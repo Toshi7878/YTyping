@@ -1,4 +1,5 @@
 import { ThemeColors } from "@/types";
+import { AuthProvider } from "@/types/next-auth";
 import { Box, Button, MenuItem, useTheme } from "@chakra-ui/react";
 import React from "react";
 import { handleSignIn } from "../authAction";
@@ -7,7 +8,7 @@ interface SignInMenuItemProps {
   _hover: { bg: string; color: string };
   leftIcon: React.ReactElement;
   text: string;
-  provider: string;
+  provider: AuthProvider;
 }
 
 const SignInMenuItem = (props: SignInMenuItemProps) => {

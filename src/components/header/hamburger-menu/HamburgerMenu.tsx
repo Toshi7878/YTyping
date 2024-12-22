@@ -1,5 +1,8 @@
 "use client";
 
+import { leftLink, leftMenuItem } from "@/config/headerNav";
+import { ThemeColors } from "@/types";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import {
   Flex,
   IconButton,
@@ -12,14 +15,11 @@ import {
   useDisclosure,
   useTheme,
 } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
-import { ThemeColors } from "@/types";
-import LinkMenuItem from "../child/child/LinkMenuItem";
-import { leftLink, leftMenuItem } from "@/config/headerNav";
-import LogOutMenuItem from "../child/right-child/login/child/LogOutMenuItem";
 import { useSession } from "next-auth/react";
-import SignInMenuItem from "../child/right-child/login/child/SignInMenuItem";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
+import LinkMenuItem from "../child/child/LinkMenuItem";
+import LogOutMenuItem from "../child/right-child/login/child/LogOutMenuItem";
+import SignInMenuItem from "../child/right-child/login/child/SignInMenuItem";
 import NewCreateModal from "../child/right-child/new-map/child/NewCreateModal";
 import NotifyBell from "../child/right-child/notify-bell/NotifyBell";
 
@@ -73,11 +73,13 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
                 _hover={{ bg: "#7289DA", color: "white" }}
                 text={"Discordでログイン"}
                 leftIcon={<BsDiscord size="1.5em" />}
+                provider="discord"
               />
               <SignInMenuItem
                 _hover={{ bg: "#DB4437", color: "white" }}
                 text={"Googleでログイン"}
                 leftIcon={<BsGoogle size="1.5em" />}
+                provider="google"
               />
             </>
           )}
