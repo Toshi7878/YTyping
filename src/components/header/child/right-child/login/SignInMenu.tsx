@@ -1,9 +1,6 @@
-import { Box, MenuItem, useTheme } from "@chakra-ui/react";
-import { Menu, MenuButton, MenuList, Button } from "@chakra-ui/react";
-import { BsDiscord } from "react-icons/bs";
-import { BsGoogle } from "react-icons/bs";
 import { ThemeColors } from "@/types";
-import { handleSignIn } from "./authAction";
+import { Button, Menu, MenuButton, MenuList, useTheme } from "@chakra-ui/react";
+import { BsDiscord, BsGoogle } from "react-icons/bs";
 import SignInMenuItem from "./child/SignInMenuItem";
 
 export default function SignInMenu() {
@@ -27,11 +24,13 @@ export default function SignInMenu() {
           _hover={{ bg: "#7289DA", color: "white" }}
           text={"Discordでログイン"}
           leftIcon={<BsDiscord size="1.5em" />}
+          provider={"discord"}
         />
         <SignInMenuItem
           _hover={{ bg: "#DB4437", color: "white" }}
           text={"Googleでログイン"}
           leftIcon={<BsGoogle size="1.5em" />}
+          provider={"google"}
         />
       </MenuList>
     </Menu>

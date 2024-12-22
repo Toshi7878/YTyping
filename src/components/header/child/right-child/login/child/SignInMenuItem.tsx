@@ -7,13 +7,14 @@ interface SignInMenuItemProps {
   _hover: { bg: string; color: string };
   leftIcon: React.ReactElement;
   text: string;
+  provider: "discord" | "google";
 }
 
 const SignInMenuItem = (props: SignInMenuItemProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
-    <Box as="form" action={() => handleSignIn("google")}>
+    <Box as="form" action={() => handleSignIn(props.provider)}>
       <MenuItem
         _hover={props._hover}
         bg={theme.colors.background.body}
