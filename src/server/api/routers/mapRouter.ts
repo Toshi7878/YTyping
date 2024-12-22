@@ -8,7 +8,7 @@ export const mapRouter = {
     const { mapId } = input;
 
     const session = await auth();
-    const userId = Number(session?.user.id);
+    const userId = session?.user ? Number(session?.user.id) : 0;
 
     const mapInfo = await db.map.findUnique({
       where: { id: mapId },

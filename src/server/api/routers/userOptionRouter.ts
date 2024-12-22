@@ -5,7 +5,7 @@ import { publicProcedure } from "../trpc";
 export const userOptionRouter = {
   getUserTypingOptions: publicProcedure.query(async () => {
     const session = await auth();
-    const userId = Number(session?.user.id);
+    const userId = session?.user ? Number(session?.user.id) : 0;
 
     const userTypingOptions = await db.typingOption.findUnique({
       where: { userId },
