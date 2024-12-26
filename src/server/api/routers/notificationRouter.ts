@@ -6,7 +6,7 @@ import { publicProcedure } from "../trpc";
 export const notificationRouter = {
   newNotificationCheck: publicProcedure.query(async () => {
     const session = await auth();
-    const userId = Number(session?.user.id);
+    const userId = session ? Number(session.user.id) : 0;
 
     const data = await db.notification.findFirst({
       where: {
@@ -117,4 +117,24 @@ export const notificationRouter = {
         throw new Error("Internal Server Error");
       }
     }),
+  postUserNotificationRead: publicProcedure.mutation(async () => {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    const userId = session ? Number(session.user.id) : 0;
+
+    await db.notification.updateMany({
+      where: {
+        visited_id: userId,
+        checked: false,
+      },
+      data: {
+        checked: true,
+      },
+    });
+
+    return new Response("Notifications marked as read", { status: 200 });
+  }),
 };
