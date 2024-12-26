@@ -35,11 +35,13 @@ export default async function RootLayout({
         <Analytics />
         <ThemeProvider colorMode={colorMode?.value}>
           <SessionProvider session={session}>
-            <Header session={session} />
-            <GlobalProvider>
-              <TRPCProvider>{children}</TRPCProvider>
-              <PreviewYouTubeContent />
-            </GlobalProvider>
+            <TRPCProvider>
+              <Header session={session} />
+              <GlobalProvider>
+                {children}
+                <PreviewYouTubeContent />
+              </GlobalProvider>
+            </TRPCProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>

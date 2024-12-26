@@ -1,14 +1,14 @@
 "use client";
-import { Box, Flex, useTheme } from "@chakra-ui/react";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { MapCardInfo } from "@/app/(home)/ts/type";
-import { ThemeColors } from "@/types";
-import MapBadges from "./MapBadgesLayout";
 import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { RouterOutPuts } from "@/server/api/trpc";
+import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
+import { Box, Flex, useTheme } from "@chakra-ui/react";
+import MapBadges from "./MapBadgesLayout";
 
 interface MapCardProps {
-  map: MapCardInfo;
+  map: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number]["map"];
 }
 function NotificationMapInfo({ map }: MapCardProps) {
   const theme: ThemeColors = useTheme();

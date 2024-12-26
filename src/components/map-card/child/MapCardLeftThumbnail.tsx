@@ -1,9 +1,8 @@
+import { PREVIEW_DISABLE_PATHNAMES } from "@/config/consts";
 import { Image } from "@chakra-ui/next-js";
 import { Box, useBreakpointValue } from "@chakra-ui/react";
-import React from "react";
-import ThumbnailPreviewCover from "./child/ThumbnailPreviewCover";
 import { usePathname } from "next/navigation";
-import { PREVIEW_DISABLE_PATHNAMES } from "@/config/consts";
+import ThumbnailPreviewCover from "./child/ThumbnailPreviewCover";
 
 interface MapLeftThumbnailProps {
   src?: string;
@@ -12,7 +11,7 @@ interface MapLeftThumbnailProps {
   mapVideoId?: string;
   mapPreviewTime?: string;
   mapPreviewSpeed?: number;
-  thumbnailQuality?: "maxresdefault" | "mqdefault";
+  thumbnailQuality?: string;
   thumnailWidth: Partial<Record<string, number>>;
   thumnailHeight: Partial<Record<string, number>>;
 }

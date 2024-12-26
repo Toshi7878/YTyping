@@ -1,11 +1,11 @@
 "use client";
-import { Card, CardBody, CardHeader, useTheme } from "@chakra-ui/react";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
-import { NotificationSelect } from "@/types/api";
+import { Card, CardBody, CardHeader, useTheme } from "@chakra-ui/react";
 import UserLinkText from "../custom-ui/UserLinkText";
 
 interface MapCardProps {
-  notify: NotificationSelect;
+  notify: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number];
   children: React.ReactNode;
 }
 function NotificationMapCard({ notify, children }: MapCardProps) {
@@ -21,7 +21,7 @@ function NotificationMapCard({ notify, children }: MapCardProps) {
       maxW="100%"
     >
       <CardHeader fontSize="sm" py={2} px={2} bg={theme.colors.background.header} roundedTop="md">
-        <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name} />
+        <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name!} />
         さんがスコア {notify.visitorResult.score - notify.visitedResult.score} 差で{" "}
         {Number(notify.oldRank)}位 の記録を抜かしました
       </CardHeader>

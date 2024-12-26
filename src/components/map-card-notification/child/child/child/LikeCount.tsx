@@ -1,7 +1,7 @@
-import { MapCardInfo } from "@/app/(home)/ts/type";
 import { LikeButton } from "@/components/like-button/LikeButton";
 import { INITIAL_STATE } from "@/config/consts";
 import { useLocalLikeServerActions } from "@/lib/hooks/useLocalLikeServerActions";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { LocalLikeState, ThemeColors } from "@/types";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
@@ -63,14 +63,14 @@ const ActiveLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
 };
 
 interface LikeCountProps {
-  map: MapCardInfo;
+  map: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number]["map"];
 }
 
 const LikeCount = (props: LikeCountProps) => {
   const { map } = props;
   const { data: session } = useSession();
   const { likeOptimisticState, toggleLikeAction } = useLocalLikeServerActions({
-    hasLike: props.map.mapLike?.isLiked,
+    hasLike: !!props.map.mapLike[0]?.isLiked,
     likeCount: props.map.likeCount,
   });
 

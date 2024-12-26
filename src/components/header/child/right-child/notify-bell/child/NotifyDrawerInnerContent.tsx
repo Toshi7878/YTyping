@@ -4,7 +4,7 @@ import NotificationMapCardRightInfo from "@/components/map-card-notification/chi
 import NotificationMapCard from "@/components/map-card-notification/NotificationMapCard";
 import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import { NOTIFICATION_MAP_THUBNAIL_HEIGHT, NOTIFICATION_MAP_THUBNAIL_WIDTH } from "@/config/consts";
-import { useNotifyInfiniteQuery } from "@/lib/hooks/fetcher-hook/useNotifyInfiniteQuery";
+import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import {
   Box,
@@ -17,6 +17,19 @@ import {
 import InfiniteScroll from "react-infinite-scroller";
 
 const NotifyDrawerInnerContent = () => {
+  // const {
+  //   data,
+  //   error,
+  //   fetchNextPage,
+  //   fetchPreviousPage,
+  //   hasNextPage,
+  //   hasPreviousPage,
+  //   isFetching,
+  //   isFetchingNextPage,
+  //   isFetchingPreviousPage,
+  //   isLoading,
+  // } = useNotifyInfiniteQuery();
+
   const {
     data,
     error,
@@ -28,7 +41,15 @@ const NotifyDrawerInnerContent = () => {
     isFetchingNextPage,
     isFetchingPreviousPage,
     isLoading,
-  } = useNotifyInfiniteQuery();
+  } = clientApi.notification.getInfiniteUserNotifications.useInfiniteQuery(
+    { cursor: 1 }, // 必要な引数を指定
+    {
+      getNextPageParam: (lastPage) => lastPage?.nextCursor,
+      initialCursor: 1, // 必要に応じて初期カーソルを設定
+    },
+  );
+  // const utils = clientApi.useUtils();
+  // utils.invalidate();
 
   const theme: ThemeColors = useTheme();
 
@@ -51,7 +72,7 @@ const NotifyDrawerInnerContent = () => {
           >
             {data?.pages.length ? (
               data.pages.map((page, index: number) => {
-                return page.map((notify, index: number) => {
+                return page.notifications.map((notify, index: number) => {
                   const { map } = notify;
                   const src =
                     map.thumbnailQuality === "maxresdefault"
