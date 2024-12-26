@@ -1,11 +1,9 @@
 "use client";
 import CustomDrawerContent from "@/components/custom-ui/CustomDrawerContent";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { QUERY_KEYS } from "@/config/consts";
-import { useClientNewNotifyCheck } from "@/lib/hooks/fetcher-hook/useClientNewNotifyCheck";
+import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Box, Drawer, useDisclosure, useTheme } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Bell, BellDot } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -20,11 +18,11 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
   const [isNewBadge, isSetNewBadge] = useState(isNewNotification);
   const theme: ThemeColors = useTheme();
   const { isOpen, onOpen, onClose } = useDisclosure(); // Drawerの開閉状態を管理
-  const queryClient = useQueryClient();
   const router = useRouter();
-  const { data } = useClientNewNotifyCheck();
+  const { data } = clientApi.notification.newNotificationCheck.useQuery();
+  const utils = clientApi.useUtils();
   const nofityDrawerClose = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.notification });
+    utils.notification.getInfiniteUserNotifications.invalidate();
     onClose();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

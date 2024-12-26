@@ -1,17 +1,18 @@
 "use client";
+import SkeletonCard from "@/components/map-card/SkeletonCard";
+import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
+import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
+import MapInfo from "@/components/map-card/child/child/MapInfo";
+import { Box } from "@chakra-ui/react";
+import { useSearchParams } from "next/navigation";
+import nProgress from "nprogress";
+import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
-import MapCardLayout from "./MapCardLayout";
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { useMapListInfiniteQuery } from "../hooks/useMapListInfiniteQuery";
-import nProgress from "nprogress";
-import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
-import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "../ts/const/consts";
 import { MapCardInfo } from "../ts/type";
-import SkeletonCard from "@/components/map-card/SkeletonCard";
-import MapInfo from "@/components/map-card/child/child/MapInfo";
+import MapCardLayout from "./MapCardLayout";
 
 function LoadingMapCard({ cardLength }: { cardLength: number }) {
   return (
@@ -59,7 +60,11 @@ function MapList() {
   return (
     <InfiniteScroll
       loadMore={() => fetchNextPage()}
-      loader={<LoadingMapCard cardLength={2} />}
+      loader={
+        <Box key={0}>
+          <LoadingMapCard cardLength={2} />
+        </Box>
+      }
       hasMore={hasNextPage}
       threshold={1800} // スクロールの閾値を追加
     >

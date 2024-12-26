@@ -17,19 +17,6 @@ import {
 import InfiniteScroll from "react-infinite-scroller";
 
 const NotifyDrawerInnerContent = () => {
-  // const {
-  //   data,
-  //   error,
-  //   fetchNextPage,
-  //   fetchPreviousPage,
-  //   hasNextPage,
-  //   hasPreviousPage,
-  //   isFetching,
-  //   isFetchingNextPage,
-  //   isFetchingPreviousPage,
-  //   isLoading,
-  // } = useNotifyInfiniteQuery();
-
   const {
     data,
     error,

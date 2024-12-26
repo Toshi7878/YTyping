@@ -1,8 +1,8 @@
+import { QUERY_KEYS } from "@/config/consts";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { MapCardInfo } from "../ts/type";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { QUERY_KEYS } from "@/config/consts";
+import { MapCardInfo } from "../ts/type";
 
 async function getMapList(page: number, mapKeyword: string): Promise<MapCardInfo[]> {
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
@@ -20,19 +20,7 @@ export const useMapListInfiniteQuery = () => {
   const searchParams = useSearchParams();
   const mapKeyword = searchParams.get("map-keyword") || "";
 
-  const {
-    data,
-    error,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    status,
-    refetch,
-  } = useInfiniteQuery({
+  const mapListInfiniteQuery = useInfiniteQuery({
     queryKey: QUERY_KEYS.mapList,
     queryFn: ({ pageParam = 0 }) => getMapList(pageParam, mapKeyword), // ページ数を引数として渡す
     initialPageParam: 0,
@@ -57,17 +45,5 @@ export const useMapListInfiniteQuery = () => {
     refetchOnMount: false, // マウント時に再フェッチしない
   });
 
-  return {
-    data,
-    error,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    status,
-    refetch,
-  };
+  return mapListInfiniteQuery;
 };

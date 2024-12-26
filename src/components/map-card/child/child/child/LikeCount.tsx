@@ -17,14 +17,7 @@ const LogoutLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
-    <Flex
-      as="button"
-      type="button"
-      alignItems="baseline"
-      color={`${theme.colors.text.body}99`}
-      rounded="md"
-      px={1}
-    >
+    <Flex alignItems="baseline" color={`${theme.colors.text.body}99`} rounded="md" px={1}>
       <Box mr={1} position="relative" top="2.5px">
         <FiHeart size={17} />
       </Box>
@@ -42,8 +35,6 @@ const ActiveLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
 
   return (
     <Flex
-      as="button"
-      type={session?.user.id ? "submit" : "button"}
       alignItems="baseline"
       color={
         likeOptimisticState.hasLike ? theme.colors.semantic.like : `${theme.colors.text.body}99`

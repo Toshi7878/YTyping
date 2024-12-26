@@ -1,7 +1,6 @@
-import { Link, useTheme } from "@chakra-ui/react";
-import React from "react";
 import { useLinkClick } from "@/lib/hooks/useLinkClick";
 import { ThemeColors } from "@/types";
+import { Link, useTheme } from "@chakra-ui/react";
 
 interface UserLInkTextProps {
   userId: number;
