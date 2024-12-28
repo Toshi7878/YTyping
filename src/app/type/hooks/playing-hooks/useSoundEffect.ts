@@ -1,7 +1,7 @@
 import clearTypeSound from "@/asset/wav/clear_type.wav";
 import typeSound from "@/asset/wav/key_type.wav";
 import missSound from "@/asset/wav/miss_type.wav";
-import { useVolumeAtom } from "@/components/atom/globalAtoms";
+import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { useStore } from "jotai";
 import useSound from "use-sound";
 import { userOptionsAtom } from "../../type-atoms/gameRenderAtoms";

@@ -1,4 +1,4 @@
-import { useVolumeAtom } from "@/components/atom/globalAtoms";
+import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import NProgress from "nprogress";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 import { editTicker } from "../components/editor-youtube-content/EditYoutube";

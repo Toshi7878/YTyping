@@ -1,4 +1,4 @@
-import { useVolumeAtom } from "@/components/atom/globalAtoms";
+import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { Ticker } from "@pixi/ticker";
 import { useStore } from "jotai";
 import NProgress from "nprogress";

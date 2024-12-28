@@ -16,7 +16,7 @@ import {
   usePreviewVideoIdAtom,
   useSetPreviewVideoIdAtom,
   useVolumeAtom,
-} from "../atom/globalAtoms";
+} from "../../lib/global-atoms/globalAtoms";
 import { useGlobalRefs } from "../global-provider/GlobalRefProvider";
 
 const PreviewYouTubeContent = function YouTubeContent() {

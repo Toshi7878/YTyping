@@ -1,4 +1,4 @@
-import { useSetPreviewVideoIdAtom } from "@/components/atom/globalAtoms";
+import { useSetPreviewVideoIdAtom } from "@/lib/global-atoms/globalAtoms";
 
 export const usePreviewYouTubeKeyDown = () => {
   const setPreviewVideoId = useSetPreviewVideoIdAtom();

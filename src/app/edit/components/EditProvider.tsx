@@ -1,7 +1,7 @@
 "use client";
-import { getGlobalAtomStore, previewVideoIdAtom } from "@/components/atom/globalAtoms";
 import { QUERY_KEYS } from "@/config/global-consts";
 import { db } from "@/lib/db";
+import { getGlobalAtomStore, previewVideoIdAtom } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { IndexDBOption } from "@/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

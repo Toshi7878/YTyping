@@ -1,7 +1,7 @@
 "use client";
 
 import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
-import { CreateMapBackUpInfo } from "@/lib/global-types";
+import { CreateMapBackUpInfo } from "@/types/global-types";
 import { Link } from "@chakra-ui/next-js";
 import { Button, UseDisclosureReturn } from "@chakra-ui/react";
 

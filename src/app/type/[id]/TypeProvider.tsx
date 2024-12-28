@@ -1,5 +1,5 @@
 "use client";
-import { getGlobalAtomStore, previewVideoIdAtom } from "@/components/atom/globalAtoms";
+import { getGlobalAtomStore, previewVideoIdAtom } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createStore, Provider as JotaiProvider } from "jotai";

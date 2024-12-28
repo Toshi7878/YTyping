@@ -1,14 +1,13 @@
-import { Flex } from "@chakra-ui/react";
-import React, { useCallback, useState } from "react";
-import { FaPlay } from "react-icons/fa";
-import { FaPause } from "react-icons/fa";
 import {
   usePreviewVideoIdAtom,
   useSetPreviewSpeedAtom,
   useSetPreviewTimeAtom,
   useSetPreviewVideoIdAtom,
-} from "@/components/atom/globalAtoms";
+} from "@/lib/global-atoms/globalAtoms";
+import { Flex } from "@chakra-ui/react";
 import { RESET } from "jotai/utils";
+import React, { useCallback, useState } from "react";
+import { FaPause, FaPlay } from "react-icons/fa";
 
 interface MapLeftThumbnailProps {
   mapVideoId: string;

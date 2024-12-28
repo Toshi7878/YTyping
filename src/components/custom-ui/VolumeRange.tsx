@@ -1,21 +1,19 @@
 "use client";
 import {
+  Box,
   HStack,
   Slider,
-  SliderTrack,
   SliderFilledTrack,
-  SliderThumb,
-  useTheme,
-  Box,
   SliderMark,
+  SliderThumb,
+  SliderTrack,
+  useTheme,
 } from "@chakra-ui/react";
 
+import { useSetVolumeAtom, useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { ThemeColors } from "@/types";
-import { useSetVolumeAtom, useVolumeAtom } from "@/components/atom/globalAtoms";
-import { IoMdVolumeMute } from "react-icons/io";
-import { IoMdVolumeLow } from "react-icons/io";
-import { IoMdVolumeHigh } from "react-icons/io";
 import { useState } from "react";
+import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
 
 interface VolumeRangeProps {
   playerRef: any;

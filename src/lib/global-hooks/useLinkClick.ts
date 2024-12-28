@@ -1,12 +1,10 @@
 import { useCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
-import { useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import NProgress from "nprogress";
 
 export const useLinkClick = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const queryClient = useQueryClient();
   const canUpload = useCanUploadAtom();
 
   return (event: React.MouseEvent<HTMLAnchorElement>) => {
