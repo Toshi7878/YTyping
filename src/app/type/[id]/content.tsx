@@ -1,6 +1,7 @@
 "use client";
 import { QUERY_KEYS } from "@/config/consts";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { clientApi } from "@/trpc/client-api";
 import { Box, Flex } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
@@ -54,6 +55,7 @@ function Content({ mapInfo }: ContentProps) {
   const setCombo = useSetComboAtom();
   const setChangeCSSCount = useSetChangeCSSCountAtom();
   const setPlayingInputMode = useSetPlayingInputModeAtom();
+  const utils = clientApi.useUtils();
 
   useEffect(() => {
     window.addEventListener("keydown", disableKeyHandle);
@@ -62,7 +64,7 @@ function Content({ mapInfo }: ContentProps) {
       window.removeEventListener("keydown", disableKeyHandle);
       // コンポーネントのアンマウント時にクエリキャッシュをクリア
       queryClient.removeQueries({ queryKey: QUERY_KEYS.mapData(mapId) });
-      queryClient.removeQueries({ queryKey: QUERY_KEYS.mapRanking(mapId) });
+      utils.ranking.getMapRanking.invalidate();
 
       setMap(null);
       setScene(RESET);

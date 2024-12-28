@@ -2,7 +2,6 @@
 
 import { useDownloadPlayDataJsonQuery } from "@/app/type/hooks/data-query/useDownloadResultJsonQuery";
 import { RANKING_COLUMN_WIDTH } from "@/app/type/ts/const/consts";
-import { RankingListType } from "@/app/type/ts/type";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import UpdateAtText from "@/components/custom-ui/UpdateAtText";
@@ -12,6 +11,7 @@ import RankText from "@/components/user-result-text/RankText";
 import ResultToolTipText from "@/components/user-result-text/ResultToolTipText";
 import { UserInputModeText } from "@/components/user-result-text/UserInputModeText";
 import { useLocalClapServerActions } from "@/lib/hooks/useLocalClapServerActions";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
 import { Td, Tr, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
@@ -19,7 +19,7 @@ import { Dispatch, useEffect, useState } from "react";
 import RankingMenu from "./RankingMenu";
 
 interface RankingTrProps {
-  result: RankingListType;
+  result: RouterOutPuts["ranking"]["getMapRanking"][number];
   index: number;
   rank: number;
   type: number;
@@ -134,7 +134,7 @@ const RankingTr = (props: RankingTrProps) => {
           resultId={props.result.id}
           userId={props.result.userId}
           resultUpdatedAt={props.result.updatedAt}
-          name={props.result.user.name}
+          name={props.result.user.name as string}
           setShowMenu={props.setShowMenu}
           setHoveredIndex={props.setHoveredIndex}
           clapOptimisticState={clapOptimisticState}

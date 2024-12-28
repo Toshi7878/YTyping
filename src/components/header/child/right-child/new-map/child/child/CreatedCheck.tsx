@@ -3,16 +3,18 @@ import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapCard from "@/components/map-card/MapCard";
-import { useCreatedCheckVideoIdQuery } from "@/lib/hooks/fetcher-hook/useCreatedCheckVideoIdQuery";
+import { clientApi } from "@/trpc/client-api";
 import { Box, Spinner } from "@chakra-ui/react";
-import React from "react";
 
 interface CreatedCheckProps {
   videoId: string;
 }
 
 const CreatedCheck = (props: CreatedCheckProps) => {
-  const { data, error, isLoading } = useCreatedCheckVideoIdQuery(props.videoId);
+  const { data, error, isLoading } = clientApi.map.getCreatedVideoIdMapList.useQuery({
+    videoId: props.videoId,
+  });
+  // const { data, error, isLoading } = useCreatedCheckVideoIdQuery(props.videoId);
 
   if (isLoading) {
     return <Spinner size="sm" />;

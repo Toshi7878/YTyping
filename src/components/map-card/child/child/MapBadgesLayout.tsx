@@ -1,13 +1,12 @@
-import { MapCardInfo } from "@/app/(home)/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, HStack, Text, useBreakpointValue } from "@chakra-ui/react";
-import React from "react";
 import MapBadge from "./MapBadge";
 import LikeCount from "./child/LikeCount";
 import RankingCount from "./child/RankingCount";
 
 interface MapBadgesProps {
-  map: MapCardInfo;
+  map: RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 }
 
 const MapBadges = (props: MapBadgesProps) => {
