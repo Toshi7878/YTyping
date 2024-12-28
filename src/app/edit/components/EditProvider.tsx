@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { getGlobalAtomStore, previewVideoIdAtom } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { IndexDBOption } from "@/types";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
 import { useSearchParams } from "next/navigation";
 import React from "react";
@@ -25,8 +25,6 @@ import { RefsProvider } from "../edit-contexts/refsProvider";
 import editStore from "../redux/store";
 import { EditorNewMapBackUpInfoData, GeminiMapInfo } from "../ts/type";
 
-const queryClient = new QueryClient();
-
 interface EditProviderProps {
   mapInfo?: RouterOutPuts["map"]["getMapInfo"];
   children: React.ReactNode;
@@ -37,6 +35,7 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const isBackUp = searchParams.get("backup") === "true";
+  const queryClient = useQueryClient();
 
   const globalAtomStore = getGlobalAtomStore();
   globalAtomStore.set(previewVideoIdAtom, null);
@@ -95,11 +94,9 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
 
   return (
     <RefsProvider>
-      <QueryClientProvider client={queryClient}>
-        <ReduxProvider store={editStore}>
-          <JotaiProvider store={editAtomStore}>{children}</JotaiProvider>
-        </ReduxProvider>
-      </QueryClientProvider>
+      <ReduxProvider store={editStore}>
+        <JotaiProvider store={editAtomStore}>{children}</JotaiProvider>
+      </ReduxProvider>
     </RefsProvider>
   );
 };
