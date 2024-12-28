@@ -1,8 +1,10 @@
 import { QUERY_KEYS } from "@/config/consts";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { MapCardInfo } from "../ts/type";
+
+type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 
 async function getMapList(page: number, mapKeyword: string): Promise<MapCardInfo[]> {
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
