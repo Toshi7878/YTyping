@@ -1,4 +1,4 @@
-import { toggleLikeServerAction } from "@/config/server-actions/toggle-like-server-action";
+import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { LocalLikeState, UploadResult } from "@/types";
 import { useEffect, useOptimistic, useState } from "react";
 

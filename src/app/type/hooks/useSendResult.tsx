@@ -1,5 +1,5 @@
 import { useParams } from "next/navigation";
-import { actions } from "../ts/scene-ts/end/send-result-server-actions";
+import { actions } from "../../../server/actions/sendTypingResultActions";
 import { LineResultData } from "../ts/type";
 import { useLineResultsAtom, useStatusAtomsValues } from "../type-atoms/gameRenderAtoms";
 import { useRefs } from "../type-contexts/refsProvider";

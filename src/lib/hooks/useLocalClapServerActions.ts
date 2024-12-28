@@ -1,4 +1,4 @@
-import { toggleClapServerAction } from "@/config/server-actions/toggle-clap-server-action";
+import { toggleClapServerAction } from "@/server/actions/toggleClapActions";
 import { LocalClapState, UploadResult } from "@/types";
 import { useEffect, useOptimistic, useState } from "react";
 

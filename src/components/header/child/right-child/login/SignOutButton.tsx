@@ -1,9 +1,8 @@
 "use client";
 import { Box, Button, useTheme } from "@chakra-ui/react";
 
-import React from "react";
-import { handleSignOut } from "./authAction";
 import { ThemeColors } from "@/types";
+import { handleSignOut } from "../../../../../server/actions/authActions";
 
 export function SignOutButton() {
   const theme: ThemeColors = useTheme();

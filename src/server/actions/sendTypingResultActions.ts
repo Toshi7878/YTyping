@@ -4,8 +4,28 @@ import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
 import { UploadResult } from "@/types";
 import { PrismaClient } from "@prisma/client";
-import { LineResultData, SendResultData } from "../../type";
-import { resultSendSchema } from "./validationSchema";
+import { LineResultData, SendResultData } from "../../app/type/ts/type";
+
+import { z } from "zod";
+
+const statusSchema = z.object({
+  score: z.number(),
+  kanaType: z.number(),
+  romaType: z.number(),
+  flickType: z.number(),
+  miss: z.number(),
+  lost: z.number(),
+  maxCombo: z.number(),
+  kpm: z.number(),
+  rkpm: z.number(),
+  romaKpm: z.number(),
+  defaultSpeed: z.number(),
+});
+
+export const resultSendSchema = z.object({
+  mapId: z.number(),
+  status: statusSchema,
+});
 
 const prisma = new PrismaClient();
 
@@ -152,8 +172,6 @@ export async function actions(
   data: SendResultData,
   lineResults: LineResultData[],
 ): Promise<UploadResult> {
-  const session = await auth();
-
   const validatedFields = resultSendSchema.safeParse({
     mapId: data.mapId,
     status: data.status,
@@ -168,10 +186,10 @@ export async function actions(
     };
   }
   try {
+    const session = await auth();
     const userId = Number(session?.user?.id);
     const mapId = await sendNewResult(data, userId);
     await sendLineResult(mapId, lineResults);
-
     await calcRank(data.mapId, userId);
     return {
       id: mapId,

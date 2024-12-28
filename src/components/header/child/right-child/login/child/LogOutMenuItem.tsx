@@ -1,7 +1,6 @@
-import { Box, MenuItem, useTheme } from "@chakra-ui/react";
-import React from "react";
-import { handleSignOut } from "../authAction";
 import { ThemeColors } from "@/types";
+import { Box, MenuItem, useTheme } from "@chakra-ui/react";
+import { handleSignOut } from "../../../../../../server/actions/authActions";
 
 const LogOutMenuItem = () => {
   const theme: ThemeColors = useTheme();

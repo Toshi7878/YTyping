@@ -2,8 +2,8 @@
 
 import { UploadResult } from "@/types";
 import { PrismaClient } from "@prisma/client";
-import { auth } from "../../../server/auth";
-import { nameSchema } from "./validationSchema";
+import { nameSchema } from "../../app/user/register/validationSchema";
+import { auth } from "../auth";
 const prisma = new PrismaClient();
 
 const sendUserName = async (email_hash: string, newName: string) => {

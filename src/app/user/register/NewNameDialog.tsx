@@ -1,15 +1,15 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { Button, Input, FormControl, Box } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { nameSchema } from "./validationSchema";
-import { actions } from "./actions";
-import { useFormState } from "react-dom";
-import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
 import { INITIAL_STATE } from "@/config/consts";
+import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
+import { Box, Button, FormControl, Input } from "@chakra-ui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useFormState } from "react-dom";
+import { useForm } from "react-hook-form";
+import { actions } from "../../../server/actions/sendUserNameActions";
+import { nameSchema } from "./validationSchema";
 
 interface FormData {
   newName: string;
