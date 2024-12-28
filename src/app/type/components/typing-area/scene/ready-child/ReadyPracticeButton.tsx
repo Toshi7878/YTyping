@@ -4,12 +4,10 @@ import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Button, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
 const ReadyPracticeButton = () => {
   const { data: session } = useSession();
-  const { id: mapId } = useParams();
   const userId = Number(session?.user.id);
 
   const [resultId, setResultId] = useState<number | null>(null);
