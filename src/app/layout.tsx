@@ -7,13 +7,13 @@ import { fonts } from "../lib/fonts";
 // export const runtime = "edge";
 
 import type { Metadata } from "next";
-import ThemeProvider from "./provider/ThemeProvider";
+import ThemeProvider from "../components/global-provider/ThemeProvider";
 
 import PreviewYouTubeContent from "@/components/custom-ui/PreviewYouTubeContent";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { SessionProvider } from "next-auth/react";
-import GlobalProvider from "./provider/GlobalProvider";
+import GlobalProvider from "../components/global-provider/GlobalProvider";
 
 export const metadata: Metadata = {
   title: "YTyping",

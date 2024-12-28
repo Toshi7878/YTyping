@@ -1,8 +1,7 @@
-import { Box, Flex } from "@chakra-ui/react";
-import React from "react";
-import SearchInputs from "./search/SearchInputs";
 import VolumeRange from "@/components/custom-ui/VolumeRange";
-import { useGlobalRefs } from "@/components/globalRefContext/GlobalRefProvider";
+import { useGlobalRefs } from "@/components/global-provider/GlobalRefProvider";
+import { Box, Flex } from "@chakra-ui/react";
+import SearchInputs from "./search/SearchInputs";
 
 const SearchContent = () => {
   const isIOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);

@@ -17,7 +17,7 @@ import {
   useSetPreviewVideoIdAtom,
   useVolumeAtom,
 } from "../atom/globalAtoms";
-import { useGlobalRefs } from "../globalRefContext/GlobalRefProvider";
+import { useGlobalRefs } from "../global-provider/GlobalRefProvider";
 
 const PreviewYouTubeContent = function YouTubeContent() {
   const router = useRouter(); // 追加

@@ -1,7 +1,7 @@
 "use client";
 import { getGlobalAtomStore } from "@/components/atom/globalAtoms";
+import { GlobalRefProvider } from "@/components/global-provider/GlobalRefProvider";
 import { Provider as JotaiProvider } from "jotai";
-import { GlobalRefProvider } from "@/components/globalRefContext/GlobalRefProvider";
 
 const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const globalAtomStore = getGlobalAtomStore();
