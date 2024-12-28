@@ -1,7 +1,7 @@
 "use client";
 
-import { INITIAL_STATE } from "@/config/consts";
-import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
+import { INITIAL_STATE } from "@/config/global-consts";
+import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
 import { Box, Button, FormControl, Input } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";

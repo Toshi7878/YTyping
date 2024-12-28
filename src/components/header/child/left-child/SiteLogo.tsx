@@ -1,7 +1,7 @@
+import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { ThemeColors } from "@/types";
-import { Text, useTheme } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
-import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { Text, useTheme } from "@chakra-ui/react";
 
 function SiteLogo() {
   const theme: ThemeColors = useTheme();

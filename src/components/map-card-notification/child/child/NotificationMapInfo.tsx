@@ -1,6 +1,6 @@
 "use client";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";

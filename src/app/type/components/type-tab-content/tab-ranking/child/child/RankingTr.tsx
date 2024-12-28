@@ -10,7 +10,7 @@ import ClearRateText from "@/components/user-result-text/ClearRateText";
 import RankText from "@/components/user-result-text/RankText";
 import ResultToolTipText from "@/components/user-result-text/ResultToolTipText";
 import { UserInputModeText } from "@/components/user-result-text/UserInputModeText";
-import { useLocalClapServerActions } from "@/lib/hooks/useLocalClapServerActions";
+import { useLocalClapServerActions } from "@/lib/global-hooks/useLocalClapServerActions";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
 import { Td, Tr, useTheme } from "@chakra-ui/react";

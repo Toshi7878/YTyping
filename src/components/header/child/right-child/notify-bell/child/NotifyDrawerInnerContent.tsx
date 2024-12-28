@@ -3,7 +3,10 @@ import NotificationMapInfo from "@/components/map-card-notification/child/child/
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import NotificationMapCard from "@/components/map-card-notification/NotificationMapCard";
 import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
-import { NOTIFICATION_MAP_THUBNAIL_HEIGHT, NOTIFICATION_MAP_THUBNAIL_WIDTH } from "@/config/consts";
+import {
+  NOTIFICATION_MAP_THUBNAIL_HEIGHT,
+  NOTIFICATION_MAP_THUBNAIL_WIDTH,
+} from "@/config/global-consts";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { useInView } from "react-intersection-observer";

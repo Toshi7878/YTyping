@@ -1,12 +1,12 @@
 "use client";
-import { Button, FormLabel, HStack } from "@chakra-ui/react";
-import { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/app/edit/redux/store";
-import { ImportFile } from "@/app/edit/ts/tab/settings/importFile";
 import { useSetIsLrcConvertingAtom } from "@/app/edit/edit-atom/editAtom";
 import { useWordConvert } from "@/app/edit/hooks/useWordConvert";
-import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
+import { RootState } from "@/app/edit/redux/store";
+import { ImportFile } from "@/app/edit/ts/tab/settings/importFile";
+import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
+import { Button, HStack } from "@chakra-ui/react";
+import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function LrcConvertButton() {
   const dispatch = useDispatch();

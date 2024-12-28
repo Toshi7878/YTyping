@@ -1,10 +1,10 @@
 "use client";
-import { INITIAL_STATE } from "@/config/consts";
+import { INITIAL_STATE } from "@/config/global-consts";
+import { useLocalClapServerActions } from "@/lib/global-hooks/useLocalClapServerActions";
 import { ThemeColors } from "@/types";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
 import { useFormState } from "react-dom";
 import { FaHandsClapping } from "react-icons/fa6";
-import { useLocalClapServerActions } from "@/lib/hooks/useLocalClapServerActions";
 interface ResultClapButtonProps {
   resultId: number;
   clapCount: number;

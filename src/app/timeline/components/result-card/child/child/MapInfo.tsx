@@ -1,10 +1,10 @@
 "use client";
-import { Box, Flex, Text, useTheme } from "@chakra-ui/react";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ResultCardInfo } from "@/app/timeline/ts/type";
+import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
-import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { Box, Flex, Text, useTheme } from "@chakra-ui/react";
 
 interface MapCardProps {
   map: ResultCardInfo["map"];

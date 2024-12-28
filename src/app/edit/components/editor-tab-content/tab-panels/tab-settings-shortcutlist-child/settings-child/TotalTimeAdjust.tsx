@@ -1,14 +1,14 @@
 "use client";
-import { Button, FormLabel, Input, HStack, Box, useTheme, Tooltip } from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
 import { allAdjustTime } from "@/app/edit/redux/mapDataSlice";
 import { RootState } from "@/app/edit/redux/store";
 import { addHistory } from "@/app/edit/redux/undoredoSlice";
-import { useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
-import { ThemeColors } from "@/types";
-import { useState } from "react";
-import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
+import { ThemeColors } from "@/types";
+import { Box, Button, FormLabel, HStack, Input, useTheme } from "@chakra-ui/react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function TotalTimeAdjust() {
   const dispatch = useDispatch();

@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  PREVIEW_YOUTUBE_HEIGHT,
+  PREVIEW_YOUTUBE_POSITION,
+  PREVIEW_YOUTUBE_WIDTH,
+} from "@/config/global-consts";
+import { usePreviewYouTubeKeyDown } from "@/lib/global-hooks/usePreviewYouTubeKeyDown";
+import { Box, useBreakpointValue } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import YouTube from "react-youtube";
 import {
   usePreviewSpeedAtom,
@@ -8,16 +17,7 @@ import {
   useSetPreviewVideoIdAtom,
   useVolumeAtom,
 } from "../atom/globalAtoms";
-import { useEffect } from "react";
 import { useGlobalRefs } from "../globalRefContext/GlobalRefProvider";
-import { usePreviewYouTubeKeyDown } from "@/lib/hooks/usePreviewYouTubeKeyDown";
-import { useRouter } from "next/navigation";
-import { Box, useBreakpointValue } from "@chakra-ui/react";
-import {
-  PREVIEW_YOUTUBE_HEIGHT,
-  PREVIEW_YOUTUBE_POSITION,
-  PREVIEW_YOUTUBE_WIDTH,
-} from "@/config/consts";
 
 const PreviewYouTubeContent = function YouTubeContent() {
   const router = useRouter(); // 追加

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetTabIndexAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
+import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
 import { clientApi } from "@/trpc/client-api";
 import { UploadResult } from "@/types";
 import {

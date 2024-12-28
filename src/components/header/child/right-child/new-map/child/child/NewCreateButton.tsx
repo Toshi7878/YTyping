@@ -1,9 +1,9 @@
 "use client";
 
-import { Button, UseDisclosureReturn } from "@chakra-ui/react";
-import { Link } from "@chakra-ui/next-js";
-import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { CreateMapBackUpInfo } from "@/lib/global-types";
+import { Link } from "@chakra-ui/next-js";
+import { Button, UseDisclosureReturn } from "@chakra-ui/react";
 
 interface NewCreateButtonProps {
   createMapBackUpInfo: CreateMapBackUpInfo;

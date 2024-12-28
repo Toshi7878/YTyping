@@ -4,7 +4,7 @@ import { Stack } from "@chakra-ui/react";
 import { useFormState } from "react-dom";
 
 import { useSendResult } from "@/app/type/hooks/useSendResult";
-import { INITIAL_STATE } from "@/config/consts";
+import { INITIAL_STATE } from "@/config/global-consts";
 import { useSession } from "next-auth/react";
 import { CARD_BODY_MIN_HEIGHT } from "../TypingCard";
 import EndMainButtonContainer from "./end-child/EndMainButtonContainer";

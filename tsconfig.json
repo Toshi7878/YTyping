@@ -32,7 +32,7 @@
     "src/lib/generateIdenticon.js",
     "src/app/type/ts/scene-ts/ready/createTypingWord.ts",
     "src/app/type/components/type-tab-content/tab/child/child/StatusKpmValue.tsx",
-    "src/config/declarations.d.ts" // ここに追加
+    "src/types/declarations.d.ts" // ここに追加
   ],
 
   "exclude": ["node_modules"]

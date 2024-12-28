@@ -1,10 +1,10 @@
 import { ThemeColors } from "@/types";
 
+import { leftLink, leftMenuItem } from "@/config/headerNav";
+import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
+import { Link } from "@chakra-ui/next-js";
 import { Box, Button, Menu, MenuButton, MenuList, useTheme } from "@chakra-ui/react";
 import LinkMenuItem from "../child/LinkMenuItem";
-import { leftLink, leftMenuItem } from "@/config/headerNav";
-import { Link } from "@chakra-ui/next-js";
-import { useLinkClick } from "@/lib/hooks/useLinkClick";
 
 function LeftMenus() {
   const theme: ThemeColors = useTheme();

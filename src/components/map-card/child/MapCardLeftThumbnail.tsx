@@ -1,4 +1,4 @@
-import { PREVIEW_DISABLE_PATHNAMES } from "@/config/consts";
+import { PREVIEW_DISABLE_PATHNAMES } from "@/config/global-consts";
 import { Image } from "@chakra-ui/next-js";
 import { Box, useBreakpointValue } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";

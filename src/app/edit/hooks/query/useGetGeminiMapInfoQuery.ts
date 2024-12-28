@@ -1,16 +1,16 @@
+import { QUERY_KEYS } from "@/config/global-consts";
+import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
+import { UploadResult } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { GeminiMapInfo, GetYouTubeMovieInfo } from "../../ts/type";
-import { UploadResult } from "@/types";
+import { useSearchParams } from "next/navigation";
 import {
   useSetEditMusicSourceAtom,
   useSetGeminiTagsAtom,
   useSetMapArtistNameAtom,
   useSetMapTitleAtom,
 } from "../../edit-atom/editAtom";
-import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
-import { useSearchParams } from "next/navigation";
-import { QUERY_KEYS } from "@/config/consts";
+import { GeminiMapInfo, GetYouTubeMovieInfo } from "../../ts/type";
 
 export const useGetGeminiMapInfoQuery = (videoId: string) => {
   const successToast = useSuccessToast();

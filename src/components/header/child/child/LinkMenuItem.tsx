@@ -1,4 +1,4 @@
-import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { ThemeColors } from "@/types";
 import { Link, MenuItem, useTheme } from "@chakra-ui/react";
 

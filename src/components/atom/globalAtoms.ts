@@ -1,4 +1,4 @@
-import { DEFAULT_VOLUME } from "@/config/consts";
+import { DEFAULT_VOLUME } from "@/config/global-consts";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage } from "jotai/utils";
 const globalAtomStore = createStore();

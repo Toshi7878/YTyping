@@ -4,7 +4,7 @@ import { Button, useTheme } from "@chakra-ui/react";
 import { useCanUploadAtom, useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
 import { useUpdateNewMapBackUp } from "@/app/edit/hooks/useUpdateNewMapBackUp";
 import { useInitializeEditorCreateBak } from "@/lib/db";
-import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
+import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
 import { ThemeColors, UploadResult } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";

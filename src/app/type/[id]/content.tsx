@@ -1,5 +1,5 @@
 "use client";
-import { QUERY_KEYS } from "@/config/consts";
+import { QUERY_KEYS } from "@/config/global-consts";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { Box, Flex } from "@chakra-ui/react";

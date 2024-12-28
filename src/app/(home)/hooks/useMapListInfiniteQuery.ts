@@ -1,4 +1,4 @@
-import { QUERY_KEYS } from "@/config/consts";
+import { QUERY_KEYS } from "@/config/global-consts";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";

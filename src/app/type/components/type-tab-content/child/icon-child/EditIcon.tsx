@@ -1,10 +1,9 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
 import { Box, useTheme } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import React from "react";
 import { BiEdit } from "react-icons/bi";
 
 const EditIcon = () => {

@@ -20,12 +20,8 @@ export const QUERY_KEYS = {
   mapList: ["mapList"] as const,
   usersResultList: ["usersResultList"] as const,
   mapData: (mapId: string | string[]) => ["mapData", mapId] as const,
-  mapRanking: (mapId: string | string[]) => ["mapRanking", mapId] as const,
   userPlayData: (resultId: string | string[]) => ["userPlayData", resultId] as const,
-  mapCreatedCheck: (videoId: string) => ["createdCheck", videoId] as const,
-  notification: ["notification"] as const,
   generateMapInfoGemini: (videoId: string) => ["generate-gemini-map-info", videoId] as const,
-  clientNewNotifyCheck: ["client-new-notify-check"] as const,
 };
 
 export const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];

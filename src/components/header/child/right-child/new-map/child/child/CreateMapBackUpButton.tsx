@@ -1,12 +1,12 @@
 "use client";
 
-import { Button, Box, useTheme, UseDisclosureReturn } from "@chakra-ui/react";
-import { ThemeColors } from "@/types";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { ThemeColors } from "@/types";
+import { Box, Button, UseDisclosureReturn, useTheme } from "@chakra-ui/react";
 
-import { Link } from "@chakra-ui/next-js";
-import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { CreateMapBackUpInfo } from "@/lib/global-types";
+import { Link } from "@chakra-ui/next-js";
 
 interface CreateMapBackUpButtonProps {
   createMapBackUpInfo: CreateMapBackUpInfo;

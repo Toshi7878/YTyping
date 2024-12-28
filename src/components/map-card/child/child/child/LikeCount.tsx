@@ -1,6 +1,6 @@
 import { LikeButton } from "@/components/like-button/LikeButton";
-import { INITIAL_STATE } from "@/config/consts";
-import { useLocalLikeServerActions } from "@/lib/hooks/useLocalLikeServerActions";
+import { INITIAL_STATE } from "@/config/global-consts";
+import { useLocalLikeServerActions } from "@/lib/global-hooks/useLocalLikeServerActions";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { LocalLikeState, ThemeColors } from "@/types";
 import { Box, Flex, useTheme } from "@chakra-ui/react";

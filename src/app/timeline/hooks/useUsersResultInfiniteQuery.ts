@@ -1,8 +1,8 @@
+import { QUERY_KEYS } from "@/config/global-consts";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { FilterMode, ResultCardInfo } from "../ts/type";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { QUERY_KEYS } from "@/config/consts";
+import { FilterMode, ResultCardInfo } from "../ts/type";
 
 interface GetResultListProps {
   page: number;
