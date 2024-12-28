@@ -1,4 +1,3 @@
-import { sendUpdateData } from "@/app/type/hooks/sendTypingOptionData";
 import {
   isOptionEditedAtom,
   userOptionsAtom,
@@ -6,6 +5,7 @@ import {
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import VolumeRange from "@/components/custom-ui/VolumeRange";
+import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, Divider, useTheme } from "@chakra-ui/react";
 import { useStore } from "jotai";
@@ -27,6 +27,7 @@ const SettingCard = (props: SettingCardProps) => {
   const isIOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
   const typeAtomStore = useStore();
+  const updateTypingOptions = clientApi.userOption.update.useMutation();
 
   const setIsOptionEdited = useSetIsOptionEdited();
 
@@ -42,7 +43,7 @@ const SettingCard = (props: SettingCardProps) => {
         const isOptionEdited = typeAtomStore.get(isOptionEditedAtom);
         if (isOptionEdited) {
           const userOptions = typeAtomStore.get(userOptionsAtom);
-          sendUpdateData(userOptions);
+          updateTypingOptions.mutate(userOptions);
           setIsOptionEdited(false);
         }
       }
