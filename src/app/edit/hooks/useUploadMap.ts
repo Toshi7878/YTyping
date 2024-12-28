@@ -4,6 +4,7 @@ import { useStore as useReduxStore } from "react-redux";
 
 import { UploadResult } from "@/types";
 import { useParams } from "next/navigation";
+import { actions } from "../../../server/actions/sendMapDataActions";
 import {
   editCreatorCommentAtom,
   editMapArtistNameAtom,
@@ -16,7 +17,6 @@ import {
 import { useRefs } from "../edit-contexts/refsProvider";
 import { RootState } from "../redux/store";
 import { getThumbnailQuality } from "../ts/tab/info-upload/getThumbailQuality";
-import { actions } from "../ts/tab/info-upload/serverActions";
 
 export function useUploadMap() {
   const editReduxStore = useReduxStore<RootState>();

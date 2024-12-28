@@ -2,11 +2,10 @@ import { useHasLocalLikeAtom, useSetHasLocalLikeAtom } from "@/app/type/type-ato
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { LikeButton } from "@/components/like-button/LikeButton";
 import { INITIAL_STATE } from "@/config/consts";
-import { toggleLikeServerAction } from "@/config/server-actions/toggle-like-server-action";
+import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { ThemeColors, UploadResult } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import React from "react";
 import { useFormState } from "react-dom";
 
 const LikeIcon = () => {
