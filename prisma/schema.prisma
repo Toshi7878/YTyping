@@ -100,7 +100,7 @@ model Notification {
   action         String // like, ot(overtake)
   oldRank        Int?
   checked        Boolean @default(false)
-  createdAt      DateTime @default(now())
+  createdAt      DateTime @default(now()) @unique
   visitor        User @relation("Visitor", fields: [visitor_id], references: [id], onDelete: Cascade)
   visitorResult  Result @relation("VisitorResult", fields: [visitor_id,mapId], references: [userId, mapId], onDelete: Cascade)
   visitedResult  Result @relation("VisitedResult", fields: [visited_id,mapId], references: [userId, mapId], onDelete: Cascade)

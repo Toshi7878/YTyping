@@ -4,7 +4,6 @@ import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Box, Drawer, useDisclosure, useTheme } from "@chakra-ui/react";
-import axios from "axios";
 import { Bell, BellDot } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -20,6 +19,7 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
   const { isOpen, onOpen, onClose } = useDisclosure(); // Drawerの開閉状態を管理
   const router = useRouter();
   const { data } = clientApi.notification.newNotificationCheck.useQuery();
+  const postUserNotificationRead = clientApi.notification.postUserNotificationRead.useMutation();
   const utils = clientApi.useUtils();
   const nofityDrawerClose = useCallback(() => {
     utils.notification.getInfiniteUserNotifications.invalidate();
@@ -28,7 +28,7 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
   }, []);
 
   const notificationOpen = useCallback(() => {
-    axios.post("/api/post-user-notification-read");
+    postUserNotificationRead.mutate();
     isSetNewBadge(false);
     onOpen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
