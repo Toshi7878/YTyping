@@ -28,7 +28,6 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
   }, []);
 
   const notificationOpen = useCallback(() => {
-    // axios.post("/api/post-user-notification-read");
     postUserNotificationRead.mutate();
     isSetNewBadge(false);
     onOpen();

@@ -6,6 +6,8 @@ import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import { NOTIFICATION_MAP_THUBNAIL_HEIGHT, NOTIFICATION_MAP_THUBNAIL_WIDTH } from "@/config/consts";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
+import { useInView } from "react-intersection-observer";
+
 import {
   Box,
   DrawerBody,
@@ -14,30 +16,27 @@ import {
   Spinner,
   useTheme,
 } from "@chakra-ui/react";
-import InfiniteScroll from "react-infinite-scroller";
+import { useEffect } from "react";
 
 const NotifyDrawerInnerContent = () => {
-  const {
-    data,
-    error,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    isLoading,
-  } = clientApi.notification.getInfiniteUserNotifications.useInfiniteQuery(
-    { cursor: 1 }, // 必要な引数を指定
-    {
-      getNextPageParam: (lastPage) => lastPage?.nextCursor,
-      initialCursor: 1, // 必要に応じて初期カーソルを設定
-    },
-  );
-  // const utils = clientApi.useUtils();
-  // utils.invalidate();
+  const { ref, inView } = useInView({
+    threshold: 0.8,
+  });
+  const { data, error, fetchNextPage, hasNextPage, isFetching, isLoading, isFetchingNextPage } =
+    clientApi.notification.getInfiniteUserNotifications.useInfiniteQuery(
+      {
+        limit: 20,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    );
 
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
   const theme: ThemeColors = useTheme();
 
   return (
@@ -47,16 +46,9 @@ const NotifyDrawerInnerContent = () => {
 
       <DrawerBody px={3}>
         {isLoading ? (
-          <Box display="flex" mt={10} justifyContent="center" alignItems="center">
-            <Spinner />
-          </Box>
+          <LoadingSpinner />
         ) : (
-          <InfiniteScroll
-            loadMore={() => fetchNextPage()}
-            // loader={<LoadingMapCard />}
-            hasMore={hasNextPage}
-            threshold={500} // スクロールの閾値を追加
-          >
+          <Box>
             {data?.pages.length ? (
               data.pages.map((page, index: number) => {
                 return page.notifications.map((notify, index: number) => {
@@ -95,10 +87,19 @@ const NotifyDrawerInnerContent = () => {
             ) : (
               <Box>まだ通知はありません</Box>
             )}
-          </InfiniteScroll>
+            <div ref={ref}>{isFetchingNextPage && <LoadingSpinner />}</div>
+          </Box>
         )}
       </DrawerBody>
     </>
+  );
+};
+
+const LoadingSpinner = () => {
+  return (
+    <Box display="flex" mt={10} justifyContent="center" alignItems="center">
+      <Spinner />
+    </Box>
   );
 };
 

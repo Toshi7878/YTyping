@@ -23,25 +23,27 @@ export const notificationRouter = {
   getInfiniteUserNotifications: publicProcedure
     .input(
       z.object({
-        cursor: z.number().nullish(), // <--- cursor を含めないと client 側で useInfiniteQuery hooks が現れない
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.date().nullish(), // <-- "cursor" needs to exist, but can be any type
+        direction: z.enum(["forward", "backward"]), // optional, useful for bi-directional query      }),
       }),
     )
     .query(async ({ input }) => {
-      const cursor = input.cursor ?? 0;
       const session = await auth();
       const userId = session ? Number(session.user.id) : 0;
-      const take = 20; //ここを編集したらInfiniteQueryのgetNextPageParamも編集する
-      const skip = take * cursor;
+      const { cursor } = input;
+      const limit = input.limit ?? 20;
 
       try {
         const notifyList = await db.notification.findMany({
           where: {
             visited_id: userId,
           },
-          skip,
-          take,
+          take: limit + 1,
+          cursor: cursor ? { createdAt: cursor } : undefined,
+
           orderBy: {
-            createdAt: "desc", // 作成日時の新しい順にソート
+            createdAt: "desc",
           },
           select: {
             createdAt: true,
@@ -105,9 +107,11 @@ export const notificationRouter = {
             },
           },
         });
-
-        const nextCursor = notifyList.length < take ? null : cursor + 1;
-
+        let nextCursor: typeof cursor | undefined = undefined;
+        if (notifyList.length > limit) {
+          const nextItem = notifyList.pop();
+          nextCursor = nextItem!.createdAt;
+        }
         return {
           notifications: notifyList,
           nextCursor,
