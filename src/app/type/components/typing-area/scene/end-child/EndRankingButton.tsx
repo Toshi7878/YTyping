@@ -1,25 +1,23 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react"; // useRefを追加
+import { useSetTabIndexAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
+import { clientApi } from "@/trpc/client-api";
+import { UploadResult } from "@/types";
 import {
   AlertDialog,
   AlertDialogBody,
+  AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogContent,
   AlertDialogOverlay,
+  Box,
   Button,
   useDisclosure,
-  Box,
 } from "@chakra-ui/react"; // Chakra UIのコンポーネントをインポート
-import EndMainButton from "./child/EndMainButton";
+import { useEffect, useRef, useState } from "react"; // useRefを追加
 import AlertDialogButton from "./child/AlertDialogButton";
-import { UploadResult } from "@/types";
-import { useSuccessToast } from "@/lib/hooks/useSuccessToast";
-import { useSetTabIndexAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { QUERY_KEYS } from "@/config/consts";
-import { useParams } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
+import EndMainButton from "./child/EndMainButton";
 
 interface UploadButtonProps {
   isScoreUpdated: boolean;
@@ -28,18 +26,17 @@ interface UploadButtonProps {
 }
 
 const EndUploadButton = ({ isScoreUpdated, formAction, state }: UploadButtonProps) => {
-  const { id: mapId } = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const setTabIndex = useSetTabIndexAtom();
   const successToast = useSuccessToast();
-  const queryClient = useQueryClient();
+  const utils = clientApi.useUtils();
 
   useEffect(() => {
     if (state.status === 200) {
       setIsDisabled(true);
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.mapRanking(mapId) });
+      utils.ranking.invalidate();
       onClose();
     } else {
       setIsDisabled(false);
