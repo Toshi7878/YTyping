@@ -28,31 +28,6 @@ export interface LineData {
   options?: MapData["options"];
 }
 
-export interface RankingListType {
-  id: number;
-  userId: number;
-  user: { name: string };
-  romaType: number;
-  kanaType: number;
-  flickType: number;
-  kpm: number;
-  rkpm: number;
-  romaKpm: number;
-  miss: number;
-  lost: number;
-  maxCombo: number;
-  clearRate: number;
-  playSpeed: number;
-  defaultSpeed: number;
-  clapCount: number;
-  score: number;
-  clap: {
-    isClaped: true;
-  };
-
-  updatedAt: Date;
-}
-
 export interface RefsContextType {
   playerRef: any;
   bestScoreRef: React.MutableRefObject<number>;
