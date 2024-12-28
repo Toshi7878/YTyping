@@ -32,22 +32,24 @@ export async function GET(req: NextRequest) {
     "Map"."likeCount",
     "Map"."rankingCount",
     json_build_object('id', "User"."id", 'name', "User"."name") as "user",
-    json_build_object(
-      'isLiked',(
-        SELECT "isLiked"
-        FROM "MapLike"
-        WHERE "MapLike"."mapId" = "Map"."id"
-        AND "MapLike"."userId" = ${userId}
-        LIMIT 1
-      )) as "mapLike",
-      json_build_object(
-        'rank',(
-        SELECT "rank"
-        FROM "Result"
-        WHERE "Result"."mapId" = "Map"."id"
-        AND "Result"."userId" = ${userId}
-        LIMIT 1
-      )) as "result"
+    'mapLike', COALESCE(
+        (
+          SELECT array_agg(json_build_object('isLiked', "isLiked"))
+          FROM "MapLike"
+          WHERE "MapLike"."mapId" = "Map"."id"
+          AND "MapLike"."userId" = ${userId}
+        ),
+        ARRAY[]::json[]
+      ) as "mapLike",
+      'result', COALESCE(
+        (
+          SELECT array_agg(json_build_object('rank', "rank"))
+          FROM "Result"
+          WHERE "Result"."mapId" = "Map"."id"
+          AND "Result"."userId" = ${userId}
+        ),
+        ARRAY[]::json[]
+      ) as "result"
     FROM "Map"
     JOIN "User" ON "Map"."creatorId" = "User"."id"
     WHERE (

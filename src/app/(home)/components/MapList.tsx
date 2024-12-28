@@ -3,6 +3,7 @@ import SkeletonCard from "@/components/map-card/SkeletonCard";
 import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import nProgress from "nprogress";
@@ -11,8 +12,9 @@ import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
 import { useMapListInfiniteQuery } from "../hooks/useMapListInfiniteQuery";
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "../ts/const/consts";
-import { MapCardInfo } from "../ts/type";
 import MapCardLayout from "./MapCardLayout";
+
+type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 
 function LoadingMapCard({ cardLength }: { cardLength: number }) {
   return (

@@ -10,13 +10,14 @@ interface RankingCountProps {
 const RankingCount = (props: RankingCountProps) => {
   const theme: ThemeColors = useTheme();
   const { map } = props;
+
   return (
     <Flex
       alignItems="baseline"
       color={
-        map.result[0].rank === 1
+        map.result[0]?.rank === 1
           ? theme.colors.semantic.perfect
-          : map.result[0].rank
+          : map.result[0]?.rank
             ? theme.colors.secondary.main
             : `${theme.colors.text.body}99`
       }

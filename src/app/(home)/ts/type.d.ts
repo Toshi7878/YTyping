@@ -14,10 +14,10 @@
 //   rankingCount: number;
 //   mapLike: {
 //     isLiked: boolean;
-//   };
+//   }[];
 //   result: {
 //     rank: number;
-//   };
+//   }[];
 //   thumbnailQuality: "maxresdefault" | "mqdefault";
 //   user: {
 //     id: number;
