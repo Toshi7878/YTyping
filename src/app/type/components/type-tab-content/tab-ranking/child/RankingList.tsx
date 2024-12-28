@@ -1,13 +1,13 @@
-import { useRankingQuery } from "@/app/type/hooks/data-query/useRankingQuery";
-import { RankingListType } from "@/app/type/ts/type";
 import {
   useSceneAtom,
   useSetRankingScoresAtom,
   useSetStatusAtoms,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
+import { clientApi } from "@/trpc/client-api";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import RankingTable from "../RankingTable";
 import RankingTr from "./child/RankingTr";
@@ -19,7 +19,11 @@ const RankingList = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const setRankingScores = useSetRankingScoresAtom();
   const scene = useSceneAtom();
-  const { data, error, isLoading } = useRankingQuery();
+  const { id: mapId } = useParams();
+
+  const { data, error, isLoading } = clientApi.ranking.getMapRanking.useQuery({
+    mapId: Number(mapId),
+  });
   const { setStatusValues } = useSetStatusAtoms();
 
   useEffect(() => {
@@ -53,7 +57,7 @@ const RankingList = () => {
   }, []);
 
   useEffect(() => {
-    const scores = data ? data.map((result: RankingListType) => result.score) : [];
+    const scores = data ? data.map((result: (typeof data)[number]) => result.score) : [];
 
     setRankingScores(scores);
 
@@ -89,7 +93,7 @@ const RankingList = () => {
   return (
     <RankingTable>
       {data &&
-        data.map((user: RankingListType, index: number) => {
+        data.map((user: (typeof data)[number], index: number) => {
           const romaType = user.romaType;
           const kanaType = user.kanaType;
           const flickType = user.flickType;

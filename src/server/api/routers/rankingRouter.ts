@@ -1,18 +1,17 @@
 import { auth } from "@/server/auth";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/server/db";
+import { z } from "zod";
+import { publicProcedure } from "../trpc";
 
-const prisma = new PrismaClient();
+export const rankingRouter = {
+  getMapRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
+    const { mapId } = input;
+    const session = await auth();
+    const userId = session ? Number(session.user.id) : 0;
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const session = await auth();
-  const userId = Number(session?.user?.id);
-  const id = parseInt(url.searchParams.get("id") || "0", 10); // クエリからidを取得
-
-  try {
-    const rankingList = await prisma.result.findMany({
+    const rankingList = await db.result.findMany({
       where: {
-        mapId: id,
+        mapId,
       },
       select: {
         id: true,
@@ -50,12 +49,6 @@ export async function GET(request: Request) {
       },
     });
 
-    return new Response(JSON.stringify(rankingList), {
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("Error fetching ranking list:", error);
-
-    return new Response("Internal Server Error", { status: 500 });
-  }
-}
+    return rankingList;
+  }),
+};
