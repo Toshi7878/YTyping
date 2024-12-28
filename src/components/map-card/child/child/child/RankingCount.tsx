@@ -1,11 +1,10 @@
-import { MapCardInfo } from "@/app/(home)/ts/type";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
-import React from "react";
 import { FaRankingStar } from "react-icons/fa6";
 
 interface RankingCountProps {
-  map: MapCardInfo;
+  map: RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 }
 
 const RankingCount = (props: RankingCountProps) => {
@@ -15,9 +14,9 @@ const RankingCount = (props: RankingCountProps) => {
     <Flex
       alignItems="baseline"
       color={
-        map.result?.rank === 1
+        map.result[0].rank === 1
           ? theme.colors.semantic.perfect
-          : map.result?.rank
+          : map.result[0].rank
             ? theme.colors.secondary.main
             : `${theme.colors.text.body}99`
       }

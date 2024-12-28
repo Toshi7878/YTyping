@@ -1,15 +1,15 @@
 "use client";
-import { Box, Flex, Stack, useTheme } from "@chakra-ui/react";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { MapCardInfo } from "@/app/(home)/ts/type";
-import { ThemeColors } from "@/types";
-import MapCreateUser from "./MapCreateUser";
-import MapBadges from "./MapBadgesLayout";
 import { useLinkClick } from "@/lib/hooks/useLinkClick";
+import { RouterOutPuts } from "@/server/api/trpc";
+import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
+import { Box, Flex, Stack, useTheme } from "@chakra-ui/react";
+import MapBadges from "./MapBadgesLayout";
+import MapCreateUser from "./MapCreateUser";
 
 interface MapCardProps {
-  map: MapCardInfo;
+  map: RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 }
 function MapInfo({ map }: MapCardProps) {
   const theme: ThemeColors = useTheme();

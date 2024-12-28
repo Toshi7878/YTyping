@@ -31,4 +31,59 @@ export const mapRouter = {
 
     return mapInfo;
   }),
+  getCreatedVideoIdMapList: publicProcedure
+    .input(z.object({ videoId: z.string().length(11) }))
+    .query(async ({ input }) => {
+      const { videoId } = input;
+      const session = await auth();
+      const userId = session ? Number(session.user.id) : 0;
+
+      const mapList = await db.map.findMany({
+        where: {
+          videoId,
+        },
+        select: {
+          id: true,
+          title: true,
+          artistName: true,
+          musicSource: true,
+          romaKpmMedian: true,
+          romaKpmMax: true,
+          videoId: true,
+          updatedAt: true,
+          previewTime: true,
+          totalTime: true,
+          thumbnailQuality: true,
+          likeCount: true,
+          rankingCount: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          mapLike: {
+            where: {
+              userId,
+            },
+            select: {
+              isLiked: true,
+            },
+          },
+          result: {
+            where: {
+              userId,
+            },
+            select: {
+              rank: true,
+            },
+          },
+        },
+        orderBy: {
+          id: "desc",
+        },
+      });
+
+      return mapList;
+    }),
 };
