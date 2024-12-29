@@ -42,7 +42,7 @@ const ActiveLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
       rounded="md"
       _hover={session?.user.id ? { bg: `${theme.colors.semantic.like}60` } : ""}
       pr={1}
-      zIndex={5}
+      zIndex={1}
       cursor={"pointer"}
     >
       <Box m={-1} mt={-4} position="relative" top="10.25px">
