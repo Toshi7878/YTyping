@@ -1,8 +1,8 @@
 import { UploadResult } from "@/types";
-import { Box, Flex, useToast } from "@chakra-ui/react";
 import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
+import { Box, Flex, useToast } from "@chakra-ui/react";
 
-export const useSuccessToast = () => {
+export const useUploadToast = () => {
   const toast = useToast();
   const duration = 5000;
   const position = "bottom-right";

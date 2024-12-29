@@ -4,7 +4,7 @@ import { Button, useTheme } from "@chakra-ui/react";
 import { useCanUploadAtom, useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
 import { useUpdateNewMapBackUp } from "@/app/edit/hooks/useUpdateNewMapBackUp";
 import { useInitializeEditorCreateBak } from "@/lib/db";
-import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
+import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
 import { ThemeColors, UploadResult } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -18,7 +18,7 @@ const UploadButton = ({ state }: UploadButtonProps) => {
   const theme: ThemeColors = useTheme();
   const canUpload = useCanUploadAtom();
   const setCanUpload = useSetCanUploadAtom();
-  const successToast = useSuccessToast();
+  const uploadToast = useUploadToast();
   const initializeEditorCreateIndexedDB = useInitializeEditorCreateBak();
   const router = useRouter();
   const updateNewMapBackUp = useUpdateNewMapBackUp();
@@ -27,7 +27,7 @@ const UploadButton = ({ state }: UploadButtonProps) => {
 
   useEffect(() => {
     if (state.status !== 0) {
-      successToast(state);
+      uploadToast(state);
 
       const isSuccess = state.status === 200;
 

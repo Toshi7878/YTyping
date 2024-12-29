@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from "@/config/global-consts";
-import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
+import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
 import { UploadResult } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -13,7 +13,7 @@ import {
 import { GeminiMapInfo, GetYouTubeMovieInfo } from "../../ts/type";
 
 export const useGetGeminiMapInfoQuery = (videoId: string) => {
-  const successToast = useSuccessToast();
+  const uploadToast = useUploadToast();
   const searchParams = useSearchParams();
   const isNewCreate = !!searchParams.get("new");
   const isBackUp = searchParams.get("backup") === "true";
@@ -32,7 +32,7 @@ export const useGetGeminiMapInfoQuery = (videoId: string) => {
       );
 
       if ("status" in ytInfo.data && ytInfo.data.status === 404) {
-        successToast(ytInfo.data);
+        uploadToast(ytInfo.data);
         return null;
         // 404エラーの処理をここに追加
       } else {

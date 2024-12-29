@@ -1,5 +1,6 @@
 import { mapUpdatedAtAtom, useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
+import { useWarningToast } from "@/lib/global-hooks/useWarningToast";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
 import { Button, Stack, useTheme } from "@chakra-ui/react";
 import { useStore } from "jotai";
@@ -34,15 +35,16 @@ const RankingMenu = ({
   const theme: ThemeColors = useTheme();
   const scene = useSceneAtom();
   const typeAtomStore = useStore();
+  const warningToast = useWarningToast();
 
   const handleReplayClick = (name: string, resultId: number) => {
     const mapUpdatedAt = typeAtomStore.get(mapUpdatedAtAtom);
     const resultUpdatedAtDate = new Date(resultUpdatedAt); // 文字列をDate型に変換
-
     if (mapUpdatedAt > resultUpdatedAtDate) {
-      alert(
-        "ランキング登録日時より後に譜面データが更新されているので、正常にリプレイできない可能性があります。",
-      );
+      warningToast({
+        title: "リプレイ登録時より後に譜面が更新されています",
+        msg: "正常に再生できない可能性があります",
+      });
     }
     setShowMenu(null);
     setHoveredIndex(null);

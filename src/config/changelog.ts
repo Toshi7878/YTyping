@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2024-12-29",
+    descriptions: ["正常にリプレイできない可能性の表示方法を改善"],
+  },
+  {
     date: "2024-12-22",
     descriptions: [
       "タイピングページを開いたときにエラーが発生する問題を修正",

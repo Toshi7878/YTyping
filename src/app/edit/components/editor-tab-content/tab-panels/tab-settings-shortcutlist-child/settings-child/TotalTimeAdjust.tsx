@@ -4,7 +4,7 @@ import { allAdjustTime } from "@/app/edit/redux/mapDataSlice";
 import { RootState } from "@/app/edit/redux/store";
 import { addHistory } from "@/app/edit/redux/undoredoSlice";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
+import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
 import { ThemeColors } from "@/types";
 import { Box, Button, FormLabel, HStack, Input, useTheme } from "@chakra-ui/react";
 import { useState } from "react";
@@ -14,7 +14,7 @@ export default function TotalTimeAdjust() {
   const dispatch = useDispatch();
   const setCanUpload = useSetCanUploadAtom();
   const theme: ThemeColors = useTheme();
-  const successToast = useSuccessToast();
+  const uploadToast = useUploadToast();
 
   const [totalAdjustValue, setTotalAdjustValue] = useState<string>("");
 
@@ -42,7 +42,7 @@ export default function TotalTimeAdjust() {
           Ctrl + Zで前のタイムに戻ることができます。`,
       status: 200,
     };
-    successToast(successState);
+    uploadToast(successState);
   };
 
   return (

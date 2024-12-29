@@ -3,7 +3,7 @@ import { useSetIsLrcConvertingAtom } from "@/app/edit/edit-atom/editAtom";
 import { useWordConvert } from "@/app/edit/hooks/useWordConvert";
 import { RootState } from "@/app/edit/redux/store";
 import { ImportFile } from "@/app/edit/ts/tab/settings/importFile";
-import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
+import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
 import { Button, HStack } from "@chakra-ui/react";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ export default function LrcConvertButton() {
   const dispatch = useDispatch();
   const setIsLrcConverting = useSetIsLrcConvertingAtom();
   const wordConvert = useWordConvert();
-  const successToast = useSuccessToast();
+  const uploadToast = useUploadToast();
 
   const mapData = useSelector((state: RootState) => state.mapData!.value);
   const fileInputRef = useRef<HTMLInputElement>(null); // useRefを使用してfileInputRefを定義
@@ -38,7 +38,7 @@ export default function LrcConvertButton() {
               message: "",
               status: 200,
             };
-            successToast(successState);
+            uploadToast(successState);
           } catch (error) {
             console.error("ファイルの処理中にエラーが発生しました:", error);
             const errorState = {
@@ -47,7 +47,7 @@ export default function LrcConvertButton() {
               message: "ファイルの処理中にエラーが発生しました。",
               status: 400,
             };
-            successToast(errorState);
+            uploadToast(errorState);
           } finally {
             setIsLrcConverting(false);
           }

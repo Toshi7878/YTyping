@@ -1,7 +1,7 @@
 "use client";
 
 import { INITIAL_STATE } from "@/config/global-consts";
-import { useSuccessToast } from "@/lib/global-hooks/useSuccessToast";
+import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
 import { Box, Button, FormControl, Input } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
@@ -33,12 +33,12 @@ export default function NewNameDialog() {
   const [state, formAction] = useFormState(upload, INITIAL_STATE);
   const { data: session, update } = useSession();
 
-  const successToast = useSuccessToast();
+  const uploadToast = useUploadToast();
 
   useEffect(() => {
     if (state.status !== 0) {
       (async function () {
-        successToast(state);
+        uploadToast(state);
 
         const isSuccess = state.status === 200 ? true : false;
 
