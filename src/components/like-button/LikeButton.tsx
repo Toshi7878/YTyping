@@ -8,7 +8,7 @@ type LikeButtonProps = {
   text?: string;
   onClick?: (arg0: boolean) => void;
   defaultLiked?: boolean;
-  likeButtonRef: React.RefObject<HTMLButtonElement>;
+  likeButtonRef?: React.RefObject<HTMLButtonElement>;
 };
 
 export const LikeButton = ({
