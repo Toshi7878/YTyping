@@ -1,6 +1,6 @@
 "use client";
 
-import { leftLink, leftMenuItem } from "@/config/headerNav";
+import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { ThemeColors } from "@/types";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import {
@@ -63,6 +63,10 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
               >
                 譜面新規作成
               </MenuItem>
+              <MenuDivider />
+              {loginMenuItem.map((item, index) => {
+                return <LinkMenuItem key={index} title={item.title} href={item.href} />;
+              })}
               <LogOutMenuItem />
             </>
           ) : (

@@ -102,6 +102,11 @@ export default extendTheme({
           _hover: {
             bg: darkTheme.colors.primary.light,
           },
+          _disabled: {
+            _hover: {
+              backgroundColor: `${darkTheme.colors.primary.main} !important`,
+            },
+          },
         },
       },
       // 6. We can overwrite defaultProps
