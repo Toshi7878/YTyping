@@ -5,7 +5,7 @@ import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Box, Drawer, useDisclosure, useTheme } from "@chakra-ui/react";
 import { Bell, BellDot } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import NotifyDrawerInnerContent from "./child/NotifyDrawerInnerContent";
 
