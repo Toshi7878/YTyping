@@ -7,7 +7,7 @@ interface RankingCountProps {
   rankingCount: number;
 }
 
-const RankingCount = (props: RankingCountProps) => {
+const RankingCountIcon = (props: RankingCountProps) => {
   const theme: ThemeColors = useTheme();
   const { myRank, rankingCount } = props;
 
@@ -33,4 +33,4 @@ const RankingCount = (props: RankingCountProps) => {
   );
 };
 
-export default RankingCount;
+export default RankingCountIcon;

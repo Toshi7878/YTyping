@@ -1,6 +1,6 @@
-import React from "react";
-import { Heart } from "lucide-react";
 import { clsx } from "clsx";
+import { Heart } from "lucide-react";
+import React from "react";
 import "./css/render.css";
 
 type LikeButtonProps = {
@@ -8,9 +8,16 @@ type LikeButtonProps = {
   text?: string;
   onClick?: (arg0: boolean) => void;
   defaultLiked?: boolean;
+  likeButtonRef: React.RefObject<HTMLButtonElement>;
 };
 
-export const LikeButton = ({ size = 50, defaultLiked = false, text, onClick }: LikeButtonProps) => {
+export const LikeButton = ({
+  size = 50,
+  defaultLiked = false,
+  text,
+  onClick,
+  likeButtonRef,
+}: LikeButtonProps) => {
   const width = Math.floor(size * 25);
   const [isLiked, setIsLiked] = React.useState(defaultLiked);
   const [clicked, setClicked] = React.useState(false);
@@ -23,6 +30,7 @@ export const LikeButton = ({ size = 50, defaultLiked = false, text, onClick }: L
 
   return (
     <button
+      ref={likeButtonRef}
       className="relative flex items-center justify-center"
       style={{
         width: text ? "auto" : `${size}px`,

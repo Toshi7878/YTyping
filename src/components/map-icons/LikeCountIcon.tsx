@@ -1,11 +1,10 @@
 import { LikeButton } from "@/components/like-button/LikeButton";
 import { INITIAL_STATE } from "@/config/global-consts";
 import { useLocalLikeServerActions } from "@/lib/global-hooks/useLocalLikeServerActions";
-import { RouterOutPuts } from "@/server/api/trpc";
 import { LocalLikeState, ThemeColors } from "@/types";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import React, { memo } from "react";
+import React, { memo, useRef } from "react";
 import { useFormState } from "react-dom";
 import { FiHeart } from "react-icons/fi";
 
@@ -32,6 +31,7 @@ const ActiveLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
   const theme: ThemeColors = useTheme();
 
   const { data: session } = useSession();
+  const likeButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Flex
@@ -42,31 +42,51 @@ const ActiveLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
       rounded="md"
       _hover={session?.user.id ? { bg: `${theme.colors.semantic.like}60` } : ""}
       pr={1}
+      zIndex={5}
+      cursor={"pointer"}
     >
       <Box m={-1} mt={-4} position="relative" top="10.25px">
-        <LikeButton defaultLiked={likeOptimisticState.hasLike} size={34} />
+        <LikeButton
+          defaultLiked={likeOptimisticState.hasLike}
+          size={34}
+          likeButtonRef={likeButtonRef}
+        />
       </Box>
-      <Box fontSize="lg" fontFamily="monospace" position="relative" top="0px">
+      <Box
+        as="button"
+        type="button"
+        fontSize="lg"
+        fontFamily="monospace"
+        position="relative"
+        top="0px"
+        onClick={(event) => {
+          // LikeButtonのクリックイベントをトリガー
+          likeButtonRef.current!.click();
+          event.stopPropagation();
+        }}
+      >
         {likeOptimisticState.likeCount}
       </Box>
     </Flex>
   );
 };
 
-interface LikeCountProps {
-  map: RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
+interface LikeCountIconProps {
+  mapId: number;
+  isLiked: boolean;
+  likeCount: number;
 }
 
-const LikeCount = (props: LikeCountProps) => {
-  const { map } = props;
+const LikeCountIcon = (props: LikeCountIconProps) => {
+  const { mapId, isLiked, likeCount } = props;
   const { data: session } = useSession();
   const { likeOptimisticState, toggleLikeAction } = useLocalLikeServerActions({
-    hasLike: props.map.mapLike[0]?.isLiked,
-    likeCount: props.map.likeCount,
+    hasLike: isLiked,
+    likeCount,
   });
 
   const [state, formAction] = useFormState(async () => {
-    const result = await toggleLikeAction(map.id);
+    const result = await toggleLikeAction(mapId);
 
     return result;
   }, INITIAL_STATE);
@@ -88,4 +108,4 @@ const LikeCount = (props: LikeCountProps) => {
   );
 };
 
-export default memo(LikeCount);
+export default memo(LikeCountIcon);

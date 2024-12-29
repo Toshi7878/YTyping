@@ -3,8 +3,8 @@ import { ResultCardInfo } from "@/app/timeline/ts/type";
 import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import { ThemeColors } from "@/types";
 import { CardBody, Flex, useBreakpointValue, useTheme } from "@chakra-ui/react";
-import LikeCount from "./child/icon-child/LikeCount";
-import RankingCount from "./child/icon-child/RankingCount";
+import LikeCountIcon from "../../../../../components/map-icons/LikeCountIcon";
+import RankingCountIcon from "../../../../../components/map-icons/RankingCountIcon";
 import MapInfo from "./child/MapInfo";
 import { MapResultBadges } from "./child/MapResultBadgesLayout";
 import UserRank from "./child/UserRank";
@@ -86,9 +86,9 @@ const MapIcons = ({
   left = "auto",
 }: MapIconsProps) => {
   return (
-    <Flex position="absolute" top={top} right={right} bottom={bottom} left={left} zIndex="10">
-      <RankingCount myRank={result.result[0]?.rank} rankingCount={result.map.rankingCount} />
-      <LikeCount
+    <Flex position="absolute" top={top} right={right} bottom={bottom} left={left}>
+      <RankingCountIcon myRank={result.result[0]?.rank} rankingCount={result.map.rankingCount} />
+      <LikeCountIcon
         mapId={result.map.id}
         isLiked={!!result.mapLike[0]?.isLiked}
         likeCount={result.map.likeCount}
