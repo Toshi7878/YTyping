@@ -27,11 +27,16 @@ export interface ResultCardInfo {
     previewTime: string;
     thumbnailQuality: "maxresdefault" | "mqdefault";
     updatedAt: Date;
+    likeCount: number;
+    rankingCount: number;
+
     user: {
       id: number;
       name: string;
     };
   };
+  mapLike: { isLiked: boolean }[];
+  result: { rank: number }[];
   user: {
     id: number;
     name: string;

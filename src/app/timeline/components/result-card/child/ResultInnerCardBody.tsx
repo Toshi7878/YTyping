@@ -1,12 +1,13 @@
-import { CardBody, Flex, useBreakpointValue, useTheme } from "@chakra-ui/react";
-import React from "react";
-import UserRank from "./child/UserRank";
-import MapInfo from "./child/MapInfo";
-import { ThemeColors } from "@/types";
-import { ResultCardInfo } from "@/app/timeline/ts/type";
-import { MapResultBadges } from "./child/MapResultBadgesLayout";
-import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import { TIMELINE_THUBNAIL_HEIGHT, TIMELINE_THUBNAIL_WIDTH } from "@/app/timeline/ts/const/consts";
+import { ResultCardInfo } from "@/app/timeline/ts/type";
+import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
+import { ThemeColors } from "@/types";
+import { CardBody, Flex, useBreakpointValue, useTheme } from "@chakra-ui/react";
+import LikeCount from "./child/icon-child/LikeCount";
+import RankingCount from "./child/icon-child/RankingCount";
+import MapInfo from "./child/MapInfo";
+import { MapResultBadges } from "./child/MapResultBadgesLayout";
+import UserRank from "./child/UserRank";
 
 interface ResultInnerCardBodyProps {
   result: ResultCardInfo;
@@ -21,7 +22,7 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
       : `https://i.ytimg.com/vi/${result.map.videoId}/mqdefault.jpg`;
 
   const isToggledInputMode = result.romaType != 0 && result.kanaType != 0;
-  const showBadges = useBreakpointValue({ base: false, md: true }, { ssr: false });
+  const isRowDisplay = useBreakpointValue({ base: false, md: true }, { ssr: false });
 
   return (
     <CardBody
@@ -34,6 +35,7 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
       style={{ padding: 0, border: "none" }}
       mx={6}
     >
+      {isRowDisplay && <MapIcons result={result} bottom="25px" left="35px" />}
       <Flex
         py={6}
         direction="row"
@@ -44,7 +46,7 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
         zIndex={0}
       >
         <Flex direction="row" gap={4}>
-          {showBadges && <UserRank userRank={result.rank} />}
+          {isRowDisplay && <UserRank userRank={result.rank} />}
           <MapLeftThumbnail
             alt={result.map.title}
             src={src}
@@ -57,14 +59,41 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
             thumnailHeight={TIMELINE_THUBNAIL_HEIGHT}
           />
           <MapInfo map={result.map} isToggledInputMode={isToggledInputMode} />
+          {!isRowDisplay && <MapIcons result={result} top={"142px"} right={"30px"} />}
         </Flex>
-        {showBadges && (
+        {isRowDisplay && (
           <Flex justifyContent="flex-end">
             <MapResultBadges props={result} />
           </Flex>
         )}
       </Flex>
     </CardBody>
+  );
+};
+
+interface MapIconsProps {
+  result: ResultCardInfo;
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+}
+const MapIcons = ({
+  result,
+  top = "auto",
+  right = "auto",
+  bottom = "auto",
+  left = "auto",
+}: MapIconsProps) => {
+  return (
+    <Flex position="absolute" top={top} right={right} bottom={bottom} left={left} zIndex="10">
+      <RankingCount myRank={result.result[0]?.rank} rankingCount={result.map.rankingCount} />
+      <LikeCount
+        mapId={result.map.id}
+        isLiked={!!result.mapLike[0]?.isLiked}
+        likeCount={result.map.likeCount}
+      />
+    </Flex>
   );
 };
 

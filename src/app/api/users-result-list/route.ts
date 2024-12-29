@@ -58,6 +58,8 @@ export async function GET(req: NextRequest) {
         'artistName', "Map"."artistName",
         'previewTime', "Map"."previewTime",
         'thumbnailQuality', "Map"."thumbnailQuality",
+        'likeCount', "Map"."likeCount",
+        'rankingCount', "Map"."rankingCount",
         'updatedAt', "Map"."updatedAt",
         'user', json_build_object(
           'id', "Creator"."id",
@@ -74,8 +76,25 @@ export async function GET(req: NextRequest) {
         WHERE "Clap"."resultId" = "Result"."id"
         AND "Clap"."userId" = ${userId}
         LIMIT 1
-      ) as "hasClap"
-
+      ) as "hasClap",
+      'mapLike', COALESCE(
+        (
+          SELECT array_agg(json_build_object('isLiked', "isLiked"))
+          FROM "MapLike"
+          WHERE "MapLike"."mapId" = "Map"."id"
+          AND "MapLike"."userId" = ${userId}
+        ),
+        ARRAY[]::json[]
+      ) as "mapLike",
+      'result', COALESCE(
+        (
+          SELECT array_agg(json_build_object('rank', "rank"))
+          FROM "Result"
+          WHERE "Result"."mapId" = "Map"."id"
+          AND "Result"."userId" = ${userId}
+        ),
+        ARRAY[]::json[]
+      ) as "result"
       FROM "Result"
       JOIN "Map" ON "Result"."mapId" = "Map"."id"
       JOIN "User" AS "Creator" ON "Map"."creatorId" = "Creator"."id"
