@@ -22,7 +22,7 @@ const statusSchema = z.object({
   defaultSpeed: z.number(),
 });
 
-export const resultSendSchema = z.object({
+const resultSendSchema = z.object({
   mapId: z.number(),
   status: statusSchema,
 });
