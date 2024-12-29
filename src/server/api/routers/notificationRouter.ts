@@ -1,5 +1,5 @@
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -8,7 +8,7 @@ export const notificationRouter = {
     const session = await auth();
     const userId = session ? Number(session.user.id) : 0;
 
-    const data = await db.notification.findFirst({
+    const data = await prisma.notification.findFirst({
       where: {
         visited_id: userId,
         checked: false,
@@ -35,7 +35,7 @@ export const notificationRouter = {
       const limit = input.limit ?? 20;
 
       try {
-        const notifyList = await db.notification.findMany({
+        const notifyList = await prisma.notification.findMany({
           where: {
             visited_id: userId,
           },
@@ -129,7 +129,7 @@ export const notificationRouter = {
 
     const userId = session ? Number(session.user.id) : 0;
 
-    await db.notification.updateMany({
+    await prisma.notification.updateMany({
       where: {
         visited_id: userId,
         checked: false,

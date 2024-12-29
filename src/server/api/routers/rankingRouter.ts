@@ -1,5 +1,5 @@
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -9,7 +9,7 @@ export const rankingRouter = {
     const session = await auth();
     const userId = session ? Number(session.user.id) : 0;
 
-    const rankingList = await db.result.findMany({
+    const rankingList = await prisma.result.findMany({
       where: {
         mapId,
       },

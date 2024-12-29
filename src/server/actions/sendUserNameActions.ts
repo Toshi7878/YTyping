@@ -1,13 +1,13 @@
 "use server";
 
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
 import { nameSchema } from "../../app/user/register/validationSchema";
 import { auth } from "../auth";
 
 const sendUserName = async (email_hash: string, newName: string) => {
   if (email_hash) {
-    await db.user.update({
+    await prisma.user.update({
       where: { email_hash },
       data: { name: newName },
     });

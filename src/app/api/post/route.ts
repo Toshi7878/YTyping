@@ -1,8 +1,8 @@
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 
 export async function POST(request: Request) {
   try {
-    await db.map.updateMany({
+    await prisma.map.updateMany({
       where: {
         category: {
           equals: null,

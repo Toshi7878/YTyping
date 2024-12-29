@@ -1,5 +1,5 @@
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 
 import { NextRequest } from "next/server";
 
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   const mapKeyword = searchParams.get("mapKeyword") ?? "";
   const offset = MAP_LIST_TAKE_LENGTH * Number(page); // 20件ずつ読み込むように変更
   try {
-    const mapList = await db.$queryRaw`
+    const mapList = await prisma.$queryRaw`
     SELECT
     "Map"."id",
     "Map"."title",

@@ -1,11 +1,11 @@
 "use server";
 
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
 
 async function updateClap(resultId: number, userId: number, optimisticState: boolean) {
-  await db.$transaction(async (db) => {
+  await prisma.$transaction(async (db) => {
     const claped = await db.clap.upsert({
       where: {
         userId_resultId: {

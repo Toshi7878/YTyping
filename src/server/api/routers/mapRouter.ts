@@ -1,5 +1,5 @@
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -10,7 +10,7 @@ export const mapRouter = {
     const session = await auth();
     const userId = session?.user ? Number(session?.user.id) : 0;
 
-    const mapInfo = await db.map.findUnique({
+    const mapInfo = await prisma.map.findUnique({
       where: { id: mapId },
       select: {
         title: true,
@@ -38,7 +38,7 @@ export const mapRouter = {
       const session = await auth();
       const userId = session ? Number(session.user.id) : 0;
 
-      const mapList = await db.map.findMany({
+      const mapList = await prisma.map.findMany({
         where: {
           videoId,
         },

@@ -1,4 +1,4 @@
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { NextRequest } from "next/server";
 
 import {
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
   const offset = USERS_RESULT_LIST_TAKE_LENGTH * Number(page); // 20件ずつ読み込むように変更
 
   try {
-    const resultList = await db.$queryRaw`
+    const resultList = await prisma.$queryRaw`
       SELECT "Result"."id",
       "Result"."mapId",
       "Result"."userId",

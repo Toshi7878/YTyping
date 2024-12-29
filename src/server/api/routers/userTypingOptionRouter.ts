@@ -1,5 +1,5 @@
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -8,7 +8,7 @@ export const userTypingOptionRouter = {
     const session = await auth();
     const userId = session?.user ? Number(session?.user.id) : 0;
 
-    const userTypingOptions = await db.typingOption.findUnique({
+    const userTypingOptions = await prisma.typingOption.findUnique({
       where: { userId },
       select: {
         timeOffset: true,
@@ -41,7 +41,7 @@ export const userTypingOptionRouter = {
       try {
         const userId = session ? Number(session.user.id) : 0;
 
-        const updated = await db.typingOption.upsert({
+        const updated = await prisma.typingOption.upsert({
           where: {
             userId,
           },

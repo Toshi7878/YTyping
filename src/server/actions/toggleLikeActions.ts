@@ -1,12 +1,12 @@
 "use server";
 
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
 import { revalidatePath } from "next/cache";
 
 async function updateLike(mapId: number, userId: number, optimisticState: boolean) {
-  await db.$transaction(async (db) => {
+  await prisma.$transaction(async (db) => {
     const liked = await db.mapLike.upsert({
       where: {
         userId_mapId: {

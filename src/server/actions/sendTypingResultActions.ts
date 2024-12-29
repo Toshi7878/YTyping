@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
 import { LineResultData, SendResultData } from "../../app/type/ts/type";
 
@@ -28,7 +28,7 @@ const resultSendSchema = z.object({
 });
 
 const calcRank = async (mapId: number, userId: number) => {
-  const rankingList = await db.result.findMany({
+  const rankingList = await prisma.result.findMany({
     where: {
       mapId: mapId,
     },
@@ -40,7 +40,7 @@ const calcRank = async (mapId: number, userId: number) => {
     orderBy: { score: "desc" },
   });
 
-  const overtakeNotify = await db.notification.findMany({
+  const overtakeNotify = await prisma.notification.findMany({
     where: {
       visited_id: userId,
       mapId: mapId,
@@ -63,7 +63,7 @@ const calcRank = async (mapId: number, userId: number) => {
     const myScore = myResult?.score;
     if (visitorScore - Number(myScore) <= 0) {
       const visitorId = overtakeNotify[i].visitorResult.userId;
-      await db.notification.delete({
+      await prisma.notification.delete({
         where: {
           visitor_id_visited_id_mapId_action: {
             visitor_id: visitorId,
@@ -79,7 +79,7 @@ const calcRank = async (mapId: number, userId: number) => {
   for (let i = 0; i < rankingList.length; i++) {
     const newRank = i + 1;
 
-    await db.result.update({
+    await prisma.result.update({
       where: {
         userId_mapId: {
           mapId: mapId,
@@ -93,7 +93,7 @@ const calcRank = async (mapId: number, userId: number) => {
 
     const isOtherUser = rankingList[i].userId !== userId;
     if (isOtherUser && rankingList[i].rank <= 5 && rankingList[i].rank !== newRank) {
-      await db.notification.upsert({
+      await prisma.notification.upsert({
         where: {
           visitor_id_visited_id_mapId_action: {
             visitor_id: userId,
@@ -118,7 +118,7 @@ const calcRank = async (mapId: number, userId: number) => {
     }
   }
 
-  await db.map.update({
+  await prisma.map.update({
     where: {
       id: mapId,
     },
@@ -145,7 +145,7 @@ const sendLineResult = async (mapId: number, lineResults: LineResultData[]) => {
 };
 
 const sendNewResult = async (data: SendResultData, userId: number) => {
-  const upsertResult = await db.result.upsert({
+  const upsertResult = await prisma.result.upsert({
     where: {
       userId_mapId: {
         userId: userId,

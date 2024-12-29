@@ -3,7 +3,7 @@
 import { MapData } from "@/app/type/ts/type";
 import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
 import { revalidatePath } from "next/cache";
 import { EditorSendData } from "../../app/edit/ts/type";
@@ -16,7 +16,7 @@ const upsertMap = async (
   mapData: MapData[],
 ) => {
   const mapIdNumber = mapId === "new" ? 0 : Number(mapId);
-  const upsertedMap = await db.map.upsert({
+  const upsertedMap = await prisma.map.upsert({
     where: {
       id: mapIdNumber, // 0は存在しないIDとして使用
     },
@@ -76,7 +76,7 @@ export async function actions(
     const userRole = session?.user.role;
     let newMapId: number;
 
-    const mapCreatorId = await db.map.findUnique({
+    const mapCreatorId = await prisma.map.findUnique({
       where: { id: mapId === "new" ? 0 : Number(mapId) },
       select: {
         creatorId: true,

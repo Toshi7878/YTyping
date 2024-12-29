@@ -1,4 +1,4 @@
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import CryptoJS from "crypto-js";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Discord from "next-auth/providers/discord";
@@ -12,13 +12,13 @@ export const config: NextAuthConfig = {
   callbacks: {
     async signIn({ user, account, profile }) {
       const hash = CryptoJS.MD5(user.email!).toString();
-      const UserData = await db.user.findUnique({
+      const UserData = await prisma.user.findUnique({
         where: { email_hash: hash },
       });
 
       if (!UserData) {
         try {
-          await db.user.create({
+          await prisma.user.create({
             data: {
               email_hash: hash!,
               name: null,
@@ -54,7 +54,7 @@ export const config: NextAuthConfig = {
       }
       if (user) {
         const hash = CryptoJS.MD5(user.email!).toString();
-        const dbUser = await db.user.findUnique({
+        const dbUser = await prisma.user.findUnique({
           where: { email_hash: hash },
         });
         if (dbUser) {

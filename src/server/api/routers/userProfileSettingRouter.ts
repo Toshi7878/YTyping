@@ -1,4 +1,4 @@
-import { db } from "@/server/db";
+import { prisma } from "@/server/db";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -10,7 +10,7 @@ export const userProfileSettingRouter = {
       }),
     )
     .query(async ({ input }) => {
-      const userName = db.user.findUnique({
+      const userName = prisma.user.findUnique({
         where: {
           name: input.newName,
         },
