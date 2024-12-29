@@ -17,10 +17,10 @@ const upsertMap = async (
   isMapDataEdited: boolean,
   mapData: MapData[],
 ) => {
-  const mapIdNumber = mapId === "new" ? undefined : Number(mapId);
+  const mapIdNumber = mapId === "new" ? 0 : Number(mapId);
   const upsertedMap = await prisma.map.upsert({
     where: {
-      id: mapIdNumber || 0, // 0は存在しないIDとして使用
+      id: mapIdNumber, // 0は存在しないIDとして使用
     },
     update: {
       ...data,
@@ -79,7 +79,7 @@ export async function actions(
     let newMapId: number;
 
     const mapCreatorId = await prisma.map.findUnique({
-      where: { id: Number(mapId) },
+      where: { id: mapId === "new" ? 0 : Number(mapId) },
       select: {
         creatorId: true,
       },
@@ -126,7 +126,7 @@ const lineSchema = z.object({
     .optional(), // 追加
 });
 
-export const mapSendSchema = z.object({
+const mapSendSchema = z.object({
   title: z.string().min(1, { message: "タイトルは１文字以上必要です" }),
   creatorComment: z.string().optional(),
   tags: z.array(z.string()).min(2, { message: "タグは2つ以上必要です" }),

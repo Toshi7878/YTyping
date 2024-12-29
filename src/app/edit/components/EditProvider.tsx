@@ -71,7 +71,7 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
 
             editAtomStore.set(editMapTitleAtom, backupMap.title);
             editAtomStore.set(editMapArtistNameAtom, backupMap.artistName);
-            editAtomStore.set(editMusicSourceAtom, backupMap.musicSource);
+            editAtomStore.set(editMusicSourceAtom, backupMap.musicSource || "");
             editAtomStore.set(editCreatorCommentAtom, backupMap.creatorComment);
             editAtomStore.set(editPreviewTimeInputAtom, backupMap.previewTime);
             editAtomStore.set(editTagsAtom, {
