@@ -13,7 +13,7 @@ const UserNextDisplayRadioButton = () => {
 
   const changeRadio = (value: string) => {
     // 引数を追加
-    const newUserOptions: RouterOutPuts["userOption"]["getUserTypingOptions"] = {
+    const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
       ...userOptionsAtom,
       nextDisplay: value, // 選択された値を設定
     };
