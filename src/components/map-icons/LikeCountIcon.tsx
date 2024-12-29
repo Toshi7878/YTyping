@@ -59,10 +59,11 @@ const ActiveLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
         fontFamily="monospace"
         position="relative"
         top="0px"
-        onClick={(event) => {
+        onClick={(event: React.MouseEvent) => {
           // LikeButtonのクリックイベントをトリガー
           likeButtonRef.current!.click();
           event.stopPropagation();
+          event.preventDefault();
         }}
       >
         {likeOptimisticState.likeCount}
