@@ -1,15 +1,13 @@
 "use server";
 
 import { auth } from "@/server/auth";
+import { db } from "@/server/db";
 import { UploadResult } from "@/types";
-import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-const prisma = new PrismaClient();
-
 async function updateLike(mapId: number, userId: number, optimisticState: boolean) {
-  await prisma.$transaction(async (prisma) => {
-    const liked = await prisma.mapLike.upsert({
+  await db.$transaction(async (db) => {
+    const liked = await db.mapLike.upsert({
       where: {
         userId_mapId: {
           userId,
@@ -26,14 +24,14 @@ async function updateLike(mapId: number, userId: number, optimisticState: boolea
       },
     });
 
-    const newLikeCount = await prisma.mapLike.count({
+    const newLikeCount = await db.mapLike.count({
       where: {
         mapId: mapId,
         isLiked: true, // resultIdのisClapedがtrueのものをカウント
       },
     });
 
-    await prisma.map.update({
+    await db.map.update({
       where: {
         id: mapId,
       },

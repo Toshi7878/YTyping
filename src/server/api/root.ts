@@ -1,14 +1,16 @@
 import { mapRouter } from "./routers/mapRouter";
 import { notificationRouter } from "./routers/notificationRouter";
 import { rankingRouter } from "./routers/rankingRouter";
-import { userOptionRouter } from "./routers/userOptionRouter";
+import { userProfileSettingRouter } from "./routers/userProfileSettingRouter";
+import { userTypingOptionRouter } from "./routers/userTypingOptionRouter";
 import { router } from "./trpc";
 
 export const appRouter = router({
   map: mapRouter,
-  userOption: userOptionRouter,
+  userTypingOption: userTypingOptionRouter,
   notification: notificationRouter,
   ranking: rankingRouter,
+  userProfileSetting: userProfileSettingRouter,
 });
 
 export type AppRouter = typeof appRouter;

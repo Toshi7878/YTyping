@@ -84,4 +84,27 @@ export default extendTheme({
       },
     },
   },
+  components: {
+    Input: {
+      variants: {
+        outline: {
+          field: {
+            bg: darkTheme.colors.background.body, // ここで背景色を指定
+          },
+        },
+      },
+    },
+    Button: {
+      variants: {
+        upload: {
+          bg: darkTheme.colors.primary.main, // ここで背景色を指定
+          color: darkTheme.colors.text.body,
+          _hover: {
+            bg: darkTheme.colors.primary.light,
+          },
+        },
+      },
+      // 6. We can overwrite defaultProps
+    },
+  },
 });

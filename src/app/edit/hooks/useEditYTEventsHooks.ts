@@ -1,7 +1,7 @@
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import NProgress from "nprogress";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
-import { editTicker } from "../components/editor-youtube-content/EditYoutube";
+import { editTicker } from "../_components/editor-youtube-content/EditYoutube";
 import {
   useSetIsEditYTPlayingAtom,
   useSetIsEditYTReadyAtom,

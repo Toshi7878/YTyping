@@ -1,14 +1,12 @@
 "use server";
 
 import { auth } from "@/server/auth";
+import { db } from "@/server/db";
 import { UploadResult } from "@/types";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 async function updateClap(resultId: number, userId: number, optimisticState: boolean) {
-  await prisma.$transaction(async (prisma) => {
-    const claped = await prisma.clap.upsert({
+  await db.$transaction(async (db) => {
+    const claped = await db.clap.upsert({
       where: {
         userId_resultId: {
           userId,
@@ -25,14 +23,14 @@ async function updateClap(resultId: number, userId: number, optimisticState: boo
       },
     });
 
-    const newClapCount = await prisma.clap.count({
+    const newClapCount = await db.clap.count({
       where: {
         resultId: resultId,
         isClaped: true, // resultIdのisClapedがtrueのものをカウント
       },
     });
 
-    await prisma.result.update({
+    await db.result.update({
       where: {
         id: resultId,
       },

@@ -1,9 +1,7 @@
 import { auth } from "@/server/auth";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/server/db";
 
 import { NextRequest } from "next/server";
-
-const prisma = new PrismaClient();
 
 const MAP_LIST_TAKE_LENGTH = 40; //ここを編集したらInfiniteQueryのgetNextPageParamも編集する
 
@@ -16,7 +14,7 @@ export async function GET(req: NextRequest) {
   const mapKeyword = searchParams.get("mapKeyword") ?? "";
   const offset = MAP_LIST_TAKE_LENGTH * Number(page); // 20件ずつ読み込むように変更
   try {
-    const mapList = await prisma.$queryRaw`
+    const mapList = await db.$queryRaw`
     SELECT
     "Map"."id",
     "Map"."title",

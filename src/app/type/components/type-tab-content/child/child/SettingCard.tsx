@@ -27,7 +27,7 @@ const SettingCard = (props: SettingCardProps) => {
   const isIOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
   const typeAtomStore = useStore();
-  const updateTypingOptions = clientApi.userOption.update.useMutation();
+  const updateTypingOptions = clientApi.userTypingOption.update.useMutation();
 
   const setIsOptionEdited = useSetIsOptionEdited();
 

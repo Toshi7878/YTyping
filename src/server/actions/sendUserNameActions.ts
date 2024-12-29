@@ -1,14 +1,13 @@
 "use server";
 
+import { db } from "@/server/db";
 import { UploadResult } from "@/types";
-import { PrismaClient } from "@prisma/client";
 import { nameSchema } from "../../app/user/register/validationSchema";
 import { auth } from "../auth";
-const prisma = new PrismaClient();
 
 const sendUserName = async (email_hash: string, newName: string) => {
   if (email_hash) {
-    await prisma.user.update({
+    await db.user.update({
       where: { email_hash },
       data: { name: newName },
     });

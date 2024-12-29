@@ -3,7 +3,7 @@ import { db } from "@/server/db";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
-export const userOptionRouter = {
+export const userTypingOptionRouter = {
   getUserTypingOptions: publicProcedure.query(async () => {
     const session = await auth();
     const userId = session?.user ? Number(session?.user.id) : 0;

@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db } from "@/server/db";
 
 export async function POST(request: Request) {
   try {
-    await prisma.map.updateMany({
+    await db.map.updateMany({
       where: {
         category: {
           equals: null,

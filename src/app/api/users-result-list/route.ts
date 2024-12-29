@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
+import { db } from "@/server/db";
 import { NextRequest } from "next/server";
 
 import {
@@ -8,8 +7,6 @@ import {
 } from "@/app/timeline/ts/const/consts";
 import { FilterMode } from "@/app/timeline/ts/type";
 import { auth } from "@/server/auth";
-
-const prisma = new PrismaClient();
 
 const USERS_RESULT_LIST_TAKE_LENGTH = 30; //ここを編集したらInfiniteQueryのgetNextPageParamも編集する
 
@@ -34,7 +31,7 @@ export async function GET(req: NextRequest) {
   const offset = USERS_RESULT_LIST_TAKE_LENGTH * Number(page); // 20件ずつ読み込むように変更
 
   try {
-    const resultList = await prisma.$queryRaw`
+    const resultList = await db.$queryRaw`
       SELECT "Result"."id",
       "Result"."mapId",
       "Result"."userId",

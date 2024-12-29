@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/server/db";
 import CryptoJS from "crypto-js";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Discord from "next-auth/providers/discord";
@@ -6,21 +6,19 @@ import Google from "next-auth/providers/google";
 
 // export const runtime = "edge";
 
-const prisma = new PrismaClient();
-
 export const config: NextAuthConfig = {
   providers: [Discord, Google],
   secret: process.env.AUTH_SECRET,
   callbacks: {
     async signIn({ user, account, profile }) {
       const hash = CryptoJS.MD5(user.email!).toString();
-      const UserData = await prisma.user.findUnique({
+      const UserData = await db.user.findUnique({
         where: { email_hash: hash },
       });
 
       if (!UserData) {
         try {
-          await prisma.user.create({
+          await db.user.create({
             data: {
               email_hash: hash!,
               name: null,
@@ -56,7 +54,7 @@ export const config: NextAuthConfig = {
       }
       if (user) {
         const hash = CryptoJS.MD5(user.email!).toString();
-        const dbUser = await prisma.user.findUnique({
+        const dbUser = await db.user.findUnique({
           where: { email_hash: hash },
         });
         if (dbUser) {

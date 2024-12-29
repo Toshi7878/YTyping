@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import Content from "../components/Content";
-import EditProvider from "../components/EditProvider";
+import Content from "../_components/Content";
+import EditProvider from "../_components/EditProvider";
 
 export const metadata: Metadata = {
   title: `Edit New Map - YTyping`,

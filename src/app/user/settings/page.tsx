@@ -1,4 +1,6 @@
 import { Box } from "@chakra-ui/react"; // Textを追加
+import Content from "./_components/Content";
+import UserSettingsProvider from "./UserSettingsProvider";
 
 export default function Home() {
   return (
@@ -8,11 +10,12 @@ export default function Home() {
       width={"100vw"}
       display="flex"
       flexDirection="column"
-      alignItems="baseline"
+      alignItems="center"
       pt={20}
-      pl={"10%"}
     >
-      {/* <Content /> */}
+      <UserSettingsProvider>
+        <Content />
+      </UserSettingsProvider>
     </Box>
   );
 }
