@@ -14,7 +14,7 @@ const queryClient = new QueryClient();
 
 interface TypeProviderProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
-  userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
+  userTypingOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"];
   children: React.ReactNode;
 }
 const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProps) => {

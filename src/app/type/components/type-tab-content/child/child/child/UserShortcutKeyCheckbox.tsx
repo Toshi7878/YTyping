@@ -14,7 +14,7 @@ const UserShortcutKeyCheckbox = () => {
 
   const changeTimeOffsetKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value; // 選択された値を取得
-    const newUserOptions: RouterOutPuts["userOption"]["getUserTypingOptions"] = {
+    const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
       ...userOptionsAtom,
       timeOffsetKey: value, // 選択された値を設定
     };
@@ -24,7 +24,7 @@ const UserShortcutKeyCheckbox = () => {
 
   const changeInputModeKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value; // 選択された値を取得
-    const newUserOptions: RouterOutPuts["userOption"]["getUserTypingOptions"] = {
+    const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
       ...userOptionsAtom,
       toggleInputModeKey: value, // 選択された値を設定
     };
