@@ -6,5 +6,5 @@ export const leftLink: HeaderMenu[] = [{ title: "タイムライン", href: "/ti
 
 export const loginMenuItem: HeaderMenu[] = [
   { title: "TestMenu1", href: "/" },
-  { title: "TestMenu2", href: "/" },
+  { title: "ユーザー設定", href: "/user/settings" },
 ];

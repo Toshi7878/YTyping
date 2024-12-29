@@ -1,5 +1,6 @@
-import { Box, Card, CardBody, useTheme } from "@chakra-ui/react";
+import { Box, CardBody, useTheme } from "@chakra-ui/react";
 
+import CustomCard from "@/components/custom-ui/CustomCard";
 import { ThemeColors } from "@/types";
 import RankingList from "./child/RankingList";
 
@@ -11,13 +12,7 @@ const TabRanking = (props: TabRankingProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
-    <Card
-      className="tab-card"
-      variant="filled"
-      bg={theme.colors.background.card}
-      boxShadow="lg"
-      color={theme.colors.text.body}
-    >
+    <CustomCard className="tab-card">
       <CardBody fontSize="3xl" fontWeight="bold" width="full" pt={1} pb={2}>
         <Box
           overflowY="scroll"
@@ -38,7 +33,7 @@ const TabRanking = (props: TabRankingProps) => {
           <RankingList />
         </Box>
       </CardBody>
-    </Card>
+    </CustomCard>
   );
 };
 

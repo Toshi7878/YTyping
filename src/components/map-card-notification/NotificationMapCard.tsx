@@ -1,7 +1,8 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
-import { Card, CardBody, CardHeader, useTheme } from "@chakra-ui/react";
+import { CardBody, CardHeader, useTheme } from "@chakra-ui/react";
+import CustomMapCard from "../custom-ui/CustomMapCard";
 import UserLinkText from "../custom-ui/UserLinkText";
 
 interface MapCardProps {
@@ -12,14 +13,7 @@ function NotificationMapCard({ notify, children }: MapCardProps) {
   const theme: ThemeColors = useTheme();
 
   return (
-    <Card
-      borderRadius="lg"
-      transition="box-shadow 0.3s"
-      _hover={{
-        boxShadow: theme.colors.home.card.hover,
-      }}
-      maxW="100%"
-    >
+    <CustomMapCard>
       <CardHeader fontSize="sm" py={2} px={2} bg={theme.colors.background.header} roundedTop="md">
         <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name!} />
         さんがスコア {notify.visitorResult.score - notify.visitedResult.score} 差で{" "}
@@ -37,7 +31,7 @@ function NotificationMapCard({ notify, children }: MapCardProps) {
       >
         {children}
       </CardBody>
-    </Card>
+    </CustomMapCard>
   );
 }
 

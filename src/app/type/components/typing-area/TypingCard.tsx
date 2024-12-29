@@ -1,13 +1,11 @@
 "use client";
-import { ThemeColors } from "@/types";
+import CustomCard from "@/components/custom-ui/CustomCard";
 import {
-  Card,
   CardBody,
   CardFooter,
   CardHeader,
   useDisclosure,
   UseDisclosureReturn,
-  useTheme,
 } from "@chakra-ui/react";
 import { atom, useSetAtom } from "jotai";
 import { useEffect } from "react";
@@ -107,7 +105,6 @@ export const useSetDrawerClosureAtom = () => {
 };
 
 function TypingCard() {
-  const theme: ThemeColors = useTheme();
   const drawerClosure = useDisclosure();
   const setDrawerClosure = useSetDrawerClosureAtom();
 
@@ -117,13 +114,7 @@ function TypingCard() {
   }, [drawerClosure]);
 
   return (
-    <Card
-      className="typing-card"
-      variant={"filled"}
-      bg={theme.colors.background.card}
-      color={theme.colors.text.body}
-      boxShadow="lg"
-    >
+    <CustomCard className="typing-card">
       <CardHeader py={0} mx={3}>
         <PlayingTop />
       </CardHeader>
@@ -131,7 +122,7 @@ function TypingCard() {
       <CardFooter py={0} mx={3} flexDirection="column">
         <PlayingBottom />
       </CardFooter>
-    </Card>
+    </CustomCard>
   );
 }
 

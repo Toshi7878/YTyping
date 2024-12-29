@@ -1,12 +1,13 @@
 "use client";
-import { Card, CardFooter, CardHeader, Flex, useBreakpointValue, useTheme } from "@chakra-ui/react";
-import { ResultCardInfo } from "../../ts/type";
+import CustomMapCard from "@/components/custom-ui/CustomMapCard";
 import { ThemeColors } from "@/types";
-import ResultUserName from "./child/child/ResultUserName";
-import ResultInnerCardBody from "./child/ResultInnerCardBody";
+import { CardFooter, CardHeader, Flex, useBreakpointValue, useTheme } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
+import { ResultCardInfo } from "../../ts/type";
 import { MapResultBadgesMobile } from "./child/child/MapResultBadgesLayout";
 import ResultClapButton from "./child/child/ResultClapButton";
-import { useSession } from "next-auth/react";
+import ResultUserName from "./child/child/ResultUserName";
+import ResultInnerCardBody from "./child/ResultInnerCardBody";
 
 interface ResultCardProps {
   result: ResultCardInfo;
@@ -20,13 +21,7 @@ function ResultCard(props: ResultCardProps) {
   const showBadges = useBreakpointValue({ base: false, md: true }, { ssr: false });
 
   return (
-    <Card
-      transition="box-shadow 0.3s"
-      bg={theme.colors.background.card}
-      _hover={{
-        boxShadow: theme.colors.home.card.hover,
-      }}
-    >
+    <CustomMapCard>
       <CardHeader bg={theme.colors.background.card} borderRadius="md" mx={2} py={3}>
         <Flex alignItems="baseline" justifyContent="space-between">
           <ResultUserName result={result} />
@@ -44,7 +39,7 @@ function ResultCard(props: ResultCardProps) {
       <CardFooter bg={theme.colors.background.card} borderRadius="md" pb={1}>
         {!showBadges && <MapResultBadgesMobile props={result} />}
       </CardFooter>
-    </Card>
+    </CustomMapCard>
   );
 }
 

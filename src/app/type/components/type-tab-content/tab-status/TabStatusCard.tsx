@@ -1,5 +1,5 @@
-import { ThemeColors } from "@/types";
-import { Card, CardBody, Table, TableContainer, useTheme } from "@chakra-ui/react";
+import CustomCard from "@/components/custom-ui/CustomCard";
+import { CardBody, Table, TableContainer } from "@chakra-ui/react";
 import StatusTbody from "./child/StatusTbody";
 
 interface TabStatusProps {
@@ -7,16 +7,8 @@ interface TabStatusProps {
 }
 
 const TabStatusCard = (props: TabStatusProps) => {
-  const theme: ThemeColors = useTheme();
-
   return (
-    <Card
-      className="tab-card"
-      variant="filled"
-      bg={theme.colors.background.card}
-      boxShadow="lg"
-      color={theme.colors.text.body}
-    >
+    <CustomCard className="tab-card">
       <CardBody>
         <TableContainer>
           <Table
@@ -29,7 +21,7 @@ const TabStatusCard = (props: TabStatusProps) => {
           </Table>
         </TableContainer>
       </CardBody>
-    </Card>
+    </CustomCard>
   );
 };
 
