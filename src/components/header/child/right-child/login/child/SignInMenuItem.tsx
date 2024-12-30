@@ -1,8 +1,9 @@
+import { handleSignIn } from "@/server/actions/authActions";
 import { ThemeColors } from "@/types";
 import { AuthProvider } from "@/types/next-auth";
-import { Box, Button, MenuItem, useTheme } from "@chakra-ui/react";
+import { Button, MenuItem, useTheme } from "@chakra-ui/react";
 import React from "react";
-import { handleSignIn } from "../../../../../../server/actions/authActions";
+import { useFormState } from "react-dom";
 
 interface SignInMenuItemProps {
   _hover: { bg: string; color: string };
@@ -13,8 +14,12 @@ interface SignInMenuItemProps {
 
 const SignInMenuItem = (props: SignInMenuItemProps) => {
   const theme: ThemeColors = useTheme();
+  const [, formAction] = useFormState(async () => {
+    const result = await handleSignIn(props.provider);
+    return result;
+  }, null);
   return (
-    <Box as="form" onSubmit={() => handleSignIn(props.provider)}>
+    <form action={formAction}>
       <MenuItem
         _hover={props._hover}
         bg={theme.colors.background.body}
@@ -25,7 +30,7 @@ const SignInMenuItem = (props: SignInMenuItemProps) => {
           {props.text}
         </Button>
       </MenuItem>
-    </Box>
+    </form>
   );
 };
 

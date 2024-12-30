@@ -1,14 +1,17 @@
 "use client";
 
 import { Flex } from "@chakra-ui/react";
-import SiteLogo from "./SiteLogo";
+import { useSession } from "next-auth/react";
 import LeftMenus from "./LeftMenus";
+import SiteLogo from "./SiteLogo";
 
 function LeftNav() {
+  const { data: session } = useSession();
+
   return (
     <Flex gap={10} alignItems="center">
       <SiteLogo />
-      <LeftMenus />
+      {(!session || session.user.name) && <LeftMenus />}
     </Flex>
   );
 }

@@ -2,13 +2,15 @@ import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
 import { Text, useTheme } from "@chakra-ui/react";
+import { usePathname } from "next/navigation";
 
 function SiteLogo() {
   const theme: ThemeColors = useTheme();
   const handleLinkClick = useLinkClick();
+  const pathname = usePathname();
   return (
     <Link
-      href={"/"}
+      href={pathname === "/user/register" ? "/user/register" : "/"}
       onClick={handleLinkClick}
       fontSize="2xl"
       position="relative"

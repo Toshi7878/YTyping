@@ -3,10 +3,10 @@ import { z } from "zod";
 export const nameSchema = z.object({
   newName: z
     .string()
-    .min(1, "このフィールドを入力してください。")
-    .max(15, "最大15文字以内で入力してください")
+    .min(1, "名前は1文字以上である必要があります。")
+    .max(15, "名前は15文字以内である必要があります。")
     .refine(
-      (val) => !/^[\s\u200B]+|[\s\u200B]+$/.test(val),
+      (val) => !/^[\s\u200B\u3000\t]+|[\s\u200B\u3000\t]+$/.test(val),
       "文字列の両端にスペースを含めることはできません",
     )
     .refine((val) => !/[\u200B]/.test(val), "ゼロ幅スペースを含めることはできません"),

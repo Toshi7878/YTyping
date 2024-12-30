@@ -1,15 +1,27 @@
-import { auth } from "@/server/auth";
+export { auth as middleware } from "@/server/auth";
 
-export default auth((req) => {
-  const isLoggedIn = !!req.auth;
-  const { nextUrl } = req;
-  const hasUserName: boolean = isLoggedIn && req.auth?.user?.name ? true : false;
+// export async function middleware(request: NextRequest) {
+// const session = await auth();
+// const isLoggedIn = !!session;
+// if (isLoggedIn) {
+//   const userName = session!.user.name;
+//   if (request.nextUrl.pathname !== "/user/register") {
+//     if (!userName) {
+//       return NextResponse.redirect(new URL("/user/register", request.url));
+//     }
+//   } else {
+//     //名付け済みで/user/registerに遷移される場合はrootにリダイレクト
+//     return NextResponse.redirect(new URL("/", request.url));
+//   }
+// } else {
+//   if (logoutRedirectPaths.includes(request.nextUrl.pathname)) {
+//     return NextResponse.redirect(new URL("/", request.url));
+//   }
+// }
+// }
 
-  if (nextUrl.pathname === "/user/register" && (!isLoggedIn || hasUserName)) {
-    return Response.redirect(new URL("/", nextUrl), 307);
-  }
-});
+// const logoutRedirectPaths = ["/user/register", "/user/settings"];
 
 export const config = {
-  matcher: ["/user/register"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"],
 };

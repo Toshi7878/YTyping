@@ -1,7 +1,6 @@
-import { SignOutButton } from "./SignOutButton";
-import { CheckName } from "./CheckName";
 import { useSession } from "next-auth/react";
 import SignInMenu from "./SignInMenu";
+import { SignOutButton } from "./SignOutButton";
 import UserMenu from "./UserMenu";
 
 export default function Login() {
@@ -10,12 +9,6 @@ export default function Login() {
   if (!session?.user) {
     return <SignInMenu />;
   } else {
-    return (
-      <>
-        {session?.user.name === null ? <SignOutButton /> : <UserMenu />}
-
-        <CheckName name={session.user.name ?? ""} />
-      </>
-    );
+    return <>{!session?.user.name ? <SignOutButton /> : <UserMenu />}</>;
   }
 }

@@ -37,7 +37,7 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
   const menus = leftMenuItem.concat(leftLink);
   return (
     <Flex display={display} alignItems="center" gap={5}>
-      {session?.user?.id && <NotifyBell isNewNotification={isNewNotification} />}
+      {session?.user?.name && <NotifyBell isNewNotification={isNewNotification} />}
       <Menu>
         <MenuButton
           as={IconButton}
@@ -51,7 +51,7 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
           {menus.map((menuItem, index) => {
             return <LinkMenuItem key={index} title={menuItem.title} href={menuItem.href} />;
           })}
-          {session?.user.id ? (
+          {session?.user.name ? (
             <>
               <MenuItem
                 onClick={newCreateModalDisclosure.onOpen}
@@ -70,22 +70,24 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
               <LogOutMenuItem />
             </>
           ) : (
-            <>
-              <MenuDivider />
+            !session && (
+              <>
+                <MenuDivider />
 
-              <SignInMenuItem
-                _hover={{ bg: "#7289DA", color: "white" }}
-                text={"Discordでログイン"}
-                leftIcon={<BsDiscord size="1.5em" />}
-                provider="discord"
-              />
-              <SignInMenuItem
-                _hover={{ bg: "#DB4437", color: "white" }}
-                text={"Googleでログイン"}
-                leftIcon={<BsGoogle size="1.5em" />}
-                provider="google"
-              />
-            </>
+                <SignInMenuItem
+                  _hover={{ bg: "#7289DA", color: "white" }}
+                  text={"Discordでログイン"}
+                  leftIcon={<BsDiscord size="1.5em" />}
+                  provider="discord"
+                />
+                <SignInMenuItem
+                  _hover={{ bg: "#DB4437", color: "white" }}
+                  text={"Googleでログイン"}
+                  leftIcon={<BsGoogle size="1.5em" />}
+                  provider="google"
+                />
+              </>
+            )
           )}
         </MenuList>
       </Menu>

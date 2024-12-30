@@ -1,7 +1,7 @@
 "use client";
+import { Box, Flex } from "@chakra-ui/react";
 import LeftNav from "./child/left-child/LeftNav";
 import RightNav from "./child/RightNav";
-import { Flex, Box } from "@chakra-ui/react";
 import HamburgerMenu from "./hamburger-menu/HamburgerMenu";
 
 interface HeaderContentProps {

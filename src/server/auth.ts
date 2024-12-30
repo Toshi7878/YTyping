@@ -1,14 +1,13 @@
-import { prisma } from "@/server/db";
+import authConfig from "@/auth.config";
 import CryptoJS from "crypto-js";
-import NextAuth, { NextAuthConfig } from "next-auth";
-import Discord from "next-auth/providers/discord";
-import Google from "next-auth/providers/google";
+import NextAuth from "next-auth";
+import { prisma } from "./db";
 
 // export const runtime = "edge";
-
-export const config: NextAuthConfig = {
-  providers: [Discord, Google],
+export const { auth, handlers, signIn, signOut } = NextAuth({
+  ...authConfig,
   secret: process.env.AUTH_SECRET,
+  session: { strategy: "jwt" },
   callbacks: {
     async signIn({ user, account, profile }) {
       const hash = CryptoJS.MD5(user.email!).toString();
@@ -33,15 +32,28 @@ export const config: NextAuthConfig = {
 
       return true;
     },
-    authorized({ request, auth }) {
+    authorized({ request: { nextUrl }, auth }) {
       try {
-        const url = new URL(request.url);
-        const pathname = url.pathname;
-        if (pathname === "/user/register") {
-          if (!auth?.user?.name) {
-            return !!auth;
+        const isLoggedIn = !!auth?.user;
+        const pathname = nextUrl.pathname;
+
+        if (isLoggedIn) {
+          const userName = auth.user.name;
+          if (userName) {
+            if (pathname === "/user/register") {
+              return Response.redirect(new URL("/", nextUrl));
+            }
           } else {
-            return false;
+            if (pathname !== "/user/register") {
+              return Response.redirect(new URL("/user/register", nextUrl));
+            }
+          }
+        } else {
+          const isAuthRoute = authRoutes.includes(pathname);
+
+          if (isAuthRoute) {
+            //ログアウト状態の場合は専用ページアクセス時にrootにリダイレクトさせる
+            return Response.redirect(new URL("/", nextUrl));
           }
         }
 
@@ -77,17 +89,7 @@ export const config: NextAuthConfig = {
       }
       return session;
     },
-    // redirect({ url, baseUrl }) {
-    //   // Allows relative callback URLs
-    //   if (url.startsWith("/")) return `${baseUrl}${url}`;
-    //   // Allows callback URLs on the same origin
-    //   if (new URL(url).origin === baseUrl) return url;
-    //   return baseUrl;
-    // },
   },
-  pages: {
-    signIn: "/",
-  },
-};
+});
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+const authRoutes = ["/user/register", "/user/settings"];

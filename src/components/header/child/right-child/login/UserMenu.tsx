@@ -1,9 +1,8 @@
-import { MenuDivider, useTheme } from "@chakra-ui/react";
-import { Menu, MenuButton, MenuList } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { ThemeColors } from "@/types";
-import LinkMenuItem from "../../child/LinkMenuItem";
 import { loginMenuItem } from "@/config/headerNav";
+import { ThemeColors } from "@/types";
+import { Menu, MenuButton, MenuDivider, MenuList, useTheme } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
+import LinkMenuItem from "../../child/LinkMenuItem";
 import LogOutMenuItem from "./child/LogOutMenuItem";
 
 export default function UserMenu() {
@@ -21,7 +20,7 @@ export default function UserMenu() {
         _active={{ color: theme.colors.text.header.hover }}
         className="dropdown-toggle"
       >
-        {session!.user!.name}
+        {session?.user?.name ? session?.user?.name : "名前未設定"}
       </MenuButton>
       <MenuList bg={theme.colors.background.body} minW="fit-content">
         {loginMenuItem.map((item, index) => {

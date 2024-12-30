@@ -1,9 +1,18 @@
-import NewNameDialog from "./NewNameDialog";
+import { Box } from "@chakra-ui/react";
+import Content from "./Content";
 
 export default async function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <NewNameDialog />
-    </main>
+    <Box
+      as="main"
+      minH="100vw"
+      width={"100vw"}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      pt={20}
+    >
+      <Content />
+    </Box>
   );
 }
