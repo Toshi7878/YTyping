@@ -1,1 +1,0 @@
-SELECT "mapData", "previewTime" FROM public."Map" WHERE id = $1

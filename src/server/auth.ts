@@ -1,4 +1,4 @@
-import authConfig from "@/auth.config";
+import authConfig from "@/config/auth.config";
 import CryptoJS from "crypto-js";
 import NextAuth from "next-auth";
 import { prisma } from "./db";
