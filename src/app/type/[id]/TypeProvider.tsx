@@ -3,7 +3,6 @@ import { getGlobalAtomStore, previewVideoIdAtom } from "@/lib/global-atoms/globa
 import { RouterOutPuts } from "@/server/api/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createStore, Provider as JotaiProvider } from "jotai";
-import { DevTools } from "jotai-devtools";
 import { useEffect } from "react";
 import { hasLocalLikeAtom, mapUpdatedAtAtom, userOptionsAtom } from "../type-atoms/gameRenderAtoms";
 import { RefsProvider } from "../type-contexts/refsProvider";
@@ -33,10 +32,7 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
   return (
     <QueryClientProvider client={queryClient}>
       <RefsProvider>
-        <JotaiProvider store={typeAtomStore}>
-          <DevTools />
-          {children}
-        </JotaiProvider>
+        <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>
       </RefsProvider>
     </QueryClientProvider>
   );
