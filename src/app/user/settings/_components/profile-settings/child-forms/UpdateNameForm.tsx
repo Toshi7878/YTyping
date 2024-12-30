@@ -79,7 +79,7 @@ export const UpdateNameForm = ({
     });
   };
   useEffect(() => {
-    if (session?.user.name !== newNameValue && newNameValue) {
+    if (!errors.newName && session?.user.name !== newNameValue && newNameValue) {
       setNameState("pending");
       debounce(async () => {
         const result = await checkNewName.mutateAsync({
