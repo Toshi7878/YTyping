@@ -20,7 +20,7 @@ const PreviewTimeInput = () => {
 
   const handlePreviewClick = () => {
     editStatus.current!.isNotAutoTabToggle = true;
-    playerRef.current.seekTo(Number(previewTime));
+    playerRef.current!.seekTo(Number(previewTime), true);
   };
 
   return (
