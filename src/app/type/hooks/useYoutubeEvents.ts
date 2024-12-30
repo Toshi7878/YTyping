@@ -2,7 +2,7 @@ import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { Ticker } from "@pixi/ticker";
 import { useStore } from "jotai";
 import NProgress from "nprogress";
-import { YouTubePlayer } from "react-youtube";
+import { YouTubeEvent } from "react-youtube";
 import {
   isLoadingOverlayAtom,
   sceneAtom,
@@ -20,13 +20,13 @@ export const useYTPlayEvent = () => {
   const setScene = useSetSceneAtom();
   const setNotify = useSetPlayingNotifyAtom();
   const startTimer = useStartTimer();
-  return (event) => {
+  return async (event: YouTubeEvent) => {
     console.log("再生 1");
     const scene = typeAtomStore.get(sceneAtom);
 
     if (scene === "ready") {
       if (ytStateRef.current) {
-        ytStateRef.current.movieDuration = playerRef.current.getDuration();
+        ytStateRef.current.movieDuration = await playerRef.current!.getDuration();
       }
 
       const playMode = gameStateRef.current!.playMode;
@@ -65,8 +65,8 @@ export const useYTEndEvent = () => {
   return () => {
     console.log("プレイ終了");
 
-    playerRef.current.seekTo(0);
-    playerRef.current.stopVideo();
+    playerRef.current!.seekTo(0, true);
+    playerRef.current!.stopVideo();
   };
 };
 
@@ -106,7 +106,7 @@ export const useYTSeekEvent = () => {
   const { gameStateRef, statusRef, playerRef } = useRefs();
 
   return () => {
-    const time = playerRef.current.getCurrentTime();
+    const time = playerRef.current!.getCurrentTime();
     const isRetrySkip = gameStateRef.current!.isRetrySkip;
 
     if (isRetrySkip && time === 0) {
@@ -120,7 +120,7 @@ export const useYTReadyEvent = () => {
   const { setRef } = useRefs();
   const volumeAtom = useVolumeAtom();
 
-  return (event: { target: YouTubePlayer }) => {
+  return (event: YouTubeEvent) => {
     const player = event.target;
     NProgress.done();
     setRef("playerRef", player);

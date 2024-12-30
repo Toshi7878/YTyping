@@ -35,7 +35,7 @@ export const usePressSkip = () => {
         ? ytStateRef.current!.movieDuration - 2
         : skippedTime - 1 + (1 - playSpeed);
 
-    playerRef.current.seekTo(seekTime);
+    playerRef.current!.seekTo(seekTime, true);
     gameStateRef.current!.isRetrySkip = false;
     setSkip("");
   };

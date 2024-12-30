@@ -56,7 +56,7 @@ export const useRetry = () => {
     gameStateRef.current!.replay.replayKeyCount = 0;
 
     gameStateRef.current!.isRetrySkip = true;
-    playerRef.current.seekTo(0);
+    playerRef.current!.seekTo(0, true);
     if (typeTicker.started) {
       typeTicker.stop();
     }
@@ -85,7 +85,7 @@ export const useProceedRetry = () => {
     }
     gameStateRef.current!.replay.replayKeyCount = 0;
     gameStateRef.current!.isRetrySkip = true;
-    playerRef.current.seekTo(0);
-    playerRef.current.playVideo();
+    playerRef.current!.seekTo(0, true);
+    playerRef.current!.playVideo();
   };
 };

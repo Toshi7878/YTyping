@@ -12,12 +12,12 @@ import {
 
 import { useSetVolumeAtom, useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { ThemeColors } from "@/types";
+import { YTPlayer } from "@/types/global-types";
 import { useState } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
-import { YouTubePlayer } from "react-youtube";
 
 interface VolumeRangeProps {
-  playerRef: React.RefObject<YouTubePlayer>;
+  playerRef: React.RefObject<YTPlayer>;
 }
 
 export default function VolumeRange({ playerRef }: VolumeRangeProps) {

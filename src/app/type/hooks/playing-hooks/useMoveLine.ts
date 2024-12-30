@@ -45,7 +45,7 @@ export const useMoveLine = () => {
     statusRef.current!.status.count = newCount;
     updateLine(newCount);
 
-    playerRef.current.seekTo(prevTime);
+    playerRef.current!.seekTo(prevTime, true);
     setNotify(Symbol(`◁`));
     drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
@@ -84,7 +84,7 @@ export const useMoveLine = () => {
     statusRef.current!.status.count = newCount;
     updateLine(newCount);
 
-    playerRef.current.seekTo(nextTime);
+    playerRef.current!.seekTo(nextTime, true);
     setNotify(Symbol(`▷`));
     drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
@@ -102,7 +102,7 @@ export const useMoveLine = () => {
       console.log("colorchange");
       drawerSelectColorChange(seekCount);
     }
-    playerRef.current.seekTo(seekTime);
+    playerRef.current!.seekTo(seekTime, true);
     const newCount = getSeekLineCount(seekTime);
     statusRef.current!.status.count = newCount;
     updateLine(newCount);

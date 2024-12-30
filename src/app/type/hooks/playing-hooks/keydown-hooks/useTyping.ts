@@ -47,11 +47,11 @@ export const useTyping = () => {
   const { setStatusValues } = useSetStatusAtoms();
   const updateAllStatus = useUpdateAllStatus();
 
-  return ({ event, count }: HandleTypingParams) => {
+  return async ({ event, count }: HandleTypingParams) => {
     const lineWord = typeAtomStore.get(lineWordAtom);
     const inputMode = typeAtomStore.get(playingInputModeAtom);
 
-    const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+    const lineTime = getCurrentLineTime(await getCurrentOffsettedYTTime());
     const constantLineTime = getConstantLineTime(lineTime);
 
     const typingResult = new Typing({ event, lineWord, inputMode });

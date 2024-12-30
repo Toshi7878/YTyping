@@ -1,7 +1,7 @@
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
+import { YouTubeEvent } from "@/types/global-types";
 import NProgress from "nprogress";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
-import { YouTubeEvent } from "react-youtube";
 import { editTicker } from "../_components/editor-youtube-content/EditYoutube";
 import {
   useSetIsEditYTPlayingAtom,
@@ -51,7 +51,7 @@ export const useYTPlayEvent = () => {
   const setIsYTStarted = useSetIsEditYTStartedAtom();
   const setTabIndex = useSetTabIndexAtom();
 
-  const onPlay = (event) => {
+  const onPlay = () => {
     console.log("再生 1");
 
     editTicker.start();
@@ -64,7 +64,7 @@ export const useYTPlayEvent = () => {
     editStatus.current!.isNotAutoTabToggle = false;
   };
 
-  return { onPlay };
+  return onPlay;
 };
 
 export const useYTPauseEvent = () => {
@@ -91,8 +91,8 @@ export const useYTSeekEvent = () => {
   const getSeekCount = useGetSeekCount();
   const updateCurrentLine = useUpdateCurrentLine();
 
-  return async (event: YouTubeEvent) => {
-    const time = await event.target.getCurrentTime()!;
+  return (event: YouTubeEvent) => {
+    const time = event.target.getCurrentTime();
     console.log(`シークtime: ${time}`);
     updateCurrentLine(getSeekCount(time));
   };

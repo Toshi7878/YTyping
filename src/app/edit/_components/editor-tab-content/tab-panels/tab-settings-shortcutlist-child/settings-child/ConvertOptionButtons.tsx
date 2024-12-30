@@ -22,7 +22,7 @@ export default function ConvertOptionButtons() {
         colorScheme: "green",
         label: "記号なし(一部除く)",
         value: "non_symbol",
-        label: (
+        tooltipLabel: (
           <Box>
             <Box>一部の記号を除いてワードに記号を含まずよみ変換します。</Box>
             <Box>変換される記号:{nonSymbol.join(" ")}</Box>
@@ -33,7 +33,7 @@ export default function ConvertOptionButtons() {
         colorScheme: "yellow",
         label: "記号あり(一部)",
         value: "add_symbol",
-        label: (
+        tooltipLabel: (
           <Box>
             <Box>一部の記号をよみ変換されるようにします。</Box>
             <Box>変換される記号:{nonSymbol.concat(addSymbol).join(" ")}</Box>
@@ -44,7 +44,7 @@ export default function ConvertOptionButtons() {
         colorScheme: "red",
         label: "記号あり(すべて)",
         value: "add_symbol_all",
-        label: (
+        tooltipLabel: (
           <Box>
             <Box>キーボードで入力できる全ての記号をよみ変換されるようにします。</Box>
             <Box>変換される記号:{nonSymbol.concat(addSymbol).concat(addSymbolAll).join(" ")}</Box>
@@ -66,7 +66,7 @@ export default function ConvertOptionButtons() {
       >
         <Stack direction="row">
           {options.map((option) => (
-            <CustomToolTip label={option.label} key={option.label} placement="bottom">
+            <CustomToolTip label={option.tooltipLabel} key={option.label} placement="bottom">
               <Button
                 variant={selectedConvertOption === option.value ? "solid" : "outline"}
                 size="sm"

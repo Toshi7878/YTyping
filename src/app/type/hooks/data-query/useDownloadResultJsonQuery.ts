@@ -40,7 +40,7 @@ export const useDownloadPlayDataJsonQuery = (resultId: number | null) => {
         if (scene === "end") {
           proceedRetry("replay");
         } else {
-          playerRef.current.playVideo();
+          playerRef.current!.playVideo();
         }
         return jsonData;
       } catch (error) {

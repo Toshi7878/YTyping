@@ -24,10 +24,10 @@ const TimeRange = () => {
   const handleRangeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const time = Number(e.target.value);
     rangeRef.current!.value = e.target.value;
-    playerRef.current.playVideo();
+    playerRef.current!.playVideo();
 
     if (playerRef.current) {
-      playerRef.current.seekTo(time);
+      playerRef.current.seekTo(time, true);
     }
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -41,7 +41,7 @@ const TimeRange = () => {
 
   useEffect(() => {
     if (isYTReady || isYTStarted) {
-      const duration = playerRef.current?.getDuration().toFixed(3);
+      const duration = playerRef.current!.getDuration().toFixed(3);
       if (duration !== undefined) {
         rangeRef.current!.max = duration;
       }

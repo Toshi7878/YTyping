@@ -25,7 +25,7 @@ import { useWordConvert } from "./useWordConvert";
 const timeValidate = (
   time: number,
   mapData: RootState["mapData"]["value"],
-  endAfterLineIndex: number,
+  endAfterLineIndex: number
 ) => {
   const lastLineTime = Number(mapData[endAfterLineIndex]["time"]);
 
@@ -54,7 +54,7 @@ export const useLineAddButtonEvent = () => {
   const lineInputReducer = useLineInputReducer();
   const deleteTopLyricsText = useDeleteTopLyricsText();
 
-  return async (isShiftKey: boolean) => {
+  return (isShiftKey: boolean) => {
     const mapData = editReduxStore.getState().mapData.value;
 
     const endAfterLineIndex =
@@ -72,12 +72,12 @@ export const useLineAddButtonEvent = () => {
     const word = editAtomStore.get(editLineWordAtom);
     const timeOffset = isYTPlaying && word && !isShiftKey ? Number(addTimeOffset) : 0;
     const time_ = Number(
-      isYTPlaying ? playerRef.current.getCurrentTime() : timeInputRef.current!.value,
+      isYTPlaying ? playerRef.current!.getCurrentTime() : timeInputRef.current!.value
     );
     const time = timeValidate(time_ + timeOffset, mapData, endAfterLineIndex).toFixed(3);
     const newLine = !isShiftKey ? { time, lyrics, word } : { time, lyrics: "", word: "" };
     const addLineMap = [...mapData, newLine].sort(
-      (a, b) => parseFloat(a.time) - parseFloat(b.time),
+      (a, b) => parseFloat(a.time) - parseFloat(b.time)
     );
 
     dispatch(setLastAddedTime(time));
@@ -120,7 +120,7 @@ export const useLineUpdateButtonEvent = () => {
   const editJotaiStore = useJotaiStore();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
 
-  return async () => {
+  return () => {
     const mapData = editReduxStore.getState().mapData.value;
 
     const endAfterLineIndex =
@@ -139,8 +139,8 @@ export const useLineUpdateButtonEvent = () => {
     const timeOffset = isYTPlaying && word && !selectedLineCount ? Number(addTimeOffset) : 0;
     const time_ = Number(
       isYTPlaying && !selectedLineCount
-        ? playerRef.current.getCurrentTime()
-        : timeInputRef.current!.value,
+        ? playerRef.current!.getCurrentTime()
+        : timeInputRef.current!.value
     );
 
     const time = timeValidate(time_ + timeOffset, mapData, endAfterLineIndex).toFixed(3);
@@ -173,7 +173,7 @@ export const useLineUpdateButtonEvent = () => {
           new: { time, lyrics, word },
           lineNumber: selectedLineCount,
         },
-      }),
+      })
     );
 
     dispatch(setMapData(newValue));
@@ -233,7 +233,7 @@ export const useLineDelete = () => {
             ...mapData[selectedLineCount],
             selectedLineCount: selectedLineCount,
           },
-        }),
+        })
       );
 
       if (newVideoId) {

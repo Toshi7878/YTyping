@@ -35,8 +35,8 @@ export function useUploadMap() {
     const isMapDataEdited = editAtomStore.get(isMapDataEditedAtom);
 
     const map = new CreateMap(mapData);
-    const mapVideoId = playerRef.current.getVideoData().video_id;
-    const videoDuration: number = playerRef.current.getDuration();
+    const mapVideoId = playerRef.current!.getVideoData().video_id;
+    const videoDuration: number = await playerRef.current!.getDuration();
     const sendData = {
       videoId: mapVideoId,
       title: mapTitle,
@@ -60,7 +60,7 @@ export function useUploadMap() {
       sendData,
       mapData,
       isMapDataEdited,
-      Array.isArray(mapId) ? mapId[0] : mapId || "new",
+      Array.isArray(mapId) ? mapId[0] : mapId || "new"
     );
 
     return result;

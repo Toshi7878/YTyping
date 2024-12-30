@@ -1,3 +1,5 @@
+import { YTPlayer } from "@/types/global-types";
+
 export type InputModeType = "roma" | "kana" | "flick";
 export type PlayMode = "playing" | "replay" | "practice";
 export type SceneType = "ready" | "playing" | "end" | "replay" | "practice";
@@ -29,7 +31,7 @@ export interface LineData {
 }
 
 export interface RefsContextType {
-  playerRef: React.RefObject<YouTubePlayer>;
+  playerRef: React.RefObject<YTPlayer>;
   bestScoreRef: React.MutableRefObject<number>;
   statusRef: React.RefObject<StatusRef>;
   ytStateRef: React.RefObject<YTStateRef>;

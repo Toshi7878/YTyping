@@ -43,7 +43,7 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
             timeInputRef.current!.value = newValue;
             e.preventDefault();
           } else if (e.code === "Enter") {
-            playerRef.current.seekTo(Number(value));
+            playerRef.current!.seekTo(Number(value), true);
           }
         }}
       />

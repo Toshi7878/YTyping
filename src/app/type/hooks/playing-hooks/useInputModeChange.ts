@@ -28,7 +28,7 @@ export const useInputModeChange = () => {
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
   const setLineWord = useSetLineWordAtom();
 
-  return (newInputMode: InputModeType) => {
+  return async (newInputMode: InputModeType) => {
     const playingInputMode = typeAtomStore.get(playingInputModeAtom);
 
     if (newInputMode === playingInputMode) {
@@ -74,7 +74,7 @@ export const useInputModeChange = () => {
     const scene = typeAtomStore.get(sceneAtom);
 
     if (scene === "playing") {
-      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+      const lineTime = getCurrentLineTime(await getCurrentOffsettedYTTime());
 
       statusRef.current!.lineStatus.typeResult.push({
         op: newInputMode,

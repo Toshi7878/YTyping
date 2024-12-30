@@ -1,9 +1,9 @@
 "use client";
+import { YTPlayer } from "@/types/global-types";
 import React, { createContext, useContext, useRef } from "react";
-import { YouTubePlayer } from "react-youtube";
 
 export interface GlobalRefsContextType {
-  playerRef: React.RefObject<YouTubePlayer>;
+  playerRef: React.RefObject<YTPlayer>;
   setRef: (key: string, ref: HTMLElement | any) => void;
 }
 

@@ -33,7 +33,7 @@ export const useVideoSpeedChange = () => {
     }
 
     setSpeedData({ defaultSpeed: setSpeed, playSpeed: setSpeed });
-    playerRef.current.setPlaybackRate(setSpeed);
+    playerRef.current!.setPlaybackRate(setSpeed);
 
     const scene = typeAtomStore.get(sceneAtom);
 
@@ -46,7 +46,7 @@ export const useVideoSpeedChange = () => {
     }
   };
 
-  const playingSpeedChange = (type: "set" | "change" = "change", setSpeed: number = 1) => {
+  const playingSpeedChange = async (type: "set" | "change" = "change", setSpeed: number = 1) => {
     const defaultSpeed = typeAtomStore.get(speedAtom).defaultSpeed;
     const currentSpeed = typeAtomStore.get(speedAtom).playSpeed;
 
@@ -61,7 +61,7 @@ export const useVideoSpeedChange = () => {
       playSpeed: setSpeed,
     });
 
-    playerRef.current.setPlaybackRate(setSpeed);
+    playerRef.current!.setPlaybackRate(setSpeed);
 
     if (currentSpeed !== setSpeed) {
       setNotify(Symbol(`${setSpeed.toFixed(2)}x`));
@@ -70,7 +70,7 @@ export const useVideoSpeedChange = () => {
     const scene = typeAtomStore.get(sceneAtom);
 
     if (scene === "playing") {
-      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+      const lineTime = getCurrentLineTime(await getCurrentOffsettedYTTime());
 
       statusRef.current!.lineStatus.typeResult.push({
         op: "speedChange",

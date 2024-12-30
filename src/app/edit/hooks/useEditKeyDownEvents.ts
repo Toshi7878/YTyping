@@ -22,7 +22,7 @@ import { RootState } from "../redux/store";
 import { redo, undo } from "../redux/undoredoSlice";
 import { useDeleteTopLyricsText, useSetTopLyricsText } from "./useEditAddLyricsTextHooks";
 
-import { YouTubePlayer } from "react-youtube";
+import { YTPlayer } from "@/types/global-types";
 import {
   useLineAddButtonEvent,
   useLineDelete,
@@ -69,7 +69,7 @@ export const useWindowKeydownEvent = () => {
   const lineDelete = useLineDelete();
   const seekNextPrev = useSeekNextPrev();
 
-  return async (event: KeyboardEvent, optionModalIndex: number | null) => {
+  return (event: KeyboardEvent, optionModalIndex: number | null) => {
     const IS_FOCUS_INPUT = document.activeElement instanceof HTMLInputElement;
     const iS_FOCUS_ADD_LYRICS_TEXTAREA = document.activeElement!.id === "add_lyrics_text";
 
@@ -82,7 +82,7 @@ export const useWindowKeydownEvent = () => {
       }
       event.preventDefault();
     } else if (!iS_FOCUS_ADD_LYRICS_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
-      const player = playerRef!.current as YouTubePlayer;
+      const player = playerRef!.current as YTPlayer;
       const undoredoState = editReduxStore.getState().undoRedo;
 
       switch (event.code) {
@@ -100,7 +100,7 @@ export const useWindowKeydownEvent = () => {
 
         case "ArrowLeft":
           {
-            const time = await player.getCurrentTime();
+            const time = player.getCurrentTime();
             const speed = editAtomStore.get(editSpeedAtom);
 
             player.seekTo(time - 3 * speed, true);
@@ -111,7 +111,7 @@ export const useWindowKeydownEvent = () => {
 
         case "ArrowRight":
           {
-            const time = await player.getCurrentTime();
+            const time = player.getCurrentTime();
             const speed = editAtomStore.get(editSpeedAtom);
             player.seekTo(time + 3 * speed, true);
             event.preventDefault();

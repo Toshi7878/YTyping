@@ -16,7 +16,8 @@ export const useGetTime = () => {
     const userOptions = typeAtomStore.get(userOptionsAtom);
     const timeOffset = typeAtomStore.get(timeOffsetAtom);
 
-    return playerRef.current.getCurrentTime() - userOptions.timeOffset - timeOffset;
+    const result = playerRef.current!.getCurrentTime() - userOptions.timeOffset - timeOffset;
+    return result;
   };
 
   const getConstantOffsettedYTTime = (YTCurrentTime: number) => {

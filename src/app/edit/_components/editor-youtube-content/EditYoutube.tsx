@@ -2,7 +2,7 @@
 
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect } from "react";
-import YouTube, { YouTubeEvent } from "react-youtube";
+import YouTube from "react-youtube";
 import { useVideoIdAtom } from "../../edit-atom/editAtom";
 import { useEditTimer } from "../../hooks/timer/useEditTimer";
 import {
@@ -21,14 +21,14 @@ export const editTicker = new Ticker();
 const EditYouTube = function ({ className }: EditorYouTubeProps) {
   const videoId = useVideoIdAtom();
   const onReady = useYTReadyEvent();
-  const { onPlay } = useYTPlayEvent();
+  const onPlay = useYTPlayEvent();
   const onPause = useYTPauseEvent();
   const onEndStop = useYTEndStopEvent();
   const onSeek = useYTSeekEvent();
   const editTimer = useEditTimer();
 
   const handleStateChange = useCallback(
-    (event: YouTubeEvent) => {
+    (event) => {
       if (
         document.activeElement instanceof HTMLIFrameElement &&
         document.activeElement.tagName === "IFRAME"

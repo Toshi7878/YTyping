@@ -51,7 +51,7 @@ const RankingMenu = ({
     gameStateRef.current!.replay.userName = name;
     gameStateRef.current!.playMode = "replay";
     setReplayId(resultId);
-    playerRef.current.playVideo();
+    playerRef.current!.playVideo();
   };
   return (
     <Stack

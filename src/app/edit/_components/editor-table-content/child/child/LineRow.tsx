@@ -95,15 +95,15 @@ function LineRow({
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mapData, directEdit, endAfterLineIndex],
+    [mapData, directEdit, endAfterLineIndex]
   );
 
   const clickTimeCell = (
     event: React.MouseEvent<HTMLTableCellElement, MouseEvent>,
-    index: number,
+    index: number
   ) => {
     if (directEdit !== index) {
-      playerRef.current.seekTo(line.time);
+      playerRef.current!.seekTo(Number(line.time), true);
     }
   };
 

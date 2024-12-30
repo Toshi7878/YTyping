@@ -5,9 +5,9 @@ export const useGamePause = () => {
 
   return () => {
     if (ytStateRef.current?.isPaused) {
-      playerRef.current.playVideo();
+      playerRef.current!.playVideo();
     } else {
-      playerRef.current.pauseVideo();
+      playerRef.current!.pauseVideo();
     }
   };
 };

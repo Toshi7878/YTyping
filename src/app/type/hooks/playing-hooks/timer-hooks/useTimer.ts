@@ -59,11 +59,11 @@ export const usePlayTimer = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const statusAtomsValues = useStatusAtomsValues();
 
-  return () => {
+  return async () => {
     const count = statusRef.current!.status.count;
 
     //時間取得
-    const currentOffesettedYTTime = getCurrentOffsettedYTTime();
+    const currentOffesettedYTTime = await getCurrentOffsettedYTTime();
     const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
     const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
     const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
@@ -151,7 +151,7 @@ export const usePlayTimer = () => {
         currentLine?.["lyrics"] === "end" ||
         currentOffesettedYTTime >= ytStateRef.current!.movieDuration
       ) {
-        playerRef.current.stopVideo();
+        playerRef.current!.stopVideo();
         typeTicker.stop();
 
         return;

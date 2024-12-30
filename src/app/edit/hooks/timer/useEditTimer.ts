@@ -16,7 +16,7 @@ export const useEditTimer = () => {
   const updateCurrentLine = useUpdateCurrentLine();
 
   return () => {
-    const currentTime = playerRef.current.getCurrentTime().toFixed(3);
+    const currentTime = playerRef.current!.getCurrentTime().toFixed(3);
 
     rangeRef.current!.value = currentTime;
     const rangeMaxValue = rangeRef.current!.max;
