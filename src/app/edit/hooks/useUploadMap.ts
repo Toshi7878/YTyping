@@ -41,7 +41,7 @@ export function useUploadMap() {
       videoId: mapVideoId,
       title: mapTitle,
       artistName,
-      musicSource,
+      musicSource: musicSource ?? "",
       creatorComment,
       tags: tags.map((tag) => tag.id),
       previewTime:
