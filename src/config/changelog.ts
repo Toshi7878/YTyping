@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2024-12-30",
-    description: ["譜面一覧のランキングカウントホバーで自分の順位表示を追加"],
+    descriptions: ["譜面一覧のランキングカウントホバーで自分の順位表示を追加"],
   },
   {
     date: "2024-12-29",
