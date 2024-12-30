@@ -40,7 +40,7 @@ const TimeRange = () => {
   }, []);
 
   useEffect(() => {
-    if (isYTReady || isYTStarted) {
+    if (playerRef.current && (isYTReady || isYTStarted)) {
       const duration = playerRef.current!.getDuration().toFixed(3);
       if (duration !== undefined) {
         rangeRef.current!.max = duration;
