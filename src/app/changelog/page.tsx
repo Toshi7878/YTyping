@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react"; // Textを追加
-import Content from "./content/Content";
+import Content from "./Content";
 
 export default function Home() {
   return (

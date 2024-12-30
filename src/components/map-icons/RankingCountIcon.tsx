@@ -13,15 +13,15 @@ const RankingCountIcon = (props: RankingCountProps) => {
   const { myRank, rankingCount } = props;
 
   return (
-    <CustomToolTip tooltipLabel={`自分の順位: ${myRank}位`} placement="top" isDisabled={!myRank}>
+    <CustomToolTip label={`自分の順位: ${myRank}位`} placement="top" isDisabled={!myRank}>
       <Flex
         alignItems="baseline"
         color={
           myRank === 1
             ? theme.colors.semantic.perfect
             : myRank
-              ? theme.colors.secondary.main
-              : `${theme.colors.text.body}99`
+            ? theme.colors.secondary.main
+            : `${theme.colors.text.body}99`
         }
         mr={1}
       >

@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Flex, Heading } from "@chakra-ui/react";
-import { UpdateNameForm } from "../settings/_components/profile-settings/child-forms/UpdateNameForm";
+import { UpdateNameForm } from "../_components/UpdateNameForm";
 
 export default function Content() {
   return (

@@ -14,8 +14,8 @@ import {
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
+import { CreateMap } from "../../../../../lib/instanceMapData";
 import { CharsType, KanaInput, RomaInput } from "../../../ts/scene-ts/playing/keydown/typingJudge";
-import { CreateMap } from "../../../ts/scene-ts/ready/createTypingWord";
 import { LineResultData, Status, TypeResult } from "../../../ts/type";
 import { useGetTime } from "../../useGetTime";
 import { useSoundEffect } from "../useSoundEffect";

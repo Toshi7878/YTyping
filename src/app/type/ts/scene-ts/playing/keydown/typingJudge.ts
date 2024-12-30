@@ -1,8 +1,8 @@
 import { lineWordAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useStore } from "jotai";
-import { CODE_TO_KANA, KEY_TO_KANA } from "../../../const/kanaKeyMap";
+import { CODE_TO_KANA, KEY_TO_KANA } from "../../../../../../config/kanaKeyMap";
+import { CHAR_POINT } from "../../../../../../lib/instanceMapData";
 import { Dakuten, HanDakuten, InputModeType, LineWord, NormalizeHirakana } from "../../../type";
-import { CHAR_POINT } from "../../ready/createTypingWord";
 
 const keyboardCharacters = [
   "0",
@@ -247,7 +247,7 @@ export class RomaInput {
     const nextRomaPattern: string[] = newLineWord.nextChar["r"];
     const kana = lineWord.nextChar["k"];
     const IS_SUCCESS = nextRomaPattern.some(
-      (pattern) => pattern[0] && pattern[0].toLowerCase() === chars["keys"][0],
+      (pattern) => pattern[0] && pattern[0].toLowerCase() === chars["keys"][0]
     );
 
     if (!IS_SUCCESS) {
@@ -379,7 +379,7 @@ export class KanaInput {
 
     const successIndex: number = nextKana[0]
       ? keys.indexOf(
-          dakuHanDakuData.normalized ? dakuHanDakuData.normalized : nextKana[0].toLowerCase(),
+          dakuHanDakuData.normalized ? dakuHanDakuData.normalized : nextKana[0].toLowerCase()
         )
       : -1;
 
@@ -563,7 +563,7 @@ export class Typing {
         event.key.toLowerCase(),
         event.key.toLowerCase().replace(event.key.toLowerCase(), function (s) {
           return String.fromCharCode(s.charCodeAt(0) + 0xfee0);
-        }),
+        })
       );
     }
 

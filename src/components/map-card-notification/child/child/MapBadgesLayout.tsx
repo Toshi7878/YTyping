@@ -16,7 +16,7 @@ const MapBadges = (props: MapBadgesProps) => {
     <Flex justifyContent="space-between" width="98%">
       <HStack>
         <CustomToolTip
-          tooltipLabel={
+          label={
             <Box>
               <Box>最高速度:{map.romaKpmMax}kpm</Box>
             </Box>

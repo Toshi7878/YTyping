@@ -109,7 +109,6 @@ export default extendTheme({
           },
         },
       },
-      // 6. We can overwrite defaultProps
     },
   },
 });

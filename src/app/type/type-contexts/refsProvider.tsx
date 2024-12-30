@@ -8,7 +8,7 @@ import {
 import { GameStateRef, RefsContextType, StatusRef, YTStateRef } from "../ts/type";
 
 export const RefsContext = createContext<RefsContextType>({
-  playerRef: null,
+  playerRef: { current: null },
   bestScoreRef: { current: 0 },
   statusRef: { current: structuredClone(DEFAULT_STATUS_REF) },
   ytStateRef: { current: structuredClone(DEFAULT_YT_STATE_REF) },

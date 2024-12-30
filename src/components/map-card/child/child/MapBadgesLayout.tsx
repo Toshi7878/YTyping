@@ -21,7 +21,7 @@ const MapBadges = (props: MapBadgesProps) => {
     >
       <HStack mr={2}>
         <CustomToolTip
-          tooltipLabel={
+          label={
             <Box>
               <Box>最高速度:{map.romaKpmMax}kpm</Box>
             </Box>

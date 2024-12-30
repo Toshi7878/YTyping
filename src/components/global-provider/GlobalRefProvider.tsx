@@ -1,13 +1,14 @@
 "use client";
 import React, { createContext, useContext, useRef } from "react";
+import { YouTubePlayer } from "react-youtube";
 
 export interface GlobalRefsContextType {
-  playerRef: any;
+  playerRef: React.RefObject<YouTubePlayer>;
   setRef: (key: string, ref: HTMLElement | any) => void;
 }
 
 const RefsContext = createContext<GlobalRefsContextType>({
-  playerRef: null,
+  playerRef: { current: null },
   setRef: (ref: HTMLElement | any) => {},
 });
 export const GlobalRefProvider = ({ children }) => {

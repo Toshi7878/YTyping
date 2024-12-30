@@ -22,6 +22,7 @@ import { RootState } from "../redux/store";
 import { redo, undo } from "../redux/undoredoSlice";
 import { useDeleteTopLyricsText, useSetTopLyricsText } from "./useEditAddLyricsTextHooks";
 
+import { YouTubePlayer } from "react-youtube";
 import {
   useLineAddButtonEvent,
   useLineDelete,
@@ -68,7 +69,7 @@ export const useWindowKeydownEvent = () => {
   const lineDelete = useLineDelete();
   const seekNextPrev = useSeekNextPrev();
 
-  return (event: KeyboardEvent, optionModalIndex: number | null) => {
+  return async (event: KeyboardEvent, optionModalIndex: number | null) => {
     const IS_FOCUS_INPUT = document.activeElement instanceof HTMLInputElement;
     const iS_FOCUS_ADD_LYRICS_TEXTAREA = document.activeElement!.id === "add_lyrics_text";
 
@@ -81,7 +82,7 @@ export const useWindowKeydownEvent = () => {
       }
       event.preventDefault();
     } else if (!iS_FOCUS_ADD_LYRICS_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
-      const player = playerRef!.current as any;
+      const player = playerRef!.current as YouTubePlayer;
       const undoredoState = editReduxStore.getState().undoRedo;
 
       switch (event.code) {
@@ -99,10 +100,10 @@ export const useWindowKeydownEvent = () => {
 
         case "ArrowLeft":
           {
-            const time = player.getCurrentTime();
+            const time = await player.getCurrentTime();
             const speed = editAtomStore.get(editSpeedAtom);
 
-            player.seekTo(time - 3 * speed);
+            player.seekTo(time - 3 * speed, true);
             event.preventDefault();
           }
 
@@ -110,9 +111,9 @@ export const useWindowKeydownEvent = () => {
 
         case "ArrowRight":
           {
-            const time = player.getCurrentTime();
+            const time = await player.getCurrentTime();
             const speed = editAtomStore.get(editSpeedAtom);
-            player.seekTo(time + 3 * speed);
+            player.seekTo(time + 3 * speed, true);
             event.preventDefault();
           }
 
@@ -147,7 +148,7 @@ export const useWindowKeydownEvent = () => {
 
                 undoLine(data, addLyricsText);
                 const speed = editAtomStore.get(editSpeedAtom);
-                playerRef.current.seekTo(Number(data.time) - 3 * speed);
+                player.seekTo(Number(data.time) - 3 * speed, true);
               }
 
               dispatch(undo());
@@ -251,7 +252,7 @@ function useSeekNextPrev() {
       const seekCount = selectedIndex + (type === "next" ? 1 : -1);
       const seekLine = mapData[seekCount];
       if (seekLine) {
-        playerRef.current.seekTo(Number(seekLine.time));
+        playerRef.current!.seekTo(Number(seekLine.time), true);
         lineInputReducer({
           type: "set",
           payload: {
@@ -288,7 +289,10 @@ export function useAddRubyTagEvent() {
         return false;
       }
 
-      const addRubyTagLyrics = `${lyrics.slice(0, start)}<ruby>${lyrics.slice(start, end)}<rt></rt></ruby>${lyrics.slice(end, lyrics.length)}`;
+      const addRubyTagLyrics = `${lyrics.slice(0, start)}<ruby>${lyrics.slice(
+        start,
+        end
+      )}<rt></rt></ruby>${lyrics.slice(end, lyrics.length)}`;
 
       setLyrics(addRubyTagLyrics);
       setTimeout(() => {
@@ -296,7 +300,7 @@ export function useAddRubyTagEvent() {
         target.focus();
         target.setSelectionRange(
           addRubyTagLyrics.search("<rt></rt></ruby>") + 4,
-          addRubyTagLyrics.search("<rt></rt></ruby>") + 4,
+          addRubyTagLyrics.search("<rt></rt></ruby>") + 4
         );
       });
     }

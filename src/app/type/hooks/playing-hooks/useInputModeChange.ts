@@ -1,5 +1,5 @@
 import { useStore } from "jotai";
-import { romaConvert } from "../../ts/scene-ts/ready/createTypingWord";
+import { romaConvert } from "../../../../lib/instanceMapData";
 import { InputModeType } from "../../ts/type";
 import {
   lineWordAtom,

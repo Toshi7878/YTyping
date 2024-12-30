@@ -1,11 +1,11 @@
 import { ThemeColors } from "@/types";
-import { Card, useTheme } from "@chakra-ui/react";
+import { Card, CardProps, useTheme } from "@chakra-ui/react";
 
-interface CustomMapCardProps {
+interface CustomMapCardProps extends CardProps {
   children: React.ReactNode;
 }
 
-const CustomMapCard = ({ children }: CustomMapCardProps) => {
+const CustomMapCard = ({ children, ...rest }: CustomMapCardProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
@@ -15,6 +15,7 @@ const CustomMapCard = ({ children }: CustomMapCardProps) => {
       _hover={{
         boxShadow: theme.colors.home.card.hover,
       }}
+      {...rest}
     >
       {children}
     </Card>

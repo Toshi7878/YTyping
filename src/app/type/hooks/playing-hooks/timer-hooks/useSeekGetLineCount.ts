@@ -1,5 +1,5 @@
-import { CreateMap } from "@/app/type/ts/scene-ts/ready/createTypingWord";
 import { mapAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { CreateMap } from "@/lib/instanceMapData";
 import { useStore } from "jotai";
 
 export const useGetSeekLineCount = () => {

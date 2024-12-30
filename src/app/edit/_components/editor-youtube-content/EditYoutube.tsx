@@ -2,7 +2,7 @@
 
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect } from "react";
-import YouTube from "react-youtube";
+import YouTube, { YouTubeEvent } from "react-youtube";
 import { useVideoIdAtom } from "../../edit-atom/editAtom";
 import { useEditTimer } from "../../hooks/timer/useEditTimer";
 import {
@@ -28,7 +28,7 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
   const editTimer = useEditTimer();
 
   const handleStateChange = useCallback(
-    (event: any) => {
+    (event: YouTubeEvent) => {
       if (
         document.activeElement instanceof HTMLIFrameElement &&
         document.activeElement.tagName === "IFRAME"
@@ -45,7 +45,7 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    []
   );
 
   useEffect(() => {

@@ -1,5 +1,5 @@
+import { CreateMap, MISS_PENALTY } from "../../../../lib/instanceMapData";
 import { getTypeAtomStore } from "../../[id]/TypeProvider";
-import { CreateMap, MISS_PENALTY } from "../../ts/scene-ts/ready/createTypingWord";
 import { Status } from "../../ts/type";
 import {
   comboAtom,

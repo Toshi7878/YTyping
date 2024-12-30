@@ -1,9 +1,9 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage } from "jotai/utils";
+import { CreateMap } from "../../../lib/instanceMapData";
 import { getTypeAtomStore } from "../[id]/TypeProvider";
 import { defaultLineWord } from "../ts/const/consts";
 import { DEFAULT_SPEED, DEFAULT_USER_OPTIONS } from "../ts/const/typeDefaultValue";
-import { CreateMap } from "../ts/scene-ts/ready/createTypingWord";
 import {
   InputModeType,
   LineResultData,
@@ -61,7 +61,7 @@ export const readyRadioInputModeAtom = atomWithStorage<InputModeType>(
   undefined,
   {
     getOnInit: true,
-  },
+  }
 );
 
 export const useReadyInputModeAtom = () => {
@@ -73,7 +73,7 @@ export const useReadySetInputModeAtom = () => {
 };
 
 export const playingInputModeAtom = atom<InputModeType>(
-  (localStorage.getItem("inputMode") as InputModeType) || "roma",
+  (localStorage.getItem("inputMode") as InputModeType) || "roma"
 );
 export const usePlayingInputModeAtom = () => {
   return useAtomValue(playingInputModeAtom, { store: typeAtomStore });

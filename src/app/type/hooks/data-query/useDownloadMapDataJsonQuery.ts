@@ -2,7 +2,7 @@ import { QUERY_KEYS } from "@/config/global-consts";
 import { supabase } from "@/lib/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { CreateMap } from "../../ts/scene-ts/ready/createTypingWord";
+import { CreateMap } from "../../../../lib/instanceMapData";
 import {
   useSetLineResultsAtom,
   useSetLineSelectIndexAtom,

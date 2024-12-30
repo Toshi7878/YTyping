@@ -26,7 +26,9 @@ function NotificationMapInfo({ map }: MapCardProps) {
     >
       <Flex direction="column" gap={1}>
         <CustomToolTip
-          tooltipLabel={`${map.title} / ${map.artistName}${map.musicSource ? `【${map.musicSource}】` : ""}`}
+          label={`${map.title} / ${map.artistName}${
+            map.musicSource ? `【${map.musicSource}】` : ""
+          }`}
           placement="top"
         >
           <Box

@@ -16,7 +16,7 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
   const { timeInputRef, playerRef } = useRefs();
 
   return (
-    <CustomToolTip tooltipLabel={"↓↑: 0.05ずつ調整, Enter:再生"} placement="top">
+    <CustomToolTip label={"↓↑: 0.05ずつ調整, Enter:再生"} placement="top">
       <Input
         ref={props.directEditTimeInputRef}
         size="xs"

@@ -1,7 +1,7 @@
 import { useStore } from "jotai";
+import { CreateMap } from "../../../../lib/instanceMapData";
 import { defaultLineWord, defaultNextLyrics } from "../../ts/const/consts";
 import { DEFAULT_STATUS_REF } from "../../ts/const/typeDefaultValue";
-import { CreateMap } from "../../ts/scene-ts/ready/createTypingWord";
 import { StatusRef } from "../../ts/type";
 import {
   sceneAtom,

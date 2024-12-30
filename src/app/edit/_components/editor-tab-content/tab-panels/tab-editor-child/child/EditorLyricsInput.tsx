@@ -15,7 +15,7 @@ const EditorLyricsInput = () => {
 
   return (
     <CustomToolTip
-      tooltipLabel={<Box fontSize="xs">Enterキーを押すとRubyタグを挿入できます。</Box>}
+      label={<Box fontSize="xs">Enterキーを押すとRubyタグを挿入できます。</Box>}
       placement="top"
       isDisabled={!isLineLyricsSelected}
       isOpen={isLineLyricsSelected}

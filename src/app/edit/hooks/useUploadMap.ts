@@ -1,4 +1,4 @@
-import { CreateMap } from "@/app/type/ts/scene-ts/ready/createTypingWord";
+import { CreateMap } from "@/lib/instanceMapData";
 import { useStore as useJotaiStore } from "jotai";
 import { useStore as useReduxStore } from "react-redux";
 

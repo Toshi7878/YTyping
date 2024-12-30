@@ -1,6 +1,7 @@
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import NProgress from "nprogress";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
+import { YouTubeEvent } from "react-youtube";
 import { editTicker } from "../_components/editor-youtube-content/EditYoutube";
 import {
   useSetIsEditYTPlayingAtom,
@@ -38,7 +39,7 @@ export const useYTReadyEvent = () => {
           lyrics: "end",
           word: "",
           selectedLineCount: 1,
-        }),
+        })
       );
     }
   };
@@ -90,8 +91,8 @@ export const useYTSeekEvent = () => {
   const getSeekCount = useGetSeekCount();
   const updateCurrentLine = useUpdateCurrentLine();
 
-  return (event: any) => {
-    const time = event.target.getCurrentTime()!;
+  return async (event: YouTubeEvent) => {
+    const time = await event.target.getCurrentTime()!;
     console.log(`シークtime: ${time}`);
     updateCurrentLine(getSeekCount(time));
   };

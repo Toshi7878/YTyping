@@ -12,6 +12,8 @@ interface ThemeProviderProps {
 }
 
 const ThemeProvider = ({ colorMode, children }: ThemeProviderProps) => {
+  // TODO: CacheProvider非推奨
+
   return (
     <>
       <CacheProvider>

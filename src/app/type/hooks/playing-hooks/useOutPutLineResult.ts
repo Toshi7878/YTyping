@@ -6,7 +6,7 @@ import {
   useStatusAtomsValues,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useStore } from "jotai";
-import { CHAR_POINT, CreateMap } from "../../ts/scene-ts/ready/createTypingWord";
+import { CHAR_POINT, CreateMap } from "../../../../lib/instanceMapData";
 import { LineWord, Status } from "../../ts/type";
 import { useRefs } from "../../type-contexts/refsProvider";
 

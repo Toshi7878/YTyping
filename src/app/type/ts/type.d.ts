@@ -29,7 +29,7 @@ export interface LineData {
 }
 
 export interface RefsContextType {
-  playerRef: any;
+  playerRef: React.RefObject<YouTubePlayer>;
   bestScoreRef: React.MutableRefObject<number>;
   statusRef: React.RefObject<StatusRef>;
   ytStateRef: React.RefObject<YTStateRef>;

@@ -12,9 +12,9 @@ import {
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
+import { CreateMap } from "../../../../../lib/instanceMapData";
 import { useCalcTypeSpeed } from "../../../ts/scene-ts/playing/calcTypeSpeed";
 import { Typing } from "../../../ts/scene-ts/playing/keydown/typingJudge";
-import { CreateMap } from "../../../ts/scene-ts/ready/createTypingWord";
 import { useGetTime } from "../../useGetTime";
 import { useUpdateAllStatus } from "../timer-hooks/replayHooks";
 import { useSoundEffect } from "../useSoundEffect";

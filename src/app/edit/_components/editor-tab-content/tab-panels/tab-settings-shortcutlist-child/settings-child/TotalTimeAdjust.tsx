@@ -32,7 +32,7 @@ export default function TotalTimeAdjust() {
       addHistory({
         type: "allAdjustTime",
         data: { times, totalAdjustValue: Number(totalAdjustValue) },
-      }),
+      })
     );
     dispatch(allAdjustTime(totalAdjustValue));
     const successState = {
@@ -48,7 +48,7 @@ export default function TotalTimeAdjust() {
   return (
     <HStack alignItems="baseline">
       <CustomToolTip
-        tooltipLabel={<Box>数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します</Box>}
+        label={<Box>数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します</Box>}
         placement="top"
       >
         <HStack alignItems="baseline">

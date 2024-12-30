@@ -19,7 +19,7 @@ export default function CreateMapBackUpButton(props: CreateMapBackUpButtonProps)
 
   return (
     <CustomToolTip
-      tooltipLabel={
+      label={
         <Box>
           <Box>タイトル: {props.createMapBackUpInfo.title}</Box>
           <Box>YouTubeId: {props.createMapBackUpInfo.videoId}</Box>

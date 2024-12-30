@@ -1,21 +1,20 @@
 import { ThemeColors } from "@/types";
-import { Card, useTheme } from "@chakra-ui/react";
+import { Card, CardProps, useTheme } from "@chakra-ui/react";
 
-interface CustomCardProps {
+interface CustomCardProps extends CardProps {
   children: React.ReactNode;
-  className?: string;
 }
 
-const CustomCard = ({ children, className = "" }: CustomCardProps) => {
+const CustomCard = ({ children, ...rest }: CustomCardProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
     <Card
-      className={className}
       variant={"filled"}
       bg={theme.colors.background.card}
       color={theme.colors.text.body}
       boxShadow="lg"
+      {...rest}
     >
       {children}
     </Card>

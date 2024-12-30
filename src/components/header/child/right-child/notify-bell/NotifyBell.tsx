@@ -44,7 +44,7 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
       <CustomToolTip
         key={isNewBadge ? "new" : "old"}
         placement="bottom"
-        tooltipLabel="通知"
+        label="通知"
         fontSize="xs"
         openDelay={600}
       >

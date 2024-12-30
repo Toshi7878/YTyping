@@ -25,7 +25,7 @@ const PreviewTimeInput = () => {
 
   return (
     <CustomToolTip
-      tooltipLabel={
+      label={
         <>
           <Box>
             譜面一覧でのプレビュー再生時に入力されているタイムから再生されるようになります。(サビのタイム推奨です)

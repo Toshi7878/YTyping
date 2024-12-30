@@ -1,7 +1,6 @@
-import { drawerClosureAtom } from "@/app/type/components/typing-area/TypingCard";
+import { drawerClosureAtom } from "@/app/type/_components/typing-area/TypingCard";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/typeDefaultValue";
 import { useIsKeydownTyped } from "@/app/type/ts/scene-ts/playing/keydown/typingJudge";
-import { CreateMap } from "@/app/type/ts/scene-ts/ready/createTypingWord";
 import {
   lineSelectIndexAtom,
   lineWordAtom,
@@ -14,6 +13,7 @@ import {
   useSetTimeOffsetAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
+import { CreateMap } from "@/lib/instanceMapData";
 import { UseDisclosureReturn } from "@chakra-ui/react";
 import { useStore } from "jotai";
 import { useVideoSpeedChange } from "../../useVideoSpeedChange";

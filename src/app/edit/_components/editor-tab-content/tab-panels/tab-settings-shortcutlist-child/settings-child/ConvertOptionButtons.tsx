@@ -1,15 +1,15 @@
 "use client";
-import { Box, Button, FormLabel, HStack, RadioGroup, Stack, useTheme } from "@chakra-ui/react";
-import { ThemeColors } from "@/types";
-import { ConvertOptionsType } from "@/app/edit/ts/type";
-import { useMemo } from "react";
-import { addSymbol, addSymbolAll, nonSymbol } from "@/app/edit/hooks/useWordConvert";
 import {
   useEditWordConvertOptionAtom,
   useSetEditWordConvertOptionAtom,
 } from "@/app/edit/edit-atom/editAtom";
-import { sendEditorOptionIndexedDBData } from "@/lib/db";
+import { addSymbol, addSymbolAll, nonSymbol } from "@/app/edit/hooks/useWordConvert";
+import { ConvertOptionsType } from "@/app/edit/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { sendEditorOptionIndexedDBData } from "@/lib/db";
+import { ThemeColors } from "@/types";
+import { Box, Button, FormLabel, HStack, RadioGroup, Stack, useTheme } from "@chakra-ui/react";
+import { useMemo } from "react";
 
 export default function ConvertOptionButtons() {
   const theme: ThemeColors = useTheme();
@@ -22,7 +22,7 @@ export default function ConvertOptionButtons() {
         colorScheme: "green",
         label: "記号なし(一部除く)",
         value: "non_symbol",
-        tooltipLabel: (
+        label: (
           <Box>
             <Box>一部の記号を除いてワードに記号を含まずよみ変換します。</Box>
             <Box>変換される記号:{nonSymbol.join(" ")}</Box>
@@ -33,7 +33,7 @@ export default function ConvertOptionButtons() {
         colorScheme: "yellow",
         label: "記号あり(一部)",
         value: "add_symbol",
-        tooltipLabel: (
+        label: (
           <Box>
             <Box>一部の記号をよみ変換されるようにします。</Box>
             <Box>変換される記号:{nonSymbol.concat(addSymbol).join(" ")}</Box>
@@ -44,7 +44,7 @@ export default function ConvertOptionButtons() {
         colorScheme: "red",
         label: "記号あり(すべて)",
         value: "add_symbol_all",
-        tooltipLabel: (
+        label: (
           <Box>
             <Box>キーボードで入力できる全ての記号をよみ変換されるようにします。</Box>
             <Box>変換される記号:{nonSymbol.concat(addSymbol).concat(addSymbolAll).join(" ")}</Box>
@@ -53,7 +53,7 @@ export default function ConvertOptionButtons() {
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [theme],
+    [theme]
   );
 
   return (
@@ -66,7 +66,7 @@ export default function ConvertOptionButtons() {
       >
         <Stack direction="row">
           {options.map((option) => (
-            <CustomToolTip tooltipLabel={option.tooltipLabel} key={option.label} placement="bottom">
+            <CustomToolTip label={option.label} key={option.label} placement="bottom">
               <Button
                 variant={selectedConvertOption === option.value ? "solid" : "outline"}
                 size="sm"

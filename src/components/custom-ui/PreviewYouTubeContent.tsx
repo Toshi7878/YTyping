@@ -9,7 +9,7 @@ import { usePreviewYouTubeKeyDown } from "@/lib/global-hooks/usePreviewYouTubeKe
 import { Box, useBreakpointValue } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import YouTube from "react-youtube";
+import YouTube, { YouTubeEvent } from "react-youtube";
 import {
   usePreviewSpeedAtom,
   usePreviewTimeAtom,
@@ -53,14 +53,14 @@ const PreviewYouTubeContent = function YouTubeContent() {
     return null;
   }
 
-  const onReady = (event: any) => {
+  const onReady = (event: YouTubeEvent) => {
     event.target.setVolume(volume);
-    event.target.seekTo(previewTime);
+    event.target.seekTo(Number(previewTime), true);
     event.target.playVideo();
     setRef("playerRef", event.target);
   };
-  const onPlay = (event: any) => {
-    event.target.setPlaybackRate(previewSpeed);
+  const onPlay = (event: YouTubeEvent) => {
+    event.target.setPlaybackRate(Number(previewSpeed));
   };
 
   return (

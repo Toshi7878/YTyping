@@ -1,6 +1,5 @@
 import { Box } from "@chakra-ui/react"; // Textを追加
-import Content from "./_components/Content";
-import UserSettingsProvider from "./UserSettingsProvider";
+import Content from "./Content";
 
 export default function Home() {
   return (
@@ -13,9 +12,7 @@ export default function Home() {
       alignItems="center"
       pt={20}
     >
-      <UserSettingsProvider>
-        <Content />
-      </UserSettingsProvider>
+      <Content />
     </Box>
   );
 }

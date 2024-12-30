@@ -2,6 +2,7 @@ import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { Ticker } from "@pixi/ticker";
 import { useStore } from "jotai";
 import NProgress from "nprogress";
+import { YouTubePlayer } from "react-youtube";
 import {
   isLoadingOverlayAtom,
   sceneAtom,
@@ -119,7 +120,7 @@ export const useYTReadyEvent = () => {
   const { setRef } = useRefs();
   const volumeAtom = useVolumeAtom();
 
-  return (event: { target: any }) => {
+  return (event: { target: YouTubePlayer }) => {
     const player = event.target;
     NProgress.done();
     setRef("playerRef", player);

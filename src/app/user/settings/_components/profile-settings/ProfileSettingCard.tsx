@@ -1,6 +1,6 @@
 import CustomCard from "@/components/custom-ui/CustomCard";
 import { CardBody, CardFooter, CardHeader, Flex } from "@chakra-ui/react";
-import { UpdateNameForm } from "./child-forms/UpdateNameForm";
+import { UpdateNameForm } from "../../../_components/UpdateNameForm";
 
 const ProfileSettingCard = () => {
   return (

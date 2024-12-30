@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useContext, useRef } from "react";
+import { YouTubePlayer } from "react-youtube";
 import { DEFAULT_EDIT_STATUS_REF } from "../ts/const/editDefaultValues";
 import { EditStatusRef } from "../ts/type";
 
@@ -7,7 +8,7 @@ export interface RefsContextType {
   timeInputRef: React.RefObject<HTMLInputElement>;
   tbodyRef: React.RefObject<HTMLElement>;
   rangeRef: React.RefObject<HTMLInputElement>;
-  playerRef: any;
+  playerRef: React.RefObject<YouTubePlayer>;
   editStatus: React.RefObject<EditStatusRef>;
   setRef: (key: string, ref: HTMLElement | any) => void;
 }
@@ -16,7 +17,7 @@ const RefsContext = createContext<RefsContextType>({
   timeInputRef: { current: null },
   tbodyRef: { current: null },
   rangeRef: { current: null },
-  playerRef: null,
+  playerRef: { current: null },
   editStatus: { current: DEFAULT_EDIT_STATUS_REF },
   setRef: (ref: HTMLElement | any) => {},
 });

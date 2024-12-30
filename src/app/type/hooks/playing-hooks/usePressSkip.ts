@@ -1,5 +1,5 @@
 import { useStore } from "jotai";
-import { CreateMap } from "../../ts/scene-ts/ready/createTypingWord";
+import { CreateMap } from "../../../../lib/instanceMapData";
 import {
   speedAtom,
   timeOffsetAtom,

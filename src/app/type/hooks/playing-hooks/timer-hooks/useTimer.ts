@@ -23,9 +23,9 @@ import {
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
+import { CreateMap } from "../../../../../lib/instanceMapData";
 import { DEFAULT_STATUS_REF } from "../../../ts/const/typeDefaultValue";
 import { useCalcTypeSpeed } from "../../../ts/scene-ts/playing/calcTypeSpeed";
-import { CreateMap } from "../../../ts/scene-ts/ready/createTypingWord";
 import { Status } from "../../../ts/type";
 import { useGetTime } from "../../useGetTime";
 import { typeTicker } from "../../useYoutubeEvents";
@@ -97,7 +97,7 @@ export const usePlayTimer = () => {
       Math.abs(
         nextLineTime / playSpeed -
           constantOffesettedYTTime -
-          gameStateRef.current!.displayLineTimeCount,
+          gameStateRef.current!.displayLineTimeCount
       ) >= 0.1
     ) {
       gameStateRef.current!.displayLineTimeCount = constantRemainLineTime;

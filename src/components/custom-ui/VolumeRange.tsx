@@ -14,9 +14,10 @@ import { useSetVolumeAtom, useVolumeAtom } from "@/lib/global-atoms/globalAtoms"
 import { ThemeColors } from "@/types";
 import { useState } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
+import { YouTubePlayer } from "react-youtube";
 
 interface VolumeRangeProps {
-  playerRef: any;
+  playerRef: React.RefObject<YouTubePlayer>;
 }
 
 export default function VolumeRange({ playerRef }: VolumeRangeProps) {
