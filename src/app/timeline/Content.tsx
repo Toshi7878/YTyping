@@ -1,8 +1,7 @@
 "use client";
 import { Box } from "@chakra-ui/react";
-import UsersResultList from "./components/UsersResultList";
 import { useEffect } from "react";
-import React from "react";
+import UsersResultList from "./_components/UsersResultList";
 
 export default function Content() {
   useEffect(() => {

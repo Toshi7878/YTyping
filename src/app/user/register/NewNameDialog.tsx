@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 import { actions } from "../../../server/actions/sendUserNameActions";
-import { nameSchema } from "./validationSchema";
+import { nameSchema } from "../../../validator/schema";
 
 interface FormData {
   newName: string;

@@ -86,7 +86,7 @@ const MapIcons = ({
   left = "auto",
 }: MapIconsProps) => {
   return (
-    <Flex position="absolute" top={top} right={right} bottom={bottom} left={left}>
+    <Flex zIndex={2} position="absolute" top={top} right={right} bottom={bottom} left={left}>
       <RankingCountIcon myRank={result.result[0]?.rank} rankingCount={result.map.rankingCount} />
       <LikeCountIcon
         mapId={result.map.id}

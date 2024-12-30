@@ -1,4 +1,3 @@
-import { nameSchema } from "@/app/user/register/validationSchema";
 import CustomCard from "@/components/custom-ui/CustomCard";
 import { INITIAL_STATE } from "@/config/global-consts";
 import { useDebounce } from "@/lib/global-hooks/useDebounce";
@@ -6,6 +5,7 @@ import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
 import { actions } from "@/server/actions/sendUserNameActions";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
+import { nameSchema } from "@/validator/schema";
 import {
   Button,
   CardBody,
@@ -60,6 +60,7 @@ const NameForm = () => {
   });
 
   const newNameValue = watch("newName");
+  const updateName = clientApi.userProfileSetting.updateName.useMutation();
   const checkNewName = clientApi.userProfileSetting.checkNewName.useMutation();
 
   useEffect(() => {

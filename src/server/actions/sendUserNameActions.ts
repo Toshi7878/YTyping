@@ -2,17 +2,10 @@
 
 import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
-import { nameSchema } from "../../app/user/register/validationSchema";
+import { nameSchema } from "../../validator/schema";
 import { auth } from "../auth";
 
-const sendUserName = async (email_hash: string, newName: string) => {
-  if (email_hash) {
-    await prisma.user.update({
-      where: { email_hash },
-      data: { name: newName },
-    });
-  }
-};
+const sendUserName = async (email_hash: string, newName: string) => {};
 
 export async function actions(newName: string): Promise<UploadResult> {
   const session = await auth();
@@ -34,7 +27,12 @@ export async function actions(newName: string): Promise<UploadResult> {
 
   try {
     const newName = validatedFields.data!.newName;
-    await sendUserName(email_hash!, newName);
+    if (email_hash) {
+      await prisma.user.update({
+        where: { email_hash },
+        data: { name: newName },
+      });
+    }
     return { id: newName, title: "名前が更新されました", message: "", status: 200 };
   } catch (error) {
     return { id: "", title: "名前の更新中にエラーが発生しました", message: "", status: 500 };
