@@ -37,16 +37,16 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
     >
       {isRowDisplay && <MapIcons result={result} bottom="25px" left="35px" />}
       <Flex
+        minW="100%"
         py={6}
         direction="row"
-        gap={4}
         justifyContent="space-between"
-        w="100%"
         alignItems="center"
         zIndex={0}
       >
-        <Flex direction="row" gap={4}>
+        <Flex direction="row" gap={4} width="100%">
           {isRowDisplay && <UserRank userRank={result.rank} />}
+
           <MapLeftThumbnail
             alt={result.map.title}
             src={src}
@@ -58,11 +58,26 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
             thumnailWidth={TIMELINE_THUBNAIL_WIDTH}
             thumnailHeight={TIMELINE_THUBNAIL_HEIGHT}
           />
-          <MapInfo map={result.map} isToggledInputMode={isToggledInputMode} />
+          <MapInfo
+            map={result.map}
+            isToggledInputMode={isToggledInputMode}
+            w={
+              isRowDisplay
+                ? {
+                    base: "15vw",
+                    lg: isToggledInputMode ? "15vw" : "18vw",
+                    "2xl": isToggledInputMode ? "18vw" : "21vw",
+                  }
+                : "100%"
+            }
+            overflow="hidden"
+            textOverflow="ellipsis"
+            whiteSpace="nowrap"
+          />
           {!isRowDisplay && <MapIcons result={result} top={"142px"} right={"30px"} />}
         </Flex>
         {isRowDisplay && (
-          <Flex justifyContent="flex-end">
+          <Flex justifyContent="flex-end" minW="fit-content">
             <MapResultBadges props={result} />
           </Flex>
         )}

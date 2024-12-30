@@ -9,7 +9,7 @@ export default function Content() {
   }, []);
 
   return (
-    <Box as="main" width={{ base: "100%", md: "90vw", "2xl": "65vw" }}>
+    <Box as="main" width={{ base: "100%", md: "90vw", lg: "80vw", xl: "70vw", "2xl": "65vw" }}>
       <UsersResultList />
     </Box>
   );

@@ -1,10 +1,9 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
 import ClearRateText from "@/components/user-result-text/ClearRateText";
 import { UserInputModeText } from "@/components/user-result-text/UserInputModeText";
-import { Stack, Text, useTheme, VStack } from "@chakra-ui/react";
-import React from "react";
-import ResultBadge from "./child/ResultBadge";
 import { ThemeColors } from "@/types";
+import { Flex, Stack, Text, useTheme, VStack } from "@chakra-ui/react";
+import ResultBadge from "./child/ResultBadge";
 
 interface ResultCardProps {
   props: ResultCardInfo;
@@ -68,7 +67,7 @@ export const MapResultBadgesMobile = ({ props }: ResultCardProps) => {
 
   const rankColor = props.rank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
   return (
-    <>
+    <Flex justifyContent="space-around" width="100%">
       <VStack align="end" mr={5} spacing={5}>
         <ResultBadge letterSpacing={1} color={rankColor} borderColor={theme.colors.border.badge}>
           Rank: #{props.rank}
@@ -119,6 +118,6 @@ export const MapResultBadgesMobile = ({ props }: ResultCardProps) => {
           </Text>
         </ResultBadge>
       </VStack>
-    </>
+    </Flex>
   );
 };

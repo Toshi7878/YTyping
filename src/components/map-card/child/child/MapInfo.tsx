@@ -18,7 +18,6 @@ function MapInfo({ map }: MapCardProps) {
   return (
     <Link
       display="flex"
-      prefetch
       justifyContent="space-between"
       flexDirection="column"
       height="100%"
