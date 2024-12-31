@@ -1,30 +1,29 @@
 "use client";
 
-import {
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Flex,
-  UseDisclosureReturn,
-} from "@chakra-ui/react";
-import { IndexDBOption } from "@/types";
-import { useEffect, useRef, useState } from "react";
-import { db } from "@/lib/db";
 import { EditorNewMapBackUpInfoData } from "@/app/edit/ts/type";
 import CustomModalContent from "@/components/custom-ui/CustomModalContent";
+import { db } from "@/lib/db";
+import { IndexDBOption } from "@/types";
+import {
+  Flex,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  UseDisclosureReturn,
+} from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
+import CreatedCheck from "./child/CreatedCheck";
 import CreateMapBackUpButton from "./child/CreateMapBackUpButton";
 import NewCreateButton from "./child/NewCreateButton";
 import NewCreateVideoIdInputBox from "./child/NewCreateVideoIdInputBox";
-import CreatedCheck from "./child/CreatedCheck";
 
-interface NewCreateModalProps {
+interface CreateNewMapModalProps {
   newCreateModalDisclosure: UseDisclosureReturn;
 }
 
-export default function NewCreateModal({ newCreateModalDisclosure }: NewCreateModalProps) {
+export default function CreateNewMapModal({ newCreateModalDisclosure }: CreateNewMapModalProps) {
   const [createMapBackUpInfo, setCreateMapBackUpInfo] = useState({ title: "", videoId: "" });
   const [createYTURL, setCreateYTURL] = useState("");
   const [newID, setNewID] = useState("");

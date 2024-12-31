@@ -1,6 +1,5 @@
 "use client";
-import { ThemeColors } from "@/types";
-import { Box, FormLabel, HStack, Input, useTheme } from "@chakra-ui/react";
+import { Box, FormLabel, HStack, Input } from "@chakra-ui/react";
 
 import {
   useEditAddTimeOffsetAtom,
@@ -10,8 +9,6 @@ import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { sendEditorOptionIndexedDBData } from "@/lib/db";
 
 export default function AddTimeAdjust() {
-  const theme: ThemeColors = useTheme();
-
   const addTimeOffset = useEditAddTimeOffsetAtom();
   const setAddTimeOffset = useSetEditAddTimeOffsetAtom();
 
@@ -39,8 +36,6 @@ export default function AddTimeAdjust() {
             min="-3"
             max="3"
             className="max-w-[70px]"
-            bg={theme.colors.background.body}
-            borderColor={`${theme.colors.border.card}60`}
             value={addTimeOffset}
             onChange={(e) => {
               setAddTimeOffset(Number(e.target.value));

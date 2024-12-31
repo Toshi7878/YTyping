@@ -20,7 +20,7 @@ import { BsDiscord, BsGoogle } from "react-icons/bs";
 import LinkMenuItem from "../child/child/LinkMenuItem";
 import LogOutMenuItem from "../child/right-child/login/child/LogOutMenuItem";
 import SignInMenuItem from "../child/right-child/login/child/SignInMenuItem";
-import NewCreateModal from "../child/right-child/new-map/child/NewCreateModal";
+import CreateNewMapModal from "../child/right-child/new-map/child/CreateNewMapModal";
 import NotifyBell from "../child/right-child/notify-bell/NotifyBell";
 
 interface HamburgerMenuProps {
@@ -93,7 +93,7 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
       </Menu>
 
       {newCreateModalDisclosure.isOpen && (
-        <NewCreateModal newCreateModalDisclosure={newCreateModalDisclosure} />
+        <CreateNewMapModal newCreateModalDisclosure={newCreateModalDisclosure} />
       )}
     </Flex>
   );

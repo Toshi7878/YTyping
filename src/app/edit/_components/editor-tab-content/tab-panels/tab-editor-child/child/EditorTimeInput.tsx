@@ -1,12 +1,10 @@
-import { Input, useTheme } from "@chakra-ui/react";
+import { Input } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 
 import { useSetEditIsTimeInputValidAtom } from "@/app/edit/edit-atom/editAtom";
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
-import { ThemeColors } from "@/types";
 
 const EditorTimeInput = () => {
-  const theme: ThemeColors = useTheme();
   const timeInputRef = useRef<HTMLInputElement>(null);
   const setEditIsTimeInputValid = useSetEditIsTimeInputValidAtom();
 
@@ -24,8 +22,6 @@ const EditorTimeInput = () => {
       size="sm"
       width="90px"
       type="number"
-      bg={theme.colors.background.body}
-      borderColor={`${theme.colors.border.card}60`}
       onChange={(e) => {
         setEditIsTimeInputValid(e.currentTarget.value ? false : true);
       }}

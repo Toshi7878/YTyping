@@ -1,8 +1,7 @@
 import { useEditLineLyricsAtom, useSetEditLineLyricsAtom } from "@/app/edit/edit-atom/editAtom";
 import { useAddRubyTagEvent } from "@/app/edit/hooks/useEditKeyDownEvents";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { Box, Input, useTheme } from "@chakra-ui/react";
+import { Box, Input } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 interface DirectEditLyricsInputProps {
@@ -10,8 +9,6 @@ interface DirectEditLyricsInputProps {
 }
 
 const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
-  const theme: ThemeColors = useTheme();
-
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const selectLyrics = useEditLineLyricsAtom();
 
@@ -31,8 +28,6 @@ const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
         autoComplete="off"
         value={selectLyrics}
         onKeyDown={handleEnterAddRuby}
-        bg={theme.colors.background.body}
-        borderColor={`${theme.colors.border.card}60`}
         onChange={(e) => setLyrics(e.target.value)}
         onSelect={(e) => {
           const start = e.currentTarget.selectionStart;

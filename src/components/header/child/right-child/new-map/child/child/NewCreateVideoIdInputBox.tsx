@@ -1,8 +1,8 @@
 "use client";
 
-import { Input, Box, UseDisclosureReturn } from "@chakra-ui/react";
-import { extractYouTubeVideoId } from "../../extractYTId";
+import { Box, Input, UseDisclosureReturn } from "@chakra-ui/react";
 import { Dispatch } from "react";
+import { extractYouTubeVideoId } from "../../extractYTId";
 
 interface NewCreateVideoIdInputBoxProps {
   newCreateModalDisclosure: UseDisclosureReturn;

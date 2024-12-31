@@ -1,8 +1,6 @@
-import { Input, FormLabel, useTheme } from "@chakra-ui/react";
 import { useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
-import { ThemeColors } from "@/types";
+import { FormLabel, Input } from "@chakra-ui/react";
 import { Dispatch } from "react";
-import React from "react";
 
 interface InfoInputProps {
   isGeminiLoading?: boolean;
@@ -13,7 +11,6 @@ interface InfoInputProps {
   isRequired?: boolean;
 }
 const InfoInput = (props: InfoInputProps) => {
-  const theme: ThemeColors = useTheme();
   const setCanUpload = useSetCanUploadAtom();
   return (
     <>
@@ -27,8 +24,6 @@ const InfoInput = (props: InfoInputProps) => {
         isDisabled={props.isGeminiLoading}
         size="sm"
         fontWeight={props.isRequired ? "bold" : "normal"}
-        bg={theme.colors.background.body}
-        borderColor={`${theme.colors.border.card}60`}
         value={props.inputState}
         onChange={(e) => {
           setCanUpload(true);

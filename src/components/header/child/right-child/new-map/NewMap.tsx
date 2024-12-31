@@ -4,7 +4,7 @@ import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, useDisclosure, useTheme } from "@chakra-ui/react";
 import { RiAddBoxFill } from "react-icons/ri";
-import NewCreateModal from "./child/NewCreateModal";
+import CreateNewMapModal from "./child/CreateNewMapModal";
 
 export default function NewMap() {
   const newCreateModalDisclosure = useDisclosure();
@@ -26,7 +26,7 @@ export default function NewMap() {
       </CustomToolTip>
 
       {newCreateModalDisclosure.isOpen && (
-        <NewCreateModal newCreateModalDisclosure={newCreateModalDisclosure} />
+        <CreateNewMapModal newCreateModalDisclosure={newCreateModalDisclosure} />
       )}
     </>
   );

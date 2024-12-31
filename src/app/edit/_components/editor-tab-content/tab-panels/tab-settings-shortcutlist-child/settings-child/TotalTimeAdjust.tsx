@@ -61,8 +61,6 @@ export default function TotalTimeAdjust() {
             min="-3"
             max="3"
             className="max-w-[70px]"
-            bg={theme.colors.background.body}
-            borderColor={`${theme.colors.border.card}60`}
             value={totalAdjustValue}
             onChange={(e) => setTotalAdjustValue(e.target.value)}
             onKeyDown={(e) => {

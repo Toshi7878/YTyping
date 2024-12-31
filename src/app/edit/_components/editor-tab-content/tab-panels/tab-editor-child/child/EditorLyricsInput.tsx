@@ -26,8 +26,6 @@ const EditorLyricsInput = () => {
         autoComplete="off"
         value={lyrics}
         onChange={(e) => setLyrics(e.target.value)}
-        bg={theme.colors.background.body}
-        borderColor={`${theme.colors.border.card}60`}
         onKeyDown={handleEnterAddRuby}
         onSelect={(e) => {
           const start = e.currentTarget.selectionStart;

@@ -89,7 +89,15 @@ export default extendTheme({
       variants: {
         outline: {
           field: {
-            bg: darkTheme.colors.background.body, // ここで背景色を指定
+            borderColor: `${darkTheme.colors.border.card}60`,
+            bg: darkTheme.colors.background.body,
+          },
+        },
+        filled: {
+          field: {
+            bg: darkTheme.colors.background.card,
+            borderColor: `${darkTheme.colors.border.card}60`,
+            border: "1px",
           },
         },
       },

@@ -1,7 +1,6 @@
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { Input, useTheme } from "@chakra-ui/react";
+import { Input } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 interface DirectEditTimeInputProps {
@@ -12,7 +11,6 @@ interface DirectEditTimeInputProps {
 const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
   const [editTime, setEditTime] = useState(props.editTime);
 
-  const theme: ThemeColors = useTheme();
   const { timeInputRef, playerRef } = useRefs();
 
   return (
@@ -22,8 +20,6 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
         size="xs"
         type="number"
         value={editTime}
-        bg={theme.colors.background.body}
-        borderColor={`${theme.colors.border.card}60`}
         onChange={(e) => {
           const newValue = e.target.value;
           setEditTime(newValue);
