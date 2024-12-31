@@ -137,8 +137,8 @@ class WordConvert {
   }
 
   async postMorphAPI(SENTENCE: string) {
-    const APIKEY = "48049f223f8d9169a08de4e3bba21f64e4c17a7771620c1b8bb20574b87ea813";
-    const BASE_URL = "https://labs.goo.ne.jp/api/morph";
+    const apiUrl = process.env.NEXT_PUBLIC_MORPH_API_URL as string;
+    const apiKey = process.env.NEXT_PUBLIC_MORPH_API_KEY as string;
 
     const requestOptions = {
       method: "POST",
@@ -146,14 +146,14 @@ class WordConvert {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        app_id: APIKEY,
+        app_id: apiKey,
         sentence: JSON.stringify(SENTENCE.replace(/\r$/, "")),
         info_filter: "form|read",
       }),
     };
 
     try {
-      const response = await fetch(BASE_URL, requestOptions);
+      const response = await fetch(apiUrl, requestOptions);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
