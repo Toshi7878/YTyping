@@ -1,5 +1,4 @@
 const nextConfig = {
-  transpilePackages: ["jotai-devtools"],
   webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.(wav|mp3)$/,
