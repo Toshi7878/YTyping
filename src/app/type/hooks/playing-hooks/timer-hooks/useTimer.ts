@@ -24,7 +24,7 @@ import {
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
-import { CreateMap } from "../../../../../lib/instanceMapData";
+import { CreateMap, MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { DEFAULT_STATUS_REF } from "../../../ts/const/typeDefaultValue";
 import { useCalcTypeSpeed } from "../../../ts/scene-ts/playing/calcTypeSpeed";
 import { Status } from "../../../ts/type";
@@ -203,22 +203,20 @@ export const useCalcLineResult = () => {
           : statusRef.current!.lineStatus.lineClearTime;
         statusRef.current!.status.totalLatency += statusRef.current!.lineStatus.latency;
 
-        const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
-        const mode = statusRef.current!.lineStatus.lineStartInputMode;
-        const sp = statusRef.current!.lineStatus.lineStartSpeed;
-        const typeResult = statusRef.current!.lineStatus.typeResult;
         const lMiss = statusRef.current!.lineStatus.lineMiss;
-
-        const lineScore = status!.point + status!.timeBonus + lMiss * 5;
-
+        const lineScore = status!.point + status!.timeBonus + lMiss * MISS_PENALTY;
         const lResult = lineResults[count - 1];
         const oldLineScore =
-          lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * 5;
+          lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * MISS_PENALTY;
 
         const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
         const isUpdateResult = (playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
 
         if (isUpdateResult) {
+          const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
+          const mode = statusRef.current!.lineStatus.lineStartInputMode;
+          const sp = statusRef.current!.lineStatus.lineStartSpeed;
+          const typeResult = statusRef.current!.lineStatus.typeResult;
           const newLineResults = [...lineResults];
           const combo = typeAtomStore.get(comboAtom);
 

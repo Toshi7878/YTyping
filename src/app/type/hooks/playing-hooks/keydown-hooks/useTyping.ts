@@ -7,12 +7,14 @@ import {
   speedAtom,
   statusAtoms,
   useMapAtom,
+  useSetDisplayLineKpmAtom,
   useSetLineResultsAtom,
+  useSetLineWordAtom,
   useSetStatusAtoms,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
-import { CreateMap } from "../../../../../lib/instanceMapData";
+import { CreateMap, MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { useCalcTypeSpeed } from "../../../ts/scene-ts/playing/calcTypeSpeed";
 import { Typing } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { useGetTime } from "../../useGetTime";
@@ -34,7 +36,9 @@ export const useTyping = () => {
   const setLineResults = useSetLineResultsAtom();
   const { triggerTypingSound, triggerMissSound } = useSoundEffect();
 
+  const setLineWord = useSetLineWordAtom();
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
+  const setDisplayLineKpm = useSetDisplayLineKpmAtom();
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
   const {
@@ -57,27 +61,27 @@ export const useTyping = () => {
     const typingResult = new Typing({ event, lineWord, inputMode });
 
     if (typingResult.successKey) {
-      const statusType = typeAtomStore.get(statusAtoms.type);
       const isLineCompleted = !typingResult.newLineWord.nextChar["k"];
+      const totalTypeCount = typeAtomStore.get(statusAtoms.type);
 
       const typeSpeed = calcTypeSpeed({
         updateType: isLineCompleted ? "completed" : "keydown",
         constantLineTime,
-        totalTypeCount: statusType,
+        totalTypeCount: totalTypeCount,
       });
 
       updateSuccessStatusRefs({
         constantLineTime,
         newLineWord: typingResult.newLineWord,
         successKey: typingResult.successKey,
-        newLineKpm: typeSpeed!.lineKpm,
       });
 
-      const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
+      setDisplayLineKpm(typeSpeed!.lineKpm);
+      setLineWord(typingResult.newLineWord);
 
       const newStatus = updateSuccessStatus({
         newLineWord: typingResult.newLineWord,
-        lineRemainConstantTime,
+        lineRemainConstantTime: getConstantRemainLineTime(constantLineTime),
         updatePoint: typingResult.updatePoint,
         totalKpm: typeSpeed!.totalKpm,
       });
@@ -91,20 +95,21 @@ export const useTyping = () => {
       if (scene === "practice" && playSpeed >= 1 && !isPaused && isLineCompleted) {
         const lineResults = typeAtomStore.get(lineResultsAtom);
 
-        const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
-        const mode = statusRef.current!.lineStatus.lineStartInputMode;
-        const sp = statusRef.current!.lineStatus.lineStartSpeed;
-        const typeResult = statusRef.current!.lineStatus.typeResult;
         const lResult = lineResults[count - 1];
         const lMiss = statusRef.current!.lineStatus.lineMiss;
-        const lineScore = newStatus.point + newStatus.timeBonus + lMiss * 5;
+
+        const lineScore = newStatus.point + newStatus.timeBonus + lMiss * MISS_PENALTY;
         const oldLineScore =
-          lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * 5;
+          lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * MISS_PENALTY;
 
         const isUpdateResult = lineScore >= oldLineScore;
         const newLineResults = [...lineResults];
 
         if (isUpdateResult) {
+          const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
+          const mode = statusRef.current!.lineStatus.lineStartInputMode;
+          const sp = statusRef.current!.lineStatus.lineStartSpeed;
+          const typeResult = statusRef.current!.lineStatus.typeResult;
           const combo = typeAtomStore.get(comboAtom);
 
           newLineResults[count - 1] = {

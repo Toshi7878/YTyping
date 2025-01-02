@@ -78,6 +78,7 @@ const useKeyReplay = () => {
   const { getConstantRemainLineTime } = useGetTime();
 
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
+
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
   const { triggerTypingSound, triggerMissSound } = useSoundEffect();
   const calcTypeSpeed = useCalcTypeSpeed();
@@ -121,7 +122,6 @@ const useKeyReplay = () => {
             constantLineTime,
             newLineWord: result.newLineWord,
             successKey: result.successKey,
-            newLineKpm: typeSpeed!.lineKpm,
           });
 
           updateSuccessStatus({
@@ -132,7 +132,6 @@ const useKeyReplay = () => {
           });
 
           triggerTypingSound({ isLineCompleted: false });
-
           setDisplayLineKpm(typeSpeed!.lineKpm);
         } else {
           const newStatusReplay = updateAllStatus({ count, newLineResults: lineResults });

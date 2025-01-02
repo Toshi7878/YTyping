@@ -8,8 +8,6 @@ import {
   useRankingScoresAtom,
   useSceneAtom,
   useSetComboAtom,
-  useSetDisplayLineKpmAtom,
-  useSetLineWordAtom,
   useSetStatusAtoms,
   useStatusAtomsValues,
 } from "../../type-atoms/gameRenderAtoms";
@@ -22,8 +20,6 @@ export const useTypeSuccess = () => {
 
   const map = useMapAtom() as CreateMap;
   const scene = useSceneAtom();
-  const setLineWord = useSetLineWordAtom();
-  const setDisplayLineKpm = useSetDisplayLineKpmAtom();
   const setCombo = useSetComboAtom();
   const { setStatusValues } = useSetStatusAtoms();
   const statusAtomsValues = useStatusAtomsValues();
@@ -73,15 +69,8 @@ export const useTypeSuccess = () => {
 
       isUp.rank = newStatus.rank !== status.rank ? true : false;
     }
-    // isUpがtrueの項目だけをセット
-    const updatedStatus = {};
-    for (const key in isUp) {
-      if (isUp[key]) {
-        updatedStatus[key] = newStatus[key];
-      }
-    }
 
-    setStatusValues(updatedStatus);
+    setStatusValues(newStatus);
 
     const combo = typeAtomStore.get(comboAtom);
     setCombo(combo + 1);
@@ -89,7 +78,7 @@ export const useTypeSuccess = () => {
     return newStatus;
   };
 
-  const updateSuccessStatusRefs = ({ constantLineTime, newLineWord, successKey, newLineKpm }) => {
+  const updateSuccessStatusRefs = ({ constantLineTime, newLineWord, successKey }) => {
     if (statusRef.current!.lineStatus.lineType === 0) {
       statusRef.current!.lineStatus.latency = constantLineTime;
     }
@@ -126,9 +115,6 @@ export const useTypeSuccess = () => {
         t: constantLineTime,
       });
     }
-
-    setLineWord(newLineWord);
-    setDisplayLineKpm(newLineKpm);
   };
 
   return { updateSuccessStatus, updateSuccessStatusRefs };
