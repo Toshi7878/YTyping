@@ -1,8 +1,8 @@
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
-import { Ticker } from "@pixi/ticker";
 import { useStore } from "jotai";
 import NProgress from "nprogress";
 import { YouTubeEvent } from "react-youtube";
+import { typeTicker } from "../ts/const/consts";
 import {
   isLoadingOverlayAtom,
   sceneAtom,
@@ -11,8 +11,6 @@ import {
 } from "../type-atoms/gameRenderAtoms";
 import { useRefs } from "../type-contexts/refsProvider";
 import { useStartTimer } from "./playing-hooks/timer-hooks/useStartTimer";
-
-export const typeTicker = new Ticker();
 
 export const useYTPlayEvent = () => {
   const { ytStateRef, playerRef, gameStateRef } = useRefs();

@@ -1,4 +1,5 @@
 import { useStore } from "jotai";
+import { typeTicker } from "../../ts/const/consts";
 import {
   lineSelectIndexAtom,
   sceneAtom,
@@ -8,7 +9,6 @@ import {
   useSetPlayingNotifyAtom,
 } from "../../type-atoms/gameRenderAtoms";
 import { useRefs } from "../../type-contexts/refsProvider";
-import { typeTicker } from "../useYoutubeEvents";
 import { useGetSeekLineCount } from "./timer-hooks/useSeekGetLineCount";
 import { useUpdateLine } from "./timer-hooks/useTimer";
 

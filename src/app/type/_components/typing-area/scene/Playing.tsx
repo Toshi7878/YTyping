@@ -8,8 +8,7 @@ import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
 import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useStartTimer";
-import { typeTicker } from "@/app/type/hooks/useYoutubeEvents";
-import { defaultLineWord, defaultNextLyrics } from "@/app/type/ts/const/consts";
+import { defaultLineWord, defaultNextLyrics, typeTicker } from "@/app/type/ts/const/consts";
 import { UseDisclosureReturn } from "@chakra-ui/react";
 
 interface PlayingProps {

@@ -1,4 +1,5 @@
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
+import { typeTicker } from "@/app/type/ts/const/consts";
 import {
   comboAtom,
   currentTimeSSMMAtom,
@@ -28,7 +29,6 @@ import { DEFAULT_STATUS_REF } from "../../../ts/const/typeDefaultValue";
 import { useCalcTypeSpeed } from "../../../ts/scene-ts/playing/calcTypeSpeed";
 import { Status } from "../../../ts/type";
 import { useGetTime } from "../../useGetTime";
-import { typeTicker } from "../../useYoutubeEvents";
 import { useOutPutLineResult } from "../useOutPutLineResult";
 import { useLineReplayUpdate, useReplay, useUpdateAllStatus } from "./replayHooks";
 import { useGetSeekLineCount } from "./useSeekGetLineCount";

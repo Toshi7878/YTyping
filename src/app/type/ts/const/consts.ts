@@ -1,3 +1,4 @@
+import { Ticker } from "@pixi/ticker";
 import { LineWord, NextLyricsType, Status } from "../type";
 
 export const RANKING_COLUMN_WIDTH = {
@@ -39,3 +40,5 @@ export const defaultNextLyrics: NextLyricsType = {
   lyrics: "",
   kpm: "",
 };
+
+export const typeTicker = new Ticker();

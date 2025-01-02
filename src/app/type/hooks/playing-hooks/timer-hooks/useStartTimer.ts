@@ -1,10 +1,10 @@
+import { typeTicker } from "@/app/type/ts/const/consts";
 import { InputModeType } from "@/app/type/ts/type";
 import {
   readyRadioInputModeAtom,
   useSetPlayingInputModeAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useStore } from "jotai";
-import { typeTicker } from "../../useYoutubeEvents";
 
 export const useStartTimer = () => {
   const typeAtomStore = useStore();

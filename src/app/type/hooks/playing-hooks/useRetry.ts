@@ -1,6 +1,6 @@
 import { useStore } from "jotai";
 import { CreateMap } from "../../../../lib/instanceMapData";
-import { defaultLineWord, defaultNextLyrics } from "../../ts/const/consts";
+import { defaultLineWord, defaultNextLyrics, typeTicker } from "../../ts/const/consts";
 import { DEFAULT_STATUS_REF } from "../../ts/const/typeDefaultValue";
 import { StatusRef } from "../../ts/type";
 import {
@@ -17,7 +17,6 @@ import {
   useStatusAtomsValues,
 } from "../../type-atoms/gameRenderAtoms";
 import { useRefs } from "../../type-contexts/refsProvider";
-import { typeTicker } from "../useYoutubeEvents";
 
 export const useRetry = () => {
   const { statusRef, gameStateRef, playerRef } = useRefs();
