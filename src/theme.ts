@@ -82,6 +82,10 @@ export default extendTheme({
         bg: darkTheme.colors.background.body,
         overflowX: "hidden",
       },
+      "::selection": {
+        background: darkTheme.colors.primary.main, // 選択時の背景色
+        color: darkTheme.colors.text.body, // 選択時のテキスト色
+      },
     },
   },
   components: {
