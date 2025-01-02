@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-1-02",
+    descriptions: ["エディターのTabキーの動作を歌詞追加テキストエリアのフォーカス切り替えに変更"],
+  },
+  {
     date: "2024-12-30",
     descriptions: [
       "ログイン・ログアウトの処理を改善",

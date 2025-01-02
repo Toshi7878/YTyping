@@ -40,6 +40,7 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
   const playTimer = usePlayTimer();
 
   const handleKeydown = useHandleKeydown();
+
   useEffect(() => {
     if (isPlayed) {
       window.addEventListener("keydown", handleKeydown);

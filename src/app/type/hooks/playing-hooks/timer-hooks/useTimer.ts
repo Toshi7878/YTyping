@@ -59,11 +59,10 @@ export const usePlayTimer = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const statusAtomsValues = useStatusAtomsValues();
 
-  return async () => {
+  return () => {
     const count = statusRef.current!.status.count;
-
     //時間取得
-    const currentOffesettedYTTime = await getCurrentOffsettedYTTime();
+    const currentOffesettedYTTime = getCurrentOffsettedYTTime();
     const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
     const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
     const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
@@ -139,12 +138,11 @@ export const usePlayTimer = () => {
         setCurrentTimeSSMM(constantOffesettedYTTime);
       }
     }
-
     if (
       currentOffesettedYTTime >= nextLineTime ||
       currentOffesettedYTTime >= ytStateRef.current!.movieDuration
     ) {
-      calcLineResult({ count, lineConstantTime: constantLineTime });
+      calcLineResult({ count, constantLineTime });
 
       const currentLine = map.mapData[count - 1];
       if (
@@ -180,7 +178,7 @@ export const useCalcLineResult = () => {
   const outPutLineResult = useOutPutLineResult();
   const updateAllStatus = useUpdateAllStatus();
 
-  return ({ count, lineConstantTime }: { count: number; lineConstantTime: number }) => {
+  return ({ count, constantLineTime }: { count: number; constantLineTime: number }) => {
     const status: Status = statusAtomsValues();
     const scene = typeAtomStore.get(sceneAtom);
     const lineResults = typeAtomStore.get(lineResultsAtom);
@@ -201,7 +199,7 @@ export const useCalcLineResult = () => {
 
       if (count > 0) {
         statusRef.current!.status.totalTypeTime += lineWord.nextChar["k"]
-          ? lineConstantTime
+          ? constantLineTime
           : statusRef.current!.lineStatus.lineClearTime;
         statusRef.current!.status.totalLatency += statusRef.current!.lineStatus.latency;
 

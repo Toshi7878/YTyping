@@ -74,6 +74,13 @@ export const useYTStopEvent = () => {
     console.log("動画停止");
 
     setScene("end");
+    // const averagePerformance =
+    //   performances.length > 0
+    //     ? performances.reduce((sum, value) => sum + value, 0) / performances.length
+    //     : 0;
+    // const maxPerformance = performances.length > 0 ? Math.max(...performances) : 0;
+    // console.log("平均performance:", averagePerformance);
+    // console.log("最長performance:", maxPerformance);
 
     if (typeTicker.started) {
       typeTicker.stop();

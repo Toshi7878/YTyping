@@ -1,8 +1,6 @@
 import { ThemeColors } from "@/types";
 import { Box, Heading, HStack, Kbd, Text, useTheme } from "@chakra-ui/react";
 
-import React from "react";
-
 const shortCutList = [
   { keys: ["←", "→"], description: "3秒スキップ" },
   { keys: ["↑", "↓"], description: "選択ライン移動" },
@@ -12,7 +10,7 @@ const shortCutList = [
   { keys: ["Delete"], description: "削除" },
   { keys: ["Esc"], description: "再生・停止" },
   { keys: ["D"], description: "選択ライン解除" },
-  { keys: ["Tab"], description: "次の歌詞をセット(テキストフォーカス時は追加)" },
+  { keys: ["Tab"], description: "歌詞追加テキストエリア切り替え" },
   { keys: ["Ctrl+Shift+F"], description: "全体よみ置換" },
   { keys: ["Ctrl+Z"], description: "元に戻す" },
   { keys: ["Ctrl+Y"], description: "繰り返し" },

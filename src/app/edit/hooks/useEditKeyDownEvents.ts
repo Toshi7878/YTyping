@@ -75,9 +75,8 @@ export const useWindowKeydownEvent = () => {
 
     if (event.key === "Tab") {
       if (!iS_FOCUS_ADD_LYRICS_TEXTAREA) {
-        setTopLyricsText(undefined);
+        document.getElementById("add_lyrics_text")?.focus();
       } else if (iS_FOCUS_ADD_LYRICS_TEXTAREA) {
-        lineAddButtonEvent(event.shiftKey);
         (document.activeElement as HTMLElement)?.blur();
       }
       event.preventDefault();

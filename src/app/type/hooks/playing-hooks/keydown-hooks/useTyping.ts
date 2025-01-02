@@ -47,14 +47,15 @@ export const useTyping = () => {
   const { setStatusValues } = useSetStatusAtoms();
   const updateAllStatus = useUpdateAllStatus();
 
-  return async ({ event, count }: HandleTypingParams) => {
+  return ({ event, count }: HandleTypingParams) => {
     const lineWord = typeAtomStore.get(lineWordAtom);
     const inputMode = typeAtomStore.get(playingInputModeAtom);
 
-    const lineTime = getCurrentLineTime(await getCurrentOffsettedYTTime());
+    const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
     const constantLineTime = getConstantLineTime(lineTime);
 
     const typingResult = new Typing({ event, lineWord, inputMode });
+
     if (typingResult.successKey) {
       const statusType = typeAtomStore.get(statusAtoms.type);
       const isLineCompleted = !typingResult.newLineWord.nextChar["k"];
