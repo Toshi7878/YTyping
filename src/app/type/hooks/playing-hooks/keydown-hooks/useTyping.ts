@@ -61,7 +61,10 @@ export const useTyping = () => {
     const typingResult = new Typing({ event, lineWord, inputMode });
 
     if (typingResult.successKey) {
+      setLineWord(typingResult.newLineWord);
       const isLineCompleted = !typingResult.newLineWord.nextChar["k"];
+      triggerTypingSound({ isLineCompleted });
+
       const totalTypeCount = typeAtomStore.get(statusAtoms.type);
 
       const typeSpeed = calcTypeSpeed({
@@ -77,7 +80,6 @@ export const useTyping = () => {
       });
 
       setDisplayLineKpm(typeSpeed!.lineKpm);
-      setLineWord(typingResult.newLineWord);
 
       const newStatus = updateSuccessStatus({
         newLineWord: typingResult.newLineWord,
@@ -85,8 +87,6 @@ export const useTyping = () => {
         updatePoint: typingResult.updatePoint,
         totalKpm: typeSpeed!.totalKpm,
       });
-
-      triggerTypingSound({ isLineCompleted });
 
       const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
       const scene = typeAtomStore.get(sceneAtom);
