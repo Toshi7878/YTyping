@@ -183,7 +183,7 @@ export const useSetNextLyricsAtom = () => {
   return useSetAtom(nextLyricsAtom, { store: typeAtomStore });
 };
 
-export const lineWordAtom = atom<LineWord>(structuredClone(defaultLineWord));
+export const lineWordAtom = atom<LineWord>({ ...defaultLineWord });
 
 export const useLineWordAtom = () => {
   return useAtomValue(lineWordAtom, { store: typeAtomStore });

@@ -1,6 +1,5 @@
 import { drawerClosureAtom } from "@/app/type/_components/typing-area/TypingCard";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/typeDefaultValue";
-import { useIsKeydownTyped } from "@/app/type/ts/scene-ts/playing/keydown/typingJudge";
 import {
   lineSelectIndexAtom,
   lineWordAtom,
@@ -55,6 +54,7 @@ export const useHandleKeydown = () => {
         typing({
           event,
           count,
+          lineWord,
         });
       } else {
         playingShortcutKey(event);
@@ -217,5 +217,76 @@ const usePauseShortcutKey = () => {
         event.preventDefault();
         break;
     }
+  };
+};
+
+const CODES = [
+  "Space",
+  "Digit1",
+  "Digit2",
+  "Digit3",
+  "Digit4",
+  "Digit5",
+  "Digit6",
+  "Digit7",
+  "Digit8",
+  "Digit9",
+  "Digit0",
+  "Minus",
+  "Equal",
+  "IntlYen",
+  "BracketLeft",
+  "BracketRight",
+  "Semicolon",
+  "Quote",
+  "Backslash",
+  "Backquote",
+  "IntlBackslash",
+  "Comma",
+  "Period",
+  "Slash",
+  "IntlRo",
+];
+const TENKEYS = [
+  "Numpad1",
+  "Numpad2",
+  "Numpad3",
+  "Numpad4",
+  "Numpad5",
+  "Numpad6",
+  "Numpad7",
+  "Numpad8",
+  "Numpad9",
+  "Numpad0",
+  "NumpadDivide",
+  "NumpadMultiply",
+  "NumpadSubtract",
+  "NumpadAdd",
+  "NumpadDecimal",
+];
+
+const useIsKeydownTyped = () => {
+  const typeAtomStore = useStore();
+
+  return (event: KeyboardEvent) => {
+    if (event.ctrlKey || event.altKey) {
+      return false;
+    }
+
+    const KEY_CODE = event.keyCode;
+    const CODE = event.code;
+
+    const IS_TYPE =
+      (KEY_CODE >= 65 && KEY_CODE <= 90) || CODES.includes(CODE) || TENKEYS.includes(CODE);
+    //event.keyが"Process"になるブラウザの不具合が昔はあったので場合によっては追加する
+    //ChatGPT「'Process' キーは通常、国際的なキーボードで入力方法やプロセスのキーを指すために使用されます。」
+
+    const ACTIVE_ELEMENT = document.activeElement as HTMLInputElement;
+    const HAS_FOCUS = ACTIVE_ELEMENT && ACTIVE_ELEMENT.type != "text";
+    const lineWord = typeAtomStore.get(lineWordAtom);
+
+    const KANA = lineWord.nextChar["k"];
+
+    return IS_TYPE && HAS_FOCUS && KANA;
   };
 };

@@ -41,8 +41,9 @@ const RankingTr = (props: RankingTrProps) => {
   const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
   const userId = Number(session?.user.id);
+
   const { clapOptimisticState, toggleClapAction } = useLocalClapServerActions({
-    hasClap: !!props.result.clap[0]?.isClaped,
+    hasClap: !!props.result.clap[0]?.isClaped && !!session,
     clapCount: props.result.clapCount,
   });
   const [replayId, setReplayId] = useState<number | null>(null);

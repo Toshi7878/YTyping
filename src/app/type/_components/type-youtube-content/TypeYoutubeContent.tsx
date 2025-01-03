@@ -66,6 +66,7 @@ const TypeYouTubeContent = function YouTubeContent({ className, videoId }: TypeY
     () => (
       <Box style={{ userSelect: "none" }}>
         <YouTube
+          id="type_youtube"
           className={`${className} `}
           videoId={videoId}
           opts={{

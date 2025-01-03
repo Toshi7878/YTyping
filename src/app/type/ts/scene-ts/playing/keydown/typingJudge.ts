@@ -1,5 +1,3 @@
-import { lineWordAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { useStore } from "jotai";
 import { CODE_TO_KANA, KEY_TO_KANA } from "../../../../../../config/kanaKeyMap";
 import { CHAR_POINT } from "../../../../../../lib/instanceMapData";
 import { Dakuten, HanDakuten, InputModeType, LineWord, NormalizeHirakana } from "../../../type";
@@ -158,7 +156,7 @@ class ProcessedLineWord {
   }
 
   private keyX({ chars, lineWord }: JudgeType) {
-    let newLineWord = structuredClone(lineWord);
+    let newLineWord = { ...lineWord };
     if (chars.code == "KeyX") {
       //んん nxnの対応
       const isNNRoute =
@@ -179,7 +177,7 @@ class ProcessedLineWord {
   }
 
   private keyW({ chars, lineWord }: JudgeType) {
-    let newLineWord = structuredClone(lineWord);
+    let newLineWord = { ...lineWord };
     if (chars.code == "KeyW") {
       //んう nwu nwhuの対応
       const isNNRoute =
@@ -200,7 +198,7 @@ class ProcessedLineWord {
   }
 
   private zCommand({ chars, lineWord }: JudgeType) {
-    let newLineWord = structuredClone(lineWord);
+    let newLineWord = { ...lineWord };
     if (chars.code == "KeyZ" && !chars.shift) {
       const doublePeriod = newLineWord.nextChar.k === "." && newLineWord.word[0]?.k === ".";
       if (doublePeriod) {
@@ -437,51 +435,6 @@ export class KanaInput {
   }
 }
 
-const CODES = [
-  "Space",
-  "Digit1",
-  "Digit2",
-  "Digit3",
-  "Digit4",
-  "Digit5",
-  "Digit6",
-  "Digit7",
-  "Digit8",
-  "Digit9",
-  "Digit0",
-  "Minus",
-  "Equal",
-  "IntlYen",
-  "BracketLeft",
-  "BracketRight",
-  "Semicolon",
-  "Quote",
-  "Backslash",
-  "Backquote",
-  "IntlBackslash",
-  "Comma",
-  "Period",
-  "Slash",
-  "IntlRo",
-];
-const TENKEYS = [
-  "Numpad1",
-  "Numpad2",
-  "Numpad3",
-  "Numpad4",
-  "Numpad5",
-  "Numpad6",
-  "Numpad7",
-  "Numpad8",
-  "Numpad9",
-  "Numpad0",
-  "NumpadDivide",
-  "NumpadMultiply",
-  "NumpadSubtract",
-  "NumpadAdd",
-  "NumpadDecimal",
-];
-
 interface TypingEvent {
   event: KeyboardEvent;
   lineWord: LineWord;
@@ -570,29 +523,3 @@ export class Typing {
     return input;
   }
 }
-
-export const useIsKeydownTyped = () => {
-  const typeAtomStore = useStore();
-
-  return (event: KeyboardEvent) => {
-    if (event.ctrlKey || event.altKey) {
-      return false;
-    }
-
-    const KEY_CODE = event.keyCode;
-    const CODE = event.code;
-
-    const IS_TYPE =
-      (KEY_CODE >= 65 && KEY_CODE <= 90) || CODES.includes(CODE) || TENKEYS.includes(CODE);
-    //event.keyが"Process"になるブラウザの不具合が昔はあったので場合によっては追加する
-    //ChatGPT「'Process' キーは通常、国際的なキーボードで入力方法やプロセスのキーを指すために使用されます。」
-
-    const ACTIVE_ELEMENT = document.activeElement as HTMLInputElement;
-    const HAS_FOCUS = ACTIVE_ELEMENT && ACTIVE_ELEMENT.type != "text";
-    const lineWord = typeAtomStore.get(lineWordAtom);
-
-    const KANA = lineWord.nextChar["k"];
-
-    return IS_TYPE && HAS_FOCUS && KANA;
-  };
-};

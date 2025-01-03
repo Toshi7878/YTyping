@@ -70,8 +70,11 @@ export const useYTEndEvent = () => {
 
 export const useYTStopEvent = () => {
   const setScene = useSetSceneAtom();
+  const { lineProgressRef, totalProgressRef } = useRefs();
   return () => {
     console.log("動画停止");
+    lineProgressRef.current!.value = lineProgressRef.current!.max;
+    totalProgressRef.current!.value = totalProgressRef.current!.max;
 
     setScene("end");
     // const averagePerformance =

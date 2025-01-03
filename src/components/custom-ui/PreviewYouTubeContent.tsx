@@ -66,6 +66,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
   return (
     <Box zIndex={2} position="fixed" bottom={fixedPosition} right={fixedPosition}>
       <YouTube
+        id="preview_youtube"
         videoId={videoId}
         opts={{
           width: `${width}px`,

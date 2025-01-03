@@ -1,6 +1,5 @@
 import { LocalClapState, ThemeColors } from "@/types";
 import { Text, useTheme } from "@chakra-ui/react";
-import React from "react";
 
 interface ClapedTextProps {
   clapOptimisticState: LocalClapState;

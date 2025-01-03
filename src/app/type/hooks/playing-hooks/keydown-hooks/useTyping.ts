@@ -1,7 +1,7 @@
+import { LineWord } from "@/app/type/ts/type";
 import {
   comboAtom,
   lineResultsAtom,
-  lineWordAtom,
   playingInputModeAtom,
   sceneAtom,
   speedAtom,
@@ -25,6 +25,7 @@ import { useTypeMiss, useTypeSuccess } from "../useUpdateStatus";
 interface HandleTypingParams {
   event: KeyboardEvent;
   count: number;
+  lineWord: LineWord;
 }
 
 export const useTyping = () => {
@@ -51,12 +52,8 @@ export const useTyping = () => {
   const { setStatusValues } = useSetStatusAtoms();
   const updateAllStatus = useUpdateAllStatus();
 
-  return ({ event, count }: HandleTypingParams) => {
-    const lineWord = typeAtomStore.get(lineWordAtom);
+  return ({ event, count, lineWord }: HandleTypingParams) => {
     const inputMode = typeAtomStore.get(playingInputModeAtom);
-
-    const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
-    const constantLineTime = getConstantLineTime(lineTime);
 
     const typingResult = new Typing({ event, lineWord, inputMode });
 
@@ -67,20 +64,19 @@ export const useTyping = () => {
 
       const totalTypeCount = typeAtomStore.get(statusAtoms.type);
 
+      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+      const constantLineTime = getConstantLineTime(lineTime);
       const typeSpeed = calcTypeSpeed({
         updateType: isLineCompleted ? "completed" : "keydown",
         constantLineTime,
         totalTypeCount: totalTypeCount,
       });
-
       updateSuccessStatusRefs({
         constantLineTime,
         newLineWord: typingResult.newLineWord,
         successKey: typingResult.successKey,
       });
-
       setDisplayLineKpm(typeSpeed!.lineKpm);
-
       const newStatus = updateSuccessStatus({
         newLineWord: typingResult.newLineWord,
         lineRemainConstantTime: getConstantRemainLineTime(constantLineTime),
@@ -88,63 +84,66 @@ export const useTyping = () => {
         totalKpm: typeSpeed!.totalKpm,
       });
 
-      const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
-      const scene = typeAtomStore.get(sceneAtom);
-
       const isPaused = ytStateRef.current?.isPaused;
-      if (scene === "practice" && playSpeed >= 1 && !isPaused && isLineCompleted) {
-        const lineResults = typeAtomStore.get(lineResultsAtom);
+      if (isLineCompleted && !isPaused) {
+        const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
+        const scene = typeAtomStore.get(sceneAtom);
+        if (scene === "practice" && playSpeed >= 1) {
+          const lineResults = typeAtomStore.get(lineResultsAtom);
 
-        const lResult = lineResults[count - 1];
-        const lMiss = statusRef.current!.lineStatus.lineMiss;
+          const lResult = lineResults[count - 1];
+          const lMiss = statusRef.current!.lineStatus.lineMiss;
 
-        const lineScore = newStatus.point + newStatus.timeBonus + lMiss * MISS_PENALTY;
-        const oldLineScore =
-          lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * MISS_PENALTY;
+          const lineScore = newStatus.point + newStatus.timeBonus + lMiss * MISS_PENALTY;
+          const oldLineScore =
+            lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * MISS_PENALTY;
 
-        const isUpdateResult = lineScore >= oldLineScore;
-        const newLineResults = [...lineResults];
+          const isUpdateResult = lineScore >= oldLineScore;
+          const newLineResults = [...lineResults];
 
-        if (isUpdateResult) {
-          const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
-          const mode = statusRef.current!.lineStatus.lineStartInputMode;
-          const sp = statusRef.current!.lineStatus.lineStartSpeed;
-          const typeResult = statusRef.current!.lineStatus.typeResult;
-          const combo = typeAtomStore.get(comboAtom);
+          if (isUpdateResult) {
+            const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
+            const mode = statusRef.current!.lineStatus.lineStartInputMode;
+            const sp = statusRef.current!.lineStatus.lineStartSpeed;
+            const typeResult = statusRef.current!.lineStatus.typeResult;
+            const combo = typeAtomStore.get(comboAtom);
 
-          newLineResults[count - 1] = {
-            status: {
-              p: newStatus.point,
-              tBonus: newStatus.timeBonus,
-              lType: statusRef.current!.lineStatus.lineType,
-              lMiss,
-              lRkpm: typeSpeed?.lineRkpm || 0,
-              lKpm: typeSpeed!.lineKpm,
-              lostW: "",
-              lLost: 0,
-              combo,
-              tTime,
-              mode,
-              sp,
-            },
-            typeResult,
-          };
-          setLineResults(newLineResults);
+            newLineResults[count - 1] = {
+              status: {
+                p: newStatus.point,
+                tBonus: newStatus.timeBonus,
+                lType: statusRef.current!.lineStatus.lineType,
+                lMiss,
+                lRkpm: typeSpeed!.lineRkpm,
+                lKpm: typeSpeed!.lineKpm,
+                lostW: "",
+                lLost: 0,
+                combo,
+                tTime,
+                mode,
+                sp,
+              },
+              typeResult,
+            };
+            setLineResults(newLineResults);
+          }
+
+          const newStatusReplay = updateAllStatus({
+            count: map!.mapData.length - 1,
+            newLineResults,
+          });
+
+          setStatusValues({
+            ...newStatusReplay,
+            point: newStatus.point,
+            timeBonus: newStatus.timeBonus,
+          });
         }
-
-        const newStatusReplay = updateAllStatus({
-          count: map!.mapData.length - 1,
-          newLineResults,
-        });
-
-        setStatusValues({
-          ...newStatusReplay,
-          point: newStatus.point,
-          timeBonus: newStatus.timeBonus,
-        });
       }
     } else if (typingResult.newLineWord.correct["r"] || typingResult.newLineWord.correct["k"]) {
       updateMissStatus();
+      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+      const constantLineTime = getConstantLineTime(lineTime);
       updateMissRefStatus({ constantLineTime, failKey: typingResult.failKey });
 
       triggerMissSound();

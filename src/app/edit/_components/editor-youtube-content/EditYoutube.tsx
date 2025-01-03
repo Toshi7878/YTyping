@@ -59,6 +59,7 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
 
   return (
     <YouTube
+      id="edit_youtube"
       className={className}
       videoId={videoId}
       opts={{

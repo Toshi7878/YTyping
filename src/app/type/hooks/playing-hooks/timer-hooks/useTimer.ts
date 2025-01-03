@@ -60,7 +60,6 @@ export const usePlayTimer = () => {
   const statusAtomsValues = useStatusAtomsValues();
 
   return () => {
-    const count = statusRef.current!.status.count;
     //時間取得
     const currentOffesettedYTTime = getCurrentOffsettedYTTime();
     const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
@@ -68,10 +67,39 @@ export const usePlayTimer = () => {
     const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
     const constantLineTime = getConstantLineTime(currentLineTime);
 
-    //次のラインの時間取得
+    const count = statusRef.current!.status.count;
     const nextLine = map.mapData[count];
     const movieDuration = ytStateRef.current!.movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
+    const scene = typeAtomStore.get(sceneAtom);
+
+    if (
+      currentOffesettedYTTime >= nextLineTime ||
+      currentOffesettedYTTime >= ytStateRef.current!.movieDuration
+    ) {
+      calcLineResult({ count, constantLineTime });
+
+      const currentLine = map.mapData[count - 1];
+      if (
+        currentLine?.["lyrics"] === "end" ||
+        currentOffesettedYTTime >= ytStateRef.current!.movieDuration
+      ) {
+        playerRef.current!.stopVideo();
+        typeTicker.stop();
+
+        return;
+      } else if (nextLine) {
+        if (scene === "playing") {
+          statusRef.current!.status.count += 1;
+        } else {
+          statusRef.current!.status.count = getSeekLineCount(currentOffesettedYTTime);
+        }
+
+        updateLine(statusRef.current!.status.count);
+      }
+
+      return;
+    }
 
     //タイムバー
     lineProgressRef.current!.value =
@@ -81,8 +109,6 @@ export const usePlayTimer = () => {
     if (Math.abs(currentOffesettedYTTime - totalProgressValue) >= map.currentTimeBarFrequency) {
       totalProgressRef.current!.value = currentOffesettedYTTime;
     }
-
-    const scene = typeAtomStore.get(sceneAtom);
 
     if (scene === "replay") {
       if (count && currentLineTime) {
@@ -138,31 +164,6 @@ export const usePlayTimer = () => {
         setCurrentTimeSSMM(constantOffesettedYTTime);
       }
     }
-    if (
-      currentOffesettedYTTime >= nextLineTime ||
-      currentOffesettedYTTime >= ytStateRef.current!.movieDuration
-    ) {
-      calcLineResult({ count, constantLineTime });
-
-      const currentLine = map.mapData[count - 1];
-      if (
-        currentLine?.["lyrics"] === "end" ||
-        currentOffesettedYTTime >= ytStateRef.current!.movieDuration
-      ) {
-        playerRef.current!.stopVideo();
-        typeTicker.stop();
-
-        return;
-      } else if (nextLine) {
-        if (scene === "playing") {
-          statusRef.current!.status.count += 1;
-        } else {
-          statusRef.current!.status.count = getSeekLineCount(currentOffesettedYTTime);
-        }
-
-        updateLine(statusRef.current!.status.count);
-      }
-    }
   };
 };
 
@@ -181,7 +182,6 @@ export const useCalcLineResult = () => {
   return ({ count, constantLineTime }: { count: number; constantLineTime: number }) => {
     const status: Status = statusAtomsValues();
     const scene = typeAtomStore.get(sceneAtom);
-    const lineResults = typeAtomStore.get(lineResultsAtom);
 
     if (scene === "playing" || scene === "practice") {
       const typeSpeed = calcTypeSpeed({
@@ -198,6 +198,8 @@ export const useCalcLineResult = () => {
       });
 
       if (count > 0) {
+        const lineResults = typeAtomStore.get(lineResultsAtom);
+
         statusRef.current!.status.totalTypeTime += lineWord.nextChar["k"]
           ? constantLineTime
           : statusRef.current!.lineStatus.lineClearTime;
@@ -258,6 +260,8 @@ export const useCalcLineResult = () => {
       if (scene === "playing") {
         setStatusValues(currentLineResult.newStatus);
       } else if (scene === "practice") {
+        const lineResults = typeAtomStore.get(lineResultsAtom);
+
         const newStatus = updateAllStatus({
           count: map!.mapData.length - 1,
           newLineResults: lineResults,
@@ -265,6 +269,8 @@ export const useCalcLineResult = () => {
         setStatusValues(newStatus);
       }
     } else if (scene === "replay") {
+      const lineResults = typeAtomStore.get(lineResultsAtom);
+
       const newStatus = updateAllStatus({ count, newLineResults: lineResults });
       setStatusValues(newStatus);
       if (count > 0) {
