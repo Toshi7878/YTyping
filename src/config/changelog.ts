@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-1-04",
+    descriptions: ["タイピング効果音をONにしているとタイピング中の処理が少し重くなる問題を修正"],
+  },
+  {
     date: "2025-1-03",
     descriptions: [
       "譜面読込中…を追加",
