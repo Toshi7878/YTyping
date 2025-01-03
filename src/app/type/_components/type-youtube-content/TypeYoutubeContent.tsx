@@ -70,39 +70,39 @@ const TypeYouTubeContent = function YouTubeContent({
 
   const memoizedYouTube = useMemo(
     () => (
-      <Box style={{ userSelect: "none" }}>
-        <YouTube
-          className={`${className} `}
-          videoId={videoId}
-          opts={{
-            width: "100%",
-            height: "100%",
-            playerVars: {
-              enablejsapi: 1,
-              controls: 0,
-              playsinline: 1,
-              iv_load_policy: 3,
-              modestbranding: 1,
-              rel: 0,
-            },
-          }}
-          onReady={ytReadyEvent}
-          onPlay={ytPlayEvent}
-          onPause={ytPauseEvent}
-          onEnd={ytEndEvent}
-          onStateChange={handleStateChange}
-          onError={handleError} // エラーハンドリングを追加
-        />
-      </Box>
+      <YouTube
+        className={`${className} `}
+        videoId={videoId}
+        opts={{
+          width: "100%",
+          height: "100%",
+          playerVars: {
+            enablejsapi: 1,
+            controls: 0,
+            playsinline: 1,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            rel: 0,
+          },
+        }}
+        onReady={ytReadyEvent}
+        onPlay={ytPlayEvent}
+        onPause={ytPauseEvent}
+        onEnd={ytEndEvent}
+        onStateChange={handleStateChange}
+        onError={handleError} // エラーハンドリングを追加
+      />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [className, videoId]
   );
 
   return (
-    <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
-      {memoizedYouTube}
-    </LoadingOverlayWrapper>
+    <Box style={{ userSelect: "none" }}>
+      <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
+        {memoizedYouTube}
+      </LoadingOverlayWrapper>
+    </Box>
   );
 };
 
