@@ -23,7 +23,10 @@ export const useSoundEffect = () => {
 
   useEffect(() => {
     manifest.forEach(({ alias, src }) => {
-      sound.add(alias, src);
+      sound.add(alias, {
+        url: src,
+        preload: true,
+      });
     });
   }, []);
 
