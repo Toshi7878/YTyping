@@ -56,7 +56,7 @@ function MapTableBody() {
       window.removeEventListener("keydown", onKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [optionModalIndex]);
 
   useEffect(() => {
     if (mapData.length > 0) {
@@ -95,7 +95,7 @@ function MapTableBody() {
                 lyrics: "end",
                 word: "",
                 selectedLineCount: i,
-              }),
+              })
             );
 
             return;
@@ -146,7 +146,7 @@ function MapTableBody() {
       return rows;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mapData],
+    [mapData]
   );
 
   return (

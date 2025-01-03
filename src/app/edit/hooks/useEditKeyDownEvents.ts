@@ -75,7 +75,12 @@ export const useWindowKeydownEvent = () => {
 
     if (event.key === "Tab") {
       if (!iS_FOCUS_ADD_LYRICS_TEXTAREA) {
-        document.getElementById("add_lyrics_text")?.focus();
+        const textarea = document.getElementById("add_lyrics_text") as HTMLTextAreaElement;
+        if (textarea) {
+          textarea.focus();
+          textarea.scrollTop = 0;
+          textarea.setSelectionRange(0, 0);
+        }
       } else if (iS_FOCUS_ADD_LYRICS_TEXTAREA) {
         (document.activeElement as HTMLElement)?.blur();
       }
