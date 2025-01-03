@@ -113,7 +113,7 @@ const useKeyReplay = () => {
 
         const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
 
-        if (isLineCompleted) {
+        if (!isLineCompleted) {
           const typeSpeed = calcTypeSpeed({
             updateType: "keydown",
             constantLineTime,
