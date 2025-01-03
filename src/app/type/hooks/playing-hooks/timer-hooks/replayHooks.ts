@@ -107,7 +107,7 @@ const useKeyReplay = () => {
           inputMode === "roma"
             ? new RomaInput({ chars, lineWord })
             : new KanaInput({ chars, lineWord });
-        setLineWord(result.newLineWord);
+        setLineWord({ ...result.newLineWord });
         const isLineCompleted = !result.newLineWord.nextChar["k"];
         triggerTypingSound({ isLineCompleted });
 
