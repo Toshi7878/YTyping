@@ -107,8 +107,9 @@ const useKeyReplay = () => {
           inputMode === "roma"
             ? new RomaInput({ chars, lineWord })
             : new KanaInput({ chars, lineWord });
-        const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
+        setLineWord(result.newLineWord);
 
+        const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
         const lineResults = typeAtomStore.get(lineResultsAtom);
 
         if (result.newLineWord.nextChar["k"]) {
@@ -145,8 +146,6 @@ const useKeyReplay = () => {
           setDisplayLineKpm(lineResult.status!.lKpm as number);
           statusRef.current!.status.totalTypeTime = lineResult.status!.tTime;
         }
-
-        setLineWord(result.newLineWord);
       } else {
         triggerMissSound();
         updateMissStatus();
