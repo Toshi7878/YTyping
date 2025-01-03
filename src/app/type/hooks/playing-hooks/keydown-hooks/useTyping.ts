@@ -141,12 +141,11 @@ export const useTyping = () => {
         }
       }
     } else if (typingResult.newLineWord.correct["r"] || typingResult.newLineWord.correct["k"]) {
+      triggerMissSound();
       updateMissStatus();
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
       const constantLineTime = getConstantLineTime(lineTime);
       updateMissRefStatus({ constantLineTime, failKey: typingResult.failKey });
-
-      triggerMissSound();
     }
   };
 };

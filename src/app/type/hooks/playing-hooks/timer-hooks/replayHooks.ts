@@ -112,6 +112,8 @@ const useKeyReplay = () => {
         const lineResults = typeAtomStore.get(lineResultsAtom);
 
         if (result.newLineWord.nextChar["k"]) {
+          triggerTypingSound({ isLineCompleted: false });
+
           const typeSpeed = calcTypeSpeed({
             updateType: "keydown",
             constantLineTime,
@@ -131,9 +133,9 @@ const useKeyReplay = () => {
             totalKpm: typeSpeed!.totalKpm,
           });
 
-          triggerTypingSound({ isLineCompleted: false });
           setDisplayLineKpm(typeSpeed!.lineKpm);
         } else {
+          triggerTypingSound({ isLineCompleted: true });
           const newStatusReplay = updateAllStatus({ count, newLineResults: lineResults });
           newStatusReplay.point = lineResult.status!.p as number;
           newStatusReplay.timeBonus = lineResult.status!.tBonus as number;
@@ -142,14 +144,13 @@ const useKeyReplay = () => {
           setCombo(lineResult.status!.combo as number);
           setDisplayLineKpm(lineResult.status!.lKpm as number);
           statusRef.current!.status.totalTypeTime = lineResult.status!.tTime;
-          triggerTypingSound({ isLineCompleted: true });
         }
 
         setLineWord(result.newLineWord);
       } else {
+        triggerMissSound();
         updateMissStatus();
         updateMissRefStatus({ constantLineTime, failKey: key });
-        triggerMissSound();
       }
     } else if (option) {
       switch (option) {
