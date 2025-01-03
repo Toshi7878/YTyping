@@ -108,13 +108,12 @@ const useKeyReplay = () => {
             ? new RomaInput({ chars, lineWord })
             : new KanaInput({ chars, lineWord });
         setLineWord(result.newLineWord);
+        const isLineCompleted = !result.newLineWord.nextChar["k"];
+        triggerTypingSound({ isLineCompleted });
 
         const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
-        const lineResults = typeAtomStore.get(lineResultsAtom);
 
-        if (result.newLineWord.nextChar["k"]) {
-          triggerTypingSound({ isLineCompleted: false });
-
+        if (isLineCompleted) {
           const typeSpeed = calcTypeSpeed({
             updateType: "keydown",
             constantLineTime,
@@ -136,11 +135,10 @@ const useKeyReplay = () => {
 
           setDisplayLineKpm(typeSpeed!.lineKpm);
         } else {
-          triggerTypingSound({ isLineCompleted: true });
+          const lineResults = typeAtomStore.get(lineResultsAtom);
           const newStatusReplay = updateAllStatus({ count, newLineResults: lineResults });
           newStatusReplay.point = lineResult.status!.p as number;
           newStatusReplay.timeBonus = lineResult.status!.tBonus as number;
-
           setStatusValues(newStatusReplay);
           setCombo(lineResult.status!.combo as number);
           setDisplayLineKpm(lineResult.status!.lKpm as number);
