@@ -1,8 +1,7 @@
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import LikeCountIcon from "@/components/map-icons/LikeCountIcon";
 import RankingCountIcon from "@/components/map-icons/RankingCountIcon";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { Box, Flex, HStack, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, HStack, Text, useBreakpointValue } from "@chakra-ui/react";
 import MapBadge from "./MapBadge";
 
 interface MapBadgesProps {
@@ -20,21 +19,12 @@ const MapBadges = (props: MapBadgesProps) => {
       mr={3}
     >
       <HStack mr={2}>
-        <CustomToolTip
-          label={
-            <Box>
-              <Box>最高速度:{map.romaKpmMax}kpm</Box>
-            </Box>
-          }
-          placement="top"
-        >
-          <MapBadge>
-            <Text as="span" fontSize="xs" display={{ base: "none", sm: "inline-block" }}>
-              ★
-            </Text>
-            {(map.romaKpmMedian / 100).toFixed(1)}
-          </MapBadge>
-        </CustomToolTip>
+        <MapBadge>
+          <Text as="span" fontSize="xs" display={{ base: "none", sm: "inline-block" }}>
+            ★
+          </Text>
+          {(map.romaKpmMedian / 100).toFixed(1)}
+        </MapBadge>
         {showBadges && (
           <MapBadge>{new Date(map.totalTime * 1000).toISOString().slice(14, 19)}</MapBadge>
         )}

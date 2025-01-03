@@ -3,8 +3,6 @@ import { ThemeColors } from "@/types";
 import { Badge, HStack, Kbd, useTheme } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 
-import { useAtomValue } from "jotai";
-
 interface PlayingBottomBadgeProps {
   badgeText: string;
   kbdText: string;
@@ -12,28 +10,29 @@ interface PlayingBottomBadgeProps {
   isKbdHidden: boolean;
   onClick: () => void;
 }
-const StyledKbd = styled(Kbd)<{ isDisabled: boolean; isKbdHidden: boolean }>`
-  cursor: ${(props) => (props.isDisabled ? "not-allowed" : "pointer")};
-  visibility: ${(props) => (props.isKbdHidden ? "hidden" : "visible")};
+const StyledKbd = styled(Kbd)<{ $disabled: boolean; $is_kbd_hidden: boolean }>`
+  cursor: ${(props) => (props.$disabled ? "not-allowed" : "pointer")};
+  visibility: ${(props) => (props.$is_kbd_hidden ? "hidden" : "visible")};
   transition: transform 0.1s ease-in-out;
 
   &:hover {
     ${(props) =>
-      !props.isDisabled &&
+      !props.$disabled &&
       `
   transform: scale(1.20);
 `}
   }
 `;
 
-const StyledBadge = styled(Badge)<{ isDisabled: boolean; isKbdHidden: boolean }>`
+const StyledBadge = styled(Badge)<{ $disabled: boolean; $is_kbd_hidden: boolean }>`
   cursor: ${(props) =>
-    props.isDisabled ? "not-allowed" : props.isKbdHidden ? "initial" : "pointer"};
+    props.$disabled ? "not-allowed" : props.$is_kbd_hidden ? "initial" : "pointer"};
   transition: transform 0.1s ease-in-out;
+  opacity: ${(props) => (props.$disabled ? 0.5 : 1)};
 
   &:hover {
     ${(props) =>
-      !props.isDisabled && !props.isKbdHidden
+      !props.$disabled && !props.$is_kbd_hidden
         ? `
       transform: scale(1.05);
       `
@@ -52,14 +51,14 @@ const PlayingBottomBadge = function (props: PlayingBottomBadgeProps) {
       <StyledBadge
         py={1}
         px={4}
+        $disabled={isDisabled}
         isDisabled={isDisabled}
-        isKbdHidden={props.isKbdHidden}
+        $is_kbd_hidden={props.isKbdHidden}
         fontSize="lg"
         as="button"
         className="bottom-card-badge"
         onClick={isDisabled || props.isKbdHidden ? undefined : props.onClick}
         borderRadius="3xl"
-        opacity={isDisabled ? 0.5 : 1}
         bg={theme.colors.background.card}
         color={"color"}
         borderWidth="1px"
@@ -69,8 +68,9 @@ const PlayingBottomBadge = function (props: PlayingBottomBadgeProps) {
         {props.badgeText}
       </StyledBadge>
       <StyledKbd
+        $disabled={isDisabled}
         isDisabled={isDisabled}
-        isKbdHidden={props.isKbdHidden}
+        $is_kbd_hidden={props.isKbdHidden}
         fontSize="xl"
         bg={"background"}
         color={"color"}

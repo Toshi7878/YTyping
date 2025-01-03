@@ -1,7 +1,7 @@
-import { Badge, HStack, Kbd, useTheme } from "@chakra-ui/react";
-import styled from "@emotion/styled";
 import { usePlayingNotifyAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { ThemeColors } from "@/types";
+import { Badge, HStack, Kbd, useTheme } from "@chakra-ui/react";
+import styled from "@emotion/styled";
 
 interface PlayingLineSeekBadgeProps {
   badgeText: string;
@@ -12,20 +12,18 @@ interface PlayingLineSeekBadgeProps {
   onClickNext: () => void;
 }
 
-const StyledKbd = styled(Kbd)<{ isDisabled: boolean }>`
-  cursor: ${(props) => (props.isDisabled ? "not-allowed" : "pointer")};
+const StyledKbd = styled(Kbd)<{ $isDisabled: boolean }>`
+  cursor: ${(props) => (props.$isDisabled ? "not-allowed" : "pointer")};
   transition: transform 0.1s ease-in-out;
 
   &:hover {
     ${(props) =>
-      !props.isDisabled &&
+      !props.$isDisabled &&
       `
       transform: scale(1.20);
     `}
   }
 `;
-
-const StyledBadge = styled(Badge)<{ isDisabled: boolean }>``;
 
 const PlayingLineSeekBadge = function (props: PlayingLineSeekBadgeProps) {
   const notify = usePlayingNotifyAtom();
@@ -38,7 +36,8 @@ const PlayingLineSeekBadge = function (props: PlayingLineSeekBadgeProps) {
       <StyledKbd
         fontSize="xl"
         onClick={isDisabled ? undefined : props.onClickPrev}
-        isDisabled={isDisabled}
+        $isDisabled={isDisabled}
+        isDisabled={isDisabled} // $isDisabled から isDisabled に変更
         bg={theme.colors.background.body}
         color={theme.colors.text.body}
         className="bottom-card-kbd"
@@ -49,7 +48,7 @@ const PlayingLineSeekBadge = function (props: PlayingLineSeekBadgeProps) {
       >
         {props.kbdTextPrev}
       </StyledKbd>
-      <StyledBadge
+      <Badge
         py={1}
         px={4}
         fontSize="lg"
@@ -62,13 +61,13 @@ const PlayingLineSeekBadge = function (props: PlayingLineSeekBadgeProps) {
         borderStyle="solid"
         borderColor={theme.colors.border.card}
         onClick={isDisabled ? undefined : props.onClick}
-        isDisabled={isDisabled}
       >
         {props.badgeText}
-      </StyledBadge>
+      </Badge>
       <StyledKbd
         fontSize="xl"
         onClick={isDisabled ? undefined : props.onClickNext}
+        $isDisabled={isDisabled}
         isDisabled={isDisabled}
         bg={theme.colors.background.body}
         color={theme.colors.text.body}

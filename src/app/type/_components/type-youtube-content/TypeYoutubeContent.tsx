@@ -2,6 +2,7 @@
 import { Box } from "@chakra-ui/react";
 import { useStore } from "jotai";
 import { useCallback, useMemo } from "react";
+import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import {
   useYTEndEvent,
@@ -14,11 +15,16 @@ import {
 import { sceneAtom } from "../../type-atoms/gameRenderAtoms";
 
 interface TypeYouTubeProps {
+  isMapLoading: boolean;
   className: string;
   videoId: string;
 }
 
-const TypeYouTubeContent = function YouTubeContent({ className, videoId }: TypeYouTubeProps) {
+const TypeYouTubeContent = function YouTubeContent({
+  isMapLoading,
+  className,
+  videoId,
+}: TypeYouTubeProps) {
   const typeAtomStore = useStore();
 
   const ytReadyEvent = useYTReadyEvent();
@@ -66,7 +72,6 @@ const TypeYouTubeContent = function YouTubeContent({ className, videoId }: TypeY
     () => (
       <Box style={{ userSelect: "none" }}>
         <YouTube
-          id="type_youtube"
           className={`${className} `}
           videoId={videoId}
           opts={{
@@ -94,7 +99,11 @@ const TypeYouTubeContent = function YouTubeContent({ className, videoId }: TypeY
     [className, videoId]
   );
 
-  return memoizedYouTube;
+  return (
+    <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
+      {memoizedYouTube}
+    </LoadingOverlayWrapper>
+  );
 };
 
 export default TypeYouTubeContent;

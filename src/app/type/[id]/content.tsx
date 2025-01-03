@@ -107,7 +107,8 @@ function Content({ mapInfo }: ContentProps) {
           <Flex direction="column">
             <Flex gap="6">
               <TypeYouTubeContent
-                className={`w-[513px] ${isLoading ? "invisible" : ""} aspect-video mt-2`}
+                isMapLoading={isLoading}
+                className={`w-[513px] aspect-video mt-2`}
                 videoId={videoId}
               />
               <Box flex={{ base: "8" }} flexDirection="column">
