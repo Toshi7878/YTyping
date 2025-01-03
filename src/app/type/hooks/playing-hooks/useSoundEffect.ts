@@ -12,7 +12,6 @@ const manifest = [
   { alias: "miss", src: missSound },
   { alias: "lineClear", src: clearTypeSound },
 ];
-const soundInstances = new Map();
 
 export const useSoundEffect = () => {
   const isIOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -23,38 +22,21 @@ export const useSoundEffect = () => {
   const typeAtomStore = useStore();
 
   useEffect(() => {
-    // 一度だけ初期化
-    if (soundInstances.size === 0) {
-      manifest.forEach(({ alias, src }) => {
-        sound.add(alias, src);
-        // プリロードしてインスタンスを保持
-        const instance = sound.find(alias);
-        soundInstances.set(alias, instance);
-      });
-    }
-
-    // クリーンアップ
-    return () => {
-      if (soundInstances.size > 0) {
-        soundInstances.forEach((instance) => instance.destroy());
-        soundInstances.clear();
-      }
-    };
+    manifest.forEach(({ alias, src }) => {
+      sound.add(alias, src);
+    });
   }, []);
 
   const clearTypeSoundPlay = () => {
-    const instance = soundInstances.get("lineClear");
-    if (instance) instance.play({ volume });
+    sound.play("lineClear", { volume });
   };
 
   const typeSoundPlay = () => {
-    const instance = soundInstances.get("type");
-    if (instance) instance.play({ volume });
+    sound.play("type", { volume });
   };
 
   const missSoundPlay = () => {
-    const instance = soundInstances.get("miss");
-    if (instance) instance.play({ volume });
+    sound.play("miss", { volume });
   };
 
   const triggerTypingSound = ({ isLineCompleted }: { isLineCompleted: boolean }) => {
