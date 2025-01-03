@@ -1,5 +1,11 @@
 export const changelog = [
   {
+    date: "2025-1-03",
+    descriptions: [
+      "ログアウト時に譜面一覧のランキングアイコンの状態がログイン後のままになっている問題を修正",
+    ],
+  },
+  {
     date: "2025-1-02",
     descriptions: [
       "文字を選択した際のbgカラーを変更",
