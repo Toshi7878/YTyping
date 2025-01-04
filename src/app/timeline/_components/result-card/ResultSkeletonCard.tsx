@@ -4,10 +4,9 @@ import { CardFooter, CardHeader } from "@chakra-ui/react";
 import ResultInnerCardBody from "./child/ResultCardBody";
 import ResultInnerCardBodyWrapper from "./child/ResultCardBodyWrapper";
 import ResultCardHeader from "./child/ResultCardHeader";
+import { MapResultBadgesMobile } from "./child/child/MapResultBadgesLayout";
 
 function ResultSkeletonCard() {
-  // const showBadges = useBreakpointValue({ base: false, md: true }, { ssr: false });
-
   return (
     <CustomMapCard>
       <CardHeader borderRadius="md" mx={2} py={3}>
@@ -17,7 +16,7 @@ function ResultSkeletonCard() {
         <ResultInnerCardBody />
       </ResultInnerCardBodyWrapper>
       <CardFooter borderRadius="md" pb={1}>
-        {/* {!showBadges && <MapResultBadgesMobile result={skeletonResult} />} */}
+        <MapResultBadgesMobile display={{ base: "flex", md: "none" }} />
       </CardFooter>
     </CustomMapCard>
   );

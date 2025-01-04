@@ -32,24 +32,6 @@ const MapLeftThumbnail = (props: MapLeftThumbnailProps) => {
   const pathname = usePathname();
   const pathSegment = pathname.split("/")[1];
 
-  // const [imgSrc, setImgSrc] = useState(fallbackSrc); //高画質: src 低画質: fallbackSrc
-
-  // const handleImageLoad = useCallback((src: string) => {
-  //   const img = new window.Image();
-  //   img.src = src;
-  //   img.onload = () => {
-  //     if (img.width === 120) {
-  //       setImgSrc(fallbackSrc);
-  //     }
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // useEffect(() => {
-  //   handleImageLoad(src);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [src]);
-
   const width = useBreakpointValue(thumnailWidth, { ssr: false }) || 100; // ここを変更
   const height = useBreakpointValue(thumnailHeight, { ssr: false }) || 100; // ここを変更
   return (

@@ -1,7 +1,7 @@
 import LikeCountIcon from "@/components/map-icons/LikeCountIcon";
 import RankingCountIcon from "@/components/map-icons/RankingCountIcon";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { Flex, HStack, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, HStack, Text } from "@chakra-ui/react";
 import MapBadge from "./MapBadge";
 
 interface MapBadgesProps {
@@ -10,7 +10,6 @@ interface MapBadgesProps {
 
 const MapBadges = (props: MapBadgesProps) => {
   const { map } = props;
-  const showBadges = useBreakpointValue({ base: false, md: true }, { ssr: false });
 
   return (
     <Flex
@@ -25,9 +24,9 @@ const MapBadges = (props: MapBadgesProps) => {
           </Text>
           {(map.romaKpmMedian / 100).toFixed(1)}
         </MapBadge>
-        {showBadges && (
-          <MapBadge>{new Date(map.totalTime * 1000).toISOString().slice(14, 19)}</MapBadge>
-        )}
+        <MapBadge display={{ base: "none", md: "block" }}>
+          {new Date(map.totalTime * 1000).toISOString().slice(14, 19)}
+        </MapBadge>
       </HStack>
       <Flex>
         <RankingCountIcon myRank={map.result[0]?.rank} rankingCount={map.rankingCount} />

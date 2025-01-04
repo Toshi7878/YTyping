@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  PREVIEW_YOUTUBE_HEIGHT,
-  PREVIEW_YOUTUBE_POSITION,
-  PREVIEW_YOUTUBE_WIDTH,
-} from "@/config/global-consts";
+import { PREVIEW_YOUTUBE_HEIGHT, PREVIEW_YOUTUBE_WIDTH } from "@/config/global-consts";
 import { usePreviewYouTubeKeyDown } from "@/lib/global-hooks/usePreviewYouTubeKeyDown";
 import { Box, useBreakpointValue } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -47,7 +43,6 @@ const PreviewYouTubeContent = function YouTubeContent() {
   }, [router]);
   const width = useBreakpointValue(PREVIEW_YOUTUBE_WIDTH, { ssr: false });
   const height = useBreakpointValue(PREVIEW_YOUTUBE_HEIGHT, { ssr: false });
-  const fixedPosition = useBreakpointValue(PREVIEW_YOUTUBE_POSITION, { ssr: false });
 
   if (!videoId) {
     return null;
@@ -64,7 +59,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
   };
 
   return (
-    <Box zIndex={2} position="fixed" bottom={fixedPosition} right={fixedPosition}>
+    <Box zIndex={2} position="fixed" bottom={{ base: 2, lg: 5 }} right={{ base: 2, lg: 5 }}>
       <YouTube
         id="preview_youtube"
         videoId={videoId}

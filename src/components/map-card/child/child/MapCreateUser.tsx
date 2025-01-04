@@ -11,7 +11,7 @@ const MapCreateUser = (props: MapCreateUserProps) => {
   return (
     <Text as="small" mt={2}>
       <UserLinkText userId={props.map.user.id} userName={props.map.user.name as string} />
-      <Text as="span" fontSize="xs" display={{ base: "none", sm: "inline-block" }}>
+      <Text as="span" fontSize="xs" display={{ base: "none", md: "inline-block" }}>
         <Box mx={1}>
           - <UpdateAtText updatedAt={props.map.updatedAt} />
         </Box>

@@ -57,7 +57,7 @@ function UsersResultList() {
       ) : (
         <InfiniteScroll
           loadMore={() => fetchNextPage()}
-          loader={<LoadingResultCard cardLength={1} />}
+          loader={<LoadingResultCard key="loading-more" cardLength={1} />}
           hasMore={hasNextPage}
           threshold={2000} // スクロールの閾値を追加
         >
