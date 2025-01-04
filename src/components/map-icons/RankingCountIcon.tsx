@@ -18,7 +18,7 @@ const RankingCountIcon = (props: RankingCountProps) => {
     <CustomToolTip
       label={`自分の順位: ${myRank}位`}
       placement="top"
-      isDisabled={!myRank || !!session}
+      isDisabled={!myRank || !session}
     >
       <Flex
         alignItems="baseline"
