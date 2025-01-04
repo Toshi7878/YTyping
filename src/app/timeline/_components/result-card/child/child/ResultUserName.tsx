@@ -6,7 +6,7 @@ import { Link } from "@chakra-ui/next-js";
 import { Text, useTheme } from "@chakra-ui/react";
 
 interface ResultUserNameProps {
-  result: ResultCardInfo;
+  result?: ResultCardInfo;
 }
 
 const ResultUserName = (props: ResultUserNameProps) => {
@@ -17,15 +17,21 @@ const ResultUserName = (props: ResultUserNameProps) => {
 
   return (
     <Text as="span" className="ml-0 md:ml-6">
-      <Link
-        href={`/user/${result.user.id}`}
-        onClick={handleLinkClick}
-        color={theme.colors.secondary.main}
-        fontWeight="bold"
-      >
-        {result.user.name}
-      </Link>{" "}
-      - <UpdateAtText updatedAt={result.updatedAt} />
+      {result ? (
+        <>
+          <Link
+            href={`/user/${result.user.id}`}
+            onClick={handleLinkClick}
+            color={theme.colors.secondary.main}
+            fontWeight="bold"
+          >
+            {result.user.name}
+          </Link>{" "}
+          - <UpdateAtText updatedAt={result.updatedAt} />
+        </>
+      ) : (
+        ""
+      )}
     </Text>
   );
 };
