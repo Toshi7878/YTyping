@@ -210,6 +210,7 @@ export const useLineDelete = () => {
   const dispatch = useDispatch();
   const lineInputReducer = useLineInputReducer();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
+  const setDirectEdit = useSetEditDirectEditCountAtom();
 
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
@@ -241,6 +242,7 @@ export const useLineDelete = () => {
       }
     }
 
+    setDirectEdit(null);
     lineInputReducer({ type: "reset" });
   };
 };
