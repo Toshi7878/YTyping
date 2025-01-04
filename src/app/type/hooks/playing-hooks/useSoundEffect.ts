@@ -4,7 +4,6 @@ import missSound from "@/asset/wav/miss_type.wav";
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { sound } from "@pixi/sound";
 import { useStore } from "jotai";
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { userOptionsAtom } from "../../type-atoms/gameRenderAtoms";
 
@@ -20,12 +19,11 @@ export const useSoundEffect = () => {
   const volumeAtom = useVolumeAtom();
   const volume = (isIOS || isAndroid ? 100 : volumeAtom) / 100;
 
-  const { data: session } = useSession();
   const typeAtomStore = useStore();
 
   useEffect(() => {
     manifest.forEach(({ alias, src }) => {
-      if (!sound.exists(alias) && session) {
+      if (!sound.exists(alias)) {
         sound.add(alias, {
           url: src,
           preload: true,
