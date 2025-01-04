@@ -1,3 +1,4 @@
+import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import { mapUpdatedAtAtom, useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useWarningToast } from "@/lib/global-hooks/useWarningToast";
@@ -36,10 +37,13 @@ const RankingMenu = ({
   const scene = useSceneAtom();
   const typeAtomStore = useStore();
   const warningToast = useWarningToast();
+  const { iosActiveSound } = useSoundEffect();
 
   const handleReplayClick = (name: string, resultId: number) => {
     const mapUpdatedAt = typeAtomStore.get(mapUpdatedAtAtom);
     const resultUpdatedAtDate = new Date(resultUpdatedAt); // 文字列をDate型に変換
+    iosActiveSound();
+
     if (mapUpdatedAt > resultUpdatedAtDate) {
       warningToast({
         title: "リプレイ登録時より後に譜面が更新されています",

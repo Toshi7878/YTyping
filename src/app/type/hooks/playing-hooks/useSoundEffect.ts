@@ -4,6 +4,7 @@ import missSound from "@/asset/wav/miss_type.wav";
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { sound } from "@pixi/sound";
 import { useStore } from "jotai";
+import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { userOptionsAtom } from "../../type-atoms/gameRenderAtoms";
 
@@ -19,17 +20,20 @@ export const useSoundEffect = () => {
   const volumeAtom = useVolumeAtom();
   const volume = (isIOS || isAndroid ? 100 : volumeAtom) / 100;
 
+  const { data: session } = useSession();
   const typeAtomStore = useStore();
 
   useEffect(() => {
     manifest.forEach(({ alias, src }) => {
-      sound.add(alias, {
-        url: src,
-        preload: true,
-      });
+      if (!sound.exists(alias) && session) {
+        sound.add(alias, {
+          url: src,
+          preload: true,
+        });
+      }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const clearTypeSoundPlay = () => {
     sound.play("lineClear", { volume });
   };
@@ -42,6 +46,11 @@ export const useSoundEffect = () => {
     sound.play("miss", { volume });
   };
 
+  const iosActiveSound = () => {
+    sound.play("lineClear", { volume: 0 });
+    sound.play("type", { volume: 0 });
+    sound.play("miss", { volume: 0 });
+  };
   const triggerTypingSound = ({ isLineCompleted }: { isLineCompleted: boolean }) => {
     const userOptions = typeAtomStore.get(userOptionsAtom);
     if (isLineCompleted) {
@@ -64,5 +73,12 @@ export const useSoundEffect = () => {
     }
   };
 
-  return { triggerTypingSound, triggerMissSound, clearTypeSoundPlay, typeSoundPlay, missSoundPlay };
+  return {
+    iosActiveSound,
+    triggerTypingSound,
+    triggerMissSound,
+    clearTypeSoundPlay,
+    typeSoundPlay,
+    missSoundPlay,
+  };
 };
