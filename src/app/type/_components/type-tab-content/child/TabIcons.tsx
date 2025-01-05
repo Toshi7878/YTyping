@@ -1,11 +1,11 @@
-import { useTheme, Box, Flex } from "@chakra-ui/react";
 import { ThemeColors } from "@/types";
-import SettingCard from "./child/SettingCard";
-import SettingIcon from "./icon-child/SettingIcon";
-import LikeIcon from "./icon-child/LikeIcon";
+import { Box, Flex, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import EditIcon from "./icon-child/EditIcon";
 import { useState } from "react";
+import SettingCard from "./child/SettingCard";
+import EditIcon from "./icon-child/EditIcon";
+import LikeIcon from "./icon-child/LikeIcon";
+import SettingIcon from "./icon-child/SettingIcon";
 
 export default function TabIcons() {
   const theme: ThemeColors = useTheme();
@@ -17,7 +17,7 @@ export default function TabIcons() {
     <>
       <Box
         position="absolute"
-        top="-20px"
+        top={{ base: "-20px", md: "-20px" }}
         right="5px"
         color={`${theme.colors.text.body}99`}
         width="100px"

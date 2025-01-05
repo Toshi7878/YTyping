@@ -108,6 +108,11 @@ export default extendTheme({
     },
     Button: {
       variants: {
+        rankingMenu: {
+          fontSize: { base: "3rem", md: "lg" },
+          p: { base: 16, md: 6 },
+          _hover: { backgroundColor: darkTheme.colors.button.sub.hover },
+        },
         upload: {
           bg: darkTheme.colors.primary.main, // ここで背景色を指定
           color: darkTheme.colors.text.body,

@@ -4,7 +4,7 @@ import { LikeButton } from "@/components/like-button/LikeButton";
 import { INITIAL_STATE } from "@/config/global-consts";
 import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { ThemeColors, UploadResult } from "@/types";
-import { Box, useTheme } from "@chakra-ui/react";
+import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useFormState } from "react-dom";
 
@@ -32,10 +32,11 @@ const LikeIcon = () => {
   };
 
   const [state, formAction] = useFormState(toggleLikeAction, INITIAL_STATE);
+  const iconSize = useBreakpointValue({ base: 120, md: 62 });
   return (
     <CustomToolTip label="譜面にいいね" placement="top">
       <Box as="form" action={formAction} _hover={{ color: theme.colors.text.body }}>
-        <LikeButton size={62} defaultLiked={hasLocalLikeAtom} />
+        <LikeButton size={iconSize} defaultLiked={hasLocalLikeAtom} />
       </Box>
     </CustomToolTip>
   );

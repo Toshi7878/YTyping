@@ -75,6 +75,7 @@ const SettingCard = (props: SettingCardProps) => {
           top={10}
           right={0}
           borderColor={theme.colors.border.card}
+          fontSize={"lg"}
         >
           <CardBody>
             {!isIOS && !isAndroid && <VolumeRange playerRef={playerRef} />}

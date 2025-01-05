@@ -68,22 +68,14 @@ const RankingMenu = ({
       p={2}
       border="0.5px"
       borderColor={theme.colors.border.card}
-      top={{ base: "-60px", md: "auto" }}
+      top={{ base: "auto", md: "auto" }}
+      fontSize={{ base: "3xl", md: "xl" }}
     >
-      <Button
-        as="a"
-        display="flex"
-        href={`/user/${userId}`}
-        variant="unstyled"
-        size="md"
-        _hover={{ backgroundColor: theme.colors.button.sub.hover }}
-      >
+      <Button variant="rankingMenu" as="a" display="flex" href={`/user/${userId}`}>
         ユーザーページへ
       </Button>
       <Button
-        variant="unstyled"
-        size="md"
-        _hover={{ backgroundColor: theme.colors.button.sub.hover }}
+        variant="rankingMenu"
         onClick={() => handleReplayClick(name, resultId)}
         isDisabled={scene === "playing" || scene === "replay" || scene === "practice"}
       >

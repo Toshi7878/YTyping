@@ -1,4 +1,4 @@
-import { Table, Tbody, Th, Thead, Tr, useTheme } from "@chakra-ui/react";
+import { Table, Tbody, Th, Thead, Tr, useBreakpointValue, useTheme } from "@chakra-ui/react";
 
 import { RANKING_COLUMN_WIDTH } from "@/app/type/ts/const/consts";
 import { ThemeColors } from "@/types";
@@ -10,6 +10,7 @@ interface RankingTableProps {
 
 const RankingTable = (props: RankingTableProps) => {
   const theme: ThemeColors = useTheme();
+  const clapIconSize = useBreakpointValue({ base: "2rem", md: "1rem" });
 
   return (
     <Table
@@ -21,12 +22,14 @@ const RankingTable = (props: RankingTableProps) => {
           border: "none",
           borderBottom: "1px",
           borderColor: `${theme.colors.border.card}cc`,
-          paddingY: { base: "1.2rem", md: "0.6rem" },
-          fontSize: { base: "2rem", md: "1.13rem" },
+          paddingY: { base: "2rem", md: "0.6rem" },
+          fontSize: { base: "2.5rem", md: "1.13rem" },
         },
         th: {
           borderBottom: "1px",
+          paddingY: { base: "1.3rem", md: "6px" },
           borderColor: `${theme.colors.border.card}30`,
+          fontSize: { base: "1.7rem", md: "xs" },
         },
       }}
     >
@@ -68,7 +71,7 @@ const RankingTable = (props: RankingTableProps) => {
             top={-0.5}
             color={theme.colors.text.body}
           >
-            <FaHandsClapping size={"1rem"} />
+            <FaHandsClapping size={clapIconSize} />
           </Th>
         </Tr>
       </Thead>

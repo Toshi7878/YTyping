@@ -1,14 +1,10 @@
-import { Box, CardBody, useTheme } from "@chakra-ui/react";
+import { Box, BoxProps, CardBody, useTheme } from "@chakra-ui/react";
 
 import CustomCard from "@/components/custom-ui/CustomCard";
 import { ThemeColors } from "@/types";
 import RankingList from "./child/RankingList";
 
-interface TabRankingProps {
-  height: string;
-}
-
-const TabRanking = (props: TabRankingProps) => {
+const TabRanking = (props: BoxProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
@@ -16,8 +12,8 @@ const TabRanking = (props: TabRankingProps) => {
       <CardBody fontSize="3xl" fontWeight="bold" width="full" pt={1} pb={2}>
         <Box
           overflowY="scroll"
-          minH={props.height}
-          maxH={props.height}
+          minH={props.minH}
+          maxH={props.minH}
           sx={{
             "&::-webkit-scrollbar": {
               width: "12px",

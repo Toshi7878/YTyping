@@ -100,13 +100,13 @@ function Content({ mapInfo }: ContentProps) {
         id="main_content"
         flexDirection="column"
         alignItems="center"
-        pt={16}
-        width="100vw"
+        pt={{ base: 12, md: 16 }}
+        width="100%"
         height="100vh"
       >
         <Box style={style}>
           <Flex direction="column">
-            <Flex gap="6">
+            <Flex width="100%" gap="6">
               {layoutMode === "row" && (
                 <Box>
                   <TypeYouTubeContent

@@ -1,7 +1,7 @@
 import { useSetTabIndexAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { ThemeColors } from "@/types";
 import { Tab, TabList, useTheme } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 const tabLists = ["ステータス", "ランキング"];
 
 interface TabListsProps {
@@ -19,12 +19,13 @@ const TabLists = ({ tabIndex }: TabListsProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <TabList height="33px" px="8" w="100%">
+    <TabList height={{ base: "80px", md: "33px" }} px="8" w="100%">
       {tabLists.map((tabName, index) => {
         return (
           <Tab
             key={index}
-            width="200px"
+            fontSize={{ base: "3rem", md: "xl" }}
+            width={{ base: "400px", md: "200px" }}
             opacity={tabIndex === index ? 1 : 0.5}
             borderBottom={tabIndex === index ? `1px solid ${theme.colors.text.body}` : ""}
             color={theme.colors.text.body}

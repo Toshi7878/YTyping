@@ -1,6 +1,6 @@
 import { INITIAL_STATE } from "@/config/global-consts";
-import { LocalClapState, ThemeColors, UploadResult } from "@/types";
-import { Box, Button, useTheme } from "@chakra-ui/react";
+import { LocalClapState, UploadResult } from "@/types";
+import { Box, Button, ButtonProps } from "@chakra-ui/react";
 import { useFormState } from "react-dom";
 
 interface MenuClapButtonProps {
@@ -13,9 +13,8 @@ const MenuClapButton = ({
   resultId,
   clapOptimisticState,
   toggleClapAction,
-}: MenuClapButtonProps) => {
-  const theme: ThemeColors = useTheme();
-
+  ...rest
+}: MenuClapButtonProps & ButtonProps) => {
   const [state, formAction] = useFormState(async () => {
     const result = await toggleClapAction(resultId);
 
@@ -23,14 +22,7 @@ const MenuClapButton = ({
   }, INITIAL_STATE);
   return (
     <Box as="form" action={formAction}>
-      {" "}
-      <Button
-        width="100%"
-        variant="unstyled"
-        size="md"
-        type="submit"
-        _hover={{ backgroundColor: `${theme.colors.text.body}60` }}
-      >
+      <Button width="100%" variant="rankingMenu" type="submit" {...rest}>
         {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
       </Button>
     </Box>

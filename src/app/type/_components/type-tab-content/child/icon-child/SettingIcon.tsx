@@ -1,6 +1,6 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { Box, useTheme } from "@chakra-ui/react";
+import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
 import { Dispatch } from "react";
 import { IoMdSettings } from "react-icons/io";
 
@@ -10,6 +10,8 @@ interface SettingIconProps {
 
 const SettingIcon = ({ setIsCardVisible }: SettingIconProps) => {
   const theme: ThemeColors = useTheme();
+  const iconSize = useBreakpointValue({ base: 72, md: 36 });
+
   return (
     <CustomToolTip label="設定" placement="top">
       <Box
@@ -21,7 +23,7 @@ const SettingIcon = ({ setIsCardVisible }: SettingIconProps) => {
         id="option_icon"
         onClick={() => setIsCardVisible((prev) => !prev)}
       >
-        <IoMdSettings size={36} />
+        <IoMdSettings size={iconSize} />
       </Box>
     </CustomToolTip>
   );

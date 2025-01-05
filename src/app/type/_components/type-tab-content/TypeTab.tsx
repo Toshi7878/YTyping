@@ -1,10 +1,10 @@
-import { Tabs, TabPanels, TabPanel, useTheme, HStack } from "@chakra-ui/react";
-import TabRanking from "./tab-ranking/TabRanking";
 import { ThemeColors } from "@/types";
-import TabStatusCard from "./tab-status/TabStatusCard";
-import TabIcons from "./child/TabIcons";
+import { HStack, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
 import { useSetTabIndexAtom, useTabIndexAtom } from "../../type-atoms/gameRenderAtoms";
+import TabIcons from "./child/TabIcons";
 import TabLists from "./child/TabLists";
+import TabRanking from "./tab-ranking/TabRanking";
+import TabStatusCard from "./tab-status/TabStatusCard";
 
 interface TypeTabContentProps {
   className?: string;
@@ -15,6 +15,8 @@ export default function TypeTabContent({ className }: TypeTabContentProps) {
   const setTabIndex = useSetTabIndexAtom();
   const theme: ThemeColors = useTheme();
 
+  const statusHeight = 208;
+  const rankingHeight = 236;
   return (
     <Tabs
       index={tabIndex}
@@ -26,7 +28,7 @@ export default function TypeTabContent({ className }: TypeTabContentProps) {
         justifyContent="space-between"
         w="100%"
         borderBottom={`1px solid ${theme.colors.text.body}55`}
-        style={{ userSelect: "none" }}
+        userSelect="none"
       >
         <TabLists tabIndex={tabIndex} />
         <TabIcons />
@@ -34,11 +36,11 @@ export default function TypeTabContent({ className }: TypeTabContentProps) {
 
       <TabPanels>
         <TabPanel px={0}>
-          <TabStatusCard height={"208px"} />
+          <TabStatusCard minH={{ base: `${statusHeight * 1.5}px`, md: `${statusHeight}px` }} />
         </TabPanel>
 
         <TabPanel px={0}>
-          <TabRanking height={"236px"} />
+          <TabRanking minH={{ base: `${rankingHeight * 1.5}px`, md: `${rankingHeight}px` }} />
         </TabPanel>
       </TabPanels>
     </Tabs>

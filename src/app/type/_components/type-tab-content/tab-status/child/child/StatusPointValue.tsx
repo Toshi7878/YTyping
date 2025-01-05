@@ -14,12 +14,10 @@ const PointStatusValue = ({ atom, timeBonusAtom }: PointStatusValueProps) => {
   const timeBonusValue = useAtomValue(timeBonusAtom, { store: typeAtomStore });
 
   return (
-    <>
-      <Text as="span" fontSize="4xl" className="value">
-        {value.toString()}
-        <small>{timeBonusValue > 0 && `+${timeBonusValue.toString()}`}</small>
-      </Text>
-    </>
+    <Text as="span" fontSize={{ base: "3rem", md: "4xl" }} className="value">
+      {value.toString()}
+      <small>{timeBonusValue > 0 && `+${timeBonusValue.toString()}`}</small>
+    </Text>
   );
 };
 

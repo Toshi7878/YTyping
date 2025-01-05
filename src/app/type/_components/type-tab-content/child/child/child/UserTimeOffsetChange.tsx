@@ -44,7 +44,6 @@ const UserTimeOffsetChange = () => {
         borderColor={`${theme.colors.border.card}90`}
         width="fit-content"
         rounded={"full"}
-        fontSize="md"
       >
         <Button onClick={decrement} cursor="pointer" variant="unstyled" size="lg" fontSize="xl">
           -
