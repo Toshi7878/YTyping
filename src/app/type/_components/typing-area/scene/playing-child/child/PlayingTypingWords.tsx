@@ -14,7 +14,7 @@ const PlayingTypingWords = () => {
   return (
     <Box
       color={theme.colors.text.body}
-      fontSize={{ base: "6rem", sm: "4rem", md: "2.75rem" }}
+      fontSize={{ base: "5.5rem", sm: "4rem", md: "2.75rem" }}
       className={`word-font outline-text ${lineCompleted ? "word-area-completed" : ""}`}
       style={{ letterSpacing: "0.1em" }}
     >
