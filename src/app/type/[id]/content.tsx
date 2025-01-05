@@ -107,13 +107,15 @@ function Content({ mapInfo }: ContentProps) {
         <Box style={style}>
           <Flex direction="column">
             <Flex gap="6">
-              <Box display={layoutMode === "row" ? "block" : "none"}>
-                <TypeYouTubeContent
-                  className="w-[513px]"
-                  isMapLoading={isLoading}
-                  videoId={videoId}
-                />
-              </Box>
+              {layoutMode === "row" && (
+                <Box>
+                  <TypeYouTubeContent
+                    className="w-[513px]"
+                    isMapLoading={isLoading}
+                    videoId={videoId}
+                  />
+                </Box>
+              )}
               <Box flex={{ base: "8" }} flexDirection="column">
                 <TypeTabContent />
               </Box>
@@ -122,9 +124,11 @@ function Content({ mapInfo }: ContentProps) {
               <TypingCard />
             </Box>
 
-            <Box mt={5} display={layoutMode === "column" ? "block" : "none"}>
-              <TypeYouTubeContent className="" isMapLoading={isLoading} videoId={videoId} />
-            </Box>
+            {layoutMode === "column" && (
+              <Box mt={5}>
+                <TypeYouTubeContent isMapLoading={isLoading} videoId={videoId} />
+              </Box>
+            )}
           </Flex>
         </Box>
       </Flex>
