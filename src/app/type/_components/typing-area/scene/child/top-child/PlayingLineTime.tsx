@@ -1,11 +1,10 @@
 import { Box, Text } from "@chakra-ui/react";
-import React from "react";
 import LineKpmText from "./child/LineKpmText";
 import LineRemainTimeText from "./child/LineRemainTimeText";
 
 const PlayingLineTime = () => {
   return (
-    <Box fontSize="3xl">
+    <Box fontSize={{ base: "3.5rem", sm: "2.7rem", md: "3xl" }}>
       <LineKpmText />
       <Text as="span" ms={1} letterSpacing="1.5px">
         kpm

@@ -11,9 +11,9 @@ const NextLyrics = () => {
       color={`${theme.colors.text.body}`}
       id="next_lyrics_kpm"
       opacity={0.6}
-      fontSize="3xl"
+      fontSize={{ base: "4rem", sm: "2.7rem", md: "3xl" }}
       className="lyrics-font"
-      lineHeight={10}
+      lineHeight={{ base: "80px", sm: "50px", md: "2.5rem" }}
       ml={-2}
     >
       <Box

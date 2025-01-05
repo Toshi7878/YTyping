@@ -35,7 +35,7 @@ export interface Tag {
   [key: string]: string;
 }
 
-interface ThemeColors {
+export interface ThemeColors {
   colors: {
     background: {
       body: `#${string}`;

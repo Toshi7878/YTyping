@@ -1,6 +1,5 @@
 import { useSkipAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { Box } from "@chakra-ui/react";
-import React from "react";
 
 const PlayingSkipGuide = () => {
   const skip = useSkipAtom();

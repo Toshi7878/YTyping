@@ -122,5 +122,34 @@ export default extendTheme({
         },
       },
     },
+    Badge: {
+      variants: {
+        typeArea: {
+          py: 1,
+          px: 4,
+          fontSize: "lg",
+          borderRadius: "3xl",
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: darkTheme.colors.border.card,
+          bg: darkTheme.colors.background.card,
+          color: darkTheme.colors.text.body,
+          transition: "transform 0.1s ease-in-out",
+        },
+      },
+    },
+    Kbd: {
+      variants: {
+        typeArea: {
+          fontSize: "xl",
+          color: darkTheme.colors.text.body,
+          bg: darkTheme.colors.background.body,
+          borderColor: darkTheme.colors.border.card,
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderBottomWidth: "1px",
+        },
+      },
+    },
   },
 });

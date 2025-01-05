@@ -7,7 +7,7 @@ const PlayingLyrics = () => {
   return (
     <Box
       fontWeight="bold"
-      fontSize="2.75rem"
+      fontSize={{ base: "5rem", sm: "4rem", md: "2.75rem" }}
       id="lyrics"
       ml={-8}
       width="103%"

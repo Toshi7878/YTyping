@@ -34,7 +34,7 @@ const PlayingProgress = (props: PlayingProgressProps) => {
   return (
     <>
       <Box>
-        <progress id={props.id} ref={progressRef} className="w-full" />
+        <progress id={props.id} ref={progressRef} className="w-full h-[20px] md:h-[10px]" />
       </Box>
       <style>
         {`#${props.id}::-webkit-progress-value {
