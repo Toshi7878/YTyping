@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-1-05",
+    descriptions: ["タイピングページをスマートフォン表示に仮対応"],
+  },
+  {
     date: "2025-1-04",
     descriptions: [
       "タイムラインにローディングを追加",
