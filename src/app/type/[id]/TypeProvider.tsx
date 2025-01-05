@@ -22,7 +22,7 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
   useEffect(() => {
     // 状態の更新をuseEffect内に移動
     globalAtomStore.set(previewVideoIdAtom, null);
-    typeAtomStore.set(hasLocalLikeAtom, !!mapInfo?.mapLike[0].isLiked);
+    typeAtomStore.set(hasLocalLikeAtom, !!mapInfo?.mapLike[0]?.isLiked);
     typeAtomStore.set(mapUpdatedAtAtom, mapInfo!.updatedAt);
     if (userTypingOptions) {
       typeAtomStore.set(userOptionsAtom, userTypingOptions);
