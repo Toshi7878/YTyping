@@ -11,7 +11,7 @@ const StatusUnderline = ({ label, children }: StatusUnderlineProps) => {
   const theme: ThemeColors = useTheme();
 
   const width = useBreakpointValue({
-    base: { main: "190px", sub: "106px" },
+    base: { main: "250px", sub: "140px" },
     md: { main: "159px", sub: "80px" },
   });
 

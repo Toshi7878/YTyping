@@ -9,7 +9,7 @@ const StatusValue = ({ atom }: { atom: Atom<number> }) => {
   const value = useAtomValue(atom, { store: typeAtomStore });
 
   return (
-    <Text as="span" fontSize={{ base: "3rem", md: "4xl" }} className="value">
+    <Text as="span" fontSize={{ base: "4rem", md: "4xl" }} className="value">
       {value}
     </Text>
   );

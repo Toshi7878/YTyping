@@ -11,7 +11,7 @@ const StatusLabel = ({ label }: StatusLabelProps) => {
       className="status-label"
       position="relative"
       right="8px"
-      fontSize={{ base: "3rem", md: "80%" }}
+      fontSize={{ base: "3.5rem", md: "80%" }}
       letterSpacing={label === "kpm" ? "0.2em" : ""}
       textTransform="capitalize"
     >
