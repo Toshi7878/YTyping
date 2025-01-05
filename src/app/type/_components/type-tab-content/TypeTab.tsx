@@ -36,7 +36,7 @@ export default function TypeTabContent({ className }: TypeTabContentProps) {
 
       <TabPanels>
         <TabPanel px={0}>
-          <TabStatusCard minH={{ base: `${statusHeight * 1.5}px`, md: `${statusHeight}px` }} />
+          <TabStatusCard minH={{ base: `${statusHeight * 1.55}px`, md: `${statusHeight}px` }} />
         </TabPanel>
 
         <TabPanel px={0}>
