@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   const minKpm = Number(searchParams.get("minKpm") ?? DEFAULT_KPM_SEARCH_RANGE.min);
   const maxKpm = Number(searchParams.get("maxKpm"));
   const minClearRate = Number(
-    searchParams.get("minClearRate") ?? DEFAULT_CLEAR_RATE_SEARCH_RANGE.min,
+    searchParams.get("minClearRate") ?? DEFAULT_CLEAR_RATE_SEARCH_RANGE.min
   );
   const maxClearRate = Number(searchParams.get("maxClearRate"));
   const minSpeed = Number(searchParams.get("minSpeed") ?? 1);
@@ -53,6 +53,7 @@ export async function GET(req: NextRequest) {
         'videoId', "Map"."videoId",
         'title', "Map"."title",
         'artistName', "Map"."artistName",
+        'musicSource', "Map"."musicSource",
         'previewTime', "Map"."previewTime",
         'thumbnailQuality', "Map"."thumbnailQuality",
         'likeCount', "Map"."likeCount",
