@@ -2,7 +2,7 @@
 import { QUERY_KEYS } from "@/config/global-consts";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
@@ -92,6 +92,8 @@ function Content({ mapInfo }: ContentProps) {
     height: `${CONTENT_HEIGHT}px`,
   };
 
+  const layoutMode = useBreakpointValue({ base: "column", md: "row" });
+
   return (
     <LoadingOverlayWrapper active={isLoadingOverlay} spinner={true} text="Loading...">
       <Flex
@@ -106,11 +108,13 @@ function Content({ mapInfo }: ContentProps) {
         <Box style={style}>
           <Flex direction="column">
             <Flex gap="6">
-              <TypeYouTubeContent
-                isMapLoading={isLoading}
-                className={`w-[513px] aspect-video mt-2`}
-                videoId={videoId}
-              />
+              {layoutMode === "row" && (
+                <TypeYouTubeContent
+                  isMapLoading={isLoading}
+                  className={`w-[513px] aspect-video mt-2`}
+                  videoId={videoId}
+                />
+              )}
               <Box flex={{ base: "8" }} flexDirection="column">
                 <TypeTabContent />
               </Box>
@@ -118,6 +122,16 @@ function Content({ mapInfo }: ContentProps) {
             <Box mt={5}>
               <TypingCard />
             </Box>
+
+            {layoutMode === "column" && (
+              <Box mt={5}>
+                <TypeYouTubeContent
+                  isMapLoading={isLoading}
+                  className={`aspect-video mt-2`}
+                  videoId={videoId}
+                />
+              </Box>
+            )}
           </Flex>
         </Box>
       </Flex>

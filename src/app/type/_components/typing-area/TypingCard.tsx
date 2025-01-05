@@ -27,7 +27,7 @@ interface TypingCardBodyProps {
   drawerClosure: UseDisclosureReturn;
 }
 
-export const CARD_BODY_MIN_HEIGHT = "320px";
+export const CARD_BODY_MIN_HEIGHT = { base: "460px", md: "320px" };
 
 const TypingCardBody = (props: TypingCardBodyProps) => {
   const { drawerClosure } = props;

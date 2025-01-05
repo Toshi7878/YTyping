@@ -40,7 +40,7 @@ const ReadyPracticeButton = () => {
       px={16}
       py={6}
       size="xl"
-      fontSize="3xl"
+      fontSize={{ base: "3rem", md: "3xl" }}
       _hover={{
         bg: theme.colors.button.sub.hover,
       }}

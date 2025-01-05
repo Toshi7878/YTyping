@@ -16,7 +16,7 @@ const PlayingBottom = function () {
         mx={2}
         fontWeight="bold"
         className={`${isPlayed ? "" : "invisible"} bottom-card-text`}
-        fontSize={{ base: "3.5rem", sm: "2.7rem", md: "2xl" }}
+        fontSize={{ base: "3rem", sm: "2.5rem", md: "xl" }}
       >
         <PlayingSkipGuide />
         <PlayingTotalTime />

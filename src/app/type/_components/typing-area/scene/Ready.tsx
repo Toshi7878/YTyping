@@ -1,12 +1,12 @@
+import { useMapAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
+import "../../../style/fKey.scss";
+import { CARD_BODY_MIN_HEIGHT } from "../TypingCard";
 import ReadyInputModeRadioCards from "./ready-child/ReadyInputModeRadioCards";
 import ReadyPlaySpeed from "./ready-child/ReadyPlaySpeed";
-import "../../../style/fKey.scss";
 import ReadyPracticeButton from "./ready-child/ReadyPracticeButton";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
-import { CARD_BODY_MIN_HEIGHT } from "../TypingCard";
-import { useMapAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 
 function Ready() {
   const { playerRef } = useRefs();
@@ -47,7 +47,7 @@ function Ready() {
 
   return (
     <Stack justifyContent="space-between" direction="column" minH={CARD_BODY_MIN_HEIGHT}>
-      <Box fontWeight="bold" fontSize="2xl">
+      <Box fontWeight="bold" fontSize={{ base: "2.5rem", md: "2xl" }}>
         Enterキー / 動画をクリックして開始
       </Box>
       <Flex textAlign="center" fontSize="3xl" justifyContent="center">

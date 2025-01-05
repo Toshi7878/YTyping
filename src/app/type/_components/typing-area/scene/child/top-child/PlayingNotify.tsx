@@ -3,12 +3,11 @@ import {
   useSceneAtom,
   useSetPlayingNotifyAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion"; // 追加
-import { FaPause } from "react-icons/fa6";
-import { FaPlay } from "react-icons/fa6";
 import { useEffect, useRef } from "react";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
+import { FaPause, FaPlay } from "react-icons/fa6";
 
 interface PlayingNotifyProps {
   className?: string;
@@ -72,11 +71,12 @@ const PlayingNotify = ({ className = "" }: PlayingNotifyProps) => {
       whiteSpace="nowrap"
       textAlign="center"
       className={`${className}`}
-      fontSize="3xl"
     >
       {notify.description && NON_ANIMATED.includes(notify.description) ? (
         <Box
-          className={`${className} ${notify.description === "Replay" || notify.description === "Practice" ? "opacity-30" : ""}`}
+          className={`${className} ${
+            notify.description === "Replay" || notify.description === "Practice" ? "opacity-30" : ""
+          }`}
         >
           {notify.description === "ll" ? (
             <FaPause />

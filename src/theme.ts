@@ -127,7 +127,7 @@ export default extendTheme({
         typeArea: {
           py: 1,
           px: 4,
-          fontSize: "lg",
+          fontSize: { base: "3rem", sm: "2xl", md: "xl" },
           borderRadius: "3xl",
           borderWidth: "1px",
           borderStyle: "solid",
@@ -141,7 +141,7 @@ export default extendTheme({
     Kbd: {
       variants: {
         typeArea: {
-          fontSize: "xl",
+          fontSize: { base: "3rem", sm: "2xl", md: "xl" },
           color: darkTheme.colors.text.body,
           bg: darkTheme.colors.background.body,
           borderColor: darkTheme.colors.border.card,

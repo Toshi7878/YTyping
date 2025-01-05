@@ -1,6 +1,6 @@
 import { useLineWordAtom, usePlayingInputModeAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { ThemeColors } from "@/types";
-import { Box, useTheme } from "@chakra-ui/react";
+import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
 import PlayingWord from "./PlayingWord";
 
 const PlayingTypingWords = () => {
@@ -9,6 +9,8 @@ const PlayingTypingWords = () => {
   const theme: ThemeColors = useTheme();
 
   const lineCompleted = !lineWord.nextChar.k && lineWord.correct.k;
+  const kanaCorrectSlice = useBreakpointValue({ base: -5, md: -10 });
+  const romaCorrectSlice = useBreakpointValue({ base: -8, md: -16 });
   return (
     <Box
       color={theme.colors.text.body}
@@ -18,17 +20,23 @@ const PlayingTypingWords = () => {
     >
       <PlayingWord
         id="main_word"
-        correct={lineWord.correct["k"].slice(-10).replace(/ /g, "ˍ")}
+        correct={lineWord.correct["k"].slice(kanaCorrectSlice).replace(/ /g, "ˍ")}
         nextChar={lineWord.nextChar["k"]}
-        word={lineWord.word.map((w) => w["k"]).join("")}
+        word={lineWord.word
+          .map((w) => w["k"])
+          .join("")
+          .slice(0, 50)}
         className="lowercase word-kana"
       />
 
       <PlayingWord
         id="sub_word"
-        correct={lineWord.correct["r"].slice(-16).replace(/ /g, "ˍ")}
+        correct={lineWord.correct["r"].slice(romaCorrectSlice).replace(/ /g, "ˍ")}
         nextChar={lineWord.nextChar["r"][0]}
-        word={lineWord.word.map((w) => w["r"][0]).join("")}
+        word={lineWord.word
+          .map((w) => w["r"][0])
+          .join("")
+          .slice(0, 50)}
         className={`uppercase word-roma ${inputMode === "kana" ? "invisible" : ""}`}
       />
     </Box>

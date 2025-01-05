@@ -52,6 +52,7 @@ function RadioCard({ option, children, ...props }: RadioCardProps) {
         }}
         px={15}
         py="2.6rem"
+        fontSize={{ base: "2.75rem", md: "3xl" }}
       >
         {children}
       </Box>

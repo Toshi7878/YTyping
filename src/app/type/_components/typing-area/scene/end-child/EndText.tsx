@@ -24,7 +24,7 @@ const EndText = ({
   const playMode = gameStateRef.current!.playMode;
 
   return (
-    <Box textAlign="left" fontSize="3xl" mx={2} id="end_text">
+    <Box textAlign="left" fontSize={{ base: "3rem", md: "3xl" }} mx={2} id="end_text">
       {isPerfect && playMode === "playing" && <Text as="span">パーフェクト！！</Text>}
       <Text as="span">
         {playMode === "practice" ? (

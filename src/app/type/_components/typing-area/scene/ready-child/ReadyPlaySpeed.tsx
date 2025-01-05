@@ -1,10 +1,10 @@
-import { useVideoSpeedChange } from "@/app/type/hooks/useVideoSpeedChange";
 import { useSceneAtom, useTypePageSpeedAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { Box, Button, HStack, Text, useTheme } from "@chakra-ui/react";
+import { Box, HStack, Text, useTheme } from "@chakra-ui/react";
 import React, { useEffect } from "react";
+import SpeedChangeButton from "./child/SpeedChangeButton";
 
 interface ReadyPlaySpeedProps {
   speedUpButtonRef: React.RefObject<HTMLButtonElement>;
@@ -13,7 +13,6 @@ interface ReadyPlaySpeedProps {
 const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   const speedData = useTypePageSpeedAtom();
   const scene = useSceneAtom();
-  const { defaultSpeedChange } = useVideoSpeedChange();
   const { gameStateRef } = useRefs();
   const theme: ThemeColors = useTheme();
 
@@ -33,6 +32,7 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
       borderColor={theme.colors.border.card}
       border="1px solid"
       px={8}
+      py={{ base: 6, md: 3 }}
       className="rounded-lg"
       boxShadow="md"
     >
@@ -41,47 +41,25 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
         placement="top"
         isDisabled={speedData.defaultSpeed > 1}
       >
-        <Box>
-          <Button
-            variant="link"
-            colorScheme="cyan"
-            ref={props.speedDownButtonRef}
-            style={{ textDecoration: "none" }} // 下線非表示
-            onClick={() => defaultSpeedChange("down")}
-          >
-            <Box position="relative" fontSize="3xl" top="4px">
-              -
-              <Text as="small" className="f-key">
-                F9
-              </Text>
-            </Box>
-          </Button>
-        </Box>
+        <SpeedChangeButton
+          buttonRef={props.speedDownButtonRef}
+          buttonLabel={{ text: "-", key: "F9" }}
+          type="down"
+        />
       </CustomToolTip>
 
-      <Box fontWeight="bold" mx={8} fontSize="4xl">
+      <Box fontWeight="bold" mx={8} fontSize={{ base: "3rem", md: "4xl" }}>
         <Text as="span" id="speed">
           {speedData.defaultSpeed.toFixed(2)}
         </Text>
         倍速
       </Box>
 
-      <Box>
-        <Button
-          variant="link"
-          colorScheme="cyan"
-          ref={props.speedUpButtonRef}
-          style={{ textDecoration: "none" }} // 下線非表示
-          onClick={() => defaultSpeedChange("up")}
-        >
-          <Box position="relative" fontSize="3xl" top="4px">
-            +
-            <Text as="small" className="f-key">
-              F10
-            </Text>
-          </Box>
-        </Button>
-      </Box>
+      <SpeedChangeButton
+        buttonRef={props.speedUpButtonRef}
+        buttonLabel={{ text: "+", key: "F10" }}
+        type="up"
+      />
     </HStack>
   );
 };

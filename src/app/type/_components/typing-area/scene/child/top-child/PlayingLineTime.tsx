@@ -4,7 +4,7 @@ import LineRemainTimeText from "./child/LineRemainTimeText";
 
 const PlayingLineTime = () => {
   return (
-    <Box fontSize={{ base: "3.5rem", sm: "2.7rem", md: "3xl" }}>
+    <Box>
       <LineKpmText />
       <Text as="span" ms={1} letterSpacing="1.5px">
         kpm

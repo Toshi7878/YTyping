@@ -1,21 +1,19 @@
 import { ThemeColors } from "@/types";
-import { Box, Text, useTheme } from "@chakra-ui/react";
-import React from "react";
+import { Box, BoxProps, Text, useTheme } from "@chakra-ui/react";
 
 interface WordProps {
   correct: string;
   nextChar: string;
   word: string;
-  className?: string;
   id: string;
 }
 
-const PlayingWord = ({ correct, nextChar, word, className, id = "" }: WordProps) => {
+const PlayingWord = ({ correct, nextChar, word, ...rest }: WordProps & BoxProps) => {
   const remainWord = nextChar + word;
   const theme: ThemeColors = useTheme();
 
   return (
-    <Box id={id} className={className}>
+    <Box {...rest}>
       <Text
         as="span"
         color={

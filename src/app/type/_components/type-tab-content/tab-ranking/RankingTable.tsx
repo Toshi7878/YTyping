@@ -21,8 +21,8 @@ const RankingTable = (props: RankingTableProps) => {
           border: "none",
           borderBottom: "1px",
           borderColor: `${theme.colors.border.card}cc`,
-          paddingY: "0.6rem",
-          fontSize: "1.13rem",
+          paddingY: { base: "1.2rem", md: "0.6rem" },
+          fontSize: { base: "2rem", md: "1.13rem" },
         },
         th: {
           borderBottom: "1px",
