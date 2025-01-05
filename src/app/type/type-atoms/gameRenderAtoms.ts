@@ -17,6 +17,7 @@ const typeAtomStore = getTypeAtomStore();
 
 export const mapAtom = atom<CreateMap | null>(null);
 
+export const youtubePlayerContainerAtom = atom<HTMLDivElement | null>(null);
 export const useMapAtom = () => {
   return useAtomValue(mapAtom);
 };

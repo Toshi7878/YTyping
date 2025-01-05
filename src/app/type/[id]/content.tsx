@@ -56,6 +56,7 @@ function Content({ mapInfo }: ContentProps) {
   const setChangeCSSCount = useSetChangeCSSCountAtom();
   const setPlayingInputMode = useSetPlayingInputModeAtom();
   const utils = clientApi.useUtils();
+  const layoutMode = useBreakpointValue({ base: "column", md: "row" });
 
   useEffect(() => {
     window.addEventListener("keydown", disableKeyHandle);
@@ -92,8 +93,6 @@ function Content({ mapInfo }: ContentProps) {
     height: `${CONTENT_HEIGHT}px`,
   };
 
-  const layoutMode = useBreakpointValue({ base: "column", md: "row" });
-
   return (
     <LoadingOverlayWrapper active={isLoadingOverlay} spinner={true} text="Loading...">
       <Flex
@@ -108,13 +107,13 @@ function Content({ mapInfo }: ContentProps) {
         <Box style={style}>
           <Flex direction="column">
             <Flex gap="6">
-              {layoutMode === "row" && (
+              <Box display={layoutMode === "row" ? "block" : "none"}>
                 <TypeYouTubeContent
+                  className="w-[513px]"
                   isMapLoading={isLoading}
-                  className={`w-[513px] aspect-video mt-2`}
                   videoId={videoId}
                 />
-              )}
+              </Box>
               <Box flex={{ base: "8" }} flexDirection="column">
                 <TypeTabContent />
               </Box>
@@ -123,15 +122,9 @@ function Content({ mapInfo }: ContentProps) {
               <TypingCard />
             </Box>
 
-            {layoutMode === "column" && (
-              <Box mt={5}>
-                <TypeYouTubeContent
-                  isMapLoading={isLoading}
-                  className={`aspect-video mt-2`}
-                  videoId={videoId}
-                />
-              </Box>
-            )}
+            <Box mt={5} display={layoutMode === "column" ? "block" : "none"}>
+              <TypeYouTubeContent className="" isMapLoading={isLoading} videoId={videoId} />
+            </Box>
           </Flex>
         </Box>
       </Flex>

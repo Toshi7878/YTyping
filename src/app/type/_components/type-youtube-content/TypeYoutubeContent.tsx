@@ -1,5 +1,4 @@
 "use client";
-import { Box } from "@chakra-ui/react";
 import { useStore } from "jotai";
 import { useCallback, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -16,14 +15,14 @@ import { sceneAtom } from "../../type-atoms/gameRenderAtoms";
 
 interface TypeYouTubeProps {
   isMapLoading: boolean;
-  className: string;
   videoId: string;
+  className?: string;
 }
 
 const TypeYouTubeContent = function YouTubeContent({
   isMapLoading,
-  className,
   videoId,
+  className = "",
 }: TypeYouTubeProps) {
   const typeAtomStore = useStore();
 
@@ -71,7 +70,7 @@ const TypeYouTubeContent = function YouTubeContent({
   const memoizedYouTube = useMemo(
     () => (
       <YouTube
-        className={`${className} `}
+        className={`${className} aspect-video mt-2 select-none`}
         videoId={videoId}
         opts={{
           width: "100%",
@@ -94,15 +93,13 @@ const TypeYouTubeContent = function YouTubeContent({
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [className, videoId]
+    [videoId]
   );
 
   return (
-    <Box style={{ userSelect: "none" }}>
-      <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
-        {memoizedYouTube}
-      </LoadingOverlayWrapper>
-    </Box>
+    <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
+      {memoizedYouTube}
+    </LoadingOverlayWrapper>
   );
 };
 
