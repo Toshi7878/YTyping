@@ -2,7 +2,7 @@ import { PREVIEW_DISABLE_PATHNAMES } from "@/config/global-consts";
 import { Image } from "@chakra-ui/next-js";
 import { Box, BoxProps, useBreakpointValue } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
-import ThumbnailPreviewCover from "./child/ThumbnailPreviewCover";
+import ThumbnailPreviewCover from "../map-card/child/child/ThumbnailPreviewCover";
 
 interface MapLeftThumbnailProps extends BoxProps {
   src?: string;

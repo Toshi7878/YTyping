@@ -1,4 +1,4 @@
-import Header from "@/components/header/Header";
+import Header from "@/app/_components/header/Header";
 import "@/styles/globals.css";
 import "@/styles/nprogress.css";
 import { Analytics } from "@vercel/analytics/react";

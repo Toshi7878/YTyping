@@ -1,9 +1,9 @@
+import { extractYouTubeVideoId } from "@/app/_components/header/child/right-child/new-map/extractYTId";
 import {
   useSetIsEditYTStartedAtom,
   useSetVideoIdAtom,
   useVideoIdAtom,
 } from "@/app/edit/edit-atom/editAtom";
-import { extractYouTubeVideoId } from "@/components/header/child/right-child/new-map/extractYTId";
 import { ThemeColors } from "@/types";
 import {
   Button,

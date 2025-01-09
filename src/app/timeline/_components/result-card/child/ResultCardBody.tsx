@@ -1,6 +1,6 @@
 import { TIMELINE_THUBNAIL_HEIGHT, TIMELINE_THUBNAIL_WIDTH } from "@/app/timeline/ts/const/consts";
 import { ResultCardInfo } from "@/app/timeline/ts/type";
-import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
+import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { Flex, FlexProps } from "@chakra-ui/react";
 import LikeCountIcon from "../../../../../components/map-icons/LikeCountIcon";
 import RankingCountIcon from "../../../../../components/map-icons/RankingCountIcon";
@@ -58,7 +58,9 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
             />
           )}
 
-          {result && <MapIcons result={result} top={"142px"} right={"30px"} display={columnDisplay}/>}
+          {result && (
+            <MapIcons result={result} top={"142px"} right={"30px"} display={columnDisplay} />
+          )}
         </Flex>
         <Flex justifyContent="flex-end" minW="fit-content" display={rowDisplay}>
           <MapResultBadges result={result} />

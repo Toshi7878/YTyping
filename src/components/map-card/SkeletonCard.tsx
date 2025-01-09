@@ -1,6 +1,6 @@
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "@/app/(home)/ts/const/consts";
+import MapLeftThumbnail from "../share-components/MapCardThumbnail";
 import MapCard from "./MapCard";
-import MapLeftThumbnail from "./child/MapCardLeftThumbnail";
 import MapCardRightInfo from "./child/MapCardRightInfo";
 
 function SkeletonCard() {

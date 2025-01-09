@@ -1,8 +1,8 @@
 "use client";
 import SkeletonCard from "@/components/map-card/SkeletonCard";
-import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
+import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
@@ -95,7 +95,7 @@ function MapList() {
                 </MapCardRightInfo>
               </MapCard>
             );
-          }),
+          })
         )}
       </MapCardLayout>
     </InfiniteScroll>

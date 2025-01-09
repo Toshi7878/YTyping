@@ -8,10 +8,10 @@ import { Box, Flex, Stack, useTheme } from "@chakra-ui/react";
 import MapBadges from "./MapBadgesLayout";
 import MapCreateUser from "./MapCreateUser";
 
-interface MapCardProps {
+interface MapInfoProps {
   map: RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 }
-function MapInfo({ map }: MapCardProps) {
+function MapInfo({ map }: MapInfoProps) {
   const theme: ThemeColors = useTheme();
   const handleLinkClick = useLinkClick();
 

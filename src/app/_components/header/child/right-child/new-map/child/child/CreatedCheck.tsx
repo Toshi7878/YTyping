@@ -1,8 +1,8 @@
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "@/app/(home)/ts/const/consts";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
-import MapLeftThumbnail from "@/components/map-card/child/MapCardLeftThumbnail";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapCard from "@/components/map-card/MapCard";
+import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { clientApi } from "@/trpc/client-api";
 import { Box, Spinner } from "@chakra-ui/react";
 
