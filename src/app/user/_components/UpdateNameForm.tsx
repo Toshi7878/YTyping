@@ -41,7 +41,7 @@ export const UpdateNameForm = ({
   const router = useRouter();
   const {
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
     watch,
   } = useForm({
@@ -139,9 +139,7 @@ export const UpdateNameForm = ({
         isLoading={updateName.isPending}
         type="submit"
         width="full"
-        disabled={
-          !!errors.newName?.message || nameState !== "unique" || session?.user.name === newNameValue
-        }
+        disabled={!!errors.newName?.message || nameState !== "unique" || !isDirty}
       >
         {buttonLabel}
       </Button>
