@@ -1,9 +1,9 @@
 import { TIMELINE_THUBNAIL_HEIGHT, TIMELINE_THUBNAIL_WIDTH } from "@/app/timeline/ts/const/consts";
 import { ResultCardInfo } from "@/app/timeline/ts/type";
+import LikeCountIcon from "@/components/share-components/map-icons/LikeCountIcon";
+import RankingCountIcon from "@/components/share-components/map-icons/RankingCountIcon";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { Flex, FlexProps } from "@chakra-ui/react";
-import LikeCountIcon from "../../../../../components/map-icons/LikeCountIcon";
-import RankingCountIcon from "../../../../../components/map-icons/RankingCountIcon";
 import MapInfo from "./child/MapInfo";
 import { MapResultBadges } from "./child/MapResultBadgesLayout";
 import UserRank from "./child/UserRank";

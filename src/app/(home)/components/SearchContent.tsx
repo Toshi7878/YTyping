@@ -1,5 +1,5 @@
+import { useGlobalRefs } from "@/app/_components/global-provider/GlobalRefProvider";
 import VolumeRange from "@/components/custom-ui/VolumeRange";
-import { useGlobalRefs } from "@/components/global-provider/GlobalRefProvider";
 import { Box, Flex } from "@chakra-ui/react";
 import SearchInputs from "./search/SearchInputs";
 

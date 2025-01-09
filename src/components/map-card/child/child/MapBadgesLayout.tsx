@@ -1,5 +1,5 @@
-import LikeCountIcon from "@/components/map-icons/LikeCountIcon";
-import RankingCountIcon from "@/components/map-icons/RankingCountIcon";
+import LikeCountIcon from "@/components/share-components/map-icons/LikeCountIcon";
+import RankingCountIcon from "@/components/share-components/map-icons/RankingCountIcon";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Flex, HStack, Text } from "@chakra-ui/react";
 import MapBadge from "./MapBadge";

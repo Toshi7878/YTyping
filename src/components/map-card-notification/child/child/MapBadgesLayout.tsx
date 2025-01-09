@@ -1,7 +1,7 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import MapBadge from "@/components/map-card/child/child/MapBadge";
-import LikeCountIcon from "@/components/map-icons/LikeCountIcon";
-import RankingCountIcon from "@/components/map-icons/RankingCountIcon";
+import LikeCountIcon from "@/components/share-components/map-icons/LikeCountIcon";
+import RankingCountIcon from "@/components/share-components/map-icons/RankingCountIcon";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, HStack, Text } from "@chakra-ui/react";
 
