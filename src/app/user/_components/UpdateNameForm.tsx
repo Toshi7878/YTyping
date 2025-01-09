@@ -79,7 +79,7 @@ export const UpdateNameForm = ({
     });
   };
   useEffect(() => {
-    if (!errors.newName && session?.user.name !== newNameValue && newNameValue) {
+    if (!errors.newName && isDirty && newNameValue) {
       setNameState("pending");
       debounce(async () => {
         const result = await checkNewName.mutateAsync({
@@ -116,7 +116,7 @@ export const UpdateNameForm = ({
         ) : (
           <Text
             as="span"
-            visibility={session?.user.name !== newNameValue && newNameValue ? "visible" : "hidden"}
+            visibility={isDirty && newNameValue ? "visible" : "hidden"}
             color={
               nameState === "duplicate" ? theme.colors.error.light : theme.colors.secondary.light
             }
