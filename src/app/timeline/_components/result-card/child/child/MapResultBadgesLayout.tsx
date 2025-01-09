@@ -1,6 +1,6 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
-import ClearRateText from "@/components/user-result-text/ClearRateText";
-import { UserInputModeText } from "@/components/user-result-text/UserInputModeText";
+import ClearRateText from "@/components/share-components/text/ClearRateText";
+import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";
 import { ThemeColors } from "@/types";
 import { Flex, FlexProps, Stack, Text, useTheme, VStack } from "@chakra-ui/react";
 import ResultBadge from "./child/ResultBadge";

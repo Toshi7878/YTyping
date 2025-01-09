@@ -9,7 +9,7 @@ import { fonts } from "../lib/fonts";
 import type { Metadata } from "next";
 import ThemeProvider from "../components/global-provider/ThemeProvider";
 
-import PreviewYouTubeContent from "@/components/custom-ui/PreviewYouTubeContent";
+import PreviewYouTubeContent from "@/app/_components/PreviewYouTubeContent";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { SessionProvider } from "next-auth/react";

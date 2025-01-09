@@ -1,8 +1,8 @@
+import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { FaRankingStar } from "react-icons/fa6";
-import CustomToolTip from "../custom-ui/CustomToolTip";
 
 interface RankingCountProps {
   myRank: number | undefined;
