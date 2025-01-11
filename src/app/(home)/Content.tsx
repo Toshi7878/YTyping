@@ -1,8 +1,7 @@
 "use client";
 import { Box } from "@chakra-ui/react";
-import MapList from "./components/MapList";
 import { useEffect } from "react";
-import React from "react";
+import MapList from "./components/MapList";
 import SearchContent from "./components/SearchContent";
 
 export default function Content() {
