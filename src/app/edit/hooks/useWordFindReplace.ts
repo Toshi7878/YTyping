@@ -1,7 +1,7 @@
 import { Action } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
-import { useSetCanUploadAtom } from "../edit-atom/editAtom";
+import { useSetCanUploadAtom, useSetIsMapDataEditedAtom } from "../edit-atom/editAtom";
 import { RefsContextType, useRefs } from "../edit-contexts/refsProvider";
 import { updateLine } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
@@ -12,30 +12,41 @@ export const useWordFindReplace = () => {
   const dispatch = useDispatch();
   const editReduxStore = useReduxStore<RootState>();
   const setCanUpload = useSetCanUploadAtom();
+  const setIsMapDataEdited = useSetIsMapDataEditedAtom();
 
   return () => {
     const mapData = editReduxStore.getState().mapData.value;
-    new WordReplace(mapData, tbodyRef, dispatch, setCanUpload).wordSearchReplace();
+    new WordReplace(
+      mapData,
+      tbodyRef,
+      dispatch,
+      setCanUpload,
+      setIsMapDataEdited
+    ).wordSearchReplace();
   };
 };
+
 class WordReplace {
   mapData: RootState["mapData"]["value"];
   tbodyRef: RefsContextType["tbodyRef"];
   dispatch: Dispatch<Action>;
   setCanUpload: Dispatch<boolean>;
   newWord: string;
+  setIsMapDataEdited: Dispatch<boolean>;
 
   constructor(
     mapData: RootState["mapData"]["value"],
     tbodyRef: RefsContextType["tbodyRef"],
     dispatch: Dispatch<Action>,
     setCanUpload: Dispatch<boolean>,
+    setIsMapDataEdited: Dispatch<boolean>
   ) {
     this.mapData = mapData;
     this.tbodyRef = tbodyRef;
     this.dispatch = dispatch;
     this.setCanUpload = setCanUpload;
     this.newWord = "";
+    this.setIsMapDataEdited = setIsMapDataEdited;
   }
 
   async wordSearchReplace() {
@@ -54,7 +65,7 @@ class WordReplace {
     const searchReg = new RegExp(`${replace ? `(?!${replace})` : ""}${search}`, "g");
 
     if (search && replace.match(search)) {
-      alert("sorry...置き換えする文字に検索する文字が含まないようにしてください。");
+      alert("sorry...置き換えする文字に検索する文字が含まれないようにしてください。");
       return;
     }
     for (let i = 0, len = this.mapData.length; i < len; i++) {
@@ -156,6 +167,7 @@ class WordReplace {
           });
 
           this.setCanUpload(true);
+          this.setIsMapDataEdited(true);
           this.dispatch(
             addHistory({
               type: "update",
@@ -164,7 +176,7 @@ class WordReplace {
                 new: { time, lyrics, word: newWord },
                 lineNumber: i,
               },
-            }),
+            })
           );
 
           this.newWord = newWord;
