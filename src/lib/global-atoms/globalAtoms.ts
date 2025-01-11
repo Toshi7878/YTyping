@@ -14,7 +14,7 @@ const getInitialTheme = (): "light" | "dark" => {
 
 export const themeAtom = atom<"light" | "dark">(getInitialTheme());
 
-const volumeAtom = atomWithStorage<number>("volume", DEFAULT_VOLUME);
+export const volumeAtom = atomWithStorage<number>("volume", DEFAULT_VOLUME);
 
 export const useVolumeAtom = () => {
   return useAtomValue(volumeAtom, { store: globalAtomStore });
