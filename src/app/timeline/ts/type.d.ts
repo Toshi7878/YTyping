@@ -1,3 +1,5 @@
+import { $Enums } from "@prisma/client";
+
 export type FilterMode = "all" | "roma" | "kana" | "romakana";
 
 export interface ResultCardInfo {
@@ -25,7 +27,7 @@ export interface ResultCardInfo {
     artistName: string;
     musicSource: string;
     previewTime: string;
-    thumbnailQuality: "maxresdefault" | "mqdefault";
+    thumbnailQuality: $Enums.ThumbnailQuality;
     updatedAt: Date;
     likeCount: number;
     rankingCount: number;

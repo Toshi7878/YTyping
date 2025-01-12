@@ -5,6 +5,7 @@ import {
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
+import { $Enums } from "@prisma/client";
 import React from "react";
 
 const UserShortcutKeyCheckbox = () => {
@@ -13,7 +14,7 @@ const UserShortcutKeyCheckbox = () => {
   const setIsOptionEdited = useSetIsOptionEdited();
 
   const changeTimeOffsetKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value; // 選択された値を取得
+    const value = event.target.value as $Enums.TimeOffsetKey;
     const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
       ...userOptionsAtom,
       timeOffsetKey: value, // 選択された値を設定
@@ -23,7 +24,7 @@ const UserShortcutKeyCheckbox = () => {
   };
 
   const changeInputModeKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value; // 選択された値を取得
+    const value = event.target.value as $Enums.ToggleInputModeKey; // 選択された値を取得
     const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
       ...userOptionsAtom,
       toggleInputModeKey: value, // 選択された値を設定
@@ -43,9 +44,9 @@ const UserShortcutKeyCheckbox = () => {
             width="fit-content"
             defaultValue={userOptionsAtom.timeOffsetKey}
           >
-            <option value="ctrl-left-right">Ctrl+←→</option>
-            <option value="ctrl-alt-left-right">Ctrl+Alt+←→</option>
-            <option value="none">無効化</option>
+            <option value="CTRL_LEFT_RIGHT">Ctrl+←→</option>
+            <option value="CTRL_ALT_LEFT_RIGHT">Ctrl+Alt+←→</option>
+            <option value="NONE">無効化</option>
           </Select>
         </Flex>
         <Flex alignItems="baseline">
@@ -55,9 +56,9 @@ const UserShortcutKeyCheckbox = () => {
             width="fit-content"
             defaultValue={userOptionsAtom.toggleInputModeKey}
           >
-            <option value="alt-kana">Alt+Kana</option>
-            <option value="tab">Tab</option>
-            <option value="none">無効化</option>
+            <option value="ALT_KANA">Alt+Kana</option>
+            <option value="TAB">Tab</option>
+            <option value="NONE">無効化</option>
           </Select>
         </Flex>
       </Box>
