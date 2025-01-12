@@ -113,12 +113,17 @@ model MapLike {
     @@unique([userId, mapId]) // 複合ユニーク制約を追加
 }
 
+
+enum Action {
+  LIKE
+  OVER_TAKE
+}
 model Notification {
   id             Int @id @default(autoincrement())
   visitor_id     Int
   visited_id     Int
   mapId          Int
-  action         String  // like, ot(overtake)
+  action         Action @default(OVER_TAKE)
   oldRank        Int?
   checked        Boolean @default(false)
   createdAt      DateTime @default(now()) @unique
