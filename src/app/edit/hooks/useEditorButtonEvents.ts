@@ -204,6 +204,7 @@ export const useWordConvertButtonEvent = () => {
 };
 
 export const useLineDelete = () => {
+  const {tbodyRef} = useRefs();
   const editAtomStore = useJotaiStore();
   const editReduxStore = useReduxStore<RootState>();
   const setCanUpload = useSetCanUploadAtom();
@@ -242,6 +243,11 @@ export const useLineDelete = () => {
       }
     }
 
+    const selectedLine = tbodyRef.current!.querySelector(".selected-line");
+
+    if (selectedLine) {
+      selectedLine.classList.remove("selected-line");
+    }
     setDirectEdit(null);
     lineInputReducer({ type: "reset" });
   };
