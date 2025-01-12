@@ -16,7 +16,6 @@ const MobileCover = () => {
       } else {
         playerRef.current?.pauseVideo();
       }
-      window.scrollTo(0, 0);
 
       (document.activeElement as HTMLElement)?.blur();
     },

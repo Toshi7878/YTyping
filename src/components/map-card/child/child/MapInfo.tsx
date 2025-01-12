@@ -24,6 +24,7 @@ function MapInfo({ map }: MapInfoProps) {
       _hover={{ textDecoration: "none" }}
       href={`/type/${map.id}`}
       onClick={handleLinkClick}
+      scroll={false}
     >
       <Flex direction="column" gap={1}>
         <CustomToolTip
