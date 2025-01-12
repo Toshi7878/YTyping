@@ -38,7 +38,7 @@ interface ContentProps {
 
 function Content({ mapInfo }: ContentProps) {
   const { scale } = useWindowScale();
-  const { videoId, title, creatorComment, tags, updatedAt } = mapInfo!;
+  const { videoId, title, creatorComment, tags } = mapInfo!;
   const { id: mapId } = useParams();
   const setMap = useSetMapAtom();
   const setScene = useSetSceneAtom();
