@@ -1,6 +1,7 @@
 import clearTypeSound from "@/asset/wav/clear_type.wav";
 import typeSound from "@/asset/wav/key_type.wav";
 import missSound from "@/asset/wav/miss_type.wav";
+import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
 import { getGlobalAtomStore, volumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { sound } from "@pixi/sound";
 import { useStore } from "jotai";
@@ -14,11 +15,8 @@ const manifest = [
 ];
 
 export const useSoundEffect = () => {
-  const isIOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
 
   const globalAtomStore = getGlobalAtomStore();
-
   const typeAtomStore = useStore();
 
   useEffect(() => {
@@ -32,19 +30,26 @@ export const useSoundEffect = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const calcVolume = () => {
+
+    const volume = (IS_IOS || IS_ANDROID? 100 : globalAtomStore.get(volumeAtom)) / 100;
+
+    return volume
+  }
   const clearTypeSoundPlay = () => {
-    const volume = (isIOS || isAndroid ? 100 : globalAtomStore.get(volumeAtom)) / 100;
+    const volume = calcVolume()
     sound.play("lineClear", { volume });
   };
 
   const typeSoundPlay = () => {
-    const volume = (isIOS || isAndroid ? 100 : globalAtomStore.get(volumeAtom)) / 100;
+    const volume = calcVolume()
 
     sound.play("type", { volume });
   };
 
   const missSoundPlay = () => {
-    const volume = (isIOS || isAndroid ? 100 : globalAtomStore.get(volumeAtom)) / 100;
+    const volume = calcVolume()
 
     sound.play("miss", { volume });
   };

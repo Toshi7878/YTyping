@@ -1,5 +1,5 @@
 "use client";
-import { QUERY_KEYS } from "@/config/global-consts";
+import { IS_ANDROID, IS_IOS, QUERY_KEYS } from "@/config/global-consts";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
@@ -9,10 +9,12 @@ import { useParams } from "next/navigation";
 import { CSSProperties, useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import TypeTabContent from "../_components/type-tab-content/TypeTab";
+import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
 import { useDownloadMapDataJsonQuery } from "../hooks/data-query/useDownloadMapDataJsonQuery";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
+import useWindowScale, { CONTENT_HEIGHT, CONTENT_WIDTH } from "../hooks/useWindowScale";
 import { InputModeType } from "../ts/type";
 import {
   useIsLoadingOverlayAtom,
@@ -29,7 +31,6 @@ import {
   useSetTimeOffsetAtom,
   useSetTypePageSpeedAtom,
 } from "../type-atoms/gameRenderAtoms";
-import useWindowScale, { CONTENT_HEIGHT, CONTENT_WIDTH } from "./windowScale";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -37,7 +38,7 @@ interface ContentProps {
 
 function Content({ mapInfo }: ContentProps) {
   const { scale } = useWindowScale();
-  const { videoId, title, creatorComment, tags, updatedAt } = mapInfo!;
+  const { videoId, title, creatorComment, tags } = mapInfo!;
   const { id: mapId } = useParams();
   const setMap = useSetMapAtom();
   const setScene = useSetSceneAtom();
@@ -66,7 +67,6 @@ function Content({ mapInfo }: ContentProps) {
       // コンポーネントのアンマウント時にクエリキャッシュをクリア
       queryClient.removeQueries({ queryKey: QUERY_KEYS.mapData(mapId) });
       utils.ranking.getMapRanking.invalidate();
-
       setMap(null);
       setScene(RESET);
       setNotify(RESET);
@@ -103,12 +103,15 @@ function Content({ mapInfo }: ContentProps) {
         pt={{ base: 12, md: 16 }}
         width="100%"
         height="100vh"
+        overflowX={"hidden"}
       >
         <Box style={style}>
           <Flex direction="column">
             <Flex width="100%" gap="6">
               {layoutMode === "row" && (
-                <Box>
+                <Box position="relative">
+                  {(IS_IOS || IS_ANDROID) && <MobileCover />}
+
                   <TypeYouTubeContent
                     className="w-[513px]"
                     isMapLoading={isLoading}
@@ -125,7 +128,8 @@ function Content({ mapInfo }: ContentProps) {
             </Box>
 
             {layoutMode === "column" && (
-              <Box mt={5}>
+              <Box mt={5} position="relative">
+                {(IS_IOS || IS_ANDROID) && <MobileCover />}
                 <TypeYouTubeContent isMapLoading={isLoading} videoId={videoId} />
               </Box>
             )}

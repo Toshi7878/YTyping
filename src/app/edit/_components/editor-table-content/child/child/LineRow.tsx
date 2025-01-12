@@ -11,6 +11,7 @@ import {
   useSetTabIndexAtom,
 } from "@/app/edit/edit-atom/editAtom";
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
+import { useChangeLineRowColor } from "@/app/edit/hooks/useChangeLineRowColor";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useEditorButtonEvents";
 import { RootState } from "@/app/edit/redux/store";
 import { LineEdit, ThemeColors } from "@/types";
@@ -44,12 +45,12 @@ function LineRow({
   const lineInputReducer = useLineInputReducer();
   const directEdit = useEditDirectEditCountAtom();
   const setDirectEdit = useSetEditDirectEditCountAtom();
-  const { playerRef, tbodyRef } = useRefs();
+  const { playerRef } = useRefs();
   const theme: ThemeColors = useTheme();
   const mapData = useSelector((state: RootState) => state.mapData.value);
 
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
-
+  const { allUpdateSelectColor } = useChangeLineRowColor();
   const selectLine = useCallback(
     (event: React.MouseEvent<HTMLTableRowElement>, selectCount: number) => {
       const time = mapData[selectCount].time;
@@ -80,17 +81,7 @@ function LineRow({
       }
 
       setLineSelectedCount(selectCount);
-      const tbodyChildren = tbodyRef.current?.children;
-      if (tbodyChildren) {
-        for (let i = 0; i < tbodyChildren.length; i++) {
-          const trElement = tbodyChildren[i] as HTMLElement;
-          if (trElement.getAttribute("data-line-index") === String(selectCount)) {
-            trElement.classList.add("selected-line");
-          } else {
-            trElement.classList.remove("selected-line");
-          }
-        }
-      }
+      allUpdateSelectColor(selectCount);
       lineInputReducer({ type: "set", payload: { time, lyrics, word, selectCount } });
     },
 

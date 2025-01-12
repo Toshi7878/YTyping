@@ -5,6 +5,7 @@ import {
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import VolumeRange from "@/components/custom-ui/VolumeRange";
+import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, Divider, useTheme } from "@chakra-ui/react";
@@ -24,8 +25,6 @@ const SettingCard = (props: SettingCardProps) => {
   const { playerRef } = useRefs();
   const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
-  const isIOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
   const typeAtomStore = useStore();
   const updateTypingOptions = clientApi.userTypingOption.update.useMutation();
 
@@ -78,8 +77,8 @@ const SettingCard = (props: SettingCardProps) => {
           fontSize={"lg"}
         >
           <CardBody>
-            {!isIOS && !isAndroid && <VolumeRange playerRef={playerRef} />}
-            {!isIOS && !isAndroid && <Divider bg={theme.colors.text.body} my={3} />}
+            {!IS_IOS && !IS_ANDROID && <VolumeRange playerRef={playerRef} />}
+            {!IS_IOS && !IS_ANDROID && <Divider bg={theme.colors.text.body} my={3} />}
             <UserTimeOffsetChange />
             <Divider bg={theme.colors.text.body} my={3} />
             <UserSoundEffectCheckbox />

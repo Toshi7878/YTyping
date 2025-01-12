@@ -1,12 +1,11 @@
 import { useGlobalRefs } from "@/app/_components/global-provider/GlobalRefProvider";
 import VolumeRange from "@/components/custom-ui/VolumeRange";
+import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
 import { Box, Flex } from "@chakra-ui/react";
 import SearchInputs from "./child/SearchInputs";
 import SearchCard from "./child/SearchModal";
 
 const SearchContent = () => {
-  const isIOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
   const { playerRef } = useGlobalRefs();
 
   return (
@@ -17,7 +16,7 @@ const SearchContent = () => {
         </Box>
         <Flex justifyContent="space-between">
           <SearchCard />
-          {!isIOS && !isAndroid && (
+          {!IS_IOS && !IS_ANDROID && (
             <Flex justifyContent="flex-end">
               <VolumeRange playerRef={playerRef} />
             </Flex>
