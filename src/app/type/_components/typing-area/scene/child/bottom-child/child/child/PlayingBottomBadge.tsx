@@ -23,7 +23,7 @@ const PlayingBottomBadge = function (props: PlayingBottomBadgeProps) {
         {props.badgeText}
       </CustomBadge>
 
-      <CustomKbd onClick={props.onClick} isDisabled={isDisabled} isKbdHidden={props.isKbdHidden}>
+      <CustomKbd onClick={props.onClick} isDisabled={isDisabled} hidden={props.isKbdHidden}>
         {props.kbdText}
       </CustomKbd>
     </HStack>

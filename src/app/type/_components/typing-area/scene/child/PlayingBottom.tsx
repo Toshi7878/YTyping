@@ -31,6 +31,7 @@ const PlayingBottom = function () {
         mb={4}
         fontWeight="bold"
         className={`${isPlayed ? "" : "invisible"}`}
+        userSelect="none"
       >
         <PlayingBottomBadgeLayout />
       </Flex>

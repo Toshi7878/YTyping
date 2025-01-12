@@ -47,7 +47,7 @@ function Ready() {
 
   return (
     <Stack justifyContent="space-between" direction="column" minH={CARD_BODY_MIN_HEIGHT}>
-      <Box fontWeight="bold" fontSize={{ base: "2.5rem", md: "2xl" }}>
+      <Box fontWeight="bold" fontSize={{ base: "2.5rem", md: "2xl" }} userSelect="none">
         Enterキー / 動画をクリックして開始
       </Box>
       <Flex textAlign="center" fontSize="3xl" justifyContent="center">

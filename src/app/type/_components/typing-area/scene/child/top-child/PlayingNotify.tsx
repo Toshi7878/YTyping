@@ -71,6 +71,7 @@ const PlayingNotify = ({ className = "" }: PlayingNotifyProps) => {
       whiteSpace="nowrap"
       textAlign="center"
       className={`${className}`}
+      userSelect="none"
     >
       {notify.description && NON_ANIMATED.includes(notify.description) ? (
         <Box
