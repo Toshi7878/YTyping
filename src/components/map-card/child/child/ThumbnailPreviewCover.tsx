@@ -1,4 +1,3 @@
-import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
 import {
   usePreviewVideoIdAtom,
   useSetPreviewSpeedAtom,
@@ -26,17 +25,20 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
 
   const previewYouTube = useCallback(
     () => {
-      if (mapVideoId !== videoId) {
-        setVideoId(mapVideoId);
-        setPreviewTime(mapPreviewTime);
-      } else {
-        setVideoId(null);
-        setPreviewTime(RESET);
+      if (!isTouchMove) {
+        if (mapVideoId !== videoId) {
+          setVideoId(mapVideoId);
+          setPreviewTime(mapPreviewTime);
+        } else {
+          setVideoId(null);
+          setPreviewTime(RESET);
+        }
+        setPreviewSpeed(mapPreviewSpeed);
       }
-      setPreviewSpeed(mapPreviewSpeed);
     },
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId]
+    [videoId, isTouchMove]
   );
   const handleTouchMove = () => {
     setIsTouchMove(true);
@@ -64,9 +66,9 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
         border: "none",
       }}
       borderRadius="lg"
-      onClick={!IS_IOS && !IS_ANDROID ? previewYouTube : undefined}
+      onClick={previewYouTube}
       onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      // onTouchEnd={handleTouchEnd}
     >
       {videoId === mapVideoId ? (
         <FaPause color="white" size={35} />
