@@ -2,17 +2,10 @@ import { Kbd, KbdProps } from "@chakra-ui/react";
 
 interface CustomKbdProps {
   isDisabled?: boolean;
-  isKbdHidden?: boolean;
   children: React.ReactNode;
 }
 
-const CustomKbd = ({
-  isDisabled,
-  isKbdHidden,
-  children,
-  onClick,
-  ...rest
-}: CustomKbdProps & KbdProps) => {
+const CustomKbd = ({ isDisabled, children, onClick, ...rest }: CustomKbdProps & KbdProps) => {
   return (
     <Kbd
       variant="typeArea"

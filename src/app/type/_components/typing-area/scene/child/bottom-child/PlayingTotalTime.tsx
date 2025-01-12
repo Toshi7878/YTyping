@@ -4,7 +4,7 @@ import VideoDurationTimeText from "./child/VideoDurationTimeText";
 
 const PlayingTotalTime = () => {
   return (
-    <Box fontFamily="mono" id="movie_time">
+    <Box fontFamily="mono" id="movie_time" userSelect="none">
       <VideoCurrentTimeText /> / <VideoDurationTimeText />
     </Box>
   );

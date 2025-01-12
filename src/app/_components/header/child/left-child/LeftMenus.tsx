@@ -22,6 +22,7 @@ function LeftMenus() {
           className="dropdown-toggle"
           fontSize="sm"
           _active={{ color: theme.colors.text.header.hover }}
+          userSelect="none"
         >
           Menu
         </MenuButton>
@@ -46,6 +47,7 @@ function LeftMenus() {
             _active={{ color: theme.colors.text.header.hover }}
             ml={5}
             onClick={handleLinkClick}
+            userSelect="none"
           >
             {link.title}
           </Link>
