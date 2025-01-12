@@ -16,8 +16,11 @@ export default async function Page({ params }: { params: { id: string } }) {
   const userTypingOptions = await serverApi.userTypingOption.getUserTypingOptions();
 
   return (
-    <TypeProvider mapInfo={mapInfo!} userTypingOptions={userTypingOptions}>
-      <Content mapInfo={mapInfo!} />
-    </TypeProvider>
+    <>
+      <div></div>
+      <TypeProvider mapInfo={mapInfo!} userTypingOptions={userTypingOptions}>
+        <Content mapInfo={mapInfo!} />
+      </TypeProvider>
+    </>
   );
 }
