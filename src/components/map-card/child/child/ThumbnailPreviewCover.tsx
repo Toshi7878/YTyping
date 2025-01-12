@@ -34,8 +34,9 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
       }
       setPreviewSpeed(mapPreviewSpeed);
     },
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId],
+    [videoId]
   );
   const handleTouchMove = () => {
     setIsTouchMove(true);
@@ -43,7 +44,9 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!isTouchMove) {
-      previewYouTube();
+      if (mapVideoId !== videoId) {
+        previewYouTube();
+      }
     }
     setIsTouchMove(false);
   };
