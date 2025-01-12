@@ -94,16 +94,16 @@ function Content({ mapInfo }: ContentProps) {
   };
 
   return (
-    <LoadingOverlayWrapper active={isLoadingOverlay} spinner={true} text="Loading...">
-      <Flex
-        as="main"
-        id="main_content"
-        flexDirection="column"
-        alignItems="center"
-        pt={{ base: 12, md: 16 }}
-        width="100%"
-        height="100vh"
-      >
+    <Flex
+      as="main"
+      id="main_content"
+      flexDirection="column"
+      alignItems="center"
+      pt={{ base: 12, md: 16 }}
+      width="100%"
+      height="100vh"
+    >
+      <LoadingOverlayWrapper active={isLoadingOverlay} spinner={true} text="Loading...">
         <Box style={style}>
           <Flex direction="column">
             <Flex width="100%" gap="6">
@@ -134,8 +134,8 @@ function Content({ mapInfo }: ContentProps) {
             )}
           </Flex>
         </Box>
-      </Flex>
-    </LoadingOverlayWrapper>
+      </LoadingOverlayWrapper>
+    </Flex>
   );
 }
 
