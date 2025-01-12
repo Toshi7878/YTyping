@@ -30,6 +30,6 @@ export const useLinkClick = () => {
     NProgress.configure({ trickle: false });
 
     NProgress.start();
-    router.push(event.currentTarget.href);
+    router.push(event.currentTarget.href,{scroll: true});
   };
 };
