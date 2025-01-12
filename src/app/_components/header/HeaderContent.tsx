@@ -10,32 +10,29 @@ interface HeaderContentProps {
 
 const HeaderContent = ({ isNewNotification }: HeaderContentProps) => {
   return (
-    <>
-      <div></div>
-      <Box
-        as="header"
-        id="header"
-        position="fixed"
-        zIndex={40}
-        bg={"background.header"}
-        width="100vw"
+    <Box
+      as="header"
+      id="header"
+      position="fixed"
+      zIndex={40}
+      bg={"background.header"}
+      width="100vw"
+    >
+      <Flex
+        width={{ base: "90%", md: "80%" }}
+        mx="auto"
+        height={10}
+        alignItems="center"
+        justifyContent="space-between"
       >
-        <Flex
-          width={{ base: "90%", md: "80%" }}
-          mx="auto"
-          height={10}
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <LeftNav />
-          <RightNav display={{ base: "none", md: "flex" }} isNewNotification={isNewNotification} />
-          <HamburgerMenu
-            display={{ base: "flex", md: "none" }}
-            isNewNotification={isNewNotification}
-          />
-        </Flex>
-      </Box>
-    </>
+        <LeftNav />
+        <RightNav display={{ base: "none", md: "flex" }} isNewNotification={isNewNotification} />
+        <HamburgerMenu
+          display={{ base: "flex", md: "none" }}
+          isNewNotification={isNewNotification}
+        />
+      </Flex>
+    </Box>
   );
 };
 

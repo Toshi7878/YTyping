@@ -16,7 +16,7 @@ const MobileCover = () => {
       } else {
         playerRef.current?.pauseVideo();
       }
-
+      window.scrollTo(0, 0); // 関数として呼び出し
       (document.activeElement as HTMLElement)?.blur();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
