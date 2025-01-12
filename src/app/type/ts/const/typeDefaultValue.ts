@@ -1,3 +1,4 @@
+import { $Enums } from "@prisma/client";
 import { GameStateRef, PlayMode, StatusRef, YTStateRef } from "../type";
 
 export const DEFAULT_STATUS_REF: StatusRef = {
@@ -56,7 +57,7 @@ export const DEFAULT_USER_OPTIONS = {
   typeSound: false,
   missSound: false,
   lineClearSound: false,
-  nextDisplay: "lyrics",
+  nextDisplay: "LYRICS" as $Enums.NextDisplay,
   timeOffsetKey: "ctrl-left-right",
   toggleInputModeKey: "alt-kana",
 };

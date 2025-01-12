@@ -3,19 +3,20 @@ import {
   useSetUserOptionsAtom,
   useUserOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
-import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { $Enums } from "@prisma/client";
 
 const UserNextDisplayRadioButton = () => {
   const setUserOptionsAtom = useSetUserOptionsAtom();
   const userOptionsAtom = useUserOptionsAtom();
   const setIsOptionEdited = useSetIsOptionEdited();
 
-  const changeRadio = (value: string) => {
-    // 引数を追加
-    const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
+  const changeRadio = (value: $Enums.NextDisplay) => {
+    if (!userOptionsAtom) return;
+
+    const newUserOptions = {
       ...userOptionsAtom,
-      nextDisplay: value, // 選択された値を設定
+      nextDisplay: value,
     };
     setUserOptionsAtom(newUserOptions);
     setIsOptionEdited(true);
@@ -27,8 +28,8 @@ const UserNextDisplayRadioButton = () => {
       </Text>
       <RadioGroup defaultValue={userOptionsAtom.nextDisplay} onChange={changeRadio}>
         <Stack direction="row" spacing={5}>
-          <Radio value="lyrics">歌詞</Radio>
-          <Radio value="word">ワード</Radio>
+          <Radio value="LYRICS">歌詞</Radio>
+          <Radio value="WORD">ワード</Radio>
         </Stack>
       </RadioGroup>
     </Box>

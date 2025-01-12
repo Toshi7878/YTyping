@@ -66,7 +66,7 @@ export const useInputModeChange = () => {
       const userOptions = typeAtomStore.get(userOptionsAtom);
 
       setNextLyrics({
-        lyrics: userOptions.nextDisplay === "word" ? nextLine.kanaWord : nextLine["lyrics"],
+        lyrics: userOptions.nextDisplay === "WORD" ? nextLine.kanaWord : nextLine["lyrics"],
         kpm: nextKpm.toFixed(0),
       });
     }

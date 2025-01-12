@@ -1,5 +1,6 @@
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
+import { NextDisplay } from "@prisma/client";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -18,7 +19,7 @@ export const userTypingOptionRouter = {
         nextDisplay: true,
         timeOffsetKey: true,
         toggleInputModeKey: true,
-      }, // 全てのカラムを取得するためにselectをnullに設定
+      },
     });
 
     return userTypingOptions;
@@ -30,7 +31,7 @@ export const userTypingOptionRouter = {
         typeSound: z.boolean(),
         missSound: z.boolean(),
         lineClearSound: z.boolean(),
-        nextDisplay: z.string(),
+        nextDisplay: z.nativeEnum(NextDisplay),
         timeOffsetKey: z.string(),
         toggleInputModeKey: z.string(),
       }),

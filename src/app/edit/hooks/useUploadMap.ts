@@ -36,7 +36,7 @@ export function useUploadMap() {
 
     const map = new CreateMap(mapData);
     const mapVideoId = playerRef.current!.getVideoData().video_id;
-    const videoDuration: number = await playerRef.current!.getDuration();
+    const videoDuration: number =  playerRef.current!.getDuration();
     const sendData = {
       videoId: mapVideoId,
       title: mapTitle,

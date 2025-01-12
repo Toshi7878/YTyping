@@ -54,13 +54,26 @@ model UserTypingStats {
     user           User   @relation(fields: [userId],   references: [id], onDelete: Cascade)
 }
 
+
+enum NextDisplay{
+  LYRICS
+  WORD
+}
+
+enum TimeOffsetKey{
+  LYRICS
+  WORD
+}
+
+
+
 model TypingOption {
-    userId         Int @unique
+    userId         Int @id @unique
     timeOffset     Float @default(0)
     typeSound      Boolean @default(false)
     missSound      Boolean @default(false)
     lineClearSound Boolean @default(false)
-    nextDisplay    String @default("lyrics")
+    nextDisplay    NextDisplay @default(LYRICS)
     timeOffsetKey  String @default("ctrl-left-right")
     toggleInputModeKey String @default("alt-kana")
     user           User   @relation(fields: [userId],   references: [id], onDelete: Cascade)

@@ -324,7 +324,7 @@ export const useUpdateLine = () => {
     if (nextKpm) {
       setNextLyrics({
         lyrics:
-          userOptions.nextDisplay === "word"
+          userOptions.nextDisplay === "WORD"
             ? map.mapData[newCount].kanaWord
             : map.mapData[newCount]["lyrics"],
         kpm: nextKpm.toFixed(0),
