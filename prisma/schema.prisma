@@ -129,6 +129,10 @@ model Notification {
 }
 
 
+enum ThumbnailQuality {
+  mqdefault
+  maxresdefault
+}
 model Map {
   id               Int @id @default(autoincrement())
   videoId          String @default("")
@@ -150,7 +154,7 @@ model Map {
   likeCount        Int @default(0)
   rankingCount     Int @default(0)
   category         String[] @default([])// "css", speedShift
-  thumbnailQuality String @default("mqdefault")
+  thumbnailQuality ThumbnailQuality @default(mqdefault)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now())
   user             User @relation(fields: [creatorId], references: [id])

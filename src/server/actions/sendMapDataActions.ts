@@ -113,6 +113,7 @@ export async function actions(
   }
 }
 
+import { ThumbnailQuality } from "@prisma/client";
 import { z } from "zod";
 
 const lineSchema = z.object({
@@ -128,7 +129,7 @@ const mapSendSchema = z.object({
   title: z.string().min(1, { message: "タイトルは１文字以上必要です" }),
   creatorComment: z.string().optional(),
   tags: z.array(z.string()).min(2, { message: "タグは2つ以上必要です" }),
-  thumbnailQuality: z.enum(["maxresdefault", "mqdefault"]),
+  thumbnailQuality: z.nativeEnum(ThumbnailQuality),
   previewTime: z
     .string()
     .min(1, { message: "プレビュータイムを設定してください。" })
