@@ -21,7 +21,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             data: {
               email_hash: hash!,
               name: null,
-              role: "user",
+              role: "USER",
             },
           });
         } catch (err) {
@@ -75,7 +75,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
 
         token.name = dbUser?.name ?? null;
-        token.role = dbUser?.role ?? "user";
+        token.role = dbUser?.role ?? "USER";
       }
 
       return token;

@@ -83,7 +83,7 @@ export async function actions(
       },
     });
 
-    if (mapId === "new" || mapCreatorId?.creatorId === userId || userRole === "admin") {
+    if (mapId === "new" || mapCreatorId?.creatorId === userId || userRole === "ADMIN") {
       newMapId = await upsertMap(data, mapId, userId, isMapDataEdited, mapData);
     } else {
       return {

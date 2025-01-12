@@ -11,6 +11,7 @@ datasource db {
 
 }
 
+
 model Result {
   id             Int @id @default(autoincrement())
   mapId          Int
@@ -117,7 +118,7 @@ model Notification {
   visitor_id     Int
   visited_id     Int
   mapId          Int
-  action         String // like, ot(overtake)
+  action         String  // like, ot(overtake)
   oldRank        Int?
   checked        Boolean @default(false)
   createdAt      DateTime @default(now()) @unique
@@ -132,6 +133,11 @@ model Notification {
 enum ThumbnailQuality {
   mqdefault
   maxresdefault
+}
+
+enum Category {
+  CSS
+  SPEED_SHIFT
 }
 model Map {
   id               Int @id @default(autoincrement())
@@ -153,7 +159,7 @@ model Map {
   playCount        Int @default(0)
   likeCount        Int @default(0)
   rankingCount     Int @default(0)
-  category         String[] @default([])// "css", speedShift
+  category         Category[] @default([])
   thumbnailQuality ThumbnailQuality @default(mqdefault)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now())
@@ -164,11 +170,15 @@ model Map {
 }
 
 
+enum Role{
+  USER
+  ADMIN
+}
 model User {
   id            Int             @id @default(autoincrement())
   name          String?         @unique
   email_hash    String          @unique
-  role          String          @default("user")
+  role          Role          @default(USER)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   maps          Map[]
