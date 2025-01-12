@@ -67,7 +67,6 @@ function Content({ mapInfo }: ContentProps) {
       // コンポーネントのアンマウント時にクエリキャッシュをクリア
       queryClient.removeQueries({ queryKey: QUERY_KEYS.mapData(mapId) });
       utils.ranking.getMapRanking.invalidate();
-      window.scrollTo(0, 0);
       setMap(null);
       setScene(RESET);
       setNotify(RESET);

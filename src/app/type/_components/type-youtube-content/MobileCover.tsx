@@ -16,6 +16,8 @@ const MobileCover = () => {
       } else {
         playerRef.current?.pauseVideo();
       }
+      window.scrollTo(0, 0);
+
       (document.activeElement as HTMLElement)?.blur();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
