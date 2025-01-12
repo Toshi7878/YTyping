@@ -44,7 +44,7 @@ const calcRank = async (mapId: number, userId: number) => {
     where: {
       visited_id: userId,
       mapId: mapId,
-      action: "ot",
+      action: "OVER_TAKE",
     },
     select: {
       visitorResult: {
@@ -69,7 +69,7 @@ const calcRank = async (mapId: number, userId: number) => {
             visitor_id: visitorId,
             visited_id: userId,
             mapId: mapId,
-            action: "ot",
+            action: "OVER_TAKE",
           },
         },
       });
@@ -99,7 +99,7 @@ const calcRank = async (mapId: number, userId: number) => {
             visitor_id: userId,
             visited_id: rankingList[i].userId,
             mapId: mapId,
-            action: "ot",
+            action: "OVER_TAKE",
           },
         },
         update: {
@@ -111,7 +111,7 @@ const calcRank = async (mapId: number, userId: number) => {
           visitor_id: userId,
           visited_id: rankingList[i].userId,
           mapId: mapId,
-          action: "ot",
+          action: "OVER_TAKE",
           oldRank: rankingList[i].rank,
         },
       });
