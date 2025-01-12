@@ -1,5 +1,5 @@
 "use client";
-import { QUERY_KEYS } from "@/config/global-consts";
+import { IS_ANDROID, IS_IOS, QUERY_KEYS } from "@/config/global-consts";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { CSSProperties, useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import TypeTabContent from "../_components/type-tab-content/TypeTab";
+import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
 import { useDownloadMapDataJsonQuery } from "../hooks/data-query/useDownloadMapDataJsonQuery";
@@ -108,7 +109,9 @@ function Content({ mapInfo }: ContentProps) {
           <Flex direction="column">
             <Flex width="100%" gap="6">
               {layoutMode === "row" && (
-                <Box>
+                <Box position="relative">
+                  {(IS_IOS || IS_ANDROID) && <MobileCover />}
+
                   <TypeYouTubeContent
                     className="w-[513px]"
                     isMapLoading={isLoading}
@@ -125,7 +128,8 @@ function Content({ mapInfo }: ContentProps) {
             </Box>
 
             {layoutMode === "column" && (
-              <Box mt={5}>
+              <Box mt={5} position="relative">
+                {(IS_IOS || IS_ANDROID) && <MobileCover />}
                 <TypeYouTubeContent isMapLoading={isLoading} videoId={videoId} />
               </Box>
             )}

@@ -25,3 +25,7 @@ export const QUERY_KEYS = {
 };
 
 export const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
+
+
+export const IS_IOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+export const IS_ANDROID = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
