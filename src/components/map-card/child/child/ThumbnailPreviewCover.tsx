@@ -1,3 +1,4 @@
+import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
 import {
   usePreviewVideoIdAtom,
   useSetPreviewSpeedAtom,
@@ -35,7 +36,7 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
       setPreviewSpeed(mapPreviewSpeed);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId],
+    [videoId]
   );
   const handleTouchMove = () => {
     setIsTouchMove(true);
@@ -63,7 +64,7 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
         border: "none",
       }}
       borderRadius="lg"
-      onClick={previewYouTube}
+      onClick={!IS_IOS && !IS_ANDROID ? previewYouTube : undefined}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
