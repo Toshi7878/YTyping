@@ -25,20 +25,18 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
 
   const previewYouTube = useCallback(
     () => {
-      if (!isTouchMove) {
-        if (mapVideoId !== videoId) {
-          setVideoId(mapVideoId);
-          setPreviewTime(mapPreviewTime);
-        } else {
-          setVideoId(null);
-          setPreviewTime(RESET);
-        }
-        setPreviewSpeed(mapPreviewSpeed);
+      if (mapVideoId !== videoId) {
+        setVideoId(mapVideoId);
+        setPreviewTime(mapPreviewTime);
+      } else {
+        setVideoId(null);
+        setPreviewTime(RESET);
       }
+      setPreviewSpeed(mapPreviewSpeed);
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId, isTouchMove]
+    [videoId]
   );
   const handleTouchMove = () => {
     setIsTouchMove(true);
@@ -46,7 +44,9 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!isTouchMove) {
-      previewYouTube();
+      if (mapVideoId !== videoId) {
+        previewYouTube();
+      }
     }
     setIsTouchMove(false);
   };
