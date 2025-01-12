@@ -13,6 +13,7 @@ import {
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useEditorButtonEvents";
 import { RootState } from "@/app/edit/redux/store";
+import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
 import { LineEdit, ThemeColors } from "@/types";
 import parse from "html-react-parser";
 import DirectEditLyricsInput from "./child/DirectEditLyricsInput";
@@ -85,9 +86,9 @@ function LineRow({
         for (let i = 0; i < tbodyChildren.length; i++) {
           const trElement = tbodyChildren[i] as HTMLElement;
           if (trElement.getAttribute("data-line-index") === String(selectCount)) {
-            trElement.classList.add("selected-line");
+            trElement.classList.add(LINE_ROW_SWITCH_CLASSNAMES.selected);
           } else {
-            trElement.classList.remove("selected-line");
+            trElement.classList.remove(LINE_ROW_SWITCH_CLASSNAMES.selected);
           }
         }
       }

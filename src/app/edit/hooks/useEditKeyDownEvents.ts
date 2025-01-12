@@ -23,6 +23,7 @@ import { redo, undo } from "../redux/undoredoSlice";
 import { useDeleteTopLyricsText, useSetTopLyricsText } from "./useEditAddLyricsTextHooks";
 
 import { YTPlayer } from "@/types/global-types";
+import { useChangeLineRowColor } from "./useChangeLineRowColor";
 import {
   useLineAddButtonEvent,
   useLineDelete,
@@ -241,11 +242,12 @@ export const useWindowKeydownEvent = () => {
 };
 
 function useSeekNextPrev() {
-  const { tbodyRef, playerRef } = useRefs();
+  const { playerRef } = useRefs();
   const editAtomStore = useJotaiStore();
   const editReduxStore = useReduxStore<RootState>();
   const lineInputReducer = useLineInputReducer();
   const tbodyScroll = useTbodyScroll();
+  const { addLineSeekColor} = useChangeLineRowColor()
 
   return (type: "next" | "prev") => {
     const mapData = editReduxStore.getState().mapData.value;
@@ -266,15 +268,7 @@ function useSeekNextPrev() {
           },
         });
         tbodyScroll(seekCount);
-        const currentTimeLine = tbodyRef.current!.querySelector(".current-time-line");
-        const selectedLine = tbodyRef.current!.querySelector(".selected-line");
-        if (selectedLine) {
-          selectedLine.classList.remove("selected-line");
-        }
-        if (currentTimeLine) {
-          currentTimeLine.classList.remove("current-time-line");
-        }
-        tbodyRef.current!.children[seekCount].classList.add("selected-line", "current-time-line");
+        addLineSeekColor(seekCount);
       }
     }
   };

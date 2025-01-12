@@ -9,6 +9,7 @@ import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useEditKeyDownEvents";
 import { setMapData, updateLine } from "@/app/edit/redux/mapDataSlice";
 import { RootState } from "@/app/edit/redux/store";
+import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
 import { MapData } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
 import { useDisclosure, useTheme } from "@chakra-ui/react";
@@ -155,16 +156,16 @@ function MapTableBody() {
       <style>
         {`
 
-      .current-time-line {
+      .${LINE_ROW_SWITCH_CLASSNAMES.currentTime} {
         background: ${theme.colors.secondary.light}40;
       }
 
-        .selected-line {
+        .${LINE_ROW_SWITCH_CLASSNAMES.selected} {
         outline: 1px solid ${theme.colors.text.body};
         background: ${theme.colors.primary.dark};
       }
 
-      [id*="line_"]:hover:not(.selected-line) {
+      [id*="line_"]:hover:not(.${LINE_ROW_SWITCH_CLASSNAMES.selected}) {
       background:${theme.colors.primary.dark}50;
       }
 

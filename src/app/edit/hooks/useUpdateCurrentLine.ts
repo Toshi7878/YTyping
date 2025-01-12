@@ -1,5 +1,6 @@
 import { useSetEditTimeCountAtom } from "../edit-atom/editAtom";
 import { useRefs } from "../edit-contexts/refsProvider";
+import { LINE_ROW_SWITCH_CLASSNAMES } from "../ts/const/editDefaultValues";
 
 export const useUpdateCurrentLine = () => {
   const { tbodyRef } = useRefs();
@@ -12,9 +13,9 @@ export const useUpdateCurrentLine = () => {
       for (let i = 0; i < tbodyChildren.length; i++) {
         const trElement = tbodyChildren[i] as HTMLElement;
         if (trElement.getAttribute("data-line-index") === String(newCount)) {
-          trElement.classList.add("current-time-line");
+          trElement.classList.add(LINE_ROW_SWITCH_CLASSNAMES.currentTime);
         } else {
-          trElement.classList.remove("current-time-line");
+          trElement.classList.remove(LINE_ROW_SWITCH_CLASSNAMES.currentTime);
         }
       }
     }

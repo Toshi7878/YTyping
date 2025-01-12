@@ -18,6 +18,7 @@ import { useRefs } from "../edit-contexts/refsProvider";
 import { setLastAddedTime, setMapData } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { addHistory } from "../redux/undoredoSlice";
+import { useChangeLineRowColor } from "./useChangeLineRowColor";
 import { useDeleteTopLyricsText } from "./useEditAddLyricsTextHooks";
 import { useUpdateNewMapBackUp } from "./useUpdateNewMapBackUp";
 import { useWordConvert } from "./useWordConvert";
@@ -204,7 +205,7 @@ export const useWordConvertButtonEvent = () => {
 };
 
 export const useLineDelete = () => {
-  const {tbodyRef} = useRefs();
+
   const editAtomStore = useJotaiStore();
   const editReduxStore = useReduxStore<RootState>();
   const setCanUpload = useSetCanUploadAtom();
@@ -216,6 +217,7 @@ export const useLineDelete = () => {
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
+  const {removeSelectedLineColor } = useChangeLineRowColor()
 
   return () => {
     const selectedLineCount = editAtomStore.get(editLineSelectedCountAtom);
@@ -243,11 +245,7 @@ export const useLineDelete = () => {
       }
     }
 
-    const selectedLine = tbodyRef.current!.querySelector(".selected-line");
-
-    if (selectedLine) {
-      selectedLine.classList.remove("selected-line");
-    }
+    removeSelectedLineColor()
     setDirectEdit(null);
     lineInputReducer({ type: "reset" });
   };
