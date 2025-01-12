@@ -1,6 +1,6 @@
 import { serverApi } from "@/trpc/server";
 import { Metadata } from "next";
-import Content from "./content";
+import Content from "./Content";
 import TypeProvider from "./TypeProvider";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
