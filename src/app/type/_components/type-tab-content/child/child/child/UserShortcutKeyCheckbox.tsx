@@ -24,7 +24,7 @@ const UserShortcutKeyCheckbox = () => {
   };
 
   const changeInputModeKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value; // 選択された値を取得
+    const value = event.target.value as $Enums.ToggleInputModeKey; // 選択された値を取得
     const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
       ...userOptionsAtom,
       toggleInputModeKey: value, // 選択された値を設定
@@ -56,9 +56,9 @@ const UserShortcutKeyCheckbox = () => {
             width="fit-content"
             defaultValue={userOptionsAtom.toggleInputModeKey}
           >
-            <option value="alt-kana">Alt+Kana</option>
-            <option value="tab">Tab</option>
-            <option value="none">無効化</option>
+            <option value="ALT_KANA">Alt+Kana</option>
+            <option value="TAB">Tab</option>
+            <option value="NONE">無効化</option>
           </Select>
         </Flex>
       </Box>

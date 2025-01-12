@@ -66,6 +66,11 @@ enum TimeOffsetKey{
   NONE
 }
 
+enum ToggleInputModeKey {
+  ALT_KANA
+  TAB
+  NONE
+}
 
 
 model TypingOption {
@@ -76,7 +81,7 @@ model TypingOption {
     lineClearSound Boolean @default(false)
     nextDisplay    NextDisplay @default(LYRICS)
     timeOffsetKey  TimeOffsetKey @default(CTRL_LEFT_RIGHT)
-    toggleInputModeKey String @default("alt-kana")
+    toggleInputModeKey ToggleInputModeKey @default(ALT_KANA)
     user           User   @relation(fields: [userId],   references: [id], onDelete: Cascade)
 }
 

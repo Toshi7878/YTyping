@@ -59,7 +59,7 @@ export const DEFAULT_USER_OPTIONS = {
   lineClearSound: false,
   nextDisplay: "LYRICS" as $Enums.NextDisplay,
   timeOffsetKey: "CTRL_LEFT_RIGHT" as $Enums.TimeOffsetKey,
-  toggleInputModeKey: "alt-kana",
+  toggleInputModeKey: "ALT_KANA" as $Enums.ToggleInputModeKey,
 };
 
 export const CHANGE_TIME_OFFSET_VALUE = 0.05;

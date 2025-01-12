@@ -142,7 +142,7 @@ const usePlayingShortcutKey = () => {
         }
         break;
       case "F1":
-        if (userOptions.toggleInputModeKey === "tab") {
+        if (userOptions.toggleInputModeKey === "TAB") {
           if (scene === "replay" || scene === "practice") {
             toggleLineListDrawer();
           }
@@ -169,7 +169,7 @@ const usePlayingShortcutKey = () => {
         break;
       case "KanaMode":
       case "Romaji":
-        if (userOptions.toggleInputModeKey === "alt-kana") {
+        if (userOptions.toggleInputModeKey === "ALT_KANA") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
               inputModeChange("kana");
@@ -188,7 +188,7 @@ const usePlayingShortcutKey = () => {
         break;
 
       case "Tab":
-        if (userOptions.toggleInputModeKey === "tab") {
+        if (userOptions.toggleInputModeKey === "TAB") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
               inputModeChange("kana");
