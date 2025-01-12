@@ -14,6 +14,7 @@ import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeC
 import TypingCard from "../_components/typing-area/TypingCard";
 import { useDownloadMapDataJsonQuery } from "../hooks/data-query/useDownloadMapDataJsonQuery";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
+import useWindowScale, { CONTENT_HEIGHT, CONTENT_WIDTH } from "../hooks/useWindowScale";
 import { InputModeType } from "../ts/type";
 import {
   useIsLoadingOverlayAtom,
@@ -30,7 +31,6 @@ import {
   useSetTimeOffsetAtom,
   useSetTypePageSpeedAtom,
 } from "../type-atoms/gameRenderAtoms";
-import useWindowScale, { CONTENT_HEIGHT, CONTENT_WIDTH } from "./windowScale";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
