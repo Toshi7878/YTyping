@@ -1,4 +1,5 @@
 import authConfig from "@/config/auth.config";
+import { $Enums } from "@prisma/client";
 import CryptoJS from "crypto-js";
 import NextAuth from "next-auth";
 import { prisma } from "./db";
@@ -85,7 +86,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         session.user.id = token.uid as string;
         session.user.name = token.name;
         session.user.email = token.email_hash as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role as $Enums.Role;
       }
       return session;
     },
