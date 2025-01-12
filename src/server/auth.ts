@@ -1,4 +1,5 @@
 import authConfig from "@/config/auth.config";
+import { $Enums } from "@prisma/client";
 import CryptoJS from "crypto-js";
 import NextAuth from "next-auth";
 import { prisma } from "./db";
@@ -21,7 +22,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             data: {
               email_hash: hash!,
               name: null,
-              role: "user",
+              role: "USER",
             },
           });
         } catch (err) {
@@ -75,7 +76,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
 
         token.name = dbUser?.name ?? null;
-        token.role = dbUser?.role ?? "user";
+        token.role = dbUser?.role ?? "USER";
       }
 
       return token;
@@ -85,7 +86,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         session.user.id = token.uid as string;
         session.user.name = token.name;
         session.user.email = token.email_hash as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role as $Enums.Role;
       }
       return session;
     },

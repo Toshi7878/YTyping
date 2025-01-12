@@ -28,7 +28,7 @@ const TabInfoUpload = () => {
   const [state, formAction] = useFormState(upload, INITIAL_SERVER_ACTIONS_STATE);
 
   const myUserId = session?.user?.id;
-  const isAdmin = session?.user?.role === "admin";
+  const isAdmin = session?.user?.role === "ADMIN";
   const isDisplayUploadButton =
     (myUserId && (!mapCreatorId || Number(myUserId) === mapCreatorId)) || isAdmin;
 

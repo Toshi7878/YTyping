@@ -1,3 +1,5 @@
+import { $Enums } from "@prisma/client";
+
 export type ConvertOptionsType = "non_symbol" | "add_symbol" | "add_symbol_all";
 export interface EditorSendData {
   title: string;
@@ -14,7 +16,7 @@ export interface EditorSendData {
   totalTime: number;
   romaTotalNotes: number;
   kanaTotalNotes: number;
-  thumbnailQuality: "maxresdefault" | "mqdefault";
+  thumbnailQuality: $Enums.ThumbnailQuality;
 }
 
 export interface EditorNewMapBackUpInfoData {

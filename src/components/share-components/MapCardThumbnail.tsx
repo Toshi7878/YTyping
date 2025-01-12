@@ -1,6 +1,7 @@
 import { PREVIEW_DISABLE_PATHNAMES } from "@/config/global-consts";
 import { Image } from "@chakra-ui/next-js";
 import { Box, BoxProps, useBreakpointValue } from "@chakra-ui/react";
+import { $Enums } from "@prisma/client";
 import { usePathname } from "next/navigation";
 import ThumbnailPreviewCover from "../map-card/child/child/ThumbnailPreviewCover";
 
@@ -11,7 +12,7 @@ interface MapLeftThumbnailProps extends BoxProps {
   mapVideoId?: string;
   mapPreviewTime?: string;
   mapPreviewSpeed?: number;
-  thumbnailQuality?: string;
+  thumbnailQuality?: $Enums.ThumbnailQuality;
   thumnailWidth: Partial<Record<string, number>>;
   thumnailHeight: Partial<Record<string, number>>;
 }
