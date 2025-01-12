@@ -11,7 +11,7 @@ import {
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
-} from "../../hooks/useEditYTEventsHooks";
+} from "../../hooks/useEditYTEvents";
 
 interface EditorYouTubeProps {
   className: string;

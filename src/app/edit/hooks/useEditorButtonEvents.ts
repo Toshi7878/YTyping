@@ -20,6 +20,7 @@ import { RootState } from "../redux/store";
 import { addHistory } from "../redux/undoredoSlice";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
 import { useDeleteTopLyricsText } from "./useEditAddLyricsTextHooks";
+import { useGetSeekCount } from "./useGetSeekCount";
 import { useUpdateNewMapBackUp } from "./useUpdateNewMapBackUp";
 import { useWordConvert } from "./useWordConvert";
 
@@ -217,7 +218,10 @@ export const useLineDelete = () => {
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
-  const {removeSelectedLineColor } = useChangeLineRowColor()
+  const {allUpdateCurrentTimeColor } = useChangeLineRowColor()
+  const { playerRef } = useRefs()
+  const getSeekCount = useGetSeekCount();
+
 
   return () => {
     const selectedLineCount = editAtomStore.get(editLineSelectedCountAtom);
@@ -244,9 +248,10 @@ export const useLineDelete = () => {
         updateNewMapBackUp(newVideoId);
       }
     }
+    const currentTime = playerRef.current!.getCurrentTime();
 
-    removeSelectedLineColor()
-    setDirectEdit(null);
+    allUpdateCurrentTimeColor(getSeekCount(currentTime))
+        setDirectEdit(null);
     lineInputReducer({ type: "reset" });
   };
 };

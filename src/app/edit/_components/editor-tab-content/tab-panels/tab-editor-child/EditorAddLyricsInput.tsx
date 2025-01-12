@@ -1,6 +1,6 @@
 import { useEditAddLyricsTextAtom } from "@/app/edit/edit-atom/editAtom";
 import { useSetAddLyrics } from "@/app/edit/hooks/useEditAddLyricsTextHooks";
-import { useAddLyricsTextPasteEvents } from "@/app/edit/hooks/useEditPasteEventHooks";
+import { useAddLyricsTextPasteEvents } from "@/app/edit/hooks/useEditPasteEvent";
 import { ThemeColors } from "@/types";
 import { Box, Textarea, useTheme } from "@chakra-ui/react";
 

@@ -29,7 +29,7 @@ import {
   useLineDelete,
   useLineUpdateButtonEvent,
 } from "./useEditorButtonEvents";
-import { useUndoLine } from "./useEditUndoRedoHooks";
+import { useUndoLine } from "./useEditUndoRedo";
 import { useWordFindReplace } from "./useWordFindReplace";
 
 export const useTbodyScroll = () => {
