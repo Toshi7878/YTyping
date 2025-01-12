@@ -58,7 +58,7 @@ export const DEFAULT_USER_OPTIONS = {
   missSound: false,
   lineClearSound: false,
   nextDisplay: "LYRICS" as $Enums.NextDisplay,
-  timeOffsetKey: "ctrl-left-right",
+  timeOffsetKey: "CTRL_LEFT_RIGHT" as $Enums.TimeOffsetKey,
   toggleInputModeKey: "alt-kana",
 };
 

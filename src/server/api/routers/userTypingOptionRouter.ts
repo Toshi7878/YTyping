@@ -1,6 +1,6 @@
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
-import { NextDisplay } from "@prisma/client";
+import { NextDisplay, TimeOffsetKey } from "@prisma/client";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -32,7 +32,7 @@ export const userTypingOptionRouter = {
         missSound: z.boolean(),
         lineClearSound: z.boolean(),
         nextDisplay: z.nativeEnum(NextDisplay),
-        timeOffsetKey: z.string(),
+        timeOffsetKey: z.nativeEnum(TimeOffsetKey),
         toggleInputModeKey: z.string(),
       }),
     )

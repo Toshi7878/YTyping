@@ -101,9 +101,9 @@ const usePlayingShortcutKey = () => {
     const inputMode = typeAtomStore.get(playingInputModeAtom);
     const skip = typeAtomStore.get(skipAtom);
 
-    const isCtrlLeftRight = userOptions.timeOffsetKey === "ctrl-left-right" && event.ctrlKey;
+    const isCtrlLeftRight = userOptions.timeOffsetKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
     const isCtrlAltLeftRight =
-      userOptions.timeOffsetKey === "ctrl-alt-left-right" && event.ctrlKey && event.altKey;
+      userOptions.timeOffsetKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
 
     switch (event.code) {
       case "Escape": //Escでポーズ

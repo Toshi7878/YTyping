@@ -61,8 +61,9 @@ enum NextDisplay{
 }
 
 enum TimeOffsetKey{
-  LYRICS
-  WORD
+  CTRL_LEFT_RIGHT
+  CTRL_ALT_LEFT_RIGHT
+  NONE
 }
 
 
@@ -74,7 +75,7 @@ model TypingOption {
     missSound      Boolean @default(false)
     lineClearSound Boolean @default(false)
     nextDisplay    NextDisplay @default(LYRICS)
-    timeOffsetKey  String @default("ctrl-left-right")
+    timeOffsetKey  TimeOffsetKey @default(CTRL_LEFT_RIGHT)
     toggleInputModeKey String @default("alt-kana")
     user           User   @relation(fields: [userId],   references: [id], onDelete: Cascade)
 }
