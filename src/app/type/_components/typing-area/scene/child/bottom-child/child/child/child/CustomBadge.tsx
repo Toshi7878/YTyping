@@ -21,7 +21,7 @@ const CustomBadge = ({
       cursor={isDisabled ? "not-allowed" : isKbdHidden || !onClick ? "initial" : "pointer"}
       opacity={isDisabled ? 0.5 : 1}
       _hover={{
-        transform: isDisabled || !onClick ? "none" : "scale(1.05)",
+        transform: isDisabled || isKbdHidden || !onClick ? "none" : "scale(1.05)",
       }}
     >
       {children}
