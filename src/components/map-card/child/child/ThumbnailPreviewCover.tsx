@@ -68,7 +68,7 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
       borderRadius="lg"
       onClick={previewYouTube}
       onTouchMove={handleTouchMove}
-      // onTouchEnd={handleTouchEnd}
+      onTouchEnd={handleTouchEnd}
     >
       {videoId === mapVideoId ? (
         <FaPause color="white" size={35} />
