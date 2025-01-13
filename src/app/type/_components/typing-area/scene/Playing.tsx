@@ -41,6 +41,7 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
 
   const inputMode = usePlayingInputModeAtom();
   useEffect(() => {
+    typeTicker.maxFPS = 60;
     typeTicker.add(playTimer);
 
     startTimer();
