@@ -1,3 +1,4 @@
+import { RouterOutPuts } from "@/server/api/trpc";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage } from "jotai/utils";
 import { CreateMap } from "../../../lib/instanceMapData";
@@ -17,13 +18,18 @@ const typeAtomStore = getTypeAtomStore();
 
 export const mapAtom = atom<CreateMap | null>(null);
 
-export const youtubePlayerContainerAtom = atom<HTMLDivElement | null>(null);
 export const useMapAtom = () => {
   return useAtomValue(mapAtom);
 };
 
 export const useSetMapAtom = () => {
   return useSetAtom(mapAtom);
+};
+
+export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>(null);
+
+export const useMapInfoAtom = () => {
+  return useAtomValue(mapInfoAtom, { store: typeAtomStore });
 };
 
 export const sceneAtom = atomWithReset<SceneType>("ready");

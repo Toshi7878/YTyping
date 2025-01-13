@@ -4,7 +4,12 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createStore, Provider as JotaiProvider } from "jotai";
 import { useEffect } from "react";
-import { hasLocalLikeAtom, mapUpdatedAtAtom, userOptionsAtom } from "../type-atoms/gameRenderAtoms";
+import {
+  hasLocalLikeAtom,
+  mapInfoAtom,
+  mapUpdatedAtAtom,
+  userOptionsAtom,
+} from "../type-atoms/gameRenderAtoms";
 import { RefsProvider } from "../type-contexts/refsProvider";
 
 const typeAtomStore = createStore();
@@ -12,13 +17,14 @@ export const getTypeAtomStore = () => typeAtomStore;
 const queryClient = new QueryClient();
 
 interface TypeProviderProps {
-  mapInfo: RouterOutPuts["map"]["getMapInfo"];
+  mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
   userTypingOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"];
   children: React.ReactNode;
 }
 const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProps) => {
   const globalAtomStore = getGlobalAtomStore();
-  typeAtomStore.set(hasLocalLikeAtom, !!mapInfo?.mapLike[0]?.isLiked);
+  typeAtomStore.set(hasLocalLikeAtom, !!mapInfo.mapLike[0].isLiked);
+  typeAtomStore.set(mapInfoAtom, mapInfo);
 
   useEffect(() => {
     // 状態の更新をuseEffect内に移動
