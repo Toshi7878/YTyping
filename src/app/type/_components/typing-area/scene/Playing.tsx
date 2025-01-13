@@ -42,7 +42,7 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
   const inputMode = usePlayingInputModeAtom();
   useEffect(() => {
     if (scene === "replay") {
-      typeTicker.maxFPS = 120; // リプレイモードでは高いFPSを設定
+      typeTicker.maxFPS = 0; // リプレイモードは制限なし
     } else {
       typeTicker.maxFPS = 60;
     }
