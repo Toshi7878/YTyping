@@ -48,8 +48,8 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
         />
       </CustomToolTip>
 
-      <Box fontWeight="bold" mx={8} fontSize={{ base: "3rem", md: "4xl" }}>
-        <Text as="span" id="speed" userSelect="none">
+      <Box fontWeight="bold" mx={8} fontSize={{ base: "3rem", md: "4xl" }} userSelect="none">
+        <Text as="span" id="speed">
           {speedData.defaultSpeed.toFixed(2)}
         </Text>
         倍速

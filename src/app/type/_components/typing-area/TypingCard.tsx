@@ -34,17 +34,6 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
   const scene = useSceneAtom();
   const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 
-  // useEffect(() => {
-  //   if (isPlayed) {
-  //     typeTicker.add(playTimer);
-  //   }
-
-  //   return () => {
-  //     typeTicker.remove(playTimer);
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [scene]);
-
   useEffect(() => {
     if (isPlayed) {
       setTabIndex(0);
@@ -102,7 +91,7 @@ function TypingCard() {
         <PlayingTop />
       </CardHeader>
       <TypingCardBody drawerClosure={drawerClosure} />
-      <CardFooter py={0} mx={3} flexDirection="column">
+      <CardFooter py={0} mx={3} flexDirection="column" userSelect="none">
         <PlayingBottom />
       </CardFooter>
     </CustomCard>
