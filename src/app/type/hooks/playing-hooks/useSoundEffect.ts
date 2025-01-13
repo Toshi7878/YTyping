@@ -2,7 +2,7 @@ import clearTypeSound from "@/asset/wav/clear_type.wav";
 import typeSound from "@/asset/wav/key_type.wav";
 import missSound from "@/asset/wav/miss_type.wav";
 import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
-import { getGlobalAtomStore, volumeAtom } from "@/lib/global-atoms/globalAtoms";
+import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { sound } from "@pixi/sound";
 import { useStore } from "jotai";
 import { useEffect } from "react";
@@ -16,8 +16,10 @@ const manifest = [
 
 export const useSoundEffect = () => {
 
-  const globalAtomStore = getGlobalAtomStore();
   const typeAtomStore = useStore();
+
+  const volumeAtom = useVolumeAtom()
+  const volume = (IS_IOS || IS_ANDROID? 100 : volumeAtom) / 100;
 
   useEffect(() => {
     manifest.forEach(({ alias, src }) => {
@@ -31,26 +33,16 @@ export const useSoundEffect = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const calcVolume = () => {
 
-    const volume = (IS_IOS || IS_ANDROID? 100 : globalAtomStore.get(volumeAtom)) / 100;
-
-    return volume
-  }
   const clearTypeSoundPlay = () => {
-    const volume = calcVolume()
     sound.play("lineClear", { volume });
   };
 
   const typeSoundPlay = () => {
-    const volume = calcVolume()
-
     sound.play("type", { volume });
   };
 
   const missSoundPlay = () => {
-    const volume = calcVolume()
-
     sound.play("miss", { volume });
   };
 

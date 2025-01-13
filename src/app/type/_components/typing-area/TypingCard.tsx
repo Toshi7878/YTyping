@@ -10,7 +10,6 @@ import {
 import { atom, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { getTypeAtomStore } from "../../[id]/TypeProvider";
-import { useHandleKeydown } from "../../hooks/playing-hooks/keydown-hooks/useHandleKeydown";
 import { usePlayTimer } from "../../hooks/playing-hooks/timer-hooks/useTimer";
 import "../../style/type.scss";
 import { typeTicker } from "../../ts/const/consts";
@@ -38,19 +37,6 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
   const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 
   const playTimer = usePlayTimer();
-
-  const handleKeydown = useHandleKeydown();
-
-  useEffect(() => {
-    if (isPlayed) {
-      window.addEventListener("keydown", handleKeydown);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleKeydown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene]);
 
   useEffect(() => {
     if (isPlayed) {

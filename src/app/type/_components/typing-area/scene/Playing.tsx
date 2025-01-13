@@ -7,8 +7,10 @@ import {
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
+import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
 import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useStartTimer";
 import { defaultLineWord, defaultNextLyrics, typeTicker } from "@/app/type/ts/const/consts";
+import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { UseDisclosureReturn } from "@chakra-ui/react";
 
 interface PlayingProps {
@@ -23,9 +25,20 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
   const setNextLyrics = useSetNextLyricsAtom();
   const startTimer = useStartTimer();
 
+  const handleKeydown = useHandleKeydown();
+  const volumeAtom = useVolumeAtom();
+
   useEffect(() => {
     startTimer();
+    document.addEventListener("keydown", handleKeydown);
 
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [volumeAtom]);
+
+  useEffect(() => {
     if (scene === "practice") {
       onOpen();
     }
@@ -34,7 +47,6 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
       if (typeTicker.started) {
         typeTicker.stop();
       }
-
       setLineWord(structuredClone(defaultLineWord));
       setLyrics("");
       setNextLyrics(structuredClone(defaultNextLyrics));
