@@ -23,7 +23,7 @@ interface TypeProviderProps {
 }
 const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProps) => {
   const globalAtomStore = getGlobalAtomStore();
-  typeAtomStore.set(hasLocalLikeAtom, !!mapInfo.mapLike[0].isLiked);
+  typeAtomStore.set(hasLocalLikeAtom, !!mapInfo.mapLike[0]?.isLiked);
   typeAtomStore.set(mapInfoAtom, mapInfo);
 
   useEffect(() => {
