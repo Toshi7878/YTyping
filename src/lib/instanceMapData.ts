@@ -307,6 +307,7 @@ export class TypingWord {
     if (word[word.length - 1]["k"] == "ん") {
       word[word.length - 1]["r"][0] = "nn";
       word[word.length - 1]["r"].push("n'");
+      word[word.length - 1]["p"] = CHAR_POINT * 2
     }
 
     return word;
