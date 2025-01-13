@@ -1,24 +1,21 @@
 import { CreateMap, MISS_PENALTY } from "../../../../lib/instanceMapData";
-import { getTypeAtomStore } from "../../[id]/TypeProvider";
 import { Status } from "../../ts/type";
 import {
-  comboAtom,
-  playingInputModeAtom,
   useMapAtom,
+  usePlayingInputModeAtom,
   useRankingScoresAtom,
   useSceneAtom,
   useSetComboAtom,
   useSetStatusAtoms,
-  useStatusAtomsValues,
+  useStatusAtomsValues
 } from "../../type-atoms/gameRenderAtoms";
 import { useRefs } from "../../type-contexts/refsProvider";
 
 export const useTypeSuccess = () => {
   const { statusRef } = useRefs();
 
-  const typeAtomStore = getTypeAtomStore();
-
   const map = useMapAtom() as CreateMap;
+  const inputMode = usePlayingInputModeAtom();
   const scene = useSceneAtom();
   const setCombo = useSetComboAtom();
   const { setStatusValues } = useSetStatusAtoms();
@@ -30,6 +27,7 @@ export const useTypeSuccess = () => {
     lineRemainConstantTime,
     updatePoint,
     totalKpm,
+    combo,
   }): Status => {
     const status = statusAtomsValues();
     const newStatus = { ...status };
@@ -72,26 +70,23 @@ export const useTypeSuccess = () => {
 
     setStatusValues(newStatus);
 
-    const combo = typeAtomStore.get(comboAtom);
-    setCombo(combo + 1);
+    setCombo(combo+1);
 
     return newStatus;
   };
 
-  const updateSuccessStatusRefs = ({ constantLineTime, newLineWord, successKey }) => {
+  const updateSuccessStatusRefs = ({ constantLineTime, newLineWord, successKey, combo }) => {
     if (statusRef.current!.lineStatus.lineType === 0) {
       statusRef.current!.lineStatus.latency = constantLineTime;
     }
 
     statusRef.current!.status.missCombo = 0;
 
-    const combo = typeAtomStore.get(comboAtom);
-    const newCombo = combo + 1;
+    const newCombo = combo + 1
     if (newCombo > statusRef.current!.status.maxCombo) {
       statusRef.current!.status.maxCombo = newCombo;
     }
 
-    const inputMode = typeAtomStore.get(playingInputModeAtom);
     if (inputMode === "roma") {
       statusRef.current!.status.romaType++;
     } else if (inputMode === "kana") {

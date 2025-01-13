@@ -2,15 +2,16 @@ import { useInputModeChange } from "@/app/type/hooks/playing-hooks/useInputModeC
 import { useVideoSpeedChange } from "@/app/type/hooks/useVideoSpeedChange";
 import { useCalcTypeSpeed } from "@/app/type/ts/scene-ts/playing/calcTypeSpeed";
 import {
+  comboAtom,
   lineResultsAtom,
   lineWordAtom,
-  playingInputModeAtom,
   useMapAtom,
+  usePlayingInputModeAtom,
   useSetComboAtom,
   useSetDisplayLineKpmAtom,
   useSetLineWordAtom,
   useSetStatusAtoms,
-  useStatusAtomsValues,
+  useStatusAtomsValues
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
@@ -66,6 +67,8 @@ interface UseKeyReplayProps {
 
 const useKeyReplay = () => {
   const { statusRef } = useRefs();
+  const inputMode = usePlayingInputModeAtom();
+
   const typeAtomStore = useStore();
 
   const setLineWord = useSetLineWordAtom();
@@ -101,7 +104,6 @@ const useKeyReplay = () => {
       const status = statusAtomsValues();
 
       if (isSuccess) {
-        const inputMode = typeAtomStore.get(playingInputModeAtom);
         const lineWord = typeAtomStore.get(lineWordAtom);
         const result =
           inputMode === "roma"
@@ -120,10 +122,13 @@ const useKeyReplay = () => {
             totalTypeCount: status.type,
           });
 
+          const combo = typeAtomStore.get(comboAtom);
+
           updateSuccessStatusRefs({
             constantLineTime,
             newLineWord: result.newLineWord,
             successKey: result.successKey,
+            combo
           });
 
           updateSuccessStatus({
@@ -131,6 +136,7 @@ const useKeyReplay = () => {
             lineRemainConstantTime,
             updatePoint: result.updatePoint,
             totalKpm: typeSpeed!.totalKpm,
+            combo
           });
 
           setDisplayLineKpm(typeSpeed!.lineKpm);

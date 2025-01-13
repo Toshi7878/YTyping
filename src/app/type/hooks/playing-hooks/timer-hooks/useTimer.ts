@@ -5,11 +5,9 @@ import {
   currentTimeSSMMAtom,
   lineResultsAtom,
   lineWordAtom,
-  playingInputModeAtom,
-  sceneAtom,
-  speedAtom,
   useMapAtom,
-  userOptionsAtom,
+  usePlayingInputModeAtom,
+  useSceneAtom,
   useSetChangeCSSCountAtom,
   useSetComboAtom,
   useSetCurrentTimeSSMMAtom,
@@ -21,6 +19,8 @@ import {
   useSetNextLyricsAtom,
   useSetStatusAtoms,
   useStatusAtomsValues,
+  useTypePageSpeedAtom,
+  useUserOptionsAtom
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
@@ -37,6 +37,8 @@ export const usePlayTimer = () => {
   const { statusRef, gameStateRef, lineProgressRef, totalProgressRef, ytStateRef, playerRef } =
     useRefs();
   const map = useMapAtom() as CreateMap;
+  const scene = useSceneAtom();
+  const speed = useTypePageSpeedAtom();
 
   const typeAtomStore = useStore();
 
@@ -71,7 +73,6 @@ export const usePlayTimer = () => {
     const nextLine = map.mapData[count];
     const movieDuration = ytStateRef.current!.movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
-    const scene = typeAtomStore.get(sceneAtom);
 
     if (
       currentOffesettedYTTime >= nextLineTime ||
@@ -116,11 +117,10 @@ export const usePlayTimer = () => {
       }
     }
 
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
 
     if (
       Math.abs(
-        nextLineTime / playSpeed -
+        nextLineTime / speed.playSpeed -
           constantOffesettedYTTime -
           gameStateRef.current!.displayLineTimeCount
       ) >= 0.1
@@ -145,7 +145,7 @@ export const usePlayTimer = () => {
 
       if (
         isRetrySkip &&
-        map.mapData[map.startLine].time - 3 * playSpeed <= currentOffesettedYTTime
+        map.mapData[map.startLine].time - 3 * speed.playSpeed <= currentOffesettedYTTime
       ) {
         gameStateRef.current!.isRetrySkip = false;
       }
@@ -170,6 +170,9 @@ export const usePlayTimer = () => {
 export const useCalcLineResult = () => {
   const { statusRef } = useRefs();
   const map = useMapAtom() as CreateMap;
+  const scene = useSceneAtom();
+  const speed = useTypePageSpeedAtom();
+
   const typeAtomStore = useStore();
   const setLineResults = useSetLineResultsAtom();
   const calcTypeSpeed = useCalcTypeSpeed();
@@ -181,7 +184,6 @@ export const useCalcLineResult = () => {
 
   return ({ count, constantLineTime }: { count: number; constantLineTime: number }) => {
     const status: Status = statusAtomsValues();
-    const scene = typeAtomStore.get(sceneAtom);
 
     if (scene === "playing" || scene === "practice") {
       const typeSpeed = calcTypeSpeed({
@@ -211,8 +213,7 @@ export const useCalcLineResult = () => {
         const oldLineScore =
           lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * MISS_PENALTY;
 
-        const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
-        const isUpdateResult = (playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
+        const isUpdateResult = (speed.playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
 
         if (isUpdateResult) {
           const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
@@ -286,7 +287,10 @@ export const useUpdateLine = () => {
   const { statusRef, lineProgressRef, ytStateRef } = useRefs();
 
   const map = useMapAtom() as CreateMap;
-  const typeAtomStore = useStore();
+  const userOptions = useUserOptionsAtom();
+  const inputMode = usePlayingInputModeAtom();
+  const speed = useTypePageSpeedAtom();
+  const scene = useSceneAtom();
 
   const setLyrics = useSetLyricsAtom();
   const setNextLyrics = useSetNextLyricsAtom();
@@ -296,15 +300,11 @@ export const useUpdateLine = () => {
 
   const lineReplayUpdate = useLineReplayUpdate();
   return (newCount: number) => {
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
-    const inputMode = typeAtomStore.get(playingInputModeAtom);
-    const scene = typeAtomStore.get(sceneAtom);
-    const userOptions = typeAtomStore.get(userOptionsAtom);
 
     const currentCount = newCount ? newCount - 1 : 0;
     statusRef.current!.lineStatus = structuredClone({
       ...DEFAULT_STATUS_REF.lineStatus,
-      lineStartSpeed: playSpeed,
+      lineStartSpeed: speed.playSpeed,
       lineStartInputMode: inputMode,
     });
     setDisplayLineKpm(0);
@@ -320,7 +320,7 @@ export const useUpdateLine = () => {
 
     const nextKpm =
       (inputMode === "roma" ? map.mapData[newCount].kpm["r"] : map.mapData[newCount].kpm["k"]) *
-      playSpeed;
+      speed.playSpeed;
     if (nextKpm) {
       setNextLyrics({
         lyrics:

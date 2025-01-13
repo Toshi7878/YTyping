@@ -10,9 +10,7 @@ import {
 import { atom, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { getTypeAtomStore } from "../../[id]/TypeProvider";
-import { usePlayTimer } from "../../hooks/playing-hooks/timer-hooks/useTimer";
 import "../../style/type.scss";
-import { typeTicker } from "../../ts/const/consts";
 import { useMapAtom, useSceneAtom, useSetTabIndexAtom } from "../../type-atoms/gameRenderAtoms";
 import PlayingBottom from "./scene/child/PlayingBottom";
 import PlayingTop from "./scene/child/PlayingTop";
@@ -36,18 +34,16 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
   const scene = useSceneAtom();
   const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 
-  const playTimer = usePlayTimer();
+  // useEffect(() => {
+  //   if (isPlayed) {
+  //     typeTicker.add(playTimer);
+  //   }
 
-  useEffect(() => {
-    if (isPlayed) {
-      typeTicker.add(playTimer);
-    }
-
-    return () => {
-      typeTicker.remove(playTimer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene]);
+  //   return () => {
+  //     typeTicker.remove(playTimer);
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [scene]);
 
   useEffect(() => {
     if (isPlayed) {

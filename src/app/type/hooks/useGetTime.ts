@@ -1,29 +1,26 @@
-import { useStore } from "jotai";
 import {
-  speedAtom,
-  timeOffsetAtom,
   useMapAtom,
-  userOptionsAtom,
+  useTimeOffsetAtom,
+  useTypePageSpeedAtom,
+  useUserOptionsAtom
 } from "../type-atoms/gameRenderAtoms";
 import { useRefs } from "../type-contexts/refsProvider";
 
 export const useGetTime = () => {
   const map = useMapAtom();
+  const userOptions = useUserOptionsAtom();
+  const timeOffset = useTimeOffsetAtom();
+  const speed = useTypePageSpeedAtom();
   const { playerRef, statusRef, ytStateRef } = useRefs();
-  const typeAtomStore = useStore();
 
   const getCurrentOffsettedYTTime = () => {
-    const userOptions = typeAtomStore.get(userOptionsAtom);
-    const timeOffset = typeAtomStore.get(timeOffsetAtom);
 
     const result = playerRef.current!.getCurrentTime() - userOptions.timeOffset - timeOffset;
     return result;
   };
 
   const getConstantOffsettedYTTime = (YTCurrentTime: number) => {
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
-
-    return YTCurrentTime / playSpeed;
+    return YTCurrentTime / speed.playSpeed;
   };
 
   const getCurrentLineTime = (YTCurrentTime: number) => {
@@ -43,17 +40,14 @@ export const useGetTime = () => {
     const nextLine = map!.mapData[count];
     const movieDuration = ytStateRef.current!.movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
 
-    const lineRemainTime = (nextLineTime - YTCurrentTime) / playSpeed;
+    const lineRemainTime = (nextLineTime - YTCurrentTime) / speed.playSpeed;
 
     return lineRemainTime;
   };
 
   const getConstantLineTime = (lineTime: number) => {
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
-
-    const lineConstantTime = Math.round((lineTime / playSpeed) * 1000) / 1000;
+    const lineConstantTime = Math.round((lineTime / speed.playSpeed) * 1000) / 1000;
     return lineConstantTime;
   };
 

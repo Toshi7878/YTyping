@@ -1,15 +1,16 @@
 import { drawerClosureAtom } from "@/app/type/_components/typing-area/TypingCard";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/typeDefaultValue";
+import { LineWord } from "@/app/type/ts/type";
 import {
   lineSelectIndexAtom,
   lineWordAtom,
   playingInputModeAtom,
-  sceneAtom,
   skipAtom,
   useMapAtom,
-  userOptionsAtom,
+  useSceneAtom,
   useSetPlayingNotifyAtom,
   useSetTimeOffsetAtom,
+  useUserOptionsAtom
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { CreateMap } from "@/lib/instanceMapData";
@@ -32,9 +33,9 @@ export const useHandleKeydown = () => {
   const playingShortcutKey = usePlayingShortcutKey();
   const pauseShortcutKey = usePauseShortcutKey();
   const typeAtomStore = useStore();
+  const scene = useSceneAtom()
 
   return (event: KeyboardEvent) => {
-    const scene = typeAtomStore.get(sceneAtom);
 
     const isPaused = ytStateRef.current?.isPaused;
     if (!isPaused || scene === "practice") {
@@ -46,9 +47,9 @@ export const useHandleKeydown = () => {
         return;
       }
 
-      const lineWord = typeAtomStore.get(lineWordAtom);
 
-      if (currentLineCount == lineWord.lineCount && isKeydownTyped(event) && scene !== "replay") {
+      const lineWord = typeAtomStore.get(lineWordAtom);
+      if (currentLineCount == lineWord.lineCount && isKeydownTyped(event,lineWord) && scene !== "replay") {
         event.preventDefault();
 
         typing({
@@ -73,6 +74,8 @@ const openDrawerCtrlKeyCodeList = ["KeyF"];
 const usePlayingShortcutKey = () => {
   const typeAtomStore = useStore();
   const map = useMapAtom() as CreateMap;
+  const scene = useSceneAtom();
+  const userOptions = useUserOptionsAtom();
 
   const retry = useRetry();
   const pressSkip = usePressSkip();
@@ -96,8 +99,6 @@ const usePlayingShortcutKey = () => {
     ) {
       return;
     }
-    const userOptions = typeAtomStore.get(userOptionsAtom);
-    const scene = typeAtomStore.get(sceneAtom);
     const inputMode = typeAtomStore.get(playingInputModeAtom);
     const skip = typeAtomStore.get(skipAtom);
 
@@ -266,9 +267,8 @@ const TENKEYS = [
 ];
 
 const useIsKeydownTyped = () => {
-  const typeAtomStore = useStore();
 
-  return (event: KeyboardEvent) => {
+  return (event: KeyboardEvent, lineWord:LineWord) => {
     if (event.ctrlKey || event.altKey) {
       return false;
     }
@@ -283,7 +283,6 @@ const useIsKeydownTyped = () => {
 
     const ACTIVE_ELEMENT = document.activeElement as HTMLInputElement;
     const HAS_FOCUS = ACTIVE_ELEMENT && ACTIVE_ELEMENT.type != "text";
-    const lineWord = typeAtomStore.get(lineWordAtom);
 
     const KANA = lineWord.nextChar["k"];
 

@@ -24,7 +24,7 @@ export const useYTPlayEvent = () => {
 
     if (scene === "ready") {
       if (ytStateRef.current) {
-        ytStateRef.current.movieDuration = await playerRef.current!.getDuration();
+        ytStateRef.current.movieDuration = playerRef.current!.getDuration();
       }
 
       const playMode = gameStateRef.current!.playMode;

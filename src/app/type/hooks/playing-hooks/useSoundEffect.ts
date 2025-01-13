@@ -4,9 +4,8 @@ import missSound from "@/asset/wav/miss_type.wav";
 import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { sound } from "@pixi/sound";
-import { useStore } from "jotai";
 import { useEffect } from "react";
-import { userOptionsAtom } from "../../type-atoms/gameRenderAtoms";
+import { useUserOptionsAtom } from "../../type-atoms/gameRenderAtoms";
 
 const manifest = [
   { alias: "type", src: typeSound },
@@ -16,8 +15,8 @@ const manifest = [
 
 export const useSoundEffect = () => {
 
-  const typeAtomStore = useStore();
 
+  const userOptions = useUserOptionsAtom();
   const volumeAtom = useVolumeAtom()
   const volume = (IS_IOS || IS_ANDROID? 100 : volumeAtom) / 100;
 
@@ -52,7 +51,6 @@ export const useSoundEffect = () => {
     sound.play("miss", { volume: 0 });
   };
   const triggerTypingSound = ({ isLineCompleted }: { isLineCompleted: boolean }) => {
-    const userOptions = typeAtomStore.get(userOptionsAtom);
     if (isLineCompleted) {
       if (userOptions.lineClearSound) {
         clearTypeSoundPlay();
@@ -67,7 +65,6 @@ export const useSoundEffect = () => {
   };
 
   const triggerMissSound = () => {
-    const userOptions = typeAtomStore.get(userOptionsAtom);
     if (userOptions.missSound) {
       missSoundPlay();
     }
