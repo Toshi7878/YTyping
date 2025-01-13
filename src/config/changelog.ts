@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2025-1-13",
-    descriptions: ["タイピング中のタイマー更新頻度を調整"],
+    descriptions: ["タイピング中のタイマー更新頻度を調整し、タイピング中のパフォーマンス向上"],
   },{
     date: "2025-1-05",
     descriptions: ["タイピングページをスマートフォン表示に仮対応"],
