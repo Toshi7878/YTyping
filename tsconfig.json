@@ -29,10 +29,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/lib/generateIdenticon.js",
     "src/lib/instanceMapData.ts",
-    "src/app/type/_components/type-tab-content/tab/child/child/StatusKpmValue.tsx",
-    "src/types/declarations.d.ts" // ここに追加
+    "src/types/declarations.d.ts"
   ],
 
   "exclude": ["node_modules"]
