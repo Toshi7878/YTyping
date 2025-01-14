@@ -6,7 +6,7 @@ import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
-import { CSSProperties, useEffect } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
@@ -18,6 +18,7 @@ import useWindowScale, { CONTENT_HEIGHT, CONTENT_WIDTH } from "../hooks/useWindo
 import { InputModeType } from "../ts/type";
 import {
   useIsLoadingOverlayAtom,
+  useSceneAtom,
   useSetChangeCSSCountAtom,
   useSetComboAtom,
   useSetLineResultsAtom,
@@ -39,6 +40,8 @@ interface ContentProps {
 function Content({ mapInfo }: ContentProps) {
   const { scale } = useWindowScale();
   const { videoId, title, creatorComment, tags } = mapInfo!;
+  const scene = useSceneAtom();
+
   const { id: mapId } = useParams();
   const setMap = useSetMapAtom();
   const setScene = useSetSceneAtom();
@@ -58,6 +61,14 @@ function Content({ mapInfo }: ContentProps) {
   const setPlayingInputMode = useSetPlayingInputModeAtom();
   const utils = clientApi.useUtils();
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
+  const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
+
+  useEffect(() => {
+    if (scene === "ready" && layoutMode) {
+      setStartedYTLayoutMode(layoutMode as "column" | "row");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layoutMode]);
 
   useEffect(() => {
     window.addEventListener("keydown", disableKeyHandle);
@@ -103,12 +114,13 @@ function Content({ mapInfo }: ContentProps) {
         pt={{ base: 12, md: 16 }}
         width="100%"
         height="100vh"
-        overflowX={"hidden"}
+        overflowX="hidden"
+        overflowY={layoutMode === "row" ? "hidden" : "auto"}
       >
         <Box style={style}>
           <Flex direction="column">
             <Flex width="100%" gap="6">
-              {layoutMode === "row" && (
+              {ytLayoutMode === "row" && (
                 <Box position="relative">
                   {(IS_IOS || IS_ANDROID) && <MobileCover />}
 
@@ -127,7 +139,7 @@ function Content({ mapInfo }: ContentProps) {
               <TypingCard />
             </Box>
 
-            {layoutMode === "column" && (
+            {ytLayoutMode === "column" && (
               <Box mt={5} position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
                 <TypeYouTubeContent isMapLoading={isLoading} videoId={videoId} />
