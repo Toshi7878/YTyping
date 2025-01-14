@@ -25,7 +25,7 @@ const PlayingTypingWords = () => {
         word={lineWord.word
           .map((w) => w["k"])
           .join("")
-          .slice(0, 50)}
+          .slice(0, 60)}
         className="lowercase word-kana"
       />
 
@@ -36,7 +36,7 @@ const PlayingTypingWords = () => {
         word={lineWord.word
           .map((w) => w["r"][0])
           .join("")
-          .slice(0, 50)}
+          .slice(0, 60)}
         className={`uppercase word-roma ${inputMode === "kana" ? "invisible" : ""}`}
       />
     </Box>
