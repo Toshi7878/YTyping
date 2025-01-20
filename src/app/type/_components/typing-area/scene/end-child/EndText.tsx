@@ -42,6 +42,7 @@ const EndText = ({
           <>
             おめでとうございます！最高スコアが {bestScoreRef.current} から {status.score}{" "}
             に更新されました！
+            <wbr />
             <RandomEmoji />
           </>
         ) : (
