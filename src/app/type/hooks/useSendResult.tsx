@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation";
 import { actions } from "../../../server/actions/sendTypingResultActions";
-import { LineResultData } from "../ts/type";
+import { LineResultData, SendResultData } from "../ts/type";
 import { useLineResultsAtom, useStatusAtomsValues } from "../type-atoms/gameRenderAtoms";
 import { useRefs } from "../type-contexts/refsProvider";
 
@@ -22,11 +22,14 @@ export const useSendResult = () => {
     const kanaToRomaConvertCount = statusRef.current!.status.kanaToRomaConvertCount;
     const status = statusAtomsValue();
 
-    const sendStatus = {
+    const sendStatus: SendResultData["status"] = {
       score: status.score,
       romaType: statusRef.current!.status.romaType,
       kanaType: statusRef.current!.status.kanaType,
       flickType: statusRef.current!.status.flickType,
+      englishType: 0,
+      symbolType: 0,
+      numType: 0,
       miss: status.miss,
       lost: status.lost,
       rkpm: Math.round((status.type / rkpmTime) * 60),

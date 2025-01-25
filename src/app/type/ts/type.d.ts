@@ -126,6 +126,9 @@ export interface SendResultData {
     kanaType: number;
     romaType: number;
     flickType: number;
+    englishType: number;
+    symbolType: number;
+    numType: number;
     miss: number;
     lost: number;
     rkpm: number;

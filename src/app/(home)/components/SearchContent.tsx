@@ -18,6 +18,14 @@ const SearchContent = () => {
             <VolumeRange playerRef={playerRef} />
           </Flex>
         )}
+        <Box mb={3}>
+          <Box>
+            現在、データを格納しているデータベースの無料で使用できる容量が超過しているので、
+          </Box>
+          <Box>
+            ランキング登録、譜面投稿などデータベースに追加する処理が含まれる機能が使用できません。
+          </Box>
+        </Box>
       </Box>
     </Flex>
   );
