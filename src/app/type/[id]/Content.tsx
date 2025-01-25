@@ -1,5 +1,5 @@
 "use client";
-import { IS_ANDROID, IS_IOS, QUERY_KEYS } from "@/config/global-consts";
+import { IS_ANDROID, IS_IOS, QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";

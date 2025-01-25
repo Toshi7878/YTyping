@@ -1,5 +1,5 @@
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
-import { INITIAL_STATE } from "@/config/global-consts";
+import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { useLocalLikeServerActions } from "@/lib/global-hooks/useLocalLikeServerActions";
 import { LocalLikeState, ThemeColors } from "@/types";
 import { Box, Flex, useTheme } from "@chakra-ui/react";

@@ -1,5 +1,5 @@
 "use client";
-import { QUERY_KEYS } from "@/config/global-consts";
+import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { db } from "@/lib/db";
 import { IndexDBOption } from "@/types";
 import { Box } from "@chakra-ui/react";

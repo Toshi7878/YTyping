@@ -1,5 +1,5 @@
 "use client";
-import { QUERY_KEYS } from "@/config/global-consts";
+import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { db } from "@/lib/db";
 import { getGlobalAtomStore, previewVideoIdAtom } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
@@ -41,7 +41,7 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const globalAtomStore = getGlobalAtomStore();
   globalAtomStore.set(previewVideoIdAtom, null);
   const geminiQueryData: GeminiMapInfo | undefined = queryClient.getQueryData(
-    QUERY_KEYS.generateMapInfoGemini(mapInfo ? mapInfo.videoId : newVideoId),
+    QUERY_KEYS.generateMapInfoGemini(mapInfo ? mapInfo.videoId : newVideoId)
   );
 
   editAtomStore.set(editGeminiTagsAtom, geminiQueryData?.otherTags || []);

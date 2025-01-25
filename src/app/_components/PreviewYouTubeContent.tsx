@@ -1,6 +1,6 @@
 "use client";
 
-import { PREVIEW_YOUTUBE_HEIGHT, PREVIEW_YOUTUBE_WIDTH } from "@/config/global-consts";
+import { PREVIEW_YOUTUBE_HEIGHT, PREVIEW_YOUTUBE_WIDTH } from "@/config/consts/globalConst";
 import { usePreviewYouTubeKeyDown } from "@/lib/global-hooks/usePreviewYouTubeKeyDown";
 import { Box, useBreakpointValue } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";

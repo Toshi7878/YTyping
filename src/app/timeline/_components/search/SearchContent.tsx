@@ -1,6 +1,6 @@
 import { useGlobalRefs } from "@/app/_components/global-provider/GlobalRefProvider";
 import VolumeRange from "@/components/custom-ui/VolumeRange";
-import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
+import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { Box, Flex } from "@chakra-ui/react";
 import SearchInputs from "./child/SearchInputs";
 import SearchCard from "./child/SearchModal";

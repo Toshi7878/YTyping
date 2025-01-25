@@ -1,4 +1,4 @@
-import { INITIAL_STATE } from "@/config/global-consts";
+import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { LocalClapState, UploadResult } from "@/types";
 import { Box, Button, ButtonProps } from "@chakra-ui/react";
 import { useFormState } from "react-dom";

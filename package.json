@@ -8,9 +8,9 @@
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "next lint",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "migrate": "dotenv -e .env.local -- npx prisma migrate dev --name init",
+    "studio": "dotenv -e .env.local -- npx prisma studio"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -82,6 +82,7 @@
     "@types/react-dom": "^18",
     "@types/react-infinite-scroller": "^1.2.5",
     "@types/youtube-player": "^5.5.11",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",

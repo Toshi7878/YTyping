@@ -1,7 +1,7 @@
 import clearTypeSound from "@/asset/wav/clear_type.wav";
 import typeSound from "@/asset/wav/key_type.wav";
 import missSound from "@/asset/wav/miss_type.wav";
-import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
+import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
@@ -14,11 +14,9 @@ const manifest = [
 ];
 
 export const useSoundEffect = () => {
-
-
   const userOptions = useUserOptionsAtom();
-  const volumeAtom = useVolumeAtom()
-  const volume = (IS_IOS || IS_ANDROID? 100 : volumeAtom) / 100;
+  const volumeAtom = useVolumeAtom();
+  const volume = (IS_IOS || IS_ANDROID ? 100 : volumeAtom) / 100;
 
   useEffect(() => {
     manifest.forEach(({ alias, src }) => {
@@ -31,7 +29,6 @@ export const useSoundEffect = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   const clearTypeSoundPlay = () => {
     sound.play("lineClear", { volume });

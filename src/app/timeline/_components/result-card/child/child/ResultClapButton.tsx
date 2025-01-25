@@ -1,5 +1,5 @@
 "use client";
-import { INITIAL_STATE } from "@/config/global-consts";
+import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { useLocalClapServerActions } from "@/lib/global-hooks/useLocalClapServerActions";
 import { ThemeColors } from "@/types";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";

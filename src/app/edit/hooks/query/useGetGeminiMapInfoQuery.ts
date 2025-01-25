@@ -1,4 +1,4 @@
-import { QUERY_KEYS } from "@/config/global-consts";
+import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
 import { UploadResult } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -28,7 +28,7 @@ export const useGetGeminiMapInfoQuery = (videoId: string) => {
     queryFn: async () => {
       const ytInfo = await axios.post<GetYouTubeMovieInfo | UploadResult>(
         `${process.env.NEXT_PUBLIC_API_URL}/api/get-youtube-channel-info`,
-        { videoId },
+        { videoId }
       );
 
       if ("status" in ytInfo.data && ytInfo.data.status === 404) {
@@ -38,7 +38,7 @@ export const useGetGeminiMapInfoQuery = (videoId: string) => {
       } else {
         const { data } = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/api/generate-map-info-gemini`,
-          { prompt_post: ytInfo.data },
+          { prompt_post: ytInfo.data }
         );
 
         const mapInfoData: GeminiMapInfo = JSON.parse(data.message);

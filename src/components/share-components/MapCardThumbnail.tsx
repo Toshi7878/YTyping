@@ -1,4 +1,4 @@
-import { PREVIEW_DISABLE_PATHNAMES } from "@/config/global-consts";
+import { PREVIEW_DISABLE_PATHNAMES } from "@/config/consts/globalConst";
 import { Image } from "@chakra-ui/next-js";
 import { Box, BoxProps, useBreakpointValue } from "@chakra-ui/react";
 import { $Enums } from "@prisma/client";

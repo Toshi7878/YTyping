@@ -1,4 +1,4 @@
-import { QUERY_KEYS } from "@/config/global-consts";
+import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";

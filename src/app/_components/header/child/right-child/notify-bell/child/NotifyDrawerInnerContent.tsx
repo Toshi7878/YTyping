@@ -6,7 +6,7 @@ import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import {
   NOTIFICATION_MAP_THUBNAIL_HEIGHT,
   NOTIFICATION_MAP_THUBNAIL_WIDTH,
-} from "@/config/global-consts";
+} from "@/config/consts/globalConst";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { useInView } from "react-intersection-observer";

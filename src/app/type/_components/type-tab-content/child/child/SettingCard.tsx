@@ -5,7 +5,7 @@ import {
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import VolumeRange from "@/components/custom-ui/VolumeRange";
-import { IS_ANDROID, IS_IOS } from "@/config/global-consts";
+import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, Divider, useTheme } from "@chakra-ui/react";

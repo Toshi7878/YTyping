@@ -1,3 +1,4 @@
+import { ALPHABET_LIST, NUM_LIST, SYMBOL_LIST } from "@/config/consts/charList";
 import {
   InputModeType,
   LineData,
@@ -7,7 +8,7 @@ import {
   SpeedDifficulty,
   TypeChank,
 } from "../app/type/ts/type";
-import { ROMA_MAP } from "../config/romaMap";
+import { ROMA_MAP } from "../config/consts/romaMap";
 
 const ZENKAKU_LIST = [
   "０",
@@ -207,42 +208,6 @@ const SOKUON_JOIN_LIST = [
   "ぺ",
   "ぽ",
 ];
-const SYMBOL_LIST = [
-  ",",
-  ".",
-  "/",
-  '"',
-  "'",
-  "[",
-  "]",
-  "z[",
-  "z]",
-  "!",
-  "?",
-  "^",
-  "|",
-  "(",
-  ")",
-  "`",
-  ":",
-  ";",
-  "<",
-  ">",
-  "_",
-  "~",
-  "{",
-  "}",
-  " ",
-  "#",
-  "$",
-  "%",
-  "&",
-  "=",
-  "*",
-  "+",
-  "@",
-  "\\",
-];
 
 export const CHAR_POINT = 50;
 export const MISS_PENALTY = CHAR_POINT / 2;
@@ -254,51 +219,29 @@ export class TypingWord {
     this.word = this.hiraganaToRomaArray(lineRomaMap);
   }
 
+  private getCharType({ romaChar }: { romaChar: string }): TypeChank["t"] {
+    if (ALPHABET_LIST.includes(romaChar)) {
+      return "eng";
+    } else if (NUM_LIST.includes(romaChar)) {
+      return "num";
+    } else if (SYMBOL_LIST.includes(romaChar)) {
+      return "symbol";
+    } else {
+      return "kana";
+    }
+  }
+
   private hiraganaToRomaArray(lineRomaMap: [string, ...string[]]) {
     let word: TypeChank[] = [];
-
     const STR_LEN = lineRomaMap.length;
 
     for (let i = 0; i < STR_LEN; i++) {
-      if (!isNaN(Number(lineRomaMap[i]))) {
-      }
       const CHAR = structuredClone(ROMA_MAP[parseInt(lineRomaMap[i])]);
       if (CHAR) {
-        word.push({ ...CHAR, p: CHAR_POINT * CHAR["r"][0].length });
-
-        //促音の打鍵パターン
-        if (word.length >= 2) {
-          const PREVIOUS_KANA = word[word.length - 2]["k"];
-
-          if (PREVIOUS_KANA && PREVIOUS_KANA[PREVIOUS_KANA.length - 1] == "っ") {
-            const KANA = word[word.length - 1]["k"][0];
-
-            if (SOKUON_JOIN_LIST.includes(KANA)) {
-              word = this.joinSokuonPattern("", word);
-            } else if (["い", "う", "ん"].includes(KANA)) {
-              word = this.joinSokuonPattern("iunFlag", word);
-            }
-          }
-        }
-
-        //n→nn変換
-        word = this.nConvert_nn(word);
+        word = this.pushRomaMapChar({ word, CHAR });
       } else {
         for (let v = 0; v < lineRomaMap[i].length; v++) {
-          let char: string = lineRomaMap[i][v];
-
-          //全角→半角に変換(英数字記号)
-          if (ZENKAKU_LIST.includes(lineRomaMap[i][v])) {
-            char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
-          }
-
-          //追加
-          word.push({ k: char, r: [char], p: CHAR_POINT * char.length });
-
-          //n→nn変換
-          if (v == 0) {
-            word = this.nConvert_nn(word);
-          }
+          word = this.pushChar({ word, char: lineRomaMap[i][v], index: v });
         }
       }
     }
@@ -307,14 +250,67 @@ export class TypingWord {
     if (word[word.length - 1]["k"] == "ん") {
       word[word.length - 1]["r"][0] = "nn";
       word[word.length - 1]["r"].push("n'");
-      word[word.length - 1]["p"] = CHAR_POINT * 2
+      word[word.length - 1]["p"] = CHAR_POINT * word[word.length - 1]["r"][0].length;
+    }
+
+    return word;
+  }
+
+  private pushRomaMapChar({ word, CHAR }: { word: TypeChank[]; CHAR: (typeof ROMA_MAP)[number] }) {
+    word.push({
+      ...CHAR,
+      p: CHAR_POINT * CHAR["r"][0].length,
+      t: this.getCharType({ romaChar: CHAR.r[0] }),
+    });
+
+    //促音の打鍵パターン
+    if (word.length >= 2) {
+      const PREVIOUS_KANA = word[word.length - 2]["k"];
+
+      if (PREVIOUS_KANA && PREVIOUS_KANA[PREVIOUS_KANA.length - 1] == "っ") {
+        const KANA = word[word.length - 1]["k"][0];
+
+        if (SOKUON_JOIN_LIST.includes(KANA)) {
+          word = this.joinSokuonPattern("", word);
+        } else if (["い", "う", "ん"].includes(KANA)) {
+          word = this.joinSokuonPattern("iunFlag", word);
+        }
+      }
+    }
+
+    //n→nn変換
+    word = this.nConvert_nn(word);
+
+    return word;
+  }
+
+  private pushChar({ word, char, index }: { word: TypeChank[]; char: string; index: number }) {
+    //全角→半角に変換(英数字記号)
+    if (ZENKAKU_LIST.includes(char)) {
+      char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
+    }
+
+    //追加
+    word.push({
+      k: char,
+      r: [char],
+      p: CHAR_POINT * char.length,
+      t: this.getCharType({ romaChar: char }),
+    });
+
+    //n→nn変換
+    if (index === 0) {
+      word = this.nConvert_nn(word);
     }
 
     return word;
   }
 
   //'っ','か' → 'っか'等の繋げられる促音をつなげる
-  private joinSokuonPattern(iunFlag: string, lineWord: { k: string; r: string[]; p: number }[]) {
+  private joinSokuonPattern(
+    iunFlag: string,
+    lineWord: { k: string; r: string[]; p: number; t: TypeChank["t"] }[]
+  ) {
     const PREVIOUS_KANA = lineWord[lineWord.length - 2]["k"];
     const KANA = lineWord[lineWord.length - 1]["k"];
 
@@ -486,7 +482,7 @@ export class CreateMap {
         mapData.push({
           time: Number(time),
           lyrics,
-          word: [{ k: "", r: [""], p: 0 }],
+          word: [{ k: "", r: [""], p: 0, t: undefined }],
           kanaWord,
           kpm: { k: 0, r: 0 },
           notes: { k: 0, r: 0 },

@@ -1,4 +1,4 @@
-import { CODE_TO_KANA, KEY_TO_KANA } from "../../../../../../config/kanaKeyMap";
+import { CODE_TO_KANA, KEY_TO_KANA } from "../../../../../../config/consts/kanaKeyMap";
 import { CHAR_POINT } from "../../../../../../lib/instanceMapData";
 import { Dakuten, HanDakuten, InputModeType, LineWord, NormalizeHirakana } from "../../../type";
 
@@ -139,8 +139,8 @@ const kana_mode_convert_rule_before = ["←", "↓", "↑", "→", "『", "』"]
 const kana_mode_convert_rule_after = ["ひだり", "した", "うえ", "みぎ", "「", "」"];
 
 const Z_COMMAND_MAP = {
-  "...": { k: "...", r: ["z.", "z,."], p: CHAR_POINT * 3 },
-  "..": { k: "..", r: ["z,"], p: CHAR_POINT * 2 },
+  "...": { k: "...", r: ["z.", "z,."], p: CHAR_POINT * 3, t: "symbol" as const },
+  "..": { k: "..", r: ["z,"], p: CHAR_POINT * 2, t: "symbol" as const },
 };
 
 class ProcessedLineWord {
@@ -331,7 +331,7 @@ export class RomaInput {
       newLineWord.correct["k"] += kana;
       //スコア加算
       this.updatePoint = newLineWord.nextChar["p"];
-      newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0 };
+      newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
     }
 
     newLineWord.correct["r"] += chars["keys"][0];
@@ -429,7 +429,7 @@ export class KanaInput {
 
     //スコア加算
     this.updatePoint = newLineWord.nextChar["p"];
-    newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0 };
+    newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
 
     return newLineWord;
   }

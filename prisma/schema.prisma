@@ -24,6 +24,9 @@ model Result {
   romaType       Int @default(0)
   kanaType       Int @default(0)
   flickType      Int @default(0)
+  englishType    Int @default(0)
+  symbolType     Int @default(0)
+  numType        Int @default(0)
   miss           Int @default(0)
   lost           Int @default(0)
   maxCombo       Int @default(0)
@@ -46,8 +49,13 @@ model Result {
 model UserTypingStats {
     userId             Int    @unique
     totalTypingTime    Float  @default(0)
-    kanaTypeTotalCount Int    @default(0)
     romaTypeTotalCount Int    @default(0)
+    kanaTypeTotalCount Int    @default(0)
+    flickTypeTotalCount Int   @default(0)
+    englishTypeTotalCount Int    @default(0)
+    symbolTypeTotalCount Int    @default(0)
+    intTypeTotalCount Int    @default(0)
+
     totalPlayCount     Int    @default(0)
     maxCombo           Int    @default(0)
     clapCount          Int    @default(0)

@@ -1,4 +1,4 @@
-import { QUERY_KEYS } from "@/config/global-consts";
+import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { supabase } from "@/lib/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import {

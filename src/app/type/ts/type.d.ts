@@ -15,7 +15,12 @@ export type MapData = {
     changeVideoSpeed?: number;
   };
 };
-export type TypeChank = { k: string; r: string[]; p: number };
+export type TypeChank = {
+  k: string;
+  r: string[];
+  p: number;
+  t: "kana" | "eng" | "num" | "symbol" | undefined;
+};
 
 export type SpeedDifficulty = { median: { r: number; k: number }; max: { r: number; k: number } };
 
