@@ -41,13 +41,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         if (isLoggedIn) {
           const userName = auth.user.name;
 
-          const isMaintenanceMode = Boolean(process.env.NEXT_PUBLIC_MAINTENANCE_MODE);
+          const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
 
           if (isMaintenanceMode) {
-            // 繰り返しリダイレクトを防ぐ
             if (pathname !== "/maintenance") {
-              // メンテナンス画面へリダイレクト
               return Response.redirect(new URL("/maintenance", nextUrl));
+            }
+          } else {
+            if (pathname === "/maintenance") {
+              return Response.redirect(new URL("/404", nextUrl));
             }
           }
 
