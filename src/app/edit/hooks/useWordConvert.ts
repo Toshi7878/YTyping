@@ -137,7 +137,7 @@ class WordConvert {
   }
 
   async postMorphAPI(SENTENCE: string) {
-    const apiUrl = process.env.NEXT_PUBLIC_MORPH_API_URL as string;
+    const apiUrl = "https://labs.goo.ne.jp/api/morph";
     const apiKey = process.env.NEXT_PUBLIC_MORPH_API_KEY as string;
 
     const requestOptions = {
