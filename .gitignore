@@ -3,6 +3,8 @@
 # dependencies
 /node_modules
 /.pnp
+/supabase
+/.idea
 .pnp.js
 .yarn/install-state.gz
 
@@ -27,12 +29,9 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-*storybook.log
