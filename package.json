@@ -9,9 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "tsc": "tsc",
-    "migrate": "dotenv -e .env.local -- npx prisma migrate dev --name init",
+    "db:migrate": "dotenv -e .env.local -- npx prisma migrate dev --name init",
     "studio": "dotenv -e .env.local -- npx prisma studio",
-    "generate": "dotenv -e .env.local -- npx prisma generate"
+    "db:generate": "dotenv -e .env.local -- npx prisma generate",
+    "db:reset": "dotenv -e .env.local -- npx prisma migrate reset"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -47,6 +48,7 @@
     "dexie-react-hooks": "^1.1.7",
     "framer-motion": "^11.2.10",
     "html-react-parser": "^5.1.16",
+    "iconv-lite": "^0.6.3",
     "interactjs": "^1.10.27",
     "jotai": "^2.10.3",
     "jschardet": "^3.1.2",
@@ -75,8 +77,6 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^1.5.0",
-    "@cloudflare/next-on-pages": "^1.11.3",
     "@types/node": "^20",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^18",
@@ -88,10 +88,9 @@
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-next": "14.2.3",
-    "eslint-plugin-storybook": "^0.8.0",
     "file-loader": "^6.2.0",
     "prisma": "^6.2.1",
-    "supabase": "^2.2.1",
+    "supabase": "^2.6.8",
     "typescript": "^5"
   }
 }

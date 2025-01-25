@@ -2,6 +2,7 @@ generator client {
   provider = "prisma-client-js"
   engineType = "library" // または "binary"
   previewFeatures = ["typedSql"]
+  relationMode      = "prisma"
 }
 
 datasource db {
@@ -43,11 +44,11 @@ model Result {
 
 
   @@unique([userId, mapId]) // 複合ユニーク制約を追加
-
 }
 
 model UserTypingStats {
     userId             Int    @unique
+    totalRankingCount  Int    @default(0)
     totalTypingTime    Float  @default(0)
     romaTypeTotalCount Int    @default(0)
     kanaTypeTotalCount Int    @default(0)

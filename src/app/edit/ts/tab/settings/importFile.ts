@@ -1,15 +1,15 @@
-import jschardet from "jschardet";
-import iconv from "iconv-lite";
-import { RootState } from "../../../redux/store";
 import { Action, Dispatch } from "@reduxjs/toolkit";
+import iconv from "iconv-lite";
+import jschardet from "jschardet";
 import { setMapData } from "../../../redux/mapDataSlice";
+import { RootState } from "../../../redux/store";
 
 export class ImportFile {
   async open(
     file: File,
     wordConvert: (lyrics: string) => Promise<string>,
     dispatch: Dispatch<Action>,
-    mapData: RootState["mapData"]["value"],
+    mapData: RootState["mapData"]["value"]
   ) {
     const fileReader = new FileReader();
     fileReader.readAsArrayBuffer(file);
@@ -59,7 +59,7 @@ class Convert {
   static async lrc(
     lrc: string[],
     wordConvert: (lyrics: string) => Promise<string>,
-    mapData: RootState["mapData"]["value"],
+    mapData: RootState["mapData"]["value"]
   ) {
     const result: RootState["mapData"]["value"] = [{ time: "0", lyrics: "", word: "" }];
     for (let i = 0; i < lrc.length; i++) {

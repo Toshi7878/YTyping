@@ -11,7 +11,7 @@ function LeftNav() {
   return (
     <Flex gap={10} alignItems="center">
       <SiteLogo />
-      {(!session || session.user.name) && <LeftMenus />}
+      {(!session || session.user?.name) && <LeftMenus />}
     </Flex>
   );
 }

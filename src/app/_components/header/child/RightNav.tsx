@@ -16,7 +16,7 @@ export default function RightNav({ display, isNewNotification }: RightNavProps) 
 
   return (
     <Flex display={display} alignItems={"center"} gap={5}>
-      {session?.user.name && (
+      {session?.user?.name && (
         <>
           <NotifyBell isNewNotification={isNewNotification} />
           <NewMap />

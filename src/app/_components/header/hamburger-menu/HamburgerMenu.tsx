@@ -51,7 +51,7 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
           {menus.map((menuItem, index) => {
             return <LinkMenuItem key={index} title={menuItem.title} href={menuItem.href} />;
           })}
-          {session?.user.name ? (
+          {session?.user?.name ? (
             <>
               <MenuItem
                 onClick={newCreateModalDisclosure.onOpen}

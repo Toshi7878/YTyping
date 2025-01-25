@@ -49,7 +49,7 @@ export const UpdateNameForm = ({
 
     resolver: zodResolver(nameSchema),
     defaultValues: {
-      newName: session?.user ? (session.user.name as string) : "",
+      newName: session?.user ? (session.user?.name as string) : "",
     },
   });
 

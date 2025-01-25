@@ -10,7 +10,7 @@ interface HeaderProps {
 }
 
 const Header = async ({ session }: HeaderProps) => {
-  const isNewNotification = session?.user.name
+  const isNewNotification = session?.user?.name
     ? await serverApi.notification.newNotificationCheck()
     : false;
   return (

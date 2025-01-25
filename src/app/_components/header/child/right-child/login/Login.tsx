@@ -9,6 +9,6 @@ export default function Login() {
   if (!session?.user) {
     return <SignInMenu />;
   } else {
-    return <>{!session?.user.name ? <SignOutButton /> : <UserMenu />}</>;
+    return <>{!session?.user?.name ? <SignOutButton /> : <UserMenu />}</>;
   }
 }
