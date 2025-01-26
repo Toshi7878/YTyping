@@ -9,36 +9,36 @@ export const userTypingStatsRouter = {
       z.object({
         romaType: z.number(),
         kanaType: z.number(),
-		typingTime: z.number()
-      }),
+        typingTime: z.number(),
+      })
     )
     .mutation(async ({ input }) => {
       const session = await auth();
 
-	  const {romaType, kanaType, typingTime} = input
+      const { romaType, kanaType, typingTime } = input;
       try {
         const userId = session ? Number(session.user.id) : 0;
-		const stats = await prisma.userTypingStats.findUnique({
-			where:{
-				userId
-			}
-		})
-
-        const updated = await prisma.userTypingStats.upsert({
+        const stats = await prisma.user_typing_stats.findUnique({
           where: {
-            userId,
+            user_id: userId,
+          },
+        });
+
+        const updated = await prisma.user_typing_stats.upsert({
+          where: {
+            user_id: userId,
           },
           update: {
-            romaTypeTotalCount: (stats ? stats.romaTypeTotalCount:0) + romaType,
-            kanaTypeTotalCount: (stats ? stats.kanaTypeTotalCount:0) + kanaType,
-			totalTypingTime: (stats ? stats.totalTypingTime:0) + typingTime
+            roma_type_total_count: (stats ? stats.roma_type_total_count : 0) + romaType,
+            kana_type_total_count: (stats ? stats.kana_type_total_count : 0) + kanaType,
+            total_typing_time: (stats ? stats.total_typing_time : 0) + typingTime,
           },
           create: {
-            userId,
-            romaTypeTotalCount: romaType,
-            kanaTypeTotalCount: kanaType,
-			totalTypingTime: typingTime
-		},
+            user_id: userId,
+            roma_type_total_count: romaType,
+            kana_type_total_count: kanaType,
+            total_typing_time: typingTime,
+          },
         });
 
         return updated;
@@ -51,7 +51,7 @@ export const userTypingStatsRouter = {
             status: 500,
             errorObject: error instanceof Error ? error.message : String(error),
           }),
-          { status: 500 },
+          { status: 500 }
         );
       }
     }),

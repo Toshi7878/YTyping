@@ -2,7 +2,7 @@ import { prisma } from "@/server/db";
 
 export async function POST(request: Request) {
   try {
-    await prisma.map.updateMany({
+    await prisma.maps.updateMany({
       where: {
         category: {
           equals: null,

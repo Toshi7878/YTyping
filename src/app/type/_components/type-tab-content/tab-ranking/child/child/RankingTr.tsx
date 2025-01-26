@@ -37,28 +37,30 @@ interface RankingTrProps {
 }
 
 const RankingTr = (props: RankingTrProps) => {
+  const { result } = props;
+  const { status } = result as { status: NonNullable<typeof result.status> };
   const { gameStateRef } = useRefs();
   const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
   const userId = Number(session?.user.id);
 
   const { clapOptimisticState, toggleClapAction } = useLocalClapServerActions({
-    hasClap: !!props.result.clap[0]?.isClaped && !!session,
-    clapCount: props.result.clapCount,
+    hasClap: !!result.claps[0]?.is_claped && !!session,
+    clapCount: result.clap_count,
   });
   const [replayId, setReplayId] = useState<number | null>(null);
   const { data, error, isLoading } = useDownloadPlayDataJsonQuery(replayId);
 
   useEffect(() => {
-    if (userId === props.result.userId) {
+    if (userId === result.user_id) {
       gameStateRef.current!.practice.hasMyRankingData = true;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isPerfect = props.result.miss === 0 && props.result.lost === 0;
+  const isPerfect = status.miss === 0 && status.lost === 0;
   const isKanaFlickTyped = props.kanaType > 0 || props.flickType > 0;
-  const correctRate = ((props.type / (props.result.miss + props.type)) * 100).toFixed(1);
+  const correctRate = ((props.type / (status.miss + props.type)) * 100).toFixed(1);
 
   return (
     <>
@@ -68,17 +70,17 @@ const RankingTr = (props: RankingTrProps) => {
             romaType={props.romaType}
             kanaType={props.kanaType}
             flickType={props.flickType}
-            miss={props.result.miss}
+            miss={status.miss}
             correctRate={correctRate}
-            lost={props.result.lost}
+            lost={status.lost}
             isPerfect={isPerfect}
-            maxCombo={props.result.maxCombo}
-            kpm={props.result.kpm}
-            rkpm={props.result.rkpm}
-            romaKpm={props.result.romaKpm}
+            maxCombo={status.max_combo}
+            kpm={status.kpm}
+            rkpm={status.rkpm}
+            romaKpm={status.roma_kpm}
             isKanaFlickTyped={isKanaFlickTyped}
-            defaultSpeed={props.result.defaultSpeed}
-            updatedAt={props.result.updatedAt}
+            defaultSpeed={status.default_speed}
+            updatedAt={result.updated_at}
           />
         }
         isOpen={(props.isHighlighted && window.innerWidth >= 768) || props.isHovered}
@@ -88,8 +90,8 @@ const RankingTr = (props: RankingTrProps) => {
           _hover={{ backgroundColor: theme.colors.button.sub.hover }}
           backgroundColor={props.isHighlighted ? theme.colors.button.sub.hover : "transparent"}
           cursor="pointer"
-          className={`${userId === props.result.userId ? "my-result" : ""}`}
-          {...(userId === props.result.userId && {
+          className={`${userId === result.user_id ? "my-result" : ""}`}
+          {...(userId === result.user_id && {
             color: theme.colors.secondary.main,
           })}
           zIndex={5}
@@ -100,9 +102,9 @@ const RankingTr = (props: RankingTrProps) => {
           <Td width={RANKING_COLUMN_WIDTH.rank}>
             <RankText rank={props.rank}>{`#${props.rank}`}</RankText>
           </Td>
-          <Td width={RANKING_COLUMN_WIDTH.score}>{props.result.score}</Td>
+          <Td width={RANKING_COLUMN_WIDTH.score}>{status.score}</Td>
           <Td width={RANKING_COLUMN_WIDTH.clearRate}>
-            <ClearRateText clearRate={props.result.clearRate} isPerfect={isPerfect} />
+            <ClearRateText clearRate={status.clear_rate} isPerfect={isPerfect} />
           </Td>
           <Td
             width={RANKING_COLUMN_WIDTH.userName}
@@ -111,10 +113,10 @@ const RankingTr = (props: RankingTrProps) => {
             overflow="hidden"
             textOverflow="ellipsis"
           >
-            {props.result.user.name}
+            {result.user.name}
           </Td>
 
-          <Td width={RANKING_COLUMN_WIDTH.kpm}>{props.result.kpm}</Td>
+          <Td width={RANKING_COLUMN_WIDTH.kpm}>{status.kpm}</Td>
           <Td width={RANKING_COLUMN_WIDTH.inputMode}>
             <UserInputModeText
               kanaType={props.kanaType}
@@ -123,7 +125,7 @@ const RankingTr = (props: RankingTrProps) => {
             />
           </Td>
           <Td width={RANKING_COLUMN_WIDTH.updatedAt}>
-            <UpdateAtText updatedAt={props.result.updatedAt} />
+            <UpdateAtText updatedAt={result.updated_at} />
           </Td>
           <Td width={RANKING_COLUMN_WIDTH.clapCount} alignItems="center">
             <ClapedText clapOptimisticState={clapOptimisticState} />
@@ -132,10 +134,10 @@ const RankingTr = (props: RankingTrProps) => {
       </CustomToolTip>
       {props.showMenu === props.index && (
         <RankingMenu
-          resultId={props.result.id}
-          userId={props.result.userId}
-          resultUpdatedAt={props.result.updatedAt}
-          name={props.result.user.name as string}
+          resultId={result.id}
+          userId={result.user_id}
+          resultUpdatedAt={result.updated_at}
+          name={result.user.name as string}
           setShowMenu={props.setShowMenu}
           setHoveredIndex={props.setHoveredIndex}
           clapOptimisticState={clapOptimisticState}

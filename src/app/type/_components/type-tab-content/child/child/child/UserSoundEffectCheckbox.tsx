@@ -1,7 +1,6 @@
-import React from "react";
+import { useUserOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { Box, CheckboxGroup, Flex, Text } from "@chakra-ui/react";
 import CheckBoxOption from "./child/CheckBoxOption";
-import { useUserOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 
 const UserSoundEffectCheckbox = () => {
   const userOptionsAtom = useUserOptionsAtom();
@@ -16,17 +15,17 @@ const UserSoundEffectCheckbox = () => {
           <CheckBoxOption
             label={"タイプ音"}
             name="typeSound"
-            defaultChecked={userOptionsAtom.typeSound}
+            defaultChecked={userOptionsAtom.type_sound}
           />
           <CheckBoxOption
             label={"ミス音"}
             name="missSound"
-            defaultChecked={userOptionsAtom.missSound}
+            defaultChecked={userOptionsAtom.miss_sound}
           />
           <CheckBoxOption
             label={"打ち切り音"}
             name="lineClearSound"
-            defaultChecked={userOptionsAtom.lineClearSound}
+            defaultChecked={userOptionsAtom.line_clear_sound}
           />
         </CheckboxGroup>
       </Box>

@@ -26,8 +26,8 @@ function NotificationMapInfo({ map }: MapCardProps) {
     >
       <Flex direction="column" gap={1}>
         <CustomToolTip
-          label={`${map.title} / ${map.artistName}${
-            map.musicSource ? `【${map.musicSource}】` : ""
+          label={`${map.title} / ${map.artist_name}${
+            map.music_source ? `【${map.music_source}】` : ""
           }`}
           placement="top"
         >
@@ -50,7 +50,7 @@ function NotificationMapInfo({ map }: MapCardProps) {
           textOverflow="ellipsis"
           whiteSpace="nowrap"
         >
-          {map.artistName || "\u00A0"}
+          {map.artist_name || "\u00A0"}
         </Box>
       </Flex>
       <MapBadges map={map} />

@@ -25,7 +25,7 @@ export const usePressSkip = () => {
       (gameStateRef.current!.isRetrySkip
         ? Number(map!.mapData[map!.startLine]["time"])
         : Number(nextLine["time"])) +
-      userOptions.timeOffset +
+      userOptions.time_offset +
       timeOffset;
 
     const playSpeed = typeAtomStore.get(speedAtom).playSpeed;

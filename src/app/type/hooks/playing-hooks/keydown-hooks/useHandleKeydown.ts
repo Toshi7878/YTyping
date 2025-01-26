@@ -10,7 +10,7 @@ import {
   useSceneAtom,
   useSetPlayingNotifyAtom,
   useSetTimeOffsetAtom,
-  useUserOptionsAtom
+  useUserOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { CreateMap } from "@/lib/instanceMapData";
@@ -33,10 +33,9 @@ export const useHandleKeydown = () => {
   const playingShortcutKey = usePlayingShortcutKey();
   const pauseShortcutKey = usePauseShortcutKey();
   const typeAtomStore = useStore();
-  const scene = useSceneAtom()
+  const scene = useSceneAtom();
 
   return (event: KeyboardEvent) => {
-
     const isPaused = ytStateRef.current?.isPaused;
     if (!isPaused || scene === "practice") {
       const count = statusRef.current!.status.count;
@@ -47,9 +46,12 @@ export const useHandleKeydown = () => {
         return;
       }
 
-
       const lineWord = typeAtomStore.get(lineWordAtom);
-      if (currentLineCount == lineWord.lineCount && isKeydownTyped(event,lineWord) && scene !== "replay") {
+      if (
+        currentLineCount == lineWord.lineCount &&
+        isKeydownTyped(event, lineWord) &&
+        scene !== "replay"
+      ) {
         event.preventDefault();
 
         typing({
@@ -102,9 +104,9 @@ const usePlayingShortcutKey = () => {
     const inputMode = typeAtomStore.get(playingInputModeAtom);
     const skip = typeAtomStore.get(skipAtom);
 
-    const isCtrlLeftRight = userOptions.timeOffsetKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
+    const isCtrlLeftRight = userOptions.time_offset_key === "CTRL_LEFT_RIGHT" && event.ctrlKey;
     const isCtrlAltLeftRight =
-      userOptions.timeOffsetKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
+      userOptions.time_offset_key === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
 
     switch (event.code) {
       case "Escape": //Escでポーズ
@@ -118,7 +120,7 @@ const usePlayingShortcutKey = () => {
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
           setTimeOffset((prev) => {
             const newValue = Math.round((prev + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-            setNotify(Symbol(`時間調整:${(newValue + userOptions.timeOffset).toFixed(2)}`));
+            setNotify(Symbol(`時間調整:${(newValue + userOptions.time_offset).toFixed(2)}`));
             return newValue;
           });
         } else if (scene === "replay" || scene === "practice") {
@@ -130,7 +132,7 @@ const usePlayingShortcutKey = () => {
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
           setTimeOffset((prev) => {
             const newValue = Math.round((prev - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-            setNotify(Symbol(`時間調整:${(newValue + userOptions.timeOffset).toFixed(2)}`));
+            setNotify(Symbol(`時間調整:${(newValue + userOptions.time_offset).toFixed(2)}`));
             return newValue;
           });
         } else if (scene === "replay" || scene === "practice") {
@@ -143,7 +145,7 @@ const usePlayingShortcutKey = () => {
         }
         break;
       case "F1":
-        if (userOptions.toggleInputModeKey === "TAB") {
+        if (userOptions.toggle_input_mode_key === "TAB") {
           if (scene === "replay" || scene === "practice") {
             toggleLineListDrawer();
           }
@@ -170,7 +172,7 @@ const usePlayingShortcutKey = () => {
         break;
       case "KanaMode":
       case "Romaji":
-        if (userOptions.toggleInputModeKey === "ALT_KANA") {
+        if (userOptions.toggle_input_mode_key === "ALT_KANA") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
               inputModeChange("kana");
@@ -189,7 +191,7 @@ const usePlayingShortcutKey = () => {
         break;
 
       case "Tab":
-        if (userOptions.toggleInputModeKey === "TAB") {
+        if (userOptions.toggle_input_mode_key === "TAB") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
               inputModeChange("kana");
@@ -267,8 +269,7 @@ const TENKEYS = [
 ];
 
 const useIsKeydownTyped = () => {
-
-  return (event: KeyboardEvent, lineWord:LineWord) => {
+  return (event: KeyboardEvent, lineWord: LineWord) => {
     if (event.ctrlKey || event.altKey) {
       return false;
     }

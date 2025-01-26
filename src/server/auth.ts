@@ -11,16 +11,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   callbacks: {
     async signIn({ user, account, profile }) {
-      const hash = CryptoJS.MD5(user.email!).toString();
-      const UserData = await prisma.user.findUnique({
-        where: { email_hash: hash },
+      const email_hash = CryptoJS.MD5(user.email!).toString();
+      const UserData = await prisma.users.findUnique({
+        where: { email_hash },
       });
 
       if (!UserData) {
         try {
-          await prisma.user.create({
+          await prisma.users.create({
             data: {
-              email_hash: hash!,
+              email_hash: email_hash!,
               name: null,
               role: "USER",
             },
@@ -79,9 +79,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         token.name = session.name;
       }
       if (user) {
-        const hash = CryptoJS.MD5(user.email!).toString();
-        const dbUser = await prisma.user.findUnique({
-          where: { email_hash: hash },
+        const email_hash = CryptoJS.MD5(user.email!).toString();
+        const dbUser = await prisma.users.findUnique({
+          where: { email_hash },
         });
         if (dbUser) {
           token.uid = dbUser.id.toString();
@@ -99,7 +99,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         session.user.id = token.uid as string;
         session.user.name = token.name;
         session.user.email = token.email_hash as string;
-        session.user.role = token.role as $Enums.Role;
+        session.user.role = token.role as $Enums.role;
       }
       return session;
     },

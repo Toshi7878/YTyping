@@ -28,47 +28,55 @@ const resultSendSchema = z.object({
 });
 
 const calcRank = async (mapId: number, userId: number) => {
-  const rankingList = await prisma.result.findMany({
+  const rankingList = await prisma.results.findMany({
     where: {
-      mapId: mapId,
+      map_id: mapId,
     },
     select: {
-      userId: true,
-      score: true,
+      user_id: true,
       rank: true,
+      status: {
+        select: {
+          score: true,
+        },
+      },
     },
-    orderBy: { score: "desc" },
+    orderBy: { status: { score: "desc" } },
   });
 
-  const overtakeNotify = await prisma.notification.findMany({
+  const overtakeNotify = await prisma.notifications.findMany({
     where: {
       visited_id: userId,
-      mapId: mapId,
+      map_id: mapId,
       action: "OVER_TAKE",
     },
     select: {
       visitorResult: {
         select: {
-          userId: true,
-          score: true,
+          user_id: true,
+          status: {
+            select: {
+              score: true,
+            },
+          },
         },
       },
     },
   });
 
-  const myResult = rankingList.find((record) => record.userId === userId);
+  const myResult = rankingList.find((record) => record.user_id === userId);
 
   for (let i = 0; i < overtakeNotify.length; i++) {
-    const visitorScore = overtakeNotify[i].visitorResult.score;
-    const myScore = myResult?.score;
+    const visitorScore = overtakeNotify[i].visitorResult.status!.score;
+    const myScore = myResult?.status!.score;
     if (visitorScore - Number(myScore) <= 0) {
-      const visitorId = overtakeNotify[i].visitorResult.userId;
-      await prisma.notification.delete({
+      const visitorId = overtakeNotify[i].visitorResult.user_id;
+      await prisma.notifications.delete({
         where: {
-          visitor_id_visited_id_mapId_action: {
+          visitor_id_visited_id_map_id_action: {
             visitor_id: visitorId,
             visited_id: userId,
-            mapId: mapId,
+            map_id: mapId,
             action: "OVER_TAKE",
           },
         },
@@ -79,11 +87,11 @@ const calcRank = async (mapId: number, userId: number) => {
   for (let i = 0; i < rankingList.length; i++) {
     const newRank = i + 1;
 
-    await prisma.result.update({
+    await prisma.results.update({
       where: {
-        userId_mapId: {
-          mapId: mapId,
-          userId: rankingList[i].userId,
+        user_id_map_id: {
+          map_id: mapId,
+          user_id: rankingList[i].user_id,
         },
       },
       data: {
@@ -91,39 +99,39 @@ const calcRank = async (mapId: number, userId: number) => {
       },
     });
 
-    const isOtherUser = rankingList[i].userId !== userId;
+    const isOtherUser = rankingList[i].user_id !== userId;
     if (isOtherUser && rankingList[i].rank <= 5 && rankingList[i].rank !== newRank) {
-      await prisma.notification.upsert({
+      await prisma.notifications.upsert({
         where: {
-          visitor_id_visited_id_mapId_action: {
+          visitor_id_visited_id_map_id_action: {
             visitor_id: userId,
-            visited_id: rankingList[i].userId,
-            mapId: mapId,
+            visited_id: rankingList[i].user_id,
+            map_id: mapId,
             action: "OVER_TAKE",
           },
         },
         update: {
           checked: false,
-          createdAt: new Date(),
-          oldRank: rankingList[i].rank,
+          created_at: new Date(),
+          old_rank: rankingList[i].rank,
         },
         create: {
           visitor_id: userId,
-          visited_id: rankingList[i].userId,
-          mapId: mapId,
+          visited_id: rankingList[i].user_id,
+          map_id: mapId,
           action: "OVER_TAKE",
-          oldRank: rankingList[i].rank,
+          old_rank: rankingList[i].rank,
         },
       });
     }
   }
 
-  await prisma.map.update({
+  await prisma.maps.update({
     where: {
       id: mapId,
     },
     data: {
-      rankingCount: rankingList.length,
+      ranking_count: rankingList.length,
     },
   });
 };
@@ -145,20 +153,20 @@ const sendLineResult = async (mapId: number, lineResults: LineResultData[]) => {
 };
 
 const sendNewResult = async (data: SendResultData, userId: number) => {
-  const upsertResult = await prisma.result.upsert({
+  const upsertResult = await prisma.results.upsert({
     where: {
-      userId_mapId: {
-        userId: userId,
-        mapId: data.mapId,
+      user_id_map_id: {
+        user_id: userId,
+        map_id: data.mapId,
       },
     },
     update: {
       ...data.status,
-      updatedAt: new Date(),
+      updated_at: new Date(),
     },
     create: {
-      mapId: data.mapId,
-      userId,
+      map_id: data.mapId,
+      user_id: userId,
       ...data.status,
     },
   });
@@ -168,7 +176,7 @@ const sendNewResult = async (data: SendResultData, userId: number) => {
 
 export async function actions(
   data: SendResultData,
-  lineResults: LineResultData[],
+  lineResults: LineResultData[]
 ): Promise<UploadResult> {
   const validatedFields = resultSendSchema.safeParse({
     mapId: data.mapId,

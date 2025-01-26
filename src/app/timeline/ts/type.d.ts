@@ -4,42 +4,44 @@ export type FilterMode = "all" | "roma" | "kana" | "romakana";
 
 export interface ResultCardInfo {
   id: number;
-  mapId: number;
-  userId: number;
-  updatedAt: Date;
-  clearRate: number;
-  score: number;
-  miss: number;
-  lost: number;
-  rank: number;
-  kanaType: number;
-  romaType: number;
-  flickType: number;
-  kpm: number;
-  romaKpm: number;
-  defaultSpeed: number;
-  clapCount: number;
+  map_id: number;
+  user_id: number;
+  clap_count: number;
   hasClap: boolean;
+  updated_at: Date;
+  status: {
+    score: number;
+    default_speed: number;
+    miss: number;
+    lost: number;
+    rank: number;
+    kpm: number;
+    roma_kpm: number;
+    kana_type: number;
+    roma_type: number;
+    flick_type: number;
+    clear_rate: number;
+  };
+
   map: {
     id: number;
-    videoId: string;
+    video_id: string;
     title: string;
-    artistName: string;
-    musicSource: string;
-    previewTime: string;
-    thumbnailQuality: $Enums.ThumbnailQuality;
-    updatedAt: Date;
-    likeCount: number;
-    rankingCount: number;
-
-    user: {
+    artist_name: string;
+    music_source: string;
+    preview_time: string;
+    thumbnail_quality: $Enums.ThumbnailQuality;
+    updated_at: Date;
+    like_count: number;
+    ranking_count: number;
+    creator: {
       id: number;
       name: string;
     };
+    map_likes: { is_liked: boolean }[];
+    results: { rank: number }[];
   };
-  mapLike: { isLiked: boolean }[];
-  result: { rank: number }[];
-  user: {
+  player: {
     id: number;
     name: string;
   };

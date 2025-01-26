@@ -17,7 +17,7 @@ const EditIcon = () => {
   const { data: session } = useSession();
 
   const role = session?.user.role;
-  const creatorId = mapInfo?.creatorId;
+  const creatorId = mapInfo?.creator_id;
   const userId = session?.user.id;
 
   const tooltipLabel = `譜面のEditページに移動${

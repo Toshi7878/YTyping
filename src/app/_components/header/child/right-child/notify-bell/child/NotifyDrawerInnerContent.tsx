@@ -57,9 +57,9 @@ const NotifyDrawerInnerContent = () => {
                 return page.notifications.map((notify, index: number) => {
                   const { map } = notify;
                   const src =
-                    map.thumbnailQuality === "maxresdefault"
-                      ? `https://i.ytimg.com/vi_webp/${map.videoId}/maxresdefault.webp`
-                      : `https://i.ytimg.com/vi/${map.videoId}/mqdefault.jpg`;
+                    map.thumbnail_quality === "maxresdefault"
+                      ? `https://i.ytimg.com/vi_webp/${map.video_id}/maxresdefault.webp`
+                      : `https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`;
 
                   return (
                     <Box key={index} mb={4}>
@@ -67,11 +67,11 @@ const NotifyDrawerInnerContent = () => {
                         <NotificationMapCard notify={notify}>
                           <MapLeftThumbnail
                             alt={map.title}
-                            fallbackSrc={`https://i.ytimg.com/vi/${map.videoId}/mqdefault.jpg`}
+                            fallbackSrc={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
                             src={src}
-                            mapVideoId={map.videoId}
-                            mapPreviewTime={map.previewTime}
-                            thumbnailQuality={map.thumbnailQuality}
+                            mapVideoId={map.video_id}
+                            mapPreviewTime={map.preview_time}
+                            thumbnailQuality={map.thumbnail_quality}
                             thumnailWidth={NOTIFICATION_MAP_THUBNAIL_WIDTH}
                             thumnailHeight={NOTIFICATION_MAP_THUBNAIL_HEIGHT}
                           />
@@ -80,7 +80,7 @@ const NotifyDrawerInnerContent = () => {
                           </NotificationMapCardRightInfo>
                         </NotificationMapCard>
                         <Box textAlign="end" color={`${theme.colors.text.body}cc`}>
-                          <UpdateAtText updatedAt={notify.createdAt} />
+                          <UpdateAtText updatedAt={notify.created_at} />
                         </Box>
                       </Box>
                     </Box>

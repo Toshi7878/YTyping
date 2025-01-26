@@ -1,3 +1,4 @@
+import { RouterOutPuts } from "@/server/api/trpc";
 import { $Enums } from "@prisma/client";
 import { GameStateRef, PlayMode, StatusRef, YTStateRef } from "../type";
 
@@ -52,14 +53,16 @@ export const DEFAULT_SPEED = {
   playSpeed: 1,
 };
 
-export const DEFAULT_USER_OPTIONS = {
-  timeOffset: 0,
-  typeSound: false,
-  missSound: false,
-  lineClearSound: false,
-  nextDisplay: "LYRICS" as $Enums.NextDisplay,
-  timeOffsetKey: "CTRL_LEFT_RIGHT" as $Enums.TimeOffsetKey,
-  toggleInputModeKey: "ALT_KANA" as $Enums.ToggleInputModeKey,
+export const DEFAULT_USER_OPTIONS: NonNullable<
+  RouterOutPuts["userTypingOption"]["getUserTypingOptions"]
+> = {
+  time_offset: 0,
+  type_sound: false,
+  miss_sound: false,
+  line_clear_sound: false,
+  next_display: "LYRICS" as $Enums.next_display,
+  time_offset_key: "CTRL_LEFT_RIGHT" as $Enums.time_offset_key,
+  toggle_input_mode_key: "ALT_KANA" as $Enums.toggle_input_mode_key,
 };
 
 export const CHANGE_TIME_OFFSET_VALUE = 0.05;

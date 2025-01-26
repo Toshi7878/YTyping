@@ -18,7 +18,7 @@ const MapBadges = (props: MapBadgesProps) => {
         <CustomToolTip
           label={
             <Box>
-              <Box>最高速度:{map.romaKpmMax}kpm</Box>
+              <Box>最高速度:{map.difficulty!.roma_kpm_max}kpm</Box>
             </Box>
           }
           placement="top"
@@ -27,16 +27,16 @@ const MapBadges = (props: MapBadgesProps) => {
             <Text as="span" fontSize="xs" display={{ base: "none", sm: "inline-block" }}>
               ★
             </Text>
-            {(map.romaKpmMedian / 100).toFixed(1)}
+            {(map.difficulty!.roma_kpm_median / 100).toFixed(1)}
           </MapBadge>
         </CustomToolTip>
       </HStack>
       <Flex>
-        <RankingCountIcon myRank={map.result[0]?.rank} rankingCount={map.rankingCount} />
+        <RankingCountIcon myRank={map.results[0]?.rank} rankingCount={map.ranking_count} />
         <LikeCountIcon
           mapId={map.id}
-          isLiked={!!map.mapLike[0]?.isLiked}
-          likeCount={map.likeCount}
+          isLiked={!!map.map_likes[0]?.is_liked}
+          likeCount={map.like_count}
         />
       </Flex>
     </Flex>

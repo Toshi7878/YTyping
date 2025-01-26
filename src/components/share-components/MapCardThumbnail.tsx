@@ -12,7 +12,7 @@ interface MapLeftThumbnailProps extends BoxProps {
   mapVideoId?: string;
   mapPreviewTime?: string;
   mapPreviewSpeed?: number;
-  thumbnailQuality?: $Enums.ThumbnailQuality;
+  thumbnailQuality?: $Enums.thumbnail_quality;
   thumnailWidth: Partial<Record<string, number>>;
   thumnailHeight: Partial<Record<string, number>>;
 }

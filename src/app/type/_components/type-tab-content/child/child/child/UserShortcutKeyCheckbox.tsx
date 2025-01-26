@@ -14,20 +14,20 @@ const UserShortcutKeyCheckbox = () => {
   const setIsOptionEdited = useSetIsOptionEdited();
 
   const changeTimeOffsetKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value as $Enums.TimeOffsetKey;
-    const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
+    const value = event.target.value as $Enums.time_offset_key;
+    const newUserOptions: NonNullable<RouterOutPuts["userTypingOption"]["getUserTypingOptions"]> = {
       ...userOptionsAtom,
-      timeOffsetKey: value, // 選択された値を設定
+      time_offset_key: value, // 選択された値を設定
     };
     setUserOptionsAtom(newUserOptions);
     setIsOptionEdited(true);
   };
 
   const changeInputModeKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value as $Enums.ToggleInputModeKey; // 選択された値を取得
+    const value = event.target.value as $Enums.toggle_input_mode_key; // 選択された値を取得
     const newUserOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"] = {
       ...userOptionsAtom,
-      toggleInputModeKey: value, // 選択された値を設定
+      toggle_input_mode_key: value, // 選択された値を設定
     };
     setUserOptionsAtom(newUserOptions);
   };
@@ -42,7 +42,7 @@ const UserShortcutKeyCheckbox = () => {
           <Select
             onChange={changeTimeOffsetKey}
             width="fit-content"
-            defaultValue={userOptionsAtom.timeOffsetKey}
+            defaultValue={userOptionsAtom.time_offset_key}
           >
             <option value="CTRL_LEFT_RIGHT">Ctrl+←→</option>
             <option value="CTRL_ALT_LEFT_RIGHT">Ctrl+Alt+←→</option>
@@ -54,7 +54,7 @@ const UserShortcutKeyCheckbox = () => {
           <Select
             onChange={changeInputModeKey}
             width="fit-content"
-            defaultValue={userOptionsAtom.toggleInputModeKey}
+            defaultValue={userOptionsAtom.toggle_input_mode_key}
           >
             <option value="ALT_KANA">Alt+Kana</option>
             <option value="TAB">Tab</option>

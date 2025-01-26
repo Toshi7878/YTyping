@@ -32,97 +32,107 @@ export async function GET(req: NextRequest) {
 
   try {
     const resultList = await prisma.$queryRaw`
-      SELECT "Result"."id",
-      "Result"."mapId",
-      "Result"."userId",
-      "Result"."updatedAt",
-      "Result"."clearRate",
-      "Result"."score",
-      "Result"."miss",
-      "Result"."lost",
-      "Result"."rank",
-      "Result"."kanaType",
-      "Result"."romaType",
-      "Result"."flickType",
-      "Result"."kpm",
-      "Result"."romaKpm",
-      "Result"."defaultSpeed",
-      "Result"."clapCount",
+      SELECT results."id",
+      results."map_id",
+      results."user_id",
+      results."updated_at",
+      results."clap_count",
+      results."rank",
       json_build_object(
-        'id', "Map"."id",
-        'videoId', "Map"."videoId",
-        'title', "Map"."title",
-        'artistName', "Map"."artistName",
-        'musicSource', "Map"."musicSource",
-        'previewTime', "Map"."previewTime",
-        'thumbnailQuality', "Map"."thumbnailQuality",
-        'likeCount', "Map"."likeCount",
-        'rankingCount', "Map"."rankingCount",
-        'updatedAt', "Map"."updatedAt",
-        'user', json_build_object(
-          'id', "Creator"."id",
-          'name', "Creator"."name"
+        'score', "status"."score",
+        'miss', "status"."miss",
+        'lost', "status"."lost",
+        'roma_type', "status"."roma_type",
+        'kana_type', "status"."kana_type",
+        'flick_type', "status"."flick_type",
+        'kpm', "status"."kpm",
+        'roma_kpm', "status"."roma_kpm",
+        'clear_rate', "status"."clear_rate",
+        'default_speed', "status"."default_speed"
+      ) as "status",
+      json_build_object(
+        'id', map."id",
+        'video_id', map."video_id",
+        'title', map."title",
+        'artist_name', map."artist_name",
+        'music_source', map."music_source",
+        'preview_time', map."preview_time",
+        'thumbnail_quality', map."thumbnail_quality",
+        'like_count', map."like_count",
+        'ranking_count', map."ranking_count",
+        'updated_at', map."updated_at",
+        'creator', json_build_object(
+          'id', creator."id",
+          'name', creator."name"
+        ),
+        'map_likes', COALESCE(
+      (
+        SELECT json_agg(
+          json_build_object(
+            'is_liked', ml."is_liked",
+            'user_id', ml."user_id"
+          )
         )
+        FROM map_likes ml
+        WHERE ml."map_id" = map."id"
+        AND ml."user_id" = ${userId}
+        GROUP BY ml."map_id"
+      ),
+      '[]'::json
+    ),
+    'results', COALESCE(
+      (
+        SELECT json_agg(
+          json_build_object(
+            'rank', r."rank"
+          )
+        )
+        FROM (
+          SELECT MIN(rank) as rank
+          FROM results
+          WHERE "map_id" = map."id"
+          AND "user_id" = ${userId}
+        ) r
+      ),
+      '[]'::json
+    )
       ) as "map",
       json_build_object(
         'id', "Player"."id",
         'name', "Player"."name"
-      ) as "user",
-      (
-        SELECT "isClaped"
-        FROM "Clap"
-        WHERE "Clap"."resultId" = "Result"."id"
-        AND "Clap"."userId" = ${userId}
-        LIMIT 1
-      ) as "hasClap",
-      'mapLike', COALESCE(
-        (
-          SELECT array_agg(json_build_object('isLiked', "isLiked"))
-          FROM "MapLike"
-          WHERE "MapLike"."mapId" = "Map"."id"
-          AND "MapLike"."userId" = ${userId}
-        ),
-        ARRAY[]::json[]
-      ) as "mapLike",
-      'result', COALESCE(
-        (
-          SELECT array_agg(json_build_object('rank', "rank"))
-          FROM "Result"
-          WHERE "Result"."mapId" = "Map"."id"
-          AND "Result"."userId" = ${userId}
-        ),
-        ARRAY[]::json[]
-      ) as "result"
-      FROM "Result"
-      JOIN "Map" ON "Result"."mapId" = "Map"."id"
-      JOIN "User" AS "Creator" ON "Map"."creatorId" = "Creator"."id"
-      JOIN "User" AS "Player" ON "Result"."userId" = "Player"."id"
+      ) as "player"
+
+      FROM results
+      JOIN maps AS map ON results."map_id" = map."id"
+      JOIN result_statuses AS "status" ON results."id" = "status"."result_id"
+      JOIN users AS creator ON map."creator_id" = creator."id"
+      JOIN users AS "Player" ON results."user_id" = "Player"."id"
       WHERE (
         CASE
-          WHEN ${mode} = 'roma' THEN "Result"."romaType" > 0 AND "Result"."kanaType" = 0
-          WHEN ${mode} = 'kana' THEN "Result"."kanaType" > 0 AND "Result"."romaType" = 0
-          WHEN ${mode} = 'romakana' THEN "Result"."kanaType" > 0 AND "Result"."romaType" > 0
+          WHEN ${mode} = 'roma' THEN "status"."roma_type" > 0 AND "status"."kana_type" = 0
+          WHEN ${mode} = 'kana' THEN "status"."kana_type" > 0 AND "status"."roma_type" = 0
+          WHEN ${mode} = 'romakana' THEN "status"."kana_type" > 0 AND "status"."roma_type" > 0
           ELSE 1=1
         END
       )
       AND
       (
         CASE
-          WHEN ${maxKpm} != 0 THEN "Result"."romaKpm" BETWEEN ${minKpm} AND (CASE WHEN ${maxKpm} = 1200 THEN "Result"."romaKpm" ELSE ${maxKpm} END)
+          WHEN ${maxKpm} != 0 THEN "status"."roma_kpm" BETWEEN ${minKpm} AND (CASE WHEN ${maxKpm} = 1200 THEN "status"."roma_kpm" ELSE ${maxKpm} END)
           ELSE 1=1
         END
       )
       AND
       (
         CASE
-          WHEN ${maxClearRate} != 0 THEN "Result"."clearRate" BETWEEN ${minClearRate} AND ${maxClearRate}
+          WHEN ${maxClearRate} != 0 THEN "status"."clear_rate" BETWEEN ${minClearRate} AND ${maxClearRate}
           ELSE 1=1
         END
       )
       AND
       (
         CASE
-          WHEN ${maxSpeed} != 0 THEN "Result"."defaultSpeed" BETWEEN ${minSpeed} AND ${maxSpeed}
+          WHEN ${maxSpeed} != 0 THEN "status"."default_speed" BETWEEN ${minSpeed} AND ${maxSpeed}
           ELSE 1=1
         END
       )
@@ -136,17 +146,138 @@ export async function GET(req: NextRequest) {
       AND
       (
         CASE
-          WHEN ${mapKeyword} != '' THEN "title" &@~ ${mapKeyword}
-          OR "artistName" &@~ ${mapKeyword}
-          OR "musicSource" &@~ ${mapKeyword}
-          OR "tags" &@~ ${mapKeyword}
-          OR "Creator"."name" &@~ ${mapKeyword}
+          WHEN ${mapKeyword} != '' THEN map."title" &@~ ${mapKeyword}
+          OR map."artist_name" &@~ ${mapKeyword}
+          OR map."music_source" &@~ ${mapKeyword}
+          OR map."tags" &@~ ${mapKeyword}
+          OR creator."name" &@~ ${mapKeyword}
           ELSE 1=1
         END
       )
-      ORDER BY "Result"."updatedAt" DESC
+      ORDER BY results."updated_at" DESC
       LIMIT ${USERS_RESULT_LIST_TAKE_LENGTH} OFFSET ${offset}
     `;
+
+    // const resultList = await prisma.$queryRaw`
+    //   SELECT results."id",
+    //   results."map_id",
+    //   results."user_id",
+    //   results."updated_at",
+    //   results."clap_count",
+    //   results."rank",
+    //   json_build_object(
+    //     'score', "status"."score",
+    //     'miss', "status"."miss",
+    //     'lost', "status"."lost",
+    //     'rank', "status"."rank",
+    //     'roma_type', "status"."roma_type",
+    //     'kana_type', "status"."kana_type",
+    //     'flick_type', "status"."flick_type",
+    //     'kpm', "status"."kpm",
+    //     'roma_kpm', "status"."roma_kpm",
+    //     'clear_rate', "status"."clear_rate",
+    //     'default_speed', "status"."default_speed",
+    //   ) as "status",
+    //   json_build_object(
+    //     'id', maps."id",
+    //     'video_id', maps."video_id",
+    //     'title', maps."title",
+    //     'artist_name', maps."artist_name",
+    //     'music_source', maps."music_source",
+    //     'preview_time', maps."preview_time",
+    //     'thumbnail_quality', maps."thumbnail_quality",
+    //     'like_count', maps."like_count",
+    //     'ranking_count', maps."ranking_count",
+    //     'updated_at', maps."updated_at",
+    //     'creator', json_build_object(
+    //       'id', creator."id",
+    //       'name', creator."name"
+    //     )
+    //   ) as "map",
+    //   json_build_object(
+    //     'id', "Player"."id",
+    //     'name', "Player"."name"
+    //   ) as "user",
+    //   (
+    //     SELECT "is_claped"
+    //     FROM result_claps
+    //     WHERE result_claps."result_id" = results."id"
+    //     AND result_claps."user_id" = ${userId}
+    //     LIMIT 1
+    //   ) as "hasClap",
+    //   'map_likes', COALESCE(
+    //     (
+    //       SELECT array_agg(json_build_object('is_liked', "is_liked"))
+    //       FROM map_likes
+    //       WHERE map_likes."map_id" = maps."id"
+    //       AND map_likes."user_id" = ${userId}
+    //     ),
+    //     ARRAY[]::json[]
+    //   ) as map_likes,
+    //   'results', COALESCE(
+    //     (
+    //       SELECT array_agg(json_build_object('rank', "rank"))
+    //       FROM results
+    //       WHERE results."map_id" = maps."id"
+    //       AND user_id."user_id" = ${userId}
+    //     ),
+    //     ARRAY[]::json[]
+    //   ) as results
+    //   FROM results
+    //   JOIN maps AS map ON results."map_id" = maps."id"
+    //   JOIN result_statuses AS "status" ON results."map_id" = "status"."id"
+    //   JOIN users AS creator ON maps."creator_id" = creator."id"
+    //   JOIN users AS "Player" ON results."user_id" = "Player"."id"
+    //   WHERE (
+    //     CASE
+    //       WHEN ${mode} = 'roma' THEN "status"."roma_type" > 0 AND "status"."kana_type" = 0
+    //       WHEN ${mode} = 'kana' THEN "status"."kana_type" > 0 AND "status"."roma_type" = 0
+    //       WHEN ${mode} = 'romakana' THEN "status"."kana_type" > 0 AND "status"."roma_type" > 0
+    //       ELSE 1=1
+    //     END
+    //   )
+    //   AND
+    //   (
+    //     CASE
+    //       WHEN ${maxKpm} != 0 THEN results."roma_kpm" BETWEEN ${minKpm} AND (CASE WHEN ${maxKpm} = 1200 THEN results."roma_kpm" ELSE ${maxKpm} END)
+    //       ELSE 1=1
+    //     END
+    //   )
+    //   AND
+    //   (
+    //     CASE
+    //       WHEN ${maxClearRate} != 0 THEN results."clear_rate" BETWEEN ${minClearRate} AND ${maxClearRate}
+    //       ELSE 1=1
+    //     END
+    //   )
+    //   AND
+    //   (
+    //     CASE
+    //       WHEN ${maxSpeed} != 0 THEN results."default_speed" BETWEEN ${minSpeed} AND ${maxSpeed}
+    //       ELSE 1=1
+    //     END
+    //   )
+    //   AND
+    //   (
+    //     CASE
+    //       WHEN ${userKey} != '' THEN "Player"."name" &@~ ${userKey}
+    //       ELSE 1=1
+    //     END
+    //   )
+    //   AND
+    //   (
+    //     CASE
+    //       WHEN ${mapKeyword} != '' THEN "title" &@~ ${mapKeyword}
+    //       OR "artist_name" &@~ ${mapKeyword}
+    //       OR "music_source" &@~ ${mapKeyword}
+    //       OR "tags" &@~ ${mapKeyword}
+    //       OR creator."name" &@~ ${mapKeyword}
+    //       ELSE 1=1
+    //     END
+    //   )
+    //   ORDER BY results."updated_at" DESC
+    //   LIMIT ${USERS_RESULT_LIST_TAKE_LENGTH} OFFSET ${offset}
+    // `;
 
     return new Response(JSON.stringify(resultList), {
       headers: { "Content-Type": "application/json" },

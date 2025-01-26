@@ -17,7 +17,9 @@ function MapInfo({ map, isToggledInputMode, ...rest }: MapCardProps) {
   return (
     <Flex direction="column" gap={1} justifyContent="space-between" {...rest}>
       <CustomToolTip
-        label={`${map.title} / ${map.artistName}${map.musicSource ? `【${map.musicSource}】` : ""}`}
+        label={`${map.title} / ${map.artist_name}${
+          map.music_source ? `【${map.music_source}】` : ""
+        }`}
         placement="top"
       >
         <Link
@@ -32,7 +34,7 @@ function MapInfo({ map, isToggledInputMode, ...rest }: MapCardProps) {
             textOverflow="ellipsis"
             whiteSpace="nowrap"
           >
-            {`${map.title} / ${map.artistName}`}
+            {`${map.title} / ${map.artist_name}`}
           </Box>
         </Link>
       </CustomToolTip>
@@ -40,11 +42,11 @@ function MapInfo({ map, isToggledInputMode, ...rest }: MapCardProps) {
         <Text as="span">
           制作者:{" "}
           <Link
-            href={`/user/${map.user.id}`}
+            href={`/user/${map.creator.id}`}
             onClick={handleLinkClick}
             color={theme.colors.secondary.main}
           >
-            {map.user.name}
+            {map.creator.name}
           </Link>
         </Text>
       </Box>

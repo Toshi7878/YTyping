@@ -13,10 +13,10 @@ const upsertMap = async (
   mapId: string,
   userId: number,
   isMapDataEdited: boolean,
-  mapData: MapData[],
+  mapData: MapData[]
 ) => {
   const mapIdNumber = mapId === "new" ? 0 : Number(mapId);
-  const upsertedMap = await prisma.map.upsert({
+  const upsertedMap = await prisma.maps.upsert({
     where: {
       id: mapIdNumber, // 0は存在しないIDとして使用
     },
@@ -26,7 +26,7 @@ const upsertMap = async (
     },
     create: {
       ...data,
-      creatorId: userId,
+      creator_id: userId,
     },
   });
 
@@ -40,7 +40,7 @@ const upsertMap = async (
       new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
       {
         upsert: true, // 既存のファイルを上書きするオプションを追加
-      },
+      }
     );
 
   return newMapId; // upsertされたマップのIDを返す
@@ -50,7 +50,7 @@ export async function actions(
   data: EditorSendData,
   mapData: MapData[],
   isMapDataEdited: boolean,
-  mapId: string,
+  mapId: string
 ): Promise<UploadResult> {
   const validatedFields = mapSendSchema.safeParse({
     title: data.title,
@@ -76,14 +76,14 @@ export async function actions(
     const userRole = session?.user.role;
     let newMapId: number;
 
-    const mapCreatorId = await prisma.map.findUnique({
+    const mapCreatorId = await prisma.maps.findUnique({
       where: { id: mapId === "new" ? 0 : Number(mapId) },
       select: {
-        creatorId: true,
+        creator_id: true,
       },
     });
 
-    if (mapId === "new" || mapCreatorId?.creatorId === userId || userRole === "ADMIN") {
+    if (mapId === "new" || mapCreatorId?.creator_id === userId || userRole === "ADMIN") {
       newMapId = await upsertMap(data, mapId, userId, isMapDataEdited, mapData);
     } else {
       return {
@@ -113,7 +113,7 @@ export async function actions(
   }
 }
 
-import { ThumbnailQuality } from "@prisma/client";
+import { thumbnail_quality } from "@prisma/client";
 import { z } from "zod";
 
 const lineSchema = z.object({
@@ -129,7 +129,7 @@ const mapSendSchema = z.object({
   title: z.string().min(1, { message: "タイトルは１文字以上必要です" }),
   creatorComment: z.string().optional(),
   tags: z.array(z.string()).min(2, { message: "タグは2つ以上必要です" }),
-  thumbnailQuality: z.nativeEnum(ThumbnailQuality),
+  thumbnailQuality: z.nativeEnum(thumbnail_quality),
   previewTime: z
     .string()
     .min(1, { message: "プレビュータイムを設定してください。" })
@@ -141,11 +141,11 @@ const mapSendSchema = z.object({
     .refine(
       (lines) =>
         !lines.some((line) =>
-          Object.values(line).some((value) => typeof value === "string" && value.includes("http")),
+          Object.values(line).some((value) => typeof value === "string" && value.includes("http"))
         ),
       {
         message: "譜面データにはhttpから始まる文字を含めることはできません",
-      },
+      }
     )
     .refine((lines) => lines.some((line) => line.word && line.word.length > 0), {
       message: "タイピングワードが設定されていません",
@@ -163,12 +163,12 @@ const mapSendSchema = z.object({
       (lines) => {
         const endAfterLineIndex = lines.findIndex((line) => line.lyrics === "end");
         return lines.every((line, index) =>
-          endAfterLineIndex < index ? line.lyrics === "end" : true,
+          endAfterLineIndex < index ? line.lyrics === "end" : true
         );
       },
       {
         message: "endの後に無効な行があります",
-      },
+      }
     )
     .refine(
       (lines) => {
@@ -189,7 +189,7 @@ const mapSendSchema = z.object({
       },
       {
         message: "カスタムCSSの合計文字数は10000文字以下になるようにしてください",
-      },
+      }
     ),
   videoId: z.string(),
 });

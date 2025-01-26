@@ -49,20 +49,20 @@ export const useSoundEffect = () => {
   };
   const triggerTypingSound = ({ isLineCompleted }: { isLineCompleted: boolean }) => {
     if (isLineCompleted) {
-      if (userOptions.lineClearSound) {
+      if (userOptions.line_clear_sound) {
         clearTypeSoundPlay();
-      } else if (userOptions.typeSound) {
+      } else if (userOptions.type_sound) {
         typeSoundPlay();
       }
     } else {
-      if (userOptions.typeSound) {
+      if (userOptions.type_sound) {
         typeSoundPlay();
       }
     }
   };
 
   const triggerMissSound = () => {
-    if (userOptions.missSound) {
+    if (userOptions.miss_sound) {
       missSoundPlay();
     }
   };

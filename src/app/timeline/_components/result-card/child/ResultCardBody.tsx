@@ -14,7 +14,7 @@ interface ResultInnerCardBodyProps {
 const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
   const { result } = props;
 
-  const isToggledInputMode = result?.romaType != 0 && result?.kanaType != 0;
+  const isToggledInputMode = result?.status.roma_type != 0 && result?.status.kana_type != 0;
 
   const rowDisplay = { base: "none", md: "flex" };
   const columnDisplay = { base: "flex", md: "none" };
@@ -30,14 +30,16 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
         zIndex={0}
       >
         <Flex direction="row" gap={4} width="100%">
-          {result && <UserRank userRank={result.rank} display={rowDisplay} />}
+          {result && <UserRank userRank={result.status.rank} display={rowDisplay} />}
 
           <MapLeftThumbnail
             alt={result ? result.map.title : ""}
-            fallbackSrc={result ? `https://i.ytimg.com/vi/${result.map.videoId}/mqdefault.jpg` : ""}
-            mapVideoId={result?.map.videoId}
-            mapPreviewTime={result?.map.previewTime}
-            mapPreviewSpeed={result?.defaultSpeed}
+            fallbackSrc={
+              result ? `https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg` : ""
+            }
+            mapVideoId={result?.map.video_id}
+            mapPreviewTime={result?.map.preview_time}
+            mapPreviewSpeed={result?.status.default_speed}
             thumnailWidth={TIMELINE_THUBNAIL_WIDTH}
             thumnailHeight={TIMELINE_THUBNAIL_HEIGHT}
           />
@@ -95,11 +97,14 @@ const MapIcons = ({
       left={left}
       {...rest}
     >
-      <RankingCountIcon myRank={result.result[0]?.rank} rankingCount={result.map.rankingCount} />
+      <RankingCountIcon
+        myRank={result.map.results[0]?.rank}
+        rankingCount={result.map.ranking_count}
+      />
       <LikeCountIcon
         mapId={result.map.id}
-        isLiked={!!result.mapLike[0]?.isLiked}
-        likeCount={result.map.likeCount}
+        isLiked={!!result.map.map_likes[0]?.is_liked}
+        likeCount={result.map.like_count}
       />
     </Flex>
   );

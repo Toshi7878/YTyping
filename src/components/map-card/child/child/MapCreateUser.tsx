@@ -10,10 +10,10 @@ interface MapCreateUserProps {
 const MapCreateUser = (props: MapCreateUserProps) => {
   return (
     <Text as="small" mt={2}>
-      <UserLinkText userId={props.map.user.id} userName={props.map.user.name as string} />
+      <UserLinkText userId={props.map.creator.id} userName={props.map.creator.name as string} />
       <Text as="span" fontSize="xs" display={{ base: "none", md: "inline-block" }}>
         <Box mx={1}>
-          - <UpdateAtText updatedAt={props.map.updatedAt} />
+          - <UpdateAtText updatedAt={props.map.updated_at} />
         </Box>
       </Text>
     </Text>

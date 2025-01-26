@@ -10,9 +10,9 @@ const ResultInnerCardBodyWrapper = ({ children, result }: ResultInnerCardBodyWra
   const theme: ThemeColors = useTheme();
 
   const src =
-    result?.map.thumbnailQuality === "maxresdefault"
-      ? `https://i.ytimg.com/vi_webp/${result.map.videoId}/maxresdefault.webp`
-      : `https://i.ytimg.com/vi/${result?.map.videoId}/mqdefault.jpg`;
+    result?.map.thumbnail_quality === "maxresdefault"
+      ? `https://i.ytimg.com/vi_webp/${result.map.video_id}/maxresdefault.webp`
+      : `https://i.ytimg.com/vi/${result?.map.video_id}/mqdefault.jpg`;
 
   return (
     <CardBody

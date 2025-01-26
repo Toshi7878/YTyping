@@ -8,7 +8,7 @@ export const notificationRouter = {
     const session = await auth();
     const userId = session ? Number(session.user.id) : 0;
 
-    const data = await prisma.notification.findFirst({
+    const data = await prisma.notifications.findFirst({
       where: {
         visited_id: userId,
         checked: false,
@@ -26,7 +26,7 @@ export const notificationRouter = {
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.date().nullish(), // <-- "cursor" needs to exist, but can be any type
         direction: z.enum(["forward", "backward"]), // optional, useful for bi-directional query      }),
-      }),
+      })
     )
     .query(async ({ input }) => {
       const session = await auth();
@@ -35,21 +35,21 @@ export const notificationRouter = {
       const limit = input.limit ?? 20;
 
       try {
-        const notifyList = await prisma.notification.findMany({
+        const notifyList = await prisma.notifications.findMany({
           where: {
             visited_id: userId,
           },
           take: limit + 1,
-          cursor: cursor ? { createdAt: cursor } : undefined,
+          cursor: cursor ? { created_at: cursor } : undefined,
 
           orderBy: {
-            createdAt: "desc",
+            created_at: "desc",
           },
           select: {
-            createdAt: true,
+            created_at: true,
             action: true,
             visitor_id: true,
-            oldRank: true,
+            old_rank: true,
             visitor: {
               select: {
                 name: true,
@@ -57,47 +57,61 @@ export const notificationRouter = {
             },
             visitedResult: {
               select: {
-                score: true,
+                status: {
+                  select: {
+                    score: true,
+                  },
+                },
               },
             },
+
             visitorResult: {
               select: {
-                score: true,
+                status: {
+                  select: {
+                    score: true,
+                  },
+                },
               },
             },
             map: {
               select: {
                 id: true,
                 title: true,
-                artistName: true,
-                musicSource: true,
-                romaKpmMedian: true,
-                romaKpmMax: true,
-                videoId: true,
-                creatorId: true,
-                updatedAt: true,
-                previewTime: true,
-                totalTime: true,
-                thumbnailQuality: true,
-                likeCount: true,
-                rankingCount: true,
-                mapLike: {
-                  where: {
-                    userId,
-                  },
+                artist_name: true,
+                music_source: true,
+                video_id: true,
+                creator_id: true,
+                updated_at: true,
+                preview_time: true,
+                thumbnail_quality: true,
+                like_count: true,
+                ranking_count: true,
+
+                difficulty: {
                   select: {
-                    isLiked: true,
+                    roma_kpm_median: true,
+                    roma_kpm_max: true,
+                    total_time: true,
                   },
                 },
-                result: {
+                map_likes: {
                   where: {
-                    userId,
+                    user_id: userId,
+                  },
+                  select: {
+                    is_liked: true,
+                  },
+                },
+                results: {
+                  where: {
+                    user_id: userId,
                   },
                   select: {
                     rank: true,
                   },
                 },
-                user: {
+                creator: {
                   select: {
                     id: true,
                     name: true,
@@ -110,7 +124,7 @@ export const notificationRouter = {
         let nextCursor: typeof cursor | undefined = undefined;
         if (notifyList.length > limit) {
           const nextItem = notifyList.pop();
-          nextCursor = nextItem!.createdAt;
+          nextCursor = nextItem!.created_at;
         }
         return {
           notifications: notifyList,
@@ -129,7 +143,7 @@ export const notificationRouter = {
 
     const userId = session ? Number(session.user.id) : 0;
 
-    await prisma.notification.updateMany({
+    await prisma.notifications.updateMany({
       where: {
         visited_id: userId,
         checked: false,

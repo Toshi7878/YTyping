@@ -7,36 +7,36 @@ import { revalidatePath } from "next/cache";
 
 async function updateLike(mapId: number, userId: number, optimisticState: boolean) {
   await prisma.$transaction(async (db) => {
-    const liked = await db.mapLike.upsert({
+    const liked = await db.map_likes.upsert({
       where: {
-        userId_mapId: {
-          userId,
-          mapId,
+        user_id_map_id: {
+          user_id: userId,
+          map_id: mapId,
         },
       },
       update: {
-        isLiked: optimisticState,
+        is_liked: optimisticState,
       },
       create: {
-        userId,
-        mapId,
-        isLiked: true,
+        user_id: userId,
+        map_id: mapId,
+        is_liked: true,
       },
     });
 
-    const newLikeCount = await db.mapLike.count({
+    const newLikeCount = await db.map_likes.count({
       where: {
-        mapId: mapId,
-        isLiked: true, // resultIdのisClapedがtrueのものをカウント
+        map_id: mapId,
+        is_liked: true, // resultIdのisClapedがtrueのものをカウント
       },
     });
 
-    await db.map.update({
+    await db.maps.update({
       where: {
         id: mapId,
       },
       data: {
-        likeCount: newLikeCount,
+        like_count: newLikeCount,
       },
     });
   });
@@ -44,7 +44,7 @@ async function updateLike(mapId: number, userId: number, optimisticState: boolea
 
 export async function toggleLikeServerAction(
   mapId: number,
-  optimisticState: boolean,
+  optimisticState: boolean
 ): Promise<UploadResult> {
   const session = await auth();
 

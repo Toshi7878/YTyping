@@ -10,21 +10,21 @@ export const mapRouter = {
     const session = await auth();
     const userId = session?.user ? Number(session?.user.id) : 0;
 
-    const mapInfo = await prisma.map.findUnique({
+    const mapInfo = await prisma.maps.findUnique({
       where: { id: mapId },
       select: {
         title: true,
-        artistName: true,
-        musicSource: true,
-        creatorComment: true,
-        creatorId: true,
+        artist_name: true,
+        music_source: true,
+        creator_comment: true,
+        creator_id: true,
         tags: true,
-        videoId: true,
-        previewTime: true,
-        updatedAt: true,
-        mapLike: {
-          where: { userId },
-          select: { isLiked: true },
+        video_id: true,
+        preview_time: true,
+        updated_at: true,
+        map_likes: {
+          where: { user_id: userId },
+          select: { is_liked: true },
         },
       },
     });
@@ -38,41 +38,46 @@ export const mapRouter = {
       const session = await auth();
       const userId = session ? Number(session.user.id) : 0;
 
-      const mapList = await prisma.map.findMany({
+      const mapList = await prisma.maps.findMany({
         where: {
-          videoId,
+          video_id: videoId,
         },
         select: {
           id: true,
           title: true,
-          artistName: true,
-          musicSource: true,
-          romaKpmMedian: true,
-          romaKpmMax: true,
-          videoId: true,
-          updatedAt: true,
-          previewTime: true,
-          totalTime: true,
-          thumbnailQuality: true,
-          likeCount: true,
-          rankingCount: true,
-          user: {
+          artist_name: true,
+          music_source: true,
+
+          video_id: true,
+          updated_at: true,
+          preview_time: true,
+          thumbnail_quality: true,
+          like_count: true,
+          ranking_count: true,
+          difficulty: {
+            select: {
+              roma_kpm_median: true,
+              roma_kpm_max: true,
+              total_time: true,
+            },
+          },
+          creator: {
             select: {
               id: true,
               name: true,
             },
           },
-          mapLike: {
+          map_likes: {
             where: {
-              userId,
+              user_id: userId,
             },
             select: {
-              isLiked: true,
+              is_liked: true,
             },
           },
-          result: {
+          results: {
             where: {
-              userId,
+              user_id: userId,
             },
             select: {
               rank: true,
