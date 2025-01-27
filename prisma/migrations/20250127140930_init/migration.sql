@@ -1,18 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Clap` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Map` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `MapLike` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Notification` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Result` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `ResultStats` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `TypingOption` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `UserOption` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `UserTypingStats` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "next_display" AS ENUM ('LYRICS', 'WORD');
 
@@ -34,96 +19,6 @@ CREATE TYPE "category" AS ENUM ('CSS', 'SPEED_SHIFT');
 -- CreateEnum
 CREATE TYPE "role" AS ENUM ('USER', 'ADMIN');
 
--- DropForeignKey
-ALTER TABLE "Clap" DROP CONSTRAINT "Clap_resultId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Clap" DROP CONSTRAINT "Clap_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Map" DROP CONSTRAINT "Map_creatorId_fkey";
-
--- DropForeignKey
-ALTER TABLE "MapLike" DROP CONSTRAINT "MapLike_mapId_fkey";
-
--- DropForeignKey
-ALTER TABLE "MapLike" DROP CONSTRAINT "MapLike_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Notification" DROP CONSTRAINT "Notification_mapId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Notification" DROP CONSTRAINT "Notification_visited_id_mapId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Notification" DROP CONSTRAINT "Notification_visitor_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Notification" DROP CONSTRAINT "Notification_visitor_id_mapId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Result" DROP CONSTRAINT "Result_mapId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Result" DROP CONSTRAINT "Result_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "TypingOption" DROP CONSTRAINT "TypingOption_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "UserTypingStats" DROP CONSTRAINT "UserTypingStats_userId_fkey";
-
--- DropTable
-DROP TABLE "Clap";
-
--- DropTable
-DROP TABLE "Map";
-
--- DropTable
-DROP TABLE "MapLike";
-
--- DropTable
-DROP TABLE "Notification";
-
--- DropTable
-DROP TABLE "Result";
-
--- DropTable
-DROP TABLE "ResultStats";
-
--- DropTable
-DROP TABLE "TypingOption";
-
--- DropTable
-DROP TABLE "User";
-
--- DropTable
-DROP TABLE "UserOption";
-
--- DropTable
-DROP TABLE "UserTypingStats";
-
--- DropEnum
-DROP TYPE "Action";
-
--- DropEnum
-DROP TYPE "Category";
-
--- DropEnum
-DROP TYPE "NextDisplay";
-
--- DropEnum
-DROP TYPE "Role";
-
--- DropEnum
-DROP TYPE "ThumbnailQuality";
-
--- DropEnum
-DROP TYPE "TimeOffsetKey";
-
--- DropEnum
-DROP TYPE "ToggleInputModeKey";
-
 -- CreateTable
 CREATE TABLE "results" (
     "id" SERIAL NOT NULL,
@@ -131,6 +26,7 @@ CREATE TABLE "results" (
     "user_id" INTEGER NOT NULL,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "clap_count" INTEGER NOT NULL DEFAULT 0,
+    "rank" INTEGER NOT NULL DEFAULT 1,
 
     CONSTRAINT "results_pkey" PRIMARY KEY ("id")
 );
@@ -138,8 +34,8 @@ CREATE TABLE "results" (
 -- CreateTable
 CREATE TABLE "result_statuses" (
     "result_id" INTEGER NOT NULL,
-    "default_speed" DOUBLE PRECISION NOT NULL DEFAULT 1,
     "score" INTEGER NOT NULL DEFAULT 0,
+    "default_speed" DOUBLE PRECISION NOT NULL DEFAULT 1,
     "kpm" INTEGER NOT NULL DEFAULT 0,
     "rkpm" INTEGER NOT NULL DEFAULT 0,
     "roma_kpm" INTEGER NOT NULL DEFAULT 0,
@@ -153,7 +49,8 @@ CREATE TABLE "result_statuses" (
     "lost" INTEGER NOT NULL DEFAULT 0,
     "max_combo" INTEGER NOT NULL DEFAULT 0,
     "clear_rate" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "rank" INTEGER NOT NULL DEFAULT 1
+
+    CONSTRAINT "result_statuses_pkey" PRIMARY KEY ("result_id")
 );
 
 -- CreateTable
@@ -174,7 +71,7 @@ CREATE TABLE "user_typing_stats" (
 );
 
 -- CreateTable
-CREATE TABLE "typing_option" (
+CREATE TABLE "user_typing_options" (
     "user_id" INTEGER NOT NULL,
     "time_offset" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "type_sound" BOOLEAN NOT NULL DEFAULT false,
@@ -184,11 +81,11 @@ CREATE TABLE "typing_option" (
     "time_offset_key" "time_offset_key" NOT NULL DEFAULT 'CTRL_LEFT_RIGHT',
     "toggle_input_mode_key" "toggle_input_mode_key" NOT NULL DEFAULT 'ALT_KANA',
 
-    CONSTRAINT "typing_option_pkey" PRIMARY KEY ("user_id")
+    CONSTRAINT "user_typing_options_pkey" PRIMARY KEY ("user_id")
 );
 
 -- CreateTable
-CREATE TABLE "user_option" (
+CREATE TABLE "user_options" (
     "user_id" INTEGER NOT NULL,
     "map_like_notify" BOOLEAN NOT NULL DEFAULT true,
     "over_take_notify" INTEGER NOT NULL DEFAULT 5
@@ -235,13 +132,6 @@ CREATE TABLE "maps" (
     "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "creator_id" INTEGER NOT NULL,
     "preview_time" TEXT NOT NULL DEFAULT '0',
-    "roma_kpm_median" INTEGER NOT NULL DEFAULT 0,
-    "roma_kpm_max" INTEGER NOT NULL DEFAULT 0,
-    "kana_kpm_median" INTEGER NOT NULL DEFAULT 0,
-    "kana_kpm_max" INTEGER NOT NULL DEFAULT 0,
-    "total_time" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "roma_total_notes" INTEGER NOT NULL DEFAULT 0,
-    "kana_total_notes" INTEGER NOT NULL DEFAULT 0,
     "play_count" INTEGER NOT NULL DEFAULT 0,
     "like_count" INTEGER NOT NULL DEFAULT 0,
     "ranking_count" INTEGER NOT NULL DEFAULT 0,
@@ -251,6 +141,23 @@ CREATE TABLE "maps" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "maps_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "map_difficulties" (
+    "map_id" INTEGER NOT NULL,
+    "roma_kpm_median" INTEGER NOT NULL DEFAULT 0,
+    "roma_kpm_max" INTEGER NOT NULL DEFAULT 0,
+    "kana_kpm_median" INTEGER NOT NULL DEFAULT 0,
+    "kana_kpm_max" INTEGER NOT NULL DEFAULT 0,
+    "total_time" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "roma_total_notes" INTEGER NOT NULL DEFAULT 0,
+    "kana_total_notes" INTEGER NOT NULL DEFAULT 0,
+    "english_total_notes" INTEGER NOT NULL DEFAULT 0,
+    "symbol_total_notes" INTEGER NOT NULL DEFAULT 0,
+    "int_total_notes" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "map_difficulties_pkey" PRIMARY KEY ("map_id")
 );
 
 -- CreateTable
@@ -269,16 +176,13 @@ CREATE TABLE "users" (
 CREATE UNIQUE INDEX "results_user_id_map_id_key" ON "results"("user_id", "map_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "result_statuses_result_id_key" ON "result_statuses"("result_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "user_typing_stats_user_id_key" ON "user_typing_stats"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "typing_option_user_id_key" ON "typing_option"("user_id");
+CREATE UNIQUE INDEX "user_typing_options_user_id_key" ON "user_typing_options"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_option_user_id_key" ON "user_option"("user_id");
+CREATE UNIQUE INDEX "user_options_user_id_key" ON "user_options"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "result_claps_user_id_result_id_key" ON "result_claps"("user_id", "result_id");
@@ -305,13 +209,16 @@ ALTER TABLE "results" ADD CONSTRAINT "results_user_id_fkey" FOREIGN KEY ("user_i
 ALTER TABLE "results" ADD CONSTRAINT "results_map_id_fkey" FOREIGN KEY ("map_id") REFERENCES "maps"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "result_statuses" ADD CONSTRAINT "result_statuses_result_id_fkey" FOREIGN KEY ("result_id") REFERENCES "results"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "result_statuses" ADD CONSTRAINT "result_statuses_result_id_fkey" FOREIGN KEY ("result_id") REFERENCES "results"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_typing_stats" ADD CONSTRAINT "user_typing_stats_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "typing_option" ADD CONSTRAINT "typing_option_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "user_typing_options" ADD CONSTRAINT "user_typing_options_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_options" ADD CONSTRAINT "user_options_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "result_claps" ADD CONSTRAINT "result_claps_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -339,3 +246,6 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_map_id_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "maps" ADD CONSTRAINT "maps_creator_id_fkey" FOREIGN KEY ("creator_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "map_difficulties" ADD CONSTRAINT "map_difficulties_map_id_fkey" FOREIGN KEY ("map_id") REFERENCES "maps"("id") ON DELETE CASCADE ON UPDATE CASCADE;

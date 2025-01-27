@@ -3,6 +3,7 @@ import { useStore as useJotaiStore } from "jotai";
 import { useStore as useReduxStore } from "react-redux";
 
 import { UploadResult } from "@/types";
+import { $Enums } from "@prisma/client";
 import { useParams } from "next/navigation";
 import { actions } from "../../../server/actions/sendMapDataActions";
 import {
@@ -17,6 +18,7 @@ import {
 import { useRefs } from "../edit-contexts/refsProvider";
 import { RootState } from "../redux/store";
 import { getThumbnailQuality } from "../ts/tab/info-upload/getThumbailQuality";
+import { SendMapDifficulty, SendMapInfo } from "../ts/type";
 
 export function useUploadMap() {
   const editReduxStore = useReduxStore<RootState>();
@@ -27,8 +29,8 @@ export function useUploadMap() {
   const upload = async () => {
     const mapData = editReduxStore.getState().mapData.value;
     const mapTitle = editAtomStore.get(editMapTitleAtom);
-    const artistName = editAtomStore.get(editMapArtistNameAtom);
-    const creatorComment = editAtomStore.get(editCreatorCommentAtom);
+    const artist_name = editAtomStore.get(editMapArtistNameAtom);
+    const creator_comment = editAtomStore.get(editCreatorCommentAtom);
     const musicSource = editAtomStore.get(editMusicSourceAtom);
     const tags = editAtomStore.get(editTagsAtom);
     const previewTime = editAtomStore.get(editPreviewTimeInputAtom);
@@ -36,28 +38,32 @@ export function useUploadMap() {
 
     const map = new CreateMap(mapData);
     const mapVideoId = playerRef.current!.getVideoData().video_id;
-    const videoDuration: number =  playerRef.current!.getDuration();
-    const sendData = {
-      videoId: mapVideoId,
+    const videoDuration: number = playerRef.current!.getDuration();
+    const sendMapInfo: SendMapInfo = {
+      video_id: mapVideoId,
       title: mapTitle,
-      artistName,
-      musicSource: musicSource ?? "",
-      creatorComment,
+      artist_name,
+      music_source: musicSource ?? "",
+      creator_comment,
       tags: tags.map((tag) => tag.id),
-      previewTime:
+      preview_time:
         Number(previewTime) < videoDuration ? previewTime : mapData[map.startLine]["time"],
-      romaKpmMedian: map.speedDifficulty.median.r,
-      romaKpmMax: map.speedDifficulty.max.r,
-      kanaKpmMedian: map.speedDifficulty.median.r,
-      kanaKpmMax: map.speedDifficulty.max.r,
-      totalTime: map.movieTotalTime,
-      romaTotalNotes: map.totalNotes.r,
-      kanaTotalNotes: map.totalNotes.k,
-      thumbnailQuality: (await getThumbnailQuality(mapVideoId)) as "maxresdefault" | "mqdefault",
+      thumbnail_quality: (await getThumbnailQuality(mapVideoId)) as $Enums.thumbnail_quality,
+    };
+
+    const sendMapDifficulty: SendMapDifficulty = {
+      roma_kpm_median: map.speedDifficulty.median.r,
+      roma_kpm_max: map.speedDifficulty.max.r,
+      kana_kpm_median: map.speedDifficulty.median.r,
+      kana_kpm_max: map.speedDifficulty.max.r,
+      total_time: map.movieTotalTime,
+      roma_total_notes: map.totalNotes.r,
+      kana_total_notes: map.totalNotes.k,
     };
 
     const result: UploadResult = await actions(
-      sendData,
+      sendMapInfo,
+      sendMapDifficulty,
       mapData,
       isMapDataEdited,
       Array.isArray(mapId) ? mapId[0] : mapId || "new"

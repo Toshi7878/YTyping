@@ -10,16 +10,16 @@ import { z } from "zod";
 
 const statusSchema = z.object({
   score: z.number(),
-  kanaType: z.number(),
-  romaType: z.number(),
-  flickType: z.number(),
+  kana_type: z.number(),
+  roma_type: z.number(),
+  flick_type: z.number(),
   miss: z.number(),
   lost: z.number(),
-  maxCombo: z.number(),
+  max_combo: z.number(),
   kpm: z.number(),
   rkpm: z.number(),
-  romaKpm: z.number(),
-  defaultSpeed: z.number(),
+  roma_kpm: z.number(),
+  default_speed: z.number(),
 });
 
 const resultSendSchema = z.object({
@@ -153,25 +153,38 @@ const sendLineResult = async (mapId: number, lineResults: LineResultData[]) => {
 };
 
 const sendNewResult = async (data: SendResultData, userId: number) => {
-  const upsertResult = await prisma.results.upsert({
-    where: {
-      user_id_map_id: {
-        user_id: userId,
-        map_id: data.mapId,
+  return await prisma.$transaction(async (tx) => {
+    const upsertResult = await tx.results.upsert({
+      where: {
+        user_id_map_id: {
+          user_id: userId,
+          map_id: data.map_id,
+        },
       },
-    },
-    update: {
-      ...data.status,
-      updated_at: new Date(),
-    },
-    create: {
-      map_id: data.mapId,
-      user_id: userId,
-      ...data.status,
-    },
-  });
+      update: {
+        updated_at: new Date(),
+      },
+      create: {
+        map_id: data.map_id,
+        user_id: userId,
+      },
+    });
 
-  return upsertResult.id;
+    await tx.result_statuses.upsert({
+      where: {
+        result_id: upsertResult.id,
+      },
+      update: {
+        ...data.status,
+      },
+      create: {
+        result_id: upsertResult.id,
+        ...data.status,
+      },
+    });
+
+    return upsertResult.id;
+  });
 };
 
 export async function actions(
@@ -179,7 +192,7 @@ export async function actions(
   lineResults: LineResultData[]
 ): Promise<UploadResult> {
   const validatedFields = resultSendSchema.safeParse({
-    mapId: data.mapId,
+    mapId: data.map_id,
     status: data.status,
   });
 
@@ -196,7 +209,7 @@ export async function actions(
     const userId = Number(session?.user?.id);
     const mapId = await sendNewResult(data, userId);
     await sendLineResult(mapId, lineResults);
-    await calcRank(data.mapId, userId);
+    await calcRank(data.map_id, userId);
     return {
       id: mapId,
       title: "ランキング登録が完了しました",

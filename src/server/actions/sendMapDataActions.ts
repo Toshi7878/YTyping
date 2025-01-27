@@ -6,60 +6,86 @@ import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
 import { revalidatePath } from "next/cache";
-import { EditorSendData } from "../../app/edit/ts/type";
+import { SendMapDifficulty, SendMapInfo } from "../../app/edit/ts/type";
 
 const upsertMap = async (
-  data: EditorSendData,
+  sendMapInfo: SendMapInfo,
+  sendMapDifficulty: SendMapDifficulty,
   mapId: string,
   userId: number,
   isMapDataEdited: boolean,
   mapData: MapData[]
 ) => {
-  const mapIdNumber = mapId === "new" ? 0 : Number(mapId);
-  const upsertedMap = await prisma.maps.upsert({
-    where: {
-      id: mapIdNumber, // 0は存在しないIDとして使用
-    },
-    update: {
-      ...data,
-      ...(isMapDataEdited && { updatedAt: new Date() }),
-    },
-    create: {
-      ...data,
-      creator_id: userId,
-    },
-  });
+  // トランザクションを開始
+  return await prisma.$transaction(async (tx) => {
+    try {
+      const mapIdNumber = mapId === "new" ? 0 : Number(mapId);
+      const upsertedMap = await tx.maps.upsert({
+        where: {
+          id: mapIdNumber,
+        },
+        update: {
+          ...sendMapInfo,
+          ...(isMapDataEdited && { updated_at: new Date() }),
+        },
+        create: {
+          ...sendMapInfo,
+          creator_id: userId,
+        },
+      });
 
-  const newMapId = upsertedMap.id;
+      const newMapId = upsertedMap.id;
 
-  // Supabaseストレージにアップロード
-  await supabase.storage
-    .from("map-data") // バケット名を指定
-    .upload(
-      `public/${mapId === "new" ? newMapId : mapId}.json`,
-      new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
-      {
-        upsert: true, // 既存のファイルを上書きするオプションを追加
+      await tx.map_difficulties.upsert({
+        where: {
+          map_id: newMapId,
+        },
+        update: {
+          ...sendMapDifficulty,
+        },
+        create: {
+          map_id: newMapId,
+          ...sendMapDifficulty,
+        },
+      });
+
+      // Supabaseストレージにアップロード
+      await supabase.storage
+        .from("map-data")
+        .upload(
+          `public/${mapId === "new" ? newMapId : mapId}.json`,
+          new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
+          {
+            upsert: true,
+          }
+        );
+
+      return newMapId;
+    } catch (error) {
+      console.error("Prisma Error:", error);
+      if (error instanceof Error) {
+        throw new Error(`データベース操作に失敗しました: ${error.message}`);
       }
-    );
-
-  return newMapId; // upsertされたマップのIDを返す
+      throw new Error("データベース操作に失敗しました");
+    }
+  });
 };
 
 export async function actions(
-  data: EditorSendData,
+  data: SendMapInfo,
+  sendMapDifficulty: SendMapDifficulty,
   mapData: MapData[],
   isMapDataEdited: boolean,
   mapId: string
 ): Promise<UploadResult> {
   const validatedFields = mapSendSchema.safeParse({
     title: data.title,
-    creatorComment: data.creatorComment,
-    previewTime: data.previewTime,
+    creatorComment: data.creator_comment,
+    previewTime: data.preview_time,
     tags: data.tags,
     mapData,
-    videoId: data.videoId,
-    thumbnailQuality: data.thumbnailQuality,
+    videoId: data.video_id,
+    thumbnailQuality: data.thumbnail_quality,
   });
 
   if (!validatedFields.success) {
@@ -84,7 +110,7 @@ export async function actions(
     });
 
     if (mapId === "new" || mapCreatorId?.creator_id === userId || userRole === "ADMIN") {
-      newMapId = await upsertMap(data, mapId, userId, isMapDataEdited, mapData);
+      newMapId = await upsertMap(data, sendMapDifficulty, mapId, userId, isMapDataEdited, mapData);
     } else {
       return {
         id: null,

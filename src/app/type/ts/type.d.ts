@@ -120,23 +120,23 @@ export interface YTStateRef {
 }
 
 export interface SendResultData {
-  mapId: number;
+  map_id: number;
   status: {
     score: number;
-    kanaType: number;
-    romaType: number;
-    flickType: number;
-    englishType: number;
-    symbolType: number;
-    numType: number;
+    kana_type: number;
+    roma_type: number;
+    flick_type: number;
+    english_type: number;
+    symbol_type: number;
+    num_type: number;
     miss: number;
     lost: number;
     rkpm: number;
-    romaKpm: number; //かな入力・フリック入力の場合もローマ字換算でkpmを計算
-    maxCombo: number;
+    roma_kpm: number; //かな入力・フリック入力の場合もローマ字換算でkpmを計算
+    max_combo: number;
     kpm: number;
-    defaultSpeed: number;
-    clearRate: number;
+    default_speed: number;
+    clear_rate: number;
   };
 }
 export interface TypeResult {
