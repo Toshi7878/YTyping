@@ -28,9 +28,9 @@ const CheckBoxOption = ({
 
     const newUserOptions = {
       ...userOptionsAtom,
-      typeSound: name === "typeSound" ? checked : userOptionsAtom.typeSound,
-      missSound: name === "missSound" ? checked : userOptionsAtom.missSound,
-      lineClearSound: name === "lineClearSound" ? checked : userOptionsAtom.lineClearSound,
+      typeSound: name === "typeSound" ? checked : userOptionsAtom.type_sound,
+      missSound: name === "missSound" ? checked : userOptionsAtom.miss_sound,
+      lineClearSound: name === "lineClearSound" ? checked : userOptionsAtom.line_clear_sound,
     };
     setUserOptionsAtom(newUserOptions);
     if (checked) {

@@ -39,7 +39,7 @@ interface ContentProps {
 
 function Content({ mapInfo }: ContentProps) {
   const { scale } = useWindowScale();
-  const { videoId, title, creatorComment, tags } = mapInfo!;
+  const { video_id, title, creator_comment, tags } = mapInfo!;
   const scene = useSceneAtom();
 
   const { id: mapId } = useParams();
@@ -127,7 +127,7 @@ function Content({ mapInfo }: ContentProps) {
                   <TypeYouTubeContent
                     className="w-[513px]"
                     isMapLoading={isLoading}
-                    videoId={videoId}
+                    videoId={video_id}
                   />
                 </Box>
               )}
@@ -142,7 +142,7 @@ function Content({ mapInfo }: ContentProps) {
             {ytLayoutMode === "column" && (
               <Box mt={5} position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
-                <TypeYouTubeContent isMapLoading={isLoading} videoId={videoId} />
+                <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
               </Box>
             )}
           </Flex>

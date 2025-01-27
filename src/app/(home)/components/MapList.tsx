@@ -74,19 +74,19 @@ function MapList() {
         {data?.pages.map((page: MapCardInfo[]) =>
           page.map((map: MapCardInfo) => {
             const src =
-              map.thumbnailQuality === "maxresdefault"
-                ? `https://i.ytimg.com/vi_webp/${map.videoId}/maxresdefault.webp`
-                : `https://i.ytimg.com/vi/${map.videoId}/mqdefault.jpg`;
+              map.thumbnail_quality === "maxresdefault"
+                ? `https://i.ytimg.com/vi_webp/${map.video_id}/maxresdefault.webp`
+                : `https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`;
 
             return (
               <MapCard key={map.id}>
                 <MapLeftThumbnail
                   alt={map.title}
-                  fallbackSrc={`https://i.ytimg.com/vi/${map.videoId}/mqdefault.jpg`}
+                  fallbackSrc={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
                   src={src}
-                  mapVideoId={map.videoId}
-                  mapPreviewTime={map.previewTime}
-                  thumbnailQuality={map.thumbnailQuality}
+                  mapVideoId={map.video_id}
+                  mapPreviewTime={map.preview_time}
+                  thumbnailQuality={map.thumbnail_quality}
                   thumnailWidth={HOME_THUBNAIL_WIDTH}
                   thumnailHeight={HOME_THUBNAIL_HEIGHT}
                 />

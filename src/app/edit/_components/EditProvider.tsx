@@ -41,19 +41,19 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const globalAtomStore = getGlobalAtomStore();
   globalAtomStore.set(previewVideoIdAtom, null);
   const geminiQueryData: GeminiMapInfo | undefined = queryClient.getQueryData(
-    QUERY_KEYS.generateMapInfoGemini(mapInfo ? mapInfo.videoId : newVideoId)
+    QUERY_KEYS.generateMapInfoGemini(mapInfo ? mapInfo.video_id : newVideoId)
   );
 
   editAtomStore.set(editGeminiTagsAtom, geminiQueryData?.otherTags || []);
 
   if (mapInfo) {
     editAtomStore.set(editMapTitleAtom, mapInfo.title);
-    editAtomStore.set(editMapArtistNameAtom, mapInfo.artistName);
-    editAtomStore.set(editVideoIdAtom, mapInfo.videoId);
-    editAtomStore.set(editCreatorIdAtom, mapInfo.creatorId);
-    editAtomStore.set(editCreatorCommentAtom, mapInfo.creatorComment);
-    editAtomStore.set(editMusicSourceAtom, mapInfo.musicSource!);
-    editAtomStore.set(editPreviewTimeInputAtom, mapInfo.previewTime);
+    editAtomStore.set(editMapArtistNameAtom, mapInfo.artist_name);
+    editAtomStore.set(editVideoIdAtom, mapInfo.video_id);
+    editAtomStore.set(editCreatorIdAtom, mapInfo.creator_id);
+    editAtomStore.set(editCreatorCommentAtom, mapInfo.creator_comment);
+    editAtomStore.set(editMusicSourceAtom, mapInfo.music_source!);
+    editAtomStore.set(editPreviewTimeInputAtom, mapInfo.preview_time);
     editAtomStore.set(editTagsAtom, {
       type: "set",
       payload: mapInfo.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],

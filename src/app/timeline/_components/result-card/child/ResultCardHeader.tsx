@@ -13,7 +13,7 @@ const ResultCardHeader = ({ result }: ResultCardHeaderProps) => {
       <ResultUserName result={result} />
       <ResultClapButton
         resultId={result?.id}
-        clapCount={result?.clapCount}
+        clapCount={result?.clap_count}
         hasClap={result?.hasClap}
       />
     </Flex>

@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Result" ALTER COLUMN "defaultSpeed" SET DEFAULT 1,
-ALTER COLUMN "defaultSpeed" SET DATA TYPE DOUBLE PRECISION;

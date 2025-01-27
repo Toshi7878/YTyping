@@ -18,7 +18,7 @@ const UserTimeOffsetChange = () => {
   const decrement = () => {
     const newUserOptions = {
       ...userOptionsAtom,
-      timeOffset: Math.round((userOptionsAtom.timeOffset - CHANGE_TIME_OFFSET_VALUE) * 100) / 100,
+      time_offset: Math.round((userOptionsAtom.time_offset - CHANGE_TIME_OFFSET_VALUE) * 100) / 100,
     };
     setUserOptionsAtom(newUserOptions);
     setIsOptionEdited(true);
@@ -26,7 +26,7 @@ const UserTimeOffsetChange = () => {
   const increment = () => {
     const newUserOptions = {
       ...userOptionsAtom,
-      timeOffset: Math.round((userOptionsAtom.timeOffset + CHANGE_TIME_OFFSET_VALUE) * 100) / 100,
+      time_offset: Math.round((userOptionsAtom.time_offset + CHANGE_TIME_OFFSET_VALUE) * 100) / 100,
     };
 
     setUserOptionsAtom(newUserOptions);
@@ -48,7 +48,7 @@ const UserTimeOffsetChange = () => {
         <Button onClick={decrement} cursor="pointer" variant="unstyled" size="lg" fontSize="xl">
           -
         </Button>
-        <Box fontSize="lg">{userOptionsAtom.timeOffset.toFixed(2)}</Box>
+        <Box fontSize="lg">{userOptionsAtom.time_offset.toFixed(2)}</Box>
         <Button onClick={increment} cursor="pointer" variant="unstyled" size="lg" fontSize="xl">
           +
         </Button>

@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Result" ADD COLUMN     "clearRate" DOUBLE PRECISION NOT NULL DEFAULT 0;

@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation";
 import { actions } from "../../../server/actions/sendTypingResultActions";
-import { LineResultData } from "../ts/type";
+import { LineResultData, SendResultData } from "../ts/type";
 import { useLineResultsAtom, useStatusAtomsValues } from "../type-atoms/gameRenderAtoms";
 import { useRefs } from "../type-contexts/refsProvider";
 
@@ -22,22 +22,25 @@ export const useSendResult = () => {
     const kanaToRomaConvertCount = statusRef.current!.status.kanaToRomaConvertCount;
     const status = statusAtomsValue();
 
-    const sendStatus = {
+    const sendStatus: SendResultData["status"] = {
       score: status.score,
-      romaType: statusRef.current!.status.romaType,
-      kanaType: statusRef.current!.status.kanaType,
-      flickType: statusRef.current!.status.flickType,
+      roma_type: statusRef.current!.status.romaType,
+      kana_type: statusRef.current!.status.kanaType,
+      flick_type: statusRef.current!.status.flickType,
+      english_type: 0,
+      symbol_type: 0,
+      num_type: 0,
       miss: status.miss,
       lost: status.lost,
       rkpm: Math.round((status.type / rkpmTime) * 60),
-      maxCombo: statusRef.current!.status.maxCombo,
+      max_combo: statusRef.current!.status.maxCombo,
       kpm: status.kpm,
-      romaKpm: Math.round((kanaToRomaConvertCount / totalTypeTime) * 60),
-      defaultSpeed: minSp,
-      clearRate: +statusRef.current!.status.clearRate.toFixed(1),
+      roma_kpm: Math.round((kanaToRomaConvertCount / totalTypeTime) * 60),
+      default_speed: minSp,
+      clear_rate: +statusRef.current!.status.clearRate.toFixed(1),
     };
     const sendData = {
-      mapId: Number(mapId),
+      map_id: Number(mapId),
       status: sendStatus,
     };
 

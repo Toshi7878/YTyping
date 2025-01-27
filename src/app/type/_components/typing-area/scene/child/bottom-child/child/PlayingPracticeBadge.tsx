@@ -24,7 +24,7 @@ const PlayingPracticeBadge = function () {
           />
           <PlayingBottomBadge
             badgeText="ライン一覧"
-            kbdText={userOptionsAtom.toggleInputModeKey === "TAB" ? "F1" : "Tab"}
+            kbdText={userOptionsAtom.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
             onClick={() => toggleLineListDrawer()}
             isPauseDisabled={false}
             isKbdHidden={false}

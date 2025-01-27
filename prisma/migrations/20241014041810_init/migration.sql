@@ -1,1 +1,0 @@
-   ALTER TABLE "Map" RENAME COLUMN "musicSouce" TO "musicSource";

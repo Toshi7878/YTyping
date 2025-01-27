@@ -11,7 +11,7 @@ export const userProfileSettingRouter = {
       const email_hash = session?.user?.email;
 
       if (email_hash) {
-        await prisma.user.update({
+        await prisma.users.update({
           where: { email_hash },
           data: { name: input.newName },
         });
@@ -25,11 +25,11 @@ export const userProfileSettingRouter = {
     .input(
       z.object({
         newName: z.string().min(1),
-      }),
+      })
     )
     .mutation(async ({ input }) => {
       const session = await auth();
-      const userName = prisma.user.findFirst({
+      const userName = prisma.users.findFirst({
         where: {
           name: input.newName,
           NOT: {

@@ -20,7 +20,7 @@ import {
   useSetStatusAtoms,
   useStatusAtomsValues,
   useTypePageSpeedAtom,
-  useUserOptionsAtom
+  useUserOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
@@ -117,7 +117,6 @@ export const usePlayTimer = () => {
       }
     }
 
-
     if (
       Math.abs(
         nextLineTime / speed.playSpeed -
@@ -213,7 +212,8 @@ export const useCalcLineResult = () => {
         const oldLineScore =
           lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * MISS_PENALTY;
 
-        const isUpdateResult = (speed.playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
+        const isUpdateResult =
+          (speed.playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
 
         if (isUpdateResult) {
           const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
@@ -300,7 +300,6 @@ export const useUpdateLine = () => {
 
   const lineReplayUpdate = useLineReplayUpdate();
   return (newCount: number) => {
-
     const currentCount = newCount ? newCount - 1 : 0;
     statusRef.current!.lineStatus = structuredClone({
       ...DEFAULT_STATUS_REF.lineStatus,
@@ -324,7 +323,7 @@ export const useUpdateLine = () => {
     if (nextKpm) {
       setNextLyrics({
         lyrics:
-          userOptions.nextDisplay === "WORD"
+          userOptions.next_display === "WORD"
             ? map.mapData[newCount].kanaWord
             : map.mapData[newCount]["lyrics"],
         kpm: nextKpm.toFixed(0),

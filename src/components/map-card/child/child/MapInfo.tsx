@@ -27,8 +27,8 @@ function MapInfo({ map }: MapInfoProps) {
     >
       <Flex direction="column" gap={1}>
         <CustomToolTip
-          label={`${map.title} / ${map.artistName}${
-            map.musicSource ? `【${map.musicSource}】` : ""
+          label={`${map.title} / ${map.artist_name}${
+            map.music_source ? `【${map.music_source}】` : ""
           }`}
           placement="top"
         >
@@ -52,8 +52,8 @@ function MapInfo({ map }: MapInfoProps) {
           textOverflow="ellipsis"
           whiteSpace="nowrap"
         >
-          {map.artistName || "\u00A0"}
-          {map.musicSource ? `【${map.musicSource}】` : "\u00A0"}
+          {map.artist_name || "\u00A0"}
+          {map.music_source ? `【${map.music_source}】` : "\u00A0"}
         </Box>
       </Flex>
       <Stack

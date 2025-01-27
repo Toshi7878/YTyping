@@ -20,14 +20,14 @@ const ResultUserName = (props: ResultUserNameProps) => {
       {result ? (
         <>
           <Link
-            href={`/user/${result.user.id}`}
+            href={`/user/${result.player.id}`}
             onClick={handleLinkClick}
             color={theme.colors.secondary.main}
             fontWeight="bold"
           >
-            {result.user.name}
+            {result.player.name}
           </Link>{" "}
-          - <UpdateAtText updatedAt={result.updatedAt} />
+          - <UpdateAtText updatedAt={result.updated_at} />
         </>
       ) : (
         ""

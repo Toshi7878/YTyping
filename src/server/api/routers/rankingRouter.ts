@@ -9,43 +9,52 @@ export const rankingRouter = {
     const session = await auth();
     const userId = session ? Number(session.user.id) : 0;
 
-    const rankingList = await prisma.result.findMany({
+    const rankingList = await prisma.results.findMany({
       where: {
-        mapId,
+        map_id: mapId,
       },
       select: {
         id: true,
-        userId: true,
-        score: true,
-        defaultSpeed: true,
-        kpm: true,
-        rkpm: true,
-        romaKpm: true,
-        romaType: true,
-        kanaType: true,
-        flickType: true,
-        miss: true,
-        lost: true,
-        maxCombo: true,
-        clapCount: true,
-        clearRate: true,
-        updatedAt: true,
+        user_id: true,
+        clap_count: true,
+        updated_at: true,
+        status: {
+          select: {
+            score: true,
+            default_speed: true,
+            kpm: true,
+            rkpm: true,
+            roma_kpm: true,
+            roma_type: true,
+            kana_type: true,
+            flick_type: true,
+            english_type: true,
+            symbol_type: true,
+            num_type: true,
+            miss: true,
+            lost: true,
+            max_combo: true,
+            clear_rate: true,
+          },
+        },
         user: {
           select: {
             name: true,
           },
         },
-        clap: {
+        claps: {
           where: {
-            userId: userId ? userId : undefined,
+            user_id: userId ? userId : undefined,
           },
           select: {
-            isClaped: true,
+            is_claped: true,
           },
         },
       },
       orderBy: {
-        score: "desc",
+        status: {
+          score: "desc",
+        },
       },
     });
 

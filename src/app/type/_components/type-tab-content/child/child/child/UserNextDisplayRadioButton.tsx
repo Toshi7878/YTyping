@@ -11,7 +11,7 @@ const UserNextDisplayRadioButton = () => {
   const userOptionsAtom = useUserOptionsAtom();
   const setIsOptionEdited = useSetIsOptionEdited();
 
-  const changeRadio = (value: $Enums.NextDisplay) => {
+  const changeRadio = (value: $Enums.next_display) => {
     if (!userOptionsAtom) return;
 
     const newUserOptions = {
@@ -26,7 +26,7 @@ const UserNextDisplayRadioButton = () => {
       <Text fontSize="lg" fontWeight="semibold" mb={2}>
         次の歌詞表示
       </Text>
-      <RadioGroup defaultValue={userOptionsAtom.nextDisplay} onChange={changeRadio}>
+      <RadioGroup defaultValue={userOptionsAtom.next_display} onChange={changeRadio}>
         <Stack direction="row" spacing={5}>
           <Radio value="LYRICS">歌詞</Radio>
           <Radio value="WORD">ワード</Radio>

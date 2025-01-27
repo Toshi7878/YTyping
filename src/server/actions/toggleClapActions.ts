@@ -6,36 +6,36 @@ import { UploadResult } from "@/types";
 
 async function updateClap(resultId: number, userId: number, optimisticState: boolean) {
   await prisma.$transaction(async (db) => {
-    const claped = await db.clap.upsert({
+    const claped = await db.result_claps.upsert({
       where: {
-        userId_resultId: {
-          userId,
-          resultId,
+        user_id_result_id: {
+          user_id: userId,
+          result_id: resultId,
         },
       },
       update: {
-        isClaped: optimisticState,
+        is_claped: optimisticState,
       },
       create: {
-        userId,
-        resultId,
-        isClaped: true,
+        user_id: userId,
+        result_id: resultId,
+        is_claped: true,
       },
     });
 
-    const newClapCount = await db.clap.count({
+    const newClapCount = await db.result_claps.count({
       where: {
-        resultId: resultId,
-        isClaped: true, // resultIdのisClapedがtrueのものをカウント
+        result_id: resultId,
+        is_claped: true, // resultIdのisClapedがtrueのものをカウント
       },
     });
 
-    await db.result.update({
+    await db.results.update({
       where: {
         id: resultId,
       },
       data: {
-        clapCount: newClapCount,
+        clap_count: newClapCount,
       },
     });
 
@@ -45,7 +45,7 @@ async function updateClap(resultId: number, userId: number, optimisticState: boo
 
 export async function toggleClapServerAction(
   resultId: number,
-  optimisticState: boolean,
+  optimisticState: boolean
 ): Promise<UploadResult> {
   const session = await auth();
 

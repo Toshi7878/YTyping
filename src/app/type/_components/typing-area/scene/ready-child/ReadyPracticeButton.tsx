@@ -22,7 +22,7 @@ const ReadyPracticeButton = () => {
     const result = utils.ranking.getMapRanking.getData({ mapId: Number(mapId) });
     if (gameStateRef.current!.practice.hasMyRankingData && result) {
       for (let i = 0; i < result.length; i++) {
-        if (userId === result[i].userId) {
+        if (userId === result[i].user_id) {
           setResultId(result[i].id);
           break;
         }

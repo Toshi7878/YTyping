@@ -23,13 +23,13 @@ interface TypeProviderProps {
 }
 const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProps) => {
   const globalAtomStore = getGlobalAtomStore();
-  typeAtomStore.set(hasLocalLikeAtom, !!mapInfo.mapLike[0]?.isLiked);
+  typeAtomStore.set(hasLocalLikeAtom, !!mapInfo.map_likes[0]?.is_liked);
   typeAtomStore.set(mapInfoAtom, mapInfo);
 
   useEffect(() => {
     // 状態の更新をuseEffect内に移動
     globalAtomStore.set(previewVideoIdAtom, null);
-    typeAtomStore.set(mapUpdatedAtAtom, mapInfo!.updatedAt);
+    typeAtomStore.set(mapUpdatedAtAtom, mapInfo!.updated_at);
     if (userTypingOptions) {
       typeAtomStore.set(userOptionsAtom, userTypingOptions);
     }

@@ -2,7 +2,7 @@ import {
   useMapAtom,
   useTimeOffsetAtom,
   useTypePageSpeedAtom,
-  useUserOptionsAtom
+  useUserOptionsAtom,
 } from "../type-atoms/gameRenderAtoms";
 import { useRefs } from "../type-contexts/refsProvider";
 
@@ -14,8 +14,7 @@ export const useGetTime = () => {
   const { playerRef, statusRef, ytStateRef } = useRefs();
 
   const getCurrentOffsettedYTTime = () => {
-
-    const result = playerRef.current!.getCurrentTime() - userOptions.timeOffset - timeOffset;
+    const result = playerRef.current!.getCurrentTime() - userOptions.time_offset - timeOffset;
     return result;
   };
 

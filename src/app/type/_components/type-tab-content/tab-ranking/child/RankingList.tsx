@@ -36,7 +36,7 @@ const RankingList = () => {
             (el) =>
               (el as HTMLElement).className?.includes("cursor-pointer") ||
               (el as HTMLElement).tagName === "BUTTON" ||
-              (el as HTMLElement).tagName === "A",
+              (el as HTMLElement).tagName === "A"
           )
       ) {
         setShowMenu(null);
@@ -57,7 +57,7 @@ const RankingList = () => {
   }, []);
 
   useEffect(() => {
-    const scores = data ? data.map((result: (typeof data)[number]) => result.score) : [];
+    const scores = data ? data.map((result: (typeof data)[number]) => result.status!.score) : [];
 
     setRankingScores(scores);
 
@@ -71,8 +71,8 @@ const RankingList = () => {
 
     if (scene === "playing" && data) {
       for (let i = 0; i < data.length; i++) {
-        if (userId === Number(data[i].userId)) {
-          bestScoreRef.current = data[i].score;
+        if (userId === Number(data[i].user_id)) {
+          bestScoreRef.current = data[i].status!.score;
         }
       }
     }
@@ -94,9 +94,9 @@ const RankingList = () => {
     <RankingTable>
       {data &&
         data.map((user: (typeof data)[number], index: number) => {
-          const romaType = user.romaType;
-          const kanaType = user.kanaType;
-          const flickType = user.flickType;
+          const romaType = user.status!.roma_type;
+          const kanaType = user.status!.kana_type;
+          const flickType = user.status!.flick_type;
           const type = romaType + kanaType + flickType;
           const handleShowMenu = () => {
             if (showMenu === index) {
@@ -108,7 +108,7 @@ const RankingList = () => {
 
           return (
             <RankingTr
-              key={user.userId}
+              key={user.user_id}
               result={user}
               index={index}
               rank={index + 1}

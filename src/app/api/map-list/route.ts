@@ -16,51 +16,69 @@ export async function GET(req: NextRequest) {
   try {
     const mapList = await prisma.$queryRaw`
     SELECT
-    "Map"."id",
-    "Map"."title",
-    "Map"."artistName",
-    "Map"."musicSource",
-    "Map"."romaKpmMedian",
-    "Map"."romaKpmMax",
-    "Map"."videoId",
-    "Map"."updatedAt",
-    "Map"."previewTime",
-    "Map"."totalTime",
-    "Map"."thumbnailQuality",
-    "Map"."likeCount",
-    "Map"."rankingCount",
-    json_build_object('id', "User"."id", 'name', "User"."name") as "user",
-    'mapLike', COALESCE(
-        (
-          SELECT array_agg(json_build_object('isLiked', "isLiked"))
-          FROM "MapLike"
-          WHERE "MapLike"."mapId" = "Map"."id"
-          AND "MapLike"."userId" = ${userId}
-        ),
-        ARRAY[]::json[]
-      ) as "mapLike",
-      'result', COALESCE(
-        (
-          SELECT array_agg(json_build_object('rank', "rank"))
-          FROM "Result"
-          WHERE "Result"."mapId" = "Map"."id"
-          AND "Result"."userId" = ${userId}
-        ),
-        ARRAY[]::json[]
-      ) as "result"
-    FROM "Map"
-    JOIN "User" ON "Map"."creatorId" = "User"."id"
-    WHERE (
-            CASE
-              WHEN ${mapKeyword} != '' THEN "title" &@~ ${mapKeyword}
-              OR "artistName" &@~ ${mapKeyword}
-              OR "musicSource" &@~ ${mapKeyword}
-              OR "tags" &@~ ${mapKeyword}
-              OR "User"."name" &@~ ${mapKeyword}
-              ELSE 1=1
-              END
+    maps."id",
+    maps."video_id",
+    maps."title",
+    maps."artist_name",
+    maps."preview_time",
+    maps."like_count",
+    maps."ranking_count",
+    maps."updated_at",
+    maps."thumbnail_quality",
+    maps."music_source",
+    json_build_object(
+      'id', creator."id",
+      'name', creator."name"
+    ) as "creator",
+    json_build_object(
+      'roma_kpm_median', "difficulty"."roma_kpm_median",
+      'roma_kpm_max', "difficulty"."roma_kpm_max",
+      'total_time', "difficulty"."total_time"
+    ) as "difficulty",
+    COALESCE(
+      (
+        SELECT json_agg(
+          json_build_object(
+            'is_liked', ml."is_liked",
+            'user_id', ml."user_id"
           )
-    ORDER BY "Map"."id" DESC
+        )
+        FROM map_likes ml
+        WHERE ml."map_id" = maps."id"
+        AND ml."user_id" = ${userId}
+        GROUP BY ml."map_id"
+      ),
+      '[]'::json
+    ) as map_likes,
+    COALESCE(
+      (
+        SELECT json_agg(
+          json_build_object(
+            'rank', r."rank"
+          )
+        )
+        FROM (
+          SELECT MIN(rank) as rank
+          FROM results
+          WHERE "map_id" = maps."id"
+          AND "user_id" = ${userId}
+        ) r
+      ),
+      '[]'::json
+    ) as results
+    FROM maps
+    JOIN users AS creator ON maps."creator_id" = creator."id"
+    JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
+    WHERE (
+      ${mapKeyword} = '' OR (
+        maps."title" &@~ ${mapKeyword} OR
+        maps."artist_name" &@~ ${mapKeyword} OR
+        maps."music_source" &@~ ${mapKeyword} OR
+        maps."tags" &@~ ${mapKeyword} OR
+        creator."name" &@~ ${mapKeyword}
+      )
+    )
+    ORDER BY maps."id" DESC
     LIMIT ${MAP_LIST_TAKE_LENGTH} OFFSET ${offset}`;
 
     return new Response(JSON.stringify(mapList), {

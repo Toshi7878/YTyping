@@ -1,6 +1,6 @@
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
-import { NextDisplay, TimeOffsetKey, ToggleInputModeKey } from "@prisma/client";
+import { next_display, time_offset_key, toggle_input_mode_key } from "@prisma/client";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -9,16 +9,16 @@ export const userTypingOptionRouter = {
     const session = await auth();
     const userId = session?.user ? Number(session?.user.id) : 0;
 
-    const userTypingOptions = await prisma.typingOption.findUnique({
-      where: { userId },
+    const userTypingOptions = await prisma.user_typing_options.findUnique({
+      where: { user_id: userId },
       select: {
-        timeOffset: true,
-        typeSound: true,
-        missSound: true,
-        lineClearSound: true,
-        nextDisplay: true,
-        timeOffsetKey: true,
-        toggleInputModeKey: true,
+        time_offset: true,
+        type_sound: true,
+        miss_sound: true,
+        line_clear_sound: true,
+        next_display: true,
+        time_offset_key: true,
+        toggle_input_mode_key: true,
       },
     });
 
@@ -27,14 +27,14 @@ export const userTypingOptionRouter = {
   update: publicProcedure
     .input(
       z.object({
-        timeOffset: z.number(),
-        typeSound: z.boolean(),
-        missSound: z.boolean(),
-        lineClearSound: z.boolean(),
-        nextDisplay: z.nativeEnum(NextDisplay),
-        timeOffsetKey: z.nativeEnum(TimeOffsetKey),
-        toggleInputModeKey: z.nativeEnum(ToggleInputModeKey),
-      }),
+        time_offset: z.number(),
+        type_sound: z.boolean(),
+        miss_sound: z.boolean(),
+        line_clear_sound: z.boolean(),
+        next_display: z.nativeEnum(next_display),
+        time_offset_key: z.nativeEnum(time_offset_key),
+        toggle_input_mode_key: z.nativeEnum(toggle_input_mode_key),
+      })
     )
     .mutation(async ({ input }) => {
       const session = await auth();
@@ -42,15 +42,15 @@ export const userTypingOptionRouter = {
       try {
         const userId = session ? Number(session.user.id) : 0;
 
-        const updated = await prisma.typingOption.upsert({
+        const updated = await prisma.user_typing_options.upsert({
           where: {
-            userId,
+            user_id: userId,
           },
           update: {
             ...input,
           },
           create: {
-            userId,
+            user_id: userId,
             ...input,
           },
         });
@@ -65,7 +65,7 @@ export const userTypingOptionRouter = {
             status: 500,
             errorObject: error instanceof Error ? error.message : String(error),
           }),
-          { status: 500 },
+          { status: 500 }
         );
       }
     }),

@@ -6,60 +6,86 @@ import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
 import { revalidatePath } from "next/cache";
-import { EditorSendData } from "../../app/edit/ts/type";
+import { SendMapDifficulty, SendMapInfo } from "../../app/edit/ts/type";
 
 const upsertMap = async (
-  data: EditorSendData,
+  sendMapInfo: SendMapInfo,
+  sendMapDifficulty: SendMapDifficulty,
   mapId: string,
   userId: number,
   isMapDataEdited: boolean,
-  mapData: MapData[],
+  mapData: MapData[]
 ) => {
-  const mapIdNumber = mapId === "new" ? 0 : Number(mapId);
-  const upsertedMap = await prisma.map.upsert({
-    where: {
-      id: mapIdNumber, // 0は存在しないIDとして使用
-    },
-    update: {
-      ...data,
-      ...(isMapDataEdited && { updatedAt: new Date() }),
-    },
-    create: {
-      ...data,
-      creatorId: userId,
-    },
+  // トランザクションを開始
+  return await prisma.$transaction(async (tx) => {
+    try {
+      const mapIdNumber = mapId === "new" ? 0 : Number(mapId);
+      const upsertedMap = await tx.maps.upsert({
+        where: {
+          id: mapIdNumber,
+        },
+        update: {
+          ...sendMapInfo,
+          ...(isMapDataEdited && { updated_at: new Date() }),
+        },
+        create: {
+          ...sendMapInfo,
+          creator_id: userId,
+        },
+      });
+
+      const newMapId = upsertedMap.id;
+
+      await tx.map_difficulties.upsert({
+        where: {
+          map_id: newMapId,
+        },
+        update: {
+          ...sendMapDifficulty,
+        },
+        create: {
+          map_id: newMapId,
+          ...sendMapDifficulty,
+        },
+      });
+
+      // Supabaseストレージにアップロード
+      await supabase.storage
+        .from("map-data")
+        .upload(
+          `public/${mapId === "new" ? newMapId : mapId}.json`,
+          new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
+          {
+            upsert: true,
+          }
+        );
+
+      return newMapId;
+    } catch (error) {
+      console.error("Prisma Error:", error);
+      if (error instanceof Error) {
+        throw new Error(`データベース操作に失敗しました: ${error.message}`);
+      }
+      throw new Error("データベース操作に失敗しました");
+    }
   });
-
-  const newMapId = upsertedMap.id;
-
-  // Supabaseストレージにアップロード
-  await supabase.storage
-    .from("map-data") // バケット名を指定
-    .upload(
-      `public/${mapId === "new" ? newMapId : mapId}.json`,
-      new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
-      {
-        upsert: true, // 既存のファイルを上書きするオプションを追加
-      },
-    );
-
-  return newMapId; // upsertされたマップのIDを返す
 };
 
 export async function actions(
-  data: EditorSendData,
+  data: SendMapInfo,
+  sendMapDifficulty: SendMapDifficulty,
   mapData: MapData[],
   isMapDataEdited: boolean,
-  mapId: string,
+  mapId: string
 ): Promise<UploadResult> {
   const validatedFields = mapSendSchema.safeParse({
     title: data.title,
-    creatorComment: data.creatorComment,
-    previewTime: data.previewTime,
+    creatorComment: data.creator_comment,
+    previewTime: data.preview_time,
     tags: data.tags,
     mapData,
-    videoId: data.videoId,
-    thumbnailQuality: data.thumbnailQuality,
+    videoId: data.video_id,
+    thumbnailQuality: data.thumbnail_quality,
   });
 
   if (!validatedFields.success) {
@@ -76,15 +102,15 @@ export async function actions(
     const userRole = session?.user.role;
     let newMapId: number;
 
-    const mapCreatorId = await prisma.map.findUnique({
+    const mapCreatorId = await prisma.maps.findUnique({
       where: { id: mapId === "new" ? 0 : Number(mapId) },
       select: {
-        creatorId: true,
+        creator_id: true,
       },
     });
 
-    if (mapId === "new" || mapCreatorId?.creatorId === userId || userRole === "ADMIN") {
-      newMapId = await upsertMap(data, mapId, userId, isMapDataEdited, mapData);
+    if (mapId === "new" || mapCreatorId?.creator_id === userId || userRole === "ADMIN") {
+      newMapId = await upsertMap(data, sendMapDifficulty, mapId, userId, isMapDataEdited, mapData);
     } else {
       return {
         id: null,
@@ -113,7 +139,7 @@ export async function actions(
   }
 }
 
-import { ThumbnailQuality } from "@prisma/client";
+import { thumbnail_quality } from "@prisma/client";
 import { z } from "zod";
 
 const lineSchema = z.object({
@@ -129,7 +155,7 @@ const mapSendSchema = z.object({
   title: z.string().min(1, { message: "タイトルは１文字以上必要です" }),
   creatorComment: z.string().optional(),
   tags: z.array(z.string()).min(2, { message: "タグは2つ以上必要です" }),
-  thumbnailQuality: z.nativeEnum(ThumbnailQuality),
+  thumbnailQuality: z.nativeEnum(thumbnail_quality),
   previewTime: z
     .string()
     .min(1, { message: "プレビュータイムを設定してください。" })
@@ -141,11 +167,11 @@ const mapSendSchema = z.object({
     .refine(
       (lines) =>
         !lines.some((line) =>
-          Object.values(line).some((value) => typeof value === "string" && value.includes("http")),
+          Object.values(line).some((value) => typeof value === "string" && value.includes("http"))
         ),
       {
         message: "譜面データにはhttpから始まる文字を含めることはできません",
-      },
+      }
     )
     .refine((lines) => lines.some((line) => line.word && line.word.length > 0), {
       message: "タイピングワードが設定されていません",
@@ -163,12 +189,12 @@ const mapSendSchema = z.object({
       (lines) => {
         const endAfterLineIndex = lines.findIndex((line) => line.lyrics === "end");
         return lines.every((line, index) =>
-          endAfterLineIndex < index ? line.lyrics === "end" : true,
+          endAfterLineIndex < index ? line.lyrics === "end" : true
         );
       },
       {
         message: "endの後に無効な行があります",
-      },
+      }
     )
     .refine(
       (lines) => {
@@ -189,7 +215,7 @@ const mapSendSchema = z.object({
       },
       {
         message: "カスタムCSSの合計文字数は10000文字以下になるようにしてください",
-      },
+      }
     ),
   videoId: z.string(),
 });
