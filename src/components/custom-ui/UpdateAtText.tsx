@@ -1,15 +1,24 @@
 import { Text } from "@chakra-ui/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
-import React from "react";
 
 interface UpdateAtTextProps {
   updatedAt: Date;
 }
 
 const UpdateAtText = (props: UpdateAtTextProps) => {
+  const date = new Date(props.updatedAt);
+
   return (
-    <Text as="span" isTruncated whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+    <Text
+      as="time"
+      dateTime={date.toISOString()}
+      title={date.toLocaleString("ja-JP")}
+      isTruncated
+      whiteSpace="nowrap"
+      overflow="hidden"
+      textOverflow="ellipsis"
+    >
       {formatDistanceToNowStrict(new Date(props.updatedAt), { addSuffix: true, locale: ja })}
     </Text>
   );

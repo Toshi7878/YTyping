@@ -13,8 +13,7 @@ export const MapResultBadges = ({ result }: ResultCardProps) => {
   const isPerfect = result?.status.miss === 0 && result?.status.lost === 0;
   const theme: ThemeColors = useTheme();
 
-  const rankColor =
-    result?.status.rank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
+  const rankColor = result?.rank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
   return (
     <VStack align="end" mr={5} spacing={5} visibility={result ? "visible" : "hidden"}>
       <Stack direction="row" mb={2}>
@@ -68,8 +67,7 @@ export const MapResultBadgesMobile = ({ result, ...rest }: ResultCardProps & Fle
   const isPerfect = result?.status.miss === 0 && result.status.lost === 0;
   const theme: ThemeColors = useTheme();
 
-  const rankColor =
-    result?.status.rank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
+  const rankColor = result?.rank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
   return (
     <Flex
       justifyContent="space-around"
@@ -79,7 +77,7 @@ export const MapResultBadgesMobile = ({ result, ...rest }: ResultCardProps & Fle
     >
       <VStack align="end" mr={5} spacing={5}>
         <ResultBadge letterSpacing={1} color={rankColor} borderColor={theme.colors.border.badge}>
-          Rank: #{result?.status.rank ?? 0}
+          Rank: #{result?.rank ?? 0}
         </ResultBadge>
         <ResultBadge
           letterSpacing={1}

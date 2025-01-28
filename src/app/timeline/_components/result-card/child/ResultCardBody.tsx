@@ -30,7 +30,7 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
         zIndex={0}
       >
         <Flex direction="row" gap={4} width="100%">
-          {result && <UserRank userRank={result.status.rank} display={rowDisplay} />}
+          {result && <UserRank userRank={result.rank} display={rowDisplay} />}
 
           <MapLeftThumbnail
             alt={result ? result.map.title : ""}

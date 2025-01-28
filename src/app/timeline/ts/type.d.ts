@@ -8,13 +8,13 @@ export interface ResultCardInfo {
   user_id: number;
   clap_count: number;
   hasClap: boolean;
+  rank: number;
   updated_at: Date;
   status: {
     score: number;
     default_speed: number;
     miss: number;
     lost: number;
-    rank: number;
     kpm: number;
     roma_kpm: number;
     kana_type: number;
