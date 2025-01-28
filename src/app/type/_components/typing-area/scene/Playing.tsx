@@ -44,7 +44,8 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
     if (scene === "replay") {
       typeTicker.maxFPS = 0; // リプレイモードは制限なし
     } else {
-      typeTicker.maxFPS = 60;
+      typeTicker.maxFPS = 59.99;
+      typeTicker.minFPS = 59.99;
     }
     typeTicker.add(playTimer);
 
