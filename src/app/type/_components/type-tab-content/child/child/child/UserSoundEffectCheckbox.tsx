@@ -3,7 +3,7 @@ import { Box, CheckboxGroup, Flex, Text } from "@chakra-ui/react";
 import CheckBoxOption from "./child/CheckBoxOption";
 
 const UserSoundEffectCheckbox = () => {
-  const userOptionsAtom = useUserOptionsAtom();
+  const userTypingOptionsAtom = useUserOptionsAtom();
 
   return (
     <Flex>
@@ -14,18 +14,18 @@ const UserSoundEffectCheckbox = () => {
         <CheckboxGroup>
           <CheckBoxOption
             label={"タイプ音"}
-            name="typeSound"
-            defaultChecked={userOptionsAtom.type_sound}
+            name="type_sound"
+            defaultChecked={userTypingOptionsAtom.type_sound}
           />
           <CheckBoxOption
             label={"ミス音"}
-            name="missSound"
-            defaultChecked={userOptionsAtom.miss_sound}
+            name="miss_sound"
+            defaultChecked={userTypingOptionsAtom.miss_sound}
           />
           <CheckBoxOption
             label={"打ち切り音"}
-            name="lineClearSound"
-            defaultChecked={userOptionsAtom.line_clear_sound}
+            name="line_clear_sound"
+            defaultChecked={userTypingOptionsAtom.line_clear_sound}
           />
         </CheckboxGroup>
       </Box>

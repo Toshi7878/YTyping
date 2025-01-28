@@ -28,39 +28,40 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   }, [speedData.defaultSpeed, scene]);
 
   return (
-    <HStack
-      borderColor={theme.colors.border.card}
-      border="1px solid"
-      px={8}
-      py={{ base: 6, md: 3 }}
-      className="rounded-lg"
-      boxShadow="md"
+    <CustomToolTip
+      label="1.00倍速未満の場合は練習モードになります。"
+      placement="top"
+      isDisabled={speedData.defaultSpeed >= 1}
+      isOpen={speedData.defaultSpeed < 1}
     >
-      <CustomToolTip
-        label="1.00倍速未満の場合は練習モードになります。"
-        placement="top"
-        isDisabled={speedData.defaultSpeed > 1}
+      <HStack
+        borderColor={theme.colors.border.card}
+        border="1px solid"
+        px={8}
+        py={{ base: 6, md: 3 }}
+        className="rounded-lg"
+        boxShadow="md"
       >
         <SpeedChangeButton
           buttonRef={props.speedDownButtonRef}
           buttonLabel={{ text: "-", key: "F9" }}
           type="down"
         />
-      </CustomToolTip>
 
-      <Box fontWeight="bold" mx={8} fontSize={{ base: "3rem", md: "4xl" }} userSelect="none">
-        <Text as="span" id="speed">
-          {speedData.defaultSpeed.toFixed(2)}
-        </Text>
-        倍速
-      </Box>
+        <Box fontWeight="bold" mx={8} fontSize={{ base: "3rem", md: "4xl" }} userSelect="none">
+          <Text as="span" id="speed">
+            {speedData.defaultSpeed.toFixed(2)}
+          </Text>
+          倍速
+        </Box>
 
-      <SpeedChangeButton
-        buttonRef={props.speedUpButtonRef}
-        buttonLabel={{ text: "+", key: "F10" }}
-        type="up"
-      />
-    </HStack>
+        <SpeedChangeButton
+          buttonRef={props.speedUpButtonRef}
+          buttonLabel={{ text: "+", key: "F10" }}
+          type="up"
+        />
+      </HStack>
+    </CustomToolTip>
   );
 };
 

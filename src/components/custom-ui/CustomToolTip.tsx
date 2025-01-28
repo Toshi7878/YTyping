@@ -2,10 +2,10 @@ import { ThemeColors } from "@/types";
 import { Box, Tooltip, TooltipProps, useTheme } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
-interface CustomToolTipProps extends TooltipProps {
+interface CustomToolTipProps {
   children: ReactNode;
 }
-const CustomToolTip = ({ label, children, ...rest }: CustomToolTipProps) => {
+const CustomToolTip = ({ label, children, ...rest }: CustomToolTipProps & TooltipProps) => {
   const theme: ThemeColors = useTheme();
 
   return (

@@ -28,17 +28,15 @@ const CheckBoxOption = ({
 
     const newUserOptions = {
       ...userOptionsAtom,
-      typeSound: name === "typeSound" ? checked : userOptionsAtom.type_sound,
-      missSound: name === "missSound" ? checked : userOptionsAtom.miss_sound,
-      lineClearSound: name === "lineClearSound" ? checked : userOptionsAtom.line_clear_sound,
+      [name]: checked,
     };
     setUserOptionsAtom(newUserOptions);
     if (checked) {
-      if (name === "typeSound") {
+      if (name === "type_sound") {
         typeSoundPlay();
-      } else if (name === "missSound") {
+      } else if (name === "miss_sound") {
         missSoundPlay();
-      } else if (name === "lineClearSound") {
+      } else if (name === "line_clear_sound") {
         clearTypeSoundPlay();
       }
     }

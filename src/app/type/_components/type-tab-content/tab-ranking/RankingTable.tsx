@@ -75,7 +75,7 @@ const RankingTable = (props: RankingTableProps) => {
           </Th>
         </Tr>
       </Thead>
-      <Tbody>{props.children}</Tbody>
+      <Tbody suppressHydrationWarning>{props.children}</Tbody>
     </Table>
   );
 };
