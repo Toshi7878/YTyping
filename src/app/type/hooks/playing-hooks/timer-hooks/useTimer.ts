@@ -106,11 +106,6 @@ export const usePlayTimer = () => {
     lineProgressRef.current!.value =
       currentOffesettedYTTime < 0 ? nextLine.time + currentOffesettedYTTime : currentLineTime;
 
-    const totalProgressValue = totalProgressRef.current!.value;
-    if (Math.abs(currentOffesettedYTTime - totalProgressValue) >= map.currentTimeBarFrequency) {
-      totalProgressRef.current!.value = currentOffesettedYTTime;
-    }
-
     if (scene === "replay") {
       if (count && currentLineTime) {
         replay({ constantLineTime });
@@ -149,6 +144,7 @@ export const usePlayTimer = () => {
         gameStateRef.current!.isRetrySkip = false;
       }
 
+      console.log(map.currentTimeBarFrequency);
       //スキップガイド表示;
       displaySkipGuide({
         kana: lineWord.nextChar["k"],
@@ -156,6 +152,7 @@ export const usePlayTimer = () => {
         lineRemainTime: constantRemainLineTime,
         isRetrySkip,
       });
+      totalProgressRef.current!.value = currentOffesettedYTTime;
 
       //動画タイム:トータル動画タイム
       const currentTimeSSMM = typeAtomStore.get(currentTimeSSMMAtom);
