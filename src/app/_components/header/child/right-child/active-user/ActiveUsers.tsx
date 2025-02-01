@@ -16,8 +16,7 @@ export default function ActiveUsers() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const nofityDrawerClose = useCallback(() => {
     onClose();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onClose]);
 
   const { data: session } = useSession();
   const setOnlineUsers = useSetOnlineUsersAtom();
@@ -29,91 +28,96 @@ export default function ActiveUsers() {
 
     const roomOne = supabase.channel("active_users_room", {
       config: {
-        presence: {
-          key: session?.user?.id,
-        },
+        presence: { key: session.user.id },
       },
     });
-
-    roomOne
-      .on("presence", { event: "sync" }, () => {
-        const newState = roomOne.presenceState<UserStatus>();
-        const users = Object.keys(newState).map((key) => ({
-          id: newState[key][0].id,
-          name: newState[key][0].name,
-          onlineAt: newState[key][0].onlineAt,
-          state: newState[key][0].state,
-          mapId: newState[key][0].mapId,
-        }));
-        setOnlineUsers(users);
-      })
-      .on(
-        "presence",
-        { event: "join" },
-        ({ key, newPresences }: { key: string; newPresences: UserStatus[] }) => {
-          console.log("join", key, newPresences);
-          setOnlineUsers((prev) => [...prev, ...newPresences]);
-        }
-      )
-      .on("presence", { event: "leave" }, ({ key }: { key: string }) => {
-        setOnlineUsers((prev) => prev.filter((user) => user.id.toString() !== key));
-      })
-      .subscribe(async (status) => {
-        if (status !== "SUBSCRIBED" || !session?.user?.name) {
-          return;
-        }
-
-        const isType = pathname.match("/type/");
-        const isEdit = pathname.match("/edit");
-
-        const userStatus: UserStatus = {
-          id: Number(session.user.id),
-          name: session.user.name,
-          onlineAt: new Date(),
-          state: isType ? "type" : isEdit ? "edit" : "idle",
-          mapId: Number(mapId),
-        };
-
-        await roomOne.track(userStatus);
-      });
-
-    // 一定時間操作がなかった場合にunsubscribeするためのタイマー
+    let isSubscribed = false;
     let inactivityTimer: number;
 
-    // 操作が行われたらタイマーをリセットする処理
-    const resetInactivityTimer = () => {
-      if (inactivityTimer) {
-        clearTimeout(inactivityTimer);
+    // ユーザー状態の更新処理を共通化
+    const updateUserStatus = async () => {
+      if (!session?.user?.name) return;
+      const isType = pathname.match("/type/");
+      const isEdit = pathname.match("/edit");
+      const userStatus: UserStatus = {
+        id: Number(session.user.id),
+        name: session.user.name,
+        onlineAt: new Date(),
+        state: isType ? "type" : isEdit ? "edit" : "idle",
+        mapId: Number(mapId),
+      };
+      await roomOne.track(userStatus);
+    };
+
+    // チャンネルへの再購読処理
+    const subscribeChannel = () => {
+      if (isSubscribed) return;
+      roomOne.subscribe(async (status) => {
+        if (status !== "SUBSCRIBED" || !session?.user?.name) return;
+        await updateUserStatus();
+      });
+      isSubscribed = true;
+      console.log("操作が復活したので再度 subscribe しました");
+    };
+
+    // presence イベントの登録
+    roomOne.on("presence", { event: "sync" }, () => {
+      const newState = roomOne.presenceState<UserStatus>();
+      const users = Object.keys(newState).map((key) => {
+        const [userData] = newState[key];
+        return {
+          id: userData.id,
+          name: userData.name,
+          onlineAt: userData.onlineAt,
+          state: userData.state,
+          mapId: userData.mapId,
+        };
+      });
+      setOnlineUsers(users);
+    });
+
+    roomOne.on(
+      "presence",
+      { event: "join" },
+      ({ key, newPresences }: { key: string; newPresences: UserStatus[] }) => {
+        console.log("join", key, newPresences);
+        setOnlineUsers((prev) => [...prev, ...newPresences]);
       }
+    );
+
+    roomOne.on("presence", { event: "leave" }, ({ key }: { key: string }) => {
+      setOnlineUsers((prev) => prev.filter((user) => user.id.toString() !== key));
+    });
+
+    // 初回の購読
+    roomOne.subscribe(async (status) => {
+      if (status !== "SUBSCRIBED" || !session?.user?.name) return;
+      await updateUserStatus();
+    });
+    isSubscribed = true;
+
+    // 不活性状態タイマーのリセット処理
+    const resetInactivityTimer = () => {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      if (!isSubscribed) subscribeChannel();
       inactivityTimer = window.setTimeout(() => {
         console.log("一定時間操作がなかったので unsubscribe を実行します");
         roomOne.unsubscribe();
-        removeActivityListeners();
-      }, 60 * 10000);
+        isSubscribed = false;
+      }, 60 * 1000);
     };
 
-    // イベントリスナーの登録
     const activityEvents = ["mousemove", "keydown", "click", "scroll"];
-    const addActivityListeners = () => {
-      activityEvents.forEach((event) => window.addEventListener(event, resetInactivityTimer));
-    };
+    activityEvents.forEach((event) => window.addEventListener(event, resetInactivityTimer));
 
-    const removeActivityListeners = () => {
-      activityEvents.forEach((event) => window.removeEventListener(event, resetInactivityTimer));
-    };
-
-    addActivityListeners();
     resetInactivityTimer();
 
     return () => {
-      removeActivityListeners();
-      if (inactivityTimer) {
-        clearTimeout(inactivityTimer);
-      }
+      activityEvents.forEach((event) => window.removeEventListener(event, resetInactivityTimer));
+      if (inactivityTimer) clearTimeout(inactivityTimer);
       roomOne.unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, session?.user.name, setOnlineUsers, mapId, session?.user.id]);
 
   return (
     <>
