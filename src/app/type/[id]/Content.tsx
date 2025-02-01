@@ -113,7 +113,7 @@ function Content({ mapInfo }: ContentProps) {
         alignItems="center"
         pt={{ base: 12, md: 16 }}
         width="100%"
-        height="100vh"
+        maxH="100vh"
         overflowX="hidden"
         overflowY={layoutMode === "row" ? "hidden" : "auto"}
       >

@@ -14,8 +14,8 @@ import {
   Box,
   Button,
   useDisclosure,
-} from "@chakra-ui/react"; // Chakra UIのコンポーネントをインポート
-import { useEffect, useRef, useState } from "react"; // useRefを追加
+} from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import AlertDialogButton from "./child/AlertDialogButton";
 import EndMainButton from "./child/EndMainButton";
 

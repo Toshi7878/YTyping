@@ -27,7 +27,7 @@ import { useStore } from "jotai";
 import { CreateMap, MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { DEFAULT_STATUS_REF } from "../../../ts/const/typeDefaultValue";
 import { useCalcTypeSpeed } from "../../../ts/scene-ts/playing/calcTypeSpeed";
-import { Status } from "../../../ts/type";
+import { LineData, Status } from "../../../ts/type";
 import { useGetTime } from "../../useGetTime";
 import { useOutPutLineResult } from "../useOutPutLineResult";
 import { useLineReplayUpdate, useReplay, useUpdateAllStatus } from "./replayHooks";
@@ -39,7 +39,6 @@ export const usePlayTimer = () => {
   const map = useMapAtom() as CreateMap;
   const scene = useSceneAtom();
   const speed = useTypePageSpeedAtom();
-
   const typeAtomStore = useStore();
 
   const setCurrentTimeSSMM = useSetCurrentTimeSSMMAtom();
@@ -61,104 +60,135 @@ export const usePlayTimer = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const statusAtomsValues = useStatusAtomsValues();
 
-  return () => {
-    //時間取得
-    const currentOffesettedYTTime = getCurrentOffsettedYTTime();
-    const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
-    const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
-    const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
-    const constantLineTime = getConstantLineTime(currentLineTime);
+  const update = ({
+    count,
+    currentOffesettedYTTime,
+    constantLineTime,
+    nextLine,
+  }: {
+    count: number;
+    currentOffesettedYTTime: number;
+    constantLineTime: number;
+    nextLine: LineData;
+  }) => {
+    calcLineResult({ count, constantLineTime });
 
-    const count = statusRef.current!.status.count;
-    const nextLine = map.mapData[count];
-    const movieDuration = ytStateRef.current!.movieDuration;
-    const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
-
+    const currentLine = map.mapData[count - 1];
     if (
-      currentOffesettedYTTime >= nextLineTime ||
+      currentLine?.["lyrics"] === "end" ||
       currentOffesettedYTTime >= ytStateRef.current!.movieDuration
     ) {
-      calcLineResult({ count, constantLineTime });
+      playerRef.current!.stopVideo();
+      typeTicker.stop();
 
-      const currentLine = map.mapData[count - 1];
-      if (
-        currentLine?.["lyrics"] === "end" ||
-        currentOffesettedYTTime >= ytStateRef.current!.movieDuration
-      ) {
-        playerRef.current!.stopVideo();
-        typeTicker.stop();
-
-        return;
-      } else if (nextLine) {
-        if (scene === "playing") {
-          statusRef.current!.status.count += 1;
-        } else {
-          statusRef.current!.status.count = getSeekLineCount(currentOffesettedYTTime);
-        }
-
-        updateLine(statusRef.current!.status.count);
+      return;
+    } else if (nextLine) {
+      if (scene === "playing") {
+        statusRef.current!.status.count += 1;
+      } else {
+        statusRef.current!.status.count = getSeekLineCount(currentOffesettedYTTime);
       }
 
+      updateLine(statusRef.current!.status.count);
+    }
+  };
+
+  const updateMs = ({
+    constantLineTime,
+    constantRemainLineTime,
+    currentOffesettedYTTime,
+    constantOffesettedYTTime,
+  }: {
+    constantLineTime: number;
+    constantRemainLineTime: number;
+    currentOffesettedYTTime: number;
+    constantOffesettedYTTime: number;
+  }) => {
+    gameStateRef.current!.displayLineTimeCount = constantRemainLineTime;
+    setDisplayRemainTime(constantRemainLineTime);
+
+    const lineWord = typeAtomStore.get(lineWordAtom);
+
+    if (lineWord.nextChar["k"]) {
+      const status = statusAtomsValues();
+
+      const typeSpeed = calcTypeSpeed({
+        updateType: "timer",
+        constantLineTime,
+        totalTypeCount: status.type,
+      });
+      setDisplayLineKpm(typeSpeed!.lineKpm);
+    }
+
+    const isRetrySkip = gameStateRef.current!.isRetrySkip;
+
+    if (
+      isRetrySkip &&
+      map.mapData[map.startLine].time - 3 * speed.playSpeed <= currentOffesettedYTTime
+    ) {
+      gameStateRef.current!.isRetrySkip = false;
+    }
+
+    displaySkipGuide({
+      kana: lineWord.nextChar["k"],
+      lineConstantTime: constantLineTime,
+      lineRemainTime: constantRemainLineTime,
+      isRetrySkip,
+    });
+    totalProgressRef.current!.value = currentOffesettedYTTime;
+
+    const currentTimeSSMM = typeAtomStore.get(currentTimeSSMMAtom);
+    if (Math.abs(constantOffesettedYTTime - currentTimeSSMM) >= 1) {
+      setCurrentTimeSSMM(constantOffesettedYTTime);
+    }
+  };
+
+  return () => {
+    const currentOffesettedYTTime = getCurrentOffsettedYTTime();
+    const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
+    const movieDuration = ytStateRef.current!.movieDuration;
+    const count = statusRef.current!.status.count;
+    const nextLine = map.mapData[count];
+    const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
+    const isUpdateLine =
+      currentOffesettedYTTime >= nextLineTime ||
+      currentOffesettedYTTime >= ytStateRef.current!.movieDuration;
+
+    if (isUpdateLine) {
+      const constantLineTime = getConstantLineTime(currentLineTime);
+      update({
+        count,
+        currentOffesettedYTTime,
+        constantLineTime,
+        nextLine,
+      });
       return;
     }
 
-    //タイムバー
-    lineProgressRef.current!.value =
-      currentOffesettedYTTime < 0 ? nextLine.time + currentOffesettedYTTime : currentLineTime;
-
-    if (scene === "replay") {
-      if (count && currentLineTime) {
-        replay({ constantLineTime });
-      }
-    }
-
-    if (
+    const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
+    const isUpdateMs =
       Math.abs(
         nextLineTime / speed.playSpeed -
           constantOffesettedYTTime -
           gameStateRef.current!.displayLineTimeCount
-      ) >= 0.1
-    ) {
-      gameStateRef.current!.displayLineTimeCount = constantRemainLineTime;
-      setDisplayRemainTime(constantRemainLineTime);
-
-      const lineWord = typeAtomStore.get(lineWordAtom);
-
-      if (lineWord.nextChar["k"]) {
-        const status = statusAtomsValues();
-
-        const typeSpeed = calcTypeSpeed({
-          updateType: "timer",
-          constantLineTime,
-          totalTypeCount: status.type,
-        });
-        setDisplayLineKpm(typeSpeed!.lineKpm);
-      }
-
-      const isRetrySkip = gameStateRef.current!.isRetrySkip;
-
-      if (
-        isRetrySkip &&
-        map.mapData[map.startLine].time - 3 * speed.playSpeed <= currentOffesettedYTTime
-      ) {
-        gameStateRef.current!.isRetrySkip = false;
-      }
-
-      console.log(map.currentTimeBarFrequency);
-      //スキップガイド表示;
-      displaySkipGuide({
-        kana: lineWord.nextChar["k"],
-        lineConstantTime: constantLineTime,
-        lineRemainTime: constantRemainLineTime,
-        isRetrySkip,
+      ) >= 0.1;
+    if (isUpdateMs) {
+      const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
+      const constantLineTime = getConstantLineTime(currentLineTime);
+      updateMs({
+        currentOffesettedYTTime,
+        constantOffesettedYTTime,
+        constantLineTime,
+        constantRemainLineTime,
       });
-      totalProgressRef.current!.value = currentOffesettedYTTime;
+    }
 
-      //動画タイム:トータル動画タイム
-      const currentTimeSSMM = typeAtomStore.get(currentTimeSSMMAtom);
-      if (Math.abs(constantOffesettedYTTime - currentTimeSSMM) >= 1) {
-        setCurrentTimeSSMM(constantOffesettedYTTime);
-      }
+    lineProgressRef.current!.value =
+      currentOffesettedYTTime < 0 ? nextLine.time + currentOffesettedYTTime : currentLineTime;
+
+    if (scene === "replay" && count && currentLineTime) {
+      const constantLineTime = getConstantLineTime(currentLineTime);
+      replay({ constantLineTime });
     }
   };
 };

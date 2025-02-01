@@ -6,6 +6,7 @@ import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
 import { LineResultData, SendResultData } from "../../app/type/ts/type";
 
+import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 
 const statusSchema = z.object({
@@ -27,8 +28,16 @@ const resultSendSchema = z.object({
   status: statusSchema,
 });
 
-const calcRank = async (mapId: number, userId: number) => {
-  const rankingList = await prisma.results.findMany({
+const calcRank = async ({
+  db,
+  mapId,
+  userId,
+}: {
+  db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">;
+  mapId: number;
+  userId: number;
+}) => {
+  const rankingList = await db.results.findMany({
     where: {
       map_id: mapId,
     },
@@ -44,7 +53,7 @@ const calcRank = async (mapId: number, userId: number) => {
     orderBy: { status: { score: "desc" } },
   });
 
-  const overtakeNotify = await prisma.notifications.findMany({
+  const overtakeNotify = await db.notifications.findMany({
     where: {
       visited_id: userId,
       map_id: mapId,
@@ -71,7 +80,7 @@ const calcRank = async (mapId: number, userId: number) => {
     const myScore = myResult?.status!.score;
     if (visitorScore - Number(myScore) <= 0) {
       const visitorId = overtakeNotify[i].visitorResult.user_id;
-      await prisma.notifications.delete({
+      await db.notifications.delete({
         where: {
           visitor_id_visited_id_map_id_action: {
             visitor_id: visitorId,
@@ -87,7 +96,7 @@ const calcRank = async (mapId: number, userId: number) => {
   for (let i = 0; i < rankingList.length; i++) {
     const newRank = i + 1;
 
-    await prisma.results.update({
+    await db.results.update({
       where: {
         user_id_map_id: {
           map_id: mapId,
@@ -101,7 +110,7 @@ const calcRank = async (mapId: number, userId: number) => {
 
     const isOtherUser = rankingList[i].user_id !== userId;
     if (isOtherUser && rankingList[i].rank <= 5 && rankingList[i].rank !== newRank) {
-      await prisma.notifications.upsert({
+      await db.notifications.upsert({
         where: {
           visitor_id_visited_id_map_id_action: {
             visitor_id: userId,
@@ -126,7 +135,7 @@ const calcRank = async (mapId: number, userId: number) => {
     }
   }
 
-  await prisma.maps.update({
+  await db.maps.update({
     where: {
       id: mapId,
     },
@@ -134,9 +143,17 @@ const calcRank = async (mapId: number, userId: number) => {
       ranking_count: rankingList.length,
     },
   });
+
+  console.log("calced");
 };
 
-const sendLineResult = async (mapId: number, lineResults: LineResultData[]) => {
+const sendLineResult = async ({
+  mapId,
+  lineResults,
+}: {
+  mapId: number;
+  lineResults: LineResultData[];
+}) => {
   const jsonString = JSON.stringify(lineResults, null, 2);
 
   // Supabaseストレージにアップロード
@@ -150,41 +167,50 @@ const sendLineResult = async (mapId: number, lineResults: LineResultData[]) => {
     console.error("Error uploading to Supabase:", error);
     throw error;
   }
+
+  console.log("send-replay-data");
 };
 
-const sendNewResult = async (data: SendResultData, userId: number) => {
-  return await prisma.$transaction(async (tx) => {
-    const upsertResult = await tx.results.upsert({
-      where: {
-        user_id_map_id: {
-          user_id: userId,
-          map_id: data.map_id,
-        },
-      },
-      update: {
-        updated_at: new Date(),
-      },
-      create: {
-        map_id: data.map_id,
+const sendNewResult = async ({
+  db,
+  data,
+  userId,
+}: {
+  db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">;
+  data: SendResultData;
+  userId: number;
+}) => {
+  const upsertResult = await db.results.upsert({
+    where: {
+      user_id_map_id: {
         user_id: userId,
+        map_id: data.map_id,
       },
-    });
-
-    await tx.result_statuses.upsert({
-      where: {
-        result_id: upsertResult.id,
-      },
-      update: {
-        ...data.status,
-      },
-      create: {
-        result_id: upsertResult.id,
-        ...data.status,
-      },
-    });
-
-    return upsertResult.id;
+    },
+    update: {
+      updated_at: new Date(),
+    },
+    create: {
+      map_id: data.map_id,
+      user_id: userId,
+    },
   });
+
+  await db.result_statuses.upsert({
+    where: {
+      result_id: upsertResult.id,
+    },
+    update: {
+      ...data.status,
+    },
+    create: {
+      result_id: upsertResult.id,
+      ...data.status,
+    },
+  });
+
+  console.log("upserted");
+  return upsertResult.id;
 };
 
 export async function actions(
@@ -207,9 +233,13 @@ export async function actions(
   try {
     const session = await auth();
     const userId = Number(session?.user?.id);
-    const mapId = await sendNewResult(data, userId);
-    await sendLineResult(mapId, lineResults);
-    await calcRank(data.map_id, userId);
+    const mapId = await prisma.$transaction(async (tx) => {
+      const mapId = await sendNewResult({ db: tx, data, userId });
+      await sendLineResult({ mapId, lineResults });
+      await calcRank({ db: tx, mapId: data.map_id, userId });
+      return mapId;
+    });
+
     return {
       id: mapId,
       title: "ランキング登録が完了しました",

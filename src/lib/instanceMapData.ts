@@ -393,7 +393,6 @@ export class CreateMap {
   defaultLineResultData: LineResultData[];
   totalNotes: LineData["notes"];
   speedDifficulty: SpeedDifficulty;
-  currentTimeBarFrequency: number;
   movieTotalTime: number;
   keyRate: number;
   missRate: number;
@@ -415,7 +414,6 @@ export class CreateMap {
     this.speedDifficulty = this.calculateSpeedDifficulty(result.words);
 
     this.movieTotalTime = +this.mapData[result.words.length - 1].time;
-    this.currentTimeBarFrequency = this.movieTotalTime / 1700;
     this.keyRate = 100 / this.totalNotes.r;
     this.missRate = this.keyRate / 2;
   }
