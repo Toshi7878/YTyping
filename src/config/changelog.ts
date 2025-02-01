@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-2-1",
+    descriptions: ["アクティブユーザープレセンス追加"],
+  },
+  {
     date: "2025-1-28",
     descriptions: ["データベース復旧"],
   },
