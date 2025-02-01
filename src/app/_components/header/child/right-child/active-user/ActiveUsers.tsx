@@ -49,14 +49,14 @@ export default function ActiveUsers() {
       await roomOne.track(userStatus);
     };
 
-    // チャンネルへの再購読処理
     const subscribeChannel = () => {
       if (isSubscribed) return;
+      isSubscribed = true;
+
       roomOne.subscribe(async (status) => {
         if (status !== "SUBSCRIBED" || !session?.user?.name) return;
         await updateUserStatus();
       });
-      isSubscribed = true;
       console.log("操作が復活したので再度 subscribe しました");
     };
 
