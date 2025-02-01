@@ -10,9 +10,9 @@ interface HeaderProps {
 }
 
 const Header = async ({ session }: HeaderProps) => {
-  const isNewNotification = session?.user?.name
-    ? await serverApi.notification.newNotificationCheck()
-    : false;
+  const onVercel = process.env.NEXT_PUBLIC_API_URL !== "http://localhost:3000";
+  const isNewNotification =
+    onVercel && session?.user?.name ? await serverApi.notification.newNotificationCheck() : false;
   return (
     <HeaderClientProvider>
       <HeaderContent isNewNotification={isNewNotification} />
