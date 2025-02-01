@@ -1,4 +1,5 @@
 import { DEFAULT_VOLUME } from "@/config/consts/globalConst";
+import { UserStatus } from "@/types/global-types";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage } from "jotai/utils";
 const globalAtomStore = createStore();
@@ -49,4 +50,13 @@ export const usePreviewSpeedAtom = () => {
 };
 export const useSetPreviewSpeedAtom = () => {
   return useSetAtom(previewSpeedAtom, { store: globalAtomStore });
+};
+
+const onlineUsersAtom = atom<UserStatus[]>([]);
+
+export const useOnlineUsersAtom = () => {
+  return useAtomValue(onlineUsersAtom, { store: globalAtomStore });
+};
+export const useSetOnlineUsersAtom = () => {
+  return useSetAtom(onlineUsersAtom, { store: globalAtomStore });
 };

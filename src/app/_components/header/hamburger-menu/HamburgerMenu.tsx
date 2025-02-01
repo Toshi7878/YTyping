@@ -18,6 +18,7 @@ import {
 import { useSession } from "next-auth/react";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
 import LinkMenuItem from "../child/child/LinkMenuItem";
+import ActiveUsers from "../child/right-child/active-user/ActiveUsers";
 import LogOutMenuItem from "../child/right-child/login/child/LogOutMenuItem";
 import SignInMenuItem from "../child/right-child/login/child/SignInMenuItem";
 import CreateNewMapModal from "../child/right-child/new-map/child/CreateNewMapModal";
@@ -37,7 +38,12 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
   const menus = leftMenuItem.concat(leftLink);
   return (
     <Flex display={display} alignItems="center" gap={5}>
-      {session?.user?.name && <NotifyBell isNewNotification={isNewNotification} />}
+      {session?.user?.name && (
+        <>
+          <ActiveUsers />
+          <NotifyBell isNewNotification={isNewNotification} />
+        </>
+      )}
       <Menu>
         <MenuButton
           as={IconButton}

@@ -1,4 +1,4 @@
-import UpdateAtText from "@/components/custom-ui/UpdateAtText";
+import DateDistanceText from "@/components/custom-ui/DateDistanceText";
 import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import NotificationMapCard from "@/components/map-card-notification/NotificationMapCard";
@@ -80,7 +80,7 @@ const NotifyDrawerInnerContent = () => {
                           </NotificationMapCardRightInfo>
                         </NotificationMapCard>
                         <Box textAlign="end" color={`${theme.colors.text.body}cc`}>
-                          <UpdateAtText updatedAt={notify.created_at} />
+                          <DateDistanceText date={notify.created_at} />
                         </Box>
                       </Box>
                     </Box>

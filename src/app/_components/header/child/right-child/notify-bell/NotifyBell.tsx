@@ -48,19 +48,15 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
         fontSize="xs"
         openDelay={600}
       >
-        <Box
-          color={theme.colors.text.header.normal}
-          _hover={{
-            color: theme.colors.text.header.hover,
-          }}
-          cursor="pointer"
-          onClick={notificationOpen}
-        >
+        <Box color={theme.colors.text.header.normal} cursor="pointer" onClick={notificationOpen}>
           <Box
             position="relative"
             top="0.5px"
             boxShadow="xl"
             color={isNewBadge ? theme.colors.text.body : theme.colors.text.header.normal}
+            _hover={{
+              color: theme.colors.text.header.hover,
+            }}
           >
             {isNewBadge ? (
               <BellDot size={18} strokeWidth={2.5} />

@@ -2,6 +2,7 @@
 
 import { Flex, ResponsiveValue } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import ActiveUsers from "./right-child/active-user/ActiveUsers";
 import Login from "./right-child/login/Login";
 import NewMap from "./right-child/new-map/NewMap";
 import NotifyBell from "./right-child/notify-bell/NotifyBell";
@@ -18,6 +19,7 @@ export default function RightNav({ display, isNewNotification }: RightNavProps) 
     <Flex display={display} alignItems={"center"} gap={5}>
       {session?.user?.name && (
         <>
+          <ActiveUsers />
           <NotifyBell isNewNotification={isNewNotification} />
           <NewMap />
         </>

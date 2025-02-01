@@ -2,13 +2,13 @@ import { Text } from "@chakra-ui/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 
-interface UpdateAtTextProps {
-  updatedAt: Date;
+interface DateDistanceTextProps {
+  date: Date;
+  text?: string;
+  addSuffix?: boolean;
 }
 
-const UpdateAtText = (props: UpdateAtTextProps) => {
-  const date = new Date(props.updatedAt);
-
+const DateDistanceText = ({ date, text, addSuffix = true }: DateDistanceTextProps) => {
   return (
     <Text
       as="time"
@@ -19,9 +19,10 @@ const UpdateAtText = (props: UpdateAtTextProps) => {
       overflow="hidden"
       textOverflow="ellipsis"
     >
-      {formatDistanceToNowStrict(new Date(props.updatedAt), { addSuffix: true, locale: ja })}
+      {formatDistanceToNowStrict(new Date(date), { addSuffix, locale: ja })}
+      {text && text}
     </Text>
   );
 };
 
-export default UpdateAtText;
+export default DateDistanceText;

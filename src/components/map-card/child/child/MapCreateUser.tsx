@@ -1,4 +1,4 @@
-import UpdateAtText from "@/components/custom-ui/UpdateAtText";
+import DateDistanceText from "@/components/custom-ui/DateDistanceText";
 import UserLinkText from "@/components/custom-ui/UserLinkText";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Text } from "@chakra-ui/react";
@@ -13,7 +13,7 @@ const MapCreateUser = (props: MapCreateUserProps) => {
       <UserLinkText userId={props.map.creator.id} userName={props.map.creator.name as string} />
       <Text as="span" fontSize="xs" display={{ base: "none", md: "inline-block" }}>
         <Box mx={1}>
-          - <UpdateAtText updatedAt={props.map.updated_at} />
+          - <DateDistanceText date={props.map.updated_at} />
         </Box>
       </Text>
     </Text>

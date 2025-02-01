@@ -4,7 +4,7 @@ import { useDownloadPlayDataJsonQuery } from "@/app/type/hooks/data-query/useDow
 import { RANKING_COLUMN_WIDTH } from "@/app/type/ts/const/consts";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import UpdateAtText from "@/components/custom-ui/UpdateAtText";
+import DateDistanceText from "@/components/custom-ui/DateDistanceText";
 import ClapedText from "@/components/share-components/text/ClapedText";
 import ClearRateText from "@/components/share-components/text/ClearRateText";
 import RankText from "@/components/share-components/text/RankText";
@@ -125,7 +125,7 @@ const RankingTr = (props: RankingTrProps) => {
             />
           </Td>
           <Td width={RANKING_COLUMN_WIDTH.updatedAt}>
-            <UpdateAtText updatedAt={result.updated_at} />
+            <DateDistanceText date={result.updated_at} />
           </Td>
           <Td width={RANKING_COLUMN_WIDTH.clapCount} alignItems="center">
             <ClapedText clapOptimisticState={clapOptimisticState} />
