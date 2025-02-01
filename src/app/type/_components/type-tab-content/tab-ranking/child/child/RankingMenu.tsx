@@ -1,4 +1,6 @@
+import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
+import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
 import { mapUpdatedAtAtom, useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useWarningToast } from "@/lib/global-hooks/useWarningToast";
@@ -18,7 +20,6 @@ interface RankingMenuProps {
   setHoveredIndex: Dispatch<number | null>;
   clapOptimisticState: LocalClapState;
   toggleClapAction: (resultId: number) => Promise<UploadResult>;
-  setReplayId: Dispatch<number | null>;
 }
 const RankingMenu = ({
   resultId,
@@ -29,17 +30,21 @@ const RankingMenu = ({
   setHoveredIndex,
   clapOptimisticState,
   toggleClapAction,
-  setReplayId,
 }: RankingMenuProps) => {
-  const { gameStateRef, playerRef } = useRefs();
+  const { gameStateRef } = useRefs();
   const { data: session } = useSession();
   const theme: ThemeColors = useTheme();
   const scene = useSceneAtom();
   const typeAtomStore = useStore();
   const warningToast = useWarningToast();
   const { iosActiveSound } = useSoundEffect();
+  const proceedRetry = useProceedRetry();
 
-  const handleReplayClick = (name: string, resultId: number) => {
+  const handleClick = useOnClickPracticeReplay({ startMode: "replay", resultId });
+
+  const handleReplayClick = async () => {
+    await handleClick();
+
     const mapUpdatedAt = typeAtomStore.get(mapUpdatedAtAtom);
     const resultUpdatedAtDate = new Date(resultUpdatedAt); // 文字列をDate型に変換
     iosActiveSound();
@@ -50,12 +55,13 @@ const RankingMenu = ({
         msg: "正常に再生できない可能性があります",
       });
     }
+
     setShowMenu(null);
     setHoveredIndex(null);
     gameStateRef.current!.replay.userName = name;
-    gameStateRef.current!.playMode = "replay";
-    setReplayId(resultId);
-    playerRef.current!.playVideo();
+    if (scene === "end") {
+      proceedRetry("replay");
+    }
   };
   return (
     <Stack
@@ -76,7 +82,7 @@ const RankingMenu = ({
       </Button>
       <Button
         variant="rankingMenu"
-        onClick={() => handleReplayClick(name, resultId)}
+        onClick={() => handleReplayClick()}
         isDisabled={scene === "playing" || scene === "replay" || scene === "practice"}
       >
         リプレイ再生

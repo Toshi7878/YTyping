@@ -1,39 +1,17 @@
-import { useDownloadPlayDataJsonQuery } from "@/app/type/hooks/data-query/useDownloadResultJsonQuery";
+import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
-import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Button, useTheme } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
-import { useCallback, useState } from "react";
 
 const ReadyPracticeButton = () => {
-  const { data: session } = useSession();
-  const userId = Number(session?.user.id);
-
-  const { id: mapId } = useParams();
-  const [resultId, setResultId] = useState<number | null>(null);
-  const utils = clientApi.useUtils();
-  const { gameStateRef, playerRef } = useRefs();
-  const { data, error, isLoading } = useDownloadPlayDataJsonQuery(resultId);
   const theme: ThemeColors = useTheme();
+  const { gameStateRef } = useRefs();
 
-  const handleClick = useCallback(() => {
-    const result = utils.ranking.getMapRanking.getData({ mapId: Number(mapId) });
-    if (gameStateRef.current!.practice.hasMyRankingData && result) {
-      for (let i = 0; i < result.length; i++) {
-        if (userId === result[i].user_id) {
-          setResultId(result[i].id);
-          break;
-        }
-      }
-    }
+  const handleClick = useOnClickPracticeReplay({
+    startMode: "practice",
+    resultId: gameStateRef.current?.practice.myResultId || null,
+  });
 
-    playerRef.current!.playVideo();
-
-    gameStateRef.current!.playMode = "practice";
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
     <Button
       variant="outline"

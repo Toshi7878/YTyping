@@ -1,9 +1,8 @@
 "use client";
-import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { db } from "@/lib/db";
+import { clientApi } from "@/trpc/client-api";
 import { IndexDBOption } from "@/types";
 import { Box } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -21,7 +20,6 @@ import {
   useSetIsEditYTStartedAtom,
   useSetIsMapDataEditedAtom,
 } from "../edit-atom/editAtom";
-import { useDownloadMapDataQuery } from "../hooks/query/useDownloadMapDataQuery";
 import { resetMapData, setMapData } from "../redux/mapDataSlice";
 import { resetUndoRedoData } from "../redux/undoredoSlice";
 import ColorStyle from "./ColorStyle";
@@ -46,10 +44,9 @@ function Content() {
   const setWord = useSetEditLineWordAtom();
   const setDirectEditCountAtom = useSetDirectEditCountAtom();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
-  const queryClient = useQueryClient();
   const { id: mapId } = useParams();
-
-  const { data, isLoading } = useDownloadMapDataQuery();
+  const { data, isLoading } = clientApi.map.getMap.useQuery({ mapId: mapId as string });
+  const utils = clientApi.useUtils();
 
   useEffect(() => {
     if (data) {
@@ -90,7 +87,7 @@ function Content() {
       setWord("");
       setDirectEditCountAtom(null);
       if (mapId) {
-        queryClient.removeQueries({ queryKey: QUERY_KEYS.mapData(mapId) });
+        utils.map.getMap.invalidate();
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

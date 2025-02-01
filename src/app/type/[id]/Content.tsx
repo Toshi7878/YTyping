@@ -1,9 +1,9 @@
 "use client";
-import { IS_ANDROID, IS_IOS, QUERY_KEYS } from "@/config/consts/globalConst";
+import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
+import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
@@ -12,10 +12,9 @@ import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
-import { useDownloadMapDataJsonQuery } from "../hooks/data-query/useDownloadMapDataJsonQuery";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
 import useWindowScale, { CONTENT_HEIGHT, CONTENT_WIDTH } from "../hooks/useWindowScale";
-import { InputModeType } from "../ts/type";
+import { InputModeType, MapData } from "../ts/type";
 import {
   useIsLoadingOverlayAtom,
   useSceneAtom,
@@ -32,6 +31,7 @@ import {
   useSetTimeOffsetAtom,
   useSetTypePageSpeedAtom,
 } from "../type-atoms/gameRenderAtoms";
+import { useRefs } from "../type-contexts/refsProvider";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -51,9 +51,10 @@ function Content({ mapInfo }: ContentProps) {
   const setLineResults = useSetLineResultsAtom();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
   const setTimeOffset = useSetTimeOffsetAtom();
-  const { isLoading } = useDownloadMapDataJsonQuery();
+  const { data: mapData, isLoading } = clientApi.map.getMap.useQuery<MapData[]>({
+    mapId: mapId as string,
+  });
   const isLoadingOverlay = useIsLoadingOverlayAtom();
-  const queryClient = useQueryClient();
   const disableKeyHandle = useDisableKeyHandle();
   const { resetStatusValues } = useSetStatusAtoms();
   const setCombo = useSetComboAtom();
@@ -62,6 +63,20 @@ function Content({ mapInfo }: ContentProps) {
   const utils = clientApi.useUtils();
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
+  const { setStatusValues } = useSetStatusAtoms();
+  const { totalProgressRef } = useRefs();
+
+  useEffect(() => {
+    if (mapData) {
+      const map = new CreateMap(mapData);
+      setMap(map);
+      setLineResults(map.defaultLineResultData);
+      setStatusValues({ line: map.lineLength });
+      setLineSelectIndex(map.typingLineNumbers[0]);
+      totalProgressRef.current!.max = map.movieTotalTime;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapData]);
 
   useEffect(() => {
     if (scene === "ready" && layoutMode) {
@@ -75,8 +90,7 @@ function Content({ mapInfo }: ContentProps) {
 
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
-      // コンポーネントのアンマウント時にクエリキャッシュをクリア
-      queryClient.removeQueries({ queryKey: QUERY_KEYS.mapData(mapId) });
+      utils.map.getMap.invalidate();
       utils.ranking.getMapRanking.invalidate();
       setMap(null);
       setScene(RESET);

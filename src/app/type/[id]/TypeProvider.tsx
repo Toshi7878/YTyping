@@ -1,7 +1,6 @@
 "use client";
 import { getGlobalAtomStore, previewVideoIdAtom } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createStore, Provider as JotaiProvider } from "jotai";
 import { useEffect } from "react";
 import {
@@ -14,7 +13,6 @@ import { RefsProvider } from "../type-contexts/refsProvider";
 
 const typeAtomStore = createStore();
 export const getTypeAtomStore = () => typeAtomStore;
-const queryClient = new QueryClient();
 
 interface TypeProviderProps {
   mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
@@ -38,11 +36,9 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapInfo, userTypingOptions]);
   return (
-    <QueryClientProvider client={queryClient}>
-      <RefsProvider>
-        <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>
-      </RefsProvider>
-    </QueryClientProvider>
+    <RefsProvider>
+      <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>
+    </RefsProvider>
   );
 };
 

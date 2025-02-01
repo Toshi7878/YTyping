@@ -19,13 +19,11 @@ export const NOTIFICATION_MAP_THUBNAIL_HEIGHT = {
 export const QUERY_KEYS = {
   mapList: ["mapList"] as const,
   usersResultList: ["usersResultList"] as const,
-  mapData: (mapId: string | string[]) => ["mapData", mapId] as const,
-  userPlayData: (resultId: string | string[]) => ["userPlayData", resultId] as const,
   generateMapInfoGemini: (videoId: string) => ["generate-gemini-map-info", videoId] as const,
 };
 
 export const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
 
-
-export const IS_IOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+export const IS_IOS =
+  typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 export const IS_ANDROID = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);

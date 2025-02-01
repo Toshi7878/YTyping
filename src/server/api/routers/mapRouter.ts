@@ -1,3 +1,4 @@
+import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { z } from "zod";
@@ -91,4 +92,27 @@ export const mapRouter = {
 
       return mapList;
     }),
+
+  getMap: publicProcedure.input(z.object({ mapId: z.string() })).query(async ({ input }) => {
+    try {
+      const timestamp = new Date().getTime(); // 一意のクエリパラメータを生成
+
+      const { data, error } = await supabase.storage
+        .from("map-data") // バケット名を指定
+        .download(`public/${input.mapId}.json?timestamp=${timestamp}`);
+
+      if (error) {
+        console.error("Error downloading from Supabase:", error);
+        throw error;
+      }
+
+      const jsonString = await data.text();
+      const jsonData = JSON.parse(jsonString);
+
+      return jsonData;
+    } catch (error) {
+      console.error("Error processing the downloaded file:", error);
+      throw error;
+    }
+  }),
 };

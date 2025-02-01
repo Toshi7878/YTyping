@@ -3,7 +3,7 @@ import { useStore } from "jotai";
 import { CreateMap } from "../../../../lib/instanceMapData";
 import { defaultLineWord, defaultNextLyrics, typeTicker } from "../../ts/const/consts";
 import { DEFAULT_STATUS_REF } from "../../ts/const/typeDefaultValue";
-import { StatusRef } from "../../ts/type";
+import { PlayMode, StatusRef } from "../../ts/type";
 import {
   sceneAtom,
   useMapAtom,
@@ -79,7 +79,7 @@ export const useProceedRetry = () => {
   const setScene = useSetSceneAtom();
   const { resetStatusValues } = useSetStatusAtoms();
 
-  return (playMode: "playing" | "replay" | "practice") => {
+  return (playMode: PlayMode) => {
     setScene(playMode);
 
     if (playMode === "playing") {

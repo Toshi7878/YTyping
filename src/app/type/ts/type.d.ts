@@ -83,7 +83,7 @@ export interface GameStateRef {
     userName: string;
   };
   practice: {
-    hasMyRankingData: boolean;
+    myResultId: number | null;
   };
 }
 

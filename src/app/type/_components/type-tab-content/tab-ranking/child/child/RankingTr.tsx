@@ -1,6 +1,5 @@
 "use client";
 
-import { useDownloadPlayDataJsonQuery } from "@/app/type/hooks/data-query/useDownloadResultJsonQuery";
 import { RANKING_COLUMN_WIDTH } from "@/app/type/ts/const/consts";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
@@ -15,7 +14,7 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
 import { Td, Tr, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import { Dispatch, useEffect, useState } from "react";
+import { Dispatch, useEffect } from "react";
 import RankingMenu from "./RankingMenu";
 
 interface RankingTrProps {
@@ -48,12 +47,10 @@ const RankingTr = (props: RankingTrProps) => {
     hasClap: !!result.claps[0]?.is_claped && !!session,
     clapCount: result.clap_count,
   });
-  const [replayId, setReplayId] = useState<number | null>(null);
-  const { data, error, isLoading } = useDownloadPlayDataJsonQuery(replayId);
 
   useEffect(() => {
     if (userId === result.user_id) {
-      gameStateRef.current!.practice.hasMyRankingData = true;
+      gameStateRef.current!.practice.myResultId = result.id;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -142,7 +139,6 @@ const RankingTr = (props: RankingTrProps) => {
           setHoveredIndex={props.setHoveredIndex}
           clapOptimisticState={clapOptimisticState}
           toggleClapAction={toggleClapAction}
-          setReplayId={setReplayId}
         />
       )}
     </>

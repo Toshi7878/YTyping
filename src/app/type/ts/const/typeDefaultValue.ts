@@ -44,7 +44,7 @@ export const DEFAULT_GAME_STATE_REF: GameStateRef = {
     userName: "",
   },
   practice: {
-    hasMyRankingData: false,
+    myResultId: null,
   },
 };
 
