@@ -1,7 +1,7 @@
 import CustomDrawerContent from "@/components/custom-ui/CustomDrawerContent";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { useSetOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
-import { useActiveUsersRoom } from "@/lib/global-hooks/useActiveUsersRoom";
+import { supabase } from "@/lib/supabaseClient";
 import { ThemeColors } from "@/types";
 import { UserStatus } from "@/types/global-types";
 import { Box, Drawer, useDisclosure, useTheme } from "@chakra-ui/react";
@@ -21,12 +21,18 @@ export default function ActiveUsers() {
 
   const { data: session } = useSession();
   const setOnlineUsers = useSetOnlineUsersAtom();
-  const activeUsersRoom = useActiveUsersRoom();
   const pathname = usePathname();
   const { id: mapId } = useParams();
   useEffect(() => {
     if (!session?.user?.name) return;
-    const roomOne = activeUsersRoom(session.user.id);
+
+    const roomOne = supabase.channel("active_users_room", {
+      config: {
+        presence: {
+          key: session?.user?.id,
+        },
+      },
+    });
 
     roomOne
       .on("presence", { event: "sync" }, () => {
@@ -74,7 +80,7 @@ export default function ActiveUsers() {
       roomOne.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [pathname]);
 
   return (
     <>
