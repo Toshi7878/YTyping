@@ -63,7 +63,7 @@ export default function ActiveUsers() {
         }
 
         const isType = pathname.match("/type/");
-        const isEdit = pathname.match("/edit/");
+        const isEdit = pathname.match("/edit");
 
         const userStatus: UserStatus = {
           id: Number(session.user.id),
