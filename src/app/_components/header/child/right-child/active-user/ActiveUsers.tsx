@@ -100,7 +100,7 @@ export default function ActiveUsers() {
       </CustomToolTip>
 
       <Drawer isOpen={isOpen} placement="right" onClose={nofityDrawerClose}>
-        <CustomDrawerContent width={{ base: "400px", lg: "400px" }}>
+        <CustomDrawerContent width={{ base: "auto", lg: "400px" }}>
           <ActiveUsersInnerContent />
         </CustomDrawerContent>
       </Drawer>
