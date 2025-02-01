@@ -23,6 +23,7 @@ export default function ActiveUsers() {
   const setOnlineUsers = useSetOnlineUsersAtom();
   const pathname = usePathname();
   const { id: mapId } = useParams();
+
   useEffect(() => {
     if (!session?.user?.name) return;
 
@@ -55,7 +56,7 @@ export default function ActiveUsers() {
         }
       )
       .on("presence", { event: "leave" }, ({ key }: { key: string }) => {
-        setOnlineUsers((prev) => [...prev.filter((user) => user.id.toString() === key)]);
+        setOnlineUsers((prev) => prev.filter((user) => user.id.toString() !== key));
       })
       .subscribe(async (status) => {
         if (status !== "SUBSCRIBED" || !session?.user?.name) {
@@ -76,7 +77,39 @@ export default function ActiveUsers() {
         await roomOne.track(userStatus);
       });
 
+    // 一定時間操作がなかった場合にunsubscribeするためのタイマー
+    let inactivityTimer: number;
+
+    // 操作が行われたらタイマーをリセットする処理
+    const resetInactivityTimer = () => {
+      if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+      }
+      inactivityTimer = window.setTimeout(() => {
+        console.log("一定時間操作がなかったので unsubscribe を実行します");
+        roomOne.unsubscribe();
+        removeActivityListeners();
+      }, 60 * 10000);
+    };
+
+    // イベントリスナーの登録
+    const activityEvents = ["mousemove", "keydown", "click", "scroll"];
+    const addActivityListeners = () => {
+      activityEvents.forEach((event) => window.addEventListener(event, resetInactivityTimer));
+    };
+
+    const removeActivityListeners = () => {
+      activityEvents.forEach((event) => window.removeEventListener(event, resetInactivityTimer));
+    };
+
+    addActivityListeners();
+    resetInactivityTimer();
+
     return () => {
+      removeActivityListeners();
+      if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+      }
       roomOne.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
