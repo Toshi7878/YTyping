@@ -97,6 +97,13 @@ export async function GET(req: NextRequest) {
       '[]'::json
     )
       ) as "map",
+     (
+         SELECT "is_claped"
+         FROM result_claps
+         WHERE result_claps."result_id" = results."id"
+         AND result_claps."user_id" = ${userId}
+         LIMIT 1
+       ) as "hasClap",
       json_build_object(
         'id', "Player"."id",
         'name', "Player"."name"
