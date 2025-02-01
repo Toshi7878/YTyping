@@ -27,7 +27,7 @@ const ResultUserName = (props: ResultUserNameProps) => {
           >
             {result.player.name}
           </Link>{" "}
-          - <DateDistanceText date={result.updated_at} />
+          - <DateDistanceText date={new Date(result.updated_at)} />
         </>
       ) : (
         ""

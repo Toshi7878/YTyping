@@ -80,7 +80,7 @@ const NotifyDrawerInnerContent = () => {
                           </NotificationMapCardRightInfo>
                         </NotificationMapCard>
                         <Box textAlign="end" color={`${theme.colors.text.body}cc`}>
-                          <DateDistanceText date={notify.created_at} />
+                          <DateDistanceText date={new Date(notify.created_at)} />
                         </Box>
                       </Box>
                     </Box>

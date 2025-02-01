@@ -125,7 +125,7 @@ const RankingTr = (props: RankingTrProps) => {
             />
           </Td>
           <Td width={RANKING_COLUMN_WIDTH.updatedAt}>
-            <DateDistanceText date={result.updated_at} />
+            <DateDistanceText date={new Date(result.updated_at)} />
           </Td>
           <Td width={RANKING_COLUMN_WIDTH.clapCount} alignItems="center">
             <ClapedText clapOptimisticState={clapOptimisticState} />

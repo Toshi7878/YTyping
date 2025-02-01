@@ -22,12 +22,21 @@ const ActiveUsersInnerContent = () => {
 
           return (
             <Tr key={user.id} gap={2}>
-              <Td isTruncated>
-                <Link href={`/user/${user.id}`}>{user.name}</Link>
+              <Td isTruncated w="full">
+                <Link
+                  href={`/user/${user.id}`}
+                  w="full"
+                  display="block"
+                  _hover={{ textDecoration: "none", bg: "gray.100" }}
+                >
+                  {user.name}
+                </Link>
               </Td>
               <Td isTruncated>
                 {user.state === "type" ? (
-                  <Link href={`/type/${user.mapId}`}>{stateMsg}</Link>
+                  <Link href={`/type/${user.mapId}`} w="full" display="block">
+                    {stateMsg}
+                  </Link>
                 ) : (
                   stateMsg
                 )}

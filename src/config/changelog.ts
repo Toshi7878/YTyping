@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2025-2-1",
-    descriptions: ["アクティブユーザープレセンス追加"],
+    descriptions: ["アクティブユーザープレセンス(仮)追加"],
   },
   {
     date: "2025-1-28",

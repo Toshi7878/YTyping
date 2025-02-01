@@ -19,7 +19,7 @@ const DateDistanceText = ({ date, text, addSuffix = true }: DateDistanceTextProp
       overflow="hidden"
       textOverflow="ellipsis"
     >
-      {formatDistanceToNowStrict(new Date(date), { addSuffix, locale: ja })}
+      {formatDistanceToNowStrict(date, { addSuffix, locale: ja })}
       {text && text}
     </Text>
   );
