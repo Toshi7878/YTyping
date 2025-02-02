@@ -37,8 +37,8 @@ const ActiveUsersInnerContent = () => {
     >
       <Thead>
         <Tr fontSize="sm">
-          <Td w="28%">名前</Td>
-          <Td w="72%">プレイ中譜面</Td>
+          <Td w="25%">名前</Td>
+          <Td w="75%">プレイ中譜面</Td>
         </Tr>
       </Thead>
       <Tbody>
