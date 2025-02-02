@@ -8,13 +8,14 @@ declare type YouTubeEvent<T = any> = {
   target: YTPlayer;
 };
 
-export interface UserStatus {
+export interface ActiveUserStatus {
   id: number;
   name: string;
   onlineAt: Date;
   state: "type" | "edit" | "idle" | "askMe";
   mapId: number | null;
 }
+
 export interface YTPlayer {
   addEventListener(event: string, listener: (event: CustomEvent) => void): Promise<void>;
   destroy(): Promise<void>;

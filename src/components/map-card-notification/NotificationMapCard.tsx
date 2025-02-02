@@ -5,11 +5,11 @@ import { CardBody, CardHeader, useTheme } from "@chakra-ui/react";
 import CustomMapCard from "../custom-ui/CustomMapCard";
 import UserLinkText from "../custom-ui/UserLinkText";
 
-interface MapCardProps {
+interface NotificationMapCardProps {
   notify: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number];
   children: React.ReactNode;
 }
-function NotificationMapCard({ notify, children }: MapCardProps) {
+function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
   const theme: ThemeColors = useTheme();
 
   return (

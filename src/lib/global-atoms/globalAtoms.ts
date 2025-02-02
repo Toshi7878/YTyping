@@ -1,6 +1,6 @@
 import { DEFAULT_VOLUME } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { UserStatus } from "@/types/global-types";
+import { ActiveUserStatus } from "@/types/global-types";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage } from "jotai/utils";
 const globalAtomStore = createStore();
@@ -53,7 +53,7 @@ export const useSetPreviewSpeedAtom = () => {
   return useSetAtom(previewSpeedAtom, { store: globalAtomStore });
 };
 
-const onlineUsersAtom = atom<UserStatus[]>([]);
+const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 
 export const useOnlineUsersAtom = () => {
   return useAtomValue(onlineUsersAtom, { store: globalAtomStore });

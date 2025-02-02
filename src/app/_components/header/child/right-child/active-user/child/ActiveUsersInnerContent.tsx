@@ -1,62 +1,94 @@
-import DateDistanceText from "@/components/custom-ui/DateDistanceText";
+import ActiveUserMapCard from "@/components/map-card-notification/ActiveUserMapCard";
+import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
+import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
+import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import {
+  ACTIVE_USER_MAP_THUBNAIL_HEIGHT,
+  ACTIVE_USER_MAP_THUBNAIL_WIDTH,
+} from "@/config/consts/globalConst";
 import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
+import { clientApi } from "@/trpc/client-api";
+import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
-import { Table, Tbody, Td, Thead, Tr } from "@chakra-ui/react";
+import { Table, Tbody, Td, Thead, Tr, useTheme } from "@chakra-ui/react";
 
 const ActiveUsersInnerContent = () => {
   const onlineUsers = useOnlineUsersAtom();
+  const { data: mapedActiveUserList, isLoading } =
+    clientApi.activeUser.getUserPlayingMaps.useQuery(onlineUsers);
+  const theme: ThemeColors = useTheme();
+
+  if (isLoading) {
+    return;
+  }
   return (
-    <Table>
+    <Table
+      style={{ tableLayout: "fixed" }}
+      sx={{
+        td: {
+          border: "none",
+          borderBottom: "1px",
+          borderColor: `${theme.colors.border.card}30`,
+        },
+        th: {
+          paddingY: { base: "1.3rem", md: "6px" },
+        },
+      }}
+    >
       <Thead>
-        <Tr>
-          <Td>名前</Td>
-          <Td>状態</Td>
-          <Td>曲名</Td>
-          <Td>時間</Td>
+        <Tr fontSize="sm">
+          <Td w="28%">名前</Td>
+          <Td w="72%">プレイ中譜面</Td>
         </Tr>
       </Thead>
       <Tbody>
-        {onlineUsers.map((user) => {
-          const stateMsg =
-            user.state === "askMe"
-              ? "Ask Me"
-              : user.state === "type"
-              ? "プレイ中"
-              : user.state === "edit"
-              ? "譜面編集中"
-              : "待機中";
+        {mapedActiveUserList &&
+          mapedActiveUserList.map((user) => {
+            const stateMsg =
+              user.state === "askMe"
+                ? "Ask Me"
+                : user.state === "type"
+                ? "プレイ中"
+                : user.state === "edit"
+                ? "譜面編集中"
+                : "待機中";
 
-          return (
-            <Tr key={user.id} gap={2}>
-              <Td isTruncated w="full">
-                <Link
-                  href={`/user/${user.id}`}
-                  w="full"
-                  display="block"
-                  _hover={{ textDecoration: "none", bg: "gray.100" }}
-                >
-                  {user.name}
-                </Link>
-              </Td>
-              <Td isTruncated>
-                {user.state === "type" ? (
-                  <Link href={`/type/${user.mapId}`} w="full" display="block">
-                    {stateMsg}
+            return (
+              <Tr key={user.id}>
+                <Td isTruncated paddingY={0} paddingX={0}>
+                  <Link
+                    href={`/user/${user.id}`}
+                    display="block"
+                    fontSize="sm"
+                    paddingY="1rem"
+                    paddingX="0.75rem"
+                  >
+                    {user.name}
                   </Link>
-                ) : (
-                  stateMsg
-                )}
-              </Td>
-              <Td>
-                {user.state === "type" && <Link href={`/type/${user.mapId}`}>{user.mapId}</Link>}
-              </Td>
-              <Td>
-                <DateDistanceText date={new Date(user.onlineAt)} addSuffix={false} />
-              </Td>
-            </Tr>
-          );
-        })}
-        <Tr></Tr>
+                </Td>
+                <Td paddingY={0} paddingX={0}>
+                  {user.state === "type" && user.map ? (
+                    <ActiveUserMapCard>
+                      <MapLeftThumbnail
+                        alt={user.map.title}
+                        fallbackSrc={`https://i.ytimg.com/vi/${user.map.video_id}/mqdefault.jpg`}
+                        mapVideoId={user.map.video_id}
+                        mapPreviewTime={user.map.preview_time}
+                        thumbnailQuality={user.map.thumbnail_quality}
+                        thumnailWidth={ACTIVE_USER_MAP_THUBNAIL_WIDTH}
+                        thumnailHeight={ACTIVE_USER_MAP_THUBNAIL_HEIGHT}
+                      />
+                      <NotificationMapCardRightInfo>
+                        <NotificationMapInfo map={user.map} />
+                      </NotificationMapCardRightInfo>
+                    </ActiveUserMapCard>
+                  ) : (
+                    stateMsg
+                  )}
+                </Td>
+              </Tr>
+            );
+          })}
       </Tbody>
     </Table>
   );

@@ -3,7 +3,7 @@ import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { useSetOnlineUsersAtom, useUserOptionsAtom } from "@/lib/global-atoms/globalAtoms";
 import { supabase } from "@/lib/supabaseClient";
 import { ThemeColors } from "@/types";
-import { UserStatus } from "@/types/global-types";
+import { ActiveUserStatus } from "@/types/global-types";
 import { Box, Drawer, useDisclosure, useTheme } from "@chakra-ui/react";
 import { Users } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -44,7 +44,7 @@ export default function ActiveUsers() {
           ? "edit"
           : "idle";
 
-      const userStatus: UserStatus = {
+      const userStatus: ActiveUserStatus = {
         id: Number(session.user.id),
         name: session.user.name,
         onlineAt: new Date(),
@@ -63,7 +63,7 @@ export default function ActiveUsers() {
       });
 
       channel.on("presence", { event: "sync" }, () => {
-        const newState = channel.presenceState<UserStatus>();
+        const newState = channel.presenceState<ActiveUserStatus>();
         const users = Object.keys(newState).map((key) => {
           const [userData] = newState[key];
           return {
@@ -80,7 +80,7 @@ export default function ActiveUsers() {
       channel.on(
         "presence",
         { event: "join" },
-        ({ key, newPresences }: { key: string; newPresences: UserStatus[] }) => {
+        ({ key, newPresences }: { key: string; newPresences: ActiveUserStatus[] }) => {
           console.log("join", key, newPresences);
           setOnlineUsers((prev) => [...prev, ...newPresences]);
         }
@@ -158,7 +158,7 @@ export default function ActiveUsers() {
         </Box>
       </CustomToolTip>
 
-      <Drawer isOpen={isOpen} placement="right" onClose={nofityDrawerClose}>
+      <Drawer isOpen={isOpen} placement="right" onClose={nofityDrawerClose} autoFocus={false}>
         <CustomDrawerContent width={{ base: "auto", lg: "400px" }}>
           <ActiveUsersInnerContent />
         </CustomDrawerContent>
