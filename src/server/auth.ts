@@ -85,7 +85,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         });
         if (dbUser) {
           token.uid = dbUser.id.toString();
-          token.email_hash = dbUser.email_hash;
+          token.email_hash = email_hash;
         }
 
         token.name = dbUser?.name ?? null;
