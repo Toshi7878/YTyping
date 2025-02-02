@@ -30,6 +30,10 @@ const ActiveUsersInnerContent = () => {
           borderBottom: "1px",
           borderColor: `${theme.colors.border.card}30`,
         },
+        "tbody td": {
+          paddingX: 0,
+          paddingY: 2,
+        },
       }}
     >
       <Thead>
@@ -59,7 +63,7 @@ const ActiveUsersInnerContent = () => {
 
             return (
               <Tr key={user.id}>
-                <Td isTruncated paddingY={0} paddingX={0}>
+                <Td>
                   <Link
                     href={`/user/${user.id}`}
                     display="block"
@@ -70,7 +74,7 @@ const ActiveUsersInnerContent = () => {
                     {user.name}
                   </Link>
                 </Td>
-                <Td paddingY={0} paddingX={0}>
+                <Td>
                   {user.state === "type" && user.map ? (
                     <ActiveUserMapCard>
                       <MapLeftThumbnail
@@ -89,7 +93,7 @@ const ActiveUsersInnerContent = () => {
                   ) : (
                     <ActiveUserMapCard>
                       <MapLeftThumbnail
-                        thumnailWidth={{ base: 0 }}
+                        thumnailWidth={ACTIVE_USER_MAP_THUBNAIL_WIDTH}
                         thumnailHeight={ACTIVE_USER_MAP_THUBNAIL_HEIGHT}
                       />
                       <Flex position="absolute" top="50%" transform="translateY(-50%)" left="20px">
