@@ -1,4 +1,5 @@
 "use client";
+import { MapData } from "@/app/type/ts/type";
 import { db } from "@/lib/db";
 import { clientApi } from "@/trpc/client-api";
 import { IndexDBOption } from "@/types";
@@ -45,15 +46,16 @@ function Content() {
   const setDirectEditCountAtom = useSetDirectEditCountAtom();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
   const { id: mapId } = useParams();
-  const { data, isLoading } = clientApi.map.getMap.useQuery({ mapId: mapId as string });
+  const { data, isLoading } = clientApi.map.getMap.useQuery<MapData[]>({ mapId: mapId as string });
   const utils = clientApi.useUtils();
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       dispatch(setMapData(data));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isLoading]);
+  }, [data]);
 
   useEffect(() => {
     setIsYTStarted(false);
@@ -66,6 +68,7 @@ function Content() {
     if (!mapId) {
       //新規作成譜面に移動したら初期化
       dispatch(resetUndoRedoData());
+      dispatch(resetMapData());
     }
 
     if (isBackUp) {
@@ -78,7 +81,6 @@ function Content() {
         });
       setCanUpload(true);
     } else {
-      dispatch(resetMapData());
       setCanUpload(false);
     }
 
