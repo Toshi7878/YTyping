@@ -10,7 +10,7 @@ import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
-import { Flex, Table, Tbody, Td, Thead, Tr, useTheme } from "@chakra-ui/react";
+import { Badge, Flex, Table, Tbody, Td, Text, Thead, Tr, useTheme } from "@chakra-ui/react";
 
 const ActiveUsersInnerContent = () => {
   const onlineUsers = useOnlineUsersAtom();
@@ -35,7 +35,10 @@ const ActiveUsersInnerContent = () => {
       <Thead>
         <Tr fontSize="sm">
           <Td w="25%" paddingY="1rem" paddingX="0.75rem">
-            ユーザー ({onlineUsers.length}人)
+            <Flex alignItems="baseline" gap={1} whiteSpace="nowrap">
+              <Text as="span">ユーザー</Text>
+              <Badge size="sm">{onlineUsers.length}人</Badge>
+            </Flex>
           </Td>
           <Td w="75%" paddingY={0} paddingX={"20px"}>
             プレイ中譜面
