@@ -30,6 +30,7 @@ function NotificationMapInfo({ map }: MapCardProps) {
             map.music_source ? `【${map.music_source}】` : ""
           }`}
           placement="top"
+          right={12}
         >
           <Box
             color={theme.colors.secondary.main}

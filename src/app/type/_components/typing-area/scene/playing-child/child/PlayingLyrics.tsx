@@ -1,5 +1,6 @@
 import { useLyricsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { Box } from "@chakra-ui/react";
+import parse from "html-react-parser";
 
 const PlayingLyrics = () => {
   const lyrics = useLyricsAtom();
@@ -9,13 +10,12 @@ const PlayingLyrics = () => {
       fontWeight="bold"
       fontSize={{ base: "5rem", sm: "4rem", md: "2.75rem" }}
       id="lyrics"
-      ml={-8}
+      ml={1}
       width="103%"
-      className={"-inset-5 lyrics-font"}
-      dangerouslySetInnerHTML={{
-        __html: `<ruby class="invisible">あ<rt>あ<rt></ruby>${lyrics}`,
-      }}
-    />
+      className={"lyrics-font"}
+    >
+      {parse(`${lyrics}<ruby class="invisible">あ<rt>あ<rt></ruby>`)}
+    </Box>
   );
 };
 

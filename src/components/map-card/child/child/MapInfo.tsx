@@ -31,6 +31,7 @@ function MapInfo({ map }: MapInfoProps) {
             map.music_source ? `【${map.music_source}】` : ""
           }`}
           placement="top"
+          right={24}
         >
           <Box
             color={theme.colors.secondary.main}

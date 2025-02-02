@@ -21,6 +21,7 @@ function MapInfo({ map, isToggledInputMode, ...rest }: MapCardProps) {
           map.music_source ? `【${map.music_source}】` : ""
         }`}
         placement="top"
+        right={19}
       >
         <Link
           href={`/type/${map.id}`}
