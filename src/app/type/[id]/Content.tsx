@@ -90,8 +90,8 @@ function Content({ mapInfo }: ContentProps) {
 
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
-      utils.map.getMap.invalidate();
-      utils.ranking.getMapRanking.invalidate();
+      utils.map.getMap.invalidate({ mapId: mapId as string });
+      utils.ranking.getMapRanking.invalidate({ mapId: Number(mapId) });
       setMap(null);
       setScene(RESET);
       setNotify(RESET);

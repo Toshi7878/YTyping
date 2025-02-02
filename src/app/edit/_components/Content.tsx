@@ -87,7 +87,7 @@ function Content() {
       setWord("");
       setDirectEditCountAtom(null);
       if (mapId) {
-        utils.map.getMap.invalidate();
+        utils.map.getMap.invalidate({ mapId: mapId as string });
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
