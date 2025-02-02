@@ -59,7 +59,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
   };
 
   return (
-    <Box zIndex={2} position="fixed" bottom={{ base: 2, lg: 5 }} right={{ base: 2, lg: 5 }}>
+    <Box zIndex={9999} position="fixed" bottom={{ base: 2, lg: 5 }} right={{ base: 2, lg: 5 }}>
       <YouTube
         id="preview_youtube"
         videoId={videoId}
