@@ -152,7 +152,7 @@ export default function ActiveUsers() {
           cursor="pointer"
           onClick={onOpen}
         >
-          <Box position="relative" top="0.5px" boxShadow="xl">
+          <Box position="relative" top="0.5px" boxShadow="xl" p={2}>
             <Users size={18} strokeWidth={2.5} />
           </Box>
         </Box>

@@ -23,6 +23,7 @@ function LeftMenus() {
           fontSize="sm"
           _active={{ color: theme.colors.text.header.hover }}
           userSelect="none"
+          p={2}
         >
           Menu
         </MenuButton>
@@ -45,7 +46,7 @@ function LeftMenus() {
             }}
             fontSize="sm"
             _active={{ color: theme.colors.text.header.hover }}
-            ml={5}
+            p={2}
             onClick={handleLinkClick}
             userSelect="none"
           >

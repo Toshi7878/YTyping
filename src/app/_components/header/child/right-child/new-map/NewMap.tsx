@@ -20,6 +20,7 @@ export default function NewMap() {
           }}
           cursor="pointer"
           onClick={newCreateModalDisclosure.onOpen}
+          p={2}
         >
           <RiAddBoxFill size={20} />
         </Box>

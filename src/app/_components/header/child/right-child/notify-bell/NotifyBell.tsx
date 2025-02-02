@@ -57,6 +57,7 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
             _hover={{
               color: theme.colors.text.header.hover,
             }}
+            p={2}
           >
             {isNewBadge ? (
               <BellDot size={18} strokeWidth={2.5} />

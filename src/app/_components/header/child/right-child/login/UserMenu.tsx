@@ -19,6 +19,7 @@ export default function UserMenu() {
         }}
         _active={{ color: theme.colors.text.header.hover }}
         className="dropdown-toggle"
+        p={2}
       >
         {session?.user?.name ? session?.user?.name : "名前未設定"}
       </MenuButton>

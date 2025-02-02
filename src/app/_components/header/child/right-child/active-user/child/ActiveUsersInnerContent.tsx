@@ -73,6 +73,7 @@ const ActiveUsersInnerContent = () => {
                     fontSize="sm"
                     paddingY="1rem"
                     paddingX="0.75rem"
+                    isTruncated
                   >
                     {user.name}
                   </Link>

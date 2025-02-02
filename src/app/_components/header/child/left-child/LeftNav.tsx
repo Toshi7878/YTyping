@@ -9,7 +9,7 @@ function LeftNav() {
   const { data: session } = useSession();
 
   return (
-    <Flex gap={10} alignItems="center">
+    <Flex gap={6} alignItems="center">
       <SiteLogo />
       {(!session || session.user?.name) && <LeftMenus />}
     </Flex>

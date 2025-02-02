@@ -51,9 +51,7 @@ function Content({ mapInfo }: ContentProps) {
   const setLineResults = useSetLineResultsAtom();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
   const setTimeOffset = useSetTimeOffsetAtom();
-  const { data: mapData, isLoading } = clientApi.map.getMap.useQuery<MapData[]>({
-    mapId: mapId as string,
-  });
+  const { mutate, isPending } = clientApi.map.getMap.useMutation<MapData[]>();
   const isLoadingOverlay = useIsLoadingOverlayAtom();
   const disableKeyHandle = useDisableKeyHandle();
   const { resetStatusValues } = useSetStatusAtoms();
@@ -67,18 +65,6 @@ function Content({ mapInfo }: ContentProps) {
   const { totalProgressRef } = useRefs();
 
   useEffect(() => {
-    if (mapData) {
-      const map = new CreateMap(mapData);
-      setMap(map);
-      setLineResults(map.defaultLineResultData);
-      setStatusValues({ line: map.lineLength });
-      setLineSelectIndex(map.typingLineNumbers[0]);
-      totalProgressRef.current!.max = map.movieTotalTime;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapData]);
-
-  useEffect(() => {
     if (scene === "ready" && layoutMode) {
       setStartedYTLayoutMode(layoutMode as "column" | "row");
     }
@@ -86,11 +72,23 @@ function Content({ mapInfo }: ContentProps) {
   }, [layoutMode]);
 
   useEffect(() => {
+    mutate(
+      { mapId: mapId as string },
+      {
+        onSuccess: (mapData: MapData[]) => {
+          const map = new CreateMap(mapData);
+          setMap(map);
+          setLineResults(map.defaultLineResultData);
+          setStatusValues({ line: map.lineLength });
+          setLineSelectIndex(map.typingLineNumbers[0]);
+          totalProgressRef.current!.max = map.movieTotalTime;
+        },
+      }
+    );
     window.addEventListener("keydown", disableKeyHandle);
 
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
-      utils.map.getMap.invalidate({ mapId: mapId as string });
       utils.ranking.getMapRanking.invalidate({ mapId: Number(mapId) });
       setMap(null);
       setScene(RESET);
@@ -140,7 +138,7 @@ function Content({ mapInfo }: ContentProps) {
 
                   <TypeYouTubeContent
                     className="w-[513px]"
-                    isMapLoading={isLoading}
+                    isMapLoading={isPending}
                     videoId={video_id}
                   />
                 </Box>
@@ -156,7 +154,7 @@ function Content({ mapInfo }: ContentProps) {
             {ytLayoutMode === "column" && (
               <Box mt={5} position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
-                <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
+                <TypeYouTubeContent isMapLoading={isPending} videoId={video_id} />
               </Box>
             )}
           </Flex>

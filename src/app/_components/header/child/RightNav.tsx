@@ -16,7 +16,7 @@ export default function RightNav({ display, isNewNotification }: RightNavProps) 
   const { data: session } = useSession();
 
   return (
-    <Flex display={display} alignItems={"center"} gap={5}>
+    <Flex display={display} alignItems={"center"} gap={3}>
       {session?.user?.name && (
         <>
           <ActiveUsers />

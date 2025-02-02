@@ -46,16 +46,7 @@ function Content() {
   const setDirectEditCountAtom = useSetDirectEditCountAtom();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
   const { id: mapId } = useParams();
-  const { data, isLoading } = clientApi.map.getMap.useQuery<MapData[]>({ mapId: mapId as string });
-  const utils = clientApi.useUtils();
-
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-      dispatch(setMapData(data));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  const { mutate, isPending } = clientApi.map.getMap.useMutation();
 
   useEffect(() => {
     setIsYTStarted(false);
@@ -64,11 +55,18 @@ function Content() {
     setSelectedCount(null);
     setTimeCount(0);
     setIsMapDataEdited(false);
+    dispatch(resetMapData());
+    dispatch(resetUndoRedoData());
 
-    if (!mapId) {
-      //新規作成譜面に移動したら初期化
-      dispatch(resetUndoRedoData());
-      dispatch(resetMapData());
+    if (mapId) {
+      mutate(
+        { mapId: mapId as string },
+        {
+          onSuccess: (mapData: MapData[]) => {
+            dispatch(setMapData(mapData));
+          },
+        }
+      );
     }
 
     if (isBackUp) {
@@ -88,9 +86,6 @@ function Content() {
       setLyrics("");
       setWord("");
       setDirectEditCountAtom(null);
-      if (mapId) {
-        utils.map.getMap.invalidate({ mapId: mapId as string });
-      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId, newVideoId]);
@@ -119,7 +114,7 @@ function Content() {
           <TimeRange />
         </Box>
         <Box as="section" width="100%" mt={0}>
-          <EditTable mapLoading={isLoading} />
+          <EditTable mapLoading={isPending} />
         </Box>
       </Box>
       <ColorStyle />
