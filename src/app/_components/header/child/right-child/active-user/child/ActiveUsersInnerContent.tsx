@@ -96,7 +96,12 @@ const ActiveUsersInnerContent = () => {
                         thumnailWidth={ACTIVE_USER_MAP_THUBNAIL_WIDTH}
                         thumnailHeight={ACTIVE_USER_MAP_THUBNAIL_HEIGHT}
                       />
-                      <Flex position="absolute" top="50%" transform="translateY(-50%)" left="20px">
+                      <Flex
+                        position="absolute"
+                        top="50%"
+                        transform="translateY(-50%)"
+                        left="32.5px"
+                      >
                         {stateMsg}
                       </Flex>
                     </ActiveUserMapCard>
