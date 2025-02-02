@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-2-2",
+    descriptions: ["ユーザー設定ページに自分のアクティブを隠す設定を追加"],
+  },
+  {
     date: "2025-2-1",
     descriptions: ["アクティブユーザープレゼンス(仮)追加"],
   },
