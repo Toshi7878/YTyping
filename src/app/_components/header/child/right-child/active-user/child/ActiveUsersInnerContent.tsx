@@ -30,15 +30,16 @@ const ActiveUsersInnerContent = () => {
           borderBottom: "1px",
           borderColor: `${theme.colors.border.card}30`,
         },
-        th: {
-          paddingY: { base: "1.3rem", md: "6px" },
-        },
       }}
     >
       <Thead>
         <Tr fontSize="sm">
-          <Td w="25%">名前</Td>
-          <Td w="75%">プレイ中譜面</Td>
+          <Td w="25%" paddingY="1rem" paddingX="0.75rem">
+            名前
+          </Td>
+          <Td w="75%" paddingY={0} paddingX={"20px"}>
+            プレイ中譜面
+          </Td>
         </Tr>
       </Thead>
       <Tbody>
@@ -88,7 +89,7 @@ const ActiveUsersInnerContent = () => {
                         thumnailWidth={{ base: 0 }}
                         thumnailHeight={ACTIVE_USER_MAP_THUBNAIL_HEIGHT}
                       />
-                      <Flex position="absolute" top="50%" transform="translateY(-50%)" left="25px">
+                      <Flex position="absolute" top="50%" transform="translateY(-50%)" left="20px">
                         {stateMsg}
                       </Flex>
                     </ActiveUserMapCard>
