@@ -36,7 +36,7 @@ const MapLeftThumbnail = (props: MapLeftThumbnailProps) => {
   const width = useBreakpointValue(thumnailWidth, { ssr: false }) || 100; // ここを変更
   const height = useBreakpointValue(thumnailHeight, { ssr: false }) || 100; // ここを変更
   return (
-    <Box position="relative" m="auto" className="group select-none" {...rest}>
+    <Box position="relative" my="auto" className="group select-none" {...rest}>
       {src || fallbackSrc ? (
         <Image
           loader={({ src }) => src}

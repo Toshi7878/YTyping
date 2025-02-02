@@ -10,7 +10,7 @@ import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
-import { Table, Tbody, Td, Thead, Tr, useTheme } from "@chakra-ui/react";
+import { Flex, Table, Tbody, Td, Thead, Tr, useTheme } from "@chakra-ui/react";
 
 const ActiveUsersInnerContent = () => {
   const onlineUsers = useOnlineUsersAtom();
@@ -83,7 +83,15 @@ const ActiveUsersInnerContent = () => {
                       </NotificationMapCardRightInfo>
                     </ActiveUserMapCard>
                   ) : (
-                    stateMsg
+                    <ActiveUserMapCard>
+                      <MapLeftThumbnail
+                        thumnailWidth={{ base: 0 }}
+                        thumnailHeight={ACTIVE_USER_MAP_THUBNAIL_HEIGHT}
+                      />
+                      <Flex position="absolute" top="50%" transform="translateY(-50%)" left="25px">
+                        {stateMsg}
+                      </Flex>
+                    </ActiveUserMapCard>
                   )}
                 </Td>
               </Tr>
