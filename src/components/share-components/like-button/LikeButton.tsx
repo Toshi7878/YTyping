@@ -42,7 +42,7 @@ export const LikeButton = ({
     >
       <div
         className={clsx(
-          `like-base-64 absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center rounded-full`,
+          `like-base-64 absolute inset-0 flex items-center justify-center rounded-full`
         )}
         style={{
           width: `${size}px`,
@@ -56,7 +56,7 @@ export const LikeButton = ({
         <Heart
           className={clsx(
             isLiked ? "fill-pink-400 text-pink-400" : "fill-transparent",
-            clicked ? (isLiked ? "like-animation" : "like-animation-end") : "",
+            clicked ? (isLiked ? "like-animation" : "like-animation-end") : ""
           )}
           size={Math.floor(size / 2)}
           strokeWidth={2.5}

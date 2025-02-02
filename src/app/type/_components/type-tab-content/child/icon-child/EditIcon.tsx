@@ -24,13 +24,15 @@ const EditIcon = () => {
     Number(userId) !== creatorId && role === "USER" ? "(閲覧のみ)" : ""
   }`;
   return (
-    <CustomToolTip label={tooltipLabel} placement="top">
+    <CustomToolTip label={tooltipLabel} placement="top" right={1} top={1}>
       <Box height="60px" display="flex" alignItems="center">
         <Link
           href={`/edit/${mapId}`}
           onClick={handleLinkClick}
           _hover={{ color: theme.colors.text.body }}
           cursor="pointer"
+          pr={3}
+          pl={0.5}
         >
           <BiEdit size={iconSize} />
         </Link>

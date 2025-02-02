@@ -34,7 +34,7 @@ const LikeIcon = () => {
   const [state, formAction] = useFormState(toggleLikeAction, INITIAL_STATE);
   const iconSize = useBreakpointValue({ base: 120, md: 62 });
   return (
-    <CustomToolTip label="譜面にいいね" placement="top">
+    <CustomToolTip label="譜面にいいね" placement="top" top={1}>
       <Box as="form" action={formAction} _hover={{ color: theme.colors.text.body }}>
         <LikeButton size={iconSize} defaultLiked={hasLocalLikeAtom} />
       </Box>

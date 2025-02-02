@@ -18,9 +18,8 @@ export default function TabIcons() {
       <Box
         position="absolute"
         top={{ base: "-20px", md: "-20px" }}
-        right="5px"
+        right="-10px"
         color={`${theme.colors.text.body}99`}
-        width="100px"
       >
         <Flex alignItems="center" justifyContent="flex-end">
           {session?.user.id ? <SettingIcon setIsCardVisible={setIsCardVisible} /> : null}

@@ -13,7 +13,7 @@ const SettingIcon = ({ setIsCardVisible }: SettingIconProps) => {
   const iconSize = useBreakpointValue({ base: 72, md: 36 });
 
   return (
-    <CustomToolTip label="設定" placement="top">
+    <CustomToolTip label="設定" placement="top" left={1} top={1}>
       <Box
         height="60px"
         display="flex"
@@ -21,6 +21,8 @@ const SettingIcon = ({ setIsCardVisible }: SettingIconProps) => {
         alignItems="center"
         cursor="pointer"
         id="option_icon"
+        pl={3}
+        pr={1}
         onClick={() => setIsCardVisible((prev) => !prev)}
       >
         <IoMdSettings size={iconSize} />
