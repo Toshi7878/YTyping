@@ -13,7 +13,7 @@ export const useDebounce = (timeout: number): Debounce => {
         fn();
       }, timeout);
     },
-    [timeout],
+    [timeout]
   );
   return debounce;
 };

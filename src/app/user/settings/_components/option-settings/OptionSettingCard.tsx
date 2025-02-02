@@ -1,18 +1,23 @@
 import CustomCard from "@/components/custom-ui/CustomCard";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { CardBody, CardFooter, CardHeader, Flex, Heading } from "@chakra-ui/react";
-import { UpdateNameForm } from "../../../_components/UpdateNameForm";
+import { OptionSettingForm } from "./child/OptionSettingForm";
 
-const ProfileSettingCard = () => {
+interface OptionSettingCardProps {
+  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
+}
+
+const OptionSettingCard = ({ userOptions }: OptionSettingCardProps) => {
   return (
     <CustomCard>
       <CardHeader mx={8}>
         <Heading as="h3" size="md">
-          プロフィール設定
+          ユーザー設定
         </Heading>
       </CardHeader>
       <CardBody mx={8}>
         <Flex width="100%">
-          <UpdateNameForm />
+          <OptionSettingForm userOptions={userOptions} />
         </Flex>
       </CardBody>
       <CardFooter mx={8} />
@@ -20,4 +25,4 @@ const ProfileSettingCard = () => {
   );
 };
 
-export default ProfileSettingCard;
+export default OptionSettingCard;

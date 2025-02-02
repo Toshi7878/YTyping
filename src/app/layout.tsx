@@ -11,6 +11,7 @@ import type { Metadata } from "next";
 import PreviewYouTubeContent from "@/app/_components/PreviewYouTubeContent";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
+import { serverApi } from "@/trpc/server";
 import { SessionProvider } from "next-auth/react";
 import GlobalProvider from "./_components/global-provider/GlobalProvider";
 import ThemeProvider from "./_components/global-provider/ThemeProvider";
@@ -28,6 +29,7 @@ export default async function RootLayout({
   const cookiesList = cookies();
   const colorMode = cookiesList.get("chakra-ui-color-mode");
   const session = await auth();
+  const userOptions = await serverApi.userOption.getUserOptions();
 
   return (
     <html lang="ja">
@@ -37,7 +39,7 @@ export default async function RootLayout({
           <SessionProvider session={session}>
             <TRPCProvider>
               <Header session={session} />
-              <GlobalProvider>
+              <GlobalProvider userOptions={userOptions}>
                 {children}
                 <PreviewYouTubeContent />
               </GlobalProvider>

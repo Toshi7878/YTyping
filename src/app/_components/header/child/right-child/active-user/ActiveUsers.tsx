@@ -1,6 +1,6 @@
 import CustomDrawerContent from "@/components/custom-ui/CustomDrawerContent";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useSetOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
+import { useSetOnlineUsersAtom, useUserOptionsAtom } from "@/lib/global-atoms/globalAtoms";
 import { supabase } from "@/lib/supabaseClient";
 import { ThemeColors } from "@/types";
 import { UserStatus } from "@/types/global-types";
@@ -14,6 +14,8 @@ import ActiveUsersInnerContent from "./child/ActiveUsersInnerContent";
 export default function ActiveUsers() {
   const theme: ThemeColors = useTheme();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const userOptions = useUserOptionsAtom();
+
   const nofityDrawerClose = useCallback(() => {
     onClose();
   }, [onClose]);
@@ -33,13 +35,23 @@ export default function ActiveUsers() {
       if (!session?.user?.name || !channelInstance) return;
       const isType = pathname.match("/type/");
       const isEdit = pathname.match("/edit");
+      const currentState =
+        userOptions?.custom_user_active_state === "ASK_ME"
+          ? "askMe"
+          : isType
+          ? "type"
+          : isEdit
+          ? "edit"
+          : "idle";
+
       const userStatus: UserStatus = {
         id: Number(session.user.id),
         name: session.user.name,
         onlineAt: new Date(),
-        state: isType ? "type" : isEdit ? "edit" : "idle",
-        mapId: Number(mapId),
+        state: currentState,
+        mapId: currentState === "type" ? Number(mapId) : null,
       };
+
       await channelInstance.track(userStatus);
     };
 
@@ -81,7 +93,9 @@ export default function ActiveUsers() {
       // 初回 subscribe
       channel.subscribe(async (status) => {
         if (status !== "SUBSCRIBED" || !session?.user?.name) return;
-        await updateUserStatus(channel);
+        if (userOptions?.custom_user_active_state !== "HIDE_ONLINE") {
+          await updateUserStatus(channel);
+        }
       });
 
       return channel;
@@ -114,10 +128,18 @@ export default function ActiveUsers() {
     return () => {
       activityEvents.forEach((event) => window.removeEventListener(event, resetInactivityTimer));
       if (inactivityTimer) clearTimeout(inactivityTimer);
-      if (currentChannel) currentChannel.unsubscribe();
+      if (currentChannel) {
+        currentChannel.unsubscribe();
+      }
     };
-    // session.user.name, pathname, mapId 等の変更時にも再実行
-  }, [pathname, session?.user.name, setOnlineUsers, mapId, session?.user.id]);
+  }, [
+    pathname,
+    session?.user.name,
+    setOnlineUsers,
+    mapId,
+    session?.user.id,
+    userOptions?.custom_user_active_state,
+  ]);
 
   return (
     <>

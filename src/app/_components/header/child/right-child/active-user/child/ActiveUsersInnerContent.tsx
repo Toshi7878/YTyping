@@ -18,7 +18,13 @@ const ActiveUsersInnerContent = () => {
       <Tbody>
         {onlineUsers.map((user) => {
           const stateMsg =
-            user.state === "type" ? "プレイ中" : user.state === "edit" ? "譜面編集中" : "待機中";
+            user.state === "askMe"
+              ? "Ask Me"
+              : user.state === "type"
+              ? "プレイ中"
+              : user.state === "edit"
+              ? "譜面編集中"
+              : "待機中";
 
           return (
             <Tr key={user.id} gap={2}>

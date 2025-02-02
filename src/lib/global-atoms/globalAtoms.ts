@@ -1,4 +1,5 @@
 import { DEFAULT_VOLUME } from "@/config/consts/globalConst";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { UserStatus } from "@/types/global-types";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage } from "jotai/utils";
@@ -59,4 +60,15 @@ export const useOnlineUsersAtom = () => {
 };
 export const useSetOnlineUsersAtom = () => {
   return useSetAtom(onlineUsersAtom, { store: globalAtomStore });
+};
+
+export const userOptionsAtom = atom<RouterOutPuts["userOption"]["getUserOptions"]>({
+  custom_user_active_state: "ONLINE" as const,
+});
+
+export const useUserOptionsAtom = () => {
+  return useAtomValue(userOptionsAtom, { store: globalAtomStore });
+};
+export const useSetUserOptionsAtom = () => {
+  return useSetAtom(userOptionsAtom, { store: globalAtomStore });
 };

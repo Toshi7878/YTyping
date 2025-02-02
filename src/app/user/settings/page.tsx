@@ -1,7 +1,10 @@
+import { serverApi } from "@/trpc/server";
 import { Box } from "@chakra-ui/react"; // Textを追加
 import Content from "./Content";
 
-export default function Home() {
+export default async function Home() {
+  const userOptions = await serverApi.userOption.getUserOptions();
+
   return (
     <Box
       as="main"
@@ -12,7 +15,7 @@ export default function Home() {
       alignItems="center"
       pt={20}
     >
-      <Content />
+      <Content userOptions={userOptions} />
     </Box>
   );
 }

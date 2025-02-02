@@ -12,7 +12,7 @@ export interface UserStatus {
   id: number;
   name: string;
   onlineAt: Date;
-  state: "type" | "edit" | "idle";
+  state: "type" | "edit" | "idle" | "askMe";
   mapId: number | null;
 }
 export interface YTPlayer {
