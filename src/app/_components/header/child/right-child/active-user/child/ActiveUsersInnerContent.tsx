@@ -100,7 +100,7 @@ const ActiveUsersInnerContent = () => {
                         position="absolute"
                         top="50%"
                         transform="translateY(-50%)"
-                        left="32.5px"
+                        left={user.state === "edit" ? "20.5px" : "32.5px"}
                       >
                         {stateMsg}
                       </Flex>
