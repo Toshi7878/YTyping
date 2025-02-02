@@ -34,17 +34,20 @@ const ActiveUsersInnerContent = () => {
           paddingX: 0,
           paddingY: 2,
         },
+        "thead td": {
+          paddingY: 3,
+        },
       }}
     >
       <Thead>
         <Tr fontSize="sm">
-          <Td w="25%" paddingY="1rem" paddingX="0.75rem">
+          <Td w="25%" paddingX="0.75rem">
             <Flex alignItems="baseline" gap={1} whiteSpace="nowrap">
               <Text as="span">ユーザー</Text>
               <Badge size="sm">{onlineUsers.length}人</Badge>
             </Flex>
           </Td>
-          <Td w="75%" paddingY={0} paddingX={"17.5px"}>
+          <Td w="75%" paddingX={"17.5px"}>
             プレイ中譜面
           </Td>
         </Tr>
