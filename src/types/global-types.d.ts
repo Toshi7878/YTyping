@@ -14,6 +14,7 @@ export interface UserStatus {
   onlineAt: Date;
   state: "type" | "edit" | "idle" | "askMe";
   mapId: number | null;
+  email_hash: string;
 }
 export interface YTPlayer {
   addEventListener(event: string, listener: (event: CustomEvent) => void): Promise<void>;
