@@ -35,7 +35,7 @@ const ActiveUsersInnerContent = () => {
       <Thead>
         <Tr fontSize="sm">
           <Td w="25%" paddingY="1rem" paddingX="0.75rem">
-            名前
+            ユーザー ({onlineUsers.length}人)
           </Td>
           <Td w="75%" paddingY={0} paddingX={"20px"}>
             プレイ中譜面
