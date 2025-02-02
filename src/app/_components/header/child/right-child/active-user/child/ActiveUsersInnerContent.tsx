@@ -1,3 +1,4 @@
+import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import ActiveUserMapCard from "@/components/map-card-notification/ActiveUserMapCard";
 import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
@@ -67,16 +68,18 @@ const ActiveUsersInnerContent = () => {
             return (
               <Tr key={user.id}>
                 <Td>
-                  <Link
-                    href={`/user/${user.id}`}
-                    display="block"
-                    fontSize="sm"
-                    paddingY="1rem"
-                    paddingX="0.75rem"
-                    isTruncated
-                  >
-                    {user.name}
-                  </Link>
+                  <CustomToolTip label={user.name} placement="top" top={4} right={2}>
+                    <Link
+                      href={`/user/${user.id}`}
+                      display="block"
+                      fontSize="sm"
+                      paddingY="1rem"
+                      paddingX="0.75rem"
+                      isTruncated
+                    >
+                      {user.name}
+                    </Link>
+                  </CustomToolTip>
                 </Td>
                 <Td>
                   {user.state === "type" && user.map ? (
