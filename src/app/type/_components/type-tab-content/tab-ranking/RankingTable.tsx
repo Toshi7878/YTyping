@@ -58,7 +58,7 @@ const RankingTable = (props: RankingTableProps) => {
           <Th width={RANKING_COLUMN_WIDTH.kpm} color={theme.colors.text.body}>
             kpm
           </Th>
-          <Th width={RANKING_COLUMN_WIDTH.inputMode} color={theme.colors.text.body}>
+          <Th maxW={RANKING_COLUMN_WIDTH.inputMode} color={theme.colors.text.body}>
             モード
           </Th>
           <Th width={RANKING_COLUMN_WIDTH.updatedAt} color={theme.colors.text.body}>

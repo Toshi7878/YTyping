@@ -1,6 +1,5 @@
 import { ThemeColors } from "@/types";
 import { Box, Text, useTheme } from "@chakra-ui/react";
-import React from "react";
 
 interface UserInputModeTextProps {
   kanaType: number;
@@ -32,7 +31,7 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
       );
     } else {
       return (
-        <>
+        <Box isTruncated whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
           <Text as="span" color={kanaColor} className="input-mode-outline-text">
             かな
           </Text>
@@ -42,7 +41,7 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
           <Text as="span" color={romaColor} className="input-mode-outline-text">
             ローマ字
           </Text>
-        </>
+        </Box>
       );
     }
   } else {

@@ -31,8 +31,8 @@ export const DEFAULT_STATUS: Status = {
 
 export const defaultLineWord: LineWord = {
   correct: { k: "", r: "" },
-  nextChar: { k: "", r: [""], p: 0, t:undefined },
-  word: [{ k: "", r: [""], p: 0,t:undefined }],
+  nextChar: { k: "", r: [""], p: 0, t: undefined },
+  word: [{ k: "", r: [""], p: 0, t: undefined }],
   lineCount: 0,
 };
 
