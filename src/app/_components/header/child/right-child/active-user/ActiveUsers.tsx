@@ -50,7 +50,7 @@ export default function ActiveUsers() {
         onlineAt: new Date(),
         state: currentState,
         mapId: currentState === "type" ? Number(mapId) : null,
-        email_hash: session.user.email_hash,
+        email_hash: session.user.email!,
       };
 
       await channelInstance.track(userStatus);
@@ -77,6 +77,7 @@ export default function ActiveUsers() {
           };
         });
         setOnlineUsers(users);
+        console.log(users);
       });
 
       channel.on(
