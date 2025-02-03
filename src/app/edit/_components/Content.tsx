@@ -1,5 +1,4 @@
 "use client";
-import { MapData } from "@/app/type/ts/type";
 import { db } from "@/lib/db";
 import { clientApi } from "@/trpc/client-api";
 import { IndexDBOption } from "@/types";
@@ -46,7 +45,18 @@ function Content() {
   const setDirectEditCountAtom = useSetDirectEditCountAtom();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
   const { id: mapId } = useParams();
-  const { mutate, isPending } = clientApi.map.getMap.useMutation();
+  const { data: mapData, isLoading } = clientApi.map.getMap.useQuery(
+    { mapId: mapId as string },
+    {
+      gcTime: 0,
+    }
+  );
+
+  useEffect(() => {
+    if (mapData) {
+      dispatch(setMapData(mapData));
+    }
+  }, [dispatch, mapData]);
 
   useEffect(() => {
     setIsYTStarted(false);
@@ -57,17 +67,6 @@ function Content() {
     setIsMapDataEdited(false);
     dispatch(resetMapData());
     dispatch(resetUndoRedoData());
-
-    if (mapId) {
-      mutate(
-        { mapId: mapId as string },
-        {
-          onSuccess: (mapData: MapData[]) => {
-            dispatch(setMapData(mapData));
-          },
-        }
-      );
-    }
 
     if (isBackUp) {
       db.editorNewCreateBak
@@ -114,7 +113,7 @@ function Content() {
           <TimeRange />
         </Box>
         <Box as="section" width="100%" mt={0}>
-          <EditTable mapLoading={isPending} />
+          <EditTable mapLoading={isLoading} />
         </Box>
       </Box>
       <ColorStyle />

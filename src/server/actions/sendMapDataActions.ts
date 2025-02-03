@@ -86,6 +86,7 @@ export async function actions(
     mapData,
     videoId: data.video_id,
     thumbnailQuality: data.thumbnail_quality,
+    roma_kpm_max: sendMapDifficulty.roma_kpm_max,
   });
 
   if (!validatedFields.success) {
@@ -151,6 +152,7 @@ const lineSchema = z.object({
     .optional(), // 追加
 });
 
+const mapSendDifficulty = z.object({});
 const mapSendSchema = z.object({
   title: z.string().min(1, { message: "タイトルは１文字以上必要です" }),
   creatorComment: z.string().optional(),
@@ -218,4 +220,7 @@ const mapSendSchema = z.object({
       }
     ),
   videoId: z.string(),
+  roma_kpm_max: z.number().refine((val) => Number.isFinite(val), {
+    message: "同じタイムのラインが2つ以上存在しています。",
+  }),
 });

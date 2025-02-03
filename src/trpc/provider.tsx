@@ -16,11 +16,15 @@ export default function Provider({ children }: { children: React.ReactNode }) {
           transformer: SuperJSON,
         }),
       ],
-    }),
+    })
   );
   return (
     <clientApi.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+
+        {children}
+      </QueryClientProvider>
     </clientApi.Provider>
   );
 }

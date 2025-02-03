@@ -93,7 +93,7 @@ export const mapRouter = {
       return mapList;
     }),
 
-  getMap: publicProcedure.input(z.object({ mapId: z.string() })).mutation(async ({ input }) => {
+  getMap: publicProcedure.input(z.object({ mapId: z.string() })).query(async ({ input }) => {
     try {
       const timestamp = new Date().getTime(); // 一意のクエリパラメータを生成
 

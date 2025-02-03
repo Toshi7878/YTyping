@@ -8,14 +8,17 @@ import { fonts } from "../lib/fonts";
 
 import type { Metadata } from "next";
 
-import PreviewYouTubeContent from "@/app/_components/PreviewYouTubeContent";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
 import { SessionProvider } from "next-auth/react";
+import dynamic from "next/dynamic";
 import GlobalProvider from "./_components/global-provider/GlobalProvider";
 import ThemeProvider from "./_components/global-provider/ThemeProvider";
 
+const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"), {
+  ssr: false,
+});
 export const metadata: Metadata = {
   title: "YTyping",
   description: "",

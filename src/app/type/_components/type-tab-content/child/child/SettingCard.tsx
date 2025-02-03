@@ -49,13 +49,13 @@ const SettingCard = (props: SettingCardProps) => {
     };
 
     if (props.isCardVisible) {
-      document.addEventListener("mousedown", handleClickOutside);
+      window.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("mousedown", handleClickOutside);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.isCardVisible]);

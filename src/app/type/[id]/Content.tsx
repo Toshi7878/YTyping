@@ -51,7 +51,14 @@ function Content({ mapInfo }: ContentProps) {
   const setLineResults = useSetLineResultsAtom();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
   const setTimeOffset = useSetTimeOffsetAtom();
-  const { mutate, isPending } = clientApi.map.getMap.useMutation<MapData[]>();
+  const { data: mapData, isLoading } = clientApi.map.getMap.useQuery<MapData[]>(
+    {
+      mapId: mapId as string,
+    },
+    {
+      gcTime: 0,
+    }
+  );
   const isLoadingOverlay = useIsLoadingOverlayAtom();
   const disableKeyHandle = useDisableKeyHandle();
   const { resetStatusValues } = useSetStatusAtoms();
@@ -72,19 +79,17 @@ function Content({ mapInfo }: ContentProps) {
   }, [layoutMode]);
 
   useEffect(() => {
-    mutate(
-      { mapId: mapId as string },
-      {
-        onSuccess: (mapData: MapData[]) => {
-          const map = new CreateMap(mapData);
-          setMap(map);
-          setLineResults(map.defaultLineResultData);
-          setStatusValues({ line: map.lineLength });
-          setLineSelectIndex(map.typingLineNumbers[0]);
-          totalProgressRef.current!.max = map.movieTotalTime;
-        },
-      }
-    );
+    if (mapData) {
+      const map = new CreateMap(mapData);
+      setMap(map);
+      setLineResults(map.defaultLineResultData);
+      setStatusValues({ line: map.lineLength });
+      setLineSelectIndex(map.typingLineNumbers[0]);
+      totalProgressRef.current!.max = map.movieTotalTime;
+    }
+  }, [mapData]);
+
+  useEffect(() => {
     window.addEventListener("keydown", disableKeyHandle);
 
     return () => {
@@ -138,7 +143,7 @@ function Content({ mapInfo }: ContentProps) {
 
                   <TypeYouTubeContent
                     className="w-[513px]"
-                    isMapLoading={isPending}
+                    isMapLoading={isLoading}
                     videoId={video_id}
                   />
                 </Box>
@@ -154,7 +159,7 @@ function Content({ mapInfo }: ContentProps) {
             {ytLayoutMode === "column" && (
               <Box mt={5} position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
-                <TypeYouTubeContent isMapLoading={isPending} videoId={video_id} />
+                <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
               </Box>
             )}
           </Flex>
