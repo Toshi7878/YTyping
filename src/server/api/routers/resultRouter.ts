@@ -5,7 +5,7 @@ import { publicProcedure } from "../trpc";
 export const resultRouter = {
   getUserResultData: publicProcedure
     .input(z.object({ resultId: z.number().nullable() }))
-    .mutation(async ({ input }) => {
+    .query(async ({ input }) => {
       try {
         const timestamp = new Date().getTime();
 

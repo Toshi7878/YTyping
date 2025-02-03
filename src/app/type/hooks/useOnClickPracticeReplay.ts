@@ -13,13 +13,13 @@ export const useOnClickPracticeReplay = ({
   const setIsLoadingOverlay = useSetIsLoadingOverlayAtom();
   const setLineResults = useSetLineResultsAtom();
   const { gameStateRef, playerRef } = useRefs();
-  const getUserResultData = clientApi.result.getUserResultData.useMutation();
+  const utils = clientApi.useUtils();
 
   const handleClick = async () => {
     try {
       if (resultId) {
         setIsLoadingOverlay(true);
-        const resultData = await getUserResultData.mutateAsync({ resultId });
+        const resultData = await utils.result.getUserResultData.fetch({ resultId });
         setLineResults(resultData);
       }
     } catch {
