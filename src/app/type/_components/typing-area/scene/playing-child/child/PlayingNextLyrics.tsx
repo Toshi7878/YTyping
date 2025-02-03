@@ -16,7 +16,7 @@ const NextLyrics = () => {
       className="lyrics-font"
       lineHeight={{ base: "80px", sm: "50px", md: "2.5rem" }}
     >
-      <Box ml={1.5} fontWeight="bold" id="next_lyrics">
+      <Box ml={1.5} fontWeight="bold" id="next_lyrics" whiteSpace="nowrap">
         {parse(`${lyrics}<ruby class="invisible">あ<rt>あ<rt></ruby>`)}
       </Box>
       <Box ml={2} id="next_kpm">

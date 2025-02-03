@@ -13,6 +13,7 @@ const PlayingLyrics = () => {
       ml={1}
       width="103%"
       className={"lyrics-font"}
+      whiteSpace="nowrap"
     >
       {parse(`${lyrics}<ruby class="invisible">あ<rt>あ<rt></ruby>`)}
     </Box>
