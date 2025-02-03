@@ -20,7 +20,7 @@ import {
   useSetIsEditYTStartedAtom,
   useSetIsMapDataEditedAtom,
 } from "../edit-atom/editAtom";
-import { setMapData } from "../redux/mapDataSlice";
+import { resetMapData, setMapData } from "../redux/mapDataSlice";
 import { resetUndoRedoData } from "../redux/undoredoSlice";
 import ColorStyle from "./ColorStyle";
 import EditorTabContent from "./editor-tab-content/EditTabList";
@@ -48,6 +48,7 @@ function Content() {
   const { data: mapData, isLoading } = clientApi.map.getMap.useQuery(
     { mapId: mapId as string },
     {
+      enabled: !newVideoId,
       gcTime: 0,
     }
   );
@@ -55,6 +56,8 @@ function Content() {
   useEffect(() => {
     if (mapData) {
       dispatch(setMapData(mapData));
+    } else {
+      dispatch(resetMapData());
     }
   }, [mapData]);
 
@@ -65,7 +68,6 @@ function Content() {
     setSelectedCount(null);
     setTimeCount(0);
     setIsMapDataEdited(false);
-    // dispatch(resetMapData());
     dispatch(resetUndoRedoData());
 
     if (isBackUp) {
