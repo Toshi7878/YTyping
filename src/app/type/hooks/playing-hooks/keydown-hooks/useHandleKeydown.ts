@@ -1,7 +1,7 @@
-import { drawerClosureAtom } from "@/app/type/_components/typing-area/TypingCard";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/typeDefaultValue";
 import { LineWord } from "@/app/type/ts/type";
 import {
+  drawerClosureAtom,
   lineSelectIndexAtom,
   lineWordAtom,
   playingInputModeAtom,

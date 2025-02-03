@@ -1,18 +1,16 @@
 "use client";
 import { getGlobalAtomStore, previewVideoIdAtom } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { createStore, Provider as JotaiProvider } from "jotai";
+import { Provider as JotaiProvider } from "jotai";
 import { useEffect } from "react";
 import {
+  getTypeAtomStore,
   hasLocalLikeAtom,
   mapInfoAtom,
   mapUpdatedAtAtom,
   userOptionsAtom,
 } from "../type-atoms/gameRenderAtoms";
 import { RefsProvider } from "../type-contexts/refsProvider";
-
-const typeAtomStore = createStore();
-export const getTypeAtomStore = () => typeAtomStore;
 
 interface TypeProviderProps {
   mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
@@ -21,6 +19,8 @@ interface TypeProviderProps {
 }
 const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProps) => {
   const globalAtomStore = getGlobalAtomStore();
+  const typeAtomStore = getTypeAtomStore();
+
   typeAtomStore.set(hasLocalLikeAtom, !!mapInfo.map_likes[0]?.is_liked);
   typeAtomStore.set(mapInfoAtom, mapInfo);
 

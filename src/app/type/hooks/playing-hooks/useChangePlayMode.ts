@@ -1,7 +1,7 @@
 import { useStore } from "jotai";
-import { drawerClosureAtom } from "../../_components/typing-area/TypingCard";
 import { DEFAULT_GAME_STATE_REF } from "../../ts/const/typeDefaultValue";
 import {
+  drawerClosureAtom,
   sceneAtom,
   useSetPlayingNotifyAtom,
   useSetSceneAtom,

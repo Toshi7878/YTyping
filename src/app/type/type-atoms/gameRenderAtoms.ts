@@ -1,8 +1,8 @@
 import { RouterOutPuts } from "@/server/api/trpc";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { UseDisclosureReturn } from "@chakra-ui/react";
+import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage } from "jotai/utils";
 import { CreateMap } from "../../../lib/instanceMapData";
-import { getTypeAtomStore } from "../[id]/TypeProvider";
 import { defaultLineWord } from "../ts/const/consts";
 import { DEFAULT_SPEED, DEFAULT_USER_OPTIONS } from "../ts/const/typeDefaultValue";
 import {
@@ -14,7 +14,8 @@ import {
   Speed,
   useSetStatusValueProps,
 } from "../ts/type";
-const typeAtomStore = getTypeAtomStore();
+const typeAtomStore = createStore();
+export const getTypeAtomStore = () => typeAtomStore;
 
 export const mapAtom = atom<CreateMap | null>(null);
 
@@ -79,9 +80,13 @@ export const useReadySetInputModeAtom = () => {
   return useSetAtom(readyRadioInputModeAtom, { store: typeAtomStore });
 };
 
-export const playingInputModeAtom = atom<InputModeType>(
-  (localStorage.getItem("inputMode") as InputModeType) || "roma"
-);
+const initialInputMode: InputModeType =
+  typeof window !== "undefined"
+    ? (localStorage.getItem("inputMode") as InputModeType) || "roma"
+    : "roma";
+
+export const playingInputModeAtom = atom<InputModeType>(initialInputMode);
+
 export const usePlayingInputModeAtom = () => {
   return useAtomValue(playingInputModeAtom, { store: typeAtomStore });
 };
@@ -266,6 +271,12 @@ export const useSetIsOptionEdited = () => {
 };
 
 export const mapUpdatedAtAtom = atom<Date>(new Date());
+
+export const drawerClosureAtom = atom<UseDisclosureReturn | null>(null);
+
+export const useSetDrawerClosureAtom = () => {
+  return useSetAtom(drawerClosureAtom, { store: typeAtomStore });
+};
 
 // Status Atoms
 

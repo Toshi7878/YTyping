@@ -1,4 +1,4 @@
-import { getTypeAtomStore } from "@/app/type/[id]/TypeProvider";
+import { getTypeAtomStore } from "@/app/type/type-atoms/gameRenderAtoms";
 import { Text } from "@chakra-ui/react";
 import { Atom, useAtomValue } from "jotai";
 import { memo } from "react";
@@ -7,9 +7,10 @@ interface PointStatusValueProps {
   atom: Atom<number>;
   timeBonusAtom: Atom<number>;
 }
-const typeAtomStore = getTypeAtomStore();
 
 const PointStatusValue = ({ atom, timeBonusAtom }: PointStatusValueProps) => {
+  const typeAtomStore = getTypeAtomStore();
+
   const value = useAtomValue(atom, { store: typeAtomStore });
   const timeBonusValue = useAtomValue(timeBonusAtom, { store: typeAtomStore });
 

@@ -7,11 +7,14 @@ import {
   useDisclosure,
   UseDisclosureReturn,
 } from "@chakra-ui/react";
-import { atom, useSetAtom } from "jotai";
 import { useEffect } from "react";
-import { getTypeAtomStore } from "../../[id]/TypeProvider";
 import "../../style/type.scss";
-import { useMapAtom, useSceneAtom, useSetTabIndexAtom } from "../../type-atoms/gameRenderAtoms";
+import {
+  useMapAtom,
+  useSceneAtom,
+  useSetDrawerClosureAtom,
+  useSetTabIndexAtom,
+} from "../../type-atoms/gameRenderAtoms";
 import PlayingBottom from "./scene/child/PlayingBottom";
 import PlayingTop from "./scene/child/PlayingTop";
 import End from "./scene/End";
@@ -67,13 +70,6 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
       ) : null}
     </CardBody>
   );
-};
-
-export const drawerClosureAtom = atom<UseDisclosureReturn | null>(null);
-const typeAtomStore = getTypeAtomStore();
-
-export const useSetDrawerClosureAtom = () => {
-  return useSetAtom(drawerClosureAtom, { store: typeAtomStore });
 };
 
 function TypingCard() {

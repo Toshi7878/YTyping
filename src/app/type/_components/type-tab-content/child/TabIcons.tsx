@@ -1,12 +1,14 @@
 import { ThemeColors } from "@/types";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import SettingCard from "./child/SettingCard";
 import EditIcon from "./icon-child/EditIcon";
 import LikeIcon from "./icon-child/LikeIcon";
 import SettingIcon from "./icon-child/SettingIcon";
-
+const SettingCard = dynamic(() => import("./child/SettingCard"), {
+  ssr: false, // サーバーサイドレンダリングを無効にする場合、このオプションを有効にします
+});
 export default function TabIcons() {
   const theme: ThemeColors = useTheme();
 
