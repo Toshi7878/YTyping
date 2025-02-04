@@ -11,7 +11,7 @@ import {
   useSetDisplayLineKpmAtom,
   useSetLineWordAtom,
   useSetStatusAtoms,
-  useStatusAtomsValues
+  useStatusAtomsValues,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
@@ -45,13 +45,13 @@ export const useUpdateAllStatus = () => {
 
     for (let i = 0; i <= count - 1; i++) {
       newStatus.score +=
-        (newLineResults[i].status?.p ?? 0) + (newLineResults[i].status?.tBonus ?? 0);
-      newStatus.type += newLineResults[i].status?.lType ?? 0;
-      newStatus.miss += newLineResults[i].status?.lMiss ?? 0;
-      newStatus.lost += newLineResults[i].status?.lLost ?? 0;
-      newStatus.line -= newLineResults[i].status?.lType != null ? 1 : 0;
+        (newLineResults[i]?.status?.p ?? 0) + (newLineResults[i]?.status?.tBonus ?? 0);
+      newStatus.type += newLineResults[i]?.status?.lType ?? 0;
+      newStatus.miss += newLineResults[i]?.status?.lMiss ?? 0;
+      newStatus.lost += newLineResults[i]?.status?.lLost ?? 0;
+      newStatus.line -= newLineResults[i]?.status?.lType != null ? 1 : 0;
     }
-    const totalTypeTime = newLineResults[count - 1].status?.tTime;
+    const totalTypeTime = newLineResults[count - 1]?.status?.tTime;
     newStatus.kpm = totalTypeTime ? Math.round((newStatus.type / totalTypeTime!) * 60) : 0;
     newStatus.rank = calcCurrentRank(newStatus.score);
 
@@ -128,7 +128,7 @@ const useKeyReplay = () => {
             constantLineTime,
             newLineWord: result.newLineWord,
             successKey: result.successKey,
-            combo
+            combo,
           });
 
           updateSuccessStatus({
@@ -136,7 +136,7 @@ const useKeyReplay = () => {
             lineRemainConstantTime,
             updatePoint: result.updatePoint,
             totalKpm: typeSpeed!.totalKpm,
-            combo
+            combo,
           });
 
           setDisplayLineKpm(typeSpeed!.lineKpm);
