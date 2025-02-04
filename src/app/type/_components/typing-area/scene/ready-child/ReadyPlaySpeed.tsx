@@ -33,6 +33,7 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
       placement="top"
       isDisabled={speedData.defaultSpeed >= 1}
       isOpen={speedData.defaultSpeed < 1}
+      top={3}
     >
       <HStack
         borderColor={theme.colors.border.card}
