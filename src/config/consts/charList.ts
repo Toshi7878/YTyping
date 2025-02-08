@@ -21,6 +21,7 @@ export const SYMBOL_LIST = [
   ";",
   "<",
   ">",
+  "-",
   "_",
   "~",
   "{",
