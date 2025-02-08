@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-2-8",
+    descriptions: ["英語・数字・記号・スペースのタイプ数区分を追加"],
+  },
+  {
     date: "2025-2-2",
     descriptions: [
       "アクティブユーザー一覧に譜面表示を追加",

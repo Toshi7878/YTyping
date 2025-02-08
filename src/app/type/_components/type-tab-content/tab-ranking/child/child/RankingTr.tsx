@@ -67,6 +67,10 @@ const RankingTr = (props: RankingTrProps) => {
             romaType={props.romaType}
             kanaType={props.kanaType}
             flickType={props.flickType}
+            englishType={result.status!.english_type}
+            numType={result.status!.num_type}
+            symbolType={result.status!.symbol_type}
+            spaceType={result.status!.space_type}
             miss={status.miss}
             correctRate={correctRate}
             lost={status.lost}

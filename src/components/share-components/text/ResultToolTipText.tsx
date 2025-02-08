@@ -1,11 +1,14 @@
 import { ThemeColors } from "@/types";
 import { Box, Text, useTheme } from "@chakra-ui/react";
-import React from "react";
 
 interface ResultToolTipTextProps {
   romaType: number;
   kanaType: number;
   flickType: number;
+  englishType: number;
+  numType: number;
+  spaceType: number;
+  symbolType: number;
   miss: number;
   correctRate: string;
   lost: number;
@@ -24,30 +27,15 @@ const ResultToolTipText = (props: ResultToolTipTextProps) => {
 
   return (
     <Box fontSize="sm" lineHeight={7}>
-      {props.romaType > 0 && (
-        <Box>
-          <Text as="span">ローマ字タイプ数</Text>:{" "}
-          <Text as="span" fontSize="md" fontWeight="bold">
-            {props.romaType}
-          </Text>
-        </Box>
-      )}
-      {props.kanaType > 0 && (
-        <Box>
-          <Text as="span">かな入力タイプ数</Text>:{" "}
-          <Text as="span" fontSize="md" fontWeight="bold">
-            {props.kanaType}
-          </Text>
-        </Box>
-      )}
-      {props.flickType > 0 && (
-        <Box>
-          <Text as="span">フリック入力タイプ数</Text>:{" "}
-          <Text as="span" fontSize="md" fontWeight="bold">
-            {props.flickType}
-          </Text>
-        </Box>
-      )}
+      <TypeCountResult
+        romaType={props.romaType}
+        kanaType={props.kanaType}
+        flickType={props.flickType}
+        englishType={props.englishType}
+        numType={props.numType}
+        symbolType={props.symbolType}
+        spaceType={props.spaceType}
+      />
       <Box>
         ミス数:{" "}
         <Text as="span" fontSize="md" fontWeight="bold">
@@ -110,4 +98,55 @@ const ResultToolTipText = (props: ResultToolTipTextProps) => {
   );
 };
 
+interface TypeCountResultProps {
+  romaType: number;
+  kanaType: number;
+  flickType: number;
+  englishType: number;
+  numType: number;
+  spaceType: number;
+  symbolType: number;
+}
+
+const TypeCountResult = (props: TypeCountResultProps) => {
+  // 各入力タイプの情報を配列にまとめる
+  const types = [
+    { label: "ローマ字タイプ数", value: props.romaType },
+    { label: "かな入力タイプ数", value: props.kanaType },
+    { label: "フリック入力タイプ数", value: props.flickType },
+    { label: "英語タイプ数", value: props.englishType },
+    { label: "数字タイプ数", value: props.numType },
+    { label: "記号タイプ数", value: props.symbolType },
+    { label: "スペースタイプ数", value: props.spaceType },
+  ];
+
+  // 総入力数を計算
+  const total = types.reduce((sum, type) => sum + type.value, 0);
+  // カウントが0より大きい入力タイプの数
+  const typesUsedCount = types.filter((type) => type.value > 0).length;
+
+  return (
+    <>
+      {types.map(
+        (type, index) =>
+          type.value > 0 && (
+            <Box key={index}>
+              <Text as="span">{type.label}</Text>:{" "}
+              <Text as="span" fontSize="md" fontWeight="bold">
+                {type.value}
+              </Text>
+            </Box>
+          )
+      )}
+      {typesUsedCount > 1 && (
+        <Box>
+          <Text as="span">合計タイプ数</Text>:{" "}
+          <Text as="span" fontSize="md" fontWeight="bold">
+            {total}
+          </Text>
+        </Box>
+      )}
+    </>
+  );
+};
 export default ResultToolTipText;
