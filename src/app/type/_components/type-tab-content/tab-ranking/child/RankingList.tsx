@@ -97,7 +97,13 @@ const RankingList = () => {
           const romaType = user.status!.roma_type;
           const kanaType = user.status!.kana_type;
           const flickType = user.status!.flick_type;
-          const type = romaType + kanaType + flickType;
+
+          const englishType = user.status!.english_type;
+          const numType = user.status!.num_type;
+          const symbolType = user.status!.symbol_type;
+          const spaceType = user.status!.space_type;
+          const type =
+            romaType + kanaType + flickType + englishType + numType + symbolType + spaceType;
           const handleShowMenu = () => {
             if (showMenu === index) {
               setShowMenu(null);
