@@ -144,7 +144,7 @@ function Content({ mapInfo }: ContentProps) {
 
                   <TypeYouTubeContent
                     className="w-[513px]"
-                    isMapLoading={!mapData}
+                    isMapLoading={!!mapData}
                     videoId={video_id}
                   />
                 </Box>
@@ -160,7 +160,7 @@ function Content({ mapInfo }: ContentProps) {
             {ytLayoutMode === "column" && (
               <Box mt={5} position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
-                <TypeYouTubeContent isMapLoading={!mapData} videoId={video_id} />
+                <TypeYouTubeContent isMapLoading={!!mapData} videoId={video_id} />
               </Box>
             )}
           </Flex>
