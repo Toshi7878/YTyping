@@ -222,11 +222,16 @@ export class TypingWord {
   private getCharType({
     romaChar,
     kanaChar,
+    romaMapIndex,
   }: {
     romaChar: string;
     kanaChar: string;
+    romaMapIndex?: number;
   }): TypeChunk["t"] {
-    if (KANA_TYPE_LIST.includes(kanaChar)) {
+    if (
+      (romaMapIndex && romaMapIndex >= 10 && romaMapIndex <= 222) ||
+      KANA_TYPE_LIST.includes(kanaChar)
+    ) {
       return "kana";
     } else if (ALPHABET_LIST.includes(romaChar)) {
       return "eng";
@@ -246,9 +251,10 @@ export class TypingWord {
     const STR_LEN = lineRomaMap.length;
 
     for (let i = 0; i < STR_LEN; i++) {
-      const CHAR = structuredClone(ROMA_MAP[parseInt(lineRomaMap[i])]);
+      const romaMapIndex = parseInt(lineRomaMap[i]);
+      const CHAR = structuredClone(ROMA_MAP[romaMapIndex]);
       if (CHAR) {
-        word = this.pushRomaMapChar({ word, CHAR });
+        word = this.pushRomaMapChar({ word, CHAR, romaMapIndex });
       } else {
         for (let v = 0; v < lineRomaMap[i].length; v++) {
           word = this.pushChar({ word, char: lineRomaMap[i][v], index: v });
@@ -266,11 +272,19 @@ export class TypingWord {
     return word;
   }
 
-  private pushRomaMapChar({ word, CHAR }: { word: TypeChunk[]; CHAR: (typeof ROMA_MAP)[number] }) {
+  private pushRomaMapChar({
+    word,
+    CHAR,
+    romaMapIndex,
+  }: {
+    word: TypeChunk[];
+    CHAR: (typeof ROMA_MAP)[number];
+    romaMapIndex: number;
+  }) {
     word.push({
       ...CHAR,
       p: CHAR_POINT * CHAR["r"][0].length,
-      t: this.getCharType({ romaChar: CHAR.r[0], kanaChar: CHAR.k }),
+      t: this.getCharType({ romaChar: CHAR.r[0], kanaChar: CHAR.k, romaMapIndex }),
     });
 
     //促音の打鍵パターン
