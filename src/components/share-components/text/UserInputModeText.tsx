@@ -29,6 +29,16 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
     </Text>
   );
 
+  // 各入力モードの合計値を算出
+  const total =
+    props.romaType +
+    props.kanaType +
+    props.flickType +
+    props.englishType +
+    props.spaceType +
+    props.numType +
+    props.symbolType;
+
   // romaType と kanaType の両方が存在する場合、数値の大小で表示順序を決定
   if (props.romaType && props.kanaType) {
     const isRomaFirst = props.romaType >= props.kanaType;
@@ -46,6 +56,27 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
           ・
         </Text>
         {renderText(second.label, second.color)}
+      </Box>
+    );
+  }
+
+  if (total > 0 && props.englishType / total >= 0.1) {
+    const inputMode = props.flickType
+      ? "flick"
+      : props.romaType >= props.kanaType
+      ? "roma"
+      : "kana";
+
+    const inputLabel =
+      inputMode === "flick" ? "フリック" : inputMode === "roma" ? "ローマ字" : "かな";
+
+    return (
+      <Box isTruncated whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis">
+        {renderText(inputLabel, colors[inputMode])}
+        <Text as="span" color={theme.colors.text.body}>
+          ・
+        </Text>
+        {renderText("英語", colors.english)}
       </Box>
     );
   }
