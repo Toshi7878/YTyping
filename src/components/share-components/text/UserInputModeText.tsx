@@ -39,7 +39,6 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
     props.numType +
     props.symbolType;
 
-  // romaType と kanaType の両方が存在する場合、数値の大小で表示順序を決定
   if (props.romaType && props.kanaType) {
     const isRomaFirst = props.romaType >= props.kanaType;
     const first = isRomaFirst
@@ -60,7 +59,8 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
     );
   }
 
-  if (total > 0 && props.englishType / total >= 0.1) {
+  const kanaInput = props.romaType || props.kanaType;
+  if (kanaInput && props.englishType / total >= 0.1) {
     const inputMode = props.flickType
       ? "flick"
       : props.romaType >= props.kanaType
