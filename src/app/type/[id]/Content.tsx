@@ -51,7 +51,7 @@ function Content({ mapInfo }: ContentProps) {
   const setLineResults = useSetLineResultsAtom();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
   const setTimeOffset = useSetTimeOffsetAtom();
-  const { data: mapData, isLoading } = clientApi.map.getMap.useQuery<MapData[]>(
+  const [mapData] = clientApi.map.getMap.useSuspenseQuery<MapData[]>(
     {
       mapId: mapId as string,
     },
@@ -87,6 +87,7 @@ function Content({ mapInfo }: ContentProps) {
       setLineSelectIndex(map.typingLineNumbers[0]);
       totalProgressRef.current!.max = map.movieTotalTime;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
 
   useEffect(() => {
@@ -143,7 +144,7 @@ function Content({ mapInfo }: ContentProps) {
 
                   <TypeYouTubeContent
                     className="w-[513px]"
-                    isMapLoading={isLoading}
+                    isMapLoading={!mapData}
                     videoId={video_id}
                   />
                 </Box>
@@ -159,7 +160,7 @@ function Content({ mapInfo }: ContentProps) {
             {ytLayoutMode === "column" && (
               <Box mt={5} position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
-                <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
+                <TypeYouTubeContent isMapLoading={!mapData} videoId={video_id} />
               </Box>
             )}
           </Flex>
