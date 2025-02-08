@@ -30,6 +30,7 @@ export const rankingRouter = {
             flick_type: true,
             english_type: true,
             symbol_type: true,
+            space_type: true,
             num_type: true,
             miss: true,
             lost: true,

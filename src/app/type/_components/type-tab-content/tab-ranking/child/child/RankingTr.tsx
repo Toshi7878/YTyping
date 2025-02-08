@@ -119,6 +119,10 @@ const RankingTr = (props: RankingTrProps) => {
               kanaType={props.kanaType}
               romaType={props.romaType}
               flickType={props.flickType}
+              englishType={result.status!.english_type}
+              symbolType={result.status!.symbol_type}
+              numType={result.status!.num_type}
+              spaceType={result.status!.space_type}
             />
           </Td>
           <Td width={RANKING_COLUMN_WIDTH.updatedAt}>

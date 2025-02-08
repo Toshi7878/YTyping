@@ -5,6 +5,10 @@ interface UserInputModeTextProps {
   kanaType: number;
   romaType: number;
   flickType: number;
+  englishType: number;
+  spaceType: number;
+  numType: number;
+  symbolType: number;
 }
 
 export const UserInputModeText = (props: UserInputModeTextProps) => {
@@ -13,6 +17,9 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
   const romaColor = theme.colors.semantic.roma;
   const kanaColor = theme.colors.semantic.kana;
   const flickColor = theme.colors.semantic.flick;
+  const englishColor = theme.colors.semantic.english;
+  const numColor = theme.colors.semantic.num;
+  const otherColor = theme.colors.semantic.other;
 
   if (props.romaType && props.kanaType) {
     if (props.romaType >= props.kanaType) {
@@ -58,6 +65,22 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
           かな
         </Text>
       );
+    } else if (props.flickType) {
+      <Text as="span" color={flickColor} className="input-mode-outline-text">
+        フリック
+      </Text>;
+    } else if (props.englishType) {
+      <Text as="span" color={englishColor} className="input-mode-outline-text">
+        英語
+      </Text>;
+    } else if (props.numType) {
+      <Text as="span" color={numColor} className="input-mode-outline-text">
+        数字
+      </Text>;
+    } else if (props.spaceType || props.symbolType) {
+      <Text as="span" color={otherColor} className="input-mode-outline-text">
+        その他
+      </Text>;
     }
   }
   return null;

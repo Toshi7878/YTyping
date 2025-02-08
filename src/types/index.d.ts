@@ -81,6 +81,9 @@ export interface ThemeColors {
       roma: `#${string}`;
       kana: `#${string}`;
       flick: `#${string}`;
+      english: `#${string}`;
+      num: `#${string}`;
+      other: `#${string}`;
       like: `#${string}`;
       clap: `#${string}`;
       word: {

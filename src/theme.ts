@@ -52,6 +52,9 @@ const darkTheme: ThemeColors = {
       roma: "#00b5d8",
       kana: "#de781f",
       flick: "#59e04d",
+      english: "#f472b6",
+      num: "#b7d5ec",
+      other: "#ac44cd",
       like: "#f472b6",
       clap: "#ffb825",
       word: {

@@ -1,4 +1,4 @@
-import { ALPHABET_LIST, NUM_LIST, SYMBOL_LIST } from "@/config/consts/charList";
+import { ALPHABET_LIST, KANA_TYPE_LIST, NUM_LIST, SYMBOL_LIST } from "@/config/consts/charList";
 import {
   InputModeType,
   LineData,
@@ -6,7 +6,7 @@ import {
   LineWord,
   MapData,
   SpeedDifficulty,
-  TypeChank,
+  TypeChunk,
 } from "../app/type/ts/type";
 import { ROMA_MAP } from "../config/consts/romaMap";
 
@@ -219,11 +219,21 @@ export class TypingWord {
     this.word = this.hiraganaToRomaArray(lineRomaMap);
   }
 
-  private getCharType({ romaChar }: { romaChar: string }): TypeChank["t"] {
-    if (ALPHABET_LIST.includes(romaChar)) {
+  private getCharType({
+    romaChar,
+    kanaChar,
+  }: {
+    romaChar: string;
+    kanaChar: string;
+  }): TypeChunk["t"] {
+    if (KANA_TYPE_LIST.includes(kanaChar)) {
+      return "kana";
+    } else if (ALPHABET_LIST.includes(romaChar)) {
       return "eng";
     } else if (NUM_LIST.includes(romaChar)) {
       return "num";
+    } else if (romaChar === " ") {
+      return "space";
     } else if (SYMBOL_LIST.includes(romaChar)) {
       return "symbol";
     } else {
@@ -232,7 +242,7 @@ export class TypingWord {
   }
 
   private hiraganaToRomaArray(lineRomaMap: [string, ...string[]]) {
-    let word: TypeChank[] = [];
+    let word: TypeChunk[] = [];
     const STR_LEN = lineRomaMap.length;
 
     for (let i = 0; i < STR_LEN; i++) {
@@ -256,11 +266,11 @@ export class TypingWord {
     return word;
   }
 
-  private pushRomaMapChar({ word, CHAR }: { word: TypeChank[]; CHAR: (typeof ROMA_MAP)[number] }) {
+  private pushRomaMapChar({ word, CHAR }: { word: TypeChunk[]; CHAR: (typeof ROMA_MAP)[number] }) {
     word.push({
       ...CHAR,
       p: CHAR_POINT * CHAR["r"][0].length,
-      t: this.getCharType({ romaChar: CHAR.r[0] }),
+      t: this.getCharType({ romaChar: CHAR.r[0], kanaChar: CHAR.k }),
     });
 
     //促音の打鍵パターン
@@ -284,7 +294,7 @@ export class TypingWord {
     return word;
   }
 
-  private pushChar({ word, char, index }: { word: TypeChank[]; char: string; index: number }) {
+  private pushChar({ word, char, index }: { word: TypeChunk[]; char: string; index: number }) {
     //全角→半角に変換(英数字記号)
     if (ZENKAKU_LIST.includes(char)) {
       char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
@@ -295,7 +305,7 @@ export class TypingWord {
       k: char,
       r: [char],
       p: CHAR_POINT * char.length,
-      t: this.getCharType({ romaChar: char }),
+      t: this.getCharType({ romaChar: char, kanaChar: char }),
     });
 
     //n→nn変換
@@ -309,7 +319,7 @@ export class TypingWord {
   //'っ','か' → 'っか'等の繋げられる促音をつなげる
   private joinSokuonPattern(
     iunFlag: string,
-    lineWord: { k: string; r: string[]; p: number; t: TypeChank["t"] }[]
+    lineWord: { k: string; r: string[]; p: number; t: TypeChunk["t"] }[]
   ) {
     const PREVIOUS_KANA = lineWord[lineWord.length - 2]["k"];
     const KANA = lineWord[lineWord.length - 1]["k"];
@@ -346,7 +356,7 @@ export class TypingWord {
     return lineWord;
   }
 
-  private nConvert_nn(lineWord: TypeChank[]) {
+  private nConvert_nn(lineWord: TypeChunk[]) {
     //n→nn変換
     const PREVIOUS_KANA = lineWord.length >= 2 ? lineWord[lineWord.length - 2]["k"] : false;
 
@@ -515,7 +525,7 @@ export class CreateMap {
     return { r: romaKpm, k: kanaKpm };
   }
 
-  private calcLineNotes(word: TypeChank[]) {
+  private calcLineNotes(word: TypeChunk[]) {
     const kanaWord = word.map((item) => item.k);
     const dakuHandakuLineNotes = (
       kanaWord

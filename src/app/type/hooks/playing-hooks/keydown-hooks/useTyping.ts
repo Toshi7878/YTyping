@@ -10,7 +10,7 @@ import {
   useSetLineResultsAtom,
   useSetLineWordAtom,
   useSetStatusAtoms,
-  useTypePageSpeedAtom
+  useTypePageSpeedAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
@@ -33,10 +33,9 @@ export const useTyping = () => {
 
   const map = useMapAtom() as CreateMap;
   const inputMode = usePlayingInputModeAtom();
-  const scene = useSceneAtom()
+  const scene = useSceneAtom();
   const speed = useTypePageSpeedAtom();
   const typeAtomStore = useStore();
-
 
   const setLineResults = useSetLineResultsAtom();
   const { triggerTypingSound, triggerMissSound } = useSoundEffect();
@@ -57,15 +56,14 @@ export const useTyping = () => {
   const updateAllStatus = useUpdateAllStatus();
 
   return ({ event, count, lineWord }: HandleTypingParams) => {
-
     const typingResult = new Typing({ event, lineWord, inputMode });
 
-    if (typingResult.successKey) {
+    const isSuccess = typingResult.successKey;
+    const isFailed = typingResult.newLineWord.correct["r"] || typingResult.newLineWord.correct["k"];
+    if (isSuccess) {
       setLineWord(typingResult.newLineWord);
-      const isLineCompleted = !typingResult.newLineWord.nextChar["k"];
-      triggerTypingSound({ isLineCompleted });
-
-
+      const isCompleted = !typingResult.newLineWord.nextChar["k"];
+      triggerTypingSound({ isCompleted });
 
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
       const constantLineTime = getConstantLineTime(lineTime);
@@ -73,7 +71,7 @@ export const useTyping = () => {
       const totalTypeCount = typeAtomStore.get(statusAtoms.type);
       const combo = typeAtomStore.get(comboAtom);
       const typeSpeed = calcTypeSpeed({
-        updateType: isLineCompleted ? "completed" : "keydown",
+        updateType: isCompleted ? "completed" : "keydown",
         constantLineTime,
         totalTypeCount: totalTypeCount,
       });
@@ -81,6 +79,7 @@ export const useTyping = () => {
         constantLineTime,
         newLineWord: typingResult.newLineWord,
         successKey: typingResult.successKey,
+        typeChunk: typingResult.typeChunk,
         combo,
       });
       setDisplayLineKpm(typeSpeed!.lineKpm);
@@ -89,12 +88,11 @@ export const useTyping = () => {
         lineRemainConstantTime: getConstantRemainLineTime(constantLineTime),
         updatePoint: typingResult.updatePoint,
         totalKpm: typeSpeed!.totalKpm,
-        combo
+        combo,
       });
 
       const isPaused = ytStateRef.current?.isPaused;
-      if (isLineCompleted && !isPaused) {
-
+      if (isCompleted && !isPaused) {
         if (scene === "practice" && speed.playSpeed >= 1) {
           const lineResults = typeAtomStore.get(lineResultsAtom);
 
@@ -145,9 +143,8 @@ export const useTyping = () => {
             timeBonus: newStatus.timeBonus,
           });
         }
-
       }
-    } else if (typingResult.newLineWord.correct["r"] || typingResult.newLineWord.correct["k"]) {
+    } else if (isFailed) {
       triggerMissSound();
       updateMissStatus();
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());

@@ -99,6 +99,7 @@ model result_statuses {
   kana_type     Int     @default(0)
   flick_type    Int     @default(0)
   english_type  Int     @default(0)
+  space_type    Int     @default(0)
   symbol_type   Int     @default(0)
   num_type      Int     @default(0)
   miss          Int     @default(0)
@@ -159,7 +160,7 @@ model users {
   mapLikes               map_likes[]
   notificationsAsVisitor notifications[]      @relation("Visitor")
   typingOption           user_typing_options?
-  typingStats            user_typing_stats?
+  typingStats            user_stats?
   user_option            user_options?
 }
 
@@ -206,7 +207,7 @@ model user_typing_options {
   user                  users                 @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
-model user_typing_stats {
+model user_stats {
   user_id                  Int      @id
   total_ranking_count      Int      @default(0)
   total_typing_time        Float    @default(0)
@@ -214,11 +215,12 @@ model user_typing_stats {
   kana_type_total_count    Int      @default(0)
   flick_type_total_count   Int      @default(0)
   english_type_total_count Int      @default(0)
+  space_type_total_count   Int      @default(0)
   symbol_type_total_count  Int      @default(0)
-  int_type_total_count     Int      @default(0)
+  num_type_total_count     Int      @default(0)
   total_play_count         Int      @default(0)
   max_combo                Int      @default(0)
-  clap_count               Int      @default(0)
+  receive_applaused_count  Int      @default(0)
   created_at               DateTime @default(now())
   user                     users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }

@@ -1,4 +1,3 @@
-import { clientApi } from "@/trpc/client-api";
 import { useStore } from "jotai";
 import { CreateMap } from "../../../../lib/instanceMapData";
 import { defaultLineWord, defaultNextLyrics, typeTicker } from "../../ts/const/consts";
@@ -18,12 +17,12 @@ import {
   useStatusAtomsValues,
 } from "../../type-atoms/gameRenderAtoms";
 import { useRefs } from "../../type-contexts/refsProvider";
+import { useSendUserStats } from "./useSendUserStats";
 
 export const useRetry = () => {
   const { statusRef, gameStateRef, playerRef } = useRefs();
   const map = useMapAtom();
   const typeAtomStore = useStore();
-  const upsertTypingStats = clientApi.userTypingStats.upsert.useMutation();
 
   const setLineResults = useSetLineResultsAtom();
   const setCombo = useSetComboAtom();
@@ -34,6 +33,7 @@ export const useRetry = () => {
 
   const { resetStatusValues } = useSetStatusAtoms();
   const statusAtomsValues = useStatusAtomsValues();
+  const sendUserStats = useSendUserStats();
 
   return () => {
     setLineWord(structuredClone(defaultLineWord));
@@ -48,11 +48,7 @@ export const useRetry = () => {
         gameStateRef.current!.retryCount++;
       }
 
-      const romaType = statusRef.current?.status.romaType ?? 0;
-      const kanaType = statusRef.current?.status.kanaType ?? 0;
-      const typingTime = statusRef.current?.status.totalTypeTime ?? 0;
-      upsertTypingStats.mutate({ romaType, kanaType, typingTime });
-
+      sendUserStats();
       setNotify(Symbol(`Retry(${gameStateRef.current!.retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
       (statusRef.current as StatusRef) = structuredClone(DEFAULT_STATUS_REF);

@@ -47,8 +47,8 @@ export const useSoundEffect = () => {
     sound.play("type", { volume: 0 });
     sound.play("miss", { volume: 0 });
   };
-  const triggerTypingSound = ({ isLineCompleted }: { isLineCompleted: boolean }) => {
-    if (isLineCompleted) {
+  const triggerTypingSound = ({ isCompleted }: { isCompleted: boolean }) => {
+    if (isCompleted) {
       if (userOptions.line_clear_sound) {
         clearTypeSoundPlay();
       } else if (userOptions.type_sound) {

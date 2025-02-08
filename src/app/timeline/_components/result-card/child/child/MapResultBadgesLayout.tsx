@@ -23,6 +23,10 @@ export const MapResultBadges = ({ result }: ResultCardProps) => {
               romaType={result.status.roma_type}
               kanaType={result.status.kana_type}
               flickType={result.status.flick_type}
+              englishType={result.status.english_type}
+              symbolType={result.status.symbol_type}
+              numType={result.status.num_type}
+              spaceType={result.status.space_type}
             />
           )}
         </ResultBadge>
@@ -89,6 +93,10 @@ export const MapResultBadgesMobile = ({ result, ...rest }: ResultCardProps & Fle
               romaType={result.status.roma_type}
               kanaType={result.status.kana_type}
               flickType={result.status.flick_type}
+              englishType={result.status.english_type}
+              symbolType={result.status.symbol_type}
+              numType={result.status.num_type}
+              spaceType={result.status.space_type}
             />
           )}
         </ResultBadge>

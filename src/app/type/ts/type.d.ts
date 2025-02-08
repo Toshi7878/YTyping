@@ -15,18 +15,18 @@ export type MapData = {
     changeVideoSpeed?: number;
   };
 };
-export type TypeChank = {
+export type TypeChunk = {
   k: string;
   r: string[];
   p: number;
-  t: "kana" | "eng" | "num" | "symbol" | undefined;
+  t: "kana" | "eng" | "num" | "symbol" | "space" | undefined;
 };
 
 export type SpeedDifficulty = { median: { r: number; k: number }; max: { r: number; k: number } };
 
 export interface LineData {
   time: number; //後でここは配列に変更する;
-  word: TypeChank[];
+  word: TypeChunk[];
   lyrics: string; //後でここは配列に変更する;
   kpm: { k: number; r: number };
   notes: { k: number; r: number };
@@ -49,8 +49,8 @@ export interface RefsContextType {
 
 export interface LineWord {
   correct: { k: string; r: string };
-  nextChar: TypeChank;
-  word: TypeChank[];
+  nextChar: TypeChunk;
+  word: TypeChunk[];
   kanaDakuten?: string;
   lineCount: number;
 }
@@ -93,6 +93,10 @@ export interface StatusRef {
     romaType: number;
     kanaType: number;
     flickType: number;
+    englishType: number;
+    spaceType: number;
+    symbolType: number;
+    numType: number;
     rkpm: number;
     clearRate: number;
     kanaToRomaConvertCount: number;
@@ -127,6 +131,7 @@ export interface SendResultData {
     roma_type: number;
     flick_type: number;
     english_type: number;
+    space_type: number;
     symbol_type: number;
     num_type: number;
     miss: number;

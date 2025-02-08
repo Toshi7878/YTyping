@@ -1,5 +1,5 @@
 import { CreateMap, MISS_PENALTY } from "../../../../lib/instanceMapData";
-import { Status } from "../../ts/type";
+import { LineWord, Status, TypeChunk } from "../../ts/type";
 import {
   useMapAtom,
   usePlayingInputModeAtom,
@@ -7,7 +7,7 @@ import {
   useSceneAtom,
   useSetComboAtom,
   useSetStatusAtoms,
-  useStatusAtomsValues
+  useStatusAtomsValues,
 } from "../../type-atoms/gameRenderAtoms";
 import { useRefs } from "../../type-contexts/refsProvider";
 
@@ -51,7 +51,8 @@ export const useTypeSuccess = () => {
     newStatus.kpm = totalKpm;
     newStatus.type++;
 
-    if (!newLineWord.nextChar["k"]) {
+    const isCompleted = !newLineWord.nextChar["k"];
+    if (isCompleted) {
       const timeBonus = Math.round(lineRemainConstantTime * 1 * 100);
       newStatus.timeBonus = timeBonus; //speed;
       isUp.timeBonus = true;
@@ -70,29 +71,33 @@ export const useTypeSuccess = () => {
 
     setStatusValues(newStatus);
 
-    setCombo(combo+1);
+    setCombo(combo + 1);
 
     return newStatus;
   };
 
-  const updateSuccessStatusRefs = ({ constantLineTime, newLineWord, successKey, combo }) => {
+  const updateSuccessStatusRefs = ({
+    constantLineTime,
+    newLineWord,
+    typeChunk,
+    successKey,
+    combo,
+  }: {
+    constantLineTime: number;
+    newLineWord: LineWord;
+    typeChunk?: TypeChunk;
+    successKey: string;
+    combo: number;
+  }) => {
     if (statusRef.current!.lineStatus.lineType === 0) {
       statusRef.current!.lineStatus.latency = constantLineTime;
     }
 
     statusRef.current!.status.missCombo = 0;
 
-    const newCombo = combo + 1
+    const newCombo = combo + 1;
     if (newCombo > statusRef.current!.status.maxCombo) {
       statusRef.current!.status.maxCombo = newCombo;
-    }
-
-    if (inputMode === "roma") {
-      statusRef.current!.status.romaType++;
-    } else if (inputMode === "kana") {
-      statusRef.current!.status.kanaType++;
-    } else if (inputMode === "flick") {
-      statusRef.current!.status.flickType++;
     }
 
     statusRef.current!.lineStatus.lineType++;
@@ -109,6 +114,28 @@ export const useTypeSuccess = () => {
         is: true,
         t: constantLineTime,
       });
+    }
+
+    if (!typeChunk) {
+      return;
+    }
+
+    if (typeChunk.t === "kana") {
+      if (inputMode === "roma") {
+        statusRef.current!.status.romaType++;
+      } else if (inputMode === "kana") {
+        statusRef.current!.status.kanaType++;
+      } else if (inputMode === "flick") {
+        statusRef.current!.status.flickType++;
+      }
+    } else if (typeChunk.t === "eng") {
+      statusRef.current!.status.englishType++;
+    } else if (typeChunk.t === "num") {
+      statusRef.current!.status.numType++;
+    } else if (typeChunk.t === "space") {
+      statusRef.current!.status.spaceType++;
+    } else if (typeChunk.t === "symbol") {
+      statusRef.current!.status.symbolType++;
     }
   };
 

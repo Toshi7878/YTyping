@@ -1,3 +1,5 @@
+export const KANA_TYPE_LIST = ["ー", "、", "。"];
+
 export const SYMBOL_LIST = [
   ",",
   ".",
@@ -23,7 +25,6 @@ export const SYMBOL_LIST = [
   "~",
   "{",
   "}",
-  " ",
   "#",
   "$",
   "%",

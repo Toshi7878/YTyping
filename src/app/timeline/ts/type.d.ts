@@ -20,6 +20,10 @@ export interface ResultCardInfo {
     kana_type: number;
     roma_type: number;
     flick_type: number;
+    english_type: number;
+    symbol_type: number;
+    num_type: number;
+    space_type: number;
     clear_rate: number;
   };
 

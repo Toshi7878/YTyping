@@ -16,7 +16,7 @@ import {
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
 import { CreateMap } from "../../../../../lib/instanceMapData";
-import { CharsType, KanaInput, RomaInput } from "../../../ts/scene-ts/playing/keydown/typingJudge";
+import { KanaInput, RomaInput, TypingKeys } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { LineResultData, Status, TypeResult } from "../../../ts/type";
 import { useGetTime } from "../../useGetTime";
 import { useSoundEffect } from "../useSoundEffect";
@@ -95,7 +95,7 @@ const useKeyReplay = () => {
     const count = statusRef.current!.status.count;
 
     if (key) {
-      const chars: CharsType = {
+      const typingKeys: TypingKeys = {
         keys: [key],
         key: key,
         code: `Key${key.toUpperCase()}`,
@@ -107,11 +107,11 @@ const useKeyReplay = () => {
         const lineWord = typeAtomStore.get(lineWordAtom);
         const result =
           inputMode === "roma"
-            ? new RomaInput({ chars, lineWord })
-            : new KanaInput({ chars, lineWord });
+            ? new RomaInput({ typingKeys, lineWord })
+            : new KanaInput({ typingKeys, lineWord });
         setLineWord(result.newLineWord);
         const isLineCompleted = !result.newLineWord.nextChar["k"];
-        triggerTypingSound({ isLineCompleted });
+        triggerTypingSound({ isCompleted: isLineCompleted });
 
         const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
 
