@@ -66,21 +66,29 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
         </Text>
       );
     } else if (props.flickType) {
-      <Text as="span" color={flickColor} className="input-mode-outline-text">
-        フリック
-      </Text>;
+      return (
+        <Text as="span" color={flickColor} className="input-mode-outline-text">
+          フリック
+        </Text>
+      );
     } else if (props.englishType) {
-      <Text as="span" color={englishColor} className="input-mode-outline-text">
-        英語
-      </Text>;
+      return (
+        <Text as="span" color={englishColor} className="input-mode-outline-text">
+          英語
+        </Text>
+      );
     } else if (props.numType) {
-      <Text as="span" color={numColor} className="input-mode-outline-text">
-        数字
-      </Text>;
+      return (
+        <Text as="span" color={numColor} className="input-mode-outline-text">
+          数字
+        </Text>
+      );
     } else if (props.spaceType || props.symbolType) {
-      <Text as="span" color={otherColor} className="input-mode-outline-text">
-        その他
-      </Text>;
+      return (
+        <Text as="span" color={otherColor} className="input-mode-outline-text">
+          その他
+        </Text>
+      );
     }
   }
   return null;
