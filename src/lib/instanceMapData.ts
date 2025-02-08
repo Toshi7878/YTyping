@@ -1,4 +1,4 @@
-import { ALPHABET_LIST, KANA_TYPE_LIST, NUM_LIST, SYMBOL_LIST } from "@/config/consts/charList";
+import { ALPHABET_LIST, NUM_LIST } from "@/config/consts/charList";
 import {
   InputModeType,
   LineData,
@@ -228,10 +228,7 @@ export class TypingWord {
     kanaChar: string;
     romaMapIndex?: number;
   }): TypeChunk["t"] {
-    if (
-      (romaMapIndex && romaMapIndex >= 10 && romaMapIndex <= 222) ||
-      KANA_TYPE_LIST.includes(kanaChar)
-    ) {
+    if (romaMapIndex && romaMapIndex >= 10 && romaMapIndex <= 222) {
       return "kana";
     } else if (ALPHABET_LIST.includes(romaChar)) {
       return "alphabet";
@@ -239,10 +236,8 @@ export class TypingWord {
       return "num";
     } else if (romaChar === " ") {
       return "space";
-    } else if (SYMBOL_LIST.includes(romaChar)) {
-      return "symbol";
     } else {
-      return "kana";
+      return "symbol";
     }
   }
 
