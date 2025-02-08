@@ -51,7 +51,7 @@ function Content({ mapInfo }: ContentProps) {
   const setLineResults = useSetLineResultsAtom();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
   const setTimeOffset = useSetTimeOffsetAtom();
-  const [mapData] = clientApi.map.getMap.useSuspenseQuery<MapData[]>(
+  const { data: mapData, isLoading } = clientApi.map.getMap.useQuery<MapData[]>(
     {
       mapId: mapId as string,
     },
@@ -144,7 +144,7 @@ function Content({ mapInfo }: ContentProps) {
 
                   <TypeYouTubeContent
                     className="w-[513px]"
-                    isMapLoading={!!mapData}
+                    isMapLoading={isLoading}
                     videoId={video_id}
                   />
                 </Box>
@@ -160,7 +160,7 @@ function Content({ mapInfo }: ContentProps) {
             {ytLayoutMode === "column" && (
               <Box mt={5} position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
-                <TypeYouTubeContent isMapLoading={!!mapData} videoId={video_id} />
+                <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
               </Box>
             )}
           </Flex>
