@@ -128,7 +128,7 @@ export const useTypeSuccess = () => {
       } else if (inputMode === "flick") {
         statusRef.current!.status.flickType++;
       }
-    } else if (typeChunk.t === "eng") {
+    } else if (typeChunk.t === "alphabet") {
       statusRef.current!.status.englishType++;
     } else if (typeChunk.t === "num") {
       statusRef.current!.status.numType++;

@@ -19,7 +19,7 @@ export type TypeChunk = {
   k: string;
   r: string[];
   p: number;
-  t: "kana" | "eng" | "num" | "symbol" | "space" | undefined;
+  t: "kana" | "alphabet" | "num" | "symbol" | "space" | undefined;
 };
 
 export type SpeedDifficulty = { median: { r: number; k: number }; max: { r: number; k: number } };

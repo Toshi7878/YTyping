@@ -234,7 +234,7 @@ export class TypingWord {
     ) {
       return "kana";
     } else if (ALPHABET_LIST.includes(romaChar)) {
-      return "eng";
+      return "alphabet";
     } else if (NUM_LIST.includes(romaChar)) {
       return "num";
     } else if (romaChar === " ") {
