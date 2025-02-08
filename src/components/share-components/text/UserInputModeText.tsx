@@ -19,7 +19,6 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
     kana: theme.colors.semantic.kana,
     flick: theme.colors.semantic.flick,
     english: theme.colors.semantic.english,
-    num: theme.colors.semantic.num,
     other: theme.colors.semantic.other,
   };
 
@@ -56,8 +55,8 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
   if (props.kanaType) return renderText("かな", colors.kana);
   if (props.flickType) return renderText("フリック", colors.flick);
   if (props.englishType) return renderText("英語", colors.english);
-  if (props.numType) return renderText("数字", colors.num);
-  if (props.spaceType || props.symbolType) return renderText("その他", colors.other);
+  if (props.numType || props.spaceType || props.symbolType)
+    return renderText("その他", colors.other);
 
   return null;
 };

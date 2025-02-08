@@ -82,7 +82,6 @@ export interface ThemeColors {
       kana: `#${string}`;
       flick: `#${string}`;
       english: `#${string}`;
-      num: `#${string}`;
       other: `#${string}`;
       like: `#${string}`;
       clap: `#${string}`;
