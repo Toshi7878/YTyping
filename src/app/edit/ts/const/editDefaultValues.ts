@@ -1,7 +1,7 @@
 import { UploadResult } from "@/types";
 import { EditStatusRef } from "../type";
 
-export const DEFAULT_ADD_ADJUST_TIME = -0.16;
+export const DEFAULT_ADD_ADJUST_TIME = -0.18;
 
 export const TAG_MAX_LEN = 10;
 export const TAG_MIN_LEN = 2;
@@ -20,7 +20,7 @@ export const INITIAL_SERVER_ACTIONS_STATE: UploadResult = {
 export const LINE_ROW_SWITCH_CLASSNAMES = {
   currentTime: "current-time-line",
   selected: "selected-line",
-}
+};
 
 export const CHOICE_TAGS = [
   "公式動画",
