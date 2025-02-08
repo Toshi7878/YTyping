@@ -114,7 +114,7 @@ const TypeCountResult = (props: TypeCountResultProps) => {
     { label: "ローマ字タイプ数", value: props.romaType },
     { label: "かな入力タイプ数", value: props.kanaType },
     { label: "フリック入力タイプ数", value: props.flickType },
-    { label: "英語タイプ数", value: props.englishType },
+    { label: "アルファベットタイプ数", value: props.englishType },
     { label: "数字タイプ数", value: props.numType },
     { label: "記号タイプ数", value: props.symbolType },
     { label: "スペースタイプ数", value: props.spaceType },
