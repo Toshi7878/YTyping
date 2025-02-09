@@ -43,32 +43,44 @@ export const userStatsRouter = {
         romaType: z.number(),
         kanaType: z.number(),
         flickType: z.number(),
-        typingTime: z.number(),
+        totalTypeTime: z.number(),
         englishType: z.number(),
         numType: z.number(),
         symbolType: z.number(),
         spaceType: z.number(),
+        maxCombo: z.number(),
       })
     )
     .mutation(async ({ input }) => {
       try {
         const session = await auth();
         const userId = session ? Number(session.user.id) : 0;
+        const currentStats = await prisma.user_stats.findUnique({
+          where: { user_id: userId },
+          select: { max_combo: true },
+        });
+
+        const updateData: Record<string, any> = {
+          roma_type_total_count: { increment: input.romaType },
+          kana_type_total_count: { increment: input.kanaType },
+          flick_type_total_count: { increment: input.flickType },
+          english_type_total_count: { increment: input.englishType },
+          num_type_total_count: { increment: input.numType },
+          symbol_type_total_count: { increment: input.symbolType },
+          space_type_total_count: { increment: input.spaceType },
+          total_typing_time: { increment: input.totalTypeTime },
+        };
+
+        const isUpdateMaxCombo = !currentStats || input.maxCombo > (currentStats.max_combo || 0);
+        if (isUpdateMaxCombo) {
+          updateData.max_combo = input.maxCombo;
+        }
 
         await prisma.user_stats.upsert({
           where: {
             user_id: userId,
           },
-          update: {
-            roma_type_total_count: { increment: input.romaType },
-            kana_type_total_count: { increment: input.kanaType },
-            flick_type_total_count: { increment: input.flickType },
-            english_type_total_count: { increment: input.englishType },
-            num_type_total_count: { increment: input.numType },
-            symbol_type_total_count: { increment: input.symbolType },
-            space_type_total_count: { increment: input.spaceType },
-            total_typing_time: { increment: input.typingTime },
-          },
+          update: updateData,
           create: {
             user_id: userId,
             roma_type_total_count: input.romaType,
@@ -78,7 +90,8 @@ export const userStatsRouter = {
             num_type_total_count: input.numType,
             symbol_type_total_count: input.symbolType,
             space_type_total_count: input.spaceType,
-            total_typing_time: input.typingTime,
+            total_typing_time: input.totalTypeTime,
+            max_combo: input.maxCombo,
           },
         });
       } catch (error) {
@@ -94,4 +107,29 @@ export const userStatsRouter = {
         );
       }
     }),
+
+  getUserStats: publicProcedure.query(async () => {
+    const session = await auth();
+    const userId = session?.user ? Number(session?.user.id) : 0;
+
+    const userTypingOptions = await prisma.user_stats.findUnique({
+      where: { user_id: userId },
+      select: {
+        total_ranking_count: true,
+        total_typing_time: true,
+        roma_type_total_count: true,
+        kana_type_total_count: true,
+        flick_type_total_count: true,
+        english_type_total_count: true,
+        symbol_type_total_count: true,
+        num_type_total_count: true,
+        space_type_total_count: true,
+        total_play_count: true,
+        max_combo: true,
+        created_at: true,
+      },
+    });
+
+    return userTypingOptions;
+  }),
 };

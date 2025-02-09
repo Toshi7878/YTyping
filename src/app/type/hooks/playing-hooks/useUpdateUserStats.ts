@@ -12,24 +12,10 @@ export function useUpdateUserStats() {
     incrementPlayCountStats.mutate({ mapId: Number(mapId) });
   };
   const updateTypingStats = () => {
-    const romaType = statusRef.current!.userStats.romaType;
-    const kanaType = statusRef.current!.userStats.kanaType;
-    const flickType = statusRef.current!.userStats.flickType;
-    const englishType = statusRef.current!.userStats.englishType;
-    const numType = statusRef.current!.userStats.numType;
-    const symbolType = statusRef.current!.userStats.symbolType;
-    const spaceType = statusRef.current!.userStats.spaceType;
-    const typingTime = statusRef.current!.userStats.totalTypeTime;
+    const userStats = statusRef.current!.userStats;
 
     incrementTypingStats.mutate({
-      romaType,
-      kanaType,
-      typingTime,
-      flickType,
-      englishType,
-      numType,
-      symbolType,
-      spaceType,
+      ...userStats,
     });
   };
 

@@ -98,6 +98,9 @@ export const useTypeSuccess = () => {
     const newCombo = combo + 1;
     if (newCombo > statusRef.current!.status.maxCombo) {
       statusRef.current!.status.maxCombo = newCombo;
+      if (scene === "playing") {
+        statusRef.current!.userStats.maxCombo = newCombo;
+      }
     }
 
     statusRef.current!.lineStatus.lineType++;

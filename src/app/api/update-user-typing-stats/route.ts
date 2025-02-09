@@ -9,20 +9,32 @@ export async function POST(request: Request) {
 
     const bodyText = await request.text();
     const input: StatusRef["userStats"] = JSON.parse(bodyText);
+    const currentStats = await prisma.user_stats.findUnique({
+      where: { user_id: userId },
+      select: { max_combo: true },
+    });
+
+    const updateData: Record<string, any> = {
+      roma_type_total_count: { increment: input.romaType },
+      kana_type_total_count: { increment: input.kanaType },
+      flick_type_total_count: { increment: input.flickType },
+      english_type_total_count: { increment: input.englishType },
+      num_type_total_count: { increment: input.numType },
+      symbol_type_total_count: { increment: input.symbolType },
+      space_type_total_count: { increment: input.spaceType },
+      total_typing_time: { increment: input.totalTypeTime },
+    };
+
+    const isUpdateMaxCombo = !currentStats || input.maxCombo > (currentStats.max_combo || 0);
+    if (isUpdateMaxCombo) {
+      updateData.max_combo = input.maxCombo;
+    }
+
     await prisma.user_stats.upsert({
       where: {
         user_id: userId,
       },
-      update: {
-        roma_type_total_count: { increment: input.romaType },
-        kana_type_total_count: { increment: input.kanaType },
-        flick_type_total_count: { increment: input.flickType },
-        english_type_total_count: { increment: input.englishType },
-        num_type_total_count: { increment: input.numType },
-        symbol_type_total_count: { increment: input.symbolType },
-        space_type_total_count: { increment: input.spaceType },
-        total_typing_time: { increment: input.totalTypeTime },
-      },
+      update: updateData,
       create: {
         user_id: userId,
         roma_type_total_count: input.romaType,
@@ -33,6 +45,7 @@ export async function POST(request: Request) {
         symbol_type_total_count: input.symbolType,
         space_type_total_count: input.spaceType,
         total_typing_time: input.totalTypeTime,
+        max_combo: input.maxCombo,
       },
     });
   } catch (error) {

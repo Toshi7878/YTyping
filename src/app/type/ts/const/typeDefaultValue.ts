@@ -40,6 +40,7 @@ export const DEFAULT_STATUS_REF: StatusRef = {
     symbolType: 0,
     numType: 0,
     totalTypeTime: 0,
+    maxCombo: 0,
   },
 };
 

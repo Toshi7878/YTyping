@@ -125,6 +125,7 @@ export interface StatusRef {
     symbolType: number;
     numType: number;
     totalTypeTime: number;
+    maxCombo: number;
   };
 }
 
