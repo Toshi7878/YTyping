@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-2-9",
+    descriptions: ["ユーザーページに累計記録情報を追加"],
+  },
+  {
     date: "2025-2-8",
     descriptions: [
       "エディターの追加タイム補正値のデフォルトを-0.18に変更",
