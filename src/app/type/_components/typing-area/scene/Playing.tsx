@@ -14,7 +14,10 @@ import PlayingCenter from "./playing-child/PlayingCenter";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
 import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useStartTimer";
 import { usePlayTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
+import { useUpdateUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
 import { defaultLineWord, defaultNextLyrics, typeTicker } from "@/app/type/ts/const/consts";
+import { DEFAULT_STATUS_REF } from "@/app/type/ts/const/typeDefaultValue";
+import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { UseDisclosureReturn } from "@chakra-ui/react";
 
@@ -38,8 +41,40 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
   const userOptions = useUserOptionsAtom();
   const timeOffset = useTimeOffsetAtom();
   const playSpeed = useTypePageSpeedAtom();
+  const { updateTypingStats } = useUpdateUserStats();
+  const { statusRef } = useRefs();
 
   const inputMode = usePlayingInputModeAtom();
+
+  // ページ離脱時に updateTypingStats を送信するための処理
+  useEffect(() => {
+    const handleVisibilitychange = () => {
+      if (document.visibilityState === "hidden") {
+        const sendStats = statusRef.current!.userStats;
+        navigator.sendBeacon(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
+          JSON.stringify(sendStats)
+        );
+        statusRef.current!.userStats = structuredClone(DEFAULT_STATUS_REF.userStats);
+      }
+    };
+    const handleBeforeunload = () => {
+      const sendStats = statusRef.current!.userStats;
+      navigator.sendBeacon(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
+        JSON.stringify(sendStats)
+      );
+      statusRef.current!.userStats = structuredClone(DEFAULT_STATUS_REF.userStats);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeunload);
+    window.addEventListener("visibilitychange", handleVisibilitychange);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeunload);
+      window.removeEventListener("visibilitychange", handleVisibilitychange);
+    };
+  }, []);
+
   useEffect(() => {
     if (scene === "replay") {
       // リプレイモードは制限なし

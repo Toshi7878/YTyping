@@ -3,9 +3,12 @@ import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { Stack } from "@chakra-ui/react";
 import { useFormState } from "react-dom";
 
+import { useUpdateUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
 import { useSendResult } from "@/app/type/hooks/useSendResult";
+import { DEFAULT_STATUS_REF } from "@/app/type/ts/const/typeDefaultValue";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 import { CARD_BODY_MIN_HEIGHT } from "../TypingCard";
 import EndMainButtonContainer from "./end-child/EndMainButtonContainer";
 import EndSubButtonContainer from "./end-child/EndSubButtonContainer";
@@ -25,7 +28,13 @@ const End = ({ onOpen }: EndProps) => {
 
   const [state, formAction] = useFormState(sendResult, INITIAL_STATE);
 
-  const { bestScoreRef, gameStateRef } = useRefs();
+  const { bestScoreRef, gameStateRef, statusRef } = useRefs();
+  const { updateTypingStats } = useUpdateUserStats();
+
+  useEffect(() => {
+    updateTypingStats();
+    statusRef.current!.userStats = structuredClone(DEFAULT_STATUS_REF.userStats);
+  }, []);
 
   const status = statusAtomsValues();
 

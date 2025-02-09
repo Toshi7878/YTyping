@@ -72,7 +72,7 @@ export const useRetry = () => {
 export const useProceedRetry = () => {
   const { statusRef, gameStateRef, playerRef } = useRefs();
   const setCombo = useSetComboAtom();
-  const { updatePlayCountStats, updateTypingStats } = useUpdateUserStats();
+  const { updatePlayCountStats } = useUpdateUserStats();
 
   const map = useMapAtom() as CreateMap;
   const setLineResults = useSetLineResultsAtom();
@@ -85,7 +85,6 @@ export const useProceedRetry = () => {
     if (playMode === "playing") {
       setLineResults(structuredClone(map.defaultLineResultData));
       updatePlayCountStats();
-      updateTypingStats();
     }
 
     if (playMode !== "practice") {

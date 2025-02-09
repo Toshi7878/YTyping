@@ -11,6 +11,7 @@ import {
 } from "../type-atoms/gameRenderAtoms";
 import { useRefs } from "../type-contexts/refsProvider";
 import { useStartTimer } from "./playing-hooks/timer-hooks/useStartTimer";
+import { useUpdateUserStats } from "./playing-hooks/useUpdateUserStats";
 
 export const useYTPlayEvent = () => {
   const { ytStateRef, playerRef, gameStateRef } = useRefs();
@@ -18,6 +19,8 @@ export const useYTPlayEvent = () => {
   const setScene = useSetSceneAtom();
   const setNotify = useSetPlayingNotifyAtom();
   const startTimer = useStartTimer();
+  const { updatePlayCountStats } = useUpdateUserStats();
+
   return async (event: YouTubeEvent) => {
     console.log("再生 1");
     const scene = typeAtomStore.get(sceneAtom);
@@ -43,6 +46,7 @@ export const useYTPlayEvent = () => {
       } else {
         setScene("playing");
       }
+      updatePlayCountStats();
     }
 
     if (scene === "playing" || scene === "replay" || scene === "practice") {

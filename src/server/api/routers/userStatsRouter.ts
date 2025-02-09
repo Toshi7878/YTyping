@@ -55,7 +55,7 @@ export const userStatsRouter = {
         const session = await auth();
         const userId = session ? Number(session.user.id) : 0;
 
-        const updated = await prisma.user_stats.upsert({
+        await prisma.user_stats.upsert({
           where: {
             user_id: userId,
           },
@@ -81,8 +81,6 @@ export const userStatsRouter = {
             total_typing_time: input.typingTime,
           },
         });
-
-        return updated;
       } catch (error) {
         return new Response(
           JSON.stringify({
