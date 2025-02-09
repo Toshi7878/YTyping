@@ -93,7 +93,6 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
               key={index}
               p={4}
               borderWidth="1px"
-              borderColor="gray.200"
               borderRadius="md"
               bg={theme.colors.background.body}
             >
@@ -116,7 +115,6 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
               key={index}
               p={4}
               borderWidth="1px"
-              borderColor="gray.200"
               borderRadius="md"
               bg={theme.colors.background.body}
             >
