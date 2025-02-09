@@ -49,9 +49,9 @@ export const useRetry = () => {
         if (status.type >= 10) {
           updatePlayCountStats();
         }
-        updateTypingStats();
       }
 
+      updateTypingStats();
       setNotify(Symbol(`Retry(${gameStateRef.current!.retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
       (statusRef.current as StatusRef) = structuredClone(DEFAULT_STATUS_REF);
@@ -72,7 +72,6 @@ export const useRetry = () => {
 export const useProceedRetry = () => {
   const { statusRef, gameStateRef, playerRef } = useRefs();
   const setCombo = useSetComboAtom();
-  const { updatePlayCountStats } = useUpdateUserStats();
 
   const map = useMapAtom() as CreateMap;
   const setLineResults = useSetLineResultsAtom();
@@ -84,7 +83,6 @@ export const useProceedRetry = () => {
 
     if (playMode === "playing") {
       setLineResults(structuredClone(map.defaultLineResultData));
-      updatePlayCountStats();
     }
 
     if (playMode !== "practice") {
