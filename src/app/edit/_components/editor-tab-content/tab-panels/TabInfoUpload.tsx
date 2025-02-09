@@ -1,4 +1,4 @@
-import { Card, CardBody, HStack, Stack, useTheme } from "@chakra-ui/react";
+import { Card, CardBody, Flex, HStack, Stack, useTheme } from "@chakra-ui/react";
 
 import { useCreatorIdAtom, useVideoIdAtom } from "@/app/edit/edit-atom/editAtom";
 import { useGetGeminiMapInfoQuery } from "@/app/edit/hooks/query/useGetGeminiMapInfoQuery";
@@ -45,14 +45,18 @@ const TabInfoUpload = () => {
           <InfoTag isGeminiLoading={isLoading} />
           <HStack justifyContent="space-between">
             {isDisplayUploadButton ? (
-              <form action={formAction}>
+              <Flex
+                as={"form"}
+                action={formAction}
+                gap={4}
+                alignItems="baseline"
+                flexDirection={{ base: "column", lg: "row" }}
+              >
                 <UploadButton state={state} />
                 {mapId ? <TypeLinkButton /> : ""}
-              </form>
-            ) : mapId ? (
-              <TypeLinkButton />
+              </Flex>
             ) : (
-              ""
+              mapId && <TypeLinkButton />
             )}
             <PreviewTimeInput />
           </HStack>

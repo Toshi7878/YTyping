@@ -38,7 +38,7 @@ const PreviewTimeInput = () => {
       <HStack alignItems="baseline">
         <FormLabel fontSize="sm">
           <HStack alignItems="baseline">
-            <Text as="span" mr={3}>
+            <Text as="small" mr={3}>
               プレビュータイム
             </Text>
 

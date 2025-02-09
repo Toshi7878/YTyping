@@ -9,7 +9,7 @@ const TypeLinkButton = () => {
   const { id } = useParams();
   const handleLinkClick = useLinkClick();
   return (
-    <Link href={`/type/${id}`} onClick={handleLinkClick} cursor="pointer">
+    <Link href={`/type/${id}`} onClick={handleLinkClick}>
       <Button
         size="md"
         variant="outline"
@@ -18,7 +18,6 @@ const TypeLinkButton = () => {
         _hover={{
           bg: theme.colors.button.sub.hover,
         }}
-        ml={5}
       >
         タイピングページに移動
       </Button>
