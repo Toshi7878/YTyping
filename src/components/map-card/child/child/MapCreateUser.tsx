@@ -9,7 +9,7 @@ interface MapCreateUserProps {
 
 const MapCreateUser = (props: MapCreateUserProps) => {
   return (
-    <Text as="small" mt={2}>
+    <Text as="small" mt={2} isTruncated>
       <UserLinkText userId={props.map.creator.id} userName={props.map.creator.name as string} />
       <Text as="span" fontSize="xs" display={{ base: "none", md: "inline-block" }}>
         <Box mx={1}>

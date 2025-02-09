@@ -29,19 +29,8 @@ function LoadingMapCard({ cardLength }: { cardLength: number }) {
 function MapList() {
   const searchParams = useSearchParams();
 
-  const {
-    data,
-    error,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    status,
-    refetch,
-  } = useMapListInfiniteQuery();
+  const { data, fetchNextPage, hasNextPage, isFetching, status, refetch } =
+    useMapListInfiniteQuery();
 
   useEffect(() => {
     refetch();
