@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         num_type_total_count: { increment: input.numType },
         symbol_type_total_count: { increment: input.symbolType },
         space_type_total_count: { increment: input.spaceType },
-        total_typing_time: { increment: input.typingTime },
+        total_typing_time: { increment: input.totalTypeTime },
       },
       create: {
         user_id: userId,
@@ -31,11 +31,11 @@ export async function POST(request: Request) {
         num_type_total_count: input.numType,
         symbol_type_total_count: input.symbolType,
         space_type_total_count: input.spaceType,
-        total_typing_time: input.typingTime,
+        total_typing_time: input.totalTypeTime,
       },
     });
   } catch (error) {
-    console.error("Error fetching ranking list:", error);
+    console.error("Error :", error);
 
     return new Response("Internal Server Error", { status: 500 });
   }
