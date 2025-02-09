@@ -123,9 +123,10 @@ const TypeCountResult = (props: TypeCountResultProps) => {
     { label: "ローマ字タイプ数", value: props.romaType },
     { label: "かな入力タイプ数", value: props.kanaType },
     { label: "フリック入力タイプ数", value: props.flickType },
-    { label: "アルファベットタイプ数", value: props.englishType },
-    { label: "数字タイプ数", value: props.numType },
-    { label: "記号タイプ数(スペース含)", value: props.symbolType + props.spaceType },
+    {
+      label: "英数字記号タイプ数",
+      value: props.englishType + props.numType + props.symbolType + props.spaceType,
+    },
   ];
 
   const total = types.reduce((sum, type) => sum + type.value, 0);
