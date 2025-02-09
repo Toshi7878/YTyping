@@ -26,7 +26,7 @@ const ResultToolTipText = (props: ResultToolTipTextProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
-    <Box p={4} borderRadius="md" boxShadow="md">
+    <Box p={4}>
       <VStack spacing={3} align="start">
         <TypeCountResult
           romaType={props.romaType}
