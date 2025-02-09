@@ -58,6 +58,7 @@ function Content() {
     } else {
       dispatch(resetMapData());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
 
   useEffect(() => {
