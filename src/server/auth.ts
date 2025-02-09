@@ -110,4 +110,4 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
 });
 
-const authRoutes = ["/user/register", "/user/settings"];
+const authRoutes = ["/user/register", "/user/settings", "/user/mypage"];
