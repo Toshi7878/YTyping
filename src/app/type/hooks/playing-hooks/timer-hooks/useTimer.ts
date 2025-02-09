@@ -232,7 +232,9 @@ export const useCalcLineResult = () => {
           ? constantLineTime
           : statusRef.current!.lineStatus.lineClearTime;
 
-        if (scene === "playing" || scene === "practice") {
+        const lineTypeCount = statusRef.current!.lineStatus.lineType;
+
+        if (lineTypeCount && (scene === "playing" || scene === "practice")) {
           statusRef.current!.userStats.totalTypeTime += lineWord.nextChar["k"]
             ? constantLineTime
             : statusRef.current!.lineStatus.lineClearTime;
