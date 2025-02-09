@@ -4,7 +4,7 @@ import {
   useSetIsOptionEdited,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
-import VolumeRange from "@/components/custom-ui/VolumeRange";
+import VolumeRange from "@/components/share-components/VolumeRange";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";

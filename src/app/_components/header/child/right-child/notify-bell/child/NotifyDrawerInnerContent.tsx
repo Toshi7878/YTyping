@@ -1,8 +1,8 @@
-import DateDistanceText from "@/components/custom-ui/DateDistanceText";
 import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import NotificationMapCard from "@/components/map-card-notification/NotificationMapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import DateDistanceText from "@/components/share-components/text/DateDistanceText";
 import {
   NOTIFICATION_MAP_THUBNAIL_HEIGHT,
   NOTIFICATION_MAP_THUBNAIL_WIDTH,

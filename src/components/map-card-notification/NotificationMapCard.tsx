@@ -3,7 +3,7 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
 import { CardBody, CardHeader, useTheme } from "@chakra-ui/react";
 import CustomMapCard from "../custom-ui/CustomMapCard";
-import UserLinkText from "../custom-ui/UserLinkText";
+import UserLinkText from "../share-components/text/UserLinkText";
 
 interface NotificationMapCardProps {
   notify: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number];

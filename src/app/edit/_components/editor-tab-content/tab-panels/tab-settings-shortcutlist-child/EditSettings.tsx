@@ -1,6 +1,6 @@
 "use client";
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
-import VolumeRange from "@/components/custom-ui/VolumeRange";
+import VolumeRange from "@/components/share-components/VolumeRange";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { HStack, VStack } from "@chakra-ui/react";
 import ConvertOptionButtons from "./settings-child/ConvertOptionButtons";

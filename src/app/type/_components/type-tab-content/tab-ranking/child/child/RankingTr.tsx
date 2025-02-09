@@ -3,9 +3,9 @@
 import { RANKING_COLUMN_WIDTH } from "@/app/type/ts/const/consts";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import DateDistanceText from "@/components/custom-ui/DateDistanceText";
 import ClapedText from "@/components/share-components/text/ClapedText";
 import ClearRateText from "@/components/share-components/text/ClearRateText";
+import DateDistanceText from "@/components/share-components/text/DateDistanceText";
 import RankText from "@/components/share-components/text/RankText";
 import ResultToolTipText from "@/components/share-components/text/ResultToolTipText";
 import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";

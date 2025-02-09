@@ -1,17 +1,21 @@
 import CustomCard from "@/components/custom-ui/CustomCard";
+import CustomSimpleGrid from "@/components/custom-ui/CustomSimpleGrid";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { ThemeColors } from "@/types";
 import {
   Badge,
+  Box,
   CardBody,
   CardFooter,
   CardHeader,
+  Divider,
+  Flex,
   Heading,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Tr,
+  Text,
+  useTheme,
 } from "@chakra-ui/react";
+import { formatDistanceToNowStrict } from "date-fns";
+import { ja } from "date-fns/locale";
 
 const formatTime = (totalSeconds: number) => {
   const hours = Math.floor(totalSeconds / 3600);
@@ -25,10 +29,9 @@ interface UserStatsCardProps {
 }
 
 const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
-  // フィールド名と表示ラベルのマッピング
-
+  const theme: ThemeColors = useTheme();
   if (!userStats) {
-    return;
+    return null;
   }
 
   // 各打鍵数の合計を計算
@@ -40,10 +43,9 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
     userStats.space_type_total_count +
     userStats.num_type_total_count +
     userStats.symbol_type_total_count;
-  const statsData = [
-    // { label: "ランキング合計", value: userStats.total_ranking_count },
-    { label: "累計 タイピング時間", value: formatTime(userStats.total_typing_time) },
-    { label: "累計 プレイ 回数", value: userStats.total_play_count },
+
+  // 打鍵数に関する統計情報
+  const keystrokeStatsData = [
     { label: "累計ローマ字 打鍵数", value: userStats.roma_type_total_count },
     { label: "累計かな入力 打鍵数", value: userStats.kana_type_total_count },
     { label: "累計フリック 打鍵数", value: userStats.flick_type_total_count },
@@ -52,47 +54,81 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
     { label: "累計　数字　 打鍵数", value: userStats.num_type_total_count },
     { label: "累計　記号　 打鍵数", value: userStats.symbol_type_total_count },
     { label: "累計合計打鍵数", value: totalKeystrokes },
+  ];
+
+  const generalStatsData = [
+    {
+      label: "計測開始日",
+      value: (
+        <Flex as={"time"} alignItems="center" gap={2}>
+          <Text>{userStats.created_at.toLocaleDateString()}</Text>
+          <Text fontSize="sm" color="gray.500">
+            ({formatDistanceToNowStrict(userStats.created_at, { addSuffix: true, locale: ja })})
+          </Text>
+        </Flex>
+      ),
+    },
+    { label: "累計 タイピング時間", value: formatTime(userStats.total_typing_time) },
+    { label: "累計 プレイ 回数", value: userStats.total_play_count },
     { label: "最大コンボ", value: userStats.max_combo },
-    { label: "計測開始日", value: new Date(userStats.created_at).toLocaleDateString() },
   ];
 
   return (
     <CustomCard>
-      <CardHeader mx={8}>
-        <Heading as="h3" display="flex" alignItems="center" gap={2} size="md">
-          ユーザー累計情報{" "}
-          <Badge p={1}>記録はやり直し時、ページ離脱時、リザルト時に更新されます</Badge>
+      <CardHeader mx={8} textAlign="center">
+        <Heading as="h3" size="lg" mb={2}>
+          ユーザー累計情報
         </Heading>
+        <Badge colorScheme="blue" fontSize="md">
+          記録はやり直し時・ページ離脱時・リザルト時に更新されます
+        </Badge>
       </CardHeader>
       <CardBody mx={8}>
-        <TableContainer>
-          <Table variant="simple" style={{ tableLayout: "fixed" }}>
-            <Tbody
-              sx={{
-                "td.label": {
-                  width: "25%",
-                  fontWeight: "bold",
-                  whiteSpace: "nowrap",
-                  fontSize: "lg",
-                },
-                "td.total-value": {
-                  textAlign: "left",
-                  fontSize: "2xl",
-                  // 必要に応じて他のスタイルも追加できます
-                },
-              }}
+        <Heading as="h4" size="md" mb={4}>
+          基本情報
+        </Heading>
+        <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={6}>
+          {generalStatsData.map((item, index) => (
+            <Box
+              key={index}
+              p={4}
+              borderWidth="1px"
+              borderColor="gray.200"
+              borderRadius="md"
+              bg={theme.colors.background.body}
             >
-              {statsData.map((item, index) => {
-                return (
-                  <Tr key={index}>
-                    <Td className="label">{item.label}</Td>
-                    <Td className="total-value">{item.value}</Td>
-                  </Tr>
-                );
-              })}
-            </Tbody>
-          </Table>
-        </TableContainer>
+              <Text fontSize="lg" mb={1}>
+                {item.label}
+              </Text>
+              <Text fontSize="2xl" fontWeight="bold">
+                {item.value}
+              </Text>
+            </Box>
+          ))}
+        </CustomSimpleGrid>
+        <Divider my={4} />
+        <Heading as="h4" size="md" mb={4}>
+          打鍵情報
+        </Heading>
+        <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+          {keystrokeStatsData.map((item, index) => (
+            <Box
+              key={index}
+              p={4}
+              borderWidth="1px"
+              borderColor="gray.200"
+              borderRadius="md"
+              bg={theme.colors.background.body}
+            >
+              <Text fontSize="lg" mb={1}>
+                {item.label}
+              </Text>
+              <Text fontSize="2xl" fontWeight="bold">
+                {item.value}
+              </Text>
+            </Box>
+          ))}
+        </CustomSimpleGrid>
       </CardBody>
       <CardFooter mx={8} />
     </CustomCard>

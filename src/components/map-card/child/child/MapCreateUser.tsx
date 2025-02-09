@@ -1,5 +1,5 @@
-import DateDistanceText from "@/components/custom-ui/DateDistanceText";
-import UserLinkText from "@/components/custom-ui/UserLinkText";
+import DateDistanceText from "@/components/share-components/text/DateDistanceText";
+import UserLinkText from "@/components/share-components/text/UserLinkText";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Text } from "@chakra-ui/react";
 
