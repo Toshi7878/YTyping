@@ -231,6 +231,13 @@ export const useCalcLineResult = () => {
         statusRef.current!.status.totalTypeTime += lineWord.nextChar["k"]
           ? constantLineTime
           : statusRef.current!.lineStatus.lineClearTime;
+
+        if (scene === "playing" || scene === "practice") {
+          statusRef.current!.userStats.totalTypeTime += lineWord.nextChar["k"]
+            ? constantLineTime
+            : statusRef.current!.lineStatus.lineClearTime;
+        }
+
         statusRef.current!.status.totalLatency += statusRef.current!.lineStatus.latency;
 
         const lMiss = statusRef.current!.lineStatus.lineMiss;
@@ -305,7 +312,6 @@ export const useCalcLineResult = () => {
         const currentReplayLineResult = lineResults[count - 1];
         setCombo(currentReplayLineResult.status!.combo as number);
         statusRef.current!.status.totalTypeTime = currentReplayLineResult.status!.tTime;
-        statusRef.current!.userStats.totalTypeTime = currentReplayLineResult.status!.tTime;
       }
     }
   };
