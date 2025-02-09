@@ -77,9 +77,13 @@ export const useProceedRetry = () => {
   const setLineResults = useSetLineResultsAtom();
   const setScene = useSetSceneAtom();
   const { resetStatusValues } = useSetStatusAtoms();
+  const { updatePlayCountStats } = useUpdateUserStats();
 
   return (playMode: PlayMode) => {
     setScene(playMode);
+    if (playMode === "playing" || playMode === "practice") {
+      updatePlayCountStats();
+    }
 
     if (playMode === "playing") {
       setLineResults(structuredClone(map.defaultLineResultData));

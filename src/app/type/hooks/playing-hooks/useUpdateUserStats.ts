@@ -1,5 +1,6 @@
 import { clientApi } from "@/trpc/client-api";
 import { useParams } from "next/navigation";
+import { DEFAULT_STATUS_REF } from "../../ts/const/typeDefaultValue";
 import { useRefs } from "../../type-contexts/refsProvider";
 
 export function useUpdateUserStats() {
@@ -13,10 +14,14 @@ export function useUpdateUserStats() {
   };
   const updateTypingStats = () => {
     const userStats = statusRef.current!.userStats;
+    const maxCombo = statusRef.current!.status.maxCombo;
 
     incrementTypingStats.mutate({
       ...userStats,
     });
+
+    statusRef.current!.userStats = structuredClone(DEFAULT_STATUS_REF.userStats);
+    statusRef.current!.userStats.maxCombo = structuredClone(maxCombo);
   };
 
   return { updatePlayCountStats, updateTypingStats };
