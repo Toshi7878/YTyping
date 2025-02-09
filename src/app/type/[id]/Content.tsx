@@ -12,6 +12,7 @@ import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
+import { useUpdateUserStats } from "../hooks/playing-hooks/useUpdateUserStats";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
 import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
 import { InputModeType, MapData } from "../ts/type";
@@ -70,6 +71,7 @@ function Content({ mapInfo }: ContentProps) {
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
   const { setStatusValues } = useSetStatusAtoms();
   const { totalProgressRef } = useRefs();
+  const { updateTypingStats } = useUpdateUserStats();
 
   useEffect(() => {
     if (scene === "ready" && layoutMode) {
@@ -98,6 +100,7 @@ function Content({ mapInfo }: ContentProps) {
       window.removeEventListener("keydown", disableKeyHandle);
       utils.ranking.getMapRanking.invalidate({ mapId: Number(mapId) });
       setMap(null);
+      updateTypingStats();
       setScene(RESET);
       setNotify(RESET);
       setLineResults([]);

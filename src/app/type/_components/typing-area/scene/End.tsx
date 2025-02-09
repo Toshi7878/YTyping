@@ -32,6 +32,7 @@ const End = ({ onOpen }: EndProps) => {
 
   useEffect(() => {
     updateTypingStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const status = statusAtomsValues();
