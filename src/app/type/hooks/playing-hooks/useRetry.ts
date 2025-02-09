@@ -17,7 +17,7 @@ import {
   useStatusAtomsValues,
 } from "../../type-atoms/gameRenderAtoms";
 import { useRefs } from "../../type-contexts/refsProvider";
-import { useSendUserStats } from "./useSendUserStats";
+import { useUpdateUserStats } from "./useUpdateUserStats";
 
 export const useRetry = () => {
   const { statusRef, gameStateRef, playerRef } = useRefs();
@@ -33,9 +33,9 @@ export const useRetry = () => {
 
   const { resetStatusValues } = useSetStatusAtoms();
   const statusAtomsValues = useStatusAtomsValues();
-  const sendUserStats = useSendUserStats();
+  const { updatePlayCountStats, updateTypingStats } = useUpdateUserStats();
 
-  return () => {
+  return (newPlayMode: PlayMode) => {
     setLineWord(structuredClone(defaultLineWord));
     setLyrics("");
     setNextLyrics(structuredClone(defaultNextLyrics));
@@ -46,9 +46,12 @@ export const useRetry = () => {
       const status = statusAtomsValues();
       if (status?.type) {
         gameStateRef.current!.retryCount++;
+        if (status.type >= 10) {
+          updatePlayCountStats();
+        }
+        updateTypingStats();
       }
 
-      sendUserStats();
       setNotify(Symbol(`Retry(${gameStateRef.current!.retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
       (statusRef.current as StatusRef) = structuredClone(DEFAULT_STATUS_REF);
@@ -56,8 +59,8 @@ export const useRetry = () => {
       setCombo(0);
     }
 
+    gameStateRef.current!.playMode = newPlayMode;
     gameStateRef.current!.replay.replayKeyCount = 0;
-
     gameStateRef.current!.isRetrySkip = true;
     playerRef.current!.seekTo(0, true);
     if (typeTicker.started) {
@@ -69,6 +72,7 @@ export const useRetry = () => {
 export const useProceedRetry = () => {
   const { statusRef, gameStateRef, playerRef } = useRefs();
   const setCombo = useSetComboAtom();
+  const { updatePlayCountStats, updateTypingStats } = useUpdateUserStats();
 
   const map = useMapAtom() as CreateMap;
   const setLineResults = useSetLineResultsAtom();
@@ -80,7 +84,10 @@ export const useProceedRetry = () => {
 
     if (playMode === "playing") {
       setLineResults(structuredClone(map.defaultLineResultData));
+      updatePlayCountStats();
+      updateTypingStats();
     }
+
     if (playMode !== "practice") {
       resetStatusValues();
       setCombo(0);

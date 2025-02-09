@@ -5,8 +5,8 @@ import { rankingRouter } from "./routers/rankingRouter";
 import { resultRouter } from "./routers/resultRouter";
 import { userOptionRouter } from "./routers/userOptionRouter";
 import { userProfileSettingRouter } from "./routers/userProfileSettingRouter";
+import { userStatsRouter } from "./routers/userStatsRouter";
 import { userTypingOptionRouter } from "./routers/userTypingOptionRouter";
-import { userTypingStatsRouter } from "./routers/userTypingStatsRouter";
 import { router } from "./trpc";
 
 export const appRouter = router({
@@ -16,7 +16,7 @@ export const appRouter = router({
   ranking: rankingRouter,
   result: resultRouter,
   userProfileSetting: userProfileSettingRouter,
-  userTypingStats: userTypingStatsRouter,
+  userStats: userStatsRouter,
   userOption: userOptionRouter,
   activeUser: activeUserRouter,
 });

@@ -305,6 +305,7 @@ export const useCalcLineResult = () => {
         const currentReplayLineResult = lineResults[count - 1];
         setCombo(currentReplayLineResult.status!.combo as number);
         statusRef.current!.status.totalTypeTime = currentReplayLineResult.status!.tTime;
+        statusRef.current!.userStats.totalTypeTime = currentReplayLineResult.status!.tTime;
       }
     }
   };

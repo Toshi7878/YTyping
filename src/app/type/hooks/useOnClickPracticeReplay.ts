@@ -26,9 +26,7 @@ export const useOnClickPracticeReplay = ({
     } finally {
       setIsLoadingOverlay(false);
       playerRef.current?.playVideo();
-      if (gameStateRef.current) {
-        gameStateRef.current.playMode = startMode;
-      }
+      gameStateRef.current!.playMode = startMode;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };

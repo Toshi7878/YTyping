@@ -116,6 +116,16 @@ export interface StatusRef {
     lineStartSpeed: number;
     lineStartInputMode: InputModeType;
   };
+  userStats: {
+    romaType: number;
+    kanaType: number;
+    flickType: number;
+    englishType: number;
+    spaceType: number;
+    symbolType: number;
+    numType: number;
+    totalTypeTime: number;
+  };
 }
 
 export interface YTStateRef {

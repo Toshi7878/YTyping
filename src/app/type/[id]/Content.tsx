@@ -75,6 +75,7 @@ function Content({ mapInfo }: ContentProps) {
     if (scene === "ready" && layoutMode) {
       setStartedYTLayoutMode(layoutMode as "column" | "row");
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layoutMode]);
 
@@ -147,7 +148,7 @@ function Content({ mapInfo }: ContentProps) {
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
 
                 <TypeYouTubeContent
-                  className="w-[513px]"
+                  className="w-[513px] "
                   isMapLoading={isLoading}
                   videoId={video_id}
                 />

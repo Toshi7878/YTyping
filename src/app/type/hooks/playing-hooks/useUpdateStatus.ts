@@ -123,19 +123,26 @@ export const useTypeSuccess = () => {
     if (typeChunk.t === "kana") {
       if (inputMode === "roma") {
         statusRef.current!.status.romaType++;
+        statusRef.current!.userStats.romaType++;
       } else if (inputMode === "kana") {
         statusRef.current!.status.kanaType++;
+        statusRef.current!.userStats.kanaType++;
       } else if (inputMode === "flick") {
         statusRef.current!.status.flickType++;
+        statusRef.current!.userStats.flickType++;
       }
     } else if (typeChunk.t === "alphabet") {
       statusRef.current!.status.englishType++;
+      statusRef.current!.userStats.englishType++;
     } else if (typeChunk.t === "num") {
       statusRef.current!.status.numType++;
+      statusRef.current!.userStats.numType++;
     } else if (typeChunk.t === "space") {
       statusRef.current!.status.spaceType++;
+      statusRef.current!.userStats.spaceType++;
     } else if (typeChunk.t === "symbol") {
       statusRef.current!.status.symbolType++;
+      statusRef.current!.userStats.symbolType++;
     }
   };
 

@@ -31,6 +31,16 @@ export const DEFAULT_STATUS_REF: StatusRef = {
     lineStartSpeed: 1,
     lineStartInputMode: "roma",
   },
+  userStats: {
+    romaType: 0,
+    kanaType: 0,
+    flickType: 0,
+    englishType: 0,
+    spaceType: 0,
+    symbolType: 0,
+    numType: 0,
+    totalTypeTime: 0,
+  },
 };
 
 export const DEFAULT_YT_STATE_REF: YTStateRef = {

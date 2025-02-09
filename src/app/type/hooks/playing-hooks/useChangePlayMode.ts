@@ -32,14 +32,13 @@ export const useChangePlayMode = () => {
       if (window.confirm(confirmMessage)) {
         gameStateRef.current!.practice = structuredClone(DEFAULT_GAME_STATE_REF.practice);
         gameStateRef.current!.replay = structuredClone(DEFAULT_GAME_STATE_REF.replay);
-        gameStateRef.current!.playMode = "playing";
         setScene("playing");
         const drawerClosure = typeAtomStore.get(drawerClosureAtom);
 
         if (drawerClosure) {
           drawerClosure.onClose();
         }
-        retry();
+        retry("playing");
         defaultSpeedChange("set", gameStateRef.current?.startPlaySpeed);
       }
       setNotify(Symbol(""));

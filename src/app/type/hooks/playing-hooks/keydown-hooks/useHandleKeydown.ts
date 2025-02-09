@@ -75,6 +75,7 @@ const openDrawerCtrlKeyCodeList = ["KeyF"];
 
 const usePlayingShortcutKey = () => {
   const typeAtomStore = useStore();
+  const { gameStateRef } = useRefs();
   const map = useMapAtom() as CreateMap;
   const scene = useSceneAtom();
   const userOptions = useUserOptionsAtom();
@@ -153,7 +154,8 @@ const usePlayingShortcutKey = () => {
         break;
 
       case "F4":
-        retry();
+        const playMode = gameStateRef.current!.playMode;
+        retry(playMode);
         break;
       case "F7":
         changePlayMode();
