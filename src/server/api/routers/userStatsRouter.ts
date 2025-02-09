@@ -108,28 +108,31 @@ export const userStatsRouter = {
       }
     }),
 
-  getUserStats: publicProcedure.query(async () => {
-    const session = await auth();
-    const userId = session?.user ? Number(session?.user.id) : 0;
+  getUserStats: publicProcedure
+    .input(
+      z.object({
+        userId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const userTypingOptions = await prisma.user_stats.findUnique({
+        where: { user_id: input.userId },
+        select: {
+          total_ranking_count: true,
+          total_typing_time: true,
+          roma_type_total_count: true,
+          kana_type_total_count: true,
+          flick_type_total_count: true,
+          english_type_total_count: true,
+          symbol_type_total_count: true,
+          num_type_total_count: true,
+          space_type_total_count: true,
+          total_play_count: true,
+          max_combo: true,
+          created_at: true,
+        },
+      });
 
-    const userTypingOptions = await prisma.user_stats.findUnique({
-      where: { user_id: userId },
-      select: {
-        total_ranking_count: true,
-        total_typing_time: true,
-        roma_type_total_count: true,
-        kana_type_total_count: true,
-        flick_type_total_count: true,
-        english_type_total_count: true,
-        symbol_type_total_count: true,
-        num_type_total_count: true,
-        space_type_total_count: true,
-        total_play_count: true,
-        max_combo: true,
-        created_at: true,
-      },
-    });
-
-    return userTypingOptions;
-  }),
+      return userTypingOptions;
+    }),
 };

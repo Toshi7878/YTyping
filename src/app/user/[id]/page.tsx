@@ -3,7 +3,7 @@ import Content from "./Content";
 
 export default async function Home({ params }: { params: { id: string } }) {
   const user = await serverApi.user.getUser({ userId: Number(params.id) });
-  const userStats = await serverApi.userStats.getUserStats();
+  const userStats = await serverApi.userStats.getUserStats({ userId: Number(params.id) });
 
   return <Content user={user} userStats={userStats} />;
 }
