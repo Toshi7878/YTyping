@@ -57,13 +57,14 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
             <Tbody
               sx={{
                 "td.label": {
-                  width: "30%",
+                  width: "25%",
                   fontWeight: "bold",
                   whiteSpace: "nowrap",
+                  fontSize: "lg",
                 },
                 "td.total-value": {
                   textAlign: "left",
-                  fontSize: "xl",
+                  fontSize: "2xl",
                   // 必要に応じて他のスタイルも追加できます
                 },
               }}
