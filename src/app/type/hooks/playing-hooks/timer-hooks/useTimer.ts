@@ -228,16 +228,16 @@ export const useCalcLineResult = () => {
       if (count > 0) {
         const lineResults = typeAtomStore.get(lineResultsAtom);
 
-        statusRef.current!.status.totalTypeTime += lineWord.nextChar["k"]
+        const incrementTotalTypeTime = lineWord.nextChar["k"]
           ? constantLineTime
           : statusRef.current!.lineStatus.lineClearTime;
+
+        statusRef.current!.status.totalTypeTime += incrementTotalTypeTime;
 
         const lineTypeCount = statusRef.current!.lineStatus.lineType;
 
         if (lineTypeCount && (scene === "playing" || scene === "practice")) {
-          statusRef.current!.userStats.totalTypeTime += lineWord.nextChar["k"]
-            ? constantLineTime
-            : statusRef.current!.lineStatus.lineClearTime;
+          statusRef.current!.userStats.totalTypeTime += incrementTotalTypeTime;
         }
 
         statusRef.current!.status.totalLatency += statusRef.current!.lineStatus.latency;
