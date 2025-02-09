@@ -37,6 +37,8 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
   }, [mapInfo, userTypingOptions]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
+
     const htmlElement = document.documentElement;
     // <html> 要素に overflow: hidden を設定
     htmlElement.style.overflow = "hidden";
