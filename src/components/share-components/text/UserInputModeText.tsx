@@ -60,7 +60,7 @@ export const UserInputModeText = (props: UserInputModeTextProps) => {
   }
 
   const kanaInput = props.romaType || props.kanaType;
-  if (kanaInput && props.englishType / total >= 0.1) {
+  if (kanaInput && (props.englishType + props.spaceType) / total >= 0.1) {
     const inputMode = props.flickType
       ? "flick"
       : props.romaType >= props.kanaType
