@@ -46,14 +46,14 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
 
   // 打鍵数に関する統計情報
   const keystrokeStatsData = [
-    { label: "累計ローマ字 打鍵数", value: userStats.roma_type_total_count },
-    { label: "累計かな入力 打鍵数", value: userStats.kana_type_total_count },
-    { label: "累計フリック 打鍵数", value: userStats.flick_type_total_count },
-    { label: "累計　英語　 打鍵数", value: userStats.english_type_total_count },
-    { label: "累計スペース 打鍵数", value: userStats.space_type_total_count },
-    { label: "累計　数字　 打鍵数", value: userStats.num_type_total_count },
-    { label: "累計　記号　 打鍵数", value: userStats.symbol_type_total_count },
-    { label: "累計合計打鍵数", value: totalKeystrokes },
+    { label: "ローマ字 打鍵数", value: userStats.roma_type_total_count },
+    { label: "かな入力 打鍵数", value: userStats.kana_type_total_count },
+    { label: "英語 打鍵数", value: userStats.english_type_total_count },
+    { label: "スペース 打鍵数", value: userStats.space_type_total_count },
+    { label: "数字 打鍵数", value: userStats.num_type_total_count },
+    { label: "記号 打鍵数", value: userStats.symbol_type_total_count },
+    { label: "フリック 打鍵数", value: userStats.flick_type_total_count },
+    { label: "合計 打鍵数", value: totalKeystrokes },
   ];
 
   const generalStatsData = [
@@ -68,8 +68,8 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
         </Flex>
       ),
     },
-    { label: "累計 タイピング時間", value: formatTime(userStats.total_typing_time) },
-    { label: "累計 プレイ 回数", value: userStats.total_play_count },
+    { label: "タイピング時間", value: formatTime(userStats.total_typing_time) },
+    { label: "プレイ回数", value: userStats.total_play_count },
     { label: "最大コンボ", value: userStats.max_combo },
   ];
 
