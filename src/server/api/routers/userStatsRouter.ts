@@ -24,7 +24,7 @@ export const userStatsRouter = {
         },
         create: {
           user_id: userId,
-          total_typing_time: 1,
+          total_play_count: 1,
         },
       });
 
