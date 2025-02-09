@@ -1,6 +1,7 @@
 import CustomCard from "@/components/custom-ui/CustomCard";
 import { RouterOutPuts } from "@/server/api/trpc";
 import {
+  Badge,
   CardBody,
   CardFooter,
   CardHeader,
@@ -29,6 +30,16 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
   if (!userStats) {
     return;
   }
+
+  // 各打鍵数の合計を計算
+  const totalKeystrokes =
+    userStats.roma_type_total_count +
+    userStats.kana_type_total_count +
+    userStats.flick_type_total_count +
+    userStats.english_type_total_count +
+    userStats.space_type_total_count +
+    userStats.num_type_total_count +
+    userStats.symbol_type_total_count;
   const statsData = [
     // { label: "ランキング合計", value: userStats.total_ranking_count },
     { label: "累計 タイピング時間", value: formatTime(userStats.total_typing_time) },
@@ -40,6 +51,7 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
     { label: "累計スペース 打鍵数", value: userStats.space_type_total_count },
     { label: "累計　数字　 打鍵数", value: userStats.num_type_total_count },
     { label: "累計　記号　 打鍵数", value: userStats.symbol_type_total_count },
+    { label: "累計合計打鍵数", value: totalKeystrokes },
     { label: "最大コンボ", value: userStats.max_combo },
     { label: "計測開始日", value: new Date(userStats.created_at).toLocaleDateString() },
   ];
@@ -47,8 +59,9 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
   return (
     <CustomCard>
       <CardHeader mx={8}>
-        <Heading as="h3" size="md">
-          ユーザー累計情報
+        <Heading as="h3" display="flex" alignItems="center" gap={2} size="md">
+          ユーザー累計情報{" "}
+          <Badge p={1}>記録はやり直し時、ページ離脱時、リザルト時に更新されます</Badge>
         </Heading>
       </CardHeader>
       <CardBody mx={8}>
