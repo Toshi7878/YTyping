@@ -15,7 +15,7 @@ function MapInfo({ map, isToggledInputMode, ...rest }: MapCardProps) {
   const handleLinkClick = useLinkClick();
 
   return (
-    <Flex direction="column" gap={1} justifyContent="space-between" {...rest}>
+    <Flex direction="column" justifyContent="space-between" {...rest} mt={2} mb={3}>
       <CustomToolTip
         label={`${map.title} / ${map.artist_name}${
           map.music_source ? `【${map.music_source}】` : ""

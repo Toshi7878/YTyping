@@ -17,7 +17,7 @@ const Content = ({ userOptions }: ContentProps) => {
   }, []);
 
   return (
-    <Stack width={{ base: "100%", md: "90vw", "2xl": "65vw" }} spacing={4}>
+    <Stack width={{ base: "100%", md: "70%" }} spacing={4} pt={4}>
       <ProfileSettingCard />
       <OptionSettingCard userOptions={userOptions} />
     </Stack>

@@ -1,10 +1,10 @@
-import { Box } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 
 const ResultCardLayout = ({ children }) => {
   return (
-    <Box display="grid" gridTemplateColumns={{ base: "1fr" }} gap={3} mb={3}>
+    <Grid gridTemplateColumns={{ base: "1fr" }} gap={3} mb={3}>
       {children}
-    </Box>
+    </Grid>
   );
 };
 

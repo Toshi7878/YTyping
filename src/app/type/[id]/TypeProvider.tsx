@@ -35,6 +35,17 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
     window.getSelection()!.removeAllRanges();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapInfo, userTypingOptions]);
+
+  useEffect(() => {
+    const htmlElement = document.documentElement;
+    // <html> 要素に overflow: hidden を設定
+    htmlElement.style.overflow = "hidden";
+
+    // コンポーネントのアンマウント時に元のスタイルに戻す
+    return () => {
+      htmlElement.style.overflow = "";
+    };
+  }, []);
   return (
     <RefsProvider>
       <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>

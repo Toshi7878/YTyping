@@ -2,7 +2,7 @@
 import { db } from "@/lib/db";
 import { clientApi } from "@/trpc/client-api";
 import { IndexDBOption } from "@/types";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex, Grid } from "@chakra-ui/react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -22,7 +22,6 @@ import {
 } from "../edit-atom/editAtom";
 import { resetMapData, setMapData } from "../redux/mapDataSlice";
 import { resetUndoRedoData } from "../redux/undoredoSlice";
-import ColorStyle from "./ColorStyle";
 import EditorTabContent from "./editor-tab-content/EditTabList";
 import EditTable from "./editor-table-content/EditTable";
 import TimeRange from "./editor-time-range-content/EditTimeRange";
@@ -96,29 +95,36 @@ function Content() {
   }, []);
 
   return (
-    <LoadingOverlayWrapper active={isLrcConverting} spinner={true} text="Loading...">
-      <Box
-        as="main"
-        display="flex"
-        minHeight="100vh"
-        paddingX={{ base: 0, md: 14 }}
-        flexDirection="column"
-        alignItems="center"
-        paddingTop="55px"
-        width="100vw"
-      >
-        <Box as="section" display="flex" flexDirection={{ base: "column", lg: "row" }} width="100%">
-          <EditYouTube className="mt-1 md:mr-5 md:min-w-[416px] md:min-h-[234px] md:max-h-[234px]" />
+    <LoadingOverlayWrapper
+      active={isLrcConverting}
+      spinner={true}
+      text="Loading..."
+      className="w-full xl:w-[90%] 2xl:w-[80%]"
+    >
+      <Box marginX={{ base: 0, md: "auto" }} pt={{ base: 4, lg: 0 }}>
+        <Flex
+          as="section"
+          flexDirection={{ base: "column", lg: "row" }}
+          width="100%"
+          gap={{ base: 2, lg: 6 }}
+        >
+          <EditYouTube className="w-full lg:w-[416px] h-[286px] aspect-video select-none" />
           <EditorTabContent />
-        </Box>
-        <Box as="section" width="100%" my={1}>
+        </Flex>
+        <Grid
+          as="section"
+          width="100%"
+          my={1}
+          gridTemplateColumns="1fr auto"
+          gap-y="1px"
+          alignItems="center"
+        >
           <TimeRange />
-        </Box>
-        <Box as="section" width="100%" mt={0}>
+        </Grid>
+        <Box as="section" width="100%">
           <EditTable mapLoading={isLoading} />
         </Box>
       </Box>
-      <ColorStyle />
     </LoadingOverlayWrapper>
   );
 }

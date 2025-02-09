@@ -20,7 +20,8 @@ const HeaderContent = ({ isNewNotification }: HeaderContentProps) => {
     >
       <Flex
         as="nav"
-        width={{ base: "90%", md: "80%" }}
+        width={{ base: "90%", xl: "80%" }}
+        className="max-w-screen-2xl"
         mx="auto"
         height={10}
         alignItems="center"

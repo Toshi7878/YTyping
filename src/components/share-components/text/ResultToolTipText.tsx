@@ -116,13 +116,10 @@ const TypeCountResult = (props: TypeCountResultProps) => {
     { label: "フリック入力タイプ数", value: props.flickType },
     { label: "アルファベットタイプ数", value: props.englishType },
     { label: "数字タイプ数", value: props.numType },
-    { label: "記号タイプ数", value: props.symbolType },
-    { label: "スペースタイプ数", value: props.spaceType },
+    { label: "記号タイプ数(スペース含)", value: props.symbolType + props.spaceType },
   ];
 
-  // 総入力数を計算
   const total = types.reduce((sum, type) => sum + type.value, 0);
-  // カウントが0より大きい入力タイプの数
   const typesUsedCount = types.filter((type) => type.value > 0).length;
 
   return (

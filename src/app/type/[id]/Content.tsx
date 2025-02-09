@@ -13,7 +13,7 @@ import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
-import useWindowScale, { CONTENT_HEIGHT, CONTENT_WIDTH } from "../hooks/useWindowScale";
+import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
 import { InputModeType, MapData } from "../ts/type";
 import {
   useIsLoadingOverlayAtom,
@@ -119,53 +119,56 @@ function Content({ mapInfo }: ContentProps) {
     transform: `scale(${scale})`,
     transformOrigin: "top",
     width: `${CONTENT_WIDTH}px`,
-    height: `${CONTENT_HEIGHT}px`,
+    height: "fit-content",
   };
 
   return (
-    <LoadingOverlayWrapper active={isLoadingOverlay} spinner={true} text="Loading...">
-      <Flex
-        as="main"
-        id="main_content"
-        flexDirection="column"
-        alignItems="center"
-        pt={{ base: 12, md: 16 }}
-        width="100%"
-        maxH="100vh"
-        overflowX="hidden"
-        overflowY={layoutMode === "row" ? "hidden" : "auto"}
-      >
-        <Box style={style}>
-          <Flex direction="column">
-            <Flex width="100%" gap="6">
-              {ytLayoutMode === "row" && (
-                <Box position="relative">
-                  {(IS_IOS || IS_ANDROID) && <MobileCover />}
-
-                  <TypeYouTubeContent
-                    className="w-[513px]"
-                    isMapLoading={isLoading}
-                    videoId={video_id}
-                  />
-                </Box>
-              )}
-              <Box flex={{ base: "8" }} flexDirection="column">
-                <TypeTabContent />
-              </Box>
-            </Flex>
-            <Box mt={5}>
-              <TypingCard />
-            </Box>
-
-            {ytLayoutMode === "column" && (
-              <Box mt={5} position="relative">
+    <LoadingOverlayWrapper
+      active={isLoadingOverlay}
+      spinner={true}
+      text="Loading..."
+      styles={{
+        overlay: (base: React.CSSProperties) => ({
+          ...base,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 9999, // 必要に応じて調整
+        }),
+      }}
+    >
+      <Box style={style}>
+        <Flex direction="column">
+          <Flex width="100%" gap="6">
+            {ytLayoutMode === "row" && (
+              <Box position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
-                <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
+
+                <TypeYouTubeContent
+                  className="w-[513px]"
+                  isMapLoading={isLoading}
+                  videoId={video_id}
+                />
               </Box>
             )}
+            <Box flex={{ base: "8" }} flexDirection="column">
+              <TypeTabContent />
+            </Box>
           </Flex>
-        </Box>
-      </Flex>
+          <Box mt={5}>
+            <TypingCard />
+          </Box>
+
+          {ytLayoutMode === "column" && (
+            <Box mt={5} position="relative">
+              {(IS_IOS || IS_ANDROID) && <MobileCover />}
+              <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
+            </Box>
+          )}
+        </Flex>
+      </Box>
     </LoadingOverlayWrapper>
   );
 }

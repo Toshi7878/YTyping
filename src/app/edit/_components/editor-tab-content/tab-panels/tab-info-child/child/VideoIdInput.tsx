@@ -39,8 +39,8 @@ const VideoIdInput = () => {
       <FormLabel mb="0" width="150px" fontWeight="bold">
         YouTube URL
       </FormLabel>
-      <InputGroup size="sm">
-        <InputLeftAddon>https://www.youtube.com/watch?v=</InputLeftAddon>
+      <InputGroup as={Flex} flexDirection={{ base: "column", lg: "row" }} size="sm">
+        <InputLeftAddon isTruncated>https://www.youtube.com/watch?v=</InputLeftAddon>
 
         <Input
           placeholder="YouTube URL(動画URLをそのまま貼り付けできます)"

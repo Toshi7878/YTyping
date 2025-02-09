@@ -1,5 +1,5 @@
 import { ThemeColors } from "@/types";
-import { Box, Card, CardBody, Flex, useTheme } from "@chakra-ui/react";
+import { Card, CardBody, Flex, Stack, useTheme } from "@chakra-ui/react";
 
 import EditorAddLyricsInput from "./tab-editor-child/EditorAddLyricsInput";
 import EditorButtons from "./tab-editor-child/EditorButtons";
@@ -17,7 +17,7 @@ const TabEditor = () => {
       color={theme.colors.text.body}
     >
       <CardBody py={4}>
-        <Box display="flex" flexDirection="column" gap={1}>
+        <Stack display="flex" flexDirection="column" gap={1}>
           <EditorLineInput />
 
           <Flex justifyContent="space-between" alignItems="flex-end">
@@ -26,7 +26,7 @@ const TabEditor = () => {
           </Flex>
 
           <EditorAddLyricsInput />
-        </Box>
+        </Stack>
       </CardBody>
     </Card>
   );

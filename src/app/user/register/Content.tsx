@@ -5,7 +5,7 @@ import { UpdateNameForm } from "../_components/UpdateNameForm";
 
 export default function Content() {
   return (
-    <Flex direction="column" gap={5} width={{ base: "100%", md: "90vw", "2xl": "50vw" }}>
+    <Flex direction="column" gap={5} width={{ base: "100%", md: "70%" }} pt={4}>
       <UpdateNameForm
         placeholder="名前を入力してね (後から変更できます)"
         formLabel="名前"

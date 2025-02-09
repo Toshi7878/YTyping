@@ -1,4 +1,5 @@
 "use client";
+import { Box } from "@chakra-ui/react";
 import nProgress from "nprogress";
 import { useEffect } from "react";
 import ContentHeading from "./_components/Heading";
@@ -11,10 +12,10 @@ const Content = () => {
   }, []);
 
   return (
-    <>
+    <Box as="article">
       <ContentHeading />
       <UpdateHistory />
-    </>
+    </Box>
   );
 };
 

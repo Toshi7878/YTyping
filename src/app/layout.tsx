@@ -1,7 +1,6 @@
 import Header from "@/app/_components/header/Header";
 import "@/styles/globals.css";
 import "@/styles/nprogress.css";
-import { Analytics } from "@vercel/analytics/react";
 import { cookies } from "next/headers";
 import { fonts } from "../lib/fonts";
 // export const runtime = "edge";
@@ -37,14 +36,18 @@ export default async function RootLayout({
 
   return (
     <html lang="ja">
-      <body className={cn(fonts.rubik.variable, "no-ligatures")}>
-        <Analytics />
+      <body className={cn(fonts.rubik.variable, "no-ligatures ")}>
         <ThemeProvider colorMode={colorMode?.value}>
           <SessionProvider session={session}>
             <TRPCProvider>
               <Header session={session} />
               <GlobalProvider userOptions={userOptions}>
-                {children}
+                <main
+                  className="min-h-screen  flex flex-col items-center justify-between pt-12 md:pt-16 mx-auto max-w-screen-2xl"
+                  id="main_content"
+                >
+                  {children}
+                </main>
                 <PreviewYouTubeContent />
               </GlobalProvider>
             </TRPCProvider>

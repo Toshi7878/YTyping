@@ -1,10 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Tabs, TabList, TabPanels, Tab, TabPanel, useTheme } from "@chakra-ui/react";
-import TabEditor from "./tab-panels/TabEditor";
-import TabInfoUpload from "./tab-panels/TabInfoUpload";
-import TabSettings from "./tab-panels/TabSettingsShortcutList";
+import { db } from "@/lib/db";
 import { IndexDBOption, ThemeColors } from "@/types";
+import { Tab, TabList, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import {
   useIsEditYTStartedAtom,
   useSetEditAddTimeOffsetAtom,
@@ -12,9 +10,11 @@ import {
   useSetTabIndexAtom,
   useTabIndexAtom,
 } from "../../edit-atom/editAtom";
-import { EditTabIndex } from "../../ts/type";
-import { db } from "@/lib/db";
 import { DEFAULT_ADD_ADJUST_TIME } from "../../ts/const/editDefaultValues";
+import { EditTabIndex } from "../../ts/type";
+import TabEditor from "./tab-panels/TabEditor";
+import TabInfoUpload from "./tab-panels/TabInfoUpload";
+import TabSettings from "./tab-panels/TabSettingsShortcutList";
 
 interface EditorTabContentProps {
   className?: string;
@@ -61,14 +61,19 @@ export default function EditorTabContent({ className }: EditorTabContentProps) {
       variant="line"
       width="100%"
     >
-      <TabList height="25px" px="8" borderBottom={`1px solid ${theme.colors.text.body}aa`}>
+      <TabList
+        height="25px"
+        px={{ base: "0", md: "8" }}
+        borderBottom={`1px solid ${theme.colors.text.body}aa`}
+      >
         {tabLists.map((tabName, index) => {
           return (
             <Tab
               key={index}
               opacity={tabIndex === index ? 1 : 0.5}
               color={theme.colors.text.body}
-              _hover={{ bg: "rgba(0, 0, 0, 0.1)" }}
+              _hover={{ bg: theme.colors.button.sub.hover, opacity: 0.8 }}
+              isTruncated
             >
               {tabName}
             </Tab>

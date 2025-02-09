@@ -2,7 +2,7 @@ import { Container, Heading, Text, VStack } from "@chakra-ui/react";
 
 const MaintenancePage = () => {
   return (
-    <Container maxW="container.md" py={20}>
+    <Container>
       <VStack spacing={8} align="center">
         <Heading as="h1" size="xl">
           メンテナンス中

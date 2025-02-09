@@ -1,5 +1,6 @@
 "use client";
 
+import { Box } from "@chakra-ui/react";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect } from "react";
 import YouTube from "react-youtube";
@@ -58,21 +59,23 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
   }, []);
 
   return (
-    <YouTube
-      id="edit_youtube"
-      className={className}
-      videoId={videoId}
-      opts={{
-        width: "100%",
-        height: "100%",
-        playerVars: { enablejsapi: 1 },
-      }}
-      onReady={onReady}
-      onPlay={onPlay}
-      onPause={onPause}
-      onEnd={onEndStop}
-      onStateChange={handleStateChange}
-    />
+    <Box>
+      <YouTube
+        className={className}
+        id="edit_youtube"
+        videoId={videoId}
+        opts={{
+          width: "100%",
+          height: "100%",
+          playerVars: { enablejsapi: 1 },
+        }}
+        onReady={onReady}
+        onPlay={onPlay}
+        onPause={onPause}
+        onEnd={onEndStop}
+        onStateChange={handleStateChange}
+      />
+    </Box>
   );
 };
 

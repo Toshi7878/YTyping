@@ -58,7 +58,13 @@ const EditorButtons = () => {
       isLoading: isLoadWordConvert,
       colorScheme: theme.colors.primary.dark,
       onClick: wordConvertButtonEvent,
-      text: "読み変換",
+      text: (
+        <>
+          読み
+          <wbr />
+          変換
+        </>
+      ),
     },
     delete: {
       isDisabled: isDeleteButtonDisabled,

@@ -48,12 +48,6 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
             <MapInfo
               map={result.map}
               isToggledInputMode={isToggledInputMode}
-              w={{
-                sm: "100%",
-                md: "15vw",
-                lg: isToggledInputMode ? "15vw" : "18vw",
-                "2xl": isToggledInputMode ? "18vw" : "21vw",
-              }}
               overflow="hidden"
               textOverflow="ellipsis"
               whiteSpace="nowrap"
@@ -63,9 +57,9 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
           {result && (
             <MapIcons result={result} top={"142px"} right={"30px"} display={columnDisplay} />
           )}
-        </Flex>
-        <Flex justifyContent="flex-end" minW="fit-content" display={rowDisplay}>
-          <MapResultBadges result={result} />
+          <Flex ml="auto" justifyContent="flex-end" display={rowDisplay}>
+            <MapResultBadges result={result} />
+          </Flex>
         </Flex>
       </Flex>
     </>

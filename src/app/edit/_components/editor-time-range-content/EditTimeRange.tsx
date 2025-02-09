@@ -1,11 +1,12 @@
 "use client";
 import "@/app/edit/style/editor.scss";
 import { ThemeColors } from "@/types";
-import { Box, useTheme } from "@chakra-ui/react";
+import { useTheme } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useIsEditYTReadyAtom, useIsEditYTStartedAtom } from "../../edit-atom/editAtom";
 import { useRefs } from "../../edit-contexts/refsProvider";
 
+import ColorStyle from "../ColorStyle";
 import EditSpeedChange from "./child/EditSpeedChange";
 const TimeRange = () => {
   const { playerRef, setRef } = useRefs();
@@ -50,7 +51,7 @@ const TimeRange = () => {
   }, [isYTReady, isYTStarted]);
 
   return (
-    <Box display="grid" gridTemplateColumns="1fr auto" gap-y="1px" alignItems="center">
+    <>
       <input
         min="0"
         step="0.1"
@@ -61,8 +62,10 @@ const TimeRange = () => {
         onChange={handleRangeChange}
         className="w-full cursor-pointer"
       />
+      <ColorStyle />
+
       <EditSpeedChange />
-    </Box>
+    </>
   );
 };
 
