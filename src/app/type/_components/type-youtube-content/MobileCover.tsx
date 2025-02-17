@@ -9,15 +9,15 @@ const MobileCover = () => {
   const typeAtomStore = useStore();
 
   const handleStart = useCallback(
-    () => {
+    async () => {
       const scene = typeAtomStore.get(sceneAtom);
       if (ytStateRef.current?.isPaused || scene === "ready") {
-        playerRef.current?.playVideo();
+        await playerRef.current?.playVideo();
       } else {
-        playerRef.current?.pauseVideo();
+        await playerRef.current?.pauseVideo();
       }
       (document.activeElement as HTMLElement)?.blur();
-      window.focus();
+      document.body.focus();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

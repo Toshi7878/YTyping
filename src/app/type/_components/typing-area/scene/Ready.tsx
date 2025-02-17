@@ -15,11 +15,13 @@ function Ready() {
   const map = useMapAtom();
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = async (event: KeyboardEvent) => {
       switch (event.code) {
         case "Enter":
           if (playerRef.current && map) {
-            playerRef.current.playVideo();
+            await playerRef.current.playVideo();
+            (document.activeElement as HTMLElement)?.blur();
+            document.body.focus();
           }
           event.preventDefault();
           break;
