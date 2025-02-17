@@ -18,6 +18,7 @@ const MobileCover = () => {
       }
       (document.activeElement as HTMLElement)?.blur();
       document.body.focus();
+      document.body.focus();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

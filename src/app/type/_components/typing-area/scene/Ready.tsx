@@ -22,6 +22,7 @@ function Ready() {
             await playerRef.current.playVideo();
             (document.activeElement as HTMLElement)?.blur();
             document.body.focus();
+            document.body.focus();
           }
           event.preventDefault();
           break;
