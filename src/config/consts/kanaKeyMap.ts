@@ -97,7 +97,7 @@ export const KEY_TO_KANA = {
 };
 
 const IOS_KEY_TO_KANA = {
-  "\\": ["ー", "￥", "\\"],
+  "\u005C": ["ー", "￥", "\u005C"],
 };
 
 if (IS_IOS) {
