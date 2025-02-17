@@ -74,6 +74,7 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
       window.removeEventListener("beforeunload", handleBeforeunload);
       window.removeEventListener("visibilitychange", handleVisibilitychange);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 
   useEffect(() => {
@@ -88,11 +89,11 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
     typeTicker.add(playTimer);
 
     startTimer();
-    window.addEventListener("keydown", handleKeydown);
+    document.addEventListener("keydown", handleKeydown);
 
     return () => {
       typeTicker.remove(playTimer);
-      window.removeEventListener("keydown", handleKeydown);
+      document.removeEventListener("keydown", handleKeydown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [volume, scene, userOptions, inputMode, timeOffset, playSpeed]);
