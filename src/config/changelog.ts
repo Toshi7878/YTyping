@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-2-17",
+    descriptions: ["iOS端末でかな入力の「ろ, む, ー」が入力できない問題を修正"],
+  },
+  {
     date: "2025-2-9",
     descriptions: ["ユーザーページに累計記録情報を追加"],
   },
