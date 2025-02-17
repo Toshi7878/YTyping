@@ -143,10 +143,10 @@ function Content({ mapInfo }: ContentProps) {
     };
 
     // 子孫要素で発生したフォーカス変更も捕捉するために、focusin イベントにリスナーを登録
-    document.addEventListener("focusin", handleFocusIn);
+    window.addEventListener("focusin", handleFocusIn);
 
     return () => {
-      document.removeEventListener("focusin", handleFocusIn);
+      window.removeEventListener("focusin", handleFocusIn);
     };
   }, [toast]);
 
