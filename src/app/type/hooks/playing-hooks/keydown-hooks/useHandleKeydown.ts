@@ -251,6 +251,7 @@ const CODES = [
   "Period",
   "Slash",
   "IntlRo",
+  "Unidentified",
 ];
 const TENKEYS = [
   "Numpad1",
