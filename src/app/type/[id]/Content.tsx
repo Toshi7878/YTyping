@@ -3,7 +3,7 @@ import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
-import { Box, Flex, useBreakpointValue, useToast } from "@chakra-ui/react";
+import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
@@ -125,30 +125,6 @@ function Content({ mapInfo }: ContentProps) {
     width: `${CONTENT_WIDTH}px`,
     height: "fit-content",
   };
-  const toast = useToast();
-  // ...（他のフックや変数の定義など）
-
-  useEffect(() => {
-    const handleFocusIn = (event: FocusEvent) => {
-      if (event.target instanceof HTMLElement) {
-        toast({
-          title: "フォーカス変更",
-          description: `現在のフォーカスの要素: ${event.target.tagName}`,
-          status: "info",
-          duration: 3000,
-          isClosable: true,
-          position: "top-right",
-        });
-      }
-    };
-
-    // 子孫要素で発生したフォーカス変更も捕捉するために、focusin イベントにリスナーを登録
-    window.addEventListener("focusin", handleFocusIn);
-
-    return () => {
-      window.removeEventListener("focusin", handleFocusIn);
-    };
-  }, [toast]);
 
   return (
     <LoadingOverlayWrapper

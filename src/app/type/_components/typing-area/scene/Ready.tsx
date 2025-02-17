@@ -21,9 +21,8 @@ function Ready() {
           if (playerRef.current && map) {
             await playerRef.current.playVideo();
             (document.activeElement as HTMLElement)?.blur();
-            (document.activeElement as HTMLElement)?.blur();
-
             window.focus();
+            (document.activeElement as HTMLElement)?.blur();
             window.focus();
           }
           event.preventDefault();
