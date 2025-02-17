@@ -17,8 +17,10 @@ const MobileCover = () => {
         await playerRef.current?.pauseVideo();
       }
       (document.activeElement as HTMLElement)?.blur();
-      document.body.focus();
-      document.body.focus();
+      (document.activeElement as HTMLElement)?.blur();
+
+      window.focus();
+      window.focus();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
