@@ -281,10 +281,7 @@ const useIsKeydownTyped = () => {
     const CODE = event.code;
 
     const IS_TYPE =
-      (KEY_CODE >= 65 && KEY_CODE <= 90) ||
-      CODES.includes(CODE) ||
-      TENKEYS.includes(CODE) ||
-      KEY_CODE === 0;
+      (KEY_CODE >= 65 && KEY_CODE <= 90) || CODES.includes(CODE) || TENKEYS.includes(CODE);
     //event.keyが"Process"になるブラウザの不具合が昔はあったので場合によっては追加する
     //ChatGPT「'Process' キーは通常、国際的なキーボードで入力方法やプロセスのキーを指すために使用されます。」
 

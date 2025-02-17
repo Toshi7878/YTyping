@@ -498,6 +498,9 @@ export class Typing {
       shift: event.shiftKey,
     };
 
+    if (event.keyCode === 0) {
+      input.keys = ["ー", "￥", "\\"];
+    }
     if (event.shiftKey) {
       if (event.code == "KeyE") {
         input.keys[0] = "ぃ";

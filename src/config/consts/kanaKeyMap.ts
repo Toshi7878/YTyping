@@ -92,7 +92,6 @@ export const KEY_TO_KANA = {
   "}": ["」"],
   ":": ["け"],
   "*": ["け"],
-  "\\": ["ー", "￥", "\\"],
 };
 
 export const CODE_TO_KANA = {
