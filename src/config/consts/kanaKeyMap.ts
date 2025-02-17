@@ -1,5 +1,3 @@
-import { IS_IOS } from "./globalConst";
-
 export const KEY_TO_KANA = {
   "0": ["わ"],
   "1": ["ぬ"],
@@ -94,15 +92,8 @@ export const KEY_TO_KANA = {
   "}": ["」"],
   ":": ["け"],
   "*": ["け"],
+  "\\": ["ー", "￥", "\\"],
 };
-
-const IOS_KEY_TO_KANA = {
-  "\u005C": ["ー", "￥", "\u005C"],
-};
-
-if (IS_IOS) {
-  Object.assign(KEY_TO_KANA, IOS_KEY_TO_KANA);
-}
 
 export const CODE_TO_KANA = {
   IntlYen: ["ー", "￥", "\\"],
