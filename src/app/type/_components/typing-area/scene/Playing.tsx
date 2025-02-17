@@ -88,11 +88,11 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
     typeTicker.add(playTimer);
 
     startTimer();
-    document.addEventListener("keydown", handleKeydown);
+    window.addEventListener("keydown", handleKeydown);
 
     return () => {
       typeTicker.remove(playTimer);
-      document.removeEventListener("keydown", handleKeydown);
+      window.removeEventListener("keydown", handleKeydown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [volume, scene, userOptions, inputMode, timeOffset, playSpeed]);
