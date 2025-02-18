@@ -11,15 +11,19 @@ const MobileCover = () => {
   const handleStart = useCallback(
     async () => {
       const scene = typeAtomStore.get(sceneAtom);
+      (document.activeElement as HTMLElement)?.blur();
+      document.getElementById("typing_card")?.focus();
+      (document.activeElement as HTMLElement)?.blur();
+      document.getElementById("typing_card")?.focus();
       if (ytStateRef.current?.isPaused || scene === "ready") {
         await playerRef.current?.playVideo();
       } else {
         await playerRef.current?.pauseVideo();
       }
-      (document.activeElement as HTMLElement)?.blur();
-      document.getElementById("typing_card")?.focus();
-      (document.activeElement as HTMLElement)?.blur();
-      document.getElementById("typing_card")?.focus();
+      // (document.activeElement as HTMLElement)?.blur();
+      // document.getElementById("typing_card")?.focus();
+      // (document.activeElement as HTMLElement)?.blur();
+      // document.getElementById("typing_card")?.focus();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
