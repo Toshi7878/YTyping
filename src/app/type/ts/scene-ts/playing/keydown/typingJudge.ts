@@ -157,43 +157,21 @@ class ProcessedLineWord {
   constructor({ typingKeys, lineWord }: JudgeType) {
     this.newLineWord = lineWord;
     this.updatePoint = 0;
-    this.newLineWord = this.zCommand({ typingKeys: typingKeys, lineWord: this.newLineWord });
-    this.newLineWord = this.keyW({ typingKeys: typingKeys, lineWord: this.newLineWord });
-    this.newLineWord = this.keyX({ typingKeys: typingKeys, lineWord: this.newLineWord });
+    this.newLineWord = this.zCommand({ typingKeys, lineWord: this.newLineWord });
+    this.newLineWord = this.processNNRouteKey({ typingKeys, lineWord: this.newLineWord });
   }
 
-  private keyX({ typingKeys, lineWord }: JudgeType) {
+  private processNNRouteKey({ typingKeys, lineWord }: JudgeType) {
     let newLineWord = { ...lineWord };
-    if (typingKeys.code == "KeyX") {
-      //んん nxnの対応
+    if (typingKeys.code === "KeyX" || typingKeys.code === "KeyW") {
+      const expectedNextKey = typingKeys.code === "KeyX" ? "ん" : "う";
       const isNNRoute =
         newLineWord.nextChar.k === "ん" &&
         newLineWord.correct.r.slice(-1) === "n" &&
         newLineWord.nextChar.r[0] === "n";
-      const isNextXN = newLineWord.word[0]?.k === "ん";
+      const isNext = newLineWord.word[0]?.k === expectedNextKey;
 
-      if (isNNRoute && isNextXN) {
-        newLineWord.correct.k += "ん";
-        this.updatePoint = newLineWord.nextChar.p;
-        newLineWord.nextChar = newLineWord.word[0];
-        newLineWord.word.splice(0, 1);
-        return newLineWord;
-      }
-    }
-    return newLineWord;
-  }
-
-  private keyW({ typingKeys, lineWord }: JudgeType) {
-    let newLineWord = { ...lineWord };
-    if (typingKeys.code == "KeyW") {
-      //んう nwu nwhuの対応
-      const isNNRoute =
-        newLineWord.nextChar.k === "ん" &&
-        newLineWord.correct.r.slice(-1) === "n" &&
-        newLineWord.nextChar.r[0] === "n";
-      const isNextWuWhu = newLineWord.word[0]?.k === "う";
-
-      if (isNNRoute && isNextWuWhu) {
+      if (isNNRoute && isNext) {
         newLineWord.correct.k += "ん";
         this.updatePoint = newLineWord.nextChar.p;
         newLineWord.nextChar = newLineWord.word[0];
@@ -291,7 +269,6 @@ export class RomaInput {
 
       const isToriplePeriod = kana === "..." && typingKey === ",";
       if (isSokuonYouon) {
-        //促音・拗音のみを入力した場合、かな表示を更新
         newLineWord.correct["k"] += newLineWord.nextChar["k"].slice(0, 1);
         newLineWord.nextChar["k"] = newLineWord.nextChar["k"].slice(1);
       } else if (isToriplePeriod) {
@@ -305,7 +282,6 @@ export class RomaInput {
     return newLineWord;
   }
 
-  // xnで「ん」を打鍵する場合、次の文字から[nn, n']の打鍵パターンを除外する
   private nextNNFilter(typingKey: string, newLineWord: LineWord) {
     const NEXT_TO_NEXT_CHAR = newLineWord.word[0]["r"];
     const isXN =
@@ -326,12 +302,9 @@ export class RomaInput {
   private wordUpdate(typingKeys: TypingKeys, newLineWord: LineWord) {
     const kana = newLineWord.nextChar["k"];
     const romaPattern = newLineWord.nextChar["r"];
-    // const POINT = newLineWord.nextChar["point"];
 
-    //チャンク打ち切り
     if (!romaPattern.length) {
       newLineWord.correct["k"] += kana;
-      //スコア加算
       this.updatePoint = newLineWord.nextChar["p"];
       newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
     }
@@ -406,7 +379,6 @@ export class KanaInput {
         newLineWord.correct["k"] += typingKey;
         newLineWord.nextChar["k"] = newLineWord.nextChar["k"].slice(1);
       } else {
-        //チャンク打ち切り
         newLineWord = this.wordUpdate(typingKey, newLineWord);
       }
     }
@@ -433,7 +405,6 @@ export class KanaInput {
     newLineWord.correct["k"] += typingKey;
     newLineWord.correct["r"] += romaPattern[0];
 
-    //スコア加算
     this.updatePoint = newLineWord.nextChar["p"];
     newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
 
@@ -496,7 +467,6 @@ export class Typing {
         input.keys[0] = "っ";
       }
 
-      //ATOK入力 https://support.justsystems.com/faq/1032/app/servlet/qadoc?QID=024273
       if (event.code == "KeyV") {
         input.keys.push("ゐ", "ヰ");
       }
