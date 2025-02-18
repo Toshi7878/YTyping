@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { Heart } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./css/render.css";
 
 type LikeButtonProps = {
@@ -19,8 +19,12 @@ export const LikeButton = ({
   likeButtonRef,
 }: LikeButtonProps) => {
   const width = Math.floor(size * 25);
-  const [isLiked, setIsLiked] = React.useState(defaultLiked);
-  const [clicked, setClicked] = React.useState(false);
+  const [isLiked, setIsLiked] = useState(defaultLiked);
+  const [clicked, setClicked] = useState(false);
+
+  useEffect(() => {
+    setIsLiked(defaultLiked);
+  }, [defaultLiked]);
 
   const handleOnClick = () => {
     if (onClick) onClick(!isLiked);

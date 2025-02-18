@@ -28,7 +28,7 @@ export const useLocalLikeServerActions = ({
     likeLocalState.hasLike !== hasLike ? likeLocalState : { hasLike, likeCount },
     (currentState, newState) => {
       return newState as LocalLikeState;
-    },
+    }
   );
 
   const [isToggling, setIsToggling] = useState(false); // 連打対策用のフラグ
