@@ -1,3 +1,4 @@
+import { useWindowFocus } from "@/app/type/hooks/useWindowFocus";
 import { useMapAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { Box, Flex, Stack } from "@chakra-ui/react";
@@ -13,6 +14,7 @@ function Ready() {
   const speedUpButtonRef = useRef<HTMLButtonElement>(null);
   const speedDownButtonRef = useRef<HTMLButtonElement>(null);
   const map = useMapAtom();
+  const windowFocus = useWindowFocus();
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {
@@ -20,10 +22,7 @@ function Ready() {
         case "Enter":
           if (playerRef.current && map) {
             await playerRef.current.playVideo();
-            (document.activeElement as HTMLElement)?.blur();
-            document.getElementById("typing_card")?.focus();
-            (document.activeElement as HTMLElement)?.blur();
-            document.getElementById("typing_card")?.focus();
+            windowFocus();
           }
           event.preventDefault();
           break;
