@@ -47,6 +47,10 @@ export const useYTPlayEvent = () => {
         setScene("playing");
       }
       updatePlayCountStats();
+      (document.activeElement as HTMLElement)?.blur();
+      window.focus();
+      (document.activeElement as HTMLElement)?.blur();
+      window.focus();
     }
 
     if (scene === "playing" || scene === "replay" || scene === "practice") {
