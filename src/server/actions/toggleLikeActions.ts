@@ -3,6 +3,7 @@
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
+import { revalidatePath } from "next/cache";
 
 async function updateLike(mapId: number, userId: number, optimisticState: boolean) {
   await prisma.$transaction(async (db) => {
@@ -52,6 +53,7 @@ export async function toggleLikeServerAction(
 
     await updateLike(mapId, userId, optimisticState);
 
+    revalidatePath(`/api/map-info`);
     return {
       id: null,
       title: "いいね完了",
