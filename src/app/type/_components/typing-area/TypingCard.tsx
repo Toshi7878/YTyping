@@ -82,7 +82,7 @@ function TypingCard() {
   }, [drawerClosure]);
 
   return (
-    <CustomCard className="typing-card">
+    <CustomCard className="typing-card" id="typing_card">
       <CardHeader py={0} mx={3}>
         <PlayingTop />
       </CardHeader>

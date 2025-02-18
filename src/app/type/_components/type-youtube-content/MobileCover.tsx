@@ -17,9 +17,9 @@ const MobileCover = () => {
         await playerRef.current?.pauseVideo();
       }
       (document.activeElement as HTMLElement)?.blur();
-      window.focus();
+      document.getElementById("typing_card")?.focus();
       (document.activeElement as HTMLElement)?.blur();
-      window.focus();
+      document.getElementById("typing_card")?.focus();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
