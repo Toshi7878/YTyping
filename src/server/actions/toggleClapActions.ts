@@ -26,7 +26,7 @@ async function updateClap(resultId: number, userId: number, optimisticState: boo
     const newClapCount = await db.result_claps.count({
       where: {
         result_id: resultId,
-        is_claped: true, // resultIdのisClapedがtrueのものをカウント
+        is_claped: true,
       },
     });
 
@@ -52,7 +52,7 @@ export async function toggleClapServerAction(
   try {
     const userId = Number(session?.user?.id);
 
-    const clapedId = await updateClap(resultId, userId, optimisticState);
+    await updateClap(resultId, userId, optimisticState);
 
     return {
       id: null,

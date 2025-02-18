@@ -143,8 +143,6 @@ const calcRank = async ({
       ranking_count: rankingList.length,
     },
   });
-
-  console.log("calced");
 };
 
 const sendLineResult = async ({
@@ -167,8 +165,6 @@ const sendLineResult = async ({
     console.error("Error uploading to Supabase:", error);
     throw error;
   }
-
-  console.log("send-replay-data");
 };
 
 const sendNewResult = async ({
@@ -209,7 +205,6 @@ const sendNewResult = async ({
     },
   });
 
-  console.log("upserted");
   return upsertResult.id;
 };
 

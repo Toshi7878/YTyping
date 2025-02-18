@@ -3,11 +3,10 @@
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
-import { revalidatePath } from "next/cache";
 
 async function updateLike(mapId: number, userId: number, optimisticState: boolean) {
   await prisma.$transaction(async (db) => {
-    const liked = await db.map_likes.upsert({
+    await db.map_likes.upsert({
       where: {
         user_id_map_id: {
           user_id: userId,
@@ -27,7 +26,7 @@ async function updateLike(mapId: number, userId: number, optimisticState: boolea
     const newLikeCount = await db.map_likes.count({
       where: {
         map_id: mapId,
-        is_liked: true, // resultIdのisClapedがtrueのものをカウント
+        is_liked: true,
       },
     });
 
@@ -53,7 +52,6 @@ export async function toggleLikeServerAction(
 
     await updateLike(mapId, userId, optimisticState);
 
-    revalidatePath(`/api/map-info`);
     return {
       id: null,
       title: "いいね完了",

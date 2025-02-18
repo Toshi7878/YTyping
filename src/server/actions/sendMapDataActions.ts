@@ -5,7 +5,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
-import { revalidatePath } from "next/cache";
 import { SendMapDifficulty, SendMapInfo } from "../../app/edit/ts/type";
 
 const upsertMap = async (
@@ -120,8 +119,6 @@ export async function actions(
         status: 403,
       };
     }
-
-    revalidatePath(`/api/map-list`);
 
     return {
       id: mapId === "new" ? newMapId : null,
