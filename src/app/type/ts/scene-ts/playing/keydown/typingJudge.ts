@@ -150,9 +150,77 @@ const Z_COMMAND_MAP = {
   "..": { k: "..", r: ["z,"], p: CHAR_POINT * 2, t: "symbol" as const },
 };
 
-interface JudgeType {
-  typingKeys: TypingKeys;
-  lineWord: LineWord;
+class ProcessedLineWord {
+  newLineWord: LineWord;
+  updatePoint: number;
+
+  constructor({ typingKeys, lineWord }: JudgeType) {
+    this.newLineWord = lineWord;
+    this.updatePoint = 0;
+    this.newLineWord = this.zCommand({ typingKeys: typingKeys, lineWord: this.newLineWord });
+    this.newLineWord = this.keyW({ typingKeys: typingKeys, lineWord: this.newLineWord });
+    this.newLineWord = this.keyX({ typingKeys: typingKeys, lineWord: this.newLineWord });
+  }
+
+  private keyX({ typingKeys, lineWord }: JudgeType) {
+    let newLineWord = { ...lineWord };
+    if (typingKeys.code == "KeyX") {
+      //んん nxnの対応
+      const isNNRoute =
+        newLineWord.nextChar.k === "ん" &&
+        newLineWord.correct.r.slice(-1) === "n" &&
+        newLineWord.nextChar.r[0] === "n";
+      const isNextXN = newLineWord.word[0]?.k === "ん";
+
+      if (isNNRoute && isNextXN) {
+        newLineWord.correct.k += "ん";
+        this.updatePoint = newLineWord.nextChar.p;
+        newLineWord.nextChar = newLineWord.word[0];
+        newLineWord.word.splice(0, 1);
+        return newLineWord;
+      }
+    }
+    return newLineWord;
+  }
+
+  private keyW({ typingKeys, lineWord }: JudgeType) {
+    let newLineWord = { ...lineWord };
+    if (typingKeys.code == "KeyW") {
+      //んう nwu nwhuの対応
+      const isNNRoute =
+        newLineWord.nextChar.k === "ん" &&
+        newLineWord.correct.r.slice(-1) === "n" &&
+        newLineWord.nextChar.r[0] === "n";
+      const isNextWuWhu = newLineWord.word[0]?.k === "う";
+
+      if (isNNRoute && isNextWuWhu) {
+        newLineWord.correct.k += "ん";
+        this.updatePoint = newLineWord.nextChar.p;
+        newLineWord.nextChar = newLineWord.word[0];
+        newLineWord.word.splice(0, 1);
+        return newLineWord;
+      }
+    }
+    return newLineWord;
+  }
+
+  private zCommand({ typingKeys, lineWord }: JudgeType) {
+    let newLineWord = { ...lineWord };
+    if (typingKeys.code == "KeyZ" && !typingKeys.shift) {
+      const doublePeriod = newLineWord.nextChar.k === "." && newLineWord.word[0]?.k === ".";
+      if (doublePeriod) {
+        const triplePeriod = doublePeriod && newLineWord.word[1]?.k === ".";
+        if (triplePeriod) {
+          newLineWord.nextChar = structuredClone(Z_COMMAND_MAP["..."]);
+          newLineWord.word.splice(0, 2);
+        } else {
+          newLineWord.nextChar = structuredClone(Z_COMMAND_MAP[".."]);
+          newLineWord.word.splice(0, 1);
+        }
+      }
+    }
+    return newLineWord;
+  }
 }
 
 export interface TypingKeys {
@@ -162,81 +230,15 @@ export interface TypingKeys {
   shift?: boolean;
 }
 
-class ProcessedLineWord {
-  newLineWord: LineWord;
-  updatePoint: number;
-
-  constructor({ typingKeys, lineWord }: JudgeType) {
-    this.newLineWord = lineWord;
-    this.updatePoint = 0;
-    this.newLineWord = this.zCommand({ typingKeys, lineWord: this.newLineWord });
-    this.newLineWord = this.keyW({ typingKeys, lineWord: this.newLineWord });
-    this.newLineWord = this.keyX({ typingKeys, lineWord: this.newLineWord });
-  }
-
-  private keyX({ typingKeys, lineWord }: JudgeType) {
-    if (typingKeys.code === "KeyX") {
-      // 「んん」: nxn の対応
-      const isNNRoute =
-        lineWord.nextChar.k === "ん" &&
-        lineWord.correct.r.slice(-1) === "n" &&
-        lineWord.nextChar.r[0] === "n";
-      const isNextXN = lineWord.word[0]?.k === "ん";
-      if (isNNRoute && isNextXN) {
-        lineWord.correct.k += "ん";
-        this.updatePoint = lineWord.nextChar.p;
-        lineWord.nextChar = lineWord.word[0];
-        lineWord.word.splice(0, 1);
-      }
-    }
-    return lineWord;
-  }
-
-  private keyW({ typingKeys, lineWord }: JudgeType) {
-    if (typingKeys.code === "KeyW") {
-      const isNNRoute =
-        lineWord.nextChar.k === "ん" &&
-        lineWord.correct.r.slice(-1) === "n" &&
-        lineWord.nextChar.r[0] === "n";
-      const isNextWuWhu = lineWord.word[0]?.k === "う";
-      if (isNNRoute && isNextWuWhu) {
-        lineWord.correct.k += "ん";
-        this.updatePoint = lineWord.nextChar.p;
-        lineWord.nextChar = lineWord.word[0];
-        lineWord.word.splice(0, 1);
-      }
-    }
-    return lineWord;
-  }
-
-  private zCommand({ typingKeys, lineWord }: JudgeType) {
-    if (typingKeys.code === "KeyZ" && !typingKeys.shift) {
-      const doublePeriod = lineWord.nextChar.k === "." && lineWord.word[0]?.k === ".";
-      if (doublePeriod) {
-        const triplePeriod = lineWord.word[1]?.k === ".";
-        if (triplePeriod) {
-          // オブジェクトは浅いコピーで作成（structuredClone の代わり）
-          lineWord.nextChar = { ...Z_COMMAND_MAP["..."] };
-          lineWord.word.splice(0, 2);
-        } else {
-          lineWord.nextChar = { ...Z_COMMAND_MAP[".."] };
-          lineWord.word.splice(0, 1);
-        }
-      }
-    }
-    return lineWord;
-  }
+interface JudgeType {
+  typingKeys: TypingKeys;
+  lineWord: LineWord;
 }
-
-/**
- * RomaInput クラス
- */
 export class RomaInput {
   newLineWord: LineWord;
   updatePoint: number;
   successKey: string;
   failKey: string;
-
   constructor({ typingKeys, lineWord }: JudgeType) {
     const processed = new ProcessedLineWord({ typingKeys, lineWord });
     this.updatePoint = processed.updatePoint;
@@ -245,28 +247,28 @@ export class RomaInput {
     this.successKey = result.successKey;
     this.failKey = result.failKey ?? "";
   }
-
   private hasRomaPattern(typingKeys: TypingKeys, lineWord: LineWord) {
-    const newLineWord = lineWord;
+    let newLineWord = { ...lineWord } as LineWord;
     const nextRomaPattern: string[] = newLineWord.nextChar["r"];
-    const kana = newLineWord.nextChar["k"];
-    const isSuccess = nextRomaPattern.some(
-      (pattern) => pattern[0] && pattern[0].toLowerCase() === typingKeys.keys[0]
+    const kana = lineWord.nextChar["k"];
+    const IS_SUCCESS = nextRomaPattern.some(
+      (pattern) => pattern[0] && pattern[0].toLowerCase() === typingKeys["keys"][0]
     );
 
-    if (!isSuccess) {
+    if (!IS_SUCCESS) {
       return { newLineWord, successKey: "", failKey: typingKeys.key };
     }
 
-    if (kana === "ん" && newLineWord.word[0]) {
-      newLineWord.word[0]["r"] = this.nextNNFilter(typingKeys.keys[0], newLineWord);
+    if (kana == "ん" && newLineWord.word[0]) {
+      newLineWord.word[0]["r"] = this.nextNNFilter(typingKeys["keys"][0], newLineWord);
     }
 
     newLineWord.nextChar["r"] = this.updateNextRomaPattern(typingKeys, nextRomaPattern);
-    this.kanaFilter(kana, typingKeys.keys[0], nextRomaPattern, newLineWord);
-    this.wordUpdate(typingKeys, newLineWord);
+    newLineWord = this.kanaFilter(kana, typingKeys["keys"][0], nextRomaPattern, newLineWord);
 
-    return { newLineWord, successKey: typingKeys.keys[0] };
+    newLineWord = this.wordUpdate(typingKeys, newLineWord);
+
+    return { newLineWord, successKey: typingKeys["keys"][0] };
   }
 
   private updateNextRomaPattern(typingKeys: TypingKeys, nextRomaPattern: string[]) {
@@ -284,11 +286,12 @@ export class RomaInput {
   ) {
     if (kana.length >= 2 && romaPattern.length) {
       const isSokuonYouon =
-        (kana[0] !== "っ" && (romaPattern[0][0] === "x" || romaPattern[0][0] === "l")) ||
-        (kana[0] === "っ" && (typingKey === "u" || romaPattern[0][0] === typingKey));
+        (kana[0] != "っ" && (romaPattern[0][0] === "x" || romaPattern[0][0] === "l")) ||
+        (kana[0] == "っ" && (typingKey === "u" || romaPattern[0][0] === typingKey));
 
       const isToriplePeriod = kana === "..." && typingKey === ",";
       if (isSokuonYouon) {
+        //促音・拗音のみを入力した場合、かな表示を更新
         newLineWord.correct["k"] += newLineWord.nextChar["k"].slice(0, 1);
         newLineWord.nextChar["k"] = newLineWord.nextChar["k"].slice(1);
       } else if (isToriplePeriod) {
@@ -302,35 +305,48 @@ export class RomaInput {
     return newLineWord;
   }
 
-  // xn で「ん」を打鍵する場合、次の文字から [nn, n'] の打鍵パターンを除外
+  // xnで「ん」を打鍵する場合、次の文字から[nn, n']の打鍵パターンを除外する
   private nextNNFilter(typingKey: string, newLineWord: LineWord) {
-    const nextToNextChar = newLineWord.word[0]["r"];
+    const NEXT_TO_NEXT_CHAR = newLineWord.word[0]["r"];
     const isXN =
-      typingKey === "x" &&
-      nextToNextChar[0] &&
-      nextToNextChar[0][0] !== "n" &&
-      nextToNextChar[0][0] !== "N";
+      typingKey == "x" &&
+      NEXT_TO_NEXT_CHAR[0] &&
+      NEXT_TO_NEXT_CHAR[0][0] != "n" &&
+      NEXT_TO_NEXT_CHAR[0][0] != "N";
 
     if (isXN) {
-      return nextToNextChar.filter((value: string) => !value.match(/^(n|').*$/));
+      return NEXT_TO_NEXT_CHAR.filter((value: string) => {
+        return value.match(/^(?!(n|')).*$/);
+      });
     } else {
-      return nextToNextChar;
+      return NEXT_TO_NEXT_CHAR;
     }
   }
 
   private wordUpdate(typingKeys: TypingKeys, newLineWord: LineWord) {
     const kana = newLineWord.nextChar["k"];
     const romaPattern = newLineWord.nextChar["r"];
-    // チャンク打ち切り
+    // const POINT = newLineWord.nextChar["point"];
+
+    //チャンク打ち切り
     if (!romaPattern.length) {
       newLineWord.correct["k"] += kana;
+      //スコア加算
       this.updatePoint = newLineWord.nextChar["p"];
       newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
     }
-    newLineWord.correct["r"] += typingKeys.keys[0];
+
+    newLineWord.correct["r"] += typingKeys["keys"][0];
+
     return newLineWord;
   }
 }
+
+type DakuHandakuData = {
+  type: "" | "゛" | "゜";
+  normalized: "" | NormalizeHirakana;
+  dakuHandaku: "" | Dakuten | HanDakuten;
+};
 
 export class KanaInput {
   newLineWord: LineWord;
@@ -347,18 +363,19 @@ export class KanaInput {
   }
 
   private hasKana({ typingKeys, lineWord }: JudgeType) {
-    let newLineWord = lineWord;
+    let newLineWord = { ...lineWord };
+
     const nextKana = lineWord.nextChar["k"];
     const keys = typingKeys.keys;
     const isdakuHandaku = dakuHandakuList.includes(nextKana[0]);
 
-    const dakuHanDakuData: {
-      type: "" | "゛" | "゜";
-      normalized: "" | NormalizeHirakana;
-      dakuHandaku: "" | Dakuten | HanDakuten;
-    } = isdakuHandaku
+    const dakuHanDakuData: DakuHandakuData = isdakuHandaku
       ? this.parseDakuHandaku(nextKana[0] as Dakuten | HanDakuten)
-      : { type: "", normalized: "", dakuHandaku: "" };
+      : {
+          type: "",
+          normalized: "",
+          dakuHandaku: "",
+        };
 
     const successIndex: number = nextKana[0]
       ? keys.indexOf(
@@ -381,7 +398,7 @@ export class KanaInput {
     }
 
     if (dakuHanDakuData.type) {
-      const yoon = nextKana.length >= 2 ? nextKana[1] : "";
+      const yoon = nextKana.length >= 2 && dakuHanDakuData.type ? nextKana[1] : "";
       newLineWord.nextChar["k"] = dakuHanDakuData.type + yoon;
       newLineWord.kanaDakuten = dakuHanDakuData.dakuHandaku;
     } else {
@@ -389,11 +406,15 @@ export class KanaInput {
         newLineWord.correct["k"] += typingKey;
         newLineWord.nextChar["k"] = newLineWord.nextChar["k"].slice(1);
       } else {
+        //チャンク打ち切り
         newLineWord = this.wordUpdate(typingKey, newLineWord);
       }
     }
 
-    return { newLineWord, successKey: keys[successIndex] };
+    return {
+      newLineWord,
+      successKey: keys[successIndex],
+    };
   }
 
   private parseDakuHandaku(dakuHandaku: Dakuten | HanDakuten): {
@@ -408,10 +429,14 @@ export class KanaInput {
 
   private wordUpdate(typingKey: string, newLineWord: LineWord) {
     const romaPattern = newLineWord.nextChar["r"];
+
     newLineWord.correct["k"] += typingKey;
     newLineWord.correct["r"] += romaPattern[0];
+
+    //スコア加算
     this.updatePoint = newLineWord.nextChar["p"];
     newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
+
     return newLineWord;
   }
 }
@@ -451,6 +476,7 @@ export class Typing {
       code: event.code,
       shift: event.shiftKey,
     };
+
     return input;
   }
 
@@ -462,9 +488,6 @@ export class Typing {
       shift: event.shiftKey,
     };
 
-    if (event.keyCode === 0) {
-      input.keys = ["ー", "￥", "\\"];
-    }
     if (event.shiftKey) {
       if (event.code == "KeyE") {
         input.keys[0] = "ぃ";
@@ -472,7 +495,8 @@ export class Typing {
       if (event.code == "KeyZ") {
         input.keys[0] = "っ";
       }
-      // ATOK入力対応
+
+      //ATOK入力 https://support.justsystems.com/faq/1032/app/servlet/qadoc?QID=024273
       if (event.code == "KeyV") {
         input.keys.push("ゐ", "ヰ");
       }
@@ -492,6 +516,7 @@ export class Typing {
         input.keys = ["を"];
       }
     }
+
     if (keyboardCharacters.includes(event.key)) {
       input.keys.push(
         event.key.toLowerCase(),
@@ -500,6 +525,7 @@ export class Typing {
         })
       );
     }
+
     return input;
   }
 }
