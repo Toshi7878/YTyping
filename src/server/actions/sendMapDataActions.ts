@@ -15,7 +15,6 @@ const upsertMap = async (
   isMapDataEdited: boolean,
   mapData: MapData[]
 ) => {
-  // トランザクションを開始
   return await prisma.$transaction(async (tx) => {
     try {
       const mapIdNumber = mapId === "new" ? 0 : Number(mapId);
@@ -48,7 +47,6 @@ const upsertMap = async (
         },
       });
 
-      // Supabaseストレージにアップロード
       await supabase.storage
         .from("map-data")
         .upload(
@@ -149,7 +147,6 @@ const lineSchema = z.object({
     .optional(), // 追加
 });
 
-const mapSendDifficulty = z.object({});
 const mapSendSchema = z.object({
   title: z.string().min(1, { message: "タイトルは１文字以上必要です" }),
   creatorComment: z.string().optional(),
