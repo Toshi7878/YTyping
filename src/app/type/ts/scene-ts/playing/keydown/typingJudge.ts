@@ -229,11 +229,11 @@ export class RomaInput {
     let newLineWord = { ...lineWord } as LineWord;
     const nextRomaPattern: string[] = newLineWord.nextChar["r"];
     const kana = lineWord.nextChar["k"];
-    const IS_SUCCESS = nextRomaPattern.some(
+    const isSuccess = nextRomaPattern.some(
       (pattern) => pattern[0] && pattern[0].toLowerCase() === typingKeys["keys"][0]
     );
 
-    if (!IS_SUCCESS) {
+    if (!isSuccess) {
       return { newLineWord, successKey: "", failKey: typingKeys.key };
     }
 
@@ -283,19 +283,19 @@ export class RomaInput {
   }
 
   private nextNNFilter(typingKey: string, newLineWord: LineWord) {
-    const NEXT_TO_NEXT_CHAR = newLineWord.word[0]["r"];
+    const nextToNextChar = newLineWord.word[0]["r"];
     const isXN =
       typingKey == "x" &&
-      NEXT_TO_NEXT_CHAR[0] &&
-      NEXT_TO_NEXT_CHAR[0][0] != "n" &&
-      NEXT_TO_NEXT_CHAR[0][0] != "N";
+      nextToNextChar[0] &&
+      nextToNextChar[0][0] != "n" &&
+      nextToNextChar[0][0] != "N";
 
     if (isXN) {
-      return NEXT_TO_NEXT_CHAR.filter((value: string) => {
+      return nextToNextChar.filter((value: string) => {
         return value.match(/^(?!(n|')).*$/);
       });
     } else {
-      return NEXT_TO_NEXT_CHAR;
+      return nextToNextChar;
     }
   }
 
@@ -467,6 +467,7 @@ export class Typing {
         input.keys[0] = "っ";
       }
 
+      //ATOK入力 https://support.justsystems.com/faq/1032/app/servlet/qadoc?QID=024273
       if (event.code == "KeyV") {
         input.keys.push("ゐ", "ヰ");
       }
