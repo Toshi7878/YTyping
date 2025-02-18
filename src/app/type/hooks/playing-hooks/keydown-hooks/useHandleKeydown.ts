@@ -225,7 +225,7 @@ const usePauseShortcutKey = () => {
   };
 };
 
-const CODES = [
+const CODES_SET = new Set([
   "Space",
   "Digit1",
   "Digit2",
@@ -252,8 +252,9 @@ const CODES = [
   "Slash",
   "IntlRo",
   "Unidentified",
-];
-const TENKEYS = [
+]);
+
+const TENKEYS_SET = new Set([
   "Numpad1",
   "Numpad2",
   "Numpad3",
@@ -269,27 +270,21 @@ const TENKEYS = [
   "NumpadSubtract",
   "NumpadAdd",
   "NumpadDecimal",
-];
+]);
 
 const useIsKeydownTyped = () => {
   return (event: KeyboardEvent, lineWord: LineWord) => {
-    if (event.ctrlKey || event.altKey) {
-      return false;
-    }
+    if (event.ctrlKey || event.altKey) return false;
 
-    const KEY_CODE = event.keyCode;
-    const CODE = event.code;
+    const activeElement = document.activeElement as HTMLInputElement | null;
+    if (!activeElement || activeElement.type === "text") return false;
 
-    const IS_TYPE =
-      (KEY_CODE >= 65 && KEY_CODE <= 90) || CODES.includes(CODE) || TENKEYS.includes(CODE);
-    //event.keyが"Process"になるブラウザの不具合が昔はあったので場合によっては追加する
-    //ChatGPT「'Process' キーは通常、国際的なキーボードで入力方法やプロセスのキーを指すために使用されます。」
+    const keyCode = event.keyCode;
+    const code = event.code;
 
-    const ACTIVE_ELEMENT = document.activeElement as HTMLInputElement;
-    const HAS_FOCUS = ACTIVE_ELEMENT && ACTIVE_ELEMENT.type != "text";
+    const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code);
+    if (!isType) return false;
 
-    const KANA = lineWord.nextChar["k"];
-
-    return IS_TYPE && HAS_FOCUS && KANA;
+    return Boolean(lineWord.nextChar["k"]);
   };
 };

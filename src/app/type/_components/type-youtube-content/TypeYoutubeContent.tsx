@@ -3,6 +3,7 @@ import { useStore } from "jotai";
 import { useCallback, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
+import { useWindowFocus } from "../../hooks/useWindowFocus";
 import {
   useYTEndEvent,
   useYTPauseEvent,
@@ -32,14 +33,14 @@ const TypeYouTubeContent = function YouTubeContent({
   const ytStopEvent = useYTStopEvent();
   const ytEndEvent = useYTEndEvent();
   const ytSeekEvent = useYTSeekEvent();
-
+  const windowFocus = useWindowFocus();
   const handleStateChange = useCallback(
     (event: YouTubeEvent) => {
       if (
         document.activeElement instanceof HTMLIFrameElement &&
         document.activeElement.tagName === "IFRAME"
       ) {
-        document.activeElement.blur();
+        windowFocus();
       }
 
       if (event.data === 3) {
