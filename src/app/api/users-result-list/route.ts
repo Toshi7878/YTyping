@@ -11,8 +11,6 @@ import { auth } from "@/server/auth";
 const USERS_RESULT_LIST_TAKE_LENGTH = 30; //ここを編集したらInfiniteQueryのgetNextPageParamも編集する
 
 export async function GET(req: NextRequest) {
-  // JA3フィンガープリントの検証
-
   const session = await auth();
   const userId = Number(session?.user?.id);
 
