@@ -4,9 +4,6 @@ import { prisma } from "@/server/db";
 
 export async function POST(request: Request) {
   try {
-    // JA3フィンガープリントの検証
-    const ja3Digest = request.headers.get("x-vercel-ja3-digest");
-    throw new Error("JA3 Fingerprint:" + ja3Digest);
     const session = await auth();
     const userId = session ? Number(session?.user.id) : 0;
 
