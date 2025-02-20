@@ -4,6 +4,8 @@ import { prisma } from "@/server/db";
 
 export async function POST(request: Request) {
   try {
+    console.log("Headers:", Object.fromEntries(request.headers.entries()));
+
     const session = await auth();
     const userId = session ? Number(session?.user.id) : 0;
 
