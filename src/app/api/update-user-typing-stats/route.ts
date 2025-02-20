@@ -4,6 +4,9 @@ import { prisma } from "@/server/db";
 
 export async function POST(request: Request) {
   try {
+    // JA3フィンガープリントの検証
+    const ja3Digest = request.headers.get("x-vercel-ja3-digest");
+    throw new Error("JA3 Fingerprint:" + ja3Digest);
     const session = await auth();
     const userId = session ? Number(session.user.id) : 0;
 
@@ -13,10 +16,6 @@ export async function POST(request: Request) {
       where: { user_id: userId },
       select: { max_combo: true },
     });
-
-    // JA3フィンガープリントの検証
-    const ja3Digest = request.headers.get("x-vercel-ja3-digest");
-    console.log("JA3 Fingerprint:", ja3Digest);
 
     const updateData: Record<string, any> = {
       roma_type_total_count: { increment: input.romaType },
