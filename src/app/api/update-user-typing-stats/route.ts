@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const ja3Digest = request.headers.get("x-vercel-ja3-digest");
     throw new Error("JA3 Fingerprint:" + ja3Digest);
     const session = await auth();
-    const userId = session ? Number(session.user.id) : 0;
+    const userId = session ? Number(session?.user.id) : 0;
 
     const bodyText = await request.text();
     const input: StatusRef["userStats"] = JSON.parse(bodyText);
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       total_typing_time: { increment: input.totalTypeTime },
     };
 
-    const isUpdateMaxCombo = !currentStats || input.maxCombo > (currentStats.max_combo || 0);
+    const isUpdateMaxCombo = !currentStats || input.maxCombo > (currentStats?.max_combo || 0);
     if (isUpdateMaxCombo) {
       updateData.max_combo = input.maxCombo;
     }
