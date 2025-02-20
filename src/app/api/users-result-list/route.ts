@@ -11,6 +11,9 @@ import { auth } from "@/server/auth";
 const USERS_RESULT_LIST_TAKE_LENGTH = 30; //ここを編集したらInfiniteQueryのgetNextPageParamも編集する
 
 export async function GET(req: NextRequest) {
+  // JA3フィンガープリントの検証
+  const ja3Digest = req.headers.get("x-vercel-ja3-digest");
+  throw new Error("JA3 Fingerprint:" + ja3Digest);
   const session = await auth();
   const userId = Number(session?.user?.id);
 
