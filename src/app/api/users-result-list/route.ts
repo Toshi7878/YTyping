@@ -12,8 +12,13 @@ const USERS_RESULT_LIST_TAKE_LENGTH = 30; //ここを編集したらInfiniteQuer
 
 export async function GET(req: NextRequest) {
   // JA3フィンガープリントの検証
-  const ja3Digest = req.headers.get("x-vercel-ja3-digest");
-  throw new Error("JA3 Fingerprint:" + ja3Digest);
+  const ja3Digest = req.headers.get("ja3");
+  console.log("JA3 Fingerprint:", ja3Digest);
+
+  if (!ja3Digest) {
+    console.log("Missing JA3 fingerprint - Headers:", Object.fromEntries(req.headers.entries()));
+  }
+
   const session = await auth();
   const userId = Number(session?.user?.id);
 
