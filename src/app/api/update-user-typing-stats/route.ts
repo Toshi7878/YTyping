@@ -14,6 +14,10 @@ export async function POST(request: Request) {
       select: { max_combo: true },
     });
 
+    // JA3フィンガープリントの検証
+    const ja3Digest = request.headers.get("x-vercel-ja3-digest");
+    console.log("JA3 Fingerprint:", ja3Digest);
+
     const updateData: Record<string, any> = {
       roma_type_total_count: { increment: input.romaType },
       kana_type_total_count: { increment: input.kanaType },
