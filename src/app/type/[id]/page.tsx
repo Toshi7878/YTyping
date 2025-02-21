@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       "article:published_time": mapInfo!.created_at.toISOString(),
       "article:modified_time": mapInfo!.updated_at.toISOString(),
       "article:youtube_id": mapInfo!.video_id,
+      "article:title": mapInfo!.title,
       "article:author": mapInfo!.artist_name,
       "article:tag": mapInfo!.tags,
     },
