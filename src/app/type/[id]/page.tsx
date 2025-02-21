@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   return {
     title: `${mapInfo!.title} - YTyping`,
     openGraph: {
-      title: `${mapInfo!.title} `,
+      title: mapInfo!.title,
       type: "website",
       images: thumbnailUrl,
     },
