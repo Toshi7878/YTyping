@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     other: {
       "article:published_time": mapInfo!.created_at.toISOString(),
       "article:modified_time": mapInfo!.updated_at.toISOString(),
+      "article:yt_id": mapInfo!.video_id,
       "article:author": mapInfo!.artist_name,
       "article:tag": mapInfo!.tags,
     },
