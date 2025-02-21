@@ -22,11 +22,17 @@ export const mapRouter = {
         tags: true,
         video_id: true,
         preview_time: true,
+        created_at: true,
         updated_at: true,
         thumbnail_quality: true,
         map_likes: {
           where: { user_id: userId },
           select: { is_liked: true },
+        },
+        creator: {
+          select: {
+            name: true,
+          },
         },
       },
     });
