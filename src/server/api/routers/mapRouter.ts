@@ -23,6 +23,7 @@ export const mapRouter = {
         video_id: true,
         preview_time: true,
         updated_at: true,
+        thumbnail_quality: true,
         map_likes: {
           where: { user_id: userId },
           select: { is_liked: true },
