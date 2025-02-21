@@ -72,6 +72,7 @@ const TypeYouTubeContent = function YouTubeContent({
     () => (
       <YouTube
         className={`${className} aspect-video mt-2 select-none`}
+        id="yt_player"
         videoId={videoId}
         opts={{
           width: "100%",
