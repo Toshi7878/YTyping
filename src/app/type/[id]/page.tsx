@@ -1,5 +1,4 @@
 import { serverApi } from "@/trpc/server";
-import { Box } from "@chakra-ui/react";
 import { Metadata } from "next";
 import Content from "./Content";
 import TypeProvider from "./TypeProvider";
@@ -38,7 +37,6 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <TypeProvider mapInfo={mapInfo!} userTypingOptions={userTypingOptions}>
       <Content mapInfo={mapInfo!} />
-      <Box></Box>
     </TypeProvider>
   );
 }
