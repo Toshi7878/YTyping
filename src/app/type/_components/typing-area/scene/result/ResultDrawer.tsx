@@ -31,7 +31,7 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
 
   return (
     <Drawer
-      isOpen={scene === "end" ? isOpen : scene === "practice" ? true : false}
+      isOpen={scene === "end" ? isOpen : scene === "practice" || scene === "replay" ? true : false}
       placement="right"
       trapFocus={false}
       blockScrollOnMount={false}
