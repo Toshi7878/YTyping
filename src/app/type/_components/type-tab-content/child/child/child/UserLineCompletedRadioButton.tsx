@@ -6,17 +6,17 @@ import {
 import { Box, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import { $Enums } from "@prisma/client";
 
-const UserNextDisplayRadioButton = () => {
+const UserLineCompletedRadioButton = () => {
   const setUserOptionsAtom = useSetUserOptionsAtom();
   const userOptionsAtom = useUserOptionsAtom();
   const setIsOptionEdited = useSetIsOptionEdited();
 
-  const changeRadio = (value: $Enums.next_display) => {
+  const changeRadio = (value: $Enums.line_completed_display) => {
     if (!userOptionsAtom) return;
 
     const newUserOptions = {
       ...userOptionsAtom,
-      next_display: value,
+      line_completed_display: value,
     };
     setUserOptionsAtom(newUserOptions);
     setIsOptionEdited(true);
@@ -24,16 +24,16 @@ const UserNextDisplayRadioButton = () => {
   return (
     <Box>
       <Text fontSize="lg" fontWeight="semibold" mb={2}>
-        次の歌詞表示
+        ラインクリア表示
       </Text>
-      <RadioGroup defaultValue={userOptionsAtom.next_display} onChange={changeRadio}>
+      <RadioGroup defaultValue={userOptionsAtom.line_completed_display} onChange={changeRadio}>
         <Stack direction="row" spacing={5}>
-          <Radio value="LYRICS">歌詞</Radio>
-          <Radio value="WORD">ワード</Radio>
+          <Radio value="HIGH_LIGHT">ワードハイライト</Radio>
+          <Radio value="NEXT_WORD">次のワード</Radio>
         </Stack>
       </RadioGroup>
     </Box>
   );
 };
 
-export default UserNextDisplayRadioButton;
+export default UserLineCompletedRadioButton;

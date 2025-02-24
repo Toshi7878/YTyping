@@ -58,6 +58,8 @@ export interface LineWord {
 export interface NextLyricsType {
   lyrics: string;
   kpm: string;
+  kanaWord: string;
+  romaWord: string;
 }
 
 export interface Status {

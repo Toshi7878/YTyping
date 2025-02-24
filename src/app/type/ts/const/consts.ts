@@ -39,6 +39,8 @@ export const defaultLineWord: LineWord = {
 export const defaultNextLyrics: NextLyricsType = {
   lyrics: "",
   kpm: "",
+  kanaWord: "",
+  romaWord: "",
 };
 
 export const typeTicker = new Ticker();

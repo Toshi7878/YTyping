@@ -363,11 +363,18 @@ export const useUpdateLine = () => {
             ? map.mapData[newCount].kanaWord
             : map.mapData[newCount]["lyrics"],
         kpm: nextKpm.toFixed(0),
+        kanaWord: map.mapData[newCount].kanaWord.slice(0, 60),
+        romaWord: map.mapData[newCount].word
+          .map((w) => w["r"][0])
+          .join("")
+          .slice(0, 60),
       });
     } else {
       setNextLyrics({
         lyrics: "",
         kpm: "",
+        kanaWord: "",
+        romaWord: "",
       });
     }
 

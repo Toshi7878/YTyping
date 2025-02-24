@@ -76,6 +76,7 @@ export const DEFAULT_USER_OPTIONS: NonNullable<
   miss_sound: false,
   line_clear_sound: false,
   next_display: "LYRICS" as $Enums.next_display,
+  line_completed_display: "HIGH_LIGHT" as $Enums.line_completed_display,
   time_offset_key: "CTRL_LEFT_RIGHT" as $Enums.time_offset_key,
   toggle_input_mode_key: "ALT_KANA" as $Enums.toggle_input_mode_key,
 };

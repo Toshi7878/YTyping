@@ -185,6 +185,8 @@ export const useSetLyricsAtom = () => {
 const nextLyricsAtom = atom<NextLyricsType>({
   lyrics: "",
   kpm: "",
+  kanaWord: "",
+  romaWord: "",
 });
 
 export const useNextLyricsAtom = () => {

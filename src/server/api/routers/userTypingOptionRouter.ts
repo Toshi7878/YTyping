@@ -1,6 +1,11 @@
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
-import { next_display, time_offset_key, toggle_input_mode_key } from "@prisma/client";
+import {
+  line_completed_display,
+  next_display,
+  time_offset_key,
+  toggle_input_mode_key,
+} from "@prisma/client";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -16,6 +21,7 @@ export const userTypingOptionRouter = {
         type_sound: true,
         miss_sound: true,
         line_clear_sound: true,
+        line_completed_display: true,
         next_display: true,
         time_offset_key: true,
         toggle_input_mode_key: true,
@@ -31,6 +37,7 @@ export const userTypingOptionRouter = {
         type_sound: z.boolean(),
         miss_sound: z.boolean(),
         line_clear_sound: z.boolean(),
+        line_completed_display: z.nativeEnum(line_completed_display),
         next_display: z.nativeEnum(next_display),
         time_offset_key: z.nativeEnum(time_offset_key),
         toggle_input_mode_key: z.nativeEnum(toggle_input_mode_key),

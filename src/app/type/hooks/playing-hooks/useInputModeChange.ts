@@ -68,6 +68,11 @@ export const useInputModeChange = () => {
       setNextLyrics({
         lyrics: userOptions.next_display === "WORD" ? nextLine.kanaWord : nextLine["lyrics"],
         kpm: nextKpm.toFixed(0),
+        kanaWord: nextLine.kanaWord.slice(0, 60),
+        romaWord: nextLine.word
+          .map((w) => w["r"][0])
+          .join("")
+          .slice(0, 60),
       });
     }
 

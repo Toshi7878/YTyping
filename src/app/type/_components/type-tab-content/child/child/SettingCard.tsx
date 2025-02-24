@@ -11,6 +11,7 @@ import { ThemeColors } from "@/types";
 import { Card, CardBody, Divider, useTheme } from "@chakra-ui/react";
 import { useStore } from "jotai";
 import { Dispatch, useEffect, useRef } from "react";
+import UserLineCompletedRadioButton from "./child/UserLineCompletedRadioButton";
 import UserNextDisplayRadioButton from "./child/UserNextDisplayRadioButton";
 import UserShortcutKeyCheckbox from "./child/UserShortcutKeyCheckbox";
 import UserSoundEffectCheckbox from "./child/UserSoundEffectCheckbox";
@@ -84,6 +85,8 @@ const SettingCard = (props: SettingCardProps) => {
             <UserSoundEffectCheckbox />
             <Divider bg={theme.colors.text.body} my={3} />
             <UserNextDisplayRadioButton />
+            <Divider bg={theme.colors.text.body} my={3} />
+            <UserLineCompletedRadioButton />
             <Divider bg={theme.colors.text.body} my={3} />
             <UserShortcutKeyCheckbox />
           </CardBody>
