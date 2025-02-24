@@ -9,7 +9,7 @@ const NextLyrics = () => {
 
   return (
     <Box
-      color={`${theme.colors.semantic.word.next}`}
+      color={`${theme.colors.text.body}`}
       id="next_lyrics_kpm"
       opacity={0.6}
       fontSize={{ base: "4rem", sm: "2.7rem", md: "3xl" }}

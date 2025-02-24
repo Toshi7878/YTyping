@@ -31,7 +31,6 @@ const PlayingWord = ({
           as="span"
           className="word-correct word-completed"
           color={theme.colors.semantic.word.next}
-          opacity={0.3}
         >
           {nextWord}
         </Text>
