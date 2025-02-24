@@ -87,7 +87,7 @@ export interface ThemeColors {
       clap: `#${string}`;
       word: {
         correct: string;
-        next: string;
+        nextChar: string;
         word: string;
         completed: string;
       };

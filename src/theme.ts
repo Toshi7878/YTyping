@@ -58,7 +58,7 @@ const darkTheme: ThemeColors = {
       clap: "#ffb825",
       word: {
         correct: "#3182ce",
-        next: "#999",
+        nextChar: "#FFF",
         word: "#FFF",
         completed: "#4fd1c5",
       },

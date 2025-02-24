@@ -30,7 +30,7 @@ const PlayingWord = ({
         <Text
           as="span"
           className="word-correct word-completed"
-          color={theme.colors.semantic.word.next}
+          color={theme.colors.semantic.word.nextChar}
         >
           {nextWord}
         </Text>
@@ -47,7 +47,7 @@ const PlayingWord = ({
           >
             {correct}
           </Text>
-          <Text as="span" color={theme.colors.semantic.word.next} className="word-next">
+          <Text as="span" color={theme.colors.semantic.word.nextChar} className="word-next">
             {nextChar}
           </Text>
           <Text as="span" color={theme.colors.semantic.word.word} className="word">
