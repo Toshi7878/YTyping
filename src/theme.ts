@@ -158,5 +158,18 @@ export default extendTheme({
         },
       },
     },
+    Drawer: {
+      variants: {
+        alwaysOpen: {
+          parts: ["dialog, dialogContainer"],
+          dialog: {
+            pointerEvents: "auto",
+          },
+          dialogContainer: {
+            pointerEvents: "none",
+          },
+        },
+      },
+    },
   },
 });

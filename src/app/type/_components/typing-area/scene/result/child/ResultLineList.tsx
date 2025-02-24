@@ -12,14 +12,10 @@ import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { Ticker } from "@pixi/ticker";
 import { useStore } from "jotai";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import ResultCard from "./ResultCard";
 
-interface ResultLineListProps {
-  onClose: () => void;
-}
-
-function ResultLineList({ onClose }: ResultLineListProps) {
+function ResultLineList() {
   const map = useMapAtom();
   const scene = useSceneAtom();
   const lineResults = useLineResultsAtom();
@@ -51,13 +47,13 @@ function ResultLineList({ onClose }: ResultLineListProps) {
       setLineSelectIndex(lineNumber);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    []
   );
 
   const endCardClick = useCallback((lineNumber: number) => {
     let nextTypedCount = 0;
     const typedElements = cardRefs.current[lineNumber].querySelectorAll(
-      ".typed",
+      ".typed"
     ) as NodeListOf<HTMLElement>;
 
     const lastTypedChildClassList = typedElements[typedElements.length - 1].classList;
@@ -101,9 +97,9 @@ function ResultLineList({ onClose }: ResultLineListProps) {
   let lineCount = 0;
   let scoreCount = 0;
 
-  const memoizedResultCards = useMemo(
-    () =>
-      lineResults.map((lineResult: LineResultData, index: number) => {
+  return (
+    <>
+      {lineResults.map((lineResult: LineResultData, index: number) => {
         const lineData = map!.mapData[index];
 
         if (!lineData.notes.k) {
@@ -111,7 +107,6 @@ function ResultLineList({ onClose }: ResultLineListProps) {
         }
 
         lineCount++;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         scoreCount += lineResult.status!.p! + lineResult.status!.tBonus!;
 
         const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
@@ -129,12 +124,9 @@ function ResultLineList({ onClose }: ResultLineListProps) {
             selectIndex={lineSelectIndex}
           />
         );
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [lineResults, scene],
+      })}
+    </>
   );
-
-  return <>{memoizedResultCards}</>;
 }
 
 export default ResultLineList;

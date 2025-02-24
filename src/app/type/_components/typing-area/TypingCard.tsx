@@ -32,7 +32,7 @@ export const CARD_BODY_MIN_HEIGHT = { base: "460px", md: "320px" };
 const TypingCardBody = (props: TypingCardBodyProps) => {
   const { drawerClosure } = props;
   const map = useMapAtom();
-  const { isOpen, onOpen } = drawerClosure;
+  const { onOpen } = drawerClosure;
   const setTabIndex = useSetTabIndexAtom();
   const scene = useSceneAtom();
   const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
@@ -51,10 +51,8 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
       ) : isPlayed && map ? (
         <>
           <Playing drawerClosure={drawerClosure} />
-
-          {isOpen && <ResultDrawer drawerClosure={drawerClosure} />}
+          <ResultDrawer drawerClosure={drawerClosure} />
           {scene === "practice" && <PracticeLineCard />}
-
           {map!.mapData[0].options?.eternalCSS && (
             <style>{map!.mapData[0].options?.eternalCSS}</style>
           )}
@@ -62,9 +60,7 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
       ) : scene === "end" ? (
         <>
           <End onOpen={onOpen} />
-
-          {isOpen && <ResultDrawer drawerClosure={drawerClosure} />}
-
+          <ResultDrawer drawerClosure={drawerClosure} />
           <style>{map!.mapData[0].options?.eternalCSS}</style>
         </>
       ) : null}

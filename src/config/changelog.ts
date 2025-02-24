@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-2-24",
+    descriptions: ["練習モードのラインリスト開閉の動作を改善"],
+  },
+  {
     date: "2025-2-17",
     descriptions: ["iOS端末でかな入力の「ろ, む, ー」が入力できない問題を修正"],
   },

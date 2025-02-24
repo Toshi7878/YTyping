@@ -84,6 +84,7 @@ const TypeYouTubeContent = function YouTubeContent({
             iv_load_policy: 3,
             modestbranding: 1,
             rel: 0,
+            fs: 0,
           },
         }}
         onReady={ytReadyEvent}
