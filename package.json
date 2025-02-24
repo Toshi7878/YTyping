@@ -24,7 +24,7 @@
     "@hookform/resolvers": "^3.5.0",
     "@pixi/sound": "^6.0.1",
     "@pixi/ticker": "^7.4.2",
-    "@prisma/client": "^6.3.0",
+    "@prisma/client": "^6.4.1",
     "@reduxjs/toolkit": "^2.2.5",
     "@supabase/supabase-js": "^2.46.1",
     "@tanstack/react-query": "^5.62.7",
@@ -89,7 +89,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-next": "14.2.3",
     "file-loader": "^6.2.0",
-    "prisma": "^6.3.0",
+    "prisma": "^6.4.1",
     "supabase": "^2.6.8",
     "typescript": "^5"
   }
