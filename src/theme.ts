@@ -61,6 +61,7 @@ const darkTheme: ThemeColors = {
         nextChar: "#FFF",
         word: "#FFF",
         completed: "#4fd1c5",
+        nextWord: "#999",
       },
     },
 

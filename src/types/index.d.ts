@@ -90,6 +90,7 @@ export interface ThemeColors {
         nextChar: string;
         word: string;
         completed: string;
+        nextWord: string;
       };
     };
 
