@@ -36,7 +36,7 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
       trapFocus={false}
       blockScrollOnMount={false}
       onClose={onClose}
-      size="sm"
+      size={{ base: "xs", xl: "sm" }}
       variant="alwaysOpen"
     >
       <DrawerOverlay
