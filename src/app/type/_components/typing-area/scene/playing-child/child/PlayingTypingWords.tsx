@@ -2,6 +2,7 @@ import {
   useLineWordAtom,
   useNextLyricsAtom,
   usePlayingInputModeAtom,
+  useUserOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
@@ -12,10 +13,11 @@ const PlayingTypingWords = () => {
   const inputMode = usePlayingInputModeAtom();
   const nextLyrics = useNextLyricsAtom();
   const theme: ThemeColors = useTheme();
+  const userOptionsAtom = useUserOptionsAtom();
 
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
-  const kanaCorrectSlice = useBreakpointValue({ base: -5, md: -10 });
-  const romaCorrectSlice = useBreakpointValue({ base: -8, md: -16 });
+  const kanaCorrectSlice = useBreakpointValue({ base: -5, md: -userOptionsAtom.kana_word_scroll });
+  const romaCorrectSlice = useBreakpointValue({ base: -8, md: -userOptionsAtom.roma_word_scroll });
   return (
     <Box
       color={theme.colors.text.body}

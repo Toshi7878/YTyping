@@ -18,6 +18,8 @@ export const userTypingOptionRouter = {
       where: { user_id: userId },
       select: {
         time_offset: true,
+        kana_word_scroll: true,
+        roma_word_scroll: true,
         type_sound: true,
         miss_sound: true,
         line_clear_sound: true,
@@ -34,6 +36,8 @@ export const userTypingOptionRouter = {
     .input(
       z.object({
         time_offset: z.number(),
+        kana_word_scroll: z.number(),
+        roma_word_scroll: z.number(),
         type_sound: z.boolean(),
         miss_sound: z.boolean(),
         line_clear_sound: z.boolean(),

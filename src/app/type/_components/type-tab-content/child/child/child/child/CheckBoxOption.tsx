@@ -43,7 +43,7 @@ const CheckBoxOption = ({
     setIsOptionEdited(true);
   };
   return (
-    <Checkbox ml={2} mr={2} size="lg" name={name} onChange={onChange} defaultChecked={isChecked}>
+    <Checkbox pl={2} pr={2} size="lg" name={name} onChange={onChange} defaultChecked={isChecked}>
       {label}
     </Checkbox>
   );

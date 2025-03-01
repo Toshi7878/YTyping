@@ -23,10 +23,14 @@ const UserLineCompletedRadioButton = () => {
   };
   return (
     <Box>
-      <Text fontSize="lg" fontWeight="semibold" mb={2}>
+      <Text fontWeight="semibold" mb={2}>
         ラインクリア表示
       </Text>
-      <RadioGroup defaultValue={userOptionsAtom.line_completed_display} onChange={changeRadio}>
+      <RadioGroup
+        size="lg"
+        defaultValue={userOptionsAtom.line_completed_display}
+        onChange={changeRadio}
+      >
         <Stack direction="row" spacing={5}>
           <Radio value="HIGH_LIGHT">ワードハイライト</Radio>
           <Radio value="NEXT_WORD">次のワード</Radio>

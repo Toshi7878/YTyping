@@ -203,6 +203,8 @@ enum toggle_input_mode_key {
 model user_typing_options {
   user_id                Int                    @id
   time_offset            Float                  @default(0)
+  kana_word_scroll       Int                    @default(10)
+  roma_word_scroll       Int                    @default(16)
   type_sound             Boolean                @default(false)
   miss_sound             Boolean                @default(false)
   line_clear_sound       Boolean                @default(false)

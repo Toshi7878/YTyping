@@ -1,17 +1,22 @@
 import { useUserOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { Box, CheckboxGroup, Flex, Text } from "@chakra-ui/react";
+import { useRefs } from "@/app/type/type-contexts/refsProvider";
+import VolumeRange from "@/components/share-components/VolumeRange";
+import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
+import { CheckboxGroup, Flex, Text } from "@chakra-ui/react";
 import CheckBoxOption from "./child/CheckBoxOption";
 
 const UserSoundEffectCheckbox = () => {
   const userTypingOptionsAtom = useUserOptionsAtom();
+  const { playerRef } = useRefs();
 
   return (
-    <Flex>
-      <Box>
-        <Text fontSize="lg" fontWeight="semibold" mb={2}>
-          効果音
-        </Text>
-        <CheckboxGroup>
+    <Flex flexDirection="column" gap={4}>
+      <Text fontSize="lg" fontWeight="semibold">
+        サウンド
+      </Text>
+      {!IS_IOS && !IS_ANDROID && <VolumeRange playerRef={playerRef} />}
+      <CheckboxGroup>
+        <Flex flexDirection="row" gap={2}>
           <CheckBoxOption
             label={"タイプ音"}
             name="type_sound"
@@ -27,8 +32,8 @@ const UserSoundEffectCheckbox = () => {
             name="line_clear_sound"
             defaultChecked={userTypingOptionsAtom.line_clear_sound}
           />
-        </CheckboxGroup>
-      </Box>
+        </Flex>
+      </CheckboxGroup>
     </Flex>
   );
 };

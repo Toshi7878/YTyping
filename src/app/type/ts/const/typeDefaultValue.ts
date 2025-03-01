@@ -72,6 +72,8 @@ export const DEFAULT_USER_OPTIONS: NonNullable<
   RouterOutPuts["userTypingOption"]["getUserTypingOptions"]
 > = {
   time_offset: 0,
+  kana_word_scroll: 10,
+  roma_word_scroll: 16,
   type_sound: false,
   miss_sound: false,
   line_clear_sound: false,
