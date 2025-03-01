@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-3-1",
+    descriptions: ["タイピング設定にワードスクロール量調整設定を追加"],
+  },
+  {
     date: "2025-2-24",
     descriptions: [
       "タイピング設定に打ち切り時の表示方法[ワードハイライト/次のワード]を追加",
