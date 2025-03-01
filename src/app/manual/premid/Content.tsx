@@ -57,7 +57,7 @@ export default function PreMidManual() {
   return (
     <Box mx="auto" py={8} px={4}>
       <Heading as="h1" size="xl" mb={8}>
-        PreMiDでDiscordにYTypingのステータスを表示する方法
+        PreMiDでDiscordにYTypingのステータスを表示する
       </Heading>
       <CustomCard>
         <CardBody display="flex" flexDirection="column" gap={6}>
