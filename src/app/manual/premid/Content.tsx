@@ -57,7 +57,7 @@ export default function PreMidManual() {
   return (
     <Box mx="auto" py={8} px={4}>
       <Heading as="h1" size="xl" mb={8}>
-        PreMiDでDiscordにYTypingのステータスを表示する
+        DiscordにYTypingのプレイ中ステータスを表示する
       </Heading>
       <CustomCard>
         <CardBody display="flex" flexDirection="column" gap={6}>
@@ -103,7 +103,7 @@ export default function PreMidManual() {
               <Text fontWeight="bold">PreMiD拡張機能を開いてDiscordアカウントとリンクします。</Text>
               <Box mt={2}>
                 <Text>
-                  PreMiD拡張機能を初めて開くと、以下の表示が出てくるので、Discordアカウントとリンクする
+                  PreMiD拡張機能を初めて開くと、以下の表示が出てくるので、表示したいDiscordアカウントとリンクする
                 </Text>
                 <Image
                   alt="PreMID拡張機能を開いてDiscordアカウントとリンクします。"
