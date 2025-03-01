@@ -1,6 +1,5 @@
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { useStore } from "jotai";
-import NProgress from "nprogress";
 import { YouTubeEvent } from "react-youtube";
 import { typeTicker } from "../ts/const/consts";
 import {
@@ -134,7 +133,6 @@ export const useYTReadyEvent = () => {
 
   return (event: YouTubeEvent) => {
     const player = event.target;
-    NProgress.done();
     setRef("playerRef", player);
     player.setVolume(volumeAtom);
   };

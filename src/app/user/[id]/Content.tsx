@@ -1,8 +1,6 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Stack, Text } from "@chakra-ui/react";
-import nProgress from "nprogress";
-import { useEffect } from "react";
 import UserStatsCard from "./_components/user-stats/UserStatsCard";
 import UserCard from "./_components/user/UserCard";
 
@@ -12,11 +10,6 @@ interface ContentProps {
 }
 
 const Content = ({ user, userStats }: ContentProps) => {
-  useEffect(() => {
-    window.getSelection()!.removeAllRanges();
-    nProgress.done();
-  }, []);
-
   if (!user) {
     return (
       <Stack

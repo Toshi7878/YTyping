@@ -25,14 +25,12 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
   typeAtomStore.set(mapInfoAtom, mapInfo);
 
   useEffect(() => {
-    // 状態の更新をuseEffect内に移動
     globalAtomStore.set(previewVideoIdAtom, null);
     typeAtomStore.set(mapUpdatedAtAtom, mapInfo!.updated_at);
     if (userTypingOptions) {
       typeAtomStore.set(userOptionsAtom, userTypingOptions);
     }
 
-    window.getSelection()!.removeAllRanges();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapInfo, userTypingOptions]);
 

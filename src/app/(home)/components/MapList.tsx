@@ -6,7 +6,6 @@ import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
-import nProgress from "nprogress";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
@@ -29,20 +28,12 @@ function LoadingMapCard({ cardLength }: { cardLength: number }) {
 function MapList() {
   const searchParams = useSearchParams();
 
-  const { data, fetchNextPage, hasNextPage, isFetching, status, refetch } =
-    useMapListInfiniteQuery();
+  const { data, fetchNextPage, hasNextPage, status, refetch } = useMapListInfiniteQuery();
 
   useEffect(() => {
     refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
-
-  useEffect(() => {
-    if (!isFetching) {
-      // ここに最初の取得に成功したときの処理を追加
-      nProgress.done();
-    }
-  }, [isFetching]);
 
   if (status === "pending") {
     return <LoadingMapCard cardLength={10} />;

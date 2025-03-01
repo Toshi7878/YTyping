@@ -1,6 +1,5 @@
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { YouTubeEvent } from "@/types/global-types";
-import NProgress from "nprogress";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 import { editTicker } from "../_components/editor-youtube-content/EditYoutube";
 import {
@@ -23,8 +22,6 @@ export const useYTReadyEvent = () => {
   const editReduxStore = useReduxStore<RootState>();
 
   return (event) => {
-    console.log("ready");
-    NProgress.done();
     const player = event.target;
     setRef("playerRef", player);
     const duration = player.getDuration();

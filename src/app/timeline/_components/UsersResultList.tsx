@@ -1,7 +1,6 @@
 "use client";
 import { Box } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
-import nProgress from "nprogress";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { useUsersResultInfiniteQuery } from "../hooks/useUsersResultInfiniteQuery";
@@ -21,19 +20,7 @@ function LoadingResultCard({ cardLength }: { cardLength: number }) {
 }
 
 function UsersResultList() {
-  const {
-    data,
-    error,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    status,
-    refetch,
-  } = useUsersResultInfiniteQuery();
+  const { data, fetchNextPage, hasNextPage, status, refetch } = useUsersResultInfiniteQuery();
 
   const searchParams = useSearchParams();
 
@@ -41,12 +28,6 @@ function UsersResultList() {
     refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
-  useEffect(() => {
-    if (!isFetching) {
-      // ここに最初の取得に成功したときの処理を追加
-      nProgress.done();
-    }
-  }, [isFetching]);
 
   return (
     <Box as="section">

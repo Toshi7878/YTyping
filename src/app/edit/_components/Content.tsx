@@ -91,10 +91,6 @@ function Content() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId, newVideoId]);
 
-  useEffect(() => {
-    window.getSelection()!.removeAllRanges();
-  }, []);
-
   return (
     <LoadingOverlayWrapper
       active={isLrcConverting}
