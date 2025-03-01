@@ -103,7 +103,7 @@ export default function PreMidManual() {
               <Text fontWeight="bold">PreMiD拡張機能を開いてDiscordアカウントとリンクします。</Text>
               <Box mt={2}>
                 <Text>
-                  PreMiD拡張機能を初めて開くと、以下の表示が出てきますので、Discordアカウントとリンクする
+                  PreMiD拡張機能を初めて開くと、以下の表示が出てくるので、Discordアカウントとリンクする
                 </Text>
                 <Image
                   alt="PreMID拡張機能を開いてDiscordアカウントとリンクします。"
