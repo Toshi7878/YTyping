@@ -1,3 +1,5 @@
+"use client";
+
 import { ThemeColors } from "@/types";
 import { Card, CardProps, useTheme } from "@chakra-ui/react";
 

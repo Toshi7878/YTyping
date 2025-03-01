@@ -1,7 +1,10 @@
 export const changelog = [
   {
     date: "2025-3-1",
-    descriptions: ["タイピング設定にワードスクロール量調整設定を追加"],
+    descriptions: [
+      "ヘッダーのMenuに[Discordにプレイ中を表示]ページを追加",
+      "タイピング設定にワードスクロール量調整設定を追加",
+    ],
   },
   {
     date: "2025-2-24",

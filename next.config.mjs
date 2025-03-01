@@ -1,14 +1,11 @@
 const nextConfig = {
-  webpack: (config, { isServer }) => {
+  webpack: (config) => {
     config.module.rules.push({
       test: /\.(wav|mp3)$/,
-      use: {
-        loader: "file-loader",
-        options: {
-          name: "[name].[ext]",
-          outputPath: "static/sounds/",
-          publicPath: "/_next/static/sounds/",
-        },
+      type: "asset/resource",
+      generator: {
+        filename: "static/sounds/[name].[hash][ext]",
+        publicPath: "/_next/",
       },
     });
 

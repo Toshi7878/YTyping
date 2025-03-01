@@ -1,8 +1,8 @@
-import clearTypeSound from "@/asset/wav/clear_type.wav";
-import typeSound from "@/asset/wav/key_type.wav";
-import missSound from "@/asset/wav/miss_type.wav";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
+import clearTypeSound from "@/public/wav/clear_type.wav";
+import typeSound from "@/public/wav/key_type.wav";
+import missSound from "@/public/wav/miss_type.wav";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useUserOptionsAtom } from "../../type-atoms/gameRenderAtoms";

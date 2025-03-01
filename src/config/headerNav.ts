@@ -3,6 +3,7 @@ import { HeaderMenu } from "@/types";
 export const leftMenuItem: HeaderMenu[] = [
   { title: "更新履歴", href: "/changelog" },
   { title: "GitHub", href: "https://github.com/Toshi7878/YTyping" },
+  { title: "Discordにプレイ中を表示", href: "/manual/premid" },
 ];
 
 export const leftLink: HeaderMenu[] = [{ title: "タイムライン", href: "/timeline" }];

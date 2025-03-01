@@ -3,6 +3,7 @@ import {
   useSetUserOptionsAtom,
   useUserOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
+import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Box, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import { $Enums } from "@prisma/client";
 
@@ -33,7 +34,9 @@ const UserLineCompletedRadioButton = () => {
       >
         <Stack direction="row" spacing={5}>
           <Radio value="HIGH_LIGHT">ワードハイライト</Radio>
-          <Radio value="NEXT_WORD">次のワード</Radio>
+          <CustomToolTip label="ワードハイライト">
+            <Radio value="NEXT_WORD">次のワード</Radio>
+          </CustomToolTip>
         </Stack>
       </RadioGroup>
     </Box>
