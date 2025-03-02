@@ -5,16 +5,25 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 
-type SortField = "タイトル" | "アーティスト" | "難易度" | "ランキング数" | "いいね数";
+type SortField =
+  | "ID"
+  | "タイトル"
+  | "アーティスト"
+  | "難易度"
+  | "ランキング数"
+  | "いいね数"
+  | "曲の長さ";
 type SortDirection = "asc" | "desc" | null;
 
 // フィールド名とURLパラメータ名のマッピング
 const fieldToParamMap: Record<SortField, string> = {
+  ID: "id",
   タイトル: "title",
   アーティスト: "artist",
   難易度: "difficulty",
   ランキング数: "ranking_count",
   いいね数: "like_count",
+  曲の長さ: "duration",
 };
 
 const SortOptions = () => {
@@ -23,19 +32,23 @@ const SortOptions = () => {
 
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>({
+    ID: null,
     タイトル: null,
     アーティスト: null,
     難易度: null,
     ランキング数: null,
     いいね数: null,
+    曲の長さ: null,
   });
 
   const sortOptions: SortField[] = [
+    "ID",
     "タイトル",
     "アーティスト",
     "難易度",
     "ランキング数",
     "いいね数",
+    "曲の長さ",
   ];
 
   useEffect(() => {
@@ -48,11 +61,13 @@ const SortOptions = () => {
       if (matchedField && (direction === "asc" || direction === "desc")) {
         const fieldKey = matchedField[0] as SortField;
         const resetDirections: Record<SortField, SortDirection> = {
+          ID: null,
           タイトル: null,
           アーティスト: null,
           難易度: null,
           ランキング数: null,
           いいね数: null,
+          曲の長さ: null,
         };
 
         setSortDirections({
@@ -61,8 +76,26 @@ const SortOptions = () => {
         });
         setSortField(fieldKey);
       }
+    } else {
+      // デフォルトでIDの降順を設定
+      const resetDirections: Record<SortField, SortDirection> = {
+        ID: "desc",
+        タイトル: null,
+        アーティスト: null,
+        難易度: null,
+        ランキング数: null,
+        いいね数: null,
+        曲の長さ: null,
+      };
+      setSortDirections(resetDirections);
+      setSortField("ID");
+
+      // URLパラメータを更新（IDのdescの場合はクエリパラメータを追加しない）
+      // const params = new URLSearchParams(searchParams.toString());
+      // params.set("sort", `${fieldToParamMap["ID"]}_desc`);
+      // router.push(`?${params.toString()}`, { scroll: false });
     }
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   const handleSort = (field: SortField) => {
     const currentDirection = sortDirections[field];
@@ -77,11 +110,13 @@ const SortOptions = () => {
     }
 
     const resetDirections: Record<SortField, SortDirection> = {
+      ID: null,
       タイトル: null,
       アーティスト: null,
       難易度: null,
       ランキング数: null,
       いいね数: null,
+      曲の長さ: null,
     };
 
     setSortDirections({
@@ -94,7 +129,12 @@ const SortOptions = () => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (newDirection && field) {
-      params.set("sort", `${fieldToParamMap[field]}_${newDirection}`);
+      // IDのdescの場合はクエリパラメータを削除
+      if (field === "ID" && newDirection === "desc") {
+        params.delete("sort");
+      } else {
+        params.set("sort", `${fieldToParamMap[field]}_${newDirection}`);
+      }
     } else {
       params.delete("sort");
     }
