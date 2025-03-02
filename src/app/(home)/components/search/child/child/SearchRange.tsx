@@ -83,7 +83,7 @@ const SearchRange = ({ min, max, step, ...rest }: SearchRangeProps & BoxProps) =
   };
 
   return (
-    <CustomToolTip label="Enterで検索します" placement="top">
+    <CustomToolTip label="Enterで検索" placement="top">
       <Box
         flex="1"
         minWidth="150px"
