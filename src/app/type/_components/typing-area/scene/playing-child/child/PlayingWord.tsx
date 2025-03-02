@@ -27,11 +27,7 @@ const PlayingWord = ({
   return (
     <Box {...rest}>
       {isLineCompleted && isNextWordDisplay ? (
-        <Text
-          as="span"
-          className="word-correct word-completed"
-          color={theme.colors.semantic.word.nextWord}
-        >
+        <Text as="span" className="next-line-word" color={theme.colors.semantic.word.nextWord}>
           {nextWord}
         </Text>
       ) : (

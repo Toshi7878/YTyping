@@ -52,7 +52,6 @@ const SortOptions = () => {
   ];
 
   useEffect(() => {
-    // URLからソート状態を初期化
     const sortParam = searchParams.get("sort");
     if (sortParam) {
       const [field, direction] = sortParam.split("_");
