@@ -5,22 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 
-type SortField =
-  | "ID"
-  | "タイトル"
-  | "アーティスト"
-  | "難易度"
-  | "ランキング数"
-  | "いいね数"
-  | "曲の長さ"
-  | "ランダム";
+type SortField = "ID" | "難易度" | "ランキング数" | "いいね数" | "曲の長さ" | "ランダム";
 type SortDirection = "asc" | "desc" | null;
 
 // フィールド名とURLパラメータ名のマッピング
 const fieldToParamMap: Record<SortField, string> = {
   ID: "id",
-  タイトル: "title",
-  アーティスト: "artist",
   難易度: "difficulty",
   ランキング数: "ranking_count",
   いいね数: "like_count",
@@ -35,8 +25,6 @@ const SortOptions = () => {
   const [sortField, setSortField] = useState<SortField | null>("ID");
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>({
     ID: "desc",
-    タイトル: null,
-    アーティスト: null,
     難易度: null,
     ランキング数: null,
     いいね数: null,
@@ -46,8 +34,6 @@ const SortOptions = () => {
 
   const sortOptions: SortField[] = [
     "ID",
-    "タイトル",
-    "アーティスト",
     "難易度",
     "ランキング数",
     "いいね数",
@@ -58,34 +44,44 @@ const SortOptions = () => {
   useEffect(() => {
     const sortParam = searchParams.get("sort");
     if (sortParam) {
-      const [field, direction] = sortParam.split("_");
-      const matchedField = Object.entries(fieldToParamMap).find(([_, value]) => value === field);
-
-      if (matchedField && (direction === "asc" || direction === "desc")) {
-        const fieldKey = matchedField[0] as SortField;
+      // ランダムの場合は特別処理
+      if (sortParam === "random") {
         const resetDirections: Record<SortField, SortDirection> = {
           ID: null,
-          タイトル: null,
-          アーティスト: null,
           難易度: null,
           ランキング数: null,
           いいね数: null,
           曲の長さ: null,
-          ランダム: null,
+          ランダム: "desc", // ランダムをアクティブに
         };
+        setSortDirections(resetDirections);
+        setSortField("ランダム");
+      } else {
+        const [field, direction] = sortParam.split("_");
+        const matchedField = Object.entries(fieldToParamMap).find(([_, value]) => value === field);
 
-        setSortDirections({
-          ...resetDirections,
-          [fieldKey]: direction as SortDirection,
-        });
-        setSortField(fieldKey);
+        if (matchedField && (direction === "asc" || direction === "desc")) {
+          const fieldKey = matchedField[0] as SortField;
+          const resetDirections: Record<SortField, SortDirection> = {
+            ID: null,
+            難易度: null,
+            ランキング数: null,
+            いいね数: null,
+            曲の長さ: null,
+            ランダム: null,
+          };
+
+          setSortDirections({
+            ...resetDirections,
+            [fieldKey]: direction as SortDirection,
+          });
+          setSortField(fieldKey);
+        }
       }
     } else {
       // デフォルトでIDの降順を設定
       const resetDirections: Record<SortField, SortDirection> = {
         ID: "desc",
-        タイトル: null,
-        アーティスト: null,
         難易度: null,
         ランキング数: null,
         いいね数: null,
@@ -101,18 +97,21 @@ const SortOptions = () => {
     const currentDirection = sortDirections[field];
     let newDirection: SortDirection = null;
 
-    if (currentDirection === null) {
-      newDirection = "desc";
-    } else if (currentDirection === "desc") {
-      newDirection = "asc";
+    // ランダムの場合は方向を切り替えずに常にdescとして扱う
+    if (field === "ランダム") {
+      newDirection = currentDirection ? null : "desc";
     } else {
-      newDirection = null;
+      if (currentDirection === null) {
+        newDirection = "desc";
+      } else if (currentDirection === "desc") {
+        newDirection = "asc";
+      } else {
+        newDirection = null;
+      }
     }
 
     const resetDirections: Record<SortField, SortDirection> = {
       ID: null,
-      タイトル: null,
-      アーティスト: null,
       難易度: null,
       ランキング数: null,
       いいね数: null,
@@ -132,6 +131,9 @@ const SortOptions = () => {
     if (newDirection && field) {
       if (field === "ID" && newDirection === "desc") {
         params.delete("sort");
+      } else if (field === "ランダム") {
+        // ランダムの場合は方向を指定せずにパラメータを設定
+        params.set("sort", `${fieldToParamMap[field]}`);
       } else {
         params.set("sort", `${fieldToParamMap[field]}_${newDirection}`);
       }
@@ -140,11 +142,6 @@ const SortOptions = () => {
     }
 
     router.push(`?${params.toString()}`);
-
-    // ランダムの場合は常にdescとして扱う（方向は関係ないため）
-    if (field === "ランダム" && newDirection) {
-      newDirection = "desc";
-    }
   };
 
   const getSortIcon = (field: SortField) => {

@@ -30,14 +30,17 @@ function MapList() {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  const { data, isPending, fetchNextPage, hasNextPage, refetch } = useMapListInfiniteQuery();
+  const { data, isFetching, isPending, fetchNextPage, hasNextPage } = useMapListInfiniteQuery();
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["mapList"] });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  if (isPending) {
+  // ランダムソートの場合は常にローディング表示
+  const isRandomSort = searchParams.get("sort") === "random";
+
+  if (isPending || (isFetching && isRandomSort)) {
     return <LoadingMapCard cardLength={10} />;
   }
 

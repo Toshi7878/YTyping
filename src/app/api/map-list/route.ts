@@ -131,18 +131,6 @@ function getSortSql({ sort }: GetSortSql) {
       } else {
         return Prisma.raw(`ORDER BY maps."id" DESC`);
       }
-    case sort.includes("title"):
-      if (isAsc) {
-        return Prisma.raw(`ORDER BY maps."title" ASC`);
-      } else {
-        return Prisma.raw(`ORDER BY maps."title" DESC`);
-      }
-    case sort.includes("artist"):
-      if (isAsc) {
-        return Prisma.raw(`ORDER BY maps."artist_name" ASC`);
-      } else {
-        return Prisma.raw(`ORDER BY maps."artist_name" DESC`);
-      }
     case sort.includes("difficulty"):
       if (isAsc) {
         return Prisma.raw(`ORDER BY "difficulty"."roma_kpm_median" ASC`);
