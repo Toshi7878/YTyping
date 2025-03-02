@@ -30,9 +30,9 @@ const SortOptions = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [sortField, setSortField] = useState<SortField | null>(null);
+  const [sortField, setSortField] = useState<SortField | null>("ID");
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>({
-    ID: null,
+    ID: "desc",
     タイトル: null,
     アーティスト: null,
     難易度: null,
@@ -88,11 +88,6 @@ const SortOptions = () => {
       };
       setSortDirections(resetDirections);
       setSortField("ID");
-
-      // URLパラメータを更新（IDのdescの場合はクエリパラメータを追加しない）
-      // const params = new URLSearchParams(searchParams.toString());
-      // params.set("sort", `${fieldToParamMap["ID"]}_desc`);
-      // router.push(`?${params.toString()}`, { scroll: false });
     }
   }, [searchParams, router]);
 
@@ -128,7 +123,6 @@ const SortOptions = () => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (newDirection && field) {
-      // IDのdescの場合はクエリパラメータを削除
       if (field === "ID" && newDirection === "desc") {
         params.delete("sort");
       } else {
@@ -145,14 +139,14 @@ const SortOptions = () => {
     const direction = sortDirections[field];
     if (direction === "asc") return <Icon as={FaSortUp} />;
     if (direction === "desc") return <Icon as={FaSortDown} />;
-    return <Icon as={FaSort} color="gray.400" />;
+    return <Icon as={FaSort} visibility="hidden" />;
   };
 
   return (
     <Flex
       width="100%"
-      bg="gray.800"
-      color="white"
+      bg="background.card"
+      color="text.body"
       p={2}
       borderRadius="md"
       overflowX="auto"
@@ -176,7 +170,7 @@ const SortOptions = () => {
           cursor="pointer"
           fontWeight={sortField === option ? "bold" : "normal"}
           onClick={() => handleSort(option)}
-          _hover={{ bg: "gray.700" }}
+          _hover={{ bg: "button.sub.hover" }}
           transition="all 0.2s"
         >
           <Text mr={1}>{option}</Text>
