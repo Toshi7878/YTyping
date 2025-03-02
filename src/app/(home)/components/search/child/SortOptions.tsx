@@ -3,7 +3,7 @@
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import { FaSortDown, FaSortUp } from "react-icons/fa";
 
 type SortField =
   | "ID"
@@ -139,7 +139,7 @@ const SortOptions = () => {
     const direction = sortDirections[field];
     if (direction === "asc") return <Icon as={FaSortUp} />;
     if (direction === "desc") return <Icon as={FaSortDown} />;
-    return <Icon as={FaSort} visibility="hidden" />;
+    return <Icon as={FaSortDown} visibility="hidden" _groupHover={{ visibility: "visible" }} />;
   };
 
   return (
@@ -173,6 +173,7 @@ const SortOptions = () => {
           onClick={() => handleSort(option)}
           _hover={{ bg: "button.sub.hover" }}
           transition="all 0.2s"
+          role="group"
         >
           <Text mr={1}>{option}</Text>
           {getSortIcon(option)}
