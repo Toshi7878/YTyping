@@ -123,6 +123,8 @@ function getSortSql({ sort }: GetSortSql) {
   const isAsc = sort.includes("asc");
 
   switch (true) {
+    case sort.includes("random"):
+      return Prisma.raw(`ORDER BY RANDOM()`);
     case sort.includes("id"):
       if (isAsc) {
         return Prisma.raw(`ORDER BY maps."id" ASC`);

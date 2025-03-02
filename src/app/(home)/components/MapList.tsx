@@ -5,6 +5,7 @@ import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
@@ -27,15 +28,16 @@ function LoadingMapCard({ cardLength }: { cardLength: number }) {
 
 function MapList() {
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
-  const { data, fetchNextPage, hasNextPage, status, refetch } = useMapListInfiniteQuery();
+  const { data, isPending, fetchNextPage, hasNextPage, refetch } = useMapListInfiniteQuery();
 
   useEffect(() => {
-    refetch();
+    queryClient.invalidateQueries({ queryKey: ["mapList"] });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  if (status === "pending") {
+  if (isPending) {
     return <LoadingMapCard cardLength={10} />;
   }
 

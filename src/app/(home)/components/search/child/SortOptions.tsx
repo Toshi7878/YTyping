@@ -3,7 +3,7 @@
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaSortDown, FaSortUp } from "react-icons/fa";
+import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 
 type SortField =
   | "ID"
@@ -12,7 +12,8 @@ type SortField =
   | "難易度"
   | "ランキング数"
   | "いいね数"
-  | "曲の長さ";
+  | "曲の長さ"
+  | "ランダム";
 type SortDirection = "asc" | "desc" | null;
 
 // フィールド名とURLパラメータ名のマッピング
@@ -24,6 +25,7 @@ const fieldToParamMap: Record<SortField, string> = {
   ランキング数: "ranking_count",
   いいね数: "like_count",
   曲の長さ: "duration",
+  ランダム: "random",
 };
 
 const SortOptions = () => {
@@ -39,6 +41,7 @@ const SortOptions = () => {
     ランキング数: null,
     いいね数: null,
     曲の長さ: null,
+    ランダム: null,
   });
 
   const sortOptions: SortField[] = [
@@ -49,6 +52,7 @@ const SortOptions = () => {
     "ランキング数",
     "いいね数",
     "曲の長さ",
+    "ランダム",
   ];
 
   useEffect(() => {
@@ -67,6 +71,7 @@ const SortOptions = () => {
           ランキング数: null,
           いいね数: null,
           曲の長さ: null,
+          ランダム: null,
         };
 
         setSortDirections({
@@ -85,6 +90,7 @@ const SortOptions = () => {
         ランキング数: null,
         いいね数: null,
         曲の長さ: null,
+        ランダム: null,
       };
       setSortDirections(resetDirections);
       setSortField("ID");
@@ -111,6 +117,7 @@ const SortOptions = () => {
       ランキング数: null,
       いいね数: null,
       曲の長さ: null,
+      ランダム: null,
     };
 
     setSortDirections({
@@ -133,9 +140,23 @@ const SortOptions = () => {
     }
 
     router.push(`?${params.toString()}`);
+
+    // ランダムの場合は常にdescとして扱う（方向は関係ないため）
+    if (field === "ランダム" && newDirection) {
+      newDirection = "desc";
+    }
   };
 
   const getSortIcon = (field: SortField) => {
+    // ランダムの場合は専用のアイコンを表示
+    if (field === "ランダム") {
+      if (sortDirections[field]) {
+        return <Icon as={FaSort} />;
+      } else {
+        return <Icon as={FaSort} visibility="hidden" _groupHover={{ visibility: "visible" }} />;
+      }
+    }
+
     const direction = sortDirections[field];
     if (direction === "asc") return <Icon as={FaSortUp} />;
     if (direction === "desc") return <Icon as={FaSortDown} />;
