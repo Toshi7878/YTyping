@@ -13,11 +13,12 @@ const fetchMapList = async (
   filter: string,
   sort: string,
   maxRate: string,
-  minRate: string
+  minRate: string,
+  played: string
 ): Promise<MapCardInfo[]> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
-      params: { page, keyword, filter, sort, minRate, maxRate },
+      params: { page, keyword, filter, sort, minRate, maxRate, played },
     });
 
     if (response.status !== 200) {
@@ -41,11 +42,12 @@ export const useMapListInfiniteQuery = () => {
   const sort = searchParams.get("sort") || "";
   const maxRate = searchParams.get("maxRate") || "";
   const minRate = searchParams.get("minRate") || "";
+  const played = searchParams.get("played") || "";
 
   return useInfiniteQuery({
-    queryKey: [...QUERY_KEYS.mapList, keyword, filter, sort, maxRate, minRate],
+    queryKey: [...QUERY_KEYS.mapList, keyword, filter, sort, maxRate, minRate, played],
     queryFn: ({ pageParam = 0 }) =>
-      fetchMapList(pageParam, keyword, filter, sort, maxRate, minRate),
+      fetchMapList(pageParam, keyword, filter, sort, maxRate, minRate, played),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) =>
       lastPage.length === PAGE_SIZE ? allPages.length : undefined,

@@ -40,6 +40,16 @@ const SearchRange = ({ min, max, step, ...rest }: SearchRangeProps & BoxProps) =
   });
 
   useEffect(() => {
+    const minParamValue = searchParams.get(minParamName);
+    const maxParamValue = searchParams.get(maxParamName);
+
+    setValue({
+      minValue: minParamValue ? Math.max(min, Number(minParamValue)) : min,
+      maxValue: maxParamValue ? Math.min(max, Number(maxParamValue)) : max,
+    });
+  }, [searchParams, min, max, minParamName, maxParamName]);
+
+  useEffect(() => {
     if (value.minValue < min || value.maxValue > max) {
       setValue({
         minValue: Math.max(min, value.minValue),
@@ -101,7 +111,7 @@ const SearchRange = ({ min, max, step, ...rest }: SearchRangeProps & BoxProps) =
         </RangeSlider>
         <Flex position="absolute" width="100%" justifyContent="space-between" top={5}>
           <Text fontSize="sm">★{value.minValue.toFixed(1)}</Text>
-          <Text fontSize="sm">★{value.maxValue.toFixed(1)}</Text>
+          <Text fontSize="sm">★{value.maxValue === 15 ? "∞" : value.maxValue.toFixed(1)}</Text>
         </Flex>
       </Box>
     </CustomToolTip>

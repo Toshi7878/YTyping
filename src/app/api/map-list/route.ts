@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
   const minRate = searchParams.get("minRate");
   const maxRate = searchParams.get("maxRate");
   const difficultyFilterSql = getDifficultyFilterSql({ minRate, maxRate });
+  const playedSql = getPlayedFilterSql({ played: searchParams.get("played"), userId });
 
   const offset = MAP_LIST_TAKE_LENGTH * Number(page);
 
@@ -80,6 +81,7 @@ export async function GET(req: NextRequest) {
     WHERE (
       ${filterSql} AND
       ${difficultyFilterSql} AND
+      ${playedSql} AND
       (${mapKeyword} = '' OR (
         maps."title" &@~ ${mapKeyword} OR
         maps."artist_name" &@~ ${mapKeyword} OR
@@ -182,4 +184,28 @@ function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSql) {
   }
 
   return conditions.length > 0 ? Prisma.raw(conditions.join(" AND ")) : Prisma.raw("1=1");
+}
+
+interface GetPlayedFilterSql {
+  played: string | null;
+  userId: number;
+}
+
+function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
+  switch (played) {
+    case "played":
+      return Prisma.raw(`EXISTS (
+        SELECT 1 FROM results
+        WHERE results.map_id = maps.id
+        AND results.user_id = ${userId}
+      )`);
+    case "unplayed":
+      return Prisma.raw(`NOT EXISTS (
+        SELECT 1 FROM results
+        WHERE results.map_id = maps.id
+        AND results.user_id = ${userId}
+      )`);
+    default:
+      return Prisma.raw("1=1");
+  }
 }
