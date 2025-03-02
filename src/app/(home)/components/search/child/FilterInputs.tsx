@@ -4,6 +4,7 @@ import { Button, Flex } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { FaHeart, FaMap } from "react-icons/fa6";
+import SearchRange from "./child/SearchRange";
 
 const FilterInputs = () => {
   const router = useRouter();
@@ -34,7 +35,9 @@ const FilterInputs = () => {
   const currentFilter = searchParams.get("f") as MapFilter | null;
 
   return (
-    <Flex gap={2} alignItems="center">
+    <Flex gap={5} alignItems="baseline" width="100%">
+      <SearchRange min={0} max={15} step={0.1} mx={4} />
+
       <Button
         leftIcon={<FaHeart />}
         colorScheme="pink"

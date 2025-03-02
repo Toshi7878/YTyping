@@ -14,6 +14,10 @@ export async function GET(req: NextRequest) {
   const mapKeyword = searchParams.get("keyword") ?? "";
   const filterSql = getFilterSql({ filter: searchParams.get("filter"), userId });
   const sortSql = getSortSql({ sort: searchParams.get("sort") });
+  const minRate = searchParams.get("minRate");
+  const maxRate = searchParams.get("maxRate");
+  const difficultyFilterSql = getDifficultyFilterSql({ minRate, maxRate });
+
   const offset = MAP_LIST_TAKE_LENGTH * Number(page);
 
   try {
@@ -75,6 +79,7 @@ export async function GET(req: NextRequest) {
     LEFT JOIN map_likes ON maps."id" = map_likes."map_id" AND map_likes."user_id" = ${userId}
     WHERE (
       ${filterSql} AND
+      ${difficultyFilterSql} AND
       (${mapKeyword} = '' OR (
         maps."title" &@~ ${mapKeyword} OR
         maps."artist_name" &@~ ${mapKeyword} OR
@@ -158,4 +163,23 @@ function getSortSql({ sort }: GetSortSql) {
     default:
       return Prisma.raw(`ORDER BY maps."id" DESC`);
   }
+}
+
+interface GetDifficultyFilterSql {
+  minRate: string | null;
+  maxRate: string | null;
+}
+
+function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSql) {
+  const conditions: string[] = [];
+
+  if (minRate && !isNaN(Number(minRate))) {
+    conditions.push(`"difficulty"."roma_kpm_median" >= ${Number(minRate) * 100}`);
+  }
+
+  if (maxRate && !isNaN(Number(maxRate))) {
+    conditions.push(`"difficulty"."roma_kpm_median" <= ${Number(maxRate) * 100}`);
+  }
+
+  return conditions.length > 0 ? Prisma.raw(conditions.join(" AND ")) : Prisma.raw("1=1");
 }
