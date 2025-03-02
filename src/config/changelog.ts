@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2025-3-2",
-    descriptions: ["いいね済みフィルター & マイマップフィルターを追加"],
+    descriptions: ["ソートを追加", "いいね済みフィルター & マイマップフィルターを追加"],
   },
   {
     date: "2025-3-1",
