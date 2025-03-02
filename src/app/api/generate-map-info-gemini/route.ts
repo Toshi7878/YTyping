@@ -1,6 +1,10 @@
 import { GetYouTubeMovieInfo } from "@/app/edit/ts/type";
-import { GoogleGenerativeAI, SafetySetting } from "@google/generative-ai";
-import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
+import {
+  GoogleGenerativeAI,
+  HarmBlockThreshold,
+  HarmCategory,
+  SafetySetting,
+} from "@google/generative-ai";
 
 import { NextResponse } from "next/server";
 

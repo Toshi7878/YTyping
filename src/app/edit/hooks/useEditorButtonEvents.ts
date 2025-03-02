@@ -24,17 +24,9 @@ import { useGetSeekCount } from "./useGetSeekCount";
 import { useUpdateNewMapBackUp } from "./useUpdateNewMapBackUp";
 import { useWordConvert } from "./useWordConvert";
 
-const timeValidate = (
-  time: number,
-  mapData: RootState["mapData"]["value"],
-  endAfterLineIndex: number
-) => {
-  const lastLineTime = Number(mapData[endAfterLineIndex]["time"]);
-
+const timeValidate = (time: number) => {
   if (0 >= time) {
     return 0.001;
-  } else if (lastLineTime <= time) {
-    return lastLineTime - 0.001;
   } else {
     return time;
   }
@@ -76,7 +68,7 @@ export const useLineAddButtonEvent = () => {
     const time_ = Number(
       isYTPlaying ? playerRef.current!.getCurrentTime() : timeInputRef.current!.value
     );
-    const time = timeValidate(time_ + timeOffset, mapData, endAfterLineIndex).toFixed(3);
+    const time = timeValidate(time_ + timeOffset).toFixed(3);
     const newLine = !isShiftKey ? { time, lyrics, word } : { time, lyrics: "", word: "" };
     const addLineMap = [...mapData, newLine].sort(
       (a, b) => parseFloat(a.time) - parseFloat(b.time)
@@ -145,7 +137,7 @@ export const useLineUpdateButtonEvent = () => {
         : timeInputRef.current!.value
     );
 
-    const time = timeValidate(time_ + timeOffset, mapData, endAfterLineIndex).toFixed(3);
+    const time = timeValidate(time_ + timeOffset).toFixed(3);
 
     const oldLine = mapData[selectedLineCount];
     const updatedLine = {
@@ -206,7 +198,6 @@ export const useWordConvertButtonEvent = () => {
 };
 
 export const useLineDelete = () => {
-
   const editAtomStore = useJotaiStore();
   const editReduxStore = useReduxStore<RootState>();
   const setCanUpload = useSetCanUploadAtom();
@@ -218,10 +209,9 @@ export const useLineDelete = () => {
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
-  const {allUpdateCurrentTimeColor } = useChangeLineRowColor()
-  const { playerRef } = useRefs()
+  const { allUpdateCurrentTimeColor } = useChangeLineRowColor();
+  const { playerRef } = useRefs();
   const getSeekCount = useGetSeekCount();
-
 
   return () => {
     const selectedLineCount = editAtomStore.get(editLineSelectedCountAtom);
@@ -250,8 +240,8 @@ export const useLineDelete = () => {
     }
     const currentTime = playerRef.current!.getCurrentTime();
 
-    allUpdateCurrentTimeColor(getSeekCount(currentTime))
-        setDirectEdit(null);
+    allUpdateCurrentTimeColor(getSeekCount(currentTime));
+    setDirectEdit(null);
     lineInputReducer({ type: "reset" });
   };
 };
