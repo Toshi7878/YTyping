@@ -7,6 +7,7 @@ import {
   SliderMark,
   SliderThumb,
   SliderTrack,
+  StackProps,
   useTheme,
 } from "@chakra-ui/react";
 
@@ -20,7 +21,7 @@ interface VolumeRangeProps {
   playerRef: React.RefObject<YTPlayer>;
 }
 
-export default function VolumeRange({ playerRef }: VolumeRangeProps) {
+export default function VolumeRange({ playerRef, ...rest }: VolumeRangeProps & StackProps) {
   const theme: ThemeColors = useTheme();
   const volumeAtom = useVolumeAtom();
   const setVolumeAtom = useSetVolumeAtom();
@@ -33,7 +34,7 @@ export default function VolumeRange({ playerRef }: VolumeRangeProps) {
     }
   };
   return (
-    <HStack alignItems="center">
+    <HStack alignItems="center" {...rest}>
       <Box>
         {volumeAtom === 0 ? (
           <IoMdVolumeMute size={24} />

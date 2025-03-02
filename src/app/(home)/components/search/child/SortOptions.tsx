@@ -8,7 +8,6 @@ import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 type SortField = "ID" | "難易度" | "ランキング数" | "いいね数" | "曲の長さ" | "ランダム";
 type SortDirection = "asc" | "desc" | null;
 
-// フィールド名とURLパラメータ名のマッピング
 const fieldToParamMap: Record<SortField, string> = {
   ID: "id",
   難易度: "difficulty",
@@ -18,140 +17,102 @@ const fieldToParamMap: Record<SortField, string> = {
   ランダム: "random",
 };
 
+const sortOptions: SortField[] = [
+  "ID",
+  "難易度",
+  "ランキング数",
+  "いいね数",
+  "曲の長さ",
+  "ランダム",
+];
+
+const getResetDirections = (): Record<SortField, SortDirection> => ({
+  ID: null,
+  難易度: null,
+  ランキング数: null,
+  いいね数: null,
+  曲の長さ: null,
+  ランダム: null,
+});
+
 const SortOptions = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [sortField, setSortField] = useState<SortField | null>("ID");
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>({
+    ...getResetDirections(),
     ID: "desc",
-    難易度: null,
-    ランキング数: null,
-    いいね数: null,
-    曲の長さ: null,
-    ランダム: null,
   });
-
-  const sortOptions: SortField[] = [
-    "ID",
-    "難易度",
-    "ランキング数",
-    "いいね数",
-    "曲の長さ",
-    "ランダム",
-  ];
 
   useEffect(() => {
     const sortParam = searchParams.get("sort");
-    if (sortParam) {
-      // ランダムの場合は特別処理
-      if (sortParam === "random") {
-        const resetDirections: Record<SortField, SortDirection> = {
-          ID: null,
-          難易度: null,
-          ランキング数: null,
-          いいね数: null,
-          曲の長さ: null,
-          ランダム: "desc", // ランダムをアクティブに
-        };
-        setSortDirections(resetDirections);
-        setSortField("ランダム");
-      } else {
-        const [field, direction] = sortParam.split("_");
-        const matchedField = Object.entries(fieldToParamMap).find(([_, value]) => value === field);
+    const resetDirections = getResetDirections();
 
-        if (matchedField && (direction === "asc" || direction === "desc")) {
-          const fieldKey = matchedField[0] as SortField;
-          const resetDirections: Record<SortField, SortDirection> = {
-            ID: null,
-            難易度: null,
-            ランキング数: null,
-            いいね数: null,
-            曲の長さ: null,
-            ランダム: null,
-          };
-
-          setSortDirections({
-            ...resetDirections,
-            [fieldKey]: direction as SortDirection,
-          });
-          setSortField(fieldKey);
-        }
-      }
-    } else {
-      // デフォルトでIDの降順を設定
-      const resetDirections: Record<SortField, SortDirection> = {
-        ID: "desc",
-        難易度: null,
-        ランキング数: null,
-        いいね数: null,
-        曲の長さ: null,
-        ランダム: null,
-      };
-      setSortDirections(resetDirections);
+    if (!sortParam) {
+      setSortDirections({ ...resetDirections, ID: "desc" });
       setSortField("ID");
+      return;
     }
-  }, [searchParams, router]);
+
+    if (sortParam === "random") {
+      setSortDirections({ ...resetDirections, ランダム: "desc" });
+      setSortField("ランダム");
+      return;
+    }
+
+    const [field, direction] = sortParam.split("_");
+    const matchedField = Object.entries(fieldToParamMap).find(([_, value]) => value === field);
+
+    if (matchedField && (direction === "asc" || direction === "desc")) {
+      const fieldKey = matchedField[0] as SortField;
+      setSortDirections({
+        ...resetDirections,
+        [fieldKey]: direction as SortDirection,
+      });
+      setSortField(fieldKey);
+    }
+  }, [searchParams]);
 
   const handleSort = (field: SortField) => {
     const currentDirection = sortDirections[field];
-    let newDirection: SortDirection = null;
+    let newDirection: SortDirection;
 
-    // ランダムの場合は方向を切り替えずに常にdescとして扱う
     if (field === "ランダム") {
       newDirection = currentDirection ? null : "desc";
     } else {
-      if (currentDirection === null) {
-        newDirection = "desc";
-      } else if (currentDirection === "desc") {
-        newDirection = "asc";
-      } else {
-        newDirection = null;
-      }
+      newDirection =
+        currentDirection === null ? "desc" : currentDirection === "desc" ? "asc" : null;
     }
 
-    const resetDirections: Record<SortField, SortDirection> = {
-      ID: null,
-      難易度: null,
-      ランキング数: null,
-      いいね数: null,
-      曲の長さ: null,
-      ランダム: null,
-    };
-
     setSortDirections({
-      ...resetDirections,
+      ...getResetDirections(),
       [field]: newDirection,
     });
     setSortField(newDirection ? field : null);
 
-    // URLパラメータを更新
     const params = new URLSearchParams(searchParams.toString());
 
-    if (newDirection && field) {
-      if (field === "ID" && newDirection === "desc") {
-        params.delete("sort");
-      } else if (field === "ランダム") {
-        // ランダムの場合は方向を指定せずにパラメータを設定
-        params.set("sort", `${fieldToParamMap[field]}`);
-      } else {
-        params.set("sort", `${fieldToParamMap[field]}_${newDirection}`);
-      }
-    } else {
+    if (!newDirection || (field === "ID" && newDirection === "desc")) {
       params.delete("sort");
+    } else if (field === "ランダム") {
+      params.set("sort", fieldToParamMap[field]);
+    } else {
+      params.set("sort", `${fieldToParamMap[field]}_${newDirection}`);
     }
 
     router.push(`?${params.toString()}`);
   };
 
   const getSortIcon = (field: SortField) => {
-    // ランダムの場合は専用のアイコンを表示
     if (field === "ランダム") {
-      if (sortDirections[field]) {
-        return <Icon as={FaSort} />;
-      } else {
-        return <Icon as={FaSort} visibility="hidden" _groupHover={{ visibility: "visible" }} />;
-      }
+      return (
+        <Icon
+          as={FaSort}
+          visibility={sortDirections[field] ? "visible" : "hidden"}
+          _groupHover={{ visibility: "visible" }}
+        />
+      );
     }
 
     const direction = sortDirections[field];
@@ -169,6 +130,9 @@ const SortOptions = () => {
       userSelect="none"
       borderRadius="md"
       overflowX="auto"
+      flexWrap={{ base: "wrap", md: "nowrap" }}
+      justifyContent={{ base: "center", md: "flex-start" }}
+      gap={1}
       css={{
         "&::-webkit-scrollbar": {
           height: "8px",
@@ -192,6 +156,8 @@ const SortOptions = () => {
           _hover={{ bg: "button.sub.hover" }}
           transition="all 0.2s"
           role="group"
+          minWidth={{ base: "auto", md: "auto" }}
+          flex={{ base: "0 0 auto", md: "0 0 auto" }}
         >
           <Text mr={1}>{option}</Text>
           {getSortIcon(option)}
