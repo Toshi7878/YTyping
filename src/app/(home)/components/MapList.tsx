@@ -30,7 +30,8 @@ function MapList() {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  const { data, isFetching, isPending, fetchNextPage, hasNextPage } = useMapListInfiniteQuery();
+  const { data, isFetching, isFetchingNextPage, isPending, fetchNextPage, hasNextPage } =
+    useMapListInfiniteQuery();
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["mapList"] });
@@ -40,7 +41,7 @@ function MapList() {
   // ランダムソートの場合は常にローディング表示
   const isRandomSort = searchParams.get("sort") === "random";
 
-  if (isPending || (isFetching && isRandomSort)) {
+  if (isPending || (isFetching && isRandomSort && !isFetchingNextPage)) {
     return <LoadingMapCard cardLength={10} />;
   }
 
