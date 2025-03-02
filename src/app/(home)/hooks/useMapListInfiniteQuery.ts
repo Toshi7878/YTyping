@@ -49,5 +49,6 @@ export const useMapListInfiniteQuery = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    gcTime: Infinity,
   });
 };
