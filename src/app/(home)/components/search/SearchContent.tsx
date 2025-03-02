@@ -5,6 +5,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import FilterInputs from "./child/FilterInputs";
 import SearchInputs from "./child/SearchInputs";
+import SortOptions from "./child/SortOptions";
 
 const SearchContent = () => {
   const { playerRef } = useGlobalRefs();
@@ -20,6 +21,10 @@ const SearchContent = () => {
           {session?.user?.id && <FilterInputs />}
           {!IS_IOS && !IS_ANDROID && <VolumeRange playerRef={playerRef} />}
         </Flex>
+
+        <Box mt={4}>
+          <SortOptions />
+        </Box>
       </Box>
     </Flex>
   );

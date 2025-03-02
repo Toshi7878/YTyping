@@ -10,11 +10,12 @@ type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 const fetchMapList = async (
   page: number,
   keyword: string,
-  filter: string
+  filter: string,
+  sort: string
 ): Promise<MapCardInfo[]> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
-      params: { page, keyword, filter },
+      params: { page, keyword, filter, sort },
     });
 
     if (response.status !== 200) {
@@ -35,10 +36,11 @@ export const useMapListInfiniteQuery = () => {
   const searchParams = useSearchParams();
   const keyword = searchParams.get("keyword") || "";
   const filter = searchParams.get("f") || "";
+  const sort = searchParams.get("sort") || "";
 
   return useInfiniteQuery({
-    queryKey: [...QUERY_KEYS.mapList, keyword, filter],
-    queryFn: ({ pageParam = 0 }) => fetchMapList(pageParam, keyword, filter),
+    queryKey: [...QUERY_KEYS.mapList, keyword, filter, sort],
+    queryFn: ({ pageParam = 0 }) => fetchMapList(pageParam, keyword, filter, sort),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) =>
       lastPage.length === PAGE_SIZE ? allPages.length : undefined,

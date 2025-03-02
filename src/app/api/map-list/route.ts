@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
   const page = searchParams.get("page") ?? "0";
   const mapKeyword = searchParams.get("keyword") ?? "";
   const filterSql = getFilterSql({ filter: searchParams.get("filter"), userId });
+  const sortSql = getSortSql({ sort: searchParams.get("sort") });
   const offset = MAP_LIST_TAKE_LENGTH * Number(page);
 
   try {
@@ -82,7 +83,7 @@ export async function GET(req: NextRequest) {
         creator."name" &@~ ${mapKeyword}
       ))
     )
-    ORDER BY maps."id" DESC
+    ${sortSql}
     LIMIT ${MAP_LIST_TAKE_LENGTH} OFFSET ${offset}`;
 
     return new Response(JSON.stringify(mapList), {
@@ -108,5 +109,51 @@ function getFilterSql({ filter, userId }: GetFilterSql) {
       return Prisma.raw(`creator."id" = ${userId}`);
     default:
       return Prisma.raw("1=1");
+  }
+}
+
+interface GetSortSql {
+  sort: string | null;
+}
+function getSortSql({ sort }: GetSortSql) {
+  if (!sort) {
+    return Prisma.raw(`ORDER BY maps."id" DESC`);
+  }
+
+  const isAsc = sort.includes("asc");
+
+  switch (true) {
+    case sort.includes("id"):
+      if (isAsc) {
+        return Prisma.raw(`ORDER BY maps."id" ASC`);
+      } else {
+        return Prisma.raw(`ORDER BY maps."id" DESC`);
+      }
+    case sort.includes("title"):
+      if (isAsc) {
+        return Prisma.raw(`ORDER BY maps."title" ASC`);
+      } else {
+        return Prisma.raw(`ORDER BY maps."title" DESC`);
+      }
+    case sort.includes("artist"):
+      if (isAsc) {
+        return Prisma.raw(`ORDER BY maps."artist_name" ASC`);
+      } else {
+        return Prisma.raw(`ORDER BY maps."artist_name" DESC`);
+      }
+    case sort.includes("ranking_count"):
+      if (isAsc) {
+        return Prisma.raw(`ORDER BY maps."ranking_count" ASC`);
+      } else {
+        return Prisma.raw(`ORDER BY maps."ranking_count" DESC`);
+      }
+    case sort.includes("like_count"):
+      if (isAsc) {
+        return Prisma.raw(`ORDER BY maps."like_count" ASC`);
+      } else {
+        return Prisma.raw(`ORDER BY maps."like_count" DESC`);
+      }
+    default:
+      return Prisma.raw(`ORDER BY maps."id" DESC`);
   }
 }
