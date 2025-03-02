@@ -45,7 +45,7 @@ const FilterInputs = () => {
   return (
     <Flex flexDirection="row" gap={5}>
       <Flex gap={5} alignItems="baseline" width="100%">
-        <SearchRange min={0} max={15} step={0.1} mx={4} />
+        <SearchRange min={0} max={12} step={0.1} mx={4} />
 
         <Button
           leftIcon={<FaHeart />}

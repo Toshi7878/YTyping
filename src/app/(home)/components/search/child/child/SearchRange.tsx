@@ -111,7 +111,7 @@ const SearchRange = ({ min, max, step, ...rest }: SearchRangeProps & BoxProps) =
         </RangeSlider>
         <Flex position="absolute" width="100%" justifyContent="space-between" top={5}>
           <Text fontSize="sm">★{value.minValue.toFixed(1)}</Text>
-          <Text fontSize="sm">★{value.maxValue === 15 ? "∞" : value.maxValue.toFixed(1)}</Text>
+          <Text fontSize="sm">★{value.maxValue === max ? "∞" : value.maxValue.toFixed(1)}</Text>
         </Flex>
       </Box>
     </CustomToolTip>
