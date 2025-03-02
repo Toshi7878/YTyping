@@ -3,7 +3,7 @@ import VolumeRange from "@/components/share-components/VolumeRange";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { Box, Flex } from "@chakra-ui/react";
 import SearchInputs from "./child/SearchInputs";
-import SearchCard from "./child/SearchModal";
+import SearchModal from "./child/SearchModal";
 
 const SearchContent = () => {
   const { playerRef } = useGlobalRefs();
@@ -15,7 +15,7 @@ const SearchContent = () => {
           <SearchInputs />
         </Box>
         <Flex justifyContent="space-between">
-          <SearchCard />
+          <SearchModal />
           {!IS_IOS && !IS_ANDROID && (
             <Flex justifyContent="flex-end">
               <VolumeRange playerRef={playerRef} />

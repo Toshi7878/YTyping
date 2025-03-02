@@ -1,6 +1,6 @@
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
-
+import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 const MAP_LIST_TAKE_LENGTH = 40; //ここを編集したらInfiniteQueryのgetNextPageParamも編集する
@@ -11,8 +11,10 @@ export async function GET(req: NextRequest) {
   const userId = Number(session?.user?.id);
 
   const page = searchParams.get("page") ?? "0";
-  const mapKeyword = searchParams.get("mapKeyword") ?? "";
-  const offset = MAP_LIST_TAKE_LENGTH * Number(page); // 20件ずつ読み込むように変更
+  const mapKeyword = searchParams.get("keyword") ?? "";
+  const filterSql = getFilterSql({ filter: searchParams.get("filter"), userId });
+  const offset = MAP_LIST_TAKE_LENGTH * Number(page);
+
   try {
     const mapList = await prisma.$queryRaw`
     SELECT
@@ -69,14 +71,16 @@ export async function GET(req: NextRequest) {
     FROM maps
     JOIN users AS creator ON maps."creator_id" = creator."id"
     JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
+    LEFT JOIN map_likes ON maps."id" = map_likes."map_id" AND map_likes."user_id" = ${userId}
     WHERE (
-      ${mapKeyword} = '' OR (
+      ${filterSql} AND
+      (${mapKeyword} = '' OR (
         maps."title" &@~ ${mapKeyword} OR
         maps."artist_name" &@~ ${mapKeyword} OR
         maps."music_source" &@~ ${mapKeyword} OR
         maps."tags" &@~ ${mapKeyword} OR
         creator."name" &@~ ${mapKeyword}
-      )
+      ))
     )
     ORDER BY maps."id" DESC
     LIMIT ${MAP_LIST_TAKE_LENGTH} OFFSET ${offset}`;
@@ -88,5 +92,21 @@ export async function GET(req: NextRequest) {
     console.error("Error fetching map list:", error);
 
     return new Response("Internal Server Error", { status: 500 });
+  }
+}
+
+interface GetFilterSql {
+  filter: string | null;
+  userId: number;
+}
+
+function getFilterSql({ filter, userId }: GetFilterSql) {
+  switch (filter) {
+    case "liked":
+      return Prisma.raw(`map_likes."is_liked" = true`);
+    case "my-map":
+      return Prisma.raw(`creator."id" = ${userId}`);
+    default:
+      return Prisma.raw("1=1");
   }
 }

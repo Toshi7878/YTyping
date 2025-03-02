@@ -1,12 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, Card, CardBody, useTheme } from "@chakra-ui/react";
-import SearchRange from "./child/SearchRange";
-import {
-  DEFAULT_CLEAR_RATE_SEARCH_RANGE,
-  DEFAULT_KPM_SEARCH_RANGE,
-} from "@/app/timeline/ts/const/consts";
-import SearchModeRadio from "./child/SearchModeRadio";
-import { ThemeColors } from "@/types";
 import {
   useSearchResultClearRateAtom,
   useSearchResultKpmAtom,
@@ -15,8 +6,17 @@ import {
   useSetSearchResultKpmAtom,
   useSetSearchResultSpeedAtom,
 } from "@/app/timeline/atoms/atoms";
+import {
+  DEFAULT_CLEAR_RATE_SEARCH_RANGE,
+  DEFAULT_KPM_SEARCH_RANGE,
+} from "@/app/timeline/ts/const/consts";
+import { ThemeColors } from "@/types";
+import { Button, Card, CardBody, useTheme } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
+import SearchModeRadio from "./child/SearchModeRadio";
+import SearchRange from "./child/SearchRange";
 
-const SearchCard = () => {
+const SearchModal = () => {
   const [isCardVisible, setIsCardVisible] = useState(false);
   const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -94,4 +94,4 @@ const SearchCard = () => {
   );
 };
 
-export default SearchCard;
+export default SearchModal;

@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-3-2",
+    descriptions: ["いいね済みフィルター & マイマップフィルターを追加"],
+  },
+  {
     date: "2025-3-1",
     descriptions: [
       "ヘッダーのMenuに[Discordにプレイ中を表示]ページを追加",
