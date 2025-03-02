@@ -148,6 +148,7 @@ const SortOptions = () => {
       bg="background.card"
       color="text.body"
       p={2}
+      userSelect="none"
       borderRadius="md"
       overflowX="auto"
       css={{

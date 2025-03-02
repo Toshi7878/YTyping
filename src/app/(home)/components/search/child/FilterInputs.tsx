@@ -53,7 +53,7 @@ const FilterInputs = () => {
         aria-label="マイマップ"
         onClick={() => handleFilterClick("my-map")}
       >
-        マイマップ
+        作成した譜面
       </Button>
     </Flex>
   );
