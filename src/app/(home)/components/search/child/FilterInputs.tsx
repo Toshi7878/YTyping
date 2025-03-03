@@ -50,7 +50,7 @@ const FilterInputs = () => {
         width="100%"
         flexDirection={{ base: "column", md: "row" }}
       >
-        <SearchRange min={0} max={12} step={0.1} mx={4} />
+        <SearchRange step={0.1} mx={4} />
 
         <Stack direction="row" gap={2}>
           <Button

@@ -1,18 +1,24 @@
 "use client";
 
+import { DIFFICULTY_RANGE } from "@/app/(home)/ts/const/consts";
 import { Button, HStack, Input } from "@chakra-ui/react";
+import { useStore } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSearchMapKeyWordsAtom, useSetSearchMapKeyWordsAtom } from "../../../atoms/atoms";
+import {
+  difficultyRangeAtom,
+  useSearchMapKeyWordsAtom,
+  useSetSearchMapKeyWordsAtom,
+} from "../../../atoms/atoms";
 
 const SearchInputs = () => {
   const searchMapKeywords = useSearchMapKeyWordsAtom();
+  const homeAtomStore = useStore();
   const setSearchKeywords = useSetSearchMapKeyWordsAtom();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSearching, setIsSearching] = useState(false);
 
-  // URLのキーワードパラメータを監視し、初期値として設定
   useEffect(() => {
     const keywordParam = searchParams.get("keyword");
     if (keywordParam) {
@@ -30,8 +36,20 @@ const SearchInputs = () => {
       } else {
         params.delete("keyword");
       }
+      const difficultyRange = homeAtomStore.get(difficultyRangeAtom);
 
-      // URLを更新
+      if (difficultyRange.min !== DIFFICULTY_RANGE.min) {
+        params.set("minRate", difficultyRange.min.toFixed(1));
+      } else {
+        params.delete("minRate");
+      }
+
+      if (difficultyRange.max !== DIFFICULTY_RANGE.max) {
+        params.set("maxRate", difficultyRange.max.toFixed(1));
+      } else {
+        params.delete("maxRate");
+      }
+
       router.push(`?${params.toString()}`);
     } catch (error) {
       console.error("検索処理中にエラーが発生しました:", error);

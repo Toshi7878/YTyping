@@ -1,5 +1,7 @@
 "use client";
 
+import { useDifficultyRangeAtom, useSetDifficultyRangeAtom } from "@/app/(home)/atoms/atoms";
+import { DIFFICULTY_RANGE } from "@/app/(home)/ts/const/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import {
@@ -14,68 +16,59 @@ import {
   useTheme,
 } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface SearchRangeProps {
-  min: number;
-  max: number;
   step: number;
 }
 
-const SearchRange = ({ min, max, step, ...rest }: SearchRangeProps & BoxProps) => {
+const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
   const theme: ThemeColors = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { min, max } = DIFFICULTY_RANGE;
   const minParamName = "minRate";
   const maxParamName = "maxRate";
-
-  const [value, setValue] = useState(() => {
-    const minParamValue = searchParams.get(minParamName);
-    const maxParamValue = searchParams.get(maxParamName);
-
-    return {
-      minValue: minParamValue ? Math.max(min, Number(minParamValue)) : min,
-      maxValue: maxParamValue ? Math.min(max, Number(maxParamValue)) : max,
-    };
-  });
+  const difficultyRangeAtom = useDifficultyRangeAtom();
+  const setDifficultyRangeAtom = useSetDifficultyRangeAtom();
 
   useEffect(() => {
     const minParamValue = searchParams.get(minParamName);
     const maxParamValue = searchParams.get(maxParamName);
 
-    setValue({
-      minValue: minParamValue ? Math.max(min, Number(minParamValue)) : min,
-      maxValue: maxParamValue ? Math.min(max, Number(maxParamValue)) : max,
+    setDifficultyRangeAtom({
+      min: minParamValue ? Math.max(min, Number(minParamValue)) : min,
+      max: maxParamValue ? Math.min(max, Number(maxParamValue)) : max,
     });
   }, [searchParams, min, max, minParamName, maxParamName]);
 
   useEffect(() => {
-    if (value.minValue < min || value.maxValue > max) {
-      setValue({
-        minValue: Math.max(min, value.minValue),
-        maxValue: Math.min(max, value.maxValue),
+    if (difficultyRangeAtom.min < min || difficultyRangeAtom.max > max) {
+      setDifficultyRangeAtom({
+        min: Math.max(min, difficultyRangeAtom.min),
+        max: Math.min(max, difficultyRangeAtom.max),
       });
     }
-  }, [min, max, value, setValue]);
+  }, [min, max, difficultyRangeAtom, setDifficultyRangeAtom]);
 
   const handleChange = (val: number[]) => {
-    setValue({ minValue: val[0], maxValue: val[1] });
+    setDifficultyRangeAtom({ min: val[0], max: val[1] });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (value.minValue === min) {
+      if (difficultyRangeAtom.min === min) {
         params.delete(minParamName);
       } else {
-        params.set(minParamName, value.minValue.toFixed(1));
+        params.set(minParamName, difficultyRangeAtom.min.toFixed(1));
       }
 
-      if (value.maxValue === max) {
+      if (difficultyRangeAtom.max === max) {
         params.delete(maxParamName);
       } else {
-        params.set(maxParamName, value.maxValue.toFixed(1));
+        params.set(maxParamName, difficultyRangeAtom.max.toFixed(1));
       }
 
       router.replace(`?${params.toString()}`, { scroll: false });
@@ -95,7 +88,7 @@ const SearchRange = ({ min, max, step, ...rest }: SearchRangeProps & BoxProps) =
         {...rest}
       >
         <RangeSlider
-          value={[value.minValue, value.maxValue]}
+          value={[difficultyRangeAtom.min, difficultyRangeAtom.max]}
           min={min}
           max={max}
           size="lg"
@@ -109,8 +102,10 @@ const SearchRange = ({ min, max, step, ...rest }: SearchRangeProps & BoxProps) =
           <RangeSliderThumb index={1} />
         </RangeSlider>
         <Flex position="absolute" width="100%" justifyContent="space-between" top={5}>
-          <Text fontSize="md">★{value.minValue.toFixed(1)}</Text>
-          <Text fontSize="md">★{value.maxValue === max ? "∞" : value.maxValue.toFixed(1)}</Text>
+          <Text fontSize="md">★{difficultyRangeAtom.min.toFixed(1)}</Text>
+          <Text fontSize="md">
+            ★{difficultyRangeAtom.max === max ? "∞" : difficultyRangeAtom.max.toFixed(1)}
+          </Text>
         </Flex>
       </Box>
     </CustomToolTip>
