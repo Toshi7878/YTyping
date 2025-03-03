@@ -89,7 +89,6 @@ const SearchRange = ({ min, max, step, ...rest }: SearchRangeProps & BoxProps) =
         minWidth="150px"
         maxWidth="150px"
         position="relative"
-        top={-1}
         userSelect="none"
         tabIndex={0}
         onKeyDown={handleKeyDown}
