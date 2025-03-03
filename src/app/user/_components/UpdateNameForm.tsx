@@ -60,7 +60,6 @@ export const UpdateNameForm = ({
   const onSubmit = (data: FormData) => {
     updateName.mutate(data, {
       onSuccess: async (result) => {
-        console.log("User created successfully");
         await update({ ...session?.user, name: data.newName });
         uploadToast(result);
         if (isHomeRedirect) {
@@ -68,7 +67,6 @@ export const UpdateNameForm = ({
         }
       },
       onError: (error) => {
-        console.error("Error creating user:", error);
         uploadToast({
           id: "",
           title: "エラーが発生しました",

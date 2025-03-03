@@ -104,7 +104,6 @@ export default function ActiveUsers() {
     const ensureChannel = () => {
       if (!currentChannel) {
         currentChannel = createChannel();
-        console.log("チャネルを新規生成し subscribe しました");
       }
     };
 
@@ -113,7 +112,6 @@ export default function ActiveUsers() {
       ensureChannel();
       inactivityTimer = window.setTimeout(() => {
         if (currentChannel) {
-          console.log("一定時間操作がなかったのでチャネルを unsubscribe します");
           currentChannel.unsubscribe();
           currentChannel = null;
         }

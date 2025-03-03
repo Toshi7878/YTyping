@@ -99,7 +99,6 @@ export const useMoveLine = () => {
     const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
 
     if (lineSelectIndex !== seekCount) {
-      console.log("colorchange");
       drawerSelectColorChange(seekCount);
     }
     playerRef.current!.seekTo(seekTime, true);

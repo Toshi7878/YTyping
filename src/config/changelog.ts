@@ -1,5 +1,11 @@
 export const changelog = [
   {
+    date: "2025-3-3",
+    descriptions: [
+      "練習モードで入力モード切り替え時にライン移動を行うと入力モードが戻ってしまう問題を修正",
+    ],
+  },
+  {
     date: "2025-3-2",
     descriptions: [
       "プレイ済み・未プレイ絞り込み追加",

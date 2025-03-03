@@ -2,9 +2,12 @@ import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { useStore } from "jotai";
 import { YouTubeEvent } from "react-youtube";
 import { typeTicker } from "../ts/const/consts";
+import { InputModeType } from "../ts/type";
 import {
   isLoadingOverlayAtom,
+  readyRadioInputModeAtom,
   sceneAtom,
+  useSetPlayingInputModeAtom,
   useSetPlayingNotifyAtom,
   useSetSceneAtom,
 } from "../type-atoms/gameRenderAtoms";
@@ -18,6 +21,8 @@ export const useYTPlayEvent = () => {
   const setScene = useSetSceneAtom();
   const setNotify = useSetPlayingNotifyAtom();
   const startTimer = useStartTimer();
+  const setPlayingInputMode = useSetPlayingInputModeAtom();
+
   const { updatePlayCountStats } = useUpdateUserStats();
 
   return async (event: YouTubeEvent) => {
@@ -45,12 +50,16 @@ export const useYTPlayEvent = () => {
       } else {
         setScene("playing");
       }
+
+      const readyInputMode = typeAtomStore.get(readyRadioInputModeAtom);
+      setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputModeType);
       updatePlayCountStats();
     }
 
-    if (scene === "playing" || scene === "replay" || scene === "practice") {
+    if (scene === "playing" || scene === "practice" || scene === "replay") {
       startTimer();
     }
+
     const isPaused = ytStateRef.current!.isPaused;
 
     if (isPaused) {
@@ -80,13 +89,6 @@ export const useYTStopEvent = () => {
     totalProgressRef.current!.value = totalProgressRef.current!.max;
 
     setScene("end");
-    // const averagePerformance =
-    //   performances.length > 0
-    //     ? performances.reduce((sum, value) => sum + value, 0) / performances.length
-    //     : 0;
-    // const maxPerformance = performances.length > 0 ? Math.max(...performances) : 0;
-    // console.log("平均performance:", averagePerformance);
-    // console.log("最長performance:", maxPerformance);
 
     if (typeTicker.started) {
       typeTicker.stop();
