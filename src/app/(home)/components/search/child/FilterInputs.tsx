@@ -1,7 +1,7 @@
 "use client";
 
 import { MapFilter, PlayFilter } from "@/app/(home)/ts/type";
-import { Button, Flex, Stack } from "@chakra-ui/react";
+import { Badge, Button, Flex, Stack, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { FaHeart, FaMap } from "react-icons/fa6";
@@ -43,7 +43,7 @@ const FilterInputs = () => {
   const currentPlayedFilter = searchParams.get("played") as PlayFilter | null;
 
   return (
-    <Flex flexDirection={{ base: "column", md: "row" }} gap={5}>
+    <Flex flexDirection={{ base: "column", md: "row" }} alignItems="baseline" gap={5}>
       <Flex
         gap={5}
         alignItems="baseline"
@@ -77,28 +77,40 @@ const FilterInputs = () => {
           </Button>
         </Stack>
       </Flex>
-      <Flex gap={{ base: 2, md: 5 }} alignItems="baseline" width="100%" flexDirection="row">
-        <Button
-          colorScheme="green"
-          variant={currentPlayedFilter === "played" ? "solid" : "outline"}
-          size="sm"
-          aria-label="プレイ済み"
+      <Stack
+        direction="row"
+        spacing={{ base: 2, md: 4 }}
+        align="center"
+        width="100%"
+        bg="background.card"
+        p={2.5}
+        borderRadius="md"
+        boxShadow="sm"
+      >
+        <Text fontWeight="medium" color="text.card">
+          ランキング:
+        </Text>
+        <Badge
+          variant={currentPlayedFilter === "played" ? "filterSolid" : "filterOutline"}
           onClick={() => handlePlayedFilterClick("played")}
-          width={{ base: "100%", md: "auto" }}
+          cursor="pointer"
+          px={3}
+          borderRadius="full"
+          fontSize="sm"
         >
-          プレイ済み
-        </Button>
-        <Button
-          colorScheme="gray"
-          variant={currentPlayedFilter === "unplayed" ? "solid" : "outline"}
-          size="sm"
-          aria-label="未プレイ"
+          登録済
+        </Badge>
+        <Badge
+          variant={currentPlayedFilter === "unplayed" ? "filterSolid" : "filterOutline"}
           onClick={() => handlePlayedFilterClick("unplayed")}
-          width={{ base: "100%", md: "auto" }}
+          cursor="pointer"
+          px={3}
+          borderRadius="full"
+          fontSize="sm"
         >
-          未プレイ
-        </Button>
-      </Flex>
+          未登録
+        </Badge>
+      </Stack>
     </Flex>
   );
 };
