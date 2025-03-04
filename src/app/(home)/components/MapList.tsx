@@ -30,15 +30,16 @@ function MapList() {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  const { data, isFetching, isFetchingNextPage, isPending, fetchNextPage, hasNextPage } =
+  const { data, isFetching, isPending, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useMapListInfiniteQuery();
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["mapList"] });
+    if (!data) {
+      queryClient.refetchQueries({ queryKey: ["mapList"] });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  // ランダムソートの場合は常にローディング表示
   const isRandomSort = searchParams.get("sort") === "random";
 
   if (isPending || (isFetching && isRandomSort && !isFetchingNextPage)) {
@@ -54,7 +55,7 @@ function MapList() {
         </Box>
       }
       hasMore={hasNextPage}
-      threshold={1800} // スクロールの閾値を追加
+      threshold={1800}
     >
       <MapCardLayout>
         {data?.pages.map((page: MapCardInfo[]) =>
