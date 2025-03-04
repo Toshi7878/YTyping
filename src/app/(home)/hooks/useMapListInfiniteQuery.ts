@@ -6,19 +6,25 @@ import { useSearchParams } from "next/navigation";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 
-// APIからマップリストを取得する関数
-const fetchMapList = async (
-  page: number,
-  keyword: string,
-  filter: string,
-  sort: string,
-  maxRate: string,
-  minRate: string,
-  played: string
-): Promise<MapCardInfo[]> => {
+type MapListParams = {
+  keyword: string;
+  filter: string;
+  sort: string;
+  maxRate: string;
+  minRate: string;
+  played: string;
+};
+
+// 1ページあたりの最大アイテム数
+const PAGE_SIZE = 40;
+
+const fetchMapList = async ({
+  page,
+  ...params
+}: { page: number } & MapListParams): Promise<MapCardInfo[]> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
-      params: { page, keyword, filter, sort, minRate, maxRate, played },
+      params: { page, ...params },
     });
 
     if (response.status !== 200) {
@@ -32,22 +38,21 @@ const fetchMapList = async (
   }
 };
 
-// 1ページあたりの最大アイテム数
-const PAGE_SIZE = 40;
-
 export const useMapListInfiniteQuery = () => {
   const searchParams = useSearchParams();
-  const keyword = searchParams.get("keyword") || "";
-  const filter = searchParams.get("f") || "";
-  const sort = searchParams.get("sort") || "";
-  const maxRate = searchParams.get("maxRate") || "";
-  const minRate = searchParams.get("minRate") || "";
-  const played = searchParams.get("played") || "";
+
+  const queryParams: MapListParams = {
+    keyword: searchParams.get("keyword") || "",
+    filter: searchParams.get("f") || "",
+    sort: searchParams.get("sort") || "",
+    maxRate: searchParams.get("maxRate") || "",
+    minRate: searchParams.get("minRate") || "",
+    played: searchParams.get("played") || "",
+  };
 
   return useInfiniteQuery({
-    queryKey: [...QUERY_KEYS.mapList, keyword, filter, sort, maxRate, minRate, played],
-    queryFn: ({ pageParam = 0 }) =>
-      fetchMapList(pageParam, keyword, filter, sort, maxRate, minRate, played),
+    queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
+    queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, ...queryParams }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) =>
       lastPage.length === PAGE_SIZE ? allPages.length : undefined,
