@@ -43,8 +43,9 @@ const MapLeftThumbnail = (props: MapLeftThumbnailProps & UseImageSize) => {
           height={thumnailHeight}
           minW={thumnailWidth}
           minH={thumnailHeight}
+          position="relative"
         >
-          <Image loader={({ src }) => src} alt={alt} src={fallbackSrc} rounded={"md"} fill />
+          <Image unoptimized alt={alt} src={fallbackSrc} rounded={"md"} fill />
         </Box>
       ) : (
         <Box

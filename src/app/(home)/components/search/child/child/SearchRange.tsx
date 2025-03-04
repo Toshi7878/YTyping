@@ -1,6 +1,10 @@
 "use client";
 
-import { useDifficultyRangeAtom, useSetDifficultyRangeAtom } from "@/app/(home)/atoms/atoms";
+import {
+  useDifficultyRangeAtom,
+  useSetDifficultyRangeAtom,
+  useSetIsSearchingAtom,
+} from "@/app/(home)/atoms/atoms";
 import { DIFFICULTY_RANGE } from "@/app/(home)/ts/const/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
@@ -31,6 +35,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
   const maxParamName = "maxRate";
   const difficultyRangeAtom = useDifficultyRangeAtom();
   const setDifficultyRangeAtom = useSetDifficultyRangeAtom();
+  const setIsSearchingAtom = useSetIsSearchingAtom();
 
   useEffect(() => {
     const minParamValue = searchParams.get(minParamName);
@@ -71,6 +76,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
         params.set(maxParamName, difficultyRangeAtom.max.toFixed(1));
       }
 
+      setIsSearchingAtom(true);
       router.replace(`?${params.toString()}`, { scroll: false });
     }
   };

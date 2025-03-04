@@ -16,14 +16,14 @@ function MapInfo({ map }: MapInfoProps) {
   const handleLinkClick = useLinkClick();
 
   return (
-    <Link
+    <Box
       display="flex"
       justifyContent="space-between"
       flexDirection="column"
       height="100%"
       _hover={{ textDecoration: "none" }}
-      href={`/type/${map.id}`}
-      onClick={handleLinkClick}
+      pl={3}
+      pt={2}
     >
       <Flex direction="column" gap={1}>
         <CustomToolTip
@@ -33,7 +33,11 @@ function MapInfo({ map }: MapInfoProps) {
           placement="top"
           right={24}
         >
-          <Box
+          <Link
+            href={`/type/${map.id}`}
+            onClick={handleLinkClick}
+            zIndex={1}
+            _hover={{ textDecoration: "none" }}
             color={theme.colors.secondary.main}
             fontWeight="bold"
             overflow="hidden"
@@ -42,7 +46,7 @@ function MapInfo({ map }: MapInfoProps) {
             fontSize="md"
           >
             {map.title}
-          </Box>
+          </Link>
         </CustomToolTip>
 
         <Box
@@ -65,7 +69,7 @@ function MapInfo({ map }: MapInfoProps) {
         <MapCreateUser map={map} />
         <MapBadges map={map} />
       </Stack>
-    </Link>
+    </Box>
   );
 }
 

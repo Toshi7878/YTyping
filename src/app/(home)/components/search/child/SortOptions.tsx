@@ -1,5 +1,6 @@
 "use client";
 
+import { useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -38,6 +39,7 @@ const getResetDirections = (): Record<SortField, SortDirection> => ({
 const SortOptions = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const setIsSearching = useSetIsSearchingAtom();
 
   const [sortField, setSortField] = useState<SortField | null>("ID");
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>({
@@ -101,6 +103,7 @@ const SortOptions = () => {
       params.set("sort", `${fieldToParamMap[field]}_${newDirection}`);
     }
 
+    setIsSearching(true);
     router.push(`?${params.toString()}`);
   };
 

@@ -12,8 +12,7 @@ function MapCardRightInfo({ children }: MapCardProps) {
       overflow="hidden"
       width="100%"
       height="100%"
-      pl={3}
-      pt={2}
+      position="relative"
       fontSize={{ base: "xs", sm: "sm", md: "md", lg: "lg" }}
     >
       {children}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
 import { MapFilter, PlayFilter } from "@/app/(home)/ts/type";
 import { Badge, Button, Flex, Stack, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,6 +11,7 @@ import SearchRange from "./child/SearchRange";
 const FilterInputs = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const setIsSearchingAtom = useSetIsSearchingAtom();
 
   const createQueryString = useCallback(
     (name: string, value: string | null) => {
@@ -30,12 +32,16 @@ const FilterInputs = () => {
     const currentFilter = searchParams.get("f");
     // 同じフィルターが選択されている場合はフィルターを解除
     const newFilter = currentFilter === filter ? null : filter;
+
+    setIsSearchingAtom(true);
     router.push(`?${createQueryString("f", newFilter)}`);
   };
 
   const handlePlayedFilterClick = (playFilter: PlayFilter) => {
     const currentFilter = searchParams.get("played");
     const newFilter = currentFilter === playFilter ? null : playFilter;
+
+    setIsSearchingAtom(true);
     router.push(`?${createQueryString("played", newFilter)}`);
   };
 

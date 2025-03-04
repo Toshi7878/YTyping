@@ -36,6 +36,9 @@ export default async function RootLayout({
 
   return (
     <html lang="ja">
+      <head>
+        <meta charSet="UTF-8" />
+      </head>
       <body className={cn(fonts.rubik.variable, "no-ligatures ")}>
         <ThemeProvider colorMode={colorMode?.value}>
           <SessionProvider session={session}>

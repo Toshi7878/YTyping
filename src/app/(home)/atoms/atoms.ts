@@ -23,3 +23,13 @@ export const useDifficultyRangeAtom = () => {
 export const useSetDifficultyRangeAtom = () => {
   return useSetAtom(difficultyRangeAtom, { store: homeAtomStore });
 };
+
+const isSearchingAtom = atom(false);
+
+export const useIsSearchingAtom = () => {
+  return useAtomValue(isSearchingAtom, { store: homeAtomStore });
+};
+
+export const useSetIsSearchingAtom = () => {
+  return useSetAtom(isSearchingAtom, { store: homeAtomStore });
+};

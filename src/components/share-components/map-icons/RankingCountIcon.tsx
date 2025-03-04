@@ -30,6 +30,7 @@ const RankingCountIcon = (props: RankingCountProps) => {
             : `${theme.colors.text.body}99`
         }
         mr={1}
+        zIndex={1}
       >
         <Box mr={1} position="relative" top="3px">
           <FaRankingStar size={20} />

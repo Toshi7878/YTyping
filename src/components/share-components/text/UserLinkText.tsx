@@ -14,7 +14,13 @@ const UserLinkText = ({ userId, userName }: UserLInkTextProps) => {
   const handleLinkClick = useLinkClick();
 
   return (
-    <Link href={`/user/${userId}`} onClick={handleLinkClick} color={theme.colors.secondary.main}>
+    <Link
+      href={`/user/${userId}`}
+      position="relative"
+      zIndex={1}
+      onClick={handleLinkClick}
+      color={theme.colors.secondary.main}
+    >
       {userName}
     </Link>
   );

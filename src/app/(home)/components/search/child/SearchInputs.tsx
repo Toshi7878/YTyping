@@ -4,10 +4,12 @@ import { DIFFICULTY_RANGE } from "@/app/(home)/ts/const/consts";
 import { Button, HStack, Input } from "@chakra-ui/react";
 import { useStore } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   difficultyRangeAtom,
+  useIsSearchingAtom,
   useSearchMapKeyWordsAtom,
+  useSetIsSearchingAtom,
   useSetSearchMapKeyWordsAtom,
 } from "../../../atoms/atoms";
 
@@ -17,7 +19,8 @@ const SearchInputs = () => {
   const setSearchKeywords = useSetSearchMapKeyWordsAtom();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isSearching, setIsSearching] = useState(false);
+  const isSearching = useIsSearchingAtom();
+  const setIsSearching = useSetIsSearchingAtom();
 
   useEffect(() => {
     const keywordParam = searchParams.get("keyword");
@@ -28,7 +31,6 @@ const SearchInputs = () => {
 
   const handleSearch = async () => {
     try {
-      setIsSearching(true);
       const params = new URLSearchParams(searchParams.toString());
 
       if (searchMapKeywords.trim()) {
@@ -50,6 +52,7 @@ const SearchInputs = () => {
         params.delete("maxRate");
       }
 
+      setIsSearching(true);
       router.push(`?${params.toString()}`);
     } catch (error) {
       console.error("検索処理中にエラーが発生しました:", error);
@@ -74,12 +77,10 @@ const SearchInputs = () => {
         type="search"
         aria-label="検索キーワード"
         onChange={(e) => setSearchKeywords(e.target.value)}
-        disabled={isSearching}
       />
 
       <Button
         width="30%"
-        onClick={handleSearch}
         isLoading={isSearching}
         loadingText="検索中"
         type="submit"

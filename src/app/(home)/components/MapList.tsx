@@ -2,6 +2,7 @@
 import SkeletonCard from "@/components/map-card/SkeletonCard";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
+import MapLink from "@/components/map-card/child/child/MapLink";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
@@ -10,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
+import { useIsSearchingAtom, useSetIsSearchingAtom } from "../atoms/atoms";
 import { useMapListInfiniteQuery } from "../hooks/useMapListInfiniteQuery";
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "../ts/const/consts";
 import MapCardLayout from "./MapCardLayout";
@@ -28,26 +30,29 @@ function LoadingMapCard({ cardLength }: { cardLength: number }) {
 
 function MapList() {
   const searchParams = useSearchParams();
+  const isSearching = useIsSearchingAtom();
   const queryClient = useQueryClient();
+  const setIsSearchingAtom = useSetIsSearchingAtom();
 
   const { data, isFetching, isPending, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useMapListInfiniteQuery();
 
   useEffect(() => {
-    if (!data) {
-      queryClient.refetchQueries({ queryKey: ["mapList"] });
-    }
+    queryClient.refetchQueries({ queryKey: ["mapList"] });
+    setIsSearchingAtom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const isRandomSort = searchParams.get("sort") === "random";
 
-  if (isPending || (isFetching && isRandomSort && !isFetchingNextPage)) {
+  const isLoading = isPending || (isFetching && isRandomSort && !isFetchingNextPage);
+  if (isLoading) {
     return <LoadingMapCard cardLength={10} />;
   }
 
   return (
     <InfiniteScroll
+      className={!isLoading && isSearching ? "opacity-20" : ""}
       loadMore={() => fetchNextPage()}
       loader={
         <Box key={0}>
@@ -78,6 +83,7 @@ function MapList() {
                   thumnailHeight={HOME_THUBNAIL_HEIGHT}
                 />
                 <MapCardRightInfo>
+                  <MapLink mapId={map.id} />
                   <MapInfo map={map} />
                 </MapCardRightInfo>
               </MapCard>
