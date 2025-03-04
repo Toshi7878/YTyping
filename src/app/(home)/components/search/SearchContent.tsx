@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import FilterInputs from "./child/FilterInputs";
 import SearchInputs from "./child/SearchInputs";
 import SortOptions from "./child/SortOptions";
+import SearchRange from "./child/child/SearchRange";
 
 const SearchContent = () => {
   const { playerRef } = useGlobalRefs();
@@ -18,7 +19,10 @@ const SearchContent = () => {
           <SearchInputs />
         </Box>
         <Flex justifyContent={session?.user?.id ? "space-between" : "flex-end"}>
-          {session?.user?.id && <FilterInputs />}
+          <Flex alignItems="center" gap={5} direction={{ base: "column", md: "row" }}>
+            {session?.user?.id && <FilterInputs />}
+            <SearchRange step={0.1} mx={4} />
+          </Flex>
           {!IS_IOS && !IS_ANDROID && <VolumeRange playerRef={playerRef} />}
         </Flex>
 

@@ -70,6 +70,7 @@ export interface ThemeColors {
     secondary: {
       main: `#${string}`;
       light: `#${string}`;
+      dark: `#${string}`;
     };
     error: {
       main: `#${string}`;

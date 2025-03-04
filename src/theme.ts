@@ -39,6 +39,7 @@ const darkTheme: ThemeColors = {
       dark: "#00a3c4",
     },
     secondary: {
+      dark: "#009d69",
       main: "#00bd7e",
       light: "#3cd3bf",
     },

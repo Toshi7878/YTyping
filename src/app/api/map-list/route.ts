@@ -205,6 +205,29 @@ function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
         WHERE results.map_id = maps.id
         AND results.user_id = ${userId}
       )`);
+    case "1st":
+      return Prisma.raw(`EXISTS (
+        SELECT 1 FROM results
+        WHERE results.map_id = maps.id
+        AND results.user_id = ${userId}
+        AND results.rank = 1
+      )`);
+    case "not-first":
+      return Prisma.raw(`EXISTS (
+        SELECT 1 FROM results
+        WHERE results.map_id = maps.id
+        AND results.user_id = ${userId}
+        AND results.rank > 1
+      )`);
+    case "perfect":
+      return Prisma.raw(`EXISTS (
+        SELECT 1 FROM results
+        JOIN result_statuses ON results.id = result_statuses.result_id
+        WHERE results.map_id = maps.id
+        AND results.user_id = ${userId}
+        AND result_statuses.miss = 0
+        AND result_statuses.lost = 0
+      )`);
     default:
       return Prisma.raw("1=1");
   }

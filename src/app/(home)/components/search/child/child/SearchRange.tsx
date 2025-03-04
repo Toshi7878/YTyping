@@ -82,39 +82,48 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
   };
 
   return (
-    <CustomToolTip label="Enterで検索" placement="top">
-      <Box
-        flex="1"
-        minWidth="150px"
-        maxWidth="150px"
-        position="relative"
-        userSelect="none"
-        tabIndex={0}
-        onKeyDown={handleKeyDown}
-        {...rest}
-      >
-        <RangeSlider
-          value={[difficultyRangeAtom.min, difficultyRangeAtom.max]}
-          min={min}
-          max={max}
-          size="lg"
-          step={step}
-          onChange={handleChange}
+    <Box
+      bg={"background.card"}
+      p={1}
+      borderRadius="md"
+      borderWidth="1px"
+      borderColor="border.card60"
+      height="100%"
+    >
+      <CustomToolTip label="Enterで検索" placement="top">
+        <Box
+          flex="1"
+          width="170px"
+          position="relative"
+          top={4}
+          userSelect="none"
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
+          {...rest}
         >
-          <RangeSliderTrack>
-            <RangeSliderFilledTrack bg={theme.colors.primary.main} />
-          </RangeSliderTrack>
-          <RangeSliderThumb index={0} />
-          <RangeSliderThumb index={1} />
-        </RangeSlider>
-        <Flex position="absolute" width="100%" justifyContent="space-between" top={5}>
-          <Text fontSize="md">★{difficultyRangeAtom.min.toFixed(1)}</Text>
-          <Text fontSize="md">
-            ★{difficultyRangeAtom.max === max ? "∞" : difficultyRangeAtom.max.toFixed(1)}
-          </Text>
-        </Flex>
-      </Box>
-    </CustomToolTip>
+          <RangeSlider
+            value={[difficultyRangeAtom.min, difficultyRangeAtom.max]}
+            min={min}
+            max={max}
+            size="lg"
+            step={step}
+            onChange={handleChange}
+          >
+            <RangeSliderTrack height="6px">
+              <RangeSliderFilledTrack bg={theme.colors.primary.main} />
+            </RangeSliderTrack>
+            <RangeSliderThumb index={0} p={1} />
+            <RangeSliderThumb index={1} p={1} />
+          </RangeSlider>
+          <Flex position="absolute" width="100%" justifyContent="space-between" top={5}>
+            <Text fontSize="md">★{difficultyRangeAtom.min.toFixed(1)}</Text>
+            <Text fontSize="md">
+              ★{difficultyRangeAtom.max === max ? "∞" : difficultyRangeAtom.max.toFixed(1)}
+            </Text>
+          </Flex>
+        </Box>
+      </CustomToolTip>
+    </Box>
   );
 };
 

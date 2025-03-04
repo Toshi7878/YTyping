@@ -2,22 +2,41 @@
 
 import { useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
 import { MapFilter, PlayFilter } from "@/app/(home)/ts/type";
-import { Badge, Button, Flex, Stack, Text } from "@chakra-ui/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
-import { FaHeart, FaMap } from "react-icons/fa6";
-import SearchRange from "./child/SearchRange";
+import { Link } from "@chakra-ui/next-js";
+import { Box, Flex, Grid, Text } from "@chakra-ui/react";
+import { useSearchParams } from "next/navigation";
+import React, { useCallback } from "react";
 
 const FilterInputs = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const setIsSearchingAtom = useSetIsSearchingAtom();
+  const filterParams = [
+    {
+      name: "f",
+      label: "フィルター",
+      params: [
+        { label: "いいね済", value: "liked" },
+        { label: "作成した譜面", value: "my-map" },
+      ] as { label: string; value: MapFilter }[],
+    },
+    {
+      name: "played",
+      label: "ランキング",
+      params: [
+        { label: "1位", value: "1st" },
+        { label: "2位以下", value: "not-first" },
+        { label: "登録済", value: "played" },
+        { label: "未登録", value: "unplayed" },
+        { label: "パーフェクト", value: "perfect" },
+      ] as { label: string; value: PlayFilter }[],
+    },
+  ];
 
   const createQueryString = useCallback(
-    (name: string, value: string | null) => {
+    (name: string, value: string, isSelected: boolean) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (value) {
+      if (!isSelected) {
         params.set(name, value);
       } else {
         params.delete(name);
@@ -28,90 +47,69 @@ const FilterInputs = () => {
     [searchParams]
   );
 
-  const handleFilterClick = (filter: MapFilter) => {
-    const currentFilter = searchParams.get("f");
-    // 同じフィルターが選択されている場合はフィルターを解除
-    const newFilter = currentFilter === filter ? null : filter;
-
-    setIsSearchingAtom(true);
-    router.push(`?${createQueryString("f", newFilter)}`);
-  };
-
-  const handlePlayedFilterClick = (playFilter: PlayFilter) => {
-    const currentFilter = searchParams.get("played");
-    const newFilter = currentFilter === playFilter ? null : playFilter;
-
-    setIsSearchingAtom(true);
-    router.push(`?${createQueryString("played", newFilter)}`);
-  };
-
-  const currentFilter = searchParams.get("f") as MapFilter | null;
-  const currentPlayedFilter = searchParams.get("played") as PlayFilter | null;
+  const currentParams = filterParams.map((filterParam) => {
+    return {
+      name: filterParam.name,
+      value: searchParams.get(filterParam.name) || "",
+    };
+  });
 
   return (
-    <Flex flexDirection={{ base: "column", md: "row" }} alignItems="baseline" gap={5}>
-      <Flex
-        gap={5}
-        alignItems="baseline"
-        width="100%"
-        flexDirection={{ base: "column", md: "row" }}
-      >
-        <SearchRange step={0.1} mx={4} />
+    <Box
+      bg="background.card"
+      py={1}
+      px={2}
+      borderRadius="md"
+      borderWidth="1px"
+      borderColor="border.card60"
+      boxShadow="sm"
+    >
+      <Grid templateColumns={{ base: "1fr", md: "auto 1fr" }} gap={1}>
+        {filterParams.map((filter, filterIndex) => (
+          <React.Fragment key={`filter-${filterIndex}`}>
+            <Text
+              fontSize="sm"
+              fontWeight="medium"
+              display="flex"
+              alignItems="center"
+              color="text.body"
+              minWidth={{ base: "auto", md: "80px" }}
+              height="32px"
+            >
+              {filter.label}
+            </Text>
+            <Flex ml={{ base: 0, md: 3 }} gap={1} alignItems="center" flexWrap="wrap">
+              {filter.params.map(
+                (param: { label: string; value: MapFilter | PlayFilter }, paramIndex: number) => {
+                  const isSelected =
+                    currentParams.find((p) => p.name === filter.name)?.value === param.value;
 
-        <Stack direction="row" gap={2}>
-          <Button
-            leftIcon={<FaHeart />}
-            colorScheme="pink"
-            variant={currentFilter === "liked" ? "solid" : "outline"}
-            size="sm"
-            aria-label="いいね済み"
-            onClick={() => handleFilterClick("liked")}
-            width={{ base: "100%", md: "auto" }}
-          >
-            いいね済み
-          </Button>
-          <Button
-            leftIcon={<FaMap />}
-            colorScheme="teal"
-            variant={currentFilter === "my-map" ? "solid" : "outline"}
-            size="sm"
-            aria-label="マイマップ"
-            onClick={() => handleFilterClick("my-map")}
-            width={{ base: "100%", md: "auto" }}
-          >
-            作成した譜面
-          </Button>
-        </Stack>
-      </Flex>
-      <Stack
-        direction="row"
-        spacing={{ base: 2, md: 4 }}
-        align="center"
-        width="100%"
-        bg="background.card"
-        p={2.5}
-        borderRadius="md"
-        boxShadow="sm"
-      >
-        <Text fontWeight="medium" color="text.body">
-          ランキング:
-        </Text>
-        <Badge
-          as="button"
-          variant={currentPlayedFilter === "played" ? "filterSolid" : "filterOutline"}
-          onClick={() => handlePlayedFilterClick("played")}
-        >
-          登録済
-        </Badge>
-        <Badge
-          as="button"
-          variant={currentPlayedFilter === "unplayed" ? "filterSolid" : "filterOutline"}
-          onClick={() => handlePlayedFilterClick("unplayed")}
-        >
-          未登録
-        </Badge>
-      </Stack>
-    </Flex>
+                  return (
+                    <Link
+                      key={`${filter.name}-${paramIndex}`}
+                      href={`?${createQueryString(filter.name, param.value, isSelected)}`}
+                      fontSize="sm"
+                      fontWeight={isSelected ? "bold" : "normal"}
+                      onClick={() => setIsSearchingAtom(true)}
+                      color={isSelected ? "secondary.main" : "text.body"}
+                      textDecoration={isSelected ? "underline" : "none"}
+                      _hover={{
+                        color: "secondary.dark",
+                        textDecoration: "underline",
+                      }}
+                      px={2}
+                      py={1}
+                    >
+                      {param.label}
+                    </Link>
+                  );
+                }
+              )}
+            </Flex>
+          </React.Fragment>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 
