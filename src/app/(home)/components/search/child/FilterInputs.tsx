@@ -87,26 +87,20 @@ const FilterInputs = () => {
         borderRadius="md"
         boxShadow="sm"
       >
-        <Text fontWeight="medium" color="text.card">
+        <Text fontWeight="medium" color="text.body">
           ランキング:
         </Text>
         <Badge
+          as="button"
           variant={currentPlayedFilter === "played" ? "filterSolid" : "filterOutline"}
           onClick={() => handlePlayedFilterClick("played")}
-          cursor="pointer"
-          px={3}
-          borderRadius="full"
-          fontSize="sm"
         >
           登録済
         </Badge>
         <Badge
+          as="button"
           variant={currentPlayedFilter === "unplayed" ? "filterSolid" : "filterOutline"}
           onClick={() => handlePlayedFilterClick("unplayed")}
-          cursor="pointer"
-          px={3}
-          borderRadius="full"
-          fontSize="sm"
         >
           未登録
         </Badge>
