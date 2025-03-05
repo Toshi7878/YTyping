@@ -38,6 +38,7 @@ function MapList() {
     useMapListInfiniteQuery();
 
   useEffect(() => {
+    //TODO: パラメータ調査
     queryClient.refetchQueries({ queryKey: ["mapList"] });
     setIsSearchingAtom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps

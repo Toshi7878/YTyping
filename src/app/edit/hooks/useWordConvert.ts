@@ -137,8 +137,7 @@ class WordConvert {
   }
 
   async postMorphAPI(SENTENCE: string) {
-    const apiUrl = "https://labs.goo.ne.jp/api/morph";
-    const apiKey = process.env.NEXT_PUBLIC_MORPH_API_KEY as string;
+    const apiUrl = "/api/morph";
 
     const requestOptions = {
       method: "POST",
@@ -146,9 +145,7 @@ class WordConvert {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        app_id: apiKey,
         sentence: JSON.stringify(SENTENCE.replace(/\r$/, "")),
-        info_filter: "form|read",
       }),
     };
 
@@ -173,6 +170,7 @@ class WordConvert {
       } else {
         console.error("Unexpected error:", error);
       }
+      return "";
     }
   }
 
