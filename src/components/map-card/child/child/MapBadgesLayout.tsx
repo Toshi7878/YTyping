@@ -25,7 +25,10 @@ const MapBadges = (props: MapBadgesProps) => {
           {(map.difficulty!.roma_kpm_median / 100).toFixed(1)}
         </MapBadge>
         <MapBadge display={{ base: "none", md: "block" }}>
-          {new Date(map.difficulty!.total_time * 1000).toISOString().slice(14, 19)}
+          {new Date(map.difficulty!.total_time * 1000)
+            .toISOString()
+            .slice(11, 19)
+            .replace(/^00:/, "")}
         </MapBadge>
       </HStack>
       <Flex>
