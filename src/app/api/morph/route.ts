@@ -6,10 +6,10 @@ export async function POST(request: Request) {
     const { sentence } = body;
 
     const apiUrl = "https://labs.goo.ne.jp/api/morph";
-    const apiKey = process.env.NEXT_PUBLIC_MORPH_API_KEY as string;
+    const apiKey = "48049f223f8d9169a08de4e3bba21f64e4c17a7771620c1b8bb20574b87ea813";
 
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },

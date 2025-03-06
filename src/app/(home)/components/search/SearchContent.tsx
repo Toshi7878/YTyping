@@ -25,7 +25,9 @@ const SearchContent = () => {
           </Flex>
           {!IS_IOS && !IS_ANDROID && <VolumeRange playerRef={playerRef} />}
         </Flex>
-
+        <Box fontSize="xs" py="2">
+          現在、譜面エディターの読み変換機能がエラーにより使用不可になっています。復旧までしばらくお待ちください。
+        </Box>
         <Box mt={4}>
           <SortOptions />
         </Box>
