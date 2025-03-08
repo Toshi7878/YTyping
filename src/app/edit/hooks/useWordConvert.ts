@@ -158,10 +158,7 @@ class WordConvert {
 
       const responseData = await response.json();
 
-      let LIST = responseData.word_list
-        .flat()
-        .slice(1, -1)
-        .filter((charAry: string[]) => charAry[0] !== "\\");
+      let LIST = responseData.body.map((obj) => obj.kana.replace(/^"/, "").replace(/"$/, ""));
 
       return this.createWord(LIST).join("");
     } catch (error: unknown) {
@@ -174,36 +171,36 @@ class WordConvert {
     }
   }
 
-  createWord(LIST: [string, string][]) {
+  createWord(LIST: string[]) {
     let result: string[] = [];
 
     for (let i = 0; i < LIST.length; i++) {
-      const char = { kanji: LIST[i][0].replace("\\\\", "\\"), kana: LIST[i][1] };
-      const IS_ZENKAKU = /^[^\x01-\x7E\xA1-\xDF]+$/.test(char.kanji);
-      const IS_ADD_SYMBOL = this.symbolList.includes(char.kanji.slice(0, 1));
-      const IS_SYMBOL = nonSymbol.concat(addSymbol).concat(addSymbolAll).includes(char.kanji);
+      const chars = LIST[i];
+      const IS_ZENKAKU = /^[^\x01-\x7E\xA1-\xDF]+$/.test(chars);
+      const IS_ADD_SYMBOL = this.symbolList.includes(chars.slice(0, 1));
+      const IS_SYMBOL = nonSymbol.concat(addSymbol).concat(addSymbolAll).includes(chars);
       if (IS_ADD_SYMBOL) {
         //記号
         //半角の後にスペースがある場合はスペース挿入
-        if (this.convertMode != "add_symbol_all" && char.kanji == " ") {
+        if (this.convertMode != "add_symbol_all" && chars == " ") {
           const IS_HANKAKU = !/^[^\x01-\x7E\xA1-\xDF]+$/.test(LIST[i - 1][0]);
           const IS_NEXT_ZENKAKU = /^[^\x01-\x7E\xA1-\xDF]+$/.test(LIST[i + 1]?.[0][0] ?? "");
           if (IS_HANKAKU && !IS_NEXT_ZENKAKU) {
-            result.push(char.kanji);
+            result.push(chars);
           }
         } else {
-          result.push(char.kanji);
+          result.push(chars);
         }
       } else if (IS_ZENKAKU) {
         // 全角文字の時の処理を記述
-        result.push(this.kanaToHira(char.kana));
+        result.push(this.kanaToHira(chars));
       } else {
         // 半角文字の時の処理を記述
         const NON_ADD_SYMBOL = !IS_ADD_SYMBOL && IS_SYMBOL;
         if (NON_ADD_SYMBOL) {
           continue;
         }
-        result.push(char.kanji);
+        result.push(chars);
       }
     }
 

@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-3-8",
+    descriptions: ["エディターの読み変換機能の復旧(試験的)"],
+  },
+  {
     date: "2025-3-6",
     descriptions: [
       "譜面一覧の動画時間表示が1時間を超える場合に、正常な時間が表示されない問題を修正",

@@ -5,18 +5,15 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { sentence } = body;
 
-    const apiUrl = "https://labs.goo.ne.jp/api/morph";
-    const apiKey = "48049f223f8d9169a08de4e3bba21f64e4c17a7771620c1b8bb20574b87ea813";
+    const apiUrl = process.env.AWS_MORPH_API_URL as string;
 
     const response = await fetch(apiUrl, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        app_id: apiKey,
-        sentence: sentence,
-        info_filter: "form|read",
+        src: sentence,
       }),
     });
 
