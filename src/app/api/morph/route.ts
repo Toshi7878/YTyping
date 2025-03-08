@@ -1,38 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const YAHOO_API_URL = "https://jlp.yahooapis.jp/MAService/V2/parse";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const apiKey =
-      process.env.YAHOO_APP_ID || "dj00aiZpPUJQcmZDSUc0ZERBayZzPWNvbnN1bWVyc2VjcmV0Jng9MDU-";
+    const apiKey = process.env.YAHOO_APP_ID;
 
     if (!apiKey) {
       return NextResponse.json({ error: "API key is not configured" }, { status: 500 });
     }
 
-    const apiUrl = "https://jlp.yahooapis.jp/MAService/V2/parse";
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "Yahoo AppID: " + apiKey,
-      },
-      body: JSON.stringify({
-        id: apiKey,
-        jsonrpc: "2.0",
-        method: "jlp.maservice.parse",
-        params: {
-          q: body.sentence,
-          results: "ma",
-          response: {
-            surface: true,
-            reading: true,
-            pos: true,
-            baseform: true,
-          },
-        },
-      }),
-    });
+    const response = await fetchYahooMorphAnalysis(body.sentence, apiKey);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -54,4 +33,32 @@ export async function POST(request: NextRequest) {
     console.error("Error in Yahoo morph API route:", error);
     return NextResponse.json({ error: "Failed to process request" }, { status: 500 });
   }
+}
+
+/**
+ * Yahoo形態素解析APIを呼び出す関数
+ */
+async function fetchYahooMorphAnalysis(sentence: string, apiKey: string): Promise<Response> {
+  return fetch(YAHOO_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": `Yahoo AppID: ${apiKey}`,
+    },
+    body: JSON.stringify({
+      id: apiKey,
+      jsonrpc: "2.0",
+      method: "jlp.maservice.parse",
+      params: {
+        q: sentence,
+        results: "ma",
+        response: {
+          surface: true,
+          reading: true,
+          pos: false,
+          baseform: false,
+        },
+      },
+    }),
+  });
 }
