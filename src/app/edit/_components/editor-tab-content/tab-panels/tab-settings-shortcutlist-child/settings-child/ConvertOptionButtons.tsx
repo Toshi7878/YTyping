@@ -3,9 +3,13 @@ import {
   useEditWordConvertOptionAtom,
   useSetEditWordConvertOptionAtom,
 } from "@/app/edit/edit-atom/editAtom";
-import { addSymbol, addSymbolAll, nonSymbol } from "@/app/edit/hooks/useWordConvert";
 import { ConvertOptionsType } from "@/app/edit/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import {
+  LOOSE_SYMBOL_LIST,
+  MANDATORY_SYMBOL_LIST,
+  STRICT_SYMBOL_LIST,
+} from "@/config/consts/charList";
 import { sendEditorOptionIndexedDBData } from "@/lib/db";
 import { ThemeColors } from "@/types";
 import { Box, Button, FormLabel, HStack, RadioGroup, Stack, useTheme } from "@chakra-ui/react";
@@ -25,7 +29,7 @@ export default function ConvertOptionButtons() {
         tooltipLabel: (
           <Box>
             <Box>一部の記号を除いてワードに記号を含まずよみ変換します。</Box>
-            <Box>変換される記号:{nonSymbol.join(" ")}</Box>
+            <Box>変換される記号:{MANDATORY_SYMBOL_LIST.join(" ")}</Box>
           </Box>
         ),
       },
@@ -36,7 +40,7 @@ export default function ConvertOptionButtons() {
         tooltipLabel: (
           <Box>
             <Box>一部の記号をよみ変換されるようにします。</Box>
-            <Box>変換される記号:{nonSymbol.concat(addSymbol).join(" ")}</Box>
+            <Box>変換される記号:{MANDATORY_SYMBOL_LIST.concat(LOOSE_SYMBOL_LIST).join(" ")}</Box>
           </Box>
         ),
       },
@@ -47,7 +51,10 @@ export default function ConvertOptionButtons() {
         tooltipLabel: (
           <Box>
             <Box>キーボードで入力できる全ての記号をよみ変換されるようにします。</Box>
-            <Box>変換される記号:{nonSymbol.concat(addSymbol).concat(addSymbolAll).join(" ")}</Box>
+            <Box>
+              変換される記号:
+              {MANDATORY_SYMBOL_LIST.concat(LOOSE_SYMBOL_LIST).concat(STRICT_SYMBOL_LIST).join(" ")}
+            </Box>
           </Box>
         ),
       },

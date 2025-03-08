@@ -1,74 +1,23 @@
 import { editWordConvertOptionAtom } from "@/app/edit/edit-atom/editAtom";
+import {
+  ALPHABET_LIST,
+  KANA_LIST,
+  LOOSE_SYMBOL_LIST,
+  MANDATORY_SYMBOL_LIST,
+  NUM_LIST,
+  STRICT_SYMBOL_LIST,
+} from "@/config/consts/charList";
 import { useStore as useJotaiStore } from "jotai";
+import { ConvertOptionsType } from "../ts/type";
 
-const convertChar = ["ゔ"];
-
-export const nonSymbol: string[] = [" ", "ー", "'", "＇", "%", "％", "&", "＆", "@", "＠"];
-export const addSymbol: string[] = [
-  ",",
-  ".",
-  "、",
-  "。",
-  "，",
-  "．",
-  "-",
-  "!",
-  "?",
-  "！",
-  "？",
-  "~",
-  "～",
-  "#",
-  "＃",
-  "$",
-  "＄",
-  "=",
-  "＝",
-  "*",
-  "＊",
-  "+",
-  "＋",
-  "/",
-  "・",
-];
-export const addSymbolAll: string[] = [
-  "\\",
-  "￥",
-  '"',
-  "＂",
-  "[",
-  "]",
-  "『",
-  "』",
-  "「",
-  "」",
-  "［",
-  "］",
-  "^",
-  "＾",
-  "|",
-  "｜",
-  "（",
-  "）",
-  "(",
-  ")",
-  "`",
-  "｀",
-  ":",
-  "：",
-  ";",
-  "；",
-  "<",
-  "＜",
-  ">",
-  "＞",
-  "_",
-  "＿",
-  "{",
-  "｛",
-  "}",
-  "｝",
-];
+const allowedChars = new Set([
+  ...KANA_LIST,
+  ...ALPHABET_LIST,
+  ...MANDATORY_SYMBOL_LIST,
+  ...LOOSE_SYMBOL_LIST,
+  ...STRICT_SYMBOL_LIST,
+  ...NUM_LIST,
+]);
 
 export const useWordConvert = () => {
   const editAtomStore = useJotaiStore();
@@ -81,35 +30,43 @@ export const useWordConvert = () => {
   };
 };
 
+const filterAllowedCharacters = (text: string): string => {
+  return Array.from(text)
+    .filter((char) => allowedChars.has(char))
+    .join("");
+};
+
 class WordConvert {
-  symbolList: string[];
-  convertMode: string;
-  constructor(convertOption: string) {
-    this.symbolList = [];
+  filterSymbolChars: string;
+  convertMode: ConvertOptionsType;
+
+  constructor(convertOption: ConvertOptionsType) {
+    this.filterSymbolChars = "";
     this.convertMode = convertOption;
   }
 
   async convert(lyrics: string) {
     lyrics = this.wordFormat(lyrics);
-    this.symbolList = this.createSymbolList();
+    this.filterSymbolChars = this.createFilterSymbolList();
     const WORD = await this.postMorphAPI(lyrics);
 
     return WORD;
   }
 
-  wordFormat(Lyric: string) {
-    const ruby_convert = Lyric.match(/<*ruby(?: .+?)?>.*?<*\/ruby*>/g);
+  wordFormat(lyrics: string) {
+    const ruby_convert = lyrics.match(/<*ruby(?: .+?)?>.*?<*\/ruby*>/g);
 
     if (ruby_convert) {
       for (let v = 0; v < ruby_convert.length; v++) {
         const start = ruby_convert[v].indexOf("<rt>") + 4;
         const end = ruby_convert[v].indexOf("</rt>");
         const ruby = ruby_convert[v].slice(start, end);
-        Lyric = Lyric.replace(ruby_convert[v], ruby);
+        lyrics = lyrics.replace(ruby_convert[v], ruby);
       }
     }
 
-    return Lyric.replace(/[ 　]+$/, "")
+    return lyrics
+      .replace(/[ 　]+$/, "")
       .replace(/^[ 　]+/, "")
       .replace(/…/g, "...")
       .replace(/‥/g, "..")
@@ -122,93 +79,73 @@ class WordConvert {
       .replace(/　/g, " ")
       .replace(/ {2,}/g, " ")
       .replace(/ヴ/g, "ゔ")
-      .replace(/－/g, "ー");
+      .replace(/－/g, "ー")
+      .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
   }
 
-  createSymbolList() {
-    let result: string[] = [...nonSymbol, ...convertChar];
-    if (this.convertMode.match("add_symbol")) {
-      result = result.concat(addSymbol as string[]);
+  createFilterSymbolList() {
+    if (this.convertMode === "non_symbol") {
+      return LOOSE_SYMBOL_LIST.concat(STRICT_SYMBOL_LIST)
+        .map((s) => s.replace(/./g, "\\$&"))
+        .join("");
     }
-    if (this.convertMode == "add_symbol_all") {
-      result = result.concat(addSymbolAll as string[]);
+
+    if (this.convertMode === "add_symbol") {
+      return STRICT_SYMBOL_LIST.map((s) => s.replace(/./g, "\\$&")).join("");
     }
-    return result;
+
+    return "";
   }
 
   async postMorphAPI(SENTENCE: string) {
-    try {
-      const response = await fetch("/api/morph", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sentence: JSON.stringify(SENTENCE.replace(/\r$/, "")),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-
-      const list = responseData.tokens.slice(1, -1).map((char) => [char[0], char[1]]);
-
-      return this.createWord(list).join("");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Error:", error.message);
-      } else {
-        console.error("Unexpected error:", error);
-      }
+    const kanaSentence = this.kanaToHira(SENTENCE.replace(/\r$/, ""));
+    const isNotConvertSentence = Array.from(kanaSentence).every((char) => allowedChars.has(char));
+    if (isNotConvertSentence) {
+      return this.createWord(kanaSentence);
     }
+
+    const response = await fetch("/api/morph", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sentence: JSON.stringify(kanaSentence),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API エラー: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    const readingKana = responseData.tokens
+      .slice(1, -1)
+      .map((char: string) => char[1])
+      .join("");
+
+    const filterReadingKana = this.kanaToHira(filterAllowedCharacters(readingKana));
+
+    return this.createWord(filterReadingKana);
   }
 
-  createWord(LIST: [string, string][]) {
-    let result: string[] = [];
+  createWord(kanaWord: string) {
+    const filterSymbolReg = new RegExp(`[${this.filterSymbolChars}]`, "g");
 
-    for (let i = 0; i < LIST.length; i++) {
-      const char = { kanji: LIST[i][0].replace("\\\\", "\\"), kana: LIST[i][1] };
-      const IS_ZENKAKU = /^[^\x01-\x7E\xA1-\xDF]+$/.test(char.kanji);
-      const IS_ADD_SYMBOL = this.symbolList.includes(char.kanji.slice(0, 1));
-      const IS_SYMBOL = nonSymbol.concat(addSymbol).concat(addSymbolAll).includes(char.kanji);
-      if (IS_ADD_SYMBOL) {
-        //記号
-        //半角の後にスペースがある場合はスペース挿入
-        if (this.convertMode != "add_symbol_all" && char.kanji == " ") {
-          const IS_HANKAKU = !/^[^\x01-\x7E\xA1-\xDF]+$/.test(LIST[i - 1][0]);
-          const IS_NEXT_ZENKAKU = /^[^\x01-\x7E\xA1-\xDF]+$/.test(LIST[i + 1]?.[0][0] ?? "");
-          if (IS_HANKAKU && !IS_NEXT_ZENKAKU) {
-            result.push(char.kanji);
-          }
-        } else {
-          result.push(char.kanji);
-        }
-      } else if (IS_ZENKAKU) {
-        const NON_ADD_SYMBOL = !IS_ADD_SYMBOL && IS_SYMBOL;
-        if (NON_ADD_SYMBOL) {
-          continue;
-        }
-
-        result.push(this.kanaToHira(char.kana));
-      } else {
-        const NON_ADD_SYMBOL = !IS_ADD_SYMBOL && IS_SYMBOL;
-        if (NON_ADD_SYMBOL) {
-          continue;
-        }
-        result.push(char.kanji);
-      }
+    if (this.convertMode === "add_symbol_all") {
+      return kanaWord.replace(filterSymbolReg, "");
+    } else {
+      return kanaWord.replace(filterSymbolReg, "").replace(/([^\x01-\x7E\xA1-\xDF]) /g, "$1");
     }
-
-    return result;
   }
 
   kanaToHira(str: string) {
-    return str.replace(/[\u30a1-\u30f6]/g, function (match) {
-      var chr = match.charCodeAt(0) - 0x60;
-      return String.fromCharCode(chr);
-    });
+    return str
+      .replace(/[\u30a1-\u30f6]/g, function (match) {
+        var chr = match.charCodeAt(0) - 0x60;
+        return String.fromCharCode(chr);
+      })
+      .replace(/ヴ/g, "ゔ");
   }
 }
