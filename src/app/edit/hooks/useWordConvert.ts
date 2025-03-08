@@ -187,10 +187,13 @@ class WordConvert {
           result.push(char.kanji);
         }
       } else if (IS_ZENKAKU) {
-        // 全角文字の時の処理を記述
+        const NON_ADD_SYMBOL = !IS_ADD_SYMBOL && IS_SYMBOL;
+        if (NON_ADD_SYMBOL) {
+          continue;
+        }
+
         result.push(this.kanaToHira(char.kana));
       } else {
-        // 半角文字の時の処理を記述
         const NON_ADD_SYMBOL = !IS_ADD_SYMBOL && IS_SYMBOL;
         if (NON_ADD_SYMBOL) {
           continue;
