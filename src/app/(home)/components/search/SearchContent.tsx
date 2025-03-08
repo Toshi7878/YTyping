@@ -25,9 +25,6 @@ const SearchContent = () => {
           </Flex>
           {!IS_IOS && !IS_ANDROID && <VolumeRange playerRef={playerRef} />}
         </Flex>
-        <Box fontSize="xs" py="2">
-          エディターの読み変換機能を復旧しています。試験的に復旧しているので読み変換に不具合やエラーが出る場合があります。
-        </Box>
         <Box mt={4}>
           <SortOptions />
         </Box>

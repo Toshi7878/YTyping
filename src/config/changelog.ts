@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2025-3-8",
-    descriptions: ["エディターの読み変換機能の復旧(試験的)"],
+    descriptions: ["エディターの読み変換機能の復旧"],
   },
   {
     date: "2025-3-6",
