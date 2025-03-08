@@ -136,7 +136,13 @@ class WordConvert {
     if (this.convertMode === "add_symbol_all") {
       return kanaWord.replace(filterSymbolReg, "");
     } else {
-      return kanaWord.replace(filterSymbolReg, "").replace(/([^\x01-\x7E\xA1-\xDF]) /g, "$1");
+      const zenkakuAfterSpaceReg = /([^\x01-\x7E]) /g;
+      const zenkakuBeforeSpaceReg = / ([^\x01-\x7E])/g;
+
+      return kanaWord
+        .replace(filterSymbolReg, "")
+        .replace(zenkakuAfterSpaceReg, "$1")
+        .replace(zenkakuBeforeSpaceReg, "$1");
     }
   }
 
