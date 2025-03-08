@@ -26,20 +26,44 @@ const TEXT_PROMPT = `以下のJSONデータ情報を解析して{musicTitle:stri
   出力するJSONデータはJSON.parseができるように改行を使用せずに出力してください。`;
 
 export async function POST(req: Request) {
-  const { prompt_post }: { prompt_post: GetYouTubeMovieInfo } = await req.json();
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+  try {
+    const { prompt_post }: { prompt_post: GetYouTubeMovieInfo } = await req.json();
+    const genAI = new GoogleGenerativeAI(process.env.GCP_AUTH_KEY || "");
 
-  const prompt = TEXT_PROMPT + JSON.stringify(prompt_post);
+    const prompt = TEXT_PROMPT + JSON.stringify(prompt_post);
 
-  const model = genAI.getGenerativeModel({
-    model: "gemini-pro",
-    safetySettings,
-  });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-pro",
+      safetySettings,
+    });
 
-  const result = await model.generateContentStream(prompt, {});
-  const response = await result.response;
+    const result = await model.generateContentStream(prompt, {});
+    const response = await result.response;
+    const responseText = response.text();
 
-  return NextResponse.json({
-    message: response.text(),
-  });
+    // マークダウンのJSON形式から純粋なJSONを抽出
+    let jsonData = responseText;
+    if (responseText.includes("```json")) {
+      jsonData = responseText.replace(/```json\n|\n```/g, "");
+    } else if (responseText.includes("```")) {
+      jsonData = responseText.replace(/```\n|\n```/g, "");
+    }
+
+    // 余分な改行や空白を削除
+    jsonData = jsonData.trim();
+
+    return NextResponse.json({
+      message: jsonData,
+    });
+  } catch (error) {
+    console.error("Gemini API error:", error);
+    return NextResponse.json(
+      {
+        error: `Gemini APIの処理中にエラーが発生しました: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      },
+      { status: 500 }
+    );
+  }
 }
