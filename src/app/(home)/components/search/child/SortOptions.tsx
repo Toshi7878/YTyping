@@ -1,6 +1,7 @@
 "use client";
 
 import { useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
+import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
 import { PARAM_NAME } from "@/app/(home)/ts/const/consts";
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -41,6 +42,7 @@ const SortOptions = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setIsSearching = useSetIsSearchingAtom();
+  const setDifficultyRangeParams = useSetDifficultyRangeParams();
 
   const [sortField, setSortField] = useState<SortField | null>("ID");
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>({
@@ -97,15 +99,15 @@ const SortOptions = () => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (!newDirection || (field === "ID" && newDirection === "desc")) {
-      params.delete("sort");
+      params.delete(PARAM_NAME.sort);
     } else if (field === "ランダム") {
-      params.set("sort", fieldToParamMap[field]);
+      params.set(PARAM_NAME.sort, fieldToParamMap[field]);
     } else {
-      params.set("sort", `${fieldToParamMap[field]}_${newDirection}`);
+      params.set(PARAM_NAME.sort, `${fieldToParamMap[field]}_${newDirection}`);
     }
 
     setIsSearching(true);
-    router.push(`?${params.toString()}`);
+    router.push(`?${setDifficultyRangeParams(params).toString()}`);
   };
 
   const getSortIcon = (field: SortField) => {
