@@ -1,36 +1,41 @@
 "use client";
 
-import { useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
+import { useDifficultyRangeAtom, useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
+import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
+import { PARAM_NAME } from "@/app/(home)/ts/const/consts";
 import { MapFilter, PlayFilter } from "@/app/(home)/ts/type";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import React, { useCallback } from "react";
 
+const filterParams = [
+  {
+    name: PARAM_NAME.filter,
+    label: "フィルター",
+    params: [
+      { label: "いいね済", value: "liked" },
+      { label: "作成した譜面", value: "my-map" },
+    ] as { label: string; value: MapFilter }[],
+  },
+  {
+    name: PARAM_NAME.played,
+    label: "ランキング",
+    params: [
+      { label: "1位", value: "1st" },
+      { label: "2位以下", value: "not-first" },
+      { label: "登録済", value: "played" },
+      { label: "未登録", value: "unplayed" },
+      { label: "パーフェクト", value: "perfect" },
+    ] as { label: string; value: PlayFilter }[],
+  },
+];
+
 const FilterInputs = () => {
   const searchParams = useSearchParams();
   const setIsSearchingAtom = useSetIsSearchingAtom();
-  const filterParams = [
-    {
-      name: "f",
-      label: "フィルター",
-      params: [
-        { label: "いいね済", value: "liked" },
-        { label: "作成した譜面", value: "my-map" },
-      ] as { label: string; value: MapFilter }[],
-    },
-    {
-      name: "played",
-      label: "ランキング",
-      params: [
-        { label: "1位", value: "1st" },
-        { label: "2位以下", value: "not-first" },
-        { label: "登録済", value: "played" },
-        { label: "未登録", value: "unplayed" },
-        { label: "パーフェクト", value: "perfect" },
-      ] as { label: string; value: PlayFilter }[],
-    },
-  ];
+  const setDifficultyRangeParams = useSetDifficultyRangeParams();
+  const difficultyRange = useDifficultyRangeAtom();
 
   const createQueryString = useCallback(
     (name: string, value: string, isSelected: boolean) => {
@@ -42,9 +47,10 @@ const FilterInputs = () => {
         params.delete(name);
       }
 
-      return params.toString();
+      return setDifficultyRangeParams(params).toString();
     },
-    [searchParams]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchParams, difficultyRange]
   );
 
   const currentParams = filterParams.map((filterParam) => {

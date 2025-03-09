@@ -1,12 +1,11 @@
 import { useCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import NProgress from "nprogress";
 
 export const useLinkClick = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const canUpload = useCanUploadAtom();
   const { data: session } = useSession();
 
@@ -29,7 +28,7 @@ export const useLinkClick = () => {
 
     const currentNormalized = normalizePath(pathname);
     const targetNormalized = normalizePath(event.currentTarget.pathname);
-    console.log(searchParams);
+
     if (currentNormalized === targetNormalized) {
       router.push(event.currentTarget.href);
       return;

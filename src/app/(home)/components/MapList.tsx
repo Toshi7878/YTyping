@@ -14,7 +14,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
 import { useMapListInfiniteQuery } from "../../../lib/global-hooks/query/useMapListInfiniteQuery";
 import { useIsSearchingAtom, useSetIsSearchingAtom } from "../atoms/atoms";
-import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "../ts/const/consts";
+import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH, PARAM_NAME } from "../ts/const/consts";
 import MapCardLayout from "./MapCardLayout";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
@@ -45,12 +45,12 @@ function MapList() {
   const setIsSearchingAtom = useSetIsSearchingAtom();
 
   const queryParams: MapListParams = {
-    keyword: searchParams.get("keyword") || "",
-    filter: searchParams.get("f") || "",
-    sort: searchParams.get("sort") || "",
-    maxRate: searchParams.get("maxRate") || "",
-    minRate: searchParams.get("minRate") || "",
-    played: searchParams.get("played") || "",
+    keyword: searchParams.get(PARAM_NAME.keyword) || "",
+    filter: searchParams.get(PARAM_NAME.filter) || "",
+    sort: searchParams.get(PARAM_NAME.sort) || "",
+    maxRate: searchParams.get(PARAM_NAME.maxRate) || "",
+    minRate: searchParams.get(PARAM_NAME.minRate) || "",
+    played: searchParams.get(PARAM_NAME.played) || "",
   };
 
   const {
@@ -70,7 +70,7 @@ function MapList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const isRandomSort = searchParams.get("sort") === "random";
+  const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
 
   const isLoading = isFirstLoading || (isFetching && isRandomSort && !isFetchingNextPage);
   if (isLoading) {

@@ -1,61 +1,31 @@
 "use client";
 
-import { DIFFICULTY_RANGE } from "@/app/(home)/ts/const/consts";
+import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
 import { Button, HStack, Input } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import {
-  difficultyRangeAtom,
-  useIsSearchingAtom,
-  useSearchMapKeyWordsAtom,
-  useSetIsSearchingAtom,
-  useSetSearchMapKeyWordsAtom,
-} from "../../../atoms/atoms";
+import { useState } from "react";
+import { useIsSearchingAtom, useSetIsSearchingAtom } from "../../../atoms/atoms";
 
 const SearchInputs = () => {
-  const searchMapKeywords = useSearchMapKeyWordsAtom();
-  const homeAtomStore = useStore();
-  const setSearchKeywords = useSetSearchMapKeyWordsAtom();
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const [keyword, setKeyword] = useState(searchParams?.get("keyword") || "");
   const isSearching = useIsSearchingAtom();
   const setIsSearching = useSetIsSearchingAtom();
-
-  useEffect(() => {
-    const keywordParam = searchParams.get("keyword");
-    if (keywordParam) {
-      setSearchKeywords(keywordParam);
-    }
-  }, [searchParams, setSearchKeywords]);
+  const setDifficultyRangeParams = useSetDifficultyRangeParams();
+  const router = useRouter();
 
   const handleSearch = async () => {
     try {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (searchMapKeywords.trim()) {
-        params.set("keyword", searchMapKeywords);
+      if (keyword.trim()) {
+        params.set("keyword", keyword.trim());
       } else {
         params.delete("keyword");
       }
-      const difficultyRange = homeAtomStore.get(difficultyRangeAtom);
-
-      if (difficultyRange.min !== DIFFICULTY_RANGE.min) {
-        params.set("minRate", difficultyRange.min.toFixed(1));
-      } else {
-        params.delete("minRate");
-      }
-
-      if (difficultyRange.max !== DIFFICULTY_RANGE.max) {
-        params.set("maxRate", difficultyRange.max.toFixed(1));
-      } else {
-        params.delete("maxRate");
-      }
 
       setIsSearching(true);
-      router.push(`?${params.toString()}`);
-    } catch (error) {
-      console.error("検索処理中にエラーが発生しました:", error);
+      router.replace(`?${setDifficultyRangeParams(params).toString()}`);
     } finally {
       setIsSearching(false);
     }
@@ -72,11 +42,11 @@ const SearchInputs = () => {
     >
       <Input
         size="md"
-        value={searchMapKeywords}
+        value={keyword}
         placeholder="キーワードを入力"
         type="search"
         aria-label="検索キーワード"
-        onChange={(e) => setSearchKeywords(e.target.value)}
+        onChange={(e) => setKeyword(e.target.value)}
       />
 
       <Button

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
+import { PARAM_NAME } from "@/app/(home)/ts/const/consts";
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -48,7 +49,7 @@ const SortOptions = () => {
   });
 
   useEffect(() => {
-    const sortParam = searchParams.get("sort");
+    const sortParam = searchParams.get(PARAM_NAME.sort);
     const resetDirections = getResetDirections();
 
     if (!sortParam) {

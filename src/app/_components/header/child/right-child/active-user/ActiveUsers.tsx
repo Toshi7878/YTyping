@@ -81,7 +81,6 @@ export default function ActiveUsers() {
         "presence",
         { event: "join" },
         ({ key, newPresences }: { key: string; newPresences: ActiveUserStatus[] }) => {
-          console.log("join", key, newPresences);
           setOnlineUsers((prev) => [...prev, ...newPresences]);
         }
       );

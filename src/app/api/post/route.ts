@@ -17,8 +17,6 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error fetching ranking list:", error);
-
     return new Response("Internal Server Error", { status: 500 });
   }
 }

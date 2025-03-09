@@ -1,3 +1,4 @@
+import { PARAM_NAME } from "@/app/(home)/ts/const/consts";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { Prisma } from "@prisma/client";
@@ -11,13 +12,13 @@ export async function GET(req: NextRequest) {
   const userId = Number(session?.user?.id);
 
   const page = searchParams.get("page") ?? "0";
-  const mapKeyword = searchParams.get("keyword") ?? "";
+  const mapKeyword = searchParams.get(PARAM_NAME.keyword) ?? "";
   const filterSql = getFilterSql({ filter: searchParams.get("filter"), userId });
-  const sortSql = getSortSql({ sort: searchParams.get("sort") });
-  const minRate = searchParams.get("minRate");
-  const maxRate = searchParams.get("maxRate");
+  const sortSql = getSortSql({ sort: searchParams.get(PARAM_NAME.sort) });
+  const minRate = searchParams.get(PARAM_NAME.minRate);
+  const maxRate = searchParams.get(PARAM_NAME.maxRate);
   const difficultyFilterSql = getDifficultyFilterSql({ minRate, maxRate });
-  const playedSql = getPlayedFilterSql({ played: searchParams.get("played"), userId });
+  const playedSql = getPlayedFilterSql({ played: searchParams.get(PARAM_NAME.played), userId });
 
   const offset = MAP_LIST_TAKE_LENGTH * Number(page);
 
@@ -97,8 +98,6 @@ export async function GET(req: NextRequest) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error fetching map list:", error);
-
     return new Response("Internal Server Error", { status: 500 });
   }
 }
