@@ -9,19 +9,21 @@ interface TimelineProviderProps {
   children: React.ReactNode;
 }
 
-const HomeProvider = ({ children }: TimelineProviderProps) => {
+const HomeClientProvider = ({ children }: TimelineProviderProps) => {
   const homeAtomStore = getHomeAtomStore();
   const searchParams = useSearchParams();
-  const searchMapKeyWord = searchParams.get("map-keyword") || "";
-  const minRate = searchParams.get("minRate") || String(DIFFICULTY_RANGE.min);
-  const maxRate = searchParams.get("maxRate") || String(DIFFICULTY_RANGE.max);
 
+  // useEffectを使用して値を事前にセット
   useEffect(() => {
+    const searchMapKeyWord = searchParams.get("keyword") || "";
+    const minRate = searchParams.get("minRate") || String(DIFFICULTY_RANGE.min);
+    const maxRate = searchParams.get("maxRate") || String(DIFFICULTY_RANGE.max);
+
     homeAtomStore.set(searchMapKeyWordsAtom, searchMapKeyWord);
     homeAtomStore.set(difficultyRangeAtom, { min: Number(minRate), max: Number(maxRate) });
-  }, [homeAtomStore, searchMapKeyWord, minRate, maxRate]);
+  }, [searchParams, homeAtomStore]);
 
   return <JotaiProvider store={homeAtomStore}>{children}</JotaiProvider>;
 };
 
-export default HomeProvider;
+export default HomeClientProvider;
