@@ -2,18 +2,9 @@ import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { MapListParams } from "../components/MapList";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
-
-type MapListParams = {
-  keyword: string;
-  filter: string;
-  sort: string;
-  maxRate: string;
-  minRate: string;
-  played: string;
-};
 
 // 1ページあたりの最大アイテム数
 const PAGE_SIZE = 40;
@@ -38,18 +29,7 @@ const fetchMapList = async ({
   }
 };
 
-export const useMapListInfiniteQuery = () => {
-  const searchParams = useSearchParams();
-
-  const queryParams: MapListParams = {
-    keyword: searchParams.get("keyword") || "",
-    filter: searchParams.get("f") || "",
-    sort: searchParams.get("sort") || "",
-    maxRate: searchParams.get("maxRate") || "",
-    minRate: searchParams.get("minRate") || "",
-    played: searchParams.get("played") || "",
-  };
-
+export const useMapListInfiniteQuery = (queryParams: MapListParams) => {
   return useInfiniteQuery({
     queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
     queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, ...queryParams }),

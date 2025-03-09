@@ -4,6 +4,7 @@ import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLink from "@/components/map-card/child/child/MapLink";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -28,11 +29,29 @@ function LoadingMapCard({ cardLength }: { cardLength: number }) {
   );
 }
 
+export type MapListParams = {
+  keyword: string;
+  filter: string;
+  sort: string;
+  maxRate: string;
+  minRate: string;
+  played: string;
+};
+
 function MapList() {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingAtom();
   const queryClient = useQueryClient();
   const setIsSearchingAtom = useSetIsSearchingAtom();
+
+  const queryParams: MapListParams = {
+    keyword: searchParams.get("keyword") || "",
+    filter: searchParams.get("f") || "",
+    sort: searchParams.get("sort") || "",
+    maxRate: searchParams.get("maxRate") || "",
+    minRate: searchParams.get("minRate") || "",
+    played: searchParams.get("played") || "",
+  };
 
   const {
     data,
@@ -41,11 +60,14 @@ function MapList() {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useMapListInfiniteQuery();
+  } = useMapListInfiniteQuery(queryParams);
 
   useEffect(() => {
-    //TODO: パラメータ調査
-    queryClient.refetchQueries({ queryKey: ["mapList"] });
+    // 成功したクエリはrefetchしない（既に取得済みのデータを再利用）
+    queryClient.refetchQueries({
+      queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
+      predicate: (query) => query.state.status !== "success",
+    });
     setIsSearchingAtom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
