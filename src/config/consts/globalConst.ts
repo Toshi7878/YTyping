@@ -23,7 +23,6 @@ export const ACTIVE_USER_MAP_THUBNAIL_HEIGHT = {
 export const QUERY_KEYS = {
   mapList: ["mapList"] as const,
   usersResultList: ["usersResultList"] as const,
-  generateMapInfoGemini: (videoId: string) => ["generate-gemini-map-info", videoId] as const,
 };
 
 export const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];

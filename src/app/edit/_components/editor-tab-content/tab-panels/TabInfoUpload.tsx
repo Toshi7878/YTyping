@@ -1,9 +1,9 @@
 import { Card, CardBody, Flex, HStack, Stack, useTheme } from "@chakra-ui/react";
 
 import { useCreatorIdAtom, useVideoIdAtom } from "@/app/edit/edit-atom/editAtom";
-import { useGetGeminiMapInfoQuery } from "@/app/edit/hooks/query/useGetGeminiMapInfoQuery";
 import { useUploadMap } from "@/app/edit/hooks/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
+import { useGenerateMapInfoQuery } from "@/lib/global-hooks/query/edit/useGenerateMapInfoQuery";
 import { ThemeColors } from "@/types";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
@@ -22,7 +22,7 @@ const TabInfoUpload = () => {
   const isNewCreate = !!searchParams.get("new");
   const videoId = useVideoIdAtom();
   const { id: mapId } = useParams();
-  const { isLoading } = useGetGeminiMapInfoQuery(videoId);
+  const { isPending } = useGenerateMapInfoQuery(videoId);
   const upload = useUploadMap();
 
   const [state, formAction] = useFormState(upload, INITIAL_SERVER_ACTIONS_STATE);
@@ -41,8 +41,8 @@ const TabInfoUpload = () => {
     >
       <CardBody>
         <Stack display="flex" flexDirection="column" gap="6">
-          <InfoInputForm isGeminiLoading={isLoading && isNewCreate} />
-          <InfoTag isGeminiLoading={isLoading} />
+          <InfoInputForm isGeminiLoading={isPending && isNewCreate} />
+          <InfoTag isGeminiLoading={isPending} />
           <HStack justifyContent="space-between">
             {isDisplayUploadButton ? (
               <Flex

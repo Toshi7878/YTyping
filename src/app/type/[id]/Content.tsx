@@ -1,5 +1,6 @@
 "use client";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
+import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
 import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
@@ -15,7 +16,7 @@ import TypingCard from "../_components/typing-area/TypingCard";
 import { useUpdateUserStats } from "../hooks/playing-hooks/useUpdateUserStats";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
 import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
-import { InputModeType, MapData } from "../ts/type";
+import { InputModeType } from "../ts/type";
 import {
   useIsLoadingOverlayAtom,
   useSceneAtom,
@@ -52,14 +53,8 @@ function Content({ mapInfo }: ContentProps) {
   const setLineResults = useSetLineResultsAtom();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
   const setTimeOffset = useSetTimeOffsetAtom();
-  const { data: mapData, isLoading } = clientApi.map.getMap.useQuery<MapData[]>(
-    {
-      mapId: mapId as string,
-    },
-    {
-      gcTime: 0,
-    }
-  );
+  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string | undefined });
+
   const isLoadingOverlay = useIsLoadingOverlayAtom();
   const disableKeyHandle = useDisableKeyHandle();
   const { resetStatusValues } = useSetStatusAtoms();

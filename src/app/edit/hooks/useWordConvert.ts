@@ -13,6 +13,7 @@ import {
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { useStore as useJotaiStore } from "jotai";
+import { useSession } from "next-auth/react";
 import { ConvertOptionsType } from "../ts/type";
 
 const allowedChars = new Set([
@@ -55,6 +56,7 @@ const useFetchMorph = () => {
   const kanaToHira = useKanaToHira();
   const setIsLoadWordConvert = useSetIsLoadWordConvertAtom();
   const toast = useCustomToast();
+  const { data: session } = useSession();
 
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
@@ -67,7 +69,9 @@ const useFetchMorph = () => {
       );
       return kanaToHira(convertedWord);
     } catch {
-      toast({ type: "error", title: "読み変換に失敗しました" });
+      const message = !session ? "読み変換機能はログイン後に使用できます" : undefined;
+      toast({ type: "error", title: "読み変換に失敗しました", message });
+      return "";
     } finally {
       setIsLoadWordConvert(false);
     }
@@ -104,8 +108,6 @@ const useLyricsFormat = () => {
 
     return sentence
       .replace(/\r$/, "")
-      .replace(/[ 　]+$/, "")
-      .replace(/^[ 　]+/, "")
       .replace(/…/g, "...")
       .replace(/‥/g, "..")
       .replace(/･/g, "・")
@@ -118,7 +120,8 @@ const useLyricsFormat = () => {
       .replace(/ {2,}/g, " ")
       .replace(/－/g, "ー")
       .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
+      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+      .trim();
   };
 };
 

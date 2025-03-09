@@ -1,6 +1,6 @@
 "use client";
 import { db } from "@/lib/db";
-import { clientApi } from "@/trpc/client-api";
+import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
 import { IndexDBOption } from "@/types";
 import { Box, Flex, Grid } from "@chakra-ui/react";
 import { useParams, useSearchParams } from "next/navigation";
@@ -44,13 +44,7 @@ function Content() {
   const setDirectEditCountAtom = useSetDirectEditCountAtom();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
   const { id: mapId } = useParams();
-  const { data: mapData, isLoading } = clientApi.map.getMap.useQuery(
-    { mapId: mapId as string },
-    {
-      enabled: !newVideoId,
-      gcTime: 0,
-    }
-  );
+  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string | undefined });
 
   useEffect(() => {
     if (mapData) {

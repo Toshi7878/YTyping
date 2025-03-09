@@ -1,4 +1,5 @@
 import { activeUserRouter } from "./routers/activeUserRouter";
+import { geminiRouter } from "./routers/geminiRouter";
 import { mapRouter } from "./routers/mapRouter";
 import { morphConvertRouter } from "./routers/morphConvertRouter";
 import { notificationRouter } from "./routers/notificationRouter";
@@ -23,6 +24,7 @@ export const appRouter = router({
   user: userRouter,
   activeUser: activeUserRouter,
   morphConvert: morphConvertRouter,
+  gemini: geminiRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -1,9 +1,7 @@
 "use client";
-import React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
 import { useSearchParams } from "next/navigation";
-import { FilterMode } from "./ts/type";
+import React from "react";
 import {
   getTimelineAtomStore,
   searchResultKeyWordsAtom,
@@ -11,8 +9,7 @@ import {
   searchResultModeAtom,
 } from "./atoms/atoms";
 import { DEFAULT_KPM_SEARCH_RANGE } from "./ts/const/consts";
-
-const queryClient = new QueryClient();
+import { FilterMode } from "./ts/type";
 
 interface TimelineProviderProps {
   children: React.ReactNode;
@@ -37,11 +34,7 @@ const TimelineProvider = ({ children }: TimelineProviderProps) => {
     maxValue: maxKpm,
   });
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <JotaiProvider store={timelineAtomStore}>{children}</JotaiProvider>
-    </QueryClientProvider>
-  );
+  return <JotaiProvider store={timelineAtomStore}>{children}</JotaiProvider>;
 };
 
 export default TimelineProvider;

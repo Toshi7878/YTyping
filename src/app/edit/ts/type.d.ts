@@ -43,17 +43,3 @@ type LineInputReducerActionType = "set" | "reset";
 export type YTSpeedReducerActionType = "up" | "down";
 export type LineInputReducerAction = { type: LineInputReducerActionType; payload?: LineInput };
 export type TagsReducerAction = { type: TagsReducerActionType; payload?: Tag | Tag[] };
-
-export interface GetYouTubeMovieInfo {
-  channelTitle: string;
-  description: string;
-  title: string;
-  tags: string[];
-}
-
-export interface GeminiMapInfo {
-  musicTitle: string;
-  artistName: string;
-  musicSource: string;
-  otherTags: string[];
-}
