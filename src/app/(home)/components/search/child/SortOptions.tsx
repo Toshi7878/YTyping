@@ -155,6 +155,7 @@ const SortOptions = () => {
           py={1}
           cursor="pointer"
           fontWeight={sortField === option ? "bold" : "normal"}
+          color={sortField === option ? "secondary.light" : "normal"}
           onClick={() => handleSort(option)}
           _hover={{ bg: "button.sub.hover" }}
           transition="all 0.2s"
