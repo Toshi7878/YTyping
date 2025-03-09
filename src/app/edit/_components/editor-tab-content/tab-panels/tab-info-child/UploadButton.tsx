@@ -4,7 +4,7 @@ import { Button, useTheme } from "@chakra-ui/react";
 import { useCanUploadAtom, useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
 import { useUpdateNewMapBackUp } from "@/app/edit/hooks/useUpdateNewMapBackUp";
 import { useInitializeEditorCreateBak } from "@/lib/db";
-import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
+import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { ThemeColors, UploadResult } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -18,7 +18,7 @@ const UploadButton = ({ state }: UploadButtonProps) => {
   const theme: ThemeColors = useTheme();
   const canUpload = useCanUploadAtom();
   const setCanUpload = useSetCanUploadAtom();
-  const uploadToast = useUploadToast();
+  const toast = useCustomToast();
   const initializeEditorCreateIndexedDB = useInitializeEditorCreateBak();
   const router = useRouter();
   const updateNewMapBackUp = useUpdateNewMapBackUp();
@@ -27,17 +27,19 @@ const UploadButton = ({ state }: UploadButtonProps) => {
 
   useEffect(() => {
     if (state.status !== 0) {
-      uploadToast(state);
-
       const isSuccess = state.status === 200;
+      const title = state.title;
+      const message = state.message;
 
       if (isSuccess) {
+        toast({ type: "success", title, message });
         setCanUpload(false);
         if (state.id) {
           router.replace(`/edit/${state.id}`);
           initializeEditorCreateIndexedDB();
         }
-      } else if (state.status === 500) {
+      } else {
+        toast({ type: "error", title, message });
         if (newVideoId) {
           updateNewMapBackUp(newVideoId);
         }

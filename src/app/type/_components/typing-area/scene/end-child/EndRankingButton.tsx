@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetTabIndexAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
+import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { UploadResult } from "@/types";
 import {
@@ -30,8 +30,8 @@ const EndUploadButton = ({ isScoreUpdated, formAction, state }: UploadButtonProp
   const cancelRef = useRef(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const setTabIndex = useSetTabIndexAtom();
-  const uploadToast = useUploadToast();
   const utils = clientApi.useUtils();
+  const toast = useCustomToast();
 
   useEffect(() => {
     if (state.status === 200) {
@@ -52,12 +52,15 @@ const EndUploadButton = ({ isScoreUpdated, formAction, state }: UploadButtonProp
 
   useEffect(() => {
     if (state.status !== 0) {
-      uploadToast(state);
-
+      const title = state.title;
+      const message = state.message;
       const isSuccess = state.status === 200 ? true : false;
 
       if (isSuccess) {
         setTabIndex(1);
+        toast({ type: "success", title, message });
+      } else {
+        toast({ type: "error", title, message });
       }
     }
 

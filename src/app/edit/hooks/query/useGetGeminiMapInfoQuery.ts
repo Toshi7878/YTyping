@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from "@/config/consts/globalConst";
-import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
+import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { UploadResult } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -13,7 +13,7 @@ import {
 import { GeminiMapInfo, GetYouTubeMovieInfo } from "../../ts/type";
 
 export const useGetGeminiMapInfoQuery = (videoId: string) => {
-  const uploadToast = useUploadToast();
+  const toast = useCustomToast();
   const searchParams = useSearchParams();
   const isNewCreate = !!searchParams.get("new");
   const isBackUp = searchParams.get("backup") === "true";
@@ -23,7 +23,7 @@ export const useGetGeminiMapInfoQuery = (videoId: string) => {
   const setMusicSouce = useSetEditMusicSourceAtom();
   const setGeminiTags = useSetGeminiTagsAtom();
 
-  const { data, error, isLoading } = useQuery<GeminiMapInfo | null>({
+  const { data, isLoading } = useQuery<GeminiMapInfo | null>({
     queryKey: QUERY_KEYS.generateMapInfoGemini(videoId),
     queryFn: async () => {
       const ytInfo = await axios.post<GetYouTubeMovieInfo | UploadResult>(
@@ -32,7 +32,10 @@ export const useGetGeminiMapInfoQuery = (videoId: string) => {
       );
 
       if ("status" in ytInfo.data && ytInfo.data.status === 404) {
-        uploadToast(ytInfo.data);
+        const title = ytInfo.data.title;
+        const message = ytInfo.data.message;
+
+        toast({ type: "error", title, message });
         return null;
         // 404エラーの処理をここに追加
       } else {

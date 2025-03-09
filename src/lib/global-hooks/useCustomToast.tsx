@@ -1,18 +1,22 @@
-import { UploadResult } from "@/types";
 import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 import { Box, Flex, useToast } from "@chakra-ui/react";
 
-export const useUploadToast = () => {
+interface CustomToastProps {
+  type: "success" | "error";
+  title: string;
+  message?: string;
+}
+
+export const useCustomToast = () => {
   const toast = useToast();
   const duration = 5000;
   const position = "bottom-right";
   const isClosable = true;
 
-  return (state: UploadResult) => {
-    const isSuccess = state.status === 200 ? true : false;
-    const title = state.title;
-    const description = state.message ? <small>{state.message}</small> : null;
-    // const status = isSuccess ? "success" : "error";
+  return ({ type, title, message }: CustomToastProps) => {
+    const description = message ? <small>{message}</small> : null;
+    const bg = type === "success" ? "green.500" : "red.400";
+    const icon = type === "success" ? <CheckCircleIcon mr={3} /> : <WarningIcon mr={3} />;
 
     toast({
       title,
@@ -24,7 +28,7 @@ export const useUploadToast = () => {
         <Box
           color="white"
           p={5}
-          bg={isSuccess ? "green.500" : "red.400"}
+          bg={bg}
           borderRadius="md"
           boxShadow="md"
           display="flex"
@@ -32,8 +36,7 @@ export const useUploadToast = () => {
         >
           <Box>
             <Flex alignItems="center" fontWeight="bold" fontSize="lg">
-              {isSuccess ? <CheckCircleIcon mr={3} /> : <WarningIcon mr={3} />}
-
+              {icon}
               {title}
             </Flex>
             {description ? <Box mt={2}>{description}</Box> : ""}

@@ -1,5 +1,5 @@
+import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { useDebounce } from "@/lib/global-hooks/useDebounce";
-import { useUploadToast } from "@/lib/global-hooks/useUploadToast";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { nameSchema } from "@/validator/schema";
@@ -36,9 +36,10 @@ export const UpdateNameForm = ({
   const { data: session, update } = useSession();
   const [nameState, setNameState] = useState<NameState["nameState"]>("unique");
   const debounce = useDebounce(1000);
-  const uploadToast = useUploadToast();
   const theme: ThemeColors = useTheme();
   const router = useRouter();
+  const toast = useCustomToast();
+
   const {
     register,
     formState: { errors, isDirty },
@@ -61,18 +62,17 @@ export const UpdateNameForm = ({
     updateName.mutate(data, {
       onSuccess: async (result) => {
         await update({ ...session?.user, name: data.newName });
-        uploadToast(result);
+        const title = result.title;
+        const message = result.message;
+        toast({ type: "success", title, message });
         if (isHomeRedirect) {
           router.push("/");
         }
       },
       onError: (error) => {
-        uploadToast({
-          id: "",
-          title: "エラーが発生しました",
-          message: error.message,
-          status: 500,
-        });
+        const title = "エラーが発生しました";
+        const message = error.message;
+        toast({ type: "error", title, message });
       },
     });
   };
