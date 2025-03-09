@@ -2,7 +2,7 @@ import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { MapListParams } from "../components/MapList";
+import { MapListParams } from "../../../app/(home)/components/MapList";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 

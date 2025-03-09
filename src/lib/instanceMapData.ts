@@ -129,6 +129,7 @@ const NN_LIST = [
   "Y",
   "N",
 ];
+
 const SOKUON_JOIN_LIST = [
   "ヰ",
   "ゐ",
@@ -552,7 +553,7 @@ export class CreateMap {
 
   private parseWord(data: MapData[]) {
     let lyrics = data
-      .map((line) => line["word"].replace(/[ 　]+$/, "").replace(/^[ 　]+/, ""))
+      .map((line) => line["word"].trim())
       .join("\n")
       .replace(/…/g, "...")
       .replace(/‥/g, "..")

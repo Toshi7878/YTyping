@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import { useUsersResultInfiniteQuery } from "../hooks/useUsersResultInfiniteQuery";
+import { useUsersResultInfiniteQuery } from "../../../lib/global-hooks/query/useUsersResultInfiniteQuery";
 import ResultCard from "./result-card/ResultCard";
 import ResultCardLayout from "./result-card/ResultCardLayout";
 import ResultSkeletonCard from "./result-card/ResultSkeletonCard";

@@ -3,7 +3,7 @@ import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
 import { mapUpdatedAtAtom, useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
-import { useWarningToast } from "@/lib/global-hooks/useWarningToast";
+import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
 import { Button, Stack, useTheme } from "@chakra-ui/react";
 import { useStore } from "jotai";
@@ -36,7 +36,7 @@ const RankingMenu = ({
   const theme: ThemeColors = useTheme();
   const scene = useSceneAtom();
   const typeAtomStore = useStore();
-  const warningToast = useWarningToast();
+  const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const proceedRetry = useProceedRetry();
 
@@ -50,9 +50,10 @@ const RankingMenu = ({
     iosActiveSound();
 
     if (mapUpdatedAt > resultUpdatedAtDate) {
-      warningToast({
+      toast({
+        type: "warning",
         title: "リプレイ登録時より後に譜面が更新されています",
-        msg: "正常に再生できない可能性があります",
+        message: "正常に再生できない可能性があります",
       });
     }
 

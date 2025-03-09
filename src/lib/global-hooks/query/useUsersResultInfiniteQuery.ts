@@ -2,7 +2,7 @@ import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { FilterMode, ResultCardInfo } from "../ts/type";
+import { FilterMode, ResultCardInfo } from "../../../app/timeline/ts/type";
 
 interface GetResultListProps {
   page: number;
@@ -41,8 +41,7 @@ async function getResultList({
       maxClearRate,
       minSpeed,
       maxSpeed,
-    }, // ページ数をクエリパラメータとして追加
-    // cache: "no-cache", // キャッシュモード
+    },
   });
 
   if (response.status !== 200) {
@@ -64,19 +63,7 @@ export const useUsersResultInfiniteQuery = () => {
   const userKeyword = searchParams.get("user-keyword") || "";
   const mapKeyword = searchParams.get("map-keyword") || "";
 
-  const {
-    data,
-    error,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    status,
-    refetch,
-  } = useInfiniteQuery({
+  return useInfiniteQuery({
     queryKey: [QUERY_KEYS.usersResultList],
     queryFn: ({ pageParam = 0 }) =>
       getResultList({
@@ -101,29 +88,15 @@ export const useUsersResultInfiniteQuery = () => {
       return undefined;
     },
     getPreviousPageParam: (firstPage, allPages) => {
-      // 前のページを取得するための処理
       if (allPages.length > 1) {
         return allPages.length - 2;
       }
 
       return undefined;
     },
-    refetchOnWindowFocus: false, // ウィンドウフォーカス時に再フェッチしない
-    refetchOnReconnect: false, // 再接続時に再フェッチしない
-    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    gcTime: Infinity,
   });
-
-  return {
-    data,
-    error,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    status,
-    refetch,
-  };
 };
