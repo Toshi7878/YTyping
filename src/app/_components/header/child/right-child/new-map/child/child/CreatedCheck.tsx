@@ -10,8 +10,8 @@ interface CreatedCheckProps {
   videoId: string;
 }
 
-const CreatedCheck = (props: CreatedCheckProps) => {
-  const { data, isPending } = useGetCreatedVideoIdMapListQuery({ videoId: props.videoId });
+const CreatedCheck = ({ videoId }: CreatedCheckProps) => {
+  const { data, isPending } = useGetCreatedVideoIdMapListQuery({ videoId });
 
   if (isPending) {
     return <Spinner size="sm" />;
