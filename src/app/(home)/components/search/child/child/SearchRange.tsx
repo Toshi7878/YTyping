@@ -44,10 +44,13 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      const params = setDifficultyRangeParams(new URLSearchParams(searchParams.toString()));
+      const params = new URLSearchParams(searchParams.toString());
 
-      setIsSearchingAtom(true);
-      router.replace(`?${params.toString()}`);
+      const newParams = setDifficultyRangeParams(params);
+      if (newParams.toString() !== searchParams.toString()) {
+        setIsSearchingAtom(true);
+        router.replace(`?${newParams.toString()}`);
+      }
     }
   };
 
