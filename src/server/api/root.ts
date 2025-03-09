@@ -1,5 +1,6 @@
 import { activeUserRouter } from "./routers/activeUserRouter";
 import { mapRouter } from "./routers/mapRouter";
+import { morphConvertRouter } from "./routers/morphConvertRouter";
 import { notificationRouter } from "./routers/notificationRouter";
 import { rankingRouter } from "./routers/rankingRouter";
 import { resultRouter } from "./routers/resultRouter";
@@ -21,6 +22,7 @@ export const appRouter = router({
   userOption: userOptionRouter,
   user: userRouter,
   activeUser: activeUserRouter,
+  morphConvert: morphConvertRouter,
 });
 
 export type AppRouter = typeof appRouter;
