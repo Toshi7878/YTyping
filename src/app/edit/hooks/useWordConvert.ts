@@ -10,6 +10,7 @@ import {
   NUM_LIST,
   STRICT_SYMBOL_LIST,
 } from "@/config/consts/charList";
+import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { useStore as useJotaiStore } from "jotai";
 import { ConvertOptionsType } from "../ts/type";
@@ -53,6 +54,7 @@ const useFetchMorph = () => {
   const utils = clientApi.useUtils();
   const kanaToHira = useKanaToHira();
   const setIsLoadWordConvert = useSetIsLoadWordConvertAtom();
+  const toast = useCustomToast();
 
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
@@ -66,6 +68,7 @@ const useFetchMorph = () => {
       return kanaToHira(convertedWord);
     } finally {
       setIsLoadWordConvert(false);
+      toast({ type: "error", title: "読み変換に失敗しました" });
     }
   };
 };
