@@ -13,3 +13,14 @@ export const useMapQuery = ({ mapId }: { mapId: string | undefined }) => {
   //isPendingをreturnしない。enabled:falseの場合、isPendingが常にtureになるのでisLoadingを使用する
   return rest;
 };
+
+export const useGetCreatedVideoIdMapListQuery = ({ videoId }: { videoId: string }) => {
+  return clientApi.map.getCreatedVideoIdMapList.useQuery(
+    {
+      videoId,
+    },
+    {
+      staleTime: Infinity,
+    }
+  );
+};

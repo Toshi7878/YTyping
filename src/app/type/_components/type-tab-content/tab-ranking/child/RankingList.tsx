@@ -4,7 +4,7 @@ import {
   useSetStatusAtoms,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
-import { clientApi } from "@/trpc/client-api";
+import { useMapRankingQuery } from "@/lib/global-hooks/query/mapRankingRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
@@ -21,9 +21,7 @@ const RankingList = () => {
   const scene = useSceneAtom();
   const { id: mapId } = useParams();
 
-  const { data, error, isLoading } = clientApi.ranking.getMapRanking.useQuery({
-    mapId: Number(mapId),
-  });
+  const { data, error, isFetching } = useMapRankingQuery({ mapId: mapId as string });
   const { setStatusValues } = useSetStatusAtoms();
 
   useEffect(() => {
@@ -79,7 +77,7 @@ const RankingList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene, data]);
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <Box position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)">
         <Spinner size="lg" />

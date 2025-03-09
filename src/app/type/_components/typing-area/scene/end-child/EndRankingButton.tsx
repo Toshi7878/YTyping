@@ -15,6 +15,7 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import AlertDialogButton from "./child/AlertDialogButton";
 import EndMainButton from "./child/EndMainButton";
@@ -31,12 +32,13 @@ const EndUploadButton = ({ isScoreUpdated, formAction, state }: UploadButtonProp
   const [isDisabled, setIsDisabled] = useState(false);
   const setTabIndex = useSetTabIndexAtom();
   const utils = clientApi.useUtils();
+  const { id: mapId } = useParams();
   const toast = useCustomToast();
 
   useEffect(() => {
     if (state.status === 200) {
       setIsDisabled(true);
-      utils.ranking.invalidate();
+      utils.ranking.getMapRanking.invalidate({ mapId: Number(mapId) });
       onClose();
     } else {
       setIsDisabled(false);

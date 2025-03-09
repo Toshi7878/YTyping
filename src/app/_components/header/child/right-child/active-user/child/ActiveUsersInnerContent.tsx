@@ -8,18 +8,17 @@ import {
   ACTIVE_USER_MAP_THUBNAIL_WIDTH,
 } from "@/config/consts/globalConst";
 import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
-import { clientApi } from "@/trpc/client-api";
+import { useGetUserPlayingMapsQuery } from "@/lib/global-hooks/query/activeUserRouterQuery";
 import { ThemeColors } from "@/types";
 import { Link } from "@chakra-ui/next-js";
 import { Badge, Flex, Table, Tbody, Td, Text, Thead, Tr, useTheme } from "@chakra-ui/react";
 
 const ActiveUsersInnerContent = () => {
   const onlineUsers = useOnlineUsersAtom();
-  const { data: mapedActiveUserList, isLoading } =
-    clientApi.activeUser.getUserPlayingMaps.useQuery(onlineUsers);
+  const { data: mapedActiveUserList, isPending } = useGetUserPlayingMapsQuery(onlineUsers);
   const theme: ThemeColors = useTheme();
 
-  if (isLoading) {
+  if (isPending) {
     return;
   }
   return (

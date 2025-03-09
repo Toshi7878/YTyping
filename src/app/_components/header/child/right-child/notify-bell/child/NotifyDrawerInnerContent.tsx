@@ -7,10 +7,10 @@ import {
   NOTIFICATION_MAP_THUBNAIL_HEIGHT,
   NOTIFICATION_MAP_THUBNAIL_WIDTH,
 } from "@/config/consts/globalConst";
-import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { useInView } from "react-intersection-observer";
 
+import { useInfiniteNotificationsQuery } from "@/lib/global-hooks/query/notificationRouterQuery";
 import {
   Box,
   DrawerBody,
@@ -25,15 +25,9 @@ const NotifyDrawerInnerContent = () => {
   const { ref, inView } = useInView({
     threshold: 0.8,
   });
-  const { data, error, fetchNextPage, hasNextPage, isFetching, isLoading, isFetchingNextPage } =
-    clientApi.notification.getInfiniteUserNotifications.useInfiniteQuery(
-      {
-        limit: 20,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-      }
-    );
+
+  const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } =
+    useInfiniteNotificationsQuery();
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -48,7 +42,7 @@ const NotifyDrawerInnerContent = () => {
       <DrawerHeader>通知</DrawerHeader>
 
       <DrawerBody px={3}>
-        {isLoading ? (
+        {isPending ? (
           <LoadingSpinner />
         ) : (
           <Box>

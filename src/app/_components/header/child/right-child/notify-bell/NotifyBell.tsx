@@ -1,6 +1,7 @@
 "use client";
 import CustomDrawerContent from "@/components/custom-ui/CustomDrawerContent";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { useNewNotificationCheckQuery } from "@/lib/global-hooks/query/notificationRouterQuery";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { Box, Drawer, useDisclosure, useTheme } from "@chakra-ui/react";
@@ -16,13 +17,12 @@ interface NotifyBellProps {
 export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
   const [isNewBadge, isSetNewBadge] = useState(isNewNotification);
   const theme: ThemeColors = useTheme();
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Drawerの開閉状態を管理
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-  const { data } = clientApi.notification.newNotificationCheck.useQuery();
+  const { data } = useNewNotificationCheckQuery();
   const postUserNotificationRead = clientApi.notification.postUserNotificationRead.useMutation();
-  const utils = clientApi.useUtils();
+
   const nofityDrawerClose = useCallback(() => {
-    utils.notification.getInfiniteUserNotifications.invalidate();
     onClose();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

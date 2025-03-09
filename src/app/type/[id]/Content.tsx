@@ -3,7 +3,6 @@ import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
 import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { clientApi } from "@/trpc/client-api";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
@@ -61,7 +60,6 @@ function Content({ mapInfo }: ContentProps) {
   const setCombo = useSetComboAtom();
   const setChangeCSSCount = useSetChangeCSSCountAtom();
   const setPlayingInputMode = useSetPlayingInputModeAtom();
-  const utils = clientApi.useUtils();
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
   const { setStatusValues } = useSetStatusAtoms();
@@ -93,7 +91,6 @@ function Content({ mapInfo }: ContentProps) {
 
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
-      utils.ranking.getMapRanking.invalidate({ mapId: Number(mapId) });
       setMap(null);
       updateTypingStats();
       setScene(RESET);
