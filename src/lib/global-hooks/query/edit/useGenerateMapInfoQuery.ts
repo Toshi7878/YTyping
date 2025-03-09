@@ -22,7 +22,6 @@ export const useGenerateMapInfoQuery = (videoId: string) => {
   const generateMapInfo = clientApi.gemini.generateMapInfo.useQuery(
     { videoId: videoId },
     {
-      enabled: isNewCreate && !isBackUp,
       staleTime: Infinity,
       gcTime: Infinity,
       refetchOnWindowFocus: false,
@@ -41,9 +40,11 @@ export const useGenerateMapInfoQuery = (videoId: string) => {
 
   useEffect(() => {
     if (mapInfoData) {
-      setMapTitle(mapInfoData.musicTitle);
-      setMapArtistName(mapInfoData.artistName);
-      setMusicSouce(mapInfoData.musicSource);
+      if (isNewCreate && !isBackUp) {
+        setMapTitle(mapInfoData.musicTitle);
+        setMapArtistName(mapInfoData.artistName);
+        setMusicSouce(mapInfoData.musicSource);
+      }
       setGeminiTags(mapInfoData.otherTags);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
