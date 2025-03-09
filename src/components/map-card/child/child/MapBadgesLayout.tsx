@@ -32,7 +32,11 @@ const MapBadges = (props: MapBadgesProps) => {
         </MapBadge>
       </HStack>
       <Flex>
-        <RankingCountIcon myRank={map.results[0]?.rank} rankingCount={map.ranking_count} />
+        <RankingCountIcon
+          key={map.results[0]?.rank}
+          myRank={map.results[0]?.rank}
+          rankingCount={map.ranking_count}
+        />
         <LikeCountIcon
           mapId={map.id}
           isLiked={!!map.map_likes[0]?.is_liked}
