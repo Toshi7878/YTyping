@@ -4,9 +4,10 @@ import { DIFFICULTY_RANGE, PARAM_NAME } from "../ts/const/consts";
 
 export const useSetDifficultyRangeParams = () => {
   const homeAtomStore = useStore();
-  const difficultyRange = homeAtomStore.get(difficultyRangeAtom);
 
   return (params: URLSearchParams) => {
+    const difficultyRange = homeAtomStore.get(difficultyRangeAtom);
+
     if (difficultyRange.min !== DIFFICULTY_RANGE.min) {
       params.set(PARAM_NAME.minRate, difficultyRange.min.toFixed(1));
     } else {
