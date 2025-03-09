@@ -21,7 +21,7 @@ const RankingList = () => {
   const scene = useSceneAtom();
   const { id: mapId } = useParams();
 
-  const { data, error, isFetching } = useMapRankingQuery({ mapId: mapId as string });
+  const { data, error, isPending } = useMapRankingQuery({ mapId: mapId as string });
   const { setStatusValues } = useSetStatusAtoms();
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const RankingList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene, data]);
 
-  if (isFetching) {
+  if (isPending) {
     return (
       <Box position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)">
         <Spinner size="lg" />
