@@ -1,4 +1,7 @@
-import { editWordConvertOptionAtom } from "@/app/edit/edit-atom/editAtom";
+import {
+  editWordConvertOptionAtom,
+  useSetIsLoadWordConvertAtom,
+} from "@/app/edit/edit-atom/editAtom";
 import {
   ALPHABET_LIST,
   KANA_LIST,
@@ -49,16 +52,21 @@ export const useWordConvert = () => {
 const useFetchMorph = () => {
   const utils = clientApi.useUtils();
   const kanaToHira = useKanaToHira();
+  const setIsLoadWordConvert = useSetIsLoadWordConvertAtom();
 
   return async (sentence: string) => {
-    const convertedWord = await utils.morphConvert.getKanaWord.fetch(
-      { sentence },
-      {
-        staleTime: Infinity,
-      }
-    );
-
-    return kanaToHira(convertedWord);
+    setIsLoadWordConvert(true);
+    try {
+      const convertedWord = await utils.morphConvert.getKanaWord.fetch(
+        { sentence },
+        {
+          staleTime: Infinity,
+        }
+      );
+      return kanaToHira(convertedWord);
+    } finally {
+      setIsLoadWordConvert(false);
+    }
   };
 };
 

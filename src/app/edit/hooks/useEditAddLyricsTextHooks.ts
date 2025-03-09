@@ -4,7 +4,6 @@ import {
   editLineLyricsAtom,
   useLineInputReducer,
   useSetEditAddLyricsTextAtom,
-  useSetIsLoadWordConvertAtom,
 } from "../edit-atom/editAtom";
 import { useWordConvert } from "./useWordConvert";
 
@@ -12,7 +11,6 @@ export function useSetTopLyricsText() {
   const editAtomStore = useJotaiStore();
 
   const lineInputReducer = useLineInputReducer();
-  const setIsLoadWordConvert = useSetIsLoadWordConvertAtom();
   const wordConvert = useWordConvert();
 
   return async (newLyrics?: string | undefined) => {
@@ -21,9 +19,7 @@ export function useSetTopLyricsText() {
     const lines = lyricsText.split("\n");
     const lyrics = newLyrics === undefined ? lines[0].replace(/\r$/, "") : newLyrics;
 
-    setIsLoadWordConvert(true);
     const word = await wordConvert(lyrics);
-    setIsLoadWordConvert(false);
 
     lineInputReducer({ type: "set", payload: { lyrics, word } });
   };

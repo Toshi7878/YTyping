@@ -9,7 +9,6 @@ import {
   useLineInputReducer,
   useSetCanUploadAtom,
   useSetEditDirectEditCountAtom,
-  useSetIsLoadWordConvertAtom,
   useSetIsMapDataEditedAtom,
 } from "../edit-atom/editAtom";
 
@@ -185,14 +184,11 @@ export const useWordConvertButtonEvent = () => {
   const editAtomStore = useJotaiStore();
 
   const lineInputReducer = useLineInputReducer();
-  const setIsLoadWordConvert = useSetIsLoadWordConvertAtom();
   const wordConvert = useWordConvert();
 
   return async () => {
-    setIsLoadWordConvert(true);
     const lyrics = editAtomStore.get(editLineLyricsAtom);
     const word = await wordConvert(lyrics);
-    setIsLoadWordConvert(false);
     lineInputReducer({ type: "set", payload: { word } });
   };
 };
