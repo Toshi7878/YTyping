@@ -63,10 +63,8 @@ function MapList() {
   } = useMapListInfiniteQuery(queryParams);
 
   useEffect(() => {
-    // 成功したクエリはrefetchしない（既に取得済みのデータを再利用）
     queryClient.refetchQueries({
       queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
-      predicate: (query) => query.state.status !== "success",
     });
     setIsSearchingAtom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
