@@ -66,9 +66,10 @@ const useFetchMorph = () => {
         }
       );
       return kanaToHira(convertedWord);
+    } catch {
+      toast({ type: "error", title: "読み変換に失敗しました" });
     } finally {
       setIsLoadWordConvert(false);
-      toast({ type: "error", title: "読み変換に失敗しました" });
     }
   };
 };
