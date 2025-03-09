@@ -34,8 +34,14 @@ function MapList() {
   const queryClient = useQueryClient();
   const setIsSearchingAtom = useSetIsSearchingAtom();
 
-  const { data, isFetching, isPending, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useMapListInfiniteQuery();
+  const {
+    data,
+    isFetching,
+    isLoading: isFirstLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useMapListInfiniteQuery();
 
   useEffect(() => {
     //TODO: パラメータ調査
@@ -46,7 +52,7 @@ function MapList() {
 
   const isRandomSort = searchParams.get("sort") === "random";
 
-  const isLoading = isPending || (isFetching && isRandomSort && !isFetchingNextPage);
+  const isLoading = isFirstLoading || (isFetching && isRandomSort && !isFetchingNextPage);
   if (isLoading) {
     return <LoadingMapCard cardLength={10} />;
   }

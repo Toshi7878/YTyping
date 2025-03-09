@@ -1,3 +1,4 @@
+import { MapData } from "@/app/type/ts/type";
 import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
@@ -114,7 +115,7 @@ export const mapRouter = {
       }
 
       const jsonString = await data.text();
-      const jsonData = JSON.parse(jsonString);
+      const jsonData: MapData[] = JSON.parse(jsonString);
 
       return jsonData;
     } catch (error) {
