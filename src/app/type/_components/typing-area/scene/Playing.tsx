@@ -6,7 +6,7 @@ import {
   useSetNextLyricsAtom,
   useTimeOffsetAtom,
   useTypePageSpeedAtom,
-  useUserOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
@@ -37,7 +37,7 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
 
   const scene = useSceneAtom();
   const volume = useVolumeAtom();
-  const userOptions = useUserOptionsAtom();
+  const userOptions = useUserTypingOptionsAtom();
   const timeOffset = useTimeOffsetAtom();
   const playSpeed = useTypePageSpeedAtom();
   const { statusRef } = useRefs();

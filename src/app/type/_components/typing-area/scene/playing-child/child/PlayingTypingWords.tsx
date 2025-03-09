@@ -2,7 +2,7 @@ import {
   useLineWordAtom,
   useNextLyricsAtom,
   usePlayingInputModeAtom,
-  useUserOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
@@ -13,11 +13,13 @@ const PlayingTypingWords = () => {
   const inputMode = usePlayingInputModeAtom();
   const nextLyrics = useNextLyricsAtom();
   const theme: ThemeColors = useTheme();
-  const userOptionsAtom = useUserOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsAtom();
 
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
-  const kanaCorrectSlice = useBreakpointValue({ base: -5, md: -userOptionsAtom.kana_word_scroll });
-  const romaCorrectSlice = useBreakpointValue({ base: -8, md: -userOptionsAtom.roma_word_scroll });
+  const kanaScroll = userOptionsAtom.kana_word_scroll > 0 ? userOptionsAtom.kana_word_scroll : 0;
+  const romaScroll = userOptionsAtom.roma_word_scroll > 0 ? userOptionsAtom.roma_word_scroll : 0;
+  const kanaCorrectSlice = useBreakpointValue({ base: -5, md: kanaScroll }) as number;
+  const romaCorrectSlice = useBreakpointValue({ base: -8, md: romaScroll }) as number;
   return (
     <Box
       color={theme.colors.text.body}
@@ -27,7 +29,9 @@ const PlayingTypingWords = () => {
     >
       <PlayingWord
         id="main_word"
-        correct={lineWord.correct["k"].slice(kanaCorrectSlice).replace(/ /g, "ˍ")}
+        correct={lineWord.correct["k"]
+          .substr(-kanaCorrectSlice, kanaCorrectSlice)
+          .replace(/ /g, "ˍ")}
         nextChar={lineWord.nextChar["k"]}
         word={lineWord.word
           .map((w) => w["k"])
@@ -40,7 +44,9 @@ const PlayingTypingWords = () => {
 
       <PlayingWord
         id="sub_word"
-        correct={lineWord.correct["r"].slice(romaCorrectSlice).replace(/ /g, "ˍ")}
+        correct={lineWord.correct["r"]
+          .substr(-romaCorrectSlice, romaCorrectSlice)
+          .replace(/ /g, "ˍ")}
         nextChar={lineWord.nextChar["r"][0]}
         word={lineWord.word
           .map((w) => w["r"][0])

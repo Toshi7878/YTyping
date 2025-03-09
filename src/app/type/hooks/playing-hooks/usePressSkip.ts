@@ -4,7 +4,7 @@ import {
   speedAtom,
   timeOffsetAtom,
   useMapAtom,
-  userOptionsAtom,
+  userTypingOptionsAtom,
   useSetSkipAtom,
 } from "../../type-atoms/gameRenderAtoms";
 import { useRefs } from "../../type-contexts/refsProvider";
@@ -16,7 +16,7 @@ export const usePressSkip = () => {
   const setSkip = useSetSkipAtom();
 
   return () => {
-    const userOptions = typeAtomStore.get(userOptionsAtom);
+    const userOptions = typeAtomStore.get(userTypingOptionsAtom);
     const timeOffset = typeAtomStore.get(timeOffsetAtom);
 
     const nextLine = map!.mapData[statusRef.current!.status.count];

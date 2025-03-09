@@ -1,10 +1,10 @@
-import { useLyricsAtom, useUserOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useLyricsAtom, useUserTypingOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { Box } from "@chakra-ui/react";
 import parse from "html-react-parser";
 
 const PlayingLyrics = () => {
   const lyrics = useLyricsAtom();
-  const userOptionsAtom = useUserOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsAtom();
 
   return (
     <Box

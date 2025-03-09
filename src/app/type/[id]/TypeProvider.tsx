@@ -8,7 +8,7 @@ import {
   hasLocalLikeAtom,
   mapInfoAtom,
   mapUpdatedAtAtom,
-  userOptionsAtom,
+  userTypingOptionsAtom,
 } from "../type-atoms/gameRenderAtoms";
 import { RefsProvider } from "../type-contexts/refsProvider";
 
@@ -28,7 +28,7 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
     globalAtomStore.set(previewVideoIdAtom, null);
     typeAtomStore.set(mapUpdatedAtAtom, mapInfo!.updated_at);
     if (userTypingOptions) {
-      typeAtomStore.set(userOptionsAtom, userTypingOptions);
+      typeAtomStore.set(userTypingOptionsAtom, userTypingOptions);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -20,7 +20,7 @@ import {
   useSetStatusAtoms,
   useStatusAtomsValues,
   useTypePageSpeedAtom,
-  useUserOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
@@ -323,7 +323,7 @@ export const useUpdateLine = () => {
   const { statusRef, lineProgressRef, ytStateRef } = useRefs();
 
   const map = useMapAtom() as CreateMap;
-  const userOptions = useUserOptionsAtom();
+  const userOptions = useUserTypingOptionsAtom();
   const inputMode = usePlayingInputModeAtom();
   const speed = useTypePageSpeedAtom();
   const scene = useSceneAtom();

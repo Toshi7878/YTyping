@@ -5,7 +5,7 @@ import typeSound from "@/public/wav/key_type.wav";
 import missSound from "@/public/wav/miss_type.wav";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
-import { useUserOptionsAtom } from "../../type-atoms/gameRenderAtoms";
+import { useUserTypingOptionsAtom } from "../../type-atoms/gameRenderAtoms";
 
 const manifest = [
   { alias: "type", src: typeSound },
@@ -14,7 +14,7 @@ const manifest = [
 ];
 
 export const useSoundEffect = () => {
-  const userOptions = useUserOptionsAtom();
+  const userOptions = useUserTypingOptionsAtom();
   const volumeAtom = useVolumeAtom();
   const volume = (IS_IOS || IS_ANDROID ? 100 : volumeAtom) / 100;
 

@@ -2,13 +2,13 @@ import {
   useMapAtom,
   useTimeOffsetAtom,
   useTypePageSpeedAtom,
-  useUserOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "../type-atoms/gameRenderAtoms";
 import { useRefs } from "../type-contexts/refsProvider";
 
 export const useGetTime = () => {
   const map = useMapAtom();
-  const userOptions = useUserOptionsAtom();
+  const userOptions = useUserTypingOptionsAtom();
   const timeOffset = useTimeOffsetAtom();
   const speed = useTypePageSpeedAtom();
   const { playerRef, statusRef, ytStateRef } = useRefs();

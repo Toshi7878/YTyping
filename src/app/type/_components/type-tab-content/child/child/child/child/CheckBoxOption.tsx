@@ -1,8 +1,8 @@
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import {
   useSetIsOptionEdited,
-  useSetUserOptionsAtom,
-  useUserOptionsAtom,
+  useSetUserTypingOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { Checkbox } from "@chakra-ui/react";
 import React from "react";
@@ -18,19 +18,23 @@ const CheckBoxOption = ({
   name,
   defaultChecked: isChecked = false,
 }: CheckBoxOptionProps) => {
-  const setUserOptionsAtom = useSetUserOptionsAtom();
-  const userOptionsAtom = useUserOptionsAtom();
+  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
   const { clearTypeSoundPlay, typeSoundPlay, missSoundPlay } = useSoundEffect();
   const setIsOptionEdited = useSetIsOptionEdited();
+  const userTypingOptions = useUserTypingOptionsAtom();
+
+  const currentChecked = userTypingOptions[name] ?? isChecked;
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
 
     const newUserOptions = {
-      ...userOptionsAtom,
+      ...userTypingOptions,
       [name]: checked,
     };
+
     setUserOptionsAtom(newUserOptions);
+
     if (checked) {
       if (name === "type_sound") {
         typeSoundPlay();
@@ -40,10 +44,12 @@ const CheckBoxOption = ({
         clearTypeSoundPlay();
       }
     }
+
     setIsOptionEdited(true);
   };
+
   return (
-    <Checkbox pl={2} pr={2} size="lg" name={name} onChange={onChange} defaultChecked={isChecked}>
+    <Checkbox pl={2} pr={2} size="lg" name={name} onChange={onChange} isChecked={currentChecked}>
       {label}
     </Checkbox>
   );

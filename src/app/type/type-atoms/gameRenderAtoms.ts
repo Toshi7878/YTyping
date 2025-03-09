@@ -154,14 +154,14 @@ export const useSetTypePageSpeedAtom = () => {
   return useSetAtom(speedAtom, { store: typeAtomStore });
 };
 
-export const userOptionsAtom = atom(DEFAULT_USER_OPTIONS);
+export const userTypingOptionsAtom = atom(DEFAULT_USER_OPTIONS);
 
-export const useUserOptionsAtom = () => {
-  return useAtomValue(userOptionsAtom, { store: typeAtomStore });
+export const useUserTypingOptionsAtom = () => {
+  return useAtomValue(userTypingOptionsAtom, { store: typeAtomStore });
 };
 
-export const useSetUserOptionsAtom = () => {
-  return useSetAtom(userOptionsAtom, { store: typeAtomStore });
+export const useSetUserTypingOptionsAtom = () => {
+  return useSetAtom(userTypingOptionsAtom, { store: typeAtomStore });
 };
 
 export const timeOffsetAtom = atom<number>(0);

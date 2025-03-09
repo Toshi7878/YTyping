@@ -1,4 +1,4 @@
-import { useUserOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useUserTypingOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
@@ -6,7 +6,7 @@ import { CheckboxGroup, Flex, Text } from "@chakra-ui/react";
 import CheckBoxOption from "./child/CheckBoxOption";
 
 const UserSoundEffectCheckbox = () => {
-  const userTypingOptionsAtom = useUserOptionsAtom();
+  const userTypingOptionsAtom = useUserTypingOptionsAtom();
   const { playerRef } = useRefs();
 
   return (

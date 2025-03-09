@@ -7,7 +7,7 @@ import {
   sceneAtom,
   speedAtom,
   useMapAtom,
-  userOptionsAtom,
+  userTypingOptionsAtom,
   useSetLineWordAtom,
   useSetNextLyricsAtom,
   useSetPlayingInputModeAtom,
@@ -63,7 +63,7 @@ export const useInputModeChange = () => {
       (newInputMode === "roma" ? map!.mapData[count].kpm["r"] : map!.mapData[count].kpm["k"]) *
       playSpeed;
     if (nextKpm) {
-      const userOptions = typeAtomStore.get(userOptionsAtom);
+      const userOptions = typeAtomStore.get(userTypingOptionsAtom);
 
       setNextLyrics({
         lyrics: userOptions.next_display === "WORD" ? nextLine.kanaWord : nextLine["lyrics"],

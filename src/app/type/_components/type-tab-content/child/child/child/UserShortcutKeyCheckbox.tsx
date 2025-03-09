@@ -1,7 +1,7 @@
 import {
   useSetIsOptionEdited,
-  useSetUserOptionsAtom,
-  useUserOptionsAtom,
+  useSetUserTypingOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
@@ -9,8 +9,8 @@ import { $Enums } from "@prisma/client";
 import React from "react";
 
 const UserShortcutKeyCheckbox = () => {
-  const userOptionsAtom = useUserOptionsAtom();
-  const setUserOptionsAtom = useSetUserOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsAtom();
+  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
   const setIsOptionEdited = useSetIsOptionEdited();
 
   const changeTimeOffsetKey = (event: React.ChangeEvent<HTMLSelectElement>) => {

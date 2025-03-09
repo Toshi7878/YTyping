@@ -10,7 +10,7 @@ import {
   useSceneAtom,
   useSetPlayingNotifyAtom,
   useSetTimeOffsetAtom,
-  useUserOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { CreateMap } from "@/lib/instanceMapData";
@@ -78,7 +78,7 @@ const usePlayingShortcutKey = () => {
   const { gameStateRef } = useRefs();
   const map = useMapAtom() as CreateMap;
   const scene = useSceneAtom();
-  const userOptions = useUserOptionsAtom();
+  const userOptions = useUserTypingOptionsAtom();
 
   const retry = useRetry();
   const pressSkip = usePressSkip();

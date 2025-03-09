@@ -3,8 +3,8 @@ import "@/app/edit/style/editor.scss";
 import { CHANGE_TIME_OFFSET_VALUE } from "@/app/type/ts/const/typeDefaultValue";
 import {
   useSetIsOptionEdited,
-  useSetUserOptionsAtom,
-  useUserOptionsAtom,
+  useSetUserTypingOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
@@ -12,22 +12,26 @@ import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
 
 const UserTimeOffsetChange = () => {
   const theme: ThemeColors = useTheme();
-  const setUserOptionsAtom = useSetUserOptionsAtom();
-  const userOptionsAtom = useUserOptionsAtom();
+  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsAtom();
   const setIsOptionEdited = useSetIsOptionEdited();
 
   const decrement = () => {
+    const newValue =
+      Math.round((userOptionsAtom.time_offset - CHANGE_TIME_OFFSET_VALUE) * 100) / 100;
     const newUserOptions = {
       ...userOptionsAtom,
-      time_offset: Math.round((userOptionsAtom.time_offset - CHANGE_TIME_OFFSET_VALUE) * 100) / 100,
+      time_offset: Math.max(-1, newValue),
     };
     setUserOptionsAtom(newUserOptions);
     setIsOptionEdited(true);
   };
   const increment = () => {
+    const newValue =
+      Math.round((userOptionsAtom.time_offset + CHANGE_TIME_OFFSET_VALUE) * 100) / 100;
     const newUserOptions = {
       ...userOptionsAtom,
-      time_offset: Math.round((userOptionsAtom.time_offset + CHANGE_TIME_OFFSET_VALUE) * 100) / 100,
+      time_offset: Math.min(1, newValue),
     };
 
     setUserOptionsAtom(newUserOptions);

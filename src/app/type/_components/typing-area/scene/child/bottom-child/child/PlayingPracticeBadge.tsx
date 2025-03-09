@@ -1,6 +1,6 @@
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { useToggleLineList } from "@/app/type/hooks/playing-hooks/useToggleLineList";
-import { useSceneAtom, useUserOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useSceneAtom, useUserTypingOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";
 
@@ -8,7 +8,7 @@ const PlayingPracticeBadge = function () {
   const scene = useSceneAtom();
   const toggleLineListDrawer = useToggleLineList();
   const { movePrevLine, moveNextLine } = useMoveLine();
-  const userOptionsAtom = useUserOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsAtom();
 
   return (
     <>

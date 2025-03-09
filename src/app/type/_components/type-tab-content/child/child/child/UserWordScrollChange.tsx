@@ -2,22 +2,22 @@
 import "@/app/edit/style/editor.scss";
 import {
   useSetIsOptionEdited,
-  useSetUserOptionsAtom,
-  useUserOptionsAtom,
+  useSetUserTypingOptionsAtom,
+  useUserTypingOptionsAtom,
 } from "@/app/type/type-atoms/gameRenderAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
 
 export const UserWordScrollChange = () => {
-  const setUserOptionsAtom = useSetUserOptionsAtom();
-  const userOptionsAtom = useUserOptionsAtom();
+  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsAtom();
   const setIsOptionEdited = useSetIsOptionEdited();
 
   const onChangeKana = (type: "increment" | "decrement") => {
     const newValue =
       type === "increment"
-        ? userOptionsAtom.kana_word_scroll + 1
+        ? Math.min(20, userOptionsAtom.kana_word_scroll + 1)
         : Math.max(0, userOptionsAtom.kana_word_scroll - 1);
 
     const newUserOptions: typeof userOptionsAtom = {
@@ -31,7 +31,7 @@ export const UserWordScrollChange = () => {
   const onChangeRoma = (type: "increment" | "decrement") => {
     const newValue =
       type === "increment"
-        ? userOptionsAtom.roma_word_scroll + 1
+        ? Math.min(20, userOptionsAtom.roma_word_scroll + 1)
         : Math.max(0, userOptionsAtom.roma_word_scroll - 1);
 
     const newUserOptions: typeof userOptionsAtom = {
@@ -45,7 +45,7 @@ export const UserWordScrollChange = () => {
   return (
     <Flex flexDirection="column" gap={4}>
       <Text fontSize="lg" fontWeight="semibold">
-        ワードスクロール 調整
+        ワードスクロール開始位置 調整
       </Text>
       <KanaWordScrollChange
         onIncrement={() => onChangeKana("increment")}

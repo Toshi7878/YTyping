@@ -1,4 +1,4 @@
-import { useUserOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useUserTypingOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import { ThemeColors } from "@/types";
 import { Box, BoxProps, Text, useTheme } from "@chakra-ui/react";
 
@@ -21,7 +21,7 @@ const PlayingWord = ({
 }: WordProps & BoxProps) => {
   const remainWord = nextChar + word;
   const theme: ThemeColors = useTheme();
-  const userOptionsAtom = useUserOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsAtom();
   const isNextWordDisplay = userOptionsAtom.line_completed_display === "NEXT_WORD";
 
   return (
