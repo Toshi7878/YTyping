@@ -172,6 +172,7 @@ export const useWindowKeydownEvent = () => {
               if (future.type === "add") {
                 const data = future.data as LineEdit;
                 deleteAddingTopPhrase(data.lyrics);
+                pickupTopPhrase();
               }
 
               dispatch(redo());

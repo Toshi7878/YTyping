@@ -12,7 +12,7 @@ import { useRefs } from "../edit-contexts/refsProvider";
 import { updateLine } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { useGetSeekCount } from "./useGetSeekCount";
-import { useUpdateCurrentLine } from "./useUpdateCurrentLine";
+import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 
 export const useYTReadyEvent = () => {
   const { setRef } = useRefs();
@@ -86,7 +86,7 @@ export const useYTEndStopEvent = () => {
 
 export const useYTSeekEvent = () => {
   const getSeekCount = useGetSeekCount();
-  const updateCurrentLine = useUpdateCurrentLine();
+  const updateCurrentLine = useUpdateCurrentTimeLine();
 
   return (event: YouTubeEvent) => {
     const time = event.target.getCurrentTime();

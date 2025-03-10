@@ -5,7 +5,7 @@ import { useStore as useReduxStore } from "react-redux";
 import { editDirectEditCountAtom, editTimeCountAtom } from "../../edit-atom/editAtom";
 import { useRefs } from "../../edit-contexts/refsProvider";
 import { RootState } from "../../redux/store";
-import { useUpdateCurrentLine } from "../useUpdateCurrentLine";
+import { useUpdateCurrentTimeLine } from "../useUpdateCurrentTimeLine";
 
 export const useEditTimer = () => {
   const { playerRef, rangeRef, timeInputRef } = useRefs();
@@ -13,7 +13,7 @@ export const useEditTimer = () => {
   const editAtomStore = useJotaiStore();
   const editReduxStore = useReduxStore<RootState>();
 
-  const updateCurrentLine = useUpdateCurrentLine();
+  const updateCurrentLine = useUpdateCurrentTimeLine();
 
   return () => {
     const currentTime = playerRef.current!.getCurrentTime().toFixed(3);

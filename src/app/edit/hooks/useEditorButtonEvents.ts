@@ -17,7 +17,7 @@ import { useRefs } from "../edit-contexts/refsProvider";
 import { setLastAddedTime, setMapData } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { addHistory } from "../redux/undoredoSlice";
-import { useDeleteAddingTopPhrase } from "./manyPhrase";
+import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
 import { useGetSeekCount } from "./useGetSeekCount";
 import { useUpdateNewMapBackUp } from "./useUpdateNewMapBackUp";
@@ -45,7 +45,8 @@ export const useLineAddButtonEvent = () => {
   const { timeInputRef, playerRef } = useRefs();
   const setCanUpload = useSetCanUploadAtom();
   const lineInputReducer = useLineInputReducer();
-  const deleteTopLyricsText = useDeleteAddingTopPhrase();
+  const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
+  const pickupTopPhrase = usePickupTopPhrase();
 
   return (isShiftKey: boolean) => {
     const mapData = editReduxStore.getState().mapData.value;
@@ -76,7 +77,8 @@ export const useLineAddButtonEvent = () => {
       lineInputReducer({ type: "reset" });
 
       const lyricsCopy = structuredClone(lyrics);
-      deleteTopLyricsText(lyricsCopy);
+      deleteAddingTopPhrase(lyricsCopy);
+      pickupTopPhrase();
     }
 
     setCanUpload(true);

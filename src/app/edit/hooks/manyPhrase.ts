@@ -17,7 +17,6 @@ export const usePickupTopPhrase = () => {
 
 export const useDeleteAddingTopPhrase = () => {
   const setManyPhrase = useSetManyPhraseAtom();
-  const pickupTopPhrase = usePickupTopPhrase();
   const editAtomStore = useJotaiStore();
 
   return (lyrics: string) => {
@@ -30,7 +29,5 @@ export const useDeleteAddingTopPhrase = () => {
 
       setManyPhrase(newText);
     }
-
-    pickupTopPhrase();
   };
 };
