@@ -1,6 +1,6 @@
 import {
   editWordConvertOptionAtom,
-  useSetIsLoadWordConvertAtom,
+  useSetIsLoadWordConvertingAtom,
 } from "@/app/edit/edit-atom/editAtom";
 import {
   ALPHABET_LIST,
@@ -54,7 +54,7 @@ export const useWordConvert = () => {
 const useFetchMorph = () => {
   const utils = clientApi.useUtils();
   const kanaToHira = useKanaToHira();
-  const setIsLoadWordConvert = useSetIsLoadWordConvertAtom();
+  const setIsLoadWordConvert = useSetIsLoadWordConvertingAtom();
   const toast = useCustomToast();
   const { data: session } = useSession();
 

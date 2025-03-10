@@ -1,7 +1,7 @@
 import {
   useIsAddButtonDisabled,
   useIsDeleteButtonDisabledAtom,
-  useIsLoadWordConvertAtom,
+  useIsLoadWordConvertingAtom,
   useIsUpdateButtonDisabledAtom,
 } from "@/app/edit/edit-atom/editAtom";
 import {
@@ -27,7 +27,7 @@ const EditorButtons = () => {
   const wordConvertButtonEvent = useWordConvertButtonEvent();
   const lineDelete = useLineDelete();
 
-  const isLoadWordConvert = useIsLoadWordConvertAtom();
+  const isLoadWordConvert = useIsLoadWordConvertingAtom();
 
   const buttonConfigs = {
     add: {

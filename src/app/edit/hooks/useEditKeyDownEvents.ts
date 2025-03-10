@@ -2,10 +2,11 @@ import { LineEdit } from "@/types";
 import { useStore as useJotaiStore } from "jotai";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 
+import { YTPlayer } from "@/types/global-types";
 import {
-  editAddLyricsTextAtom,
   editDirectEditCountAtom,
   editLineSelectedCountAtom,
+  editManyLyricsAtom,
   editSpeedAtom,
   isAddButtonDisabledAtom,
   isDeleteButtonDisabledAtom,
@@ -20,10 +21,8 @@ import { useRefs } from "../edit-contexts/refsProvider";
 import { mapDataRedo, mapDataUndo } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { redo, undo } from "../redux/undoredoSlice";
-import { useDeleteTopLyricsText, useSetTopLyricsText } from "./useEditAddLyricsTextHooks";
-
-import { YTPlayer } from "@/types/global-types";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
+import { useDeleteTopLyricsText, useSetTopLyrics } from "./useEditManyLyricsTextHooks";
 import {
   useLineAddButtonEvent,
   useLineDelete,
@@ -58,7 +57,7 @@ export const useWindowKeydownEvent = () => {
   const dispatch = useDispatch();
   const lineInputReducer = useLineInputReducer();
   const speedReducer = useSpeedReducer();
-  const setTopLyricsText = useSetTopLyricsText();
+  const setTopLyricsText = useSetTopLyrics();
   const setDirectEdit = useSetEditDirectEditCountAtom();
 
   const undoLine = useUndoLine();
@@ -72,21 +71,21 @@ export const useWindowKeydownEvent = () => {
 
   return (event: KeyboardEvent, optionModalIndex: number | null) => {
     const IS_FOCUS_INPUT = document.activeElement instanceof HTMLInputElement;
-    const iS_FOCUS_ADD_LYRICS_TEXTAREA = document.activeElement!.id === "add_lyrics_text";
+    const iS_FOCUS_MANY_LYRICS_TEXTAREA = document.activeElement!.id === "many_lyrics_text";
 
     if (event.key === "Tab") {
-      if (!iS_FOCUS_ADD_LYRICS_TEXTAREA) {
-        const textarea = document.getElementById("add_lyrics_text") as HTMLTextAreaElement;
+      if (!iS_FOCUS_MANY_LYRICS_TEXTAREA) {
+        const textarea = document.getElementById("many_lyrics_text") as HTMLTextAreaElement;
         if (textarea) {
           textarea.focus();
           textarea.scrollTop = 0;
           textarea.setSelectionRange(0, 0);
         }
-      } else if (iS_FOCUS_ADD_LYRICS_TEXTAREA) {
+      } else if (iS_FOCUS_MANY_LYRICS_TEXTAREA) {
         (document.activeElement as HTMLElement)?.blur();
       }
       event.preventDefault();
-    } else if (!iS_FOCUS_ADD_LYRICS_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
+    } else if (!iS_FOCUS_MANY_LYRICS_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
       const player = playerRef!.current as YTPlayer;
       const undoredoState = editReduxStore.getState().undoRedo;
 
@@ -149,9 +148,9 @@ export const useWindowKeydownEvent = () => {
 
               dispatch(mapDataUndo(undoredoState.present));
               if (undoredoState.present.type === "add") {
-                const addLyricsText = editAtomStore.get(editAddLyricsTextAtom);
+                const ManyLyricsText = editAtomStore.get(editManyLyricsAtom);
 
-                undoLine(data, addLyricsText);
+                undoLine(data, ManyLyricsText);
                 const speed = editAtomStore.get(editSpeedAtom);
                 player.seekTo(Number(data.time) - 3 * speed, true);
               }
@@ -200,7 +199,7 @@ export const useWindowKeydownEvent = () => {
           break;
 
         case "KeyQ":
-          setTopLyricsText(undefined);
+          setTopLyricsText();
           event.preventDefault();
 
           break;
@@ -247,7 +246,7 @@ function useSeekNextPrev() {
   const editReduxStore = useReduxStore<RootState>();
   const lineInputReducer = useLineInputReducer();
   const tbodyScroll = useTbodyScroll();
-  const { addLineSeekColor} = useChangeLineRowColor()
+  const { addLineSeekColor } = useChangeLineRowColor();
 
   return (type: "next" | "prev") => {
     const mapData = editReduxStore.getState().mapData.value;

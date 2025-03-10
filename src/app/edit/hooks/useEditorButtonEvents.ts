@@ -18,7 +18,7 @@ import { setLastAddedTime, setMapData } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { addHistory } from "../redux/undoredoSlice";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import { useDeleteTopLyricsText } from "./useEditAddLyricsTextHooks";
+import { useDeleteTopLyricsText } from "./useEditManyLyricsTextHooks";
 import { useGetSeekCount } from "./useGetSeekCount";
 import { useUpdateNewMapBackUp } from "./useUpdateNewMapBackUp";
 import { useWordConvert } from "./useWordConvert";
@@ -49,15 +49,6 @@ export const useLineAddButtonEvent = () => {
 
   return (isShiftKey: boolean) => {
     const mapData = editReduxStore.getState().mapData.value;
-
-    const endAfterLineIndex =
-      mapData.length -
-      1 -
-      mapData
-        .slice()
-        .reverse()
-        .findIndex((line) => line.lyrics === "end");
-
     const isYTPlaying = editAtomStore.get(isEditYouTubePlayingAtom);
     const addTimeOffset = editAtomStore.get(editAddTimeOffsetAtom);
 

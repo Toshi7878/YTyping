@@ -320,24 +320,24 @@ export const useSetEditTimeCountAtom = () => {
   return useSetAtom(editTimeCountAtom, { store: editAtomStore });
 };
 
-export const editAddLyricsTextAtom = atom<string>("");
+export const editManyLyricsAtom = atom<string>("");
 
-export const useEditAddLyricsTextAtom = () => {
-  return useAtomValue(editAddLyricsTextAtom, { store: editAtomStore });
+export const useEditManyLyricsAtom = () => {
+  return useAtomValue(editManyLyricsAtom, { store: editAtomStore });
 };
 
-export const useSetEditAddLyricsTextAtom = () => {
-  return useSetAtom(editAddLyricsTextAtom, { store: editAtomStore });
+export const useSetEditManyLyricsAtom = () => {
+  return useSetAtom(editManyLyricsAtom, { store: editAtomStore });
 };
 
-const editIsLoadWordConvertAtom = atom<boolean>(false);
+const editIsLoadWordConvertingAtom = atom<boolean>(false);
 
-export const useIsLoadWordConvertAtom = () => {
-  return useAtomValue(editIsLoadWordConvertAtom, { store: editAtomStore });
+export const useIsLoadWordConvertingAtom = () => {
+  return useAtomValue(editIsLoadWordConvertingAtom, { store: editAtomStore });
 };
 
-export const useSetIsLoadWordConvertAtom = () => {
-  return useSetAtom(editIsLoadWordConvertAtom, { store: editAtomStore });
+export const useSetIsLoadWordConvertingAtom = () => {
+  return useSetAtom(editIsLoadWordConvertingAtom, { store: editAtomStore });
 };
 
 const editIsLrcConvertingAtom = atom<boolean>(false);

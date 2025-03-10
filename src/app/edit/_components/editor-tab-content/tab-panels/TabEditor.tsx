@@ -1,9 +1,9 @@
 import { ThemeColors } from "@/types";
 import { Card, CardBody, Flex, Stack, useTheme } from "@chakra-ui/react";
 
-import EditorAddLyricsInput from "./tab-editor-child/EditorAddLyricsInput";
 import EditorButtons from "./tab-editor-child/EditorButtons";
 import EditorLineInput from "./tab-editor-child/EditorInputs";
+import EditorManyLyricsTextarea from "./tab-editor-child/EditorManyLyricsTextarea";
 import AddTimeAdjust from "./tab-settings-shortcutlist-child/settings-child/AddTimeAdjust";
 
 const TabEditor = () => {
@@ -25,7 +25,7 @@ const TabEditor = () => {
             <AddTimeAdjust />
           </Flex>
 
-          <EditorAddLyricsInput />
+          <EditorManyLyricsTextarea />
         </Stack>
       </CardBody>
     </Card>

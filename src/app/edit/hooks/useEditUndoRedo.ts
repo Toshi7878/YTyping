@@ -1,14 +1,14 @@
 import { LineEdit } from "@/types";
-import { useLineInputReducer, useSetEditAddLyricsTextAtom } from "../edit-atom/editAtom";
+import { useLineInputReducer, useSetEditManyLyricsAtom } from "../edit-atom/editAtom";
 
 export const useUndoLine = () => {
   const lineInputReducer = useLineInputReducer();
-  const setLyricsText = useSetEditAddLyricsTextAtom();
+  const setLyricsText = useSetEditManyLyricsAtom();
 
-  return (undoLine: LineEdit, addLyrics: string) => {
+  return (undoLine: LineEdit, ManyLyrics: string) => {
     //Ctrl + Zで戻す
     const lyrics = undoLine.lyrics;
-    const lines = addLyrics?.split("\n") || [];
+    const lines = ManyLyrics?.split("\n") || [];
     lines.unshift(lyrics);
     const newText = lines.join("\n");
     setLyricsText(newText);

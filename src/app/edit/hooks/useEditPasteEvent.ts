@@ -1,7 +1,7 @@
-import { useSetTopLyricsText } from "./useEditAddLyricsTextHooks";
+import { useSetTopLyrics } from "./useEditManyLyricsTextHooks";
 
-export const useAddLyricsTextPasteEvents = () => {
-  const setTopLyricsText = useSetTopLyricsText();
+export const useManyLyricsTextPasteEvent = () => {
+  const setTopLyrics = useSetTopLyrics();
 
   return async () => {
     setTimeout(() => {
@@ -10,9 +10,10 @@ export const useAddLyricsTextPasteEvents = () => {
         document.activeElement.blur();
       }
     });
-    const newText = await navigator.clipboard.readText();
-    const lines = newText.split("\n") || [];
 
-    setTopLyricsText(lines[0]);
+    const newText = await navigator.clipboard.readText();
+    const lines = newText.split(/\r\n|\n/) || [];
+
+    setTopLyrics(lines[0]);
   };
 };
