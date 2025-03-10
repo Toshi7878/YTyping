@@ -320,14 +320,14 @@ export const useSetEditTimeCountAtom = () => {
   return useSetAtom(editTimeCountAtom, { store: editAtomStore });
 };
 
-export const editManyLyricsAtom = atom<string>("");
+export const manyPhraseAtom = atom<string>("");
 
-export const useEditManyLyricsAtom = () => {
-  return useAtomValue(editManyLyricsAtom, { store: editAtomStore });
+export const useManyPhraseAtom = () => {
+  return useAtomValue(manyPhraseAtom, { store: editAtomStore });
 };
 
-export const useSetEditManyLyricsAtom = () => {
-  return useSetAtom(editManyLyricsAtom, { store: editAtomStore });
+export const useSetManyPhraseAtom = () => {
+  return useSetAtom(manyPhraseAtom, { store: editAtomStore });
 };
 
 const editIsLoadWordConvertingAtom = atom<boolean>(false);

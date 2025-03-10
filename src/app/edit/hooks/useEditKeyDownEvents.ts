@@ -6,12 +6,12 @@ import { YTPlayer } from "@/types/global-types";
 import {
   editDirectEditCountAtom,
   editLineSelectedCountAtom,
-  editManyLyricsAtom,
   editSpeedAtom,
   isAddButtonDisabledAtom,
   isDeleteButtonDisabledAtom,
   isEditYouTubePlayingAtom,
   isUpdateButtonDisabledAtom,
+  manyPhraseAtom,
   useLineInputReducer,
   useSetEditDirectEditCountAtom,
   useSetEditLineLyricsAtom,
@@ -21,8 +21,8 @@ import { useRefs } from "../edit-contexts/refsProvider";
 import { mapDataRedo, mapDataUndo } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { redo, undo } from "../redux/undoredoSlice";
+import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import { useDeleteTopLyricsText, useSetTopLyrics } from "./useEditManyLyricsTextHooks";
 import {
   useLineAddButtonEvent,
   useLineDelete,
@@ -57,12 +57,12 @@ export const useWindowKeydownEvent = () => {
   const dispatch = useDispatch();
   const lineInputReducer = useLineInputReducer();
   const speedReducer = useSpeedReducer();
-  const setTopLyricsText = useSetTopLyrics();
+  const pickupTopPhrase = usePickupTopPhrase();
   const setDirectEdit = useSetEditDirectEditCountAtom();
 
   const undoLine = useUndoLine();
   const wordFindReplace = useWordFindReplace();
-  const deleteTopLyricsText = useDeleteTopLyricsText();
+  const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
 
   const lineAddButtonEvent = useLineAddButtonEvent();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
@@ -71,21 +71,21 @@ export const useWindowKeydownEvent = () => {
 
   return (event: KeyboardEvent, optionModalIndex: number | null) => {
     const IS_FOCUS_INPUT = document.activeElement instanceof HTMLInputElement;
-    const iS_FOCUS_MANY_LYRICS_TEXTAREA = document.activeElement!.id === "many_lyrics_text";
+    const iS_FOCUS_MANY_PHRASE_TEXTAREA = document.activeElement!.id === "many_phrase_textarea";
 
     if (event.key === "Tab") {
-      if (!iS_FOCUS_MANY_LYRICS_TEXTAREA) {
-        const textarea = document.getElementById("many_lyrics_text") as HTMLTextAreaElement;
+      if (!iS_FOCUS_MANY_PHRASE_TEXTAREA) {
+        const textarea = document.getElementById("many_phrase_textarea") as HTMLTextAreaElement;
         if (textarea) {
           textarea.focus();
           textarea.scrollTop = 0;
           textarea.setSelectionRange(0, 0);
         }
-      } else if (iS_FOCUS_MANY_LYRICS_TEXTAREA) {
+      } else if (iS_FOCUS_MANY_PHRASE_TEXTAREA) {
         (document.activeElement as HTMLElement)?.blur();
       }
       event.preventDefault();
-    } else if (!iS_FOCUS_MANY_LYRICS_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
+    } else if (!iS_FOCUS_MANY_PHRASE_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
       const player = playerRef!.current as YTPlayer;
       const undoredoState = editReduxStore.getState().undoRedo;
 
@@ -148,9 +148,9 @@ export const useWindowKeydownEvent = () => {
 
               dispatch(mapDataUndo(undoredoState.present));
               if (undoredoState.present.type === "add") {
-                const ManyLyricsText = editAtomStore.get(editManyLyricsAtom);
+                const ManyPhraseText = editAtomStore.get(manyPhraseAtom);
 
-                undoLine(data, ManyLyricsText);
+                undoLine(data, ManyPhraseText);
                 const speed = editAtomStore.get(editSpeedAtom);
                 player.seekTo(Number(data.time) - 3 * speed, true);
               }
@@ -171,7 +171,7 @@ export const useWindowKeydownEvent = () => {
 
               if (future.type === "add") {
                 const data = future.data as LineEdit;
-                deleteTopLyricsText(data.lyrics);
+                deleteAddingTopPhrase(data.lyrics);
               }
 
               dispatch(redo());
@@ -199,7 +199,7 @@ export const useWindowKeydownEvent = () => {
           break;
 
         case "KeyQ":
-          setTopLyricsText();
+          pickupTopPhrase();
           event.preventDefault();
 
           break;

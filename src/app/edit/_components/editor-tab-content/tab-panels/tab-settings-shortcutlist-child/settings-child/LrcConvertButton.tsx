@@ -1,6 +1,6 @@
 "use client";
 import { useSetIsLrcConvertingAtom } from "@/app/edit/edit-atom/editAtom";
-import { useWordConvert } from "@/app/edit/hooks/useWordConvert";
+import { useWordConverter } from "@/app/edit/hooks/useWordConverter";
 import { RootState } from "@/app/edit/redux/store";
 import { ImportFile } from "@/app/edit/ts/tab/settings/importFile";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 export default function LrcConvertButton() {
   const dispatch = useDispatch();
   const setIsLrcConverting = useSetIsLrcConvertingAtom();
-  const wordConvert = useWordConvert();
+  const wordConvert = useWordConverter();
   const toast = useCustomToast();
 
   const mapData = useSelector((state: RootState) => state.mapData!.value);

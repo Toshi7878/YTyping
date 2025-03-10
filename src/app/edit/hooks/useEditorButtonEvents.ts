@@ -17,11 +17,11 @@ import { useRefs } from "../edit-contexts/refsProvider";
 import { setLastAddedTime, setMapData } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { addHistory } from "../redux/undoredoSlice";
+import { useDeleteAddingTopPhrase } from "./manyPhrase";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import { useDeleteTopLyricsText } from "./useEditManyLyricsTextHooks";
 import { useGetSeekCount } from "./useGetSeekCount";
 import { useUpdateNewMapBackUp } from "./useUpdateNewMapBackUp";
-import { useWordConvert } from "./useWordConvert";
+import { useWordConverter } from "./useWordConverter";
 
 const timeValidate = (time: number) => {
   if (0 >= time) {
@@ -45,7 +45,7 @@ export const useLineAddButtonEvent = () => {
   const { timeInputRef, playerRef } = useRefs();
   const setCanUpload = useSetCanUploadAtom();
   const lineInputReducer = useLineInputReducer();
-  const deleteTopLyricsText = useDeleteTopLyricsText();
+  const deleteTopLyricsText = useDeleteAddingTopPhrase();
 
   return (isShiftKey: boolean) => {
     const mapData = editReduxStore.getState().mapData.value;
@@ -175,7 +175,7 @@ export const useWordConvertButtonEvent = () => {
   const editAtomStore = useJotaiStore();
 
   const lineInputReducer = useLineInputReducer();
-  const wordConvert = useWordConvert();
+  const wordConvert = useWordConverter();
 
   return async () => {
     const lyrics = editAtomStore.get(editLineLyricsAtom);

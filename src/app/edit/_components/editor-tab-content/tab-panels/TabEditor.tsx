@@ -3,7 +3,7 @@ import { Card, CardBody, Flex, Stack, useTheme } from "@chakra-ui/react";
 
 import EditorButtons from "./tab-editor-child/EditorButtons";
 import EditorLineInput from "./tab-editor-child/EditorInputs";
-import EditorManyLyricsTextarea from "./tab-editor-child/EditorManyLyricsTextarea";
+import EditorManyPhraseTextarea from "./tab-editor-child/EditorManyPhraseTextarea";
 import AddTimeAdjust from "./tab-settings-shortcutlist-child/settings-child/AddTimeAdjust";
 
 const TabEditor = () => {
@@ -24,8 +24,7 @@ const TabEditor = () => {
             <EditorButtons />
             <AddTimeAdjust />
           </Flex>
-
-          <EditorManyLyricsTextarea />
+          <EditorManyPhraseTextarea />
         </Stack>
       </CardBody>
     </Card>

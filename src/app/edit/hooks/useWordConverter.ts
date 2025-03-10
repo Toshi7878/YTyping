@@ -25,7 +25,7 @@ const allowedChars = new Set([
   ...NUM_LIST,
 ]);
 
-export const useWordConvert = () => {
+export const useWordConverter = () => {
   const editAtomStore = useJotaiStore();
   const fetchMorph = useFetchMorph();
   const filterWordSymbol = useFilterWordSymbol();
