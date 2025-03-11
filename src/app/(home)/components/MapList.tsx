@@ -70,12 +70,12 @@ function MapList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  // const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
+  const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
 
-  // const isLoading = isFirstLoading || (isFetching && isRandomSort && !isFetchingNextPage);
-  // if (isLoading) {
-  //   return <LoadingMapCard cardLength={10} />;
-  // }
+  const isLoading = isFirstLoading || (isFetching && isRandomSort && !isFetchingNextPage);
+  if (isLoading) {
+    return <LoadingMapCard cardLength={10} />;
+  }
 
   const queryState = queryClient.getQueryState([
     ...QUERY_KEYS.mapList,
@@ -85,7 +85,7 @@ function MapList() {
 
   return (
     <InfiniteScroll
-      className={queryState?.fetchStatus === "fetching" ? "opacity-20" : ""}
+      className={!isLoading && isSearching ? "opacity-20" : ""}
       loadMore={() => fetchNextPage()}
       loader={
         <Box key={0}>

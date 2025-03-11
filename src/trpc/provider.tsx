@@ -9,13 +9,7 @@ import SuperJSON from "superjson";
 import { clientApi } from "./client-api";
 
 function makeQueryClient() {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 60 * 1000,
-      },
-    },
-  });
+  return new QueryClient();
 }
 
 let browserQueryClient: QueryClient | undefined = undefined;
