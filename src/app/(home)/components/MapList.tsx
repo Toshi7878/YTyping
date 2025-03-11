@@ -4,7 +4,6 @@ import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLink from "@/components/map-card/child/child/MapLink";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -63,9 +62,9 @@ function MapList() {
   } = useMapListInfiniteQuery(queryParams);
 
   useEffect(() => {
-    queryClient.ensureQueryData({
-      queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
-    });
+    // queryClient.ensureQueryData({
+    //   queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
+    // });
     setIsSearchingAtom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
@@ -76,12 +75,6 @@ function MapList() {
   if (isLoading) {
     return <LoadingMapCard cardLength={10} />;
   }
-
-  const queryState = queryClient.getQueryState([
-    ...QUERY_KEYS.mapList,
-    ...Object.values(queryParams),
-  ]);
-  console.log(queryState);
 
   return (
     <InfiniteScroll
