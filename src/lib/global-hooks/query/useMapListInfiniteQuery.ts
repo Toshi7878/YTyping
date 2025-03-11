@@ -1,6 +1,6 @@
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { MapListParams } from "../../../app/(home)/components/MapList";
 
@@ -30,7 +30,7 @@ const fetchMapList = async ({
 };
 
 export const useMapListInfiniteQuery = (queryParams: MapListParams) => {
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
     queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, ...queryParams }),
     initialPageParam: 0,
