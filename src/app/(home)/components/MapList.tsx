@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
 import {
-  generateMapListInfiniteQueryKey,
+  useGenerateMapListInfiniteQueryKey,
   useMapListInfiniteQuery,
 } from "../../../lib/global-hooks/query/useMapListInfiniteQuery";
 import { useIsSearchingAtom, useSetIsSearchingAtom } from "../atoms/atoms";
@@ -36,7 +36,7 @@ function MapList() {
   const isSearching = useIsSearchingAtom();
   const setIsSearchingAtom = useSetIsSearchingAtom();
   const queryClient = useQueryClient();
-  const { queryKey } = generateMapListInfiniteQueryKey();
+  const { queryKey } = useGenerateMapListInfiniteQueryKey();
 
   const {
     data,

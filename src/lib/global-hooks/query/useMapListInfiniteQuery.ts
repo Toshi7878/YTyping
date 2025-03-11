@@ -35,7 +35,7 @@ const fetchMapList = async ({
 
 export const useMapListInfiniteQuery = () => {
   const { data: session } = useSession();
-  const { queryKey, params } = generateMapListInfiniteQueryKey();
+  const { queryKey, params } = useGenerateMapListInfiniteQueryKey();
 
   return useSuspenseInfiniteQuery({
     queryKey,
@@ -53,7 +53,7 @@ export const useMapListInfiniteQuery = () => {
   });
 };
 
-export const generateMapListInfiniteQueryKey = () => {
+export const useGenerateMapListInfiniteQueryKey = () => {
   const queryParams = useGetMapListParams();
 
   return { queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)], params: queryParams };
