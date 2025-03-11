@@ -236,7 +236,7 @@ export async function actions(
       return mapId;
     });
 
-    revalidatePath("/", "page");
+    revalidatePath("/(home)");
 
     return {
       id: mapId,

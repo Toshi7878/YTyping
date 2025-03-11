@@ -53,7 +53,8 @@ export async function toggleLikeServerAction(
 
     await updateLike(mapId, userId, optimisticState);
 
-    revalidatePath(`/api/map-info`);
+    revalidatePath(`/type/${mapId}`);
+    revalidatePath(`/(home)`);
     return {
       id: null,
       title: "いいね完了",
