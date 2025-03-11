@@ -4,10 +4,8 @@ import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLink from "@/components/map-card/child/child/MapLink";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
@@ -33,7 +31,6 @@ function MapList() {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingAtom();
   const setIsSearchingAtom = useSetIsSearchingAtom();
-  const queryClient = useQueryClient();
 
   const {
     data,
@@ -48,12 +45,6 @@ function MapList() {
     setIsSearchingAtom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
-
-  useEffect(() => {
-    return () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.mapList, stale: true });
-    };
-  }, []);
 
   const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
 
