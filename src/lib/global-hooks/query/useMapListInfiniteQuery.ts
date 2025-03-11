@@ -40,8 +40,8 @@ export const useMapListInfiniteQuery = (queryParams: MapListParams) => {
       allPages.length > 1 ? allPages.length - 2 : undefined,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
-    staleTime: Infinity,
+    refetchOnMount: true,
+    staleTime: 1000 * 60 * 5,
     gcTime: Infinity,
   });
 };
