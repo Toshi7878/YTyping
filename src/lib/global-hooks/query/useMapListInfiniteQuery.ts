@@ -48,7 +48,6 @@ export const useMapListInfiniteQuery = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: true,
-    staleTime: 1000 * 60 * 5,
     gcTime: Infinity,
   });
 };
