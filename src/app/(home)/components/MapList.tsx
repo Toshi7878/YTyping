@@ -4,6 +4,7 @@ import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLink from "@/components/map-card/child/child/MapLink";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,10 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
-import {
-  useGenerateMapListInfiniteQueryKey,
-  useMapListInfiniteQuery,
-} from "../../../lib/global-hooks/query/useMapListInfiniteQuery";
+import { useMapListInfiniteQuery } from "../../../lib/global-hooks/query/useMapListInfiniteQuery";
 import { useIsSearchingAtom, useSetIsSearchingAtom } from "../atoms/atoms";
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH, PARAM_NAME } from "../ts/const/consts";
 import MapCardLayout from "./MapCardLayout";
@@ -36,7 +34,6 @@ function MapList() {
   const isSearching = useIsSearchingAtom();
   const setIsSearchingAtom = useSetIsSearchingAtom();
   const queryClient = useQueryClient();
-  const { queryKey } = useGenerateMapListInfiniteQueryKey();
 
   const {
     data,
@@ -54,7 +51,7 @@ function MapList() {
 
   useEffect(() => {
     return () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.mapList, stale: true });
     };
   }, []);
 
