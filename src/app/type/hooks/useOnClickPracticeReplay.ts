@@ -19,7 +19,7 @@ export const useOnClickPracticeReplay = ({
     try {
       if (resultId) {
         setIsLoadingOverlay(true);
-        const resultData = await utils.result.getUserResultData.fetch({ resultId });
+        const resultData = await utils.result.getUserResultData.ensureData({ resultId });
         setLineResults(resultData);
       }
     } catch {

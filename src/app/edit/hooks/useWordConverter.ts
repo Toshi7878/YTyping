@@ -61,7 +61,7 @@ const useFetchMorph = () => {
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
     try {
-      const convertedWord = await utils.morphConvert.getKanaWord.fetch(
+      const convertedWord = await utils.morphConvert.getKanaWord.ensureData(
         { sentence },
         {
           staleTime: Infinity,

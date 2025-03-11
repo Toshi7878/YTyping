@@ -63,7 +63,7 @@ function MapList() {
   } = useMapListInfiniteQuery(queryParams);
 
   useEffect(() => {
-    queryClient.refetchQueries({
+    queryClient.ensureQueryData({
       queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
     });
     setIsSearchingAtom(false);
