@@ -7,6 +7,7 @@ import { UploadResult } from "@/types";
 import { LineResultData, SendResultData } from "../../app/type/ts/type";
 
 import { PrismaClient } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const statusSchema = z.object({
@@ -234,6 +235,8 @@ export async function actions(
       await calcRank({ db: tx, mapId: data.map_id, userId });
       return mapId;
     });
+
+    revalidatePath("/", "page");
 
     return {
       id: mapId,
