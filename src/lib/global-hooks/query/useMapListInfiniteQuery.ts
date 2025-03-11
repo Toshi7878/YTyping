@@ -2,6 +2,8 @@ import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Session } from "next-auth";
+import { useSession } from "next-auth/react";
 import { MapListParams } from "../../../app/(home)/components/MapList";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
@@ -11,11 +13,13 @@ const PAGE_SIZE = 40;
 
 const fetchMapList = async ({
   page,
+  session,
+
   ...params
-}: { page: number } & MapListParams): Promise<MapCardInfo[]> => {
+}: { page: number; session: Session | null } & MapListParams): Promise<MapCardInfo[]> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
-      params: { page, ...params },
+      params: { page, userId: session?.user.id, ...params },
     });
 
     if (response.status !== 200) {
@@ -30,9 +34,11 @@ const fetchMapList = async ({
 };
 
 export const useMapListInfiniteQuery = (queryParams: MapListParams) => {
+  const { data: session } = useSession();
+
   return useSuspenseInfiniteQuery({
     queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
-    queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, ...queryParams }),
+    queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, ...queryParams, session }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) =>
       lastPage.length === PAGE_SIZE ? allPages.length : undefined,

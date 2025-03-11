@@ -1,5 +1,4 @@
 import { PARAM_NAME } from "@/app/(home)/ts/const/consts";
-import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";
@@ -8,8 +7,7 @@ const MAP_LIST_TAKE_LENGTH = 40; //ここを編集したらInfiniteQueryのgetNe
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const session = await auth();
-  const userId = Number(session?.user?.id);
+  const userId = Number(searchParams.get("userId"));
 
   const page = searchParams.get("page") ?? "0";
   const mapKeyword = searchParams.get(PARAM_NAME.keyword) ?? "";
