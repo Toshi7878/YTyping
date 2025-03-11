@@ -11,7 +11,10 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
-import { useMapListInfiniteQuery } from "../../../lib/global-hooks/query/useMapListInfiniteQuery";
+import {
+  generateMapListInfiniteQueryKey,
+  useMapListInfiniteQuery,
+} from "../../../lib/global-hooks/query/useMapListInfiniteQuery";
 import { useIsSearchingAtom, useSetIsSearchingAtom } from "../atoms/atoms";
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH, PARAM_NAME } from "../ts/const/consts";
 import MapCardLayout from "./MapCardLayout";
@@ -28,29 +31,12 @@ function LoadingMapCard({ cardLength }: { cardLength: number }) {
   );
 }
 
-export type MapListParams = {
-  keyword: string;
-  filter: string;
-  sort: string;
-  maxRate: string;
-  minRate: string;
-  played: string;
-};
-
 function MapList() {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingAtom();
-  const queryClient = useQueryClient();
   const setIsSearchingAtom = useSetIsSearchingAtom();
-
-  const queryParams: MapListParams = {
-    keyword: searchParams.get(PARAM_NAME.keyword) || "",
-    filter: searchParams.get(PARAM_NAME.filter) || "",
-    sort: searchParams.get(PARAM_NAME.sort) || "",
-    maxRate: searchParams.get(PARAM_NAME.maxRate) || "",
-    minRate: searchParams.get(PARAM_NAME.minRate) || "",
-    played: searchParams.get(PARAM_NAME.played) || "",
-  };
+  const queryClient = useQueryClient();
+  const { queryKey } = generateMapListInfiniteQueryKey();
 
   const {
     data,
@@ -59,15 +45,18 @@ function MapList() {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useMapListInfiniteQuery(queryParams);
+  } = useMapListInfiniteQuery();
 
   useEffect(() => {
-    // queryClient.ensureQueryData({
-    //   queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)],
-    // });
     setIsSearchingAtom(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  useEffect(() => {
+    return () => {
+      queryClient.invalidateQueries({ queryKey });
+    };
+  }, []);
 
   const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
 
