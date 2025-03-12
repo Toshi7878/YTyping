@@ -1,6 +1,6 @@
+import { useCalcTypeSpeed } from "@/app/type/hooks/calcTypeSpeed";
 import { useInputModeChange } from "@/app/type/hooks/playing-hooks/useInputModeChange";
 import { useVideoSpeedChange } from "@/app/type/hooks/useVideoSpeedChange";
-import { useCalcTypeSpeed } from "@/app/type/ts/scene-ts/playing/calcTypeSpeed";
 import {
   comboAtom,
   lineResultsAtom,

@@ -26,8 +26,8 @@ import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
 import { CreateMap, MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { DEFAULT_STATUS_REF } from "../../../ts/const/typeDefaultValue";
-import { useCalcTypeSpeed } from "../../../ts/scene-ts/playing/calcTypeSpeed";
 import { LineData, Status } from "../../../ts/type";
+import { useCalcTypeSpeed } from "../../calcTypeSpeed";
 import { useGetTime } from "../../useGetTime";
 import { useOutPutLineResult } from "../useOutPutLineResult";
 import { useLineReplayUpdate, useReplay, useUpdateAllStatus } from "./replayHooks";
@@ -214,7 +214,7 @@ export const useCalcLineResult = () => {
     if (scene === "playing" || scene === "practice") {
       const typeSpeed = calcTypeSpeed({
         updateType: "lineUpdate",
-        constantLineTime: statusRef.current!.lineStatus.lineClearTime,
+        constantLineTime,
         totalTypeCount: status.type,
       });
 
