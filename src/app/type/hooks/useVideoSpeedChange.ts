@@ -4,13 +4,13 @@ import {
   sceneAtom,
   speedAtom,
   useSetPlayingNotifyAtom,
-  useSetTypePageSpeedAtom,
+  useSetPlaySpeedAtom,
 } from "../atoms/stateAtoms";
 import { useGetTime } from "./useGetTime";
 
 export const useVideoSpeedChange = () => {
   const typeAtomStore = useStore();
-  const setSpeedData = useSetTypePageSpeedAtom();
+  const setSpeedData = useSetPlaySpeedAtom();
   const setNotify = useSetPlayingNotifyAtom();
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
   const player = usePlayer();

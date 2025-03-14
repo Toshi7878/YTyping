@@ -31,10 +31,10 @@ import {
   useSetMapAtom,
   useSetPlayingInputModeAtom,
   useSetPlayingNotifyAtom,
+  useSetPlaySpeedAtom,
   useSetRankingScoresAtom,
   useSetSceneAtom,
   useSetTimeOffsetAtom,
-  useSetTypePageSpeedAtom,
   useSetTypingStatusAtoms,
 } from "../atoms/stateAtoms";
 import { useUpdateUserStats } from "../hooks/playing-hooks/useUpdateUserStats";
@@ -55,7 +55,7 @@ function Content({ mapInfo }: ContentProps) {
   const setMap = useSetMapAtom();
   const setScene = useSetSceneAtom();
   const setRankingScores = useSetRankingScoresAtom();
-  const setSpeedData = useSetTypePageSpeedAtom();
+  const setSpeedData = useSetPlaySpeedAtom();
   const setNotify = useSetPlayingNotifyAtom();
   const setLineResults = useSetLineResultsAtom();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
@@ -113,11 +113,8 @@ function Content({ mapInfo }: ContentProps) {
       setLineResults([]);
       setLineSelectIndex(0);
       setTimeOffset(0);
-      setRankingScores([]);
-      setSpeedData({
-        defaultSpeed: 1,
-        playSpeed: 1,
-      });
+      setRankingScores(RESET);
+      setSpeedData(RESET);
       resetTypingStatus();
       setCombo(0);
       setChangeCSSCount(0);

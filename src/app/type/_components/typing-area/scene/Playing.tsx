@@ -1,11 +1,11 @@
 import {
   usePlayingInputModeAtom,
+  usePlaySpeedAtom,
   useSceneAtom,
   useSetLineWordAtom,
   useSetLyricsAtom,
   useSetNextLyricsAtom,
   useTimeOffsetAtom,
-  useTypePageSpeedAtom,
   useUserTypingOptionsAtom,
 } from "@/app/type/atoms/stateAtoms";
 import { useEffect } from "react";
@@ -40,7 +40,7 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
   const volume = useVolumeAtom();
   const userOptions = useUserTypingOptionsAtom();
   const timeOffset = useTimeOffsetAtom();
-  const playSpeed = useTypePageSpeedAtom();
+  const playSpeed = usePlaySpeedAtom();
   const inputMode = usePlayingInputModeAtom();
   const typeAtomStore = useStore();
 

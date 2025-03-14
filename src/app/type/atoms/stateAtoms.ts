@@ -1,11 +1,11 @@
 import { RouterOutPuts } from "@/server/api/trpc";
 import { UseDisclosureReturn } from "@chakra-ui/react";
+import { $Enums } from "@prisma/client";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
 import { CreateMap } from "../../../lib/instanceMapData";
 import { defaultLineWord } from "../ts/const/consts";
-import { DEFAULT_SPEED, DEFAULT_USER_OPTIONS } from "../ts/const/typeDefaultValue";
 import {
   InputModeType,
   LineResultData,
@@ -116,7 +116,7 @@ export const useSetPlayingNotifyAtom = () => {
   return useSetAtom(playingNotifyAtom);
 };
 
-export const rankingScoresAtom = atom<number[]>([]);
+export const rankingScoresAtom = atomWithReset<number[]>([]);
 export const useRankingScoresAtom = () => {
   return useAtomValue(rankingScoresAtom);
 };
@@ -145,17 +145,31 @@ export const useSetLineSelectIndexAtom = () => {
   return useSetAtom(lineSelectIndexAtom);
 };
 
-export const speedAtom = atom<Speed>(DEFAULT_SPEED);
+export const speedAtom = atomWithReset<Speed>({
+  defaultSpeed: 1,
+  playSpeed: 1,
+});
 
-export const useTypePageSpeedAtom = () => {
+export const usePlaySpeedAtom = () => {
   return useAtomValue(speedAtom, { store: typeAtomStore });
 };
 
-export const useSetTypePageSpeedAtom = () => {
+export const useSetPlaySpeedAtom = () => {
   return useSetAtom(speedAtom, { store: typeAtomStore });
 };
 
-export const userTypingOptionsAtom = atom(DEFAULT_USER_OPTIONS);
+export const userTypingOptionsAtom = atomWithReset({
+  time_offset: 0,
+  kana_word_scroll: 10,
+  roma_word_scroll: 16,
+  type_sound: false,
+  miss_sound: false,
+  line_clear_sound: false,
+  next_display: "LYRICS" as $Enums.next_display,
+  line_completed_display: "HIGH_LIGHT" as $Enums.line_completed_display,
+  time_offset_key: "CTRL_LEFT_RIGHT" as $Enums.time_offset_key,
+  toggle_input_mode_key: "ALT_KANA" as $Enums.toggle_input_mode_key,
+});
 
 export const useUserTypingOptionsAtom = () => {
   return useAtomValue(userTypingOptionsAtom, { store: typeAtomStore });

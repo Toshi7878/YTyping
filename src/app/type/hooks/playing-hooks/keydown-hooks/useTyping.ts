@@ -9,12 +9,12 @@ import {
   lineResultsAtom,
   useMapAtom,
   usePlayingInputModeAtom,
+  usePlaySpeedAtom,
   useSceneAtom,
   useSetDisplayLineKpmAtom,
   useSetLineResultsAtom,
   useSetLineWordAtom,
   useSetTypingStatusAtoms,
-  useTypePageSpeedAtom,
 } from "@/app/type/atoms/stateAtoms";
 import { LineWord } from "@/app/type/ts/type";
 import { useStore } from "jotai";
@@ -36,7 +36,7 @@ export const useTyping = () => {
   const map = useMapAtom() as CreateMap;
   const inputMode = usePlayingInputModeAtom();
   const scene = useSceneAtom();
-  const speed = useTypePageSpeedAtom();
+  const speed = usePlaySpeedAtom();
   const typeAtomStore = useStore();
 
   const setLineResults = useSetLineResultsAtom();

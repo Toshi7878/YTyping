@@ -6,7 +6,6 @@ import {
   useSetPlayingNotifyAtom,
   useSetSceneAtom,
 } from "../../atoms/stateAtoms";
-import { DEFAULT_GAME_STATE_REF } from "../../ts/const/typeDefaultValue";
 import { useVideoSpeedChange } from "../useVideoSpeedChange";
 import { useRetry } from "./useRetry";
 
@@ -30,8 +29,8 @@ export const useChangePlayMode = () => {
       if (window.confirm(confirmMessage)) {
         typeAtomStore.set(gameStateRefAtom, (prev) => ({
           ...prev,
-          practice: structuredClone(DEFAULT_GAME_STATE_REF.practice),
-          replay: structuredClone(DEFAULT_GAME_STATE_REF.replay),
+          practice: { myResultId: null },
+          replay: { replayKeyCount: 0, userName: "" },
         }));
         setScene("playing");
         const drawerClosure = typeAtomStore.get(drawerClosureAtom);

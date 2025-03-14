@@ -1,5 +1,5 @@
 import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
-import { useSceneAtom, useTypePageSpeedAtom } from "@/app/type/atoms/stateAtoms";
+import { usePlaySpeedAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, HStack, Text, useTheme } from "@chakra-ui/react";
@@ -12,7 +12,7 @@ interface ReadyPlaySpeedProps {
   speedDownButtonRef: React.RefObject<HTMLButtonElement>;
 }
 const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
-  const speedData = useTypePageSpeedAtom();
+  const speedData = usePlaySpeedAtom();
   const scene = useSceneAtom();
   const theme: ThemeColors = useTheme();
   const typeAtomStore = useStore();

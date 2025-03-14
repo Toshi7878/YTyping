@@ -31,4 +31,7 @@ export const defaultNextLyrics: NextLyricsType = {
   romaWord: "",
 };
 
+export const CHANGE_TIME_OFFSET_VALUE = 0.05;
+export const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1;
+
 export const typeTicker = new Ticker();

@@ -11,7 +11,7 @@ import {
   useSetTimeOffsetAtom,
   useUserTypingOptionsAtom,
 } from "@/app/type/atoms/stateAtoms";
-import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/typeDefaultValue";
+import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/consts";
 import { LineWord } from "@/app/type/ts/type";
 import { CreateMap } from "@/lib/instanceMapData";
 import { UseDisclosureReturn } from "@chakra-ui/react";

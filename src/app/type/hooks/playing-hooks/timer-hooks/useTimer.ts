@@ -16,6 +16,7 @@ import {
   lineWordAtom,
   useMapAtom,
   usePlayingInputModeAtom,
+  usePlaySpeedAtom,
   useSceneAtom,
   useSetChangeCSSCountAtom,
   useSetComboAtom,
@@ -27,7 +28,6 @@ import {
   useSetLyricsAtom,
   useSetNextLyricsAtom,
   useSetTypingStatusAtoms,
-  useTypePageSpeedAtom,
   useUserTypingOptionsAtom,
 } from "@/app/type/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
@@ -44,7 +44,7 @@ import { useGetSeekLineCount } from "./useSeekGetLineCount";
 export const usePlayTimer = () => {
   const map = useMapAtom() as CreateMap;
   const scene = useSceneAtom();
-  const speed = useTypePageSpeedAtom();
+  const speed = usePlaySpeedAtom();
   const typeAtomStore = useStore();
   const player = usePlayer();
 
@@ -204,7 +204,7 @@ export const usePlayTimer = () => {
 export const useCalcLineResult = () => {
   const map = useMapAtom() as CreateMap;
   const scene = useSceneAtom();
-  const speed = useTypePageSpeedAtom();
+  const speed = usePlaySpeedAtom();
 
   const typeAtomStore = useStore();
   const setLineResults = useSetLineResultsAtom();
@@ -341,7 +341,7 @@ export const useUpdateLine = () => {
   const map = useMapAtom() as CreateMap;
   const userOptions = useUserTypingOptionsAtom();
   const inputMode = usePlayingInputModeAtom();
-  const speed = useTypePageSpeedAtom();
+  const speed = usePlaySpeedAtom();
   const scene = useSceneAtom();
   const typeAtomStore = useStore();
 

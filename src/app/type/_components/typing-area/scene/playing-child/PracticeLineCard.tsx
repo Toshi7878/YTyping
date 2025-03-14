@@ -3,7 +3,7 @@ import {
   useLineSelectIndexAtom,
   useMapAtom,
   usePlayingInputModeAtom,
-  useTypePageSpeedAtom,
+  usePlaySpeedAtom,
 } from "@/app/type/atoms/stateAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { useInteractJS } from "@/app/type/hooks/useInteractJS";
@@ -18,7 +18,7 @@ import ResultCardHeader from "../result/child/child/ResultCardHeader";
 const PracticeLineCard = () => {
   const map = useMapAtom();
   const lineResults = useLineResultsAtom();
-  const speedData = useTypePageSpeedAtom();
+  const speedData = usePlaySpeedAtom();
   const lineSelectIndex = useLineSelectIndexAtom();
   const inputMode = usePlayingInputModeAtom();
   const theme: ThemeColors = useTheme();

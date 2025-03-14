@@ -5,7 +5,7 @@ import {
   useSetUserTypingOptionsAtom,
   useUserTypingOptionsAtom,
 } from "@/app/type/atoms/stateAtoms";
-import { CHANGE_TIME_OFFSET_VALUE } from "@/app/type/ts/const/typeDefaultValue";
+import { CHANGE_TIME_OFFSET_VALUE } from "@/app/type/ts/const/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";

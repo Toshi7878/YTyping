@@ -1,11 +1,11 @@
-import { useSceneAtom, useTypePageSpeedAtom } from "@/app/type/atoms/stateAtoms";
+import { usePlaySpeedAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { useVideoSpeedChange } from "@/app/type/hooks/useVideoSpeedChange";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";
 
 const PlayingSpeedBadge = function () {
   const scene = useSceneAtom();
-  const speedData = useTypePageSpeedAtom();
+  const speedData = usePlaySpeedAtom();
   const { defaultSpeedChange, playingSpeedChange } = useVideoSpeedChange();
 
   return (

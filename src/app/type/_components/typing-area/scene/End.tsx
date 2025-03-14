@@ -1,4 +1,4 @@
-import { useTypePageSpeedAtom, useTypingStatusAtom } from "@/app/type/atoms/stateAtoms";
+import { usePlaySpeedAtom, useTypingStatusAtom } from "@/app/type/atoms/stateAtoms";
 import { Stack } from "@chakra-ui/react";
 import { useFormState } from "react-dom";
 
@@ -20,7 +20,7 @@ interface EndProps {
 
 const End = ({ onOpen }: EndProps) => {
   const { data: session } = useSession();
-  const speedData = useTypePageSpeedAtom();
+  const speedData = usePlaySpeedAtom();
   const sendResult = useSendResult();
   const [state, formAction] = useFormState(sendResult, INITIAL_STATE);
   const { updateTypingStats } = useUpdateUserStats();

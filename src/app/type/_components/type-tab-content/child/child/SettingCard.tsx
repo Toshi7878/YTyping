@@ -4,7 +4,6 @@ import {
   useSetIsOptionEdited,
   useSetUserTypingOptionsAtom,
 } from "@/app/type/atoms/stateAtoms";
-import { DEFAULT_USER_OPTIONS } from "@/app/type/ts/const/typeDefaultValue";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
@@ -29,6 +28,7 @@ import {
   useTheme,
 } from "@chakra-ui/react";
 import { useStore } from "jotai";
+import { RESET } from "jotai/utils";
 import { Dispatch, useEffect, useRef } from "react";
 import UserLineCompletedRadioButton from "./child/UserLineCompletedRadioButton";
 import UserNextDisplayRadioButton from "./child/UserNextDisplayRadioButton";
@@ -202,7 +202,7 @@ const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
   const setUserOptionsAtom = useSetUserTypingOptionsAtom();
 
   const handleResetOptions = () => {
-    setUserOptionsAtom(DEFAULT_USER_OPTIONS);
+    setUserOptionsAtom(RESET);
     setIsOptionEdited(true);
     toast({
       title: "設定をリセットしました",
