@@ -4,7 +4,7 @@ import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
 import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
-import { useSetAtom } from "jotai";
+import { useSetAtom, useStore } from "jotai";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
@@ -13,7 +13,13 @@ import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
-import { useProgress } from "../atoms/refAtoms";
+import {
+  gameStateRefAtom,
+  lineTypingStatusRefAtom,
+  totalProgressRefAtom,
+  typingStatusRefAtom,
+  ytStateRefAtom,
+} from "../atoms/refAtoms";
 import {
   focusTypingStatusAtoms,
   useIsLoadingOverlayAtom,
@@ -65,7 +71,7 @@ function Content({ mapInfo }: ContentProps) {
   const setLineCount = useSetAtom(focusTypingStatusAtoms.line);
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
-  const { totalProgress } = useProgress();
+  const typeAtomStore = useStore();
 
   const { updateTypingStats } = useUpdateUserStats();
 
@@ -84,7 +90,8 @@ function Content({ mapInfo }: ContentProps) {
       setLineResults(map.defaultLineResultData);
       setLineCount(map.lineLength);
       setLineSelectIndex(map.typingLineNumbers[0]);
-      totalProgress.max = map.movieTotalTime;
+      const totalProgress = typeAtomStore.get(totalProgressRefAtom);
+      totalProgress!.max = map.movieTotalTime;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
@@ -94,6 +101,11 @@ function Content({ mapInfo }: ContentProps) {
 
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
+      typeAtomStore.set(ytStateRefAtom, RESET);
+      typeAtomStore.set(gameStateRefAtom, RESET);
+      typeAtomStore.set(typingStatusRefAtom, RESET);
+      typeAtomStore.set(lineTypingStatusRefAtom, RESET);
+
       setMap(null);
       updateTypingStats();
       setScene(RESET);

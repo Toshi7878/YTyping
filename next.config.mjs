@@ -11,6 +11,7 @@ const nextConfig = {
 
     return config;
   },
+  transpilePackages: ["jotai-devtools"],
 };
 
 export default nextConfig;

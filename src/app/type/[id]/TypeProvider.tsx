@@ -10,7 +10,6 @@ import {
   mapUpdatedAtAtom,
   userTypingOptionsAtom,
 } from "../atoms/stateAtoms";
-
 interface TypeProviderProps {
   mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
   userTypingOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"];
