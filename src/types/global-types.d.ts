@@ -26,7 +26,7 @@ export interface YTPlayer {
   getAvailableQualityLevels(): Promise<readonly string[]>;
   getCurrentTime(): number;
   getDuration(): number;
-  getIframe(): Promise<HTMLIFrameElement>;
+  getIframe(): HTMLIFrameElement;
   getOption(module: string, option: string): Promise<any>;
   getOptions(): Promise<string[]>;
   getOptions(module: string): Promise<object>;
@@ -37,90 +37,80 @@ export interface YTPlayer {
     index?: number,
     startSeconds?: number,
     suggestedQuality?: string
-  ): Promise<void>;
+  );
   cuePlaylist(playlist: {
     listType: string;
     list?: string | undefined;
     index?: number | undefined;
     startSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  }): Promise<void>;
+  });
   loadPlaylist(
     playlist: string | readonly string[],
     index?: number,
     startSeconds?: number,
     suggestedQuality?: string
-  ): Promise<void>;
+  );
   loadPlaylist(playlist: {
     listType: string;
     list?: string | undefined;
     index?: number | undefined;
     startSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  }): Promise<void>;
-  getPlaylist(): Promise<readonly string[]>;
-  getPlaylistIndex(): Promise<number>;
-  getPlaybackQuality(): Promise<string>;
-  getPlaybackRate(): Promise<number>;
-  getPlayerState(): Promise<PlayerState>;
-  getVideoEmbedCode(): Promise<string>;
-  getVideoLoadedFraction(): Promise<number>;
-  getVideoUrl(): Promise<string>;
-  getVolume(): Promise<number>;
+  });
+  getPlaybackQuality(): string;
+  getPlaybackRate(): number;
+  getPlayerState(): PlayerState;
+  getVideoEmbedCode(): string;
+  getVideoLoadedFraction(): number;
+  getVideoUrl(): string;
+  getVolume(): number;
   cueVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string): Promise<void>;
   cueVideoById(video: {
     videoId: string;
     startSeconds?: number | undefined;
     endSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  }): Promise<void>;
-  cueVideoByUrl(
-    mediaContentUrl: string,
-    startSeconds?: number,
-    suggestedQuality?: string
-  ): Promise<void>;
+  });
+  cueVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string);
   cueVideoByUrl(video: {
     mediaContentUrl: string;
     startSeconds?: number | undefined;
     endSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  }): Promise<void>;
-  loadVideoByUrl(
-    mediaContentUrl: string,
-    startSeconds?: number,
-    suggestedQuality?: string
-  ): Promise<void>;
+  });
+  loadVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string);
   loadVideoByUrl(video: {
     mediaContentUrl: string;
     startSeconds?: number | undefined;
     endSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  }): Promise<void>;
-  loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string): Promise<void>;
+  });
+  loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string);
   loadVideoById(video: {
     videoId: string;
     startSeconds?: number | undefined;
     endSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  }): Promise<void>;
-  isMuted(): Promise<boolean>;
-  mute(): Promise<void>;
-  nextVideo(): Promise<void>;
-  pauseVideo(): Promise<void>;
-  playVideo(): Promise<void>;
-  playVideoAt(index: number): Promise<void>;
-  previousVideo(): Promise<void>;
-  removeEventListener(event: string, listener: (event: CustomEvent) => void): Promise<void>;
-  seekTo(seconds: number, allowSeekAhead: boolean): Promise<void>;
-  setLoop(loopPlaylists: boolean): Promise<void>;
-  setPlaybackQuality(suggestedQuality: string): Promise<void>;
-  setPlaybackRate(suggestedRate: number): Promise<void>;
-  setShuffle(shufflePlaylist: boolean): Promise<void>;
-  getSize(): Promise<PlayerSize>;
-  setSize(width: number, height: number): Promise<object>;
-  setVolume(volume: number): Promise<void>;
-  stopVideo(): Promise<void>;
-  unMute(): Promise<void>;
+  });
+  isMuted();
+  mute();
+  nextVideo(): void;
+  pauseVideo(): void;
+  playVideo(): void;
+  playVideoAt(index: number): void;
+  previousVideo(): void;
+  removeEventListener(event: string, listener: (event: CustomEvent) => void): void;
+  seekTo(seconds: number, allowSeekAhead: boolean): void;
+  setLoop(loopPlaylists: boolean): void;
+  setPlaybackQuality(suggestedQuality: string): void;
+  setPlaybackRate(suggestedRate: number): void;
+  setShuffle(shufflePlaylist: boolean): void;
+  getSize(): PlayerSize;
+  setSize(width: number, height: number): object;
+  setVolume(volume: number): void;
+  stopVideo(): void;
+  unMute(): void;
   on(eventType: "stateChange", listener: (event: CustomEvent & { data: number }) => void): void;
   on(eventType: EventType, listener: (event: CustomEvent) => void): void;
 }

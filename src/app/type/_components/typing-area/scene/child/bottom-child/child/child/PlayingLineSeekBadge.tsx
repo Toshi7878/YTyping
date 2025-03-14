@@ -1,4 +1,4 @@
-import { usePlayingNotifyAtom, useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { usePlayingNotifyAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { HStack } from "@chakra-ui/react";
 import CustomBadge from "./child/CustomBadge";
 import CustomKbd from "./child/CustomKbd";

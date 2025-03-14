@@ -1,11 +1,12 @@
-import { useStatusAtomsValues, useTypePageSpeedAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
+import { useTypePageSpeedAtom, useTypingStatusAtom } from "@/app/type/atoms/stateAtoms";
 import { Stack } from "@chakra-ui/react";
 import { useFormState } from "react-dom";
 
+import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
 import { useUpdateUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
 import { useSendResult } from "@/app/type/hooks/useSendResult";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
+import { useStore } from "jotai";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { CARD_BODY_MIN_HEIGHT } from "../TypingCard";
@@ -19,23 +20,18 @@ interface EndProps {
 
 const End = ({ onOpen }: EndProps) => {
   const { data: session } = useSession();
-
   const speedData = useTypePageSpeedAtom();
-
   const sendResult = useSendResult();
-  const statusAtomsValues = useStatusAtomsValues();
-
   const [state, formAction] = useFormState(sendResult, INITIAL_STATE);
-
-  const { bestScoreRef, gameStateRef } = useRefs();
   const { updateTypingStats } = useUpdateUserStats();
+  const typeAtomStore = useStore();
 
   useEffect(() => {
     updateTypingStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const status = statusAtomsValues();
+  const status = useTypingStatusAtom();
 
   if (status === undefined) {
     //タイピングページ　→　タイピングページに遷移時returnしないとclient errorがでる
@@ -43,9 +39,8 @@ const End = ({ onOpen }: EndProps) => {
   }
 
   const isPerfect = status.miss === 0 && status.lost === 0;
-  const isPlayingMode = gameStateRef.current!.playMode === "playing";
-
-  const isScoreUpdated = status.score >= bestScoreRef.current;
+  const isPlayingMode = typeAtomStore.get(gameStateRefAtom).playMode === "playing";
+  const isScoreUpdated = status.score >= typeAtomStore.get(gameStateRefAtom).myBestScore;
 
   const isDisplayRankingButton: boolean =
     !!session &&
@@ -58,11 +53,10 @@ const End = ({ onOpen }: EndProps) => {
     <Stack minH={CARD_BODY_MIN_HEIGHT} justifyContent="space-between">
       <EndText
         isPerfect={isPerfect}
-        gameStateRef={gameStateRef}
         session={session}
         status={status}
-        bestScoreRef={bestScoreRef}
         speedData={speedData}
+        playMode={typeAtomStore.get(gameStateRefAtom).playMode}
       />
       <EndMainButtonContainer
         formAction={formAction}
@@ -76,7 +70,7 @@ const End = ({ onOpen }: EndProps) => {
         isPlayingMode={isPlayingMode}
         isDisplayRankingButton={isDisplayRankingButton}
         state={state}
-        gameStateRef={gameStateRef}
+        playMode={typeAtomStore.get(gameStateRefAtom).playMode}
       />
     </Stack>
   );

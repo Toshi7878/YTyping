@@ -1,18 +1,22 @@
-import { LineWord } from "@/app/type/ts/type";
+import {
+  lineTypingStatusRefAtom,
+  typingStatusRefAtom,
+  ytStateRefAtom,
+} from "@/app/type/atoms/refAtoms";
 import {
   comboAtom,
+  focusTypingStatusAtoms,
   lineResultsAtom,
-  statusAtoms,
   useMapAtom,
   usePlayingInputModeAtom,
   useSceneAtom,
   useSetDisplayLineKpmAtom,
   useSetLineResultsAtom,
   useSetLineWordAtom,
-  useSetStatusAtoms,
+  useSetTypingStatusAtoms,
   useTypePageSpeedAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
+} from "@/app/type/atoms/stateAtoms";
+import { LineWord } from "@/app/type/ts/type";
 import { useStore } from "jotai";
 import { CreateMap, MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { Typing } from "../../../ts/scene-ts/playing/keydown/typingJudge";
@@ -29,8 +33,6 @@ interface HandleTypingParams {
 }
 
 export const useTyping = () => {
-  const { statusRef, ytStateRef } = useRefs();
-
   const map = useMapAtom() as CreateMap;
   const inputMode = usePlayingInputModeAtom();
   const scene = useSceneAtom();
@@ -52,7 +54,7 @@ export const useTyping = () => {
     getConstantRemainLineTime,
   } = useGetTime();
   const calcTypeSpeed = useCalcTypeSpeed();
-  const { setStatusValues } = useSetStatusAtoms();
+  const { setTypingStatus } = useSetTypingStatusAtoms();
   const updateAllStatus = useUpdateAllStatus();
 
   return ({ event, count, lineWord }: HandleTypingParams) => {
@@ -68,7 +70,7 @@ export const useTyping = () => {
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
       const constantLineTime = getConstantLineTime(lineTime);
 
-      const totalTypeCount = typeAtomStore.get(statusAtoms.type);
+      const totalTypeCount = typeAtomStore.get(focusTypingStatusAtoms.type);
       const combo = typeAtomStore.get(comboAtom);
       const typeSpeed = calcTypeSpeed({
         updateType: isCompleted ? "completed" : "keydown",
@@ -77,7 +79,7 @@ export const useTyping = () => {
       });
       updateSuccessStatusRefs({
         constantLineTime,
-        newLineWord: typingResult.newLineWord,
+        isCompleted,
         successKey: typingResult.successKey,
         typeChunk: typingResult.typeChunk,
         combo,
@@ -91,13 +93,13 @@ export const useTyping = () => {
         combo,
       });
 
-      const isPaused = ytStateRef.current?.isPaused;
+      const isPaused = typeAtomStore.get(ytStateRefAtom).isPaused;
       if (isCompleted && !isPaused) {
         if (scene === "practice" && speed.playSpeed >= 1) {
           const lineResults = typeAtomStore.get(lineResultsAtom);
 
           const lResult = lineResults[count - 1];
-          const lMiss = statusRef.current!.lineStatus.lineMiss;
+          const lMiss = typeAtomStore.get(lineTypingStatusRefAtom).miss;
 
           const lineScore = newStatus.point + newStatus.timeBonus + lMiss * MISS_PENALTY;
           const oldLineScore =
@@ -107,16 +109,14 @@ export const useTyping = () => {
           const newLineResults = [...lineResults];
 
           if (isUpdateResult) {
-            const tTime = Math.round(statusRef.current!.status.totalTypeTime * 1000) / 1000;
-            const mode = statusRef.current!.lineStatus.lineStartInputMode;
-            const sp = statusRef.current!.lineStatus.lineStartSpeed;
-            const typeResult = statusRef.current!.lineStatus.typeResult;
+            const tTime =
+              Math.round(typeAtomStore.get(typingStatusRefAtom).totalTypeTime * 1000) / 1000;
 
             newLineResults[count - 1] = {
               status: {
                 p: newStatus.point,
                 tBonus: newStatus.timeBonus,
-                lType: statusRef.current!.lineStatus.lineType,
+                lType: typeAtomStore.get(lineTypingStatusRefAtom).type,
                 lMiss,
                 lRkpm: typeSpeed!.lineRkpm,
                 lKpm: typeSpeed!.lineKpm,
@@ -124,10 +124,10 @@ export const useTyping = () => {
                 lLost: 0,
                 combo,
                 tTime,
-                mode,
-                sp,
+                mode: typeAtomStore.get(lineTypingStatusRefAtom).startInputMode,
+                sp: typeAtomStore.get(lineTypingStatusRefAtom).startSpeed,
               },
-              typeResult,
+              typeResult: typeAtomStore.get(lineTypingStatusRefAtom).typeResult,
             };
             setLineResults(newLineResults);
           }
@@ -137,7 +137,7 @@ export const useTyping = () => {
             newLineResults,
           });
 
-          setStatusValues({
+          setTypingStatus({
             ...newStatusReplay,
             point: newStatus.point,
             timeBonus: newStatus.timeBonus,

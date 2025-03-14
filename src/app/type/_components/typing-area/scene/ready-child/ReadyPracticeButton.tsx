@@ -1,15 +1,15 @@
+import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
 import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { ThemeColors } from "@/types";
 import { Button, useTheme } from "@chakra-ui/react";
+import { useStore } from "jotai";
 
 const ReadyPracticeButton = () => {
   const theme: ThemeColors = useTheme();
-  const { gameStateRef } = useRefs();
-
+  const typeAtomStore = useStore();
   const handleClick = useOnClickPracticeReplay({
     startMode: "practice",
-    resultId: gameStateRef.current?.practice.myResultId || null,
+    resultId: typeAtomStore.get(gameStateRefAtom).practice.myResultId || null,
   });
 
   return (

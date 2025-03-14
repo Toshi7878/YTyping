@@ -1,12 +1,12 @@
 "use client";
-import { LineResultData } from "@/app/type/ts/type";
 import {
   lineSelectIndexAtom,
   useLineResultsAtom,
   useMapAtom,
   useSceneAtom,
   useSetLineSelectIndexAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
+import { LineResultData } from "@/app/type/ts/type";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";

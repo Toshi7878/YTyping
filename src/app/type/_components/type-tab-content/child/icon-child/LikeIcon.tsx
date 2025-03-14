@@ -1,4 +1,4 @@
-import { useHasLocalLikeAtom, useSetHasLocalLikeAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useHasLocalLikeAtom, useSetHasLocalLikeAtom } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { INITIAL_STATE } from "@/config/consts/globalConst";

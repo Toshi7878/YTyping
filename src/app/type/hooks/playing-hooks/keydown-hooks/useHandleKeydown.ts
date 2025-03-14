@@ -1,5 +1,4 @@
-import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/typeDefaultValue";
-import { LineWord } from "@/app/type/ts/type";
+import { gameStateRefAtom, typingStatusRefAtom, ytStateRefAtom } from "@/app/type/atoms/refAtoms";
 import {
   drawerClosureAtom,
   lineSelectIndexAtom,
@@ -11,8 +10,9 @@ import {
   useSetPlayingNotifyAtom,
   useSetTimeOffsetAtom,
   useUserTypingOptionsAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
+} from "@/app/type/atoms/stateAtoms";
+import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/typeDefaultValue";
+import { LineWord } from "@/app/type/ts/type";
 import { CreateMap } from "@/lib/instanceMapData";
 import { UseDisclosureReturn } from "@chakra-ui/react";
 import { useStore } from "jotai";
@@ -27,7 +27,6 @@ import { useToggleLineList } from "../useToggleLineList";
 import { useTyping } from "./useTyping";
 
 export const useHandleKeydown = () => {
-  const { ytStateRef, statusRef } = useRefs();
   const isKeydownTyped = useIsKeydownTyped();
   const typing = useTyping();
   const playingShortcutKey = usePlayingShortcutKey();
@@ -36,9 +35,9 @@ export const useHandleKeydown = () => {
   const scene = useSceneAtom();
 
   return (event: KeyboardEvent) => {
-    const isPaused = ytStateRef.current?.isPaused;
+    const isPaused = typeAtomStore.get(ytStateRefAtom).isPaused;
     if (!isPaused || scene === "practice") {
-      const count = statusRef.current!.status.count;
+      const count = typeAtomStore.get(typingStatusRefAtom).count;
       const currentLineCount = count - 1;
 
       //ライン切り変えバグ回避(切り替わるギリギリでタイピングするとバグる)
@@ -75,7 +74,6 @@ const openDrawerCtrlKeyCodeList = ["KeyF"];
 
 const usePlayingShortcutKey = () => {
   const typeAtomStore = useStore();
-  const { gameStateRef } = useRefs();
   const map = useMapAtom() as CreateMap;
   const scene = useSceneAtom();
   const userOptions = useUserTypingOptionsAtom();
@@ -154,7 +152,7 @@ const usePlayingShortcutKey = () => {
         break;
 
       case "F4":
-        const playMode = gameStateRef.current!.playMode;
+        const playMode = typeAtomStore.get(gameStateRefAtom).playMode;
         retry(playMode);
         break;
       case "F7":

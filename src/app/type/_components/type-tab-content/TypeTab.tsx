@@ -1,6 +1,6 @@
 import { ThemeColors } from "@/types";
 import { HStack, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
-import { useSetTabIndexAtom, useTabIndexAtom } from "../../type-atoms/gameRenderAtoms";
+import { useSetTabIndexAtom, useTabIndexAtom } from "../../atoms/stateAtoms";
 import TabIcons from "./child/TabIcons";
 import TabLists from "./child/TabLists";
 import TabRanking from "./tab-ranking/TabRanking";

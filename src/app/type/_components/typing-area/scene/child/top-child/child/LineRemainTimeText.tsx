@@ -1,6 +1,5 @@
-import { useDisplayLineRemainTimeAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useDisplayLineRemainTimeAtom } from "@/app/type/atoms/stateAtoms";
 import { Text } from "@chakra-ui/react";
-import React from "react";
 
 const LineRemainTimeText = () => {
   const displayLineRemainTime = useDisplayLineRemainTimeAtom();

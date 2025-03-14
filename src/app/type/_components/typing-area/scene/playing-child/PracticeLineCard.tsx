@@ -1,12 +1,12 @@
-import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
-import { useInteractJS } from "@/app/type/hooks/useInteractJS";
 import {
   useLineResultsAtom,
   useLineSelectIndexAtom,
   useMapAtom,
   usePlayingInputModeAtom,
   useTypePageSpeedAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
+import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
+import { useInteractJS } from "@/app/type/hooks/useInteractJS";
 import { CHAR_POINT } from "@/lib/instanceMapData";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, CardFooter, CardHeader, useTheme } from "@chakra-ui/react";

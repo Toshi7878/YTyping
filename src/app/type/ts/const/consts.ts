@@ -1,5 +1,5 @@
 import { Ticker } from "@pixi/ticker";
-import { LineWord, NextLyricsType, Status } from "../type";
+import { LineWord, NextLyricsType } from "../type";
 
 export const RANKING_COLUMN_WIDTH = {
   rank: "7%",
@@ -16,18 +16,6 @@ export const STATUS_LABEL = [
   ["score", "type", "kpm", "rank"],
   ["point", "miss", "lost", "line"],
 ].flat();
-
-export const DEFAULT_STATUS: Status = {
-  score: 0,
-  point: 0,
-  timeBonus: 0,
-  type: 0,
-  miss: 0,
-  lost: 0,
-  kpm: 0,
-  rank: 1,
-  line: 0,
-};
 
 export const defaultLineWord: LineWord = {
   correct: { k: "", r: "" },

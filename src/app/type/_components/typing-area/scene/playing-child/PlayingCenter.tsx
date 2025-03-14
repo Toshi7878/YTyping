@@ -1,6 +1,5 @@
+import { skipAtom } from "@/app/type/atoms/stateAtoms";
 import { usePressSkip } from "@/app/type/hooks/playing-hooks/usePressSkip";
-import { skipAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import "@/styles/type.css";
 import { VStack } from "@chakra-ui/react";
 import { useStore } from "jotai";
@@ -15,16 +14,13 @@ interface PlayingCenterProps {
 }
 
 const PlayingCenter = ({ flex }: PlayingCenterProps) => {
-  const { gameStateRef } = useRefs();
-
-  const playMode = gameStateRef.current!.playMode;
+  const typeAtomStore = useStore();
 
   const pressSkip = usePressSkip();
-  const typeAtomStore = useStore();
 
   return (
     <VStack
-      sx={{ cursor: playMode === "playing" ? "none" : "auto" }}
+      cursor="none"
       flex={flex}
       isTruncated
       ml={-2}
@@ -35,7 +31,6 @@ const PlayingCenter = ({ flex }: PlayingCenterProps) => {
       id="typing_scene"
       onTouchStart={() => {
         const skip = typeAtomStore.get(skipAtom);
-        // タップ時の処理をここに記述
 
         if (skip) {
           pressSkip();

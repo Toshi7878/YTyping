@@ -18,7 +18,7 @@ const SearchContent = () => {
           <SearchModal />
           {!IS_IOS && !IS_ANDROID && (
             <Flex justifyContent="flex-end">
-              <VolumeRange playerRef={playerRef} />
+              <VolumeRange player={playerRef.current!} />
             </Flex>
           )}
         </Flex>

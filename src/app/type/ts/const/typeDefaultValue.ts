@@ -1,54 +1,11 @@
-import { RouterOutPuts } from "@/server/api/trpc";
 import { $Enums } from "@prisma/client";
-import { GameStateRef, PlayMode, StatusRef, YTStateRef } from "../type";
+import { PlayMode } from "../type";
 
-export const DEFAULT_STATUS_REF: StatusRef = {
-  status: {
-    count: 0,
-    romaType: 0,
-    kanaType: 0,
-    flickType: 0,
-    englishType: 0,
-    spaceType: 0,
-    symbolType: 0,
-    numType: 0,
-    rkpm: 0,
-    clearRate: 100,
-    kanaToRomaConvertCount: 0,
-    maxCombo: 0,
-    missCombo: 0,
-    totalTypeTime: 0,
-    totalLatency: 0,
-    completeCount: 0,
-    failureCount: 0,
-  },
-  lineStatus: {
-    lineType: 0,
-    lineMiss: 0,
-    lineClearTime: 0,
-    latency: 0,
-    typeResult: [],
-    lineStartSpeed: 1,
-    lineStartInputMode: "roma",
-  },
-  userStats: {
-    romaType: 0,
-    kanaType: 0,
-    flickType: 0,
-    englishType: 0,
-    spaceType: 0,
-    symbolType: 0,
-    numType: 0,
-    totalTypeTime: 0,
-    maxCombo: 0,
-  },
-};
-
-export const DEFAULT_YT_STATE_REF: YTStateRef = {
+export const DEFAULT_YT_STATE_REF = {
   isPaused: false,
   movieDuration: 0,
 };
-export const DEFAULT_GAME_STATE_REF: GameStateRef = {
+export const DEFAULT_GAME_STATE_REF = {
   isRetrySkip: false,
   retryCount: 1,
   playMode: "playing" as PlayMode,
@@ -59,7 +16,7 @@ export const DEFAULT_GAME_STATE_REF: GameStateRef = {
     userName: "",
   },
   practice: {
-    myResultId: null,
+    myResultId: null as number | null,
   },
 };
 
@@ -68,9 +25,7 @@ export const DEFAULT_SPEED = {
   playSpeed: 1,
 };
 
-export const DEFAULT_USER_OPTIONS: NonNullable<
-  RouterOutPuts["userTypingOption"]["getUserTypingOptions"]
-> = {
+export const DEFAULT_USER_OPTIONS = {
   time_offset: 0,
   kana_word_scroll: 10,
   roma_word_scroll: 16,

@@ -1,4 +1,3 @@
-import { StatusRef } from "@/app/type/ts/type";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 
@@ -8,7 +7,7 @@ export async function POST(request: Request) {
     const userId = session ? Number(session?.user.id) : 0;
 
     const bodyText = await request.text();
-    const input: StatusRef["userStats"] = JSON.parse(bodyText);
+    const input = JSON.parse(bodyText);
     const currentStats = await prisma.user_stats.findUnique({
       where: { user_id: userId },
       select: { max_combo: true },

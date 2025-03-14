@@ -1,11 +1,12 @@
+import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
 import {
   usePlayingNotifyAtom,
   useSceneAtom,
   useSetPlayingNotifyAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
+} from "@/app/type/atoms/stateAtoms";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion"; // 追加
+import { useStore } from "jotai";
 import { useEffect, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
 
@@ -16,11 +17,11 @@ interface PlayingNotifyProps {
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
 
 const PlayingNotify = ({ className = "" }: PlayingNotifyProps) => {
-  const { gameStateRef } = useRefs();
   const notify = usePlayingNotifyAtom();
   const setNotify = useSetPlayingNotifyAtom();
   const scene = useSceneAtom();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const typeAtomStore = useStore();
 
   const playModeNotify = () => {
     if (scene === "playing") {
@@ -83,7 +84,7 @@ const PlayingNotify = ({ className = "" }: PlayingNotifyProps) => {
           {notify.description === "ll" ? (
             <FaPause />
           ) : notify.description === "Replay" ? (
-            `${gameStateRef.current!.replay.userName} Replay`
+            `${typeAtomStore.get(gameStateRefAtom).replay.userName} Replay`
           ) : (
             notify.description
           )}

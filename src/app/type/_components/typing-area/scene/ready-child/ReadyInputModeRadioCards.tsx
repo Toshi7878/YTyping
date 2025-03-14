@@ -1,10 +1,10 @@
 "use client";
-import { InputModeType } from "@/app/type/ts/type";
 import {
   useReadyInputModeAtom,
   useReadySetInputModeAtom,
   useSetPlayingInputModeAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
+import { InputModeType } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
 import { Box, HStack, useRadio, useRadioGroup, UseRadioProps, useTheme } from "@chakra-ui/react";
 import React from "react";

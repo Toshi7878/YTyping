@@ -1,6 +1,6 @@
 import { useStore } from "jotai";
 import { romaConvert } from "../../../../lib/instanceMapData";
-import { InputModeType } from "../../ts/type";
+import { lineTypingStatusRefAtom, typingStatusRefAtom } from "../../atoms/refAtoms";
 import {
   lineWordAtom,
   playingInputModeAtom,
@@ -12,13 +12,11 @@ import {
   useSetNextLyricsAtom,
   useSetPlayingInputModeAtom,
   useSetPlayingNotifyAtom,
-} from "../../type-atoms/gameRenderAtoms";
-import { useRefs } from "../../type-contexts/refsProvider";
+} from "../../atoms/stateAtoms";
+import { InputModeType } from "../../ts/type";
 import { useGetTime } from "../useGetTime";
 
 export const useInputModeChange = () => {
-  const { statusRef } = useRefs();
-
   const map = useMapAtom();
   const typeAtomStore = useStore();
 
@@ -55,7 +53,7 @@ export const useInputModeChange = () => {
       }
     }
 
-    const count = statusRef.current!.status.count;
+    const count = typeAtomStore.get(typingStatusRefAtom).count;
     const nextLine = map!.mapData[count];
     const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
 
@@ -80,11 +78,16 @@ export const useInputModeChange = () => {
 
     if (scene === "playing") {
       const lineTime = getCurrentLineTime(await getCurrentOffsettedYTTime());
-
-      statusRef.current!.lineStatus.typeResult.push({
-        op: newInputMode,
-        t: Math.round(lineTime * 1000) / 1000,
-      });
+      typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
+        ...prev,
+        typeResult: [
+          ...prev.typeResult,
+          {
+            op: newInputMode,
+            t: Math.round(lineTime * 1000) / 1000,
+          },
+        ],
+      }));
     }
   };
 };

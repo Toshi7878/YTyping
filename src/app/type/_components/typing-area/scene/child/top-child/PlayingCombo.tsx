@@ -1,4 +1,4 @@
-import { useComboAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useComboAtom } from "@/app/type/atoms/stateAtoms";
 import { Box } from "@chakra-ui/react";
 
 const PlayingCombo = () => {

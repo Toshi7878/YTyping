@@ -1,7 +1,7 @@
 import { HStack } from "@chakra-ui/react";
 import PlayingProgress from "../playing-child/child/PlayingProgress";
 
-import { useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import PlayingCombo from "./top-child/PlayingCombo";
 import PlayingLineTime from "./top-child/PlayingLineTime";
 import PlayingNotify from "./top-child/PlayingNotify";

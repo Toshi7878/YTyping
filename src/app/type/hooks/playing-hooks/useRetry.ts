@@ -1,9 +1,9 @@
 import { useStore } from "jotai";
+import { RESET } from "jotai/utils";
 import { CreateMap } from "../../../../lib/instanceMapData";
-import { defaultLineWord, defaultNextLyrics, typeTicker } from "../../ts/const/consts";
-import { DEFAULT_STATUS_REF } from "../../ts/const/typeDefaultValue";
-import { PlayMode, StatusRef } from "../../ts/type";
+import { gameStateRefAtom, typingStatusRefAtom, usePlayer } from "../../atoms/refAtoms";
 import {
+  focusTypingStatusAtoms,
   sceneAtom,
   useMapAtom,
   useSetComboAtom,
@@ -13,16 +13,16 @@ import {
   useSetNextLyricsAtom,
   useSetPlayingNotifyAtom,
   useSetSceneAtom,
-  useSetStatusAtoms,
-  useStatusAtomsValues,
-} from "../../type-atoms/gameRenderAtoms";
-import { useRefs } from "../../type-contexts/refsProvider";
+  useSetTypingStatusAtoms,
+} from "../../atoms/stateAtoms";
+import { defaultLineWord, defaultNextLyrics, typeTicker } from "../../ts/const/consts";
+import { PlayMode } from "../../ts/type";
 import { useUpdateUserStats } from "./useUpdateUserStats";
 
 export const useRetry = () => {
-  const { statusRef, gameStateRef, playerRef } = useRefs();
   const map = useMapAtom();
   const typeAtomStore = useStore();
+  const player = usePlayer();
 
   const setLineResults = useSetLineResultsAtom();
   const setCombo = useSetComboAtom();
@@ -31,8 +31,7 @@ export const useRetry = () => {
   const setNextLyrics = useSetNextLyricsAtom();
   const setLineWord = useSetLineWordAtom();
 
-  const { resetStatusValues } = useSetStatusAtoms();
-  const statusAtomsValues = useStatusAtomsValues();
+  const { resetTypingStatus } = useSetTypingStatusAtoms();
   const { updatePlayCountStats, updateTypingStats } = useUpdateUserStats();
 
   return (newPlayMode: PlayMode) => {
@@ -43,26 +42,32 @@ export const useRetry = () => {
     const scene = typeAtomStore.get(sceneAtom);
 
     if (scene === "playing") {
-      const status = statusAtomsValues();
-      if (status?.type) {
-        gameStateRef.current!.retryCount++;
-        if (status.type >= 10) {
+      const totalTypeCount = typeAtomStore.get(focusTypingStatusAtoms.type);
+      if (totalTypeCount) {
+        typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, retryCount: prev.retryCount++ }));
+        if (totalTypeCount >= 10) {
           updatePlayCountStats();
         }
       }
 
       updateTypingStats();
-      setNotify(Symbol(`Retry(${gameStateRef.current!.retryCount})`));
+      const retryCount = typeAtomStore.get(gameStateRefAtom).replay.replayKeyCount;
+      setNotify(Symbol(`Retry(${retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
-      (statusRef.current as StatusRef) = structuredClone(DEFAULT_STATUS_REF);
-      resetStatusValues();
+      typeAtomStore.set(typingStatusRefAtom, RESET);
+      resetTypingStatus();
       setCombo(0);
     }
 
-    gameStateRef.current!.playMode = newPlayMode;
-    gameStateRef.current!.replay.replayKeyCount = 0;
-    gameStateRef.current!.isRetrySkip = true;
-    playerRef.current!.seekTo(0, true);
+    typeAtomStore.set(gameStateRefAtom, (prev) => ({
+      ...prev,
+      playMode: newPlayMode,
+      replay: { ...prev.replay, replayKeyCount: 0 },
+      isRetrySkip: true,
+    }));
+
+    player.seekTo(0, true);
+
     if (typeTicker.started) {
       typeTicker.stop();
     }
@@ -70,13 +75,14 @@ export const useRetry = () => {
 };
 
 export const useProceedRetry = () => {
-  const { statusRef, gameStateRef, playerRef } = useRefs();
+  const player = usePlayer();
   const setCombo = useSetComboAtom();
+  const typeAtomStore = useStore();
 
   const map = useMapAtom() as CreateMap;
   const setLineResults = useSetLineResultsAtom();
   const setScene = useSetSceneAtom();
-  const { resetStatusValues } = useSetStatusAtoms();
+  const { resetTypingStatus } = useSetTypingStatusAtoms();
   const { updatePlayCountStats } = useUpdateUserStats();
 
   return (playMode: PlayMode) => {
@@ -90,13 +96,18 @@ export const useProceedRetry = () => {
     }
 
     if (playMode !== "practice") {
-      resetStatusValues();
+      resetTypingStatus();
       setCombo(0);
-      (statusRef.current as StatusRef) = structuredClone(DEFAULT_STATUS_REF);
+
+      typeAtomStore.set(typingStatusRefAtom, RESET);
     }
-    gameStateRef.current!.replay.replayKeyCount = 0;
-    gameStateRef.current!.isRetrySkip = true;
-    playerRef.current!.seekTo(0, true);
-    playerRef.current!.playVideo();
+    typeAtomStore.set(gameStateRefAtom, (prev) => ({
+      ...prev,
+      replay: { ...prev.replay, replayKeyCount: 0 },
+      isRetrySkip: true,
+    }));
+
+    player.seekTo(0, true);
+    player.playVideo();
   };
 };

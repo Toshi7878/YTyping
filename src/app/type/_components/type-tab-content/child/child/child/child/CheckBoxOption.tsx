@@ -1,9 +1,9 @@
-import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import {
   useSetIsOptionEdited,
   useSetUserTypingOptionsAtom,
   useUserTypingOptionsAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
+import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import { Checkbox } from "@chakra-ui/react";
 import React from "react";
 

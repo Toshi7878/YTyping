@@ -1,8 +1,9 @@
-import { useSceneAtom, useTypePageSpeedAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
+import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useSceneAtom, useTypePageSpeedAtom } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, HStack, Text, useTheme } from "@chakra-ui/react";
+import { useStore } from "jotai";
 import React, { useEffect } from "react";
 import SpeedChangeButton from "./child/SpeedChangeButton";
 
@@ -13,19 +14,28 @@ interface ReadyPlaySpeedProps {
 const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   const speedData = useTypePageSpeedAtom();
   const scene = useSceneAtom();
-  const { gameStateRef } = useRefs();
   const theme: ThemeColors = useTheme();
+  const typeAtomStore = useStore();
 
-  useEffect(() => {
-    if (scene === "ready") {
-      if (speedData.defaultSpeed < 1) {
-        gameStateRef.current!.playMode = "practice";
-      } else {
-        gameStateRef.current!.playMode = "playing";
+  useEffect(
+    () => {
+      if (scene === "ready") {
+        if (speedData.defaultSpeed < 1) {
+          typeAtomStore.set(gameStateRefAtom, (prev) => ({
+            ...prev,
+            playMode: "practice",
+          }));
+        } else {
+          typeAtomStore.set(gameStateRefAtom, (prev) => ({
+            ...prev,
+            playMode: "playing",
+          }));
+        }
       }
-    }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speedData.defaultSpeed, scene]);
+    [speedData.defaultSpeed, scene]
+  );
 
   return (
     <CustomToolTip

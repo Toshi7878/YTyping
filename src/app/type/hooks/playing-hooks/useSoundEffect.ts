@@ -5,7 +5,7 @@ import typeSound from "@/public/wav/key_type.wav";
 import missSound from "@/public/wav/miss_type.wav";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
-import { useUserTypingOptionsAtom } from "../../type-atoms/gameRenderAtoms";
+import { useUserTypingOptionsAtom } from "../../atoms/stateAtoms";
 
 const manifest = [
   { alias: "type", src: typeSound },

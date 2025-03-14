@@ -1,10 +1,10 @@
-import { DEFAULT_USER_OPTIONS } from "@/app/type/ts/const/typeDefaultValue";
 import {
   isOptionEditedAtom,
   userTypingOptionsAtom,
   useSetIsOptionEdited,
   useSetUserTypingOptionsAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
+import { DEFAULT_USER_OPTIONS } from "@/app/type/ts/const/typeDefaultValue";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";

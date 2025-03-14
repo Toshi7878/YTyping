@@ -7,18 +7,19 @@ import {
   useTimeOffsetAtom,
   useTypePageSpeedAtom,
   useUserTypingOptionsAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
+import { userStatsRefAtom } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
 import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useStartTimer";
 import { usePlayTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { defaultLineWord, defaultNextLyrics, typeTicker } from "@/app/type/ts/const/consts";
-import { DEFAULT_STATUS_REF } from "@/app/type/ts/const/typeDefaultValue";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { UseDisclosureReturn } from "@chakra-ui/react";
+import { useStore } from "jotai";
+import { RESET } from "jotai/utils";
 
 interface PlayingProps {
   drawerClosure: UseDisclosureReturn;
@@ -40,30 +41,34 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
   const userOptions = useUserTypingOptionsAtom();
   const timeOffset = useTimeOffsetAtom();
   const playSpeed = useTypePageSpeedAtom();
-  const { statusRef } = useRefs();
-
   const inputMode = usePlayingInputModeAtom();
+  const typeAtomStore = useStore();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        const sendStats = statusRef.current!.userStats;
+        const sendStats = typeAtomStore.get(userStatsRefAtom);
         navigator.sendBeacon(
           `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
           JSON.stringify(sendStats)
         );
-        statusRef.current!.userStats = structuredClone(DEFAULT_STATUS_REF.userStats);
+
+        typeAtomStore.set(userStatsRefAtom, RESET);
       }
     };
     const handleBeforeunload = () => {
-      const sendStats = statusRef.current!.userStats;
-      const maxCombo = statusRef.current!.status.maxCombo;
+      const sendStats = typeAtomStore.get(userStatsRefAtom);
+      const maxCombo = sendStats.maxCombo;
       navigator.sendBeacon(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
         JSON.stringify(sendStats)
       );
-      statusRef.current!.userStats = structuredClone(DEFAULT_STATUS_REF.userStats);
-      statusRef.current!.userStats.maxCombo = structuredClone(maxCombo);
+      typeAtomStore.set(userStatsRefAtom, RESET);
+
+      typeAtomStore.set(userStatsRefAtom, (prev) => ({
+        ...prev,
+        maxCombo: structuredClone(maxCombo),
+      }));
     };
 
     if (scene === "playing" || scene === "practice") {

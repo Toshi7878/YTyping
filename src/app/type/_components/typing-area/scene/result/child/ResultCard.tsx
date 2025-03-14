@@ -1,11 +1,11 @@
 "use client";
-import { LineData, LineResultData } from "@/app/type/ts/type";
 import {
   playingInputModeAtom,
   speedAtom,
   useMapAtom,
   useSceneAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
+import { LineData, LineResultData } from "@/app/type/ts/type";
 import { CHAR_POINT } from "@/lib/instanceMapData";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, CardFooter, CardHeader, useTheme } from "@chakra-ui/react";

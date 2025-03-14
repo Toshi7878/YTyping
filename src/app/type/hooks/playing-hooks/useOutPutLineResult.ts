@@ -1,14 +1,14 @@
-import { useCalcCurrentRank } from "@/app/type/hooks/playing-hooks/useUpdateStatus";
 import {
   playingInputModeAtom,
   sceneAtom,
+  typingStatusAtom,
   useMapAtom,
-  useStatusAtomsValues,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
+import { useCalcCurrentRank } from "@/app/type/hooks/playing-hooks/useUpdateStatus";
 import { useStore } from "jotai";
 import { CHAR_POINT, CreateMap } from "../../../../lib/instanceMapData";
-import { LineWord, Status } from "../../ts/type";
-import { useRefs } from "../../type-contexts/refsProvider";
+import { typingStatusRefAtom } from "../../atoms/refAtoms";
+import { LineWord } from "../../ts/type";
 
 interface useOutPutLineResultProps {
   newLineWord: LineWord;
@@ -17,13 +17,8 @@ interface useOutPutLineResultProps {
 
 export const useOutPutLineResult = () => {
   const typeAtomStore = useStore();
-
-  const { statusRef } = useRefs();
   const map = useMapAtom() as CreateMap;
-
-  const statusAtomsValues = useStatusAtomsValues();
   const calcCurrentRank = useCalcCurrentRank();
-
   const getLostWord = (newLineWord: LineWord) => {
     if (newLineWord.nextChar["k"]) {
       const romaLostWord =
@@ -38,12 +33,15 @@ export const useOutPutLineResult = () => {
   };
 
   const updateStatus = (newLineWord: LineWord, lostLength: number, totalTypeSpeed: number) => {
-    const status: Status = statusAtomsValues();
+    const status = typeAtomStore.get(typingStatusAtom);
     const scene = typeAtomStore.get(sceneAtom);
 
     const newStatus = { ...status };
-    if (scene === "playing" && statusRef.current) {
-      statusRef.current.status.kanaToRomaConvertCount += newLineWord.correct.r.length;
+    if (scene === "playing") {
+      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
+        ...prev,
+        kanaToRomaConvertCount: (prev.kanaToRomaConvertCount += newLineWord.correct.r.length),
+      }));
     }
 
     newStatus.timeBonus = 0;
@@ -51,12 +49,16 @@ export const useOutPutLineResult = () => {
     const isLineFailure = newLineWord.nextChar["k"];
     if (isLineFailure) {
       newStatus.kpm = totalTypeSpeed;
-      statusRef.current!.status.failureCount++;
+      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
+        ...prev,
+        failureCount: prev.failureCount++,
+        clearRate: prev.clearRate - map.keyRate * lostLength,
+      }));
+
+      const typingStatusRef = typeAtomStore.get(typingStatusRefAtom);
       newStatus.line =
-        map.lineLength -
-        (statusRef.current!.status.completeCount + statusRef.current!.status.failureCount);
+        map.lineLength - (typingStatusRef.completeCount + typingStatusRef.failureCount);
       newStatus.lost += lostLength;
-      statusRef.current!.status.clearRate -= map.keyRate * lostLength;
       newStatus.score += newStatus.point;
       newStatus.rank = calcCurrentRank(newStatus.score);
     }

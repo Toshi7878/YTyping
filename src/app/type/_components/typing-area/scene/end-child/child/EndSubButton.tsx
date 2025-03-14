@@ -1,21 +1,22 @@
 import {
-  Button,
-  useDisclosure,
   AlertDialog,
   AlertDialogBody,
+  AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogContent,
   AlertDialogOverlay,
   Box,
+  Button,
+  useDisclosure,
   useTheme,
 } from "@chakra-ui/react";
 
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
-import { useRef } from "react";
+import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { PlayMode } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
-import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
+import { useStore } from "jotai";
+import { useRef } from "react";
 
 interface EndSubButtonProps {
   retryMode: PlayMode;
@@ -26,8 +27,8 @@ const EndSubButton = ({ isRetryAlert, retryMode }: EndSubButtonProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const theme: ThemeColors = useTheme();
+  const typeAtomStore = useStore();
 
-  const { gameStateRef } = useRefs();
   const proceedRetry = useProceedRetry();
 
   const retry = (playMode: PlayMode) => {
@@ -40,7 +41,7 @@ const EndSubButton = ({ isRetryAlert, retryMode }: EndSubButtonProps) => {
 
   const getButtonText = () => {
     if (retryMode === "practice") return "練習モード";
-    if (gameStateRef.current?.replay.userName) return "もう一度リプレイ";
+    if (typeAtomStore.get(gameStateRefAtom).replay.userName) return "もう一度リプレイ";
     return "もう一度プレイ";
   };
 

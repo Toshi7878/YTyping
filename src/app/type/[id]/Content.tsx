@@ -4,6 +4,7 @@ import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
 import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
+import { useSetAtom } from "jotai";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
@@ -12,11 +13,8 @@ import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
-import { useUpdateUserStats } from "../hooks/playing-hooks/useUpdateUserStats";
-import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
-import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
-import { InputModeType } from "../ts/type";
 import {
+  focusTypingStatusAtoms,
   useIsLoadingOverlayAtom,
   useSceneAtom,
   useSetChangeCSSCountAtom,
@@ -28,10 +26,14 @@ import {
   useSetPlayingNotifyAtom,
   useSetRankingScoresAtom,
   useSetSceneAtom,
-  useSetStatusAtoms,
   useSetTimeOffsetAtom,
   useSetTypePageSpeedAtom,
-} from "../type-atoms/gameRenderAtoms";
+  useSetTypingStatusAtoms,
+} from "../atoms/stateAtoms";
+import { useUpdateUserStats } from "../hooks/playing-hooks/useUpdateUserStats";
+import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
+import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
+import { InputModeType } from "../ts/type";
 import { useRefs } from "../type-contexts/refsProvider";
 
 interface ContentProps {
@@ -56,13 +58,13 @@ function Content({ mapInfo }: ContentProps) {
 
   const isLoadingOverlay = useIsLoadingOverlayAtom();
   const disableKeyHandle = useDisableKeyHandle();
-  const { resetStatusValues } = useSetStatusAtoms();
+  const { setTypingStatus, resetTypingStatus } = useSetTypingStatusAtoms();
   const setCombo = useSetComboAtom();
   const setChangeCSSCount = useSetChangeCSSCountAtom();
   const setPlayingInputMode = useSetPlayingInputModeAtom();
+  const setLineCount = useSetAtom(focusTypingStatusAtoms.line);
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
-  const { setStatusValues } = useSetStatusAtoms();
   const { totalProgressRef } = useRefs();
   const { updateTypingStats } = useUpdateUserStats();
 
@@ -79,7 +81,7 @@ function Content({ mapInfo }: ContentProps) {
       const map = new CreateMap(mapData);
       setMap(map);
       setLineResults(map.defaultLineResultData);
-      setStatusValues({ line: map.lineLength });
+      setLineCount(map.lineLength);
       setLineSelectIndex(map.typingLineNumbers[0]);
       totalProgressRef.current!.max = map.movieTotalTime;
     }
@@ -103,7 +105,7 @@ function Content({ mapInfo }: ContentProps) {
         defaultSpeed: 1,
         playSpeed: 1,
       });
-      resetStatusValues();
+      resetTypingStatus();
       setCombo(0);
       setChangeCSSCount(0);
       setPlayingInputMode((localStorage.getItem("inputMode") as InputModeType) || "roma");

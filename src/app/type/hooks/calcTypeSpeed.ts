@@ -1,7 +1,8 @@
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
+import { useStore } from "jotai";
+import { lineTypingStatusRefAtom, typingStatusRefAtom } from "../atoms/refAtoms";
 
 export const useCalcTypeSpeed = () => {
-  const { statusRef } = useRefs();
+  const typeAtomStore = useStore();
 
   const calcLineKpm = ({ constantLineTime, newLineTypeCount }) => {
     const lineKpm = constantLineTime ? Math.round((newLineTypeCount / constantLineTime) * 60) : 0;
@@ -29,7 +30,7 @@ export const useCalcTypeSpeed = () => {
   }) => {
     const isAddTypeCount = updateType === "keydown" || updateType === "completed";
 
-    const lineTypeCount = statusRef.current!.lineStatus.lineType;
+    const lineTypeCount = typeAtomStore.get(lineTypingStatusRefAtom).type;
 
     const newLineTypeCount = isAddTypeCount ? lineTypeCount + 1 : lineTypeCount;
     const lineKpm = calcLineKpm({ constantLineTime, newLineTypeCount });
@@ -39,7 +40,7 @@ export const useCalcTypeSpeed = () => {
     }
 
     const newTotalTypeCount = isAddTypeCount ? totalTypeCount + 1 : totalTypeCount;
-    const totalTypeTime = constantLineTime + statusRef.current!.status.totalTypeTime;
+    const totalTypeTime = constantLineTime + typeAtomStore.get(typingStatusRefAtom).totalTypeTime;
     const totalKpm = calcTotalKpm({ newTotalTypeCount, totalTypeTime });
 
     if (updateType === "keydown") {
@@ -48,7 +49,7 @@ export const useCalcTypeSpeed = () => {
 
     if (updateType === "lineUpdate" || updateType === "completed") {
       //ラインアップデート時、ラインクリア時はラインのrkpmも計算する
-      const lineLatency = statusRef.current!.lineStatus.latency;
+      const lineLatency = typeAtomStore.get(lineTypingStatusRefAtom).latency;
       const rkpmTime = constantLineTime - lineLatency;
       const lineRkpm = calcLineRkpm({ rkpmTime, newLineTypeCount, lineKpm });
       return { lineKpm, lineRkpm, totalKpm };

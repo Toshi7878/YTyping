@@ -1,4 +1,4 @@
-import { useChangeCSSCountAtom, useMapAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useChangeCSSCountAtom, useMapAtom } from "@/app/type/atoms/stateAtoms";
 import { CreateMap } from "@/lib/instanceMapData";
 
 const PlayingChangeCSS = () => {

@@ -1,11 +1,11 @@
 "use client";
 import "@/app/edit/style/editor.scss";
-import { CHANGE_TIME_OFFSET_VALUE } from "@/app/type/ts/const/typeDefaultValue";
 import {
   useSetIsOptionEdited,
   useSetUserTypingOptionsAtom,
   useUserTypingOptionsAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
+import { CHANGE_TIME_OFFSET_VALUE } from "@/app/type/ts/const/typeDefaultValue";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";

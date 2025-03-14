@@ -1,19 +1,19 @@
 import { useStore } from "jotai";
+import { gameStateRefAtom, lineTypingStatusRefAtom, usePlayer } from "../atoms/refAtoms";
 import {
   sceneAtom,
   speedAtom,
   useSetPlayingNotifyAtom,
   useSetTypePageSpeedAtom,
-} from "../type-atoms/gameRenderAtoms";
-import { useRefs } from "../type-contexts/refsProvider";
+} from "../atoms/stateAtoms";
 import { useGetTime } from "./useGetTime";
 
 export const useVideoSpeedChange = () => {
   const typeAtomStore = useStore();
   const setSpeedData = useSetTypePageSpeedAtom();
   const setNotify = useSetPlayingNotifyAtom();
-  const { playerRef, gameStateRef, statusRef } = useRefs();
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
+  const player = usePlayer();
 
   const defaultSpeedChange = (type: "up" | "down" | "set", setSpeed: number = 1) => {
     const defaultSpeed = typeAtomStore.get(speedAtom).defaultSpeed;
@@ -33,14 +33,14 @@ export const useVideoSpeedChange = () => {
     }
 
     setSpeedData({ defaultSpeed: setSpeed, playSpeed: setSpeed });
-    playerRef.current!.setPlaybackRate(setSpeed);
+    player.setPlaybackRate(setSpeed);
 
     const scene = typeAtomStore.get(sceneAtom);
 
     const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 
     if (scene === "ready") {
-      gameStateRef.current!.startPlaySpeed = setSpeed;
+      typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, startPlaySpeed: setSpeed }));
     } else if (isPlayed) {
       setNotify(Symbol(`${setSpeed.toFixed(2)}x`));
     }
@@ -61,7 +61,7 @@ export const useVideoSpeedChange = () => {
       playSpeed: setSpeed,
     });
 
-    playerRef.current!.setPlaybackRate(setSpeed);
+    player.setPlaybackRate(setSpeed);
 
     if (currentSpeed !== setSpeed) {
       setNotify(Symbol(`${setSpeed.toFixed(2)}x`));
@@ -71,11 +71,16 @@ export const useVideoSpeedChange = () => {
 
     if (scene === "playing") {
       const lineTime = getCurrentLineTime(await getCurrentOffsettedYTTime());
-
-      statusRef.current!.lineStatus.typeResult.push({
-        op: "speedChange",
-        t: Math.round(lineTime * 1000) / 1000,
-      });
+      typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
+        ...prev,
+        typeResult: [
+          ...prev.typeResult,
+          {
+            op: "speedChange",
+            t: Math.round(lineTime * 1000) / 1000,
+          },
+        ],
+      }));
     }
   };
 

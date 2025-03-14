@@ -1,5 +1,5 @@
 "use client";
-import { useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import {
   Drawer,

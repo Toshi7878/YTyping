@@ -1,4 +1,4 @@
-import { useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { Box, Flex, HStack } from "@chakra-ui/react";
 import PlayingProgress from "../playing-child/child/PlayingProgress";
 import PlayingBottomBadgeLayout from "./bottom-child/PlayingBottomBadgeLayout";

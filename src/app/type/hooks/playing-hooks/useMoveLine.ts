@@ -1,5 +1,5 @@
 import { useStore } from "jotai";
-import { typeTicker } from "../../ts/const/consts";
+import { typingStatusRefAtom, usePlayer } from "../../atoms/refAtoms";
 import {
   lineSelectIndexAtom,
   sceneAtom,
@@ -7,13 +7,15 @@ import {
   useMapAtom,
   useSetLineSelectIndexAtom,
   useSetPlayingNotifyAtom,
-} from "../../type-atoms/gameRenderAtoms";
+} from "../../atoms/stateAtoms";
+import { typeTicker } from "../../ts/const/consts";
 import { useRefs } from "../../type-contexts/refsProvider";
 import { useGetSeekLineCount } from "./timer-hooks/useSeekGetLineCount";
 import { useUpdateLine } from "./timer-hooks/useTimer";
 
 export const useMoveLine = () => {
-  const { statusRef, playerRef, cardRefs } = useRefs();
+  const { cardRefs } = useRefs();
+  const player = usePlayer();
   const map = useMapAtom();
   const typeAtomStore = useStore();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
@@ -23,7 +25,7 @@ export const useMoveLine = () => {
 
   const movePrevLine = () => {
     const scene = typeAtomStore.get(sceneAtom);
-    const count = statusRef.current!.status.count - (scene === "replay" ? 1 : 0);
+    const count = typeAtomStore.get(typingStatusRefAtom).count - (scene === "replay" ? 1 : 0);
     const prevCount = structuredClone(map!.typingLineNumbers)
       .reverse()
       .find((num) => num < count);
@@ -42,10 +44,10 @@ export const useMoveLine = () => {
     }
 
     const newCount = getSeekLineCount(prevTime);
-    statusRef.current!.status.count = newCount;
+    typeAtomStore.set(typingStatusRefAtom, (prev) => ({ ...prev, count: newCount }));
     updateLine(newCount);
 
-    playerRef.current!.seekTo(prevTime, true);
+    player.seekTo(prevTime, true);
     setNotify(Symbol(`◁`));
     drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
@@ -54,9 +56,10 @@ export const useMoveLine = () => {
   const moveNextLine = () => {
     const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
     const seekCount = lineSelectIndex ? map!.typingLineNumbers[lineSelectIndex - 1] : null;
-    const seekCountAdjust = seekCount && seekCount === statusRef.current!.status.count ? 0 : -1;
+    const seekCountAdjust =
+      seekCount && seekCount === typeAtomStore.get(typingStatusRefAtom).count ? 0 : -1;
 
-    const count = statusRef.current!.status.count + seekCountAdjust;
+    const count = typeAtomStore.get(typingStatusRefAtom).count + seekCountAdjust;
     const nextCount = map!.typingLineNumbers.find((num) => num > count);
 
     if (nextCount === undefined) {
@@ -81,10 +84,10 @@ export const useMoveLine = () => {
     }
 
     const newCount = getSeekLineCount(nextTime);
-    statusRef.current!.status.count = newCount;
+    typeAtomStore.set(typingStatusRefAtom, (prev) => ({ ...prev, count: newCount }));
     updateLine(newCount);
 
-    playerRef.current!.seekTo(nextTime, true);
+    player.seekTo(nextTime, true);
     setNotify(Symbol(`▷`));
     drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
@@ -101,9 +104,9 @@ export const useMoveLine = () => {
     if (lineSelectIndex !== seekCount) {
       drawerSelectColorChange(seekCount);
     }
-    playerRef.current!.seekTo(seekTime, true);
+    player.seekTo(seekTime, true);
     const newCount = getSeekLineCount(seekTime);
-    statusRef.current!.status.count = newCount;
+    typeAtomStore.set(typingStatusRefAtom, (prev) => ({ ...prev, count: newCount }));
     updateLine(newCount);
     typeTicker.stop();
   };

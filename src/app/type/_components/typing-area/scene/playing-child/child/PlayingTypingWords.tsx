@@ -3,7 +3,7 @@ import {
   useNextLyricsAtom,
   usePlayingInputModeAtom,
   useUserTypingOptionsAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
 import PlayingWord from "./PlayingWord";

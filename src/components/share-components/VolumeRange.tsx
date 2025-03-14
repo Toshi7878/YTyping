@@ -18,10 +18,10 @@ import { useState } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
 
 interface VolumeRangeProps {
-  playerRef: React.RefObject<YTPlayer>;
+  player: YTPlayer;
 }
 
-export default function VolumeRange({ playerRef, ...rest }: VolumeRangeProps & StackProps) {
+export default function VolumeRange({ player, ...props }: VolumeRangeProps & StackProps) {
   const theme: ThemeColors = useTheme();
   const volumeAtom = useVolumeAtom();
   const setVolumeAtom = useSetVolumeAtom();
@@ -29,12 +29,12 @@ export default function VolumeRange({ playerRef, ...rest }: VolumeRangeProps & S
 
   const handleChange = (value: number) => {
     setVolumeAtom(value);
-    if (playerRef.current) {
-      playerRef.current.setVolume(value);
+    if (player) {
+      player.setVolume(value);
     }
   };
   return (
-    <HStack alignItems="center" {...rest}>
+    <HStack alignItems="center" {...props}>
       <Box>
         {volumeAtom === 0 ? (
           <IoMdVolumeMute size={24} />

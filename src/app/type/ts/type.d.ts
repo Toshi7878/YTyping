@@ -1,5 +1,3 @@
-import { YTPlayer } from "@/types/global-types";
-
 export type InputModeType = "roma" | "kana" | "flick";
 export type PlayMode = "playing" | "replay" | "practice";
 export type SceneType = "ready" | "playing" | "end" | "replay" | "practice";
@@ -36,11 +34,6 @@ export interface LineData {
 }
 
 export interface RefsContextType {
-  playerRef: React.RefObject<YTPlayer>;
-  bestScoreRef: React.MutableRefObject<number>;
-  statusRef: React.RefObject<StatusRef>;
-  ytStateRef: React.RefObject<YTStateRef>;
-  gameStateRef: React.RefObject<GameStateRef>;
   lineProgressRef: React.RefObject<HTMLProgressElement>;
   totalProgressRef: React.RefObject<HTMLProgressElement>;
   cardRefs: React.RefObject<HTMLDivElement[]>;
@@ -60,80 +53,6 @@ export interface NextLyricsType {
   kpm: string;
   kanaWord: string;
   romaWord: string;
-}
-
-export interface Status {
-  score: number;
-  point: number;
-  timeBonus: number;
-  type: number;
-  miss: number;
-  kpm: number;
-  lost: number;
-  rank: number;
-  line: number;
-}
-
-export interface GameStateRef {
-  isRetrySkip: boolean;
-  retryCount: number;
-  playMode: PlayMode;
-  startPlaySpeed: number;
-  displayLineTimeCount: number;
-  replay: {
-    replayKeyCount: number;
-    userName: string;
-  };
-  practice: {
-    myResultId: number | null;
-  };
-}
-
-export interface StatusRef {
-  status: {
-    count: number;
-    romaType: number;
-    kanaType: number;
-    flickType: number;
-    englishType: number;
-    spaceType: number;
-    symbolType: number;
-    numType: number;
-    rkpm: number;
-    clearRate: number;
-    kanaToRomaConvertCount: number;
-    maxCombo: number;
-    missCombo: number;
-    totalTypeTime: number;
-    totalLatency: number;
-    completeCount: number;
-    failureCount: number;
-  };
-  lineStatus: {
-    lineType: number;
-    lineMiss: number;
-    lineClearTime: number;
-    latency: number;
-    typeResult: TypeResult[];
-    lineStartSpeed: number;
-    lineStartInputMode: InputModeType;
-  };
-  userStats: {
-    romaType: number;
-    kanaType: number;
-    flickType: number;
-    englishType: number;
-    spaceType: number;
-    symbolType: number;
-    numType: number;
-    totalTypeTime: number;
-    maxCombo: number;
-  };
-}
-
-export interface YTStateRef {
-  isPaused: boolean;
-  movieDuration: number;
 }
 
 export interface SendResultData {
@@ -185,18 +104,6 @@ export interface LineResultData {
 export interface Speed {
   defaultSpeed: number;
   playSpeed: number;
-}
-
-export interface useSetStatusValueProps {
-  score?: number;
-  type?: number;
-  kpm?: number;
-  rank?: number;
-  point?: number;
-  miss?: number;
-  lost?: number;
-  line?: number;
-  timeBonus?: number;
 }
 
 export type Dakuten =

@@ -3,6 +3,7 @@ import { useStore } from "jotai";
 import { useCallback, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
+import { sceneAtom } from "../../atoms/stateAtoms";
 import { useWindowFocus } from "../../hooks/useWindowFocus";
 import {
   useYTEndEvent,
@@ -12,7 +13,6 @@ import {
   useYTSeekEvent,
   useYTStopEvent,
 } from "../../hooks/useYoutubeEvents";
-import { sceneAtom } from "../../type-atoms/gameRenderAtoms";
 
 interface TypeYouTubeProps {
   isMapLoading: boolean;

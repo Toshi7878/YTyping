@@ -8,13 +8,13 @@ import {
   UseDisclosureReturn,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import "../../style/type.scss";
 import {
   useMapAtom,
   useSceneAtom,
   useSetDrawerClosureAtom,
   useSetTabIndexAtom,
-} from "../../type-atoms/gameRenderAtoms";
+} from "../../atoms/stateAtoms";
+import "../../style/type.scss";
 import PlayingBottom from "./scene/child/PlayingBottom";
 import PlayingTop from "./scene/child/PlayingTop";
 import End from "./scene/End";

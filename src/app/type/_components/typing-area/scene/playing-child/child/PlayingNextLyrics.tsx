@@ -1,4 +1,4 @@
-import { useNextLyricsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useNextLyricsAtom } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
 import parse from "html-react-parser";

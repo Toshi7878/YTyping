@@ -1,18 +1,21 @@
-import { useMapAtom, useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { ytStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useMapAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { ThemeColors } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
+import { useStore } from "jotai";
 import React, { useEffect } from "react";
 
 interface PlayingProgressProps {
   id: string;
 }
 const PlayingProgress = (props: PlayingProgressProps) => {
-  const { setRef, ytStateRef } = useRefs();
+  const { setRef } = useRefs();
   const theme: ThemeColors = useTheme();
   const progressRef = React.useRef<HTMLProgressElement>(null);
   const scene = useSceneAtom();
   const map = useMapAtom();
+  const typeAtomStore = useStore();
 
   useEffect(() => {
     if (progressRef.current) {
@@ -23,7 +26,7 @@ const PlayingProgress = (props: PlayingProgressProps) => {
 
   useEffect(() => {
     if (props.id === "total_progress" && scene !== "ready" && map) {
-      const movieDuration = ytStateRef.current!.movieDuration;
+      const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
       const duration =
         Number(map?.movieTotalTime) > movieDuration ? movieDuration : map?.movieTotalTime;
       progressRef.current!.max = duration;

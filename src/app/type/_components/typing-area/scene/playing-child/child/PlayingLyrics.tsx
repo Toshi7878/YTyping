@@ -1,4 +1,4 @@
-import { useLyricsAtom, useUserTypingOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useLyricsAtom, useUserTypingOptionsAtom } from "@/app/type/atoms/stateAtoms";
 import { Box } from "@chakra-ui/react";
 import parse from "html-react-parser";
 

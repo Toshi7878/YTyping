@@ -1,8 +1,8 @@
+import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { mapUpdatedAtAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
-import { mapUpdatedAtAtom, useSceneAtom } from "@/app/type/type-atoms/gameRenderAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
 import { Button, Stack, useTheme } from "@chakra-ui/react";
@@ -31,7 +31,6 @@ const RankingMenu = ({
   clapOptimisticState,
   toggleClapAction,
 }: RankingMenuProps) => {
-  const { gameStateRef } = useRefs();
   const { data: session } = useSession();
   const theme: ThemeColors = useTheme();
   const scene = useSceneAtom();
@@ -59,7 +58,14 @@ const RankingMenu = ({
 
     setShowMenu(null);
     setHoveredIndex(null);
-    gameStateRef.current!.replay.userName = name;
+    typeAtomStore.set(gameStateRefAtom, (prev) => ({
+      ...prev,
+      replay: {
+        ...prev.replay,
+        userName: name,
+      },
+    }));
+
     if (scene === "end") {
       proceedRetry("replay");
     }

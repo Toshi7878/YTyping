@@ -1,27 +1,31 @@
 import { clientApi } from "@/trpc/client-api";
+import { useStore } from "jotai";
+import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
-import { DEFAULT_STATUS_REF } from "../../ts/const/typeDefaultValue";
-import { useRefs } from "../../type-contexts/refsProvider";
+import { typingStatusRefAtom, userStatsRefAtom } from "../../atoms/refAtoms";
 
 export function useUpdateUserStats() {
   const { id: mapId } = useParams();
-  const { statusRef } = useRefs();
   const incrementTypingStats = clientApi.userStats.incrementTypingStats.useMutation();
   const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
+  const typeAtomStore = useStore();
 
   const updatePlayCountStats = () => {
     incrementPlayCountStats.mutate({ mapId: Number(mapId) });
   };
   const updateTypingStats = () => {
-    const userStats = statusRef.current!.userStats;
-    const maxCombo = statusRef.current!.status.maxCombo;
+    const userStats = typeAtomStore.get(userStatsRefAtom);
+    const maxCombo = typeAtomStore.get(typingStatusRefAtom).maxCombo;
 
     incrementTypingStats.mutate({
       ...userStats,
     });
 
-    statusRef.current!.userStats = structuredClone(DEFAULT_STATUS_REF.userStats);
-    statusRef.current!.userStats.maxCombo = structuredClone(maxCombo);
+    typeAtomStore.set(userStatsRefAtom, RESET);
+    typeAtomStore.set(userStatsRefAtom, (prev) => ({
+      ...prev,
+      maxCombo: structuredClone(maxCombo),
+    }));
   };
 
   return { updatePlayCountStats, updateTypingStats };

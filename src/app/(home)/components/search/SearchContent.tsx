@@ -23,7 +23,7 @@ const SearchContent = () => {
             {session?.user?.id && <FilterInputs />}
             <SearchRange step={0.1} mx={4} />
           </Flex>
-          {!IS_IOS && !IS_ANDROID && <VolumeRange playerRef={playerRef} />}
+          {!IS_IOS && !IS_ANDROID && <VolumeRange player={playerRef.current!} />}
         </Flex>
         <Box mt={4}>
           <SortOptions />

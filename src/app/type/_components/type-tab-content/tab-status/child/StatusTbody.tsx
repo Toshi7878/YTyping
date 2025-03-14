@@ -1,5 +1,5 @@
+import { focusTypingStatusAtoms } from "@/app/type/atoms/stateAtoms";
 import { STATUS_LABEL } from "@/app/type/ts/const/consts";
-import { statusAtoms } from "@/app/type/type-atoms/gameRenderAtoms";
 import { Tbody, Td, Tr } from "@chakra-ui/react";
 import StatusLabel from "./child/StatusLabel";
 import StatusPointValue from "./child/StatusPointValue";
@@ -35,9 +35,12 @@ const StatusTd = ({ label }: StatusTdProps) => {
 
       <StatusUnderline label={label}>
         {label === "point" ? (
-          <StatusPointValue atom={statusAtoms[label]} timeBonusAtom={statusAtoms["timeBonus"]} />
+          <StatusPointValue
+            atom={focusTypingStatusAtoms[label]}
+            timeBonusAtom={focusTypingStatusAtoms["timeBonus"]}
+          />
         ) : (
-          <StatusValue atom={statusAtoms[label]} />
+          <StatusValue atom={focusTypingStatusAtoms[label]} />
         )}
       </StatusUnderline>
     </Td>

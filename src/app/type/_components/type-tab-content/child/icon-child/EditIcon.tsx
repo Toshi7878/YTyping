@@ -1,4 +1,4 @@
-import { useMapInfoAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useMapInfoAtom } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { ThemeColors } from "@/types";

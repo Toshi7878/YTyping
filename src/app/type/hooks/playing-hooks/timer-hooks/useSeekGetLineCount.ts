@@ -1,4 +1,4 @@
-import { mapAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { mapAtom } from "@/app/type/atoms/stateAtoms";
 import { CreateMap } from "@/lib/instanceMapData";
 import { useStore } from "jotai";
 

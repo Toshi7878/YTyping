@@ -1,4 +1,4 @@
-import { useSetTabIndexAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useSetTabIndexAtom } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Tab, TabList, useTheme } from "@chakra-ui/react";
 import { useEffect } from "react";

@@ -9,7 +9,7 @@ import {
   mapInfoAtom,
   mapUpdatedAtAtom,
   userTypingOptionsAtom,
-} from "../type-atoms/gameRenderAtoms";
+} from "../atoms/stateAtoms";
 import { RefsProvider } from "../type-contexts/refsProvider";
 
 interface TypeProviderProps {

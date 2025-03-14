@@ -1,6 +1,6 @@
 "use client";
+import { useMapAtom } from "@/app/type/atoms/stateAtoms";
 import { InputModeType } from "@/app/type/ts/type";
-import { useMapAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Text, useTheme } from "@chakra-ui/react";

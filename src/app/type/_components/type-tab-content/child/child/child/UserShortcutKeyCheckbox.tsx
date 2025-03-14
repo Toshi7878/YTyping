@@ -2,7 +2,7 @@ import {
   useSetIsOptionEdited,
   useSetUserTypingOptionsAtom,
   useUserTypingOptionsAtom,
-} from "@/app/type/type-atoms/gameRenderAtoms";
+} from "@/app/type/atoms/stateAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
 import { $Enums } from "@prisma/client";

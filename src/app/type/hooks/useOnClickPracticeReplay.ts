@@ -1,7 +1,8 @@
 import { clientApi } from "@/trpc/client-api";
+import { useStore } from "jotai";
+import { gameStateRefAtom, usePlayer } from "../atoms/refAtoms";
+import { useSetIsLoadingOverlayAtom, useSetLineResultsAtom } from "../atoms/stateAtoms";
 import { PlayMode } from "../ts/type";
-import { useSetIsLoadingOverlayAtom, useSetLineResultsAtom } from "../type-atoms/gameRenderAtoms";
-import { useRefs } from "../type-contexts/refsProvider";
 
 export const useOnClickPracticeReplay = ({
   startMode,
@@ -12,7 +13,8 @@ export const useOnClickPracticeReplay = ({
 }) => {
   const setIsLoadingOverlay = useSetIsLoadingOverlayAtom();
   const setLineResults = useSetLineResultsAtom();
-  const { gameStateRef, playerRef } = useRefs();
+  const player = usePlayer();
+  const typeAtomStore = useStore();
   const utils = clientApi.useUtils();
 
   const handleClick = async () => {
@@ -22,11 +24,10 @@ export const useOnClickPracticeReplay = ({
         const resultData = await utils.result.getUserResultData.ensureData({ resultId });
         setLineResults(resultData);
       }
-    } catch {
     } finally {
       setIsLoadingOverlay(false);
-      playerRef.current?.playVideo();
-      gameStateRef.current!.playMode = startMode;
+      player.playVideo();
+      typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, playMode: startMode }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };

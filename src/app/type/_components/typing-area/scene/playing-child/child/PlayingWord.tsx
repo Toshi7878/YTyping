@@ -1,4 +1,4 @@
-import { useUserTypingOptionsAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useUserTypingOptionsAtom } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Box, BoxProps, Text, useTheme } from "@chakra-ui/react";
 

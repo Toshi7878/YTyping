@@ -1,4 +1,4 @@
-import { getTypeAtomStore } from "@/app/type/type-atoms/gameRenderAtoms";
+import { getTypeAtomStore } from "@/app/type/atoms/stateAtoms";
 import { Text } from "@chakra-ui/react";
 import { Atom, useAtomValue } from "jotai";
 import { memo } from "react";

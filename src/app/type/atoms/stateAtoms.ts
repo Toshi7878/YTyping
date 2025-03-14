@@ -1,7 +1,8 @@
 import { RouterOutPuts } from "@/server/api/trpc";
 import { UseDisclosureReturn } from "@chakra-ui/react";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
-import { atomWithReset, atomWithStorage } from "jotai/utils";
+import { focusAtom } from "jotai-optics";
+import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
 import { CreateMap } from "../../../lib/instanceMapData";
 import { defaultLineWord } from "../ts/const/consts";
 import { DEFAULT_SPEED, DEFAULT_USER_OPTIONS } from "../ts/const/typeDefaultValue";
@@ -12,8 +13,8 @@ import {
   NextLyricsType,
   SceneType,
   Speed,
-  useSetStatusValueProps,
 } from "../ts/type";
+
 const typeAtomStore = createStore();
 export const getTypeAtomStore = () => typeAtomStore;
 
@@ -280,103 +281,51 @@ export const useSetDrawerClosureAtom = () => {
   return useSetAtom(drawerClosureAtom, { store: typeAtomStore });
 };
 
-// Status Atoms
+export const typingStatusAtom = atomWithReset({
+  score: 0,
+  type: 0,
+  kpm: 0,
+  rank: 0,
+  point: 0,
+  miss: 0,
+  lost: 0,
+  line: 0,
+  timeBonus: 0,
+});
 
-const scoreAtom = atomWithReset(0);
-const typeAtom = atomWithReset(0);
-const totalKpmAtom = atomWithReset(0);
-const rankAtom = atomWithReset(0);
-const pointAtom = atomWithReset(0);
-const missAtom = atomWithReset(0);
-const lostAtom = atomWithReset(0);
-const lineCountAtom = atomWithReset(0);
-const timeBonusAtom = atomWithReset(0);
-
-export const statusAtoms = {
-  score: scoreAtom,
-  type: typeAtom,
-  kpm: totalKpmAtom,
-  rank: rankAtom,
-  point: pointAtom,
-  miss: missAtom,
-  lost: lostAtom,
-  line: lineCountAtom,
-  timeBonus: timeBonusAtom,
+export const focusTypingStatusAtoms = {
+  score: focusAtom(typingStatusAtom, (optic) => optic.prop("score")),
+  type: focusAtom(typingStatusAtom, (optic) => optic.prop("type")),
+  kpm: focusAtom(typingStatusAtom, (optic) => optic.prop("kpm")),
+  rank: focusAtom(typingStatusAtom, (optic) => optic.prop("rank")),
+  point: focusAtom(typingStatusAtom, (optic) => optic.prop("point")),
+  miss: focusAtom(typingStatusAtom, (optic) => optic.prop("miss")),
+  lost: focusAtom(typingStatusAtom, (optic) => optic.prop("lost")),
+  line: focusAtom(typingStatusAtom, (optic) => optic.prop("line")),
+  timeBonus: focusAtom(typingStatusAtom, (optic) => optic.prop("timeBonus")),
 };
 
-export const useStatusAtomsValues = () => {
-  return () => {
-    return {
-      score: typeAtomStore.get(scoreAtom),
-      type: typeAtomStore.get(typeAtom),
-      kpm: typeAtomStore.get(totalKpmAtom),
-      rank: typeAtomStore.get(rankAtom),
-      point: typeAtomStore.get(pointAtom),
-      miss: typeAtomStore.get(missAtom),
-      lost: typeAtomStore.get(lostAtom),
-      line: typeAtomStore.get(lineCountAtom),
-      timeBonus: typeAtomStore.get(timeBonusAtom),
-    };
-  };
+export const useTypingStatusAtom = () => {
+  return useAtomValue(typingStatusAtom, { store: typeAtomStore });
 };
 
-export const useSetStatusAtoms = () => {
-  const statusSetters = {
-    score: useSetAtom(scoreAtom, { store: typeAtomStore }),
-    type: useSetAtom(typeAtom, { store: typeAtomStore }),
-    kpm: useSetAtom(totalKpmAtom, { store: typeAtomStore }),
-    rank: useSetAtom(rankAtom, { store: typeAtomStore }),
-    point: useSetAtom(pointAtom, { store: typeAtomStore }),
-    miss: useSetAtom(missAtom, { store: typeAtomStore }),
-    lost: useSetAtom(lostAtom, { store: typeAtomStore }),
-    line: useSetAtom(lineCountAtom, { store: typeAtomStore }),
-    timeBonus: useSetAtom(timeBonusAtom, { store: typeAtomStore }),
-  };
+export const useSetTypingStatusAtom = () => {
+  return useSetAtom(typingStatusAtom, { store: typeAtomStore });
+};
+
+export const useSetTypingStatusAtoms = () => {
   const map = useMapAtom();
   const rankingScores = useRankingScoresAtom();
 
-  const setStatusValues = (props: useSetStatusValueProps) => {
-    if (props.score !== undefined) {
-      statusSetters.score(props.score);
-    }
-    if (props.type !== undefined) {
-      statusSetters.type(props.type);
-    }
-    if (props.kpm !== undefined) {
-      statusSetters.kpm(props.kpm);
-    }
-    if (props.rank !== undefined) {
-      statusSetters.rank(props.rank);
-    }
-    if (props.point !== undefined) {
-      statusSetters.point(props.point);
-    }
-    if (props.miss !== undefined) {
-      statusSetters.miss(props.miss);
-    }
-    if (props.lost !== undefined) {
-      statusSetters.lost(props.lost);
-    }
-    if (props.line !== undefined) {
-      statusSetters.line(props.line);
-    }
-    if (props.timeBonus !== undefined) {
-      statusSetters.timeBonus(props.timeBonus);
-    }
+  const setTypingStatus = useSetAtom(typingStatusAtom, { store: typeAtomStore });
+  const setLineCount = useSetAtom(focusTypingStatusAtoms.line, { store: typeAtomStore });
+  const setRank = useSetAtom(focusTypingStatusAtoms.rank, { store: typeAtomStore });
+
+  const resetTypingStatus = () => {
+    setTypingStatus(RESET);
+    setLineCount(map?.lineLength || 0);
+    setRank(rankingScores.length + 1);
   };
 
-  // 新しい関数: statusValuesをリセットする
-  const resetStatusValues = () => {
-    statusSetters.score(0);
-    statusSetters.type(0);
-    statusSetters.kpm(0);
-    statusSetters.point(0);
-    statusSetters.miss(0);
-    statusSetters.lost(0);
-    statusSetters.rank(rankingScores.length + 1);
-    statusSetters.line(map?.lineLength || 0);
-    statusSetters.timeBonus(0);
-  };
-
-  return { setStatusValues, resetStatusValues };
+  return { setTypingStatus, resetTypingStatus };
 };

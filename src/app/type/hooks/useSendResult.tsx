@@ -1,44 +1,45 @@
+import { useStore } from "jotai";
 import { useParams } from "next/navigation";
 import { actions } from "../../../server/actions/sendTypingResultActions";
+import { typingStatusRefAtom } from "../atoms/refAtoms";
+import { useLineResultsAtom, useTypingStatusAtom } from "../atoms/stateAtoms";
 import { LineResultData, SendResultData } from "../ts/type";
-import { useLineResultsAtom, useStatusAtomsValues } from "../type-atoms/gameRenderAtoms";
-import { useRefs } from "../type-contexts/refsProvider";
 
 export const useSendResult = () => {
   const { id: mapId } = useParams();
-  const { statusRef } = useRefs();
   const lineResults: LineResultData[] = useLineResultsAtom();
+  const typeAtomStore = useStore();
   const minSp = lineResults.reduce((min, result) => {
     if (result.status!.tTime !== 0) {
       return Math.min(min, result.status!.sp);
     }
     return min;
   }, Infinity);
-  const statusAtomsValue = useStatusAtomsValues();
+  const typingStatus = useTypingStatusAtom();
 
   return async (): Promise<ReturnType<typeof actions>> => {
-    const totalTypeTime = statusRef.current!.status.totalTypeTime;
-    const rkpmTime = totalTypeTime - statusRef.current!.status.totalLatency;
-    const kanaToRomaConvertCount = statusRef.current!.status.kanaToRomaConvertCount;
-    const status = statusAtomsValue();
+    const statusRef = typeAtomStore.get(typingStatusRefAtom);
+    const totalTypeTime = statusRef.totalTypeTime;
+    const rkpmTime = totalTypeTime - statusRef.totalLatency;
+    const kanaToRomaConvertCount = statusRef.kanaToRomaConvertCount;
 
     const sendStatus: SendResultData["status"] = {
-      score: status.score,
-      roma_type: statusRef.current!.status.romaType,
-      kana_type: statusRef.current!.status.kanaType,
-      flick_type: statusRef.current!.status.flickType,
-      english_type: statusRef.current!.status.englishType,
-      space_type: statusRef.current!.status.spaceType,
-      symbol_type: statusRef.current!.status.symbolType,
-      num_type: statusRef.current!.status.numType,
-      miss: status.miss,
-      lost: status.lost,
-      rkpm: Math.round((status.type / rkpmTime) * 60),
-      max_combo: statusRef.current!.status.maxCombo,
-      kpm: status.kpm,
+      score: typingStatus.score,
+      roma_type: statusRef.romaType,
+      kana_type: statusRef.kanaType,
+      flick_type: statusRef.flickType,
+      english_type: statusRef.englishType,
+      space_type: statusRef.spaceType,
+      symbol_type: statusRef.symbolType,
+      num_type: statusRef.numType,
+      miss: typingStatus.miss,
+      lost: typingStatus.lost,
+      rkpm: Math.round((typingStatus.type / rkpmTime) * 60),
+      max_combo: statusRef.maxCombo,
+      kpm: typingStatus.kpm,
       roma_kpm: Math.round((kanaToRomaConvertCount / totalTypeTime) * 60),
       default_speed: minSp,
-      clear_rate: +statusRef.current!.status.clearRate.toFixed(1),
+      clear_rate: +statusRef.clearRate.toFixed(1),
     };
     const sendData = {
       map_id: Number(mapId),

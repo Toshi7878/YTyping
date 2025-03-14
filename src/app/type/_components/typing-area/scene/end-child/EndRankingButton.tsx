@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetTabIndexAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { useSetTabIndexAtom } from "@/app/type/atoms/stateAtoms";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { UploadResult } from "@/types";

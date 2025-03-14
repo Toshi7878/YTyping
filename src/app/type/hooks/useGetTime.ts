@@ -1,20 +1,22 @@
+import { useStore } from "jotai";
+import { typingStatusRefAtom, usePlayer, ytStateRefAtom } from "../atoms/refAtoms";
 import {
   useMapAtom,
   useTimeOffsetAtom,
   useTypePageSpeedAtom,
   useUserTypingOptionsAtom,
-} from "../type-atoms/gameRenderAtoms";
-import { useRefs } from "../type-contexts/refsProvider";
+} from "../atoms/stateAtoms";
 
 export const useGetTime = () => {
   const map = useMapAtom();
   const userOptions = useUserTypingOptionsAtom();
   const timeOffset = useTimeOffsetAtom();
   const speed = useTypePageSpeedAtom();
-  const { playerRef, statusRef, ytStateRef } = useRefs();
+  const typeAtomStore = useStore();
+  const player = usePlayer();
 
   const getCurrentOffsettedYTTime = () => {
-    const result = playerRef.current!.getCurrentTime() - userOptions.time_offset - timeOffset;
+    const result = player.getCurrentTime() - userOptions.time_offset - timeOffset;
     return result;
   };
 
@@ -23,7 +25,7 @@ export const useGetTime = () => {
   };
 
   const getCurrentLineTime = (YTCurrentTime: number) => {
-    const count = statusRef.current!.status.count;
+    const count = typeAtomStore.get(typingStatusRefAtom).count;
 
     if (count - 1 < 0) {
       return YTCurrentTime;
@@ -35,9 +37,10 @@ export const useGetTime = () => {
   };
 
   const getCurrentLineRemainTime = (YTCurrentTime: number) => {
-    const count = statusRef.current!.status.count;
+    const count = typeAtomStore.get(typingStatusRefAtom).count;
     const nextLine = map!.mapData[count];
-    const movieDuration = ytStateRef.current!.movieDuration;
+
+    const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainTime = (nextLineTime - YTCurrentTime) / speed.playSpeed;
@@ -51,11 +54,11 @@ export const useGetTime = () => {
   };
 
   const getConstantRemainLineTime = (lineConstantTime: number) => {
-    const count = statusRef.current!.status.count;
+    const count = typeAtomStore.get(typingStatusRefAtom).count;
 
     const nextLine = map!.mapData[count];
     const currentLine = map!.mapData[count - 1];
-    const movieDuration = ytStateRef.current!.movieDuration;
+    const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainConstantTime = nextLineTime - currentLine.time - lineConstantTime;

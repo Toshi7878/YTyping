@@ -1,11 +1,12 @@
+import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
 import {
   useSceneAtom,
   useSetRankingScoresAtom,
-  useSetStatusAtoms,
-} from "@/app/type/type-atoms/gameRenderAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
+  useSetTypingStatusAtoms,
+} from "@/app/type/atoms/stateAtoms";
 import { useMapRankingQuery } from "@/lib/global-hooks/query/mapRankingRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
+import { useStore } from "jotai";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,7 +15,6 @@ import RankingTr from "./child/RankingTr";
 
 const RankingList = () => {
   const { data: session } = useSession();
-  const { bestScoreRef } = useRefs();
   const [showMenu, setShowMenu] = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const setRankingScores = useSetRankingScoresAtom();
@@ -22,7 +22,8 @@ const RankingList = () => {
   const { id: mapId } = useParams();
 
   const { data, error, isPending } = useMapRankingQuery({ mapId: mapId as string });
-  const { setStatusValues } = useSetStatusAtoms();
+  const { setTypingStatus } = useSetTypingStatusAtoms();
+  const typeAtomStore = useStore();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,7 +60,7 @@ const RankingList = () => {
 
     setRankingScores(scores);
 
-    setStatusValues({ rank: scores.length + 1 });
+    ({ rank: scores.length + 1 });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
@@ -70,7 +71,10 @@ const RankingList = () => {
     if (scene === "playing" && data) {
       for (let i = 0; i < data.length; i++) {
         if (userId === Number(data[i].user_id)) {
-          bestScoreRef.current = data[i].status!.score;
+          typeAtomStore.set(gameStateRefAtom, (prev) => ({
+            ...prev,
+            myBestScore: data[i].status!.score,
+          }));
         }
       }
     }

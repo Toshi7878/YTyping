@@ -1,4 +1,4 @@
-import { skipAtom, useSetSkipAtom } from "@/app/type/type-atoms/gameRenderAtoms";
+import { skipAtom, useSetSkipAtom } from "@/app/type/atoms/stateAtoms";
 import { useStore } from "jotai";
 
 interface useDisplaySkipGuideProps {

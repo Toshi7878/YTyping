@@ -14,7 +14,7 @@ export default function EditSettings() {
     <VStack align="start" spacing={4}>
       <HStack spacing={10} alignItems="flex-end">
         <TotalTimeAdjust />
-        {!IS_IOS && !IS_ANDROID && <VolumeRange playerRef={playerRef} />}
+        {!IS_IOS && !IS_ANDROID && <VolumeRange player={playerRef.current!} />}
       </HStack>
       <HStack spacing={10} alignItems="flex-end">
         <ConvertOptionButtons />

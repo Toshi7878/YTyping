@@ -1,5 +1,5 @@
+import { useSceneAtom, useTypePageSpeedAtom } from "@/app/type/atoms/stateAtoms";
 import { useVideoSpeedChange } from "@/app/type/hooks/useVideoSpeedChange";
-import { useSceneAtom, useTypePageSpeedAtom } from "@/app/type/type-atoms/gameRenderAtoms";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";
 
