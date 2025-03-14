@@ -8,12 +8,7 @@ import {
   UseDisclosureReturn,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import {
-  useMapAtom,
-  useSceneAtom,
-  useSetDrawerClosureAtom,
-  useSetTabIndexAtom,
-} from "../../atoms/stateAtoms";
+import { useMapAtom, useSceneAtom, useSetDrawerClosureAtom } from "../../atoms/stateAtoms";
 import "../../style/type.scss";
 import PlayingBottom from "./scene/child/PlayingBottom";
 import PlayingTop from "./scene/child/PlayingTop";
@@ -33,16 +28,8 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
   const { drawerClosure } = props;
   const map = useMapAtom();
   const { onOpen } = drawerClosure;
-  const setTabIndex = useSetTabIndexAtom();
   const scene = useSceneAtom();
   const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
-
-  useEffect(() => {
-    if (isPlayed) {
-      setTabIndex(0);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene]);
 
   return (
     <CardBody mx={8} py={3}>

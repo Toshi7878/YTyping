@@ -88,11 +88,12 @@ export const usePlayTimer = () => {
       return;
     } else if (nextLine) {
       if (scene === "playing") {
-        const newCount = typeAtomStore.get(typingStatusRefAtom).count + 1;
-        updateLine(newCount);
+        typeAtomStore.get(typingStatusRefAtom).count += 1;
       } else {
-        updateLine(getSeekLineCount(currentOffesettedYTTime));
+        typeAtomStore.get(typingStatusRefAtom).count = getSeekLineCount(currentOffesettedYTTime);
       }
+
+      updateLine(typeAtomStore.get(typingStatusRefAtom).count);
     }
   };
 
@@ -107,10 +108,7 @@ export const usePlayTimer = () => {
     currentOffesettedYTTime: number;
     constantOffesettedYTTime: number;
   }) => {
-    typeAtomStore.set(gameStateRefAtom, (prev) => ({
-      ...prev,
-      displayLineTimeCount: constantRemainLineTime,
-    }));
+    typeAtomStore.get(gameStateRefAtom).displayLineTimeCount = constantRemainLineTime;
 
     setDisplayRemainTime(constantRemainLineTime);
 
@@ -132,7 +130,7 @@ export const usePlayTimer = () => {
       isRetrySkip &&
       map.mapData[map.startLine].time - 3 * speed.playSpeed <= currentOffesettedYTTime
     ) {
-      typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, isRetrySkip: false }));
+      typeAtomStore.get(gameStateRefAtom).isRetrySkip = false;
     }
 
     displaySkipGuide({

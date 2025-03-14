@@ -79,12 +79,12 @@ export const usePlayer = () => {
 export const lineProgressRefAtom = atom<HTMLProgressElement | null>(null);
 export const totalProgressRefAtom = atom<HTMLProgressElement | null>(null);
 
-export const useProgress = () => {
-  const typeAtomStore = useStore();
-  const lineProgress = typeAtomStore.get(lineProgressRefAtom) as HTMLProgressElement;
-  const totalProgress = typeAtomStore.get(totalProgressRefAtom) as HTMLProgressElement;
+// export const useProgress = () => {
+//   const typeAtomStore = useStore();
+//   const lineProgress = typeAtomStore.get(lineProgressRefAtom) as HTMLProgressElement;
+//   const totalProgress = typeAtomStore.get(totalProgressRefAtom) as HTMLProgressElement;
 
-  return { lineProgress, totalProgress };
-};
+//   return { lineProgress, totalProgress };
+// };
 
 export const lineResultCardRefsAtom = atom<HTMLDivElement[]>([]);

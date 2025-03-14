@@ -16,6 +16,7 @@ import {
   useSetPlayingInputModeAtom,
   useSetPlayingNotifyAtom,
   useSetSceneAtom,
+  useSetTabIndexAtom,
 } from "../atoms/stateAtoms";
 import { typeTicker } from "../ts/const/consts";
 import { InputModeType } from "../ts/type";
@@ -29,6 +30,7 @@ export const useYTPlayEvent = () => {
   const startTimer = useStartTimer();
   const setPlayingInputMode = useSetPlayingInputModeAtom();
   const { updatePlayCountStats } = useUpdateUserStats();
+  const setTabIndex = useSetTabIndexAtom();
 
   return async (event: YouTubeEvent) => {
     console.log("再生 1");
@@ -61,6 +63,7 @@ export const useYTPlayEvent = () => {
       const readyInputMode = typeAtomStore.get(readyRadioInputModeAtom);
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputModeType);
       updatePlayCountStats();
+      setTabIndex(0);
     }
 
     if (scene === "playing" || scene === "practice" || scene === "replay") {

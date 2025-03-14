@@ -13,6 +13,7 @@ import {
   useSetNextLyricsAtom,
   useSetPlayingNotifyAtom,
   useSetSceneAtom,
+  useSetTabIndexAtom,
   useSetTypingStatusAtoms,
 } from "../../atoms/stateAtoms";
 import { defaultLineWord, defaultNextLyrics, typeTicker } from "../../ts/const/consts";
@@ -78,6 +79,7 @@ export const useProceedRetry = () => {
   const player = usePlayer();
   const setCombo = useSetComboAtom();
   const typeAtomStore = useStore();
+  const setTabIndex = useSetTabIndexAtom();
 
   const map = useMapAtom() as CreateMap;
   const setLineResults = useSetLineResultsAtom();
@@ -87,6 +89,8 @@ export const useProceedRetry = () => {
 
   return (playMode: PlayMode) => {
     setScene(playMode);
+    setTabIndex(0);
+
     if (playMode === "playing" || playMode === "practice") {
       updatePlayCountStats();
     }
