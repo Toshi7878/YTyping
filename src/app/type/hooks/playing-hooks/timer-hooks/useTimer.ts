@@ -107,7 +107,10 @@ export const usePlayTimer = () => {
     currentOffesettedYTTime: number;
     constantOffesettedYTTime: number;
   }) => {
-    typeAtomStore.get(gameStateRefAtom).displayLineTimeCount = constantRemainLineTime;
+    typeAtomStore.set(gameStateRefAtom, (prev) => ({
+      ...prev,
+      displayLineTimeCount: constantRemainLineTime,
+    }));
 
     setDisplayRemainTime(constantRemainLineTime);
 
@@ -129,7 +132,7 @@ export const usePlayTimer = () => {
       isRetrySkip &&
       map.mapData[map.startLine].time - 3 * speed.playSpeed <= currentOffesettedYTTime
     ) {
-      typeAtomStore.get(gameStateRefAtom).isRetrySkip = false;
+      typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, isRetrySkip: false }));
     }
 
     displaySkipGuide({
