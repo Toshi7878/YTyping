@@ -1,7 +1,7 @@
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { useStore } from "jotai";
 import { YouTubeEvent } from "react-youtube";
-import { gameStateRefAtom, playerRefAtom, ytStateRefAtom } from "../atoms/refAtoms";
+import { gameStateRefAtom, playerRefAtom, useProgress, ytStateRefAtom } from "../atoms/refAtoms";
 import {
   isLoadingOverlayAtom,
   readyRadioInputModeAtom,
@@ -13,7 +13,6 @@ import {
 } from "../atoms/stateAtoms";
 import { typeTicker } from "../ts/const/consts";
 import { InputModeType } from "../ts/type";
-import { useRefs } from "../type-contexts/refsProvider";
 import { useStartTimer } from "./playing-hooks/timer-hooks/useStartTimer";
 import { useUpdateUserStats } from "./playing-hooks/useUpdateUserStats";
 
@@ -85,12 +84,11 @@ export const useYTEndEvent = () => {
 
 export const useYTStopEvent = () => {
   const setScene = useSetSceneAtom();
-  const { lineProgressRef, totalProgressRef } = useRefs();
+  const { lineProgress, totalProgress } = useProgress();
   return () => {
     console.log("動画停止");
-    lineProgressRef.current!.value = lineProgressRef.current!.max;
-    totalProgressRef.current!.value = totalProgressRef.current!.max;
-
+    lineProgress.value = lineProgress.max;
+    totalProgress.value = totalProgress.max;
     setScene("end");
 
     if (typeTicker.started) {

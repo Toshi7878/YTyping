@@ -1,6 +1,9 @@
-import { ytStateRefAtom } from "@/app/type/atoms/refAtoms";
+import {
+  lineProgressRefAtom,
+  totalProgressRefAtom,
+  ytStateRefAtom,
+} from "@/app/type/atoms/refAtoms";
 import { useMapAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { ThemeColors } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
 import { useStore } from "jotai";
@@ -10,7 +13,6 @@ interface PlayingProgressProps {
   id: string;
 }
 const PlayingProgress = (props: PlayingProgressProps) => {
-  const { setRef } = useRefs();
   const theme: ThemeColors = useTheme();
   const progressRef = React.useRef<HTMLProgressElement>(null);
   const scene = useSceneAtom();
@@ -19,7 +21,11 @@ const PlayingProgress = (props: PlayingProgressProps) => {
 
   useEffect(() => {
     if (progressRef.current) {
-      setRef(props.id, progressRef.current);
+      if (props.id === "line_progress") {
+        typeAtomStore.set(lineProgressRefAtom, progressRef.current);
+      } else {
+        typeAtomStore.set(totalProgressRefAtom, progressRef.current);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -34,8 +34,6 @@ export interface LineData {
 }
 
 export interface RefsContextType {
-  lineProgressRef: React.RefObject<HTMLProgressElement>;
-  totalProgressRef: React.RefObject<HTMLProgressElement>;
   cardRefs: React.RefObject<HTMLDivElement[]>;
   setRef: (key: string, ref: HTMLElement | any) => void;
 }

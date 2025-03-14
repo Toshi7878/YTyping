@@ -3,6 +3,7 @@ import {
   lineTypingStatusRefAtom,
   typingStatusRefAtom,
   usePlayer,
+  useProgress,
   userStatsRefAtom,
   ytStateRefAtom,
 } from "@/app/type/atoms/refAtoms";
@@ -30,7 +31,6 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
 import { typeTicker } from "@/app/type/ts/const/consts";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
 import { useStore } from "jotai";
 import { CreateMap, MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { LineData } from "../../../ts/type";
@@ -41,7 +41,8 @@ import { useLineReplayUpdate, useReplay, useUpdateAllStatus } from "./replayHook
 import { useGetSeekLineCount } from "./useSeekGetLineCount";
 
 export const usePlayTimer = () => {
-  const { lineProgressRef, totalProgressRef } = useRefs();
+  const { lineProgress, totalProgress } = useProgress();
+
   const map = useMapAtom() as CreateMap;
   const scene = useSceneAtom();
   const speed = useTypePageSpeedAtom();
@@ -139,7 +140,7 @@ export const usePlayTimer = () => {
       lineRemainTime: constantRemainLineTime,
       isRetrySkip,
     });
-    totalProgressRef.current!.value = currentOffesettedYTTime;
+    totalProgress.value = currentOffesettedYTTime;
 
     const currentTimeSSMM = typeAtomStore.get(currentTimeSSMMAtom);
     if (Math.abs(constantOffesettedYTTime - currentTimeSSMM) >= 1) {
@@ -188,7 +189,7 @@ export const usePlayTimer = () => {
       });
     }
 
-    lineProgressRef.current!.value =
+    lineProgress.value =
       currentOffesettedYTTime < 0 ? nextLine.time + currentOffesettedYTTime : currentLineTime;
 
     if (scene === "replay" && count && currentLineTime) {
@@ -335,7 +336,7 @@ export const useCalcLineResult = () => {
 };
 
 export const useUpdateLine = () => {
-  const { lineProgressRef } = useRefs();
+  const { lineProgress } = useProgress();
 
   const map = useMapAtom() as CreateMap;
   const userOptions = useUserTypingOptionsAtom();
@@ -406,15 +407,12 @@ export const useUpdateLine = () => {
       setChangeCSSCount(closestMin);
     }
 
-    if (lineProgressRef.current) {
-      const progressElement = lineProgressRef.current as HTMLProgressElement;
-      const nextTime = Number(map.mapData[newCount]["time"]);
-      const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
+    const nextTime = Number(map.mapData[newCount]["time"]);
+    const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
 
-      progressElement.max =
-        (nextTime > movieDuration ? movieDuration : nextTime) -
-        Number(map.mapData[currentCount]["time"]);
-    }
+    lineProgress.max =
+      (nextTime > movieDuration ? movieDuration : nextTime) -
+      Number(map.mapData[currentCount]["time"]);
 
     if (scene === "replay") {
       lineReplayUpdate(currentCount);

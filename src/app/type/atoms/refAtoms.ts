@@ -75,3 +75,14 @@ export const usePlayer = () => {
   const player = typeAtomStore.get(playerRefAtom) as YTPlayer;
   return player;
 };
+
+export const lineProgressRefAtom = atom<HTMLProgressElement | null>(null);
+export const totalProgressRefAtom = atom<HTMLProgressElement | null>(null);
+
+export const useProgress = () => {
+  const typeAtomStore = useStore();
+  const lineProgress = typeAtomStore.get(lineProgressRefAtom) as HTMLProgressElement;
+  const totalProgress = typeAtomStore.get(totalProgressRefAtom) as HTMLProgressElement;
+
+  return { lineProgress, totalProgress };
+};

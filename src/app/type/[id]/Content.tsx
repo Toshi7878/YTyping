@@ -13,6 +13,7 @@ import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
+import { useProgress } from "../atoms/refAtoms";
 import {
   focusTypingStatusAtoms,
   useIsLoadingOverlayAtom,
@@ -34,7 +35,6 @@ import { useUpdateUserStats } from "../hooks/playing-hooks/useUpdateUserStats";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
 import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
 import { InputModeType } from "../ts/type";
-import { useRefs } from "../type-contexts/refsProvider";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -58,14 +58,15 @@ function Content({ mapInfo }: ContentProps) {
 
   const isLoadingOverlay = useIsLoadingOverlayAtom();
   const disableKeyHandle = useDisableKeyHandle();
-  const { setTypingStatus, resetTypingStatus } = useSetTypingStatusAtoms();
+  const { resetTypingStatus } = useSetTypingStatusAtoms();
   const setCombo = useSetComboAtom();
   const setChangeCSSCount = useSetChangeCSSCountAtom();
   const setPlayingInputMode = useSetPlayingInputModeAtom();
   const setLineCount = useSetAtom(focusTypingStatusAtoms.line);
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
-  const { totalProgressRef } = useRefs();
+  const { totalProgress } = useProgress();
+
   const { updateTypingStats } = useUpdateUserStats();
 
   useEffect(() => {
@@ -83,7 +84,7 @@ function Content({ mapInfo }: ContentProps) {
       setLineResults(map.defaultLineResultData);
       setLineCount(map.lineLength);
       setLineSelectIndex(map.typingLineNumbers[0]);
-      totalProgressRef.current!.max = map.movieTotalTime;
+      totalProgress.max = map.movieTotalTime;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
