@@ -5,7 +5,6 @@ import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { useSetAtom, useStore } from "jotai";
-import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -13,34 +12,18 @@ import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
-import {
-  gameStateRefAtom,
-  lineTypingStatusRefAtom,
-  totalProgressRefAtom,
-  typingStatusRefAtom,
-  ytStateRefAtom,
-} from "../atoms/refAtoms";
+import { totalProgressRefAtom } from "../atoms/refAtoms";
+import { usePathChangeAtomReset } from "../atoms/reset";
 import {
   focusTypingStatusAtoms,
   useIsLoadingOverlayAtom,
   useSceneAtom,
-  useSetChangeCSSCountAtom,
-  useSetComboAtom,
   useSetLineResultsAtom,
   useSetLineSelectIndexAtom,
   useSetMapAtom,
-  useSetPlayingInputModeAtom,
-  useSetPlayingNotifyAtom,
-  useSetPlaySpeedAtom,
-  useSetRankingScoresAtom,
-  useSetSceneAtom,
-  useSetTimeOffsetAtom,
-  useSetTypingStatusAtoms,
 } from "../atoms/stateAtoms";
-import { useUpdateUserStats } from "../hooks/playing-hooks/useUpdateUserStats";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
 import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
-import { InputModeType } from "../ts/type";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -52,28 +35,18 @@ function Content({ mapInfo }: ContentProps) {
   const scene = useSceneAtom();
 
   const { id: mapId } = useParams();
-  const setMap = useSetMapAtom();
-  const setScene = useSetSceneAtom();
-  const setRankingScores = useSetRankingScoresAtom();
-  const setSpeedData = useSetPlaySpeedAtom();
-  const setNotify = useSetPlayingNotifyAtom();
-  const setLineResults = useSetLineResultsAtom();
-  const setLineSelectIndex = useSetLineSelectIndexAtom();
-  const setTimeOffset = useSetTimeOffsetAtom();
   const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string | undefined });
 
   const isLoadingOverlay = useIsLoadingOverlayAtom();
   const disableKeyHandle = useDisableKeyHandle();
-  const { resetTypingStatus } = useSetTypingStatusAtoms();
-  const setCombo = useSetComboAtom();
-  const setChangeCSSCount = useSetChangeCSSCountAtom();
-  const setPlayingInputMode = useSetPlayingInputModeAtom();
-  const setLineCount = useSetAtom(focusTypingStatusAtoms.line);
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
   const typeAtomStore = useStore();
-
-  const { updateTypingStats } = useUpdateUserStats();
+  const setMap = useSetMapAtom();
+  const setLineResults = useSetLineResultsAtom();
+  const setLineSelectIndex = useSetLineSelectIndexAtom();
+  const setLineCount = useSetAtom(focusTypingStatusAtoms.line);
+  const pathChangeAtomReset = usePathChangeAtomReset();
 
   useEffect(() => {
     if (scene === "ready" && layoutMode) {
@@ -101,24 +74,7 @@ function Content({ mapInfo }: ContentProps) {
 
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
-      typeAtomStore.set(ytStateRefAtom, RESET);
-      typeAtomStore.set(gameStateRefAtom, RESET);
-      typeAtomStore.set(typingStatusRefAtom, RESET);
-      typeAtomStore.set(lineTypingStatusRefAtom, RESET);
-
-      setMap(null);
-      updateTypingStats();
-      setScene(RESET);
-      setNotify(RESET);
-      setLineResults([]);
-      setLineSelectIndex(0);
-      setTimeOffset(0);
-      setRankingScores(RESET);
-      setSpeedData(RESET);
-      resetTypingStatus();
-      setCombo(0);
-      setChangeCSSCount(0);
-      setPlayingInputMode((localStorage.getItem("inputMode") as InputModeType) || "roma");
+      pathChangeAtomReset();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId]);

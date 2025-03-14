@@ -88,12 +88,11 @@ export const usePlayTimer = () => {
       return;
     } else if (nextLine) {
       if (scene === "playing") {
-        typeAtomStore.get(typingStatusRefAtom).count += 1;
+        const newCount = typeAtomStore.get(typingStatusRefAtom).count + 1;
+        updateLine(newCount);
       } else {
-        typeAtomStore.get(typingStatusRefAtom).count = getSeekLineCount(currentOffesettedYTTime);
+        updateLine(getSeekLineCount(currentOffesettedYTTime));
       }
-
-      updateLine(typeAtomStore.get(typingStatusRefAtom).count);
     }
   };
 

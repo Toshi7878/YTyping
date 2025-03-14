@@ -18,7 +18,7 @@ import {
 const typeAtomStore = createStore();
 export const getTypeAtomStore = () => typeAtomStore;
 
-export const mapAtom = atom<CreateMap | null>(null);
+export const mapAtom = atomWithReset<CreateMap | null>(null);
 
 export const useMapAtom = () => {
   return useAtomValue(mapAtom);
@@ -125,7 +125,7 @@ export const useSetRankingScoresAtom = () => {
   return useSetAtom(rankingScoresAtom);
 };
 
-export const lineResultsAtom = atom<LineResultData[]>([]);
+export const lineResultsAtom = atomWithReset<LineResultData[]>([]);
 
 export const useLineResultsAtom = () => {
   return useAtomValue(lineResultsAtom, { store: typeAtomStore });
@@ -135,7 +135,7 @@ export const useSetLineResultsAtom = () => {
   return useSetAtom(lineResultsAtom, { store: typeAtomStore });
 };
 
-export const lineSelectIndexAtom = atom<number>(0);
+export const lineSelectIndexAtom = atomWithReset<number>(0);
 
 export const useLineSelectIndexAtom = () => {
   return useAtomValue(lineSelectIndexAtom);
@@ -179,7 +179,7 @@ export const useSetUserTypingOptionsAtom = () => {
   return useSetAtom(userTypingOptionsAtom, { store: typeAtomStore });
 };
 
-export const timeOffsetAtom = atom<number>(0);
+export const timeOffsetAtom = atomWithReset<number>(0);
 
 export const useTimeOffsetAtom = () => {
   return useAtomValue(timeOffsetAtom, { store: typeAtomStore });
@@ -261,7 +261,7 @@ export const useSetDisplayLineKpmAtom = () => {
   return useSetAtom(displayLineKpmAtom, { store: typeAtomStore });
 };
 
-export const comboAtom = atom(0);
+export const comboAtom = atomWithReset(0);
 
 export const useComboAtom = () => {
   return useAtomValue(comboAtom, { store: typeAtomStore });
@@ -271,7 +271,7 @@ export const useSetComboAtom = () => {
   return useSetAtom(comboAtom, { store: typeAtomStore });
 };
 
-export const changeCSSCountAtom = atom<number>(0);
+export const changeCSSCountAtom = atomWithReset<number>(0);
 
 export const useChangeCSSCountAtom = () => {
   return useAtomValue(changeCSSCountAtom, { store: typeAtomStore });
