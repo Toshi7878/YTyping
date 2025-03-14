@@ -134,7 +134,7 @@ function Content({ mapInfo }: ContentProps) {
           left: 0,
           width: "100vw",
           height: "100vh",
-          zIndex: 9999, // 必要に応じて調整
+          zIndex: 9999,
         }),
       }}
     >

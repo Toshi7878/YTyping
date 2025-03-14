@@ -10,7 +10,6 @@ import {
   mapUpdatedAtAtom,
   userTypingOptionsAtom,
 } from "../atoms/stateAtoms";
-import { RefsProvider } from "../type-contexts/refsProvider";
 
 interface TypeProviderProps {
   mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
@@ -46,11 +45,8 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
       htmlElement.style.overflow = "";
     };
   }, []);
-  return (
-    <RefsProvider>
-      <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>
-    </RefsProvider>
-  );
+
+  return <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>;
 };
 
 export default TypeProvider;

@@ -7,8 +7,8 @@ import {
   useSetLineSelectIndexAtom,
 } from "@/app/type/atoms/stateAtoms";
 import { LineResultData } from "@/app/type/ts/type";
-import { useRefs } from "@/app/type/type-contexts/refsProvider";
 
+import { lineResultCardRefsAtom } from "@/app/type/atoms/refAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { Ticker } from "@pixi/ticker";
 import { useStore } from "jotai";
@@ -20,15 +20,13 @@ function ResultLineList() {
   const scene = useSceneAtom();
   const lineResults = useLineResultsAtom();
   const typeAtomStore = useStore();
-
-  const { setRef } = useRefs();
   const { moveSetLine, scrollToCard, drawerSelectColorChange } = useMoveLine();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
-    setRef("cardRefs", cardRefs.current);
+    typeAtomStore.set(lineResultCardRefsAtom, cardRefs.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 

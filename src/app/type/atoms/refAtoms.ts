@@ -86,3 +86,12 @@ export const useProgress = () => {
 
   return { lineProgress, totalProgress };
 };
+
+export const lineResultCardRefsAtom = atom<HTMLDivElement[]>([]);
+
+export const useLineResultCards = () => {
+  const typeAtomStore = useStore();
+  const lineResultCards = typeAtomStore.get(lineResultCardRefsAtom);
+
+  return lineResultCards;
+};

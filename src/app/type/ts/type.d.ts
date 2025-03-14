@@ -33,11 +33,6 @@ export interface LineData {
   options?: MapData["options"];
 }
 
-export interface RefsContextType {
-  cardRefs: React.RefObject<HTMLDivElement[]>;
-  setRef: (key: string, ref: HTMLElement | any) => void;
-}
-
 export interface LineWord {
   correct: { k: string; r: string };
   nextChar: TypeChunk;

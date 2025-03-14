@@ -1,5 +1,5 @@
 import { useStore } from "jotai";
-import { typingStatusRefAtom, usePlayer } from "../../atoms/refAtoms";
+import { lineResultCardRefsAtom, typingStatusRefAtom, usePlayer } from "../../atoms/refAtoms";
 import {
   lineSelectIndexAtom,
   sceneAtom,
@@ -9,12 +9,10 @@ import {
   useSetPlayingNotifyAtom,
 } from "../../atoms/stateAtoms";
 import { typeTicker } from "../../ts/const/consts";
-import { useRefs } from "../../type-contexts/refsProvider";
 import { useGetSeekLineCount } from "./timer-hooks/useSeekGetLineCount";
 import { useUpdateLine } from "./timer-hooks/useTimer";
 
 export const useMoveLine = () => {
-  const { cardRefs } = useRefs();
   const player = usePlayer();
   const map = useMapAtom();
   const typeAtomStore = useStore();
@@ -112,23 +110,27 @@ export const useMoveLine = () => {
   };
 
   const drawerSelectColorChange = (newLineSelectIndex: number) => {
-    for (let i = 0; i < cardRefs.current!.length; i++) {
-      const card = cardRefs.current![i];
+    const lineResultCards = typeAtomStore.get(lineResultCardRefsAtom);
+
+    for (let i = 0; i < lineResultCards.length; i++) {
+      const card = lineResultCards[i];
 
       if (!card) {
         continue;
       }
       if (newLineSelectIndex === i) {
-        cardRefs.current![i].classList.add("result-line-select-outline");
-        cardRefs.current![i].classList.remove("result-line-hover");
+        lineResultCards[i].classList.add("result-line-select-outline");
+        lineResultCards[i].classList.remove("result-line-hover");
       } else {
-        cardRefs.current![i].classList.add("result-line-hover");
-        cardRefs.current![i].classList.remove("result-line-select-outline");
+        lineResultCards[i].classList.add("result-line-hover");
+        lineResultCards[i].classList.remove("result-line-select-outline");
       }
     }
   };
   const scrollToCard = (newIndex: number) => {
-    const card: HTMLDivElement = cardRefs.current![newIndex];
+    const lineResultCards = typeAtomStore.get(lineResultCardRefsAtom);
+
+    const card: HTMLDivElement = lineResultCards[newIndex];
 
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;
