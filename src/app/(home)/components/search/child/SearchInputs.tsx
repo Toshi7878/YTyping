@@ -23,8 +23,16 @@ const SearchInputs = () => {
       params.delete("keyword");
     }
 
+    // 更新後のパラメータが現在のURLと同じ場合は何もしない
+    const updatedParams = setDifficultyRangeParams(params).toString();
+    const currentParams = searchParams.toString();
+
+    if (updatedParams === currentParams) {
+      return;
+    }
+
     setIsSearching(true);
-    router.replace(`?${setDifficultyRangeParams(params).toString()}`);
+    router.replace(`?${updatedParams}`);
   };
 
   return (
