@@ -1,5 +1,5 @@
 "use client";
-import { getGlobalAtomStore, useSetPreviewVideoState } from "@/lib/global-atoms/globalAtoms";
+import { useSetPreviewVideoState } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
@@ -12,7 +12,6 @@ interface TypeProviderProps {
   children: React.ReactNode;
 }
 const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProps) => {
-  const globalAtomStore = getGlobalAtomStore();
   const typeAtomStore = getTypeAtomStore();
   const setPreviewVideoState = useSetPreviewVideoState();
 
@@ -21,7 +20,7 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
       [mapInfoAtom, mapInfo],
       ...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : []),
     ],
-    { store: typeAtomStore }
+    { dangerouslyForceHydrate: true, store: typeAtomStore }
   );
 
   useEffect(() => {
