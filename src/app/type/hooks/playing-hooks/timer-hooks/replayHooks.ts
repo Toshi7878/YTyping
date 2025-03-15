@@ -1,4 +1,4 @@
-import { gameStateRefAtom, typingStatusRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef, useStatusRef } from "@/app/type/atoms/refAtoms";
 import {
   comboAtom,
   focusTypingStatusAtoms,
@@ -87,11 +87,12 @@ const useKeyReplay = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
 
+  const { readStatusRef } = useStatusRef();
   return ({ constantLineTime, lineResult, typeData }: UseKeyReplayProps) => {
     const key = typeData.c;
     const isSuccess = typeData.is;
     const option = typeData.op;
-    const count = typeAtomStore.get(typingStatusRefAtom).count;
+    const count = readStatusRef().count;
 
     if (key) {
       const typingKeys: TypingKeys = {
@@ -177,8 +178,11 @@ export const useReplay = () => {
   const keyReplay = useKeyReplay();
   const typeAtomStore = useStore();
 
+  const { readGameRef, writeGameRef } = useGameRef();
+  const { readStatusRef } = useStatusRef();
+
   return ({ constantLineTime }: { constantLineTime: number }) => {
-    const count = typeAtomStore.get(typingStatusRefAtom).count;
+    const count = readStatusRef().count;
     const lineResults = typeAtomStore.get(lineResultsAtom);
 
     const lineResult: LineResultData = lineResults[count - 1];
@@ -187,8 +191,8 @@ export const useReplay = () => {
     if (typeResults.length === 0) {
       return;
     }
-    const keyCount = typeAtomStore.get(gameStateRefAtom).replay.replayKeyCount!;
-    const typeData = typeResults[keyCount];
+    const replayKeyCount = readGameRef().replayKeyCount;
+    const typeData = typeResults[replayKeyCount];
 
     if (!typeData) {
       return;
@@ -198,7 +202,7 @@ export const useReplay = () => {
 
     if (constantLineTime >= keyTime) {
       keyReplay({ constantLineTime: constantLineTime, lineResult, typeData });
-      typeAtomStore.get(gameStateRefAtom).replay.replayKeyCount++;
+      writeGameRef({ replayKeyCount: replayKeyCount + 1 });
     }
   };
 };
@@ -209,6 +213,8 @@ export const useLineReplayUpdate = () => {
   const { playingSpeedChange } = useVideoSpeedChange();
   const inputModeChange = useInputModeChange();
 
+  const { writeGameRef } = useGameRef();
+
   return (newCount: number) => {
     const lineResults = typeAtomStore.get(lineResultsAtom);
 
@@ -218,7 +224,6 @@ export const useLineReplayUpdate = () => {
 
     inputModeChange(lineInputMode);
     playingSpeedChange("set", speed);
-
-    typeAtomStore.get(gameStateRefAtom).replay.replayKeyCount = 0;
+    writeGameRef({ replayKeyCount: 0 });
   };
 };

@@ -7,14 +7,14 @@ import CheckBoxOption from "./child/CheckBoxOption";
 
 const UserSoundEffectCheckbox = () => {
   const userTypingOptionsAtom = useUserTypingOptionsAtom();
-  const player = usePlayer();
+  const { readPlayer } = usePlayer();
 
   return (
     <Flex flexDirection="column" gap={4}>
       <Text fontSize="lg" fontWeight="semibold">
         サウンド
       </Text>
-      {!IS_IOS && !IS_ANDROID && <VolumeRange player={player} />}
+      {!IS_IOS && !IS_ANDROID && <VolumeRange player={readPlayer()} />}
       <CheckboxGroup>
         <Flex flexDirection="row" gap={2}>
           <CheckBoxOption

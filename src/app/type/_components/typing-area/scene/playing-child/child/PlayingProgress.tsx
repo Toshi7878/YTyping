@@ -1,8 +1,4 @@
-import {
-  lineProgressRefAtom,
-  totalProgressRefAtom,
-  ytStateRefAtom,
-} from "@/app/type/atoms/refAtoms";
+import { useProgress, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import { useMapAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
@@ -19,12 +15,15 @@ const PlayingProgress = (props: PlayingProgressProps) => {
   const map = useMapAtom();
   const typeAtomStore = useStore();
 
+  const { writeLineProgress, writeTotalProgress } = useProgress();
+  const { readYTStatusRef } = useYTStatusRef();
+
   useEffect(() => {
     if (progressRef.current) {
       if (props.id === "line_progress") {
-        typeAtomStore.set(lineProgressRefAtom, progressRef.current);
+        writeLineProgress(progressRef.current!);
       } else {
-        typeAtomStore.set(totalProgressRefAtom, progressRef.current);
+        writeTotalProgress(progressRef.current!);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -32,7 +31,7 @@ const PlayingProgress = (props: PlayingProgressProps) => {
 
   useEffect(() => {
     if (props.id === "total_progress" && scene !== "ready" && map) {
-      const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
+      const movieDuration = readYTStatusRef().movieDuration;
       const duration =
         Number(map?.movieTotalTime) > movieDuration ? movieDuration : map?.movieTotalTime;
       progressRef.current!.max = duration;

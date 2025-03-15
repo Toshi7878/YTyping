@@ -1,12 +1,7 @@
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
-import {
-  useSceneAtom,
-  useSetRankingScoresAtom,
-  useSetTypingStatusAtoms,
-} from "@/app/type/atoms/stateAtoms";
+import { useGameRef } from "@/app/type/atoms/refAtoms";
+import { useSceneAtom, useSetRankingScoresAtom } from "@/app/type/atoms/stateAtoms";
 import { useMapRankingQuery } from "@/lib/global-hooks/query/mapRankingRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,8 +17,7 @@ const RankingList = () => {
   const { id: mapId } = useParams();
 
   const { data, error, isPending } = useMapRankingQuery({ mapId: mapId as string });
-  const { setTypingStatus } = useSetTypingStatusAtoms();
-  const typeAtomStore = useStore();
+  const { writeGameRef } = useGameRef();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -71,10 +65,9 @@ const RankingList = () => {
     if (scene === "playing" && data) {
       for (let i = 0; i < data.length; i++) {
         if (userId === Number(data[i].user_id)) {
-          typeAtomStore.set(gameStateRefAtom, (prev) => ({
-            ...prev,
+          writeGameRef({
             myBestScore: data[i].status!.score,
-          }));
+          });
         }
       }
     }

@@ -1,5 +1,5 @@
 import { useStore } from "jotai";
-import { gameStateRefAtom, lineTypingStatusRefAtom, usePlayer } from "../atoms/refAtoms";
+import { useGameRef, useLineStatusRef, usePlayer } from "../atoms/refAtoms";
 import {
   sceneAtom,
   speedAtom,
@@ -13,7 +13,10 @@ export const useVideoSpeedChange = () => {
   const setSpeedData = useSetPlaySpeedAtom();
   const setNotify = useSetPlayingNotifyAtom();
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
-  const player = usePlayer();
+
+  const { readPlayer } = usePlayer();
+  const { writeGameRef } = useGameRef();
+  const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
 
   const defaultSpeedChange = (type: "up" | "down" | "set", setSpeed: number = 1) => {
     const defaultSpeed = typeAtomStore.get(speedAtom).defaultSpeed;
@@ -33,14 +36,14 @@ export const useVideoSpeedChange = () => {
     }
 
     setSpeedData({ defaultSpeed: setSpeed, playSpeed: setSpeed });
-    player.setPlaybackRate(setSpeed);
+    readPlayer().setPlaybackRate(setSpeed);
 
     const scene = typeAtomStore.get(sceneAtom);
 
     const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 
     if (scene === "ready") {
-      typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, startPlaySpeed: setSpeed }));
+      writeGameRef({ startPlaySpeed: setSpeed });
     } else if (isPlayed) {
       setNotify(Symbol(`${setSpeed.toFixed(2)}x`));
     }
@@ -61,7 +64,7 @@ export const useVideoSpeedChange = () => {
       playSpeed: setSpeed,
     });
 
-    player.setPlaybackRate(setSpeed);
+    readPlayer().setPlaybackRate(setSpeed);
 
     if (currentSpeed !== setSpeed) {
       setNotify(Symbol(`${setSpeed.toFixed(2)}x`));
@@ -70,17 +73,17 @@ export const useVideoSpeedChange = () => {
     const scene = typeAtomStore.get(sceneAtom);
 
     if (scene === "playing") {
-      const lineTime = getCurrentLineTime(await getCurrentOffsettedYTTime());
-      typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
-        ...prev,
+      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+
+      writeLineStatusRef({
         typeResult: [
-          ...prev.typeResult,
+          ...readLineStatusRef().typeResult,
           {
             op: "speedChange",
             t: Math.round(lineTime * 1000) / 1000,
           },
         ],
-      }));
+      });
     }
   };
 

@@ -1,5 +1,5 @@
 import { useStore } from "jotai";
-import { gameStateRefAtom, lineTypingStatusRefAtom } from "../../atoms/refAtoms";
+import { useGameRef, useLineStatusRef } from "../../atoms/refAtoms";
 import {
   drawerClosureAtom,
   sceneAtom,
@@ -16,22 +16,21 @@ export const useChangePlayMode = () => {
   const { defaultSpeedChange } = useVideoSpeedChange();
   const typeAtomStore = useStore();
 
+  const { writeGameRef } = useGameRef();
+  const { readLineStatusRef } = useLineStatusRef();
+
   return () => {
     const scene = typeAtomStore.get(sceneAtom);
     if (scene === "playing") {
       const confirmMessage = "練習モードに移動しますか？";
       if (window.confirm(confirmMessage)) {
-        typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, playMode: "practice" }));
+        writeGameRef({ playMode: "practice" });
         setScene("practice");
       }
     } else {
       const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
       if (window.confirm(confirmMessage)) {
-        typeAtomStore.set(gameStateRefAtom, (prev) => ({
-          ...prev,
-          practice: { myResultId: null },
-          replay: { replayKeyCount: 0, userName: "" },
-        }));
+        writeGameRef({ practiceMyResultId: null, replayKeyCount: 0, replayUserName: "" });
         setScene("playing");
         const drawerClosure = typeAtomStore.get(drawerClosureAtom);
 
@@ -39,7 +38,7 @@ export const useChangePlayMode = () => {
           drawerClosure.onClose();
         }
         retry("playing");
-        defaultSpeedChange("set", typeAtomStore.get(lineTypingStatusRefAtom).startSpeed);
+        defaultSpeedChange("set", readLineStatusRef().startSpeed);
       }
       setNotify(Symbol(""));
     }

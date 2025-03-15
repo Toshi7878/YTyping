@@ -1,14 +1,12 @@
-import { useStore } from "jotai";
 import { useParams } from "next/navigation";
 import { actions } from "../../../server/actions/sendTypingResultActions";
-import { typingStatusRefAtom } from "../atoms/refAtoms";
+import { useStatusRef } from "../atoms/refAtoms";
 import { useLineResultsAtom, useTypingStatusAtom } from "../atoms/stateAtoms";
 import { LineResultData, SendResultData } from "../ts/type";
 
 export const useSendResult = () => {
   const { id: mapId } = useParams();
   const lineResults: LineResultData[] = useLineResultsAtom();
-  const typeAtomStore = useStore();
   const minSp = lineResults.reduce((min, result) => {
     if (result.status!.tTime !== 0) {
       return Math.min(min, result.status!.sp);
@@ -16,9 +14,10 @@ export const useSendResult = () => {
     return min;
   }, Infinity);
   const typingStatus = useTypingStatusAtom();
+  const { readStatusRef } = useStatusRef();
 
   return async (): Promise<ReturnType<typeof actions>> => {
-    const statusRef = typeAtomStore.get(typingStatusRefAtom);
+    const statusRef = readStatusRef();
     const totalTypeTime = statusRef.totalTypeTime;
     const rkpmTime = totalTypeTime - statusRef.totalLatency;
     const kanaToRomaConvertCount = statusRef.kanaToRomaConvertCount;

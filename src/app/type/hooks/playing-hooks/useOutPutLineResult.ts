@@ -7,7 +7,7 @@ import {
 import { useCalcCurrentRank } from "@/app/type/hooks/playing-hooks/useUpdateStatus";
 import { useStore } from "jotai";
 import { CHAR_POINT, CreateMap } from "../../../../lib/instanceMapData";
-import { typingStatusRefAtom } from "../../atoms/refAtoms";
+import { useStatusRef } from "../../atoms/refAtoms";
 import { LineWord } from "../../ts/type";
 
 interface useOutPutLineResultProps {
@@ -19,6 +19,8 @@ export const useOutPutLineResult = () => {
   const typeAtomStore = useStore();
   const map = useMapAtom() as CreateMap;
   const calcCurrentRank = useCalcCurrentRank();
+  const { readStatusRef, writeStatusRef } = useStatusRef();
+
   const getLostWord = (newLineWord: LineWord) => {
     if (newLineWord.nextChar["k"]) {
       const romaLostWord =
@@ -38,10 +40,10 @@ export const useOutPutLineResult = () => {
 
     const newStatus = { ...status };
     if (scene === "playing") {
-      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-        ...prev,
-        kanaToRomaConvertCount: (prev.kanaToRomaConvertCount += newLineWord.correct.r.length),
-      }));
+      writeStatusRef({
+        kanaToRomaConvertCount: (readStatusRef().kanaToRomaConvertCount +=
+          newLineWord.correct.r.length),
+      });
     }
 
     newStatus.timeBonus = 0;
@@ -49,15 +51,14 @@ export const useOutPutLineResult = () => {
     const isLineFailure = newLineWord.nextChar["k"];
     if (isLineFailure) {
       newStatus.kpm = totalTypeSpeed;
-      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-        ...prev,
-        failureCount: prev.failureCount++,
-        clearRate: prev.clearRate - map.keyRate * lostLength,
-      }));
 
-      const typingStatusRef = typeAtomStore.get(typingStatusRefAtom);
-      newStatus.line =
-        map.lineLength - (typingStatusRef.completeCount + typingStatusRef.failureCount);
+      writeStatusRef({
+        failureCount: readStatusRef().failureCount + 1,
+        clearRate: readStatusRef().clearRate - map.keyRate * lostLength,
+      });
+
+      const statusRef = readStatusRef();
+      newStatus.line = map.lineLength - (statusRef.completeCount + statusRef.failureCount);
       newStatus.lost += lostLength;
       newStatus.score += newStatus.point;
       newStatus.rank = calcCurrentRank(newStatus.score);

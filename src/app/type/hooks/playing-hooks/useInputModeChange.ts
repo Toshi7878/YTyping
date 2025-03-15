@@ -1,6 +1,6 @@
 import { useStore } from "jotai";
 import { romaConvert } from "../../../../lib/instanceMapData";
-import { lineTypingStatusRefAtom, typingStatusRefAtom } from "../../atoms/refAtoms";
+import { useLineStatusRef, useStatusRef } from "../../atoms/refAtoms";
 import {
   lineWordAtom,
   playingInputModeAtom,
@@ -23,9 +23,11 @@ export const useInputModeChange = () => {
   const setPlayingInputMode = useSetPlayingInputModeAtom();
   const setNotify = useSetPlayingNotifyAtom();
   const setNextLyrics = useSetNextLyricsAtom();
-  const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
   const setLineWord = useSetLineWordAtom();
 
+  const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
+  const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
+  const { readStatusRef, writeStatusRef } = useStatusRef();
   return async (newInputMode: InputModeType) => {
     const playingInputMode = typeAtomStore.get(playingInputModeAtom);
 
@@ -53,7 +55,7 @@ export const useInputModeChange = () => {
       }
     }
 
-    const count = typeAtomStore.get(typingStatusRefAtom).count;
+    const count = readStatusRef().count;
     const nextLine = map!.mapData[count];
     const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
 
@@ -77,17 +79,16 @@ export const useInputModeChange = () => {
     const scene = typeAtomStore.get(sceneAtom);
 
     if (scene === "playing") {
-      const lineTime = getCurrentLineTime(await getCurrentOffsettedYTTime());
-      typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
-        ...prev,
+      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+      writeLineStatusRef({
         typeResult: [
-          ...prev.typeResult,
+          ...readLineStatusRef().typeResult,
           {
             op: newInputMode,
             t: Math.round(lineTime * 1000) / 1000,
           },
         ],
-      }));
+      });
     }
   };
 };

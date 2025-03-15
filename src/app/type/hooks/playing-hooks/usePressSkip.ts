@@ -1,11 +1,6 @@
 import { useStore } from "jotai";
 import { CreateMap } from "../../../../lib/instanceMapData";
-import {
-  gameStateRefAtom,
-  typingStatusRefAtom,
-  usePlayer,
-  ytStateRefAtom,
-} from "../../atoms/refAtoms";
+import { useGameRef, usePlayer, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
 import {
   speedAtom,
   timeOffsetAtom,
@@ -15,18 +10,22 @@ import {
 } from "../../atoms/stateAtoms";
 
 export const usePressSkip = () => {
-  const player = usePlayer();
+  const { readPlayer } = usePlayer();
   const map = useMapAtom() as CreateMap;
   const typeAtomStore = useStore();
   const setSkip = useSetSkipAtom();
 
+  const { readGameRef, writeGameRef } = useGameRef();
+  const { readYTStatusRef } = useYTStatusRef();
+  const { readStatusRef } = useStatusRef();
+
   return () => {
     const userOptions = typeAtomStore.get(userTypingOptionsAtom);
     const timeOffset = typeAtomStore.get(timeOffsetAtom);
-    const count = typeAtomStore.get(typingStatusRefAtom).count;
+    const count = readStatusRef().count;
 
     const nextLine = map!.mapData[count];
-    const isRetrySkip = typeAtomStore.get(gameStateRefAtom).isRetrySkip;
+    const isRetrySkip = readGameRef().isRetrySkip;
 
     const skippedTime =
       (isRetrySkip ? Number(map!.mapData[map!.startLine]["time"]) : Number(nextLine["time"])) +
@@ -35,13 +34,13 @@ export const usePressSkip = () => {
 
     const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
 
-    const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
+    const movieDuration = readYTStatusRef().movieDuration;
     const seekTime =
       nextLine["lyrics"] === "end" ? movieDuration - 2 : skippedTime - 1 + (1 - playSpeed);
 
-    player.seekTo(seekTime, true);
+    readPlayer().seekTo(seekTime, true);
 
-    typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, isRetrySkip: false }));
+    writeGameRef({ isRetrySkip: false });
     setSkip("");
   };
 };

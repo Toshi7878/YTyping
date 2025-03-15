@@ -1,6 +1,6 @@
 "use client";
 
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef } from "@/app/type/atoms/refAtoms";
 import { RANKING_COLUMN_WIDTH } from "@/app/type/ts/const/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import ClapedText from "@/components/share-components/text/ClapedText";
@@ -13,7 +13,6 @@ import { useLocalClapServerActions } from "@/lib/global-hooks/useLocalClapServer
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
 import { Td, Tr, useTheme } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import { useSession } from "next-auth/react";
 import { Dispatch, useEffect } from "react";
 import RankingMenu from "./RankingMenu";
@@ -42,7 +41,7 @@ const RankingTr = (props: RankingTrProps) => {
   const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
   const userId = Number(session?.user.id);
-  const typeAtomStore = useStore();
+  const { writeGameRef } = useGameRef();
 
   const { clapOptimisticState, toggleClapAction } = useLocalClapServerActions({
     hasClap: !!result.claps[0]?.is_claped && !!session,
@@ -51,13 +50,9 @@ const RankingTr = (props: RankingTrProps) => {
 
   useEffect(() => {
     if (userId === result.user_id) {
-      typeAtomStore.set(gameStateRefAtom, (prev) => ({
-        ...prev,
-        practice: {
-          ...prev.practice,
-          myResultId: result.id,
-        },
-      }));
+      writeGameRef({
+        practiceMyResultId: result.id,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

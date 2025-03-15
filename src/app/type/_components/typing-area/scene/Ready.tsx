@@ -14,12 +14,13 @@ function Ready() {
   const speedDownButtonRef = useRef<HTMLButtonElement>(null);
   const map = useMapAtom();
   const windowFocus = useWindowFocus();
-  const player = usePlayer();
+  const { readPlayer } = usePlayer();
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {
       switch (event.code) {
         case "Enter":
+          const player = readPlayer();
           if (player && map) {
             player.playVideo();
             windowFocus();
@@ -46,7 +47,7 @@ function Ready() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player, map]);
+  }, [readPlayer(), map]);
 
   return (
     <Stack justifyContent="space-between" direction="column" minH={CARD_BODY_MIN_HEIGHT}>

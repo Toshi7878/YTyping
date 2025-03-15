@@ -11,11 +11,10 @@ import {
   useTheme,
 } from "@chakra-ui/react";
 
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef } from "@/app/type/atoms/refAtoms";
 import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { PlayMode } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
-import { useStore } from "jotai";
 import { useRef } from "react";
 
 interface EndSubButtonProps {
@@ -27,7 +26,7 @@ const EndSubButton = ({ isRetryAlert, retryMode }: EndSubButtonProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const theme: ThemeColors = useTheme();
-  const typeAtomStore = useStore();
+  const { readGameRef } = useGameRef();
 
   const proceedRetry = useProceedRetry();
 
@@ -41,7 +40,7 @@ const EndSubButton = ({ isRetryAlert, retryMode }: EndSubButtonProps) => {
 
   const getButtonText = () => {
     if (retryMode === "practice") return "練習モード";
-    if (typeAtomStore.get(gameStateRefAtom).replay.userName) return "もう一度リプレイ";
+    if (readGameRef().replayUserName) return "もう一度リプレイ";
     return "もう一度プレイ";
   };
 

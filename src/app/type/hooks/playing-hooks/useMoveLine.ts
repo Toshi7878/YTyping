@@ -1,5 +1,5 @@
 import { useStore } from "jotai";
-import { lineResultCardRefsAtom, typingStatusRefAtom, usePlayer } from "../../atoms/refAtoms";
+import { usePlayer, useResultCards, useStatusRef } from "../../atoms/refAtoms";
 import {
   lineSelectIndexAtom,
   sceneAtom,
@@ -13,7 +13,7 @@ import { useGetSeekLineCount } from "./timer-hooks/useSeekGetLineCount";
 import { useUpdateLine } from "./timer-hooks/useTimer";
 
 export const useMoveLine = () => {
-  const player = usePlayer();
+  const { readPlayer } = usePlayer();
   const map = useMapAtom();
   const typeAtomStore = useStore();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
@@ -21,9 +21,12 @@ export const useMoveLine = () => {
   const updateLine = useUpdateLine();
   const getSeekLineCount = useGetSeekLineCount();
 
+  const { readResultCards } = useResultCards();
+  const { readStatusRef, writeStatusRef } = useStatusRef();
+
   const movePrevLine = () => {
     const scene = typeAtomStore.get(sceneAtom);
-    const count = typeAtomStore.get(typingStatusRefAtom).count - (scene === "replay" ? 1 : 0);
+    const count = readStatusRef().count - (scene === "replay" ? 1 : 0);
     const prevCount = structuredClone(map!.typingLineNumbers)
       .reverse()
       .find((num) => num < count);
@@ -42,10 +45,10 @@ export const useMoveLine = () => {
     }
 
     const newCount = getSeekLineCount(prevTime);
-    typeAtomStore.set(typingStatusRefAtom, (prev) => ({ ...prev, count: newCount }));
+    writeStatusRef({ count: newCount });
     updateLine(newCount);
 
-    player.seekTo(prevTime, true);
+    readPlayer().seekTo(prevTime, true);
     setNotify(Symbol(`◁`));
     drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
@@ -54,10 +57,9 @@ export const useMoveLine = () => {
   const moveNextLine = () => {
     const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
     const seekCount = lineSelectIndex ? map!.typingLineNumbers[lineSelectIndex - 1] : null;
-    const seekCountAdjust =
-      seekCount && seekCount === typeAtomStore.get(typingStatusRefAtom).count ? 0 : -1;
+    const seekCountAdjust = seekCount && seekCount === readStatusRef().count ? 0 : -1;
 
-    const count = typeAtomStore.get(typingStatusRefAtom).count + seekCountAdjust;
+    const count = readStatusRef().count + seekCountAdjust;
     const nextCount = map!.typingLineNumbers.find((num) => num > count);
 
     if (nextCount === undefined) {
@@ -82,10 +84,10 @@ export const useMoveLine = () => {
     }
 
     const newCount = getSeekLineCount(nextTime);
-    typeAtomStore.set(typingStatusRefAtom, (prev) => ({ ...prev, count: newCount }));
+    writeStatusRef({ count: newCount });
     updateLine(newCount);
 
-    player.seekTo(nextTime, true);
+    readPlayer().seekTo(nextTime, true);
     setNotify(Symbol(`▷`));
     drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
@@ -102,35 +104,34 @@ export const useMoveLine = () => {
     if (lineSelectIndex !== seekCount) {
       drawerSelectColorChange(seekCount);
     }
-    player.seekTo(seekTime, true);
+    readPlayer().seekTo(seekTime, true);
     const newCount = getSeekLineCount(seekTime);
-    typeAtomStore.set(typingStatusRefAtom, (prev) => ({ ...prev, count: newCount }));
+    writeStatusRef({ count: newCount });
     updateLine(newCount);
     typeTicker.stop();
   };
 
   const drawerSelectColorChange = (newLineSelectIndex: number) => {
-    const lineResultCards = typeAtomStore.get(lineResultCardRefsAtom);
-
-    for (let i = 0; i < lineResultCards.length; i++) {
-      const card = lineResultCards[i];
+    const resultCards = readResultCards();
+    for (let i = 0; i < resultCards.length; i++) {
+      const card = resultCards[i];
 
       if (!card) {
         continue;
       }
       if (newLineSelectIndex === i) {
-        lineResultCards[i].classList.add("result-line-select-outline");
-        lineResultCards[i].classList.remove("result-line-hover");
+        resultCards[i].classList.add("result-line-select-outline");
+        resultCards[i].classList.remove("result-line-hover");
       } else {
-        lineResultCards[i].classList.add("result-line-hover");
-        lineResultCards[i].classList.remove("result-line-select-outline");
+        resultCards[i].classList.add("result-line-hover");
+        resultCards[i].classList.remove("result-line-select-outline");
       }
     }
   };
   const scrollToCard = (newIndex: number) => {
-    const lineResultCards = typeAtomStore.get(lineResultCardRefsAtom);
+    const resultCards = readResultCards();
 
-    const card: HTMLDivElement = lineResultCards[newIndex];
+    const card: HTMLDivElement = resultCards[newIndex];
 
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;

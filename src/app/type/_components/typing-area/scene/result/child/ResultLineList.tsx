@@ -8,7 +8,7 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { LineResultData } from "@/app/type/ts/type";
 
-import { lineResultCardRefsAtom } from "@/app/type/atoms/refAtoms";
+import { useResultCards } from "@/app/type/atoms/refAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { Ticker } from "@pixi/ticker";
 import { useStore } from "jotai";
@@ -22,11 +22,12 @@ function ResultLineList() {
   const typeAtomStore = useStore();
   const { moveSetLine, scrollToCard, drawerSelectColorChange } = useMoveLine();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
+  const { writeResultCards } = useResultCards();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
-    typeAtomStore.set(lineResultCardRefsAtom, cardRefs.current);
+    writeResultCards(cardRefs.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 

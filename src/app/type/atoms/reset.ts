@@ -1,12 +1,6 @@
-import { useStore } from "jotai";
 import { RESET } from "jotai/utils";
 import { InputModeType } from "../ts/type";
-import {
-  gameStateRefAtom,
-  lineTypingStatusRefAtom,
-  typingStatusRefAtom,
-  ytStateRefAtom,
-} from "./refAtoms";
+import { useGameRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "./refAtoms";
 import {
   useSetChangeCSSCountAtom,
   useSetComboAtom,
@@ -35,14 +29,12 @@ export const usePathChangeAtomReset = () => {
   const setCombo = useSetComboAtom();
   const setChangeCSSCount = useSetChangeCSSCountAtom();
   const setPlayingInputMode = useSetPlayingInputModeAtom();
-  const typeAtomStore = useStore();
+  const { resetGameRef } = useGameRef();
+  const { resetYTStatusRef } = useYTStatusRef();
+  const { resetLineStatusRef } = useLineStatusRef();
+  const { resetStatusRef } = useStatusRef();
 
   return () => {
-    typeAtomStore.set(ytStateRefAtom, RESET);
-    typeAtomStore.set(gameStateRefAtom, RESET);
-    typeAtomStore.set(typingStatusRefAtom, RESET);
-    typeAtomStore.set(lineTypingStatusRefAtom, RESET);
-
     setMap(RESET);
     setScene(RESET);
     setNotify(RESET);
@@ -55,5 +47,9 @@ export const usePathChangeAtomReset = () => {
     setChangeCSSCount(RESET);
     setPlayingInputMode((localStorage.getItem("inputMode") as InputModeType) || "roma");
     resetTypingStatus();
+    resetGameRef();
+    resetYTStatusRef();
+    resetStatusRef();
+    resetLineStatusRef();
   };
 };

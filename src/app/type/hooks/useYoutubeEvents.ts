@@ -1,13 +1,8 @@
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
+import { YTPlayer } from "@/types/global-types";
 import { useStore } from "jotai";
 import { YouTubeEvent } from "react-youtube";
-import {
-  gameStateRefAtom,
-  lineProgressRefAtom,
-  playerRefAtom,
-  totalProgressRefAtom,
-  ytStateRefAtom,
-} from "../atoms/refAtoms";
+import { useGameRef, usePlayer, useProgress, useYTStatusRef } from "../atoms/refAtoms";
 import {
   isLoadingOverlayAtom,
   readyRadioInputModeAtom,
@@ -32,23 +27,24 @@ export const useYTPlayEvent = () => {
   const { updatePlayCountStats } = useUpdateUserStats();
   const setTabIndex = useSetTabIndexAtom();
 
+  const { readPlayer } = usePlayer();
+  const { readGameRef } = useGameRef();
+  const { readYTStatusRef, writeYTStatusRef } = useYTStatusRef();
+
   return async (event: YouTubeEvent) => {
     console.log("再生 1");
     const scene = typeAtomStore.get(sceneAtom);
 
-    const ytState = typeAtomStore.get(ytStateRefAtom);
     if (scene === "ready") {
-      if (ytState) {
-        const movieDuration = typeAtomStore.get(playerRefAtom)!.getDuration();
-        typeAtomStore.set(ytStateRefAtom, (prev) => ({ ...prev, movieDuration }));
-      }
+      const movieDuration = readPlayer().getDuration();
+      writeYTStatusRef({ movieDuration });
 
-      const playMode = typeAtomStore.get(gameStateRefAtom).playMode;
+      const playMode = readGameRef().playMode;
 
       const isPlayDataLoad = typeAtomStore.get(isLoadingOverlayAtom);
 
       if (isPlayDataLoad) {
-        event.target.pauseVideo();
+        readPlayer().pauseVideo();
         return;
       }
 
@@ -70,38 +66,38 @@ export const useYTPlayEvent = () => {
       startTimer();
     }
 
-    const isPaused = ytState.isPaused;
+    const isPaused = readYTStatusRef().isPaused;
 
     if (isPaused) {
-      typeAtomStore.set(ytStateRefAtom, (prev) => ({ ...prev, isPaused: false }));
+      writeYTStatusRef({ isPaused: false });
       setNotify(Symbol("▶"));
     }
   };
 };
 
 export const useYTEndEvent = () => {
-  const typeAtomStore = useStore();
+  const { readPlayer } = usePlayer();
 
   return () => {
     console.log("プレイ終了");
-    const player = typeAtomStore.get(playerRefAtom);
 
-    player!.seekTo(0, true);
-    player!.stopVideo();
+    readPlayer().seekTo(0, true);
+    readPlayer().stopVideo();
   };
 };
 
 export const useYTStopEvent = () => {
   const setScene = useSetSceneAtom();
-  const typeAtomStore = useStore();
+  const { readLineProgress, readTotalProgress } = useProgress();
+
   return () => {
     console.log("動画停止");
 
-    const lineProgress = typeAtomStore.get(lineProgressRefAtom);
-    const totalProgress = typeAtomStore.get(totalProgressRefAtom);
+    const lineProgress = readLineProgress();
+    const totalProgress = readTotalProgress();
 
-    lineProgress!.value = lineProgress!.max;
-    totalProgress!.value = totalProgress!.max;
+    lineProgress.value = lineProgress.max;
+    totalProgress.value = totalProgress.max;
     setScene("end");
 
     if (typeTicker.started) {
@@ -112,7 +108,7 @@ export const useYTStopEvent = () => {
 
 export const useYTPauseEvent = () => {
   const setNotify = useSetPlayingNotifyAtom();
-  const typeAtomStore = useStore();
+  const { readYTStatusRef, writeYTStatusRef } = useYTStatusRef();
 
   return () => {
     console.log("一時停止");
@@ -121,9 +117,9 @@ export const useYTPauseEvent = () => {
       typeTicker.stop();
     }
 
-    const isPaused = typeAtomStore.get(ytStateRefAtom).isPaused;
+    const isPaused = readYTStatusRef().isPaused;
     if (!isPaused) {
-      typeAtomStore.set(ytStateRefAtom, (prev) => ({ ...prev, isPaused: true }));
+      writeYTStatusRef({ isPaused: true });
       setNotify(Symbol("ll"));
     }
   };
@@ -131,10 +127,13 @@ export const useYTPauseEvent = () => {
 
 export const useYTSeekEvent = () => {
   const typeAtomStore = useStore();
+  const { readPlayer } = usePlayer();
+  const { readGameRef } = useGameRef();
 
   return () => {
-    const time = typeAtomStore.get(playerRefAtom)!.getCurrentTime();
-    const isRetrySkip = typeAtomStore.get(gameStateRefAtom).isRetrySkip;
+    const time = readPlayer().getCurrentTime();
+
+    const isRetrySkip = readGameRef().isRetrySkip;
 
     if (isRetrySkip && time === 0) {
       typeAtomStore.set(typingStatusAtom, (prev) => ({ ...prev, count: 0 }));
@@ -145,11 +144,11 @@ export const useYTSeekEvent = () => {
 
 export const useYTReadyEvent = () => {
   const volumeAtom = useVolumeAtom();
-  const typeAtomStore = useStore();
+  const { writePlayer } = usePlayer();
 
   return (event) => {
-    const player = event.target;
-    typeAtomStore.set(playerRefAtom, player);
+    const player = event.target as YTPlayer;
     player.setVolume(volumeAtom);
+    writePlayer(player);
   };
 };

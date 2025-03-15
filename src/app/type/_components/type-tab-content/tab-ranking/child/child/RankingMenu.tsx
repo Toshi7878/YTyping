@@ -1,4 +1,4 @@
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef } from "@/app/type/atoms/refAtoms";
 import { mapUpdatedAtAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
@@ -38,8 +38,8 @@ const RankingMenu = ({
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const proceedRetry = useProceedRetry();
-
   const handleClick = useOnClickPracticeReplay({ startMode: "replay", resultId });
+  const { writeGameRef } = useGameRef();
 
   const handleReplayClick = async () => {
     await handleClick();
@@ -58,13 +58,9 @@ const RankingMenu = ({
 
     setShowMenu(null);
     setHoveredIndex(null);
-    typeAtomStore.set(gameStateRefAtom, (prev) => ({
-      ...prev,
-      replay: {
-        ...prev.replay,
-        userName: name,
-      },
-    }));
+    writeGameRef({
+      replayUserName: name,
+    });
 
     if (scene === "end") {
       proceedRetry("replay");

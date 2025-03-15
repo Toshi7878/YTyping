@@ -1,14 +1,12 @@
+import { useGameRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedAtom, useTypingStatusAtom } from "@/app/type/atoms/stateAtoms";
-import { Stack } from "@chakra-ui/react";
-import { useFormState } from "react-dom";
-
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
 import { useUpdateUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
 import { useSendResult } from "@/app/type/hooks/useSendResult";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
-import { useStore } from "jotai";
+import { Stack } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { useFormState } from "react-dom";
 import { CARD_BODY_MIN_HEIGHT } from "../TypingCard";
 import EndMainButtonContainer from "./end-child/EndMainButtonContainer";
 import EndSubButtonContainer from "./end-child/EndSubButtonContainer";
@@ -24,7 +22,7 @@ const End = ({ onOpen }: EndProps) => {
   const sendResult = useSendResult();
   const [state, formAction] = useFormState(sendResult, INITIAL_STATE);
   const { updateTypingStats } = useUpdateUserStats();
-  const typeAtomStore = useStore();
+  const { readGameRef } = useGameRef();
 
   useEffect(() => {
     updateTypingStats();
@@ -39,8 +37,8 @@ const End = ({ onOpen }: EndProps) => {
   }
 
   const isPerfect = status.miss === 0 && status.lost === 0;
-  const isPlayingMode = typeAtomStore.get(gameStateRefAtom).playMode === "playing";
-  const isScoreUpdated = status.score >= typeAtomStore.get(gameStateRefAtom).myBestScore;
+  const isPlayingMode = readGameRef().playMode === "playing";
+  const isScoreUpdated = status.score >= readGameRef().myBestScore;
 
   const isDisplayRankingButton: boolean =
     !!session &&
@@ -56,7 +54,7 @@ const End = ({ onOpen }: EndProps) => {
         session={session}
         status={status}
         speedData={speedData}
-        playMode={typeAtomStore.get(gameStateRefAtom).playMode}
+        playMode={readGameRef().playMode}
       />
       <EndMainButtonContainer
         formAction={formAction}
@@ -70,7 +68,7 @@ const End = ({ onOpen }: EndProps) => {
         isPlayingMode={isPlayingMode}
         isDisplayRankingButton={isDisplayRankingButton}
         state={state}
-        playMode={typeAtomStore.get(gameStateRefAtom).playMode}
+        playMode={readGameRef().playMode}
       />
     </Stack>
   );

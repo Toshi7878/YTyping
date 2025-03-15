@@ -1,8 +1,8 @@
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef } from "@/app/type/atoms/refAtoms";
 import { typingStatusAtom } from "@/app/type/atoms/stateAtoms";
 import { PlayMode, Speed } from "@/app/type/ts/type";
 import { Box, Text } from "@chakra-ui/react";
-import { ExtractAtomValue, useStore } from "jotai";
+import { ExtractAtomValue } from "jotai";
 import { Session } from "next-auth";
 import RandomEmoji from "./child/RandomEmoji";
 
@@ -15,8 +15,8 @@ interface EndTextProps {
 }
 
 const EndText = ({ isPerfect, session, status, speedData, playMode }: EndTextProps) => {
-  const typeAtomStore = useStore();
-  const bestScore = typeAtomStore.get(gameStateRefAtom).myBestScore;
+  const { readGameRef } = useGameRef();
+  const bestScore = readGameRef().myBestScore;
   return (
     <Box textAlign="left" fontSize={{ base: "3rem", md: "3xl" }} mx={2} id="end_text">
       {isPerfect && playMode === "playing" && <Text as="span">パーフェクト！！</Text>}

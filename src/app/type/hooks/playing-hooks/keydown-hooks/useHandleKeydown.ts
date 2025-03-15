@@ -1,4 +1,4 @@
-import { gameStateRefAtom, typingStatusRefAtom, ytStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import {
   drawerClosureAtom,
   lineSelectIndexAtom,
@@ -34,10 +34,12 @@ export const useHandleKeydown = () => {
   const typeAtomStore = useStore();
   const scene = useSceneAtom();
 
+  const { readYTStatusRef } = useYTStatusRef();
+  const { readStatusRef } = useStatusRef();
   return (event: KeyboardEvent) => {
-    const isPaused = typeAtomStore.get(ytStateRefAtom).isPaused;
+    const isPaused = readYTStatusRef().isPaused;
     if (!isPaused || scene === "practice") {
-      const count = typeAtomStore.get(typingStatusRefAtom).count;
+      const count = readStatusRef().count;
       const currentLineCount = count - 1;
 
       //ライン切り変えバグ回避(切り替わるギリギリでタイピングするとバグる)
@@ -67,10 +69,10 @@ export const useHandleKeydown = () => {
   };
 };
 
-const keyWhiteList = ["F5"];
-const ctrlKeyWhiteCodeList = ["KeyC"];
-const altKeyWhiteCodeList = ["ArrowLeft", "ArrowRight"];
-const openDrawerCtrlKeyCodeList = ["KeyF"];
+const KEY_WHITE_LIST = ["F5"];
+const CTRL_KEY_WHITE_CODE_LIST = ["KeyC"];
+const ALT_KEY_WHITE_CODE_LIST = ["ArrowLeft", "ArrowRight"];
+const OPEN_DRAWER_CTRL_KEY_CODE_LIST = ["KeyF"];
 
 const usePlayingShortcutKey = () => {
   const typeAtomStore = useStore();
@@ -89,14 +91,16 @@ const usePlayingShortcutKey = () => {
   const setTimeOffset = useSetTimeOffsetAtom();
   const setNotify = useSetPlayingNotifyAtom();
 
+  const { readGameRef } = useGameRef();
+
   return (event: KeyboardEvent) => {
     const drawerClosure = typeAtomStore.get(drawerClosureAtom) as UseDisclosureReturn;
 
     if (
-      keyWhiteList.includes(event.code) ||
-      (event.ctrlKey && ctrlKeyWhiteCodeList.includes(event.code)) ||
-      (event.altKey && !event.ctrlKey && altKeyWhiteCodeList.includes(event.code)) ||
-      (event.ctrlKey && openDrawerCtrlKeyCodeList.includes(event.code) && drawerClosure.isOpen)
+      KEY_WHITE_LIST.includes(event.code) ||
+      (event.ctrlKey && CTRL_KEY_WHITE_CODE_LIST.includes(event.code)) ||
+      (event.altKey && !event.ctrlKey && ALT_KEY_WHITE_CODE_LIST.includes(event.code)) ||
+      (event.ctrlKey && OPEN_DRAWER_CTRL_KEY_CODE_LIST.includes(event.code) && drawerClosure.isOpen)
     ) {
       return;
     }
@@ -152,8 +156,7 @@ const usePlayingShortcutKey = () => {
         break;
 
       case "F4":
-        const playMode = typeAtomStore.get(gameStateRefAtom).playMode;
-        retry(playMode);
+        retry(readGameRef().playMode);
         break;
       case "F7":
         changePlayMode();

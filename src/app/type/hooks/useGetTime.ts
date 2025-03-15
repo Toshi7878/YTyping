@@ -1,5 +1,5 @@
 import { useStore } from "jotai";
-import { typingStatusRefAtom, usePlayer, ytStateRefAtom } from "../atoms/refAtoms";
+import { usePlayer, useStatusRef, useYTStatusRef } from "../atoms/refAtoms";
 import {
   useMapAtom,
   usePlaySpeedAtom,
@@ -13,10 +13,12 @@ export const useGetTime = () => {
   const timeOffset = useTimeOffsetAtom();
   const speed = usePlaySpeedAtom();
   const typeAtomStore = useStore();
-  const player = usePlayer();
 
+  const { readPlayer } = usePlayer();
+  const { readYTStatusRef } = useYTStatusRef();
+  const { readStatusRef } = useStatusRef();
   const getCurrentOffsettedYTTime = () => {
-    const result = player.getCurrentTime() - userOptions.time_offset - timeOffset;
+    const result = readPlayer().getCurrentTime() - userOptions.time_offset - timeOffset;
     return result;
   };
 
@@ -25,7 +27,7 @@ export const useGetTime = () => {
   };
 
   const getCurrentLineTime = (YTCurrentTime: number) => {
-    const count = typeAtomStore.get(typingStatusRefAtom).count;
+    const count = readStatusRef().count;
 
     if (count - 1 < 0) {
       return YTCurrentTime;
@@ -37,10 +39,10 @@ export const useGetTime = () => {
   };
 
   const getCurrentLineRemainTime = (YTCurrentTime: number) => {
-    const count = typeAtomStore.get(typingStatusRefAtom).count;
+    const count = readStatusRef().count;
     const nextLine = map!.mapData[count];
 
-    const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
+    const movieDuration = readYTStatusRef().movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainTime = (nextLineTime - YTCurrentTime) / speed.playSpeed;
@@ -54,11 +56,11 @@ export const useGetTime = () => {
   };
 
   const getConstantRemainLineTime = (lineConstantTime: number) => {
-    const count = typeAtomStore.get(typingStatusRefAtom).count;
+    const count = readStatusRef().count;
 
     const nextLine = map!.mapData[count];
     const currentLine = map!.mapData[count - 1];
-    const movieDuration = typeAtomStore.get(ytStateRefAtom).movieDuration;
+    const movieDuration = readYTStatusRef().movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainConstantTime = nextLineTime - currentLine.time - lineConstantTime;

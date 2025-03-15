@@ -11,15 +11,13 @@ import {
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
-import { userStatsRefAtom } from "@/app/type/atoms/refAtoms";
+import { useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
 import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useStartTimer";
 import { usePlayTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { defaultLineWord, defaultNextLyrics, typeTicker } from "@/app/type/ts/const/consts";
 import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
 import { UseDisclosureReturn } from "@chakra-ui/react";
-import { useStore } from "jotai";
-import { RESET } from "jotai/utils";
 
 interface PlayingProps {
   drawerClosure: UseDisclosureReturn;
@@ -42,33 +40,32 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
   const timeOffset = useTimeOffsetAtom();
   const playSpeed = usePlaySpeedAtom();
   const inputMode = usePlayingInputModeAtom();
-  const typeAtomStore = useStore();
+  const { readUserStatsRef, writeUserStatsRef, resetUserStatsRef } = useUserStatsRef();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        const sendStats = typeAtomStore.get(userStatsRefAtom);
+        const sendStats = readUserStatsRef();
         navigator.sendBeacon(
           `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
           JSON.stringify(sendStats)
         );
 
-        typeAtomStore.set(userStatsRefAtom, RESET);
+        resetUserStatsRef();
       }
     };
     const handleBeforeunload = () => {
-      const sendStats = typeAtomStore.get(userStatsRefAtom);
+      const sendStats = readUserStatsRef();
       const maxCombo = sendStats.maxCombo;
       navigator.sendBeacon(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
         JSON.stringify(sendStats)
       );
-      typeAtomStore.set(userStatsRefAtom, RESET);
+      resetUserStatsRef();
 
-      typeAtomStore.set(userStatsRefAtom, (prev) => ({
-        ...prev,
+      writeUserStatsRef({
         maxCombo: structuredClone(maxCombo),
-      }));
+      });
     };
 
     if (scene === "playing" || scene === "practice") {

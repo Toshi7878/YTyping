@@ -1,4 +1,4 @@
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef } from "@/app/type/atoms/refAtoms";
 import {
   usePlayingNotifyAtom,
   useSceneAtom,
@@ -6,7 +6,6 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion"; // 追加
-import { useStore } from "jotai";
 import { useEffect, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
 
@@ -21,7 +20,7 @@ const PlayingNotify = ({ className = "" }: PlayingNotifyProps) => {
   const setNotify = useSetPlayingNotifyAtom();
   const scene = useSceneAtom();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const typeAtomStore = useStore();
+  const { readGameRef } = useGameRef();
 
   const playModeNotify = () => {
     if (scene === "playing") {
@@ -84,7 +83,7 @@ const PlayingNotify = ({ className = "" }: PlayingNotifyProps) => {
           {notify.description === "ll" ? (
             <FaPause />
           ) : notify.description === "Replay" ? (
-            `${typeAtomStore.get(gameStateRefAtom).replay.userName} Replay`
+            `${readGameRef().replayUserName} Replay`
           ) : (
             notify.description
           )}

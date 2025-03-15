@@ -1,9 +1,8 @@
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, HStack, Text, useTheme } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import React, { useEffect } from "react";
 import SpeedChangeButton from "./child/SpeedChangeButton";
 
@@ -15,21 +14,19 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   const speedData = usePlaySpeedAtom();
   const scene = useSceneAtom();
   const theme: ThemeColors = useTheme();
-  const typeAtomStore = useStore();
+  const { writeGameRef } = useGameRef();
 
   useEffect(
     () => {
       if (scene === "ready") {
         if (speedData.defaultSpeed < 1) {
-          typeAtomStore.set(gameStateRefAtom, (prev) => ({
-            ...prev,
+          writeGameRef({
             playMode: "practice",
-          }));
+          });
         } else {
-          typeAtomStore.set(gameStateRefAtom, (prev) => ({
-            ...prev,
+          writeGameRef({
             playMode: "playing",
-          }));
+          });
         }
       }
     },

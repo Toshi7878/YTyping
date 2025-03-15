@@ -1,31 +1,28 @@
 import { clientApi } from "@/trpc/client-api";
-import { useStore } from "jotai";
-import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
-import { typingStatusRefAtom, userStatsRefAtom } from "../../atoms/refAtoms";
+import { useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
 
 export function useUpdateUserStats() {
   const { id: mapId } = useParams();
   const incrementTypingStats = clientApi.userStats.incrementTypingStats.useMutation();
   const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
-  const typeAtomStore = useStore();
+
+  const { readUserStatsRef, writeUserStatsRef, resetUserStatsRef } = useUserStatsRef();
+  const { readStatusRef } = useStatusRef();
 
   const updatePlayCountStats = () => {
     incrementPlayCountStats.mutate({ mapId: Number(mapId) });
   };
   const updateTypingStats = () => {
-    const userStats = typeAtomStore.get(userStatsRefAtom);
-    const maxCombo = typeAtomStore.get(typingStatusRefAtom).maxCombo;
+    const userStats = readUserStatsRef();
+    const maxCombo = readStatusRef().maxCombo;
 
     incrementTypingStats.mutate({
       ...userStats,
     });
 
-    typeAtomStore.set(userStatsRefAtom, RESET);
-    typeAtomStore.set(userStatsRefAtom, (prev) => ({
-      ...prev,
-      maxCombo: structuredClone(maxCombo),
-    }));
+    resetUserStatsRef();
+    writeUserStatsRef({ maxCombo: maxCombo });
   };
 
   return { updatePlayCountStats, updateTypingStats };

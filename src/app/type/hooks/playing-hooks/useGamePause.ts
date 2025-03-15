@@ -1,16 +1,17 @@
 import { useStore } from "jotai";
-import { usePlayer, ytStateRefAtom } from "../../atoms/refAtoms";
+import { usePlayer, useYTStatusRef } from "../../atoms/refAtoms";
 
 export const useGamePause = () => {
-  const player = usePlayer();
   const typeAtomStore = useStore();
 
+  const { readPlayer } = usePlayer();
+  const { readYTStatusRef } = useYTStatusRef();
   return () => {
-    const isPaused = typeAtomStore.get(ytStateRefAtom).isPaused;
+    const isPaused = readYTStatusRef().isPaused;
     if (isPaused) {
-      player.playVideo();
+      readPlayer().playVideo();
     } else {
-      player.pauseVideo();
+      readPlayer().pauseVideo();
     }
   };
 };

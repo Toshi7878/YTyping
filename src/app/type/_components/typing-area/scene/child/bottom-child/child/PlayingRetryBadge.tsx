@@ -1,17 +1,16 @@
-import { gameStateRefAtom } from "@/app/type/atoms/refAtoms";
+import { useGameRef } from "@/app/type/atoms/refAtoms";
 import { useRetry } from "@/app/type/hooks/playing-hooks/useRetry";
-import { useStore } from "jotai";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 
 const PlayingRetryBadge = function () {
   const retry = useRetry();
-  const typeAtomStore = useStore();
+  const { readGameRef } = useGameRef();
   return (
     <PlayingBottomBadge
       badgeText="やり直し"
       kbdText="F4"
       onClick={() => {
-        const playMode = typeAtomStore.get(gameStateRefAtom).playMode;
+        const playMode = readGameRef().playMode;
 
         retry(playMode);
       }}

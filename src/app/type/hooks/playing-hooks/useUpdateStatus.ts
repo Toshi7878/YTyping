@@ -1,10 +1,6 @@
 import { useStore } from "jotai";
 import { CreateMap, MISS_PENALTY } from "../../../../lib/instanceMapData";
-import {
-  lineTypingStatusRefAtom,
-  typingStatusRefAtom,
-  userStatsRefAtom,
-} from "../../atoms/refAtoms";
+import { useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
 import {
   typingStatusAtom,
   useMapAtom,
@@ -25,6 +21,9 @@ export const useTypeSuccess = () => {
   const calcCurrentRank = useCalcCurrentRank();
   const typeAtomStore = useStore();
 
+  const { readUserStatsRef, writeUserStatsRef } = useUserStatsRef();
+  const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
+  const { readStatusRef, writeStatusRef } = useStatusRef();
   const updateSuccessStatus = ({
     newLineWord,
     lineRemainConstantTime,
@@ -34,7 +33,7 @@ export const useTypeSuccess = () => {
   }) => {
     const status = typeAtomStore.get(typingStatusAtom);
     const newStatus = { ...status };
-    const lineTypeCount = typeAtomStore.get(lineTypingStatusRefAtom).type;
+    const lineTypeCount = readLineStatusRef().type;
 
     if (lineTypeCount === 1) {
       newStatus.point = updatePoint;
@@ -49,8 +48,8 @@ export const useTypeSuccess = () => {
       const timeBonus = Math.round(lineRemainConstantTime * 1 * 100);
       newStatus.timeBonus = timeBonus; //speed;
       newStatus.score += newStatus.point + timeBonus;
-      const completeCount = typeAtomStore.get(typingStatusRefAtom).completeCount;
-      const failureCount = typeAtomStore.get(typingStatusRefAtom).failureCount;
+      const completeCount = readStatusRef().completeCount;
+      const failureCount = readStatusRef().failureCount;
 
       newStatus.line = map.lineLength - (completeCount + failureCount);
 
@@ -76,63 +75,56 @@ export const useTypeSuccess = () => {
     successKey: string;
     combo: number;
   }) => {
-    const lineTypingStatusRef = typeAtomStore.get(lineTypingStatusRefAtom);
-    const typingStatusRef = typeAtomStore.get(typingStatusRefAtom);
+    const lineTypingStatusRef = readLineStatusRef();
+    const statusRef = readStatusRef();
     if (lineTypingStatusRef.type === 0) {
-      typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
-        ...prev,
+      writeLineStatusRef({
         latency: constantLineTime,
-      }));
+      });
     }
 
-    typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-      ...prev,
+    writeStatusRef({
       missCombo: 0,
-    }));
+    });
 
     const newCombo = combo + 1;
-    if (newCombo > typingStatusRef.maxCombo) {
-      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-        ...prev,
+    if (newCombo > statusRef.maxCombo) {
+      writeStatusRef({
         maxCombo: newCombo,
-      }));
+      });
+
       if (scene === "playing") {
-        typeAtomStore.set(userStatsRefAtom, (prev) => ({
-          ...prev,
+        writeUserStatsRef({
           maxCombo: newCombo,
-        }));
+        });
       }
     }
 
-    typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
-      ...prev,
-      type: prev.type + 1,
-    }));
+    writeLineStatusRef({
+      type: readLineStatusRef().type + 1,
+    });
 
     if (isCompleted) {
-      typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
-        ...prev,
+      writeLineStatusRef({
         isCompleted: true,
         completedTime: constantLineTime,
-      }));
-      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-        ...prev,
-        completeCount: prev.completeCount + 1,
-      }));
+      });
+      writeStatusRef({
+        completeCount: readStatusRef().completeCount + 1,
+      });
     }
 
     if (scene !== "replay") {
-      typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
-        ...prev,
+      writeLineStatusRef({
         typeResult: [
-          ...prev.typeResult,
+          ...readLineStatusRef().typeResult,
           {
             c: successKey,
             is: true,
             t: constantLineTime,
           },
         ],
-      }));
+      });
     }
 
     if (!typeChunk) {
@@ -141,60 +133,56 @@ export const useTypeSuccess = () => {
 
     if (typeChunk.t === "kana") {
       if (inputMode === "roma") {
-        typeAtomStore.set(userStatsRefAtom, (prev) => ({ ...prev, romaType: prev.romaType + 1 }));
-        typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-          ...prev,
-          romaType: prev.romaType + 1,
-        }));
+        writeUserStatsRef({
+          romaType: readUserStatsRef().romaType + 1,
+        });
+        writeStatusRef({
+          romaType: readStatusRef().romaType + 1,
+        });
       } else if (inputMode === "kana") {
-        typeAtomStore.set(userStatsRefAtom, (prev) => ({ ...prev, kanaType: prev.kanaType + 1 }));
-        typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-          ...prev,
-          kanaType: prev.kanaType + 1,
-        }));
+        writeUserStatsRef({
+          kanaType: readUserStatsRef().kanaType + 1,
+        });
+
+        writeStatusRef({
+          kanaType: readStatusRef().kanaType + 1,
+        });
       } else if (inputMode === "flick") {
-        typeAtomStore.set(userStatsRefAtom, (prev) => ({ ...prev, flickType: prev.flickType + 1 }));
-        typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-          ...prev,
-          flickType: prev.flickType + 1,
-        }));
+        writeUserStatsRef({
+          flickType: readUserStatsRef().flickType + 1,
+        });
+        writeStatusRef({
+          flickType: readStatusRef().flickType + 1,
+        });
       }
     } else if (typeChunk.t === "alphabet") {
-      typeAtomStore.set(userStatsRefAtom, (prev) => ({
-        ...prev,
-        englishType: prev.englishType + 1,
-      }));
-      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-        ...prev,
-        englishType: prev.englishType + 1,
-      }));
+      writeUserStatsRef({
+        englishType: readUserStatsRef().englishType + 1,
+      });
+      writeStatusRef({
+        englishType: readStatusRef().englishType + 1,
+      });
     } else if (typeChunk.t === "num") {
-      typeAtomStore.set(userStatsRefAtom, (prev) => ({
-        ...prev,
-        numType: prev.numType + 1,
-      }));
-      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-        ...prev,
-        numType: prev.numType + 1,
-      }));
+      writeUserStatsRef({
+        numType: readUserStatsRef().numType + 1,
+      });
+      writeStatusRef({
+        numType: readStatusRef().numType + 1,
+      });
     } else if (typeChunk.t === "space") {
-      typeAtomStore.set(userStatsRefAtom, (prev) => ({
-        ...prev,
-        spaceType: prev.spaceType + 1,
-      }));
-      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-        ...prev,
-        spaceType: prev.spaceType + 1,
-      }));
+      writeUserStatsRef({
+        spaceType: readUserStatsRef().spaceType + 1,
+      });
+      writeStatusRef({
+        spaceType: readStatusRef().spaceType + 1,
+      });
     } else if (typeChunk.t === "symbol") {
-      typeAtomStore.set(userStatsRefAtom, (prev) => ({
-        ...prev,
-        symbolType: prev.symbolType + 1,
-      }));
-      typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-        ...prev,
-        symbolType: prev.symbolType + 1,
-      }));
+      writeUserStatsRef({
+        symbolType: readUserStatsRef().symbolType + 1,
+      });
+      writeStatusRef({
+        symbolType: readStatusRef().symbolType + 1,
+      });
     }
   };
 
@@ -217,6 +205,8 @@ export const useTypeMiss = () => {
   const { setTypingStatus } = useSetTypingStatusAtoms();
   const typeAtomStore = useStore();
 
+  const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
+  const { readStatusRef, writeStatusRef } = useStatusRef();
   const updateMissStatus = () => {
     const status = typeAtomStore.get(typingStatusAtom);
     const newStatus = { ...status };
@@ -229,23 +219,21 @@ export const useTypeMiss = () => {
   };
 
   const updateMissRefStatus = ({ constantLineTime, failKey }) => {
-    typeAtomStore.set(typingStatusRefAtom, (prev) => ({
-      ...prev,
-      clearRate: prev.clearRate - map.missRate,
-      missCombo: prev.missCombo++,
-    }));
+    writeStatusRef({
+      clearRate: readStatusRef().clearRate - map.missRate,
+      missCombo: readStatusRef().missCombo + 1,
+    });
 
-    typeAtomStore.set(lineTypingStatusRefAtom, (prev) => ({
-      ...prev,
-      miss: prev.miss + 1,
+    writeLineStatusRef({
+      miss: readLineStatusRef().miss + 1,
       typeResult: [
-        ...prev.typeResult,
+        ...readLineStatusRef().typeResult,
         {
           c: failKey,
           t: constantLineTime,
         },
       ],
-    }));
+    });
   };
 
   return { updateMissStatus, updateMissRefStatus };

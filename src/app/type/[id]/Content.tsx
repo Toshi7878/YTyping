@@ -4,7 +4,7 @@ import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
 import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
-import { useSetAtom, useStore } from "jotai";
+import { useSetAtom } from "jotai";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -12,7 +12,7 @@ import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
 import TypingCard from "../_components/typing-area/TypingCard";
-import { totalProgressRefAtom } from "../atoms/refAtoms";
+import { useProgress } from "../atoms/refAtoms";
 import { usePathChangeAtomReset } from "../atoms/reset";
 import {
   focusTypingStatusAtoms,
@@ -41,12 +41,12 @@ function Content({ mapInfo }: ContentProps) {
   const disableKeyHandle = useDisableKeyHandle();
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
-  const typeAtomStore = useStore();
   const setMap = useSetMapAtom();
   const setLineResults = useSetLineResultsAtom();
   const setLineSelectIndex = useSetLineSelectIndexAtom();
   const setLineCount = useSetAtom(focusTypingStatusAtoms.line);
   const pathChangeAtomReset = usePathChangeAtomReset();
+  const { readTotalProgress } = useProgress();
 
   useEffect(() => {
     if (scene === "ready" && layoutMode) {
@@ -63,8 +63,9 @@ function Content({ mapInfo }: ContentProps) {
       setLineResults(map.defaultLineResultData);
       setLineCount(map.lineLength);
       setLineSelectIndex(map.typingLineNumbers[0]);
-      const totalProgress = typeAtomStore.get(totalProgressRefAtom);
-      totalProgress!.max = map.movieTotalTime;
+
+      const totalProgress = readTotalProgress();
+      totalProgress.max = map.movieTotalTime;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);

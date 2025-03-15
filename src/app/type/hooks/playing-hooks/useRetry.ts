@@ -1,7 +1,6 @@
 import { useStore } from "jotai";
-import { RESET } from "jotai/utils";
 import { CreateMap } from "../../../../lib/instanceMapData";
-import { gameStateRefAtom, typingStatusRefAtom, usePlayer } from "../../atoms/refAtoms";
+import { useGameRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
 import {
   focusTypingStatusAtoms,
   sceneAtom,
@@ -23,7 +22,8 @@ import { useUpdateUserStats } from "./useUpdateUserStats";
 export const useRetry = () => {
   const map = useMapAtom();
   const typeAtomStore = useStore();
-  const player = usePlayer();
+  const { readPlayer } = usePlayer();
+  const { readGameRef, writeGameRef } = useGameRef();
 
   const setLineResults = useSetLineResultsAtom();
   const setCombo = useSetComboAtom();
@@ -34,6 +34,7 @@ export const useRetry = () => {
 
   const { resetTypingStatus } = useSetTypingStatusAtoms();
   const { updatePlayCountStats, updateTypingStats } = useUpdateUserStats();
+  const { readStatusRef, resetStatusRef } = useStatusRef();
 
   return (newPlayMode: PlayMode) => {
     setLineWord(structuredClone(defaultLineWord));
@@ -45,29 +46,28 @@ export const useRetry = () => {
     if (scene === "playing") {
       const totalTypeCount = typeAtomStore.get(focusTypingStatusAtoms.type);
       if (totalTypeCount) {
-        typeAtomStore.set(gameStateRefAtom, (prev) => ({ ...prev, retryCount: prev.retryCount++ }));
+        const retryCount = readGameRef().retryCount;
+        writeGameRef({ retryCount: retryCount + 1 });
         if (totalTypeCount >= 10) {
           updatePlayCountStats();
         }
       }
 
       updateTypingStats();
-      const retryCount = typeAtomStore.get(gameStateRefAtom).replay.replayKeyCount;
-      setNotify(Symbol(`Retry(${retryCount})`));
+      setNotify(Symbol(`Retry(${readGameRef().retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
-      typeAtomStore.set(typingStatusRefAtom, RESET);
+      resetStatusRef();
       resetTypingStatus();
       setCombo(0);
     }
 
-    typeAtomStore.set(gameStateRefAtom, (prev) => ({
-      ...prev,
+    writeGameRef({
       playMode: newPlayMode,
-      replay: { ...prev.replay, replayKeyCount: 0 },
+      replayKeyCount: 0,
       isRetrySkip: true,
-    }));
+    });
 
-    player.seekTo(0, true);
+    readPlayer().seekTo(0, true);
 
     if (typeTicker.started) {
       typeTicker.stop();
@@ -76,16 +76,20 @@ export const useRetry = () => {
 };
 
 export const useProceedRetry = () => {
-  const player = usePlayer();
   const setCombo = useSetComboAtom();
   const typeAtomStore = useStore();
   const setTabIndex = useSetTabIndexAtom();
 
   const map = useMapAtom() as CreateMap;
+
   const setLineResults = useSetLineResultsAtom();
   const setScene = useSetSceneAtom();
   const { resetTypingStatus } = useSetTypingStatusAtoms();
   const { updatePlayCountStats } = useUpdateUserStats();
+
+  const { readPlayer } = usePlayer();
+  const { writeGameRef } = useGameRef();
+  const { resetStatusRef } = useStatusRef();
 
   return (playMode: PlayMode) => {
     setScene(playMode);
@@ -102,16 +106,15 @@ export const useProceedRetry = () => {
     if (playMode !== "practice") {
       resetTypingStatus();
       setCombo(0);
-
-      typeAtomStore.set(typingStatusRefAtom, RESET);
+      resetStatusRef();
     }
-    typeAtomStore.set(gameStateRefAtom, (prev) => ({
-      ...prev,
-      replay: { ...prev.replay, replayKeyCount: 0 },
-      isRetrySkip: true,
-    }));
 
-    player.seekTo(0, true);
-    player.playVideo();
+    writeGameRef({
+      replayKeyCount: 0,
+      isRetrySkip: true,
+    });
+
+    readPlayer().seekTo(0, true);
+    readPlayer().playVideo();
   };
 };
