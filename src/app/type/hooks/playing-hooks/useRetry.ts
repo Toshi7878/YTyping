@@ -77,7 +77,6 @@ export const useRetry = () => {
 
 export const useProceedRetry = () => {
   const setCombo = useSetComboAtom();
-  const typeAtomStore = useStore();
   const setTabIndex = useSetTabIndexAtom();
 
   const map = useMapAtom() as CreateMap;

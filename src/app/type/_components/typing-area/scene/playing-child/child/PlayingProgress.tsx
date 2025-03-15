@@ -2,7 +2,6 @@ import { useProgress, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import { useMapAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import React, { useEffect } from "react";
 
 interface PlayingProgressProps {
@@ -13,7 +12,6 @@ const PlayingProgress = (props: PlayingProgressProps) => {
   const progressRef = React.useRef<HTMLProgressElement>(null);
   const scene = useSceneAtom();
   const map = useMapAtom();
-  const typeAtomStore = useStore();
 
   const { writeLineProgress, writeTotalProgress } = useProgress();
   const { readYTStatusRef } = useYTStatusRef();

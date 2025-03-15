@@ -7,7 +7,7 @@ export function useUpdateUserStats() {
   const incrementTypingStats = clientApi.userStats.incrementTypingStats.useMutation();
   const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
 
-  const { readUserStatsRef, writeUserStatsRef, resetUserStatsRef } = useUserStatsRef();
+  const { readUserStatsRef, resetUserStatsRef } = useUserStatsRef();
   const { readStatusRef } = useStatusRef();
 
   const updatePlayCountStats = () => {
@@ -21,8 +21,7 @@ export function useUpdateUserStats() {
       ...userStats,
     });
 
-    resetUserStatsRef();
-    writeUserStatsRef({ maxCombo: maxCombo });
+    resetUserStatsRef(maxCombo);
   };
 
   return { updatePlayCountStats, updateTypingStats };

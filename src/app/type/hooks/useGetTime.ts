@@ -1,4 +1,3 @@
-import { useStore } from "jotai";
 import { usePlayer, useStatusRef, useYTStatusRef } from "../atoms/refAtoms";
 import {
   useMapAtom,
@@ -12,7 +11,6 @@ export const useGetTime = () => {
   const userOptions = useUserTypingOptionsAtom();
   const timeOffset = useTimeOffsetAtom();
   const speed = usePlaySpeedAtom();
-  const typeAtomStore = useStore();
 
   const { readPlayer } = usePlayer();
   const { readYTStatusRef } = useYTStatusRef();

@@ -1,9 +1,6 @@
-import { useStore } from "jotai";
 import { useLineStatusRef, useStatusRef } from "../atoms/refAtoms";
 
 export const useCalcTypeSpeed = () => {
-  const typeAtomStore = useStore();
-
   const { readLineStatusRef } = useLineStatusRef();
   const { readStatusRef } = useStatusRef();
 

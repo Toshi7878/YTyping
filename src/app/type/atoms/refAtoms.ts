@@ -93,8 +93,9 @@ export const useUserStatsRef = () => {
     }, [])
   );
   const resetUserStatsRef = useAtomCallback(
-    useCallback((get, set) => {
+    useCallback((get, set, maxCombo=0) => {
       set(userStatsRefAtom, RESET);
+      set(userStatsRefAtom, (prev) => ({ ...prev, maxCombo }));
     }, [])
   );
 

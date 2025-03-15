@@ -40,18 +40,19 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
   const timeOffset = useTimeOffsetAtom();
   const playSpeed = usePlaySpeedAtom();
   const inputMode = usePlayingInputModeAtom();
-  const { readUserStatsRef, writeUserStatsRef, resetUserStatsRef } = useUserStatsRef();
+  const { readUserStatsRef, resetUserStatsRef } = useUserStatsRef();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
         const sendStats = readUserStatsRef();
+        const maxCombo = sendStats.maxCombo;
         navigator.sendBeacon(
           `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
           JSON.stringify(sendStats)
         );
 
-        resetUserStatsRef();
+        resetUserStatsRef(structuredClone(maxCombo));
       }
     };
     const handleBeforeunload = () => {
@@ -61,11 +62,7 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
         JSON.stringify(sendStats)
       );
-      resetUserStatsRef();
-
-      writeUserStatsRef({
-        maxCombo: structuredClone(maxCombo),
-      });
+      resetUserStatsRef(structuredClone(maxCombo));
     };
 
     if (scene === "playing" || scene === "practice") {
