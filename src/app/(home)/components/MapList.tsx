@@ -48,11 +48,15 @@ function MapList() {
 
   const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
 
-  const isLoading = isFirstLoading || (isFetching && isRandomSort && !isFetchingNextPage);
+  const isRandomLoading = isFetching && isRandomSort && !isFetchingNextPage;
+
+  if (isRandomLoading) {
+    return <LoadingMapCard cardLength={10} />;
+  }
 
   return (
     <InfiniteScroll
-      className={isLoading || isSearching ? "opacity-20" : ""}
+      className={isRandomLoading || isSearching ? "opacity-20" : ""}
       loadMore={() => fetchNextPage()}
       loader={
         <Box key={0}>
