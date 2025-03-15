@@ -1,18 +1,15 @@
 "use client";
 import "@/app/edit/style/editor.scss";
-import {
-  useSetIsOptionEdited,
-  useSetUserTypingOptionsAtom,
-  useUserTypingOptionsAtom,
-} from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
 
 export const UserWordScrollChange = () => {
-  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
-  const userOptionsAtom = useUserTypingOptionsAtom();
-  const setIsOptionEdited = useSetIsOptionEdited();
+  const setUserOptionsAtom = useSetUserTypingOptionsState();
+  const userOptionsAtom = useUserTypingOptionsState();
+  const { writeGameUtils } = useGameUtilsRef();
 
   const onChangeKana = (type: "increment" | "decrement") => {
     const newValue =
@@ -25,7 +22,7 @@ export const UserWordScrollChange = () => {
       kana_word_scroll: newValue,
     };
     setUserOptionsAtom(newUserOptions);
-    setIsOptionEdited(true);
+    writeGameUtils({ isOptionEdited: true });
   };
 
   const onChangeRoma = (type: "increment" | "decrement") => {
@@ -39,7 +36,7 @@ export const UserWordScrollChange = () => {
       roma_word_scroll: newValue,
     };
     setUserOptionsAtom(newUserOptions);
-    setIsOptionEdited(true);
+    writeGameUtils({ isOptionEdited: true });
   };
 
   return (
@@ -67,11 +64,7 @@ interface KanaWordScrollChangeProps {
   kana_word_scroll: number;
 }
 
-const KanaWordScrollChange = ({
-  onIncrement,
-  onDecrement,
-  kana_word_scroll,
-}: KanaWordScrollChangeProps) => {
+const KanaWordScrollChange = ({ onIncrement, onDecrement, kana_word_scroll }: KanaWordScrollChangeProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
@@ -108,11 +101,7 @@ interface RomaWordScrollChangeProps {
   roma_word_scroll: number;
 }
 
-const RomaWordScrollChange = ({
-  onIncrement,
-  onDecrement,
-  roma_word_scroll,
-}: RomaWordScrollChangeProps) => {
+const RomaWordScrollChange = ({ onIncrement, onDecrement, roma_word_scroll }: RomaWordScrollChangeProps) => {
   const theme: ThemeColors = useTheme();
 
   return (

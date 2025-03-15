@@ -1,17 +1,15 @@
-import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
+import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
-import { useStore } from "jotai";
 import { YouTubeEvent } from "react-youtube";
-import { useGameRef, usePlayer, useProgress, useYTStatusRef } from "../atoms/refAtoms";
+import { useGameUtilsRef, usePlayer, useProgress, useStatusRef, useYTStatusRef } from "../atoms/refAtoms";
 import {
-  isLoadingOverlayAtom,
-  readyRadioInputModeAtom,
-  sceneAtom,
-  typingStatusAtom,
-  useSetPlayingInputModeAtom,
-  useSetPlayingNotifyAtom,
-  useSetSceneAtom,
-  useSetTabIndexAtom,
+  useIsLoadingOverlayStateRef,
+  useReadyInputModeStateRef,
+  useSceneStateRef,
+  useSetNotifyState,
+  useSetPlayingInputModeState,
+  useSetSceneState,
+  useSetTabIndexState,
 } from "../atoms/stateAtoms";
 import { typeTicker } from "../ts/const/consts";
 import { InputModeType } from "../ts/type";
@@ -19,29 +17,30 @@ import { useStartTimer } from "./playing-hooks/timer-hooks/useStartTimer";
 import { useUpdateUserStats } from "./playing-hooks/useUpdateUserStats";
 
 export const useYTPlayEvent = () => {
-  const typeAtomStore = useStore();
-  const setScene = useSetSceneAtom();
-  const setNotify = useSetPlayingNotifyAtom();
+  const setScene = useSetSceneState();
+  const setNotify = useSetNotifyState();
   const startTimer = useStartTimer();
-  const setPlayingInputMode = useSetPlayingInputModeAtom();
+  const setPlayingInputMode = useSetPlayingInputModeState();
   const { updatePlayCountStats } = useUpdateUserStats();
-  const setTabIndex = useSetTabIndexAtom();
+  const setTabIndex = useSetTabIndexState();
 
   const { readPlayer } = usePlayer();
-  const { readGameRef } = useGameRef();
+  const { readGameUtils } = useGameUtilsRef();
   const { readYTStatusRef, writeYTStatusRef } = useYTStatusRef();
+  const readScene = useSceneStateRef();
+  const readIsLoadingOverlay = useIsLoadingOverlayStateRef();
+  const readReadyInputMode = useReadyInputModeStateRef();
 
   return async (event: YouTubeEvent) => {
     console.log("再生 1");
-    const scene = typeAtomStore.get(sceneAtom);
+    const scene = readScene();
 
     if (scene === "ready") {
       const movieDuration = readPlayer().getDuration();
       writeYTStatusRef({ movieDuration });
 
-      const playMode = readGameRef().playMode;
-
-      const isPlayDataLoad = typeAtomStore.get(isLoadingOverlayAtom);
+      const playMode = readGameUtils().playMode;
+      const isPlayDataLoad = readIsLoadingOverlay();
 
       if (isPlayDataLoad) {
         readPlayer().pauseVideo();
@@ -56,7 +55,7 @@ export const useYTPlayEvent = () => {
         setScene("playing");
       }
 
-      const readyInputMode = typeAtomStore.get(readyRadioInputModeAtom);
+      const readyInputMode = readReadyInputMode();
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputModeType);
       updatePlayCountStats();
       setTabIndex(0);
@@ -87,7 +86,7 @@ export const useYTEndEvent = () => {
 };
 
 export const useYTStopEvent = () => {
-  const setScene = useSetSceneAtom();
+  const setScene = useSetSceneState();
   const { readLineProgress, readTotalProgress } = useProgress();
 
   return () => {
@@ -107,7 +106,7 @@ export const useYTStopEvent = () => {
 };
 
 export const useYTPauseEvent = () => {
-  const setNotify = useSetPlayingNotifyAtom();
+  const setNotify = useSetNotifyState();
   const { readYTStatusRef, writeYTStatusRef } = useYTStatusRef();
 
   return () => {
@@ -126,24 +125,25 @@ export const useYTPauseEvent = () => {
 };
 
 export const useYTSeekEvent = () => {
-  const typeAtomStore = useStore();
   const { readPlayer } = usePlayer();
-  const { readGameRef } = useGameRef();
+  const { readGameUtils } = useGameUtilsRef();
+  const { writeStatusRef } = useStatusRef();
 
   return () => {
     const time = readPlayer().getCurrentTime();
 
-    const isRetrySkip = readGameRef().isRetrySkip;
+    const isRetrySkip = readGameUtils().isRetrySkip;
 
     if (isRetrySkip && time === 0) {
-      typeAtomStore.set(typingStatusAtom, (prev) => ({ ...prev, count: 0 }));
+      writeStatusRef({ count: 0 });
     }
+
     console.log("シーク");
   };
 };
 
 export const useYTReadyEvent = () => {
-  const volumeAtom = useVolumeAtom();
+  const volumeAtom = useVolumeState();
   const { writePlayer } = usePlayer();
 
   return (event) => {

@@ -1,12 +1,11 @@
-import { useGameRef } from "@/app/type/atoms/refAtoms";
-import { mapUpdatedAtAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef, useMapInfoRef } from "@/app/type/atoms/refAtoms";
+import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
 import { Button, Stack, useTheme } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import { useSession } from "next-auth/react";
 import { Dispatch } from "react";
 import MenuClapButton from "./child/MenuClapButton";
@@ -33,19 +32,19 @@ const RankingMenu = ({
 }: RankingMenuProps) => {
   const { data: session } = useSession();
   const theme: ThemeColors = useTheme();
-  const scene = useSceneAtom();
-  const typeAtomStore = useStore();
+  const scene = useSceneState();
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const proceedRetry = useProceedRetry();
   const handleClick = useOnClickPracticeReplay({ startMode: "replay", resultId });
-  const { writeGameRef } = useGameRef();
 
+  const { writeGameUtils } = useGameUtilsRef();
+  const { readMapInfoRef } = useMapInfoRef();
   const handleReplayClick = async () => {
     await handleClick();
 
-    const mapUpdatedAt = typeAtomStore.get(mapUpdatedAtAtom);
-    const resultUpdatedAtDate = new Date(resultUpdatedAt); // 文字列をDate型に変換
+    const mapUpdatedAt = readMapInfoRef().updated_at;
+    const resultUpdatedAtDate = new Date(resultUpdatedAt);
     iosActiveSound();
 
     if (mapUpdatedAt > resultUpdatedAtDate) {
@@ -58,7 +57,7 @@ const RankingMenu = ({
 
     setShowMenu(null);
     setHoveredIndex(null);
-    writeGameRef({
+    writeGameUtils({
       replayUserName: name,
     });
 

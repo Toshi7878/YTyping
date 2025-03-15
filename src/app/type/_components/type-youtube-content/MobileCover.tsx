@@ -1,19 +1,18 @@
 import { Box } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import { useCallback } from "react";
 import { usePlayer, useYTStatusRef } from "../../atoms/refAtoms";
-import { sceneAtom } from "../../atoms/stateAtoms";
+import { useSceneStateRef } from "../../atoms/stateAtoms";
 import { useWindowFocus } from "../../hooks/useWindowFocus";
 
 const MobileCover = () => {
-  const typeAtomStore = useStore();
   const windowFocus = useWindowFocus();
   const { readPlayer } = usePlayer();
   const { readYTStatusRef } = useYTStatusRef();
 
+  const readScene = useSceneStateRef();
   const handleStart = useCallback(
     async () => {
-      const scene = typeAtomStore.get(sceneAtom);
+      const scene = readScene();
 
       if (readYTStatusRef().isPaused || scene === "ready") {
         readPlayer().playVideo();

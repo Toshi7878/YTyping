@@ -1,17 +1,14 @@
-import {
-  useSetIsOptionEdited,
-  useSetUserTypingOptionsAtom,
-  useUserTypingOptionsAtom,
-} from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
 import { $Enums } from "@prisma/client";
 import React from "react";
 
 const UserShortcutKeyCheckbox = () => {
-  const userOptionsAtom = useUserTypingOptionsAtom();
-  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
-  const setIsOptionEdited = useSetIsOptionEdited();
+  const userOptionsAtom = useUserTypingOptionsState();
+  const setUserOptionsAtom = useSetUserTypingOptionsState();
+  const { writeGameUtils } = useGameUtilsRef();
 
   const changeTimeOffsetKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as $Enums.time_offset_key;
@@ -20,7 +17,7 @@ const UserShortcutKeyCheckbox = () => {
       time_offset_key: value, // 選択された値を設定
     };
     setUserOptionsAtom(newUserOptions);
-    setIsOptionEdited(true);
+    writeGameUtils({ isOptionEdited: true });
   };
 
   const changeInputModeKey = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -30,6 +27,7 @@ const UserShortcutKeyCheckbox = () => {
       toggle_input_mode_key: value, // 選択された値を設定
     };
     setUserOptionsAtom(newUserOptions);
+    writeGameUtils({ isOptionEdited: true });
   };
   return (
     <Flex>

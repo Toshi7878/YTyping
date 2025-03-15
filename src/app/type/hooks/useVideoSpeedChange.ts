@@ -1,25 +1,25 @@
-import { useStore } from "jotai";
-import { useGameRef, useLineStatusRef, usePlayer } from "../atoms/refAtoms";
+import { useGameUtilsRef, useLineStatusRef, usePlayer } from "../atoms/refAtoms";
 import {
-  sceneAtom,
-  speedAtom,
-  useSetPlayingNotifyAtom,
-  useSetPlaySpeedAtom,
+  usePlaySpeedStateRef,
+  useSceneStateRef,
+  useSetNotifyState,
+  useSetPlaySpeedState,
 } from "../atoms/stateAtoms";
 import { useGetTime } from "./useGetTime";
 
 export const useVideoSpeedChange = () => {
-  const typeAtomStore = useStore();
-  const setSpeedData = useSetPlaySpeedAtom();
-  const setNotify = useSetPlayingNotifyAtom();
+  const setSpeedData = useSetPlaySpeedState();
+  const setNotify = useSetNotifyState();
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
 
   const { readPlayer } = usePlayer();
-  const { writeGameRef } = useGameRef();
+  const { writeGameUtils } = useGameUtilsRef();
   const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
+  const readPlaySpeed = usePlaySpeedStateRef();
+  const readScene = useSceneStateRef();
 
   const defaultSpeedChange = (type: "up" | "down" | "set", setSpeed: number = 1) => {
-    const defaultSpeed = typeAtomStore.get(speedAtom).defaultSpeed;
+    const defaultSpeed = readPlaySpeed().defaultSpeed;
 
     if (type === "up") {
       if (defaultSpeed < 2) {
@@ -38,20 +38,20 @@ export const useVideoSpeedChange = () => {
     setSpeedData({ defaultSpeed: setSpeed, playSpeed: setSpeed });
     readPlayer().setPlaybackRate(setSpeed);
 
-    const scene = typeAtomStore.get(sceneAtom);
+    const scene = readScene();
 
     const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 
     if (scene === "ready") {
-      writeGameRef({ startPlaySpeed: setSpeed });
+      writeGameUtils({ startPlaySpeed: setSpeed });
     } else if (isPlayed) {
       setNotify(Symbol(`${setSpeed.toFixed(2)}x`));
     }
   };
 
   const playingSpeedChange = async (type: "set" | "change" = "change", setSpeed: number = 1) => {
-    const defaultSpeed = typeAtomStore.get(speedAtom).defaultSpeed;
-    const currentSpeed = typeAtomStore.get(speedAtom).playSpeed;
+    const defaultSpeed = readPlaySpeed().defaultSpeed;
+    const currentSpeed = readPlaySpeed().playSpeed;
 
     if (type === "change") {
       setSpeed = currentSpeed + 0.25 <= 2 ? currentSpeed + 0.25 : defaultSpeed;
@@ -70,7 +70,7 @@ export const useVideoSpeedChange = () => {
       setNotify(Symbol(`${setSpeed.toFixed(2)}x`));
     }
 
-    const scene = typeAtomStore.get(sceneAtom);
+    const scene = readScene();
 
     if (scene === "playing") {
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());

@@ -1,27 +1,34 @@
 import { useParams } from "next/navigation";
 import { actions } from "../../../server/actions/sendTypingResultActions";
 import { useStatusRef } from "../atoms/refAtoms";
-import { useLineResultsAtom, useTypingStatusAtom } from "../atoms/stateAtoms";
+import { useLineResultsStateRef, useTypingStatusStateRef } from "../atoms/stateAtoms";
 import { LineResultData, SendResultData } from "../ts/type";
 
 export const useSendResult = () => {
   const { id: mapId } = useParams();
-  const lineResults: LineResultData[] = useLineResultsAtom();
-  const minSp = lineResults.reduce((min, result) => {
-    if (result.status!.tTime !== 0) {
-      return Math.min(min, result.status!.sp);
-    }
-    return min;
-  }, Infinity);
-  const typingStatus = useTypingStatusAtom();
   const { readStatusRef } = useStatusRef();
+
+  const readLineResults = useLineResultsStateRef();
+  const readTypingStatus = useTypingStatusStateRef();
+
+  const getMinSpeed = (lineResults: LineResultData[]) => {
+    return lineResults.reduce((min, result) => {
+      if (result.status!.tTime !== 0) {
+        return Math.min(min, result.status!.sp);
+      }
+      return min;
+    }, Infinity);
+  };
 
   return async (): Promise<ReturnType<typeof actions>> => {
     const statusRef = readStatusRef();
+    const lineResults = readLineResults();
+    const minSp = getMinSpeed(lineResults);
     const totalTypeTime = statusRef.totalTypeTime;
     const rkpmTime = totalTypeTime - statusRef.totalLatency;
     const kanaToRomaConvertCount = statusRef.kanaToRomaConvertCount;
 
+    const typingStatus = readTypingStatus();
     const sendStatus: SendResultData["status"] = {
       score: typingStatus.score,
       roma_type: statusRef.romaType,

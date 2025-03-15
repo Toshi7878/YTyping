@@ -1,35 +1,39 @@
-import { useStore } from "jotai";
 import { romaConvert } from "../../../../lib/instanceMapData";
 import { useLineStatusRef, useStatusRef } from "../../atoms/refAtoms";
 import {
-  lineWordAtom,
-  playingInputModeAtom,
-  sceneAtom,
-  speedAtom,
-  useMapAtom,
-  userTypingOptionsAtom,
-  useSetLineWordAtom,
-  useSetNextLyricsAtom,
-  useSetPlayingInputModeAtom,
-  useSetPlayingNotifyAtom,
+  useLineWordStateRef,
+  useMapState,
+  usePlayingInputModeStateRef,
+  usePlaySpeedStateRef,
+  useSceneStateRef,
+  useSetLineWordState,
+  useSetNextLyricsState,
+  useSetNotifyState,
+  useSetPlayingInputModeState,
+  useUserTypingOptionsStateRef,
 } from "../../atoms/stateAtoms";
 import { InputModeType } from "../../ts/type";
 import { useGetTime } from "../useGetTime";
 
 export const useInputModeChange = () => {
-  const map = useMapAtom();
-  const typeAtomStore = useStore();
+  const map = useMapState();
 
-  const setPlayingInputMode = useSetPlayingInputModeAtom();
-  const setNotify = useSetPlayingNotifyAtom();
-  const setNextLyrics = useSetNextLyricsAtom();
-  const setLineWord = useSetLineWordAtom();
+  const setPlayingInputMode = useSetPlayingInputModeState();
+  const setNotify = useSetNotifyState();
+  const setNextLyrics = useSetNextLyricsState();
+  const setLineWord = useSetLineWordState();
 
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
   const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
-  const { readStatusRef, writeStatusRef } = useStatusRef();
+  const { readStatusRef } = useStatusRef();
+  const readPlayingInputMode = usePlayingInputModeStateRef();
+  const readPlaySpeed = usePlaySpeedStateRef();
+  const readScene = useSceneStateRef();
+  const readLineWord = useLineWordStateRef();
+  const readTypingOptions = useUserTypingOptionsStateRef();
+
   return async (newInputMode: InputModeType) => {
-    const playingInputMode = typeAtomStore.get(playingInputModeAtom);
+    const playingInputMode = readPlayingInputMode();
 
     if (newInputMode === playingInputMode) {
       return;
@@ -41,7 +45,7 @@ export const useInputModeChange = () => {
       setNotify(Symbol("KanaMode"));
     } else {
       setNotify(Symbol("Romaji"));
-      const lineWord = typeAtomStore.get(lineWordAtom);
+      const lineWord = readLineWord();
 
       if (lineWord.nextChar["k"]) {
         const wordFix = romaConvert(lineWord);
@@ -57,13 +61,12 @@ export const useInputModeChange = () => {
 
     const count = readStatusRef().count;
     const nextLine = map!.mapData[count];
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
+    const playSpeed = readPlaySpeed().playSpeed;
 
     const nextKpm =
-      (newInputMode === "roma" ? map!.mapData[count].kpm["r"] : map!.mapData[count].kpm["k"]) *
-      playSpeed;
+      (newInputMode === "roma" ? map!.mapData[count].kpm["r"] : map!.mapData[count].kpm["k"]) * playSpeed;
     if (nextKpm) {
-      const userOptions = typeAtomStore.get(userTypingOptionsAtom);
+      const userOptions = readTypingOptions();
 
       setNextLyrics({
         lyrics: userOptions.next_display === "WORD" ? nextLine.kanaWord : nextLine["lyrics"],
@@ -76,7 +79,7 @@ export const useInputModeChange = () => {
       });
     }
 
-    const scene = typeAtomStore.get(sceneAtom);
+    const scene = readScene();
 
     if (scene === "playing") {
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());

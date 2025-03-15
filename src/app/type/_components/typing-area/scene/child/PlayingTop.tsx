@@ -1,13 +1,13 @@
 import { HStack } from "@chakra-ui/react";
 import PlayingProgress from "../playing-child/child/PlayingProgress";
 
-import { useSceneAtom } from "@/app/type/atoms/stateAtoms";
+import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import PlayingCombo from "./top-child/PlayingCombo";
 import PlayingLineTime from "./top-child/PlayingLineTime";
 import PlayingNotify from "./top-child/PlayingNotify";
 
 function PlayingTop() {
-  const scene = useSceneAtom();
+  const scene = useSceneState();
 
   const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 

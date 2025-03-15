@@ -1,10 +1,9 @@
-import { getTypeAtomStore } from "@/app/type/atoms/stateAtoms";
 import { Text } from "@chakra-ui/react";
-import { Atom, useAtomValue } from "jotai";
+import { Atom, useAtomValue, useStore } from "jotai";
 import { memo } from "react";
 
 const StatusValue = ({ atom }: { atom: Atom<number> }) => {
-  const typeAtomStore = getTypeAtomStore();
+  const typeAtomStore = useStore();
   const value = useAtomValue(atom, { store: typeAtomStore });
 
   return (

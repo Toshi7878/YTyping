@@ -1,15 +1,12 @@
-import {
-  useSetIsOptionEdited,
-  useSetUserTypingOptionsAtom,
-  useUserTypingOptionsAtom,
-} from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { Box, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import { $Enums } from "@prisma/client";
 
 const UserNextDisplayRadioButton = () => {
-  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
-  const userOptionsAtom = useUserTypingOptionsAtom();
-  const setIsOptionEdited = useSetIsOptionEdited();
+  const setUserOptionsAtom = useSetUserTypingOptionsState();
+  const userOptionsAtom = useUserTypingOptionsState();
+  const { writeGameUtils } = useGameUtilsRef();
 
   const changeRadio = (value: $Enums.next_display) => {
     if (!userOptionsAtom) return;
@@ -19,7 +16,7 @@ const UserNextDisplayRadioButton = () => {
       next_display: value,
     };
     setUserOptionsAtom(newUserOptions);
-    setIsOptionEdited(true);
+    writeGameUtils({ isOptionEdited: true });
   };
   return (
     <Box>

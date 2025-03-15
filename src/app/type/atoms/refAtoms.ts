@@ -1,8 +1,22 @@
+import { RouterOutPuts } from "@/server/api/trpc";
 import { YTPlayer } from "@/types/global-types";
+import { UseDisclosureReturn } from "@chakra-ui/react";
 import { atom, ExtractAtomValue, useStore } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputModeType, PlayMode, TypeResult } from "../ts/type";
+
+export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>();
+
+export const useMapInfoRef = () => {
+  const typeAtomStore = useStore();
+  const readMapInfoRef = useAtomCallback(
+    useCallback((get) => get(mapInfoAtom) as NonNullable<RouterOutPuts["map"]["getMapInfo"]>, []),
+    { store: typeAtomStore }
+  );
+
+  return { readMapInfoRef };
+};
 
 const statusRefAtom = atomWithReset({
   count: 0,
@@ -99,6 +113,7 @@ const userStatsRefAtom = atomWithReset({
 
 export const useUserStatsRef = () => {
   const typeAtomStore = useStore();
+
   const readUserStatsRef = useAtomCallback(
     useCallback((get) => get(userStatsRefAtom), []),
     { store: typeAtomStore }
@@ -156,44 +171,48 @@ export const useYTStatusRef = () => {
   };
 };
 
-const gameRefAtom = atomWithReset({
+const gameUtilsRefAtom = atomWithReset({
   isRetrySkip: false,
   retryCount: 1,
+  timeOffset: 0,
   playMode: "playing" as PlayMode,
   startPlaySpeed: 1,
   updateMsTimeCount: 0,
   myBestScore: 0,
   replayKeyCount: 0,
   replayUserName: "",
+  rankingScores: [] as number[],
   practiceMyResultId: null as number | null,
+  isOptionEdited: false,
+  lineResultdrawerClosure: null as UseDisclosureReturn | null,
 });
 
-export const useGameRef = () => {
+export const useGameUtilsRef = () => {
   const typeAtomStore = useStore();
 
-  const readGameRef = useAtomCallback(
-    useCallback((get) => get(gameRefAtom), []),
+  const readGameUtils = useAtomCallback(
+    useCallback((get) => get(gameUtilsRefAtom), []),
     { store: typeAtomStore }
   );
-  const writeGameRef = useAtomCallback(
-    useCallback((get, set, newGameState: Partial<ExtractAtomValue<typeof gameRefAtom>>) => {
-      set(gameRefAtom, (prev) => {
+  const writeGameUtils = useAtomCallback(
+    useCallback((get, set, newGameState: Partial<ExtractAtomValue<typeof gameUtilsRefAtom>>) => {
+      set(gameUtilsRefAtom, (prev) => {
         return { ...prev, ...newGameState };
       });
     }, []),
     { store: typeAtomStore }
   );
-  const resetGameRef = useAtomCallback(
+  const resetGameUtils = useAtomCallback(
     useCallback((get, set) => {
-      set(gameRefAtom, RESET);
+      set(gameUtilsRefAtom, RESET);
     }, []),
     { store: typeAtomStore }
   );
 
   return {
-    readGameRef,
-    writeGameRef,
-    resetGameRef,
+    readGameUtils,
+    writeGameUtils,
+    resetGameUtils,
   };
 };
 

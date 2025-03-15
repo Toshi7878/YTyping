@@ -1,12 +1,9 @@
-import { mapAtom } from "@/app/type/atoms/stateAtoms";
-import { CreateMap } from "@/lib/instanceMapData";
-import { useStore } from "jotai";
+import { useMapState } from "@/app/type/atoms/stateAtoms";
 
 export const useGetSeekLineCount = () => {
-  const typeAtomStore = useStore();
+  const map = useMapState();
 
   return (newTime: number): number => {
-    const map = typeAtomStore.get(mapAtom) as CreateMap;
     const index = map.mapData.findIndex((line) => line.time >= newTime);
     return Math.max(index);
   };

@@ -1,8 +1,8 @@
-import { useDisplayLineRemainTimeAtom } from "@/app/type/atoms/stateAtoms";
+import { useLineRemainTimeState } from "@/app/type/atoms/stateAtoms";
 import { Text } from "@chakra-ui/react";
 
 const LineRemainTimeText = () => {
-  const displayLineRemainTime = useDisplayLineRemainTimeAtom();
+  const displayLineRemainTime = useLineRemainTimeState();
   return <Text as="span">{displayLineRemainTime.toFixed(1)}</Text>;
 };
 

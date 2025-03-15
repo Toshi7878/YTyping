@@ -1,67 +1,67 @@
-import { useStore } from "jotai";
-import { CreateMap } from "../../../../lib/instanceMapData";
-import { useGameRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
+import { RESET } from "jotai/utils";
+import { useGameUtilsRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
 import {
-  focusTypingStatusAtoms,
-  sceneAtom,
-  useMapAtom,
-  useSetComboAtom,
-  useSetLineResultsAtom,
-  useSetLineWordAtom,
-  useSetLyricsAtom,
-  useSetNextLyricsAtom,
-  useSetPlayingNotifyAtom,
-  useSetSceneAtom,
-  useSetTabIndexAtom,
-  useSetTypingStatusAtoms,
+  useMapState,
+  useSceneStateRef,
+  useSetComboState,
+  useSetLineResultsState,
+  useSetLineWordState,
+  useSetLyricsState,
+  useSetNextLyricsState,
+  useSetNotifyState,
+  useSetSceneState,
+  useSetTabIndexState,
+  useSetTypingStatusState,
+  useTypingStatusStateRef,
 } from "../../atoms/stateAtoms";
-import { defaultLineWord, defaultNextLyrics, typeTicker } from "../../ts/const/consts";
+import { typeTicker } from "../../ts/const/consts";
 import { PlayMode } from "../../ts/type";
 import { useUpdateUserStats } from "./useUpdateUserStats";
 
 export const useRetry = () => {
-  const map = useMapAtom();
-  const typeAtomStore = useStore();
+  const map = useMapState();
   const { readPlayer } = usePlayer();
-  const { readGameRef, writeGameRef } = useGameRef();
+  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
 
-  const setLineResults = useSetLineResultsAtom();
-  const setCombo = useSetComboAtom();
-  const setNotify = useSetPlayingNotifyAtom();
-  const setLyrics = useSetLyricsAtom();
-  const setNextLyrics = useSetNextLyricsAtom();
-  const setLineWord = useSetLineWordAtom();
+  const setLineResults = useSetLineResultsState();
+  const setCombo = useSetComboState();
+  const setNotify = useSetNotifyState();
+  const setLyrics = useSetLyricsState();
+  const setNextLyrics = useSetNextLyricsState();
+  const setLineWord = useSetLineWordState();
 
-  const { resetTypingStatus } = useSetTypingStatusAtoms();
+  const { resetTypingStatus } = useSetTypingStatusState();
   const { updatePlayCountStats, updateTypingStats } = useUpdateUserStats();
-  const { readStatusRef, resetStatusRef } = useStatusRef();
+  const { resetStatusRef } = useStatusRef();
+  const readScene = useSceneStateRef();
+  const readTypingStatus = useTypingStatusStateRef();
 
   return (newPlayMode: PlayMode) => {
-    setLineWord(structuredClone(defaultLineWord));
+    setLineWord(RESET);
     setLyrics("");
-    setNextLyrics(structuredClone(defaultNextLyrics));
+    setNextLyrics(RESET);
 
-    const scene = typeAtomStore.get(sceneAtom);
+    const scene = readScene();
 
     if (scene === "playing") {
-      const totalTypeCount = typeAtomStore.get(focusTypingStatusAtoms.type);
+      const totalTypeCount = readTypingStatus().type;
       if (totalTypeCount) {
-        const retryCount = readGameRef().retryCount;
-        writeGameRef({ retryCount: retryCount + 1 });
+        const retryCount = readGameUtils().retryCount;
+        writeGameUtils({ retryCount: retryCount + 1 });
         if (totalTypeCount >= 10) {
           updatePlayCountStats();
         }
       }
 
       updateTypingStats();
-      setNotify(Symbol(`Retry(${readGameRef().retryCount})`));
+      setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
       resetStatusRef();
       resetTypingStatus();
       setCombo(0);
     }
 
-    writeGameRef({
+    writeGameUtils({
       playMode: newPlayMode,
       replayKeyCount: 0,
       isRetrySkip: true,
@@ -76,18 +76,18 @@ export const useRetry = () => {
 };
 
 export const useProceedRetry = () => {
-  const setCombo = useSetComboAtom();
-  const setTabIndex = useSetTabIndexAtom();
+  const setCombo = useSetComboState();
+  const setTabIndex = useSetTabIndexState();
 
-  const map = useMapAtom() as CreateMap;
+  const map = useMapState();
 
-  const setLineResults = useSetLineResultsAtom();
-  const setScene = useSetSceneAtom();
-  const { resetTypingStatus } = useSetTypingStatusAtoms();
+  const setLineResults = useSetLineResultsState();
+  const setScene = useSetSceneState();
+  const { resetTypingStatus } = useSetTypingStatusState();
   const { updatePlayCountStats } = useUpdateUserStats();
 
   const { readPlayer } = usePlayer();
-  const { writeGameRef } = useGameRef();
+  const { writeGameUtils } = useGameUtilsRef();
   const { resetStatusRef } = useStatusRef();
 
   return (playMode: PlayMode) => {
@@ -108,7 +108,7 @@ export const useProceedRetry = () => {
       resetStatusRef();
     }
 
-    writeGameRef({
+    writeGameUtils({
       replayKeyCount: 0,
       isRetrySkip: true,
     });

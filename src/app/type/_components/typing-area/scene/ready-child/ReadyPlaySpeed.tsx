@@ -1,5 +1,5 @@
-import { useGameRef } from "@/app/type/atoms/refAtoms";
-import { usePlaySpeedAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { usePlaySpeedState, useSceneState } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, HStack, Text, useTheme } from "@chakra-ui/react";
@@ -11,20 +11,20 @@ interface ReadyPlaySpeedProps {
   speedDownButtonRef: React.RefObject<HTMLButtonElement>;
 }
 const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
-  const speedData = usePlaySpeedAtom();
-  const scene = useSceneAtom();
+  const speedData = usePlaySpeedState();
+  const scene = useSceneState();
   const theme: ThemeColors = useTheme();
-  const { writeGameRef } = useGameRef();
+  const { writeGameUtils } = useGameUtilsRef();
 
   useEffect(
     () => {
       if (scene === "ready") {
         if (speedData.defaultSpeed < 1) {
-          writeGameRef({
+          writeGameUtils({
             playMode: "practice",
           });
         } else {
-          writeGameRef({
+          writeGameUtils({
             playMode: "playing",
           });
         }

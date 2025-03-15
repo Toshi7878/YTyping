@@ -1,162 +1,15 @@
-import { RouterOutPuts } from "@/server/api/trpc";
-import { UseDisclosureReturn } from "@chakra-ui/react";
+import { CreateMap } from "@/lib/instanceMapData";
 import { $Enums } from "@prisma/client";
-import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
+import { createStore, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
-import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
-import { CreateMap } from "../../../lib/instanceMapData";
-import { defaultLineWord } from "../ts/const/consts";
-import {
-  InputModeType,
-  LineResultData,
-  LineWord,
-  NextLyricsType,
-  SceneType,
-  Speed,
-} from "../ts/type";
-
+import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
+import { useCallback } from "react";
+import { InputModeType, LineResultData, LineWord, SceneType, Speed } from "../ts/type";
+import { mapInfoAtom, useGameUtilsRef } from "./refAtoms";
 const typeAtomStore = createStore();
 export const getTypeAtomStore = () => typeAtomStore;
-
-export const mapAtom = atomWithReset<CreateMap | null>(null);
-
-export const useMapAtom = () => {
-  return useAtomValue(mapAtom);
-};
-
-export const useSetMapAtom = () => {
-  return useSetAtom(mapAtom);
-};
-
-export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>(null);
-
-export const useMapInfoAtom = () => {
-  return useAtomValue(mapInfoAtom, { store: typeAtomStore });
-};
-
-export const sceneAtom = atomWithReset<SceneType>("ready");
-
-export const useSceneAtom = () => {
-  return useAtomValue(sceneAtom, { store: typeAtomStore });
-};
-
-export const useSetSceneAtom = () => {
-  return useSetAtom(sceneAtom, { store: typeAtomStore });
-};
-
-export const hasLocalLikeAtom = atom<boolean>(false);
-
-export const useHasLocalLikeAtom = () => {
-  return useAtomValue(hasLocalLikeAtom, { store: typeAtomStore });
-};
-
-export const useSetHasLocalLikeAtom = () => {
-  return useSetAtom(hasLocalLikeAtom, { store: typeAtomStore });
-};
-
-const tabIndexAtom = atomWithReset<0 | 1>(1);
-
-export const useTabIndexAtom = () => {
-  return useAtomValue(tabIndexAtom);
-};
-
-export const useSetTabIndexAtom = () => {
-  return useSetAtom(tabIndexAtom);
-};
-
-export const readyRadioInputModeAtom = atomWithStorage<InputModeType>(
-  "inputMode",
-  "roma",
-  undefined,
-  {
-    getOnInit: true,
-  }
-);
-
-export const useReadyInputModeAtom = () => {
-  return useAtomValue(readyRadioInputModeAtom, { store: typeAtomStore });
-};
-
-export const useReadySetInputModeAtom = () => {
-  return useSetAtom(readyRadioInputModeAtom, { store: typeAtomStore });
-};
-
 const initialInputMode: InputModeType =
-  typeof window !== "undefined"
-    ? (localStorage.getItem("inputMode") as InputModeType) || "roma"
-    : "roma";
-
-export const playingInputModeAtom = atom<InputModeType>(initialInputMode);
-
-export const usePlayingInputModeAtom = () => {
-  return useAtomValue(playingInputModeAtom, { store: typeAtomStore });
-};
-
-export const useSetPlayingInputModeAtom = () => {
-  return useSetAtom(playingInputModeAtom, { store: typeAtomStore });
-};
-
-export const isLoadingOverlayAtom = atom<boolean>(false);
-
-export const useIsLoadingOverlayAtom = () => {
-  return useAtomValue(isLoadingOverlayAtom);
-};
-
-export const useSetIsLoadingOverlayAtom = () => {
-  return useSetAtom(isLoadingOverlayAtom);
-};
-
-const playingNotifyAtom = atomWithReset<symbol>(Symbol(""));
-
-export const usePlayingNotifyAtom = () => {
-  return useAtomValue(playingNotifyAtom);
-};
-
-export const useSetPlayingNotifyAtom = () => {
-  return useSetAtom(playingNotifyAtom);
-};
-
-export const rankingScoresAtom = atomWithReset<number[]>([]);
-export const useRankingScoresAtom = () => {
-  return useAtomValue(rankingScoresAtom);
-};
-
-export const useSetRankingScoresAtom = () => {
-  return useSetAtom(rankingScoresAtom);
-};
-
-export const lineResultsAtom = atomWithReset<LineResultData[]>([]);
-
-export const useLineResultsAtom = () => {
-  return useAtomValue(lineResultsAtom, { store: typeAtomStore });
-};
-
-export const useSetLineResultsAtom = () => {
-  return useSetAtom(lineResultsAtom, { store: typeAtomStore });
-};
-
-export const lineSelectIndexAtom = atomWithReset<number>(0);
-
-export const useLineSelectIndexAtom = () => {
-  return useAtomValue(lineSelectIndexAtom);
-};
-
-export const useSetLineSelectIndexAtom = () => {
-  return useSetAtom(lineSelectIndexAtom);
-};
-
-export const speedAtom = atomWithReset<Speed>({
-  defaultSpeed: 1,
-  playSpeed: 1,
-});
-
-export const usePlaySpeedAtom = () => {
-  return useAtomValue(speedAtom, { store: typeAtomStore });
-};
-
-export const useSetPlaySpeedAtom = () => {
-  return useSetAtom(speedAtom, { store: typeAtomStore });
-};
+  typeof window !== "undefined" ? (localStorage.getItem("inputMode") as InputModeType) || "roma" : "roma";
 
 export const userTypingOptionsAtom = atomWithReset({
   time_offset: 0,
@@ -171,131 +24,72 @@ export const userTypingOptionsAtom = atomWithReset({
   toggle_input_mode_key: "ALT_KANA" as $Enums.toggle_input_mode_key,
 });
 
-export const useUserTypingOptionsAtom = () => {
-  return useAtomValue(userTypingOptionsAtom, { store: typeAtomStore });
-};
+const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) =>
+  optic.valueOr({} as { isLiked: undefined }).prop("isLiked")
+);
 
-export const useSetUserTypingOptionsAtom = () => {
-  return useSetAtom(userTypingOptionsAtom, { store: typeAtomStore });
-};
+const mapAtom = atomWithReset<CreateMap | null>(null);
 
-export const timeOffsetAtom = atomWithReset<number>(0);
+const gameUtilsStateAtom = atomWithReset({
+  scene: "ready" as SceneType,
+  tabIndex: 1 as 0 | 1,
+  playingInputMode: initialInputMode,
+  notify: Symbol(""),
+  skip: "Space" as "Space" | "",
+  changeCSSCount: 0,
+  isLoadingOverlay: false,
+  lineSelectIndex: 0,
+});
+const sceneAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("scene"));
+const tabIndexAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("tabIndex"));
+const notifyAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("notify"));
+const skipAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("skip"));
+const changeCSSCountAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("changeCSSCount"));
+const lineSelectIndexAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("lineSelectIndex"));
+const isLoadingOverlayAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("isLoadingOverlay"));
+const playingInputModeAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("playingInputMode"));
 
-export const useTimeOffsetAtom = () => {
-  return useAtomValue(timeOffsetAtom, { store: typeAtomStore });
-};
+const playingStateAtom = atomWithReset({
+  currentTime: 0,
+  lineRemainTime: 0,
+  lineKpm: 0,
+  combo: 0,
+  lyrics: "",
+});
 
-export const useSetTimeOffsetAtom = () => {
-  return useSetAtom(timeOffsetAtom, { store: typeAtomStore });
-};
-const lyricsAtom = atom<string>("");
+const lyricsAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lyrics"));
+const currentTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("currentTime"));
+const lineRemainTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineRemainTime"));
+const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm"));
+const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
 
-export const useLyricsAtom = () => {
-  return useAtomValue(lyricsAtom, { store: typeAtomStore });
-};
+const readyRadioInputModeAtom = atomWithStorage<InputModeType>("inputMode", "roma", undefined, {
+  getOnInit: true,
+});
 
-export const useSetLyricsAtom = () => {
-  return useSetAtom(lyricsAtom, { store: typeAtomStore });
-};
-const nextLyricsAtom = atom<NextLyricsType>({
+const lineResultsAtom = atomWithReset<LineResultData[]>([]);
+
+const speedAtom = atomWithReset<Speed>({
+  defaultSpeed: 1,
+  playSpeed: 1,
+});
+
+const nextLyricsAtom = atomWithReset({
   lyrics: "",
   kpm: "",
   kanaWord: "",
   romaWord: "",
 });
 
-export const useNextLyricsAtom = () => {
-  return useAtomValue(nextLyricsAtom, { store: typeAtomStore });
-};
+const lineWordAtom = atomWithReset<LineWord>({
+  correct: { k: "", r: "" },
+  nextChar: { k: "", r: [""], p: 0, t: undefined },
+  word: [{ k: "", r: [""], p: 0, t: undefined }],
+  lineCount: 0,
+});
 
-export const useSetNextLyricsAtom = () => {
-  return useSetAtom(nextLyricsAtom, { store: typeAtomStore });
-};
-
-export const lineWordAtom = atom<LineWord>({ ...defaultLineWord });
-
-export const useLineWordAtom = () => {
-  return useAtomValue(lineWordAtom, { store: typeAtomStore });
-};
-
-export const useSetLineWordAtom = () => {
-  return useSetAtom(lineWordAtom, { store: typeAtomStore });
-};
-
-export const skipAtom = atom<"Space" | "">("");
-
-export const useSkipAtom = () => {
-  return useAtomValue(skipAtom, { store: typeAtomStore });
-};
-
-export const useSetSkipAtom = () => {
-  return useSetAtom(skipAtom, { store: typeAtomStore });
-};
-
-export const currentTimeSSMMAtom = atom(0);
-
-export const useCurrentTimeSSMMAtom = () => {
-  return useAtomValue(currentTimeSSMMAtom, { store: typeAtomStore });
-};
-
-export const useSetCurrentTimeSSMMAtom = () => {
-  return useSetAtom(currentTimeSSMMAtom, { store: typeAtomStore });
-};
-
-const displayLineRemainTimeAtom = atom(0);
-
-export const useDisplayLineRemainTimeAtom = () => {
-  return useAtomValue(displayLineRemainTimeAtom, { store: typeAtomStore });
-};
-
-export const useSetDisplayLineRemainTimeAtom = () => {
-  return useSetAtom(displayLineRemainTimeAtom, { store: typeAtomStore });
-};
-const displayLineKpmAtom = atom(0);
-
-export const useDisplayLineKpmAtom = () => {
-  return useAtomValue(displayLineKpmAtom, { store: typeAtomStore });
-};
-
-export const useSetDisplayLineKpmAtom = () => {
-  return useSetAtom(displayLineKpmAtom, { store: typeAtomStore });
-};
-
-export const comboAtom = atomWithReset(0);
-
-export const useComboAtom = () => {
-  return useAtomValue(comboAtom, { store: typeAtomStore });
-};
-
-export const useSetComboAtom = () => {
-  return useSetAtom(comboAtom, { store: typeAtomStore });
-};
-
-export const changeCSSCountAtom = atomWithReset<number>(0);
-
-export const useChangeCSSCountAtom = () => {
-  return useAtomValue(changeCSSCountAtom, { store: typeAtomStore });
-};
-
-export const useSetChangeCSSCountAtom = () => {
-  return useSetAtom(changeCSSCountAtom, { store: typeAtomStore });
-};
-
-export const isOptionEditedAtom = atom<boolean>(false);
-
-export const useSetIsOptionEdited = () => {
-  return useSetAtom(isOptionEditedAtom, { store: typeAtomStore });
-};
-
-export const mapUpdatedAtAtom = atom<Date>(new Date());
-
-export const drawerClosureAtom = atom<UseDisclosureReturn | null>(null);
-
-export const useSetDrawerClosureAtom = () => {
-  return useSetAtom(drawerClosureAtom, { store: typeAtomStore });
-};
-
-export const typingStatusAtom = atomWithReset({
+export type TypingStatusAtomValue = ExtractAtomValue<typeof typingStatusAtom>;
+const typingStatusAtom = atomWithReset({
   score: 0,
   type: 0,
   kpm: 0,
@@ -319,17 +113,147 @@ export const focusTypingStatusAtoms = {
   timeBonus: focusAtom(typingStatusAtom, (optic) => optic.prop("timeBonus")),
 };
 
-export const useTypingStatusAtom = () => {
-  return useAtomValue(typingStatusAtom, { store: typeAtomStore });
+export const useMapState = () => useAtomValue(mapAtom, { store: typeAtomStore }) as CreateMap;
+export const useSetMapState = () => useSetAtom(mapAtom, { store: typeAtomStore });
+
+export const useIsLikeAtom = () => useAtomValue(mapLikeFocusAtom, { store: typeAtomStore });
+export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store: typeAtomStore });
+
+export const useSetGameUtilsState = () => useSetAtom(gameUtilsStateAtom, { store: typeAtomStore });
+
+export const useSceneState = () => useAtomValue(sceneAtom, { store: typeAtomStore });
+export const useSetSceneState = () => useSetAtom(sceneAtom, { store: typeAtomStore });
+export const useSceneStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(sceneAtom), []),
+    { store: typeAtomStore }
+  );
 };
 
-export const useSetTypingStatusAtom = () => {
-  return useSetAtom(typingStatusAtom, { store: typeAtomStore });
+export const useTabIndexState = () => useAtomValue(tabIndexAtom);
+export const useSetTabIndexState = () => useSetAtom(tabIndexAtom);
+
+export const useReadyInputModeState = () => useAtomValue(readyRadioInputModeAtom, { store: typeAtomStore });
+export const useSetReadyInputModeState = () => useSetAtom(readyRadioInputModeAtom, { store: typeAtomStore });
+export const useReadyInputModeStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(readyRadioInputModeAtom), []),
+    { store: typeAtomStore }
+  );
 };
 
-export const useSetTypingStatusAtoms = () => {
-  const map = useMapAtom();
-  const rankingScores = useRankingScoresAtom();
+export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store: typeAtomStore });
+export const useSetPlayingInputModeState = () => useSetAtom(playingInputModeAtom, { store: typeAtomStore });
+export const usePlayingInputModeStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(playingInputModeAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useIsLoadingOverlayState = () => useAtomValue(isLoadingOverlayAtom);
+export const useSetIsLoadingOverlayState = () => useSetAtom(isLoadingOverlayAtom);
+export const useIsLoadingOverlayStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(isLoadingOverlayAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useNotifyState = () => useAtomValue(notifyAtom);
+export const useSetNotifyState = () => useSetAtom(notifyAtom);
+
+export const useLineResultsState = () => useAtomValue(lineResultsAtom, { store: typeAtomStore });
+export const useSetLineResultsState = () => useSetAtom(lineResultsAtom, { store: typeAtomStore });
+export const useLineResultsStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(lineResultsAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
+export const useSetLineSelectIndexState = () => useSetAtom(lineSelectIndexAtom);
+export const useLineSelectIndexStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(lineSelectIndexAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const usePlaySpeedState = () => useAtomValue(speedAtom, { store: typeAtomStore });
+export const useSetPlaySpeedState = () => useSetAtom(speedAtom, { store: typeAtomStore });
+export const usePlaySpeedStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(speedAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useUserTypingOptionsState = () => useAtomValue(userTypingOptionsAtom, { store: typeAtomStore });
+export const useSetUserTypingOptionsState = () => useSetAtom(userTypingOptionsAtom, { store: typeAtomStore });
+export const useUserTypingOptionsStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(userTypingOptionsAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useLyricsState = () => useAtomValue(lyricsAtom, { store: typeAtomStore });
+export const useSetLyricsState = () => useSetAtom(lyricsAtom, { store: typeAtomStore });
+
+export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store: typeAtomStore });
+export const useSetNextLyricsState = () => useSetAtom(nextLyricsAtom, { store: typeAtomStore });
+
+export const useLineWordState = () => useAtomValue(lineWordAtom, { store: typeAtomStore });
+export const useSetLineWordState = () => useSetAtom(lineWordAtom, { store: typeAtomStore });
+export const useLineWordStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(lineWordAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useSkipState = () => useAtomValue(skipAtom, { store: typeAtomStore });
+export const useSetSkipState = () => useSetAtom(skipAtom, { store: typeAtomStore });
+export const useSkipStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(skipAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useCurrentTimeState = () => useAtomValue(currentTimeAtom, { store: typeAtomStore });
+export const useSetCurrentTimeState = () => useSetAtom(currentTimeAtom, { store: typeAtomStore });
+export const useCurrentTimeStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(currentTimeAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useLineRemainTimeState = () => useAtomValue(lineRemainTimeAtom, { store: typeAtomStore });
+export const useSetLineRemainTimeState = () => useSetAtom(lineRemainTimeAtom, { store: typeAtomStore });
+
+export const useLineKpmState = () => useAtomValue(lineKpmAtom, { store: typeAtomStore });
+export const useSetLineKpmState = () => useSetAtom(lineKpmAtom, { store: typeAtomStore });
+
+export const useComboState = () => useAtomValue(comboAtom, { store: typeAtomStore });
+export const useSetComboState = () => useSetAtom(comboAtom, { store: typeAtomStore });
+export const useComboStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(comboAtom), []),
+    { store: typeAtomStore }
+  );
+};
+
+export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { store: typeAtomStore });
+export const useSetChangeCSSCountState = () => useSetAtom(changeCSSCountAtom, { store: typeAtomStore });
+
+export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store: typeAtomStore });
+export const useSetTypingStatusState = () => {
+  const map = useMapState() as CreateMap | null;
+  const { readGameUtils } = useGameUtilsRef();
 
   const setTypingStatus = useSetAtom(typingStatusAtom, { store: typeAtomStore });
   const setLineCount = useSetAtom(focusTypingStatusAtoms.line, { store: typeAtomStore });
@@ -338,8 +262,16 @@ export const useSetTypingStatusAtoms = () => {
   const resetTypingStatus = () => {
     setTypingStatus(RESET);
     setLineCount(map?.lineLength || 0);
+
+    const { rankingScores } = readGameUtils();
     setRank(rankingScores.length + 1);
   };
 
   return { setTypingStatus, resetTypingStatus };
+};
+export const useTypingStatusStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(typingStatusAtom), []),
+    { store: typeAtomStore }
+  );
 };

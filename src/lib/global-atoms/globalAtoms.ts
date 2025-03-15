@@ -1,8 +1,8 @@
-import { DEFAULT_VOLUME } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ActiveUserStatus } from "@/types/global-types";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
-import { atomWithReset, atomWithStorage } from "jotai/utils";
+import { atomWithReset, atomWithStorage, useAtomCallback } from "jotai/utils";
+import { useCallback } from "react";
 const globalAtomStore = createStore();
 export const getGlobalAtomStore = () => globalAtomStore;
 
@@ -16,61 +16,36 @@ const getInitialTheme = (): "light" | "dark" => {
 
 export const themeAtom = atom<"light" | "dark">(getInitialTheme());
 
-export const volumeAtom = atomWithStorage<number>("volume", DEFAULT_VOLUME, undefined, {
+const volumeAtom = atomWithStorage<number>("volume", 30, undefined, {
   getOnInit: true,
 });
 
-export const useVolumeAtom = () => {
-  return useAtomValue(volumeAtom, { store: globalAtomStore });
+export const useVolumeState = () => useAtomValue(volumeAtom, { store: globalAtomStore });
+export const useSetVolumeState = () => useSetAtom(volumeAtom, { store: globalAtomStore });
+export const useVolumeStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(volumeAtom), []),
+    { store: globalAtomStore }
+  );
 };
 
-export const useSetVolumeAtom = () => {
-  return useSetAtom(volumeAtom, { store: globalAtomStore });
-};
+const previewVideoAtom = atomWithReset<{
+  videoId: string | null;
+  previewTime: string | null;
+  previewSpeed: string | null;
+}>({ videoId: null, previewTime: null, previewSpeed: null });
 
-export const previewVideoIdAtom = atom<string | null>(null);
-
-export const usePreviewVideoIdAtom = () => {
-  return useAtomValue(previewVideoIdAtom, { store: globalAtomStore });
-};
-export const useSetPreviewVideoIdAtom = () => {
-  return useSetAtom(previewVideoIdAtom, { store: globalAtomStore });
-};
-
-const previewTimeAtom = atomWithReset<string | null>(null);
-
-export const usePreviewTimeAtom = () => {
-  return useAtomValue(previewTimeAtom, { store: globalAtomStore });
-};
-export const useSetPreviewTimeAtom = () => {
-  return useSetAtom(previewTimeAtom, { store: globalAtomStore });
-};
-
-const previewSpeedAtom = atom<number | null>(null);
-
-export const usePreviewSpeedAtom = () => {
-  return useAtomValue(previewSpeedAtom, { store: globalAtomStore });
-};
-export const useSetPreviewSpeedAtom = () => {
-  return useSetAtom(previewSpeedAtom, { store: globalAtomStore });
-};
+export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store: globalAtomStore });
+export const useSetPreviewVideoState = () => useSetAtom(previewVideoAtom, { store: globalAtomStore });
 
 const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 
-export const useOnlineUsersAtom = () => {
-  return useAtomValue(onlineUsersAtom, { store: globalAtomStore });
-};
-export const useSetOnlineUsersAtom = () => {
-  return useSetAtom(onlineUsersAtom, { store: globalAtomStore });
-};
+export const useOnlineUsersAtom = () => useAtomValue(onlineUsersAtom, { store: globalAtomStore });
+export const useSetOnlineUsersAtom = () => useSetAtom(onlineUsersAtom, { store: globalAtomStore });
 
 export const userOptionsAtom = atom<RouterOutPuts["userOption"]["getUserOptions"]>({
   custom_user_active_state: "ONLINE" as const,
 });
 
-export const useUserOptionsAtom = () => {
-  return useAtomValue(userOptionsAtom, { store: globalAtomStore });
-};
-export const useSetUserOptionsAtom = () => {
-  return useSetAtom(userOptionsAtom, { store: globalAtomStore });
-};
+export const useUserOptionsAtom = () => useAtomValue(userOptionsAtom, { store: globalAtomStore });
+export const useSetUserOptionsAtom = () => useSetAtom(userOptionsAtom, { store: globalAtomStore });

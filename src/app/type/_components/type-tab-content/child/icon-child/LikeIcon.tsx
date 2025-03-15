@@ -1,4 +1,4 @@
-import { useHasLocalLikeAtom, useSetHasLocalLikeAtom } from "@/app/type/atoms/stateAtoms";
+import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
@@ -13,20 +13,19 @@ const LikeIcon = () => {
 
   const { id: mapId } = useParams();
 
-  const hasLocalLikeAtom = useHasLocalLikeAtom();
+  const isLikeAtom = useIsLikeAtom();
 
-  const setHasLocalLikeAtom = useSetHasLocalLikeAtom();
+  const setIsLikeAtom = useSetIsLikeAtom();
 
   const toggleLikeAction = (state: UploadResult): Promise<UploadResult> => {
-    // 楽観的UI更新
-    const newHasLike = !hasLocalLikeAtom;
-    setHasLocalLikeAtom(newHasLike);
+    const newHasLike = !isLikeAtom;
+    setIsLikeAtom(newHasLike);
 
     try {
       return toggleLikeServerAction(Number(mapId), newHasLike);
     } catch (error) {
       // エラーが発生した場合、元の状態に戻す
-      setHasLocalLikeAtom(hasLocalLikeAtom);
+      setIsLikeAtom(isLikeAtom);
       return Promise.reject(error); // エラーを返す
     }
   };
@@ -36,7 +35,7 @@ const LikeIcon = () => {
   return (
     <CustomToolTip label="譜面にいいね" placement="top" top={1}>
       <Box as="form" action={formAction} _hover={{ color: theme.colors.text.body }}>
-        <LikeButton size={iconSize} defaultLiked={hasLocalLikeAtom} />
+        <LikeButton size={iconSize} defaultLiked={isLikeAtom} />
       </Box>
     </CustomToolTip>
   );

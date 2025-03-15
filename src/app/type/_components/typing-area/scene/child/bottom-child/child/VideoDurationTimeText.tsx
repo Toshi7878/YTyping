@@ -1,16 +1,18 @@
 import { useYTStatusRef } from "@/app/type/atoms/refAtoms";
-import { useMapAtom, usePlaySpeedAtom } from "@/app/type/atoms/stateAtoms";
+import { useMapState, usePlaySpeedState } from "@/app/type/atoms/stateAtoms";
 import { formatTime } from "@/app/type/ts/scene-ts/playing/formatTime";
+import { CreateMap } from "@/lib/instanceMapData";
 import { Text } from "@chakra-ui/react";
 
 const VideoDurationTimeText = () => {
-  const map = useMapAtom();
-  const speedData = usePlaySpeedAtom();
-  const { readYTStatusRef } = useYTStatusRef();
-  const movieDuration = readYTStatusRef().movieDuration;
-  const duration =
-    Number(map?.movieTotalTime) > movieDuration ? movieDuration : map?.movieTotalTime;
-  const totalTime = formatTime(map ? Number(duration) / speedData.playSpeed : 0);
+  const map = useMapState() as CreateMap | null;
+  const speedData = usePlaySpeedState();
+  const movieDuration = useYTStatusRef().readYTStatusRef().movieDuration;
+  if (!map) {
+    return;
+  }
+  const duration = map.movieTotalTime > movieDuration ? movieDuration : map?.movieTotalTime;
+  const totalTime = formatTime(Number(duration) / speedData.playSpeed);
 
   return (
     <Text as="span" id="total_time">

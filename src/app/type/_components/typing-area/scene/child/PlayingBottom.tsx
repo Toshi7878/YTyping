@@ -1,4 +1,4 @@
-import { useSceneAtom } from "@/app/type/atoms/stateAtoms";
+import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import { Box, Flex, HStack } from "@chakra-ui/react";
 import PlayingProgress from "../playing-child/child/PlayingProgress";
 import PlayingBottomBadgeLayout from "./bottom-child/PlayingBottomBadgeLayout";
@@ -6,7 +6,7 @@ import PlayingSkipGuide from "./bottom-child/PlayingSkipGuide";
 import PlayingTotalTime from "./bottom-child/PlayingTotalTime";
 
 const PlayingBottom = function () {
-  const scene = useSceneAtom();
+  const scene = useSceneState();
   const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 
   return (

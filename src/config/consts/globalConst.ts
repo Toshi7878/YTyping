@@ -1,7 +1,5 @@
 import { UploadResult } from "@/types";
 
-export const DEFAULT_VOLUME = 30;
-
 export const INITIAL_STATE: UploadResult = { id: null, title: "", message: "", status: 0 };
 
 export const PREVIEW_YOUTUBE_WIDTH = { base: 288, xl: 448 };
@@ -27,6 +25,5 @@ export const QUERY_KEYS = {
 
 export const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
 
-export const IS_IOS =
-  typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+export const IS_IOS = typeof navigator !== "undefined" && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 export const IS_ANDROID = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);

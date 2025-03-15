@@ -1,10 +1,9 @@
-import { useStore } from "jotai";
-import { drawerClosureAtom } from "../../atoms/stateAtoms";
+import { useGameUtilsRef } from "../../atoms/refAtoms";
 
 export const useToggleLineList = () => {
-  const typeAtomStore = useStore();
+  const { readGameUtils } = useGameUtilsRef();
   return () => {
-    const drawerClosure = typeAtomStore.get(drawerClosureAtom);
+    const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
 
     if (!drawerClosure) {
       return;

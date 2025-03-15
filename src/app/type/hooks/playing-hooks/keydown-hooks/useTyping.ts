@@ -1,20 +1,19 @@
 import { useLineStatusRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import {
-  comboAtom,
-  focusTypingStatusAtoms,
-  lineResultsAtom,
-  useMapAtom,
-  usePlayingInputModeAtom,
-  usePlaySpeedAtom,
-  useSceneAtom,
-  useSetDisplayLineKpmAtom,
-  useSetLineResultsAtom,
-  useSetLineWordAtom,
-  useSetTypingStatusAtoms,
+  useComboStateRef,
+  useLineResultsStateRef,
+  useMapState,
+  usePlayingInputModeStateRef,
+  usePlaySpeedStateRef,
+  useSceneStateRef,
+  useSetLineKpmState,
+  useSetLineResultsState,
+  useSetLineWordState,
+  useSetTypingStatusState,
+  useTypingStatusStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { LineWord } from "@/app/type/ts/type";
-import { useStore } from "jotai";
-import { CreateMap, MISS_PENALTY } from "../../../../../lib/instanceMapData";
+import { MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { Typing } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { useCalcTypeSpeed } from "../../calcTypeSpeed";
 import { useGetTime } from "../../useGetTime";
@@ -29,35 +28,35 @@ interface HandleTypingParams {
 }
 
 export const useTyping = () => {
-  const map = useMapAtom() as CreateMap;
-  const inputMode = usePlayingInputModeAtom();
-  const scene = useSceneAtom();
-  const speed = usePlaySpeedAtom();
-  const typeAtomStore = useStore();
+  const map = useMapState();
 
-  const setLineResults = useSetLineResultsAtom();
+  const setLineResults = useSetLineResultsState();
   const { triggerTypingSound, triggerMissSound } = useSoundEffect();
 
-  const setLineWord = useSetLineWordAtom();
+  const setLineWord = useSetLineWordState();
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
-  const setDisplayLineKpm = useSetDisplayLineKpmAtom();
+  const setDisplayLineKpm = useSetLineKpmState();
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
-  const {
-    getCurrentLineTime,
-    getCurrentOffsettedYTTime,
-    getConstantLineTime,
-    getConstantRemainLineTime,
-  } = useGetTime();
+  const { getCurrentLineTime, getCurrentOffsettedYTTime, getConstantLineTime, getConstantRemainLineTime } =
+    useGetTime();
   const calcTypeSpeed = useCalcTypeSpeed();
-  const { setTypingStatus } = useSetTypingStatusAtoms();
+  const { setTypingStatus } = useSetTypingStatusState();
   const updateAllStatus = useUpdateAllStatus();
 
   const { readYTStatusRef } = useYTStatusRef();
   const { readLineStatusRef } = useLineStatusRef();
   const { readStatusRef } = useStatusRef();
+  const readTypingStatus = useTypingStatusStateRef();
+  const readCombo = useComboStateRef();
+  const readLineResults = useLineResultsStateRef();
+  const readPlayingInputMode = usePlayingInputModeStateRef();
+  const readScene = useSceneStateRef();
+  const readPlaySpeed = usePlaySpeedStateRef();
+
   return ({ event, count, lineWord }: HandleTypingParams) => {
-    const typingResult = new Typing({ event, lineWord, inputMode });
+    const typingResult = new Typing({ event, lineWord, inputMode: readPlayingInputMode() });
+    const typingStatus = readTypingStatus();
 
     const isSuccess = typingResult.successKey;
     const isFailed = typingResult.newLineWord.correct["r"] || typingResult.newLineWord.correct["k"];
@@ -69,8 +68,8 @@ export const useTyping = () => {
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
       const constantLineTime = getConstantLineTime(lineTime);
 
-      const totalTypeCount = typeAtomStore.get(focusTypingStatusAtoms.type);
-      const combo = typeAtomStore.get(comboAtom);
+      const totalTypeCount = typingStatus.type;
+      const combo = readCombo();
       const typeSpeed = calcTypeSpeed({
         updateType: isCompleted ? "completed" : "keydown",
         constantLineTime,
@@ -94,8 +93,8 @@ export const useTyping = () => {
 
       const isPaused = readYTStatusRef().isPaused;
       if (isCompleted && !isPaused) {
-        if (scene === "practice" && speed.playSpeed >= 1) {
-          const lineResults = typeAtomStore.get(lineResultsAtom);
+        if (readScene() === "practice" && readPlaySpeed().playSpeed >= 1) {
+          const lineResults = readLineResults();
 
           const lResult = lineResults[count - 1];
           const lMiss = readLineStatusRef().miss;
@@ -131,7 +130,7 @@ export const useTyping = () => {
           }
 
           const newStatusReplay = updateAllStatus({
-            count: map!.mapData.length - 1,
+            count: map.mapData.length - 1,
             newLineResults,
           });
 

@@ -1,27 +1,25 @@
-import { usePlayer, useStatusRef, useYTStatusRef } from "../atoms/refAtoms";
-import {
-  useMapAtom,
-  usePlaySpeedAtom,
-  useTimeOffsetAtom,
-  useUserTypingOptionsAtom,
-} from "../atoms/stateAtoms";
+import { useGameUtilsRef, usePlayer, useStatusRef, useYTStatusRef } from "../atoms/refAtoms";
+import { useMapState, usePlaySpeedStateRef, useUserTypingOptionsStateRef } from "../atoms/stateAtoms";
 
 export const useGetTime = () => {
-  const map = useMapAtom();
-  const userOptions = useUserTypingOptionsAtom();
-  const timeOffset = useTimeOffsetAtom();
-  const speed = usePlaySpeedAtom();
+  const map = useMapState();
 
   const { readPlayer } = usePlayer();
   const { readYTStatusRef } = useYTStatusRef();
   const { readStatusRef } = useStatusRef();
+  const { readGameUtils } = useGameUtilsRef();
+  const readPlaySpeed = usePlaySpeedStateRef();
+  const readTypingOptions = useUserTypingOptionsStateRef();
+
   const getCurrentOffsettedYTTime = () => {
-    const result = readPlayer().getCurrentTime() - userOptions.time_offset - timeOffset;
+    const { timeOffset } = readGameUtils();
+    const typingOptions = readTypingOptions();
+    const result = readPlayer().getCurrentTime() - typingOptions.time_offset - timeOffset;
     return result;
   };
 
   const getConstantOffsettedYTTime = (YTCurrentTime: number) => {
-    return YTCurrentTime / speed.playSpeed;
+    return YTCurrentTime / readPlaySpeed().playSpeed;
   };
 
   const getCurrentLineTime = (YTCurrentTime: number) => {
@@ -43,13 +41,13 @@ export const useGetTime = () => {
     const movieDuration = readYTStatusRef().movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
-    const lineRemainTime = (nextLineTime - YTCurrentTime) / speed.playSpeed;
+    const lineRemainTime = (nextLineTime - YTCurrentTime) / readPlaySpeed().playSpeed;
 
     return lineRemainTime;
   };
 
   const getConstantLineTime = (lineTime: number) => {
-    const lineConstantTime = Math.round((lineTime / speed.playSpeed) * 1000) / 1000;
+    const lineConstantTime = Math.round((lineTime / readPlaySpeed().playSpeed) * 1000) / 1000;
     return lineConstantTime;
   };
 

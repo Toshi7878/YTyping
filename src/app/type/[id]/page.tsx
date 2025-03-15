@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       type: "website",
       images: thumbnailUrl,
     },
-    creator: mapInfo?.creator.name,
+    creator: mapInfo!.creatorName,
     other: {
       "article:published_time": mapInfo!.created_at.toISOString(),
       "article:modified_time": mapInfo!.updated_at.toISOString(),

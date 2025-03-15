@@ -1,8 +1,8 @@
 "use client";
 import {
-  useReadyInputModeAtom,
-  useReadySetInputModeAtom,
-  useSetPlayingInputModeAtom,
+  useReadyInputModeState,
+  useSetPlayingInputModeState,
+  useSetReadyInputModeState,
 } from "@/app/type/atoms/stateAtoms";
 import { InputModeType } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
@@ -68,9 +68,9 @@ function ReadyInputModeRadioCards() {
     { value: "flick", label: "フリック入力" },
   ];
 
-  const readyInputMode = useReadyInputModeAtom();
-  const setReadyInputMode = useReadySetInputModeAtom();
-  const setPlayingInputMode = useSetPlayingInputModeAtom();
+  const readyInputMode = useReadyInputModeState();
+  const setReadyInputMode = useSetReadyInputModeState();
+  const setPlayingInputMode = useSetPlayingInputModeState();
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "inputMode",

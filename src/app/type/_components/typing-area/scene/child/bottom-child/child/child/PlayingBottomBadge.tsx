@@ -1,4 +1,4 @@
-import { usePlayingNotifyAtom, useSceneAtom } from "@/app/type/atoms/stateAtoms";
+import { useNotifyState, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { HStack } from "@chakra-ui/react";
 import CustomBadge from "./child/CustomBadge";
 import CustomKbd from "./child/CustomKbd";
@@ -12,8 +12,8 @@ interface PlayingBottomBadgeProps {
 }
 
 const PlayingBottomBadge = function (props: PlayingBottomBadgeProps) {
-  const notify = usePlayingNotifyAtom();
-  const scene = useSceneAtom();
+  const notify = useNotifyState();
+  const scene = useSceneState();
   const isDisabled = notify.description === "ll" && props.isPauseDisabled;
   const isHidden = scene === "ready" || scene === "end";
 

@@ -1,4 +1,4 @@
-import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
+import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YouTubeEvent } from "@/types/global-types";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 import { editTicker } from "../_components/editor-youtube-content/EditYoutube";
@@ -18,7 +18,7 @@ export const useYTReadyEvent = () => {
   const { setRef } = useRefs();
   const setIsReady = useSetIsEditYTReadyAtom();
   const dispatch = useDispatch();
-  const volume = useVolumeAtom();
+  const volume = useVolumeState();
   const editReduxStore = useReduxStore<RootState>();
 
   return (event) => {

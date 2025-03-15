@@ -1,19 +1,19 @@
 import {
-  useLineWordAtom,
-  useNextLyricsAtom,
-  usePlayingInputModeAtom,
-  useUserTypingOptionsAtom,
+  useLineWordState,
+  useNextLyricsState,
+  usePlayingInputModeState,
+  useUserTypingOptionsState,
 } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
 import PlayingWord from "./PlayingWord";
 
 const PlayingTypingWords = () => {
-  const lineWord = useLineWordAtom();
-  const inputMode = usePlayingInputModeAtom();
-  const nextLyrics = useNextLyricsAtom();
+  const lineWord = useLineWordState();
+  const inputMode = usePlayingInputModeState();
+  const nextLyrics = useNextLyricsState();
   const theme: ThemeColors = useTheme();
-  const userOptionsAtom = useUserTypingOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsState();
 
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
   const kanaScroll = userOptionsAtom.kana_word_scroll > 0 ? userOptionsAtom.kana_word_scroll : 0;
@@ -29,9 +29,7 @@ const PlayingTypingWords = () => {
     >
       <PlayingWord
         id="main_word"
-        correct={lineWord.correct["k"]
-          .substr(-kanaCorrectSlice, kanaCorrectSlice)
-          .replace(/ /g, "ˍ")}
+        correct={lineWord.correct["k"].substr(-kanaCorrectSlice, kanaCorrectSlice).replace(/ /g, "ˍ")}
         nextChar={lineWord.nextChar["k"]}
         word={lineWord.word
           .map((w) => w["k"])
@@ -44,9 +42,7 @@ const PlayingTypingWords = () => {
 
       <PlayingWord
         id="sub_word"
-        correct={lineWord.correct["r"]
-          .substr(-romaCorrectSlice, romaCorrectSlice)
-          .replace(/ /g, "ˍ")}
+        correct={lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice).replace(/ /g, "ˍ")}
         nextChar={lineWord.nextChar["r"][0]}
         word={lineWord.word
           .map((w) => w["r"][0])

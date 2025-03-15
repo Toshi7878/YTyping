@@ -1,12 +1,8 @@
 import {
-  usePlayingInputModeAtom,
-  usePlaySpeedAtom,
-  useSceneAtom,
-  useSetLineWordAtom,
-  useSetLyricsAtom,
-  useSetNextLyricsAtom,
-  useTimeOffsetAtom,
-  useUserTypingOptionsAtom,
+  useSceneState,
+  useSetLineWordState,
+  useSetLyricsState,
+  useSetNextLyricsState,
 } from "@/app/type/atoms/stateAtoms";
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
@@ -15,9 +11,9 @@ import { useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
 import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useStartTimer";
 import { usePlayTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
-import { defaultLineWord, defaultNextLyrics, typeTicker } from "@/app/type/ts/const/consts";
-import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
+import { typeTicker } from "@/app/type/ts/const/consts";
 import { UseDisclosureReturn } from "@chakra-ui/react";
+import { RESET } from "jotai/utils";
 
 interface PlayingProps {
   drawerClosure: UseDisclosureReturn;
@@ -25,21 +21,16 @@ interface PlayingProps {
 const Playing = ({ drawerClosure }: PlayingProps) => {
   const { onOpen } = drawerClosure;
 
-  const setLineWord = useSetLineWordAtom();
-  const setLyrics = useSetLyricsAtom();
-  const setNextLyrics = useSetNextLyricsAtom();
+  const setLineWord = useSetLineWordState();
+  const setLyrics = useSetLyricsState();
+  const setNextLyrics = useSetNextLyricsState();
   const startTimer = useStartTimer();
 
   const playTimer = usePlayTimer();
 
   const handleKeydown = useHandleKeydown();
 
-  const scene = useSceneAtom();
-  const volume = useVolumeAtom();
-  const userOptions = useUserTypingOptionsAtom();
-  const timeOffset = useTimeOffsetAtom();
-  const playSpeed = usePlaySpeedAtom();
-  const inputMode = usePlayingInputModeAtom();
+  const scene = useSceneState();
   const { readUserStatsRef, resetUserStatsRef } = useUserStatsRef();
 
   useEffect(() => {
@@ -95,7 +86,7 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
       window.removeEventListener("keydown", handleKeydown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [volume, scene, userOptions, inputMode, timeOffset, playSpeed]);
+  }, []);
 
   useEffect(() => {
     if (scene === "practice") {
@@ -107,9 +98,9 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
         typeTicker.remove(playTimer);
         typeTicker.stop();
       }
-      setLineWord(structuredClone(defaultLineWord));
+      setLineWord(RESET);
       setLyrics("");
-      setNextLyrics(structuredClone(defaultNextLyrics));
+      setNextLyrics(RESET);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

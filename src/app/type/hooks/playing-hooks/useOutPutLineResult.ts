@@ -1,12 +1,11 @@
 import {
-  playingInputModeAtom,
-  sceneAtom,
-  typingStatusAtom,
-  useMapAtom,
+  useMapState,
+  usePlayingInputModeStateRef,
+  useSceneStateRef,
+  useTypingStatusStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { useCalcCurrentRank } from "@/app/type/hooks/playing-hooks/useUpdateStatus";
-import { useStore } from "jotai";
-import { CHAR_POINT, CreateMap } from "../../../../lib/instanceMapData";
+import { CHAR_POINT } from "../../../../lib/instanceMapData";
 import { useStatusRef } from "../../atoms/refAtoms";
 import { LineWord } from "../../ts/type";
 
@@ -16,18 +15,20 @@ interface useOutPutLineResultProps {
 }
 
 export const useOutPutLineResult = () => {
-  const typeAtomStore = useStore();
-  const map = useMapAtom() as CreateMap;
+  const map = useMapState();
   const calcCurrentRank = useCalcCurrentRank();
+
   const { readStatusRef, writeStatusRef } = useStatusRef();
+  const readPlayingInputMode = usePlayingInputModeStateRef();
+  const readTypingStatus = useTypingStatusStateRef();
+  const readScene = useSceneStateRef();
 
   const getLostWord = (newLineWord: LineWord) => {
     if (newLineWord.nextChar["k"]) {
-      const romaLostWord =
-        newLineWord.nextChar["r"][0] + newLineWord.word.map((w) => w["r"][0]).join("");
+      const romaLostWord = newLineWord.nextChar["r"][0] + newLineWord.word.map((w) => w["r"][0]).join("");
       const kanaLostWord = newLineWord.nextChar["k"] + newLineWord.word.map((w) => w["k"]).join("");
 
-      const inputMode = typeAtomStore.get(playingInputModeAtom);
+      const inputMode = readPlayingInputMode();
       return inputMode === "roma" ? romaLostWord : kanaLostWord;
     } else {
       return "";
@@ -35,14 +36,13 @@ export const useOutPutLineResult = () => {
   };
 
   const updateStatus = (newLineWord: LineWord, lostLength: number, totalTypeSpeed: number) => {
-    const status = typeAtomStore.get(typingStatusAtom);
-    const scene = typeAtomStore.get(sceneAtom);
+    const status = readTypingStatus();
+    const scene = readScene();
 
     const newStatus = { ...status };
     if (scene === "playing") {
       writeStatusRef({
-        kanaToRomaConvertCount: (readStatusRef().kanaToRomaConvertCount +=
-          newLineWord.correct.r.length),
+        kanaToRomaConvertCount: (readStatusRef().kanaToRomaConvertCount += newLineWord.correct.r.length),
       });
     }
 
@@ -70,8 +70,7 @@ export const useOutPutLineResult = () => {
 
   return ({ newLineWord, totalTypeSpeed }: useOutPutLineResultProps) => {
     const lostLength = newLineWord.nextChar["k"]
-      ? newLineWord.nextChar["p"] / CHAR_POINT +
-        newLineWord.word.map((w) => w["r"][0]).join("").length
+      ? newLineWord.nextChar["p"] / CHAR_POINT + newLineWord.word.map((w) => w["r"][0]).join("").length
       : 0;
 
     const newStatus = updateStatus(newLineWord, lostLength, totalTypeSpeed);

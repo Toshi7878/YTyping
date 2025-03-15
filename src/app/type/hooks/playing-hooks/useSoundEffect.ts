@@ -1,11 +1,11 @@
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
-import { useVolumeAtom } from "@/lib/global-atoms/globalAtoms";
+import { useVolumeStateRef } from "@/lib/global-atoms/globalAtoms";
 import clearTypeSound from "@/public/wav/clear_type.wav";
 import typeSound from "@/public/wav/key_type.wav";
 import missSound from "@/public/wav/miss_type.wav";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
-import { useUserTypingOptionsAtom } from "../../atoms/stateAtoms";
+import { useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
 
 const manifest = [
   { alias: "type", src: typeSound },
@@ -14,9 +14,8 @@ const manifest = [
 ];
 
 export const useSoundEffect = () => {
-  const userOptions = useUserTypingOptionsAtom();
-  const volumeAtom = useVolumeAtom();
-  const volume = (IS_IOS || IS_ANDROID ? 100 : volumeAtom) / 100;
+  const readTypingOptions = useUserTypingOptionsStateRef();
+  const readVolume = useVolumeStateRef();
 
   useEffect(() => {
     manifest.forEach(({ alias, src }) => {
@@ -31,14 +30,17 @@ export const useSoundEffect = () => {
   }, []);
 
   const clearTypeSoundPlay = () => {
+    const volume = (IS_IOS || IS_ANDROID ? 100 : readVolume()) / 100;
     sound.play("lineClear", { volume });
   };
 
   const typeSoundPlay = () => {
+    const volume = (IS_IOS || IS_ANDROID ? 100 : readVolume()) / 100;
     sound.play("type", { volume });
   };
 
   const missSoundPlay = () => {
+    const volume = (IS_IOS || IS_ANDROID ? 100 : readVolume()) / 100;
     sound.play("miss", { volume });
   };
 
@@ -48,21 +50,23 @@ export const useSoundEffect = () => {
     sound.play("miss", { volume: 0 });
   };
   const triggerTypingSound = ({ isCompleted }: { isCompleted: boolean }) => {
+    const typingOptions = readTypingOptions();
+
     if (isCompleted) {
-      if (userOptions.line_clear_sound) {
+      if (typingOptions.line_clear_sound) {
         clearTypeSoundPlay();
-      } else if (userOptions.type_sound) {
+      } else if (typingOptions.type_sound) {
         typeSoundPlay();
       }
     } else {
-      if (userOptions.type_sound) {
+      if (typingOptions.type_sound) {
         typeSoundPlay();
       }
     }
   };
 
   const triggerMissSound = () => {
-    if (userOptions.miss_sound) {
+    if (readTypingOptions().miss_sound) {
       missSoundPlay();
     }
   };

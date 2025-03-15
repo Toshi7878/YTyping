@@ -1,11 +1,11 @@
-import { useNextLyricsAtom } from "@/app/type/atoms/stateAtoms";
+import { useNextLyricsState } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
 import parse from "html-react-parser";
 
 const NextLyrics = () => {
   const theme: ThemeColors = useTheme();
-  const { lyrics, kpm } = useNextLyricsAtom();
+  const { lyrics, kpm } = useNextLyricsState();
 
   return (
     <Box

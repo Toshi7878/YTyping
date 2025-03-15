@@ -1,5 +1,5 @@
 "use client";
-import { useSceneAtom } from "@/app/type/atoms/stateAtoms";
+import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import {
   Drawer,
@@ -21,7 +21,7 @@ interface ResultDrawerProps {
 function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
   const { isOpen, onClose } = drawerClosure;
   const theme: ThemeColors = useTheme();
-  const scene = useSceneAtom();
+  const scene = useSceneState();
 
   const memoizedResultLineList = useMemo(() => {
     if (scene === "end" || scene === "practice" || scene === "replay") {

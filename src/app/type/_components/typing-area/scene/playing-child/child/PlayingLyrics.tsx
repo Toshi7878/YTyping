@@ -1,10 +1,10 @@
-import { useLyricsAtom, useUserTypingOptionsAtom } from "@/app/type/atoms/stateAtoms";
+import { useLyricsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { Box } from "@chakra-ui/react";
 import parse from "html-react-parser";
 
 const PlayingLyrics = () => {
-  const lyrics = useLyricsAtom();
-  const userOptionsAtom = useUserTypingOptionsAtom();
+  const lyrics = useLyricsState();
+  const userOptionsAtom = useUserTypingOptionsState();
 
   return (
     <Box

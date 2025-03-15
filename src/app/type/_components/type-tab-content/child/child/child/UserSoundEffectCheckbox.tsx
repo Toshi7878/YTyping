@@ -1,12 +1,12 @@
 import { usePlayer } from "@/app/type/atoms/refAtoms";
-import { useUserTypingOptionsAtom } from "@/app/type/atoms/stateAtoms";
+import { useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { CheckboxGroup, Flex, Text } from "@chakra-ui/react";
 import CheckBoxOption from "./child/CheckBoxOption";
 
 const UserSoundEffectCheckbox = () => {
-  const userTypingOptionsAtom = useUserTypingOptionsAtom();
+  const userTypingOptionsAtom = useUserTypingOptionsState();
   const { readPlayer } = usePlayer();
 
   return (

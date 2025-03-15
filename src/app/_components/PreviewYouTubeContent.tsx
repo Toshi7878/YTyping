@@ -3,27 +3,24 @@
 import { PREVIEW_YOUTUBE_HEIGHT, PREVIEW_YOUTUBE_WIDTH } from "@/config/consts/globalConst";
 import { usePreviewYouTubeKeyDown } from "@/lib/global-hooks/usePreviewYouTubeKeyDown";
 import { Box, useBreakpointValue } from "@chakra-ui/react";
+import { RESET } from "jotai/utils";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import {
-  usePreviewSpeedAtom,
-  usePreviewTimeAtom,
-  usePreviewVideoIdAtom,
-  useSetPreviewVideoIdAtom,
-  useVolumeAtom,
+  usePreviewVideoState,
+  useSetPreviewVideoState,
+  useVolumeState,
 } from "../../lib/global-atoms/globalAtoms";
 import { useGlobalRefs } from "./global-provider/GlobalRefProvider";
 
 const PreviewYouTubeContent = function YouTubeContent() {
   const router = useRouter(); // 追加
 
-  const videoId = usePreviewVideoIdAtom();
-  const previewTime = usePreviewTimeAtom();
-  const previewSpeed = usePreviewSpeedAtom();
-  const volume = useVolumeAtom();
+  const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
+  const setPreviewVideoState = useSetPreviewVideoState();
+  const volume = useVolumeState();
   const { setRef } = useGlobalRefs();
-  const setPreviewVideoId = useSetPreviewVideoIdAtom();
   const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
 
   useEffect(() => {
@@ -37,7 +34,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
 
   useEffect(() => {
     return () => {
-      setPreviewVideoId(null);
+      setPreviewVideoState(RESET);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);

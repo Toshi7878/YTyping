@@ -1,14 +1,14 @@
-import { useSceneAtom, useUserTypingOptionsAtom } from "@/app/type/atoms/stateAtoms";
+import { useSceneState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { useToggleLineList } from "@/app/type/hooks/playing-hooks/useToggleLineList";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";
 
 const PlayingPracticeBadge = function () {
-  const scene = useSceneAtom();
+  const scene = useSceneState();
   const toggleLineListDrawer = useToggleLineList();
   const { movePrevLine, moveNextLine } = useMoveLine();
-  const userOptionsAtom = useUserTypingOptionsAtom();
+  const userOptionsAtom = useUserTypingOptionsState();
 
   return (
     <>

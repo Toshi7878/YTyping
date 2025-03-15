@@ -2,6 +2,7 @@ import { MapData } from "@/app/type/ts/type";
 import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -38,7 +39,19 @@ export const mapRouter = {
       },
     });
 
-    return mapInfo;
+    if (!mapInfo) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+      });
+    }
+
+    const isLiked = !!mapInfo?.map_likes?.[0]?.is_liked;
+    const creatorName = mapInfo?.creator.name;
+
+    // map_likesプロパティを除外して返す
+    const { map_likes, creator, ...restMapInfo } = mapInfo;
+
+    return { ...restMapInfo, isLiked, creatorName };
   }),
   getCreatedVideoIdMapList: publicProcedure
     .input(z.object({ videoId: z.string().length(11) }))

@@ -1,15 +1,14 @@
 "use client";
 import {
-  playingInputModeAtom,
-  speedAtom,
-  useMapAtom,
-  useSceneAtom,
+  useMapState,
+  usePlayingInputModeStateRef,
+  usePlaySpeedStateRef,
+  useSceneState,
 } from "@/app/type/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/type/ts/type";
 import { CHAR_POINT } from "@/lib/instanceMapData";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, CardFooter, CardHeader, useTheme } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import { memo } from "react";
 import ResultCardBody from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
@@ -36,19 +35,17 @@ function ResultCard({
   cardRefs,
   handleCardClick,
 }: ResultCardProps) {
-  const map = useMapAtom();
-  const scene = useSceneAtom();
+  const map = useMapState();
+  const scene = useSceneState();
   const theme: ThemeColors = useTheme();
-  const typeAtomStore = useStore();
+  const speedData = usePlaySpeedStateRef()();
+  const inputMode = usePlayingInputModeStateRef()();
 
-  const speedData = typeAtomStore.get(speedAtom);
-  const inputMode = typeAtomStore.get(playingInputModeAtom);
   const lineSpeed =
     lineResult.status!.sp > speedData.defaultSpeed ? lineResult.status!.sp : speedData.defaultSpeed;
   const lineInputMode = lineResult.status?.mode ?? inputMode;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
-  const lineTypeWord =
-    lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
+  const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
   const lineTime =
     (Number(map!.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
@@ -63,8 +60,7 @@ function ResultCard({
   const tBonus = lineResult.status?.tBonus;
   const lostWord = lineResult.status?.lostW;
 
-  const seekTime =
-    Number(map!.mapData[index]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
+  const seekTime = Number(map!.mapData[index]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
 
   const lineNumber = lineCount;
 
@@ -85,9 +81,7 @@ function ResultCard({
       cursor="pointer"
       bg={theme.colors.background.card}
       color={theme.colors.text.body}
-      className={`${
-        selectIndex === lineNumber ? "result-line-select-outline" : "result-line-hover"
-      }`}
+      className={`${selectIndex === lineNumber ? "result-line-select-outline" : "result-line-hover"}`}
       onClick={() => handleCardClick(lineNumber)}
     >
       <CardHeader py={0}>

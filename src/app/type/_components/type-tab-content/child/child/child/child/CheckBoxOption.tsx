@@ -1,8 +1,5 @@
-import {
-  useSetIsOptionEdited,
-  useSetUserTypingOptionsAtom,
-  useUserTypingOptionsAtom,
-} from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import { Checkbox } from "@chakra-ui/react";
 import React from "react";
@@ -13,17 +10,12 @@ interface CheckBoxOptionProps {
   defaultChecked: boolean;
 }
 
-const CheckBoxOption = ({
-  label,
-  name,
-  defaultChecked: isChecked = false,
-}: CheckBoxOptionProps) => {
-  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
+const CheckBoxOption = ({ label, name, defaultChecked: isChecked = false }: CheckBoxOptionProps) => {
+  const setUserOptionsAtom = useSetUserTypingOptionsState();
   const { clearTypeSoundPlay, typeSoundPlay, missSoundPlay } = useSoundEffect();
-  const setIsOptionEdited = useSetIsOptionEdited();
-  const userTypingOptions = useUserTypingOptionsAtom();
-
+  const userTypingOptions = useUserTypingOptionsState();
   const currentChecked = userTypingOptions[name] ?? isChecked;
+  const { writeGameUtils } = useGameUtilsRef();
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -45,7 +37,7 @@ const CheckBoxOption = ({
       }
     }
 
-    setIsOptionEdited(true);
+    writeGameUtils({ isOptionEdited: true });
   };
 
   return (

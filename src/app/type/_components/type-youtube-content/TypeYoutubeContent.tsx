@@ -1,9 +1,8 @@
 "use client";
-import { useStore } from "jotai";
 import { useCallback, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { sceneAtom } from "../../atoms/stateAtoms";
+import { useSceneStateRef } from "../../atoms/stateAtoms";
 import { useWindowFocus } from "../../hooks/useWindowFocus";
 import {
   useYTEndEvent,
@@ -25,7 +24,7 @@ const TypeYouTubeContent = function YouTubeContent({
   videoId,
   className = "",
 }: TypeYouTubeProps) {
-  const typeAtomStore = useStore();
+  const readScene = useSceneStateRef();
 
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
@@ -50,7 +49,7 @@ const TypeYouTubeContent = function YouTubeContent({
         //	未スタート、他の動画に切り替えた時など
         console.log("未スタート -1");
 
-        const scene = typeAtomStore.get(sceneAtom);
+        const scene = readScene();
         if (scene === "ready") {
           event.target.seekTo(0, true);
         }

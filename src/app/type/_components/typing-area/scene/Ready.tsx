@@ -1,5 +1,5 @@
 import { usePlayer } from "@/app/type/atoms/refAtoms";
-import { useMapAtom } from "@/app/type/atoms/stateAtoms";
+import { useMapState } from "@/app/type/atoms/stateAtoms";
 import { useWindowFocus } from "@/app/type/hooks/useWindowFocus";
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
@@ -12,7 +12,7 @@ import ReadyPracticeButton from "./ready-child/ReadyPracticeButton";
 function Ready() {
   const speedUpButtonRef = useRef<HTMLButtonElement>(null);
   const speedDownButtonRef = useRef<HTMLButtonElement>(null);
-  const map = useMapAtom();
+  const map = useMapState();
   const windowFocus = useWindowFocus();
   const { readPlayer } = usePlayer();
 

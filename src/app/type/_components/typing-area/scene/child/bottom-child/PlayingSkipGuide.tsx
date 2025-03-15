@@ -1,8 +1,8 @@
-import { useSkipAtom } from "@/app/type/atoms/stateAtoms";
+import { useSkipState } from "@/app/type/atoms/stateAtoms";
 import { Box } from "@chakra-ui/react";
 
 const PlayingSkipGuide = () => {
-  const skip = useSkipAtom();
+  const skip = useSkipState();
 
   return <Box opacity={0.6}>{skip ? `Type ${skip} key to Skip. ⏩` : ""}</Box>;
 };

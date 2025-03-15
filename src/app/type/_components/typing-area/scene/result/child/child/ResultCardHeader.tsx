@@ -1,5 +1,5 @@
 "use client";
-import { useMapAtom } from "@/app/type/atoms/stateAtoms";
+import { useMapState } from "@/app/type/atoms/stateAtoms";
 import { InputModeType } from "@/app/type/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
@@ -25,13 +25,13 @@ function ResultCardHeader({
   lineKpm,
   lineSpeed,
 }: ResultCardHeaderdProps) {
-  const map = useMapAtom();
+  const map = useMapState();
   const theme: ThemeColors = useTheme();
 
   return (
     <Box>
       <Text as="span" data-list-number={index}>
-        {lineCount}/{map!.lineLength}
+        {lineCount}/{map.lineLength}
       </Text>
       <Text as="span" mx={2}>
         {"|"}

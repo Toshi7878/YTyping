@@ -1,37 +1,30 @@
-import { useStore } from "jotai";
-import { CreateMap, MISS_PENALTY } from "../../../../lib/instanceMapData";
-import { useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
+import { MISS_PENALTY } from "../../../../lib/instanceMapData";
+import { useGameUtilsRef, useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
 import {
-  typingStatusAtom,
-  useMapAtom,
-  usePlayingInputModeAtom,
-  useRankingScoresAtom,
-  useSceneAtom,
-  useSetComboAtom,
-  useSetTypingStatusAtoms,
+  useMapState,
+  usePlayingInputModeStateRef,
+  useSceneStateRef,
+  useSetComboState,
+  useSetTypingStatusState,
+  useTypingStatusStateRef,
 } from "../../atoms/stateAtoms";
 import { TypeChunk } from "../../ts/type";
 
 export const useTypeSuccess = () => {
-  const map = useMapAtom() as CreateMap;
-  const inputMode = usePlayingInputModeAtom();
-  const scene = useSceneAtom();
-  const setCombo = useSetComboAtom();
-  const { setTypingStatus } = useSetTypingStatusAtoms();
+  const map = useMapState();
+  const setCombo = useSetComboState();
+  const { setTypingStatus } = useSetTypingStatusState();
   const calcCurrentRank = useCalcCurrentRank();
-  const typeAtomStore = useStore();
 
   const { readUserStatsRef, writeUserStatsRef } = useUserStatsRef();
   const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
   const { readStatusRef, writeStatusRef } = useStatusRef();
-  const updateSuccessStatus = ({
-    newLineWord,
-    lineRemainConstantTime,
-    updatePoint,
-    totalKpm,
-    combo,
-  }) => {
-    const status = typeAtomStore.get(typingStatusAtom);
+  const readTypingStatus = useTypingStatusStateRef();
+  const readPlayingInputMode = usePlayingInputModeStateRef();
+  const readScene = useSceneStateRef();
+
+  const updateSuccessStatus = ({ newLineWord, lineRemainConstantTime, updatePoint, totalKpm, combo }) => {
+    const status = readTypingStatus();
     const newStatus = { ...status };
     const lineTypeCount = readLineStatusRef().type;
 
@@ -75,6 +68,7 @@ export const useTypeSuccess = () => {
     successKey: string;
     combo: number;
   }) => {
+    const scene = readScene();
     const lineTypingStatusRef = readLineStatusRef();
     const statusRef = readStatusRef();
     if (lineTypingStatusRef.type === 0) {
@@ -131,6 +125,7 @@ export const useTypeSuccess = () => {
       return;
     }
 
+    const inputMode = readPlayingInputMode();
     if (typeChunk.t === "kana") {
       if (inputMode === "roma") {
         writeUserStatsRef({
@@ -190,25 +185,27 @@ export const useTypeSuccess = () => {
 };
 
 export const useCalcCurrentRank = () => {
-  const rankingScores = useRankingScoresAtom();
+  const { readGameUtils } = useGameUtilsRef();
 
   return (currentScore: number) => {
     // 現在のスコアが何番目に入るかを取得
+    const { rankingScores } = readGameUtils();
     const rank = rankingScores.findIndex((score) => score <= currentScore);
     return (rank < 0 ? rankingScores.length : rank) + 1;
   };
 };
 
 export const useTypeMiss = () => {
-  const map = useMapAtom() as CreateMap;
-  const setCombo = useSetComboAtom();
-  const { setTypingStatus } = useSetTypingStatusAtoms();
-  const typeAtomStore = useStore();
+  const map = useMapState();
+  const setCombo = useSetComboState();
+  const { setTypingStatus } = useSetTypingStatusState();
 
   const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
   const { readStatusRef, writeStatusRef } = useStatusRef();
+  const readTypingStatus = useTypingStatusStateRef();
+
   const updateMissStatus = () => {
-    const status = typeAtomStore.get(typingStatusAtom);
+    const status = readTypingStatus();
     const newStatus = { ...status };
 
     newStatus.miss++;

@@ -1,21 +1,17 @@
-import { useGameRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
+import { useGameUtilsRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import {
-  drawerClosureAtom,
-  lineSelectIndexAtom,
-  lineWordAtom,
-  playingInputModeAtom,
-  skipAtom,
-  useMapAtom,
-  useSceneAtom,
-  useSetPlayingNotifyAtom,
-  useSetTimeOffsetAtom,
-  useUserTypingOptionsAtom,
+  useLineSelectIndexStateRef,
+  useLineWordStateRef,
+  useMapState,
+  usePlayingInputModeStateRef,
+  useSceneState,
+  useSceneStateRef,
+  useSetNotifyState,
+  useSkipStateRef,
+  useUserTypingOptionsStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/consts";
 import { LineWord } from "@/app/type/ts/type";
-import { CreateMap } from "@/lib/instanceMapData";
-import { UseDisclosureReturn } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import { useVideoSpeedChange } from "../../useVideoSpeedChange";
 import { useChangePlayMode } from "../useChangePlayMode";
 import { useGamePause } from "../useGamePause";
@@ -31,13 +27,16 @@ export const useHandleKeydown = () => {
   const typing = useTyping();
   const playingShortcutKey = usePlayingShortcutKey();
   const pauseShortcutKey = usePauseShortcutKey();
-  const typeAtomStore = useStore();
-  const scene = useSceneAtom();
 
   const { readYTStatusRef } = useYTStatusRef();
   const { readStatusRef } = useStatusRef();
+  const readLineWord = useLineWordStateRef();
+  const readScene = useSceneStateRef();
+
   return (event: KeyboardEvent) => {
     const isPaused = readYTStatusRef().isPaused;
+    const scene = readScene();
+
     if (!isPaused || scene === "practice") {
       const count = readStatusRef().count;
       const currentLineCount = count - 1;
@@ -47,12 +46,8 @@ export const useHandleKeydown = () => {
         return;
       }
 
-      const lineWord = typeAtomStore.get(lineWordAtom);
-      if (
-        currentLineCount == lineWord.lineCount &&
-        isKeydownTyped(event, lineWord) &&
-        scene !== "replay"
-      ) {
+      const lineWord = readLineWord();
+      if (currentLineCount == lineWord.lineCount && isKeydownTyped(event, lineWord) && scene !== "replay") {
         event.preventDefault();
 
         typing({
@@ -75,10 +70,7 @@ const ALT_KEY_WHITE_CODE_LIST = ["ArrowLeft", "ArrowRight"];
 const OPEN_DRAWER_CTRL_KEY_CODE_LIST = ["KeyF"];
 
 const usePlayingShortcutKey = () => {
-  const typeAtomStore = useStore();
-  const map = useMapAtom() as CreateMap;
-  const scene = useSceneAtom();
-  const userOptions = useUserTypingOptionsAtom();
+  const scene = useSceneState();
 
   const retry = useRetry();
   const pressSkip = usePressSkip();
@@ -88,28 +80,34 @@ const usePlayingShortcutKey = () => {
   const changePlayMode = useChangePlayMode();
   const { defaultSpeedChange, playingSpeedChange } = useVideoSpeedChange();
   const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine();
-  const setTimeOffset = useSetTimeOffsetAtom();
-  const setNotify = useSetPlayingNotifyAtom();
+  const setNotify = useSetNotifyState();
 
-  const { readGameRef } = useGameRef();
+  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
+  const readPlayingInputMode = usePlayingInputModeStateRef();
+  const readSkip = useSkipStateRef();
+  const readLineSelectIndex = useLineSelectIndexStateRef();
+  const readTypingOptions = useUserTypingOptionsStateRef();
+
+  const map = useMapState();
 
   return (event: KeyboardEvent) => {
-    const drawerClosure = typeAtomStore.get(drawerClosureAtom) as UseDisclosureReturn;
+    const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
+    const typingOptions = readTypingOptions();
 
     if (
       KEY_WHITE_LIST.includes(event.code) ||
       (event.ctrlKey && CTRL_KEY_WHITE_CODE_LIST.includes(event.code)) ||
       (event.altKey && !event.ctrlKey && ALT_KEY_WHITE_CODE_LIST.includes(event.code)) ||
-      (event.ctrlKey && OPEN_DRAWER_CTRL_KEY_CODE_LIST.includes(event.code) && drawerClosure.isOpen)
+      (event.ctrlKey && OPEN_DRAWER_CTRL_KEY_CODE_LIST.includes(event.code) && drawerClosure!.isOpen)
     ) {
       return;
     }
-    const inputMode = typeAtomStore.get(playingInputModeAtom);
-    const skip = typeAtomStore.get(skipAtom);
+    const inputMode = readPlayingInputMode();
+    const skip = readSkip();
 
-    const isCtrlLeftRight = userOptions.time_offset_key === "CTRL_LEFT_RIGHT" && event.ctrlKey;
+    const isCtrlLeftRight = typingOptions.time_offset_key === "CTRL_LEFT_RIGHT" && event.ctrlKey;
     const isCtrlAltLeftRight =
-      userOptions.time_offset_key === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
+      typingOptions.time_offset_key === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
 
     switch (event.code) {
       case "Escape": //Escでポーズ
@@ -121,11 +119,10 @@ const usePlayingShortcutKey = () => {
         break;
       case "ArrowRight":
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
-          setTimeOffset((prev) => {
-            const newValue = Math.round((prev + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-            setNotify(Symbol(`時間調整:${(newValue + userOptions.time_offset).toFixed(2)}`));
-            return newValue;
-          });
+          const { timeOffset } = readGameUtils();
+          const newTimeOffset = Math.round((timeOffset + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
+          writeGameUtils({ timeOffset: newTimeOffset });
+          setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.time_offset).toFixed(2)}`));
         } else if (scene === "replay" || scene === "practice") {
           moveNextLine();
         }
@@ -133,11 +130,10 @@ const usePlayingShortcutKey = () => {
         break;
       case "ArrowLeft":
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
-          setTimeOffset((prev) => {
-            const newValue = Math.round((prev - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-            setNotify(Symbol(`時間調整:${(newValue + userOptions.time_offset).toFixed(2)}`));
-            return newValue;
-          });
+          const { timeOffset } = readGameUtils();
+          const newTimeOffset = Math.round((timeOffset - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
+          writeGameUtils({ timeOffset: newTimeOffset });
+          setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.time_offset).toFixed(2)}`));
         } else if (scene === "replay" || scene === "practice") {
           movePrevLine();
         }
@@ -148,7 +144,7 @@ const usePlayingShortcutKey = () => {
         }
         break;
       case "F1":
-        if (userOptions.toggle_input_mode_key === "TAB") {
+        if (typingOptions.toggle_input_mode_key === "TAB") {
           if (scene === "replay" || scene === "practice") {
             toggleLineListDrawer();
           }
@@ -156,7 +152,7 @@ const usePlayingShortcutKey = () => {
         break;
 
       case "F4":
-        retry(readGameRef().playMode);
+        retry(readGameUtils().playMode);
         break;
       case "F7":
         changePlayMode();
@@ -175,7 +171,7 @@ const usePlayingShortcutKey = () => {
         break;
       case "KanaMode":
       case "Romaji":
-        if (userOptions.toggle_input_mode_key === "ALT_KANA") {
+        if (typingOptions.toggle_input_mode_key === "ALT_KANA") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
               inputModeChange("kana");
@@ -187,14 +183,14 @@ const usePlayingShortcutKey = () => {
         break;
       case "Backspace":
         if (scene === "replay" || scene === "practice") {
-          const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
+          const lineSelectIndex = readLineSelectIndex();
           const seekCount = map.typingLineNumbers[lineSelectIndex - 1];
           moveSetLine(seekCount);
         }
         break;
 
       case "Tab":
-        if (userOptions.toggle_input_mode_key === "TAB") {
+        if (typingOptions.toggle_input_mode_key === "TAB") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
               inputModeChange("kana");

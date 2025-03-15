@@ -1,9 +1,9 @@
 import {
-  useLineResultsAtom,
-  useLineSelectIndexAtom,
-  useMapAtom,
-  usePlayingInputModeAtom,
-  usePlaySpeedAtom,
+  useLineResultsState,
+  useLineSelectIndexState,
+  useMapState,
+  usePlayingInputModeState,
+  usePlaySpeedState,
 } from "@/app/type/atoms/stateAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { useInteractJS } from "@/app/type/hooks/useInteractJS";
@@ -16,11 +16,11 @@ import ResultCardFooter from "../result/child/child/ResultCardFooter";
 import ResultCardHeader from "../result/child/child/ResultCardHeader";
 
 const PracticeLineCard = () => {
-  const map = useMapAtom();
-  const lineResults = useLineResultsAtom();
-  const speedData = usePlaySpeedAtom();
-  const lineSelectIndex = useLineSelectIndexAtom();
-  const inputMode = usePlayingInputModeAtom();
+  const map = useMapState();
+  const lineResults = useLineResultsState();
+  const speedData = usePlaySpeedState();
+  const lineSelectIndex = useLineSelectIndexState();
+  const inputMode = usePlayingInputModeState();
   const theme: ThemeColors = useTheme();
   const [isDragging, setIsDragging] = useState(false);
   const { moveSetLine } = useMoveLine();

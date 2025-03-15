@@ -1,14 +1,14 @@
-import { useGameRef } from "@/app/type/atoms/refAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
 import { ThemeColors } from "@/types";
 import { Button, useTheme } from "@chakra-ui/react";
 
 const ReadyPracticeButton = () => {
   const theme: ThemeColors = useTheme();
-  const { readGameRef } = useGameRef();
+  const { readGameUtils } = useGameUtilsRef();
   const handleClick = useOnClickPracticeReplay({
     startMode: "practice",
-    resultId: readGameRef().practiceMyResultId || null,
+    resultId: readGameUtils().practiceMyResultId || null,
   });
 
   return (

@@ -4,7 +4,6 @@ import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
 import { CreateMap } from "@/lib/instanceMapData";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
-import { useSetAtom } from "jotai";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -15,12 +14,12 @@ import TypingCard from "../_components/typing-area/TypingCard";
 import { useProgress } from "../atoms/refAtoms";
 import { usePathChangeAtomReset } from "../atoms/reset";
 import {
-  focusTypingStatusAtoms,
-  useIsLoadingOverlayAtom,
-  useSceneAtom,
-  useSetLineResultsAtom,
-  useSetLineSelectIndexAtom,
-  useSetMapAtom,
+  useIsLoadingOverlayState,
+  useSceneState,
+  useSetLineResultsState,
+  useSetLineSelectIndexState,
+  useSetMapState,
+  useSetTypingStatusState,
 } from "../atoms/stateAtoms";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
 import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
@@ -31,22 +30,22 @@ interface ContentProps {
 
 function Content({ mapInfo }: ContentProps) {
   const { scale } = useWindowScale();
-  const { video_id, title, creator_comment, tags } = mapInfo!;
-  const scene = useSceneAtom();
+  const { video_id } = mapInfo!;
+  const scene = useSceneState();
 
   const { id: mapId } = useParams();
   const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string | undefined });
 
-  const isLoadingOverlay = useIsLoadingOverlayAtom();
+  const isLoadingOverlay = useIsLoadingOverlayState();
   const disableKeyHandle = useDisableKeyHandle();
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
-  const setMap = useSetMapAtom();
-  const setLineResults = useSetLineResultsAtom();
-  const setLineSelectIndex = useSetLineSelectIndexAtom();
-  const setLineCount = useSetAtom(focusTypingStatusAtoms.line);
+  const setMap = useSetMapState();
+  const setLineResults = useSetLineResultsState();
+  const setLineSelectIndex = useSetLineSelectIndexState();
   const pathChangeAtomReset = usePathChangeAtomReset();
   const { readTotalProgress } = useProgress();
+  const { resetTypingStatus } = useSetTypingStatusState();
 
   useEffect(() => {
     if (scene === "ready" && layoutMode) {
@@ -61,8 +60,8 @@ function Content({ mapInfo }: ContentProps) {
       const map = new CreateMap(mapData);
       setMap(map);
       setLineResults(map.defaultLineResultData);
-      setLineCount(map.lineLength);
       setLineSelectIndex(map.typingLineNumbers[0]);
+      resetTypingStatus();
 
       const totalProgress = readTotalProgress();
       totalProgress.max = map.movieTotalTime;
@@ -111,11 +110,7 @@ function Content({ mapInfo }: ContentProps) {
               <Box position="relative">
                 {(IS_IOS || IS_ANDROID) && <MobileCover />}
 
-                <TypeYouTubeContent
-                  className="w-[513px] "
-                  isMapLoading={isLoading}
-                  videoId={video_id}
-                />
+                <TypeYouTubeContent className="w-[513px] " isMapLoading={isLoading} videoId={video_id} />
               </Box>
             )}
             <Box flex={{ base: "8" }} flexDirection="column">

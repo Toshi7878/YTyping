@@ -1,9 +1,4 @@
-import {
-  usePreviewVideoIdAtom,
-  useSetPreviewSpeedAtom,
-  useSetPreviewTimeAtom,
-  useSetPreviewVideoIdAtom,
-} from "@/lib/global-atoms/globalAtoms";
+import { usePreviewVideoState, useSetPreviewVideoState } from "@/lib/global-atoms/globalAtoms";
 import { Flex } from "@chakra-ui/react";
 import { RESET } from "jotai/utils";
 import React, { useCallback, useState } from "react";
@@ -16,23 +11,21 @@ interface MapLeftThumbnailProps {
 }
 const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
   const { mapVideoId, mapPreviewTime, mapPreviewSpeed = 1 } = props;
-  const videoId = usePreviewVideoIdAtom();
+  const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
+  const setPreviewVideoState = useSetPreviewVideoState();
   const [isTouchMove, setIsTouchMove] = useState(false);
-
-  const setVideoId = useSetPreviewVideoIdAtom();
-  const setPreviewTime = useSetPreviewTimeAtom();
-  const setPreviewSpeed = useSetPreviewSpeedAtom();
 
   const previewYouTube = useCallback(
     () => {
       if (mapVideoId !== videoId) {
-        setVideoId(mapVideoId);
-        setPreviewTime(mapPreviewTime);
+        setPreviewVideoState({
+          videoId: mapVideoId,
+          previewTime: mapPreviewTime,
+          previewSpeed: mapPreviewSpeed.toString(),
+        });
       } else {
-        setVideoId(null);
-        setPreviewTime(RESET);
+        setPreviewVideoState(RESET);
       }
-      setPreviewSpeed(mapPreviewSpeed);
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,11 +63,7 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {videoId === mapVideoId ? (
-        <FaPause color="white" size={35} />
-      ) : (
-        <FaPlay color="white" size={35} />
-      )}
+      {videoId === mapVideoId ? <FaPause color="white" size={35} /> : <FaPlay color="white" size={35} />}
     </Flex>
   );
 };

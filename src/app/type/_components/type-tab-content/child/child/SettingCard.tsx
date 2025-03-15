@@ -1,9 +1,5 @@
-import {
-  isOptionEditedAtom,
-  userTypingOptionsAtom,
-  useSetIsOptionEdited,
-  useSetUserTypingOptionsAtom,
-} from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/type/atoms/stateAtoms";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
@@ -27,7 +23,6 @@ import {
   useDisclosure,
   useTheme,
 } from "@chakra-ui/react";
-import { useStore } from "jotai";
 import { RESET } from "jotai/utils";
 import { Dispatch, useEffect, useRef } from "react";
 import UserLineCompletedRadioButton from "./child/UserLineCompletedRadioButton";
@@ -45,12 +40,12 @@ interface SettingCardProps {
 const SettingCard = (props: SettingCardProps) => {
   const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
-  const typeAtomStore = useStore();
   const updateTypingOptions = clientApi.userTypingOption.update.useMutation();
   const breakpoint = useBreakpointValue({ base: "base", md: "md" });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const setIsOptionEdited = useSetIsOptionEdited();
+  const { writeGameUtils } = useGameUtilsRef();
+  const readUserTypingOptions = useUserTypingOptionsStateRef();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -63,11 +58,11 @@ const SettingCard = (props: SettingCardProps) => {
       ) {
         props.setIsCardVisible(false);
 
-        const isOptionEdited = typeAtomStore.get(isOptionEditedAtom);
+        const isOptionEdited = readUserTypingOptions();
         if (isOptionEdited) {
-          const userOptions = typeAtomStore.get(userTypingOptionsAtom);
+          const userOptions = readUserTypingOptions();
           updateTypingOptions.mutate(userOptions);
-          setIsOptionEdited(false);
+          writeGameUtils({ isOptionEdited: false });
         }
       }
     };
@@ -196,14 +191,14 @@ interface ResetSettingModalProps {
 
 const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
   const theme: ThemeColors = useTheme();
-  const setIsOptionEdited = useSetIsOptionEdited();
+  const { writeGameUtils } = useGameUtilsRef();
   const toast = useCustomToast();
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const setUserOptionsAtom = useSetUserTypingOptionsAtom();
+  const setUserOptionsAtom = useSetUserTypingOptionsState();
 
   const handleResetOptions = () => {
     setUserOptionsAtom(RESET);
-    setIsOptionEdited(true);
+    writeGameUtils({ isOptionEdited: true });
     toast({
       title: "設定をリセットしました",
       type: "success",
@@ -211,12 +206,7 @@ const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
     onClose();
   };
   return (
-    <AlertDialog
-      id="reset-setting-modal"
-      isOpen={isOpen}
-      leastDestructiveRef={cancelRef}
-      onClose={onClose}
-    >
+    <AlertDialog id="reset-setting-modal" isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
       <AlertDialogOverlay id="reset-setting-modal-overlay">
         <AlertDialogContent bg={theme.colors.background.body} color={theme.colors.text.body}>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">

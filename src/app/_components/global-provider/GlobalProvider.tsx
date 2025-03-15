@@ -2,6 +2,7 @@
 import { getGlobalAtomStore, userOptionsAtom } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
+import { useHydrateAtoms } from "jotai/utils";
 import { usePathname } from "next/navigation";
 import nProgress from "nprogress";
 import { useEffect } from "react";
@@ -15,10 +16,7 @@ interface GlobalProviderProps {
 const GlobalProvider = ({ children, userOptions }: GlobalProviderProps) => {
   const globalAtomStore = getGlobalAtomStore();
   const pathname = usePathname();
-
-  if (userOptions) {
-    globalAtomStore.set(userOptionsAtom, userOptions);
-  }
+  useHydrateAtoms([[userOptionsAtom, userOptions]], { store: globalAtomStore });
 
   useEffect(() => {
     window.getSelection()!.removeAllRanges();

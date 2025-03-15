@@ -1,28 +1,27 @@
 "use client";
 import {
-  lineSelectIndexAtom,
-  useLineResultsAtom,
-  useMapAtom,
-  useSceneAtom,
-  useSetLineSelectIndexAtom,
+  useLineResultsState,
+  useLineSelectIndexStateRef,
+  useMapState,
+  useSceneState,
+  useSetLineSelectIndexState,
 } from "@/app/type/atoms/stateAtoms";
 import { LineResultData } from "@/app/type/ts/type";
 
 import { useResultCards } from "@/app/type/atoms/refAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { Ticker } from "@pixi/ticker";
-import { useStore } from "jotai";
 import { useCallback, useEffect, useRef } from "react";
 import ResultCard from "./ResultCard";
 
 function ResultLineList() {
-  const map = useMapAtom();
-  const scene = useSceneAtom();
-  const lineResults = useLineResultsAtom();
-  const typeAtomStore = useStore();
+  const map = useMapState();
+  const scene = useSceneState();
+  const lineResults = useLineResultsState();
   const { moveSetLine, scrollToCard, drawerSelectColorChange } = useMoveLine();
-  const setLineSelectIndex = useSetLineSelectIndexAtom();
+  const setLineSelectIndex = useSetLineSelectIndexState();
   const { writeResultCards } = useResultCards();
+  const readLineSelectIndex = useLineSelectIndexStateRef();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
@@ -32,15 +31,13 @@ function ResultLineList() {
   }, [scene]);
 
   useEffect(() => {
-    const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
-    scrollToCard(lineSelectIndex);
+    scrollToCard(readLineSelectIndex());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const practiceReplayCardClick = useCallback(
     (lineNumber: number) => {
-      // onClose();
-      const seekCount = map!.typingLineNumbers[lineNumber - 1];
+      const seekCount = map.typingLineNumbers[lineNumber - 1];
 
       moveSetLine(seekCount);
       setLineSelectIndex(lineNumber);
@@ -51,9 +48,7 @@ function ResultLineList() {
 
   const endCardClick = useCallback((lineNumber: number) => {
     let nextTypedCount = 0;
-    const typedElements = cardRefs.current[lineNumber].querySelectorAll(
-      ".typed"
-    ) as NodeListOf<HTMLElement>;
+    const typedElements = cardRefs.current[lineNumber].querySelectorAll(".typed") as NodeListOf<HTMLElement>;
 
     const lastTypedChildClassList = typedElements[typedElements.length - 1].classList;
 
@@ -99,7 +94,7 @@ function ResultLineList() {
   return (
     <>
       {lineResults.map((lineResult: LineResultData, index: number) => {
-        const lineData = map!.mapData[index];
+        const lineData = map.mapData[index];
 
         if (!lineData.notes.k) {
           return null;
@@ -107,8 +102,6 @@ function ResultLineList() {
 
         lineCount++;
         scoreCount += lineResult.status!.p! + lineResult.status!.tBonus!;
-
-        const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
 
         return (
           <ResultCard
@@ -120,7 +113,7 @@ function ResultLineList() {
             scoreCount={scoreCount}
             cardRefs={cardRefs}
             handleCardClick={scene === "end" ? endCardClick : practiceReplayCardClick}
-            selectIndex={lineSelectIndex}
+            selectIndex={readLineSelectIndex()}
           />
         );
       })}

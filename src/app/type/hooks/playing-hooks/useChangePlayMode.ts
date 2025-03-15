@@ -1,38 +1,32 @@
-import { useStore } from "jotai";
-import { useGameRef, useLineStatusRef } from "../../atoms/refAtoms";
-import {
-  drawerClosureAtom,
-  sceneAtom,
-  useSetPlayingNotifyAtom,
-  useSetSceneAtom,
-} from "../../atoms/stateAtoms";
+import { useGameUtilsRef, useLineStatusRef } from "../../atoms/refAtoms";
+import { useSceneStateRef, useSetNotifyState, useSetSceneState } from "../../atoms/stateAtoms";
 import { useVideoSpeedChange } from "../useVideoSpeedChange";
 import { useRetry } from "./useRetry";
 
 export const useChangePlayMode = () => {
-  const setScene = useSetSceneAtom();
-  const setNotify = useSetPlayingNotifyAtom();
+  const setScene = useSetSceneState();
+  const setNotify = useSetNotifyState();
   const retry = useRetry();
   const { defaultSpeedChange } = useVideoSpeedChange();
-  const typeAtomStore = useStore();
 
-  const { writeGameRef } = useGameRef();
+  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
   const { readLineStatusRef } = useLineStatusRef();
+  const readScene = useSceneStateRef();
 
   return () => {
-    const scene = typeAtomStore.get(sceneAtom);
+    const scene = readScene();
     if (scene === "playing") {
       const confirmMessage = "練習モードに移動しますか？";
       if (window.confirm(confirmMessage)) {
-        writeGameRef({ playMode: "practice" });
+        writeGameUtils({ playMode: "practice" });
         setScene("practice");
       }
     } else {
       const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
       if (window.confirm(confirmMessage)) {
-        writeGameRef({ practiceMyResultId: null, replayKeyCount: 0, replayUserName: "" });
+        writeGameUtils({ practiceMyResultId: null, replayKeyCount: 0, replayUserName: "" });
         setScene("playing");
-        const drawerClosure = typeAtomStore.get(drawerClosureAtom);
+        const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
 
         if (drawerClosure) {
           drawerClosure.onClose();

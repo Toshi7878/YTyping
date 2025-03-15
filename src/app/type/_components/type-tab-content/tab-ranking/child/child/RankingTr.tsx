@@ -1,6 +1,6 @@
 "use client";
 
-import { useGameRef } from "@/app/type/atoms/refAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { RANKING_COLUMN_WIDTH } from "@/app/type/ts/const/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import ClapedText from "@/components/share-components/text/ClapedText";
@@ -41,7 +41,7 @@ const RankingTr = (props: RankingTrProps) => {
   const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
   const userId = Number(session?.user.id);
-  const { writeGameRef } = useGameRef();
+  const { writeGameUtils } = useGameUtilsRef();
 
   const { clapOptimisticState, toggleClapAction } = useLocalClapServerActions({
     hasClap: !!result.claps[0]?.is_claped && !!session,
@@ -50,7 +50,7 @@ const RankingTr = (props: RankingTrProps) => {
 
   useEffect(() => {
     if (userId === result.user_id) {
-      writeGameRef({
+      writeGameUtils({
         practiceMyResultId: result.id,
       });
     }

@@ -1,14 +1,13 @@
-import { useChangeCSSCountAtom, useMapAtom } from "@/app/type/atoms/stateAtoms";
-import { CreateMap } from "@/lib/instanceMapData";
+import { useChangeCSSCountState, useMapState } from "@/app/type/atoms/stateAtoms";
 
 const PlayingChangeCSS = () => {
-  const map = useMapAtom() as CreateMap;
-  const changeCSSCount = useChangeCSSCountAtom();
+  const map = useMapState();
+  const changeCSSCount = useChangeCSSCountState();
 
   if (changeCSSCount === null) {
     return;
   }
-  const changeCSS = map.mapData[changeCSSCount].options?.changeCSS || "";
+  const changeCSS = map.mapData[changeCSSCount].options?.changeCSS;
 
   return <style>{changeCSS}</style>;
 };

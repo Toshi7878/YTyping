@@ -1,7 +1,7 @@
 import { clientApi } from "@/trpc/client-api";
-import { useGameRef, usePlayer } from "../atoms/refAtoms";
+import { useGameUtilsRef, usePlayer } from "../atoms/refAtoms";
 
-import { useSetIsLoadingOverlayAtom, useSetLineResultsAtom } from "../atoms/stateAtoms";
+import { useSetIsLoadingOverlayState, useSetLineResultsState } from "../atoms/stateAtoms";
 import { PlayMode } from "../ts/type";
 
 export const useOnClickPracticeReplay = ({
@@ -11,10 +11,10 @@ export const useOnClickPracticeReplay = ({
   startMode: Exclude<PlayMode, "playing">;
   resultId: number | null;
 }) => {
-  const setIsLoadingOverlay = useSetIsLoadingOverlayAtom();
-  const setLineResults = useSetLineResultsAtom();
+  const setIsLoadingOverlay = useSetIsLoadingOverlayState();
+  const setLineResults = useSetLineResultsState();
   const { readPlayer } = usePlayer();
-  const { writeGameRef } = useGameRef();
+  const { writeGameUtils } = useGameUtilsRef();
   const utils = clientApi.useUtils();
 
   const handleClick = async () => {
@@ -27,7 +27,7 @@ export const useOnClickPracticeReplay = ({
     } finally {
       setIsLoadingOverlay(false);
       readPlayer().playVideo();
-      writeGameRef({
+      writeGameUtils({
         playMode: startMode,
       });
     }

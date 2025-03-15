@@ -1,5 +1,5 @@
-import { useGameRef } from "@/app/type/atoms/refAtoms";
-import { useSceneAtom, useSetRankingScoresAtom } from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useSceneState, useSetTypingStatusState } from "@/app/type/atoms/stateAtoms";
 import { useMapRankingQuery } from "@/lib/global-hooks/query/mapRankingRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
@@ -12,12 +12,12 @@ const RankingList = () => {
   const { data: session } = useSession();
   const [showMenu, setShowMenu] = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const setRankingScores = useSetRankingScoresAtom();
-  const scene = useSceneAtom();
+  const scene = useSceneState();
   const { id: mapId } = useParams();
 
   const { data, error, isPending } = useMapRankingQuery({ mapId: mapId as string });
-  const { writeGameRef } = useGameRef();
+  const { writeGameUtils } = useGameUtilsRef();
+  const { setTypingStatus } = useSetTypingStatusState();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,10 +52,14 @@ const RankingList = () => {
   useEffect(() => {
     const scores = data ? data.map((result: (typeof data)[number]) => result.status!.score) : [];
 
-    setRankingScores(scores);
+    writeGameUtils({
+      rankingScores: scores,
+    });
 
-    ({ rank: scores.length + 1 });
-
+    setTypingStatus((prev) => ({
+      ...prev,
+      rank: scores.length + 1,
+    }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
@@ -65,7 +69,7 @@ const RankingList = () => {
     if (scene === "playing" && data) {
       for (let i = 0; i < data.length; i++) {
         if (userId === Number(data[i].user_id)) {
-          writeGameRef({
+          writeGameUtils({
             myBestScore: data[i].status!.score,
           });
         }
@@ -97,8 +101,7 @@ const RankingList = () => {
           const numType = user.status!.num_type;
           const symbolType = user.status!.symbol_type;
           const spaceType = user.status!.space_type;
-          const type =
-            romaType + kanaType + flickType + englishType + numType + symbolType + spaceType;
+          const type = romaType + kanaType + flickType + englishType + numType + symbolType + spaceType;
           const handleShowMenu = () => {
             if (showMenu === index) {
               setShowMenu(null);

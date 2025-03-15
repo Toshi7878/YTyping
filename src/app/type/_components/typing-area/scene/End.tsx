@@ -1,5 +1,5 @@
-import { useGameRef } from "@/app/type/atoms/refAtoms";
-import { usePlaySpeedAtom, useTypingStatusAtom } from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { usePlaySpeedState, useTypingStatusState } from "@/app/type/atoms/stateAtoms";
 import { useUpdateUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
 import { useSendResult } from "@/app/type/hooks/useSendResult";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
@@ -18,18 +18,18 @@ interface EndProps {
 
 const End = ({ onOpen }: EndProps) => {
   const { data: session } = useSession();
-  const speedData = usePlaySpeedAtom();
+  const speedData = usePlaySpeedState();
   const sendResult = useSendResult();
   const [state, formAction] = useFormState(sendResult, INITIAL_STATE);
   const { updateTypingStats } = useUpdateUserStats();
-  const { readGameRef } = useGameRef();
+  const { readGameUtils } = useGameUtilsRef();
 
   useEffect(() => {
     updateTypingStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const status = useTypingStatusAtom();
+  const status = useTypingStatusState();
 
   if (status === undefined) {
     //タイピングページ　→　タイピングページに遷移時returnしないとclient errorがでる
@@ -37,8 +37,8 @@ const End = ({ onOpen }: EndProps) => {
   }
 
   const isPerfect = status.miss === 0 && status.lost === 0;
-  const isPlayingMode = readGameRef().playMode === "playing";
-  const isScoreUpdated = status.score >= readGameRef().myBestScore;
+  const isPlayingMode = readGameUtils().playMode === "playing";
+  const isScoreUpdated = status.score >= readGameUtils().myBestScore;
 
   const isDisplayRankingButton: boolean =
     !!session &&
@@ -54,7 +54,7 @@ const End = ({ onOpen }: EndProps) => {
         session={session}
         status={status}
         speedData={speedData}
-        playMode={readGameRef().playMode}
+        playMode={readGameUtils().playMode}
       />
       <EndMainButtonContainer
         formAction={formAction}
@@ -68,7 +68,7 @@ const End = ({ onOpen }: EndProps) => {
         isPlayingMode={isPlayingMode}
         isDisplayRankingButton={isDisplayRankingButton}
         state={state}
-        playMode={readGameRef().playMode}
+        playMode={readGameUtils().playMode}
       />
     </Stack>
   );

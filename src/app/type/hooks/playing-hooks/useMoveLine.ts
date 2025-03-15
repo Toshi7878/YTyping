@@ -1,12 +1,11 @@
-import { useStore } from "jotai";
 import { usePlayer, useResultCards, useStatusRef } from "../../atoms/refAtoms";
 import {
-  lineSelectIndexAtom,
-  sceneAtom,
-  speedAtom,
-  useMapAtom,
-  useSetLineSelectIndexAtom,
-  useSetPlayingNotifyAtom,
+  useLineSelectIndexStateRef,
+  useMapState,
+  usePlaySpeedStateRef,
+  useSceneStateRef,
+  useSetLineSelectIndexState,
+  useSetNotifyState,
 } from "../../atoms/stateAtoms";
 import { typeTicker } from "../../ts/const/consts";
 import { useGetSeekLineCount } from "./timer-hooks/useSeekGetLineCount";
@@ -14,18 +13,20 @@ import { useUpdateLine } from "./timer-hooks/useTimer";
 
 export const useMoveLine = () => {
   const { readPlayer } = usePlayer();
-  const map = useMapAtom();
-  const typeAtomStore = useStore();
-  const setLineSelectIndex = useSetLineSelectIndexAtom();
-  const setNotify = useSetPlayingNotifyAtom();
+  const map = useMapState();
+  const setLineSelectIndex = useSetLineSelectIndexState();
+  const setNotify = useSetNotifyState();
   const updateLine = useUpdateLine();
   const getSeekLineCount = useGetSeekLineCount();
 
   const { readResultCards } = useResultCards();
   const { readStatusRef, writeStatusRef } = useStatusRef();
+  const readScene = useSceneStateRef();
+  const readPlaySpeed = usePlaySpeedStateRef();
+  const readLineSelectIndex = useLineSelectIndexStateRef();
 
   const movePrevLine = () => {
-    const scene = typeAtomStore.get(sceneAtom);
+    const scene = readScene();
     const count = readStatusRef().count - (scene === "replay" ? 1 : 0);
     const prevCount = structuredClone(map!.typingLineNumbers)
       .reverse()
@@ -34,7 +35,7 @@ export const useMoveLine = () => {
     if (prevCount === undefined) {
       return;
     }
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
+    const playSpeed = readPlaySpeed().playSpeed;
 
     const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
     const prevTime = Number(map!.mapData[prevCount]["time"]) - seekBuffer;
@@ -55,7 +56,7 @@ export const useMoveLine = () => {
   };
 
   const moveNextLine = () => {
-    const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
+    const lineSelectIndex = readLineSelectIndex();
     const seekCount = lineSelectIndex ? map!.typingLineNumbers[lineSelectIndex - 1] : null;
     const seekCountAdjust = seekCount && seekCount === readStatusRef().count ? 0 : -1;
 
@@ -66,13 +67,12 @@ export const useMoveLine = () => {
       return;
     }
 
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
+    const playSpeed = readPlaySpeed().playSpeed;
 
     const prevLineTime =
-      (nextCount > 1 ? map!.mapData[nextCount]["time"] - map!.mapData[nextCount - 1]["time"] : 0) /
-      playSpeed;
+      (nextCount > 1 ? map!.mapData[nextCount]["time"] - map!.mapData[nextCount - 1]["time"] : 0) / playSpeed;
 
-    const scene = typeAtomStore.get(sceneAtom);
+    const scene = readScene();
     const seekBuffer = scene === "practice" && prevLineTime > 1 ? 1 * playSpeed : 0;
     const nextTime = Number(map!.mapData[nextCount]["time"]) - seekBuffer;
 
@@ -94,12 +94,12 @@ export const useMoveLine = () => {
   };
 
   const moveSetLine = (seekCount: number) => {
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
-    const scene = typeAtomStore.get(sceneAtom);
+    const playSpeed = readPlaySpeed().playSpeed;
+    const scene = readScene();
     const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
     const seekTime = Number(map!.mapData[seekCount]["time"]) - seekBuffer;
 
-    const lineSelectIndex = typeAtomStore.get(lineSelectIndexAtom);
+    const lineSelectIndex = readLineSelectIndex();
 
     if (lineSelectIndex !== seekCount) {
       drawerSelectColorChange(seekCount);

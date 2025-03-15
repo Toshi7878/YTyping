@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetTabIndexAtom } from "@/app/type/atoms/stateAtoms";
+import { useSetTabIndexState } from "@/app/type/atoms/stateAtoms";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { UploadResult } from "@/types";
@@ -30,7 +30,7 @@ const EndUploadButton = ({ isScoreUpdated, formAction, state }: UploadButtonProp
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const [isDisabled, setIsDisabled] = useState(false);
-  const setTabIndex = useSetTabIndexAtom();
+  const setTabIndex = useSetTabIndexState();
   const utils = clientApi.useUtils();
   const { id: mapId } = useParams();
   const toast = useCustomToast();

@@ -1,46 +1,42 @@
-import { useStore } from "jotai";
-import { CreateMap } from "../../../../lib/instanceMapData";
-import { useGameRef, usePlayer, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
+import { useGameUtilsRef, usePlayer, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
 import {
-  speedAtom,
-  timeOffsetAtom,
-  useMapAtom,
-  userTypingOptionsAtom,
-  useSetSkipAtom,
+  useMapState,
+  usePlaySpeedStateRef,
+  useSetSkipState,
+  useUserTypingOptionsStateRef,
 } from "../../atoms/stateAtoms";
 
 export const usePressSkip = () => {
   const { readPlayer } = usePlayer();
-  const map = useMapAtom() as CreateMap;
-  const typeAtomStore = useStore();
-  const setSkip = useSetSkipAtom();
+  const map = useMapState();
+  const setSkip = useSetSkipState();
 
-  const { readGameRef, writeGameRef } = useGameRef();
+  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
   const { readYTStatusRef } = useYTStatusRef();
   const { readStatusRef } = useStatusRef();
+  const readUserOptions = useUserTypingOptionsStateRef();
+  const readPlaySpeed = usePlaySpeedStateRef();
 
   return () => {
-    const userOptions = typeAtomStore.get(userTypingOptionsAtom);
-    const timeOffset = typeAtomStore.get(timeOffsetAtom);
+    const userOptions = readUserOptions();
+    const { timeOffset, isRetrySkip } = readGameUtils();
     const count = readStatusRef().count;
 
     const nextLine = map!.mapData[count];
-    const isRetrySkip = readGameRef().isRetrySkip;
 
     const skippedTime =
       (isRetrySkip ? Number(map!.mapData[map!.startLine]["time"]) : Number(nextLine["time"])) +
       userOptions.time_offset +
       timeOffset;
 
-    const playSpeed = typeAtomStore.get(speedAtom).playSpeed;
+    const playSpeed = readPlaySpeed().playSpeed;
 
     const movieDuration = readYTStatusRef().movieDuration;
-    const seekTime =
-      nextLine["lyrics"] === "end" ? movieDuration - 2 : skippedTime - 1 + (1 - playSpeed);
+    const seekTime = nextLine["lyrics"] === "end" ? movieDuration - 2 : skippedTime - 1 + (1 - playSpeed);
 
     readPlayer().seekTo(seekTime, true);
 
-    writeGameRef({ isRetrySkip: false });
+    writeGameUtils({ isRetrySkip: false });
     setSkip("");
   };
 };

@@ -41,13 +41,6 @@ export interface LineWord {
   lineCount: number;
 }
 
-export interface NextLyricsType {
-  lyrics: string;
-  kpm: string;
-  kanaWord: string;
-  romaWord: string;
-}
-
 export interface SendResultData {
   map_id: number;
   status: {
