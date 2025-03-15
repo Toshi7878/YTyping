@@ -14,6 +14,7 @@ interface ResultCardBodyProps {
 function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: ResultCardBodyProps) {
   const theme: ThemeColors = useTheme();
 
+  let correctCount = 0;
   return (
     <>
       <Box className="kana-word">
@@ -26,15 +27,16 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
         className="word-result outline-text"
         letterSpacing="0.1em"
       >
-        {typeResult.map(
-          (type: TypeResult, index: number) =>
+        {typeResult.map((type: TypeResult, index: number) => {
+          if (type.is) {
+            correctCount++;
+          }
+
+          const label = `time: ${type.t.toFixed(3)}, kpm: ${Math.round(correctCount / (type.t / 60))}`;
+
+          return (
             type.c && (
-              <CustomToolTip
-                key={index}
-                label={`time: ${type.t.toFixed(3)}`}
-                placement="top"
-                fontSize="sm"
-              >
+              <CustomToolTip key={index} label={label} placement="top" fontSize="sm">
                 <Text
                   as="span"
                   className="typed"
@@ -53,7 +55,8 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
                 </Text>
               </CustomToolTip>
             )
-        )}
+          );
+        })}
         <Text as="span" wordBreak="break-all">
           {lostWord !== null ? lostWord : lineTypeWord}
         </Text>

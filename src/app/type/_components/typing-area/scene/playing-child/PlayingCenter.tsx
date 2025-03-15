@@ -1,8 +1,8 @@
 import { useSkipStateRef } from "@/app/type/atoms/stateAtoms";
 import { usePressSkip } from "@/app/type/hooks/playing-hooks/usePressSkip";
+import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import "@/styles/type.css";
 import { VStack } from "@chakra-ui/react";
-import { CARD_BODY_MIN_HEIGHT } from "../../TypingCard";
 import PlayingChangeCSS from "./child/PlayingChangeCSS";
 import PlayingLyrics from "./child/PlayingLyrics";
 import NextLyrics from "./child/PlayingNextLyrics";

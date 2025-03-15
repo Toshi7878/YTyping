@@ -10,7 +10,7 @@ import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import TypeTabContent from "../_components/type-tab-content/TypeTab";
 import MobileCover from "../_components/type-youtube-content/MobileCover";
 import TypeYouTubeContent from "../_components/type-youtube-content/TypeYoutubeContent";
-import TypingCard from "../_components/typing-area/TypingCard";
+import MainGameCard from "../_components/typing-area/MainGameCard";
 import { useProgress } from "../atoms/refAtoms";
 import { usePathChangeAtomReset } from "../atoms/reset";
 import {
@@ -118,7 +118,7 @@ function Content({ mapInfo }: ContentProps) {
             </Box>
           </Flex>
           <Box mt={5}>
-            <TypingCard />
+            <MainGameCard />
           </Box>
 
           {ytLayoutMode === "column" && (

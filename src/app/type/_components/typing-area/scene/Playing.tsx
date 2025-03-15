@@ -1,5 +1,5 @@
 import {
-  useSceneState,
+  useSceneStateRef,
   useSetLineWordState,
   useSetLyricsState,
   useSetNextLyricsState,
@@ -7,31 +7,23 @@ import {
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
-import { useUserStatsRef } from "@/app/type/atoms/refAtoms";
+import { useGameUtilsRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
 import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useStartTimer";
 import { usePlayTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { typeTicker } from "@/app/type/ts/const/consts";
-import { UseDisclosureReturn } from "@chakra-ui/react";
 import { RESET } from "jotai/utils";
 
-interface PlayingProps {
-  drawerClosure: UseDisclosureReturn;
-}
-const Playing = ({ drawerClosure }: PlayingProps) => {
-  const { onOpen } = drawerClosure;
-
+const Playing = () => {
   const setLineWord = useSetLineWordState();
   const setLyrics = useSetLyricsState();
   const setNextLyrics = useSetNextLyricsState();
   const startTimer = useStartTimer();
-
   const playTimer = usePlayTimer();
-
   const handleKeydown = useHandleKeydown();
-
-  const scene = useSceneState();
   const { readUserStatsRef, resetUserStatsRef } = useUserStatsRef();
+  const { readGameUtils } = useGameUtilsRef();
+  const readScene = useSceneStateRef();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -56,6 +48,7 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
       resetUserStatsRef(structuredClone(maxCombo));
     };
 
+    const scene = readScene();
     if (scene === "playing" || scene === "practice") {
       window.addEventListener("beforeunload", handleBeforeunload);
       window.addEventListener("visibilitychange", handleVisibilitychange);
@@ -65,9 +58,16 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
       window.removeEventListener("visibilitychange", handleVisibilitychange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene]);
+  }, []);
 
   useEffect(() => {
+    const scene = readScene();
+
+    if (scene === "practice") {
+      const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
+      drawerClosure!.onOpen();
+    }
+
     if (scene === "replay") {
       // リプレイモードは制限なし
       typeTicker.maxFPS = 0;
@@ -82,22 +82,12 @@ const Playing = ({ drawerClosure }: PlayingProps) => {
     window.addEventListener("keydown", handleKeydown);
 
     return () => {
-      typeTicker.remove(playTimer);
-      window.removeEventListener("keydown", handleKeydown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (scene === "practice") {
-      onOpen();
-    }
-
-    return () => {
       if (typeTicker.started) {
         typeTicker.remove(playTimer);
         typeTicker.stop();
       }
+
+      window.removeEventListener("keydown", handleKeydown);
       setLineWord(RESET);
       setLyrics("");
       setNextLyrics(RESET);

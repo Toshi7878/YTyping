@@ -17,9 +17,7 @@ interface TypingCardBodyProps {
   drawerClosure: UseDisclosureReturn;
 }
 
-export const CARD_BODY_MIN_HEIGHT = { base: "460px", md: "320px" };
-
-const TypingCardBody = (props: TypingCardBodyProps) => {
+const GameCardBody = (props: TypingCardBodyProps) => {
   const { drawerClosure } = props;
   const map = useMapState();
   const { onOpen } = drawerClosure;
@@ -32,23 +30,23 @@ const TypingCardBody = (props: TypingCardBodyProps) => {
         <Ready />
       ) : isPlayed && map ? (
         <>
-          <Playing drawerClosure={drawerClosure} />
+          <Playing />
           <ResultDrawer drawerClosure={drawerClosure} />
           {scene === "practice" && <PracticeLineCard />}
-          {map!.mapData[0].options?.eternalCSS && <style>{map!.mapData[0].options?.eternalCSS}</style>}
+          {map.mapData[0].options?.eternalCSS && <style>{map.mapData[0].options?.eternalCSS}</style>}
         </>
       ) : scene === "end" ? (
         <>
           <End onOpen={onOpen} />
           <ResultDrawer drawerClosure={drawerClosure} />
-          <style>{map!.mapData[0].options?.eternalCSS}</style>
+          <style>{map.mapData[0].options?.eternalCSS}</style>
         </>
       ) : null}
     </CardBody>
   );
 };
 
-function TypingCard() {
+function MainGameCard() {
   const drawerClosure = useDisclosure();
   const { writeGameUtils } = useGameUtilsRef();
 
@@ -62,7 +60,7 @@ function TypingCard() {
       <CardHeader py={0} mx={3}>
         <PlayingTop />
       </CardHeader>
-      <TypingCardBody drawerClosure={drawerClosure} />
+      <GameCardBody drawerClosure={drawerClosure} />
       <CardFooter py={0} mx={3} flexDirection="column" userSelect="none">
         <PlayingBottom />
       </CardFooter>
@@ -70,4 +68,4 @@ function TypingCard() {
   );
 }
 
-export default TypingCard;
+export default MainGameCard;

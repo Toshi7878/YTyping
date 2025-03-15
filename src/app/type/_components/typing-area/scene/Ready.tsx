@@ -1,10 +1,10 @@
 import { usePlayer } from "@/app/type/atoms/refAtoms";
 import { useMapState } from "@/app/type/atoms/stateAtoms";
 import { useWindowFocus } from "@/app/type/hooks/useWindowFocus";
+import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import "../../../style/fKey.scss";
-import { CARD_BODY_MIN_HEIGHT } from "../TypingCard";
 import ReadyInputModeRadioCards from "./ready-child/ReadyInputModeRadioCards";
 import ReadyPlaySpeed from "./ready-child/ReadyPlaySpeed";
 import ReadyPracticeButton from "./ready-child/ReadyPracticeButton";
@@ -58,10 +58,7 @@ function Ready() {
         <ReadyInputModeRadioCards />
       </Flex>
       <Flex textAlign="center" justifyContent="space-between">
-        <ReadyPlaySpeed
-          speedUpButtonRef={speedUpButtonRef}
-          speedDownButtonRef={speedDownButtonRef}
-        />
+        <ReadyPlaySpeed speedUpButtonRef={speedUpButtonRef} speedDownButtonRef={speedDownButtonRef} />
         <ReadyPracticeButton />
       </Flex>
     </Stack>
