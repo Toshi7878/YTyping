@@ -15,20 +15,16 @@ const SearchInputs = () => {
   const router = useRouter();
 
   const handleSearch = async () => {
-    try {
-      const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString());
 
-      if (keyword.trim()) {
-        params.set("keyword", keyword.trim());
-      } else {
-        params.delete("keyword");
-      }
-
-      setIsSearching(true);
-      router.replace(`?${setDifficultyRangeParams(params).toString()}`);
-    } finally {
-      setIsSearching(false);
+    if (keyword.trim()) {
+      params.set("keyword", keyword.trim());
+    } else {
+      params.delete("keyword");
     }
+
+    setIsSearching(true);
+    router.replace(`?${setDifficultyRangeParams(params).toString()}`);
   };
 
   return (
