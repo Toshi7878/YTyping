@@ -61,10 +61,12 @@ export const useRetry = () => {
       setCombo(0);
     }
 
+    const startTime = map.mapData[map.startLine].time;
+
     writeGameUtils({
       playMode: newPlayMode,
       replayKeyCount: 0,
-      isRetrySkip: true,
+      isRetrySkip: startTime > 5 ? true : false,
     });
 
     readPlayer().seekTo(0, true);

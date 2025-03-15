@@ -1,7 +1,13 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { YouTubeEvent } from "react-youtube";
-import { useGameUtilsRef, usePlayer, useProgress, useStatusRef, useYTStatusRef } from "../atoms/refAtoms";
+import {
+  useGameUtilsRef,
+  usePlayer,
+  useProgress,
+  useStatusRef,
+  useYTStatusRef,
+} from "../atoms/refAtoms";
 import {
   useIsLoadingOverlayStateRef,
   useReadyInputModeStateRef,
@@ -132,7 +138,7 @@ export const useYTSeekEvent = () => {
   return () => {
     const time = readPlayer().getCurrentTime();
 
-    const isRetrySkip = readGameUtils().isRetrySkip;
+    const { isRetrySkip } = readGameUtils();
 
     if (isRetrySkip && time === 0) {
       writeStatusRef({ count: 0 });

@@ -133,9 +133,12 @@ export const usePlayTimer = () => {
       setDisplayLineKpm(typeSpeed!.lineKpm);
     }
 
-    const isRetrySkip = readGameUtils().isRetrySkip;
+    const { isRetrySkip } = readGameUtils();
 
-    if (isRetrySkip && map.mapData[map.startLine].time - 3 * speed.playSpeed <= currentOffesettedYTTime) {
+    if (
+      isRetrySkip &&
+      map.mapData[map.startLine].time - 3 * speed.playSpeed <= currentOffesettedYTTime
+    ) {
       writeGameUtils({ isRetrySkip: false });
     }
 
@@ -163,7 +166,8 @@ export const usePlayTimer = () => {
     const nextLine = map.mapData[count];
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
     const isUpdateLine =
-      currentOffesettedYTTime >= nextLineTime || currentOffesettedYTTime >= readYTStatusRef().movieDuration;
+      currentOffesettedYTTime >= nextLineTime ||
+      currentOffesettedYTTime >= readYTStatusRef().movieDuration;
 
     if (isUpdateLine) {
       const constantLineTime = getConstantLineTime(currentLineTime);
@@ -275,7 +279,8 @@ export const useCalcLineResult = () => {
           lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * MISS_PENALTY;
 
         const speed = readPlaySpeed();
-        const isUpdateResult = (speed.playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
+        const isUpdateResult =
+          (speed.playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
 
         if (isUpdateResult) {
           const tTime = Math.round(readStatusRef().totalTypeTime * 1000) / 1000;
