@@ -23,12 +23,12 @@ interface VolumeRangeProps {
 
 export default function VolumeRange({ player, ...props }: VolumeRangeProps & StackProps) {
   const theme: ThemeColors = useTheme();
-  const volumeAtom = useVolumeState();
-  const setVolumeAtom = useSetVolumeState();
+  const volume = useVolumeState();
+  const setVolume = useSetVolumeState();
   const [showSliderMark, setShowSliderMark] = useState(false);
 
   const handleChange = (value: number) => {
-    setVolumeAtom(value);
+    setVolume(value);
     if (player) {
       player.setVolume(value);
     }
@@ -36,9 +36,9 @@ export default function VolumeRange({ player, ...props }: VolumeRangeProps & Sta
   return (
     <HStack alignItems="center" {...props}>
       <Box>
-        {volumeAtom === 0 ? (
+        {volume === 0 ? (
           <IoMdVolumeMute size={24} />
-        ) : volumeAtom < 50 ? (
+        ) : volume < 50 ? (
           <IoMdVolumeLow size={24} />
         ) : (
           <IoMdVolumeHigh size={24} />
@@ -51,13 +51,13 @@ export default function VolumeRange({ player, ...props }: VolumeRangeProps & Sta
         aria-label="slider-ex-1"
         onChange={handleChange}
         max={100}
-        value={volumeAtom}
+        value={volume}
         onMouseEnter={() => setShowSliderMark(true)}
         onMouseLeave={() => setShowSliderMark(false)}
       >
         {showSliderMark && (
           <SliderMark
-            value={volumeAtom}
+            value={volume}
             textAlign="center"
             bg={theme.colors.background.body}
             color={theme.colors.text.body}
@@ -67,7 +67,7 @@ export default function VolumeRange({ player, ...props }: VolumeRangeProps & Sta
             ml="-4"
             w="8"
           >
-            {volumeAtom}
+            {volume}
           </SliderMark>
         )}
         <SliderTrack>
