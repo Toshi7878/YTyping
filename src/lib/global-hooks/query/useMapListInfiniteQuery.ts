@@ -1,4 +1,4 @@
-import { PARAM_NAME } from "@/app/(home)/ts/consts";
+import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/ts/consts";
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
@@ -8,9 +8,6 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
-
-// 1ページあたりの最大アイテム数
-export const PAGE_SIZE = 40;
 
 const fetchMapList = async ({
   page,
@@ -47,6 +44,7 @@ export const useMapListInfiniteQuery = () => {
     refetchOnReconnect: false,
     refetchOnMount: true,
     gcTime: Infinity,
+    staleTime: params.sort?.includes("random") ? Infinity : 20,
   });
 };
 

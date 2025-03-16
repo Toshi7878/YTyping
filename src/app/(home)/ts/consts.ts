@@ -38,3 +38,5 @@ export const PLAYED_FILTER = {
     { label: "パーフェクト", value: "perfect" as const },
   ],
 };
+
+export const PAGE_SIZE = 40;

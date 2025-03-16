@@ -1,5 +1,4 @@
-import { PARAM_NAME } from "@/app/(home)/ts/consts";
-import { PAGE_SIZE } from "@/lib/global-hooks/query/useMapListInfiniteQuery";
+import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/ts/consts";
 import { prisma } from "@/server/db";
 import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";
