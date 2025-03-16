@@ -24,7 +24,7 @@ export const usePathChangeAtomReset = () => {
     setLineResults(RESET);
     setGameUtils(RESET);
     setPlaySpeed(RESET);
-    setMap(RESET);
+    setMap(null);
     resetTypingStatus();
     resetGameUtils();
     resetYTStatusRef();
