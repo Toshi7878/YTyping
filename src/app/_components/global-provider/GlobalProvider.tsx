@@ -6,7 +6,6 @@ import { useHydrateAtoms } from "jotai/utils";
 import { usePathname } from "next/navigation";
 import nProgress from "nprogress";
 import { useEffect } from "react";
-import { GlobalRefProvider } from "./GlobalRefProvider";
 
 interface GlobalProviderProps {
   children: React.ReactNode;
@@ -23,13 +22,7 @@ const GlobalProvider = ({ children, userOptions }: GlobalProviderProps) => {
     nProgress.done();
   }, [pathname]);
 
-  return (
-    <>
-      <GlobalRefProvider>
-        <JotaiProvider store={globalAtomStore}>{children}</JotaiProvider>
-      </GlobalRefProvider>
-    </>
-  );
+  return <JotaiProvider store={globalAtomStore}>{children}</JotaiProvider>;
 };
 
 export default GlobalProvider;

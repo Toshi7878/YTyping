@@ -18,7 +18,7 @@ import { useState } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
 
 interface VolumeRangeProps {
-  player: YTPlayer;
+  player: YTPlayer | null;
 }
 
 export default function VolumeRange({ player, ...props }: VolumeRangeProps & StackProps) {

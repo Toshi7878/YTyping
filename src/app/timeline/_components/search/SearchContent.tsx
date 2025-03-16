@@ -1,13 +1,12 @@
-import { useGlobalRefs } from "@/app/_components/global-provider/GlobalRefProvider";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
+import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
 import { Box, Flex } from "@chakra-ui/react";
 import SearchInputs from "./child/SearchInputs";
 import SearchModal from "./child/SearchModal";
 
 const SearchContent = () => {
-  const { playerRef } = useGlobalRefs();
-
+  const player = usePreviewPlayerState();
   return (
     <Flex as="section" width="100%" alignItems="center" mb={4}>
       <Box width="100%">
@@ -18,7 +17,7 @@ const SearchContent = () => {
           <SearchModal />
           {!IS_IOS && !IS_ANDROID && (
             <Flex justifyContent="flex-end">
-              <VolumeRange player={playerRef.current!} />
+              <VolumeRange player={player} />
             </Flex>
           )}
         </Flex>

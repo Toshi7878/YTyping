@@ -3,25 +3,19 @@
 import { PREVIEW_YOUTUBE_HEIGHT, PREVIEW_YOUTUBE_WIDTH } from "@/config/consts/globalConst";
 import { usePreviewYouTubeKeyDown } from "@/lib/global-hooks/usePreviewYouTubeKeyDown";
 import { Box, useBreakpointValue } from "@chakra-ui/react";
-import { RESET } from "jotai/utils";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import {
   usePreviewVideoState,
-  useSetPreviewVideoState,
+  useSetPreviewPlayerState,
   useVolumeState,
 } from "../../lib/global-atoms/globalAtoms";
-import { useGlobalRefs } from "./global-provider/GlobalRefProvider";
 
 const PreviewYouTubeContent = function YouTubeContent() {
-  const router = useRouter(); // 追加
-
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
-  const setPreviewVideoState = useSetPreviewVideoState();
   const volume = useVolumeState();
-  const { setRef } = useGlobalRefs();
   const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
+  const setPreviewPlayerState = useSetPreviewPlayerState();
 
   useEffect(() => {
     window.addEventListener("keydown", previewYouTubeKeyDown);
@@ -32,12 +26,6 @@ const PreviewYouTubeContent = function YouTubeContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
 
-  useEffect(() => {
-    return () => {
-      setPreviewVideoState(RESET);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
   const width = useBreakpointValue(PREVIEW_YOUTUBE_WIDTH, { ssr: false });
   const height = useBreakpointValue(PREVIEW_YOUTUBE_HEIGHT, { ssr: false });
 
@@ -45,12 +33,14 @@ const PreviewYouTubeContent = function YouTubeContent() {
     return null;
   }
 
-  const onReady = (event: YouTubeEvent) => {
-    event.target.setVolume(volume);
-    event.target.seekTo(Number(previewTime), true);
-    event.target.playVideo();
-    setRef("playerRef", event.target);
+  const onReady = (event) => {
+    const player = event.target;
+    player.setVolume(volume);
+    player.seekTo(Number(previewTime), true);
+    player.playVideo();
+    setPreviewPlayerState(player);
   };
+
   const onPlay = (event: YouTubeEvent) => {
     event.target.setPlaybackRate(Number(previewSpeed));
   };

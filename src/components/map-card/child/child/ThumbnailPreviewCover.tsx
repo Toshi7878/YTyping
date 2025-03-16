@@ -11,7 +11,7 @@ interface MapLeftThumbnailProps {
 }
 const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
   const { mapVideoId, mapPreviewTime, mapPreviewSpeed = 1 } = props;
-  const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
+  const { videoId } = usePreviewVideoState();
   const setPreviewVideoState = useSetPreviewVideoState();
   const [isTouchMove, setIsTouchMove] = useState(false);
 
@@ -22,6 +22,7 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
           videoId: mapVideoId,
           previewTime: mapPreviewTime,
           previewSpeed: mapPreviewSpeed.toString(),
+          player: null,
         });
       } else {
         setPreviewVideoState(RESET);

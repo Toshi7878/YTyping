@@ -1,6 +1,7 @@
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ActiveUserStatus } from "@/types/global-types";
+import { ActiveUserStatus, YTPlayer } from "@/types/global-types";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
+import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 const globalAtomStore = createStore();
@@ -16,8 +17,8 @@ const getInitialTheme = (): "light" | "dark" => {
 
 export const themeAtom = atom<"light" | "dark">(getInitialTheme());
 
-const volumeAtom = atomWithStorage<number>("volume", 30, undefined, {
-  getOnInit: true,
+const volumeAtom = atomWithStorage("volume", 30, undefined, {
+  getOnInit: false,
 });
 
 export const useVolumeState = () => useAtomValue(volumeAtom, { store: globalAtomStore });
@@ -33,10 +34,16 @@ const previewVideoAtom = atomWithReset<{
   videoId: string | null;
   previewTime: string | null;
   previewSpeed: string | null;
-}>({ videoId: null, previewTime: null, previewSpeed: null });
+  player: YTPlayer | null;
+}>({ videoId: null, previewTime: null, previewSpeed: null, player: null });
+const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
 
 export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store: globalAtomStore });
 export const useSetPreviewVideoState = () => useSetAtom(previewVideoAtom, { store: globalAtomStore });
+export const usePreviewPlayerState = () =>
+  useAtomValue(previewPlayerFocusAtom, { store: globalAtomStore });
+export const useSetPreviewPlayerState = () =>
+  useSetAtom(previewPlayerFocusAtom, { store: globalAtomStore });
 
 const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 
