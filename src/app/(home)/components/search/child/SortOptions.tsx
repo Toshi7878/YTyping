@@ -51,20 +51,21 @@ const SortOptions = () => {
     const currentDirection = sortDirections[field];
     const params = new URLSearchParams(searchParams.toString());
 
-    if (field === "ランダム") {
-      params.set(PARAM_NAME.sort, FIELD_TO_PARAMS[field]);
-      setSortDirections({ ...getResetDirections(), ランダム: "desc" });
-    } else {
-      if (currentDirection === null) {
-        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
-        setSortDirections({ ...getResetDirections(), [field]: "desc" });
-      } else if (currentDirection === "desc") {
-        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_asc`);
-        setSortDirections({ ...getResetDirections(), [field]: "asc" });
-      } else {
+    if (currentDirection === null) {
+      if (field === "ID") {
         params.delete(PARAM_NAME.sort);
-        setSortDirections({ ...getResetDirections(), ID: "desc" });
+      } else if (field === "ランダム") {
+        params.set(PARAM_NAME.sort, "random");
+      } else {
+        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
       }
+      setSortDirections({ ...getResetDirections(), [field]: "desc" });
+    } else if (currentDirection === "desc" && field !== "ランダム") {
+      params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_asc`);
+      setSortDirections({ ...getResetDirections(), [field]: "asc" });
+    } else {
+      params.delete(PARAM_NAME.sort);
+      setSortDirections({ ...getResetDirections(), ID: "desc" });
     }
 
     setIsSearching(true);
