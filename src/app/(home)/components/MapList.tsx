@@ -32,23 +32,19 @@ function MapList() {
   const isSearching = useIsSearchingAtom();
   const setIsSearchingAtom = useSetIsSearchingAtom();
 
-  const {
-    data,
-    isFetching,
-    isLoading: isFirstLoading,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-  } = useMapListInfiniteQuery();
+  const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useMapListInfiniteQuery();
 
   useEffect(() => {
-    setIsSearchingAtom(false);
+    if (data) {
+      setIsSearchingAtom(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [data]);
 
   const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
 
-  const isRandomLoading = isFetching && isRandomSort && !isFetchingNextPage;
+  const isRandomLoading = (isFetching || isRefetching) && isRandomSort && !isFetchingNextPage;
 
   if (isRandomLoading) {
     return <LoadingMapCard cardLength={10} />;
@@ -56,7 +52,7 @@ function MapList() {
 
   return (
     <InfiniteScroll
-      className={isRandomLoading || isSearching ? "opacity-20" : ""}
+      className={isSearching ? "opacity-20" : ""}
       loadMore={() => fetchNextPage()}
       loader={
         <Box key={0}>
