@@ -12,7 +12,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
 import { useMapListInfiniteQuery } from "../../../lib/global-hooks/query/useMapListInfiniteQuery";
 import { useIsSearchingAtom, useSetIsSearchingAtom } from "../atoms/atoms";
-import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH, PARAM_NAME } from "../ts/const/consts";
+import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH, PARAM_NAME } from "../ts/consts";
 import MapCardLayout from "./MapCardLayout";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];

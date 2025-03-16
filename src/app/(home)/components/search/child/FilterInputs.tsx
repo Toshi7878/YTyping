@@ -2,34 +2,14 @@
 
 import { useDifficultyRangeAtom, useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
 import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
-import { PARAM_NAME } from "@/app/(home)/ts/const/consts";
-import { MapFilter, PlayFilter } from "@/app/(home)/ts/type";
+import { MY_FILTER, PLAYED_FILTER } from "@/app/(home)/ts/consts";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import React, { useCallback } from "react";
 
-const filterParams = [
-  {
-    name: PARAM_NAME.filter,
-    label: "フィルター",
-    params: [
-      { label: "いいね済", value: "liked" },
-      { label: "作成した譜面", value: "my-map" },
-    ] as { label: string; value: MapFilter }[],
-  },
-  {
-    name: PARAM_NAME.played,
-    label: "ランキング",
-    params: [
-      { label: "1位", value: "1st" },
-      { label: "2位以下", value: "not-first" },
-      { label: "登録済", value: "played" },
-      { label: "未登録", value: "unplayed" },
-      { label: "パーフェクト", value: "perfect" },
-    ] as { label: string; value: PlayFilter }[],
-  },
-];
+const FILTER_CONTENT = [MY_FILTER, PLAYED_FILTER];
+type FilterParam = (typeof FILTER_CONTENT)[number]["params"][number];
 
 const FilterInputs = () => {
   const searchParams = useSearchParams();
@@ -53,7 +33,7 @@ const FilterInputs = () => {
     [searchParams, difficultyRange]
   );
 
-  const currentParams = filterParams.map((filterParam) => {
+  const currentParams = FILTER_CONTENT.map((filterParam) => {
     return {
       name: filterParam.name,
       value: searchParams.get(filterParam.name) || "",
@@ -71,7 +51,7 @@ const FilterInputs = () => {
       boxShadow="sm"
     >
       <Grid templateColumns={{ base: "1fr", md: "auto 1fr" }} gap={1}>
-        {filterParams.map((filter, filterIndex) => (
+        {FILTER_CONTENT.map((filter, filterIndex) => (
           <React.Fragment key={`filter-${filterIndex}`}>
             <Text
               fontSize="sm"
@@ -85,32 +65,30 @@ const FilterInputs = () => {
               {filter.label}
             </Text>
             <Flex ml={{ base: 0, md: 3 }} gap={1} alignItems="center" flexWrap="wrap">
-              {filter.params.map(
-                (param: { label: string; value: MapFilter | PlayFilter }, paramIndex: number) => {
-                  const isSelected =
-                    currentParams.find((p) => p.name === filter.name)?.value === param.value;
+              {filter.params.map((param: FilterParam, paramIndex: number) => {
+                const isSelected =
+                  currentParams.find((p) => p.name === filter.name)?.value === param.value;
 
-                  return (
-                    <Link
-                      key={`${filter.name}-${paramIndex}`}
-                      href={`?${createQueryString(filter.name, param.value, isSelected)}`}
-                      fontSize="sm"
-                      fontWeight={isSelected ? "bold" : "normal"}
-                      onClick={() => setIsSearchingAtom(true)}
-                      color={isSelected ? "secondary.main" : "text.body"}
-                      textDecoration={isSelected ? "underline" : "none"}
-                      _hover={{
-                        color: "secondary.dark",
-                        textDecoration: "underline",
-                      }}
-                      px={2}
-                      py={1}
-                    >
-                      {param.label}
-                    </Link>
-                  );
-                }
-              )}
+                return (
+                  <Link
+                    key={`${filter.name}-${paramIndex}`}
+                    href={`?${createQueryString(filter.name, param.value, isSelected)}`}
+                    fontSize="sm"
+                    fontWeight={isSelected ? "bold" : "normal"}
+                    onClick={() => setIsSearchingAtom(true)}
+                    color={isSelected ? "secondary.main" : "text.body"}
+                    textDecoration={isSelected ? "underline" : "none"}
+                    _hover={{
+                      color: "secondary.dark",
+                      textDecoration: "underline",
+                    }}
+                    px={2}
+                    py={1}
+                  >
+                    {param.label}
+                  </Link>
+                );
+              })}
             </Flex>
           </React.Fragment>
         ))}

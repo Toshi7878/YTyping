@@ -1,15 +1,14 @@
 import { useSearchParams } from "next/navigation";
-import { PARAM_NAME } from "../ts/const/consts";
-import { MapListParams } from "../ts/type";
+import { PARAM_NAME } from "../ts/consts";
 
-export function useGetMapListParams(): MapListParams {
+export function useGetMapListParams(): Partial<typeof PARAM_NAME> {
   const searchParams = useSearchParams();
 
-  const params: MapListParams = {};
+  const params: Partial<typeof PARAM_NAME> = {};
 
   for (const [key, value] of Array.from(searchParams.entries())) {
     if (key in PARAM_NAME) {
-      params[key as keyof MapListParams] = value;
+      params[key] = value;
     }
   }
 

@@ -1,4 +1,4 @@
-import { PARAM_NAME } from "@/app/(home)/ts/const/consts";
+import { PARAM_NAME } from "@/app/(home)/ts/consts";
 import { prisma } from "@/server/db";
 import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";

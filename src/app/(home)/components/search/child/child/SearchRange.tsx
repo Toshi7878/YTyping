@@ -2,7 +2,7 @@
 
 import { useSetDifficultyRangeAtom, useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
 import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
-import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/ts/const/consts";
+import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/ts/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import {
