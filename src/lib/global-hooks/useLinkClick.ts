@@ -1,4 +1,4 @@
-import { useCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
+import { useCanUploadState } from "@/app/edit/atoms/stateAtoms";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import NProgress from "nprogress";
@@ -6,7 +6,7 @@ import NProgress from "nprogress";
 export const useLinkClick = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const canUpload = useCanUploadAtom();
+  const canUpload = useCanUploadState();
   const { data: session } = useSession();
 
   const userId = session?.user.id || 0;

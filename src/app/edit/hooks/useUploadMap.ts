@@ -6,15 +6,7 @@ import { UploadResult } from "@/types";
 import { $Enums } from "@prisma/client";
 import { useParams } from "next/navigation";
 import { actions } from "../../../server/actions/sendMapDataActions";
-import {
-  editCreatorCommentAtom,
-  editMapArtistNameAtom,
-  editMapTitleAtom,
-  editMusicSourceAtom,
-  editPreviewTimeInputAtom,
-  editTagsAtom,
-  isMapDataEditedAtom,
-} from "../edit-atom/editAtom";
+import { useEditUtilsStateRef, useMapInfoStateRef, useMapTagsStateRef } from "../atoms/stateAtoms";
 import { useRefs } from "../edit-contexts/refsProvider";
 import { RootState } from "../redux/store";
 import { getThumbnailQuality } from "../ts/tab/info-upload/getThumbailQuality";
@@ -25,29 +17,26 @@ export function useUploadMap() {
   const editAtomStore = useJotaiStore();
   const { playerRef } = useRefs();
   const { id: mapId } = useParams();
+  const readEditUtils = useEditUtilsStateRef();
+  const readMapInfo = useMapInfoStateRef();
+  const readTags = useMapTagsStateRef();
 
   const upload = async () => {
+    const { title, artist, source, comment, previewTime } = readMapInfo();
+    const tags = readTags();
     const mapData = editReduxStore.getState().mapData.value;
-    const mapTitle = editAtomStore.get(editMapTitleAtom);
-    const artist_name = editAtomStore.get(editMapArtistNameAtom);
-    const creator_comment = editAtomStore.get(editCreatorCommentAtom);
-    const musicSource = editAtomStore.get(editMusicSourceAtom);
-    const tags = editAtomStore.get(editTagsAtom);
-    const previewTime = editAtomStore.get(editPreviewTimeInputAtom);
-    const isMapDataEdited = editAtomStore.get(isMapDataEditedAtom);
 
     const map = new CreateMap(mapData);
     const mapVideoId = playerRef.current!.getVideoData().video_id;
     const videoDuration: number = playerRef.current!.getDuration();
     const sendMapInfo: SendMapInfo = {
       video_id: mapVideoId,
-      title: mapTitle,
-      artist_name,
-      music_source: musicSource ?? "",
-      creator_comment,
+      title,
+      artist_name: artist,
+      music_source: source ?? "",
+      creator_comment: comment,
       tags: tags.map((tag) => tag.id),
-      preview_time:
-        Number(previewTime) < videoDuration ? previewTime : mapData[map.startLine]["time"],
+      preview_time: Number(previewTime) < videoDuration ? previewTime : mapData[map.startLine]["time"],
       thumbnail_quality: (await getThumbnailQuality(mapVideoId)) as $Enums.thumbnail_quality,
     };
 
@@ -61,11 +50,12 @@ export function useUploadMap() {
       kana_total_notes: map.totalNotes.k,
     };
 
+    const { isUpdateUpdatedAt } = readEditUtils();
     const result: UploadResult = await actions(
       sendMapInfo,
       sendMapDifficulty,
       mapData,
-      isMapDataEdited,
+      isUpdateUpdatedAt,
       Array.isArray(mapId) ? mapId[0] : mapId || "new"
     );
 

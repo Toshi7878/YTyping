@@ -1,27 +1,27 @@
 import {
-  editLineLyricsAtom,
   useLineInputReducer,
-  useManyPhraseAtom,
-  useSetManyPhraseAtom,
-} from "@/app/edit/edit-atom/editAtom";
+  useManyPhraseState,
+  useSelectLineStateRef,
+  useSetManyPhraseState,
+} from "@/app/edit/atoms/stateAtoms";
 import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
 import { useWordConverter } from "@/app/edit/hooks/useWordConverter";
 import { ThemeColors } from "@/types";
 import { Box, Textarea, useTheme } from "@chakra-ui/react";
-import { useStore as useJotaiStore } from "jotai";
 import { useCallback } from "react";
 
-const EditorManyPhraseTextarea = () => {
+const ManyPhraseTextarea = () => {
   const theme: ThemeColors = useTheme();
-  const manyPhrase = useManyPhraseAtom();
-  const setManyPhrase = useSetManyPhraseAtom();
+  const manyPhrase = useManyPhraseState();
+
+  const setManyPhrase = useSetManyPhraseState();
   const pickupTopPhrase = usePickupTopPhrase();
-  const editAtomStore = useJotaiStore();
   const lineInputReducer = useLineInputReducer();
   const wordConverter = useWordConverter();
+  const readSelectLine = useSelectLineStateRef();
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const lyrics = editAtomStore.get(editLineLyricsAtom);
+    const { lyrics } = readSelectLine();
 
     const firstLine = e.target.value.split("\n")[0];
     if (firstLine !== lyrics) {
@@ -67,4 +67,4 @@ const EditorManyPhraseTextarea = () => {
   );
 };
 
-export default EditorManyPhraseTextarea;
+export default ManyPhraseTextarea;

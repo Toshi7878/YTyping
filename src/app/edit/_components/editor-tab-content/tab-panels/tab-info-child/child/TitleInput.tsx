@@ -1,4 +1,4 @@
-import { useMapTitleAtom, useSetMapTitleAtom } from "@/app/edit/edit-atom/editAtom";
+import { useMapTitleState, useSetMapTitleState } from "@/app/edit/atoms/stateAtoms";
 import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
@@ -7,8 +7,8 @@ interface TitleInputProps {
 }
 
 const TitleInput = (props: TitleInputProps) => {
-  const setMapTitle = useSetMapTitleAtom();
-  const mapTitle = useMapTitleAtom();
+  const setMapTitle = useSetMapTitleState();
+  const mapTitle = useMapTitleState();
 
   return (
     <Flex alignItems="center">

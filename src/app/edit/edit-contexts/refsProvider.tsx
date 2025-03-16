@@ -2,14 +2,13 @@
 import { YTPlayer } from "@/types/global-types";
 import React, { createContext, useContext, useRef } from "react";
 import { DEFAULT_EDIT_STATUS_REF } from "../ts/const/editDefaultValues";
-import { EditStatusRef } from "../ts/type";
 
 export interface RefsContextType {
   timeInputRef: React.RefObject<HTMLInputElement>;
   tbodyRef: React.RefObject<HTMLElement>;
   rangeRef: React.RefObject<HTMLInputElement>;
   playerRef: React.RefObject<YTPlayer>;
-  editStatus: React.RefObject<EditStatusRef>;
+  editStatus: React.RefObject<typeof DEFAULT_EDIT_STATUS_REF>;
   setRef: (key: string, ref: HTMLElement | any) => void;
 }
 

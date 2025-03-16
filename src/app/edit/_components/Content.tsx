@@ -7,21 +7,9 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { useDispatch } from "react-redux";
-import {
-  useIsLrcConvertingAtom,
-  useSetCanUploadAtom,
-  useSetEditDirectEditCountAtom as useSetDirectEditCountAtom,
-  useSetEditLineLyricsAtom,
-  useSetEditLineSelectedCountAtom,
-  useSetEditLineWordAtom,
-  useSetEditTimeCountAtom,
-  useSetIsEditYTPlayingAtom,
-  useSetIsEditYTReadyAtom,
-  useSetIsEditYTStartedAtom,
-  useSetIsMapDataEditedAtom,
-} from "../edit-atom/editAtom";
+import { usePathChangeAtomReset } from "../atoms/reset";
+import { useIsLrcConvertingState, useSetCanUploadState } from "../atoms/stateAtoms";
 import { resetMapData, setMapData } from "../redux/mapDataSlice";
-import { resetUndoRedoData } from "../redux/undoredoSlice";
 import EditorTabContent from "./editor-tab-content/EditTabList";
 import EditTable from "./editor-table-content/EditTable";
 import TimeRange from "./editor-time-range-content/EditTimeRange";
@@ -32,19 +20,11 @@ function Content() {
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const isBackUp = searchParams.get("backup") === "true";
-  const isLrcConverting = useIsLrcConvertingAtom();
-  const setIsYTStarted = useSetIsEditYTStartedAtom();
-  const setIsYTReady = useSetIsEditYTReadyAtom();
-  const setIsYTPlaying = useSetIsEditYTPlayingAtom();
-  const setTimeCount = useSetEditTimeCountAtom();
-  const setSelectedCount = useSetEditLineSelectedCountAtom();
-  const setLyrics = useSetEditLineLyricsAtom();
-  const setCanUpload = useSetCanUploadAtom();
-  const setWord = useSetEditLineWordAtom();
-  const setDirectEditCountAtom = useSetDirectEditCountAtom();
-  const setIsMapDataEdited = useSetIsMapDataEditedAtom();
+  const isLrcConverting = useIsLrcConvertingState();
+  const setCanUpload = useSetCanUploadState();
+  const pathChangeReset = usePathChangeAtomReset();
   const { id: mapId } = useParams();
-  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string | undefined });
+  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
 
   useEffect(() => {
     if (mapData) {
@@ -56,31 +36,19 @@ function Content() {
   }, [mapData]);
 
   useEffect(() => {
-    setIsYTStarted(false);
-    setIsYTReady(false);
-    setIsYTPlaying(false);
-    setSelectedCount(null);
-    setTimeCount(0);
-    setIsMapDataEdited(false);
-    dispatch(resetUndoRedoData());
-
     if (isBackUp) {
-      db.editorNewCreateBak
-        .get({ optionName: "backupMapData" })
-        .then((data: IndexDBOption | undefined) => {
-          if (data) {
-            dispatch(setMapData(data.value));
-          }
-        });
+      db.editorNewCreateBak.get({ optionName: "backupMapData" }).then((data: IndexDBOption | undefined) => {
+        if (data) {
+          dispatch(setMapData(data.value));
+        }
+      });
       setCanUpload(true);
     } else {
       setCanUpload(false);
     }
 
     return () => {
-      setLyrics("");
-      setWord("");
-      setDirectEditCountAtom(null);
+      pathChangeReset();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId, newVideoId]);
@@ -102,14 +70,7 @@ function Content() {
           <EditYouTube className="w-full lg:w-[416px] h-[286px] aspect-video select-none" />
           <EditorTabContent />
         </Flex>
-        <Grid
-          as="section"
-          width="100%"
-          my={1}
-          gridTemplateColumns="1fr auto"
-          gap-y="1px"
-          alignItems="center"
-        >
+        <Grid as="section" width="100%" my={1} gridTemplateColumns="1fr auto" gap-y="1px" alignItems="center">
           <TimeRange />
         </Grid>
         <Box as="section" width="100%">

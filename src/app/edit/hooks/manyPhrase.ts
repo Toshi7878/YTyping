@@ -1,14 +1,12 @@
-import { useStore as useJotaiStore } from "jotai";
-import { manyPhraseAtom, useLineInputReducer, useSetManyPhraseAtom } from "../edit-atom/editAtom";
+import { useEditUtilsStateRef, useLineInputReducer, useSetManyPhraseState } from "../atoms/stateAtoms";
 import { useWordConverter } from "./useWordConverter";
 
 export const usePickupTopPhrase = () => {
-  const editAtomStore = useJotaiStore();
   const lineInputReducer = useLineInputReducer();
   const wordConvert = useWordConverter();
-
+  const readEditUtils = useEditUtilsStateRef();
   return async () => {
-    const topPhrase = editAtomStore.get(manyPhraseAtom).split("\n")[0];
+    const topPhrase = readEditUtils().manyPhraseText.split("\n")[0];
 
     const word = await wordConvert(topPhrase);
     lineInputReducer({ type: "set", payload: { lyrics: topPhrase, word } });
@@ -16,11 +14,11 @@ export const usePickupTopPhrase = () => {
 };
 
 export const useDeleteAddingTopPhrase = () => {
-  const setManyPhrase = useSetManyPhraseAtom();
-  const editAtomStore = useJotaiStore();
+  const setManyPhrase = useSetManyPhraseState();
+  const readEditUtils = useEditUtilsStateRef();
 
   return (lyrics: string) => {
-    const lines = editAtomStore.get(manyPhraseAtom).split("\n") || [];
+    const lines = readEditUtils().manyPhraseText.split("\n") || [];
 
     const firstLine = lines[0];
 

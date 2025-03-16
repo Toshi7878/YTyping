@@ -1,5 +1,5 @@
 "use client";
-import { useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
+import { useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
 import { setLineOption } from "@/app/edit/redux/mapDataSlice";
 import { Box, Button } from "@chakra-ui/react";
 import { Dispatch } from "react";
@@ -18,17 +18,10 @@ interface SaveOptionButtonProps {
 }
 
 export default function SaveOptionButton(props: SaveOptionButtonProps) {
-  const {
-    changeCSS,
-    eternalCSS,
-    isChangeCSS,
-    changeVideoSpeed,
-    optionModalIndex,
-    onClose,
-    setIsEditedCSS,
-  } = props;
+  const { changeCSS, eternalCSS, isChangeCSS, changeVideoSpeed, optionModalIndex, onClose, setIsEditedCSS } =
+    props;
   const dispatch = useDispatch();
-  const setCanUpload = useSetCanUploadAtom();
+  const setCanUpload = useSetCanUploadState();
 
   const handleBtnClick = () => {
     dispatch(
@@ -40,7 +33,7 @@ export default function SaveOptionButton(props: SaveOptionButtonProps) {
           ...(changeVideoSpeed && { changeVideoSpeed }),
         },
         number: optionModalIndex,
-      }),
+      })
     );
     setCanUpload(true);
     setIsEditedCSS(false);

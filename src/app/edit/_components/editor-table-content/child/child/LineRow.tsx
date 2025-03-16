@@ -4,12 +4,12 @@ import { Dispatch, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 
 import {
-  useEditDirectEditCountAtom,
+  useDirectEditIndexState,
   useLineInputReducer,
-  useSetEditDirectEditCountAtom,
-  useSetEditLineSelectedCountAtom,
-  useSetTabIndexAtom,
-} from "@/app/edit/edit-atom/editAtom";
+  useSetDirectEditIndexState,
+  useSetSelectedIndexState,
+  useSetTabIndexState,
+} from "@/app/edit/atoms/stateAtoms";
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 import { useChangeLineRowColor } from "@/app/edit/hooks/useChangeLineRowColor";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useEditorButtonEvents";
@@ -40,11 +40,11 @@ function LineRow({
   const directEditTimeInputRef = useRef<HTMLInputElement | null>(null);
   const directEditLyricsInputRef = useRef<HTMLInputElement | null>(null);
   const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
-  const setTabIndex = useSetTabIndexAtom();
-  const setLineSelectedCount = useSetEditLineSelectedCountAtom();
+  const directEditIndex = useDirectEditIndexState();
+  const setTabIndex = useSetTabIndexState();
+  const setSelectedIndex = useSetSelectedIndexState();
   const lineInputReducer = useLineInputReducer();
-  const directEdit = useEditDirectEditCountAtom();
-  const setDirectEdit = useSetEditDirectEditCountAtom();
+  const setDirectEditIndex = useSetDirectEditIndexState();
   const { playerRef } = useRefs();
   const theme: ThemeColors = useTheme();
   const mapData = useSelector((state: RootState) => state.mapData.value);
@@ -57,43 +57,40 @@ function LineRow({
       const lyrics = mapData[selectCount].lyrics;
       const word = mapData[selectCount].word;
 
-      if (directEdit === selectCount) {
+      if (directEditIndex === selectCount) {
         return null;
-      } else if (directEdit) {
+      } else if (directEditIndex) {
         lineUpdateButtonEvent();
       }
 
       if (event.ctrlKey && selectCount !== 0 && selectCount !== endAfterLineIndex) {
-        setDirectEdit(selectCount);
+        setDirectEditIndex(selectCount);
 
         const cellClassName = (event.target as HTMLElement).classList[0];
         setTimeout(() => {
           if (cellClassName === "time-cell") {
-            directEditTimeInputRef.current?.focus(); // フォーカスを設定
+            directEditTimeInputRef.current?.focus();
           } else if (cellClassName === "lyrics-cell") {
-            directEditLyricsInputRef.current?.focus(); // フォーカスを設定
+            directEditLyricsInputRef.current?.focus();
           } else if (cellClassName === "word-cell") {
-            directEditWordInputRef.current?.focus(); // フォーカスを設定
+            directEditWordInputRef.current?.focus();
           }
         }, 0);
-      } else if (directEdit !== selectCount) {
-        setDirectEdit(null);
+      } else if (directEditIndex !== selectCount) {
+        setDirectEditIndex(null);
       }
 
-      setLineSelectedCount(selectCount);
+      setSelectedIndex(selectCount);
       allUpdateSelectColor(selectCount);
       lineInputReducer({ type: "set", payload: { time, lyrics, word, selectCount } });
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mapData, directEdit, endAfterLineIndex]
+    [mapData, directEditIndex, endAfterLineIndex]
   );
 
-  const clickTimeCell = (
-    event: React.MouseEvent<HTMLTableCellElement, MouseEvent>,
-    index: number
-  ) => {
-    if (directEdit !== index) {
+  const clickTimeCell = (event: React.MouseEvent<HTMLTableCellElement, MouseEvent>, index: number) => {
+    if (directEditIndex !== index) {
       playerRef.current!.seekTo(Number(line.time), true);
     }
   };
@@ -120,13 +117,10 @@ function LineRow({
         borderBottomColor={theme.colors.border.editorTable.bottom}
         className="time-cell"
         onClick={(event) => clickTimeCell(event, index)}
-        px={directEdit === index ? 2 : 4}
+        px={directEditIndex === index ? 2 : 4}
       >
-        {directEdit === index ? (
-          <DirectEditTimeInput
-            directEditTimeInputRef={directEditTimeInputRef}
-            editTime={line.time}
-          />
+        {directEditIndex === index ? (
+          <DirectEditTimeInput directEditTimeInputRef={directEditTimeInputRef} editTime={line.time} />
         ) : (
           line.time
         )}
@@ -138,7 +132,7 @@ function LineRow({
         borderRightColor={`${theme.colors.border.editorTable.right}`}
         borderBottomColor={theme.colors.border.editorTable.bottom}
       >
-        {directEdit === index ? (
+        {directEditIndex === index ? (
           <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef} />
         ) : (
           parse(line.lyrics)
@@ -151,7 +145,7 @@ function LineRow({
         borderRight="1px solid"
         borderRightColor={`${theme.colors.border.editorTable.right}`}
       >
-        {directEdit === index ? (
+        {directEditIndex === index ? (
           <DirectEditWordInput directEditWordInputRef={directEditWordInputRef} />
         ) : (
           line.word

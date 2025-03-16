@@ -1,5 +1,5 @@
+import { useGeminiTagsState, useMapTagsState } from "@/app/edit/atoms/stateAtoms";
 import { Flex, Skeleton, Stack } from "@chakra-ui/react";
-import { useGeminiTagsAtom, useTagsAtom } from "@/app/edit/edit-atom/editAtom";
 import TagBadge from "./TagBadge";
 
 interface GeminiTagSuggestionsProps {
@@ -7,8 +7,8 @@ interface GeminiTagSuggestionsProps {
 }
 
 const GeminiTagSuggestions = (props: GeminiTagSuggestionsProps) => {
-  const tags = useTagsAtom();
-  const geminiTags = useGeminiTagsAtom();
+  const tags = useMapTagsState();
+  const geminiTags = useGeminiTagsState();
 
   if (props.isGeminiLoading) {
     return (

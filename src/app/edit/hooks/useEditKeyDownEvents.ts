@@ -4,30 +4,26 @@ import { useDispatch, useStore as useReduxStore } from "react-redux";
 
 import { YTPlayer } from "@/types/global-types";
 import {
-  editDirectEditCountAtom,
-  editLineSelectedCountAtom,
-  editSpeedAtom,
-  isAddButtonDisabledAtom,
-  isDeleteButtonDisabledAtom,
-  isEditYouTubePlayingAtom,
-  isUpdateButtonDisabledAtom,
-  manyPhraseAtom,
+  useIsAddBtnDisabledStateRef,
+  useIsDeleteBtnDisabledStateRef,
+  useIsUpdateBtnDisabledStateRef,
+} from "../atoms/buttonDisableStateAtoms";
+import {
+  useEditUtilsStateRef,
   useLineInputReducer,
-  useSetEditDirectEditCountAtom,
-  useSetEditLineLyricsAtom,
+  useSelectLineStateRef,
+  useSetDirectEditIndexState,
+  useSetSelectLyricsState,
   useSpeedReducer,
-} from "../edit-atom/editAtom";
+  useYtPlayerStatusStateRef,
+} from "../atoms/stateAtoms";
 import { useRefs } from "../edit-contexts/refsProvider";
 import { mapDataRedo, mapDataUndo } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { redo, undo } from "../redux/undoredoSlice";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import {
-  useLineAddButtonEvent,
-  useLineDelete,
-  useLineUpdateButtonEvent,
-} from "./useEditorButtonEvents";
+import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useEditorButtonEvents";
 import { useUndoLine } from "./useEditUndoRedo";
 import { useWordFindReplace } from "./useWordFindReplace";
 
@@ -58,7 +54,7 @@ export const useWindowKeydownEvent = () => {
   const lineInputReducer = useLineInputReducer();
   const speedReducer = useSpeedReducer();
   const pickupTopPhrase = usePickupTopPhrase();
-  const setDirectEdit = useSetEditDirectEditCountAtom();
+  const setDirectEdit = useSetDirectEditIndexState();
 
   const undoLine = useUndoLine();
   const wordFindReplace = useWordFindReplace();
@@ -68,10 +64,17 @@ export const useWindowKeydownEvent = () => {
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
   const lineDelete = useLineDelete();
   const seekNextPrev = useSeekNextPrev();
+  const readEditUtils = useEditUtilsStateRef();
+  const readYtPlayerStatus = useYtPlayerStatusStateRef();
+  const readIsAddBtnDisalbed = useIsAddBtnDisabledStateRef();
+  const readIsUpdateBtnDisalbed = useIsUpdateBtnDisabledStateRef();
+  const readIsDeleteBtnDisalbed = useIsDeleteBtnDisabledStateRef();
 
   return (event: KeyboardEvent, optionModalIndex: number | null) => {
     const IS_FOCUS_INPUT = document.activeElement instanceof HTMLInputElement;
     const iS_FOCUS_MANY_PHRASE_TEXTAREA = document.activeElement!.id === "many_phrase_textarea";
+    const { manyPhraseText } = readEditUtils();
+    const { playing, speed } = readYtPlayerStatus();
 
     if (event.key === "Tab") {
       if (!iS_FOCUS_MANY_PHRASE_TEXTAREA) {
@@ -105,7 +108,6 @@ export const useWindowKeydownEvent = () => {
         case "ArrowLeft":
           {
             const time = player.getCurrentTime();
-            const speed = editAtomStore.get(editSpeedAtom);
 
             player.seekTo(time - 3 * speed, true);
             event.preventDefault();
@@ -116,7 +118,6 @@ export const useWindowKeydownEvent = () => {
         case "ArrowRight":
           {
             const time = player.getCurrentTime();
-            const speed = editAtomStore.get(editSpeedAtom);
             player.seekTo(time + 3 * speed, true);
             event.preventDefault();
           }
@@ -124,18 +125,18 @@ export const useWindowKeydownEvent = () => {
           break;
 
         case "KeyS":
-          const isAddButtonDisabled = editAtomStore.get(isAddButtonDisabledAtom);
+          const isAddBtnDisabled = readIsAddBtnDisalbed();
 
-          if (!isAddButtonDisabled) {
+          if (!isAddBtnDisabled) {
             lineAddButtonEvent(event.shiftKey);
           }
           event.preventDefault();
           break;
 
         case "KeyU":
-          const isUpdateButtonDisabled = editAtomStore.get(isUpdateButtonDisabledAtom);
+          const isUpdateBtnDisabled = readIsUpdateBtnDisalbed();
 
-          if (!isUpdateButtonDisabled) {
+          if (!isUpdateBtnDisabled) {
             lineUpdateButtonEvent();
           }
           event.preventDefault();
@@ -148,10 +149,7 @@ export const useWindowKeydownEvent = () => {
 
               dispatch(mapDataUndo(undoredoState.present));
               if (undoredoState.present.type === "add") {
-                const ManyPhraseText = editAtomStore.get(manyPhraseAtom);
-
-                undoLine(data, ManyPhraseText);
-                const speed = editAtomStore.get(editSpeedAtom);
+                undoLine(data, manyPhraseText);
                 player.seekTo(Number(data.time) - 3 * speed, true);
               }
 
@@ -190,9 +188,9 @@ export const useWindowKeydownEvent = () => {
           break;
 
         case "Delete":
-          const isDeleteButtonDisabled = editAtomStore.get(isDeleteButtonDisabledAtom);
+          const isDeleteBtnDisabled = readIsDeleteBtnDisalbed();
 
-          if (!isDeleteButtonDisabled) {
+          if (!isDeleteBtnDisabled) {
             lineDelete();
           }
           event.preventDefault();
@@ -213,9 +211,7 @@ export const useWindowKeydownEvent = () => {
           break;
 
         case "Escape":
-          const isYTPlaying = editAtomStore.get(isEditYouTubePlayingAtom);
-
-          if (!isYTPlaying) {
+          if (!playing) {
             player.playVideo();
           } else {
             player.pauseVideo();
@@ -243,19 +239,20 @@ export const useWindowKeydownEvent = () => {
 
 function useSeekNextPrev() {
   const { playerRef } = useRefs();
-  const editAtomStore = useJotaiStore();
   const editReduxStore = useReduxStore<RootState>();
   const lineInputReducer = useLineInputReducer();
   const tbodyScroll = useTbodyScroll();
   const { addLineSeekColor } = useChangeLineRowColor();
+  const readEditUtils = useEditUtilsStateRef();
+  const readLineStatus = useSelectLineStateRef();
 
   return (type: "next" | "prev") => {
     const mapData = editReduxStore.getState().mapData.value;
-    const directEdit = editAtomStore.get(editDirectEditCountAtom);
+    const { directEditingIndex } = readEditUtils();
 
-    const selectedIndex = editAtomStore.get(editLineSelectedCountAtom);
-    if (selectedIndex !== null && !directEdit) {
-      const seekCount = selectedIndex + (type === "next" ? 1 : -1);
+    const { index: selectIndex } = readLineStatus();
+    if (selectIndex !== null && !directEditingIndex) {
+      const seekCount = selectIndex + (type === "next" ? 1 : -1);
       const seekLine = mapData[seekCount];
       if (seekLine) {
         playerRef.current!.seekTo(Number(seekLine.time), true);
@@ -275,7 +272,7 @@ function useSeekNextPrev() {
 }
 
 export function useAddRubyTagEvent() {
-  const setLyrics = useSetEditLineLyricsAtom();
+  const setLyrics = useSetSelectLyricsState();
 
   return (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {

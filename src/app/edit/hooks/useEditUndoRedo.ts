@@ -1,9 +1,9 @@
 import { LineEdit } from "@/types";
-import { useLineInputReducer, useSetManyPhraseAtom } from "../edit-atom/editAtom";
+import { useLineInputReducer, useSetManyPhraseState } from "../atoms/stateAtoms";
 
 export const useUndoLine = () => {
   const lineInputReducer = useLineInputReducer();
-  const setManyPhrase = useSetManyPhraseAtom();
+  const setManyPhrase = useSetManyPhraseState();
 
   return (undoLine: LineEdit, ManyPhrase: string) => {
     const lyrics = undoLine.lyrics;

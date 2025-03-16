@@ -1,9 +1,9 @@
 import {
-  useIsAddButtonDisabled,
-  useIsDeleteButtonDisabledAtom,
-  useIsLoadWordConvertingAtom,
-  useIsUpdateButtonDisabledAtom,
-} from "@/app/edit/edit-atom/editAtom";
+  useIsAddBtnDisabledState,
+  useIsDeleteBtnDisabledState,
+  useIsUpdateBtnDisabledState,
+} from "@/app/edit/atoms/buttonDisableStateAtoms";
+import { useIsWordConvertingState } from "@/app/edit/atoms/stateAtoms";
 import {
   useLineAddButtonEvent,
   useLineDelete,
@@ -18,16 +18,16 @@ import EditorButton from "./child/EditorButton";
 const EditorButtons = () => {
   const theme: ThemeColors = useTheme();
 
-  const isAddButtonDisabled = useIsAddButtonDisabled();
-  const isUpdateButtonDisabled = useIsUpdateButtonDisabledAtom();
-  const isDeleteButtonDisabled = useIsDeleteButtonDisabledAtom();
+  const isAddButtonDisabled = useIsAddBtnDisabledState();
+  const isUpdateButtonDisabled = useIsUpdateBtnDisabledState();
+  const isDeleteButtonDisabled = useIsDeleteBtnDisabledState();
 
   const lineAddButtonEvent = useLineAddButtonEvent();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
   const wordConvertButtonEvent = useWordConvertButtonEvent();
   const lineDelete = useLineDelete();
 
-  const isLoadWordConvert = useIsLoadWordConvertingAtom();
+  const isLoadWordConvert = useIsWordConvertingState();
 
   const buttonConfigs = {
     add: {

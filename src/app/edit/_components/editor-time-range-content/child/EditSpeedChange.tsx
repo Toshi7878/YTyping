@@ -1,10 +1,10 @@
 "use client";
-import { useSpeedAtom, useSpeedReducer } from "@/app/edit/edit-atom/editAtom";
+import { useSpeedReducer, useYTSpeedState } from "@/app/edit/atoms/stateAtoms";
 import "@/app/edit/style/editor.scss";
 import { Box, Button, HStack, Text } from "@chakra-ui/react";
 
 const EditSpeedChange = () => {
-  const speed = useSpeedAtom(); //0.25 or 2.00 場合片方のボタンをdisabledにする
+  const speed = useYTSpeedState(); //0.25 or 2.00 場合片方のボタンをdisabledにする
   const speedReducer = useSpeedReducer();
 
   return (

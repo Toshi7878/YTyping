@@ -1,8 +1,8 @@
 import {
-  useEditLineWordAtom,
-  useIsLoadWordConvertingAtom,
-  useSetEditLineWordAtom,
-} from "@/app/edit/edit-atom/editAtom";
+  useIsWordConvertingState,
+  useSelectWordState,
+  useSetSelectWordState,
+} from "@/app/edit/atoms/stateAtoms";
 import { useWordConvertButtonEvent } from "@/app/edit/hooks/useEditorButtonEvents";
 import { ThemeColors } from "@/types";
 import { Button, Flex, Input, useTheme } from "@chakra-ui/react";
@@ -13,11 +13,11 @@ interface DirectEditWordInputProps {
 
 const DirectEditWordInput = (props: DirectEditWordInputProps) => {
   const theme: ThemeColors = useTheme();
-  const isLoadWordConvert = useIsLoadWordConvertingAtom();
-  const selectWord = useEditLineWordAtom();
+  const isLoadWordConvert = useIsWordConvertingState();
+  const selectWord = useSelectWordState();
 
   const wordConvertButtonEvent = useWordConvertButtonEvent();
-  const setWord = useSetEditLineWordAtom();
+  const setWord = useSetSelectWordState();
 
   return (
     <Flex alignItems="center" justifyContent="space-between">

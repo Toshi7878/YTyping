@@ -1,9 +1,9 @@
 import {
-  useSetEditMusicSourceAtom,
-  useSetGeminiTagsAtom,
-  useSetMapArtistNameAtom,
-  useSetMapTitleAtom,
-} from "@/app/edit/edit-atom/editAtom";
+  useSetGeminiTagsState,
+  useSetMapArtistState,
+  useSetMapSourceState,
+  useSetMapTitleState,
+} from "@/app/edit/atoms/stateAtoms";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { useSearchParams } from "next/navigation";
@@ -15,10 +15,10 @@ export const useGenerateMapInfoQuery = (videoId: string) => {
   const isNewCreate = !!searchParams.get("new");
   const isBackUp = searchParams.get("backup") === "true";
 
-  const setMapTitle = useSetMapTitleAtom();
-  const setMapArtistName = useSetMapArtistNameAtom();
-  const setMusicSouce = useSetEditMusicSourceAtom();
-  const setGeminiTags = useSetGeminiTagsAtom();
+  const setMapTitle = useSetMapTitleState();
+  const setMapArtistName = useSetMapArtistState();
+  const setMusicSouce = useSetMapSourceState();
+  const setGeminiTags = useSetGeminiTagsState();
   const generateMapInfo = clientApi.gemini.generateMapInfo.useQuery(
     { videoId: videoId },
     {

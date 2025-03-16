@@ -1,5 +1,5 @@
 "use client";
-import { useEditCustomStyleLengthAtom } from "@/app/edit/edit-atom/editAtom";
+import { useCssLengthState } from "@/app/edit/atoms/stateAtoms";
 import { MapData } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
@@ -10,14 +10,10 @@ interface CSSTextLengthProps {
   lineOptions: MapData["options"] | null;
 }
 
-export default function CSSTextLength({
-  eternalCSSText,
-  changeCSSText,
-  lineOptions,
-}: CSSTextLengthProps) {
+export default function CSSTextLength({ eternalCSSText, changeCSSText, lineOptions }: CSSTextLengthProps) {
   const theme: ThemeColors = useTheme();
 
-  const customStyleLength = useEditCustomStyleLengthAtom();
+  const customStyleLength = useCssLengthState();
 
   const loadLineCustomStyleLength =
     Number(lineOptions?.eternalCSS?.length || 0) + Number(lineOptions?.eternalCSS?.length || 0);

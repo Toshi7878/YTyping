@@ -1,10 +1,10 @@
-import { useCreatorCommentAtom, useSetCreatorCommentAtom } from "@/app/edit/edit-atom/editAtom";
+import { useMapCommentState, useSetMapCommentState } from "@/app/edit/atoms/stateAtoms";
 import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
 const CreatorCommentInput = () => {
-  const setCreatorComment = useSetCreatorCommentAtom();
-  const creatorComment = useCreatorCommentAtom();
+  const setCreatorComment = useSetMapCommentState();
+  const creatorComment = useMapCommentState();
 
   return (
     <Flex alignItems="center">

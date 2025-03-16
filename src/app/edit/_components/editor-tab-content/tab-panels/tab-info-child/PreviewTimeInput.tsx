@@ -1,10 +1,10 @@
 import { Box, FormLabel, HStack, Input, Text, useTheme } from "@chakra-ui/react";
 
 import {
-  useEditPreviewTimeInputAtom,
-  useSetCanUploadAtom,
-  useSetEditPreviewTimeInputAtom,
-} from "@/app/edit/edit-atom/editAtom";
+  useMapPreviewTimeState,
+  useSetCanUploadState,
+  useSetPreviewTimeState,
+} from "@/app/edit/atoms/stateAtoms";
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
@@ -14,9 +14,9 @@ const PreviewTimeInput = () => {
   const theme: ThemeColors = useTheme();
   const { playerRef, editStatus } = useRefs();
 
-  const previewTime = useEditPreviewTimeInputAtom();
-  const setPreviewTime = useSetEditPreviewTimeInputAtom();
-  const setCanUpload = useSetCanUploadAtom();
+  const previewTime = useMapPreviewTimeState();
+  const setPreviewTime = useSetPreviewTimeState();
+  const setCanUpload = useSetCanUploadState();
 
   const handlePreviewClick = () => {
     editStatus.current!.isNotAutoTabToggle = true;

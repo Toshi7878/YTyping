@@ -1,12 +1,11 @@
 import { UploadResult } from "@/types";
-import { EditStatusRef } from "../type";
 
 export const DEFAULT_ADD_ADJUST_TIME = -0.18;
 
 export const TAG_MAX_LEN = 10;
 export const TAG_MIN_LEN = 2;
 
-export const DEFAULT_EDIT_STATUS_REF: EditStatusRef = {
+export const DEFAULT_EDIT_STATUS_REF = {
   isNotAutoTabToggle: false,
 };
 

@@ -1,7 +1,7 @@
 "use client";
 import { Button, useTheme } from "@chakra-ui/react";
 
-import { useCanUploadAtom, useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
+import { useCanUploadState, useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
 import { useUpdateNewMapBackUp } from "@/app/edit/hooks/useUpdateNewMapBackUp";
 import { useInitializeEditorCreateBak } from "@/lib/db";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
@@ -16,8 +16,8 @@ interface UploadButtonProps {
 const UploadButton = ({ state }: UploadButtonProps) => {
   const { pending } = useFormStatus();
   const theme: ThemeColors = useTheme();
-  const canUpload = useCanUploadAtom();
-  const setCanUpload = useSetCanUploadAtom();
+  const canUpload = useCanUploadState();
+  const setCanUpload = useSetCanUploadState();
   const toast = useCustomToast();
   const initializeEditorCreateIndexedDB = useInitializeEditorCreateBak();
   const router = useRouter();

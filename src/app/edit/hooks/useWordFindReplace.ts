@@ -1,7 +1,7 @@
 import { Action } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
-import { useSetCanUploadAtom, useSetIsMapDataEditedAtom } from "../edit-atom/editAtom";
+import { useSetCanUploadState, useSetIsMapDataEditedAtom } from "../atoms/stateAtoms";
 import { RefsContextType, useRefs } from "../edit-contexts/refsProvider";
 import { updateLine } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
@@ -11,18 +11,12 @@ export const useWordFindReplace = () => {
   const { tbodyRef } = useRefs();
   const dispatch = useDispatch();
   const editReduxStore = useReduxStore<RootState>();
-  const setCanUpload = useSetCanUploadAtom();
+  const setCanUpload = useSetCanUploadState();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
 
   return () => {
     const mapData = editReduxStore.getState().mapData.value;
-    new WordReplace(
-      mapData,
-      tbodyRef,
-      dispatch,
-      setCanUpload,
-      setIsMapDataEdited
-    ).wordSearchReplace();
+    new WordReplace(mapData, tbodyRef, dispatch, setCanUpload, setIsMapDataEdited).wordSearchReplace();
   };
 };
 

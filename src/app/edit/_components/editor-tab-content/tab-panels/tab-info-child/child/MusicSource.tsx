@@ -1,4 +1,4 @@
-import { useEditMusicSourceAtom, useSetEditMusicSourceAtom } from "@/app/edit/edit-atom/editAtom";
+import { useMapSourceState, useSetMapSourceState } from "@/app/edit/atoms/stateAtoms";
 import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
@@ -7,8 +7,8 @@ interface MusicSourceInputProps {
 }
 
 const MusicSourceInput = (props: MusicSourceInputProps) => {
-  const setMusicSouce = useSetEditMusicSourceAtom();
-  const musicSource = useEditMusicSourceAtom();
+  const setMusicSouce = useSetMapSourceState();
+  const musicSource = useMapSourceState();
 
   return (
     <Flex alignItems="center">

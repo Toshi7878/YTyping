@@ -3,7 +3,7 @@ import "@/app/edit/style/editor.scss";
 import { ThemeColors } from "@/types";
 import { useTheme } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useRef } from "react";
-import { useIsEditYTReadyAtom, useIsEditYTStartedAtom } from "../../edit-atom/editAtom";
+import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms";
 import { useRefs } from "../../edit-contexts/refsProvider";
 
 import ColorStyle from "../ColorStyle";
@@ -14,8 +14,8 @@ const TimeRange = () => {
   const rangeRef = useRef<HTMLInputElement>(null);
   const theme: ThemeColors = useTheme();
 
-  const isYTStarted = useIsEditYTStartedAtom();
-  const isYTReady = useIsEditYTReadyAtom();
+  const isYTStarted = useIsYTStartedState();
+  const isYTReady = useIsYTReadiedState();
 
   useEffect(() => {
     setRef("rangeRef", rangeRef.current);

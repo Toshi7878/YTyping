@@ -1,6 +1,6 @@
 import { Card, CardBody, Flex, HStack, Stack, useTheme } from "@chakra-ui/react";
 
-import { useCreatorIdAtom, useVideoIdAtom } from "@/app/edit/edit-atom/editAtom";
+import { useMapCreatorIdState, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
 import { useUploadMap } from "@/app/edit/hooks/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
 import { useGenerateMapInfoQuery } from "@/lib/global-hooks/query/edit/useGenerateMapInfoQuery";
@@ -16,11 +16,11 @@ import UploadButton from "./tab-info-child/UploadButton";
 
 const TabInfoUpload = () => {
   const { data: session } = useSession();
-  const mapCreatorId = useCreatorIdAtom();
+  const mapCreatorId = useMapCreatorIdState();
   const theme: ThemeColors = useTheme();
   const searchParams = useSearchParams();
   const isNewCreate = !!searchParams.get("new");
-  const videoId = useVideoIdAtom();
+  const videoId = useVideoIdState();
   const { id: mapId } = useParams();
   const { isPending } = useGenerateMapInfoQuery(videoId);
   const upload = useUploadMap();
@@ -29,16 +29,10 @@ const TabInfoUpload = () => {
 
   const myUserId = session?.user?.id;
   const isAdmin = session?.user?.role === "ADMIN";
-  const isDisplayUploadButton =
-    (myUserId && (!mapCreatorId || Number(myUserId) === mapCreatorId)) || isAdmin;
+  const isDisplayUploadButton = (myUserId && (!mapCreatorId || Number(myUserId) === mapCreatorId)) || isAdmin;
 
   return (
-    <Card
-      variant="filled"
-      bg={theme.colors.background.card}
-      boxShadow="lg"
-      color={theme.colors.text.body}
-    >
+    <Card variant="filled" bg={theme.colors.background.card} boxShadow="lg" color={theme.colors.text.body}>
       <CardBody>
         <Stack display="flex" flexDirection="column" gap="6">
           <InfoInputForm isGeminiLoading={isPending && isNewCreate} />

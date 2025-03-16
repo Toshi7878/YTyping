@@ -1,8 +1,8 @@
-import { useEditLineSelectedCountAtom } from "@/app/edit/edit-atom/editAtom";
+import { useSelectedIndexState } from "@/app/edit/atoms/stateAtoms";
 import { Input } from "@chakra-ui/react";
 
 const EditorSelectedLineCountInput = () => {
-  const selectedLineCount = useEditLineSelectedCountAtom();
+  const selectedLineCount = useSelectedIndexState();
   return (
     <Input
       placeholder="No."

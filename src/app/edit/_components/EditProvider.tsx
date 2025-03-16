@@ -9,18 +9,7 @@ import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
-import {
-  editCreatorCommentAtom,
-  editCreatorIdAtom,
-  editGeminiTagsAtom,
-  editMapArtistNameAtom,
-  editMapTitleAtom,
-  editMusicSourceAtom,
-  editPreviewTimeInputAtom,
-  editTagsAtom,
-  editVideoIdAtom,
-  getEditAtomStore,
-} from "../edit-atom/editAtom";
+import { geminiTagsAtom, getEditAtomStore, mapInfoAtom, mapTagsAtom, videoIdAtom } from "../atoms/stateAtoms";
 import { RefsProvider } from "../edit-contexts/refsProvider";
 import editStore from "../redux/store";
 import { EditorNewMapBackUpInfoData } from "../ts/type";
@@ -31,7 +20,7 @@ interface EditProviderProps {
 }
 
 const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
-  const editAtomStore = getEditAtomStore();
+  const jotaiStore = getEditAtomStore();
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const isBackUp = searchParams.get("backup") === "true";
@@ -45,69 +34,83 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
 
   const videoId = mapInfo ? mapInfo.video_id : newVideoId;
   const geminiQueryData = utils.gemini.generateMapInfo.getData({ videoId });
-  const hydrationState: any[] = [[editGeminiTagsAtom, geminiQueryData?.otherTags || []]];
+  const hydrationState: any[] = [[geminiTagsAtom, geminiQueryData?.otherTags || []]];
 
   if (mapInfo) {
-    hydrationState.push([editMapTitleAtom, mapInfo.title]);
-    hydrationState.push([editMapArtistNameAtom, mapInfo.artist_name]);
-    hydrationState.push([editVideoIdAtom, mapInfo.video_id]);
-    hydrationState.push([editCreatorIdAtom, mapInfo.creator_id]);
-    hydrationState.push([editCreatorCommentAtom, mapInfo.creator_comment]);
-    hydrationState.push([editMusicSourceAtom, mapInfo.music_source!]);
-    hydrationState.push([editPreviewTimeInputAtom, mapInfo.preview_time]);
+    hydrationState.push(
+      [
+        mapInfoAtom,
+        {
+          title: mapInfo.title,
+          artist: mapInfo.artist_name,
+          creatorId: mapInfo.creator_id,
+          creatorComment: mapInfo.creator_comment,
+          musicSource: mapInfo.music_source,
+          previewTime: mapInfo.preview_time,
+        },
+      ],
+      [videoIdAtom, videoId]
+    );
     hydrationState.push([
-      editTagsAtom,
+      mapTagsAtom,
       {
         type: "set",
         payload: mapInfo.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
       },
     ]);
   } else {
-    hydrationState.push([editCreatorIdAtom, null]);
-    hydrationState.push([editVideoIdAtom, newVideoId]);
-
     if (isBackUp) {
-      db.editorNewCreateBak
-        .get({ optionName: "backupMapInfo" })
-        .then((data: IndexDBOption | undefined) => {
-          if (data) {
-            const backupMap = data.value as EditorNewMapBackUpInfoData;
+      db.editorNewCreateBak.get({ optionName: "backupMapInfo" }).then((data: IndexDBOption | undefined) => {
+        if (data) {
+          const backupMap = data.value as EditorNewMapBackUpInfoData;
 
-            hydrationState.push([editMapTitleAtom, backupMap.title]);
-            hydrationState.push([editMapArtistNameAtom, backupMap.artistName]);
-            hydrationState.push([editMusicSourceAtom, backupMap.musicSource || ""]);
-            hydrationState.push([editCreatorCommentAtom, backupMap.creatorComment]);
-            hydrationState.push([editPreviewTimeInputAtom, backupMap.previewTime]);
-            hydrationState.push([
-              editTagsAtom,
+          hydrationState.push(
+            [
+              mapInfoAtom,
               {
-                type: "set",
-                payload: backupMap.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
+                title: backupMap.title,
+                artist: backupMap.artistName,
+                creatorId: null,
+                creatorComment: backupMap.creatorComment,
+                musicSource: backupMap.musicSource,
+                previewTime: backupMap.previewTime,
               },
-            ]);
-          }
-        });
+            ],
+            [videoIdAtom, backupMap.videoId]
+          );
+          hydrationState.push([
+            mapTagsAtom,
+            {
+              type: "set",
+              payload: backupMap.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
+            },
+          ]);
+        }
+      });
     } else {
-      //完全新規作成時
-      hydrationState.push([editMapTitleAtom, geminiQueryData?.musicTitle || ""]);
-      hydrationState.push([editMapArtistNameAtom, geminiQueryData?.artistName || ""]);
-      hydrationState.push([editMusicSourceAtom, geminiQueryData?.musicSource || ""]);
-      hydrationState.push([editCreatorCommentAtom, ""]);
-      hydrationState.push([editPreviewTimeInputAtom, ""]);
-      hydrationState.push([
-        editTagsAtom,
-        {
-          type: "reset",
-        },
-      ]);
+      hydrationState.push(
+        [
+          mapInfoAtom,
+          {
+            title: geminiQueryData?.musicTitle || "",
+            artist: geminiQueryData?.artistName || "",
+            creatorId: null,
+            creatorComment: "",
+            musicSource: geminiQueryData?.musicSource || "",
+            previewTime: "",
+          },
+        ],
+        [videoIdAtom, newVideoId]
+      );
+      hydrationState.push([mapTagsAtom, { type: "reset" }]);
     }
   }
 
-  useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store: editAtomStore });
+  useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store: jotaiStore });
   return (
     <RefsProvider>
       <ReduxProvider store={editStore}>
-        <JotaiProvider store={editAtomStore}>{children}</JotaiProvider>
+        <JotaiProvider store={jotaiStore}>{children}</JotaiProvider>
       </ReduxProvider>
     </RefsProvider>
   );

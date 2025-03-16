@@ -1,17 +1,8 @@
 "use client";
-import { db } from "@/lib/db";
-import { IndexDBOption, ThemeColors } from "@/types";
+import { ThemeColors } from "@/types";
 import { Tab, TabList, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import {
-  useIsEditYTStartedAtom,
-  useSetEditAddTimeOffsetAtom,
-  useSetEditWordConvertOptionAtom,
-  useSetTabIndexAtom,
-  useTabIndexAtom,
-} from "../../edit-atom/editAtom";
-import { DEFAULT_ADD_ADJUST_TIME } from "../../ts/const/editDefaultValues";
-import { EditTabIndex } from "../../ts/type";
+import { useSetTabIndexState, useTabIndexState } from "../../atoms/stateAtoms";
+import { TabIndex } from "../../ts/type";
 import TabEditor from "./tab-panels/TabEditor";
 import TabInfoUpload from "./tab-panels/TabInfoUpload";
 import TabSettings from "./tab-panels/TabSettingsShortcutList";
@@ -20,40 +11,16 @@ interface EditorTabContentProps {
   className?: string;
 }
 
-const tabLists = ["情報 & 保存", "エディター", "設定 & ショートカットキー"];
+const TAB_LIST = ["情報 & 保存", "エディター", "設定 & ショートカットキー"];
 export default function EditorTabContent({ className }: EditorTabContentProps) {
-  const tabIndex = useTabIndexAtom();
-  const setTabIndex = useSetTabIndexAtom();
-
-  const isYTStarted = useIsEditYTStartedAtom();
-  const [isDisabled, setIsDisabled] = useState(true);
+  const tabIndex = useTabIndexState();
+  const setTabIndex = useSetTabIndexState();
   const theme: ThemeColors = useTheme();
-  const setSelectedConvertOption = useSetEditWordConvertOptionAtom();
-  const setAddTimeOffset = useSetEditAddTimeOffsetAtom();
-
-  useEffect(() => {
-    if (isYTStarted && isDisabled) {
-      setIsDisabled(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isYTStarted]);
-
-  useEffect(() => {
-    db.editorOption.toArray().then((allData) => {
-      const formattedData = allData.reduce((acc, { optionName, value }) => {
-        acc[optionName] = value;
-        return acc;
-      }, {} as IndexDBOption);
-      setSelectedConvertOption(formattedData["word-convert-option"] ?? "non_symbol");
-      setAddTimeOffset(formattedData["time-offset"] ?? DEFAULT_ADD_ADJUST_TIME);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Tabs
       index={tabIndex}
-      onChange={(index) => setTabIndex(index as EditTabIndex)}
+      onChange={(index) => setTabIndex(index as TabIndex)}
       className={className}
       isFitted
       size="sm"
@@ -66,7 +33,7 @@ export default function EditorTabContent({ className }: EditorTabContentProps) {
         px={{ base: "0", md: "8" }}
         borderBottom={`1px solid ${theme.colors.text.body}aa`}
       >
-        {tabLists.map((tabName, index) => {
+        {TAB_LIST.map((tabName, index) => {
           return (
             <Tab
               key={index}

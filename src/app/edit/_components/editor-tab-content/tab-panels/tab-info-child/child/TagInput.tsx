@@ -1,19 +1,18 @@
-import { Box, Flex, Text, FormLabel } from "@chakra-ui/react";
-import { WithContext as ReactTags, SEPARATORS } from "react-tag-input";
-import { Tag } from "@/types";
-import { useSetCanUploadAtom, useSetTagsAtom, useTagsAtom } from "@/app/edit/edit-atom/editAtom";
-import { TAG_MAX_LEN, TAG_MIN_LEN } from "@/app/edit/ts/const/editDefaultValues";
+import { useMapTagsState, useSetCanUploadState, useSetMapTagsState } from "@/app/edit/atoms/stateAtoms";
 import "@/app/edit/style/reactTags.scss";
+import { TAG_MAX_LEN, TAG_MIN_LEN } from "@/app/edit/ts/const/editDefaultValues";
+import { Tag } from "@/types";
+import { Box, Flex, FormLabel, Text } from "@chakra-ui/react";
+import { WithContext as ReactTags, SEPARATORS } from "react-tag-input";
 
 const TagInput = () => {
-  const tags = useTagsAtom();
-  const setTags = useSetTagsAtom();
-  const setCanUpload = useSetCanUploadAtom();
+  const tags = useMapTagsState();
+  const setTags = useSetMapTagsState();
+  const setCanUpload = useSetCanUploadState();
 
   const suggestions = [
     { id: "1", text: "公式MV", className: "" },
     { id: "2", text: "英語", className: "" },
-    // 他の提案タグを追加
   ];
 
   const handleDelete = (index: number) => {
@@ -46,7 +45,7 @@ const TagInput = () => {
             },
           }
         : {})}
-      alignItems="center" // 追加: Flexアイテムを中央揃え
+      alignItems="center"
     >
       <FormLabel mb="0" width="150px" fontWeight="bold">
         <Text as="span">

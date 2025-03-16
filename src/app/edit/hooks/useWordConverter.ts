@@ -1,7 +1,4 @@
-import {
-  editWordConvertOptionAtom,
-  useSetIsLoadWordConvertingAtom,
-} from "@/app/edit/edit-atom/editAtom";
+import { useSetIsWordConvertingState } from "@/app/edit/atoms/stateAtoms";
 import {
   ALPHABET_LIST,
   KANA_LIST,
@@ -12,8 +9,8 @@ import {
 } from "@/config/consts/charList";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
-import { useStore as useJotaiStore } from "jotai";
 import { useSession } from "next-auth/react";
+import { useWordConvertOptionStateRef } from "../atoms/storageAtoms";
 import { ConvertOptionsType } from "../ts/type";
 
 const allowedChars = new Set([
@@ -26,14 +23,14 @@ const allowedChars = new Set([
 ]);
 
 export const useWordConverter = () => {
-  const editAtomStore = useJotaiStore();
   const fetchMorph = useFetchMorph();
   const filterWordSymbol = useFilterWordSymbol();
   const lyricsFormat = useLyricsFormat();
+  const readWordCOnvertOption = useWordConvertOptionStateRef();
 
   return async (lyrics: string) => {
     const formatLyrics = lyricsFormat(lyrics);
-    const convertOption = editAtomStore.get(editWordConvertOptionAtom);
+    const convertOption = readWordCOnvertOption();
     const isNeedsConversion = /[\u4E00-\u9FFF]/.test(formatLyrics);
 
     const filterAllowedCharacters = (text: string): string => {
@@ -54,7 +51,7 @@ export const useWordConverter = () => {
 const useFetchMorph = () => {
   const utils = clientApi.useUtils();
   const kanaToHira = useKanaToHira();
-  const setIsLoadWordConvert = useSetIsLoadWordConvertingAtom();
+  const setIsLoadWordConvert = useSetIsWordConvertingState();
   const toast = useCustomToast();
   const { data: session } = useSession();
 

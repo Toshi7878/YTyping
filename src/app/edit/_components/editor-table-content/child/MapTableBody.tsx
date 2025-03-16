@@ -1,10 +1,10 @@
 "use client";
 import {
-  useIsEditYTPlayingAtom,
-  useIsEditYTStartedAtom,
-  useSetEditCustomStyleLengthAtom,
-  useSetEditIsTimeInputValidAtom,
-} from "@/app/edit/edit-atom/editAtom";
+  useIsYTPlayingState,
+  useIsYTStartedState,
+  useSetCssLengthState,
+  useSetIsTimeInputValidState,
+} from "@/app/edit/atoms/stateAtoms";
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useEditKeyDownEvents";
 import { setMapData, updateLine } from "@/app/edit/redux/mapDataSlice";
@@ -27,14 +27,14 @@ function MapTableBody() {
   const [lineOptions, setLineOptions] = useState<MapData["options"] | null>(null);
   const lastAddedTime = useSelector((state: RootState) => state.mapData.lastAddedTime);
   const mapData = useSelector((state: RootState) => state.mapData.value);
-  const isYTStarted = useIsEditYTStartedAtom();
-  const isYTPlaying = useIsEditYTPlayingAtom();
+  const isYTStarted = useIsYTStartedState();
+  const isYTPlaying = useIsYTPlayingState();
   const optionClosure = useDisclosure();
 
   const { tbodyRef, playerRef } = useRefs();
-  const setCustomStyleLength = useSetEditCustomStyleLengthAtom();
+  const setCustomStyleLength = useSetCssLengthState();
   const windowKeydownEvent = useWindowKeydownEvent();
-  const setEditIsTimeInputValid = useSetEditIsTimeInputValidAtom();
+  const setEditIsTimeInputValid = useSetIsTimeInputValidState();
 
   useEffect(() => {
     if (isYTPlaying && !editTicker.started) {
@@ -103,10 +103,9 @@ function MapTableBody() {
           }
         }
 
-        const addLineMap = [
-          ...mapData,
-          { time: duration.toFixed(3), lyrics: "end", word: "" },
-        ].sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
+        const addLineMap = [...mapData, { time: duration.toFixed(3), lyrics: "end", word: "" }].sort(
+          (a, b) => parseFloat(a.time) - parseFloat(b.time)
+        );
         dispatch(setMapData(addLineMap));
       }
     }

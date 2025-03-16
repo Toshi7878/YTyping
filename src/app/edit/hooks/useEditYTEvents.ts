@@ -3,11 +3,11 @@ import { YouTubeEvent } from "@/types/global-types";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 import { editTicker } from "../_components/editor-youtube-content/EditYoutube";
 import {
-  useSetIsEditYTPlayingAtom,
-  useSetIsEditYTReadyAtom,
-  useSetIsEditYTStartedAtom,
-  useSetTabIndexAtom,
-} from "../edit-atom/editAtom";
+  useSetIsYTPlayingState,
+  useSetIsYTReadiedState,
+  useSetIsYTStartedState,
+  useSetTabIndexState,
+} from "../atoms/stateAtoms";
 import { useRefs } from "../edit-contexts/refsProvider";
 import { updateLine } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
@@ -16,7 +16,7 @@ import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 
 export const useYTReadyEvent = () => {
   const { setRef } = useRefs();
-  const setIsReady = useSetIsEditYTReadyAtom();
+  const setIsYTReadied = useSetIsYTReadiedState();
   const dispatch = useDispatch();
   const volume = useVolumeState();
   const editReduxStore = useReduxStore<RootState>();
@@ -26,7 +26,7 @@ export const useYTReadyEvent = () => {
     setRef("playerRef", player);
     const duration = player.getDuration();
     player.setVolume(volume);
-    setIsReady(true);
+    setIsYTReadied(true);
 
     const mapData = editReduxStore.getState().mapData.value;
     if (mapData.length === 2) {
@@ -44,9 +44,9 @@ export const useYTReadyEvent = () => {
 
 export const useYTPlayEvent = () => {
   const { editStatus } = useRefs();
-  const setIsYTPlaying = useSetIsEditYTPlayingAtom();
-  const setIsYTStarted = useSetIsEditYTStartedAtom();
-  const setTabIndex = useSetTabIndexAtom();
+  const setIsYTPlaying = useSetIsYTPlayingState();
+  const setIsYTStarted = useSetIsYTStartedState();
+  const setTabIndex = useSetTabIndexState();
 
   const onPlay = () => {
     console.log("再生 1");
@@ -65,7 +65,7 @@ export const useYTPlayEvent = () => {
 };
 
 export const useYTPauseEvent = () => {
-  const setIsYTPlaying = useSetIsEditYTPlayingAtom();
+  const setIsYTPlaying = useSetIsYTPlayingState();
 
   return () => {
     console.log("一時停止");
@@ -75,7 +75,7 @@ export const useYTPauseEvent = () => {
 };
 
 export const useYTEndStopEvent = () => {
-  const setIsYTPlaying = useSetIsEditYTPlayingAtom();
+  const setIsYTPlaying = useSetIsYTPlayingState();
 
   return () => {
     console.log("プレイ終了 動画完全停止");

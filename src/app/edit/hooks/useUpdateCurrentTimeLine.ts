@@ -1,8 +1,8 @@
-import { useSetEditTimeCountAtom } from "../edit-atom/editAtom";
+import { useSetTimeCountState } from "../atoms/stateAtoms";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
 
 export const useUpdateCurrentTimeLine = () => {
-  const setTimeCount = useSetEditTimeCountAtom();
+  const setTimeCount = useSetTimeCountState();
 
   const { allUpdateCurrentTimeColor } = useChangeLineRowColor();
   return (newCount: number) => {

@@ -1,4 +1,4 @@
-import { useEditLineLyricsAtom, useSetEditLineLyricsAtom } from "@/app/edit/edit-atom/editAtom";
+import { useSelectLyricsState, useSetSelectLyricsState } from "@/app/edit/atoms/stateAtoms";
 import { useAddRubyTagEvent } from "@/app/edit/hooks/useEditKeyDownEvents";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Box, Input } from "@chakra-ui/react";
@@ -6,8 +6,8 @@ import { useState } from "react";
 
 const EditorLyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
-  const lyrics = useEditLineLyricsAtom();
-  const setLyrics = useSetEditLineLyricsAtom();
+  const lyrics = useSelectLyricsState();
+  const setLyrics = useSetSelectLyricsState();
   const handleEnterAddRuby = useAddRubyTagEvent();
 
   return (

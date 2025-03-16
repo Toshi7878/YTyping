@@ -1,5 +1,5 @@
 "use client";
-import { useSetCanUploadAtom } from "@/app/edit/edit-atom/editAtom";
+import { useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
 import { allAdjustTime } from "@/app/edit/redux/mapDataSlice";
 import { RootState } from "@/app/edit/redux/store";
 import { addHistory } from "@/app/edit/redux/undoredoSlice";
@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function TotalTimeAdjust() {
   const dispatch = useDispatch();
-  const setCanUpload = useSetCanUploadAtom();
+  const setCanUpload = useSetCanUploadState();
   const theme: ThemeColors = useTheme();
   const toast = useCustomToast();
 
