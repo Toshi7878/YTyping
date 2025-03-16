@@ -1,6 +1,7 @@
 import { useStore as useJotaiStore } from "jotai";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 import {
+  useEditUtilsStateRef,
   useLineInputReducer,
   useSelectLineStateRef,
   useSetCanUploadState,
@@ -49,6 +50,7 @@ export const useLineAddButtonEvent = () => {
   const readYtPlayerStatus = useYtPlayerStatusStateRef();
   const readSelectLine = useSelectLineStateRef();
   const readTimeOffset = useTimeOffsetStateRef();
+  const readEditUtils = useEditUtilsStateRef();
 
   return (isShiftKey: boolean) => {
     const mapData = editReduxStore.getState().mapData.value;
@@ -75,7 +77,9 @@ export const useLineAddButtonEvent = () => {
 
       const lyricsCopy = structuredClone(lyrics);
       deleteAddingTopPhrase(lyricsCopy);
-      pickupTopPhrase();
+      const { manyPhraseText } = readEditUtils();
+      const topPhrase = manyPhraseText.split("\n")[0];
+      pickupTopPhrase(topPhrase);
     }
 
     setCanUpload(true);

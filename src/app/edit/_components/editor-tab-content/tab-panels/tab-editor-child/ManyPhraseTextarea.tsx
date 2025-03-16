@@ -8,7 +8,6 @@ import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
 import { useWordConverter } from "@/app/edit/hooks/useWordConverter";
 import { ThemeColors } from "@/types";
 import { Box, Textarea, useTheme } from "@chakra-ui/react";
-import { useCallback } from "react";
 
 const ManyPhraseTextarea = () => {
   const theme: ThemeColors = useTheme();
@@ -20,18 +19,18 @@ const ManyPhraseTextarea = () => {
   const wordConverter = useWordConverter();
   const readSelectLine = useSelectLineStateRef();
 
-  const onChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { lyrics } = readSelectLine();
 
-    const firstLine = e.target.value.split("\n")[0];
-    if (firstLine !== lyrics) {
-      pickupTopPhrase();
+    const topPhrase = e.target.value.split("\n")[0];
+    if (topPhrase !== lyrics) {
+      pickupTopPhrase(topPhrase);
     }
 
     setManyPhrase(e.target.value);
-  }, []);
+  };
 
-  const onPaste = useCallback(async () => {
+  const onPaste = async () => {
     setTimeout(() => {
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.scrollTop = 0;
@@ -45,7 +44,7 @@ const ManyPhraseTextarea = () => {
     const topPhrase = lines[0];
     const word = await wordConverter(topPhrase);
     lineInputReducer({ type: "set", payload: { lyrics: topPhrase, word } });
-  }, []);
+  };
 
   return (
     <Box display="flex" alignItems="center">

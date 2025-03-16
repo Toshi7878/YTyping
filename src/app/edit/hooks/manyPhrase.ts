@@ -4,10 +4,7 @@ import { useWordConverter } from "./useWordConverter";
 export const usePickupTopPhrase = () => {
   const lineInputReducer = useLineInputReducer();
   const wordConvert = useWordConverter();
-  const readEditUtils = useEditUtilsStateRef();
-  return async () => {
-    const topPhrase = readEditUtils().manyPhraseText.split("\n")[0];
-
+  return async (topPhrase: string) => {
     const word = await wordConvert(topPhrase);
     lineInputReducer({ type: "set", payload: { lyrics: topPhrase, word } });
   };

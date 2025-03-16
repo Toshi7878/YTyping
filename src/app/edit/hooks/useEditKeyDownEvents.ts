@@ -1,5 +1,4 @@
 import { LineEdit } from "@/types";
-import { useStore as useJotaiStore } from "jotai";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 
 import { YTPlayer } from "@/types/global-types";
@@ -48,7 +47,6 @@ export const useTbodyScroll = () => {
 export const useWindowKeydownEvent = () => {
   const { playerRef } = useRefs();
   const editReduxStore = useReduxStore<RootState>();
-  const editAtomStore = useJotaiStore();
 
   const dispatch = useDispatch();
   const lineInputReducer = useLineInputReducer();
@@ -170,7 +168,8 @@ export const useWindowKeydownEvent = () => {
               if (future.type === "add") {
                 const data = future.data as LineEdit;
                 deleteAddingTopPhrase(data.lyrics);
-                pickupTopPhrase();
+                const topPhrase = manyPhraseText.split("\n")[0];
+                pickupTopPhrase(topPhrase);
               }
 
               dispatch(redo());
@@ -198,7 +197,9 @@ export const useWindowKeydownEvent = () => {
           break;
 
         case "KeyQ":
-          pickupTopPhrase();
+          const topPhrase = manyPhraseText.split("\n")[0];
+
+          pickupTopPhrase(topPhrase);
           event.preventDefault();
 
           break;
