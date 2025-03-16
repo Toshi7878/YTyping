@@ -16,7 +16,7 @@ const fetchMapList = async ({
   page,
   session,
   ...params
-}: { page: number; session: Session | null } & MapListParams): Promise<MapCardInfo[]> => {
+}: { page: number; session: Session | null } & Partial<MapListParams>): Promise<MapCardInfo[]> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
       params: { page, userId: session?.user.id, ...params },
