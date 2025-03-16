@@ -44,7 +44,7 @@ export const useMapListInfiniteQuery = () => {
     refetchOnReconnect: false,
     refetchOnMount: true,
     gcTime: Infinity,
-    staleTime: params.sort?.includes("random") ? Infinity : 20,
+    staleTime: params.sort?.includes("random") ? Infinity : 1000 * 20,
   });
 };
 
