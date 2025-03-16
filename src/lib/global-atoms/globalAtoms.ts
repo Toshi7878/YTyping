@@ -15,7 +15,7 @@ const getInitialTheme = (): "light" | "dark" => {
   return "dark";
 };
 
-export const themeAtom = atom<"light" | "dark">(getInitialTheme());
+const themeAtom = atom<"light" | "dark">(getInitialTheme());
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, {
   getOnInit: false,
