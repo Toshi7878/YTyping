@@ -35,7 +35,7 @@ const fetchMapList = async ({
 
 export const useMapListInfiniteQuery = () => {
   const { data: session } = useSession();
-  const { queryKey, params } = useGetMapListParams();
+  const { queryKey, params } = useGetMapListSearchParams();
 
   return useSuspenseInfiniteQuery({
     queryKey,
@@ -52,7 +52,7 @@ export const useMapListInfiniteQuery = () => {
   });
 };
 
-function useGetMapListParams() {
+function useGetMapListSearchParams() {
   const searchParams = useSearchParams();
 
   const params: Partial<typeof PARAM_NAME> = {};
