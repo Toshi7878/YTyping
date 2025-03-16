@@ -34,7 +34,7 @@ function Content({ mapInfo }: ContentProps) {
   const scene = useSceneState();
 
   const { id: mapId } = useParams();
-  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string | undefined });
+  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
 
   const isLoadingOverlay = useIsLoadingOverlayState();
   const disableKeyHandle = useDisableKeyHandle();

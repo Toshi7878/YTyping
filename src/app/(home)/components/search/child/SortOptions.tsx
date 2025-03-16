@@ -5,7 +5,7 @@ import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyR
 import { PARAM_NAME } from "@/app/(home)/ts/consts";
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 
 type SortField = keyof typeof FIELD_TO_PARAMS;
@@ -46,6 +46,16 @@ const SortOptions = () => {
       [field as SortField]: direction as SortDirection,
     };
   });
+
+  useEffect(() => {
+    const paramValue = searchParams.get(PARAM_NAME.sort);
+    const [direction] = paramValue?.match(/asc|desc/) || ["desc"];
+    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || [
+      "ID",
+    ];
+    setSortDirections({ ...getResetDirections(), [field as SortField]: direction as SortDirection });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleSort = (field: SortField) => {
     const currentDirection = sortDirections[field];

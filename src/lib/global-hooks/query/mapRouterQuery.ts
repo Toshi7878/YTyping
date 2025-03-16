@@ -1,8 +1,8 @@
 import { clientApi } from "@/trpc/client-api";
 
-export const useMapQuery = ({ mapId }: { mapId: string | undefined }) => {
+export const useMapQuery = ({ mapId }: { mapId: string }) => {
   const getMap = clientApi.map.getMap.useQuery(
-    { mapId: mapId as string },
+    { mapId },
     {
       enabled: !!mapId,
       gcTime: 0,
