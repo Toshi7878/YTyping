@@ -5,6 +5,7 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { IndexDBOption } from "@/types";
 import { Provider as JotaiProvider } from "jotai";
+import { DevTools } from "jotai-devtools";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
@@ -34,7 +35,11 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
 
   const videoId = mapInfo ? mapInfo.video_id : newVideoId;
   const geminiQueryData = utils.gemini.generateMapInfo.getData({ videoId });
-  const hydrationState: any[] = [[geminiTagsAtom, geminiQueryData?.otherTags || []]];
+  const hydrationState: any[] = [];
+
+  if (geminiQueryData) {
+    hydrationState.push([geminiTagsAtom, geminiQueryData.otherTags]);
+  }
 
   if (mapInfo) {
     hydrationState.push(
@@ -110,7 +115,10 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   return (
     <RefsProvider>
       <ReduxProvider store={editStore}>
-        <JotaiProvider store={jotaiStore}>{children}</JotaiProvider>
+        <JotaiProvider store={jotaiStore}>
+          <DevTools store={jotaiStore} />
+          {children}
+        </JotaiProvider>
       </ReduxProvider>
     </RefsProvider>
   );

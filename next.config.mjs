@@ -11,6 +11,7 @@ const nextConfig = {
 
     return config;
   },
+  reactStrictMode: false,
   transpilePackages: ["jotai-devtools"],
 };
 
