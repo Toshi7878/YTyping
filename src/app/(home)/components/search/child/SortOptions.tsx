@@ -38,9 +38,9 @@ const SortOptions = () => {
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>(() => {
     const paramValue = searchParams.get(PARAM_NAME.sort);
     const [direction] = paramValue?.match(/asc|desc/) || ["desc"];
-    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) =>
-      paramValue?.includes(value)
-    ) || ["ID"];
+    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || [
+      "ID",
+    ];
     return {
       ...getResetDirections(),
       [field as SortField]: direction as SortDirection,
@@ -49,25 +49,22 @@ const SortOptions = () => {
 
   const handleSort = (field: SortField) => {
     const currentDirection = sortDirections[field];
-    let newDirection: SortDirection;
-
-    if (field === "ランダム") {
-      newDirection = currentDirection ? null : "desc";
-    } else {
-      newDirection = currentDirection === null ? "desc" : currentDirection === "desc" ? "asc" : null;
-    }
-
     const params = new URLSearchParams(searchParams.toString());
 
-    if (!newDirection) {
-      params.delete(PARAM_NAME.sort);
-      setSortDirections({ ...getResetDirections(), ID: "desc" });
-    } else if (field === "ランダム") {
+    if (field === "ランダム") {
       params.set(PARAM_NAME.sort, FIELD_TO_PARAMS[field]);
       setSortDirections({ ...getResetDirections(), ランダム: "desc" });
     } else {
-      params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_${newDirection}`);
-      setSortDirections({ ...getResetDirections(), [field]: newDirection });
+      if (currentDirection === null) {
+        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
+        setSortDirections({ ...getResetDirections(), [field]: "desc" });
+      } else if (currentDirection === "desc") {
+        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_asc`);
+        setSortDirections({ ...getResetDirections(), [field]: "asc" });
+      } else {
+        params.delete(PARAM_NAME.sort);
+        setSortDirections({ ...getResetDirections(), ID: "desc" });
+      }
     }
 
     setIsSearching(true);
