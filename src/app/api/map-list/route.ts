@@ -1,9 +1,8 @@
 import { PARAM_NAME } from "@/app/(home)/ts/consts";
+import { PAGE_SIZE } from "@/lib/global-hooks/query/useMapListInfiniteQuery";
 import { prisma } from "@/server/db";
 import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";
-
-const MAP_LIST_TAKE_LENGTH = 40; //ここを編集したらInfiniteQueryのgetNextPageParamも編集する
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -18,7 +17,7 @@ export async function GET(req: NextRequest) {
   const difficultyFilterSql = getDifficultyFilterSql({ minRate, maxRate });
   const playedSql = getPlayedFilterSql({ played: searchParams.get(PARAM_NAME.played), userId });
 
-  const offset = MAP_LIST_TAKE_LENGTH * Number(page);
+  const offset = PAGE_SIZE * Number(page);
 
   try {
     const mapList = await prisma.$queryRaw`
@@ -90,7 +89,7 @@ export async function GET(req: NextRequest) {
       ))
     )
     ${sortSql}
-    LIMIT ${MAP_LIST_TAKE_LENGTH} OFFSET ${offset}`;
+    LIMIT ${PAGE_SIZE} OFFSET ${offset}`;
 
     return new Response(JSON.stringify(mapList), {
       headers: { "Content-Type": "application/json" },

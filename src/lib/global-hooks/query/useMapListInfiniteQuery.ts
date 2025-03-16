@@ -10,7 +10,7 @@ import { useSearchParams } from "next/navigation";
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 
 // 1ページあたりの最大アイテム数
-const PAGE_SIZE = 40;
+export const PAGE_SIZE = 40;
 
 const fetchMapList = async ({
   page,
@@ -41,10 +41,8 @@ export const useMapListInfiniteQuery = () => {
     queryKey,
     queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, session, ...params }),
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage.length === PAGE_SIZE ? allPages.length : undefined,
-    getPreviousPageParam: (firstPage, allPages) =>
-      allPages.length > 1 ? allPages.length - 2 : undefined,
+    getNextPageParam: (lastPage, allPages) => (lastPage.length === PAGE_SIZE ? allPages.length : undefined),
+    getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 2 : undefined),
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: true,
