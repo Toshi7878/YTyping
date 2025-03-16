@@ -20,7 +20,7 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
       [mapInfoAtom, mapInfo],
       ...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : []),
     ],
-    { dangerouslyForceHydrate: true, store: typeAtomStore }
+    { dangerouslyForceHydrate: false, store: typeAtomStore }
   );
 
   useEffect(() => {
