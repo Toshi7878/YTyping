@@ -1,4 +1,3 @@
-import { useGetMapListParams } from "@/app/(home)/hook/useGetMapListSearchParams";
 import { PARAM_NAME } from "@/app/(home)/ts/consts";
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
@@ -6,6 +5,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 
@@ -35,7 +35,7 @@ const fetchMapList = async ({
 
 export const useMapListInfiniteQuery = () => {
   const { data: session } = useSession();
-  const { queryKey, params } = useGenerateMapListInfiniteQueryKey();
+  const { queryKey, params } = useGetMapListParams();
 
   return useSuspenseInfiniteQuery({
     queryKey,
@@ -52,8 +52,16 @@ export const useMapListInfiniteQuery = () => {
   });
 };
 
-export const useGenerateMapListInfiniteQueryKey = () => {
-  const queryParams = useGetMapListParams();
+function useGetMapListParams() {
+  const searchParams = useSearchParams();
 
-  return { queryKey: [...QUERY_KEYS.mapList, ...Object.values(queryParams)], params: queryParams };
-};
+  const params: Partial<typeof PARAM_NAME> = {};
+
+  for (const [key, value] of Array.from(searchParams.entries())) {
+    if (key in PARAM_NAME) {
+      params[key] = value;
+    }
+  }
+
+  return { queryKey: [...QUERY_KEYS.mapList, ...Object.values(params)], params: params };
+}
