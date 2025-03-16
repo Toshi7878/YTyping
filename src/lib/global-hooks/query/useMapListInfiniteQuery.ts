@@ -1,5 +1,5 @@
 import { useGetMapListParams } from "@/app/(home)/hook/useGetMapListSearchParams";
-import { MapListParams } from "@/app/(home)/ts/type";
+import { PARAM_NAME } from "@/app/(home)/ts/consts";
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ const fetchMapList = async ({
   page,
   session,
   ...params
-}: { page: number; session: Session | null } & Partial<MapListParams>): Promise<MapCardInfo[]> => {
+}: { page: number; session: Session | null } & Partial<typeof PARAM_NAME>): Promise<MapCardInfo[]> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
       params: { page, userId: session?.user.id, ...params },
