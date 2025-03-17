@@ -26,29 +26,25 @@ const PracticeLineCard = () => {
   const { moveSetLine } = useMoveLine();
   const interact = useInteractJS();
 
-  const index = map!.typingLineNumbers[lineSelectIndex - 1] || map!.typingLineNumbers[0];
+  const index = map.typingLineNumbers[lineSelectIndex - 1] || map.typingLineNumbers[0];
 
   const lineResult = lineResults[index];
 
   const lineInputMode = lineResult?.status?.mode ?? inputMode;
 
-  const lineData = map!.mapData[index];
+  const lineData = map.mapData[index];
 
-  // mapのLineデータ
   const maxLinePoint = lineData?.notes.r * CHAR_POINT;
   const lineKanaWord = lineData?.word.map((w) => w["k"]).join("");
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
   const lineSpeed =
-    lineResult?.status!.sp > speedData.defaultSpeed
-      ? lineResult?.status!.sp
-      : speedData.defaultSpeed;
+    lineResult?.status!.sp > speedData.defaultSpeed ? lineResult?.status!.sp : speedData.defaultSpeed;
   const lineTime =
-    (Number(map!.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
+    (Number(map.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
   //ユーザーのLineリザルトデータ
-  const lineTypeWord =
-    lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
+  const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
   const lostWord = lineResult?.status!.lostW;
   const point = lineResult?.status?.p;
   const tBonus = lineResult?.status?.tBonus;
@@ -80,7 +76,7 @@ const PracticeLineCard = () => {
       onMouseMove={() => setIsDragging(true)}
       onClick={() => {
         if (!isDragging) {
-          const seekCount = map!.typingLineNumbers[lineSelectIndex - 1];
+          const seekCount = map.typingLineNumbers[lineSelectIndex - 1];
           moveSetLine(seekCount);
         }
       }}

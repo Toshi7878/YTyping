@@ -48,7 +48,7 @@ function ResultCard({
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
   const lineTime =
-    (Number(map!.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
+    (Number(map.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
   const maxLinePoint = lineData.notes.r * CHAR_POINT;
@@ -60,7 +60,7 @@ function ResultCard({
   const tBonus = lineResult.status?.tBonus;
   const lostWord = lineResult.status?.lostW;
 
-  const seekTime = Number(map!.mapData[index]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
+  const seekTime = Number(map.mapData[index]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
 
   const lineNumber = lineCount;
 

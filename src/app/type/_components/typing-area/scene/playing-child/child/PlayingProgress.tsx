@@ -30,8 +30,7 @@ const PlayingProgress = (props: PlayingProgressProps) => {
   useEffect(() => {
     if (props.id === "total_progress" && scene !== "ready" && map) {
       const movieDuration = readYTStatusRef().movieDuration;
-      const duration =
-        Number(map?.movieTotalTime) > movieDuration ? movieDuration : map?.movieTotalTime;
+      const duration = Number(map.movieTotalTime) > movieDuration ? movieDuration : map.movieTotalTime;
       progressRef.current!.max = duration;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

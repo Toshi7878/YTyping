@@ -1,5 +1,4 @@
 import {
-  useMapState,
   useSceneState,
   useSetLineWordState,
   useSetLyricsState,
@@ -24,7 +23,6 @@ const Playing = () => {
   const handleKeydown = useHandleKeydown();
   const { readUserStatsRef, resetUserStatsRef } = useUserStatsRef();
   const { readGameUtils } = useGameUtilsRef();
-  const map = useMapState();
   const scene = useSceneState();
 
   useEffect(() => {
@@ -92,7 +90,7 @@ const Playing = () => {
       setNextLyrics(RESET);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, scene]);
+  }, [scene]);
 
   return <PlayingCenter flex="1" />;
 };
