@@ -1,6 +1,6 @@
 import { CreateMap } from "@/lib/instanceMapData";
 import { $Enums } from "@prisma/client";
-import { atom, createStore, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import { createStore, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
@@ -28,7 +28,7 @@ const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) =>
   optic.valueOr({} as { isLiked: undefined }).prop("isLiked")
 );
 
-const mapAtom = atom<CreateMap | null>(null);
+const mapAtom = atomWithReset<CreateMap | null>(null);
 
 const gameUtilsStateAtom = atomWithReset({
   scene: "ready" as SceneType,
@@ -115,6 +115,12 @@ export const focusTypingStatusAtoms = {
 
 export const useMapState = () => useAtomValue(mapAtom, { store }) as CreateMap;
 export const useSetMapState = () => useSetAtom(mapAtom, { store });
+export const useMapStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(mapAtom) as CreateMap, []),
+    { store }
+  );
+};
 
 export const useIsLikeAtom = () => useAtomValue(mapLikeFocusAtom, { store });
 export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store });

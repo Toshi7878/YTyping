@@ -2,7 +2,7 @@ import { useGameUtilsRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/
 import {
   useLineSelectIndexStateRef,
   useLineWordStateRef,
-  useMapState,
+  useMapStateRef,
   usePlayingInputModeStateRef,
   useSceneState,
   useSceneStateRef,
@@ -87,10 +87,10 @@ const usePlayingShortcutKey = () => {
   const readSkip = useSkipStateRef();
   const readLineSelectIndex = useLineSelectIndexStateRef();
   const readTypingOptions = useUserTypingOptionsStateRef();
-
-  const map = useMapState();
+  const readMap = useMapStateRef();
 
   return (event: KeyboardEvent) => {
+    const map = readMap();
     const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
     const typingOptions = readTypingOptions();
 

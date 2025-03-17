@@ -3,7 +3,7 @@ import {
   useComboStateRef,
   useLineResultsStateRef,
   useLineWordStateRef,
-  useMapState,
+  useMapStateRef,
   usePlayingInputModeStateRef,
   useSetComboState,
   useSetLineKpmState,
@@ -21,10 +21,12 @@ import { useSoundEffect } from "../useSoundEffect";
 import { useCalcCurrentRank, useTypeMiss, useTypeSuccess } from "../useUpdateStatus";
 
 export const useUpdateAllStatus = () => {
-  const map = useMapState();
   const calcCurrentRank = useCalcCurrentRank();
+  const readMap = useMapStateRef();
 
   return ({ count, newLineResults }) => {
+    const map = readMap();
+
     const newStatus = {
       score: 0,
       point: 0,

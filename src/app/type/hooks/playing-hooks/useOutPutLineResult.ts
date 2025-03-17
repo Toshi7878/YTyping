@@ -1,5 +1,5 @@
 import {
-  useMapState,
+  useMapStateRef,
   usePlayingInputModeStateRef,
   useSceneStateRef,
   useTypingStatusStateRef,
@@ -15,13 +15,13 @@ interface useOutPutLineResultProps {
 }
 
 export const useOutPutLineResult = () => {
-  const map = useMapState();
   const calcCurrentRank = useCalcCurrentRank();
 
   const { readStatusRef, writeStatusRef } = useStatusRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readScene = useSceneStateRef();
+  const readMap = useMapStateRef();
 
   const getLostWord = (newLineWord: LineWord) => {
     if (newLineWord.nextChar["k"]) {
@@ -36,6 +36,7 @@ export const useOutPutLineResult = () => {
   };
 
   const updateStatus = (newLineWord: LineWord, lostLength: number, totalTypeSpeed: number) => {
+    const map = readMap();
     const status = readTypingStatus();
     const scene = readScene();
 

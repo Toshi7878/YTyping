@@ -12,7 +12,7 @@ import {
   useCurrentTimeStateRef,
   useLineResultsStateRef,
   useLineWordStateRef,
-  useMapState,
+  useMapStateRef,
   usePlayingInputModeStateRef,
   usePlaySpeedStateRef,
   useSceneStateRef,
@@ -40,7 +40,6 @@ import { useLineReplayUpdate, useReplay, useUpdateAllStatus } from "./replayHook
 import { useGetSeekLineCount } from "./useSeekGetLineCount";
 
 export const usePlayTimer = () => {
-  const map = useMapState();
   const { readPlayer } = usePlayer();
 
   const setCurrentTime = useSetCurrentTimeState();
@@ -70,6 +69,7 @@ export const usePlayTimer = () => {
   const readTypingStatus = useTypingStatusStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readScene = useSceneStateRef();
+  const readMap = useMapStateRef();
 
   const update = ({
     count,
@@ -82,6 +82,8 @@ export const usePlayTimer = () => {
     constantLineTime: number;
     nextLine: LineData;
   }) => {
+    const map = readMap();
+
     calcLineResult({ count, constantLineTime });
 
     const currentLine = map.mapData[count - 1];
@@ -118,6 +120,7 @@ export const usePlayTimer = () => {
     currentOffesettedYTTime: number;
     constantOffesettedYTTime: number;
   }) => {
+    const map = readMap();
     setDisplayRemainTime(constantRemainLineTime);
 
     const lineWord = readLineWord();
@@ -155,6 +158,7 @@ export const usePlayTimer = () => {
   };
 
   return () => {
+    const map = readMap();
     const currentOffesettedYTTime = getCurrentOffsettedYTTime();
     const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
 
@@ -206,8 +210,6 @@ export const usePlayTimer = () => {
 };
 
 export const useCalcLineResult = () => {
-  const map = useMapState();
-
   const setLineResults = useSetLineResultsState();
   const calcTypeSpeed = useCalcTypeSpeed();
   const setCombo = useSetComboState();
@@ -224,9 +226,12 @@ export const useCalcLineResult = () => {
   const readTypingStatus = useTypingStatusStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readScene = useSceneStateRef();
+  const readMap = useMapStateRef();
 
   return ({ count, constantLineTime }: { count: number; constantLineTime: number }) => {
+    const map = readMap();
     const scene = readScene();
+
     if (scene === "playing" || scene === "practice") {
       const completedTime = readLineStatusRef().completedTime;
 
@@ -326,7 +331,7 @@ export const useCalcLineResult = () => {
         const lineResults = readLineResults();
 
         const newStatus = updateAllStatus({
-          count: map!.mapData.length - 1,
+          count: map.mapData.length - 1,
           newLineResults: lineResults,
         });
         setTypingStatus(newStatus);
@@ -348,8 +353,6 @@ export const useCalcLineResult = () => {
 };
 
 export const useUpdateLine = () => {
-  const map = useMapState();
-
   const setLyrics = useSetLyricsState();
   const setNextLyrics = useSetNextLyricsState();
   const setLineWord = useSetLineWordState();
@@ -365,8 +368,10 @@ export const useUpdateLine = () => {
   const readTypingOptions = useUserTypingOptionsStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readScene = useSceneStateRef();
+  const readMap = useMapStateRef();
 
   return (newCount: number) => {
+    const map = readMap();
     const currentCount = newCount ? newCount - 1 : 0;
     const inputMode = readPlayingInputMode();
     resetLineStatusRef();

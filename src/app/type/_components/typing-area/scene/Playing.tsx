@@ -1,6 +1,6 @@
 import {
   useMapState,
-  useSceneStateRef,
+  useSceneState,
   useSetLineWordState,
   useSetLyricsState,
   useSetNextLyricsState,
@@ -24,8 +24,8 @@ const Playing = () => {
   const handleKeydown = useHandleKeydown();
   const { readUserStatsRef, resetUserStatsRef } = useUserStatsRef();
   const { readGameUtils } = useGameUtilsRef();
-  const readScene = useSceneStateRef();
   const map = useMapState();
+  const scene = useSceneState();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -50,7 +50,6 @@ const Playing = () => {
       resetUserStatsRef(structuredClone(maxCombo));
     };
 
-    const scene = readScene();
     if (scene === "playing" || scene === "practice") {
       window.addEventListener("beforeunload", handleBeforeunload);
       window.addEventListener("visibilitychange", handleVisibilitychange);
@@ -60,11 +59,9 @@ const Playing = () => {
       window.removeEventListener("visibilitychange", handleVisibilitychange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [scene]);
 
   useEffect(() => {
-    const scene = readScene();
-
     if (scene === "practice") {
       const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
       drawerClosure!.onOpen();
@@ -95,7 +92,7 @@ const Playing = () => {
       setNextLyrics(RESET);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map]);
+  }, [map, scene]);
 
   return <PlayingCenter flex="1" />;
 };

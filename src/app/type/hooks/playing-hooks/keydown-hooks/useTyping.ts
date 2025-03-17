@@ -2,7 +2,7 @@ import { useLineStatusRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms
 import {
   useComboStateRef,
   useLineResultsStateRef,
-  useMapState,
+  useMapStateRef,
   usePlayingInputModeStateRef,
   usePlaySpeedStateRef,
   useSceneStateRef,
@@ -28,8 +28,6 @@ interface HandleTypingParams {
 }
 
 export const useTyping = () => {
-  const map = useMapState();
-
   const setLineResults = useSetLineResultsState();
   const { triggerTypingSound, triggerMissSound } = useSoundEffect();
 
@@ -53,8 +51,11 @@ export const useTyping = () => {
   const readPlayingInputMode = usePlayingInputModeStateRef();
   const readScene = useSceneStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
+  const readMap = useMapStateRef();
 
   return ({ event, count, lineWord }: HandleTypingParams) => {
+    const map = readMap();
+
     const typingResult = new Typing({ event, lineWord, inputMode: readPlayingInputMode() });
     const typingStatus = readTypingStatus();
 

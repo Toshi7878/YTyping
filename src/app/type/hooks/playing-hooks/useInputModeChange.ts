@@ -2,7 +2,7 @@ import { romaConvert } from "../../../../lib/instanceMapData";
 import { useLineStatusRef, useStatusRef } from "../../atoms/refAtoms";
 import {
   useLineWordStateRef,
-  useMapState,
+  useMapStateRef,
   usePlayingInputModeStateRef,
   usePlaySpeedStateRef,
   useSceneStateRef,
@@ -16,8 +16,6 @@ import { InputModeType } from "../../ts/type";
 import { useGetTime } from "../useGetTime";
 
 export const useInputModeChange = () => {
-  const map = useMapState();
-
   const setPlayingInputMode = useSetPlayingInputModeState();
   const setNotify = useSetNotifyState();
   const setNextLyrics = useSetNextLyricsState();
@@ -31,8 +29,10 @@ export const useInputModeChange = () => {
   const readScene = useSceneStateRef();
   const readLineWord = useLineWordStateRef();
   const readTypingOptions = useUserTypingOptionsStateRef();
+  const readMap = useMapStateRef();
 
   return async (newInputMode: InputModeType) => {
+    const map = readMap();
     const playingInputMode = readPlayingInputMode();
 
     if (newInputMode === playingInputMode) {
@@ -60,11 +60,11 @@ export const useInputModeChange = () => {
     }
 
     const count = readStatusRef().count;
-    const nextLine = map!.mapData[count];
+    const nextLine = map.mapData[count];
     const playSpeed = readPlaySpeed().playSpeed;
 
     const nextKpm =
-      (newInputMode === "roma" ? map!.mapData[count].kpm["r"] : map!.mapData[count].kpm["k"]) * playSpeed;
+      (newInputMode === "roma" ? map.mapData[count].kpm["r"] : map.mapData[count].kpm["k"]) * playSpeed;
     if (nextKpm) {
       const userOptions = readTypingOptions();
 

@@ -1,6 +1,6 @@
 import { useGameUtilsRef, usePlayer, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
 import {
-  useMapState,
+  useMapStateRef,
   usePlaySpeedStateRef,
   useSetSkipState,
   useUserTypingOptionsStateRef,
@@ -8,7 +8,6 @@ import {
 
 export const usePressSkip = () => {
   const { readPlayer } = usePlayer();
-  const map = useMapState();
   const setSkip = useSetSkipState();
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
@@ -16,16 +15,18 @@ export const usePressSkip = () => {
   const { readStatusRef } = useStatusRef();
   const readUserOptions = useUserTypingOptionsStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
+  const readMap = useMapStateRef();
 
   return () => {
+    const map = readMap();
     const userOptions = readUserOptions();
     const { timeOffset, isRetrySkip } = readGameUtils();
     const count = readStatusRef().count;
 
-    const nextLine = map!.mapData[count];
+    const nextLine = map.mapData[count];
 
     const skippedTime =
-      (isRetrySkip ? Number(map!.mapData[map!.startLine]["time"]) : Number(nextLine["time"])) +
+      (isRetrySkip ? Number(map.mapData[map!.startLine]["time"]) : Number(nextLine["time"])) +
       userOptions.time_offset +
       timeOffset;
 

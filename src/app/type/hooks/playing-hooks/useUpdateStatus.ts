@@ -1,7 +1,7 @@
 import { MISS_PENALTY } from "../../../../lib/instanceMapData";
 import { useGameUtilsRef, useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
 import {
-  useMapState,
+  useMapStateRef,
   usePlayingInputModeStateRef,
   useSceneStateRef,
   useSetComboState,
@@ -11,7 +11,6 @@ import {
 import { TypeChunk } from "../../ts/type";
 
 export const useTypeSuccess = () => {
-  const map = useMapState();
   const setCombo = useSetComboState();
   const { setTypingStatus } = useSetTypingStatusState();
   const calcCurrentRank = useCalcCurrentRank();
@@ -22,8 +21,10 @@ export const useTypeSuccess = () => {
   const readTypingStatus = useTypingStatusStateRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
   const readScene = useSceneStateRef();
+  const readMap = useMapStateRef();
 
   const updateSuccessStatus = ({ newLineWord, lineRemainConstantTime, updatePoint, totalKpm, combo }) => {
+    const map = readMap();
     const status = readTypingStatus();
     const newStatus = { ...status };
     const lineTypeCount = readLineStatusRef().type;
@@ -196,13 +197,13 @@ export const useCalcCurrentRank = () => {
 };
 
 export const useTypeMiss = () => {
-  const map = useMapState();
   const setCombo = useSetComboState();
   const { setTypingStatus } = useSetTypingStatusState();
 
   const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
   const { readStatusRef, writeStatusRef } = useStatusRef();
   const readTypingStatus = useTypingStatusStateRef();
+  const readMap = useMapStateRef();
 
   const updateMissStatus = () => {
     const status = readTypingStatus();
@@ -216,6 +217,8 @@ export const useTypeMiss = () => {
   };
 
   const updateMissRefStatus = ({ constantLineTime, failKey }) => {
+    const map = readMap();
+
     writeStatusRef({
       clearRate: readStatusRef().clearRate - map.missRate,
       missCombo: readStatusRef().missCombo + 1,

@@ -1,7 +1,7 @@
 import { usePlayer, useResultCards, useStatusRef } from "../../atoms/refAtoms";
 import {
   useLineSelectIndexStateRef,
-  useMapState,
+  useMapStateRef,
   usePlaySpeedStateRef,
   useSceneStateRef,
   useSetLineSelectIndexState,
@@ -13,7 +13,6 @@ import { useUpdateLine } from "./timer-hooks/useTimer";
 
 export const useMoveLine = () => {
   const { readPlayer } = usePlayer();
-  const map = useMapState();
   const setLineSelectIndex = useSetLineSelectIndexState();
   const setNotify = useSetNotifyState();
   const updateLine = useUpdateLine();
@@ -24,11 +23,13 @@ export const useMoveLine = () => {
   const readScene = useSceneStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readLineSelectIndex = useLineSelectIndexStateRef();
+  const readMap = useMapStateRef();
 
   const movePrevLine = () => {
+    const map = readMap();
     const scene = readScene();
     const count = readStatusRef().count - (scene === "replay" ? 1 : 0);
-    const prevCount = structuredClone(map!.typingLineNumbers)
+    const prevCount = structuredClone(map.typingLineNumbers)
       .reverse()
       .find((num) => num < count);
 
@@ -38,8 +39,8 @@ export const useMoveLine = () => {
     const playSpeed = readPlaySpeed().playSpeed;
 
     const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
-    const prevTime = Number(map!.mapData[prevCount]["time"]) - seekBuffer;
-    const newLineSelectIndex = map!.typingLineNumbers.indexOf(prevCount) + 1;
+    const prevTime = Number(map.mapData[prevCount]["time"]) - seekBuffer;
+    const newLineSelectIndex = map.typingLineNumbers.indexOf(prevCount) + 1;
     setLineSelectIndex(newLineSelectIndex);
     if (typeTicker.started) {
       typeTicker.stop();
@@ -56,12 +57,13 @@ export const useMoveLine = () => {
   };
 
   const moveNextLine = () => {
+    const map = readMap();
     const lineSelectIndex = readLineSelectIndex();
-    const seekCount = lineSelectIndex ? map!.typingLineNumbers[lineSelectIndex - 1] : null;
+    const seekCount = lineSelectIndex ? map.typingLineNumbers[lineSelectIndex - 1] : null;
     const seekCountAdjust = seekCount && seekCount === readStatusRef().count ? 0 : -1;
 
     const count = readStatusRef().count + seekCountAdjust;
-    const nextCount = map!.typingLineNumbers.find((num) => num > count);
+    const nextCount = map.typingLineNumbers.find((num) => num > count);
 
     if (nextCount === undefined) {
       return;
@@ -70,13 +72,13 @@ export const useMoveLine = () => {
     const playSpeed = readPlaySpeed().playSpeed;
 
     const prevLineTime =
-      (nextCount > 1 ? map!.mapData[nextCount]["time"] - map!.mapData[nextCount - 1]["time"] : 0) / playSpeed;
+      (nextCount > 1 ? map.mapData[nextCount]["time"] - map.mapData[nextCount - 1]["time"] : 0) / playSpeed;
 
     const scene = readScene();
     const seekBuffer = scene === "practice" && prevLineTime > 1 ? 1 * playSpeed : 0;
-    const nextTime = Number(map!.mapData[nextCount]["time"]) - seekBuffer;
+    const nextTime = Number(map.mapData[nextCount]["time"]) - seekBuffer;
 
-    const newLineSelectIndex = map!.typingLineNumbers.indexOf(nextCount) + 1;
+    const newLineSelectIndex = map.typingLineNumbers.indexOf(nextCount) + 1;
 
     setLineSelectIndex(newLineSelectIndex);
     if (typeTicker.started) {
@@ -94,10 +96,11 @@ export const useMoveLine = () => {
   };
 
   const moveSetLine = (seekCount: number) => {
+    const map = readMap();
     const playSpeed = readPlaySpeed().playSpeed;
     const scene = readScene();
     const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
-    const seekTime = Number(map!.mapData[seekCount]["time"]) - seekBuffer;
+    const seekTime = Number(map.mapData[seekCount]["time"]) - seekBuffer;
 
     const lineSelectIndex = readLineSelectIndex();
 
@@ -129,6 +132,7 @@ export const useMoveLine = () => {
     }
   };
   const scrollToCard = (newIndex: number) => {
+    const map = readMap();
     const resultCards = readResultCards();
 
     const card: HTMLDivElement = resultCards[newIndex];
@@ -136,7 +140,7 @@ export const useMoveLine = () => {
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;
       const scrollHeight = drawerBody.scrollHeight;
-      drawerBody.scrollTop = (scrollHeight * (newIndex - 2)) / map!.typingLineNumbers.length;
+      drawerBody.scrollTop = (scrollHeight * (newIndex - 2)) / map.typingLineNumbers.length;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };

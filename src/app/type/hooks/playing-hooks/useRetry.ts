@@ -1,7 +1,7 @@
 import { RESET } from "jotai/utils";
 import { useGameUtilsRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
 import {
-  useMapState,
+  useMapStateRef,
   useSceneStateRef,
   useSetComboState,
   useSetLineResultsState,
@@ -19,7 +19,6 @@ import { PlayMode } from "../../ts/type";
 import { useUpdateUserStats } from "./useUpdateUserStats";
 
 export const useRetry = () => {
-  const map = useMapState();
   const { readPlayer } = usePlayer();
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
 
@@ -35,8 +34,10 @@ export const useRetry = () => {
   const { resetStatusRef } = useStatusRef();
   const readScene = useSceneStateRef();
   const readTypingStatus = useTypingStatusStateRef();
+  const readMap = useMapStateRef();
 
   return (newPlayMode: PlayMode) => {
+    const map = readMap();
     setLineWord(RESET);
     setLyrics("");
     setNextLyrics(RESET);
@@ -81,8 +82,6 @@ export const useProceedRetry = () => {
   const setCombo = useSetComboState();
   const setTabIndex = useSetTabIndexState();
 
-  const map = useMapState();
-
   const setLineResults = useSetLineResultsState();
   const setScene = useSetSceneState();
   const { resetTypingStatus } = useSetTypingStatusState();
@@ -91,8 +90,10 @@ export const useProceedRetry = () => {
   const { readPlayer } = usePlayer();
   const { writeGameUtils } = useGameUtilsRef();
   const { resetStatusRef } = useStatusRef();
+  const readMap = useMapStateRef();
 
   return (playMode: PlayMode) => {
+    const map = readMap();
     setScene(playMode);
     setTabIndex(0);
 

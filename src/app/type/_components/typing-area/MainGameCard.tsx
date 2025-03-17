@@ -24,6 +24,8 @@ const GameCardBody = (props: TypingCardBodyProps) => {
   const scene = useSceneState();
   const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
 
+  useEffect(() => {}, [map]);
+
   return (
     <CardBody mx={8} py={3}>
       {scene === "ready" ? (
