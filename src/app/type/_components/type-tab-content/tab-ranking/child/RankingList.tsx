@@ -1,5 +1,5 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
-import { useSceneState, useSetTypingStatusState } from "@/app/type/atoms/stateAtoms";
+import { useSceneState, useSetTypingStatusRankState } from "@/app/type/atoms/stateAtoms";
 import { useMapRankingQuery } from "@/lib/global-hooks/query/mapRankingRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
@@ -17,7 +17,7 @@ const RankingList = () => {
 
   const { data, error, isPending } = useMapRankingQuery({ mapId: mapId as string });
   const { writeGameUtils } = useGameUtilsRef();
-  const { setTypingStatus } = useSetTypingStatusState();
+  const setTypingStatusRank = useSetTypingStatusRankState();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,10 +56,7 @@ const RankingList = () => {
       rankingScores: scores,
     });
 
-    setTypingStatus((prev) => ({
-      ...prev,
-      rank: scores.length + 1,
-    }));
+    setTypingStatusRank(scores.length + 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 

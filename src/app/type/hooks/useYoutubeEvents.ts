@@ -1,22 +1,16 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { YouTubeEvent } from "react-youtube";
-import {
-  useGameUtilsRef,
-  usePlayer,
-  useProgress,
-  useStatusRef,
-  useYTStatusRef,
-} from "../atoms/refAtoms";
+import { useGameUtilsRef, usePlayer, useProgress, useStatusRef, useYTStatusRef } from "../atoms/refAtoms";
 import {
   useIsLoadingOverlayStateRef,
-  useReadyInputModeStateRef,
   useSceneStateRef,
   useSetNotifyState,
   useSetPlayingInputModeState,
   useSetSceneState,
   useSetTabIndexState,
 } from "../atoms/stateAtoms";
+import { useReadyInputModeStateRef } from "../atoms/storageAtoms";
 import { typeTicker } from "../ts/const/consts";
 import { InputModeType } from "../ts/type";
 import { useStartTimer } from "./playing-hooks/timer-hooks/useStartTimer";

@@ -19,6 +19,7 @@ import {
   useSetLineResultsState,
   useSetLineSelectIndexState,
   useSetMapState,
+  useSetTypingStatusLineState,
   useSetTypingStatusState,
 } from "../atoms/stateAtoms";
 import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
@@ -43,6 +44,7 @@ function Content({ mapInfo }: ContentProps) {
   const setMap = useSetMapState();
   const setLineResults = useSetLineResultsState();
   const setLineSelectIndex = useSetLineSelectIndexState();
+  const setTypingStatusLine = useSetTypingStatusLineState();
   const pathChangeAtomReset = usePathChangeAtomReset();
   const { readTotalProgress } = useProgress();
   const { resetTypingStatus } = useSetTypingStatusState();
@@ -61,6 +63,7 @@ function Content({ mapInfo }: ContentProps) {
       setMap(map);
       setLineResults(map.defaultLineResultData);
       setLineSelectIndex(map.typingLineNumbers[0]);
+      setTypingStatusLine(map.lineLength);
       resetTypingStatus();
 
       const totalProgress = readTotalProgress();

@@ -1,9 +1,6 @@
 "use client";
-import {
-  useReadyInputModeState,
-  useSetPlayingInputModeState,
-  useSetReadyInputModeState,
-} from "@/app/type/atoms/stateAtoms";
+import { useSetPlayingInputModeState } from "@/app/type/atoms/stateAtoms";
+import { useReadyInputModeState, useSetReadyInputModeState } from "@/app/type/atoms/storageAtoms";
 import { InputModeType } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
 import { Box, HStack, useRadio, useRadioGroup, UseRadioProps, useTheme } from "@chakra-ui/react";
