@@ -1,9 +1,9 @@
+import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
 import {
   useLineResultsState,
   useLineSelectIndexState,
   useMapState,
   usePlayingInputModeState,
-  usePlaySpeedState,
 } from "@/app/type/atoms/stateAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
 import { useInteractJS } from "@/app/type/hooks/useInteractJS";

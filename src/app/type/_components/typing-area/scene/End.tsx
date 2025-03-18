@@ -1,5 +1,6 @@
+import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
-import { usePlaySpeedState, useTypingStatusState } from "@/app/type/atoms/stateAtoms";
+import { useTypingStatusState } from "@/app/type/atoms/stateAtoms";
 import { useUpdateUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
 import { useSendResult } from "@/app/type/hooks/useSendResult";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";

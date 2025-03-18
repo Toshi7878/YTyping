@@ -1,15 +1,15 @@
 import { RESET } from "jotai/utils";
+import { usePlaySpeedReducer } from "./reducerAtoms";
 import { useGameUtilsRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "./refAtoms";
 import {
   useSetGameUtilsState,
   useSetLineResultsState,
   useSetMapState,
-  useSetPlaySpeedState,
   useSetTypingStatusState,
 } from "./stateAtoms";
 
 export const usePathChangeAtomReset = () => {
-  const setPlaySpeed = useSetPlaySpeedState();
+  const dispatchSpeed = usePlaySpeedReducer();
   const setLineResults = useSetLineResultsState();
   const setGameUtils = useSetGameUtilsState();
 
@@ -23,7 +23,7 @@ export const usePathChangeAtomReset = () => {
   return () => {
     setLineResults(RESET);
     setGameUtils(RESET);
-    setPlaySpeed(RESET);
+    dispatchSpeed({ type: "reset" });
     setMap(RESET);
     resetTypingStatus();
     resetGameUtils();

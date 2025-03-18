@@ -1,4 +1,4 @@
-import { useVideoSpeedChange } from "@/app/type/hooks/useVideoSpeedChange";
+import { usePlaySpeedReducer } from "@/app/type/atoms/reducerAtoms";
 import { Box, Button, Text } from "@chakra-ui/react";
 
 interface SpeedCHangeButtonProps {
@@ -11,15 +11,15 @@ interface SpeedCHangeButtonProps {
 }
 
 const SpeedChangeButton = (props: SpeedCHangeButtonProps) => {
-  const { defaultSpeedChange } = useVideoSpeedChange();
+  const dispatchSpeed = usePlaySpeedReducer();
 
   return (
     <Button
       variant="link"
       colorScheme="cyan"
       ref={props.buttonRef}
-      style={{ textDecoration: "none" }} // 下線非表示
-      onClick={() => defaultSpeedChange(props.type)}
+      style={{ textDecoration: "none" }}
+      onClick={() => dispatchSpeed({ type: props.type })}
       py={3}
       px={4}
     >

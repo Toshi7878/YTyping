@@ -4,7 +4,7 @@ import { createStore, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputModeType, LineResultData, LineWord, SceneType, Speed } from "../ts/type";
+import { InputModeType, LineResultData, LineWord, SceneType } from "../ts/type";
 import { mapInfoAtom, useGameUtilsRef } from "./refAtoms";
 const store = createStore();
 export const getTypeAtomStore = () => store;
@@ -59,7 +59,7 @@ const gameUtilsStateAtom = atomWithReset({
   isLoadingOverlay: false,
   lineSelectIndex: 0,
 });
-const sceneAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("scene"));
+export const sceneAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("scene"));
 const tabIndexAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("tabIndex"));
 const notifyAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("notify"));
 const skipAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("skip"));
@@ -171,20 +171,6 @@ export const useSetLineResultsState = () => useSetAtom(lineResultsAtom, { store 
 export const useLineResultsStateRef = () => {
   return useAtomCallback(
     useCallback((get) => get(lineResultsAtom), []),
-    { store }
-  );
-};
-
-const speedAtom = atomWithReset<Speed>({
-  defaultSpeed: 1,
-  playSpeed: 1,
-});
-
-export const usePlaySpeedState = () => useAtomValue(speedAtom, { store });
-export const useSetPlaySpeedState = () => useSetAtom(speedAtom, { store });
-export const usePlaySpeedStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(speedAtom), []),
     { store }
   );
 };

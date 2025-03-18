@@ -1,5 +1,6 @@
+import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
 import { useYTStatusRef } from "@/app/type/atoms/refAtoms";
-import { useMapState, usePlaySpeedState } from "@/app/type/atoms/stateAtoms";
+import { useMapState } from "@/app/type/atoms/stateAtoms";
 import { formatTime } from "@/app/type/ts/scene-ts/playing/formatTime";
 import { CreateMap } from "@/lib/instanceMapData";
 import { Text } from "@chakra-ui/react";

@@ -1,5 +1,6 @@
+import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
-import { usePlaySpeedState, useSceneState } from "@/app/type/atoms/stateAtoms";
+import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, HStack, Text, useTheme } from "@chakra-ui/react";

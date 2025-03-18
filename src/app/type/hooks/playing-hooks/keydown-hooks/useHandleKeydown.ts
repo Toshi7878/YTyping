@@ -1,3 +1,4 @@
+import { usePlaySpeedReducer } from "@/app/type/atoms/reducerAtoms";
 import { useGameUtilsRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import {
   useLineSelectIndexStateRef,
@@ -12,7 +13,6 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/consts";
 import { LineWord } from "@/app/type/ts/type";
-import { useVideoSpeedChange } from "../../useVideoSpeedChange";
 import { useChangePlayMode } from "../useChangePlayMode";
 import { useGamePause } from "../useGamePause";
 import { useInputModeChange } from "../useInputModeChange";
@@ -78,7 +78,7 @@ const usePlayingShortcutKey = () => {
   const inputModeChange = useInputModeChange();
   const toggleLineListDrawer = useToggleLineList();
   const changePlayMode = useChangePlayMode();
-  const { defaultSpeedChange, playingSpeedChange } = useVideoSpeedChange();
+  const dispatchSpeed = usePlaySpeedReducer();
   const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine();
   const setNotify = useSetNotifyState();
 
@@ -159,14 +159,14 @@ const usePlayingShortcutKey = () => {
         break;
       case "F9":
         if (scene === "practice") {
-          defaultSpeedChange("down");
+          dispatchSpeed({ type: "down" });
         }
         break;
       case "F10":
         if (scene === "playing") {
-          playingSpeedChange();
+          dispatchSpeed({ type: "toggle" });
         } else if (scene === "practice") {
-          defaultSpeedChange("up");
+          dispatchSpeed({ type: "up" });
         }
         break;
       case "KanaMode":

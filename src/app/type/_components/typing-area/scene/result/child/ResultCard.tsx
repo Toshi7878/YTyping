@@ -1,10 +1,6 @@
 "use client";
-import {
-  useMapState,
-  usePlayingInputModeStateRef,
-  usePlaySpeedStateRef,
-  useSceneState,
-} from "@/app/type/atoms/stateAtoms";
+import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
+import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/type/ts/type";
 import { CHAR_POINT } from "@/lib/instanceMapData";
 import { ThemeColors } from "@/types";
@@ -38,8 +34,8 @@ function ResultCard({
   const map = useMapState();
   const scene = useSceneState();
   const theme: ThemeColors = useTheme();
-  const speedData = usePlaySpeedStateRef()();
-  const inputMode = usePlayingInputModeStateRef()();
+  const speedData = usePlaySpeedState();
+  const inputMode = usePlayingInputModeState();
 
   const lineSpeed =
     lineResult.status!.sp > speedData.defaultSpeed ? lineResult.status!.sp : speedData.defaultSpeed;

@@ -1,3 +1,4 @@
+import { usePlaySpeedStateRef } from "@/app/type/atoms/reducerAtoms";
 import {
   useGameUtilsRef,
   useLineStatusRef,
@@ -14,7 +15,6 @@ import {
   useLineWordStateRef,
   useMapStateRef,
   usePlayingInputModeStateRef,
-  usePlaySpeedStateRef,
   useSceneStateRef,
   useSetChangeCSSCountState,
   useSetComboState,

@@ -1,8 +1,8 @@
+import { usePlaySpeedStateRef } from "../../atoms/reducerAtoms";
 import { usePlayer, useResultCards, useStatusRef } from "../../atoms/refAtoms";
 import {
   useLineSelectIndexStateRef,
   useMapStateRef,
-  usePlaySpeedStateRef,
   useSceneStateRef,
   useSetLineSelectIndexState,
   useSetNotifyState,

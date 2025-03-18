@@ -1,13 +1,14 @@
+import { YouTubeSpeed } from "@/types";
+import { usePlaySpeedReducer } from "../../atoms/reducerAtoms";
 import { useGameUtilsRef, useLineStatusRef } from "../../atoms/refAtoms";
 import { useSceneStateRef, useSetNotifyState, useSetSceneState } from "../../atoms/stateAtoms";
-import { useVideoSpeedChange } from "../useVideoSpeedChange";
 import { useRetry } from "./useRetry";
 
 export const useChangePlayMode = () => {
   const setScene = useSetSceneState();
   const setNotify = useSetNotifyState();
   const retry = useRetry();
-  const { defaultSpeedChange } = useVideoSpeedChange();
+  const dispatchSpeed = usePlaySpeedReducer();
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
   const { readLineStatusRef } = useLineStatusRef();
@@ -24,6 +25,7 @@ export const useChangePlayMode = () => {
     } else {
       const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
       if (window.confirm(confirmMessage)) {
+        const { startSpeed } = readLineStatusRef();
         writeGameUtils({ practiceMyResultId: null, replayKeyCount: 0, replayUserName: "" });
         setScene("playing");
         const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
@@ -32,7 +34,7 @@ export const useChangePlayMode = () => {
           drawerClosure.onClose();
         }
         retry("playing");
-        defaultSpeedChange("set", readLineStatusRef().startSpeed);
+        dispatchSpeed({ type: "set", payload: startSpeed as YouTubeSpeed });
       }
       setNotify(Symbol(""));
     }

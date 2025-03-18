@@ -1,3 +1,4 @@
+import { usePlaySpeedReducer } from "@/app/type/atoms/reducerAtoms";
 import { useGameUtilsRef, useStatusRef } from "@/app/type/atoms/refAtoms";
 import {
   useComboStateRef,
@@ -13,7 +14,7 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { useCalcTypeSpeed } from "@/app/type/hooks/calcTypeSpeed";
 import { useInputModeChange } from "@/app/type/hooks/playing-hooks/useInputModeChange";
-import { useVideoSpeedChange } from "@/app/type/hooks/useVideoSpeedChange";
+import { YouTubeSpeed } from "@/types";
 import { KanaInput, RomaInput, TypingKeys } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { LineResultData, TypeResult } from "../../../ts/type";
 import { useGetTime } from "../../useGetTime";
@@ -71,7 +72,7 @@ const useKeyReplay = () => {
   const { setTypingStatus } = useSetTypingStatusState();
 
   const inputModeChange = useInputModeChange();
-  const { playingSpeedChange } = useVideoSpeedChange();
+  const dispatchSpeed = usePlaySpeedReducer();
   const { getConstantRemainLineTime } = useGetTime();
 
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
@@ -165,7 +166,7 @@ const useKeyReplay = () => {
           inputModeChange("kana");
           break;
         case "speedChange":
-          playingSpeedChange();
+          dispatchSpeed({ type: "toggle" });
           break;
       }
     }
@@ -206,7 +207,7 @@ export const useReplay = () => {
 };
 
 export const useLineReplayUpdate = () => {
-  const { playingSpeedChange } = useVideoSpeedChange();
+  const dispatchSpeed = usePlaySpeedReducer();
   const inputModeChange = useInputModeChange();
 
   const { writeGameUtils } = useGameUtilsRef();
@@ -217,10 +218,10 @@ export const useLineReplayUpdate = () => {
 
     const lineResult = lineResults[newCount];
     const lineInputMode = lineResult.status!.mode;
-    const speed = lineResult.status!.sp;
+    const speed = lineResult.status!.sp as YouTubeSpeed;
 
     inputModeChange(lineInputMode);
-    playingSpeedChange("set", speed);
+    dispatchSpeed({ type: "set", payload: speed });
     writeGameUtils({ replayKeyCount: 0 });
   };
 };

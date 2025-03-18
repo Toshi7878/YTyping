@@ -1,10 +1,10 @@
 import { romaConvert } from "../../../../lib/instanceMapData";
+import { usePlaySpeedStateRef } from "../../atoms/reducerAtoms";
 import { useLineStatusRef, useStatusRef } from "../../atoms/refAtoms";
 import {
   useLineWordStateRef,
   useMapStateRef,
   usePlayingInputModeStateRef,
-  usePlaySpeedStateRef,
   useSceneStateRef,
   useSetLineWordState,
   useSetNextLyricsState,

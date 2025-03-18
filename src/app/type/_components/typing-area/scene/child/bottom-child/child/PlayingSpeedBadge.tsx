@@ -1,13 +1,12 @@
-import { usePlaySpeedState, useSceneState } from "@/app/type/atoms/stateAtoms";
-import { useVideoSpeedChange } from "@/app/type/hooks/useVideoSpeedChange";
+import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
+import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";
 
 const PlayingSpeedBadge = function () {
   const scene = useSceneState();
   const speedData = usePlaySpeedState();
-  const { defaultSpeedChange, playingSpeedChange } = useVideoSpeedChange();
-
+  const dispatchSpeed = usePlaySpeedReducer();
   return (
     <>
       {scene === "practice" ? (
@@ -16,14 +15,14 @@ const PlayingSpeedBadge = function () {
           kbdTextPrev="F9-"
           kbdTextNext="+F10"
           onClick={() => {}}
-          onClickPrev={() => defaultSpeedChange("down")}
-          onClickNext={() => defaultSpeedChange("up")}
+          onClickPrev={() => dispatchSpeed({ type: "down" })}
+          onClickNext={() => dispatchSpeed({ type: "up" })}
         />
       ) : (
         <PlayingBottomBadge
           badgeText={speedData.playSpeed.toFixed(2) + "倍速"}
           kbdText="F10"
-          onClick={() => playingSpeedChange()}
+          onClick={() => dispatchSpeed({ type: "toggle" })}
           isPauseDisabled={true}
           isKbdHidden={scene === "replay" ? true : false}
         />

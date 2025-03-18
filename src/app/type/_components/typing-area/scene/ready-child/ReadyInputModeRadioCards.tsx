@@ -40,6 +40,7 @@ function RadioCard({ option, children, ...props }: RadioCardProps) {
           bg: selectedBg,
           color: theme.colors.text.body,
           borderColor: theme.colors.border.card,
+
           _hover: {
             bg: selectedBg,
           },
