@@ -74,7 +74,7 @@ const gameUtilsStateAtom = atomWithReset({
 });
 export const sceneAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("scene"));
 const tabIndexAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("tabIndex"));
-const notifyAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("notify"));
+export const notifyAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("notify"));
 const skipAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("skip"));
 const changeCSSCountAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("changeCSSCount"));
 const lineSelectIndexAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("lineSelectIndex"));

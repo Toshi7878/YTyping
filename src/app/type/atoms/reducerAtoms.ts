@@ -2,17 +2,34 @@ import { YouTubeSpeed } from "@/types";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { sceneAtom } from "./stateAtoms";
+import { playerRefAtom } from "./refAtoms";
+import { notifyAtom, sceneAtom } from "./stateAtoms";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
+
+type SpeedActionType = "up" | "down" | "set" | "reset" | "toggle";
 
 const speedBaseAtom = atomWithReset({
   defaultSpeed: 1,
   playSpeed: 1,
 });
 
-type SpeedActionType = "up" | "down" | "set" | "reset" | "toggle";
+store.sub(speedBaseAtom, () => {
+  const scene = store.get(sceneAtom);
+  const { playSpeed } = store.get(speedBaseAtom);
+  const isPlaying = scene === "playing" || scene === "practice" || scene === "replay";
+  const player = store.get(playerRefAtom);
+
+  if (player) {
+    player?.setPlaybackRate(playSpeed);
+  }
+
+  if (isPlaying) {
+    store.set(notifyAtom, Symbol(`${playSpeed.toFixed(2)}x`));
+  }
+});
+
 const speedReducerAtom = atom(
   null,
   (get, set, { type, payload: value }: { type: SpeedActionType; payload?: YouTubeSpeed }) => {
@@ -49,7 +66,7 @@ const speedReducerAtom = atom(
         set(speedBaseAtom, RESET);
         break;
       case "toggle":
-        const newPlaySpeed = playSpeed + 0.25 < 2 ? playSpeed + 0.25 : defaultSpeed;
+        const newPlaySpeed = playSpeed + 0.25 <= 2 ? playSpeed + 0.25 : defaultSpeed;
         set(speedBaseAtom, {
           playSpeed: newPlaySpeed,
           defaultSpeed,
