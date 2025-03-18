@@ -4,8 +4,8 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useEffect } from "react";
-import { mapInfoAtom } from "../atoms/refAtoms";
-import { getTypeAtomStore, userTypingOptionsAtom } from "../atoms/stateAtoms";
+import { mapInfoAtom, userTypingOptionsAtom } from "../atoms/stateAtoms";
+import { getTypeAtomStore } from "../atoms/store";
 interface TypeProviderProps {
   mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
   userTypingOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"];

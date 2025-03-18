@@ -6,7 +6,7 @@ import { LineResultData, SendResultData } from "../ts/type";
 
 export const useSendResult = () => {
   const { id: mapId } = useParams();
-  const { readStatusRef } = useStatusRef();
+  const { readStatus } = useStatusRef();
 
   const readLineResults = useLineResultsStateRef();
   const readTypingStatus = useTypingStatusStateRef();
@@ -21,7 +21,7 @@ export const useSendResult = () => {
   };
 
   return async (): Promise<ReturnType<typeof actions>> => {
-    const statusRef = readStatusRef();
+    const statusRef = readStatus();
     const lineResults = readLineResults();
     const minSp = getMinSpeed(lineResults);
     const totalTypeTime = statusRef.totalTypeTime;

@@ -4,8 +4,8 @@ import { useMapStateRef, useUserTypingOptionsStateRef } from "../atoms/stateAtom
 
 export const useGetTime = () => {
   const { readPlayer } = usePlayer();
-  const { readYTStatusRef } = useYTStatusRef();
-  const { readStatusRef } = useStatusRef();
+  const { readYTStatus } = useYTStatusRef();
+  const { readStatus } = useStatusRef();
   const { readGameUtils } = useGameUtilsRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readTypingOptions = useUserTypingOptionsStateRef();
@@ -24,7 +24,7 @@ export const useGetTime = () => {
 
   const getCurrentLineTime = (YTCurrentTime: number) => {
     const map = readMap();
-    const count = readStatusRef().count;
+    const count = readStatus().count;
 
     if (count - 1 < 0) {
       return YTCurrentTime;
@@ -37,10 +37,10 @@ export const useGetTime = () => {
 
   const getCurrentLineRemainTime = (YTCurrentTime: number) => {
     const map = readMap();
-    const count = readStatusRef().count;
+    const count = readStatus().count;
     const nextLine = map.mapData[count];
 
-    const movieDuration = readYTStatusRef().movieDuration;
+    const movieDuration = readYTStatus().movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainTime = (nextLineTime - YTCurrentTime) / readPlaySpeed().playSpeed;
@@ -55,11 +55,11 @@ export const useGetTime = () => {
 
   const getConstantRemainLineTime = (lineConstantTime: number) => {
     const map = readMap();
-    const count = readStatusRef().count;
+    const count = readStatus().count;
 
     const nextLine = map.mapData[count];
     const currentLine = map.mapData[count - 1];
-    const movieDuration = readYTStatusRef().movieDuration;
+    const movieDuration = readYTStatus().movieDuration;
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainConstantTime = nextLineTime - currentLine.time - lineConstantTime;

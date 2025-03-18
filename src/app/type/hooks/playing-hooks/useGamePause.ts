@@ -2,9 +2,9 @@ import { usePlayer, useYTStatusRef } from "../../atoms/refAtoms";
 
 export const useGamePause = () => {
   const { readPlayer } = usePlayer();
-  const { readYTStatusRef } = useYTStatusRef();
+  const { readYTStatus } = useYTStatusRef();
   return () => {
-    const isPaused = readYTStatusRef().isPaused;
+    const isPaused = readYTStatus().isPaused;
     if (isPaused) {
       readPlayer().playVideo();
     } else {

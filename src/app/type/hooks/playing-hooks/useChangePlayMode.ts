@@ -11,7 +11,7 @@ export const useChangePlayMode = () => {
   const dispatchSpeed = usePlaySpeedReducer();
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const { readLineStatusRef } = useLineStatusRef();
+  const { readLineStatus } = useLineStatusRef();
   const readScene = useSceneStateRef();
 
   return () => {
@@ -25,7 +25,7 @@ export const useChangePlayMode = () => {
     } else {
       const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
       if (window.confirm(confirmMessage)) {
-        const { startSpeed } = readLineStatusRef();
+        const { startSpeed } = readLineStatus();
         writeGameUtils({ practiceMyResultId: null, replayKeyCount: 0, replayUserName: "" });
         setScene("playing");
         const { lineResultdrawerClosure: drawerClosure } = readGameUtils();

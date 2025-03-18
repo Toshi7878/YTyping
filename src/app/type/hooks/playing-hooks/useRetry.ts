@@ -31,7 +31,7 @@ export const useRetry = () => {
 
   const { resetTypingStatus } = useSetTypingStatusState();
   const { updatePlayCountStats, updateTypingStats } = useUpdateUserStats();
-  const { resetStatusRef } = useStatusRef();
+  const { resetStatus } = useStatusRef();
   const readScene = useSceneStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readMap = useMapStateRef();
@@ -57,7 +57,7 @@ export const useRetry = () => {
       updateTypingStats();
       setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
-      resetStatusRef();
+      resetStatus();
       resetTypingStatus();
       setCombo(0);
     }
@@ -89,7 +89,7 @@ export const useProceedRetry = () => {
 
   const { readPlayer } = usePlayer();
   const { writeGameUtils } = useGameUtilsRef();
-  const { resetStatusRef } = useStatusRef();
+  const { resetStatus } = useStatusRef();
   const readMap = useMapStateRef();
 
   return (playMode: PlayMode) => {
@@ -108,7 +108,7 @@ export const useProceedRetry = () => {
     if (playMode !== "practice") {
       resetTypingStatus();
       setCombo(0);
-      resetStatusRef();
+      resetStatus();
     }
 
     const enableRetrySKip = map.mapData[map.startLine].time > 5;

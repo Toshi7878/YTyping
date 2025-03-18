@@ -14,7 +14,7 @@ const PlayingProgress = (props: PlayingProgressProps) => {
   const map = useMapState();
 
   const { writeLineProgress, writeTotalProgress } = useProgress();
-  const { readYTStatusRef } = useYTStatusRef();
+  const { readYTStatus } = useYTStatusRef();
 
   useEffect(() => {
     if (progressRef.current) {
@@ -29,7 +29,7 @@ const PlayingProgress = (props: PlayingProgressProps) => {
 
   useEffect(() => {
     if (props.id === "total_progress" && scene !== "ready" && map) {
-      const movieDuration = readYTStatusRef().movieDuration;
+      const movieDuration = readYTStatus().movieDuration;
       const duration = Number(map.movieTotalTime) > movieDuration ? movieDuration : map.movieTotalTime;
       progressRef.current!.max = duration;
     }

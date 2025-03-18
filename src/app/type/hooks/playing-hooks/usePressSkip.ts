@@ -7,8 +7,8 @@ export const usePressSkip = () => {
   const setSkip = useSetSkipState();
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const { readYTStatusRef } = useYTStatusRef();
-  const { readStatusRef } = useStatusRef();
+  const { readYTStatus } = useYTStatusRef();
+  const { readStatus } = useStatusRef();
   const readUserOptions = useUserTypingOptionsStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readMap = useMapStateRef();
@@ -17,7 +17,7 @@ export const usePressSkip = () => {
     const map = readMap();
     const userOptions = readUserOptions();
     const { timeOffset, isRetrySkip } = readGameUtils();
-    const count = readStatusRef().count;
+    const count = readStatus().count;
 
     const nextLine = map.mapData[count];
 
@@ -28,7 +28,7 @@ export const usePressSkip = () => {
 
     const playSpeed = readPlaySpeed().playSpeed;
 
-    const movieDuration = readYTStatusRef().movieDuration;
+    const movieDuration = readYTStatus().movieDuration;
     const seekTime = nextLine["lyrics"] === "end" ? movieDuration - 2 : skippedTime - 1 + (1 - playSpeed);
 
     readPlayer().seekTo(seekTime, true);

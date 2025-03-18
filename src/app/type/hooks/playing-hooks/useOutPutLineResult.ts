@@ -17,7 +17,7 @@ interface useOutPutLineResultProps {
 export const useOutPutLineResult = () => {
   const calcCurrentRank = useCalcCurrentRank();
 
-  const { readStatusRef, writeStatusRef } = useStatusRef();
+  const { readStatus, writeStatus } = useStatusRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readScene = useSceneStateRef();
@@ -42,8 +42,8 @@ export const useOutPutLineResult = () => {
 
     const newStatus = { ...status };
     if (scene === "playing") {
-      writeStatusRef({
-        kanaToRomaConvertCount: (readStatusRef().kanaToRomaConvertCount += newLineWord.correct.r.length),
+      writeStatus({
+        kanaToRomaConvertCount: (readStatus().kanaToRomaConvertCount += newLineWord.correct.r.length),
       });
     }
 
@@ -53,12 +53,12 @@ export const useOutPutLineResult = () => {
     if (isLineFailure) {
       newStatus.kpm = totalTypeSpeed;
 
-      writeStatusRef({
-        failureCount: readStatusRef().failureCount + 1,
-        clearRate: readStatusRef().clearRate - map.keyRate * lostLength,
+      writeStatus({
+        failureCount: readStatus().failureCount + 1,
+        clearRate: readStatus().clearRate - map.keyRate * lostLength,
       });
 
-      const statusRef = readStatusRef();
+      const statusRef = readStatus();
       newStatus.line = map.lineLength - (statusRef.completeCount + statusRef.failureCount);
       newStatus.lost += lostLength;
       newStatus.score += newStatus.point;

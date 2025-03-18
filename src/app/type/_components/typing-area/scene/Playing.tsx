@@ -21,31 +21,31 @@ const Playing = () => {
   const startTimer = useStartTimer();
   const playTimer = usePlayTimer();
   const handleKeydown = useHandleKeydown();
-  const { readUserStatsRef, resetUserStatsRef } = useUserStatsRef();
+  const { readUserStats, resetUserStats } = useUserStatsRef();
   const { readGameUtils } = useGameUtilsRef();
   const scene = useSceneState();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        const sendStats = readUserStatsRef();
+        const sendStats = readUserStats();
         const maxCombo = sendStats.maxCombo;
         navigator.sendBeacon(
           `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
           JSON.stringify(sendStats)
         );
 
-        resetUserStatsRef(structuredClone(maxCombo));
+        resetUserStats(structuredClone(maxCombo));
       }
     };
     const handleBeforeunload = () => {
-      const sendStats = readUserStatsRef();
+      const sendStats = readUserStats();
       const maxCombo = sendStats.maxCombo;
       navigator.sendBeacon(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
         JSON.stringify(sendStats)
       );
-      resetUserStatsRef(structuredClone(maxCombo));
+      resetUserStats(structuredClone(maxCombo));
     };
 
     if (scene === "playing" || scene === "practice") {

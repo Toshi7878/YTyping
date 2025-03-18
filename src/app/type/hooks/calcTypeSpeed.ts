@@ -1,8 +1,8 @@
 import { useLineStatusRef, useStatusRef } from "../atoms/refAtoms";
 
 export const useCalcTypeSpeed = () => {
-  const { readLineStatusRef } = useLineStatusRef();
-  const { readStatusRef } = useStatusRef();
+  const { readLineStatus } = useLineStatusRef();
+  const { readStatus } = useStatusRef();
 
   const calcLineKpm = ({ constantLineTime, newLineTypeCount }) => {
     const lineKpm = constantLineTime ? Math.round((newLineTypeCount / constantLineTime) * 60) : 0;
@@ -10,8 +10,7 @@ export const useCalcTypeSpeed = () => {
   };
 
   const calcLineRkpm = ({ lineKpm, newLineTypeCount, rkpmTime }) => {
-    const lineRkpm =
-      newLineTypeCount != 0 ? Math.round((newLineTypeCount / rkpmTime) * 60) : lineKpm;
+    const lineRkpm = newLineTypeCount != 0 ? Math.round((newLineTypeCount / rkpmTime) * 60) : lineKpm;
     return lineRkpm;
   };
 
@@ -30,7 +29,7 @@ export const useCalcTypeSpeed = () => {
   }) => {
     const isAddTypeCount = updateType === "keydown" || updateType === "completed";
 
-    const lineTypeCount = readLineStatusRef().type;
+    const lineTypeCount = readLineStatus().type;
 
     const newLineTypeCount = isAddTypeCount ? lineTypeCount + 1 : lineTypeCount;
     const lineKpm = calcLineKpm({ constantLineTime, newLineTypeCount });
@@ -40,7 +39,7 @@ export const useCalcTypeSpeed = () => {
     }
 
     const newTotalTypeCount = isAddTypeCount ? totalTypeCount + 1 : totalTypeCount;
-    const totalTypeTime = constantLineTime + readStatusRef().totalTypeTime;
+    const totalTypeTime = constantLineTime + readStatus().totalTypeTime;
     const totalKpm = calcTotalKpm({ newTotalTypeCount, totalTypeTime });
 
     if (updateType === "keydown") {
@@ -49,7 +48,7 @@ export const useCalcTypeSpeed = () => {
 
     if (updateType === "lineUpdate" || updateType === "completed") {
       //ラインアップデート時、ラインクリア時はラインのrkpmも計算する
-      const lineLatency = readLineStatusRef().latency;
+      const lineLatency = readLineStatus().latency;
       const rkpmTime = constantLineTime - lineLatency;
       const lineRkpm = calcLineRkpm({ rkpmTime, newLineTypeCount, lineKpm });
       return { lineKpm, lineRkpm, totalKpm };

@@ -1,22 +1,11 @@
-import { RouterOutPuts } from "@/server/api/trpc";
 import { YTPlayer } from "@/types/global-types";
 import { UseDisclosureReturn } from "@chakra-ui/react";
-import { atom, ExtractAtomValue, useStore } from "jotai";
+import { atom, ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputModeType, PlayMode, TypeResult } from "../ts/type";
-
-export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>();
-
-export const useMapInfoRef = () => {
-  const typeAtomStore = useStore();
-  const readMapInfoRef = useAtomCallback(
-    useCallback((get) => get(mapInfoAtom) as NonNullable<RouterOutPuts["map"]["getMapInfo"]>, []),
-    { store: typeAtomStore }
-  );
-
-  return { readMapInfoRef };
-};
+import { getTypeAtomStore } from "./store";
+const store = getTypeAtomStore();
 
 const statusRefAtom = atomWithReset({
   count: 0,
@@ -39,28 +28,26 @@ const statusRefAtom = atomWithReset({
 });
 
 export const useStatusRef = () => {
-  const typeAtomStore = useStore();
-
-  const readStatusRef = useAtomCallback(
+  const readStatus = useAtomCallback(
     useCallback((get) => get(statusRefAtom), []),
-    { store: typeAtomStore }
+    { store }
   );
-  const writeStatusRef = useAtomCallback(
+  const writeStatus = useAtomCallback(
     useCallback((get, set, newUserStats: Partial<ExtractAtomValue<typeof statusRefAtom>>) => {
       set(statusRefAtom, (prev) => {
         return { ...prev, ...newUserStats };
       });
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
-  const resetStatusRef = useAtomCallback(
+  const resetStatus = useAtomCallback(
     useCallback((get, set) => {
       set(statusRefAtom, RESET);
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
-  return { readStatusRef, writeStatusRef, resetStatusRef };
+  return { readStatus, writeStatus, resetStatus };
 };
 
 const lineStatusRefAtom = atomWithReset({
@@ -75,28 +62,26 @@ const lineStatusRefAtom = atomWithReset({
 });
 
 export const useLineStatusRef = () => {
-  const typeAtomStore = useStore();
-
-  const readLineStatusRef = useAtomCallback(
+  const readLineStatus = useAtomCallback(
     useCallback((get) => get(lineStatusRefAtom), []),
-    { store: typeAtomStore }
+    { store }
   );
-  const writeLineStatusRef = useAtomCallback(
+  const writeLineStatus = useAtomCallback(
     useCallback((get, set, newUserStats: Partial<ExtractAtomValue<typeof lineStatusRefAtom>>) => {
       set(lineStatusRefAtom, (prev) => {
         return { ...prev, ...newUserStats };
       });
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
-  const resetLineStatusRef = useAtomCallback(
+  const resetLineStatus = useAtomCallback(
     useCallback((get, set) => {
       set(lineStatusRefAtom, RESET);
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
-  return { readLineStatusRef, writeLineStatusRef, resetLineStatusRef };
+  return { readLineStatus, writeLineStatus, resetLineStatus };
 };
 
 const userStatsRefAtom = atomWithReset({
@@ -112,29 +97,27 @@ const userStatsRefAtom = atomWithReset({
 });
 
 export const useUserStatsRef = () => {
-  const typeAtomStore = useStore();
-
-  const readUserStatsRef = useAtomCallback(
+  const readUserStats = useAtomCallback(
     useCallback((get) => get(userStatsRefAtom), []),
-    { store: typeAtomStore }
+    { store }
   );
-  const writeUserStatsRef = useAtomCallback(
+  const writeUserStats = useAtomCallback(
     useCallback((get, set, newUserStats: Partial<ExtractAtomValue<typeof userStatsRefAtom>>) => {
       set(userStatsRefAtom, (prev) => {
         return { ...prev, ...newUserStats };
       });
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
-  const resetUserStatsRef = useAtomCallback(
+  const resetUserStats = useAtomCallback(
     useCallback((get, set, maxCombo = 0) => {
       set(userStatsRefAtom, RESET);
       set(userStatsRefAtom, (prev) => ({ ...prev, maxCombo }));
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
-  return { readUserStatsRef, writeUserStatsRef, resetUserStatsRef };
+  return { readUserStats, writeUserStats, resetUserStats };
 };
 
 const ytStatusRefAtom = atomWithReset({
@@ -143,31 +126,29 @@ const ytStatusRefAtom = atomWithReset({
 });
 
 export const useYTStatusRef = () => {
-  const typeAtomStore = useStore();
-
-  const readYTStatusRef = useAtomCallback(
+  const readYTStatus = useAtomCallback(
     useCallback((get) => get(ytStatusRefAtom), []),
-    { store: typeAtomStore }
+    { store }
   );
-  const writeYTStatusRef = useAtomCallback(
+  const writeYTStatus = useAtomCallback(
     useCallback((get, set, newYTStatus: Partial<ExtractAtomValue<typeof ytStatusRefAtom>>) => {
       set(ytStatusRefAtom, (prev) => {
         return { ...prev, ...newYTStatus };
       });
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
-  const resetYTStatusRef = useAtomCallback(
+  const resetYTStatus = useAtomCallback(
     useCallback((get, set) => {
       set(ytStatusRefAtom, RESET);
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
   return {
-    readYTStatusRef,
-    writeYTStatusRef,
-    resetYTStatusRef,
+    readYTStatus,
+    writeYTStatus,
+    resetYTStatus,
   };
 };
 
@@ -188,11 +169,9 @@ const gameUtilsRefAtom = atomWithReset({
 });
 
 export const useGameUtilsRef = () => {
-  const typeAtomStore = useStore();
-
   const readGameUtils = useAtomCallback(
     useCallback((get) => get(gameUtilsRefAtom), []),
-    { store: typeAtomStore }
+    { store }
   );
   const writeGameUtils = useAtomCallback(
     useCallback((get, set, newGameState: Partial<ExtractAtomValue<typeof gameUtilsRefAtom>>) => {
@@ -200,13 +179,13 @@ export const useGameUtilsRef = () => {
         return { ...prev, ...newGameState };
       });
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
   const resetGameUtils = useAtomCallback(
     useCallback((get, set) => {
       set(gameUtilsRefAtom, RESET);
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
   return {
@@ -219,18 +198,16 @@ export const useGameUtilsRef = () => {
 export const playerRefAtom = atom<YTPlayer | null>(null);
 
 export const usePlayer = () => {
-  const typeAtomStore = useStore();
-
   const readPlayer = useAtomCallback(
     useCallback((get) => get(playerRefAtom) as YTPlayer, []),
-    { store: typeAtomStore }
+    { store }
   );
 
   const writePlayer = useAtomCallback(
     useCallback((get, set, newPlayer: YTPlayer | null) => {
       set(playerRefAtom, newPlayer);
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
   return { readPlayer, writePlayer };
@@ -240,29 +217,27 @@ const lineProgressRefAtom = atom<HTMLProgressElement | null>(null);
 const totalProgressRefAtom = atom<HTMLProgressElement | null>(null);
 
 export const useProgress = () => {
-  const typeAtomStore = useStore();
-
   const readLineProgress = useAtomCallback(
     useCallback((get) => get(lineProgressRefAtom) as HTMLProgressElement, []),
-    { store: typeAtomStore }
+    { store }
   );
   const readTotalProgress = useAtomCallback(
     useCallback((get) => get(totalProgressRefAtom) as HTMLProgressElement, []),
-    { store: typeAtomStore }
+    { store }
   );
 
   const writeLineProgress = useAtomCallback(
     useCallback((get, set, newProgress: HTMLProgressElement | null) => {
       set(lineProgressRefAtom, newProgress);
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
   const writeTotalProgress = useAtomCallback(
     useCallback((get, set, newProgress: HTMLProgressElement | null) => {
       set(totalProgressRefAtom, newProgress);
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
   return { readTotalProgress, readLineProgress, writeLineProgress, writeTotalProgress };
@@ -271,18 +246,16 @@ export const useProgress = () => {
 const lineResultCardRefsAtom = atom<HTMLDivElement[]>([]);
 
 export const useResultCards = () => {
-  const typeAtomStore = useStore();
-
   const readResultCards = useAtomCallback(
     useCallback((get) => get(lineResultCardRefsAtom) as HTMLDivElement[], []),
-    { store: typeAtomStore }
+    { store }
   );
 
   const writeResultCards = useAtomCallback(
     useCallback((get, set, newCards: HTMLDivElement[]) => {
       set(lineResultCardRefsAtom, newCards);
     }, []),
-    { store: typeAtomStore }
+    { store }
   );
 
   return { readResultCards, writeResultCards };

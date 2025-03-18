@@ -62,8 +62,8 @@ export const usePlayTimer = () => {
 
   const { readLineProgress, readTotalProgress } = useProgress();
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const { readYTStatusRef } = useYTStatusRef();
-  const { readStatusRef, writeStatusRef } = useStatusRef();
+  const { readYTStatus } = useYTStatusRef();
+  const { readStatus, writeStatus } = useStatusRef();
   const readCurrentTime = useCurrentTimeStateRef();
   const readLineWord = useLineWordStateRef();
   const readTypingStatus = useTypingStatusStateRef();
@@ -87,7 +87,7 @@ export const usePlayTimer = () => {
     calcLineResult({ count, constantLineTime });
 
     const currentLine = map.mapData[count - 1];
-    const movieDuration = readYTStatusRef().movieDuration;
+    const movieDuration = readYTStatus().movieDuration;
     if (currentLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
       readPlayer().stopVideo();
       typeTicker.stop();
@@ -96,16 +96,16 @@ export const usePlayTimer = () => {
     } else if (nextLine) {
       const scene = readScene();
       if (scene === "playing") {
-        writeStatusRef({
-          count: readStatusRef().count + 1,
+        writeStatus({
+          count: readStatus().count + 1,
         });
       } else {
-        writeStatusRef({
+        writeStatus({
           count: getSeekLineCount(currentOffesettedYTTime),
         });
       }
 
-      updateLine(readStatusRef().count);
+      updateLine(readStatus().count);
     }
   };
 
@@ -162,12 +162,12 @@ export const usePlayTimer = () => {
     const currentOffesettedYTTime = getCurrentOffsettedYTTime();
     const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
 
-    const movieDuration = readYTStatusRef().movieDuration;
-    const count = readStatusRef().count;
+    const movieDuration = readYTStatus().movieDuration;
+    const count = readStatus().count;
     const nextLine = map.mapData[count];
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
     const isUpdateLine =
-      currentOffesettedYTTime >= nextLineTime || currentOffesettedYTTime >= readYTStatusRef().movieDuration;
+      currentOffesettedYTTime >= nextLineTime || currentOffesettedYTTime >= readYTStatus().movieDuration;
 
     if (isUpdateLine) {
       const constantLineTime = getConstantLineTime(currentLineTime);
@@ -217,9 +217,9 @@ export const useCalcLineResult = () => {
   const outPutLineResult = useOutPutLineResult();
   const updateAllStatus = useUpdateAllStatus();
 
-  const { readLineStatusRef } = useLineStatusRef();
-  const { writeUserStatsRef } = useUserStatsRef();
-  const { readStatusRef, writeStatusRef } = useStatusRef();
+  const { readLineStatus } = useLineStatusRef();
+  const { writeUserStats } = useUserStatsRef();
+  const { readStatus, writeStatus } = useStatusRef();
   const readLineResults = useLineResultsStateRef();
   const readCombo = useComboStateRef();
   const readLineWord = useLineWordStateRef();
@@ -233,7 +233,7 @@ export const useCalcLineResult = () => {
     const scene = readScene();
 
     if (scene === "playing" || scene === "practice") {
-      const completedTime = readLineStatusRef().completedTime;
+      const completedTime = readLineStatus().completedTime;
 
       const typeSpeed = calcTypeSpeed({
         updateType: "lineUpdate",
@@ -247,30 +247,30 @@ export const useCalcLineResult = () => {
       });
 
       if (count > 0) {
-        const isCompleted = readLineStatusRef().isCompleted;
+        const isCompleted = readLineStatus().isCompleted;
 
         const incrementTotalTypeTime = isCompleted ? completedTime : constantLineTime;
 
         if (map.mapData[count - 1].kpm.r > 0) {
-          writeStatusRef({
-            totalTypeTime: readStatusRef().totalTypeTime + incrementTotalTypeTime,
+          writeStatus({
+            totalTypeTime: readStatus().totalTypeTime + incrementTotalTypeTime,
           });
-          const lineTypeCount = readLineStatusRef().type;
+          const lineTypeCount = readLineStatus().type;
 
           if (lineTypeCount && (scene === "playing" || scene === "practice")) {
-            writeUserStatsRef({
+            writeUserStats({
               totalTypeTime: incrementTotalTypeTime,
             });
           }
 
-          const lineLatency = readLineStatusRef().latency;
+          const lineLatency = readLineStatus().latency;
 
-          writeStatusRef({
-            totalLatency: readStatusRef().totalLatency + lineLatency,
+          writeStatus({
+            totalLatency: readStatus().totalLatency + lineLatency,
           });
         }
 
-        const lMiss = readLineStatusRef().miss;
+        const lMiss = readLineStatus().miss;
         const point = readTypingStatus().point;
         const timeBonus = readTypingStatus().timeBonus;
         const lineResults = readLineResults();
@@ -283,10 +283,10 @@ export const useCalcLineResult = () => {
         const isUpdateResult = (speed.playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
 
         if (isUpdateResult) {
-          const tTime = Math.round(readStatusRef().totalTypeTime * 1000) / 1000;
-          const mode = readLineStatusRef().startInputMode;
-          const sp = readLineStatusRef().startSpeed;
-          const typeResult = readLineStatusRef().typeResult;
+          const tTime = Math.round(readStatus().totalTypeTime * 1000) / 1000;
+          const mode = readLineStatus().startInputMode;
+          const sp = readLineStatus().startSpeed;
+          const typeResult = readLineStatus().typeResult;
           const newLineResults = [...lineResults];
           const combo = readCombo();
 
@@ -295,7 +295,7 @@ export const useCalcLineResult = () => {
               status: {
                 p: point,
                 tBonus: timeBonus,
-                lType: readLineStatusRef().type,
+                lType: readLineStatus().type,
                 lMiss,
                 lRkpm: typeSpeed!.lineRkpm,
                 lKpm: typeSpeed!.lineKpm,
@@ -344,7 +344,7 @@ export const useCalcLineResult = () => {
       if (count > 0) {
         const currentReplayLineResult = lineResults[count - 1];
         setCombo(currentReplayLineResult.status!.combo as number);
-        writeStatusRef({
+        writeStatus({
           totalTypeTime: currentReplayLineResult.status!.tTime,
         });
       }
@@ -362,8 +362,8 @@ export const useUpdateLine = () => {
   const lineReplayUpdate = useLineReplayUpdate();
 
   const { readLineProgress } = useProgress();
-  const { readYTStatusRef } = useYTStatusRef();
-  const { resetLineStatusRef, writeLineStatusRef } = useLineStatusRef();
+  const { readYTStatus } = useYTStatusRef();
+  const { resetLineStatus, writeLineStatus } = useLineStatusRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
   const readTypingOptions = useUserTypingOptionsStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
@@ -374,9 +374,9 @@ export const useUpdateLine = () => {
     const map = readMap();
     const currentCount = newCount ? newCount - 1 : 0;
     const inputMode = readPlayingInputMode();
-    resetLineStatusRef();
+    resetLineStatus();
     const speed = readPlaySpeed();
-    writeLineStatusRef({
+    writeLineStatus({
       startSpeed: speed.playSpeed,
       startInputMode: inputMode,
     });
@@ -424,7 +424,7 @@ export const useUpdateLine = () => {
     }
 
     const nextTime = Number(map.mapData[newCount]["time"]);
-    const movieDuration = readYTStatusRef().movieDuration;
+    const movieDuration = readYTStatus().movieDuration;
 
     const lineProgress = readLineProgress();
     lineProgress.max =

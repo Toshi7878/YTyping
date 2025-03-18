@@ -7,21 +7,21 @@ export function useUpdateUserStats() {
   const incrementTypingStats = clientApi.userStats.incrementTypingStats.useMutation();
   const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
 
-  const { readUserStatsRef, resetUserStatsRef } = useUserStatsRef();
-  const { readStatusRef } = useStatusRef();
+  const { readUserStats, resetUserStats } = useUserStatsRef();
+  const { readStatus } = useStatusRef();
 
   const updatePlayCountStats = () => {
     incrementPlayCountStats.mutate({ mapId: Number(mapId) });
   };
   const updateTypingStats = () => {
-    const userStats = readUserStatsRef();
-    const maxCombo = readStatusRef().maxCombo;
+    const userStats = readUserStats();
+    const maxCombo = readStatus().maxCombo;
 
     incrementTypingStats.mutate({
       ...userStats,
     });
 
-    resetUserStatsRef(maxCombo);
+    resetUserStats(maxCombo);
   };
 
   return { updatePlayCountStats, updateTypingStats };

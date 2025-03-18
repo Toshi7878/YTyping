@@ -7,14 +7,14 @@ import { useWindowFocus } from "../../hooks/useWindowFocus";
 const MobileCover = () => {
   const windowFocus = useWindowFocus();
   const { readPlayer } = usePlayer();
-  const { readYTStatusRef } = useYTStatusRef();
+  const { readYTStatus } = useYTStatusRef();
 
   const readScene = useSceneStateRef();
   const handleStart = useCallback(
     async () => {
       const scene = readScene();
 
-      if (readYTStatusRef().isPaused || scene === "ready") {
+      if (readYTStatus().isPaused || scene === "ready") {
         readPlayer().playVideo();
       } else {
         readPlayer().pauseVideo();

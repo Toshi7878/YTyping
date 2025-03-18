@@ -1,13 +1,16 @@
 import { CreateMap } from "@/lib/instanceMapData";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { $Enums } from "@prisma/client";
-import { createStore, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputModeType, LineResultData, LineWord, SceneType } from "../ts/type";
-import { mapInfoAtom, useGameUtilsRef } from "./refAtoms";
-const store = createStore();
-export const getTypeAtomStore = () => store;
+import { useGameUtilsRef } from "./refAtoms";
+import { getTypeAtomStore } from "./store";
+
+const store = getTypeAtomStore();
+
 const initialInputMode: InputModeType =
   typeof window !== "undefined" ? (localStorage.getItem("inputMode") as InputModeType) || "roma" : "roma";
 
@@ -31,6 +34,16 @@ export const useUserTypingOptionsStateRef = () => {
     useCallback((get) => get(userTypingOptionsAtom), []),
     { store }
   );
+};
+export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>();
+
+export const useMapInfoRef = () => {
+  const readMapInfo = useAtomCallback(
+    useCallback((get) => get(mapInfoAtom) as NonNullable<RouterOutPuts["map"]["getMapInfo"]>, []),
+    { store }
+  );
+
+  return { readMapInfo };
 };
 
 const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) =>

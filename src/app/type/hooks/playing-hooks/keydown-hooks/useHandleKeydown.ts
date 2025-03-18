@@ -28,17 +28,17 @@ export const useHandleKeydown = () => {
   const playingShortcutKey = usePlayingShortcutKey();
   const pauseShortcutKey = usePauseShortcutKey();
 
-  const { readYTStatusRef } = useYTStatusRef();
-  const { readStatusRef } = useStatusRef();
+  const { readYTStatus } = useYTStatusRef();
+  const { readStatus } = useStatusRef();
   const readLineWord = useLineWordStateRef();
   const readScene = useSceneStateRef();
 
   return (event: KeyboardEvent) => {
-    const isPaused = readYTStatusRef().isPaused;
+    const isPaused = readYTStatus().isPaused;
     const scene = readScene();
 
     if (!isPaused || scene === "practice") {
-      const count = readStatusRef().count;
+      const count = readStatus().count;
       const currentLineCount = count - 1;
 
       //ライン切り変えバグ回避(切り替わるギリギリでタイピングするとバグる)

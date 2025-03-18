@@ -15,9 +15,9 @@ export const usePathChangeAtomReset = () => {
 
   const { resetTypingStatus } = useSetTypingStatusState();
   const { resetGameUtils } = useGameUtilsRef();
-  const { resetYTStatusRef } = useYTStatusRef();
-  const { resetLineStatusRef } = useLineStatusRef();
-  const { resetStatusRef } = useStatusRef();
+  const { resetYTStatus } = useYTStatusRef();
+  const { resetLineStatus } = useLineStatusRef();
+  const { resetStatus } = useStatusRef();
   const setMap = useSetMapState();
 
   return () => {
@@ -27,8 +27,8 @@ export const usePathChangeAtomReset = () => {
     setMap(RESET);
     resetTypingStatus();
     resetGameUtils();
-    resetYTStatusRef();
-    resetStatusRef();
-    resetLineStatusRef();
+    resetYTStatus();
+    resetStatus();
+    resetLineStatus();
   };
 };

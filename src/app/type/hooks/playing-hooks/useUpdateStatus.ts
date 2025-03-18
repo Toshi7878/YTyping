@@ -15,9 +15,9 @@ export const useTypeSuccess = () => {
   const { setTypingStatus } = useSetTypingStatusState();
   const calcCurrentRank = useCalcCurrentRank();
 
-  const { readUserStatsRef, writeUserStatsRef } = useUserStatsRef();
-  const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
-  const { readStatusRef, writeStatusRef } = useStatusRef();
+  const { readUserStats, writeUserStats } = useUserStatsRef();
+  const { readLineStatus, writeLineStatus } = useLineStatusRef();
+  const { readStatus, writeStatus } = useStatusRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
   const readScene = useSceneStateRef();
@@ -27,7 +27,7 @@ export const useTypeSuccess = () => {
     const map = readMap();
     const status = readTypingStatus();
     const newStatus = { ...status };
-    const lineTypeCount = readLineStatusRef().type;
+    const lineTypeCount = readLineStatus().type;
 
     if (lineTypeCount === 1) {
       newStatus.point = updatePoint;
@@ -42,8 +42,8 @@ export const useTypeSuccess = () => {
       const timeBonus = Math.round(lineRemainConstantTime * 1 * 100);
       newStatus.timeBonus = timeBonus; //speed;
       newStatus.score += newStatus.point + timeBonus;
-      const completeCount = readStatusRef().completeCount;
-      const failureCount = readStatusRef().failureCount;
+      const completeCount = readStatus().completeCount;
+      const failureCount = readStatus().failureCount;
 
       newStatus.line = map.lineLength - (completeCount + failureCount);
 
@@ -70,49 +70,49 @@ export const useTypeSuccess = () => {
     combo: number;
   }) => {
     const scene = readScene();
-    const lineTypingStatusRef = readLineStatusRef();
-    const statusRef = readStatusRef();
+    const lineTypingStatusRef = readLineStatus();
+    const statusRef = readStatus();
     if (lineTypingStatusRef.type === 0) {
-      writeLineStatusRef({
+      writeLineStatus({
         latency: constantLineTime,
       });
     }
 
-    writeStatusRef({
+    writeStatus({
       missCombo: 0,
     });
 
     const newCombo = combo + 1;
     if (newCombo > statusRef.maxCombo) {
-      writeStatusRef({
+      writeStatus({
         maxCombo: newCombo,
       });
 
       if (scene === "playing") {
-        writeUserStatsRef({
+        writeUserStats({
           maxCombo: newCombo,
         });
       }
     }
 
-    writeLineStatusRef({
-      type: readLineStatusRef().type + 1,
+    writeLineStatus({
+      type: readLineStatus().type + 1,
     });
 
     if (isCompleted) {
-      writeLineStatusRef({
+      writeLineStatus({
         isCompleted: true,
         completedTime: constantLineTime,
       });
-      writeStatusRef({
-        completeCount: readStatusRef().completeCount + 1,
+      writeStatus({
+        completeCount: readStatus().completeCount + 1,
       });
     }
 
     if (scene !== "replay") {
-      writeLineStatusRef({
+      writeLineStatus({
         typeResult: [
-          ...readLineStatusRef().typeResult,
+          ...readLineStatus().typeResult,
           {
             c: successKey,
             is: true,
@@ -129,55 +129,55 @@ export const useTypeSuccess = () => {
     const inputMode = readPlayingInputMode();
     if (typeChunk.t === "kana") {
       if (inputMode === "roma") {
-        writeUserStatsRef({
-          romaType: readUserStatsRef().romaType + 1,
+        writeUserStats({
+          romaType: readUserStats().romaType + 1,
         });
-        writeStatusRef({
-          romaType: readStatusRef().romaType + 1,
+        writeStatus({
+          romaType: readStatus().romaType + 1,
         });
       } else if (inputMode === "kana") {
-        writeUserStatsRef({
-          kanaType: readUserStatsRef().kanaType + 1,
+        writeUserStats({
+          kanaType: readUserStats().kanaType + 1,
         });
 
-        writeStatusRef({
-          kanaType: readStatusRef().kanaType + 1,
+        writeStatus({
+          kanaType: readStatus().kanaType + 1,
         });
       } else if (inputMode === "flick") {
-        writeUserStatsRef({
-          flickType: readUserStatsRef().flickType + 1,
+        writeUserStats({
+          flickType: readUserStats().flickType + 1,
         });
-        writeStatusRef({
-          flickType: readStatusRef().flickType + 1,
+        writeStatus({
+          flickType: readStatus().flickType + 1,
         });
       }
     } else if (typeChunk.t === "alphabet") {
-      writeUserStatsRef({
-        englishType: readUserStatsRef().englishType + 1,
+      writeUserStats({
+        englishType: readUserStats().englishType + 1,
       });
-      writeStatusRef({
-        englishType: readStatusRef().englishType + 1,
+      writeStatus({
+        englishType: readStatus().englishType + 1,
       });
     } else if (typeChunk.t === "num") {
-      writeUserStatsRef({
-        numType: readUserStatsRef().numType + 1,
+      writeUserStats({
+        numType: readUserStats().numType + 1,
       });
-      writeStatusRef({
-        numType: readStatusRef().numType + 1,
+      writeStatus({
+        numType: readStatus().numType + 1,
       });
     } else if (typeChunk.t === "space") {
-      writeUserStatsRef({
-        spaceType: readUserStatsRef().spaceType + 1,
+      writeUserStats({
+        spaceType: readUserStats().spaceType + 1,
       });
-      writeStatusRef({
-        spaceType: readStatusRef().spaceType + 1,
+      writeStatus({
+        spaceType: readStatus().spaceType + 1,
       });
     } else if (typeChunk.t === "symbol") {
-      writeUserStatsRef({
-        symbolType: readUserStatsRef().symbolType + 1,
+      writeUserStats({
+        symbolType: readUserStats().symbolType + 1,
       });
-      writeStatusRef({
-        symbolType: readStatusRef().symbolType + 1,
+      writeStatus({
+        symbolType: readStatus().symbolType + 1,
       });
     }
   };
@@ -200,8 +200,8 @@ export const useTypeMiss = () => {
   const setCombo = useSetComboState();
   const { setTypingStatus } = useSetTypingStatusState();
 
-  const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
-  const { readStatusRef, writeStatusRef } = useStatusRef();
+  const { readLineStatus, writeLineStatus } = useLineStatusRef();
+  const { readStatus, writeStatus } = useStatusRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readMap = useMapStateRef();
 
@@ -219,15 +219,15 @@ export const useTypeMiss = () => {
   const updateMissRefStatus = ({ constantLineTime, failKey }) => {
     const map = readMap();
 
-    writeStatusRef({
-      clearRate: readStatusRef().clearRate - map.missRate,
-      missCombo: readStatusRef().missCombo + 1,
+    writeStatus({
+      clearRate: readStatus().clearRate - map.missRate,
+      missCombo: readStatus().missCombo + 1,
     });
 
-    writeLineStatusRef({
-      miss: readLineStatusRef().miss + 1,
+    writeLineStatus({
+      miss: readLineStatus().miss + 1,
       typeResult: [
-        ...readLineStatusRef().typeResult,
+        ...readLineStatus().typeResult,
         {
           c: failKey,
           t: constantLineTime,

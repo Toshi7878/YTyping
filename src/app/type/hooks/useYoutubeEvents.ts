@@ -26,7 +26,7 @@ export const useYTPlayEvent = () => {
 
   const { readPlayer } = usePlayer();
   const { readGameUtils } = useGameUtilsRef();
-  const { readYTStatusRef, writeYTStatusRef } = useYTStatusRef();
+  const { readYTStatus, writeYTStatus } = useYTStatusRef();
   const readScene = useSceneStateRef();
   const readIsLoadingOverlay = useIsLoadingOverlayStateRef();
   const readReadyInputMode = useReadyInputModeStateRef();
@@ -37,7 +37,7 @@ export const useYTPlayEvent = () => {
 
     if (scene === "ready") {
       const movieDuration = readPlayer().getDuration();
-      writeYTStatusRef({ movieDuration });
+      writeYTStatus({ movieDuration });
 
       const playMode = readGameUtils().playMode;
       const isPlayDataLoad = readIsLoadingOverlay();
@@ -65,10 +65,10 @@ export const useYTPlayEvent = () => {
       startTimer();
     }
 
-    const isPaused = readYTStatusRef().isPaused;
+    const isPaused = readYTStatus().isPaused;
 
     if (isPaused) {
-      writeYTStatusRef({ isPaused: false });
+      writeYTStatus({ isPaused: false });
       setNotify(Symbol("▶"));
     }
   };
@@ -107,7 +107,7 @@ export const useYTStopEvent = () => {
 
 export const useYTPauseEvent = () => {
   const setNotify = useSetNotifyState();
-  const { readYTStatusRef, writeYTStatusRef } = useYTStatusRef();
+  const { readYTStatus, writeYTStatus } = useYTStatusRef();
 
   return () => {
     console.log("一時停止");
@@ -116,9 +116,9 @@ export const useYTPauseEvent = () => {
       typeTicker.stop();
     }
 
-    const isPaused = readYTStatusRef().isPaused;
+    const isPaused = readYTStatus().isPaused;
     if (!isPaused) {
-      writeYTStatusRef({ isPaused: true });
+      writeYTStatus({ isPaused: true });
       setNotify(Symbol("ll"));
     }
   };
@@ -127,7 +127,7 @@ export const useYTPauseEvent = () => {
 export const useYTSeekEvent = () => {
   const { readPlayer } = usePlayer();
   const { readGameUtils } = useGameUtilsRef();
-  const { writeStatusRef } = useStatusRef();
+  const { writeStatus } = useStatusRef();
 
   return () => {
     const time = readPlayer().getCurrentTime();
@@ -135,7 +135,7 @@ export const useYTSeekEvent = () => {
     const { isRetrySkip } = readGameUtils();
 
     if (isRetrySkip && time === 0) {
-      writeStatusRef({ count: 0 });
+      writeStatus({ count: 0 });
     }
 
     console.log("シーク");

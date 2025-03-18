@@ -19,7 +19,7 @@ export const useMoveLine = () => {
   const getSeekLineCount = useGetSeekLineCount();
 
   const { readResultCards } = useResultCards();
-  const { readStatusRef, writeStatusRef } = useStatusRef();
+  const { readStatus, writeStatus } = useStatusRef();
   const readScene = useSceneStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readLineSelectIndex = useLineSelectIndexStateRef();
@@ -28,7 +28,7 @@ export const useMoveLine = () => {
   const movePrevLine = () => {
     const map = readMap();
     const scene = readScene();
-    const count = readStatusRef().count - (scene === "replay" ? 1 : 0);
+    const count = readStatus().count - (scene === "replay" ? 1 : 0);
     const prevCount = structuredClone(map.typingLineNumbers)
       .reverse()
       .find((num) => num < count);
@@ -47,7 +47,7 @@ export const useMoveLine = () => {
     }
 
     const newCount = getSeekLineCount(prevTime);
-    writeStatusRef({ count: newCount });
+    writeStatus({ count: newCount });
     updateLine(newCount);
 
     readPlayer().seekTo(prevTime, true);
@@ -60,9 +60,9 @@ export const useMoveLine = () => {
     const map = readMap();
     const lineSelectIndex = readLineSelectIndex();
     const seekCount = lineSelectIndex ? map.typingLineNumbers[lineSelectIndex - 1] : null;
-    const seekCountAdjust = seekCount && seekCount === readStatusRef().count ? 0 : -1;
+    const seekCountAdjust = seekCount && seekCount === readStatus().count ? 0 : -1;
 
-    const count = readStatusRef().count + seekCountAdjust;
+    const count = readStatus().count + seekCountAdjust;
     const nextCount = map.typingLineNumbers.find((num) => num > count);
 
     if (nextCount === undefined) {
@@ -86,7 +86,7 @@ export const useMoveLine = () => {
     }
 
     const newCount = getSeekLineCount(nextTime);
-    writeStatusRef({ count: newCount });
+    writeStatus({ count: newCount });
     updateLine(newCount);
 
     readPlayer().seekTo(nextTime, true);
@@ -109,7 +109,7 @@ export const useMoveLine = () => {
     }
     readPlayer().seekTo(seekTime, true);
     const newCount = getSeekLineCount(seekTime);
-    writeStatusRef({ count: newCount });
+    writeStatus({ count: newCount });
     updateLine(newCount);
     typeTicker.stop();
   };

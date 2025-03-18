@@ -1,5 +1,5 @@
-import { useGameUtilsRef, useMapInfoRef } from "@/app/type/atoms/refAtoms";
-import { useSceneState } from "@/app/type/atoms/stateAtoms";
+import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useMapInfoRef, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
@@ -39,11 +39,11 @@ const RankingMenu = ({
   const handleClick = useOnClickPracticeReplay({ startMode: "replay", resultId });
 
   const { writeGameUtils } = useGameUtilsRef();
-  const { readMapInfoRef } = useMapInfoRef();
+  const { readMapInfo } = useMapInfoRef();
   const handleReplayClick = async () => {
     await handleClick();
 
-    const mapUpdatedAt = readMapInfoRef().updated_at;
+    const mapUpdatedAt = readMapInfo().updated_at;
     const resultUpdatedAtDate = new Date(resultUpdatedAt);
     iosActiveSound();
 

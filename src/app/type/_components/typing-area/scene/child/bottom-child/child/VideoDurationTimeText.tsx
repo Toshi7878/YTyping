@@ -8,7 +8,7 @@ import { Text } from "@chakra-ui/react";
 const VideoDurationTimeText = () => {
   const map = useMapState() as CreateMap | null;
   const speedData = usePlaySpeedState();
-  const movieDuration = useYTStatusRef().readYTStatusRef().movieDuration;
+  const movieDuration = useYTStatusRef().readYTStatus().movieDuration;
   if (!map) {
     return;
   }

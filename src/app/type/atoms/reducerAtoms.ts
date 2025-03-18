@@ -2,7 +2,8 @@ import { YouTubeSpeed } from "@/types";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { getTypeAtomStore, sceneAtom } from "./stateAtoms";
+import { sceneAtom } from "./stateAtoms";
+import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
 

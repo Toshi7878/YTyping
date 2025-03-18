@@ -82,7 +82,7 @@ const useKeyReplay = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
 
-  const { readStatusRef, writeStatusRef } = useStatusRef();
+  const { readStatus, writeStatus } = useStatusRef();
   const readLineResults = useLineResultsStateRef();
   const readCombo = useComboStateRef();
   const readLineWord = useLineWordStateRef();
@@ -93,7 +93,7 @@ const useKeyReplay = () => {
     const key = typeData.c;
     const isSuccess = typeData.is;
     const option = typeData.op;
-    const count = readStatusRef().count;
+    const count = readStatus().count;
 
     if (key) {
       const typingKeys: TypingKeys = {
@@ -150,7 +150,7 @@ const useKeyReplay = () => {
           setTypingStatus(newStatusReplay);
           setCombo(lineResult.status!.combo as number);
           setDisplayLineKpm(lineResult.status!.lKpm as number);
-          writeStatusRef({ totalTypeTime: lineResult.status!.tTime });
+          writeStatus({ totalTypeTime: lineResult.status!.tTime });
         }
       } else {
         triggerMissSound();
@@ -178,10 +178,10 @@ export const useReplay = () => {
   const readLineResults = useLineResultsStateRef();
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const { readStatusRef } = useStatusRef();
+  const { readStatus } = useStatusRef();
 
   return ({ constantLineTime }: { constantLineTime: number }) => {
-    const count = readStatusRef().count;
+    const count = readStatus().count;
     const lineResults = readLineResults();
 
     const lineResult: LineResultData = lineResults[count - 1];

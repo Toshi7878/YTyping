@@ -42,9 +42,9 @@ export const useTyping = () => {
   const { setTypingStatus } = useSetTypingStatusState();
   const updateAllStatus = useUpdateAllStatus();
 
-  const { readYTStatusRef } = useYTStatusRef();
-  const { readLineStatusRef } = useLineStatusRef();
-  const { readStatusRef } = useStatusRef();
+  const { readYTStatus } = useYTStatusRef();
+  const { readLineStatus } = useLineStatusRef();
+  const { readStatus } = useStatusRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readCombo = useComboStateRef();
   const readLineResults = useLineResultsStateRef();
@@ -92,13 +92,13 @@ export const useTyping = () => {
         combo,
       });
 
-      const isPaused = readYTStatusRef().isPaused;
+      const isPaused = readYTStatus().isPaused;
       if (isCompleted && !isPaused) {
         if (readScene() === "practice" && readPlaySpeed().playSpeed >= 1) {
           const lineResults = readLineResults();
 
           const lResult = lineResults[count - 1];
-          const lMiss = readLineStatusRef().miss;
+          const lMiss = readLineStatus().miss;
 
           const lineScore = newStatus.point + newStatus.timeBonus + lMiss * MISS_PENALTY;
           const oldLineScore =
@@ -108,13 +108,13 @@ export const useTyping = () => {
           const newLineResults = [...lineResults];
 
           if (isUpdateResult) {
-            const tTime = Math.round(readStatusRef().totalTypeTime * 1000) / 1000;
+            const tTime = Math.round(readStatus().totalTypeTime * 1000) / 1000;
 
             newLineResults[count - 1] = {
               status: {
                 p: newStatus.point,
                 tBonus: newStatus.timeBonus,
-                lType: readLineStatusRef().type,
+                lType: readLineStatus().type,
                 lMiss,
                 lRkpm: typeSpeed!.lineRkpm,
                 lKpm: typeSpeed!.lineKpm,
@@ -122,10 +122,10 @@ export const useTyping = () => {
                 lLost: 0,
                 combo,
                 tTime,
-                mode: readLineStatusRef().startInputMode,
-                sp: readLineStatusRef().startSpeed,
+                mode: readLineStatus().startInputMode,
+                sp: readLineStatus().startSpeed,
               },
-              typeResult: readLineStatusRef().typeResult,
+              typeResult: readLineStatus().typeResult,
             };
             setLineResults(newLineResults);
           }

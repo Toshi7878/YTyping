@@ -22,8 +22,8 @@ export const useInputModeChange = () => {
   const setLineWord = useSetLineWordState();
 
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
-  const { readLineStatusRef, writeLineStatusRef } = useLineStatusRef();
-  const { readStatusRef } = useStatusRef();
+  const { readLineStatus, writeLineStatus } = useLineStatusRef();
+  const { readStatus } = useStatusRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readScene = useSceneStateRef();
@@ -59,7 +59,7 @@ export const useInputModeChange = () => {
       }
     }
 
-    const count = readStatusRef().count;
+    const count = readStatus().count;
     const nextLine = map.mapData[count];
     const playSpeed = readPlaySpeed().playSpeed;
 
@@ -83,9 +83,9 @@ export const useInputModeChange = () => {
 
     if (scene === "playing") {
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
-      writeLineStatusRef({
+      writeLineStatus({
         typeResult: [
-          ...readLineStatusRef().typeResult,
+          ...readLineStatus().typeResult,
           {
             op: newInputMode,
             t: Math.round(lineTime * 1000) / 1000,
