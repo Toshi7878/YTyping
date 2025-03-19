@@ -60,7 +60,7 @@ export const userStatsRouter = {
 
       axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
-        JSON.stringify(sendStats)
+        JSON.stringify({ ...sendStats, userId: user.id })
       );
     }),
 

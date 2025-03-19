@@ -1,12 +1,13 @@
+import { RouterInputs } from "@/server/api/trpc";
 import { prisma } from "@/server/db";
 import { NextResponse } from "next/server";
 
+type Input = RouterInputs["userStats"]["incrementTypingStats"];
+type UserId = { userId: number };
 export async function POST(request: Request) {
-  const userId = session ? Number(session?.user.id) : 0;
-
   try {
     const bodyText = await request.text();
-    const input = JSON.parse(bodyText);
+    const { userId, ...input }: Input & UserId = JSON.parse(bodyText);
     const currentStats = await prisma.user_stats.findUnique({
       where: { user_id: userId },
       select: { max_combo: true },

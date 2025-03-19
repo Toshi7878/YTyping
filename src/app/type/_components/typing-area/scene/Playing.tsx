@@ -13,8 +13,10 @@ import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useSta
 import { usePlayTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { typeTicker } from "@/app/type/ts/const/consts";
 import { RESET } from "jotai/utils";
+import { useSession } from "next-auth/react";
 
 const Playing = () => {
+  const { data: session } = useSession();
   const setLineWord = useSetLineWordState();
   const setLyrics = useSetLyricsState();
   const setNextLyrics = useSetNextLyricsState();
@@ -32,7 +34,7 @@ const Playing = () => {
         const maxCombo = sendStats.maxCombo;
         navigator.sendBeacon(
           `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
-          JSON.stringify(sendStats)
+          JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })
         );
 
         resetUserStats(structuredClone(maxCombo));
@@ -43,7 +45,7 @@ const Playing = () => {
       const maxCombo = sendStats.maxCombo;
       navigator.sendBeacon(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
-        JSON.stringify(sendStats)
+        JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })
       );
       resetUserStats(structuredClone(maxCombo));
     };
