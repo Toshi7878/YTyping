@@ -6,7 +6,7 @@ import { protectedProcedure } from "../trpc";
 export const userProfileSettingRouter = {
   updateName: protectedProcedure.input(userNameSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    const email_hash = user.email;
+    const email_hash = user.email_hash;
 
     if (!email_hash) {
       throw new TRPCError({
