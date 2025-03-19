@@ -56,9 +56,14 @@ const speedReducerAtom = atom(
         break;
       case "set":
         if (value !== undefined) {
-          set(speedBaseAtom, {
-            defaultSpeed: value,
-            playSpeed: value,
+          set(speedBaseAtom, (prev) => {
+            if (prev.playSpeed === value) {
+              return prev;
+            }
+            return {
+              defaultSpeed: value,
+              playSpeed: value,
+            };
           });
         }
         break;
