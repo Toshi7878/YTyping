@@ -1,5 +1,6 @@
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
@@ -47,6 +48,8 @@ export async function POST(request: Request) {
         max_combo: input.maxCombo,
       },
     });
+
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error :", error);
 
