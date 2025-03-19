@@ -1,9 +1,9 @@
 "use client";
 
-import { useSetTabIndexState } from "@/app/type/atoms/stateAtoms";
+import { useSetTabIndexState } from "@/app/edit/atoms/stateAtoms";
+import { useResultData } from "@/app/type/hooks/end/useResultData";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
-import { UploadResult } from "@/types";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -11,63 +11,54 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
-  Box,
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import AlertDialogButton from "./child/AlertDialogButton";
 import EndMainButton from "./child/EndMainButton";
 
 interface UploadButtonProps {
   isScoreUpdated: boolean;
-  formAction: () => void;
-  state: UploadResult;
+  isSendResultBtnDisabled: boolean;
+  setIsSendResultBtnDisabled: (isDisabled: boolean) => void;
 }
 
-const EndUploadButton = ({ isScoreUpdated, formAction, state }: UploadButtonProps) => {
+const EndUploadButton = ({
+  isScoreUpdated,
+  isSendResultBtnDisabled,
+  setIsSendResultBtnDisabled,
+}: UploadButtonProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
-  const [isDisabled, setIsDisabled] = useState(false);
-  const setTabIndex = useSetTabIndexState();
-  const utils = clientApi.useUtils();
   const { id: mapId } = useParams();
+  const setTabIndex = useSetTabIndexState();
   const toast = useCustomToast();
 
-  useEffect(() => {
-    if (state.status === 200) {
-      setIsDisabled(true);
+  const resultData = useResultData();
+  const utils = clientApi.useUtils();
+
+  const sendResult = clientApi.result.sendResult.useMutation({
+    onSuccess: () => {
+      setIsSendResultBtnDisabled(true);
       utils.ranking.getMapRanking.invalidate({ mapId: Number(mapId) });
       onClose();
-    } else {
-      setIsDisabled(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.status]);
+      setTabIndex(1);
+      toast({ type: "success", title: "ランキング登録が完了しました" });
+    },
+    onError: () => {
+      setIsSendResultBtnDisabled(false);
+    },
+  });
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!isScoreUpdated) {
       onOpen();
+    } else {
+      sendResult.mutate(resultData());
     }
   };
-
-  useEffect(() => {
-    if (state.status !== 0) {
-      const title = state.title;
-      const message = state.message;
-      const isSuccess = state.status === 200 ? true : false;
-
-      if (isSuccess) {
-        setTabIndex(1);
-        toast({ type: "success", title, message });
-      } else {
-        toast({ type: "error", title, message });
-      }
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
 
   return (
     <>
@@ -84,21 +75,22 @@ const EndUploadButton = ({ isScoreUpdated, formAction, state }: UploadButtonProp
               <Button ref={cancelRef} onClick={onClose}>
                 キャンセル
               </Button>
-              <Box as="form" action={formAction}>
-                <AlertDialogButton />
-              </Box>
+              <AlertDialogButton
+                onClick={() => sendResult.mutate(resultData())}
+                isLoading={sendResult.isPending}
+              />
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-      <Box as="form" action={formAction}>
-        <EndMainButton
-          text={isDisabled ? "ランキング登録完了" : "ランキング登録"}
-          isDisabled={isDisabled}
-          type={isScoreUpdated ? "submit" : "button"}
-          onClick={handleClick}
-        />
-      </Box>
+      <EndMainButton
+        isDisabled={isSendResultBtnDisabled}
+        onClick={handleClick}
+        type={isScoreUpdated ? "submit" : "button"}
+        isLoading={sendResult.isPending}
+      >
+        {isSendResultBtnDisabled ? "ランキング登録完了" : "ランキング登録"}
+      </EndMainButton>
     </>
   );
 };

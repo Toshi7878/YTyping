@@ -1,5 +1,3 @@
-import { auth } from "@/server/auth";
-import { prisma } from "@/server/db";
 import axios from "axios";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
@@ -11,27 +9,25 @@ export const userStatsRouter = {
         mapId: z.number(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      const { db, user } = ctx;
       const { mapId } = input;
-      const session = await auth();
-      const userId = session ? Number(session.user.id) : 0;
-
-      if (session) {
-        await prisma.user_stats.upsert({
+      if (user.id) {
+        await db.user_stats.upsert({
           where: {
-            user_id: userId,
+            user_id: user.id,
           },
           update: {
             total_play_count: { increment: 1 },
           },
           create: {
-            user_id: userId,
+            user_id: user.id,
             total_play_count: 1,
           },
         });
       }
 
-      await prisma.maps.update({
+      await db.maps.update({
         where: {
           id: mapId,
         },
@@ -40,6 +36,7 @@ export const userStatsRouter = {
         },
       });
     }),
+
   incrementTypingStats: protectedProcedure
     .input(
       z.object({
@@ -55,65 +52,10 @@ export const userStatsRouter = {
       })
     )
     .mutation(async ({ input: sendStats }) => {
-      try {
-        axios
-          .post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
-            JSON.stringify(sendStats)
-          )
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-        // const updateData: Record<string, any> = {
-        //   roma_type_total_count: { increment: input.romaType },
-        //   kana_type_total_count: { increment: input.kanaType },
-        //   flick_type_total_count: { increment: input.flickType },
-        //   english_type_total_count: { increment: input.englishType },
-        //   num_type_total_count: { increment: input.numType },
-        //   symbol_type_total_count: { increment: input.symbolType },
-        //   space_type_total_count: { increment: input.spaceType },
-        //   total_typing_time: { increment: input.totalTypeTime },
-        // };
-
-        // const isUpdateMaxCombo = !currentStats || input.maxCombo > (currentStats.max_combo || 0);
-        // if (isUpdateMaxCombo) {
-        //   updateData.max_combo = input.maxCombo;
-        // }
-
-        // await prisma.user_stats.upsert({
-        //   where: {
-        //     user_id: userId,
-        //   },
-        //   update: updateData,
-        //   create: {
-        //     user_id: userId,
-        //     roma_type_total_count: input.romaType,
-        //     kana_type_total_count: input.kanaType,
-        //     flick_type_total_count: input.flickType,
-        //     english_type_total_count: input.englishType,
-        //     num_type_total_count: input.numType,
-        //     symbol_type_total_count: input.symbolType,
-        //     space_type_total_count: input.spaceType,
-        //     total_typing_time: input.totalTypeTime,
-        //     max_combo: input.maxCombo,
-        //   },
-        // });
-      } catch (error) {
-        return new Response(
-          JSON.stringify({
-            id: null,
-            title: "サーバー側で問題が発生しました",
-            message: "しばらく時間をおいてから再度お試しください。",
-            status: 500,
-            errorObject: error instanceof Error ? error.message : String(error),
-          }),
-          { status: 500 }
-        );
-      }
+      axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
+        JSON.stringify(sendStats)
+      );
     }),
 
   getUserStats: publicProcedure
@@ -122,8 +64,10 @@ export const userStatsRouter = {
         userId: z.number(),
       })
     )
-    .query(async ({ input }) => {
-      const userTypingOptions = await prisma.user_stats.findUnique({
+    .query(async ({ input, ctx }) => {
+      const { db } = ctx;
+
+      const userTypingOptions = await db.user_stats.findUnique({
         where: { user_id: input.userId },
         select: {
           total_ranking_count: true,

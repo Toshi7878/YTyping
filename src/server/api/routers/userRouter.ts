@@ -1,4 +1,3 @@
-import { prisma } from "@/server/db";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -9,8 +8,9 @@ export const userRouter = {
         userId: z.number(),
       })
     )
-    .query(async ({ input }) => {
-      const user = await prisma.users.findUnique({
+    .query(async ({ input, ctx }) => {
+      const { db } = ctx;
+      const user = await db.users.findUnique({
         where: { id: input.userId },
         select: {
           name: true,

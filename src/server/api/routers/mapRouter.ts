@@ -1,19 +1,15 @@
 import { MapData } from "@/app/type/ts/type";
 import { supabase } from "@/lib/supabaseClient";
-import { auth } from "@/server/auth";
-import { prisma } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
 export const mapRouter = {
-  getMapInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
+  getMapInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
+    const { db, user } = ctx;
     const { mapId } = input;
 
-    const session = await auth();
-    const userId = session?.user ? Number(session?.user.id) : 0;
-
-    const mapInfo = await prisma.maps.findUnique({
+    const mapInfo = await db.maps.findUnique({
       where: { id: mapId },
       select: {
         title: true,
@@ -28,7 +24,7 @@ export const mapRouter = {
         updated_at: true,
         thumbnail_quality: true,
         map_likes: {
-          where: { user_id: userId },
+          where: { user_id: user.id },
           select: { is_liked: true },
         },
         creator: {
@@ -55,12 +51,11 @@ export const mapRouter = {
   }),
   getCreatedVideoIdMapList: publicProcedure
     .input(z.object({ videoId: z.string().length(11) }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const { db, user } = ctx;
       const { videoId } = input;
-      const session = await auth();
-      const userId = session ? Number(session.user.id) : 0;
 
-      const mapList = await prisma.maps.findMany({
+      const mapList = await db.maps.findMany({
         where: {
           video_id: videoId,
         },
@@ -91,7 +86,7 @@ export const mapRouter = {
           },
           map_likes: {
             where: {
-              user_id: userId,
+              user_id: user.id,
             },
             select: {
               is_liked: true,
@@ -99,7 +94,7 @@ export const mapRouter = {
           },
           results: {
             where: {
-              user_id: userId,
+              user_id: user.id,
             },
             select: {
               rank: true,
@@ -116,7 +111,7 @@ export const mapRouter = {
 
   getMap: publicProcedure.input(z.object({ mapId: z.string() })).query(async ({ input }) => {
     try {
-      const timestamp = new Date().getTime(); // 一意のクエリパラメータを生成
+      const timestamp = new Date().getTime();
 
       const { data, error } = await supabase.storage
         .from("map-data") // バケット名を指定

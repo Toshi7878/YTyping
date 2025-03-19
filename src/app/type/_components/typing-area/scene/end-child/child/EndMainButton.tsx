@@ -1,43 +1,9 @@
-import { ThemeColors } from "@/types";
-import { Button, useTheme } from "@chakra-ui/react";
-import React from "react";
-import { useFormStatus } from "react-dom";
+import { Button, ButtonProps } from "@chakra-ui/react";
 
-interface EndMainButtonProps {
-  text: string;
-  onClick?: () => void;
-  isDisabled?: boolean;
-  type?: "button" | "submit" | "reset";
-}
-const EndMainButton = ({
-  text,
-  onClick = () => {},
-  isDisabled = false,
-  type = "button",
-}: EndMainButtonProps) => {
-  const theme: ThemeColors = useTheme();
-  const { pending } = useFormStatus();
-
+const EndMainButton = ({ children, ...props }: ButtonProps) => {
   return (
-    <Button
-      className="cursor-pointer"
-      variant="solid"
-      py="3.2rem"
-      width="430px"
-      bg={theme.colors.primary.main}
-      color={theme.colors.text.body}
-      border="1px"
-      borderColor={theme.colors.border.card}
-      fontSize="3xl"
-      onClick={onClick}
-      isDisabled={isDisabled}
-      isLoading={pending}
-      type={type}
-      _hover={{
-        bg: theme.colors.primary.light,
-      }}
-    >
-      {text}
+    <Button variant="endMain" {...props}>
+      {children}
     </Button>
   );
 };

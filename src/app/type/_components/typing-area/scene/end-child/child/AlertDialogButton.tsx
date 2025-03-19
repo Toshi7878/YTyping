@@ -1,12 +1,8 @@
-import { Button } from "@chakra-ui/react";
-import React from "react";
-import { useFormStatus } from "react-dom";
+import { Button, ButtonProps } from "@chakra-ui/react";
 
-const AlertDialogButton = () => {
-  const { pending } = useFormStatus();
-
+const AlertDialogButton = (props: ButtonProps) => {
   return (
-    <Button colorScheme="red" type="submit" ml={3} isLoading={pending}>
+    <Button colorScheme="red" type="submit" ml={3} {...props}>
       ランキングに登録
     </Button>
   );

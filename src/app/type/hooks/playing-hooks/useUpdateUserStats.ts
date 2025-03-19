@@ -15,7 +15,7 @@ export function useUpdateUserStats() {
   };
   const updateTypingStats = () => {
     const userStats = readUserStats();
-    const maxCombo = readStatus().maxCombo;
+    const { maxCombo } = readStatus();
 
     incrementTypingStats.mutate({
       ...userStats,

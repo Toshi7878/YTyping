@@ -1,5 +1,3 @@
-import { auth } from "@/server/auth";
-import { prisma } from "@/server/db";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
@@ -14,13 +12,12 @@ export const userStatusSchema = z.array(
 );
 
 export const activeUserRouter = {
-  getUserPlayingMaps: publicProcedure.input(userStatusSchema).query(async ({ input }) => {
-    const session = await auth();
-    const userId = session?.user ? Number(session?.user.id) : 0;
+  getUserPlayingMaps: publicProcedure.input(userStatusSchema).query(async ({ input, ctx }) => {
+    const { db, user } = ctx;
 
     const userListPromises = input.map(async (activeUser) => {
       if (activeUser.state === "type" && activeUser.mapId) {
-        const mapInfo = await prisma.maps.findUnique({
+        const mapInfo = await db.maps.findUnique({
           where: { id: activeUser.mapId },
           select: {
             id: true,
@@ -44,7 +41,7 @@ export const activeUserRouter = {
             },
             map_likes: {
               where: {
-                user_id: userId,
+                user_id: user.id,
               },
               select: {
                 is_liked: true,
@@ -52,7 +49,7 @@ export const activeUserRouter = {
             },
             results: {
               where: {
-                user_id: userId,
+                user_id: user.id,
               },
               select: {
                 rank: true,

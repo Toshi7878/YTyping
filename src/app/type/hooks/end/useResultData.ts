@@ -1,17 +1,17 @@
+import { sendResultSchema } from "@/server/api/routers/rankingRouter";
 import { useParams } from "next/navigation";
-import { actions } from "../../../server/actions/sendTypingResultActions";
-import { useStatusRef } from "../atoms/refAtoms";
-import { useLineResultsStateRef, useTypingStatusStateRef } from "../atoms/stateAtoms";
-import { LineResultData, SendResultData } from "../ts/type";
+import { z } from "zod";
+import { useStatusRef } from "../../atoms/refAtoms";
+import { useLineResultsStateRef, useTypingStatusStateRef } from "../../atoms/stateAtoms";
 
-export const useSendResult = () => {
+export const useResultData = () => {
   const { id: mapId } = useParams();
   const { readStatus } = useStatusRef();
 
   const readLineResults = useLineResultsStateRef();
   const readTypingStatus = useTypingStatusStateRef();
 
-  const getMinSpeed = (lineResults: LineResultData[]) => {
+  const getMinSpeed = (lineResults: z.infer<typeof sendResultSchema>["lineResults"]) => {
     return lineResults.reduce((min, result) => {
       if (result.status!.tTime !== 0) {
         return Math.min(min, result.status!.sp);
@@ -20,16 +20,15 @@ export const useSendResult = () => {
     }, Infinity);
   };
 
-  return async (): Promise<ReturnType<typeof actions>> => {
+  return () => {
     const statusRef = readStatus();
     const lineResults = readLineResults();
     const minSp = getMinSpeed(lineResults);
     const totalTypeTime = statusRef.totalTypeTime;
     const rkpmTime = totalTypeTime - statusRef.totalLatency;
     const kanaToRomaConvertCount = statusRef.kanaToRomaConvertCount;
-
     const typingStatus = readTypingStatus();
-    const sendStatus: SendResultData["status"] = {
+    const sendStatus: z.infer<typeof sendResultSchema>["status"] = {
       score: typingStatus.score,
       roma_type: statusRef.romaType,
       kana_type: statusRef.kanaType,
@@ -47,13 +46,11 @@ export const useSendResult = () => {
       default_speed: minSp,
       clear_rate: +statusRef.clearRate.toFixed(1),
     };
-    const sendData = {
-      map_id: Number(mapId),
+
+    return {
+      mapId: Number(mapId),
       status: sendStatus,
+      lineResults,
     };
-
-    const result = await actions(sendData, lineResults);
-
-    return result;
   };
 };

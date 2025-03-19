@@ -1,21 +1,17 @@
-import { auth } from "@/server/auth";
-import { prisma } from "@/server/db";
-import {
-  line_completed_display,
-  next_display,
-  time_offset_key,
-  toggle_input_mode_key,
-} from "@prisma/client";
+import { line_completed_display, next_display, time_offset_key, toggle_input_mode_key } from "@prisma/client";
 import { z } from "zod";
-import { publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userTypingOptionRouter = {
-  getUserTypingOptions: publicProcedure.query(async () => {
-    const session = await auth();
-    const userId = session?.user ? Number(session?.user.id) : 0;
+  getUserTypingOptions: publicProcedure.query(async ({ ctx }) => {
+    const { db, user } = ctx;
 
-    const userTypingOptions = await prisma.user_typing_options.findUnique({
-      where: { user_id: userId },
+    if (!user.id) {
+      return;
+    }
+
+    const userTypingOptions = await db.user_typing_options.findUnique({
+      where: { user_id: user.id },
       select: {
         time_offset: true,
         kana_word_scroll: true,
@@ -32,7 +28,7 @@ export const userTypingOptionRouter = {
 
     return userTypingOptions;
   }),
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         time_offset: z.number(),
@@ -47,37 +43,22 @@ export const userTypingOptionRouter = {
         toggle_input_mode_key: z.nativeEnum(toggle_input_mode_key),
       })
     )
-    .mutation(async ({ input }) => {
-      const session = await auth();
+    .mutation(async ({ input, ctx }) => {
+      const { db, user } = ctx;
 
-      try {
-        const userId = session ? Number(session.user.id) : 0;
+      const updated = await db.user_typing_options.upsert({
+        where: {
+          user_id: user.id,
+        },
+        update: {
+          ...input,
+        },
+        create: {
+          user_id: user.id,
+          ...input,
+        },
+      });
 
-        const updated = await prisma.user_typing_options.upsert({
-          where: {
-            user_id: userId,
-          },
-          update: {
-            ...input,
-          },
-          create: {
-            user_id: userId,
-            ...input,
-          },
-        });
-
-        return updated;
-      } catch (error) {
-        return new Response(
-          JSON.stringify({
-            id: null,
-            title: "サーバー側で問題が発生しました",
-            message: "しばらく時間をおいてから再度お試しください。",
-            status: 500,
-            errorObject: error instanceof Error ? error.message : String(error),
-          }),
-          { status: 500 }
-        );
-      }
+      return updated;
     }),
 };

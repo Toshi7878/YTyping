@@ -129,6 +129,19 @@ export default extendTheme({
             },
           },
         },
+        endMain: {
+          py: "3.2rem",
+          width: "430px",
+          bg: darkTheme.colors.primary.main,
+          cursor: "pointer",
+          color: darkTheme.colors.text.body,
+          border: "1px",
+          borderColor: darkTheme.colors.border.card,
+          fontSize: "3xl",
+          _hover: {
+            bg: darkTheme.colors.primary.light,
+          },
+        },
       },
     },
     Badge: {

@@ -1,16 +1,17 @@
-import { auth } from "@/server/auth";
-import { prisma } from "@/server/db";
 import { z } from "zod";
-import { publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const notificationRouter = {
-  newNotificationCheck: publicProcedure.query(async () => {
-    const session = await auth();
-    const userId = session ? Number(session.user.id) : 0;
+  newNotificationCheck: publicProcedure.query(async ({ ctx }) => {
+    const { db, user } = ctx;
 
-    const data = await prisma.notifications.findFirst({
+    if (!user.id) {
+      return false;
+    }
+
+    const data = await db.notifications.findFirst({
       where: {
-        visited_id: userId,
+        visited_id: user.id,
         checked: false,
       },
       select: {
@@ -20,7 +21,7 @@ export const notificationRouter = {
 
     return data === null ? false : true;
   }),
-  getInfiniteUserNotifications: publicProcedure
+  getInfiniteUserNotifications: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).nullish(),
@@ -28,16 +29,15 @@ export const notificationRouter = {
         direction: z.enum(["forward", "backward"]), // optional, useful for bi-directional query      }),
       })
     )
-    .query(async ({ input }) => {
-      const session = await auth();
-      const userId = session ? Number(session.user.id) : 0;
+    .query(async ({ input, ctx }) => {
+      const { db, user } = ctx;
       const { cursor } = input;
       const limit = input.limit ?? 20;
 
       try {
-        const notifyList = await prisma.notifications.findMany({
+        const notifyList = await db.notifications.findMany({
           where: {
-            visited_id: userId,
+            visited_id: user.id,
           },
           take: limit + 1,
           cursor: cursor ? { created_at: cursor } : undefined,
@@ -97,7 +97,7 @@ export const notificationRouter = {
                 },
                 map_likes: {
                   where: {
-                    user_id: userId,
+                    user_id: user?.id,
                   },
                   select: {
                     is_liked: true,
@@ -105,7 +105,7 @@ export const notificationRouter = {
                 },
                 results: {
                   where: {
-                    user_id: userId,
+                    user_id: user?.id,
                   },
                   select: {
                     rank: true,
@@ -135,17 +135,12 @@ export const notificationRouter = {
         throw new Error("Internal Server Error");
       }
     }),
-  postUserNotificationRead: publicProcedure.mutation(async () => {
-    const session = await auth();
-    if (!session || !session.user || !session.user.id) {
-      return new Response("Unauthorized", { status: 401 });
-    }
+  postUserNotificationRead: protectedProcedure.mutation(async ({ ctx }) => {
+    const { db, user } = ctx;
 
-    const userId = session ? Number(session.user.id) : 0;
-
-    await prisma.notifications.updateMany({
+    await db.notifications.updateMany({
       where: {
-        visited_id: userId,
+        visited_id: user.id,
         checked: false,
       },
       data: {
