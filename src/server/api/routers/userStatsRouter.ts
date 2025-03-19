@@ -52,7 +52,7 @@ export const userStatsRouter = {
       })
     )
     .mutation(async ({ input: sendStats, ctx }) => {
-      const { db, user } = ctx;
+      const { user } = ctx;
 
       if (!user.id) {
         return;

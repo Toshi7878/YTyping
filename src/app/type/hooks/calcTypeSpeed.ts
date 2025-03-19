@@ -14,8 +14,8 @@ export const useCalcTypeSpeed = () => {
     return lineRkpm;
   };
 
-  const calcTotalKpm = ({ newTotalTypeCount, totalTypeTime }) => {
-    return totalTypeTime ? Math.round((newTotalTypeCount / totalTypeTime) * 60) : 0;
+  const calcTotalKpm = ({ newTotalTypeCount, newTotalTypeTime }) => {
+    return newTotalTypeTime ? Math.round((newTotalTypeCount / newTotalTypeTime) * 60) : 0;
   };
 
   return ({
@@ -27,9 +27,9 @@ export const useCalcTypeSpeed = () => {
     constantLineTime: number;
     totalTypeCount: number;
   }) => {
+    const { type: lineTypeCount } = readLineStatus();
+    const { totalTypeTime } = readStatus();
     const isAddTypeCount = updateType === "keydown" || updateType === "completed";
-
-    const lineTypeCount = readLineStatus().type;
 
     const newLineTypeCount = isAddTypeCount ? lineTypeCount + 1 : lineTypeCount;
     const lineKpm = calcLineKpm({ constantLineTime, newLineTypeCount });
@@ -39,8 +39,8 @@ export const useCalcTypeSpeed = () => {
     }
 
     const newTotalTypeCount = isAddTypeCount ? totalTypeCount + 1 : totalTypeCount;
-    const totalTypeTime = constantLineTime + readStatus().totalTypeTime;
-    const totalKpm = calcTotalKpm({ newTotalTypeCount, totalTypeTime });
+    const newTotalTypeTime = constantLineTime + totalTypeTime;
+    const totalKpm = calcTotalKpm({ newTotalTypeCount, newTotalTypeTime });
 
     if (updateType === "keydown") {
       return { lineKpm, totalKpm };

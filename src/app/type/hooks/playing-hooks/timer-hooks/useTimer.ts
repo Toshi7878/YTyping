@@ -233,7 +233,14 @@ export const useCalcLineResult = () => {
     const scene = readScene();
 
     if (scene === "playing" || scene === "practice") {
-      const completedTime = readLineStatus().completedTime;
+      const { totalTypeTime, totalLatency } = readStatus();
+      const {
+        latency: lineLatency,
+        type: lineType,
+        completedTime,
+        startInputMode,
+        startSpeed,
+      } = readLineStatus();
 
       const typeSpeed = calcTypeSpeed({
         updateType: "lineUpdate",
@@ -251,22 +258,20 @@ export const useCalcLineResult = () => {
 
         const incrementTotalTypeTime = isCompleted ? completedTime : constantLineTime;
 
+        const newTotalTypeTime = totalTypeTime + incrementTotalTypeTime;
         if (map.mapData[count - 1].kpm.r > 0) {
           writeStatus({
-            totalTypeTime: readStatus().totalTypeTime + incrementTotalTypeTime,
+            totalTypeTime: newTotalTypeTime,
           });
-          const lineTypeCount = readLineStatus().type;
 
-          if (lineTypeCount && (scene === "playing" || scene === "practice")) {
+          if (lineType && (scene === "playing" || scene === "practice")) {
             writeUserStats({
-              totalTypeTime: incrementTotalTypeTime,
+              totalTypeTime: newTotalTypeTime,
             });
           }
 
-          const lineLatency = readLineStatus().latency;
-
           writeStatus({
-            totalLatency: readStatus().totalLatency + lineLatency,
+            totalLatency: totalLatency + lineLatency,
           });
         }
 
@@ -283,9 +288,9 @@ export const useCalcLineResult = () => {
         const isUpdateResult = (speed.playSpeed >= 1 && lineScore >= oldLineScore) || scene === "playing";
 
         if (isUpdateResult) {
-          const tTime = Math.round(readStatus().totalTypeTime * 1000) / 1000;
-          const mode = readLineStatus().startInputMode;
-          const sp = readLineStatus().startSpeed;
+          const tTime = Math.round(newTotalTypeTime * 1000) / 1000;
+          const mode = startInputMode;
+          const sp = startSpeed;
           const typeResult = readLineStatus().typeResult;
           const newLineResults = [...lineResults];
           const combo = readCombo();
@@ -295,7 +300,7 @@ export const useCalcLineResult = () => {
               status: {
                 p: point,
                 tBonus: timeBonus,
-                lType: readLineStatus().type,
+                lType: lineType,
                 lMiss,
                 lRkpm: typeSpeed!.lineRkpm,
                 lKpm: typeSpeed!.lineKpm,
