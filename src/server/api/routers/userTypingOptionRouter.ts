@@ -6,10 +6,6 @@ export const userTypingOptionRouter = {
   getUserTypingOptions: publicProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
 
-    if (!user.id) {
-      return;
-    }
-
     const userTypingOptions = await db.user_typing_options.findUnique({
       where: { user_id: user.id },
       select: {
