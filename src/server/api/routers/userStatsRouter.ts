@@ -1,6 +1,6 @@
 import axios from "axios";
 import { z } from "zod";
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { publicProcedure } from "../trpc";
 
 export const userStatsRouter = {
   incrementPlayCountStats: publicProcedure
@@ -37,7 +37,7 @@ export const userStatsRouter = {
       });
     }),
 
-  incrementTypingStats: protectedProcedure
+  incrementTypingStats: publicProcedure
     .input(
       z.object({
         romaType: z.number(),
@@ -51,7 +51,13 @@ export const userStatsRouter = {
         maxCombo: z.number(),
       })
     )
-    .mutation(async ({ input: sendStats }) => {
+    .mutation(async ({ input: sendStats, ctx }) => {
+      const { db, user } = ctx;
+
+      if (!user.id) {
+        return;
+      }
+
       axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
         JSON.stringify(sendStats)

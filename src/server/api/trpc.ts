@@ -7,7 +7,7 @@ import { AppRouter } from "./root";
 export const createContext = async () => {
   const session = await auth();
 
-  const user = { ...session?.user, id: Number(session?.user.id) };
+  const user = { ...session?.user, id: Number(session?.user.id ?? 0) };
   return {
     db: prisma,
     user,

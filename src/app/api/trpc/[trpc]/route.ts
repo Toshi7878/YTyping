@@ -12,7 +12,7 @@ const handler = async (req: Request) =>
       const session = await auth();
       return {
         db: prisma,
-        user: { ...session?.user, id: Number(session?.user.id) },
+        user: { ...session?.user, id: Number(session?.user.id ?? 0) },
       };
     },
   });

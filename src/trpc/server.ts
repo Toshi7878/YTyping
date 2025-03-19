@@ -6,7 +6,7 @@ import { prisma } from "@/server/db";
 export const serverApi = createCallerFactory(appRouter)(async () => {
   const session = await auth();
 
-  const user = { ...session?.user, id: Number(session?.user.id) };
+  const user = { ...session?.user, id: Number(session?.user.id ?? 0) };
   return {
     db: prisma,
     user,

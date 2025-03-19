@@ -1,12 +1,10 @@
-import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  try {
-    const session = await auth();
-    const userId = session ? Number(session?.user.id) : 0;
+  const userId = session ? Number(session?.user.id) : 0;
 
+  try {
     const bodyText = await request.text();
     const input = JSON.parse(bodyText);
     const currentStats = await prisma.user_stats.findUnique({
