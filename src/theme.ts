@@ -139,7 +139,7 @@ export default extendTheme({
           borderColor: darkTheme.colors.border.card,
           fontSize: "3xl",
           _hover: {
-            bg: darkTheme.colors.primary.light,
+            backgroundColor: darkTheme.colors.primary.light,
           },
         },
       },
