@@ -27,7 +27,7 @@ export const useCalcTypeSpeed = () => {
     constantLineTime: number;
     totalTypeCount: number;
   }) => {
-    const { type: lineTypeCount } = readLineStatus();
+    const { type: lineTypeCount, latency: lineLatency } = readLineStatus();
     const { totalTypeTime } = readStatus();
     const isAddTypeCount = updateType === "keydown" || updateType === "completed";
 
@@ -48,7 +48,6 @@ export const useCalcTypeSpeed = () => {
 
     if (updateType === "lineUpdate" || updateType === "completed") {
       //ラインアップデート時、ラインクリア時はラインのrkpmも計算する
-      const lineLatency = readLineStatus().latency;
       const rkpmTime = constantLineTime - lineLatency;
       const lineRkpm = calcLineRkpm({ rkpmTime, newLineTypeCount, lineKpm });
       return { lineKpm, lineRkpm, totalKpm };
