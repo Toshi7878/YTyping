@@ -3,7 +3,8 @@ import { useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { useStore as useReduxStore } from "react-redux";
 import { RootState } from "../redux/store";
-import { getEditAtomStore, isTimeInputValidAtom, selectIndexAtom } from "./stateAtoms";
+import { isTimeInputValidAtom, selectIndexAtom } from "./stateAtoms";
+import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
 
 const editReduxStoreAtom = atom(() => useReduxStore<RootState>());

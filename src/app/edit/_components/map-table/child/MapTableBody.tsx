@@ -15,7 +15,7 @@ import { ThemeColors } from "@/types";
 import { useDisclosure, useTheme } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editTicker } from "../../editor-youtube-content/EditYoutube";
+import { editTicker } from "../../youtube/EditYoutube";
 import LineRow from "./child/LineRow";
 import LineOptionModal from "./LineOptionModal";
 

@@ -3,7 +3,7 @@ import { atomWithStorage, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DEFAULT_ADD_ADJUST_TIME } from "../ts/const/editDefaultValues";
 import { ConvertOptionsType } from "../ts/type";
-import { getEditAtomStore } from "./stateAtoms";
+import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
 

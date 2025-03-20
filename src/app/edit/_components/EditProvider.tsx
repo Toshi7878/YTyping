@@ -10,7 +10,8 @@ import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
-import { geminiTagsAtom, getEditAtomStore, mapInfoAtom, mapTagsAtom, videoIdAtom } from "../atoms/stateAtoms";
+import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, videoIdAtom } from "../atoms/stateAtoms";
+import { getEditAtomStore } from "../atoms/store";
 import { RefsProvider } from "../edit-contexts/refsProvider";
 import editStore from "../redux/store";
 import { EditorNewMapBackUpInfoData } from "../ts/type";
@@ -21,7 +22,7 @@ interface EditProviderProps {
 }
 
 const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
-  const jotaiStore = getEditAtomStore();
+  const store = getEditAtomStore();
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const isBackUp = searchParams.get("backup") === "true";
@@ -111,12 +112,12 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
     }
   }
 
-  useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store: jotaiStore });
+  useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store });
   return (
     <RefsProvider>
       <ReduxProvider store={editStore}>
-        <JotaiProvider store={jotaiStore}>
-          <DevTools store={jotaiStore} />
+        <JotaiProvider store={store}>
+          <DevTools store={store} />
           {children}
         </JotaiProvider>
       </ReduxProvider>

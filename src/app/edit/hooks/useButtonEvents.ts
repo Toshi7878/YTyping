@@ -11,6 +11,7 @@ import {
 } from "../atoms/stateAtoms";
 
 import { useSearchParams } from "next/navigation";
+import { useTimeInput } from "../atoms/refAtoms";
 import { useTimeOffsetStateRef } from "../atoms/storageAtoms";
 import { useRefs } from "../edit-contexts/refsProvider";
 import { setLastAddedTime, setMapData } from "../redux/mapDataSlice";
@@ -41,7 +42,7 @@ export const useLineAddButtonEvent = () => {
   const setDirectEdit = useSetDirectEditIndexState();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
 
-  const { timeInputRef, playerRef } = useRefs();
+  const { playerRef } = useRefs();
   const setCanUpload = useSetCanUploadState();
   const lineInputReducer = useLineInputReducer();
   const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
@@ -51,20 +52,22 @@ export const useLineAddButtonEvent = () => {
   const readSelectLine = useSelectLineStateRef();
   const readTimeOffset = useTimeOffsetStateRef();
   const readEditUtils = useEditUtilsStateRef();
+  const { readTimeInput } = useTimeInput();
 
   return (isShiftKey: boolean) => {
     const mapData = editReduxStore.getState().mapData.value;
     const { playing } = readYtPlayerStatus();
     const { lyrics, word } = readSelectLine();
-    const addTimeOffset = readTimeOffset();
+    const timeOffset = readTimeOffset();
 
-    const timeOffset = playing && word && !isShiftKey ? addTimeOffset : 0;
-    const time_ = Number(playing ? playerRef.current!.getCurrentTime() : timeInputRef.current!.value);
-    const time = timeValidate(time_ + timeOffset).toFixed(3);
-    const newLine = !isShiftKey ? { time, lyrics, word } : { time, lyrics: "", word: "" };
+    const _time = playing ? playerRef.current!.getCurrentTime() + timeOffset : +readTimeInput().value;
+    const formatedTime = timeValidate(_time).toFixed(3);
+    const newLine = !isShiftKey
+      ? { time: formatedTime, lyrics, word }
+      : { time: formatedTime, lyrics: "", word: "" };
     const addLineMap = [...mapData, newLine].sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
 
-    dispatch(setLastAddedTime(time));
+    dispatch(setLastAddedTime(formatedTime));
     dispatch(setMapData(addLineMap));
     dispatch(addHistory({ type: "add", data: newLine }));
 
@@ -94,7 +97,7 @@ export const useLineAddButtonEvent = () => {
 export const useLineUpdateButtonEvent = () => {
   const editReduxStore = useReduxStore<RootState>();
 
-  const { timeInputRef, playerRef } = useRefs();
+  const { playerRef } = useRefs();
   const setCanUpload = useSetCanUploadState();
   const dispatch = useDispatch();
   const lineInputReducer = useLineInputReducer();
@@ -108,23 +111,22 @@ export const useLineUpdateButtonEvent = () => {
   const readYtPlayerStatus = useYtPlayerStatusStateRef();
   const readSelectLine = useSelectLineStateRef();
   const readTimeOffset = useTimeOffsetStateRef();
+  const { readTimeInput } = useTimeInput();
   return () => {
     const mapData = editReduxStore.getState().mapData.value;
     const { index, lyrics, word } = readSelectLine();
     const { playing } = readYtPlayerStatus();
-    const addTimeOffset = readTimeOffset();
+    const timeOffset = readTimeOffset();
     const selectLineIndex = index as number;
 
-    const timeOffset = playing && word && !selectLineIndex ? Number(addTimeOffset) : 0;
-    const time_ = Number(
-      playing && !selectLineIndex ? playerRef.current!.getCurrentTime() : timeInputRef.current!.value
-    );
+    const _time =
+      playing && !selectLineIndex ? playerRef.current!.getCurrentTime() + timeOffset : +readTimeInput().value;
 
-    const time = timeValidate(time_ + addTimeOffset).toFixed(3);
+    const formatedTime = timeValidate(_time).toFixed(3);
 
     const oldLine = mapData[selectLineIndex];
     const updatedLine = {
-      time,
+      time: formatedTime,
       lyrics,
       word,
       ...(oldLine.options && {
@@ -139,7 +141,7 @@ export const useLineUpdateButtonEvent = () => {
     ].sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
 
     setCanUpload(true);
-    if (oldLine.word !== word || oldLine.time !== time) {
+    if (oldLine.word !== word || oldLine.time !== formatedTime) {
       setIsMapDataEdited(true);
     }
     dispatch(
@@ -147,7 +149,7 @@ export const useLineUpdateButtonEvent = () => {
         type: "update",
         data: {
           old: mapData[selectLineIndex],
-          new: { time, lyrics, word },
+          new: { time: formatedTime, lyrics, word },
           lineNumber: selectLineIndex,
         },
       })

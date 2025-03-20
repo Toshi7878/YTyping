@@ -1,5 +1,5 @@
 import { Tag, YouTubeSpeed } from "@/types";
-import { createStore, useAtomValue, useStore as useJotaiStore, useSetAtom } from "jotai";
+import { useAtomValue, useStore as useJotaiStore, useSetAtom } from "jotai";
 import { atomWithReducer, atomWithReset, useAtomCallback } from "jotai/utils";
 import { useStore as useReduxStore } from "react-redux";
 import { useRefs } from "../edit-contexts/refsProvider";
@@ -8,9 +8,9 @@ import { RootState } from "../redux/store";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
 import { LineInputReducerAction, TabIndex, TagsReducerAction, YTSpeedReducerActionType } from "../ts/type";
-
-const store = createStore();
-export const getEditAtomStore = () => store;
+import { useTimeInput } from "./refAtoms";
+import { getEditAtomStore } from "./store";
+const store = getEditAtomStore();
 
 const editUtilsAtom = atomWithReset({
   tabIndex: 0 as TabIndex,
@@ -211,13 +211,14 @@ export const useSetSelectedIndexState = () => useSetAtom(selectIndexAtom, { stor
 export const useLineInputReducer = () => {
   const setEditLineLyrics = useSetSelectLyricsState();
   const setEditLineWord = useSetSelectWordState();
-  const { timeInputRef } = useRefs();
   const setEditLineCount = useSetSelectedIndexState();
   const setEditIsTimeInputValid = useSetIsTimeInputValidState();
   const editReduxStore = useReduxStore<RootState>();
   const editJotaiStore = useJotaiStore();
 
+  const { readTimeInput } = useTimeInput();
   return ({ type, payload }: LineInputReducerAction) => {
+    const timeInput = readTimeInput();
     switch (type) {
       case "set":
         if (payload) {
@@ -227,11 +228,11 @@ export const useLineInputReducer = () => {
           }
           if (typeof payload.selectCount === "number") {
             const mapData = editReduxStore.getState().mapData.value;
-            timeInputRef.current!.value = mapData[payload.selectCount].time;
+            timeInput.value = mapData[payload.selectCount].time;
             setEditIsTimeInputValid(false);
             setEditLineCount(payload.selectCount);
           } else if (typeof payload.time === "string") {
-            timeInputRef.current!.value = payload.time;
+            timeInput.value = payload.time;
             setEditIsTimeInputValid(false);
           }
         }
@@ -240,7 +241,7 @@ export const useLineInputReducer = () => {
         const isYTPlaying = editJotaiStore.get(playingAtom);
 
         if (!isYTPlaying) {
-          timeInputRef.current!.value = "";
+          timeInput.value = "";
           setEditIsTimeInputValid(true);
         }
         setEditLineLyrics("");

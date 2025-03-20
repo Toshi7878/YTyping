@@ -10,10 +10,10 @@ import { useDispatch } from "react-redux";
 import { usePathChangeAtomReset } from "../atoms/reset";
 import { useIsLrcConvertingState, useSetCanUploadState } from "../atoms/stateAtoms";
 import { resetMapData, setMapData } from "../redux/mapDataSlice";
-import EditorTabContent from "./editor-tab-content/EditTabList";
-import EditTable from "./editor-table-content/EditTable";
-import TimeRange from "./editor-time-range-content/EditTimeRange";
-import EditYouTube from "./editor-youtube-content/EditYoutube";
+import EditTable from "./map-table/EditTable";
+import EditorTabContent from "./tab/EditTabList";
+import TimeRange from "./time-range/EditTimeRange";
+import EditYouTube from "./youtube/EditYoutube";
 
 function Content() {
   const dispatch = useDispatch();

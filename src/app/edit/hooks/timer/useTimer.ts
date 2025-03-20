@@ -1,19 +1,21 @@
 import { ThemeColors } from "@/types";
 import { useTheme } from "@chakra-ui/react";
 import { useStore as useReduxStore } from "react-redux";
+import { useTimeInput } from "../../atoms/refAtoms";
 import { useEditUtilsStateRef } from "../../atoms/stateAtoms";
 import { useRefs } from "../../edit-contexts/refsProvider";
 import { RootState } from "../../redux/store";
 import { useUpdateCurrentTimeLine } from "../useUpdateCurrentTimeLine";
 
 export const useTimer = () => {
-  const { playerRef, rangeRef, timeInputRef } = useRefs();
+  const { playerRef, rangeRef } = useRefs();
   const theme: ThemeColors = useTheme();
   const editReduxStore = useReduxStore<RootState>();
 
   const updateCurrentLine = useUpdateCurrentTimeLine();
   const readEditUtils = useEditUtilsStateRef();
 
+  const { readTimeInput } = useTimeInput();
   return () => {
     const currentTime = playerRef.current!.getCurrentTime().toFixed(3);
 
@@ -25,7 +27,7 @@ export const useTimer = () => {
 
     const { directEditingIndex, timeCount } = readEditUtils();
     if (!directEditingIndex) {
-      timeInputRef.current!.value = currentTime;
+      readTimeInput().value = currentTime;
     }
 
     const nextCount = timeCount + 1;

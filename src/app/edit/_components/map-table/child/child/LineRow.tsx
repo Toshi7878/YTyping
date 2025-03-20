@@ -11,8 +11,8 @@ import {
   useSetTabIndexState,
 } from "@/app/edit/atoms/stateAtoms";
 import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
+import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
 import { useChangeLineRowColor } from "@/app/edit/hooks/useChangeLineRowColor";
-import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useEditorButtonEvents";
 import { RootState } from "@/app/edit/redux/store";
 import { LineEdit, ThemeColors } from "@/types";
 import parse from "html-react-parser";

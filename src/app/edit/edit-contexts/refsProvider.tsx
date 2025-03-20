@@ -4,7 +4,6 @@ import React, { createContext, useContext, useRef } from "react";
 import { DEFAULT_EDIT_STATUS_REF } from "../ts/const/editDefaultValues";
 
 export interface RefsContextType {
-  timeInputRef: React.RefObject<HTMLInputElement>;
   tbodyRef: React.RefObject<HTMLElement>;
   rangeRef: React.RefObject<HTMLInputElement>;
   playerRef: React.RefObject<YTPlayer>;
@@ -13,7 +12,6 @@ export interface RefsContextType {
 }
 
 const RefsContext = createContext<RefsContextType>({
-  timeInputRef: { current: null },
   tbodyRef: { current: null },
   rangeRef: { current: null },
   playerRef: { current: null },
@@ -50,7 +48,6 @@ export const RefsProvider = ({ children }) => {
         rangeRef,
         playerRef,
         editStatus,
-        timeInputRef,
         setRef,
       }}
     >
@@ -65,7 +62,6 @@ export const useRefs = () => {
     tbodyRef: context.tbodyRef,
     rangeRef: context.rangeRef,
     playerRef: context.playerRef,
-    timeInputRef: context.timeInputRef,
     editStatus: context.editStatus,
     setRef: context.setRef,
   };

@@ -1,17 +1,18 @@
 import { Input } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 
+import { useTimeInput } from "@/app/edit/atoms/refAtoms";
 import { useSetIsTimeInputValidState } from "@/app/edit/atoms/stateAtoms";
-import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 
 const EditorTimeInput = () => {
   const timeInputRef = useRef<HTMLInputElement>(null);
   const setEditIsTimeInputValid = useSetIsTimeInputValidState();
-
-  const { setRef } = useRefs();
+  const { writeTimeInput } = useTimeInput();
 
   useEffect(() => {
-    setRef("timeInputRef", timeInputRef.current);
+    if (timeInputRef.current) {
+      writeTimeInput(timeInputRef.current);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

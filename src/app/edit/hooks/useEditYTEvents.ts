@@ -1,7 +1,7 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YouTubeEvent } from "@/types/global-types";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
-import { editTicker } from "../_components/editor-youtube-content/EditYoutube";
+import { editTicker } from "../_components/youtube/EditYoutube";
 import {
   useSetIsYTPlayingState,
   useSetIsYTReadiedState,

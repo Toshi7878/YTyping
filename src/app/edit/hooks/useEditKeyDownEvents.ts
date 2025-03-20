@@ -21,8 +21,8 @@ import { mapDataRedo, mapDataUndo } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { redo, undo } from "../redux/undoredoSlice";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
+import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useButtonEvents";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useEditorButtonEvents";
 import { useUndoLine } from "./useEditUndoRedo";
 import { useWordFindReplace } from "./useWordFindReplace";
 

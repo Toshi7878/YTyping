@@ -9,7 +9,7 @@ import {
   useLineDelete,
   useLineUpdateButtonEvent,
   useWordConvertButtonEvent,
-} from "@/app/edit/hooks/useEditorButtonEvents";
+} from "@/app/edit/hooks/useButtonEvents";
 import { ThemeColors } from "@/types";
 import { Flex, useTheme } from "@chakra-ui/react";
 import React from "react";
