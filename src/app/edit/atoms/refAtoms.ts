@@ -22,3 +22,21 @@ export const useTimeInput = () => {
 
   return { readTimeInput, writeTimeInput };
 };
+
+const tbodyRefAtom = atom<HTMLElement | null>(null);
+
+export const useTbodyRef = () => {
+  const readTbody = useAtomCallback(
+    useCallback((get) => get(tbodyRefAtom) as HTMLElement, []),
+    { store }
+  );
+
+  const writeTbody = useAtomCallback(
+    useCallback((get, set, tbody: HTMLElement) => {
+      set(tbodyRefAtom, tbody);
+    }, []),
+    { store }
+  );
+
+  return { readTbody, writeTbody };
+};

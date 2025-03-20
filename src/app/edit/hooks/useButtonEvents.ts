@@ -60,14 +60,13 @@ export const useLineAddButtonEvent = () => {
     const { lyrics, word } = readSelectLine();
     const timeOffset = readTimeOffset();
 
-    const _time = playing ? playerRef.current!.getCurrentTime() + timeOffset : +readTimeInput().value;
-    const formatedTime = timeValidate(_time).toFixed(3);
-    const newLine = !isShiftKey
-      ? { time: formatedTime, lyrics, word }
-      : { time: formatedTime, lyrics: "", word: "" };
+    const _time = playing ? playerRef.current!.getCurrentTime() + timeOffset : Number(readTimeInput().value);
+    const time = timeValidate(_time).toFixed(3);
+    const newLine = !isShiftKey ? { time, lyrics, word } : { time, lyrics: "", word: "" };
+
     const addLineMap = [...mapData, newLine].sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
 
-    dispatch(setLastAddedTime(formatedTime));
+    dispatch(setLastAddedTime(time));
     dispatch(setMapData(addLineMap));
     dispatch(addHistory({ type: "add", data: newLine }));
 

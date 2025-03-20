@@ -4,7 +4,6 @@ import React, { createContext, useContext, useRef } from "react";
 import { DEFAULT_EDIT_STATUS_REF } from "../ts/const/editDefaultValues";
 
 export interface RefsContextType {
-  tbodyRef: React.RefObject<HTMLElement>;
   rangeRef: React.RefObject<HTMLInputElement>;
   playerRef: React.RefObject<YTPlayer>;
   editStatus: React.RefObject<typeof DEFAULT_EDIT_STATUS_REF>;
@@ -12,7 +11,6 @@ export interface RefsContextType {
 }
 
 const RefsContext = createContext<RefsContextType>({
-  tbodyRef: { current: null },
   rangeRef: { current: null },
   playerRef: { current: null },
   editStatus: { current: DEFAULT_EDIT_STATUS_REF },
@@ -44,7 +42,6 @@ export const RefsProvider = ({ children }) => {
   return (
     <RefsContext.Provider
       value={{
-        tbodyRef,
         rangeRef,
         playerRef,
         editStatus,
@@ -59,7 +56,6 @@ export const RefsProvider = ({ children }) => {
 export const useRefs = () => {
   const context = useContext(RefsContext);
   return {
-    tbodyRef: context.tbodyRef,
     rangeRef: context.rangeRef,
     playerRef: context.playerRef,
     editStatus: context.editStatus,

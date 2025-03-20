@@ -7,6 +7,7 @@ import {
   useIsDeleteBtnDisabledStateRef,
   useIsUpdateBtnDisabledStateRef,
 } from "../atoms/buttonDisableStateAtoms";
+import { useTbodyRef } from "../atoms/refAtoms";
 import {
   useEditUtilsStateRef,
   useLineInputReducer,
@@ -27,10 +28,9 @@ import { useUndoLine } from "./useEditUndoRedo";
 import { useWordFindReplace } from "./useWordFindReplace";
 
 export const useTbodyScroll = () => {
-  const { tbodyRef } = useRefs();
-
+  const { readTbody } = useTbodyRef();
   return (count: number) => {
-    const targetRow = tbodyRef.current?.children[count];
+    const targetRow = readTbody().children[count];
 
     if (targetRow && targetRow instanceof HTMLElement) {
       const parentElement = targetRow.parentElement!.parentElement!.parentElement;

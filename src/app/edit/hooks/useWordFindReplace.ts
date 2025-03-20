@@ -1,42 +1,42 @@
 import { Action } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
+import { useTbodyRef } from "../atoms/refAtoms";
 import { useSetCanUploadState, useSetIsMapDataEditedAtom } from "../atoms/stateAtoms";
-import { RefsContextType, useRefs } from "../edit-contexts/refsProvider";
 import { updateLine } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { addHistory } from "../redux/undoredoSlice";
 
 export const useWordFindReplace = () => {
-  const { tbodyRef } = useRefs();
   const dispatch = useDispatch();
   const editReduxStore = useReduxStore<RootState>();
   const setCanUpload = useSetCanUploadState();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
+  const { readTbody } = useTbodyRef();
 
   return () => {
     const mapData = editReduxStore.getState().mapData.value;
-    new WordReplace(mapData, tbodyRef, dispatch, setCanUpload, setIsMapDataEdited).wordSearchReplace();
+    new WordReplace(mapData, readTbody(), dispatch, setCanUpload, setIsMapDataEdited).wordSearchReplace();
   };
 };
 
 class WordReplace {
   mapData: RootState["mapData"]["value"];
-  tbodyRef: RefsContextType["tbodyRef"];
   dispatch: Dispatch<Action>;
+  tbodyRef: HTMLElement;
   setCanUpload: Dispatch<boolean>;
   newWord: string;
   setIsMapDataEdited: Dispatch<boolean>;
 
   constructor(
     mapData: RootState["mapData"]["value"],
-    tbodyRef: RefsContextType["tbodyRef"],
+    tbody: HTMLElement,
     dispatch: Dispatch<Action>,
     setCanUpload: Dispatch<boolean>,
     setIsMapDataEdited: Dispatch<boolean>
   ) {
     this.mapData = mapData;
-    this.tbodyRef = tbodyRef;
+    this.tbodyRef = tbody;
     this.dispatch = dispatch;
     this.setCanUpload = setCanUpload;
     this.newWord = "";
@@ -95,7 +95,7 @@ class WordReplace {
   replaceFoundFocus(i, search) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const targetRow = this.tbodyRef.current?.children[i];
+        const targetRow = this.tbodyRef.children[i];
 
         if (targetRow) {
           targetRow.scrollIntoView({ behavior: "auto", block: "center" });
@@ -104,7 +104,7 @@ class WordReplace {
         let range = document.createRange();
 
         // 取得した要素の内側を範囲とする
-        const WORD_NODE = this.tbodyRef.current?.children[i].children[2];
+        const WORD_NODE = this.tbodyRef.children[i].children[2];
         if (WORD_NODE && WORD_NODE.textContent) {
           this.newWord = WORD_NODE.textContent;
           const textMatch = WORD_NODE.textContent.match(new RegExp(search));

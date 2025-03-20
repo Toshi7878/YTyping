@@ -1,4 +1,5 @@
 "use client";
+import { useTbodyRef } from "@/app/edit/atoms/refAtoms";
 import {
   useIsYTPlayingState,
   useIsYTStartedState,
@@ -31,10 +32,11 @@ function MapTableBody() {
   const isYTPlaying = useIsYTPlayingState();
   const optionClosure = useDisclosure();
 
-  const { tbodyRef, playerRef } = useRefs();
+  const { playerRef } = useRefs();
   const setCustomStyleLength = useSetCssLengthState();
   const windowKeydownEvent = useWindowKeydownEvent();
   const setEditIsTimeInputValid = useSetIsTimeInputValidState();
+  const { readTbody } = useTbodyRef();
 
   useEffect(() => {
     if (isYTPlaying && !editTicker.started) {
@@ -63,7 +65,7 @@ function MapTableBody() {
     if (mapData.length > 0) {
       for (let i = mapData.length - 1; i >= 0; i--) {
         if (Number(mapData[i]["time"]) == Number(lastAddedTime)) {
-          const targetRow = tbodyRef.current?.children[i];
+          const targetRow = readTbody().children[i];
 
           if (targetRow && targetRow instanceof HTMLElement) {
             const parentElement = targetRow.parentElement!.parentElement!.parentElement;
