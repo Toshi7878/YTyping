@@ -141,6 +141,11 @@ export default extendTheme({
           _hover: {
             backgroundColor: darkTheme.colors.primary.light,
           },
+          _disabled: {
+            _hover: {
+              backgroundColor: `${darkTheme.colors.primary.main} !important`,
+            },
+          },
         },
       },
     },
