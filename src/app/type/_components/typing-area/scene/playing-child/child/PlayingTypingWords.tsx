@@ -18,8 +18,8 @@ const PlayingTypingWords = () => {
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
   const kanaScroll = userOptionsAtom.kana_word_scroll > 0 ? userOptionsAtom.kana_word_scroll : 0;
   const romaScroll = userOptionsAtom.roma_word_scroll > 0 ? userOptionsAtom.roma_word_scroll : 0;
-  const kanaCorrectSlice = useBreakpointValue({ base: -5, md: kanaScroll }) as number;
-  const romaCorrectSlice = useBreakpointValue({ base: -8, md: romaScroll }) as number;
+  const kanaCorrectSlice = useBreakpointValue({ base: 5, md: kanaScroll }) as number;
+  const romaCorrectSlice = useBreakpointValue({ base: 8, md: romaScroll }) as number;
   return (
     <Box
       color={theme.colors.text.body}
