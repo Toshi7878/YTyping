@@ -2,13 +2,12 @@ import { Tag, YouTubeSpeed } from "@/types";
 import { useAtomValue, useStore as useJotaiStore, useSetAtom } from "jotai";
 import { atomWithReducer, atomWithReset, useAtomCallback } from "jotai/utils";
 import { useStore as useReduxStore } from "react-redux";
-import { useRefs } from "../edit-contexts/refsProvider";
 import { RootState } from "../redux/store";
 
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
 import { LineInputReducerAction, TabIndex, TagsReducerAction, YTSpeedReducerActionType } from "../ts/type";
-import { useTimeInput } from "./refAtoms";
+import { usePlayer, useTimeInput } from "./refAtoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
 
@@ -257,8 +256,8 @@ export const useLineInputReducer = () => {
 export const useSpeedReducer = () => {
   const editAtomStore = useJotaiStore();
   const setYTSpeedAtom = useSetYTSpeedState();
-  const { playerRef } = useRefs();
 
+  const { readPlayer } = usePlayer();
   return (actionType: YTSpeedReducerActionType) => {
     const speed = editAtomStore.get(speedAtom);
 
@@ -267,14 +266,14 @@ export const useSpeedReducer = () => {
         {
           const newSpeed = (speed < 2 ? speed + 0.25 : 2) as YouTubeSpeed;
           setYTSpeedAtom(newSpeed);
-          playerRef.current!.setPlaybackRate(newSpeed);
+          readPlayer().setPlaybackRate(newSpeed);
         }
         break;
       case "down":
         {
           const newSpeed = (speed > 0.25 ? speed - 0.25 : 0.25) as YouTubeSpeed;
           setYTSpeedAtom(newSpeed);
-          playerRef.current!.setPlaybackRate(newSpeed);
+          readPlayer().setPlaybackRate(newSpeed);
         }
         break;
       default:

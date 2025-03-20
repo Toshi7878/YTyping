@@ -1,12 +1,11 @@
 "use client";
-import { useTbodyRef } from "@/app/edit/atoms/refAtoms";
+import { usePlayer, useTbodyRef } from "@/app/edit/atoms/refAtoms";
 import {
   useIsYTPlayingState,
   useIsYTStartedState,
   useSetCssLengthState,
   useSetIsTimeInputValidState,
 } from "@/app/edit/atoms/stateAtoms";
-import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useEditKeyDownEvents";
 import { setMapData, updateLine } from "@/app/edit/redux/mapDataSlice";
 import { RootState } from "@/app/edit/redux/store";
@@ -32,11 +31,11 @@ function MapTableBody() {
   const isYTPlaying = useIsYTPlayingState();
   const optionClosure = useDisclosure();
 
-  const { playerRef } = useRefs();
   const setCustomStyleLength = useSetCssLengthState();
   const windowKeydownEvent = useWindowKeydownEvent();
   const setEditIsTimeInputValid = useSetIsTimeInputValidState();
   const { readTbody } = useTbodyRef();
+  const { readPlayer } = usePlayer();
 
   useEffect(() => {
     if (isYTPlaying && !editTicker.started) {
@@ -62,7 +61,7 @@ function MapTableBody() {
   }, [optionModalIndex]);
 
   useEffect(() => {
-    if (mapData.length > 0) {
+    if (mapData.length > 0 && readTbody()) {
       for (let i = mapData.length - 1; i >= 0; i--) {
         if (Number(mapData[i]["time"]) == Number(lastAddedTime)) {
           const targetRow = readTbody().children[i];
@@ -87,7 +86,7 @@ function MapTableBody() {
 
   useEffect(() => {
     if (isYTStarted) {
-      const duration = playerRef.current?.getDuration();
+      const duration = readPlayer().getDuration();
 
       if (duration) {
         for (let i = mapData.length - 1; i >= 0; i--) {

@@ -1,13 +1,12 @@
 import { LineEdit } from "@/types";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 
-import { YTPlayer } from "@/types/global-types";
 import {
   useIsAddBtnDisabledStateRef,
   useIsDeleteBtnDisabledStateRef,
   useIsUpdateBtnDisabledStateRef,
 } from "../atoms/buttonDisableStateAtoms";
-import { useTbodyRef } from "../atoms/refAtoms";
+import { usePlayer, useTbodyRef } from "../atoms/refAtoms";
 import {
   useEditUtilsStateRef,
   useLineInputReducer,
@@ -17,7 +16,6 @@ import {
   useSpeedReducer,
   useYtPlayerStatusStateRef,
 } from "../atoms/stateAtoms";
-import { useRefs } from "../edit-contexts/refsProvider";
 import { mapDataRedo, mapDataUndo } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { redo, undo } from "../redux/undoredoSlice";
@@ -45,7 +43,6 @@ export const useTbodyScroll = () => {
 };
 
 export const useWindowKeydownEvent = () => {
-  const { playerRef } = useRefs();
   const editReduxStore = useReduxStore<RootState>();
 
   const dispatch = useDispatch();
@@ -67,12 +64,14 @@ export const useWindowKeydownEvent = () => {
   const readIsAddBtnDisalbed = useIsAddBtnDisabledStateRef();
   const readIsUpdateBtnDisalbed = useIsUpdateBtnDisabledStateRef();
   const readIsDeleteBtnDisalbed = useIsDeleteBtnDisabledStateRef();
+  const { readPlayer } = usePlayer();
 
   return (event: KeyboardEvent, optionModalIndex: number | null) => {
     const IS_FOCUS_INPUT = document.activeElement instanceof HTMLInputElement;
     const iS_FOCUS_MANY_PHRASE_TEXTAREA = document.activeElement!.id === "many_phrase_textarea";
     const { manyPhraseText } = readEditUtils();
     const { playing, speed } = readYtPlayerStatus();
+    const player = readPlayer();
 
     if (event.key === "Tab") {
       if (!iS_FOCUS_MANY_PHRASE_TEXTAREA) {
@@ -87,7 +86,6 @@ export const useWindowKeydownEvent = () => {
       }
       event.preventDefault();
     } else if (!iS_FOCUS_MANY_PHRASE_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
-      const player = playerRef!.current as YTPlayer;
       const undoredoState = editReduxStore.getState().undoRedo;
 
       switch (event.code) {
@@ -239,13 +237,13 @@ export const useWindowKeydownEvent = () => {
 };
 
 function useSeekNextPrev() {
-  const { playerRef } = useRefs();
   const editReduxStore = useReduxStore<RootState>();
   const lineInputReducer = useLineInputReducer();
   const tbodyScroll = useTbodyScroll();
   const { addLineSeekColor } = useChangeLineRowColor();
   const readEditUtils = useEditUtilsStateRef();
   const readLineStatus = useSelectLineStateRef();
+  const { readPlayer } = usePlayer();
 
   return (type: "next" | "prev") => {
     const mapData = editReduxStore.getState().mapData.value;
@@ -256,7 +254,7 @@ function useSeekNextPrev() {
       const seekCount = selectIndex + (type === "next" ? 1 : -1);
       const seekLine = mapData[seekCount];
       if (seekLine) {
-        playerRef.current!.seekTo(Number(seekLine.time), true);
+        readPlayer().seekTo(Number(seekLine.time), true);
         lineInputReducer({
           type: "set",
           payload: {

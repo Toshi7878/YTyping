@@ -1,29 +1,30 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
-import { YouTubeEvent } from "@/types/global-types";
+import { YouTubeEvent, YTPlayer } from "@/types/global-types";
 import { useDispatch, useStore as useReduxStore } from "react-redux";
 import { editTicker } from "../_components/youtube/EditYoutube";
+import { useEditUtilsRef, usePlayer } from "../atoms/refAtoms";
 import {
   useSetIsYTPlayingState,
   useSetIsYTReadiedState,
   useSetIsYTStartedState,
   useSetTabIndexState,
 } from "../atoms/stateAtoms";
-import { useRefs } from "../edit-contexts/refsProvider";
 import { updateLine } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { useGetSeekCount } from "./useGetSeekCount";
 import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 
 export const useYTReadyEvent = () => {
-  const { setRef } = useRefs();
   const setIsYTReadied = useSetIsYTReadiedState();
   const dispatch = useDispatch();
   const volume = useVolumeState();
   const editReduxStore = useReduxStore<RootState>();
 
+  const { writePlayer } = usePlayer();
   return (event) => {
-    const player = event.target;
-    setRef("playerRef", player);
+    const player = event.target as YTPlayer;
+
+    writePlayer(player);
     const duration = player.getDuration();
     player.setVolume(volume);
     setIsYTReadied(true);
@@ -43,25 +44,26 @@ export const useYTReadyEvent = () => {
 };
 
 export const useYTPlayEvent = () => {
-  const { editStatus } = useRefs();
   const setIsYTPlaying = useSetIsYTPlayingState();
   const setIsYTStarted = useSetIsYTStartedState();
   const setTabIndex = useSetTabIndexState();
 
-  const onPlay = () => {
+  const { readEditUtils, writeEditUtils } = useEditUtilsRef();
+
+  return () => {
     console.log("再生 1");
 
     editTicker.start();
     setIsYTPlaying(true);
     setIsYTStarted(true);
-    if (!editStatus.current?.isNotAutoTabToggle) {
-      setTabIndex(1);
+
+    const { preventAutoTabToggle } = readEditUtils();
+    if (preventAutoTabToggle) {
+      writeEditUtils({ preventAutoTabToggle: false });
+      return;
     }
-
-    editStatus.current!.isNotAutoTabToggle = false;
+    setTabIndex(1);
   };
-
-  return onPlay;
 };
 
 export const useYTPauseEvent = () => {

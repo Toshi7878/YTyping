@@ -1,5 +1,4 @@
-import { useTimeInput } from "@/app/edit/atoms/refAtoms";
-import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
+import { usePlayer, useTimeInput } from "@/app/edit/atoms/refAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Input } from "@chakra-ui/react";
 import React, { useState } from "react";
@@ -12,9 +11,8 @@ interface DirectEditTimeInputProps {
 const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
   const [editTime, setEditTime] = useState(props.editTime);
 
-  const { playerRef } = useRefs();
-
   const { readTimeInput } = useTimeInput();
+  const { readPlayer } = usePlayer();
 
   return (
     <CustomToolTip label={"↓↑: 0.05ずつ調整, Enter:再生"} placement="top">
@@ -42,7 +40,7 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
             readTimeInput().value = newValue;
             e.preventDefault();
           } else if (e.code === "Enter") {
-            playerRef.current!.seekTo(Number(value), true);
+            readPlayer().seekTo(Number(value), true);
           }
         }}
       />

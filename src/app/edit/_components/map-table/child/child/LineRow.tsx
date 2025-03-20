@@ -3,6 +3,7 @@ import { Button, Td, Tr, UseDisclosureReturn, useTheme } from "@chakra-ui/react"
 import { Dispatch, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 
+import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import {
   useDirectEditIndexState,
   useLineInputReducer,
@@ -10,7 +11,6 @@ import {
   useSetSelectedIndexState,
   useSetTabIndexState,
 } from "@/app/edit/atoms/stateAtoms";
-import { useRefs } from "@/app/edit/edit-contexts/refsProvider";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
 import { useChangeLineRowColor } from "@/app/edit/hooks/useChangeLineRowColor";
 import { RootState } from "@/app/edit/redux/store";
@@ -45,12 +45,12 @@ function LineRow({
   const setSelectedIndex = useSetSelectedIndexState();
   const lineInputReducer = useLineInputReducer();
   const setDirectEditIndex = useSetDirectEditIndexState();
-  const { playerRef } = useRefs();
   const theme: ThemeColors = useTheme();
   const mapData = useSelector((state: RootState) => state.mapData.value);
 
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
   const { allUpdateSelectColor } = useChangeLineRowColor();
+  const { readPlayer } = usePlayer();
   const selectLine = useCallback(
     (event: React.MouseEvent<HTMLTableRowElement>, selectCount: number) => {
       const time = mapData[selectCount].time;
@@ -91,7 +91,7 @@ function LineRow({
 
   const clickTimeCell = (event: React.MouseEvent<HTMLTableCellElement, MouseEvent>, index: number) => {
     if (directEditIndex !== index) {
-      playerRef.current!.seekTo(Number(line.time), true);
+      readPlayer().seekTo(Number(line.time), true);
     }
   };
 

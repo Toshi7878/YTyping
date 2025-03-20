@@ -1,25 +1,23 @@
 import { CreateMap } from "@/lib/instanceMapData";
-import { useStore as useJotaiStore } from "jotai";
 import { useStore as useReduxStore } from "react-redux";
 
 import { UploadResult } from "@/types";
 import { $Enums } from "@prisma/client";
 import { useParams } from "next/navigation";
 import { actions } from "../../../server/actions/sendMapDataActions";
+import { usePlayer } from "../atoms/refAtoms";
 import { useEditUtilsStateRef, useMapInfoStateRef, useMapTagsStateRef } from "../atoms/stateAtoms";
-import { useRefs } from "../edit-contexts/refsProvider";
 import { RootState } from "../redux/store";
 import { getThumbnailQuality } from "../ts/tab/info-upload/getThumbailQuality";
 import { SendMapDifficulty, SendMapInfo } from "../ts/type";
 
 export function useUploadMap() {
   const editReduxStore = useReduxStore<RootState>();
-  const editAtomStore = useJotaiStore();
-  const { playerRef } = useRefs();
   const { id: mapId } = useParams();
   const readEditUtils = useEditUtilsStateRef();
   const readMapInfo = useMapInfoStateRef();
   const readTags = useMapTagsStateRef();
+  const { readPlayer } = usePlayer();
 
   const upload = async () => {
     const { title, artist, source, comment, previewTime } = readMapInfo();
@@ -27,8 +25,8 @@ export function useUploadMap() {
     const mapData = editReduxStore.getState().mapData.value;
 
     const map = new CreateMap(mapData);
-    const mapVideoId = playerRef.current!.getVideoData().video_id;
-    const videoDuration: number = playerRef.current!.getDuration();
+    const mapVideoId = readPlayer().getVideoData().video_id;
+    const videoDuration = readPlayer().getDuration();
     const sendMapInfo: SendMapInfo = {
       video_id: mapVideoId,
       title,

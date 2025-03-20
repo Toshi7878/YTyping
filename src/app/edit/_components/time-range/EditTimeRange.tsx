@@ -4,31 +4,34 @@ import { ThemeColors } from "@/types";
 import { useTheme } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms";
-import { useRefs } from "../../edit-contexts/refsProvider";
 
+import { usePlayer, useTimeRange } from "../../atoms/refAtoms";
 import ColorStyle from "../ColorStyle";
 import EditSpeedChange from "./child/EditSpeedChange";
-const TimeRange = () => {
-  const { playerRef, setRef } = useRefs();
 
+const TimeRange = () => {
   const rangeRef = useRef<HTMLInputElement>(null);
   const theme: ThemeColors = useTheme();
-
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
+  const { readPlayer } = usePlayer();
+  const { writeTimeRange } = useTimeRange();
 
   useEffect(() => {
-    setRef("rangeRef", rangeRef.current);
+    if (rangeRef.current) {
+      writeTimeRange(rangeRef.current);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRangeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const time = Number(e.target.value);
     rangeRef.current!.value = e.target.value;
-    playerRef.current!.playVideo();
+    const player = readPlayer();
+    player.playVideo();
 
-    if (playerRef.current) {
-      playerRef.current.seekTo(time, true);
+    if (player) {
+      player.seekTo(time, true);
     }
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -41,8 +44,9 @@ const TimeRange = () => {
   }, []);
 
   useEffect(() => {
-    if (playerRef.current && (isYTReady || isYTStarted)) {
-      const duration = playerRef.current!.getDuration().toFixed(3);
+    const player = readPlayer();
+    if (player && (isYTReady || isYTStarted)) {
+      const duration = player.getDuration().toFixed(3);
       if (duration !== undefined) {
         rangeRef.current!.max = duration;
       }

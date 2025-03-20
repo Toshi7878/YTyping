@@ -11,9 +11,8 @@ import {
 } from "../atoms/stateAtoms";
 
 import { useSearchParams } from "next/navigation";
-import { useTimeInput } from "../atoms/refAtoms";
+import { usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useTimeOffsetStateRef } from "../atoms/storageAtoms";
-import { useRefs } from "../edit-contexts/refsProvider";
 import { setLastAddedTime, setMapData } from "../redux/mapDataSlice";
 import { RootState } from "../redux/store";
 import { addHistory } from "../redux/undoredoSlice";
@@ -42,7 +41,6 @@ export const useLineAddButtonEvent = () => {
   const setDirectEdit = useSetDirectEditIndexState();
   const setIsMapDataEdited = useSetIsMapDataEditedAtom();
 
-  const { playerRef } = useRefs();
   const setCanUpload = useSetCanUploadState();
   const lineInputReducer = useLineInputReducer();
   const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
@@ -53,6 +51,7 @@ export const useLineAddButtonEvent = () => {
   const readTimeOffset = useTimeOffsetStateRef();
   const readEditUtils = useEditUtilsStateRef();
   const { readTimeInput } = useTimeInput();
+  const { readPlayer } = usePlayer();
 
   return (isShiftKey: boolean) => {
     const mapData = editReduxStore.getState().mapData.value;
@@ -60,7 +59,7 @@ export const useLineAddButtonEvent = () => {
     const { lyrics, word } = readSelectLine();
     const timeOffset = readTimeOffset();
 
-    const _time = playing ? playerRef.current!.getCurrentTime() + timeOffset : Number(readTimeInput().value);
+    const _time = playing ? readPlayer().getCurrentTime() + timeOffset : Number(readTimeInput().value);
     const time = timeValidate(_time).toFixed(3);
     const newLine = !isShiftKey ? { time, lyrics, word } : { time, lyrics: "", word: "" };
 
@@ -96,7 +95,6 @@ export const useLineAddButtonEvent = () => {
 export const useLineUpdateButtonEvent = () => {
   const editReduxStore = useReduxStore<RootState>();
 
-  const { playerRef } = useRefs();
   const setCanUpload = useSetCanUploadState();
   const dispatch = useDispatch();
   const lineInputReducer = useLineInputReducer();
@@ -111,6 +109,7 @@ export const useLineUpdateButtonEvent = () => {
   const readSelectLine = useSelectLineStateRef();
   const readTimeOffset = useTimeOffsetStateRef();
   const { readTimeInput } = useTimeInput();
+  const { readPlayer } = usePlayer();
   return () => {
     const mapData = editReduxStore.getState().mapData.value;
     const { index, lyrics, word } = readSelectLine();
@@ -119,7 +118,7 @@ export const useLineUpdateButtonEvent = () => {
     const selectLineIndex = index as number;
 
     const _time =
-      playing && !selectLineIndex ? playerRef.current!.getCurrentTime() + timeOffset : +readTimeInput().value;
+      playing && !selectLineIndex ? readPlayer()!.getCurrentTime() + timeOffset : +readTimeInput().value;
 
     const formatedTime = timeValidate(_time).toFixed(3);
 
@@ -190,9 +189,10 @@ export const useLineDelete = () => {
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
   const { allUpdateCurrentTimeColor } = useChangeLineRowColor();
-  const { playerRef } = useRefs();
   const getSeekCount = useGetSeekCount();
   const readSelectLine = useSelectLineStateRef();
+  const { readPlayer } = usePlayer();
+
   return () => {
     const { index: selectLineIndex } = readSelectLine();
 
@@ -218,7 +218,7 @@ export const useLineDelete = () => {
         updateNewMapBackUp(newVideoId);
       }
     }
-    const currentTime = playerRef.current!.getCurrentTime();
+    const currentTime = readPlayer().getCurrentTime();
 
     allUpdateCurrentTimeColor(getSeekCount(currentTime));
     setDirectEdit(null);

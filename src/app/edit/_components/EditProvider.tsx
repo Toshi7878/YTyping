@@ -12,7 +12,6 @@ import React, { useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
 import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, videoIdAtom } from "../atoms/stateAtoms";
 import { getEditAtomStore } from "../atoms/store";
-import { RefsProvider } from "../edit-contexts/refsProvider";
 import editStore from "../redux/store";
 import { EditorNewMapBackUpInfoData } from "../ts/type";
 
@@ -114,14 +113,12 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
 
   useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store });
   return (
-    <RefsProvider>
-      <ReduxProvider store={editStore}>
-        <JotaiProvider store={store}>
-          <DevTools store={store} />
-          {children}
-        </JotaiProvider>
-      </ReduxProvider>
-    </RefsProvider>
+    <ReduxProvider store={editStore}>
+      <JotaiProvider store={store}>
+        <DevTools store={store} />
+        {children}
+      </JotaiProvider>
+    </ReduxProvider>
   );
 };
 

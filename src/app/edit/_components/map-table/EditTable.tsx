@@ -6,7 +6,7 @@ import "@/app/edit/style/table.scss";
 import { ThemeColors } from "@/types";
 import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
-import { useRefs } from "../../edit-contexts/refsProvider";
+import { useTbodyRef } from "../../atoms/refAtoms";
 import MapTableBody from "./child/MapTableBody";
 
 interface EditTableProps {
@@ -16,11 +16,13 @@ interface EditTableProps {
 export default function EditTable(props: EditTableProps) {
   const theme: ThemeColors = useTheme();
   const tbodyRef = useRef(null);
-
-  const { setRef } = useRefs();
+  const { writeTbody } = useTbodyRef();
 
   useEffect(() => {
-    setRef("tbody", tbodyRef.current);
+    const tbody = tbodyRef.current;
+    if (tbody) {
+      writeTbody(tbody);
+    }
   }, []);
 
   return (
@@ -40,16 +42,10 @@ export default function EditTable(props: EditTableProps) {
                 >
                   Time
                 </Th>
-                <Th
-                  borderRight="1px solid"
-                  borderRightColor={`${theme.colors.border.editorTable.right}`}
-                >
+                <Th borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
                   歌詞
                 </Th>
-                <Th
-                  borderRight="1px solid"
-                  borderRightColor={`${theme.colors.border.editorTable.right}`}
-                >
+                <Th borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
                   ワード
                 </Th>
                 <Th
