@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetTabIndexState } from "@/app/edit/atoms/stateAtoms";
+import { useSetTabIndexState } from "@/app/type/atoms/stateAtoms";
 import { useResultData } from "@/app/type/hooks/end/useResultData";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
