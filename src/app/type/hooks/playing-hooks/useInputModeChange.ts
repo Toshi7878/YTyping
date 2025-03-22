@@ -12,7 +12,7 @@ import {
   useSetPlayingInputModeState,
   useUserTypingOptionsStateRef,
 } from "../../atoms/stateAtoms";
-import { InputModeType } from "../../ts/type";
+import { InputMode } from "../../ts/type";
 import { useGetTime } from "../useGetTime";
 
 export const useInputModeChange = () => {
@@ -31,7 +31,7 @@ export const useInputModeChange = () => {
   const readTypingOptions = useUserTypingOptionsStateRef();
   const readMap = useMapStateRef();
 
-  return async (newInputMode: InputModeType) => {
+  return async (newInputMode: InputMode) => {
     const map = readMap();
     const playingInputMode = readPlayingInputMode();
 

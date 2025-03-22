@@ -1,9 +1,9 @@
-import { useSelectWordState, useSetSelectWordState } from "@/app/edit/atoms/stateAtoms";
+import { useSetWordState, useWordState } from "@/app/edit/atoms/stateAtoms";
 import { Input } from "@chakra-ui/react";
 
 const EditorWordInput = () => {
-  const word = useSelectWordState();
-  const setWord = useSetSelectWordState();
+  const word = useWordState();
+  const setWord = useSetWordState();
 
   return (
     <Input

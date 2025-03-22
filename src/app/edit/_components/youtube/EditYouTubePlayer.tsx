@@ -5,7 +5,6 @@ import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect } from "react";
 import YouTube from "react-youtube";
 import { useVideoIdState } from "../../atoms/stateAtoms";
-import { useTimer } from "../../hooks/timer/useTimer";
 import {
   useYTEndStopEvent,
   useYTPauseEvent,
@@ -13,6 +12,7 @@ import {
   useYTReadyEvent,
   useYTSeekEvent,
 } from "../../hooks/useEditYTEvents";
+import { useTimer } from "../../hooks/useTimer";
 
 interface EditorYouTubeProps {
   className: string;

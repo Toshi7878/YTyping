@@ -1,13 +1,13 @@
 "use client";
 import { useCssLengthState } from "@/app/edit/atoms/stateAtoms";
-import { MapData } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
+import { MapLineEdit } from "@/types/map";
 import { Box, useTheme } from "@chakra-ui/react";
 
 interface CSSTextLengthProps {
   eternalCSSText: string;
   changeCSSText: string;
-  lineOptions: MapData["options"] | null;
+  lineOptions: MapLineEdit["options"] | null;
 }
 
 export default function CSSTextLength({ eternalCSSText, changeCSSText, lineOptions }: CSSTextLengthProps) {

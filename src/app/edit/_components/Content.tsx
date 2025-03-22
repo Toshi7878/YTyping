@@ -1,57 +1,14 @@
 "use client";
-import { db } from "@/lib/db";
-import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
-import { IndexDBOption } from "@/types";
 import { Box, Flex, Grid } from "@chakra-ui/react";
-import { useParams, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
-import { useDispatch } from "react-redux";
-import { usePathChangeAtomReset } from "../atoms/reset";
-import { useIsLrcConvertingState, useSetCanUploadState } from "../atoms/stateAtoms";
-import { resetMapData, setMapData } from "../redux/mapDataSlice";
+import { useIsLrcConvertingState } from "../atoms/stateAtoms";
 import EditTable from "./map-table/EditTable";
-import EditorTabContent from "./tab/EditTabList";
-import TimeRange from "./time-range/EditTimeRange";
-import EditYouTube from "./youtube/EditYoutube";
+import EditorTabContent from "./tab/TabList";
+import TimeRange from "./time-range/TimeRange";
+import EditYouTube from "./youtube/EditYouTubePlayer";
 
 function Content() {
-  const dispatch = useDispatch();
-  const searchParams = useSearchParams();
-  const newVideoId = searchParams.get("new") || "";
-  const isBackUp = searchParams.get("backup") === "true";
   const isLrcConverting = useIsLrcConvertingState();
-  const setCanUpload = useSetCanUploadState();
-  const pathChangeReset = usePathChangeAtomReset();
-  const { id: mapId } = useParams();
-  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
-
-  useEffect(() => {
-    if (mapData) {
-      dispatch(setMapData(mapData));
-    } else {
-      dispatch(resetMapData());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapData]);
-
-  useEffect(() => {
-    if (isBackUp) {
-      db.editorNewCreateBak.get({ optionName: "backupMapData" }).then((data: IndexDBOption | undefined) => {
-        if (data) {
-          dispatch(setMapData(data.value));
-        }
-      });
-      setCanUpload(true);
-    } else {
-      setCanUpload(false);
-    }
-
-    return () => {
-      pathChangeReset();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapId, newVideoId]);
 
   return (
     <LoadingOverlayWrapper
@@ -74,7 +31,7 @@ function Content() {
           <TimeRange />
         </Grid>
         <Box as="section" width="100%">
-          <EditTable mapLoading={isLoading} />
+          <EditTable />
         </Box>
       </Box>
     </LoadingOverlayWrapper>

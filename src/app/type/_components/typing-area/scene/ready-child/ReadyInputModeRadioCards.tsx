@@ -1,13 +1,13 @@
 "use client";
 import { useSetPlayingInputModeState } from "@/app/type/atoms/stateAtoms";
 import { useReadyInputModeState, useSetReadyInputModeState } from "@/app/type/atoms/storageAtoms";
-import { InputModeType } from "@/app/type/ts/type";
+import { InputMode } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
 import { Box, HStack, useRadio, useRadioGroup, UseRadioProps, useTheme } from "@chakra-ui/react";
 import React from "react";
 
 interface RadioCardProps extends UseRadioProps {
-  option: InputModeType;
+  option: InputMode;
   children: React.ReactNode;
 }
 function RadioCard({ option, children, ...props }: RadioCardProps) {
@@ -60,7 +60,7 @@ function RadioCard({ option, children, ...props }: RadioCardProps) {
 
 // Step 2: Use the `useRadioGroup` hook to control a group of custom radios.
 function ReadyInputModeRadioCards() {
-  const options: { value: InputModeType; label: string }[] = [
+  const options: { value: InputMode; label: string }[] = [
     { value: "roma", label: "ローマ字入力" },
     { value: "kana", label: "かな入力" },
     { value: "flick", label: "フリック入力" },
@@ -74,8 +74,8 @@ function ReadyInputModeRadioCards() {
     name: "inputMode",
     defaultValue: readyInputMode,
     onChange: (value) => {
-      setReadyInputMode(value as InputModeType);
-      setPlayingInputMode(value as InputModeType);
+      setReadyInputMode(value as InputMode);
+      setPlayingInputMode(value as InputMode);
     },
   });
 

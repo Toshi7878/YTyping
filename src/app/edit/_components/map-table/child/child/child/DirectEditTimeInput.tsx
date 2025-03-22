@@ -11,7 +11,7 @@ interface DirectEditTimeInputProps {
 const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
   const [editTime, setEditTime] = useState(props.editTime);
 
-  const { readTimeInput } = useTimeInput();
+  const { setTime } = useTimeInput();
   const { readPlayer } = usePlayer();
 
   return (
@@ -24,7 +24,7 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
         onChange={(e) => {
           const newValue = e.target.value;
           setEditTime(newValue);
-          readTimeInput().value = newValue;
+          setTime(newValue);
         }}
         onKeyDown={(e) => {
           const value = e.currentTarget.value;
@@ -32,12 +32,12 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
           if (e.code === "ArrowUp") {
             const newValue = (Number(value) - 0.05).toFixed(3);
             setEditTime(newValue);
-            readTimeInput().value = newValue;
+            setTime(newValue);
             e.preventDefault();
           } else if (e.code === "ArrowDown") {
             const newValue = (Number(value) + 0.05).toFixed(3);
             setEditTime(newValue);
-            readTimeInput().value = newValue;
+            setTime(newValue);
             e.preventDefault();
           } else if (e.code === "Enter") {
             readPlayer().seekTo(Number(value), true);

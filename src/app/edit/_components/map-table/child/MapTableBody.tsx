@@ -1,33 +1,26 @@
 "use client";
+import { useMapState } from "@/app/edit/atoms/mapReducerAtom";
 import { usePlayer, useTbodyRef } from "@/app/edit/atoms/refAtoms";
 import {
   useIsYTPlayingState,
-  useIsYTStartedState,
   useSetCssLengthState,
   useSetIsTimeInputValidState,
 } from "@/app/edit/atoms/stateAtoms";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useEditKeyDownEvents";
-import { setMapData, updateLine } from "@/app/edit/redux/mapDataSlice";
-import { RootState } from "@/app/edit/redux/store";
 import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
-import { MapData } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
+import { MapLineEdit } from "@/types/map";
 import { useDisclosure, useTheme } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { editTicker } from "../../youtube/EditYoutube";
+import { editTicker } from "../../youtube/EditYouTubePlayer";
 import LineRow from "./child/LineRow";
 import LineOptionModal from "./LineOptionModal";
 
 function MapTableBody() {
-  const dispatch = useDispatch();
   const theme: ThemeColors = useTheme();
 
   const [optionModalIndex, setOptionModalIndex] = useState<number | null>(null);
-  const [lineOptions, setLineOptions] = useState<MapData["options"] | null>(null);
-  const lastAddedTime = useSelector((state: RootState) => state.mapData.lastAddedTime);
-  const mapData = useSelector((state: RootState) => state.mapData.value);
-  const isYTStarted = useIsYTStartedState();
+  const [lineOptions, setLineOptions] = useState<MapLineEdit["options"] | null>(null);
   const isYTPlaying = useIsYTPlayingState();
   const optionClosure = useDisclosure();
 
@@ -36,6 +29,7 @@ function MapTableBody() {
   const setEditIsTimeInputValid = useSetIsTimeInputValidState();
   const { readTbody } = useTbodyRef();
   const { readPlayer } = usePlayer();
+  const map = useMapState();
 
   useEffect(() => {
     if (isYTPlaying && !editTicker.started) {
@@ -60,65 +54,11 @@ function MapTableBody() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionModalIndex]);
 
-  useEffect(() => {
-    if (mapData.length > 0 && readTbody()) {
-      for (let i = mapData.length - 1; i >= 0; i--) {
-        if (Number(mapData[i]["time"]) == Number(lastAddedTime)) {
-          const targetRow = readTbody().children[i];
-
-          if (targetRow && targetRow instanceof HTMLElement) {
-            const parentElement = targetRow.parentElement!.parentElement!.parentElement;
-            if (parentElement && targetRow instanceof HTMLElement) {
-              parentElement.scrollTo({
-                top: targetRow.offsetTop - parentElement.offsetTop - targetRow.offsetHeight,
-                behavior: "smooth",
-              });
-            }
-          }
-
-          break;
-        }
-      }
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastAddedTime]);
-
-  useEffect(() => {
-    if (isYTStarted) {
-      const duration = readPlayer().getDuration();
-
-      if (duration) {
-        for (let i = mapData.length - 1; i >= 0; i--) {
-          if (mapData[i].lyrics === "end") {
-            dispatch(
-              updateLine({
-                time: duration.toFixed(3),
-                lyrics: "end",
-                word: "",
-                selectedLineCount: i,
-              })
-            );
-
-            return;
-          }
-        }
-
-        const addLineMap = [...mapData, { time: duration.toFixed(3), lyrics: "end", word: "" }].sort(
-          (a, b) => parseFloat(a.time) - parseFloat(b.time)
-        );
-        dispatch(setMapData(addLineMap));
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isYTStarted]);
-
   const renderedRows = useMemo(
     () => {
       let customStyleLength = 0;
-      const endAfterLineIndex = mapData.findIndex((line) => line.lyrics === "end");
 
-      const rows = mapData.map((line, index) => {
+      const rows = map.map((line, index) => {
         const eternalCSS = line.options?.eternalCSS;
         const changeCSS = line.options?.changeCSS;
         if (eternalCSS) {
@@ -137,7 +77,6 @@ function MapTableBody() {
             optionClosure={optionClosure}
             setLineOptions={setLineOptions}
             setOptionModalIndex={setOptionModalIndex}
-            endAfterLineIndex={endAfterLineIndex}
           />
         );
       });
@@ -147,7 +86,7 @@ function MapTableBody() {
       return rows;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mapData]
+    [map]
   );
 
   return (

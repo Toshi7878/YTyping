@@ -3,7 +3,6 @@ import { Box, FormLabel, HStack, Input } from "@chakra-ui/react";
 
 import { useSetTimeOffsetState, useTimeOffsetState } from "@/app/edit/atoms/storageAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { sendEditorOptionIndexedDBData } from "@/lib/db";
 
 export default function AddTimeAdjust() {
   const timeOffset = useTimeOffsetState();
@@ -36,7 +35,6 @@ export default function AddTimeAdjust() {
             value={timeOffset}
             onChange={(e) => {
               setTimeOffset(Number(e.target.value));
-              sendEditorOptionIndexedDBData(e.target as HTMLInputElement);
             }}
           />
         </HStack>

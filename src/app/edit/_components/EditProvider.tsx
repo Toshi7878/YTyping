@@ -9,10 +9,8 @@ import { DevTools } from "jotai-devtools";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { Provider as ReduxProvider } from "react-redux";
 import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, videoIdAtom } from "../atoms/stateAtoms";
 import { getEditAtomStore } from "../atoms/store";
-import editStore from "../redux/store";
 import { EditorNewMapBackUpInfoData } from "../ts/type";
 
 interface EditProviderProps {
@@ -113,12 +111,10 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
 
   useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store });
   return (
-    <ReduxProvider store={editStore}>
-      <JotaiProvider store={store}>
-        <DevTools store={store} />
-        {children}
-      </JotaiProvider>
-    </ReduxProvider>
+    <JotaiProvider store={store}>
+      <DevTools store={store} />
+      {children}
+    </JotaiProvider>
   );
 };
 

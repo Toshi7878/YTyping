@@ -1,13 +1,6 @@
 import { ALPHABET_LIST, NUM_LIST } from "@/config/consts/charList";
-import {
-  InputModeType,
-  LineData,
-  LineResultData,
-  LineWord,
-  MapData,
-  SpeedDifficulty,
-  TypeChunk,
-} from "../app/type/ts/type";
+import { MapLine } from "@/types/map";
+import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../app/type/ts/type";
 import { ROMA_MAP } from "../config/consts/romaMap";
 
 const ZENKAKU_LIST = [
@@ -349,8 +342,7 @@ export class TypingWord {
     for (let i = 0; i < ROMA_LEN; i++) {
       if (!iunFlag || !["i", "u", "n"].includes(lineWord[lineWord.length - 1]["r"][i][0])) {
         repeat.push(
-          lineWord[lineWord.length - 1]["r"][i][0].repeat(XTU_LEN) +
-            lineWord[lineWord.length - 1]["r"][i]
+          lineWord[lineWord.length - 1]["r"][i][0].repeat(XTU_LEN) + lineWord[lineWord.length - 1]["r"][i]
         );
       }
 
@@ -383,8 +375,7 @@ export class TypingWord {
           if (IS_N) {
             lineWord[lineWord.length - 2]["r"][i] = lineWord[lineWord.length - 2]["r"][i] + "n";
             lineWord[lineWord.length - 2]["r"].push("n'");
-            lineWord[lineWord.length - 2]["p"] =
-              CHAR_POINT * lineWord[lineWord.length - 2]["r"][i].length;
+            lineWord[lineWord.length - 2]["p"] = CHAR_POINT * lineWord[lineWord.length - 2]["r"][i].length;
           }
         }
 
@@ -412,12 +403,12 @@ export class CreateMap {
   mapChangeCSSCounts: number[];
   defaultLineResultData: LineResultData[];
   totalNotes: LineData["notes"];
-  speedDifficulty: SpeedDifficulty;
+  speedDifficulty: { median: { r: number; k: number }; max: { r: number; k: number } };
   movieTotalTime: number;
   keyRate: number;
   missRate: number;
 
-  constructor(data: MapData[]) {
+  constructor(data: MapLine[]) {
     const wordRomaMap = this.parseWord(data);
 
     const result = this.create(wordRomaMap, data);
@@ -438,12 +429,12 @@ export class CreateMap {
     this.missRate = this.keyRate / 2;
   }
 
-  private create(wordRomaMap: string[][], data: MapData[]) {
+  private create(wordRomaMap: string[][], data: MapLine[]) {
     const mapData: LineData[] = [];
     const defaultLineResultData: LineResultData[] = [];
     const typingLineNumbers: number[] = [];
     const mapChangeCSSCounts: number[] = [];
-    const inputMode = (localStorage.getItem("inputMode") ?? "roma") as InputModeType;
+    const inputMode = (localStorage.getItem("inputMode") ?? "roma") as InputMode;
     const validatedInputMode = ["roma", "kana", "flick"].includes(inputMode) ? inputMode : "roma";
     let startLine = 0;
     let lineLength = 0;
@@ -540,9 +531,7 @@ export class CreateMap {
     const dakuHandakuLineNotes = (
       kanaWord
         .join("")
-        .match(
-          /[ゔ|が|ぎ|ぐ|げ|ご|ざ|じ|ず|ぜ|ぞ|だ|ぢ|づ|で|ど|ば|び|ぶ|べ|ぼ|ぱ|ぴ|ぷ|ぺ|ぽ]/g
-        ) || []
+        .match(/[ゔ|が|ぎ|ぐ|げ|ご|ざ|じ|ず|ぜ|ぞ|だ|ぢ|づ|で|ど|ば|び|ぶ|べ|ぼ|ぱ|ぴ|ぷ|ぺ|ぽ]/g) || []
     ).length;
     const kanaNotes = kanaWord.join("").length + dakuHandakuLineNotes;
 
@@ -551,7 +540,7 @@ export class CreateMap {
     return { k: kanaNotes, r: romaWord.join("").length };
   }
 
-  private parseWord(data: MapData[]) {
+  private parseWord(data: MapLine[]) {
     let lyrics = data
       .map((line) => line["word"].trim())
       .join("\n")

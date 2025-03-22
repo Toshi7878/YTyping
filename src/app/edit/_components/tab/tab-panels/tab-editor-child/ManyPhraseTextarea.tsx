@@ -1,11 +1,12 @@
 import {
-  useLineInputReducer,
+  useLineReducer,
+  useLineStateRef,
   useManyPhraseState,
-  useSelectLineStateRef,
   useSetManyPhraseState,
 } from "@/app/edit/atoms/stateAtoms";
 import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
 import { useWordConverter } from "@/app/edit/hooks/useWordConverter";
+import { usePlayer } from "@/app/type/atoms/refAtoms";
 import { ThemeColors } from "@/types";
 import { Box, Textarea, useTheme } from "@chakra-ui/react";
 
@@ -15,9 +16,10 @@ const ManyPhraseTextarea = () => {
 
   const setManyPhrase = useSetManyPhraseState();
   const pickupTopPhrase = usePickupTopPhrase();
-  const lineInputReducer = useLineInputReducer();
   const wordConverter = useWordConverter();
-  const readSelectLine = useSelectLineStateRef();
+  const readSelectLine = useLineStateRef();
+  const lineDispatch = useLineReducer();
+  const { readPlayer } = usePlayer();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { lyrics } = readSelectLine();
@@ -43,7 +45,12 @@ const ManyPhraseTextarea = () => {
 
     const topPhrase = lines[0];
     const word = await wordConverter(topPhrase);
-    lineInputReducer({ type: "set", payload: { lyrics: topPhrase, word } });
+    const time = readPlayer().getCurrentTime();
+
+    lineDispatch({
+      type: "set",
+      line: { lyrics: topPhrase, word, selectIndex: null, time: time.toString() },
+    });
   };
 
   return (

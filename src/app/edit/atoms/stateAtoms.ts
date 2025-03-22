@@ -1,13 +1,12 @@
 import { Tag, YouTubeSpeed } from "@/types";
-import { useAtomValue, useStore as useJotaiStore, useSetAtom } from "jotai";
-import { atomWithReducer, atomWithReset, useAtomCallback } from "jotai/utils";
-import { useStore as useReduxStore } from "react-redux";
-import { RootState } from "../redux/store";
+import { atom, ExtractAtomValue, useAtomValue, useStore as useJotaiStore, useSetAtom } from "jotai";
+import { atomWithReducer, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 
+import { playerRefAtom } from "@/app/type/atoms/refAtoms";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { LineInputReducerAction, TabIndex, TagsReducerAction, YTSpeedReducerActionType } from "../ts/type";
-import { usePlayer, useTimeInput } from "./refAtoms";
+import { TabIndex, TagsReducerAction, YTSpeedReducerActionType } from "../ts/type";
+import { timeInputRef } from "./refAtoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
 
@@ -72,7 +71,7 @@ export const useCanUploadState = () => useAtomValue(canUploadAtom, { store });
 export const useSetCanUploadState = () => useSetAtom(canUploadAtom, { store });
 
 export const useSetIsTimeInputValidState = () => useSetAtom(isTimeInputValidAtom, { store });
-export const useSetIsMapDataEditedAtom = () => useSetAtom(isUpdateUpdatedAtAtom, { store });
+export const useSetIsUpdateUpdatedAtRef = () => useSetAtom(isUpdateUpdatedAtAtom, { store });
 
 const ytPlayerStatusAtom = atomWithReset({
   videoId: "",
@@ -108,6 +107,38 @@ export const useSetIsYTPlayingState = () => useSetAtom(playingAtom, { store });
 
 export const useVideoIdState = () => useAtomValue(videoIdAtom, { store });
 export const useSetVideoIdState = () => useSetAtom(videoIdAtom, { store });
+
+store.sub(speedAtom, () => {
+  const player = store.get(playerRefAtom);
+  const speed = store.get(speedAtom);
+
+  if (player) {
+    player.setPlaybackRate(speed);
+  }
+});
+
+export const useSpeedReducer = () => {
+  const editAtomStore = useJotaiStore();
+  const setYTSpeedAtom = useSetYTSpeedState();
+  return (actionType: YTSpeedReducerActionType) => {
+    const speed = editAtomStore.get(speedAtom);
+
+    switch (actionType) {
+      case "up":
+        {
+          const newSpeed = (speed < 2 ? speed + 0.25 : 2) as YouTubeSpeed;
+          setYTSpeedAtom(newSpeed);
+        }
+        break;
+      case "down":
+        {
+          const newSpeed = (speed > 0.25 ? speed - 0.25 : 0.25) as YouTubeSpeed;
+          setYTSpeedAtom(newSpeed);
+        }
+        break;
+    }
+  };
+};
 
 export const mapInfoAtom = atomWithReset({
   title: "",
@@ -181,103 +212,50 @@ export const useMapTagsStateRef = () => {
   );
 };
 
-const selectLineAtom = atomWithReset({
+const lineAtom = atomWithReset({
+  selectIndex: null as number | null,
   lyrics: "",
   word: "",
-  index: null as number | null,
 });
-const selectLyricsAtom = focusAtom(selectLineAtom, (optic) => optic.prop("lyrics"));
-const selectWordAtom = focusAtom(selectLineAtom, (optic) => optic.prop("word"));
-export const selectIndexAtom = focusAtom(selectLineAtom, (optic) => optic.prop("index"));
 
-export const useSetSelectLineState = () => useSetAtom(selectLineAtom, { store });
-export const useSelectLineStateRef = () => {
+interface WriteLineSetAction {
+  type: "set";
+  line: ExtractAtomValue<typeof lineAtom> & { time: string | number };
+}
+
+interface ResetLineAction {
+  type: "reset";
+}
+
+const writeLineAtom = atom(null, (get, set, action: WriteLineSetAction | ResetLineAction) => {
+  const timeInput = get(timeInputRef) as HTMLInputElement;
+
+  if (action.type === "set" && "line" in action) {
+    const { time, ...lineAtomData } = action.line;
+    set(lineAtom, lineAtomData);
+    timeInput.value = String(time);
+  } else if (action.type === "reset") {
+    set(lineAtom, RESET);
+    timeInput.value = "";
+  }
+});
+const selectLineLyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics"));
+const selectLineWordAtom = focusAtom(lineAtom, (optic) => optic.prop("word"));
+export const selectLineIndexAtom = focusAtom(lineAtom, (optic) => optic.prop("selectIndex"));
+
+export const useLineReducer = () => useSetAtom(writeLineAtom, { store });
+export const useLineStateRef = () => {
   return useAtomCallback(
-    useCallback((get) => get(selectLineAtom), []),
+    useCallback((get) => get(lineAtom), []),
     { store }
   );
 };
 
-export const useSelectLyricsState = () => useAtomValue(selectLyricsAtom, { store });
-export const useSetSelectLyricsState = () => useSetAtom(selectLyricsAtom, { store });
+export const useLyricsState = () => useAtomValue(selectLineLyricsAtom, { store });
+export const useSetLyricsState = () => useSetAtom(selectLineLyricsAtom, { store });
 
-export const useSelectWordState = () => useAtomValue(selectWordAtom, { store });
-export const useSetSelectWordState = () => useSetAtom(selectWordAtom, { store });
+export const useWordState = () => useAtomValue(selectLineWordAtom, { store });
+export const useSetWordState = () => useSetAtom(selectLineWordAtom, { store });
 
-export const useSelectedIndexState = () => useAtomValue(selectIndexAtom, { store });
-export const useSetSelectedIndexState = () => useSetAtom(selectIndexAtom, { store });
-
-export const useLineInputReducer = () => {
-  const setEditLineLyrics = useSetSelectLyricsState();
-  const setEditLineWord = useSetSelectWordState();
-  const setEditLineCount = useSetSelectedIndexState();
-  const setEditIsTimeInputValid = useSetIsTimeInputValidState();
-  const editReduxStore = useReduxStore<RootState>();
-  const editJotaiStore = useJotaiStore();
-
-  const { readTimeInput } = useTimeInput();
-  return ({ type, payload }: LineInputReducerAction) => {
-    const timeInput = readTimeInput();
-    switch (type) {
-      case "set":
-        if (payload) {
-          setEditLineWord(payload.word);
-          if (typeof payload.lyrics === "string") {
-            setEditLineLyrics(payload.lyrics);
-          }
-          if (typeof payload.selectCount === "number") {
-            const mapData = editReduxStore.getState().mapData.value;
-            timeInput.value = mapData[payload.selectCount].time;
-            setEditIsTimeInputValid(false);
-            setEditLineCount(payload.selectCount);
-          } else if (typeof payload.time === "string") {
-            timeInput.value = payload.time;
-            setEditIsTimeInputValid(false);
-          }
-        }
-        break;
-      case "reset":
-        const isYTPlaying = editJotaiStore.get(playingAtom);
-
-        if (!isYTPlaying) {
-          timeInput.value = "";
-          setEditIsTimeInputValid(true);
-        }
-        setEditLineLyrics("");
-        setEditLineCount(null);
-        setEditLineWord("");
-        break;
-      default:
-        throw new Error(`Unknown action type: ${type}`);
-    }
-  };
-};
-
-export const useSpeedReducer = () => {
-  const editAtomStore = useJotaiStore();
-  const setYTSpeedAtom = useSetYTSpeedState();
-
-  const { readPlayer } = usePlayer();
-  return (actionType: YTSpeedReducerActionType) => {
-    const speed = editAtomStore.get(speedAtom);
-
-    switch (actionType) {
-      case "up":
-        {
-          const newSpeed = (speed < 2 ? speed + 0.25 : 2) as YouTubeSpeed;
-          setYTSpeedAtom(newSpeed);
-          readPlayer().setPlaybackRate(newSpeed);
-        }
-        break;
-      case "down":
-        {
-          const newSpeed = (speed > 0.25 ? speed - 0.25 : 0.25) as YouTubeSpeed;
-          setYTSpeedAtom(newSpeed);
-          readPlayer().setPlaybackRate(newSpeed);
-        }
-        break;
-      default:
-        throw new Error(`Unknown action type: ${actionType}`);
-    }
-  };
-};
+export const useSelectIndexState = () => useAtomValue(selectLineIndexAtom, { store });
+export const useSetSelectIndexState = () => useSetAtom(selectLineIndexAtom, { store });

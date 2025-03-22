@@ -1,21 +1,20 @@
 import { ThemeColors } from "@/types";
 import { useTheme } from "@chakra-ui/react";
-import { useStore as useReduxStore } from "react-redux";
-import { usePlayer, useTimeInput, useTimeRange } from "../../atoms/refAtoms";
-import { useEditUtilsStateRef } from "../../atoms/stateAtoms";
-import { RootState } from "../../redux/store";
-import { useUpdateCurrentTimeLine } from "../useUpdateCurrentTimeLine";
+import { useMapStateRef } from "../atoms/mapReducerAtom";
+import { usePlayer, useTimeInput, useTimeRange } from "../atoms/refAtoms";
+import { useEditUtilsStateRef } from "../atoms/stateAtoms";
+import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 
 export const useTimer = () => {
   const theme: ThemeColors = useTheme();
-  const editReduxStore = useReduxStore<RootState>();
 
   const updateCurrentLine = useUpdateCurrentTimeLine();
   const readEditUtils = useEditUtilsStateRef();
 
-  const { readTimeInput } = useTimeInput();
+  const { setTime } = useTimeInput();
   const { readPlayer } = usePlayer();
   const { readTimeRange } = useTimeRange();
+  const readMap = useMapStateRef();
 
   return () => {
     const currentTime = readPlayer().getCurrentTime().toFixed(3);
@@ -28,13 +27,13 @@ export const useTimer = () => {
 
     const { directEditingIndex, timeCount } = readEditUtils();
     if (!directEditingIndex) {
-      readTimeInput().value = currentTime;
+      setTime(currentTime);
     }
 
     const nextCount = timeCount + 1;
 
-    const mapData = editReduxStore.getState().mapData.value;
-    const nextLine = mapData[nextCount];
+    const map = readMap();
+    const nextLine = map[nextCount];
     if (nextLine && Number(currentTime) >= Number(nextLine["time"])) {
       updateCurrentLine(nextCount);
     }

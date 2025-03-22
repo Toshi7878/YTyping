@@ -3,7 +3,7 @@ import { UseDisclosureReturn } from "@chakra-ui/react";
 import { atom, ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputModeType, PlayMode, TypeResult } from "../ts/type";
+import { InputMode, PlayMode, TypeResult } from "../ts/type";
 import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 
@@ -57,7 +57,7 @@ const lineStatusRefAtom = atomWithReset({
   latency: 0,
   typeResult: [] as TypeResult[],
   startSpeed: 1,
-  startInputMode: "roma" as InputModeType,
+  startInputMode: "roma" as InputMode,
   isCompleted: false,
 });
 

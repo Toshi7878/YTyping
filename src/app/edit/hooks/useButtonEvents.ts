@@ -1,128 +1,118 @@
-import { useStore as useJotaiStore } from "jotai";
-import { useDispatch, useStore as useReduxStore } from "react-redux";
 import {
   useEditUtilsStateRef,
-  useLineInputReducer,
-  useSelectLineStateRef,
+  useLineReducer,
+  useLineStateRef,
   useSetCanUploadState,
   useSetDirectEditIndexState,
-  useSetIsMapDataEditedAtom,
+  useSetIsUpdateUpdatedAtRef,
+  useSetWordState,
   useYtPlayerStatusStateRef,
 } from "../atoms/stateAtoms";
 
+import { MapLine } from "@/types/map";
 import { useSearchParams } from "next/navigation";
+import { useHistoryReducer } from "../atoms/historyReducerAtom";
+import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
 import { usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useTimeOffsetStateRef } from "../atoms/storageAtoms";
-import { setLastAddedTime, setMapData } from "../redux/mapDataSlice";
-import { RootState } from "../redux/store";
-import { addHistory } from "../redux/undoredoSlice";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import { useGetSeekCount } from "./useGetSeekCount";
 import { useUpdateNewMapBackUp } from "./useUpdateNewMapBackUp";
 import { useWordConverter } from "./useWordConverter";
-
-const timeValidate = (time: number) => {
-  if (0 >= time) {
-    return 0.001;
-  } else {
-    return time;
-  }
-};
+import useTimeValidate from "./utils/useTimeValidate";
 
 export const useLineAddButtonEvent = () => {
-  const editAtomStore = useJotaiStore();
-  const editReduxStore = useReduxStore<RootState>();
-
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
-  const dispatch = useDispatch();
   const setDirectEdit = useSetDirectEditIndexState();
-  const setIsMapDataEdited = useSetIsMapDataEditedAtom();
+  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAtRef();
 
   const setCanUpload = useSetCanUploadState();
-  const lineInputReducer = useLineInputReducer();
   const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
 
   const readYtPlayerStatus = useYtPlayerStatusStateRef();
-  const readSelectLine = useSelectLineStateRef();
+  const readSelectLine = useLineStateRef();
   const readTimeOffset = useTimeOffsetStateRef();
   const readEditUtils = useEditUtilsStateRef();
-  const { readTimeInput } = useTimeInput();
+  const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
+  const readMap = useMapStateRef();
+  const mapDispatch = useMapReducer();
+  const historyDispatch = useHistoryReducer();
+  const lineDispatch = useLineReducer();
+  const timeValidate = useTimeValidate();
 
   return (isShiftKey: boolean) => {
-    const mapData = editReduxStore.getState().mapData.value;
     const { playing } = readYtPlayerStatus();
     const { lyrics, word } = readSelectLine();
     const timeOffset = readTimeOffset();
 
-    const _time = playing ? readPlayer().getCurrentTime() + timeOffset : Number(readTimeInput().value);
+    const _time = playing ? readPlayer().getCurrentTime() + timeOffset : Number(readTime());
     const time = timeValidate(_time).toFixed(3);
-    const newLine = !isShiftKey ? { time, lyrics, word } : { time, lyrics: "", word: "" };
+    const newLine: MapLine = !isShiftKey ? { time, lyrics, word } : { time, lyrics: "", word: "" };
 
-    const addLineMap = [...mapData, newLine].sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-
-    dispatch(setLastAddedTime(time));
-    dispatch(setMapData(addLineMap));
-    dispatch(addHistory({ type: "add", data: newLine }));
+    mapDispatch({ type: "add", payload: newLine });
+    const lineIndex = readMap().findIndex((line) => JSON.stringify(line) === JSON.stringify(newLine));
+    historyDispatch({ type: "add", payload: { actionType: "add", data: { ...newLine, lineIndex } } });
 
     if (newVideoId) {
       updateNewMapBackUp(newVideoId);
     }
 
-    if (!isShiftKey) {
-      lineInputReducer({ type: "reset" });
-
-      const lyricsCopy = structuredClone(lyrics);
-      deleteAddingTopPhrase(lyricsCopy);
-      const { manyPhraseText } = readEditUtils();
-      const topPhrase = manyPhraseText.split("\n")[0];
-      pickupTopPhrase(topPhrase);
-    }
-
     setCanUpload(true);
-    setIsMapDataEdited(true);
+    setIsUpdateUpdatedAt(true);
     setDirectEdit(null);
 
-    //フォーカスを外さないとクリック時にテーブルがスクロールされない
+    //フォーカスを外さないと追加ボタンクリック時にテーブルがスクロールされない
     (document.activeElement as HTMLElement)?.blur();
+
+    if (isShiftKey) {
+      return;
+    }
+
+    lineDispatch({ type: "reset" });
+    const lyricsCopy = structuredClone(lyrics);
+    deleteAddingTopPhrase(lyricsCopy);
+    const { manyPhraseText } = readEditUtils();
+    const topPhrase = manyPhraseText.split("\n")[0];
+    pickupTopPhrase(topPhrase);
   };
 };
 
 export const useLineUpdateButtonEvent = () => {
-  const editReduxStore = useReduxStore<RootState>();
-
   const setCanUpload = useSetCanUploadState();
-  const dispatch = useDispatch();
-  const lineInputReducer = useLineInputReducer();
   const setDirectEdit = useSetDirectEditIndexState();
 
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
-  const setIsMapDataEdited = useSetIsMapDataEditedAtom();
+  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAtRef();
+
+  const mapDispatch = useMapReducer();
+  const historyDispatch = useHistoryReducer();
+  const lineDispatch = useLineReducer();
 
   const readYtPlayerStatus = useYtPlayerStatusStateRef();
-  const readSelectLine = useSelectLineStateRef();
+  const readSelectLine = useLineStateRef();
   const readTimeOffset = useTimeOffsetStateRef();
-  const { readTimeInput } = useTimeInput();
+  const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
+  const readMap = useMapStateRef();
+
+  const timeValidate = useTimeValidate();
   return () => {
-    const mapData = editReduxStore.getState().mapData.value;
-    const { index, lyrics, word } = readSelectLine();
+    const map = readMap();
+    const { selectIndex: index, lyrics, word } = readSelectLine();
     const { playing } = readYtPlayerStatus();
     const timeOffset = readTimeOffset();
     const selectLineIndex = index as number;
 
-    const _time =
-      playing && !selectLineIndex ? readPlayer()!.getCurrentTime() + timeOffset : +readTimeInput().value;
-
+    const _time = playing && !selectLineIndex ? readPlayer()!.getCurrentTime() + timeOffset : +readTime();
     const formatedTime = timeValidate(_time).toFixed(3);
 
-    const oldLine = mapData[selectLineIndex];
+    const oldLine = map[selectLineIndex];
     const updatedLine = {
       time: formatedTime,
       lyrics,
@@ -132,96 +122,85 @@ export const useLineUpdateButtonEvent = () => {
       }),
     };
 
-    const newValue = [
-      ...mapData.slice(0, selectLineIndex),
-      updatedLine,
-      ...mapData.slice(selectLineIndex + 1),
-    ].sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-
-    setCanUpload(true);
-    if (oldLine.word !== word || oldLine.time !== formatedTime) {
-      setIsMapDataEdited(true);
-    }
-    dispatch(
-      addHistory({
-        type: "update",
+    historyDispatch({
+      type: "add",
+      payload: {
+        actionType: "update",
         data: {
-          old: mapData[selectLineIndex],
-          new: { time: formatedTime, lyrics, word },
-          lineNumber: selectLineIndex,
+          old: oldLine,
+          new: updatedLine,
+          lineIndex: selectLineIndex,
         },
-      })
-    );
+      },
+    });
 
-    dispatch(setMapData(newValue));
+    if (oldLine.word !== word || oldLine.time !== formatedTime) {
+      setIsUpdateUpdatedAt(true);
+    }
 
     if (newVideoId) {
       updateNewMapBackUp(newVideoId);
     }
 
-    lineInputReducer({ type: "reset" });
+    mapDispatch({ type: "update", payload: updatedLine, index: selectLineIndex });
+    lineDispatch({ type: "reset" });
     setDirectEdit(null);
+    setCanUpload(true);
   };
 };
 
 export const useWordConvertButtonEvent = () => {
-  const lineInputReducer = useLineInputReducer();
   const wordConvert = useWordConverter();
-  const readSelectLine = useSelectLineStateRef();
+  const readSelectLine = useLineStateRef();
 
+  const setWord = useSetWordState();
   return async () => {
     const { lyrics } = readSelectLine();
     const word = await wordConvert(lyrics);
-    lineInputReducer({ type: "set", payload: { word } });
+    setWord(word);
   };
 };
 
 export const useLineDelete = () => {
-  const editAtomStore = useJotaiStore();
-  const editReduxStore = useReduxStore<RootState>();
   const setCanUpload = useSetCanUploadState();
-  const dispatch = useDispatch();
-  const lineInputReducer = useLineInputReducer();
-  const setIsMapDataEdited = useSetIsMapDataEditedAtom();
+  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAtRef();
   const setDirectEdit = useSetDirectEditIndexState();
 
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
-  const { allUpdateCurrentTimeColor } = useChangeLineRowColor();
-  const getSeekCount = useGetSeekCount();
-  const readSelectLine = useSelectLineStateRef();
-  const { readPlayer } = usePlayer();
+  const { removeSelectedLineColor } = useChangeLineRowColor();
+  const readSelectLine = useLineStateRef();
+  const readMap = useMapStateRef();
+
+  const mapDispatch = useMapReducer();
+  const historyDispatch = useHistoryReducer();
+  const lineDispatch = useLineReducer();
 
   return () => {
-    const { index: selectLineIndex } = readSelectLine();
+    const { selectIndex } = readSelectLine();
 
-    if (selectLineIndex) {
-      const mapData = editReduxStore.getState().mapData.value;
-
-      const newValue = mapData.filter((_, index) => index !== selectLineIndex);
-
-      dispatch(setMapData(newValue));
-      setCanUpload(true);
-      setIsMapDataEdited(true);
-      dispatch(
-        addHistory({
-          type: "delete",
-          data: {
-            ...mapData[selectLineIndex],
-            selectedLineCount: selectLineIndex,
-          },
-        })
-      );
-
-      if (newVideoId) {
-        updateNewMapBackUp(newVideoId);
-      }
-    }
-    const currentTime = readPlayer().getCurrentTime();
-
-    allUpdateCurrentTimeColor(getSeekCount(currentTime));
+    removeSelectedLineColor();
     setDirectEdit(null);
-    lineInputReducer({ type: "reset" });
+    lineDispatch({ type: "reset" });
+
+    if (!selectIndex) {
+      return;
+    }
+
+    const map = readMap();
+
+    historyDispatch({
+      type: "add",
+      payload: { actionType: "delete", data: { ...map[selectIndex], lineIndex: selectIndex } },
+    });
+
+    mapDispatch({ type: "delete", index: selectIndex });
+    setCanUpload(true);
+    setIsUpdateUpdatedAt(true);
+
+    if (newVideoId) {
+      updateNewMapBackUp(newVideoId);
+    }
   };
 };

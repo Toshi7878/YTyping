@@ -1,40 +1,47 @@
 "use client";
+import { useHistoryReducer } from "@/app/edit/atoms/historyReducerAtom";
+import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
-import { allAdjustTime } from "@/app/edit/redux/mapDataSlice";
-import { RootState } from "@/app/edit/redux/store";
-import { addHistory } from "@/app/edit/redux/undoredoSlice";
+import useTimeValidate from "@/app/edit/hooks/utils/useTimeValidate";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { ThemeColors } from "@/types";
 import { Box, Button, FormLabel, HStack, Input, useTheme } from "@chakra-ui/react";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-export default function TotalTimeAdjust() {
-  const dispatch = useDispatch();
+export default function AllTimeAdjust() {
   const setCanUpload = useSetCanUploadState();
   const theme: ThemeColors = useTheme();
   const toast = useCustomToast();
-
   const [totalAdjustValue, setTotalAdjustValue] = useState<string>("");
-
-  const mapData = useSelector((state: RootState) => state.mapData.value);
+  const readMap = useMapStateRef();
+  const mapDispatch = useMapReducer();
+  const historyDispatch = useHistoryReducer();
+  const timeValidate = useTimeValidate();
 
   const allTimeAdjust = () => {
     if (!totalAdjustValue) {
       return;
     }
 
-    const times = mapData.map((item) => item.time);
+    const newMap = readMap().map((item) => {
+      const newTime = timeValidate(Number(item.time) + Number(totalAdjustValue));
+
+      return {
+        ...item,
+        time: newTime.toFixed(3),
+      };
+    });
     setCanUpload(true);
 
-    dispatch(
-      addHistory({
-        type: "allAdjustTime",
-        data: { times, totalAdjustValue: Number(totalAdjustValue) },
-      })
-    );
-    dispatch(allAdjustTime(totalAdjustValue));
+    mapDispatch({ type: "replaceAll", payload: { ...newMap } });
+    historyDispatch({
+      type: "add",
+      payload: {
+        actionType: "replaceAll",
+        data: { old: readMap(), new: newMap },
+      },
+    });
 
     toast({
       type: "success",

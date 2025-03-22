@@ -1,18 +1,7 @@
-export type InputModeType = "roma" | "kana" | "flick";
+export type InputMode = "roma" | "kana" | "flick";
 export type PlayMode = "playing" | "replay" | "practice";
 export type SceneType = "ready" | "playing" | "end" | "replay" | "practice";
 
-export type MapData = {
-  time: string;
-  lyrics: string;
-  word: string;
-  options?: {
-    eternalCSS?: string;
-    changeCSS?: string;
-    isChangeCSS?: boolean;
-    changeVideoSpeed?: number;
-  };
-};
 export type TypeChunk = {
   k: string;
   r: string[];
@@ -20,17 +9,15 @@ export type TypeChunk = {
   t: "kana" | "alphabet" | "num" | "symbol" | "space" | undefined;
 };
 
-export type SpeedDifficulty = { median: { r: number; k: number }; max: { r: number; k: number } };
-
 export interface LineData {
-  time: number; //後でここは配列に変更する;
+  time: number;
   word: TypeChunk[];
-  lyrics: string; //後でここは配列に変更する;
+  lyrics: string;
   kpm: { k: number; r: number };
   notes: { k: number; r: number };
   lineCount?: number;
   kanaWord: string;
-  options?: MapData["options"];
+  options?: MapLine["options"];
 }
 
 export interface LineWord {
@@ -55,7 +42,7 @@ export interface SendResultData {
     miss: number;
     lost: number;
     rkpm: number;
-    roma_kpm: number; //かな入力・フリック入力の場合もローマ字換算でkpmを計算
+    roma_kpm: number;
     max_combo: number;
     kpm: number;
     default_speed: number;
@@ -81,15 +68,10 @@ export interface LineResultData {
     lLost?: number;
     combo: number;
     tTime: number;
-    mode: InputModeType;
+    mode: InputMode;
     sp: number;
   };
   typeResult: TypeResult[];
-}
-
-export interface Speed {
-  defaultSpeed: number;
-  playSpeed: number;
 }
 
 export type Dakuten =

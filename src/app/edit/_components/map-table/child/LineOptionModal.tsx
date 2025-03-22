@@ -1,7 +1,7 @@
 "use client";
 
-import { MapData } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
+import { MapLineEdit } from "@/types/map";
 import {
   Badge,
   Box,
@@ -30,7 +30,7 @@ interface LineOptionModalProps {
   onClose: () => void;
   optionModalIndex: number | null;
   setOptionModalIndex: Dispatch<number | null>;
-  lineOptions: MapData["options"] | null;
+  lineOptions: MapLineEdit["options"] | null;
 }
 
 export default function LineOptionModal({

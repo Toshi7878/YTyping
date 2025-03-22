@@ -5,14 +5,14 @@ import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputModeType, LineResultData, LineWord, SceneType } from "../ts/type";
+import { InputMode, LineResultData, LineWord, SceneType } from "../ts/type";
 import { useGameUtilsRef } from "./refAtoms";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
 
-const initialInputMode: InputModeType =
-  typeof window !== "undefined" ? (localStorage.getItem("inputMode") as InputModeType) || "roma" : "roma";
+const initialInputMode: InputMode =
+  typeof window !== "undefined" ? (localStorage.getItem("inputMode") as InputMode) || "roma" : "roma";
 
 export const userTypingOptionsAtom = atomWithReset({
   time_offset: 0,

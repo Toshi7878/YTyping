@@ -12,7 +12,7 @@ import {
 } from "../atoms/stateAtoms";
 import { useReadyInputModeStateRef } from "../atoms/storageAtoms";
 import { typeTicker } from "../ts/const/consts";
-import { InputModeType } from "../ts/type";
+import { InputMode } from "../ts/type";
 import { useStartTimer } from "./playing-hooks/timer-hooks/useStartTimer";
 import { useUpdateUserStats } from "./playing-hooks/useUpdateUserStats";
 
@@ -56,7 +56,7 @@ export const useYTPlayEvent = () => {
       }
 
       const readyInputMode = readReadyInputMode();
-      setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputModeType);
+      setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
       updatePlayCountStats();
       setTabIndex(0);
     }

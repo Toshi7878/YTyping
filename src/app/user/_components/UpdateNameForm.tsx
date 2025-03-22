@@ -62,8 +62,7 @@ export const UpdateNameForm = ({
     updateName.mutate(data, {
       onSuccess: async (result) => {
         await update({ ...session?.user, name: data.newName });
-        const title = result.title;
-        const message = result.message;
+        const { title, message } = result;
         toast({ type: "success", title, message });
         if (isHomeRedirect) {
           router.push("/");
@@ -115,9 +114,7 @@ export const UpdateNameForm = ({
           <Text
             as="span"
             visibility={isDirty && newNameValue ? "visible" : "hidden"}
-            color={
-              nameState === "duplicate" ? theme.colors.error.light : theme.colors.secondary.light
-            }
+            color={nameState === "duplicate" ? theme.colors.error.light : theme.colors.secondary.light}
           >
             {nameState === "duplicate"
               ? "この名前は既に使用されています。"
@@ -125,13 +122,7 @@ export const UpdateNameForm = ({
           </Text>
         )}
       </FormLabel>
-      <Input
-        size="lg"
-        autoFocus={isAutoFocus}
-        {...register("newName")}
-        placeholder={placeholder}
-        required
-      />
+      <Input size="lg" autoFocus={isAutoFocus} {...register("newName")} placeholder={placeholder} required />
       <Button
         variant="upload"
         isLoading={updateName.isPending}

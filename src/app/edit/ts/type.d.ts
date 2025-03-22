@@ -33,8 +33,7 @@ export interface EditorNewMapBackUpInfoData {
 }
 
 type TagsReducerActionType = "set" | "add" | "delete" | "reset";
-type LineInputReducerActionType = "set" | "reset";
 export type YTSpeedReducerActionType = "up" | "down";
-export type LineInputReducerAction = { type: LineInputReducerActionType; payload?: LineInput };
+
 export type TagsReducerAction = { type: TagsReducerActionType; payload?: Tag | Tag[] };
 export type TabIndex = 0 | 1 | 2;

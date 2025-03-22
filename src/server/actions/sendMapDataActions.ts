@@ -1,6 +1,5 @@
 "use server";
 
-import { MapData } from "@/app/type/ts/type";
 import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
@@ -13,7 +12,7 @@ const upsertMap = async (
   mapId: string,
   userId: number,
   isMapDataEdited: boolean,
-  mapData: MapData[]
+  mapData: MapLine[]
 ) => {
   return await prisma.$transaction(async (tx) => {
     try {
@@ -71,7 +70,7 @@ const upsertMap = async (
 export async function actions(
   data: SendMapInfo,
   sendMapDifficulty: SendMapDifficulty,
-  mapData: MapData[],
+  mapData: MapLine[],
   isMapDataEdited: boolean,
   mapId: string
 ): Promise<UploadResult> {
@@ -135,6 +134,7 @@ export async function actions(
   }
 }
 
+import { MapLine } from "@/types/map";
 import { thumbnail_quality } from "@prisma/client";
 import { z } from "zod";
 
@@ -142,9 +142,7 @@ const lineSchema = z.object({
   time: z.string(),
   lyrics: z.string().optional(),
   word: z.string().optional(),
-  options: z
-    .object({ eternalCSS: z.string().optional(), changeCSS: z.string().optional() })
-    .optional(), // 追加
+  options: z.object({ eternalCSS: z.string().optional(), changeCSS: z.string().optional() }).optional(), // 追加
 });
 
 const mapSendSchema = z.object({
@@ -184,9 +182,7 @@ const mapSendSchema = z.object({
     .refine(
       (lines) => {
         const endAfterLineIndex = lines.findIndex((line) => line.lyrics === "end");
-        return lines.every((line, index) =>
-          endAfterLineIndex < index ? line.lyrics === "end" : true
-        );
+        return lines.every((line, index) => (endAfterLineIndex < index ? line.lyrics === "end" : true));
       },
       {
         message: "endの後に無効な行があります",

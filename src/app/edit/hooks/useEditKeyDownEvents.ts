@@ -1,29 +1,25 @@
-import { LineEdit } from "@/types";
-import { useDispatch, useStore as useReduxStore } from "react-redux";
-
 import {
   useIsAddBtnDisabledStateRef,
   useIsDeleteBtnDisabledStateRef,
   useIsUpdateBtnDisabledStateRef,
 } from "../atoms/buttonDisableStateAtoms";
+import { useEditHistoryRef, useHistoryReducer } from "../atoms/historyReducerAtom";
+import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
 import { usePlayer, useTbodyRef } from "../atoms/refAtoms";
 import {
   useEditUtilsStateRef,
-  useLineInputReducer,
-  useSelectLineStateRef,
+  useLineReducer,
+  useLineStateRef,
   useSetDirectEditIndexState,
-  useSetSelectLyricsState,
+  useSetLyricsState,
+  useSetManyPhraseState,
   useSpeedReducer,
   useYtPlayerStatusStateRef,
 } from "../atoms/stateAtoms";
-import { mapDataRedo, mapDataUndo } from "../redux/mapDataSlice";
-import { RootState } from "../redux/store";
-import { redo, undo } from "../redux/undoredoSlice";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useButtonEvents";
 import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import { useUndoLine } from "./useEditUndoRedo";
-import { useWordFindReplace } from "./useWordFindReplace";
+import { useWordSearchReplace } from "./useWordFindReplace";
 
 export const useTbodyScroll = () => {
   const { readTbody } = useTbodyRef();
@@ -43,20 +39,20 @@ export const useTbodyScroll = () => {
 };
 
 export const useWindowKeydownEvent = () => {
-  const editReduxStore = useReduxStore<RootState>();
+  const speedDispatch = useSpeedReducer();
+  const lineDispatch = useLineReducer();
+  const historyDispatch = useHistoryReducer();
+  const mapDispatch = useMapReducer();
 
-  const dispatch = useDispatch();
-  const lineInputReducer = useLineInputReducer();
-  const speedReducer = useSpeedReducer();
   const pickupTopPhrase = usePickupTopPhrase();
   const setDirectEdit = useSetDirectEditIndexState();
 
-  const undoLine = useUndoLine();
-  const wordFindReplace = useWordFindReplace();
+  const wordSearchPeplace = useWordSearchReplace();
   const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
 
   const lineAddButtonEvent = useLineAddButtonEvent();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
+  const setManyPhrase = useSetManyPhraseState();
   const lineDelete = useLineDelete();
   const seekNextPrev = useSeekNextPrev();
   const readEditUtils = useEditUtilsStateRef();
@@ -65,6 +61,7 @@ export const useWindowKeydownEvent = () => {
   const readIsUpdateBtnDisalbed = useIsUpdateBtnDisabledStateRef();
   const readIsDeleteBtnDisalbed = useIsDeleteBtnDisabledStateRef();
   const { readPlayer } = usePlayer();
+  const readHistory = useEditHistoryRef();
 
   return (event: KeyboardEvent, optionModalIndex: number | null) => {
     const IS_FOCUS_INPUT = document.activeElement instanceof HTMLInputElement;
@@ -86,8 +83,6 @@ export const useWindowKeydownEvent = () => {
       }
       event.preventDefault();
     } else if (!iS_FOCUS_MANY_PHRASE_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
-      const undoredoState = editReduxStore.getState().undoRedo;
-
       switch (event.code) {
         case "ArrowUp":
           seekNextPrev("prev");
@@ -140,37 +135,51 @@ export const useWindowKeydownEvent = () => {
 
         case "KeyZ":
           if (event.ctrlKey) {
-            if (undoredoState.present) {
-              const data = undoredoState.present.data as LineEdit;
+            const { present } = readHistory();
 
-              dispatch(mapDataUndo(undoredoState.present));
-              if (undoredoState.present.type === "add") {
-                undoLine(data, manyPhraseText);
-                player.seekTo(Number(data.time) - 3 * speed, true);
+            if (present) {
+              const { actionType, data } = present;
+              switch (actionType) {
+                case "add":
+                  mapDispatch({ type: "delete", index: data.lineIndex });
+                  player.seekTo(Number(data.time) - 3 * speed, true);
+                  setManyPhrase(data.lyrics + "\n" + manyPhraseText);
+                  break;
+                case "update":
+                  mapDispatch({ type: "update", payload: data.old, index: data.lineIndex });
+                  break;
+                case "delete":
+                  mapDispatch({ type: "add", payload: data });
+                  break;
               }
-
-              dispatch(undo());
-              event.preventDefault();
+              historyDispatch({ type: "undo" });
             }
+            event.preventDefault();
           }
-
           break;
 
         case "KeyY":
           if (event.ctrlKey) {
-            if (undoredoState.future.length) {
-              const future = undoredoState.future[undoredoState.future.length - 1];
+            const { future } = readHistory();
 
-              dispatch(mapDataRedo(future));
+            if (future.length) {
+              const { actionType, data } = future[future.length - 1];
 
-              if (future.type === "add") {
-                const data = future.data as LineEdit;
-                deleteAddingTopPhrase(data.lyrics);
-                const topPhrase = manyPhraseText.split("\n")[0];
-                pickupTopPhrase(topPhrase);
+              switch (actionType) {
+                case "add":
+                  mapDispatch({ type: "add", payload: data });
+                  deleteAddingTopPhrase(data.lyrics);
+                  const topPhrase = manyPhraseText.split("\n")[0];
+                  pickupTopPhrase(topPhrase);
+                  break;
+                case "update":
+                  mapDispatch({ type: "update", payload: data.new, index: data.lineIndex });
+                  break;
+                case "delete":
+                  mapDispatch({ type: "delete", index: data.lineIndex });
+                  break;
               }
-
-              dispatch(redo());
+              historyDispatch({ type: "redo" });
               event.preventDefault();
             }
           }
@@ -178,7 +187,7 @@ export const useWindowKeydownEvent = () => {
           break;
 
         case "KeyD":
-          lineInputReducer({ type: "reset" });
+          lineDispatch({ type: "reset" });
           setDirectEdit(null);
           event.preventDefault();
 
@@ -204,7 +213,7 @@ export const useWindowKeydownEvent = () => {
 
         case "KeyF":
           if (event.ctrlKey && event.shiftKey) {
-            wordFindReplace();
+            wordSearchPeplace();
             event.preventDefault();
           }
           break;
@@ -221,13 +230,13 @@ export const useWindowKeydownEvent = () => {
           break;
 
         case "F9":
-          speedReducer("down");
+          speedDispatch("down");
           event.preventDefault();
 
           break;
 
         case "F10":
-          speedReducer("up");
+          speedDispatch("up");
           event.preventDefault();
 
           break;
@@ -237,30 +246,30 @@ export const useWindowKeydownEvent = () => {
 };
 
 function useSeekNextPrev() {
-  const editReduxStore = useReduxStore<RootState>();
-  const lineInputReducer = useLineInputReducer();
+  const lineDispatch = useLineReducer();
+
   const tbodyScroll = useTbodyScroll();
   const { addLineSeekColor } = useChangeLineRowColor();
   const readEditUtils = useEditUtilsStateRef();
-  const readLineStatus = useSelectLineStateRef();
+  const readLineStatus = useLineStateRef();
   const { readPlayer } = usePlayer();
-
+  const readMap = useMapStateRef();
   return (type: "next" | "prev") => {
-    const mapData = editReduxStore.getState().mapData.value;
     const { directEditingIndex } = readEditUtils();
 
-    const { index: selectIndex } = readLineStatus();
+    const { selectIndex: selectIndex } = readLineStatus();
     if (selectIndex !== null && !directEditingIndex) {
       const seekCount = selectIndex + (type === "next" ? 1 : -1);
-      const seekLine = mapData[seekCount];
+      const seekLine = readMap()[seekCount];
       if (seekLine) {
         readPlayer().seekTo(Number(seekLine.time), true);
-        lineInputReducer({
+        lineDispatch({
           type: "set",
-          payload: {
+          line: {
+            time: seekLine.time,
             lyrics: seekLine.lyrics,
             word: seekLine.word,
-            selectCount: seekCount,
+            selectIndex: seekCount,
           },
         });
         tbodyScroll(seekCount);
@@ -271,7 +280,7 @@ function useSeekNextPrev() {
 }
 
 export function useAddRubyTagEvent() {
-  const setLyrics = useSetSelectLyricsState();
+  const setLyrics = useSetLyricsState();
 
   return (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {

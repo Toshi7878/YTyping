@@ -1,5 +1,5 @@
-import { MapData } from "@/app/type/ts/type";
 import { supabase } from "@/lib/supabaseClient";
+import { MapLine } from "@/types/map";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { publicProcedure } from "../trpc";
@@ -123,7 +123,7 @@ export const mapRouter = {
       }
 
       const jsonString = await data.text();
-      const jsonData: MapData[] = JSON.parse(jsonString);
+      const jsonData: MapLine[] = JSON.parse(jsonString);
 
       return jsonData;
     } catch (error) {

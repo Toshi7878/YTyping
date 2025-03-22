@@ -1,18 +1,16 @@
 import { sendEditorNewCreateBakIndexedDBData } from "@/lib/db";
 import { Tag } from "@/types";
-import { useStore as useReduxStore } from "react-redux";
+import { useMapStateRef } from "../atoms/mapReducerAtom";
 import { useMapInfoStateRef, useMapTagsStateRef } from "../atoms/stateAtoms";
 
-import { RootState } from "../redux/store";
-
 export const useUpdateNewMapBackUp = () => {
-  const editReduxStore = useReduxStore<RootState>();
   const readMapInfo = useMapInfoStateRef();
   const readTags = useMapTagsStateRef();
+  const readMap = useMapStateRef();
 
   return (newVideoId: string) => {
     const { title, artist, source, comment, previewTime } = readMapInfo();
-    const mapData = editReduxStore.getState().mapData.value;
+    const map = readMap();
     const tags = readTags();
 
     sendEditorNewCreateBakIndexedDBData(
@@ -25,7 +23,7 @@ export const useUpdateNewMapBackUp = () => {
         previewTime,
         tags: tags.map((tag: Tag) => tag.id),
       },
-      mapData
+      map
     );
   };
 };

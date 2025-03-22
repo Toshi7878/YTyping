@@ -5,12 +5,12 @@ import { Box, Button, HStack, Text } from "@chakra-ui/react";
 
 const EditSpeedChange = () => {
   const speed = useYTSpeedState(); //0.25 or 2.00 場合片方のボタンをdisabledにする
-  const speedReducer = useSpeedReducer();
+  const speedDispatch = useSpeedReducer();
 
   return (
     <HStack justify="center" className="w-[170px]">
       <Box>
-        <Button cursor="pointer" variant="unstyled" onClick={() => speedReducer("down")}>
+        <Button cursor="pointer" variant="unstyled" onClick={() => speedDispatch("down")}>
           <Box className="relative">
             -
             <Text as="span" className="f-key">
@@ -26,7 +26,7 @@ const EditSpeedChange = () => {
         倍速
       </Box>
       <Box>
-        <Button variant="unstyled" cursor="pointer" onClick={() => speedReducer("up")}>
+        <Button variant="unstyled" cursor="pointer" onClick={() => speedDispatch("up")}>
           <Box className="relative">
             +
             <Text as="span" className="f-key">

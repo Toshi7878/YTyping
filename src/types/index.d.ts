@@ -1,5 +1,5 @@
 import { EditorNewMapBackUpInfoData } from "@/app/edit/ts/type";
-import { MapData } from "@/app/type/ts/type";
+import { MapLine } from "@/app/type/ts/type";
 
 export type HeaderMenu = { title: string; href: string };
 
@@ -12,21 +12,6 @@ export type NavItem = {
 export type LeftNavConfig = {
   items: NavItem[];
 };
-
-export interface LineInput {
-  time?: string;
-  lyrics?: string;
-  word: string;
-  selectCount?: number;
-}
-
-export interface LineEdit {
-  time: string;
-  lyrics: string;
-  word: string;
-  selectedLineCount?: number;
-  options?: MapData["options"];
-}
 
 // react-tag-input Tag 型は時前で定義しなければならない
 export interface Tag {
@@ -108,7 +93,7 @@ export type YouTubeSpeed = 0.25 | 0.5 | 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2;
 export interface IndexDBOption {
   id: number;
   optionName: string;
-  value: string | number | boolean | EditorNewMapBackUpInfoData | MapData[];
+  value: string | number | boolean | EditorNewMapBackUpInfoData | MapLine[];
 }
 
 export interface UploadResult {

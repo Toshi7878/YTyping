@@ -1,20 +1,21 @@
 "use client";
 import { Button, Td, Tr, UseDisclosureReturn, useTheme } from "@chakra-ui/react";
 import { Dispatch, useCallback, useRef } from "react";
-import { useSelector } from "react-redux";
 
+import { useEndLineIndex } from "@/app/edit/atoms/buttonDisableStateAtoms";
+import { useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import {
   useDirectEditIndexState,
-  useLineInputReducer,
+  useLineReducer,
   useSetDirectEditIndexState,
-  useSetSelectedIndexState,
+  useSetSelectIndexState,
   useSetTabIndexState,
 } from "@/app/edit/atoms/stateAtoms";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
 import { useChangeLineRowColor } from "@/app/edit/hooks/useChangeLineRowColor";
-import { RootState } from "@/app/edit/redux/store";
-import { LineEdit, ThemeColors } from "@/types";
+import { ThemeColors } from "@/types";
+import { MapLine, MapLineEdit } from "@/types/map";
 import parse from "html-react-parser";
 import DirectEditLyricsInput from "./child/DirectEditLyricsInput";
 import DirectEditTimeInput from "./child/DirectEditTimeInput";
@@ -22,49 +23,44 @@ import DirectEditWordInput from "./child/DirectEditWordInput";
 
 interface LineRowProps {
   index: number;
-  line: LineEdit;
+  line: MapLine;
   optionClosure: UseDisclosureReturn;
   setOptionModalIndex: Dispatch<number>;
-  setLineOptions: Dispatch<LineEdit["options"]>;
-  endAfterLineIndex: number;
+  setLineOptions: Dispatch<MapLineEdit["options"]>;
 }
 
-function LineRow({
-  line,
-  index,
-  optionClosure,
-  setOptionModalIndex,
-  setLineOptions,
-  endAfterLineIndex,
-}: LineRowProps) {
+function LineRow({ line, index, optionClosure, setOptionModalIndex, setLineOptions }: LineRowProps) {
   const directEditTimeInputRef = useRef<HTMLInputElement | null>(null);
   const directEditLyricsInputRef = useRef<HTMLInputElement | null>(null);
   const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
   const directEditIndex = useDirectEditIndexState();
   const setTabIndex = useSetTabIndexState();
-  const setSelectedIndex = useSetSelectedIndexState();
-  const lineInputReducer = useLineInputReducer();
+  const setSelectedIndex = useSetSelectIndexState();
   const setDirectEditIndex = useSetDirectEditIndexState();
+  const setSelectLine = useLineReducer();
+  const endLineIndex = useEndLineIndex();
   const theme: ThemeColors = useTheme();
-  const mapData = useSelector((state: RootState) => state.mapData.value);
 
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
   const { allUpdateSelectColor } = useChangeLineRowColor();
   const { readPlayer } = usePlayer();
-  const selectLine = useCallback(
-    (event: React.MouseEvent<HTMLTableRowElement>, selectCount: number) => {
-      const time = mapData[selectCount].time;
-      const lyrics = mapData[selectCount].lyrics;
-      const word = mapData[selectCount].word;
+  const readMap = useMapStateRef();
 
-      if (directEditIndex === selectCount) {
+  const selectLine = useCallback(
+    (event: React.MouseEvent<HTMLTableRowElement>, selectIndex: number) => {
+      const map = readMap();
+      const time = map[selectIndex].time;
+      const lyrics = map[selectIndex].lyrics;
+      const word = map[selectIndex].word;
+
+      if (directEditIndex === selectIndex) {
         return null;
       } else if (directEditIndex) {
         lineUpdateButtonEvent();
       }
 
-      if (event.ctrlKey && selectCount !== 0 && selectCount !== endAfterLineIndex) {
-        setDirectEditIndex(selectCount);
+      if (event.ctrlKey && selectIndex !== 0 && selectIndex !== endLineIndex) {
+        setDirectEditIndex(selectIndex);
 
         const cellClassName = (event.target as HTMLElement).classList[0];
         setTimeout(() => {
@@ -76,17 +72,17 @@ function LineRow({
             directEditWordInputRef.current?.focus();
           }
         }, 0);
-      } else if (directEditIndex !== selectCount) {
+      } else if (directEditIndex !== selectIndex) {
         setDirectEditIndex(null);
       }
 
-      setSelectedIndex(selectCount);
-      allUpdateSelectColor(selectCount);
-      lineInputReducer({ type: "set", payload: { time, lyrics, word, selectCount } });
+      setSelectedIndex(selectIndex);
+      allUpdateSelectColor(selectIndex);
+      setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex } });
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mapData, directEditIndex, endAfterLineIndex]
+    [directEditIndex, endLineIndex]
   );
 
   const clickTimeCell = (event: React.MouseEvent<HTMLTableCellElement, MouseEvent>, index: number) => {
@@ -97,7 +93,6 @@ function LineRow({
 
   const isOptionEdited = line.options?.isChangeCSS || line.options?.eternalCSS;
 
-  const isLastLine = mapData.length - 1 === index;
   return (
     <Tr
       id={`line_${index}`}
@@ -111,7 +106,7 @@ function LineRow({
       }}
     >
       <Td
-        borderBottom={isLastLine ? "" : "1px solid"}
+        borderBottom={index === endLineIndex ? "" : "1px solid"}
         borderRight="1px solid"
         borderRightColor={`${theme.colors.border.editorTable.right}`}
         borderBottomColor={theme.colors.border.editorTable.bottom}
@@ -127,7 +122,7 @@ function LineRow({
       </Td>
       <Td
         className="lyrics-cell"
-        borderBottom={isLastLine ? "" : "1px solid"}
+        borderBottom={index === endLineIndex ? "" : "1px solid"}
         borderRight="1px solid"
         borderRightColor={`${theme.colors.border.editorTable.right}`}
         borderBottomColor={theme.colors.border.editorTable.bottom}
@@ -140,7 +135,7 @@ function LineRow({
       </Td>
       <Td
         className="word-cell"
-        borderBottom={isLastLine ? "" : "1px solid"}
+        borderBottom={index === endLineIndex ? "" : "1px solid"}
         borderBottomColor={theme.colors.border.editorTable.bottom}
         borderRight="1px solid"
         borderRightColor={`${theme.colors.border.editorTable.right}`}
@@ -152,11 +147,11 @@ function LineRow({
         )}
       </Td>
       <Td
-        borderBottom={isLastLine ? "" : "1px solid"}
+        borderBottom={index === endLineIndex ? "" : "1px solid"}
         borderBottomColor={theme.colors.border.editorTable.bottom}
       >
         <Button
-          disabled={mapData.length - 1 === index}
+          disabled={index === endLineIndex}
           variant={isOptionEdited ? "solid" : "outline"}
           color={isOptionEdited ? theme.colors.text.body : theme.colors.secondary.main}
           bg={isOptionEdited ? theme.colors.secondary.main : ""}
@@ -166,7 +161,7 @@ function LineRow({
           }}
           size="sm"
           onClick={() => {
-            if (mapData.length - 1 !== index) {
+            if (index !== endLineIndex) {
               setOptionModalIndex(index);
               setLineOptions(line.options);
               optionClosure.onOpen();

@@ -1,13 +1,6 @@
 import { CODE_TO_KANA, KEY_TO_KANA } from "../../../../../../config/consts/kanaKeyMap";
 import { CHAR_POINT } from "../../../../../../lib/instanceMapData";
-import {
-  Dakuten,
-  HanDakuten,
-  InputModeType,
-  LineWord,
-  NormalizeHirakana,
-  TypeChunk,
-} from "../../../type";
+import { Dakuten, HanDakuten, InputMode, LineWord, NormalizeHirakana, TypeChunk } from "../../../type";
 
 const keyboardCharacters = [
   "0",
@@ -125,21 +118,7 @@ const handakuKanaList = ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"];
 const dakuHandakuList = dakuKanaList.concat(handakuKanaList);
 const yoonFlickList = ["ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "っ", "ゎ"];
 const yoonFlickListLarge = ["あ", "い", "う", "え", "お", "や", "ゆ", "よ", "つ", "わ"];
-const smallKanaList = [
-  "っ",
-  "ぁ",
-  "ぃ",
-  "ぅ",
-  "ぇ",
-  "ぉ",
-  "ゃ",
-  "ゅ",
-  "ょ",
-  "ゎ",
-  "ヵ",
-  "ヶ",
-  "ん",
-];
+const smallKanaList = ["っ", "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "ゎ", "ヵ", "ヶ", "ん"];
 const OptimisationWhiteList = ["っっ", "っん", "っい", "っう"];
 
 const kana_mode_convert_rule_before = ["←", "↓", "↑", "→", "『", "』"];
@@ -256,12 +235,7 @@ export class RomaInput {
       .filter((pattern) => pattern !== "");
   }
 
-  private kanaFilter(
-    kana: string,
-    typingKey: string,
-    romaPattern: string[],
-    newLineWord: LineWord
-  ) {
+  private kanaFilter(kana: string, typingKey: string, romaPattern: string[], newLineWord: LineWord) {
     if (kana.length >= 2 && romaPattern.length) {
       const isSokuonYouon =
         (kana[0] != "っ" && (romaPattern[0][0] === "x" || romaPattern[0][0] === "l")) ||
@@ -285,10 +259,7 @@ export class RomaInput {
   private nextNNFilter(typingKey: string, newLineWord: LineWord) {
     const nextToNextChar = newLineWord.word[0]["r"];
     const isXN =
-      typingKey == "x" &&
-      nextToNextChar[0] &&
-      nextToNextChar[0][0] != "n" &&
-      nextToNextChar[0][0] != "N";
+      typingKey == "x" && nextToNextChar[0] && nextToNextChar[0][0] != "n" && nextToNextChar[0][0] != "N";
 
     if (isXN) {
       return nextToNextChar.filter((value: string) => {
@@ -351,9 +322,7 @@ export class KanaInput {
         };
 
     const successIndex: number = nextKana[0]
-      ? keys.indexOf(
-          dakuHanDakuData.normalized ? dakuHanDakuData.normalized : nextKana[0].toLowerCase()
-        )
+      ? keys.indexOf(dakuHanDakuData.normalized ? dakuHanDakuData.normalized : nextKana[0].toLowerCase())
       : -1;
 
     const typingKey =
@@ -415,7 +384,7 @@ export class KanaInput {
 interface TypingEvent {
   event: KeyboardEvent;
   lineWord: LineWord;
-  inputMode?: InputModeType;
+  inputMode?: InputMode;
 }
 
 export class Typing {

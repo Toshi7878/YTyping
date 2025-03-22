@@ -1,15 +1,14 @@
-import { useStore as useReduxStore } from "react-redux";
-import { RootState } from "../redux/store";
+import { useMapStateRef } from "../atoms/mapReducerAtom";
 
 export const useGetSeekCount = () => {
-  const editReduxStore = useReduxStore<RootState>();
+  const readMap = useMapStateRef();
 
   return (time: number) => {
     let count = 0;
-    const mapData = editReduxStore.getState().mapData.value;
 
-    for (let i = 0; i < mapData.length; i++) {
-      if (Number(mapData[i]["time"]) - time >= 0) {
+    const map = readMap();
+    for (let i = 0; i < map.length; i++) {
+      if (Number(map[i]["time"]) - time >= 0) {
         count = i - 1;
         break;
       }

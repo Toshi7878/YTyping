@@ -1,4 +1,4 @@
-import { useSelectLyricsState, useSetSelectLyricsState } from "@/app/edit/atoms/stateAtoms";
+import { useLyricsState, useSetLyricsState } from "@/app/edit/atoms/stateAtoms";
 import { useAddRubyTagEvent } from "@/app/edit/hooks/useEditKeyDownEvents";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Box, Input } from "@chakra-ui/react";
@@ -10,9 +10,9 @@ interface DirectEditLyricsInputProps {
 
 const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
-  const selectLyrics = useSelectLyricsState();
+  const selectLyrics = useLyricsState();
 
-  const setLyrics = useSetSelectLyricsState();
+  const setLyrics = useSetLyricsState();
   const handleEnterAddRuby = useAddRubyTagEvent();
 
   return (

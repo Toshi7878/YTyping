@@ -7,7 +7,7 @@ import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms
 
 import { usePlayer, useTimeRange } from "../../atoms/refAtoms";
 import ColorStyle from "../ColorStyle";
-import EditSpeedChange from "./child/EditSpeedChange";
+import EditSpeedChange from "./child/SpeedChange";
 
 const TimeRange = () => {
   const rangeRef = useRef<HTMLInputElement>(null);

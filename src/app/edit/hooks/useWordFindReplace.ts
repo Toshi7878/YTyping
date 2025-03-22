@@ -1,101 +1,61 @@
-import { Action } from "@reduxjs/toolkit";
-import { Dispatch } from "react";
-import { useDispatch, useStore as useReduxStore } from "react-redux";
+import { useHistoryReducer } from "../atoms/historyReducerAtom";
+import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
 import { useTbodyRef } from "../atoms/refAtoms";
-import { useSetCanUploadState, useSetIsMapDataEditedAtom } from "../atoms/stateAtoms";
-import { updateLine } from "../redux/mapDataSlice";
-import { RootState } from "../redux/store";
-import { addHistory } from "../redux/undoredoSlice";
+import { useSetCanUploadState, useSetIsUpdateUpdatedAtRef } from "../atoms/stateAtoms";
 
-export const useWordFindReplace = () => {
-  const dispatch = useDispatch();
-  const editReduxStore = useReduxStore<RootState>();
-  const setCanUpload = useSetCanUploadState();
-  const setIsMapDataEdited = useSetIsMapDataEditedAtom();
-  const { readTbody } = useTbodyRef();
+export const useWordSearchReplace = () => {
+  const getKanaSearchLength = useGetKanaSearchLength();
+  const readMap = useMapStateRef();
+  const replaceDialog = useReplaceDialog();
+  const replaceFoundFocus = useReplaceFoundFocus();
 
-  return () => {
-    const mapData = editReduxStore.getState().mapData.value;
-    new WordReplace(mapData, readTbody(), dispatch, setCanUpload, setIsMapDataEdited).wordSearchReplace();
-  };
-};
+  return async () => {
+    const searchText = escapeRegExp(prompt("置き換えしたい読みを入力してください。") ?? "");
 
-class WordReplace {
-  mapData: RootState["mapData"]["value"];
-  dispatch: Dispatch<Action>;
-  tbodyRef: HTMLElement;
-  setCanUpload: Dispatch<boolean>;
-  newWord: string;
-  setIsMapDataEdited: Dispatch<boolean>;
-
-  constructor(
-    mapData: RootState["mapData"]["value"],
-    tbody: HTMLElement,
-    dispatch: Dispatch<Action>,
-    setCanUpload: Dispatch<boolean>,
-    setIsMapDataEdited: Dispatch<boolean>
-  ) {
-    this.mapData = mapData;
-    this.tbodyRef = tbody;
-    this.dispatch = dispatch;
-    this.setCanUpload = setCanUpload;
-    this.newWord = "";
-    this.setIsMapDataEdited = setIsMapDataEdited;
-  }
-
-  async wordSearchReplace() {
-    const search = this.escapeRegExp(prompt("置き換えしたい読みを入力してください。"));
-
-    if (!search) {
+    if (!searchText) {
       return;
     }
 
-    let matchLength = this.getKanaSearchLength(new RegExp(search, "g"));
+    let matchLength = getKanaSearchLength(new RegExp(searchText, "g"));
     const replace = prompt("置き換えする文字を入力してください。");
     if (!replace) {
       return;
     }
 
-    const searchReg = new RegExp(`${replace ? `(?!${replace})` : ""}${search}`, "g");
+    const searchReg = new RegExp(`${replace ? `(?!${replace})` : ""}${searchText}`, "g");
 
-    if (search && replace.match(search)) {
+    if (searchText && replace.match(searchText)) {
       alert("sorry...置き換えする文字に検索する文字が含まれないようにしてください。");
       return;
     }
-    for (let i = 0, len = this.mapData.length; i < len; i++) {
-      const match = this.mapData[i]["word"].match(searchReg);
+    const map = readMap();
+
+    for (let i = 0, len = map.length; i < len; i++) {
+      const match = map[i]["word"].match(searchReg);
       if (!match) {
         continue;
       }
-      let replacedWord = this.mapData[i]["word"];
+      let replacedWord = map[i]["word"];
       let replacedLength = 0;
 
       for (let j = 1; j < match.length + 1; j++) {
-        await this.replaceFoundFocus(i, search);
-        await this.replaceDialog(i, searchReg, replace, matchLength);
-        replacedWord = replacedWord.replace(search, "");
-        replacedLength += search.length;
+        replaceFoundFocus({ i, searchText });
+        await replaceDialog(i, searchReg, replace, matchLength);
+        replacedWord = replacedWord.replace(searchText, "");
+        replacedLength += searchText.length;
         matchLength--;
       }
     }
-  }
+  };
+};
 
-  getKanaSearchLength(searchReg) {
-    let lyricsKana = "";
-
-    for (let i = 0, len = this.mapData.length; i < len; i++) {
-      lyricsKana += this.mapData[i]["word"];
-    }
-
-    const Result = lyricsKana.match(searchReg);
-
-    return Result ? Result.length : 0;
-  }
-
-  replaceFoundFocus(i, search) {
+function useReplaceFoundFocus() {
+  const { readTbody } = useTbodyRef();
+  return ({ i, searchText }: { i: number; searchText: string }) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const targetRow = this.tbodyRef.children[i];
+        const tbody = readTbody();
+        const targetRow = tbody.children[i];
 
         if (targetRow) {
           targetRow.scrollIntoView({ behavior: "auto", block: "center" });
@@ -103,20 +63,16 @@ class WordReplace {
 
         let range = document.createRange();
 
-        // 取得した要素の内側を範囲とする
-        const WORD_NODE = this.tbodyRef.children[i].children[2];
+        const WORD_NODE = tbody.children[i].children[2];
         if (WORD_NODE && WORD_NODE.textContent) {
-          this.newWord = WORD_NODE.textContent;
-          const textMatch = WORD_NODE.textContent.match(new RegExp(search));
+          const textMatch = WORD_NODE.textContent.match(new RegExp(searchText));
           if (textMatch) {
             range.selectNodeContents(WORD_NODE);
           }
           if (WORD_NODE && WORD_NODE.firstChild && textMatch && textMatch.index !== undefined) {
-            // 範囲を選択状態にする
             range.setStart(WORD_NODE.firstChild, textMatch.index);
             range.setEnd(WORD_NODE.firstChild, textMatch.index + (textMatch[0]?.length || 0));
 
-            // 選択範囲をクリアして新しい範囲を追加
             const selection = window.getSelection();
             if (selection) {
               selection.removeAllRanges();
@@ -141,49 +97,77 @@ class WordReplace {
         }
       }, 50);
     });
-  }
+  };
+}
 
-  replaceDialog(i, searchReg, replace, matchLength) {
+function useGetKanaSearchLength() {
+  const readMap = useMapStateRef();
+
+  return (searchReg: RegExp) => {
+    const map = readMap();
+    let lyricsKana = "";
+
+    for (let i = 0, len = map.length; i < len; i++) {
+      lyricsKana += map[i]["word"];
+    }
+
+    const Result = lyricsKana.match(searchReg);
+
+    return Result ? Result.length : 0;
+  };
+}
+
+function useReplaceDialog() {
+  const readMap = useMapStateRef();
+  const setCanUpload = useSetCanUploadState();
+  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAtRef();
+
+  const mapDispatch = useMapReducer();
+  const historyDispatch = useHistoryReducer();
+  return (i: number, searchReg: RegExp, replace, matchLength: number) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        if (confirm(`残り${matchLength}件\n${this.newWord}\n置き換えますか？`)) {
+        const map = readMap();
+        const { time, lyrics, word } = map[i];
+        if (confirm(`残り${matchLength}件\n${word}\n置き換えますか？`)) {
           let n = 0;
 
-          const selectedLineCount = i;
-
-          const time = this.mapData[i]["time"];
-
-          const lyrics = this.mapData[i]["lyrics"];
-
-          const newWord = this.newWord.replace(searchReg, (match) => {
+          const newWord = word.replace(searchReg, (match) => {
             if (++n == 1) return replace;
             else return match;
           });
 
-          this.setCanUpload(true);
-          this.setIsMapDataEdited(true);
-          this.dispatch(
-            addHistory({
-              type: "update",
+          mapDispatch({
+            type: "update",
+            payload: {
+              time,
+              lyrics,
+              word: newWord,
+            },
+            index: i,
+          });
+
+          historyDispatch({
+            type: "add",
+            payload: {
+              actionType: "update",
               data: {
-                old: { time, lyrics, word: this.newWord },
+                old: { time, lyrics, word },
                 new: { time, lyrics, word: newWord },
-                lineNumber: i,
+                lineIndex: i,
               },
-            })
-          );
-
-          this.newWord = newWord;
-
-          this.dispatch(updateLine({ selectedLineCount, time, lyrics, word: this.newWord }));
+            },
+          });
         }
 
         resolve(1);
+        setCanUpload(true);
+        setIsUpdateUpdatedAt(true);
       }, 50);
     });
-  }
+  };
+}
 
-  escapeRegExp(string) {
-    return string ? string.replace(/[.*+\-?^${}()|[\]\\]/g, "\\$&") : null;
-  }
+function escapeRegExp(string: string) {
+  return string ? string.replace(/[.*+\-?^${}()|[\]\\]/g, "\\$&") : null;
 }

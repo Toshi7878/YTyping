@@ -1,36 +1,32 @@
 import { atom, useAtomValue } from "jotai";
 import { useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { useStore as useReduxStore } from "react-redux";
-import { RootState } from "../redux/store";
-import { isTimeInputValidAtom, selectIndexAtom } from "./stateAtoms";
+import { mapReducerAtom } from "./mapReducerAtom";
+import { isTimeInputValidAtom, selectLineIndexAtom } from "./stateAtoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
 
-const editReduxStoreAtom = atom(() => useReduxStore<RootState>());
-
 const isNotSelectLineAtom = atom((get) => {
-  const selectIndex = get(selectIndexAtom);
+  const selectIndex = get(selectLineIndexAtom);
 
   return selectIndex === 0 || selectIndex === null;
 });
 
-const isLineLastSelectAtom = atom((get) => {
-  const mapData = get(editReduxStoreAtom).getState().mapData.value;
-  const index = get(selectIndexAtom);
-  const endAfterLineIndex =
-    mapData.length -
-    1 -
-    mapData
-      .slice()
-      .reverse()
-      .findIndex((line) => line.lyrics === "end");
+const endLineIndexAtom = atom((get) => {
+  const map = get(mapReducerAtom);
 
-  if (index === null) {
+  return map.findLastIndex((line) => line.lyrics === "end");
+});
+
+const isLineLastSelectAtom = atom((get) => {
+  const endLineIndex = get(endLineIndexAtom);
+  const selectIndex = get(selectLineIndexAtom);
+
+  if (selectIndex === null) {
     return false;
   }
 
-  return index === endAfterLineIndex;
+  return selectIndex === endLineIndex;
 });
 
 const isAddButtonDisabledAtom = atom((get) => {
@@ -74,3 +70,5 @@ export const useIsDeleteBtnDisabledStateRef = () => {
     { store }
   );
 };
+
+export const useEndLineIndex = () => useAtomValue(endLineIndexAtom, { store });

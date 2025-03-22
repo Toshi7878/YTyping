@@ -1,22 +1,21 @@
-import { Action, Dispatch } from "@reduxjs/toolkit";
+import { useMapReducer } from "@/app/edit/atoms/mapReducerAtom";
+import { usePlayer } from "@/app/edit/atoms/refAtoms";
+import { useWordConverter } from "@/app/edit/hooks/useWordConverter";
+import { MapLine } from "@/types/map";
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
-import { setMapData } from "../../../redux/mapDataSlice";
-import { RootState } from "../../../redux/store";
 
-export class ImportFile {
-  async open(
-    file: File,
-    wordConvert: (lyrics: string) => Promise<string>,
-    dispatch: Dispatch<Action>,
-    mapData: RootState["mapData"]["value"]
-  ) {
+export const useImportMapFile = () => {
+  const mapDispatch = useMapReducer();
+  const lrcConverter = useLrcConverter();
+  const jsonConverter = useJsonConverter();
+
+  return async (file: File) => {
     const fileReader = new FileReader();
     fileReader.readAsArrayBuffer(file);
 
     let data = await new Promise((resolve) => {
-      fileReader.onload = (event: ProgressEvent<FileReader>) =>
-        resolve((event.target as FileReader).result);
+      fileReader.onload = (event: ProgressEvent<FileReader>) => resolve((event.target as FileReader).result);
     });
 
     const buffer = Buffer.from(new Uint8Array(data as ArrayBuffer));
@@ -25,19 +24,21 @@ export class ImportFile {
 
     if (file.name.endsWith(".lrc")) {
       const lrc = decodedData.split("\r\n");
-      const convertedData = await Convert.lrc(lrc, wordConvert, mapData);
-      dispatch(setMapData(convertedData));
+      const convertedData = await lrcConverter(lrc);
+      mapDispatch({ type: "replaceAll", payload: convertedData });
     } else {
-      const convertedData = await Convert.json(JSON.parse(decodedData).map, mapData);
-      dispatch(setMapData(convertedData));
+      const convertedData = jsonConverter(JSON.parse(decodedData).map);
+      mapDispatch({ type: "replaceAll", payload: convertedData });
     }
-  }
-}
-
+  };
+};
 type JsonMap = [string, string, string];
-class Convert {
-  static json(jsonMap: JsonMap, mapData: RootState["mapData"]["value"]) {
-    const result: RootState["mapData"]["value"] = [{ time: "0", lyrics: "", word: "" }];
+
+function useJsonConverter() {
+  const { readPlayer } = usePlayer();
+
+  return (jsonMap: JsonMap) => {
+    const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
 
     for (let i = 0; i < jsonMap.length; i++) {
       const lyrics = jsonMap[i][1];
@@ -51,17 +52,17 @@ class Convert {
       result.push({ time, lyrics, word });
     }
 
-    result.push(mapData[mapData.length - 1]);
+    result.push({ time: readPlayer().getCurrentTime().toFixed(3), lyrics: "", word: "" });
 
     return result;
-  }
+  };
+}
 
-  static async lrc(
-    lrc: string[],
-    wordConvert: (lyrics: string) => Promise<string>,
-    mapData: RootState["mapData"]["value"]
-  ) {
-    const result: RootState["mapData"]["value"] = [{ time: "0", lyrics: "", word: "" }];
+function useLrcConverter() {
+  const wordConvert = useWordConverter();
+  const { readPlayer } = usePlayer();
+  return async (lrc: string[]) => {
+    const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
     for (let i = 0; i < lrc.length; i++) {
       const timeTagMatch = lrc[i].match(/\[\d\d:\d\d.\d\d\]/);
 
@@ -79,8 +80,8 @@ class Convert {
       }
     }
 
-    result.push(mapData[mapData.length - 1]);
+    result.push({ time: readPlayer().getCurrentTime().toFixed(3), lyrics: "", word: "" });
 
     return result;
-  }
+  };
 }
