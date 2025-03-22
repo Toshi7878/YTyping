@@ -7,7 +7,7 @@ export const useTimeValidate = () => {
     const duration = readPlayer().getDuration();
     if (0 >= time) {
       return 0.001;
-    } else if (duration > time) {
+    } else if (time >= duration) {
       return duration - 0.001;
     } else {
       return time;
