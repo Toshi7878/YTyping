@@ -102,7 +102,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (token) {
         session.user.id = token.uid as string;
         session.user.name = token.name;
-        session.user.email = token.email_hash as string;
+        session.user.email_hash = token.email_hash as string;
         session.user.role = token.role as $Enums.role;
       }
       return session;
