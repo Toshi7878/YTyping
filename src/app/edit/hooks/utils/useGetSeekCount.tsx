@@ -1,4 +1,4 @@
-import { useMapStateRef } from "../atoms/mapReducerAtom";
+import { useMapStateRef } from "../../atoms/mapReducerAtom";
 
 export const useGetSeekCount = () => {
   const readMap = useMapStateRef();

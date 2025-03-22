@@ -6,7 +6,7 @@ import {
   useSetManyPhraseState,
   useSetWordState,
 } from "../atoms/stateAtoms";
-import { useWordConverter } from "./useWordConverter";
+import { useWordConverter } from "./utils/useWordConverter";
 
 export const usePickupTopPhrase = () => {
   const lineDispatch = useLineReducer();

@@ -1,5 +1,5 @@
-import { useTbodyRef } from "../atoms/refAtoms";
-import { LINE_ROW_SWITCH_CLASSNAMES } from "../ts/const/editDefaultValues";
+import { useTbodyRef } from "../../atoms/refAtoms";
+import { LINE_ROW_SWITCH_CLASSNAMES } from "../../ts/const/editDefaultValues";
 
 export const useChangeLineRowColor = () => {
   const { readTbody } = useTbodyRef();

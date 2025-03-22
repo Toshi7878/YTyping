@@ -18,8 +18,8 @@ import {
 } from "../atoms/stateAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useButtonEvents";
-import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import { useWordSearchReplace } from "./useWordFindReplace";
+import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
+import { useWordSearchReplace } from "./utils/useWordFindReplace";
 
 export const useTbodyScroll = () => {
   const { readTbody } = useTbodyRef();

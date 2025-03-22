@@ -5,7 +5,7 @@ import {
   useSetManyPhraseState,
 } from "@/app/edit/atoms/stateAtoms";
 import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
-import { useWordConverter } from "@/app/edit/hooks/useWordConverter";
+import { useWordConverter } from "@/app/edit/hooks/utils/useWordConverter";
 import { usePlayer } from "@/app/type/atoms/refAtoms";
 import { ThemeColors } from "@/types";
 import { Box, Textarea, useTheme } from "@chakra-ui/react";

@@ -16,10 +16,10 @@ import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
 import { usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useTimeOffsetStateRef } from "../atoms/storageAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
-import { useChangeLineRowColor } from "./useChangeLineRowColor";
-import { useUpdateNewMapBackUp } from "./useUpdateNewMapBackUp";
-import { useWordConverter } from "./useWordConverter";
+import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 import useTimeValidate from "./utils/useTimeValidate";
+import { useUpdateNewMapBackUp } from "./utils/useUpdateNewMapBackUp";
+import { useWordConverter } from "./utils/useWordConverter";
 
 export const useLineAddButtonEvent = () => {
   const searchParams = useSearchParams();

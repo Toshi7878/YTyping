@@ -8,8 +8,8 @@ import {
   useSetIsYTStartedState,
   useSetTabIndexState,
 } from "../atoms/stateAtoms";
-import { useGetSeekCount } from "./useGetSeekCount";
 import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
+import { useGetSeekCount } from "./utils/useGetSeekCount";
 
 export const useYTReadyEvent = () => {
   const setIsYTReadied = useSetIsYTReadiedState();

@@ -1,5 +1,5 @@
 import { useSetTimeCountState } from "../atoms/stateAtoms";
-import { useChangeLineRowColor } from "./useChangeLineRowColor";
+import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 
 export const useUpdateCurrentTimeLine = () => {
   const setTimeCount = useSetTimeCountState();

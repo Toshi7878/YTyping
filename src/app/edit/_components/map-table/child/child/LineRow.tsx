@@ -13,7 +13,7 @@ import {
   useSetTabIndexState,
 } from "@/app/edit/atoms/stateAtoms";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
-import { useChangeLineRowColor } from "@/app/edit/hooks/useChangeLineRowColor";
+import { useChangeLineRowColor } from "@/app/edit/hooks/utils/useChangeLineRowColor";
 import { ThemeColors } from "@/types";
 import { MapLine, MapLineEdit } from "@/types/map";
 import parse from "html-react-parser";

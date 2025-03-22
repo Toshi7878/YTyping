@@ -10,8 +10,8 @@ import {
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { useSession } from "next-auth/react";
-import { useWordConvertOptionStateRef } from "../atoms/storageAtoms";
-import { ConvertOptionsType } from "../ts/type";
+import { useWordConvertOptionStateRef } from "../../atoms/storageAtoms";
+import { ConvertOptionsType } from "../../ts/type";
 
 const allowedChars = new Set([
   ...KANA_LIST,

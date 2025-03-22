@@ -1,6 +1,6 @@
 "use client";
 import { useSetIsLrcConvertingState } from "@/app/edit/atoms/stateAtoms";
-import { useImportMapFile } from "@/app/edit/ts/tab/settings/importFile";
+import { useImportMapFile } from "@/app/edit/hooks/utils/importMapFile";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { Button, HStack } from "@chakra-ui/react";
 import { useRef } from "react";

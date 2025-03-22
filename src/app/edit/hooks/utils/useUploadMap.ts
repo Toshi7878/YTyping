@@ -3,12 +3,12 @@ import { CreateMap } from "@/lib/instanceMapData";
 import { UploadResult } from "@/types";
 import { $Enums } from "@prisma/client";
 import { useParams } from "next/navigation";
-import { actions } from "../../../server/actions/sendMapDataActions";
-import { useMapStateRef } from "../atoms/mapReducerAtom";
-import { usePlayer } from "../atoms/refAtoms";
-import { useEditUtilsStateRef, useMapInfoStateRef, useMapTagsStateRef } from "../atoms/stateAtoms";
-import { getThumbnailQuality } from "../ts/tab/info-upload/getThumbailQuality";
-import { SendMapDifficulty, SendMapInfo } from "../ts/type";
+import { actions } from "../../../../server/actions/sendMapDataActions";
+import { useMapStateRef } from "../../atoms/mapReducerAtom";
+import { usePlayer } from "../../atoms/refAtoms";
+import { useEditUtilsStateRef, useMapInfoStateRef, useMapTagsStateRef } from "../../atoms/stateAtoms";
+import { getThumbnailQuality } from "../../ts/tab/info-upload/getThumbailQuality";
+import { SendMapDifficulty, SendMapInfo } from "../../ts/type";
 
 export function useUploadMap() {
   const { id: mapId } = useParams();

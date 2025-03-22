@@ -1,7 +1,7 @@
-import { useHistoryReducer } from "../atoms/historyReducerAtom";
-import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
-import { useTbodyRef } from "../atoms/refAtoms";
-import { useSetCanUploadState, useSetIsUpdateUpdatedAtRef } from "../atoms/stateAtoms";
+import { useHistoryReducer } from "../../atoms/historyReducerAtom";
+import { useMapReducer, useMapStateRef } from "../../atoms/mapReducerAtom";
+import { useTbodyRef } from "../../atoms/refAtoms";
+import { useSetCanUploadState, useSetIsUpdateUpdatedAtRef } from "../../atoms/stateAtoms";
 
 export const useWordSearchReplace = () => {
   const getKanaSearchLength = useGetKanaSearchLength();

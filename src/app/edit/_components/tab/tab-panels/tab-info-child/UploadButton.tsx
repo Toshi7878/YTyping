@@ -2,7 +2,7 @@
 import { Button, useTheme } from "@chakra-ui/react";
 
 import { useCanUploadState, useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
-import { useUpdateNewMapBackUp } from "@/app/edit/hooks/useUpdateNewMapBackUp";
+import { useUpdateNewMapBackUp } from "@/app/edit/hooks/utils/useUpdateNewMapBackUp";
 import { useInitializeEditorCreateBak } from "@/lib/db";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { ThemeColors, UploadResult } from "@/types";

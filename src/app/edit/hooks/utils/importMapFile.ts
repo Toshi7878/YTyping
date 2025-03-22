@@ -1,6 +1,6 @@
 import { useMapReducer } from "@/app/edit/atoms/mapReducerAtom";
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
-import { useWordConverter } from "@/app/edit/hooks/useWordConverter";
+import { useWordConverter } from "@/app/edit/hooks/utils/useWordConverter";
 import { MapLine } from "@/types/map";
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
