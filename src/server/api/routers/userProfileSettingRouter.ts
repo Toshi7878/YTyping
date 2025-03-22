@@ -1,3 +1,4 @@
+import { auth } from "@/server/auth";
 import { nameSchema as userNameSchema } from "@/validator/schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -6,7 +7,8 @@ import { protectedProcedure } from "../trpc";
 export const userProfileSettingRouter = {
   updateName: protectedProcedure.input(userNameSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    const email_hash = user.email_hash;
+    const session = await auth();
+    const email_hash = session?.user.email_hash;
 
     if (!email_hash) {
       throw new TRPCError({
