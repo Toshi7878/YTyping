@@ -5,7 +5,6 @@ export const useMapQuery = ({ mapId }: { mapId: string }) => {
     { mapId },
     {
       enabled: !!mapId,
-      gcTime: 0,
     }
   );
 
