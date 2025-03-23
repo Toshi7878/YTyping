@@ -45,6 +45,7 @@ export const UpdateNameForm = ({
     formState: { errors, isDirty },
     handleSubmit,
     watch,
+    reset,
   } = useForm({
     mode: "onChange",
 
@@ -64,6 +65,9 @@ export const UpdateNameForm = ({
         await update({ ...session?.user, name: data.newName });
         const { title, message } = result;
         toast({ type: "success", title, message });
+
+        reset({ newName: data.newName });
+
         if (isHomeRedirect) {
           router.push("/");
         }
