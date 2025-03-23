@@ -1,12 +1,5 @@
-import { usePlayer } from "@/app/edit/atoms/refAtoms";
-import {
-  useLineReducer,
-  useLineStateRef,
-  useManyPhraseState,
-  useSetManyPhraseState,
-} from "@/app/edit/atoms/stateAtoms";
+import { useLineStateRef, useManyPhraseState, useSetManyPhraseState } from "@/app/edit/atoms/stateAtoms";
 import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
-import { useWordConverter } from "@/app/edit/hooks/utils/useWordConverter";
 import { ThemeColors } from "@/types";
 import { Box, Textarea, useTheme } from "@chakra-ui/react";
 
@@ -16,10 +9,7 @@ const ManyPhraseTextarea = () => {
 
   const setManyPhrase = useSetManyPhraseState();
   const pickupTopPhrase = usePickupTopPhrase();
-  const wordConverter = useWordConverter();
   const readSelectLine = useLineStateRef();
-  const lineDispatch = useLineReducer();
-  const { readPlayer } = usePlayer();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { lyrics } = readSelectLine();

@@ -13,7 +13,7 @@ import { MapLine } from "@/types/map";
 import { useSearchParams } from "next/navigation";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
-import { usePlayer, useTimeInput } from "../atoms/refAtoms";
+import { useEditUtilsRef, usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useTimeOffsetStateRef } from "../atoms/storageAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
@@ -43,6 +43,7 @@ export const useLineAddButtonEvent = () => {
   const historyDispatch = useHistoryReducer();
   const lineDispatch = useLineReducer();
   const timeValidate = useTimeValidate();
+  const { writeEditUtils } = useEditUtilsRef();
 
   return (isShiftKey: boolean) => {
     const { playing } = readYtPlayerStatus();
@@ -67,6 +68,9 @@ export const useLineAddButtonEvent = () => {
 
     //フォーカスを外さないと追加ボタンクリック時にテーブルがスクロールされない
     (document.activeElement as HTMLElement)?.blur();
+    writeEditUtils({
+      tableScrollIndex: lineIndex,
+    });
 
     if (isShiftKey) {
       return;
@@ -100,6 +104,7 @@ export const useLineUpdateButtonEvent = () => {
   const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
   const readMap = useMapStateRef();
+  const { writeEditUtils } = useEditUtilsRef();
 
   const timeValidate = useTimeValidate();
   return () => {
@@ -142,6 +147,9 @@ export const useLineUpdateButtonEvent = () => {
       updateNewMapBackUp(newVideoId);
     }
 
+    writeEditUtils({
+      tableScrollIndex: selectLineIndex,
+    });
     mapDispatch({ type: "update", payload: updatedLine, index: selectLineIndex });
     lineDispatch({ type: "reset" });
     setDirectEdit(null);

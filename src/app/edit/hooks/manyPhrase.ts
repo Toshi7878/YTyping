@@ -27,6 +27,12 @@ export const useDeleteAddingTopPhrase = () => {
       const newText = lines.slice(1).join("\n");
 
       setManyPhrase(newText);
+      setTimeout(() => {
+        const textarea = document.getElementById("many_phrase_textarea");
+        if (textarea) {
+          textarea.scrollTop = 0;
+        }
+      });
     }
   };
 };
