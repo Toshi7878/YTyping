@@ -65,7 +65,7 @@ const SortOptions = () => {
 
     if (currentDirection === null) {
       if (field === "ID") {
-        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
+        params.delete(PARAM_NAME.sort);
       } else if (field === "ランダム") {
         params.set(PARAM_NAME.sort, "random");
       } else {
@@ -76,7 +76,7 @@ const SortOptions = () => {
       params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_asc`);
       setSortDirections({ ...getResetDirections(), [field]: "asc" });
     } else {
-      params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
+      params.delete(PARAM_NAME.sort);
       setSortDirections({ ...getResetDirections(), ID: "desc" });
     }
 
