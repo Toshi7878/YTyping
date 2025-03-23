@@ -57,19 +57,19 @@ export const useEditUtilsRef = () => {
   return { readEditUtils, writeEditUtils };
 };
 
-export const timeInputRef = atom<HTMLInputElement | null>(null);
+export const timeInputRefAtom = atom<HTMLInputElement | null>(null);
 
 export const useTimeInput = () => {
   const readTime = useAtomCallback(
     useCallback((get) => {
-      const input = get(timeInputRef) as HTMLInputElement;
+      const input = get(timeInputRefAtom) as HTMLInputElement;
       return input.value;
     }, []),
     { store }
   );
   const setTime = useAtomCallback(
     useCallback((get, set, newValue: number | string | null) => {
-      const timeInput = get(timeInputRef) as HTMLInputElement;
+      const timeInput = get(timeInputRefAtom) as HTMLInputElement;
 
       timeInput.value = newValue === null ? "" : String(newValue);
     }, []),
@@ -78,7 +78,7 @@ export const useTimeInput = () => {
 
   const writeTimeInput = useAtomCallback(
     useCallback((get, set, timeInput: HTMLInputElement) => {
-      set(timeInputRef, timeInput);
+      set(timeInputRefAtom, timeInput);
     }, []),
     { store }
   );

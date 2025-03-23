@@ -1,6 +1,6 @@
 import { romaConvert } from "../../../../lib/instanceMapData";
-import { usePlaySpeedStateRef } from "../../atoms/reducerAtoms";
 import { useLineStatusRef, useStatusRef } from "../../atoms/refAtoms";
+import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
   useLineWordStateRef,
   useMapStateRef,

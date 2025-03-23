@@ -9,9 +9,7 @@ import PlayingCenter from "./playing-child/PlayingCenter";
 
 import { useGameUtilsRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
-import { useStartTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useStartTimer";
-import { usePlayTimer } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
-import { typeTicker } from "@/app/type/ts/const/consts";
+import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { RESET } from "jotai/utils";
 import { useSession } from "next-auth/react";
 
@@ -20,12 +18,11 @@ const Playing = () => {
   const setLineWord = useSetLineWordState();
   const setLyrics = useSetLyricsState();
   const setNextLyrics = useSetNextLyricsState();
-  const startTimer = useStartTimer();
-  const playTimer = usePlayTimer();
   const handleKeydown = useHandleKeydown();
   const { readUserStats, resetUserStats } = useUserStatsRef();
   const { readGameUtils } = useGameUtilsRef();
   const scene = useSceneState();
+  const { setFrameRate } = useTimerControls();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -69,23 +66,14 @@ const Playing = () => {
 
     if (scene === "replay") {
       // リプレイモードは制限なし
-      typeTicker.maxFPS = 0;
-      typeTicker.minFPS = 0;
+      setFrameRate(0);
     } else {
-      typeTicker.maxFPS = 59.99;
-      typeTicker.minFPS = 59.99;
+      setFrameRate(59.99);
     }
-    typeTicker.add(playTimer);
 
-    startTimer();
     window.addEventListener("keydown", handleKeydown);
 
     return () => {
-      if (typeTicker.started) {
-        typeTicker.remove(playTimer);
-        typeTicker.stop();
-      }
-
       window.removeEventListener("keydown", handleKeydown);
       setLineWord(RESET);
       setLyrics("");

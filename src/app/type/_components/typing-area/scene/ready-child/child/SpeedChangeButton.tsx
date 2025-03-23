@@ -1,4 +1,4 @@
-import { usePlaySpeedReducer } from "@/app/type/atoms/reducerAtoms";
+import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import { Box, Button, Text } from "@chakra-ui/react";
 
 interface SpeedCHangeButtonProps {

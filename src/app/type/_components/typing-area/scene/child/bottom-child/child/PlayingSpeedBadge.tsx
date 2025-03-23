@@ -1,4 +1,4 @@
-import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
+import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";

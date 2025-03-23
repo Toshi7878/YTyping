@@ -1,5 +1,5 @@
-import { usePlaySpeedStateRef } from "../../atoms/reducerAtoms";
 import { usePlayer, useResultCards, useStatusRef } from "../../atoms/refAtoms";
+import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
   useLineSelectIndexStateRef,
   useMapStateRef,
@@ -7,9 +7,8 @@ import {
   useSetLineSelectIndexState,
   useSetNotifyState,
 } from "../../atoms/stateAtoms";
-import { typeTicker } from "../../ts/const/consts";
 import { useGetSeekLineCount } from "./timer-hooks/useSeekGetLineCount";
-import { useUpdateLine } from "./timer-hooks/useTimer";
+import { useTimerControls, useUpdateLine } from "./timer-hooks/useTimer";
 
 export const useMoveLine = () => {
   const { readPlayer } = usePlayer();
@@ -24,6 +23,7 @@ export const useMoveLine = () => {
   const readPlaySpeed = usePlaySpeedStateRef();
   const readLineSelectIndex = useLineSelectIndexStateRef();
   const readMap = useMapStateRef();
+  const { pauseTimer } = useTimerControls();
 
   const movePrevLine = () => {
     const map = readMap();
@@ -42,9 +42,7 @@ export const useMoveLine = () => {
     const prevTime = Number(map.mapData[prevCount]["time"]) - seekBuffer;
     const newLineSelectIndex = map.typingLineNumbers.indexOf(prevCount) + 1;
     setLineSelectIndex(newLineSelectIndex);
-    if (typeTicker.started) {
-      typeTicker.stop();
-    }
+    pauseTimer();
 
     const newCount = getSeekLineCount(prevTime);
     writeStatus({ count: newCount });
@@ -81,9 +79,7 @@ export const useMoveLine = () => {
     const newLineSelectIndex = map.typingLineNumbers.indexOf(nextCount) + 1;
 
     setLineSelectIndex(newLineSelectIndex);
-    if (typeTicker.started) {
-      typeTicker.stop();
-    }
+    pauseTimer();
 
     const newCount = getSeekLineCount(nextTime);
     writeStatus({ count: newCount });
@@ -111,7 +107,7 @@ export const useMoveLine = () => {
     const newCount = getSeekLineCount(seekTime);
     writeStatus({ count: newCount });
     updateLine(newCount);
-    typeTicker.stop();
+    pauseTimer();
   };
 
   const drawerSelectColorChange = (newLineSelectIndex: number) => {

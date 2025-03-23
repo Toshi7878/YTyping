@@ -5,7 +5,7 @@ import { atomWithReducer, atomWithReset, RESET, useAtomCallback } from "jotai/ut
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
 import { TabIndex, TagsReducerAction, YTSpeedReducerActionType } from "../ts/type";
-import { playerRefAtom, timeInputRef } from "./refAtoms";
+import { playerRefAtom, timeInputRefAtom } from "./refAtoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
 
@@ -18,7 +18,7 @@ const editUtilsAtom = atomWithReset({
   cssTextLength: 0,
   isWordConverting: false,
   isLrcConverting: false,
-  isTimeInputValid: false,
+  isTimeInputValid: true,
   isUpdateUpdatedAt: false,
   canUpload: false,
 });
@@ -226,7 +226,7 @@ interface ResetLineAction {
 }
 
 const writeLineAtom = atom(null, (get, set, action: WriteLineSetAction | ResetLineAction) => {
-  const timeInput = get(timeInputRef) as HTMLInputElement;
+  const timeInput = get(timeInputRefAtom) as HTMLInputElement;
 
   if (action.type === "set" && "line" in action) {
     const { time, ...lineAtomData } = action.line;

@@ -1,5 +1,5 @@
-import { usePlaySpeedStateRef } from "@/app/type/atoms/reducerAtoms";
 import { useLineStatusRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
+import { usePlaySpeedStateRef } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useComboStateRef,
   useLineResultsStateRef,

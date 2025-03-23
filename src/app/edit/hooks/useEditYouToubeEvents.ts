@@ -1,6 +1,5 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YouTubeEvent, YTPlayer } from "@/types/global-types";
-import { editTicker } from "../_components/youtube/EditYouTubePlayer";
 import { useEditUtilsRef, usePlayer } from "../atoms/refAtoms";
 import {
   useSetIsYTPlayingState,
@@ -8,6 +7,7 @@ import {
   useSetIsYTStartedState,
   useSetTabIndexState,
 } from "../atoms/stateAtoms";
+import { useTimerControls } from "./useTimer";
 import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 import { useGetSeekCount } from "./utils/useGetSeekCount";
 
@@ -31,11 +31,12 @@ export const useYTPlayEvent = () => {
   const setTabIndex = useSetTabIndexState();
 
   const { readEditUtils, writeEditUtils } = useEditUtilsRef();
+  const { startTimer } = useTimerControls();
 
   return () => {
     console.log("再生 1");
 
-    editTicker.start();
+    startTimer();
     setIsYTPlaying(true);
     setIsYTStarted(true);
 
@@ -51,19 +52,22 @@ export const useYTPlayEvent = () => {
 export const useYTPauseEvent = () => {
   const setIsYTPlaying = useSetIsYTPlayingState();
 
+  const { pauseTimer } = useTimerControls();
+
   return () => {
     console.log("一時停止");
-    editTicker.stop();
+    pauseTimer();
     setIsYTPlaying(false);
   };
 };
 
 export const useYTEndStopEvent = () => {
   const setIsYTPlaying = useSetIsYTPlayingState();
+  const { pauseTimer } = useTimerControls();
 
   return () => {
     console.log("プレイ終了 動画完全停止");
-    editTicker.stop();
+    pauseTimer();
     setIsYTPlaying(false);
   };
 };

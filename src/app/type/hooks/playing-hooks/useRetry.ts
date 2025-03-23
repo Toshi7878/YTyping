@@ -14,8 +14,8 @@ import {
   useSetTypingStatusState,
   useTypingStatusStateRef,
 } from "../../atoms/stateAtoms";
-import { typeTicker } from "../../ts/const/consts";
 import { PlayMode } from "../../ts/type";
+import { useTimerControls } from "./timer-hooks/useTimer";
 import { useUpdateUserStats } from "./useUpdateUserStats";
 
 export const useRetry = () => {
@@ -35,6 +35,7 @@ export const useRetry = () => {
   const readScene = useSceneStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readMap = useMapStateRef();
+  const { pauseTimer } = useTimerControls();
 
   return (newPlayMode: PlayMode) => {
     const map = readMap();
@@ -72,9 +73,7 @@ export const useRetry = () => {
 
     readPlayer().seekTo(0, true);
 
-    if (typeTicker.started) {
-      typeTicker.stop();
-    }
+    pauseTimer();
   };
 };
 

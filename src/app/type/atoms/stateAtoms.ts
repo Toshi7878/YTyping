@@ -149,7 +149,7 @@ const lyricsAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lyrics"));
 const currentTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("currentTime"));
 const lineRemainTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineRemainTime"));
 const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm"));
-const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
+export const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
 
 export const useLyricsState = () => useAtomValue(lyricsAtom, { store });
 export const useSetLyricsState = () => useSetAtom(lyricsAtom, { store });

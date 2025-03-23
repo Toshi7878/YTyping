@@ -1,5 +1,5 @@
-import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";

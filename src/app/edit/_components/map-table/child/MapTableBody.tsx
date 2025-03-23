@@ -1,17 +1,12 @@
 "use client";
 import { useMapState } from "@/app/edit/atoms/mapReducerAtom";
-import {
-  useIsYTPlayingState,
-  useSetCssLengthState,
-  useSetIsTimeInputValidState,
-} from "@/app/edit/atoms/stateAtoms";
+import { useSetCssLengthState } from "@/app/edit/atoms/stateAtoms";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useKeyDown";
 import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
 import { ThemeColors } from "@/types";
 import { MapLineEdit } from "@/types/map";
 import { useDisclosure, useTheme } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
-import { editTicker } from "../../youtube/EditYouTubePlayer";
 import LineRow from "./child/LineRow";
 import LineOptionModal from "./LineOptionModal";
 
@@ -20,27 +15,11 @@ function MapTableBody() {
 
   const [optionModalIndex, setOptionModalIndex] = useState<number | null>(null);
   const [lineOptions, setLineOptions] = useState<MapLineEdit["options"] | null>(null);
-  const isYTPlaying = useIsYTPlayingState();
   const optionClosure = useDisclosure();
 
   const setCustomStyleLength = useSetCssLengthState();
   const windowKeydownEvent = useWindowKeydownEvent();
-  const setEditIsTimeInputValid = useSetIsTimeInputValidState();
   const map = useMapState();
-
-  useEffect(() => {
-    if (isYTPlaying && !editTicker.started) {
-      editTicker.start();
-      setEditIsTimeInputValid(false);
-    }
-
-    return () => {
-      if (editTicker.started) {
-        editTicker.stop();
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isYTPlaying]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => windowKeydownEvent(event, optionModalIndex);

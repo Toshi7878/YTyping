@@ -1,5 +1,5 @@
-import { usePlaySpeedReducer } from "@/app/type/atoms/reducerAtoms";
 import { useGameUtilsRef, useStatusRef } from "@/app/type/atoms/refAtoms";
+import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useComboStateRef,
   useLineResultsStateRef,

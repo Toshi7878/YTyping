@@ -1,5 +1,5 @@
-import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
 import { useYTStatusRef } from "@/app/type/atoms/refAtoms";
+import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useMapState } from "@/app/type/atoms/stateAtoms";
 import { formatTime } from "@/app/type/ts/scene-ts/playing/formatTime";
 import { CreateMap } from "@/lib/instanceMapData";

@@ -1,6 +1,6 @@
 import { YouTubeSpeed } from "@/types";
-import { usePlaySpeedReducer } from "../../atoms/reducerAtoms";
 import { useGameUtilsRef, useLineStatusRef } from "../../atoms/refAtoms";
+import { usePlaySpeedReducer } from "../../atoms/speedReducerAtoms";
 import { useSceneStateRef, useSetNotifyState, useSetSceneState } from "../../atoms/stateAtoms";
 import { useRetry } from "./useRetry";
 

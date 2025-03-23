@@ -11,18 +11,17 @@ import {
   useSetTabIndexState,
 } from "../atoms/stateAtoms";
 import { useReadyInputModeStateRef } from "../atoms/storageAtoms";
-import { typeTicker } from "../ts/const/consts";
 import { InputMode } from "../ts/type";
-import { useStartTimer } from "./playing-hooks/timer-hooks/useStartTimer";
+import { useTimerControls } from "./playing-hooks/timer-hooks/useTimer";
 import { useUpdateUserStats } from "./playing-hooks/useUpdateUserStats";
 
 export const useYTPlayEvent = () => {
   const setScene = useSetSceneState();
   const setNotify = useSetNotifyState();
-  const startTimer = useStartTimer();
   const setPlayingInputMode = useSetPlayingInputModeState();
   const { updatePlayCountStats } = useUpdateUserStats();
   const setTabIndex = useSetTabIndexState();
+  const { startTimer } = useTimerControls();
 
   const { readPlayer } = usePlayer();
   const { readGameUtils } = useGameUtilsRef();
@@ -88,6 +87,7 @@ export const useYTEndEvent = () => {
 export const useYTStopEvent = () => {
   const setScene = useSetSceneState();
   const { readLineProgress, readTotalProgress } = useProgress();
+  const { pauseTimer } = useTimerControls();
 
   return () => {
     console.log("動画停止");
@@ -99,22 +99,19 @@ export const useYTStopEvent = () => {
     totalProgress.value = totalProgress.max;
     setScene("end");
 
-    if (typeTicker.started) {
-      typeTicker.stop();
-    }
+    pauseTimer();
   };
 };
 
 export const useYTPauseEvent = () => {
   const setNotify = useSetNotifyState();
   const { readYTStatus, writeYTStatus } = useYTStatusRef();
+  const { pauseTimer } = useTimerControls();
 
   return () => {
     console.log("一時停止");
 
-    if (typeTicker.started) {
-      typeTicker.stop();
-    }
+    pauseTimer();
 
     const isPaused = readYTStatus().isPaused;
     if (!isPaused) {

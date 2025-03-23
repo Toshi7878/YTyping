@@ -1,6 +1,6 @@
 import { RESET } from "jotai/utils";
-import { usePlaySpeedReducer } from "./reducerAtoms";
 import { useGameUtilsRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "./refAtoms";
+import { usePlaySpeedReducer } from "./speedReducerAtoms";
 import {
   useSetGameUtilsState,
   useSetLineResultsState,

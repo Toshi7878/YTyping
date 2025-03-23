@@ -1,5 +1,5 @@
 "use client";
-import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
+import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/type/ts/type";
 import { CHAR_POINT } from "@/lib/instanceMapData";

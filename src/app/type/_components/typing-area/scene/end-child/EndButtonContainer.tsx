@@ -1,5 +1,5 @@
-import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useTypingStatusState } from "@/app/type/atoms/stateAtoms";
 import { HStack } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";

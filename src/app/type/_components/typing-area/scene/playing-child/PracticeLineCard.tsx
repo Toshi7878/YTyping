@@ -1,4 +1,4 @@
-import { usePlaySpeedState } from "@/app/type/atoms/reducerAtoms";
+import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useLineResultsState,
   useLineSelectIndexState,

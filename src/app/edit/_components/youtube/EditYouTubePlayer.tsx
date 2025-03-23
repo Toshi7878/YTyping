@@ -1,8 +1,7 @@
 "use client";
 
 import { Box } from "@chakra-ui/react";
-import { Ticker } from "@pixi/ticker";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import YouTube from "react-youtube";
 import { useVideoIdState } from "../../atoms/stateAtoms";
 import {
@@ -11,13 +10,11 @@ import {
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
-} from "../../hooks/useEditYTEvents";
-import { useTimer } from "../../hooks/useTimer";
+} from "../../hooks/useEditYouToubeEvents";
 
 interface EditorYouTubeProps {
   className: string;
 }
-export const editTicker = new Ticker();
 
 const EditYouTube = function ({ className }: EditorYouTubeProps) {
   const videoId = useVideoIdState();
@@ -26,7 +23,6 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
   const onPause = useYTPauseEvent();
   const onEndStop = useYTEndStopEvent();
   const onSeek = useYTSeekEvent();
-  const editTimer = useTimer();
 
   const handleStateChange = useCallback(
     (event) => {
@@ -48,15 +44,6 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
-
-  useEffect(() => {
-    editTicker.add(editTimer);
-    return () => {
-      editTicker.stop();
-      editTicker.remove(editTimer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Box>

@@ -1,11 +1,43 @@
 import { ThemeColors } from "@/types";
 import { useTheme } from "@chakra-ui/react";
+import { Ticker } from "pixi.js";
+import { useEffect } from "react";
 import { useMapStateRef } from "../atoms/mapReducerAtom";
 import { usePlayer, useTimeInput, useTimeRange } from "../atoms/refAtoms";
-import { useEditUtilsStateRef } from "../atoms/stateAtoms";
+import { useEditUtilsStateRef, useSetIsTimeInputValidState } from "../atoms/stateAtoms";
 import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 
-export const useTimer = () => {
+const editTicker = new Ticker();
+export const useTimerControls = () => {
+  const setIsTimeInputValid = useSetIsTimeInputValidState();
+  const editTimer = useTimer();
+
+  useEffect(() => {
+    editTicker.add(editTimer);
+
+    return () => {
+      editTicker.stop();
+      editTicker.remove(editTimer);
+    };
+  }, [editTicker]);
+
+  const startTimer = () => {
+    if (!editTicker.started) {
+      editTicker.start();
+      setIsTimeInputValid(false);
+    }
+  };
+
+  const pauseTimer = () => {
+    if (editTicker.started) {
+      editTicker.stop();
+    }
+  };
+
+  return { startTimer, pauseTimer };
+};
+
+const useTimer = () => {
   const theme: ThemeColors = useTheme();
 
   const updateCurrentLine = useUpdateCurrentTimeLine();

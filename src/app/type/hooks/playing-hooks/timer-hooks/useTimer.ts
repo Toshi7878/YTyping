@@ -1,4 +1,3 @@
-import { usePlaySpeedStateRef } from "@/app/type/atoms/reducerAtoms";
 import {
   useGameUtilsRef,
   useLineStatusRef,
@@ -8,6 +7,7 @@ import {
   useUserStatsRef,
   useYTStatusRef,
 } from "@/app/type/atoms/refAtoms";
+import { usePlaySpeedStateRef } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useComboStateRef,
   useCurrentTimeStateRef,
@@ -30,7 +30,8 @@ import {
   useUserTypingOptionsStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
-import { typeTicker } from "@/app/type/ts/const/consts";
+import { Ticker } from "pixi.js";
+import { useEffect } from "react";
 import { MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { LineData } from "../../../ts/type";
 import { useCalcTypeSpeed } from "../../calcTypeSpeed";
@@ -39,7 +40,39 @@ import { useOutPutLineResult } from "../useOutPutLineResult";
 import { useLineReplayUpdate, useReplay, useUpdateAllStatus } from "./replayHooks";
 import { useGetSeekLineCount } from "./useSeekGetLineCount";
 
-export const usePlayTimer = () => {
+const typeTicker = new Ticker();
+export const useTimerControls = () => {
+  const playTimer = useTimer();
+  useEffect(() => {
+    typeTicker.add(playTimer);
+
+    return () => {
+      typeTicker.stop();
+      typeTicker.remove(playTimer);
+    };
+  }, [typeTicker]);
+
+  const startTimer = () => {
+    if (!typeTicker.started) {
+      typeTicker.start();
+    }
+  };
+
+  const pauseTimer = () => {
+    if (typeTicker.started) {
+      typeTicker.stop();
+    }
+  };
+
+  const setFrameRate = (rate: number) => {
+    typeTicker.maxFPS = 59.99;
+    typeTicker.minFPS = 59.99;
+  };
+
+  return { startTimer, pauseTimer, setFrameRate };
+};
+
+const useTimer = () => {
   const { readPlayer } = usePlayer();
 
   const setCurrentTime = useSetCurrentTimeState();
@@ -70,6 +103,7 @@ export const usePlayTimer = () => {
   const readPlaySpeed = usePlaySpeedStateRef();
   const readScene = useSceneStateRef();
   const readMap = useMapStateRef();
+  const { pauseTimer } = useTimerControls();
 
   const update = ({
     count,
@@ -88,9 +122,9 @@ export const usePlayTimer = () => {
 
     const currentLine = map.mapData[count - 1];
     const movieDuration = readYTStatus().movieDuration;
-    if (currentLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
+    if (currentLine["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
       readPlayer().stopVideo();
-      typeTicker.stop();
+      pauseTimer();
 
       return;
     } else if (nextLine) {

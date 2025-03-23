@@ -101,6 +101,7 @@ export const useUserStatsRef = () => {
     useCallback((get) => get(userStatsRefAtom), []),
     { store }
   );
+
   const writeUserStats = useAtomCallback(
     useCallback((get, set, newUserStats: Partial<ExtractAtomValue<typeof userStatsRefAtom>>) => {
       set(userStatsRefAtom, (prev) => {
