@@ -1,26 +1,16 @@
 import { usePlayer } from "../atoms/refAtoms";
-import {
-  useEditUtilsStateRef,
-  useLineReducer,
-  useSetLyricsState,
-  useSetManyPhraseState,
-  useSetWordState,
-} from "../atoms/stateAtoms";
+import { useEditUtilsStateRef, useLineReducer, useSetManyPhraseState } from "../atoms/stateAtoms";
 import { useWordConverter } from "./utils/useWordConverter";
 
 export const usePickupTopPhrase = () => {
   const lineDispatch = useLineReducer();
-  const setLyrics = useSetLyricsState();
-  const setWord = useSetWordState();
   const { readPlayer } = usePlayer();
 
   const wordConvert = useWordConverter();
   return async (topPhrase: string) => {
     const word = await wordConvert(topPhrase);
     const time = readPlayer().getCurrentTime();
-    lineDispatch({ type: "set", line: { lyrics: topPhrase, word, selectIndex: null, time } });
-    setLyrics(topPhrase);
-    setWord(word);
+    lineDispatch({ type: "set", line: { lyrics: topPhrase.trim(), word, selectIndex: null, time } });
   };
 };
 
@@ -33,7 +23,7 @@ export const useDeleteAddingTopPhrase = () => {
 
     const firstLine = lines[0];
 
-    if (lyrics === firstLine) {
+    if (lyrics === firstLine.trim()) {
       const newText = lines.slice(1).join("\n");
 
       setManyPhrase(newText);

@@ -44,13 +44,8 @@ const ManyPhraseTextarea = () => {
     const lines = pasteManyPhrase.split(/\r\n|\n/) || [];
 
     const topPhrase = lines[0];
-    const word = await wordConverter(topPhrase);
-    const time = readPlayer().getCurrentTime();
 
-    lineDispatch({
-      type: "set",
-      line: { lyrics: topPhrase, word, selectIndex: null, time: time.toString() },
-    });
+    pickupTopPhrase(topPhrase);
   };
 
   return (
