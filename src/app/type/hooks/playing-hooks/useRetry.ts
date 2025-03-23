@@ -1,5 +1,5 @@
 import { RESET } from "jotai/utils";
-import { useGameUtilsRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
+import { useCountRef, useGameUtilsRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
 import {
   useMapStateRef,
   useSceneStateRef,
@@ -35,8 +35,9 @@ export const useRetry = () => {
   const readScene = useSceneStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readMap = useMapStateRef();
-  const { pauseTimer } = useTimerControls();
+  const { writeCount } = useCountRef();
 
+  const { pauseTimer } = useTimerControls();
   return (newPlayMode: PlayMode) => {
     const map = readMap();
     setLineWord(RESET);
@@ -63,9 +64,11 @@ export const useRetry = () => {
     if (scene != "practice") {
       resetTypingStatus();
       setCombo(0);
+      resetStatus();
     }
 
-    resetStatus();
+    writeCount(0);
+
     const enableRetrySKip = map.mapData[map.startLine].time > 5;
 
     writeGameUtils({
@@ -92,6 +95,7 @@ export const useProceedRetry = () => {
   const { readPlayer } = usePlayer();
   const { writeGameUtils } = useGameUtilsRef();
   const { resetStatus } = useStatusRef();
+  const { writeCount } = useCountRef();
   const readMap = useMapStateRef();
 
   return (playMode: PlayMode) => {
@@ -113,6 +117,7 @@ export const useProceedRetry = () => {
       resetStatus();
     }
 
+    writeCount(0);
     const enableRetrySKip = map.mapData[map.startLine].time > 5;
 
     writeGameUtils({

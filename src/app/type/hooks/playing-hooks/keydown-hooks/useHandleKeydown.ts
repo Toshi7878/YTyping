@@ -1,4 +1,4 @@
-import { useGameUtilsRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
+import { useCountRef, useGameUtilsRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useLineSelectIndexStateRef,
@@ -32,13 +32,14 @@ export const useHandleKeydown = () => {
   const { readStatus } = useStatusRef();
   const readLineWord = useLineWordStateRef();
   const readScene = useSceneStateRef();
+  const { readCount } = useCountRef();
 
   return (event: KeyboardEvent) => {
     const isPaused = readYTStatus().isPaused;
     const scene = readScene();
 
     if (!isPaused || scene === "practice") {
-      const count = readStatus().count;
+      const count = readCount();
       const currentLineCount = count - 1;
 
       //ライン切り変えバグ回避(切り替わるギリギリでタイピングするとバグる)

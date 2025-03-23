@@ -7,8 +7,24 @@ import { InputMode, PlayMode, TypeResult } from "../ts/type";
 import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 
+const countRefAtom = atomWithReset(0);
+
+export const useCountRef = () => {
+  const readCount = useAtomCallback(
+    useCallback((get) => get(countRefAtom), []),
+    { store }
+  );
+  const writeCount = useAtomCallback(
+    useCallback((get, set, newCount: number) => {
+      set(countRefAtom, newCount);
+    }, []),
+    { store }
+  );
+
+  return { readCount, writeCount };
+};
+
 const statusRefAtom = atomWithReset({
-  count: 0,
   romaType: 0,
   kanaType: 0,
   flickType: 0,

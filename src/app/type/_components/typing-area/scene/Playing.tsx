@@ -1,26 +1,19 @@
-import {
-  useMapStateRef,
-  useSceneState,
-  useSetLineWordState,
-  useSetLyricsState,
-  useSetNextLyricsState,
-} from "@/app/type/atoms/stateAtoms";
+import { useMapStateRef, useSceneState, useSetNextLyricsState } from "@/app/type/atoms/stateAtoms";
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
-import { useGameUtilsRef, useStatusRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
+import { useCountRef, useGameUtilsRef, useStatusRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
 import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { useSession } from "next-auth/react";
 
 const Playing = () => {
   const { data: session } = useSession();
-  const setLineWord = useSetLineWordState();
-  const setLyrics = useSetLyricsState();
-  const { setNextLyrics, resetNextLyrics } = useSetNextLyricsState();
+  const { setNextLyrics } = useSetNextLyricsState();
   const handleKeydown = useHandleKeydown();
   const { readUserStats, resetUserStats } = useUserStatsRef();
   const { readGameUtils } = useGameUtilsRef();
+  const { readCount } = useCountRef();
   const { readStatus } = useStatusRef();
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
@@ -75,7 +68,7 @@ const Playing = () => {
 
     window.addEventListener("keydown", handleKeydown);
 
-    const { count } = readStatus();
+    const count = readCount();
     if (count === 0) {
       const map = readMap();
       setNextLyrics(map.mapData[1]);

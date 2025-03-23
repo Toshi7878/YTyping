@@ -1,4 +1,4 @@
-import { useGameUtilsRef, useStatusRef } from "@/app/type/atoms/refAtoms";
+import { useCountRef, useGameUtilsRef, useStatusRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useComboStateRef,
@@ -82,18 +82,19 @@ const useKeyReplay = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
 
-  const { readStatus, writeStatus } = useStatusRef();
+  const { writeStatus } = useStatusRef();
   const readLineResults = useLineResultsStateRef();
   const readCombo = useComboStateRef();
   const readLineWord = useLineWordStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
+  const { readCount } = useCountRef();
 
   return ({ constantLineTime, lineResult, typeData }: UseKeyReplayProps) => {
     const key = typeData.c;
     const isSuccess = typeData.is;
     const option = typeData.op;
-    const count = readStatus().count;
+    const count = readCount();
 
     if (key) {
       const typingKeys: TypingKeys = {
@@ -178,10 +179,10 @@ export const useReplay = () => {
   const readLineResults = useLineResultsStateRef();
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const { readStatus } = useStatusRef();
+  const { readCount } = useCountRef();
 
   return ({ constantLineTime }: { constantLineTime: number }) => {
-    const count = readStatus().count;
+    const count = readCount();
     const lineResults = readLineResults();
 
     const lineResult: LineResultData = lineResults[count - 1];

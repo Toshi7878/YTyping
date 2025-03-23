@@ -1,4 +1,5 @@
 import {
+  useCountRef,
   useGameUtilsRef,
   useLineStatusRef,
   usePlayer,
@@ -107,8 +108,9 @@ export const useTimer = () => {
   const readPlaySpeed = usePlaySpeedStateRef();
   const readScene = useSceneStateRef();
   const readMap = useMapStateRef();
-  const { pauseTimer } = useTimerControls();
+  const { readCount, writeCount } = useCountRef();
 
+  const { pauseTimer } = useTimerControls();
   const update = ({
     count,
     currentOffesettedYTTime,
@@ -131,16 +133,12 @@ export const useTimer = () => {
     } else if (nextLine) {
       const scene = readScene();
       if (scene === "playing") {
-        writeStatus({
-          count: readStatus().count + 1,
-        });
+        writeCount(readCount() + 1);
       } else {
-        writeStatus({
-          count: getSeekLineCount(currentOffesettedYTTime),
-        });
+        writeCount(getSeekLineCount(currentOffesettedYTTime));
       }
 
-      updateLine(readStatus().count);
+      updateLine(readCount());
     }
   };
 
@@ -198,7 +196,7 @@ export const useTimer = () => {
     const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
 
     const movieDuration = readYTStatus().movieDuration;
-    const count = readStatus().count;
+    const count = readCount();
     const nextLine = map.mapData[count];
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
     const isUpdateLine =

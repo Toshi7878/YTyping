@@ -1,5 +1,5 @@
 import { romaConvert } from "../../../../lib/instanceMapData";
-import { useLineStatusRef, useStatusRef } from "../../atoms/refAtoms";
+import { useCountRef, useLineStatusRef } from "../../atoms/refAtoms";
 import {
   useLineWordStateRef,
   useMapStateRef,
@@ -21,11 +21,11 @@ export const useInputModeChange = () => {
 
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
   const { readLineStatus, writeLineStatus } = useLineStatusRef();
-  const { readStatus } = useStatusRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
   const readScene = useSceneStateRef();
   const readLineWord = useLineWordStateRef();
   const readMap = useMapStateRef();
+  const { readCount, writeCount } = useCountRef();
 
   return async (newInputMode: InputMode) => {
     const map = readMap();
@@ -55,7 +55,7 @@ export const useInputModeChange = () => {
       }
     }
 
-    const count = readStatus().count;
+    const count = readCount();
     const nextLine = map.mapData[count];
 
     if (nextLine.kanaWord) {

@@ -1,7 +1,7 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { YouTubeEvent } from "react-youtube";
-import { useGameUtilsRef, usePlayer, useProgress, useStatusRef, useYTStatusRef } from "../atoms/refAtoms";
+import { useCountRef, useGameUtilsRef, usePlayer, useProgress, useYTStatusRef } from "../atoms/refAtoms";
 import {
   useIsLoadingOverlayStateRef,
   useSceneStateRef,
@@ -126,7 +126,7 @@ export const useYTPauseEvent = () => {
 export const useYTSeekEvent = () => {
   const { readPlayer } = usePlayer();
   const { readGameUtils } = useGameUtilsRef();
-  const { writeStatus } = useStatusRef();
+  const { writeCount } = useCountRef();
 
   return () => {
     const time = readPlayer().getCurrentTime();
@@ -134,7 +134,7 @@ export const useYTSeekEvent = () => {
     const { isRetrySkip } = readGameUtils();
 
     if (isRetrySkip && time === 0) {
-      writeStatus({ count: 0 });
+      writeCount(0);
     }
 
     console.log("シーク");
