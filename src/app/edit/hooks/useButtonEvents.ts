@@ -148,7 +148,7 @@ export const useLineUpdateButtonEvent = () => {
     }
 
     writeEditUtils({
-      tableScrollIndex: selectLineIndex,
+      tableScrollIndex: selectLineIndex + 1,
     });
     mapDispatch({ type: "update", payload: updatedLine, index: selectLineIndex });
     lineDispatch({ type: "reset" });
