@@ -121,13 +121,10 @@ export const useTimer = () => {
     constantLineTime: number;
     nextLine: LineData;
   }) => {
-    const map = readMap();
-
     calcLineResult({ count, constantLineTime });
 
-    const currentLine = map.mapData[count - 1];
     const movieDuration = readYTStatus().movieDuration;
-    if (currentLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
+    if (nextLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
       readPlayer().stopVideo();
       pauseTimer();
 
