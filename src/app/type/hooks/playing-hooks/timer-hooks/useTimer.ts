@@ -127,7 +127,7 @@ export const useTimer = () => {
 
     const currentLine = map.mapData[count - 1];
     const movieDuration = readYTStatus().movieDuration;
-    if (currentLine["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
+    if (currentLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
       readPlayer().stopVideo();
       pauseTimer();
 
