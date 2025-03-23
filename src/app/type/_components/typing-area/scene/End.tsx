@@ -1,4 +1,4 @@
-import { useUpdateUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
+import { useSendUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import { Stack } from "@chakra-ui/react";
 import { useEffect } from "react";
@@ -10,10 +10,10 @@ interface EndProps {
 }
 
 const End = ({ onOpen }: EndProps) => {
-  const { updateTypingStats } = useUpdateUserStats();
+  const { sendTypingStats } = useSendUserStats();
 
   useEffect(() => {
-    updateTypingStats();
+    sendTypingStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

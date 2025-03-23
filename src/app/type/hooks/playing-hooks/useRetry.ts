@@ -16,7 +16,7 @@ import {
 } from "../../atoms/stateAtoms";
 import { PlayMode } from "../../ts/type";
 import { useTimerControls } from "./timer-hooks/useTimer";
-import { useUpdateUserStats } from "./useUpdateUserStats";
+import { useSendUserStats } from "./useUpdateUserStats";
 
 export const useRetry = () => {
   const { readPlayer } = usePlayer();
@@ -30,7 +30,7 @@ export const useRetry = () => {
   const setLineWord = useSetLineWordState();
 
   const { resetTypingStatus } = useSetTypingStatusState();
-  const { updatePlayCountStats, updateTypingStats } = useUpdateUserStats();
+  const { updatePlayCountStats, sendTypingStats } = useSendUserStats();
   const { resetStatus } = useStatusRef();
   const readScene = useSceneStateRef();
   const readTypingStatus = useTypingStatusStateRef();
@@ -55,14 +55,17 @@ export const useRetry = () => {
         }
       }
 
-      updateTypingStats();
+      sendTypingStats();
       setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
-      resetStatus();
+    }
+
+    if (scene != "practice") {
       resetTypingStatus();
       setCombo(0);
     }
 
+    resetStatus();
     const enableRetrySKip = map.mapData[map.startLine].time > 5;
 
     writeGameUtils({
@@ -84,7 +87,7 @@ export const useProceedRetry = () => {
   const setLineResults = useSetLineResultsState();
   const setScene = useSetSceneState();
   const { resetTypingStatus } = useSetTypingStatusState();
-  const { updatePlayCountStats } = useUpdateUserStats();
+  const { updatePlayCountStats } = useSendUserStats();
 
   const { readPlayer } = usePlayer();
   const { writeGameUtils } = useGameUtilsRef();

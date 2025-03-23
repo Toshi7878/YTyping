@@ -13,13 +13,13 @@ import {
 import { useReadyInputModeStateRef } from "../atoms/storageAtoms";
 import { InputMode } from "../ts/type";
 import { useTimerControls } from "./playing-hooks/timer-hooks/useTimer";
-import { useUpdateUserStats } from "./playing-hooks/useUpdateUserStats";
+import { useSendUserStats } from "./playing-hooks/useUpdateUserStats";
 
 export const useYTPlayEvent = () => {
   const setScene = useSetSceneState();
   const setNotify = useSetNotifyState();
   const setPlayingInputMode = useSetPlayingInputModeState();
-  const { updatePlayCountStats } = useUpdateUserStats();
+  const { updatePlayCountStats } = useSendUserStats();
   const setTabIndex = useSetTabIndexState();
   const { startTimer } = useTimerControls();
 

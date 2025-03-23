@@ -2,7 +2,7 @@ import { clientApi } from "@/trpc/client-api";
 import { useParams } from "next/navigation";
 import { useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
 
-export function useUpdateUserStats() {
+export function useSendUserStats() {
   const { id: mapId } = useParams();
   const incrementTypingStats = clientApi.userStats.incrementTypingStats.useMutation();
   const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
@@ -13,7 +13,7 @@ export function useUpdateUserStats() {
   const updatePlayCountStats = () => {
     incrementPlayCountStats.mutate({ mapId: Number(mapId) });
   };
-  const updateTypingStats = () => {
+  const sendTypingStats = () => {
     const userStats = readUserStats();
     const { maxCombo } = readStatus();
 
@@ -24,5 +24,5 @@ export function useUpdateUserStats() {
     resetUserStats(maxCombo);
   };
 
-  return { updatePlayCountStats, updateTypingStats };
+  return { updatePlayCountStats, sendTypingStats };
 }
