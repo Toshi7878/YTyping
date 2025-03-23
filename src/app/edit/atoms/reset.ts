@@ -1,21 +1,34 @@
 import { RESET } from "jotai/utils";
+import { useHistoryReducer } from "./historyReducerAtom";
+import { useMapReducer } from "./mapReducerAtom";
 import {
   useLineReducer,
   useSetEditUtilsState,
-  useSetMapInfoState,
   useSetYtPlayerStatusState,
+  useSetYTSpeedState,
 } from "./stateAtoms";
 
 export const usePathChangeAtomReset = () => {
   const setEditUtils = useSetEditUtilsState();
+
+  const setYTSpeed = useSetYTSpeedState();
   const setYtPlayerStatus = useSetYtPlayerStatusState();
-  const setMapInfo = useSetMapInfoState();
+
+  const mapDispatch = useMapReducer();
   const setSelectLine = useLineReducer();
+  const historyDispatch = useHistoryReducer();
+
   return () => {
     setEditUtils(RESET);
-    setYtPlayerStatus(RESET);
-    setMapInfo(RESET);
+    setYTSpeed(1);
+    setYtPlayerStatus((prev) => ({
+      ...prev,
+      playing: false,
+      readied: false,
+      started: false,
+    }));
+    mapDispatch({ type: "reset" });
     setSelectLine({ type: "reset" });
-    // dispatch(resetUndoRedoData());
+    historyDispatch({ type: "reset" });
   };
 };

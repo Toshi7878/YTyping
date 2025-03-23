@@ -41,9 +41,12 @@ export const useOutPutLineResult = () => {
     const scene = readScene();
 
     const newStatus = { ...status };
+
     if (scene === "playing") {
+      const { kanaToRomaConvertCount } = readStatus();
+
       writeStatus({
-        kanaToRomaConvertCount: (readStatus().kanaToRomaConvertCount += newLineWord.correct.r.length),
+        kanaToRomaConvertCount: kanaToRomaConvertCount + newLineWord.correct.r.length,
       });
     }
 
@@ -51,15 +54,17 @@ export const useOutPutLineResult = () => {
 
     const isLineFailure = newLineWord.nextChar["k"];
     if (isLineFailure) {
+      const { failureCount, clearRate, completeCount } = readStatus();
+
       newStatus.kpm = totalTypeSpeed;
+      const newFailureCount = failureCount + 1;
 
       writeStatus({
-        failureCount: readStatus().failureCount + 1,
-        clearRate: readStatus().clearRate - map.keyRate * lostLength,
+        failureCount: newFailureCount,
+        clearRate: clearRate - map.keyRate * lostLength,
       });
 
-      const statusRef = readStatus();
-      newStatus.line = map.lineLength - (statusRef.completeCount + statusRef.failureCount);
+      newStatus.line = map.lineLength - (completeCount + newFailureCount);
       newStatus.lost += lostLength;
       newStatus.score += newStatus.point;
       newStatus.rank = calcCurrentRank(newStatus.score);

@@ -101,7 +101,6 @@ export const useTimer = () => {
   const { readLineProgress, readTotalProgress } = useProgress();
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
   const { readYTStatus } = useYTStatusRef();
-  const { readStatus, writeStatus } = useStatusRef();
   const readCurrentTime = useCurrentTimeStateRef();
   const readLineWord = useLineWordStateRef();
   const readTypingStatus = useTypingStatusStateRef();

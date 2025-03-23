@@ -27,16 +27,22 @@ export interface MapDeleteAction {
   index: number;
 }
 
-type MapAction = MapAddAction | MapUpdateAction | MapDeleteAction | MapReplaceAllAction;
+interface MapResetAction {
+  type: "reset";
+}
+
+type MapAction = MapAddAction | MapUpdateAction | MapDeleteAction | MapReplaceAllAction | MapResetAction;
+
+const init = [
+  {
+    time: "0",
+    lyrics: "",
+    word: "",
+  },
+];
 
 export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(
-  [
-    {
-      time: "0",
-      lyrics: "",
-      word: "",
-    },
-  ],
+  init,
   (prev: MapLine[], action: MapAction) => {
     switch (action.type) {
       case "add": {
@@ -56,6 +62,10 @@ export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(
 
       case "replaceAll": {
         return action.payload;
+      }
+
+      case "reset": {
+        return init;
       }
     }
   }

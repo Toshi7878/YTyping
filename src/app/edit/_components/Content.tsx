@@ -2,6 +2,7 @@
 import { Box, Flex, Grid } from "@chakra-ui/react";
 import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
+import { usePathChangeAtomReset } from "../atoms/reset";
 import { useIsLrcConvertingState } from "../atoms/stateAtoms";
 import { useTimerRegistration } from "../hooks/useTimer";
 import EditTable from "./map-table/EditTable";
@@ -13,11 +14,13 @@ function Content() {
   const isLrcConverting = useIsLrcConvertingState();
 
   const { addTimer, removeTimer } = useTimerRegistration();
+  const pathChangeReset = usePathChangeAtomReset();
 
   useEffect(() => {
     addTimer();
     return () => {
       removeTimer();
+      pathChangeReset();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

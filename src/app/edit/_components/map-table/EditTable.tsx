@@ -12,29 +12,22 @@ import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { useMapReducer, useMapStateRef } from "../../atoms/mapReducerAtom";
 import { usePlayer, useTbodyRef } from "../../atoms/refAtoms";
-import { usePathChangeAtomReset } from "../../atoms/reset";
-import {
-  useIsYTPlayingState,
-  useIsYTReadiedState,
-  useIsYTStartedState,
-  useSetCanUploadState,
-} from "../../atoms/stateAtoms";
+import { useIsYTReadiedState, useIsYTStartedState, useSetCanUploadState } from "../../atoms/stateAtoms";
 import MapTableBody from "./child/MapTableBody";
 
 export default function EditTable() {
   const theme: ThemeColors = useTheme();
   const tbodyRef = useRef(null);
   const { writeTbody } = useTbodyRef();
-  const { id: mapId } = useParams<{ id: string }>();
-  const { data: mapData, isLoading } = useMapQuery({ mapId });
 
   const searchParams = useSearchParams();
+  const { id: mapId } = useParams<{ id: string }>();
   const newVideoId = searchParams.get("new") || "";
+  const { data: mapData, isLoading } = useMapQuery({ mapId });
   const isBackUp = searchParams.get("backup") === "true";
   const setCanUpload = useSetCanUploadState();
-  const pathChangeReset = usePathChangeAtomReset();
+
   const mapDispatch = useMapReducer();
-  const isYTPlaying = useIsYTPlayingState();
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
   const { readPlayer } = usePlayer();
@@ -59,13 +52,6 @@ export default function EditTable() {
       setCanUpload(false);
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapId, newVideoId]);
-
-  useEffect(() => {
-    return () => {
-      pathChangeReset();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId, newVideoId]);
 

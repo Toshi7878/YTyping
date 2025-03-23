@@ -20,10 +20,10 @@ interface EditProviderProps {
 const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const store = getEditAtomStore();
   const searchParams = useSearchParams();
-  const newVideoId = searchParams.get("new") || "";
   const isBackUp = searchParams.get("backup") === "true";
   const utils = clientApi.useUtils();
   const setPreviewVideoState = useSetPreviewVideoState();
+  const newVideoId = searchParams.get("new") || "";
 
   useEffect(() => {
     setPreviewVideoState(RESET);

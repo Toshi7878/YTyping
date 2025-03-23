@@ -1,4 +1,4 @@
-import { useCountRef, usePlayer, useResultCards, useStatusRef } from "../../atoms/refAtoms";
+import { useCountRef, usePlayer, useResultCards } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
   useLineSelectIndexStateRef,
@@ -18,7 +18,6 @@ export const useMoveLine = () => {
   const getSeekLineCount = useGetSeekLineCount();
 
   const { readResultCards } = useResultCards();
-  const { readStatus, writeStatus } = useStatusRef();
   const readScene = useSceneStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readLineSelectIndex = useLineSelectIndexStateRef();

@@ -42,8 +42,7 @@ export const useTypeSuccess = () => {
       const timeBonus = Math.round(lineRemainConstantTime * 1 * 100);
       newStatus.timeBonus = timeBonus; //speed;
       newStatus.score += newStatus.point + timeBonus;
-      const completeCount = readStatus().completeCount;
-      const failureCount = readStatus().failureCount;
+      const { completeCount, failureCount } = readStatus();
 
       newStatus.line = map.lineLength - (completeCount + failureCount);
 
@@ -71,7 +70,7 @@ export const useTypeSuccess = () => {
   }) => {
     const scene = readScene();
     const lineTypingStatusRef = readLineStatus();
-    const statusRef = readStatus();
+    const { maxCombo, completeCount } = readStatus();
     if (lineTypingStatusRef.type === 0) {
       writeLineStatus({
         latency: constantLineTime,
@@ -83,7 +82,7 @@ export const useTypeSuccess = () => {
     });
 
     const newCombo = combo + 1;
-    if (newCombo > statusRef.maxCombo) {
+    if (newCombo > maxCombo) {
       writeStatus({
         maxCombo: newCombo,
       });
@@ -105,7 +104,7 @@ export const useTypeSuccess = () => {
         completedTime: constantLineTime,
       });
       writeStatus({
-        completeCount: readStatus().completeCount + 1,
+        completeCount: completeCount + 1,
       });
     }
 
