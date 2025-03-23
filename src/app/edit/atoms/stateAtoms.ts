@@ -2,11 +2,10 @@ import { Tag, YouTubeSpeed } from "@/types";
 import { atom, ExtractAtomValue, useAtomValue, useStore as useJotaiStore, useSetAtom } from "jotai";
 import { atomWithReducer, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 
-import { playerRefAtom } from "@/app/type/atoms/refAtoms";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
 import { TabIndex, TagsReducerAction, YTSpeedReducerActionType } from "../ts/type";
-import { timeInputRef } from "./refAtoms";
+import { playerRefAtom, timeInputRef } from "./refAtoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
 

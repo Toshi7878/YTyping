@@ -104,17 +104,17 @@ export const useTbodyRef = () => {
   return { readTbody, writeTbody };
 };
 
-const playerRef = atom<YTPlayer | null>(null);
+export const playerRefAtom = atom<YTPlayer | null>(null);
 
 export const usePlayer = () => {
   const readPlayer = useAtomCallback(
-    useCallback((get) => get(playerRef) as YTPlayer, []),
+    useCallback((get) => get(playerRefAtom) as YTPlayer, []),
     { store }
   );
 
   const writePlayer = useAtomCallback(
     useCallback((get, set, player: YTPlayer) => {
-      set(playerRef, player);
+      set(playerRefAtom, player);
     }, []),
     { store }
   );

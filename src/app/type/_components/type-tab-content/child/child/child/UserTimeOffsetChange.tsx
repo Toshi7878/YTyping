@@ -1,5 +1,4 @@
 "use client";
-import "@/app/edit/style/editor.scss";
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { CHANGE_TIME_OFFSET_VALUE } from "@/app/type/ts/const/consts";
