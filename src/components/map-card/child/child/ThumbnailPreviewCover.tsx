@@ -18,12 +18,12 @@ const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
   const previewYouTube = useCallback(
     () => {
       if (mapVideoId !== videoId) {
-        setPreviewVideoState({
+        setPreviewVideoState((prev) => ({
+          ...prev,
           videoId: mapVideoId,
           previewTime: mapPreviewTime,
           previewSpeed: mapPreviewSpeed.toString(),
-          player: null,
-        });
+        }));
       } else {
         setPreviewVideoState(RESET);
       }
