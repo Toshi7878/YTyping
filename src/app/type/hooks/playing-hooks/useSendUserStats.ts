@@ -10,7 +10,7 @@ export function useSendUserStats() {
   const { readUserStats, resetUserStats } = useUserStatsRef();
   const { readStatus } = useStatusRef();
 
-  const updatePlayCountStats = () => {
+  const sendPlayCountStats = () => {
     incrementPlayCountStats.mutate({ mapId: Number(mapId) });
   };
   const sendTypingStats = () => {
@@ -24,5 +24,5 @@ export function useSendUserStats() {
     resetUserStats(maxCombo);
   };
 
-  return { updatePlayCountStats, sendTypingStats };
+  return { sendPlayCountStats, sendTypingStats };
 }

@@ -1,4 +1,4 @@
-import { useSendUserStats } from "@/app/type/hooks/playing-hooks/useUpdateUserStats";
+import { useSendUserStats } from "@/app/type/hooks/playing-hooks/useSendUserStats";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import { Stack } from "@chakra-ui/react";
 import { useEffect } from "react";

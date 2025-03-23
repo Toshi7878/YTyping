@@ -16,7 +16,7 @@ import {
 } from "../../atoms/stateAtoms";
 import { PlayMode } from "../../ts/type";
 import { useTimerControls } from "./timer-hooks/useTimer";
-import { useSendUserStats } from "./useUpdateUserStats";
+import { useSendUserStats } from "./useSendUserStats";
 
 export const useRetry = () => {
   const { readPlayer } = usePlayer();
@@ -30,7 +30,7 @@ export const useRetry = () => {
   const setLineWord = useSetLineWordState();
 
   const { resetTypingStatus } = useSetTypingStatusState();
-  const { updatePlayCountStats, sendTypingStats } = useSendUserStats();
+  const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
   const { resetStatus } = useStatusRef();
   const readScene = useSceneStateRef();
   const readTypingStatus = useTypingStatusStateRef();
@@ -51,7 +51,7 @@ export const useRetry = () => {
         const retryCount = readGameUtils().retryCount;
         writeGameUtils({ retryCount: retryCount + 1 });
         if (totalTypeCount >= 10) {
-          updatePlayCountStats();
+          sendPlayCountStats();
         }
       }
 
@@ -87,7 +87,7 @@ export const useProceedRetry = () => {
   const setLineResults = useSetLineResultsState();
   const setScene = useSetSceneState();
   const { resetTypingStatus } = useSetTypingStatusState();
-  const { updatePlayCountStats } = useSendUserStats();
+  const { sendPlayCountStats } = useSendUserStats();
 
   const { readPlayer } = usePlayer();
   const { writeGameUtils } = useGameUtilsRef();
@@ -100,7 +100,7 @@ export const useProceedRetry = () => {
     setTabIndex(0);
 
     if (playMode === "playing" || playMode === "practice") {
-      updatePlayCountStats();
+      sendPlayCountStats();
     }
 
     if (playMode === "playing") {
