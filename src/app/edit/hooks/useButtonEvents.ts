@@ -114,7 +114,7 @@ export const useLineUpdateButtonEvent = () => {
     const timeOffset = word !== "" ? readTimeOffset() : 0;
     const selectLineIndex = index as number;
 
-    const _time = playing && !selectLineIndex ? readPlayer()!.getCurrentTime() + timeOffset : +readTime();
+    const _time = playing ? readPlayer()!.getCurrentTime() + timeOffset : +readTime();
     const formatedTime = timeValidate(_time).toFixed(3);
 
     const oldLine = map[selectLineIndex];
