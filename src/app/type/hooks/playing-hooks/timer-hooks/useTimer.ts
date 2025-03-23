@@ -31,7 +31,6 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
 import { Ticker } from "pixi.js";
-import { useEffect } from "react";
 import { MISS_PENALTY } from "../../../../../lib/instanceMapData";
 import { LineData } from "../../../ts/type";
 import { useCalcTypeSpeed } from "../../calcTypeSpeed";
@@ -41,17 +40,23 @@ import { useLineReplayUpdate, useReplay, useUpdateAllStatus } from "./replayHook
 import { useGetSeekLineCount } from "./useSeekGetLineCount";
 
 const typeTicker = new Ticker();
-export const useTimerControls = () => {
+
+export const useTimerRegistration = () => {
   const playTimer = useTimer();
-  useEffect(() => {
+
+  const addTimer = () => {
     typeTicker.add(playTimer);
+  };
 
-    return () => {
-      typeTicker.stop();
-      typeTicker.remove(playTimer);
-    };
-  }, [typeTicker]);
+  const removeTimer = () => {
+    typeTicker.stop();
+    typeTicker.remove(playTimer);
+  };
 
+  return { addTimer, removeTimer };
+};
+
+export const useTimerControls = () => {
   const startTimer = () => {
     if (!typeTicker.started) {
       typeTicker.start();
@@ -65,14 +70,14 @@ export const useTimerControls = () => {
   };
 
   const setFrameRate = (rate: number) => {
-    typeTicker.maxFPS = 59.99;
-    typeTicker.minFPS = 59.99;
+    typeTicker.maxFPS = rate;
+    typeTicker.minFPS = rate;
   };
 
   return { startTimer, pauseTimer, setFrameRate };
 };
 
-const useTimer = () => {
+export const useTimer = () => {
   const { readPlayer } = usePlayer();
 
   const setCurrentTime = useSetCurrentTimeState();

@@ -9,7 +9,7 @@ import PlayingCenter from "./playing-child/PlayingCenter";
 
 import { useGameUtilsRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
-import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
+import { useTimerControls, useTimerRegistration } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { RESET } from "jotai/utils";
 import { useSession } from "next-auth/react";
 
@@ -23,6 +23,7 @@ const Playing = () => {
   const { readGameUtils } = useGameUtilsRef();
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
+  const { addTimer, removeTimer } = useTimerRegistration();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -71,9 +72,12 @@ const Playing = () => {
       setFrameRate(59.99);
     }
 
+    addTimer();
+
     window.addEventListener("keydown", handleKeydown);
 
     return () => {
+      removeTimer();
       window.removeEventListener("keydown", handleKeydown);
       setLineWord(RESET);
       setLyrics("");

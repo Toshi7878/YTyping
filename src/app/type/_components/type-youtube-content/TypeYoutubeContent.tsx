@@ -33,6 +33,7 @@ const TypeYouTubeContent = function YouTubeContent({
   const ytEndEvent = useYTEndEvent();
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
+
   const handleStateChange = useCallback(
     (event: YouTubeEvent) => {
       if (

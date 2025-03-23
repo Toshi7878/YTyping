@@ -242,7 +242,7 @@ export const useSetTypingStatusLineState = () => useSetAtom(focusTypingStatusAto
 export const useSetTypingStatusRankState = () => useSetAtom(focusTypingStatusAtoms.rank, { store });
 export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
 export const useSetTypingStatusState = () => {
-  const map = useMapState() as CreateMap | null;
+  const readMap = useMapStateRef();
   const { readGameUtils } = useGameUtilsRef();
   const setTypingStatus = useSetAtom(typingStatusAtom, { store });
   const setLineCount = useSetTypingStatusLineState();
@@ -250,7 +250,7 @@ export const useSetTypingStatusState = () => {
 
   const resetTypingStatus = () => {
     setTypingStatus(RESET);
-    setLineCount(map?.lineLength || 0);
+    setLineCount(readMap()?.lineLength || 0);
 
     const { rankingScores } = readGameUtils();
     setRank(rankingScores.length + 1);
