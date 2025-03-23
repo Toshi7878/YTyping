@@ -10,6 +10,7 @@ import { userProfileSettingRouter } from "./routers/userProfileSettingRouter";
 import { userRouter } from "./routers/userRouter";
 import { userStatsRouter } from "./routers/userStatsRouter";
 import { userTypingOptionRouter } from "./routers/userTypingOptionRouter";
+import { vercelRouter } from "./routers/vercelRouter";
 import { router } from "./trpc";
 
 export const appRouter = router({
@@ -25,6 +26,7 @@ export const appRouter = router({
   activeUser: activeUserRouter,
   morphConvert: morphConvertRouter,
   gemini: geminiRouter,
+  vercel: vercelRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -1,14 +1,23 @@
 "use client";
-import { Box } from "@chakra-ui/react";
+import { ThemeColors } from "@/types";
+import { Flex, Text, useTheme } from "@chakra-ui/react";
 import ContentHeading from "./_components/Heading";
 import UpdateHistory from "./_components/UpdateHistory";
 
-const Content = () => {
+interface ContentProps {
+  buildingDate: Date | null;
+}
+
+const Content = ({ buildingDate }: ContentProps) => {
+  const theme: ThemeColors = useTheme();
   return (
-    <Box as="article">
+    <Flex flexDirection="column" as="article" gap={4}>
+      <Text fontSize="sm" color={theme.colors.text.body}>
+        最終更新: {buildingDate?.toLocaleString()}
+      </Text>
       <ContentHeading />
       <UpdateHistory />
-    </Box>
+    </Flex>
   );
 };
 
