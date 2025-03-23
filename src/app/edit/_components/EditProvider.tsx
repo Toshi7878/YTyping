@@ -5,7 +5,6 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { IndexDBOption } from "@/types";
 import { Provider as JotaiProvider } from "jotai";
-import { DevTools } from "jotai-devtools";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
@@ -110,12 +109,7 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   }
 
   useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store });
-  return (
-    <JotaiProvider store={store}>
-      <DevTools store={store} />
-      {children}
-    </JotaiProvider>
-  );
+  return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };
 
 export default EditProvider;

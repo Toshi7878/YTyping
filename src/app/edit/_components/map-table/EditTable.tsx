@@ -77,7 +77,7 @@ export default function EditTable() {
   }, []);
 
   useEffect(() => {
-    if ((isYTReady && !isYTStarted) || isYTPlaying) {
+    if ((isYTReady && !isYTStarted) || isYTStarted) {
       const duration = readPlayer().getDuration();
       const map = readMap();
 
@@ -105,7 +105,7 @@ export default function EditTable() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isYTReady, isYTPlaying, isYTStarted]);
+  }, [isYTReady, isYTStarted]);
 
   return (
     <Card bg={theme.colors.background.card} color={theme.colors.text.body} m={2}>
