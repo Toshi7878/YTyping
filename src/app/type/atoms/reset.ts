@@ -4,6 +4,8 @@ import { usePlaySpeedReducer } from "./speedReducerAtoms";
 import {
   useSetGameUtilsState,
   useSetLineResultsState,
+  useSetLineWordState,
+  useSetLyricsState,
   useSetMapState,
   useSetTypingStatusState,
 } from "./stateAtoms";
@@ -20,8 +22,12 @@ export const usePathChangeAtomReset = () => {
   const { resetStatus } = useStatusRef();
   const { writeCount } = useCountRef();
   const setMap = useSetMapState();
+  const setLyrics = useSetLyricsState();
+  const setLineWord = useSetLineWordState();
 
   return () => {
+    setLineWord(RESET);
+    setLyrics("");
     setLineResults(RESET);
     setGameUtils(RESET);
     dispatchSpeed({ type: "reset" });
