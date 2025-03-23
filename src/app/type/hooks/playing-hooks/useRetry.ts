@@ -26,7 +26,7 @@ export const useRetry = () => {
   const setCombo = useSetComboState();
   const setNotify = useSetNotifyState();
   const setLyrics = useSetLyricsState();
-  const setNextLyrics = useSetNextLyricsState();
+  const { resetNextLyrics } = useSetNextLyricsState();
   const setLineWord = useSetLineWordState();
 
   const { resetTypingStatus } = useSetTypingStatusState();
@@ -41,7 +41,7 @@ export const useRetry = () => {
     const map = readMap();
     setLineWord(RESET);
     setLyrics("");
-    setNextLyrics(RESET);
+    resetNextLyrics();
 
     const scene = readScene();
 

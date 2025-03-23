@@ -27,7 +27,6 @@ import {
   useSetNextLyricsState,
   useSetTypingStatusState,
   useTypingStatusStateRef,
-  useUserTypingOptionsStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
 import { Ticker } from "pixi.js";
@@ -395,7 +394,7 @@ export const useCalcLineResult = () => {
 
 export const useUpdateLine = () => {
   const setLyrics = useSetLyricsState();
-  const setNextLyrics = useSetNextLyricsState();
+  const { setNextLyrics, resetNextLyrics } = useSetNextLyricsState();
   const setLineWord = useSetLineWordState();
   const setDisplayLineKpm = useSetLineKpmState();
   const setChangeCSSCount = useSetChangeCSSCountState();
@@ -406,7 +405,6 @@ export const useUpdateLine = () => {
   const { readYTStatus } = useYTStatusRef();
   const { resetLineStatus, writeLineStatus } = useLineStatusRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
-  const readTypingOptions = useUserTypingOptionsStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readScene = useSceneStateRef();
   const readMap = useMapStateRef();
@@ -432,29 +430,10 @@ export const useUpdateLine = () => {
 
     setLyrics(map.mapData[currentCount]["lyrics"]);
 
-    const nextKpm =
-      (inputMode === "roma" ? map.mapData[newCount].kpm["r"] : map.mapData[newCount].kpm["k"]) *
-      speed.playSpeed;
-    if (nextKpm) {
-      setNextLyrics({
-        lyrics:
-          readTypingOptions().next_display === "WORD"
-            ? map.mapData[newCount].kanaWord
-            : map.mapData[newCount]["lyrics"],
-        kpm: nextKpm.toFixed(0),
-        kanaWord: map.mapData[newCount].kanaWord.slice(0, 60),
-        romaWord: map.mapData[newCount].word
-          .map((w) => w["r"][0])
-          .join("")
-          .slice(0, 60),
-      });
+    if (map.mapData[newCount].kanaWord) {
+      setNextLyrics(map.mapData[newCount]);
     } else {
-      setNextLyrics({
-        lyrics: "",
-        kpm: "",
-        kanaWord: "",
-        romaWord: "",
-      });
+      resetNextLyrics();
     }
 
     if (map.mapChangeCSSCounts.length) {

@@ -1,6 +1,5 @@
 import { romaConvert } from "../../../../lib/instanceMapData";
 import { useLineStatusRef, useStatusRef } from "../../atoms/refAtoms";
-import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
   useLineWordStateRef,
   useMapStateRef,
@@ -10,7 +9,6 @@ import {
   useSetNextLyricsState,
   useSetNotifyState,
   useSetPlayingInputModeState,
-  useUserTypingOptionsStateRef,
 } from "../../atoms/stateAtoms";
 import { InputMode } from "../../ts/type";
 import { useGetTime } from "../useGetTime";
@@ -18,17 +16,15 @@ import { useGetTime } from "../useGetTime";
 export const useInputModeChange = () => {
   const setPlayingInputMode = useSetPlayingInputModeState();
   const setNotify = useSetNotifyState();
-  const setNextLyrics = useSetNextLyricsState();
+  const { setNextLyrics } = useSetNextLyricsState();
   const setLineWord = useSetLineWordState();
 
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
   const { readLineStatus, writeLineStatus } = useLineStatusRef();
   const { readStatus } = useStatusRef();
   const readPlayingInputMode = usePlayingInputModeStateRef();
-  const readPlaySpeed = usePlaySpeedStateRef();
   const readScene = useSceneStateRef();
   const readLineWord = useLineWordStateRef();
-  const readTypingOptions = useUserTypingOptionsStateRef();
   const readMap = useMapStateRef();
 
   return async (newInputMode: InputMode) => {
@@ -61,22 +57,9 @@ export const useInputModeChange = () => {
 
     const count = readStatus().count;
     const nextLine = map.mapData[count];
-    const playSpeed = readPlaySpeed().playSpeed;
 
-    const nextKpm =
-      (newInputMode === "roma" ? map.mapData[count].kpm["r"] : map.mapData[count].kpm["k"]) * playSpeed;
-    if (nextKpm) {
-      const userOptions = readTypingOptions();
-
-      setNextLyrics({
-        lyrics: userOptions.next_display === "WORD" ? nextLine.kanaWord : nextLine["lyrics"],
-        kpm: nextKpm.toFixed(0),
-        kanaWord: nextLine.kanaWord.slice(0, 60),
-        romaWord: nextLine.word
-          .map((w) => w["r"][0])
-          .join("")
-          .slice(0, 60),
-      });
+    if (nextLine.kanaWord) {
+      setNextLyrics(nextLine);
     }
 
     const scene = readScene();

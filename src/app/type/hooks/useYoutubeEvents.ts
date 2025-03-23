@@ -34,32 +34,6 @@ export const useYTPlayEvent = () => {
     console.log("再生 1");
     const scene = readScene();
 
-    if (scene === "ready") {
-      const movieDuration = readPlayer().getDuration();
-      writeYTStatus({ movieDuration });
-
-      const playMode = readGameUtils().playMode;
-      const isPlayDataLoad = readIsLoadingOverlay();
-
-      if (isPlayDataLoad) {
-        readPlayer().pauseVideo();
-        return;
-      }
-
-      if (playMode === "replay") {
-        setScene("replay");
-      } else if (playMode === "practice") {
-        setScene("practice");
-      } else {
-        setScene("playing");
-      }
-
-      const readyInputMode = readReadyInputMode();
-      setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
-      updatePlayCountStats();
-      setTabIndex(0);
-    }
-
     if (scene === "playing" || scene === "practice" || scene === "replay") {
       startTimer();
     }
@@ -70,6 +44,34 @@ export const useYTPlayEvent = () => {
       writeYTStatus({ isPaused: false });
       setNotify(Symbol("▶"));
     }
+
+    if (scene !== "ready") {
+      return;
+    }
+
+    const movieDuration = readPlayer().getDuration();
+    writeYTStatus({ movieDuration });
+
+    const playMode = readGameUtils().playMode;
+    const isPlayDataLoad = readIsLoadingOverlay();
+
+    if (isPlayDataLoad) {
+      readPlayer().pauseVideo();
+      return;
+    }
+
+    if (playMode === "replay") {
+      setScene("replay");
+    } else if (playMode === "practice") {
+      setScene("practice");
+    } else {
+      setScene("playing");
+    }
+
+    const readyInputMode = readReadyInputMode();
+    setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
+    updatePlayCountStats();
+    setTabIndex(0);
   };
 };
 

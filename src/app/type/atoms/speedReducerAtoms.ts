@@ -10,7 +10,7 @@ const store = getTypeAtomStore();
 
 type SpeedActionType = "up" | "down" | "set" | "reset" | "toggle";
 
-const speedBaseAtom = atomWithReset({
+export const speedBaseAtom = atomWithReset({
   defaultSpeed: 1,
   playSpeed: 1,
 });

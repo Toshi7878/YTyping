@@ -1,4 +1,5 @@
 import {
+  useMapStateRef,
   useSceneState,
   useSetLineWordState,
   useSetLyricsState,
@@ -7,23 +8,23 @@ import {
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
-import { useGameUtilsRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
+import { useGameUtilsRef, useStatusRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
-import { useTimerControls, useTimerRegistration } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
-import { RESET } from "jotai/utils";
+import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { useSession } from "next-auth/react";
 
 const Playing = () => {
   const { data: session } = useSession();
   const setLineWord = useSetLineWordState();
   const setLyrics = useSetLyricsState();
-  const setNextLyrics = useSetNextLyricsState();
+  const { setNextLyrics, resetNextLyrics } = useSetNextLyricsState();
   const handleKeydown = useHandleKeydown();
   const { readUserStats, resetUserStats } = useUserStatsRef();
   const { readGameUtils } = useGameUtilsRef();
+  const { readStatus } = useStatusRef();
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
-  const { addTimer, removeTimer } = useTimerRegistration();
+  const readMap = useMapStateRef();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -72,16 +73,16 @@ const Playing = () => {
       setFrameRate(59.99);
     }
 
-    addTimer();
-
     window.addEventListener("keydown", handleKeydown);
 
+    const { count } = readStatus();
+    if (count === 0) {
+      const map = readMap();
+      setNextLyrics(map.mapData[1]);
+    }
+
     return () => {
-      removeTimer();
       window.removeEventListener("keydown", handleKeydown);
-      setLineWord(RESET);
-      setLyrics("");
-      setNextLyrics(RESET);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);

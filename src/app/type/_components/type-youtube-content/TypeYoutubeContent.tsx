@@ -1,8 +1,9 @@
 "use client";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useSceneStateRef } from "../../atoms/stateAtoms";
+import { useTimerRegistration } from "../../hooks/playing-hooks/timer-hooks/useTimer";
 import { useWindowFocus } from "../../hooks/useWindowFocus";
 import {
   useYTPauseEvent,
@@ -31,6 +32,16 @@ const TypeYouTubeContent = function YouTubeContent({
   const ytStopEvent = useYTStopEvent();
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
+  const { addTimer, removeTimer } = useTimerRegistration();
+
+  useEffect(() => {
+    addTimer();
+
+    return () => {
+      removeTimer();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleStateChange = useCallback(
     (event: YouTubeEvent) => {

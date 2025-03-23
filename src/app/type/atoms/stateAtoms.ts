@@ -5,8 +5,9 @@ import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputMode, LineResultData, LineWord, SceneType } from "../ts/type";
+import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../ts/type";
 import { useGameUtilsRef } from "./refAtoms";
+import { speedBaseAtom } from "./speedReducerAtoms";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
@@ -195,8 +196,31 @@ const nextLyricsAtom = atomWithReset({
   romaWord: "",
 });
 
+const writeNextLyricsAtom = atom(null, (get, set, line: LineData) => {
+  const typingOptions = get(userTypingOptionsAtom);
+  const inputMode = get(playingInputModeAtom);
+  const speed = get(speedBaseAtom);
+
+  const nextKpm = (inputMode === "roma" ? line.kpm["r"] : line.kpm["k"]) * speed.playSpeed;
+
+  set(nextLyricsAtom, {
+    lyrics: typingOptions.next_display === "WORD" ? line.kanaWord : line["lyrics"],
+    kpm: nextKpm.toFixed(0),
+    kanaWord: line.kanaWord.slice(0, 60),
+    romaWord: line.word
+      .map((w) => w["r"][0])
+      .join("")
+      .slice(0, 60),
+  });
+});
+
 export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
-export const useSetNextLyricsState = () => useSetAtom(nextLyricsAtom, { store });
+export const useSetNextLyricsState = () => {
+  const setNextLyrics = useSetAtom(writeNextLyricsAtom, { store });
+  const resetNextLyrics = useCallback(() => store.set(nextLyricsAtom, RESET), []);
+
+  return { setNextLyrics, resetNextLyrics };
+};
 
 const lineWordAtom = atomWithReset<LineWord>({
   correct: { k: "", r: "" },
