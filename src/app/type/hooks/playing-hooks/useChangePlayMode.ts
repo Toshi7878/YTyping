@@ -34,7 +34,7 @@ export const useChangePlayMode = () => {
           drawerClosure.onClose();
         }
         retry("playing");
-        dispatchSpeed({ type: "set", payload: startSpeed as YouTubeSpeed });
+        dispatchSpeed({ type: "set", payload: 1 > startSpeed ? 1 : (startSpeed as YouTubeSpeed) });
       }
       setNotify(Symbol(""));
     }
