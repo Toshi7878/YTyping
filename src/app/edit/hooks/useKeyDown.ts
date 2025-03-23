@@ -141,8 +141,10 @@ export const useWindowKeydownEvent = () => {
               const { actionType, data } = present;
               switch (actionType) {
                 case "add":
-                  mapDispatch({ type: "delete", index: data.lineIndex });
+                  const { lineIndex, options, time, lyrics, word } = data;
+                  mapDispatch({ type: "delete", index: lineIndex });
                   player.seekTo(Number(data.time) - 3 * speed, true);
+                  lineDispatch({ type: "set", line: { time, lyrics, word, selectIndex: null } });
                   setManyPhrase(data.lyrics + "\n" + manyPhraseText);
                   break;
                 case "update":
