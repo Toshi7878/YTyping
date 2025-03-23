@@ -63,7 +63,7 @@ function useJsonConverter() {
       result.push({ time, lyrics, word });
     }
 
-    result.push({ time: readPlayer().getDuration().toFixed(3), lyrics: "", word: "" });
+    result.push({ time: readPlayer().getDuration().toFixed(3), lyrics: "end", word: "" });
 
     return result;
   };
@@ -91,7 +91,7 @@ function useLrcConverter() {
       }
     }
 
-    result.push({ time: readPlayer().getDuration().toFixed(3), lyrics: "", word: "" });
+    result.push({ time: readPlayer().getDuration().toFixed(3), lyrics: "end", word: "" });
 
     return result;
   };
