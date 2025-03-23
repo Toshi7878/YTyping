@@ -22,13 +22,17 @@ const ManyPhraseTextarea = () => {
     setManyPhrase(e.target.value);
   };
 
-  const onPaste = async () => {
-    setTimeout(() => {
-      if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.scrollTop = 0;
-        document.activeElement.blur();
-      }
-    });
+  const onPaste = async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const target = event.currentTarget;
+
+    if (!target.value) {
+      setTimeout(() => {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.scrollTop = 0;
+          document.activeElement.blur();
+        }
+      });
+    }
 
     const pasteManyPhrase = await navigator.clipboard.readText();
     const lines = pasteManyPhrase.split(/\r\n|\n/) || [];
