@@ -141,7 +141,7 @@ export const useWindowKeydownEvent = () => {
               const { actionType, data } = present;
               switch (actionType) {
                 case "add":
-                  const { lineIndex, options, time, lyrics, word } = data;
+                  const { lineIndex, time, lyrics, word } = data;
                   mapDispatch({ type: "delete", index: lineIndex });
                   player.seekTo(Number(data.time) - 3 * speed, true);
                   lineDispatch({ type: "set", line: { time, lyrics, word, selectIndex: null } });

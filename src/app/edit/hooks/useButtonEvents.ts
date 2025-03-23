@@ -48,7 +48,7 @@ export const useLineAddButtonEvent = () => {
   return (isShiftKey: boolean) => {
     const { playing } = readYtPlayerStatus();
     const { lyrics, word } = readSelectLine();
-    const timeOffset = readTimeOffset();
+    const timeOffset = word !== "" ? readTimeOffset() : 0;
 
     const _time = playing ? readPlayer().getCurrentTime() + timeOffset : Number(readTime());
     const time = timeValidate(_time).toFixed(3);
@@ -111,7 +111,7 @@ export const useLineUpdateButtonEvent = () => {
     const map = readMap();
     const { selectIndex: index, lyrics, word } = readSelectLine();
     const { playing } = readYtPlayerStatus();
-    const timeOffset = readTimeOffset();
+    const timeOffset = word !== "" ? readTimeOffset() : 0;
     const selectLineIndex = index as number;
 
     const _time = playing && !selectLineIndex ? readPlayer()!.getCurrentTime() + timeOffset : +readTime();
