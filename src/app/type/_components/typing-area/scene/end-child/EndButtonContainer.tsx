@@ -50,13 +50,13 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
         {isPlayingMode && (
           <EndSubButton
             retryMode="practice"
-            isRetryAlert={Boolean(isDisplayRankingButton && isSendResultBtnDisabled)}
+            isRetryAlert={Boolean(isDisplayRankingButton && !isSendResultBtnDisabled)}
           />
         )}
 
         <EndSubButton
           retryMode={playMode}
-          isRetryAlert={Boolean(isDisplayRankingButton && isSendResultBtnDisabled)}
+          isRetryAlert={Boolean(isDisplayRankingButton && !isSendResultBtnDisabled)}
         />
       </HStack>
     </>
