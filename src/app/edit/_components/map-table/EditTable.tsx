@@ -13,7 +13,12 @@ import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { useMapReducer, useMapStateRef } from "../../atoms/mapReducerAtom";
 import { usePlayer, useTbodyRef } from "../../atoms/refAtoms";
 import { usePathChangeAtomReset } from "../../atoms/reset";
-import { useIsYTPlayingState, useIsYTReadiedState, useSetCanUploadState } from "../../atoms/stateAtoms";
+import {
+  useIsYTPlayingState,
+  useIsYTReadiedState,
+  useIsYTStartedState,
+  useSetCanUploadState,
+} from "../../atoms/stateAtoms";
 import MapTableBody from "./child/MapTableBody";
 
 export default function EditTable() {
@@ -30,6 +35,7 @@ export default function EditTable() {
   const pathChangeReset = usePathChangeAtomReset();
   const mapDispatch = useMapReducer();
   const isYTPlaying = useIsYTPlayingState();
+  const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
   const { readPlayer } = usePlayer();
   const readMap = useMapStateRef();
@@ -71,7 +77,7 @@ export default function EditTable() {
   }, []);
 
   useEffect(() => {
-    if (isYTReady || isYTPlaying) {
+    if ((isYTReady && !isYTStarted) || isYTPlaying) {
       const duration = readPlayer().getDuration();
       const map = readMap();
 
@@ -99,7 +105,7 @@ export default function EditTable() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isYTReady, isYTPlaying]);
+  }, [isYTReady, isYTPlaying, isYTStarted]);
 
   return (
     <Card bg={theme.colors.background.card} color={theme.colors.text.body} m={2}>
