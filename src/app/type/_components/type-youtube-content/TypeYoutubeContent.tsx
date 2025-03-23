@@ -5,7 +5,6 @@ import YouTube, { YouTubeEvent } from "react-youtube";
 import { useSceneStateRef } from "../../atoms/stateAtoms";
 import { useWindowFocus } from "../../hooks/useWindowFocus";
 import {
-  useYTEndEvent,
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
@@ -30,7 +29,6 @@ const TypeYouTubeContent = function YouTubeContent({
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
   const ytStopEvent = useYTStopEvent();
-  const ytEndEvent = useYTEndEvent();
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
 
@@ -90,7 +88,7 @@ const TypeYouTubeContent = function YouTubeContent({
         onReady={ytReadyEvent}
         onPlay={ytPlayEvent}
         onPause={ytPauseEvent}
-        onEnd={ytEndEvent}
+        onEnd={ytStopEvent}
         onStateChange={handleStateChange}
         onError={handleError} // エラーハンドリングを追加
       />
