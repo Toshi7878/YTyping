@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
 import { useCountRef, useGameUtilsRef, useStatusRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
-import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useHandleKeydown";
+import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useKeydown";
 import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { useSession } from "next-auth/react";
 

@@ -1,4 +1,4 @@
-import { useCountRef, useGameUtilsRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
+import { useCountRef, useGameUtilsRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useLineSelectIndexStateRef,
@@ -29,7 +29,6 @@ export const useHandleKeydown = () => {
   const pauseShortcutKey = usePauseShortcutKey();
 
   const { readYTStatus } = useYTStatusRef();
-  const { readStatus } = useStatusRef();
   const readLineWord = useLineWordStateRef();
   const readScene = useSceneStateRef();
   const { readCount } = useCountRef();
@@ -66,7 +65,7 @@ export const useHandleKeydown = () => {
 };
 
 const KEY_WHITE_LIST = ["F5"];
-const CTRL_KEY_WHITE_CODE_LIST = ["KeyC"];
+const CTRL_KEY_WHITE_CODE_LIST = ["KeyC", "KeyV", "KeyZ", "KeyY", "KeyX"];
 const ALT_KEY_WHITE_CODE_LIST = ["ArrowLeft", "ArrowRight"];
 const OPEN_DRAWER_CTRL_KEY_CODE_LIST = ["KeyF"];
 
