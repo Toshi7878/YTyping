@@ -71,7 +71,7 @@ export default function EditTable() {
   }, []);
 
   useEffect(() => {
-    if (isYTReady && isYTPlaying) {
+    if (isYTReady || isYTPlaying) {
       const duration = readPlayer().getDuration();
       const map = readMap();
 
