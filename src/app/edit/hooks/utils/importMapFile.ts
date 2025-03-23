@@ -75,7 +75,7 @@ function useLrcConverter() {
   return async (lrc: string[]) => {
     const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
     for (let i = 0; i < lrc.length; i++) {
-      const timeTagMatch = lrc[i].match(/\[\d\d:\d\d.\d\d\]/);
+      const timeTagMatch = lrc[i].match(/\[\d\d:\d\d[:.]\d\d\]/);
 
       if (timeTagMatch) {
         const timeTag = timeTagMatch[0].match(/\d\d/g);
@@ -84,7 +84,7 @@ function useLrcConverter() {
         const minSec = +timeTag![2];
 
         const time = (minute * 60 + second + minSec * 0.01).toString();
-        const lyrics = lrc[i].replace(/\[\d\d:\d\d.\d\d\]/g, "").trim();
+        const lyrics = lrc[i].replace(/\[\d\d:\d\d[:.]\d\d\]/g, "").trim();
         const word = (await wordConvert(lyrics)) ?? "";
 
         result.push({ time, lyrics, word });
