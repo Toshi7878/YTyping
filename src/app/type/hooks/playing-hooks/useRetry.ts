@@ -46,6 +46,10 @@ export const useRetry = () => {
 
     const scene = readScene();
 
+    if (scene === "playing" || scene === "practice") {
+      sendTypingStats();
+    }
+
     if (scene === "playing") {
       const totalTypeCount = readTypingStatus().type;
       if (totalTypeCount) {
@@ -56,7 +60,6 @@ export const useRetry = () => {
         }
       }
 
-      sendTypingStats();
       setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
       setLineResults(structuredClone(map!.defaultLineResultData));
     }
