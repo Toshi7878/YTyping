@@ -2,7 +2,7 @@ import { useMapStateRef, useSceneState, useSetNextLyricsState } from "@/app/type
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
-import { useCountRef, useGameUtilsRef, useStatusRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
+import { useCountRef, useGameUtilsRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/useKeydown";
 import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/useTimer";
 import { useSession } from "next-auth/react";
@@ -14,7 +14,6 @@ const Playing = () => {
   const { readUserStats, resetUserStats } = useUserStatsRef();
   const { readGameUtils } = useGameUtilsRef();
   const { readCount } = useCountRef();
-  const { readStatus } = useStatusRef();
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
   const readMap = useMapStateRef();
