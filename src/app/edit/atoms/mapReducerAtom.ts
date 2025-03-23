@@ -44,20 +44,13 @@ export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(
       }
 
       case "update": {
-        if (action.index < 0 || action.index >= prev.length) {
-          throw new Error("Invalid index for update action.");
-        }
+        const newArray = [...prev];
+        newArray[action.index] = action.payload;
 
-        prev[action.index] = action.payload;
-
-        return prev.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
+        return newArray.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
       }
 
       case "delete": {
-        if (action.index === undefined || action.index < 0 || action.index >= prev.length) {
-          throw new Error("Invalid index for delete action.");
-        }
-
         return prev.filter((_, lineIndex) => lineIndex !== action.index);
       }
 

@@ -26,7 +26,7 @@ export default function SaveOptionButton(props: SaveOptionButtonProps) {
   const readMap = useMapStateRef();
   const handleBtnClick = () => {
     const map = readMap();
-    if (!map || !optionModalIndex) {
+    if (!map || optionModalIndex === null) {
       return;
     }
 

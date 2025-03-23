@@ -1,12 +1,11 @@
 "use client";
 import { useMapState } from "@/app/edit/atoms/mapReducerAtom";
-import { usePlayer, useTbodyRef } from "@/app/edit/atoms/refAtoms";
 import {
   useIsYTPlayingState,
   useSetCssLengthState,
   useSetIsTimeInputValidState,
 } from "@/app/edit/atoms/stateAtoms";
-import { useWindowKeydownEvent } from "@/app/edit/hooks/useEditKeyDownEvents";
+import { useWindowKeydownEvent } from "@/app/edit/hooks/useKeyDown";
 import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
 import { ThemeColors } from "@/types";
 import { MapLineEdit } from "@/types/map";
@@ -27,8 +26,6 @@ function MapTableBody() {
   const setCustomStyleLength = useSetCssLengthState();
   const windowKeydownEvent = useWindowKeydownEvent();
   const setEditIsTimeInputValid = useSetIsTimeInputValidState();
-  const { readTbody } = useTbodyRef();
-  const { readPlayer } = usePlayer();
   const map = useMapState();
 
   useEffect(() => {
@@ -74,7 +71,7 @@ function MapTableBody() {
             key={index}
             index={index}
             line={line}
-            optionClosure={optionClosure}
+            onOpen={optionClosure.onOpen}
             setLineOptions={setLineOptions}
             setOptionModalIndex={setOptionModalIndex}
           />

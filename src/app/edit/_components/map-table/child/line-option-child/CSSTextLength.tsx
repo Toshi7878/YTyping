@@ -13,13 +13,13 @@ interface CSSTextLengthProps {
 export default function CSSTextLength({ eternalCSSText, changeCSSText, lineOptions }: CSSTextLengthProps) {
   const theme: ThemeColors = useTheme();
 
-  const customStyleLength = useCssLengthState();
+  const cssLength = useCssLengthState();
 
   const loadLineCustomStyleLength =
-    Number(lineOptions?.eternalCSS?.length || 0) + Number(lineOptions?.eternalCSS?.length || 0);
+    Number(lineOptions?.eternalCSS?.length || 0) + Number(lineOptions?.changeCSS?.length || 0);
 
   const calcAllCustomStyleLength =
-    customStyleLength - loadLineCustomStyleLength + (eternalCSSText.length + changeCSSText.length);
+    cssLength - loadLineCustomStyleLength + (eternalCSSText.length + changeCSSText.length);
   return (
     <Box
       textAlign="right"

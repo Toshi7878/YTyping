@@ -45,12 +45,12 @@ export default function LineOptionModal({
   const [isEditedCSS, setIsEditedCSS] = useState(false);
   const [changeVideoSpeed, setChangeVideoSpeed] = useState(0);
   const [isChangeCSS, setIsEditChangeCSS] = useState(lineOptions?.isChangeCSS || false);
-  const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure();
+  const confirmModal = useDisclosure();
 
   const theme: ThemeColors = useTheme();
   const handleModalClose = () => {
     if (isEditedCSS) {
-      onConfirmOpen();
+      confirmModal.onOpen();
     } else {
       onClose();
       setOptionModalIndex(null);
@@ -135,8 +135,8 @@ export default function LineOptionModal({
       </ModalContent>
       <LineOptionModalCloseButton
         onClose={onClose}
-        isConfirmOpen={isConfirmOpen}
-        onConfirmClose={onConfirmClose}
+        isConfirmOpen={confirmModal.isOpen}
+        onConfirmClose={confirmModal.onClose}
         setOptionModalIndex={setOptionModalIndex}
       />
     </Modal>

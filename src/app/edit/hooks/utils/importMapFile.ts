@@ -1,12 +1,15 @@
-import { useMapReducer } from "@/app/edit/atoms/mapReducerAtom";
+import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import { useWordConverter } from "@/app/edit/hooks/utils/useWordConverter";
 import { MapLine } from "@/types/map";
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
+import { useHistoryReducer } from "../../atoms/historyReducerAtom";
 
 export const useImportMapFile = () => {
   const mapDispatch = useMapReducer();
+  const historyDispatch = useHistoryReducer();
+  const readMap = useMapStateRef();
   const lrcConverter = useLrcConverter();
   const jsonConverter = useJsonConverter();
 
@@ -25,9 +28,17 @@ export const useImportMapFile = () => {
     if (file.name.endsWith(".lrc")) {
       const lrc = decodedData.split("\r\n");
       const convertedData = await lrcConverter(lrc);
+      historyDispatch({
+        type: "add",
+        payload: { actionType: "replaceAll", data: { old: readMap(), new: convertedData } },
+      });
       mapDispatch({ type: "replaceAll", payload: convertedData });
     } else {
       const convertedData = jsonConverter(JSON.parse(decodedData).map);
+      historyDispatch({
+        type: "add",
+        payload: { actionType: "replaceAll", data: { old: readMap(), new: convertedData } },
+      });
       mapDispatch({ type: "replaceAll", payload: convertedData });
     }
   };

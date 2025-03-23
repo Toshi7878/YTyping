@@ -151,6 +151,9 @@ export const useWindowKeydownEvent = () => {
                 case "delete":
                   mapDispatch({ type: "add", payload: data });
                   break;
+                case "replaceAll":
+                  mapDispatch({ type: "replaceAll", payload: data.old });
+                  break;
               }
               historyDispatch({ type: "undo" });
             }
@@ -177,6 +180,9 @@ export const useWindowKeydownEvent = () => {
                   break;
                 case "delete":
                   mapDispatch({ type: "delete", index: data.lineIndex });
+                  break;
+                case "replaceAll":
+                  mapDispatch({ type: "replaceAll", payload: data.new });
                   break;
               }
               historyDispatch({ type: "redo" });
@@ -257,7 +263,7 @@ function useSeekNextPrev() {
   return (type: "next" | "prev") => {
     const { directEditingIndex } = readEditUtils();
 
-    const { selectIndex: selectIndex } = readLineStatus();
+    const { selectIndex } = readLineStatus();
     if (selectIndex !== null && !directEditingIndex) {
       const seekCount = selectIndex + (type === "next" ? 1 : -1);
       const seekLine = readMap()[seekCount];

@@ -1,5 +1,5 @@
 import { Tag, YouTubeSpeed } from "@/types";
-import { atom, ExtractAtomValue, useAtomValue, useStore as useJotaiStore, useSetAtom } from "jotai";
+import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReducer, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 
 import { focusAtom } from "jotai-optics";
@@ -117,10 +117,9 @@ store.sub(speedAtom, () => {
 });
 
 export const useSpeedReducer = () => {
-  const editAtomStore = useJotaiStore();
   const setYTSpeedAtom = useSetYTSpeedState();
   return (actionType: YTSpeedReducerActionType) => {
-    const speed = editAtomStore.get(speedAtom);
+    const speed = store.get(speedAtom);
 
     switch (actionType) {
       case "up":

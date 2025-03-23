@@ -24,12 +24,12 @@ import DirectEditWordInput from "./child/DirectEditWordInput";
 interface LineRowProps {
   index: number;
   line: MapLine;
-  optionClosure: UseDisclosureReturn;
+  onOpen: UseDisclosureReturn["onOpen"];
   setOptionModalIndex: Dispatch<number>;
   setLineOptions: Dispatch<MapLineEdit["options"]>;
 }
 
-function LineRow({ line, index, optionClosure, setOptionModalIndex, setLineOptions }: LineRowProps) {
+function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: LineRowProps) {
   const directEditTimeInputRef = useRef<HTMLInputElement | null>(null);
   const directEditLyricsInputRef = useRef<HTMLInputElement | null>(null);
   const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
@@ -164,7 +164,7 @@ function LineRow({ line, index, optionClosure, setOptionModalIndex, setLineOptio
             if (index !== endLineIndex) {
               setOptionModalIndex(index);
               setLineOptions(line.options);
-              optionClosure.onOpen();
+              onOpen();
             }
           }}
         >
