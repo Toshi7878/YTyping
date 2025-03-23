@@ -18,6 +18,7 @@ const FIELD_TO_PARAMS = {
   いいね数: "like_count" as const,
   曲の長さ: "duration" as const,
   ランダム: "random" as const,
+  いいね: "like" as const,
 };
 
 const getResetDirections = (): Record<SortField, SortDirection> => ({
@@ -27,6 +28,7 @@ const getResetDirections = (): Record<SortField, SortDirection> => ({
   いいね数: null,
   曲の長さ: null,
   ランダム: null,
+  いいね: null,
 });
 
 const SortOptions = () => {
@@ -63,7 +65,7 @@ const SortOptions = () => {
 
     if (currentDirection === null) {
       if (field === "ID") {
-        params.delete(PARAM_NAME.sort);
+        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
       } else if (field === "ランダム") {
         params.set(PARAM_NAME.sort, "random");
       } else {
@@ -74,7 +76,7 @@ const SortOptions = () => {
       params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_asc`);
       setSortDirections({ ...getResetDirections(), [field]: "asc" });
     } else {
-      params.delete(PARAM_NAME.sort);
+      params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
       setSortDirections({ ...getResetDirections(), ID: "desc" });
     }
 
@@ -121,27 +123,34 @@ const SortOptions = () => {
         },
       }}
     >
-      {Object.keys(FIELD_TO_PARAMS).map((option) => (
-        <Flex
-          key={option}
-          alignItems="center"
-          justifyContent="center"
-          px={3}
-          py={1}
-          cursor="pointer"
-          fontWeight={sortDirections[option as SortField] ? "bold" : "normal"}
-          color={sortDirections[option as SortField] ? "secondary.light" : "normal"}
-          onClick={() => handleSort(option as SortField)}
-          _hover={{ bg: "button.sub.hover" }}
-          transition="all 0.2s"
-          role="group"
-          minWidth={{ base: "auto", md: "auto" }}
-          flex={{ base: "0 0 auto", md: "0 0 auto" }}
-        >
-          <Text mr={1}>{option}</Text>
-          {getSortIcon(option as SortField)}
-        </Flex>
-      ))}
+      {Object.keys(FIELD_TO_PARAMS).map((option) => {
+        const isLikedSort = option === "いいね";
+        const isFilterLiked = searchParams.get("filter") === "liked";
+        if (isLikedSort && !isFilterLiked) {
+          return null;
+        }
+        return (
+          <Flex
+            key={option}
+            alignItems="center"
+            justifyContent="center"
+            px={3}
+            py={1}
+            cursor="pointer"
+            fontWeight={sortDirections[option as SortField] ? "bold" : "normal"}
+            color={sortDirections[option as SortField] ? "secondary.light" : "normal"}
+            onClick={() => handleSort(option as SortField)}
+            _hover={{ bg: "button.sub.hover" }}
+            transition="all 0.2s"
+            role="group"
+            minWidth={{ base: "auto", md: "auto" }}
+            flex={{ base: "0 0 auto", md: "0 0 auto" }}
+          >
+            <Text mr={1}>{option}</Text>
+            {getSortIcon(option as SortField)}
+          </Flex>
+        );
+      })}
     </Flex>
   );
 };

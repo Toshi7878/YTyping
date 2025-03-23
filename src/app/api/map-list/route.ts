@@ -157,6 +157,12 @@ function getSortSql({ sort }: GetSortSql) {
       } else {
         return Prisma.raw(`ORDER BY "difficulty"."total_time" DESC`);
       }
+    case sort.includes("like"):
+      if (isAsc) {
+        return Prisma.raw(`ORDER BY "map_likes"."created_at" ASC`);
+      } else {
+        return Prisma.raw(`ORDER BY "map_likes"."created_at" DESC`);
+      }
     default:
       return Prisma.raw(`ORDER BY maps."id" DESC`);
   }

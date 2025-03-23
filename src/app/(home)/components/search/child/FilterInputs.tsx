@@ -23,8 +23,16 @@ const FilterInputs = () => {
 
       if (!isSelected) {
         params.set(name, value);
+        if (name === MY_FILTER.name && value === "liked") {
+          params.set("sort", "like");
+        } else if (name === MY_FILTER.name) {
+          params.delete("sort");
+        }
       } else {
         params.delete(name);
+        if (name === MY_FILTER.name && value === "liked") {
+          params.delete("sort");
+        }
       }
 
       return setDifficultyRangeParams(params).toString();
@@ -66,8 +74,7 @@ const FilterInputs = () => {
             </Text>
             <Flex ml={{ base: 0, md: 3 }} gap={1} alignItems="center" flexWrap="wrap">
               {filter.params.map((param: FilterParam, paramIndex: number) => {
-                const isSelected =
-                  currentParams.find((p) => p.name === filter.name)?.value === param.value;
+                const isSelected = currentParams.find((p) => p.name === filter.name)?.value === param.value;
 
                 return (
                   <Link
