@@ -20,13 +20,15 @@ import { useRef } from "react";
 interface EndSubButtonProps {
   retryMode: PlayMode;
   isRetryAlert: boolean;
+  retryBtnRef: React.RefObject<HTMLButtonElement>;
 }
 
-const EndSubButton = ({ isRetryAlert, retryMode }: EndSubButtonProps) => {
+const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const theme: ThemeColors = useTheme();
   const { readGameUtils } = useGameUtilsRef();
+  const { playMode } = readGameUtils();
 
   const proceedRetry = useProceedRetry();
 
@@ -39,9 +41,11 @@ const EndSubButton = ({ isRetryAlert, retryMode }: EndSubButtonProps) => {
   };
 
   const getButtonText = () => {
-    if (retryMode === "practice") return "練習モード";
-    if (readGameUtils().replayUserName) return "もう一度リプレイ";
-    return "もう一度プレイ";
+    if (retryMode === "practice" && playMode !== "practice") return "練習モードへ";
+    if (retryMode === "playing" && playMode !== "playing") return "本番モードへ";
+    if (retryMode === "practice") return "もう一度練習";
+    if (retryMode === "replay") return "もう一度リプレイ";
+    if (retryMode === "playing") return "もう一度プレイ";
   };
 
   return (
@@ -84,6 +88,7 @@ const EndSubButton = ({ isRetryAlert, retryMode }: EndSubButtonProps) => {
       </AlertDialog>
 
       <Button
+        ref={retryBtnRef}
         size="2xl"
         px={20}
         py={6}

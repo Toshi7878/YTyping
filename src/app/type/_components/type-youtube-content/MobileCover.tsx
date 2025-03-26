@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { usePlayer, useYTStatusRef } from "../../atoms/refAtoms";
-import { useSceneStateRef } from "../../atoms/stateAtoms";
+import { useGameStateUtilsRef } from "../../atoms/stateAtoms";
 import { useWindowFocus } from "../../hooks/useWindowFocus";
 
 const MobileCover = () => {
@@ -9,10 +9,10 @@ const MobileCover = () => {
   const { readPlayer } = usePlayer();
   const { readYTStatus } = useYTStatusRef();
 
-  const readScene = useSceneStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
   const handleStart = useCallback(
     async () => {
-      const scene = readScene();
+      const { scene } = readGameStateUtils();
 
       if (readYTStatus().isPaused || scene === "ready") {
         readPlayer().playVideo();

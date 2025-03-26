@@ -63,65 +63,48 @@ export const useMapStateRef = () => {
   );
 };
 
-const gameUtilsStateAtom = atomWithReset({
+const gameStateUtilsAtom = atomWithReset({
   scene: "ready" as SceneType,
   tabIndex: 1 as 0 | 1,
-  playingInputMode: initialInputMode,
+  inputMode: initialInputMode,
   notify: Symbol(""),
   skip: "Space" as "Space" | "",
   changeCSSCount: 0,
   isLoadingOverlay: false,
   lineSelectIndex: 0,
 });
-export const sceneAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("scene"));
-const tabIndexAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("tabIndex"));
-export const notifyAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("notify"));
-const skipAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("skip"));
-const changeCSSCountAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("changeCSSCount"));
-const lineSelectIndexAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("lineSelectIndex"));
-const isLoadingOverlayAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("isLoadingOverlay"));
-const playingInputModeAtom = focusAtom(gameUtilsStateAtom, (optic) => optic.prop("playingInputMode"));
+export const sceneAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("scene"));
+const tabIndexAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("tabIndex"));
+export const notifyAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("notify"));
+const skipAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("skip"));
+const changeCSSCountAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("changeCSSCount"));
+const lineSelectIndexAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("lineSelectIndex"));
+const isLoadingOverlayAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("isLoadingOverlay"));
+const playingInputModeAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("inputMode"));
 
-export const useSetGameUtilsState = () => useSetAtom(gameUtilsStateAtom, { store });
+export const useGameStateUtilsRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(gameStateUtilsAtom), []),
+    { store }
+  );
+};
+
+export const useSetGameUtilsState = () => useSetAtom(gameStateUtilsAtom, { store });
 
 export const useTabIndexState = () => useAtomValue(tabIndexAtom);
 export const useSetTabIndexState = () => useSetAtom(tabIndexAtom);
 
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
 export const useSetSceneState = () => useSetAtom(sceneAtom, { store });
-export const useSceneStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(sceneAtom), []),
-    { store }
-  );
-};
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });
 export const useSetPlayingInputModeState = () => useSetAtom(playingInputModeAtom, { store });
-export const usePlayingInputModeStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(playingInputModeAtom), []),
-    { store }
-  );
-};
 
 export const useIsLoadingOverlayState = () => useAtomValue(isLoadingOverlayAtom);
 export const useSetIsLoadingOverlayState = () => useSetAtom(isLoadingOverlayAtom);
-export const useIsLoadingOverlayStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(isLoadingOverlayAtom), []),
-    { store }
-  );
-};
 
 export const useSkipState = () => useAtomValue(skipAtom, { store });
 export const useSetSkipState = () => useSetAtom(skipAtom, { store });
-export const useSkipStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(skipAtom), []),
-    { store }
-  );
-};
 
 export const useNotifyState = () => useAtomValue(notifyAtom);
 export const useSetNotifyState = () => useSetAtom(notifyAtom);
@@ -131,12 +114,6 @@ export const useSetChangeCSSCountState = () => useSetAtom(changeCSSCountAtom, { 
 
 export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
 export const useSetLineSelectIndexState = () => useSetAtom(lineSelectIndexAtom);
-export const useLineSelectIndexStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(lineSelectIndexAtom), []),
-    { store }
-  );
-};
 
 const playingStateAtom = atomWithReset({
   currentTime: 0,
@@ -179,12 +156,13 @@ export const useCurrentTimeStateRef = () => {
   );
 };
 
-const lineResultsAtom = atomWithReset<LineResultData[]>([]);
-export const useLineResultsState = () => useAtomValue(lineResultsAtom, { store });
-export const useSetLineResultsState = () => useSetAtom(lineResultsAtom, { store });
+const lineResultListAtom = atomWithReset<LineResultData[]>([]);
+
+export const useLineResultsState = () => useAtomValue(lineResultListAtom, { store });
+export const useSetLineResultsState = () => useSetAtom(lineResultListAtom, { store });
 export const useLineResultsStateRef = () => {
   return useAtomCallback(
-    useCallback((get) => get(lineResultsAtom), []),
+    useCallback((get) => get(lineResultListAtom), []),
     { store }
   );
 };
@@ -226,7 +204,6 @@ const lineWordAtom = atomWithReset<LineWord>({
   correct: { k: "", r: "" },
   nextChar: { k: "", r: [""], p: 0, t: undefined },
   word: [{ k: "", r: [""], p: 0, t: undefined }],
-  lineCount: 0,
 });
 
 export const useLineWordState = () => useAtomValue(lineWordAtom, { store });

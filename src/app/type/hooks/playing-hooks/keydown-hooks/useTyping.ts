@@ -1,31 +1,23 @@
-import { useLineStatusRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
+import { useCountRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedStateRef } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useComboStateRef,
+  useGameStateUtilsRef,
   useLineResultsStateRef,
   useMapStateRef,
-  usePlayingInputModeStateRef,
-  useSceneStateRef,
   useSetLineKpmState,
   useSetLineResultsState,
   useSetLineWordState,
   useSetTypingStatusState,
   useTypingStatusStateRef,
 } from "@/app/type/atoms/stateAtoms";
-import { LineWord } from "@/app/type/ts/type";
+import { useInputJudge } from "@/app/type/ts/scene-ts/playing/keydown/typingJudge";
 import { MISS_PENALTY } from "../../../../../lib/instanceMapData";
-import { Typing } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { useCalcTypeSpeed } from "../../calcTypeSpeed";
 import { useGetTime } from "../../useGetTime";
 import { useUpdateAllStatus } from "../timer-hooks/replayHooks";
 import { useSoundEffect } from "../useSoundEffect";
 import { useTypeMiss, useTypeSuccess } from "../useUpdateStatus";
-
-interface HandleTypingParams {
-  event: KeyboardEvent;
-  count: number;
-  lineWord: LineWord;
-}
 
 export const useTyping = () => {
   const setLineResults = useSetLineResultsState();
@@ -48,27 +40,23 @@ export const useTyping = () => {
   const readTypingStatus = useTypingStatusStateRef();
   const readCombo = useComboStateRef();
   const readLineResults = useLineResultsStateRef();
-  const readPlayingInputMode = usePlayingInputModeStateRef();
-  const readScene = useSceneStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readMap = useMapStateRef();
+  const { readCount } = useCountRef();
+  const readGameStateUtils = useGameStateUtilsRef();
+  const inputJudge = useInputJudge();
 
-  return ({ event, count, lineWord }: HandleTypingParams) => {
+  return (event: KeyboardEvent) => {
     const map = readMap();
 
-    const typingResult = new Typing({ event, lineWord, inputMode: readPlayingInputMode() });
-    const typingStatus = readTypingStatus();
+    const { isSuccess, isFailed, isCompleted, newLineWord, ...inputResult } = inputJudge(event);
+    const constantLineTime = getConstantLineTime(getCurrentLineTime(getCurrentOffsettedYTTime()));
 
-    const isSuccess = typingResult.successKey;
-    const isFailed = typingResult.newLineWord.correct["r"] || typingResult.newLineWord.correct["k"];
     if (isSuccess) {
-      setLineWord(typingResult.newLineWord);
-      const isCompleted = !typingResult.newLineWord.nextChar["k"];
+      setLineWord(newLineWord);
       triggerTypingSound({ isCompleted });
 
-      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
-      const constantLineTime = getConstantLineTime(lineTime);
-
+      const typingStatus = readTypingStatus();
       const totalTypeCount = typingStatus.type;
       const combo = readCombo();
       const typeSpeed = calcTypeSpeed({
@@ -79,53 +67,57 @@ export const useTyping = () => {
       updateSuccessStatusRefs({
         constantLineTime,
         isCompleted,
-        successKey: typingResult.successKey,
-        typeChunk: typingResult.typeChunk,
+        successKey: inputResult.successKey,
+        typeChunk: inputResult.typeChunk,
         combo,
       });
       setDisplayLineKpm(typeSpeed!.lineKpm);
       const newStatus = updateSuccessStatus({
-        newLineWord: typingResult.newLineWord,
+        newLineWord,
         lineRemainConstantTime: getConstantRemainLineTime(constantLineTime),
-        updatePoint: typingResult.updatePoint,
+        updatePoint: inputResult.updatePoint,
         totalKpm: typeSpeed!.totalKpm,
         combo,
       });
 
-      const isPaused = readYTStatus().isPaused;
+      const { isPaused } = readYTStatus();
+      const { scene } = readGameStateUtils();
+      const { playSpeed } = readPlaySpeed();
+
       if (isCompleted && !isPaused) {
-        if (readScene() === "practice" && readPlaySpeed().playSpeed >= 1) {
-          const lineResults = readLineResults();
+        if (scene === "practice" && playSpeed >= 1) {
+          const lineResultList = readLineResults();
+          const count = readCount();
 
-          const lResult = lineResults[count - 1];
-          const lMiss = readLineStatus().miss;
+          const lineResult = lineResultList[count - 1];
+          const { miss: lineMiss, type: lineType, typeResult, startSpeed, startInputMode } = readLineStatus();
 
-          const lineScore = newStatus.point + newStatus.timeBonus + lMiss * MISS_PENALTY;
+          const lineScore = newStatus.point + newStatus.timeBonus + lineMiss * MISS_PENALTY;
           const oldLineScore =
-            lResult.status!.p! + lResult.status!.tBonus! + lResult.status!.lMiss! * MISS_PENALTY;
+            lineResult.status!.p! + lineResult.status!.tBonus! + lineResult.status!.lMiss! * MISS_PENALTY;
 
           const isUpdateResult = lineScore >= oldLineScore;
-          const newLineResults = [...lineResults];
+          const newLineResults = [...lineResultList];
 
           if (isUpdateResult) {
-            const tTime = Math.round(readStatus().totalTypeTime * 1000) / 1000;
+            const newtotalTypeTime = Math.round(readStatus().totalTypeTime * 1000) / 1000;
 
             newLineResults[count - 1] = {
               status: {
                 p: newStatus.point,
                 tBonus: newStatus.timeBonus,
-                lType: readLineStatus().type,
-                lMiss,
+                lType: lineType,
+                lMiss: lineMiss,
                 lRkpm: typeSpeed!.lineRkpm,
                 lKpm: typeSpeed!.lineKpm,
                 lostW: "",
                 lLost: 0,
                 combo,
-                tTime,
-                mode: readLineStatus().startInputMode,
-                sp: readLineStatus().startSpeed,
+                tTime: newtotalTypeTime,
+                mode: startInputMode,
+                sp: startSpeed,
               },
-              typeResult: readLineStatus().typeResult,
+              typeResult,
             };
             setLineResults(newLineResults);
           }
@@ -145,9 +137,7 @@ export const useTyping = () => {
     } else if (isFailed) {
       triggerMissSound();
       updateMissStatus();
-      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
-      const constantLineTime = getConstantLineTime(lineTime);
-      updateMissRefStatus({ constantLineTime, failKey: typingResult.failKey });
+      updateMissRefStatus({ constantLineTime, failKey: inputResult.failKey });
     }
   };
 };

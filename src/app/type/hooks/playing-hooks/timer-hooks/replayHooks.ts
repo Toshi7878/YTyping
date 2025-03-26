@@ -2,10 +2,10 @@ import { useCountRef, useGameUtilsRef, useStatusRef } from "@/app/type/atoms/ref
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useComboStateRef,
+  useGameStateUtilsRef,
   useLineResultsStateRef,
   useLineWordStateRef,
   useMapStateRef,
-  usePlayingInputModeStateRef,
   useSetComboState,
   useSetLineKpmState,
   useSetLineWordState,
@@ -87,7 +87,7 @@ const useKeyReplay = () => {
   const readCombo = useComboStateRef();
   const readLineWord = useLineWordStateRef();
   const readTypingStatus = useTypingStatusStateRef();
-  const readPlayingInputMode = usePlayingInputModeStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
   const { readCount } = useCountRef();
 
   return ({ constantLineTime, lineResult, typeData }: UseKeyReplayProps) => {
@@ -104,9 +104,10 @@ const useKeyReplay = () => {
       };
 
       if (isSuccess) {
+        const { inputMode } = readGameStateUtils();
         const lineWord = readLineWord();
         const result =
-          readPlayingInputMode() === "roma"
+          inputMode === "roma"
             ? new RomaInput({ typingKeys, lineWord })
             : new KanaInput({ typingKeys, lineWord });
         setLineWord(result.newLineWord);

@@ -2,12 +2,22 @@ export type InputMode = "roma" | "kana" | "flick";
 export type PlayMode = "playing" | "replay" | "practice";
 export type SceneType = "ready" | "playing" | "end" | "replay" | "practice";
 
-export type TypeChunk = {
+export interface TypeChunk {
   k: string;
   r: string[];
   p: number;
   t: "kana" | "alphabet" | "num" | "symbol" | "space" | undefined;
-};
+}
+
+interface NextTypeChunk extends TypeChunk {
+  orginalDakuChar?: Dakuten | HanDakuten;
+}
+
+export interface LineWord {
+  correct: { k: string; r: string };
+  nextChar: NextTypeChunk;
+  word: TypeChunk[];
+}
 
 export interface LineData {
   time: number;
@@ -18,14 +28,6 @@ export interface LineData {
   lineCount?: number;
   kanaWord: string;
   options?: MapLine["options"];
-}
-
-export interface LineWord {
-  correct: { k: string; r: string };
-  nextChar: TypeChunk;
-  word: TypeChunk[];
-  kanaDakuten?: string;
-  lineCount: number;
 }
 
 export interface SendResultData {

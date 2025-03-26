@@ -1,7 +1,7 @@
 "use client";
 import {
   useLineResultsState,
-  useLineSelectIndexStateRef,
+  useLineSelectIndexState,
   useMapState,
   useSceneState,
   useSetLineSelectIndexState,
@@ -19,9 +19,9 @@ function ResultLineList() {
   const scene = useSceneState();
   const lineResults = useLineResultsState();
   const { moveSetLine, scrollToCard, drawerSelectColorChange } = useMoveLine();
-  const setLineSelectIndex = useSetLineSelectIndexState();
   const { writeResultCards } = useResultCards();
-  const readLineSelectIndex = useLineSelectIndexStateRef();
+  const lineSelectIndex = useLineSelectIndexState();
+  const setLineSelectIndex = useSetLineSelectIndexState();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
@@ -31,9 +31,9 @@ function ResultLineList() {
   }, [scene]);
 
   useEffect(() => {
-    scrollToCard(readLineSelectIndex());
+    scrollToCard(lineSelectIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [lineSelectIndex]);
 
   const practiceReplayCardClick = useCallback(
     (lineNumber: number) => {
@@ -113,7 +113,7 @@ function ResultLineList() {
             scoreCount={scoreCount}
             cardRefs={cardRefs}
             handleCardClick={scene === "end" ? endCardClick : practiceReplayCardClick}
-            selectIndex={readLineSelectIndex()}
+            selectIndex={lineSelectIndex}
           />
         );
       })}

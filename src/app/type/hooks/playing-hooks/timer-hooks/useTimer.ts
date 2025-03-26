@@ -12,11 +12,10 @@ import { usePlaySpeedStateRef } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useComboStateRef,
   useCurrentTimeStateRef,
+  useGameStateUtilsRef,
   useLineResultsStateRef,
   useLineWordStateRef,
   useMapStateRef,
-  usePlayingInputModeStateRef,
-  useSceneStateRef,
   useSetChangeCSSCountState,
   useSetComboState,
   useSetCurrentTimeState,
@@ -105,7 +104,7 @@ export const useTimer = () => {
   const readLineWord = useLineWordStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readScene = useSceneStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
   const readMap = useMapStateRef();
   const { readCount, writeCount } = useCountRef();
 
@@ -130,7 +129,7 @@ export const useTimer = () => {
 
       return;
     } else if (nextLine) {
-      const scene = readScene();
+      const { scene } = readGameStateUtils();
       if (scene === "playing") {
         writeCount(readCount() + 1);
       } else {
@@ -232,7 +231,7 @@ export const useTimer = () => {
     const lineProgress = readLineProgress();
     lineProgress.value =
       currentOffesettedYTTime < 0 ? nextLine.time + currentOffesettedYTTime : currentLineTime;
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
 
     if (scene === "replay" && count && currentLineTime) {
       const constantLineTime = getConstantLineTime(currentLineTime);
@@ -257,12 +256,12 @@ export const useCalcLineResult = () => {
   const readLineWord = useLineWordStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readScene = useSceneStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
   const readMap = useMapStateRef();
 
   return ({ count, constantLineTime }: { count: number; constantLineTime: number }) => {
     const map = readMap();
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
 
     if (scene === "playing" || scene === "practice") {
       const { totalTypeTime, totalLatency } = readStatus();
@@ -401,15 +400,14 @@ export const useUpdateLine = () => {
   const { readLineProgress } = useProgress();
   const { readYTStatus } = useYTStatusRef();
   const { resetLineStatus, writeLineStatus } = useLineStatusRef();
-  const readPlayingInputMode = usePlayingInputModeStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readScene = useSceneStateRef();
   const readMap = useMapStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
 
   return (newCount: number) => {
     const map = readMap();
     const currentCount = newCount ? newCount - 1 : 0;
-    const inputMode = readPlayingInputMode();
+    const { inputMode, scene } = readGameStateUtils();
     resetLineStatus();
     const speed = readPlaySpeed();
     writeLineStatus({
@@ -422,7 +420,6 @@ export const useUpdateLine = () => {
       correct: { k: "", r: "" },
       nextChar: [...structuredClone(map.mapData[currentCount].word)][0],
       word: [...structuredClone(map.mapData[currentCount].word)].slice(1),
-      lineCount: currentCount,
     });
 
     setLyrics(map.mapData[currentCount]["lyrics"]);
@@ -447,7 +444,7 @@ export const useUpdateLine = () => {
     lineProgress.max =
       (nextTime > movieDuration ? movieDuration : nextTime) - Number(map.mapData[currentCount]["time"]);
 
-    if (readScene() === "replay") {
+    if (scene === "replay") {
       lineReplayUpdate(currentCount);
     }
   };

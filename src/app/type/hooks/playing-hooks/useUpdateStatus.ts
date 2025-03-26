@@ -1,9 +1,8 @@
 import { MISS_PENALTY } from "../../../../lib/instanceMapData";
 import { useGameUtilsRef, useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
 import {
+  useGameStateUtilsRef,
   useMapStateRef,
-  usePlayingInputModeStateRef,
-  useSceneStateRef,
   useSetComboState,
   useSetTypingStatusState,
   useTypingStatusStateRef,
@@ -19,8 +18,8 @@ export const useTypeSuccess = () => {
   const { readLineStatus, writeLineStatus } = useLineStatusRef();
   const { readStatus, writeStatus } = useStatusRef();
   const readTypingStatus = useTypingStatusStateRef();
-  const readPlayingInputMode = usePlayingInputModeStateRef();
-  const readScene = useSceneStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
+
   const readMap = useMapStateRef();
 
   const updateSuccessStatus = ({ newLineWord, lineRemainConstantTime, updatePoint, totalKpm, combo }) => {
@@ -68,7 +67,7 @@ export const useTypeSuccess = () => {
     successKey: string;
     combo: number;
   }) => {
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
     const lineTypingStatusRef = readLineStatus();
     const { maxCombo, completeCount } = readStatus();
     if (lineTypingStatusRef.type === 0) {
@@ -125,7 +124,7 @@ export const useTypeSuccess = () => {
       return;
     }
 
-    const inputMode = readPlayingInputMode();
+    const { inputMode: inputMode } = readGameStateUtils();
     if (typeChunk.t === "kana") {
       if (inputMode === "roma") {
         writeUserStats({

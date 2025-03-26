@@ -7,7 +7,7 @@ import { InputMode, PlayMode, TypeResult } from "../ts/type";
 import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 
-const countRefAtom = atomWithReset(0);
+export const countRefAtom = atomWithReset(0);
 
 export const useCountRef = () => {
   const readCount = useAtomCallback(
@@ -66,7 +66,7 @@ export const useStatusRef = () => {
   return { readStatus, writeStatus, resetStatus };
 };
 
-const lineStatusRefAtom = atomWithReset({
+export const lineStatusRefAtom = atomWithReset({
   type: 0,
   miss: 0,
   completedTime: 0,
