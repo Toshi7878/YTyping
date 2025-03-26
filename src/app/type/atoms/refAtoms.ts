@@ -75,6 +75,7 @@ export const lineStatusRefAtom = atomWithReset({
   startSpeed: 1,
   startInputMode: "roma" as InputMode,
   isCompleted: false,
+  rkpm: 0,
 });
 
 export const useLineStatusRef = () => {
@@ -257,7 +258,21 @@ export const useProgress = () => {
     { store }
   );
 
-  return { readTotalProgress, readLineProgress, writeLineProgress, writeTotalProgress };
+  const setTotalProgressValue = useAtomCallback(
+    useCallback((get, set, value: number) => {
+      const totalProgress = get(totalProgressRefAtom) as HTMLProgressElement;
+      totalProgress.value = value;
+    }, []),
+    { store }
+  );
+
+  return {
+    readTotalProgress,
+    readLineProgress,
+    writeLineProgress,
+    writeTotalProgress,
+    setTotalProgressValue,
+  };
 };
 
 const lineResultCardRefsAtom = atom<HTMLDivElement[]>([]);

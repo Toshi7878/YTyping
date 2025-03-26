@@ -137,6 +137,12 @@ export const useSetLineRemainTimeState = () => useSetAtom(lineRemainTimeAtom, { 
 
 export const useLineKpmState = () => useAtomValue(lineKpmAtom, { store });
 export const useSetLineKpmState = () => useSetAtom(lineKpmAtom, { store });
+export const useLineKpmStateRef = () => {
+  return useAtomCallback(
+    useCallback((get) => get(lineKpmAtom), []),
+    { store }
+  );
+};
 
 export const useComboState = () => useAtomValue(comboAtom, { store });
 export const useSetComboState = () => useSetAtom(comboAtom, { store });

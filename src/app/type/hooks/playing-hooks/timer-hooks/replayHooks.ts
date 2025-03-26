@@ -1,7 +1,6 @@
 import { useCountRef, useGameUtilsRef, useStatusRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
-  useComboStateRef,
   useGameStateUtilsRef,
   useLineResultsStateRef,
   useLineWordStateRef,
@@ -10,7 +9,6 @@ import {
   useSetLineKpmState,
   useSetLineWordState,
   useSetTypingStatusState,
-  useTypingStatusStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { useCalcTypeSpeed } from "@/app/type/hooks/calcTypeSpeed";
 import { useInputModeChange } from "@/app/type/hooks/playing-hooks/useInputModeChange";
@@ -84,9 +82,7 @@ const useKeyReplay = () => {
 
   const { writeStatus } = useStatusRef();
   const readLineResults = useLineResultsStateRef();
-  const readCombo = useComboStateRef();
   const readLineWord = useLineWordStateRef();
-  const readTypingStatus = useTypingStatusStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
   const { readCount } = useCountRef();
 
@@ -117,32 +113,22 @@ const useKeyReplay = () => {
         const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
 
         if (!isCompleted) {
-          const totalTypeCount = readTypingStatus().type;
-
-          const typeSpeed = calcTypeSpeed({
+          calcTypeSpeed({
             updateType: "keydown",
             constantLineTime,
-            totalTypeCount,
           });
-
-          const combo = readCombo();
 
           updateSuccessStatusRefs({
             constantLineTime,
             isCompleted,
             successKey: result.successKey,
-            combo,
           });
 
           updateSuccessStatus({
-            newLineWord: result.newLineWord,
+            isCompleted,
             lineRemainConstantTime,
             updatePoint: result.updatePoint,
-            totalKpm: typeSpeed!.totalKpm,
-            combo,
           });
-
-          setDisplayLineKpm(typeSpeed!.lineKpm);
         } else {
           const lineResults = readLineResults();
           const newStatusReplay = updateAllStatus({ count, newLineResults: lineResults });

@@ -1,56 +1,72 @@
-import { useLineStatusRef, useStatusRef } from "../atoms/refAtoms";
+import { useLineStatusRef, useStatusRef, useUserStatsRef } from "../atoms/refAtoms";
+import { useSetLineKpmState, useSetTypingStatusState, useTypingStatusStateRef } from "../atoms/stateAtoms";
 
+type UpdateType = "keydown" | "completed" | "timer" | "lineUpdate";
 export const useCalcTypeSpeed = () => {
   const { readLineStatus } = useLineStatusRef();
-  const { readStatus } = useStatusRef();
 
-  const calcLineKpm = ({ constantLineTime, newLineTypeCount }) => {
-    const lineKpm = constantLineTime ? Math.round((newLineTypeCount / constantLineTime) * 60) : 0;
+  const readTypingStatus = useTypingStatusStateRef();
+  const setDisplayLineKpm = useSetLineKpmState();
+  const { writeLineStatus } = useLineStatusRef();
+  const { setTypingStatus } = useSetTypingStatusState();
+  const { readStatus, writeStatus } = useStatusRef();
+  const { readUserStats, writeUserStats } = useUserStatsRef();
+
+  const calcLineKpm = ({ constantLineTime }) => {
+    const { type: lineTypeCount } = readLineStatus();
+
+    const lineKpm = constantLineTime ? Math.round((lineTypeCount / constantLineTime) * 60) : 0;
+    setDisplayLineKpm(lineKpm);
     return lineKpm;
   };
 
-  const calcLineRkpm = ({ lineKpm, newLineTypeCount, rkpmTime }) => {
-    const lineRkpm = newLineTypeCount != 0 ? Math.round((newLineTypeCount / rkpmTime) * 60) : lineKpm;
-    return lineRkpm;
+  const calcLineRkpm = ({ lineKpm, constantLineTime }) => {
+    const { latency: lineLatency } = readLineStatus();
+    const { type: lineTypeCount } = readLineStatus();
+
+    const rkpmTime = constantLineTime - lineLatency;
+    const lineRkpm = lineTypeCount !== 0 ? Math.round((lineTypeCount / rkpmTime) * 60) : lineKpm;
+    writeLineStatus({ rkpm: lineRkpm });
   };
 
-  const calcTotalKpm = ({ newTotalTypeCount, newTotalTypeTime }) => {
-    return newTotalTypeTime ? Math.round((newTotalTypeCount / newTotalTypeTime) * 60) : 0;
-  };
-
-  return ({
-    updateType = "timer",
+  const calcTotalKpm = ({
     constantLineTime,
-    totalTypeCount,
+    updateType,
   }: {
-    updateType: "keydown" | "completed" | "timer" | "lineUpdate";
+    updateType: UpdateType;
     constantLineTime: number;
-    totalTypeCount: number;
   }) => {
-    const { type: lineTypeCount, latency: lineLatency } = readLineStatus();
+    const { type: totalTypeCount } = readTypingStatus();
     const { totalTypeTime } = readStatus();
-    const isAddTypeCount = updateType === "keydown" || updateType === "completed";
 
-    const newLineTypeCount = isAddTypeCount ? lineTypeCount + 1 : lineTypeCount;
-    const lineKpm = calcLineKpm({ constantLineTime, newLineTypeCount });
+    const newTotalTypeTime = totalTypeTime + (updateType === "completed" ? 0 : constantLineTime);
+
+    const totalKpm = newTotalTypeTime ? Math.round((totalTypeCount / newTotalTypeTime) * 60) : 0;
+    setTypingStatus((prev) => ({ ...prev, kpm: totalKpm }));
+  };
+
+  return ({ updateType, constantLineTime }: { updateType: UpdateType; constantLineTime: number }) => {
+    const lineKpm = calcLineKpm({ constantLineTime });
 
     if (updateType === "timer") {
-      return { lineKpm };
+      return;
     }
 
-    const newTotalTypeCount = isAddTypeCount ? totalTypeCount + 1 : totalTypeCount;
-    const newTotalTypeTime = constantLineTime + totalTypeTime;
-    const totalKpm = calcTotalKpm({ newTotalTypeCount, newTotalTypeTime });
+    calcTotalKpm({ constantLineTime, updateType });
 
     if (updateType === "keydown") {
-      return { lineKpm, totalKpm };
+      return;
     }
 
     if (updateType === "lineUpdate" || updateType === "completed") {
-      //ラインアップデート時、ラインクリア時はラインのrkpmも計算する
-      const rkpmTime = constantLineTime - lineLatency;
-      const lineRkpm = calcLineRkpm({ rkpmTime, newLineTypeCount, lineKpm });
-      return { lineKpm, lineRkpm, totalKpm };
+      writeStatus({
+        totalTypeTime: readStatus().totalTypeTime + constantLineTime,
+      });
+      writeUserStats({
+        totalTypeTime: readUserStats().totalTypeTime + constantLineTime,
+      });
+      calcLineRkpm({ lineKpm, constantLineTime });
+      return;
     }
   };
 };
