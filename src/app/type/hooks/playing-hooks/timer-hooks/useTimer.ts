@@ -248,7 +248,7 @@ export const useCalcLineResult = () => {
     const { isCompleted } = readLineStatus();
     const count = readCount();
 
-    if (!isCompleted && scene !== "replay") {
+    if (!isCompleted && scene !== "replay" && count > 0) {
       const isTypingLine = map.mapData[count - 1].kpm.r > 0;
 
       if (isTypingLine) {
@@ -258,7 +258,7 @@ export const useCalcLineResult = () => {
         });
       }
 
-      if (count > 0 && isLinePointUpdated()) {
+      if (isLinePointUpdated()) {
         updateLineResult();
       }
 

@@ -24,6 +24,7 @@ export const useTypeSuccess = () => {
 
   const readMap = useMapStateRef();
   const readCombo = useComboStateRef();
+  const readLineWord = useLineWordStateRef();
 
   const updateSuccessStatus = ({ isCompleted, lineRemainConstantTime, updatePoint }) => {
     const newStatus = readTypingStatus();
@@ -104,6 +105,9 @@ export const useTypeSuccess = () => {
       });
       writeStatus({
         completeCount: completeCount + 1,
+      });
+      writeStatus({
+        kanaToRomaConvertCount: readStatus().kanaToRomaConvertCount + readLineWord().correct.r.length,
       });
     }
 
@@ -238,23 +242,17 @@ export const useLineUpdateStatus = () => {
   const { setTypingStatus } = useSetTypingStatusState();
   const { readStatus, writeStatus } = useStatusRef();
   const readTypingStatus = useTypingStatusStateRef();
-  const readGameStateUtils = useGameStateUtilsRef();
   const readMap = useMapStateRef();
   const readLineWord = useLineWordStateRef();
   const { readLineStatus } = useLineStatusRef();
   return ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
     const newStatus = readTypingStatus();
-    const { scene } = readGameStateUtils();
     const lineWord = readLineWord();
 
-    if (scene === "playing") {
-      const { kanaToRomaConvertCount } = readStatus();
-
-      writeStatus({
-        kanaToRomaConvertCount: kanaToRomaConvertCount + lineWord.correct.r.length,
-      });
-    }
+    writeStatus({
+      kanaToRomaConvertCount: readStatus().kanaToRomaConvertCount + lineWord.correct.r.length,
+    });
 
     const isFailured = lineWord.nextChar["k"];
     if (isFailured) {

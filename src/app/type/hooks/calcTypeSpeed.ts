@@ -29,19 +29,13 @@ export const useCalcTypeSpeed = () => {
     writeLineStatus({ rkpm: lineRkpm });
   };
 
-  const calcTotalKpm = ({
-    constantLineTime,
-    updateType,
-  }: {
-    updateType: UpdateType;
-    constantLineTime: number;
-  }) => {
+  const calcTotalKpm = ({ constantLineTime }: { constantLineTime: number }) => {
     const { type: totalTypeCount } = readTypingStatus();
     const { totalTypeTime } = readStatus();
 
-    const newTotalTypeTime = totalTypeTime + (updateType === "completed" ? 0 : constantLineTime);
+    const newTotalTypeTime = totalTypeTime + constantLineTime;
 
-    const totalKpm = newTotalTypeTime ? Math.round((totalTypeCount / newTotalTypeTime) * 60) : 0;
+    const totalKpm = Math.round((totalTypeCount / newTotalTypeTime) * 60);
     setTypingStatus((prev) => ({ ...prev, kpm: totalKpm }));
   };
 
@@ -52,7 +46,7 @@ export const useCalcTypeSpeed = () => {
       return;
     }
 
-    calcTotalKpm({ constantLineTime, updateType });
+    calcTotalKpm({ constantLineTime });
 
     if (updateType === "keydown") {
       return;
