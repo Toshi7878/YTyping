@@ -48,7 +48,7 @@ export const useUpdateLineResult = () => {
     writeStatus({
       clearRate: readStatus().clearRate - readMap().keyRate * lostLength,
     });
-    setTypingStatus((prev) => ({ ...prev, lost: lostLength }));
+    setTypingStatus((prev) => ({ ...prev, lost: prev.lost + lostLength }));
 
     return { lostWord: inputMode === "roma" ? romaLostWord : kanaLostWord, lostLength };
   };
