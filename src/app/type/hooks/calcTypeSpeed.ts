@@ -56,9 +56,12 @@ export const useCalcTypeSpeed = () => {
       writeStatus({
         totalTypeTime: readStatus().totalTypeTime + constantLineTime,
       });
-      writeUserStats({
-        totalTypeTime: readUserStats().totalTypeTime + constantLineTime,
-      });
+
+      if (readLineStatus().type !== 0) {
+        writeUserStats({
+          totalTypeTime: readUserStats().totalTypeTime + constantLineTime,
+        });
+      }
       calcLineRkpm({ lineKpm, constantLineTime });
       return;
     }
