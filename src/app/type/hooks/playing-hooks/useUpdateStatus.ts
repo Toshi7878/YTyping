@@ -66,6 +66,10 @@ export const useTypeSuccess = () => {
     const { scene } = readGameStateUtils();
     const lineTypingStatusRef = readLineStatus();
     const { maxCombo, completeCount } = readStatus();
+    writeStatus({
+      missCombo: 0,
+    });
+
     if (lineTypingStatusRef.type === 0) {
       writeLineStatus({
         latency: constantLineTime,
@@ -76,10 +80,6 @@ export const useTypeSuccess = () => {
         totalLatency: totalLatency + constantLineTime,
       });
     }
-
-    writeStatus({
-      missCombo: 0,
-    });
 
     const newCombo = readCombo() + 1;
     if (scene === "playing") {
@@ -111,72 +111,74 @@ export const useTypeSuccess = () => {
       });
     }
 
-    if (scene !== "replay" && typeChunk) {
-      writeLineStatus({
-        typeResult: [
-          ...readLineStatus().typeResult,
-          {
-            c: successKey,
-            is: true,
-            t: constantLineTime,
-          },
-        ],
-      });
+    if (scene === "replay" || !typeChunk) {
+      return;
+    }
 
-      const { inputMode } = readGameStateUtils();
-      if (typeChunk.t === "kana") {
-        if (inputMode === "roma") {
-          writeUserStats({
-            romaType: readUserStats().romaType + 1,
-          });
-          writeStatus({
-            romaType: readStatus().romaType + 1,
-          });
-        } else if (inputMode === "kana") {
-          writeUserStats({
-            kanaType: readUserStats().kanaType + 1,
-          });
+    writeLineStatus({
+      typeResult: [
+        ...readLineStatus().typeResult,
+        {
+          c: successKey,
+          is: true,
+          t: constantLineTime,
+        },
+      ],
+    });
 
-          writeStatus({
-            kanaType: readStatus().kanaType + 1,
-          });
-        } else if (inputMode === "flick") {
-          writeUserStats({
-            flickType: readUserStats().flickType + 1,
-          });
-          writeStatus({
-            flickType: readStatus().flickType + 1,
-          });
-        }
-      } else if (typeChunk.t === "alphabet") {
+    const { inputMode } = readGameStateUtils();
+    if (typeChunk.t === "kana") {
+      if (inputMode === "roma") {
         writeUserStats({
-          englishType: readUserStats().englishType + 1,
+          romaType: readUserStats().romaType + 1,
         });
         writeStatus({
-          englishType: readStatus().englishType + 1,
+          romaType: readStatus().romaType + 1,
         });
-      } else if (typeChunk.t === "num") {
+      } else if (inputMode === "kana") {
         writeUserStats({
-          numType: readUserStats().numType + 1,
+          kanaType: readUserStats().kanaType + 1,
+        });
+
+        writeStatus({
+          kanaType: readStatus().kanaType + 1,
+        });
+      } else if (inputMode === "flick") {
+        writeUserStats({
+          flickType: readUserStats().flickType + 1,
         });
         writeStatus({
-          numType: readStatus().numType + 1,
-        });
-      } else if (typeChunk.t === "space") {
-        writeUserStats({
-          spaceType: readUserStats().spaceType + 1,
-        });
-        writeStatus({
-          spaceType: readStatus().spaceType + 1,
-        });
-      } else if (typeChunk.t === "symbol") {
-        writeUserStats({
-          symbolType: readUserStats().symbolType + 1,
-        });
-        writeStatus({
-          symbolType: readStatus().symbolType + 1,
+          flickType: readStatus().flickType + 1,
         });
       }
+    } else if (typeChunk.t === "alphabet") {
+      writeUserStats({
+        englishType: readUserStats().englishType + 1,
+      });
+      writeStatus({
+        englishType: readStatus().englishType + 1,
+      });
+    } else if (typeChunk.t === "num") {
+      writeUserStats({
+        numType: readUserStats().numType + 1,
+      });
+      writeStatus({
+        numType: readStatus().numType + 1,
+      });
+    } else if (typeChunk.t === "space") {
+      writeUserStats({
+        spaceType: readUserStats().spaceType + 1,
+      });
+      writeStatus({
+        spaceType: readStatus().spaceType + 1,
+      });
+    } else if (typeChunk.t === "symbol") {
+      writeUserStats({
+        symbolType: readUserStats().symbolType + 1,
+      });
+      writeStatus({
+        symbolType: readStatus().symbolType + 1,
+      });
     }
   };
 
