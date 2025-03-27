@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-3-28",
+    descriptions: ["譜面エディターの全体時間調整機能を実行するとエラーになる問題を修正"],
+  },
+  {
     date: "2025-3-23",
     descriptions: [
       "lrcファイルインポートで[xx:xx.xx]の形式のファイルは変換できて[xx:xx:xx]の形式のlrcファイルが変換できなかった問題を修正",
