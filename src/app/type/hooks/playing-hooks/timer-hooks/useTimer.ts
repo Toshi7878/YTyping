@@ -19,6 +19,7 @@ import {
   useSetLineWordState,
   useSetLyricsState,
   useSetNextLyricsState,
+  useSetTypingStatusState,
 } from "@/app/type/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
 import { Ticker } from "pixi.js";
@@ -283,6 +284,7 @@ export const useUpdateLine = () => {
   const readPlaySpeed = usePlaySpeedStateRef();
   const readMap = useMapStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
+  const { setTypingStatus } = useSetTypingStatusState();
 
   return (newCount: number) => {
     const map = readMap();
@@ -294,6 +296,11 @@ export const useUpdateLine = () => {
       startSpeed: speed.playSpeed,
       startInputMode: inputMode,
     });
+    setTypingStatus((prev) => ({
+      ...prev,
+      point: 0,
+      timeBonus: 0,
+    }));
 
     setDisplayLineKpm(0);
     setLineWord({
