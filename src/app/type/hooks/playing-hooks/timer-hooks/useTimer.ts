@@ -4,25 +4,21 @@ import {
   useLineStatusRef,
   usePlayer,
   useProgress,
-  useStatusRef,
   useYTStatusRef,
 } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedStateRef } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useCurrentTimeStateRef,
   useGameStateUtilsRef,
-  useLineResultsStateRef,
   useLineWordStateRef,
   useMapStateRef,
   useSetChangeCSSCountState,
-  useSetComboState,
   useSetCurrentTimeState,
   useSetLineKpmState,
   useSetLineRemainTimeState,
   useSetLineWordState,
   useSetLyricsState,
   useSetNextLyricsState,
-  useSetTypingStatusState,
 } from "@/app/type/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
 import { Ticker } from "pixi.js";
@@ -30,8 +26,8 @@ import { LineData } from "../../../ts/type";
 import { useCalcTypeSpeed } from "../../calcTypeSpeed";
 import { useGetTime } from "../../useGetTime";
 import { useUpdateLineResult } from "../updateLineResult";
-import { useLineUpdateStatus } from "../useUpdateStatus";
-import { useLineReplayUpdate, useReplay, useUpdateAllStatus } from "./replayHooks";
+import { useLineUpdateStatus, useUpdateAllStatus } from "../useUpdateStatus";
+import { useLineReplayUpdate, useReplay } from "./replayHooks";
 import { useGetSeekLineCount } from "./useSeekGetLineCount";
 
 const typeTicker = new Ticker();
@@ -229,13 +225,9 @@ export const useTimer = () => {
 
 export const useCalcLineResult = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
-  const setCombo = useSetComboState();
-  const { setTypingStatus } = useSetTypingStatusState();
   const updateAllStatus = useUpdateAllStatus();
 
   const { readLineStatus } = useLineStatusRef();
-  const { writeStatus } = useStatusRef();
-  const readLineResults = useLineResultsStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
   const readMap = useMapStateRef();
   const { readCount } = useCountRef();
@@ -265,26 +257,13 @@ export const useCalcLineResult = () => {
       if (scene === "playing") {
         updateStatus({ constantLineTime });
       } else if (scene === "practice") {
-        const lineResults = readLineResults();
-
-        const newStatus = updateAllStatus({
+        updateAllStatus({
           count: map.mapData.length - 1,
-          newLineResults: lineResults,
+          updateType: "lineUpdate",
         });
-        setTypingStatus(newStatus);
       }
     } else if (scene === "replay") {
-      const lineResults = readLineResults();
-
-      const newStatus = updateAllStatus({ count, newLineResults: lineResults });
-      setTypingStatus(newStatus);
-      if (count > 0) {
-        const currentReplayLineResult = lineResults[count - 1];
-        setCombo(currentReplayLineResult.status!.combo as number);
-        writeStatus({
-          totalTypeTime: currentReplayLineResult.status!.tTime,
-        });
-      }
+      updateAllStatus({ count, updateType: "lineUpdate" });
     }
   };
 };

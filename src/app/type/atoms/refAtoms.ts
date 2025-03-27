@@ -69,7 +69,6 @@ export const useStatusRef = () => {
 export const lineStatusRefAtom = atomWithReset({
   type: 0,
   miss: 0,
-  completedTime: 0,
   latency: 0,
   typeResult: [] as TypeResult[],
   startSpeed: 1,
