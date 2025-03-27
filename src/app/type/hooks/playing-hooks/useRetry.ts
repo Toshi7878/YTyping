@@ -126,6 +126,7 @@ export const useProceedRetry = () => {
     writeGameUtils({
       replayKeyCount: 0,
       isRetrySkip: enableRetrySKip,
+      playMode: playMode,
     });
 
     readPlayer().seekTo(0, true);
