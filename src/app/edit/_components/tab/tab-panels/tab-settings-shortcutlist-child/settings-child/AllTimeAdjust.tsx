@@ -24,8 +24,8 @@ export default function AllTimeAdjust() {
       return;
     }
 
-    const newMap = readMap().map((item) => {
-      const newTime = timeValidate(Number(item.time) + Number(totalAdjustValue));
+    const newMap = readMap().map((item, index) => {
+      const newTime = index === 0 ? 0 : timeValidate(Number(item.time) + Number(totalAdjustValue));
 
       return {
         ...item,
