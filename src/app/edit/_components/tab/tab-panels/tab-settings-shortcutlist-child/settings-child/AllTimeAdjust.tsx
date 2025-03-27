@@ -24,13 +24,25 @@ export default function AllTimeAdjust() {
       return;
     }
 
-    const newMap = readMap().map((item, index) => {
-      const newTime = index === 0 ? 0 : timeValidate(Number(item.time) + Number(totalAdjustValue));
-
-      return {
-        ...item,
-        time: newTime.toFixed(3),
-      };
+    const map = readMap();
+    const newMap = map.map((item, index) => {
+      if (index === 0) {
+        return {
+          ...item,
+          time: "0",
+        };
+      } else if (index === map.length - 1) {
+        return {
+          ...item,
+          time: item.time,
+        };
+      } else {
+        const newTime = timeValidate(Number(item.time) + Number(totalAdjustValue));
+        return {
+          ...item,
+          time: newTime.toFixed(3),
+        };
+      }
     });
     setCanUpload(true);
 
