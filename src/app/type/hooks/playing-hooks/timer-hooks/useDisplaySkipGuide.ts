@@ -1,4 +1,4 @@
-import { useSetSkipState, useSkipStateRef } from "@/app/type/atoms/stateAtoms";
+import { useGameStateUtilsRef, useSetSkipState } from "@/app/type/atoms/stateAtoms";
 
 interface useDisplaySkipGuideProps {
   kana: string;
@@ -9,7 +9,7 @@ interface useDisplaySkipGuideProps {
 
 export const useDisplaySkipGuide = () => {
   const setSkip = useSetSkipState();
-  const readSkip = useSkipStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
 
   return ({ kana, lineConstantTime, lineRemainTime, isRetrySkip }: useDisplaySkipGuideProps) => {
     const SKIP_IN = 0.4; //ラインが切り替わり後、指定のtimeが経過したら表示
@@ -18,8 +18,7 @@ export const useDisplaySkipGuide = () => {
     const IS_SKIP_DISPLAY =
       (!kana && lineConstantTime >= SKIP_IN && lineRemainTime >= SKIP_OUT) || isRetrySkip;
 
-    //スキップ表示絶対条件 && 既に表示されているか
-    const skip = readSkip();
+    const { skip } = readGameStateUtils();
 
     if (IS_SKIP_DISPLAY) {
       if (!skip) {

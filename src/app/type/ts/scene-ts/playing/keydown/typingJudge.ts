@@ -1,8 +1,9 @@
+import { useGameStateUtilsRef, useLineWordStateRef } from "@/app/type/atoms/stateAtoms";
 import { CODE_TO_KANA, KEY_TO_KANA } from "../../../../../../config/consts/kanaKeyMap";
 import { CHAR_POINT } from "../../../../../../lib/instanceMapData";
-import { Dakuten, HanDakuten, InputMode, LineWord, NormalizeHirakana, TypeChunk } from "../../../type";
+import { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../../type";
 
-const keyboardCharacters = [
+const KEYBOARD_CHARS = [
   "0",
   "1",
   "2",
@@ -90,7 +91,7 @@ const keyboardCharacters = [
   "^",
 ];
 
-const dakuKanaList = [
+const DAKU_LIST = [
   "ゔ",
   "が",
   "ぎ",
@@ -113,9 +114,9 @@ const dakuKanaList = [
   "べ",
   "ぼ",
 ];
-const handakuKanaList = ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"];
+const HANDAKU_KANA_LIST = ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"];
 
-const dakuHandakuList = dakuKanaList.concat(handakuKanaList);
+const DAKU_HANDAKU_LIST = DAKU_LIST.concat(HANDAKU_KANA_LIST);
 const yoonFlickList = ["ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "っ", "ゎ"];
 const yoonFlickListLarge = ["あ", "い", "う", "え", "お", "や", "ゆ", "よ", "つ", "わ"];
 const smallKanaList = ["っ", "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "ゎ", "ヵ", "ヶ", "ん"];
@@ -286,11 +287,11 @@ export class RomaInput {
   }
 }
 
-type DakuHandakuData = {
+interface DakuHandakuData {
   type: "" | "゛" | "゜";
-  normalized: "" | NormalizeHirakana;
-  dakuHandaku: "" | Dakuten | HanDakuten;
-};
+  normalizedKana: "" | NormalizeHirakana;
+  originalKana: "" | Dakuten | HanDakuten;
+}
 
 export class KanaInput {
   newLineWord: LineWord;
@@ -301,7 +302,7 @@ export class KanaInput {
   constructor({ typingKeys, lineWord }: JudgeType) {
     this.updatePoint = 0;
     const result = this.hasKana({ typingKeys, lineWord });
-    this.newLineWord = result.newLineWord as LineWord;
+    this.newLineWord = result.newLineWord;
     this.successKey = result.successKey;
     this.failKey = result.failKey ?? "";
   }
@@ -311,27 +312,29 @@ export class KanaInput {
 
     const nextKana = lineWord.nextChar["k"];
     const keys = typingKeys.keys;
-    const isdakuHandaku = dakuHandakuList.includes(nextKana[0]);
+    const isdakuHandaku = DAKU_HANDAKU_LIST.includes(nextKana[0]);
 
     const dakuHanDakuData: DakuHandakuData = isdakuHandaku
       ? this.parseDakuHandaku(nextKana[0] as Dakuten | HanDakuten)
       : {
           type: "",
-          normalized: "",
-          dakuHandaku: "",
+          normalizedKana: "",
+          originalKana: "",
         };
 
     const successIndex: number = nextKana[0]
-      ? keys.indexOf(dakuHanDakuData.normalized ? dakuHanDakuData.normalized : nextKana[0].toLowerCase())
+      ? keys.indexOf(
+          dakuHanDakuData.normalizedKana ? dakuHanDakuData.normalizedKana : nextKana[0].toLowerCase()
+        )
       : -1;
 
     const typingKey =
       keys[successIndex] === "゛" || keys[successIndex] === "゜"
-        ? newLineWord.kanaDakuten
+        ? newLineWord.nextChar.orginalDakuChar
         : keys[successIndex];
 
     if (!typingKey) {
-      const isKanaInArray = !keyboardCharacters.includes(nextKana[0]);
+      const isKanaInArray = !KEYBOARD_CHARS.includes(nextKana[0]);
       return {
         newLineWord,
         successKey: "",
@@ -342,7 +345,7 @@ export class KanaInput {
     if (dakuHanDakuData.type) {
       const yoon = nextKana.length >= 2 && dakuHanDakuData.type ? nextKana[1] : "";
       newLineWord.nextChar["k"] = dakuHanDakuData.type + yoon;
-      newLineWord.kanaDakuten = dakuHanDakuData.dakuHandaku;
+      newLineWord.nextChar.orginalDakuChar = dakuHanDakuData.originalKana as Dakuten | HanDakuten;
     } else {
       if (nextKana.length >= 2) {
         newLineWord.correct["k"] += typingKey;
@@ -358,14 +361,10 @@ export class KanaInput {
     };
   }
 
-  private parseDakuHandaku(dakuHandaku: Dakuten | HanDakuten): {
-    type: "" | "゛" | "゜";
-    normalized: "" | NormalizeHirakana;
-    dakuHandaku: "" | Dakuten | HanDakuten;
-  } {
-    const type: "" | "゛" | "゜" = dakuKanaList.includes(dakuHandaku) ? "゛" : "゜";
-    const normalized: "" | NormalizeHirakana = dakuHandaku.normalize("NFD")[0] as NormalizeHirakana;
-    return { type, normalized, dakuHandaku };
+  private parseDakuHandaku(originalKana: Dakuten | HanDakuten): DakuHandakuData {
+    const type: "" | "゛" | "゜" = DAKU_LIST.includes(originalKana) ? "゛" : "゜";
+    const normalizedKana: "" | NormalizeHirakana = originalKana.normalize("NFD")[0] as NormalizeHirakana;
+    return { type, normalizedKana, originalKana };
   }
 
   private wordUpdate(typingKey: string, newLineWord: LineWord) {
@@ -381,35 +380,8 @@ export class KanaInput {
   }
 }
 
-interface TypingEvent {
-  event: KeyboardEvent;
-  lineWord: LineWord;
-  inputMode?: InputMode;
-}
-
-export class Typing {
-  typeChunk: TypeChunk;
-  newLineWord: LineWord;
-  updatePoint: number;
-  successKey: string;
-  failKey: string;
-
-  constructor({ event, lineWord, inputMode }: TypingEvent) {
-    const typingKeys: TypingKeys =
-      inputMode === "roma" ? this.romaMakeInput(event) : this.kanaMakeInput(event);
-    const inputResult =
-      inputMode === "roma"
-        ? new RomaInput({ typingKeys, lineWord })
-        : new KanaInput({ typingKeys, lineWord });
-
-    this.typeChunk = lineWord.nextChar;
-    this.newLineWord = inputResult.newLineWord;
-    this.updatePoint = inputResult.updatePoint;
-    this.successKey = inputResult.successKey;
-    this.failKey = inputResult.failKey;
-  }
-
-  private romaMakeInput(event: KeyboardEvent) {
+export const useInputJudge = () => {
+  const romaMakeInput = (event: KeyboardEvent) => {
     const input = {
       keys: [event.key.toLowerCase()],
       key: event.key.toLowerCase(),
@@ -418,9 +390,9 @@ export class Typing {
     };
 
     return input;
-  }
+  };
 
-  private kanaMakeInput(event: KeyboardEvent) {
+  const kanaMakeInput = (event: KeyboardEvent) => {
     const input = {
       keys: CODE_TO_KANA[event.code] ? CODE_TO_KANA[event.code] : KEY_TO_KANA[event.key],
       key: event.key.toLowerCase(),
@@ -459,7 +431,7 @@ export class Typing {
       }
     }
 
-    if (keyboardCharacters.includes(event.key)) {
+    if (KEYBOARD_CHARS.includes(event.key)) {
       input.keys.push(
         event.key.toLowerCase(),
         event.key.toLowerCase().replace(event.key.toLowerCase(), function (s) {
@@ -469,5 +441,24 @@ export class Typing {
     }
 
     return input;
-  }
-}
+  };
+
+  const readGameStateUtils = useGameStateUtilsRef();
+  const readLineWord = useLineWordStateRef();
+
+  return (event: KeyboardEvent) => {
+    const { inputMode: inputMode } = readGameStateUtils();
+    const lineWord = readLineWord();
+    const typingKeys: TypingKeys = inputMode === "roma" ? romaMakeInput(event) : kanaMakeInput(event);
+    const inputResult =
+      inputMode === "roma"
+        ? new RomaInput({ typingKeys, lineWord })
+        : new KanaInput({ typingKeys, lineWord });
+
+    const isCompleted = inputResult.newLineWord.nextChar.k === "";
+    const isSuccess = inputResult.successKey;
+    const isFailed = inputResult.newLineWord.correct["r"] || inputResult.newLineWord.correct["k"];
+
+    return { ...inputResult, typeChunk: lineWord.nextChar, isCompleted, isSuccess, isFailed };
+  };
+};

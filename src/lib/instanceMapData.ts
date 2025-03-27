@@ -610,7 +610,7 @@ export class CreateMap {
 }
 
 export function romaConvert(lineWord: LineWord) {
-  const dakuten = lineWord.kanaDakuten;
+  const dakuten = lineWord.nextChar.orginalDakuChar;
   let kanaWord =
     (dakuten ? dakuten : lineWord.nextChar["k"]) + lineWord.word.map((char) => char["k"]).join("");
   const nextPoint = lineWord.nextChar["p"];

@@ -1,75 +1,28 @@
-import { useCountRef, useGameUtilsRef, useStatusRef } from "@/app/type/atoms/refAtoms";
+import { useCountRef, useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
-  useComboStateRef,
+  useGameStateUtilsRef,
   useLineResultsStateRef,
   useLineWordStateRef,
-  useMapStateRef,
-  usePlayingInputModeStateRef,
-  useSetComboState,
-  useSetLineKpmState,
   useSetLineWordState,
-  useSetTypingStatusState,
-  useTypingStatusStateRef,
 } from "@/app/type/atoms/stateAtoms";
-import { useCalcTypeSpeed } from "@/app/type/hooks/calcTypeSpeed";
+import { useCalcTypeSpeed } from "@/app/type/hooks/playing-hooks/calcTypeSpeed";
 import { useInputModeChange } from "@/app/type/hooks/playing-hooks/useInputModeChange";
 import { YouTubeSpeed } from "@/types";
 import { KanaInput, RomaInput, TypingKeys } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { LineResultData, TypeResult } from "../../../ts/type";
-import { useGetTime } from "../../useGetTime";
+import { useGetTime } from "../useGetTime";
 import { useSoundEffect } from "../useSoundEffect";
-import { useCalcCurrentRank, useTypeMiss, useTypeSuccess } from "../useUpdateStatus";
-
-export const useUpdateAllStatus = () => {
-  const calcCurrentRank = useCalcCurrentRank();
-  const readMap = useMapStateRef();
-
-  return ({ count, newLineResults }) => {
-    const map = readMap();
-
-    const newStatus = {
-      score: 0,
-      point: 0,
-      timeBonus: 0,
-      type: 0,
-      miss: 0,
-      lost: 0,
-      kpm: 0,
-      rank: 0,
-      line: map.lineLength,
-    };
-
-    if (0 >= count) {
-      return newStatus;
-    }
-
-    for (let i = 0; i <= count - 1; i++) {
-      newStatus.score += (newLineResults[i]?.status?.p ?? 0) + (newLineResults[i]?.status?.tBonus ?? 0);
-      newStatus.type += newLineResults[i]?.status?.lType ?? 0;
-      newStatus.miss += newLineResults[i]?.status?.lMiss ?? 0;
-      newStatus.lost += newLineResults[i]?.status?.lLost ?? 0;
-      newStatus.line -= newLineResults[i]?.status?.lType != null ? 1 : 0;
-    }
-    const totalTypeTime = newLineResults[count - 1]?.status?.tTime;
-    newStatus.kpm = totalTypeTime ? Math.round((newStatus.type / totalTypeTime!) * 60) : 0;
-    newStatus.rank = calcCurrentRank(newStatus.score);
-
-    return newStatus;
-  };
-};
+import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../useUpdateStatus";
 
 interface UseKeyReplayProps {
   constantLineTime: number;
-  typeData: TypeResult;
+  typeResult: TypeResult;
   lineResult: LineResultData;
 }
 
 const useKeyReplay = () => {
   const setLineWord = useSetLineWordState();
-  const setDisplayLineKpm = useSetLineKpmState();
-  const setCombo = useSetComboState();
-  const { setTypingStatus } = useSetTypingStatusState();
 
   const inputModeChange = useInputModeChange();
   const dispatchSpeed = usePlaySpeedReducer();
@@ -82,18 +35,14 @@ const useKeyReplay = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
 
-  const { writeStatus } = useStatusRef();
-  const readLineResults = useLineResultsStateRef();
-  const readCombo = useComboStateRef();
   const readLineWord = useLineWordStateRef();
-  const readTypingStatus = useTypingStatusStateRef();
-  const readPlayingInputMode = usePlayingInputModeStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
   const { readCount } = useCountRef();
 
-  return ({ constantLineTime, lineResult, typeData }: UseKeyReplayProps) => {
-    const key = typeData.c;
-    const isSuccess = typeData.is;
-    const option = typeData.op;
+  return ({ constantLineTime, typeResult }: UseKeyReplayProps) => {
+    const key = typeResult.c;
+    const isSuccess = typeResult.is;
+    const option = typeResult.op;
     const count = readCount();
 
     if (key) {
@@ -104,54 +53,34 @@ const useKeyReplay = () => {
       };
 
       if (isSuccess) {
+        const { inputMode } = readGameStateUtils();
         const lineWord = readLineWord();
         const result =
-          readPlayingInputMode() === "roma"
+          inputMode === "roma"
             ? new RomaInput({ typingKeys, lineWord })
             : new KanaInput({ typingKeys, lineWord });
         setLineWord(result.newLineWord);
-        const isCompleted = !result.newLineWord.nextChar["k"];
-        triggerTypingSound({ isCompleted: isCompleted });
+        const isCompleted = result.newLineWord.nextChar["k"] === "";
+        triggerTypingSound({ isCompleted });
 
         const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
+        calcTypeSpeed({
+          updateType: "keydown",
+          constantLineTime,
+        });
+
+        updateSuccessStatusRefs({
+          constantLineTime,
+          successKey: result.successKey,
+        });
 
         if (!isCompleted) {
-          const totalTypeCount = readTypingStatus().type;
-
-          const typeSpeed = calcTypeSpeed({
-            updateType: "keydown",
-            constantLineTime,
-            totalTypeCount,
-          });
-
-          const combo = readCombo();
-
-          updateSuccessStatusRefs({
-            constantLineTime,
-            isCompleted,
-            successKey: result.successKey,
-            combo,
-          });
-
           updateSuccessStatus({
-            newLineWord: result.newLineWord,
             lineRemainConstantTime,
             updatePoint: result.updatePoint,
-            totalKpm: typeSpeed!.totalKpm,
-            combo,
           });
-
-          setDisplayLineKpm(typeSpeed!.lineKpm);
         } else {
-          const lineResults = readLineResults();
-          const newStatusReplay = updateAllStatus({ count, newLineResults: lineResults });
-          newStatusReplay.point = lineResult.status!.p as number;
-          newStatusReplay.timeBonus = lineResult.status!.tBonus as number;
-
-          setTypingStatus(newStatusReplay);
-          setCombo(lineResult.status!.combo as number);
-          setDisplayLineKpm(lineResult.status!.lKpm as number);
-          writeStatus({ totalTypeTime: lineResult.status!.tTime });
+          updateAllStatus({ count, updateType: "completed" });
         }
       } else {
         triggerMissSound();
@@ -201,7 +130,7 @@ export const useReplay = () => {
     const keyTime = typeData.t;
 
     if (constantLineTime >= keyTime) {
-      keyReplay({ constantLineTime: constantLineTime, lineResult, typeData });
+      keyReplay({ constantLineTime: constantLineTime, lineResult, typeResult: typeData });
       writeGameUtils({ replayKeyCount: replayKeyCount + 1 });
     }
   };

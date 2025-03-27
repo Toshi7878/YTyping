@@ -3,8 +3,7 @@ import { YTPlayer } from "@/types/global-types";
 import { YouTubeEvent } from "react-youtube";
 import { useCountRef, useGameUtilsRef, usePlayer, useProgress, useYTStatusRef } from "../atoms/refAtoms";
 import {
-  useIsLoadingOverlayStateRef,
-  useSceneStateRef,
+  useGameStateUtilsRef,
   useSetNotifyState,
   useSetPlayingInputModeState,
   useSetSceneState,
@@ -26,13 +25,12 @@ export const useYTPlayEvent = () => {
   const { readPlayer } = usePlayer();
   const { readGameUtils } = useGameUtilsRef();
   const { readYTStatus, writeYTStatus } = useYTStatusRef();
-  const readScene = useSceneStateRef();
-  const readIsLoadingOverlay = useIsLoadingOverlayStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
   const readReadyInputMode = useReadyInputModeStateRef();
 
   return async (event: YouTubeEvent) => {
     console.log("再生 1");
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
 
     if (scene === "playing" || scene === "practice" || scene === "replay") {
       startTimer();
@@ -53,9 +51,9 @@ export const useYTPlayEvent = () => {
     writeYTStatus({ movieDuration });
 
     const playMode = readGameUtils().playMode;
-    const isPlayDataLoad = readIsLoadingOverlay();
+    const { isLoadingOverlay } = readGameStateUtils();
 
-    if (isPlayDataLoad) {
+    if (isLoadingOverlay) {
       readPlayer().pauseVideo();
       return;
     }

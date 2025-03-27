@@ -7,7 +7,7 @@ import { InputMode, PlayMode, TypeResult } from "../ts/type";
 import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 
-const countRefAtom = atomWithReset(0);
+export const countRefAtom = atomWithReset(0);
 
 export const useCountRef = () => {
   const readCount = useAtomCallback(
@@ -66,15 +66,15 @@ export const useStatusRef = () => {
   return { readStatus, writeStatus, resetStatus };
 };
 
-const lineStatusRefAtom = atomWithReset({
+export const lineStatusRefAtom = atomWithReset({
   type: 0,
   miss: 0,
-  completedTime: 0,
   latency: 0,
   typeResult: [] as TypeResult[],
   startSpeed: 1,
   startInputMode: "roma" as InputMode,
   isCompleted: false,
+  rkpm: 0,
 });
 
 export const useLineStatusRef = () => {
@@ -257,7 +257,21 @@ export const useProgress = () => {
     { store }
   );
 
-  return { readTotalProgress, readLineProgress, writeLineProgress, writeTotalProgress };
+  const setTotalProgressValue = useAtomCallback(
+    useCallback((get, set, value: number) => {
+      const totalProgress = get(totalProgressRefAtom) as HTMLProgressElement;
+      totalProgress.value = value;
+    }, []),
+    { store }
+  );
+
+  return {
+    readTotalProgress,
+    readLineProgress,
+    writeLineProgress,
+    writeTotalProgress,
+    setTotalProgressValue,
+  };
 };
 
 const lineResultCardRefsAtom = atom<HTMLDivElement[]>([]);

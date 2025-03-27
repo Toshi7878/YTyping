@@ -1,9 +1,8 @@
 import { useCountRef, usePlayer, useResultCards } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
-  useLineSelectIndexStateRef,
+  useGameStateUtilsRef,
   useMapStateRef,
-  useSceneStateRef,
   useSetLineSelectIndexState,
   useSetNotifyState,
 } from "../../atoms/stateAtoms";
@@ -18,17 +17,16 @@ export const useMoveLine = () => {
   const getSeekLineCount = useGetSeekLineCount();
 
   const { readResultCards } = useResultCards();
-  const readScene = useSceneStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readLineSelectIndex = useLineSelectIndexStateRef();
   const readMap = useMapStateRef();
   const { readCount, writeCount } = useCountRef();
 
   const { pauseTimer } = useTimerControls();
+  const readGameStateUtils = useGameStateUtilsRef();
 
   const movePrevLine = () => {
     const map = readMap();
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
     const count = readCount() - (scene === "replay" ? 1 : 0);
     const prevCount = structuredClone(map.typingLineNumbers)
       .reverse()
@@ -57,7 +55,7 @@ export const useMoveLine = () => {
 
   const moveNextLine = () => {
     const map = readMap();
-    const lineSelectIndex = readLineSelectIndex();
+    const { lineSelectIndex } = readGameStateUtils();
     const seekCount = lineSelectIndex ? map.typingLineNumbers[lineSelectIndex - 1] : null;
     const seekCountAdjust = seekCount && seekCount === readCount() ? 0 : -1;
 
@@ -73,7 +71,7 @@ export const useMoveLine = () => {
     const prevLineTime =
       (nextCount > 1 ? map.mapData[nextCount]["time"] - map.mapData[nextCount - 1]["time"] : 0) / playSpeed;
 
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
     const seekBuffer = scene === "practice" && prevLineTime > 1 ? 1 * playSpeed : 0;
     const nextTime = Number(map.mapData[nextCount]["time"]) - seekBuffer;
 
@@ -95,11 +93,9 @@ export const useMoveLine = () => {
   const moveSetLine = (seekCount: number) => {
     const map = readMap();
     const playSpeed = readPlaySpeed().playSpeed;
-    const scene = readScene();
+    const { scene, lineSelectIndex } = readGameStateUtils();
     const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
     const seekTime = Number(map.mapData[seekCount]["time"]) - seekBuffer;
-
-    const lineSelectIndex = readLineSelectIndex();
 
     if (lineSelectIndex !== seekCount) {
       drawerSelectColorChange(seekCount);

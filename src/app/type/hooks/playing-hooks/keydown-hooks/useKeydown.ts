@@ -1,14 +1,11 @@
-import { useCountRef, useGameUtilsRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
+import { useGameUtilsRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
-  useLineSelectIndexStateRef,
+  useGameStateUtilsRef,
   useLineWordStateRef,
   useMapStateRef,
-  usePlayingInputModeStateRef,
   useSceneState,
-  useSceneStateRef,
   useSetNotifyState,
-  useSkipStateRef,
   useUserTypingOptionsStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/consts";
@@ -30,31 +27,18 @@ export const useHandleKeydown = () => {
 
   const { readYTStatus } = useYTStatusRef();
   const readLineWord = useLineWordStateRef();
-  const readScene = useSceneStateRef();
-  const { readCount } = useCountRef();
+  const readGameStateUtils = useGameStateUtilsRef();
 
   return (event: KeyboardEvent) => {
-    const isPaused = readYTStatus().isPaused;
-    const scene = readScene();
+    const { isPaused } = readYTStatus();
+    const { scene } = readGameStateUtils();
 
     if (!isPaused || scene === "practice") {
-      const count = readCount();
-      const currentLineCount = count - 1;
-
-      //ライン切り変えバグ回避(切り替わるギリギリでタイピングするとバグる)
-      if (currentLineCount < 0) {
-        return;
-      }
-
       const lineWord = readLineWord();
-      if (currentLineCount == lineWord.lineCount && isKeydownTyped(event, lineWord) && scene !== "replay") {
+      if (isKeydownTyped(event, lineWord) && scene !== "replay") {
         event.preventDefault();
 
-        typing({
-          event,
-          count,
-          lineWord,
-        });
+        typing(event);
       } else {
         playingShortcutKey(event);
       }
@@ -83,11 +67,9 @@ const usePlayingShortcutKey = () => {
   const setNotify = useSetNotifyState();
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const readPlayingInputMode = usePlayingInputModeStateRef();
-  const readSkip = useSkipStateRef();
-  const readLineSelectIndex = useLineSelectIndexStateRef();
   const readTypingOptions = useUserTypingOptionsStateRef();
   const readMap = useMapStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
 
   return (event: KeyboardEvent) => {
     const map = readMap();
@@ -102,8 +84,8 @@ const usePlayingShortcutKey = () => {
     ) {
       return;
     }
-    const inputMode = readPlayingInputMode();
-    const skip = readSkip();
+
+    const { inputMode, skip } = readGameStateUtils();
 
     const isCtrlLeftRight = typingOptions.time_offset_key === "CTRL_LEFT_RIGHT" && event.ctrlKey;
     const isCtrlAltLeftRight =
@@ -183,7 +165,7 @@ const usePlayingShortcutKey = () => {
         break;
       case "Backspace":
         if (scene === "replay" || scene === "practice") {
-          const lineSelectIndex = readLineSelectIndex();
+          const { lineSelectIndex } = readGameStateUtils();
           const seekCount = map.typingLineNumbers[lineSelectIndex - 1];
           moveSetLine(seekCount);
         }

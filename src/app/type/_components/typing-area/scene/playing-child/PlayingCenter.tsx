@@ -1,4 +1,4 @@
-import { useSkipStateRef } from "@/app/type/atoms/stateAtoms";
+import { useGameStateUtilsRef } from "@/app/type/atoms/stateAtoms";
 import { usePressSkip } from "@/app/type/hooks/playing-hooks/usePressSkip";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import "@/styles/type.css";
@@ -14,7 +14,7 @@ interface PlayingCenterProps {
 
 const PlayingCenter = ({ flex }: PlayingCenterProps) => {
   const pressSkip = usePressSkip();
-  const readSkip = useSkipStateRef();
+  const readGameUtils = useGameStateUtilsRef();
 
   return (
     <VStack
@@ -28,7 +28,7 @@ const PlayingCenter = ({ flex }: PlayingCenterProps) => {
       style={{ userSelect: "none", cursor: "none" }}
       id="typing_scene"
       onTouchStart={() => {
-        const skip = readSkip();
+        const { skip } = readGameUtils();
 
         if (skip) {
           pressSkip();

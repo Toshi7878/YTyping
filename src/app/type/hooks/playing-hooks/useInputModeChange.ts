@@ -1,17 +1,16 @@
 import { romaConvert } from "../../../../lib/instanceMapData";
 import { useCountRef, useLineStatusRef } from "../../atoms/refAtoms";
 import {
+  useGameStateUtilsRef,
   useLineWordStateRef,
   useMapStateRef,
-  usePlayingInputModeStateRef,
-  useSceneStateRef,
   useSetLineWordState,
   useSetNextLyricsState,
   useSetNotifyState,
   useSetPlayingInputModeState,
 } from "../../atoms/stateAtoms";
 import { InputMode } from "../../ts/type";
-import { useGetTime } from "../useGetTime";
+import { useGetTime } from "./useGetTime";
 
 export const useInputModeChange = () => {
   const setPlayingInputMode = useSetPlayingInputModeState();
@@ -21,17 +20,16 @@ export const useInputModeChange = () => {
 
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
   const { readLineStatus, writeLineStatus } = useLineStatusRef();
-  const readPlayingInputMode = usePlayingInputModeStateRef();
-  const readScene = useSceneStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
   const readLineWord = useLineWordStateRef();
   const readMap = useMapStateRef();
-  const { readCount, writeCount } = useCountRef();
+  const { readCount } = useCountRef();
 
   return async (newInputMode: InputMode) => {
     const map = readMap();
-    const playingInputMode = readPlayingInputMode();
+    const { inputMode, scene } = readGameStateUtils();
 
-    if (newInputMode === playingInputMode) {
+    if (newInputMode === inputMode) {
       return;
     }
 
@@ -50,7 +48,6 @@ export const useInputModeChange = () => {
           correct: lineWord.correct,
           nextChar: wordFix.nextChar,
           word: wordFix.word,
-          lineCount: lineWord.lineCount,
         });
       }
     }
@@ -61,8 +58,6 @@ export const useInputModeChange = () => {
     if (nextLine.kanaWord) {
       setNextLyrics(nextLine);
     }
-
-    const scene = readScene();
 
     if (scene === "playing") {
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());

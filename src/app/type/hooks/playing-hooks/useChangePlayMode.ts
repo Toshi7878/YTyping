@@ -1,7 +1,7 @@
 import { YouTubeSpeed } from "@/types";
 import { useGameUtilsRef, useLineStatusRef } from "../../atoms/refAtoms";
 import { usePlaySpeedReducer } from "../../atoms/speedReducerAtoms";
-import { useSceneStateRef, useSetNotifyState, useSetSceneState } from "../../atoms/stateAtoms";
+import { useGameStateUtilsRef, useSetNotifyState, useSetSceneState } from "../../atoms/stateAtoms";
 import { useRetry } from "./useRetry";
 
 export const useChangePlayMode = () => {
@@ -12,10 +12,10 @@ export const useChangePlayMode = () => {
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
   const { readLineStatus } = useLineStatusRef();
-  const readScene = useSceneStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
 
   return () => {
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
     if (scene === "playing") {
       const confirmMessage = "練習モードに移動しますか？";
       if (window.confirm(confirmMessage)) {

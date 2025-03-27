@@ -1,14 +1,17 @@
 import { MISS_PENALTY } from "../../../../lib/instanceMapData";
 import { useGameUtilsRef, useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
 import {
+  useComboStateRef,
+  useGameStateUtilsRef,
+  useLineResultsStateRef,
+  useLineWordStateRef,
   useMapStateRef,
-  usePlayingInputModeStateRef,
-  useSceneStateRef,
   useSetComboState,
+  useSetLineKpmState,
   useSetTypingStatusState,
   useTypingStatusStateRef,
 } from "../../atoms/stateAtoms";
-import { TypeChunk } from "../../ts/type";
+import { NextTypeChunk } from "../../ts/type";
 
 export const useTypeSuccess = () => {
   const setCombo = useSetComboState();
@@ -19,14 +22,22 @@ export const useTypeSuccess = () => {
   const { readLineStatus, writeLineStatus } = useLineStatusRef();
   const { readStatus, writeStatus } = useStatusRef();
   const readTypingStatus = useTypingStatusStateRef();
-  const readPlayingInputMode = usePlayingInputModeStateRef();
-  const readScene = useSceneStateRef();
-  const readMap = useMapStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
 
-  const updateSuccessStatus = ({ newLineWord, lineRemainConstantTime, updatePoint, totalKpm, combo }) => {
-    const map = readMap();
-    const status = readTypingStatus();
-    const newStatus = { ...status };
+  const readMap = useMapStateRef();
+  const readCombo = useComboStateRef();
+  const readLineWord = useLineWordStateRef();
+
+  const updateSuccessStatus = ({
+    isCompleted,
+    lineRemainConstantTime,
+    updatePoint,
+  }: {
+    isCompleted?: boolean;
+    lineRemainConstantTime: number;
+    updatePoint: number;
+  }) => {
+    const newStatus = readTypingStatus();
     const lineTypeCount = readLineStatus().type;
 
     if (lineTypeCount === 1) {
@@ -34,25 +45,21 @@ export const useTypeSuccess = () => {
     } else if (updatePoint > 0) {
       newStatus.point += updatePoint;
     }
-    newStatus.kpm = totalKpm;
     newStatus.type++;
 
-    const isCompleted = !newLineWord.nextChar["k"];
     if (isCompleted) {
-      const timeBonus = Math.round(lineRemainConstantTime * 1 * 100);
-      newStatus.timeBonus = timeBonus; //speed;
+      const timeBonus = Math.floor(lineRemainConstantTime * 100);
+      newStatus.timeBonus = timeBonus;
       newStatus.score += newStatus.point + timeBonus;
       const { completeCount, failureCount } = readStatus();
 
-      newStatus.line = map.lineLength - (completeCount + failureCount);
+      newStatus.line = readMap().lineLength - (completeCount + failureCount);
 
       newStatus.rank = calcCurrentRank(newStatus.score);
     }
 
     setTypingStatus(newStatus);
-    setCombo(combo + 1);
-
-    return newStatus;
+    setCombo((prev) => prev + 1);
   };
 
   const updateSuccessStatusRefs = ({
@@ -60,34 +67,37 @@ export const useTypeSuccess = () => {
     isCompleted,
     typeChunk,
     successKey,
-    combo,
   }: {
     constantLineTime: number;
-    isCompleted: boolean;
-    typeChunk?: TypeChunk;
+    isCompleted?: boolean;
+    typeChunk?: NextTypeChunk;
     successKey: string;
-    combo: number;
   }) => {
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
     const lineTypingStatusRef = readLineStatus();
     const { maxCombo, completeCount } = readStatus();
-    if (lineTypingStatusRef.type === 0) {
-      writeLineStatus({
-        latency: constantLineTime,
-      });
-    }
-
     writeStatus({
       missCombo: 0,
     });
 
-    const newCombo = combo + 1;
-    if (newCombo > maxCombo) {
-      writeStatus({
-        maxCombo: newCombo,
+    if (lineTypingStatusRef.type === 0) {
+      writeLineStatus({
+        latency: constantLineTime,
       });
 
-      if (scene === "playing") {
+      const { totalLatency } = readStatus();
+      writeStatus({
+        totalLatency: totalLatency + constantLineTime,
+      });
+    }
+
+    const newCombo = readCombo() + 1;
+    if (scene === "playing") {
+      if (newCombo > maxCombo) {
+        writeStatus({
+          maxCombo: newCombo,
+        });
+
         writeUserStats({
           maxCombo: newCombo,
         });
@@ -101,31 +111,31 @@ export const useTypeSuccess = () => {
     if (isCompleted) {
       writeLineStatus({
         isCompleted: true,
-        completedTime: constantLineTime,
       });
       writeStatus({
         completeCount: completeCount + 1,
       });
-    }
-
-    if (scene !== "replay") {
-      writeLineStatus({
-        typeResult: [
-          ...readLineStatus().typeResult,
-          {
-            c: successKey,
-            is: true,
-            t: constantLineTime,
-          },
-        ],
+      writeStatus({
+        kanaToRomaConvertCount: readStatus().kanaToRomaConvertCount + readLineWord().correct.r.length,
       });
     }
 
-    if (!typeChunk) {
+    if (scene === "replay" || !typeChunk) {
       return;
     }
 
-    const inputMode = readPlayingInputMode();
+    writeLineStatus({
+      typeResult: [
+        ...readLineStatus().typeResult,
+        {
+          c: successKey,
+          is: true,
+          t: constantLineTime,
+        },
+      ],
+    });
+
+    const { inputMode } = readGameStateUtils();
     if (typeChunk.t === "kana") {
       if (inputMode === "roma") {
         writeUserStats({
@@ -236,4 +246,117 @@ export const useTypeMiss = () => {
   };
 
   return { updateMissStatus, updateMissRefStatus };
+};
+
+export const useLineUpdateStatus = () => {
+  const calcCurrentRank = useCalcCurrentRank();
+  const { setTypingStatus } = useSetTypingStatusState();
+  const { readStatus, writeStatus } = useStatusRef();
+  const readTypingStatus = useTypingStatusStateRef();
+  const readMap = useMapStateRef();
+  const readLineWord = useLineWordStateRef();
+  const { readLineStatus } = useLineStatusRef();
+  return ({ constantLineTime }: { constantLineTime: number }) => {
+    const map = readMap();
+    const newStatus = readTypingStatus();
+    const lineWord = readLineWord();
+
+    writeStatus({
+      kanaToRomaConvertCount: readStatus().kanaToRomaConvertCount + lineWord.correct.r.length,
+    });
+
+    const isFailured = lineWord.nextChar["k"];
+    if (isFailured) {
+      const { failureCount, completeCount } = readStatus();
+
+      const newFailureCount = failureCount + 1;
+
+      writeStatus({
+        failureCount: newFailureCount,
+      });
+
+      newStatus.line = map.lineLength - (completeCount + newFailureCount);
+      newStatus.score += newStatus.point;
+      newStatus.rank = calcCurrentRank(newStatus.score);
+
+      const { totalLatency } = readStatus();
+      const { type: lineType } = readLineStatus();
+
+      writeStatus({
+        totalLatency: lineType === 0 ? totalLatency + constantLineTime : totalLatency,
+      });
+    }
+
+    newStatus.timeBonus = 0;
+    newStatus.point = 0;
+    setTypingStatus(newStatus);
+  };
+};
+
+export const useUpdateAllStatus = () => {
+  const calcCurrentRank = useCalcCurrentRank();
+  const readMap = useMapStateRef();
+  const readLineResults = useLineResultsStateRef();
+  const { setTypingStatus } = useSetTypingStatusState();
+  const readGameStateUtils = useGameStateUtilsRef();
+  const setDisplayLineKpm = useSetLineKpmState();
+  const { writeLineStatus } = useLineStatusRef();
+  const setCombo = useSetComboState();
+
+  const { writeStatus } = useStatusRef();
+
+  return ({ count, updateType }: { count: number; updateType: "lineUpdate" | "completed" }) => {
+    const map = readMap();
+
+    const newStatus = {
+      score: 0,
+      point: 0,
+      timeBonus: 0,
+      type: 0,
+      miss: 0,
+      lost: 0,
+      kpm: 0,
+      rank: 0,
+      line: map.lineLength,
+    };
+
+    if (0 >= count) {
+      return newStatus;
+    }
+    const lineResults = readLineResults();
+
+    for (let i = 0; i <= count - 1; i++) {
+      newStatus.score += (lineResults[i].status?.p ?? 0) + (lineResults[i].status?.tBonus ?? 0);
+      newStatus.type += lineResults[i].status?.lType ?? 0;
+      newStatus.miss += lineResults[i].status?.lMiss ?? 0;
+      newStatus.lost += lineResults[i].status?.lLost ?? 0;
+      newStatus.line -= lineResults[i].status?.lType !== undefined ? 1 : 0;
+    }
+
+    const lineResult = lineResults[count - 1];
+    const totalTypeTime = count > 1 ? lineResult.status?.tTime ?? 0 : 0;
+    newStatus.kpm = totalTypeTime ? Math.floor((newStatus.type / totalTypeTime) * 60) : 0;
+    newStatus.rank = calcCurrentRank(newStatus.score);
+
+    if (updateType === "completed") {
+      newStatus.point = lineResult.status?.p ?? 0;
+      newStatus.timeBonus = lineResult.status?.tBonus ?? 0;
+    } else {
+      newStatus.point = 0;
+      newStatus.timeBonus = 0;
+    }
+
+    setTypingStatus(newStatus);
+
+    const { scene } = readGameStateUtils();
+
+    if (scene === "replay") {
+      setCombo(lineResult.status?.combo ?? 0);
+      writeStatus({
+        totalTypeTime: lineResult.status?.tTime ?? 0,
+      });
+      setDisplayLineKpm(lineResult.status?.lKpm ?? 0);
+      writeLineStatus({ isCompleted: true });
+    }
+  };
 };

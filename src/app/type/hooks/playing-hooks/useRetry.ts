@@ -1,8 +1,8 @@
 import { RESET } from "jotai/utils";
 import { useCountRef, useGameUtilsRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
 import {
+  useGameStateUtilsRef,
   useMapStateRef,
-  useSceneStateRef,
   useSetComboState,
   useSetLineResultsState,
   useSetLineWordState,
@@ -32,9 +32,9 @@ export const useRetry = () => {
   const { resetTypingStatus } = useSetTypingStatusState();
   const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
   const { resetStatus } = useStatusRef();
-  const readScene = useSceneStateRef();
   const readTypingStatus = useTypingStatusStateRef();
   const readMap = useMapStateRef();
+  const readGameStateUtils = useGameStateUtilsRef();
   const { writeCount } = useCountRef();
 
   const { pauseTimer } = useTimerControls();
@@ -44,7 +44,7 @@ export const useRetry = () => {
     setLyrics("");
     setNextLyrics(map.mapData[1]);
 
-    const scene = readScene();
+    const { scene } = readGameStateUtils();
 
     if (scene === "playing" || scene === "practice") {
       sendTypingStats();

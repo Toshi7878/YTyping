@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useSceneStateRef } from "../../atoms/stateAtoms";
+import { useGameStateUtilsRef } from "../../atoms/stateAtoms";
 import { useTimerRegistration } from "../../hooks/playing-hooks/timer-hooks/useTimer";
 import { useWindowFocus } from "../../hooks/useWindowFocus";
 import {
@@ -24,8 +24,6 @@ const TypeYouTubeContent = function YouTubeContent({
   videoId,
   className = "",
 }: TypeYouTubeProps) {
-  const readScene = useSceneStateRef();
-
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -33,6 +31,8 @@ const TypeYouTubeContent = function YouTubeContent({
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
   const { addTimer, removeTimer } = useTimerRegistration();
+
+  const readGameStateUtils = useGameStateUtilsRef();
 
   useEffect(() => {
     addTimer();
@@ -59,7 +59,7 @@ const TypeYouTubeContent = function YouTubeContent({
         //	未スタート、他の動画に切り替えた時など
         console.log("未スタート -1");
 
-        const scene = readScene();
+        const { scene } = readGameStateUtils();
         if (scene === "ready") {
           event.target.seekTo(0, true);
         }
