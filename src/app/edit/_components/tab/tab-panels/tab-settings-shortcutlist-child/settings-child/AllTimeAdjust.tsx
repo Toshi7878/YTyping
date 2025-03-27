@@ -34,7 +34,7 @@ export default function AllTimeAdjust() {
     });
     setCanUpload(true);
 
-    mapDispatch({ type: "replaceAll", payload: { ...newMap } });
+    mapDispatch({ type: "replaceAll", payload: [...newMap] });
     historyDispatch({
       type: "add",
       payload: {
