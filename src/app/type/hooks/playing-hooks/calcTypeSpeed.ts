@@ -1,5 +1,5 @@
-import { useLineStatusRef, useStatusRef, useUserStatsRef } from "../atoms/refAtoms";
-import { useSetLineKpmState, useSetTypingStatusState, useTypingStatusStateRef } from "../atoms/stateAtoms";
+import { useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
+import { useSetLineKpmState, useSetTypingStatusState, useTypingStatusStateRef } from "../../atoms/stateAtoms";
 
 type UpdateType = "keydown" | "completed" | "timer" | "lineUpdate";
 export const useCalcTypeSpeed = () => {

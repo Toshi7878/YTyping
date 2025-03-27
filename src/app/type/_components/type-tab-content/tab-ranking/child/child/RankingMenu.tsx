@@ -1,8 +1,8 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useMapInfoRef, useSceneState } from "@/app/type/atoms/stateAtoms";
+import { useLoadResultPlay } from "@/app/type/hooks/loadResultPlay";
 import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
-import { useOnClickPracticeReplay } from "@/app/type/hooks/useOnClickPracticeReplay";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
 import { Button, Stack, useTheme } from "@chakra-ui/react";
@@ -36,7 +36,7 @@ const RankingMenu = ({
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const proceedRetry = useProceedRetry();
-  const handleClick = useOnClickPracticeReplay({ startMode: "replay", resultId });
+  const handleClick = useLoadResultPlay({ startMode: "replay", resultId });
 
   const { writeGameUtils } = useGameUtilsRef();
   const { readMapInfo } = useMapInfoRef();

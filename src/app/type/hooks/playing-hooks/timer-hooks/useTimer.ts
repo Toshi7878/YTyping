@@ -23,9 +23,9 @@ import {
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
 import { Ticker } from "pixi.js";
 import { LineData } from "../../../ts/type";
-import { useCalcTypeSpeed } from "../../calcTypeSpeed";
-import { useGetTime } from "../../useGetTime";
+import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useUpdateLineResult } from "../updateLineResult";
+import { useGetTime } from "../useGetTime";
 import { useLineUpdateStatus, useUpdateAllStatus } from "../useUpdateStatus";
 import { useLineReplayUpdate, useReplay } from "./replayHooks";
 import { useGetSeekLineCount } from "./useSeekGetLineCount";

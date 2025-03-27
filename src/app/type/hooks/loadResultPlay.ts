@@ -4,7 +4,7 @@ import { useGameUtilsRef, usePlayer } from "../atoms/refAtoms";
 import { useSetIsLoadingOverlayState, useSetLineResultsState } from "../atoms/stateAtoms";
 import { PlayMode } from "../ts/type";
 
-export const useOnClickPracticeReplay = ({
+export const useLoadResultPlay = ({
   startMode,
   resultId,
 }: {

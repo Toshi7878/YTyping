@@ -1,8 +1,8 @@
 import { useSetLineWordState } from "@/app/type/atoms/stateAtoms";
 import { useInputJudge } from "@/app/type/ts/scene-ts/playing/keydown/typingJudge";
-import { useCalcTypeSpeed } from "../../calcTypeSpeed";
-import { useGetTime } from "../../useGetTime";
+import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useUpdateLineResult } from "../updateLineResult";
+import { useGetTime } from "../useGetTime";
 import { useSoundEffect } from "../useSoundEffect";
 import { useTypeMiss, useTypeSuccess } from "../useUpdateStatus";
 

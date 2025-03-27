@@ -334,7 +334,7 @@ export const useUpdateAllStatus = () => {
     }
 
     const lineResult = lineResults[count - 1];
-    const totalTypeTime = lineResult.status?.tTime ?? 0;
+    const totalTypeTime = count > 1 ? lineResult.status?.tTime ?? 0 : 0;
     newStatus.kpm = totalTypeTime ? Math.floor((newStatus.type / totalTypeTime) * 60) : 0;
     newStatus.rank = calcCurrentRank(newStatus.score);
 

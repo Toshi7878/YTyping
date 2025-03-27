@@ -6,12 +6,12 @@ import {
   useLineWordStateRef,
   useSetLineWordState,
 } from "@/app/type/atoms/stateAtoms";
-import { useCalcTypeSpeed } from "@/app/type/hooks/calcTypeSpeed";
+import { useCalcTypeSpeed } from "@/app/type/hooks/playing-hooks/calcTypeSpeed";
 import { useInputModeChange } from "@/app/type/hooks/playing-hooks/useInputModeChange";
 import { YouTubeSpeed } from "@/types";
 import { KanaInput, RomaInput, TypingKeys } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { LineResultData, TypeResult } from "../../../ts/type";
-import { useGetTime } from "../../useGetTime";
+import { useGetTime } from "../useGetTime";
 import { useSoundEffect } from "../useSoundEffect";
 import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../useUpdateStatus";
 
