@@ -232,6 +232,7 @@ const writeLineAtom = atom(null, (get, set, action: WriteLineSetAction | ResetLi
     const { time, ...lineAtomData } = action.line;
     set(lineAtom, lineAtomData);
     timeInput.value = String(time);
+    set(isTimeInputValidAtom, String(time) !== "");
   } else if (action.type === "reset") {
     set(lineAtom, RESET);
     timeInput.value = "";
