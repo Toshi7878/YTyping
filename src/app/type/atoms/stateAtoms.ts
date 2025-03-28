@@ -249,11 +249,9 @@ const writeCurrentLineAtom = atom(
     const nextTime = Number(newNextLine["time"]);
 
     const { movieDuration } = get(ytStatusRefAtom);
-    const lineProgress = get(lineProgressRefAtom);
+    const lineProgress = get(lineProgressRefAtom) as HTMLProgressElement;
 
-    if (lineProgress) {
-      lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
-    }
+    lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
   }
 );
 
@@ -262,8 +260,11 @@ export const useSetCurrentLineState = () => {
   const resetCurrentLine = useCallback(() => {
     store.set(currentLineAtom, RESET);
     const map = store.get(mapAtom) as CreateMap;
-    const lineProgress = store.get(lineProgressRefAtom) as HTMLProgressElement;
-    lineProgress.max = map[1]["time"];
+    const lineProgress = store.get(lineProgressRefAtom);
+
+    if (lineProgress) {
+      lineProgress.max = map[1]["time"];
+    }
   }, []);
 
   return { setCurrentLine, resetCurrentLine };
