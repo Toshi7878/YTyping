@@ -30,7 +30,7 @@ const PlayingLyrics = () => {
       <ruby className="invisible">
         あ<rt>あ</rt>
       </ruby>
-      <span />
+      <span className="invisible">あ</span>
     </Box>
   );
 };
