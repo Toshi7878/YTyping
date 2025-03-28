@@ -26,7 +26,7 @@ const PlayingLyrics = () => {
         },
       }}
     >
-      {parse(`${lyrics}<ruby class="">あ<rt>あ</rt></ruby>`)}
+      <Box>{parse(`${lyrics}<ruby class="">あ<rt>あ</rt></ruby>`)}</Box>
     </Box>
   );
 };
