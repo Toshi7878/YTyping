@@ -14,16 +14,16 @@ const PlayingLyrics = () => {
       ml={1}
       width="103%"
       className={"lyrics-font"}
-      whiteSpace="nowrap"
-      overflow="hidden"
-      textOverflow="ellipsis"
-      {...(userOptionsAtom.line_completed_display === "NEXT_WORD" && {
-        sx: {
+      sx={{
+        ...(userOptionsAtom.line_completed_display === "NEXT_WORD" && {
           ".word-area-completed + &": {
             visibility: "hidden",
           },
+        }),
+        "ruby, rt": {
+          whiteSpace: "nowrap",
         },
-      })}
+      }}
     >
       {parse(`${lyrics}<ruby class="invisible">あ<rt>あ</rt></ruby>`)}
     </Box>
