@@ -47,9 +47,7 @@ export const useMapInfoRef = () => {
   return { readMapInfo };
 };
 
-const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) =>
-  optic.valueOr({} as { isLiked: undefined }).prop("isLiked")
-);
+const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) => optic.valueOr({} as { isLiked: undefined }).prop("isLiked"));
 export const useIsLikeAtom = () => useAtomValue(mapLikeFocusAtom, { store });
 export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store });
 
@@ -259,7 +257,12 @@ const writeCurrentLineAtom = atom(
 
 export const useSetCurrentLineState = () => {
   const setCurrentLine = useSetAtom(writeCurrentLineAtom, { store });
-  const resetCurrentLine = useCallback(() => store.set(currentLineAtom, RESET), []);
+  const resetCurrentLine = useCallback(() => {
+    store.set(currentLineAtom, RESET);
+    const map = store.get(mapAtom) as CreateMap;
+    const lineProgress = store.get(lineProgressRefAtom) as HTMLProgressElement;
+    lineProgress.max = map[1]["time"];
+  }, []);
 
   return { setCurrentLine, resetCurrentLine };
 };
