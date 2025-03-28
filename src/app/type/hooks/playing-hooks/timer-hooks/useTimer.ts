@@ -88,7 +88,7 @@ export const useTimer = () => {
   } = useGetTime();
   const calcTypeSpeed = useCalcTypeSpeed();
 
-  const { readLineProgress, setTotalProgressValue } = useProgress();
+  const { setLineProgressValue, setTotalProgressValue } = useProgress();
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
   const { readYTStatus } = useYTStatusRef();
   const readCurrentTime = useCurrentTimeStateRef();
@@ -211,9 +211,7 @@ export const useTimer = () => {
       });
     }
 
-    const lineProgress = readLineProgress();
-    lineProgress.value =
-      currentOffesettedYTTime < 0 ? nextLine.time + currentOffesettedYTTime : currentLineTime;
+    setLineProgressValue(currentOffesettedYTTime < 0 ? nextLine.time + currentOffesettedYTTime : currentLineTime);
     const { scene } = readGameStateUtils();
 
     if (scene === "replay" && count && currentLineTime) {
@@ -270,7 +268,7 @@ export const useCalcLineResult = () => {
 
 export const useUpdateLine = () => {
   const { setNextLyrics, resetNextLyrics } = useSetNextLyricsState();
-  const setDisplayLineKpm = useSetLineKpmState();
+  const setLineKpm = useSetLineKpmState();
   const setChangeCSSCount = useSetChangeCSSCountState();
 
   const lineReplayUpdate = useLineReplayUpdate();
@@ -281,41 +279,39 @@ export const useUpdateLine = () => {
   const readMap = useMapStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
 
-  return (newCount: number) => {
+  return (newNextCount: number) => {
     const map = readMap();
-    const currentCount = newCount ? newCount - 1 : 0;
+    const newCurrentCount = newNextCount ? newNextCount - 1 : 0;
     const { inputMode, scene } = readGameStateUtils();
+    const newCurrentLine = map.mapData[newCurrentCount];
+    const newNextLine = map.mapData[newNextCount];
+    setCurrentLine({ newCurrentLine, newNextLine });
+
     resetLineStatus();
-    const speed = readPlaySpeed();
+    const { playSpeed } = readPlaySpeed();
     if (scene === "replay") {
-      lineReplayUpdate(currentCount);
+      lineReplayUpdate(newCurrentCount);
     }
 
     writeLineStatus({
-      startSpeed: speed.playSpeed,
+      startSpeed: playSpeed,
       startInputMode: inputMode,
     });
+
     setTypingStatus((prev) => ({
       ...prev,
       point: 0,
       timeBonus: 0,
     }));
 
-    setDisplayLineKpm(0);
+    setLineKpm(0);
 
-    setCurrentLine({ newCurrentLine: map.mapData[currentCount], newNextLine: map.mapData[newCount] });
-
-    if (map.mapData[newCount].kanaWord) {
-      setNextLyrics(map.mapData[newCount]);
+    if (newNextLine.kanaWord) {
+      setNextLyrics(newNextLine);
     } else {
       resetNextLyrics();
     }
 
-    if (map.mapChangeCSSCounts.length) {
-      const closestMin = map.mapChangeCSSCounts
-        .filter((count) => count <= currentCount)
-        .reduce((prev, curr) => (prev === undefined || curr > prev ? curr : prev), 0);
-      setChangeCSSCount(closestMin);
-    }
+    setChangeCSSCount({ newCurrentCount: newCurrentCount });
   };
 };

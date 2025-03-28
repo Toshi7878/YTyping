@@ -82,6 +82,18 @@ const lineSelectIndexAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop(
 const isLoadingOverlayAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("isLoadingOverlay"));
 const playingInputModeAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("inputMode"));
 
+const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { newCurrentCount: number }) => {
+  const map = get(mapAtom) as CreateMap;
+
+  if (map.mapChangeCSSCounts.length) {
+    const closestMin = map.mapChangeCSSCounts
+      .filter((count) => count <= newCurrentCount)
+      .reduce((prev, curr) => (prev === undefined || curr > prev ? curr : prev), 0);
+
+    set(changeCSSCountAtom, closestMin);
+  }
+});
+
 export const useGameStateUtilsRef = () => {
   return useAtomCallback(
     useCallback((get) => get(gameStateUtilsAtom), []),
@@ -110,7 +122,7 @@ export const useNotifyState = () => useAtomValue(notifyAtom);
 export const useSetNotifyState = () => useSetAtom(notifyAtom);
 
 export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { store });
-export const useSetChangeCSSCountState = () => useSetAtom(changeCSSCountAtom, { store });
+export const useSetChangeCSSCountState = () => useSetAtom(writeChangeCSSCountAtom, { store });
 
 export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
 export const useSetLineSelectIndexState = () => useSetAtom(lineSelectIndexAtom);

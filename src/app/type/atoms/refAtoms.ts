@@ -257,6 +257,14 @@ export const useProgress = () => {
     { store }
   );
 
+  const setLineProgressValue = useAtomCallback(
+    useCallback((get, set, value: number) => {
+      const lineProgress = get(lineProgressRefAtom) as HTMLProgressElement;
+      lineProgress.value = value;
+    }, []),
+    { store }
+  );
+
   const setTotalProgressValue = useAtomCallback(
     useCallback((get, set, value: number) => {
       const totalProgress = get(totalProgressRefAtom) as HTMLProgressElement;
@@ -270,6 +278,7 @@ export const useProgress = () => {
     readLineProgress,
     writeLineProgress,
     writeTotalProgress,
+    setLineProgressValue,
     setTotalProgressValue,
   };
 };

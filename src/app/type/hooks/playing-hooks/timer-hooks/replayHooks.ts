@@ -143,10 +143,10 @@ export const useLineReplayUpdate = () => {
   const { writeGameUtils } = useGameUtilsRef();
   const readLineResults = useLineResultsStateRef();
 
-  return (newCount: number) => {
+  return (currentCount: number) => {
     const lineResults = readLineResults();
 
-    const lineResult = lineResults[newCount];
+    const lineResult = lineResults[currentCount];
     const lineInputMode = lineResult.status!.mode;
     const speed = lineResult.status!.sp as YouTubeSpeed;
 

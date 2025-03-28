@@ -6,7 +6,7 @@ export const useCalcTypeSpeed = () => {
   const { readLineStatus } = useLineStatusRef();
 
   const readTypingStatus = useTypingStatusStateRef();
-  const setDisplayLineKpm = useSetLineKpmState();
+  const setLineKpm = useSetLineKpmState();
   const { writeLineStatus } = useLineStatusRef();
   const { setTypingStatus } = useSetTypingStatusState();
   const { readStatus, writeStatus } = useStatusRef();
@@ -16,7 +16,7 @@ export const useCalcTypeSpeed = () => {
     const { type: lineTypeCount } = readLineStatus();
 
     const lineKpm = constantLineTime ? Math.round((lineTypeCount / constantLineTime) * 60) : 0;
-    setDisplayLineKpm(lineKpm);
+    setLineKpm(lineKpm);
     return lineKpm;
   };
 

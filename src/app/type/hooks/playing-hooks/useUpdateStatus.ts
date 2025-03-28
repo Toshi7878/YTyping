@@ -299,7 +299,7 @@ export const useUpdateAllStatus = () => {
   const readLineResults = useLineResultsStateRef();
   const { setTypingStatus } = useSetTypingStatusState();
   const readGameStateUtils = useGameStateUtilsRef();
-  const setDisplayLineKpm = useSetLineKpmState();
+  const setLineKpm = useSetLineKpmState();
   const { writeLineStatus } = useLineStatusRef();
   const setCombo = useSetComboState();
 
@@ -355,7 +355,7 @@ export const useUpdateAllStatus = () => {
       writeStatus({
         totalTypeTime: lineResult.status.tTime ?? 0,
       });
-      setDisplayLineKpm(lineResult.status.lKpm ?? 0);
+      setLineKpm(lineResult.status.lKpm ?? 0);
       writeLineStatus({ isCompleted: true });
     }
   };
