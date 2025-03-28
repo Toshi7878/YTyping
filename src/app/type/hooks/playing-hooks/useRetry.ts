@@ -68,7 +68,6 @@ export const useRetry = () => {
           }
         }
 
-        writeGameUtils({ replayUserName: "" });
         setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
         break;
       }
@@ -92,6 +91,10 @@ export const useRetry = () => {
       resetTypingStatus();
       setCombo(0);
       resetStatus();
+    }
+
+    if (newPlayMode !== "replay") {
+      writeGameUtils({ replayUserName: "" });
     }
 
     readPlayer().seekTo(0, true);
