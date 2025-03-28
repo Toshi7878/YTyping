@@ -59,7 +59,7 @@ export interface TypeResult {
 }
 
 export interface LineResultData {
-  status?: {
+  status: {
     p?: number;
     tBonus?: number;
     lType?: number;

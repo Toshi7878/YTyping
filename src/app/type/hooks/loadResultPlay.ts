@@ -1,8 +1,12 @@
 import { clientApi } from "@/trpc/client-api";
 import { useGameUtilsRef, usePlayer } from "../atoms/refAtoms";
 
-import { useSetIsLoadingOverlayState, useSetLineResultsState } from "../atoms/stateAtoms";
-import { PlayMode } from "../ts/type";
+import {
+  useSetIsLoadingOverlayState,
+  useSetLineResultsState,
+  useSetPlayingInputModeState,
+} from "../atoms/stateAtoms";
+import { LineResultData, PlayMode } from "../ts/type";
 
 export const useLoadResultPlay = ({
   startMode,
@@ -15,14 +19,16 @@ export const useLoadResultPlay = ({
   const setLineResults = useSetLineResultsState();
   const { readPlayer } = usePlayer();
   const { writeGameUtils } = useGameUtilsRef();
+  const setPlayingInputModeState = useSetPlayingInputModeState();
   const utils = clientApi.useUtils();
 
-  const handleClick = async () => {
+  const loadResultPlay = async () => {
     try {
       if (resultId) {
         setIsLoadingOverlay(true);
-        const resultData = await utils.result.getUserResultData.ensureData({ resultId });
+        const resultData: LineResultData[] = await utils.result.getUserResultData.ensureData({ resultId });
         setLineResults(resultData);
+        setPlayingInputModeState(resultData[0].status.mode);
       }
     } finally {
       setIsLoadingOverlay(false);
@@ -34,5 +40,5 @@ export const useLoadResultPlay = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  return handleClick;
+  return loadResultPlay;
 };

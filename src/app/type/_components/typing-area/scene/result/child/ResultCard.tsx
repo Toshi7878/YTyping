@@ -38,8 +38,8 @@ function ResultCard({
   const inputMode = usePlayingInputModeState();
 
   const lineSpeed =
-    lineResult.status!.sp > speedData.defaultSpeed ? lineResult.status!.sp : speedData.defaultSpeed;
-  const lineInputMode = lineResult.status?.mode ?? inputMode;
+    lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
+  const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
@@ -49,12 +49,12 @@ function ResultCard({
 
   const maxLinePoint = lineData.notes.r * CHAR_POINT;
 
-  const kpm = lineResult.status?.lKpm;
-  const rkpm = lineResult.status?.lRkpm;
-  const point = lineResult.status?.p;
-  const lMiss = lineResult.status?.lMiss;
-  const tBonus = lineResult.status?.tBonus;
-  const lostWord = lineResult.status?.lostW;
+  const kpm = lineResult.status.lKpm;
+  const rkpm = lineResult.status.lRkpm;
+  const point = lineResult.status.p;
+  const lMiss = lineResult.status.lMiss;
+  const tBonus = lineResult.status.tBonus;
+  const lostWord = lineResult.status.lostW;
 
   const seekTime = Number(map.mapData[index]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
 

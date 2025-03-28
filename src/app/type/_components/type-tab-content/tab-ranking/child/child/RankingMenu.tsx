@@ -36,12 +36,12 @@ const RankingMenu = ({
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const proceedRetry = useProceedRetry();
-  const handleClick = useLoadResultPlay({ startMode: "replay", resultId });
+  const loadResultPlay = useLoadResultPlay({ startMode: "replay", resultId });
 
   const { writeGameUtils } = useGameUtilsRef();
   const { readMapInfo } = useMapInfoRef();
   const handleReplayClick = async () => {
-    await handleClick();
+    await loadResultPlay();
 
     const mapUpdatedAt = readMapInfo().updated_at;
     const resultUpdatedAtDate = new Date(resultUpdatedAt);

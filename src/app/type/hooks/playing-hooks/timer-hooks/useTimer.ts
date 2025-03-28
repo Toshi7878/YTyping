@@ -292,6 +292,10 @@ export const useUpdateLine = () => {
     const { inputMode, scene } = readGameStateUtils();
     resetLineStatus();
     const speed = readPlaySpeed();
+    if (scene === "replay") {
+      lineReplayUpdate(currentCount);
+    }
+
     writeLineStatus({
       startSpeed: speed.playSpeed,
       startInputMode: inputMode,
@@ -330,9 +334,5 @@ export const useUpdateLine = () => {
     const lineProgress = readLineProgress();
     lineProgress.max =
       (nextTime > movieDuration ? movieDuration : nextTime) - Number(map.mapData[currentCount]["time"]);
-
-    if (scene === "replay") {
-      lineReplayUpdate(currentCount);
-    }
   };
 };

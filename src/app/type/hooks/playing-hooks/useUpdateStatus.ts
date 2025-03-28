@@ -326,21 +326,21 @@ export const useUpdateAllStatus = () => {
     const lineResults = readLineResults();
 
     for (let i = 0; i <= count - 1; i++) {
-      newStatus.score += (lineResults[i].status?.p ?? 0) + (lineResults[i].status?.tBonus ?? 0);
-      newStatus.type += lineResults[i].status?.lType ?? 0;
-      newStatus.miss += lineResults[i].status?.lMiss ?? 0;
-      newStatus.lost += lineResults[i].status?.lLost ?? 0;
-      newStatus.line -= lineResults[i].status?.lType !== undefined ? 1 : 0;
+      newStatus.score += (lineResults[i].status.p ?? 0) + (lineResults[i].status.tBonus ?? 0);
+      newStatus.type += lineResults[i].status.lType ?? 0;
+      newStatus.miss += lineResults[i].status.lMiss ?? 0;
+      newStatus.lost += lineResults[i].status.lLost ?? 0;
+      newStatus.line -= lineResults[i].status.lType !== undefined ? 1 : 0;
     }
 
     const lineResult = lineResults[count - 1];
-    const totalTypeTime = count > 1 ? lineResult.status?.tTime ?? 0 : 0;
+    const totalTypeTime = count > 1 ? lineResult.status.tTime ?? 0 : 0;
     newStatus.kpm = totalTypeTime ? Math.floor((newStatus.type / totalTypeTime) * 60) : 0;
     newStatus.rank = calcCurrentRank(newStatus.score);
 
     if (updateType === "completed") {
-      newStatus.point = lineResult.status?.p ?? 0;
-      newStatus.timeBonus = lineResult.status?.tBonus ?? 0;
+      newStatus.point = lineResult.status.p ?? 0;
+      newStatus.timeBonus = lineResult.status.tBonus ?? 0;
     } else {
       newStatus.point = 0;
       newStatus.timeBonus = 0;
@@ -351,11 +351,11 @@ export const useUpdateAllStatus = () => {
     const { scene } = readGameStateUtils();
 
     if (scene === "replay") {
-      setCombo(lineResult.status?.combo ?? 0);
+      setCombo(lineResult.status.combo ?? 0);
       writeStatus({
-        totalTypeTime: lineResult.status?.tTime ?? 0,
+        totalTypeTime: lineResult.status.tTime ?? 0,
       });
-      setDisplayLineKpm(lineResult.status?.lKpm ?? 0);
+      setDisplayLineKpm(lineResult.status.lKpm ?? 0);
       writeLineStatus({ isCompleted: true });
     }
   };

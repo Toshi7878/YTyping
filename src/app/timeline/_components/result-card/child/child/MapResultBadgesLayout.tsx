@@ -37,11 +37,7 @@ export const MapResultBadges = ({ result }: ResultCardProps) => {
         >
           {result?.status.score}
         </ResultBadge>
-        <ResultBadge
-          color={theme.colors.text.body}
-          letterSpacing={1}
-          borderColor={theme.colors.border.badge}
-        >
+        <ResultBadge color={theme.colors.text.body} letterSpacing={1} borderColor={theme.colors.border.badge}>
           <ClearRateText clearRate={result?.status.clear_rate ?? 0} isPerfect={isPerfect} />
         </ResultBadge>
       </Stack>
@@ -52,11 +48,7 @@ export const MapResultBadges = ({ result }: ResultCardProps) => {
             倍速
           </Text>
         </ResultBadge>
-        <ResultBadge
-          color={theme.colors.text.body}
-          letterSpacing={1}
-          borderColor={theme.colors.border.badge}
-        >
+        <ResultBadge color={theme.colors.text.body} letterSpacing={1} borderColor={theme.colors.border.badge}>
           {result && result.status.kpm}
           <Text as="span" ml={1} letterSpacing={2}>
             kpm
@@ -73,21 +65,12 @@ export const MapResultBadgesMobile = ({ result, ...rest }: ResultCardProps & Fle
 
   const rankColor = result?.rank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
   return (
-    <Flex
-      justifyContent="space-around"
-      width="100%"
-      visibility={result ? "visible" : "hidden"}
-      {...rest}
-    >
+    <Flex justifyContent="space-around" width="100%" visibility={result ? "visible" : "hidden"} {...rest}>
       <VStack align="end" mr={5} spacing={5}>
         <ResultBadge letterSpacing={1} color={rankColor} borderColor={theme.colors.border.badge}>
           Rank: #{result?.rank ?? 0}
         </ResultBadge>
-        <ResultBadge
-          letterSpacing={1}
-          color={theme.colors.text.body}
-          borderColor={theme.colors.border.badge}
-        >
+        <ResultBadge letterSpacing={1} color={theme.colors.text.body} borderColor={theme.colors.border.badge}>
           {result && (
             <UserInputModeText
               romaType={result.status.roma_type}
@@ -109,11 +92,7 @@ export const MapResultBadgesMobile = ({ result, ...rest }: ResultCardProps & Fle
         >
           {result?.status.score ?? 0}
         </ResultBadge>
-        <ResultBadge
-          letterSpacing={1}
-          color={theme.colors.text.body}
-          borderColor={theme.colors.border.badge}
-        >
+        <ResultBadge letterSpacing={1} color={theme.colors.text.body} borderColor={theme.colors.border.badge}>
           {result?.status.kpm ?? 0}
           <Text as="span" ml={1} letterSpacing={2}>
             kpm
@@ -121,11 +100,7 @@ export const MapResultBadgesMobile = ({ result, ...rest }: ResultCardProps & Fle
         </ResultBadge>
       </VStack>
       <VStack align="end" mr={5} spacing={5}>
-        <ResultBadge
-          letterSpacing={1}
-          color={theme.colors.text.body}
-          borderColor={theme.colors.border.badge}
-        >
+        <ResultBadge letterSpacing={1} color={theme.colors.text.body} borderColor={theme.colors.border.badge}>
           <ClearRateText clearRate={result?.status.clear_rate ?? 0} isPerfect={isPerfect} />
         </ResultBadge>
         <ResultBadge color={theme.colors.text.body} borderColor={theme.colors.border.badge}>

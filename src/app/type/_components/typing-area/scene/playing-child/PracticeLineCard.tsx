@@ -30,12 +30,12 @@ const PracticeLineCard = () => {
 
   const lineResult = lineResults[index];
 
-  const lineInputMode = lineResult?.status?.mode ?? inputMode;
+  const lineInputMode = lineResult.status.mode ?? inputMode;
 
   const lineData = map.mapData[index];
 
-  const maxLinePoint = lineData?.notes.r * CHAR_POINT;
-  const lineKanaWord = lineData?.word.map((w) => w["k"]).join("");
+  const maxLinePoint = lineData.notes.r * CHAR_POINT;
+  const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
   const lineSpeed =
     lineResult?.status!.sp > speedData.defaultSpeed ? lineResult?.status!.sp : speedData.defaultSpeed;
@@ -45,12 +45,12 @@ const PracticeLineCard = () => {
 
   //ユーザーのLineリザルトデータ
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
-  const lostWord = lineResult?.status!.lostW;
-  const point = lineResult?.status?.p;
-  const tBonus = lineResult?.status?.tBonus;
-  const kpm = lineResult?.status?.lKpm;
-  const rkpm = lineResult?.status?.lRkpm;
-  const lMiss = lineResult?.status?.lMiss;
+  const lostWord = lineResult.status.lostW;
+  const point = lineResult.status.p;
+  const tBonus = lineResult.status.tBonus;
+  const kpm = lineResult.status.lKpm;
+  const rkpm = lineResult.status.lRkpm;
+  const lMiss = lineResult.status.lMiss;
 
   return (
     <Card
