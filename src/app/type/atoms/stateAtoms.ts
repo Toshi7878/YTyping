@@ -265,7 +265,7 @@ export const useSetCurrentLineState = () => {
     const lineProgress = store.get(lineProgressRefAtom);
 
     if (lineProgress) {
-      lineProgress.max = map[1]["time"];
+      lineProgress.max = map.mapData[1]["time"];
     }
   }, []);
 
