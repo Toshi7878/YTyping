@@ -14,7 +14,7 @@ const PlayingLyrics = () => {
       alignItems="flex-end"
       ml={1}
       width="103%"
-      className={"lyrics-font"}
+      className="lyrics-font"
       whiteSpace="nowrap"
       sx={{
         ...(userOptionsAtom.line_completed_display === "NEXT_WORD" && {
@@ -22,12 +22,9 @@ const PlayingLyrics = () => {
             visibility: "hidden",
           },
         }),
-        "ruby, rt": {
-          whiteSpace: "nowrap",
-        },
       }}
     >
-      {parse(`${lyrics}`)}
+      {parse(lyrics)}
       <ruby className="invisible">
         あ<rt>あ</rt>
       </ruby>
