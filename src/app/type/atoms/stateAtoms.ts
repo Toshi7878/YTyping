@@ -237,11 +237,13 @@ export const useLyricsState = () => useAtomValue(lineLyricsAtom, { store });
 const writeCurrentLineAtom = atom(
   null,
   (get, set, { newCurrentLine, newNextLine }: { newCurrentLine: LineData; newNextLine: LineData }) => {
+    const cloneWord = structuredClone([...newCurrentLine.word]);
+
     set(currentLineAtom, {
       lineWord: {
         correct: { k: "", r: "" },
-        nextChar: structuredClone([...newCurrentLine.word][0]),
-        word: structuredClone([...newCurrentLine.word].slice(1)),
+        nextChar: cloneWord[0],
+        word: cloneWord.slice(1),
       },
       lyrics: newCurrentLine["lyrics"],
     });
