@@ -232,10 +232,11 @@ const writeLineAtom = atom(null, (get, set, action: WriteLineSetAction | ResetLi
     const { time, ...lineAtomData } = action.line;
     set(lineAtom, lineAtomData);
     timeInput.value = String(time);
-    set(isTimeInputValidAtom, String(time) !== "");
+    set(isTimeInputValidAtom, String(time) !== "" ? false : true);
   } else if (action.type === "reset") {
     set(lineAtom, RESET);
     timeInput.value = "";
+    set(isTimeInputValidAtom, true);
   }
 });
 const selectLineLyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics"));
