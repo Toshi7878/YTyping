@@ -22,13 +22,13 @@ export const usePressSkip = () => {
     const nextLine = map.mapData[count];
 
     const skippedTime =
-      (isRetrySkip ? Number(map.mapData[map!.startLine]["time"]) : Number(nextLine["time"])) +
+      (isRetrySkip ? Number(map.mapData[map.startLine]["time"]) : Number(nextLine["time"])) +
       userOptions.time_offset +
       timeOffset;
 
-    const playSpeed = readPlaySpeed().playSpeed;
+    const { playSpeed } = readPlaySpeed();
 
-    const movieDuration = readYTStatus().movieDuration;
+    const { movieDuration } = readYTStatus();
     const seekTime = nextLine["lyrics"] === "end" ? movieDuration - 2 : skippedTime - 1 + (1 - playSpeed);
 
     readPlayer().seekTo(seekTime, true);
