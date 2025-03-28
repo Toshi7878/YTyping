@@ -23,7 +23,7 @@ const PlayingPracticeBadge = function () {
             onClickNext={() => moveNextLine()}
           />
           <PlayingBottomBadge
-            badgeText="一覧"
+            badgeText="リスト"
             kbdText={userOptionsAtom.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
             onClick={() => toggleLineListDrawer()}
             isPauseDisabled={false}
