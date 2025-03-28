@@ -6,6 +6,7 @@ import {
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   UseDisclosureReturn,
@@ -39,11 +40,7 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
       size={{ base: "xs", xl: "sm" }}
       variant="alwaysOpen"
     >
-      <DrawerOverlay
-        backgroundColor="transparent"
-        onClick={onClose}
-        display={isOpen ? "block" : "none"}
-      />
+      <DrawerOverlay backgroundColor="transparent" onClick={onClose} display={isOpen ? "block" : "none"} />
       <DrawerContent
         height="100vh"
         display={isOpen ? "block" : "none"}
@@ -56,6 +53,7 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
         <DrawerBody overflowY="auto" position="relative" height="100%">
           {memoizedResultLineList}
         </DrawerBody>
+        <DrawerFooter />
       </DrawerContent>
       <style>
         {`
