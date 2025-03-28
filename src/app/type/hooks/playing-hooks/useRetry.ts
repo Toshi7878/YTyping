@@ -1,12 +1,10 @@
-import { RESET } from "jotai/utils";
 import { useCountRef, useGameUtilsRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
 import {
   useGameStateUtilsRef,
   useMapStateRef,
   useSetComboState,
+  useSetCurrentLineState,
   useSetLineResultsState,
-  useSetLineWordState,
-  useSetLyricsState,
   useSetNextLyricsState,
   useSetNotifyState,
   useSetSceneState,
@@ -25,9 +23,7 @@ export const useRetry = () => {
   const setLineResults = useSetLineResultsState();
   const setCombo = useSetComboState();
   const setNotify = useSetNotifyState();
-  const setLyrics = useSetLyricsState();
   const { setNextLyrics } = useSetNextLyricsState();
-  const setLineWord = useSetLineWordState();
 
   const { resetTypingStatus } = useSetTypingStatusState();
   const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
@@ -36,6 +32,7 @@ export const useRetry = () => {
   const readMap = useMapStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
   const { writeCount } = useCountRef();
+  const { resetCurrentLine } = useSetCurrentLineState();
   const setTabIndex = useSetTabIndexState();
 
   const setScene = useSetSceneState();
@@ -43,8 +40,7 @@ export const useRetry = () => {
   const { pauseTimer } = useTimerControls();
   return (newPlayMode: PlayMode) => {
     const map = readMap();
-    setLineWord(RESET);
-    setLyrics("");
+    resetCurrentLine();
     setNextLyrics(map.mapData[1]);
     writeCount(0);
 

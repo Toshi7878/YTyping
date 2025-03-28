@@ -13,11 +13,10 @@ import {
   useLineWordStateRef,
   useMapStateRef,
   useSetChangeCSSCountState,
+  useSetCurrentLineState,
   useSetCurrentTimeState,
   useSetLineKpmState,
   useSetLineRemainTimeState,
-  useSetLineWordState,
-  useSetLyricsState,
   useSetNextLyricsState,
   useSetTypingStatusState,
 } from "@/app/type/atoms/stateAtoms";
@@ -112,7 +111,7 @@ export const useTimer = () => {
   }) => {
     calcLineResult({ constantLineTime });
 
-    const movieDuration = readYTStatus().movieDuration;
+    const { movieDuration } = readYTStatus();
     if (nextLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
       readPlayer().stopVideo();
       pauseTimer();
@@ -270,21 +269,17 @@ export const useCalcLineResult = () => {
 };
 
 export const useUpdateLine = () => {
-  const setLyrics = useSetLyricsState();
   const { setNextLyrics, resetNextLyrics } = useSetNextLyricsState();
-  const setLineWord = useSetLineWordState();
   const setDisplayLineKpm = useSetLineKpmState();
   const setChangeCSSCount = useSetChangeCSSCountState();
 
   const lineReplayUpdate = useLineReplayUpdate();
-
-  const { readLineProgress } = useProgress();
-  const { readYTStatus } = useYTStatusRef();
   const { resetLineStatus, writeLineStatus } = useLineStatusRef();
+  const { setTypingStatus } = useSetTypingStatusState();
+  const { setCurrentLine } = useSetCurrentLineState();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readMap = useMapStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
-  const { setTypingStatus } = useSetTypingStatusState();
 
   return (newCount: number) => {
     const map = readMap();
@@ -307,13 +302,8 @@ export const useUpdateLine = () => {
     }));
 
     setDisplayLineKpm(0);
-    setLineWord({
-      correct: { k: "", r: "" },
-      nextChar: [...structuredClone(map.mapData[currentCount].word)][0],
-      word: [...structuredClone(map.mapData[currentCount].word)].slice(1),
-    });
 
-    setLyrics(map.mapData[currentCount]["lyrics"]);
+    setCurrentLine({ newCurrentLine: map.mapData[currentCount], newNextLine: map.mapData[newCount] });
 
     if (map.mapData[newCount].kanaWord) {
       setNextLyrics(map.mapData[newCount]);
@@ -327,12 +317,5 @@ export const useUpdateLine = () => {
         .reduce((prev, curr) => (prev === undefined || curr > prev ? curr : prev), 0);
       setChangeCSSCount(closestMin);
     }
-
-    const nextTime = Number(map.mapData[newCount]["time"]);
-    const movieDuration = readYTStatus().movieDuration;
-
-    const lineProgress = readLineProgress();
-    lineProgress.max =
-      (nextTime > movieDuration ? movieDuration : nextTime) - Number(map.mapData[currentCount]["time"]);
   };
 };

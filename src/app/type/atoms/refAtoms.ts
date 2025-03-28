@@ -137,7 +137,7 @@ export const useUserStatsRef = () => {
   return { readUserStats, writeUserStats, resetUserStats };
 };
 
-const ytStatusRefAtom = atomWithReset({
+export const ytStatusRefAtom = atomWithReset({
   isPaused: false,
   movieDuration: 0,
 });
@@ -230,7 +230,7 @@ export const usePlayer = () => {
   return { readPlayer, writePlayer };
 };
 
-const lineProgressRefAtom = atom<HTMLProgressElement | null>(null);
+export const lineProgressRefAtom = atom<HTMLProgressElement | null>(null);
 const totalProgressRefAtom = atom<HTMLProgressElement | null>(null);
 
 export const useProgress = () => {

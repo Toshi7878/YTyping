@@ -2,10 +2,9 @@ import { RESET } from "jotai/utils";
 import { useCountRef, useGameUtilsRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "./refAtoms";
 import { usePlaySpeedReducer } from "./speedReducerAtoms";
 import {
+  useSetCurrentLineState,
   useSetGameUtilsState,
   useSetLineResultsState,
-  useSetLineWordState,
-  useSetLyricsState,
   useSetMapState,
   useSetTypingStatusState,
 } from "./stateAtoms";
@@ -22,12 +21,10 @@ export const usePathChangeAtomReset = () => {
   const { resetStatus } = useStatusRef();
   const { writeCount } = useCountRef();
   const setMap = useSetMapState();
-  const setLyrics = useSetLyricsState();
-  const setLineWord = useSetLineWordState();
+  const { resetCurrentLine } = useSetCurrentLineState();
 
   return () => {
-    setLineWord(RESET);
-    setLyrics("");
+    resetCurrentLine();
     setLineResults(RESET);
     setGameUtils(RESET);
     dispatchSpeed({ type: "reset" });

@@ -6,7 +6,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../ts/type";
-import { useGameUtilsRef } from "./refAtoms";
+import { lineProgressRefAtom, useGameUtilsRef, ytStatusRefAtom } from "./refAtoms";
 import { speedBaseAtom } from "./speedReducerAtoms";
 import { getTypeAtomStore } from "./store";
 
@@ -120,17 +120,12 @@ const playingStateAtom = atomWithReset({
   lineRemainTime: 0,
   lineKpm: 0,
   combo: 0,
-  lyrics: "",
 });
 
-const lyricsAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lyrics"));
 const currentTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("currentTime"));
 const lineRemainTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineRemainTime"));
 const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm"));
 export const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
-
-export const useLyricsState = () => useAtomValue(lyricsAtom, { store });
-export const useSetLyricsState = () => useSetAtom(lyricsAtom, { store });
 
 export const useLineRemainTimeState = () => useAtomValue(lineRemainTimeAtom, { store });
 export const useSetLineRemainTimeState = () => useSetAtom(lineRemainTimeAtom, { store });
@@ -206,11 +201,17 @@ export const useSetNextLyricsState = () => {
   return { setNextLyrics, resetNextLyrics };
 };
 
-const lineWordAtom = atomWithReset<LineWord>({
-  correct: { k: "", r: "" },
-  nextChar: { k: "", r: [""], p: 0, t: undefined },
-  word: [{ k: "", r: [""], p: 0, t: undefined }],
+const currentLineAtom = atomWithReset<{ lineWord: LineWord; lyrics: string }>({
+  lineWord: {
+    correct: { k: "", r: "" },
+    nextChar: { k: "", r: [""], p: 0, t: undefined },
+    word: [{ k: "", r: [""], p: 0, t: undefined }],
+  },
+  lyrics: "",
 });
+
+const lineWordAtom = focusAtom(currentLineAtom, (optic) => optic.prop("lineWord"));
+const lineLyricsAtom = focusAtom(currentLineAtom, (optic) => optic.prop("lyrics"));
 
 export const useLineWordState = () => useAtomValue(lineWordAtom, { store });
 export const useSetLineWordState = () => useSetAtom(lineWordAtom, { store });
@@ -219,6 +220,36 @@ export const useLineWordStateRef = () => {
     useCallback((get) => get(lineWordAtom), []),
     { store }
   );
+};
+
+export const useLyricsState = () => useAtomValue(lineLyricsAtom, { store });
+
+const writeCurrentLineAtom = atom(
+  null,
+  (get, set, { newCurrentLine, newNextLine }: { newCurrentLine: LineData; newNextLine: LineData }) => {
+    set(currentLineAtom, {
+      lineWord: {
+        correct: { k: "", r: "" },
+        nextChar: [...newCurrentLine.word][0],
+        word: [...newCurrentLine.word].slice(1),
+      },
+      lyrics: newCurrentLine["lyrics"],
+    });
+
+    const nextTime = Number(newNextLine["time"]);
+
+    const { movieDuration } = get(ytStatusRefAtom);
+    const lineProgress = get(lineProgressRefAtom) as HTMLProgressElement;
+
+    lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
+  }
+);
+
+export const useSetCurrentLineState = () => {
+  const setCurrentLine = useSetAtom(writeCurrentLineAtom, { store });
+  const resetCurrentLine = useCallback(() => store.set(currentLineAtom, RESET), []);
+
+  return { setCurrentLine, resetCurrentLine };
 };
 
 export type TypingStatusAtomValue = ExtractAtomValue<typeof typingStatusAtom>;
