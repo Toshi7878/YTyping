@@ -23,7 +23,7 @@ const PlayingLyrics = () => {
         },
       })}
     >
-      {parse(`${lyrics}<ruby class="invisible">あ<rt>あ<rt></ruby>`)}
+      {parse(`${lyrics}<ruby class="invisible">あ<rt>あ</rt></ruby>`)}
     </Box>
   );
 };
