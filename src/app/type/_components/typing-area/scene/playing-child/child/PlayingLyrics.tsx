@@ -14,6 +14,7 @@ const PlayingLyrics = () => {
       ml={1}
       width="103%"
       className={"lyrics-font"}
+      whiteSpace="nowrap"
       sx={{
         ...(userOptionsAtom.line_completed_display === "NEXT_WORD" && {
           ".word-area-completed + &": {
