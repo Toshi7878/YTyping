@@ -1,5 +1,5 @@
 import { useLyricsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
-import { Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import parse from "html-react-parser";
 
 const PlayingLyrics = () => {
@@ -7,7 +7,7 @@ const PlayingLyrics = () => {
   const userOptionsAtom = useUserTypingOptionsState();
 
   return (
-    <Box
+    <Flex
       fontWeight="bold"
       fontSize={{ base: "5rem", sm: "4rem", md: "2.75rem" }}
       id="lyrics"
@@ -30,8 +30,7 @@ const PlayingLyrics = () => {
       <ruby className="invisible">
         あ<rt>あ</rt>
       </ruby>
-      <span className="invisible">あ</span>
-    </Box>
+    </Flex>
   );
 };
 
