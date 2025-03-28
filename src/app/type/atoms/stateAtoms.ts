@@ -249,9 +249,11 @@ const writeCurrentLineAtom = atom(
     const nextTime = Number(newNextLine["time"]);
 
     const { movieDuration } = get(ytStatusRefAtom);
-    const lineProgress = get(lineProgressRefAtom) as HTMLProgressElement;
+    const lineProgress = get(lineProgressRefAtom);
 
-    lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
+    if (lineProgress) {
+      lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
+    }
   }
 );
 
