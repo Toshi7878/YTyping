@@ -1,7 +1,7 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useMapInfoRef, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { useLoadResultPlay } from "@/app/type/hooks/loadResultPlay";
-import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
+import { useRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
@@ -35,7 +35,7 @@ const RankingMenu = ({
   const scene = useSceneState();
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
-  const proceedRetry = useProceedRetry();
+  const retry = useRetry();
   const loadResultPlay = useLoadResultPlay({ startMode: "replay", resultId });
 
   const { writeGameUtils } = useGameUtilsRef();
@@ -62,7 +62,7 @@ const RankingMenu = ({
     });
 
     if (scene === "end") {
-      proceedRetry("replay");
+      retry("replay");
     }
   };
   return (

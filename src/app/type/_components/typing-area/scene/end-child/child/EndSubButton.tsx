@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
-import { useProceedRetry } from "@/app/type/hooks/playing-hooks/useRetry";
+import { useRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { PlayMode } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
 import { useRef } from "react";
@@ -30,13 +30,13 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
   const { readGameUtils } = useGameUtilsRef();
   const { playMode } = readGameUtils();
 
-  const proceedRetry = useProceedRetry();
+  const retry = useRetry();
 
-  const retry = (playMode: PlayMode) => {
+  const handleRetry = (playMode: PlayMode) => {
     if (isRetryAlert) {
       onOpen();
     } else {
-      proceedRetry(playMode);
+      retry(playMode);
     }
   };
 
@@ -76,7 +76,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
                 colorScheme="red"
                 onClick={() => {
                   onClose();
-                  proceedRetry(retryMode);
+                  handleRetry(retryMode);
                 }}
                 ml={3}
               >
@@ -100,7 +100,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
           bg: theme.colors.button.sub.hover,
         }}
         onClick={() => {
-          retry(retryMode);
+          handleRetry(retryMode);
         }}
       >
         {getButtonText()}

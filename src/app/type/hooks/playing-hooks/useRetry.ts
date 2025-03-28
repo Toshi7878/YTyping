@@ -36,6 +36,9 @@ export const useRetry = () => {
   const readMap = useMapStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
   const { writeCount } = useCountRef();
+  const setTabIndex = useSetTabIndexState();
+
+  const setScene = useSetSceneState();
 
   const { pauseTimer } = useTimerControls();
   return (newPlayMode: PlayMode) => {
@@ -43,33 +46,6 @@ export const useRetry = () => {
     setLineWord(RESET);
     setLyrics("");
     setNextLyrics(map.mapData[1]);
-
-    const { scene } = readGameStateUtils();
-
-    if (scene === "playing" || scene === "practice") {
-      sendTypingStats();
-    }
-
-    if (scene === "playing") {
-      const totalTypeCount = readTypingStatus().type;
-      if (totalTypeCount) {
-        const retryCount = readGameUtils().retryCount;
-        writeGameUtils({ retryCount: retryCount + 1 });
-        if (totalTypeCount >= 10) {
-          sendPlayCountStats();
-        }
-      }
-
-      setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
-      setLineResults(structuredClone(map!.defaultLineResultData));
-    }
-
-    if (scene != "practice") {
-      resetTypingStatus();
-      setCombo(0);
-      resetStatus();
-    }
-
     writeCount(0);
 
     const enableRetrySKip = map.mapData[map.startLine].time > 5;
@@ -80,56 +56,49 @@ export const useRetry = () => {
       isRetrySkip: enableRetrySKip,
     });
 
-    readPlayer().seekTo(0, true);
-
-    pauseTimer();
-  };
-};
-
-export const useProceedRetry = () => {
-  const setCombo = useSetComboState();
-  const setTabIndex = useSetTabIndexState();
-
-  const setLineResults = useSetLineResultsState();
-  const setScene = useSetSceneState();
-  const { resetTypingStatus } = useSetTypingStatusState();
-  const { sendPlayCountStats } = useSendUserStats();
-
-  const { readPlayer } = usePlayer();
-  const { writeGameUtils } = useGameUtilsRef();
-  const { resetStatus } = useStatusRef();
-  const { writeCount } = useCountRef();
-  const readMap = useMapStateRef();
-
-  return (playMode: PlayMode) => {
-    const map = readMap();
-    setScene(playMode);
-    setTabIndex(0);
-
-    if (playMode === "playing" || playMode === "practice") {
-      sendPlayCountStats();
+    const { scene } = readGameStateUtils();
+    if (scene === "playing" || scene === "practice") {
+      sendTypingStats();
     }
 
-    if (playMode === "playing") {
+    switch (scene) {
+      case "playing": {
+        const { type: totalTypeCount } = readTypingStatus();
+        if (totalTypeCount) {
+          const retryCount = readGameUtils().retryCount;
+          writeGameUtils({ retryCount: retryCount + 1 });
+          if (totalTypeCount >= 10) {
+            sendPlayCountStats();
+          }
+        }
+
+        setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
+        break;
+      }
+      case "end": {
+        setScene(newPlayMode);
+        setTabIndex(0);
+
+        if (newPlayMode === "playing" || newPlayMode === "practice") {
+          sendPlayCountStats();
+        }
+
+        break;
+      }
+    }
+
+    if (newPlayMode === "playing") {
       setLineResults(structuredClone(map.defaultLineResultData));
     }
 
-    if (playMode !== "practice") {
+    if (newPlayMode !== "practice") {
       resetTypingStatus();
       setCombo(0);
       resetStatus();
     }
 
-    writeCount(0);
-    const enableRetrySKip = map.mapData[map.startLine].time > 5;
-
-    writeGameUtils({
-      replayKeyCount: 0,
-      isRetrySkip: enableRetrySKip,
-      playMode: playMode,
-    });
-
     readPlayer().seekTo(0, true);
+    pauseTimer();
     readPlayer().playVideo();
   };
 };
