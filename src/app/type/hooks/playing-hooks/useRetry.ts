@@ -68,6 +68,7 @@ export const useRetry = () => {
           }
         }
 
+        writeGameUtils({ replayUserName: "" });
         setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
         break;
       }
