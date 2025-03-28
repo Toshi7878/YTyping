@@ -11,6 +11,7 @@ const PlayingLyrics = () => {
       fontWeight="bold"
       fontSize={{ base: "5rem", sm: "4rem", md: "2.75rem" }}
       id="lyrics"
+      alignItems="flex-end"
       ml={1}
       width="103%"
       className={"lyrics-font"}
