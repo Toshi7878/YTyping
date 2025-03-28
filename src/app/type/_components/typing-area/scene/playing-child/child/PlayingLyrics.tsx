@@ -26,10 +26,10 @@ const PlayingLyrics = () => {
         },
       }}
     >
-      <ruby>
+      {parse(`${lyrics}`)}
+      <ruby className="invisible">
         あ<rt>あ</rt>
       </ruby>
-      {parse(`${lyrics}`)}
     </Box>
   );
 };
