@@ -8,26 +8,24 @@ const NextLyrics = () => {
   const { lyrics, kpm } = useNextLyricsState();
 
   return (
-    <Flex
+    <Box
       color={`${theme.colors.text.body}`}
       id="next_lyrics_kpm"
       opacity={0.6}
-      alignItems="flex-end"
-      whiteSpace="nowrap"
       fontSize={{ base: "4rem", sm: "2.7rem", md: "3xl" }}
       className="lyrics-font"
       lineHeight={{ base: "80px", sm: "50px", md: "2.5rem" }}
     >
-      <Box ml={1.5} fontWeight="bold" id="next_lyrics" whiteSpace="nowrap">
+      <Flex ml={1.5} alignItems="flex-end" fontWeight="bold" id="next_lyrics" whiteSpace="nowrap">
         {parse(lyrics)}
         <ruby className="invisible">
           あ<rt>あ</rt>
         </ruby>
-      </Box>
+      </Flex>
       <Box ml={2} id="next_kpm">
         {Number(kpm) > 0 ? `NEXT: ${kpm}kpm` : ""}
       </Box>
-    </Flex>
+    </Box>
   );
 };
 
