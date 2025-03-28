@@ -240,8 +240,8 @@ const writeCurrentLineAtom = atom(
     set(currentLineAtom, {
       lineWord: {
         correct: { k: "", r: "" },
-        nextChar: [...newCurrentLine.word][0],
-        word: [...newCurrentLine.word].slice(1),
+        nextChar: structuredClone([...newCurrentLine.word][0]),
+        word: structuredClone([...newCurrentLine.word].slice(1)),
       },
       lyrics: newCurrentLine["lyrics"],
     });
