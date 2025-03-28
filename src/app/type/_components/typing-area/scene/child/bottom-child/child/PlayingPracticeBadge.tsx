@@ -15,7 +15,7 @@ const PlayingPracticeBadge = function () {
       {scene !== "playing" && (
         <>
           <PlayingLineSeekBadge
-            badgeText="ライン移動"
+            badgeText="移動"
             kbdTextPrev="←"
             kbdTextNext="→"
             onClick={() => {}}
@@ -23,7 +23,7 @@ const PlayingPracticeBadge = function () {
             onClickNext={() => moveNextLine()}
           />
           <PlayingBottomBadge
-            badgeText="ライン一覧"
+            badgeText="一覧"
             kbdText={userOptionsAtom.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
             onClick={() => toggleLineListDrawer()}
             isPauseDisabled={false}

@@ -66,8 +66,10 @@ export const useYTPlayEvent = () => {
       setScene("playing");
     }
 
-    const readyInputMode = readReadyInputMode();
-    setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
+    if (playMode !== "replay") {
+      const readyInputMode = readReadyInputMode();
+      setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
+    }
     sendPlayCountStats();
     setTabIndex(0);
   };
