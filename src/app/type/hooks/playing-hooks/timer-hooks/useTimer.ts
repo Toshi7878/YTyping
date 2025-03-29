@@ -261,10 +261,13 @@ export const useCalcLineResult = () => {
           updateStatus({ constantLineTime });
           break;
         case "practice":
-          updateAllStatus({
-            count: map.mapData.length - 1,
-            updateType: "lineUpdate",
-          });
+          const { type } = readLineStatus();
+          if (isTypingLine && type) {
+            updateAllStatus({
+              count: map.mapData.length - 1,
+              updateType: "lineUpdate",
+            });
+          }
           break;
       }
     }
