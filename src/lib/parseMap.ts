@@ -203,6 +203,8 @@ const SOKUON_JOIN_LIST = [
   "ぽ",
 ];
 
+const KANA_UNSUPPORTED_SYMBOLS = ["←", "↓", "↑", "→"];
+
 export const CHAR_POINT = 50;
 export const MISS_PENALTY = CHAR_POINT / 2;
 
@@ -274,6 +276,7 @@ export class TypingWord {
       ...CHAR,
       p: CHAR_POINT * CHAR["r"][0].length,
       t: this.getCharType({ romaChar: CHAR.r[0], kanaChar: CHAR.k, romaMapIndex }),
+      ...(KANA_UNSUPPORTED_SYMBOLS.includes(CHAR.k) && { kanaUnSupportedSymbol: CHAR.k }),
     });
 
     //促音の打鍵パターン
