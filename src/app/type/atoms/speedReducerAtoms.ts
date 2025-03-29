@@ -3,7 +3,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { playerRefAtom } from "./refAtoms";
-import { notifyAtom, sceneAtom } from "./stateAtoms";
+import { notifyAtom, sceneAtom, sceneGroupAtom } from "./stateAtoms";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
@@ -16,9 +16,9 @@ export const speedBaseAtom = atomWithReset({
 });
 
 store.sub(speedBaseAtom, () => {
-  const scene = store.get(sceneAtom);
+  const sceneGroup = store.get(sceneGroupAtom);
   const { playSpeed } = store.get(speedBaseAtom);
-  const isPlaying = scene === "play" || scene === "practice" || scene === "replay";
+  const isPlaying = sceneGroup === "Playing";
   const player = store.get(playerRefAtom);
 
   if (player) {
