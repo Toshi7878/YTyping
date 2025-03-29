@@ -203,13 +203,13 @@ enum toggle_input_mode_key {
 model user_typing_options {
   user_id                Int                    @id
   time_offset            Float                  @default(0)
-  kana_word_scroll       Int                    @default(10)
-  roma_word_scroll       Int                    @default(16)
+  kana_word_scroll       Int                    @default(6)
+  roma_word_scroll       Int                    @default(9)
   type_sound             Boolean                @default(false)
   miss_sound             Boolean                @default(false)
   line_clear_sound       Boolean                @default(false)
   next_display           next_display           @default(LYRICS)
-  line_completed_display line_completed_display @default(HIGH_LIGHT)
+  line_completed_display line_completed_display @default(NEXT_WORD)
   time_offset_key        time_offset_key        @default(CTRL_LEFT_RIGHT)
   toggle_input_mode_key  toggle_input_mode_key  @default(ALT_KANA)
   user                   users                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
