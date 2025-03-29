@@ -1,4 +1,4 @@
-import { useCountRef, usePlayer, useResultCards } from "../../atoms/refAtoms";
+import { useCountRef, usePlayer, useProgress, useResultCards } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
   useGameStateUtilsRef,
@@ -23,6 +23,7 @@ export const useMoveLine = () => {
 
   const { pauseTimer } = useTimerControls();
   const readGameStateUtils = useGameStateUtilsRef();
+  const { readLineProgress, readTotalProgress } = useProgress();
 
   const movePrevLine = () => {
     const map = readMap();
@@ -51,6 +52,7 @@ export const useMoveLine = () => {
     setNotify(Symbol(`◁`));
     drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
+    readLineProgress().value = prevTime - map.mapData[newCount - 1].time;
   };
 
   const moveNextLine = () => {
@@ -88,6 +90,7 @@ export const useMoveLine = () => {
     setNotify(Symbol(`▷`));
     drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
+    readLineProgress().value = nextTime - map.mapData[newCount - 1].time;
   };
 
   const moveSetLine = (seekCount: number) => {
@@ -105,6 +108,8 @@ export const useMoveLine = () => {
     writeCount(newCount);
     updateLine(newCount);
     pauseTimer();
+
+    readLineProgress().value = seekTime - map.mapData[newCount - 1].time;
   };
 
   const drawerSelectColorChange = (newLineSelectIndex: number) => {
