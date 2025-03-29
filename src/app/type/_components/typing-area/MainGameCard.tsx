@@ -3,7 +3,7 @@ import CustomCard from "@/components/custom-ui/CustomCard";
 import { CardBody, CardFooter, CardHeader, useDisclosure, UseDisclosureReturn } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useGameUtilsRef } from "../../atoms/refAtoms";
-import { useMapState, useSceneState } from "../../atoms/stateAtoms";
+import { useMapState, useSceneState, useYTStartedState } from "../../atoms/stateAtoms";
 import "../../style/type.scss";
 import PlayingBottom from "./scene/child/PlayingBottom";
 import PlayingTop from "./scene/child/PlayingTop";
@@ -22,26 +22,29 @@ const GameCardBody = (props: TypingCardBodyProps) => {
   const map = useMapState();
   const { onOpen } = drawerClosure;
   const scene = useSceneState();
-  const isPlayed = scene === "playing" || scene === "replay" || scene === "practice";
+  const isYTStarted = useYTStartedState();
+  const isPlayed = isYTStarted && (scene === "playing" || scene === "replay" || scene === "practice");
 
   return (
     <CardBody mx={8} py={3}>
-      {scene === "ready" ? (
+      {scene === "ready" || !isYTStarted || !map ? (
         <Ready />
-      ) : isPlayed && map ? (
+      ) : isPlayed ? (
         <>
           <Playing />
           <ResultDrawer drawerClosure={drawerClosure} />
           {scene === "practice" && <PracticeLineCard />}
           {map.mapData[0].options?.eternalCSS && <style>{map.mapData[0].options?.eternalCSS}</style>}
         </>
-      ) : scene === "end" ? (
-        <>
-          <End onOpen={onOpen} />
-          <ResultDrawer drawerClosure={drawerClosure} />
-          <style>{map.mapData[0].options?.eternalCSS}</style>
-        </>
-      ) : null}
+      ) : (
+        scene === "end" && (
+          <>
+            <End onOpen={onOpen} />
+            <ResultDrawer drawerClosure={drawerClosure} />
+            <style>{map.mapData[0].options?.eternalCSS}</style>
+          </>
+        )
+      )}
     </CardBody>
   );
 };

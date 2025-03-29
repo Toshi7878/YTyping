@@ -27,8 +27,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const theme: ThemeColors = useTheme();
-  const { readGameUtils } = useGameUtilsRef();
-  const { playMode } = readGameUtils();
+  const { playMode } = useGameUtilsRef().readGameUtils();
 
   const retry = useRetry();
 

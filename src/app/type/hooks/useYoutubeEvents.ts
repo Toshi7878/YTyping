@@ -2,12 +2,14 @@ import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { YouTubeEvent } from "react-youtube";
 import { useCountRef, useGameUtilsRef, usePlayer, useProgress, useYTStatusRef } from "../atoms/refAtoms";
+import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";
 import {
   useGameStateUtilsRef,
   useSetNotifyState,
   useSetPlayingInputModeState,
   useSetSceneState,
   useSetTabIndexState,
+  useSetYTStartedState,
 } from "../atoms/stateAtoms";
 import { useReadyInputModeStateRef } from "../atoms/storageAtoms";
 import { InputMode } from "../ts/type";
@@ -23,34 +25,33 @@ export const useYTPlayEvent = () => {
   const { startTimer } = useTimerControls();
 
   const { readPlayer } = usePlayer();
-  const { readGameUtils } = useGameUtilsRef();
+  const setYTStarted = useSetYTStartedState();
   const { readYTStatus, writeYTStatus } = useYTStatusRef();
   const readGameStateUtils = useGameStateUtilsRef();
   const readReadyInputMode = useReadyInputModeStateRef();
+  const readPlaySpeed = usePlaySpeedStateRef();
 
   return async (event: YouTubeEvent) => {
     console.log("再生 1");
-    const { scene } = readGameStateUtils();
+    const { scene, isYTStarted } = readGameStateUtils();
 
-    if (scene === "playing" || scene === "practice" || scene === "replay") {
+    if (isYTStarted && (scene === "playing" || scene === "practice" || scene === "replay")) {
       startTimer();
     }
-
-    const isPaused = readYTStatus().isPaused;
-
+    const { isPaused } = readYTStatus();
     if (isPaused) {
       writeYTStatus({ isPaused: false });
       setNotify(Symbol("▶"));
     }
 
-    if (scene !== "ready") {
+    if (isYTStarted) {
       return;
     }
 
     const movieDuration = readPlayer().getDuration();
     writeYTStatus({ movieDuration });
 
-    const playMode = readGameUtils().playMode;
+    const { defaultSpeed } = readPlaySpeed();
     const { isLoadingOverlay } = readGameStateUtils();
 
     if (isLoadingOverlay) {
@@ -58,20 +59,19 @@ export const useYTPlayEvent = () => {
       return;
     }
 
-    if (playMode === "replay") {
-      setScene("replay");
-    } else if (playMode === "practice") {
-      setScene("practice");
-    } else {
-      setScene("playing");
-    }
+    if (scene !== "replay") {
+      if (1 > defaultSpeed) {
+        setScene("practice");
+      } else {
+        setScene("playing");
+      }
 
-    if (playMode !== "replay") {
       const readyInputMode = readReadyInputMode();
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
     }
     sendPlayCountStats();
     setTabIndex(0);
+    setYTStarted(true);
   };
 };
 

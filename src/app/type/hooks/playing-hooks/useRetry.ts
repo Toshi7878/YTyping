@@ -47,7 +47,6 @@ export const useRetry = () => {
     const enableRetrySKip = map.mapData[map.startLine].time > 5;
 
     writeGameUtils({
-      playMode: newPlayMode,
       replayKeyCount: 0,
       isRetrySkip: enableRetrySKip,
     });
@@ -72,7 +71,6 @@ export const useRetry = () => {
         break;
       }
       case "end": {
-        setScene(newPlayMode);
         setTabIndex(0);
 
         if (newPlayMode === "playing" || newPlayMode === "practice") {
@@ -82,6 +80,8 @@ export const useRetry = () => {
         break;
       }
     }
+
+    setScene(newPlayMode);
 
     if (newPlayMode === "playing") {
       setLineResults(structuredClone(map.defaultLineResultData));

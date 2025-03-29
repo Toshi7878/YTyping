@@ -169,7 +169,7 @@ export const useYTStatusRef = () => {
   };
 };
 
-const gameUtilsRefAtom = atomWithReset({
+export const gameUtilsRefAtom = atomWithReset({
   isRetrySkip: false,
   retryCount: 1,
   timeOffset: 0,

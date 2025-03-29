@@ -6,7 +6,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../ts/type";
-import { lineProgressRefAtom, useGameUtilsRef, ytStatusRefAtom } from "./refAtoms";
+import { gameUtilsRefAtom, lineProgressRefAtom, useGameUtilsRef, ytStatusRefAtom } from "./refAtoms";
 import { speedBaseAtom } from "./speedReducerAtoms";
 import { getTypeAtomStore } from "./store";
 
@@ -70,7 +70,9 @@ const gameStateUtilsAtom = atomWithReset({
   changeCSSCount: 0,
   isLoadingOverlay: false,
   lineSelectIndex: 0,
+  isYTStarted: false,
 });
+
 export const sceneAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("scene"));
 const tabIndexAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("tabIndex"));
 export const notifyAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("notify"));
@@ -79,6 +81,15 @@ const changeCSSCountAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("
 const lineSelectIndexAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("lineSelectIndex"));
 const isLoadingOverlayAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("isLoadingOverlay"));
 const playingInputModeAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("inputMode"));
+const isYTStartedAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("isYTStarted"));
+
+const writeSceneAtom = atom(null, (get, set, newScene: SceneType) => {
+  set(sceneAtom, newScene);
+
+  if (newScene !== "ready" && newScene !== "end") {
+    set(gameUtilsRefAtom, (prev) => ({ ...prev, playMode: newScene }));
+  }
+});
 
 const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { newCurrentCount: number }) => {
   const map = get(mapAtom) as ParseMap;
@@ -105,7 +116,7 @@ export const useTabIndexState = () => useAtomValue(tabIndexAtom);
 export const useSetTabIndexState = () => useSetAtom(tabIndexAtom);
 
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
-export const useSetSceneState = () => useSetAtom(sceneAtom, { store });
+export const useSetSceneState = () => useSetAtom(writeSceneAtom, { store });
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });
 export const useSetPlayingInputModeState = () => useSetAtom(playingInputModeAtom, { store });
@@ -124,6 +135,9 @@ export const useSetChangeCSSCountState = () => useSetAtom(writeChangeCSSCountAto
 
 export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
 export const useSetLineSelectIndexState = () => useSetAtom(lineSelectIndexAtom);
+
+export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
+export const useSetYTStartedState = () => useSetAtom(isYTStartedAtom);
 
 const playingStateAtom = atomWithReset({
   currentTime: 0,

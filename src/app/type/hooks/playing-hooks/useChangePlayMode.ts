@@ -19,7 +19,6 @@ export const useChangePlayMode = () => {
     if (scene === "playing") {
       const confirmMessage = "練習モードに移動しますか？";
       if (window.confirm(confirmMessage)) {
-        writeGameUtils({ playMode: "practice" });
         setScene("practice");
       }
     } else {
@@ -27,7 +26,6 @@ export const useChangePlayMode = () => {
       if (window.confirm(confirmMessage)) {
         const { startSpeed } = readLineStatus();
         writeGameUtils({ practiceMyResultId: null, replayKeyCount: 0, replayUserName: "" });
-        setScene("playing");
         const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
 
         if (drawerClosure) {
