@@ -293,10 +293,10 @@ export const useSetCurrentLineState = () => {
   const setCurrentLine = useSetAtom(writeCurrentLineAtom, { store });
   const resetCurrentLine = useCallback(() => {
     store.set(currentLineAtom, RESET);
-    const map = store.get(mapAtom) as ParseMap;
+    const map = store.get(mapAtom);
     const lineProgress = store.get(lineProgressRefAtom);
 
-    if (lineProgress) {
+    if (lineProgress && map) {
       lineProgress.value = 0;
       lineProgress.max = map.mapData[1]["time"];
     }

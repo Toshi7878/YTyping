@@ -79,6 +79,7 @@ const ytPlayerStatusAtom = atomWithReset({
   playing: false,
   speed: 1 as YouTubeSpeed,
 });
+
 export const videoIdAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("videoId"));
 const readiedAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("readied"));
 const startedAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("started"));
