@@ -35,9 +35,10 @@ export const useYTPlayEvent = () => {
     console.log("再生 1");
     const { scene, isYTStarted } = readGameStateUtils();
 
-    if (isYTStarted && (scene === "play" || scene === "practice" || scene === "replay")) {
+    if (scene === "ready" || scene === "play" || scene === "practice" || scene === "replay") {
       startTimer();
     }
+
     const { isPaused } = readYTStatus();
     if (isPaused) {
       writeYTStatus({ isPaused: false });
