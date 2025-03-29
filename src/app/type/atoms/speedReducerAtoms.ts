@@ -22,7 +22,7 @@ store.sub(speedBaseAtom, () => {
   const player = store.get(playerRefAtom);
 
   if (player) {
-    player?.setPlaybackRate(playSpeed);
+    player.setPlaybackRate(playSpeed);
   }
 
   if (isPlaying) {

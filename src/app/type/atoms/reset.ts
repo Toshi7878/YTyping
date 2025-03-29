@@ -27,7 +27,6 @@ export const usePathChangeAtomReset = () => {
     resetCurrentLine();
     setLineResults(RESET);
     setGameUtils(RESET);
-    dispatchSpeed({ type: "reset" });
     setMap(RESET);
     resetTypingStatus();
     resetGameUtils();
