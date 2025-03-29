@@ -78,7 +78,7 @@ export const useRetry = () => {
         if (newPlayMode === "play" || newPlayMode === "practice") {
           sendPlayCountStats();
         }
-
+        setNotify(Symbol(""));
         break;
       }
     }
