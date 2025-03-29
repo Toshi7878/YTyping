@@ -109,7 +109,11 @@ export const useTimer = () => {
     constantLineTime: number;
     nextLine: LineData;
   }) => {
-    calcLineResult({ constantLineTime });
+    const { scene } = readGameStateUtils();
+
+    if (scene !== "replay") {
+      calcLineResult({ constantLineTime });
+    }
 
     const { movieDuration } = readYTStatus();
     if (nextLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
@@ -119,8 +123,7 @@ export const useTimer = () => {
     }
 
     if (nextLine) {
-      const { scene } = readGameStateUtils();
-      if (scene === "playing") {
+      if (scene === "play") {
         writeCount(readCount() + 1);
       } else {
         writeCount(getSeekLineCount(currentOffesettedYTTime));
@@ -144,6 +147,7 @@ export const useTimer = () => {
     setDisplayRemainTime(constantRemainLineTime);
 
     const { isCompleted } = readLineStatus();
+
     if (!isCompleted) {
       calcTypeSpeed({
         updateType: "timer",
@@ -238,7 +242,7 @@ export const useCalcLineResult = () => {
     const { isCompleted } = readLineStatus();
     const count = readCount();
 
-    if (!isCompleted && scene !== "replay" && count > 0) {
+    if (!isCompleted && count > 0) {
       const isTypingLine = map.mapData[count - 1].kpm.r > 0;
 
       if (isTypingLine) {
@@ -252,16 +256,17 @@ export const useCalcLineResult = () => {
         updateLineResult();
       }
 
-      if (scene === "playing") {
-        updateStatus({ constantLineTime });
-      } else if (scene === "practice") {
-        updateAllStatus({
-          count: map.mapData.length - 1,
-          updateType: "lineUpdate",
-        });
+      switch (scene) {
+        case "play":
+          updateStatus({ constantLineTime });
+          break;
+        case "practice":
+          updateAllStatus({
+            count: map.mapData.length - 1,
+            updateType: "lineUpdate",
+          });
+          break;
       }
-    } else if (scene === "replay") {
-      updateAllStatus({ count, updateType: "lineUpdate" });
     }
   };
 };
@@ -278,6 +283,7 @@ export const useUpdateLine = () => {
   const readPlaySpeed = usePlaySpeedStateRef();
   const readMap = useMapStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
+  const updateAllStatus = useUpdateAllStatus();
 
   return (newNextCount: number) => {
     const map = readMap();
@@ -291,6 +297,7 @@ export const useUpdateLine = () => {
     const { playSpeed } = readPlaySpeed();
     if (scene === "replay") {
       lineReplayUpdate(newCurrentCount);
+      updateAllStatus({ count: newCurrentCount, updateType: "lineUpdate" });
     }
 
     writeLineStatus({

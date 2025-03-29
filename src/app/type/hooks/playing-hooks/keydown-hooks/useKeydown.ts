@@ -133,7 +133,10 @@ const usePlayingShortcutKey = () => {
         break;
 
       case "F4":
-        retry(readGameUtils().playMode);
+        const isPlaying = scene === "play" || scene === "practice" || scene === "replay";
+        if (isPlaying) {
+          retry(scene);
+        }
         break;
       case "F7":
         changePlayMode();
@@ -144,7 +147,7 @@ const usePlayingShortcutKey = () => {
         }
         break;
       case "F10":
-        if (scene === "playing") {
+        if (scene === "play") {
           dispatchSpeed({ type: "toggle" });
         } else if (scene === "practice") {
           dispatchSpeed({ type: "up" });

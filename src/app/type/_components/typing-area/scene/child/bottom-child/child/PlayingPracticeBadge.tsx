@@ -12,7 +12,7 @@ const PlayingPracticeBadge = function () {
 
   return (
     <>
-      {scene !== "playing" && (
+      {scene !== "play" && (
         <>
           <PlayingLineSeekBadge
             badgeText="移動"

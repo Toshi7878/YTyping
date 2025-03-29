@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@chakra-ui/react";
 
-import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useSceneState } from "@/app/type/atoms/stateAtoms";
 import { useRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { PlayMode } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
@@ -27,8 +27,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const theme: ThemeColors = useTheme();
-  const { playMode } = useGameUtilsRef().readGameUtils();
-
+  const scene = useSceneState();
   const retry = useRetry();
 
   const handleRetry = () => {
@@ -40,11 +39,11 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
   };
 
   const getButtonText = () => {
-    if (retryMode === "practice" && playMode !== "practice") return "練習モードへ";
-    if (retryMode === "playing" && playMode !== "playing") return "本番モードへ";
+    if (retryMode === "practice" && scene !== "practice_end") return "練習モードへ";
+    if (retryMode === "play" && scene !== "play_end") return "本番モードへ";
     if (retryMode === "practice") return "もう一度練習";
     if (retryMode === "replay") return "もう一度リプレイ";
-    if (retryMode === "playing") return "もう一度プレイ";
+    if (retryMode === "play") return "もう一度プレイ";
   };
 
   return (

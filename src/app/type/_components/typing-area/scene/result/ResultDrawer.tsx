@@ -1,5 +1,5 @@
 "use client";
-import { useSceneState } from "@/app/type/atoms/stateAtoms";
+import { useSceneGroupState, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import {
   Drawer,
@@ -22,16 +22,17 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
   const { isOpen, onClose } = drawerClosure;
   const theme: ThemeColors = useTheme();
   const scene = useSceneState();
+  const sceneGroup = useSceneGroupState();
 
   const memoizedResultLineList = useMemo(() => {
-    if (scene === "end" || scene === "practice" || scene === "replay") {
+    if (sceneGroup === "End" || scene === "practice" || scene === "replay") {
       return <ResultLineList />;
     }
-  }, [scene]);
+  }, [scene, sceneGroup]);
 
   return (
     <Drawer
-      isOpen={scene === "end" ? isOpen : scene === "practice" || scene === "replay" ? true : false}
+      isOpen={sceneGroup === "End" ? isOpen : scene === "practice" || scene === "replay" ? true : false}
       placement="right"
       trapFocus={false}
       blockScrollOnMount={false}

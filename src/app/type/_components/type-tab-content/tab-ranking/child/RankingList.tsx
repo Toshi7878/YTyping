@@ -63,7 +63,7 @@ const RankingList = () => {
   useEffect(() => {
     const userId = Number(session?.user?.id);
 
-    if (scene === "playing" && data) {
+    if (scene === "play" && data) {
       for (let i = 0; i < data.length; i++) {
         if (userId === Number(data[i].user_id)) {
           writeGameUtils({

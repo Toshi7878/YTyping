@@ -3,7 +3,7 @@ import { UseDisclosureReturn } from "@chakra-ui/react";
 import { atom, ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputMode, PlayMode, TypeResult } from "../ts/type";
+import { InputMode, TypeResult } from "../ts/type";
 import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 
@@ -173,7 +173,6 @@ export const gameUtilsRefAtom = atomWithReset({
   isRetrySkip: false,
   retryCount: 1,
   timeOffset: 0,
-  playMode: "playing" as PlayMode,
   startPlaySpeed: 1,
   updateMsTimeCount: 0,
   myBestScore: 0,

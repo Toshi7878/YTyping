@@ -52,12 +52,12 @@ export const useRetry = () => {
     });
 
     const { scene } = readGameStateUtils();
-    if (scene === "playing" || scene === "practice") {
+    if (scene === "play" || scene === "practice") {
       sendTypingStats();
     }
 
     switch (scene) {
-      case "playing": {
+      case "play": {
         const { type: totalTypeCount } = readTypingStatus();
         if (totalTypeCount) {
           const retryCount = readGameUtils().retryCount;
@@ -70,10 +70,12 @@ export const useRetry = () => {
         setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
         break;
       }
-      case "end": {
+      case "play_end":
+      case "practice_end":
+      case "replay_end": {
         setTabIndex(0);
 
-        if (newPlayMode === "playing" || newPlayMode === "practice") {
+        if (newPlayMode === "play" || newPlayMode === "practice") {
           sendPlayCountStats();
         }
 
@@ -83,7 +85,7 @@ export const useRetry = () => {
 
     setScene(newPlayMode);
 
-    if (newPlayMode === "playing") {
+    if (newPlayMode === "play") {
       setLineResults(structuredClone(map.defaultLineResultData));
     }
 

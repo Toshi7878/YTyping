@@ -35,7 +35,7 @@ export const useYTPlayEvent = () => {
     console.log("再生 1");
     const { scene, isYTStarted } = readGameStateUtils();
 
-    if (isYTStarted && (scene === "playing" || scene === "practice" || scene === "replay")) {
+    if (isYTStarted && (scene === "play" || scene === "practice" || scene === "replay")) {
       startTimer();
     }
     const { isPaused } = readYTStatus();
@@ -63,7 +63,7 @@ export const useYTPlayEvent = () => {
       if (1 > defaultSpeed) {
         setScene("practice");
       } else {
-        setScene("playing");
+        setScene("play");
       }
 
       const readyInputMode = readReadyInputMode();
@@ -90,7 +90,7 @@ export const useYTStopEvent = () => {
   const setScene = useSetSceneState();
   const { readLineProgress, readTotalProgress } = useProgress();
   const { pauseTimer } = useTimerControls();
-
+  const readGameStateUtils = useGameStateUtilsRef();
   return () => {
     console.log("動画停止");
 
@@ -99,7 +99,16 @@ export const useYTStopEvent = () => {
 
     lineProgress.value = lineProgress.max;
     totalProgress.value = totalProgress.max;
-    setScene("end");
+
+    const { scene } = readGameStateUtils();
+
+    if (scene === "play") {
+      setScene("play_end");
+    } else if (scene === "practice") {
+      setScene("practice_end");
+    } else if (scene === "replay_end") {
+      setScene("replay_end");
+    }
 
     pauseTimer();
   };

@@ -19,7 +19,7 @@ const PlayingNotify = ({ className = "" }: PlayingNotifyProps) => {
   const { readGameUtils } = useGameUtilsRef();
 
   const playModeNotify = () => {
-    if (scene === "playing") {
+    if (scene === "play") {
       setNotify(Symbol(""));
     } else if (scene === "replay") {
       setNotify(Symbol(`Replay`));
@@ -55,7 +55,7 @@ const PlayingNotify = ({ className = "" }: PlayingNotifyProps) => {
   };
 
   useEffect(() => {
-    if (scene !== "playing") {
+    if (scene !== "play") {
       playModeNotify();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -41,7 +41,7 @@ const Playing = () => {
       resetUserStats(structuredClone(maxCombo));
     };
 
-    if (scene === "playing" || scene === "practice") {
+    if (scene === "play" || scene === "practice") {
       window.addEventListener("beforeunload", handleBeforeunload);
       window.addEventListener("visibilitychange", handleVisibilitychange);
     }

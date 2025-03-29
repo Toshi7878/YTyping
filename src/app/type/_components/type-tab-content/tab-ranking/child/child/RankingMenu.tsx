@@ -1,5 +1,5 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
-import { useMapInfoRef, useSceneState } from "@/app/type/atoms/stateAtoms";
+import { useMapInfoRef, useSceneGroupState } from "@/app/type/atoms/stateAtoms";
 import { useLoadResultPlay } from "@/app/type/hooks/loadResultPlay";
 import { useRetry } from "@/app/type/hooks/playing-hooks/useRetry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
@@ -32,7 +32,7 @@ const RankingMenu = ({
 }: RankingMenuProps) => {
   const { data: session } = useSession();
   const theme: ThemeColors = useTheme();
-  const scene = useSceneState();
+  const sceneGroup = useSceneGroupState();
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const retry = useRetry();
@@ -61,7 +61,7 @@ const RankingMenu = ({
       replayUserName: name,
     });
 
-    if (scene === "end") {
+    if (sceneGroup === "End") {
       retry("replay");
     }
   };
@@ -82,11 +82,7 @@ const RankingMenu = ({
       <Button variant="rankingMenu" as="a" display="flex" href={`/user/${userId}`}>
         ユーザーページへ
       </Button>
-      <Button
-        variant="rankingMenu"
-        onClick={() => handleReplayClick()}
-        isDisabled={scene === "playing" || scene === "replay" || scene === "practice"}
-      >
+      <Button variant="rankingMenu" onClick={() => handleReplayClick()} isDisabled={sceneGroup === "Playing"}>
         リプレイ再生
       </Button>
       {session?.user.id ? (

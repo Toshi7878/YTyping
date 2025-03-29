@@ -8,7 +8,7 @@ import PlayingTotalTime from "./bottom-child/PlayingTotalTime";
 const PlayingBottom = function () {
   const scene = useSceneState();
   const isYTStarted = useYTStartedState();
-  const isPlayed = isYTStarted && (scene === "playing" || scene === "replay" || scene === "practice");
+  const isPlayed = isYTStarted && (scene === "play" || scene === "replay" || scene === "practice");
 
   return (
     <>

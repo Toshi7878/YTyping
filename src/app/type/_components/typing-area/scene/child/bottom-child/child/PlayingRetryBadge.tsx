@@ -12,7 +12,7 @@ const PlayingRetryBadge = function () {
       onClick={() => {
         const { scene } = readGameStateUtils();
 
-        if (scene === "playing" || scene === "practice" || scene === "replay") {
+        if (scene === "play" || scene === "practice" || scene === "replay") {
           retry(scene);
         }
       }}

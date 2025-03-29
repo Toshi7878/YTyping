@@ -3,7 +3,7 @@ import {
   useLineResultsState,
   useLineSelectIndexState,
   useMapState,
-  useSceneState,
+  useSceneGroupState,
   useSetLineSelectIndexState,
 } from "@/app/type/atoms/stateAtoms";
 import { LineResultData } from "@/app/type/ts/type";
@@ -16,9 +16,9 @@ import ResultCard from "./ResultCard";
 
 function ResultLineList() {
   const map = useMapState();
-  const scene = useSceneState();
+  const sceneGroup = useSceneGroupState();
   const lineResults = useLineResultsState();
-  const { moveSetLine, scrollToCard, drawerSelectColorChange } = useMoveLine();
+  const { moveSetLine, drawerSelectColorChange } = useMoveLine();
   const { writeResultCards } = useResultCards();
   const lineSelectIndex = useLineSelectIndexState();
   const setLineSelectIndex = useSetLineSelectIndexState();
@@ -28,7 +28,7 @@ function ResultLineList() {
   useEffect(() => {
     writeResultCards(cardRefs.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene]);
+  }, [sceneGroup]);
 
   const practiceReplayCardClick = useCallback(
     (lineIndex: number) => {
@@ -107,7 +107,7 @@ function ResultLineList() {
             lineCount={lineCount}
             scoreCount={scoreCount}
             cardRefs={cardRefs}
-            handleCardClick={scene === "end" ? endCardClick : practiceReplayCardClick}
+            handleCardClick={sceneGroup === "End" ? endCardClick : practiceReplayCardClick}
             selectIndex={lineSelectIndex}
           />
         );

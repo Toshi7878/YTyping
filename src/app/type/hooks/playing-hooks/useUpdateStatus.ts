@@ -92,7 +92,7 @@ export const useTypeSuccess = () => {
     }
 
     const newCombo = readCombo() + 1;
-    if (scene === "playing") {
+    if (scene === "play") {
       if (newCombo > maxCombo) {
         writeStatus({
           maxCombo: newCombo,

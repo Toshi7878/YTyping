@@ -18,7 +18,7 @@ export const speedBaseAtom = atomWithReset({
 store.sub(speedBaseAtom, () => {
   const scene = store.get(sceneAtom);
   const { playSpeed } = store.get(speedBaseAtom);
-  const isPlaying = scene === "playing" || scene === "practice" || scene === "replay";
+  const isPlaying = scene === "play" || scene === "practice" || scene === "replay";
   const player = store.get(playerRefAtom);
 
   if (player) {
@@ -35,7 +35,7 @@ const speedReducerAtom = atom(
   (get, set, { type, payload: value }: { type: SpeedActionType; payload?: YouTubeSpeed }) => {
     const { playSpeed, defaultSpeed } = get(speedBaseAtom);
     const scene = get(sceneAtom);
-    const isUpdateDefaultSp = scene !== "playing";
+    const isUpdateDefaultSp = scene !== "play";
 
     switch (type) {
       case "up":

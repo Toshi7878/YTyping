@@ -1,6 +1,6 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
-import { useTypingStatusState } from "@/app/type/atoms/stateAtoms";
+import { useSceneState, useTypingStatusState } from "@/app/type/atoms/stateAtoms";
 import { HStack } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
@@ -19,19 +19,16 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
   const { readGameUtils } = useGameUtilsRef();
   const retryBtnRef = useRef<HTMLButtonElement>(null);
   const modeChangeBtnRef = useRef<HTMLButtonElement>(null);
+  const scene = useSceneState();
 
   const isPerfect = status.miss === 0 && status.lost === 0;
-  const { playMode, myBestScore } = readGameUtils();
+  const { myBestScore } = readGameUtils();
 
-  const isPlayingMode = playMode === "playing";
+  const isPlayingMode = scene === "play_end";
   const isScoreUpdated = status.score >= myBestScore;
 
   const isDisplayRankingButton: boolean =
-    !!session &&
-    status.score > 0 &&
-    (isScoreUpdated || isPerfect) &&
-    speed.defaultSpeed >= 1 &&
-    isPlayingMode;
+    !!session && status.score > 0 && (isScoreUpdated || isPerfect) && speed.defaultSpeed >= 1 && isPlayingMode;
 
   const [isSendResultBtnDisabled, setIsSendResultBtnDisabled] = useState(false);
 
@@ -60,6 +57,7 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const playMode = scene === "play_end" ? "play" : scene === "practice_end" ? "practice" : "replay";
   return (
     <>
       <HStack justifyContent="space-around" id="end_main_buttons">
@@ -76,7 +74,7 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
       <HStack spacing={14} justifyContent="flex-end" mx="12" id="end_sub_buttons">
         <EndSubButton
           retryBtnRef={modeChangeBtnRef}
-          retryMode={playMode !== "playing" ? "playing" : "practice"}
+          retryMode={scene !== "play_end" ? "play" : "practice"}
           isRetryAlert={Boolean(isDisplayRankingButton && !isSendResultBtnDisabled)}
         />
         <EndSubButton

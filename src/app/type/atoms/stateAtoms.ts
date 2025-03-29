@@ -6,7 +6,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../ts/type";
-import { gameUtilsRefAtom, lineProgressRefAtom, useGameUtilsRef, ytStatusRefAtom } from "./refAtoms";
+import { lineProgressRefAtom, useGameUtilsRef, ytStatusRefAtom } from "./refAtoms";
 import { speedBaseAtom } from "./speedReducerAtoms";
 import { getTypeAtomStore } from "./store";
 
@@ -74,6 +74,24 @@ const gameStateUtilsAtom = atomWithReset({
 });
 
 export const sceneAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("scene"));
+export const sceneGroupAtom = atom((get) => {
+  const scene = get(sceneAtom);
+  switch (scene) {
+    case "ready": {
+      return "Ready";
+    }
+    case "play":
+    case "practice":
+    case "replay": {
+      return "Playing";
+    }
+    case "play_end":
+    case "practice_end":
+    case "replay_end": {
+      return "End";
+    }
+  }
+});
 const tabIndexAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("tabIndex"));
 export const notifyAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("notify"));
 const skipAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("skip"));
@@ -85,10 +103,6 @@ const isYTStartedAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("isY
 
 const writeSceneAtom = atom(null, (get, set, newScene: SceneType) => {
   set(sceneAtom, newScene);
-
-  if (newScene !== "ready" && newScene !== "end") {
-    set(gameUtilsRefAtom, (prev) => ({ ...prev, playMode: newScene }));
-  }
 });
 
 const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { newCurrentCount: number }) => {
@@ -116,6 +130,7 @@ export const useTabIndexState = () => useAtomValue(tabIndexAtom);
 export const useSetTabIndexState = () => useSetAtom(tabIndexAtom);
 
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
+export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
 export const useSetSceneState = () => useSetAtom(writeSceneAtom, { store });
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });

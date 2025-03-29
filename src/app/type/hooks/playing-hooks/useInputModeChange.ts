@@ -59,7 +59,7 @@ export const useInputModeChange = () => {
       setNextLyrics(nextLine);
     }
 
-    if (scene === "playing") {
+    if (scene === "play") {
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
       writeLineStatus({
         typeResult: [

@@ -16,7 +16,7 @@ export const useChangePlayMode = () => {
 
   return () => {
     const { scene } = readGameStateUtils();
-    if (scene === "playing") {
+    if (scene === "play") {
       const confirmMessage = "練習モードに移動しますか？";
       if (window.confirm(confirmMessage)) {
         setScene("practice");
@@ -31,7 +31,7 @@ export const useChangePlayMode = () => {
         if (drawerClosure) {
           drawerClosure.onClose();
         }
-        retry("playing");
+        retry("play");
         dispatchSpeed({ type: "set", payload: 1 > startSpeed ? 1 : (startSpeed as YouTubeSpeed) });
       }
       setNotify(Symbol(""));
