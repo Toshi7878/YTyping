@@ -412,7 +412,7 @@ export class CreateMap {
     this.startLine = result.startLine;
 
     this.lineLength = result.lineLength;
-    this.typingLineIndexes = result.typingLineIndexes;
+    this.typingLineIndexes = result.typingLineNumbers;
     this.mapChangeCSSCounts = result.mapChangeCSSCounts;
 
     this.defaultLineResultData = result.defaultLineResultData;
