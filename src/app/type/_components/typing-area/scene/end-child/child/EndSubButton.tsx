@@ -32,11 +32,11 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
 
   const retry = useRetry();
 
-  const handleRetry = (playMode: PlayMode) => {
+  const handleRetry = () => {
     if (isRetryAlert) {
       onOpen();
     } else {
-      retry(playMode);
+      retry(retryMode);
     }
   };
 
@@ -76,7 +76,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
                 colorScheme="red"
                 onClick={() => {
                   onClose();
-                  handleRetry(retryMode);
+                  handleRetry();
                 }}
                 ml={3}
               >
@@ -100,7 +100,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
           bg: theme.colors.button.sub.hover,
         }}
         onClick={() => {
-          handleRetry(retryMode);
+          handleRetry();
         }}
       >
         {getButtonText()}
