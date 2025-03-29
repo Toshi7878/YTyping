@@ -76,7 +76,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
                 colorScheme="red"
                 onClick={() => {
                   onClose();
-                  handleRetry();
+                  retry(retryMode);
                 }}
                 ml={3}
               >
@@ -99,9 +99,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
         _hover={{
           bg: theme.colors.button.sub.hover,
         }}
-        onClick={() => {
-          handleRetry();
-        }}
+        onClick={handleRetry}
       >
         {getButtonText()}
       </Button>
