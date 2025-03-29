@@ -35,7 +35,7 @@ export const useYTPlayEvent = () => {
     console.log("再生 1");
     const { scene, isYTStarted } = readGameStateUtils();
 
-    if (scene === "ready" || scene === "play" || scene === "practice" || scene === "replay") {
+    if (scene === "play" || scene === "practice" || scene === "replay") {
       startTimer();
     }
 
@@ -70,6 +70,7 @@ export const useYTPlayEvent = () => {
       const readyInputMode = readReadyInputMode();
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
     }
+
     sendPlayCountStats();
     setTabIndex(0);
     setYTStarted(true);
