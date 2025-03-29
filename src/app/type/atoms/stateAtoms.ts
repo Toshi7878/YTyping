@@ -66,7 +66,7 @@ const gameStateUtilsAtom = atomWithReset({
   tabIndex: 1 as 0 | 1,
   inputMode: initialInputMode,
   notify: Symbol(""),
-  skip: "Space" as "Space" | "",
+  skip: "" as "Space" | "",
   changeCSSCount: 0,
   isLoadingOverlay: false,
   lineSelectIndex: 0,
