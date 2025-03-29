@@ -69,9 +69,8 @@ const PlayingNotify = () => {
           )}
         </Box>
       ) : (
-        <AnimatePresence mode="popLayout" onExitComplete={handleExitComplete}>
+        <AnimatePresence mode="popLayout" key={Date.now()}>
           <motion.div
-            key={Date.now()}
             initial={{ opacity: 1 }}
             animate={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
