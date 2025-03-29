@@ -115,7 +115,8 @@ export const useMoveLine = () => {
       if (!card) {
         continue;
       }
-      if (newLineSelectIndex === i) {
+
+      if (String(newLineSelectIndex) === card.dataset.count) {
         resultCards[i].classList.add("result-line-select-outline");
         resultCards[i].classList.remove("result-line-hover");
       } else {

@@ -63,7 +63,7 @@ export const useYTPlayEvent = () => {
     if (scene !== "replay") {
       if (1 > defaultSpeed) {
         setScene("practice");
-      } else {
+      } else if (scene === "ready") {
         setScene("play");
       }
 
