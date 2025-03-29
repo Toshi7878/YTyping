@@ -1,4 +1,4 @@
-import { CreateMap } from "@/lib/instanceMapData";
+import { ParseMap } from "@/lib/parseMap";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { $Enums } from "@prisma/client";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
@@ -51,12 +51,12 @@ const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) => optic.valueOr({} as {
 export const useIsLikeAtom = () => useAtomValue(mapLikeFocusAtom, { store });
 export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store });
 
-const mapAtom = atomWithReset<CreateMap | null>(null);
-export const useMapState = () => useAtomValue(mapAtom, { store }) as CreateMap;
+const mapAtom = atomWithReset<ParseMap | null>(null);
+export const useMapState = () => useAtomValue(mapAtom, { store }) as ParseMap;
 export const useSetMapState = () => useSetAtom(mapAtom, { store });
 export const useMapStateRef = () => {
   return useAtomCallback(
-    useCallback((get) => get(mapAtom) as CreateMap, []),
+    useCallback((get) => get(mapAtom) as ParseMap, []),
     { store }
   );
 };
@@ -81,7 +81,7 @@ const isLoadingOverlayAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop
 const playingInputModeAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("inputMode"));
 
 const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { newCurrentCount: number }) => {
-  const map = get(mapAtom) as CreateMap;
+  const map = get(mapAtom) as ParseMap;
 
   if (map.mapChangeCSSCounts.length) {
     const closestMin = map.mapChangeCSSCounts
@@ -254,6 +254,7 @@ const writeCurrentLineAtom = atom(
     const lineProgress = get(lineProgressRefAtom);
 
     if (lineProgress) {
+      lineProgress.value = 0;
       lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
     }
   }
@@ -263,10 +264,11 @@ export const useSetCurrentLineState = () => {
   const setCurrentLine = useSetAtom(writeCurrentLineAtom, { store });
   const resetCurrentLine = useCallback(() => {
     store.set(currentLineAtom, RESET);
-    const map = store.get(mapAtom) as CreateMap;
+    const map = store.get(mapAtom) as ParseMap;
     const lineProgress = store.get(lineProgressRefAtom);
 
     if (lineProgress) {
+      lineProgress.value = 0;
       lineProgress.max = map.mapData[1]["time"];
     }
   }, []);

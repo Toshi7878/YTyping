@@ -1,7 +1,7 @@
 "use client";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
-import { CreateMap } from "@/lib/instanceMapData";
+import { ParseMap } from "@/lib/parseMap";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
@@ -59,7 +59,7 @@ function Content({ mapInfo }: ContentProps) {
 
   useEffect(() => {
     if (mapData) {
-      const map = new CreateMap(mapData);
+      const map = new ParseMap(mapData);
       setMap(map);
       setLineResults(map.defaultLineResultData);
       setLineSelectIndex(map.typingLineIndexes[0]);

@@ -1,4 +1,4 @@
-import { CHAR_POINT, MISS_PENALTY } from "@/lib/instanceMapData";
+import { CHAR_POINT, MISS_PENALTY } from "@/lib/parseMap";
 import { useCountRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
@@ -61,8 +61,7 @@ export const useUpdateLineResult = () => {
     const typingStatus = readTypingResult();
 
     const newLineScore = typingStatus.point + typingStatus.timeBonus + lineMiss * MISS_PENALTY;
-    const oldLineScore =
-      lineResult.status!.p! + lineResult.status!.tBonus! + lineResult.status!.lMiss! * MISS_PENALTY;
+    const oldLineScore = lineResult.status!.p! + lineResult.status!.tBonus! + lineResult.status!.lMiss! * MISS_PENALTY;
 
     const { isPaused } = readYTStatus();
     const { scene } = readGameStateUtils();
@@ -74,14 +73,7 @@ export const useUpdateLineResult = () => {
     const count = readCount();
     const typingStatus = readTypingResult();
 
-    const {
-      miss: lineMiss,
-      type: lineType,
-      typeResult,
-      startSpeed,
-      startInputMode,
-      rkpm: lineRkpm,
-    } = readLineStatus();
+    const { miss: lineMiss, type: lineType, typeResult, startSpeed, startInputMode, rkpm: lineRkpm } = readLineStatus();
 
     const { totalTypeTime } = readStatus();
 

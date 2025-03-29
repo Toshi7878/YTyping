@@ -1,6 +1,6 @@
 import { useGameStateUtilsRef, useLineWordStateRef } from "@/app/type/atoms/stateAtoms";
 import { CODE_TO_KANA, KEY_TO_KANA } from "../../../../../../config/consts/kanaKeyMap";
-import { CHAR_POINT } from "../../../../../../lib/instanceMapData";
+import { CHAR_POINT } from "../../../../../../lib/parseMap";
 import { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../../type";
 
 const KEYBOARD_CHARS = [
@@ -146,9 +146,7 @@ class ProcessedLineWord {
     if (typingKeys.code === "KeyX" || typingKeys.code === "KeyW") {
       const expectedNextKey = typingKeys.code === "KeyX" ? "ん" : "う";
       const isNNRoute =
-        newLineWord.nextChar.k === "ん" &&
-        newLineWord.correct.r.slice(-1) === "n" &&
-        newLineWord.nextChar.r[0] === "n";
+        newLineWord.nextChar.k === "ん" && newLineWord.correct.r.slice(-1) === "n" && newLineWord.nextChar.r[0] === "n";
       const isNext = newLineWord.word[0]?.k === expectedNextKey;
 
       if (isNNRoute && isNext) {
@@ -259,8 +257,7 @@ export class RomaInput {
 
   private nextNNFilter(typingKey: string, newLineWord: LineWord) {
     const nextToNextChar = newLineWord.word[0]["r"];
-    const isXN =
-      typingKey == "x" && nextToNextChar[0] && nextToNextChar[0][0] != "n" && nextToNextChar[0][0] != "N";
+    const isXN = typingKey == "x" && nextToNextChar[0] && nextToNextChar[0][0] != "n" && nextToNextChar[0][0] != "N";
 
     if (isXN) {
       return nextToNextChar.filter((value: string) => {
@@ -323,9 +320,7 @@ export class KanaInput {
         };
 
     const successIndex: number = nextKana[0]
-      ? keys.indexOf(
-          dakuHanDakuData.normalizedKana ? dakuHanDakuData.normalizedKana : nextKana[0].toLowerCase()
-        )
+      ? keys.indexOf(dakuHanDakuData.normalizedKana ? dakuHanDakuData.normalizedKana : nextKana[0].toLowerCase())
       : -1;
 
     const typingKey =
@@ -451,9 +446,7 @@ export const useInputJudge = () => {
     const lineWord = readLineWord();
     const typingKeys: TypingKeys = inputMode === "roma" ? romaMakeInput(event) : kanaMakeInput(event);
     const inputResult =
-      inputMode === "roma"
-        ? new RomaInput({ typingKeys, lineWord })
-        : new KanaInput({ typingKeys, lineWord });
+      inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
 
     const isCompleted = inputResult.newLineWord.nextChar.k === "";
     const isSuccess = inputResult.successKey;

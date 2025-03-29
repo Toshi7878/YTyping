@@ -7,6 +7,7 @@ export interface TypeChunk {
   r: string[];
   p: number;
   t: "kana" | "alphabet" | "num" | "symbol" | "space" | undefined;
+  kanaUnSupportedSymbol?: string;
 }
 
 interface NextTypeChunk extends TypeChunk {

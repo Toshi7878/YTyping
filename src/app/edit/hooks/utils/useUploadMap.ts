@@ -1,4 +1,4 @@
-import { CreateMap } from "@/lib/instanceMapData";
+import { ParseMap } from "@/lib/parseMap";
 
 import { UploadResult } from "@/types";
 import { $Enums } from "@prisma/client";
@@ -23,7 +23,7 @@ export function useUploadMap() {
     const tags = readTags();
 
     const map = readMap();
-    const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new CreateMap(map);
+    const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new ParseMap(map);
 
     const mapVideoId = readPlayer().getVideoData().video_id;
     const videoDuration = readPlayer().getDuration();

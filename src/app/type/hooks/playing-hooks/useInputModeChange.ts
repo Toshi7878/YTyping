@@ -1,4 +1,4 @@
-import { romaConvert } from "../../../../lib/instanceMapData";
+import { romaConvert } from "../../../../lib/parseMap";
 import { useCountRef, useLineStatusRef } from "../../atoms/refAtoms";
 import {
   useGameStateUtilsRef,

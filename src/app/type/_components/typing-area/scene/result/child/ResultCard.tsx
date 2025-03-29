@@ -2,7 +2,7 @@
 import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/type/ts/type";
-import { CHAR_POINT } from "@/lib/instanceMapData";
+import { CHAR_POINT } from "@/lib/parseMap";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, CardFooter, CardHeader, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
@@ -37,14 +37,12 @@ function ResultCard({
   const speedData = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();
 
-  const lineSpeed =
-    lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
+  const lineSpeed = lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
-  const lineTime =
-    (Number(map.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
+  const lineTime = (Number(map.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
   const maxLinePoint = lineData.notes.r * CHAR_POINT;

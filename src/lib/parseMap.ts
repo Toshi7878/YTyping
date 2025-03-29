@@ -389,7 +389,7 @@ export class TypingWord {
   }
 }
 
-export class CreateMap {
+export class ParseMap {
   mapData: LineData[];
 
   startLine: number;
