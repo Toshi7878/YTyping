@@ -30,14 +30,9 @@ function ResultLineList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 
-  useEffect(() => {
-    scrollToCard(lineSelectIndex);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lineSelectIndex]);
-
   const practiceReplayCardClick = useCallback(
     (lineIndex: number) => {
-      const seekCount = map.typingLineNumbers[lineIndex - 1];
+      const seekCount = map.typingLineIndexes[lineIndex - 1];
 
       moveSetLine(seekCount);
       setLineSelectIndex(lineIndex);

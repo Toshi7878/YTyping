@@ -28,7 +28,7 @@ export const useMoveLine = () => {
     const map = readMap();
     const { scene } = readGameStateUtils();
     const count = readCount() - (scene === "replay" ? 1 : 0);
-    const prevCount = structuredClone(map.typingLineNumbers)
+    const prevCount = structuredClone(map.typingLineIndexes)
       .reverse()
       .find((num) => num < count);
 
@@ -39,7 +39,7 @@ export const useMoveLine = () => {
 
     const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
     const prevTime = Number(map.mapData[prevCount]["time"]) - seekBuffer;
-    const newLineSelectIndex = map.typingLineNumbers.indexOf(prevCount) + 1;
+    const newLineSelectIndex = map.typingLineIndexes.indexOf(prevCount) + 1;
     setLineSelectIndex(newLineSelectIndex);
     pauseTimer();
 
@@ -49,18 +49,17 @@ export const useMoveLine = () => {
 
     readPlayer().seekTo(prevTime, true);
     setNotify(Symbol(`◁`));
-    drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
   };
 
   const moveNextLine = () => {
     const map = readMap();
     const { lineSelectIndex } = readGameStateUtils();
-    const seekCount = lineSelectIndex ? map.typingLineNumbers[lineSelectIndex - 1] : null;
+    const seekCount = lineSelectIndex ? map.typingLineIndexes[lineSelectIndex - 1] : null;
     const seekCountAdjust = seekCount && seekCount === readCount() ? 0 : -1;
 
     const count = readCount() + seekCountAdjust;
-    const nextCount = map.typingLineNumbers.find((num) => num > count);
+    const nextCount = map.typingLineIndexes.find((num) => num > count);
 
     if (nextCount === undefined) {
       return;
@@ -75,7 +74,7 @@ export const useMoveLine = () => {
     const seekBuffer = scene === "practice" && prevLineTime > 1 ? 1 * playSpeed : 0;
     const nextTime = Number(map.mapData[nextCount]["time"]) - seekBuffer;
 
-    const newLineSelectIndex = map.typingLineNumbers.indexOf(nextCount) + 1;
+    const newLineSelectIndex = map.typingLineIndexes.indexOf(nextCount) + 1;
 
     setLineSelectIndex(newLineSelectIndex);
     pauseTimer();
@@ -86,20 +85,16 @@ export const useMoveLine = () => {
 
     readPlayer().seekTo(nextTime, true);
     setNotify(Symbol(`▷`));
-    drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
   };
 
   const moveSetLine = (seekCount: number) => {
     const map = readMap();
     const playSpeed = readPlaySpeed().playSpeed;
-    const { scene, lineSelectIndex } = readGameStateUtils();
+    const { scene } = readGameStateUtils();
     const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
     const seekTime = Number(map.mapData[seekCount]["time"]) - seekBuffer;
 
-    if (lineSelectIndex !== seekCount) {
-      drawerSelectColorChange(seekCount);
-    }
     readPlayer().seekTo(seekTime, true);
     const newCount = getSeekLineCount(seekTime);
     writeCount(newCount);
@@ -109,13 +104,16 @@ export const useMoveLine = () => {
 
   const drawerSelectColorChange = (newLineSelectIndex: number) => {
     const resultCards = readResultCards();
+    const map = readMap();
     for (let i = 0; i < resultCards.length; i++) {
       const card = resultCards[i];
 
       if (!card) {
         continue;
       }
-      if (newLineSelectIndex === i) {
+
+      const index = map.typingLineIndexes[newLineSelectIndex];
+      if (index === i) {
         resultCards[i].classList.add("result-line-select-outline");
         resultCards[i].classList.remove("result-line-hover");
       } else {
@@ -124,6 +122,7 @@ export const useMoveLine = () => {
       }
     }
   };
+
   const scrollToCard = (newIndex: number) => {
     const map = readMap();
     const resultCards = readResultCards();
@@ -132,10 +131,9 @@ export const useMoveLine = () => {
 
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;
-      const scrollHeight = drawerBody.scrollHeight / 2;
-      drawerBody.scrollTop = (scrollHeight * (newIndex - 2)) / map.typingLineNumbers.length;
+      const scrollHeight = drawerBody.scrollHeight;
+      drawerBody.scrollTop = (scrollHeight * (newIndex - 2)) / map.typingLineIndexes.length;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   return { movePrevLine, moveNextLine, moveSetLine, scrollToCard, drawerSelectColorChange };
