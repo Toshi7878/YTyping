@@ -49,6 +49,7 @@ export const useMoveLine = () => {
 
     readPlayer().seekTo(prevTime, true);
     setNotify(Symbol(`◁`));
+    drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
   };
 
@@ -85,16 +86,20 @@ export const useMoveLine = () => {
 
     readPlayer().seekTo(nextTime, true);
     setNotify(Symbol(`▷`));
+    drawerSelectColorChange(newLineSelectIndex);
     scrollToCard(newLineSelectIndex);
   };
 
   const moveSetLine = (seekCount: number) => {
     const map = readMap();
     const playSpeed = readPlaySpeed().playSpeed;
-    const { scene } = readGameStateUtils();
+    const { scene, lineSelectIndex } = readGameStateUtils();
     const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
     const seekTime = Number(map.mapData[seekCount]["time"]) - seekBuffer;
 
+    if (lineSelectIndex !== seekCount) {
+      drawerSelectColorChange(seekCount);
+    }
     readPlayer().seekTo(seekTime, true);
     const newCount = getSeekLineCount(seekTime);
     writeCount(newCount);
@@ -104,16 +109,13 @@ export const useMoveLine = () => {
 
   const drawerSelectColorChange = (newLineSelectIndex: number) => {
     const resultCards = readResultCards();
-    const map = readMap();
     for (let i = 0; i < resultCards.length; i++) {
       const card = resultCards[i];
 
       if (!card) {
         continue;
       }
-
-      const index = map.typingLineIndexes[newLineSelectIndex];
-      if (index === i) {
+      if (newLineSelectIndex === i) {
         resultCards[i].classList.add("result-line-select-outline");
         resultCards[i].classList.remove("result-line-hover");
       } else {
@@ -122,7 +124,6 @@ export const useMoveLine = () => {
       }
     }
   };
-
   const scrollToCard = (newIndex: number) => {
     const map = readMap();
     const resultCards = readResultCards();
@@ -131,9 +132,10 @@ export const useMoveLine = () => {
 
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;
-      const scrollHeight = drawerBody.scrollHeight / 2;
+      const scrollHeight = drawerBody.scrollHeight;
       drawerBody.scrollTop = (scrollHeight * (newIndex - 2)) / map.typingLineIndexes.length;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   return { movePrevLine, moveNextLine, moveSetLine, scrollToCard, drawerSelectColorChange };
