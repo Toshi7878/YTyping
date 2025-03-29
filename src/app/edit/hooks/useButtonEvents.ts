@@ -105,16 +105,18 @@ export const useLineUpdateButtonEvent = () => {
   const { readPlayer } = usePlayer();
   const readMap = useMapStateRef();
   const { writeEditUtils } = useEditUtilsRef();
+  const readUtilsState = useEditUtilsStateRef();
 
   const timeValidate = useTimeValidate();
   return () => {
     const map = readMap();
     const { selectIndex: index, lyrics, word } = readSelectLine();
     const { playing } = readYtPlayerStatus();
+    const { directEditingIndex } = readUtilsState();
     const timeOffset = word !== "" ? readTimeOffset() : 0;
     const selectLineIndex = index as number;
 
-    const _time = playing ? readPlayer()!.getCurrentTime() + timeOffset : +readTime();
+    const _time = playing && !directEditingIndex ? readPlayer()!.getCurrentTime() + timeOffset : +readTime();
     const formatedTime = timeValidate(_time).toFixed(3);
 
     const oldLine = map[selectLineIndex];
