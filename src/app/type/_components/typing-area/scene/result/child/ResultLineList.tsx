@@ -36,19 +36,19 @@ function ResultLineList() {
   }, [lineSelectIndex]);
 
   const practiceReplayCardClick = useCallback(
-    (lineNumber: number) => {
-      const seekCount = map.typingLineNumbers[lineNumber - 1];
+    (lineIndex: number) => {
+      const seekCount = map.typingLineNumbers[lineIndex - 1];
 
       moveSetLine(seekCount);
-      setLineSelectIndex(lineNumber);
+      setLineSelectIndex(lineIndex);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  const endCardClick = useCallback((lineNumber: number) => {
+  const endCardClick = useCallback((lineIndex: number) => {
     let nextTypedCount = 0;
-    const typedElements = cardRefs.current[lineNumber].querySelectorAll(".typed") as NodeListOf<HTMLElement>;
+    const typedElements = cardRefs.current[lineIndex].querySelectorAll(".typed") as NodeListOf<HTMLElement>;
 
     const lastTypedChildClassList = typedElements[typedElements.length - 1].classList;
 
@@ -83,7 +83,7 @@ function ResultLineList() {
     if (!ticker.started) {
       ticker.add(handleTick);
       ticker.start();
-      drawerSelectColorChange(lineNumber);
+      drawerSelectColorChange(lineIndex);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

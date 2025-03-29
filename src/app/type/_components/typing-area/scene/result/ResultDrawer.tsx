@@ -6,7 +6,6 @@ import {
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   UseDisclosureReturn,
@@ -50,10 +49,9 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
           タイピングリザルト
         </DrawerHeader>
         <DrawerCloseButton tabIndex={-1} autoFocus={false} mr={5} color={theme.colors.text.body} />
-        <DrawerBody overflowY="auto" position="relative" height="100%">
+        <DrawerBody overflowY="auto" position="relative" height="100%" pb={14}>
           {memoizedResultLineList}
         </DrawerBody>
-        <DrawerFooter />
       </DrawerContent>
       <style>
         {`

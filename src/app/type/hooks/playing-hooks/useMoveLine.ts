@@ -132,7 +132,7 @@ export const useMoveLine = () => {
 
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;
-      const scrollHeight = drawerBody.scrollHeight;
+      const scrollHeight = drawerBody.scrollHeight / 2;
       drawerBody.scrollTop = (scrollHeight * (newIndex - 2)) / map.typingLineNumbers.length;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
