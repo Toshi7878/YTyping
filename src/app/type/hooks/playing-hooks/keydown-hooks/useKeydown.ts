@@ -88,8 +88,7 @@ const usePlayingShortcutKey = () => {
     const { inputMode, skip } = readGameStateUtils();
 
     const isCtrlLeftRight = typingOptions.time_offset_key === "CTRL_LEFT_RIGHT" && event.ctrlKey;
-    const isCtrlAltLeftRight =
-      typingOptions.time_offset_key === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
+    const isCtrlAltLeftRight = typingOptions.time_offset_key === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
 
     switch (event.code) {
       case "Escape": //Escでポーズ
@@ -166,7 +165,7 @@ const usePlayingShortcutKey = () => {
       case "Backspace":
         if (scene === "replay" || scene === "practice") {
           const { lineSelectIndex } = readGameStateUtils();
-          const seekCount = map.typingLineNumbers[lineSelectIndex - 1];
+          const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
           moveSetLine(seekCount);
         }
         break;

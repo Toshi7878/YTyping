@@ -37,7 +37,7 @@ function ResultLineList() {
 
   const practiceReplayCardClick = useCallback(
     (lineIndex: number) => {
-      const seekCount = map.typingLineNumbers[lineIndex - 1];
+      const seekCount = map.typingLineIndexes[lineIndex - 1];
 
       moveSetLine(seekCount);
       setLineSelectIndex(lineIndex);

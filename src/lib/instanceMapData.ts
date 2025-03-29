@@ -320,10 +320,7 @@ export class TypingWord {
   }
 
   //'っ','か' → 'っか'等の繋げられる促音をつなげる
-  private joinSokuonPattern(
-    iunFlag: string,
-    lineWord: { k: string; r: string[]; p: number; t: TypeChunk["t"] }[]
-  ) {
+  private joinSokuonPattern(iunFlag: string, lineWord: { k: string; r: string[]; p: number; t: TypeChunk["t"] }[]) {
     const PREVIOUS_KANA = lineWord[lineWord.length - 2]["k"];
     const KANA = lineWord[lineWord.length - 1]["k"];
 
@@ -341,9 +338,7 @@ export class TypingWord {
     //変数に値渡し？して処理する方がわかりやすい(後でリファクタリング)
     for (let i = 0; i < ROMA_LEN; i++) {
       if (!iunFlag || !["i", "u", "n"].includes(lineWord[lineWord.length - 1]["r"][i][0])) {
-        repeat.push(
-          lineWord[lineWord.length - 1]["r"][i][0].repeat(XTU_LEN) + lineWord[lineWord.length - 1]["r"][i]
-        );
+        repeat.push(lineWord[lineWord.length - 1]["r"][i][0].repeat(XTU_LEN) + lineWord[lineWord.length - 1]["r"][i]);
       }
 
       xtu.push("x".repeat(XTU_LEN) + "tu" + lineWord[lineWord.length - 1]["r"][i]);
@@ -399,7 +394,7 @@ export class CreateMap {
 
   startLine: number;
   lineLength: number;
-  typingLineNumbers: number[];
+  typingLineIndexes: number[];
   mapChangeCSSCounts: number[];
   defaultLineResultData: LineResultData[];
   totalNotes: LineData["notes"];
@@ -417,7 +412,7 @@ export class CreateMap {
     this.startLine = result.startLine;
 
     this.lineLength = result.lineLength;
-    this.typingLineNumbers = result.typingLineNumbers;
+    this.typingLineIndexes = result.typingLineNumbers;
     this.mapChangeCSSCounts = result.mapChangeCSSCounts;
 
     this.defaultLineResultData = result.defaultLineResultData;
@@ -529,9 +524,7 @@ export class CreateMap {
   private calcLineNotes(word: TypeChunk[]) {
     const kanaWord = word.map((item) => item.k);
     const dakuHandakuLineNotes = (
-      kanaWord
-        .join("")
-        .match(/[ゔ|が|ぎ|ぐ|げ|ご|ざ|じ|ず|ぜ|ぞ|だ|ぢ|づ|で|ど|ば|び|ぶ|べ|ぼ|ぱ|ぴ|ぷ|ぺ|ぽ]/g) || []
+      kanaWord.join("").match(/[ゔ|が|ぎ|ぐ|げ|ご|ざ|じ|ず|ぜ|ぞ|だ|ぢ|づ|で|ど|ば|び|ぶ|べ|ぼ|ぱ|ぴ|ぷ|ぺ|ぽ]/g) || []
     ).length;
     const kanaNotes = kanaWord.join("").length + dakuHandakuLineNotes;
 
@@ -611,8 +604,7 @@ export class CreateMap {
 
 export function romaConvert(lineWord: LineWord) {
   const dakuten = lineWord.nextChar.orginalDakuChar;
-  let kanaWord =
-    (dakuten ? dakuten : lineWord.nextChar["k"]) + lineWord.word.map((char) => char["k"]).join("");
+  let kanaWord = (dakuten ? dakuten : lineWord.nextChar["k"]) + lineWord.word.map((char) => char["k"]).join("");
   const nextPoint = lineWord.nextChar["p"];
   const ROMA_MAP_LEN = ROMA_MAP.length;
 
