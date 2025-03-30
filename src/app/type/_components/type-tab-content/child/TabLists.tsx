@@ -18,6 +18,10 @@ const TabLists = ({ tabIndex }: TabListsProps) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+    e.target.blur();
+  };
   return (
     <TabList height={{ base: "80px", md: "33px" }} px="8" w="100%">
       {tabLists.map((tabName, index) => {
@@ -31,6 +35,7 @@ const TabLists = ({ tabIndex }: TabListsProps) => {
             color={theme.colors.text.body}
             _hover={{ bg: "rgba(0, 0, 0, 0.1)", color: theme.colors.text.body }}
             _selected={{ color: theme.colors.text.body }}
+            onFocus={handleFocus}
           >
             {tabName}
           </Tab>
