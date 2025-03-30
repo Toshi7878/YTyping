@@ -303,7 +303,7 @@ export const useUpdateAllStatus = () => {
   const { writeLineStatus } = useLineStatusRef();
   const setCombo = useSetComboState();
 
-  const { writeStatus, readTotalTypeCountStatus } = useStatusRef();
+  const { writeStatus } = useStatusRef();
 
   return ({ count, updateType }: { count: number; updateType: "lineUpdate" | "completed" }) => {
     const map = readMap();
@@ -338,9 +338,7 @@ export const useUpdateAllStatus = () => {
       if (typeResultLength) {
         totalTypeTime += lineResult.typeResult[typeResultLength - 1].t;
       }
-      if (scene === "replay") {
-        newStatus.type += lineResult.status.lType ?? 0;
-      }
+      newStatus.type += lineResult.status.lType ?? 0;
     }
 
     const lineResult = lineResults[count - 1];
@@ -357,7 +355,6 @@ export const useUpdateAllStatus = () => {
 
     if (scene === "practice") {
       writeStatus({ totalTypeTime });
-      newStatus.type = readTotalTypeCountStatus();
     } else if (scene === "replay") {
       writeStatus({
         totalTypeTime: lineResult.status.tTime ?? 0,
