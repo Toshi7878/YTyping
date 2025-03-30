@@ -1,4 +1,4 @@
-import { useSceneState, useYTStartedState } from "@/app/type/atoms/stateAtoms";
+import { useSceneGroupState, useYTStartedState } from "@/app/type/atoms/stateAtoms";
 import { Box, Flex, HStack } from "@chakra-ui/react";
 import PlayingProgress from "../playing-child/child/PlayingProgress";
 import PlayingBottomBadgeLayout from "./bottom-child/PlayingBottomBadgeLayout";
@@ -6,9 +6,9 @@ import PlayingSkipGuide from "./bottom-child/PlayingSkipGuide";
 import PlayingTotalTime from "./bottom-child/PlayingTotalTime";
 
 const PlayingBottom = function () {
-  const scene = useSceneState();
   const isYTStarted = useYTStartedState();
-  const isPlayed = isYTStarted && (scene === "play" || scene === "replay" || scene === "practice");
+  const sceneGroup = useSceneGroupState();
+  const isPlayed = isYTStarted && sceneGroup === "Playing";
 
   return (
     <>
@@ -16,7 +16,8 @@ const PlayingBottom = function () {
         justifyContent="space-between"
         mx={2}
         fontWeight="bold"
-        className={`${isPlayed ? "" : "invisible"} bottom-card-text`}
+        visibility={isPlayed ? "visible" : "hidden"}
+        className={"bottom-card-text"}
         fontSize={{ base: "3rem", sm: "2.5rem", md: "xl" }}
       >
         <PlayingSkipGuide />
@@ -31,7 +32,7 @@ const PlayingBottom = function () {
         mt={2}
         mb={4}
         fontWeight="bold"
-        className={`${isPlayed ? "" : "invisible"}`}
+        visibility={isPlayed ? "visible" : "hidden"}
       >
         <PlayingBottomBadgeLayout />
       </Flex>
