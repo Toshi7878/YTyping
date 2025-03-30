@@ -117,7 +117,7 @@ export const useYTStopEvent = () => {
       setScene("play_end");
     } else if (scene === "practice") {
       setScene("practice_end");
-    } else if (scene === "replay_end") {
+    } else if (scene === "replay") {
       setScene("replay_end");
     }
 
