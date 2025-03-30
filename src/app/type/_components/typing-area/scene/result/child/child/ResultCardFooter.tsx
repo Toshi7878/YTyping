@@ -25,7 +25,7 @@ function ResultCardFooter({
   ...props
 }: ResultCardFooterProps & FlexProps) {
   return (
-    <Flex width="100%" justifyContent="space-between" alignItems="center" p={2} {...props}>
+    <Flex width="100%" justifyContent="space-between" alignItems="center" py={2} {...props}>
       <HStack spacing={2}>
         <Badge colorScheme="red" variant="subtle" size="md" fontSize="sm" px={1.5} py={0.5}>
           ミス: {lMiss}
