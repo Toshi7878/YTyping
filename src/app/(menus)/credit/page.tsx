@@ -1,7 +1,7 @@
-import PreMidManual from "./Content";
+import Content from "./Content";
 
 const page = () => {
-  return <PreMidManual />;
+  return <Content />;
 };
 
 export default page;

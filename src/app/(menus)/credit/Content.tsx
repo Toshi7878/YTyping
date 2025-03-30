@@ -1,62 +1,39 @@
 "use client";
 
 import CustomCard from "@/components/custom-ui/CustomCard";
-import { Box, CardBody, Divider, Heading, Link, ListItem, OrderedList, Text } from "@chakra-ui/react";
+import { Link } from "@chakra-ui/next-js";
+import { CardBody, Container, Flex, Heading, List, ListItem, Text } from "@chakra-ui/react";
 
-export default function PreMidManual() {
+export default function Content() {
   return (
-    <Box mx="auto" py={8} px={4}>
+    <Container maxW={"container.lg"} py={8} px={4}>
       <Heading as="h1" size="xl" mb={8}>
-        DiscordにYTypingのプレイ中ステータスを表示する
+        クレジット
       </Heading>
       <CustomCard>
-        <CardBody display="flex" flexDirection="column" gap={6}>
-          <Text fontSize="xl">
-            PreMiDブラウザ拡張機能を使用すると、DiscordのステータスにYTypingをプレイしていることを表示できます。
-          </Text>
-
-          <Heading as="h2" size="lg">
-            インストール手順
+        <CardBody display="flex" flexDirection="column" gap={2}>
+          <Heading as="h2" size="lg" mb={4}>
+            お借りした素材
           </Heading>
-          <OrderedList spacing={6}>
+          <List spacing={4}>
             <ListItem>
-              <Text fontWeight="bold">PreMiDブラウザ拡張機能をインストールする</Text>
-              <Text mt={2}></Text>
-            </ListItem>
-
-            <Divider my={4} />
-
-            <ListItem>
-              <Text fontWeight="bold">YTypingのプレゼンス設定をPreMiD Storeからインストールする</Text>
-              <Text mt={2}>
-                <Link href="https://premid.app/store/presences/YTyping" color="primary.main" isExternal>
-                  YTyping - PreMiD Store
+              <Heading as="h3" size="md" mb={2}>
+                <Link href="http://www.kurage-kosho.info/system.html" color="blue.500" isExternal>
+                  くらげ工匠
                 </Link>
-                からYTypingのプレゼンス設定を追加します。
-              </Text>
-            </ListItem>
-
-            <Divider my={4} />
-
-            <ListItem>
-              <Text fontWeight="bold">PreMiD拡張機能を開いてDiscordアカウントとリンクします。</Text>
-              <Box mt={2}>
-                <Text>
-                  PreMiD拡張機能を初めて開くと、以下の表示が出てくるので、表示したいDiscordアカウントとリンクする
+                <Text as="span" ml={1}>
+                  様
                 </Text>
-              </Box>
+              </Heading>
+              <Flex flexDirection="column" pl={4}>
+                <Text>・打鍵音 ボタン58</Text>
+                <Text>・ミス音 ボタン40</Text>
+                <Text>・打ち切り音 ボタン68</Text>
+              </Flex>
             </ListItem>
-
-            <Divider my={4} />
-
-            <ListItem>
-              <Text fontWeight="bold">YTypingをプレイする</Text>
-              <Text mt={2}>YTypingをプレイすると、自動的にDiscordのステータスに表示されます。</Text>
-              <Box mt={2} display="flex" flexDirection="column" gap={4}></Box>
-            </ListItem>
-          </OrderedList>
+          </List>
         </CardBody>
       </CustomCard>
-    </Box>
+    </Container>
   );
 }

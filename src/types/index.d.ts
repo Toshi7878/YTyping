@@ -1,7 +1,7 @@
 import { EditorNewMapBackUpInfoData } from "@/app/edit/ts/type";
 import { MapLine } from "@/app/type/ts/type";
 
-export type HeaderMenu = { title: string; href: string };
+export type HeaderMenu = { title: string; href: string; device?: "PC" };
 
 export type NavItem = {
   title: string;

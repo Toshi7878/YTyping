@@ -1,5 +1,6 @@
 "use client";
 
+import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { ThemeColors } from "@/types";
 import { HamburgerIcon } from "@chakra-ui/icons";
@@ -30,7 +31,7 @@ interface HamburgerMenuProps {
 }
 
 const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onOpen } = useDisclosure();
   const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
   const newCreateModalDisclosure = useDisclosure();
@@ -55,7 +56,12 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
         />
         <MenuList bg={theme.colors.background.body} minW="fit-content">
           {menus.map((menuItem, index) => {
-            return <LinkMenuItem key={index} title={menuItem.title} href={menuItem.href} />;
+            const isPhone = IS_IOS || IS_ANDROID;
+
+            if ((menuItem.device === "PC" && !isPhone) || !menuItem.device) {
+              return <LinkMenuItem key={index} title={menuItem.title} href={menuItem.href} />;
+            }
+            return null;
           })}
           {session?.user?.name ? (
             <>
@@ -98,9 +104,7 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
         </MenuList>
       </Menu>
 
-      {newCreateModalDisclosure.isOpen && (
-        <CreateNewMapModal newCreateModalDisclosure={newCreateModalDisclosure} />
-      )}
+      {newCreateModalDisclosure.isOpen && <CreateNewMapModal newCreateModalDisclosure={newCreateModalDisclosure} />}
     </Flex>
   );
 };
