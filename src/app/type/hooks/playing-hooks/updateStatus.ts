@@ -333,9 +333,7 @@ export const useUpdateAllStatus = () => {
       newStatus.miss += lineResult.status.lMiss ?? 0;
       newStatus.lost += lineResult.status.lLost ?? 0;
       newStatus.line -= lineResult.status.lType !== undefined ? 1 : 0;
-      if (lineResult.status.tTime) {
-        totalTypeTime += lineResult.status.tTime;
-      }
+      totalTypeTime += lineResult.status.tTime;
     }
 
     const lineResult = lineResults[count - 1];
