@@ -56,6 +56,15 @@ export const useStatusRef = () => {
     }, []),
     { store }
   );
+
+  const readTotalTypeCountStatus = useAtomCallback(
+    useCallback((get) => {
+      const { romaType, kanaType, flickType, englishType, spaceType, symbolType, numType } = get(statusRefAtom);
+      return romaType + kanaType + flickType + englishType + spaceType + symbolType + numType;
+    }, []),
+    { store }
+  );
+
   const resetStatus = useAtomCallback(
     useCallback((get, set) => {
       set(statusRefAtom, RESET);
@@ -63,7 +72,7 @@ export const useStatusRef = () => {
     { store }
   );
 
-  return { readStatus, writeStatus, resetStatus };
+  return { readStatus, writeStatus, resetStatus, readTotalTypeCountStatus };
 };
 
 export const lineStatusRefAtom = atomWithReset({

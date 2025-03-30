@@ -303,7 +303,7 @@ export const useUpdateAllStatus = () => {
   const { writeLineStatus } = useLineStatusRef();
   const setCombo = useSetComboState();
 
-  const { writeStatus } = useStatusRef();
+  const { writeStatus, readTotalTypeCountStatus } = useStatusRef();
 
   return ({ count, updateType }: { count: number; updateType: "lineUpdate" | "completed" }) => {
     const map = readMap();
@@ -325,11 +325,11 @@ export const useUpdateAllStatus = () => {
     }
     const lineResults = readLineResults();
     let totalTypeTime = 0;
+    const { scene } = readGameStateUtils();
 
     for (let i = 0; i <= count - 1; i++) {
       const lineResult = lineResults[i];
       newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
-      newStatus.type += lineResult.status.lType ?? 0;
       newStatus.miss += lineResult.status.lMiss ?? 0;
       newStatus.lost += lineResult.status.lLost ?? 0;
       newStatus.line -= lineResult.status.lType !== undefined ? 1 : 0;
@@ -337,6 +337,9 @@ export const useUpdateAllStatus = () => {
       const typeResultLength = lineResult.typeResult.length;
       if (typeResultLength) {
         totalTypeTime += lineResult.typeResult[typeResultLength - 1].t;
+      }
+      if (scene === "replay") {
+        newStatus.type += lineResult.status.lType ?? 0;
       }
     }
 
@@ -352,12 +355,9 @@ export const useUpdateAllStatus = () => {
       newStatus.timeBonus = 0;
     }
 
-    setTypingStatus(newStatus);
-
-    const { scene } = readGameStateUtils();
-
     if (scene === "practice") {
       writeStatus({ totalTypeTime });
+      newStatus.type = readTotalTypeCountStatus();
     } else if (scene === "replay") {
       writeStatus({
         totalTypeTime: lineResult.status.tTime ?? 0,
@@ -366,5 +366,7 @@ export const useUpdateAllStatus = () => {
       setLineKpm(lineResult.status.lKpm ?? 0);
       writeLineStatus({ isCompleted: true });
     }
+
+    setTypingStatus(newStatus);
   };
 };
