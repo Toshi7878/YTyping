@@ -1,10 +1,10 @@
-import { useSetLineWordState } from "@/app/type/atoms/stateAtoms";
+import { useGameStateUtilsRef, useMapStateRef, useSetLineWordState } from "@/app/type/atoms/stateAtoms";
 import { useInputJudge } from "@/app/type/ts/scene-ts/playing/keydown/typingJudge";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";
 import { useSoundEffect } from "../soundEffect";
 import { useUpdateLineResult } from "../updateLineResult";
-import { useTypeMiss, useTypeSuccess } from "../updateStatus";
+import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../updateStatus";
 
 export const useTyping = () => {
   const { triggerTypingSound, triggerMissSound } = useSoundEffect();
@@ -18,6 +18,9 @@ export const useTyping = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const inputJudge = useInputJudge();
   const { isLinePointUpdated, updateLineResult } = useUpdateLineResult();
+  const readGameStateUtils = useGameStateUtilsRef();
+  const updateAllStatus = useUpdateAllStatus();
+  const readMap = useMapStateRef();
 
   return (event: KeyboardEvent) => {
     const { isSuccess, isFailed, isCompleted, newLineWord, ...inputResult } = inputJudge(event);
@@ -48,6 +51,14 @@ export const useTyping = () => {
       if (isCompleted) {
         if (isLinePointUpdated()) {
           updateLineResult();
+        }
+
+        const { scene } = readGameStateUtils();
+        if (scene === "practice") {
+          updateAllStatus({
+            count: readMap().mapData.length - 1,
+            updateType: "lineUpdate",
+          });
         }
       }
     } else if (isFailed) {
