@@ -1,20 +1,20 @@
 import { useSceneState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/moveLine";
 import { useToggleLineList } from "@/app/type/hooks/playing-hooks/toggleLineList";
-import PlayingBottomBadge from "./child/PlayingBottomBadge";
-import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";
+import BottomBadge from "./child/BottomBadge";
+import BottomDoubleKeyBadge from "./child/BottomDoubleKeyBadge";
 
-const PlayingPracticeBadge = function () {
+const PracticeBadges = function () {
   const scene = useSceneState();
   const toggleLineListDrawer = useToggleLineList();
   const { movePrevLine, moveNextLine } = useMoveLine();
-  const userOptionsAtom = useUserTypingOptionsState();
+  const userOptions = useUserTypingOptionsState();
 
   return (
     <>
       {scene !== "play" && (
         <>
-          <PlayingLineSeekBadge
+          <BottomDoubleKeyBadge
             badgeText="移動"
             kbdTextPrev="←"
             kbdTextNext="→"
@@ -22,9 +22,9 @@ const PlayingPracticeBadge = function () {
             onClickPrev={() => movePrevLine()}
             onClickNext={() => moveNextLine()}
           />
-          <PlayingBottomBadge
+          <BottomBadge
             badgeText="リスト"
-            kbdText={userOptionsAtom.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
+            kbdText={userOptions.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
             onClick={() => toggleLineListDrawer()}
             isPauseDisabled={false}
             isKbdHidden={false}
@@ -35,4 +35,4 @@ const PlayingPracticeBadge = function () {
   );
 };
 
-export default PlayingPracticeBadge;
+export default PracticeBadges;

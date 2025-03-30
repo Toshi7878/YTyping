@@ -1,12 +1,12 @@
 import { useGameStateUtilsRef } from "@/app/type/atoms/stateAtoms";
 import { useRetry } from "@/app/type/hooks/playing-hooks/retry";
-import PlayingBottomBadge from "./child/PlayingBottomBadge";
+import BottomBadge from "./child/BottomBadge";
 
-const PlayingRetryBadge = function () {
+const RetryBadge = function () {
   const retry = useRetry();
   const readGameStateUtils = useGameStateUtilsRef();
   return (
-    <PlayingBottomBadge
+    <BottomBadge
       badgeText="やり直し"
       kbdText="F4"
       onClick={() => {
@@ -22,4 +22,4 @@ const PlayingRetryBadge = function () {
   );
 };
 
-export default PlayingRetryBadge;
+export default RetryBadge;

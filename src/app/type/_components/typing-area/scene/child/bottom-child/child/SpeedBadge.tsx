@@ -1,17 +1,17 @@
 import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useSceneState } from "@/app/type/atoms/stateAtoms";
-import PlayingBottomBadge from "./child/PlayingBottomBadge";
-import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";
+import BottomBadge from "./child/BottomBadge";
+import BottomDoubleKeyBadge from "./child/BottomDoubleKeyBadge";
 
-const PlayingSpeedBadge = function () {
+const SpeedBadge = function () {
   const scene = useSceneState();
-  const speedData = usePlaySpeedState();
+  const { playSpeed } = usePlaySpeedState();
   const dispatchSpeed = usePlaySpeedReducer();
   return (
     <>
       {scene === "practice" ? (
-        <PlayingLineSeekBadge
-          badgeText={speedData.playSpeed.toFixed(2) + "倍速"}
+        <BottomDoubleKeyBadge
+          badgeText={playSpeed.toFixed(2) + "倍速"}
           kbdTextPrev="F9-"
           kbdTextNext="+F10"
           onClick={() => {}}
@@ -19,8 +19,8 @@ const PlayingSpeedBadge = function () {
           onClickNext={() => dispatchSpeed({ type: "up" })}
         />
       ) : (
-        <PlayingBottomBadge
-          badgeText={speedData.playSpeed.toFixed(2) + "倍速"}
+        <BottomBadge
+          badgeText={playSpeed.toFixed(2) + "倍速"}
           kbdText="F10"
           onClick={() => dispatchSpeed({ type: "toggle" })}
           isPauseDisabled={true}
@@ -31,4 +31,4 @@ const PlayingSpeedBadge = function () {
   );
 };
 
-export default PlayingSpeedBadge;
+export default SpeedBadge;

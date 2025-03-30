@@ -3,10 +3,10 @@ import { usePressSkip } from "@/app/type/hooks/playing-hooks/pressSkip";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import "@/styles/type.css";
 import { VStack } from "@chakra-ui/react";
-import PlayingChangeCSS from "./child/PlayingChangeCSS";
-import PlayingLyrics from "./child/PlayingLyrics";
-import NextLyrics from "./child/PlayingNextLyrics";
-import PlayingTypingWords from "./child/PlayingTypingWords";
+import ChangeCSS from "./child/ChangeCSS";
+import Lyrics from "./child/Lyrics";
+import NextLyrics from "./child/NextLyrics";
+import TypingWords from "./child/PlayingTypingWords";
 
 interface PlayingCenterProps {
   flex: string;
@@ -35,10 +35,10 @@ const PlayingCenter = ({ flex }: PlayingCenterProps) => {
         }
       }}
     >
-      <PlayingTypingWords />
-      <PlayingLyrics />
+      <TypingWords />
+      <Lyrics />
       <NextLyrics />
-      <PlayingChangeCSS />
+      <ChangeCSS />
     </VStack>
   );
 };

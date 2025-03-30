@@ -3,7 +3,7 @@ import { HStack } from "@chakra-ui/react";
 import CustomBadge from "./child/CustomBadge";
 import CustomKbd from "./child/CustomKbd";
 
-interface PlayingLineSeekBadgeProps {
+interface BottomDoubleKeyBadgeProps {
   badgeText: string;
   kbdTextPrev: string;
   kbdTextNext: string;
@@ -12,7 +12,7 @@ interface PlayingLineSeekBadgeProps {
   onClickNext: () => void;
 }
 
-const PlayingLineSeekBadge = function (props: PlayingLineSeekBadgeProps) {
+const BottomDoubleKeyBadge = function (props: BottomDoubleKeyBadgeProps) {
   const notify = useNotifyState();
   const sceneGroup = useSceneGroupState();
   const isDisabled = notify.description === "ll";
@@ -31,4 +31,4 @@ const PlayingLineSeekBadge = function (props: PlayingLineSeekBadgeProps) {
   );
 };
 
-export default PlayingLineSeekBadge;
+export default BottomDoubleKeyBadge;

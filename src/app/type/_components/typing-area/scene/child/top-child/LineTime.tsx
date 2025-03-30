@@ -2,7 +2,7 @@ import { Box, Text } from "@chakra-ui/react";
 import LineKpmText from "./child/LineKpmText";
 import LineRemainTimeText from "./child/LineRemainTimeText";
 
-const PlayingLineTime = () => {
+const LineTime = () => {
   return (
     <Box>
       <LineKpmText />
@@ -21,4 +21,4 @@ const PlayingLineTime = () => {
   );
 };
 
-export default PlayingLineTime;
+export default LineTime;

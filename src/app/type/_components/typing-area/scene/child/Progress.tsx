@@ -3,10 +3,10 @@ import { ThemeColors } from "@/types";
 import { Box, useTheme } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 
-interface PlayingProgressProps {
+interface ProgressProps {
   id: string;
 }
-const PlayingProgress = (props: PlayingProgressProps) => {
+const Progress = (props: ProgressProps) => {
   const theme: ThemeColors = useTheme();
   const progressRef = React.useRef<HTMLProgressElement>(null);
 
@@ -38,4 +38,4 @@ const PlayingProgress = (props: PlayingProgressProps) => {
   );
 };
 
-export default PlayingProgress;
+export default Progress;

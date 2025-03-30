@@ -3,7 +3,7 @@ import { HStack } from "@chakra-ui/react";
 import CustomBadge from "./child/CustomBadge";
 import CustomKbd from "./child/CustomKbd";
 
-interface PlayingBottomBadgeProps {
+interface BottomBadgeProps {
   badgeText: string;
   kbdText: string;
   isPauseDisabled: boolean;
@@ -11,7 +11,7 @@ interface PlayingBottomBadgeProps {
   onClick: () => void;
 }
 
-const PlayingBottomBadge = function (props: PlayingBottomBadgeProps) {
+const BottomBadge = function (props: BottomBadgeProps) {
   const notify = useNotifyState();
   const sceneGroup = useSceneGroupState();
   const isDisabled = notify.description === "ll" && props.isPauseDisabled;
@@ -30,4 +30,4 @@ const PlayingBottomBadge = function (props: PlayingBottomBadgeProps) {
   );
 };
 
-export default PlayingBottomBadge;
+export default BottomBadge;

@@ -1,9 +1,9 @@
 import { HStack } from "@chakra-ui/react";
-import PlayingProgress from "../playing-child/child/PlayingProgress";
+import Progress from "./Progress";
 
 import { useSceneGroupState, useYTStartedState } from "@/app/type/atoms/stateAtoms";
-import PlayingCombo from "./top-child/PlayingCombo";
-import PlayingLineTime from "./top-child/PlayingLineTime";
+import Combo from "./top-child/Combo";
+import LineTime from "./top-child/LineTime";
 import PlayingNotify from "./top-child/PlayingNotify";
 
 function PlayingTop() {
@@ -25,11 +25,11 @@ function PlayingTop() {
         className={"top-card-text"}
         fontSize={{ base: "3.5rem", sm: "2.7rem", md: "3xl" }}
       >
-        <PlayingCombo />
+        <Combo />
         <PlayingNotify />
-        <PlayingLineTime />
+        <LineTime />
       </HStack>
-      <PlayingProgress id="line_progress" />
+      <Progress id="line_progress" />
     </>
   );
 }

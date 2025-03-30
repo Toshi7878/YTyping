@@ -2,7 +2,7 @@ import { useLyricsState, useUserTypingOptionsState } from "@/app/type/atoms/stat
 import { Flex } from "@chakra-ui/react";
 import parse from "html-react-parser";
 
-const PlayingLyrics = () => {
+const Lyrics = () => {
   const lyrics = useLyricsState();
   const userOptionsAtom = useUserTypingOptionsState();
 
@@ -32,4 +32,4 @@ const PlayingLyrics = () => {
   );
 };
 
-export default PlayingLyrics;
+export default Lyrics;

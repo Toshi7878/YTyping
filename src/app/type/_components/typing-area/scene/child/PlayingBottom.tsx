@@ -1,9 +1,11 @@
 import { useSceneGroupState, useYTStartedState } from "@/app/type/atoms/stateAtoms";
 import { Box, Flex, HStack } from "@chakra-ui/react";
-import PlayingProgress from "../playing-child/child/PlayingProgress";
-import PlayingBottomBadgeLayout from "./bottom-child/PlayingBottomBadgeLayout";
+import Progress from "./Progress";
 import PlayingSkipGuide from "./bottom-child/PlayingSkipGuide";
 import PlayingTotalTime from "./bottom-child/PlayingTotalTime";
+import PracticeBadges from "./bottom-child/child/PracticeBadgeLayout";
+import RetryBadge from "./bottom-child/child/RetryBadge";
+import SpeedBadge from "./bottom-child/child/SpeedBadge";
 
 const PlayingBottom = function () {
   const isYTStarted = useYTStartedState();
@@ -24,7 +26,7 @@ const PlayingBottom = function () {
         <PlayingTotalTime />
       </HStack>
       <Box>
-        <PlayingProgress id="total_progress" />
+        <Progress id="total_progress" />
       </Box>
       <Flex
         justifyContent="space-between"
@@ -34,7 +36,9 @@ const PlayingBottom = function () {
         fontWeight="bold"
         visibility={isPlayed ? "visible" : "hidden"}
       >
-        <PlayingBottomBadgeLayout />
+        <SpeedBadge />
+        <PracticeBadges />
+        <RetryBadge />
       </Flex>
     </>
   );

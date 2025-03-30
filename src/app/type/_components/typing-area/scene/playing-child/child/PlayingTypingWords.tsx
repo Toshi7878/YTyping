@@ -6,9 +6,8 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
-import PlayingWord from "./PlayingWord";
 
-const PlayingTypingWords = () => {
+const TypingWords = () => {
   const lineWord = useLineWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
@@ -27,7 +26,7 @@ const PlayingTypingWords = () => {
       className={`word-font outline-text ${isLineCompleted ? "word-area-completed" : ""}`}
       style={{ letterSpacing: "0.1em" }}
     >
-      <PlayingWord
+      <Word
         id="main_word"
         correct={lineWord.correct["k"].substr(-kanaCorrectSlice, kanaCorrectSlice).replace(/ /g, "ˍ")}
         nextChar={lineWord.nextChar["k"]}
@@ -40,7 +39,7 @@ const PlayingTypingWords = () => {
         className="lowercase word-kana"
       />
 
-      <PlayingWord
+      <Word
         id="sub_word"
         correct={lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice).replace(/ /g, "ˍ")}
         nextChar={lineWord.nextChar["r"][0]}
@@ -56,4 +55,48 @@ const PlayingTypingWords = () => {
   );
 };
 
-export default PlayingTypingWords;
+import { BoxProps, Text } from "@chakra-ui/react";
+
+interface WordProps {
+  correct: string;
+  nextChar: string;
+  word: string;
+  id: string;
+  isLineCompleted: boolean;
+  nextWord: string;
+}
+
+const Word = ({ correct, nextChar, word, isLineCompleted, nextWord, ...rest }: WordProps & BoxProps) => {
+  const remainWord = nextChar + word;
+  const theme: ThemeColors = useTheme();
+  const userOptionsAtom = useUserTypingOptionsState();
+  const isNextWordDisplay = userOptionsAtom.line_completed_display === "NEXT_WORD";
+
+  return (
+    <Box {...rest}>
+      {isLineCompleted && isNextWordDisplay ? (
+        <Text as="span" className="next-line-word" color={theme.colors.semantic.word.nextWord}>
+          {nextWord}
+        </Text>
+      ) : (
+        <>
+          <Text
+            as="span"
+            color={remainWord.length === 0 ? theme.colors.semantic.word.completed : theme.colors.semantic.word.correct}
+            className={remainWord.length === 0 ? "word-completed" : "word-correct"}
+          >
+            {correct}
+          </Text>
+          <Text as="span" color={theme.colors.semantic.word.nextChar} className="word-next">
+            {nextChar}
+          </Text>
+          <Text as="span" color={theme.colors.semantic.word.word} className="word">
+            {word}
+          </Text>
+        </>
+      )}
+    </Box>
+  );
+};
+
+export default TypingWords;

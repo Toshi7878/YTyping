@@ -1,6 +1,6 @@
 import { useChangeCSSCountState, useMapState } from "@/app/type/atoms/stateAtoms";
 
-const PlayingChangeCSS = () => {
+const ChangeCSS = () => {
   const map = useMapState();
   const changeCSSCount = useChangeCSSCountState();
 
@@ -12,4 +12,4 @@ const PlayingChangeCSS = () => {
   return <style>{changeCSS}</style>;
 };
 
-export default PlayingChangeCSS;
+export default ChangeCSS;
