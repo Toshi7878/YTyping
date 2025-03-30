@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2025-3-30",
-    descriptions: ["クレジットページを追加"],
+    descriptions: ["タイプ音のレスポンス速度を改善", "クレジットページを追加"],
   },
   {
     date: "2025-3-28",
