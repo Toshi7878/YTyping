@@ -39,7 +39,7 @@ function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSp
       <Text as="span" mx={2}>
         |
       </Text>
-      <CustomToolTip label={`ライン打鍵数${inputModeText}`} {...tooltipProps}>
+      <CustomToolTip label={`要求打鍵数${inputModeText}`} {...tooltipProps}>
         <Text as="span" _hover={hoverStyle} className="line-notes">
           {lineNotes}打
         </Text>
