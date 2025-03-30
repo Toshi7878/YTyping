@@ -36,7 +36,6 @@ const PracticeLineCard = () => {
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
   const lineSpeed = lineResult?.status!.sp > speedData.defaultSpeed ? lineResult?.status!.sp : speedData.defaultSpeed;
-  const lineTime = (Number(map.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
   //ユーザーのLineリザルトデータ

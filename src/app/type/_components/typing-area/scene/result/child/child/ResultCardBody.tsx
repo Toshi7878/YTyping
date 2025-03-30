@@ -26,7 +26,7 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
         className="word-result outline-text"
         letterSpacing="0.15em"
       >
-        {typeResult.map((type: TypeResult) => {
+        {typeResult.map((type: TypeResult, index: number) => {
           if (type.is) {
             correctCount++;
           }
@@ -35,7 +35,7 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
 
           return (
             type.c && (
-              <CustomToolTip key={type.t} label={label} placement="top" fontSize="sm">
+              <CustomToolTip key={index} label={label} placement="top" fontSize="sm">
                 <Text
                   as="span"
                   className="typed"
