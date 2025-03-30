@@ -83,7 +83,7 @@ function ResultLineList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let lineCount = 0;
+  let lineIndex = 0;
   let scoreCount = 0;
 
   return (
@@ -95,7 +95,7 @@ function ResultLineList() {
           return null;
         }
 
-        lineCount++;
+        lineIndex++;
         scoreCount += lineResult.status!.p! + lineResult.status!.tBonus!;
 
         return (
@@ -103,8 +103,8 @@ function ResultLineList() {
             key={index}
             lineResult={lineResult}
             lineData={lineData}
-            index={index}
-            lineCount={lineCount}
+            count={index}
+            lineIndex={lineIndex}
             scoreCount={scoreCount}
             cardRefs={cardRefs}
             handleCardClick={sceneGroup === "End" ? endCardClick : practiceReplayCardClick}

@@ -12,8 +12,8 @@ import ResultCardHeader from "./child/ResultCardHeader";
 
 interface ResultCardProps {
   lineResult: LineResultData;
-  index: number;
-  lineCount: number;
+  count: number;
+  lineIndex: number;
   scoreCount: number;
   lineData: LineData;
   cardRefs: React.RefObject<HTMLDivElement[]>;
@@ -23,8 +23,8 @@ interface ResultCardProps {
 
 function ResultCard({
   lineResult,
-  index,
-  lineCount,
+  count,
+  lineIndex,
   scoreCount,
   lineData,
   selectIndex,
@@ -42,7 +42,6 @@ function ResultCard({
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
-  const lineTime = (Number(map.mapData[index + 1].time) - (index === 0 ? 0 : Number(lineData.time))) / lineSpeed;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
   const maxLinePoint = lineData.notes.r * CHAR_POINT;
@@ -54,34 +53,29 @@ function ResultCard({
   const tBonus = lineResult.status.tBonus;
   const lostWord = lineResult.status.lostW;
 
-  const seekTime = Number(map.mapData[index]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
-
-  const lineNumber = lineCount;
+  const seekTime = Number(map.mapData[count]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
 
   return (
     <Card
-      key={index}
       ref={(el) => {
-        if (el) cardRefs.current![lineCount] = el;
+        if (el) cardRefs.current![lineIndex] = el;
       }}
       variant="practice"
       data-seek-time={seekTime}
-      data-line-number={lineNumber}
-      data-count={index}
+      data-line-index={lineIndex}
+      data-count={count}
       style={{
-        ...(selectIndex === lineNumber && {
+        ...(selectIndex === lineIndex && {
           outline: `3px solid ${theme.colors.primary.main}`,
         }),
       }}
-      onClick={() => handleCardClick(lineNumber)}
+      onClick={() => handleCardClick(lineIndex)}
     >
       <CardHeader py={0}>
         <ResultCardHeader
-          index={index}
-          lineCount={lineCount}
+          lineIndex={lineIndex}
           lineNotes={lineNotes}
           lineInputMode={lineInputMode}
-          lineTime={lineTime}
           lineKpm={lineKpm}
           lineSpeed={lineSpeed}
         />

@@ -22,7 +22,6 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
       </Box>
       <Box
         color={theme.colors.text.body}
-        ml={1}
         textTransform="uppercase"
         className="word-result outline-text"
         letterSpacing="0.1em"

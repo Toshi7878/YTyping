@@ -69,11 +69,9 @@ const PracticeLineCard = () => {
     >
       <CardHeader>
         <ResultCardHeader
-          index={index}
-          lineCount={lineSelectIndex}
+          lineIndex={lineSelectIndex}
           lineNotes={lineNotes}
           lineInputMode={lineInputMode}
-          lineTime={lineTime}
           lineKpm={lineKpm}
           lineSpeed={lineSpeed}
         />

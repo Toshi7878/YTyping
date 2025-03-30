@@ -7,24 +7,14 @@ import { Box, Text, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
 
 interface ResultCardHeaderProps {
-  index: number;
   lineNotes: number;
-  lineCount: number;
+  lineIndex: number;
   lineInputMode: InputMode;
-  lineTime: number;
   lineKpm: number;
   lineSpeed: number;
 }
 
-function ResultCardHeader({
-  index,
-  lineNotes,
-  lineCount,
-  lineInputMode,
-  lineTime,
-  lineKpm,
-  lineSpeed,
-}: ResultCardHeaderProps) {
+function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSpeed }: ResultCardHeaderProps) {
   const map = useMapState();
   const theme: ThemeColors = useTheme();
 
@@ -35,8 +25,8 @@ function ResultCardHeader({
 
   return (
     <Box>
-      <Text as="span" data-list-number={index}>
-        {lineCount}/{map.lineLength}
+      <Text as="span">
+        {lineIndex}/{map.lineLength}
       </Text>
       <Text as="span" mx={2}>
         |
