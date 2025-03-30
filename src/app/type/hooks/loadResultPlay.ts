@@ -28,8 +28,10 @@ export const useLoadResultPlay = ({
       if (resultId) {
         setIsLoadingOverlay(true);
         const resultData: LineResultData[] = await utils.result.getUserResultData.ensureData({ resultId });
+        if (startMode === "replay") {
+          setPlayingInputModeState(resultData[0].status.mode);
+        }
         setLineResults(resultData);
-        setPlayingInputModeState(resultData[0].status.mode);
       }
     } finally {
       setIsLoadingOverlay(false);
