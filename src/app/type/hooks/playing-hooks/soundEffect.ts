@@ -36,7 +36,7 @@ export const useSoundEffect = () => {
 
   const typeSoundPlay = () => {
     const volume = (IS_IOS || IS_ANDROID ? 100 : readVolume()) / 100;
-    sound.play("type", { volume });
+    sound.play("type", { volume, start: 0.005 });
   };
 
   const missSoundPlay = () => {
