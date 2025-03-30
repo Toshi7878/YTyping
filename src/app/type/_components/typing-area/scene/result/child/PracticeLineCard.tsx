@@ -85,7 +85,7 @@ const PracticeLineCard = () => {
           lostWord={lostWord!}
         />
       </CardBody>
-      <Divider width="88%" mx="auto" />
+      <Divider width="92%" mx="auto" />
       <CardFooter>
         <ResultCardFooter
           point={point!}
@@ -95,6 +95,7 @@ const PracticeLineCard = () => {
           lost={lost!}
           kpm={kpm!}
           rkpm={rkpm!}
+          alignItems="flex-end"
         />
       </CardFooter>
     </Card>

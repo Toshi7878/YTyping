@@ -101,6 +101,7 @@ function ResultCard({
           rkpm={rkpm!}
           lost={lost!}
           flexDirection="column"
+          alignItems="flex-start"
         />
       </CardFooter>
     </Card>

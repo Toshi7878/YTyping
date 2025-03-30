@@ -29,7 +29,7 @@ function ResultCardFooter({
   const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green";
 
   return (
-    <Flex gap={2} width="100%" justifyContent="space-between" alignItems="flex-start" py={2} {...props}>
+    <Flex gap={2} width="100%" justifyContent="space-between" py={2} {...props}>
       <HStack>
         <Badge colorScheme={missColor} fontSize="sm" px={1.5} py={0.5}>
           ミス: {miss}, ロスト: {lost}
