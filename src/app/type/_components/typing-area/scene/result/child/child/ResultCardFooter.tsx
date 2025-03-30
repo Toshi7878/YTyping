@@ -9,9 +9,10 @@ interface ResultCardFooterProps {
   point: number;
   tBonus: number;
   maxLinePoint: number;
-  lMiss: number;
+  miss: number;
   kpm: number;
   rkpm: number;
+  lost: number;
 }
 
 function ResultCardFooter({
@@ -19,16 +20,19 @@ function ResultCardFooter({
   point,
   tBonus,
   maxLinePoint,
-  lMiss,
+  miss,
   kpm,
   rkpm,
+  lost,
   ...props
 }: ResultCardFooterProps & FlexProps) {
+  const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green";
+
   return (
     <Flex gap={2} width="100%" justifyContent="space-between" alignItems="flex-start" py={2} {...props}>
       <HStack>
-        <Badge colorScheme="red" fontSize="sm" px={1.5} py={0.5}>
-          ミス: {lMiss}
+        <Badge colorScheme={missColor} fontSize="sm" px={1.5} py={0.5}>
+          ミス: {miss}, ロスト: {lost}
         </Badge>
         <CustomToolTip label={`rkpm: ${rkpm}`} placement="top">
           <Badge colorScheme="blue" fontSize="sm" px={1.5} py={0.5}>

@@ -46,7 +46,8 @@ const PracticeLineCard = () => {
   const tBonus = lineResult.status.tBonus;
   const kpm = lineResult.status.lKpm;
   const rkpm = lineResult.status.lRkpm;
-  const lMiss = lineResult.status.lMiss;
+  const miss = lineResult.status.lMiss;
+  const lost = lineResult.status.lLost;
 
   return (
     <Card
@@ -76,7 +77,7 @@ const PracticeLineCard = () => {
           lineSpeed={lineSpeed}
         />
       </CardHeader>
-      <CardBody className="word-font">
+      <CardBody className="word-font" py={2}>
         <ResultCardBody
           lineKanaWord={lineKanaWord}
           typeResult={lineResult.typeResult}
@@ -90,7 +91,8 @@ const PracticeLineCard = () => {
           point={point!}
           tBonus={tBonus!}
           maxLinePoint={maxLinePoint}
-          lMiss={lMiss!}
+          miss={miss!}
+          lost={lost!}
           kpm={kpm!}
           rkpm={rkpm!}
         />

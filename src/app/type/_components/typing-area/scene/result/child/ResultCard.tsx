@@ -49,9 +49,10 @@ function ResultCard({
   const kpm = lineResult.status.lKpm;
   const rkpm = lineResult.status.lRkpm;
   const point = lineResult.status.p;
-  const lMiss = lineResult.status.lMiss;
+  const miss = lineResult.status.lMiss;
   const tBonus = lineResult.status.tBonus;
   const lostWord = lineResult.status.lostW;
+  const lost = lineResult.status.lLost;
 
   const seekTime = Number(map.mapData[count]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
 
@@ -95,9 +96,10 @@ function ResultCard({
           point={point!}
           tBonus={tBonus!}
           maxLinePoint={maxLinePoint}
-          lMiss={lMiss!}
+          miss={miss!}
           kpm={kpm!}
           rkpm={rkpm!}
+          lost={lost!}
           flexDirection="column"
         />
       </CardFooter>
