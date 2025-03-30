@@ -353,13 +353,15 @@ export const useUpdateAllStatus = () => {
     }
 
     setTypingStatus(newStatus);
-    writeStatus({
-      totalTypeTime: lineResult.status.tTime ?? 0,
-    });
 
     const { scene } = readGameStateUtils();
 
-    if (scene === "replay") {
+    if (scene === "practice") {
+      writeStatus({ totalTypeTime });
+    } else if (scene === "replay") {
+      writeStatus({
+        totalTypeTime: lineResult.status.tTime ?? 0,
+      });
       setCombo(lineResult.status.combo ?? 0);
       setLineKpm(lineResult.status.lKpm ?? 0);
       writeLineStatus({ isCompleted: true });
