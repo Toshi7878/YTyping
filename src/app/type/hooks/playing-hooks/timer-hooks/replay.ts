@@ -145,10 +145,9 @@ export const useLineReplayUpdate = () => {
     const lineResults = readLineResults();
 
     const lineResult = lineResults[newCurrentCount];
-    const lineInputMode = lineResult.status!.mode;
-    const speed = lineResult.status!.sp as YouTubeSpeed;
 
-    inputModeChange(lineInputMode);
+    inputModeChange(lineResult.status.mode);
+    const speed = lineResult.status.sp as YouTubeSpeed;
     dispatchSpeed({ type: "set", payload: speed });
     writeGameUtils({ replayKeyCount: 0 });
   };
