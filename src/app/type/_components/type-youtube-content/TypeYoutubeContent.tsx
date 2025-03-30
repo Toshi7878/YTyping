@@ -3,15 +3,15 @@ import { useCallback, useEffect, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useGameStateUtilsRef } from "../../atoms/stateAtoms";
-import { useTimerRegistration } from "../../hooks/playing-hooks/timer-hooks/useTimer";
-import { useWindowFocus } from "../../hooks/useWindowFocus";
+import { useTimerRegistration } from "../../hooks/playing-hooks/timer-hooks/timer";
+import { useWindowFocus } from "../../hooks/windowFocus";
 import {
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
   useYTStopEvent,
-} from "../../hooks/useYoutubeEvents";
+} from "../../hooks/youtubeEvents";
 
 interface TypeYouTubeProps {
   isMapLoading: boolean;
@@ -19,11 +19,7 @@ interface TypeYouTubeProps {
   className?: string;
 }
 
-const TypeYouTubeContent = function YouTubeContent({
-  isMapLoading,
-  videoId,
-  className = "",
-}: TypeYouTubeProps) {
+const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, className = "" }: TypeYouTubeProps) {
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -45,10 +41,7 @@ const TypeYouTubeContent = function YouTubeContent({
 
   const handleStateChange = useCallback(
     (event: YouTubeEvent) => {
-      if (
-        document.activeElement instanceof HTMLIFrameElement &&
-        document.activeElement.tagName === "IFRAME"
-      ) {
+      if (document.activeElement instanceof HTMLIFrameElement && document.activeElement.tagName === "IFRAME") {
         windowFocus();
       }
 

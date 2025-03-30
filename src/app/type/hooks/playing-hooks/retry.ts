@@ -13,8 +13,8 @@ import {
   useTypingStatusStateRef,
 } from "../../atoms/stateAtoms";
 import { PlayMode } from "../../ts/type";
-import { useTimerControls } from "./timer-hooks/useTimer";
-import { useSendUserStats } from "./useSendUserStats";
+import { useSendUserStats } from "./sendUserStats";
+import { useTimerControls } from "./timer-hooks/timer";
 
 export const useRetry = () => {
   const { readPlayer } = usePlayer();

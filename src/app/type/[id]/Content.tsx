@@ -22,8 +22,8 @@ import {
   useSetTypingStatusLineState,
   useSetTypingStatusState,
 } from "../atoms/stateAtoms";
-import { useDisableKeyHandle } from "../hooks/useDisableKeyHandle";
-import useWindowScale, { CONTENT_WIDTH } from "../hooks/useWindowScale";
+import { useDisableKey } from "../hooks/disableKey";
+import useWindowScale, { CONTENT_WIDTH } from "../hooks/windowScale";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -38,7 +38,7 @@ function Content({ mapInfo }: ContentProps) {
   const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
 
   const isLoadingOverlay = useIsLoadingOverlayState();
-  const disableKeyHandle = useDisableKeyHandle();
+  const disableKeyHandle = useDisableKey();
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
   const setMap = useSetMapState();

@@ -13,8 +13,8 @@ import {
 } from "../atoms/stateAtoms";
 import { useReadyInputModeStateRef } from "../atoms/storageAtoms";
 import { InputMode } from "../ts/type";
-import { useTimerControls } from "./playing-hooks/timer-hooks/useTimer";
-import { useSendUserStats } from "./playing-hooks/useSendUserStats";
+import { useSendUserStats } from "./playing-hooks/sendUserStats";
+import { useTimerControls } from "./playing-hooks/timer-hooks/timer";
 
 export const useYTPlayEvent = () => {
   const setScene = useSetSceneState();

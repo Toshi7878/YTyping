@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useSceneState } from "@/app/type/atoms/stateAtoms";
-import { useRetry } from "@/app/type/hooks/playing-hooks/useRetry";
+import { useRetry } from "@/app/type/hooks/playing-hooks/retry";
 import { PlayMode } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
 import { useRef } from "react";

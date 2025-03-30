@@ -1,6 +1,6 @@
 import { useSceneState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
-import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
-import { useToggleLineList } from "@/app/type/hooks/playing-hooks/useToggleLineList";
+import { useMoveLine } from "@/app/type/hooks/playing-hooks/moveLine";
+import { useToggleLineList } from "@/app/type/hooks/playing-hooks/toggleLineList";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 import PlayingLineSeekBadge from "./child/PlayingLineSeekBadge";
 

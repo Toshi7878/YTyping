@@ -9,15 +9,14 @@ import {
   useUserTypingOptionsStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/consts";
-import { LineWord } from "@/app/type/ts/type";
+import { useGamePause } from "../gamePause";
+import { useInputModeChange } from "../inputModeChange";
+import { useMoveLine } from "../moveLine";
+import { usePressSkip } from "../pressSkip";
+import { useRetry } from "../retry";
+import { useToggleLineList } from "../toggleLineList";
 import { useChangePlayMode } from "../useChangePlayMode";
-import { useGamePause } from "../useGamePause";
-import { useInputModeChange } from "../useInputModeChange";
-import { useMoveLine } from "../useMoveLine";
-import { usePressSkip } from "../usePressSkip";
-import { useRetry } from "../useRetry";
-import { useToggleLineList } from "../useToggleLineList";
-import { useTyping } from "./useTyping";
+import { useTyping } from "./handleTyping";
 
 export const useHandleKeydown = () => {
   const isKeydownTyped = useIsKeydownTyped();
@@ -26,7 +25,6 @@ export const useHandleKeydown = () => {
   const pauseShortcutKey = usePauseShortcutKey();
 
   const { readYTStatus } = useYTStatusRef();
-  const readLineWord = useLineWordStateRef();
   const readGameStateUtils = useGameStateUtilsRef();
 
   return (event: KeyboardEvent) => {
@@ -34,8 +32,7 @@ export const useHandleKeydown = () => {
     const { scene } = readGameStateUtils();
 
     if (!isPaused || scene === "practice") {
-      const lineWord = readLineWord();
-      if (isKeydownTyped(event, lineWord) && scene !== "replay") {
+      if (isKeydownTyped(event)) {
         event.preventDefault();
 
         typing(event);
@@ -254,7 +251,13 @@ const TENKEYS_SET = new Set([
 ]);
 
 const useIsKeydownTyped = () => {
-  return (event: KeyboardEvent, lineWord: LineWord) => {
+  const readGameStateUtils = useGameStateUtilsRef();
+  const readLineWord = useLineWordStateRef();
+
+  return (event: KeyboardEvent) => {
+    const { scene } = readGameStateUtils();
+
+    if (scene === "replay") return false;
     if (event.ctrlKey || event.altKey) return false;
 
     const activeElement = document.activeElement as HTMLInputElement | null;
@@ -266,6 +269,7 @@ const useIsKeydownTyped = () => {
     const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code);
     if (!isType) return false;
 
+    const lineWord = readLineWord();
     return Boolean(lineWord.nextChar["k"]);
   };
 };

@@ -1,6 +1,6 @@
 import { usePlayer } from "@/app/type/atoms/refAtoms";
 import { useMapState } from "@/app/type/atoms/stateAtoms";
-import { useWindowFocus } from "@/app/type/hooks/useWindowFocus";
+import { useWindowFocus } from "@/app/type/hooks/windowFocus";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";

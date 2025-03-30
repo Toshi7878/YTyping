@@ -20,15 +20,15 @@ import {
   useSetNextLyricsState,
   useSetTypingStatusState,
 } from "@/app/type/atoms/stateAtoms";
-import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/useDisplaySkipGuide";
+import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/displaySkipGuide";
 import { Ticker } from "pixi.js";
 import { LineData } from "../../../ts/type";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
+import { useGetTime } from "../getYTTime";
 import { useUpdateLineResult } from "../updateLineResult";
-import { useGetTime } from "../useGetTime";
-import { useLineUpdateStatus, useUpdateAllStatus } from "../useUpdateStatus";
+import { useLineUpdateStatus, useUpdateAllStatus } from "../updateStatus";
+import { useGetSeekLineCount } from "./getLineCountByTime";
 import { useLineReplayUpdate, useReplay } from "./replayHooks";
-import { useGetSeekLineCount } from "./useSeekGetLineCount";
 
 const typeTicker = new Ticker();
 

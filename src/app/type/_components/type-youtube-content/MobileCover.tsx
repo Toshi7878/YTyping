@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { usePlayer, useYTStatusRef } from "../../atoms/refAtoms";
 import { useGameStateUtilsRef } from "../../atoms/stateAtoms";
-import { useWindowFocus } from "../../hooks/useWindowFocus";
+import { useWindowFocus } from "../../hooks/windowFocus";
 
 const MobileCover = () => {
   const windowFocus = useWindowFocus();

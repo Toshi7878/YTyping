@@ -1,8 +1,8 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useMapInfoRef, useSceneGroupState } from "@/app/type/atoms/stateAtoms";
 import { useLoadResultPlay } from "@/app/type/hooks/loadResultPlay";
-import { useRetry } from "@/app/type/hooks/playing-hooks/useRetry";
-import { useSoundEffect } from "@/app/type/hooks/playing-hooks/useSoundEffect";
+import { useRetry } from "@/app/type/hooks/playing-hooks/retry";
+import { useSoundEffect } from "@/app/type/hooks/playing-hooks/soundEffect";
 import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
 import { Button, Stack, useTheme } from "@chakra-ui/react";

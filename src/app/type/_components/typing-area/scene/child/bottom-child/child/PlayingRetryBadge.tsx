@@ -1,5 +1,5 @@
 import { useGameStateUtilsRef } from "@/app/type/atoms/stateAtoms";
-import { useRetry } from "@/app/type/hooks/playing-hooks/useRetry";
+import { useRetry } from "@/app/type/hooks/playing-hooks/retry";
 import PlayingBottomBadge from "./child/PlayingBottomBadge";
 
 const PlayingRetryBadge = function () {

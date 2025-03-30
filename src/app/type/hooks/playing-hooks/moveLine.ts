@@ -6,8 +6,8 @@ import {
   useSetLineSelectIndexState,
   useSetNotifyState,
 } from "../../atoms/stateAtoms";
-import { useGetSeekLineCount } from "./timer-hooks/useSeekGetLineCount";
-import { useTimerControls, useUpdateLine } from "./timer-hooks/useTimer";
+import { useGetSeekLineCount } from "./timer-hooks/getLineCountByTime";
+import { useTimerControls, useUpdateLine } from "./timer-hooks/timer";
 
 export const useMoveLine = () => {
   const { readPlayer } = usePlayer();

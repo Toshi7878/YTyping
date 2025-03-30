@@ -2,7 +2,7 @@ import { YouTubeSpeed } from "@/types";
 import { useGameUtilsRef, useLineStatusRef } from "../../atoms/refAtoms";
 import { usePlaySpeedReducer } from "../../atoms/speedReducerAtoms";
 import { useGameStateUtilsRef, useSetNotifyState, useSetSceneState } from "../../atoms/stateAtoms";
-import { useRetry } from "./useRetry";
+import { useRetry } from "./retry";
 
 export const useChangePlayMode = () => {
   const setScene = useSetSceneState();

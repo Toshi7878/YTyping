@@ -5,7 +5,7 @@ import {
   useMapState,
   usePlayingInputModeState,
 } from "@/app/type/atoms/stateAtoms";
-import { useMoveLine } from "@/app/type/hooks/playing-hooks/useMoveLine";
+import { useMoveLine } from "@/app/type/hooks/playing-hooks/moveLine";
 import { useInteractJS } from "@/app/type/hooks/useInteractJS";
 import { CHAR_POINT } from "@/lib/parseMap";
 import { ThemeColors } from "@/types";

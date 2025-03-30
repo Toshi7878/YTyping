@@ -1,5 +1,5 @@
 import { useGameStateUtilsRef } from "@/app/type/atoms/stateAtoms";
-import { usePressSkip } from "@/app/type/hooks/playing-hooks/usePressSkip";
+import { usePressSkip } from "@/app/type/hooks/playing-hooks/pressSkip";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import "@/styles/type.css";
 import { VStack } from "@chakra-ui/react";

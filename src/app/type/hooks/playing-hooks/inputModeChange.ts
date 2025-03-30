@@ -10,7 +10,7 @@ import {
   useSetPlayingInputModeState,
 } from "../../atoms/stateAtoms";
 import { InputMode } from "../../ts/type";
-import { useGetTime } from "./useGetTime";
+import { useGetTime } from "./getYTTime";
 
 export const useInputModeChange = () => {
   const setPlayingInputMode = useSetPlayingInputModeState();

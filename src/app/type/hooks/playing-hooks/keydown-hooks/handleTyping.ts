@@ -1,10 +1,10 @@
 import { useSetLineWordState } from "@/app/type/atoms/stateAtoms";
 import { useInputJudge } from "@/app/type/ts/scene-ts/playing/keydown/typingJudge";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
+import { useGetTime } from "../getYTTime";
+import { useSoundEffect } from "../soundEffect";
 import { useUpdateLineResult } from "../updateLineResult";
-import { useGetTime } from "../useGetTime";
-import { useSoundEffect } from "../useSoundEffect";
-import { useTypeMiss, useTypeSuccess } from "../useUpdateStatus";
+import { useTypeMiss, useTypeSuccess } from "../updateStatus";
 
 export const useTyping = () => {
   const { triggerTypingSound, triggerMissSound } = useSoundEffect();

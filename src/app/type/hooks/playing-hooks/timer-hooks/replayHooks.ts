@@ -7,13 +7,13 @@ import {
   useSetLineWordState,
 } from "@/app/type/atoms/stateAtoms";
 import { useCalcTypeSpeed } from "@/app/type/hooks/playing-hooks/calcTypeSpeed";
-import { useInputModeChange } from "@/app/type/hooks/playing-hooks/useInputModeChange";
+import { useInputModeChange } from "@/app/type/hooks/playing-hooks/inputModeChange";
 import { YouTubeSpeed } from "@/types";
 import { KanaInput, RomaInput, TypingKeys } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { LineResultData, TypeResult } from "../../../ts/type";
-import { useGetTime } from "../useGetTime";
-import { useSoundEffect } from "../useSoundEffect";
-import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../useUpdateStatus";
+import { useGetTime } from "../getYTTime";
+import { useSoundEffect } from "../soundEffect";
+import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../updateStatus";
 
 interface UseKeyReplayProps {
   constantLineTime: number;
@@ -56,9 +56,7 @@ const useKeyReplay = () => {
         const { inputMode } = readGameStateUtils();
         const lineWord = readLineWord();
         const result =
-          inputMode === "roma"
-            ? new RomaInput({ typingKeys, lineWord })
-            : new KanaInput({ typingKeys, lineWord });
+          inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
         setLineWord(result.newLineWord);
         const isCompleted = result.newLineWord.nextChar["k"] === "";
         triggerTypingSound({ isCompleted });
