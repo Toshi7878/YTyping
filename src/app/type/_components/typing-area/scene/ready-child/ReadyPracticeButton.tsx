@@ -1,9 +1,11 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { useMapState } from "@/app/type/atoms/stateAtoms";
 import { useLoadResultPlay } from "@/app/type/hooks/loadResultPlay";
 import { ThemeColors } from "@/types";
 import { Button, useTheme } from "@chakra-ui/react";
 
 const ReadyPracticeButton = () => {
+  const map = useMapState();
   const theme: ThemeColors = useTheme();
   const { readGameUtils } = useGameUtilsRef();
   const handleClick = useLoadResultPlay({
@@ -23,7 +25,7 @@ const ReadyPracticeButton = () => {
       _hover={{
         bg: theme.colors.button.sub.hover,
       }}
-      onClick={handleClick}
+      onClick={map ? handleClick : undefined}
     >
       練習モードで開始
     </Button>

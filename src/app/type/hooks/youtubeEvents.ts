@@ -1,10 +1,10 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
-import { YouTubeEvent } from "react-youtube";
 import { useCountRef, useGameUtilsRef, usePlayer, useProgress, useYTStatusRef } from "../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";
 import {
   useGameStateUtilsRef,
+  useMapStateRef,
   useSetNotifyState,
   useSetPlayingInputModeState,
   useSetSceneState,
@@ -15,6 +15,7 @@ import { useReadyInputModeStateRef } from "../atoms/storageAtoms";
 import { InputMode } from "../ts/type";
 import { useSendUserStats } from "./playing-hooks/sendUserStats";
 import { useTimerControls } from "./playing-hooks/timer-hooks/timer";
+import { useUpdateAllStatus } from "./playing-hooks/updateStatus";
 
 export const useYTPlayEvent = () => {
   const setScene = useSetSceneState();
@@ -30,8 +31,10 @@ export const useYTPlayEvent = () => {
   const readGameStateUtils = useGameStateUtilsRef();
   const readReadyInputMode = useReadyInputModeStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
+  const updateAllStatus = useUpdateAllStatus();
+  const readMap = useMapStateRef();
 
-  return async (event: YouTubeEvent) => {
+  return async () => {
     console.log("再生 1");
     const { scene, isYTStarted } = readGameStateUtils();
 
@@ -69,6 +72,12 @@ export const useYTPlayEvent = () => {
 
       const readyInputMode = readReadyInputMode();
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
+      if (scene === "practice") {
+        updateAllStatus({
+          count: readMap().mapData.length - 1,
+          updateType: "completed",
+        });
+      }
     }
 
     sendPlayCountStats();

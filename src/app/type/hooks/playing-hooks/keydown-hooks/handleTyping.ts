@@ -57,7 +57,7 @@ export const useTyping = () => {
         if (scene === "practice") {
           updateAllStatus({
             count: readMap().mapData.length - 1,
-            updateType: "lineUpdate",
+            updateType: "completed",
           });
         }
       }
