@@ -21,7 +21,7 @@ interface UseKeyReplayProps {
   lineResult: LineResultData;
 }
 
-const useKeyReplay = () => {
+const usePlayBackKey = () => {
   const setLineWord = useSetLineWordState();
 
   const inputModeChange = useInputModeChange();
@@ -102,7 +102,7 @@ const useKeyReplay = () => {
 };
 
 export const useReplay = () => {
-  const keyReplay = useKeyReplay();
+  const keyReplay = usePlayBackKey();
   const readLineResults = useLineResultsStateRef();
 
   const { readGameUtils, writeGameUtils } = useGameUtilsRef();
@@ -141,10 +141,10 @@ export const useLineReplayUpdate = () => {
   const { writeGameUtils } = useGameUtilsRef();
   const readLineResults = useLineResultsStateRef();
 
-  return (currentCount: number) => {
+  return (newCurrentCount: number) => {
     const lineResults = readLineResults();
 
-    const lineResult = lineResults[currentCount];
+    const lineResult = lineResults[newCurrentCount];
     const lineInputMode = lineResult.status!.mode;
     const speed = lineResult.status!.sp as YouTubeSpeed;
 

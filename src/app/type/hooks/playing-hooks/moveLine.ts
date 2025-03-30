@@ -23,7 +23,7 @@ export const useMoveLine = () => {
 
   const { pauseTimer } = useTimerControls();
   const readGameStateUtils = useGameStateUtilsRef();
-  const { readLineProgress, readTotalProgress } = useProgress();
+  const { readLineProgress } = useProgress();
 
   const movePrevLine = () => {
     const map = readMap();

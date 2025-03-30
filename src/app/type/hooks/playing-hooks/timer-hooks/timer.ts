@@ -28,7 +28,7 @@ import { useGetTime } from "../getYTTime";
 import { useUpdateLineResult } from "../updateLineResult";
 import { useLineUpdateStatus, useUpdateAllStatus } from "../updateStatus";
 import { useGetSeekLineCount } from "./getLineCountByTime";
-import { useLineReplayUpdate, useReplay } from "./replayHooks";
+import { useLineReplayUpdate, useReplay } from "./replay";
 
 const typeTicker = new Ticker();
 
@@ -68,7 +68,7 @@ export const useTimerControls = () => {
   return { startTimer, pauseTimer, setFrameRate };
 };
 
-export const useTimer = () => {
+const useTimer = () => {
   const { readPlayer } = usePlayer();
 
   const setCurrentTime = useSetCurrentTimeState();
@@ -225,7 +225,7 @@ export const useTimer = () => {
   };
 };
 
-export const useCalcLineResult = () => {
+const useCalcLineResult = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
 

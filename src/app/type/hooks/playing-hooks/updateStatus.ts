@@ -324,6 +324,7 @@ export const useUpdateAllStatus = () => {
       return newStatus;
     }
     const lineResults = readLineResults();
+    let totalTypeTime = 0;
 
     for (let i = 0; i <= count - 1; i++) {
       newStatus.score += (lineResults[i].status.p ?? 0) + (lineResults[i].status.tBonus ?? 0);
@@ -331,10 +332,12 @@ export const useUpdateAllStatus = () => {
       newStatus.miss += lineResults[i].status.lMiss ?? 0;
       newStatus.lost += lineResults[i].status.lLost ?? 0;
       newStatus.line -= lineResults[i].status.lType !== undefined ? 1 : 0;
+      if (lineResults[i].status.tTime) {
+        totalTypeTime = lineResults[i].status.tTime;
+      }
     }
 
     const lineResult = lineResults[count - 1];
-    const totalTypeTime = count > 1 ? lineResult.status.tTime ?? 0 : 0;
     newStatus.kpm = totalTypeTime ? Math.floor((newStatus.type / totalTypeTime) * 60) : 0;
     newStatus.rank = calcCurrentRank(newStatus.score);
 
