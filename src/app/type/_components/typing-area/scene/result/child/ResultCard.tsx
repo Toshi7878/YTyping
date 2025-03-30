@@ -80,7 +80,7 @@ function ResultCard({
           lineSpeed={lineSpeed}
         />
       </CardHeader>
-      <CardBody py={0} fontSize="md" className="word-font">
+      <CardBody py={2} fontSize="md" className="word-font">
         <ResultCardBody
           lineKanaWord={lineKanaWord}
           typeResult={lineResult.typeResult}

@@ -1,7 +1,7 @@
 import { TypeResult } from "@/app/type/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { Box, Text, useTheme } from "@chakra-ui/react";
+import { Box, Flex, Text, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
 
 interface ResultCardBodyProps {
@@ -16,7 +16,7 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
 
   let correctCount = 0;
   return (
-    <>
+    <Flex flexDirection="column" gap={2}>
       <Box className="kana-word">
         <Box>{lineKanaWord}</Box>
       </Box>
@@ -24,9 +24,9 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
         color={theme.colors.text.body}
         textTransform="uppercase"
         className="word-result outline-text"
-        letterSpacing="0.1em"
+        letterSpacing="0.15em"
       >
-        {typeResult.map((type: TypeResult, index: number) => {
+        {typeResult.map((type: TypeResult) => {
           if (type.is) {
             correctCount++;
           }
@@ -35,7 +35,7 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
 
           return (
             type.c && (
-              <CustomToolTip key={index} label={label} placement="top" fontSize="sm">
+              <CustomToolTip key={type.t} label={label} placement="top" fontSize="sm">
                 <Text
                   as="span"
                   className="typed"
@@ -60,7 +60,7 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
           {lostWord !== null ? lostWord : lineTypeWord}
         </Text>
       </Box>
-    </>
+    </Flex>
   );
 }
 

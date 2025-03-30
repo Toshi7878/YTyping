@@ -25,7 +25,7 @@ const PlayingCenter = ({ flex }: PlayingCenterProps) => {
       align="start"
       minH={CARD_BODY_MIN_HEIGHT}
       justifyContent="space-between"
-      style={{ userSelect: "none", cursor: "none" }}
+      userSelect="none"
       id="typing_scene"
       onTouchStart={() => {
         const { skip } = readGameUtils();

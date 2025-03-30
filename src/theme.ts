@@ -211,7 +211,6 @@ export default extendTheme({
           },
           footer: {
             py: 0,
-            ml: 1,
             fontWeight: "semibold",
             fontSize: "lg",
           },

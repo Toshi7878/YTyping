@@ -47,7 +47,7 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
         backgroundColor={`${theme.colors.background.body}dd`}
       >
         <DrawerHeader fontSize="md" py={2} color={theme.colors.text.body}>
-          タイピングリザルト
+          {sceneGroup === "End" ? "詳細リザルト" : "練習リザルト"}
         </DrawerHeader>
         <DrawerCloseButton tabIndex={-1} autoFocus={false} mr={5} color={theme.colors.text.body} />
         <DrawerBody overflowY="auto" position="relative" height="100%" pb={14}>
