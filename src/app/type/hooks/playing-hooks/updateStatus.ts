@@ -332,7 +332,12 @@ export const useUpdateAllStatus = () => {
       newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
       newStatus.miss += lineResult.status.lMiss ?? 0;
       newStatus.lost += lineResult.status.lLost ?? 0;
-      newStatus.line -= lineResult.status.lType !== undefined ? 1 : 0;
+
+      if (scene === "practice") {
+        newStatus.line -= lineResult.status.lLost === 0 ? 1 : 0;
+      } else if (scene === "replay") {
+        newStatus.line -= lineResult.status.lType !== undefined ? 1 : 0;
+      }
 
       const typeResultLength = lineResult.typeResult.length;
       if (typeResultLength) {
