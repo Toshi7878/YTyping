@@ -41,9 +41,9 @@ function ResultCardFooter({
         label={`合計ポイント: ${Number(point) + Number(tBonus)}${scoreCount ? ` スコア: ${scoreCount}` : ""}`}
         placement="top"
       >
-        <Badge colorScheme="green" variant="solid" cursor="pointer" px={2} py={1} borderRadius="md">
+        <Badge colorScheme="green" variant="solid" fontSize="sm" cursor="pointer" px={2} py={1} borderRadius="md">
           ポイント: {point}
-          {tBonus ? `+${tBonus}` : ""} / {maxLinePoint}
+          {tBonus ? `+${tBonus}` : ""}
         </Badge>
       </CustomToolTip>
     </Flex>
