@@ -50,7 +50,7 @@ export const useMoveLine = () => {
 
     readPlayer().seekTo(prevTime, true);
     setNotify(Symbol(`◁`));
-    drawerSelectColorChange(newLineSelectIndex);
+    drawerSelectColorChange(newCount);
     scrollToCard(newLineSelectIndex);
     readLineProgress().value = prevTime - map.mapData[newCount - 1].time;
   };
@@ -88,7 +88,7 @@ export const useMoveLine = () => {
 
     readPlayer().seekTo(nextTime, true);
     setNotify(Symbol(`▷`));
-    drawerSelectColorChange(newLineSelectIndex);
+    drawerSelectColorChange(newCount);
     scrollToCard(newLineSelectIndex);
     readLineProgress().value = nextTime - map.mapData[newCount - 1].time;
   };
