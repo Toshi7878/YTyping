@@ -327,13 +327,14 @@ export const useUpdateAllStatus = () => {
     let totalTypeTime = 0;
 
     for (let i = 0; i <= count - 1; i++) {
-      newStatus.score += (lineResults[i].status.p ?? 0) + (lineResults[i].status.tBonus ?? 0);
-      newStatus.type += lineResults[i].status.lType ?? 0;
-      newStatus.miss += lineResults[i].status.lMiss ?? 0;
-      newStatus.lost += lineResults[i].status.lLost ?? 0;
-      newStatus.line -= lineResults[i].status.lType !== undefined ? 1 : 0;
-      if (lineResults[i].status.tTime) {
-        totalTypeTime = lineResults[i].status.tTime;
+      const lineResult = lineResults[i];
+      newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
+      newStatus.type += lineResult.status.lType ?? 0;
+      newStatus.miss += lineResult.status.lMiss ?? 0;
+      newStatus.lost += lineResult.status.lLost ?? 0;
+      newStatus.line -= lineResult.status.lType !== undefined ? 1 : 0;
+      if (lineResult.status.tTime) {
+        totalTypeTime += lineResult.status.tTime;
       }
     }
 
