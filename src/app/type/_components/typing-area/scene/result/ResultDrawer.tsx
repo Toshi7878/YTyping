@@ -37,7 +37,7 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
       trapFocus={false}
       blockScrollOnMount={false}
       onClose={onClose}
-      size={{ base: "xs", xl: "sm" }}
+      size={scene === "practice" ? "xs" : "sm"}
       variant="alwaysOpen"
     >
       <DrawerOverlay backgroundColor="transparent" onClick={onClose} display={isOpen ? "block" : "none"} />
@@ -54,17 +54,6 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
           {memoizedResultLineList}
         </DrawerBody>
       </DrawerContent>
-      <style>
-        {`
-        .result-line-select-outline {
-          outline:3px solid ${theme.colors.primary.main};
-        }
-
-        .result-line-hover:hover {
-          outline:1px solid ${theme.colors.text.body};
-        }
-        `}
-      </style>
     </Drawer>
   );
 }

@@ -187,6 +187,7 @@ export default extendTheme({
       variants: {
         practice: {
           container: {
+            zIndex: 1,
             py: 4,
             pl: 1,
             mb: 4,

@@ -104,6 +104,7 @@ function ResultCard({
           lMiss={lMiss!}
           kpm={kpm!}
           rkpm={rkpm!}
+          flexDirection="column"
         />
       </CardFooter>
     </Card>

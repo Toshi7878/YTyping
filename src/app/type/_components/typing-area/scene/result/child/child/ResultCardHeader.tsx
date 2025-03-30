@@ -42,8 +42,8 @@ function ResultCardHeader({
         |
       </Text>
       <CustomToolTip label={`要求打鍵速度${inputModeText}`} {...tooltipProps}>
-        <Text as="span" className="line-kpm" _hover={hoverStyle}>
-          {lineKpm.toFixed(0)}kpm {lineSpeed > 1 && <>{`(${lineSpeed.toFixed(2)}倍速)`}</>}
+        <Text as="span" className="line-kpm" fontWeight="bold" _hover={hoverStyle}>
+          {lineKpm.toFixed(0)}kpm {lineSpeed > 1 && `(${lineSpeed.toFixed(2)}倍速)`}
         </Text>
       </CustomToolTip>
       <Text as="span" mx={2}>
