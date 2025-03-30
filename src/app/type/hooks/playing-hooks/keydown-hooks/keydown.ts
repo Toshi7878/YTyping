@@ -9,13 +9,13 @@ import {
   useUserTypingOptionsStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/consts";
+import { useChangePlayMode } from "../changePlayScene";
 import { useGamePause } from "../gamePause";
 import { useInputModeChange } from "../inputModeChange";
 import { useMoveLine } from "../moveLine";
 import { usePressSkip } from "../pressSkip";
 import { useRetry } from "../retry";
 import { useToggleLineList } from "../toggleLineList";
-import { useChangePlayMode } from "../useChangePlayMode";
 import { useTyping } from "./handleTyping";
 
 export const useHandleKeydown = () => {
