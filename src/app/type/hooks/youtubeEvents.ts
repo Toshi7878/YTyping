@@ -75,7 +75,7 @@ export const useYTPlayEvent = () => {
       if (scene === "practice") {
         updateAllStatus({
           count: readMap().mapData.length - 1,
-          updateType: "completed",
+          updateType: "lineUpdate",
         });
       }
     }
