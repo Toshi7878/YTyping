@@ -9,8 +9,8 @@ import PlayingBottom from "./scene/child/PlayingBottom";
 import PlayingTop from "./scene/child/PlayingTop";
 import End from "./scene/End";
 import Playing from "./scene/Playing";
-import PracticeLineCard from "./scene/playing-child/PracticeLineCard";
 import Ready from "./scene/Ready";
+import PracticeLineCard from "./scene/result/child/PracticeLineCard";
 import ResultDrawer from "./scene/result/ResultDrawer";
 
 interface TypingCardBodyProps {

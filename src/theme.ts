@@ -183,6 +183,40 @@ export default extendTheme({
         },
       },
     },
+    Card: {
+      variants: {
+        practice: {
+          container: {
+            py: 4,
+            pl: 1,
+            mb: 4,
+            gap: 1,
+            userSelect: "none",
+            bg: "background.card",
+            color: "text.body",
+            outlineColor: "border.card",
+            cursor: "pointer",
+            boxShadow: "lg",
+            _hover: {
+              outline: `1px solid ${darkTheme.colors.text.body}`,
+            },
+          },
+          header: {
+            py: 0,
+          },
+          body: {
+            py: 0,
+            fontSize: "md",
+          },
+          footer: {
+            py: 0,
+            ml: 1,
+            fontWeight: "semibold",
+            fontSize: "lg",
+          },
+        },
+      },
+    },
     Kbd: {
       variants: {
         typeArea: {

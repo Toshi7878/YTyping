@@ -4,7 +4,7 @@ import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/type
 import { LineData, LineResultData } from "@/app/type/ts/type";
 import { CHAR_POINT } from "@/lib/parseMap";
 import { ThemeColors } from "@/types";
-import { Card, CardBody, CardFooter, CardHeader, useTheme } from "@chakra-ui/react";
+import { Card, CardBody, CardFooter, CardHeader, Divider, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
 import ResultCardBody from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
@@ -61,21 +61,18 @@ function ResultCard({
   return (
     <Card
       key={index}
-      p={4}
-      mb={4}
-      gap={1}
       ref={(el) => {
         if (el) cardRefs.current![lineCount] = el;
       }}
+      variant="practice"
       data-seek-time={seekTime}
       data-line-number={lineNumber}
       data-count={index}
-      size="sm"
-      boxShadow="md"
-      cursor="pointer"
-      bg={theme.colors.background.card}
-      color={theme.colors.text.body}
-      className={`${selectIndex === lineNumber ? "result-line-select-outline" : "result-line-hover"}`}
+      style={{
+        ...(selectIndex === lineNumber && {
+          outline: `3px solid ${theme.colors.primary.main}`,
+        }),
+      }}
       onClick={() => handleCardClick(lineNumber)}
     >
       <CardHeader py={0}>
@@ -97,7 +94,8 @@ function ResultCard({
           lostWord={lostWord!}
         />
       </CardBody>
-      <CardFooter py={0} ml={1} fontSize="lg" fontWeight="semibold">
+      <Divider width="88%" mx="auto" />
+      <CardFooter py={0} fontSize="lg" fontWeight="semibold">
         <ResultCardFooter
           scoreCount={scoreCount}
           point={point!}

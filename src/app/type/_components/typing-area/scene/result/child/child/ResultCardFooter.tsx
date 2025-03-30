@@ -1,9 +1,9 @@
 "use client";
 
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { Box, Stack, Text, useTheme } from "@chakra-ui/react";
+import { Badge, Flex, FlexProps, HStack } from "@chakra-ui/react";
 import { memo } from "react";
+
 interface ResultCardFooterProps {
   scoreCount?: number;
   point: number;
@@ -22,33 +22,31 @@ function ResultCardFooter({
   lMiss,
   kpm,
   rkpm,
-}: ResultCardFooterProps) {
-  const theme: ThemeColors = useTheme();
-
+  ...props
+}: ResultCardFooterProps & FlexProps) {
   return (
-    <Stack>
-      <Box>
-        miss: {lMiss},{" "}
-        <CustomToolTip label={`rkpm:${rkpm}`} placement="top" fontSize="sm">
-          <Text as="span" _hover={{ bg: `${theme.colors.border.card}30` }}>
-            kpm: {kpm}
-          </Text>
+    <Flex width="100%" justifyContent="space-between" alignItems="center" p={2} {...props}>
+      <HStack spacing={2}>
+        <Badge colorScheme="red" variant="subtle" size="md" fontSize="sm" px={1.5} py={0.5}>
+          ミス: {lMiss}
+        </Badge>
+        <CustomToolTip label={`rkpm: ${rkpm}`} placement="top">
+          <Badge colorScheme="blue" variant="subtle" cursor="pointer" fontSize="sm" px={1.5} py={0.5}>
+            KPM: {kpm}
+          </Badge>
         </CustomToolTip>
-        ,{" "}
-        <CustomToolTip
-          label={`sumPoint: ${Number(point) + Number(tBonus)}${
-            scoreCount ? ` Score: ${scoreCount}` : ""
-          }`}
-          placement="top"
-          fontSize="sm"
-        >
-          <Text as="span" _hover={{ bg: `${theme.colors.border.card}30` }}>
-            point: {point}
-            {tBonus ? `+${tBonus}` : ""} / {maxLinePoint}
-          </Text>
-        </CustomToolTip>
-      </Box>
-    </Stack>
+      </HStack>
+
+      <CustomToolTip
+        label={`合計ポイント: ${Number(point) + Number(tBonus)}${scoreCount ? ` スコア: ${scoreCount}` : ""}`}
+        placement="top"
+      >
+        <Badge colorScheme="green" variant="solid" cursor="pointer" px={2} py={1} borderRadius="md">
+          ポイント: {point}
+          {tBonus ? `+${tBonus}` : ""} / {maxLinePoint}
+        </Badge>
+      </CustomToolTip>
+    </Flex>
   );
 }
 

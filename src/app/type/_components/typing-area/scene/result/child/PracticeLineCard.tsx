@@ -9,11 +9,11 @@ import { useMoveLine } from "@/app/type/hooks/playing-hooks/moveLine";
 import { useInteractJS } from "@/app/type/hooks/useInteractJS";
 import { CHAR_POINT } from "@/lib/parseMap";
 import { ThemeColors } from "@/types";
-import { Card, CardBody, CardFooter, CardHeader, useTheme } from "@chakra-ui/react";
+import { Card, CardBody, CardFooter, CardHeader, Divider, useTheme } from "@chakra-ui/react";
 import { useState } from "react";
-import ResultCardBody from "../result/child/child/ResultCardBody";
-import ResultCardFooter from "../result/child/child/ResultCardFooter";
-import ResultCardHeader from "../result/child/child/ResultCardHeader";
+import ResultCardBody from "./child/ResultCardBody";
+import ResultCardFooter from "./child/ResultCardFooter";
+import ResultCardHeader from "./child/ResultCardHeader";
 
 const PracticeLineCard = () => {
   const map = useMapState();
@@ -53,21 +53,11 @@ const PracticeLineCard = () => {
   return (
     <Card
       ref={interact?.ref}
-      py={4}
-      pl={1}
-      mb={4}
-      gap={1}
-      zIndex={100}
+      variant="practice"
+      outline={"1px solid"}
       style={{
         ...interact?.style,
         height: "fit-content",
-      }}
-      bg={theme.colors.background.card}
-      color={theme.colors.text.body}
-      outline={`1px solid ${theme.colors.border.card}`}
-      boxShadow="lg"
-      _hover={{
-        bg: theme.colors.button.sub,
       }}
       cursor={isDragging ? "move" : "pointer"}
       onMouseDown={() => setIsDragging(false)}
@@ -79,7 +69,7 @@ const PracticeLineCard = () => {
         }
       }}
     >
-      <CardHeader py={0}>
+      <CardHeader>
         <ResultCardHeader
           index={index}
           lineCount={lineSelectIndex}
@@ -90,7 +80,7 @@ const PracticeLineCard = () => {
           lineSpeed={lineSpeed}
         />
       </CardHeader>
-      <CardBody py={0} fontSize="md" className="word-font">
+      <CardBody className="word-font">
         <ResultCardBody
           lineKanaWord={lineKanaWord}
           typeResult={lineResult.typeResult}
@@ -98,7 +88,8 @@ const PracticeLineCard = () => {
           lostWord={lostWord!}
         />
       </CardBody>
-      <CardFooter py={0} ml={1} fontWeight="semibold" fontSize="lg">
+      <Divider width="88%" mx="auto" />
+      <CardFooter>
         <ResultCardFooter
           point={point!}
           tBonus={tBonus!}
