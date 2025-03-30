@@ -1,39 +1,7 @@
 "use client";
 
-import CustomCard from "@/components/custom-ui/CustomCard";
-import preMidLinks from "@/public/images/manual/premid/premid-link.png";
-import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
-import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
 import { Image } from "@chakra-ui/next-js";
-import {
-  Box,
-  CardBody,
-  Divider,
-  Heading,
-  Link,
-  ListItem,
-  OrderedList,
-  Text,
-} from "@chakra-ui/react";
-
-const browserLinks = {
-  chrome: {
-    url: "https://chromewebstore.google.com/detail/premid/agjnjboanicjcpenljmaaigopkgdnihi",
-    text: "PreMiD - Chrome ウェブストア",
-  },
-  firefox: {
-    url: "https://premid.app/downloads",
-    text: "PreMiD Downloads",
-  },
-  edge: {
-    url: "https://microsoftedge.microsoft.com/addons/detail/premid/hkchpjlnddoppadcbefbpgmgaeidkkkm",
-    text: "PreMiD - Microsoft Edge アドオン",
-  },
-  safari: {
-    url: "https://premid.app/downloads",
-    text: "PreMiD Downloads",
-  },
-};
+import { Box, CardBody, Divider, Heading, Link, ListItem, OrderedList, Text } from "@chakra-ui/react";
 
 function detectBrowserType() {
   if (typeof window === "undefined") return "chrome";
@@ -82,15 +50,9 @@ export default function PreMidManual() {
             <Divider my={4} />
 
             <ListItem>
-              <Text fontWeight="bold">
-                YTypingのプレゼンス設定をPreMiD Storeからインストールする
-              </Text>
+              <Text fontWeight="bold">YTypingのプレゼンス設定をPreMiD Storeからインストールする</Text>
               <Text mt={2}>
-                <Link
-                  href="https://premid.app/store/presences/YTyping"
-                  color="primary.main"
-                  isExternal
-                >
+                <Link href="https://premid.app/store/presences/YTyping" color="primary.main" isExternal>
                   YTyping - PreMiD Store
                 </Link>
                 からYTypingのプレゼンス設定を追加します。
