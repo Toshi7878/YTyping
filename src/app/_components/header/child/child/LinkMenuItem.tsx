@@ -1,5 +1,5 @@
-import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { ThemeColors } from "@/types";
+import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link, MenuItem, useTheme } from "@chakra-ui/react";
 
 interface LinkMenuItemProps {

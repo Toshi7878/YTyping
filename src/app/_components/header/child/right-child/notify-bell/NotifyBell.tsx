@@ -1,9 +1,9 @@
 "use client";
 import CustomDrawerContent from "@/components/custom-ui/CustomDrawerContent";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useNewNotificationCheckQuery } from "@/lib/global-hooks/query/notificationRouterQuery";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
+import { useNewNotificationCheckQuery } from "@/util/global-hooks/query/notificationRouterQuery";
 import { Box, Drawer, useDisclosure, useTheme } from "@chakra-ui/react";
 import { Bell, BellDot } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -41,13 +41,7 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
   }, [router, data]);
   return (
     <>
-      <CustomToolTip
-        key={isNewBadge ? "new" : "old"}
-        placement="bottom"
-        label="通知"
-        fontSize="xs"
-        openDelay={600}
-      >
+      <CustomToolTip key={isNewBadge ? "new" : "old"} placement="bottom" label="通知" fontSize="xs" openDelay={600}>
         <Box color={theme.colors.text.header.normal} cursor="pointer" onClick={notificationOpen}>
           <Box
             position="relative"
@@ -59,11 +53,7 @@ export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
             }}
             p={2}
           >
-            {isNewBadge ? (
-              <BellDot size={18} strokeWidth={2.5} />
-            ) : (
-              <Bell size={18} strokeWidth={2.5} />
-            )}
+            {isNewBadge ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
           </Box>
         </Box>
       </CustomToolTip>

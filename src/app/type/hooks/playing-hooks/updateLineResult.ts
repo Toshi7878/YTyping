@@ -1,4 +1,4 @@
-import { CHAR_POINT, MISS_PENALTY } from "@/lib/parseMap";
+import { CHAR_POINT, MISS_PENALTY } from "@/util/parseMap";
 import { useCountRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {

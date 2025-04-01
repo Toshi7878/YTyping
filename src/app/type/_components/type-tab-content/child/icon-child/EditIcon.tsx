@@ -1,7 +1,7 @@
 import { useMapInfoRef } from "@/app/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { ThemeColors } from "@/types";
+import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
@@ -20,9 +20,7 @@ const EditIcon = () => {
   const creatorId = readMapInfo()?.creator_id;
   const userId = session?.user.id;
 
-  const tooltipLabel = `譜面のEditページに移動${
-    Number(userId) !== creatorId && role === "USER" ? "(閲覧のみ)" : ""
-  }`;
+  const tooltipLabel = `譜面のEditページに移動${Number(userId) !== creatorId && role === "USER" ? "(閲覧のみ)" : ""}`;
   return (
     <CustomToolTip label={tooltipLabel} placement="top" right={1} top={1}>
       <Box height="60px" display="flex" alignItems="center">

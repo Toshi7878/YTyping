@@ -4,9 +4,9 @@ import { Card, Table, TableContainer, Tbody, Th, Thead, Tr, useTheme } from "@ch
 
 import "@/app/edit/style/table.scss";
 import { db } from "@/lib/db";
-import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
 import { IndexDBOption, ThemeColors } from "@/types";
 import { MapLine } from "@/types/map";
+import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -103,11 +103,7 @@ export default function EditTable() {
           <Table size="sm" variant="simple">
             <Thead>
               <Tr>
-                <Th
-                  width="5%"
-                  borderRight="1px solid"
-                  borderRightColor={`${theme.colors.border.editorTable.right}`}
-                >
+                <Th width="5%" borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
                   Time
                 </Th>
                 <Th borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>

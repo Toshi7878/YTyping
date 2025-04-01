@@ -1,6 +1,6 @@
 import { useGameStateUtilsRef, useLineWordStateRef } from "@/app/type/atoms/stateAtoms";
 import { CODE_TO_KANA, KEY_TO_KANA } from "../../../../../config/consts/kanaKeyMap";
-import { CHAR_POINT } from "../../../../../lib/parseMap";
+import { CHAR_POINT } from "../../../../../util/parseMap";
 import { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../../ts/type";
 
 const KEYBOARD_CHARS = [

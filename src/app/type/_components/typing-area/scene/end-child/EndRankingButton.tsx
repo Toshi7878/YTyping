@@ -2,8 +2,8 @@
 
 import { useSetTabIndexState } from "@/app/type/atoms/stateAtoms";
 import { useResultData } from "@/app/type/hooks/end/useResultData";
-import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
+import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -68,17 +68,12 @@ const EndUploadButton = ({
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               スコア未更新
             </AlertDialogHeader>
-            <AlertDialogBody>
-              ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？
-            </AlertDialogBody>
+            <AlertDialogBody>ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？</AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 キャンセル
               </Button>
-              <AlertDialogButton
-                onClick={() => sendResult.mutate(resultData())}
-                isLoading={sendResult.isPending}
-              />
+              <AlertDialogButton onClick={() => sendResult.mutate(resultData())} isLoading={sendResult.isPending} />
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>

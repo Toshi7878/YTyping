@@ -1,7 +1,7 @@
 import { useYTStatusRef } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useMapState } from "@/app/type/atoms/stateAtoms";
-import { formatTime } from "@/app/type/ts/scene-ts/playing/formatTime";
+import { formatTime } from "@/util/formatTime";
 import { Text } from "@chakra-ui/react";
 
 const VideoDurationTimeText = () => {

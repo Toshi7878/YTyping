@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import { useUsersResultInfiniteQuery } from "../../../lib/global-hooks/query/useUsersResultInfiniteQuery";
+import { useUsersResultInfiniteQuery } from "../../../util/global-hooks/query/useUsersResultInfiniteQuery";
 import ResultCard from "./result-card/ResultCard";
 import ResultCardLayout from "./result-card/ResultCardLayout";
 import ResultSkeletonCard from "./result-card/ResultSkeletonCard";
@@ -43,9 +43,7 @@ function UsersResultList() {
           threshold={2000} // スクロールの閾値を追加
         >
           <ResultCardLayout>
-            {data?.pages.map((page) =>
-              page.map((result) => <ResultCard key={result.id} result={result} />)
-            )}
+            {data?.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
           </ResultCardLayout>
         </InfiniteScroll>
       )}

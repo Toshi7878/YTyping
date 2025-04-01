@@ -7,8 +7,8 @@ import {
   NUM_LIST,
   STRICT_SYMBOL_LIST,
 } from "@/config/consts/charList";
-import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
+import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useSession } from "next-auth/react";
 import { useWordConvertOptionStateRef } from "../../atoms/storageAtoms";
 import { ConvertOptionsType } from "../../ts/type";

@@ -4,8 +4,8 @@ import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Button, UseDisclosureReturn, useTheme } from "@chakra-ui/react";
 
-import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { CreateMapBackUpInfo } from "@/types/global-types";
+import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 
 interface CreateMapBackUpButtonProps {

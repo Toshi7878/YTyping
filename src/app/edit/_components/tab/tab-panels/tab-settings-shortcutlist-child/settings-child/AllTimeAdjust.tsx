@@ -4,8 +4,8 @@ import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
 import useTimeValidate from "@/app/edit/hooks/utils/useTimeValidate";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { ThemeColors } from "@/types";
+import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { Box, Button, FormLabel, HStack, Input, useTheme } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -89,12 +89,7 @@ export default function AllTimeAdjust() {
             }}
           />
 
-          <Button
-            colorScheme="yellow"
-            bg={theme.colors.background.body}
-            variant={"outline"}
-            onClick={allTimeAdjust}
-          >
+          <Button colorScheme="yellow" bg={theme.colors.background.body} variant={"outline"} onClick={allTimeAdjust}>
             実行
           </Button>
         </HStack>

@@ -3,8 +3,8 @@ import { Card, CardBody, Flex, HStack, Stack, useTheme } from "@chakra-ui/react"
 import { useMapCreatorIdState, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
 import { useUploadMap } from "@/app/edit/hooks/utils/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
-import { useGenerateMapInfoQuery } from "@/lib/global-hooks/query/edit/useGenerateMapInfoQuery";
 import { ThemeColors } from "@/types";
+import { useGenerateMapInfoQuery } from "@/util/global-hooks/query/edit/useGenerateMapInfoQuery";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useFormState } from "react-dom";

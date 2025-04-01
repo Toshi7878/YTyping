@@ -2,8 +2,8 @@
 import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/type/ts/type";
-import { CHAR_POINT, ParseMap } from "@/lib/parseMap";
 import { ThemeColors } from "@/types";
+import { CHAR_POINT, ParseMap } from "@/util/parseMap";
 import { Card, CardBody, CardFooter, CardHeader, Divider, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
 import ResultCardBody from "./child/ResultCardBody";

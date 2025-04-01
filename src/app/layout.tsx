@@ -7,7 +7,7 @@ import { fonts } from "../lib/fonts";
 
 import type { Metadata } from "next";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
@@ -39,7 +39,7 @@ export default async function RootLayout({
       <head>
         <meta charSet="UTF-8" />
       </head>
-      <body className={cn(fonts.rubik.variable, "no-ligatures ")}>
+      <body className={cn(fonts.rubik.variable, "no-ligatures")}>
         <ThemeProvider colorMode={colorMode?.value}>
           <SessionProvider session={session}>
             <TRPCProvider>

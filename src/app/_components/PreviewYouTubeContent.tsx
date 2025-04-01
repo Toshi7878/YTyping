@@ -1,15 +1,11 @@
 "use client";
 
 import { PREVIEW_YOUTUBE_HEIGHT, PREVIEW_YOUTUBE_WIDTH } from "@/config/consts/globalConst";
-import { usePreviewYouTubeKeyDown } from "@/lib/global-hooks/usePreviewYouTubeKeyDown";
+import { usePreviewYouTubeKeyDown } from "@/util/global-hooks/usePreviewYouTubeKeyDown";
 import { Box, useBreakpointValue } from "@chakra-ui/react";
 import { useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import {
-  usePreviewVideoState,
-  useSetPreviewPlayerState,
-  useVolumeState,
-} from "../../lib/global-atoms/globalAtoms";
+import { usePreviewVideoState, useSetPreviewPlayerState, useVolumeState } from "../../lib/global-atoms/globalAtoms";
 
 const PreviewYouTubeContent = function YouTubeContent() {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();

@@ -1,7 +1,7 @@
 import { useSetUserOptionsAtom } from "@/lib/global-atoms/globalAtoms";
-import { useDebounce } from "@/lib/global-hooks/useDebounce";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
+import { useDebounce } from "@/util/global-hooks/useDebounce";
 import { userOptionSchema } from "@/validator/schema";
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,8 +26,7 @@ export const OptionSettingForm = ({ userOptions }: OptionSettingFromProps) => {
   } = useForm({
     resolver: zodResolver(userOptionSchema),
     defaultValues: {
-      custom_user_active_state:
-        userOptions?.custom_user_active_state ?? ("ONLINE" as $Enums.custom_user_active_state),
+      custom_user_active_state: userOptions?.custom_user_active_state ?? ("ONLINE" as $Enums.custom_user_active_state),
     },
   });
   const sendUserOption = clientApi.userOption.update.useMutation();
@@ -39,13 +38,7 @@ export const OptionSettingForm = ({ userOptions }: OptionSettingFromProps) => {
 
   return (
     <FormControl as="form" gap={3} display="flex" flexDirection="column">
-      <FormLabel
-        mb={0}
-        display="flex"
-        alignItems="center"
-        gap={2}
-        htmlFor="custom_user_active_state"
-      >
+      <FormLabel mb={0} display="flex" alignItems="center" gap={2} htmlFor="custom_user_active_state">
         オンライン状態
       </FormLabel>
       <Select

@@ -1,8 +1,8 @@
 "use client";
 import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
-import { useMapQuery } from "@/lib/global-hooks/query/mapRouterQuery";
-import { ParseMap } from "@/lib/parseMap";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
+import { ParseMap } from "@/util/parseMap";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";

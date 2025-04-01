@@ -1,6 +1,6 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useSceneState, useSetTypingStatusRankState } from "@/app/type/atoms/stateAtoms";
-import { useMapRankingQuery } from "@/lib/global-hooks/query/mapRankingRouterQuery";
+import { useMapRankingQuery } from "@/util/global-hooks/query/mapRankingRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";

@@ -3,22 +3,12 @@ import NotificationMapCardRightInfo from "@/components/map-card-notification/chi
 import NotificationMapCard from "@/components/map-card-notification/NotificationMapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import DateDistanceText from "@/components/share-components/text/DateDistanceText";
-import {
-  NOTIFICATION_MAP_THUBNAIL_HEIGHT,
-  NOTIFICATION_MAP_THUBNAIL_WIDTH,
-} from "@/config/consts/globalConst";
+import { NOTIFICATION_MAP_THUBNAIL_HEIGHT, NOTIFICATION_MAP_THUBNAIL_WIDTH } from "@/config/consts/globalConst";
 import { ThemeColors } from "@/types";
 import { useInView } from "react-intersection-observer";
 
-import { useInfiniteNotificationsQuery } from "@/lib/global-hooks/query/notificationRouterQuery";
-import {
-  Box,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerHeader,
-  Spinner,
-  useTheme,
-} from "@chakra-ui/react";
+import { useInfiniteNotificationsQuery } from "@/util/global-hooks/query/notificationRouterQuery";
+import { Box, DrawerBody, DrawerCloseButton, DrawerHeader, Spinner, useTheme } from "@chakra-ui/react";
 import { useEffect } from "react";
 
 const NotifyDrawerInnerContent = () => {
@@ -26,8 +16,7 @@ const NotifyDrawerInnerContent = () => {
     threshold: 0.8,
   });
 
-  const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } =
-    useInfiniteNotificationsQuery();
+  const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteNotificationsQuery();
 
   useEffect(() => {
     if (inView && hasNextPage) {

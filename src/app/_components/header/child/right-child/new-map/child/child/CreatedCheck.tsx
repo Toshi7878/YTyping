@@ -3,7 +3,7 @@ import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapCard from "@/components/map-card/MapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { useGetCreatedVideoIdMapListQuery } from "@/lib/global-hooks/query/mapRouterQuery";
+import { useGetCreatedVideoIdMapListQuery } from "@/util/global-hooks/query/mapRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
 
 interface CreatedCheckProps {

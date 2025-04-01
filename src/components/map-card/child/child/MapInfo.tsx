@@ -1,8 +1,8 @@
 "use client";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
+import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Flex, Stack, useTheme } from "@chakra-ui/react";
 import MapBadges from "./MapBadgesLayout";
@@ -27,9 +27,7 @@ function MapInfo({ map }: MapInfoProps) {
     >
       <Flex direction="column" gap={1}>
         <CustomToolTip
-          label={`${map.title} / ${map.artist_name}${
-            map.music_source ? `【${map.music_source}】` : ""
-          }`}
+          label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
           placement="top"
           right={24}
         >
@@ -61,11 +59,7 @@ function MapInfo({ map }: MapInfoProps) {
           {map.music_source ? `【${map.music_source}】` : "\u00A0"}
         </Box>
       </Flex>
-      <Stack
-        justifyContent="space-between"
-        alignItems="baseline"
-        flexDirection={{ base: "row", lg: "column" }}
-      >
+      <Stack justifyContent="space-between" alignItems="baseline" flexDirection={{ base: "row", lg: "column" }}>
         <MapCreateUser map={map} />
         <MapBadges map={map} />
       </Stack>

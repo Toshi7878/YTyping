@@ -1,8 +1,8 @@
 import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/type/atoms/stateAtoms";
-import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
+import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -212,9 +212,7 @@ const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
             設定のリセット
           </AlertDialogHeader>
-          <AlertDialogBody>
-            すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。
-          </AlertDialogBody>
+          <AlertDialogBody>すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。</AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
               キャンセル

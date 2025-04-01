@@ -1,7 +1,7 @@
 import { ThemeColors } from "@/types";
 
 import { leftLink, leftMenuItem } from "@/config/headerNav";
-import { useLinkClick } from "@/lib/global-hooks/useLinkClick";
+import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Button, Menu, MenuButton, MenuList, useTheme } from "@chakra-ui/react";
 import LinkMenuItem from "../child/LinkMenuItem";

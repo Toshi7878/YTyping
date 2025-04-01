@@ -1,7 +1,7 @@
-import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
-import { useDebounce } from "@/lib/global-hooks/useDebounce";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
+import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useDebounce } from "@/util/global-hooks/useDebounce";
 import { nameSchema } from "@/validator/schema";
 import { Button, FormControl, FormLabel, Input, Spinner, Text, useTheme } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";

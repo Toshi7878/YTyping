@@ -3,13 +3,10 @@ import ActiveUserMapCard from "@/components/map-card-notification/ActiveUserMapC
 import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import {
-  ACTIVE_USER_MAP_THUBNAIL_HEIGHT,
-  ACTIVE_USER_MAP_THUBNAIL_WIDTH,
-} from "@/config/consts/globalConst";
+import { ACTIVE_USER_MAP_THUBNAIL_HEIGHT, ACTIVE_USER_MAP_THUBNAIL_WIDTH } from "@/config/consts/globalConst";
 import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
-import { useGetUserPlayingMapsQuery } from "@/lib/global-hooks/query/activeUserRouterQuery";
 import { ThemeColors } from "@/types";
+import { useGetUserPlayingMapsQuery } from "@/util/global-hooks/query/activeUserRouterQuery";
 import { Link } from "@chakra-ui/next-js";
 import { Badge, Flex, Table, Tbody, Td, Text, Thead, Tr, useTheme } from "@chakra-ui/react";
 

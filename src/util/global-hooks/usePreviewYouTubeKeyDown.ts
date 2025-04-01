@@ -1,5 +1,5 @@
 import { RESET } from "jotai/utils";
-import { useSetPreviewVideoState } from "../global-atoms/globalAtoms";
+import { useSetPreviewVideoState } from "../../lib/global-atoms/globalAtoms";
 
 export const usePreviewYouTubeKeyDown = () => {
   const setPreviewVideo = useSetPreviewVideoState();

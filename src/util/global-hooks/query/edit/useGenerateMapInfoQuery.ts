@@ -4,8 +4,8 @@ import {
   useSetMapSourceState,
   useSetMapTitleState,
 } from "@/app/edit/atoms/stateAtoms";
-import { useCustomToast } from "@/lib/global-hooks/useCustomToast";
 import { clientApi } from "@/trpc/client-api";
+import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
