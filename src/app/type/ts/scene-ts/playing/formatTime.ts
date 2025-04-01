@@ -1,7 +1,16 @@
-export const formatTime = (time: number): string => {
-  const HH = Math.floor(time / 3600);
-  const MM = ("00" + Math.floor((time % 3600) / 60)).slice(-2);
-  const SS = ("00" + Math.floor(time % 60)).slice(-2);
+export const formatTime = (totalSeconds: number): string => {
+  // 負の値や小数点を処理するために Math.abs と Math.floor を使用
+  const absSeconds = Math.abs(Math.floor(totalSeconds));
 
-  return HH > 0 ? `${HH}:${MM}:${SS}` : `${MM}:${SS}`;
+  const hours = Math.floor(absSeconds / 3600);
+  const minutes = Math.floor((absSeconds % 3600) / 60);
+  const seconds = absSeconds % 60;
+
+  // パディング関数を使用して読みやすくする
+  const padZero = (num: number): string => num.toString().padStart(2, "0");
+
+  const MM = padZero(minutes);
+  const SS = padZero(seconds);
+
+  return hours > 0 ? `${hours}:${MM}:${SS}` : `${MM}:${SS}`;
 };
