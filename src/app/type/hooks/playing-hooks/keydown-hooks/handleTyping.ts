@@ -1,5 +1,5 @@
 import { useGameStateUtilsRef, useMapStateRef, useSetLineWordState } from "@/app/type/atoms/stateAtoms";
-import { useInputJudge } from "@/app/type/ts/scene-ts/playing/keydown/typingJudge";
+import { useInputJudge } from "@/app/type/hooks/playing-hooks/keydown-hooks/typingJudge";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";
 import { useSoundEffect } from "../soundEffect";

@@ -9,9 +9,9 @@ import {
 import { useCalcTypeSpeed } from "@/app/type/hooks/playing-hooks/calcTypeSpeed";
 import { useInputModeChange } from "@/app/type/hooks/playing-hooks/inputModeChange";
 import { YouTubeSpeed } from "@/types";
-import { KanaInput, RomaInput, TypingKeys } from "../../../ts/scene-ts/playing/keydown/typingJudge";
 import { LineResultData, TypeResult } from "../../../ts/type";
 import { useGetTime } from "../getYTTime";
+import { KanaInput, RomaInput, TypingKeys } from "../keydown-hooks/typingJudge";
 import { useSoundEffect } from "../soundEffect";
 import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../updateStatus";
 
