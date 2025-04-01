@@ -7,7 +7,7 @@ const ChangeCSS = () => {
   if (changeCSSCount === null) {
     return;
   }
-  const changeCSS = map.mapData[changeCSSCount].options?.changeCSS;
+  const changeCSS = map?.mapData[changeCSSCount].options?.changeCSS;
 
   return <style>{changeCSS}</style>;
 };

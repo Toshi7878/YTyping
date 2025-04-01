@@ -52,7 +52,7 @@ export const useIsLikeAtom = () => useAtomValue(mapLikeFocusAtom, { store });
 export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store });
 
 const mapAtom = atomWithReset<ParseMap | null>(null);
-export const useMapState = () => useAtomValue(mapAtom, { store }) as ParseMap;
+export const useMapState = () => useAtomValue(mapAtom, { store });
 export const useSetMapState = () => useSetAtom(mapAtom, { store });
 export const useMapStateRef = () => {
   return useAtomCallback(

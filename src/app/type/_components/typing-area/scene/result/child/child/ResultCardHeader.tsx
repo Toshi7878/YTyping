@@ -2,6 +2,7 @@
 import { useMapState } from "@/app/type/atoms/stateAtoms";
 import { InputMode } from "@/app/type/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { ParseMap } from "@/lib/parseMap";
 import { ThemeColors } from "@/types";
 import { Box, Text, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
@@ -15,7 +16,7 @@ interface ResultCardHeaderProps {
 }
 
 function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSpeed }: ResultCardHeaderProps) {
-  const map = useMapState();
+  const map = useMapState() as ParseMap;
   const theme: ThemeColors = useTheme();
 
   const hoverStyle = { bg: `${theme.colors.border.card}30` };
@@ -26,7 +27,7 @@ function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSp
   return (
     <Box>
       <Text as="span">
-        {lineIndex}/{map.lineLength}
+        {lineIndex}/{map?.lineLength}
       </Text>
       <Text as="span" mx={2}>
         |

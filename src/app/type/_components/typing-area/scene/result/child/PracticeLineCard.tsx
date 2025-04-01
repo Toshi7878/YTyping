@@ -7,7 +7,7 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/moveLine";
 import { useInteractJS } from "@/app/type/hooks/useInteractJS";
-import { CHAR_POINT } from "@/lib/parseMap";
+import { CHAR_POINT, ParseMap } from "@/lib/parseMap";
 import { Card, CardBody, CardFooter, CardHeader, Divider } from "@chakra-ui/react";
 import { useState } from "react";
 import ResultCardBody from "./child/ResultCardBody";
@@ -15,7 +15,7 @@ import ResultCardFooter from "./child/ResultCardFooter";
 import ResultCardHeader from "./child/ResultCardHeader";
 
 const PracticeLineCard = () => {
-  const map = useMapState();
+  const map = useMapState() as ParseMap;
   const lineResults = useLineResultsState();
   const speedData = usePlaySpeedState();
   const lineSelectIndex = useLineSelectIndexState();

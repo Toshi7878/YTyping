@@ -2,7 +2,7 @@
 import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/type/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/type/ts/type";
-import { CHAR_POINT } from "@/lib/parseMap";
+import { CHAR_POINT, ParseMap } from "@/lib/parseMap";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, CardFooter, CardHeader, Divider, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
@@ -31,7 +31,7 @@ function ResultCard({
   cardRefs,
   handleCardClick,
 }: ResultCardProps) {
-  const map = useMapState();
+  const map = useMapState() as ParseMap;
   const scene = useSceneState();
   const theme: ThemeColors = useTheme();
   const speedData = usePlaySpeedState();

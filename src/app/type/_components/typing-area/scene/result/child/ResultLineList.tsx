@@ -10,12 +10,13 @@ import { LineResultData } from "@/app/type/ts/type";
 
 import { useResultCards } from "@/app/type/atoms/refAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/moveLine";
+import { ParseMap } from "@/lib/parseMap";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import ResultCard from "./ResultCard";
 
 function ResultLineList() {
-  const map = useMapState();
+  const map = useMapState() as ParseMap;
   const sceneGroup = useSceneGroupState();
   const lineResults = useLineResultsState();
   const { moveSetLine, drawerSelectColorChange } = useMoveLine();
