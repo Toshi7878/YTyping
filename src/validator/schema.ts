@@ -16,3 +16,14 @@ export const nameSchema = z.object({
 export const userOptionSchema = z.object({
   custom_user_active_state: z.nativeEnum(custom_user_active_state),
 });
+
+export const userFingerChartUrlSchema = z.object({
+  url: z
+    .string()
+    .url("有効なURLを入力してください")
+    .refine(
+      (val) => /^https?:\/\/unsi\.nonip\.net\/user\/[0-9]+$/.test(val),
+      "URLは「http://unsi.nonip.net/user/」で始まり、有効なURLである必要があります。"
+    ),
+  username: z.string().optional(),
+});

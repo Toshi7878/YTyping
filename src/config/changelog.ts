@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-4-2",
+    descriptions: ["運指表のURLに仮対応"],
+  },
+  {
     date: "2025-3-30",
     descriptions: ["タイプ音のレスポンス速度を改善", "クレジットページを追加"],
   },

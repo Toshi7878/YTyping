@@ -1,12 +1,13 @@
 import CustomCard from "@/components/custom-ui/CustomCard";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { CardBody, CardFooter, CardHeader, Heading, Stack, Text } from "@chakra-ui/react";
+import FingerChartUrl from "./child/FingerChartUrl";
 
 interface UserCardProps {
-  user: NonNullable<RouterOutPuts["user"]["getUser"]>;
+  userProfile: NonNullable<RouterOutPuts["user"]["getUserProfile"]>;
 }
 
-const UserCard = ({ user }: UserCardProps) => {
+const UserCard = ({ userProfile }: UserCardProps) => {
   return (
     <CustomCard>
       <CardHeader mx={8}>
@@ -17,8 +18,9 @@ const UserCard = ({ user }: UserCardProps) => {
       <CardBody mx={8}>
         <Stack direction={{ base: "column", md: "row" }} spacing={4} align="center">
           <Text fontSize="xl" fontWeight="bold">
-            {user.name}
+            {userProfile.name}
           </Text>
+          <FingerChartUrl url={userProfile.user_profiles?.[0]?.finger_chart_url ?? ""} />
         </Stack>
       </CardBody>
       <CardFooter mx={8} />

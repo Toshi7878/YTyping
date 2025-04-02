@@ -2,8 +2,8 @@ import { serverApi } from "@/trpc/server";
 import Content from "./Content";
 
 export default async function Home({ params }: { params: { id: string } }) {
-  const user = await serverApi.user.getUser({ userId: Number(params.id) });
+  const userProfile = await serverApi.user.getUserProfile({ userId: Number(params.id) });
   const userStats = await serverApi.userStats.getUserStats({ userId: Number(params.id) });
 
-  return <Content user={user} userStats={userStats} />;
+  return <Content userProfile={userProfile} userStats={userStats} />;
 }

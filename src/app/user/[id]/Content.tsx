@@ -5,21 +5,14 @@ import UserStatsCard from "./_components/user-stats/UserStatsCard";
 import UserCard from "./_components/user/UserCard";
 
 interface ContentProps {
-  user: RouterOutPuts["user"]["getUser"];
+  userProfile: RouterOutPuts["user"]["getUserProfile"];
   userStats: RouterOutPuts["userStats"]["getUserStats"];
 }
 
-const Content = ({ user, userStats }: ContentProps) => {
-  if (!user) {
+const Content = ({ userProfile, userStats }: ContentProps) => {
+  if (!userProfile) {
     return (
-      <Stack
-        width={{ base: "100%", md: "70%" }}
-        spacing={4}
-        pt={4}
-        align="center"
-        justify="center"
-        minHeight="200px"
-      >
+      <Stack width={{ base: "100%", md: "70%" }} spacing={4} pt={4} align="center" justify="center" minHeight="200px">
         <Text fontSize="xl">ユーザーが存在しません</Text>
       </Stack>
     );
@@ -27,7 +20,7 @@ const Content = ({ user, userStats }: ContentProps) => {
 
   return (
     <Stack width={{ base: "100%", md: "70%" }} spacing={4} pt={4}>
-      <UserCard user={user} />
+      <UserCard userProfile={userProfile} />
       <UserStatsCard userStats={userStats} />
     </Stack>
   );

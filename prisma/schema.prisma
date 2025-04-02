@@ -162,6 +162,13 @@ model users {
   typingOption           user_typing_options?
   typingStats            user_stats?
   user_option            user_options?
+  user_profiles          user_profiles[]
+}
+
+model user_profiles {
+  user_id          Int    @id
+  finger_chart_url String
+  user             users  @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 enum custom_user_active_state {

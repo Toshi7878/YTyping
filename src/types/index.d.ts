@@ -112,3 +112,5 @@ export interface LocalLikeState {
   hasLike: boolean;
   likeCount: number;
 }
+
+export type ValidationUniqueState = "duplicate" | "pending" | "unique";

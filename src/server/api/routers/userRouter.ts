@@ -2,7 +2,7 @@ import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
 export const userRouter = {
-  getUser: publicProcedure
+  getUserProfile: publicProcedure
     .input(
       z.object({
         userId: z.number(),
@@ -10,13 +10,16 @@ export const userRouter = {
     )
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
-      const user = await db.users.findUnique({
+      return await db.users.findUnique({
         where: { id: input.userId },
         select: {
           name: true,
+          user_profiles: {
+            select: {
+              finger_chart_url: true,
+            },
+          },
         },
       });
-
-      return user;
     }),
 };

@@ -6,12 +6,13 @@ import ProfileSettingCard from "./_components/profile-settings/ProfileSettingCar
 
 interface ContentProps {
   userOptions: RouterOutPuts["userOption"]["getUserOptions"];
+  userProfile: RouterOutPuts["user"]["getUserProfile"];
 }
 
-const Content = ({ userOptions }: ContentProps) => {
+const Content = ({ userOptions, userProfile }: ContentProps) => {
   return (
     <Stack width={{ base: "100%", md: "70%" }} spacing={4} pt={4}>
-      <ProfileSettingCard />
+      <ProfileSettingCard userProfile={userProfile} />
       <OptionSettingCard userOptions={userOptions} />
     </Stack>
   );

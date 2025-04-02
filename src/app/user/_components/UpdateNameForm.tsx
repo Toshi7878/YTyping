@@ -1,5 +1,5 @@
 import { clientApi } from "@/trpc/client-api";
-import { ThemeColors } from "@/types";
+import { ThemeColors, ValidationUniqueState } from "@/types";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useDebounce } from "@/util/global-hooks/useDebounce";
 import { nameSchema } from "@/validator/schema";
@@ -9,10 +9,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-
-interface NameState {
-  nameState: "duplicate" | "pending" | "unique";
-}
 
 interface FormData {
   newName: string;
@@ -34,7 +30,7 @@ export const UpdateNameForm = ({
   isHomeRedirect = false,
 }: UpdateNameFromProps) => {
   const { data: session, update } = useSession();
-  const [nameState, setNameState] = useState<NameState["nameState"]>("unique");
+  const [nameState, setNameState] = useState<ValidationUniqueState>("unique");
   const debounce = useDebounce(1000);
   const theme: ThemeColors = useTheme();
   const router = useRouter();
@@ -79,6 +75,7 @@ export const UpdateNameForm = ({
       },
     });
   };
+
   useEffect(() => {
     if (!errors.newName && isDirty && newNameValue) {
       setNameState("pending");
@@ -102,11 +99,11 @@ export const UpdateNameForm = ({
       as="form"
       onSubmit={handleSubmit(onSubmit)}
       isInvalid={!!errors.newName}
-      gap={3}
+      gap={2}
       display="flex"
       flexDirection="column"
     >
-      <FormLabel mb={0} display="flex" alignItems="center" gap={2} htmlFor="newName">
+      <FormLabel display="flex" alignItems="center" gap={2} htmlFor="newName">
         {formLabel}
         {errors.newName ? (
           <Text as="span" color={theme.colors.error.light}>
@@ -126,7 +123,7 @@ export const UpdateNameForm = ({
           </Text>
         )}
       </FormLabel>
-      <Input size="lg" autoFocus={isAutoFocus} {...register("newName")} placeholder={placeholder} required />
+      <Input size="md" autoFocus={isAutoFocus} {...register("newName")} placeholder={placeholder} required />
       <Button
         variant="upload"
         isLoading={updateName.isPending}

@@ -2,18 +2,7 @@ import CustomCard from "@/components/custom-ui/CustomCard";
 import CustomSimpleGrid from "@/components/custom-ui/CustomSimpleGrid";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
-import {
-  Badge,
-  Box,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Divider,
-  Flex,
-  Heading,
-  Text,
-  useTheme,
-} from "@chakra-ui/react";
+import { Badge, Box, CardBody, CardFooter, CardHeader, Divider, Flex, Heading, Text, useTheme } from "@chakra-ui/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 
@@ -60,7 +49,7 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
     {
       label: "計測開始日",
       value: (
-        <Flex as={"time"} alignItems="center" gap={2}>
+        <Flex as="time" alignItems="center" gap={2}>
           <Text>{userStats.created_at.toLocaleDateString()}</Text>
           <Text fontSize="sm" color="gray.500">
             ({formatDistanceToNowStrict(userStats.created_at, { addSuffix: true, locale: ja })})
@@ -89,13 +78,7 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
         </Heading>
         <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={6}>
           {generalStatsData.map((item, index) => (
-            <Box
-              key={index}
-              p={4}
-              borderWidth="1px"
-              borderRadius="md"
-              bg={theme.colors.background.body}
-            >
+            <Box key={index} p={4} borderWidth="1px" borderRadius="md" bg={theme.colors.background.body}>
               <Text fontSize="lg" mb={1}>
                 {item.label}
               </Text>
@@ -111,13 +94,7 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
         </Heading>
         <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
           {keystrokeStatsData.map((item, index) => (
-            <Box
-              key={index}
-              p={4}
-              borderWidth="1px"
-              borderRadius="md"
-              bg={theme.colors.background.body}
-            >
+            <Box key={index} p={4} borderWidth="1px" borderRadius="md" bg={theme.colors.background.body}>
               <Text fontSize="lg" mb={1}>
                 {item.label}
               </Text>
