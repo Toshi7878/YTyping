@@ -1,4 +1,4 @@
-import { nameSchema as userNameSchema } from "@/validator/schema";
+import { userFingerChartUrlSchema, nameSchema as userNameSchema } from "@/validator/schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { protectedProcedure } from "../trpc";
@@ -49,24 +49,18 @@ export const userProfileSettingRouter = {
       return userName;
     }),
 
-  updateFingerChartUrl: protectedProcedure
-    .input(
-      z.object({
-        url: z.string().url(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+  updateFingerChartUrl: protectedProcedure.input(userFingerChartUrlSchema).mutation(async ({ input, ctx }) => {
+    const { db, user } = ctx;
 
-      await db.user_profiles.upsert({
-        where: { user_id: user.id },
-        update: { finger_chart_url: input.url },
-        create: {
-          user_id: user.id,
-          finger_chart_url: input.url,
-        },
-      });
+    await db.user_profiles.upsert({
+      where: { user_id: user.id },
+      update: { finger_chart_url: input.url },
+      create: {
+        user_id: user.id,
+        finger_chart_url: input.url,
+      },
+    });
 
-      return input.url;
-    }),
+    return input.url;
+  }),
 };

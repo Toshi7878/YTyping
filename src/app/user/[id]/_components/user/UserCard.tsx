@@ -16,7 +16,7 @@ const UserCard = ({ userProfile }: UserCardProps) => {
         </Heading>
       </CardHeader>
       <CardBody mx={8}>
-        <Stack direction={{ base: "column", md: "row" }} spacing={4} align="center">
+        <Stack spacing={4}>
           <Text fontSize="xl" fontWeight="bold">
             {userProfile.name}
           </Text>
