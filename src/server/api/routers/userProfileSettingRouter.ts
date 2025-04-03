@@ -1,6 +1,6 @@
 import { userFingerChartUrlSchema, nameSchema as userNameSchema } from "@/validator/schema";
+import { z } from "@/validator/z";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import { protectedProcedure } from "../trpc";
 
 export const userProfileSettingRouter = {

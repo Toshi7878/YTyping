@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { MapLine } from "@/types/map";
+import { z } from "@/validator/z";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
 export const mapRouter = {

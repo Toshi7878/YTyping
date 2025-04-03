@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/validator/z";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const notificationRouter = {

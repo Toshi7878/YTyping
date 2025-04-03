@@ -1,5 +1,5 @@
+import { z } from "@/validator/z";
 import { custom_user_active_state } from "@prisma/client";
-import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userOptionRouter = {

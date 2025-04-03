@@ -1,5 +1,5 @@
+import { z } from "@/validator/z";
 import axios from "axios";
-import { z } from "zod";
 import { publicProcedure } from "../trpc";
 
 export const userStatsRouter = {

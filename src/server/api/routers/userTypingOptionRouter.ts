@@ -1,5 +1,5 @@
+import { z } from "@/validator/z";
 import { line_completed_display, next_display, time_offset_key, toggle_input_mode_key } from "@prisma/client";
-import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 const typingOptionSchema = z.object({

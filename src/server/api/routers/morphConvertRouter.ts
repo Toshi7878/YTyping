@@ -1,19 +1,15 @@
-import { z } from "zod";
+import { z } from "@/validator/z";
 import { protectedProcedure } from "../trpc";
 
 export const morphConvertRouter = {
-  getKanaWord: protectedProcedure
-    .input(z.object({ sentence: z.string().min(1) }))
-    .query(async ({ input }) => {
-      const data = await fetchYahooMorphAnalysis(input.sentence);
+  getKanaWord: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
+    const data = await fetchYahooMorphAnalysis(input.sentence);
 
-      return data.result.tokens.map((char: string) => char[1]).join("");
-    }),
+    return data.result.tokens.map((char: string) => char[1]).join("");
+  }),
 };
 
-async function fetchYahooMorphAnalysis(
-  sentence: string
-): Promise<{ result: { tokens: string[] } }> {
+async function fetchYahooMorphAnalysis(sentence: string): Promise<{ result: { tokens: string[] } }> {
   const apiKey = process.env.YAHOO_APP_ID as string;
   const apiUrl = "https://jlp.yahooapis.jp/MAService/V2/parse";
 

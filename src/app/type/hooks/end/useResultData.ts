@@ -1,6 +1,6 @@
 import { sendResultSchema } from "@/server/api/routers/rankingRouter";
+import { z } from "@/validator/z";
 import { useParams } from "next/navigation";
-import { z } from "zod";
 import { useStatusRef } from "../../atoms/refAtoms";
 import { useLineResultsStateRef, useTypingStatusStateRef } from "../../atoms/stateAtoms";
 

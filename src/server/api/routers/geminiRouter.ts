@@ -1,11 +1,6 @@
-import {
-  GoogleGenerativeAI,
-  HarmBlockThreshold,
-  HarmCategory,
-  SafetySetting,
-} from "@google/generative-ai";
+import { z } from "@/validator/z";
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory, SafetySetting } from "@google/generative-ai";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import { protectedProcedure } from "../trpc";
 
 const TEXT_PROMPT = `以下のJSONデータ情報を解析して{musicTitle:string; artistName:string; musicSource:string; otherTags:string[];}の形式で出力してください。\n
@@ -36,34 +31,32 @@ interface GeminiMapInfo {
 }
 
 export const geminiRouter = {
-  generateMapInfo: protectedProcedure
-    .input(z.object({ videoId: z.string().length(11) }))
-    .query(async ({ input }) => {
-      const genAI = new GoogleGenerativeAI(GCP_API_KEY);
+  generateMapInfo: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input }) => {
+    const genAI = new GoogleGenerativeAI(GCP_API_KEY);
 
-      const model = genAI.getGenerativeModel({
-        model: MODEL,
-        safetySettings: SAFETY_SETTINGS,
+    const model = genAI.getGenerativeModel({
+      model: MODEL,
+      safetySettings: SAFETY_SETTINGS,
+    });
+
+    try {
+      const youtubeInfo = await getYouTubeInfo(input.videoId);
+      const prompt = TEXT_PROMPT + JSON.stringify(youtubeInfo);
+
+      const result = await model.generateContentStream(prompt, {});
+      const response = await result.response;
+      const responseText = response.text();
+
+      return cleanJsonResponse(responseText);
+    } catch (error) {
+      if (error instanceof TRPCError) throw error;
+
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "譜面情報の生成に失敗しました",
       });
-
-      try {
-        const youtubeInfo = await getYouTubeInfo(input.videoId);
-        const prompt = TEXT_PROMPT + JSON.stringify(youtubeInfo);
-
-        const result = await model.generateContentStream(prompt, {});
-        const response = await result.response;
-        const responseText = response.text();
-
-        return cleanJsonResponse(responseText);
-      } catch (error) {
-        if (error instanceof TRPCError) throw error;
-
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "譜面情報の生成に失敗しました",
-        });
-      }
-    }),
+    }
+  }),
 };
 
 const cleanJsonResponse = (responseText: string): GeminiMapInfo => {
