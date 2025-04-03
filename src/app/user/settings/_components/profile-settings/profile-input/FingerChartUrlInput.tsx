@@ -11,11 +11,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-interface UpdateFingerChartUrlProps {
+interface FingerChartUrlInputProps {
   url: string;
 }
 
-export const UpdateFingerChartUrl = ({ url }: UpdateFingerChartUrlProps) => {
+export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
   const debounce = useDebounce(1000);
   const [isPending, setIsPending] = useState(false);
 
@@ -34,7 +34,7 @@ export const UpdateFingerChartUrl = ({ url }: UpdateFingerChartUrlProps) => {
   } = methods;
 
   const urlValue = watch("url");
-  const updateFingerChartUrl = clientApi.userProfileSetting.updateFingerChartUrl.useMutation();
+  const updateFingerChartUrl = clientApi.userProfileSetting.upsertFingerChartUrl.useMutation();
 
   useEffect(() => {
     if (isDirty) {
@@ -65,7 +65,7 @@ export const UpdateFingerChartUrl = ({ url }: UpdateFingerChartUrlProps) => {
           successMessage={urlValue ? "URLを更新しました" : "URLを削除しました"}
           name="url"
         />
-        <Flex justifyContent="end">
+        <Flex justifyContent="end" width={{ base: "full", md: "sm" }}>
           <Link href="http://unsi.nonip.net" target="_blank" fontSize="xs" color={colors.text.body} opacity="0.7">
             運指表作成はこちら
           </Link>

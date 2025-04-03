@@ -17,6 +17,7 @@ export const userRouter = {
           user_profiles: {
             select: {
               finger_chart_url: true,
+              my_keyboard: true,
             },
           },
         },

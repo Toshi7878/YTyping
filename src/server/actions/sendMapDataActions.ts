@@ -143,7 +143,7 @@ const lineSchema = z.object({
   time: z.string().max(20),
   lyrics: z.string().optional(),
   word: z.string().optional(),
-  options: z.object({ eternalCSS: z.string().optional(), changeCSS: z.string().optional() }).optional(), // 追加
+  options: z.object({ eternalCSS: z.string().optional(), changeCSS: z.string().optional() }).optional(),
 });
 
 const mapSendSchema = z.object({

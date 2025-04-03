@@ -1,4 +1,4 @@
-import { userFingerChartUrlSchema, nameSchema as userNameSchema } from "@/validator/schema";
+import { upsertMyKeyboardSchema, userFingerChartUrlSchema, nameSchema as userNameSchema } from "@/validator/schema";
 import { z } from "@/validator/z";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure } from "../trpc";
@@ -49,7 +49,7 @@ export const userProfileSettingRouter = {
       return userName;
     }),
 
-  updateFingerChartUrl: protectedProcedure.input(userFingerChartUrlSchema).mutation(async ({ input, ctx }) => {
+  upsertFingerChartUrl: protectedProcedure.input(userFingerChartUrlSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
     await db.user_profiles.upsert({
@@ -62,5 +62,19 @@ export const userProfileSettingRouter = {
     });
 
     return input.url;
+  }),
+  upsertMyKeyboard: protectedProcedure.input(upsertMyKeyboardSchema).mutation(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+
+    await db.user_profiles.upsert({
+      where: { user_id: user.id },
+      update: { my_keyboard: input.myKeyboard },
+      create: {
+        user_id: user.id,
+        my_keyboard: input.myKeyboard,
+      },
+    });
+
+    return input.myKeyboard;
   }),
 };

@@ -167,7 +167,8 @@ model users {
 
 model user_profiles {
   user_id          Int    @id
-  finger_chart_url String
+  finger_chart_url String @default("")
+  my_keyboard      String @default("")
   user             users  @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 

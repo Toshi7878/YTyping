@@ -8,7 +8,7 @@ interface AutoUpdateFormFieldProps {
   isPending: boolean;
   isSuccess: boolean;
   label: string;
-  placeholder: string;
+  placeholder?: string;
   successMessage: string;
   name: string;
 }
@@ -17,7 +17,7 @@ const AutoUpdateFormField = ({
   isPending,
   isSuccess,
   label,
-  placeholder,
+  placeholder = "",
   successMessage,
   name,
 }: AutoUpdateFormFieldProps) => {
@@ -27,7 +27,7 @@ const AutoUpdateFormField = ({
   } = useFormContext();
 
   return (
-    <FormControl as="form" display="flex" flexDirection="column">
+    <FormControl as="form" display="flex" flexDirection="column" width={{ base: "full", md: "sm" }}>
       <FormLabel display="flex" alignItems="center" gap={2}>
         {label}
         <MutateMessage isPending={isPending} isSuccess={isSuccess} errors={errors} successMessage={successMessage} />

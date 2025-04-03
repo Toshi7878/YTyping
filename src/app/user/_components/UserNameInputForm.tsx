@@ -14,7 +14,7 @@ interface FormData {
   newName: string;
 }
 
-interface UpdateNameFromProps {
+interface UserNameInputFormProps {
   placeholder?: string;
   formLabel?: string;
   buttonLabel?: string;
@@ -22,13 +22,13 @@ interface UpdateNameFromProps {
   isHomeRedirect?: boolean;
 }
 
-export const UpdateNameForm = ({
+export const UserNameInputForm = ({
   placeholder = "名前を入力",
   formLabel = "名前",
   buttonLabel = "名前を変更",
   isAutoFocus = false,
   isHomeRedirect = false,
-}: UpdateNameFromProps) => {
+}: UserNameInputFormProps) => {
   const { data: session, update } = useSession();
   const [nameState, setNameState] = useState<ValidationUniqueState>("unique");
   const debounce = useDebounce(1000);

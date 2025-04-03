@@ -1,12 +1,12 @@
 "use client";
 
 import { Box, Flex, Heading } from "@chakra-ui/react";
-import { UpdateNameForm } from "../_components/UpdateNameForm";
+import { UserNameInputForm } from "../_components/UserNameInputForm";
 
 export default function Content() {
   return (
     <Flex direction="column" gap={5} width={{ base: "100%", md: "70%" }} pt={4}>
-      <UpdateNameForm
+      <UserNameInputForm
         placeholder="名前を入力してね (後から変更できます)"
         formLabel="名前"
         buttonLabel="名前を決定"

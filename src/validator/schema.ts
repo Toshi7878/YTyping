@@ -1,4 +1,5 @@
 import { custom_user_active_state } from "@prisma/client";
+import { MAX_SHORT_LENGTH } from "./const";
 import { z } from "./z";
 
 export const nameSchema = z.object({
@@ -25,4 +26,8 @@ export const userFingerChartUrlSchema = z.object({
       (val) => val === "" || /^http?:\/\/unsi\.nonip\.net\/user\/[0-9]+$/.test(val),
       "URLは「http://unsi.nonip.net/user/{id}」形式のURLである必要があります。"
     ),
+});
+
+export const upsertMyKeyboardSchema = z.object({
+  myKeyboard: z.string().max(MAX_SHORT_LENGTH),
 });
