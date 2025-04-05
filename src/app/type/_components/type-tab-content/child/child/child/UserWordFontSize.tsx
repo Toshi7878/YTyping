@@ -12,7 +12,7 @@ export const UserWordFontSize = () => {
     const newValue =
       type === "increment"
         ? Math.min(130, userOptionsAtom.kana_word_font_size + 1)
-        : Math.max(90, userOptionsAtom.kana_word_font_size - 1);
+        : Math.max(80, userOptionsAtom.kana_word_font_size - 1);
 
     const newUserOptions: typeof userOptionsAtom = {
       ...userOptionsAtom,
@@ -26,7 +26,7 @@ export const UserWordFontSize = () => {
     const newValue =
       type === "increment"
         ? Math.min(130, userOptionsAtom.roma_word_font_size + 1)
-        : Math.max(90, userOptionsAtom.roma_word_font_size - 1);
+        : Math.max(80, userOptionsAtom.roma_word_font_size - 1);
 
     const newUserOptions: typeof userOptionsAtom = {
       ...userOptionsAtom,
