@@ -15,24 +15,9 @@ const TypeActivity = () => {
   const { colors }: ThemeColors = useTheme();
 
   const getThemeColors = () => {
-    const roma = [
-      `${colors.semantic.roma}40`,
-      `${colors.semantic.roma}60`,
-      `${colors.semantic.roma}80`,
-      colors.semantic.roma,
-    ];
-    const kana = [
-      `${colors.semantic.kana}40`,
-      `${colors.semantic.kana}60`,
-      `${colors.semantic.kana}80`,
-      colors.semantic.kana,
-    ];
-    const english = [
-      `${colors.semantic.english}40`,
-      `${colors.semantic.english}60`,
-      `${colors.semantic.english}80`,
-      colors.semantic.english,
-    ];
+    const roma = [`${colors.semantic.roma}60`, `${colors.semantic.roma}80`, colors.semantic.roma];
+    const kana = [`${colors.semantic.kana}60`, `${colors.semantic.kana}80`, colors.semantic.kana];
+    const english = [`${colors.semantic.english}60`, `${colors.semantic.english}80`, colors.semantic.english];
 
     return ["#161b22"].concat(roma).concat(kana).concat(english);
   };
@@ -62,7 +47,7 @@ const TypeActivity = () => {
             colorScheme="dark"
             blockSize={14}
             blockMargin={3}
-            maxLevel={12}
+            maxLevel={9}
             renderBlock={(block, activity) => (
               <CustomToolTip placement="top" label={`${activity.count} 打鍵 ${activity.date}`}>
                 {block}
