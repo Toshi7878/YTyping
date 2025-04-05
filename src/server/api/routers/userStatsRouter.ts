@@ -154,15 +154,15 @@ export const userStatsRouter = {
         let level = 0;
         if (count > 0) {
           if (dominantType.type === "roma") {
-            if (count >= 12000) level = 3;
+            if (count >= 15000) level = 3;
             else if (count >= 5000) level = 2;
             else if (count >= 1) level = 1;
           } else if (dominantType.type === "kana") {
-            if (count >= 10000) level = 6;
+            if (count >= 12000) level = 6;
             else if (count >= 5000) level = 5;
             else if (count >= 1) level = 4;
           } else {
-            if (count >= 12000) level = 9;
+            if (count >= 15000) level = 9;
             else if (count >= 5000) level = 8;
             else if (count >= 1) level = 7;
           }
