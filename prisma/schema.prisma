@@ -213,6 +213,8 @@ model user_typing_options {
   time_offset            Float                  @default(0)
   kana_word_scroll       Int                    @default(6)
   roma_word_scroll       Int                    @default(9)
+  kana_word_font_size    Int                    @default(100)
+  roma_word_font_size    Int                    @default(100)
   type_sound             Boolean                @default(false)
   miss_sound             Boolean                @default(false)
   line_clear_sound       Boolean                @default(false)

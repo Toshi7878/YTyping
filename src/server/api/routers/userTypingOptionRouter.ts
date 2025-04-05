@@ -6,6 +6,8 @@ const typingOptionSchema = z.object({
   time_offset: z.number(),
   kana_word_scroll: z.number(),
   roma_word_scroll: z.number(),
+  kana_word_font_size: z.number(),
+  roma_word_font_size: z.number(),
   type_sound: z.boolean(),
   miss_sound: z.boolean(),
   line_clear_sound: z.boolean(),
@@ -21,21 +23,14 @@ export const userTypingOptionRouter = {
 
     const userTypingOptions = await db.user_typing_options.findUnique({
       where: { user_id: user.id },
-      select: {
-        time_offset: true,
-        kana_word_scroll: true,
-        roma_word_scroll: true,
-        type_sound: true,
-        miss_sound: true,
-        line_clear_sound: true,
-        line_completed_display: true,
-        next_display: true,
-        time_offset_key: true,
-        toggle_input_mode_key: true,
-      },
     });
 
-    return userTypingOptions;
+    if (userTypingOptions) {
+      const { user_id, ...typingOptionsWithoutUserId } = userTypingOptions;
+      return typingOptionsWithoutUserId;
+    }
+
+    return null;
   }),
   update: protectedProcedure.input(typingOptionSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;

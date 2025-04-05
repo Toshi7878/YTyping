@@ -12,11 +12,11 @@ const TypingWords = () => {
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
   const theme: ThemeColors = useTheme();
-  const userOptionsAtom = useUserTypingOptionsState();
+  const userOptions = useUserTypingOptionsState();
 
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
-  const kanaScroll = userOptionsAtom.kana_word_scroll > 0 ? userOptionsAtom.kana_word_scroll : 0;
-  const romaScroll = userOptionsAtom.roma_word_scroll > 0 ? userOptionsAtom.roma_word_scroll : 0;
+  const kanaScroll = userOptions.kana_word_scroll > 0 ? userOptions.kana_word_scroll : 0;
+  const romaScroll = userOptions.roma_word_scroll > 0 ? userOptions.roma_word_scroll : 0;
   const kanaCorrectSlice = useBreakpointValue({ base: 5, md: kanaScroll }) as number;
   const romaCorrectSlice = useBreakpointValue({ base: 8, md: romaScroll }) as number;
   return (
@@ -37,6 +37,7 @@ const TypingWords = () => {
         isLineCompleted={isLineCompleted}
         nextWord={nextLyrics.kanaWord}
         className="lowercase word-kana"
+        fontSize={`${userOptions.kana_word_font_size}%`}
       />
 
       <Word
@@ -50,6 +51,7 @@ const TypingWords = () => {
         className={`uppercase word-roma ${inputMode === "kana" ? "invisible" : ""}`}
         isLineCompleted={isLineCompleted}
         nextWord={nextLyrics.romaWord}
+        fontSize={`${userOptions.roma_word_font_size}%`}
       />
     </Box>
   );

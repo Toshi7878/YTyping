@@ -30,6 +30,7 @@ import UserNextDisplayRadioButton from "./child/UserNextDisplayRadioButton";
 import UserShortcutKeyCheckbox from "./child/UserShortcutKeyCheckbox";
 import UserSoundEffectCheckbox from "./child/UserSoundEffectCheckbox";
 import UserTimeOffsetChange from "./child/UserTimeOffsetChange";
+import { UserWordFontSize } from "./child/UserWordFontSize";
 import { UserWordScrollChange } from "./child/UserWordScrollChange";
 
 interface SettingCardProps {
@@ -97,6 +98,8 @@ const SettingCard = (props: SettingCardProps) => {
           <UserNextDisplayRadioButton />
           <SettingCardDivider />
           <UserLineCompletedRadioButton />
+          <SettingCardDivider />
+          <UserWordFontSize />
           {breakpoint === "md" && (
             <>
               <SettingCardDivider />

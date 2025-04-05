@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2025-4-5",
-    descriptions: ["譜面ヒット数表示を追加"],
+    descriptions: ["タイピング設定にワードフォントサイズ調整設定を追加", "譜面ヒット数表示を追加"],
   },
   {
     date: "2025-4-3",

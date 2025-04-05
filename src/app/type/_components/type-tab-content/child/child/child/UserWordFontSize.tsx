@@ -3,7 +3,7 @@ import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { Flex, Text } from "@chakra-ui/react";
 import { CounterInput } from "./child/CounterInput";
-export const UserWordScrollChange = () => {
+export const UserWordFontSize = () => {
   const setUserOptionsAtom = useSetUserTypingOptionsState();
   const userOptionsAtom = useUserTypingOptionsState();
   const { writeGameUtils } = useGameUtilsRef();
@@ -11,12 +11,12 @@ export const UserWordScrollChange = () => {
   const onChangeKana = (type: "increment" | "decrement") => {
     const newValue =
       type === "increment"
-        ? Math.min(20, userOptionsAtom.kana_word_scroll + 1)
-        : Math.max(0, userOptionsAtom.kana_word_scroll - 1);
+        ? Math.min(130, userOptionsAtom.kana_word_font_size + 1)
+        : Math.max(90, userOptionsAtom.kana_word_font_size - 1);
 
     const newUserOptions: typeof userOptionsAtom = {
       ...userOptionsAtom,
-      kana_word_scroll: newValue,
+      kana_word_font_size: newValue,
     };
     setUserOptionsAtom(newUserOptions);
     writeGameUtils({ isOptionEdited: true });
@@ -25,12 +25,12 @@ export const UserWordScrollChange = () => {
   const onChangeRoma = (type: "increment" | "decrement") => {
     const newValue =
       type === "increment"
-        ? Math.min(20, userOptionsAtom.roma_word_scroll + 1)
-        : Math.max(0, userOptionsAtom.roma_word_scroll - 1);
+        ? Math.min(130, userOptionsAtom.roma_word_font_size + 1)
+        : Math.max(90, userOptionsAtom.roma_word_font_size - 1);
 
     const newUserOptions: typeof userOptionsAtom = {
       ...userOptionsAtom,
-      roma_word_scroll: newValue,
+      roma_word_font_size: newValue,
     };
     setUserOptionsAtom(newUserOptions);
     writeGameUtils({ isOptionEdited: true });
@@ -39,24 +39,26 @@ export const UserWordScrollChange = () => {
   return (
     <Flex flexDirection="column" gap={4}>
       <Text fontSize="lg" fontWeight="semibold">
-        ワードスクロール開始位置 調整
+        ワードフォントサイズ 調整
       </Text>
       <Flex gap={6}>
         <CounterInput
           onIncrement={() => onChangeKana("increment")}
           onDecrement={() => onChangeKana("decrement")}
-          value={userOptionsAtom.kana_word_scroll}
+          value={userOptionsAtom.kana_word_font_size}
           label="かな表示"
-          incrementTooltip="かな表示スクロールタイミングを増やします。"
-          decrementTooltip="かな表示スクロールタイミングを減らします。"
+          incrementTooltip="かな表示フォントサイズを大きくします。"
+          decrementTooltip="かな表示フォントサイズを小さくします。"
+          unit="%"
         />
         <CounterInput
           onIncrement={() => onChangeRoma("increment")}
           onDecrement={() => onChangeRoma("decrement")}
-          value={userOptionsAtom.roma_word_scroll}
+          value={userOptionsAtom.roma_word_font_size}
           label="ローマ字"
-          incrementTooltip="ローマ字表示スクロールタイミングを増やします。"
-          decrementTooltip="ローマ字表示スクロールタイミングを減らします。"
+          incrementTooltip="ローマ字表示フォントサイズを大きくします。"
+          decrementTooltip="ローマ字表示フォントサイズを小さくします。"
+          unit="%"
         />
       </Flex>
     </Flex>
