@@ -138,10 +138,18 @@ export const useMoveLine = () => {
 
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;
-      const scrollHeight = drawerBody.scrollHeight;
-      drawerBody.scrollTop = (scrollHeight * (newIndex - 2)) / map.typingLineIndexes.length;
+      const cardRect = card.getBoundingClientRect();
+      const drawerRect = drawerBody.getBoundingClientRect();
+
+      const cardTop = card.offsetTop;
+      const drawerHeight = drawerBody.clientHeight;
+      const scrollPosition = cardTop - drawerHeight / 2 + card.clientHeight / 2;
+
+      drawerBody.scrollTo({
+        top: Math.max(0, scrollPosition),
+        behavior: "instant",
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   return { movePrevLine, moveNextLine, moveSetLine, scrollToCard, drawerSelectColorChange };

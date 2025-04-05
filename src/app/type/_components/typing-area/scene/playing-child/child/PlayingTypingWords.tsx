@@ -77,13 +77,7 @@ const Word = ({ correct, nextChar, word, isLineCompleted, nextWord, ...rest }: W
   const isNextWordDisplay = userOptionsAtom.line_completed_display === "NEXT_WORD";
 
   return (
-    <Box
-      {...rest}
-      position="relative"
-      style={{
-        fontFeatureSettings: "pnum",
-      }}
-    >
+    <Box {...rest} position="relative">
       {isLineCompleted && isNextWordDisplay ? (
         <Text as="span" className="next-line-word" color={theme.colors.semantic.word.nextWord}>
           {nextWord}
