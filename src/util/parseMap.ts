@@ -205,6 +205,11 @@ const SOKUON_JOIN_LIST = [
 
 const KANA_UNSUPPORTED_SYMBOLS = ["←", "↓", "↑", "→"];
 
+const PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS = {
+  "!": "！",
+  "?": "？",
+};
+
 export const CHAR_POINT = 50;
 export const MISS_PENALTY = CHAR_POINT / 2;
 
@@ -215,15 +220,7 @@ export class TypingWord {
     this.word = this.hiraganaToRomaArray(lineRomaMap);
   }
 
-  private getCharType({
-    romaChar,
-    kanaChar,
-    romaMapIndex,
-  }: {
-    romaChar: string;
-    kanaChar: string;
-    romaMapIndex?: number;
-  }): TypeChunk["t"] {
+  private getCharType({ romaChar, romaMapIndex }: { romaChar: string; romaMapIndex?: number }): TypeChunk["t"] {
     if (romaMapIndex && romaMapIndex >= 10 && romaMapIndex <= 222) {
       return "kana";
     } else if (ALPHABET_LIST.includes(romaChar)) {
@@ -275,7 +272,7 @@ export class TypingWord {
     word.push({
       ...CHAR,
       p: CHAR_POINT * CHAR["r"][0].length,
-      t: this.getCharType({ romaChar: CHAR.r[0], kanaChar: CHAR.k, romaMapIndex }),
+      t: this.getCharType({ romaChar: CHAR.r[0], romaMapIndex }),
       ...(KANA_UNSUPPORTED_SYMBOLS.includes(CHAR.k) && { kanaUnSupportedSymbol: CHAR.k }),
     });
 
@@ -306,12 +303,17 @@ export class TypingWord {
       char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
     }
 
+    const convertedKanaChar =
+      word.length > 0 && isFullWidth(word[word.length - 1]?.k)
+        ? PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS[char as keyof typeof PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS]
+        : undefined;
+
     //追加
     word.push({
-      k: char,
+      k: convertedKanaChar || char,
       r: [char],
       p: CHAR_POINT * char.length,
-      t: this.getCharType({ romaChar: char, kanaChar: char }),
+      t: this.getCharType({ romaChar: char }),
     });
 
     //n→nn変換
@@ -439,7 +441,6 @@ export class ParseMap {
     for (let i = 0; i < data.length; i++) {
       const time = data[i]["time"];
       const lyrics = data[i]["lyrics"];
-      const kanaWord = data[i]["word"];
       const options = data[i]["options"];
 
       if (options?.isChangeCSS) {
@@ -463,7 +464,7 @@ export class ParseMap {
           word,
           kpm,
           notes,
-          kanaWord,
+          kanaWord: word.map((w) => w["k"]).join(""),
           lineCount: lineLength,
           options,
         });
@@ -490,7 +491,7 @@ export class ParseMap {
           time: Number(time),
           lyrics,
           word: [{ k: "", r: [""], p: 0, t: undefined }],
-          kanaWord,
+          kanaWord: "",
           kpm: { k: 0, r: 0 },
           notes: { k: 0, r: 0 },
           options,
@@ -619,4 +620,21 @@ export function romaConvert(lineWord: LineWord) {
   const word = new TypingWord(lyricsArray as [string, ...string[]]).word;
 
   return { nextChar: { ...word[0], p: nextPoint }, word: word.slice(1) };
+}
+
+function isFullWidth(char: string): boolean {
+  // 文字コードを取得
+  const code = char.charCodeAt(0);
+
+  // 全角の範囲を判定
+  // 全角スペース
+  if (code === 0x3000) return true;
+
+  // CJK統合漢字、ひらがな、カタカナなど
+  if (code >= 0x3000 && code <= 0x9fff) return true;
+
+  // 全角英数字や記号
+  if (code >= 0xff00 && code <= 0xffef) return true;
+
+  return false;
 }
