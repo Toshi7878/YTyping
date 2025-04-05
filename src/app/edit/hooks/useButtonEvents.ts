@@ -149,9 +149,6 @@ export const useLineUpdateButtonEvent = () => {
       updateNewMapBackUp(newVideoId);
     }
 
-    writeEditUtils({
-      tableScrollIndex: selectLineIndex + 1,
-    });
     mapDispatch({ type: "update", payload: updatedLine, index: selectLineIndex });
     lineDispatch({ type: "reset" });
     setDirectEdit(null);
