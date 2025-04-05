@@ -55,7 +55,15 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
   };
 
   return (
-    <Box bg={"background.card"} p={1} borderRadius="md" borderWidth="1px" borderColor="border.card60" height="100%">
+    <Box
+      minH="75px"
+      bg={"background.card"}
+      p={1}
+      borderRadius="md"
+      borderWidth="1px"
+      borderColor="border.card60"
+      height="100%"
+    >
       <CustomToolTip label="Enterで検索" placement="top">
         <Box
           flex="1"
