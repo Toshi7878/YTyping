@@ -49,11 +49,12 @@ export async function POST(request: Request) {
       },
     });
 
+    const today = new Date(new Date().setHours(0, 0, 0, 0));
     await prisma.user_daily_type_counts.upsert({
       where: {
-        user_id_date: {
+        user_id_created_at: {
           user_id: userId,
-          date: new Date().toISOString().split("T")[0],
+          created_at: today,
         },
       },
       update: {
@@ -65,7 +66,6 @@ export async function POST(request: Request) {
       },
       create: {
         user_id: userId,
-        date: new Date().toISOString().split("T")[0],
         roma_type_count: romaType,
         kana_type_count: kanaType,
         flick_type_count: flickType,

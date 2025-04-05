@@ -248,7 +248,7 @@ model user_stats {
 
 model user_daily_type_counts {
   user_id            Int
-  date               DateTime @default(now())
+  created_at         DateTime @default(now())
   roma_type_count    Int      @default(0)
   kana_type_count    Int      @default(0)
   flick_type_count   Int      @default(0)
@@ -256,5 +256,5 @@ model user_daily_type_counts {
   other_type_count   Int      @default(0)
   user               users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  @@id([user_id, date])
+  @@id([user_id, created_at])
 }
