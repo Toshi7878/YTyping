@@ -62,6 +62,7 @@
     "pixi.js": "^8.0.0",
     "postcss": "^8.4.38",
     "react": "^18",
+    "react-activity-calendar": "^2.7.10",
     "react-dom": "^18",
     "react-hook-form": "^7.51.5",
     "react-icons": "^5.2.1",

@@ -5,6 +5,7 @@ import { ThemeColors } from "@/types";
 import { Badge, Box, CardBody, CardFooter, CardHeader, Divider, Flex, Heading, Text, useTheme } from "@chakra-ui/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
+import TypeActivity from "./child/TypeActivity";
 
 const formatTime = (totalSeconds: number) => {
   const hours = Math.floor(totalSeconds / 3600);
@@ -50,8 +51,8 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
       label: "計測開始日",
       value: (
         <Flex as="time" alignItems="center" gap={2}>
-          <Text>{userStats.created_at.toLocaleDateString()}</Text>
-          <Text fontSize="sm" color="gray.500">
+          <Text as="span">{userStats.created_at.toLocaleDateString()}</Text>
+          <Text as="span" fontSize="sm" color="gray.500">
             ({formatDistanceToNowStrict(userStats.created_at, { addSuffix: true, locale: ja })})
           </Text>
         </Flex>
@@ -79,12 +80,14 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
         <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={6}>
           {generalStatsData.map((item, index) => (
             <Box key={index} p={4} borderWidth="1px" borderRadius="md" bg={theme.colors.background.body}>
-              <Text fontSize="lg" mb={1}>
-                {item.label}
-              </Text>
-              <Text fontSize="2xl" fontWeight="bold">
-                {item.value}
-              </Text>
+              <Flex direction="column">
+                <Text fontSize="lg" mb={1}>
+                  {item.label}
+                </Text>
+                <Text fontSize="2xl" fontWeight="bold">
+                  {item.value}
+                </Text>
+              </Flex>
             </Box>
           ))}
         </CustomSimpleGrid>
@@ -92,15 +95,19 @@ const UserStatsCard = ({ userStats }: UserStatsCardProps) => {
         <Heading as="h4" size="md" mb={4}>
           打鍵情報
         </Heading>
+        <TypeActivity />
+
         <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
           {keystrokeStatsData.map((item, index) => (
             <Box key={index} p={4} borderWidth="1px" borderRadius="md" bg={theme.colors.background.body}>
-              <Text fontSize="lg" mb={1}>
-                {item.label}
-              </Text>
-              <Text fontSize="2xl" fontWeight="bold">
-                {item.value}
-              </Text>
+              <Flex direction="column">
+                <Text fontSize="lg" mb={1}>
+                  {item.label}
+                </Text>
+                <Text fontSize="2xl" fontWeight="bold">
+                  {item.value}
+                </Text>
+              </Flex>
             </Box>
           ))}
         </CustomSimpleGrid>

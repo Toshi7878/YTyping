@@ -248,7 +248,7 @@ model user_stats {
 
 model user_daily_type_counts {
   user_id            Int
-  created_at         DateTime @default(now())
+  created_at         DateTime
   roma_type_count    Int      @default(0)
   kana_type_count    Int      @default(0)
   flick_type_count   Int      @default(0)

@@ -66,6 +66,7 @@ export async function POST(request: Request) {
       },
       create: {
         user_id: userId,
+        created_at: today,
         roma_type_count: romaType,
         kana_type_count: kanaType,
         flick_type_count: flickType,
