@@ -1,9 +1,9 @@
 "use client";
 
-import { useMapListLengthState, useSetIsSearchingState } from "@/app/(home)/atoms/atoms";
+import { useSetIsSearchingState } from "@/app/(home)/atoms/atoms";
 import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
 import { PARAM_NAME } from "@/app/(home)/ts/consts";
-import { Box, Flex, Icon, Text } from "@chakra-ui/react";
+import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
@@ -34,7 +34,6 @@ const getResetDirections = (): Record<SortField, SortDirection> => ({
 const SortOptions = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const mapListLength = useMapListLengthState();
   const setIsSearching = useSetIsSearchingState();
   const setDifficultyRangeParams = useSetDifficultyRangeParams();
 
@@ -99,63 +98,37 @@ const SortOptions = () => {
   };
 
   return (
-    <Flex
-      width="100%"
-      bg="background.card"
-      color="text.body"
-      p={2}
-      userSelect="none"
-      borderRadius="md"
-      overflowX="auto"
-      flexWrap={{ base: "wrap", md: "nowrap" }}
-      justifyContent="space-between"
-      alignItems="center"
-      gap={1}
-      css={{
-        "&::-webkit-scrollbar": {
-          height: "8px",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "rgba(255, 255, 255, 0.2)",
-          borderRadius: "4px",
-        },
-      }}
-    >
-      <Flex>
-        {Object.keys(FIELD_TO_PARAMS).map((option) => {
-          const isLikedSort = option === "いいね";
-          const isFilterLiked = searchParams.get("filter") === "liked";
-          if (isLikedSort && !isFilterLiked) {
-            return null;
-          }
-          return (
-            <Flex
-              key={option}
-              alignItems="center"
-              justifyContent="center"
-              px={3}
-              py={1}
-              cursor="pointer"
-              fontWeight={sortDirections[option as SortField] ? "bold" : "normal"}
-              color={sortDirections[option as SortField] ? "secondary.light" : "normal"}
-              onClick={() => handleSort(option as SortField)}
-              _hover={{ bg: "button.sub.hover" }}
-              transition="all 0.2s"
-              role="group"
-              minWidth={{ base: "auto", md: "auto" }}
-              flex={{ base: "0 0 auto", md: "0 0 auto" }}
-              borderRadius="md"
-              bg={sortDirections[option as SortField] ? "rgba(255, 255, 255, 0.1)" : "transparent"}
-            >
-              <Text mr={1}>{option}</Text>
-              {getSortIcon(option as SortField)}
-            </Flex>
-          );
-        })}
-      </Flex>
-      <Box userSelect="text" px={3} py={1} borderRadius="md" bg="rgba(255, 255, 255, 0.05)" fontWeight="medium">
-        <Text>譜面数: {mapListLength}</Text>
-      </Box>
+    <Flex userSelect="none">
+      {Object.keys(FIELD_TO_PARAMS).map((option) => {
+        const isLikedSort = option === "いいね";
+        const isFilterLiked = searchParams.get("filter") === "liked";
+        if (isLikedSort && !isFilterLiked) {
+          return null;
+        }
+        return (
+          <Flex
+            key={option}
+            alignItems="center"
+            justifyContent="center"
+            px={3}
+            py={1}
+            cursor="pointer"
+            fontWeight={sortDirections[option as SortField] ? "bold" : "normal"}
+            color={sortDirections[option as SortField] ? "secondary.light" : "normal"}
+            onClick={() => handleSort(option as SortField)}
+            _hover={{ bg: "button.sub.hover" }}
+            transition="all 0.2s"
+            role="group"
+            minWidth={{ base: "auto", md: "auto" }}
+            flex={{ base: "0 0 auto", md: "0 0 auto" }}
+            borderRadius="md"
+            bg={sortDirections[option as SortField] ? "rgba(255, 255, 255, 0.1)" : "transparent"}
+          >
+            <Text mr={1}>{option}</Text>
+            {getSortIcon(option as SortField)}
+          </Flex>
+        );
+      })}
     </Flex>
   );
 };
