@@ -38,6 +38,7 @@ const TypingWords = () => {
         nextWord={nextLyrics.kanaWord}
         className="lowercase word-kana"
         fontSize={`${userOptions.kana_word_font_size}%`}
+        bottom={userOptions.kana_word_top_position}
       />
 
       <Word
@@ -52,6 +53,7 @@ const TypingWords = () => {
         isLineCompleted={isLineCompleted}
         nextWord={nextLyrics.romaWord}
         fontSize={`${userOptions.roma_word_font_size}%`}
+        bottom={userOptions.roma_word_top_position}
       />
     </Box>
   );
@@ -75,7 +77,13 @@ const Word = ({ correct, nextChar, word, isLineCompleted, nextWord, ...rest }: W
   const isNextWordDisplay = userOptionsAtom.line_completed_display === "NEXT_WORD";
 
   return (
-    <Box {...rest}>
+    <Box
+      {...rest}
+      position="relative"
+      style={{
+        fontFeatureSettings: "pnum",
+      }}
+    >
       {isLineCompleted && isNextWordDisplay ? (
         <Text as="span" className="next-line-word" color={theme.colors.semantic.word.nextWord}>
           {nextWord}
