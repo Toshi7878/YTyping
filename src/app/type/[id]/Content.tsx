@@ -14,6 +14,7 @@ import MainGameCard from "../_components/typing-area/MainGameCard";
 import { useProgress } from "../atoms/refAtoms";
 import { usePathChangeAtomReset } from "../atoms/reset";
 import {
+  useGameStateUtilsRef,
   useIsLoadingOverlayState,
   useSceneState,
   useSetLineResultsState,
@@ -50,6 +51,7 @@ function Content({ mapInfo }: ContentProps) {
   const { readTotalProgress } = useProgress();
   const { resetTypingStatus } = useSetTypingStatusState();
   const { sendTypingStats } = useSendUserStats();
+  const readGameStateUtils = useGameStateUtilsRef();
 
   useEffect(() => {
     if (scene === "ready" && layoutMode) {
@@ -80,7 +82,11 @@ function Content({ mapInfo }: ContentProps) {
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
       pathChangeAtomReset();
-      sendTypingStats();
+
+      const { scene } = readGameStateUtils();
+      if (scene === "play" || scene === "practice") {
+        sendTypingStats();
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId]);
