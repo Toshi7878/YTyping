@@ -288,12 +288,13 @@ export const useUpdateLine = () => {
   return (newNextCount: number) => {
     const map = readMap();
     const newCurrentCount = newNextCount ? newNextCount - 1 : 0;
-    const { inputMode, scene } = readGameStateUtils();
+
     const newCurrentLine = map.mapData[newCurrentCount];
     const newNextLine = map.mapData[newNextCount];
     setCurrentLine({ newCurrentLine, newNextLine });
-
     resetLineStatus();
+
+    const { inputMode, scene } = readGameStateUtils();
     const { playSpeed } = readPlaySpeed();
     if (scene === "replay") {
       lineReplayUpdate(newCurrentCount);
@@ -319,6 +320,6 @@ export const useUpdateLine = () => {
       resetNextLyrics();
     }
 
-    setChangeCSSCount({ newCurrentCount: newCurrentCount });
+    setChangeCSSCount({ newCurrentCount });
   };
 };
