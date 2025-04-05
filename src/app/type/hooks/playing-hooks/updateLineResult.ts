@@ -61,7 +61,8 @@ export const useUpdateLineResult = () => {
     const typingStatus = readTypingResult();
 
     const newLineScore = typingStatus.point + typingStatus.timeBonus + lineMiss * MISS_PENALTY;
-    const oldLineScore = lineResult.status!.p! + lineResult.status!.tBonus! + lineResult.status!.lMiss! * MISS_PENALTY;
+    const oldLineScore =
+      (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0) + (lineResult.status.lMiss ?? 0) * MISS_PENALTY;
 
     const { isPaused } = readYTStatus();
     const { scene } = readGameStateUtils();
