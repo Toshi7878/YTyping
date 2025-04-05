@@ -182,7 +182,7 @@ export const userStatsRouter = {
 
       const currentYear = new Date().getFullYear();
       const startOfYear = new Date(currentYear, 0, 1);
-      if (startOfYear !== new Date(dailyTotals[0].date)) {
+      if (!dailyTotals.length || startOfYear !== new Date(dailyTotals[0].date)) {
         dailyTotals.unshift({
           date: startOfYear.toISOString().split("T")[0],
           count: 0,
@@ -192,7 +192,7 @@ export const userStatsRouter = {
       }
 
       const endOfYear = new Date(currentYear, 11, 31);
-      if (endOfYear !== new Date(dailyTotals[dailyTotals.length - 1].date)) {
+      if (!dailyTotals.length || endOfYear !== new Date(dailyTotals[dailyTotals.length - 1].date)) {
         dailyTotals.push({
           date: endOfYear.toISOString().split("T")[0],
           count: 0,
