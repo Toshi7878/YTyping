@@ -13,15 +13,20 @@ const SearchContent = () => {
   const { data: session } = useSession();
   const player = usePreviewPlayerState();
 
+  const isLogin = !!session?.user?.id;
   return (
     <Flex as="section" width="100%" alignItems="center" mb={4}>
       <Box width="100%">
         <Box mb={3}>
           <SearchInputs />
         </Box>
-        <Flex justifyContent={session?.user?.id ? "space-between" : "flex-end"}>
+        <Flex
+          justifyContent={isLogin ? "space-between" : "flex-end"}
+          gap={isLogin ? 0 : 8}
+          direction={{ base: "column", md: "row" }}
+        >
           <Flex alignItems="center" gap={5} direction={{ base: "column", md: "row" }}>
-            {session?.user?.id && <FilterInputs />}
+            {isLogin && <FilterInputs />}
             <SearchRange step={0.1} mx={4} />
           </Flex>
           {!IS_IOS && !IS_ANDROID && <VolumeRange player={player} />}
