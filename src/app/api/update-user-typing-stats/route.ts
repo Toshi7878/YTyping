@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       updateData.max_combo = input.maxCombo;
     }
 
+    const { romaType, kanaType, flickType, englishType, numType, symbolType, spaceType } = input;
     await prisma.user_stats.upsert({
       where: {
         user_id: userId,
@@ -36,15 +37,40 @@ export async function POST(request: Request) {
       update: updateData,
       create: {
         user_id: userId,
-        roma_type_total_count: input.romaType,
-        kana_type_total_count: input.kanaType,
-        flick_type_total_count: input.flickType,
-        english_type_total_count: input.englishType,
-        num_type_total_count: input.numType,
-        symbol_type_total_count: input.symbolType,
-        space_type_total_count: input.spaceType,
+        roma_type_total_count: romaType,
+        kana_type_total_count: kanaType,
+        flick_type_total_count: flickType,
+        english_type_total_count: englishType,
+        num_type_total_count: numType,
+        symbol_type_total_count: symbolType,
+        space_type_total_count: spaceType,
         total_typing_time: input.totalTypeTime,
         max_combo: input.maxCombo,
+      },
+    });
+
+    await prisma.user_daily_type_counts.upsert({
+      where: {
+        user_id_date: {
+          user_id: userId,
+          date: new Date().toISOString().split("T")[0],
+        },
+      },
+      update: {
+        roma_type_count: { increment: romaType },
+        kana_type_count: { increment: kanaType },
+        flick_type_count: { increment: flickType },
+        english_type_count: { increment: englishType },
+        other_type_count: { increment: spaceType + numType + symbolType },
+      },
+      create: {
+        user_id: userId,
+        date: new Date().toISOString().split("T")[0],
+        roma_type_count: romaType,
+        kana_type_count: kanaType,
+        flick_type_count: flickType,
+        english_type_count: englishType,
+        other_type_count: spaceType + numType + symbolType,
       },
     });
 
