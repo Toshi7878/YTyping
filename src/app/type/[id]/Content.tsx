@@ -23,6 +23,7 @@ import {
   useSetTypingStatusState,
 } from "../atoms/stateAtoms";
 import { useDisableKey } from "../hooks/disableKey";
+import { useSendUserStats } from "../hooks/playing-hooks/sendUserStats";
 import useWindowScale, { CONTENT_WIDTH } from "../hooks/windowScale";
 
 interface ContentProps {
@@ -48,6 +49,7 @@ function Content({ mapInfo }: ContentProps) {
   const pathChangeAtomReset = usePathChangeAtomReset();
   const { readTotalProgress } = useProgress();
   const { resetTypingStatus } = useSetTypingStatusState();
+  const { sendTypingStats } = useSendUserStats();
 
   useEffect(() => {
     if (scene === "ready" && layoutMode) {
@@ -78,6 +80,7 @@ function Content({ mapInfo }: ContentProps) {
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
       pathChangeAtomReset();
+      sendTypingStats();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId]);
