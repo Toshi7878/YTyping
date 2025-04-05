@@ -4,13 +4,13 @@ import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyR
 import { Button, HStack, Input } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useIsSearchingAtom, useSetIsSearchingAtom } from "../../../atoms/atoms";
+import { useIsSearchingState, useSetIsSearchingState } from "../../../atoms/atoms";
 
 const SearchInputs = () => {
   const searchParams = useSearchParams();
   const [keyword, setKeyword] = useState(searchParams?.get("keyword") || "");
-  const isSearching = useIsSearchingAtom();
-  const setIsSearching = useSetIsSearchingAtom();
+  const isSearching = useIsSearchingState();
+  const setIsSearching = useSetIsSearchingState();
   const setDifficultyRangeParams = useSetDifficultyRangeParams();
   const router = useRouter();
 
@@ -53,13 +53,7 @@ const SearchInputs = () => {
         onChange={(e) => setKeyword(e.target.value)}
       />
 
-      <Button
-        width="30%"
-        isLoading={isSearching}
-        loadingText="検索中"
-        type="submit"
-        aria-label="検索を実行"
-      >
+      <Button width="30%" isLoading={isSearching} loadingText="検索中" type="submit" aria-label="検索を実行">
         検索
       </Button>
     </HStack>

@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-4-5",
+    descriptions: ["譜面ヒット数表示を追加"],
+  },
+  {
     date: "2025-4-3",
     descriptions: ["使用キーボードプロフィール設定を仮追加"],
   },

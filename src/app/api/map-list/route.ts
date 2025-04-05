@@ -15,8 +15,23 @@ export async function GET(req: NextRequest) {
   const maxRate = searchParams.get(PARAM_NAME.maxRate);
   const difficultyFilterSql = getDifficultyFilterSql({ minRate, maxRate });
   const playedSql = getPlayedFilterSql({ played: searchParams.get(PARAM_NAME.played), userId });
-
   const offset = PAGE_SIZE * Number(page);
+
+  const where = Prisma.sql`
+      ${filterSql} AND
+      ${difficultyFilterSql} AND
+      ${playedSql} AND
+      (${
+        mapKeyword === ""
+          ? Prisma.sql`TRUE`
+          : Prisma.sql`(
+        maps."title" &@~ ${mapKeyword} OR
+        maps."artist_name" &@~ ${mapKeyword} OR
+        maps."music_source" &@~ ${mapKeyword} OR
+        maps."tags" &@~ ${mapKeyword} OR
+        creator."name" &@~ ${mapKeyword}
+      )`
+      })`;
 
   try {
     const mapList = await prisma.$queryRaw`
@@ -75,25 +90,35 @@ export async function GET(req: NextRequest) {
     JOIN users AS creator ON maps."creator_id" = creator."id"
     JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
     LEFT JOIN map_likes ON maps."id" = map_likes."map_id" AND map_likes."user_id" = ${userId}
-    WHERE (
-      ${filterSql} AND
-      ${difficultyFilterSql} AND
-      ${playedSql} AND
-      (${mapKeyword} = '' OR (
-        maps."title" &@~ ${mapKeyword} OR
-        maps."artist_name" &@~ ${mapKeyword} OR
-        maps."music_source" &@~ ${mapKeyword} OR
-        maps."tags" &@~ ${mapKeyword} OR
-        creator."name" &@~ ${mapKeyword}
-      ))
-    )
-    ${sortSql}
+    WHERE (${where})
+    ORDER BY ${sortSql}
     LIMIT ${PAGE_SIZE} OFFSET ${offset}`;
 
-    return new Response(JSON.stringify(mapList), {
-      headers: { "Content-Type": "application/json" },
-    });
+    const mapListLength =
+      page === "0"
+        ? await prisma.$queryRaw`
+    SELECT COUNT(*) as total_count
+    FROM maps
+    JOIN users AS creator ON maps."creator_id" = creator."id"
+    JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
+    LEFT JOIN map_likes ON maps."id" = map_likes."map_id" AND map_likes."user_id" = ${userId}
+    WHERE (${where})`.then((result) => {
+            const totalCount = (result as any)[0].total_count;
+            return Number(totalCount);
+          })
+        : undefined;
+
+    return new Response(
+      JSON.stringify({
+        maps: mapList,
+        ...(mapListLength !== undefined ? { mapListLength } : {}),
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
+    console.error("マップリスト取得エラー:", error);
     return new Response("Internal Server Error", { status: 500 });
   }
 }
@@ -119,52 +144,52 @@ interface GetSortSql {
 }
 function getSortSql({ sort }: GetSortSql) {
   if (!sort) {
-    return Prisma.raw(`ORDER BY maps."id" DESC`);
+    return Prisma.raw(`maps."id" DESC`);
   }
 
   const isAsc = sort.includes("asc");
 
   switch (true) {
     case sort.includes("random"):
-      return Prisma.raw(`ORDER BY RANDOM()`);
+      return Prisma.raw(`RANDOM()`);
     case sort.includes("id"):
       if (isAsc) {
-        return Prisma.raw(`ORDER BY maps."id" ASC`);
+        return Prisma.raw(`maps."id" ASC`);
       } else {
-        return Prisma.raw(`ORDER BY maps."id" DESC`);
+        return Prisma.raw(`maps."id" DESC`);
       }
     case sort.includes("difficulty"):
       if (isAsc) {
-        return Prisma.raw(`ORDER BY "difficulty"."roma_kpm_median" ASC`);
+        return Prisma.raw(`"difficulty"."roma_kpm_median" ASC`);
       } else {
-        return Prisma.raw(`ORDER BY "difficulty"."roma_kpm_median" DESC`);
+        return Prisma.raw(`"difficulty"."roma_kpm_median" DESC`);
       }
     case sort.includes("ranking_count"):
       if (isAsc) {
-        return Prisma.raw(`ORDER BY maps."ranking_count" ASC`);
+        return Prisma.raw(`maps."ranking_count" ASC`);
       } else {
-        return Prisma.raw(`ORDER BY maps."ranking_count" DESC`);
+        return Prisma.raw(`maps."ranking_count" DESC`);
       }
     case sort.includes("like_count"):
       if (isAsc) {
-        return Prisma.raw(`ORDER BY maps."like_count" ASC`);
+        return Prisma.raw(`maps."like_count" ASC`);
       } else {
-        return Prisma.raw(`ORDER BY maps."like_count" DESC`);
+        return Prisma.raw(`maps."like_count" DESC`);
       }
     case sort.includes("duration"):
       if (isAsc) {
-        return Prisma.raw(`ORDER BY "difficulty"."total_time" ASC`);
+        return Prisma.raw(`"difficulty"."total_time" ASC`);
       } else {
-        return Prisma.raw(`ORDER BY "difficulty"."total_time" DESC`);
+        return Prisma.raw(`"difficulty"."total_time" DESC`);
       }
     case sort.includes("like"):
       if (isAsc) {
-        return Prisma.raw(`ORDER BY "map_likes"."created_at" ASC`);
+        return Prisma.raw(`"map_likes"."created_at" ASC`);
       } else {
-        return Prisma.raw(`ORDER BY "map_likes"."created_at" DESC`);
+        return Prisma.raw(`"map_likes"."created_at" DESC`);
       }
     default:
-      return Prisma.raw(`ORDER BY maps."id" DESC`);
+      return Prisma.raw(`maps."id" DESC`);
   }
 }
 

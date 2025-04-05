@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetDifficultyRangeAtom, useSetIsSearchingAtom } from "@/app/(home)/atoms/atoms";
+import { useSetDifficultyRangeState, useSetIsSearchingState } from "@/app/(home)/atoms/atoms";
 import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
 import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/ts/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
@@ -34,8 +34,8 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
   });
 
   const setDifficultyRangeParams = useSetDifficultyRangeParams();
-  const setDifficultyRangeAtom = useSetDifficultyRangeAtom();
-  const setIsSearchingAtom = useSetIsSearchingAtom();
+  const setDifficultyRangeAtom = useSetDifficultyRangeState();
+  const setIsSearchingAtom = useSetIsSearchingState();
 
   const handleChange = (val: number[]) => {
     setDifficultyRange({ min: val[0], max: val[1] });
@@ -55,14 +55,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
   };
 
   return (
-    <Box
-      bg={"background.card"}
-      p={1}
-      borderRadius="md"
-      borderWidth="1px"
-      borderColor="border.card60"
-      height="100%"
-    >
+    <Box bg={"background.card"} p={1} borderRadius="md" borderWidth="1px" borderColor="border.card60" height="100%">
       <CustomToolTip label="Enterで検索" placement="top">
         <Box
           flex="1"
@@ -90,9 +83,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
           </RangeSlider>
           <Flex position="absolute" width="100%" justifyContent="space-between" top={5}>
             <Text fontSize="md">★{difficultyRange.min.toFixed(1)}</Text>
-            <Text fontSize="md">
-              ★{difficultyRange.max === max ? "∞" : difficultyRange.max.toFixed(1)}
-            </Text>
+            <Text fontSize="md">★{difficultyRange.max === max ? "∞" : difficultyRange.max.toFixed(1)}</Text>
           </Flex>
         </Box>
       </CustomToolTip>

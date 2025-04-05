@@ -2,13 +2,17 @@ import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset } from "jotai/utils";
 import { DIFFICULTY_RANGE } from "../ts/consts";
 
-const homeAtomStore = createStore();
-export const getHomeAtomStore = () => homeAtomStore;
+const store = createStore();
+export const getHomeAtomStore = () => store;
 
 export const difficultyRangeAtom = atomWithReset(DIFFICULTY_RANGE);
-export const useDifficultyRangeAtom = () => useAtomValue(difficultyRangeAtom, { store: homeAtomStore });
-export const useSetDifficultyRangeAtom = () => useSetAtom(difficultyRangeAtom, { store: homeAtomStore });
+export const useDifficultyRangeState = () => useAtomValue(difficultyRangeAtom, { store: store });
+export const useSetDifficultyRangeState = () => useSetAtom(difficultyRangeAtom, { store: store });
 
 const isSearchingAtom = atom(false);
-export const useIsSearchingAtom = () => useAtomValue(isSearchingAtom, { store: homeAtomStore });
-export const useSetIsSearchingAtom = () => useSetAtom(isSearchingAtom, { store: homeAtomStore });
+export const useIsSearchingState = () => useAtomValue(isSearchingAtom, { store: store });
+export const useSetIsSearchingState = () => useSetAtom(isSearchingAtom, { store: store });
+
+const mapListLengthAtom = atom(0);
+export const useMapListLengthState = () => useAtomValue(mapListLengthAtom, { store: store });
+export const useSetMapListLengthState = () => useSetAtom(mapListLengthAtom, { store: store });
