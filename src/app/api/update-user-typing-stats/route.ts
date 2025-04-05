@@ -49,12 +49,23 @@ export async function POST(request: Request) {
       },
     });
 
-    const today = new Date(new Date().setHours(0, 0, 0, 0));
+    // DBの日付変更基準（15:00）に合わせて日付を計算
+    const now = new Date();
+    const isBeforeCutoff = now.getHours() < 15;
+    const targetDate = new Date();
+
+    // 15時前なら前日の日付、15時以降なら当日の日付
+    if (isBeforeCutoff) {
+      targetDate.setDate(targetDate.getDate() - 1);
+    }
+
+    const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+
     await prisma.user_daily_type_counts.upsert({
       where: {
         user_id_created_at: {
           user_id: userId,
-          created_at: today,
+          created_at: dbDate,
         },
       },
       update: {
@@ -66,7 +77,7 @@ export async function POST(request: Request) {
       },
       create: {
         user_id: userId,
-        created_at: today,
+        created_at: dbDate,
         roma_type_count: romaType,
         kana_type_count: kanaType,
         flick_type_count: flickType,
