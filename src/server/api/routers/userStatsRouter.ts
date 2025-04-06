@@ -202,9 +202,13 @@ export const LEVELS = {
 };
 
 const getActivityLevel = ({ type, count }: { type: keyof typeof LEVELS; count: number }): number => {
-  for (const [levelKey, threshold] of Object.entries(LEVELS[type])) {
+  const sortedLevels = Object.entries(LEVELS[type])
+    .map(([level, threshold]) => ({ level: parseInt(level), threshold }))
+    .sort((a, b) => b.level - a.level);
+
+  for (const { level, threshold } of sortedLevels) {
     if (count >= threshold) {
-      return parseInt(levelKey);
+      return level;
     }
   }
 
