@@ -177,16 +177,18 @@ const MyHideOptionInfo = () => {
 
   return (
     <InfoCard title="統計情報は非公開に設定されています" mb={4}>
-      <Text>現在プロフィールは自分のみが閲覧できます</Text>
-      {!isHidePreview ? (
-        <Link href="?hidePreview=true">
-          <Button>他の人が見ているページを見る</Button>
-        </Link>
-      ) : (
-        <Link href={`/user/${userId}`}>
-          <Button>統計情報を表示</Button>
-        </Link>
-      )}
+      <Flex alignItems="center" gap={4}>
+        <Text>現在プロフィールは自分のみが閲覧できます</Text>
+        {!isHidePreview ? (
+          <Link href="?hidePreview=true">
+            <Button size="sm">他の人が見ているページを見る</Button>
+          </Link>
+        ) : (
+          <Link href={`/user/${userId}`}>
+            <Button size="sm">統計情報を表示</Button>
+          </Link>
+        )}
+      </Flex>
     </InfoCard>
   );
 };
