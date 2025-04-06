@@ -1,9 +1,15 @@
-import { useMapStateRef, useSceneState, useSetNextLyricsState } from "@/app/type/atoms/stateAtoms";
+import {
+  useGameStateUtilsRef,
+  useMapStateRef,
+  useSceneState,
+  useSetNextLyricsState,
+} from "@/app/type/atoms/stateAtoms";
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
 import { useCountRef, useGameUtilsRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/playingKeydown";
+import { useSendUserStats } from "@/app/type/hooks/playing-hooks/sendUserStats";
 import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/timer";
 import { useSession } from "next-auth/react";
 
@@ -17,6 +23,18 @@ const Playing = () => {
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
   const readMap = useMapStateRef();
+  const { sendTypingStats } = useSendUserStats();
+  const readGameStateUtils = useGameStateUtilsRef();
+
+  useEffect(() => {
+    return () => {
+      const { scene } = readGameStateUtils();
+      if (scene === "play" || scene === "practice") {
+        sendTypingStats();
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleVisibilitychange = () => {
