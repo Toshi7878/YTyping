@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
     // DBの日付変更基準（15:00）に合わせて日付を計算
     const now = new Date();
-    const isAfterCutoff = now.getHours() > 15;
+    const isAfterCutoff = now.getHours() >= 15;
     const targetDate = new Date();
 
     // 15時前なら前日の日付、15時以降なら当日の日付
