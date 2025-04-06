@@ -244,14 +244,20 @@ const writeNextLyricsAtom = atom(null, (get, set, line: LineData) => {
 
   const nextKpm = (inputMode === "roma" ? line.kpm["r"] : line.kpm["k"]) * speed.playSpeed;
 
-  set(nextLyricsAtom, {
-    lyrics: typingOptions.next_display === "WORD" ? line.kanaWord : line["lyrics"],
-    kpm: nextKpm.toFixed(0),
-    kanaWord: line.kanaWord.slice(0, 60),
-    romaWord: line.word
-      .map((w) => w["r"][0])
-      .join("")
-      .slice(0, 60),
+  set(nextLyricsAtom, () => {
+    if (line.kanaWord) {
+      return {
+        lyrics: typingOptions.next_display === "WORD" ? line.kanaWord : line["lyrics"],
+        kpm: nextKpm.toFixed(0),
+        kanaWord: line.kanaWord.slice(0, 60),
+        romaWord: line.word
+          .map((w) => w["r"][0])
+          .join("")
+          .slice(0, 60),
+      };
+    } else {
+      return RESET;
+    }
   });
 });
 

@@ -314,11 +314,7 @@ export const useUpdateLine = () => {
 
     setLineKpm(0);
 
-    if (newNextLine.kanaWord) {
-      setNextLyrics(newNextLine);
-    } else {
-      resetNextLyrics();
-    }
+    setNextLyrics(newNextLine);
 
     setChangeCSSCount({ newCurrentCount });
   };
