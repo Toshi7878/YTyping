@@ -10,6 +10,7 @@ import { Flex, Stack, useTheme } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { FiExternalLink } from "react-icons/fi";
 
 interface FingerChartUrlInputProps {
   url: string;
@@ -65,9 +66,19 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
           successMessage={urlValue ? "URLを更新しました" : "URLを削除しました"}
           name="url"
         />
-        <Flex justifyContent="end" width={{ base: "full", md: "sm" }}>
-          <Link href="http://unsi.nonip.net" target="_blank" fontSize="xs" color={colors.text.body} opacity="0.7">
+        <Flex justifyContent="end" width={{ base: "full", md: "sm" }} flexDirection="row">
+          <Link
+            href="http://unsi.nonip.net"
+            target="_blank"
+            fontSize="xs"
+            color={colors.text.body}
+            opacity="0.7"
+            display="flex"
+            alignItems="center"
+            gap="1"
+          >
             運指表作成はこちら
+            <FiExternalLink />
           </Link>
         </Flex>
       </Stack>
