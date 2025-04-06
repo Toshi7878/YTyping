@@ -3,11 +3,24 @@ import CustomSimpleGrid from "@/components/custom-ui/CustomSimpleGrid";
 import InfoCard from "@/components/share-components/InfoCard";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
-import { Badge, Box, CardBody, CardFooter, CardHeader, Divider, Flex, Heading, Text, useTheme } from "@chakra-ui/react";
+import { Link } from "@chakra-ui/next-js";
+import {
+  Badge,
+  Box,
+  Button,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Flex,
+  Heading,
+  Text,
+  useTheme,
+} from "@chakra-ui/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { GoLock } from "react-icons/go";
 import TypeActivity from "./child/TypeActivity";
 
@@ -24,9 +37,11 @@ interface UserStatsProps {
 }
 
 const UserStatsCard = ({ userStats, userOptions }: UserStatsProps) => {
-  const isHideUserStats = userOptions?.hide_user_stats ?? false;
   const { id: userId } = useParams() as { id: string };
   const { data: session } = useSession();
+  const userSearchParams = useSearchParams();
+  const isHidePreview = userSearchParams.get("hidePreview") === "true";
+  const isHideUserStats = userOptions?.hide_user_stats ?? false;
   const isMyStats = session?.user?.id === userId;
   const isMyStatsWithHide = isMyStats && isHideUserStats;
 
@@ -41,8 +56,8 @@ const UserStatsCard = ({ userStats, userOptions }: UserStatsProps) => {
         </Badge>
       </CardHeader>
       <CardBody mx={8}>
-        {isHideUserStats && !isMyStats ? (
-          <HideUserStats />
+        {(isHideUserStats && !isMyStats) || isHidePreview ? (
+          <HideUserStats isMyStatsWithHide={isMyStatsWithHide} />
         ) : (
           <UserStatsContent userStats={userStats} isMyStatsWithHide={isMyStatsWithHide} />
         )}
@@ -101,11 +116,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
   ];
   return (
     <>
-      {isMyStatsWithHide && (
-        <InfoCard title="統計情報は非公開に設定されています" mb={4}>
-          <Text>現在プロフィールは自分のみが閲覧できます</Text>
-        </InfoCard>
-      )}
+      {isMyStatsWithHide && <MyHideOptionInfo />}
       <Heading as="h4" size="md" mb={4}>
         基本情報
       </Heading>
@@ -147,14 +158,39 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
   );
 };
 
-const HideUserStats = () => {
+const HideUserStats = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) => {
   return (
     <Box>
+      {isMyStatsWithHide && <MyHideOptionInfo />}
       <Flex justifyContent="center" flexDirection="column" alignItems="center" gap={4}>
         <GoLock size={30} />
-        <Text>ユーザー累計情報は非表示にしています</Text>
+        <Text>ユーザー累計情報は非公開にしています</Text>
       </Flex>
     </Box>
+  );
+};
+
+const MyHideOptionInfo = () => {
+  const userSearchParams = useSearchParams();
+  const isHidePreview = userSearchParams.get("hidePreview") === "true";
+  const { id: userId } = useParams() as { id: string };
+
+  return (
+    <InfoCard title="統計情報は非公開に設定されています" mb={4}>
+      <Text>現在プロフィールは自分のみが閲覧できます</Text>
+      <Text>
+        このユーザーの統計情報は非公開に設定されています。
+        {!isHidePreview ? (
+          <Link href="?hidePreview=true">
+            <Button>他の人が見ているページを見る</Button>
+          </Link>
+        ) : (
+          <Link href={`/user/${userId}`}>
+            <Button>統計情報を表示</Button>
+          </Link>
+        )}
+      </Text>
+    </InfoCard>
   );
 };
 
