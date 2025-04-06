@@ -164,7 +164,7 @@ const HideUserStats = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) =>
       {isMyStatsWithHide && <MyHideOptionInfo />}
       <Flex justifyContent="center" flexDirection="column" alignItems="center" gap={4}>
         <GoLock size={30} />
-        <Text>ユーザー累計情報は非公開にしています</Text>
+        <Text>タイピング統計情報は非公開にしています</Text>
       </Flex>
     </Box>
   );
@@ -178,18 +178,15 @@ const MyHideOptionInfo = () => {
   return (
     <InfoCard title="統計情報は非公開に設定されています" mb={4}>
       <Text>現在プロフィールは自分のみが閲覧できます</Text>
-      <Text>
-        このユーザーの統計情報は非公開に設定されています。
-        {!isHidePreview ? (
-          <Link href="?hidePreview=true">
-            <Button>他の人が見ているページを見る</Button>
-          </Link>
-        ) : (
-          <Link href={`/user/${userId}`}>
-            <Button>統計情報を表示</Button>
-          </Link>
-        )}
-      </Text>
+      {!isHidePreview ? (
+        <Link href="?hidePreview=true">
+          <Button>他の人が見ているページを見る</Button>
+        </Link>
+      ) : (
+        <Link href={`/user/${userId}`}>
+          <Button>統計情報を表示</Button>
+        </Link>
+      )}
     </InfoCard>
   );
 };
