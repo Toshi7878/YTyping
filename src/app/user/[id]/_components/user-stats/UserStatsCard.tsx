@@ -3,6 +3,7 @@ import CustomSimpleGrid from "@/components/custom-ui/CustomSimpleGrid";
 import InfoCard from "@/components/share-components/InfoCard";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
+import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 import {
   Badge,
@@ -174,20 +175,28 @@ const MyHideOptionInfo = () => {
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
   const { id: userId } = useParams() as { id: string };
+  const handleLinkClick = useLinkClick();
 
   return (
     <InfoCard title="統計情報は非公開に設定されています" mb={4}>
-      <Flex alignItems="center" gap={4}>
-        <Text>現在プロフィールは自分のみが閲覧できます</Text>
-        {!isHidePreview ? (
-          <Link href="?hidePreview=true">
-            <Button size="sm">他の人が見ているページを見る</Button>
+      <Flex alignItems="center" justifyContent="space-between">
+        <Flex alignItems="center" gap={4}>
+          <Text>現在プロフィールは自分のみが閲覧できます</Text>
+          {!isHidePreview ? (
+            <Link href="?hidePreview=true" onClick={handleLinkClick}>
+              <Button size="sm">他の人が見ているページを見る</Button>
+            </Link>
+          ) : (
+            <Link href={`/user/${userId}`} onClick={handleLinkClick}>
+              <Button size="sm">統計情報を表示</Button>
+            </Link>
+          )}
+        </Flex>
+        <Flex justifyContent="flex-end">
+          <Link href="/user/settings#user-settings" onClick={handleLinkClick}>
+            <Button size="xs">設定を変更</Button>
           </Link>
-        ) : (
-          <Link href={`/user/${userId}`}>
-            <Button size="sm">統計情報を表示</Button>
-          </Link>
-        )}
+        </Flex>
       </Flex>
     </InfoCard>
   );

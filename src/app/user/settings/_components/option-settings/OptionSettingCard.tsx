@@ -6,7 +6,7 @@ const OptionSettingCard = () => {
   return (
     <CustomCard>
       <CardHeader mx={8}>
-        <Heading as="h3" size="md">
+        <Heading as="h3" size="md" id="user-settings">
           ユーザー設定
         </Heading>
       </CardHeader>
