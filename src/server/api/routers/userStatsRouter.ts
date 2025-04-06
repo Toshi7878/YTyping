@@ -185,19 +185,19 @@ export const userStatsRouter = {
 
 export const LEVELS = {
   roma: {
-    1: 1 as const,
-    2: 5000 as const,
     3: 15000 as const,
+    2: 5000 as const,
+    1: 1 as const,
   },
   kana: {
-    4: 1 as const,
-    5: 5000 as const,
     6: 12000 as const,
+    5: 5000 as const,
+    4: 1 as const,
   },
   other: {
-    7: 1 as const,
-    8: 5000 as const,
     9: 15000 as const,
+    8: 5000 as const,
+    7: 1 as const,
   },
 };
 
