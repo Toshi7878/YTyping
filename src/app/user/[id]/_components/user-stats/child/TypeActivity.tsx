@@ -58,9 +58,10 @@ const TypeActivity = () => {
             }}
             renderColorLegend={(color, level) => {
               const label = level === 0 ? "活動なし" : level <= 3 ? "ローマ字" : level <= 6 ? "かな" : "英語";
+              const inputLevel = level % 3 === 0 ? 3 : level % 3;
               return (
-                <CustomToolTip placement="top" label={`${label} level: ${level}`}>
-                  <Box mr={level % 3 === 0 ? "10px" : "0px"}>{color}</Box>
+                <CustomToolTip placement="top" label={`${label} level: ${inputLevel}`}>
+                  <Box mr={inputLevel === 3 ? "10px" : "0px"}>{color}</Box>
                 </CustomToolTip>
               );
             }}
