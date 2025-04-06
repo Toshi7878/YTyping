@@ -65,7 +65,7 @@ const TypeActivity = () => {
                   ? `ローマ字 level: ${levelLabel}`
                   : level <= 6
                   ? `かな level: ${levelLabel}`
-                  : `英語 level: ${levelLabel}`;
+                  : `英数字記号 level: ${levelLabel}`;
 
               return (
                 <CustomToolTip placement="top" label={label}>
@@ -86,7 +86,7 @@ const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
   const sortedTypeData = [
     { label: "ローマ字", count: data?.roma_type_count ?? 0 },
     { label: "かな", count: data?.kana_type_count ?? 0 },
-    { label: "英語数字記号", count: data?.english_type_count ?? 0 },
+    { label: "英数字記号", count: data?.english_type_count ?? 0 },
   ].sort((a, b) => b.count - a.count);
 
   const sortedTypeDataString = sortedTypeData.map((item) => {
