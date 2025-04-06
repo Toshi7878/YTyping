@@ -146,6 +146,7 @@ const SettingCard = (props: SettingCardProps) => {
                     }}
                     border={`1px solid ${theme.colors.border.card}`}
                     color={theme.colors.text.body}
+                    rounded="md"
                     bg={theme.colors.background.card}
                   >
                     {tab.label}
