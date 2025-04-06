@@ -131,7 +131,7 @@ const SettingCard = (props: SettingCardProps) => {
           overflow="hidden"
         >
           <CardBody padding={4}>
-            <Tabs variant="soft-rounded">
+            <Tabs variant="unstyled">
               <TabList mb={4} gap={2} sx={{ display: "flex", flexWrap: "wrap" }}>
                 {tabData.map((tab, index) => (
                   <Tab
