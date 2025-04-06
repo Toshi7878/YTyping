@@ -5,7 +5,7 @@ import { Button, Flex, Text, useTheme } from "@chakra-ui/react";
 interface CounterInputProps {
   onIncrement: () => void;
   onDecrement: () => void;
-  value: number;
+  value: number | string;
   label: string;
   incrementTooltip: string;
   decrementTooltip: string;
@@ -34,6 +34,8 @@ export const CounterInput = ({
         borderColor={`${theme.colors.border.card}90`}
         width="fit-content"
         rounded="full"
+        py={0}
+        px={2}
       >
         <CustomToolTip label={decrementTooltip} placement="top">
           <Button onClick={onDecrement} cursor="pointer" variant="unstyled" size="lg" fontSize="xl">

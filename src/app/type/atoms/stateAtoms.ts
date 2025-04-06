@@ -6,7 +6,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../ts/type";
-import { lineProgressRefAtom, useGameUtilsRef, ytStatusRefAtom } from "./refAtoms";
+import { gameUtilsRefAtom, lineProgressRefAtom, useGameUtilsRef, ytStatusRefAtom } from "./refAtoms";
 import { speedBaseAtom } from "./speedReducerAtoms";
 import { getTypeAtomStore } from "./store";
 
@@ -32,8 +32,27 @@ export const userTypingOptionsAtom = atomWithReset({
   toggle_input_mode_key: "ALT_KANA" as $Enums.toggle_input_mode_key,
 });
 
+const writeTypingOptionsAtom = atom(
+  null,
+  (get, set, newUserTypingOptions: Partial<ExtractAtomValue<typeof userTypingOptionsAtom>>) => {
+    set(userTypingOptionsAtom, (prev) => ({ ...prev, ...newUserTypingOptions }));
+    set(gameUtilsRefAtom, (prev) => ({ ...prev, isOptionEdited: true }));
+  }
+);
+
 export const useUserTypingOptionsState = () => useAtomValue(userTypingOptionsAtom, { store });
-export const useSetUserTypingOptionsState = () => useSetAtom(userTypingOptionsAtom, { store });
+export const useSetUserTypingOptionsState = () => {
+  const setUserTypingOptions = useSetAtom(writeTypingOptionsAtom, { store });
+  const resetUserTypingOptions = useAtomCallback(
+    useCallback((get, set) => {
+      set(userTypingOptionsAtom, RESET);
+      set(gameUtilsRefAtom, (prev) => ({ ...prev, isOptionEdited: true }));
+    }, []),
+    { store }
+  );
+
+  return { setUserTypingOptions, resetUserTypingOptions };
+};
 export const useUserTypingOptionsStateRef = () => {
   return useAtomCallback(
     useCallback((get) => get(userTypingOptionsAtom), []),

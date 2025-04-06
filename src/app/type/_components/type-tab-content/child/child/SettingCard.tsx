@@ -23,7 +23,6 @@ import {
   useDisclosure,
   useTheme,
 } from "@chakra-ui/react";
-import { RESET } from "jotai/utils";
 import { Dispatch, useEffect, useRef } from "react";
 import UserLineCompletedRadioButton from "./child/UserLineCompletedRadioButton";
 import UserNextDisplayRadioButton from "./child/UserNextDisplayRadioButton";
@@ -194,14 +193,12 @@ interface ResetSettingModalProps {
 
 const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
   const theme: ThemeColors = useTheme();
-  const { writeGameUtils } = useGameUtilsRef();
   const toast = useCustomToast();
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const setUserOptionsAtom = useSetUserTypingOptionsState();
+  const { resetUserTypingOptions } = useSetUserTypingOptionsState();
 
   const handleResetOptions = () => {
-    setUserOptionsAtom(RESET);
-    writeGameUtils({ isOptionEdited: true });
+    resetUserTypingOptions();
     toast({
       title: "設定をリセットしました",
       type: "success",

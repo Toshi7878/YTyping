@@ -1,39 +1,30 @@
 "use client";
-import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { Flex, Text } from "@chakra-ui/react";
 import { CounterInput } from "./child/CounterInput";
+
+const MAX_SCROLL = 20;
+const MIN_SCROLL = 0;
+const SCROLL_STEP = 1;
+
 export const UserWordScrollChange = () => {
-  const setUserOptionsAtom = useSetUserTypingOptionsState();
-  const userOptionsAtom = useUserTypingOptionsState();
-  const { writeGameUtils } = useGameUtilsRef();
+  const { setUserTypingOptions } = useSetUserTypingOptionsState();
+  const { kana_word_scroll, roma_word_scroll } = useUserTypingOptionsState();
 
   const onChangeKana = (type: "increment" | "decrement") => {
     const newValue =
       type === "increment"
-        ? Math.min(20, userOptionsAtom.kana_word_scroll + 1)
-        : Math.max(0, userOptionsAtom.kana_word_scroll - 1);
-
-    const newUserOptions: typeof userOptionsAtom = {
-      ...userOptionsAtom,
-      kana_word_scroll: newValue,
-    };
-    setUserOptionsAtom(newUserOptions);
-    writeGameUtils({ isOptionEdited: true });
+        ? Math.min(MAX_SCROLL, kana_word_scroll + SCROLL_STEP)
+        : Math.max(MIN_SCROLL, kana_word_scroll - SCROLL_STEP);
+    setUserTypingOptions({ kana_word_scroll: newValue });
   };
 
   const onChangeRoma = (type: "increment" | "decrement") => {
     const newValue =
       type === "increment"
-        ? Math.min(20, userOptionsAtom.roma_word_scroll + 1)
-        : Math.max(0, userOptionsAtom.roma_word_scroll - 1);
-
-    const newUserOptions: typeof userOptionsAtom = {
-      ...userOptionsAtom,
-      roma_word_scroll: newValue,
-    };
-    setUserOptionsAtom(newUserOptions);
-    writeGameUtils({ isOptionEdited: true });
+        ? Math.min(MAX_SCROLL, roma_word_scroll + SCROLL_STEP)
+        : Math.max(MIN_SCROLL, roma_word_scroll - SCROLL_STEP);
+    setUserTypingOptions({ roma_word_scroll: newValue });
   };
 
   return (
@@ -45,7 +36,7 @@ export const UserWordScrollChange = () => {
         <CounterInput
           onIncrement={() => onChangeKana("increment")}
           onDecrement={() => onChangeKana("decrement")}
-          value={userOptionsAtom.kana_word_scroll}
+          value={kana_word_scroll}
           label="かな表示"
           incrementTooltip="かな表示スクロールタイミングを増やします。"
           decrementTooltip="かな表示スクロールタイミングを減らします。"
@@ -53,7 +44,7 @@ export const UserWordScrollChange = () => {
         <CounterInput
           onIncrement={() => onChangeRoma("increment")}
           onDecrement={() => onChangeRoma("decrement")}
-          value={userOptionsAtom.roma_word_scroll}
+          value={roma_word_scroll}
           label="ローマ字"
           incrementTooltip="ローマ字表示スクロールタイミングを増やします。"
           decrementTooltip="ローマ字表示スクロールタイミングを減らします。"

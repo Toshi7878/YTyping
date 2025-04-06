@@ -1,4 +1,5 @@
 "use client";
+import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { ThemeColors } from "@/types";
 import { useLocalClapServerActions } from "@/util/global-hooks/useLocalClapServerActions";
@@ -28,38 +29,39 @@ function ResultClapButton({ resultId = 0, clapCount = 0, hasClap = false }: Resu
   }, INITIAL_STATE);
 
   return (
-    <Box
-      as="form"
-      action={session ? formAction : () => {}}
-      display="inline-flex"
-      visibility={resultId ? "visible" : "hidden"}
-    >
-      <Button
-        mx={5}
-        px={7}
-        rounded={50}
-        background={clapOptimisticState.hasClap ? `${theme.colors.semantic.clap}34` : "transparent"}
-        {...(session && {
-          _hover: {
-            bg: `${theme.colors.semantic.clap}34`,
-            color: theme.colors.semantic.clap,
-          },
-        })}
-        color={clapOptimisticState.hasClap ? theme.colors.semantic.clap : "white"}
-        cursor={session ? "pointer" : "default"}
-        borderColor={theme.colors.border.card}
-        border={"1px"}
-        size="sm"
-        variant={session ? "" : "unstyled"}
-        type="submit"
-      >
-        <Flex alignItems="center" letterSpacing={1}>
-          <FaHandsClapping />
-          <Text as="span" ml={1}>
-            ×{clapOptimisticState.clapCount}
-          </Text>
-        </Flex>
-      </Button>
+    <Box as="form" action={session ? formAction : () => {}} display="inline-flex">
+      <CustomToolTip placement="top" isDisabled={!!session} label={"拍手はログイン後に可能です"}>
+        <Button
+          mx={5}
+          px={7}
+          rounded={50}
+          background={clapOptimisticState.hasClap ? `${theme.colors.semantic.clap}34` : "transparent"}
+          {...(session && {
+            _hover: {
+              bg: `${theme.colors.semantic.clap}34`,
+              color: theme.colors.semantic.clap,
+            },
+          })}
+          color={clapOptimisticState.hasClap ? theme.colors.semantic.clap : "white"}
+          cursor={session ? "pointer" : "default"}
+          disabled={!session}
+          _disabled={{
+            color: "gray.400",
+          }}
+          border={"1px"}
+          size="sm"
+          variant={"outline"}
+          minWidth={100}
+          type="submit"
+        >
+          <Flex alignItems="center" letterSpacing={1}>
+            <FaHandsClapping />
+            <Text as="span" ml={1}>
+              ×{clapOptimisticState.clapCount}
+            </Text>
+          </Flex>
+        </Button>
+      </CustomToolTip>
     </Box>
   );
 }
