@@ -10,11 +10,11 @@ import { MdOutlineEdit } from "react-icons/md";
 import FingerChartUrl from "./child/FingerChartUrl";
 import MyKeyBoard from "./child/MyKeyboard";
 
-interface UserCardProps {
+interface UserProfileCardProps {
   userProfile: NonNullable<RouterOutPuts["user"]["getUserProfile"]>;
 }
 
-const UserCard = ({ userProfile }: UserCardProps) => {
+const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const handleLinkClick = useLinkClick();
   const { id: userId } = useParams() as { id: string };
   const { data: session } = useSession();
@@ -32,8 +32,10 @@ const UserCard = ({ userProfile }: UserCardProps) => {
           <Text fontSize="xl" fontWeight="bold">
             {userProfile.name}
           </Text>
-          <FingerChartUrl url={userProfile.user_profiles?.[0]?.finger_chart_url ?? ""} />
-          <MyKeyBoard myKeyboard={userProfile.user_profiles?.[0]?.my_keyboard ?? ""} />
+          <Stack gap={0}>
+            <FingerChartUrl url={userProfile.user_profiles?.[0]?.finger_chart_url ?? ""} />
+            <MyKeyBoard myKeyboard={userProfile.user_profiles?.[0]?.my_keyboard ?? ""} />
+          </Stack>
         </Stack>
       </CardBody>
       <CardFooter mx={8} justifyContent="flex-end">
@@ -49,4 +51,4 @@ const UserCard = ({ userProfile }: UserCardProps) => {
   );
 };
 
-export default UserCard;
+export default UserProfileCard;

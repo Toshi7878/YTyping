@@ -2,7 +2,7 @@
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Stack, Text } from "@chakra-ui/react";
 import UserStatsCard from "./_components/user-stats/UserStatsCard";
-import UserCard from "./_components/user/UserCard";
+import UserProfileCard from "./_components/user/UserProfileCard";
 
 interface ContentProps {
   userProfile: RouterOutPuts["user"]["getUserProfile"];
@@ -21,7 +21,7 @@ const Content = ({ userProfile, userStats, userOptions }: ContentProps) => {
 
   return (
     <Stack width={{ base: "100%", md: "70%" }} spacing={4} pt={4}>
-      <UserCard userProfile={userProfile} />
+      <UserProfileCard userProfile={userProfile} />
       <UserStatsCard userStats={userStats} userOptions={userOptions} />
     </Stack>
   );
