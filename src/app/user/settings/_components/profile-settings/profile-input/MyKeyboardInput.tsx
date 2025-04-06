@@ -1,6 +1,6 @@
 "use client";
 
-import AutoUpdateFormField from "@/components/share-components/form/AutoUpdateFormField";
+import AutoUpdateTextFormField from "@/components/share-components/form/AutoUpdateTextFormField";
 import { clientApi } from "@/trpc/client-api";
 import { useDebounce } from "@/util/global-hooks/useDebounce";
 import { userFingerChartUrlSchema } from "@/validator/schema";
@@ -52,7 +52,7 @@ export const MyKeyboardInput = ({ myKeyboard }: MyKeyboardInputProps) => {
 
   return (
     <FormProvider {...methods}>
-      <AutoUpdateFormField
+      <AutoUpdateTextFormField
         isPending={isPending}
         isSuccess={isSuccess}
         label="使用キーボード"

@@ -32,7 +32,7 @@ export default async function RootLayout({
   const cookiesList = cookies();
   const colorMode = cookiesList.get("chakra-ui-color-mode");
   const session = await auth();
-  const userOptions = await serverApi.userOption.getUserOptions();
+  const userOptions = await serverApi.userOption.getUserOptions({});
 
   return (
     <html lang="ja">

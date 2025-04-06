@@ -15,7 +15,8 @@ interface GlobalProviderProps {
 const GlobalProvider = ({ children, userOptions }: GlobalProviderProps) => {
   const globalAtomStore = getGlobalAtomStore();
   const pathname = usePathname();
-  useHydrateAtoms([[userOptionsAtom, userOptions]], { store: globalAtomStore });
+
+  useHydrateAtoms([[userOptionsAtom, userOptions ?? userOptionsAtom.init]], { store: globalAtomStore });
 
   useEffect(() => {
     window.getSelection()!.removeAllRanges();

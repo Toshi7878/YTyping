@@ -4,7 +4,7 @@ import { ThemeColors } from "@/types";
 import { FormControl, FormLabel, Input, Spinner, Text, useTheme } from "@chakra-ui/react";
 import { FieldErrors, useFormContext } from "react-hook-form";
 
-interface AutoUpdateFormFieldProps {
+interface AutoUpdateTextFormFieldProps {
   isPending: boolean;
   isSuccess: boolean;
   label: string;
@@ -13,14 +13,14 @@ interface AutoUpdateFormFieldProps {
   name: string;
 }
 
-const AutoUpdateFormField = ({
+const AutoUpdateTextFormField = ({
   isPending,
   isSuccess,
   label,
   placeholder = "",
   successMessage,
   name,
-}: AutoUpdateFormFieldProps) => {
+}: AutoUpdateTextFormFieldProps) => {
   const {
     register,
     formState: { errors },
@@ -73,4 +73,4 @@ const MutateMessage = ({ isPending, isSuccess, errors, successMessage }: MutateM
   return null;
 };
 
-export default AutoUpdateFormField;
+export default AutoUpdateTextFormField;

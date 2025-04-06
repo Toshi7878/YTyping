@@ -184,6 +184,7 @@ model user_options {
   map_like_notify          Boolean                  @default(true)
   over_take_notify         Int                      @default(5)
   custom_user_active_state custom_user_active_state @default(ONLINE)
+  hide_user_stats          Boolean                  @default(false)
   user                     users                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 

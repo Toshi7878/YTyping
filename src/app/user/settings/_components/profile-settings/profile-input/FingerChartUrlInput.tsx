@@ -1,6 +1,6 @@
 "use client";
 
-import AutoUpdateFormField from "@/components/share-components/form/AutoUpdateFormField";
+import AutoUpdateTextFormField from "@/components/share-components/form/AutoUpdateTextFormField";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
 import { useDebounce } from "@/util/global-hooks/useDebounce";
@@ -57,7 +57,7 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
   return (
     <FormProvider {...methods}>
       <Stack>
-        <AutoUpdateFormField
+        <AutoUpdateTextFormField
           isPending={isPending}
           isSuccess={isSuccess}
           label="みんなの運指表URL"

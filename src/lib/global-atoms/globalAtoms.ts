@@ -40,19 +40,18 @@ const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop
 
 export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store: globalAtomStore });
 export const useSetPreviewVideoState = () => useSetAtom(previewVideoAtom, { store: globalAtomStore });
-export const usePreviewPlayerState = () =>
-  useAtomValue(previewPlayerFocusAtom, { store: globalAtomStore });
-export const useSetPreviewPlayerState = () =>
-  useSetAtom(previewPlayerFocusAtom, { store: globalAtomStore });
+export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, { store: globalAtomStore });
+export const useSetPreviewPlayerState = () => useSetAtom(previewPlayerFocusAtom, { store: globalAtomStore });
 
 const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 
 export const useOnlineUsersAtom = () => useAtomValue(onlineUsersAtom, { store: globalAtomStore });
 export const useSetOnlineUsersAtom = () => useSetAtom(onlineUsersAtom, { store: globalAtomStore });
 
-export const userOptionsAtom = atom<RouterOutPuts["userOption"]["getUserOptions"]>({
+export const userOptionsAtom = atom<NonNullable<RouterOutPuts["userOption"]["getUserOptions"]>>({
   custom_user_active_state: "ONLINE" as const,
+  hide_user_stats: false,
 });
 
-export const useUserOptionsAtom = () => useAtomValue(userOptionsAtom, { store: globalAtomStore });
-export const useSetUserOptionsAtom = () => useSetAtom(userOptionsAtom, { store: globalAtomStore });
+export const useUserOptionsState = () => useAtomValue(userOptionsAtom, { store: globalAtomStore });
+export const useSetUserOptionsState = () => useSetAtom(userOptionsAtom, { store: globalAtomStore });

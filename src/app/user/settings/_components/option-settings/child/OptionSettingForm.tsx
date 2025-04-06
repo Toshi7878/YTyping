@@ -1,62 +1,51 @@
-import { useSetUserOptionsAtom } from "@/lib/global-atoms/globalAtoms";
+import CheckBoxFormField from "@/components/share-components/form/CheckBoxFormField";
+import SelectFormField from "@/components/share-components/form/SelectFormField";
+import { useSetUserOptionsState, useUserOptionsState } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
-import { useDebounce } from "@/util/global-hooks/useDebounce";
 import { userOptionSchema } from "@/validator/schema";
-import { FormControl, FormLabel, Select } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { $Enums } from "@prisma/client";
-import { useForm } from "react-hook-form";
+import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-interface FormData {
-  custom_user_active_state: $Enums.custom_user_active_state;
-}
+// ユーザーオプションの型を定義
+type UserOptionFormValues = NonNullable<RouterOutPuts["userOption"]["getUserOptions"]>;
 
-interface OptionSettingFromProps {
-  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
-}
-
-export const OptionSettingForm = ({ userOptions }: OptionSettingFromProps) => {
-  const debounce = useDebounce(500);
-  const setUserOptions = useSetUserOptionsAtom();
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm({
+export const OptionSettingForm = () => {
+  const userOptions = useUserOptionsState();
+  const setUserOptions = useSetUserOptionsState();
+  const methods = useForm<UserOptionFormValues>({
     resolver: zodResolver(userOptionSchema),
     defaultValues: {
-      custom_user_active_state: userOptions?.custom_user_active_state ?? ("ONLINE" as $Enums.custom_user_active_state),
+      custom_user_active_state: userOptions.custom_user_active_state,
+      hide_user_stats: userOptions.hide_user_stats,
     },
   });
   const sendUserOption = clientApi.userOption.update.useMutation();
-
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: UserOptionFormValues) => {
     setUserOptions(data);
     sendUserOption.mutate(data);
   };
 
   return (
-    <FormControl as="form" gap={3} display="flex" flexDirection="column">
-      <FormLabel mb={0} display="flex" alignItems="center" gap={2} htmlFor="custom_user_active_state">
-        オンライン状態
-      </FormLabel>
-      <Select
-        width="fit-content"
-        size="lg"
-        {...register("custom_user_active_state", {
-          setValueAs: (value) => {
-            debounce(() => {
-              handleSubmit(onSubmit)();
-            });
-            return value as $Enums.custom_user_active_state;
-          },
-        })}
-      >
-        <option value="ONLINE">プレイ中の曲を共有</option>
-        <option value="ASK_ME">プレイ中の曲を隠す</option>
-        <option value="HIDE_ONLINE">アクティブ状態を隠す</option>
-      </Select>
-    </FormControl>
+    <FormProvider {...methods}>
+      <Flex flexDirection="column" gap={3}>
+        <SelectFormField
+          label="オンライン状態"
+          name="custom_user_active_state"
+          options={[
+            { label: "プレイ中の曲を共有", value: "ONLINE" as const },
+            { label: "プレイ中の曲を隠す", value: "ASK_ME" as const },
+            { label: "オンライン状態を非表示", value: "HIDE_ONLINE" as const },
+          ]}
+          onSubmit={onSubmit as SubmitHandler<FieldValues>}
+        />
+        <CheckBoxFormField
+          label="プロフィールページのタイピング統計情報を隠す"
+          name="hide_user_stats"
+          onSubmit={onSubmit as SubmitHandler<FieldValues>}
+        />
+      </Flex>
+    </FormProvider>
   );
 };

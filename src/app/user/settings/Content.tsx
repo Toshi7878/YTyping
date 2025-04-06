@@ -5,15 +5,14 @@ import OptionSettingCard from "./_components/option-settings/OptionSettingCard";
 import ProfileSettingCard from "./_components/profile-settings/ProfileSettingCard";
 
 interface ContentProps {
-  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
   userProfile: RouterOutPuts["user"]["getUserProfile"];
 }
 
-const Content = ({ userOptions, userProfile }: ContentProps) => {
+const Content = ({ userProfile }: ContentProps) => {
   return (
     <Stack width={{ base: "100%", md: "70%" }} spacing={4} pt={4}>
       <ProfileSettingCard userProfile={userProfile} />
-      <OptionSettingCard userOptions={userOptions} />
+      <OptionSettingCard />
     </Stack>
   );
 };

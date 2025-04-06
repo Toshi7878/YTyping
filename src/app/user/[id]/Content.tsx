@@ -7,9 +7,10 @@ import UserCard from "./_components/user/UserCard";
 interface ContentProps {
   userProfile: RouterOutPuts["user"]["getUserProfile"];
   userStats: RouterOutPuts["userStats"]["getUserStats"];
+  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
 }
 
-const Content = ({ userProfile, userStats }: ContentProps) => {
+const Content = ({ userProfile, userStats, userOptions }: ContentProps) => {
   if (!userProfile) {
     return (
       <Stack width={{ base: "100%", md: "70%" }} spacing={4} pt={4} align="center" justify="center" minHeight="200px">
@@ -21,7 +22,7 @@ const Content = ({ userProfile, userStats }: ContentProps) => {
   return (
     <Stack width={{ base: "100%", md: "70%" }} spacing={4} pt={4}>
       <UserCard userProfile={userProfile} />
-      <UserStatsCard userStats={userStats} />
+      <UserStatsCard userStats={userStats} userOptions={userOptions} />
     </Stack>
   );
 };

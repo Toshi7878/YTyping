@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-4-6",
+    descriptions: ["ユーザー設定にプロフィールのタイピング統計情報を隠す設定を追加"],
+  },
+  {
     date: "2025-4-5",
     descriptions: [
       "ユーザーページに打鍵数のアクティビティカレンダーを追加",

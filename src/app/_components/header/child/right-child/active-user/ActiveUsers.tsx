@@ -1,6 +1,6 @@
 import CustomDrawerContent from "@/components/custom-ui/CustomDrawerContent";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useSetOnlineUsersAtom, useUserOptionsAtom } from "@/lib/global-atoms/globalAtoms";
+import { useSetOnlineUsersAtom, useUserOptionsState } from "@/lib/global-atoms/globalAtoms";
 import { supabase } from "@/lib/supabaseClient";
 import { ThemeColors } from "@/types";
 import { ActiveUserStatus } from "@/types/global-types";
@@ -14,7 +14,7 @@ import ActiveUsersInnerContent from "./child/ActiveUsersInnerContent";
 export default function ActiveUsers() {
   const theme: ThemeColors = useTheme();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const userOptions = useUserOptionsAtom();
+  const userOptions = useUserOptionsState();
 
   const nofityDrawerClose = useCallback(() => {
     onClose();
@@ -36,13 +36,7 @@ export default function ActiveUsers() {
       const isType = pathname.match("/type/");
       const isEdit = pathname.match("/edit");
       const currentState =
-        userOptions?.custom_user_active_state === "ASK_ME"
-          ? "askMe"
-          : isType
-          ? "type"
-          : isEdit
-          ? "edit"
-          : "idle";
+        userOptions?.custom_user_active_state === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
 
       const userStatus: ActiveUserStatus = {
         id: Number(session.user.id),
@@ -129,14 +123,7 @@ export default function ActiveUsers() {
         currentChannel.unsubscribe();
       }
     };
-  }, [
-    pathname,
-    session?.user.name,
-    setOnlineUsers,
-    mapId,
-    session?.user.id,
-    userOptions?.custom_user_active_state,
-  ]);
+  }, [pathname, session?.user.name, setOnlineUsers, mapId, session?.user.id, userOptions?.custom_user_active_state]);
 
   return (
     <>

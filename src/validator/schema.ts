@@ -16,6 +16,7 @@ export const nameSchema = z.object({
 
 export const userOptionSchema = z.object({
   custom_user_active_state: z.nativeEnum(custom_user_active_state),
+  hide_user_stats: z.boolean(),
 });
 
 export const userFingerChartUrlSchema = z.object({
