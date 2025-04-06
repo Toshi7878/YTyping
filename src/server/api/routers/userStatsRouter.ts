@@ -126,23 +126,18 @@ export const userStatsRouter = {
         },
       });
 
-      // 日付ごとの合計タイプ数を計算
-      const dailyTotals = userTypingOptions.map((day) => {
-        const romaCount = day.roma_type_count || 0;
-        const kanaCount = day.kana_type_count || 0;
-        const flickCount = day.flick_type_count || 0;
-        const englishCount = day.english_type_count || 0;
-        const otherCount = day.other_type_count || 0;
+      const dailyTotals: {
+        date: string;
+        count: number;
+        level: number;
+        data: (typeof userTypingOptions)[number] | undefined;
+      }[] = userTypingOptions.map((day) => {
+        const { roma_type_count, kana_type_count, flick_type_count, english_type_count, other_type_count } = day;
 
-        const count = romaCount + kanaCount + flickCount + englishCount + otherCount;
-
-        // 最も多いタイプを特定
         const typeCounts = [
-          { type: "roma", count: romaCount },
-          { type: "kana", count: kanaCount },
-          { type: "flick", count: flickCount },
-          { type: "english", count: englishCount },
-          { type: "other", count: otherCount },
+          { type: "roma" as const, count: roma_type_count },
+          { type: "kana" as const, count: kana_type_count },
+          { type: "other" as const, count: flick_type_count + english_type_count + other_type_count },
         ];
 
         const dominantType = typeCounts.reduce(
@@ -150,33 +145,16 @@ export const userStatsRouter = {
           typeCounts[0]
         );
 
-        // タイプに基づいてレベルを決定
-        let level = 0;
-        if (count > 0) {
-          if (dominantType.type === "roma") {
-            if (count >= 15000) level = 3;
-            else if (count >= 5000) level = 2;
-            else if (count >= 1) level = 1;
-          } else if (dominantType.type === "kana") {
-            if (count >= 12000) level = 6;
-            else if (count >= 5000) level = 5;
-            else if (count >= 1) level = 4;
-          } else {
-            if (count >= 15000) level = 9;
-            else if (count >= 5000) level = 8;
-            else if (count >= 1) level = 7;
-          }
-        }
+        const level = getActivityLevel(dominantType);
 
-        // 日付を'YYYY-MM-DD'形式に変換
         const dateObj = new Date(day.created_at);
         const formattedDate = dateObj.toISOString().split("T")[0];
 
         return {
           date: formattedDate,
-          count,
+          count: roma_type_count + kana_type_count + flick_type_count + english_type_count + other_type_count,
           level,
-          dominantType: dominantType.type,
+          data: day,
         };
       });
 
@@ -187,7 +165,7 @@ export const userStatsRouter = {
           date: startOfYear.toISOString().split("T")[0],
           count: 0,
           level: 0,
-          dominantType: "",
+          data: undefined,
         });
       }
 
@@ -197,10 +175,38 @@ export const userStatsRouter = {
           date: endOfYear.toISOString().split("T")[0],
           count: 0,
           level: 0,
-          dominantType: "",
+          data: undefined,
         });
       }
 
       return dailyTotals;
     }),
+};
+
+export const LEVELS = {
+  roma: {
+    1: 1 as const,
+    2: 5000 as const,
+    3: 15000 as const,
+  },
+  kana: {
+    4: 1 as const,
+    5: 5000 as const,
+    6: 12000 as const,
+  },
+  other: {
+    7: 1 as const,
+    8: 5000 as const,
+    9: 15000 as const,
+  },
+};
+
+const getActivityLevel = ({ type, count }: { type: keyof typeof LEVELS; count: number }): number => {
+  for (const [levelKey, threshold] of Object.entries(LEVELS[type])) {
+    if (count >= threshold) {
+      return parseInt(levelKey);
+    }
+  }
+
+  return 0;
 };

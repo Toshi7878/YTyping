@@ -1,11 +1,12 @@
 "use client";
 
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
-import { Flex, Spinner, Text, useTheme } from "@chakra-ui/react";
+import { Box, Divider, Flex, Spinner, Text, useTheme } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import ActivityCalendar from "react-activity-calendar";
+import ActivityCalendar, { Activity } from "react-activity-calendar";
 
 const TypeActivity = () => {
   const { id: userId } = useParams() as { id: string };
@@ -48,15 +49,51 @@ const TypeActivity = () => {
             blockSize={14}
             blockMargin={3}
             maxLevel={9}
-            renderBlock={(block, activity) => (
-              <CustomToolTip placement="top" label={`${activity.count} 打鍵 ${activity.date}`}>
-                {block}
-              </CustomToolTip>
-            )}
+            renderBlock={(block, activity) => {
+              return (
+                <CustomToolTip placement="top" label={<BlockToolTipLabel activity={activity} />}>
+                  {block}
+                </CustomToolTip>
+              );
+            }}
+            renderColorLegend={(color, level) => {
+              const label = level === 0 ? "活動なし" : level <= 3 ? "ローマ字" : level <= 6 ? "かな" : "英語";
+              return (
+                <CustomToolTip placement="top" label={`${label} level: ${level}`}>
+                  <Box mr={level % 3 === 0 ? "10px" : "0px"}>{color}</Box>
+                </CustomToolTip>
+              );
+            }}
             weekStart={1}
           />
         </Flex>
       )}
+    </Flex>
+  );
+};
+
+const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
+  const { data } = activity as RouterOutPuts["userStats"]["getUserActivity"][number];
+  const sortedTypeData = [
+    { label: "ローマ字", count: data?.roma_type_count ?? 0 },
+    { label: "かな", count: data?.kana_type_count ?? 0 },
+    { label: "英語数字記号", count: data?.english_type_count ?? 0 },
+  ].sort((a, b) => b.count - a.count);
+
+  const sortedTypeDataString = sortedTypeData.map((item) => {
+    return (
+      <Box key={item.label} fontSize="xs">
+        {item.label}: {item.count}
+      </Box>
+    );
+  });
+
+  return (
+    <Flex flexDirection="column" gap={2}>
+      {sortedTypeDataString}
+      <Divider />
+      <Box>合計打鍵数: {activity.count}</Box>
+      <Box>日付: {activity.date}</Box>
     </Flex>
   );
 };
