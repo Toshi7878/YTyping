@@ -145,14 +145,16 @@ export const userStatsRouter = {
           typeCounts[0]
         );
 
-        const level = getActivityLevel(dominantType);
+        const totalTypeCount =
+          roma_type_count + kana_type_count + flick_type_count + english_type_count + other_type_count;
+        const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
 
         const dateObj = new Date(day.created_at);
         const formattedDate = dateObj.toISOString().split("T")[0];
 
         return {
           date: formattedDate,
-          count: roma_type_count + kana_type_count + flick_type_count + english_type_count + other_type_count,
+          count: totalTypeCount,
           level,
           data: day,
         };
@@ -201,13 +203,13 @@ export const LEVELS = {
   },
 };
 
-const getActivityLevel = ({ type, count }: { type: keyof typeof LEVELS; count: number }): number => {
+const getActivityLevel = ({ type, totalTypeCount }: { type: keyof typeof LEVELS; totalTypeCount: number }): number => {
   const sortedLevels = Object.entries(LEVELS[type])
     .map(([level, threshold]) => ({ level: parseInt(level), threshold }))
     .sort((a, b) => b.level - a.level);
 
   for (const { level, threshold } of sortedLevels) {
-    if (count >= threshold) {
+    if (totalTypeCount >= threshold) {
       return level;
     }
   }
