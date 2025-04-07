@@ -16,9 +16,9 @@ const TypeActivity = () => {
   const { colors }: ThemeColors = useTheme();
 
   const getThemeColors = () => {
-    const roma = [`${colors.semantic.roma}40`, `${colors.semantic.roma}80`, colors.semantic.roma];
-    const kana = [`${colors.semantic.kana}40`, `${colors.semantic.kana}80`, colors.semantic.kana];
-    const english = [`${colors.semantic.english}40`, `${colors.semantic.english}80`, colors.semantic.english];
+    const roma = [`${colors.semantic.roma}40`, `${colors.semantic.roma}a0`, colors.semantic.roma];
+    const kana = [`${colors.semantic.kana}40`, `${colors.semantic.kana}a0`, colors.semantic.kana];
+    const english = [`${colors.semantic.english}40`, `${colors.semantic.english}a0`, colors.semantic.english];
 
     return ["#161b22"].concat(roma).concat(kana).concat(english);
   };
