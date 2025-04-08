@@ -9,9 +9,12 @@ import {
 } from "@/config/consts/charList";
 import { clientApi } from "@/trpc/client-api";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useQueryClient } from "@tanstack/react-query";
+import Kuroshiro from "kuroshiro";
 import { useSession } from "next-auth/react";
 import { useWordConvertOptionStateRef } from "../../atoms/storageAtoms";
 import { ConvertOptionsType } from "../../ts/type";
+const kuroshiro = new Kuroshiro();
 
 const allowedChars = new Set([
   ...KANA_LIST,
@@ -50,6 +53,7 @@ export const useWordConverter = () => {
 
 const useFetchMorph = () => {
   const utils = clientApi.useUtils();
+  const queryClient = useQueryClient();
   const kanaToHira = useKanaToHira();
   const setIsLoadWordConvert = useSetIsWordConvertingState();
   const toast = useCustomToast();
@@ -64,6 +68,7 @@ const useFetchMorph = () => {
           staleTime: Infinity,
         }
       );
+
       return kanaToHira(convertedWord);
     } catch {
       const message = !session ? "読み変換機能はログイン後に使用できます" : undefined;
