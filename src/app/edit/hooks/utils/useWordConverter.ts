@@ -14,6 +14,9 @@ import Kuroshiro from "kuroshiro";
 import { useSession } from "next-auth/react";
 import { useWordConvertOptionStateRef } from "../../atoms/storageAtoms";
 import { ConvertOptionsType } from "../../ts/type";
+// Initialize kuroshiro with an instance of analyzer (You could check the [apidoc](#initanalyzer) for more information):
+// For this example, you should npm install and import the kuromoji analyzer first
+import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
 const kuroshiro = new Kuroshiro();
 
 const allowedChars = new Set([
@@ -62,12 +65,20 @@ const useFetchMorph = () => {
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
     try {
-      const convertedWord = await utils.morphConvert.getKanaWord.ensureData(
-        { sentence },
-        {
-          staleTime: Infinity,
-        }
-      );
+      const convertedWord = await queryClient.ensureQueryData({
+        queryKey: ["morph", sentence],
+        queryFn: async () => {
+          await kuroshiro.init(new KuromojiAnalyzer());
+
+          // Convert what you want:
+          const result = await kuroshiro.convert(sentence, {
+            to: "hiragana",
+          });
+
+          return result;
+        },
+        staleTime: Infinity,
+      });
 
       return kanaToHira(convertedWord);
     } catch {
