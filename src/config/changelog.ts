@@ -1,9 +1,5 @@
 export const changelog = [
   {
-    date: "2025-4-8",
-    descriptions: ["エディターの読み仮名変換APIを https://github.com/hexenq/kuroshiro に変更"],
-  },
-  {
     date: "2025-4-6",
     descriptions: ["ユーザー設定にプロフィールのタイピング統計情報を隠す設定を追加"],
   },
