@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-4-9",
+    descriptions: ["エディター読み仮名変換辞書をmecab-ipadic-neologdに変更(読み変換精度向上)"],
+  },
+  {
     date: "2025-4-6",
     descriptions: ["ユーザー設定にプロフィールのタイピング統計情報を隠す設定を追加"],
   },
