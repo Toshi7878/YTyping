@@ -43,7 +43,7 @@ export const useWordConverter = () => {
       const convertedWord = await fetchMorph(formatLyrics);
       return filterAllowedCharacters(filterWordSymbol({ kanaWord: convertedWord, convertOption }));
     } else {
-      return filterWordSymbol({ kanaWord: formatLyrics, convertOption });
+      return filterAllowedCharacters(filterWordSymbol({ kanaWord: formatLyrics, convertOption }));
     }
   };
 };
