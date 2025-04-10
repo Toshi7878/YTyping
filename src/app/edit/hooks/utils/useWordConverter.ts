@@ -58,7 +58,7 @@ const useFetchMorph = () => {
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
     try {
-      const convertedWord = await utils.morphConvert.getKanaWordMecabNeologd.ensureData(
+      const convertedWord = await utils.morphConvert.getKanaWordYahoo.ensureData(
         { sentence },
         {
           staleTime: Infinity,

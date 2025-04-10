@@ -37,7 +37,7 @@ async function postAwsLambdaMecabNeologd(sentence: string): Promise<string> {
     return await response.text();
   } catch (error) {
     console.error("形態素解析エラー:", error);
-    throw new Error("形態素解析の実行中にエラーが発生しました");
+    throw new Error("形態素解析中にエラーが発生しました。詳細はログを確認してください。");
   }
 }
 
