@@ -1,21 +1,12 @@
 import { z } from "@/validator/z";
-import Kuroshiro from "kuroshiro";
 import { protectedProcedure } from "../trpc";
-// Initialize kuroshiro with an instance of analyzer (You could check the [apidoc](#initanalyzer) for more information):
-// For this example, you should npm install and import the kuromoji analyzer first
-import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
-const kuroshiro = new Kuroshiro();
 
 export const morphConvertRouter = {
   getKanaWordFugashi: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
-    const data = await postAwsLambdaFugashi(input.sentence);
-
-    return data;
+    return await postAwsLambdaFugashi(input.sentence);
   }),
   getKanaWordYahoo: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
-    const data = await fetchYahooMorphAnalysis(input.sentence);
-
-    return data.result.tokens.map((char: string) => char[1]).join("");
+    return await fetchYahooMorphAnalysis(input.sentence);
   }),
 };
 
@@ -44,7 +35,7 @@ async function postAwsLambdaFugashi(sentence: string): Promise<string> {
   }
 }
 
-async function fetchYahooMorphAnalysis(sentence: string): Promise<{ result: { tokens: string[] } }> {
+async function fetchYahooMorphAnalysis(sentence: string): Promise<string> {
   const apiKey = process.env.YAHOO_APP_ID as string;
   const apiUrl = "https://jlp.yahooapis.jp/MAService/V2/parse";
 
@@ -71,5 +62,6 @@ async function fetchYahooMorphAnalysis(sentence: string): Promise<{ result: { to
     }),
   });
 
-//   return response.json();
-// }
+  const data = await response.json();
+  return data.tokens.map((char: string) => char[1]).join("");
+}
