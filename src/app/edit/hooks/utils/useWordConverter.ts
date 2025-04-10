@@ -43,7 +43,7 @@ export const useWordConverter = () => {
       const convertedWord = await fetchMorph(formatLyrics);
       return filterAllowedCharacters(filterWordSymbol({ kanaWord: convertedWord, convertOption }));
     } else {
-      return filterWordSymbol({ kanaWord: formatLyrics, convertOption });
+      return filterAllowedCharacters(filterWordSymbol({ kanaWord: formatLyrics, convertOption }));
     }
   };
 };
@@ -58,7 +58,7 @@ const useFetchMorph = () => {
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
     try {
-      const convertedWord = await utils.morphConvert.getKanaWord.ensureData(
+      const convertedWord = await utils.morphConvert.getKanaWordFugashi.ensureData(
         { sentence },
         {
           staleTime: Infinity,
@@ -108,6 +108,8 @@ const useLyricsFormat = () => {
       .replace(/…/g, "...")
       .replace(/‥/g, "..")
       .replace(/･/g, "・")
+      .replace(/“/g, '"')
+      .replace(/”/g, '"')
       .replace(/〜/g, "～")
       .replace(/｢/g, "「")
       .replace(/｣/g, "」")
