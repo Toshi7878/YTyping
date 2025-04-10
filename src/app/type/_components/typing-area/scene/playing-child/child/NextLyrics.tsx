@@ -16,13 +16,13 @@ const NextLyrics = () => {
       className="lyrics-font"
       lineHeight={{ base: "80px", sm: "50px", md: "2.5rem" }}
     >
-      <Flex ml={1.5} alignItems="flex-end" fontWeight="bold" id="next_lyrics" whiteSpace="nowrap">
+      <Flex ml={1.5} alignItems="flex-end" fontWeight="bold" id="next_lyrics" whiteSpace="nowrap" fontSize="110%">
         {parse(lyrics)}
         <ruby className="invisible">
           あ<rt>あ</rt>
         </ruby>
       </Flex>
-      <Box ml={2} id="next_kpm">
+      <Box ml={2} id="next_kpm" fontSize="90%">
         {Number(kpm) > 0 ? `NEXT: ${kpm}kpm` : ""}
       </Box>
     </Box>
