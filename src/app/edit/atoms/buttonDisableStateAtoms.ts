@@ -35,11 +35,11 @@ const isAddButtonDisabledAtom = atom((get) => {
 });
 
 const isUpdateButtonDisabledAtom = atom((get) => {
-  const isTimeInputValid = get(isTimeInputValidAtom);
-  const isLineNotSelect = get(isNotSelectLineAtom);
+  const isNotLineSelect = get(isNotSelectLineAtom);
   const isLineLastSelect = get(isLineLastSelectAtom);
+  const isTimeInputValid = get(isTimeInputValidAtom);
 
-  return isTimeInputValid || isLineNotSelect || isLineLastSelect;
+  return isTimeInputValid || isNotLineSelect || isLineLastSelect;
 });
 
 const isDeleteButtonDisabledAtom = atom((get) => {

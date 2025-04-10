@@ -233,13 +233,18 @@ const writeLineAtom = atom(null, (get, set, action: WriteLineSetAction | ResetLi
     const { time, ...lineAtomData } = action.line;
     set(lineAtom, lineAtomData);
     timeInput.value = String(time);
-    set(isTimeInputValidAtom, String(time) !== "" ? false : true);
   } else if (action.type === "reset") {
     set(lineAtom, RESET);
     timeInput.value = "";
-    set(isTimeInputValidAtom, true);
   }
 });
+
+store.sub(lineAtom, () => {
+  const timeInput = store.get(timeInputRefAtom) as HTMLInputElement;
+
+  store.set(isTimeInputValidAtom, timeInput.value === "");
+});
+
 const selectLineLyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics"));
 const selectLineWordAtom = focusAtom(lineAtom, (optic) => optic.prop("word"));
 export const selectLineIndexAtom = focusAtom(lineAtom, (optic) => optic.prop("selectIndex"));

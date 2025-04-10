@@ -1,7 +1,10 @@
 export const changelog = [
   {
     date: "2025-4-9",
-    descriptions: ["変換辞書が正しく適用されていない問題を修正。unidic辞書を適用"],
+    descriptions: [
+      "エディターで変更ボタンが有効にならないときがある問題を修正",
+      "変換辞書が正しく適用されていない問題を修正。unidic辞書を適用",
+    ],
   },
   {
     date: "2025-4-9",
