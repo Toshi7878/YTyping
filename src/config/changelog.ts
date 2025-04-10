@@ -1,6 +1,10 @@
 export const changelog = [
   {
     date: "2025-4-9",
+    descriptions: ["変換辞書が正しく適用されていない問題を修正。unidic辞書を適用"],
+  },
+  {
+    date: "2025-4-9",
     descriptions: ["エディター読み仮名変換辞書をmecab-ipadic-neologdに変更(読み変換精度向上)"],
   },
   {

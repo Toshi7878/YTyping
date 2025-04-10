@@ -2,13 +2,11 @@ import { z } from "@/validator/z";
 import { protectedProcedure } from "../trpc";
 
 export const morphConvertRouter = {
-  getKanaWordMecabNeologd: protectedProcedure
-    .input(z.object({ sentence: z.string().min(1) }))
-    .query(async ({ input }) => {
-      const data = await postAwsLambdaMecabNeologd(input.sentence);
+  getKanaWordFugashi: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
+    const data = await postAwsLambdaFugashi(input.sentence);
 
-      return data;
-    }),
+    return data;
+  }),
   getKanaWordYahoo: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
     const data = await fetchYahooMorphAnalysis(input.sentence);
 
@@ -16,7 +14,7 @@ export const morphConvertRouter = {
   }),
 };
 
-async function postAwsLambdaMecabNeologd(sentence: string): Promise<string> {
+async function postAwsLambdaFugashi(sentence: string): Promise<string> {
   const apiKey = process.env.AWS_LAMBDA_MORPH_API_KEY as string;
   const apiUrl = "https://j94myzm4v8.execute-api.ap-northeast-1.amazonaws.com/dev/mecab/parse";
 
@@ -24,7 +22,7 @@ async function postAwsLambdaMecabNeologd(sentence: string): Promise<string> {
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "",
+        "Content-Type": "text/plain",
         "x-api-key": apiKey,
       },
       body: sentence,
