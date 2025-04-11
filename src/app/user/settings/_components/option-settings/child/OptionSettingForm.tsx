@@ -41,7 +41,7 @@ export const OptionSettingForm = () => {
           onSubmit={onSubmit as SubmitHandler<FieldValues>}
         />
         <CheckBoxFormField
-          label="プロフィールページのタイピング統計情報を隠す"
+          label="プロフィールページのタイピング統計情報を非公開にする"
           name="hide_user_stats"
           onSubmit={onSubmit as SubmitHandler<FieldValues>}
         />

@@ -118,9 +118,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
   return (
     <>
       {isMyStatsWithHide && <MyHideOptionInfo />}
-      <Heading as="h4" size="md" mb={4}>
-        基本情報
-      </Heading>
+
       <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={6}>
         {generalStatsData.map((item, index) => (
           <Box key={index} p={4} borderWidth="1px" borderRadius="md" bg={theme.colors.background.body}>
