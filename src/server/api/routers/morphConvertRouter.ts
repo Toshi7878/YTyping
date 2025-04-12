@@ -7,8 +7,8 @@ const AWS_API = {
     url: "https://0bwyiswewg.execute-api.ap-northeast-1.amazonaws.com/dev/fugashi-unidic/parse",
   },
   SUDACHI_FULL: {
-    apiKey: process.env.FUGASHI_UNIDIC_API_KEY as string,
-    url: "https://0bwyiswewg.execute-api.ap-northeast-1.amazonaws.com/dev/fugashi-unidic/parse",
+    apiKey: process.env.SUDACHI_FULL_API_KEY as string,
+    url: "https://wdso812r5e.execute-api.ap-northeast-1.amazonaws.com/dev/sudachi-full/parse",
   },
 } as const;
 
