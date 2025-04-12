@@ -11,8 +11,8 @@ export const morphConvertRouter = {
 };
 
 async function postAwsLambdaFugashi(sentence: string): Promise<string> {
-  const apiKey = process.env.AWS_LAMBDA_MORPH_API_KEY as string;
-  const apiUrl = "https://j94myzm4v8.execute-api.ap-northeast-1.amazonaws.com/dev/mecab/parse";
+  const apiKey = process.env.FUGASHI_UNIDIC_API_KEY as string;
+  const apiUrl = "https://0bwyiswewg.execute-api.ap-northeast-1.amazonaws.com/dev/fugashi-unidic/parse";
 
   try {
     const response = await fetch(apiUrl, {
