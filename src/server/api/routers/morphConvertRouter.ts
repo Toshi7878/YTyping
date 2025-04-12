@@ -1,21 +1,31 @@
 import { z } from "@/validator/z";
 import { protectedProcedure } from "../trpc";
 
+const AWS_API = {
+  FUGASHI_UNIDIC: {
+    apiKey: process.env.FUGASHI_UNIDIC_API_KEY as string,
+    url: "https://0bwyiswewg.execute-api.ap-northeast-1.amazonaws.com/dev/fugashi-unidic/parse",
+  },
+  SUDACHI_FULL: {
+    apiKey: process.env.FUGASHI_UNIDIC_API_KEY as string,
+    url: "https://0bwyiswewg.execute-api.ap-northeast-1.amazonaws.com/dev/fugashi-unidic/parse",
+  },
+} as const;
+
 export const morphConvertRouter = {
-  getKanaWordFugashi: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
-    return await postAwsLambdaFugashi(input.sentence);
+  getKanaWordAws: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
+    return await postAwsLambdaMorphApi(input.sentence);
   }),
   getKanaWordYahoo: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
     return await fetchYahooMorphAnalysis(input.sentence);
   }),
 };
 
-async function postAwsLambdaFugashi(sentence: string): Promise<string> {
-  const apiKey = process.env.FUGASHI_UNIDIC_API_KEY as string;
-  const apiUrl = "https://0bwyiswewg.execute-api.ap-northeast-1.amazonaws.com/dev/fugashi-unidic/parse";
+async function postAwsLambdaMorphApi(sentence: string): Promise<string> {
+  const { apiKey, url } = AWS_API["SUDACHI_FULL"];
 
   try {
-    const response = await fetch(apiUrl, {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "text/plain",
