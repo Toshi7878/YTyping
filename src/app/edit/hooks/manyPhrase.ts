@@ -13,8 +13,10 @@ export const usePickupTopPhrase = () => {
     const time = readPlayer().getCurrentTime();
 
     const { lyrics } = readSelectLine();
-    if (topPhrase === lyrics)
+
+    if (lyrics === "") {
       lineDispatch({ type: "set", line: { lyrics: topPhrase.trim(), word, selectIndex: null, time } });
+    }
   };
 };
 
