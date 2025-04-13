@@ -1,16 +1,20 @@
 import { usePlayer } from "../atoms/refAtoms";
-import { useEditUtilsStateRef, useLineReducer, useSetManyPhraseState } from "../atoms/stateAtoms";
+import { useEditUtilsStateRef, useLineReducer, useLineStateRef, useSetManyPhraseState } from "../atoms/stateAtoms";
 import { useWordConverter } from "./utils/useWordConverter";
 
 export const usePickupTopPhrase = () => {
   const lineDispatch = useLineReducer();
   const { readPlayer } = usePlayer();
+  const readSelectLine = useLineStateRef();
 
   const wordConvert = useWordConverter();
   return async (topPhrase: string) => {
     const word = await wordConvert(topPhrase);
     const time = readPlayer().getCurrentTime();
-    lineDispatch({ type: "set", line: { lyrics: topPhrase.trim(), word, selectIndex: null, time } });
+
+    const { lyrics } = readSelectLine();
+    if (topPhrase === lyrics)
+      lineDispatch({ type: "set", line: { lyrics: topPhrase.trim(), word, selectIndex: null, time } });
   };
 };
 
