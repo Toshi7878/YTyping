@@ -9,6 +9,7 @@ import {
   useYtPlayerStatusStateRef,
 } from "../atoms/stateAtoms";
 
+import { clientApi } from "@/trpc/client-api";
 import { MapLine } from "@/types/map";
 import { useSearchParams } from "next/navigation";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
@@ -104,8 +105,8 @@ export const useLineUpdateButtonEvent = () => {
   const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
   const readMap = useMapStateRef();
-  const { writeEditUtils } = useEditUtilsRef();
   const readUtilsState = useEditUtilsStateRef();
+  const postFixWordLog = clientApi.morphConvert.post_fix_word_log.useMutation();
 
   const timeValidate = useTimeValidate();
   return () => {
@@ -120,7 +121,7 @@ export const useLineUpdateButtonEvent = () => {
     const formatedTime = timeValidate(_time).toFixed(3);
 
     const oldLine = map[selectLineIndex];
-    const updatedLine = {
+    const newLine = {
       time: formatedTime,
       lyrics,
       word,
@@ -135,7 +136,7 @@ export const useLineUpdateButtonEvent = () => {
         actionType: "update",
         data: {
           old: oldLine,
-          new: updatedLine,
+          new: newLine,
           lineIndex: selectLineIndex,
         },
       },
@@ -149,10 +150,18 @@ export const useLineUpdateButtonEvent = () => {
       updateNewMapBackUp(newVideoId);
     }
 
-    mapDispatch({ type: "update", payload: updatedLine, index: selectLineIndex });
+    mapDispatch({ type: "update", payload: newLine, index: selectLineIndex });
     lineDispatch({ type: "reset" });
     setDirectEdit(null);
     setCanUpload(true);
+
+    if (newLine.time === oldLine.time && newLine.lyrics === oldLine.lyrics && newLine.word !== oldLine.word) {
+      const hasKanji = /[\u4e00-\u9faf]/.test(oldLine.lyrics);
+
+      if (hasKanji) {
+        postFixWordLog.mutate({ lyrics: oldLine.lyrics, word: oldLine.word });
+      }
+    }
   };
 };
 

@@ -82,6 +82,7 @@
     "eslint-config-next": "14.2.3",
     "npm": "^11.2.0",
     "prisma": "^6.5.0",
+    "supabase": "^2.20.12",
     "typescript": "^5"
   }
 }

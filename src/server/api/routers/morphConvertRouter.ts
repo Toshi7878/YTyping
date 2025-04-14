@@ -16,19 +16,56 @@ export const morphConvertRouter = {
   getKanaWordAws: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
     return await postAwsLambdaMorphApi(input.sentence);
   }),
+
   getKanaWordYahoo: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
     return await fetchYahooMorphAnalysis(input.sentence);
   }),
+
+  getCustomDic: protectedProcedure.query(async ({ ctx }) => {
+    const result = await ctx.db.morph_convert_kana_dic.findMany();
+
+    return result.sort((a, b) => b.surface.length - a.surface.length);
+  }),
+
+  registerCustomDic: protectedProcedure
+    .input(z.object({ surface: z.string().min(2), reading: z.string().min(2) }))
+    .mutation(async ({ input, ctx }) => {
+      const { surface, reading } = input;
+
+      await ctx.db.morph_convert_kana_dic.create({
+        data: {
+          surface,
+          reading,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  post_fix_word_log: protectedProcedure
+    .input(z.object({ lyrics: z.string().min(2), word: z.string().min(2) }))
+    .mutation(async ({ input, ctx }) => {
+      const { lyrics, word } = input;
+
+      await ctx.db.fix_word_edit_logs.create({
+        data: {
+          lyrics,
+          word,
+        },
+      });
+
+      return { success: true };
+    }),
 };
 
-async function postAwsLambdaMorphApi(sentence: string): Promise<string> {
+async function postAwsLambdaMorphApi(sentence: string): Promise<{ lyrics: string[]; reading: string[] }> {
   const { apiKey, url } = AWS_API["SUDACHI_FULL"];
 
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "text/plain",
+        "Content-Type": "application/json",
         "x-api-key": apiKey,
       },
       body: sentence,
@@ -38,7 +75,7 @@ async function postAwsLambdaMorphApi(sentence: string): Promise<string> {
       throw new Error(`API エラー: ${response.status} ${response.statusText}`);
     }
 
-    return await response.text();
+    return await response.json();
   } catch (error) {
     console.error("形態素解析エラー:", error);
     throw new Error("形態素解析中にエラーが発生しました。詳細はログを確認してください。");

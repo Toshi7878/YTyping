@@ -53,18 +53,20 @@ const useFetchMorph = () => {
   const kanaToHira = useKanaToHira();
   const setIsLoadWordConvert = useSetIsWordConvertingState();
   const toast = useCustomToast();
+  const replaceReadingWithCustomDic = useReplaceReadingWithCustomDic();
   const { data: session } = useSession();
 
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
     try {
       const convertedWord = await utils.morphConvert.getKanaWordAws.ensureData(
-        { sentence },
+        { sentence: await replaceReadingWithCustomDic(sentence) },
         {
           staleTime: Infinity,
         }
       );
-      return kanaToHira(convertedWord);
+
+      return convertedWord.reading.join();
     } catch {
       const message = !session ? "読み変換機能はログイン後に使用できます" : undefined;
       toast({ type: "error", title: "読み変換に失敗しました", message });
@@ -72,6 +74,28 @@ const useFetchMorph = () => {
     } finally {
       setIsLoadWordConvert(false);
     }
+  };
+};
+
+const useReplaceReadingWithCustomDic = () => {
+  const utils = clientApi.useUtils();
+
+  return async (sentense: string) => {
+    const customDic = await utils.morphConvert.getCustomDic.ensureData(undefined, {
+      staleTime: Infinity,
+      gcTime: Infinity,
+    });
+
+    let result = sentense;
+
+    // カスタム辞書の各エントリーで置換
+    for (const entry of customDic) {
+      // 大文字小文字を区別せずに全ての一致を置換
+      const regex = new RegExp(entry.surface, "g");
+      result = result.replace(regex, entry.reading);
+    }
+
+    return result;
   };
 };
 

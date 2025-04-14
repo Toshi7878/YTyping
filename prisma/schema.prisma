@@ -259,3 +259,13 @@ model user_daily_type_counts {
 
   @@id([user_id, created_at])
 }
+
+model morph_convert_kana_dic {
+  surface String @id
+  reading String
+}
+
+model fix_word_edit_logs {
+  lyrics String @id
+  word   String
+}
