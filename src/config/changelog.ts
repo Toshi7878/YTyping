@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-4-14",
+    descriptions: ["譜面新規作成時に同じ動画の譜面が存在する場合はエディターの下部に譜面カードを表示"],
+  },
+  {
     date: "2025-4-9",
     descriptions: [
       "次の歌詞の文字サイズを10%拡大、NEXT kpm文字サイズを10%縮小",

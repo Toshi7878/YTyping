@@ -1,3 +1,5 @@
+"use client";
+
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "@/app/(home)/ts/consts";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
@@ -8,9 +10,10 @@ import { Box, Spinner } from "@chakra-ui/react";
 
 interface CreatedCheckProps {
   videoId: string;
+  disableNotFoundText?: boolean;
 }
 
-const CreatedCheck = ({ videoId }: CreatedCheckProps) => {
+const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProps) => {
   const { data, isPending } = useGetCreatedVideoIdMapListQuery({ videoId });
 
   if (isPending) {
@@ -51,13 +54,14 @@ const CreatedCheck = ({ videoId }: CreatedCheckProps) => {
         })}
       </Box>
     );
-  } else {
+  } else if (!disableNotFoundText) {
     return (
       <Box fontSize="lg" fontWeight="bold" my={3}>
         この動画の譜面は見つかりませんでした
       </Box>
     );
   }
+  return null;
 };
 
 export default CreatedCheck;

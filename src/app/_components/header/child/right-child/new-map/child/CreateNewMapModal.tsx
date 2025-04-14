@@ -4,17 +4,9 @@ import { EditorNewMapBackUpInfoData } from "@/app/edit/ts/type";
 import CustomModalContent from "@/components/custom-ui/CustomModalContent";
 import { db } from "@/lib/db";
 import { IndexDBOption } from "@/types";
-import {
-  Flex,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  UseDisclosureReturn,
-} from "@chakra-ui/react";
+import { Flex, Modal, ModalBody, ModalFooter, ModalHeader, ModalOverlay, UseDisclosureReturn } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import CreatedCheck from "./child/CreatedCheck";
+import CreatedCheck from "../../../../../../../components/share-components/CreatedCheck";
 import CreateMapBackUpButton from "./child/CreateMapBackUpButton";
 import NewCreateButton from "./child/NewCreateButton";
 import NewCreateVideoIdInputBox from "./child/NewCreateVideoIdInputBox";
@@ -37,16 +29,14 @@ export default function CreateNewMapModal({ newCreateModalDisclosure }: CreateNe
   }, [newCreateModalDisclosure.isOpen]);
 
   useEffect(() => {
-    db.editorNewCreateBak
-      .get({ optionName: "backupMapInfo" })
-      .then((data: IndexDBOption | undefined) => {
-        if (data) {
-          const backupMapInfo = data.value as EditorNewMapBackUpInfoData;
-          setCreateMapBackUpInfo({ title: backupMapInfo.title, videoId: backupMapInfo.videoId });
-        } else {
-          setCreateMapBackUpInfo({ title: "", videoId: "" });
-        }
-      });
+    db.editorNewCreateBak.get({ optionName: "backupMapInfo" }).then((data: IndexDBOption | undefined) => {
+      if (data) {
+        const backupMapInfo = data.value as EditorNewMapBackUpInfoData;
+        setCreateMapBackUpInfo({ title: backupMapInfo.title, videoId: backupMapInfo.videoId });
+      } else {
+        setCreateMapBackUpInfo({ title: "", videoId: "" });
+      }
+    });
 
     return () => {
       setCreateMapBackUpInfo({ title: "", videoId: "" });
