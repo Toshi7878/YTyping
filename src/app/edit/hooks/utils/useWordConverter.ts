@@ -66,7 +66,7 @@ const useFetchMorph = () => {
         }
       );
 
-      return convertedWord.reading.join();
+      return convertedWord.readings.join();
     } catch {
       const message = !session ? "読み変換機能はログイン後に使用できます" : undefined;
       toast({ type: "error", title: "読み変換に失敗しました", message });

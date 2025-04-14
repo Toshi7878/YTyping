@@ -58,7 +58,7 @@ export const morphConvertRouter = {
     }),
 };
 
-async function postAwsLambdaMorphApi(sentence: string): Promise<{ lyrics: string[]; reading: string[] }> {
+async function postAwsLambdaMorphApi(sentence: string): Promise<{ lyrics: string[]; readings: string[] }> {
   const { apiKey, url } = AWS_API["SUDACHI_FULL"];
 
   try {
@@ -68,14 +68,15 @@ async function postAwsLambdaMorphApi(sentence: string): Promise<{ lyrics: string
         "Content-Type": "application/json",
         "x-api-key": apiKey,
       },
-      body: sentence,
+      body: JSON.stringify({ text: sentence }),
     });
 
     if (!response.ok) {
       throw new Error(`API エラー: ${response.status} ${response.statusText}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("形態素解析エラー:", error);
     throw new Error("形態素解析中にエラーが発生しました。詳細はログを確認してください。");
