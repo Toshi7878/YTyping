@@ -7,6 +7,7 @@ import {
   NUM_LIST,
   STRICT_SYMBOL_LIST,
 } from "@/config/consts/charList";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useSession } from "next-auth/react";
@@ -50,7 +51,6 @@ export const useWordConverter = () => {
 
 const useFetchMorph = () => {
   const utils = clientApi.useUtils();
-  const kanaToHira = useKanaToHira();
   const setIsLoadWordConvert = useSetIsWordConvertingState();
   const toast = useCustomToast();
   const replaceReadingWithCustomDic = useReplaceReadingWithCustomDic();
@@ -60,13 +60,13 @@ const useFetchMorph = () => {
     setIsLoadWordConvert(true);
     try {
       const convertedWord = await utils.morphConvert.getKanaWordAws.ensureData(
-        { sentence: await replaceReadingWithCustomDic(sentence) },
+        { sentence },
         {
           staleTime: Infinity,
         }
       );
 
-      return convertedWord.readings.join("");
+      return replaceReadingWithCustomDic(convertedWord);
     } catch {
       const message = !session ? "読み変換機能はログイン後に使用できます" : undefined;
       toast({ type: "error", title: "読み変換に失敗しました", message });
@@ -80,22 +80,32 @@ const useFetchMorph = () => {
 const useReplaceReadingWithCustomDic = () => {
   const utils = clientApi.useUtils();
 
-  return async (sentense: string) => {
+  return async (sentense: RouterOutPuts["morphConvert"]["getKanaWordAws"]) => {
     const customDic = await utils.morphConvert.getCustomDic.ensureData(undefined, {
       staleTime: Infinity,
       gcTime: Infinity,
     });
 
-    let result = sentense;
+    const result = customDic.reduce((acc, { surface, reading }) => {
+      const matchIndexes: number[] = [];
+      acc.lyrics.forEach((lyric, index) => {
+        if (lyric === surface) {
+          matchIndexes.push(index);
+        }
+      });
 
-    // カスタム辞書の各エントリーで置換
-    for (const entry of customDic) {
-      // 大文字小文字を区別せずに全ての一致を置換
-      const regex = new RegExp(entry.surface, "g");
-      result = result.replace(regex, entry.reading);
-    }
+      if (matchIndexes.length > 0) {
+        const newReadings = [...acc.readings];
+        matchIndexes.forEach((index) => {
+          newReadings[index] = reading;
+        });
+        return { ...acc, readings: newReadings };
+      }
 
-    return result;
+      return acc;
+    }, sentense);
+
+    return result.readings.join("");
   };
 };
 
