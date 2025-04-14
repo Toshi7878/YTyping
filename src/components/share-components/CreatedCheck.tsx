@@ -17,7 +17,7 @@ const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProp
   const { data, isPending } = useGetCreatedVideoIdMapListQuery({ videoId });
 
   if (isPending) {
-    return <Spinner size="sm" />;
+    return <Spinner size="sm" my={10} />;
   }
 
   if (data && data.length) {
