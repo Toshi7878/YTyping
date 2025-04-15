@@ -260,9 +260,15 @@ model user_daily_type_counts {
   @@id([user_id, created_at])
 }
 
+enum morph_convert_kana_dic_type {
+  DICTIONARY
+  REGEX
+}
+
 model morph_convert_kana_dic {
-  surface String @id
+  surface String                      @id
   reading String
+  type    morph_convert_kana_dic_type @default(DICTIONARY)
 }
 
 model fix_word_edit_logs {
