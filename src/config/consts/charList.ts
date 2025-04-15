@@ -142,7 +142,7 @@ export const KANA_LIST = [
   "ゑ",
 ];
 
-export const MANDATORY_SYMBOL_LIST = [" ", "ー", "'", "＇", "%", "％", "&", "＆", "@", "＠"];
+export const MANDATORY_SYMBOL_LIST = [" ", "ー", "'", "＇", "%", "％", "&", "＆", "@", "＠", "~", "～"];
 export const LOOSE_SYMBOL_LIST = [
   ",",
   ".",
@@ -155,8 +155,7 @@ export const LOOSE_SYMBOL_LIST = [
   "?",
   "！",
   "？",
-  "~",
-  "～",
+
   "#",
   "＃",
   "$",
