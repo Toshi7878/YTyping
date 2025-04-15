@@ -155,7 +155,6 @@ export const LOOSE_SYMBOL_LIST = [
   "?",
   "！",
   "？",
-
   "#",
   "＃",
   "$",
