@@ -22,9 +22,10 @@ export const morphConvertRouter = {
   }),
 
   getCustomDic: protectedProcedure.query(async ({ ctx }) => {
-    const result = await ctx.db.morph_convert_kana_dic.findMany();
+    const customDic = await ctx.db.morph_convert_kana_dic.findMany({ where: { type: "DICTIONARY" } });
+    const customRegexDic = await ctx.db.morph_convert_kana_dic.findMany({ where: { type: "REGEX" } });
 
-    return result.sort((a, b) => b.surface.length - a.surface.length);
+    return { customDic, customRegexDic };
   }),
 
   registerCustomDic: protectedProcedure

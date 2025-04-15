@@ -55,10 +55,18 @@ const useFetchMorph = () => {
   const toast = useCustomToast();
   const replaceReadingWithCustomDic = useReplaceReadingWithCustomDic();
   const { data: session } = useSession();
+  const fetchCustomDic = useFetchCustomDic();
 
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
     try {
+      const { customRegexDic } = await fetchCustomDic();
+
+      sentence = customRegexDic.reduce((acc, { surface, reading }) => {
+        const regex = new RegExp(surface, "g");
+        return acc.replace(regex, reading);
+      }, sentence);
+
       const convertedWord = await utils.morphConvert.getKanaWordAws.ensureData(
         { sentence },
         {
@@ -81,7 +89,7 @@ const useReplaceReadingWithCustomDic = () => {
   const utils = clientApi.useUtils();
 
   return async (sentense: RouterOutPuts["morphConvert"]["getKanaWordAws"]) => {
-    const customDic = await utils.morphConvert.getCustomDic.ensureData(undefined, {
+    const { customDic } = await utils.morphConvert.getCustomDic.ensureData(undefined, {
       staleTime: Infinity,
       gcTime: Infinity,
     });
@@ -192,5 +200,16 @@ const useFilterWordSymbol = () => {
         .replace(zenkakuAfterSpaceReg, "$1")
         .replace(zenkakuBeforeSpaceReg, "$1");
     }
+  };
+};
+
+const useFetchCustomDic = () => {
+  const utils = clientApi.useUtils();
+
+  return async () => {
+    return await utils.morphConvert.getCustomDic.ensureData(undefined, {
+      staleTime: Infinity,
+      gcTime: Infinity,
+    });
   };
 };
