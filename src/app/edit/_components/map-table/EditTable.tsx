@@ -100,7 +100,7 @@ export default function EditTable() {
           maxH={{ sm: "calc(100vh - 100px)", md: "500px", "2xl": "calc(100vh - 400px)" }}
           overflowY="auto"
         >
-          <Table size="sm" variant="simple">
+          <Table size="sm" variant="simple" mb={{ sm: "65vh", md: "60vh", "2xl": "30vh" }}>
             <Thead>
               <Tr>
                 <Th width="5%" borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
