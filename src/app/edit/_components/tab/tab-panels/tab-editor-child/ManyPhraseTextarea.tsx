@@ -45,7 +45,9 @@ const ManyPhraseTextarea = () => {
   return (
     <Box display="flex" alignItems="center">
       <Textarea
-        placeholder="ここから歌詞をまとめて追加できます"
+        placeholder={`ここから歌詞をまとめて追加できます。
+Sキー: 歌詞を追加
+Ctrl+Zキー: 歌詞の追加のやり直し`}
         size="lg"
         id="many_phrase_textarea"
         height="110px"
