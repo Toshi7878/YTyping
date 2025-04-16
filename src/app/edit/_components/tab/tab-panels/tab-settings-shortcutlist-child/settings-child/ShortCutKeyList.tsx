@@ -3,19 +3,19 @@ import { Box, Heading, HStack, Kbd, Text, useTheme } from "@chakra-ui/react";
 
 const shortCutList = [
   { keys: ["←", "→"], description: "3秒スキップ" },
-  { keys: ["↑", "↓"], description: "選択ライン移動" },
+  { keys: ["↑", "↓"], description: "選択行の移動" },
   { keys: ["S"], description: "追加" },
   { keys: ["Shift+S"], description: "空行を追加" },
   { keys: ["U"], description: "変更" },
   { keys: ["Delete"], description: "削除" },
   { keys: ["Esc"], description: "再生・停止" },
-  { keys: ["D"], description: "選択ライン解除" },
-  { keys: ["Tab"], description: "歌詞追加テキストエリア切り替え" },
+  { keys: ["D"], description: "選択行の解除" },
+  { keys: ["Tab"], description: "歌詞追加テキストエリアフォーカス切り替え" },
   { keys: ["Ctrl+Shift+F"], description: "全体よみ置換" },
   { keys: ["Ctrl+Z"], description: "元に戻す" },
   { keys: ["Ctrl+Y"], description: "繰り返し" },
   { keys: ["Enter"], description: "歌詞テキストボックスの選択した文字にRubyタグを挿入" },
-  { keys: ["Ctrl+登録済みラインクリック"], description: "ライン直接編集モード" },
+  { keys: ["Ctrl+登録済み歌詞クリック"], description: "直接編集モード" },
 ];
 
 const ShortCutKeyList = () => {
