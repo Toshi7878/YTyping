@@ -1,6 +1,9 @@
 "use client";
 
 import { useSetTimeOffsetState, useTimeOffsetState } from "@/app/edit/atoms/storageAtoms";
+import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { ThemeColors } from "@/types";
+import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
 
 const MAX_TIME_OFFSET = -0.1;
 const MIN_TIME_OFFSET = -0.4;
@@ -18,22 +21,14 @@ export default function AddTimeAdjust() {
       max={MAX_TIME_OFFSET}
       min={MIN_TIME_OFFSET}
       valueDigits={2}
-      decrementTooltip="タイミングが早くなります"
-      incrementTooltip="タイミングが遅くなります"
       label="タイム補正"
     />
   );
 }
 
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
-
 interface CounterInputProps {
   value: number;
   label: string;
-  incrementTooltip: string;
-  decrementTooltip: string;
   max: number;
   min: number;
   step: number;
@@ -41,17 +36,7 @@ interface CounterInputProps {
   onChange: (value: number) => void;
 }
 
-const CounterInput = ({
-  value,
-  label,
-  incrementTooltip,
-  decrementTooltip,
-  max,
-  min,
-  step,
-  valueDigits = 0,
-  onChange,
-}: CounterInputProps) => {
+const CounterInput = ({ value, label, max, min, step, valueDigits = 0, onChange }: CounterInputProps) => {
   const theme: ThemeColors = useTheme();
 
   const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
@@ -63,10 +48,11 @@ const CounterInput = ({
     <CustomToolTip
       label={
         <>
-          <Box>再生中に追加・変更ボタンを押した時に、数値分タイムを補正します</Box>
+          <Box>再生中に追加・変更を行う場合に、数値分補正してタイムを記録します。</Box>
           <Box>
             <Text fontSize="xs">
               譜面のタイムは、歌いだしの瞬間より-0.2 ~ -0.25秒程早めに設定すると丁度よいタイミングになります。
+              (譜面のタイムが遅くなってしまうと、決め打ちなどのテクニックが通りづらくなってしまいます。)
             </Text>
             <Text fontSize="xs">※間奏など、追加時にワードが存在しない場合は追加タイム補正は適用されません。</Text>
           </Box>
@@ -86,30 +72,21 @@ const CounterInput = ({
           rounded="full"
           px={2}
         >
-          <CustomToolTip label={decrementTooltip} placement="top">
-            <Button
-              onClick={() => onCounterChange({ type: "decrement" })}
-              size="xs"
-              cursor="pointer"
-              variant="unstyled"
-            >
-              -
-            </Button>
-          </CustomToolTip>
+          <Button onClick={() => onCounterChange({ type: "decrement" })} size="xs" cursor="pointer" variant="unstyled">
+            -
+          </Button>
           <Flex fontSize="xs" gap={2}>
             {value.toFixed(valueDigits)}
           </Flex>
-          <CustomToolTip label={incrementTooltip} placement="top">
-            <Button
-              onClick={() => onCounterChange({ type: "increment" })}
-              size="xs"
-              cursor="pointer"
-              variant="unstyled"
-              position="relative"
-            >
-              +
-            </Button>
-          </CustomToolTip>
+          <Button
+            onClick={() => onCounterChange({ type: "increment" })}
+            size="xs"
+            cursor="pointer"
+            variant="unstyled"
+            position="relative"
+          >
+            +
+          </Button>
         </Flex>
       </Flex>
     </CustomToolTip>
