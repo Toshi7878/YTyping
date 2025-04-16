@@ -1,28 +1,23 @@
 "use client";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
-import { CounterInput } from "./child/CounterInput";
+import CounterInput from "./child/CounterInput";
 
-const CHANGE_TIME_OFFSET_VALUE = 0.05;
+const MAX_TIME_OFFSET = 1;
+const MIN_TIME_OFFSET = -1;
+const TIME_OFFSET_STEP = 0.05;
 
 const UserTimeOffsetChange = () => {
   const { setUserTypingOptions } = useSetUserTypingOptionsState();
   const { time_offset } = useUserTypingOptionsState();
 
-  const decrement = () => {
-    const newValue = Math.round((time_offset - CHANGE_TIME_OFFSET_VALUE) * 100) / 100;
-
-    setUserTypingOptions({ time_offset: Math.max(-1, newValue) });
-  };
-  const increment = () => {
-    const newValue = Math.round((time_offset + CHANGE_TIME_OFFSET_VALUE) * 100) / 100;
-    setUserTypingOptions({ time_offset: Math.min(1, newValue) });
-  };
-
   return (
     <CounterInput
-      value={time_offset.toFixed(2)}
-      onDecrement={decrement}
-      onIncrement={increment}
+      value={time_offset}
+      onChange={(value) => setUserTypingOptions({ time_offset: value })}
+      step={TIME_OFFSET_STEP}
+      max={MAX_TIME_OFFSET}
+      min={MIN_TIME_OFFSET}
+      valueDigits={2}
       decrementTooltip="タイミングが早くなります"
       incrementTooltip="タイミングが遅くなります"
       label={"全体タイミング調整"}

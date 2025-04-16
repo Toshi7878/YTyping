@@ -2,7 +2,7 @@
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/type/atoms/stateAtoms";
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { MdRestartAlt } from "react-icons/md";
-import { CounterInput } from "./child/CounterInput";
+import CounterInput from "./child/CounterInput";
 
 const FONT_SIZE_STEP = 1;
 const TOP_POSITION_STEP = 0.5;
@@ -18,42 +18,6 @@ export const UserWordFontSize = () => {
   const { setUserTypingOptions } = useSetUserTypingOptionsState();
   const { kana_word_font_size, roma_word_font_size, kana_word_top_position, roma_word_top_position } =
     useUserTypingOptionsState();
-
-  const onChangeKanaFontSize = (type: "increment" | "decrement") => {
-    const newValue =
-      type === "increment"
-        ? Math.min(MAX_FONT_SIZE, kana_word_font_size + FONT_SIZE_STEP)
-        : Math.max(MIN_FONT_SIZE, kana_word_font_size - FONT_SIZE_STEP);
-
-    setUserTypingOptions({ kana_word_font_size: newValue });
-  };
-
-  const onChangeRomaFontSize = (type: "increment" | "decrement") => {
-    const newValue =
-      type === "increment"
-        ? Math.min(MAX_FONT_SIZE, roma_word_font_size + FONT_SIZE_STEP)
-        : Math.max(MIN_FONT_SIZE, roma_word_font_size - FONT_SIZE_STEP);
-
-    setUserTypingOptions({ roma_word_font_size: newValue });
-  };
-
-  const onChangeKanaTopPosition = (type: "increment" | "decrement") => {
-    const newValue =
-      type === "increment"
-        ? Math.min(MAX_TOP_POSITION, kana_word_top_position + TOP_POSITION_STEP)
-        : Math.max(MIN_TOP_POSITION, kana_word_top_position - TOP_POSITION_STEP);
-
-    setUserTypingOptions({ kana_word_top_position: newValue });
-  };
-
-  const onChangeRomaTopPosition = (type: "increment" | "decrement") => {
-    const newValue =
-      type === "increment"
-        ? Math.min(MAX_TOP_POSITION, roma_word_top_position + TOP_POSITION_STEP)
-        : Math.max(MIN_TOP_POSITION, roma_word_top_position - TOP_POSITION_STEP);
-
-    setUserTypingOptions({ roma_word_top_position: newValue });
-  };
 
   const resetToDefaults = () => {
     setUserTypingOptions({
@@ -76,8 +40,10 @@ export const UserWordFontSize = () => {
       </Flex>
       <Flex gap={6}>
         <CounterInput
-          onIncrement={() => onChangeKanaFontSize("increment")}
-          onDecrement={() => onChangeKanaFontSize("decrement")}
+          onChange={(value) => setUserTypingOptions({ kana_word_font_size: value })}
+          step={FONT_SIZE_STEP}
+          max={MAX_FONT_SIZE}
+          min={MIN_FONT_SIZE}
           value={kana_word_font_size}
           label="かな表示"
           incrementTooltip="かな表示フォントサイズを大きくします。"
@@ -85,8 +51,10 @@ export const UserWordFontSize = () => {
           unit="%"
         />
         <CounterInput
-          onIncrement={() => onChangeRomaFontSize("increment")}
-          onDecrement={() => onChangeRomaFontSize("decrement")}
+          onChange={(value) => setUserTypingOptions({ roma_word_font_size: value })}
+          step={FONT_SIZE_STEP}
+          max={MAX_FONT_SIZE}
+          min={MIN_FONT_SIZE}
           value={roma_word_font_size}
           label="ローマ字"
           incrementTooltip="ローマ字表示フォントサイズを大きくします。"
@@ -96,18 +64,24 @@ export const UserWordFontSize = () => {
       </Flex>
       <Flex gap={6}>
         <CounterInput
-          onIncrement={() => onChangeKanaTopPosition("increment")}
-          onDecrement={() => onChangeKanaTopPosition("decrement")}
+          onChange={(value) => setUserTypingOptions({ kana_word_top_position: value })}
+          step={TOP_POSITION_STEP}
+          max={MAX_TOP_POSITION}
+          min={MIN_TOP_POSITION}
           value={kana_word_top_position}
+          valueDigits={1}
           label="かな表示"
           incrementTooltip="かな表示を上に移動します。"
           decrementTooltip="かな表示を下に移動します。"
           unit="px"
         />
         <CounterInput
-          onIncrement={() => onChangeRomaTopPosition("increment")}
-          onDecrement={() => onChangeRomaTopPosition("decrement")}
+          onChange={(value) => setUserTypingOptions({ roma_word_top_position: value })}
+          step={TOP_POSITION_STEP}
+          max={MAX_TOP_POSITION}
+          min={MIN_TOP_POSITION}
           value={roma_word_top_position}
+          valueDigits={1}
           label="ローマ字"
           incrementTooltip="ローマ字表示を上に移動します。"
           decrementTooltip="ローマ字表示を下に移動します。"

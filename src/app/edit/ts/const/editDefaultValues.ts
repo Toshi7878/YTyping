@@ -1,7 +1,5 @@
 import { UploadResult } from "@/types";
 
-export const DEFAULT_ADD_ADJUST_TIME = -0.18;
-
 export const TAG_MAX_LEN = 10;
 export const TAG_MIN_LEN = 2;
 

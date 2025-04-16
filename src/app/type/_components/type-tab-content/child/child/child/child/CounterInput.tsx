@@ -3,29 +3,42 @@ import { ThemeColors } from "@/types";
 import { Button, Flex, Text, useTheme } from "@chakra-ui/react";
 
 interface CounterInputProps {
-  onIncrement: () => void;
-  onDecrement: () => void;
-  value: number | string;
+  value: number;
   label: string;
   incrementTooltip: string;
   decrementTooltip: string;
   unit?: string;
+  max: number;
+  min: number;
+  step: number;
+  valueDigits?: number;
+  onChange: (value: number) => void;
+  size?: "sm" | "md" | "lg";
 }
 
-export const CounterInput = ({
-  onIncrement,
-  onDecrement,
+const CounterInput = ({
   value,
   label,
   incrementTooltip,
   decrementTooltip,
   unit,
+  max,
+  min,
+  step,
+  valueDigits = 0,
+  onChange,
+  size = "lg",
 }: CounterInputProps) => {
   const theme: ThemeColors = useTheme();
 
+  const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
+    const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
+    onChange(newValue);
+  };
+
   return (
     <Flex alignItems="baseline">
-      <Text fontSize="lg" mr={2}>
+      <Text fontSize={size} mr={2}>
         {label}
       </Text>
       <Flex
@@ -38,16 +51,30 @@ export const CounterInput = ({
         px={2}
       >
         <CustomToolTip label={decrementTooltip} placement="top">
-          <Button onClick={onDecrement} cursor="pointer" variant="unstyled" size="lg" fontSize="xl">
+          <Button
+            onClick={() => onCounterChange({ type: "decrement" })}
+            cursor="pointer"
+            variant="unstyled"
+            fontSize="xl"
+            position="relative"
+            bottom={0.5}
+          >
             -
           </Button>
         </CustomToolTip>
-        <Flex fontSize="lg" gap={1}>
-          {value}
+        <Flex fontSize={size} gap={1} fontWeight="bold">
+          {value.toFixed(valueDigits)}
           {unit && <Text>{unit}</Text>}
         </Flex>
         <CustomToolTip label={incrementTooltip} placement="top">
-          <Button onClick={onIncrement} cursor="pointer" variant="unstyled" size="lg" fontSize="xl">
+          <Button
+            onClick={() => onCounterChange({ type: "increment" })}
+            cursor="pointer"
+            variant="unstyled"
+            position="relative"
+            bottom={0.5}
+            fontSize="xl"
+          >
             +
           </Button>
         </CustomToolTip>
@@ -55,3 +82,5 @@ export const CounterInput = ({
     </Flex>
   );
 };
+
+export default CounterInput;

@@ -15,7 +15,7 @@ const TabEditor = () => {
         <Stack display="flex" flexDirection="column" gap={1}>
           <EditorLineInput />
 
-          <Flex justifyContent="space-between" alignItems="flex-end">
+          <Flex justifyContent="space-between" alignItems="center">
             <EditorButtons />
             <AddTimeAdjust />
           </Flex>
