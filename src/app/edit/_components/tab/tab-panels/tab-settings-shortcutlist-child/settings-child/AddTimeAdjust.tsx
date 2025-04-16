@@ -56,7 +56,7 @@ const CounterInput = ({ value, label, max, min, step, valueDigits = 0, onChange 
             <Text fontSize="xs">
               (譜面のタイムが遅くなってしまうと、決め打ちなどのテクニックが通りづらくなってしまいます。)
             </Text>
-            <Text fontSize="xs">※間奏など、追加時にワードが存在しない場合は追加タイム補正は適用されません。</Text>
+            <Text fontSize="xs">※間奏などでワードが存在しない場合は追加タイム補正は適用されません。</Text>
           </Box>
         </>
       }
