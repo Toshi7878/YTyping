@@ -26,13 +26,11 @@ const allowedChars = new Set([
 export const useWordConverter = () => {
   const fetchMorph = useFetchMorph();
   const filterWordSymbol = useFilterWordSymbol();
-  const lyricsFormat = useLyricsFormat();
-  const readWordCOnvertOption = useWordConvertOptionStateRef();
+  const { kanaToHira, rubyKanaConvert, formatSimilarChar } = useLyricsFormatUtils();
 
   return async (lyrics: string) => {
-    const formatLyrics = lyricsFormat(lyrics);
-    const convertOption = readWordCOnvertOption();
-    const isNeedsConversion = /[\u4E00-\u9FFF]/.test(formatLyrics);
+    const formatedLyrics = formatSimilarChar(kanaToHira(rubyKanaConvert(lyrics)));
+    const isNeedsConversion = /[\u4E00-\u9FFF]/.test(formatedLyrics);
 
     const filterAllowedCharacters = (text: string): string => {
       return Array.from(text)
@@ -41,10 +39,10 @@ export const useWordConverter = () => {
     };
 
     if (isNeedsConversion) {
-      const convertedWord = await fetchMorph(formatLyrics);
-      return filterAllowedCharacters(filterWordSymbol({ kanaWord: convertedWord, convertOption }));
+      const convertedWord = await fetchMorph(formatedLyrics);
+      return filterAllowedCharacters(filterWordSymbol({ sentence: convertedWord }));
     } else {
-      return filterAllowedCharacters(filterWordSymbol({ kanaWord: formatLyrics, convertOption }));
+      return filterAllowedCharacters(filterWordSymbol({ sentence: formatedLyrics }));
     }
   };
 };
@@ -118,21 +116,17 @@ const useReplaceReadingWithCustomDic = () => {
   };
 };
 
-const useKanaToHira = () => {
-  return (str: string) => {
-    return str
+export const useLyricsFormatUtils = () => {
+  const kanaToHira = (lyrics: string) => {
+    return lyrics
       .replace(/[\u30a1-\u30f6]/g, function (match) {
         var chr = match.charCodeAt(0) - 0x60;
         return String.fromCharCode(chr);
       })
       .replace(/ヴ/g, "ゔ");
   };
-};
 
-const useLyricsFormat = () => {
-  const kanaToHira = useKanaToHira();
-
-  return (lyrics: string) => {
+  const rubyKanaConvert = (lyrics: string) => {
     const rubyConvert = lyrics.match(/<*ruby(?: .+?)?>.*?<*\/ruby*>/g);
 
     if (rubyConvert) {
@@ -144,9 +138,11 @@ const useLyricsFormat = () => {
       }
     }
 
-    const sentence = kanaToHira(lyrics);
+    return lyrics;
+  };
 
-    return sentence
+  const formatSimilarChar = (lyrics: string) => {
+    return lyrics
       .replace(/\r$/, "")
       .replace(/…/g, "...")
       .replace(/‥/g, "..")
@@ -159,15 +155,27 @@ const useLyricsFormat = () => {
       .replace(/､/g, "、")
       .replace(/｡/g, "。")
       .replace(/　/g, " ")
-      .replace(/ {2,}/g, " ")
       .replace(/－/g, "ー")
       .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
       .replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+      .replace(/ {2,}/g, " ")
       .trim();
   };
+
+  const filterUnicodeSymbol = (text: string): string => {
+    const allowedSymbols = [...MANDATORY_SYMBOL_LIST, ...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST];
+
+    return text.replace(/[^\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{ASCII}\d\s]/gu, (char) =>
+      allowedSymbols.includes(char) ? char : ""
+    );
+  };
+
+  return { kanaToHira, formatSimilarChar, rubyKanaConvert, filterUnicodeSymbol };
 };
 
-const useFilterWordSymbol = () => {
+export const useFilterWordSymbol = () => {
+  const readWordConvertOption = useWordConvertOptionStateRef();
+
   const generateFilterRegExp = (convertOption: ConvertOptionsType) => {
     if (convertOption === "non_symbol") {
       const filterChars = LOOSE_SYMBOL_LIST.concat(STRICT_SYMBOL_LIST)
@@ -186,19 +194,31 @@ const useFilterWordSymbol = () => {
     return new RegExp("");
   };
 
-  return ({ kanaWord, convertOption }: { kanaWord: string; convertOption: ConvertOptionsType }) => {
+  return ({
+    sentence,
+    filterType = "wordConvert",
+    replaceChar = "",
+  }: {
+    sentence: string;
+    filterType?: "wordConvert" | "lyricsWithFilterSymbol";
+    replaceChar?: string;
+  }) => {
+    const convertOption = readWordConvertOption();
     const filterSymbolRegExp = generateFilterRegExp(convertOption);
-
     if (convertOption === "add_symbol_all") {
-      return kanaWord.replace(filterSymbolRegExp, "");
+      return sentence;
     } else {
+      //全角文字の前後のスペースをフィルター
       const zenkakuAfterSpaceReg = /([^\x01-\x7E]) /g;
       const zenkakuBeforeSpaceReg = / ([^\x01-\x7E])/g;
 
-      return kanaWord
-        .replace(filterSymbolRegExp, "")
-        .replace(zenkakuAfterSpaceReg, "$1")
-        .replace(zenkakuBeforeSpaceReg, "$1");
+      let result = sentence.replace(filterSymbolRegExp, replaceChar);
+
+      if (filterType === "wordConvert") {
+        result = result.replace(zenkakuAfterSpaceReg, "$1").replace(zenkakuBeforeSpaceReg, "$1");
+      }
+
+      return result;
     }
   };
 };
