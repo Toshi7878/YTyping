@@ -52,10 +52,7 @@ const ManyPhraseTextarea = () => {
       });
     }
 
-    const pasteManyPhrase = await navigator.clipboard.readText();
-    const lines = pasteManyPhrase.split(/\r\n|\n/) || [];
-
-    const topPhrase = lines[0];
+    const topPhrase = target.value.split("\n")[0];
 
     pickupTopPhrase(topPhrase);
   };
