@@ -53,11 +53,12 @@ const ManyPhraseTextarea = () => {
     }
 
     const pasteManyPhrase = await navigator.clipboard.readText();
-    const lines = pasteManyPhrase.split(/\r\n|\n/) || [];
 
-    const topPhrase = lines[0];
+    const textareaTopPhrase = target.value.split("\n")[0];
 
-    pickupTopPhrase(topPhrase);
+    pickupTopPhrase(textareaTopPhrase);
+
+    setManyPhrase(pasteManyPhrase);
   };
 
   return (

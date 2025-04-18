@@ -13,9 +13,15 @@ export const usePickupTopPhrase = () => {
   const { readPlayer } = usePlayer();
   const readSelectLine = useLineStateRef();
   const setWordState = useSetWordState();
+  const readEditUtils = useEditUtilsStateRef();
 
   const wordConvert = useWordConverter();
   return async (topPhrase: string) => {
+    const { directEditingIndex } = readEditUtils();
+    if (directEditingIndex !== null) {
+      return null;
+    }
+
     lineDispatch({
       type: "set",
       line: { lyrics: topPhrase.trim(), word: "", selectIndex: null, time: readPlayer().getCurrentTime() },
