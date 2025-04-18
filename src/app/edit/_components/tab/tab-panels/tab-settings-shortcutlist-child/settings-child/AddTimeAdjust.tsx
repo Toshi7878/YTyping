@@ -54,6 +54,9 @@ const CounterInput = ({ value, label, max, min, step, valueDigits = 0, onChange 
               譜面のタイムは、歌いだしの瞬間より-0.2 ~ -0.25秒程早めに設定すると丁度よいタイミングになります。
             </Text>
             <Text fontSize="xs">※間奏などでワードが存在しない場合は追加タイム補正は適用されません。</Text>
+            <Text fontSize="xs">
+              Bluetoothキーボードや無線イヤホンなど環境に合わせて最適な補正値に調整してください。
+            </Text>
           </Box>
         </>
       }
