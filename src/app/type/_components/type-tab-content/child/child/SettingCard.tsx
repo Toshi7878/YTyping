@@ -59,6 +59,7 @@ const SettingCard = (props: SettingCardProps) => {
         props.setIsCardVisible(false);
 
         const isOptionEdited = readUserTypingOptions();
+
         if (isOptionEdited) {
           const userOptions = readUserTypingOptions();
           updateTypingOptions.mutate(userOptions);
