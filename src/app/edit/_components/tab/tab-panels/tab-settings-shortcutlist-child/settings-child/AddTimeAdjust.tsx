@@ -32,16 +32,17 @@ interface CounterInputProps {
   max: number;
   min: number;
   step: number;
-  valueDigits?: number;
+  valueDigits: number;
   onChange: (value: number) => void;
 }
 
-const CounterInput = ({ value, label, max, min, step, valueDigits = 0, onChange }: CounterInputProps) => {
+const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: CounterInputProps) => {
   const theme: ThemeColors = useTheme();
 
   const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
     const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
-    onChange(newValue);
+    const newValueFixed = Number(newValue.toFixed(valueDigits));
+    onChange(newValueFixed);
   };
 
   return (

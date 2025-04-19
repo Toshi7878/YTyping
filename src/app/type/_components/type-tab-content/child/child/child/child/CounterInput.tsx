@@ -32,9 +32,9 @@ const CounterInput = ({
   const theme: ThemeColors = useTheme();
 
   const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
-    let newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
-    newValue = Number(newValue.toFixed(valueDigits));
-    onChange(newValue);
+    const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
+    const newValueFixed = Number(newValue.toFixed(valueDigits));
+    onChange(newValueFixed);
   };
 
   return (
