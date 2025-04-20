@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
     LIMIT ${PAGE_SIZE} OFFSET ${offset}`;
 
     const mapListLength =
-      page === "0"
+      page === "0" && mapKeyword === ""
         ? await prisma.$queryRaw`
     SELECT COUNT(*) as total_count
     FROM maps
