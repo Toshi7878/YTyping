@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { useSetPreviewVideoState } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
-import { IndexDBOption } from "@/types";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
@@ -19,16 +18,24 @@ interface EditProviderProps {
 
 const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const store = getEditAtomStore();
-  const searchParams = useSearchParams();
-  const isBackUp = searchParams.get("backup") === "true";
-  const utils = clientApi.useUtils();
   const setPreviewVideoState = useSetPreviewVideoState();
-  const newVideoId = searchParams.get("new") || "";
+  useSetHydrationState(mapInfo);
+  const loadBackupData = useLoadBackupData();
 
   useEffect(() => {
     setPreviewVideoState(RESET);
+    loadBackupData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  return <JotaiProvider store={store}>{children}</JotaiProvider>;
+};
+
+const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | undefined) => {
+  const store = getEditAtomStore();
+  const searchParams = useSearchParams();
+  const utils = clientApi.useUtils();
+  const newVideoId = searchParams.get("new") || "";
 
   const videoId = mapInfo ? mapInfo.video_id : newVideoId;
   const geminiQueryData = utils.gemini.generateMapInfo.getData({ videoId });
@@ -51,65 +58,65 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
           previewTime: mapInfo.preview_time,
         },
       ],
-      [videoIdAtom, videoId]
+      [videoIdAtom, videoId],
+      [
+        mapTagsAtom,
+        {
+          type: "set",
+          payload: mapInfo.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
+        },
+      ]
     );
-    hydrationState.push([
-      mapTagsAtom,
-      {
-        type: "set",
-        payload: mapInfo.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
-      },
-    ]);
   } else {
-    if (isBackUp) {
-      db.editorNewCreateBak.get({ optionName: "backupMapInfo" }).then((data: IndexDBOption | undefined) => {
-        if (data) {
-          const backupMap = data.value as EditorNewMapBackUpInfoData;
-
-          hydrationState.push(
-            [
-              mapInfoAtom,
-              {
-                title: backupMap.title,
-                artist: backupMap.artistName,
-                creatorId: null,
-                creatorComment: backupMap.creatorComment,
-                source: backupMap.musicSource,
-                previewTime: backupMap.previewTime,
-              },
-            ],
-            [videoIdAtom, backupMap.videoId]
-          );
-          hydrationState.push([
-            mapTagsAtom,
-            {
-              type: "set",
-              payload: backupMap.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
-            },
-          ]);
-        }
-      });
-    } else {
-      hydrationState.push(
-        [
-          mapInfoAtom,
-          {
-            title: geminiQueryData?.musicTitle || "",
-            artist: geminiQueryData?.artistName || "",
-            creatorId: null,
-            creatorComment: "",
-            source: geminiQueryData?.musicSource || "",
-            previewTime: "",
-          },
-        ],
-        [videoIdAtom, newVideoId]
-      );
-      hydrationState.push([mapTagsAtom, { type: "reset" }]);
-    }
+    hydrationState.push(
+      [
+        mapInfoAtom,
+        {
+          title: geminiQueryData?.title || "",
+          artist: geminiQueryData?.artistName || "",
+          creatorId: null,
+          creatorComment: "",
+          source: geminiQueryData?.source || "",
+          previewTime: "",
+        },
+      ],
+      [videoIdAtom, newVideoId],
+      [mapTagsAtom, { type: "reset" }]
+    );
   }
 
   useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store });
-  return <JotaiProvider store={store}>{children}</JotaiProvider>;
+};
+
+const useLoadBackupData = () => {
+  const store = getEditAtomStore();
+  const searchParams = useSearchParams();
+  const isBackUp = searchParams.get("backup") === "true";
+
+  return () => {
+    if (isBackUp) {
+      db.editorNewCreateBak.get({ optionName: "backupMapInfo" }).then((data) => {
+        if (data) {
+          const backupMap = data.value as EditorNewMapBackUpInfoData;
+
+          store.set(mapInfoAtom, {
+            title: backupMap.title,
+            artist: backupMap.artistName,
+            creatorId: null,
+            comment: backupMap.creatorComment,
+            source: backupMap.musicSource,
+            previewTime: backupMap.previewTime,
+          });
+
+          store.set(videoIdAtom, backupMap.videoId);
+          store.set(mapTagsAtom, {
+            type: "set",
+            payload: backupMap.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
+          });
+        }
+      });
+    }
+  };
 };
 
 export default EditProvider;

@@ -156,7 +156,20 @@ const mapPreviewTimeAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("preview
 const mapCreatorIdAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("creatorId"));
 export const mapTagsAtom = atomWithReducer<Tag[], TagsReducerAction>([], tagsReducer);
 
-export const useSetMapInfoState = () => useSetAtom(mapInfoAtom, { store });
+interface WriteVideoInfoAtomParams {
+  title: ExtractAtomValue<typeof mapTitleAtom>;
+  artistName: ExtractAtomValue<typeof mapArtistAtom>;
+  source: ExtractAtomValue<typeof mapSourceAtom>;
+}
+const writeVideoInfoAtom = atom(null, (get, set, newVideoInfo: WriteVideoInfoAtomParams) => {
+  const { title, artistName, source } = newVideoInfo;
+
+  set(mapTitleAtom, title);
+  set(mapArtistAtom, artistName);
+  set(mapSourceAtom, source);
+});
+
+export const useSetMapInfoState = () => useSetAtom(writeVideoInfoAtom, { store });
 export const useMapInfoStateRef = () => {
   return useAtomCallback(
     useCallback((get) => get(mapInfoAtom), []),

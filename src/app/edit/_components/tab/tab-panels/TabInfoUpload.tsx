@@ -1,12 +1,19 @@
 import { Card, CardBody, Flex, HStack, Stack, useTheme } from "@chakra-ui/react";
 
-import { useMapCreatorIdState, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
+import {
+  useMapCreatorIdState,
+  useSetGeminiTagsState,
+  useSetMapInfoState,
+  useVideoIdState,
+} from "@/app/edit/atoms/stateAtoms";
 import { useUploadMap } from "@/app/edit/hooks/utils/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
 import { ThemeColors } from "@/types";
 import { useGenerateMapInfoQuery } from "@/util/global-hooks/query/edit/useGenerateMapInfoQuery";
+import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useFormState } from "react-dom";
 import InfoInputForm from "./tab-info-child/InfoInputFrom";
 import InfoTag from "./tab-info-child/InfoTag";
@@ -15,6 +22,7 @@ import TypeLinkButton from "./tab-info-child/TypeLinkButton";
 import UploadButton from "./tab-info-child/UploadButton";
 
 const TabInfoUpload = () => {
+  const toast = useCustomToast();
   const { data: session } = useSession();
   const mapCreatorId = useMapCreatorIdState();
   const theme: ThemeColors = useTheme();
@@ -22,7 +30,30 @@ const TabInfoUpload = () => {
   const isNewCreate = !!searchParams.get("new");
   const videoId = useVideoIdState();
   const { id: mapId } = useParams();
-  const { isPending } = useGenerateMapInfoQuery(videoId);
+  const { data: mapInfoData, isFetching, error } = useGenerateMapInfoQuery({ videoId });
+
+  const setGeminiTags = useSetGeminiTagsState();
+  const setMapInfo = useSetMapInfoState();
+
+  useEffect(() => {
+    if (error) {
+      toast({ type: "error", title: error.message });
+    }
+  }, [error, toast]);
+
+  useEffect(() => {
+    if (mapInfoData) {
+      const { title, artistName, source, otherTags } = mapInfoData;
+
+      if (isNewCreate) {
+        setMapInfo({ title, artistName, source });
+      }
+
+      setGeminiTags(otherTags);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapInfoData]);
+
   const upload = useUploadMap();
 
   const [state, formAction] = useFormState(upload, INITIAL_SERVER_ACTIONS_STATE);
@@ -35,8 +66,8 @@ const TabInfoUpload = () => {
     <Card variant="filled" bg={theme.colors.background.card} boxShadow="lg" color={theme.colors.text.body}>
       <CardBody>
         <Stack display="flex" flexDirection="column" gap="6">
-          <InfoInputForm isGeminiLoading={isPending && isNewCreate} />
-          <InfoTag isGeminiLoading={isPending} />
+          <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
+          <InfoTag isGeminiLoading={isFetching} />
           <HStack justifyContent="space-between">
             {isDisplayUploadButton ? (
               <Flex

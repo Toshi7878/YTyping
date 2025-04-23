@@ -9,14 +9,14 @@ interface InfoInputFormProps {
   isGeminiLoading: boolean;
 }
 
-const InfoInputForm = (props: InfoInputFormProps) => {
+const InfoInputForm = ({ isGeminiLoading }: InfoInputFormProps) => {
   return (
     <Stack display="flex" flexDirection="column" gap="6">
       <VideoIdInput />
       <Stack>
-        <TitleInput isGeminiLoading={props.isGeminiLoading} />
-        <ArtistNameInput isGeminiLoading={props.isGeminiLoading} />
-        <MusicSourceInput isGeminiLoading={props.isGeminiLoading} />
+        <TitleInput isGeminiLoading={isGeminiLoading} />
+        <ArtistNameInput isGeminiLoading={isGeminiLoading} />
+        <MusicSourceInput isGeminiLoading={isGeminiLoading} />
       </Stack>
       <CreatorCommentInput />
     </Stack>

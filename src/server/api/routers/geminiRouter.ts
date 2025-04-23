@@ -3,11 +3,11 @@ import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory, SafetySetting } f
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure } from "../trpc";
 
-const TEXT_PROMPT = `以下のJSONデータ情報を解析して{musicTitle:string; artistName:string; musicSource:string; otherTags:string[];}の形式で出力してください。\n
-  ボーカロイドや歌手とアーティストが異なる場合はmusicTitleにfeat.で歌っている人の名前を追加してください。musicTitleは曲名のみいれてください\n
-  その曲の特に際立つアーティスト名をartistNameに追加してください。channelTitleはその曲のアーティスト名とは限りません。\n
-  アニメ・ドラマ・映画のタイトルが存在する場合はmusicSourceに出力してください。括弧等を抜いた状態のタイトル名のみ出力してください。情報が見つかった場合のみ出力してください。\n
-  descriptionなどに記載されているアーティストや曲に関連する単語をotherTagsに格納してください。otherTagsに格納する情報についてアーティストの所属するグループ名・単語などは重要です。\n
+const TEXT_PROMPT = `以下のJSONデータ情報を解析して{title:string; artistName:string; source:string; otherTags:string[];}の形式で出力してください。\n
+  titleプロパティ: titleは曲名です。ボーカロイド・歌手がアーティストが異なる場合はにfeat.で歌っている人の名前を追加してください。\n
+  artistNameプロパティ: その曲の特に際立つアーティスト名を追加してください。channelNameはその曲のアーティスト名とは限りません。\n
+  source: アニメ・ドラマ・映画のタイトルが存在する場合に出力してください。括弧等を抜いた状態のタイトル名のみ出力してください。情報が見つかった場合のみ出力してください。\n
+  otherTags: 受け取ったデータ内のアーティストや曲に関連する単語を格納してください。\n
   出力するJSONデータはJSON.parseができるように改行を使用せずに出力してください。`;
 
 const SAFETY_SETTINGS: SafetySetting[] = [
@@ -24,9 +24,9 @@ const MODEL = "gemini-1.5-pro";
 const GCP_API_KEY = process.env.GCP_AUTH_KEY as string;
 
 interface GeminiMapInfo {
-  musicTitle: string;
+  title: string;
   artistName: string;
-  musicSource: string;
+  source: string;
   otherTags: string[];
 }
 
