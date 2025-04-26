@@ -1,5 +1,6 @@
 import { serverApi } from "@/trpc/server";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Content from "../_components/Content";
 import EditProvider from "../_components/EditProvider";
 
@@ -12,6 +13,10 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 }
 export default async function Page({ params }: { params: { id: string } }) {
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(params.id) });
+
+  if (!mapInfo) {
+    notFound();
+  }
 
   return (
     <EditProvider mapInfo={mapInfo}>

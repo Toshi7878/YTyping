@@ -1,5 +1,6 @@
 import { serverApi } from "@/trpc/server";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Content from "./Content";
 import TypeProvider from "./TypeProvider";
 
@@ -34,9 +35,13 @@ export default async function Page({ params }: { params: { id: string } }) {
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(params.id) });
   const userTypingOptions = await serverApi.userTypingOption.getUserTypingOptions();
 
+  if (!mapInfo) {
+    notFound();
+  }
+
   return (
-    <TypeProvider mapInfo={mapInfo!} userTypingOptions={userTypingOptions}>
-      <Content mapInfo={mapInfo!} />
+    <TypeProvider mapInfo={mapInfo} userTypingOptions={userTypingOptions}>
+      <Content mapInfo={mapInfo} />
     </TypeProvider>
   );
 }
