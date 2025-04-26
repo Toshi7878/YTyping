@@ -1,6 +1,6 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
-import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
+import { useUserAgent } from "@/util/useUserAgent";
 import { Box, Flex } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import FilterInputs from "./child/FilterInputs";
@@ -12,6 +12,7 @@ import SearchRange from "./child/child/SearchRange";
 const SearchContent = () => {
   const { data: session } = useSession();
   const player = usePreviewPlayerState();
+  const { isMobile } = useUserAgent();
 
   const isLogin = !!session?.user?.id;
   return (
@@ -29,7 +30,7 @@ const SearchContent = () => {
             {isLogin && <FilterInputs />}
             <SearchRange step={0.1} mx={4} />
           </Flex>
-          {!IS_IOS && !IS_ANDROID && <VolumeRange player={player} />}
+          {!isMobile && <VolumeRange player={player} />}
         </Flex>
         <Box mt={4}>
           <Flex

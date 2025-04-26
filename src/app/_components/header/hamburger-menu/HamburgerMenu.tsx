@@ -1,8 +1,8 @@
 "use client";
 
-import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { ThemeColors } from "@/types";
+import { useUserAgent } from "@/util/useUserAgent";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import {
   Flex,
@@ -35,6 +35,7 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
   const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
   const newCreateModalDisclosure = useDisclosure();
+  const { isMobile } = useUserAgent();
 
   const menus = leftMenuItem.concat(leftLink);
   return (
@@ -56,9 +57,7 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
         />
         <MenuList bg={theme.colors.background.body} minW="fit-content">
           {menus.map((menuItem, index) => {
-            const isPhone = IS_IOS || IS_ANDROID;
-
-            if ((menuItem.device === "PC" && !isPhone) || !menuItem.device) {
+            if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
               return <LinkMenuItem key={index} title={menuItem.title} href={menuItem.href} />;
             }
             return null;

@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from "@/config/consts/globalConst";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { FilterMode, ResultCardInfo } from "../../../app/timeline/ts/type";
@@ -63,7 +63,7 @@ export const useUsersResultInfiniteQuery = () => {
   const userKeyword = searchParams.get("user-keyword") || "";
   const mapKeyword = searchParams.get("map-keyword") || "";
 
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: [QUERY_KEYS.usersResultList],
     queryFn: ({ pageParam = 0 }) =>
       getResultList({

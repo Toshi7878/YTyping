@@ -1,8 +1,8 @@
 "use client";
-import { IS_ANDROID, IS_IOS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
 import { ParseMap } from "@/util/parseMap";
+import { useUserAgent } from "@/util/useUserAgent";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
@@ -50,6 +50,7 @@ function Content({ mapInfo }: ContentProps) {
   const { readTotalProgress } = useProgress();
   const { resetTypingStatus } = useSetTypingStatusState();
   const { sendTypingStats } = useSendUserStats();
+  const { isMobile } = useUserAgent();
 
   useEffect(() => {
     if (scene === "ready" && layoutMode) {
@@ -114,7 +115,7 @@ function Content({ mapInfo }: ContentProps) {
           <Flex width="100%" gap="6">
             {ytLayoutMode === "row" && (
               <Box position="relative">
-                {(IS_IOS || IS_ANDROID) && <MobileCover />}
+                {isMobile && <MobileCover />}
 
                 <TypeYouTubeContent className="w-[513px] " isMapLoading={isLoading} videoId={video_id} />
               </Box>
@@ -129,7 +130,7 @@ function Content({ mapInfo }: ContentProps) {
 
           {ytLayoutMode === "column" && (
             <Box mt={5} position="relative">
-              {(IS_IOS || IS_ANDROID) && <MobileCover />}
+              {isMobile && <MobileCover />}
               <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
             </Box>
           )}
