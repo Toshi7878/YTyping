@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetIsSearchingState } from "@/app/(home)/atoms/atoms";
-import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
+import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { PARAM_NAME } from "@/app/(home)/ts/consts";
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -35,7 +35,7 @@ const SortOptions = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setIsSearching = useSetIsSearchingState();
-  const setDifficultyRangeParams = useSetDifficultyRangeParams();
+  const setDifficultyRangeParams = useDifficultyRangeParams();
 
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>(() => {
     const paramValue = searchParams.get(PARAM_NAME.sort);

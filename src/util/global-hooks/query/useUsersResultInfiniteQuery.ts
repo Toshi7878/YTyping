@@ -1,46 +1,20 @@
+import { PAGE_SIZE, PARAM_NAME } from "@/app/timeline/ts/const/consts";
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { FilterMode, ResultCardInfo } from "../../../app/timeline/ts/type";
+import { ResultCardInfo } from "../../../app/timeline/ts/type";
 
 interface GetResultListProps {
   page: number;
-  mode: FilterMode;
-  mapKeyword: string;
-  userKeyword: string;
-  minKpm: number;
-  maxKpm: number;
-  minClearRate: number;
-  maxClearRate: number;
-  minSpeed: number;
-  maxSpeed: number;
+  params?: Partial<typeof PARAM_NAME>;
 }
 
-async function getResultList({
-  page,
-  mode,
-  mapKeyword,
-  userKeyword,
-  minKpm,
-  maxKpm,
-  minClearRate,
-  maxClearRate,
-  minSpeed,
-  maxSpeed,
-}: GetResultListProps): Promise<ResultCardInfo[]> {
+async function getResultList({ page, params }: GetResultListProps): Promise<ResultCardInfo[]> {
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users-result-list`, {
     params: {
       page,
-      mode,
-      mapKeyword,
-      userKeyword,
-      minKpm,
-      maxKpm,
-      minClearRate,
-      maxClearRate,
-      minSpeed,
-      maxSpeed,
+      ...params,
     },
   });
 
@@ -52,35 +26,18 @@ async function getResultList({
 }
 
 export const useUsersResultInfiniteQuery = () => {
-  const searchParams = useSearchParams();
-  const searchMode = (searchParams.get("mode") || "all") as FilterMode;
-  const minKpm = Number(searchParams.get("min-kpm") || 0);
-  const maxKpm = Number(searchParams.get("max-kpm") || 0);
-  const minClearRate = Number(searchParams.get("min-clear-rate") || 0);
-  const maxClearRate = Number(searchParams.get("max-clear-rate") || 0);
-  const minSpeed = Number(searchParams.get("min-speed") || 1);
-  const maxSpeed = Number(searchParams.get("max-speed") || 0);
-  const userKeyword = searchParams.get("user-keyword") || "";
-  const mapKeyword = searchParams.get("map-keyword") || "";
+  const { queryKey, params } = useGetSearchParams();
 
   return useSuspenseInfiniteQuery({
-    queryKey: [QUERY_KEYS.usersResultList],
+    queryKey,
     queryFn: ({ pageParam = 0 }) =>
       getResultList({
         page: pageParam,
-        mode: searchMode,
-        mapKeyword,
-        userKeyword,
-        minKpm,
-        maxKpm,
-        minClearRate,
-        maxClearRate,
-        minSpeed,
-        maxSpeed,
+        params,
       }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length === 30) {
+      if (lastPage.length === PAGE_SIZE) {
         const nextPage = allPages.length;
         return nextPage;
       }
@@ -100,3 +57,17 @@ export const useUsersResultInfiniteQuery = () => {
     gcTime: Infinity,
   });
 };
+
+function useGetSearchParams() {
+  const searchParams = useSearchParams();
+
+  const params: Partial<typeof PARAM_NAME> = {};
+
+  for (const [key, value] of Array.from(searchParams.entries())) {
+    if (key in PARAM_NAME) {
+      params[key] = value;
+    }
+  }
+
+  return { queryKey: [...QUERY_KEYS.usersResultList, ...Object.values(params)], params: params };
+}

@@ -2,7 +2,7 @@ import { useStore } from "jotai";
 import { difficultyRangeAtom } from "../atoms/atoms";
 import { DIFFICULTY_RANGE, PARAM_NAME } from "../ts/consts";
 
-export const useSetDifficultyRangeParams = () => {
+export const useDifficultyRangeParams = () => {
   const homeAtomStore = useStore();
 
   return (params: URLSearchParams) => {

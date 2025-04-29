@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetDifficultyRangeState, useSetIsSearchingState } from "@/app/(home)/atoms/atoms";
-import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
+import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/ts/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
@@ -33,7 +33,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
     max: Number(searchParams.get(PARAM_NAME.maxRate)) || max,
   });
 
-  const setDifficultyRangeParams = useSetDifficultyRangeParams();
+  const setDifficultyRangeParams = useDifficultyRangeParams();
   const setDifficultyRangeAtom = useSetDifficultyRangeState();
   const setIsSearchingAtom = useSetIsSearchingState();
 

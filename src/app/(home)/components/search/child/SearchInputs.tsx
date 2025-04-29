@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetDifficultyRangeParams } from "@/app/(home)/hook/useSetDifficultyRangeParams";
+import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { Button, HStack, Input } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -11,7 +11,7 @@ const SearchInputs = () => {
   const [keyword, setKeyword] = useState(searchParams?.get("keyword") || "");
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearchingState();
-  const setDifficultyRangeParams = useSetDifficultyRangeParams();
+  const setDifficultyRangeParams = useDifficultyRangeParams();
   const router = useRouter();
 
   const handleSearch = async () => {

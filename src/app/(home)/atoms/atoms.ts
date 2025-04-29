@@ -12,7 +12,3 @@ export const useSetDifficultyRangeState = () => useSetAtom(difficultyRangeAtom, 
 const isSearchingAtom = atom(false);
 export const useIsSearchingState = () => useAtomValue(isSearchingAtom, { store: store });
 export const useSetIsSearchingState = () => useSetAtom(isSearchingAtom, { store: store });
-
-const mapListLengthAtom = atom(0);
-export const useMapListLengthState = () => useAtomValue(mapListLengthAtom, { store: store });
-export const useSetMapListLengthState = () => useSetAtom(mapListLengthAtom, { store: store });

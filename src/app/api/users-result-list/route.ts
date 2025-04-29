@@ -4,11 +4,12 @@ import { NextRequest } from "next/server";
 import {
   DEFAULT_CLEAR_RATE_SEARCH_RANGE,
   DEFAULT_KPM_SEARCH_RANGE,
+  PAGE_SIZE,
+  PARAM_NAME,
 } from "@/app/timeline/ts/const/consts";
 import { FilterMode } from "@/app/timeline/ts/type";
 import { auth } from "@/server/auth";
-
-const USERS_RESULT_LIST_TAKE_LENGTH = 30; //ここを編集したらInfiniteQueryのgetNextPageParamも編集する
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   const session = await auth();
@@ -16,19 +17,33 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const page = searchParams.get("page") ?? "0";
-  const mode = (searchParams.get("mode") ?? "all") as FilterMode;
-  const mapKeyword = searchParams.get("mapKeyword") ?? "";
-  const userKey = searchParams.get("userKeyword") ?? "";
-  const minKpm = Number(searchParams.get("minKpm") ?? DEFAULT_KPM_SEARCH_RANGE.min);
-  const maxKpm = Number(searchParams.get("maxKpm"));
-  const minClearRate = Number(
-    searchParams.get("minClearRate") ?? DEFAULT_CLEAR_RATE_SEARCH_RANGE.min
-  );
-  const maxClearRate = Number(searchParams.get("maxClearRate"));
-  const minSpeed = Number(searchParams.get("minSpeed") ?? 1);
-  const maxSpeed = Number(searchParams.get("maxSpeed"));
+  const offset = PAGE_SIZE * Number(page);
 
-  const offset = USERS_RESULT_LIST_TAKE_LENGTH * Number(page); // 20件ずつ読み込むように変更
+  const modeFilter = generateModeFilterSql({ mode: (searchParams.get(PARAM_NAME.mode) ?? "all") as FilterMode });
+
+  const kpmFilter = generateKpmFilterSql({
+    minKpm: Number(searchParams.get(PARAM_NAME.minKpm) ?? DEFAULT_KPM_SEARCH_RANGE.min),
+    maxKpm: Number(searchParams.get(PARAM_NAME.maxKpm) ?? DEFAULT_KPM_SEARCH_RANGE.max),
+  });
+
+  const clearRateFilter = generateClearRateFilterSql({
+    minClearRate: Number(searchParams.get(PARAM_NAME.minClearRate) ?? DEFAULT_CLEAR_RATE_SEARCH_RANGE.min),
+    maxClearRate: Number(searchParams.get(PARAM_NAME.maxClearRate) ?? DEFAULT_CLEAR_RATE_SEARCH_RANGE.max),
+  });
+
+  const playSpeedFilter = generatePlaySpeedFilterSql({
+    minPlaySpeed: Number(searchParams.get(PARAM_NAME.minPlaySpeed) ?? 1),
+    maxPlaySpeed: Number(searchParams.get(PARAM_NAME.maxPlaySpeed) ?? 2),
+  });
+
+  const keywordFilter = generateKeywordFilterSql({
+    username: searchParams.get(PARAM_NAME.username) ?? "",
+    mapKeyword: searchParams.get(PARAM_NAME.mapkeyword) ?? "",
+  });
+
+  const whereConditions = [modeFilter, kpmFilter, clearRateFilter, playSpeedFilter, ...keywordFilter];
+
+  const where = Prisma.sql`${Prisma.join(whereConditions, ` AND `)}`;
 
   try {
     const resultList = await prisma.$queryRaw`
@@ -118,55 +133,9 @@ export async function GET(req: NextRequest) {
       JOIN result_statuses AS "status" ON results."id" = "status"."result_id"
       JOIN users AS creator ON map."creator_id" = creator."id"
       JOIN users AS "Player" ON results."user_id" = "Player"."id"
-      WHERE (
-        CASE
-          WHEN ${mode} = 'roma' THEN "status"."roma_type" > 0 AND "status"."kana_type" = 0
-          WHEN ${mode} = 'kana' THEN "status"."kana_type" > 0 AND "status"."roma_type" = 0
-          WHEN ${mode} = 'romakana' THEN "status"."kana_type" > 0 AND "status"."roma_type" > 0
-          ELSE 1=1
-        END
-      )
-      AND
-      (
-        CASE
-          WHEN ${maxKpm} != 0 THEN "status"."roma_kpm" BETWEEN ${minKpm} AND (CASE WHEN ${maxKpm} = 1200 THEN "status"."roma_kpm" ELSE ${maxKpm} END)
-          ELSE 1=1
-        END
-      )
-      AND
-      (
-        CASE
-          WHEN ${maxClearRate} != 0 THEN "status"."clear_rate" BETWEEN ${minClearRate} AND ${maxClearRate}
-          ELSE 1=1
-        END
-      )
-      AND
-      (
-        CASE
-          WHEN ${maxSpeed} != 0 THEN "status"."default_speed" BETWEEN ${minSpeed} AND ${maxSpeed}
-          ELSE 1=1
-        END
-      )
-      AND
-      (
-        CASE
-          WHEN ${userKey} != '' THEN "Player"."name" &@~ ${userKey}
-          ELSE 1=1
-        END
-      )
-      AND
-      (
-        CASE
-          WHEN ${mapKeyword} != '' THEN map."title" &@~ ${mapKeyword}
-          OR map."artist_name" &@~ ${mapKeyword}
-          OR map."music_source" &@~ ${mapKeyword}
-          OR map."tags" &@~ ${mapKeyword}
-          OR creator."name" &@~ ${mapKeyword}
-          ELSE 1=1
-        END
-      )
+      WHERE ${where}
       ORDER BY results."updated_at" DESC
-      LIMIT ${USERS_RESULT_LIST_TAKE_LENGTH} OFFSET ${offset}
+      LIMIT ${PAGE_SIZE} OFFSET ${offset}
     `;
 
     return new Response(JSON.stringify(resultList), {
@@ -175,4 +144,80 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return new Response("Internal Server Error", { status: 500 });
   }
+}
+
+interface GenerateModeFilterSql {
+  mode: string;
+}
+
+function generateModeFilterSql({ mode }: GenerateModeFilterSql) {
+  if (mode === "all") return Prisma.raw("1=1");
+
+  return Prisma.sql`(
+    CASE
+      WHEN ${mode} = 'roma' THEN "status"."roma_type" > 0 AND "status"."kana_type" = 0
+      WHEN ${mode} = 'kana' THEN "status"."kana_type" > 0 AND "status"."roma_type" = 0
+      WHEN ${mode} = 'romakana' THEN "status"."kana_type" > 0 AND "status"."roma_type" > 0
+      WHEN ${mode} = 'english' THEN "status"."kana_type" = 0 AND "status"."roma_type" = 0 AND "status"."english_type" > 0
+    END
+  )`;
+}
+
+interface GenerateKpmFilterSql {
+  minKpm: number;
+  maxKpm: number;
+}
+
+function generateKpmFilterSql({ minKpm, maxKpm }: GenerateKpmFilterSql) {
+  if (maxKpm === 0) return Prisma.raw("1=1");
+
+  if (maxKpm === DEFAULT_KPM_SEARCH_RANGE.max) {
+    return Prisma.sql`("status"."roma_kpm" >= ${minKpm})`;
+  }
+
+  return Prisma.sql`("status"."roma_kpm" BETWEEN ${minKpm} AND ${maxKpm})`;
+}
+
+interface GenerateClearRateFilterSql {
+  minClearRate: number;
+  maxClearRate: number;
+}
+
+function generateClearRateFilterSql({ minClearRate, maxClearRate }: GenerateClearRateFilterSql) {
+  if (maxClearRate === 0) return Prisma.raw("1=1");
+
+  return Prisma.sql`("status"."clear_rate" BETWEEN ${minClearRate} AND ${maxClearRate})`;
+}
+
+interface GeneratePlaySpeedFilterSql {
+  minPlaySpeed: number;
+  maxPlaySpeed: number;
+}
+
+function generatePlaySpeedFilterSql({ minPlaySpeed, maxPlaySpeed }: GeneratePlaySpeedFilterSql) {
+  if (maxPlaySpeed === 0) return Prisma.raw("1=1");
+
+  return Prisma.sql`("status"."default_speed" BETWEEN ${minPlaySpeed} AND ${maxPlaySpeed})`;
+}
+
+interface GenerateKeywordFilterSql {
+  username: string;
+  mapKeyword: string;
+}
+
+function generateKeywordFilterSql({ username, mapKeyword }: GenerateKeywordFilterSql) {
+  const usernameCondition = username !== "" ? Prisma.sql`("Player"."name" &@~ ${username})` : Prisma.raw("1=1");
+
+  const mapKeywordCondition =
+    mapKeyword !== ""
+      ? Prisma.sql`(
+      map."title" &@~ ${mapKeyword} OR
+      map."artist_name" &@~ ${mapKeyword} OR
+      map."music_source" &@~ ${mapKeyword} OR
+      map."tags" &@~ ${mapKeyword} OR
+      creator."name" &@~ ${mapKeyword}
+      )`
+      : Prisma.raw("1=1");
+
+  return [usernameCondition, mapKeywordCondition];
 }

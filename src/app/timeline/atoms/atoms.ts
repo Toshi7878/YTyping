@@ -1,67 +1,51 @@
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
-import { FilterMode, SearchResultKeyWords, SearchResultRange } from "../ts/type";
+import { focusAtom } from "jotai-optics";
+import { atomWithReset, useAtomCallback } from "jotai/utils";
+import { useCallback } from "react";
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "../ts/const/consts";
-const timelineAtomStore = createStore();
-export const getTimelineAtomStore = () => timelineAtomStore;
+import { FilterMode } from "../ts/type";
+const store = createStore();
+export const getTimelineAtomStore = () => store;
 
-export const searchResultKeyWordsAtom = atom<SearchResultKeyWords>({
-  mapKeyWord: "",
-  userName: "",
+const searchAtom = atomWithReset({
+  kpm: {
+    minValue: DEFAULT_KPM_SEARCH_RANGE.min,
+    maxValue: DEFAULT_KPM_SEARCH_RANGE.max,
+  },
+  clearRate: {
+    minValue: DEFAULT_CLEAR_RATE_SEARCH_RANGE.min,
+    maxValue: DEFAULT_CLEAR_RATE_SEARCH_RANGE.max,
+  },
+  playSpeed: {
+    minValue: 1,
+    maxValue: 2,
+  },
+  mode: "all" as FilterMode,
 });
 
-export const useSearchResultKeyWordsAtom = () => {
-  return useAtomValue(searchResultKeyWordsAtom, { store: timelineAtomStore });
+export const useReadSearchRange = () => {
+  return useAtomCallback(
+    useCallback((get) => get(searchAtom), []),
+    { store }
+  );
 };
 
-export const useSetSearchResultKeyWordsAtom = () => {
-  return useSetAtom(searchResultKeyWordsAtom, { store: timelineAtomStore });
-};
+export const searchResultKpmAtom = focusAtom(searchAtom, (optic) => optic.prop("kpm"));
+export const useSearchResultKpmState = () => useAtomValue(searchResultKpmAtom, { store });
+export const useSetSearchResultKpm = () => useSetAtom(searchResultKpmAtom, { store });
 
-export const searchResultKpmAtom = atom<SearchResultRange>({
-  minValue: DEFAULT_KPM_SEARCH_RANGE.min,
-  maxValue: DEFAULT_KPM_SEARCH_RANGE.max,
-});
+const searchResultClearRateAtom = focusAtom(searchAtom, (optic) => optic.prop("clearRate"));
+export const useSearchResultClearRateState = () => useAtomValue(searchResultClearRateAtom, { store });
+export const useSetSearchResultClearRate = () => useSetAtom(searchResultClearRateAtom, { store });
 
-export const useSearchResultKpmAtom = () => {
-  return useAtomValue(searchResultKpmAtom, { store: timelineAtomStore });
-};
+const searchResultSpeedRangeAtom = focusAtom(searchAtom, (optic) => optic.prop("playSpeed"));
+export const useSearchResultSpeedState = () => useAtomValue(searchResultSpeedRangeAtom, { store });
+export const useSetSearchResultSpeed = () => useSetAtom(searchResultSpeedRangeAtom, { store });
 
-export const useSetSearchResultKpmAtom = () => {
-  return useSetAtom(searchResultKpmAtom, { store: timelineAtomStore });
-};
+export const searchResultModeAtom = focusAtom(searchAtom, (optic) => optic.prop("mode"));
+export const useSearchResultModeState = () => useAtomValue(searchResultModeAtom, { store });
+export const useSetSearchResultMode = () => useSetAtom(searchResultModeAtom, { store });
 
-const searchResultClearRateAtom = atom<SearchResultRange>({
-  minValue: DEFAULT_CLEAR_RATE_SEARCH_RANGE.min,
-  maxValue: DEFAULT_CLEAR_RATE_SEARCH_RANGE.max,
-});
-
-export const useSearchResultClearRateAtom = () => {
-  return useAtomValue(searchResultClearRateAtom, { store: timelineAtomStore });
-};
-
-export const useSetSearchResultClearRateAtom = () => {
-  return useSetAtom(searchResultClearRateAtom, { store: timelineAtomStore });
-};
-
-const searchResultSpeedRangeAtom = atom<SearchResultRange>({
-  minValue: 1,
-  maxValue: 2,
-});
-
-export const useSearchResultSpeedAtom = () => {
-  return useAtomValue(searchResultSpeedRangeAtom, { store: timelineAtomStore });
-};
-
-export const useSetSearchResultSpeedAtom = () => {
-  return useSetAtom(searchResultSpeedRangeAtom, { store: timelineAtomStore });
-};
-
-export const searchResultModeAtom = atom<FilterMode>("all");
-
-export const useSearchResultModeAtom = () => {
-  return useAtomValue(searchResultModeAtom, { store: timelineAtomStore });
-};
-
-export const useSetSearchResultModeAtom = () => {
-  return useSetAtom(searchResultModeAtom, { store: timelineAtomStore });
-};
+const isSearchingAtom = atom(false);
+export const useIsSearchingState = () => useAtomValue(isSearchingAtom, { store });
+export const useSetIsSearching = () => useSetAtom(isSearchingAtom, { store });

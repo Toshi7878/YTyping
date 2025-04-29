@@ -1,15 +1,12 @@
 import {
-  useSearchResultClearRateAtom,
-  useSearchResultKpmAtom,
-  useSearchResultSpeedAtom,
-  useSetSearchResultClearRateAtom,
-  useSetSearchResultKpmAtom,
-  useSetSearchResultSpeedAtom,
+  useSearchResultClearRateState,
+  useSearchResultKpmState,
+  useSearchResultSpeedState,
+  useSetSearchResultClearRate,
+  useSetSearchResultKpm,
+  useSetSearchResultSpeed,
 } from "@/app/timeline/atoms/atoms";
-import {
-  DEFAULT_CLEAR_RATE_SEARCH_RANGE,
-  DEFAULT_KPM_SEARCH_RANGE,
-} from "@/app/timeline/ts/const/consts";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/ts/const/consts";
 import { ThemeColors } from "@/types";
 import { Button, Card, CardBody, useTheme } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
@@ -20,12 +17,12 @@ const SearchModal = () => {
   const [isCardVisible, setIsCardVisible] = useState(false);
   const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
-  const searchKpm = useSearchResultKpmAtom();
-  const searchClearRate = useSearchResultClearRateAtom();
-  const searchSpeed = useSearchResultSpeedAtom();
-  const setSearchKpm = useSetSearchResultKpmAtom();
-  const setSearchClearRate = useSetSearchResultClearRateAtom();
-  const setSearchSpeed = useSetSearchResultSpeedAtom();
+  const searchKpm = useSearchResultKpmState();
+  const searchClearRate = useSearchResultClearRateState();
+  const searchSpeed = useSearchResultSpeedState();
+  const setSearchKpm = useSetSearchResultKpm();
+  const setSearchClearRate = useSetSearchResultClearRate();
+  const setSearchSpeed = useSetSearchResultSpeed();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -79,14 +76,7 @@ const SearchModal = () => {
               value={searchClearRate}
               setValue={setSearchClearRate}
             />
-            <SearchRange
-              label={"倍速"}
-              min={1}
-              max={2}
-              step={0.25}
-              value={searchSpeed}
-              setValue={setSearchSpeed}
-            />
+            <SearchRange label={"倍速"} min={1} max={2} step={0.25} value={searchSpeed} setValue={setSearchSpeed} />
           </CardBody>
         </Card>
       )}

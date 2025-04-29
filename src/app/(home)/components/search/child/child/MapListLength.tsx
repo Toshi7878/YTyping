@@ -1,20 +1,24 @@
-import { useMapListLengthState } from "@/app/(home)/atoms/atoms";
-import { Box, Text } from "@chakra-ui/react";
+import { useMapListLengthQuery } from "@/util/global-hooks/query/useMapListQuery";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 
 const MapListLength = () => {
-  const mapListLength = useMapListLengthState();
+  const { data: mapListLength, isPending } = useMapListLengthQuery();
 
   return (
-    <Box
+    <Flex
       visibility={mapListLength === 0 ? "hidden" : "visible"}
       px={3}
       py={1}
       borderRadius="md"
       bg="rgba(255, 255, 255, 0.05)"
       fontWeight="medium"
+      gap={2}
     >
-      <Text>譜面数: {mapListLength}</Text>
-    </Box>
+      <Text>譜面数:</Text>
+      <Flex minWidth="1.75rem" width="1.75rem" alignItems="center" justifyContent="end">
+        {isPending ? <Spinner size="sm" /> : mapListLength}
+      </Flex>
+    </Flex>
   );
 };
 

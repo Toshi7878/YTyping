@@ -16,15 +16,18 @@ const HomeClientProvider = ({ children }: TimelineProviderProps) => {
   const minRate = searchParams.get(PARAM_NAME.minRate);
   const maxRate = searchParams.get(PARAM_NAME.maxRate);
 
-  useHydrateAtoms([
+  useHydrateAtoms(
     [
-      difficultyRangeAtom,
-      {
-        min: Number(minRate) || DIFFICULTY_RANGE.min,
-        max: Number(maxRate) || DIFFICULTY_RANGE.max,
-      },
+      [
+        difficultyRangeAtom,
+        {
+          min: Number(minRate) || DIFFICULTY_RANGE.min,
+          max: Number(maxRate) || DIFFICULTY_RANGE.max,
+        },
+      ],
     ],
-  ]);
+    { store: homeAtomStore }
+  );
 
   return <JotaiProvider store={homeAtomStore}>{children}</JotaiProvider>;
 };

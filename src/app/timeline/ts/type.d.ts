@@ -1,6 +1,6 @@
 import { $Enums } from "@prisma/client";
 
-export type FilterMode = "all" | "roma" | "kana" | "romakana";
+export type FilterMode = "all" | "roma" | "kana" | "romakana" | "english";
 
 export interface ResultCardInfo {
   id: number;
@@ -54,9 +54,4 @@ export interface ResultCardInfo {
 export interface SearchResultKeyWords {
   mapKeyWord: string;
   userName: string;
-}
-
-export interface SearchResultRange {
-  minValue: number;
-  maxValue: number;
 }

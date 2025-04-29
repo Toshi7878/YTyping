@@ -10,14 +10,7 @@ interface HeaderContentProps {
 
 const HeaderContent = ({ isNewNotification }: HeaderContentProps) => {
   return (
-    <Box
-      as="header"
-      id="header"
-      position="fixed"
-      zIndex={40}
-      bg={"background.header"}
-      width="100vw"
-    >
+    <Box as="header" id="header" position="fixed" zIndex={40} bg={"background.header"} width="100vw">
       <Flex
         as="nav"
         width={{ base: "90%", xl: "80%" }}
@@ -29,10 +22,7 @@ const HeaderContent = ({ isNewNotification }: HeaderContentProps) => {
       >
         <LeftNav />
         <RightNav display={{ base: "none", md: "flex" }} isNewNotification={isNewNotification} />
-        <HamburgerMenu
-          display={{ base: "flex", md: "none" }}
-          isNewNotification={isNewNotification}
-        />
+        <HamburgerMenu display={{ base: "flex", md: "none" }} isNewNotification={isNewNotification} />
       </Flex>
     </Box>
   );

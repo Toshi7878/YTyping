@@ -10,8 +10,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
-import { MapListResponse, useMapListInfiniteQuery } from "../../../util/global-hooks/query/useMapListInfiniteQuery";
-import { useIsSearchingState, useSetIsSearchingState, useSetMapListLengthState } from "../atoms/atoms";
+import { MapListResponse, useMapListInfiniteQuery } from "../../../util/global-hooks/query/useMapListQuery";
+import { useIsSearchingState, useSetIsSearchingState } from "../atoms/atoms";
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH, PARAM_NAME } from "../ts/consts";
 import MapCardLayout from "./MapCardLayout";
 
@@ -31,18 +31,12 @@ function MapList() {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingState();
   const setIsSearchingAtom = useSetIsSearchingState();
-  const setMapListLength = useSetMapListLengthState();
 
   const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useMapListInfiniteQuery();
 
   useEffect(() => {
     if (data) {
       setIsSearchingAtom(false);
-
-      const mapListLength = data.pages[0].mapListLength;
-      if (mapListLength) {
-        setMapListLength(mapListLength);
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
