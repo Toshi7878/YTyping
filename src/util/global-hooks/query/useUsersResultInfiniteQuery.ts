@@ -51,6 +51,9 @@ export const useUsersResultInfiniteQuery = () => {
 
       return undefined;
     },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
     gcTime: Infinity,
   });
 };
