@@ -1,7 +1,7 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import MapBadge from "@/components/map-card/child/child/MapBadge";
-import LikeCountIcon from "@/components/share-components/map-icons/LikeCountIcon";
-import RankingCountIcon from "@/components/share-components/map-icons/RankingCountIcon";
+import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
+import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex, HStack, Text } from "@chakra-ui/react";
 
@@ -33,11 +33,7 @@ const MapBadges = (props: MapBadgesProps) => {
       </HStack>
       <Flex>
         <RankingCountIcon myRank={map.results[0]?.rank} rankingCount={map.ranking_count} />
-        <LikeCountIcon
-          mapId={map.id}
-          isLiked={!!map.map_likes[0]?.is_liked}
-          likeCount={map.like_count}
-        />
+        <LikeCountIcon mapId={map.id} isLiked={!!map.map_likes[0]?.is_liked} likeCount={map.like_count} />
       </Flex>
     </Flex>
   );

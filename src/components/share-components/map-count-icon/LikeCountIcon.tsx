@@ -12,7 +12,7 @@ interface LikeButtonProps {
   likeOptimisticState: LocalLikeState;
 }
 
-const LogoutLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
+const UnauthenticatedLikeCountIcon = ({ likeOptimisticState }: LikeButtonProps) => {
   const theme: ThemeColors = useTheme();
 
   return (
@@ -27,7 +27,7 @@ const LogoutLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
   );
 };
 
-const ActiveLikeButton = ({ likeOptimisticState }: LikeButtonProps) => {
+const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonProps) => {
   const theme: ThemeColors = useTheme();
 
   const { data: session } = useSession();
@@ -72,8 +72,7 @@ interface LikeCountIconProps {
   likeCount: number;
 }
 
-const LikeCountIcon = (props: LikeCountIconProps) => {
-  const { mapId, isLiked, likeCount } = props;
+const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
   const { data: session } = useSession();
   const { likeOptimisticState, toggleLikeAction } = useLocalLikeServerActions({
     hasLike: isLiked,
@@ -91,9 +90,9 @@ const LikeCountIcon = (props: LikeCountIconProps) => {
   return (
     <Flex as="form" action={session?.user.id ? formAction : ""} onClick={session?.user.id ? preventClick : undefined}>
       {session?.user.id ? (
-        <ActiveLikeButton likeOptimisticState={likeOptimisticState} />
+        <AuthenticatedLikeCountIconButton likeOptimisticState={likeOptimisticState} />
       ) : (
-        <LogoutLikeButton likeOptimisticState={likeOptimisticState} />
+        <UnauthenticatedLikeCountIcon likeOptimisticState={likeOptimisticState} />
       )}
     </Flex>
   );
