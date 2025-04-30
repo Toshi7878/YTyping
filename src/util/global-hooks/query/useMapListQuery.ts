@@ -60,9 +60,6 @@ export const useMapListInfiniteQuery = () => {
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => (lastPage.maps.length === PAGE_SIZE ? allPages.length : undefined),
     getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 2 : undefined),
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: true,
     gcTime: Infinity,
     staleTime: params.sort?.includes("random") ? Infinity : 1000 * 20,
   });
