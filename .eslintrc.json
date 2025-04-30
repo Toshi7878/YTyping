@@ -1,12 +1,21 @@
 {
-  "extends": ["next/core-web-vitals"],
+  "extends": [
+    "next/core-web-vitals"
+  ],
   "overrides": [
     {
-      "files": ["src/app/edit/(tab-content)/(components)/wordConvert.ts"],
+      "files": [
+        "src/app/edit/(tab-content)/(components)/wordConvert.ts"
+      ],
       "rules": {
-        // 特定のルールを無視する
         "no-mixed-operators": "off",
-        "quotes": ["error", "double", { "avoidEscape": true }]
+        "quotes": [
+          "error",
+          "double",
+          {
+            "avoidEscape": true
+          }
+        ]
       }
     }
   ]

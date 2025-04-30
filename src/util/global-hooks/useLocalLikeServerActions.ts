@@ -7,10 +7,7 @@ interface useLocalLikeServerActionsProps {
   likeCount: LocalLikeState["likeCount"];
 }
 
-export const useLocalLikeServerActions = ({
-  hasLike,
-  likeCount,
-}: useLocalLikeServerActionsProps) => {
+export const useLocalLikeServerActions = ({ hasLike, likeCount }: useLocalLikeServerActionsProps) => {
   const [likeLocalState, setLikeLocalState] = useState<LocalLikeState>({
     hasLike,
     likeCount,
@@ -35,14 +32,11 @@ export const useLocalLikeServerActions = ({
 
   const toggleLikeAction = async (mapId: number): Promise<UploadResult> => {
     if (isToggling) return Promise.reject(new Error("Action is already in progress")); // 連打防止
-    setIsToggling(true); // フラグを立てる
+    setIsToggling(true);
 
-    // 楽観的UI更新
     const newOptimisticState: LocalLikeState = {
       hasLike: !likeOptimisticState.hasLike,
-      likeCount: likeOptimisticState.hasLike
-        ? likeOptimisticState.likeCount - 1
-        : likeOptimisticState.likeCount + 1,
+      likeCount: likeOptimisticState.hasLike ? likeOptimisticState.likeCount - 1 : likeOptimisticState.likeCount + 1,
     };
 
     setLikeOptimisticState(newOptimisticState);

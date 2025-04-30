@@ -41,18 +41,13 @@ async function updateLike(mapId: number, userId: number, optimisticState: boolea
   });
 }
 
-export async function toggleLikeServerAction(
-  mapId: number,
-  optimisticState: boolean
-): Promise<UploadResult> {
+export async function toggleLikeServerAction(mapId: number, optimisticState: boolean): Promise<UploadResult> {
   const session = await auth();
 
   try {
     const userId = Number(session?.user?.id);
 
     await updateLike(mapId, userId, optimisticState);
-
-    // revalidatePath(`/type/${mapId}`);
 
     return {
       id: null,
