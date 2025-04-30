@@ -74,9 +74,6 @@ export const useMapListLengthQuery = () => {
   return useQuery({
     queryKey: [...queryKey, "length"],
     queryFn: () => fetchMapListLength({ session, params }),
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: true,
     staleTime: Infinity,
     gcTime: Infinity,
   });
