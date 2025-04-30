@@ -13,6 +13,9 @@ const nextConfig = {
   },
   reactStrictMode: false,
   transpilePackages: ["jotai-devtools"],
+  experimental: {
+    scrollRestoration: true,
+  },
 };
 
 export default nextConfig;
