@@ -520,8 +520,8 @@ export class ParseMap {
   }
 
   private calcLineKpm(notes: LineData["notes"], remainTime: number) {
-    const romaKpm = Math.round((notes.r / remainTime) * 60);
-    const kanaKpm = Math.round((notes.k / remainTime) * 60);
+    const romaKpm = Math.floor((notes.r / remainTime) * 60);
+    const kanaKpm = Math.floor((notes.k / remainTime) * 60);
     return { r: romaKpm, k: kanaKpm };
   }
 

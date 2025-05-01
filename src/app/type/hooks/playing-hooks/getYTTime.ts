@@ -49,7 +49,7 @@ export const useGetTime = () => {
   };
 
   const getConstantLineTime = (lineTime: number) => {
-    const lineConstantTime = Math.round((lineTime / readPlaySpeed().playSpeed) * 1000) / 1000;
+    const lineConstantTime = Math.floor((lineTime / readPlaySpeed().playSpeed) * 1000) / 1000;
     return lineConstantTime;
   };
 

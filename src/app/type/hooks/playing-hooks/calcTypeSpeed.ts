@@ -15,7 +15,7 @@ export const useCalcTypeSpeed = () => {
   const calcLineKpm = ({ constantLineTime }) => {
     const { type: lineTypeCount } = readLineStatus();
 
-    const lineKpm = constantLineTime ? Math.round((lineTypeCount / constantLineTime) * 60) : 0;
+    const lineKpm = constantLineTime ? Math.floor((lineTypeCount / constantLineTime) * 60) : 0;
     setLineKpm(lineKpm);
     return lineKpm;
   };
@@ -25,7 +25,7 @@ export const useCalcTypeSpeed = () => {
     const { type: lineTypeCount } = readLineStatus();
 
     const rkpmTime = constantLineTime - lineLatency;
-    const lineRkpm = lineTypeCount !== 0 ? Math.round((lineTypeCount / rkpmTime) * 60) : lineKpm;
+    const lineRkpm = lineTypeCount !== 0 ? Math.floor((lineTypeCount / rkpmTime) * 60) : lineKpm;
     writeLineStatus({ rkpm: lineRkpm });
   };
 
@@ -35,7 +35,7 @@ export const useCalcTypeSpeed = () => {
 
     const newTotalTypeTime = totalTypeTime + constantLineTime;
 
-    const totalKpm = Math.round((totalTypeCount / newTotalTypeTime) * 60);
+    const totalKpm = Math.floor((totalTypeCount / newTotalTypeTime) * 60);
     setTypingStatus((prev) => ({ ...prev, kpm: totalKpm }));
   };
 

@@ -66,7 +66,7 @@ export const useInputModeChange = () => {
           ...readLineStatus().typeResult,
           {
             op: newInputMode,
-            t: Math.round(lineTime * 1000) / 1000,
+            t: Math.floor(lineTime * 1000) / 1000,
           },
         ],
       });

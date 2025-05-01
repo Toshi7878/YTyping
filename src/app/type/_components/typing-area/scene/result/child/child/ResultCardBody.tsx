@@ -31,7 +31,7 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
             correctCount++;
           }
 
-          const label = `time: ${type.t.toFixed(3)}, kpm: ${Math.round(correctCount / (type.t / 60))}`;
+          const label = `time: ${type.t.toFixed(3)}, kpm: ${Math.floor(correctCount / (type.t / 60))}`;
 
           return (
             type.c && (

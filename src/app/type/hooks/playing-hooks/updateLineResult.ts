@@ -36,24 +36,22 @@ export const useUpdateLineResult = () => {
     const isCompleted = !lineWord.nextChar["k"];
 
     if (isCompleted) {
-      return { lostWord: "", actualLostNotesCount: 0 };
+      return { lostWord: "", actualLostNotes: 0, pointLostNotes: 0 };
     }
 
     const romaLostWordOmitNextChar = lineWord.word.map((w) => w["r"][0]).join("");
     const pointLostNotes = !isCompleted ? lineWord.nextChar["p"] / CHAR_POINT + romaLostWordOmitNextChar.length : 0;
 
-    writeStatus({ clearRate: readStatus().clearRate - readMap().keyRate * pointLostNotes });
-
     const { inputMode } = readGameStateUtils();
 
     if (inputMode === "roma") {
       const romaLostWord = lineWord.nextChar["r"][0] + romaLostWordOmitNextChar;
-      const actualLostNotesCount = romaLostWord.length;
-      return { lostWord: romaLostWord, actualLostNotesCount };
+      const actualLostNotes = romaLostWord.length;
+      return { lostWord: romaLostWord, actualLostNotes, pointLostNotes };
     } else {
       const kanaLostWord = lineWord.nextChar["k"] + lineWord.word.map((w) => w["k"]).join("");
-      const actualLostNotesCount = calcWordKanaNotes({ kanaWord: kanaLostWord });
-      return { lostWord: kanaLostWord, actualLostNotesCount };
+      const actualLostNotes = calcWordKanaNotes({ kanaWord: kanaLostWord });
+      return { lostWord: kanaLostWord, actualLostNotes, pointLostNotes };
     }
   };
 
@@ -75,23 +73,18 @@ export const useUpdateLineResult = () => {
   };
 
   const updateLineResult = () => {
-    const count = readCount();
-    const typingStatus = readTypingResult();
+    const { lostWord, actualLostNotes, pointLostNotes } = generateLostWord();
 
-    const { miss: lineMiss, type: lineType, typeResult, startSpeed, startInputMode, rkpm: lineRkpm } = readLineStatus();
-
-    const { totalTypeTime } = readStatus();
-
-    const roundedTotalTypeTime = Math.round(totalTypeTime * 1000) / 1000;
-    const { lostWord, actualLostNotesCount } = generateLostWord();
+    if (actualLostNotes > 0) setTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
+    if (pointLostNotes > 0) writeStatus({ clearRate: readStatus().clearRate - readMap().keyRate * pointLostNotes });
 
     const map = readMap();
+    const count = readCount();
+    const typingStatus = readTypingResult();
+    const { miss: lineMiss, type: lineType, typeResult, startSpeed, startInputMode, rkpm: lineRkpm } = readLineStatus();
     const isTypingLine = map.mapData[count - 1].kpm.r > 0;
-
-    if (isTypingLine) {
-      setTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotesCount }));
-    }
-
+    const { totalTypeTime } = readStatus();
+    const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
     setLineResults((prev) => {
       const newLineResults = [...prev];
 
@@ -105,7 +98,7 @@ export const useUpdateLineResult = () => {
             lRkpm: lineRkpm,
             lKpm: readLineKpm(),
             lostW: lostWord,
-            lLost: actualLostNotesCount,
+            lLost: actualLostNotes,
             combo: readCombo(),
             tTime: roundedTotalTypeTime,
             mode: startInputMode,
