@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-5-1",
+    descriptions: ["かな入力のローマ字換算kpmにrkpm表示を追加"],
+  },
+  {
     date: "2025-4-16",
     descriptions: [
       "エディターの歌詞追加テキストエリアに記号を削除するボタンを追加",
