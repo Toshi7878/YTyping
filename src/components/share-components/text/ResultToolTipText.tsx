@@ -78,7 +78,7 @@ const ResultToolTipText = (props: ResultToolTipTextProps) => {
           <HStack spacing={2}>
             <Text>ローマ字換算kpm:</Text>
             <Text fontSize="md" fontWeight="bold">
-              {props.romaKpm} {props.romaRkpm && `(rkpm:${props.romaRkpm})`}
+              {props.romaKpm} {props.romaRkpm ? `(rkpm:${props.romaRkpm})` : ""}
             </Text>
           </HStack>
         )}
