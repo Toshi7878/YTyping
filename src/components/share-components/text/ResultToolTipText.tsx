@@ -17,6 +17,7 @@ interface ResultToolTipTextProps {
   kpm: number;
   rkpm: number;
   romaKpm: number;
+  romaRkpm: number;
   isKanaFlickTyped: boolean;
   defaultSpeed: number;
   updatedAt: Date;
@@ -77,7 +78,7 @@ const ResultToolTipText = (props: ResultToolTipTextProps) => {
           <HStack spacing={2}>
             <Text>ローマ字換算kpm:</Text>
             <Text fontSize="md" fontWeight="bold">
-              {props.romaKpm}
+              {props.romaKpm} {props.romaRkpm && `(rkpm:${props.romaRkpm})`}
             </Text>
           </HStack>
         )}

@@ -27,6 +27,7 @@ export const useResultData = () => {
     const minSp = getMinSpeed(lineResults);
     const rkpmTime = totalTypeTime - totalLatency;
     const typingStatus = readTypingStatus();
+
     const sendStatus: z.infer<typeof sendResultSchema>["status"] = {
       score: typingStatus.score,
       roma_type: romaType,
@@ -38,10 +39,11 @@ export const useResultData = () => {
       num_type: numType,
       miss: typingStatus.miss,
       lost: typingStatus.lost,
-      rkpm: Math.round((typingStatus.type / rkpmTime) * 60),
+      rkpm: Math.floor((typingStatus.type / rkpmTime) * 60),
       max_combo: maxCombo,
       kpm: typingStatus.kpm,
-      roma_kpm: Math.round((kanaToRomaConvertCount / totalTypeTime) * 60),
+      roma_kpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
+      roma_rkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
       default_speed: minSp,
       clear_rate: Number(clearRate.toFixed(1)),
     };

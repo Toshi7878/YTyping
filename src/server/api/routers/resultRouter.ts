@@ -10,7 +10,7 @@ export const resultRouter = {
       const timestamp = new Date().getTime();
 
       const { data, error } = await supabase.storage
-        .from("user-result") // バケット名を指定
+        .from("user-result")
         .download(`public/${input.resultId}.json?timestamp=${timestamp}`);
 
       if (error) {

@@ -73,15 +73,16 @@ const RankingTr = (props: RankingTrProps) => {
             numType={result.status!.num_type}
             symbolType={result.status!.symbol_type}
             spaceType={result.status!.space_type}
-            miss={status.miss}
             correctRate={correctRate}
-            lost={status.lost}
             isPerfect={isPerfect}
+            isKanaFlickTyped={isKanaFlickTyped}
+            lost={status.lost}
+            miss={status.miss}
             maxCombo={status.max_combo}
             kpm={status.kpm}
             rkpm={status.rkpm}
             romaKpm={status.roma_kpm}
-            isKanaFlickTyped={isKanaFlickTyped}
+            romaRkpm={status.roma_rkpm}
             defaultSpeed={status.default_speed}
             updatedAt={result.updated_at}
           />

@@ -95,6 +95,7 @@ model result_statuses {
   kpm           Int     @default(0)
   rkpm          Int     @default(0)
   roma_kpm      Int     @default(0)
+  roma_rkpm     Int     @default(0)
   roma_type     Int     @default(0)
   kana_type     Int     @default(0)
   flick_type    Int     @default(0)
