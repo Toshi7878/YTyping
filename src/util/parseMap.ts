@@ -526,15 +526,11 @@ export class ParseMap {
   }
 
   private calcLineNotes(word: TypeChunk[]) {
-    const kanaWord = word.map((item) => item.k);
-    const dakuHandakuLineNotes = (
-      kanaWord.join("").match(/[ゔ|が|ぎ|ぐ|げ|ご|ざ|じ|ず|ぜ|ぞ|だ|ぢ|づ|で|ど|ば|び|ぶ|べ|ぼ|ぱ|ぴ|ぷ|ぺ|ぽ]/g) || []
-    ).length;
-    const kanaNotes = kanaWord.join("").length + dakuHandakuLineNotes;
+    const kanaWord = word.map((item) => item.k).join("");
+    const kanaNotes = calcWordKanaNotes({ kanaWord });
+    const romaNotes = word.map((item) => item.r[0]).join("").length;
 
-    const romaWord = word.map((item) => item.r[0]);
-
-    return { k: kanaNotes, r: romaWord.join("").length };
+    return { k: kanaNotes, r: romaNotes };
   }
 
   private parseWord(data: MapLine[]) {
@@ -638,3 +634,8 @@ function isFullWidth(char: string): boolean {
 
   return false;
 }
+
+export const calcWordKanaNotes = ({ kanaWord }: { kanaWord: string }) => {
+  const dakuHandakuLineNotes = (kanaWord.match(/[ゔがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ]/g) || []).length;
+  return kanaWord.length + dakuHandakuLineNotes;
+};

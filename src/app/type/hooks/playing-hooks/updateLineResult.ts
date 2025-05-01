@@ -1,4 +1,4 @@
-import { CHAR_POINT, MISS_PENALTY } from "@/util/parseMap";
+import { calcWordKanaNotes, CHAR_POINT, MISS_PENALTY } from "@/util/parseMap";
 import { useCountRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
@@ -44,7 +44,7 @@ export const useUpdateLineResult = () => {
       : 0;
 
     const { inputMode } = readGameStateUtils();
-    const actualLostLength = inputMode === "roma" ? romaLostWord.length : kanaLostWord.length;
+    const actualLostLength = inputMode === "roma" ? romaLostWord.length : calcWordKanaNotes({ kanaWord: kanaLostWord });
 
     const { clearRate } = readStatus();
     writeStatus({
