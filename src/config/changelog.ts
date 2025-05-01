@@ -1,7 +1,10 @@
 export const changelog = [
   {
     date: "2025-5-1",
-    descriptions: ["かな入力のローマ字換算kpmにrkpm表示を追加"],
+    descriptions: [
+      "Lostステータスの加算方式を「ローマ字換算の逃した合計チャンク数」→「実際に逃した打鍵数」に変更",
+      "かな入力のローマ字換算kpmにrkpm表示を追加",
+    ],
   },
   {
     date: "2025-4-16",

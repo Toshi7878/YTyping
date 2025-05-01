@@ -39,18 +39,21 @@ export const useUpdateLineResult = () => {
 
     const romaLostWord = lineWord.nextChar["r"][0] + lineWord.word.map((w) => w["r"][0]).join("");
     const kanaLostWord = lineWord.nextChar["k"] + lineWord.word.map((w) => w["k"]).join("");
-    const lostLength = lineWord.nextChar["k"]
+    const pointLostLength = lineWord.nextChar["k"]
       ? lineWord.nextChar["p"] / CHAR_POINT + lineWord.word.map((w) => w["r"][0]).join("").length
       : 0;
 
     const { inputMode } = readGameStateUtils();
+    const actualLostLength = inputMode === "roma" ? romaLostWord.length : kanaLostWord.length;
 
+    const { clearRate } = readStatus();
     writeStatus({
-      clearRate: readStatus().clearRate - readMap().keyRate * lostLength,
+      clearRate: clearRate - readMap().keyRate * pointLostLength,
     });
-    setTypingStatus((prev) => ({ ...prev, lost: prev.lost + lostLength }));
 
-    return { lostWord: inputMode === "roma" ? romaLostWord : kanaLostWord, lostLength };
+    setTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostLength }));
+
+    return { lostWord: inputMode === "roma" ? romaLostWord : kanaLostWord, actualLostLength };
   };
 
   const isLinePointUpdated = () => {
@@ -79,7 +82,7 @@ export const useUpdateLineResult = () => {
     const { totalTypeTime } = readStatus();
 
     const roundedTotalTypeTime = Math.round(totalTypeTime * 1000) / 1000;
-    const { lostWord, lostLength } = generateLostWord();
+    const { lostWord, actualLostLength } = generateLostWord();
 
     const map = readMap();
     const isTypingLine = map.mapData[count - 1].kpm.r > 0;
@@ -96,7 +99,7 @@ export const useUpdateLineResult = () => {
             lRkpm: lineRkpm,
             lKpm: readLineKpm(),
             lostW: lostWord,
-            lLost: lostLength,
+            lLost: actualLostLength,
             combo: readCombo(),
             tTime: roundedTotalTypeTime,
             mode: startInputMode,
