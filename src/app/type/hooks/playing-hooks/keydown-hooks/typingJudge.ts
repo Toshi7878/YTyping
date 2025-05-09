@@ -395,7 +395,7 @@ export const useInputJudge = () => {
       shift: event.shiftKey,
     };
 
-    console.log("shiftKey: ", event.shiftKey, "key: ", event.key, "code: ", event.code);
+    console.log("shiftKey:", event.shiftKey, "key:", event.key, "code:", event.code);
     if (event.keyCode === 0) {
       input.keys = ["ー", "￥", "\\"];
     } else if (event.shiftKey) {
