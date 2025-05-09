@@ -445,7 +445,7 @@ export const useInputJudge = () => {
       "keyCode:",
       event.keyCode,
       "kanaInput:",
-      input
+      input.keys
     );
 
     return input;
