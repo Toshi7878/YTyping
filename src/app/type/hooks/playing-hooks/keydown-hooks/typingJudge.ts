@@ -399,30 +399,30 @@ export const useInputJudge = () => {
     if (event.keyCode === 0) {
       input.keys = ["ー", "￥", "\\"];
     } else if (event.shiftKey) {
-      if (event.code == "KeyE") {
+      if (event.code === "KeyE") {
         input.keys[0] = "ぃ";
       }
-      if (event.code == "KeyZ") {
+      if (event.code === "KeyZ") {
         input.keys[0] = "っ";
       }
 
       //ATOK入力 https://support.justsystems.com/faq/1032/app/servlet/qadoc?QID=024273
-      if (event.code == "KeyV") {
+      if (event.code === "KeyV") {
         input.keys.push("ゐ", "ヰ");
       }
-      if (event.code == "Equal") {
+      if (event.code === "Equal") {
         input.keys.push("ゑ", "ヱ");
       }
-      if (event.code == "KeyT") {
+      if (event.code === "KeyT") {
         input.keys.push("ヵ");
       }
-      if (event.code == "Quote") {
+      if (event.code === "Quote") {
         input.keys.push("ヶ");
       }
-      if (event.code == "KeyF") {
+      if (event.code === "KeyF") {
         input.keys.push("ゎ");
       }
-      if (event.key == "0") {
+      if (event.key === "0") {
         input.keys = ["を"];
       }
     }
