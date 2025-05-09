@@ -389,8 +389,9 @@ export const useInputJudge = () => {
 
   const kanaMakeInput = (event: KeyboardEvent) => {
     const codeKanaKey = CODE_TO_KANA.get(event.code);
+    const keyToKanaResult = KEY_TO_KANA.get(event.key) ?? [];
     const input = {
-      keys: codeKanaKey ? codeKanaKey : KEY_TO_KANA.get(event.key) ?? [],
+      keys: codeKanaKey ? [...codeKanaKey] : [...keyToKanaResult],
       key: event.key.toLowerCase(),
       code: event.code,
       shift: event.shiftKey,
