@@ -395,18 +395,6 @@ export const useInputJudge = () => {
       shift: event.shiftKey,
     };
 
-    console.log(
-      "shiftKey:",
-      event.shiftKey,
-      "key:",
-      event.key,
-      "code:",
-      event.code,
-      "keyCode:",
-      event.keyCode,
-      "kanaInput:",
-      input
-    );
     if (event.keyCode === 0) {
       input.keys = ["ー", "￥", "\\"];
     } else if (event.shiftKey) {
@@ -446,6 +434,19 @@ export const useInputJudge = () => {
         })
       );
     }
+
+    console.log(
+      "shiftKey:",
+      event.shiftKey,
+      "key:",
+      event.key,
+      "code:",
+      event.code,
+      "keyCode:",
+      event.keyCode,
+      "kanaInput:",
+      input
+    );
 
     return input;
   };
