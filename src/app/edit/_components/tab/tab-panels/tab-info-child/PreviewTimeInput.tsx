@@ -1,11 +1,7 @@
 import { Box, FormLabel, HStack, Input, Text, useTheme } from "@chakra-ui/react";
 
 import { useEditUtilsRef, usePlayer } from "@/app/edit/atoms/refAtoms";
-import {
-  useMapPreviewTimeState,
-  useSetCanUploadState,
-  useSetPreviewTimeState,
-} from "@/app/edit/atoms/stateAtoms";
+import { useMapPreviewTimeState, useSetCanUploadState, useSetPreviewTimeState } from "@/app/edit/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { FaPlay } from "react-icons/fa";
@@ -31,6 +27,7 @@ const PreviewTimeInput = () => {
           <Box>
             譜面一覧でのプレビュー再生時に入力されているタイムから再生されるようになります。(サビのタイム推奨です)
           </Box>
+          <Box>※ 0を指定すると最初のタイピングワードが存在するタイムが設定されます。</Box>
           <Box>↑↓キー: 0.05ずつ調整, Enter:再生</Box>
         </>
       }
