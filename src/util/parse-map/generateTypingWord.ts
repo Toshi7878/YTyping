@@ -187,12 +187,12 @@ const isFullWidth = (char: string): boolean => {
   return false;
 };
 
+const PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS = { "!": "！", "?": "？" } as const;
+
 const convertZenkakuToHankaku = ({ typeChunks, char }: { typeChunks: TypeChunk[]; char: string }): string => {
   if (ZENKAKU_LIST.includes(char)) {
     char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
   }
-
-  const PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS = { "!": "！", "?": "？" } as const;
 
   const convertedZenkakuKanaChar =
     typeChunks.length > 0 && isFullWidth(typeChunks[typeChunks.length - 1]?.k)
