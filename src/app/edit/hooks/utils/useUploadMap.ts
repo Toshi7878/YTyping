@@ -25,17 +25,18 @@ export function useUploadMap() {
     const map = readMap();
     const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new ParseMap(map);
 
-    const mapVideoId = readPlayer().getVideoData().video_id;
+    const { video_id } = readPlayer().getVideoData();
     const videoDuration = readPlayer().getDuration();
     const sendMapInfo: SendMapInfo = {
-      video_id: mapVideoId,
+      video_id,
       title,
       artist_name: artist,
       music_source: source ?? "",
       creator_comment: comment,
       tags: tags.map((tag) => tag.id),
-      preview_time: Number(previewTime) < videoDuration ? previewTime : map[startLine]["time"],
-      thumbnail_quality: (await getThumbnailQuality(mapVideoId)) as $Enums.thumbnail_quality,
+      preview_time:
+        Number(previewTime) > videoDuration || Number(previewTime) === 0 ? map[startLine]["time"] : previewTime,
+      thumbnail_quality: (await getThumbnailQuality(video_id)) as $Enums.thumbnail_quality,
     };
 
     const sendMapDifficulty: SendMapDifficulty = {
