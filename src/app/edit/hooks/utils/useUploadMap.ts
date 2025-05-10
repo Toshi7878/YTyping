@@ -35,7 +35,9 @@ export function useUploadMap() {
       creator_comment: comment,
       tags: tags.map((tag) => tag.id),
       preview_time:
-        Number(previewTime) > videoDuration || Number(previewTime) === 0 ? map[startLine]["time"] : previewTime,
+        Number(previewTime) > videoDuration || Number(previewTime) === 0
+          ? Number(map[startLine]["time"] + 0.2).toFixed(3)
+          : previewTime,
       thumbnail_quality: (await getThumbnailQuality(video_id)) as $Enums.thumbnail_quality,
     };
 
