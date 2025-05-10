@@ -1,4 +1,4 @@
-import { ParseMap } from "@/util/parseMap";
+import { ParseMap } from "@/util/parse-map/parseMap";
 
 import { UploadResult } from "@/types";
 import { $Enums } from "@prisma/client";

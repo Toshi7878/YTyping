@@ -1,7 +1,7 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
-import { ParseMap } from "@/util/parseMap";
+import { ParseMap } from "@/util/parse-map/parseMap";
 import { useUserAgent } from "@/util/useUserAgent";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { useParams } from "next/navigation";

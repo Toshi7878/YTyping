@@ -1,4 +1,4 @@
-import { calcWordKanaNotes, CHAR_POINT, MISS_PENALTY } from "@/util/parseMap";
+import { calcWordKanaNotes, CHAR_POINT, MISS_PENALTY } from "@/util/parse-map/parseMap";
 import { useCountRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {

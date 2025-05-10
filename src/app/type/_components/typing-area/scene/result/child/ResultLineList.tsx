@@ -10,7 +10,7 @@ import { LineResultData } from "@/app/type/ts/type";
 
 import { useResultCards } from "@/app/type/atoms/refAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/moveLine";
-import { ParseMap } from "@/util/parseMap";
+import { ParseMap } from "@/util/parse-map/parseMap";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import ResultCard from "./ResultCard";

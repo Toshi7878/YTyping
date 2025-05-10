@@ -1,4 +1,4 @@
-import { MISS_PENALTY } from "../../../../util/parseMap";
+import { MISS_PENALTY } from "../../../../util/parse-map/parseMap";
 import { useGameUtilsRef, useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
 import {
   useComboStateRef,

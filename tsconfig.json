@@ -35,7 +35,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/util/parseMap.ts",
+    "src/util/parse-map/parseMap.ts",
     "src/types/declarations.d.ts"
   ],
   "exclude": [

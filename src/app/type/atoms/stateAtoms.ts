@@ -1,5 +1,5 @@
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ParseMap } from "@/util/parseMap";
+import { ParseMap } from "@/util/parse-map/parseMap";
 import { $Enums } from "@prisma/client";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";

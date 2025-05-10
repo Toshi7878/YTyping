@@ -7,7 +7,7 @@ import {
 } from "@/app/type/atoms/stateAtoms";
 import { useMoveLine } from "@/app/type/hooks/playing-hooks/moveLine";
 import { useInteractJS } from "@/app/type/hooks/useInteractJS";
-import { CHAR_POINT, ParseMap } from "@/util/parseMap";
+import { CHAR_POINT, ParseMap } from "@/util/parse-map/parseMap";
 import { Card, CardBody, CardFooter, CardHeader, Divider } from "@chakra-ui/react";
 import { useState } from "react";
 import ResultCardBody from "./child/ResultCardBody";
