@@ -190,17 +190,14 @@ const isFullWidth = (char: string): boolean => {
 const convertZenkakuToHankaku = ({ typeChunks, char }: { typeChunks: TypeChunk[]; char: string }): string => {
   if (ZENKAKU_LIST.includes(char)) {
     char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
-
-    // prettier-ignore
-    const PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS = { "!": "！", "?": "？" } as const;
-
-    const convertedZenkakuKanaChar =
-      typeChunks.length > 0 && isFullWidth(typeChunks[typeChunks.length - 1]?.k)
-        ? PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS[char as keyof typeof PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS]
-        : undefined;
-
-    return convertedZenkakuKanaChar || char;
   }
 
-  return char;
+  const PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS = { "!": "！", "?": "？" } as const;
+
+  const convertedZenkakuKanaChar =
+    typeChunks.length > 0 && isFullWidth(typeChunks[typeChunks.length - 1]?.k)
+      ? PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS[char as keyof typeof PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS]
+      : undefined;
+
+  return convertedZenkakuKanaChar || char;
 };
