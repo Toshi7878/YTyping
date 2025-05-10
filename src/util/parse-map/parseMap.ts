@@ -34,7 +34,7 @@ export class ParseMap {
     this.totalNotes = this.calculateTotalNotes(result.words);
     this.speedDifficulty = this.calculateSpeedDifficulty(result.words);
 
-    this.movieTotalTime = +this.mapData[result.words.length - 1].time;
+    this.movieTotalTime = Number(this.mapData[result.words.length - 1].time);
     this.keyRate = 100 / this.totalNotes.r;
     this.missRate = this.keyRate / 2;
   }
