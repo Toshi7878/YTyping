@@ -64,7 +64,7 @@ function Content({ mapInfo }: ContentProps) {
     if (mapData) {
       const map = new ParseMap(mapData);
       setMap(map);
-      setLineResults(map.defaultLineResultData);
+      setLineResults(map.initialLineResultData);
       setLineSelectIndex(map.typingLineIndexes[0]);
       setTypingStatusLine(map.lineLength);
       resetTypingStatus();

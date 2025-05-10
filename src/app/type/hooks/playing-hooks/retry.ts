@@ -86,7 +86,7 @@ export const useRetry = () => {
     setScene(newPlayMode);
 
     if (newPlayMode === "play") {
-      setLineResults(structuredClone(map.defaultLineResultData));
+      setLineResults(structuredClone(map.initialLineResultData));
     }
 
     if (newPlayMode !== "practice") {
