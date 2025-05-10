@@ -3,213 +3,16 @@ import { MapLine } from "@/types/map";
 import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../app/type/ts/type";
 import { ROMA_MAP } from "../config/consts/romaMap";
 
-const ZENKAKU_LIST = [
-  "０",
-  "１",
-  "２",
-  "３",
-  "４",
-  "５",
-  "６",
-  "７",
-  "８",
-  "９",
-  "Ａ",
-  "Ｂ",
-  "Ｃ",
-  "Ｄ",
-  "Ｅ",
-  "Ｆ",
-  "Ｇ",
-  "Ｈ",
-  "Ｉ",
-  "Ｊ",
-  "Ｋ",
-  "Ｌ",
-  "Ｍ",
-  "Ｎ",
-  "Ｏ",
-  "Ｐ",
-  "Ｑ",
-  "Ｒ",
-  "Ｓ",
-  "Ｔ",
-  "Ｕ",
-  "Ｖ",
-  "Ｗ",
-  "Ｘ",
-  "Ｙ",
-  "Ｚ",
-  "ａ",
-  "ｂ",
-  "ｃ",
-  "ｄ",
-  "ｅ",
-  "ｆ",
-  "ｇ",
-  "ｈ",
-  "ｉ",
-  "ｊ",
-  "ｋ",
-  "ｌ",
-  "ｍ",
-  "ｎ",
-  "ｏ",
-  "ｐ",
-  "ｑ",
-  "ｒ",
-  "ｓ",
-  "ｔ",
-  "ｕ",
-  "ｖ",
-  "ｗ",
-  "ｘ",
-  "ｙ",
-  "ｚ",
-  "～",
-  "＆",
-  "％",
-  "！",
-  "？",
-  "＠",
-  "＃",
-  "＄",
-  "（",
-  "）",
-  "｜",
-  "｛",
-  "｝",
-  "｀",
-  "＊",
-  "＋",
-  "：",
-  "；",
-  "＿",
-  "＜",
-  "＞",
-  "＝",
-  "＾",
-];
-const NN_LIST = [
-  "あ",
-  "い",
-  "う",
-  "え",
-  "お",
-  "な",
-  "に",
-  "ぬ",
-  "ね",
-  "の",
-  "や",
-  "ゆ",
-  "よ",
-  "ん",
-  "'",
-  "’",
-  "a",
-  "i",
-  "u",
-  "e",
-  "o",
-  "y",
-  "n",
-  "A",
-  "I",
-  "U",
-  "E",
-  "O",
-  "Y",
-  "N",
-];
-
-const SOKUON_JOIN_LIST = [
-  "ヰ",
-  "ゐ",
-  "ヱ",
-  "ゑ",
-  "ぁ",
-  "ぃ",
-  "ぅ",
-  "ぇ",
-  "ぉ",
-  "ゃ",
-  "ゅ",
-  "ょ",
-  "っ",
-  "ゎ",
-  "ヵ",
-  "ヶ",
-  "ゔ",
-  "か",
-  "き",
-  "く",
-  "け",
-  "こ",
-  "さ",
-  "し",
-  "す",
-  "せ",
-  "そ",
-  "た",
-  "ち",
-  "つ",
-  "て",
-  "と",
-  "は",
-  "ひ",
-  "ふ",
-  "へ",
-  "ほ",
-  "ま",
-  "み",
-  "む",
-  "め",
-  "も",
-  "や",
-  "ゆ",
-  "よ",
-  "ら",
-  "り",
-  "る",
-  "れ",
-  "ろ",
-  "わ",
-  "を",
-  "が",
-  "ぎ",
-  "ぐ",
-  "げ",
-  "ご",
-  "ざ",
-  "じ",
-  "ず",
-  "ぜ",
-  "ぞ",
-  "だ",
-  "ぢ",
-  "づ",
-  "で",
-  "ど",
-  "ば",
-  "び",
-  "ぶ",
-  "べ",
-  "ぼ",
-  "ぱ",
-  "ぴ",
-  "ぷ",
-  "ぺ",
-  "ぽ",
-];
-
-const KANA_UNSUPPORTED_SYMBOLS = ["←", "↓", "↑", "→"];
-
-const PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS = {
-  "!": "！",
-  "?": "？",
-};
-
+// prettier-ignore
+const ZENKAKU_LIST = ["０", "１", "２", "３", "４", "５", "６", "７", "８", "９", "Ａ", "Ｂ", "Ｃ", "Ｄ", "Ｅ", "Ｆ", "Ｇ", "Ｈ", "Ｉ", "Ｊ", "Ｋ", "Ｌ", "Ｍ", "Ｎ", "Ｏ", "Ｐ", "Ｑ", "Ｒ", "Ｓ", "Ｔ", "Ｕ", "Ｖ", "Ｗ", "Ｘ", "Ｙ", "Ｚ", "ａ", "ｂ", "ｃ", "ｄ", "ｅ", "ｆ", "ｇ", "ｈ", "ｉ", "ｊ", "ｋ", "ｌ", "ｍ", "ｎ", "ｏ", "ｐ", "ｑ", "ｒ", "ｓ", "ｔ", "ｕ", "ｖ", "ｗ", "ｘ", "ｙ", "ｚ", "～", "＆", "％", "！", "？", "＠", "＃", "＄", "（", "）", "｜", "｛", "｝", "｀", "＊", "＋", "：", "；", "＿", "＜", "＞", "＝", "＾", ]
+// prettier-ignore
+const NN_LIST = ["あ", "い", "う", "え", "お", "な", "に", "ぬ", "ね", "の", "や", "ゆ", "よ", "ん", "'", "’", "a", "i", "u", "e", "o", "y", "n", "A", "I", "U", "E", "O", "Y", "N", ];
+// prettier-ignore
+const SOKUON_JOIN_LIST = ["ヰ", "ゐ", "ヱ", "ゑ", "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "っ", "ゎ", "ヵ", "ヶ", "ゔ", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ", "た", "ち", "つ", "て", "と", "は", "ひ","ふ", "へ", "ほ", "ま", "み", "む", "め", "も", "や", "ゆ", "よ", "ら", "り", "る", "れ", "ろ", "わ", "を", "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど", "ば", "び", "ぶ", "べ", "ぼ", "ぱ", "ぴ", "ぷ", "ぺ", "ぽ", ]
+// prettier-ignore
+const KANA_UNSUPPORTED_SYMBOLS = ["←", "↓", "↑", "→"]
+// prettier-ignore
+const PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS = { "!": "！", "?": "？" } as const;
 export const CHAR_POINT = 50;
 export const MISS_PENALTY = CHAR_POINT / 2;
 
@@ -245,13 +48,13 @@ export class TypingWord {
         word = this.pushRomaMapChar({ word, CHAR, romaMapIndex });
       } else {
         for (let v = 0; v < lineRomaMap[i].length; v++) {
-          word = this.pushChar({ word, char: lineRomaMap[i][v], index: v });
+          word = this.pushChar({ word, char: constconvertZenkakuToHankaku(lineRomaMap[i][v]), index: v });
         }
       }
     }
 
     //this.kanaArray最後の文字が「ん」だった場合も[nn]に置き換えます。
-    if (word[word.length - 1]["k"] == "ん") {
+    if (word[word.length - 1]["k"] === "ん") {
       word[word.length - 1]["r"][0] = "nn";
       word[word.length - 1]["r"].push("n'");
       word[word.length - 1]["p"] = CHAR_POINT * word[word.length - 1]["r"][0].length;
@@ -280,7 +83,7 @@ export class TypingWord {
     if (word.length >= 2) {
       const PREVIOUS_KANA = word[word.length - 2]["k"];
 
-      if (PREVIOUS_KANA && PREVIOUS_KANA[PREVIOUS_KANA.length - 1] == "っ") {
+      if (PREVIOUS_KANA && PREVIOUS_KANA[PREVIOUS_KANA.length - 1] === "っ") {
         const KANA = word[word.length - 1]["k"][0];
 
         if (SOKUON_JOIN_LIST.includes(KANA)) {
@@ -298,11 +101,6 @@ export class TypingWord {
   }
 
   private pushChar({ word, char, index }: { word: TypeChunk[]; char: string; index: number }) {
-    //全角→半角に変換(英数字記号)
-    if (ZENKAKU_LIST.includes(char)) {
-      char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
-    }
-
     const convertedKanaChar =
       word.length > 0 && isFullWidth(word[word.length - 1]?.k)
         ? PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS[char as keyof typeof PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS]
@@ -360,17 +158,17 @@ export class TypingWord {
 
   private nConvert_nn(lineWord: TypeChunk[]) {
     //n→nn変換
-    const PREVIOUS_KANA = lineWord.length >= 2 ? lineWord[lineWord.length - 2]["k"] : false;
+    const prevKanaChar = lineWord.length >= 2 ? lineWord[lineWord.length - 2]["k"] : false;
 
-    if (PREVIOUS_KANA && PREVIOUS_KANA[PREVIOUS_KANA.length - 1] == "ん") {
+    if (prevKanaChar && prevKanaChar[prevKanaChar.length - 1] === "ん") {
       if (NN_LIST.includes(lineWord[lineWord.length - 1]["k"])) {
         for (let i = 0; i < lineWord[lineWord.length - 2]["r"].length; i++) {
           const ROMA_PATTERN = lineWord[lineWord.length - 2]["r"][i];
           const IS_N =
             (ROMA_PATTERN.length >= 2 &&
               ROMA_PATTERN[ROMA_PATTERN.length - 2] != "x" &&
-              ROMA_PATTERN[ROMA_PATTERN.length - 1] == "n") ||
-            ROMA_PATTERN == "n";
+              ROMA_PATTERN[ROMA_PATTERN.length - 1] === "n") ||
+            ROMA_PATTERN === "n";
 
           if (IS_N) {
             lineWord[lineWord.length - 2]["r"][i] = lineWord[lineWord.length - 2]["r"][i] + "n";
@@ -447,7 +245,7 @@ export class ParseMap {
         mapChangeCSSCounts.push(i);
       }
       if (wordRomaMap[i].length && lyrics !== "end") {
-        if (startLine == 0) {
+        if (startLine === 0) {
           startLine = i;
         }
         lineLength++;
@@ -534,29 +332,25 @@ export class ParseMap {
   }
 
   private parseWord(data: MapLine[]) {
-    let lyrics = data
-      .map((line) => line["word"].trim())
-      .join("\n")
-      .replace(/…/g, "...")
-      .replace(/‥/g, "..")
-      .replace(/･/g, "・")
-      .replace(/〜/g, "～")
-      .replace(/｢/g, "「")
-      .replace(/｣/g, "」")
-      .replace(/､/g, "、")
-      .replace(/｡/g, "。")
-      .replace(/　/g, " ")
-      .replace(/ {2,}/g, " ")
-      .replace(/ヴ/g, "ゔ")
-      .replace(/－/g, "ー");
+    const lyricsWithRomaMapIndexes = replaceRomaMapIndex(
+      data
+        .map((line) => line["word"].trim())
+        .join("\n")
+        .replace(/…/g, "...")
+        .replace(/‥/g, "..")
+        .replace(/･/g, "・")
+        .replace(/〜/g, "～")
+        .replace(/｢/g, "「")
+        .replace(/｣/g, "」")
+        .replace(/､/g, "、")
+        .replace(/｡/g, "。")
+        .replace(/　/g, " ")
+        .replace(/ {2,}/g, " ")
+        .replace(/ヴ/g, "ゔ")
+        .replace(/－/g, "ー")
+    );
 
-    const ROMA_MAP_LEN = ROMA_MAP.length;
-
-    for (let i = 0; i < ROMA_MAP_LEN; i++) {
-      lyrics = lyrics.replace(RegExp(ROMA_MAP[i]["k"], "g"), "\t" + i + "\t");
-    }
-
-    const lyricsArray = lyrics.split("\n");
+    const lyricsArray = lyricsWithRomaMapIndexes.split("\n");
 
     return lyricsArray.map((array) => array.split("\t").filter((word) => word > ""));
   }
@@ -604,15 +398,12 @@ export class ParseMap {
 
 export function romaConvert(lineWord: LineWord) {
   const dakuten = lineWord.nextChar.orginalDakuChar;
-  let kanaWord = (dakuten ? dakuten : lineWord.nextChar["k"]) + lineWord.word.map((char) => char["k"]).join("");
+  const kanaLyricsWithRomaMapIndexes = replaceRomaMapIndex(
+    (dakuten ? dakuten : lineWord.nextChar["k"]) + lineWord.word.map((char) => char["k"]).join("")
+  );
   const nextPoint = lineWord.nextChar["p"];
-  const ROMA_MAP_LEN = ROMA_MAP.length;
 
-  for (let i = 0; i < ROMA_MAP_LEN; i++) {
-    kanaWord = kanaWord.replace(RegExp(ROMA_MAP[i]["k"], "g"), "\t" + i + "\t");
-  }
-
-  const lyricsArray = kanaWord.split("\t").filter((word) => word > "");
+  const lyricsArray = kanaLyricsWithRomaMapIndexes.split("\t").filter((word) => word > "");
   const word = new TypingWord(lyricsArray as [string, ...string[]]).word;
 
   return { nextChar: { ...word[0], p: nextPoint }, word: word.slice(1) };
@@ -638,4 +429,21 @@ function isFullWidth(char: string): boolean {
 export const calcWordKanaNotes = ({ kanaWord }: { kanaWord: string }) => {
   const dakuHandakuLineNotes = (kanaWord.match(/[ゔがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ]/g) || []).length;
   return kanaWord.length + dakuHandakuLineNotes;
+};
+
+const replaceRomaMapIndex = (kanaSentence: string) => {
+  const ROMA_MAP_LEN = ROMA_MAP.length;
+
+  for (let i = 0; i < ROMA_MAP_LEN; i++) {
+    kanaSentence = kanaSentence.replace(RegExp(ROMA_MAP[i]["k"], "g"), "\t" + i + "\t");
+  }
+
+  return kanaSentence;
+};
+
+const constconvertZenkakuToHankaku = (char: string): string => {
+  if (ZENKAKU_LIST.includes(char)) {
+    return String.fromCharCode(char.charCodeAt(0) - 0xfee0);
+  }
+  return char;
 };
