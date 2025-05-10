@@ -437,18 +437,6 @@ export const useInputJudge = () => {
       );
     }
 
-    console.log(
-      "shiftKey:",
-      event.shiftKey,
-      "key:",
-      event.key,
-      "code:",
-      event.code,
-      "keyCode:",
-      event.keyCode,
-      "kanaKeys:",
-      input.keys
-    );
     return input;
   };
 
