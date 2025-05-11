@@ -49,20 +49,6 @@ const UploadButton = ({ state }: UploadButtonProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (canUpload && !newVideoId) {
-        event.preventDefault();
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [canUpload, newVideoId]);
-
   return (
     <Button
       className="cursor-pointer"
