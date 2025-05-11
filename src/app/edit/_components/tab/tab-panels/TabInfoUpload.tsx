@@ -1,17 +1,12 @@
 import { Card, CardBody, Flex, HStack, Stack, useTheme, useToast } from "@chakra-ui/react";
 
-import {
-  useMapCreatorIdState,
-  useSetGeminiTagsState,
-  useSetMapInfoState,
-  useVideoIdState,
-} from "@/app/edit/atoms/stateAtoms";
+import { useSetGeminiTagsState, useSetMapInfoState, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
+import useHasEditPermission from "@/app/edit/hooks/useUserEditPermission";
 import { useUploadMap } from "@/app/edit/hooks/utils/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
 import { ThemeColors } from "@/types";
 import { useGenerateMapInfoQuery } from "@/util/global-hooks/query/edit/useGenerateMapInfoQuery";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
-import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useFormState } from "react-dom";
@@ -23,8 +18,6 @@ import UploadButton from "./tab-info-child/UploadButton";
 
 const TabInfoUpload = () => {
   const toast = useCustomToast();
-  const { data: session } = useSession();
-  const mapCreatorId = useMapCreatorIdState();
   const theme: ThemeColors = useTheme();
   const searchParams = useSearchParams();
   const isNewCreate = !!searchParams.get("new");
@@ -32,6 +25,7 @@ const TabInfoUpload = () => {
   const { id: mapId } = useParams();
   const { data: mapInfoData, isFetching, error } = useGenerateMapInfoQuery({ videoId });
   const chakraToast = useToast();
+  const hasEditPermission = useHasEditPermission();
 
   const setGeminiTags = useSetGeminiTagsState();
   const setMapInfo = useSetMapInfoState();
@@ -59,12 +53,8 @@ const TabInfoUpload = () => {
 
   const [state, formAction] = useFormState(upload, INITIAL_SERVER_ACTIONS_STATE);
 
-  const myUserId = session?.user?.id;
-  const isAdmin = session?.user?.role === "ADMIN";
-  const isDisplayUploadButton = (myUserId && (!mapCreatorId || Number(myUserId) === mapCreatorId)) || isAdmin;
-
   useEffect(() => {
-    if (!isDisplayUploadButton) {
+    if (!hasEditPermission) {
       const existingToast = chakraToast.isActive("login-required-toast");
       if (!existingToast) {
         toast({
@@ -72,12 +62,12 @@ const TabInfoUpload = () => {
           title: "編集保存権限がないため譜面の更新はできません",
           duration: 100000,
           size: "sm",
-          isClosable: false, // ユーザーが閉じられないようにする
-          id: "login-required-toast", // 重複表示を防ぐためのID
+          isClosable: false,
+          id: "login-required-toast",
         });
       }
     }
-  }, [chakraToast, isDisplayUploadButton, toast]);
+  }, [chakraToast, hasEditPermission, toast]);
 
   return (
     <Card variant="filled" bg={theme.colors.background.card} boxShadow="lg" color={theme.colors.text.body}>
@@ -86,7 +76,7 @@ const TabInfoUpload = () => {
           <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
           <InfoTag isGeminiLoading={isFetching} />
           <HStack justifyContent="space-between">
-            {isDisplayUploadButton ? (
+            {hasEditPermission ? (
               <Flex
                 as={"form"}
                 action={formAction}
