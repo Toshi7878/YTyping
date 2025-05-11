@@ -27,13 +27,13 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
   let typeChunks: TypeChunk[] = [];
 
   for (let i = 0; i < tokenizedKanaWord.length; i++) {
-    const kanaChar = tokenizedKanaWord[i];
+    const kanaChar = transformSymbolBasedOnPreviousChar({ typeChunks, char: tokenizedKanaWord[i] });
     const romaPatterns = [
       ...(KANA_TO_ROMA_MAP.get(kanaChar) || SYMBOL_TO_ROMA_MAP.get(kanaChar) || [convertZenkakuToHankaku(kanaChar)]),
     ];
 
     typeChunks.push({
-      k: transformSymbolBasedOnPreviousChar({ typeChunks, char: kanaChar }),
+      k: kanaChar,
       r: romaPatterns,
       p: CHAR_POINT * romaPatterns[0].length,
       t: determineCharacterType({ kanaChar, romaChar: romaPatterns[0] }),
