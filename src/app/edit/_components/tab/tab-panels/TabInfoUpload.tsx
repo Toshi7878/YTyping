@@ -16,6 +16,8 @@ import PreviewTimeInput from "./tab-info-child/PreviewTimeInput";
 import TypeLinkButton from "./tab-info-child/TypeLinkButton";
 import UploadButton from "./tab-info-child/UploadButton";
 
+export const NOT_EDIT_PERMISSION_TOAST_ID = "not-edit-permission-toast";
+
 const TabInfoUpload = () => {
   const toast = useCustomToast();
   const theme: ThemeColors = useTheme();
@@ -55,7 +57,7 @@ const TabInfoUpload = () => {
 
   useEffect(() => {
     if (!hasEditPermission) {
-      const existingToast = chakraToast.isActive("login-required-toast");
+      const existingToast = chakraToast.isActive(NOT_EDIT_PERMISSION_TOAST_ID);
       if (!existingToast) {
         toast({
           type: "warning",
@@ -63,7 +65,7 @@ const TabInfoUpload = () => {
           duration: 100000,
           size: "sm",
           isClosable: false,
-          id: "login-required-toast",
+          id: NOT_EDIT_PERMISSION_TOAST_ID,
         });
       }
     }
