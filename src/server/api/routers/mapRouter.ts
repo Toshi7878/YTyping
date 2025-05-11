@@ -123,9 +123,9 @@ export const mapRouter = {
       }
 
       const jsonString = await data.text();
-      const jsonData: MapLine[] = JSON.parse(jsonString);
+      const rawMapData: MapLine[] = JSON.parse(jsonString);
 
-      return jsonData;
+      return rawMapData;
     } catch (error) {
       console.error("Error processing the downloaded file:", error);
       throw error;
