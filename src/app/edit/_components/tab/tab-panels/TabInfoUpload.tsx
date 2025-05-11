@@ -1,4 +1,4 @@
-import { Card, CardBody, Flex, HStack, Stack, useTheme } from "@chakra-ui/react";
+import { Card, CardBody, Flex, HStack, Stack, useTheme, useToast } from "@chakra-ui/react";
 
 import {
   useMapCreatorIdState,
@@ -31,6 +31,7 @@ const TabInfoUpload = () => {
   const videoId = useVideoIdState();
   const { id: mapId } = useParams();
   const { data: mapInfoData, isFetching, error } = useGenerateMapInfoQuery({ videoId });
+  const chakraToast = useToast();
 
   const setGeminiTags = useSetGeminiTagsState();
   const setMapInfo = useSetMapInfoState();
@@ -61,6 +62,22 @@ const TabInfoUpload = () => {
   const myUserId = session?.user?.id;
   const isAdmin = session?.user?.role === "ADMIN";
   const isDisplayUploadButton = (myUserId && (!mapCreatorId || Number(myUserId) === mapCreatorId)) || isAdmin;
+
+  useEffect(() => {
+    if (!isDisplayUploadButton) {
+      const existingToast = chakraToast.isActive("login-required-toast");
+      if (!existingToast) {
+        toast({
+          type: "warning",
+          title: "編集保存権限がないため譜面の更新はできません",
+          duration: 100000,
+          size: "sm",
+          isClosable: false, // ユーザーが閉じられないようにする
+          id: "login-required-toast", // 重複表示を防ぐためのID
+        });
+      }
+    }
+  }, [chakraToast, isDisplayUploadButton, toast]);
 
   return (
     <Card variant="filled" bg={theme.colors.background.card} boxShadow="lg" color={theme.colors.text.body}>
