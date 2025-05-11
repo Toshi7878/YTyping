@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams, useLineCount, usePlayer, useTypingDetails } from "../../atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineCount, usePlayer, useTypingDetails } from "../../atoms/refAtoms";
 import {
   useReadGameUtilParams,
   useReadMapState,
@@ -18,7 +18,7 @@ import { useTimerControls } from "./timer-hooks/timer";
 
 export const useRetry = () => {
   const { readPlayer } = usePlayer();
-  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
 
   const setLineResults = useSetLineResults();
   const setCombo = useSetCombo();

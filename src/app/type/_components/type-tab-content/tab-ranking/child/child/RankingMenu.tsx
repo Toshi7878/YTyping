@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
 import { useMapInfoRef, useSceneGroupState, useSetTabIndex } from "@/app/type/atoms/stateAtoms";
 import { useLoadResultPlay } from "@/app/type/hooks/loadResultPlay";
 import { useRetry } from "@/app/type/hooks/playing-hooks/retry";
@@ -39,7 +39,7 @@ const RankingMenu = ({
   const loadResultPlay = useLoadResultPlay({ startMode: "replay", resultId });
   const setTabIndex = useSetTabIndex();
 
-  const { writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readMapInfo } = useMapInfoRef();
   const handleReplayClick = async () => {
     await loadResultPlay();

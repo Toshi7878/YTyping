@@ -2,7 +2,7 @@ import { useReadMapState, useSceneState, useSetNextLyrics } from "@/app/type/ato
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
-import { usegameUtilityReferenceParams, useLineCount, useUserStats } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineCount, useUserStats } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/playingKeydown";
 import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/timer";
 import { useSession } from "next-auth/react";
@@ -12,7 +12,7 @@ const Playing = () => {
   const { setNextLyrics } = useSetNextLyrics();
   const handleKeydown = useHandleKeydown();
   const { readUserStats, resetUserStats } = useUserStats();
-  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readCount } = useLineCount();
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();

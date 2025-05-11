@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
 import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/type/atoms/stateAtoms";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors } from "@/types";
@@ -44,7 +44,7 @@ const SettingCard = (props: SettingCardProps) => {
   const breakpoint = useBreakpointValue({ base: "base", md: "md" });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useUserTypingOptionsStateRef();
 
   useEffect(() => {

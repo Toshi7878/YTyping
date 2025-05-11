@@ -185,7 +185,7 @@ export const gameUtilityReferenceParamsAtom = atomWithReset({
   lineResultdrawerClosure: null as UseDisclosureReturn | null,
 });
 
-export const usegameUtilityReferenceParams = () => {
+export const useGameUtilityReferenceParams = () => {
   const readGameUtilRefParams = useAtomCallback(
     useCallback((get) => get(gameUtilityReferenceParamsAtom), []),
     { store }

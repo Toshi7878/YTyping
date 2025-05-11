@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
 import { useSceneState, useSetTypingStatusRank } from "@/app/type/atoms/stateAtoms";
 import { useMapRankingQuery } from "@/util/global-hooks/query/mapRankingRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
@@ -16,7 +16,7 @@ const RankingList = () => {
   const { id: mapId } = useParams();
 
   const { data, error, isPending } = useMapRankingQuery({ mapId: mapId as string });
-  const { writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const setTypingStatusRank = useSetTypingStatusRank();
 
   useEffect(() => {

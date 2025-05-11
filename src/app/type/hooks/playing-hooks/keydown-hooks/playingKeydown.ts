@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams, useYTStatus } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams, useYTStatus } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
@@ -63,7 +63,7 @@ const usePlayingShortcutKey = () => {
   const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine();
   const setNotify = useSetNotify();
 
-  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readTypingOptions = useUserTypingOptionsStateRef();
   const readMap = useReadMapState();
   const readGameStateUtils = useReadGameUtilParams();

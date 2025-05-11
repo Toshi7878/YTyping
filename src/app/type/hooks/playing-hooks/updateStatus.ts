@@ -1,5 +1,5 @@
 import { MISS_PENALTY } from "../../../../util/parse-map/parseMap";
-import { usegameUtilityReferenceParams, useLineStatus, useTypingDetails, useUserStats } from "../../atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineStatus, useTypingDetails, useUserStats } from "../../atoms/refAtoms";
 import {
   useReadCombo,
   useReadGameUtilParams,
@@ -195,7 +195,7 @@ export const useTypeSuccess = () => {
 };
 
 export const useCalcCurrentRank = () => {
-  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
 
   return (currentScore: number) => {
     // 現在のスコアが何番目に入るかを取得

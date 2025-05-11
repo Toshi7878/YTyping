@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams, useLineCount } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineCount } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
@@ -105,7 +105,7 @@ export const useReplay = () => {
   const keyReplay = usePlayBackKey();
   const readLineResults = useReadLineResults();
 
-  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readCount } = useLineCount();
 
   return ({ constantLineTime }: { constantLineTime: number }) => {
@@ -138,7 +138,7 @@ export const useLineReplayUpdate = () => {
   const dispatchSpeed = usePlaySpeedReducer();
   const inputModeChange = useInputModeChange();
 
-  const { writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readLineResults = useReadLineResults();
 
   return (newCurrentCount: number) => {

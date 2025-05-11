@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
 import { useMapState } from "@/app/type/atoms/stateAtoms";
 import { useLoadResultPlay } from "@/app/type/hooks/loadResultPlay";
 import { ThemeColors } from "@/types";
@@ -7,7 +7,7 @@ import { Button, useTheme } from "@chakra-ui/react";
 const ReadyPracticeButton = () => {
   const map = useMapState();
   const theme: ThemeColors = useTheme();
-  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const handleClick = useLoadResultPlay({
     startMode: "practice",
     resultId: readGameUtilRefParams().practiceMyResultId || null,

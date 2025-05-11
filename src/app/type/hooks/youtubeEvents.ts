@@ -1,6 +1,6 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
-import { usegameUtilityReferenceParams, useLineCount, usePlayer, useProgress, useYTStatus } from "../atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineCount, usePlayer, useProgress, useYTStatus } from "../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
@@ -145,7 +145,7 @@ export const useYTPauseEvent = () => {
 
 export const useYTSeekEvent = () => {
   const { readPlayer } = usePlayer();
-  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const { writeCount } = useLineCount();
 
   return () => {

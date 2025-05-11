@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useSceneState, useTypingStatusState } from "@/app/type/atoms/stateAtoms";
 import { HStack } from "@chakra-ui/react";
@@ -16,7 +16,7 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
   const status = useTypingStatusState();
-  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const retryBtnRef = useRef<HTMLButtonElement>(null);
   const modeChangeBtnRef = useRef<HTMLButtonElement>(null);
   const scene = useSceneState();

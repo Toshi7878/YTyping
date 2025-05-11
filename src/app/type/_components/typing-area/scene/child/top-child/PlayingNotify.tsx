@@ -1,4 +1,4 @@
-import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useGameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
 import { useNotifyState, useSceneState, useSetNotify } from "@/app/type/atoms/stateAtoms";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion"; // 追加
@@ -12,7 +12,7 @@ const PlayingNotify = () => {
   const setNotify = useSetNotify();
   const scene = useSceneState();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
 
   const playModeNotify = () => {
     if (scene === "play") {

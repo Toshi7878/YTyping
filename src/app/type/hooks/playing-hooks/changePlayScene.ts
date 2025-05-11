@@ -1,5 +1,5 @@
 import { YouTubeSpeed } from "@/types";
-import { usegameUtilityReferenceParams, useLineStatus } from "../../atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineStatus } from "../../atoms/refAtoms";
 import { usePlaySpeedReducer } from "../../atoms/speedReducerAtoms";
 import { useReadGameUtilParams, useSetNotify, useSetScene } from "../../atoms/stateAtoms";
 import { useRetry } from "./retry";
@@ -10,7 +10,7 @@ export const useChangePlayMode = () => {
   const retry = useRetry();
   const dispatchSpeed = usePlaySpeedReducer();
 
-  const { writeGameUtilRefParams, readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { writeGameUtilRefParams, readGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readLineStatus } = useLineStatus();
   const readGameStateUtils = useReadGameUtilParams();
 

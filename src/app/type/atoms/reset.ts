@@ -1,6 +1,6 @@
 import { RESET } from "jotai/utils";
 import {
-  usegameUtilityReferenceParams,
+  useGameUtilityReferenceParams,
   useLineCount,
   useLineStatus,
   usePlayer,
@@ -22,7 +22,7 @@ export const usePathChangeAtomReset = () => {
   const setGameUtils = useSetGameUtilParams();
 
   const { resetTypingStatus } = useSetTypingStatus();
-  const { resetGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { resetGameUtilRefParams } = useGameUtilityReferenceParams();
   const { resetYTStatus } = useYTStatus();
   const { resetLineStatus } = useLineStatus();
   const { resetStatus } = useTypingDetails();

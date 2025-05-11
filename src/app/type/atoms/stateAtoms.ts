@@ -9,7 +9,7 @@ import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../ts/
 import {
   gameUtilityReferenceParamsAtom,
   lineProgressAtom,
-  usegameUtilityReferenceParams,
+  useGameUtilityReferenceParams,
   ytStatusAtom,
 } from "./refAtoms";
 import { speedBaseAtom } from "./speedReducerAtoms";
@@ -368,7 +368,7 @@ export const useSetTypingStatusRank = () => useSetAtom(focusTypingStatusAtoms.ra
 export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
 export const useSetTypingStatus = () => {
   const readMap = useReadMapState();
-  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const setTypingStatus = useSetAtom(typingStatusAtom, { store });
   const setLineCount = useSetTypingStatusLine();
   const setRank = useSetTypingStatusRank();

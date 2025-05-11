@@ -1,5 +1,5 @@
 import {
-  usegameUtilityReferenceParams,
+  useGameUtilityReferenceParams,
   useLineCount,
   useLineStatus,
   usePlayer,
@@ -89,7 +89,7 @@ const useTimer = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
 
   const { setLineProgressValue, setTotalProgressValue } = useProgress();
-  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readYTStatus } = useYTStatus();
   const readCurrentTime = useReadCurrentTime();
   const readLineWord = useReadLineWord();
