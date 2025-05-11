@@ -94,7 +94,7 @@ export const KEY_TO_KANA = new Map([
   ["*", ["け"]],
 ]);
 
-export const CODE_TO_KANA = new Map<string, string[]>([
+export const CODE_TO_KANA = new Map([
   ["IntlYen", ["ー", "￥", "\\"]],
   ["IntlRo", ["ろ", "￥", "\\"]],
   ["Space", [" "]],
