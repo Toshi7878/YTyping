@@ -11,12 +11,14 @@ import {
 
 import { clientApi } from "@/trpc/client-api";
 import { MapLine } from "@/types/map";
+import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useSearchParams } from "next/navigation";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
 import { useEditUtilsRef, usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useTimeOffsetStateRef } from "../atoms/storageAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
+import useHasEditPermission from "./useUserEditPermission";
 import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 import useTimeValidate from "./utils/useTimeValidate";
 import { useUpdateNewMapBackUp } from "./utils/useUpdateNewMapBackUp";
@@ -168,9 +170,19 @@ export const useLineUpdateButtonEvent = () => {
 export const useWordConvertButtonEvent = () => {
   const wordConvert = useWordConverter();
   const readSelectLine = useLineStateRef();
+  const hasEditPermission = useHasEditPermission();
+  const toast = useCustomToast();
 
   const setWord = useSetWordState();
   return async () => {
+    if (!hasEditPermission) {
+      toast({
+        type: "warning",
+        title: "読み変換機能は編集保存権限が有効な場合に使用できます",
+      });
+      return;
+    }
+
     const { lyrics } = readSelectLine();
     const word = await wordConvert(lyrics);
     setWord(word);

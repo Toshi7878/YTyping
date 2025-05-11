@@ -62,7 +62,7 @@ const TabInfoUpload = () => {
         toast({
           type: "warning",
           title: "編集保存権限がないため譜面の更新はできません",
-          duration: 100000,
+          duration: null,
           size: "sm",
           isClosable: false,
           id: NOT_EDIT_PERMISSION_TOAST_ID,
