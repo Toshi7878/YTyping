@@ -1,5 +1,5 @@
 import { MapLine } from "@/types/map";
-import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../../app/type/ts/type";
+import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../../app/(typing)/type/ts/type";
 import { generateTypingWord } from "./generateTypingWord";
 import { KANA_TO_ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./romaMap";
 
