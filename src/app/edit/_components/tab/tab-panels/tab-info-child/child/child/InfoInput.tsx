@@ -1,4 +1,4 @@
-import { useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
+import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import { FormLabel, Input } from "@chakra-ui/react";
 import { Dispatch } from "react";
 
@@ -11,7 +11,7 @@ interface InfoInputProps {
   isRequired?: boolean;
 }
 const InfoInput = (props: InfoInputProps) => {
-  const setCanUpload = useSetCanUploadState();
+  const setCanUpload = useSetCanUpload();
   return (
     <>
       <FormLabel mb="0" width="150px" fontWeight="bold" fontSize="sm">

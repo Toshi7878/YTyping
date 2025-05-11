@@ -1,4 +1,4 @@
-import { useGameStateUtilsRef, useLineWordStateRef } from "@/app/type/atoms/stateAtoms";
+import { useReadGameUtilParams, useReadLineWord } from "@/app/type/atoms/stateAtoms";
 import { CHAR_POINT } from "../../../../../util/parse-map/parseMap";
 import { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../../ts/type";
 import { CODE_TO_KANA, KEY_TO_KANA } from "./kanaKeyMap";
@@ -440,8 +440,8 @@ export const useInputJudge = () => {
     return input;
   };
 
-  const readGameStateUtils = useGameStateUtilsRef();
-  const readLineWord = useLineWordStateRef();
+  const readGameStateUtils = useReadGameUtilParams();
+  const readLineWord = useReadLineWord();
 
   return (event: KeyboardEvent) => {
     const { inputMode: inputMode } = readGameStateUtils();

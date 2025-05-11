@@ -1,4 +1,4 @@
-import { useLineStateRef, useManyPhraseState, useSetManyPhraseState } from "@/app/edit/atoms/stateAtoms";
+import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/atoms/stateAtoms";
 import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
 import { useFilterWordSymbol, useLyricsFormatUtils } from "@/app/edit/hooks/utils/useWordConverter";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
@@ -25,9 +25,9 @@ const ManyPhraseTextarea = () => {
   const theme: ThemeColors = useTheme();
   const manyPhrase = useManyPhraseState();
 
-  const setManyPhrase = useSetManyPhraseState();
+  const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
-  const readSelectLine = useLineStateRef();
+  const readSelectLine = useReadLine();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { lyrics } = readSelectLine();
@@ -84,7 +84,7 @@ interface FilterSymbolButtonProps {
   manyPhrase: string;
 }
 const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
-  const setManyPhrase = useSetManyPhraseState();
+  const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
   const filterWordSymbol = useFilterWordSymbol();
   const { formatSimilarChar, filterUnicodeSymbol } = useLyricsFormatUtils();

@@ -1,7 +1,7 @@
 import { Box, FormLabel, HStack, Input, Text, useTheme } from "@chakra-ui/react";
 
-import { useEditUtilsRef, usePlayer } from "@/app/edit/atoms/refAtoms";
-import { useMapPreviewTimeState, useSetCanUploadState, useSetPreviewTimeState } from "@/app/edit/atoms/stateAtoms";
+import { useEditUtilsParams, usePlayer } from "@/app/edit/atoms/refAtoms";
+import { useMapPreviewTimeState, useSetCanUpload, useSetPreviewTime } from "@/app/edit/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { FaPlay } from "react-icons/fa";
@@ -10,10 +10,10 @@ const PreviewTimeInput = () => {
   const theme: ThemeColors = useTheme();
 
   const previewTime = useMapPreviewTimeState();
-  const setPreviewTime = useSetPreviewTimeState();
-  const setCanUpload = useSetCanUploadState();
+  const setPreviewTime = useSetPreviewTime();
+  const setCanUpload = useSetCanUpload();
   const { readPlayer } = usePlayer();
-  const { writeEditUtils } = useEditUtilsRef();
+  const { writeEditUtils } = useEditUtilsParams();
 
   const handlePreviewClick = () => {
     writeEditUtils({ preventAutoTabToggle: true });

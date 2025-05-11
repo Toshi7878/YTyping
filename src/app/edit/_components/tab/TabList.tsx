@@ -1,7 +1,7 @@
 "use client";
 import { ThemeColors } from "@/types";
 import { Tab, TabList, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
-import { useSetTabIndexState, useTabIndexState } from "../../atoms/stateAtoms";
+import { useSetTabIndex, useTabIndexState } from "../../atoms/stateAtoms";
 import { TabIndex } from "../../ts/type";
 import TabEditor from "./tab-panels/TabEditor";
 import TabInfoUpload from "./tab-panels/TabInfoUpload";
@@ -14,7 +14,7 @@ interface EditorTabContentProps {
 const TAB_LIST = ["情報 & 保存", "エディター", "設定 & ショートカットキー"];
 export default function EditorTabContent({ className }: EditorTabContentProps) {
   const tabIndex = useTabIndexState();
-  const setTabIndex = useSetTabIndexState();
+  const setTabIndex = useSetTabIndex();
   const theme: ThemeColors = useTheme();
 
   return (
@@ -28,11 +28,7 @@ export default function EditorTabContent({ className }: EditorTabContentProps) {
       variant="line"
       width="100%"
     >
-      <TabList
-        height="25px"
-        px={{ base: "0", md: "8" }}
-        borderBottom={`1px solid ${theme.colors.text.body}aa`}
-      >
+      <TabList height="25px" px={{ base: "0", md: "8" }} borderBottom={`1px solid ${theme.colors.text.body}aa`}>
         {TAB_LIST.map((tabName, index) => {
           return (
             <Tab

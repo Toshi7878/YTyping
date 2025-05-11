@@ -1,6 +1,6 @@
 "use client";
-import { useSetPlayingInputModeState } from "@/app/type/atoms/stateAtoms";
-import { useReadyInputModeState, useSetReadyInputModeState } from "@/app/type/atoms/storageAtoms";
+import { useSetPlayingInputMode } from "@/app/type/atoms/stateAtoms";
+import { useReadyInputModeState, useSetReadyInputMode } from "@/app/type/atoms/storageAtoms";
 import { InputMode } from "@/app/type/ts/type";
 import { ThemeColors } from "@/types";
 import { Box, HStack, useRadio, useRadioGroup, UseRadioProps, useTheme } from "@chakra-ui/react";
@@ -67,8 +67,8 @@ function ReadyInputModeRadioCards() {
   ];
 
   const readyInputMode = useReadyInputModeState();
-  const setReadyInputMode = useSetReadyInputModeState();
-  const setPlayingInputMode = useSetPlayingInputModeState();
+  const setReadyInputMode = useSetReadyInputMode();
+  const setPlayingInputMode = useSetPlayingInputMode();
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "inputMode",
@@ -86,12 +86,7 @@ function ReadyInputModeRadioCards() {
       {options.map((option) => {
         const radio = getRadioProps({ value: option.value });
         return (
-          <RadioCard
-            key={option.value}
-            option={option.value}
-            {...radio}
-            isDisabled={option.value === "flick"}
-          >
+          <RadioCard key={option.value} option={option.value} {...radio} isDisabled={option.value === "flick"}>
             {option.label}
           </RadioCard>
         );

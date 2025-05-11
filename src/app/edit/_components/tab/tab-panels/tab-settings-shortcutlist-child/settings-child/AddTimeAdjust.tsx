@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetTimeOffsetState, useTimeOffsetState } from "@/app/edit/atoms/storageAtoms";
+import { useSetTimeOffset, useTimeOffsetState } from "@/app/edit/atoms/storageAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
@@ -11,7 +11,7 @@ const TIME_OFFSET_STEP = 0.01;
 
 export default function AddTimeAdjust() {
   const timeOffset = useTimeOffsetState();
-  const setTimeOffset = useSetTimeOffsetState();
+  const setTimeOffset = useSetTimeOffset();
 
   return (
     <CounterInput

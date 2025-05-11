@@ -1,12 +1,12 @@
 import {
-  useEditUtilsStateRef,
   useLineReducer,
-  useLineStateRef,
-  useSetCanUploadState,
-  useSetDirectEditIndexState,
-  useSetIsUpdateUpdatedAtRef,
-  useSetWordState,
-  useYtPlayerStatusStateRef,
+  useReadEditUtils,
+  useReadLine,
+  useReadYtPlayerStatus,
+  useSetCanUpload,
+  useSetDirectEditIndex,
+  useSetIsUpdateUpdatedAt,
+  useSetWord,
 } from "../atoms/stateAtoms";
 
 import { clientApi } from "@/trpc/client-api";
@@ -15,8 +15,8 @@ import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useSearchParams } from "next/navigation";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
-import { useEditUtilsRef, usePlayer, useTimeInput } from "../atoms/refAtoms";
-import { useTimeOffsetStateRef } from "../atoms/storageAtoms";
+import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
+import { useReadTimeOffsetState } from "../atoms/storageAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import useHasEditPermission from "./useUserEditPermission";
 import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
@@ -28,17 +28,17 @@ export const useLineAddButtonEvent = () => {
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
-  const setDirectEdit = useSetDirectEditIndexState();
-  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAtRef();
+  const setDirectEdit = useSetDirectEditIndex();
+  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
 
-  const setCanUpload = useSetCanUploadState();
+  const setCanUpload = useSetCanUpload();
   const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
 
-  const readYtPlayerStatus = useYtPlayerStatusStateRef();
-  const readSelectLine = useLineStateRef();
-  const readTimeOffset = useTimeOffsetStateRef();
-  const readEditUtils = useEditUtilsStateRef();
+  const readYtPlayerStatus = useReadYtPlayerStatus();
+  const readSelectLine = useReadLine();
+  const readTimeOffset = useReadTimeOffsetState();
+  const readEditUtils = useReadEditUtils();
   const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
   const readMap = useMapStateRef();
@@ -46,7 +46,7 @@ export const useLineAddButtonEvent = () => {
   const historyDispatch = useHistoryReducer();
   const lineDispatch = useLineReducer();
   const timeValidate = useTimeValidate();
-  const { writeEditUtils } = useEditUtilsRef();
+  const { writeEditUtils } = useEditUtilsParams();
 
   return (isShiftKey: boolean) => {
     const { playing } = readYtPlayerStatus();
@@ -89,25 +89,25 @@ export const useLineAddButtonEvent = () => {
 };
 
 export const useLineUpdateButtonEvent = () => {
-  const setCanUpload = useSetCanUploadState();
-  const setDirectEdit = useSetDirectEditIndexState();
+  const setCanUpload = useSetCanUpload();
+  const setDirectEdit = useSetDirectEditIndex();
 
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
-  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAtRef();
+  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
 
   const mapDispatch = useMapReducer();
   const historyDispatch = useHistoryReducer();
   const lineDispatch = useLineReducer();
 
-  const readYtPlayerStatus = useYtPlayerStatusStateRef();
-  const readSelectLine = useLineStateRef();
-  const readTimeOffset = useTimeOffsetStateRef();
+  const readYtPlayerStatus = useReadYtPlayerStatus();
+  const readSelectLine = useReadLine();
+  const readTimeOffset = useReadTimeOffsetState();
   const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
   const readMap = useMapStateRef();
-  const readUtilsState = useEditUtilsStateRef();
+  const readUtilsState = useReadEditUtils();
   const postFixWordLog = clientApi.morphConvert.post_fix_word_log.useMutation();
 
   const timeValidate = useTimeValidate();
@@ -169,11 +169,11 @@ export const useLineUpdateButtonEvent = () => {
 
 export const useWordConvertButtonEvent = () => {
   const wordConvert = useWordConverter();
-  const readSelectLine = useLineStateRef();
+  const readSelectLine = useReadLine();
   const hasEditPermission = useHasEditPermission();
   const toast = useCustomToast();
 
-  const setWord = useSetWordState();
+  const setWord = useSetWord();
   return async () => {
     if (!hasEditPermission) {
       toast({
@@ -190,15 +190,15 @@ export const useWordConvertButtonEvent = () => {
 };
 
 export const useLineDelete = () => {
-  const setCanUpload = useSetCanUploadState();
-  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAtRef();
-  const setDirectEdit = useSetDirectEditIndexState();
+  const setCanUpload = useSetCanUpload();
+  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
+  const setDirectEdit = useSetDirectEditIndex();
 
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const updateNewMapBackUp = useUpdateNewMapBackUp();
   const { removeSelectedLineColor } = useChangeLineRowColor();
-  const readSelectLine = useLineStateRef();
+  const readSelectLine = useReadLine();
   const readMap = useMapStateRef();
 
   const mapDispatch = useMapReducer();

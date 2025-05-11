@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetTabIndexState } from "@/app/type/atoms/stateAtoms";
+import { useSetTabIndex } from "@/app/type/atoms/stateAtoms";
 import { useResultData } from "@/app/type/hooks/end/useResultData";
 import { clientApi } from "@/trpc/client-api";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
@@ -33,7 +33,7 @@ const EndUploadButton = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const { id: mapId } = useParams();
-  const setTabIndex = useSetTabIndexState();
+  const setTabIndex = useSetTabIndex();
   const toast = useCustomToast();
 
   const resultData = useResultData();

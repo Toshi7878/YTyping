@@ -1,18 +1,13 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YouTubeEvent, YTPlayer } from "@/types/global-types";
-import { useEditUtilsRef, usePlayer } from "../atoms/refAtoms";
-import {
-  useSetIsYTPlayingState,
-  useSetIsYTReadiedState,
-  useSetIsYTStartedState,
-  useSetTabIndexState,
-} from "../atoms/stateAtoms";
+import { useEditUtilsParams, usePlayer } from "../atoms/refAtoms";
+import { useSetIsYTPlaying, useSetIsYTReadied, useSetIsYTStarted, useSetTabIndex } from "../atoms/stateAtoms";
 import { useTimerControls } from "./useTimer";
 import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 import { useGetSeekCount } from "./utils/useGetSeekCount";
 
 export const useYTReadyEvent = () => {
-  const setIsYTReadied = useSetIsYTReadiedState();
+  const setIsYTReadied = useSetIsYTReadied();
   const volume = useVolumeState();
 
   const { writePlayer } = usePlayer();
@@ -26,11 +21,11 @@ export const useYTReadyEvent = () => {
 };
 
 export const useYTPlayEvent = () => {
-  const setIsYTPlaying = useSetIsYTPlayingState();
-  const setIsYTStarted = useSetIsYTStartedState();
-  const setTabIndex = useSetTabIndexState();
+  const setIsYTPlaying = useSetIsYTPlaying();
+  const setIsYTStarted = useSetIsYTStarted();
+  const setTabIndex = useSetTabIndex();
 
-  const { readEditUtils, writeEditUtils } = useEditUtilsRef();
+  const { readEditUtils, writeEditUtils } = useEditUtilsParams();
   const { startTimer } = useTimerControls();
 
   return () => {
@@ -50,7 +45,7 @@ export const useYTPlayEvent = () => {
 };
 
 export const useYTPauseEvent = () => {
-  const setIsYTPlaying = useSetIsYTPlayingState();
+  const setIsYTPlaying = useSetIsYTPlaying();
 
   const { pauseTimer } = useTimerControls();
 
@@ -62,7 +57,7 @@ export const useYTPauseEvent = () => {
 };
 
 export const useYTEndStopEvent = () => {
-  const setIsYTPlaying = useSetIsYTPlayingState();
+  const setIsYTPlaying = useSetIsYTPlaying();
   const { pauseTimer } = useTimerControls();
 
   return () => {

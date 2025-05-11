@@ -1,8 +1,4 @@
-import {
-  useMapTagsState,
-  useSetCanUploadState,
-  useSetMapTagsState,
-} from "@/app/edit/atoms/stateAtoms";
+import { useMapTagsState, useSetCanUpload, useSetMapTags } from "@/app/edit/atoms/stateAtoms";
 import { TAG_MAX_LEN } from "@/app/edit/ts/const/editDefaultValues";
 import { Tag } from "@/types";
 import { Badge } from "@chakra-ui/react";
@@ -13,8 +9,8 @@ interface TagBadgeProps {
 }
 const TagBadge = (props: TagBadgeProps) => {
   const tags = useMapTagsState();
-  const setTags = useSetMapTagsState();
-  const setCanUpload = useSetCanUploadState();
+  const setTags = useSetMapTags();
+  const setCanUpload = useSetCanUpload();
 
   const handleAddition = (tag: Tag) => {
     tag.id = tag.id.trim();

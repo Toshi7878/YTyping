@@ -1,5 +1,5 @@
 import { extractYouTubeVideoId } from "@/app/_components/header/child/right-child/new-map/extractYTId";
-import { useSetIsYTStartedState, useSetVideoIdState, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
+import { useSetIsYTStarted, useSetVideoId, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
 import { z } from "@/validator/z";
 import { Button, Flex, FormLabel, Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
@@ -16,8 +16,8 @@ const VideoIdInput = () => {
 
   const videoId = useVideoIdState();
   const [changeVideoId, setChangeVideoId] = useState(videoId);
-  const setIsYTStarted = useSetIsYTStartedState();
-  const setVideoId = useSetVideoIdState();
+  const setIsYTStarted = useSetIsYTStarted();
+  const setVideoId = useSetVideoId();
   const canChangeVideo = videoIdSchema.safeParse(changeVideoId).success && videoId !== changeVideoId;
   return (
     <Flex alignItems="center" hidden={isNewCreateMap ? true : false}>

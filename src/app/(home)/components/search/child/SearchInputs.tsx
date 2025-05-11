@@ -4,13 +4,13 @@ import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangePa
 import { Button, HStack, Input } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useIsSearchingState, useSetIsSearchingState } from "../../../atoms/atoms";
+import { useIsSearchingState, useSetIsSearching } from "../../../atoms/atoms";
 
 const SearchInputs = () => {
   const searchParams = useSearchParams();
   const [keyword, setKeyword] = useState(searchParams?.get("keyword") || "");
   const isSearching = useIsSearchingState();
-  const setIsSearching = useSetIsSearchingState();
+  const setIsSearching = useSetIsSearching();
   const setDifficultyRangeParams = useDifficultyRangeParams();
   const router = useRouter();
 

@@ -3,7 +3,7 @@ import { useTheme } from "@chakra-ui/react";
 import { Ticker } from "pixi.js";
 import { useMapStateRef } from "../atoms/mapReducerAtom";
 import { usePlayer, useTimeInput, useTimeRange } from "../atoms/refAtoms";
-import { useEditUtilsStateRef, useSetIsTimeInputValidState } from "../atoms/stateAtoms";
+import { useReadEditUtils, useSetIsTimeInputValid } from "../atoms/stateAtoms";
 import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 
 const editTicker = new Ticker();
@@ -23,7 +23,7 @@ export const useTimerRegistration = () => {
   return { addTimer, removeTimer };
 };
 export const useTimerControls = () => {
-  const setIsTimeInputValid = useSetIsTimeInputValidState();
+  const setIsTimeInputValid = useSetIsTimeInputValid();
 
   const startTimer = () => {
     if (!editTicker.started) {
@@ -45,7 +45,7 @@ const useTimer = () => {
   const theme: ThemeColors = useTheme();
 
   const updateCurrentLine = useUpdateCurrentTimeLine();
-  const readEditUtils = useEditUtilsStateRef();
+  const readEditUtils = useReadEditUtils();
 
   const { setTime } = useTimeInput();
   const { readPlayer } = usePlayer();

@@ -1,4 +1,4 @@
-import { useMapTagsState, useSetCanUploadState, useSetMapTagsState } from "@/app/edit/atoms/stateAtoms";
+import { useMapTagsState, useSetCanUpload, useSetMapTags } from "@/app/edit/atoms/stateAtoms";
 import "@/app/edit/style/reactTags.scss";
 import { TAG_MAX_LEN, TAG_MIN_LEN } from "@/app/edit/ts/const/editDefaultValues";
 import { Tag } from "@/types";
@@ -7,8 +7,8 @@ import { WithContext as ReactTags, SEPARATORS } from "react-tag-input";
 
 const TagInput = () => {
   const tags = useMapTagsState();
-  const setTags = useSetMapTagsState();
-  const setCanUpload = useSetCanUploadState();
+  const setTags = useSetMapTags();
+  const setCanUpload = useSetCanUpload();
 
   const suggestions = [
     { id: "1", text: "公式MV", className: "" },

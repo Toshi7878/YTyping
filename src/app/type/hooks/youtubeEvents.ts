@@ -1,38 +1,38 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
-import { useCountRef, useGameUtilsRef, usePlayer, useProgress, useYTStatusRef } from "../atoms/refAtoms";
+import { usegameUtilityReferenceParams, useLineCount, usePlayer, useProgress, useYTStatus } from "../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";
 import {
-  useGameStateUtilsRef,
-  useMapStateRef,
-  useSetNotifyState,
-  useSetPlayingInputModeState,
-  useSetSceneState,
-  useSetTabIndexState,
-  useSetYTStartedState,
+  useReadGameUtilParams,
+  useReadMapState,
+  useSetNotify,
+  useSetPlayingInputMode,
+  useSetScene,
+  useSetTabIndex,
+  useSetYTStarted,
 } from "../atoms/stateAtoms";
-import { useReadyInputModeStateRef } from "../atoms/storageAtoms";
+import { useReadReadyInputMode } from "../atoms/storageAtoms";
 import { InputMode } from "../ts/type";
 import { useSendUserStats } from "./playing-hooks/sendUserStats";
 import { useTimerControls } from "./playing-hooks/timer-hooks/timer";
 import { useUpdateAllStatus } from "./playing-hooks/updateStatus";
 
 export const useYTPlayEvent = () => {
-  const setScene = useSetSceneState();
-  const setNotify = useSetNotifyState();
-  const setPlayingInputMode = useSetPlayingInputModeState();
+  const setScene = useSetScene();
+  const setNotify = useSetNotify();
+  const setPlayingInputMode = useSetPlayingInputMode();
   const { sendPlayCountStats } = useSendUserStats();
-  const setTabIndex = useSetTabIndexState();
+  const setTabIndex = useSetTabIndex();
   const { startTimer } = useTimerControls();
 
   const { readPlayer } = usePlayer();
-  const setYTStarted = useSetYTStartedState();
-  const { readYTStatus, writeYTStatus } = useYTStatusRef();
-  const readGameStateUtils = useGameStateUtilsRef();
-  const readReadyInputMode = useReadyInputModeStateRef();
+  const setYTStarted = useSetYTStarted();
+  const { readYTStatus, writeYTStatus } = useYTStatus();
+  const readGameStateUtils = useReadGameUtilParams();
+  const readReadyInputMode = useReadReadyInputMode();
   const readPlaySpeed = usePlaySpeedStateRef();
   const updateAllStatus = useUpdateAllStatus();
-  const readMap = useMapStateRef();
+  const readMap = useReadMapState();
 
   return async () => {
     console.log("再生 1");
@@ -98,10 +98,10 @@ export const useYTEndEvent = () => {
 };
 
 export const useYTStopEvent = () => {
-  const setScene = useSetSceneState();
+  const setScene = useSetScene();
   const { readLineProgress, readTotalProgress } = useProgress();
   const { pauseTimer } = useTimerControls();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const readGameStateUtils = useReadGameUtilParams();
   return () => {
     console.log("動画停止");
 
@@ -126,8 +126,8 @@ export const useYTStopEvent = () => {
 };
 
 export const useYTPauseEvent = () => {
-  const setNotify = useSetNotifyState();
-  const { readYTStatus, writeYTStatus } = useYTStatusRef();
+  const setNotify = useSetNotify();
+  const { readYTStatus, writeYTStatus } = useYTStatus();
   const { pauseTimer } = useTimerControls();
 
   return () => {
@@ -145,13 +145,13 @@ export const useYTPauseEvent = () => {
 
 export const useYTSeekEvent = () => {
   const { readPlayer } = usePlayer();
-  const { readGameUtils } = useGameUtilsRef();
-  const { writeCount } = useCountRef();
+  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { writeCount } = useLineCount();
 
   return () => {
     const time = readPlayer().getCurrentTime();
 
-    const { isRetrySkip } = readGameUtils();
+    const { isRetrySkip } = readGameUtilRefParams();
 
     if (isRetrySkip && time === 0) {
       writeCount(0);

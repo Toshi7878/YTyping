@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useGameStateUtilsRef } from "../../atoms/stateAtoms";
+import { useReadGameUtilParams } from "../../atoms/stateAtoms";
 import { useTimerRegistration } from "../../hooks/playing-hooks/timer-hooks/timer";
 import { useWindowFocus } from "../../hooks/windowFocus";
 import {
@@ -28,7 +28,7 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
   const windowFocus = useWindowFocus();
   const { addTimer, removeTimer } = useTimerRegistration();
 
-  const readGameStateUtils = useGameStateUtilsRef();
+  const readGameStateUtils = useReadGameUtilParams();
 
   useEffect(() => {
     addTimer();

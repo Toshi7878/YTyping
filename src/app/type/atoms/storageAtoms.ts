@@ -9,8 +9,8 @@ const readyRadioInputModeAtom = atomWithStorage<InputMode>("inputMode", "roma", 
   getOnInit: true,
 });
 export const useReadyInputModeState = () => useAtomValue(readyRadioInputModeAtom, { store });
-export const useSetReadyInputModeState = () => useSetAtom(readyRadioInputModeAtom, { store });
-export const useReadyInputModeStateRef = () => {
+export const useSetReadyInputMode = () => useSetAtom(readyRadioInputModeAtom, { store });
+export const useReadReadyInputMode = () => {
   return useAtomCallback(
     useCallback((get) => get(readyRadioInputModeAtom), []),
     { store }

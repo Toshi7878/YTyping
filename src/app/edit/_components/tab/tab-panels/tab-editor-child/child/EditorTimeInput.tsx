@@ -2,11 +2,11 @@ import { Input } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 
 import { useTimeInput } from "@/app/edit/atoms/refAtoms";
-import { useSetIsTimeInputValidState } from "@/app/edit/atoms/stateAtoms";
+import { useSetIsTimeInputValid } from "@/app/edit/atoms/stateAtoms";
 
 const EditorTimeInput = () => {
   const timeInputRef = useRef<HTMLInputElement>(null);
-  const setEditIsTimeInputValid = useSetIsTimeInputValidState();
+  const setEditIsTimeInputValid = useSetIsTimeInputValid();
   const { writeTimeInput } = useTimeInput();
 
   useEffect(() => {

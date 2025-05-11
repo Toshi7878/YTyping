@@ -1,22 +1,22 @@
-import { useMapStateRef, useSceneState, useSetNextLyricsState } from "@/app/type/atoms/stateAtoms";
+import { useReadMapState, useSceneState, useSetNextLyrics } from "@/app/type/atoms/stateAtoms";
 import { useEffect } from "react";
 import PlayingCenter from "./playing-child/PlayingCenter";
 
-import { useCountRef, useGameUtilsRef, useUserStatsRef } from "@/app/type/atoms/refAtoms";
+import { usegameUtilityReferenceParams, useLineCount, useUserStats } from "@/app/type/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/type/hooks/playing-hooks/keydown-hooks/playingKeydown";
 import { useTimerControls } from "@/app/type/hooks/playing-hooks/timer-hooks/timer";
 import { useSession } from "next-auth/react";
 
 const Playing = () => {
   const { data: session } = useSession();
-  const { setNextLyrics } = useSetNextLyricsState();
+  const { setNextLyrics } = useSetNextLyrics();
   const handleKeydown = useHandleKeydown();
-  const { readUserStats, resetUserStats } = useUserStatsRef();
-  const { readGameUtils } = useGameUtilsRef();
-  const { readCount } = useCountRef();
+  const { readUserStats, resetUserStats } = useUserStats();
+  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readCount } = useLineCount();
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
-  const readMap = useMapStateRef();
+  const readMap = useReadMapState();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -54,7 +54,7 @@ const Playing = () => {
 
   useEffect(() => {
     if (scene === "practice") {
-      const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
+      const { lineResultdrawerClosure: drawerClosure } = readGameUtilRefParams();
       drawerClosure!.onOpen();
     }
 

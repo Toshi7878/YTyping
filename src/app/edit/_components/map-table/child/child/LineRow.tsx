@@ -8,9 +8,9 @@ import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import {
   useDirectEditIndexState,
   useLineReducer,
-  useSetDirectEditIndexState,
-  useSetSelectIndexState,
-  useSetTabIndexState,
+  useSetDirectEditIndex,
+  useSetSelectIndex,
+  useSetTabIndex,
 } from "@/app/edit/atoms/stateAtoms";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
 import { useChangeLineRowColor } from "@/app/edit/hooks/utils/useChangeLineRowColor";
@@ -34,9 +34,9 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
   const directEditLyricsInputRef = useRef<HTMLInputElement | null>(null);
   const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
   const directEditIndex = useDirectEditIndexState();
-  const setTabIndex = useSetTabIndexState();
-  const setSelectedIndex = useSetSelectIndexState();
-  const setDirectEditIndex = useSetDirectEditIndexState();
+  const setTabIndex = useSetTabIndex();
+  const setSelectedIndex = useSetSelectIndex();
+  const setDirectEditIndex = useSetDirectEditIndex();
   const setSelectLine = useLineReducer();
   const endLineIndex = useEndLineIndex();
   const theme: ThemeColors = useTheme();

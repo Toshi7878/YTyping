@@ -1,4 +1,4 @@
-import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/type/atoms/speedReducerAtoms";
 import { useSceneState, useTypingStatusState } from "@/app/type/atoms/stateAtoms";
 import { Box, Text } from "@chakra-ui/react";
@@ -6,8 +6,8 @@ import { useSession } from "next-auth/react";
 import RandomEmoji from "./child/RandomEmoji";
 
 const EndText = () => {
-  const { readGameUtils } = useGameUtilsRef();
-  const { myBestScore } = readGameUtils();
+  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { myBestScore } = readGameUtilRefParams();
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
   const status = useTypingStatusState();

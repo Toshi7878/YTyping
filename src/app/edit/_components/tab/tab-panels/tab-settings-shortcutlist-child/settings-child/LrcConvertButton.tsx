@@ -1,12 +1,12 @@
 "use client";
-import { useSetIsLrcConvertingState } from "@/app/edit/atoms/stateAtoms";
+import { useSetIsLrcConverting } from "@/app/edit/atoms/stateAtoms";
 import { useImportMapFile } from "@/app/edit/hooks/utils/importMapFile";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { Button, HStack } from "@chakra-ui/react";
 import { useRef } from "react";
 
 export default function LrcConvertButton() {
-  const setIsLrcConverting = useSetIsLrcConvertingState();
+  const setIsLrcConverting = useSetIsLrcConverting();
   const toast = useCustomToast();
 
   const fileInputRef = useRef<HTMLInputElement>(null);

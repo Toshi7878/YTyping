@@ -4,7 +4,7 @@ import {
   useLineSelectIndexState,
   useMapState,
   useSceneGroupState,
-  useSetLineSelectIndexState,
+  useSetLineSelectIndex,
 } from "@/app/type/atoms/stateAtoms";
 import { LineResultData } from "@/app/type/ts/type";
 
@@ -22,7 +22,7 @@ function ResultLineList() {
   const { moveSetLine, drawerSelectColorChange } = useMoveLine();
   const { writeResultCards } = useResultCards();
   const lineSelectIndex = useLineSelectIndexState();
-  const setLineSelectIndex = useSetLineSelectIndexState();
+  const setLineSelectIndex = useSetLineSelectIndex();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 

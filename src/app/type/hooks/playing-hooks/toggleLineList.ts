@@ -1,9 +1,9 @@
-import { useGameUtilsRef } from "../../atoms/refAtoms";
+import { usegameUtilityReferenceParams } from "../../atoms/refAtoms";
 
 export const useToggleLineList = () => {
-  const { readGameUtils } = useGameUtilsRef();
+  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
   return () => {
-    const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
+    const { lineResultdrawerClosure: drawerClosure } = readGameUtilRefParams();
 
     if (!drawerClosure) {
       return;

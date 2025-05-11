@@ -1,29 +1,29 @@
 import { romaConvert } from "../../../../util/parse-map/parseMap";
-import { useCountRef, useLineStatusRef } from "../../atoms/refAtoms";
+import { useLineCount, useLineStatus } from "../../atoms/refAtoms";
 import {
-  useGameStateUtilsRef,
-  useLineWordStateRef,
-  useMapStateRef,
-  useSetLineWordState,
-  useSetNextLyricsState,
-  useSetNotifyState,
-  useSetPlayingInputModeState,
+  useReadGameUtilParams,
+  useReadLineWord,
+  useReadMapState,
+  useSetLineWord,
+  useSetNextLyrics,
+  useSetNotify,
+  useSetPlayingInputMode,
 } from "../../atoms/stateAtoms";
 import { InputMode } from "../../ts/type";
 import { useGetTime } from "./getYTTime";
 
 export const useInputModeChange = () => {
-  const setPlayingInputMode = useSetPlayingInputModeState();
-  const setNotify = useSetNotifyState();
-  const { setNextLyrics } = useSetNextLyricsState();
-  const setLineWord = useSetLineWordState();
+  const setPlayingInputMode = useSetPlayingInputMode();
+  const setNotify = useSetNotify();
+  const { setNextLyrics } = useSetNextLyrics();
+  const setLineWord = useSetLineWord();
 
   const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
-  const { readLineStatus, writeLineStatus } = useLineStatusRef();
-  const readGameStateUtils = useGameStateUtilsRef();
-  const readLineWord = useLineWordStateRef();
-  const readMap = useMapStateRef();
-  const { readCount } = useCountRef();
+  const { readLineStatus, writeLineStatus } = useLineStatus();
+  const readGameStateUtils = useReadGameUtilParams();
+  const readLineWord = useReadLineWord();
+  const readMap = useReadMapState();
+  const { readCount } = useLineCount();
 
   return async (newInputMode: InputMode) => {
     const map = readMap();

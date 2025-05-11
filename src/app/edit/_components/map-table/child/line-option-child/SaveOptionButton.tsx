@@ -1,7 +1,7 @@
 "use client";
 import { useHistoryReducer } from "@/app/edit/atoms/historyReducerAtom";
 import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
-import { useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
+import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import { Box, Button } from "@chakra-ui/react";
 import { Dispatch } from "react";
 
@@ -18,9 +18,8 @@ interface SaveOptionButtonProps {
 }
 
 export default function SaveOptionButton(props: SaveOptionButtonProps) {
-  const { changeCSS, eternalCSS, isChangeCSS, changeVideoSpeed, optionModalIndex, onClose, setIsEditedCSS } =
-    props;
-  const setCanUpload = useSetCanUploadState();
+  const { changeCSS, eternalCSS, isChangeCSS, changeVideoSpeed, optionModalIndex, onClose, setIsEditedCSS } = props;
+  const setCanUpload = useSetCanUpload();
   const historyDispatch = useHistoryReducer();
   const mapDispatch = useMapReducer();
   const readMap = useMapStateRef();

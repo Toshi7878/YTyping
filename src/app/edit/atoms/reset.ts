@@ -1,18 +1,13 @@
 import { RESET } from "jotai/utils";
 import { useHistoryReducer } from "./historyReducerAtom";
 import { useMapReducer } from "./mapReducerAtom";
-import {
-  useLineReducer,
-  useSetEditUtilsState,
-  useSetYtPlayerStatusState,
-  useSetYTSpeedState,
-} from "./stateAtoms";
+import { useLineReducer, useSetEditUtils, useSetYtPlayerStatus, useSetYTSpeed } from "./stateAtoms";
 
 export const usePathChangeAtomReset = () => {
-  const setEditUtils = useSetEditUtilsState();
+  const setEditUtils = useSetEditUtils();
 
-  const setYTSpeed = useSetYTSpeedState();
-  const setYtPlayerStatus = useSetYtPlayerStatusState();
+  const setYTSpeed = useSetYTSpeed();
+  const setYtPlayerStatus = useSetYtPlayerStatus();
 
   const mapDispatch = useMapReducer();
   const setSelectLine = useLineReducer();

@@ -1,8 +1,8 @@
-import { useTbodyRef } from "../../atoms/refAtoms";
+import { useTbody } from "../../atoms/refAtoms";
 import { LINE_ROW_SWITCH_CLASSNAMES } from "../../ts/const/editDefaultValues";
 
 export const useChangeLineRowColor = () => {
-  const { readTbody } = useTbodyRef();
+  const { readTbody } = useTbody();
 
   const removeSelectedLineColor = () => {
     const selectedLine = readTbody().querySelector(".selected-line");

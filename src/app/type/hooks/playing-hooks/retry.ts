@@ -1,16 +1,16 @@
-import { useCountRef, useGameUtilsRef, usePlayer, useStatusRef } from "../../atoms/refAtoms";
+import { usegameUtilityReferenceParams, useLineCount, usePlayer, useTypingDetails } from "../../atoms/refAtoms";
 import {
-  useGameStateUtilsRef,
-  useMapStateRef,
-  useSetComboState,
-  useSetCurrentLineState,
-  useSetLineResultsState,
-  useSetNextLyricsState,
-  useSetNotifyState,
-  useSetSceneState,
-  useSetTabIndexState,
-  useSetTypingStatusState,
-  useTypingStatusStateRef,
+  useReadGameUtilParams,
+  useReadMapState,
+  useReadTypingStatus,
+  useSetCombo,
+  useSetCurrentLine,
+  useSetLineResults,
+  useSetNextLyrics,
+  useSetNotify,
+  useSetScene,
+  useSetTabIndex,
+  useSetTypingStatus,
 } from "../../atoms/stateAtoms";
 import { PlayMode } from "../../ts/type";
 import { useSendUserStats } from "./sendUserStats";
@@ -18,24 +18,24 @@ import { useTimerControls } from "./timer-hooks/timer";
 
 export const useRetry = () => {
   const { readPlayer } = usePlayer();
-  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
 
-  const setLineResults = useSetLineResultsState();
-  const setCombo = useSetComboState();
-  const setNotify = useSetNotifyState();
-  const { setNextLyrics } = useSetNextLyricsState();
+  const setLineResults = useSetLineResults();
+  const setCombo = useSetCombo();
+  const setNotify = useSetNotify();
+  const { setNextLyrics } = useSetNextLyrics();
 
-  const { resetTypingStatus } = useSetTypingStatusState();
+  const { resetTypingStatus } = useSetTypingStatus();
   const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
-  const { resetStatus } = useStatusRef();
-  const readTypingStatus = useTypingStatusStateRef();
-  const readMap = useMapStateRef();
-  const readGameStateUtils = useGameStateUtilsRef();
-  const { writeCount } = useCountRef();
-  const { resetCurrentLine } = useSetCurrentLineState();
-  const setTabIndex = useSetTabIndexState();
+  const { resetStatus } = useTypingDetails();
+  const readTypingStatus = useReadTypingStatus();
+  const readMap = useReadMapState();
+  const readGameStateUtils = useReadGameUtilParams();
+  const { writeCount } = useLineCount();
+  const { resetCurrentLine } = useSetCurrentLine();
+  const setTabIndex = useSetTabIndex();
 
-  const setScene = useSetSceneState();
+  const setScene = useSetScene();
 
   const { pauseTimer } = useTimerControls();
   return (newPlayMode: PlayMode) => {
@@ -46,7 +46,7 @@ export const useRetry = () => {
 
     const enableRetrySKip = map.mapData[map.startLine].time > 5;
 
-    writeGameUtils({
+    writeGameUtilRefParams({
       replayKeyCount: 0,
       isRetrySkip: enableRetrySKip,
     });
@@ -60,14 +60,14 @@ export const useRetry = () => {
       case "play": {
         const { type: totalTypeCount } = readTypingStatus();
         if (totalTypeCount) {
-          const retryCount = readGameUtils().retryCount;
-          writeGameUtils({ retryCount: retryCount + 1 });
+          const retryCount = readGameUtilRefParams().retryCount;
+          writeGameUtilRefParams({ retryCount: retryCount + 1 });
           if (totalTypeCount >= 10) {
             sendPlayCountStats();
           }
         }
 
-        setNotify(Symbol(`Retry(${readGameUtils().retryCount})`));
+        setNotify(Symbol(`Retry(${readGameUtilRefParams().retryCount})`));
         break;
       }
       case "play_end":
@@ -96,7 +96,7 @@ export const useRetry = () => {
     }
 
     if (newPlayMode !== "replay") {
-      writeGameUtils({ replayUserName: "" });
+      writeGameUtilRefParams({ replayUserName: "" });
     }
 
     readPlayer().seekTo(0, true);

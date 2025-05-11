@@ -1,34 +1,34 @@
 import { calcWordKanaNotes, CHAR_POINT, MISS_PENALTY } from "@/util/parse-map/parseMap";
-import { useCountRef, useLineStatusRef, useStatusRef, useYTStatusRef } from "../../atoms/refAtoms";
+import { useLineCount, useLineStatus, useTypingDetails, useYTStatus } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
-  useComboStateRef,
-  useGameStateUtilsRef,
-  useLineKpmStateRef,
-  useLineResultsStateRef,
-  useLineWordStateRef,
-  useMapStateRef,
-  useSetLineResultsState,
-  useSetTypingStatusState,
-  useTypingStatusStateRef,
+  useReadCombo,
+  useReadGameUtilParams,
+  useReadLineKpm,
+  useReadLineResults,
+  useReadLineWord,
+  useReadMapState,
+  useReadTypingStatus,
+  useSetLineResults,
+  useSetTypingStatus,
 } from "../../atoms/stateAtoms";
 
 export const useUpdateLineResult = () => {
-  const setLineResults = useSetLineResultsState();
+  const setLineResults = useSetLineResults();
 
-  const { readLineStatus } = useLineStatusRef();
-  const { readStatus, writeStatus } = useStatusRef();
-  const readLineResults = useLineResultsStateRef();
-  const { readCount } = useCountRef();
-  const readCombo = useComboStateRef();
-  const readTypingResult = useTypingStatusStateRef();
-  const readLineWord = useLineWordStateRef();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const { readLineStatus } = useLineStatus();
+  const { readStatus, writeStatus } = useTypingDetails();
+  const readLineResults = useReadLineResults();
+  const { readCount } = useLineCount();
+  const readCombo = useReadCombo();
+  const readTypingResult = useReadTypingStatus();
+  const readLineWord = useReadLineWord();
+  const readGameStateUtils = useReadGameUtilParams();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const { readYTStatus } = useYTStatusRef();
-  const readLineKpm = useLineKpmStateRef();
-  const readMap = useMapStateRef();
-  const { setTypingStatus } = useSetTypingStatusState();
+  const { readYTStatus } = useYTStatus();
+  const readLineKpm = useReadLineKpm();
+  const readMap = useReadMapState();
+  const { setTypingStatus } = useSetTypingStatus();
 
   const generateLostWord = () => {
     const lineWord = readLineWord();

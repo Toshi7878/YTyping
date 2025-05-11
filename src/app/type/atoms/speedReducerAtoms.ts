@@ -2,7 +2,7 @@ import { YouTubeSpeed } from "@/types";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { playerRefAtom } from "./refAtoms";
+import { playerAtom } from "./refAtoms";
 import { notifyAtom, sceneAtom, sceneGroupAtom } from "./stateAtoms";
 import { getTypeAtomStore } from "./store";
 
@@ -19,7 +19,7 @@ store.sub(speedBaseAtom, () => {
   const sceneGroup = store.get(sceneGroupAtom);
   const { playSpeed } = store.get(speedBaseAtom);
   const isPlaying = sceneGroup === "Playing";
-  const player = store.get(playerRefAtom);
+  const player = store.get(playerAtom);
 
   if (player) {
     player.setPlaybackRate(playSpeed);

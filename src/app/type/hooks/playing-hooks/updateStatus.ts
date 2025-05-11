@@ -1,32 +1,32 @@
 import { MISS_PENALTY } from "../../../../util/parse-map/parseMap";
-import { useGameUtilsRef, useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
+import { usegameUtilityReferenceParams, useLineStatus, useTypingDetails, useUserStats } from "../../atoms/refAtoms";
 import {
-  useComboStateRef,
-  useGameStateUtilsRef,
-  useLineResultsStateRef,
-  useLineWordStateRef,
-  useMapStateRef,
-  useSetComboState,
-  useSetLineKpmState,
-  useSetTypingStatusState,
-  useTypingStatusStateRef,
+  useReadCombo,
+  useReadGameUtilParams,
+  useReadLineResults,
+  useReadLineWord,
+  useReadMapState,
+  useReadTypingStatus,
+  useSetCombo,
+  useSetLineKpm,
+  useSetTypingStatus,
 } from "../../atoms/stateAtoms";
 import { NextTypeChunk } from "../../ts/type";
 
 export const useTypeSuccess = () => {
-  const setCombo = useSetComboState();
-  const { setTypingStatus } = useSetTypingStatusState();
+  const setCombo = useSetCombo();
+  const { setTypingStatus } = useSetTypingStatus();
   const calcCurrentRank = useCalcCurrentRank();
 
-  const { readUserStats, writeUserStats } = useUserStatsRef();
-  const { readLineStatus, writeLineStatus } = useLineStatusRef();
-  const { readStatus, writeStatus } = useStatusRef();
-  const readTypingStatus = useTypingStatusStateRef();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const { readUserStats, writeUserStats } = useUserStats();
+  const { readLineStatus, writeLineStatus } = useLineStatus();
+  const { readStatus, writeStatus } = useTypingDetails();
+  const readTypingStatus = useReadTypingStatus();
+  const readGameStateUtils = useReadGameUtilParams();
 
-  const readMap = useMapStateRef();
-  const readCombo = useComboStateRef();
-  const readLineWord = useLineWordStateRef();
+  const readMap = useReadMapState();
+  const readCombo = useReadCombo();
+  const readLineWord = useReadLineWord();
 
   const updateSuccessStatus = ({
     isCompleted,
@@ -195,24 +195,24 @@ export const useTypeSuccess = () => {
 };
 
 export const useCalcCurrentRank = () => {
-  const { readGameUtils } = useGameUtilsRef();
+  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
 
   return (currentScore: number) => {
     // 現在のスコアが何番目に入るかを取得
-    const { rankingScores } = readGameUtils();
+    const { rankingScores } = readGameUtilRefParams();
     const rank = rankingScores.findIndex((score) => score <= currentScore);
     return (rank < 0 ? rankingScores.length : rank) + 1;
   };
 };
 
 export const useTypeMiss = () => {
-  const setCombo = useSetComboState();
-  const { setTypingStatus } = useSetTypingStatusState();
+  const setCombo = useSetCombo();
+  const { setTypingStatus } = useSetTypingStatus();
 
-  const { readLineStatus, writeLineStatus } = useLineStatusRef();
-  const { readStatus, writeStatus } = useStatusRef();
-  const readTypingStatus = useTypingStatusStateRef();
-  const readMap = useMapStateRef();
+  const { readLineStatus, writeLineStatus } = useLineStatus();
+  const { readStatus, writeStatus } = useTypingDetails();
+  const readTypingStatus = useReadTypingStatus();
+  const readMap = useReadMapState();
 
   const updateMissStatus = () => {
     const status = readTypingStatus();
@@ -250,12 +250,12 @@ export const useTypeMiss = () => {
 
 export const useLineUpdateStatus = () => {
   const calcCurrentRank = useCalcCurrentRank();
-  const { setTypingStatus } = useSetTypingStatusState();
-  const { readStatus, writeStatus } = useStatusRef();
-  const readTypingStatus = useTypingStatusStateRef();
-  const readMap = useMapStateRef();
-  const readLineWord = useLineWordStateRef();
-  const { readLineStatus } = useLineStatusRef();
+  const { setTypingStatus } = useSetTypingStatus();
+  const { readStatus, writeStatus } = useTypingDetails();
+  const readTypingStatus = useReadTypingStatus();
+  const readMap = useReadMapState();
+  const readLineWord = useReadLineWord();
+  const { readLineStatus } = useLineStatus();
   return ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
     const newStatus = readTypingStatus();
@@ -295,15 +295,15 @@ export const useLineUpdateStatus = () => {
 
 export const useUpdateAllStatus = () => {
   const calcCurrentRank = useCalcCurrentRank();
-  const readMap = useMapStateRef();
-  const readLineResults = useLineResultsStateRef();
-  const { setTypingStatus } = useSetTypingStatusState();
-  const readGameStateUtils = useGameStateUtilsRef();
-  const setLineKpm = useSetLineKpmState();
-  const { writeLineStatus } = useLineStatusRef();
-  const setCombo = useSetComboState();
+  const readMap = useReadMapState();
+  const readLineResults = useReadLineResults();
+  const { setTypingStatus } = useSetTypingStatus();
+  const readGameStateUtils = useReadGameUtilParams();
+  const setLineKpm = useSetLineKpm();
+  const { writeLineStatus } = useLineStatus();
+  const setCombo = useSetCombo();
 
-  const { writeStatus } = useStatusRef();
+  const { writeStatus } = useTypingDetails();
 
   return ({ count, updateType }: { count: number; updateType: "lineUpdate" | "completed" }) => {
     const map = readMap();

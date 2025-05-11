@@ -1,4 +1,4 @@
-import { useMapSourceState, useSetMapSourceState } from "@/app/edit/atoms/stateAtoms";
+import { useMapSourceState, useSetMapSource } from "@/app/edit/atoms/stateAtoms";
 import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
@@ -7,7 +7,7 @@ interface MusicSourceInputProps {
 }
 
 const MusicSourceInput = (props: MusicSourceInputProps) => {
-  const setMusicSouce = useSetMapSourceState();
+  const setMusicSouce = useSetMapSource();
   const musicSource = useMapSourceState();
 
   return (

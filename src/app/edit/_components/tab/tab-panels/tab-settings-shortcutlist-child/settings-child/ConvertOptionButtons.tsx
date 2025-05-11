@@ -1,5 +1,5 @@
 "use client";
-import { useSetWordConvertOptionState, useWordConvertOptionState } from "@/app/edit/atoms/storageAtoms";
+import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/atoms/storageAtoms";
 import { ConvertOptionsType } from "@/app/edit/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/config/consts/charList";
@@ -10,7 +10,7 @@ import { useMemo } from "react";
 export default function ConvertOptionButtons() {
   const theme: ThemeColors = useTheme();
   const wordConvertOption = useWordConvertOptionState();
-  const setWordConvertOption = useSetWordConvertOptionState();
+  const setWordConvertOption = useSetWordConvertOption();
 
   const options = useMemo(
     () => [

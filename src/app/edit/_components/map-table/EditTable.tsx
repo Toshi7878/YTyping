@@ -11,21 +11,21 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { useMapReducer, useMapStateRef } from "../../atoms/mapReducerAtom";
-import { usePlayer, useTbodyRef } from "../../atoms/refAtoms";
-import { useIsYTReadiedState, useIsYTStartedState, useSetCanUploadState } from "../../atoms/stateAtoms";
+import { usePlayer, useTbody } from "../../atoms/refAtoms";
+import { useIsYTReadiedState, useIsYTStartedState, useSetCanUpload } from "../../atoms/stateAtoms";
 import MapTableBody from "./child/MapTableBody";
 
 export default function EditTable() {
   const theme: ThemeColors = useTheme();
   const tbodyRef = useRef(null);
-  const { writeTbody } = useTbodyRef();
+  const { writeTbody } = useTbody();
 
   const searchParams = useSearchParams();
   const { id: mapId } = useParams<{ id: string }>();
   const newVideoId = searchParams.get("new") || "";
   const { data: mapData, isLoading } = useMapQuery({ mapId });
   const isBackUp = searchParams.get("backup") === "true";
-  const setCanUpload = useSetCanUploadState();
+  const setCanUpload = useSetCanUpload();
 
   const mapDispatch = useMapReducer();
   const isYTStarted = useIsYTStartedState();

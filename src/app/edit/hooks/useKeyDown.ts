@@ -5,16 +5,16 @@ import {
 } from "../atoms/buttonDisableStateAtoms";
 import { useEditHistoryRef, useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
-import { usePlayer, useTbodyRef } from "../atoms/refAtoms";
+import { usePlayer, useTbody } from "../atoms/refAtoms";
 import {
-  useEditUtilsStateRef,
   useLineReducer,
-  useLineStateRef,
-  useSetDirectEditIndexState,
-  useSetLyricsState,
-  useSetManyPhraseState,
+  useReadEditUtils,
+  useReadLine,
+  useReadYtPlayerStatus,
+  useSetDirectEditIndex,
+  useSetLyrics,
+  useSetManyPhrase,
   useSpeedReducer,
-  useYtPlayerStatusStateRef,
 } from "../atoms/stateAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useButtonEvents";
@@ -22,7 +22,7 @@ import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 import { useWordSearchReplace } from "./utils/useWordFindReplace";
 
 export const useTbodyScroll = () => {
-  const { readTbody } = useTbodyRef();
+  const { readTbody } = useTbody();
   return (count: number) => {
     const targetRow = readTbody().children[count];
 
@@ -45,18 +45,18 @@ export const useWindowKeydownEvent = () => {
   const mapDispatch = useMapReducer();
 
   const pickupTopPhrase = usePickupTopPhrase();
-  const setDirectEdit = useSetDirectEditIndexState();
+  const setDirectEdit = useSetDirectEditIndex();
 
   const wordSearchPeplace = useWordSearchReplace();
   const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
 
   const lineAddButtonEvent = useLineAddButtonEvent();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
-  const setManyPhrase = useSetManyPhraseState();
+  const setManyPhrase = useSetManyPhrase();
   const lineDelete = useLineDelete();
   const seekNextPrev = useSeekNextPrev();
-  const readEditUtils = useEditUtilsStateRef();
-  const readYtPlayerStatus = useYtPlayerStatusStateRef();
+  const readEditUtils = useReadEditUtils();
+  const readYtPlayerStatus = useReadYtPlayerStatus();
   const readIsAddBtnDisalbed = useIsAddBtnDisabledStateRef();
   const readIsUpdateBtnDisalbed = useIsUpdateBtnDisabledStateRef();
   const readIsDeleteBtnDisalbed = useIsDeleteBtnDisabledStateRef();
@@ -258,8 +258,8 @@ function useSeekNextPrev() {
 
   const tbodyScroll = useTbodyScroll();
   const { addLineSeekColor } = useChangeLineRowColor();
-  const readEditUtils = useEditUtilsStateRef();
-  const readLineStatus = useLineStateRef();
+  const readEditUtils = useReadEditUtils();
+  const readLineStatus = useReadLine();
   const { readPlayer } = usePlayer();
   const readMap = useMapStateRef();
   return (type: "next" | "prev") => {
@@ -288,7 +288,7 @@ function useSeekNextPrev() {
 }
 
 export function useAddRubyTagEvent() {
-  const setLyrics = useSetLyricsState();
+  const setLyrics = useSetLyrics();
 
   return (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {

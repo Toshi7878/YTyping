@@ -1,6 +1,6 @@
 "use client";
 import { db } from "@/lib/db";
-import { useSetPreviewVideoState } from "@/lib/global-atoms/globalAtoms";
+import { useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { Provider as JotaiProvider } from "jotai";
@@ -18,7 +18,7 @@ interface EditProviderProps {
 
 const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const store = getEditAtomStore();
-  const setPreviewVideoState = useSetPreviewVideoState();
+  const setPreviewVideoState = useSetPreviewVideo();
   useSetHydrationState(mapInfo);
   const loadBackupData = useLoadBackupData();
 

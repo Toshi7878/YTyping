@@ -1,4 +1,4 @@
-import { useSetIsWordConvertingState } from "@/app/edit/atoms/stateAtoms";
+import { useSetIsWordConverting } from "@/app/edit/atoms/stateAtoms";
 import {
   ALPHABET_LIST,
   KANA_LIST,
@@ -11,7 +11,7 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useSession } from "next-auth/react";
-import { useWordConvertOptionStateRef } from "../../atoms/storageAtoms";
+import { useReadWordConvertOption } from "../../atoms/storageAtoms";
 import { ConvertOptionsType } from "../../ts/type";
 
 const allowedChars = new Set([
@@ -49,7 +49,7 @@ export const useWordConverter = () => {
 
 const useFetchMorph = () => {
   const utils = clientApi.useUtils();
-  const setIsLoadWordConvert = useSetIsWordConvertingState();
+  const setIsLoadWordConvert = useSetIsWordConverting();
   const toast = useCustomToast();
   const replaceReadingWithCustomDic = useReplaceReadingWithCustomDic();
   const { data: session } = useSession();
@@ -174,7 +174,7 @@ export const useLyricsFormatUtils = () => {
 };
 
 export const useFilterWordSymbol = () => {
-  const readWordConvertOption = useWordConvertOptionStateRef();
+  const readWordConvertOption = useReadWordConvertOption();
 
   const generateFilterRegExp = (convertOption: ConvertOptionsType) => {
     if (convertOption === "non_symbol") {

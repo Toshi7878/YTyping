@@ -1,6 +1,6 @@
 import { Card, CardBody, Flex, HStack, Stack, useTheme, useToast } from "@chakra-ui/react";
 
-import { useSetGeminiTagsState, useSetMapInfoState, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
+import { useSetGeminiTags, useSetMapInfo, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
 import useHasEditPermission from "@/app/edit/hooks/useUserEditPermission";
 import { useUploadMap } from "@/app/edit/hooks/utils/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
@@ -29,8 +29,8 @@ const TabInfoUpload = () => {
   const chakraToast = useToast();
   const hasEditPermission = useHasEditPermission();
 
-  const setGeminiTags = useSetGeminiTagsState();
-  const setMapInfo = useSetMapInfoState();
+  const setGeminiTags = useSetGeminiTags();
+  const setMapInfo = useSetMapInfo();
 
   useEffect(() => {
     if (error) {

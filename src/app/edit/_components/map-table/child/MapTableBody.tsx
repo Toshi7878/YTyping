@@ -1,6 +1,6 @@
 "use client";
 import { useMapState } from "@/app/edit/atoms/mapReducerAtom";
-import { useSetCssLengthState } from "@/app/edit/atoms/stateAtoms";
+import { useSetCssLength } from "@/app/edit/atoms/stateAtoms";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useKeyDown";
 import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
 import { ThemeColors } from "@/types";
@@ -17,7 +17,7 @@ function MapTableBody() {
   const [lineOptions, setLineOptions] = useState<MapLineEdit["options"] | null>(null);
   const optionClosure = useDisclosure();
 
-  const setCustomStyleLength = useSetCssLengthState();
+  const setCustomStyleLength = useSetCssLength();
   const windowKeydownEvent = useWindowKeydownEvent();
   const map = useMapState();
 

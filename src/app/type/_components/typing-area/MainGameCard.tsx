@@ -2,7 +2,7 @@
 import CustomCard from "@/components/custom-ui/CustomCard";
 import { CardBody, CardFooter, CardHeader, useDisclosure, UseDisclosureReturn } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { useGameUtilsRef } from "../../atoms/refAtoms";
+import { usegameUtilityReferenceParams } from "../../atoms/refAtoms";
 import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../atoms/stateAtoms";
 import "../../style/type.scss";
 import PlayingBottom from "./scene/child/PlayingBottom";
@@ -52,10 +52,10 @@ const GameCardBody = (props: TypingCardBodyProps) => {
 
 function MainGameCard() {
   const drawerClosure = useDisclosure();
-  const { writeGameUtils } = useGameUtilsRef();
+  const { writeGameUtilRefParams } = usegameUtilityReferenceParams();
 
   useEffect(() => {
-    writeGameUtils({ lineResultdrawerClosure: drawerClosure });
+    writeGameUtilRefParams({ lineResultdrawerClosure: drawerClosure });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drawerClosure]);
 

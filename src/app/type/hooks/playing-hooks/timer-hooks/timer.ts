@@ -1,24 +1,24 @@
 import {
-  useCountRef,
-  useGameUtilsRef,
-  useLineStatusRef,
+  usegameUtilityReferenceParams,
+  useLineCount,
+  useLineStatus,
   usePlayer,
   useProgress,
-  useYTStatusRef,
+  useYTStatus,
 } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedStateRef } from "@/app/type/atoms/speedReducerAtoms";
 import {
-  useCurrentTimeStateRef,
-  useGameStateUtilsRef,
-  useLineWordStateRef,
-  useMapStateRef,
-  useSetChangeCSSCountState,
-  useSetCurrentLineState,
-  useSetCurrentTimeState,
-  useSetLineKpmState,
-  useSetLineRemainTimeState,
-  useSetNextLyricsState,
-  useSetTypingStatusState,
+  useReadCurrentTime,
+  useReadGameUtilParams,
+  useReadLineWord,
+  useReadMapState,
+  useSetChangeCSSCount,
+  useSetCurrentLine,
+  useSetCurrentTime,
+  useSetLineKpm,
+  useSetLineRemainTime,
+  useSetNextLyrics,
+  useSetTypingStatus,
 } from "@/app/type/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/type/hooks/playing-hooks/timer-hooks/displaySkipGuide";
 import { Ticker } from "pixi.js";
@@ -71,8 +71,8 @@ export const useTimerControls = () => {
 const useTimer = () => {
   const { readPlayer } = usePlayer();
 
-  const setCurrentTime = useSetCurrentTimeState();
-  const setDisplayRemainTime = useSetLineRemainTimeState();
+  const setCurrentTime = useSetCurrentTime();
+  const setDisplayRemainTime = useSetLineRemainTime();
   const displaySkipGuide = useDisplaySkipGuide();
   const updateLine = useUpdateLine();
   const calcLineResult = useCalcLineResult();
@@ -89,15 +89,15 @@ const useTimer = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
 
   const { setLineProgressValue, setTotalProgressValue } = useProgress();
-  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const { readYTStatus } = useYTStatusRef();
-  const readCurrentTime = useCurrentTimeStateRef();
-  const readLineWord = useLineWordStateRef();
-  const { readLineStatus } = useLineStatusRef();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readYTStatus } = useYTStatus();
+  const readCurrentTime = useReadCurrentTime();
+  const readLineWord = useReadLineWord();
+  const { readLineStatus } = useLineStatus();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readGameStateUtils = useGameStateUtilsRef();
-  const readMap = useMapStateRef();
-  const { readCount, writeCount } = useCountRef();
+  const readGameStateUtils = useReadGameUtilParams();
+  const readMap = useReadMapState();
+  const { readCount, writeCount } = useLineCount();
 
   const { pauseTimer } = useTimerControls();
   const update = ({
@@ -155,11 +155,11 @@ const useTimer = () => {
       });
     }
 
-    const { isRetrySkip } = readGameUtils();
+    const { isRetrySkip } = readGameUtilRefParams();
     const map = readMap();
     const { playSpeed } = readPlaySpeed();
     if (isRetrySkip && map.mapData[map.startLine].time - 3 * playSpeed <= currentOffesettedYTTime) {
-      writeGameUtils({ isRetrySkip: false });
+      writeGameUtilRefParams({ isRetrySkip: false });
     }
 
     displaySkipGuide({
@@ -199,7 +199,7 @@ const useTimer = () => {
     }
 
     const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
-    const isUpdateMs = Math.abs(constantOffesettedYTTime - readGameUtils().updateMsTimeCount) >= 0.1;
+    const isUpdateMs = Math.abs(constantOffesettedYTTime - readGameUtilRefParams().updateMsTimeCount) >= 0.1;
 
     if (isUpdateMs) {
       const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
@@ -210,7 +210,7 @@ const useTimer = () => {
         constantLineTime,
         constantRemainLineTime,
       });
-      writeGameUtils({
+      writeGameUtilRefParams({
         updateMsTimeCount: constantOffesettedYTTime,
       });
     }
@@ -229,10 +229,10 @@ const useCalcLineResult = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
 
-  const { readLineStatus } = useLineStatusRef();
-  const readGameStateUtils = useGameStateUtilsRef();
-  const readMap = useMapStateRef();
-  const { readCount } = useCountRef();
+  const { readLineStatus } = useLineStatus();
+  const readGameStateUtils = useReadGameUtilParams();
+  const readMap = useReadMapState();
+  const { readCount } = useLineCount();
   const { isLinePointUpdated, updateLineResult } = useUpdateLineResult();
   const updateStatus = useLineUpdateStatus();
 
@@ -272,17 +272,17 @@ const useCalcLineResult = () => {
 };
 
 export const useUpdateLine = () => {
-  const { setNextLyrics, resetNextLyrics } = useSetNextLyricsState();
-  const setLineKpm = useSetLineKpmState();
-  const setChangeCSSCount = useSetChangeCSSCountState();
+  const { setNextLyrics, resetNextLyrics } = useSetNextLyrics();
+  const setLineKpm = useSetLineKpm();
+  const setChangeCSSCount = useSetChangeCSSCount();
 
   const lineReplayUpdate = useLineReplayUpdate();
-  const { resetLineStatus, writeLineStatus } = useLineStatusRef();
-  const { setTypingStatus } = useSetTypingStatusState();
-  const { setCurrentLine } = useSetCurrentLineState();
+  const { resetLineStatus, writeLineStatus } = useLineStatus();
+  const { setTypingStatus } = useSetTypingStatus();
+  const { setCurrentLine } = useSetCurrentLine();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readMap = useMapStateRef();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const readMap = useReadMapState();
+  const readGameStateUtils = useReadGameUtilParams();
   const updateAllStatus = useUpdateAllStatus();
 
   return (newNextCount: number) => {

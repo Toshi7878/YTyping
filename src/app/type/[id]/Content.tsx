@@ -16,11 +16,11 @@ import { usePathChangeAtomReset } from "../atoms/reset";
 import {
   useIsLoadingOverlayState,
   useSceneState,
-  useSetLineResultsState,
-  useSetLineSelectIndexState,
-  useSetMapState,
-  useSetTypingStatusLineState,
-  useSetTypingStatusState,
+  useSetLineResults,
+  useSetLineSelectIndex,
+  useSetMap,
+  useSetTypingStatus,
+  useSetTypingStatusLine,
 } from "../atoms/stateAtoms";
 import { useDisableKey } from "../hooks/disableKey";
 import { useSendUserStats } from "../hooks/playing-hooks/sendUserStats";
@@ -42,13 +42,13 @@ function Content({ mapInfo }: ContentProps) {
   const disableKeyHandle = useDisableKey();
   const layoutMode = useBreakpointValue({ base: "column", md: "row" });
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
-  const setMap = useSetMapState();
-  const setLineResults = useSetLineResultsState();
-  const setLineSelectIndex = useSetLineSelectIndexState();
-  const setTypingStatusLine = useSetTypingStatusLineState();
+  const setMap = useSetMap();
+  const setLineResults = useSetLineResults();
+  const setLineSelectIndex = useSetLineSelectIndex();
+  const setTypingStatusLine = useSetTypingStatusLine();
   const pathChangeAtomReset = usePathChangeAtomReset();
   const { readTotalProgress } = useProgress();
-  const { resetTypingStatus } = useSetTypingStatusState();
+  const { resetTypingStatus } = useSetTypingStatus();
   const { sendTypingStats } = useSendUserStats();
   const { isMobile } = useUserAgent();
 

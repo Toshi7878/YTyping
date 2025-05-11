@@ -1,4 +1,4 @@
-import { useGameStateUtilsRef } from "@/app/type/atoms/stateAtoms";
+import { useReadGameUtilParams } from "@/app/type/atoms/stateAtoms";
 import { usePressSkip } from "@/app/type/hooks/playing-hooks/pressSkip";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/type/ts/const/consts";
 import "@/styles/type.css";
@@ -14,7 +14,7 @@ interface PlayingCenterProps {
 
 const PlayingCenter = ({ flex }: PlayingCenterProps) => {
   const pressSkip = usePressSkip();
-  const readGameUtils = useGameStateUtilsRef();
+  const readGameUtils = useReadGameUtilParams();
 
   return (
     <VStack

@@ -1,28 +1,23 @@
-import { useCountRef, usePlayer, useProgress, useResultCards } from "../../atoms/refAtoms";
+import { useLineCount, usePlayer, useProgress, useResultCards } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
-import {
-  useGameStateUtilsRef,
-  useMapStateRef,
-  useSetLineSelectIndexState,
-  useSetNotifyState,
-} from "../../atoms/stateAtoms";
+import { useReadGameUtilParams, useReadMapState, useSetLineSelectIndex, useSetNotify } from "../../atoms/stateAtoms";
 import { useGetSeekLineCount } from "./timer-hooks/getLineCountByTime";
 import { useTimerControls, useUpdateLine } from "./timer-hooks/timer";
 
 export const useMoveLine = () => {
   const { readPlayer } = usePlayer();
-  const setLineSelectIndex = useSetLineSelectIndexState();
-  const setNotify = useSetNotifyState();
+  const setLineSelectIndex = useSetLineSelectIndex();
+  const setNotify = useSetNotify();
   const updateLine = useUpdateLine();
   const getSeekLineCount = useGetSeekLineCount();
 
   const { readResultCards } = useResultCards();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readMap = useMapStateRef();
-  const { readCount, writeCount } = useCountRef();
+  const readMap = useReadMapState();
+  const { readCount, writeCount } = useLineCount();
 
   const { pauseTimer } = useTimerControls();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const readGameStateUtils = useReadGameUtilParams();
   const { readLineProgress } = useProgress();
 
   const movePrevLine = () => {

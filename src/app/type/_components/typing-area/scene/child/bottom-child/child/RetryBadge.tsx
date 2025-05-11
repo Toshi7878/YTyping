@@ -1,10 +1,10 @@
-import { useGameStateUtilsRef } from "@/app/type/atoms/stateAtoms";
+import { useReadGameUtilParams } from "@/app/type/atoms/stateAtoms";
 import { useRetry } from "@/app/type/hooks/playing-hooks/retry";
 import BottomBadge from "./child/BottomBadge";
 
 const RetryBadge = function () {
   const retry = useRetry();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const readGameStateUtils = useReadGameUtilParams();
   return (
     <BottomBadge
       badgeText="やり直し"

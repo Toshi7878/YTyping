@@ -1,22 +1,22 @@
-import { useCountRef, useGameUtilsRef, usePlayer, useYTStatusRef } from "../../atoms/refAtoms";
+import { usegameUtilityReferenceParams, useLineCount, usePlayer, useYTStatus } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
-import { useMapStateRef, useSetSkipState, useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
+import { useReadMapState, useSetSkip, useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
 
 export const usePressSkip = () => {
   const { readPlayer } = usePlayer();
-  const setSkip = useSetSkipState();
+  const setSkip = useSetSkip();
 
-  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const { readYTStatus } = useYTStatusRef();
-  const { readCount } = useCountRef();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readYTStatus } = useYTStatus();
+  const { readCount } = useLineCount();
   const readUserOptions = useUserTypingOptionsStateRef();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readMap = useMapStateRef();
+  const readMap = useReadMapState();
 
   return () => {
     const map = readMap();
     const userOptions = readUserOptions();
-    const { timeOffset, isRetrySkip } = readGameUtils();
+    const { timeOffset, isRetrySkip } = readGameUtilRefParams();
     const count = readCount();
 
     const nextLine = map.mapData[count];
@@ -33,7 +33,7 @@ export const usePressSkip = () => {
 
     readPlayer().seekTo(seekTime, true);
 
-    writeGameUtils({ isRetrySkip: false });
+    writeGameUtilRefParams({ isRetrySkip: false });
     setSkip("");
   };
 };

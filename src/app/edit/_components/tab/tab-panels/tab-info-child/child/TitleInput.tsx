@@ -1,4 +1,4 @@
-import { useMapTitleState, useSetMapTitleState } from "@/app/edit/atoms/stateAtoms";
+import { useMapTitleState, useSetMapTitle } from "@/app/edit/atoms/stateAtoms";
 import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
@@ -7,7 +7,7 @@ interface TitleInputProps {
 }
 
 const TitleInput = (props: TitleInputProps) => {
-  const setMapTitle = useSetMapTitleState();
+  const setMapTitle = useSetMapTitle();
   const mapTitle = useMapTitleState();
 
   return (

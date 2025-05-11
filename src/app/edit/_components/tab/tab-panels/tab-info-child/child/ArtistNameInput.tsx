@@ -1,4 +1,4 @@
-import { useMapArtistState, useSetMapArtistState } from "@/app/edit/atoms/stateAtoms";
+import { useMapArtistState, useSetMapArtist } from "@/app/edit/atoms/stateAtoms";
 import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
@@ -7,7 +7,7 @@ interface ArtistNameInputProps {
 }
 
 const ArtistNameInput = (props: ArtistNameInputProps) => {
-  const setMapArtistName = useSetMapArtistState();
+  const setMapArtistName = useSetMapArtist();
   const mapArtistName = useMapArtistState();
 
   return (

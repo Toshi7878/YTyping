@@ -6,7 +6,12 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../ts/type";
-import { gameUtilsRefAtom, lineProgressRefAtom, useGameUtilsRef, ytStatusRefAtom } from "./refAtoms";
+import {
+  gameUtilityReferenceParamsAtom,
+  lineProgressAtom,
+  usegameUtilityReferenceParams,
+  ytStatusAtom,
+} from "./refAtoms";
 import { speedBaseAtom } from "./speedReducerAtoms";
 import { getTypeAtomStore } from "./store";
 
@@ -36,7 +41,7 @@ const writeTypingOptionsAtom = atom(
   null,
   (get, set, newUserTypingOptions: Partial<ExtractAtomValue<typeof userTypingOptionsAtom>>) => {
     set(userTypingOptionsAtom, (prev) => ({ ...prev, ...newUserTypingOptions }));
-    set(gameUtilsRefAtom, (prev) => ({ ...prev, isOptionEdited: true }));
+    set(gameUtilityReferenceParamsAtom, (prev) => ({ ...prev, isOptionEdited: true }));
   }
 );
 
@@ -46,7 +51,7 @@ export const useSetUserTypingOptionsState = () => {
   const resetUserTypingOptions = useAtomCallback(
     useCallback((get, set) => {
       set(userTypingOptionsAtom, RESET);
-      set(gameUtilsRefAtom, (prev) => ({ ...prev, isOptionEdited: true }));
+      set(gameUtilityReferenceParamsAtom, (prev) => ({ ...prev, isOptionEdited: true }));
     }, []),
     { store }
   );
@@ -76,15 +81,15 @@ export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store });
 
 const mapAtom = atomWithReset<ParseMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });
-export const useSetMapState = () => useSetAtom(mapAtom, { store });
-export const useMapStateRef = () => {
+export const useSetMap = () => useSetAtom(mapAtom, { store });
+export const useReadMapState = () => {
   return useAtomCallback(
     useCallback((get) => get(mapAtom) as ParseMap, []),
     { store }
   );
 };
 
-const gameStateUtilsAtom = atomWithReset({
+const gameStateUtilParamsAtom = atomWithReset({
   scene: "ready" as SceneType,
   tabIndex: 1 as 0 | 1,
   inputMode: initialInputMode,
@@ -96,7 +101,7 @@ const gameStateUtilsAtom = atomWithReset({
   isYTStarted: false,
 });
 
-export const sceneAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("scene"));
+export const sceneAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("scene"));
 export const sceneGroupAtom = atom((get) => {
   const scene = get(sceneAtom);
   switch (scene) {
@@ -115,14 +120,14 @@ export const sceneGroupAtom = atom((get) => {
     }
   }
 });
-const tabIndexAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("tabIndex"));
-export const notifyAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("notify"));
-const skipAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("skip"));
-const changeCSSCountAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("changeCSSCount"));
-const lineSelectIndexAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("lineSelectIndex"));
-const isLoadingOverlayAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("isLoadingOverlay"));
-const playingInputModeAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("inputMode"));
-const isYTStartedAtom = focusAtom(gameStateUtilsAtom, (optic) => optic.prop("isYTStarted"));
+const tabIndexAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("tabIndex"));
+export const notifyAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("notify"));
+const skipAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("skip"));
+const changeCSSCountAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("changeCSSCount"));
+const lineSelectIndexAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("lineSelectIndex"));
+const isLoadingOverlayAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("isLoadingOverlay"));
+const playingInputModeAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("inputMode"));
+const isYTStartedAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("isYTStarted"));
 
 const writeSceneAtom = atom(null, (get, set, newScene: SceneType) => {
   set(sceneAtom, newScene);
@@ -140,42 +145,42 @@ const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { new
   }
 });
 
-export const useGameStateUtilsRef = () => {
+export const useReadGameUtilParams = () => {
   return useAtomCallback(
-    useCallback((get) => get(gameStateUtilsAtom), []),
+    useCallback((get) => get(gameStateUtilParamsAtom), []),
     { store }
   );
 };
 
-export const useSetGameUtilsState = () => useSetAtom(gameStateUtilsAtom, { store });
+export const useSetGameUtilParams = () => useSetAtom(gameStateUtilParamsAtom, { store });
 
 export const useTabIndexState = () => useAtomValue(tabIndexAtom);
-export const useSetTabIndexState = () => useSetAtom(tabIndexAtom);
+export const useSetTabIndex = () => useSetAtom(tabIndexAtom);
 
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
 export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
-export const useSetSceneState = () => useSetAtom(writeSceneAtom, { store });
+export const useSetScene = () => useSetAtom(writeSceneAtom, { store });
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });
-export const useSetPlayingInputModeState = () => useSetAtom(playingInputModeAtom, { store });
+export const useSetPlayingInputMode = () => useSetAtom(playingInputModeAtom, { store });
 
 export const useIsLoadingOverlayState = () => useAtomValue(isLoadingOverlayAtom);
-export const useSetIsLoadingOverlayState = () => useSetAtom(isLoadingOverlayAtom);
+export const useSetIsLoadingOverlay = () => useSetAtom(isLoadingOverlayAtom);
 
 export const useSkipState = () => useAtomValue(skipAtom, { store });
-export const useSetSkipState = () => useSetAtom(skipAtom, { store });
+export const useSetSkip = () => useSetAtom(skipAtom, { store });
 
 export const useNotifyState = () => useAtomValue(notifyAtom);
-export const useSetNotifyState = () => useSetAtom(notifyAtom);
+export const useSetNotify = () => useSetAtom(notifyAtom);
 
 export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { store });
-export const useSetChangeCSSCountState = () => useSetAtom(writeChangeCSSCountAtom, { store });
+export const useSetChangeCSSCount = () => useSetAtom(writeChangeCSSCountAtom, { store });
 
 export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
-export const useSetLineSelectIndexState = () => useSetAtom(lineSelectIndexAtom);
+export const useSetLineSelectIndex = () => useSetAtom(lineSelectIndexAtom);
 
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
-export const useSetYTStartedState = () => useSetAtom(isYTStartedAtom);
+export const useSetYTStarted = () => useSetAtom(isYTStartedAtom);
 
 const playingStateAtom = atomWithReset({
   currentTime: 0,
@@ -190,11 +195,11 @@ const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm")
 export const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
 
 export const useLineRemainTimeState = () => useAtomValue(lineRemainTimeAtom, { store });
-export const useSetLineRemainTimeState = () => useSetAtom(lineRemainTimeAtom, { store });
+export const useSetLineRemainTime = () => useSetAtom(lineRemainTimeAtom, { store });
 
 export const useLineKpmState = () => useAtomValue(lineKpmAtom, { store });
-export const useSetLineKpmState = () => useSetAtom(lineKpmAtom, { store });
-export const useLineKpmStateRef = () => {
+export const useSetLineKpm = () => useSetAtom(lineKpmAtom, { store });
+export const useReadLineKpm = () => {
   return useAtomCallback(
     useCallback((get) => get(lineKpmAtom), []),
     { store }
@@ -202,8 +207,8 @@ export const useLineKpmStateRef = () => {
 };
 
 export const useComboState = () => useAtomValue(comboAtom, { store });
-export const useSetComboState = () => useSetAtom(comboAtom, { store });
-export const useComboStateRef = () => {
+export const useSetCombo = () => useSetAtom(comboAtom, { store });
+export const useReadCombo = () => {
   return useAtomCallback(
     useCallback((get) => get(comboAtom), []),
     { store }
@@ -211,8 +216,8 @@ export const useComboStateRef = () => {
 };
 
 export const useCurrentTimeState = () => useAtomValue(currentTimeAtom, { store });
-export const useSetCurrentTimeState = () => useSetAtom(currentTimeAtom, { store });
-export const useCurrentTimeStateRef = () => {
+export const useSetCurrentTime = () => useSetAtom(currentTimeAtom, { store });
+export const useReadCurrentTime = () => {
   return useAtomCallback(
     useCallback((get) => get(currentTimeAtom), []),
     { store }
@@ -222,8 +227,8 @@ export const useCurrentTimeStateRef = () => {
 const lineResultListAtom = atomWithReset<LineResultData[]>([]);
 
 export const useLineResultsState = () => useAtomValue(lineResultListAtom, { store });
-export const useSetLineResultsState = () => useSetAtom(lineResultListAtom, { store });
-export const useLineResultsStateRef = () => {
+export const useSetLineResults = () => useSetAtom(lineResultListAtom, { store });
+export const useReadLineResults = () => {
   return useAtomCallback(
     useCallback((get) => get(lineResultListAtom), []),
     { store }
@@ -262,7 +267,7 @@ const writeNextLyricsAtom = atom(null, (get, set, line: LineData) => {
 });
 
 export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
-export const useSetNextLyricsState = () => {
+export const useSetNextLyrics = () => {
   const setNextLyrics = useSetAtom(writeNextLyricsAtom, { store });
   const resetNextLyrics = useCallback(() => store.set(nextLyricsAtom, RESET), []);
 
@@ -282,8 +287,8 @@ const lineWordAtom = focusAtom(currentLineAtom, (optic) => optic.prop("lineWord"
 const lineLyricsAtom = focusAtom(currentLineAtom, (optic) => optic.prop("lyrics"));
 
 export const useLineWordState = () => useAtomValue(lineWordAtom, { store });
-export const useSetLineWordState = () => useSetAtom(lineWordAtom, { store });
-export const useLineWordStateRef = () => {
+export const useSetLineWord = () => useSetAtom(lineWordAtom, { store });
+export const useReadLineWord = () => {
   return useAtomCallback(
     useCallback((get) => get(lineWordAtom), []),
     { store }
@@ -308,8 +313,8 @@ const writeCurrentLineAtom = atom(
 
     const nextTime = Number(newNextLine["time"]);
 
-    const { movieDuration } = get(ytStatusRefAtom);
-    const lineProgress = get(lineProgressRefAtom);
+    const { movieDuration } = get(ytStatusAtom);
+    const lineProgress = get(lineProgressAtom);
 
     if (lineProgress) {
       lineProgress.value = 0;
@@ -318,12 +323,12 @@ const writeCurrentLineAtom = atom(
   }
 );
 
-export const useSetCurrentLineState = () => {
+export const useSetCurrentLine = () => {
   const setCurrentLine = useSetAtom(writeCurrentLineAtom, { store });
   const resetCurrentLine = useCallback(() => {
     store.set(currentLineAtom, RESET);
     const map = store.get(mapAtom);
-    const lineProgress = store.get(lineProgressRefAtom);
+    const lineProgress = store.get(lineProgressAtom);
 
     if (lineProgress && map) {
       lineProgress.value = 0;
@@ -358,27 +363,27 @@ export const focusTypingStatusAtoms = {
   timeBonus: focusAtom(typingStatusAtom, (optic) => optic.prop("timeBonus")),
 };
 
-export const useSetTypingStatusLineState = () => useSetAtom(focusTypingStatusAtoms.line, { store });
-export const useSetTypingStatusRankState = () => useSetAtom(focusTypingStatusAtoms.rank, { store });
+export const useSetTypingStatusLine = () => useSetAtom(focusTypingStatusAtoms.line, { store });
+export const useSetTypingStatusRank = () => useSetAtom(focusTypingStatusAtoms.rank, { store });
 export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
-export const useSetTypingStatusState = () => {
-  const readMap = useMapStateRef();
-  const { readGameUtils } = useGameUtilsRef();
+export const useSetTypingStatus = () => {
+  const readMap = useReadMapState();
+  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
   const setTypingStatus = useSetAtom(typingStatusAtom, { store });
-  const setLineCount = useSetTypingStatusLineState();
-  const setRank = useSetTypingStatusRankState();
+  const setLineCount = useSetTypingStatusLine();
+  const setRank = useSetTypingStatusRank();
 
   const resetTypingStatus = () => {
     setTypingStatus(RESET);
     setLineCount(readMap()?.lineLength || 0);
 
-    const { rankingScores } = readGameUtils();
+    const { rankingScores } = readGameUtilRefParams();
     setRank(rankingScores.length + 1);
   };
 
   return { setTypingStatus, resetTypingStatus };
 };
-export const useTypingStatusStateRef = () => {
+export const useReadTypingStatus = () => {
   return useAtomCallback(
     useCallback((get) => get(typingStatusAtom), []),
     { store }

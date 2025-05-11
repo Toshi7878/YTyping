@@ -5,13 +5,13 @@ import { usePreviewYouTubeKeyDown } from "@/util/global-hooks/usePreviewYouTubeK
 import { Box, useBreakpointValue } from "@chakra-ui/react";
 import { useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { usePreviewVideoState, useSetPreviewPlayerState, useVolumeState } from "../../lib/global-atoms/globalAtoms";
+import { usePreviewVideoState, useSetPreviewPlayer, useVolumeState } from "../../lib/global-atoms/globalAtoms";
 
 const PreviewYouTubeContent = function YouTubeContent() {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
   const volume = useVolumeState();
   const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
-  const setPreviewPlayerState = useSetPreviewPlayerState();
+  const setPreviewPlayerState = useSetPreviewPlayer();
 
   useEffect(() => {
     window.addEventListener("keydown", previewYouTubeKeyDown);

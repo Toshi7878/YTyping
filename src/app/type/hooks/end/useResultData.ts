@@ -1,15 +1,15 @@
 import { sendResultSchema } from "@/server/api/routers/rankingRouter";
 import { z } from "@/validator/z";
 import { useParams } from "next/navigation";
-import { useStatusRef } from "../../atoms/refAtoms";
-import { useLineResultsStateRef, useTypingStatusStateRef } from "../../atoms/stateAtoms";
+import { useTypingDetails } from "../../atoms/refAtoms";
+import { useReadLineResults, useReadTypingStatus } from "../../atoms/stateAtoms";
 
 export const useResultData = () => {
   const { id: mapId } = useParams();
-  const { readStatus } = useStatusRef();
+  const { readStatus } = useTypingDetails();
 
-  const readLineResults = useLineResultsStateRef();
-  const readTypingStatus = useTypingStatusStateRef();
+  const readLineResults = useReadLineResults();
+  const readTypingStatus = useReadTypingStatus();
 
   const getMinSpeed = (lineResults: z.infer<typeof sendResultSchema>["lineResults"]) => {
     return lineResults.reduce((min, result) => {

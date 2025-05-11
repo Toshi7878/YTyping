@@ -11,8 +11,8 @@ const timeOffsetAtom = atomWithStorage("editor_playing_time_offset", -0.2, undef
 });
 
 export const useTimeOffsetState = () => useAtomValue(timeOffsetAtom, { store });
-export const useSetTimeOffsetState = () => useSetAtom(timeOffsetAtom, { store });
-export const useTimeOffsetStateRef = () => {
+export const useSetTimeOffset = () => useSetAtom(timeOffsetAtom, { store });
+export const useReadTimeOffsetState = () => {
   return useAtomCallback(
     useCallback((get) => get(timeOffsetAtom), []),
     { store }
@@ -29,8 +29,8 @@ export const wordConvertOptionAtom = atomWithStorage<ConvertOptionsType>(
 );
 
 export const useWordConvertOptionState = () => useAtomValue(wordConvertOptionAtom, { store });
-export const useSetWordConvertOptionState = () => useSetAtom(wordConvertOptionAtom, { store });
-export const useWordConvertOptionStateRef = () => {
+export const useSetWordConvertOption = () => useSetAtom(wordConvertOptionAtom, { store });
+export const useReadWordConvertOption = () => {
   return useAtomCallback(
     useCallback((get) => get(wordConvertOptionAtom), []),
     { store }

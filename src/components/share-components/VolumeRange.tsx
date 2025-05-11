@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@chakra-ui/react";
 
-import { useSetVolumeState, useVolumeState } from "@/lib/global-atoms/globalAtoms";
+import { useSetVolume, useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { ThemeColors } from "@/types";
 import { YTPlayer } from "@/types/global-types";
 import { useState } from "react";
@@ -24,7 +24,7 @@ interface VolumeRangeProps {
 export default function VolumeRange({ player, ...props }: VolumeRangeProps & StackProps) {
   const theme: ThemeColors = useTheme();
   const volume = useVolumeState();
-  const setVolume = useSetVolumeState();
+  const setVolume = useSetVolume();
   const [showSliderMark, setShowSliderMark] = useState(false);
 
   const handleChange = (value: number) => {

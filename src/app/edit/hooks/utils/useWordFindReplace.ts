@@ -1,7 +1,7 @@
 import { useHistoryReducer } from "../../atoms/historyReducerAtom";
 import { useMapReducer, useMapStateRef } from "../../atoms/mapReducerAtom";
-import { useTbodyRef } from "../../atoms/refAtoms";
-import { useSetCanUploadState, useSetIsUpdateUpdatedAtRef } from "../../atoms/stateAtoms";
+import { useTbody } from "../../atoms/refAtoms";
+import { useSetCanUpload, useSetIsUpdateUpdatedAt } from "../../atoms/stateAtoms";
 
 export const useWordSearchReplace = () => {
   const getKanaSearchLength = useGetKanaSearchLength();
@@ -50,7 +50,7 @@ export const useWordSearchReplace = () => {
 };
 
 function useReplaceFoundFocus() {
-  const { readTbody } = useTbodyRef();
+  const { readTbody } = useTbody();
   return ({ i, searchText }: { i: number; searchText: string }) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -119,8 +119,8 @@ function useGetKanaSearchLength() {
 
 function useReplaceDialog() {
   const readMap = useMapStateRef();
-  const setCanUpload = useSetCanUploadState();
-  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAtRef();
+  const setCanUpload = useSetCanUpload();
+  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
 
   const mapDispatch = useMapReducer();
   const historyDispatch = useHistoryReducer();

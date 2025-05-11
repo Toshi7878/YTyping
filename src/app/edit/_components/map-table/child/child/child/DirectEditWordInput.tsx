@@ -1,4 +1,4 @@
-import { useIsWordConvertingState, useSetWordState, useWordState } from "@/app/edit/atoms/stateAtoms";
+import { useIsWordConvertingState, useSetWord, useWordState } from "@/app/edit/atoms/stateAtoms";
 import { useWordConvertButtonEvent } from "@/app/edit/hooks/useButtonEvents";
 import { ThemeColors } from "@/types";
 import { Button, Flex, Input, useTheme } from "@chakra-ui/react";
@@ -13,7 +13,7 @@ const DirectEditWordInput = (props: DirectEditWordInputProps) => {
   const selectWord = useWordState();
 
   const wordConvertButtonEvent = useWordConvertButtonEvent();
-  const setWord = useSetWordState();
+  const setWord = useSetWord();
 
   return (
     <Flex alignItems="center" justifyContent="space-between">

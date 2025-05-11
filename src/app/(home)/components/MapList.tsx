@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import MapCard from "../../../components/map-card/MapCard";
 import { MapListResponse, useMapListInfiniteQuery } from "../../../util/global-hooks/query/useMapListQuery";
-import { useIsSearchingState, useSetIsSearchingState } from "../atoms/atoms";
+import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
 import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH, PARAM_NAME } from "../ts/consts";
 import MapCardLayout from "./MapCardLayout";
 
@@ -30,7 +30,7 @@ function LoadingMapCard({ cardLength }: { cardLength: number }) {
 function MapList() {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingState();
-  const setIsSearchingAtom = useSetIsSearchingState();
+  const setIsSearchingAtom = useSetIsSearching();
 
   const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useMapListInfiniteQuery();
 

@@ -1,6 +1,6 @@
 import CheckBoxFormField from "@/components/share-components/form/CheckBoxFormField";
 import SelectFormField from "@/components/share-components/form/SelectFormField";
-import { useSetUserOptionsState, useUserOptionsState } from "@/lib/global-atoms/globalAtoms";
+import { useSetUserOptions, useUserOptionsState } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { userOptionSchema } from "@/validator/schema";
@@ -13,7 +13,7 @@ type UserOptionFormValues = NonNullable<RouterOutPuts["userOption"]["getUserOpti
 
 export const OptionSettingForm = () => {
   const userOptions = useUserOptionsState();
-  const setUserOptions = useSetUserOptionsState();
+  const setUserOptions = useSetUserOptions();
   const methods = useForm<UserOptionFormValues>({
     resolver: zodResolver(userOptionSchema),
     defaultValues: {

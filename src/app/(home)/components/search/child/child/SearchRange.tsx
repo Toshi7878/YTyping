@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetDifficultyRangeState, useSetIsSearchingState } from "@/app/(home)/atoms/atoms";
+import { useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/atoms/atoms";
 import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/ts/consts";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
@@ -34,8 +34,8 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
   });
 
   const setDifficultyRangeParams = useDifficultyRangeParams();
-  const setDifficultyRangeAtom = useSetDifficultyRangeState();
-  const setIsSearchingAtom = useSetIsSearchingState();
+  const setDifficultyRangeAtom = useSetDifficultyRange();
+  const setIsSearchingAtom = useSetIsSearching();
 
   const handleChange = (val: number[]) => {
     setDifficultyRange({ min: val[0], max: val[1] });

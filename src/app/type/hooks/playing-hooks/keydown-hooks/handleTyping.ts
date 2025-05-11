@@ -1,4 +1,4 @@
-import { useGameStateUtilsRef, useMapStateRef, useSetLineWordState } from "@/app/type/atoms/stateAtoms";
+import { useReadGameUtilParams, useReadMapState, useSetLineWord } from "@/app/type/atoms/stateAtoms";
 import { useInputJudge } from "@/app/type/hooks/playing-hooks/keydown-hooks/typingJudge";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";
@@ -9,7 +9,7 @@ import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../updateStatus
 export const useTyping = () => {
   const { triggerTypingSound, triggerMissSound } = useSoundEffect();
 
-  const setLineWord = useSetLineWordState();
+  const setLineWord = useSetLineWord();
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
@@ -18,9 +18,9 @@ export const useTyping = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const inputJudge = useInputJudge();
   const { isLinePointUpdated, updateLineResult } = useUpdateLineResult();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const readGameStateUtils = useReadGameUtilParams();
   const updateAllStatus = useUpdateAllStatus();
-  const readMap = useMapStateRef();
+  const readMap = useReadMapState();
 
   return (event: KeyboardEvent) => {
     const { isSuccess, isFailed, isCompleted, newLineWord, ...inputResult } = inputJudge(event);

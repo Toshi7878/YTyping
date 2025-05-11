@@ -1,5 +1,5 @@
-import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
-import { useSceneState, useSetTypingStatusRankState } from "@/app/type/atoms/stateAtoms";
+import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useSceneState, useSetTypingStatusRank } from "@/app/type/atoms/stateAtoms";
 import { useMapRankingQuery } from "@/util/global-hooks/query/mapRankingRouterQuery";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
@@ -16,8 +16,8 @@ const RankingList = () => {
   const { id: mapId } = useParams();
 
   const { data, error, isPending } = useMapRankingQuery({ mapId: mapId as string });
-  const { writeGameUtils } = useGameUtilsRef();
-  const setTypingStatusRank = useSetTypingStatusRankState();
+  const { writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const setTypingStatusRank = useSetTypingStatusRank();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,7 +52,7 @@ const RankingList = () => {
   useEffect(() => {
     const scores = data ? data.map((result: (typeof data)[number]) => result.status!.score) : [];
 
-    writeGameUtils({
+    writeGameUtilRefParams({
       rankingScores: scores,
     });
 
@@ -66,7 +66,7 @@ const RankingList = () => {
     if (scene === "play" && data) {
       for (let i = 0; i < data.length; i++) {
         if (userId === Number(data[i].user_id)) {
-          writeGameUtils({
+          writeGameUtilRefParams({
             myBestScore: data[i].status!.score,
           });
         }

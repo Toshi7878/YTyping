@@ -1,6 +1,6 @@
 "use client";
 
-import { useDifficultyRangeState, useSetIsSearchingState } from "@/app/(home)/atoms/atoms";
+import { useDifficultyRangeState, useSetIsSearching } from "@/app/(home)/atoms/atoms";
 import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { MY_FILTER, PLAYED_FILTER } from "@/app/(home)/ts/consts";
 import { Link } from "@chakra-ui/next-js";
@@ -13,7 +13,7 @@ type FilterParam = (typeof FILTER_CONTENT)[number]["params"][number];
 
 const FilterInputs = () => {
   const searchParams = useSearchParams();
-  const setIsSearchingAtom = useSetIsSearchingState();
+  const setIsSearchingAtom = useSetIsSearching();
   const setDifficultyRangeParams = useDifficultyRangeParams();
   const difficultyRange = useDifficultyRangeState();
 

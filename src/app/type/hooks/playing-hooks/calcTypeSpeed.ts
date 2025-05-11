@@ -1,16 +1,16 @@
-import { useLineStatusRef, useStatusRef, useUserStatsRef } from "../../atoms/refAtoms";
-import { useSetLineKpmState, useSetTypingStatusState, useTypingStatusStateRef } from "../../atoms/stateAtoms";
+import { useLineStatus, useTypingDetails, useUserStats } from "../../atoms/refAtoms";
+import { useReadTypingStatus, useSetLineKpm, useSetTypingStatus } from "../../atoms/stateAtoms";
 
 type UpdateType = "keydown" | "completed" | "timer" | "lineUpdate";
 export const useCalcTypeSpeed = () => {
-  const { readLineStatus } = useLineStatusRef();
+  const { readLineStatus } = useLineStatus();
 
-  const readTypingStatus = useTypingStatusStateRef();
-  const setLineKpm = useSetLineKpmState();
-  const { writeLineStatus } = useLineStatusRef();
-  const { setTypingStatus } = useSetTypingStatusState();
-  const { readStatus, writeStatus } = useStatusRef();
-  const { readUserStats, writeUserStats } = useUserStatsRef();
+  const readTypingStatus = useReadTypingStatus();
+  const setLineKpm = useSetLineKpm();
+  const { writeLineStatus } = useLineStatus();
+  const { setTypingStatus } = useSetTypingStatus();
+  const { readStatus, writeStatus } = useTypingDetails();
+  const { readUserStats, writeUserStats } = useUserStats();
 
   const calcLineKpm = ({ constantLineTime }) => {
     const { type: lineTypeCount } = readLineStatus();

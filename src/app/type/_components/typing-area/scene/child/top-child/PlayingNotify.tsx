@@ -1,5 +1,5 @@
-import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
-import { useNotifyState, useSceneState, useSetNotifyState } from "@/app/type/atoms/stateAtoms";
+import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useNotifyState, useSceneState, useSetNotify } from "@/app/type/atoms/stateAtoms";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion"; // 追加
 import { useEffect, useRef } from "react";
@@ -9,10 +9,10 @@ const NON_ANIMATED = ["ll", "Replay", "Practice"];
 
 const PlayingNotify = () => {
   const notify = useNotifyState();
-  const setNotify = useSetNotifyState();
+  const setNotify = useSetNotify();
   const scene = useSceneState();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const { readGameUtils } = useGameUtilsRef();
+  const { readGameUtilRefParams } = usegameUtilityReferenceParams();
 
   const playModeNotify = () => {
     if (scene === "play") {
@@ -63,7 +63,7 @@ const PlayingNotify = () => {
           {notify.description === "ll" ? (
             <FaPause />
           ) : notify.description === "Replay" ? (
-            `${readGameUtils().replayUserName} Replay`
+            `${readGameUtilRefParams().replayUserName} Replay`
           ) : (
             notify.description
           )}

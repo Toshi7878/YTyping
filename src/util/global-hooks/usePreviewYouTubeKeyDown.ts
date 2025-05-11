@@ -1,8 +1,8 @@
 import { RESET } from "jotai/utils";
-import { useSetPreviewVideoState } from "../../lib/global-atoms/globalAtoms";
+import { useSetPreviewVideo } from "../../lib/global-atoms/globalAtoms";
 
 export const usePreviewYouTubeKeyDown = () => {
-  const setPreviewVideo = useSetPreviewVideoState();
+  const setPreviewVideo = useSetPreviewVideo();
 
   return (event: KeyboardEvent) => {
     if (event.key === "Escape") {

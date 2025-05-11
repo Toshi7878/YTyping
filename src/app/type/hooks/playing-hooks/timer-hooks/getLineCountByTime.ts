@@ -1,7 +1,7 @@
-import { useMapStateRef } from "@/app/type/atoms/stateAtoms";
+import { useReadMapState } from "@/app/type/atoms/stateAtoms";
 
 export const useGetSeekLineCount = () => {
-  const readMap = useMapStateRef();
+  const readMap = useReadMapState();
 
   return (newTime: number): number => {
     const map = readMap();

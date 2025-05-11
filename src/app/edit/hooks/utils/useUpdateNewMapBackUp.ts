@@ -1,11 +1,11 @@
 import { sendEditorNewCreateBakIndexedDBData } from "@/lib/db";
 import { Tag } from "@/types";
 import { useMapStateRef } from "../../atoms/mapReducerAtom";
-import { useMapInfoStateRef, useMapTagsStateRef } from "../../atoms/stateAtoms";
+import { useReadMapInfo, useReadMapTags } from "../../atoms/stateAtoms";
 
 export const useUpdateNewMapBackUp = () => {
-  const readMapInfo = useMapInfoStateRef();
-  const readTags = useMapTagsStateRef();
+  const readMapInfo = useReadMapInfo();
+  const readTags = useReadMapTags();
   const readMap = useMapStateRef();
 
   return (newVideoId: string) => {

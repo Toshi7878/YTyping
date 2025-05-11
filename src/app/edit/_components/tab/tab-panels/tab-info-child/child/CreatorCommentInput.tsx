@@ -1,9 +1,9 @@
-import { useMapCommentState, useSetMapCommentState } from "@/app/edit/atoms/stateAtoms";
+import { useMapCommentState, useSetMapComment } from "@/app/edit/atoms/stateAtoms";
 import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
 const CreatorCommentInput = () => {
-  const setCreatorComment = useSetMapCommentState();
+  const setCreatorComment = useSetMapComment();
   const creatorComment = useMapCommentState();
 
   return (

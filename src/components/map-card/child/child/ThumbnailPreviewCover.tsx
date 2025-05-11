@@ -1,4 +1,4 @@
-import { usePreviewVideoState, useSetPreviewVideoState } from "@/lib/global-atoms/globalAtoms";
+import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
 import { Flex } from "@chakra-ui/react";
 import { RESET } from "jotai/utils";
 import React, { useCallback, useState } from "react";
@@ -12,7 +12,7 @@ interface MapLeftThumbnailProps {
 const ThumbnailPreviewCover = (props: MapLeftThumbnailProps) => {
   const { mapVideoId, mapPreviewTime, mapPreviewSpeed = 1 } = props;
   const { videoId } = usePreviewVideoState();
-  const setPreviewVideoState = useSetPreviewVideoState();
+  const setPreviewVideoState = useSetPreviewVideo();
   const [isTouchMove, setIsTouchMove] = useState(false);
 
   const previewYouTube = useCallback(

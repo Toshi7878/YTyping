@@ -1,5 +1,5 @@
-import { useGameUtilsRef } from "@/app/type/atoms/refAtoms";
-import { useMapInfoRef, useSceneGroupState } from "@/app/type/atoms/stateAtoms";
+import { usegameUtilityReferenceParams } from "@/app/type/atoms/refAtoms";
+import { useMapInfoRef, useSceneGroupState, useSetTabIndex } from "@/app/type/atoms/stateAtoms";
 import { useLoadResultPlay } from "@/app/type/hooks/loadResultPlay";
 import { useRetry } from "@/app/type/hooks/playing-hooks/retry";
 import { useSoundEffect } from "@/app/type/hooks/playing-hooks/soundEffect";
@@ -37,8 +37,9 @@ const RankingMenu = ({
   const { iosActiveSound } = useSoundEffect();
   const retry = useRetry();
   const loadResultPlay = useLoadResultPlay({ startMode: "replay", resultId });
+  const setTabIndex = useSetTabIndex();
 
-  const { writeGameUtils } = useGameUtilsRef();
+  const { writeGameUtilRefParams } = usegameUtilityReferenceParams();
   const { readMapInfo } = useMapInfoRef();
   const handleReplayClick = async () => {
     await loadResultPlay();
@@ -57,7 +58,8 @@ const RankingMenu = ({
 
     setShowMenu(null);
     setHoveredIndex(null);
-    writeGameUtils({
+    setTabIndex(0);
+    writeGameUtilRefParams({
       replayUserName: name,
     });
 

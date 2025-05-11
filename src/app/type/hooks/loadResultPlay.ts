@@ -1,12 +1,7 @@
 import { clientApi } from "@/trpc/client-api";
 import { usePlayer } from "../atoms/refAtoms";
 
-import {
-  useSetIsLoadingOverlayState,
-  useSetLineResultsState,
-  useSetPlayingInputModeState,
-  useSetSceneState,
-} from "../atoms/stateAtoms";
+import { useSetIsLoadingOverlay, useSetLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/stateAtoms";
 import { LineResultData, PlayMode } from "../ts/type";
 
 export const useLoadResultPlay = ({
@@ -16,12 +11,12 @@ export const useLoadResultPlay = ({
   startMode: Exclude<PlayMode, "playing">;
   resultId: number | null;
 }) => {
-  const setIsLoadingOverlay = useSetIsLoadingOverlayState();
-  const setLineResults = useSetLineResultsState();
+  const setIsLoadingOverlay = useSetIsLoadingOverlay();
+  const setLineResults = useSetLineResults();
   const { readPlayer } = usePlayer();
-  const setPlayingInputModeState = useSetPlayingInputModeState();
+  const setPlayingInputModeState = useSetPlayingInputMode();
   const utils = clientApi.useUtils();
-  const setScene = useSetSceneState();
+  const setScene = useSetScene();
 
   const loadResultPlay = async () => {
     try {

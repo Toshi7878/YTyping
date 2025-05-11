@@ -1,11 +1,11 @@
-import { useGameUtilsRef, useYTStatusRef } from "@/app/type/atoms/refAtoms";
+import { usegameUtilityReferenceParams, useYTStatus } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
-  useGameStateUtilsRef,
-  useLineWordStateRef,
-  useMapStateRef,
+  useReadGameUtilParams,
+  useReadLineWord,
+  useReadMapState,
   useSceneState,
-  useSetNotifyState,
+  useSetNotify,
   useUserTypingOptionsStateRef,
 } from "@/app/type/atoms/stateAtoms";
 import { TIME_OFFSET_SHORTCUTKEY_RANGE } from "@/app/type/ts/const/consts";
@@ -24,8 +24,8 @@ export const useHandleKeydown = () => {
   const playingShortcutKey = usePlayingShortcutKey();
   const pauseShortcutKey = usePauseShortcutKey();
 
-  const { readYTStatus } = useYTStatusRef();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const { readYTStatus } = useYTStatus();
+  const readGameStateUtils = useReadGameUtilParams();
 
   return (event: KeyboardEvent) => {
     const { isPaused } = readYTStatus();
@@ -61,16 +61,16 @@ const usePlayingShortcutKey = () => {
   const changePlayMode = useChangePlayMode();
   const dispatchSpeed = usePlaySpeedReducer();
   const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine();
-  const setNotify = useSetNotifyState();
+  const setNotify = useSetNotify();
 
-  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
   const readTypingOptions = useUserTypingOptionsStateRef();
-  const readMap = useMapStateRef();
-  const readGameStateUtils = useGameStateUtilsRef();
+  const readMap = useReadMapState();
+  const readGameStateUtils = useReadGameUtilParams();
 
   return (event: KeyboardEvent) => {
     const map = readMap();
-    const { lineResultdrawerClosure: drawerClosure } = readGameUtils();
+    const { lineResultdrawerClosure: drawerClosure } = readGameUtilRefParams();
     const typingOptions = readTypingOptions();
 
     if (
@@ -97,9 +97,9 @@ const usePlayingShortcutKey = () => {
         break;
       case "ArrowRight":
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
-          const { timeOffset } = readGameUtils();
+          const { timeOffset } = readGameUtilRefParams();
           const newTimeOffset = Math.round((timeOffset + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-          writeGameUtils({ timeOffset: newTimeOffset });
+          writeGameUtilRefParams({ timeOffset: newTimeOffset });
           setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.time_offset).toFixed(2)}`));
         } else if (scene === "replay" || scene === "practice") {
           moveNextLine();
@@ -108,9 +108,9 @@ const usePlayingShortcutKey = () => {
         break;
       case "ArrowLeft":
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
-          const { timeOffset } = readGameUtils();
+          const { timeOffset } = readGameUtilRefParams();
           const newTimeOffset = Math.round((timeOffset - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-          writeGameUtils({ timeOffset: newTimeOffset });
+          writeGameUtilRefParams({ timeOffset: newTimeOffset });
           setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.time_offset).toFixed(2)}`));
         } else if (scene === "replay" || scene === "practice") {
           movePrevLine();
@@ -251,8 +251,8 @@ const TENKEYS_SET = new Set([
 ]);
 
 const useIsKeydownTyped = () => {
-  const readGameStateUtils = useGameStateUtilsRef();
-  const readLineWord = useLineWordStateRef();
+  const readGameStateUtils = useReadGameUtilParams();
+  const readLineWord = useReadLineWord();
 
   return (event: KeyboardEvent) => {
     const { scene } = readGameStateUtils();

@@ -1,27 +1,34 @@
 import { RESET } from "jotai/utils";
-import { useCountRef, useGameUtilsRef, useLineStatusRef, usePlayer, useStatusRef, useYTStatusRef } from "./refAtoms";
+import {
+  usegameUtilityReferenceParams,
+  useLineCount,
+  useLineStatus,
+  usePlayer,
+  useTypingDetails,
+  useYTStatus,
+} from "./refAtoms";
 import { usePlaySpeedReducer } from "./speedReducerAtoms";
 import {
-  useSetCurrentLineState,
-  useSetGameUtilsState,
-  useSetLineResultsState,
-  useSetMapState,
-  useSetTypingStatusState,
+  useSetCurrentLine,
+  useSetGameUtilParams,
+  useSetLineResults,
+  useSetMap,
+  useSetTypingStatus,
 } from "./stateAtoms";
 
 export const usePathChangeAtomReset = () => {
   const dispatchSpeed = usePlaySpeedReducer();
-  const setLineResults = useSetLineResultsState();
-  const setGameUtils = useSetGameUtilsState();
+  const setLineResults = useSetLineResults();
+  const setGameUtils = useSetGameUtilParams();
 
-  const { resetTypingStatus } = useSetTypingStatusState();
-  const { resetGameUtils } = useGameUtilsRef();
-  const { resetYTStatus } = useYTStatusRef();
-  const { resetLineStatus } = useLineStatusRef();
-  const { resetStatus } = useStatusRef();
-  const { writeCount } = useCountRef();
-  const setMap = useSetMapState();
-  const { resetCurrentLine } = useSetCurrentLineState();
+  const { resetTypingStatus } = useSetTypingStatus();
+  const { resetGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { resetYTStatus } = useYTStatus();
+  const { resetLineStatus } = useLineStatus();
+  const { resetStatus } = useTypingDetails();
+  const { writeCount } = useLineCount();
+  const setMap = useSetMap();
+  const { resetCurrentLine } = useSetCurrentLine();
   const { writePlayer } = usePlayer();
 
   return () => {
@@ -32,7 +39,7 @@ export const usePathChangeAtomReset = () => {
     dispatchSpeed({ type: "reset" });
     setMap(RESET);
     resetTypingStatus();
-    resetGameUtils();
+    resetGameUtilRefParams();
     resetYTStatus();
     resetStatus();
     resetLineStatus();

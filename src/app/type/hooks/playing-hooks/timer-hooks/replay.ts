@@ -1,10 +1,10 @@
-import { useCountRef, useGameUtilsRef } from "@/app/type/atoms/refAtoms";
+import { usegameUtilityReferenceParams, useLineCount } from "@/app/type/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/type/atoms/speedReducerAtoms";
 import {
-  useGameStateUtilsRef,
-  useLineResultsStateRef,
-  useLineWordStateRef,
-  useSetLineWordState,
+  useReadGameUtilParams,
+  useReadLineResults,
+  useReadLineWord,
+  useSetLineWord,
 } from "@/app/type/atoms/stateAtoms";
 import { useCalcTypeSpeed } from "@/app/type/hooks/playing-hooks/calcTypeSpeed";
 import { useInputModeChange } from "@/app/type/hooks/playing-hooks/inputModeChange";
@@ -22,7 +22,7 @@ interface UseKeyReplayProps {
 }
 
 const usePlayBackKey = () => {
-  const setLineWord = useSetLineWordState();
+  const setLineWord = useSetLineWord();
 
   const inputModeChange = useInputModeChange();
   const dispatchSpeed = usePlaySpeedReducer();
@@ -35,9 +35,9 @@ const usePlayBackKey = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
 
-  const readLineWord = useLineWordStateRef();
-  const readGameStateUtils = useGameStateUtilsRef();
-  const { readCount } = useCountRef();
+  const readLineWord = useReadLineWord();
+  const readGameStateUtils = useReadGameUtilParams();
+  const { readCount } = useLineCount();
 
   return ({ constantLineTime, typeResult }: UseKeyReplayProps) => {
     const key = typeResult.c;
@@ -103,10 +103,10 @@ const usePlayBackKey = () => {
 
 export const useReplay = () => {
   const keyReplay = usePlayBackKey();
-  const readLineResults = useLineResultsStateRef();
+  const readLineResults = useReadLineResults();
 
-  const { readGameUtils, writeGameUtils } = useGameUtilsRef();
-  const { readCount } = useCountRef();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const { readCount } = useLineCount();
 
   return ({ constantLineTime }: { constantLineTime: number }) => {
     const count = readCount();
@@ -118,7 +118,7 @@ export const useReplay = () => {
     if (typeResults.length === 0) {
       return;
     }
-    const replayKeyCount = readGameUtils().replayKeyCount;
+    const { replayKeyCount } = readGameUtilRefParams();
     const typeData = typeResults[replayKeyCount];
 
     if (!typeData) {
@@ -129,7 +129,7 @@ export const useReplay = () => {
 
     if (constantLineTime >= keyTime) {
       keyReplay({ constantLineTime: constantLineTime, lineResult, typeResult: typeData });
-      writeGameUtils({ replayKeyCount: replayKeyCount + 1 });
+      writeGameUtilRefParams({ replayKeyCount: replayKeyCount + 1 });
     }
   };
 };
@@ -138,8 +138,8 @@ export const useLineReplayUpdate = () => {
   const dispatchSpeed = usePlaySpeedReducer();
   const inputModeChange = useInputModeChange();
 
-  const { writeGameUtils } = useGameUtilsRef();
-  const readLineResults = useLineResultsStateRef();
+  const { writeGameUtilRefParams } = usegameUtilityReferenceParams();
+  const readLineResults = useReadLineResults();
 
   return (newCurrentCount: number) => {
     const lineResults = readLineResults();
@@ -149,6 +149,6 @@ export const useLineReplayUpdate = () => {
     inputModeChange(lineResult.status.mode);
     const speed = lineResult.status.sp as YouTubeSpeed;
     dispatchSpeed({ type: "set", payload: speed });
-    writeGameUtils({ replayKeyCount: 0 });
+    writeGameUtilRefParams({ replayKeyCount: 0 });
   };
 };

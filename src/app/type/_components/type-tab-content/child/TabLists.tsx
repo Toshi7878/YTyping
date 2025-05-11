@@ -1,4 +1,4 @@
-import { useSetTabIndexState } from "@/app/type/atoms/stateAtoms";
+import { useSetTabIndex } from "@/app/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import { Tab, TabList, useTheme } from "@chakra-ui/react";
 import { useEffect } from "react";
@@ -10,7 +10,7 @@ interface TabListsProps {
 
 const TabLists = ({ tabIndex }: TabListsProps) => {
   const theme: ThemeColors = useTheme();
-  const setTabIndex = useSetTabIndexState();
+  const setTabIndex = useSetTabIndex();
 
   useEffect(() => {
     return () => {

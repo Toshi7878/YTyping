@@ -1,7 +1,7 @@
 "use client";
 import { useHistoryReducer } from "@/app/edit/atoms/historyReducerAtom";
 import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
-import { useSetCanUploadState } from "@/app/edit/atoms/stateAtoms";
+import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import useTimeValidate from "@/app/edit/hooks/utils/useTimeValidate";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
@@ -10,7 +10,7 @@ import { Box, Button, FormLabel, HStack, Input, useTheme } from "@chakra-ui/reac
 import { useState } from "react";
 
 export default function AllTimeAdjust() {
-  const setCanUpload = useSetCanUploadState();
+  const setCanUpload = useSetCanUpload();
   const theme: ThemeColors = useTheme();
   const toast = useCustomToast();
   const [totalAdjustValue, setTotalAdjustValue] = useState<string>("");
