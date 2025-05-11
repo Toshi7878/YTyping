@@ -27,6 +27,14 @@ export function useUploadMap() {
 
     const { video_id } = readPlayer().getVideoData();
     const videoDuration = readPlayer().getDuration();
+
+    const typingStartTime = Math.max(0, Number(map[startLine]["time"]) + 0.2);
+
+    const newPreviewTime =
+      Number(previewTime) > videoDuration || typingStartTime >= Number(previewTime)
+        ? typingStartTime.toFixed(3)
+        : previewTime;
+
     const sendMapInfo: SendMapInfo = {
       video_id,
       title,
@@ -34,10 +42,7 @@ export function useUploadMap() {
       music_source: source ?? "",
       creator_comment: comment,
       tags: tags.map((tag) => tag.id),
-      preview_time:
-        Number(previewTime) > videoDuration || 0 >= Number(previewTime)
-          ? Math.max(0, Number(map[startLine]["time"]) + 0.2).toFixed(3)
-          : previewTime,
+      preview_time: newPreviewTime,
       thumbnail_quality: (await getThumbnailQuality(video_id)) as $Enums.thumbnail_quality,
     };
 

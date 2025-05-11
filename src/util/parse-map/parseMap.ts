@@ -44,7 +44,9 @@ export class ParseMap {
     const initialLineResultData: LineResultData[] = [];
     const typingLineIndexes: number[] = [];
     const mapChangeCSSCounts: number[] = [];
-    const inputMode = (localStorage.getItem("inputMode") ?? "roma") as InputMode;
+    const inputMode = (
+      typeof window !== "undefined" ? localStorage.getItem("inputMode") ?? "roma" : "roma"
+    ) as InputMode;
     const validatedInputMode = ["roma", "kana", "flick"].includes(inputMode) ? inputMode : "roma";
     let startLine = 0;
     let lineLength = 0;
