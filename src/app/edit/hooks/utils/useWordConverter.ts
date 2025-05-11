@@ -26,7 +26,7 @@ const allowedChars = new Set([
 export const useWordConverter = () => {
   const fetchMorph = useFetchMorph();
   const filterWordSymbol = useFilterWordSymbol();
-  const { kanaToHira, rubyKanaConvert, formatSimilarChar } = useLyricsFormatUtils();
+  const { kanaToHira, rubyKanaConvert, formatSimilarChar, transformSymbolBasedOnPreviousChar } = useLyricsFormatUtils();
 
   return async (lyrics: string) => {
     const formatedLyrics = formatSimilarChar(kanaToHira(rubyKanaConvert(lyrics)));
@@ -40,9 +40,11 @@ export const useWordConverter = () => {
 
     if (isNeedsConversion) {
       const convertedWord = await fetchMorph(formatedLyrics);
-      return filterAllowedCharacters(filterWordSymbol({ sentence: convertedWord }));
+      return transformSymbolBasedOnPreviousChar(filterAllowedCharacters(filterWordSymbol({ sentence: convertedWord })));
     } else {
-      return filterAllowedCharacters(filterWordSymbol({ sentence: formatedLyrics }));
+      return transformSymbolBasedOnPreviousChar(
+        filterAllowedCharacters(filterWordSymbol({ sentence: formatedLyrics }))
+      );
     }
   };
 };
@@ -170,7 +172,17 @@ export const useLyricsFormatUtils = () => {
     );
   };
 
-  return { kanaToHira, formatSimilarChar, rubyKanaConvert, filterUnicodeSymbol };
+  const transformSymbolBasedOnPreviousChar = (reading: string) => {
+    const convertedText = reading
+      .replace(/([^\x01-\x7E])(!+)/g, (_, p1, p2) => p1 + "！".repeat(p2.length))
+      .replace(/([^\x01-\x7E])(\?+)/g, (_, p1, p2) => p1 + "？".repeat(p2.length))
+      .replace(/([\x01-\x7E])(！+)/g, (_, p1, p2) => p1 + "!".repeat(p2.length))
+      .replace(/([\x01-\x7E])(？+)/g, (_, p1, p2) => p1 + "?".repeat(p2.length));
+
+    return convertedText;
+  };
+
+  return { kanaToHira, formatSimilarChar, rubyKanaConvert, filterUnicodeSymbol, transformSymbolBasedOnPreviousChar };
 };
 
 export const useFilterWordSymbol = () => {
