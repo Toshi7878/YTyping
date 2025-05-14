@@ -14,11 +14,11 @@ interface MenuBarProps {
   menubarRef: React.RefObject<HTMLDivElement>;
 }
 
-const MenuBar = ({ menubarRef }: MenuBarProps) => {
+const MenuBar = () => {
   const { readPlayer } = usePlayer();
 
   return (
-    <Flex justifyContent="space-between" bg="background.card" borderRadius={1} ref={menubarRef}>
+    <Flex justifyContent="space-between" bg="background.card">
       <Flex ml={6}>
         <VolumeRange player={readPlayer()} />
         <MenuSpeedButton image={metronome} onClick={() => {}} title="倍速" />

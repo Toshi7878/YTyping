@@ -1,18 +1,14 @@
 import { Flex, Textarea } from "@chakra-ui/react";
 
-interface LyricsTextareaProps {
-  lyricsInputRef: React.RefObject<HTMLDivElement>;
-}
-
-const LyricsTextarea = ({ lyricsInputRef }: LyricsTextareaProps) => {
+const LyricsTextarea = () => {
   return (
-    <Flex bg="background.card" width="80%" alignItems="center" justifyContent="center" mx="auto" ref={lyricsInputRef}>
+    <Flex bg="background.card" width="80%" alignItems="center" justifyContent="center" mx="auto">
       <Textarea
         px={4}
         height="100px"
         autoComplete="off"
         resize="none"
-        borderRadius={1}
+        borderRadius="md"
         fontSize="2xl"
         fontWeight="bold"
         letterSpacing={1.5}
