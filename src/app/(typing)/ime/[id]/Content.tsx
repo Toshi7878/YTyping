@@ -3,7 +3,6 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Flex } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import LyricsTextarea from "../_components/lyrics-input-area/LyricsTextarea";
-import LyricsViewArea from "../_components/lyrics-view-area/LyricsViewArea";
 import MenuBar from "../_components/memu/MenuBar";
 import ImeTypeYouTubeContent from "../_components/youtube-content/ImeTypeYoutubeContent";
 
@@ -67,7 +66,7 @@ function Content({ mapInfo }: ContentProps) {
         borderRadius={1}
         flexDirection="column"
       >
-        <LyricsViewArea />
+        {/* <LyricsViewArea /> */}
         <MenuBar menubarRef={menubarRef} />
         <LyricsTextarea lyricsInputRef={lyricsInputRef} />
       </Flex>
