@@ -14,13 +14,14 @@ import {
   useYTStopEvent,
 } from "../../hooks/youtubeEvents";
 
-interface TypeYouTubeProps {
+interface ImeTypeYouTubeProps {
   isMapLoading: boolean;
   videoId: string;
   className?: string;
+  style: React.CSSProperties;
 }
 
-const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, className = "" }: TypeYouTubeProps) {
+const ImeTypeYouTubeContent = ({ isMapLoading, videoId, className = "", style }: ImeTypeYouTubeProps) => {
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -74,7 +75,8 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
   const memoizedYouTube = useMemo(
     () => (
       <YouTube
-        className={`${className} aspect-video mt-2 select-none`}
+        className={`${className} select-none`}
+        style={style}
         id="yt_player"
         videoId={videoId}
         opts={{
@@ -99,7 +101,7 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId]
+    [videoId, className, style]
   );
 
   return (
@@ -109,4 +111,4 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
   );
 };
 
-export default TypeYouTubeContent;
+export default ImeTypeYouTubeContent;

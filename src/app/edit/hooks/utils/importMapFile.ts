@@ -26,7 +26,7 @@ export const useImportMapFile = () => {
     const decodedData = iconv.decode(buffer, detected.encoding);
 
     if (file.name.endsWith(".lrc")) {
-      const lrc = decodedData.split("\r\n");
+      const lrc = decodedData.split(/\r\n|\n/);
       const convertedData = await lrcConverter(lrc);
       historyDispatch({
         type: "add",
