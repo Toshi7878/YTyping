@@ -28,7 +28,7 @@ const Lyrics = () => {
   }, [writeLyricsContainer]);
 
   return (
-    <Box id="lyrics_" my={1} ref={lyricsContainerRef} minH="7.5rem">
+    <Box my={1} ref={lyricsContainerRef} minH="7.5rem">
       {displayLines.map((line, index) => (
         <Box key={index}>
           <Box className="shadow-layer">
