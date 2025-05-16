@@ -13,7 +13,7 @@ export const useGenerateTokenizedWords = () => {
 
     const repl = parseRepl(formattedTokenizedWords);
 
-    return replMergeInWords(words, repl);
+    return marge(words, repl);
   };
 };
 
@@ -29,41 +29,32 @@ const parseRepl = (tokenizedWords: RouterOutPuts["morphConvert"]["tokenizeWordAw
   return Array.from(repl).sort((a, b) => b[0].length - a[0].length);
 };
 
-const replMergeInWords = (words: string[][], repl: string[][]) => {
-  const replMergedWords: string[][][] = [];
-
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    for (let j = 0; j < word.length; j++) {
-      if (/[一-龥]/.test(word[j])) {
+const marge = (comparisonLyrics: any, repl: string[][]) => {
+  for (let i = 0; i < comparisonLyrics.length; i++) {
+    for (let j = 0; j < comparisonLyrics[i].length; j++) {
+      if (/[一-龥]/.test(comparisonLyrics[i])) {
         for (let m = 0; m < repl.length; m++) {
-          word[j] = word[j].replace(RegExp(repl[m][0], "g"), "\t@@" + m + "@@\t");
+          comparisonLyrics[i][j] = comparisonLyrics[i][j].replace(RegExp(repl[m][0], "g"), "\t@@" + m + "@@\t");
         }
       }
     }
   }
 
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-
-    const mergedWord: string[][] = [];
-    for (let j = 0; j < word.length; j++) {
-      let line = word[j].split("\t").filter((x) => x !== "");
+  for (let i = 0; i < comparisonLyrics.length; i++) {
+    for (let j = 0; j < comparisonLyrics[i].length; j++) {
+      let line = comparisonLyrics[i][j].split("\t").filter((x) => x !== "");
 
       for (let m = 0; m < line.length; m++) {
-        let result: string[];
         if (line[m].slice(0, 2) == "@@" && line[m].slice(-2) == "@@" && repl[parseFloat(line[m].slice(2))]) {
-          result = repl[parseFloat(line[m].slice(2))];
+          line[m] = repl[parseFloat(line[m].slice(2))];
         } else {
-          result = [line[m]];
+          line[m] = [line[m]];
         }
-
-        mergedWord.push(result);
       }
-    }
 
-    replMergedWords.push(mergedWord);
+      comparisonLyrics[i][j] = line;
+    }
   }
 
-  return replMergedWords;
+  return comparisonLyrics as string[][][][];
 };

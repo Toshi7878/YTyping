@@ -6,7 +6,7 @@ type ParseMap = {
     time: number;
     word: string;
   }[][];
-  words: string[][][];
+  words: string[][][][];
 };
 type Lines = ParseMap["lines"][number][];
 

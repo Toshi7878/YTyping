@@ -109,7 +109,7 @@ export const useReadStatus = () => {
   );
 };
 
-const judgedWordsAtom = atomWithReset([] as string[][]);
+const judgedWordsAtom = atomWithReset([] as string[][][]);
 
 export const useSetJudgedWords = () => useSetAtom(judgedWordsAtom, { store });
 export const useReadJudgedWords = () => {
@@ -118,3 +118,8 @@ export const useReadJudgedWords = () => {
     { store }
   );
 };
+
+const notificationsAtom = atomWithReset<string[]>([]);
+
+export const useNotificationsState = () => useAtomValue(notificationsAtom, { store });
+export const useSetNotifications = () => useSetAtom(notificationsAtom, { store });

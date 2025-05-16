@@ -1,11 +1,12 @@
 import { kanaToHira } from "@/util/global-hooks/kanaToHira";
-import { useReadJudgedWords, useReadStatus, useSetStatus } from "../atom/stateAtoms";
+import { useReadJudgedWords, useReadStatus, useSetNotifications, useSetStatus } from "../atom/stateAtoms";
 import { formatWord } from "./formatWord";
 
-export const useCheckPhraseMatch = () => {
+export const useJudgeTargetWords = () => {
   const readStatus = useReadStatus();
   const readJudgedWords = useReadJudgedWords();
   const setStatus = useSetStatus();
+  const setNotifications = useSetNotifications();
 
   return (chatData: string) => {
     let userInput = formatComment(chatData);
@@ -27,44 +28,49 @@ export const useCheckPhraseMatch = () => {
               missComment = userInput.slice(0, userInput.indexOf(correct["lyrics"]));
             }
 
-            const updatedWordResult = [
-              ...readStatus().wordResult,
-              { input: missComment, evaluation: "None" as const, targetWord: correct.lyrics },
-            ];
-            setStatus((prev) => ({ ...prev, wordResult: updatedWordResult }));
+            setStatus((prev) => ({
+              ...prev,
+              wordResult: [
+                ...prev.wordResult,
+                { input: missComment, evaluation: "None" as const, targetWord: correct.lyrics },
+              ],
+            }));
           }
 
           //   userInput = userInput.slice(correct["lyrics"].length + userInput.indexOf(correct["lyrics"]));
           //   this.users[userId]["typeCount"] += JOIN_LYRICS.length / (correct["judge"] == "Good" ? 1.5 : 1);
           //   this.users[userId]["score"] = Math.round((1000 / game.totalNotes) * this.users[userId]["typeCount"]);
 
-          const updatedWordResult = [
-            ...readStatus().wordResult,
-            {
-              input: correct.lyrics,
-              evaluation: correct["judge"],
-              targetWord: correct["judge"] === "Good" ? joinWord(judgedWord) : undefined,
-            },
-          ];
-          setStatus((prev) => ({ ...prev, wordResult: updatedWordResult, wordIndex: i + 1 }));
+          setStatus((prev) => ({
+            ...prev,
+            wordResult: [
+              ...prev.wordResult,
+              {
+                input: correct.lyrics,
+                evaluation: correct["judge"],
+                targetWord: correct["judge"] === "Good" ? joinWord(judgedWord) : undefined,
+              },
+            ],
+            wordIndex: i + 1,
+          }));
 
-          //   if (notifyOption.notifyScoring) {
-          //     Notify.add(`${i}: ${correct["judge"]}! ${this.users[userId]["name"]} ${correct["lyrics"]}`);
-          //   }
+          setNotifications((prev) => [...prev, `${i}: ${correct["judge"]}! ${correct["lyrics"]}`]);
         }
       }
     }
 
     if (userInput) {
-      const updatedWordResult = [
-        ...readStatus().wordResult,
-        {
-          input: userInput,
-          evaluation: "None" as const,
-          targetWord: undefined,
-        },
-      ];
-      setStatus((prev) => ({ ...prev, wordResult: updatedWordResult }));
+      setStatus((prev) => ({
+        ...prev,
+        wordResult: [
+          ...prev.wordResult,
+          {
+            input: userInput,
+            evaluation: "None" as const,
+            targetWord: undefined,
+          },
+        ],
+      }));
     }
   };
 };
@@ -73,7 +79,7 @@ function escapeRegExp(string: string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& はマッチした部分文字列を示します
 }
 
-function judgeComment(judgedWords: string[], comment: string) {
+function judgeComment(judgedWords: string[][], comment: string) {
   let judge = "Great";
   let correcting = "";
   let reSearchFlag = false;
@@ -158,7 +164,7 @@ function formatComment(text: string) {
   return text;
 }
 
-function joinWord(word: string[]) {
+function joinWord(word: string[][]) {
   let str = "";
 
   for (let i = 0; i < word.length; i++) {

@@ -4,9 +4,11 @@ import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
 import { Box, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import LyricsTextarea from "../_components/lyrics-input-area/LyricsTextarea";
 import LyricsViewArea from "../_components/lyrics-view-area/LyricsViewArea";
 import MenuBar from "../_components/memu/MenuBar";
+import Notifications from "../_components/notifications/Notifications";
 import ImeTypeYouTubeContent from "../_components/youtube-content/ImeTypeYoutubeContent";
 import { useMapState, useSetMap } from "../atom/stateAtoms";
 import { useParseImeMap } from "../hooks/parseImeMap";
@@ -53,12 +55,30 @@ function Content({ mapInfo }: ContentProps) {
 
   return (
     <Box as="main">
-      <ImeTypeYouTubeContent
-        videoId={video_id}
-        isMapLoading={typeof map === "undefined"}
-        className={"fixed top-[40px] left-0 w-full"}
-        style={{ height: youtubeHeight }}
-      />
+      <LoadingOverlayWrapper
+        active={map === null}
+        spinner={true}
+        text="譜面読み込み中..."
+        styles={{
+          overlay: (base: React.CSSProperties) => ({
+            ...base,
+            position: "fixed",
+            top: "40px",
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 9999,
+          }),
+        }}
+      >
+        <Notifications style={{ height: youtubeHeight }} />
+        <ImeTypeYouTubeContent
+          videoId={video_id}
+          className={"fixed top-[40px] left-0 w-full"}
+          style={{ height: youtubeHeight }}
+        />
+      </LoadingOverlayWrapper>
+
       <Flex ref={lyricsViewAreaRef} width="100%" position="fixed" bottom="140" left="0" flexDirection="column">
         <LyricsViewArea />
         <LyricsTextarea />

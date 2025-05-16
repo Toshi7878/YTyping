@@ -1,6 +1,5 @@
 "use client";
 import { useCallback, useEffect, useMemo } from "react";
-import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useReadGameUtilParams } from "../../atom/stateAtoms";
 
@@ -15,13 +14,12 @@ import {
 } from "../../hooks/youtubeEvents";
 
 interface ImeTypeYouTubeProps {
-  isMapLoading: boolean;
   videoId: string;
   className?: string;
   style: React.CSSProperties;
 }
 
-const ImeTypeYouTubeContent = ({ isMapLoading, videoId, className = "", style }: ImeTypeYouTubeProps) => {
+const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTubeProps) => {
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -104,11 +102,7 @@ const ImeTypeYouTubeContent = ({ isMapLoading, videoId, className = "", style }:
     [videoId, className, style]
   );
 
-  return (
-    <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
-      {memoizedYouTube}
-    </LoadingOverlayWrapper>
-  );
+  return memoizedYouTube;
 };
 
 export default ImeTypeYouTubeContent;
