@@ -9,3 +9,9 @@ type ParseMap = {
   words: string[][][];
 };
 type Lines = ParseMap["lines"][number][];
+
+export type TypingResult = {
+  input: string;
+  evaluation: "Great" | "Good" | "Skip" | "None";
+  targetWord: string | undefined;
+}[];

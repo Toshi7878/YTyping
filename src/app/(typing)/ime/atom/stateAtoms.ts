@@ -4,7 +4,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
-import { ParseMap, SceneType } from "../type";
+import { ParseMap, SceneType, TypingResult } from "../type";
 import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
@@ -67,48 +67,6 @@ export const useSetSkip = () => useSetAtom(skipAtom, { store });
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const useSetYTStarted = () => useSetAtom(isYTStartedAtom);
 
-const playingStateAtom = atomWithReset({
-  currentTime: 0,
-  lineRemainTime: 0,
-  lineKpm: 0,
-  combo: 0,
-});
-
-const currentTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("currentTime"));
-const lineRemainTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineRemainTime"));
-const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm"));
-export const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
-
-export const useLineRemainTimeState = () => useAtomValue(lineRemainTimeAtom, { store });
-export const useSetLineRemainTime = () => useSetAtom(lineRemainTimeAtom, { store });
-
-export const useLineKpmState = () => useAtomValue(lineKpmAtom, { store });
-export const useSetLineKpm = () => useSetAtom(lineKpmAtom, { store });
-export const useReadLineKpm = () => {
-  return useAtomCallback(
-    useCallback((get) => get(lineKpmAtom), []),
-    { store }
-  );
-};
-
-export const useComboState = () => useAtomValue(comboAtom, { store });
-export const useSetCombo = () => useSetAtom(comboAtom, { store });
-export const useReadCombo = () => {
-  return useAtomCallback(
-    useCallback((get) => get(comboAtom), []),
-    { store }
-  );
-};
-
-export const useCurrentTimeState = () => useAtomValue(currentTimeAtom, { store });
-export const useSetCurrentTime = () => useSetAtom(currentTimeAtom, { store });
-export const useReadCurrentTime = () => {
-  return useAtomCallback(
-    useCallback((get) => get(currentTimeAtom), []),
-    { store }
-  );
-};
-
 const displayLinesAtom = atomWithReset<ParseMap["lines"][number][]>(Array(DISPLAY_LINE_LENGTH).fill([]));
 export const useDisplayLinesState = () => useAtomValue(displayLinesAtom, { store });
 export const useSetDisplayLines = () => useSetAtom(displayLinesAtom, { store });
@@ -137,4 +95,26 @@ export const useSetNextLyrics = () => {
   const resetNextLyrics = useCallback(() => store.set(nextLyricsAtom, RESET), []);
 
   return { setNextLyrics, resetNextLyrics };
+};
+
+const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0, wordResult: [] as TypingResult });
+
+export const useStatusState = () => useAtomValue(statusAtom, { store });
+export const useSetStatus = () => useSetAtom(statusAtom, { store });
+
+export const useReadStatus = () => {
+  return useAtomCallback(
+    useCallback((get) => get(statusAtom), []),
+    { store }
+  );
+};
+
+const judgedWordsAtom = atomWithReset([] as string[][]);
+
+export const useSetJudgedWords = () => useSetAtom(judgedWordsAtom, { store });
+export const useReadJudgedWords = () => {
+  return useAtomCallback(
+    useCallback((get) => get(judgedWordsAtom), []),
+    { store }
+  );
 };

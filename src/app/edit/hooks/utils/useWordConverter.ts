@@ -9,6 +9,7 @@ import {
 } from "@/config/consts/charList";
 import { clientApi } from "@/trpc/client-api";
 import { useFetchCustomDic } from "@/util/global-hooks/fetch/fetchCustomDic";
+import { kanaToHira } from "@/util/global-hooks/kanaToHira";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useReplaceReadingWithCustomDic } from "@/util/global-hooks/useMorphReplaceCustomDic";
 import { useSession } from "next-auth/react";
@@ -27,7 +28,7 @@ const allowedChars = new Set([
 export const useWordConverter = () => {
   const fetchMorph = useFetchMorph();
   const filterWordSymbol = useFilterWordSymbol();
-  const { kanaToHira, rubyKanaConvert, formatSimilarChar, transformSymbolBasedOnPreviousChar } = useLyricsFormatUtils();
+  const { rubyKanaConvert, formatSimilarChar, transformSymbolBasedOnPreviousChar } = useLyricsFormatUtils();
 
   return async (lyrics: string) => {
     const formatedLyrics = formatSimilarChar(kanaToHira(rubyKanaConvert(lyrics)));
@@ -87,15 +88,6 @@ const useFetchMorph = () => {
 };
 
 export const useLyricsFormatUtils = () => {
-  const kanaToHira = (lyrics: string) => {
-    return lyrics
-      .replace(/[\u30a1-\u30f6]/g, function (match) {
-        var chr = match.charCodeAt(0) - 0x60;
-        return String.fromCharCode(chr);
-      })
-      .replace(/ヴ/g, "ゔ");
-  };
-
   const rubyKanaConvert = (lyrics: string) => {
     const rubyConvert = lyrics.match(/<*ruby(?: .+?)?>.*?<*\/ruby*>/g);
 
@@ -150,7 +142,7 @@ export const useLyricsFormatUtils = () => {
     return convertedText;
   };
 
-  return { kanaToHira, formatSimilarChar, rubyKanaConvert, filterUnicodeSymbol, transformSymbolBasedOnPreviousChar };
+  return { formatSimilarChar, rubyKanaConvert, filterUnicodeSymbol, transformSymbolBasedOnPreviousChar };
 };
 
 export const useFilterWordSymbol = () => {

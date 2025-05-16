@@ -8,7 +8,7 @@ import LyricsTextarea from "../_components/lyrics-input-area/LyricsTextarea";
 import LyricsViewArea from "../_components/lyrics-view-area/LyricsViewArea";
 import MenuBar from "../_components/memu/MenuBar";
 import ImeTypeYouTubeContent from "../_components/youtube-content/ImeTypeYoutubeContent";
-import { useSetMap } from "../atom/stateAtoms";
+import { useMapState, useSetMap } from "../atom/stateAtoms";
 import { useParseImeMap } from "../hooks/parseImeMap";
 
 interface ContentProps {
@@ -23,13 +23,13 @@ function Content({ mapInfo }: ContentProps) {
   const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
   const setMap = useSetMap();
   const parseImeMap = useParseImeMap();
+  const map = useMapState();
 
   useEffect(() => {
     if (mapData) {
       const loadMap = async () => {
         const map = await parseImeMap(mapData);
         setMap(map);
-        console.log(map);
       };
 
       loadMap();
@@ -52,10 +52,10 @@ function Content({ mapInfo }: ContentProps) {
   }, []);
 
   return (
-    <Box>
+    <Box as="main">
       <ImeTypeYouTubeContent
         videoId={video_id}
-        isMapLoading={false}
+        isMapLoading={typeof map === "undefined"}
         className={"fixed top-[40px] left-0 w-full"}
         style={{ height: youtubeHeight }}
       />

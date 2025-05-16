@@ -1,6 +1,6 @@
 import { Ticker } from "@pixi/ticker";
 import { useLineCount, useLyricsContainer, useWipeCount } from "../atom/refAtoms";
-import { useReadDisplayLines, useReadMap, useSetDisplayLines } from "../atom/stateAtoms";
+import { useReadDisplayLines, useReadMap, useSetDisplayLines, useSetJudgedWords } from "../atom/stateAtoms";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
 import { ParseMap } from "../type";
 import { useGetTime } from "./getYTTime";
@@ -54,6 +54,8 @@ const useTimer = () => {
   const { readLyricsContainer } = useLyricsContainer();
   const { readWipeLine } = useReadDisplayLines();
   const { updateWipe, completeWipe } = useUpdateWipe();
+  const getJudgedWords = useGetJudgedWords();
+  const setJudgedWords = useSetJudgedWords();
 
   const update = ({ currentOffesettedYTTime }: { currentOffesettedYTTime: number }) => {
     const wipeElements = readLyricsContainer()?.lastElementChild?.lastElementChild;
@@ -93,6 +95,7 @@ const useTimer = () => {
     }
 
     setDisplayLines(displayLines);
+    setJudgedWords(getJudgedWords(newCount));
     writeWipeCount(0);
   };
 
@@ -140,3 +143,11 @@ const useUpdateWipe = () => {
 
   return { updateWipe, completeWipe };
 };
+
+function useGetJudgedWords() {
+  const readMap = useReadMap();
+
+  return (count: number) => {
+    return readMap().words.slice(0, count).flat(1);
+  };
+}
