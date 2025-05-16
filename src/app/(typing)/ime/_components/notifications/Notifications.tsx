@@ -20,7 +20,7 @@ const Notifications = ({ style }: { style: React.CSSProperties }) => {
       fontWeight="bold"
       textShadow="0px 0px 10px rgba(0, 0, 0, 1)"
       fontSize="xl"
-      zIndex={13}
+      zIndex={200}
       overflowY="hidden"
       position="absolute"
       top="40px"
