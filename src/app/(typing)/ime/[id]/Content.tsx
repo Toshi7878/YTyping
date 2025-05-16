@@ -70,14 +70,13 @@ function Content({ mapInfo }: ContentProps) {
             zIndex: 9999,
           }),
         }}
-      >
-        <Notifications style={{ height: youtubeHeight }} />
-        <ImeTypeYouTubeContent
-          videoId={video_id}
-          className={"fixed top-[40px] left-0 w-full"}
-          style={{ height: youtubeHeight }}
-        />
-      </LoadingOverlayWrapper>
+      />
+      <Notifications style={{ height: youtubeHeight }} />
+      <ImeTypeYouTubeContent
+        videoId={video_id}
+        className={"fixed top-[40px] left-0 w-full"}
+        style={{ height: youtubeHeight }}
+      />
 
       <Flex ref={lyricsViewAreaRef} width="100%" position="fixed" bottom="140" left="0" flexDirection="column">
         <LyricsViewArea />

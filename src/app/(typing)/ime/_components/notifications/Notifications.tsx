@@ -23,11 +23,12 @@ const Notifications = ({ style }: { style: React.CSSProperties }) => {
       zIndex={200}
       overflowY="hidden"
       position="absolute"
-      top="40px"
+      top="45px"
       left="0"
       style={{ ...style }}
       cursor="pointer"
       pointerEvents="none"
+      lineHeight={"xl"}
     >
       {notifications.map((notification, index) => (
         <Box key={index}>{notification}</Box>
