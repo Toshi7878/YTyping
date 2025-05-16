@@ -13,7 +13,7 @@ const AWS_API = {
 } as const;
 
 export const morphConvertRouter = {
-  getKanaWordAws: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
+  tokenizeWordAws: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
     return await postAwsLambdaMorphApi(input.sentence);
   }),
 

@@ -1,0 +1,19 @@
+.wipe-layer {
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  text-shadow: none;
+  display: inline;
+  pointer-events: none;
+  user-select: none;
+}
+
+.shadow-layer {
+  position: absolute;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.shadow-layer::before,
+.wipe-layer::before {
+  content: "\200B";
+}

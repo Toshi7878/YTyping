@@ -7,9 +7,10 @@ import {
   NUM_LIST,
   STRICT_SYMBOL_LIST,
 } from "@/config/consts/charList";
-import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
+import { useFetchCustomDic } from "@/util/global-hooks/fetch/fetchCustomDic";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useReplaceReadingWithCustomDic } from "@/util/global-hooks/useMorphReplaceCustomDic";
 import { useSession } from "next-auth/react";
 import { useReadWordConvertOption } from "../../atoms/storageAtoms";
 import { ConvertOptionsType } from "../../ts/type";
@@ -67,14 +68,14 @@ const useFetchMorph = () => {
         return acc.replace(regex, reading);
       }, sentence);
 
-      const convertedWord = await utils.morphConvert.getKanaWordAws.ensureData(
+      const convertedWord = await utils.morphConvert.tokenizeWordAws.ensureData(
         { sentence },
         {
           staleTime: Infinity,
         }
       );
 
-      return replaceReadingWithCustomDic(convertedWord);
+      return (await replaceReadingWithCustomDic(convertedWord)).readings.join("");
     } catch {
       const message = !session ? "読み変換機能はログイン後に使用できます" : undefined;
       toast({ type: "error", title: "読み変換に失敗しました", message });
@@ -82,39 +83,6 @@ const useFetchMorph = () => {
     } finally {
       setIsLoadWordConvert(false);
     }
-  };
-};
-
-const useReplaceReadingWithCustomDic = () => {
-  const utils = clientApi.useUtils();
-
-  return async (sentense: RouterOutPuts["morphConvert"]["getKanaWordAws"]) => {
-    const { customDic } = await utils.morphConvert.getCustomDic.ensureData(undefined, {
-      staleTime: Infinity,
-      gcTime: Infinity,
-    });
-
-    const result = customDic.reduce((acc, { surface, reading }) => {
-      const matchIndexes: number[] = [];
-      acc.lyrics.forEach((lyric, index) => {
-        if (lyric === surface) {
-          matchIndexes.push(index);
-        }
-      });
-
-      if (matchIndexes.length > 0) {
-        const newReadings = [...acc.readings];
-        matchIndexes.forEach((index) => {
-          newReadings[index] = reading;
-        });
-        return { ...acc, readings: newReadings };
-      }
-
-      return acc;
-    }, sentense);
-
-    console.log(result);
-    return result.readings.join("");
   };
 };
 
@@ -232,16 +200,5 @@ export const useFilterWordSymbol = () => {
 
       return result;
     }
-  };
-};
-
-const useFetchCustomDic = () => {
-  const utils = clientApi.useUtils();
-
-  return async () => {
-    return await utils.morphConvert.getCustomDic.ensureData(undefined, {
-      staleTime: Infinity,
-      gcTime: Infinity,
-    });
   };
 };

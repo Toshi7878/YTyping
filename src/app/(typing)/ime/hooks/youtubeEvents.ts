@@ -1,8 +1,7 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
-import { useGameUtilityReferenceParams, useLineCount, usePlayer, useProgress, useYTStatus } from "../atom/refAtoms";
-import { usePlaySpeedStateRef } from "../atom/speedReducerAtoms";
-import { useReadGameUtilParams, useReadMapState, useSetScene, useSetYTStarted } from "../atom/stateAtoms";
+import { useGameUtilityReferenceParams, useLineCount, usePlayer, useYTStatus } from "../atom/refAtoms";
+import { useReadGameUtilParams, useSetScene, useSetYTStarted } from "../atom/stateAtoms";
 import { useTimerControls } from "./timer";
 
 export const useYTPlayEvent = () => {
@@ -13,8 +12,6 @@ export const useYTPlayEvent = () => {
   const setYTStarted = useSetYTStarted();
   const { readYTStatus, writeYTStatus } = useYTStatus();
   const readGameStateUtils = useReadGameUtilParams();
-  const readPlaySpeed = usePlaySpeedStateRef();
-  const readMap = useReadMapState();
 
   return async () => {
     console.log("再生 1");
@@ -64,17 +61,10 @@ export const useYTEndEvent = () => {
 
 export const useYTStopEvent = () => {
   const setScene = useSetScene();
-  const { readLineProgress, readTotalProgress } = useProgress();
   const { pauseTimer } = useTimerControls();
   const readGameStateUtils = useReadGameUtilParams();
   return () => {
     console.log("動画停止");
-
-    const lineProgress = readLineProgress();
-    const totalProgress = readTotalProgress();
-
-    lineProgress.value = lineProgress.max;
-    totalProgress.value = totalProgress.max;
 
     const { scene } = readGameStateUtils();
 

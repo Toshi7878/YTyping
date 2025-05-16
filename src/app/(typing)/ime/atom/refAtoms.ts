@@ -23,6 +23,23 @@ export const useLineCount = () => {
   return { readCount, writeCount };
 };
 
+export const wipeCountAtom = atomWithReset(0);
+
+export const useWipeCount = () => {
+  const readWipeCount = useAtomCallback(
+    useCallback((get) => get(wipeCountAtom), []),
+    { store }
+  );
+  const writeWipeCount = useAtomCallback(
+    useCallback((get, set, newCount: number) => {
+      set(wipeCountAtom, newCount);
+    }, []),
+    { store }
+  );
+
+  return { readWipeCount, writeWipeCount };
+};
+
 const typingDetailsAtom = atomWithReset({
   romaType: 0,
   kanaType: 0,
@@ -225,6 +242,24 @@ export const usePlayer = () => {
   );
 
   return { readPlayer, writePlayer };
+};
+
+const lyricsContainerAtom = atom<HTMLDivElement | null>(null);
+
+export const useLyricsContainer = () => {
+  const readLyricsContainer = useAtomCallback(
+    useCallback((get) => get(lyricsContainerAtom) as HTMLDivElement, []),
+    { store }
+  );
+
+  const writeLyricsContainer = useAtomCallback(
+    useCallback((get, set, newLyricsContainer: HTMLDivElement) => {
+      set(lyricsContainerAtom, newLyricsContainer);
+    }, []),
+    { store }
+  );
+
+  return { readLyricsContainer, writeLyricsContainer };
 };
 
 export const lineProgressAtom = atom<HTMLProgressElement | null>(null);

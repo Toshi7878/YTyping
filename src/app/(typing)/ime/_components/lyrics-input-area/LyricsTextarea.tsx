@@ -2,10 +2,11 @@ import { Flex, Textarea } from "@chakra-ui/react";
 
 const LyricsTextarea = () => {
   return (
-    <Flex bg="background.card" width="80%" alignItems="center" justifyContent="center" mx="auto">
+    <Flex bg="background.card" width="85%" alignItems="center" justifyContent="center" mx="auto">
       <Textarea
         px={4}
-        height="100px"
+        height="120px"
+        color="white"
         autoComplete="off"
         resize="none"
         borderRadius="md"

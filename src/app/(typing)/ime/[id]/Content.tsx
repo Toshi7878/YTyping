@@ -1,11 +1,15 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
 import { Box, Flex } from "@chakra-ui/react";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LyricsTextarea from "../_components/lyrics-input-area/LyricsTextarea";
 import LyricsViewArea from "../_components/lyrics-view-area/LyricsViewArea";
 import MenuBar from "../_components/memu/MenuBar";
 import ImeTypeYouTubeContent from "../_components/youtube-content/ImeTypeYoutubeContent";
+import { useSetMap } from "../atom/stateAtoms";
+import { useParseImeMap } from "../hooks/parseImeMap";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -15,6 +19,23 @@ function Content({ mapInfo }: ContentProps) {
   const { video_id } = mapInfo!;
   const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
   const [youtubeHeight, setYoutubeHeight] = useState<string>("calc(100vh - var(--header-height))");
+  const { id: mapId } = useParams();
+  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
+  const setMap = useSetMap();
+  const parseImeMap = useParseImeMap();
+
+  useEffect(() => {
+    if (mapData) {
+      const loadMap = async () => {
+        const map = await parseImeMap(mapData);
+        setMap(map);
+        console.log(map);
+      };
+
+      loadMap();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapData]);
 
   useEffect(() => {
     const lyricsViewAreaElement = lyricsViewAreaRef.current;
@@ -40,8 +61,8 @@ function Content({ mapInfo }: ContentProps) {
       />
       <Flex ref={lyricsViewAreaRef} width="100%" position="fixed" bottom="140" left="0" flexDirection="column">
         <LyricsViewArea />
-        <MenuBar />
         <LyricsTextarea />
+        <MenuBar />
       </Flex>
     </Box>
   );

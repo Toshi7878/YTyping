@@ -1,10 +1,10 @@
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ParseMap } from "@/util/parse-map/parseMap";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { SceneType } from "../type";
+import { DISPLAY_LINE_LENGTH } from "../ts/const";
+import { ParseMap, SceneType } from "../type";
 import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
@@ -27,9 +27,9 @@ export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store });
 const mapAtom = atomWithReset<ParseMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });
 export const useSetMap = () => useSetAtom(mapAtom, { store });
-export const useReadMapState = () => {
+export const useReadMap = () => {
   return useAtomCallback(
-    useCallback((get) => get(mapAtom) as ParseMap, []),
+    useCallback((get) => get(mapAtom) as NonNullable<ParseMap>, []),
     { store }
   );
 };
@@ -107,6 +107,26 @@ export const useReadCurrentTime = () => {
     useCallback((get) => get(currentTimeAtom), []),
     { store }
   );
+};
+
+const displayLinesAtom = atomWithReset<ParseMap["lines"][number][]>(Array(DISPLAY_LINE_LENGTH).fill([]));
+export const useDisplayLinesState = () => useAtomValue(displayLinesAtom, { store });
+export const useSetDisplayLines = () => useSetAtom(displayLinesAtom, { store });
+export const useReadDisplayLines = () => {
+  const readDisplayLines = useAtomCallback(
+    useCallback((get) => get(displayLinesAtom), []),
+    { store }
+  );
+  const readWipeLine = useAtomCallback(
+    useCallback((get) => {
+      const displayLines = get(displayLinesAtom);
+
+      return displayLines[displayLines.length - 1];
+    }, []),
+    { store }
+  );
+
+  return { readDisplayLines, readWipeLine };
 };
 
 const nextLyricsAtom = atomWithReset("");

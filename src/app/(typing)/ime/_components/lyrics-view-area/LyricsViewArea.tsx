@@ -1,25 +1,17 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import LyricsContainer from "./play/LyricsContainer";
 
 const LyricsViewArea = () => {
-  const lyrics = ["test", "test", "test"];
   return (
     <Box
       fontFamily="Yu Gothic Ui"
-      id="word-area"
-      bg="rgba(0, 0, 0, 0.6)"
+      bg="rgba(0, 0, 0, 0.8)"
       width="100%"
       fontWeight="bold"
       textShadow="0px 0px 10px rgba(0, 0, 0, 1)"
       fontSize="4xl"
     >
-      <Flex id="lyrics-container" ml={28} flexDirection="column" gap={1} my={1}>
-        <Box id="lyrics" color="#fff">
-          {lyrics ? lyrics.map((line, index) => <div key={index}>{line}</div>) : <div>歌詞がロード中...</div>}
-        </Box>
-        <Box id="next_lyrics" color="#aaa" fontSize="60%">
-          NEXT: test
-        </Box>
-      </Flex>
+      <LyricsContainer />
 
       {/* <div id="music-title-container">
         <img src="/assets/img/music.png" alt="音楽アイコン" />
