@@ -1,4 +1,6 @@
 import { Box } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { usePlayer } from "../../atom/refAtoms";
 import { useSceneState } from "../../atom/stateAtoms";
 import ResultScore from "./end/ResultScore";
 import LyricsContainer from "./play/LyricsContainer";
@@ -29,7 +31,19 @@ const LyricsViewArea = () => {
 
 const SceneView = () => {
   const scene = useSceneState();
+  const { readPlayer } = usePlayer();
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        readPlayer().playVideo();
+      }
+    };
+    if (scene === "ready") {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [scene, readPlayer]);
   return (
     <Box ml={32}>
       <LyricsContainer visibility={scene === "ready" || scene === "play" ? "visible" : "hidden"} />
