@@ -1,5 +1,5 @@
 import { kanaToHira } from "@/util/global-hooks/kanaToHira";
-import { useReadJudgedWords, useReadStatus, useSetNotifications, useSetStatus } from "../atom/stateAtoms";
+import { useReadJudgedWords, useReadMap, useReadStatus, useSetNotifications, useSetStatus } from "../atom/stateAtoms";
 import { formatWord } from "./formatWord";
 
 export const useJudgeTargetWords = () => {
@@ -7,6 +7,7 @@ export const useJudgeTargetWords = () => {
   const readJudgedWords = useReadJudgedWords();
   const setStatus = useSetStatus();
   const setNotifications = useSetNotifications();
+  const readMap = useReadMap();
 
   return (chatData: string) => {
     let userInput = formatComment(chatData);
@@ -19,7 +20,6 @@ export const useJudgeTargetWords = () => {
 
       if (userInput) {
         let correct = judgeComment(judgedWord, userInput);
-        userInput = correct.comment;
 
         if (correct["lyrics"]) {
           if (userInput.indexOf(correct["lyrics"]) > 0) {
@@ -31,29 +31,34 @@ export const useJudgeTargetWords = () => {
 
             setStatus((prev) => ({
               ...prev,
-              wordResult: [
-                ...prev.wordResult,
+              wordsResult: [
+                ...prev.wordsResult,
                 { input: missComment, evaluation: "None" as const, targetWord: correct.lyrics },
               ],
             }));
           }
 
-          //   userInput = userInput.slice(correct["lyrics"].length + userInput.indexOf(correct["lyrics"]));
-          //   this.users[userId]["typeCount"] += JOIN_LYRICS.length / (correct["judge"] == "Good" ? 1.5 : 1);
-          //   this.users[userId]["score"] = Math.round((1000 / game.totalNotes) * this.users[userId]["typeCount"]);
+          userInput = userInput.slice(correct["lyrics"].length + userInput.indexOf(correct["lyrics"]));
+          const joinedJudgeWord = joinWord(judgedWord);
 
-          setStatus((prev) => ({
-            ...prev,
-            wordResult: [
-              ...prev.wordResult,
-              {
-                input: correct.lyrics,
-                evaluation: correct["judge"],
-                targetWord: correct["judge"] === "Good" ? joinWord(judgedWord) : undefined,
-              },
-            ],
-            wordIndex: i + 1,
-          }));
+          setStatus((prev) => {
+            const newTypeCount = prev.typeCount + joinedJudgeWord.length / (correct["judge"] == "Good" ? 1.5 : 1);
+
+            return {
+              ...prev,
+              typeCount: newTypeCount,
+              score: Math.round((1000 / readMap().totalNotes) * newTypeCount),
+              wordsResult: [
+                ...prev.wordsResult,
+                {
+                  input: correct.lyrics,
+                  evaluation: correct["judge"],
+                  targetWord: correct["judge"] === "Good" ? joinWord(judgedWord) : undefined,
+                },
+              ],
+              wordIndex: i + 1,
+            };
+          });
 
           setNotifications((prev) => [...prev, `${i}: ${correct["judge"]}! ${correct["lyrics"]}`]);
         }
@@ -63,8 +68,8 @@ export const useJudgeTargetWords = () => {
     if (userInput) {
       setStatus((prev) => ({
         ...prev,
-        wordResult: [
-          ...prev.wordResult,
+        wordsResult: [
+          ...prev.wordsResult,
           {
             input: userInput,
             evaluation: "None" as const,

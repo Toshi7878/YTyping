@@ -62,7 +62,9 @@ export const useParseImeMap = () => {
       })
     );
 
-    return { lines, words };
+    const totalNotes = words.flat(2).reduce((acc, word) => acc + word[0].length, 0);
+
+    return { lines, words, totalNotes };
   };
 };
 

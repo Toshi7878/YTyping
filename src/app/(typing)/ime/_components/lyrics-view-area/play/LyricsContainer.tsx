@@ -1,13 +1,13 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, FlexProps, Text } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import { useLyricsContainer } from "../../../atom/refAtoms";
 import { useDisplayLinesState } from "../../../atom/stateAtoms";
 import { COMPLETED_WIPE_COLOR, INITIAL_WIPE_COLOR } from "../../../ts/const";
 import "./lyrics-container.css";
 
-const LyricsContainer = () => {
+const LyricsContainer = (props: FlexProps) => {
   return (
-    <Flex id="lyrics-container" ml={32} flexDirection="column" mb={2}>
+    <Flex id="lyrics-container" flexDirection="column" mb={2} {...props}>
       <Lyrics />
       <Box id="next_lyrics" color="#aaa" fontSize="60%">
         NEXT: test

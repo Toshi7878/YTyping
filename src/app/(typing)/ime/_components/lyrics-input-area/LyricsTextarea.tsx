@@ -1,5 +1,5 @@
 import { Flex, Textarea } from "@chakra-ui/react";
-import { useJudgeTargetWords } from "../../hooks/scoring";
+import { useJudgeTargetWords } from "../../hooks/judgeTargetWords";
 
 const LyricsTextarea = () => {
   const judgeTargetWords = useJudgeTargetWords();

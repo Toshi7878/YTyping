@@ -4,7 +4,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
-import { ParseMap, SceneType, TypingResult } from "../type";
+import { ParseMap, SceneType, WordsResult } from "../type";
 import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
@@ -92,7 +92,7 @@ const nextLyricsAtom = atomWithReset("");
 export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
 export const useSetNextLyrics = () => useSetAtom(nextLyricsAtom, { store });
 
-const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0, wordResult: [] as TypingResult });
+const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0, wordsResult: [] as WordsResult });
 
 export const useStatusState = () => useAtomValue(statusAtom, { store });
 export const useSetStatus = () => useSetAtom(statusAtom, { store });

@@ -7,10 +7,11 @@ type ParseMap = {
     word: string;
   }[][];
   words: string[][][][];
+  totalNotes: number;
 };
 type Lines = ParseMap["lines"][number][];
 
-export type TypingResult = {
+export type WordsResult = {
   input: string;
   evaluation: "Great" | "Good" | "Skip" | "None";
   targetWord: string | undefined;

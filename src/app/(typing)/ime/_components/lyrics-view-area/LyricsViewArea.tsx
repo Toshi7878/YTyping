@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { useSceneState } from "../../atom/stateAtoms";
+import ResultScore from "./end/ResultScore";
 import LyricsContainer from "./play/LyricsContainer";
 
 const LyricsViewArea = () => {
@@ -29,15 +30,12 @@ const LyricsViewArea = () => {
 const SceneView = () => {
   const scene = useSceneState();
 
-  if (scene === "ready" || scene === "play") {
-    return <LyricsContainer />;
-  }
-
-  if (scene === "end") {
-    return "end";
-  }
-
-  return null;
+  return (
+    <Box ml={32}>
+      <LyricsContainer visibility={scene === "ready" || scene === "play" ? "visible" : "hidden"} />
+      {scene === "end" && <ResultScore />}
+    </Box>
+  );
 };
 
 export default LyricsViewArea;

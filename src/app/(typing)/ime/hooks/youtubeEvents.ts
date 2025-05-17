@@ -60,17 +60,9 @@ export const useYTEndEvent = () => {
 };
 
 export const useYTStopEvent = () => {
-  const setScene = useSetScene();
   const { pauseTimer } = useTimerControls();
-  const readGameStateUtils = useReadGameUtilParams();
   return () => {
     console.log("動画停止");
-
-    const { scene } = readGameStateUtils();
-
-    if (scene === "play") {
-      setScene("end");
-    }
 
     pauseTimer();
   };
