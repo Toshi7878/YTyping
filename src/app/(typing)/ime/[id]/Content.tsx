@@ -10,9 +10,9 @@ import LyricsViewArea from "../_components/lyrics-view-area/LyricsViewArea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/notifications/Notifications";
 import ImeTypeYouTubeContent from "../_components/youtube-content/ImeTypeYoutubeContent";
-import { usePathChangeAtomReset } from "../atom/reset";
 import { useMapState, useSetMap } from "../atom/stateAtoms";
 import { useParseImeMap } from "../hooks/parseImeMap";
+import { usePathChangeAtomReset } from "../hooks/reset";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
