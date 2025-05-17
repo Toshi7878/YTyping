@@ -25,6 +25,8 @@ export const useReplaceReadingWithCustomDic = () => {
       return acc;
     }, sentense);
 
+    console.log(result);
+
     return result;
   };
 };
