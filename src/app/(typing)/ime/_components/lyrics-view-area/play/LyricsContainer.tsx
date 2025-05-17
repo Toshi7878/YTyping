@@ -79,9 +79,11 @@ const NextLyrics = () => {
             style={{ display: "inline" }}
           >
             {nextDisplayLine.map((chunk) => (
-              <Text as="span" key={String(chunk.time)}>
-                {chunk.word}
-              </Text>
+              <>
+                <Text as="span" key={String(chunk.time)}>
+                  {chunk.word}
+                </Text>{" "}
+              </>
             ))}
           </motion.div>
         )}
