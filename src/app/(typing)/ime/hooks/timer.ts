@@ -1,15 +1,15 @@
 import { Ticker } from "@pixi/ticker";
-import { RESET } from "jotai/utils";
-import { useLineCount, useLyricsContainer, useWipeCount } from "../atom/refAtoms";
+import { useLyricsContainer } from "../atom/refAtoms";
 import { useReadPlaySpeed } from "../atom/speedReducerAtoms";
 import {
-  useReadDisplayLines,
+  useReadGameUtilParams,
   useReadMap,
-  useReadNextDisplayLine,
+  useSetCount,
   useSetDisplayLines,
   useSetJudgedWords,
   useSetNextDisplayLine,
   useSetSkipRemainTime,
+  useSetWipeCount,
 } from "../atom/stateAtoms";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
 import { ParseMap } from "../type";
@@ -59,33 +59,33 @@ const useTimer = () => {
   const setNextDisplayLine = useSetNextDisplayLine();
   const setDisplayLines = useSetDisplayLines();
   const readPlaySpeed = useReadPlaySpeed();
-  const readNextDisplayLine = useReadNextDisplayLine();
-
-  const { readCount, writeCount } = useLineCount();
-  const { readWipeCount, writeWipeCount } = useWipeCount();
+  const { readGameUtilParams, readWipeLine } = useReadGameUtilParams();
 
   const { getCurrentOffsettedYTTime, getConstantOffsettedYTTime } = useGetTime();
   const { readLyricsContainer } = useLyricsContainer();
-  const { readWipeLine } = useReadDisplayLines();
   const { calcWipeProgress, completeWipe } = useCalcWipeProgress();
   const getJudgedWords = useGetJudgedWords();
   const setJudgedWords = useSetJudgedWords();
   const setSkipRemainTime = useSetSkipRemainTime();
+  const setCount = useSetCount();
+  const setWipeCount = useSetWipeCount();
 
   const updateSkip = ({
     currentLine,
     count,
     nextLineStartTime,
     constantOffsettedYTTime,
+    wipeCount,
   }: {
     currentLine: ParseMap["lines"][number];
     count: number;
     nextLineStartTime: number;
     constantOffsettedYTTime: number;
+    wipeCount: number;
   }) => {
     const SKIP_REMAIN_TIME = 5;
 
-    const isWipeCompleted = count == 0 || (count >= 0 && currentLine.length == readWipeCount() + 1) ? true : false;
+    const isWipeCompleted = count == 0 || (count >= 0 && currentLine.length == wipeCount + 1) ? true : false;
 
     const remainTime = nextLineStartTime - constantOffsettedYTTime;
     if (remainTime > SKIP_REMAIN_TIME && isWipeCompleted) {
@@ -95,10 +95,15 @@ const useTimer = () => {
     }
   };
 
-  const wipeUpdate = ({ currentOffesettedYTTime }: { currentOffesettedYTTime: number }) => {
+  const wipeUpdate = ({
+    wipeCount,
+    currentOffesettedYTTime,
+  }: {
+    wipeCount: number;
+    currentOffesettedYTTime: number;
+  }) => {
     const wipeElements = readLyricsContainer()?.lastElementChild?.lastElementChild;
     if (!wipeElements) return;
-    const wipeCount = readWipeCount();
     const currentWipeElement = wipeElements.children[wipeCount];
     if (!currentWipeElement) return;
 
@@ -107,7 +112,7 @@ const useTimer = () => {
 
     if (nextWipeChunk && currentOffesettedYTTime > nextWipeChunk.time) {
       currentWipeElement.setAttribute("style", completeWipe());
-      writeWipeCount(wipeCount + 1);
+      setWipeCount(wipeCount + 1);
       return;
     }
 
@@ -133,9 +138,9 @@ const useTimer = () => {
     }
 
     setDisplayLines(displayLines);
-    setNextDisplayLine(RESET);
+    setNextDisplayLine([]);
     setJudgedWords(getJudgedWords(newCount));
-    writeWipeCount(0);
+    setWipeCount(0);
   };
 
   const updateNextDisplayLine = ({
@@ -147,7 +152,7 @@ const useTimer = () => {
     constantOffsettedYTTime: number;
     count: number;
   }) => {
-    const nextDisplayLine = readNextDisplayLine();
+    const { nextDisplayLine } = readGameUtilParams();
     if (nextDisplayLine.length === 0) {
       const nextTime = nextLine[0].time / readPlaySpeed().playSpeed;
 
@@ -159,12 +164,12 @@ const useTimer = () => {
   };
 
   return () => {
+    const { count, wipeCount } = readGameUtilParams();
     const map = readMap();
-    const count = readCount();
     const currentOffesettedYTTime = getCurrentOffsettedYTTime();
     const constantOffsettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
 
-    wipeUpdate({ currentOffesettedYTTime });
+    wipeUpdate({ currentOffesettedYTTime, wipeCount });
 
     const nextLine = map.lines[count];
     if (!nextLine) return;
@@ -174,13 +179,14 @@ const useTimer = () => {
     updateNextDisplayLine({ nextLine, constantOffsettedYTTime, count });
     if (currentOffesettedYTTime > nextLineStartTime) {
       const newCount = count + 1;
-      writeCount(newCount);
+
+      setCount(newCount);
       updateDisplayLines(newCount);
     }
 
     const currentLine = map.lines?.[Math.max(0, count - 1)];
     if (!currentLine) return;
-    updateSkip({ constantOffsettedYTTime, count, currentLine, nextLineStartTime });
+    updateSkip({ constantOffsettedYTTime, count, currentLine, nextLineStartTime, wipeCount });
   };
 };
 

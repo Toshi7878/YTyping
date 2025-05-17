@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useReadGameUtilParams } from "../../atom/stateAtoms";
+import { useReadScene } from "../../atom/stateAtoms";
 
 import { useWindowFocus } from "@/util/global-hooks/windowFocus";
 import { useTimerRegistration } from "../../hooks/timer";
@@ -27,8 +27,7 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
   const { addTimer, removeTimer } = useTimerRegistration();
-
-  const readGameStateUtils = useReadGameUtilParams();
+  const readScene = useReadScene();
 
   useEffect(() => {
     addTimer();
@@ -52,7 +51,7 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
         //	未スタート、他の動画に切り替えた時など
         console.log("未スタート -1");
 
-        const { scene } = readGameStateUtils();
+        const scene = readScene();
         if (scene === "ready") {
           event.target.seekTo(0, true);
         }

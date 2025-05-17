@@ -1,10 +1,8 @@
 import { RESET } from "jotai/utils";
-import { useLineCount, usePlayer } from "./refAtoms";
+import { usePlayer } from "./refAtoms";
 import { usePlaySpeedReducer } from "./speedReducerAtoms";
 import {
-  useSetDisplayLines,
-  useSetGameUtilParams,
-  useSetJudgedWords,
+  useResetGameUtilParams,
   useSetMap,
   useSetNextDisplayLine,
   useSetNotifications,
@@ -13,27 +11,21 @@ import {
 
 export const usePathChangeAtomReset = () => {
   const dispatchSpeed = usePlaySpeedReducer();
-  const setGameUtils = useSetGameUtilParams();
+  const resetGameUtils = useResetGameUtilParams();
 
   const setMap = useSetMap();
   const { writePlayer } = usePlayer();
-  const setDisplayLines = useSetDisplayLines();
   const setNextDisplayLine = useSetNextDisplayLine();
   const setStatus = useSetStatus();
-  const setJudgedWords = useSetJudgedWords();
   const setNotifications = useSetNotifications();
-  const { writeCount } = useLineCount();
 
   return () => {
+    resetGameUtils();
     writePlayer(null);
-    setGameUtils(RESET);
     dispatchSpeed({ type: "reset" });
     setMap(RESET);
-    setDisplayLines(RESET);
     setNextDisplayLine([]);
     setStatus(RESET);
-    setJudgedWords(RESET);
     setNotifications(RESET);
-    writeCount(0);
   };
 };

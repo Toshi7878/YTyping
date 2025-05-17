@@ -1,15 +1,20 @@
 import { Box, BoxProps } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useLineCount, useLyricsTextarea, usePlayer } from "../../../atom/refAtoms";
+import { useLyricsTextarea, usePlayer } from "../../../atom/refAtoms";
 import { useReadPlaySpeed } from "../../../atom/speedReducerAtoms";
-import { useReadMap, useSetSkipRemainTime, useSkipRemainTimeState } from "../../../atom/stateAtoms";
+import {
+  useReadGameUtilParams,
+  useReadMap,
+  useSetSkipRemainTime,
+  useSkipRemainTimeState,
+} from "../../../atom/stateAtoms";
 
 const SKIP_BUFFER_TIME = 3;
 const Skip = (props: BoxProps) => {
   const skipRemainTime = useSkipRemainTimeState();
   const setSkipRemainTime = useSetSkipRemainTime();
   const readMap = useReadMap();
-  const { readCount } = useLineCount();
+  const { readGameUtilParams } = useReadGameUtilParams();
   const readPlaySpeed = useReadPlaySpeed();
   const { readPlayer } = usePlayer();
   const { readLyricsTextarea } = useLyricsTextarea();
@@ -18,7 +23,7 @@ const Skip = (props: BoxProps) => {
     if (skipRemainTime === null) return;
 
     const map = readMap();
-    const count = readCount();
+    const { count } = readGameUtilParams();
 
     const nextLine = map.lines?.[count];
 

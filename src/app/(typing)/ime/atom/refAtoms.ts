@@ -1,43 +1,9 @@
 import { YTPlayer } from "@/types/global-types";
 import { atom } from "jotai";
-import { atomWithReset, useAtomCallback } from "jotai/utils";
+import { useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { getImeTypeAtomStore } from "./store";
 const store = getImeTypeAtomStore();
-
-export const lineCountAtom = atomWithReset(0);
-
-export const useLineCount = () => {
-  const readCount = useAtomCallback(
-    useCallback((get) => get(lineCountAtom), []),
-    { store }
-  );
-  const writeCount = useAtomCallback(
-    useCallback((get, set, newCount: number) => {
-      set(lineCountAtom, newCount);
-    }, []),
-    { store }
-  );
-
-  return { readCount, writeCount };
-};
-
-export const wipeCountAtom = atomWithReset(0);
-
-export const useWipeCount = () => {
-  const readWipeCount = useAtomCallback(
-    useCallback((get) => get(wipeCountAtom), []),
-    { store }
-  );
-  const writeWipeCount = useAtomCallback(
-    useCallback((get, set, newCount: number) => {
-      set(wipeCountAtom, newCount);
-    }, []),
-    { store }
-  );
-
-  return { readWipeCount, writeWipeCount };
-};
 
 export const playerAtom = atom<YTPlayer | null>(null);
 

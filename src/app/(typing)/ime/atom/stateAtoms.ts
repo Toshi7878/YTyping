@@ -1,7 +1,7 @@
 import { RouterOutPuts } from "@/server/api/trpc";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
-import { atomWithReset, useAtomCallback } from "jotai/utils";
+import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
 import { ParseMap, SceneType, WordsResult } from "../type";
@@ -34,37 +34,31 @@ export const useReadMap = () => {
   );
 };
 
-const gameStateUtilParamsAtom = atomWithReset({
-  scene: "ready" as SceneType,
-  skipRemainTime: null as number | null,
-});
-
-export const sceneAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("scene"));
-const skipRemainTimeAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("skipRemainTime"));
-
-export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
-export const useSetSkipRemainTime = () => useSetAtom(skipRemainTimeAtom, { store });
-
-export const useReadGameUtilParams = () => {
+export const sceneAtom = atomWithReset<SceneType>("ready");
+export const useSceneState = () => useAtomValue(sceneAtom, { store });
+export const useSetScene = () => useSetAtom(sceneAtom, { store });
+export const useReadScene = () => {
   return useAtomCallback(
-    useCallback((get) => get(gameStateUtilParamsAtom), []),
+    useCallback((get) => get(sceneAtom), []),
     { store }
   );
 };
 
-export const useSetGameUtilParams = () => useSetAtom(gameStateUtilParamsAtom, { store });
+const gameStateUtilParamsAtom = atomWithReset({
+  skipRemainTime: null as number | null,
+  count: 0,
+  wipeCount: 0,
+  displayLines: Array(DISPLAY_LINE_LENGTH).fill([]) as ParseMap["lines"][number][],
+  nextDisplayLine: [] as ParseMap["lines"][number],
+  judgedWords: [] as string[][][],
+});
 
-export const useSceneState = () => useAtomValue(sceneAtom, { store });
-export const useSetScene = () => useSetAtom(sceneAtom, { store });
-
-const displayLinesAtom = atomWithReset<ParseMap["lines"][number][]>(Array(DISPLAY_LINE_LENGTH).fill([]));
-export const useDisplayLinesState = () => useAtomValue(displayLinesAtom, { store });
-export const useSetDisplayLines = () => useSetAtom(displayLinesAtom, { store });
-export const useReadDisplayLines = () => {
-  const readDisplayLines = useAtomCallback(
-    useCallback((get) => get(displayLinesAtom), []),
+export const useReadGameUtilParams = () => {
+  const readGameUtilParams = useAtomCallback(
+    useCallback((get) => get(gameStateUtilParamsAtom), []),
     { store }
   );
+
   const readWipeLine = useAtomCallback(
     useCallback((get) => {
       const displayLines = get(displayLinesAtom);
@@ -74,19 +68,36 @@ export const useReadDisplayLines = () => {
     { store }
   );
 
-  return { readDisplayLines, readWipeLine };
+  return { readGameUtilParams, readWipeLine };
 };
 
-const nextDisplayLineAtom = atomWithReset<ParseMap["lines"][number]>([]);
+export const useReadWipeLine = () => {
+  return;
+};
 
+export const useResetGameUtilParams = () => {
+  const setGameUtilParams = useSetAtom(gameStateUtilParamsAtom, { store });
+  return () => setGameUtilParams(RESET);
+};
+
+const skipRemainTimeAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("skipRemainTime"));
+const countAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("count"));
+const wipeCountAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("wipeCount"));
+const displayLinesAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("displayLines"));
+const nextDisplayLineAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("nextDisplayLine"));
+const judgedWordsAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("judgedWords"));
+
+export const useCountState = () => useAtomValue(countAtom, { store });
+export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
+export const useDisplayLinesState = () => useAtomValue(displayLinesAtom, { store });
 export const useNextDisplayLineState = () => useAtomValue(nextDisplayLineAtom, { store });
+
+export const useSetSkipRemainTime = () => useSetAtom(skipRemainTimeAtom, { store });
+export const useSetWipeCount = () => useSetAtom(wipeCountAtom, { store });
+export const useSetCount = () => useSetAtom(countAtom, { store });
+export const useSetDisplayLines = () => useSetAtom(displayLinesAtom, { store });
 export const useSetNextDisplayLine = () => useSetAtom(nextDisplayLineAtom, { store });
-export const useReadNextDisplayLine = () => {
-  return useAtomCallback(
-    useCallback((get) => get(nextDisplayLineAtom), []),
-    { store }
-  );
-};
+export const useSetJudgedWords = () => useSetAtom(judgedWordsAtom, { store });
 
 const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0, wordsResult: [] as WordsResult });
 
@@ -96,16 +107,6 @@ export const useSetStatus = () => useSetAtom(statusAtom, { store });
 export const useReadStatus = () => {
   return useAtomCallback(
     useCallback((get) => get(statusAtom), []),
-    { store }
-  );
-};
-
-const judgedWordsAtom = atomWithReset([] as string[][][]);
-
-export const useSetJudgedWords = () => useSetAtom(judgedWordsAtom, { store });
-export const useReadJudgedWords = () => {
-  return useAtomCallback(
-    useCallback((get) => get(judgedWordsAtom), []),
     { store }
   );
 };

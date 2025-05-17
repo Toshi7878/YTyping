@@ -2,7 +2,7 @@ import { Box, Flex, FlexProps, Text } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { useLyricsContainer } from "../../../atom/refAtoms";
-import { useDisplayLinesState, useNextDisplayLineState } from "../../../atom/stateAtoms";
+import { useCountState, useDisplayLinesState, useMapState, useNextDisplayLineState } from "../../../atom/stateAtoms";
 import { COMPLETED_WIPE_COLOR, INITIAL_WIPE_COLOR } from "../../../ts/const";
 import "./lyrics-container.css";
 import Skip from "./Skip";
@@ -62,9 +62,13 @@ const Lyrics = () => {
 
 const NextLyrics = () => {
   const nextDisplayLine = useNextDisplayLineState();
+  const map = useMapState();
+  const count = useCountState();
+
+  const nextLine = map?.lines?.[count];
   return (
     <Box id="next_lyrics" color="#aaa" fontSize="60%">
-      <Text as="span">{`NEXT: `}</Text>
+      {nextLine && <Text as="span">{`NEXT: `}</Text>}
       <AnimatePresence>
         {nextDisplayLine.length > 0 && (
           <motion.div

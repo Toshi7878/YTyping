@@ -1,10 +1,16 @@
 import { kanaToHira } from "@/util/global-hooks/kanaToHira";
-import { useReadJudgedWords, useReadMap, useReadStatus, useSetNotifications, useSetStatus } from "../atom/stateAtoms";
+import {
+  useReadGameUtilParams,
+  useReadMap,
+  useReadStatus,
+  useSetNotifications,
+  useSetStatus,
+} from "../atom/stateAtoms";
 import { formatWord } from "./formatWord";
 
 export const useJudgeTargetWords = () => {
   const readStatus = useReadStatus();
-  const readJudgedWords = useReadJudgedWords();
+  const { readGameUtilParams } = useReadGameUtilParams();
   const setStatus = useSetStatus();
   const setNotifications = useSetNotifications();
   const readMap = useReadMap();
@@ -13,7 +19,7 @@ export const useJudgeTargetWords = () => {
     let userInput = formatComment(chatData);
 
     const { wordIndex } = readStatus();
-    const judgedWords = readJudgedWords();
+    const { judgedWords } = readGameUtilParams();
 
     for (let i = wordIndex; i < judgedWords.length; i++) {
       const judgedWord = judgedWords[i];

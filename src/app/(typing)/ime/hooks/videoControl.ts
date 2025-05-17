@@ -1,13 +1,12 @@
-import { RESET } from "jotai/utils";
 import { usePlayer } from "../atom/refAtoms";
-import { useSetDisplayLines, useSetScene } from "../atom/stateAtoms";
+import { useResetGameUtilParams, useSetScene } from "../atom/stateAtoms";
 import { useInitializePlayScene } from "./reset";
 
 const useSceneControl = () => {
   const { readPlayer } = usePlayer();
   const setScene = useSetScene();
-  const setDisplayLines = useSetDisplayLines();
   const initializePlayScene = useInitializePlayScene();
+  const resetGameUtils = useResetGameUtilParams();
 
   const handleStart = () => {
     readPlayer().stopVideo();
@@ -16,7 +15,7 @@ const useSceneControl = () => {
   };
 
   const handleEnd = () => {
-    setDisplayLines(RESET);
+    resetGameUtils();
     setScene("end");
   };
 

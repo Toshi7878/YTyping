@@ -1,18 +1,18 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { usePlayer } from "../atom/refAtoms";
-import { useReadGameUtilParams } from "../atom/stateAtoms";
+import { useReadScene } from "../atom/stateAtoms";
 import { useInitializePlayScene } from "./reset";
 import { useTimerControls } from "./timer";
 
 export const useYTPlayEvent = () => {
   const { startTimer } = useTimerControls();
-  const readGameStateUtils = useReadGameUtilParams();
   const initializePlayScene = useInitializePlayScene();
+  const readScene = useReadScene();
 
   return async () => {
     console.log("再生 1");
-    const { scene } = readGameStateUtils();
+    const scene = readScene();
 
     if (scene === "play") {
       startTimer();
