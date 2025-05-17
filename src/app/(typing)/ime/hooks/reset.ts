@@ -16,8 +16,9 @@ export const useInitializePlayScene = () => {
   const setNotifications = useSetNotifications();
   const setScene = useSetScene();
   const { readLyricsTextarea } = useLyricsTextarea();
-
+  const resetGameUtils = useResetGameUtilParams();
   return () => {
+    resetGameUtils();
     setNextDisplayLine([]);
     setStatus(RESET);
     setNotifications(RESET);
