@@ -9,7 +9,7 @@ export const useKeydown = () => {
     switch (key) {
       case "Tab":
         event.preventDefault();
-        setTimeout(() => readInputTextarea().focus());
+        readInputTextarea().focus();
         break;
     }
   };

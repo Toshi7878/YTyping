@@ -40,6 +40,7 @@ const SceneView = () => {
       if (e.key === "Enter") {
         readPlayer().playVideo();
         readInputTextarea().focus();
+        e.preventDefault();
       }
     };
     if (scene === "ready" && map !== null) {
