@@ -48,7 +48,7 @@ const gameStateUtilParamsAtom = atomWithReset({
   skipRemainTime: null as number | null,
   count: 0,
   wipeCount: 0,
-  displayLines: Array(DISPLAY_LINE_LENGTH).fill([]) as ParseMap["lines"][number][],
+  displayLines: new Array(DISPLAY_LINE_LENGTH).fill([]) as ParseMap["lines"][number][],
   nextDisplayLine: [] as ParseMap["lines"][number],
   judgedWords: [] as string[][][],
 });
