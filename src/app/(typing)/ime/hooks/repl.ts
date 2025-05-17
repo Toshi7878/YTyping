@@ -8,7 +8,7 @@ export const useGenerateTokenizedWords = () => {
   return async (words: string[][]) => {
     const joinedWords = words.flat().join(" ");
 
-    const tokenizedWords = await utils.morphConvert.tokenizeWordAws.fetch({ sentence: joinedWords });
+    const tokenizedWords = await utils.morphConvert.tokenizeWordAws.ensureData({ sentence: joinedWords });
     const formattedTokenizedWords = await replaceReadingWithCustomDic(tokenizedWords);
 
     const repl = parseRepl(formattedTokenizedWords);
