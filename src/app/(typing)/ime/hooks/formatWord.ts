@@ -4,6 +4,7 @@ const CYRILLIC_ALPHABET = ["\u0400-\u04FF]"];
 
 const LYRICS_FORMAT_REGEX = REGEX_LIST.concat(HANGUL).concat(CYRILLIC_ALPHABET).join(""); // TODO: .concat(this.customRegex);
 
+const FILTER_SYMBOLS = "×";
 export const formatWord = (text: string) => {
   text = text.replace(/<[^>]*?style>[\s\S]*?<[^>]*?\/style[^>]*?>/g, ""); //styleタグ全体削除
   text = text.replace(/[（\(].*?[\)）]/g, ""); //()（）の歌詞を削除
@@ -23,6 +24,7 @@ export const formatWord = (text: string) => {
   text = text.replace(/([a-zA-Z])([ぁ-んゔァ-ンヴ一-龥])/g, "$1 $2"); // アルファベットの後に日本語文字がある場合
   text = text.replace(/([ぁ-んゔァ-ンヴ一-龥])([a-zA-Z])/g, "$1 $2"); // 日本語文字の後にアルファベットがある場合
 
+  text = text.replace(new RegExp(FILTER_SYMBOLS, "g"), ""); //記号削除　TODO: ホワイトリストに含まれる機能はFILTERしない
   text = text.replace(new RegExp(LYRICS_FORMAT_REGEX, "g"), ""); //regexListに含まれていない文字を削除
 
   return text;
