@@ -3,7 +3,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { usePlayer } from "../../atom/refAtoms";
 import { useSceneState } from "../../atom/stateAtoms";
-import useSceneControl from "../../hooks/videoControl";
+import useSceneControl from "../../hooks/sceneControl";
 import start from "../../img/control.png";
 import gear from "../../img/gear.png";
 import metronome from "../../img/metronome.png";

@@ -158,7 +158,7 @@ const useTimer = () => {
 
       if (nextTime - constantOffsettedYTTime < 3) {
         setNextDisplayLine(nextLine);
-        setJudgedWords(getJudgedWords(count));
+        setJudgedWords(getJudgedWords(count + 1));
       }
     }
   };
