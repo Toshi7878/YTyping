@@ -71,13 +71,11 @@ export const useReadGameUtilParams = () => {
   return { readGameUtilParams, readWipeLine };
 };
 
-export const useReadWipeLine = () => {
-  return;
-};
-
 export const useResetGameUtilParams = () => {
-  const setGameUtilParams = useSetAtom(gameStateUtilParamsAtom, { store });
-  return () => setGameUtilParams(RESET);
+  return useAtomCallback(
+    useCallback((get, set) => set(statusAtom, RESET), []),
+    { store }
+  );
 };
 
 const skipRemainTimeAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("skipRemainTime"));

@@ -1,5 +1,5 @@
 import { usePlayer } from "../atom/refAtoms";
-import { useResetGameUtilParams, useSetScene } from "../atom/stateAtoms";
+import { useSetScene } from "../atom/stateAtoms";
 import { useInitializePlayScene } from "./reset";
 import { useTimerControls } from "./timer";
 
@@ -9,8 +9,6 @@ const useSceneControl = () => {
   const initializePlayScene = useInitializePlayScene();
   const { pauseTimer } = useTimerControls();
 
-  const resetGameUtils = useResetGameUtilParams();
-
   const handleStart = () => {
     readPlayer().stopVideo();
     initializePlayScene();
@@ -18,7 +16,6 @@ const useSceneControl = () => {
   };
 
   const handleEnd = () => {
-    resetGameUtils();
     setScene("end");
     pauseTimer();
   };
