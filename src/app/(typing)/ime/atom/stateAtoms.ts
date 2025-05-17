@@ -36,15 +36,14 @@ export const useReadMap = () => {
 
 const gameStateUtilParamsAtom = atomWithReset({
   scene: "ready" as SceneType,
-  skip: false,
-  isLoadingOverlay: false,
-  isYTStarted: false,
+  skipRemainTime: null as number | null,
 });
 
 export const sceneAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("scene"));
-const skipAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("skip"));
-const isLoadingOverlayAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("isLoadingOverlay"));
-const isYTStartedAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("isYTStarted"));
+const skipRemainTimeAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("skipRemainTime"));
+
+export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
+export const useSetSkipRemainTime = () => useSetAtom(skipRemainTimeAtom, { store });
 
 export const useReadGameUtilParams = () => {
   return useAtomCallback(
@@ -57,15 +56,6 @@ export const useSetGameUtilParams = () => useSetAtom(gameStateUtilParamsAtom, { 
 
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
 export const useSetScene = () => useSetAtom(sceneAtom, { store });
-
-export const useIsLoadingOverlayState = () => useAtomValue(isLoadingOverlayAtom);
-export const useSetIsLoadingOverlay = () => useSetAtom(isLoadingOverlayAtom);
-
-export const useSkipState = () => useAtomValue(skipAtom, { store });
-export const useSetSkip = () => useSetAtom(skipAtom, { store });
-
-export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
-export const useSetYTStarted = () => useSetAtom(isYTStartedAtom);
 
 const displayLinesAtom = atomWithReset<ParseMap["lines"][number][]>(Array(DISPLAY_LINE_LENGTH).fill([]));
 export const useDisplayLinesState = () => useAtomValue(displayLinesAtom, { store });
@@ -124,8 +114,3 @@ const notificationsAtom = atomWithReset<string[]>([]);
 
 export const useNotificationsState = () => useAtomValue(notificationsAtom, { store });
 export const useSetNotifications = () => useSetAtom(notificationsAtom, { store });
-
-const skipRemainTimeAtom = atomWithReset<number | null>(null);
-
-export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
-export const useSetSkipRemainTime = () => useSetAtom(skipRemainTimeAtom, { store });

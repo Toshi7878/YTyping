@@ -10,6 +10,7 @@ import LyricsViewArea from "../_components/lyrics-view-area/LyricsViewArea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/notifications/Notifications";
 import ImeTypeYouTubeContent from "../_components/youtube-content/ImeTypeYoutubeContent";
+import { usePathChangeAtomReset } from "../atom/reset";
 import { useMapState, useSetMap } from "../atom/stateAtoms";
 import { useParseImeMap } from "../hooks/parseImeMap";
 
@@ -23,10 +24,11 @@ function Content({ mapInfo }: ContentProps) {
   const [youtubeHeight, setYoutubeHeight] = useState<string>("calc(100vh - var(--header-height))");
   const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
   const { id: mapId } = useParams();
-  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
+  const { data: mapData } = useMapQuery({ mapId: mapId as string });
   const setMap = useSetMap();
   const parseImeMap = useParseImeMap();
   const map = useMapState();
+  const pathChangeAtomReset = usePathChangeAtomReset();
 
   useEffect(() => {
     if (mapData) {
@@ -39,6 +41,13 @@ function Content({ mapInfo }: ContentProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
+
+  useEffect(() => {
+    return () => {
+      pathChangeAtomReset();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapId]);
 
   useEffect(() => {
     const lyricsViewAreaElement = lyricsViewAreaRef.current;
