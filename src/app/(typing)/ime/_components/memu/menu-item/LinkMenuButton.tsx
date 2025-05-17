@@ -9,10 +9,10 @@ interface LinkMenuButtonProps {
 }
 
 const LinkMenuButton = ({ image, title, ...props }: LinkMenuButtonProps & LinkProps) => {
-  const linkClick = useLinkClick();
+  const handleLinkClick = useLinkClick();
 
   return (
-    <Link {...props} onClick={linkClick}>
+    <Link {...props} onClick={(event) => handleLinkClick(event, "replace")}>
       <Button
         leftIcon={image ? <Image src={image} alt={title} width={ICON_SIZE} height={ICON_SIZE} /> : undefined}
         variant="outline"

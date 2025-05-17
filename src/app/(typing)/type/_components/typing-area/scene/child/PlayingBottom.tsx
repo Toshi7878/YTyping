@@ -46,7 +46,7 @@ const PlayingBottom = function () {
         <RetryBadge />
       </Flex>
       {sceneGroup === "Ready" && (
-        <Link href={`/ime/${mapId}`} onClick={handleLinkClick}>
+        <Link href={`/ime/${mapId}`} onClick={(event) => handleLinkClick(event, "replace")}>
           <Button position="absolute" bottom="3" right="10">
             変換有りタイピング
           </Button>

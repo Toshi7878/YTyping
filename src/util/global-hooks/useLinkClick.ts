@@ -21,7 +21,7 @@ export const useLinkClick = () => {
     return path;
   };
 
-  return (event: React.MouseEvent<HTMLAnchorElement>) => {
+  return (event: React.MouseEvent<HTMLAnchorElement>, routeType: "push" | "replace" = "push") => {
     if (event.ctrlKey || event.altKey) {
       return;
     }
@@ -46,6 +46,10 @@ export const useLinkClick = () => {
     NProgress.configure({ showSpinner: false });
     NProgress.configure({ trickle: false });
     NProgress.start();
-    router.push(event.currentTarget.href);
+    if (routeType === "push") {
+      router.push(event.currentTarget.href);
+    } else if (routeType === "replace") {
+      router.replace(event.currentTarget.href);
+    }
   };
 };
