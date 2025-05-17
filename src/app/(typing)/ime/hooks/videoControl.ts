@@ -3,7 +3,7 @@ import { usePlayer } from "../atom/refAtoms";
 import { useSetDisplayLines, useSetScene } from "../atom/stateAtoms";
 import { useInitializePlayScene } from "./reset";
 
-const useVideoControl = () => {
+const useSceneControl = () => {
   const { readPlayer } = usePlayer();
   const setScene = useSetScene();
   const setDisplayLines = useSetDisplayLines();
@@ -17,11 +17,10 @@ const useVideoControl = () => {
 
   const handleEnd = () => {
     setDisplayLines(RESET);
-    readPlayer().stopVideo();
     setScene("end");
   };
 
   return { handleStart, handleEnd };
 };
 
-export default useVideoControl;
+export default useSceneControl;
