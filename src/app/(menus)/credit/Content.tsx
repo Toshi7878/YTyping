@@ -50,11 +50,31 @@ const SpecialThanks = () => {
       <Heading as="h2" size="lg" mb={4}>
         スペシャルサンクス
       </Heading>
-      <List spacing={4}>
+      <List spacing={8}>
         <ListItem>
-          <Heading as="h3" size="md" mb={2}>
+          <Heading as="h3" size="md">
             <Link href="http://unsi.nonip.net/" color="blue.500" isExternal>
               みんなの運指表
+            </Link>
+            <Text as="span" ml={1}>
+              様
+            </Text>
+          </Heading>
+        </ListItem>
+        <ListItem>
+          <Heading as="h3" size="md">
+            <Link href="https://typing-tube.net/" color="blue.500" isExternal>
+              TypingTube
+            </Link>
+            <Text as="span" ml={1}>
+              様
+            </Text>
+          </Heading>
+        </ListItem>
+        <ListItem>
+          <Heading as="h3" size="md">
+            <Link href="https://github.com/jz5/namatyping" color="blue.500" isExternal>
+              ニコ生タイピング
             </Link>
             <Text as="span" ml={1}>
               様

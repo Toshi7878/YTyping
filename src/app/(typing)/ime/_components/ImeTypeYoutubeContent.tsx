@@ -1,17 +1,17 @@
 "use client";
 import { useCallback, useEffect, useMemo } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useReadScene } from "../../atom/stateAtoms";
+import { useReadScene } from "../atom/stateAtoms";
 
 import { useWindowFocus } from "@/util/global-hooks/windowFocus";
-import { useTimerRegistration } from "../../hooks/timer";
+import { useTimerRegistration } from "../hooks/timer";
 import {
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
   useYTStopEvent,
-} from "../../hooks/youtubeEvents";
+} from "../hooks/youtubeEvents";
 
 interface ImeTypeYouTubeProps {
   videoId: string;

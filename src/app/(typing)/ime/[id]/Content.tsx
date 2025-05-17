@@ -5,11 +5,11 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
-import LyricsTextarea from "../_components/lyrics-input-area/LyricsTextarea";
+import ImeTypeYouTubeContent from "../_components/ImeTypeYoutubeContent";
+import InputTextarea from "../_components/InputTextarea";
 import LyricsViewArea from "../_components/lyrics-view-area/LyricsViewArea";
 import MenuBar from "../_components/memu/MenuBar";
-import Notifications from "../_components/notifications/Notifications";
-import ImeTypeYouTubeContent from "../_components/youtube-content/ImeTypeYoutubeContent";
+import Notifications from "../_components/Notifications";
 import { useMapState, useSetMap } from "../atom/stateAtoms";
 import { useParseImeMap } from "../hooks/parseImeMap";
 import { usePathChangeAtomReset } from "../hooks/reset";
@@ -105,7 +105,7 @@ function Content({ mapInfo }: ContentProps) {
 
       <Flex ref={lyricsViewAreaRef} width="100%" position="fixed" bottom="140" left="0" flexDirection="column">
         <LyricsViewArea />
-        <LyricsTextarea />
+        <InputTextarea />
         <MenuBar />
       </Flex>
     </Box>

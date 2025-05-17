@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
-import { useNotificationsState } from "../../atom/stateAtoms";
+import { useNotificationsState } from "../atom/stateAtoms";
 
 const Notifications = ({ style }: { style: React.CSSProperties }) => {
   const notifications = useNotificationsState();

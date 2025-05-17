@@ -9,6 +9,7 @@ import {
   useSetJudgedWords,
   useSetNextDisplayLine,
   useSetSkipRemainTime,
+  useSetTextareaPlaceholderType,
   useSetWipeCount,
 } from "../atom/stateAtoms";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
@@ -69,6 +70,7 @@ const useTimer = () => {
   const setSkipRemainTime = useSetSkipRemainTime();
   const setCount = useSetCount();
   const setWipeCount = useSetWipeCount();
+  const setTextareaPlaceholderType = useSetTextareaPlaceholderType();
 
   const updateSkip = ({
     currentLine,
@@ -89,8 +91,10 @@ const useTimer = () => {
 
     const remainTime = nextLineStartTime - constantOffsettedYTTime;
     if (remainTime > SKIP_REMAIN_TIME && isWipeCompleted) {
+      setTextareaPlaceholderType("skip");
       setSkipRemainTime(Number(Math.floor(remainTime - SKIP_REMAIN_TIME).toFixed()));
     } else {
+      setTextareaPlaceholderType("normal");
       setSkipRemainTime(null);
     }
   };
@@ -127,10 +131,8 @@ const useTimer = () => {
     const { lines } = readMap();
 
     const startIndex = Math.max(0, newCount - DISPLAY_LINE_LENGTH);
-
     const endIndex =
       newCount < DISPLAY_LINE_LENGTH ? Math.min(newCount, DISPLAY_LINE_LENGTH) : startIndex + DISPLAY_LINE_LENGTH;
-
     const displayLines = lines.slice(startIndex, endIndex);
 
     while (displayLines.length < DISPLAY_LINE_LENGTH) {
@@ -172,7 +174,11 @@ const useTimer = () => {
     wipeUpdate({ currentOffesettedYTTime, wipeCount });
 
     const nextLine = map.lines[count];
-    if (!nextLine) return;
+    if (!nextLine) {
+      setTextareaPlaceholderType("end");
+
+      return;
+    }
 
     const nextLineStartTime = nextLine[0]?.time / readPlaySpeed().playSpeed;
 

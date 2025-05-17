@@ -51,6 +51,7 @@ const gameStateUtilParamsAtom = atomWithReset({
   displayLines: new Array(DISPLAY_LINE_LENGTH).fill([]) as ParseMap["lines"][number][],
   nextDisplayLine: [] as ParseMap["lines"][number],
   judgedWords: [] as string[][][],
+  textareaPlaceholderType: "normal" as "normal" | "skip" | "end",
 });
 
 export const useReadGameUtilParams = () => {
@@ -86,11 +87,15 @@ const wipeCountAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("
 const displayLinesAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("displayLines"));
 const nextDisplayLineAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("nextDisplayLine"));
 const judgedWordsAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("judgedWords"));
+const textareaPlaceholderTypeAtom = focusAtom(gameStateUtilParamsAtom, (optic) =>
+  optic.prop("textareaPlaceholderType")
+);
 
 export const useCountState = () => useAtomValue(countAtom, { store });
 export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
 export const useDisplayLinesState = () => useAtomValue(displayLinesAtom, { store });
 export const useNextDisplayLineState = () => useAtomValue(nextDisplayLineAtom, { store });
+export const useTextareaPlaceholderTypeState = () => useAtomValue(textareaPlaceholderTypeAtom, { store });
 
 export const useSetSkipRemainTime = () => useSetAtom(skipRemainTimeAtom, { store });
 export const useSetWipeCount = () => useSetAtom(wipeCountAtom, { store });
@@ -98,6 +103,7 @@ export const useSetCount = () => useSetAtom(countAtom, { store });
 export const useSetDisplayLines = () => useSetAtom(displayLinesAtom, { store });
 export const useSetNextDisplayLine = () => useSetAtom(nextDisplayLineAtom, { store });
 export const useSetJudgedWords = () => useSetAtom(judgedWordsAtom, { store });
+export const useSetTextareaPlaceholderType = () => useSetAtom(textareaPlaceholderTypeAtom, { store });
 
 const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0, wordsResult: [] as WordsResult });
 
