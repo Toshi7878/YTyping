@@ -73,7 +73,10 @@ export const useReadGameUtilParams = () => {
 
 export const useResetGameUtilParams = () => {
   return useAtomCallback(
-    useCallback((get, set) => set(statusAtom, RESET), []),
+    useCallback((get, set) => {
+      set(statusAtom, RESET);
+      set(nextDisplayLineAtom, new Array(DISPLAY_LINE_LENGTH).fill([]));
+    }, []),
     { store }
   );
 };
