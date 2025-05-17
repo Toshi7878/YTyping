@@ -35,7 +35,7 @@ const LyricsTextarea = () => {
         borderRadius="md"
         fontWeight="bold"
         letterSpacing={1.5}
-        placeholder="（コメント受信をエミュレートします。コメントサーバーへの送信は行いません。）"
+        placeholder="ワードを入力（Enterで送信）"
         onKeyDown={handleKeyDown}
       />
     </Flex>
