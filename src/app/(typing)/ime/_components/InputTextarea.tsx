@@ -51,9 +51,9 @@ const InputTextarea = () => {
 
   const placeholder =
     textareaPlaceholderType === "skip"
-      ? "ワードを入力（Enterで送信）\nskipを入力してスキップできます"
+      ? "ワードを入力（Enterで送信）\nskipを入力してスキップ"
       : textareaPlaceholderType === "end"
-      ? "ワードを入力（Enterで送信）\nendを入力して終了できます"
+      ? "ワードを入力（Enterで送信）\nendを入力して終了"
       : "ワードを入力（Enterで送信）";
 
   return (
