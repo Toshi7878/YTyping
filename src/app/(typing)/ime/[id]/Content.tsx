@@ -21,6 +21,7 @@ function Content({ mapInfo }: ContentProps) {
   const { video_id } = mapInfo!;
   const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
   const [youtubeHeight, setYoutubeHeight] = useState<string>("calc(100vh - var(--header-height))");
+  const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
   const { id: mapId } = useParams();
   const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
   const setMap = useSetMap();
@@ -43,14 +44,27 @@ function Content({ mapInfo }: ContentProps) {
     const lyricsViewAreaElement = lyricsViewAreaRef.current;
     if (!lyricsViewAreaElement) return;
 
-    const lyricsViewAreaHeight = lyricsViewAreaElement.offsetHeight || 0;
+    const updateHeights = () => {
+      const lyricsViewAreaHeight = lyricsViewAreaElement.offsetHeight || 0;
+      const computedStyle = window.getComputedStyle(lyricsViewAreaElement);
+      const bottomValue = computedStyle.bottom;
+      const bottomPx = bottomValue === "auto" ? 0 : parseInt(bottomValue, 10) || 0;
 
-    const computedStyle = window.getComputedStyle(lyricsViewAreaElement);
-    const bottomValue = computedStyle.bottom;
-    const bottomPx = bottomValue === "auto" ? 0 : parseInt(bottomValue, 10) || 0;
+      setYoutubeHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px)`);
+      setNotificationsHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px - 20px)`);
+    };
 
-    const newHeight = `calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px)`;
-    setYoutubeHeight(newHeight);
+    updateHeights();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeights();
+    });
+
+    resizeObserver.observe(lyricsViewAreaElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, []);
 
   return (
@@ -71,7 +85,7 @@ function Content({ mapInfo }: ContentProps) {
           }),
         }}
       />
-      <Notifications style={{ height: youtubeHeight }} />
+      <Notifications style={{ height: notificationsHeight }} />
       <ImeTypeYouTubeContent
         videoId={video_id}
         className={"fixed top-[40px] left-0 w-full"}

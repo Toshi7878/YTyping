@@ -4,6 +4,7 @@ import { Button, useTheme } from "@chakra-ui/react";
 import { useCanUploadState, useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import { useUpdateNewMapBackUp } from "@/app/edit/hooks/utils/useUpdateNewMapBackUp";
 import { useInitializeEditorCreateBak } from "@/lib/db";
+import { clientApi } from "@/trpc/client-api";
 import { ThemeColors, UploadResult } from "@/types";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,6 +25,7 @@ const UploadButton = ({ state }: UploadButtonProps) => {
   const updateNewMapBackUp = useUpdateNewMapBackUp();
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
+  const utils = clientApi.useUtils();
 
   useEffect(() => {
     if (state.status !== 0) {
@@ -32,6 +34,7 @@ const UploadButton = ({ state }: UploadButtonProps) => {
       const message = state.message;
 
       if (isSuccess) {
+        utils.map.getMap.invalidate();
         toast({ type: "success", title, message });
         setCanUpload(false);
         if (state.id) {
@@ -77,3 +80,6 @@ const UploadButton = ({ state }: UploadButtonProps) => {
 };
 
 export default UploadButton;
+function useUtils() {
+  throw new Error("Function not implemented.");
+}

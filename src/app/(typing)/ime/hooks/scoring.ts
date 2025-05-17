@@ -19,6 +19,7 @@ export const useJudgeTargetWords = () => {
 
       if (userInput) {
         let correct = judgeComment(judgedWord, userInput);
+        userInput = correct.comment;
 
         if (correct["lyrics"]) {
           if (userInput.indexOf(correct["lyrics"]) > 0) {
@@ -129,13 +130,13 @@ function judgeComment(judgedWords: string[][], comment: string) {
         } else if (reSearchFlag) {
           return judgeComment(judgedWords, comment);
         } else {
-          return { lyrics: "", judge: "None" as const };
+          return { lyrics: "", judge: "None" as const, comment };
         }
       }
     }
   }
 
-  return { lyrics: correcting, judge: judge as "Great" | "Good" | "None" };
+  return { lyrics: correcting, judge: judge as "Great" | "Good" | "None", comment };
 }
 
 // function generateCombinations(input: string, index: number = 0, current: string = "") {

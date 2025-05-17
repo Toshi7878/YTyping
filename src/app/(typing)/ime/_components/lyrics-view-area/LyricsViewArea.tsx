@@ -1,4 +1,5 @@
 import { Box } from "@chakra-ui/react";
+import { useSceneState } from "../../atom/stateAtoms";
 import LyricsContainer from "./play/LyricsContainer";
 
 const LyricsViewArea = () => {
@@ -11,8 +12,7 @@ const LyricsViewArea = () => {
       textShadow="0px 0px 10px rgba(0, 0, 0, 1)"
       fontSize="4xl"
     >
-      <LyricsContainer />
-
+      <SceneView />
       {/* <div id="music-title-container">
         <img src="/assets/img/music.png" alt="音楽アイコン" />
         <span id="title">{title || ""}</span>
@@ -24,6 +24,20 @@ const LyricsViewArea = () => {
       </div> */}
     </Box>
   );
+};
+
+const SceneView = () => {
+  const scene = useSceneState();
+
+  if (scene === "ready" || scene === "play") {
+    return <LyricsContainer />;
+  }
+
+  if (scene === "end") {
+    return "end";
+  }
+
+  return null;
 };
 
 export default LyricsViewArea;

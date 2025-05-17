@@ -1,6 +1,6 @@
 import { Image, ImageProps } from "@chakra-ui/next-js";
 import { Box, Checkbox, Flex, useColorModeValue, VisuallyHidden } from "@chakra-ui/react";
-import { ICON_SIZE } from "../MenuBar";
+import { ICON_SIZE } from "../../../ts/const";
 
 interface MenuCheckBoxProps {
   image: ImageProps["src"];

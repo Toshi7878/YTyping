@@ -12,15 +12,15 @@ const LyricsTextarea = () => {
   };
 
   return (
-    <Flex bg="background.card" width="85%" alignItems="center" justifyContent="center" mx="auto">
+    <Flex bg="background.card" fontSize="3xl" width="85%" alignItems="center" justifyContent="center" mx="auto">
       <Textarea
         px={4}
-        height="120px"
+        height="130px"
         color="white"
         autoComplete="off"
         resize="none"
+        fontSize="90%"
         borderRadius="md"
-        fontSize="2xl"
         fontWeight="bold"
         letterSpacing={1.5}
         placeholder="（コメント受信をエミュレートします。コメントサーバーへの送信は行いません。）"

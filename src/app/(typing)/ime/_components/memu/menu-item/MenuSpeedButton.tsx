@@ -1,6 +1,6 @@
 import { Image, ImageProps } from "@chakra-ui/next-js";
 import { Button } from "@chakra-ui/react";
-import { ICON_SIZE } from "../MenuBar";
+import { ICON_SIZE } from "../../../ts/const";
 
 interface MenuSpeedButtonProps {
   image: ImageProps["src"];

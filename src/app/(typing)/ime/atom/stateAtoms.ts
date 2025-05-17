@@ -1,7 +1,7 @@
 import { RouterOutPuts } from "@/server/api/trpc";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
-import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
+import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
 import { ParseMap, SceneType, TypingResult } from "../type";
@@ -90,12 +90,7 @@ export const useReadDisplayLines = () => {
 const nextLyricsAtom = atomWithReset("");
 
 export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
-export const useSetNextLyrics = () => {
-  const setNextLyrics = useSetAtom(nextLyricsAtom, { store });
-  const resetNextLyrics = useCallback(() => store.set(nextLyricsAtom, RESET), []);
-
-  return { setNextLyrics, resetNextLyrics };
-};
+export const useSetNextLyrics = () => useSetAtom(nextLyricsAtom, { store });
 
 const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0, wordResult: [] as TypingResult });
 

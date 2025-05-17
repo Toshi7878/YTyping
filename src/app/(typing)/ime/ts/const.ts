@@ -15,3 +15,4 @@ export const INITIAL_WIPE_COLOR = {
 };
 
 export const DISPLAY_LINE_LENGTH = 3;
+export const ICON_SIZE = "4";

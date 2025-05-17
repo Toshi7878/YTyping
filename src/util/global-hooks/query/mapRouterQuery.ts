@@ -5,6 +5,8 @@ export const useMapQuery = ({ mapId }: { mapId: string }) => {
     { mapId },
     {
       enabled: !!mapId,
+      staleTime: Infinity,
+      gcTime: Infinity,
     }
   );
 
