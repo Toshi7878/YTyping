@@ -1,11 +1,11 @@
 import { Box } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { usePlayer } from "../../atom/refAtoms";
+import { useInputTextarea, usePlayer } from "../../atom/refAtoms";
 import { useMapState, useSceneState } from "../../atom/stateAtoms";
 import ResultScore from "./end/ResultScore";
 import LyricsContainer from "./play/LyricsContainer";
 
-const LyricsViewArea = () => {
+const ViewArea = () => {
   return (
     <Box
       fontFamily="Yu Gothic Ui"
@@ -33,11 +33,13 @@ const SceneView = () => {
   const scene = useSceneState();
   const { readPlayer } = usePlayer();
   const map = useMapState();
+  const { readInputTextarea } = useInputTextarea();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         readPlayer().playVideo();
+        readInputTextarea().focus();
       }
     };
     if (scene === "ready" && map !== null) {
@@ -54,4 +56,4 @@ const SceneView = () => {
   );
 };
 
-export default LyricsViewArea;
+export default ViewArea;
