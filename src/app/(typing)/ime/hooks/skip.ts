@@ -1,4 +1,4 @@
-import { useLyricsTextarea, usePlayer } from "../atom/refAtoms";
+import { useInputTextarea, usePlayer } from "../atom/refAtoms";
 import { useReadPlaySpeed } from "../atom/speedReducerAtoms";
 import { useReadGameUtilParams, useReadMap, useSetSkipRemainTime } from "../atom/stateAtoms";
 
@@ -10,7 +10,7 @@ export const useSkip = () => {
   const { readGameUtilParams } = useReadGameUtilParams();
   const readPlaySpeed = useReadPlaySpeed();
   const { readPlayer } = usePlayer();
-  const { readLyricsTextarea } = useLyricsTextarea();
+  const { readInputTextarea } = useInputTextarea();
 
   return () => {
     const map = readMap();
@@ -27,6 +27,6 @@ export const useSkip = () => {
     readPlayer().seekTo(seekTime, true);
 
     setSkipRemainTime(null);
-    readLyricsTextarea().focus();
+    readInputTextarea().focus();
   };
 };

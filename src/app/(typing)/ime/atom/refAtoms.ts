@@ -41,20 +41,20 @@ export const useLyricsContainer = () => {
   return { readLyricsContainer, writeLyricsContainer };
 };
 
-const lyricsTextareaAtom = atom<HTMLTextAreaElement | null>(null);
+const inputTextareaAtom = atom<HTMLTextAreaElement | null>(null);
 
-export const useLyricsTextarea = () => {
-  const readLyricsTextarea = useAtomCallback(
-    useCallback((get) => get(lyricsTextareaAtom) as HTMLTextAreaElement, []),
+export const useInputTextarea = () => {
+  const readInputTextarea = useAtomCallback(
+    useCallback((get) => get(inputTextareaAtom) as HTMLTextAreaElement, []),
     { store }
   );
 
-  const writeLyricsTextarea = useAtomCallback(
+  const writeInputTextarea = useAtomCallback(
     useCallback((get, set, newLyricsTextarea: HTMLTextAreaElement) => {
-      set(lyricsTextareaAtom, newLyricsTextarea);
+      set(inputTextareaAtom, newLyricsTextarea);
     }, []),
     { store }
   );
 
-  return { readLyricsTextarea, writeLyricsTextarea };
+  return { readInputTextarea, writeInputTextarea };
 };

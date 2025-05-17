@@ -1,6 +1,6 @@
 import { Flex, Textarea } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
-import { useLyricsTextarea } from "../../atom/refAtoms";
+import { useInputTextarea } from "../../atom/refAtoms";
 import { useReadGameUtilParams, useReadMap } from "../../atom/stateAtoms";
 import { useJudgeTargetWords } from "../../hooks/judgeTargetWords";
 import useSceneControl from "../../hooks/sceneControl";
@@ -40,7 +40,7 @@ const LyricsTextarea = () => {
   };
 
   const lyricsTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const { writeLyricsTextarea } = useLyricsTextarea();
+  const { writeInputTextarea: writeLyricsTextarea } = useInputTextarea();
 
   useEffect(() => {
     if (lyricsTextareaRef.current) {

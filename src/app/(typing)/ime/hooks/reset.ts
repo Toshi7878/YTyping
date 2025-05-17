@@ -1,5 +1,5 @@
 import { RESET } from "jotai/utils";
-import { useLyricsTextarea, usePlayer } from "../atom/refAtoms";
+import { useInputTextarea, usePlayer } from "../atom/refAtoms";
 import { usePlaySpeedReducer } from "../atom/speedReducerAtoms";
 import {
   useResetGameUtilParams,
@@ -15,14 +15,14 @@ export const useInitializePlayScene = () => {
   const setStatus = useSetStatus();
   const setNotifications = useSetNotifications();
   const setScene = useSetScene();
-  const { readLyricsTextarea } = useLyricsTextarea();
+  const { readInputTextarea } = useInputTextarea();
   const resetGameUtils = useResetGameUtilParams();
   return () => {
     resetGameUtils();
     setNextDisplayLine([]);
     setStatus(RESET);
     setNotifications(RESET);
-    readLyricsTextarea().focus();
+    readInputTextarea().focus();
 
     setScene("play");
   };
