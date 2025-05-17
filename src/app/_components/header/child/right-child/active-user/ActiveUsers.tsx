@@ -33,8 +33,9 @@ export default function ActiveUsers() {
 
     const updateUserStatus = async (channelInstance: typeof currentChannel) => {
       if (!session?.user?.name || !channelInstance) return;
-      const isType = pathname.match("/type/");
+      const isType = pathname.match("/type/") || pathname.match("/ime/");
       const isEdit = pathname.match("/edit");
+
       const currentState =
         userOptions?.custom_user_active_state === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
 
