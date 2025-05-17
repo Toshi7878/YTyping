@@ -1,5 +1,5 @@
 import { usePlayer } from "../atom/refAtoms";
-import { useSetScene } from "../atom/stateAtoms";
+import { useSetScene, useSetTextareaPlaceholderType } from "../atom/stateAtoms";
 import { useInitializePlayScene } from "./reset";
 import { useTimerControls } from "./timer";
 
@@ -8,6 +8,7 @@ const useSceneControl = () => {
   const setScene = useSetScene();
   const initializePlayScene = useInitializePlayScene();
   const { pauseTimer } = useTimerControls();
+  const setTextareaPlaceholderType = useSetTextareaPlaceholderType();
 
   const handleStart = () => {
     readPlayer().stopVideo();
@@ -17,6 +18,7 @@ const useSceneControl = () => {
 
   const handleEnd = () => {
     setScene("end");
+    setTextareaPlaceholderType("normal");
     pauseTimer();
   };
 
