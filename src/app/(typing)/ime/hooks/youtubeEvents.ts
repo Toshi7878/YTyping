@@ -38,11 +38,9 @@ export const useYTEndEvent = () => {
 };
 
 export const useYTStopEvent = () => {
-  const { readPlayer } = usePlayer();
   const { pauseTimer } = useTimerControls();
   return () => {
     console.log("動画停止");
-    readPlayer().stopVideo();
     pauseTimer();
   };
 };

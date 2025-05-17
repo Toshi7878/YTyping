@@ -6,6 +6,7 @@ import { useReadScene } from "../atom/stateAtoms";
 import { useWindowFocus } from "@/util/global-hooks/windowFocus";
 import { useTimerRegistration } from "../hooks/timer";
 import {
+  useYTEndEvent,
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
@@ -24,6 +25,7 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
   const ytStopEvent = useYTStopEvent();
+  const ytEndEvent = useYTEndEvent();
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
   const { addTimer, removeTimer } = useTimerRegistration();
@@ -92,7 +94,8 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
         onReady={ytReadyEvent}
         onPlay={ytPlayEvent}
         onPause={ytPauseEvent}
-        onEnd={ytStopEvent}
+        onEnd={ytEndEvent}
+        onStop={ytStopEvent}
         onStateChange={handleStateChange}
         onError={handleError}
       />
