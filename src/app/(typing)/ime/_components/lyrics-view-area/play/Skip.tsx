@@ -1,42 +1,16 @@
 import { Box, BoxProps } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useLyricsTextarea, usePlayer } from "../../../atom/refAtoms";
-import { useReadPlaySpeed } from "../../../atom/speedReducerAtoms";
-import {
-  useReadGameUtilParams,
-  useReadMap,
-  useSetSkipRemainTime,
-  useSkipRemainTimeState,
-} from "../../../atom/stateAtoms";
+import { useSkipRemainTimeState } from "../../../atom/stateAtoms";
+import { useSkip } from "../../../hooks/skip";
 
-const SKIP_BUFFER_TIME = 3;
 const Skip = (props: BoxProps) => {
   const skipRemainTime = useSkipRemainTimeState();
-  const setSkipRemainTime = useSetSkipRemainTime();
-  const readMap = useReadMap();
-  const { readGameUtilParams } = useReadGameUtilParams();
-  const readPlaySpeed = useReadPlaySpeed();
-  const { readPlayer } = usePlayer();
-  const { readLyricsTextarea } = useLyricsTextarea();
+  const handleSkip = useSkip();
 
   const handleClick = () => {
     if (skipRemainTime === null) return;
 
-    const map = readMap();
-    const { count } = readGameUtilParams();
-
-    const nextLine = map.lines?.[count];
-
-    const nextStartTime = Number(nextLine[0]["time"]);
-
-    const { playSpeed } = readPlaySpeed();
-
-    const seekTime = nextStartTime - SKIP_BUFFER_TIME + (SKIP_BUFFER_TIME - playSpeed);
-
-    readPlayer().seekTo(seekTime, true);
-
-    setSkipRemainTime(null);
-    readLyricsTextarea().focus();
+    handleSkip();
   };
 
   return (
