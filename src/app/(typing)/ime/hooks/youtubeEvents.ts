@@ -26,12 +26,14 @@ export const useYTPlayEvent = () => {
 
 export const useYTEndEvent = () => {
   const { readPlayer } = usePlayer();
+  const { pauseTimer } = useTimerControls();
 
   return () => {
     console.log("プレイ終了");
 
     readPlayer().seekTo(0, true);
     readPlayer().stopVideo();
+    pauseTimer();
   };
 };
 
