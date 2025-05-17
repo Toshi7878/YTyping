@@ -44,6 +44,7 @@ const SceneView = () => {
     }
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [scene, readPlayer]);
+
   return (
     <Box ml={32}>
       <LyricsContainer visibility={scene === "ready" || scene === "play" ? "visible" : "hidden"} />
