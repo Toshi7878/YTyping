@@ -1,29 +1,33 @@
 import { RESET } from "jotai/utils";
-import { useLineCount } from "../atom/refAtoms";
+import { useLineCount, useLyricsTextarea } from "../atom/refAtoms";
 import {
   useSetDisplayLines,
   useSetJudgedWords,
-  useSetNextLyrics,
+  useSetNextDisplayLine,
   useSetNotifications,
   useSetScene,
   useSetStatus,
 } from "../atom/stateAtoms";
 
-export const useRetry = () => {
+export const useInitializePlayScene = () => {
   const setDisplayLines = useSetDisplayLines();
-  const setNextLyrics = useSetNextLyrics();
+  const setNextDisplayLine = useSetNextDisplayLine();
   const setStatus = useSetStatus();
   const setJudgedWords = useSetJudgedWords();
   const setNotifications = useSetNotifications();
   const setScene = useSetScene();
   const { writeCount } = useLineCount();
+  const { readLyricsTextarea } = useLyricsTextarea();
+
   return () => {
     setDisplayLines(RESET);
-    setNextLyrics(RESET);
+    setNextDisplayLine([]);
     setStatus(RESET);
     setJudgedWords(RESET);
     setNotifications(RESET);
     writeCount(0);
+    readLyricsTextarea().focus();
+
     setScene("play");
   };
 };

@@ -87,10 +87,16 @@ export const useReadDisplayLines = () => {
   return { readDisplayLines, readWipeLine };
 };
 
-const nextLyricsAtom = atomWithReset("");
+const nextDisplayLineAtom = atomWithReset<ParseMap["lines"][number]>([]);
 
-export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
-export const useSetNextLyrics = () => useSetAtom(nextLyricsAtom, { store });
+export const useNextDisplayLineState = () => useAtomValue(nextDisplayLineAtom, { store });
+export const useSetNextDisplayLine = () => useSetAtom(nextDisplayLineAtom, { store });
+export const useReadNextDisplayLine = () => {
+  return useAtomCallback(
+    useCallback((get) => get(nextDisplayLineAtom), []),
+    { store }
+  );
+};
 
 const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0, wordsResult: [] as WordsResult });
 
@@ -118,3 +124,8 @@ const notificationsAtom = atomWithReset<string[]>([]);
 
 export const useNotificationsState = () => useAtomValue(notificationsAtom, { store });
 export const useSetNotifications = () => useSetAtom(notificationsAtom, { store });
+
+const skipRemainTimeAtom = atomWithReset<number | null>(null);
+
+export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
+export const useSetSkipRemainTime = () => useSetAtom(skipRemainTimeAtom, { store });

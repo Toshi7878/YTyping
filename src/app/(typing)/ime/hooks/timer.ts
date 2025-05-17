@@ -1,6 +1,16 @@
 import { Ticker } from "@pixi/ticker";
+import { RESET } from "jotai/utils";
 import { useLineCount, useLyricsContainer, useWipeCount } from "../atom/refAtoms";
-import { useReadDisplayLines, useReadMap, useSetDisplayLines, useSetJudgedWords } from "../atom/stateAtoms";
+import { useReadPlaySpeed } from "../atom/speedReducerAtoms";
+import {
+  useReadDisplayLines,
+  useReadMap,
+  useReadNextDisplayLine,
+  useSetDisplayLines,
+  useSetJudgedWords,
+  useSetNextDisplayLine,
+  useSetSkipRemainTime,
+} from "../atom/stateAtoms";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
 import { ParseMap } from "../type";
 import { useGetTime } from "./getYTTime";
@@ -45,19 +55,47 @@ export const useTimerControls = () => {
 
 const useTimer = () => {
   const readMap = useReadMap();
+
+  const setNextDisplayLine = useSetNextDisplayLine();
   const setDisplayLines = useSetDisplayLines();
+  const readPlaySpeed = useReadPlaySpeed();
+  const readNextDisplayLine = useReadNextDisplayLine();
 
   const { readCount, writeCount } = useLineCount();
   const { readWipeCount, writeWipeCount } = useWipeCount();
 
-  const { getCurrentOffsettedYTTime } = useGetTime();
+  const { getCurrentOffsettedYTTime, getConstantOffsettedYTTime } = useGetTime();
   const { readLyricsContainer } = useLyricsContainer();
   const { readWipeLine } = useReadDisplayLines();
-  const { updateWipe, completeWipe } = useUpdateWipe();
+  const { calcWipeProgress, completeWipe } = useCalcWipeProgress();
   const getJudgedWords = useGetJudgedWords();
   const setJudgedWords = useSetJudgedWords();
+  const setSkipRemainTime = useSetSkipRemainTime();
 
-  const update = ({ currentOffesettedYTTime }: { currentOffesettedYTTime: number }) => {
+  const updateSkip = ({
+    currentLine,
+    count,
+    nextLineStartTime,
+    constantOffsettedYTTime,
+  }: {
+    currentLine: ParseMap["lines"][number];
+    count: number;
+    nextLineStartTime: number;
+    constantOffsettedYTTime: number;
+  }) => {
+    const SKIP_REMAIN_TIME = 5;
+
+    const isWipeCompleted = count == 0 || (count >= 0 && currentLine.length == readWipeCount() + 1) ? true : false;
+
+    const remainTime = nextLineStartTime - constantOffsettedYTTime;
+    if (remainTime > SKIP_REMAIN_TIME && isWipeCompleted) {
+      setSkipRemainTime(Number(Math.floor(remainTime - SKIP_REMAIN_TIME).toFixed()));
+    } else {
+      setSkipRemainTime(null);
+    }
+  };
+
+  const wipeUpdate = ({ currentOffesettedYTTime }: { currentOffesettedYTTime: number }) => {
     const wipeElements = readLyricsContainer()?.lastElementChild?.lastElementChild;
     if (!wipeElements) return;
     const wipeCount = readWipeCount();
@@ -76,11 +114,11 @@ const useTimer = () => {
     const wipeChunk = wipeLine?.[wipeCount];
 
     if (wipeChunk && nextWipeChunk) {
-      currentWipeElement.setAttribute("style", updateWipe({ wipeChunk, nextWipeChunk, currentOffesettedYTTime }));
+      currentWipeElement.setAttribute("style", calcWipeProgress({ wipeChunk, nextWipeChunk, currentOffesettedYTTime }));
     }
   };
 
-  const updateLyrics = (newCount: number) => {
+  const updateDisplayLines = (newCount: number) => {
     const { lines } = readMap();
 
     const startIndex = Math.max(0, newCount - DISPLAY_LINE_LENGTH);
@@ -95,34 +133,64 @@ const useTimer = () => {
     }
 
     setDisplayLines(displayLines);
+    setNextDisplayLine(RESET);
     setJudgedWords(getJudgedWords(newCount));
     writeWipeCount(0);
+  };
+
+  const updateNextDisplayLine = ({
+    nextLine,
+    constantOffsettedYTTime,
+    count,
+  }: {
+    nextLine: ParseMap["lines"][number];
+    constantOffsettedYTTime: number;
+    count: number;
+  }) => {
+    const nextDisplayLine = readNextDisplayLine();
+    if (nextDisplayLine.length === 0) {
+      const nextTime = nextLine[0].time / readPlaySpeed().playSpeed;
+
+      if (nextTime - constantOffsettedYTTime < 3) {
+        setNextDisplayLine(nextLine);
+        setJudgedWords(getJudgedWords(count));
+      }
+    }
   };
 
   return () => {
     const map = readMap();
     const count = readCount();
     const currentOffesettedYTTime = getCurrentOffsettedYTTime();
+    const constantOffsettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
 
-    update({ currentOffesettedYTTime });
+    wipeUpdate({ currentOffesettedYTTime });
 
-    const nextLine = map.lines[count]?.[0];
-    const nextLineTime = nextLine?.time;
-    if (nextLine && currentOffesettedYTTime > nextLineTime) {
+    const nextLine = map.lines[count];
+    if (!nextLine) return;
+
+    const nextLineStartTime = nextLine[0]?.time / readPlaySpeed().playSpeed;
+
+    updateNextDisplayLine({ nextLine, constantOffsettedYTTime, count });
+    if (currentOffesettedYTTime > nextLineStartTime) {
       const newCount = count + 1;
       writeCount(newCount);
-      updateLyrics(newCount);
+      updateDisplayLines(newCount);
     }
+
+    const currentLine = map.lines?.[Math.max(0, count - 1)];
+    if (!currentLine) return;
+    updateSkip({ constantOffsettedYTTime, count, currentLine, nextLineStartTime });
   };
 };
 
 type WipeChunk = ParseMap["lines"][number][number];
-const useUpdateWipe = () => {
+const useCalcWipeProgress = () => {
   const completeWipe = () => {
     return `background:-webkit-linear-gradient(0deg, #ffa500 100%, white 0%);-webkit-background-clip:text;`;
   };
 
-  const updateWipe = ({
+  const calcWipeProgress = ({
     wipeChunk,
     nextWipeChunk,
     currentOffesettedYTTime,
@@ -141,7 +209,7 @@ const useUpdateWipe = () => {
     )}%, white 0%); -webkit-background-clip:text;`;
   };
 
-  return { updateWipe, completeWipe };
+  return { calcWipeProgress, completeWipe };
 };
 
 function useGetJudgedWords() {

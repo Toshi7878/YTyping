@@ -1,5 +1,8 @@
 import { useSceneGroupState, useYTStartedState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { Link } from "@chakra-ui/next-js";
+import { Box, Button, Flex, HStack } from "@chakra-ui/react";
+import { useParams } from "next/navigation";
 import Progress from "./Progress";
 import PlayingSkipGuide from "./bottom-child/PlayingSkipGuide";
 import PlayingTotalTime from "./bottom-child/PlayingTotalTime";
@@ -11,6 +14,8 @@ const PlayingBottom = function () {
   const isYTStarted = useYTStartedState();
   const sceneGroup = useSceneGroupState();
   const isPlayed = isYTStarted && sceneGroup === "Playing";
+  const { id: mapId } = useParams();
+  const handleLinkClick = useLinkClick();
 
   return (
     <>
@@ -40,6 +45,13 @@ const PlayingBottom = function () {
         <PracticeBadges />
         <RetryBadge />
       </Flex>
+      {sceneGroup === "Ready" && (
+        <Link href={`/ime/${mapId}`} onClick={handleLinkClick}>
+          <Button position="absolute" bottom="3" right="10">
+            変換有りタイピング
+          </Button>
+        </Link>
+      )}
     </>
   );
 };

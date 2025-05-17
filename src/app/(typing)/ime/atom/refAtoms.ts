@@ -262,73 +262,20 @@ export const useLyricsContainer = () => {
   return { readLyricsContainer, writeLyricsContainer };
 };
 
-export const lineProgressAtom = atom<HTMLProgressElement | null>(null);
-const totalProgressAtom = atom<HTMLProgressElement | null>(null);
+const lyricsTextareaAtom = atom<HTMLTextAreaElement | null>(null);
 
-export const useProgress = () => {
-  const readLineProgress = useAtomCallback(
-    useCallback((get) => get(lineProgressAtom) as HTMLProgressElement, []),
-    { store }
-  );
-  const readTotalProgress = useAtomCallback(
-    useCallback((get) => get(totalProgressAtom) as HTMLProgressElement, []),
+export const useLyricsTextarea = () => {
+  const readLyricsTextarea = useAtomCallback(
+    useCallback((get) => get(lyricsTextareaAtom) as HTMLTextAreaElement, []),
     { store }
   );
 
-  const writeLineProgress = useAtomCallback(
-    useCallback((get, set, newProgress: HTMLProgressElement | null) => {
-      set(lineProgressAtom, newProgress);
+  const writeLyricsTextarea = useAtomCallback(
+    useCallback((get, set, newLyricsTextarea: HTMLTextAreaElement) => {
+      set(lyricsTextareaAtom, newLyricsTextarea);
     }, []),
     { store }
   );
 
-  const writeTotalProgress = useAtomCallback(
-    useCallback((get, set, newProgress: HTMLProgressElement | null) => {
-      set(totalProgressAtom, newProgress);
-    }, []),
-    { store }
-  );
-
-  const setLineProgressValue = useAtomCallback(
-    useCallback((get, set, value: number) => {
-      const lineProgress = get(lineProgressAtom) as HTMLProgressElement;
-      lineProgress.value = value;
-    }, []),
-    { store }
-  );
-
-  const setTotalProgressValue = useAtomCallback(
-    useCallback((get, set, value: number) => {
-      const totalProgress = get(totalProgressAtom) as HTMLProgressElement;
-      totalProgress.value = value;
-    }, []),
-    { store }
-  );
-
-  return {
-    readTotalProgress,
-    readLineProgress,
-    writeLineProgress,
-    writeTotalProgress,
-    setLineProgressValue,
-    setTotalProgressValue,
-  };
-};
-
-const lineResultCardsAtom = atom<HTMLDivElement[]>([]);
-
-export const useResultCards = () => {
-  const readResultCards = useAtomCallback(
-    useCallback((get) => get(lineResultCardsAtom) as HTMLDivElement[], []),
-    { store }
-  );
-
-  const writeResultCards = useAtomCallback(
-    useCallback((get, set, newCards: HTMLDivElement[]) => {
-      set(lineResultCardsAtom, newCards);
-    }, []),
-    { store }
-  );
-
-  return { readResultCards, writeResultCards };
+  return { readLyricsTextarea, writeLyricsTextarea };
 };

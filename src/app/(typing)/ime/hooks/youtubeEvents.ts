@@ -1,17 +1,18 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { useGameUtilityReferenceParams, useLineCount, usePlayer, useYTStatus } from "../atom/refAtoms";
-import { useReadGameUtilParams, useSetScene, useSetYTStarted } from "../atom/stateAtoms";
+import { useReadGameUtilParams, useSetYTStarted } from "../atom/stateAtoms";
+import { useInitializePlayScene } from "./reset";
 import { useTimerControls } from "./timer";
 
 export const useYTPlayEvent = () => {
-  const setScene = useSetScene();
   const { startTimer } = useTimerControls();
 
   const { readPlayer } = usePlayer();
   const setYTStarted = useSetYTStarted();
   const { readYTStatus, writeYTStatus } = useYTStatus();
   const readGameStateUtils = useReadGameUtilParams();
+  const initializePlayScene = useInitializePlayScene();
 
   return async () => {
     console.log("再生 1");
@@ -41,7 +42,7 @@ export const useYTPlayEvent = () => {
     }
 
     if (scene === "ready") {
-      setScene("play");
+      initializePlayScene();
     }
 
     setYTStarted(true);

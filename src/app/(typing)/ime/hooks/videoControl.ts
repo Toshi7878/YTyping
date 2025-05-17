@@ -1,17 +1,17 @@
 import { RESET } from "jotai/utils";
 import { usePlayer } from "../atom/refAtoms";
 import { useSetDisplayLines, useSetScene } from "../atom/stateAtoms";
-import { useRetry } from "./reset";
+import { useInitializePlayScene } from "./reset";
 
 const useVideoControl = () => {
   const { readPlayer } = usePlayer();
   const setScene = useSetScene();
   const setDisplayLines = useSetDisplayLines();
-  const retry = useRetry();
+  const initializePlayScene = useInitializePlayScene();
 
   const handleStart = () => {
     readPlayer().stopVideo();
-    retry();
+    initializePlayScene();
     readPlayer().playVideo();
   };
 

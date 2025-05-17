@@ -14,6 +14,7 @@
 }
 
 .shadow-layer::before,
-.wipe-layer::before {
+.wipe-layer::before,
+#next_lyrics::before {
   content: "\200B";
 }

@@ -67,12 +67,14 @@ function Content({ mapInfo }: ContentProps) {
     };
   }, []);
 
+  const loadingMessage = mapData !== undefined ? "ひらがな判定生成中..." : "譜面読み込み中...";
+
   return (
     <Box as="main">
       <LoadingOverlayWrapper
         active={map === null}
         spinner={true}
-        text="譜面読み込み中..."
+        text={loadingMessage}
         styles={{
           overlay: (base: React.CSSProperties) => ({
             ...base,

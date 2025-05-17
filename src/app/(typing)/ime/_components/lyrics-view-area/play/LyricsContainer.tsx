@@ -1,17 +1,18 @@
 import { Box, Flex, FlexProps, Text } from "@chakra-ui/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { useLyricsContainer } from "../../../atom/refAtoms";
-import { useDisplayLinesState } from "../../../atom/stateAtoms";
+import { useDisplayLinesState, useNextDisplayLineState } from "../../../atom/stateAtoms";
 import { COMPLETED_WIPE_COLOR, INITIAL_WIPE_COLOR } from "../../../ts/const";
 import "./lyrics-container.css";
+import Skip from "./Skip";
 
 const LyricsContainer = (props: FlexProps) => {
   return (
-    <Flex id="lyrics-container" flexDirection="column" mb={2} {...props}>
+    <Flex id="lyrics-container" position="relative" flexDirection="column" mb={2} {...props}>
       <Lyrics />
-      <Box id="next_lyrics" color="#aaa" fontSize="60%">
-        NEXT: test
-      </Box>
+      <NextLyrics />
+      <Skip position="absolute" bottom={0.5} left={-24} />
     </Flex>
   );
 };
@@ -55,6 +56,32 @@ const Lyrics = () => {
           </Box>
         </Box>
       ))}
+    </Box>
+  );
+};
+
+const NextLyrics = () => {
+  const nextDisplayLine = useNextDisplayLineState();
+  return (
+    <Box id="next_lyrics" color="#aaa" fontSize="60%">
+      <Text as="span">{`NEXT: `}</Text>
+      <AnimatePresence>
+        {nextDisplayLine.length > 0 && (
+          <motion.div
+            key="next-lyrics"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: "inline" }}
+          >
+            {nextDisplayLine.map((chunk) => (
+              <Text as="span" key={String(chunk.time)}>
+                {chunk.word}
+              </Text>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Box>
   );
 };

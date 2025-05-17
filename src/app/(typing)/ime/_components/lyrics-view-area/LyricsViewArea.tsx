@@ -33,7 +33,7 @@ const SceneView = () => {
   return (
     <Box ml={32}>
       <LyricsContainer visibility={scene === "ready" || scene === "play" ? "visible" : "hidden"} />
-      {scene === "end" && <ResultScore />}
+      {scene === "end" && <ResultScore position="absolute" top="2" />}
     </Box>
   );
 };

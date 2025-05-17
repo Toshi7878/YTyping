@@ -77,7 +77,7 @@ const speedReducerAtom = atom(
 
 export const usePlaySpeedState = () => useAtomValue(speedBaseAtom, { store });
 export const usePlaySpeedReducer = () => useSetAtom(speedReducerAtom, { store });
-export const usePlaySpeedStateRef = () => {
+export const useReadPlaySpeed = () => {
   return useAtomCallback(
     useCallback((get) => get(speedBaseAtom), []),
     { store }
