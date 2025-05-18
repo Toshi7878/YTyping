@@ -9,6 +9,7 @@ type ParseMap = {
   words: string[][][][];
   totalNotes: number;
   initWordResults: WordResults;
+  textWords: string[];
 };
 type Lines = ParseMap["lines"][number][];
 

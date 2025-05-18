@@ -71,6 +71,7 @@ export interface ThemeColors {
       other: `#${string}`;
       like: `#${string}`;
       clap: `#${string}`;
+      failure: `#${string}`;
       word: {
         correct: string;
         nextChar: string;

@@ -106,7 +106,7 @@ function Content({ mapInfo }: ContentProps) {
         style={{ height: youtubeHeight }}
       />
 
-      <Flex ref={lyricsViewAreaRef} width="100%" position="fixed" bottom="140" left="0" flexDirection="column">
+      <Flex ref={lyricsViewAreaRef} width="100%" position="fixed" bottom="150" left="0" flexDirection="column">
         <ViewArea />
         <InputTextarea />
         <MenuBar />

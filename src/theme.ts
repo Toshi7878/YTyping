@@ -56,6 +56,7 @@ const darkTheme: ThemeColors = {
       english: "#f472b6",
       other: "#ac44cd",
       like: "#f472b6",
+      failure: "#AE81FF",
       clap: "#ffb825",
       word: {
         correct: "#3182ce",
