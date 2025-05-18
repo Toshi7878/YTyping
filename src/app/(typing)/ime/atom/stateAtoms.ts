@@ -124,7 +124,10 @@ const updateResultsAtom = atom(null, (get, set, updateResult: { index: number; r
 
   set(wordResultsAtom, (prev) => {
     const newResults = [...prev];
-    newResults[index] = result;
+
+    if (newResults[index]) {
+      newResults[index] = result;
+    }
     return newResults;
   });
 });
