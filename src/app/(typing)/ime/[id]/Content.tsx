@@ -10,7 +10,7 @@ import InputTextarea from "../_components/InputTextarea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/Notifications";
 import ViewArea from "../_components/view-area/ViewArea";
-import { useMapState, useSetMap } from "../atom/stateAtoms";
+import { useMapState, useReadScene, useSetMap } from "../atom/stateAtoms";
 import { useParseImeMap } from "../hooks/parseImeMap";
 import { usePathChangeAtomReset } from "../hooks/reset";
 
@@ -29,6 +29,7 @@ function Content({ mapInfo }: ContentProps) {
   const parseImeMap = useParseImeMap();
   const map = useMapState();
   const pathChangeAtomReset = usePathChangeAtomReset();
+  const readScene = useReadScene();
 
   useEffect(() => {
     if (mapData) {
@@ -59,7 +60,9 @@ function Content({ mapInfo }: ContentProps) {
       const bottomValue = computedStyle.bottom;
       const bottomPx = bottomValue === "auto" ? 0 : parseInt(bottomValue, 10) || 0;
 
-      setYoutubeHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px)`);
+      if (readScene() === "ready") {
+        setYoutubeHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px)`);
+      }
       setNotificationsHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px - 20px)`);
     };
 
