@@ -65,7 +65,7 @@ export const useJudgeTargetWords = () => {
         .find(([index, result]) => i > index && result.evaluation !== "Skip");
       const [prevIndex, prevResult] = prevResultEntry ?? [];
 
-      if (prevIndex !== undefined && prevResult?.evaluation === "None" && i - wordIndex > 0) {
+      if (prevIndex !== undefined && prevResult?.evaluation === "None") {
         const { inputs } = prevResult;
 
         const fixedText = getBeforeTarget(inputs[inputs.length - 1] ?? "", correct.correcting);
