@@ -15,4 +15,5 @@ export type WordsResult = {
   input: string;
   evaluation: "Great" | "Good" | "Skip" | "None";
   targetWord: string | undefined;
+  wordIndex: number;
 }[];

@@ -39,7 +39,7 @@ export const useJudgeTargetWords = () => {
           ...prev,
           wordsResult: [
             ...prev.wordsResult,
-            { input: missComment, evaluation: "None" as const, targetWord: correct.lyrics },
+            { input: missComment, evaluation: "None" as const, targetWord: correct.lyrics, wordIndex: i + 1 },
           ],
         }));
       }
@@ -61,6 +61,7 @@ export const useJudgeTargetWords = () => {
               input: correct.lyrics,
               evaluation: correct.judge,
               targetWord: isGood ? joinedJudgeWord : undefined,
+              wordIndex: i + 1,
             },
           ],
           wordIndex: i + 1,
@@ -80,10 +81,13 @@ export const useJudgeTargetWords = () => {
             input: userInput,
             evaluation: "None" as const,
             targetWord: undefined,
+            wordIndex: readStatus().wordIndex,
           },
         ],
       }));
     }
+
+    console.log(readStatus().wordsResult);
   };
 };
 
