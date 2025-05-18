@@ -1,4 +1,5 @@
 import { MapLine } from "@/types/map";
+import { useReadMap } from "../atom/stateAtoms";
 import { formatWord } from "./formatWord";
 import { useGenerateTokenizedWords } from "./repl";
 
@@ -64,7 +65,12 @@ export const useParseImeMap = () => {
 
     const totalNotes = words.flat(2).reduce((acc, word) => acc + word[0].length, 0);
 
-    return { lines, words, totalNotes };
+    const initWordResults = Array.from({ length: lines.length }, () => ({
+      input: undefined,
+      evaluation: "Skip" as const,
+    }));
+
+    return { lines, words, totalNotes, initWordResults };
   };
 };
 
@@ -137,4 +143,16 @@ const deleteRubyTag = (text: string) => {
     }
   }
   return text;
+};
+
+const useReadTextWords = () => {
+  const readMap = useReadMap();
+
+  return () => {
+    return readMap()
+      .words.flat(1)
+      .map((word) => {
+        return word.map((chars) => chars[0]).join("");
+      });
+  };
 };

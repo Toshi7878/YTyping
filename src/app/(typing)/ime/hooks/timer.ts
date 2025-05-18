@@ -224,10 +224,10 @@ const useCalcWipeProgress = () => {
   return { calcWipeProgress, completeWipe };
 };
 
-function useGetJudgedWords() {
+const useGetJudgedWords = () => {
   const readMap = useReadMap();
 
   return (count: number) => {
     return readMap().words.slice(0, count).flat(1);
   };
-}
+};

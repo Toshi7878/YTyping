@@ -5,6 +5,7 @@ import {
   useReadStatus,
   useSetNotifications,
   useSetStatus,
+  useUpdateWordResults,
 } from "../atom/stateAtoms";
 import { formatWord } from "./formatWord";
 
@@ -14,6 +15,7 @@ export const useJudgeTargetWords = () => {
   const setStatus = useSetStatus();
   const setNotifications = useSetNotifications();
   const readMap = useReadMap();
+  const updateWordResults = useUpdateWordResults();
 
   return (chatData: string) => {
     let userInput = formatComment(chatData);
@@ -32,38 +34,32 @@ export const useJudgeTargetWords = () => {
 
       const lyricsIndex = userInput.indexOf(correct.lyrics);
 
-      // ミス部分の記録
       if (lyricsIndex > 0) {
         const missComment = userInput.slice(0, lyricsIndex);
-        setStatus((prev) => ({
-          ...prev,
-          wordsResult: [
-            ...prev.wordsResult,
-            { input: missComment, evaluation: "None" as const, targetWord: correct.lyrics, wordIndex: i + 1 },
-          ],
-        }));
+        updateWordResults({
+          index: i,
+          result: { input: missComment, evaluation: "None" as const },
+        });
       }
 
       // 正解部分の記録
       userInput = userInput.slice(lyricsIndex + correct.lyrics.length);
-      const joinedJudgeWord = joinWord(judgedWord);
+
+      updateWordResults({
+        index: i,
+        result: {
+          input: correct.lyrics,
+          evaluation: correct.judge,
+        },
+      });
 
       setStatus((prev) => {
+        const joinedJudgeWord = joinWord(judgedWord);
         const isGood = correct.judge === "Good";
         const newTypeCount = prev.typeCount + joinedJudgeWord.length / (isGood ? 1.5 : 1);
         return {
-          ...prev,
           typeCount: newTypeCount,
           score: Math.round((1000 / readMap().totalNotes) * newTypeCount),
-          wordsResult: [
-            ...prev.wordsResult,
-            {
-              input: correct.lyrics,
-              evaluation: correct.judge,
-              targetWord: isGood ? joinedJudgeWord : undefined,
-              wordIndex: i + 1,
-            },
-          ],
           wordIndex: i + 1,
         };
       });
@@ -73,21 +69,14 @@ export const useJudgeTargetWords = () => {
 
     // 残りの未判定入力を記録
     if (userInput) {
-      setStatus((prev) => ({
-        ...prev,
-        wordsResult: [
-          ...prev.wordsResult,
-          {
-            input: userInput,
-            evaluation: "None" as const,
-            targetWord: undefined,
-            wordIndex: readStatus().wordIndex,
-          },
-        ],
-      }));
+      updateWordResults({
+        index: readStatus().wordIndex,
+        result: {
+          input: userInput,
+          evaluation: "None" as const,
+        },
+      });
     }
-
-    console.log(readStatus().wordsResult);
   };
 };
 
@@ -146,7 +135,7 @@ function judgeComment(judgedWords: string[][], comment: string) {
           // 再帰的に再判定
           return judgeComment(judgedWords, comment);
         } else {
-          return { lyrics: "", judge: "None" as const, comment };
+          return { lyrics: undefined, judge: "None" as const, comment };
         }
       }
     }

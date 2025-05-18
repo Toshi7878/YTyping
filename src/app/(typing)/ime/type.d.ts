@@ -8,12 +8,11 @@ type ParseMap = {
   }[][];
   words: string[][][][];
   totalNotes: number;
+  initWordResults: WordResults;
 };
 type Lines = ParseMap["lines"][number][];
 
-export type WordsResult = {
-  input: string;
+export type WordResults = {
+  input: string | undefined;
   evaluation: "Great" | "Good" | "Skip" | "None";
-  targetWord: string | undefined;
-  wordIndex: number;
 }[];

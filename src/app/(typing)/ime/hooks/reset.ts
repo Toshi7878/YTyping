@@ -2,6 +2,7 @@ import { RESET } from "jotai/utils";
 import { useInputTextarea, usePlayer } from "../atom/refAtoms";
 import { usePlaySpeedReducer } from "../atom/speedReducerAtoms";
 import {
+  useInitWordResults,
   useResetGameUtilParams,
   useSetMap,
   useSetNextDisplayLine,
@@ -15,12 +16,17 @@ export const useInitializePlayScene = () => {
   const setStatus = useSetStatus();
   const setNotifications = useSetNotifications();
   const setScene = useSetScene();
+  const initWordResults = useInitWordResults();
+
   const { readInputTextarea } = useInputTextarea();
+
   const resetGameUtils = useResetGameUtilParams();
   return () => {
     resetGameUtils();
     setNextDisplayLine([]);
     setStatus(RESET);
+    initWordResults();
+
     setNotifications(RESET);
     readInputTextarea().focus();
 

@@ -4,7 +4,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
-import { ParseMap, SceneType, WordsResult } from "../type";
+import { ParseMap, SceneType, WordResults } from "../type";
 import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
@@ -105,17 +105,35 @@ export const useSetNextDisplayLine = () => useSetAtom(nextDisplayLineAtom, { sto
 export const useSetJudgedWords = () => useSetAtom(judgedWordsAtom, { store });
 export const useSetTextareaPlaceholderType = () => useSetAtom(textareaPlaceholderTypeAtom, { store });
 
-const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0, wordsResult: [] as WordsResult });
-
+const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0 });
 export const useStatusState = () => useAtomValue(statusAtom, { store });
 export const useSetStatus = () => useSetAtom(statusAtom, { store });
-
 export const useReadStatus = () => {
   return useAtomCallback(
     useCallback((get) => get(statusAtom), []),
     { store }
   );
 };
+
+const wordResultsAtom = atomWithReset([] as WordResults);
+const updateResultsAtom = atom(null, (get, set, updateResult: { index: number; result: WordResults[number] }) => {
+  const { index, result } = updateResult;
+
+  set(wordResultsAtom, (prev) => {
+    const newResults = [...prev];
+    newResults[index] = result;
+    return newResults;
+  });
+});
+const initResultsAtom = atom(null, (get, set) => {
+  const map = get(mapAtom);
+  if (map) {
+    set(wordResultsAtom, map.initWordResults);
+  }
+});
+
+export const useInitWordResults = () => useSetAtom(initResultsAtom, { store });
+export const useUpdateWordResults = () => useSetAtom(updateResultsAtom, { store });
 
 const notificationsAtom = atomWithReset<string[]>([]);
 
