@@ -35,25 +35,23 @@ export const useJudgeTargetWords = () => {
 
       const correct = judgeComment(judgedWord, userInput);
 
-      if (!correct.lyrics) continue;
-
-      const lyricsIndex = userInput.indexOf(correct.lyrics);
-
-      if (lyricsIndex > 0) {
-        const missComment = userInput.slice(0, lyricsIndex);
+      if (correct.judge === "None") {
         updateWordResults({
           index: i,
-          result: { input: missComment, evaluation: "None" as const },
+          result: { input: correct.correcting + correct.comment[0], evaluation: "None" as const },
         });
+        continue;
       }
 
+      const lyricsIndex = userInput.indexOf(correct.correcting);
+
       // 正解部分の記録
-      userInput = userInput.slice(lyricsIndex + correct.lyrics.length);
+      userInput = userInput.slice(lyricsIndex + correct.correcting.length);
 
       updateWordResults({
         index: i,
         result: {
-          input: correct.lyrics,
+          input: correct.correcting,
           evaluation: correct.judge,
         },
       });
@@ -69,7 +67,7 @@ export const useJudgeTargetWords = () => {
         };
       });
 
-      setNotifications((prev) => [...prev, `${i}: ${correct.judge}! ${correct.lyrics}`]);
+      setNotifications((prev) => [...prev, `${i}: ${correct.judge}! ${correct.correcting}`]);
     }
 
     // 残りの未判定入力を記録
@@ -146,7 +144,7 @@ function judgeComment(judgedWords: string[][], comment: string) {
     }
   }
 
-  return { lyrics: correcting, judge, comment };
+  return { correcting, judge, comment };
 }
 
 // function generateCombinations(input: string, index: number = 0, current: string = "") {
