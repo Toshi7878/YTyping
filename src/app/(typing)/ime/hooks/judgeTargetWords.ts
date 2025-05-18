@@ -55,7 +55,7 @@ export const useJudgeTargetWords = () => {
         .find(([index, result]) => i > index && result.evaluation !== "Skip");
       const [prevIndex, prevResult] = prevResultEntry ?? [];
 
-      if (prevIndex !== undefined && prevResult?.evaluation === "None") {
+      if (prevIndex !== undefined && prevResult?.evaluation === "None" && i - wordIndex > 0) {
         updateWordResults({
           index: prevIndex,
           result: {
