@@ -3,6 +3,7 @@ import {
   useReadGameUtilParams,
   useReadMap,
   useReadStatus,
+  useReadWordResults,
   useSetNotifications,
   useSetStatus,
   useUpdateWordResults,
@@ -16,6 +17,7 @@ export const useJudgeTargetWords = () => {
   const setNotifications = useSetNotifications();
   const readMap = useReadMap();
   const updateWordResults = useUpdateWordResults();
+  const readWordResults = useReadWordResults();
 
   return (chatData: string) => {
     let userInput = formatComment(chatData);
@@ -36,11 +38,31 @@ export const useJudgeTargetWords = () => {
       const correct = judgeComment(judgedWord, userInput);
 
       if (correct.judge === "None") {
+        const prevEvaluation = readWordResults()[i - 1]?.evaluation;
+        const isPrevFailure = prevEvaluation === "None" || prevEvaluation === "Skip";
         updateWordResults({
           index: i,
-          result: { input: correct.correcting + correct.comment[0], evaluation: "None" as const },
+          result: {
+            input: isPrevFailure ? undefined : userInput,
+            evaluation: isPrevFailure ? "Skip" : "None",
+          },
         });
         continue;
+      }
+
+      const prevResultEntry = [...readWordResults().entries()]
+        .reverse()
+        .find(([index, result]) => i > index && result.evaluation !== "Skip");
+      const [prevIndex, prevResult] = prevResultEntry ?? [];
+
+      if (prevIndex !== undefined && prevResult?.evaluation === "None") {
+        updateWordResults({
+          index: prevIndex,
+          result: {
+            ...prevResult,
+            input: getBeforeTarget(prevResult?.input ?? "", correct.correcting),
+          },
+        });
       }
 
       const lyricsIndex = userInput.indexOf(correct.correcting);
@@ -61,7 +83,7 @@ export const useJudgeTargetWords = () => {
         const isGood = correct.judge === "Good";
         const newTypeCount = prev.typeCount + joinedJudgeWord.length / (isGood ? 1.5 : 1);
         return {
-          typeCount: newTypeCount,
+          typeCount: Math.floor(newTypeCount),
           score: Math.round((1000 / readMap().totalNotes) * newTypeCount),
           wordIndex: i + 1,
         };
@@ -138,7 +160,7 @@ function judgeComment(judgedWords: string[][], comment: string) {
           // 再帰的に再判定
           return judgeComment(judgedWords, comment);
         } else {
-          return { lyrics: undefined, judge: "None" as const, comment };
+          return { correcting, judge: "None" as const, comment };
         }
       }
     }
@@ -181,4 +203,9 @@ function joinWord(word: string[][]) {
   }
 
   return str;
+}
+
+function getBeforeTarget(str: string, target: string): string {
+  const index = str.indexOf(target);
+  return index !== -1 ? str.slice(0, index) : "";
 }

@@ -118,6 +118,12 @@ export const useReadStatus = () => {
 const wordResultsAtom = atomWithReset([] as WordResults);
 
 export const useWordResultsState = () => useAtomValue(wordResultsAtom, { store });
+export const useReadWordResults = () => {
+  return useAtomCallback(
+    useCallback((get) => get(wordResultsAtom), []),
+    { store }
+  );
+};
 
 const updateResultsAtom = atom(null, (get, set, updateResult: { index: number; result: WordResults[number] }) => {
   const { index, result } = updateResult;
