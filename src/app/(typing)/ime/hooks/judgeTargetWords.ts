@@ -38,14 +38,24 @@ export const useJudgeTargetWords = () => {
       const correct = judgeComment(judgedWord, userInput);
 
       if (correct.judge === "None") {
-        const prevEvaluation = readWordResults()[i - 1]?.evaluation;
+        const wordResults = readWordResults();
+        const prevEvaluation = wordResults[i - 1]?.evaluation;
         const isPrevFailure = prevEvaluation === "None" || prevEvaluation === "Skip";
+        const currentResult = wordResults[i];
+
+        const result = isPrevFailure
+          ? {
+              inputs: [],
+              evaluation: "Skip" as const,
+            }
+          : {
+              inputs: [...currentResult.inputs, userInput],
+              evaluation: "None" as const,
+            };
+
         updateWordResults({
           index: i,
-          result: {
-            input: isPrevFailure ? undefined : userInput,
-            evaluation: isPrevFailure ? "Skip" : "None",
-          },
+          result,
         });
         continue;
       }
@@ -56,24 +66,26 @@ export const useJudgeTargetWords = () => {
       const [prevIndex, prevResult] = prevResultEntry ?? [];
 
       if (prevIndex !== undefined && prevResult?.evaluation === "None" && i - wordIndex > 0) {
+        const { inputs } = prevResult;
+
+        const fixedText = getBeforeTarget(inputs[inputs.length - 1] ?? "", correct.correcting);
         updateWordResults({
           index: prevIndex,
           result: {
-            ...prevResult,
-            input: getBeforeTarget(prevResult?.input ?? "", correct.correcting),
+            evaluation: "None",
+            inputs: [...prevResult.inputs, fixedText].filter((input) => input !== ""),
           },
         });
       }
 
       const lyricsIndex = userInput.indexOf(correct.correcting);
 
-      // 正解部分の記録
       userInput = userInput.slice(lyricsIndex + correct.correcting.length);
 
       updateWordResults({
         index: i,
         result: {
-          input: correct.correcting,
+          inputs: [correct.correcting],
           evaluation: correct.judge,
         },
       });
@@ -90,17 +102,6 @@ export const useJudgeTargetWords = () => {
       });
 
       setNotifications((prev) => [...prev, `${i}: ${correct.judge}! ${correct.correcting}`]);
-    }
-
-    // 残りの未判定入力を記録
-    if (userInput) {
-      updateWordResults({
-        index: readStatus().wordIndex,
-        result: {
-          input: userInput,
-          evaluation: "None" as const,
-        },
-      });
     }
   };
 };

@@ -1,6 +1,7 @@
 import CustomModalContent from "@/components/custom-ui/CustomModalContent";
 import { ThemeColors } from "@/types";
 import {
+  Box,
   Flex,
   Modal,
   ModalBody,
@@ -117,7 +118,11 @@ const ResultWordsTable = () => {
                 <Td textAlign="center" width={TD_WIDTHS.Evaluation}>
                   {isJudged ? <EvaluationText evaluation={result.evaluation} /> : "-"}
                 </Td>
-                <Td width={TD_WIDTHS.Input}>{result.input}</Td>
+                <Td width={TD_WIDTHS.Input} lineHeight="1.5">
+                  {result.inputs.map((input, i) => (
+                    <Box key={i}>{input}</Box>
+                  ))}
+                </Td>
                 <Td width={TD_WIDTHS.Song}>{result.evaluation !== "Great" && map?.textWords[index]}</Td>
               </Tr>
             );

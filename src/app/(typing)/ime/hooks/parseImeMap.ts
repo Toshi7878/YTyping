@@ -1,4 +1,5 @@
 import { MapLine } from "@/types/map";
+import { WordResults } from "../type";
 import { formatWord } from "./formatWord";
 import { useGenerateTokenizedWords } from "./repl";
 
@@ -64,8 +65,8 @@ export const useParseImeMap = () => {
 
     const totalNotes = words.flat(2).reduce((acc, word) => acc + word[0].length, 0);
 
-    const initWordResults = Array.from({ length: lines.length }, () => ({
-      input: undefined,
+    const initWordResults: WordResults = Array.from({ length: lines.length }, () => ({
+      inputs: [],
       evaluation: "Skip" as const,
     }));
 

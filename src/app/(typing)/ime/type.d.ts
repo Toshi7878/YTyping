@@ -14,6 +14,6 @@ type ParseMap = {
 type Lines = ParseMap["lines"][number][];
 
 export type WordResults = {
-  input: string | undefined;
+  inputs: string[];
   evaluation: "Great" | "Good" | "Skip" | "None";
 }[];
