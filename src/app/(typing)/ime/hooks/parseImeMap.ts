@@ -65,14 +65,14 @@ export const useParseImeMap = () => {
 
     const totalNotes = words.flat(2).reduce((acc, word) => acc + word[0].length, 0);
 
-    const initWordResults: WordResults = Array.from({ length: lines.length }, () => ({
-      inputs: [],
-      evaluation: "Skip" as const,
-    }));
-
     const textWords = words.flat(1).map((word) => {
       return word.map((chars) => chars[0]).join("");
     });
+
+    const initWordResults: WordResults = Array.from({ length: textWords.length }, () => ({
+      inputs: [],
+      evaluation: "Skip" as const,
+    }));
 
     return { lines, words, totalNotes, initWordResults, textWords };
   };
