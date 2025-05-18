@@ -20,8 +20,13 @@ export const useJudgeTargetWords = () => {
   return (chatData: string) => {
     let userInput = formatComment(chatData);
 
+    const { textWords } = readMap();
     const { wordIndex } = readStatus();
     const { judgedWords } = readGameUtilParams();
+
+    if (wordIndex >= textWords.length) {
+      return;
+    }
 
     for (let i = wordIndex; i < judgedWords.length; i++) {
       const judgedWord = judgedWords[i];

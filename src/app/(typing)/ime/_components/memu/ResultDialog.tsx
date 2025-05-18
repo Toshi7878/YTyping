@@ -106,18 +106,22 @@ const ResultWordsTable = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {wordResults.map((result, index) => (
-            <Tr key={index} className="[&>td]:py-3">
-              <Td textAlign="center" className="font-mono" width={TD_WIDTHS.No}>
-                {index + 1}
-              </Td>
-              <Td textAlign="center" width={TD_WIDTHS.Evaluation}>
-                {status.wordIndex >= index ? <EvaluationText evaluation={result.evaluation} /> : "-"}
-              </Td>
-              <Td width={TD_WIDTHS.Input}>{result.input}</Td>
-              <Td width={TD_WIDTHS.Song}>{result.evaluation !== "Great" && map?.textWords[index]}</Td>
-            </Tr>
-          ))}
+          {wordResults.map((result, index) => {
+            const isJudged = status.wordIndex > index || (status.wordIndex === index && result.evaluation !== "Skip");
+
+            return (
+              <Tr key={index} className="[&>td]:py-3">
+                <Td textAlign="center" className="font-mono" width={TD_WIDTHS.No}>
+                  {index + 1}
+                </Td>
+                <Td textAlign="center" width={TD_WIDTHS.Evaluation}>
+                  {isJudged ? <EvaluationText evaluation={result.evaluation} /> : "-"}
+                </Td>
+                <Td width={TD_WIDTHS.Input}>{result.input}</Td>
+                <Td width={TD_WIDTHS.Song}>{result.evaluation !== "Great" && map?.textWords[index]}</Td>
+              </Tr>
+            );
+          })}
         </Tbody>
       </Table>
     </div>
