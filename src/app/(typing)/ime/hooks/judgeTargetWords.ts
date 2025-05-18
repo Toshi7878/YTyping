@@ -73,7 +73,7 @@ export const useJudgeTargetWords = () => {
           index: prevIndex,
           result: {
             evaluation: "None",
-            inputs: [...prevResult.inputs, fixedText].filter((input) => input !== ""),
+            inputs: [...prevResult.inputs.slice(0, -1), fixedText].filter((input) => input !== ""),
           },
         });
       }
