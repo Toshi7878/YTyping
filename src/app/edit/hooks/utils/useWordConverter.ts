@@ -42,12 +42,10 @@ export const useWordConverter = () => {
     };
 
     if (isNeedsConversion) {
-      const convertedWord = await fetchMorph(formatedLyrics);
-      return transformSymbolBasedOnPreviousChar(filterAllowedCharacters(filterWordSymbol({ sentence: convertedWord })));
+      const convertedWord = await fetchMorph(filterWordSymbol({ sentence: formatedLyrics }));
+      return transformSymbolBasedOnPreviousChar(filterAllowedCharacters(convertedWord));
     } else {
-      return transformSymbolBasedOnPreviousChar(
-        filterAllowedCharacters(filterWordSymbol({ sentence: formatedLyrics }))
-      );
+      return transformSymbolBasedOnPreviousChar(filterAllowedCharacters(formatedLyrics));
     }
   };
 };
