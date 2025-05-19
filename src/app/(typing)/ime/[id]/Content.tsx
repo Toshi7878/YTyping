@@ -1,9 +1,10 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { MapLine } from "@/types/map";
 import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import ImeTypeYouTubeContent from "../_components/ImeTypeYoutubeContent";
 import InputTextarea from "../_components/InputTextarea";
@@ -30,15 +31,23 @@ function Content({ mapInfo }: ContentProps) {
   const map = useMapState();
   const pathChangeAtomReset = usePathChangeAtomReset();
   const readScene = useReadScene();
+  const [tokenizerError, setTokenizerError] = useState<boolean>(false);
+  const loadMap = useCallback(
+    async (mapData: MapLine[]) => {
+      setTokenizerError(false);
+      try {
+        const map = await parseImeMap(mapData);
+        setMap(map);
+      } catch (error) {
+        setTokenizerError(true);
+      }
+    },
+    [parseImeMap, setMap]
+  );
 
   useEffect(() => {
     if (mapData) {
-      const loadMap = async () => {
-        const map = await parseImeMap(mapData);
-        setMap(map);
-      };
-
-      loadMap();
+      loadMap(mapData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
@@ -77,9 +86,18 @@ function Content({ mapInfo }: ContentProps) {
     return () => {
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [readScene]);
 
-  const loadingMessage = mapData !== undefined ? "ひらがな判定生成中..." : "譜面読み込み中...";
+  const loadingMessage = tokenizerError ? (
+    <Flex>
+      ワード生成に失敗しました。
+      <Button onClick={() => loadMap(mapData!)}>再試行</Button>
+    </Flex>
+  ) : mapData !== undefined ? (
+    "ひらがな判定生成中..."
+  ) : (
+    "譜面読み込み中..."
+  );
 
   return (
     <Box as="main">
