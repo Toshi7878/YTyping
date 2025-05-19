@@ -1,3 +1,5 @@
+import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
+
 const REGEX_LIST = ["[^-ぁ-んゔ", "ァ-ンヴ", "一-龥", "\\w", "\\d", " ", "々%&@&=+ー～~\u00C0-\u00FF"];
 const HANGUL = ["\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uFFA0-\uFFDC\uFFA0-\uFFDC"];
 const CYRILLIC_ALPHABET = ["\u0400-\u04FF]"];
@@ -12,7 +14,7 @@ export const formatWord = (text: string) => {
 
   text = text.replace(/<[^>]*>/, ""); //単体のHTMLタグを削除
 
-  text = normalizeSymbols(text); //記号整形
+  text = normalizeSimilarSymbol(text); //記号整形
 
   //   if (lrcSettingData["lrc-eng-case-sensitive"].data) {
   //     text = text.normalize("NFKC"); //全角を半角に変換
@@ -28,17 +30,4 @@ export const formatWord = (text: string) => {
   text = text.replace(new RegExp(LYRICS_FORMAT_REGEX, "g"), ""); //regexListに含まれていない文字を削除
 
   return text;
-};
-
-const normalizeSymbols = (text: string) => {
-  return text
-    .replace(/…/g, "...")
-    .replace(/‥/g, "..")
-    .replace(/･/g, "・")
-    .replace(/〜/g, "～")
-    .replace(/｢/g, "「")
-    .replace(/｣/g, "」")
-    .replace(/､/g, "、")
-    .replace(/｡/g, "。")
-    .replace(/－/g, "ー");
 };

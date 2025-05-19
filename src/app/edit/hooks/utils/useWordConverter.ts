@@ -12,6 +12,7 @@ import { useFetchCustomDic } from "@/util/global-hooks/fetch/fetchCustomDic";
 import { kanaToHira } from "@/util/global-hooks/kanaToHira";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useReplaceReadingWithCustomDic } from "@/util/global-hooks/useMorphReplaceCustomDic";
+import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
 import { useSession } from "next-auth/react";
 import { useReadWordConvertOption } from "../../atoms/storageAtoms";
 import { ConvertOptionsType } from "../../ts/type";
@@ -104,24 +105,9 @@ export const useLyricsFormatUtils = () => {
   };
 
   const formatSimilarChar = (lyrics: string) => {
-    return lyrics
-      .replace(/\r$/, "")
-      .replace(/…/g, "...")
-      .replace(/‥/g, "..")
-      .replace(/･/g, "・")
-      .replace(/“/g, '"')
-      .replace(/”/g, '"')
-      .replace(/〜/g, "～")
-      .replace(/｢/g, "「")
-      .replace(/｣/g, "」")
-      .replace(/､/g, "、")
-      .replace(/｡/g, "。")
-      .replace(/　/g, " ")
-      .replace(/－/g, "ー")
+    return normalizeSimilarSymbol(lyrics)
       .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-      .replace(/ {2,}/g, " ")
-      .trim();
+      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
   };
 
   const filterUnicodeSymbol = (text: string): string => {

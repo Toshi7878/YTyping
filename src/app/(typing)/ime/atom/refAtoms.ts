@@ -1,6 +1,6 @@
 import { YTPlayer } from "@/types/global-types";
-import { atom } from "jotai";
-import { useAtomCallback } from "jotai/utils";
+import { atom, ExtractAtomValue } from "jotai";
+import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { getImeTypeAtomStore } from "./store";
 const store = getImeTypeAtomStore();
@@ -57,4 +57,27 @@ export const useInputTextarea = () => {
   );
 
   return { readInputTextarea, writeInputTextarea };
+};
+
+const userStatsAtom = atomWithReset({
+  imeType: 0,
+  total_typing_time: 0,
+});
+
+export const useUserStats = () => {
+  const readUserStats = useAtomCallback(
+    useCallback((get) => get(userStatsAtom), []),
+    { store }
+  );
+
+  const writeUserStats = useAtomCallback(
+    useCallback((get, set, newUserStats: Partial<ExtractAtomValue<typeof userStatsAtom>>) => {
+      set(userStatsAtom, (prev) => {
+        return { ...prev, ...newUserStats };
+      });
+    }, []),
+    { store }
+  );
+
+  return { readUserStats, writeUserStats };
 };

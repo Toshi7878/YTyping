@@ -1,4 +1,5 @@
 import { kanaToHira } from "@/util/global-hooks/kanaToHira";
+import { useUserStats } from "../atom/refAtoms";
 import {
   useReadGameUtilParams,
   useReadMap,
@@ -18,6 +19,7 @@ export const useJudgeTargetWords = () => {
   const readMap = useReadMap();
   const updateWordResults = useUpdateWordResults();
   const readWordResults = useReadWordResults();
+  const { writeUserStats } = useUserStats();
 
   return (chatData: string) => {
     let userInput = formatComment(chatData);
@@ -90,15 +92,21 @@ export const useJudgeTargetWords = () => {
         },
       });
 
+      const joinedJudgeWord = joinWord(judgedWord);
+      const isGood = correct.judge === "Good";
+      const wordTypeCount = joinedJudgeWord.length / (isGood ? 1.5 : 1);
+
       setStatus((prev) => {
-        const joinedJudgeWord = joinWord(judgedWord);
-        const isGood = correct.judge === "Good";
-        const newTypeCount = prev.typeCount + joinedJudgeWord.length / (isGood ? 1.5 : 1);
+        const newTypeCount = prev.typeCount + wordTypeCount;
         return {
           typeCount: Math.floor(newTypeCount),
           score: Math.round((1000 / readMap().totalNotes) * newTypeCount),
           wordIndex: i + 1,
         };
+      });
+
+      writeUserStats({
+        imeType: Math.round(wordTypeCount),
       });
 
       setNotifications((prev) => [...prev, `${i}: ${correct.judge}! ${correct.correcting}`]);

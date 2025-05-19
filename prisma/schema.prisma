@@ -242,8 +242,8 @@ model user_stats {
   symbol_type_total_count  Int      @default(0)
   num_type_total_count     Int      @default(0)
   total_play_count         Int      @default(0)
+  ime_type_total_count     Int      @default(0)
   max_combo                Int      @default(0)
-  receive_applaused_count  Int      @default(0)
   created_at               DateTime @default(now())
   user                     users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
