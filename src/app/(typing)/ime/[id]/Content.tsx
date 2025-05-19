@@ -89,9 +89,11 @@ function Content({ mapInfo }: ContentProps) {
   }, [readScene]);
 
   const loadingMessage = tokenizerError ? (
-    <Flex>
+    <Flex flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={2}>
       ワード生成に失敗しました。
-      <Button onClick={() => loadMap(mapData!)}>再試行</Button>
+      <Button onClick={() => loadMap(mapData!)} colorScheme="green">
+        再試行
+      </Button>
     </Flex>
   ) : mapData !== undefined ? (
     "ひらがな判定生成中..."
@@ -103,7 +105,7 @@ function Content({ mapInfo }: ContentProps) {
     <Box as="main">
       <LoadingOverlayWrapper
         active={map === null}
-        spinner={true}
+        spinner={!tokenizerError}
         text={loadingMessage}
         styles={{
           overlay: (base: React.CSSProperties) => ({
