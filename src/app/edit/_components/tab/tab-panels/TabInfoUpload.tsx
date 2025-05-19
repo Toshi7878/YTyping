@@ -67,6 +67,8 @@ const TabInfoUpload = () => {
           isClosable: false,
           id: NOT_EDIT_PERMISSION_TOAST_ID,
         });
+      } else {
+        chakraToast.close(NOT_EDIT_PERMISSION_TOAST_ID);
       }
     }
   }, [chakraToast, hasEditPermission, toast]);
