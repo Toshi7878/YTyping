@@ -4,6 +4,7 @@ import { useFilterWordSymbol, useLyricsFormatUtils } from "@/app/edit/hooks/util
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useDebounce } from "@/util/global-hooks/useDebounce";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -28,13 +29,14 @@ const ManyPhraseTextarea = () => {
   const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
   const readSelectLine = useReadLine();
+  const debaunce = useDebounce(1000);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { lyrics } = readSelectLine();
 
     const topPhrase = e.target.value.split("\n")[0];
     if (topPhrase !== lyrics) {
-      pickupTopPhrase(topPhrase);
+      debaunce(() => pickupTopPhrase(topPhrase));
     }
 
     setManyPhrase(e.target.value);
