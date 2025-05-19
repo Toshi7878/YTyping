@@ -1,7 +1,6 @@
 import { MapLine } from "@/types/map";
 import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../../app/(typing)/type/ts/type";
 import { generateTypingWord } from "./generateTypingWord";
-import { normalizeSimilarSymbol } from "./normalizeSimilarSymbol";
 import { KANA_TO_ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./romaMap";
 
 export const CHAR_POINT = 50;
@@ -52,9 +51,7 @@ export class ParseMap {
     let startLine = 0;
     let lineLength = 0;
 
-    const tokenizedKanaLyrics = tokenizeKanaBySentenceRomaPatterns(
-      normalizeSimilarSymbol(data.map((line) => line["word"].trim()).join("\n"))
-    );
+    const tokenizedKanaLyrics = tokenizeKanaBySentenceRomaPatterns(data.map((line) => line["word"]).join("\n"));
 
     for (let i = 0; i < data.length; i++) {
       const tokenizedKanaWord = tokenizedKanaLyrics[i];

@@ -2,6 +2,7 @@ import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import { useWordConverter } from "@/app/edit/hooks/utils/useWordConverter";
 import { MapLine } from "@/types/map";
+import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
 import { useHistoryReducer } from "../../atoms/historyReducerAtom";
@@ -52,9 +53,9 @@ function useJsonConverter() {
     const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
 
     for (let i = 0; i < jsonMap.length; i++) {
-      const lyrics = jsonMap[i][1];
+      const lyrics = normalizeSimilarSymbol(jsonMap[i][1]);
       const time = jsonMap[i][0] === "0" ? "0.001" : jsonMap[i][0];
-      const word = jsonMap[i][2];
+      const word = normalizeSimilarSymbol(jsonMap[i][2]);
 
       if ((time === "0" && word === "" && lyrics === "") || lyrics === "end") {
         continue;
@@ -84,7 +85,7 @@ function useLrcConverter() {
         const minSec = +timeTag![2];
 
         const time = (minute * 60 + second + minSec * 0.01).toString();
-        const lyrics = lrc[i].replace(/\[\d\d.\d\d.\d\d\]/g, "").trim();
+        const lyrics = normalizeSimilarSymbol(lrc[i].replace(/\[\d\d.\d\d.\d\d\]/g, ""));
         const word = (await wordConvert(lyrics)) ?? "";
 
         result.push({ time, lyrics, word });

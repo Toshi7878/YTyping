@@ -1,4 +1,5 @@
 import { MapLine } from "@/types/map";
+import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithReducer, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
@@ -41,35 +42,43 @@ const init = [
   },
 ];
 
-export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(
-  init,
-  (prev: MapLine[], action: MapAction) => {
-    switch (action.type) {
-      case "add": {
-        return [...prev, action.payload].sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-      }
+export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(init, (prev: MapLine[], action: MapAction) => {
+  switch (action.type) {
+    case "add": {
+      const { lyrics, word } = action.payload;
+      const normalizedLyrics = normalizeSimilarSymbol(lyrics);
+      const normalizedWord = normalizeSimilarSymbol(word);
 
-      case "update": {
-        const newArray = [...prev];
-        newArray[action.index] = action.payload;
+      return [...prev, { ...action.payload, lyrics: normalizedLyrics, word: normalizedWord }].sort(
+        (a, b) => parseFloat(a.time) - parseFloat(b.time)
+      );
+    }
 
-        return newArray.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-      }
+    case "update": {
+      const newArray = [...prev];
 
-      case "delete": {
-        return prev.filter((_, lineIndex) => lineIndex !== action.index);
-      }
+      const { lyrics, word } = action.payload;
+      const normalizedLyrics = normalizeSimilarSymbol(lyrics);
+      const normalizedWord = normalizeSimilarSymbol(word);
 
-      case "replaceAll": {
-        return action.payload;
-      }
+      newArray[action.index] = { ...action.payload, lyrics: normalizedLyrics, word: normalizedWord };
 
-      case "reset": {
-        return init;
-      }
+      return newArray.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
+    }
+
+    case "delete": {
+      return prev.filter((_, lineIndex) => lineIndex !== action.index);
+    }
+
+    case "replaceAll": {
+      return action.payload;
+    }
+
+    case "reset": {
+      return init;
     }
   }
-);
+});
 
 export const useMapState = () => useAtomValue(mapReducerAtom, { store });
 export const useMapReducer = () => useSetAtom(mapReducerAtom, { store });
