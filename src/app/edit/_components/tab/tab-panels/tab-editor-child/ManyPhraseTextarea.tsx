@@ -29,7 +29,7 @@ const ManyPhraseTextarea = () => {
   const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
   const readSelectLine = useReadLine();
-  const debaunce = useDebounce(1000);
+  const debaunce = useDebounce(500);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { lyrics } = readSelectLine();
