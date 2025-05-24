@@ -37,7 +37,7 @@ const InputTextarea = () => {
       judgeTargetWords(value);
       stopTicker();
 
-      switch (value.toLowerCase()) {
+      switch (value.toLowerCase().trim()) {
         case "skip":
           const { skipRemainTime } = readGameUtilParams();
           if (skipRemainTime !== null) {
