@@ -61,7 +61,7 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
     const currentKanaChar = typeChunks[typeChunks.length - 1].k;
 
     if (prevKanaChar[prevKanaChar.length - 1] === "ん") {
-      if (NN_LIST.includes(currentKanaChar)) {
+      if (NN_LIST.includes(currentKanaChar[0])) {
         typeChunks = replaceNWithNN(typeChunks);
       } else {
         typeChunks = applyDoubleNTypePattern(typeChunks);

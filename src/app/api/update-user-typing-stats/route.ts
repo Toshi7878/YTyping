@@ -1,9 +1,11 @@
 import { RouterInputs } from "@/server/api/trpc";
 import { prisma } from "@/server/db";
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 type Input = RouterInputs["userStats"]["incrementTypingStats"];
 type UserId = { userId: number };
+
 export async function POST(request: Request) {
   try {
     const bodyText = await request.text();
@@ -13,7 +15,7 @@ export async function POST(request: Request) {
       select: { max_combo: true },
     });
 
-    const updateData: Record<string, any> = {
+    const updateData: Prisma.user_statsUpdateInput = {
       roma_type_total_count: { increment: input.romaType },
       kana_type_total_count: { increment: input.kanaType },
       flick_type_total_count: { increment: input.flickType },
