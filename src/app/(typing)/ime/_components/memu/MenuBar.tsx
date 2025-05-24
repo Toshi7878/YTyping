@@ -1,9 +1,9 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { useUserAgent } from "@/util/useUserAgent";
-import { Box, Flex, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { usePlayer } from "../../atom/refAtoms";
-import { useSceneState } from "../../atom/stateAtoms";
+import { useResultDialogDisclosure, useSceneState } from "../../atom/stateAtoms";
 import useSceneControl from "../../hooks/sceneControl";
 import start from "../../img/control.png";
 import gear from "../../img/gear.png";
@@ -22,7 +22,7 @@ const MenuBar = () => {
   const scene = useSceneState();
   const userAgent = useUserAgent();
 
-  const scoreDisclosure = useDisclosure();
+  const resultDialogDisclosure = useResultDialogDisclosure();
 
   return (
     <>
@@ -38,7 +38,7 @@ const MenuBar = () => {
             <MenuButton image={trophy} isDisabled={scene !== "play"} onClick={handleEnd} title="終了" />
             <MenuButton
               isDisabled={scene === "ready"}
-              onClick={scoreDisclosure.onOpen}
+              onClick={resultDialogDisclosure.onOpen}
               image={reportPencil}
               title="採点結果"
             />
@@ -50,7 +50,7 @@ const MenuBar = () => {
           </Flex>
         </Flex>
       </Box>
-      <ResultDialog isOpen={scoreDisclosure.isOpen} onClose={scoreDisclosure.onClose} />
+      <ResultDialog isOpen={resultDialogDisclosure.open} onClose={resultDialogDisclosure.onClose} />
     </>
   );
 };

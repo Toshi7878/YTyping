@@ -2,7 +2,13 @@ import { Flex, Textarea } from "@chakra-ui/react";
 import { Ticker } from "@pixi/ticker";
 import { useEffect, useRef } from "react";
 import { useInputTextarea, useUserStats } from "../atom/refAtoms";
-import { useReadGameUtilParams, useReadMap, useSceneState, useTextareaPlaceholderTypeState } from "../atom/stateAtoms";
+import {
+  useReadGameUtilParams,
+  useReadMap,
+  useResultDialogDisclosure,
+  useSceneState,
+  useTextareaPlaceholderTypeState,
+} from "../atom/stateAtoms";
 import { useJudgeTargetWords } from "../hooks/judgeTargetWords";
 import useSceneControl from "../hooks/sceneControl";
 import { useSkip } from "../hooks/skip";
@@ -22,6 +28,7 @@ const InputTextarea = () => {
   const placeholder = usePlaceholder({ scene, textareaPlaceholderType });
 
   const { startTicker, stopTicker, tickerRef, tickStartRef } = useTypingTimeTimer();
+  const { onOpen } = useResultDialogDisclosure();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
@@ -42,6 +49,11 @@ const InputTextarea = () => {
           const { count } = readGameUtilParams();
           if (!map.lines[count]) {
             handleEnd();
+          }
+          break;
+        case "result":
+          if (scene === "end") {
+            onOpen();
           }
           break;
       }

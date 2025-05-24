@@ -156,3 +156,19 @@ const notificationsAtom = atomWithReset<string[]>([]);
 
 export const useNotificationsState = () => useAtomValue(notificationsAtom, { store });
 export const useSetNotifications = () => useSetAtom(notificationsAtom, { store });
+
+const resultDialogAtom = atom(false);
+
+export const useResultDialogDisclosure = () => {
+  const open = useAtomValue(resultDialogAtom, { store });
+
+  const onOpen = () => {
+    store.set(resultDialogAtom, true);
+  };
+
+  const onClose = () => {
+    store.set(resultDialogAtom, false);
+  };
+
+  return { open, onOpen, onClose };
+};
