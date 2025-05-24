@@ -5,6 +5,7 @@ import { useInputTextarea, usePlayer } from "../atom/refAtoms";
 import { usePlaySpeedReducer } from "../atom/speedReducerAtoms";
 import {
   useInitWordResults,
+  useReadScene,
   useReadStatus,
   useResetGameUtilParams,
   useSetMap,
@@ -27,9 +28,10 @@ export const useInitializePlayScene = () => {
   const readStatus = useReadStatus();
   const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
   const { id: mapId } = useParams();
+  const readScene = useReadScene();
 
   return () => {
-    if (readStatus().typeCount > 0) {
+    if (readStatus().typeCount > 0 || readScene() === "ready") {
       incrementPlayCountStats.mutate({ mapId: Number(mapId) });
     }
 
