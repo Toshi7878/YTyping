@@ -189,6 +189,14 @@ const playingStateAtom = atomWithReset({
   combo: 0,
 });
 
+export const useResetPlayingState = () => {
+  const setPlayingState = useSetAtom(playingStateAtom);
+
+  return () => {
+    setPlayingState(RESET);
+  };
+};
+
 const currentTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("currentTime"));
 const lineRemainTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineRemainTime"));
 const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm"));
