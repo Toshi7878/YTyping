@@ -86,7 +86,8 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
     userStats.english_type_total_count +
     userStats.space_type_total_count +
     userStats.num_type_total_count +
-    userStats.symbol_type_total_count;
+    userStats.symbol_type_total_count +
+    userStats.ime_type_total_count;
 
   const keystrokeStatsData = [
     { label: "ローマ字 打鍵数", value: userStats.roma_type_total_count },
@@ -96,6 +97,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
     { label: "数字 打鍵数", value: userStats.num_type_total_count },
     { label: "記号 打鍵数", value: userStats.symbol_type_total_count },
     { label: "フリック 打鍵数", value: userStats.flick_type_total_count },
+    { label: "変換有り 打鍵数", value: userStats.ime_type_total_count },
     { label: "合計 打鍵数", value: totalKeystrokes },
   ];
 

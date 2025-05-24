@@ -105,6 +105,7 @@ export const userStatsRouter = {
           symbol_type_total_count: true,
           num_type_total_count: true,
           space_type_total_count: true,
+          ime_type_total_count: true,
           total_play_count: true,
           max_combo: true,
           created_at: true,
@@ -140,6 +141,7 @@ export const userStatsRouter = {
           flick_type_count: true,
           english_type_count: true,
           other_type_count: true,
+          ime_type_count: true,
         },
         orderBy: {
           created_at: "asc",
@@ -152,12 +154,20 @@ export const userStatsRouter = {
         level: number;
         data: (typeof userTypingOptions)[number] | undefined;
       }[] = userTypingOptions.map((day) => {
-        const { roma_type_count, kana_type_count, flick_type_count, english_type_count, other_type_count } = day;
+        const {
+          roma_type_count,
+          kana_type_count,
+          flick_type_count,
+          english_type_count,
+          other_type_count,
+          ime_type_count,
+        } = day;
 
         const typeCounts = [
           { type: "roma" as const, count: roma_type_count },
           { type: "kana" as const, count: kana_type_count },
           { type: "other" as const, count: flick_type_count + english_type_count + other_type_count },
+          { type: "ime" as const, count: ime_type_count },
         ];
 
         const dominantType = typeCounts.reduce(
@@ -166,7 +176,7 @@ export const userStatsRouter = {
         );
 
         const totalTypeCount =
-          roma_type_count + kana_type_count + flick_type_count + english_type_count + other_type_count;
+          roma_type_count + kana_type_count + flick_type_count + english_type_count + other_type_count + ime_type_count;
         const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
 
         const dateObj = new Date(day.created_at);
@@ -220,6 +230,11 @@ export const LEVELS = {
     9: 15000 as const,
     8: 5000 as const,
     7: 1 as const,
+  },
+  ime: {
+    12: 10000 as const,
+    11: 1000 as const,
+    10: 1 as const,
   },
 };
 

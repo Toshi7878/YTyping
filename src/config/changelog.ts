@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-5-24",
+    descriptions: ["変換有りタイピングで打鍵時間と打鍵数の統計を記録"],
+  },
+  {
     date: "2025-5-18",
     descriptions: ["変換有りタイピングページで詳細採点結果表示機能を追加"],
   },

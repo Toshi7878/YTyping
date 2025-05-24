@@ -1,8 +1,11 @@
+import { clientApi } from "@/trpc/client-api";
 import { RESET } from "jotai/utils";
+import { useParams } from "next/navigation";
 import { useInputTextarea, usePlayer } from "../atom/refAtoms";
 import { usePlaySpeedReducer } from "../atom/speedReducerAtoms";
 import {
   useInitWordResults,
+  useReadStatus,
   useResetGameUtilParams,
   useSetMap,
   useSetNextDisplayLine,
@@ -21,7 +24,15 @@ export const useInitializePlayScene = () => {
   const { readInputTextarea } = useInputTextarea();
 
   const resetGameUtils = useResetGameUtilParams();
+  const readStatus = useReadStatus();
+  const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
+  const { id: mapId } = useParams();
+
   return () => {
+    if (readStatus().typeCount > 0) {
+      incrementPlayCountStats.mutate({ mapId: Number(mapId) });
+    }
+
     resetGameUtils();
     setNextDisplayLine([]);
     setStatus(RESET);

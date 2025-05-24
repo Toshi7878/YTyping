@@ -19,8 +19,9 @@ const TypeActivity = () => {
     const roma = [`${colors.semantic.roma}40`, `${colors.semantic.roma}a0`, colors.semantic.roma];
     const kana = [`${colors.semantic.kana}40`, `${colors.semantic.kana}a0`, colors.semantic.kana];
     const english = [`${colors.semantic.english}40`, `${colors.semantic.english}a0`, colors.semantic.english];
+    const ime = [`${colors.text.body}40`, `${colors.text.body}a0`, colors.text.body];
 
-    return ["#161b22"].concat(roma).concat(kana).concat(english);
+    return ["#161b22"].concat(roma).concat(kana).concat(english).concat(ime);
   };
 
   return (
@@ -48,7 +49,7 @@ const TypeActivity = () => {
             colorScheme="dark"
             blockSize={14}
             blockMargin={3}
-            maxLevel={9}
+            maxLevel={12}
             renderBlock={(block, activity) => {
               return (
                 <CustomToolTip placement="top" label={<BlockToolTipLabel activity={activity} />}>
@@ -65,7 +66,9 @@ const TypeActivity = () => {
                   ? `ローマ字 level: ${levelLabel}`
                   : level <= 6
                   ? `かな level: ${levelLabel}`
-                  : `英数字記号 level: ${levelLabel}`;
+                  : level <= 9
+                  ? `英数字記号 level: ${levelLabel}`
+                  : `変換有りタイプ数 level: ${levelLabel}`;
 
               return (
                 <CustomToolTip placement="top" label={label}>
@@ -87,6 +90,7 @@ const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
     { label: "ローマ字", count: data?.roma_type_count ?? 0 },
     { label: "かな", count: data?.kana_type_count ?? 0 },
     { label: "英数字記号", count: data?.english_type_count ?? 0 },
+    { label: "変換有りタイプ数", count: data?.ime_type_count ?? 0 },
   ].sort((a, b) => b.count - a.count);
 
   const sortedTypeDataString = sortedTypeData.map((item) => {
