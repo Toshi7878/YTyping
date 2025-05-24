@@ -1,10 +1,13 @@
 import { Flex, Textarea } from "@chakra-ui/react";
+import { Ticker } from "@pixi/ticker";
 import { useEffect, useRef } from "react";
-import { useInputTextarea } from "../atom/refAtoms";
-import { useReadGameUtilParams, useReadMap, useTextareaPlaceholderTypeState } from "../atom/stateAtoms";
+import { useInputTextarea, useUserStats } from "../atom/refAtoms";
+import { useReadGameUtilParams, useReadMap, useSceneState, useTextareaPlaceholderTypeState } from "../atom/stateAtoms";
 import { useJudgeTargetWords } from "../hooks/judgeTargetWords";
 import useSceneControl from "../hooks/sceneControl";
 import { useSkip } from "../hooks/skip";
+
+const TICK_STOP_TIME = 1000;
 
 const InputTextarea = () => {
   const judgeTargetWords = useJudgeTargetWords();
@@ -13,12 +16,16 @@ const InputTextarea = () => {
   const { readGameUtilParams } = useReadGameUtilParams();
   const readMap = useReadMap();
   const textareaPlaceholderType = useTextareaPlaceholderTypeState();
+  const scene = useSceneState();
+
+  const { startTicker, stopTicker, tickerRef, tickStartRef } = useTypingTimeTimer();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
       const value = e.currentTarget.value;
       e.preventDefault();
       judgeTargetWords(value);
+      stopTicker();
 
       switch (value.toLowerCase()) {
         case "skip":
@@ -38,6 +45,14 @@ const InputTextarea = () => {
 
       e.currentTarget.value = "";
     }
+  };
+
+  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    if (scene === "play" && e.currentTarget.value.length > 0 && !tickerRef.current?.started) {
+      startTicker();
+    }
+
+    tickStartRef.current = Date.now();
   };
 
   const lyricsTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,9 +86,45 @@ const InputTextarea = () => {
         letterSpacing={1.5}
         placeholder={placeholder}
         onKeyDown={handleKeyDown}
+        onInput={handleInput}
       />
     </Flex>
   );
 };
 
+const useTypingTimeTimer = () => {
+  const tickerRef = useRef<Ticker | null>(null);
+  const elapsedRef = useRef(0);
+  const tickStartRef = useRef(0);
+  const { incrementTypingTime } = useUserStats();
+
+  const onTick = (delta: number) => {
+    elapsedRef.current += delta / 60;
+
+    if (Date.now() - tickStartRef.current > TICK_STOP_TIME) {
+      stopTicker();
+    }
+  };
+
+  const startTicker = () => {
+    if (!tickerRef.current) {
+      tickerRef.current = new Ticker();
+      tickerRef.current.add(onTick);
+      tickerRef.current.maxFPS = 60;
+      tickerRef.current.minFPS = 60;
+    }
+    elapsedRef.current = 0;
+    tickerRef.current.start();
+  };
+
+  const stopTicker = () => {
+    if (tickerRef.current) {
+      tickerRef.current.stop();
+      incrementTypingTime(elapsedRef.current);
+      elapsedRef.current = 0;
+    }
+  };
+
+  return { startTicker, stopTicker, tickerRef, tickStartRef };
+};
 export default InputTextarea;

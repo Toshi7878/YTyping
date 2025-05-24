@@ -52,6 +52,7 @@ const gameStateUtilParamsAtom = atomWithReset({
   nextDisplayLine: [] as ParseMap["lines"][number],
   judgedWords: [] as string[][][],
   textareaPlaceholderType: "normal" as "normal" | "skip" | "end",
+  typeTimeStatsAccumulationEnabled: false,
 });
 
 export const useReadGameUtilParams = () => {
@@ -90,6 +91,9 @@ const judgedWordsAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop
 const textareaPlaceholderTypeAtom = focusAtom(gameStateUtilParamsAtom, (optic) =>
   optic.prop("textareaPlaceholderType")
 );
+const typeTimeStatsAccumulationEnabled = focusAtom(gameStateUtilParamsAtom, (optic) =>
+  optic.prop("typeTimeStatsAccumulationEnabled")
+);
 
 export const useCountState = () => useAtomValue(countAtom, { store });
 export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
@@ -104,6 +108,7 @@ export const useSetDisplayLines = () => useSetAtom(displayLinesAtom, { store });
 export const useSetNextDisplayLine = () => useSetAtom(nextDisplayLineAtom, { store });
 export const useSetJudgedWords = () => useSetAtom(judgedWordsAtom, { store });
 export const useSetTextareaPlaceholderType = () => useSetAtom(textareaPlaceholderTypeAtom, { store });
+export const useSetTypeTimeStatsAccumulationEnabled = () => useSetAtom(typeTimeStatsAccumulationEnabled, { store });
 
 const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0 });
 export const useStatusState = () => useAtomValue(statusAtom, { store });

@@ -19,7 +19,7 @@ export const useJudgeTargetWords = () => {
   const readMap = useReadMap();
   const updateWordResults = useUpdateWordResults();
   const readWordResults = useReadWordResults();
-  const { writeUserStats } = useUserStats();
+  const { incrementImeType } = useUserStats();
 
   return (chatData: string) => {
     let userInput = formatComment(chatData);
@@ -105,9 +105,7 @@ export const useJudgeTargetWords = () => {
         };
       });
 
-      writeUserStats({
-        imeType: Math.round(wordTypeCount),
-      });
+      incrementImeType(Math.round(wordTypeCount));
 
       setNotifications((prev) => [...prev, `${i}: ${correct.judge}! ${correct.correcting}`]);
     }

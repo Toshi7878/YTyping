@@ -255,6 +255,7 @@ model user_daily_type_counts {
   kana_type_count    Int      @default(0)
   flick_type_count   Int      @default(0)
   english_type_count Int      @default(0)
+  ime_type_count     Int      @default(0)
   other_type_count   Int      @default(0)
   user               users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 

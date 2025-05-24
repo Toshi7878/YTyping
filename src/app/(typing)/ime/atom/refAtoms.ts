@@ -1,6 +1,7 @@
 import { YTPlayer } from "@/types/global-types";
-import { atom, ExtractAtomValue } from "jotai";
-import { atomWithReset, useAtomCallback } from "jotai/utils";
+import { atom } from "jotai";
+import { focusAtom } from "jotai-optics";
+import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { getImeTypeAtomStore } from "./store";
 const store = getImeTypeAtomStore();
@@ -60,9 +61,12 @@ export const useInputTextarea = () => {
 };
 
 const userStatsAtom = atomWithReset({
-  imeType: 0,
-  total_typing_time: 0,
+  ime_type: 0,
+  total_type_time: 0,
 });
+
+const totalTypingTimeAtom = focusAtom(userStatsAtom, (optic) => optic.prop("total_type_time"));
+const totalImeTypeAtom = focusAtom(userStatsAtom, (optic) => optic.prop("ime_type"));
 
 export const useUserStats = () => {
   const readUserStats = useAtomCallback(
@@ -70,14 +74,25 @@ export const useUserStats = () => {
     { store }
   );
 
-  const writeUserStats = useAtomCallback(
-    useCallback((get, set, newUserStats: Partial<ExtractAtomValue<typeof userStatsAtom>>) => {
-      set(userStatsAtom, (prev) => {
-        return { ...prev, ...newUserStats };
-      });
+  const incrementTypingTime = useAtomCallback(
+    useCallback((get, set, time: number) => {
+      set(totalTypingTimeAtom, (prev) => prev + time);
     }, []),
     { store }
   );
 
-  return { readUserStats, writeUserStats };
+  const incrementImeType = useAtomCallback(
+    useCallback((get, set, imeTypeCount: number) => {
+      set(totalImeTypeAtom, (prev) => prev + imeTypeCount);
+    }, [])
+  );
+
+  const resetUserStats = useAtomCallback(
+    useCallback((get, set) => {
+      set(userStatsAtom, RESET);
+    }, []),
+    { store }
+  );
+
+  return { readUserStats, resetUserStats, incrementImeType, incrementTypingTime };
 };

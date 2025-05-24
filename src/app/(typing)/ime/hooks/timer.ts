@@ -10,6 +10,7 @@ import {
   useSetNextDisplayLine,
   useSetSkipRemainTime,
   useSetTextareaPlaceholderType,
+  useSetTypeTimeStatsAccumulationEnabled,
   useSetWipeCount,
 } from "../atom/stateAtoms";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
@@ -71,6 +72,7 @@ const useTimer = () => {
   const setCount = useSetCount();
   const setWipeCount = useSetWipeCount();
   const setTextareaPlaceholderType = useSetTextareaPlaceholderType();
+  const setTypeTimeStatsAccumulationEnabled = useSetTypeTimeStatsAccumulationEnabled();
 
   const updateSkip = ({
     currentLine,

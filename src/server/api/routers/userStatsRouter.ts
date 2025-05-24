@@ -1,6 +1,6 @@
 import { z } from "@/validator/z";
 import axios from "axios";
-import { publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userStatsRouter = {
   incrementPlayCountStats: publicProcedure
@@ -37,7 +37,27 @@ export const userStatsRouter = {
       });
     }),
 
-  incrementTypingStats: publicProcedure
+  incrementImeStats: protectedProcedure
+    .input(
+      z.object({
+        ime_type: z.number(),
+        total_type_time: z.number(),
+      })
+    )
+    .mutation(async ({ input: sendStats, ctx }) => {
+      const { user } = ctx;
+
+      if (!user.id) {
+        return;
+      }
+
+      axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-ime-typing-stats`,
+        JSON.stringify({ ...sendStats, userId: user.id })
+      );
+    }),
+
+  incrementTypingStats: protectedProcedure
     .input(
       z.object({
         romaType: z.number(),
