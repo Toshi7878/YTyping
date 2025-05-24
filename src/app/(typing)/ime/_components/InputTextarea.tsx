@@ -6,6 +6,7 @@ import { useReadGameUtilParams, useReadMap, useSceneState, useTextareaPlaceholde
 import { useJudgeTargetWords } from "../hooks/judgeTargetWords";
 import useSceneControl from "../hooks/sceneControl";
 import { useSkip } from "../hooks/skip";
+import { PlaceholderType, SceneType } from "../type";
 
 const TICK_STOP_TIME = 1000;
 
@@ -17,6 +18,8 @@ const InputTextarea = () => {
   const readMap = useReadMap();
   const textareaPlaceholderType = useTextareaPlaceholderTypeState();
   const scene = useSceneState();
+
+  const placeholder = usePlaceholder({ scene, textareaPlaceholderType });
 
   const { startTicker, stopTicker, tickerRef, tickStartRef } = useTypingTimeTimer();
 
@@ -64,13 +67,6 @@ const InputTextarea = () => {
     }
   }, [writeLyricsTextarea]);
 
-  const placeholder =
-    textareaPlaceholderType === "skip"
-      ? "ワードを入力（Enterで送信）\nskipを入力してスキップ"
-      : textareaPlaceholderType === "end"
-      ? "ワードを入力（Enterで送信）\nendを入力して終了"
-      : "ワードを入力（Enterで送信）";
-
   return (
     <Flex bg="background.card" fontSize="3xl" width="85%" alignItems="center" justifyContent="center" mx="auto">
       <Textarea
@@ -90,6 +86,32 @@ const InputTextarea = () => {
       />
     </Flex>
   );
+};
+
+const usePlaceholder = ({
+  scene,
+  textareaPlaceholderType,
+}: {
+  scene: SceneType;
+  textareaPlaceholderType: PlaceholderType;
+}) => {
+  if (scene === "ready") {
+    return "動画クリック / Enterでスタート";
+  }
+
+  if (textareaPlaceholderType === "skip") {
+    return "ワードを入力（Enterで送信）\nskipを入力してスキップ";
+  }
+
+  if (textareaPlaceholderType === "end") {
+    return "ワードを入力（Enterで送信）\nendを入力して終了";
+  }
+
+  if (scene === "end") {
+    return "お疲れさまでした \nresultを入力すると結果を確認できます";
+  }
+
+  return "ワードを入力（Enterで送信）";
 };
 
 const useTypingTimeTimer = () => {

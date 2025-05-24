@@ -4,7 +4,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
-import { ParseMap, SceneType, WordResults } from "../type";
+import { ParseMap, PlaceholderType, SceneType, WordResults } from "../type";
 import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
@@ -51,7 +51,7 @@ const gameStateUtilParamsAtom = atomWithReset({
   displayLines: new Array(DISPLAY_LINE_LENGTH).fill([]) as ParseMap["lines"][number][],
   nextDisplayLine: [] as ParseMap["lines"][number],
   judgedWords: [] as string[][][],
-  textareaPlaceholderType: "normal" as "normal" | "skip" | "end",
+  textareaPlaceholderType: "normal" as PlaceholderType,
   typeTimeStatsAccumulationEnabled: false,
 });
 

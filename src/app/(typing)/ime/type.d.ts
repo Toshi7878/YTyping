@@ -17,3 +17,5 @@ export type WordResults = {
   inputs: string[];
   evaluation: "Great" | "Good" | "Skip" | "None";
 }[];
+
+export type PlaceholderType = "normal" | "skip" | "end";
