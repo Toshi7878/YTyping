@@ -50,7 +50,9 @@ const RankingList = () => {
   }, []);
 
   useEffect(() => {
-    const scores = data ? data.map((result: (typeof data)[number]) => result.status!.score) : [];
+    const scores = data
+      ? data.map((result: (typeof data)[number]) => result.status?.score).filter((score) => score !== undefined)
+      : [];
 
     writeGameUtilRefParams({
       rankingScores: scores,
@@ -90,6 +92,8 @@ const RankingList = () => {
     <RankingTable>
       {data &&
         data.map((user: (typeof data)[number], index: number) => {
+          if (!user.status) return null;
+
           const romaType = user.status!.roma_type;
           const kanaType = user.status!.kana_type;
           const flickType = user.status!.flick_type;
