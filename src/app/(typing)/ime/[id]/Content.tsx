@@ -1,6 +1,5 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { clientApi } from "@/trpc/client-api";
 import { MapLine } from "@/types/map";
 import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
 import { Box, Button, Flex } from "@chakra-ui/react";
@@ -12,10 +11,10 @@ import InputTextarea from "../_components/InputTextarea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/Notifications";
 import ViewArea from "../_components/view-area/ViewArea";
-import { useUserStats } from "../atom/refAtoms";
 import { useMapState, useReadScene, useSetMap } from "../atom/stateAtoms";
 import { useParseImeMap } from "../hooks/parseImeMap";
 import { usePathChangeAtomReset } from "../hooks/reset";
+import { useUpdateTypingStats } from "../hooks/updateTypingStats";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -139,21 +138,5 @@ function Content({ mapInfo }: ContentProps) {
     </Box>
   );
 }
-
-const useUpdateTypingStats = () => {
-  const updateTypingStats = clientApi.userStats.incrementImeStats.useMutation();
-  const { readUserStats, resetUserStats } = useUserStats();
-
-  return async () => {
-    const { ime_type, total_type_time } = readUserStats();
-
-    updateTypingStats.mutate({
-      ime_type,
-      total_type_time,
-    });
-
-    resetUserStats();
-  };
-};
 
 export default Content;

@@ -1,4 +1,5 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
+import { useUserAgent } from "@/util/useUserAgent";
 import { Box, Flex, useDisclosure } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { usePlayer } from "../../atom/refAtoms";
@@ -19,6 +20,7 @@ const MenuBar = () => {
   const { readPlayer } = usePlayer();
   const { handleStart, handleEnd } = useSceneControl();
   const scene = useSceneState();
+  const userAgent = useUserAgent();
 
   const scoreDisclosure = useDisclosure();
 
@@ -27,7 +29,7 @@ const MenuBar = () => {
       <Box bg="background.card">
         <Flex justifyContent="space-between" mx={4}>
           <Flex>
-            <VolumeRange player={readPlayer()} />
+            {!userAgent.isMobile && <VolumeRange player={readPlayer()} />}
             <MenuSpeedButton isDisabled={true} image={metronome} title="倍速" />
           </Flex>
 
