@@ -4,6 +4,8 @@ import { useReadGameUtilParams, useReadMapState, useSetLineSelectIndex, useSetNo
 import { useGetSeekLineCount } from "./timer-hooks/getLineCountByTime";
 import { useTimerControls, useUpdateLine } from "./timer-hooks/timer";
 
+const SEEK_BUFFER_TIME = 0.8;
+
 export const useMoveLine = () => {
   const { readPlayer } = usePlayer();
   const setLineSelectIndex = useSetLineSelectIndex();
@@ -33,7 +35,7 @@ export const useMoveLine = () => {
     }
     const playSpeed = readPlaySpeed().playSpeed;
 
-    const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
+    const seekBuffer = scene === "practice" ? SEEK_BUFFER_TIME * playSpeed : 0;
     const prevTime = Number(map.mapData[prevCount]["time"]) - seekBuffer;
     const newLineSelectIndex = map.typingLineIndexes.indexOf(prevCount) + 1;
     setLineSelectIndex(newLineSelectIndex);
@@ -69,7 +71,7 @@ export const useMoveLine = () => {
       (nextCount > 1 ? map.mapData[nextCount]["time"] - map.mapData[nextCount - 1]["time"] : 0) / playSpeed;
 
     const { scene } = readGameStateUtils();
-    const seekBuffer = scene === "practice" && prevLineTime > 1 ? 1 * playSpeed : 0;
+    const seekBuffer = scene === "practice" && prevLineTime > 1 ? SEEK_BUFFER_TIME * playSpeed : 0;
     const nextTime = Number(map.mapData[nextCount]["time"]) - seekBuffer;
 
     const newLineSelectIndex = map.typingLineIndexes.indexOf(nextCount) + 1;
@@ -92,7 +94,7 @@ export const useMoveLine = () => {
     const map = readMap();
     const playSpeed = readPlaySpeed().playSpeed;
     const { scene, lineSelectIndex } = readGameStateUtils();
-    const seekBuffer = scene === "practice" ? 0.8 * playSpeed : 0;
+    const seekBuffer = scene === "practice" ? SEEK_BUFFER_TIME * playSpeed : 0;
     const seekTime = Number(map.mapData[seekCount]["time"]) - seekBuffer;
 
     if (lineSelectIndex !== seekCount) {
