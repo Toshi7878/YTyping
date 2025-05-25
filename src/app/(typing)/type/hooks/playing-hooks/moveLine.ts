@@ -92,7 +92,7 @@ export const useMoveLine = () => {
     const map = readMap();
     const playSpeed = readPlaySpeed().playSpeed;
     const { scene, lineSelectIndex } = readGameStateUtils();
-    const seekBuffer = scene === "practice" ? 1 * playSpeed : 0;
+    const seekBuffer = scene === "practice" ? 0.8 * playSpeed : 0;
     const seekTime = Number(map.mapData[seekCount]["time"]) - seekBuffer;
 
     if (lineSelectIndex !== seekCount) {
@@ -133,8 +133,6 @@ export const useMoveLine = () => {
 
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;
-      const cardRect = card.getBoundingClientRect();
-      const drawerRect = drawerBody.getBoundingClientRect();
 
       const cardTop = card.offsetTop;
       const drawerHeight = drawerBody.clientHeight;
