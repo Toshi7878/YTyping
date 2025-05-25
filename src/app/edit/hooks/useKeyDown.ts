@@ -12,7 +12,6 @@ import {
   useReadLine,
   useReadYtPlayerStatus,
   useSetDirectEditIndex,
-  useSetLyrics,
   useSetManyPhrase,
   useSpeedReducer,
 } from "../atoms/stateAtoms";
@@ -41,18 +40,14 @@ export const useTbodyScroll = () => {
 export const useWindowKeydownEvent = () => {
   const speedDispatch = useSpeedReducer();
   const lineDispatch = useLineReducer();
-  const historyDispatch = useHistoryReducer();
-  const mapDispatch = useMapReducer();
 
   const pickupTopPhrase = usePickupTopPhrase();
   const setDirectEdit = useSetDirectEditIndex();
 
   const wordSearchPeplace = useWordSearchReplace();
-  const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
 
   const lineAddButtonEvent = useLineAddButtonEvent();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
-  const setManyPhrase = useSetManyPhrase();
   const lineDelete = useLineDelete();
   const seekNextPrev = useSeekNextPrev();
   const readEditUtils = useReadEditUtils();
@@ -61,58 +56,48 @@ export const useWindowKeydownEvent = () => {
   const readIsUpdateBtnDisalbed = useIsUpdateBtnDisabledStateRef();
   const readIsDeleteBtnDisalbed = useIsDeleteBtnDisabledStateRef();
   const { readPlayer } = usePlayer();
-  const readHistory = useEditHistoryRef();
+  const { undo, redo } = useUndoRedo();
+  const seekByArrowKey = useSeekByArrowKey();
 
   return (event: KeyboardEvent, optionModalIndex: number | null) => {
-    const IS_FOCUS_INPUT = document.activeElement instanceof HTMLInputElement;
-    const iS_FOCUS_MANY_PHRASE_TEXTAREA = document.activeElement!.id === "many_phrase_textarea";
+    const isFocusedInput = document.activeElement instanceof HTMLInputElement;
+    const isFocusedManyPhraseTextArea = document.activeElement!.id === "many_phrase_textarea";
     const { manyPhraseText } = readEditUtils();
     const { playing, speed } = readYtPlayerStatus();
     const player = readPlayer();
 
     if (event.key === "Tab") {
-      if (!iS_FOCUS_MANY_PHRASE_TEXTAREA) {
+      if (!isFocusedManyPhraseTextArea) {
         const textarea = document.getElementById("many_phrase_textarea") as HTMLTextAreaElement;
         if (textarea) {
           textarea.focus();
           textarea.scrollTop = 0;
           textarea.setSelectionRange(0, 0);
         }
-      } else if (iS_FOCUS_MANY_PHRASE_TEXTAREA) {
+      } else if (isFocusedManyPhraseTextArea) {
         (document.activeElement as HTMLElement)?.blur();
       }
       event.preventDefault();
-    } else if (!iS_FOCUS_MANY_PHRASE_TEXTAREA && !IS_FOCUS_INPUT && optionModalIndex === null) {
+    } else if (!isFocusedManyPhraseTextArea && !isFocusedInput && optionModalIndex === null) {
       switch (event.code) {
         case "ArrowUp":
           seekNextPrev("prev");
           event.preventDefault();
-
           break;
 
         case "ArrowDown":
           seekNextPrev("next");
           event.preventDefault();
-
           break;
 
         case "ArrowLeft":
-          {
-            const time = player.getCurrentTime();
-
-            player.seekTo(time - 3 * speed, true);
-            event.preventDefault();
-          }
-
+          seekByArrowKey("left");
+          event.preventDefault();
           break;
 
         case "ArrowRight":
-          {
-            const time = player.getCurrentTime();
-            player.seekTo(time + 3 * speed, true);
-            event.preventDefault();
-          }
-
+          seekByArrowKey("right");
+          event.preventDefault();
           break;
 
         case "KeyS":
@@ -135,61 +120,15 @@ export const useWindowKeydownEvent = () => {
 
         case "KeyZ":
           if (event.ctrlKey) {
-            const { present } = readHistory();
-
-            if (present) {
-              const { actionType, data } = present;
-              switch (actionType) {
-                case "add":
-                  const { lineIndex, time, lyrics, word } = data;
-                  mapDispatch({ type: "delete", index: lineIndex });
-                  player.seekTo(Number(data.time) - 3 * speed, true);
-                  lineDispatch({ type: "set", line: { time, lyrics, word, selectIndex: null } });
-                  setManyPhrase(data.lyrics + "\n" + manyPhraseText);
-                  break;
-                case "update":
-                  mapDispatch({ type: "update", payload: data.old, index: data.lineIndex });
-                  break;
-                case "delete":
-                  mapDispatch({ type: "add", payload: data });
-                  break;
-                case "replaceAll":
-                  mapDispatch({ type: "replaceAll", payload: data.old });
-                  break;
-              }
-              historyDispatch({ type: "undo" });
-            }
+            undo();
             event.preventDefault();
           }
           break;
 
         case "KeyY":
           if (event.ctrlKey) {
-            const { future } = readHistory();
-
-            if (future.length) {
-              const { actionType, data } = future[future.length - 1];
-
-              switch (actionType) {
-                case "add":
-                  mapDispatch({ type: "add", payload: data });
-                  deleteAddingTopPhrase(data.lyrics);
-                  const topPhrase = manyPhraseText.split("\n")[0];
-                  pickupTopPhrase(topPhrase);
-                  break;
-                case "update":
-                  mapDispatch({ type: "update", payload: data.new, index: data.lineIndex });
-                  break;
-                case "delete":
-                  mapDispatch({ type: "delete", index: data.lineIndex });
-                  break;
-                case "replaceAll":
-                  mapDispatch({ type: "replaceAll", payload: data.new });
-                  break;
-              }
-              historyDispatch({ type: "redo" });
-              event.preventDefault();
-            }
+            redo();
+            event.preventDefault();
           }
 
           break;
@@ -253,7 +192,25 @@ export const useWindowKeydownEvent = () => {
   };
 };
 
-function useSeekNextPrev() {
+const ARROW_SEEK_SECONDS = 3;
+const useSeekByArrowKey = () => {
+  const readYtPlayerStatus = useReadYtPlayerStatus();
+  const { readPlayer } = usePlayer();
+
+  return (direction: "left" | "right") => {
+    const { speed } = readYtPlayerStatus();
+    const player = readPlayer();
+    const time = player.getCurrentTime();
+    const seekAmount = ARROW_SEEK_SECONDS * speed;
+    if (direction === "left") {
+      player.seekTo(time - seekAmount, true);
+    } else {
+      player.seekTo(time + seekAmount, true);
+    }
+  };
+};
+
+const useSeekNextPrev = () => {
   const lineDispatch = useLineReducer();
 
   const tbodyScroll = useTbodyScroll();
@@ -285,35 +242,76 @@ function useSeekNextPrev() {
       }
     }
   };
-}
+};
 
-export function useAddRubyTagEvent() {
-  const setLyrics = useSetLyrics();
+const useUndoRedo = () => {
+  const readHistory = useEditHistoryRef();
+  const historyDispatch = useHistoryReducer();
+  const mapDispatch = useMapReducer();
+  const pickupTopPhrase = usePickupTopPhrase();
+  const readEditUtils = useReadEditUtils();
+  const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
+  const { readPlayer } = usePlayer();
+  const lineDispatch = useLineReducer();
+  const setManyPhrase = useSetManyPhrase();
+  const readYtPlayerStatus = useReadYtPlayerStatus();
 
-  return (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      const lyrics = event.currentTarget.value;
-      const start = event.currentTarget.selectionStart;
-      const end = event.currentTarget.selectionEnd;
+  const undo = () => {
+    const { present } = readHistory();
 
-      if (end === null || start === null || end - start < 1) {
-        return false;
+    if (present) {
+      const { actionType, data } = present;
+      switch (actionType) {
+        case "add":
+          const { lineIndex, time, lyrics, word } = data;
+          mapDispatch({ type: "delete", index: lineIndex });
+          const { speed } = readYtPlayerStatus();
+          readPlayer().seekTo(Number(data.time) - 3 * speed, true);
+          lineDispatch({ type: "set", line: { time, lyrics, word, selectIndex: null } });
+          const { manyPhraseText } = readEditUtils();
+          setManyPhrase(data.lyrics + "\n" + manyPhraseText);
+          break;
+        case "update":
+          mapDispatch({ type: "update", payload: data.old, index: data.lineIndex });
+          break;
+        case "delete":
+          mapDispatch({ type: "add", payload: data });
+          break;
+        case "replaceAll":
+          mapDispatch({ type: "replaceAll", payload: data.old });
+          break;
       }
-
-      const addRubyTagLyrics = `${lyrics.slice(0, start)}<ruby>${lyrics.slice(
-        start,
-        end
-      )}<rt></rt></ruby>${lyrics.slice(end, lyrics.length)}`;
-
-      setLyrics(addRubyTagLyrics);
-      setTimeout(() => {
-        const target = event.target as HTMLInputElement;
-        target.focus();
-        target.setSelectionRange(
-          addRubyTagLyrics.search("<rt></rt></ruby>") + 4,
-          addRubyTagLyrics.search("<rt></rt></ruby>") + 4
-        );
-      });
+      historyDispatch({ type: "undo" });
     }
   };
-}
+
+  const redo = () => {
+    const { future } = readHistory();
+
+    if (future.length) {
+      const { actionType, data } = future[future.length - 1];
+
+      switch (actionType) {
+        case "add":
+          mapDispatch({ type: "add", payload: data });
+          deleteAddingTopPhrase(data.lyrics);
+          const { manyPhraseText } = readEditUtils();
+          const topPhrase = manyPhraseText.split("\n")[0];
+          pickupTopPhrase(topPhrase);
+          break;
+        case "update":
+          mapDispatch({ type: "update", payload: data.new, index: data.lineIndex });
+          break;
+        case "delete":
+          mapDispatch({ type: "delete", index: data.lineIndex });
+          break;
+        case "replaceAll":
+          mapDispatch({ type: "replaceAll", payload: data.new });
+          break;
+      }
+      historyDispatch({ type: "redo" });
+    }
+  };
+
+  return { undo, redo };
+};

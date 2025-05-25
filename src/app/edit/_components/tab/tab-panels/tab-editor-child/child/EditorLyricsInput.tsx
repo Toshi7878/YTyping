@@ -1,5 +1,5 @@
 import { useLyricsState, useSetLyrics } from "@/app/edit/atoms/stateAtoms";
-import { useAddRubyTagEvent } from "@/app/edit/hooks/useKeyDown";
+import { useAddRubyTagEvent } from "@/app/edit/hooks/utils/useAddRubyTag";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Box, Input } from "@chakra-ui/react";
 import { useState } from "react";
