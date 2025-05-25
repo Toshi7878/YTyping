@@ -12,6 +12,7 @@ import {
 import { clientApi } from "@/trpc/client-api";
 import { MapLine } from "@/types/map";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
 import { useSearchParams } from "next/navigation";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
@@ -55,7 +56,9 @@ export const useLineAddButtonEvent = () => {
 
     const _time = playing ? readPlayer().getCurrentTime() + timeOffset : Number(readTime());
     const time = timeValidate(_time).toFixed(3);
-    const newLine: MapLine = !isShiftKey ? { time, lyrics, word } : { time, lyrics: "", word: "" };
+    const newLine: MapLine = !isShiftKey
+      ? { time, lyrics: normalizeSimilarSymbol(lyrics), word: normalizeSimilarSymbol(word) }
+      : { time, lyrics: "", word: "" };
 
     mapDispatch({ type: "add", payload: newLine });
     const lineIndex = readMap().findIndex((line) => JSON.stringify(line) === JSON.stringify(newLine));
