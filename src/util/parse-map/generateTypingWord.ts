@@ -172,23 +172,6 @@ export const determineCharacterType = ({
   }
 };
 
-const isFullWidth = (char: string): boolean => {
-  // 文字コードを取得
-  const code = char.charCodeAt(0);
-
-  // 全角の範囲を判定
-  // 全角スペース
-  if (code === 0x3000) return true;
-
-  // CJK統合漢字、ひらがな、カタカナなど
-  if (code >= 0x3000 && code <= 0x9fff) return true;
-
-  // 全角英数字や記号
-  if (code >= 0xff00 && code <= 0xffef) return true;
-
-  return false;
-};
-
 const convertZenkakuToHankaku = (char: string) => {
   if (ZENKAKU_LIST.includes(char)) {
     char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
