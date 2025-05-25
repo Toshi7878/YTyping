@@ -27,7 +27,7 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
   let typeChunks: TypeChunk[] = [];
 
   for (let i = 0; i < tokenizedKanaWord.length; i++) {
-    const kanaChar = transformSymbolBasedOnPreviousChar({ typeChunks, char: tokenizedKanaWord[i] });
+    const kanaChar = tokenizedKanaWord[i];
     const romaPatterns = [
       ...(KANA_TO_ROMA_MAP.get(kanaChar) || SYMBOL_TO_ROMA_MAP.get(kanaChar) || [convertZenkakuToHankaku(kanaChar)]),
     ];
@@ -36,7 +36,7 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
       k: kanaChar,
       r: romaPatterns,
       p: CHAR_POINT * romaPatterns[0].length,
-      t: determineCharacterType({ kanaChar, romaChar: romaPatterns[0] }),
+      t: determineCharacterType({ kanaChar: kanaChar, romaChar: romaPatterns[0] }),
       ...(KANA_UNSUPPORTED_SYMBOLS.includes(kanaChar) && { kanaUnSupportedSymbol: kanaChar }),
     });
 
@@ -195,15 +195,4 @@ const convertZenkakuToHankaku = (char: string) => {
   }
 
   return char;
-};
-
-const PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS = { "!": "！", "?": "？" } as const;
-
-const transformSymbolBasedOnPreviousChar = ({ typeChunks, char }: { typeChunks: TypeChunk[]; char: string }) => {
-  const convertedZenkakuKanaChar =
-    typeChunks.length > 0 && isFullWidth(typeChunks[typeChunks.length - 1]?.k)
-      ? PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS[char as keyof typeof PREVIOUS_KANA_CONVERT_ZENKAKU_SYMBOLS]
-      : undefined;
-
-  return convertedZenkakuKanaChar || char;
 };
