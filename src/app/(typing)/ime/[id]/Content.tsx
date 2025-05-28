@@ -78,9 +78,7 @@ function Content({ mapInfo }: ContentProps) {
       const menuBarHeight = document.getElementById("menu_bar")?.offsetHeight || 0;
       const viewheight = isMdOrBelow ? textareaHeight + menuBarHeight : lyricsViewAreaHeight;
 
-      if (readScene() === "ready") {
-        setYoutubeHeight(`calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`);
-      }
+      setYoutubeHeight(`calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`);
       setNotificationsHeight(`calc(100vh - 40px - ${viewheight}px - ${bottomPx}px - 20px)`);
     };
 
