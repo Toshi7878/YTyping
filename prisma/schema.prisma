@@ -232,13 +232,14 @@ model user_typing_options {
 }
 
 model user_ime_typing_options {
-  user_id               Int     @id
-  enable_add_symbol     Boolean @default(false)
-  enable_eng_space      Boolean @default(false)
-  enable_eng_upper_case Boolean @default(false)
-  enable_next_lyrics    Boolean @default(true)
-  add_symbol_list       String  @default("")
-  user                  users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id                    Int     @id
+  enable_add_symbol          Boolean @default(false)
+  enable_eng_space           Boolean @default(false)
+  enable_eng_upper_case      Boolean @default(false)
+  enable_next_lyrics         Boolean @default(true)
+  add_symbol_list            String  @default("")
+  enable_large_video_display Boolean @default(false)
+  user                       users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model user_stats {

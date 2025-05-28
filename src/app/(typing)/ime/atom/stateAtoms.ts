@@ -175,9 +175,11 @@ export const imeTypeOptionsAtom = atomWithReset({
   enable_eng_space: false,
   add_symbol_list: "",
   enable_next_lyrics: true,
+  enable_large_video_display: false,
 });
 
 const enableNextLyricsOptionAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enable_next_lyrics"));
+const enableLargeVideoDisplayAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enable_large_video_display"));
 
 store.sub(imeTypeOptionsAtom, () => {
   store.set(isImeTypeOptionsEditedAtom, true);
@@ -208,4 +210,5 @@ export const useReadImeTypeOptions = () => {
 };
 
 export const useEnableNextLyricsOptionState = () => useAtomValue(enableNextLyricsOptionAtom, { store });
+export const useEnableLargeVideoDisplayState = () => useAtomValue(enableLargeVideoDisplayAtom, { store });
 export const useSetImetypeOptions = () => useSetAtom(writeImeTypeOptionsAtom, { store });

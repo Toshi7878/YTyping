@@ -11,7 +11,7 @@ import InputTextarea from "../_components/InputTextarea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/Notifications";
 import ViewArea from "../_components/view-area/ViewArea";
-import { useMapState, useReadScene, useSetMap } from "../atom/stateAtoms";
+import { useEnableLargeVideoDisplayState, useMapState, useReadScene, useSetMap } from "../atom/stateAtoms";
 import { useParseImeMap } from "../hooks/parseImeMap";
 import { usePathChangeAtomReset } from "../hooks/reset";
 import { useUpdateTypingStats } from "../hooks/updateTypingStats";
@@ -37,6 +37,7 @@ function Content({ mapInfo }: ContentProps) {
   const readScene = useReadScene();
   const [tokenizerError, setTokenizerError] = useState<boolean>(false);
   const updateTypingStats = useUpdateTypingStats();
+  const enableLargeVideoDisplay = useEnableLargeVideoDisplayState();
 
   const loadMap = (mapData: MapLine[]) => {
     parseImeMap(mapData)
@@ -79,7 +80,7 @@ function Content({ mapInfo }: ContentProps) {
       const isMdOrBelow = window.innerWidth <= 1280;
       const textareaHeight = lyricsViewAreaElement.querySelector("textarea")?.offsetHeight || 0;
       const menuBarHeight = document.getElementById("menu_bar")?.offsetHeight || 0;
-      const viewheight = isMdOrBelow ? textareaHeight + menuBarHeight : lyricsViewAreaHeight;
+      const viewheight = isMdOrBelow || enableLargeVideoDisplay ? textareaHeight + menuBarHeight : lyricsViewAreaHeight;
 
       if (readScene() === "ready") {
         setYoutubeHeight({
@@ -107,7 +108,7 @@ function Content({ mapInfo }: ContentProps) {
     return () => {
       resizeObserver.disconnect();
     };
-  }, [readScene]);
+  }, [readScene, enableLargeVideoDisplay]);
 
   const loadingMessage = tokenizerError ? (
     <Flex flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={2}>

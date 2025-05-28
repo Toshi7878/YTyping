@@ -202,6 +202,17 @@ const MainSettingTab = () => {
           });
         }}
       />
+
+      <OptionCheckboxFormField
+        label="動画を大きく表示"
+        name="enableLargeVideoDisplay"
+        defaultChecked={userImeTypeOptions.enable_large_video_display}
+        onChange={(e) => {
+          setUserImeTypeOptions({
+            enable_large_video_display: e.target.checked,
+          });
+        }}
+      />
     </Flex>
   );
 };
