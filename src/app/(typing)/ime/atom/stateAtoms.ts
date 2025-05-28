@@ -1,5 +1,5 @@
 import { RouterOutPuts } from "@/server/api/trpc";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
@@ -52,7 +52,6 @@ const gameStateUtilParamsAtom = atomWithReset({
   nextDisplayLine: [] as ParseMap["lines"][number],
   judgedWords: [] as string[][][],
   textareaPlaceholderType: "normal" as PlaceholderType,
-  typeTimeStatsAccumulationEnabled: false,
 });
 
 export const useReadGameUtilParams = () => {
@@ -91,9 +90,6 @@ const judgedWordsAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop
 const textareaPlaceholderTypeAtom = focusAtom(gameStateUtilParamsAtom, (optic) =>
   optic.prop("textareaPlaceholderType")
 );
-const typeTimeStatsAccumulationEnabled = focusAtom(gameStateUtilParamsAtom, (optic) =>
-  optic.prop("typeTimeStatsAccumulationEnabled")
-);
 
 export const useCountState = () => useAtomValue(countAtom, { store });
 export const useSkipRemainTimeState = () => useAtomValue(skipRemainTimeAtom, { store });
@@ -108,7 +104,6 @@ export const useSetDisplayLines = () => useSetAtom(displayLinesAtom, { store });
 export const useSetNextDisplayLine = () => useSetAtom(nextDisplayLineAtom, { store });
 export const useSetJudgedWords = () => useSetAtom(judgedWordsAtom, { store });
 export const useSetTextareaPlaceholderType = () => useSetAtom(textareaPlaceholderTypeAtom, { store });
-export const useSetTypeTimeStatsAccumulationEnabled = () => useSetAtom(typeTimeStatsAccumulationEnabled, { store });
 
 const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0 });
 export const useStatusState = () => useAtomValue(statusAtom, { store });
@@ -172,3 +167,45 @@ export const useResultDialogDisclosure = () => {
 
   return { open, onOpen, onClose };
 };
+
+const isImeTypeOptionsEditedAtom = atom(false);
+export const imeTypeOptionsAtom = atomWithReset({
+  enable_add_symbol: false,
+  enable_eng_upper_case: false,
+  enable_eng_space: false,
+  add_symbol_list: "",
+  enable_next_lyrics: true,
+});
+
+const enableNextLyricsOptionAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enable_next_lyrics"));
+
+store.sub(imeTypeOptionsAtom, () => {
+  store.set(isImeTypeOptionsEditedAtom, true);
+});
+
+const writeImeTypeOptionsAtom = atom(
+  null,
+  (get, set, newOptions: Partial<ExtractAtomValue<typeof imeTypeOptionsAtom>>) => {
+    set(imeTypeOptionsAtom, (prev) => ({
+      ...prev,
+      ...newOptions,
+    }));
+  }
+);
+
+export const useReadIsImeTypeOptionsEdited = () => {
+  return useAtomCallback(
+    useCallback((get) => get(isImeTypeOptionsEditedAtom), []),
+    { store }
+  );
+};
+export const useImeTypeOptionsState = () => useAtomValue(imeTypeOptionsAtom, { store });
+export const useReadImeTypeOptions = () => {
+  return useAtomCallback(
+    useCallback((get) => get(imeTypeOptionsAtom), []),
+    { store }
+  );
+};
+
+export const useEnableNextLyricsOptionState = () => useAtomValue(enableNextLyricsOptionAtom, { store });
+export const useSetImetypeOptions = () => useSetAtom(writeImeTypeOptionsAtom, { store });

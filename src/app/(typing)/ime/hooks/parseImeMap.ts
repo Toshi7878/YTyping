@@ -1,12 +1,15 @@
 import { MapLine } from "@/types/map";
+import { useReadImeTypeOptions } from "../atom/stateAtoms";
 import { WordResults } from "../type";
-import { formatWord } from "./formatWord";
+import { useFormatWord } from "./formatWord";
 import { useGenerateTokenizedWords } from "./repl";
 
 const MIN_LINE_SECONDS = 5;
 
 export const useParseImeMap = () => {
   const generateTokenizedWords = useGenerateTokenizedWords();
+  const readImeTypeOptions = useReadImeTypeOptions();
+  const formatWord = useFormatWord();
 
   return async (mapData: MapLine[]) => {
     let lineWords: string[] = [];
@@ -22,10 +25,6 @@ export const useParseImeMap = () => {
       const isTypingLine = isValidTypingLine(formattedLyrics, line.word);
 
       if (isTypingLine) {
-        if (lineWords.length !== 0 && lineWords[lineWords.length - 1] !== "") {
-          // lineWords = addSpaceToLastChar(lineWords);
-        }
-
         lineWords.push(formattedLyrics);
         lineTimes.push(Number(line.time));
       }
@@ -56,10 +55,18 @@ export const useParseImeMap = () => {
 
     const words = await generateTokenizedWords(
       lines.map((line) => {
-        return line
+        const { enable_eng_space } = readImeTypeOptions();
+
+        const words = line
           .map((chunk) => chunk.word.split(" "))
           .flat()
           .filter((char) => char !== "");
+
+        if (enable_eng_space) {
+          return insertSpacesEng(words);
+        }
+
+        return words;
       })
     );
 
@@ -73,6 +80,8 @@ export const useParseImeMap = () => {
       inputs: [],
       evaluation: "Skip" as const,
     }));
+
+    console.log({ lines, words, totalNotes, initWordResults, textWords });
 
     return { lines, words, totalNotes, initWordResults, textWords };
   };
@@ -97,45 +106,6 @@ const shouldCreateNewLine = (
   return lineChars.length > 0 && (!nextLine || MIN_LINE_SECONDS < nextTime - lineTimes[0]);
 };
 
-// const connectWithPreviousLyrics = (
-//   displayLyrics: { times: number[]; chars: string[] }[],
-//   lineTimes: number[]
-// ): void => {
-//   const prevLastTime = prevDisplayLyrics.times[prevDisplayLyrics.times.length - 1];
-
-//   if (prevLastTime !== lineTimes[0]) {
-//     if (!prevDisplayLyrics.times) {
-//       prevDisplayLyrics.times = [];
-//     }
-//     if (!prevDisplayLyrics.chars) {
-//       prevDisplayLyrics.chars = [];
-//     }
-
-//     prevDisplayLyrics.times.push(lineTimes[0]);
-//     prevDisplayLyrics.chars.push("");
-//   }
-// };
-
-/**
- *
- * @param param0 英語のスペースを判定に含める関数
- * @returns
- */
-const insertSpacesEng = (comparison: string[]): string[] => {
-  if (!false) return comparison; // 設定を追加する
-
-  for (let i = 0; i < comparison.length; i++) {
-    const isHalfWidth = /^[!-~]*$/.test(comparison[i]);
-    const nextChar = comparison[i + 1];
-
-    if (isHalfWidth && nextChar && /^[!-~]*$/.test(nextChar[0])) {
-      comparison[i] = comparison[i] + " ";
-    }
-  }
-
-  return comparison;
-};
-
 const deleteRubyTag = (text: string) => {
   const ruby_convert = text.match(/<*ruby(?: .+?)?>.*?<.*?\/ruby*>/g);
   if (ruby_convert) {
@@ -147,4 +117,20 @@ const deleteRubyTag = (text: string) => {
     }
   }
   return text;
+};
+
+const insertSpacesEng = (words: string[]) => {
+  for (let i = 0; i < words.length; i++) {
+    const currentWord = words[i];
+    const isCurrentWordAllHankaku = /^[!-~]*$/.test(currentWord);
+    const nextWord = words[i + 1];
+
+    if (isCurrentWordAllHankaku && nextWord) {
+      if (/^[!-~]*$/.test(nextWord[0])) {
+        words[i] = words[i] + " ";
+      }
+    }
+  }
+
+  return words;
 };

@@ -2,17 +2,25 @@ import { Box, Flex, FlexProps, Text } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { useLyricsContainer } from "../../../atom/refAtoms";
-import { useCountState, useDisplayLinesState, useMapState, useNextDisplayLineState } from "../../../atom/stateAtoms";
+import {
+  useCountState,
+  useDisplayLinesState,
+  useEnableNextLyricsOptionState,
+  useMapState,
+  useNextDisplayLineState,
+} from "../../../atom/stateAtoms";
 import { COMPLETED_WIPE_COLOR, INITIAL_WIPE_COLOR } from "../../../ts/const";
 import "./lyrics-container.css";
 import Skip from "./Skip";
 
 const LyricsContainer = (props: FlexProps) => {
+  const enableNextLyricsOption = useEnableNextLyricsOptionState();
+
   return (
     <Flex id="lyrics-container" position="relative" flexDirection="column" mb={2} {...props}>
       <Lyrics />
-      <NextLyrics />
-      <Skip position="absolute" bottom={0.5} left={-24} />
+      {enableNextLyricsOption && <NextLyrics />}
+      <Skip position="absolute" bottom={0.5} left={{ base: "initial", xl: -24 }} right={{ base: "4", xl: "initial" }} />
     </Flex>
   );
 };
@@ -67,7 +75,7 @@ const NextLyrics = () => {
 
   const nextLine = map?.lines?.[count];
   return (
-    <Box id="next_lyrics" color="#aaa" fontSize="60%">
+    <Box id="next_lyrics" userSelect="none" color="#aaa" fontSize="60%">
       {nextLine && <Text as="span">{`NEXT: `}</Text>}
       <AnimatePresence>
         {nextDisplayLine.length > 0 && (

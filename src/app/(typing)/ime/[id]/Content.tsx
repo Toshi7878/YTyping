@@ -4,7 +4,7 @@ import { MapLine } from "@/types/map";
 import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import ImeTypeYouTubeContent from "../_components/ImeTypeYoutubeContent";
 import InputTextarea from "../_components/InputTextarea";
@@ -35,23 +35,22 @@ function Content({ mapInfo }: ContentProps) {
   const [tokenizerError, setTokenizerError] = useState<boolean>(false);
   const updateTypingStats = useUpdateTypingStats();
 
-  const loadMap = useCallback(
-    async (mapData: MapLine[]) => {
-      setTokenizerError(false);
-      try {
-        const map = await parseImeMap(mapData);
+  const loadMap = (mapData: MapLine[]) => {
+    parseImeMap(mapData)
+      .then((map) => {
         setMap(map);
-      } catch (error) {
+      })
+      .catch((error) => {
+        console.error(error);
         setTokenizerError(true);
-      }
-    },
-    [parseImeMap, setMap]
-  );
+      });
+  };
 
   useEffect(() => {
     if (mapData) {
       loadMap(mapData);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
 
@@ -73,10 +72,16 @@ function Content({ mapInfo }: ContentProps) {
       const bottomValue = computedStyle.bottom;
       const bottomPx = bottomValue === "auto" ? 0 : parseInt(bottomValue, 10) || 0;
 
+      // 画面幅がmd（768px）以下の場合はlyricsViewAreaHeightを引かない
+      const isMdOrBelow = window.innerWidth <= 1280;
+      const textareaHeight = lyricsViewAreaElement.querySelector("textarea")?.offsetHeight || 0;
+      const menuBarHeight = document.getElementById("menu_bar")?.offsetHeight || 0;
+      const viewheight = isMdOrBelow ? textareaHeight + menuBarHeight : lyricsViewAreaHeight;
+
       if (readScene() === "ready") {
-        setYoutubeHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px)`);
+        setYoutubeHeight(`calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`);
       }
-      setNotificationsHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px - 20px)`);
+      setNotificationsHeight(`calc(100vh - 40px - ${viewheight}px - ${bottomPx}px - 20px)`);
     };
 
     updateHeights();
@@ -130,7 +135,14 @@ function Content({ mapInfo }: ContentProps) {
         style={{ height: youtubeHeight }}
       />
 
-      <Flex ref={lyricsViewAreaRef} width="100%" position="fixed" bottom="150" left="0" flexDirection="column">
+      <Flex
+        ref={lyricsViewAreaRef}
+        width="100%"
+        position="fixed"
+        bottom={{ base: 0, lg: 100, xl: 150 }}
+        left="0"
+        flexDirection="column"
+      >
         <ViewArea />
         <InputTextarea />
         <MenuBar />

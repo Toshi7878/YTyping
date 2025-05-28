@@ -9,7 +9,7 @@ import {
   useSetStatus,
   useUpdateWordResults,
 } from "../atom/stateAtoms";
-import { formatWord } from "./formatWord";
+import { useFormatWord } from "./formatWord";
 
 export const useJudgeTargetWords = () => {
   const readStatus = useReadStatus();
@@ -20,6 +20,7 @@ export const useJudgeTargetWords = () => {
   const updateWordResults = useUpdateWordResults();
   const readWordResults = useReadWordResults();
   const { incrementImeType } = useUserStats();
+  const formatComment = useFormatComment();
 
   return (chatData: string) => {
     let userInput = formatComment(chatData);
@@ -189,17 +190,21 @@ function judgeComment(judgedWords: string[][], comment: string) {
 //   return combinations;
 // }
 
-function formatComment(text: string) {
-  text = formatWord(text);
+function useFormatComment() {
+  const formatWord = useFormatWord();
 
-  //全角の前後のスペースを削除
-  text = text.replace(/(\s+)([^!-~])/g, "$2").replace(/([^!-~])(\s+)/g, "$1");
+  return (text: string) => {
+    text = formatWord(text);
 
-  //テキストの末尾が半角ならば末尾に半角スペース追加
-  if (/[!-~]$/.test(text)) {
-    text = text + " ";
-  }
-  return text;
+    //全角の前後のスペースを削除
+    text = text.replace(/(\s+)([^!-~])/g, "$2").replace(/([^!-~])(\s+)/g, "$1");
+
+    //テキストの末尾が半角ならば末尾に半角スペース追加
+    if (/[!-~]$/.test(text)) {
+      text = text + " ";
+    }
+    return text;
+  };
 }
 
 function joinWord(word: string[][]) {

@@ -40,7 +40,7 @@ interface SettingCardProps {
 const SettingCard = (props: SettingCardProps) => {
   const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
-  const updateTypingOptions = clientApi.userTypingOption.update.useMutation();
+  const updateTypingOptions = clientApi.userTypingOption.updateTypeOptions.useMutation();
   const breakpoint = useBreakpointValue({ base: "base", md: "md" });
   const { isOpen, onOpen, onClose } = useDisclosure();
 

@@ -2,6 +2,7 @@ import VolumeRange from "@/components/share-components/VolumeRange";
 import { useUserAgent } from "@/util/useUserAgent";
 import { Box, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { usePlayer } from "../../atom/refAtoms";
 import { useResultDialogDisclosure, useSceneState } from "../../atom/stateAtoms";
 import useSceneControl from "../../hooks/sceneControl";
@@ -14,6 +15,7 @@ import LinkMenuButton from "./menu-item/LinkMenuButton";
 import MenuButton from "./menu-item/MenuButton";
 import MenuSpeedButton from "./menu-item/MenuSpeedButton";
 import ResultDialog from "./ResultDialog";
+import SettingCard from "./setting-card/SettingCard";
 
 const MenuBar = () => {
   const { id: mapId } = useParams();
@@ -23,17 +25,18 @@ const MenuBar = () => {
   const userAgent = useUserAgent();
 
   const resultDialogDisclosure = useResultDialogDisclosure();
+  const [isCardVisible, setIsCardVisible] = useState(false);
 
   return (
     <>
-      <Box bg="background.card">
-        <Flex justifyContent="space-between" mx={4}>
-          <Flex>
+      <Box id="menu_bar" bg="background.card">
+        <Flex justifyContent="space-between" mx={4} flexDirection={{ base: "column", lg: "row" }}>
+          <Flex flexDirection={{ base: "column", lg: "row" }}>
             {!userAgent.isMobile && <VolumeRange player={readPlayer()} />}
             <MenuSpeedButton isDisabled={true} image={metronome} title="倍速" />
           </Flex>
 
-          <Flex justifyContent="space-between" width="20%">
+          <Flex justifyContent="space-between" width={{ base: "100%", lg: "20%" }}>
             <MenuButton image={start} isDisabled={scene === "play"} onClick={handleStart} title="開始" />
             <MenuButton image={trophy} isDisabled={scene !== "play"} onClick={handleEnd} title="終了" />
             <MenuButton
@@ -44,13 +47,14 @@ const MenuBar = () => {
             />
           </Flex>
 
-          <Flex width="30%" justifyContent="flex-end">
-            <MenuButton image={gear} isDisabled={true} title="設定" />
+          <Flex width={{ base: "100%", lg: "30%" }} justifyContent="flex-end">
+            <MenuButton image={gear} title="設定" onClick={() => setIsCardVisible(true)} />
             <LinkMenuButton title="タイピングページに戻る" href={`/type/${mapId}`} />
           </Flex>
         </Flex>
       </Box>
       <ResultDialog isOpen={resultDialogDisclosure.open} onClose={resultDialogDisclosure.onClose} />
+      <SettingCard isCardVisible={isCardVisible} setIsCardVisible={setIsCardVisible} />
     </>
   );
 };

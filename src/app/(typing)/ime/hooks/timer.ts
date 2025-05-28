@@ -3,6 +3,7 @@ import { useLyricsContainer } from "../atom/refAtoms";
 import { useReadPlaySpeed } from "../atom/speedReducerAtoms";
 import {
   useReadGameUtilParams,
+  useReadImeTypeOptions,
   useReadMap,
   useSetCount,
   useSetDisplayLines,
@@ -10,7 +11,6 @@ import {
   useSetNextDisplayLine,
   useSetSkipRemainTime,
   useSetTextareaPlaceholderType,
-  useSetTypeTimeStatsAccumulationEnabled,
   useSetWipeCount,
 } from "../atom/stateAtoms";
 import { DISPLAY_LINE_LENGTH } from "../ts/const";
@@ -72,7 +72,7 @@ const useTimer = () => {
   const setCount = useSetCount();
   const setWipeCount = useSetWipeCount();
   const setTextareaPlaceholderType = useSetTextareaPlaceholderType();
-  const setTypeTimeStatsAccumulationEnabled = useSetTypeTimeStatsAccumulationEnabled();
+  const readImeTypeOptions = useReadImeTypeOptions();
 
   const updateSkip = ({
     currentLine,
@@ -160,7 +160,8 @@ const useTimer = () => {
     if (nextDisplayLine.length === 0) {
       const nextTime = nextLine[0].time / readPlaySpeed().playSpeed;
 
-      if (nextTime - constantOffsettedYTTime < 3) {
+      const { enable_next_lyrics } = readImeTypeOptions();
+      if (enable_next_lyrics && nextTime - constantOffsettedYTTime < 3) {
         setNextDisplayLine(nextLine);
         setJudgedWords(getJudgedWords(count + 1));
       }

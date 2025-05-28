@@ -17,6 +17,14 @@ const typingOptionSchema = z.object({
   toggle_input_mode_key: z.nativeEnum(toggle_input_mode_key),
 });
 
+const imeTypingOptionsSchema = z.object({
+  enable_add_symbol: z.boolean(),
+  enable_eng_space: z.boolean(),
+  enable_eng_upper_case: z.boolean(),
+  add_symbol_list: z.string().max(255),
+  enable_next_lyrics: z.boolean(),
+});
+
 export const userTypingOptionRouter = {
   getUserTypingOptions: publicProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
@@ -32,10 +40,43 @@ export const userTypingOptionRouter = {
 
     return null;
   }),
-  update: protectedProcedure.input(typingOptionSchema).mutation(async ({ input, ctx }) => {
+  getUserImeTypingOptions: publicProcedure.query(async ({ ctx }) => {
+    const { db, user } = ctx;
+
+    const ImeTypingOptions = await db.user_ime_typing_options.findUnique({
+      where: { user_id: user.id },
+    });
+
+    if (ImeTypingOptions) {
+      const { user_id, ...typingOptionsWithoutUserId } = ImeTypingOptions;
+      return typingOptionsWithoutUserId;
+    }
+
+    return null;
+  }),
+  updateTypeOptions: protectedProcedure.input(typingOptionSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
     const updated = await db.user_typing_options.upsert({
+      where: {
+        user_id: user.id,
+      },
+      update: {
+        ...input,
+      },
+      create: {
+        user_id: user.id,
+        ...input,
+      },
+    });
+
+    return updated;
+  }),
+
+  updateImeTypeOptions: protectedProcedure.input(imeTypingOptionsSchema).mutation(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+
+    const updated = await db.user_ime_typing_options.upsert({
       where: {
         user_id: user.id,
       },

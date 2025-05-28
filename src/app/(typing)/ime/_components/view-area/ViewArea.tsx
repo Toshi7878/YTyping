@@ -7,25 +7,29 @@ import ResultScore from "./end/ResultScore";
 import LyricsContainer from "./play/LyricsContainer";
 
 const ViewArea = () => {
+  const { readPlayer } = usePlayer();
+  const { readInputTextarea } = useInputTextarea();
+  const scene = useSceneState();
+  const map = useMapState();
+
+  const onClick = () => {
+    if (scene === "ready" && map !== null) {
+      readPlayer().playVideo();
+      readInputTextarea().focus();
+    }
+  };
   return (
     <Box
+      onClick={onClick}
+      cursor={scene === "ready" ? "pointer" : "default"}
       fontFamily="Yu Gothic Ui"
       bg="rgba(0, 0, 0, 0.8)"
       width="100%"
       fontWeight="bold"
       textShadow="0px 0px 10px rgba(0, 0, 0, 1)"
-      fontSize="4xl"
+      fontSize={{ base: "2xl", sm: "3xl", lg: "4xl" }}
     >
       <SceneView />
-      {/* <div id="music-title-container">
-        <img src="/assets/img/music.png" alt="音楽アイコン" />
-        <span id="title">{title || ""}</span>
-      </div> */}
-
-      {/* <div id="font-size-container">
-        <img src="assets\img\control-090.png" id="font-size-arrow-top" className="arrow-highlight mb-2 p-1" />
-        <img src="assets\img\control-270.png" id="font-size-arrow-down" className="arrow-highlight p-1" />
-      </div> */}
     </Box>
   );
 };
@@ -79,10 +83,10 @@ const SceneView = () => {
       window.removeEventListener("beforeunload", handleBeforeunload);
       window.removeEventListener("visibilitychange", handleVisibilitychange);
     };
-  }, [scene, readPlayer, map, readInputTextarea, readUserStats, resetUserStats]);
+  }, [scene, readPlayer, map, readInputTextarea, readUserStats, resetUserStats, session?.user.id]);
 
   return (
-    <Box ml={32}>
+    <Box ml={{ base: 6, md: 20, xl: 32 }}>
       <LyricsContainer visibility={scene === "ready" || scene === "end" ? "hidden" : "visible"} />
       {scene === "end" && <ResultScore position="absolute" top="2" />}
     </Box>

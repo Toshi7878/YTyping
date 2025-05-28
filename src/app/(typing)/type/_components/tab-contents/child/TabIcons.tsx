@@ -6,7 +6,7 @@ import { useState } from "react";
 import EditIcon from "./icon-child/EditIcon";
 import LikeIcon from "./icon-child/LikeIcon";
 import SettingIcon from "./icon-child/SettingIcon";
-const SettingCard = dynamic(() => import("./child/SettingCard"), {
+const SettingCard = dynamic(() => import("./setting-card/SettingCard"), {
   ssr: false, // サーバーサイドレンダリングを無効にする場合、このオプションを有効にします
 });
 export default function TabIcons() {
@@ -17,12 +17,7 @@ export default function TabIcons() {
 
   return (
     <>
-      <Box
-        position="absolute"
-        top={{ base: "-20px", md: "-20px" }}
-        right="-10px"
-        color={`${theme.colors.text.body}99`}
-      >
+      <Box position="absolute" top={{ base: "-20px", md: "-20px" }} right="-10px" color={`${theme.colors.text.body}99`}>
         <Flex alignItems="center" justifyContent="flex-end">
           {session?.user.id ? <SettingIcon setIsCardVisible={setIsCardVisible} /> : null}
           {session?.user.id ? <LikeIcon /> : null}

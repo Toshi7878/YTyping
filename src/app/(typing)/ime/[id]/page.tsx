@@ -33,13 +33,14 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 
 export default async function Page({ params }: { params: { id: string } }) {
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(params.id) });
+  const userImeTypingOptions = await serverApi.userTypingOption.getUserImeTypingOptions();
 
   if (!mapInfo) {
     notFound();
   }
 
   return (
-    <ImeTypeProvider>
+    <ImeTypeProvider userImeTypingOptions={userImeTypingOptions}>
       <Content mapInfo={mapInfo} />
     </ImeTypeProvider>
   );

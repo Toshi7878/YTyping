@@ -149,22 +149,23 @@ enum role {
 }
 
 model users {
-  id                     Int                      @id @default(autoincrement())
-  name                   String?                  @unique
-  email_hash             String                   @unique
-  role                   role                     @default(USER)
-  created_at             DateTime                 @default(now())
-  updated_at             DateTime                 @updatedAt
-  maps                   maps[]
-  results                results[]
-  resultClaps            result_claps[]
-  mapLikes               map_likes[]
-  notificationsAsVisitor notifications[]          @relation("Visitor")
-  typingOption           user_typing_options?
-  typingStats            user_stats?
-  user_option            user_options?
-  user_profiles          user_profiles[]
-  user_daily_type_counts user_daily_type_counts[]
+  id                      Int                      @id @default(autoincrement())
+  name                    String?                  @unique
+  email_hash              String                   @unique
+  role                    role                     @default(USER)
+  created_at              DateTime                 @default(now())
+  updated_at              DateTime                 @updatedAt
+  maps                    maps[]
+  results                 results[]
+  resultClaps             result_claps[]
+  mapLikes                map_likes[]
+  notificationsAsVisitor  notifications[]          @relation("Visitor")
+  typingOption            user_typing_options?
+  typingStats             user_stats?
+  user_option             user_options?
+  user_profiles           user_profiles[]
+  user_daily_type_counts  user_daily_type_counts[]
+  user_ime_typing_options user_ime_typing_options?
 }
 
 model user_profiles {
@@ -228,6 +229,16 @@ model user_typing_options {
   time_offset_key        time_offset_key        @default(CTRL_LEFT_RIGHT)
   toggle_input_mode_key  toggle_input_mode_key  @default(ALT_KANA)
   user                   users                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model user_ime_typing_options {
+  user_id               Int     @id
+  enable_add_symbol     Boolean @default(false)
+  enable_eng_space      Boolean @default(false)
+  enable_eng_upper_case Boolean @default(false)
+  enable_next_lyrics    Boolean @default(true)
+  add_symbol_list       String  @default("")
+  user                  users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model user_stats {
