@@ -23,7 +23,10 @@ interface ContentProps {
 function Content({ mapInfo }: ContentProps) {
   const { video_id } = mapInfo!;
   const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
-  const [youtubeHeight, setYoutubeHeight] = useState<string>("calc(100vh - var(--header-height))");
+  const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
+    minHeight: "calc(100vh - var(--header-height))",
+    height: "calc(100vh - var(--header-height))",
+  });
   const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
   const { id: mapId } = useParams();
   const { data: mapData } = useMapQuery({ mapId: mapId as string });
@@ -78,7 +81,18 @@ function Content({ mapInfo }: ContentProps) {
       const menuBarHeight = document.getElementById("menu_bar")?.offsetHeight || 0;
       const viewheight = isMdOrBelow ? textareaHeight + menuBarHeight : lyricsViewAreaHeight;
 
-      setYoutubeHeight(`calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`);
+      if (readScene() === "ready") {
+        setYoutubeHeight({
+          minHeight: `calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`,
+          height: `calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`,
+        });
+      } else {
+        setYoutubeHeight((prev) => ({
+          ...prev,
+          height: `calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`,
+        }));
+      }
+
       setNotificationsHeight(`calc(100vh - 40px - ${viewheight}px - ${bottomPx}px - 20px)`);
     };
 
@@ -130,7 +144,7 @@ function Content({ mapInfo }: ContentProps) {
       <ImeTypeYouTubeContent
         videoId={video_id}
         className={"fixed top-[40px] left-0 w-full"}
-        style={{ height: youtubeHeight }}
+        style={{ height: youtubeHeight.height, minHeight: youtubeHeight.minHeight }}
       />
 
       <Flex
