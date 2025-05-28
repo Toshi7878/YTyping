@@ -23,6 +23,7 @@ const imeTypingOptionsSchema = z.object({
   enable_eng_upper_case: z.boolean(),
   add_symbol_list: z.string().max(255),
   enable_next_lyrics: z.boolean(),
+  enable_large_video_display: z.boolean(),
 });
 
 export const userTypingOptionRouter = {
