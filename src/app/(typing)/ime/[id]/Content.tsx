@@ -94,7 +94,7 @@ function Content({ mapInfo }: ContentProps) {
         }));
       }
 
-      setNotificationsHeight(`calc(100vh - 40px - ${viewheight}px - ${bottomPx}px - 20px)`);
+      setNotificationsHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px - 20px)`);
     };
 
     updateHeights();
