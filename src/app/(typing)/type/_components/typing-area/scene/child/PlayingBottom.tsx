@@ -47,7 +47,13 @@ const PlayingBottom = function () {
       </Flex>
       {sceneGroup === "Ready" && (
         <Link href={`/ime/${mapId}`} onClick={(event) => handleLinkClick(event, "replace")}>
-          <Button position="absolute" bottom="3" right="10">
+          <Button
+            p={{ base: 8, md: "2" }}
+            fontSize={{ base: "2xl", md: "md" }}
+            position="absolute"
+            bottom="3"
+            right="10"
+          >
             変換有りタイピング
           </Button>
         </Link>
