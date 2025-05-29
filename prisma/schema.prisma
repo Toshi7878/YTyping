@@ -43,6 +43,7 @@ model maps {
   map_likes         map_likes[]
   notifications     notifications[]
   difficulty        map_difficulties?
+  ime_results       ime_results[]
 }
 
 model map_difficulties {
@@ -86,6 +87,16 @@ model results {
   notificationsAsVisited notifications[]  @relation("VisitedResult")
 
   @@unique([user_id, map_id])
+}
+
+model ime_results {
+  id         Int   @id @default(autoincrement())
+  user_id    Int
+  map_id     Int
+  type_count Int   @default(0)
+  score      Int   @default(0)
+  user       users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  map        maps  @relation(fields: [map_id], references: [id], onDelete: Cascade)
 }
 
 model result_statuses {
@@ -166,6 +177,7 @@ model users {
   user_profiles           user_profiles[]
   user_daily_type_counts  user_daily_type_counts[]
   user_ime_typing_options user_ime_typing_options?
+  ime_results             ime_results[]
 }
 
 model user_profiles {
