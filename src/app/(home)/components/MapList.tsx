@@ -5,7 +5,6 @@ import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLink from "@/components/map-card/child/child/MapLink";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { Box } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -93,9 +92,9 @@ function MapList() {
       </MapCardLayout>
 
       {hasNextPage && (
-        <Box ref={ref}>
+        <div ref={ref}>
           <LoadingMapCard cardLength={2} />
-        </Box>
+        </div>
       )}
     </div>
   );

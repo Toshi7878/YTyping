@@ -49,7 +49,7 @@ export default async function RootLayout({
               <Header />
               <GlobalProvider userOptions={userOptions}>
                 <main
-                  className="container min-w-screen min-h-screen flex flex-col items-center justify-between pt-12 md:pt-16"
+                  className="max-w-[1300px] mx-auto px-0 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center justify-between pt-12 md:pt-16"
                   id="main_content"
                 >
                   {children}

@@ -1,7 +1,6 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
 import { useUserAgent } from "@/util/useUserAgent";
-import { Box, Flex } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import FilterInputs from "./child/FilterInputs";
 import SearchInputs from "./child/SearchInputs";
@@ -16,50 +15,30 @@ const SearchContent = () => {
 
   const isLogin = !!session?.user?.id;
   return (
-    <Flex as="section" width="100%" alignItems="center" mb={4}>
-      <Box width="100%">
-        <Box mb={3}>
+    <section className="w-full flex items-center mb-4">
+      <div className="w-full">
+        <div className="mb-3">
           <SearchInputs />
-        </Box>
-        <Flex
-          justifyContent={isLogin ? "space-between" : "flex-end"}
-          gap={isLogin ? 0 : 8}
-          direction={{ base: "column", md: "row" }}
+        </div>
+        <div
+          className={`flex ${isLogin ? "justify-between" : "justify-end"} ${
+            isLogin ? "" : "gap-8"
+          } flex-col md:flex-row`}
         >
-          <Flex alignItems="center" gap={5} direction={{ base: "column", md: "row" }}>
+          <div className="flex items-center gap-5 flex-col md:flex-row">
             {isLogin && <FilterInputs />}
-            <SearchRange step={0.1} mx={4} />
-          </Flex>
+            <SearchRange step={0.1} />
+          </div>
           {!isMobile && <VolumeRange player={player} />}
-        </Flex>
-        <Box mt={4}>
-          <Flex
-            width="100%"
-            bg="background.card"
-            color="text.body"
-            p={2}
-            borderRadius="md"
-            overflowX="auto"
-            flexWrap={{ base: "wrap", md: "nowrap" }}
-            justifyContent="space-between"
-            alignItems="center"
-            gap={1}
-            css={{
-              "&::-webkit-scrollbar": {
-                height: "8px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-                borderRadius: "4px",
-              },
-            }}
-          >
+        </div>
+        <div className="mt-4">
+          <div className="w-full bg-slate-800 text-white p-2 rounded-md overflow-x-auto flex flex-wrap md:flex-nowrap justify-between items-center gap-1 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
             <SortOptions />
             <MapListLength />
-          </Flex>
-        </Box>
-      </Box>
-    </Flex>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
