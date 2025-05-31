@@ -4,15 +4,17 @@ import { notFound } from "next/navigation";
 import Content from "../_components/Content";
 import EditProvider from "../_components/EditProvider";
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(params.id) });
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
 
   return {
     title: `Edit ${mapInfo!.title} - YTyping`,
   };
 }
-export default async function Page({ params }: { params: { id: string } }) {
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(params.id) });
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
 
   if (!mapInfo) {
     notFound();
