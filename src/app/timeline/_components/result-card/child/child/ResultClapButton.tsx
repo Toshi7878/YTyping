@@ -5,8 +5,9 @@ import { ThemeColors } from "@/types";
 import { useLocalClapServerActions } from "@/util/global-hooks/useLocalClapServerActions";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
+
 interface ResultClapButtonProps {
   resultId?: number;
   clapCount?: number;
@@ -22,7 +23,7 @@ function ResultClapButton({ resultId = 0, clapCount = 0, hasClap = false }: Resu
     clapCount,
   });
 
-  const [state, formAction] = useFormState(async () => {
+  const [state, formAction] = useActionState(async () => {
     const result = await toggleClapAction(resultId);
 
     return result;

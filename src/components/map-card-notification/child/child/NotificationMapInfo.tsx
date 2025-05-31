@@ -49,7 +49,7 @@ function NotificationMapInfo({ map }: MapCardProps) {
           textOverflow="ellipsis"
           whiteSpace="nowrap"
         >
-          {map.artist_name || "\u00A0"}
+          {map.artist_name || ""}
         </Box>
       </Flex>
       <MapBadges map={map} />

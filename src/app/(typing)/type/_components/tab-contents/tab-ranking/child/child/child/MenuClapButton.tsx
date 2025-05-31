@@ -1,31 +1,30 @@
 import { INITIAL_STATE } from "@/config/consts/globalConst";
-import { LocalClapState, UploadResult } from "@/types";
-import { Box, Button, ButtonProps } from "@chakra-ui/react";
-import { useFormState } from "react-dom";
+import { toggleClapServerAction } from "@/server/actions/toggleClapActions";
+import { useActionState } from "react";
+import { FaHandsClapping } from "react-icons/fa6";
 
 interface MenuClapButtonProps {
   resultId: number;
-  clapOptimisticState: LocalClapState;
-  toggleClapAction: (resultId: number) => Promise<UploadResult>;
+  hasClap: boolean;
+  clapCount: number;
+  disabled?: boolean;
 }
 
-const MenuClapButton = ({
-  resultId,
-  clapOptimisticState,
-  toggleClapAction,
-  ...rest
-}: MenuClapButtonProps & ButtonProps) => {
-  const [state, formAction] = useFormState(async () => {
-    const result = await toggleClapAction(resultId);
-
+const MenuClapButton = ({ resultId, hasClap, clapCount, disabled }: MenuClapButtonProps) => {
+  const clapAction = async () => {
+    const result = await toggleClapServerAction(resultId, !hasClap);
     return result;
-  }, INITIAL_STATE);
+  };
+
+  const [state, formAction] = useActionState(clapAction, INITIAL_STATE);
+
   return (
-    <Box as="form" action={formAction}>
-      <Button width="100%" variant="rankingMenu" type="submit" {...rest}>
-        {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
-      </Button>
-    </Box>
+    <form action={formAction}>
+      <button type="submit" disabled={disabled}>
+        <FaHandsClapping color={hasClap ? "#ffb825" : "#999"} />
+        <span>{clapCount}</span>
+      </button>
+    </form>
   );
 };
 

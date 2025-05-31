@@ -10,11 +10,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import NotifyDrawerInnerContent from "./child/NotifyDrawerInnerContent";
 
-interface NotifyBellProps {
-  isNewNotification: boolean;
-}
-
-export default function NotifyBell({ isNewNotification }: NotifyBellProps) {
+export default function NotifyBell() {
+  const { data: isNewNotification } = clientApi.notification.newNotificationCheck.useQuery();
   const [isNewBadge, isSetNewBadge] = useState(isNewNotification);
   const theme: ThemeColors = useTheme();
   const { isOpen, onOpen, onClose } = useDisclosure();

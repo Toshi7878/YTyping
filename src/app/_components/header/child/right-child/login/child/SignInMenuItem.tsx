@@ -2,8 +2,7 @@ import { handleSignIn } from "@/server/actions/authActions";
 import { ThemeColors } from "@/types";
 import { AuthProvider } from "@/types/next-auth";
 import { Button, MenuItem, useTheme } from "@chakra-ui/react";
-import React from "react";
-import { useFormState } from "react-dom";
+import React, { useActionState } from "react";
 
 interface SignInMenuItemProps {
   _hover: { bg: string; color: string };
@@ -12,25 +11,18 @@ interface SignInMenuItemProps {
   provider: AuthProvider;
 }
 
-const SignInMenuItem = (props: SignInMenuItemProps) => {
-  const theme: ThemeColors = useTheme();
-  const [, formAction] = useFormState(async () => {
-    const result = await handleSignIn(props.provider);
-    return result;
+const SignInMenuItem = ({ _hover, leftIcon, text, provider }: SignInMenuItemProps) => {
+  const [, formAction] = useActionState(async () => {
+    return await handleSignIn(provider);
   }, null);
+  const theme: ThemeColors = useTheme();
+
   return (
-    <form action={formAction}>
-      <MenuItem
-        _hover={props._hover}
-        bg={theme.colors.background.body}
-        color={theme.colors.text.body}
-        type="submit"
-      >
-        <Button leftIcon={props.leftIcon} variant="">
-          {props.text}
-        </Button>
-      </MenuItem>
-    </form>
+    <MenuItem as="form" action={formAction} _hover={_hover} bg={theme.colors.background.body}>
+      <Button leftIcon={leftIcon} variant="ghost" type="submit" size="sm">
+        {text}
+      </Button>
+    </MenuItem>
   );
 };
 
