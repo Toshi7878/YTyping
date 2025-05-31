@@ -1,7 +1,6 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
 import { useUserAgent } from "@/util/useUserAgent";
-import { Box, Flex } from "@chakra-ui/react";
 import SearchInputs from "./child/SearchInputs";
 import SearchModal from "./child/SearchModal";
 
@@ -10,21 +9,21 @@ const SearchContent = () => {
   const { isMobile } = useUserAgent();
 
   return (
-    <Flex as="section" width="100%" alignItems="center" mb={4}>
-      <Box width="100%">
-        <Box mb={3}>
+    <section className="w-full flex items-center mb-4">
+      <div className="w-full">
+        <div className="mb-3">
           <SearchInputs />
-        </Box>
-        <Flex justifyContent="space-between">
+        </div>
+        <div className="flex justify-between">
           <SearchModal />
           {!isMobile && (
-            <Flex justifyContent="flex-end">
+            <div className="flex justify-end">
               <VolumeRange player={player} />
-            </Flex>
+            </div>
           )}
-        </Flex>
-      </Box>
-    </Flex>
+        </div>
+      </div>
+    </section>
   );
 };
 

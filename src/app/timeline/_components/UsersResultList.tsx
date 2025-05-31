@@ -1,5 +1,4 @@
 "use client";
-import { Box } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useUsersResultInfiniteQuery } from "../../../util/global-hooks/query/useUsersResultInfiniteQuery";
@@ -41,7 +40,7 @@ function UsersResultList() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <Box as="section" opacity={isSearching ? 0.2 : 1}>
+    <section className={`${isSearching ? "opacity-20" : "opacity-100"}`}>
       <ResultCardLayout>
         {data?.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
       </ResultCardLayout>
@@ -51,7 +50,7 @@ function UsersResultList() {
           <LoadingResultCard cardLength={1} />
         </div>
       )}
-    </Box>
+    </section>
   );
 }
 

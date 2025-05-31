@@ -1,11 +1,5 @@
-import { Grid } from "@chakra-ui/react";
-
 const ResultCardLayout = ({ children }) => {
-  return (
-    <Grid gridTemplateColumns={{ base: "1fr" }} gap={3} mb={3}>
-      {children}
-    </Grid>
-  );
+  return <div className="grid grid-cols-1 gap-3 mb-3">{children}</div>;
 };
 
 export default ResultCardLayout;
