@@ -6,11 +6,13 @@ import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useEffect } from "react";
 import { mapInfoAtom, userTypingOptionsAtom } from "../atoms/stateAtoms";
 import { getTypeAtomStore } from "../atoms/store";
+
 interface TypeProviderProps {
   mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
   userTypingOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"];
   children: React.ReactNode;
 }
+
 const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProps) => {
   const typeAtomStore = getTypeAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
@@ -22,15 +24,6 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
 
   useEffect(() => {
     setPreviewVideoState(RESET);
-
-    window.scrollTo({ top: 0, left: 0 });
-
-    const htmlElement = document.documentElement;
-    htmlElement.style.overflow = "hidden";
-
-    return () => {
-      htmlElement.style.overflow = "";
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

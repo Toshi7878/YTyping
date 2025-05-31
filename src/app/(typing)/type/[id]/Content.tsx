@@ -88,9 +88,10 @@ function Content({ mapInfo }: ContentProps) {
 
   const style: CSSProperties = {
     transform: `scale(${scale})`,
-    transformOrigin: "top",
+    transformOrigin: "top center",
     width: `${CONTENT_WIDTH}px`,
     height: "fit-content",
+    marginBottom: `${scale < 0.8 ? Math.max(0, (1 - scale) * 400) : 0}px`,
   };
 
   return (
