@@ -19,7 +19,6 @@ interface EditProviderProps {
 const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const store = getEditAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
-  useSetHydrationState(mapInfo);
   const loadBackupData = useLoadBackupData();
 
   useEffect(() => {
@@ -27,6 +26,8 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
     loadBackupData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useSetHydrationState(mapInfo);
 
   return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };

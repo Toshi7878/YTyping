@@ -73,6 +73,16 @@ const RankingTable = (props: RankingTableProps) => {
           >
             <FaHandsClapping size={clapIconSize} />
           </Th>
+          <Th
+            width="0"
+            padding="0"
+            border="none"
+            style={{
+              width: 0,
+              padding: 0,
+              border: "none",
+            }}
+          />
         </Tr>
       </Thead>
       <Tbody suppressHydrationWarning>{props.children}</Tbody>
