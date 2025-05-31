@@ -73,12 +73,12 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
       </HStack>
       <HStack spacing={14} justifyContent="flex-end" mx="12" id="end_sub_buttons">
         <EndSubButton
-          retryBtnRef={modeChangeBtnRef}
+          retryBtnRef={modeChangeBtnRef as any}
           retryMode={scene !== "play_end" ? "play" : "practice"}
           isRetryAlert={Boolean(isDisplayRankingButton && !isSendResultBtnDisabled)}
         />
         <EndSubButton
-          retryBtnRef={retryBtnRef}
+          retryBtnRef={retryBtnRef as any}
           retryMode={playMode}
           isRetryAlert={Boolean(isDisplayRankingButton && !isSendResultBtnDisabled)}
         />

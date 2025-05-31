@@ -16,13 +16,13 @@ const ThemeProvider = ({ colorMode, children }: ThemeProviderProps) => {
 
   return (
     <>
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <CacheProvider>
-        <ColorModeScript type="cookie" initialColorMode={theme.config.initialColorMode} />
         <ChakraProvider
           colorModeManager={{
             type: "cookie",
             ssr: true,
-            get: (init) => colorMode ?? init,
+            get: (init) => colorMode ?? "dark",
             set: (value) => {
               setCookie("chakra-ui-color-mode", value);
             },

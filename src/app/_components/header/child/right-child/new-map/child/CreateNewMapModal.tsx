@@ -19,8 +19,8 @@ export default function CreateNewMapModal({ newCreateModalDisclosure }: CreateNe
   const [createMapBackUpInfo, setCreateMapBackUpInfo] = useState({ title: "", videoId: "" });
   const [createYTURL, setCreateYTURL] = useState("");
   const [newID, setNewID] = useState("");
-  const createBtnRef = useRef(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const createBtnRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (newCreateModalDisclosure.isOpen && inputRef.current) {
@@ -52,11 +52,11 @@ export default function CreateNewMapModal({ newCreateModalDisclosure }: CreateNe
         <ModalBody>
           <NewCreateVideoIdInputBox
             newCreateModalDisclosure={newCreateModalDisclosure}
-            createBtnRef={createBtnRef}
+            createBtnRef={createBtnRef as any}
             createYTURL={createYTURL}
             setCreateYTURL={setCreateYTURL}
             setNewID={setNewID}
-            inputRef={inputRef}
+            inputRef={inputRef as any}
           />
         </ModalBody>
 
@@ -71,7 +71,7 @@ export default function CreateNewMapModal({ newCreateModalDisclosure }: CreateNe
                 createMapBackUpInfo={createMapBackUpInfo}
                 newCreateModalDisclosure={newCreateModalDisclosure}
                 newID={newID}
-                createBtnRef={createBtnRef}
+                createBtnRef={createBtnRef as any}
               />
             </Flex>
             {newID ? (

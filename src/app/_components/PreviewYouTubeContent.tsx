@@ -22,8 +22,8 @@ const PreviewYouTubeContent = function YouTubeContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
 
-  const width = useBreakpointValue(PREVIEW_YOUTUBE_WIDTH, { ssr: false });
-  const height = useBreakpointValue(PREVIEW_YOUTUBE_HEIGHT, { ssr: false });
+  const width = useBreakpointValue(PREVIEW_YOUTUBE_WIDTH);
+  const height = useBreakpointValue(PREVIEW_YOUTUBE_HEIGHT);
 
   if (!videoId) {
     return null;

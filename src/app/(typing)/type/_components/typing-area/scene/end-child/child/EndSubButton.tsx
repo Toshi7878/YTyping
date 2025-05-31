@@ -50,7 +50,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
     <>
       <AlertDialog
         isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
+        leastDestructiveRef={cancelRef as any}
         onClose={onClose}
         motionPreset="slideInBottom"
         isCentered

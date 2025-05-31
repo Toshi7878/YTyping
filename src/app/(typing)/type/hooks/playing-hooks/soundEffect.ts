@@ -1,16 +1,13 @@
 import { useVolumeStateRef } from "@/lib/global-atoms/globalAtoms";
-import clearTypeSound from "@/public/wav/clear_type.wav";
-import typeSound from "@/public/wav/key_type.wav";
-import missSound from "@/public/wav/miss_type.wav";
 import { useUserAgent } from "@/util/useUserAgent";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
 
 const manifest = [
-  { alias: "type", src: typeSound },
-  { alias: "miss", src: missSound },
-  { alias: "lineClear", src: clearTypeSound },
+  { alias: "type", src: "/wav/key_type.wav" },
+  { alias: "miss", src: "/wav/miss_type.wav" },
+  { alias: "lineClear", src: "/wav/clear_type.wav" },
 ];
 
 export const useSoundEffect = () => {
