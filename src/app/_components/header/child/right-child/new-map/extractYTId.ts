@@ -17,6 +17,6 @@ export function extractYouTubeVideoId(url: string) {
     return match[1];
   } else {
     // No match found or invalid URL
-    return "";
+    return undefined;
   }
 }
