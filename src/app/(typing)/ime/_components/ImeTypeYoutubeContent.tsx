@@ -46,20 +46,25 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
         windowFocus();
       }
 
-      if (event.data === 3) {
-        // seek時の処理
-        ytSeekEvent();
-      } else if (event.data === 1) {
-        //	未スタート、他の動画に切り替えた時など
-        console.log("未スタート -1");
+      switch (event.data) {
+        case 3:
+          // seek時の処理
+          ytSeekEvent();
+          break;
+        case 1:
+          //	未スタート、他の動画に切り替えた時など
+          console.log("未スタート -1");
 
-        const scene = readScene();
-        if (scene === "ready") {
-          event.target.seekTo(0, true);
-        }
-      } else if (event.data === 5) {
-        console.log("動画強制停止");
-        ytStopEvent();
+          const scene = readScene();
+          if (scene === "ready") {
+            event.target.seekTo(0, true);
+          }
+          break;
+        case 5:
+          // 動画強制停止
+          console.log("動画強制停止");
+          ytStopEvent();
+          break;
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,7 +100,6 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
         onPlay={ytPlayEvent}
         onPause={ytPauseEvent}
         onEnd={ytEndEvent}
-        onStop={ytStopEvent}
         onStateChange={handleStateChange}
         onError={handleError}
       />

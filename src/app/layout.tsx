@@ -16,9 +16,9 @@ import dynamic from "next/dynamic";
 import GlobalProvider from "./_components/global-provider/GlobalProvider";
 import ThemeProvider from "./_components/global-provider/ThemeProvider";
 
-const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"), {
-  ssr: false,
-});
+// Next.js 15では ssr: false オプションを削除
+const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
+
 export const metadata: Metadata = {
   title: "YTyping",
   description: "",
@@ -29,7 +29,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookiesList = cookies();
+  const cookiesList = await cookies();
   const colorMode = cookiesList.get("chakra-ui-color-mode");
   const session = await auth();
 

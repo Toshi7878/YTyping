@@ -115,7 +115,7 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
         px={directEditIndex === index ? 2 : 4}
       >
         {directEditIndex === index ? (
-          <DirectEditTimeInput directEditTimeInputRef={directEditTimeInputRef} editTime={line.time} />
+          <DirectEditTimeInput directEditTimeInputRef={directEditTimeInputRef as any} editTime={line.time} />
         ) : (
           line.time
         )}
@@ -128,7 +128,7 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
         borderBottomColor={theme.colors.border.editorTable.bottom}
       >
         {directEditIndex === index ? (
-          <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef} />
+          <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef as any} />
         ) : (
           parse(line.lyrics)
         )}
@@ -141,7 +141,7 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
         borderRightColor={`${theme.colors.border.editorTable.right}`}
       >
         {directEditIndex === index ? (
-          <DirectEditWordInput directEditWordInputRef={directEditWordInputRef} />
+          <DirectEditWordInput directEditWordInputRef={directEditWordInputRef as any} />
         ) : (
           line.word
         )}

@@ -8,10 +8,7 @@ const globalAtomStore = createStore();
 export const getGlobalAtomStore = () => globalAtomStore;
 
 const getInitialTheme = (): "light" | "dark" => {
-  if (typeof window !== "undefined") {
-    const storedTheme = localStorage.getItem("chakra-ui-color-mode");
-    // return storedTheme === "light" || storedTheme === "dark" ? storedTheme : "dark";
-  }
+  // SSRとCSRで一貫性を保つため、サーバーサイドでも一律darkを返す
   return "dark";
 };
 

@@ -58,7 +58,7 @@ function Ready() {
         <ReadyInputModeRadioCards />
       </Flex>
       <Flex textAlign="center" justifyContent="space-between">
-        <ReadyPlaySpeed speedUpButtonRef={speedUpButtonRef} speedDownButtonRef={speedDownButtonRef} />
+        <ReadyPlaySpeed speedUpButtonRef={speedUpButtonRef as any} speedDownButtonRef={speedDownButtonRef as any} />
         <ReadyPracticeButton />
       </Flex>
     </Stack>

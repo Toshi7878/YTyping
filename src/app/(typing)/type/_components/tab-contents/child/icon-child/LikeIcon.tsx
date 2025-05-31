@@ -6,7 +6,7 @@ import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { ThemeColors, UploadResult } from "@/types";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 
 const LikeIcon = () => {
   const theme: ThemeColors = useTheme();
@@ -30,7 +30,7 @@ const LikeIcon = () => {
     }
   };
 
-  const [state, formAction] = useFormState(toggleLikeAction, INITIAL_STATE);
+  const [state, formAction] = useActionState(toggleLikeAction, INITIAL_STATE);
   const iconSize = useBreakpointValue({ base: 120, md: 62 });
   return (
     <CustomToolTip label="譜面にいいね" placement="top" top={1}>

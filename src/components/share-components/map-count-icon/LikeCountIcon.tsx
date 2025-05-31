@@ -4,8 +4,7 @@ import { LocalLikeState, ThemeColors } from "@/types";
 import { useLocalLikeServerActions } from "@/util/global-hooks/useLocalLikeServerActions";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
-import React, { memo, useRef } from "react";
-import { useFormState } from "react-dom";
+import React, { memo, useActionState, useRef } from "react";
 import { FiHeart } from "react-icons/fi";
 
 interface LikeButtonProps {
@@ -44,7 +43,7 @@ const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonPro
       cursor={"pointer"}
     >
       <Box m={-1} mt={-4} position="relative" top="10.25px">
-        <LikeButton defaultLiked={likeOptimisticState.hasLike} size={34} likeButtonRef={likeButtonRef} />
+        <LikeButton defaultLiked={likeOptimisticState.hasLike} size={34} likeButtonRef={likeButtonRef as any} />
       </Box>
       <Box
         as="button"
@@ -79,7 +78,7 @@ const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
     likeCount,
   });
 
-  const [state, formAction] = useFormState(async () => {
+  const [state, formAction] = useActionState(async () => {
     const result = await toggleLikeAction(mapId);
 
     return result;

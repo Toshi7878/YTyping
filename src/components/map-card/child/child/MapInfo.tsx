@@ -55,8 +55,8 @@ function MapInfo({ map }: MapInfoProps) {
           textOverflow="ellipsis"
           whiteSpace="nowrap"
         >
-          {map.artist_name || "\u00A0"}
-          {map.music_source ? `【${map.music_source}】` : "\u00A0"}
+          {map.artist_name || ""}
+          {map.music_source ? `【${map.music_source}】` : ""}
         </Box>
       </Flex>
       <Stack justifyContent="space-between" alignItems="baseline" flexDirection={{ base: "row", lg: "column" }}>

@@ -208,7 +208,7 @@ const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
     onClose();
   };
   return (
-    <AlertDialog id="reset-setting-modal" isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+    <AlertDialog id="reset-setting-modal" isOpen={isOpen} leastDestructiveRef={cancelRef as any} onClose={onClose}>
       <AlertDialogOverlay id="reset-setting-modal-overlay">
         <AlertDialogContent bg={theme.colors.background.body} color={theme.colors.text.body}>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">

@@ -150,7 +150,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
         />
       </CustomToolTip>
 
-      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef as any} onClose={onClose}>
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
