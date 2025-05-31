@@ -2,12 +2,10 @@ import Header from "@/app/_components/header/Header";
 import "@/styles/globals.css";
 import "@/styles/nprogress.css";
 import { cookies } from "next/headers";
-import { fonts } from "../lib/fonts";
 // export const runtime = "edge";
 
 import type { Metadata } from "next";
 
-import { cn } from "@/lib/cn";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
@@ -42,7 +40,7 @@ export default async function RootLayout({
         <meta charSet="UTF-8" />
         <ColorModeScript initialColorMode="dark" />
       </head>
-      <body className={cn(fonts.rubik.variable, "no-ligatures")}>
+      <body>
         <ThemeProvider colorMode={colorMode?.value}>
           <SessionProvider session={session}>
             <TRPCProvider>
