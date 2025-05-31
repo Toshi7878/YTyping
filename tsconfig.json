@@ -32,11 +32,9 @@
   "include": [
     "next-env.d.ts",
     "types/next-auth.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/util/parse-map/parseMap.ts",
-    "src/types/declarations.d.ts"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
