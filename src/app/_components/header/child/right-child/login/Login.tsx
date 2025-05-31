@@ -3,12 +3,17 @@ import SignInMenu from "./SignInMenu";
 import { SignOutButton } from "./SignOutButton";
 import UserMenu from "./UserMenu";
 
-export default function Login() {
+interface LoginProps {
+  className?: string;
+}
+
+export default function Login({ className }: LoginProps) {
   const { data: session } = useSession();
 
-  if (!session?.user) {
-    return <SignInMenu />;
-  } else {
-    return <>{!session?.user?.name ? <SignOutButton /> : <UserMenu />}</>;
-  }
+  return (
+    <div className={className}>
+      {!session?.user && <SignInMenu />}
+      {!session?.user?.name ? <SignOutButton /> : <UserMenu />}
+    </div>
+  );
 }

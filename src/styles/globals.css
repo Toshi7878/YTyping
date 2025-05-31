@@ -40,12 +40,12 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --background: oklch(0.2565 0.0092 234.09);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.3063 0.0114 248.2);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.2565 0.0092 234.09);
+  --popover-foreground: oklch(1 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
@@ -56,8 +56,9 @@
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --input: oklch(0.2565 0.0092 234.09);
+
+  --ring: oklch(0.7547 0.1375 239.62);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

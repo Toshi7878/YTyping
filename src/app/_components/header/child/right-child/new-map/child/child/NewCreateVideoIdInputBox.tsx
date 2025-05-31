@@ -1,16 +1,16 @@
 "use client";
 
-import { Box, Input, UseDisclosureReturn } from "@chakra-ui/react";
+import { Box, Input } from "@chakra-ui/react";
 import { Dispatch } from "react";
 import { extractYouTubeVideoId } from "../../extractYTId";
 
 interface NewCreateVideoIdInputBoxProps {
-  newCreateModalDisclosure: UseDisclosureReturn;
   createBtnRef: React.RefObject<HTMLButtonElement>; // 修正: 型を追加
   createYTURL: string;
   setCreateYTURL: Dispatch<string>;
   setNewID: Dispatch<string>;
   inputRef: React.RefObject<HTMLInputElement>;
+  onClose: () => void;
 }
 
 export default function NewCreateVideoIdInputBox(props: NewCreateVideoIdInputBoxProps) {
@@ -26,6 +26,7 @@ export default function NewCreateVideoIdInputBox(props: NewCreateVideoIdInputBox
           const videoId = extractYouTubeVideoId(event.target.value);
           props.setNewID(videoId);
           if (videoId) {
+            props.onClose();
           }
         }}
         onKeyDown={(event) => {

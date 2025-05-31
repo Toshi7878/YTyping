@@ -2,6 +2,7 @@
 
 import { Flex, ResponsiveValue } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import HamburgerMenu from "../hamburger-menu/HamburgerMenu";
 import ActiveUsers from "./right-child/active-user/ActiveUsers";
 import Login from "./right-child/login/Login";
 import NewMap from "./right-child/new-map/NewMap";
@@ -23,7 +24,9 @@ export default function RightNav({ display }: RightNavProps) {
           <NewMap />
         </>
       )}
-      <Login />
+      <HamburgerMenu className="block md:hidden" />
+
+      <Login className="hidden md:block" />
     </Flex>
   );
 }

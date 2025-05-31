@@ -2,13 +2,13 @@
 
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { Box, Button, UseDisclosureReturn, useTheme } from "@chakra-ui/react";
+import { Box, Button, useTheme } from "@chakra-ui/react";
 
 import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 interface CreateMapBackUpButtonProps {
   backupData: { title: string; videoId: string } | undefined;
-  newCreateModalDisclosure: UseDisclosureReturn;
+  onClose: () => void;
 }
 
 export default function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
@@ -32,7 +32,7 @@ export default function CreateMapBackUpButton(props: CreateMapBackUpButtonProps)
         href={`/edit?new=${props.backupData?.videoId}&backup=true`}
         onClick={(event) => {
           handleLinkClick(event);
-          props.newCreateModalDisclosure.onClose();
+          props.onClose();
         }}
         visibility={props.backupData?.videoId ? "visible" : "hidden"}
       >

@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 
 import type { Metadata } from "next";
 
+import LinkLoader from "@/components/ui/link-loader";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
@@ -41,6 +42,7 @@ export default async function RootLayout({
         <ColorModeScript initialColorMode="dark" />
       </head>
       <body>
+        <LinkLoader />
         <ThemeProvider colorMode={colorMode?.value}>
           <SessionProvider session={session}>
             <TRPCProvider>

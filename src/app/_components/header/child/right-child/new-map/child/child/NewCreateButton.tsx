@@ -2,11 +2,11 @@
 
 import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
-import { Button, UseDisclosureReturn } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 
 interface NewCreateButtonProps {
   backupData: { title: string; videoId: string } | undefined;
-  newCreateModalDisclosure: UseDisclosureReturn;
+  onClose: () => void;
   newID: string;
   createBtnRef: React.RefObject<HTMLButtonElement>;
 }
@@ -24,7 +24,7 @@ export default function NewCreateButton(props: NewCreateButtonProps) {
 
         if (shouldOverwriteBackup) {
           handleLinkClick(event);
-          props.newCreateModalDisclosure.onClose();
+          props.onClose();
         } else {
           event.preventDefault();
         }

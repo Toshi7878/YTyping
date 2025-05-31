@@ -4,47 +4,26 @@ import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { ThemeColors } from "@/types";
 import { useUserAgent } from "@/util/useUserAgent";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import {
-  Flex,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  ResponsiveValue,
-  useDisclosure,
-  useTheme,
-} from "@chakra-ui/react";
+import { Box, IconButton, Menu, MenuButton, MenuDivider, MenuList, useDisclosure, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
 import LinkMenuItem from "../child/child/LinkMenuItem";
-import ActiveUsers from "../child/right-child/active-user/ActiveUsers";
 import LogOutMenuItem from "../child/right-child/login/child/LogOutMenuItem";
 import SignInMenuItem from "../child/right-child/login/child/SignInMenuItem";
-import CreateNewMapModal from "../child/right-child/new-map/child/CreateNewMapModal";
-import NotifyBell from "../child/right-child/notify-bell/NotifyBell";
 
 interface HamburgerMenuProps {
-  display: ResponsiveValue<string>;
+  className?: string;
 }
 
-const HamburgerMenu = ({ display }: HamburgerMenuProps) => {
+const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { onOpen } = useDisclosure();
   const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
-  const newCreateModalDisclosure = useDisclosure();
   const { isMobile } = useUserAgent();
 
   const menus = leftMenuItem.concat(leftLink);
   return (
-    <Flex display={display} alignItems="center" gap={5}>
-      {session?.user?.name && (
-        <>
-          <ActiveUsers />
-          <NotifyBell />
-        </>
-      )}
+    <Box alignItems="center" gap={5} className={className}>
       <Menu>
         <MenuButton
           as={IconButton}
@@ -55,9 +34,8 @@ const HamburgerMenu = ({ display }: HamburgerMenuProps) => {
           variant={"outline"}
         />
         <MenuList bg={theme.colors.background.body} minW="fit-content">
-          {menus.map((menuItem, index) => {
+          {menus.reverse().map((menuItem, index) => {
             if (isMobile === undefined) {
-              // Hydration中は何も表示しない
               return null;
             }
             if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
@@ -65,19 +43,10 @@ const HamburgerMenu = ({ display }: HamburgerMenuProps) => {
             }
             return null;
           })}
+          <MenuDivider />
+
           {session?.user?.name ? (
             <>
-              <MenuItem
-                onClick={newCreateModalDisclosure.onOpen}
-                bg={theme.colors.background.body}
-                color={theme.colors.text.body}
-                _hover={{
-                  bg: theme.colors.background.header,
-                }}
-              >
-                譜面新規作成
-              </MenuItem>
-              <MenuDivider />
               {loginMenuItem.map((item, index) => {
                 return <LinkMenuItem key={index} title={item.title} href={item.href} />;
               })}
@@ -86,8 +55,6 @@ const HamburgerMenu = ({ display }: HamburgerMenuProps) => {
           ) : (
             !session && (
               <>
-                <MenuDivider />
-
                 <SignInMenuItem
                   _hover={{ bg: "#7289DA", color: "white" }}
                   text={"Discordでログイン"}
@@ -105,9 +72,7 @@ const HamburgerMenu = ({ display }: HamburgerMenuProps) => {
           )}
         </MenuList>
       </Menu>
-
-      {newCreateModalDisclosure.isOpen && <CreateNewMapModal newCreateModalDisclosure={newCreateModalDisclosure} />}
-    </Flex>
+    </Box>
   );
 };
 
