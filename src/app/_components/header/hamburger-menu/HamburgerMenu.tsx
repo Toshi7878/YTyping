@@ -27,10 +27,9 @@ import NotifyBell from "../child/right-child/notify-bell/NotifyBell";
 
 interface HamburgerMenuProps {
   display: ResponsiveValue<string>;
-  isNewNotification: boolean;
 }
 
-const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
+const HamburgerMenu = ({ display }: HamburgerMenuProps) => {
   const { onOpen } = useDisclosure();
   const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
@@ -43,7 +42,7 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
       {session?.user?.name && (
         <>
           <ActiveUsers />
-          <NotifyBell isNewNotification={isNewNotification} />
+          <NotifyBell />
         </>
       )}
       <Menu>
@@ -57,6 +56,10 @@ const HamburgerMenu = ({ display, isNewNotification }: HamburgerMenuProps) => {
         />
         <MenuList bg={theme.colors.background.body} minW="fit-content">
           {menus.map((menuItem, index) => {
+            if (isMobile === undefined) {
+              // Hydration中は何も表示しない
+              return null;
+            }
             if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
               return <LinkMenuItem key={index} title={menuItem.title} href={menuItem.href} />;
             }

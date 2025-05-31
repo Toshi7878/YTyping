@@ -5,7 +5,7 @@ import { UAParser } from "ua-parser-js";
 
 export const useUserAgent = () => {
   const [userAgent, setUserAgent] = useState<UAParser.IResult | null>(null);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     const parser = new UAParser(navigator.userAgent);

@@ -11,6 +11,7 @@ import { cn } from "@/lib/cn";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
+import { ColorModeScript } from "@chakra-ui/react";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import GlobalProvider from "./_components/global-provider/GlobalProvider";
@@ -39,12 +40,13 @@ export default async function RootLayout({
     <html lang="ja">
       <head>
         <meta charSet="UTF-8" />
+        <ColorModeScript initialColorMode="dark" />
       </head>
       <body className={cn(fonts.rubik.variable, "no-ligatures")}>
         <ThemeProvider colorMode={colorMode?.value}>
           <SessionProvider session={session}>
             <TRPCProvider>
-              <Header session={session} />
+              <Header />
               <GlobalProvider userOptions={userOptions}>
                 <main
                   className="min-h-screen  flex flex-col items-center justify-between pt-12 md:pt-16 mx-auto max-w-screen-2xl"

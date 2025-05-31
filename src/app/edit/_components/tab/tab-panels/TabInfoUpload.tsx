@@ -8,8 +8,7 @@ import { ThemeColors } from "@/types";
 import { useGenerateMapInfoQuery } from "@/util/global-hooks/query/edit/useGenerateMapInfoQuery";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useParams, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useEffect } from "react";
 import InfoInputForm from "./tab-info-child/InfoInputFrom";
 import InfoTag from "./tab-info-child/InfoTag";
 import PreviewTimeInput from "./tab-info-child/PreviewTimeInput";
@@ -53,7 +52,7 @@ const TabInfoUpload = () => {
 
   const upload = useUploadMap();
 
-  const [state, formAction] = useFormState(upload, INITIAL_SERVER_ACTIONS_STATE);
+  const [state, formAction] = useActionState(upload, INITIAL_SERVER_ACTIONS_STATE);
 
   useEffect(() => {
     if (!hasEditPermission) {

@@ -9,10 +9,9 @@ import NotifyBell from "./right-child/notify-bell/NotifyBell";
 
 interface RightNavProps {
   display?: ResponsiveValue<string>;
-  isNewNotification: boolean;
 }
 
-export default function RightNav({ display, isNewNotification }: RightNavProps) {
+export default function RightNav({ display }: RightNavProps) {
   const { data: session } = useSession();
 
   return (
@@ -20,7 +19,7 @@ export default function RightNav({ display, isNewNotification }: RightNavProps) 
       {session?.user?.name && (
         <>
           <ActiveUsers />
-          <NotifyBell isNewNotification={isNewNotification} />
+          <NotifyBell />
           <NewMap />
         </>
       )}

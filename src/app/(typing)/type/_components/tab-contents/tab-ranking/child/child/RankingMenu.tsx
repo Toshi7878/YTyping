@@ -90,8 +90,8 @@ const RankingMenu = ({
       {session?.user.id ? (
         <MenuClapButton
           resultId={resultId}
-          clapOptimisticState={clapOptimisticState}
-          toggleClapAction={toggleClapAction}
+          hasClap={clapOptimisticState.hasClap}
+          clapCount={clapOptimisticState.clapCount}
         />
       ) : null}
     </Stack>
