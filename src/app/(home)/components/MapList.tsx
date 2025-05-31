@@ -8,7 +8,7 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { Box } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroller";
+import { useInView } from "react-intersection-observer";
 import MapCard from "../../../components/map-card/MapCard";
 import { MapListResponse, useMapListInfiniteQuery } from "../../../util/global-hooks/query/useMapListQuery";
 import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
@@ -34,12 +34,23 @@ function MapList() {
 
   const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useMapListInfiniteQuery();
 
+  const { ref, inView } = useInView({
+    threshold: 0,
+    rootMargin: "1800px 0px",
+  });
+
   useEffect(() => {
     if (data) {
       setIsSearchingAtom(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
 
@@ -50,17 +61,7 @@ function MapList() {
   }
 
   return (
-    <InfiniteScroll
-      className={isSearching ? "opacity-20" : ""}
-      loadMore={() => fetchNextPage()}
-      loader={
-        <Box key={0}>
-          <LoadingMapCard cardLength={2} />
-        </Box>
-      }
-      hasMore={hasNextPage}
-      threshold={1800}
-    >
+    <div className={isSearching ? "opacity-20" : ""}>
       <MapCardLayout>
         {data.pages.map((page: MapListResponse) =>
           page.maps.map((map: MapCardInfo) => {
@@ -90,7 +91,13 @@ function MapList() {
           })
         )}
       </MapCardLayout>
-    </InfiniteScroll>
+
+      {hasNextPage && (
+        <Box ref={ref}>
+          <LoadingMapCard cardLength={2} />
+        </Box>
+      )}
+    </div>
   );
 }
 
