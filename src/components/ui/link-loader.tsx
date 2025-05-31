@@ -26,7 +26,7 @@ const LinkLoader = () => {
 
   return (
     <div
-      className={`h-[2px] bg-goldDark fixed top-0 left-0 transition-all duration-300 ${
+      className={`h-[3px] bg-red-500 fixed top-0 left-0 transition-all duration-300 ${
         hidden ? "opacity-0 w-0" : "opacity-100 w-full z-[70]"
       }`}
       style={{

@@ -31,12 +31,6 @@ const ThemeProvider = ({ colorMode, children }: ThemeProviderProps) => {
           {children}
         </ChakraProvider>
       </CacheProvider>
-
-      <style>
-        {`#nprogress .bar {
-	  background:${theme.colors.primary.light};
-  }`}
-      </style>
     </>
   );
 };

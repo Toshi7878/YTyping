@@ -4,7 +4,6 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { usePathname } from "next/navigation";
-import nProgress from "nprogress";
 import { useEffect } from "react";
 
 interface GlobalProviderProps {
@@ -20,7 +19,6 @@ const GlobalProvider = ({ children, userOptions }: GlobalProviderProps) => {
 
   useEffect(() => {
     window.getSelection()!.removeAllRanges();
-    nProgress.done();
   }, [pathname]);
 
   return <JotaiProvider store={globalAtomStore}>{children}</JotaiProvider>;

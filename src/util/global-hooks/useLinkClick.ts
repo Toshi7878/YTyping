@@ -2,7 +2,6 @@ import { useCanUploadState } from "@/app/edit/atoms/stateAtoms";
 import useHasEditPermission from "@/app/edit/hooks/useUserEditPermission";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
-import NProgress from "nprogress";
 
 export const useLinkClick = () => {
   const router = useRouter();
@@ -43,9 +42,6 @@ export const useLinkClick = () => {
       }
     }
 
-    NProgress.configure({ showSpinner: false });
-    NProgress.configure({ trickle: false });
-    NProgress.start();
     if (routeType === "push") {
       router.push(event.currentTarget.href);
     } else if (routeType === "replace") {

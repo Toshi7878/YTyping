@@ -1,6 +1,5 @@
 import Header from "@/app/_components/header/Header";
 import "@/styles/globals.css";
-import "@/styles/nprogress.css";
 import { cookies } from "next/headers";
 // export const runtime = "edge";
 
