@@ -1,7 +1,7 @@
 "use client";
 import { Box } from "@chakra-ui/react";
 import { useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroller";
+import { useInView } from "react-intersection-observer";
 import { useUsersResultInfiniteQuery } from "../../../util/global-hooks/query/useUsersResultInfiniteQuery";
 import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
 import ResultCard from "./result-card/ResultCard";
@@ -19,9 +19,14 @@ function LoadingResultCard({ cardLength }: { cardLength: number }) {
 }
 
 function UsersResultList() {
-  const { data, fetchNextPage, hasNextPage } = useUsersResultInfiniteQuery();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useUsersResultInfiniteQuery();
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
+
+  const { ref, inView } = useInView({
+    threshold: 0,
+    rootMargin: "2000px 0px",
+  });
 
   useEffect(() => {
     if (data) {
@@ -29,18 +34,23 @@ function UsersResultList() {
     }
   }, [data, setIsSearching]);
 
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   return (
     <Box as="section" opacity={isSearching ? 0.2 : 1}>
-      <InfiniteScroll
-        loadMore={() => fetchNextPage()}
-        loader={<LoadingResultCard key="loading-more" cardLength={1} />}
-        hasMore={hasNextPage}
-        threshold={2000}
-      >
-        <ResultCardLayout>
-          {data?.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
-        </ResultCardLayout>
-      </InfiniteScroll>
+      <ResultCardLayout>
+        {data?.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
+      </ResultCardLayout>
+
+      {hasNextPage && (
+        <div ref={ref}>
+          <LoadingResultCard cardLength={1} />
+        </div>
+      )}
     </Box>
   );
 }
