@@ -1,61 +1,53 @@
-import { ThemeColors } from "@/types";
-
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { leftLink, leftMenuItem } from "@/config/headerNav";
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import { Box, Button, Menu, MenuButton, MenuList, useTheme } from "@chakra-ui/react";
-import LinkMenuItem from "../child/LinkMenuItem";
+import Link from "next/link";
 
 function LeftMenus() {
-  const theme: ThemeColors = useTheme();
-  const handleLinkClick = useLinkClick();
-
   return (
-    <Box as="nav" display={{ base: "none", md: "block" }}>
-      <Menu placement="bottom">
-        <MenuButton
-          cursor="pointer"
-          color={theme.colors.text.header.normal}
-          _hover={{
-            color: theme.colors.text.header.hover,
-          }}
-          className="dropdown-toggle"
-          fontSize="sm"
-          _active={{ color: theme.colors.text.header.hover }}
-          userSelect="none"
-          p={2}
+    <nav className="hidden md:flex items-center">
+      <Menu />
+      {leftLink.map((link, index) => (
+        <Button
+          key={index}
+          variant="ghost"
+          size="sm"
+          asChild
+          className="text-muted-foreground hover:text-foreground text-sm"
         >
-          Menu
-        </MenuButton>
-        <MenuList bg={theme.colors.background.body} minW="fit-content">
-          {leftMenuItem.map((menuItem, index) => {
-            return <LinkMenuItem key={index} title={menuItem.title} href={menuItem.href} />;
-          })}
-        </MenuList>
-      </Menu>
-      {leftLink.map((link, index) => {
-        return (
-          <Link
-            as={Button}
-            key={index}
-            href={link.href}
-            cursor="pointer"
-            color={theme.colors.text.header.normal}
-            _hover={{
-              color: theme.colors.text.header.hover,
-            }}
-            fontSize="sm"
-            _active={{ color: theme.colors.text.header.hover }}
-            p={2}
-            onClick={handleLinkClick}
-            userSelect="none"
-          >
+          <Link href={link.href} className="w-full">
             {link.title}
           </Link>
-        );
-      })}
-    </Box>
+        </Button>
+      ))}
+    </nav>
   );
 }
+
+const Menu = () => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-sm">
+          Menu
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="min-w-fit">
+        {leftMenuItem.map((menuItem, index) => (
+          <DropdownMenuItem key={index} asChild>
+            <Link href={menuItem.href} className="w-full">
+              {menuItem.title}
+            </Link>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 export default LeftMenus;

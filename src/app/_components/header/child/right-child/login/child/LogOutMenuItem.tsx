@@ -1,25 +1,18 @@
-import { ThemeColors } from "@/types";
-import { MenuItem, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
+import { useActionState } from "react";
 
 const LogOutMenuItem = () => {
-  const theme: ThemeColors = useTheme();
+  const [, formAction] = useActionState(async () => {
+    return await signOut({ redirect: false });
+  }, null);
 
   return (
-    <MenuItem
-      type="button"
-      fontSize="sm"
-      bg={theme.colors.background.body}
-      _hover={{
-        bg: theme.colors.background.header,
-      }}
-      color={theme.colors.text.body}
-      onClick={() => {
-        signOut({ redirect: false });
-      }}
-    >
-      ログアウト
-    </MenuItem>
+    <form action={formAction}>
+      <Button variant="ghost" type="submit" size="sm" className="w-full justify-start">
+        ログアウト
+      </Button>
+    </form>
   );
 };
 

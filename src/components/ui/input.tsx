@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Control } from "react-hook-form";
 
-// TODO: !important削除
+// TODO:chakra ui 移行後 !important削除
 const inputVariants = cva(
   [
     "placeholder:text-muted-foreground selection:bg-primary",

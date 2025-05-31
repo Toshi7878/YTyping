@@ -68,7 +68,7 @@ export default function CreateNewMapModal({ trigger }: CreateNewMapModalProps) {
             />
             <div className="flex justify-between items-center">
               <CreateMapBackUpButton backupData={backupData} onClose={() => setOpen(false)} />
-              <Button type="submit" disabled={!extractedVideoId}>
+              <Button size="lg" type="submit" disabled={!extractedVideoId}>
                 作成
               </Button>
             </div>
