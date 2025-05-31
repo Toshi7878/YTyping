@@ -1,6 +1,6 @@
 "use client";
 import { useHistoryReducer } from "@/app/edit/atoms/historyReducerAtom";
-import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import useTimeValidate from "@/app/edit/hooks/utils/useTimeValidate";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
@@ -14,7 +14,7 @@ export default function AllTimeAdjust() {
   const theme: ThemeColors = useTheme();
   const toast = useCustomToast();
   const [totalAdjustValue, setTotalAdjustValue] = useState<string>("");
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
   const mapDispatch = useMapReducer();
   const historyDispatch = useHistoryReducer();
   const timeValidate = useTimeValidate();

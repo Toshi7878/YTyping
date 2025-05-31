@@ -4,7 +4,7 @@ import { UploadResult } from "@/types";
 import { $Enums } from "@prisma/client";
 import { useParams } from "next/navigation";
 import { actions } from "../../../../server/actions/sendMapDataActions";
-import { useMapStateRef } from "../../atoms/mapReducerAtom";
+import { useReadMap } from "../../atoms/mapReducerAtom";
 import { usePlayer } from "../../atoms/refAtoms";
 import { useReadEditUtils, useReadMapInfo, useReadMapTags } from "../../atoms/stateAtoms";
 import { getThumbnailQuality } from "../../ts/tab/info-upload/getThumbailQuality";
@@ -16,7 +16,7 @@ export function useUploadMap() {
   const readMapInfo = useReadMapInfo();
   const readTags = useReadMapTags();
   const { readPlayer } = usePlayer();
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
 
   const upload = async () => {
     const { title, artist, source, comment, previewTime } = readMapInfo();

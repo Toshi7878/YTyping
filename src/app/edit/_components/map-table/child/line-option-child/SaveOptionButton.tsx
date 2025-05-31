@@ -1,6 +1,6 @@
 "use client";
 import { useHistoryReducer } from "@/app/edit/atoms/historyReducerAtom";
-import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import { Box, Button } from "@chakra-ui/react";
 import { Dispatch } from "react";
@@ -22,7 +22,7 @@ export default function SaveOptionButton(props: SaveOptionButtonProps) {
   const setCanUpload = useSetCanUpload();
   const historyDispatch = useHistoryReducer();
   const mapDispatch = useMapReducer();
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
   const handleBtnClick = () => {
     const map = readMap();
     if (!map || optionModalIndex === null) {

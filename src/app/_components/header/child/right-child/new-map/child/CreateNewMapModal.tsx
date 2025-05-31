@@ -1,9 +1,7 @@
 "use client";
 
-import { EditorNewMapBackUpInfoData } from "@/app/edit/ts/type";
 import CustomModalContent from "@/components/custom-ui/CustomModalContent";
-import { db } from "@/lib/db";
-import { IndexDBOption } from "@/types";
+import { useGetBackupTitleVideoIdLiveQuery } from "@/lib/db";
 import { Flex, Modal, ModalBody, ModalFooter, ModalHeader, ModalOverlay, UseDisclosureReturn } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import CreatedCheck from "../../../../../../../components/share-components/CreatedCheck";
@@ -16,33 +14,17 @@ interface CreateNewMapModalProps {
 }
 
 export default function CreateNewMapModal({ newCreateModalDisclosure }: CreateNewMapModalProps) {
-  const [createMapBackUpInfo, setCreateMapBackUpInfo] = useState({ title: "", videoId: "" });
   const [createYTURL, setCreateYTURL] = useState("");
   const [newID, setNewID] = useState("");
   const createBtnRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const backupData = useGetBackupTitleVideoIdLiveQuery();
 
   useEffect(() => {
     if (newCreateModalDisclosure.isOpen && inputRef.current) {
       inputRef.current.focus();
     }
   }, [newCreateModalDisclosure.isOpen]);
-
-  useEffect(() => {
-    db.editorNewCreateBak.get({ optionName: "backupMapInfo" }).then((data: IndexDBOption | undefined) => {
-      if (data) {
-        const backupMapInfo = data.value as EditorNewMapBackUpInfoData;
-        setCreateMapBackUpInfo({ title: backupMapInfo.title, videoId: backupMapInfo.videoId });
-      } else {
-        setCreateMapBackUpInfo({ title: "", videoId: "" });
-      }
-    });
-
-    return () => {
-      setCreateMapBackUpInfo({ title: "", videoId: "" });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Modal isOpen={newCreateModalDisclosure.isOpen} onClose={newCreateModalDisclosure.onClose}>
@@ -63,12 +45,9 @@ export default function CreateNewMapModal({ newCreateModalDisclosure }: CreateNe
         <ModalFooter>
           <Flex direction="column" justify="space-between" align="center" w="100%" minH={"80px"}>
             <Flex justify="space-between" align="center" w="100%">
-              <CreateMapBackUpButton
-                createMapBackUpInfo={createMapBackUpInfo}
-                newCreateModalDisclosure={newCreateModalDisclosure}
-              />
+              <CreateMapBackUpButton backupData={backupData} newCreateModalDisclosure={newCreateModalDisclosure} />
               <NewCreateButton
-                createMapBackUpInfo={createMapBackUpInfo}
+                backupData={backupData}
                 newCreateModalDisclosure={newCreateModalDisclosure}
                 newID={newID}
                 createBtnRef={createBtnRef as any}

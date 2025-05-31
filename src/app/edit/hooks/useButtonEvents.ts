@@ -2,6 +2,8 @@ import {
   useLineReducer,
   useReadEditUtils,
   useReadLine,
+  useReadMapInfo,
+  useReadMapTags,
   useReadYtPlayerStatus,
   useSetCanUpload,
   useSetDirectEditIndex,
@@ -9,26 +11,25 @@ import {
   useSetWord,
 } from "../atoms/stateAtoms";
 
+import { useBackupNewMap } from "@/lib/db";
 import { clientApi } from "@/trpc/client-api";
 import { MapLine } from "@/types/map";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
 import { useSearchParams } from "next/navigation";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
-import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
 import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useReadTimeOffsetState } from "../atoms/storageAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import useHasEditPermission from "./useUserEditPermission";
 import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 import useTimeValidate from "./utils/useTimeValidate";
-import { useUpdateNewMapBackUp } from "./utils/useUpdateNewMapBackUp";
 import { useWordConverter } from "./utils/useWordConverter";
 
 export const useLineAddButtonEvent = () => {
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
-  const updateNewMapBackUp = useUpdateNewMapBackUp();
   const setDirectEdit = useSetDirectEditIndex();
   const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
 
@@ -42,12 +43,15 @@ export const useLineAddButtonEvent = () => {
   const readEditUtils = useReadEditUtils();
   const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
-  const readMap = useMapStateRef();
   const mapDispatch = useMapReducer();
   const historyDispatch = useHistoryReducer();
   const lineDispatch = useLineReducer();
   const timeValidate = useTimeValidate();
   const { writeEditUtils } = useEditUtilsParams();
+  const backupNewMap = useBackupNewMap();
+  const readMapInfo = useReadMapInfo();
+  const readTags = useReadMapTags();
+  const readMap = useReadMap();
 
   return (isShiftKey: boolean) => {
     const { playing } = readYtPlayerStatus();
@@ -65,7 +69,20 @@ export const useLineAddButtonEvent = () => {
     historyDispatch({ type: "add", payload: { actionType: "add", data: { ...newLine, lineIndex } } });
 
     if (newVideoId) {
-      updateNewMapBackUp(newVideoId);
+      const mapInfo = readMapInfo();
+      const tags = readTags();
+      const mapData = readMap();
+
+      backupNewMap({
+        videoId: newVideoId,
+        title: mapInfo.title,
+        artistName: mapInfo.artist,
+        musicSource: mapInfo.source,
+        creatorComment: mapInfo.comment,
+        tags: tags.map((tag) => tag.text),
+        previewTime: mapInfo.previewTime,
+        mapData,
+      });
     }
 
     setCanUpload(true);
@@ -97,7 +114,6 @@ export const useLineUpdateButtonEvent = () => {
 
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
-  const updateNewMapBackUp = useUpdateNewMapBackUp();
   const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
 
   const mapDispatch = useMapReducer();
@@ -109,11 +125,15 @@ export const useLineUpdateButtonEvent = () => {
   const readTimeOffset = useReadTimeOffsetState();
   const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
-  const readMap = useMapStateRef();
   const readUtilsState = useReadEditUtils();
   const postFixWordLog = clientApi.morphConvert.post_fix_word_log.useMutation();
 
   const timeValidate = useTimeValidate();
+
+  const backupNewMap = useBackupNewMap();
+  const readMapInfo = useReadMapInfo();
+  const readTags = useReadMapTags();
+  const readMap = useReadMap();
   return () => {
     const map = readMap();
     const { selectIndex: index, lyrics, word } = readSelectLine();
@@ -152,7 +172,20 @@ export const useLineUpdateButtonEvent = () => {
     }
 
     if (newVideoId) {
-      updateNewMapBackUp(newVideoId);
+      const mapInfo = readMapInfo();
+      const tags = readTags();
+      const mapData = readMap();
+
+      backupNewMap({
+        videoId: newVideoId,
+        title: mapInfo.title,
+        artistName: mapInfo.artist,
+        musicSource: mapInfo.source,
+        creatorComment: mapInfo.comment,
+        tags: tags.map((tag) => tag.text),
+        previewTime: mapInfo.previewTime,
+        mapData,
+      });
     }
 
     mapDispatch({ type: "update", payload: newLine, index: selectLineIndex });
@@ -199,14 +232,17 @@ export const useLineDelete = () => {
 
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
-  const updateNewMapBackUp = useUpdateNewMapBackUp();
   const { removeSelectedLineColor } = useChangeLineRowColor();
   const readSelectLine = useReadLine();
-  const readMap = useMapStateRef();
 
   const mapDispatch = useMapReducer();
   const historyDispatch = useHistoryReducer();
   const lineDispatch = useLineReducer();
+
+  const backupNewMap = useBackupNewMap();
+  const readMapInfo = useReadMapInfo();
+  const readTags = useReadMapTags();
+  const readMap = useReadMap();
 
   return () => {
     const { selectIndex } = readSelectLine();
@@ -231,7 +267,20 @@ export const useLineDelete = () => {
     setIsUpdateUpdatedAt(true);
 
     if (newVideoId) {
-      updateNewMapBackUp(newVideoId);
+      const mapInfo = readMapInfo();
+      const tags = readTags();
+      const mapData = readMap();
+
+      backupNewMap({
+        videoId: newVideoId,
+        title: mapInfo.title,
+        artistName: mapInfo.artist,
+        musicSource: mapInfo.source,
+        creatorComment: mapInfo.comment,
+        tags: tags.map((tag) => tag.text),
+        previewTime: mapInfo.previewTime,
+        mapData,
+      });
     }
   };
 };

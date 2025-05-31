@@ -82,7 +82,7 @@ export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(init, (prev:
 
 export const useMapState = () => useAtomValue(mapReducerAtom, { store });
 export const useMapReducer = () => useSetAtom(mapReducerAtom, { store });
-export const useMapStateRef = () => {
+export const useReadMap = () => {
   return useAtomCallback(
     useCallback((get) => get(mapReducerAtom), []),
     { store }

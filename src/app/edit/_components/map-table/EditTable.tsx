@@ -3,16 +3,14 @@
 import { Card, Table, TableContainer, Tbody, Th, Thead, Tr, useTheme } from "@chakra-ui/react";
 
 import "@/app/edit/style/table.scss";
-import { db } from "@/lib/db";
-import { IndexDBOption, ThemeColors } from "@/types";
-import { MapLine } from "@/types/map";
+import { ThemeColors } from "@/types";
 import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
-import { useMapReducer, useMapStateRef } from "../../atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "../../atoms/mapReducerAtom";
 import { usePlayer, useTbody } from "../../atoms/refAtoms";
-import { useIsYTReadiedState, useIsYTStartedState, useSetCanUpload } from "../../atoms/stateAtoms";
+import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms";
 import MapTableBody from "./child/MapTableBody";
 
 export default function EditTable() {
@@ -20,18 +18,13 @@ export default function EditTable() {
   const tbodyRef = useRef(null);
   const { writeTbody } = useTbody();
 
-  const searchParams = useSearchParams();
   const { id: mapId } = useParams<{ id: string }>();
-  const newVideoId = searchParams.get("new") || "";
   const { data: mapData, isLoading } = useMapQuery({ mapId });
-  const isBackUp = searchParams.get("backup") === "true";
-  const setCanUpload = useSetCanUpload();
-
   const mapDispatch = useMapReducer();
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
   const { readPlayer } = usePlayer();
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
 
   useEffect(() => {
     if (mapData) {
@@ -39,21 +32,6 @@ export default function EditTable() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
-
-  useEffect(() => {
-    if (newVideoId && isBackUp) {
-      db.editorNewCreateBak.get({ optionName: "backupMapData" }).then((data: IndexDBOption | undefined) => {
-        if (data) {
-          mapDispatch({ type: "replaceAll", payload: data.value as MapLine[] });
-        }
-      });
-      setCanUpload(true);
-    } else {
-      setCanUpload(false);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapId, newVideoId]);
 
   useEffect(() => {
     const tbody = tbodyRef.current;

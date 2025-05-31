@@ -1,4 +1,4 @@
-import { useMapReducer, useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import { useWordConverter } from "@/app/edit/hooks/utils/useWordConverter";
 import { MapLine } from "@/types/map";
@@ -10,7 +10,7 @@ import { useHistoryReducer } from "../../atoms/historyReducerAtom";
 export const useImportMapFile = () => {
   const mapDispatch = useMapReducer();
   const historyDispatch = useHistoryReducer();
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
   const lrcConverter = useLrcConverter();
   const jsonConverter = useJsonConverter();
 

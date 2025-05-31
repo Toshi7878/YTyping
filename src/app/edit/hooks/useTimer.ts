@@ -1,7 +1,7 @@
 import { ThemeColors } from "@/types";
 import { useTheme } from "@chakra-ui/react";
 import { Ticker } from "pixi.js";
-import { useMapStateRef } from "../atoms/mapReducerAtom";
+import { useReadMap } from "../atoms/mapReducerAtom";
 import { usePlayer, useTimeInput, useTimeRange } from "../atoms/refAtoms";
 import { useReadEditUtils, useSetIsTimeInputValid } from "../atoms/stateAtoms";
 import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
@@ -50,7 +50,7 @@ const useTimer = () => {
   const { setTime } = useTimeInput();
   const { readPlayer } = usePlayer();
   const { readTimeRange } = useTimeRange();
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
 
   return () => {
     const currentTime = readPlayer().getCurrentTime().toFixed(3);

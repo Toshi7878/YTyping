@@ -1,9 +1,9 @@
 "use client";
 import { Button, useTheme } from "@chakra-ui/react";
 
-import { useCanUploadState, useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
-import { useUpdateNewMapBackUp } from "@/app/edit/hooks/utils/useUpdateNewMapBackUp";
-import { useInitializeEditorCreateBak } from "@/lib/db";
+import { useReadMap } from "@/app/edit/atoms/mapReducerAtom";
+import { useCanUploadState, useReadMapInfo, useReadMapTags, useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
+import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
 import { clientApi } from "@/trpc/client-api";
 import { ThemeColors, UploadResult } from "@/types";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
@@ -20,12 +20,15 @@ const UploadButton = ({ state }: UploadButtonProps) => {
   const canUpload = useCanUploadState();
   const setCanUpload = useSetCanUpload();
   const toast = useCustomToast();
-  const initializeEditorCreateIndexedDB = useInitializeEditorCreateBak();
+  const deleteBackupNewMap = useDeleteBackupNewMap();
   const router = useRouter();
-  const updateNewMapBackUp = useUpdateNewMapBackUp();
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
   const utils = clientApi.useUtils();
+  const backupNewMap = useBackupNewMap();
+  const readMapInfo = useReadMapInfo();
+  const readTags = useReadMapTags();
+  const readMap = useReadMap();
 
   useEffect(() => {
     if (state.status !== 0) {
@@ -39,12 +42,26 @@ const UploadButton = ({ state }: UploadButtonProps) => {
         setCanUpload(false);
         if (state.id) {
           router.replace(`/edit/${state.id}`);
-          initializeEditorCreateIndexedDB();
+          deleteBackupNewMap();
         }
       } else {
         toast({ type: "error", title, message });
+
         if (newVideoId) {
-          updateNewMapBackUp(newVideoId);
+          const mapInfo = readMapInfo();
+          const tags = readTags();
+          const mapData = readMap();
+
+          backupNewMap({
+            videoId: newVideoId,
+            title: mapInfo.title,
+            artistName: mapInfo.artist,
+            musicSource: mapInfo.source,
+            creatorComment: mapInfo.comment,
+            tags: tags.map((tag) => tag.text),
+            previewTime: mapInfo.previewTime,
+            mapData,
+          });
         }
       }
     }

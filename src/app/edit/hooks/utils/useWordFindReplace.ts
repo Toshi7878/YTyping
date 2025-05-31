@@ -1,11 +1,11 @@
 import { useHistoryReducer } from "../../atoms/historyReducerAtom";
-import { useMapReducer, useMapStateRef } from "../../atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "../../atoms/mapReducerAtom";
 import { useTbody } from "../../atoms/refAtoms";
 import { useSetCanUpload, useSetIsUpdateUpdatedAt } from "../../atoms/stateAtoms";
 
 export const useWordSearchReplace = () => {
   const getKanaSearchLength = useGetKanaSearchLength();
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
   const replaceDialog = useReplaceDialog();
   const replaceFoundFocus = useReplaceFoundFocus();
 
@@ -101,7 +101,7 @@ function useReplaceFoundFocus() {
 }
 
 function useGetKanaSearchLength() {
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
 
   return (searchReg: RegExp) => {
     const map = readMap();
@@ -118,7 +118,7 @@ function useGetKanaSearchLength() {
 }
 
 function useReplaceDialog() {
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
   const setCanUpload = useSetCanUpload();
   const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
 

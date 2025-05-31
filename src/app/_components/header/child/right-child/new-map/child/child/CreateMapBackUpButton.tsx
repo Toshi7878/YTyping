@@ -4,12 +4,10 @@ import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { Box, Button, UseDisclosureReturn, useTheme } from "@chakra-ui/react";
 
-import { CreateMapBackUpInfo } from "@/types/global-types";
 import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
-
 interface CreateMapBackUpButtonProps {
-  createMapBackUpInfo: CreateMapBackUpInfo;
+  backupData: { title: string; videoId: string } | undefined;
   newCreateModalDisclosure: UseDisclosureReturn;
 }
 
@@ -21,22 +19,22 @@ export default function CreateMapBackUpButton(props: CreateMapBackUpButtonProps)
     <CustomToolTip
       label={
         <Box>
-          <Box>タイトル: {props.createMapBackUpInfo.title}</Box>
-          <Box>YouTubeId: {props.createMapBackUpInfo.videoId}</Box>
+          <Box>タイトル: {props.backupData?.title}</Box>
+          <Box>YouTubeId: {props.backupData?.videoId}</Box>
         </Box>
       }
       placement="top"
       fontSize="sm"
-      isDisabled={props.createMapBackUpInfo.title ? false : true}
+      isDisabled={props.backupData?.title ? false : true}
     >
       <Link
         fontSize="sm"
-        href={`/edit?new=${props.createMapBackUpInfo.videoId}&backup=true`}
+        href={`/edit?new=${props.backupData?.videoId}&backup=true`}
         onClick={(event) => {
           handleLinkClick(event);
           props.newCreateModalDisclosure.onClose();
         }}
-        visibility={props.createMapBackUpInfo.videoId ? "visible" : "hidden"}
+        visibility={props.backupData?.videoId ? "visible" : "hidden"}
       >
         <Button
           variant="outline"

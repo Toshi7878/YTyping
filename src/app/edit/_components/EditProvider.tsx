@@ -1,5 +1,5 @@
 "use client";
-import { db } from "@/lib/db";
+import { useFetchBackupData } from "@/lib/db";
 import { useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
@@ -7,9 +7,9 @@ import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, videoIdAtom } from "../atoms/stateAtoms";
+import { useMapReducer } from "../atoms/mapReducerAtom";
+import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, useSetCanUpload, videoIdAtom } from "../atoms/stateAtoms";
 import { getEditAtomStore } from "../atoms/store";
-import { EditorNewMapBackUpInfoData } from "../ts/type";
 
 interface EditProviderProps {
   mapInfo?: RouterOutPuts["map"]["getMapInfo"];
@@ -93,27 +93,32 @@ const useLoadBackupData = () => {
   const store = getEditAtomStore();
   const searchParams = useSearchParams();
   const isBackUp = searchParams.get("backup") === "true";
+  const fetchBackupData = useFetchBackupData();
+  const mapDispatch = useMapReducer();
+  const setCanUpload = useSetCanUpload();
 
   return () => {
     if (isBackUp) {
-      db.editorNewCreateBak.get({ optionName: "backupMapInfo" }).then((data) => {
+      fetchBackupData().then((data) => {
         if (data) {
-          const backupMap = data.value as EditorNewMapBackUpInfoData;
+          const { id: _, mapData, ...backupInfo } = data;
 
           store.set(mapInfoAtom, {
-            title: backupMap.title,
-            artist: backupMap.artistName,
+            title: backupInfo.title,
+            artist: backupInfo.artistName,
             creatorId: null,
-            comment: backupMap.creatorComment,
-            source: backupMap.musicSource,
-            previewTime: backupMap.previewTime,
+            comment: backupInfo.creatorComment,
+            source: backupInfo.musicSource,
+            previewTime: backupInfo.previewTime,
           });
 
-          store.set(videoIdAtom, backupMap.videoId);
+          store.set(videoIdAtom, backupInfo.videoId);
           store.set(mapTagsAtom, {
             type: "set",
-            payload: backupMap.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
+            payload: backupInfo.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
           });
+          mapDispatch({ type: "replaceAll", payload: mapData });
+          setCanUpload(true);
         }
       });
     }

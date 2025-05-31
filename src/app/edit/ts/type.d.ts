@@ -1,3 +1,4 @@
+import { MapLine } from "@/types/map";
 import { $Enums } from "@prisma/client";
 
 export type ConvertOptionsType = "non_symbol" | "add_symbol" | "add_symbol_all";
@@ -30,6 +31,7 @@ export interface EditorNewMapBackUpInfoData {
   creatorComment: string;
   tags: string[];
   previewTime: string;
+  mapData: MapLine[];
 }
 
 type TagsReducerActionType = "set" | "add" | "delete" | "reset";

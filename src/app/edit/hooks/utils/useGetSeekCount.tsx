@@ -1,7 +1,7 @@
-import { useMapStateRef } from "../../atoms/mapReducerAtom";
+import { useReadMap } from "../../atoms/mapReducerAtom";
 
 export const useGetSeekCount = () => {
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
 
   return (time: number) => {
     let count = 0;

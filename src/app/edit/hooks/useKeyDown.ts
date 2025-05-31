@@ -4,7 +4,7 @@ import {
   useIsUpdateBtnDisabledStateRef,
 } from "../atoms/buttonDisableStateAtoms";
 import { useEditHistoryRef, useHistoryReducer } from "../atoms/historyReducerAtom";
-import { useMapReducer, useMapStateRef } from "../atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
 import { usePlayer, useTbody } from "../atoms/refAtoms";
 import {
   useLineReducer,
@@ -218,7 +218,7 @@ const useSeekNextPrev = () => {
   const readEditUtils = useReadEditUtils();
   const readLineStatus = useReadLine();
   const { readPlayer } = usePlayer();
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
   return (type: "next" | "prev") => {
     const { directEditingIndex } = readEditUtils();
 

@@ -3,7 +3,7 @@ import { Button, Td, Tr, UseDisclosureReturn, useTheme } from "@chakra-ui/react"
 import { Dispatch, useCallback, useRef } from "react";
 
 import { useEndLineIndex } from "@/app/edit/atoms/buttonDisableStateAtoms";
-import { useMapStateRef } from "@/app/edit/atoms/mapReducerAtom";
+import { useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import {
   useDirectEditIndexState,
@@ -44,7 +44,7 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
   const { allUpdateSelectColor } = useChangeLineRowColor();
   const { readPlayer } = usePlayer();
-  const readMap = useMapStateRef();
+  const readMap = useReadMap();
 
   const selectLine = useCallback(
     (event: React.MouseEvent<HTMLTableRowElement>, selectIndex: number) => {
