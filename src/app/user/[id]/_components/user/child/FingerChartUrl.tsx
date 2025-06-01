@@ -1,5 +1,4 @@
-import { Link } from "@chakra-ui/next-js";
-import { Flex, Icon, Text } from "@chakra-ui/react";
+import Link from "next/link";
 import { FiExternalLink } from "react-icons/fi";
 
 interface FingerChartUrlProps {
@@ -8,24 +7,22 @@ interface FingerChartUrlProps {
 
 const FingerChartUrl = ({ url }: FingerChartUrlProps) => {
   if (!url) {
-    return <Text>運指表はありません</Text>;
+    return <p>運指表はありません</p>;
   }
 
   return (
-    <Flex align="center" gap={2}>
-      <Text fontWeight="medium">運指表:</Text>
+    <div className="flex items-center gap-2">
+      <span className="font-medium">運指表:</span>
       <Link
         href={url}
-        isExternal
-        color="blue.500"
-        _hover={{ textDecoration: "underline", color: "blue.600" }}
-        display="flex"
-        alignItems="center"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500 hover:text-blue-600 hover:underline flex items-center gap-1 transition-colors"
       >
-        <Text>運指表を見る</Text>
-        <Icon as={FiExternalLink} ml={1} boxSize={4} />
+        <span>運指表を見る</span>
+        <FiExternalLink className="w-4 h-4" />
       </Link>
-    </Flex>
+    </div>
   );
 };
 

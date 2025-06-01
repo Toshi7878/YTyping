@@ -1,10 +1,10 @@
-import CustomCard from "@/components/custom-ui/CustomCard";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/util/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import { CardBody, CardFooter, CardHeader, Heading, IconButton, Stack, Text } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
 import FingerChartUrl from "./child/FingerChartUrl";
@@ -21,33 +21,37 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const myProfile = session?.user.id === userId;
 
   return (
-    <CustomCard>
-      <CardHeader mx={8}>
-        <Heading as="h3" size="md">
-          ユーザー情報
-        </Heading>
+    <Card>
+      <CardHeader className="mx-8">
+        <CardTitle className="text-lg">ユーザー情報</CardTitle>
       </CardHeader>
-      <CardBody mx={8}>
-        <Stack spacing={4}>
-          <Text fontSize="xl" fontWeight="bold">
-            {userProfile.name}
-          </Text>
-          <Stack gap={0}>
-            <FingerChartUrl url={userProfile.user_profiles?.[0]?.finger_chart_url ?? ""} />
-            <MyKeyBoard myKeyboard={userProfile.user_profiles?.[0]?.my_keyboard ?? ""} />
-          </Stack>
-        </Stack>
-      </CardBody>
-      <CardFooter mx={8} justifyContent="flex-end">
+
+      <CardContent className="mx-8">
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold">{userProfile.name}</h3>
+          <FingerChartUrl url={userProfile.user_profiles?.[0]?.finger_chart_url ?? ""} />
+          <MyKeyBoard myKeyboard={userProfile.user_profiles?.[0]?.my_keyboard ?? ""} />
+        </div>
+      </CardContent>
+
+      <CardFooter className="mx-8 justify-end">
         {myProfile && (
-          <CustomToolTip placement="top" label="プロフィール編集ページに移動">
-            <Link href={`/user/settings`} onClick={handleLinkClick}>
-              <IconButton variant="outline" aria-label="編集" icon={<MdOutlineEdit />} />
-            </Link>
-          </CustomToolTip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" asChild>
+                  <Link href="/user/settings" onClick={handleLinkClick}>
+                    <MdOutlineEdit className="h-4 w-4" />
+                    <span className="sr-only">編集</span>
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top">プロフィール編集ページに移動</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
       </CardFooter>
-    </CustomCard>
+    </Card>
   );
 };
 

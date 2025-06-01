@@ -37,6 +37,11 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-roma: var(--roma);
+  --color-kana: var(--kana);
+  --color-flick: var(--flick);
+  --color-english: var(--english);
 }
 
 :root {
@@ -59,6 +64,11 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.2565 0.0092 234.09);
+
+  --roma: oklch(0.7138 0.12848 218.2724);
+  --kana: oklch(0.6751 0.1566 54.98);
+  --flick: oklch(0.8029 0.2208 141.97);
+  --english: oklch(0.7253 0.1752 349.76);
 
   --ring: oklch(0.7547 0.1375 239.62);
   --chart-1: oklch(0.646 0.222 41.116);

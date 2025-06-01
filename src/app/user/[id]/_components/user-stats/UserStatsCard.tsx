@@ -1,26 +1,15 @@
-import CustomCard from "@/components/custom-ui/CustomCard";
-import CustomSimpleGrid from "@/components/custom-ui/CustomSimpleGrid";
 import InfoCard from "@/components/share-components/InfoCard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { H2 } from "@/components/ui/typography";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ThemeColors } from "@/types";
 import { useLinkClick } from "@/util/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import {
-  Badge,
-  Box,
-  Button,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Divider,
-  Flex,
-  Heading,
-  Text,
-  useTheme,
-} from "@chakra-ui/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { GoLock } from "react-icons/go";
 import TypeActivity from "./child/TypeActivity";
@@ -47,24 +36,22 @@ const UserStatsCard = ({ userStats, userOptions }: UserStatsProps) => {
   const isMyStatsWithHide = isMyStats && isHideUserStats;
 
   return (
-    <CustomCard>
-      <CardHeader mx={8} textAlign="center">
-        <Heading as="h3" size="lg" mb={2}>
-          タイピング統計情報
-        </Heading>
-        <Badge colorScheme="blue" fontSize="md">
+    <Card>
+      <CardHeader className="mx-8 text-center">
+        <CardTitle className="text-xl mb-2">タイピング統計情報</CardTitle>
+        <Badge variant="secondary" className="text-sm">
           統計情報はやり直し時・ページ離脱時・リザルト時に更新されます
         </Badge>
       </CardHeader>
-      <CardBody mx={8}>
+      <CardContent className="mx-8">
         {(isHideUserStats && !isMyStats) || isHidePreview ? (
           <HideUserStats isMyStatsWithHide={isMyStatsWithHide} />
         ) : (
           <UserStatsContent userStats={userStats} isMyStatsWithHide={isMyStatsWithHide} />
         )}
-      </CardBody>
-      <CardFooter mx={8} />
-    </CustomCard>
+      </CardContent>
+      <CardFooter className="mx-8" />
+    </Card>
   );
 };
 
@@ -74,7 +61,6 @@ interface UserStatsContentProps {
 }
 
 const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProps) => {
-  const theme: ThemeColors = useTheme();
   if (!userStats) {
     return null;
   }
@@ -105,69 +91,62 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
     {
       label: "計測開始日",
       value: (
-        <Flex as="time" alignItems="center" gap={2}>
-          <Text as="span">{userStats.created_at.toLocaleDateString()}</Text>
-          <Text as="span" fontSize="sm" color="gray.500">
+        <div className="flex items-center gap-2">
+          <span>{userStats.created_at.toLocaleDateString()}</span>
+          <span className="text-sm text-muted-foreground">
             ({formatDistanceToNowStrict(userStats.created_at, { addSuffix: true, locale: ja })})
-          </Text>
-        </Flex>
+          </span>
+        </div>
       ),
     },
     { label: "タイピング時間", value: formatTime(userStats.total_typing_time) },
     { label: "プレイ回数", value: userStats.total_play_count },
     { label: "最大コンボ", value: userStats.max_combo },
   ];
+
   return (
-    <>
+    <div className="flex flex-col gap-4">
       {isMyStatsWithHide && <MyHideOptionInfo />}
 
-      <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={6}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
         {generalStatsData.map((item, index) => (
-          <Box key={index} p={4} borderWidth="1px" borderRadius="md" bg={theme.colors.background.body}>
-            <Flex direction="column">
-              <Text fontSize="lg" mb={1}>
-                {item.label}
-              </Text>
-              <Text fontSize="2xl" fontWeight="bold">
-                {item.value}
-              </Text>
-            </Flex>
-          </Box>
+          <StatsCard key={index} label={item.label} value={item.value} />
         ))}
-      </CustomSimpleGrid>
-      <Divider my={4} />
-      <Heading as="h4" size="md" mb={4}>
-        打鍵情報
-      </Heading>
+      </div>
+
+      <Separator />
+
+      <H2>打鍵情報</H2>
+
       <TypeActivity />
 
-      <CustomSimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {keystrokeStatsData.map((item, index) => (
-          <Box key={index} p={4} borderWidth="1px" borderRadius="md" bg={theme.colors.background.body}>
-            <Flex direction="column">
-              <Text fontSize="lg" mb={1}>
-                {item.label}
-              </Text>
-              <Text fontSize="2xl" fontWeight="bold">
-                {item.value}
-              </Text>
-            </Flex>
-          </Box>
+          <StatsCard key={index} label={item.label} value={item.value} />
         ))}
-      </CustomSimpleGrid>
-    </>
+      </div>
+    </div>
+  );
+};
+
+const StatsCard = ({ label, value }: { label: string; value: string | number | React.ReactNode }) => {
+  return (
+    <Card className="pl-8 gap-1 py-4 border rounded-sm bg-background">
+      <CardTitle className="text-lg font-normal">{label}</CardTitle>
+      <div className="text-2xl font-bold">{value}</div>
+    </Card>
   );
 };
 
 const HideUserStats = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) => {
   return (
-    <Box>
+    <div>
       {isMyStatsWithHide && <MyHideOptionInfo />}
-      <Flex justifyContent="center" flexDirection="column" alignItems="center" gap={4}>
+      <div className="flex justify-center flex-col items-center gap-4">
         <GoLock size={30} />
-        <Text>タイピング統計情報は非公開にしています</Text>
-      </Flex>
-    </Box>
+        <p>タイピング統計情報は非公開にしています</p>
+      </div>
+    </div>
   );
 };
 
@@ -178,26 +157,32 @@ const MyHideOptionInfo = () => {
   const handleLinkClick = useLinkClick();
 
   return (
-    <InfoCard title="統計情報は非公開に設定されています" mb={4}>
-      <Flex alignItems="center" justifyContent="space-between">
-        <Flex alignItems="center" gap={4}>
-          <Text>現在プロフィールは自分のみが閲覧できます</Text>
+    <InfoCard title="統計情報は非公開に設定されています" className="mb-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <p>現在プロフィールは自分のみが閲覧できます</p>
           {!isHidePreview ? (
-            <Link href="?hidePreview=true" onClick={handleLinkClick}>
-              <Button size="sm">他の人が見ているページを見る</Button>
-            </Link>
+            <Button size="sm" asChild>
+              <Link href="?hidePreview=true" onClick={handleLinkClick}>
+                他の人が見ているページを見る
+              </Link>
+            </Button>
           ) : (
-            <Link href={`/user/${userId}`} onClick={handleLinkClick}>
-              <Button size="sm">統計情報を表示</Button>
-            </Link>
+            <Button size="sm" asChild>
+              <Link href={`/user/${userId}`} onClick={handleLinkClick}>
+                統計情報を表示
+              </Link>
+            </Button>
           )}
-        </Flex>
-        <Flex justifyContent="flex-end">
-          <Link href="/user/settings#user-settings" onClick={handleLinkClick}>
-            <Button size="xs">設定を変更</Button>
-          </Link>
-        </Flex>
-      </Flex>
+        </div>
+        <div className="flex justify-end">
+          <Button size="sm" variant="outline" asChild>
+            <Link href="/user/settings#user-settings" onClick={handleLinkClick}>
+              設定を変更
+            </Link>
+          </Button>
+        </div>
+      </div>
     </InfoCard>
   );
 };
