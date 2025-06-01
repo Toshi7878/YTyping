@@ -1,5 +1,5 @@
-import { extractYouTubeVideoId } from "@/app/_components/header/child/right-child/new-map/extractYTId";
 import { useSetIsYTStarted, useSetVideoId, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
+import { extractYouTubeVideoId } from "@/util/global-hooks/extractYTId";
 import { z } from "@/validator/z";
 import { Button, Flex, FormLabel, Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";

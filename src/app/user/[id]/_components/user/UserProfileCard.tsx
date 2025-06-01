@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/util/global-hooks/useLinkClick";
 import { useSession } from "next-auth/react";
@@ -36,19 +36,14 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
 
       <CardFooter className="mx-8 justify-end">
         {myProfile && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" asChild>
-                  <Link href="/user/settings" onClick={handleLinkClick}>
-                    <MdOutlineEdit className="h-4 w-4" />
-                    <span className="sr-only">編集</span>
-                  </Link>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="top">プロフィール編集ページに移動</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <TooltipWrapper label="プロフィール編集ページに移動">
+            <Button variant="outline" size="icon" asChild>
+              <Link href="/user/settings" onClick={handleLinkClick}>
+                <MdOutlineEdit className="h-4 w-4" />
+                <span className="sr-only">編集</span>
+              </Link>
+            </Button>
+          </TooltipWrapper>
         )}
       </CardFooter>
     </Card>

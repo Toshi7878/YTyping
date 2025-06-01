@@ -1,7 +1,7 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
 import { Loader2 } from "lucide-react";
@@ -32,17 +32,17 @@ const TypeActivity = () => {
   };
 
   return (
-    <div className="flex justify-center min-h-[200px] w-full relative">
+    <div className="relative flex min-h-[200px] w-full justify-center">
       {isPending ? (
-        <div className="flex justify-center items-center w-full h-[200px]">
+        <div className="flex h-[200px] w-full items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
       ) : isError ? (
-        <div className="flex justify-center items-center w-full h-[200px]">
+        <div className="flex h-[200px] w-full items-center justify-center">
           <p>エラーが発生しました</p>
         </div>
       ) : (
-        <div className="flex justify-center w-full">
+        <div className="flex w-full justify-center">
           <ActivityCalendar
             data={data}
             labels={{
@@ -59,14 +59,9 @@ const TypeActivity = () => {
             maxLevel={12}
             renderBlock={(block, activity) => {
               return (
-                <TooltipProvider key={activity.date}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>{block}</TooltipTrigger>
-                    <TooltipContent side="top">
-                      <BlockToolTipLabel activity={activity} />
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <TooltipWrapper key={activity.date} label={<BlockToolTipLabel activity={activity} />}>
+                  {block}
+                </TooltipWrapper>
               );
             }}
             renderColorLegend={(color, level) => {
@@ -75,22 +70,17 @@ const TypeActivity = () => {
                 level === 0
                   ? "活動なし"
                   : level <= 3
-                  ? `ローマ字 level: ${levelLabel}`
-                  : level <= 6
-                  ? `かな level: ${levelLabel}`
-                  : level <= 9
-                  ? `英数字記号 level: ${levelLabel}`
-                  : `変換有りタイプ数 level: ${levelLabel}`;
+                    ? `ローマ字 level: ${levelLabel}`
+                    : level <= 6
+                      ? `かな level: ${levelLabel}`
+                      : level <= 9
+                        ? `英数字記号 level: ${levelLabel}`
+                        : `変換有りタイプ数 level: ${levelLabel}`;
 
               return (
-                <TooltipProvider key={level}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className={levelLabel === 3 ? "mr-2" : ""}>{color}</div>
-                    </TooltipTrigger>
-                    <TooltipContent side="top">{label}</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <TooltipWrapper key={level} label={label}>
+                  <div className={levelLabel === 3 ? "mr-2" : ""}>{color}</div>
+                </TooltipWrapper>
               );
             }}
             weekStart={1}
