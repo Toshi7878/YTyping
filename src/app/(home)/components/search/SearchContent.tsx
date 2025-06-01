@@ -16,7 +16,7 @@ const SearchContent = () => {
 
   const isLogin = !!session?.user?.id;
   return (
-    <section className="w-full flex items-center mb-4">
+    <section className="mb-4 flex w-full items-center">
       <div className="w-full">
         <div className="mb-3">
           <SearchInputs />
@@ -26,14 +26,14 @@ const SearchContent = () => {
             isLogin ? "" : "gap-8"
           } flex-col md:flex-row`}
         >
-          <div className="flex items-center gap-5 flex-col md:flex-row">
+          <div className="flex flex-col items-center gap-5 md:flex-row">
             {isLogin && <FilterInputs />}
             <SearchRange step={0.1} />
           </div>
           {!isMobile && <VolumeRange player={player} />}
         </div>
         <div className="mt-4">
-          <div className="w-full bg-slate-800 text-white p-2 rounded-md overflow-x-auto flex flex-wrap md:flex-nowrap justify-between items-center gap-1 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+          <div className="bg-card flex w-full flex-wrap items-center justify-between gap-1 overflow-x-auto rounded-md p-2 md:flex-nowrap">
             <SortOptions />
             <MapListLength />
           </div>

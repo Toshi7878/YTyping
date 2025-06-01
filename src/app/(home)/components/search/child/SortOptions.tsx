@@ -3,7 +3,8 @@
 import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/atoms/atoms";
 import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { PARAM_NAME } from "@/app/(home)/ts/consts";
-import { Flex, Icon, Text } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
+import { Icon } from "@chakra-ui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
@@ -99,7 +100,7 @@ const SortOptions = () => {
   };
 
   return (
-    <Flex userSelect="none">
+    <div className="flex flex-wrap items-center gap-2 select-none">
       {Object.keys(FIELD_TO_PARAMS).map((option) => {
         const isLikedSort = option === "いいね";
         const isFilterLiked = searchParams.get("filter") === "liked";
@@ -107,30 +108,20 @@ const SortOptions = () => {
           return null;
         }
         return (
-          <Flex
+          <div
             key={option}
-            alignItems="center"
-            justifyContent="center"
-            px={3}
-            py={1}
-            cursor="pointer"
-            fontWeight={sortDirections[option as SortField] ? "bold" : "normal"}
-            color={sortDirections[option as SortField] ? "secondary.light" : "normal"}
+            className={cn(
+              "group hover:bg-accent flex cursor-pointer items-center justify-center rounded-sm px-3 py-1",
+              sortDirections[option as SortField] ? "text-secondary-light bg-accent font-bold" : "font-normal",
+            )}
             onClick={() => handleSort(option as SortField)}
-            _hover={{ bg: "button.sub.hover" }}
-            transition="all 0.2s"
-            role="group"
-            minWidth={{ base: "auto", md: "auto" }}
-            flex={{ base: "0 0 auto", md: "0 0 auto" }}
-            borderRadius="md"
-            bg={sortDirections[option as SortField] ? "rgba(255, 255, 255, 0.1)" : "transparent"}
           >
-            <Text mr={1}>{option}</Text>
+            <span className="mr-1">{option}</span>
             {getSortIcon(option as SortField)}
-          </Flex>
+          </div>
         );
       })}
-    </Flex>
+    </div>
   );
 };
 

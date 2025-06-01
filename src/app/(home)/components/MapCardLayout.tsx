@@ -1,17 +1,5 @@
-import { Box } from "@chakra-ui/react";
-import React from "react";
-
-const MapCardLayout = ({ children }) => {
-  return (
-    <Box
-      display="grid"
-      gridTemplateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }} // 2列表示に変更
-      gap={3}
-      mb={3}
-    >
-      {children}
-    </Box>
-  );
+const MapCardLayout = ({ children }: { children: React.ReactNode }) => {
+  return <div className="grid grid-cols-1 gap-3 md:grid-cols-2">{children}</div>;
 };
 
 export default MapCardLayout;

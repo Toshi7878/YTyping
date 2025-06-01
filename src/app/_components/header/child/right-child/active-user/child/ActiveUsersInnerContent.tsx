@@ -3,7 +3,6 @@ import ActiveUserMapCard from "@/components/map-card-notification/ActiveUserMapC
 import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { ACTIVE_USER_MAP_THUBNAIL_HEIGHT, ACTIVE_USER_MAP_THUBNAIL_WIDTH } from "@/config/consts/globalConst";
 import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
 import { ThemeColors } from "@/types";
 import { useGetUserPlayingMapsQuery } from "@/util/global-hooks/query/activeUserRouterQuery";
@@ -56,10 +55,10 @@ const ActiveUsersInnerContent = () => {
               user.state === "askMe"
                 ? "Ask Me"
                 : user.state === "type"
-                ? "プレイ中"
-                : user.state === "edit"
-                ? "譜面編集中"
-                : "待機中";
+                  ? "プレイ中"
+                  : user.state === "edit"
+                    ? "譜面編集中"
+                    : "待機中";
 
             return (
               <Tr key={user.id}>
@@ -82,12 +81,10 @@ const ActiveUsersInnerContent = () => {
                     <ActiveUserMapCard>
                       <MapLeftThumbnail
                         alt={user.map.title}
-                        fallbackSrc={`https://i.ytimg.com/vi/${user.map.video_id}/mqdefault.jpg`}
+                        src={`https://i.ytimg.com/vi/${user.map.video_id}/mqdefault.jpg`}
                         mapVideoId={user.map.video_id}
                         mapPreviewTime={user.map.preview_time}
-                        thumbnailQuality={user.map.thumbnail_quality}
-                        thumnailWidth={ACTIVE_USER_MAP_THUBNAIL_WIDTH}
-                        thumnailHeight={ACTIVE_USER_MAP_THUBNAIL_HEIGHT}
+                        size="activeUser"
                       />
                       <NotificationMapCardRightInfo>
                         <NotificationMapInfo map={user.map} />
@@ -95,10 +92,7 @@ const ActiveUsersInnerContent = () => {
                     </ActiveUserMapCard>
                   ) : (
                     <ActiveUserMapCard>
-                      <MapLeftThumbnail
-                        thumnailWidth={ACTIVE_USER_MAP_THUBNAIL_WIDTH}
-                        thumnailHeight={ACTIVE_USER_MAP_THUBNAIL_HEIGHT}
-                      />
+                      <MapLeftThumbnail size="activeUser" />
                       <Flex
                         position="absolute"
                         top="50%"

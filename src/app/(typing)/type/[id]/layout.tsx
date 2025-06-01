@@ -25,9 +25,9 @@ export default function TypeLayout({ children }: TypeLayoutProps) {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden flex justify-center items-start z-[1]">
+    <div className="fixed top-0 left-0 z-[1] flex h-screen w-screen items-start justify-center overflow-hidden">
       <div
-        className="w-full h-full overflow-auto flex justify-center items-start pt-16 md:pt-16 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
+        className="flex h-full w-full items-start justify-center overflow-auto pt-16 md:pt-16"
         style={{
           paddingTop: "4rem",
         }}

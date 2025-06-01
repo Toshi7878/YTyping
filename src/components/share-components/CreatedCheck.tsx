@@ -1,6 +1,5 @@
 "use client";
 
-import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "@/app/(home)/ts/consts";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapCard from "@/components/map-card/MapCard";
@@ -27,23 +26,15 @@ const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProp
           この動画の譜面が{data.length}件見つかりました
         </Box>
         {data.map((map, index) => {
-          const src =
-            map.thumbnail_quality === "maxresdefault"
-              ? `https://i.ytimg.com/vi_webp/${map.video_id}/maxresdefault.webp`
-              : `https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`;
-
           return (
             <Box key={index} mb={2} maxW="610px">
               <MapCard>
                 <MapLeftThumbnail
                   alt={map.title}
-                  fallbackSrc={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                  src={src}
+                  src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
                   mapVideoId={map.video_id}
                   mapPreviewTime={map.preview_time}
-                  thumbnailQuality={map.thumbnail_quality}
-                  thumnailWidth={HOME_THUBNAIL_WIDTH}
-                  thumnailHeight={HOME_THUBNAIL_HEIGHT}
+                  size="home"
                 />
                 <MapCardRightInfo>
                   <MapInfo map={map} />

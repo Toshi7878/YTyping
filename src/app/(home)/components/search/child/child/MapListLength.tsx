@@ -1,24 +1,16 @@
 import { useMapListLengthQuery } from "@/util/global-hooks/query/useMapListQuery";
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Loader2 } from "lucide-react";
 
 const MapListLength = () => {
   const { data: mapListLength, isPending } = useMapListLengthQuery();
 
   return (
-    <Flex
-      visibility={mapListLength === 0 ? "hidden" : "visible"}
-      px={3}
-      py={1}
-      borderRadius="md"
-      bg="rgba(255, 255, 255, 0.05)"
-      fontWeight="medium"
-      gap={2}
-    >
-      <Text>譜面数:</Text>
-      <Flex minWidth="1.75rem" width="1.75rem" alignItems="center" justifyContent="end">
-        {isPending ? <Spinner size="sm" /> : mapListLength}
-      </Flex>
-    </Flex>
+    <div className="bg-accent flex items-center gap-2 rounded-md px-3 py-1 font-medium">
+      <span>譜面数:</span>
+      <div className="flex w-6 min-w-6 items-center justify-end">
+        {isPending ? <Loader2 size="sm" /> : mapListLength}
+      </div>
+    </div>
   );
 };
 

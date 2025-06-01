@@ -11,7 +11,7 @@ import { useInView } from "react-intersection-observer";
 import MapCard from "../../../components/map-card/MapCard";
 import { MapListResponse, useMapListInfiniteQuery } from "../../../util/global-hooks/query/useMapListQuery";
 import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
-import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH, PARAM_NAME } from "../ts/consts";
+import { PARAM_NAME } from "../ts/consts";
 import MapCardLayout from "./MapCardLayout";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
@@ -64,22 +64,14 @@ function MapList() {
       <MapCardLayout>
         {data.pages.map((page: MapListResponse) =>
           page.maps.map((map: MapCardInfo) => {
-            const src =
-              map.thumbnail_quality === "maxresdefault"
-                ? `https://i.ytimg.com/vi_webp/${map.video_id}/maxresdefault.webp`
-                : `https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`;
-
             return (
               <MapCard key={map.id}>
                 <MapLeftThumbnail
                   alt={map.title}
-                  fallbackSrc={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                  src={src}
+                  src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
                   mapVideoId={map.video_id}
                   mapPreviewTime={map.preview_time}
-                  thumbnailQuality={map.thumbnail_quality}
-                  thumnailWidth={HOME_THUBNAIL_WIDTH}
-                  thumnailHeight={HOME_THUBNAIL_HEIGHT}
+                  size="home"
                 />
                 <MapCardRightInfo>
                   <MapLink mapId={map.id} />
@@ -87,7 +79,7 @@ function MapList() {
                 </MapCardRightInfo>
               </MapCard>
             );
-          })
+          }),
         )}
       </MapCardLayout>
 

@@ -69,7 +69,7 @@
   --secondary-foreground: oklch(1 0 0);
   --muted: oklch(0.6167 0.0104 242.93);
   --muted-foreground: oklch(0.683 0 0);
-  --accent: oklch(0.97 0 0);
+  --accent: oklch(0.44 0.01 286);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
@@ -105,35 +105,19 @@
   }
 }
 
+/* Map Card Hover Effect - Outside of @layer to ensure it works */
+.map-card-hover {
+  box-shadow: none;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.map-card-hover:hover {
+  box-shadow:
+    0 8px 13px -3px color-mix(in oklch, var(--color-secondary-light) 50%, transparent),
+    0 3px 5px -2px color-mix(in oklch, var(--color-secondary-light) 30%, transparent) !important;
+}
+
 @layer utilities {
-  .scrollbar-thin {
-    scrollbar-width: thin;
-  }
-
-  .scrollbar-thumb-white\/20::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-  }
-
-  .scrollbar-track-transparent::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
-  }
-
-  .dropdown-toggle::after {
-    display: inline-block;
-    margin-left: 0.255em;
-    vertical-align: 0.255em;
-    content: "";
-    border-top: 0.3em solid;
-    border-right: 0.3em solid transparent;
-    border-bottom: 0;
-    border-left: 0.3em solid transparent;
-  }
 }
 
 /* TODO: remove !important */

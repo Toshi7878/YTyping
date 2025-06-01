@@ -3,7 +3,6 @@ import NotificationMapCardRightInfo from "@/components/map-card-notification/chi
 import NotificationMapCard from "@/components/map-card-notification/NotificationMapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import DateDistanceText from "@/components/share-components/text/DateDistanceText";
-import { NOTIFICATION_MAP_THUBNAIL_HEIGHT, NOTIFICATION_MAP_THUBNAIL_WIDTH } from "@/config/consts/globalConst";
 import { ThemeColors } from "@/types";
 import { useInView } from "react-intersection-observer";
 
@@ -39,10 +38,6 @@ const NotifyDrawerInnerContent = () => {
               data.pages.map((page, index: number) => {
                 return page.notifications.map((notify, index: number) => {
                   const { map } = notify;
-                  const src =
-                    map.thumbnail_quality === "maxresdefault"
-                      ? `https://i.ytimg.com/vi_webp/${map.video_id}/maxresdefault.webp`
-                      : `https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`;
 
                   return (
                     <Box key={index} mb={4}>
@@ -50,13 +45,10 @@ const NotifyDrawerInnerContent = () => {
                         <NotificationMapCard notify={notify}>
                           <MapLeftThumbnail
                             alt={map.title}
-                            fallbackSrc={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                            src={src}
+                            src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
                             mapVideoId={map.video_id}
                             mapPreviewTime={map.preview_time}
-                            thumbnailQuality={map.thumbnail_quality}
-                            thumnailWidth={NOTIFICATION_MAP_THUBNAIL_WIDTH}
-                            thumnailHeight={NOTIFICATION_MAP_THUBNAIL_HEIGHT}
+                            size="notification"
                           />
                           <NotificationMapCardRightInfo>
                             <NotificationMapInfo map={map} />

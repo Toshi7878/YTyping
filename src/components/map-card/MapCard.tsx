@@ -1,27 +1,15 @@
 "use client";
-import { ThemeColors } from "@/types";
-import { CardBody, useTheme } from "@chakra-ui/react";
-import CustomMapCard from "../custom-ui/CustomMapCard";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface MapCardProps {
   children: React.ReactNode;
 }
-function MapCard({ children }: MapCardProps) {
-  const theme: ThemeColors = useTheme();
 
+function MapCard({ children }: MapCardProps) {
   return (
-    <CustomMapCard>
-      <CardBody
-        color={theme.colors.text.body}
-        bg={theme.colors.background.card}
-        borderRadius="md"
-        display="flex"
-        alignItems="start"
-        style={{ padding: 0, border: "none" }}
-      >
-        {children}
-      </CardBody>
-    </CustomMapCard>
+    <Card className="bg-card text-card-foreground map-card-hover py-0">
+      <CardContent className="flex items-start rounded-md border-0 p-0">{children}</CardContent>
+    </Card>
   );
 }
 

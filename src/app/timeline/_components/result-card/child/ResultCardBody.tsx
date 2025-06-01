@@ -1,4 +1,3 @@
-import { TIMELINE_THUBNAIL_HEIGHT, TIMELINE_THUBNAIL_WIDTH } from "@/app/timeline/ts/const/consts";
 import { ResultCardInfo } from "@/app/timeline/ts/type";
 import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
@@ -27,12 +26,11 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
 
           <MapLeftThumbnail
             alt={result ? result.map.title : ""}
-            fallbackSrc={result ? `https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg` : ""}
+            src={result ? `https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg` : ""}
             mapVideoId={result?.map.video_id}
             mapPreviewTime={result?.map.preview_time}
             mapPreviewSpeed={result?.status.default_speed}
-            thumnailWidth={TIMELINE_THUBNAIL_WIDTH}
-            thumnailHeight={TIMELINE_THUBNAIL_HEIGHT}
+            size="timeline"
           />
 
           {result && (
