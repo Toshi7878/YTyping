@@ -1,10 +1,14 @@
-import Content from "./Content";
+import MapList from "./components/MapList";
+import SearchContent from "./components/search/SearchContent";
 import HomeProvider from "./HomeClientProvider";
 
 export default function Home() {
   return (
     <HomeProvider>
-      <Content />
+      <div className="w-full">
+        <SearchContent />
+        <MapList />
+      </div>
     </HomeProvider>
   );
 }

@@ -1,3 +1,4 @@
+"use client";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
 import { useUserAgent } from "@/util/useUserAgent";

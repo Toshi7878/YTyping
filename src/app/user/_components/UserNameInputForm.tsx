@@ -114,17 +114,11 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
 
         <Button
           type="submit"
+          loading={updateUserName.isPending}
           disabled={!!errors.newName?.message || validationState !== "unique" || !isDirty}
           className="w-full"
         >
-          {updateUserName.isPending ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              更新中...
-            </>
-          ) : (
-            "名前を決定"
-          )}
+          {updateUserName.isPending ? "更新中..." : "名前を決定"}
         </Button>
       </form>
     </Form>

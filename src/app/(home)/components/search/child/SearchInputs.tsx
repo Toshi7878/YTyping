@@ -1,7 +1,8 @@
 "use client";
 
 import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
-import { Button, HStack, Input } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useIsSearchingState, useSetIsSearching } from "../../../atoms/atoms";
@@ -36,16 +37,14 @@ const SearchInputs = () => {
   };
 
   return (
-    <HStack
-      spacing={3}
-      as="form"
+    <form
+      className="flex items-center gap-3"
       onSubmit={(e) => {
         e.preventDefault();
         handleSearch();
       }}
     >
       <Input
-        size="md"
         value={keyword}
         placeholder="キーワードを入力"
         type="search"
@@ -53,10 +52,10 @@ const SearchInputs = () => {
         onChange={(e) => setKeyword(e.target.value)}
       />
 
-      <Button width="30%" isLoading={isSearching} loadingText="検索中" type="submit" aria-label="検索を実行">
-        検索
+      <Button className="w-60" loading={isSearching} type="submit" aria-label="検索を実行">
+        {isSearching ? "検索中" : "検索"}
       </Button>
-    </HStack>
+    </form>
   );
 };
 
