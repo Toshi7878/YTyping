@@ -3,19 +3,7 @@
 import { useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/atoms/atoms";
 import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/ts/consts";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import {
-  Box,
-  BoxProps,
-  Flex,
-  RangeSlider,
-  RangeSliderFilledTrack,
-  RangeSliderThumb,
-  RangeSliderTrack,
-  Text,
-  useTheme,
-} from "@chakra-ui/react";
+import { DualRangeSlider } from "@/components/ui/dural-range-slider";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -23,8 +11,7 @@ interface SearchRangeProps {
   step: number;
 }
 
-const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
-  const theme: ThemeColors = useTheme();
+const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<HTMLDivElement>) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { min, max } = DIFFICULTY_RANGE;
@@ -55,47 +42,21 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
   };
 
   return (
-    <Box
-      minH="75px"
-      bg={"background.card"}
-      p={1}
-      borderRadius="md"
-      borderWidth="1px"
-      borderColor="border.card60"
-      height="100%"
-    >
-      <CustomToolTip label="Enterで検索" placement="top">
-        <Box
-          flex="1"
-          width="170px"
-          position="relative"
-          top={4}
-          userSelect="none"
-          tabIndex={0}
-          onKeyDown={handleKeyDown}
-          {...rest}
-        >
-          <RangeSlider
-            value={[difficultyRange.min, difficultyRange.max]}
-            min={min}
-            max={max}
-            size="lg"
-            step={step}
-            onChange={handleChange}
-          >
-            <RangeSliderTrack height="6px">
-              <RangeSliderFilledTrack bg={theme.colors.primary.main} />
-            </RangeSliderTrack>
-            <RangeSliderThumb index={0} p={1} />
-            <RangeSliderThumb index={1} p={1} />
-          </RangeSlider>
-          <Flex position="absolute" width="100%" justifyContent="space-between" top={5}>
-            <Text fontSize="md">★{difficultyRange.min.toFixed(1)}</Text>
-            <Text fontSize="md">★{difficultyRange.max === max ? "∞" : difficultyRange.max.toFixed(1)}</Text>
-          </Flex>
-        </Box>
-      </CustomToolTip>
-    </Box>
+    <div className="bg-card border-border flex min-h-[75px] w-52 rounded-md border p-1">
+      <div className="m-auto flex w-48 flex-col items-center gap-2 select-none" onKeyDown={handleKeyDown} {...rest}>
+        <DualRangeSlider
+          value={[difficultyRange.min, difficultyRange.max]}
+          onValueChange={handleChange}
+          min={min}
+          max={max}
+          step={step}
+        />
+        <div className="flex w-full justify-between">
+          <span>★{difficultyRange.min.toFixed(1)}</span>
+          <span>★{difficultyRange.max === max ? "∞" : difficultyRange.max.toFixed(1)}</span>
+        </div>
+      </div>
+    </div>
   );
 };
 
