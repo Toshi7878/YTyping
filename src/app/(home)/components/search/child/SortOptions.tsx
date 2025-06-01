@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetIsSearching } from "@/app/(home)/atoms/atoms";
+import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/atoms/atoms";
 import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { PARAM_NAME } from "@/app/(home)/ts/consts";
 import { Flex, Icon, Text } from "@chakra-ui/react";
@@ -36,6 +36,7 @@ const SortOptions = () => {
   const searchParams = useSearchParams();
   const setIsSearching = useSetIsSearching();
   const setDifficultyRangeParams = useDifficultyRangeParams();
+  const readDifficultyRange = useReadDifficultyRange();
 
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>(() => {
     const paramValue = searchParams.get(PARAM_NAME.sort);
@@ -77,7 +78,7 @@ const SortOptions = () => {
     }
 
     setIsSearching(true);
-    router.push(`?${setDifficultyRangeParams(params).toString()}`);
+    router.push(`?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
   };
 
   const getSortIcon = (field: SortField) => {

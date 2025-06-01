@@ -6,6 +6,7 @@ const store = createStore();
 export const getHomeAtomStore = () => store;
 
 export const difficultyRangeAtom = atomWithReset(DIFFICULTY_RANGE);
+export const useReadDifficultyRange = () => () => store.get(difficultyRangeAtom);
 export const useDifficultyRangeState = () => useAtomValue(difficultyRangeAtom, { store: store });
 export const useSetDifficultyRange = () => useSetAtom(difficultyRangeAtom, { store: store });
 

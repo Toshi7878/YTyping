@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useIsSearchingState, useSetIsSearching } from "../../../atoms/atoms";
+import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../../atoms/atoms";
 
 const SearchInputs = () => {
   const searchParams = useSearchParams();
@@ -13,6 +13,7 @@ const SearchInputs = () => {
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
   const setDifficultyRangeParams = useDifficultyRangeParams();
+  const readDifficultyRange = useReadDifficultyRange();
   const router = useRouter();
 
   const handleSearch = async () => {
@@ -24,8 +25,7 @@ const SearchInputs = () => {
       params.delete("keyword");
     }
 
-    // 更新後のパラメータが現在のURLと同じ場合は何もしない
-    const updatedParams = setDifficultyRangeParams(params).toString();
+    const updatedParams = setDifficultyRangeParams(params, readDifficultyRange()).toString();
     const currentParams = searchParams.toString();
 
     if (updatedParams === currentParams) {

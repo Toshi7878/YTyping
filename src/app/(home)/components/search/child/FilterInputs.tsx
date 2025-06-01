@@ -3,8 +3,8 @@
 import { useDifficultyRangeState, useSetIsSearching } from "@/app/(home)/atoms/atoms";
 import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
 import { MY_FILTER, PLAYED_FILTER } from "@/app/(home)/ts/consts";
-import { Link } from "@chakra-ui/next-js";
-import { Box, Flex, Grid, Text } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useCallback } from "react";
 
@@ -35,10 +35,9 @@ const FilterInputs = () => {
         }
       }
 
-      return setDifficultyRangeParams(params).toString();
+      return setDifficultyRangeParams(params, difficultyRange).toString();
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchParams, difficultyRange]
+    [searchParams, difficultyRange, setDifficultyRangeParams]
   );
 
   const currentParams = FILTER_CONTENT.map((filterParam) => {
@@ -49,30 +48,14 @@ const FilterInputs = () => {
   });
 
   return (
-    <Box
-      bg="background.card"
-      py={1}
-      px={2}
-      borderRadius="md"
-      borderWidth="1px"
-      borderColor="border.card60"
-      boxShadow="sm"
-    >
-      <Grid templateColumns={{ base: "1fr", md: "auto 1fr" }} gap={1}>
+    <div className="bg-card py-1 px-2 rounded-md border border-border shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-1">
         {FILTER_CONTENT.map((filter, filterIndex) => (
           <React.Fragment key={`filter-${filterIndex}`}>
-            <Text
-              fontSize="sm"
-              fontWeight="medium"
-              display="flex"
-              alignItems="center"
-              color="text.body"
-              minWidth={{ base: "auto", md: "80px" }}
-              height="32px"
-            >
+            <p className="text-sm font-medium flex items-center text-foreground min-w-0 md:min-w-[80px] h-8">
               {filter.label}
-            </Text>
-            <Flex ml={{ base: 0, md: 3 }} gap={1} alignItems="center" flexWrap="wrap">
+            </p>
+            <div className="ml-0 md:ml-3 flex gap-1 items-center flex-wrap">
               {filter.params.map((param: FilterParam, paramIndex: number) => {
                 const isSelected = currentParams.find((p) => p.name === filter.name)?.value === param.value;
 
@@ -80,27 +63,21 @@ const FilterInputs = () => {
                   <Link
                     key={`${filter.name}-${paramIndex}`}
                     href={`?${createQueryString(filter.name, param.value, isSelected)}`}
-                    fontSize="sm"
-                    fontWeight={isSelected ? "bold" : "normal"}
                     onClick={() => setIsSearchingAtom(true)}
-                    color={isSelected ? "secondary.main" : "text.body"}
-                    textDecoration={isSelected ? "underline" : "none"}
-                    _hover={{
-                      color: "secondary.dark",
-                      textDecoration: "underline",
-                    }}
-                    px={2}
-                    py={1}
+                    className={cn(
+                      "text-sm px-2 py-1 rounded hover:text-secondary-dark hover:underline transition-colors",
+                      isSelected ? "font-bold text-secondary-dark underline" : "font-normal text-secondary-light"
+                    )}
                   >
                     {param.label}
                   </Link>
                 );
               })}
-            </Flex>
+            </div>
           </React.Fragment>
         ))}
-      </Grid>
-    </Box>
+      </div>
+    </div>
   );
 };
 

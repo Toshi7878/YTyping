@@ -15,8 +15,11 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary-light: var(--primary-light);
   --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
   --color-primary-foreground: var(--primary-foreground);
+  --color-secondary-light: var(--secondary-light);
   --color-secondary: var(--secondary);
+  --color-secondary-dark: var(--secondary-dark);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
@@ -58,8 +61,11 @@
   --popover-foreground: oklch(1 0 0);
   --primary-light: oklch(0.7547 0.1375 239.62);
   --primary: oklch(0.5946 0.1398 250.3);
+  --primary-dark: oklch(0.6611 0.1196 219.08);
   --primary-foreground: oklch(0.985 0 0);
+  --secondary-light: oklch(0.7848 0.1267 182.05);
   --secondary: oklch(0.7048 0.158 160.55);
+  --secondary-dark: oklch(0.6146 0.1368 161.02);
   --secondary-foreground: oklch(1 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -127,5 +133,17 @@
     border-right: 0.3em solid transparent;
     border-bottom: 0;
     border-left: 0.3em solid transparent;
+  }
+}
+
+/* TODO: remove !important */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html body {
+    @apply bg-background text-foreground;
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
   }
 }

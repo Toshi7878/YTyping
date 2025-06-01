@@ -1,6 +1,5 @@
 import Header from "@/app/_components/header/Header";
 import "@/styles/globals.css";
-import { cookies } from "next/headers";
 // export const runtime = "edge";
 
 import type { Metadata } from "next";
@@ -28,8 +27,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookiesList = await cookies();
-  const colorMode = cookiesList.get("chakra-ui-color-mode");
   const session = await auth();
 
   const userOptions = process.env.NODE_ENV === "development" ? null : await serverApi.userOption.getUserOptions({});
@@ -42,7 +39,7 @@ export default async function RootLayout({
       </head>
       <body>
         <LinkLoader />
-        <ThemeProvider colorMode={colorMode?.value}>
+        <ThemeProvider>
           <SessionProvider session={session}>
             <TRPCProvider>
               <Header />

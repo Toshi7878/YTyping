@@ -1,10 +1,5 @@
 import { ThemeColors } from "@/types";
-import { extendTheme, ThemeConfig } from "@chakra-ui/react";
-
-const config: ThemeConfig = {
-  initialColorMode: "dark",
-  useSystemColorMode: false,
-};
+import { extendTheme } from "@chakra-ui/react";
 
 const darkTheme: ThemeColors = {
   colors: {
@@ -76,21 +71,21 @@ const darkTheme: ThemeColors = {
 };
 
 export default extendTheme({
-  config,
+  // config,
   colors: darkTheme.colors,
   styles: {
     global: {
       "body, *": {
         transition: "background-color 0.5s ease",
       },
-      body: {
-        bg: darkTheme.colors.background.body,
-        overflowX: "hidden",
-      },
-      "::selection": {
-        background: darkTheme.colors.primary.main, // 選択時の背景色
-        color: darkTheme.colors.text.body, // 選択時のテキスト色
-      },
+      // body: {
+      //   bg: darkTheme.colors.background.body,
+      //   overflowX: "hidden",
+      // },
+      // "::selection": {
+      //   background: darkTheme.colors.primary.main, // 選択時の背景色
+      //   color: darkTheme.colors.text.body, // 選択時のテキスト色
+      // },
     },
   },
   components: {

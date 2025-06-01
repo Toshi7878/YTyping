@@ -46,7 +46,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & BoxProps) => {
     if (e.key === "Enter") {
       const params = new URLSearchParams(searchParams.toString());
 
-      const newParams = setDifficultyRangeParams(params);
+      const newParams = setDifficultyRangeParams(params, difficultyRange);
       if (newParams.toString() !== searchParams.toString()) {
         setIsSearchingAtom(true);
         router.replace(`?${newParams.toString()}`);

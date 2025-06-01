@@ -1,13 +1,7 @@
-import { useStore } from "jotai";
-import { difficultyRangeAtom } from "../atoms/atoms";
 import { DIFFICULTY_RANGE, PARAM_NAME } from "../ts/consts";
 
 export const useDifficultyRangeParams = () => {
-  const homeAtomStore = useStore();
-
-  return (params: URLSearchParams) => {
-    const difficultyRange = homeAtomStore.get(difficultyRangeAtom);
-
+  return (params: URLSearchParams, difficultyRange: typeof DIFFICULTY_RANGE) => {
     if (difficultyRange.min !== DIFFICULTY_RANGE.min) {
       params.set(PARAM_NAME.minRate, difficultyRange.min.toFixed(1));
     } else {
