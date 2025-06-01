@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, ResponsiveValue } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import HamburgerMenu from "../hamburger-menu/HamburgerMenu";
 import ActiveUsers from "./right-child/active-user/ActiveUsers";
@@ -9,15 +9,15 @@ import NewMap from "./right-child/new-map/NewMap";
 import NotifyBell from "./right-child/notify-bell/NotifyBell";
 
 interface RightNavProps {
-  display?: ResponsiveValue<string>;
+  className?: string;
 }
 
-export default function RightNav({ display }: RightNavProps) {
-  const { data: session } = useSession();
+export default function RightNav({ className }: RightNavProps) {
+  const { data: session, status } = useSession();
 
   return (
-    <Flex display={display} alignItems={"center"} gap={2}>
-      {session?.user?.name && (
+    <div className={cn("flex items-center gap-2", className)}>
+      {status !== "loading" && session?.user?.name && (
         <>
           <ActiveUsers />
           <NotifyBell />
@@ -27,6 +27,6 @@ export default function RightNav({ display }: RightNavProps) {
       <HamburgerMenu className="block md:hidden" />
 
       <Login className="hidden md:block" />
-    </Flex>
+    </div>
   );
 }

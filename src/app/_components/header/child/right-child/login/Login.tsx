@@ -8,7 +8,11 @@ interface LoginProps {
 }
 
 export default function Login({ className }: LoginProps) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <div className={className}></div>;
+  }
 
   return (
     <div className={className}>

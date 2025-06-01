@@ -1,7 +1,7 @@
+import { UserNameInputForm } from "@/app/user/_components/UserNameInputForm";
 import CustomCard from "@/components/custom-ui/CustomCard";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { CardBody, CardFooter, CardHeader, Flex, Heading } from "@chakra-ui/react";
-import { UserNameInputForm } from "../../../_components/UserNameInputForm";
 import { FingerChartUrlInput } from "./profile-input/FingerChartUrlInput";
 import { MyKeyboardInput } from "./profile-input/MyKeyboardInput";
 interface ProfileSettingCardProps {

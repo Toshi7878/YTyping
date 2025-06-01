@@ -114,4 +114,4 @@ export interface LocalLikeState {
   likeCount: number;
 }
 
-export type ValidationUniqueState = "duplicate" | "pending" | "unique";
+export type ValidationUniqueState = "duplicate" | "pending" | "unique" | "error";

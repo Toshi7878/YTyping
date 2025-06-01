@@ -11,8 +11,8 @@ import { nameSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface FormData {
@@ -21,31 +21,21 @@ interface FormData {
 
 interface UserNameInputFormProps {
   placeholder?: string;
-  formLabel?: string;
-  buttonLabel?: string;
-  isAutoFocus?: boolean;
-  isHomeRedirect?: boolean;
 }
 
-export const UserNameInputForm = ({
-  placeholder = "名前を入力",
-  formLabel = "名前",
-  buttonLabel = "名前を変更",
-  isAutoFocus = false,
-  isHomeRedirect = false,
-}: UserNameInputFormProps) => {
+export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameInputFormProps) => {
   const { data: session, update } = useSession();
-  const [nameState, setNameState] = useState<ValidationUniqueState>("unique");
-  const [isCheckingName, setIsCheckingName] = useState(false);
-  const debouncedValue = useDebounce(500); // デバウンス時間を短縮
+  const [validationState, setValidationState] = useState<ValidationUniqueState>("unique");
+  const debounceTimer = useDebounce(1000);
   const router = useRouter();
-  const toast = useCustomToast();
+  const showToast = useCustomToast();
+  const pathname = usePathname();
 
-  const form = useForm<FormData>({
+  const nameForm = useForm<FormData>({
     mode: "onChange",
     resolver: zodResolver(nameSchema),
     defaultValues: {
-      newName: session?.user ? (session.user?.name as string) : "",
+      newName: session?.user?.name || "",
     },
   });
 
@@ -53,77 +43,115 @@ export const UserNameInputForm = ({
     handleSubmit,
     watch,
     reset,
-    formState: { errors, isDirty, isValid },
-  } = form;
-  const newNameValue = watch("newName");
+    formState: { errors, isDirty },
+  } = nameForm;
 
-  const updateName = clientApi.userProfileSetting.updateName.useMutation();
-  const checkNewName = clientApi.userProfileSetting.checkNewName.useMutation();
+  const nameValue = watch("newName");
+  const updateUserName = clientApi.userProfileSetting.updateName.useMutation({
+    onSuccess: async (result) => {
+      await update({ ...session?.user, name: result.id });
+      reset({ newName: result.id });
+      showToast({ type: "success", title: result.title });
 
-  const onSubmit = (data: FormData) => {
-    updateName.mutate(data, {
-      onSuccess: async (result) => {
-        await update({ ...session?.user, name: data.newName });
-        const { title, message } = result;
-        toast({ type: "success", title, message });
+      if (pathname === "/user/register") {
+        router.push("/");
+      }
+    },
+    onError: (error) => {
+      const title = "エラーが発生しました";
+      const message = error.message;
+      showToast({ type: "error", title, message });
+    },
+  });
 
-        reset({ newName: data.newName });
+  const checkNameAvailability = clientApi.userProfileSetting.isNameAvailable.useMutation({
+    onSuccess: (isAvailable) => {
+      setValidationState(isAvailable ? "unique" : "duplicate");
+    },
+    onError: () => {
+      setValidationState("error");
+    },
+  });
 
-        if (isHomeRedirect) {
-          router.push("/");
-        }
-      },
-      onError: (error) => {
-        const title = "エラーが発生しました";
-        const message = error.message;
-        toast({ type: "error", title, message });
-      },
-    });
+  const onSubmit = (formData: FormData) => {
+    updateUserName.mutate(formData);
   };
 
-  // ユニークチェック処理の改善
+  const checkNameWithDebounce = useCallback((name: string) => {
+    debounceTimer(() => checkNameAvailability.mutate({ name }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
-    const currentName = session?.user?.name;
-
-    // バリデーションエラーがある場合や値が変更されていない場合はチェックしない
-    if (errors.newName || !isDirty || !newNameValue || newNameValue === currentName) {
-      setNameState("unique");
-      setIsCheckingName(false);
-      return;
+    if (!errors.newName && isDirty) {
+      setValidationState("pending");
+      checkNameWithDebounce(nameValue);
     }
+  }, [isDirty, errors.newName, checkNameWithDebounce, nameValue]);
 
-    setIsCheckingName(true);
-    setNameState("pending");
+  return (
+    <Form {...nameForm}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <div className="space-y-2">
+          <InputFormField
+            control={nameForm.control}
+            name="newName"
+            label={
+              <div className="flex items-center gap-2">
+                <span>名前</span>
+                <NameValidationDisplay
+                  hasError={!!errors.newName?.message}
+                  isDirty={isDirty}
+                  newNameValue={nameValue}
+                  nameState={validationState}
+                />
+              </div>
+            }
+            placeholder={placeholder}
+            variant={validationState === "duplicate" ? "error" : validationState === "unique" ? "success" : "default"}
+          />
+        </div>
 
-    const checkUniqueness = async () => {
-      try {
-        const result = await checkNewName.mutateAsync({
-          newName: newNameValue,
-        });
-        setNameState(result ? "duplicate" : "unique");
-      } catch (error) {
-        setNameState("unique"); // エラー時はユニークとして扱う
-      } finally {
-        setIsCheckingName(false);
-      }
-    };
+        <Button
+          type="submit"
+          disabled={!!errors.newName?.message || validationState !== "unique" || !isDirty}
+          className="w-full"
+        >
+          {updateUserName.isPending ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              更新中...
+            </>
+          ) : (
+            "名前を決定"
+          )}
+        </Button>
+      </form>
+    </Form>
+  );
+};
 
-    debouncedValue(checkUniqueness);
-  }, [newNameValue, isDirty, errors.newName, session?.user?.name, checkNewName, debouncedValue]);
+const NameValidationDisplay = ({
+  hasError,
+  isDirty,
+  newNameValue,
+  nameState,
+}: {
+  hasError: boolean;
+  isDirty: boolean;
+  newNameValue: string;
+  nameState: ValidationUniqueState;
+}) => {
+  if (!isDirty || !newNameValue || hasError) return null;
 
-  // 状態に応じたメッセージとアイコンを取得
-  const getValidationDisplay = () => {
-    if (!isDirty || !newNameValue) return null;
-
-    if (isCheckingName) {
-      return {
-        icon: <Loader2 className="h-4 w-4 animate-spin" />,
-        message: "確認中...",
-        variant: "default" as const,
-      };
-    }
-
+  const getDisplayContent = () => {
     switch (nameState) {
+      case "pending":
+        return {
+          icon: <Loader2 className="h-4 w-4 animate-spin" />,
+          message: "確認中...",
+          variant: "default" as const,
+        };
       case "duplicate":
         return {
           icon: <XCircle className="h-4 w-4 text-destructive" />,
@@ -141,55 +169,23 @@ export const UserNameInputForm = ({
     }
   };
 
-  const validationDisplay = getValidationDisplay();
-  const isSubmitDisabled = !isValid || nameState !== "unique" || !isDirty || isCheckingName || updateName.isPending;
+  const displayContent = getDisplayContent();
+  if (!displayContent) return null;
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <div className="space-y-2">
-          <InputFormField
-            control={form.control}
-            name="newName"
-            label={
-              <div className="flex items-center gap-2">
-                <span>{formLabel}</span>
-                {validationDisplay && (
-                  <div className="flex items-center gap-1 text-sm">
-                    {validationDisplay.icon}
-                    <span
-                      className={
-                        validationDisplay.variant === "error"
-                          ? "text-destructive"
-                          : validationDisplay.variant === "success"
-                          ? "text-green-600"
-                          : "text-muted-foreground"
-                      }
-                    >
-                      {validationDisplay.message}
-                    </span>
-                  </div>
-                )}
-              </div>
-            }
-            placeholder={placeholder}
-            autoFocus={isAutoFocus}
-            required
-            variant={validationDisplay?.variant}
-          />
-        </div>
-
-        <Button type="submit" disabled={isSubmitDisabled} className="w-full">
-          {updateName.isPending ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              更新中...
-            </>
-          ) : (
-            buttonLabel
-          )}
-        </Button>
-      </form>
-    </Form>
+    <div className="flex items-center gap-1 text-sm">
+      {displayContent.icon}
+      <span
+        className={
+          displayContent.variant === "error"
+            ? "text-destructive"
+            : displayContent.variant === "success"
+            ? "text-green-600"
+            : "text-muted-foreground"
+        }
+      >
+        {displayContent.message}
+      </span>
+    </div>
   );
 };

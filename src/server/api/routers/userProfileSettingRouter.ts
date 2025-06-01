@@ -26,27 +26,28 @@ export const userProfileSettingRouter = {
       return { id: "", title: "名前の更新中にエラーが発生しました", message: "", status: 500 };
     }
   }),
-  checkNewName: protectedProcedure
+  isNameAvailable: protectedProcedure
     .input(
       z.object({
-        newName: z.string().min(1),
+        name: z.string().min(1),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;
-      const userName = db.users.findFirst({
+      const existingUser = await db.users.findFirst({
         where: {
-          name: input.newName,
+          name: input.name,
           NOT: {
             id: user.id,
           },
         },
         select: {
-          name: true,
+          id: true,
         },
       });
 
-      return userName;
+      // true: 利用可能, false: 既に使用済み
+      return !existingUser;
     }),
 
   upsertFingerChartUrl: protectedProcedure.input(userFingerChartUrlSchema).mutation(async ({ input, ctx }) => {
