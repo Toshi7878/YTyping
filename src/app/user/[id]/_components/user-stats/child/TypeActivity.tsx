@@ -1,10 +1,10 @@
 "use client";
 
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { clientApi } from "@/trpc/client-api";
-import { ThemeColors } from "@/types";
-import { Box, Divider, Flex, Spinner, Text, useTheme } from "@chakra-ui/react";
+import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import ActivityCalendar, { Activity } from "react-activity-calendar";
 
@@ -13,29 +13,36 @@ const TypeActivity = () => {
   const { data, isPending, isError } = clientApi.userStats.getUserActivity.useQuery({
     userId: parseInt(userId),
   });
-  const { colors }: ThemeColors = useTheme();
 
+  // TODO:chakra ui 移行後 色指定を移行
+  const themeColors = {
+    roma: "#00b5d8",
+    kana: "#de781f",
+    flick: "#59e04d",
+    english: "#f472b6",
+    ime: "#FFFFFF",
+  };
   const getThemeColors = () => {
-    const roma = [`${colors.semantic.roma}40`, `${colors.semantic.roma}a0`, colors.semantic.roma];
-    const kana = [`${colors.semantic.kana}40`, `${colors.semantic.kana}a0`, colors.semantic.kana];
-    const english = [`${colors.semantic.english}40`, `${colors.semantic.english}a0`, colors.semantic.english];
-    const ime = [`${colors.text.body}40`, `${colors.text.body}a0`, colors.text.body];
+    const roma = [`${themeColors.roma}40`, `${themeColors.roma}a0`, themeColors.roma];
+    const kana = [`${themeColors.kana}40`, `${themeColors.kana}a0`, themeColors.kana];
+    const english = [`${themeColors.english}40`, `${themeColors.english}a0`, themeColors.english];
+    const ime = [`${themeColors.ime}40`, `${themeColors.ime}a0`, themeColors.ime];
 
     return ["#161b22"].concat(roma).concat(kana).concat(english).concat(ime);
   };
 
   return (
-    <Flex justifyContent="center" minHeight="200px" width="100%" position="relative">
+    <div className="flex justify-center min-h-[200px] w-full relative">
       {isPending ? (
-        <Flex justifyContent="center" alignItems="center" width="100%" height="200px">
-          <Spinner />
-        </Flex>
+        <div className="flex justify-center items-center w-full h-[200px]">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
       ) : isError ? (
-        <Flex justifyContent="center" alignItems="center" width="100%" height="200px">
-          <Text>エラーが発生しました</Text>
-        </Flex>
+        <div className="flex justify-center items-center w-full h-[200px]">
+          <p>エラーが発生しました</p>
+        </div>
       ) : (
-        <Flex justifyContent="center" width="100%">
+        <div className="flex justify-center w-full">
           <ActivityCalendar
             data={data}
             labels={{
@@ -52,9 +59,14 @@ const TypeActivity = () => {
             maxLevel={12}
             renderBlock={(block, activity) => {
               return (
-                <CustomToolTip placement="top" label={<BlockToolTipLabel activity={activity} />}>
-                  {block}
-                </CustomToolTip>
+                <TooltipProvider key={activity.date}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>{block}</TooltipTrigger>
+                    <TooltipContent side="top">
+                      <BlockToolTipLabel activity={activity} />
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               );
             }}
             renderColorLegend={(color, level) => {
@@ -71,16 +83,21 @@ const TypeActivity = () => {
                   : `変換有りタイプ数 level: ${levelLabel}`;
 
               return (
-                <CustomToolTip placement="top" label={label}>
-                  <Box mr={levelLabel === 3 ? "10px" : "0px"}>{color}</Box>
-                </CustomToolTip>
+                <TooltipProvider key={level}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className={levelLabel === 3 ? "mr-2" : ""}>{color}</div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">{label}</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               );
             }}
             weekStart={1}
           />
-        </Flex>
+        </div>
       )}
-    </Flex>
+    </div>
   );
 };
 
@@ -95,19 +112,19 @@ const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
 
   const sortedTypeDataString = sortedTypeData.map((item) => {
     return (
-      <Box key={item.label} fontSize="xs">
+      <div key={item.label} className="text-xs">
         {item.label}: {item.count}
-      </Box>
+      </div>
     );
   });
 
   return (
-    <Flex flexDirection="column" gap={2}>
+    <div className="flex flex-col gap-2">
       {sortedTypeDataString}
-      <Divider />
-      <Box>合計打鍵数: {activity.count}</Box>
-      <Box>日付: {activity.date}</Box>
-    </Flex>
+      <Separator />
+      <div>合計打鍵数: {activity.count}</div>
+      <div>日付: {activity.date}</div>
+    </div>
   );
 };
 
