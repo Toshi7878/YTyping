@@ -13,7 +13,7 @@ export default function Login({ className }: LoginProps) {
   return (
     <div className={className}>
       {!session?.user && <SignInMenu />}
-      {!session?.user?.name ? <SignOutButton /> : <UserMenu />}
+      {session?.user && (session?.user?.name ? <UserMenu /> : <SignOutButton />)}
     </div>
   );
 }
