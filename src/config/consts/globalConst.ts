@@ -2,13 +2,6 @@ import { UploadResult } from "@/types";
 
 export const INITIAL_STATE: UploadResult = { id: null, title: "", message: "", status: 0 };
 
-export const PREVIEW_YOUTUBE_WIDTH = { base: 288, xl: 448 };
-export const PREVIEW_YOUTUBE_POSITION = { base: 2, lg: 5 };
-export const PREVIEW_YOUTUBE_HEIGHT = {
-  base: (PREVIEW_YOUTUBE_WIDTH.base * 9) / 16,
-  xl: (PREVIEW_YOUTUBE_WIDTH.xl * 9) / 16,
-};
-
 export const NOTIFICATION_MAP_THUBNAIL_WIDTH = { base: 140 };
 export const NOTIFICATION_MAP_THUBNAIL_HEIGHT = {
   base: (NOTIFICATION_MAP_THUBNAIL_WIDTH.base * 9) / 15,

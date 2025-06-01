@@ -1,14 +1,20 @@
 "use client";
 
-import { PREVIEW_YOUTUBE_HEIGHT, PREVIEW_YOUTUBE_WIDTH } from "@/config/consts/globalConst";
+import useBreakPoint from "@/util/global-hooks/useBreakPoint";
 import { usePreviewYouTubeKeyDown } from "@/util/global-hooks/usePreviewYouTubeKeyDown";
-import { Box, useBreakpointValue } from "@chakra-ui/react";
 import { useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { usePreviewVideoState, useSetPreviewPlayer, useVolumeState } from "../../lib/global-atoms/globalAtoms";
 
+const PREVIEW_YOUTUBE_WIDTH = { base: 288, xl: 448 };
+const PREVIEW_YOUTUBE_HEIGHT = {
+  base: (PREVIEW_YOUTUBE_WIDTH.base * 9) / 16,
+  xl: (PREVIEW_YOUTUBE_WIDTH.xl * 9) / 16,
+};
+
 const PreviewYouTubeContent = function YouTubeContent() {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
+
   const volume = useVolumeState();
   const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
   const setPreviewPlayerState = useSetPreviewPlayer();
@@ -22,8 +28,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
 
-  const width = useBreakpointValue(PREVIEW_YOUTUBE_WIDTH);
-  const height = useBreakpointValue(PREVIEW_YOUTUBE_HEIGHT);
+  const { breakpoint } = useBreakPoint("desktop");
 
   if (!videoId) {
     return null;
@@ -42,13 +47,13 @@ const PreviewYouTubeContent = function YouTubeContent() {
   };
 
   return (
-    <Box zIndex={9} position="fixed" bottom={{ base: 2, lg: 5 }} right={{ base: 2, lg: 5 }}>
+    <div className="z-10 fixed bottom-2 lg:bottom-5 right-2 lg:right-5">
       <YouTube
         id="preview_youtube"
         videoId={videoId}
         opts={{
-          width: `${width}px`,
-          height: `${height}px`,
+          width: `${breakpoint === "desktop" ? PREVIEW_YOUTUBE_WIDTH.xl : PREVIEW_YOUTUBE_WIDTH.base}px`,
+          height: `${breakpoint === "desktop" ? PREVIEW_YOUTUBE_HEIGHT.xl : PREVIEW_YOUTUBE_HEIGHT.base}px`,
           playerVars: {
             enablejsapi: 1,
             start: Number(previewTime),
@@ -62,7 +67,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
         onReady={onReady}
         onPlay={onPlay}
       />
-    </Box>
+    </div>
   );
 };
 
