@@ -1,81 +1,54 @@
 "use client";
-import {
-  Box,
-  HStack,
-  Slider,
-  SliderFilledTrack,
-  SliderMark,
-  SliderThumb,
-  SliderTrack,
-  StackProps,
-  useTheme,
-} from "@chakra-ui/react";
-
 import { useSetVolume, useVolumeState } from "@/lib/global-atoms/globalAtoms";
-import { ThemeColors } from "@/types";
 import { YTPlayer } from "@/types/global-types";
-import { useState } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
+import { Slider } from "../ui/slider";
 
 interface VolumeRangeProps {
   player: YTPlayer | null;
 }
 
-export default function VolumeRange({ player, ...props }: VolumeRangeProps & StackProps) {
-  const theme: ThemeColors = useTheme();
+export default function VolumeRange({ player, ...props }: VolumeRangeProps & React.HTMLAttributes<HTMLDivElement>) {
   const volume = useVolumeState();
   const setVolume = useSetVolume();
-  const [showSliderMark, setShowSliderMark] = useState(false);
 
-  const handleChange = (value: number) => {
-    setVolume(value);
+  const handleChange = (value: number[]) => {
+    const newVolume = value[0];
+    setVolume(newVolume);
     if (player) {
-      player.setVolume(value);
+      player.setVolume(newVolume);
     }
   };
+
   return (
-    <HStack alignItems="center" {...props}>
-      <Box>
-        {volume === 0 ? (
-          <IoMdVolumeMute size={24} />
-        ) : volume < 50 ? (
-          <IoMdVolumeLow size={24} />
-        ) : (
-          <IoMdVolumeHigh size={24} />
-        )}
-      </Box>
+    <div className="flex items-center" {...props}>
+      <VolumeIcon volume={volume} />
 
-      <Slider
-        size="lg"
-        w="200px"
-        aria-label="slider-ex-1"
-        onChange={handleChange}
-        max={100}
-        value={volume}
-        onMouseEnter={() => setShowSliderMark(true)}
-        onMouseLeave={() => setShowSliderMark(false)}
-      >
-        {showSliderMark && (
-          <SliderMark
-            value={volume}
-            textAlign="center"
-            bg={theme.colors.background.body}
-            color={theme.colors.text.body}
-            border="1px"
-            borderColor={theme.colors.border.card}
-            mt="-10"
-            ml="-4"
-            w="8"
-          >
-            {volume}
-          </SliderMark>
-        )}
-        <SliderTrack>
-          <SliderFilledTrack bg={theme.colors.primary.main} />
-        </SliderTrack>
-
-        <SliderThumb />
-      </Slider>
-    </HStack>
+      <div className="ml-4 w-[200px]">
+        <Slider
+          defaultValue={[volume]}
+          value={[volume]}
+          onValueChange={handleChange}
+          max={100}
+          min={0}
+          step={1}
+          className="w-full"
+        />
+      </div>
+    </div>
   );
 }
+
+const VolumeIcon = ({ volume }: { volume: number }) => {
+  return (
+    <div>
+      {volume === 0 ? (
+        <IoMdVolumeMute size={24} />
+      ) : volume < 50 ? (
+        <IoMdVolumeLow size={24} />
+      ) : (
+        <IoMdVolumeHigh size={24} />
+      )}
+    </div>
+  );
+};
