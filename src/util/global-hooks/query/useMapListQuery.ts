@@ -1,4 +1,4 @@
-import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/ts/consts";
+import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/shared/const";
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";

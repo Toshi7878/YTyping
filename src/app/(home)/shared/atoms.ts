@@ -1,6 +1,6 @@
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset } from "jotai/utils";
-import { DIFFICULTY_RANGE } from "../ts/consts";
+import { DIFFICULTY_RANGE } from "./const";
 
 const store = createStore();
 export const getHomeAtomStore = () => store;

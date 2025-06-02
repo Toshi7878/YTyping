@@ -1,4 +1,4 @@
-import { DIFFICULTY_RANGE, PARAM_NAME } from "../ts/consts";
+import { DIFFICULTY_RANGE, PARAM_NAME } from "./const";
 
 export const useDifficultyRangeParams = () => {
   return (params: URLSearchParams, difficultyRange: typeof DIFFICULTY_RANGE) => {

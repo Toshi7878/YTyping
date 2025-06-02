@@ -1,13 +1,24 @@
-"use client";
-
-import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/atoms/atoms";
-import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
-import { PARAM_NAME } from "@/app/(home)/ts/consts";
+import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/shared/atoms";
+import { PARAM_NAME } from "@/app/(home)/shared/const";
+import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
 import { cn } from "@/lib/utils";
+import { useMapListLengthQuery } from "@/util/global-hooks/query/useMapListQuery";
 import { Icon } from "@chakra-ui/react";
+import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+
+const SortAndMapListLength = () => {
+  return (
+    <div className="bg-card flex w-full flex-wrap items-center justify-between gap-1 overflow-x-auto rounded-md p-2 md:flex-nowrap">
+      <SortOptions />
+      <MapListLength />
+    </div>
+  );
+};
+
+export default SortAndMapListLength;
 
 type SortField = keyof typeof FIELD_TO_PARAMS;
 type SortDirection = "asc" | "desc" | null;
@@ -125,4 +136,15 @@ const SortOptions = () => {
   );
 };
 
-export default SortOptions;
+const MapListLength = () => {
+  const { data: mapListLength, isPending } = useMapListLengthQuery();
+
+  return (
+    <div className="bg-accent flex items-center gap-2 rounded-md px-3 py-1 font-medium">
+      <span>譜面数:</span>
+      <div className="flex w-6 min-w-6 items-center justify-end">
+        {isPending ? <Loader2 size="sm" /> : mapListLength}
+      </div>
+    </div>
+  );
+};

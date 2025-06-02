@@ -1,11 +1,11 @@
 "use client";
 
-import { useDifficultyRangeParams } from "@/app/(home)/hook/useDifficultyRangeParams";
+import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../../atoms/atoms";
+import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../shared/atoms";
 
 const SearchInputs = () => {
   const searchParams = useSearchParams();

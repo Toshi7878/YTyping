@@ -10,23 +10,12 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import MapCard from "../../../components/map-card/MapCard";
 import { MapListResponse, useMapListInfiniteQuery } from "../../../util/global-hooks/query/useMapListQuery";
-import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
-import { PARAM_NAME } from "../ts/consts";
-import MapCardLayout from "./MapCardLayout";
+import { useIsSearchingState, useSetIsSearching } from "../shared/atoms";
+import { PARAM_NAME } from "../shared/const";
 
 type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
 
-function LoadingMapCard({ cardLength }: { cardLength: number }) {
-  return (
-    <MapCardLayout>
-      {[...Array(cardLength)].map((_, index) => (
-        <SkeletonCard key={index} />
-      ))}
-    </MapCardLayout>
-  );
-}
-
-function MapList() {
+const MapList = () => {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingState();
   const setIsSearchingAtom = useSetIsSearching();
@@ -90,6 +79,20 @@ function MapList() {
       )}
     </div>
   );
-}
+};
+
+const MapCardLayout = ({ children }: { children: React.ReactNode }) => {
+  return <div className="grid grid-cols-1 gap-3 md:grid-cols-2">{children}</div>;
+};
+
+const LoadingMapCard = ({ cardLength }: { cardLength: number }) => {
+  return (
+    <>
+      {[...Array(cardLength)].map((_, index) => (
+        <SkeletonCard key={index} />
+      ))}
+    </>
+  );
+};
 
 export default MapList;
