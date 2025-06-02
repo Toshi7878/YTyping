@@ -21,34 +21,27 @@ export default function VolumeRange({ player, ...props }: VolumeRangeProps & Rea
   };
 
   return (
-    <div className="flex items-center" {...props}>
+    <div className="flex items-center gap-4" role="group" aria-label="音量調整" {...props}>
       <VolumeIcon volume={volume} />
-
-      <div className="ml-4 w-[200px]">
-        <Slider
-          defaultValue={[volume]}
-          value={[volume]}
-          onValueChange={handleChange}
-          max={100}
-          min={0}
-          step={1}
-          className="w-full"
-        />
-      </div>
+      <Slider
+        value={[volume]}
+        onValueChange={handleChange}
+        max={100}
+        min={0}
+        step={1}
+        className="w-[200px]"
+        aria-label={`音量: ${volume}%`}
+      />
     </div>
   );
 }
 
 const VolumeIcon = ({ volume }: { volume: number }) => {
-  return (
-    <div>
-      {volume === 0 ? (
-        <IoMdVolumeMute size={24} />
-      ) : volume < 50 ? (
-        <IoMdVolumeLow size={24} />
-      ) : (
-        <IoMdVolumeHigh size={24} />
-      )}
-    </div>
-  );
+  if (volume === 0) {
+    return <IoMdVolumeMute size={24} aria-label="ミュート" />;
+  }
+  if (volume < 50) {
+    return <IoMdVolumeLow size={24} aria-label="音量低" />;
+  }
+  return <IoMdVolumeHigh size={24} aria-label="音量高" />;
 };

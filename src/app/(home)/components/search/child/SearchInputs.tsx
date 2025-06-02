@@ -52,7 +52,7 @@ const SearchInputs = () => {
         onChange={(e) => setKeyword(e.target.value)}
       />
 
-      <Button className="w-60" loading={isSearching} type="submit" aria-label="検索を実行">
+      <Button className="w-20 md:w-60" loading={isSearching} type="submit" aria-label="検索を実行">
         {isSearching ? "検索中" : "検索"}
       </Button>
     </form>
