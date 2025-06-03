@@ -64,7 +64,9 @@ function CreateNewMapModal({ trigger }: CreateNewMapModalProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      <TooltipWrapper label="譜面新規作成" delayDuration={600}>
+        <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      </TooltipWrapper>
       <PopoverContent className="w-[640px] border p-0" side="bottom" align="end" sideOffset={8}>
         <div className="border-b px-6 py-4">
           <h2 className="text-lg font-semibold">譜面新規作成</h2>

@@ -14,8 +14,8 @@ import { Menu } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
-import LogOutMenuItem from "../child/right-child/login/child/LogOutMenuItem";
-import SignInMenuItem from "../child/right-child/login/child/SignInMenuItem";
+import LogOutMenuItem from "./right-child/login/child/LogOutMenuItem";
+import SignInMenuItem from "./right-child/login/child/SignInMenuItem";
 
 interface HamburgerMenuProps {
   className?: string;
@@ -31,7 +31,7 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
     <div className={className}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="p-2 border border-solid border-border/50">
+          <Button variant="outline" size="sm" className="border-border/50 border border-solid p-2">
             <Menu className="h-4 w-4" />
             <span className="sr-only">メニューを開く</span>
           </Button>
@@ -72,7 +72,7 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
               <>
                 <DropdownMenuItem asChild>
                   <SignInMenuItem
-                    className="flex items-center gap-2 hover:bg-[#7289DA] hover:text-white w-full"
+                    className="flex w-full items-center gap-2 hover:bg-[#7289DA] hover:text-white"
                     text="Discordでログイン"
                     leftIcon={<BsDiscord size="1.5em" />}
                     provider="discord"
@@ -80,7 +80,7 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <SignInMenuItem
-                    className="flex items-center gap-2 hover:bg-[#DB4437] hover:text-white w-full"
+                    className="flex w-full items-center gap-2 hover:bg-[#DB4437] hover:text-white"
                     text="Googleでログイン"
                     leftIcon={<BsGoogle size="1.5em" />}
                     provider="google"
