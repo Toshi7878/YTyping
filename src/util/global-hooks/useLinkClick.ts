@@ -1,5 +1,5 @@
 import { useCanUploadState } from "@/app/edit/atoms/stateAtoms";
-import useHasEditPermission from "@/app/edit/hooks/useUserEditPermission";
+import useHasMapUploadPermission from "@/app/edit/hooks/useUserEditPermission";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -7,7 +7,7 @@ export const useLinkClick = () => {
   const router = useRouter();
   const pathname = usePathname();
   const canUpload = useCanUploadState();
-  const hasEditPermission = useHasEditPermission();
+  const hasUploadPermission = useHasMapUploadPermission();
   const { data: session } = useSession();
 
   const userId = session?.user.id || 0;
@@ -35,7 +35,7 @@ export const useLinkClick = () => {
       return;
     }
 
-    if (pathname.includes("/edit") && canUpload && hasEditPermission) {
+    if (pathname.includes("/edit") && canUpload && hasUploadPermission) {
       const confirmUpload = window.confirm("このページを離れると、行った変更が保存されない可能性があります。");
       if (!confirmUpload) {
         return;

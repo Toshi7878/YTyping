@@ -5,22 +5,27 @@ import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLink from "@/components/map-card/child/child/MapLink";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import MapCard from "../../../components/map-card/MapCard";
-import { MapListResponse, useMapListInfiniteQuery } from "../../../util/global-hooks/query/useMapListQuery";
+import { MapListResponse, mapListQueries } from "../../../util/global-hooks/queries/mapList.queries";
 import { useIsSearchingState, useSetIsSearching } from "../shared/atoms";
 import { PARAM_NAME } from "../shared/const";
 
-type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
+type MapCardInfo = RouterOutPuts["map"]["getCreatedMapsByVideoId"][number];
 
 const MapList = () => {
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
   const isSearching = useIsSearchingState();
   const setIsSearchingAtom = useSetIsSearching();
 
-  const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useMapListInfiniteQuery();
+  const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
+    mapListQueries.getInfiniteMapList(session, searchParams),
+  );
 
   const { ref, inView } = useInView({
     threshold: 0,

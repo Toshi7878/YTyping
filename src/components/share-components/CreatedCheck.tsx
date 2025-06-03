@@ -4,7 +4,7 @@ import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapCard from "@/components/map-card/MapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { useGetCreatedVideoIdMapListQuery } from "@/util/global-hooks/query/mapRouterQuery";
+import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
 import { Box, Spinner } from "@chakra-ui/react";
 
 interface CreatedCheckProps {
@@ -13,7 +13,7 @@ interface CreatedCheckProps {
 }
 
 const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProps) => {
-  const { data, isPending } = useGetCreatedVideoIdMapListQuery({ videoId });
+  const { data, isPending } = useMapQueries.getCreatedMapsByVideoId({ videoId });
 
   if (isPending) {
     return <Spinner size="sm" my={10} />;

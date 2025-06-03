@@ -1,14 +1,40 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/shared/const";
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams } from "next/navigation";
 
-type MapCardInfo = RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
+type MapCardInfo = RouterOutPuts["map"]["getCreatedMapsByVideoId"][number];
 export type MapListResponse = { maps: MapCardInfo[] };
+
+export const mapListQueries = {
+  getInfiniteMapList: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
+    const { queryKey, params } = getMapListSearchParams(searchParams);
+
+    return infiniteQueryOptions({
+      queryKey,
+      queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, session, params }),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => (lastPage.maps.length === PAGE_SIZE ? allPages.length : undefined),
+      getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 2 : undefined),
+      refetchOnWindowFocus: false,
+      gcTime: Infinity,
+    });
+  },
+
+  getMapListLength: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
+    const { queryKey, params } = getMapListSearchParams(searchParams);
+
+    return queryOptions({
+      queryKey: [...queryKey, "length"],
+      queryFn: () => fetchMapListLength({ session, params }),
+      staleTime: Infinity,
+      gcTime: Infinity,
+    });
+  },
+};
 
 interface FetchMapListParams {
   page: number;
@@ -50,36 +76,7 @@ const fetchMapListLength = async ({ session, params }: Omit<FetchMapListParams, 
   }
 };
 
-export const useMapListInfiniteQuery = () => {
-  const { data: session } = useSession();
-  const { queryKey, params } = useGetMapListSearchParams();
-
-  return useSuspenseInfiniteQuery({
-    queryKey,
-    queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, session, params }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => (lastPage.maps.length === PAGE_SIZE ? allPages.length : undefined),
-    getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 2 : undefined),
-    refetchOnWindowFocus: false,
-    gcTime: Infinity,
-  });
-};
-
-export const useMapListLengthQuery = () => {
-  const { data: session } = useSession();
-  const { queryKey, params } = useGetMapListSearchParams();
-
-  return useQuery({
-    queryKey: [...queryKey, "length"],
-    queryFn: () => fetchMapListLength({ session, params }),
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
-};
-
-function useGetMapListSearchParams() {
-  const searchParams = useSearchParams();
-
+function getMapListSearchParams(searchParams: ReadonlyURLSearchParams) {
   const params: Partial<typeof PARAM_NAME> = {};
 
   for (const [key, value] of Array.from(searchParams.entries())) {

@@ -2,9 +2,11 @@ import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/shared/a
 import { PARAM_NAME } from "@/app/(home)/shared/const";
 import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
 import { cn } from "@/lib/utils";
-import { useMapListLengthQuery } from "@/util/global-hooks/query/useMapListQuery";
+import { mapListQueries } from "@/util/global-hooks/queries/mapList.queries";
 import { Icon } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
@@ -137,7 +139,10 @@ const SortOptions = () => {
 };
 
 const MapListLength = () => {
-  const { data: mapListLength, isPending } = useMapListLengthQuery();
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
+
+  const { data: mapListLength, isPending } = useQuery(mapListQueries.getMapListLength(session, searchParams));
 
   return (
     <div className="bg-accent flex items-center gap-2 rounded-md px-3 py-1 font-medium">

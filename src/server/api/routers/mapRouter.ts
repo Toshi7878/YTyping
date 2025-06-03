@@ -2,7 +2,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { MapLine } from "@/types/map";
 import { z } from "@/validator/z";
 import { TRPCError } from "@trpc/server";
-import { publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const mapRouter = {
   getMapInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
@@ -49,7 +49,7 @@ export const mapRouter = {
 
     return { ...restMapInfo, isLiked, creatorName };
   }),
-  getCreatedVideoIdMapList: publicProcedure
+  getCreatedMapsByVideoId: protectedProcedure
     .input(z.object({ videoId: z.string().length(11) }))
     .query(async ({ input, ctx }) => {
       const { db, user } = ctx;

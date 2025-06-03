@@ -1,7 +1,7 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { MapLine } from "@/types/map";
-import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
+import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -28,8 +28,8 @@ function Content({ mapInfo }: ContentProps) {
     height: "calc(100vh - var(--header-height))",
   });
   const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
-  const { id: mapId } = useParams();
-  const { data: mapData } = useMapQuery({ mapId: mapId as string });
+  const { id: mapId } = useParams() as { id: string };
+  const { data: mapData } = useMapQueries.getMap({ mapId });
   const setMap = useSetMap();
   const parseImeMap = useParseImeMap();
   const map = useMapState();

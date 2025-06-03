@@ -1,6 +1,6 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { useSceneState, useSetTypingStatusRank } from "@/app/(typing)/type/atoms/stateAtoms";
-import { useMapRankingQuery } from "@/util/global-hooks/query/mapRankingRouterQuery";
+import { useMapRankingQueries } from "@/util/global-hooks/queries/mapRanking.queries";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
@@ -15,7 +15,7 @@ const RankingList = () => {
   const scene = useSceneState();
   const { id: mapId } = useParams();
 
-  const { data, error, isPending } = useMapRankingQuery({ mapId: mapId as string });
+  const { data, error, isPending } = useMapRankingQueries.getMapRanking({ mapId: mapId as string });
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const setTypingStatusRank = useSetTypingStatusRank();
 
@@ -29,7 +29,7 @@ const RankingList = () => {
             (el) =>
               (el as HTMLElement).className?.includes("cursor-pointer") ||
               (el as HTMLElement).tagName === "BUTTON" ||
-              (el as HTMLElement).tagName === "A"
+              (el as HTMLElement).tagName === "A",
           )
       ) {
         setShowMenu(null);

@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useMapCreatorIdState } from "../atoms/stateAtoms";
 
-const useHasEditPermission = () => {
+const useHasMapUploadPermission = () => {
   const { data: session } = useSession();
   const mapCreatorId = useMapCreatorIdState();
   const searchParams = useSearchParams();
@@ -15,4 +15,4 @@ const useHasEditPermission = () => {
   return isNewCreate || (myUserId && (!mapCreatorId || Number(myUserId) === mapCreatorId)) || isAdmin;
 };
 
-export default useHasEditPermission;
+export default useHasMapUploadPermission;

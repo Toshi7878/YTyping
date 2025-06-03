@@ -22,7 +22,7 @@ import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
 import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useReadTimeOffsetState } from "../atoms/storageAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
-import useHasEditPermission from "./useUserEditPermission";
+import useHasMapUploadPermission from "./useUserEditPermission";
 import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 import useTimeValidate from "./utils/useTimeValidate";
 import { useWordConverter } from "./utils/useWordConverter";
@@ -206,7 +206,7 @@ export const useLineUpdateButtonEvent = () => {
 export const useWordConvertButtonEvent = () => {
   const wordConvert = useWordConverter();
   const readSelectLine = useReadLine();
-  const hasEditPermission = useHasEditPermission();
+  const hasEditPermission = useHasMapUploadPermission();
   const toast = useCustomToast();
 
   const setWord = useSetWord();

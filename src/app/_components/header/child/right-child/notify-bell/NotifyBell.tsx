@@ -4,13 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { clientApi } from "@/trpc/client-api";
+import { useNotificationQueries } from "@/util/global-hooks/queries/notification.queries";
 import { Bell, BellDot } from "lucide-react";
 import { useCallback } from "react";
 import NotifyDrawerInnerContent from "./child/NotifyDrawerInnerContent";
 
 export default function NotifyBell() {
-  const { data: isNewNotification } = clientApi.notification.newNotificationCheck.useQuery();
-  const postUserNotificationRead = clientApi.notification.postUserNotificationRead.useMutation();
+  const { data: isNewNotification } = useNotificationQueries.hasNewNotification();
+  const utils = clientApi.useUtils();
+  const postUserNotificationRead = clientApi.notification.postUserNotificationRead.useMutation({
+    onSuccess: () => {
+      utils.notification.newNotificationCheck.invalidate();
+    },
+  });
 
   const notificationOpen = useCallback(() => {
     postUserNotificationRead.mutate();

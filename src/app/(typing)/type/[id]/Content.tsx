@@ -1,6 +1,6 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
+import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
 import { ParseMap } from "@/util/parse-map/parseMap";
 import { useUserAgent } from "@/util/useUserAgent";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
@@ -35,8 +35,8 @@ function Content({ mapInfo }: ContentProps) {
   const { video_id } = mapInfo!;
   const scene = useSceneState();
 
-  const { id: mapId } = useParams();
-  const { data: mapData, isLoading } = useMapQuery({ mapId: mapId as string });
+  const { id: mapId } = useParams() as { id: string };
+  const { data: mapData, isLoading } = useMapQueries.getMap({ mapId });
 
   const isLoadingOverlay = useIsLoadingOverlayState();
   const disableKeyHandle = useDisableKey();
@@ -118,7 +118,7 @@ function Content({ mapInfo }: ContentProps) {
               <Box position="relative">
                 {isMobile && <MobileCover />}
 
-                <TypeYouTubeContent className="w-[513px] " isMapLoading={isLoading} videoId={video_id} />
+                <TypeYouTubeContent className="w-[513px]" isMapLoading={isLoading} videoId={video_id} />
               </Box>
             )}
             <Box flex={{ base: "8" }} flexDirection="column">

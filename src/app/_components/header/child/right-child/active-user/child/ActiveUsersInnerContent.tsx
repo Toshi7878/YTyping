@@ -5,13 +5,13 @@ import NotificationMapCardRightInfo from "@/components/map-card-notification/chi
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
 import { ThemeColors } from "@/types";
-import { useGetUserPlayingMapsQuery } from "@/util/global-hooks/query/activeUserRouterQuery";
+import { useActiveUserQueries } from "@/util/global-hooks/queries/activeUser.queries";
 import { Link } from "@chakra-ui/next-js";
 import { Badge, Flex, Table, Tbody, Td, Text, Thead, Tr, useTheme } from "@chakra-ui/react";
 
 const ActiveUsersInnerContent = () => {
   const onlineUsers = useOnlineUsersAtom();
-  const { data: mapedActiveUserList, isPending } = useGetUserPlayingMapsQuery(onlineUsers);
+  const { data: mapedActiveUserList, isPending } = useActiveUserQueries.getUserPlayingMaps(onlineUsers);
   const theme: ThemeColors = useTheme();
 
   if (isPending) {

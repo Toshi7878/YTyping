@@ -1,12 +1,11 @@
 "use client";
 import { Box, Flex, Grid, useToast } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { usePathChangeAtomReset } from "../atoms/reset";
 import { useCanUploadState, useIsLrcConvertingState } from "../atoms/stateAtoms";
 import { useTimerRegistration } from "../hooks/useTimer";
-import useHasEditPermission from "../hooks/useUserEditPermission";
+import useHasMapUploadPermission from "../hooks/useUserEditPermission";
 import EditTable from "./map-table/EditTable";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "./tab/tab-panels/TabInfoUpload";
 import EditorTabContent from "./tab/TabList";
@@ -15,13 +14,12 @@ import EditYouTube from "./youtube/EditYouTubePlayer";
 
 function Content() {
   const isLrcConverting = useIsLrcConvertingState();
-  const router = useRouter();
 
   const { addTimer, removeTimer } = useTimerRegistration();
   const pathChangeReset = usePathChangeAtomReset();
   const chakraToast = useToast();
   const canUpload = useCanUploadState();
-  const hasEditPermission = useHasEditPermission();
+  const hasUploadPermission = useHasMapUploadPermission();
 
   useEffect(() => {
     addTimer();
@@ -41,14 +39,14 @@ function Content() {
       }
     };
 
-    if (hasEditPermission) {
+    if (hasUploadPermission) {
       window.addEventListener("beforeunload", handleBeforeUnload);
     }
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [canUpload, hasEditPermission]);
+  }, [canUpload, hasUploadPermission]);
 
   return (
     <LoadingOverlayWrapper
@@ -59,7 +57,7 @@ function Content() {
     >
       <Box marginX={{ base: 0, md: "auto" }} pt={{ base: 4, lg: 0 }}>
         <Flex as="section" flexDirection={{ base: "column", lg: "row" }} width="100%" gap={{ base: 2, lg: 6 }}>
-          <EditYouTube className="w-full lg:w-[416px] h-[286px] aspect-video select-none" />
+          <EditYouTube className="aspect-video h-[286px] w-full select-none lg:w-[416px]" />
           <EditorTabContent />
         </Flex>
         <Grid as="section" width="100%" my={1} gridTemplateColumns="1fr auto" gap-y="1px" alignItems="center">

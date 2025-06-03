@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { useUsersResultInfiniteQuery } from "../../../util/global-hooks/query/useUsersResultInfiniteQuery";
+import { useUsersResultInfiniteQuery } from "../../../util/global-hooks/queries/useUsersResultInfiniteQuery";
 import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
 import ResultCard from "./result-card/ResultCard";
 import ResultCardLayout from "./result-card/ResultCardLayout";

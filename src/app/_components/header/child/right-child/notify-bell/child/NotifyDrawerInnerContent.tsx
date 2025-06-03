@@ -6,7 +6,7 @@ import DateDistanceText from "@/components/share-components/text/DateDistanceTex
 import { ThemeColors } from "@/types";
 import { useInView } from "react-intersection-observer";
 
-import { useInfiniteNotificationsQuery } from "@/util/global-hooks/query/notificationRouterQuery";
+import { useNotificationQueries } from "@/util/global-hooks/queries/notification.queries";
 import { Box, DrawerBody, DrawerCloseButton, DrawerHeader, Spinner, useTheme } from "@chakra-ui/react";
 import { useEffect } from "react";
 
@@ -15,7 +15,8 @@ const NotifyDrawerInnerContent = () => {
     threshold: 0.8,
   });
 
-  const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteNotificationsQuery();
+  const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } =
+    useNotificationQueries.getInfiniteNotifications();
 
   useEffect(() => {
     if (inView && hasNextPage) {
