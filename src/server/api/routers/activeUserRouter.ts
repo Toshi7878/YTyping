@@ -1,14 +1,14 @@
 import { z } from "@/validator/z";
 import { publicProcedure } from "../trpc";
 
-export const userStatusSchema = z.array(
+const userStatusSchema = z.array(
   z.object({
     id: z.number(),
     name: z.string(),
     onlineAt: z.coerce.date(),
     state: z.string(),
     mapId: z.number().nullable(),
-  })
+  }),
 );
 
 export const activeUserRouter = {

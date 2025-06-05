@@ -31,27 +31,6 @@ export interface LineData {
   options?: MapLine["options"];
 }
 
-export interface SendResultData {
-  map_id: number;
-  status: {
-    score: number;
-    kana_type: number;
-    roma_type: number;
-    flick_type: number;
-    english_type: number;
-    space_type: number;
-    symbol_type: number;
-    num_type: number;
-    miss: number;
-    lost: number;
-    rkpm: number;
-    roma_kpm: number;
-    max_combo: number;
-    kpm: number;
-    default_speed: number;
-    clear_rate: number;
-  };
-}
 export interface TypeResult {
   is?: boolean;
   c?: string;

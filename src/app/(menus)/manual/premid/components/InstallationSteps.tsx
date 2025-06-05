@@ -77,7 +77,7 @@ interface InstallationStepProps {
   children: ReactNode;
 }
 
-export function InstallationStep({ title, children }: InstallationStepProps) {
+function InstallationStep({ title, children }: InstallationStepProps) {
   return (
     <li>
       <p className="inline font-bold">{title}</p>

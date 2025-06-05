@@ -5,7 +5,7 @@ import NextAuth from "next-auth";
 import { prisma } from "./db";
 
 // export const runtime = "edge";
-export const { auth, handlers, signIn, signOut } = NextAuth({
+export const { auth, handlers, signIn } = NextAuth({
   ...authConfig,
   secret: process.env.AUTH_SECRET,
   session: { strategy: "jwt" },

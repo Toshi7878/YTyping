@@ -1,15 +1,8 @@
 "use client";
 
-import useBreakPoint from "@/utils/global-hooks/useBreakPoint";
 import { useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { usePreviewVideoState, useSetPreviewPlayer, useVolumeState } from "../../lib/global-atoms/globalAtoms";
-
-const PREVIEW_YOUTUBE_WIDTH = { base: 288, xl: 448 };
-const PREVIEW_YOUTUBE_HEIGHT = {
-  base: (PREVIEW_YOUTUBE_WIDTH.base * 9) / 16,
-  xl: (PREVIEW_YOUTUBE_WIDTH.xl * 9) / 16,
-};
 
 const PreviewYouTubeContent = function YouTubeContent() {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
@@ -26,8 +19,6 @@ const PreviewYouTubeContent = function YouTubeContent() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
-
-  const { breakpoint } = useBreakPoint("desktop");
 
   if (!videoId) {
     return null;
@@ -49,10 +40,8 @@ const PreviewYouTubeContent = function YouTubeContent() {
     <YouTube
       id="preview_youtube"
       videoId={videoId}
-      className="!lg:w-[448px] fixed right-2 bottom-2 z-10 aspect-video !w-[228px] lg:right-5 lg:bottom-5"
+      className="fixed right-2 bottom-2 z-10 2xl:right-5 2xl:bottom-5 [&_iframe]:h-[128px] [&_iframe]:w-[228px] [&_iframe]:2xl:h-[252px] [&_iframe]:2xl:w-[448px]"
       opts={{
-        // width: `${breakpoint === "desktop" ? PREVIEW_YOUTUBE_WIDTH.xl : PREVIEW_YOUTUBE_WIDTH.base}px`,
-        // height: `${breakpoint === "desktop" ? PREVIEW_YOUTUBE_HEIGHT.xl : PREVIEW_YOUTUBE_HEIGHT.base}px`,
         playerVars: {
           enablejsapi: 1,
           start: Number(previewTime),
@@ -72,7 +61,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
 import { RESET } from "jotai/utils";
 import { useSetPreviewVideo } from "../../lib/global-atoms/globalAtoms";
 
-export const usePreviewYouTubeKeyDown = () => {
+const usePreviewYouTubeKeyDown = () => {
   const setPreviewVideo = useSetPreviewVideo();
 
   return (event: KeyboardEvent) => {

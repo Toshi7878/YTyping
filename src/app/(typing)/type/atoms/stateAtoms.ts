@@ -200,7 +200,7 @@ export const useResetPlayingState = () => {
 const currentTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("currentTime"));
 const lineRemainTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineRemainTime"));
 const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm"));
-export const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
+const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
 
 export const useLineRemainTimeState = () => useAtomValue(lineRemainTimeAtom, { store });
 export const useSetLineRemainTime = () => useSetAtom(lineRemainTimeAtom, { store });
@@ -347,7 +347,6 @@ export const useSetCurrentLine = () => {
   return { setCurrentLine, resetCurrentLine };
 };
 
-export type TypingStatusAtomValue = ExtractAtomValue<typeof typingStatusAtom>;
 const typingStatusAtom = atomWithReset({
   score: 0,
   type: 0,

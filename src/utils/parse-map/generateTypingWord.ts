@@ -152,13 +152,7 @@ const joinSokuonPattern = ({ joinType, typeChunks }: { joinType: "normal" | "iun
   return typeChunks;
 };
 
-export const determineCharacterType = ({
-  kanaChar,
-  romaChar,
-}: {
-  kanaChar: string;
-  romaChar: string;
-}): TypeChunk["t"] => {
+const determineCharacterType = ({ kanaChar, romaChar }: { kanaChar: string; romaChar: string }): TypeChunk["t"] => {
   if (KANA_TO_ROMA_MAP.has(kanaChar)) {
     return "kana";
   } else if (ALPHABET_LIST.includes(romaChar)) {

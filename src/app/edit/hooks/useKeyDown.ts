@@ -20,7 +20,7 @@ import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "
 import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 import { useWordSearchReplace } from "./utils/useWordFindReplace";
 
-export const useTbodyScroll = () => {
+const useTbodyScroll = () => {
   const { readTbody } = useTbody();
   return (count: number) => {
     const targetRow = readTbody().children[count];

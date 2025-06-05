@@ -3,7 +3,7 @@ import React from "react";
 import { useSetIsSearching } from "../atoms/atoms";
 import { useSetSearchParams } from "./useSetSearchParams";
 
-export const useSearchKeydown = () => {
+const useSearchKeydown = () => {
   const searchParams = useSearchParams();
   const rangeParams = useSetSearchParams();
   const router = useRouter();

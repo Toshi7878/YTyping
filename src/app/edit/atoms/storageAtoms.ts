@@ -15,24 +15,19 @@ export const useSetTimeOffset = () => useSetAtom(timeOffsetAtom, { store });
 export const useReadTimeOffsetState = () => {
   return useAtomCallback(
     useCallback((get) => get(timeOffsetAtom), []),
-    { store }
+    { store },
   );
 };
 
-export const wordConvertOptionAtom = atomWithStorage<ConvertOptionsType>(
-  "edit-word-convert-option",
-  "non_symbol",
-  undefined,
-  {
-    getOnInit: true,
-  }
-);
+const wordConvertOptionAtom = atomWithStorage<ConvertOptionsType>("edit-word-convert-option", "non_symbol", undefined, {
+  getOnInit: true,
+});
 
 export const useWordConvertOptionState = () => useAtomValue(wordConvertOptionAtom, { store });
 export const useSetWordConvertOption = () => useSetAtom(wordConvertOptionAtom, { store });
 export const useReadWordConvertOption = () => {
   return useAtomCallback(
     useCallback((get) => get(wordConvertOptionAtom), []),
-    { store }
+    { store },
   );
 };

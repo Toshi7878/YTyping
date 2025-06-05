@@ -4,7 +4,7 @@ import { auth } from "../auth";
 import { prisma } from "../db";
 import { AppRouter } from "./root";
 
-export const createContext = async () => {
+const createContext = async () => {
   const session = await auth();
 
   const user = { ...session?.user, id: Number(session?.user.id ?? 0) };
@@ -14,7 +14,7 @@ export const createContext = async () => {
   };
 };
 
-export type Context = Awaited<ReturnType<typeof createContext>>;
+type Context = Awaited<ReturnType<typeof createContext>>;
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
 });

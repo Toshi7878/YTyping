@@ -194,7 +194,7 @@ export const useTypeSuccess = () => {
   return { updateSuccessStatus, updateSuccessStatusRefs };
 };
 
-export const useCalcCurrentRank = () => {
+const useCalcCurrentRank = () => {
   const { readGameUtilRefParams } = useGameUtilityReferenceParams();
 
   return (currentScore: number) => {

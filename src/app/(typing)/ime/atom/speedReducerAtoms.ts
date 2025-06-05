@@ -10,7 +10,7 @@ const store = getImeTypeAtomStore();
 
 type SpeedActionType = "up" | "down" | "set" | "reset" | "toggle";
 
-export const speedBaseAtom = atomWithReset({
+const speedBaseAtom = atomWithReset({
   defaultSpeed: 1,
   playSpeed: 1,
 });
@@ -72,7 +72,7 @@ const speedReducerAtom = atom(
         });
         break;
     }
-  }
+  },
 );
 
 export const usePlaySpeedState = () => useAtomValue(speedBaseAtom, { store });
@@ -80,6 +80,6 @@ export const usePlaySpeedReducer = () => useSetAtom(speedReducerAtom, { store })
 export const useReadPlaySpeed = () => {
   return useAtomCallback(
     useCallback((get) => get(speedBaseAtom), []),
-    { store }
+    { store },
   );
 };

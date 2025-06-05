@@ -38,7 +38,7 @@ export const useSetEditUtils = () => useSetAtom(editUtilsAtom, { store });
 export const useReadEditUtils = () => {
   return useAtomCallback(
     useCallback((get) => get(editUtilsAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -48,7 +48,6 @@ export const useSetTabIndex = () => useSetAtom(tabIndexAtom, { store });
 export const useGeminiTagsState = () => useAtomValue(geminiTagsAtom, { store });
 export const useSetGeminiTags = () => useSetAtom(geminiTagsAtom, { store });
 
-export const useTimeCountState = () => useAtomValue(timeCountAtom, { store });
 export const useSetTimeCount = () => useSetAtom(timeCountAtom, { store });
 
 export const useDirectEditIndexState = () => useAtomValue(directEditingIndexAtom, { store });
@@ -90,7 +89,7 @@ export const useSetYtPlayerStatus = () => useSetAtom(ytPlayerStatusAtom, { store
 export const useReadYtPlayerStatus = () => {
   return useAtomCallback(
     useCallback((get) => get(ytPlayerStatusAtom), []),
-    { store }
+    { store },
   );
 };
 export const useYTSpeedState = () => useAtomValue(speedAtom, { store });
@@ -102,7 +101,6 @@ export const useSetIsYTReadied = () => useSetAtom(readiedAtom, { store });
 export const useIsYTStartedState = () => useAtomValue(startedAtom, { store });
 export const useSetIsYTStarted = () => useSetAtom(startedAtom, { store });
 
-export const useIsYTPlayingState = () => useAtomValue(playingAtom, { store });
 export const useSetIsYTPlaying = () => useSetAtom(playingAtom, { store });
 
 export const useVideoIdState = () => useAtomValue(videoIdAtom, { store });
@@ -173,7 +171,7 @@ export const useSetMapInfo = () => useSetAtom(writeVideoInfoAtom, { store });
 export const useReadMapInfo = () => {
   return useAtomCallback(
     useCallback((get) => get(mapInfoAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -187,7 +185,6 @@ export const useMapPreviewTimeState = () => useAtomValue(mapPreviewTimeAtom, { s
 export const useSetPreviewTime = () => useSetAtom(mapPreviewTimeAtom, { store });
 
 export const useMapCreatorIdState = () => useAtomValue(mapCreatorIdAtom, { store });
-export const useSetMapCreatorId = () => useSetAtom(mapCreatorIdAtom, { store });
 
 export const useMapCommentState = () => useAtomValue(mapCommentAtom, { store });
 export const useSetMapComment = () => useSetAtom(mapCommentAtom, { store });
@@ -220,7 +217,7 @@ export const useSetMapTags = () => useSetAtom(mapTagsAtom, { store });
 export const useReadMapTags = () => {
   return useAtomCallback(
     useCallback((get) => get(mapTagsAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -266,7 +263,7 @@ export const useLineReducer = () => useSetAtom(writeLineAtom, { store });
 export const useReadLine = () => {
   return useAtomCallback(
     useCallback((get) => get(lineAtom), []),
-    { store }
+    { store },
   );
 };
 

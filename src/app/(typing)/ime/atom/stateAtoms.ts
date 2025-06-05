@@ -1,4 +1,3 @@
-import { RouterOutPuts } from "@/server/api/trpc";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
@@ -9,28 +8,13 @@ import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
 
-export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>();
-
-export const useMapInfoRef = () => {
-  const readMapInfo = useAtomCallback(
-    useCallback((get) => get(mapInfoAtom) as NonNullable<RouterOutPuts["map"]["getMapInfo"]>, []),
-    { store }
-  );
-
-  return { readMapInfo };
-};
-
-const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) => optic.valueOr({} as { isLiked: undefined }).prop("isLiked"));
-export const useIsLikeAtom = () => useAtomValue(mapLikeFocusAtom, { store });
-export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store });
-
 const mapAtom = atomWithReset<ParseMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });
 export const useSetMap = () => useSetAtom(mapAtom, { store });
 export const useReadMap = () => {
   return useAtomCallback(
     useCallback((get) => get(mapAtom) as NonNullable<ParseMap>, []),
-    { store }
+    { store },
   );
 };
 
@@ -40,7 +24,7 @@ export const useSetScene = () => useSetAtom(sceneAtom, { store });
 export const useReadScene = () => {
   return useAtomCallback(
     useCallback((get) => get(sceneAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -57,7 +41,7 @@ const gameStateUtilParamsAtom = atomWithReset({
 export const useReadGameUtilParams = () => {
   const readGameUtilParams = useAtomCallback(
     useCallback((get) => get(gameStateUtilParamsAtom), []),
-    { store }
+    { store },
   );
 
   const readWipeLine = useAtomCallback(
@@ -66,7 +50,7 @@ export const useReadGameUtilParams = () => {
 
       return displayLines[displayLines.length - 1];
     }, []),
-    { store }
+    { store },
   );
 
   return { readGameUtilParams, readWipeLine };
@@ -77,7 +61,7 @@ export const useResetGameUtilParams = () => {
     useCallback((get, set) => {
       set(gameStateUtilParamsAtom, RESET);
     }, []),
-    { store }
+    { store },
   );
 };
 
@@ -88,7 +72,7 @@ const displayLinesAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.pro
 const nextDisplayLineAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("nextDisplayLine"));
 const judgedWordsAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("judgedWords"));
 const textareaPlaceholderTypeAtom = focusAtom(gameStateUtilParamsAtom, (optic) =>
-  optic.prop("textareaPlaceholderType")
+  optic.prop("textareaPlaceholderType"),
 );
 
 export const useCountState = () => useAtomValue(countAtom, { store });
@@ -111,7 +95,7 @@ export const useSetStatus = () => useSetAtom(statusAtom, { store });
 export const useReadStatus = () => {
   return useAtomCallback(
     useCallback((get) => get(statusAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -121,7 +105,7 @@ export const useWordResultsState = () => useAtomValue(wordResultsAtom, { store }
 export const useReadWordResults = () => {
   return useAtomCallback(
     useCallback((get) => get(wordResultsAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -192,20 +176,20 @@ const writeImeTypeOptionsAtom = atom(
       ...prev,
       ...newOptions,
     }));
-  }
+  },
 );
 
 export const useReadIsImeTypeOptionsEdited = () => {
   return useAtomCallback(
     useCallback((get) => get(isImeTypeOptionsEditedAtom), []),
-    { store }
+    { store },
   );
 };
 export const useImeTypeOptionsState = () => useAtomValue(imeTypeOptionsAtom, { store });
 export const useReadImeTypeOptions = () => {
   return useAtomCallback(
     useCallback((get) => get(imeTypeOptionsAtom), []),
-    { store }
+    { store },
   );
 };
 

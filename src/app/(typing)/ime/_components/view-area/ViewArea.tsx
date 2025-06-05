@@ -44,10 +44,20 @@ const SceneView = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        readPlayer().playVideo();
-        readInputTextarea().focus();
-        e.preventDefault();
+      switch (scene) {
+        case "ready":
+          if (e.key === "Enter") {
+            readPlayer().playVideo();
+            readInputTextarea().focus();
+            e.preventDefault();
+          }
+          break;
+        case "play":
+          if (e.key === "Tab") {
+            e.preventDefault();
+            readInputTextarea().focus();
+          }
+          break;
       }
     };
 
@@ -55,7 +65,7 @@ const SceneView = () => {
       if (document.visibilityState === "hidden") {
         navigator.sendBeacon(
           `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-ime-typing-stats`,
-          JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) })
+          JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) }),
         );
 
         resetUserStats();
@@ -64,7 +74,7 @@ const SceneView = () => {
     const handleBeforeunload = () => {
       navigator.sendBeacon(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-ime-typing-stats`,
-        JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) })
+        JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) }),
       );
 
       resetUserStats();
@@ -75,9 +85,10 @@ const SceneView = () => {
       window.addEventListener("visibilitychange", handleVisibilitychange);
     }
 
-    if (scene === "ready" && map !== null) {
+    if (map !== null) {
       window.addEventListener("keydown", handleKeyDown);
     }
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("beforeunload", handleBeforeunload);

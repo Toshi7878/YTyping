@@ -43,7 +43,7 @@ store.sub(tableScrollIndexAtom, () => {
 export const useEditUtilsParams = () => {
   const readEditUtils = useAtomCallback(
     useCallback((get) => get(editUtilsParamsAtom), []),
-    { store }
+    { store },
   );
 
   const writeEditUtils = useAtomCallback(
@@ -51,7 +51,7 @@ export const useEditUtilsParams = () => {
       set(editUtilsParamsAtom, (prev) => {
         return { ...prev, ...newGameState };
       });
-    }, [])
+    }, []),
   );
 
   return { readEditUtils, writeEditUtils };
@@ -65,7 +65,7 @@ export const useTimeInput = () => {
       const input = get(timeInputAtom) as HTMLInputElement;
       return input.value;
     }, []),
-    { store }
+    { store },
   );
   const setTime = useAtomCallback(
     useCallback((get, set, newValue: number | string | null) => {
@@ -73,14 +73,14 @@ export const useTimeInput = () => {
 
       timeInput.value = newValue === null ? "" : String(newValue);
     }, []),
-    { store }
+    { store },
   );
 
   const writeTimeInput = useAtomCallback(
     useCallback((get, set, timeInput: HTMLInputElement) => {
       set(timeInputAtom, timeInput);
     }, []),
-    { store }
+    { store },
   );
 
   return { readTime, setTime, writeTimeInput };
@@ -91,14 +91,14 @@ const tbodyAtom = atom<HTMLElement | null>(null);
 export const useTbody = () => {
   const readTbody = useAtomCallback(
     useCallback((get) => get(tbodyAtom) as HTMLElement, []),
-    { store }
+    { store },
   );
 
   const writeTbody = useAtomCallback(
     useCallback((get, set, tbody: HTMLElement) => {
       set(tbodyAtom, tbody);
     }, []),
-    { store }
+    { store },
   );
 
   return { readTbody, writeTbody };
@@ -109,31 +109,31 @@ export const playerAtom = atom<YTPlayer | null>(null);
 export const usePlayer = () => {
   const readPlayer = useAtomCallback(
     useCallback((get) => get(playerAtom) as YTPlayer, []),
-    { store }
+    { store },
   );
 
   const writePlayer = useAtomCallback(
     useCallback((get, set, player: YTPlayer) => {
       set(playerAtom, player);
     }, []),
-    { store }
+    { store },
   );
 
   return { readPlayer, writePlayer };
 };
-export const timeRangeAtom = atom<HTMLInputElement | null>(null);
+const timeRangeAtom = atom<HTMLInputElement | null>(null);
 
 export const useTimeRange = () => {
   const readTimeRange = useAtomCallback(
     useCallback((get) => get(timeRangeAtom) as HTMLInputElement, []),
-    { store }
+    { store },
   );
 
   const writeTimeRange = useAtomCallback(
     useCallback((get, set, timeRange: HTMLInputElement) => {
       set(timeRangeAtom, timeRange);
     }, []),
-    { store }
+    { store },
   );
 
   return { readTimeRange, writeTimeRange };

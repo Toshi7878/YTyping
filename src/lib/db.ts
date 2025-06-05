@@ -2,12 +2,11 @@ import { EditorNewMapBackUpInfoData as NewMapBackUpData } from "@/app/edit/ts/ty
 import Dexie, { type EntityTable } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 
-// id付きのバックアップデータ型
-export interface MapBackupData extends NewMapBackUpData {
+interface MapBackupData extends NewMapBackUpData {
   id: string;
 }
 
-export class AppDB extends Dexie {
+class AppDB extends Dexie {
   mapBackup!: EntityTable<MapBackupData, "id">;
 
   constructor() {
