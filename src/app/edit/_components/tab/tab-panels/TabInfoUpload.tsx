@@ -7,6 +7,7 @@ import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultVal
 import { ThemeColors } from "@/types";
 import { useGeminiQueries } from "@/util/global-hooks/queries/gemini.queries";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import InfoInputForm from "./tab-info-child/InfoInputFrom";
@@ -30,7 +31,7 @@ const TabInfoUpload = () => {
     data: mapInfoData,
     isFetching,
     error,
-  } = useGeminiQueries.generateMapInfo({ videoId }, { enabled: !isBackUp && hasUploadPermission });
+  } = useQuery(useGeminiQueries().generateMapInfo({ videoId }, { enabled: !isBackUp && hasUploadPermission }));
   const chakraToast = useToast();
 
   const setGeminiTags = useSetGeminiTags();

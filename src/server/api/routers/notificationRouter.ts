@@ -2,7 +2,7 @@ import { z } from "@/validator/z";
 import { protectedProcedure } from "../trpc";
 
 export const notificationRouter = {
-  newNotificationCheck: protectedProcedure.query(async ({ ctx }) => {
+  hasNewNotification: protectedProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
 
     if (!user.id) {

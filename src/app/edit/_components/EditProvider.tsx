@@ -2,7 +2,8 @@
 import { useFetchBackupData } from "@/lib/db";
 import { useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
+import { useQueryClient } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
@@ -35,11 +36,12 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
 const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | undefined) => {
   const store = getEditAtomStore();
   const searchParams = useSearchParams();
-  const utils = clientApi.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const newVideoId = searchParams.get("new") || "";
 
   const videoId = mapInfo ? mapInfo.video_id : newVideoId;
-  const geminiQueryData = utils.gemini.generateMapInfo.getData({ videoId });
+  const geminiQueryData = queryClient.getQueryData(trpc.gemini.generateMapInfo.queryOptions({ videoId }).queryKey);
   const hydrationState: any[] = [];
 
   if (geminiQueryData) {
@@ -66,7 +68,7 @@ const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | unde
           type: "set",
           payload: mapInfo.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
         },
-      ]
+      ],
     );
   } else {
     hydrationState.push(
@@ -82,7 +84,7 @@ const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | unde
         },
       ],
       [videoIdAtom, newVideoId],
-      [mapTagsAtom, { type: "reset" }]
+      [mapTagsAtom, { type: "reset" }],
     );
   }
 

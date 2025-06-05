@@ -1,4 +1,5 @@
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
+import { useMutation } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
 import { useInputTextarea, usePlayer } from "../atom/refAtoms";
@@ -26,8 +27,10 @@ export const useInitializePlayScene = () => {
 
   const resetGameUtils = useResetGameUtilParams();
   const readStatus = useReadStatus();
-  const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
-  const { id: mapId } = useParams();
+  const trpc = useTRPC();
+  const incrementPlayCountStats = useMutation(trpc.userStats.incrementPlayCountStats.mutationOptions());
+
+  const { id: mapId } = useParams() as { id: string };
   const readScene = useReadScene();
 
   return () => {

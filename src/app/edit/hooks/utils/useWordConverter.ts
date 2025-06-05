@@ -7,12 +7,12 @@ import {
   NUM_LIST,
   STRICT_SYMBOL_LIST,
 } from "@/config/consts/charList";
-import { clientApi } from "@/trpc/client-api";
-import { useFetchCustomDic } from "@/util/global-hooks/fetch/fetchCustomDic";
 import { kanaToHira } from "@/util/global-hooks/kanaToHira";
+import { useMorphQueries } from "@/util/global-hooks/queries/morph.queries";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useReplaceReadingWithCustomDic } from "@/util/global-hooks/useMorphReplaceCustomDic";
 import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useReadWordConvertOption } from "../../atoms/storageAtoms";
 import { ConvertOptionsType } from "../../ts/type";
@@ -46,36 +46,31 @@ export const useWordConverter = () => {
       return transformSymbolBasedOnPreviousChar(filterAllowedCharacters(filterWordSymbol({ sentence: convertedWord })));
     } else {
       return transformSymbolBasedOnPreviousChar(
-        filterAllowedCharacters(filterWordSymbol({ sentence: formatedLyrics }))
+        filterAllowedCharacters(filterWordSymbol({ sentence: formatedLyrics })),
       );
     }
   };
 };
 
 const useFetchMorph = () => {
-  const utils = clientApi.useUtils();
   const setIsLoadWordConvert = useSetIsWordConverting();
   const toast = useCustomToast();
   const replaceReadingWithCustomDic = useReplaceReadingWithCustomDic();
   const { data: session } = useSession();
-  const fetchCustomDic = useFetchCustomDic();
+  const queryClient = useQueryClient();
+  const morphQueries = useMorphQueries();
 
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
     try {
-      const { customRegexDic } = await fetchCustomDic();
+      const { customRegexDic } = await queryClient.ensureQueryData(morphQueries.customDic());
 
       sentence = customRegexDic.reduce((acc, { surface, reading }) => {
         const regex = new RegExp(surface, "g");
         return acc.replace(regex, reading);
       }, sentence);
 
-      const convertedWord = await utils.morphConvert.tokenizeWordAws.ensureData(
-        { sentence },
-        {
-          staleTime: Infinity,
-        }
-      );
+      const convertedWord = await queryClient.ensureQueryData(morphQueries.tokenizeSentence({ sentence }));
 
       return (await replaceReadingWithCustomDic(convertedWord)).readings.join("");
     } catch {
@@ -114,7 +109,7 @@ export const useLyricsFormatUtils = () => {
     const allowedSymbols = [...MANDATORY_SYMBOL_LIST, ...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST];
 
     return text.replace(/[^\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{ASCII}\d\s]/gu, (char) =>
-      allowedSymbols.includes(char) ? char : ""
+      allowedSymbols.includes(char) ? char : "",
     );
   };
 

@@ -24,7 +24,7 @@ const MapList = () => {
   const setIsSearchingAtom = useSetIsSearching();
 
   const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
-    mapListQueries.getInfiniteMapList(session, searchParams),
+    mapListQueries.infiniteMapList(session, searchParams),
   );
 
   const { ref, inView } = useInView({

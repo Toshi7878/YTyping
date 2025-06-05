@@ -1,10 +1,11 @@
 "use client";
 
 import AutoUpdateTextFormField from "@/components/share-components/form/AutoUpdateTextFormField";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { useDebounce } from "@/util/global-hooks/useDebounce";
 import { userFingerChartUrlSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -31,7 +32,8 @@ export const MyKeyboardInput = ({ myKeyboard }: MyKeyboardInputProps) => {
   } = methods;
 
   const myKeyboardValue = watch("myKeyboard");
-  const updateMyKeyboard = clientApi.userProfileSetting.upsertMyKeyboard.useMutation();
+  const trpc = useTRPC();
+  const updateMyKeyboard = useMutation(trpc.userProfileSetting.upsertMyKeyboard.mutationOptions());
 
   useEffect(() => {
     if (isDirty) {

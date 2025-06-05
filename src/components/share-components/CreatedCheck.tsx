@@ -6,6 +6,7 @@ import MapCard from "@/components/map-card/MapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
 import { Box, Spinner } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 
 interface CreatedCheckProps {
   videoId: string;
@@ -13,7 +14,7 @@ interface CreatedCheckProps {
 }
 
 const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProps) => {
-  const { data, isPending } = useMapQueries.getCreatedMapsByVideoId({ videoId });
+  const { data, isPending } = useQuery(useMapQueries().createdMapsByVideoId({ videoId }));
 
   if (isPending) {
     return <Spinner size="sm" my={10} />;

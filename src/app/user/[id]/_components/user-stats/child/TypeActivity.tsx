@@ -3,16 +3,15 @@
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { clientApi } from "@/trpc/client-api";
+import { useUserStatsQueries } from "@/util/global-hooks/queries/userStats.queries";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import ActivityCalendar, { Activity } from "react-activity-calendar";
 
 const TypeActivity = () => {
   const { id: userId } = useParams() as { id: string };
-  const { data, isPending, isError } = clientApi.userStats.getUserActivity.useQuery({
-    userId: parseInt(userId),
-  });
+  const { data, isPending, isError } = useQuery(useUserStatsQueries().userActivity({ userId: Number(userId) }));
 
   // TODO:chakra ui 移行後 色指定を移行
   const themeColors = {

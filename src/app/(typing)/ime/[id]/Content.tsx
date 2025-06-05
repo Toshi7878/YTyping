@@ -3,6 +3,7 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { MapLine } from "@/types/map";
 import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
 import { Box, Button, Flex } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -29,7 +30,7 @@ function Content({ mapInfo }: ContentProps) {
   });
   const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
   const { id: mapId } = useParams() as { id: string };
-  const { data: mapData } = useMapQueries.getMap({ mapId });
+  const { data: mapData } = useQuery(useMapQueries().map({ mapId }));
   const setMap = useSetMap();
   const parseImeMap = useParseImeMap();
   const map = useMapState();

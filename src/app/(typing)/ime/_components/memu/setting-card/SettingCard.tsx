@@ -1,6 +1,7 @@
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { ThemeColors } from "@/types";
 import { Card, CardBody, Divider, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { Dispatch, useEffect, useRef } from "react";
 import {
@@ -22,10 +23,11 @@ interface SettingCardProps {
 const SettingCard = (props: SettingCardProps) => {
   const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
-  const updateImeTypingOptions = clientApi.userTypingOption.updateImeTypeOptions.useMutation();
+  const trpc = useTRPC();
+  const updateImeTypingOptions = useMutation(trpc.userTypingOption.updateImeTypeOptions.mutationOptions());
+  const queryClient = useQueryClient();
   const readIsImeTypeOptionsEdited = useReadIsImeTypeOptionsEdited();
   const readImeTypeOptions = useReadImeTypeOptions();
-  const utils = clientApi.useUtils();
   const parseImeMap = useParseImeMap();
   const setMap = useSetMap();
   const { id: mapId } = useParams() as { id: string };
@@ -44,7 +46,7 @@ const SettingCard = (props: SettingCardProps) => {
         const isOptionEdited = readIsImeTypeOptionsEdited();
         if (isOptionEdited) {
           updateImeTypingOptions.mutate({ ...readImeTypeOptions() });
-          const mapData = utils.map.getMap.getData({ mapId });
+          const mapData = queryClient.getQueryData(trpc.map.getMap.queryOptions({ mapId }).queryKey);
 
           if (mapData) {
             parseImeMap(mapData).then((map) => {

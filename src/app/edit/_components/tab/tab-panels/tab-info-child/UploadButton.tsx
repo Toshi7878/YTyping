@@ -4,10 +4,11 @@ import { Button, useTheme } from "@chakra-ui/react";
 import { useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { useCanUploadState, useReadMapInfo, useReadMapTags, useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { ThemeColors, UploadResult } from "@/types";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -24,11 +25,13 @@ const UploadButton = ({ state }: UploadButtonProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
-  const utils = clientApi.useUtils();
   const backupNewMap = useBackupNewMap();
   const readMapInfo = useReadMapInfo();
   const readTags = useReadMapTags();
   const readMap = useReadMap();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const { id: mapId } = useParams() as { id: string };
 
   useEffect(() => {
     if (state.status !== 0) {
@@ -37,7 +40,7 @@ const UploadButton = ({ state }: UploadButtonProps) => {
       const message = state.message;
 
       if (isSuccess) {
-        utils.map.getMap.invalidate();
+        queryClient.invalidateQueries(trpc.map.getMap.queryFilter({ mapId }));
         toast({ type: "success", title, message });
         setCanUpload(false);
         if (state.id) {

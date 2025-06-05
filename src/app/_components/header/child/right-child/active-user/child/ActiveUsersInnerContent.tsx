@@ -8,13 +8,14 @@ import { ThemeColors } from "@/types";
 import { useActiveUserQueries } from "@/util/global-hooks/queries/activeUser.queries";
 import { Link } from "@chakra-ui/next-js";
 import { Badge, Flex, Table, Tbody, Td, Text, Thead, Tr, useTheme } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 
 const ActiveUsersInnerContent = () => {
   const onlineUsers = useOnlineUsersAtom();
-  const { data: mapedActiveUserList, isPending } = useActiveUserQueries.getUserPlayingMaps(onlineUsers);
+  const activeUserMapQuery = useQuery(useActiveUserQueries().userPlayingMaps(onlineUsers));
   const theme: ThemeColors = useTheme();
 
-  if (isPending) {
+  if (activeUserMapQuery.isPending) {
     return;
   }
   return (
@@ -49,8 +50,8 @@ const ActiveUsersInnerContent = () => {
         </Tr>
       </Thead>
       <Tbody>
-        {mapedActiveUserList &&
-          mapedActiveUserList.map((user) => {
+        {activeUserMapQuery.data &&
+          activeUserMapQuery.data.map((user) => {
             const stateMsg =
               user.state === "askMe"
                 ? "Ask Me"

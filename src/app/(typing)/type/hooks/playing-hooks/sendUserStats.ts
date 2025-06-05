@@ -1,11 +1,14 @@
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
+import { useMutation } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTypingDetails, useUserStats } from "../../atoms/refAtoms";
 
 export function useSendUserStats() {
-  const { id: mapId } = useParams();
-  const incrementTypingStats = clientApi.userStats.incrementTypingStats.useMutation();
-  const incrementPlayCountStats = clientApi.userStats.incrementPlayCountStats.useMutation();
+  const { id: mapId } = useParams() as { id: string };
+  const trpc = useTRPC();
+
+  const incrementTypingStats = useMutation(trpc.userStats.incrementTypingStats.mutationOptions());
+  const incrementPlayCountStats = useMutation(trpc.userStats.incrementPlayCountStats.mutationOptions());
 
   const { readUserStats, resetUserStats } = useUserStats();
   const { readStatus } = useTypingDetails();

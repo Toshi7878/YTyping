@@ -4,6 +4,7 @@ import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
 import { ParseMap } from "@/util/parse-map/parseMap";
 import { useUserAgent } from "@/util/useUserAgent";
 import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -36,7 +37,7 @@ function Content({ mapInfo }: ContentProps) {
   const scene = useSceneState();
 
   const { id: mapId } = useParams() as { id: string };
-  const { data: mapData, isLoading } = useMapQueries.getMap({ mapId });
+  const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
 
   const isLoadingOverlay = useIsLoadingOverlayState();
   const disableKeyHandle = useDisableKey();

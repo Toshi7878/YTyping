@@ -1,6 +1,7 @@
-import { clientApi } from "@/trpc/client-api";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePlayer } from "../atoms/refAtoms";
 
+import { useResultQueries } from "@/util/global-hooks/queries/result.queries";
 import { useSetIsLoadingOverlay, useSetLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/stateAtoms";
 import { LineResultData, PlayMode } from "../ts/type";
 
@@ -15,14 +16,15 @@ export const useLoadResultPlay = ({
   const setLineResults = useSetLineResults();
   const { readPlayer } = usePlayer();
   const setPlayingInputModeState = useSetPlayingInputMode();
-  const utils = clientApi.useUtils();
   const setScene = useSetScene();
+  const queryClient = useQueryClient();
+  const resultQueries = useResultQueries();
 
   const loadResultPlay = async () => {
     try {
       if (resultId) {
         setIsLoadingOverlay(true);
-        const resultData: LineResultData[] = await utils.result.getUserResultData.ensureData({ resultId });
+        const resultData: LineResultData[] = await queryClient.ensureQueryData(resultQueries.result({ resultId }));
         if (startMode === "replay") {
           setPlayingInputModeState(resultData[0].status.mode);
         }

@@ -8,6 +8,7 @@ import { useInView } from "react-intersection-observer";
 
 import { useNotificationQueries } from "@/util/global-hooks/queries/notification.queries";
 import { Box, DrawerBody, DrawerCloseButton, DrawerHeader, Spinner, useTheme } from "@chakra-ui/react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 const NotifyDrawerInnerContent = () => {
@@ -15,8 +16,9 @@ const NotifyDrawerInnerContent = () => {
     threshold: 0.8,
   });
 
-  const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } =
-    useNotificationQueries.getInfiniteNotifications();
+  const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(
+    useNotificationQueries().infiniteNotifications(),
+  );
 
   useEffect(() => {
     if (inView && hasNextPage) {

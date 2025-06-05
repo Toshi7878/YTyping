@@ -2,10 +2,11 @@ import CheckBoxFormField from "@/components/share-components/form/CheckBoxFormFi
 import SelectFormField from "@/components/share-components/form/SelectFormField";
 import { useSetUserOptions, useUserOptionsState } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { userOptionSchema } from "@/validator/schema";
 import { Flex } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 // ユーザーオプションの型を定義
@@ -21,7 +22,8 @@ export const OptionSettingForm = () => {
       hide_user_stats: userOptions.hide_user_stats,
     },
   });
-  const sendUserOption = clientApi.userOption.update.useMutation();
+  const trpc = useTRPC();
+  const sendUserOption = useMutation(trpc.userOption.update.mutationOptions());
   const onSubmit = (data: UserOptionFormValues) => {
     setUserOptions(data);
     sendUserOption.mutate(data);

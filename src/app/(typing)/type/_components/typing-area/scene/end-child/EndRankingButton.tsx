@@ -2,7 +2,7 @@
 
 import { useSetTabIndex } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useResultData } from "@/app/(typing)/type/hooks/end/useResultData";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import {
   AlertDialog,
@@ -14,6 +14,7 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useRef } from "react";
 import AlertDialogButton from "./child/AlertDialogButton";
@@ -37,20 +38,23 @@ const EndUploadButton = ({
   const toast = useCustomToast();
 
   const resultData = useResultData();
-  const utils = clientApi.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
-  const sendResult = clientApi.result.sendResult.useMutation({
-    onSuccess: () => {
-      setIsSendResultBtnDisabled(true);
-      utils.ranking.getMapRanking.invalidate({ mapId: Number(mapId) });
-      onClose();
-      setTabIndex(1);
-      toast({ type: "success", title: "ランキング登録が完了しました" });
-    },
-    onError: () => {
-      setIsSendResultBtnDisabled(false);
-    },
-  });
+  const sendResult = useMutation(
+    trpc.result.sendResult.mutationOptions({
+      onSuccess: () => {
+        setIsSendResultBtnDisabled(true);
+        queryClient.invalidateQueries(trpc.ranking.getMapRanking.queryFilter({ mapId: Number(mapId) }));
+        onClose();
+        setTabIndex(1);
+        toast({ type: "success", title: "ランキング登録が完了しました" });
+      },
+      onError: () => {
+        setIsSendResultBtnDisabled(false);
+      },
+    }),
+  );
 
   const handleClick = async () => {
     if (!isScoreUpdated) {

@@ -10,7 +10,7 @@ type MapCardInfo = RouterOutPuts["map"]["getCreatedMapsByVideoId"][number];
 export type MapListResponse = { maps: MapCardInfo[] };
 
 export const mapListQueries = {
-  getInfiniteMapList: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
+  infiniteMapList: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
     const { queryKey, params } = getMapListSearchParams(searchParams);
 
     return infiniteQueryOptions({
@@ -24,7 +24,7 @@ export const mapListQueries = {
     });
   },
 
-  getMapListLength: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
+  mapListLength: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
     const { queryKey, params } = getMapListSearchParams(searchParams);
 
     return queryOptions({

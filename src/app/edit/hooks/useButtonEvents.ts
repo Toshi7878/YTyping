@@ -12,10 +12,11 @@ import {
 } from "../atoms/stateAtoms";
 
 import { useBackupNewMap } from "@/lib/db";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { MapLine } from "@/types/map";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
+import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
@@ -126,7 +127,8 @@ export const useLineUpdateButtonEvent = () => {
   const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
   const readUtilsState = useReadEditUtils();
-  const postFixWordLog = clientApi.morphConvert.post_fix_word_log.useMutation();
+  const trpc = useTRPC();
+  const postFixWordLog = useMutation(trpc.morphConvert.post_fix_word_log.mutationOptions());
 
   const timeValidate = useTimeValidate();
 

@@ -1,8 +1,12 @@
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 
-export const useMapRankingQueries = {
-  getMapRanking: ({ mapId }: { mapId: string | number }) =>
-    clientApi.ranking.getMapRanking.useQuery({
-      mapId: Number(mapId),
-    }),
+export const useMapRankingQueries = () => {
+  const trpc = useTRPC();
+
+  return {
+    mapRanking: ({ mapId }: { mapId: string | number }) =>
+      trpc.ranking.getMapRanking.queryOptions({
+        mapId: Number(mapId),
+      }),
+  };
 };

@@ -1,7 +1,10 @@
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { ActiveUserStatus } from "@/types/global-types";
 
-export const useActiveUserQueries = {
-  getUserPlayingMaps: (onlineUsers: ActiveUserStatus[]) =>
-    clientApi.activeUser.getUserPlayingMaps.useQuery(onlineUsers),
+export const useActiveUserQueries = () => {
+  const trpc = useTRPC();
+
+  return {
+    userPlayingMaps: (onlineUsers: ActiveUserStatus[]) => trpc.activeUser.getUserPlayingMaps.queryOptions(onlineUsers),
+  };
 };

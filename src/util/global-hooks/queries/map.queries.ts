@@ -1,15 +1,19 @@
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 
-export const useMapQueries = {
-  getMap: ({ mapId }: { mapId: string }) =>
-    clientApi.map.getMap.useQuery(
-      { mapId },
-      {
-        enabled: !!mapId,
-        staleTime: Infinity,
-        gcTime: Infinity,
-      },
-    ),
-  getCreatedMapsByVideoId: ({ videoId }: { videoId: string }) =>
-    clientApi.map.getCreatedMapsByVideoId.useQuery({ videoId }, { staleTime: Infinity }),
+export const useMapQueries = () => {
+  const trpc = useTRPC();
+
+  return {
+    map: ({ mapId }: { mapId: string }) =>
+      trpc.map.getMap.queryOptions(
+        { mapId },
+        {
+          enabled: !!mapId,
+          staleTime: Infinity,
+          gcTime: Infinity,
+        },
+      ),
+    createdMapsByVideoId: ({ videoId }: { videoId: string }) =>
+      trpc.map.getCreatedMapsByVideoId.queryOptions({ videoId }),
+  };
 };

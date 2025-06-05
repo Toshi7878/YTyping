@@ -3,12 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { ValidationUniqueState } from "@/types";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import { useDebounce } from "@/util/global-hooks/useDebounce";
 import { nameSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,6 +31,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   const router = useRouter();
   const showToast = useCustomToast();
   const pathname = usePathname();
+  const trpc = useTRPC();
 
   const nameForm = useForm<FormData>({
     mode: "onChange",
@@ -47,31 +49,35 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   } = nameForm;
 
   const nameValue = watch("newName");
-  const updateUserName = clientApi.userProfileSetting.updateName.useMutation({
-    onSuccess: async (result) => {
-      await update({ ...session?.user, name: result.id });
-      reset({ newName: result.id });
-      showToast({ type: "success", title: result.title });
+  const updateUserName = useMutation(
+    trpc.userProfileSetting.updateName.mutationOptions({
+      onSuccess: async (result) => {
+        await update({ ...session?.user, name: result.id });
+        reset({ newName: result.id });
+        showToast({ type: "success", title: result.title });
 
-      if (pathname === "/user/register") {
-        router.push("/");
-      }
-    },
-    onError: (error) => {
-      const title = "エラーが発生しました";
-      const message = error.message;
-      showToast({ type: "error", title, message });
-    },
-  });
+        if (pathname === "/user/register") {
+          router.push("/");
+        }
+      },
+      onError: (error) => {
+        const title = "エラーが発生しました";
+        const message = error.message;
+        showToast({ type: "error", title, message });
+      },
+    }),
+  );
 
-  const checkNameAvailability = clientApi.userProfileSetting.isNameAvailable.useMutation({
-    onSuccess: (isAvailable) => {
-      setValidationState(isAvailable ? "unique" : "duplicate");
-    },
-    onError: () => {
-      setValidationState("error");
-    },
-  });
+  const checkNameAvailability = useMutation(
+    trpc.userProfileSetting.isNameAvailable.mutationOptions({
+      onSuccess: (isAvailable) => {
+        setValidationState(isAvailable ? "unique" : "duplicate");
+      },
+      onError: () => {
+        setValidationState("error");
+      },
+    }),
+  );
 
   const onSubmit = (formData: FormData) => {
     updateUserName.mutate(formData);
@@ -148,7 +154,7 @@ const NameValidationDisplay = ({
         };
       case "duplicate":
         return {
-          icon: <XCircle className="h-4 w-4 text-destructive" />,
+          icon: <XCircle className="text-destructive h-4 w-4" />,
           message: "この名前は既に使用されています",
           variant: "error" as const,
         };
@@ -174,8 +180,8 @@ const NameValidationDisplay = ({
           displayContent.variant === "error"
             ? "text-destructive"
             : displayContent.variant === "success"
-            ? "text-green-600"
-            : "text-muted-foreground"
+              ? "text-green-600"
+              : "text-muted-foreground"
         }
       >
         {displayContent.message}

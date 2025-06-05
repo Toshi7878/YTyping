@@ -1,13 +1,14 @@
 "use client";
 
 import AutoUpdateTextFormField from "@/components/share-components/form/AutoUpdateTextFormField";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { ThemeColors } from "@/types";
 import { useDebounce } from "@/util/global-hooks/useDebounce";
 import { userFingerChartUrlSchema } from "@/validator/schema";
 import { Link } from "@chakra-ui/next-js";
 import { Flex, Stack, useTheme } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { FiExternalLink } from "react-icons/fi";
@@ -35,7 +36,8 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
   } = methods;
 
   const urlValue = watch("url");
-  const updateFingerChartUrl = clientApi.userProfileSetting.upsertFingerChartUrl.useMutation();
+  const trpc = useTRPC();
+  const updateFingerChartUrl = useMutation(trpc.userProfileSetting.upsertFingerChartUrl.mutationOptions());
 
   useEffect(() => {
     if (isDirty) {

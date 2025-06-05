@@ -5,6 +5,7 @@ import { Card, Table, TableContainer, Tbody, Th, Thead, Tr, useTheme } from "@ch
 import "@/app/edit/style/table.scss";
 import { ThemeColors } from "@/types";
 import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -19,7 +20,7 @@ export default function EditTable() {
   const { writeTbody } = useTbody();
 
   const { id: mapId } = useParams<{ id: string }>();
-  const { data: mapData, isLoading } = useMapQueries.getMap({ mapId });
+  const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
   const mapDispatch = useMapReducer();
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();

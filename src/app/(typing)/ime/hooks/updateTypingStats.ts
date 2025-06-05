@@ -1,8 +1,10 @@
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
+import { useMutation } from "@tanstack/react-query";
 import { useUserStats } from "../atom/refAtoms";
 
 export const useUpdateTypingStats = () => {
-  const updateTypingStats = clientApi.userStats.incrementImeStats.useMutation();
+  const trpc = useTRPC();
+  const updateTypingStats = useMutation(trpc.userStats.incrementImeStats.mutationOptions());
   const { readUserStats, resetUserStats } = useUserStats();
 
   return async () => {

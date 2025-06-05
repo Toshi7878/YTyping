@@ -1,6 +1,6 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/(typing)/type/atoms/stateAtoms";
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 import { ThemeColors } from "@/types";
 import { useCustomToast } from "@/util/global-hooks/useCustomToast";
 import {
@@ -23,6 +23,7 @@ import {
   useDisclosure,
   useTheme,
 } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import { Dispatch, useEffect, useRef } from "react";
 import UserLineCompletedRadioButton from "./child/UserLineCompletedRadioButton";
 import UserNextDisplayRadioButton from "./child/UserNextDisplayRadioButton";
@@ -40,7 +41,8 @@ interface SettingCardProps {
 const SettingCard = (props: SettingCardProps) => {
   const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
-  const updateTypingOptions = clientApi.userTypingOption.updateTypeOptions.useMutation();
+  const trpc = useTRPC();
+  const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
   const breakpoint = useBreakpointValue({ base: "base", md: "md" });
   const { isOpen, onOpen, onClose } = useDisclosure();
 

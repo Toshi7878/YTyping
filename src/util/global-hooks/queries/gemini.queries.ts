@@ -1,17 +1,21 @@
-import { clientApi } from "@/trpc/client-api";
+import { useTRPC } from "@/trpc/trpc";
 
 interface UseGenerateMapInfoQueryProps {
   videoId: string;
 }
 
-export const useGeminiQueries = {
-  generateMapInfo: ({ videoId }: UseGenerateMapInfoQueryProps, { enabled }: { enabled: boolean }) =>
-    clientApi.gemini.generateMapInfo.useQuery(
-      { videoId: videoId },
-      {
-        enabled,
-        staleTime: Infinity,
-        gcTime: Infinity,
-      },
-    ),
+export const useGeminiQueries = () => {
+  const trpc = useTRPC();
+
+  return {
+    generateMapInfo: ({ videoId }: UseGenerateMapInfoQueryProps, { enabled }: { enabled: boolean }) =>
+      trpc.gemini.generateMapInfo.queryOptions(
+        { videoId: videoId },
+        {
+          enabled,
+          staleTime: Infinity,
+          gcTime: Infinity,
+        },
+      ),
+  };
 };

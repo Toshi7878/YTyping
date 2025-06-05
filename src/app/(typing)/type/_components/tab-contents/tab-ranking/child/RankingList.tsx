@@ -2,6 +2,7 @@ import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtom
 import { useSceneState, useSetTypingStatusRank } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useMapRankingQueries } from "@/util/global-hooks/queries/mapRanking.queries";
 import { Box, Spinner } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,9 +14,9 @@ const RankingList = () => {
   const [showMenu, setShowMenu] = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const scene = useSceneState();
-  const { id: mapId } = useParams();
+  const { id: mapId } = useParams() as { id: string };
 
-  const { data, error, isPending } = useMapRankingQueries.getMapRanking({ mapId: mapId as string });
+  const { data, error, isPending } = useQuery(useMapRankingQueries().mapRanking({ mapId }));
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const setTypingStatusRank = useSetTypingStatusRank();
 

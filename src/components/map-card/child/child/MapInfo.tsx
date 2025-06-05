@@ -9,7 +9,7 @@ import MapBadges from "./MapBadgesLayout";
 import MapCreateUser from "./MapCreateUser";
 
 interface MapInfoProps {
-  map: RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
+  map: RouterOutPuts["map"]["getCreatedMapsByVideoId"][number];
 }
 function MapInfo({ map }: MapInfoProps) {
   const theme: ThemeColors = useTheme();
