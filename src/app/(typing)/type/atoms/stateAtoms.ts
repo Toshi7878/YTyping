@@ -1,5 +1,5 @@
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ParseMap } from "@/util/parse-map/parseMap";
+import { ParseMap } from "@/utils/parse-map/parseMap";
 import { $Enums } from "@prisma/client";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
@@ -42,7 +42,7 @@ const writeTypingOptionsAtom = atom(
   (get, set, newUserTypingOptions: Partial<ExtractAtomValue<typeof userTypingOptionsAtom>>) => {
     set(userTypingOptionsAtom, (prev) => ({ ...prev, ...newUserTypingOptions }));
     set(gameUtilityReferenceParamsAtom, (prev) => ({ ...prev, isOptionEdited: true }));
-  }
+  },
 );
 
 export const useUserTypingOptionsState = () => useAtomValue(userTypingOptionsAtom, { store });
@@ -53,7 +53,7 @@ export const useSetUserTypingOptionsState = () => {
       set(userTypingOptionsAtom, RESET);
       set(gameUtilityReferenceParamsAtom, (prev) => ({ ...prev, isOptionEdited: true }));
     }, []),
-    { store }
+    { store },
   );
 
   return { setUserTypingOptions, resetUserTypingOptions };
@@ -61,7 +61,7 @@ export const useSetUserTypingOptionsState = () => {
 export const useUserTypingOptionsStateRef = () => {
   return useAtomCallback(
     useCallback((get) => get(userTypingOptionsAtom), []),
-    { store }
+    { store },
   );
 };
 export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>();
@@ -69,7 +69,7 @@ export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>();
 export const useMapInfoRef = () => {
   const readMapInfo = useAtomCallback(
     useCallback((get) => get(mapInfoAtom) as NonNullable<RouterOutPuts["map"]["getMapInfo"]>, []),
-    { store }
+    { store },
   );
 
   return { readMapInfo };
@@ -85,7 +85,7 @@ export const useSetMap = () => useSetAtom(mapAtom, { store });
 export const useReadMapState = () => {
   return useAtomCallback(
     useCallback((get) => get(mapAtom) as ParseMap, []),
-    { store }
+    { store },
   );
 };
 
@@ -148,7 +148,7 @@ const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { new
 export const useReadGameUtilParams = () => {
   return useAtomCallback(
     useCallback((get) => get(gameStateUtilParamsAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -210,7 +210,7 @@ export const useSetLineKpm = () => useSetAtom(lineKpmAtom, { store });
 export const useReadLineKpm = () => {
   return useAtomCallback(
     useCallback((get) => get(lineKpmAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -219,7 +219,7 @@ export const useSetCombo = () => useSetAtom(comboAtom, { store });
 export const useReadCombo = () => {
   return useAtomCallback(
     useCallback((get) => get(comboAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -228,7 +228,7 @@ export const useSetCurrentTime = () => useSetAtom(currentTimeAtom, { store });
 export const useReadCurrentTime = () => {
   return useAtomCallback(
     useCallback((get) => get(currentTimeAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -239,7 +239,7 @@ export const useSetLineResults = () => useSetAtom(lineResultListAtom, { store })
 export const useReadLineResults = () => {
   return useAtomCallback(
     useCallback((get) => get(lineResultListAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -299,7 +299,7 @@ export const useSetLineWord = () => useSetAtom(lineWordAtom, { store });
 export const useReadLineWord = () => {
   return useAtomCallback(
     useCallback((get) => get(lineWordAtom), []),
-    { store }
+    { store },
   );
 };
 
@@ -328,7 +328,7 @@ const writeCurrentLineAtom = atom(
       lineProgress.value = 0;
       lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
     }
-  }
+  },
 );
 
 export const useSetCurrentLine = () => {
@@ -394,6 +394,6 @@ export const useSetTypingStatus = () => {
 export const useReadTypingStatus = () => {
   return useAtomCallback(
     useCallback((get) => get(typingStatusAtom), []),
-    { store }
+    { store },
   );
 };

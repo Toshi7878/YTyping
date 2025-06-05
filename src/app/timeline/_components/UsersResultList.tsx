@@ -1,7 +1,9 @@
 "use client";
+import { resultListQueries } from "@/utils/queries/resultList.queries";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { useUsersResultInfiniteQuery } from "../../../util/global-hooks/queries/useUsersResultInfiniteQuery";
 import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
 import ResultCard from "./result-card/ResultCard";
 import ResultCardLayout from "./result-card/ResultCardLayout";
@@ -18,7 +20,11 @@ function LoadingResultCard({ cardLength }: { cardLength: number }) {
 }
 
 function UsersResultList() {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useUsersResultInfiniteQuery();
+  const searchParams = useSearchParams();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
+    resultListQueries.infiniteResultList(searchParams),
+  );
+
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
 

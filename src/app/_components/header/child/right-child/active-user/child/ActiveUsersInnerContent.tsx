@@ -5,7 +5,7 @@ import NotificationMapCardRightInfo from "@/components/map-card-notification/chi
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
 import { ThemeColors } from "@/types";
-import { useActiveUserQueries } from "@/util/global-hooks/queries/activeUser.queries";
+import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
 import { Link } from "@chakra-ui/next-js";
 import { Badge, Flex, Table, Tbody, Td, Text, Thead, Tr, useTheme } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";

@@ -2,7 +2,7 @@ import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/shared/a
 import { PARAM_NAME } from "@/app/(home)/shared/const";
 import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
 import { cn } from "@/lib/utils";
-import { mapListQueries } from "@/util/global-hooks/queries/mapList.queries";
+import { mapListQueries } from "@/utils/queries/mapList.queries";
 import { Icon } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";

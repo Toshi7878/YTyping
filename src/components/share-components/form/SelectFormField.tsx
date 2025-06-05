@@ -1,4 +1,4 @@
-import { useDebounce } from "@/util/global-hooks/useDebounce";
+import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 import { FieldValues, SubmitHandler, useFormContext } from "react-hook-form";
 

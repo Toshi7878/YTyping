@@ -1,7 +1,7 @@
 import { usePlayer } from "@/app/(typing)/type/atoms/refAtoms";
 import { useMapState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { CARD_BODY_MIN_HEIGHT } from "@/app/(typing)/type/ts/const/consts";
-import { useWindowFocus } from "@/util/global-hooks/windowFocus";
+import { useWindowFocus } from "@/utils/global-hooks/windowFocus";
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import "../../../style/fKey.scss";

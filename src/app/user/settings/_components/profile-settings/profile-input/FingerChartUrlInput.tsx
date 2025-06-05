@@ -3,7 +3,7 @@
 import AutoUpdateTextFormField from "@/components/share-components/form/AutoUpdateTextFormField";
 import { useTRPC } from "@/trpc/trpc";
 import { ThemeColors } from "@/types";
-import { useDebounce } from "@/util/global-hooks/useDebounce";
+import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import { userFingerChartUrlSchema } from "@/validator/schema";
 import { Link } from "@chakra-ui/next-js";
 import { Flex, Stack, useTheme } from "@chakra-ui/react";

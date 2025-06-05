@@ -3,7 +3,7 @@ import { usePlaySpeedState } from "@/app/(typing)/type/atoms/speedReducerAtoms";
 import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/(typing)/type/ts/type";
 import { ThemeColors } from "@/types";
-import { CHAR_POINT, ParseMap } from "@/util/parse-map/parseMap";
+import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
 import { Card, CardBody, CardFooter, CardHeader, Divider, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
 import ResultCardBody from "./child/ResultCardBody";

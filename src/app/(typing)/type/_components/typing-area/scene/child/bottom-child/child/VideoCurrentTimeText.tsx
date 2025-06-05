@@ -1,5 +1,5 @@
 import { useCurrentTimeState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { formatTime } from "@/util/formatTime";
+import { formatTime } from "@/utils/formatTime";
 import { Text } from "@chakra-ui/react";
 
 const VideoCurrentTimeText = () => {

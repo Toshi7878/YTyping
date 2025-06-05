@@ -1,7 +1,7 @@
 "use client";
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import VolumeRange from "@/components/share-components/VolumeRange";
-import { useUserAgent } from "@/util/useUserAgent";
+import { useUserAgent } from "@/utils/useUserAgent";
 import { HStack, VStack } from "@chakra-ui/react";
 import AllTimeAdjust from "./settings-child/AllTimeAdjust";
 import ConvertOptionButtons from "./settings-child/ConvertOptionButtons";

@@ -2,7 +2,7 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
 import MapBadges from "./MapBadgesLayout";

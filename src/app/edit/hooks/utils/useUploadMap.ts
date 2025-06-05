@@ -1,4 +1,4 @@
-import { ParseMap } from "@/util/parse-map/parseMap";
+import { ParseMap } from "@/utils/parse-map/parseMap";
 
 import { UploadResult } from "@/types";
 import { $Enums } from "@prisma/client";
@@ -62,7 +62,7 @@ export function useUploadMap() {
       sendMapDifficulty,
       map,
       isUpdateUpdatedAt,
-      Array.isArray(mapId) ? mapId[0] : mapId || "new"
+      Array.isArray(mapId) ? mapId[0] : mapId || "new",
     );
 
     return result;

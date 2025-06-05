@@ -1,7 +1,7 @@
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { LocalLikeState, ThemeColors } from "@/types";
-import { useLocalLikeServerActions } from "@/util/global-hooks/useLocalLikeServerActions";
+import { useLocalLikeServerActions } from "@/utils/global-hooks/useLocalLikeServerActions";
 import { Box, Flex, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import React, { memo, useActionState, useRef } from "react";

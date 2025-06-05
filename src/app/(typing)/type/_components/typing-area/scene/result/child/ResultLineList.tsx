@@ -10,7 +10,7 @@ import { LineResultData } from "@/app/(typing)/type/ts/type";
 
 import { useResultCards } from "@/app/(typing)/type/atoms/refAtoms";
 import { useMoveLine } from "@/app/(typing)/type/hooks/playing-hooks/moveLine";
-import { ParseMap } from "@/util/parse-map/parseMap";
+import { ParseMap } from "@/utils/parse-map/parseMap";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import ResultCard from "./ResultCard";
@@ -39,7 +39,7 @@ function ResultLineList() {
       setLineSelectIndex(lineIndex);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   const endCardClick = useCallback((lineIndex: number) => {

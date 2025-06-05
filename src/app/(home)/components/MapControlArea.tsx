@@ -2,7 +2,7 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
 import { cn } from "@/lib/utils";
-import { useUserAgent } from "@/util/useUserAgent";
+import { useUserAgent } from "@/utils/useUserAgent";
 import { useSession } from "next-auth/react";
 import FilterContents from "./search/FilterContents";
 import SearchInputs from "./search/Search";

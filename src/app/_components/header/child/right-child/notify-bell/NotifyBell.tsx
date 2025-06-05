@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useTRPC } from "@/trpc/trpc";
-import { useNotificationQueries } from "@/util/global-hooks/queries/notification.queries";
+import { useNotificationQueries } from "@/utils/queries/notification.queries";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot } from "lucide-react";
 import { useCallback } from "react";

@@ -3,7 +3,7 @@
 import { useSetTabIndex } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useResultData } from "@/app/(typing)/type/hooks/end/useResultData";
 import { useTRPC } from "@/trpc/trpc";
-import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import {
   AlertDialog,
   AlertDialogBody,

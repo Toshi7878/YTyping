@@ -1,5 +1,5 @@
 import { useVolumeStateRef } from "@/lib/global-atoms/globalAtoms";
-import { useUserAgent } from "@/util/useUserAgent";
+import { useUserAgent } from "@/utils/useUserAgent";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";

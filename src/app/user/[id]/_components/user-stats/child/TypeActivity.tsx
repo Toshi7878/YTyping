@@ -3,7 +3,7 @@
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useUserStatsQueries } from "@/util/global-hooks/queries/userStats.queries";
+import { useUserStatsQueries } from "@/utils/queries/userStats.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";

@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Separator } from "@/components/ui/separator";
 import { H2 } from "@/components/ui/typography";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import { useSession } from "next-auth/react";
@@ -38,7 +38,7 @@ const UserStatsCard = ({ userStats, userOptions }: UserStatsProps) => {
   return (
     <Card>
       <CardHeader className="mx-8 text-center">
-        <CardTitle className="text-xl mb-2">タイピング統計情報</CardTitle>
+        <CardTitle className="mb-2 text-xl">タイピング統計情報</CardTitle>
         <Badge variant="secondary" className="text-sm">
           統計情報はやり直し時・ページ離脱時・リザルト時に更新されます
         </Badge>
@@ -93,7 +93,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
       value: (
         <div className="flex items-center gap-2">
           <span>{userStats.created_at.toLocaleDateString()}</span>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-muted-foreground text-sm">
             ({formatDistanceToNowStrict(userStats.created_at, { addSuffix: true, locale: ja })})
           </span>
         </div>
@@ -108,7 +108,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
     <div className="flex flex-col gap-4">
       {isMyStatsWithHide && <MyHideOptionInfo />}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {generalStatsData.map((item, index) => (
           <StatsCard key={index} label={item.label} value={item.value} />
         ))}
@@ -120,7 +120,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
 
       <TypeActivity />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {keystrokeStatsData.map((item, index) => (
           <StatsCard key={index} label={item.label} value={item.value} />
         ))}
@@ -131,7 +131,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
 
 const StatsCard = ({ label, value }: { label: string; value: string | number | React.ReactNode }) => {
   return (
-    <Card className="pl-8 gap-1 py-4 border rounded-sm bg-background">
+    <Card className="bg-background gap-1 rounded-sm border py-4 pl-8">
       <CardTitle className="text-lg font-normal">{label}</CardTitle>
       <div className="text-2xl font-bold">{value}</div>
     </Card>
@@ -142,7 +142,7 @@ const HideUserStats = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) =>
   return (
     <div>
       {isMyStatsWithHide && <MyHideOptionInfo />}
-      <div className="flex justify-center flex-col items-center gap-4">
+      <div className="flex flex-col items-center justify-center gap-4">
         <GoLock size={30} />
         <p>タイピング統計情報は非公開にしています</p>
       </div>

@@ -1,5 +1,5 @@
 import { MapLine } from "@/types/map";
-import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
+import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithReducer, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
@@ -50,7 +50,7 @@ export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(init, (prev:
       const normalizedWord = normalizeSimilarSymbol(word);
 
       return [...prev, { ...action.payload, lyrics: normalizedLyrics, word: normalizedWord }].sort(
-        (a, b) => parseFloat(a.time) - parseFloat(b.time)
+        (a, b) => parseFloat(a.time) - parseFloat(b.time),
       );
     }
 
@@ -85,6 +85,6 @@ export const useMapReducer = () => useSetAtom(mapReducerAtom, { store });
 export const useReadMap = () => {
   return useAtomCallback(
     useCallback((get) => get(mapReducerAtom), []),
-    { store }
+    { store },
   );
 };

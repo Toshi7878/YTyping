@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useReadScene } from "../atom/stateAtoms";
 
-import { useWindowFocus } from "@/util/global-hooks/windowFocus";
+import { useWindowFocus } from "@/utils/global-hooks/windowFocus";
 import { useTimerRegistration } from "../hooks/timer";
 import {
   useYTEndEvent,
@@ -68,7 +68,7 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   // YouTubeコンポーネントのエラーハンドリングを追加
@@ -105,7 +105,7 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId, className, style]
+    [videoId, className, style],
   );
 
   return memoizedYouTube;

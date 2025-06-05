@@ -3,7 +3,7 @@ import { useMapState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { InputMode } from "@/app/(typing)/type/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { ParseMap } from "@/util/parse-map/parseMap";
+import { ParseMap } from "@/utils/parse-map/parseMap";
 import { Box, Text, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
 

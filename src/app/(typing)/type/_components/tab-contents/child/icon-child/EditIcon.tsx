@@ -1,7 +1,7 @@
 import { useMapInfoRef } from "@/app/(typing)/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";

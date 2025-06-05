@@ -1,4 +1,4 @@
-import { kanaToHira } from "@/util/global-hooks/kanaToHira";
+import { kanaToHira } from "@/utils/kanaToHira";
 import { useUserStats } from "../atom/refAtoms";
 import {
   useReadGameUtilParams,

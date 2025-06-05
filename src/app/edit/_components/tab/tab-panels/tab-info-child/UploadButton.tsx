@@ -6,7 +6,7 @@ import { useCanUploadState, useReadMapInfo, useReadMapTags, useSetCanUpload } fr
 import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
 import { useTRPC } from "@/trpc/trpc";
 import { ThemeColors, UploadResult } from "@/types";
-import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";

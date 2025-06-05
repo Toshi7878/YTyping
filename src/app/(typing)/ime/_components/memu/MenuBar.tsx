@@ -1,5 +1,5 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
-import { useUserAgent } from "@/util/useUserAgent";
+import { useUserAgent } from "@/utils/useUserAgent";
 import { Box, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useState } from "react";

@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
-import { useUserAgent } from "@/util/useUserAgent";
+import { useUserAgent } from "@/utils/useUserAgent";
 import { Menu } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";

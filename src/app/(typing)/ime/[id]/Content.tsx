@@ -1,7 +1,7 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { MapLine } from "@/types/map";
-import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
+import { useMapQueries } from "@/utils/queries/map.queries";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";

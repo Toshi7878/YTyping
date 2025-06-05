@@ -7,11 +7,11 @@ import {
   NUM_LIST,
   STRICT_SYMBOL_LIST,
 } from "@/config/consts/charList";
-import { kanaToHira } from "@/util/global-hooks/kanaToHira";
-import { useMorphQueries } from "@/util/global-hooks/queries/morph.queries";
-import { useCustomToast } from "@/util/global-hooks/useCustomToast";
-import { useReplaceReadingWithCustomDic } from "@/util/global-hooks/useMorphReplaceCustomDic";
-import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
+import { kanaToHira } from "@/utils/kanaToHira";
+import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
+import { useMorphQueries } from "@/utils/queries/morph.queries";
+import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useReadWordConvertOption } from "../../atoms/storageAtoms";

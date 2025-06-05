@@ -1,4 +1,4 @@
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 
 interface MapLinkProps {

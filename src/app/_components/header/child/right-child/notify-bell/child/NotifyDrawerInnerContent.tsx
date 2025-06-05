@@ -6,7 +6,7 @@ import DateDistanceText from "@/components/share-components/text/DateDistanceTex
 import { ThemeColors } from "@/types";
 import { useInView } from "react-intersection-observer";
 
-import { useNotificationQueries } from "@/util/global-hooks/queries/notification.queries";
+import { useNotificationQueries } from "@/utils/queries/notification.queries";
 import { Box, DrawerBody, DrawerCloseButton, DrawerHeader, Spinner, useTheme } from "@chakra-ui/react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";

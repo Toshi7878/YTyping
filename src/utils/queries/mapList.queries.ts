@@ -30,6 +30,7 @@ export const mapListQueries = {
     return queryOptions({
       queryKey: [...queryKey, "length"],
       queryFn: () => fetchMapListLength({ session, params }),
+      refetchOnWindowFocus: false,
       staleTime: Infinity,
       gcTime: Infinity,
     });

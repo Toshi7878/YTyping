@@ -1,7 +1,7 @@
 import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { formatTime } from "@/util/formatTime";
+import { formatTime } from "@/utils/formatTime";
 import { Flex, HStack, Text } from "@chakra-ui/react";
 import MapBadge from "./MapBadge";
 

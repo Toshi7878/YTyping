@@ -1,6 +1,6 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
-import { useUserAgent } from "@/util/useUserAgent";
+import { useUserAgent } from "@/utils/useUserAgent";
 import SearchInputs from "./child/SearchInputs";
 import SearchModal from "./child/SearchModal";
 
@@ -9,7 +9,7 @@ const SearchContent = () => {
   const { isMobile } = useUserAgent();
 
   return (
-    <section className="w-full flex items-center mb-4">
+    <section className="mb-4 flex w-full items-center">
       <div className="w-full">
         <div className="mb-3">
           <SearchInputs />

@@ -2,7 +2,7 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { ThemeColors } from "@/types";
-import { useLocalClapServerActions } from "@/util/global-hooks/useLocalClapServerActions";
+import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
 import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useActionState } from "react";

@@ -1,6 +1,6 @@
 import { TypeChunk } from "@/app/(typing)/type/ts/type";
 import { ALPHABET_LIST, NUM_LIST } from "@/config/consts/charList";
-import { KANA_TO_ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "@/util/parse-map/romaMap";
+import { KANA_TO_ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "@/utils/parse-map/romaMap";
 import { CHAR_POINT } from "./parseMap";
 
 // prettier-ignore

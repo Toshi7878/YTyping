@@ -1,5 +1,5 @@
 import { useSceneGroupState, useYTStartedState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import { useParams } from "next/navigation";

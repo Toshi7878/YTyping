@@ -1,4 +1,4 @@
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -9,7 +9,7 @@ function SiteLogo() {
     <Link
       href={pathname === "/user/register" ? "/user/register" : "/"}
       onClick={handleLinkClick}
-      className="px-2 user-select-none text-2xl font-bold relative top-[-2.5px] text-foreground !hover:bg-secondary/30 !hover:text-header-foreground"
+      className="user-select-none text-foreground !hover:bg-secondary/30 !hover:text-header-foreground relative top-[-2.5px] px-2 text-2xl font-bold"
     >
       <span>Y</span>
       <span>Typing</span>

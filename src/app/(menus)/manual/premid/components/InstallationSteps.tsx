@@ -1,6 +1,6 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
-import { useUserAgent } from "@/util/useUserAgent";
+import { useUserAgent } from "@/utils/useUserAgent";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { PreMidLinkImage, PreMidPresenceImages } from "./PreMidImages";

@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import MapCard from "../../../components/map-card/MapCard";
-import { MapListResponse, mapListQueries } from "../../../util/global-hooks/queries/mapList.queries";
+import { MapListResponse, mapListQueries } from "../../../utils/queries/mapList.queries";
 import { useIsSearchingState, useSetIsSearching } from "../shared/atoms";
 import { PARAM_NAME } from "../shared/const";
 

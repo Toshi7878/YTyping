@@ -1,7 +1,7 @@
 import { usePlayer } from "@/app/(typing)/type/atoms/refAtoms";
 import { useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
 import VolumeRange from "@/components/share-components/VolumeRange";
-import { useUserAgent } from "@/util/useUserAgent";
+import { useUserAgent } from "@/utils/useUserAgent";
 import { CheckboxGroup, Flex, Text } from "@chakra-ui/react";
 import CheckBoxOption from "./child/CheckBoxOption";
 

@@ -1,6 +1,6 @@
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useMorphQueries } from "@/util/global-hooks/queries/morph.queries";
-import { useReplaceReadingWithCustomDic } from "@/util/global-hooks/useMorphReplaceCustomDic";
+import { useMorphQueries } from "@/utils/queries/morph.queries";
+import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const useGenerateTokenizedWords = () => {

@@ -2,7 +2,7 @@ import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtom
 import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useTRPC } from "@/trpc/trpc";
 import { ThemeColors } from "@/types";
-import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import {
   AlertDialog,
   AlertDialogBody,

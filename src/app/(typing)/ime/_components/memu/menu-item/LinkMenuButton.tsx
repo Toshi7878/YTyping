@@ -1,4 +1,4 @@
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { Image, ImageProps, Link, LinkProps } from "@chakra-ui/next-js";
 import { Button } from "@chakra-ui/react";
 import { ICON_SIZE } from "../../../ts/const";

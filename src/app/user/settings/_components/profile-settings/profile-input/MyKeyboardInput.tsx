@@ -2,7 +2,7 @@
 
 import AutoUpdateTextFormField from "@/components/share-components/form/AutoUpdateTextFormField";
 import { useTRPC } from "@/trpc/trpc";
-import { useDebounce } from "@/util/global-hooks/useDebounce";
+import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import { userFingerChartUrlSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";

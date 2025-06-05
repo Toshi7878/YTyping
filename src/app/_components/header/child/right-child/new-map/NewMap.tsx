@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
-import { extractYouTubeVideoId } from "../../../../../../util/global-hooks/extractYTId";
+import { extractYouTubeVideoId } from "../../../../../../utils/extractYTId";
 
 export default function NewMap() {
   return (

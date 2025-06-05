@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { useCallback } from "react";
-import { useWindowFocus } from "../../../../../util/global-hooks/windowFocus";
+import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
 import { usePlayer, useYTStatus } from "../../atoms/refAtoms";
 import { useReadGameUtilParams } from "../../atoms/stateAtoms";
 
@@ -23,7 +23,7 @@ const MobileCover = () => {
       windowFocus();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   return (

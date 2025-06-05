@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useWindowFocus } from "../../../../../util/global-hooks/windowFocus";
+import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
 import { useReadGameUtilParams } from "../../atoms/stateAtoms";
 import { useTimerRegistration } from "../../hooks/playing-hooks/timer-hooks/timer";
 import {
@@ -62,7 +62,7 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   // YouTubeコンポーネントのエラーハンドリングを追加
@@ -73,7 +73,7 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
   const memoizedYouTube = useMemo(
     () => (
       <YouTube
-        className={`${className} aspect-video mt-2 select-none`}
+        className={`${className} mt-2 aspect-video select-none`}
         id="yt_player"
         videoId={videoId}
         opts={{
@@ -98,7 +98,7 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId]
+    [videoId],
   );
 
   return (

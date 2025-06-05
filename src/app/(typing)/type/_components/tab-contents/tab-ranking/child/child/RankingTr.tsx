@@ -11,7 +11,7 @@ import ResultToolTipText from "@/components/share-components/text/ResultToolTipT
 import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
-import { useLocalClapServerActions } from "@/util/global-hooks/useLocalClapServerActions";
+import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
 import { Td, Tr, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { Dispatch, useEffect } from "react";

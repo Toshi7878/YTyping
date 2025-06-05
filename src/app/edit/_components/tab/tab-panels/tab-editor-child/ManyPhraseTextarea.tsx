@@ -3,8 +3,8 @@ import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
 import { useFilterWordSymbol, useLyricsFormatUtils } from "@/app/edit/hooks/utils/useWordConverter";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { useCustomToast } from "@/util/global-hooks/useCustomToast";
-import { useDebounce } from "@/util/global-hooks/useDebounce";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
+import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -104,7 +104,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
         sentence: formatSimilarChar(manyPhrase),
         filterType: "lyricsWithFilterSymbol",
         replaceChar: " ",
-      })
+      }),
     )
       .replace(/ {2,}/g, " ")
       .split("\n")

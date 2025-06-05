@@ -2,7 +2,7 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Flex, FlexProps, Text, useTheme } from "@chakra-ui/react";
 

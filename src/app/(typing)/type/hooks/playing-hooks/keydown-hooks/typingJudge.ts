@@ -1,5 +1,5 @@
 import { useReadGameUtilParams, useReadLineWord } from "@/app/(typing)/type/atoms/stateAtoms";
-import { CHAR_POINT } from "../../../../../../util/parse-map/parseMap";
+import { CHAR_POINT } from "../../../../../../utils/parse-map/parseMap";
 import { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../../ts/type";
 import { CODE_TO_KANA, KEY_TO_KANA } from "./kanaKeyMap";
 
@@ -208,7 +208,7 @@ export class RomaInput {
     const nextRomaPattern: string[] = newLineWord.nextChar["r"];
     const kana = lineWord.nextChar["k"];
     const isSuccess = nextRomaPattern.some(
-      (pattern) => pattern[0] && pattern[0].toLowerCase() === typingKeys["keys"][0]
+      (pattern) => pattern[0] && pattern[0].toLowerCase() === typingKeys["keys"][0],
     );
 
     if (!isSuccess) {
@@ -433,7 +433,7 @@ export const useInputJudge = () => {
         event.key.toLowerCase(),
         event.key.toLowerCase().replace(event.key.toLowerCase(), function (s) {
           return String.fromCharCode(s.charCodeAt(0) + 0xfee0);
-        })
+        }),
       );
     }
 

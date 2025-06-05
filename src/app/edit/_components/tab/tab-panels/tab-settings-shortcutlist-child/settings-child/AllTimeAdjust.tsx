@@ -5,7 +5,7 @@ import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import useTimeValidate from "@/app/edit/hooks/utils/useTimeValidate";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { Box, Button, FormLabel, HStack, Input, useTheme } from "@chakra-ui/react";
 import { useState } from "react";
 

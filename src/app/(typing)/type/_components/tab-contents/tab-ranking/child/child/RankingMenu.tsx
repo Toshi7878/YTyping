@@ -4,7 +4,7 @@ import { useLoadResultPlay } from "@/app/(typing)/type/hooks/loadResultPlay";
 import { useRetry } from "@/app/(typing)/type/hooks/playing-hooks/retry";
 import { useSoundEffect } from "@/app/(typing)/type/hooks/playing-hooks/soundEffect";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
-import { useCustomToast } from "@/util/global-hooks/useCustomToast";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { Button, Stack, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { Dispatch } from "react";

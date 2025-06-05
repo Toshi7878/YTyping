@@ -4,7 +4,7 @@ import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapCard from "@/components/map-card/MapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
+import { useMapQueries } from "@/utils/queries/map.queries";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 

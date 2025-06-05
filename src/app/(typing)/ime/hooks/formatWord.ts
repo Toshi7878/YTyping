@@ -1,4 +1,4 @@
-import { normalizeSimilarSymbol } from "@/util/parse-map/normalizeSimilarSymbol";
+import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
 import { useReadImeTypeOptions } from "../atom/stateAtoms";
 
 const REGEX_LIST = ["^-ぁ-んゔ", "ァ-ンヴ", "一-龥", "\\w", "\\d", " ", "々%&@&=+ー～~\u00C0-\u00FF"];
@@ -35,7 +35,7 @@ export const useFormatWord = () => {
     if (enable_add_symbol) {
       text = text.replace(
         new RegExp(`[${LYRICS_FORMAT_REGEX.concat([add_symbol_list.replace(/./g, "\\$&")]).join("")}]`, "g"),
-        ""
+        "",
       ); //regexListに含まれていない文字を削除
     } else {
       text = text.replace(new RegExp(`[${LYRICS_FORMAT_REGEX.join("")}]`, "g"), ""); //regexListに含まれていない文字を削除

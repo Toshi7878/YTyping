@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { usePlayer } from "../atoms/refAtoms";
 
-import { useResultQueries } from "@/util/global-hooks/queries/result.queries";
+import { useResultQueries } from "@/utils/queries/result.queries";
 import { useSetIsLoadingOverlay, useSetLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/stateAtoms";
 import { LineResultData, PlayMode } from "../ts/type";
 

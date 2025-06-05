@@ -1,6 +1,6 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { useSceneState, useSetTypingStatusRank } from "@/app/(typing)/type/atoms/stateAtoms";
-import { useMapRankingQueries } from "@/util/global-hooks/queries/mapRanking.queries";
+import { useMapRankingQueries } from "@/utils/queries/mapRanking.queries";
 import { Box, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";

@@ -4,7 +4,7 @@ import { Card, Table, TableContainer, Tbody, Th, Thead, Tr, useTheme } from "@ch
 
 import "@/app/edit/style/table.scss";
 import { ThemeColors } from "@/types";
-import { useMapQueries } from "@/util/global-hooks/queries/map.queries";
+import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
