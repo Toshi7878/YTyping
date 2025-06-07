@@ -6,7 +6,7 @@ import { UseMutationResult } from "@tanstack/react-query";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { FieldError, FieldErrorsImpl, Merge, useFormContext } from "react-hook-form";
 
-interface AutoUpdateTextFormFieldProps {
+interface MutationInputFormFieldProps {
   label: string;
   successMessage: string;
   mutation: UseMutationResult<any, any, any, any>;
@@ -14,14 +14,14 @@ interface AutoUpdateTextFormFieldProps {
   onSuccess?: (value: string) => void;
 }
 
-const AutoUpdateTextFormField = ({
+const MutationInputFormField = ({
   label,
   successMessage,
   mutation,
   debounceDelay = 1000,
   onSuccess,
   ...props
-}: AutoUpdateTextFormFieldProps &
+}: MutationInputFormFieldProps &
   Omit<React.ComponentProps<typeof InputFormField>, "label" | "disabledFormMessage">) => {
   const { debounce, isPending, cancel } = useDebounce(debounceDelay);
   const {
@@ -97,4 +97,4 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
   return null;
 };
 
-export default AutoUpdateTextFormField;
+export default MutationInputFormField;

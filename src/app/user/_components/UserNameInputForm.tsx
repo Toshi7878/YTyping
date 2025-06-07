@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import AutoUpdateInputFormField from "@/components/ui/input/auto-update-input-form-field";
+import AutoUpdateInputFormField from "@/components/ui/input/mutation-input-form-field";
 import { useTRPC } from "@/trpc/trpc";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { nameSchema } from "@/validator/schema";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
-import AutoUpdateTextFormField from "@/components/ui/input/auto-update-input-form-field";
+import MutationInputFormField from "@/components/ui/input/mutation-input-form-field";
 import { useTRPC } from "@/trpc/trpc";
 import { fingerChartUrlFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +31,7 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
   return (
     <div className="flex flex-col gap-2">
       <Form {...form}>
-        <AutoUpdateTextFormField
+        <MutationInputFormField
           className="w-md"
           label="みんなの運指表URL"
           placeholder="http://unsi.nonip.net/user/[id] のURLを貼り付け"

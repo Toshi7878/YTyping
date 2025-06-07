@@ -1,6 +1,6 @@
 "use client";
 
-import AutoUpdateTextFormField from "@/components/ui/input/auto-update-input-form-field";
+import MutationInputFormField from "@/components/ui/input/mutation-input-form-field";
 import { useTRPC } from "@/trpc/trpc";
 import { myKeyboardFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +27,7 @@ export const MyKeyboardInput = ({ myKeyboard }: MyKeyboardInputProps) => {
 
   return (
     <FormProvider {...form}>
-      <AutoUpdateTextFormField
+      <MutationInputFormField
         mutation={updateMyKeyboard}
         label="使用キーボード"
         successMessage="更新しました"
