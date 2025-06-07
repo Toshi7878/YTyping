@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { GoLock } from "react-icons/go";
-import TypeActivity from "./child/TypeActivity";
+import TypeActivity from "./_components/user-stats/TypeActivity";
 
 const formatTime = (totalSeconds: number) => {
   const hours = Math.floor(totalSeconds / 3600);

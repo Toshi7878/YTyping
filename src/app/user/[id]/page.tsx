@@ -1,8 +1,9 @@
 import { serverApi } from "@/trpc/server";
 import { notFound } from "next/navigation";
-import Content from "./Content";
+import UserProfileCard from "./UserProfileCard";
+import UserStatsCard from "./UserStatsCard";
 
-export default async function Home({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const userProfile = await serverApi.user.getUserProfile({ userId: Number(id) });
   const userStats = await serverApi.userStats.getUserStats({ userId: Number(id) });
@@ -12,5 +13,10 @@ export default async function Home({ params }: { params: Promise<{ id: string }>
     return notFound();
   }
 
-  return <Content userProfile={userProfile} userStats={userStats} userOptions={userOptions} />;
+  return (
+    <div className="mx-auto flex w-[70%] flex-col gap-4 pt-4">
+      <UserProfileCard userProfile={userProfile} />
+      <UserStatsCard userStats={userStats} userOptions={userOptions} />
+    </div>
+  );
 }
