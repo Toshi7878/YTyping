@@ -35,12 +35,8 @@ const AutoUpdateTextFormField = ({
   useEffect(() => {
     debounce(async () => {
       if (isDirty && !errors[props.name] && value) {
-        try {
-          await mutation.mutateAsync(value);
-          onSuccess?.(value);
-        } catch (error) {
-          console.log("Mutation failed:", error);
-        }
+        await mutation.mutateAsync(value);
+        onSuccess?.(value);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
