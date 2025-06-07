@@ -13,7 +13,5 @@ export const useMapQueries = () => {
           gcTime: Infinity,
         },
       ),
-    createdMapsByVideoId: ({ videoId }: { videoId: string }) =>
-      trpc.map.getCreatedMapsByVideoId.queryOptions({ videoId }),
   };
 };

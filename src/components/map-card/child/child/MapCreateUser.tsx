@@ -4,7 +4,7 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { Box, Text } from "@chakra-ui/react";
 
 interface MapCreateUserProps {
-  map: RouterOutPuts["map"]["getCreatedMapsByVideoId"][number];
+  map: RouterOutPuts["mapList"]["getByVideoId"][number];
 }
 
 const MapCreateUser = (props: MapCreateUserProps) => {

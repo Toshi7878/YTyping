@@ -11,11 +11,11 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import MapCard from "../../../components/map-card/MapCard";
-import { MapListResponse, mapListQueries } from "../../../utils/queries/mapList.queries";
+import { MapListResponse, useMapListQueryOptions } from "../../../utils/queries/mapList.queries";
 import { useIsSearchingState, useSetIsSearching } from "../shared/atoms";
 import { PARAM_NAME } from "../shared/const";
 
-type MapCardInfo = RouterOutPuts["map"]["getCreatedMapsByVideoId"][number];
+type MapCardInfo = RouterOutPuts["mapList"]["getByVideoId"][number];
 
 const MapList = () => {
   const searchParams = useSearchParams();
@@ -24,7 +24,7 @@ const MapList = () => {
   const setIsSearchingAtom = useSetIsSearching();
 
   const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
-    mapListQueries.infiniteMapList(session, searchParams),
+    useMapListQueryOptions().infiniteList(session, searchParams),
   );
 
   const { ref, inView } = useInView({

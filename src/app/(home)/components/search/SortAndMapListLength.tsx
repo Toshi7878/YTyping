@@ -2,7 +2,7 @@ import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/shared/a
 import { PARAM_NAME } from "@/app/(home)/shared/const";
 import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
 import { cn } from "@/lib/utils";
-import { mapListQueries } from "@/utils/queries/mapList.queries";
+import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
 import { Icon } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -142,7 +142,7 @@ const MapListLength = () => {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
 
-  const { data: mapListLength, isPending } = useQuery(mapListQueries.mapListLength(session, searchParams));
+  const { data: mapListLength, isPending } = useQuery(useMapListQueryOptions().listLength(session, searchParams));
 
   return (
     <div className="bg-accent flex items-center gap-2 rounded-md px-3 py-1 font-medium">

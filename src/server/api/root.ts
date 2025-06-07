@@ -1,5 +1,6 @@
 import { activeUserRouter } from "./routers/activeUserRouter";
 import { geminiRouter } from "./routers/geminiRouter";
+import { mapListRouter } from "./routers/mapListRouter";
 import { mapRouter } from "./routers/mapRouter";
 import { morphConvertRouter } from "./routers/morphConvertRouter";
 import { notificationRouter } from "./routers/notificationRouter";
@@ -15,6 +16,7 @@ import { router } from "./trpc";
 
 export const appRouter = router({
   map: mapRouter,
+  mapList: mapListRouter,
   notification: notificationRouter,
   ranking: rankingRouter,
   result: resultRouter,

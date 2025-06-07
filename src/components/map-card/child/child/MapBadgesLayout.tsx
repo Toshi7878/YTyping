@@ -6,7 +6,7 @@ import { Flex, HStack, Text } from "@chakra-ui/react";
 import MapBadge from "./MapBadge";
 
 interface MapBadgesProps {
-  map: RouterOutPuts["map"]["getCreatedMapsByVideoId"][number];
+  map: RouterOutPuts["mapList"]["getByVideoId"][number];
 }
 
 const MapBadges = (props: MapBadgesProps) => {

@@ -1,40 +1,47 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/shared/const";
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { useTRPC } from "@/trpc/trpc";
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import { Session } from "next-auth";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
-type MapCardInfo = RouterOutPuts["map"]["getCreatedMapsByVideoId"][number];
+type MapCardInfo = RouterOutPuts["mapList"]["getByVideoId"][number];
 export type MapListResponse = { maps: MapCardInfo[] };
 
-export const mapListQueries = {
-  infiniteMapList: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
-    const { queryKey, params } = getMapListSearchParams(searchParams);
+export const useMapListQueryOptions = () => {
+  const trpc = useTRPC();
 
-    return infiniteQueryOptions({
-      queryKey,
-      queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, session, params }),
-      initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => (lastPage.maps.length === PAGE_SIZE ? allPages.length : undefined),
-      getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 2 : undefined),
-      refetchOnWindowFocus: false,
-      gcTime: Infinity,
-    });
-  },
+  return {
+    infiniteList: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
+      const { queryKey, params } = getMapListSearchParams(searchParams);
 
-  mapListLength: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
-    const { queryKey, params } = getMapListSearchParams(searchParams);
+      return infiniteQueryOptions({
+        queryKey,
+        queryFn: ({ pageParam = 0 }) => fetchMapList({ page: pageParam, session, params }),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, allPages) => (lastPage.maps.length === PAGE_SIZE ? allPages.length : undefined),
+        getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 2 : undefined),
+        refetchOnWindowFocus: false,
+        gcTime: Infinity,
+      });
+    },
 
-    return queryOptions({
-      queryKey: [...queryKey, "length"],
-      queryFn: () => fetchMapListLength({ session, params }),
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      gcTime: Infinity,
-    });
-  },
+    listByVideoId: ({ videoId }: { videoId: string }) => trpc.mapList.getByVideoId.queryOptions({ videoId }),
+
+    listLength: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
+      const { queryKey, params } = getMapListSearchParams(searchParams);
+
+      return queryOptions({
+        queryKey: [...queryKey, "length"],
+        queryFn: () => fetchMapListLength({ session, params }),
+        refetchOnWindowFocus: false,
+        staleTime: Infinity,
+        gcTime: Infinity,
+      });
+    },
+  };
 };
 
 interface FetchMapListParams {
