@@ -1,7 +1,7 @@
 import { serverApi } from "@/trpc/server";
 import { notFound } from "next/navigation";
-import UserProfileCard from "./UserProfileCard";
-import UserStatsCard from "./UserStatsCard";
+import UserProfileCard from "./_components/UserProfileCard";
+import UserStatsCard from "./_components/UserStatsCard";
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

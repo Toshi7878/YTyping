@@ -8,8 +8,8 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
-import FingerChartUrl from "./_components/user-info/FingerChartUrl";
-import MyKeyBoard from "./_components/user-info/MyKeyboard";
+import FingerChartUrl from "./user-info/FingerChartUrl";
+import MyKeyBoard from "./user-info/MyKeyboard";
 
 interface UserProfileCardProps {
   userProfile: NonNullable<RouterOutPuts["user"]["getUserProfile"]>;
