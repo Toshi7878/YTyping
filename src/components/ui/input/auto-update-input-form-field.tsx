@@ -4,7 +4,6 @@ import { InputFormField } from "@/components/ui/input/input";
 import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import { UseMutationResult } from "@tanstack/react-query";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import { useEffect } from "react";
 import { FieldError, FieldErrorsImpl, Merge, useFormContext } from "react-hook-form";
 
 interface AutoUpdateTextFormFieldProps {
@@ -27,20 +26,8 @@ const AutoUpdateTextFormField = ({
   const { debounce, isPending, cancel } = useDebounce(debounceDelay);
   const {
     formState: { isDirty, errors },
-    watch,
     clearErrors,
   } = useFormContext();
-  const value = watch(props.name);
-
-  useEffect(() => {
-    debounce(async () => {
-      if (isDirty && !errors[props.name] && value) {
-        await mutation.mutateAsync(value);
-        onSuccess?.(value);
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDirty, value, errors[props.name]]);
 
   return (
     <InputFormField
@@ -60,6 +47,14 @@ const AutoUpdateTextFormField = ({
         mutation.reset();
         clearErrors(props.name);
         cancel();
+        const value = e.currentTarget.value;
+
+        debounce(async () => {
+          if (isDirty && !errors[props.name] && value) {
+            await mutation.mutateAsync(value);
+            onSuccess?.(value);
+          }
+        });
       }}
       disabledFormMessage={true}
       {...props}
@@ -80,7 +75,7 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
       typeof errorMessage.message === "string" ? errorMessage.message : JSON.stringify(errorMessage.message);
 
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <XCircle className="text-destructive h-4 w-4" />
         <span className="text-destructive text-xs">{messageText}</span>
       </div>
@@ -92,7 +87,7 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
 
   if (isSuccess) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <CheckCircle className="h-4 w-4 text-green-600" />
         <span className="text-xs text-green-600">{successMessage}</span>
       </div>
