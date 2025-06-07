@@ -1,22 +1,21 @@
-import CustomCard from "@/components/custom-ui/CustomCard";
-import { CardBody, CardFooter, CardHeader, Flex, Heading } from "@chakra-ui/react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { OptionSettingForm } from "./child/OptionSettingForm";
 
 const OptionSettingCard = () => {
   return (
-    <CustomCard>
-      <CardHeader mx={8}>
-        <Heading as="h3" size="md" id="user-settings">
+    <Card className="mx-8">
+      <CardHeader>
+        <h3 className="text-lg font-medium" id="user-settings">
           ユーザー設定
-        </Heading>
+        </h3>
       </CardHeader>
-      <CardBody mx={8}>
-        <Flex width="100%">
+      <CardContent>
+        <div className="flex w-full">
           <OptionSettingForm />
-        </Flex>
-      </CardBody>
-      <CardFooter mx={8} />
-    </CustomCard>
+        </div>
+      </CardContent>
+      <CardFooter />
+    </Card>
   );
 };
 

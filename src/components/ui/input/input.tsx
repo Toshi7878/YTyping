@@ -2,7 +2,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { Control } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 // TODO:chakra ui 移行後 !important削除
 const inputVariants = cva(
@@ -43,7 +43,6 @@ function Input({ className, type, variant, size, ...props }: InputProps) {
 }
 
 interface InputFormFieldProps {
-  control: Control<any>;
   name: string;
   label?: React.ReactNode;
   description?: React.ReactNode;
@@ -51,36 +50,38 @@ interface InputFormFieldProps {
   className?: string;
   variant?: VariantProps<typeof inputVariants>["variant"];
   size?: VariantProps<typeof inputVariants>["size"];
+  disabledFormMessage?: boolean;
 }
 
 function InputFormField({
-  control,
   name,
   label,
   description,
   required = false,
   className,
-  variant = "default",
   size = "default",
+  disabledFormMessage = false,
   ...inputProps
 }: InputFormFieldProps & Omit<React.ComponentProps<"input">, "size">) {
+  const { control } = useFormContext();
+
   return (
     <FormField
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <FormItem className={cn(className)}>
+        <FormItem>
           {label && (
             <FormLabel>
               {label}
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>
           )}
-          <FormControl>
-            <Input {...field} {...inputProps} variant={fieldState.error ? "error" : variant} size={size} />
+          <FormControl className={cn(className)}>
+            <Input {...field} {...inputProps} variant={fieldState.error ? "error" : "default"} size={size} />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage />
+          {!disabledFormMessage && <FormMessage />}
         </FormItem>
       )}
     />

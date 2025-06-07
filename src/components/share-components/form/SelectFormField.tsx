@@ -11,7 +11,7 @@ interface SelectFormFieldProps {
 
 const SelectFormField = ({ label, name, options, onSubmit }: SelectFormFieldProps) => {
   const { register, handleSubmit } = useFormContext();
-  const debounce = useDebounce(500);
+  const { debounce } = useDebounce(500);
 
   return (
     <FormControl as="form" gap={3} display="flex" flexDirection="column">

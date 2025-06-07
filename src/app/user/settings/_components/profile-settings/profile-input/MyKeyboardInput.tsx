@@ -1,12 +1,10 @@
 "use client";
 
-import AutoUpdateTextFormField from "@/components/share-components/form/AutoUpdateTextFormField";
+import AutoUpdateTextFormField from "@/components/ui/input/auto-update-input-form-field";
 import { useTRPC } from "@/trpc/trpc";
-import { useDebounce } from "@/utils/global-hooks/useDebounce";
-import { userFingerChartUrlSchema } from "@/validator/schema";
+import { myKeyboardFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 interface MyKeyboardInputProps {
@@ -14,52 +12,30 @@ interface MyKeyboardInputProps {
 }
 
 export const MyKeyboardInput = ({ myKeyboard }: MyKeyboardInputProps) => {
-  const debounce = useDebounce(1000);
-  const [isPending, setIsPending] = useState(false);
-
-  const methods = useForm({
+  const form = useForm({
     mode: "onChange",
-    resolver: zodResolver(userFingerChartUrlSchema),
+    resolver: zodResolver(myKeyboardFormSchema),
     defaultValues: {
-      myKeyboard: myKeyboard,
+      myKeyboard,
     },
   });
 
-  const {
-    formState: { isDirty },
-    reset,
-    watch,
-  } = methods;
+  const { reset } = form;
 
-  const myKeyboardValue = watch("myKeyboard");
   const trpc = useTRPC();
   const updateMyKeyboard = useMutation(trpc.userProfileSetting.upsertMyKeyboard.mutationOptions());
 
-  useEffect(() => {
-    if (isDirty) {
-      setIsPending(true);
-      debounce(async () => {
-        await updateMyKeyboard.mutateAsync({
-          myKeyboard: myKeyboardValue,
-        });
-
-        reset({ myKeyboard: myKeyboardValue });
-        setIsPending(false);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [myKeyboardValue]);
-
-  const { isSuccess } = updateMyKeyboard;
-
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...form}>
       <AutoUpdateTextFormField
-        isPending={isPending}
-        isSuccess={isSuccess}
+        mutation={updateMyKeyboard}
         label="使用キーボード"
-        successMessage={myKeyboardValue ? "更新しました" : "使用キーボードを削除しました"}
+        successMessage="更新しました"
         name="myKeyboard"
+        onSuccess={async (value: string) => {
+          reset({ myKeyboard: value });
+        }}
+        className="w-md"
       />
     </FormProvider>
   );

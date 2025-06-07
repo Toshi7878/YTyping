@@ -1,29 +1,28 @@
 import { UserNameInputForm } from "@/app/user/_components/UserNameInputForm";
-import CustomCard from "@/components/custom-ui/CustomCard";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { CardBody, CardFooter, CardHeader, Flex, Heading } from "@chakra-ui/react";
 import { FingerChartUrlInput } from "./profile-input/FingerChartUrlInput";
 import { MyKeyboardInput } from "./profile-input/MyKeyboardInput";
+
 interface ProfileSettingCardProps {
   userProfile: RouterOutPuts["user"]["getUserProfile"];
 }
+
 const ProfileSettingCard = ({ userProfile }: ProfileSettingCardProps) => {
   return (
-    <CustomCard>
-      <CardHeader mx={8}>
-        <Heading as="h3" size="md">
-          プロフィール設定
-        </Heading>
+    <Card className="mx-8">
+      <CardHeader>
+        <h3 className="text-lg font-medium">プロフィール設定</h3>
       </CardHeader>
-      <CardBody mx={8}>
-        <Flex width="100%" flexDirection="column" gap={4}>
+      <CardContent>
+        <div className="flex w-full flex-col gap-4">
           <UserNameInputForm />
           <FingerChartUrlInput url={userProfile?.user_profiles?.[0]?.finger_chart_url ?? ""} />
           <MyKeyboardInput myKeyboard={userProfile?.user_profiles?.[0]?.my_keyboard ?? ""} />
-        </Flex>
-      </CardBody>
-      <CardFooter mx={8} />
-    </CustomCard>
+        </div>
+      </CardContent>
+      <CardFooter />
+    </Card>
   );
 };
 

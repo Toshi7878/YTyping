@@ -29,14 +29,14 @@ const ManyPhraseTextarea = () => {
   const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
   const readSelectLine = useReadLine();
-  const debaunce = useDebounce(500);
+  const { debounce } = useDebounce(500);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { lyrics } = readSelectLine();
 
     const topPhrase = e.target.value.split("\n")[0];
     if (topPhrase !== lyrics) {
-      debaunce(() => pickupTopPhrase(topPhrase));
+      debounce(() => pickupTopPhrase(topPhrase));
     }
 
     setManyPhrase(e.target.value);

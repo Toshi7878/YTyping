@@ -3,7 +3,7 @@
 import CreatedCheck from "@/components/share-components/CreatedCheck";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { InputFormField } from "@/components/ui/input";
+import { InputFormField } from "@/components/ui/input/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useGetBackupTitleVideoIdLiveQuery } from "@/lib/db";
@@ -76,7 +76,6 @@ function CreateNewMapModal({ trigger }: CreateNewMapModalProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
             <InputFormField
-              control={form.control}
               name="videoId"
               label="譜面を作成したいYouTube動画のURLを入力"
               placeholder="YouTube URLを入力"

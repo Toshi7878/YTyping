@@ -2,7 +2,7 @@
 
 import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../shared/atoms";

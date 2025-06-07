@@ -1,4 +1,4 @@
-import { upsertMyKeyboardSchema, userFingerChartUrlSchema, nameSchema as userNameSchema } from "@/validator/schema";
+import { fingerChartUrlApiSchema, myKeyboardApiSchema, nameSchema as userNameSchema } from "@/validator/schema";
 import { z } from "@/validator/z";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure } from "../trpc";
@@ -26,56 +26,57 @@ export const userProfileSettingRouter = {
       return { id: "", title: "名前の更新中にエラーが発生しました", message: "", status: 500 };
     }
   }),
-  isNameAvailable: protectedProcedure
-    .input(
-      z.object({
-        name: z.string().min(1),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
-      const existingUser = await db.users.findFirst({
-        where: {
-          name: input.name,
-          NOT: {
-            id: user.id,
-          },
+  isNameAvailable: protectedProcedure.input(z.string().min(1)).mutation(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+    const existingUser = await db.users.findFirst({
+      where: {
+        name: input,
+        NOT: {
+          id: user.id,
         },
-        select: {
-          id: true,
-        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (existingUser) {
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "この名前は既に使用されています",
       });
+    }
 
-      // true: 利用可能, false: 既に使用済み
-      return !existingUser;
-    }),
-
-  upsertFingerChartUrl: protectedProcedure.input(userFingerChartUrlSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
-
-    await db.user_profiles.upsert({
-      where: { user_id: user.id },
-      update: { finger_chart_url: input.url },
-      create: {
-        user_id: user.id,
-        finger_chart_url: input.url,
-      },
-    });
-
-    return input.url;
+    // true: 利用可能, false: 既に使用済み
+    return !existingUser;
   }),
-  upsertMyKeyboard: protectedProcedure.input(upsertMyKeyboardSchema).mutation(async ({ input, ctx }) => {
+
+  upsertFingerChartUrl: protectedProcedure.input(fingerChartUrlApiSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
     await db.user_profiles.upsert({
       where: { user_id: user.id },
-      update: { my_keyboard: input.myKeyboard },
+      update: { finger_chart_url: input },
       create: {
         user_id: user.id,
-        my_keyboard: input.myKeyboard,
+        finger_chart_url: input,
       },
     });
 
-    return input.myKeyboard;
+    return input;
+  }),
+  upsertMyKeyboard: protectedProcedure.input(myKeyboardApiSchema).mutation(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+
+    await db.user_profiles.upsert({
+      where: { user_id: user.id },
+      update: { my_keyboard: input },
+      create: {
+        user_id: user.id,
+        my_keyboard: input,
+      },
+    });
+
+    return input;
   }),
 };

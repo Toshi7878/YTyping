@@ -1,3 +1,5 @@
+"use client";
+
 import CheckBoxFormField from "@/components/share-components/form/CheckBoxFormField";
 import SelectFormField from "@/components/share-components/form/SelectFormField";
 import { useSetUserOptions, useUserOptionsState } from "@/lib/global-atoms/globalAtoms";

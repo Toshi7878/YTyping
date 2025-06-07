@@ -1,89 +1,62 @@
 "use client";
 
-import AutoUpdateTextFormField from "@/components/share-components/form/AutoUpdateTextFormField";
+import { Form } from "@/components/ui/form";
+import AutoUpdateTextFormField from "@/components/ui/input/auto-update-input-form-field";
 import { useTRPC } from "@/trpc/trpc";
-import { ThemeColors } from "@/types";
-import { useDebounce } from "@/utils/global-hooks/useDebounce";
-import { userFingerChartUrlSchema } from "@/validator/schema";
-import { Link } from "@chakra-ui/next-js";
-import { Flex, Stack, useTheme } from "@chakra-ui/react";
+import { fingerChartUrlFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { FiExternalLink } from "react-icons/fi";
+import { ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
 
 interface FingerChartUrlInputProps {
   url: string;
 }
 
 export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
-  const debounce = useDebounce(1000);
-  const [isPending, setIsPending] = useState(false);
-
-  const methods = useForm({
+  const form = useForm({
     mode: "onChange",
-    resolver: zodResolver(userFingerChartUrlSchema),
+    resolver: zodResolver(fingerChartUrlFormSchema),
     defaultValues: {
-      url,
+      url: url,
     },
   });
 
-  const {
-    formState: { isDirty },
-    reset,
-    watch,
-  } = methods;
+  const { reset } = form;
 
-  const urlValue = watch("url");
   const trpc = useTRPC();
-  const updateFingerChartUrl = useMutation(trpc.userProfileSetting.upsertFingerChartUrl.mutationOptions());
-
-  useEffect(() => {
-    if (isDirty) {
-      setIsPending(true);
-      debounce(async () => {
-        await updateFingerChartUrl.mutateAsync({
-          url: urlValue,
-        });
-
-        reset({ url: urlValue });
-        setIsPending(false);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlValue]);
-
-  const { isSuccess } = updateFingerChartUrl;
-  const { colors }: ThemeColors = useTheme();
+  const update = useMutation(trpc.userProfileSetting.upsertFingerChartUrl.mutationOptions());
 
   return (
-    <FormProvider {...methods}>
-      <Stack>
+    <div className="flex flex-col gap-2">
+      <Form {...form}>
         <AutoUpdateTextFormField
-          isPending={isPending}
-          isSuccess={isSuccess}
+          className="w-md"
           label="みんなの運指表URL"
           placeholder="http://unsi.nonip.net/user/[id] のURLを貼り付け"
-          successMessage={urlValue ? "URLを更新しました" : "URLを削除しました"}
+          successMessage="URLを更新しました"
           name="url"
+          onSuccess={(value: string) => {
+            reset({ url: value });
+          }}
+          mutation={update}
         />
-        <Flex justifyContent="end" width={{ base: "full", md: "sm" }} flexDirection="row">
-          <Link
-            href="http://unsi.nonip.net"
-            target="_blank"
-            fontSize="xs"
-            color={colors.text.body}
-            opacity="0.7"
-            display="flex"
-            alignItems="center"
-            gap="1"
-          >
-            運指表作成はこちら
-            <FiExternalLink />
-          </Link>
-        </Flex>
-      </Stack>
-    </FormProvider>
+      </Form>
+      <UnsiLink />
+    </div>
+  );
+};
+
+const UnsiLink = () => {
+  return (
+    <Link
+      href="http://unsi.nonip.net"
+      target="_blank"
+      className="text-muted-foreground flex w-fit items-center gap-1 text-xs opacity-70 transition-opacity hover:opacity-100"
+    >
+      運指表作成はこちら
+      <ExternalLink className="h-3 w-3" />
+    </Link>
   );
 };

@@ -10,7 +10,7 @@ interface CheckBoxFormFieldProps {
 
 const CheckBoxFormField = ({ label, name, onSubmit }: CheckBoxFormFieldProps) => {
   const { register, handleSubmit } = useFormContext();
-  const debounce = useDebounce(500);
+  const { debounce } = useDebounce(500);
 
   return (
     <FormControl as="form" gap={3} display="flex" flexDirection="row" userSelect="none">
