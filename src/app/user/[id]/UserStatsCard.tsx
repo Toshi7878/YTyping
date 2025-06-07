@@ -1,3 +1,4 @@
+"use client";
 import InfoCard from "@/components/share-components/InfoCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
