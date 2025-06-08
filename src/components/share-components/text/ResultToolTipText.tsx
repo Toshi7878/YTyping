@@ -1,5 +1,5 @@
-import { ThemeColors } from "@/types";
-import { Box, Divider, HStack, Text, useTheme, VStack } from "@chakra-ui/react";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 interface ResultToolTipTextProps {
   romaType: number;
@@ -23,89 +23,92 @@ interface ResultToolTipTextProps {
   updatedAt: Date;
 }
 
-const ResultToolTipText = (props: ResultToolTipTextProps) => {
-  const theme: ThemeColors = useTheme();
-
+const ResultToolTipText = ({
+  romaType,
+  kanaType,
+  flickType,
+  englishType,
+  numType,
+  spaceType,
+  symbolType,
+  miss,
+  correctRate,
+  lost,
+  isPerfect,
+  maxCombo,
+  kpm,
+  rkpm,
+  romaKpm,
+  romaRkpm,
+  isKanaFlickTyped,
+  defaultSpeed,
+  updatedAt,
+}: ResultToolTipTextProps) => {
   return (
-    <Box p={4}>
-      <VStack spacing={3} align="start">
+    <div className="p-4">
+      <div className="flex flex-col items-start gap-3">
         <TypeCountResult
-          romaType={props.romaType}
-          kanaType={props.kanaType}
-          flickType={props.flickType}
-          englishType={props.englishType}
-          numType={props.numType}
-          symbolType={props.symbolType}
-          spaceType={props.spaceType}
+          romaType={romaType}
+          kanaType={kanaType}
+          flickType={flickType}
+          englishType={englishType}
+          numType={numType}
+          symbolType={symbolType}
+          spaceType={spaceType}
         />
-        <Divider />
+        <Separator />
+        <div className="flex gap-2">
+          <span>ミス数:</span>
+          <span className="text-base font-bold">
+            {miss} ({correctRate}%)
+          </span>
+        </div>
 
-        <HStack spacing={2}>
-          <Text>ミス数:</Text>
-          <Text fontSize="md" fontWeight="bold">
-            {props.miss} ({props.correctRate}%)
-          </Text>
-        </HStack>
+        <div className="flex gap-2">
+          <span>ロスト数:</span>
+          <span className="text-base font-bold">{lost}</span>
+        </div>
 
-        <HStack spacing={2}>
-          <Text>ロスト数:</Text>
-          <Text fontSize="md" fontWeight="bold">
-            {props.lost}
-          </Text>
-        </HStack>
+        <div className="flex gap-2">
+          <span>最大コンボ:</span>
+          <span className={cn("text-base font-bold", isPerfect && ["text-perfect", "outline-text"])}>{maxCombo}</span>
+        </div>
 
-        <HStack spacing={2}>
-          <Text>最大コンボ:</Text>
-          <Text
-            as="span"
-            fontSize="md"
-            fontWeight="bold"
-            color={props.isPerfect ? theme.colors.semantic.perfect : undefined}
-            className={props.isPerfect ? "outline-text" : undefined}
-          >
-            {props.maxCombo}
-          </Text>
-        </HStack>
+        <div className="flex gap-2">
+          <span>rkpm:</span>
+          <span className="text-base font-bold">{rkpm}</span>
+        </div>
 
-        <HStack spacing={2}>
-          <Text>rkpm:</Text>
-          <Text fontSize="md" fontWeight="bold">
-            {props.rkpm}
-          </Text>
-        </HStack>
-
-        {props.isKanaFlickTyped && props.kpm !== props.romaKpm && (
-          <HStack spacing={2}>
-            <Text>ローマ字換算kpm:</Text>
-            <Text fontSize="md" fontWeight="bold">
-              {props.romaKpm} {props.romaRkpm ? `(rkpm:${props.romaRkpm})` : ""}
-            </Text>
-          </HStack>
+        {isKanaFlickTyped && kpm !== romaKpm && (
+          <div className="flex gap-2">
+            <span>ローマ字換算kpm:</span>
+            <span className="text-base font-bold">
+              {romaKpm} {romaRkpm ? `(rkpm:${romaRkpm})` : ""}
+            </span>
+          </div>
         )}
 
-        {props.defaultSpeed > 1 && (
-          <HStack spacing={2}>
-            <Text>倍速:</Text>
-            <Text fontSize="md" fontWeight="bold">
-              {props.defaultSpeed.toFixed(2)}x
-            </Text>
-          </HStack>
+        {defaultSpeed > 1 && (
+          <div className="flex gap-2">
+            <span>倍速:</span>
+            <span className="text-base font-bold">{defaultSpeed.toFixed(2)}x</span>
+          </div>
         )}
 
-        <HStack spacing={2}>
-          <Text>日時:</Text>
-          <Text fontSize="md">
-            {new Date(props.updatedAt).toLocaleString("ja-JP", {
+        <div className="flex gap-2">
+          <span>日時:</span>
+          <span className="text-base">
+            {new Date(updatedAt).toLocaleString("ja-JP", {
               year: "numeric",
               month: "2-digit",
               day: "2-digit",
               hour: "2-digit",
               minute: "2-digit",
             })}
-          </Text>
-        </HStack>
-      </VStack>
-    </Box>
+          </span>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -119,14 +122,22 @@ interface TypeCountResultProps {
   symbolType: number;
 }
 
-const TypeCountResult = (props: TypeCountResultProps) => {
+const TypeCountResult = ({
+  romaType,
+  kanaType,
+  flickType,
+  englishType,
+  numType,
+  spaceType,
+  symbolType,
+}: TypeCountResultProps) => {
   const types = [
-    { label: "ローマ字タイプ数", value: props.romaType },
-    { label: "かな入力タイプ数", value: props.kanaType },
-    { label: "フリック入力タイプ数", value: props.flickType },
+    { label: "ローマ字タイプ数", value: romaType },
+    { label: "かな入力タイプ数", value: kanaType },
+    { label: "フリック入力タイプ数", value: flickType },
     {
       label: "英数字記号タイプ数",
-      value: props.englishType + props.numType + props.symbolType + props.spaceType,
+      value: englishType + numType + symbolType + spaceType,
     },
   ];
 
@@ -134,27 +145,23 @@ const TypeCountResult = (props: TypeCountResultProps) => {
   const typesUsedCount = types.filter((type) => type.value > 0).length;
 
   return (
-    <VStack spacing={1} align="start">
+    <div className="flex flex-col items-start gap-1">
       {types.map(
         (type, index) =>
           type.value > 0 && (
-            <HStack key={index} spacing={2}>
-              <Text>{type.label}:</Text>
-              <Text fontSize="md" fontWeight="bold">
-                {type.value}
-              </Text>
-            </HStack>
-          )
+            <div key={index} className="flex gap-2">
+              <span>{type.label}:</span>
+              <span className="text-base font-bold">{type.value}</span>
+            </div>
+          ),
       )}
       {typesUsedCount > 1 && (
-        <HStack spacing={2}>
-          <Text>合計タイプ数:</Text>
-          <Text fontSize="md" fontWeight="bold">
-            {total}
-          </Text>
-        </HStack>
+        <div className="flex gap-2">
+          <span>合計タイプ数:</span>
+          <span className="text-base font-bold">{total}</span>
+        </div>
       )}
-    </VStack>
+    </div>
   );
 };
 

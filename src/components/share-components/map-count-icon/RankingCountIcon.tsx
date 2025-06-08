@@ -1,6 +1,5 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { Box, Flex, useTheme } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { FaRankingStar } from "react-icons/fa6";
 
@@ -9,36 +8,27 @@ interface RankingCountProps {
   rankingCount: number;
 }
 
-const RankingCountIcon = (props: RankingCountProps) => {
-  const theme: ThemeColors = useTheme();
+const RankingCountIcon = ({ myRank, rankingCount }: RankingCountProps) => {
   const { data: session } = useSession();
-  const { myRank, rankingCount } = props;
+
+  const getColorClass = () => {
+    if (myRank === 1 && session) {
+      return "text-perfect";
+    } else if (myRank && session) {
+      return "text-secondary";
+    } else {
+      return "text-muted-foreground/60";
+    }
+  };
 
   return (
-    <CustomToolTip
-      label={`自分の順位: ${myRank}位`}
-      placement="top"
-      isDisabled={!myRank || !session}
-    >
-      <Flex
-        alignItems="baseline"
-        color={
-          myRank === 1 && session
-            ? theme.colors.semantic.perfect
-            : myRank && session
-            ? theme.colors.secondary.main
-            : `${theme.colors.text.body}99`
-        }
-        mr={1}
-        zIndex={1}
-      >
-        <Box mr={1} position="relative" top="3px">
+    <CustomToolTip label={`自分の順位: ${myRank}位`} placement="top" isDisabled={!myRank || !session}>
+      <div className={cn("z-[1] mr-1 flex items-baseline", getColorClass())}>
+        <div className="relative top-[3px] mr-1">
           <FaRankingStar size={20} />
-        </Box>
-        <Box fontSize="lg" fontFamily="monospace">
-          {rankingCount}
-        </Box>
-      </Flex>
+        </div>
+        <div className="font-mono text-lg">{rankingCount}</div>
+      </div>
     </CustomToolTip>
   );
 };

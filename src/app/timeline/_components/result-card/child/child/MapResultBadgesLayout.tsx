@@ -1,8 +1,7 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
 import ClearRateText from "@/components/share-components/text/ClearRateText";
 import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";
-import { ThemeColors } from "@/types";
-import { Flex, FlexProps, Stack, Text, useTheme, VStack } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
 import ResultBadge from "./child/ResultBadge";
 
 interface ResultCardProps {
@@ -11,13 +10,16 @@ interface ResultCardProps {
 
 export const MapResultBadges = ({ result }: ResultCardProps) => {
   const isPerfect = result?.status.miss === 0 && result?.status.lost === 0;
-  const theme: ThemeColors = useTheme();
+  const rankColor = result?.rank === 1 ? "text-perfect" : "text-foreground";
 
-  const rankColor = result?.rank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
   return (
-    <VStack align="end" mr={5} spacing={5} visibility={result ? "visible" : "hidden"}>
-      <Stack direction="row" mb={2}>
-        <ResultBadge color={rankColor} letterSpacing={1} borderColor={theme.colors.border.badge}>
+    <div className={cn("mr-5 flex flex-col items-end gap-5", result ? "visible" : "invisible")}>
+      <div className="mb-2 flex flex-row gap-2">
+        <ResultBadge
+          color={result?.rank === 1 ? "rgb(var(--perfect))" : "rgb(var(--foreground))"}
+          letterSpacing={1}
+          borderColor="rgb(var(--border))"
+        >
           {result && (
             <UserInputModeText
               romaType={result.status.roma_type}
@@ -30,47 +32,49 @@ export const MapResultBadges = ({ result }: ResultCardProps) => {
             />
           )}
         </ResultBadge>
-        <ResultBadge
-          color={theme.colors.text.body}
-          letterSpacing={1.5}
-          borderColor={theme.colors.border.badge}
-        >
+        <ResultBadge color="rgb(var(--foreground))" letterSpacing={1.5} borderColor="rgb(var(--border))">
           {result?.status.score}
         </ResultBadge>
-        <ResultBadge color={theme.colors.text.body} letterSpacing={1} borderColor={theme.colors.border.badge}>
+        <ResultBadge color="rgb(var(--foreground))" letterSpacing={1} borderColor="rgb(var(--border))">
           <ClearRateText clearRate={result?.status.clear_rate ?? 0} isPerfect={isPerfect} />
         </ResultBadge>
-      </Stack>
-      <Stack direction="row">
-        <ResultBadge color={theme.colors.text.body} borderColor={theme.colors.border.badge}>
+      </div>
+      <div className="flex flex-row gap-2">
+        <ResultBadge color="rgb(var(--foreground))" borderColor="rgb(var(--border))">
           {result && result.status.default_speed.toFixed(2)}
-          <Text as="span" ml={1} letterSpacing={2}>
+          <span className="ml-1" style={{ letterSpacing: "2px" }}>
             倍速
-          </Text>
+          </span>
         </ResultBadge>
-        <ResultBadge color={theme.colors.text.body} letterSpacing={1} borderColor={theme.colors.border.badge}>
+        <ResultBadge color="rgb(var(--foreground))" letterSpacing={1} borderColor="rgb(var(--border))">
           {result && result.status.kpm}
-          <Text as="span" ml={1} letterSpacing={2}>
+          <span className="ml-1" style={{ letterSpacing: "2px" }}>
             kpm
-          </Text>
+          </span>
         </ResultBadge>
-      </Stack>
-    </VStack>
+      </div>
+    </div>
   );
 };
 
-export const MapResultBadgesMobile = ({ result, ...rest }: ResultCardProps & FlexProps) => {
-  const isPerfect = result?.status.miss === 0 && result.status.lost === 0;
-  const theme: ThemeColors = useTheme();
+interface MapResultBadgesMobileProps extends ResultCardProps {
+  className?: string;
+}
 
-  const rankColor = result?.rank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
+export const MapResultBadgesMobile = ({ result, className }: MapResultBadgesMobileProps) => {
+  const isPerfect = result?.status.miss === 0 && result.status.lost === 0;
+
   return (
-    <Flex justifyContent="space-around" width="100%" visibility={result ? "visible" : "hidden"} {...rest}>
-      <VStack align="end" mr={5} spacing={5}>
-        <ResultBadge letterSpacing={1} color={rankColor} borderColor={theme.colors.border.badge}>
+    <div className={cn("flex w-full justify-around", result ? "visible" : "invisible", className)}>
+      <div className="mr-5 flex flex-col items-end gap-5">
+        <ResultBadge
+          letterSpacing={1}
+          color={result?.rank === 1 ? "rgb(var(--perfect))" : "rgb(var(--foreground))"}
+          borderColor="rgb(var(--border))"
+        >
           Rank: #{result?.rank ?? 0}
         </ResultBadge>
-        <ResultBadge letterSpacing={1} color={theme.colors.text.body} borderColor={theme.colors.border.badge}>
+        <ResultBadge letterSpacing={1} color="rgb(var(--foreground))" borderColor="rgb(var(--border))">
           {result && (
             <UserInputModeText
               romaType={result.status.roma_type}
@@ -83,33 +87,29 @@ export const MapResultBadgesMobile = ({ result, ...rest }: ResultCardProps & Fle
             />
           )}
         </ResultBadge>
-      </VStack>
-      <VStack align="end" mr={5} spacing={5}>
-        <ResultBadge
-          letterSpacing={1.5}
-          color={theme.colors.text.body}
-          borderColor={theme.colors.border.badge}
-        >
+      </div>
+      <div className="mr-5 flex flex-col items-end gap-5">
+        <ResultBadge letterSpacing={1.5} color="rgb(var(--foreground))" borderColor="rgb(var(--border))">
           {result?.status.score ?? 0}
         </ResultBadge>
-        <ResultBadge letterSpacing={1} color={theme.colors.text.body} borderColor={theme.colors.border.badge}>
+        <ResultBadge letterSpacing={1} color="rgb(var(--foreground))" borderColor="rgb(var(--border))">
           {result?.status.kpm ?? 0}
-          <Text as="span" ml={1} letterSpacing={2}>
+          <span className="ml-1" style={{ letterSpacing: "2px" }}>
             kpm
-          </Text>
+          </span>
         </ResultBadge>
-      </VStack>
-      <VStack align="end" mr={5} spacing={5}>
-        <ResultBadge letterSpacing={1} color={theme.colors.text.body} borderColor={theme.colors.border.badge}>
+      </div>
+      <div className="mr-5 flex flex-col items-end gap-5">
+        <ResultBadge letterSpacing={1} color="rgb(var(--foreground))" borderColor="rgb(var(--border))">
           <ClearRateText clearRate={result?.status.clear_rate ?? 0} isPerfect={isPerfect} />
         </ResultBadge>
-        <ResultBadge color={theme.colors.text.body} borderColor={theme.colors.border.badge}>
+        <ResultBadge color="rgb(var(--foreground))" borderColor="rgb(var(--border))">
           {result && result.status.default_speed.toFixed(2)}
-          <Text as="span" ml={1} letterSpacing={2}>
+          <span className="ml-1" style={{ letterSpacing: "2px" }}>
             倍速
-          </Text>
+          </span>
         </ResultBadge>
-      </VStack>
-    </Flex>
+      </div>
+    </div>
   );
 };

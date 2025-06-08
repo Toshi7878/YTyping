@@ -1,10 +1,10 @@
 "use client";
-import InfoCard from "@/components/share-components/InfoCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { H2 } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { formatDistanceToNowStrict } from "date-fns";
@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { GoLock } from "react-icons/go";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import TypeActivity from "./user-stats/TypeActivity";
 
 const formatTime = (totalSeconds: number) => {
@@ -185,6 +186,24 @@ const MyHideOptionInfo = () => {
         </div>
       </div>
     </InfoCard>
+  );
+};
+
+interface InfoCardProps {
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+const InfoCard = ({ title, children, className }: InfoCardProps) => {
+  return (
+    <Card className={cn("border-blue-500 bg-blue-50/50 dark:bg-blue-950/20", className)}>
+      <CardHeader className="flex flex-row items-center gap-2 pb-2">
+        <IoMdInformationCircleOutline size={20} className="text-blue-600 dark:text-blue-400" />
+        <CardTitle className="text-lg">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0">{children}</CardContent>
+    </Card>
   );
 };
 

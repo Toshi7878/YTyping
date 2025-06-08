@@ -1,28 +1,30 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
+import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { Flex, FlexProps } from "@chakra-ui/react";
-import MapInfo from "./child/MapInfo";
+import { cn } from "@/lib/utils";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
+import Link from "next/link";
+import { HTMLAttributes } from "react";
 import { MapResultBadges } from "./child/MapResultBadgesLayout";
 import UserRank from "./child/UserRank";
 
 interface ResultInnerCardBodyProps {
   result?: ResultCardInfo;
 }
+
 const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
   const { result } = props;
 
   const isToggledInputMode = result?.status.roma_type != 0 && result?.status.kana_type != 0;
 
-  const rowDisplay = { base: "none", md: "flex" };
-  const columnDisplay = { base: "flex", md: "none" };
   return (
     <>
-      {result && <MapIcons result={result} bottom="25px" left="35px" display={rowDisplay} />}
-      <Flex minW="100%" py={6} direction="row" justifyContent="space-between" alignItems="center" zIndex={0}>
-        <Flex direction="row" gap={4} width="100%">
-          {result && <UserRank userRank={result.rank} display={rowDisplay} />}
+      {result && <MapIcons result={result} bottom="25px" left="35px" className="hidden md:flex" />}
+      <div className="z-0 flex min-w-full flex-row items-center justify-between py-6">
+        <div className="flex w-full flex-row gap-4">
+          {result && <UserRank userRank={result.rank} className="hidden md:flex" />}
 
           <MapLeftThumbnail
             alt={result ? result.map.title : ""}
@@ -37,47 +39,80 @@ const ResultInnerCardBody = (props: ResultInnerCardBodyProps) => {
             <MapInfo
               map={result.map}
               isToggledInputMode={isToggledInputMode}
-              overflow="hidden"
-              textOverflow="ellipsis"
-              whiteSpace="nowrap"
+              className="overflow-hidden text-ellipsis whitespace-nowrap"
             />
           )}
 
-          {result && <MapIcons result={result} top={"142px"} right={"30px"} display={columnDisplay} />}
-          <Flex ml="auto" justifyContent="flex-end" display={rowDisplay}>
+          {result && <MapIcons result={result} top={"142px"} right={"30px"} className="flex-col md:hidden" />}
+          <div className="ml-auto hidden justify-end md:flex">
             <MapResultBadges result={result} />
-          </Flex>
-        </Flex>
-      </Flex>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
 
-interface MapIconsProps {
+interface MapIconsProps extends HTMLAttributes<HTMLDivElement> {
   result: ResultCardInfo;
   top?: string;
   right?: string;
   bottom?: string;
   left?: string;
 }
+
 const MapIcons = ({
   result,
   top = "auto",
   right = "auto",
   bottom = "auto",
   left = "auto",
+  className,
   ...rest
-}: MapIconsProps & FlexProps) => {
+}: MapIconsProps) => {
   return (
-    <Flex zIndex={2} position="absolute" top={top} right={right} bottom={bottom} left={left} {...rest}>
+    <div className={cn("absolute z-[2]", className)} style={{ top, right, bottom, left }} {...rest}>
       <RankingCountIcon myRank={result.map.results[0]?.rank} rankingCount={result.map.ranking_count} />
       <LikeCountIcon
         mapId={result.map.id}
         isLiked={!!result.map.map_likes[0]?.is_liked}
         likeCount={result.map.like_count}
       />
-    </Flex>
+    </div>
   );
 };
+
+interface MapCardProps extends HTMLAttributes<HTMLDivElement> {
+  map: ResultCardInfo["map"];
+  isToggledInputMode: boolean;
+}
+
+function MapInfo({ map, isToggledInputMode, className, ...rest }: MapCardProps) {
+  const handleLinkClick = useLinkClick();
+
+  return (
+    <div className={cn("mt-2 mb-3 flex flex-col justify-between", className)} {...rest}>
+      <CustomToolTip
+        label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
+        placement="top"
+        right={19}
+      >
+        <Link href={`/type/${map.id}`} onClick={handleLinkClick} className="text-secondary hover:underline">
+          <div className="overflow-hidden text-base font-bold text-ellipsis whitespace-nowrap">
+            {`${map.title} / ${map.artist_name}`}
+          </div>
+        </Link>
+      </CustomToolTip>
+      <div className="text-xs">
+        <span>
+          制作者:{" "}
+          <Link href={`/user/${map.creator.id}`} onClick={handleLinkClick} className="text-secondary hover:underline">
+            {map.creator.name}
+          </Link>
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export default ResultInnerCardBody;

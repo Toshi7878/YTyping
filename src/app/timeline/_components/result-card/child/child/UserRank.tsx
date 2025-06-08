@@ -1,21 +1,21 @@
-import { ThemeColors } from "@/types";
-import { Box, BoxProps, useTheme } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
+import { HTMLAttributes } from "react";
 import ResultBadge from "./child/ResultBadge";
 
-interface UserRankProps extends BoxProps {
+interface UserRankProps extends HTMLAttributes<HTMLDivElement> {
   userRank: number;
 }
 
-const UserRank = ({ userRank, ...rest }: UserRankProps) => {
-  const theme: ThemeColors = useTheme();
+const UserRank = ({ userRank, className, ...rest }: UserRankProps) => {
+  const rankColor = userRank === 1 ? "text-yellow-500" : "text-foreground";
+  const borderColor = userRank === 1 ? "border-yellow-500" : "border-foreground";
 
-  const rankColor = userRank === 1 ? theme.colors.semantic.perfect : theme.colors.text.body;
   return (
-    <Box fontSize="lg" fontWeight="bold" my="auto" ml={4} {...rest}>
-      <ResultBadge color={rankColor} borderColor={rankColor}>
+    <div className={cn("my-auto ml-4 text-lg font-bold", className)} {...rest}>
+      <ResultBadge color={rankColor} borderColor={borderColor}>
         Rank: #{userRank}
       </ResultBadge>
-    </Box>
+    </div>
   );
 };
 

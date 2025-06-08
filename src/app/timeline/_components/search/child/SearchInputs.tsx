@@ -1,3 +1,4 @@
+"use client";
 import { useIsSearchingState, useSetIsSearching } from "@/app/timeline/atoms/atoms";
 import { useSetSearchParams } from "@/app/timeline/hook/useSetSearchParams";
 import { PARAM_NAME } from "@/app/timeline/ts/const/consts";

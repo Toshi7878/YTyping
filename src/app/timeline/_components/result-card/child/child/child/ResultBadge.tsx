@@ -1,5 +1,4 @@
-import { ThemeColors } from "@/types";
-import { Badge, useTheme } from "@chakra-ui/react";
+import { Badge } from "@/components/ui/badge";
 import React from "react";
 
 interface ResultBadgeProps {
@@ -9,23 +8,17 @@ interface ResultBadgeProps {
   children: React.ReactNode;
 }
 
-const ResultBadge = (props: ResultBadgeProps) => {
-  const theme: ThemeColors = useTheme();
-
+const ResultBadge = ({ letterSpacing, color, borderColor, children }: ResultBadgeProps) => {
   return (
     <Badge
-      className="min-w-[97.55px] lg:text-lg"
-      borderRadius="lg"
-      fontSize="lg"
-      textAlign="center"
-      border="solid 1px"
-      textTransform="none"
-      letterSpacing={props.letterSpacing}
-      bg={theme.colors.background.card}
-      color={props.color}
-      borderColor={props.borderColor}
+      className="bg-card min-w-[97.55px] rounded-lg border text-center text-lg normal-case lg:text-lg"
+      style={{
+        letterSpacing: letterSpacing ? `${letterSpacing}px` : undefined,
+        color: color,
+        borderColor: borderColor,
+      }}
     >
-      {props.children}
+      {children}
     </Badge>
   );
 };

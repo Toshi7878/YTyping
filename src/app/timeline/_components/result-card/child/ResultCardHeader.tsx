@@ -1,5 +1,4 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
-import { Flex } from "@chakra-ui/react";
 import ResultClapButton from "./child/ResultClapButton";
 import ResultUserName from "./child/ResultUserName";
 
@@ -9,14 +8,10 @@ interface ResultCardHeaderProps {
 
 const ResultCardHeader = ({ result }: ResultCardHeaderProps) => {
   return (
-    <Flex alignItems="baseline" justifyContent="space-between">
+    <div className="flex items-baseline justify-between">
       <ResultUserName result={result} />
-      <ResultClapButton
-        resultId={result?.id}
-        clapCount={result?.clap_count}
-        hasClap={result?.hasClap}
-      />
-    </Flex>
+      <ResultClapButton resultId={result?.id} clapCount={result?.clap_count} hasClap={result?.hasClap} />
+    </div>
   );
 };
 

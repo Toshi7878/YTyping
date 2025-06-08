@@ -5,8 +5,8 @@ import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapCard from "@/components/map-card/MapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
-import { Box, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 interface CreatedCheckProps {
   videoId: string;
@@ -17,18 +17,20 @@ const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProp
   const { data, isPending } = useQuery(useMapListQueryOptions().listByVideoId({ videoId }));
 
   if (isPending) {
-    return <Spinner size="sm" my={10} />;
+    return (
+      <div className="my-10 flex justify-center">
+        <Loader2 className="h-4 w-4 animate-spin" />
+      </div>
+    );
   }
 
   if (data && data.length) {
     return (
-      <Box>
-        <Box fontSize="lg" fontWeight="bold" my={3}>
-          この動画の譜面が{data.length}件見つかりました
-        </Box>
+      <div>
+        <div className="my-3 text-lg font-bold">この動画の譜面が{data.length}件見つかりました</div>
         {data.map((map, index) => {
           return (
-            <Box key={index} mb={2} maxW="610px">
+            <div key={index} className="mb-2 max-w-[610px]">
               <MapCard>
                 <MapLeftThumbnail
                   alt={map.title}
@@ -41,17 +43,13 @@ const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProp
                   <MapInfo map={map} />
                 </MapCardRightInfo>
               </MapCard>
-            </Box>
+            </div>
           );
         })}
-      </Box>
+      </div>
     );
   } else if (!disableNotFoundText) {
-    return (
-      <Box fontSize="lg" fontWeight="bold" my={3}>
-        この動画の譜面は見つかりませんでした
-      </Box>
-    );
+    return <div className="my-3 text-lg font-bold">この動画の譜面は見つかりませんでした</div>;
   }
   return null;
 };

@@ -1,6 +1,5 @@
 "use client";
-import CustomMapCard from "@/components/custom-ui/CustomMapCard";
-import { CardFooter, CardHeader } from "@chakra-ui/react";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { ResultCardInfo } from "../../ts/type";
 import { MapResultBadgesMobile } from "./child/child/MapResultBadgesLayout";
 import ResultInnerCardBody from "./child/ResultCardBody";
@@ -15,17 +14,19 @@ function ResultCard(props: ResultCardProps) {
   const { result } = props;
 
   return (
-    <CustomMapCard>
-      <CardHeader borderRadius="md" mx={2} py={3}>
+    <Card className="bg-card transition-shadow duration-300 hover:shadow-lg">
+      <CardHeader className="mx-2 rounded-md py-3">
         <ResultCardHeader result={result} />
       </CardHeader>
+
       <ResultInnerCardBodyWrapper result={result}>
         <ResultInnerCardBody result={result} />
       </ResultInnerCardBodyWrapper>
-      <CardFooter borderRadius="md" pb={1}>
-        <MapResultBadgesMobile result={result} display={{ base: "flex", md: "none" }} />
+
+      <CardFooter className="rounded-md pb-1">
+        <MapResultBadgesMobile result={result} className="hidden md:flex" />
       </CardFooter>
-    </CustomMapCard>
+    </Card>
   );
 }
 

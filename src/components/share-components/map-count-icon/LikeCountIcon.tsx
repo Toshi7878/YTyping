@@ -1,8 +1,8 @@
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
-import { LocalLikeState, ThemeColors } from "@/types";
+import { cn } from "@/lib/utils";
+import { LocalLikeState } from "@/types";
 import { useLocalLikeServerActions } from "@/utils/global-hooks/useLocalLikeServerActions";
-import { Box, Flex, useTheme } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import React, { memo, useActionState, useRef } from "react";
 import { FiHeart } from "react-icons/fi";
@@ -12,46 +12,34 @@ interface LikeButtonProps {
 }
 
 const UnauthenticatedLikeCountIcon = ({ likeOptimisticState }: LikeButtonProps) => {
-  const theme: ThemeColors = useTheme();
-
   return (
-    <Flex alignItems="baseline" color={`${theme.colors.text.body}99`} rounded="md" px={1}>
-      <Box mr={1} position="relative" top="2.5px">
+    <div className="text-muted-foreground/60 flex items-baseline rounded-md px-1">
+      <div className="relative top-[2.5px] mr-1">
         <FiHeart size={17} />
-      </Box>
-      <Box fontSize="lg" fontFamily="monospace">
-        {likeOptimisticState.likeCount}
-      </Box>
-    </Flex>
+      </div>
+      <div className="font-mono text-lg">{likeOptimisticState.likeCount}</div>
+    </div>
   );
 };
 
 const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonProps) => {
-  const theme: ThemeColors = useTheme();
-
   const { data: session } = useSession();
   const likeButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <Flex
-      alignItems="baseline"
-      color={likeOptimisticState.hasLike ? theme.colors.semantic.like : `${theme.colors.text.body}99`}
-      rounded="md"
-      _hover={session?.user.id ? { bg: `${theme.colors.semantic.like}60` } : ""}
-      pr={1}
-      zIndex={1}
-      cursor={"pointer"}
+    <div
+      className={cn(
+        "z-[1] flex cursor-pointer items-baseline rounded-md pr-1",
+        likeOptimisticState.hasLike ? "text-like" : "text-muted-foreground/60",
+        session?.user.id && "hover:bg-like/40",
+      )}
     >
-      <Box m={-1} mt={-4} position="relative" top="10.25px">
+      <div className="relative top-[10.25px] -m-1 -mt-4">
         <LikeButton defaultLiked={likeOptimisticState.hasLike} size={34} likeButtonRef={likeButtonRef as any} />
-      </Box>
-      <Box
-        as="button"
+      </div>
+      <button
         type="button"
-        fontSize="lg"
-        fontFamily="monospace"
-        position="relative"
-        top="0px"
+        className="relative top-0 font-mono text-lg"
         onClick={(event: React.MouseEvent) => {
           // LikeButtonのクリックイベントをトリガー
           likeButtonRef.current!.click();
@@ -60,8 +48,8 @@ const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonPro
         }}
       >
         {likeOptimisticState.likeCount}
-      </Box>
-    </Flex>
+      </button>
+    </div>
   );
 };
 
@@ -80,20 +68,25 @@ const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
 
   const [state, formAction] = useActionState(async () => {
     const result = await toggleLikeAction(mapId);
-
     return result;
   }, INITIAL_STATE);
+
   const preventClick = (event: React.MouseEvent) => {
     event.stopPropagation();
   };
+
   return (
-    <Flex as="form" action={session?.user.id ? formAction : ""} onClick={session?.user.id ? preventClick : undefined}>
+    <form
+      action={session?.user.id ? formAction : ""}
+      onClick={session?.user.id ? preventClick : undefined}
+      className="flex"
+    >
       {session?.user.id ? (
         <AuthenticatedLikeCountIconButton likeOptimisticState={likeOptimisticState} />
       ) : (
         <UnauthenticatedLikeCountIcon likeOptimisticState={likeOptimisticState} />
       )}
-    </Flex>
+    </form>
   );
 };
 

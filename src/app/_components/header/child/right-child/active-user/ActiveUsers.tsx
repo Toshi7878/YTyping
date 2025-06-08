@@ -1,24 +1,13 @@
-import CustomDrawerContent from "@/components/custom-ui/CustomDrawerContent";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { useSetOnlineUsersAtom, useUserOptionsState } from "@/lib/global-atoms/globalAtoms";
 import { supabase } from "@/lib/supabaseClient";
-import { ThemeColors } from "@/types";
 import { ActiveUserStatus } from "@/types/global-types";
-import { Box, Drawer, useDisclosure, useTheme } from "@chakra-ui/react";
-import { Users } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams, usePathname } from "next/navigation";
-import { useCallback, useEffect } from "react";
-import ActiveUsersInnerContent from "./child/ActiveUsersInnerContent";
+import { useEffect } from "react";
+import ActiveUsersDrawer from "./ActiveUsersDrawer";
 
 export default function ActiveUsers() {
-  const theme: ThemeColors = useTheme();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const userOptions = useUserOptionsState();
-
-  const nofityDrawerClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
 
   const { data: session } = useSession();
   const setOnlineUsers = useSetOnlineUsersAtom();
@@ -77,7 +66,7 @@ export default function ActiveUsers() {
         { event: "join" },
         ({ key, newPresences }: { key: string; newPresences: ActiveUserStatus[] }) => {
           setOnlineUsers((prev) => [...prev, ...newPresences]);
-        }
+        },
       );
 
       channel.on("presence", { event: "leave" }, ({ key }: { key: string }) => {
@@ -126,28 +115,5 @@ export default function ActiveUsers() {
     };
   }, [pathname, session?.user.name, setOnlineUsers, mapId, session?.user.id, userOptions?.custom_user_active_state]);
 
-  return (
-    <>
-      <CustomToolTip placement="bottom" label="アクティブユーザー" fontSize="xs" openDelay={600}>
-        <Box
-          color={theme.colors.text.header.normal}
-          _hover={{
-            color: theme.colors.text.header.hover,
-          }}
-          cursor="pointer"
-          onClick={onOpen}
-        >
-          <Box position="relative" top="0.5px" boxShadow="xl" p={2}>
-            <Users size={18} strokeWidth={2.5} />
-          </Box>
-        </Box>
-      </CustomToolTip>
-
-      <Drawer isOpen={isOpen} placement="right" onClose={nofityDrawerClose} autoFocus={false}>
-        <CustomDrawerContent width={{ base: "auto", lg: "450px" }}>
-          <ActiveUsersInnerContent />
-        </CustomDrawerContent>
-      </Drawer>
-    </>
-  );
+  return <ActiveUsersDrawer />;
 }

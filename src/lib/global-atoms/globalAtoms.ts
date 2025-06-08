@@ -7,13 +7,6 @@ import { useCallback } from "react";
 const globalAtomStore = createStore();
 export const getGlobalAtomStore = () => globalAtomStore;
 
-const getInitialTheme = (): "light" | "dark" => {
-  // SSRとCSRで一貫性を保つため、サーバーサイドでも一律darkを返す
-  return "dark";
-};
-
-const themeAtom = atom<"light" | "dark">(getInitialTheme());
-
 const volumeAtom = atomWithStorage("volume", 30, undefined, {
   getOnInit: false,
 });
@@ -23,7 +16,7 @@ export const useSetVolume = () => useSetAtom(volumeAtom, { store: globalAtomStor
 export const useVolumeStateRef = () => {
   return useAtomCallback(
     useCallback((get) => get(volumeAtom), []),
-    { store: globalAtomStore }
+    { store: globalAtomStore },
   );
 };
 

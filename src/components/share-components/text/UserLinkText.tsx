@@ -1,7 +1,5 @@
-import { ThemeColors } from "@/types";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import { useTheme } from "@chakra-ui/react";
+import Link from "next/link";
 
 interface UserLInkTextProps {
   userId: number;
@@ -9,18 +7,10 @@ interface UserLInkTextProps {
 }
 
 const UserLinkText = ({ userId, userName }: UserLInkTextProps) => {
-  const theme: ThemeColors = useTheme();
-
   const handleLinkClick = useLinkClick();
 
   return (
-    <Link
-      href={`/user/${userId}`}
-      position="relative"
-      zIndex={1}
-      onClick={handleLinkClick}
-      color={theme.colors.secondary.main}
-    >
+    <Link href={`/user/${userId}`} className="text-secondary relative z-1 hover:underline" onClick={handleLinkClick}>
       {userName}
     </Link>
   );

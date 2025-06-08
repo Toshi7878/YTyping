@@ -2,10 +2,10 @@
 
 import { useSession } from "next-auth/react";
 import HamburgerMenu from "./HamburgerMenu";
+import NewMap from "./NewMap";
+import NotifyBell from "./NotifyBell";
 import ActiveUsers from "./right-child/active-user/ActiveUsers";
 import Login from "./right-child/login/Login";
-import NewMap from "./right-child/new-map/NewMap";
-import NotifyBell from "./right-child/notify-bell/NotifyBell";
 
 export default function RightNav() {
   const { data: session, status } = useSession();
