@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import AutoUpdateInputFormField from "@/components/ui/input/mutation-input-form-field";
+import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useTRPC } from "@/trpc/trpc";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { nameSchema } from "@/validator/schema";
@@ -74,7 +74,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="space-y-2">
-          <AutoUpdateInputFormField
+          <MutationInputFormField
             name="newName"
             label="名前"
             placeholder={placeholder}

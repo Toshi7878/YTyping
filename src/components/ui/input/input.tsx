@@ -1,8 +1,6 @@
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { useFormContext } from "react-hook-form";
 
 // TODO:chakra ui 移行後 !important削除
 const inputVariants = cva(
@@ -42,50 +40,4 @@ function Input({ className, type, variant, size, ...props }: InputProps) {
   return <input type={type} data-slot="input" className={cn(inputVariants({ variant, size }), className)} {...props} />;
 }
 
-interface InputFormFieldProps {
-  name: string;
-  label?: React.ReactNode;
-  description?: React.ReactNode;
-  required?: boolean;
-  className?: string;
-  variant?: VariantProps<typeof inputVariants>["variant"];
-  size?: VariantProps<typeof inputVariants>["size"];
-  disabledFormMessage?: boolean;
-}
-
-function InputFormField({
-  name,
-  label,
-  description,
-  required = false,
-  className,
-  size = "default",
-  disabledFormMessage = false,
-  ...inputProps
-}: InputFormFieldProps & Omit<React.ComponentProps<"input">, "size">) {
-  const { control } = useFormContext();
-
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <FormItem>
-          {label && (
-            <FormLabel>
-              {label}
-              {required && <span className="text-destructive ml-1">*</span>}
-            </FormLabel>
-          )}
-          <FormControl className={cn(className)}>
-            <Input {...field} {...inputProps} variant={fieldState.error ? "error" : "default"} size={size} />
-          </FormControl>
-          {description && <FormDescription>{description}</FormDescription>}
-          {!disabledFormMessage && <FormMessage />}
-        </FormItem>
-      )}
-    />
-  );
-}
-
-export { Input, InputFormField, inputVariants };
+export { Input, inputVariants };

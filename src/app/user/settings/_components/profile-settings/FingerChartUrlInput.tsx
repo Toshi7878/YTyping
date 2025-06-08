@@ -1,7 +1,7 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
-import MutationInputFormField from "@/components/ui/input/mutation-input-form-field";
+import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useTRPC } from "@/trpc/trpc";
 import { fingerChartUrlFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";

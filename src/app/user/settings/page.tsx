@@ -10,11 +10,12 @@ import { MyKeyboardInput } from "./_components/profile-settings/MyKeyboardInput"
 export default async function Page() {
   const session = await auth();
   const userProfile = await serverApi.user.getUserProfile({ userId: Number(session?.user.id) });
+  const userOptions = await serverApi.userOption.getUserOptions({ userId: Number(session?.user.id) });
 
   return (
     <div className="mx-auto flex w-full flex-col gap-5 pt-4 md:w-[70%]">
       <ProfileSettingCard userProfile={userProfile} />
-      <OptionSettingCard />
+      <OptionSettingCard userOptions={userOptions} />
     </div>
   );
 }
@@ -41,7 +42,11 @@ const ProfileSettingCard = ({ userProfile }: ProfileSettingCardProps) => {
   );
 };
 
-const OptionSettingCard = () => {
+interface OptionSettingCardProps {
+  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
+}
+
+const OptionSettingCard = ({ userOptions }: OptionSettingCardProps) => {
   return (
     <Card className="mx-8">
       <CardHeader>
@@ -51,7 +56,7 @@ const OptionSettingCard = () => {
       </CardHeader>
       <CardContent>
         <div className="flex w-full">
-          <OptionSettingForm />
+          <OptionSettingForm userOptions={userOptions} />
         </div>
       </CardContent>
       <CardFooter />

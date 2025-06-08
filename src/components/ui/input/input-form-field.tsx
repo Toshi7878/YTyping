@@ -1,10 +1,59 @@
 "use client";
 
-import { InputFormField } from "@/components/ui/input/input";
+import { Input, inputVariants } from "@/components/ui/input/input";
+import { cn } from "@/lib/utils";
 import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import { UseMutationResult } from "@tanstack/react-query";
+import { VariantProps } from "class-variance-authority";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { FieldError, FieldErrorsImpl, Merge, useFormContext } from "react-hook-form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form";
+
+interface InputFormFieldProps {
+  name: string;
+  label?: React.ReactNode;
+  description?: React.ReactNode;
+  required?: boolean;
+  className?: string;
+  variant?: VariantProps<typeof inputVariants>["variant"];
+  size?: VariantProps<typeof inputVariants>["size"];
+  disabledFormMessage?: boolean;
+}
+
+const InputFormField = ({
+  name,
+  label,
+  description,
+  required = false,
+  className,
+  size = "default",
+  disabledFormMessage = false,
+  ...inputProps
+}: InputFormFieldProps & Omit<React.ComponentProps<"input">, "size">) => {
+  const { control } = useFormContext();
+
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => (
+        <FormItem>
+          {label && (
+            <FormLabel>
+              {label}
+              {required && <span className="text-destructive ml-1">*</span>}
+            </FormLabel>
+          )}
+          <FormControl className={cn(className)}>
+            <Input {...field} {...inputProps} variant={fieldState.error ? "error" : "default"} size={size} />
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          {!disabledFormMessage && <FormMessage />}
+        </FormItem>
+      )}
+    />
+  );
+};
 
 interface MutationInputFormFieldProps {
   label: string;
@@ -97,4 +146,4 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
   return null;
 };
 
-export default MutationInputFormField;
+export { InputFormField, MutationInputFormField };

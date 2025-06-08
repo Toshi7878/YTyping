@@ -1,6 +1,6 @@
 "use client";
 
-import MutationInputFormField from "@/components/ui/input/mutation-input-form-field";
+import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useTRPC } from "@/trpc/trpc";
 import { myKeyboardFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
