@@ -1,4 +1,4 @@
-import { Flex, Textarea } from "@chakra-ui/react";
+import { Textarea } from "@/components/ui/textarea";
 import { Ticker } from "@pixi/ticker";
 import { useEffect, useRef } from "react";
 import { useInputTextarea, useUserStats } from "../atom/refAtoms";
@@ -80,23 +80,16 @@ const InputTextarea = () => {
   }, [writeLyricsTextarea]);
 
   return (
-    <Flex bg="background.card" fontSize="3xl" width="85%" alignItems="center" justifyContent="center" mx="auto">
+    <div className="bg-card mx-auto flex w-[85%] items-center justify-center text-3xl">
       <Textarea
         ref={lyricsTextareaRef}
-        px={4}
-        height="130px"
-        color="white"
+        className="h-[130px] resize-none rounded-md px-4 text-[90%] font-bold tracking-widest text-white"
         autoComplete="off"
-        resize="none"
-        fontSize="90%"
-        borderRadius="md"
-        fontWeight="bold"
-        letterSpacing={1.5}
         placeholder={placeholder}
         onKeyDown={handleKeyDown}
         onInput={handleInput}
       />
-    </Flex>
+    </div>
   );
 };
 
@@ -161,4 +154,5 @@ const useTypingTimeTimer = () => {
 
   return { startTicker, stopTicker, tickerRef, tickStartRef };
 };
+
 export default InputTextarea;

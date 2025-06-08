@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import { useNotificationsState } from "../atom/stateAtoms";
 
@@ -13,27 +12,19 @@ const Notifications = ({ style }: { style: React.CSSProperties }) => {
   }, [notifications]);
 
   return (
-    <Box
+    <div
       ref={containerRef}
-      fontFamily="Yu Gothic Ui"
-      width="100%"
-      fontWeight="bold"
-      textShadow="0px 0px 10px rgba(0, 0, 0, 1)"
-      fontSize="xl"
-      zIndex={200}
-      overflowY="hidden"
-      position="absolute"
-      top="45px"
-      left="0"
-      style={{ ...style }}
-      cursor="pointer"
-      pointerEvents="none"
-      lineHeight={"xl"}
+      className="pointer-events-none absolute top-[45px] left-0 z-[200] w-full cursor-pointer overflow-y-hidden text-xl leading-7 font-bold"
+      style={{
+        fontFamily: "Yu Gothic Ui",
+        textShadow: "0px 0px 10px rgba(0, 0, 0, 1)",
+        ...style,
+      }}
     >
       {notifications.map((notification, index) => (
-        <Box key={index}>{notification}</Box>
+        <div key={index}>{notification}</div>
       ))}
-    </Box>
+    </div>
   );
 };
 

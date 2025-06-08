@@ -1,20 +1,17 @@
-import { Image, ImageProps } from "@chakra-ui/next-js";
-import { Button, ButtonProps } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import Image, { StaticImageData } from "next/image";
 import { ICON_SIZE } from "../../../ts/const";
 
 interface MenuButtonProps {
-  image?: ImageProps["src"];
+  image?: StaticImageData;
   title: string;
+  onClick?: () => void;
 }
 
-const MenuButton = ({ image, title, ...props }: MenuButtonProps & ButtonProps) => {
+const MenuButton = ({ image, title, onClick, ...props }: MenuButtonProps & React.ComponentProps<typeof Button>) => {
   return (
-    <Button
-      leftIcon={image ? <Image src={image} alt={title} width={ICON_SIZE} height={ICON_SIZE} /> : undefined}
-      variant="ghost"
-      size="sm"
-      {...props}
-    >
+    <Button variant="ghost" size="sm" onClick={onClick} className="gap-2" {...props}>
+      {image && <Image src={image} alt={title} width={ICON_SIZE} height={ICON_SIZE} className="shrink-0" />}
       {title}
     </Button>
   );

@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useInputTextarea, usePlayer, useUserStats } from "../../atom/refAtoms";
@@ -18,19 +18,21 @@ const ViewArea = () => {
       readInputTextarea().focus();
     }
   };
+
   return (
-    <Box
+    <div
       onClick={onClick}
-      cursor={scene === "ready" ? "pointer" : "default"}
-      fontFamily="Yu Gothic Ui"
-      bg="rgba(0, 0, 0, 0.8)"
-      width="100%"
-      fontWeight="bold"
-      textShadow="0px 0px 10px rgba(0, 0, 0, 1)"
-      fontSize={{ base: "2xl", sm: "3xl", lg: "4xl" }}
+      className={cn(
+        "w-full bg-black/80 text-2xl font-bold sm:text-3xl lg:text-4xl",
+        scene === "ready" ? "cursor-pointer" : "cursor-default",
+      )}
+      style={{
+        fontFamily: "Yu Gothic Ui",
+        textShadow: "0px 0px 10px rgba(0, 0, 0, 1)",
+      }}
     >
       <SceneView />
-    </Box>
+    </div>
   );
 };
 
@@ -97,10 +99,10 @@ const SceneView = () => {
   }, [scene, readPlayer, map, readInputTextarea, readUserStats, resetUserStats, session?.user.id]);
 
   return (
-    <Box ml={{ base: 6, md: 20, xl: 32 }}>
-      <LyricsContainer visibility={scene === "ready" || scene === "end" ? "hidden" : "visible"} />
-      {scene === "end" && <ResultScore position="absolute" top="2" />}
-    </Box>
+    <div className="ml-6 md:ml-20 xl:ml-32">
+      <LyricsContainer className={scene === "ready" || scene === "end" ? "invisible" : "visible"} />
+      {scene === "end" && <ResultScore className="absolute top-2" />}
+    </div>
   );
 };
 

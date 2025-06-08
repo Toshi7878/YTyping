@@ -1,6 +1,6 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/trpc";
-import { ThemeColors } from "@/types";
-import { Card, CardBody, Divider, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { Dispatch, useEffect, useRef } from "react";
@@ -21,7 +21,6 @@ interface SettingCardProps {
 }
 
 const SettingCard = (props: SettingCardProps) => {
-  const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
   const trpc = useTRPC();
   const updateImeTypingOptions = useMutation(trpc.userTypingOption.updateImeTypeOptions.mutationOptions());
@@ -81,53 +80,28 @@ const SettingCard = (props: SettingCardProps) => {
       {props.isCardVisible && (
         <Card
           ref={cardRef}
-          position="fixed"
-          zIndex={4}
-          width={"600px"}
-          bg={theme.colors.background.body}
-          color={theme.colors.text.body}
-          border="1px"
-          bottom={150}
-          right={20}
-          borderColor={theme.colors.border.card}
-          fontSize={"lg"}
-          boxShadow="lg"
-          borderRadius="md"
-          overflow="hidden"
+          className="border-border bg-background text-foreground fixed right-5 bottom-[150px] z-[4] w-[600px] overflow-hidden rounded-md border text-lg shadow-lg"
         >
-          <CardBody padding={4}>
-            <Tabs variant="unstyled">
-              <TabList mb={4} gap={2} display="flex" flexWrap="wrap">
+          <CardContent className="p-4">
+            <Tabs defaultValue="main" className="w-full">
+              <TabsList className="mb-4 flex flex-wrap gap-2 bg-transparent">
                 {tabData.map((tab, index) => (
-                  <Tab
+                  <TabsTrigger
                     key={index}
-                    _selected={{
-                      bg: theme.colors.primary.main,
-                      color: theme.colors.text.body,
-                    }}
-                    _hover={{
-                      bg: theme.colors.primary.light,
-                      color: theme.colors.text.body,
-                    }}
-                    fontSize="sm"
-                    border={`1px solid ${theme.colors.border.card}`}
-                    color={theme.colors.text.body}
-                    rounded="md"
-                    bg={theme.colors.background.card}
+                    value={index === 0 ? "main" : `tab-${index}`}
+                    className="border-border bg-card text-foreground hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md border text-sm"
                   >
                     {tab.label}
-                  </Tab>
+                  </TabsTrigger>
                 ))}
-              </TabList>
-              <TabPanels>
-                {tabData.map((tab, index) => (
-                  <TabPanel key={index} px={2}>
-                    {tab.content}
-                  </TabPanel>
-                ))}
-              </TabPanels>
+              </TabsList>
+              {tabData.map((tab, index) => (
+                <TabsContent key={index} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
+                  {tab.content}
+                </TabsContent>
+              ))}
             </Tabs>
-          </CardBody>
+          </CardContent>
         </Card>
       )}
     </>
@@ -135,8 +109,7 @@ const SettingCard = (props: SettingCardProps) => {
 };
 
 const SettingCardDivider = () => {
-  const theme: ThemeColors = useTheme();
-  return <Divider bg={theme.colors.text.body} my={4} />;
+  return <div className="bg-foreground my-4 h-px" />;
 };
 
 const MainSettingTab = () => {
@@ -144,8 +117,8 @@ const MainSettingTab = () => {
   const setUserImeTypeOptions = useSetImetypeOptions();
 
   return (
-    <Flex flexDirection="column" gap={4}>
-      <Flex flexDirection="column" gap={4}>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <OptionInputFormField
           label={
             <OptionCheckboxFormField
@@ -168,8 +141,8 @@ const MainSettingTab = () => {
           name="addSymbol"
           isDisabled={!userImeTypeOptions.enable_add_symbol}
         />
-      </Flex>
-      <Flex>
+      </div>
+      <div className="flex">
         <OptionCheckboxFormField
           label="英語スペースを有効化"
           name="enableEngSpace"
@@ -190,7 +163,7 @@ const MainSettingTab = () => {
             });
           }}
         />
-      </Flex>
+      </div>
 
       <SettingCardDivider />
 
@@ -215,7 +188,7 @@ const MainSettingTab = () => {
           });
         }}
       />
-    </Flex>
+    </div>
   );
 };
 

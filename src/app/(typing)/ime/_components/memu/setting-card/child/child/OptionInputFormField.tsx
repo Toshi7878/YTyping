@@ -1,18 +1,31 @@
-import { CheckboxProps, Flex, FormLabel, Input } from "@chakra-ui/react";
+import { Input } from "@/components/ui/input/input";
+import * as React from "react";
 
-interface CheckBoxOptionProps {
+interface InputOptionProps {
   label: React.ReactNode;
   name: string;
+  onInput?: (event: React.FormEvent<HTMLInputElement>) => void;
+  value?: string;
+  isDisabled?: boolean;
 }
 
-const OptionInputFormField = ({ label, name, ...props }: CheckBoxOptionProps & CheckboxProps) => {
+const OptionInputFormField = ({ label, name, onInput, value, isDisabled, ...props }: InputOptionProps) => {
   return (
-    <Flex flexDirection="column" gap={1}>
-      <FormLabel mb={0} htmlFor={name}>
+    <div className="flex flex-col gap-1">
+      <label className="mb-0 text-sm font-medium" htmlFor={name}>
         {label}
-      </FormLabel>
-      <Input id={name} pl={2} pr={2} size="sm" name={name} {...props} />
-    </Flex>
+      </label>
+      <Input
+        id={name}
+        name={name}
+        size="sm"
+        onInput={onInput}
+        value={value}
+        disabled={isDisabled}
+        className="px-2"
+        {...props}
+      />
+    </div>
   );
 };
 

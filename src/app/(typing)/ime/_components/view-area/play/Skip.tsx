@@ -1,9 +1,12 @@
-import { Box, BoxProps } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSkipRemainTimeState } from "../../../atom/stateAtoms";
 import { useSkip } from "../../../hooks/skip";
 
-const Skip = (props: BoxProps) => {
+interface SkipProps {
+  className?: string;
+}
+
+const Skip = ({ className }: SkipProps) => {
   const skipRemainTime = useSkipRemainTimeState();
   const handleSkip = useSkip();
 
@@ -16,21 +19,15 @@ const Skip = (props: BoxProps) => {
   return (
     <AnimatePresence>
       {skipRemainTime !== null && (
-        <Box
-          as={motion.div}
-          {...props}
-          fontSize="60%"
+        <motion.div
+          className={`cursor-pointer text-[60%] hover:underline ${className || ""}`}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 } as any}
+          transition={{ duration: 0.3 }}
           onClick={handleClick}
-          cursor="pointer"
-          _hover={{
-            textDecoration: "underline",
-          }}
         >
           Skip ({skipRemainTime})
-        </Box>
+        </motion.div>
       )}
     </AnimatePresence>
   );

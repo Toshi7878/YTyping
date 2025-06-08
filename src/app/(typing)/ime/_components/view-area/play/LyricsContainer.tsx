@@ -1,6 +1,5 @@
-import { Box, Flex, FlexProps, Text } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { HTMLAttributes, useEffect, useRef } from "react";
 import { useLyricsContainer } from "../../../atom/refAtoms";
 import {
   useCountState,
@@ -13,15 +12,15 @@ import { COMPLETED_WIPE_COLOR, INITIAL_WIPE_COLOR } from "../../../ts/const";
 import "./lyrics-container.css";
 import Skip from "./Skip";
 
-const LyricsContainer = (props: FlexProps) => {
+const LyricsContainer = (props: HTMLAttributes<HTMLDivElement>) => {
   const enableNextLyricsOption = useEnableNextLyricsOptionState();
 
   return (
-    <Flex id="lyrics-container" position="relative" flexDirection="column" mb={2} {...props}>
+    <div id="lyrics-container" className="relative mb-2 flex flex-col" {...props}>
       <Lyrics />
       {enableNextLyricsOption && <NextLyrics />}
-      <Skip position="absolute" bottom={0.5} left={{ base: "initial", xl: -24 }} right={{ base: "4", xl: "initial" }} />
-    </Flex>
+      <Skip className="absolute right-4 bottom-0.5 left-auto xl:right-auto xl:left-[-96px]" />
+    </div>
   );
 };
 
@@ -37,34 +36,33 @@ const Lyrics = () => {
   }, [writeLyricsContainer]);
 
   return (
-    <Box my={1} ref={lyricsContainerRef} minH="7.5rem">
+    <div className="my-1 min-h-[7.5rem]" ref={lyricsContainerRef}>
       {displayLines.map((line, index) => (
-        <Box key={index}>
-          <Box className="shadow-layer">
+        <div key={index}>
+          <div className="shadow-layer">
             {line.map((chunk) => (
               <>
-                <Text as="span" key={String(chunk.time)} color="transparent">
+                <span key={String(chunk.time)} className="text-transparent">
                   {chunk.word}
-                </Text>{" "}
+                </span>{" "}
               </>
             ))}
-          </Box>
-          <Box className="wipe-layer">
+          </div>
+          <div className="wipe-layer">
             {line.map((chunk) => (
               <>
-                <Text
-                  as="span"
+                <span
                   key={String(chunk.time)}
                   style={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}
                 >
                   {chunk.word}
-                </Text>{" "}
+                </span>{" "}
               </>
             ))}
-          </Box>
-        </Box>
+          </div>
+        </div>
       ))}
-    </Box>
+    </div>
   );
 };
 
@@ -75,8 +73,8 @@ const NextLyrics = () => {
 
   const nextLine = map?.lines?.[count];
   return (
-    <Box id="next_lyrics" userSelect="none" color="#aaa" fontSize="60%">
-      {nextLine && <Text as="span">{`NEXT: `}</Text>}
+    <div id="next_lyrics" className="text-[60%] text-gray-400 select-none">
+      {nextLine && <span>{`NEXT: `}</span>}
       <AnimatePresence>
         {nextDisplayLine.length > 0 && (
           <motion.div
@@ -88,15 +86,13 @@ const NextLyrics = () => {
           >
             {nextDisplayLine.map((chunk) => (
               <>
-                <Text as="span" key={String(chunk.time)}>
-                  {chunk.word}
-                </Text>{" "}
+                <span key={String(chunk.time)}>{chunk.word}</span>{" "}
               </>
             ))}
           </motion.div>
         )}
       </AnimatePresence>
-    </Box>
+    </div>
   );
 };
 

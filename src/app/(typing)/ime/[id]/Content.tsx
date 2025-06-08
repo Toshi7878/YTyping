@@ -1,8 +1,8 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { MapLine } from "@/types/map";
 import { useMapQueries } from "@/utils/queries/map.queries";
-import { Box, Button, Flex } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -112,12 +112,12 @@ function Content({ mapInfo }: ContentProps) {
   }, [readScene, enableLargeVideoDisplay]);
 
   const loadingMessage = tokenizerError ? (
-    <Flex flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={2}>
+    <div className="flex h-full flex-col items-center justify-center gap-2">
       ワード生成に失敗しました。
-      <Button onClick={() => loadMap(mapData!)} colorScheme="green">
+      <Button onClick={() => loadMap(mapData!)} className="bg-green-600 hover:bg-green-700">
         再試行
       </Button>
-    </Flex>
+    </div>
   ) : mapData !== undefined ? (
     "ひらがな判定生成中..."
   ) : (
@@ -125,7 +125,7 @@ function Content({ mapInfo }: ContentProps) {
   );
 
   return (
-    <Box as="main">
+    <main>
       <LoadingOverlayWrapper
         active={map === null}
         spinner={!tokenizerError}
@@ -149,19 +149,15 @@ function Content({ mapInfo }: ContentProps) {
         style={{ height: youtubeHeight.height, minHeight: youtubeHeight.minHeight }}
       />
 
-      <Flex
+      <div
         ref={lyricsViewAreaRef}
-        width="100%"
-        position="fixed"
-        bottom={{ base: 0, lg: 100, xl: 150 }}
-        left="0"
-        flexDirection="column"
+        className="fixed bottom-0 left-0 w-full flex-col lg:bottom-[100px] xl:bottom-[150px]"
       >
         <ViewArea />
         <InputTextarea />
         <MenuBar />
-      </Flex>
-    </Box>
+      </div>
+    </main>
   );
 }
 
