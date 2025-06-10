@@ -2,7 +2,9 @@
 import { useIsSearchingState, useSetIsSearching } from "@/app/timeline/atoms/atoms";
 import { useSetSearchParams } from "@/app/timeline/hook/useSetSearchParams";
 import { PARAM_NAME } from "@/app/timeline/ts/const/consts";
-import { Button, HStack, Input } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input/input";
+import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -45,9 +47,8 @@ const SearchInputs = () => {
   };
 
   return (
-    <HStack>
+    <div className="flex gap-2">
       <Input
-        size="md"
         value={keyword.mapKeyWord}
         type="search"
         placeholder="譜面キーワードで絞り込み"
@@ -59,7 +60,6 @@ const SearchInputs = () => {
         }}
       />
       <Input
-        size="md"
         placeholder="ユーザーネームで絞り込み"
         type="search"
         value={keyword.userName}
@@ -70,10 +70,11 @@ const SearchInputs = () => {
           }
         }}
       />
-      <Button width="30%" onClick={handleSearch} isLoading={isSearching}>
+      <Button className="w-[30%]" onClick={handleSearch} disabled={isSearching}>
+        {isSearching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         検索
       </Button>
-    </HStack>
+    </div>
   );
 };
 

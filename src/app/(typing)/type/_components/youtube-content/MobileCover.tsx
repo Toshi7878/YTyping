@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
 import { usePlayer, useYTStatus } from "../../atoms/refAtoms";
@@ -27,15 +26,9 @@ const MobileCover = () => {
   );
 
   return (
-    <Box
+    <div
       id="mobile_cover"
-      cursor="pointer"
-      position="absolute"
-      alignItems="center"
-      inset={0}
-      transition="opacity 0.3s"
-      borderRadius="lg"
-      zIndex={5}
+      className="absolute inset-0 z-[5] cursor-pointer items-center rounded-lg transition-opacity duration-300"
       onClick={handleStart}
     />
   );

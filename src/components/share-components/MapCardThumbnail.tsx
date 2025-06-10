@@ -1,7 +1,7 @@
 import { PREVIEW_DISABLE_PATHNAMES } from "@/config/consts/globalConst";
 import { cn } from "@/lib/utils";
-import { Image } from "@chakra-ui/next-js";
 import { cva, VariantProps } from "class-variance-authority";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import ThumbnailPreviewCover from "../map-card/child/child/ThumbnailPreviewCover";
 
@@ -34,7 +34,7 @@ const MapLeftThumbnail = (props: MapLeftThumbnailProps & React.HTMLAttributes<HT
     <div className="group relative my-auto select-none" {...rest}>
       {src ? (
         <div className={cn(mapLeftThumbnailVariants({ size }))}>
-          <Image unoptimized loading="lazy" alt={alt} src={src} rounded={"md"} fill />
+          <Image unoptimized loading="lazy" alt={alt} src={src} fill className="rounded-md" />
         </div>
       ) : (
         <div className={cn(mapLeftThumbnailVariants({ size }))} />

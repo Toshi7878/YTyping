@@ -1,57 +1,36 @@
 "use client";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ThemeColors } from "@/types";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import { Box, Flex, useTheme } from "@chakra-ui/react";
+import Link from "next/link";
 import MapBadges from "./MapBadgesLayout";
 
 interface MapCardProps {
   map: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number]["map"];
 }
 function NotificationMapInfo({ map }: MapCardProps) {
-  const theme: ThemeColors = useTheme();
   const handleLinkClick = useLinkClick();
 
   return (
     <Link
-      display="flex"
-      justifyContent="space-between"
-      flexDirection="column"
-      height="100%"
-      _hover={{ textDecoration: "none" }}
+      className="flex h-full flex-col justify-between hover:no-underline"
       href={`/type/${map.id}`}
       onClick={handleLinkClick}
     >
-      <Flex direction="column" gap={1}>
+      <div className="flex flex-col gap-1">
         <CustomToolTip
           label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
           placement="top"
           right={12}
         >
-          <Box
-            color={theme.colors.secondary.main}
-            fontWeight="bold"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            whiteSpace="nowrap"
-            fontSize="md"
-          >
+          <div className="text-secondary truncate overflow-hidden text-base font-bold whitespace-nowrap">
             {map.title}
-          </Box>
+          </div>
         </CustomToolTip>
-        <Box
-          fontSize={{ base: "xs", sm: "sm" }}
-          color={theme.colors.secondary.main}
-          fontWeight="bold"
-          overflow="hidden"
-          textOverflow="ellipsis"
-          whiteSpace="nowrap"
-        >
+        <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
           {map.artist_name || ""}
-        </Box>
-      </Flex>
+        </div>
+      </div>
       <MapBadges map={map} />
     </Link>
   );

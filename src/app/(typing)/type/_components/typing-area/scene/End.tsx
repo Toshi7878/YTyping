@@ -1,6 +1,4 @@
 import { useSendUserStats } from "@/app/(typing)/type/hooks/playing-hooks/sendUserStats";
-import { CARD_BODY_MIN_HEIGHT } from "@/app/(typing)/type/ts/const/consts";
-import { Stack } from "@chakra-ui/react";
 import { useEffect } from "react";
 import EndButtonContainer from "./end-child/EndButtonContainer";
 import EndText from "./end-child/EndText";
@@ -18,10 +16,10 @@ const End = ({ onOpen }: EndProps) => {
   }, []);
 
   return (
-    <Stack minH={CARD_BODY_MIN_HEIGHT} justifyContent="space-between">
+    <div className="flex min-h-[460px] flex-col justify-between md:min-h-[320px]">
       <EndText />
       <EndButtonContainer onOpen={onOpen} />
-    </Stack>
+    </div>
   );
 };
 

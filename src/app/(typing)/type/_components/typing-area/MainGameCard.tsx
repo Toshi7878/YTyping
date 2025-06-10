@@ -1,7 +1,6 @@
 "use client";
-import CustomCard from "@/components/custom-ui/CustomCard";
-import { CardBody, CardFooter, CardHeader, useDisclosure, UseDisclosureReturn } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { useEffect, useState } from "react";
 import { useGameUtilityReferenceParams } from "../../atoms/refAtoms";
 import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../atoms/stateAtoms";
 import "../../style/type.scss";
@@ -13,8 +12,14 @@ import Ready from "./scene/Ready";
 import PracticeLineCard from "./scene/result/child/PracticeLineCard";
 import ResultDrawer from "./scene/result/ResultDrawer";
 
+interface DisclosureReturn {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+}
+
 interface TypingCardBodyProps {
-  drawerClosure: UseDisclosureReturn;
+  drawerClosure: DisclosureReturn;
 }
 
 const GameCardBody = (props: TypingCardBodyProps) => {
@@ -27,7 +32,7 @@ const GameCardBody = (props: TypingCardBodyProps) => {
   const isPlayed = isYTStarted && sceneGroup === "Playing";
 
   return (
-    <CardBody mx={8} py={3}>
+    <CardContent className="mx-8 py-3">
       {sceneGroup === "Ready" || !isYTStarted || !map ? (
         <Ready />
       ) : isPlayed ? (
@@ -46,12 +51,17 @@ const GameCardBody = (props: TypingCardBodyProps) => {
           </>
         )
       )}
-    </CardBody>
+    </CardContent>
   );
 };
 
 function MainGameCard() {
-  const drawerClosure = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
+  const drawerClosure = {
+    isOpen,
+    onOpen: () => setIsOpen(true),
+    onClose: () => setIsOpen(false),
+  };
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
 
   useEffect(() => {
@@ -60,15 +70,15 @@ function MainGameCard() {
   }, [drawerClosure]);
 
   return (
-    <CustomCard className="typing-card" id="typing_card">
-      <CardHeader py={0} mx={3}>
+    <Card className="typing-card" id="typing_card">
+      <CardHeader className="mx-3 py-0">
         <PlayingTop />
       </CardHeader>
       <GameCardBody drawerClosure={drawerClosure} />
-      <CardFooter py={0} mx={3} flexDirection="column" userSelect="none">
+      <CardFooter className="mx-3 flex-col py-0 select-none">
         <PlayingBottom />
       </CardFooter>
-    </CustomCard>
+    </Card>
   );
 }
 

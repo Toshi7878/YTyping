@@ -8,7 +8,6 @@ import LinkLoader from "@/components/ui/link-loader";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
-import { ColorModeScript } from "@chakra-ui/react";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import GlobalProvider from "./_components/global-provider/GlobalProvider";
@@ -35,7 +34,6 @@ export default async function RootLayout({
     <html lang="ja">
       <head>
         <meta charSet="UTF-8" />
-        <ColorModeScript initialColorMode="dark" />
       </head>
       <body>
         <LinkLoader />
@@ -45,7 +43,7 @@ export default async function RootLayout({
               <Header />
               <GlobalProvider userOptions={userOptions}>
                 <main
-                  className="max-w-[1300px] mx-auto px-0 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center justify-between pt-12 md:pt-16"
+                  className="mx-auto flex min-h-screen max-w-[1300px] flex-col items-center justify-between px-0 pt-12 sm:px-6 md:pt-16 lg:px-8"
                   id="main_content"
                 >
                   {children}

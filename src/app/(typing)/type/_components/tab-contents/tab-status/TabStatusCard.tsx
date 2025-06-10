@@ -1,23 +1,19 @@
-import CustomCard from "@/components/custom-ui/CustomCard";
-import { CardBody, Table, TableContainer, TableProps } from "@chakra-ui/react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table } from "@/components/ui/table";
+import { ComponentProps } from "react";
 import StatusTbody from "./child/StatusTbody";
 
-const TabStatusCard = (props: TableProps) => {
+const TabStatusCard = (props: ComponentProps<typeof Table>) => {
   return (
-    <CustomCard className="tab-card">
-      <CardBody>
-        <TableContainer>
-          <Table
-            minH={props.minH}
-            variant="unstyled"
-            className="table-fixed overflow-hidden"
-            overflowY="auto"
-          >
+    <Card className="tab-card">
+      <CardContent>
+        <div className="overflow-auto">
+          <Table style={{ minHeight: props.style?.minHeight }} className="table-fixed overflow-hidden">
             <StatusTbody />
           </Table>
-        </TableContainer>
-      </CardBody>
-    </CustomCard>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

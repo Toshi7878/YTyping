@@ -1,13 +1,15 @@
-import { Badge, BadgeProps } from "@chakra-ui/react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import React from "react";
 
 interface MapBadgeProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-const MapBadge = ({ children, ...rest }: MapBadgeProps & BadgeProps) => {
+const MapBadge = ({ children, className, ...rest }: MapBadgeProps) => {
   return (
-    <Badge fontSize="sm" borderRadius="full" px={2} {...rest}>
+    <Badge className={cn("rounded-full px-2 text-sm", className)} {...rest}>
       {children}
     </Badge>
   );

@@ -1,35 +1,22 @@
-import { Box, BoxProps, CardBody, useTheme } from "@chakra-ui/react";
-
-import CustomCard from "@/components/custom-ui/CustomCard";
-import { ThemeColors } from "@/types";
+import { Card, CardContent } from "@/components/ui/card";
+import { ComponentProps } from "react";
 import RankingList from "./child/RankingList";
 
-const TabRanking = (props: BoxProps) => {
-  const theme: ThemeColors = useTheme();
-
+const TabRanking = (props: ComponentProps<"div"> & { minH?: string | number }) => {
   return (
-    <CustomCard className="tab-card">
-      <CardBody fontSize="3xl" fontWeight="bold" width="full" pt={1} pb={2}>
-        <Box
-          overflowY="scroll"
-          minH={props.minH}
-          maxH={props.minH}
-          sx={{
-            "&::-webkit-scrollbar": {
-              width: "12px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              background: theme.colors.text.header.normal,
-              borderRadius: "10px",
-              border: "2px solid transparent",
-              backgroundClip: "content-box",
-            },
+    <Card className="tab-card">
+      <CardContent className="w-full pt-1 pb-2 text-3xl font-bold">
+        <div
+          className="scrollbar-thin scrollbar-thumb-foreground/60 scrollbar-track-transparent overflow-y-scroll"
+          style={{
+            minHeight: props.minH,
+            maxHeight: props.minH,
           }}
         >
           <RankingList />
-        </Box>
-      </CardBody>
-    </CustomCard>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

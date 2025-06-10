@@ -1,10 +1,8 @@
 "use client";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ThemeColors } from "@/types";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import { Box, Flex, Stack, useTheme } from "@chakra-ui/react";
+import Link from "next/link";
 import MapBadges from "./MapBadgesLayout";
 import MapCreateUser from "./MapCreateUser";
 
@@ -12,20 +10,11 @@ interface MapInfoProps {
   map: RouterOutPuts["mapList"]["getByVideoId"][number];
 }
 function MapInfo({ map }: MapInfoProps) {
-  const theme: ThemeColors = useTheme();
   const handleLinkClick = useLinkClick();
 
   return (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      flexDirection="column"
-      height="100%"
-      _hover={{ textDecoration: "none" }}
-      pl={3}
-      pt={2}
-    >
-      <Flex direction="column" gap={1}>
+    <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
+      <div className="flex flex-col gap-1">
         <CustomToolTip
           label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
           placement="top"
@@ -34,36 +23,22 @@ function MapInfo({ map }: MapInfoProps) {
           <Link
             href={`/type/${map.id}`}
             onClick={handleLinkClick}
-            zIndex={1}
-            _hover={{ textDecoration: "none" }}
-            color={theme.colors.secondary.main}
-            fontWeight="bold"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            whiteSpace="nowrap"
-            fontSize="md"
+            className="text-secondary z-[1] truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
           >
             {map.title}
           </Link>
         </CustomToolTip>
 
-        <Box
-          fontSize={{ base: "xs", sm: "sm" }}
-          color={theme.colors.secondary.main}
-          fontWeight="bold"
-          overflow="hidden"
-          textOverflow="ellipsis"
-          whiteSpace="nowrap"
-        >
+        <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
           {map.artist_name || ""}
           {map.music_source ? `【${map.music_source}】` : ""}
-        </Box>
-      </Flex>
-      <Stack justifyContent="space-between" alignItems="baseline" flexDirection={{ base: "row", lg: "column" }}>
+        </div>
+      </div>
+      <div className="flex flex-row items-baseline justify-between lg:flex-col">
         <MapCreateUser map={map} />
         <MapBadges map={map} />
-      </Stack>
-    </Box>
+      </div>
+    </div>
   );
 }
 

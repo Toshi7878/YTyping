@@ -1,8 +1,6 @@
 import { usePlayer } from "@/app/(typing)/type/atoms/refAtoms";
 import { useMapState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { CARD_BODY_MIN_HEIGHT } from "@/app/(typing)/type/ts/const/consts";
 import { useWindowFocus } from "@/utils/global-hooks/windowFocus";
-import { Box, Flex, Stack } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import "../../../style/fKey.scss";
 import ReadyInputModeRadioCards from "./ready-child/ReadyInputModeRadioCards";
@@ -50,18 +48,16 @@ function Ready() {
   }, [readPlayer(), map]);
 
   return (
-    <Stack justifyContent="space-between" direction="column" minH={CARD_BODY_MIN_HEIGHT}>
-      <Box fontWeight="bold" fontSize={{ base: "2.5rem", md: "2xl" }} userSelect="none">
-        Enterキー / 動画をクリックして開始
-      </Box>
-      <Flex textAlign="center" fontSize="3xl" justifyContent="center">
+    <div className="flex min-h-[460px] flex-col justify-between md:min-h-[320px]">
+      <div className="text-4xl font-bold select-none md:text-2xl">Enterキー / 動画をクリックして開始</div>
+      <div className="flex justify-center text-center text-3xl">
         <ReadyInputModeRadioCards />
-      </Flex>
-      <Flex textAlign="center" justifyContent="space-between">
+      </div>
+      <div className="flex justify-between text-center">
         <ReadyPlaySpeed speedUpButtonRef={speedUpButtonRef as any} speedDownButtonRef={speedDownButtonRef as any} />
         <ReadyPracticeButton />
-      </Flex>
-    </Stack>
+      </div>
+    </div>
   );
 }
 

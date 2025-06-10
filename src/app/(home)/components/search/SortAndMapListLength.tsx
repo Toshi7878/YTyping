@@ -3,7 +3,6 @@ import { PARAM_NAME } from "@/app/(home)/shared/const";
 import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
 import { cn } from "@/lib/utils";
 import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
-import { Icon } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -97,19 +96,13 @@ const SortOptions = () => {
 
   const getSortIcon = (field: SortField) => {
     if (field === "ランダム") {
-      return (
-        <Icon
-          as={FaSort}
-          visibility={sortDirections[field] ? "visible" : "hidden"}
-          _groupHover={{ visibility: "visible" }}
-        />
-      );
+      return <FaSort className={cn(sortDirections[field] ? "visible" : "invisible", "group-hover:visible")} />;
     }
 
     const direction = sortDirections[field];
-    if (direction === "asc") return <Icon as={FaSortUp} />;
-    if (direction === "desc") return <Icon as={FaSortDown} />;
-    return <Icon as={FaSortDown} visibility="hidden" _groupHover={{ visibility: "visible" }} />;
+    if (direction === "asc") return <FaSortUp />;
+    if (direction === "desc") return <FaSortDown />;
+    return <FaSortDown className="invisible group-hover:visible" />;
   };
 
   return (
@@ -148,7 +141,7 @@ const MapListLength = () => {
     <div className="bg-accent flex items-center gap-2 rounded-md px-3 py-1 font-medium">
       <span>譜面数:</span>
       <div className="flex w-6 min-w-6 items-center justify-end">
-        {isPending ? <Loader2 size="sm" /> : mapListLength}
+        {isPending ? <Loader2 className="h-4 w-4" /> : mapListLength}
       </div>
     </div>
   );
