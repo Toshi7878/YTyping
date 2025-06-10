@@ -1,8 +1,11 @@
-import { Badge, BadgeProps } from "@chakra-ui/react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import React from "react";
 
-interface CustomBadgeProps {
+interface CustomBadgeProps extends React.HTMLAttributes<HTMLElement> {
   isDisabled: boolean;
   isKbdHidden?: boolean;
+  children: React.ReactNode;
 }
 
 const CustomBadge = ({
@@ -10,21 +13,31 @@ const CustomBadge = ({
   isKbdHidden,
   onClick,
   children,
-}: CustomBadgeProps & BadgeProps) => {
+  className,
+  ...props
+}: CustomBadgeProps) => {
+  const isClickable = !isDisabled && !isKbdHidden && onClick;
+  
   return (
     <Badge
-      as="button"
-      variant="typeArea"
-      className="bottom-card-badge"
-      disabled={isDisabled}
-      onClick={isDisabled || isKbdHidden ? undefined : onClick}
-      cursor={isDisabled ? "not-allowed" : isKbdHidden || !onClick ? "initial" : "pointer"}
-      opacity={isDisabled ? 0.5 : 1}
-      _hover={{
-        transform: isDisabled || isKbdHidden || !onClick ? "none" : "scale(1.05)",
-      }}
+      asChild={isClickable}
+      variant="outline"
+      className={cn(
+        "bottom-card-badge",
+        isDisabled && "opacity-50 cursor-not-allowed",
+        isKbdHidden && !onClick && "cursor-default",
+        isClickable && "cursor-pointer hover:scale-105 transition-transform",
+        className
+      )}
+      {...props}
     >
-      {children}
+      {isClickable ? (
+        <button onClick={onClick} disabled={isDisabled}>
+          {children}
+        </button>
+      ) : (
+        <span>{children}</span>
+      )}
     </Badge>
   );
 };

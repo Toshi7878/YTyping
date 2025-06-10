@@ -1,8 +1,20 @@
-import { Button, ButtonProps } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import React from "react";
 
-const AlertDialogButton = (props: ButtonProps) => {
+interface AlertDialogButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  isLoading?: boolean;
+}
+
+const AlertDialogButton = ({ className, isLoading, ...props }: AlertDialogButtonProps) => {
   return (
-    <Button colorScheme="red" type="submit" ml={3} {...props}>
+    <Button 
+      variant="destructive" 
+      type="submit" 
+      className={cn("ml-3", className)}
+      loading={isLoading}
+      {...props}
+    >
       ランキングに登録
     </Button>
   );

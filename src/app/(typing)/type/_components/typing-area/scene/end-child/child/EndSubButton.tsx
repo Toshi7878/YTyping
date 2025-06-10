@@ -1,15 +1,17 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
-  Button,
-  useDisclosure,
   useTheme,
 } from "@chakra-ui/react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 import { useSceneState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useRetry } from "@/app/(typing)/type/hooks/playing-hooks/retry";
@@ -24,15 +26,14 @@ interface EndSubButtonProps {
 }
 
 const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
   const theme: ThemeColors = useTheme();
   const scene = useSceneState();
   const retry = useRetry();
 
   const handleRetry = () => {
     if (isRetryAlert) {
-      onOpen();
+      setIsOpen(true);
     } else {
       retry(retryMode);
     }
@@ -48,54 +49,44 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
 
   return (
     <>
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef as any}
-        onClose={onClose}
-        motionPreset="slideInBottom"
-        isCentered
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              リトライ確認
-            </AlertDialogHeader>
-
-            <AlertDialogBody>
-              <Box>ランキング登録が完了していませんが、リトライしますか？</Box>
-              <Box>※リトライすると今回の記録は失われます</Box>
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                キャンセル
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => {
-                  onClose();
-                  retry(retryMode);
-                }}
-                ml={3}
-              >
-                リトライ
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>リトライ確認</DialogTitle>
+            <DialogDescription asChild>
+              <div>
+                <Box>ランキング登録が完了していませんが、リトライしますか？</Box>
+                <Box>※リトライすると今回の記録は失われます</Box>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsOpen(false)}
+            >
+              キャンセル
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                setIsOpen(false);
+                retry(retryMode);
+              }}
+            >
+              リトライ
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Button
         ref={retryBtnRef}
-        size="2xl"
-        px={20}
-        py={6}
-        fontSize="2xl"
         variant="outline"
-        borderColor={theme.colors.border.card}
-        color={theme.colors.text.body}
-        _hover={{
-          bg: theme.colors.button.sub.hover,
+        className="px-20 py-6 text-2xl h-auto"
+        style={{
+          borderColor: theme.colors.border.card,
+          color: theme.colors.text.body,
         }}
         onClick={handleRetry}
       >

@@ -2,15 +2,15 @@
 import { useSceneGroupState, useSceneState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
 import {
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
   UseDisclosureReturn,
   useTheme,
 } from "@chakra-ui/react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { useMemo } from "react";
 import ResultLineList from "./child/ResultLineList";
 
@@ -30,31 +30,36 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
     }
   }, [scene, sceneGroup]);
 
+  const sheetOpen = sceneGroup === "End" ? isOpen : scene === "practice" || scene === "replay" ? true : false;
+
   return (
-    <Drawer
-      isOpen={sceneGroup === "End" ? isOpen : scene === "practice" || scene === "replay" ? true : false}
-      placement="right"
-      trapFocus={false}
-      blockScrollOnMount={false}
-      onClose={onClose}
-      size={scene === "practice" ? "xs" : "sm"}
-      variant="alwaysOpen"
-    >
-      <DrawerOverlay backgroundColor="transparent" onClick={onClose} display={isOpen ? "block" : "none"} />
-      <DrawerContent
-        height="100vh"
-        display={isOpen ? "block" : "none"}
-        backgroundColor={`${theme.colors.background.body}dd`}
+    <Sheet open={sheetOpen} onOpenChange={(open) => !open && onClose()}>
+      {sheetOpen && (
+        <div 
+          className="fixed inset-0 bg-transparent z-50" 
+          onClick={onClose}
+          style={{ display: isOpen ? "block" : "none" }}
+        />
+      )}
+      <SheetContent
+        side="right"
+        className="h-screen overflow-y-auto pb-14"
+        style={{
+          display: isOpen ? "block" : "none",
+          backgroundColor: `${theme.colors.background.body}dd`,
+          width: scene === "practice" ? "20rem" : "24rem",
+        }}
       >
-        <DrawerHeader fontSize="md" py={2} color={theme.colors.text.body}>
-          {sceneGroup === "End" ? "詳細リザルト" : "練習リザルト"}
-        </DrawerHeader>
-        <DrawerCloseButton tabIndex={-1} autoFocus={false} mr={5} color={theme.colors.text.body} />
-        <DrawerBody overflowY="auto" position="relative" height="100%" pb={14}>
+        <SheetHeader className="py-2">
+          <SheetTitle style={{ color: theme.colors.text.body, fontSize: "1rem" }}>
+            {sceneGroup === "End" ? "詳細リザルト" : "練習リザルト"}
+          </SheetTitle>
+        </SheetHeader>
+        <div className="overflow-y-auto relative h-full">
           {memoizedResultLineList}
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 

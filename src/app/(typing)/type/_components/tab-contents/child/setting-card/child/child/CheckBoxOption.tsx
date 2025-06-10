@@ -1,6 +1,6 @@
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useSoundEffect } from "@/app/(typing)/type/hooks/playing-hooks/soundEffect";
-import { Checkbox } from "@chakra-ui/react";
+import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
 
 interface CheckBoxOptionProps {
@@ -15,9 +15,7 @@ const CheckBoxOption = ({ label, name, defaultChecked: isChecked = false }: Chec
   const userTypingOptions = useUserTypingOptionsState();
   const currentChecked = userTypingOptions[name] ?? isChecked;
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = event.target;
-
+  const onChange = (checked: boolean) => {
     setUserTypingOptions({ [name]: checked });
 
     if (checked) {
@@ -32,9 +30,20 @@ const CheckBoxOption = ({ label, name, defaultChecked: isChecked = false }: Chec
   };
 
   return (
-    <Checkbox pl={2} pr={2} size="lg" name={name} onChange={onChange} isChecked={currentChecked}>
-      {label}
-    </Checkbox>
+    <div className="flex items-center space-x-2 px-2">
+      <Checkbox
+        id={name}
+        name={name}
+        checked={currentChecked}
+        onCheckedChange={onChange}
+      />
+      <label
+        htmlFor={name}
+        className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      >
+        {label}
+      </label>
+    </div>
   );
 };
 
