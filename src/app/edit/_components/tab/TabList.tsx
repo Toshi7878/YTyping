@@ -1,6 +1,5 @@
 "use client";
-import { ThemeColors } from "@/types";
-import { Tab, TabList, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSetTabIndex, useTabIndexState } from "../../atoms/stateAtoms";
 import { TabIndex } from "../../ts/type";
 import TabEditor from "./tab-panels/TabEditor";
@@ -12,50 +11,46 @@ interface EditorTabContentProps {
 }
 
 const TAB_LIST = ["情報 & 保存", "エディター", "設定 & ショートカットキー"];
+const TAB_VALUES = ["info", "editor", "settings"] as const;
+
 export default function EditorTabContent({ className }: EditorTabContentProps) {
   const tabIndex = useTabIndexState();
   const setTabIndex = useSetTabIndex();
-  const theme: ThemeColors = useTheme();
 
   return (
     <Tabs
-      index={tabIndex}
-      onChange={(index) => setTabIndex(index as TabIndex)}
-      className={className}
-      isFitted
-      size="sm"
-      position="relative"
-      variant="line"
-      width="100%"
+      value={TAB_VALUES[tabIndex]}
+      onValueChange={(value) => {
+        const index = TAB_VALUES.indexOf(value as typeof TAB_VALUES[number]);
+        setTabIndex(index as TabIndex);
+      }}
+      className={`w-full relative ${className || ""}`}
     >
-      <TabList height="25px" px={{ base: "0", md: "8" }} borderBottom={`1px solid ${theme.colors.text.body}aa`}>
+      <TabsList className="h-[25px] w-full grid grid-cols-3 px-0 md:px-8 border-b border-foreground/60">
         {TAB_LIST.map((tabName, index) => {
           return (
-            <Tab
+            <TabsTrigger
               key={index}
-              opacity={tabIndex === index ? 1 : 0.5}
-              color={theme.colors.text.body}
-              _hover={{ bg: theme.colors.button.sub.hover, opacity: 0.8 }}
-              isTruncated
+              value={TAB_VALUES[index]}
+              className="truncate data-[state=inactive]:opacity-50 hover:bg-muted hover:opacity-80 text-sm"
             >
               {tabName}
-            </Tab>
+            </TabsTrigger>
           );
         })}
-      </TabList>
+      </TabsList>
 
-      <TabPanels>
-        <TabPanel px={0} pb={0} pt={2}>
-          <TabInfoUpload />
-        </TabPanel>
+      <TabsContent value="info" className="px-0 pb-0 pt-2">
+        <TabInfoUpload />
+      </TabsContent>
 
-        <TabPanel px={0} pb={0} pt={2}>
-          <TabEditor />
-        </TabPanel>
-        <TabPanel px={0} pb={0} pt={2}>
-          <TabSettings />
-        </TabPanel>
-      </TabPanels>
+      <TabsContent value="editor" className="px-0 pb-0 pt-2">
+        <TabEditor />
+      </TabsContent>
+      
+      <TabsContent value="settings" className="px-0 pb-0 pt-2">
+        <TabSettings />
+      </TabsContent>
     </Tabs>
   );
 }

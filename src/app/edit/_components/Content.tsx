@@ -1,12 +1,11 @@
 "use client";
-import { Box, Flex, Grid, useToast } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
+import { toast } from "sonner";
 import { usePathChangeAtomReset } from "../atoms/reset";
 import { useCanUploadState, useIsLrcConvertingState } from "../atoms/stateAtoms";
 import { useTimerRegistration } from "../hooks/useTimer";
-import useHasEditPermission from "../hooks/useUserEditPermission";
+import useHasMapUploadPermission from "../hooks/useUserEditPermission";
 import EditTable from "./map-table/EditTable";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "./tab/tab-panels/TabInfoUpload";
 import EditorTabContent from "./tab/TabList";
@@ -15,20 +14,18 @@ import EditYouTube from "./youtube/EditYouTubePlayer";
 
 function Content() {
   const isLrcConverting = useIsLrcConvertingState();
-  const router = useRouter();
 
   const { addTimer, removeTimer } = useTimerRegistration();
   const pathChangeReset = usePathChangeAtomReset();
-  const chakraToast = useToast();
   const canUpload = useCanUploadState();
-  const hasEditPermission = useHasEditPermission();
+  const hasUploadPermission = useHasMapUploadPermission();
 
   useEffect(() => {
     addTimer();
     return () => {
       removeTimer();
       pathChangeReset();
-      chakraToast.close(NOT_EDIT_PERMISSION_TOAST_ID);
+      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -41,14 +38,14 @@ function Content() {
       }
     };
 
-    if (hasEditPermission) {
+    if (hasUploadPermission) {
       window.addEventListener("beforeunload", handleBeforeUnload);
     }
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [canUpload, hasEditPermission]);
+  }, [canUpload, hasUploadPermission]);
 
   return (
     <LoadingOverlayWrapper
@@ -57,18 +54,18 @@ function Content() {
       text="Loading..."
       className="w-full xl:w-[90%] 2xl:w-[80%]"
     >
-      <Box marginX={{ base: 0, md: "auto" }} pt={{ base: 4, lg: 0 }}>
-        <Flex as="section" flexDirection={{ base: "column", lg: "row" }} width="100%" gap={{ base: 2, lg: 6 }}>
-          <EditYouTube className="w-full lg:w-[416px] h-[286px] aspect-video select-none" />
+      <div className="mx-0 md:mx-auto pt-4 lg:pt-0">
+        <section className="flex flex-col lg:flex-row w-full gap-2 lg:gap-6">
+          <EditYouTube className="aspect-video h-[286px] w-full select-none lg:w-[416px]" />
           <EditorTabContent />
-        </Flex>
-        <Grid as="section" width="100%" my={1} gridTemplateColumns="1fr auto" gap-y="1px" alignItems="center">
+        </section>
+        <section className="grid w-full my-1 grid-cols-[1fr_auto] gap-y-[1px] items-center">
           <TimeRange />
-        </Grid>
-        <Box as="section" width="100%">
+        </section>
+        <section className="w-full">
           <EditTable />
-        </Box>
-      </Box>
+        </section>
+      </div>
     </LoadingOverlayWrapper>
   );
 }

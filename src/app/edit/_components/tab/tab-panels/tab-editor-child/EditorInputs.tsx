@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import EditorLyricsInput from "./child/EditorLyricsInput";
 import EditorSelectedLineCountInput from "./child/EditorSelectedLineCount";
 import EditorTimeInput from "./child/EditorTimeInput";
@@ -7,14 +6,14 @@ import EditorWordInput from "./child/EditorWordInput";
 const EditorLineInput = () => {
   return (
     <>
-      <Box display="flex" alignItems="center">
+      <div className="flex items-center">
         <EditorTimeInput />
         <EditorLyricsInput />
-      </Box>
-      <Box display="flex" alignItems="center">
+      </div>
+      <div className="flex items-center">
         <EditorSelectedLineCountInput />
         <EditorWordInput />
-      </Box>
+      </div>
     </>
   );
 };

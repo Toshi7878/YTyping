@@ -1,5 +1,5 @@
-import { ThemeColors } from "@/types";
-import { Button, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import React from "react";
 
 interface EditorButtonProps {
@@ -11,22 +11,27 @@ interface EditorButtonProps {
 }
 
 const EditorButton = (props: EditorButtonProps) => {
-  const theme: ThemeColors = useTheme();
+  const getColorClasses = () => {
+    // Map colorScheme to Tailwind classes
+    const colorMap: Record<string, string> = {
+      red: "border-red-500 hover:bg-red-500/50",
+      blue: "border-blue-500 hover:bg-blue-500/50",
+      green: "border-green-500 hover:bg-green-500/50",
+      yellow: "border-yellow-500 hover:bg-yellow-500/50",
+      purple: "border-purple-500 hover:bg-purple-500/50",
+    };
+    return colorMap[props.colorScheme] || "border-primary hover:bg-primary/50";
+  };
+
   return (
     <Button
-      isDisabled={props.isDisabled}
-      isLoading={props.isLoading}
+      disabled={props.isDisabled}
       variant="outline"
       size="sm"
-      height="35px"
-      className="w-[50%] lg:w-[60%] xl:w-[70%]"
-      color={theme.colors.text.body}
-      bg={theme.colors.background.body}
-      _hover={{ bg: `${props.colorScheme}80` }}
-      borderColor={props.colorScheme}
+      className={`h-[35px] w-[50%] lg:w-[60%] xl:w-[70%] ${getColorClasses()}`}
       onClick={props.onClick}
-      sx={{ colorScheme: props.colorScheme }}
     >
+      {props.isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {props.children}
     </Button>
   );

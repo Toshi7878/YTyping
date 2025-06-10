@@ -10,14 +10,10 @@ import {
   useLineUpdateButtonEvent,
   useWordConvertButtonEvent,
 } from "@/app/edit/hooks/useButtonEvents";
-import { ThemeColors } from "@/types";
-import { Flex, useTheme } from "@chakra-ui/react";
 import React from "react";
 import EditorButton from "./child/EditorButton";
 
 const EditorButtons = () => {
-  const theme: ThemeColors = useTheme();
-
   const isAddButtonDisabled = useIsAddBtnDisabledState();
   const isUpdateButtonDisabled = useIsUpdateBtnDisabledState();
   const isDeleteButtonDisabled = useIsDeleteBtnDisabledState();
@@ -32,7 +28,7 @@ const EditorButtons = () => {
   const buttonConfigs = {
     add: {
       isDisabled: isAddButtonDisabled,
-      colorScheme: theme.colors.secondary.light,
+      colorScheme: "green",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => lineAddButtonEvent(event.shiftKey),
       text: (
         <>
@@ -43,7 +39,7 @@ const EditorButtons = () => {
     },
     update: {
       isDisabled: isUpdateButtonDisabled,
-      colorScheme: theme.colors.primary.dark,
+      colorScheme: "blue",
       onClick: lineUpdateButtonEvent,
       text: (
         <>
@@ -56,7 +52,7 @@ const EditorButtons = () => {
       isDisabled: false,
       ref: undefined,
       isLoading: isLoadWordConvert,
-      colorScheme: theme.colors.primary.dark,
+      colorScheme: "blue",
       onClick: wordConvertButtonEvent,
       text: (
         <>
@@ -68,7 +64,7 @@ const EditorButtons = () => {
     },
     delete: {
       isDisabled: isDeleteButtonDisabled,
-      colorScheme: theme.colors.error.light,
+      colorScheme: "red",
       onClick: lineDelete,
       text: (
         <>
@@ -80,7 +76,7 @@ const EditorButtons = () => {
   };
 
   return (
-    <Flex gap="3" className="w-[50%] lg:w-[60%] xl:w-[70%]">
+    <div className="flex gap-3 w-[50%] lg:w-[60%] xl:w-[70%]">
       {Object.values(buttonConfigs).map((config, index) => (
         <EditorButton
           key={index}
@@ -92,7 +88,7 @@ const EditorButtons = () => {
           {config.text}
         </EditorButton>
       ))}
-    </Flex>
+    </div>
   );
 };
 

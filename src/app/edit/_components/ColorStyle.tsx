@@ -1,12 +1,8 @@
 "use client";
 
-import { ThemeColors } from "@/types";
-import { useTheme } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 
 const ColorStyle = () => {
-  const theme: ThemeColors = useTheme();
-
   return (
     <style id="color_style">{`
         #time-range {
@@ -17,7 +13,7 @@ const ColorStyle = () => {
   outline: none;
   border-radius: 15px;
    height: 6px;
-  background: ${theme.colors.text.body}30;
+  background: hsl(var(--foreground) / 0.2);
 }
 
 /* Thumb: webkit */
@@ -28,7 +24,7 @@ const ColorStyle = () => {
   /* creating a custom design */
   height: 15px;
   width: 15px;
-  background-color: ${theme.colors.primary.main};
+  background-color: hsl(var(--primary));
   border-radius: 50%;
   border: none;
 
@@ -39,7 +35,7 @@ const ColorStyle = () => {
 #time-range::-moz-range-thumb {
   height: 15px;
   width: 15px;
-  background-color: ${theme.colors.primary.main};
+  background-color: hsl(var(--primary));
   border-radius: 50%;
   border: none;
   transition: .2s ease-in-out;
@@ -48,25 +44,25 @@ const ColorStyle = () => {
 /* Hover, active & focus Thumb: Webkit */
 
 #time-range::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 0 10px ${theme.colors.primary.main}40
+  box-shadow: 0 0 0 10px hsl(var(--primary) / 0.25)
 }
 #time-range:active::-webkit-slider-thumb {
-  box-shadow: 0 0 0 13px ${theme.colors.primary.main}60
+  box-shadow: 0 0 0 13px hsl(var(--primary) / 0.38)
 }
 #time-range:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 13px ${theme.colors.primary.main}60
+  box-shadow: 0 0 0 13px hsl(var(--primary) / 0.38)
 }
 
 /* Hover, active & focus Thumb: Firfox */
 
 #time-range::-moz-range-thumb:hover {
-  box-shadow: 0 0 0 10px ${theme.colors.primary.main}40
+  box-shadow: 0 0 0 10px hsl(var(--primary) / 0.25)
 }
 #time-range:active::-moz-range-thumb {
-  box-shadow: 0 0 0 13px ${theme.colors.primary.main}60
+  box-shadow: 0 0 0 13px hsl(var(--primary) / 0.38)
 }
 #time-range:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 13px ${theme.colors.primary.main}60
+  box-shadow: 0 0 0 13px hsl(var(--primary) / 0.38)
 }
 
       `}</style>
