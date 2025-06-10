@@ -1,4 +1,4 @@
-name: Claude Code
+name: Claude PR Assistant
 
 on:
   issue_comment:
@@ -11,32 +11,39 @@ on:
     types: [submitted]
 
 jobs:
-  claude:
+  claude-code-action:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
-
+      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write
-      pull-requests: write
-      issues: write
+      contents: read
+      pull-requests: read
+      issues: read
       id-token: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Run Claude Code
-        uses: Toshi7878/claude-code-base-action@main
+      - name: Run Claude PR Action
+        uses: grll/claude-code-action@beta
         with:
-          use_oauth: "true"
+          use_oauth: true
           claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
           claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
           claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
-          timeout_minutes: "30"
+
+          timeout_minutes: "60"
+          # Optional: add custom trigger phrase (default: @claude)
+          # trigger_phrase: "/claude"
+          # Optional: add assignee trigger for issues
+          # assignee_trigger: "claude"
+          # Optional: add custom environment variables (YAML format)
+          # claude_env: |
+          #   NODE_ENV: test
+          #   DEBUG: true
+          #   API_URL: https://api.example.com
