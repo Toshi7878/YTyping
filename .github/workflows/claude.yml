@@ -37,6 +37,7 @@ jobs:
           claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
           claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
           allowed_tools: "Bash"
+          base_branch: "dev"
           timeout_minutes: "60"
           # Optional: add custom trigger phrase (default: @claude)
           # trigger_phrase: "/claude"
