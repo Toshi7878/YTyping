@@ -1,5 +1,4 @@
-import { ThemeColors } from "@/types";
-import { Card, CardBody, Flex, Stack, useTheme } from "@chakra-ui/react";
+import { Card, CardContent } from "@/components/ui/card";
 
 import EditorButtons from "./tab-editor-child/EditorButtons";
 import EditorLineInput from "./tab-editor-child/EditorInputs";
@@ -7,21 +6,19 @@ import ManyPhraseTextarea from "./tab-editor-child/ManyPhraseTextarea";
 import AddTimeAdjust from "./tab-settings-shortcutlist-child/settings-child/AddTimeAdjust";
 
 const TabEditor = () => {
-  const theme: ThemeColors = useTheme();
-
   return (
-    <Card variant="filled" bg={theme.colors.background.card} boxShadow="lg" color={theme.colors.text.body}>
-      <CardBody py={4}>
-        <Stack display="flex" flexDirection="column" gap={1}>
+    <Card className="bg-card shadow-lg text-foreground">
+      <CardContent className="py-4">
+        <div className="flex flex-col gap-1">
           <EditorLineInput />
 
-          <Flex justifyContent="space-between" alignItems="center">
+          <div className="flex justify-between items-center">
             <EditorButtons />
             <AddTimeAdjust />
-          </Flex>
+          </div>
           <ManyPhraseTextarea />
-        </Stack>
-      </CardBody>
+        </div>
+      </CardContent>
     </Card>
   );
 };

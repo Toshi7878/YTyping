@@ -1,23 +1,10 @@
 "use client";
 
-import { ThemeColors } from "@/types";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { MapLineEdit } from "@/types/map";
-import {
-  Badge,
-  Box,
-  Checkbox,
-  FormLabel,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Stack,
-  useDisclosure,
-  useTheme,
-} from "@chakra-ui/react";
 import { Dispatch, useState } from "react";
 import ChangeLineVideoSpeedOption from "./line-option-child/ChangeLineVideoSpeedOption";
 import CSSInput from "./line-option-child/CSSInput";
@@ -45,100 +32,102 @@ export default function LineOptionModal({
   const [isEditedCSS, setIsEditedCSS] = useState(false);
   const [changeVideoSpeed, setChangeVideoSpeed] = useState(0);
   const [isChangeCSS, setIsEditChangeCSS] = useState(lineOptions?.isChangeCSS || false);
-  const confirmModal = useDisclosure();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const theme: ThemeColors = useTheme();
   const handleModalClose = () => {
     if (isEditedCSS) {
-      confirmModal.onOpen();
+      setIsConfirmOpen(true);
     } else {
       onClose();
       setOptionModalIndex(null);
     }
   };
   return (
-    <Modal isOpen={isOpen} isCentered onClose={handleModalClose} closeOnOverlayClick={false}>
-      <ModalOverlay />
-      <ModalContent maxW="600px" bg={theme.colors.background.card} color={theme.colors.text.body}>
-        <ModalHeader>ラインオプション </ModalHeader>
+    <>
+      <Dialog open={isOpen} onOpenChange={handleModalClose}>
+        <DialogContent className="max-w-[600px] bg-card text-foreground">
+          <DialogHeader>
+            <DialogTitle>ラインオプション</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <Badge variant="secondary" className="text-base">
+              選択ライン: {optionModalIndex}
+            </Badge>
 
-        <ModalCloseButton onClick={handleModalClose} />
-        <ModalBody>
-          <Badge colorScheme="teal" fontSize="1em" mb={2}>
-            選択ライン: {optionModalIndex}
-          </Badge>
+            <div className="space-y-2">
+              <ChangeLineVideoSpeedOption
+                changeVideoSpeed={changeVideoSpeed}
+                setChangeVideoSpeed={setChangeVideoSpeed}
+              />
+              {optionModalIndex === 0 && (
+                <div>
+                  <Label>
+                    永続的に適用するCSSを入力
+                    <CSSInput
+                      disabled={false}
+                      CSSText={eternalCSS}
+                      setCSSText={setEternalCSS}
+                      setIsEditedCSS={setIsEditedCSS}
+                    />
+                  </Label>
+                  <CSSTextLength
+                    eternalCSSText={eternalCSS}
+                    changeCSSText={changeCSS}
+                    lineOptions={lineOptions}
+                  />
+                </div>
+              )}
 
-          <Stack spacing={2}>
-            <ChangeLineVideoSpeedOption
-              changeVideoSpeed={changeVideoSpeed}
-              setChangeVideoSpeed={setChangeVideoSpeed}
-            />
-            {optionModalIndex === 0 && (
-              <Box>
-                <FormLabel>
-                  永続的に適用するCSSを入力
+              <div>
+                <Label className="flex items-baseline">
+                  <Checkbox
+                    checked={isChangeCSS}
+                    onCheckedChange={(checked) => setIsEditChangeCSS(checked as boolean)}
+                    className="mr-1"
+                  />
+                  ライン切り替えを有効化
+                </Label>
+                <Label>
+                  選択ラインから適用するCSSを入力
                   <CSSInput
-                    disabled={false}
-                    CSSText={eternalCSS}
-                    setCSSText={setEternalCSS}
+                    disabled={!isChangeCSS}
+                    CSSText={changeCSS}
+                    setCSSText={setChangeCSS}
                     setIsEditedCSS={setIsEditedCSS}
                   />
-                </FormLabel>
+                </Label>
                 <CSSTextLength
                   eternalCSSText={eternalCSS}
                   changeCSSText={changeCSS}
                   lineOptions={lineOptions}
                 />
-              </Box>
-            )}
+              </div>
 
-            <Box>
-              <FormLabel display="flex" alignItems="baseline">
-                <Checkbox
-                  isChecked={isChangeCSS}
-                  onChange={(event) => setIsEditChangeCSS(event.target.checked)}
-                  mr={1}
-                />
-                ライン切り替えを有効化
-              </FormLabel>
-              <FormLabel>
-                選択ラインから適用するCSSを入力
-                <CSSInput
-                  disabled={!isChangeCSS}
-                  CSSText={changeCSS}
-                  setCSSText={setChangeCSS}
-                  setIsEditedCSS={setIsEditedCSS}
-                />
-              </FormLabel>
-              <CSSTextLength
-                eternalCSSText={eternalCSS}
-                changeCSSText={changeCSS}
-                lineOptions={lineOptions}
+              <SaveOptionButton
+                eternalCSS={eternalCSS}
+                changeCSS={changeCSS}
+                isEditedCSS={isEditedCSS}
+                isChangeCSS={isChangeCSS}
+                optionModalIndex={optionModalIndex}
+                setOptionModalIndex={setOptionModalIndex}
+                onClose={onClose}
+                setIsEditedCSS={setIsEditedCSS}
+                changeVideoSpeed={changeVideoSpeed}
               />
-            </Box>
+            </div>
+          </div>
 
-            <SaveOptionButton
-              eternalCSS={eternalCSS}
-              changeCSS={changeCSS}
-              isEditedCSS={isEditedCSS}
-              isChangeCSS={isChangeCSS}
-              optionModalIndex={optionModalIndex}
-              setOptionModalIndex={setOptionModalIndex}
-              onClose={onClose}
-              setIsEditedCSS={setIsEditedCSS}
-              changeVideoSpeed={changeVideoSpeed}
-            />
-          </Stack>
-        </ModalBody>
-
-        <ModalFooter></ModalFooter>
-      </ModalContent>
+          <DialogFooter />
+        </DialogContent>
+      </Dialog>
+      
       <LineOptionModalCloseButton
         onClose={onClose}
-        isConfirmOpen={confirmModal.isOpen}
-        onConfirmClose={confirmModal.onClose}
+        isConfirmOpen={isConfirmOpen}
+        onConfirmClose={() => setIsConfirmOpen(false)}
         setOptionModalIndex={setOptionModalIndex}
       />
-    </Modal>
+    </>
   );
 }
