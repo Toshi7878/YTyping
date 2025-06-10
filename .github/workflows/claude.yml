@@ -32,6 +32,7 @@ jobs:
       - name: Run Claude PR Action
         uses: grll/claude-code-action@beta
         with:
+          prompt: "Always respond in Japanese"
           use_oauth: true
           claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
           claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
