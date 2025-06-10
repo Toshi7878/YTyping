@@ -1,13 +1,11 @@
 import Header from "@/app/_components/header/Header";
 import "@/styles/globals.css";
-import "@/styles/nprogress.css";
-import { cookies } from "next/headers";
-import { fonts } from "../lib/fonts";
 // export const runtime = "edge";
 
 import type { Metadata } from "next";
 
-import { cn } from "@/lib/cn";
+import LinkLoader from "@/components/ui/link-loader";
+import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
@@ -16,9 +14,9 @@ import dynamic from "next/dynamic";
 import GlobalProvider from "./_components/global-provider/GlobalProvider";
 import ThemeProvider from "./_components/global-provider/ThemeProvider";
 
-const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"), {
-  ssr: false,
-});
+// Next.js 15では ssr: false オプションを削除
+const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
+
 export const metadata: Metadata = {
   title: "YTyping",
   description: "",
@@ -29,8 +27,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookiesList = cookies();
-  const colorMode = cookiesList.get("chakra-ui-color-mode");
   const session = await auth();
 
   const userOptions = process.env.NODE_ENV === "development" ? null : await serverApi.userOption.getUserOptions({});
@@ -40,14 +36,15 @@ export default async function RootLayout({
       <head>
         <meta charSet="UTF-8" />
       </head>
-      <body className={cn(fonts.rubik.variable, "no-ligatures")}>
-        <ThemeProvider colorMode={colorMode?.value}>
+      <body>
+        <LinkLoader />
+        <ThemeProvider>
           <SessionProvider session={session}>
             <TRPCProvider>
-              <Header session={session} />
+              <Header />
               <GlobalProvider userOptions={userOptions}>
                 <main
-                  className="min-h-screen  flex flex-col items-center justify-between pt-12 md:pt-16 mx-auto max-w-screen-2xl"
+                  className="mx-auto flex min-h-screen max-w-[1300px] flex-col items-center justify-between px-0 pt-12 sm:px-6 md:pt-16 lg:px-8"
                   id="main_content"
                 >
                   {children}
@@ -56,6 +53,7 @@ export default async function RootLayout({
               </GlobalProvider>
             </TRPCProvider>
           </SessionProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

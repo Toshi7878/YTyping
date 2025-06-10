@@ -1,7 +1,7 @@
 import { useLyricsState, useSetLyrics } from "@/app/edit/atoms/stateAtoms";
 import { useAddRubyTagEvent } from "@/app/edit/hooks/utils/useAddRubyTag";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { Box, Input } from "@chakra-ui/react";
+import { Input } from "@/components/ui/input/input";
 import React, { useState } from "react";
 
 interface DirectEditLyricsInputProps {
@@ -17,14 +17,12 @@ const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
 
   return (
     <CustomToolTip
-      label={<Box fontSize="xs">Enterキーを押すとRubyタグを挿入できます。</Box>}
+      label={<span className="text-xs">Enterキーを押すとRubyタグを挿入できます。</span>}
       placement="top"
-      isDisabled={!isLineLyricsSelected}
-      isOpen={isLineLyricsSelected}
     >
       <Input
         ref={props.directEditLyricsInputRef}
-        size="sm"
+        className="h-7 text-sm"
         autoComplete="off"
         value={selectLyrics}
         onKeyDown={handleEnterAddRuby}

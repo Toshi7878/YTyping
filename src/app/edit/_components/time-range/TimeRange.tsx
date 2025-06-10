@@ -1,7 +1,7 @@
 "use client";
 import "@/app/edit/style/editor.scss";
+import { useTheme } from "@/hooks/use-theme";
 import { ThemeColors } from "@/types";
-import { useTheme } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms";
 

@@ -1,31 +1,36 @@
 import { ThemeColors } from "@/types";
-import { Box, Tooltip, TooltipProps, useTheme } from "@chakra-ui/react";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useTheme } from "@/hooks/use-theme";
 import { ReactNode } from "react";
 
 interface CustomToolTipProps {
   children: ReactNode;
+  label?: ReactNode;
+  placement?: "top" | "right" | "bottom" | "left";
+  [key: string]: any;
 }
-const CustomToolTip = ({ label, children, ...rest }: CustomToolTipProps & TooltipProps) => {
+
+const CustomToolTip = ({ label, children, placement = "top", ...rest }: CustomToolTipProps) => {
   const theme: ThemeColors = useTheme();
 
+  if (!label) {
+    return <>{children}</>;
+  }
+
   return (
-    <Tooltip
-      bg={theme.colors.background.body}
-      color={theme.colors.text.body}
-      borderWidth="1px"
-      borderStyle="solid"
-      borderColor={theme.colors.border.card}
-      css={{
-        "--popper-arrow-bg": theme.colors.background.body,
-        "--popper-arrow-shadow-color": theme.colors.border.card,
+    <TooltipWrapper
+      label={label}
+      side={placement}
+      className="whitespace-nowrap"
+      style={{
+        backgroundColor: theme.colors.background.body,
+        color: theme.colors.text.body,
+        borderColor: theme.colors.border.card
       }}
-      hasArrow
-      label={<Box whiteSpace="nowrap">{label}</Box>}
-      minWidth="fit-content"
       {...rest}
     >
       {children}
-    </Tooltip>
+    </TooltipWrapper>
   );
 };
 

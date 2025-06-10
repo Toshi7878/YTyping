@@ -1,7 +1,7 @@
 "use client";
 
+import { useTheme } from "@/hooks/use-theme";
 import { ThemeColors } from "@/types";
-import { useTheme } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 
 const ColorStyle = () => {
