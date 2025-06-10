@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude Code
-        uses: toshi7878/claude-code-base-action@main
+        uses: grll/claude-code-base-action@main
         with:
           use_oauth: "true"
           claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
