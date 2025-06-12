@@ -3,15 +3,13 @@ import { useMapState } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCssLength } from "@/app/edit/atoms/stateAtoms";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useKeyDown";
 import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
-import { ThemeColors } from "@/types";
 import { MapLineEdit } from "@/types/map";
-import { useDisclosure, useTheme } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import LineRow from "./child/LineRow";
 import LineOptionModal from "./LineOptionModal";
 
 function MapTableBody() {
-  const theme: ThemeColors = useTheme();
 
   const [optionModalIndex, setOptionModalIndex] = useState<number | null>(null);
   const [lineOptions, setLineOptions] = useState<MapLineEdit["options"] | null>(null);
@@ -72,21 +70,21 @@ function MapTableBody() {
         {`
 
       .${LINE_ROW_SWITCH_CLASSNAMES.currentTime} {
-        background: ${theme.colors.secondary.light}40;
+        background: hsl(var(--secondary) / 0.25);
       }
 
         .${LINE_ROW_SWITCH_CLASSNAMES.selected} {
-        outline: 1px solid ${theme.colors.text.body};
-        background: ${theme.colors.primary.dark};
+        outline: 1px solid hsl(var(--foreground));
+        background: hsl(var(--primary) / 0.9);
       }
 
       [id*="line_"]:hover:not(.${LINE_ROW_SWITCH_CLASSNAMES.selected}) {
-      background:${theme.colors.primary.dark}50;
+      background: hsl(var(--primary) / 0.31);
       }
 
 
       .error-line {
-      background: ${theme.colors.error.light}35;
+      background: hsl(var(--destructive) / 0.21);
       }
       `}
       </style>

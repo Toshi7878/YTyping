@@ -1,9 +1,15 @@
 "use client";
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Card, Table, TableContainer, Tbody, Th, Thead, Tr, useTheme } from "@chakra-ui/react";
+import { Card } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 import "@/app/edit/style/table.scss";
-import { ThemeColors } from "@/types";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -15,7 +21,6 @@ import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms
 import MapTableBody from "./child/MapTableBody";
 
 export default function EditTable() {
-  const theme: ThemeColors = useTheme();
   const tbodyRef = useRef(null);
   const { writeTbody } = useTbody();
 
@@ -73,39 +78,31 @@ export default function EditTable() {
   }, [isYTReady, isYTStarted]);
 
   return (
-    <Card bg={theme.colors.background.card} color={theme.colors.text.body} m={2}>
+    <Card className="m-2">
       <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
-        <TableContainer
-          maxH={{ sm: "calc(100vh - 100px)", md: "500px", "2xl": "calc(100vh - 400px)" }}
-          overflowY="auto"
-        >
-          <Table size="sm" variant="simple" mb={{ sm: "65vh", md: "60vh", "2xl": "30vh" }}>
-            <Thead>
-              <Tr>
-                <Th width="5%" borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
+        <div className="overflow-y-auto max-h-[calc(100vh-100px)] md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]">
+          <Table className="text-sm mb-[65vh] md:mb-[60vh] 2xl:mb-[30vh]">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[5%] border-r border-border text-center">
                   Time
-                </Th>
-                <Th borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
+                </TableHead>
+                <TableHead className="border-r border-border">
                   歌詞
-                </Th>
-                <Th borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
+                </TableHead>
+                <TableHead className="border-r border-border">
                   ワード
-                </Th>
-                <Th
-                  width="3%"
-                  textAlign="center"
-                  borderRight="1px solid"
-                  borderRightColor={`${theme.colors.border.editorTable.right}`}
-                >
+                </TableHead>
+                <TableHead className="w-[3%] text-center border-r border-border">
                   オプション
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody ref={tbodyRef}>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody ref={tbodyRef}>
               <MapTableBody />
-            </Tbody>
+            </TableBody>
           </Table>
-        </TableContainer>
+        </div>
       </LoadingOverlayWrapper>
     </Card>
   );
