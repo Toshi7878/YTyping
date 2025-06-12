@@ -1,11 +1,11 @@
 "use client";
-import { Button, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 
 import { useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { useCanUploadState, useReadMapInfo, useReadMapTags, useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
 import { useTRPC } from "@/trpc/trpc";
-import { ThemeColors, UploadResult } from "@/types";
+import { UploadResult } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -17,7 +17,6 @@ interface UploadButtonProps {
 }
 const UploadButton = ({ state }: UploadButtonProps) => {
   const { pending } = useFormStatus();
-  const theme: ThemeColors = useTheme();
   const canUpload = useCanUploadState();
   const setCanUpload = useSetCanUpload();
   const toast = useCustomToast();
@@ -74,19 +73,10 @@ const UploadButton = ({ state }: UploadButtonProps) => {
 
   return (
     <Button
-      className="cursor-pointer"
-      variant="solid"
+      className={`w-[200px] border cursor-pointer ${canUpload ? "opacity-100 hover:opacity-90" : "opacity-70"}`}
+      variant="default"
       size="lg"
-      width="200px"
-      border="1px"
-      isLoading={pending}
-      bg={theme.colors.primary.main}
-      color={theme.colors.text.body}
-      _hover={{
-        bg: canUpload ? theme.colors.primary.light : theme.colors.primary.main,
-      }}
-      borderColor={theme.colors.border.card}
-      opacity={canUpload ? "1" : "0.7"}
+      disabled={pending}
       type="submit"
       onClick={(e) => {
         if (!canUpload) {
@@ -94,12 +84,9 @@ const UploadButton = ({ state }: UploadButtonProps) => {
         }
       }}
     >
-      保存
+      {pending ? "保存中..." : "保存"}
     </Button>
   );
 };
 
 export default UploadButton;
-function useUtils() {
-  throw new Error("Function not implemented.");
-}

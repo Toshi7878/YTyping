@@ -1,7 +1,5 @@
 "use client";
 import "@/app/edit/style/editor.scss";
-import { ThemeColors } from "@/types";
-import { useTheme } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms";
 
@@ -11,7 +9,6 @@ import EditSpeedChange from "./child/SpeedChange";
 
 const TimeRange = () => {
   const rangeRef = useRef<HTMLInputElement>(null);
-  const theme: ThemeColors = useTheme();
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
   const { readPlayer } = usePlayer();
@@ -38,7 +35,7 @@ const TimeRange = () => {
     }
 
     const progress = (time / Number(e.target.max)) * 100;
-    e.target.style.background = `linear-gradient(to right, ${theme.colors.primary.main} ${progress}%, ${theme.colors.text.body}30 ${progress}%)`;
+    e.target.style.background = `linear-gradient(to right, hsl(var(--primary)) ${progress}%, hsl(var(--foreground) / 0.3) ${progress}%)`;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
