@@ -1,13 +1,7 @@
 "use client";
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import "@/app/edit/style/table.scss";
 import { useMapQueries } from "@/utils/queries/map.queries";
@@ -80,22 +74,17 @@ export default function EditTable() {
   return (
     <Card className="m-2">
       <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
-        <div className="overflow-y-auto max-h-[calc(100vh-100px)] md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]">
-          <Table className="text-sm mb-[65vh] md:mb-[60vh] 2xl:mb-[30vh]">
+        <div className="max-h-[calc(100vh-100px)] overflow-y-auto md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]">
+          <Table className="mb-[65vh] text-sm md:mb-[60vh] 2xl:mb-[30vh]">
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[5%] border-r border-border text-center">
-                  Time
-                </TableHead>
-                <TableHead className="border-r border-border">
-                  歌詞
-                </TableHead>
-                <TableHead className="border-r border-border">
-                  ワード
-                </TableHead>
-                <TableHead className="w-[3%] text-center border-r border-border">
-                  オプション
-                </TableHead>
+                <TableHead className="border-border w-[5%] border-r text-center">Time</TableHead>
+                <TableHead className="border-border border-r"></TableHead>
+                <TableHead className="border-border border-r">歌詞</TableHead>
+                <TableHead className="border-border border-r"></TableHead>
+                <TableHead className="border-border border-r">ワード</TableHead>
+                <TableHead className="border-border w-[3%] border-r text-center"></TableHead>
+                <TableHead className="border-border w-[3%] border-r text-center">オプション</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody ref={tbodyRef}>
