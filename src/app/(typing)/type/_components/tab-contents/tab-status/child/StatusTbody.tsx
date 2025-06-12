@@ -1,6 +1,6 @@
 import { focusTypingStatusAtoms } from "@/app/(typing)/type/atoms/stateAtoms";
 import { STATUS_LABEL } from "@/app/(typing)/type/ts/const/consts";
-import { Tbody, Td, Tr } from "@chakra-ui/react";
+import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import StatusLabel from "./child/StatusLabel";
 import StatusPointValue from "./child/StatusPointValue";
 import StatusUnderline from "./child/StatusUnderline";
@@ -8,20 +8,20 @@ import StatusValue from "./child/StatusValue";
 
 const StatusTbody = () => {
   return (
-    <Tbody fontSize={"2rem"} fontWeight="bold" fontFamily="mono">
-      <Tr>
+    <TableBody className="text-[2rem] font-bold font-mono">
+      <TableRow>
         {/* 1段目 */}
         {STATUS_LABEL.slice(0, STATUS_LABEL.length / 2).map((label) => {
           return <StatusTd key={label} label={label} />;
         })}
-      </Tr>
-      <Tr>
+      </TableRow>
+      <TableRow>
         {/* 2段目 */}
         {STATUS_LABEL.slice(STATUS_LABEL.length / 2).map((label) => {
           return <StatusTd key={label} label={label} />;
         })}
-      </Tr>
-    </Tbody>
+      </TableRow>
+    </TableBody>
   );
 };
 
@@ -30,7 +30,7 @@ interface StatusTdProps {
 }
 const StatusTd = ({ label }: StatusTdProps) => {
   return (
-    <Td id={label} width={label === "score" || label === "point" ? "20%" : "14%"}>
+    <TableCell id={label} style={{ width: label === "score" || label === "point" ? "20%" : "14%" }}>
       <StatusLabel label={label} />
 
       <StatusUnderline label={label}>
@@ -40,7 +40,7 @@ const StatusTd = ({ label }: StatusTdProps) => {
           <StatusValue atom={focusTypingStatusAtoms[label]} />
         )}
       </StatusUnderline>
-    </Td>
+    </TableCell>
   );
 };
 
