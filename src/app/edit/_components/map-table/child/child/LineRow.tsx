@@ -1,5 +1,6 @@
 "use client";
-import { Button, Td, Tr, UseDisclosureReturn, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import { TableCell, TableRow } from "@/components/ui/table";
 import { Dispatch, useCallback, useRef } from "react";
 
 import { useEndLineIndex } from "@/app/edit/atoms/buttonDisableStateAtoms";
@@ -14,7 +15,6 @@ import {
 } from "@/app/edit/atoms/stateAtoms";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
 import { useChangeLineRowColor } from "@/app/edit/hooks/utils/useChangeLineRowColor";
-import { ThemeColors } from "@/types";
 import { MapLine, MapLineEdit } from "@/types/map";
 import parse from "html-react-parser";
 import DirectEditLyricsInput from "./child/DirectEditLyricsInput";
@@ -24,7 +24,7 @@ import DirectEditWordInput from "./child/DirectEditWordInput";
 interface LineRowProps {
   index: number;
   line: MapLine;
-  onOpen: UseDisclosureReturn["onOpen"];
+  onOpen: () => void;
   setOptionModalIndex: Dispatch<number>;
   setLineOptions: Dispatch<MapLineEdit["options"]>;
 }
@@ -39,7 +39,6 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
   const setDirectEditIndex = useSetDirectEditIndex();
   const setSelectLine = useLineReducer();
   const endLineIndex = useEndLineIndex();
-  const theme: ThemeColors = useTheme();
 
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
   const { allUpdateSelectColor } = useChangeLineRowColor();
@@ -94,71 +93,49 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
   const isOptionEdited = line.options?.isChangeCSS || line.options?.eternalCSS;
 
   return (
-    <Tr
+    <TableRow
       id={`line_${index}`}
       data-line-index={index}
-      cursor="pointer"
-      position="relative"
-      color={theme.colors.text.body}
+      className="cursor-pointer relative"
       onClick={(event) => {
         selectLine(event, index);
         setTabIndex(1);
       }}
     >
-      <Td
-        borderBottom={index === endLineIndex ? "" : "1px solid"}
-        borderRight="1px solid"
-        borderRightColor={`${theme.colors.border.editorTable.right}`}
-        borderBottomColor={theme.colors.border.editorTable.bottom}
-        className="time-cell"
+      <TableCell
+        className={`time-cell border-r ${index !== endLineIndex ? 'border-b' : ''} ${directEditIndex === index ? 'px-2' : 'px-4'}`}
         onClick={(event) => clickTimeCell(event, index)}
-        px={directEditIndex === index ? 2 : 4}
       >
         {directEditIndex === index ? (
           <DirectEditTimeInput directEditTimeInputRef={directEditTimeInputRef as any} editTime={line.time} />
         ) : (
           line.time
         )}
-      </Td>
-      <Td
-        className="lyrics-cell"
-        borderBottom={index === endLineIndex ? "" : "1px solid"}
-        borderRight="1px solid"
-        borderRightColor={`${theme.colors.border.editorTable.right}`}
-        borderBottomColor={theme.colors.border.editorTable.bottom}
+      </TableCell>
+      <TableCell
+        className={`lyrics-cell border-r ${index !== endLineIndex ? 'border-b' : ''}`}
       >
         {directEditIndex === index ? (
           <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef as any} />
         ) : (
           parse(line.lyrics)
         )}
-      </Td>
-      <Td
-        className="word-cell"
-        borderBottom={index === endLineIndex ? "" : "1px solid"}
-        borderBottomColor={theme.colors.border.editorTable.bottom}
-        borderRight="1px solid"
-        borderRightColor={`${theme.colors.border.editorTable.right}`}
+      </TableCell>
+      <TableCell
+        className={`word-cell border-r ${index !== endLineIndex ? 'border-b' : ''}`}
       >
         {directEditIndex === index ? (
           <DirectEditWordInput directEditWordInputRef={directEditWordInputRef as any} />
         ) : (
           line.word
         )}
-      </Td>
-      <Td
-        borderBottom={index === endLineIndex ? "" : "1px solid"}
-        borderBottomColor={theme.colors.border.editorTable.bottom}
+      </TableCell>
+      <TableCell
+        className={index !== endLineIndex ? 'border-b' : ''}
       >
         <Button
           disabled={index === endLineIndex}
-          variant={isOptionEdited ? "solid" : "outline"}
-          color={isOptionEdited ? theme.colors.text.body : theme.colors.secondary.main}
-          bg={isOptionEdited ? theme.colors.secondary.main : ""}
-          borderColor={isOptionEdited ? theme.colors.secondary.main : ""}
-          _hover={{
-            bg: isOptionEdited ? theme.colors.secondary.light : "",
-          }}
+          variant={isOptionEdited ? "default" : "outline"}
           size="sm"
           onClick={() => {
             if (index !== endLineIndex) {
@@ -170,8 +147,8 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
         >
           {isOptionEdited ? "設定有" : "未設定"}
         </Button>
-      </Td>
-    </Tr>
+      </TableCell>
+    </TableRow>
   );
 }
 

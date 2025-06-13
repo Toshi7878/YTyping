@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Input } from "@/components/ui/input/input";
 import { useEffect, useRef } from "react";
 
 import { useTimeInput } from "@/app/edit/atoms/refAtoms";
@@ -20,8 +20,7 @@ const EditorTimeInput = () => {
     <Input
       ref={timeInputRef}
       placeholder="Time"
-      size="sm"
-      width="90px"
+      className="h-8 w-[90px]"
       type="number"
       onChange={(e) => {
         setEditIsTimeInputValid(e.currentTarget.value ? false : true);

@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import { Dispatch } from "react";
 
 interface ChangeLineVideoSpeedOptionProps {
@@ -27,17 +27,17 @@ const ChangeLineVideoSpeedOption = (props: ChangeLineVideoSpeedOptionProps) => {
     }
   };
   return (
-    <Flex alignItems="baseline">
-      <Button variant="unstyled" onClick={() => speedChange({ type: "down" })}>
+    <div className="flex items-baseline">
+      <Button variant="ghost" size="sm" className="h-auto p-1" onClick={() => speedChange({ type: "down" })}>
         -
       </Button>
-      <Text as="span">
+      <span className="mx-2">
         {changeVideoSpeed.toFixed(2)} {changeLabel}
-      </Text>
-      <Button variant="unstyled" onClick={() => speedChange({ type: "up" })}>
+      </span>
+      <Button variant="ghost" size="sm" className="h-auto p-1" onClick={() => speedChange({ type: "up" })}>
         +
       </Button>
-    </Flex>
+    </div>
   );
 };
 

@@ -1,14 +1,13 @@
 import { useIsWordConvertingState, useSetWord, useWordState } from "@/app/edit/atoms/stateAtoms";
 import { useWordConvertButtonEvent } from "@/app/edit/hooks/useButtonEvents";
-import { ThemeColors } from "@/types";
-import { Button, Flex, Input, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input/input";
 
 interface DirectEditWordInputProps {
   directEditWordInputRef: React.RefObject<HTMLInputElement>;
 }
 
 const DirectEditWordInput = (props: DirectEditWordInputProps) => {
-  const theme: ThemeColors = useTheme();
   const isLoadWordConvert = useIsWordConvertingState();
   const selectWord = useWordState();
 
@@ -16,30 +15,28 @@ const DirectEditWordInput = (props: DirectEditWordInputProps) => {
   const setWord = useSetWord();
 
   return (
-    <Flex alignItems="center" justifyContent="space-between">
+    <div className="flex items-center justify-between gap-2">
       <Button
-        isDisabled={false}
-        isLoading={isLoadWordConvert}
+        disabled={isLoadWordConvert}
         variant="outline"
         size="sm"
-        height="35px"
-        width="8%"
-        color={theme.colors.text.body}
-        _hover={{ bg: `${theme.colors.secondary.main}60` }}
-        borderColor={theme.colors.secondary.main}
+        className="h-8 w-[8%] hover:bg-secondary/40"
         onClick={wordConvertButtonEvent}
       >
-        変換
+        {isLoadWordConvert ? (
+          <span className="loading loading-spinner loading-xs" />
+        ) : (
+          "変換"
+        )}
       </Button>
       <Input
         ref={props.directEditWordInputRef}
-        width="91%"
-        size="sm"
+        className="h-8 w-[91%]"
         autoComplete="off"
         value={selectWord}
         onChange={(e) => setWord(e.target.value)}
       />
-    </Flex>
+    </div>
   );
 };
 

@@ -1,10 +1,10 @@
-import { Card, CardBody, Flex, HStack, Stack, useTheme, useToast } from "@chakra-ui/react";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
 
 import { useSetGeminiTags, useSetMapInfo, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
 import useHasMapUploadPermission from "@/app/edit/hooks/useUserEditPermission";
 import { useUploadMap } from "@/app/edit/hooks/utils/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
-import { ThemeColors } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useQuery } from "@tanstack/react-query";
@@ -19,8 +19,7 @@ import UploadButton from "./tab-info-child/UploadButton";
 export const NOT_EDIT_PERMISSION_TOAST_ID = "not-edit-permission-toast";
 
 const TabInfoUpload = () => {
-  const toast = useCustomToast();
-  const theme: ThemeColors = useTheme();
+  const customToast = useCustomToast();
   const searchParams = useSearchParams();
   const isNewCreate = !!searchParams.get("new");
   const videoId = useVideoIdState();
@@ -32,16 +31,15 @@ const TabInfoUpload = () => {
     isFetching,
     error,
   } = useQuery(useGeminiQueries().generateMapInfo({ videoId }, { enabled: !isBackUp && hasUploadPermission }));
-  const chakraToast = useToast();
 
   const setGeminiTags = useSetGeminiTags();
   const setMapInfo = useSetMapInfo();
 
   useEffect(() => {
     if (error) {
-      toast({ type: "error", title: error.message });
+      customToast({ type: "error", title: error.message });
     }
-  }, [error, toast]);
+  }, [error, customToast]);
 
   useEffect(() => {
     if (mapInfoData) {
@@ -62,47 +60,37 @@ const TabInfoUpload = () => {
 
   useEffect(() => {
     if (!hasUploadPermission) {
-      const existingToast = chakraToast.isActive(NOT_EDIT_PERMISSION_TOAST_ID);
-      if (!existingToast) {
-        toast({
-          type: "warning",
-          title: "編集保存権限がないため譜面の更新はできません",
-          duration: null,
-          size: "sm",
-          isClosable: false,
-          id: NOT_EDIT_PERMISSION_TOAST_ID,
-        });
-      } else {
-        chakraToast.close(NOT_EDIT_PERMISSION_TOAST_ID);
-      }
+      toast.warning("編集保存権限がないため譜面の更新はできません", {
+        id: NOT_EDIT_PERMISSION_TOAST_ID,
+        duration: Infinity,
+      });
+    } else {
+      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
     }
-  }, [chakraToast, hasUploadPermission, toast]);
+  }, [hasUploadPermission]);
 
   return (
-    <Card variant="filled" bg={theme.colors.background.card} boxShadow="lg" color={theme.colors.text.body}>
-      <CardBody>
-        <Stack display="flex" flexDirection="column" gap="6">
+    <Card className="bg-card shadow-lg text-foreground">
+      <CardContent className="p-6">
+        <div className="flex flex-col gap-6">
           <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
           <InfoTag isGeminiLoading={isFetching} />
-          <HStack justifyContent="space-between">
+          <div className="flex justify-between">
             {hasUploadPermission ? (
-              <Flex
-                as={"form"}
+              <form
                 action={formAction}
-                gap={4}
-                alignItems="baseline"
-                flexDirection={{ base: "column", lg: "row" }}
+                className="flex gap-4 items-baseline flex-col lg:flex-row"
               >
                 <UploadButton state={state} />
                 {mapId ? <TypeLinkButton /> : ""}
-              </Flex>
+              </form>
             ) : (
               mapId && <TypeLinkButton />
             )}
             <PreviewTimeInput />
-          </HStack>
-        </Stack>
-      </CardBody>
+          </div>
+        </div>
+      </CardContent>
     </Card>
   );
 };

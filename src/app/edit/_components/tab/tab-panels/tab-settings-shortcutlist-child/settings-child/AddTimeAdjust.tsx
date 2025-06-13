@@ -2,8 +2,7 @@
 
 import { useSetTimeOffset, useTimeOffsetState } from "@/app/edit/atoms/storageAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { Box, Button, Flex, Text, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 
 const MAX_TIME_OFFSET = -0.1;
 const MIN_TIME_OFFSET = -0.4;
@@ -37,8 +36,6 @@ interface CounterInputProps {
 }
 
 const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: CounterInputProps) => {
-  const theme: ThemeColors = useTheme();
-
   const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
     const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
     const newValueFixed = Number(newValue.toFixed(valueDigits));
@@ -49,49 +46,46 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
     <CustomToolTip
       label={
         <>
-          <Box>再生中に追加・変更を行う場合に、数値分補正してタイムを記録します。</Box>
-          <Box>
-            <Text fontSize="xs">
+          <div>再生中に追加・変更を行う場合に、数値分補正してタイムを記録します。</div>
+          <div>
+            <span className="text-xs">
               譜面のタイムは、歌いだしの瞬間より-0.2 ~ -0.25秒程早めに設定すると丁度よいタイミングになります。
-            </Text>
-            <Text fontSize="xs">※間奏などでワードが存在しない場合は追加タイム補正は適用されません。</Text>
-            <Text fontSize="xs">
+            </span>
+            <span className="text-xs">※間奏などでワードが存在しない場合は追加タイム補正は適用されません。</span>
+            <span className="text-xs">
               Bluetoothキーボードや無線イヤホンなど環境に合わせて最適な補正値に調整してください。
-            </Text>
-          </Box>
+            </span>
+          </div>
         </>
       }
       placement="top"
     >
-      <Flex alignItems="baseline">
-        <Text fontSize="sm" mr={2}>
+      <div className="flex items-baseline">
+        <span className="text-sm mr-2">
           {label}
-        </Text>
-        <Flex
-          alignItems="baseline"
-          border="1px"
-          borderColor={`${theme.colors.border.card}90`}
-          width="fit-content"
-          rounded="full"
-          px={2}
-        >
-          <Button onClick={() => onCounterChange({ type: "decrement" })} size="xs" cursor="pointer" variant="unstyled">
+        </span>
+        <div className="flex items-baseline border rounded-full px-2 w-fit border-border/50">
+          <Button 
+            onClick={() => onCounterChange({ type: "decrement" })} 
+            size="sm" 
+            variant="ghost" 
+            className="h-auto p-1"
+          >
             -
           </Button>
-          <Flex fontSize="xs" gap={2}>
+          <div className="text-xs px-2">
             {value.toFixed(valueDigits)}
-          </Flex>
+          </div>
           <Button
             onClick={() => onCounterChange({ type: "increment" })}
-            size="xs"
-            cursor="pointer"
-            variant="unstyled"
-            position="relative"
+            size="sm"
+            variant="ghost"
+            className="h-auto p-1"
           >
             +
           </Button>
-        </Flex>
-      </Flex>
+        </div>
+      </div>
     </CustomToolTip>
   );
 };

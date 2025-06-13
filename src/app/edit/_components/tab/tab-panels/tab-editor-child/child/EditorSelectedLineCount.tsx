@@ -1,17 +1,13 @@
 import { useSelectIndexState } from "@/app/edit/atoms/stateAtoms";
-import { Input } from "@chakra-ui/react";
+import { Input } from "@/components/ui/input/input";
 
 const EditorSelectedLineCountInput = () => {
   const selectedLineCount = useSelectIndexState();
   return (
     <Input
       placeholder="No."
-      size="sm"
-      width="90px"
+      className="h-8 w-[90px] bg-muted opacity-100"
       disabled
-      variant="filled"
-      opacity={1}
-      _disabled={{ opacity: 1 }}
       value={selectedLineCount ?? ""}
     />
   );

@@ -1,5 +1,4 @@
 import { useMapSourceState, useSetMapSource } from "@/app/edit/atoms/stateAtoms";
-import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
 interface MusicSourceInputProps {
@@ -11,7 +10,7 @@ const MusicSourceInput = (props: MusicSourceInputProps) => {
   const musicSource = useMapSourceState();
 
   return (
-    <Flex alignItems="center">
+    <div className="flex items-center">
       <InfoInput
         label={"ソース"}
         placeholder="曲が使用されているアニメ・ドラマ・映画タイトルを入力"
@@ -20,7 +19,7 @@ const MusicSourceInput = (props: MusicSourceInputProps) => {
         isRequired={false}
         isGeminiLoading={props.isGeminiLoading}
       />
-    </Flex>
+    </div>
   );
 };
 

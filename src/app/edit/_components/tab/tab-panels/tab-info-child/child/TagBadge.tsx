@@ -1,7 +1,7 @@
 import { useMapTagsState, useSetCanUpload, useSetMapTags } from "@/app/edit/atoms/stateAtoms";
 import { TAG_MAX_LEN } from "@/app/edit/ts/const/editDefaultValues";
 import { Tag } from "@/types";
-import { Badge } from "@chakra-ui/react";
+import { Badge } from "@/components/ui/badge";
 
 interface TagBadgeProps {
   label: string;
@@ -25,12 +25,8 @@ const TagBadge = (props: TagBadgeProps) => {
   };
   return (
     <Badge
-      variant="solid"
-      bg={props.bg}
-      opacity="0.7"
-      className={`cursor-pointer text-sm rounded-lg`}
-      _hover={{ opacity: "1" }}
-      textTransform="none" // 追加: UpperCaseを解除
+      className={`cursor-pointer text-sm rounded-lg opacity-70 hover:opacity-100 normal-case`}
+      style={{ backgroundColor: props.bg }}
       onClick={() => {
         if (tags.length < TAG_MAX_LEN) {
           handleAddition({ id: props.label, text: props.label, className: "" });

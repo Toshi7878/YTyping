@@ -2,28 +2,25 @@ import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/at
 import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
 import { useFilterWordSymbol, useLyricsFormatUtils } from "@/app/edit/hooks/utils/useWordConverter";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import {
   AlertDialog,
-  AlertDialogBody,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
-  Box,
-  Button,
-  IconButton,
-  Textarea,
-  useDisclosure,
-  useTheme,
-} from "@chakra-ui/react";
-import { useRef } from "react";
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 import { TiFilter } from "react-icons/ti";
 
 const ManyPhraseTextarea = () => {
-  const theme: ThemeColors = useTheme();
   const manyPhrase = useManyPhraseState();
 
   const setManyPhrase = useSetManyPhrase();
@@ -60,25 +57,19 @@ const ManyPhraseTextarea = () => {
   };
 
   return (
-    <Box display="flex" alignItems="center" position="relative">
+    <div className="flex items-center relative">
       <Textarea
         placeholder={`ここから歌詞をまとめて追加できます。
 Sキー: 歌詞を追加
 Ctrl+Zキー: 歌詞追加のやり直し`}
-        size="lg"
         id="many_phrase_textarea"
-        height="110px"
+        className="h-[110px] resize-none"
         value={manyPhrase}
-        bg={theme.colors.background.body}
-        borderColor={`${theme.colors.border.card}80`}
-        _focus={{
-          borderColor: `${theme.colors.primary}`,
-        }}
         onPaste={onPaste}
         onChange={onChange}
       />
       <FilterSymbolButton manyPhrase={manyPhrase} />
-    </Box>
+    </div>
   );
 };
 
@@ -90,13 +81,8 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
   const pickupTopPhrase = usePickupTopPhrase();
   const filterWordSymbol = useFilterWordSymbol();
   const { formatSimilarChar, filterUnicodeSymbol } = useLyricsFormatUtils();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
   const toast = useCustomToast();
-
-  const removeSymbols = () => {
-    if (!manyPhrase) return;
-    onOpen();
-  };
 
   const handleConfirm = () => {
     const cleanedText = filterUnicodeSymbol(
@@ -115,7 +101,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
 
     const topPhrase = cleanedText.split("\n")[0];
     pickupTopPhrase(topPhrase);
-    onClose();
+    setIsOpen(false);
     toast({
       title: "歌詞追加テキストエリアの記号を削除しました",
       message: "読み変換で変換されない記号を削除しました",
@@ -123,53 +109,43 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
     });
   };
 
-  const cancelRef = useRef<HTMLButtonElement>(null);
-
   return (
     <>
       <CustomToolTip
         label={
           <>
-            <Box>読み変換で変換されない記号を削除します。</Box>
-            <Box>※設定タブ内の読み変換設定によって削除される記号は変化します。</Box>
+            <div>読み変換で変換されない記号を削除します。</div>
+            <div>※設定タブ内の読み変換設定によって削除される記号は変化します。</div>
           </>
         }
         placement="top"
       >
-        <IconButton
-          aria-label="記号を削除"
-          icon={<TiFilter size="18px" />}
-          position="absolute"
-          right="20px"
-          bottom="8px"
-          size="sm"
-          colorScheme="gray"
-          variant="outline"
-          onClick={removeSymbols}
-          isDisabled={!manyPhrase}
-        />
-      </CustomToolTip>
-
-      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef as any} onClose={onClose}>
-        <AlertDialogOverlay>
+        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+          <AlertDialogTrigger asChild>
+            <Button
+              aria-label="記号を削除"
+              size="sm"
+              variant="outline"
+              className="absolute right-5 bottom-2"
+              disabled={!manyPhrase}
+            >
+              <TiFilter size="18px" />
+            </Button>
+          </AlertDialogTrigger>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              記号を削除
+            <AlertDialogHeader>
+              <AlertDialogTitle>記号を削除</AlertDialogTitle>
+              <AlertDialogDescription>
+                歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？
+              </AlertDialogDescription>
             </AlertDialogHeader>
-
-            <AlertDialogBody>
-              歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？
-            </AlertDialogBody>
-
             <AlertDialogFooter>
-              <Button onClick={onClose}>キャンセル</Button>
-              <Button colorScheme="red" onClick={handleConfirm} ml={3}>
-                削除する
-              </Button>
+              <AlertDialogCancel>キャンセル</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirm}>削除する</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+        </AlertDialog>
+      </CustomToolTip>
     </>
   );
 };

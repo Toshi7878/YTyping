@@ -1,5 +1,3 @@
-import { ThemeColors } from "@/types";
-import { useTheme } from "@chakra-ui/react";
 import { Ticker } from "pixi.js";
 import { useReadMap } from "../atoms/mapReducerAtom";
 import { usePlayer, useTimeInput, useTimeRange } from "../atoms/refAtoms";
@@ -42,8 +40,6 @@ export const useTimerControls = () => {
 };
 
 const useTimer = () => {
-  const theme: ThemeColors = useTheme();
-
   const updateCurrentLine = useUpdateCurrentTimeLine();
   const readEditUtils = useReadEditUtils();
 
@@ -59,7 +55,8 @@ const useTimer = () => {
     const rangeMaxValue = readTimeRange().max;
     const progress = (Number(currentTime) / Number(rangeMaxValue)) * 100;
 
-    readTimeRange().style.background = `linear-gradient(to right, ${theme.colors.primary.main} ${progress}%, ${theme.colors.text.body}30 ${progress}%)`;
+    // Using CSS variables from the theme instead of Chakra UI theme
+    readTimeRange().style.background = `linear-gradient(to right, hsl(var(--primary)) ${progress}%, hsl(var(--muted-foreground)) ${progress}%)`;
 
     const { directEditingIndex, timeCount } = readEditUtils();
     if (!directEditingIndex) {

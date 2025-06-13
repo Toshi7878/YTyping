@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 
 import LinkLoader from "@/components/ui/link-loader";
+import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
@@ -52,6 +53,7 @@ export default async function RootLayout({
               </GlobalProvider>
             </TRPCProvider>
           </SessionProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

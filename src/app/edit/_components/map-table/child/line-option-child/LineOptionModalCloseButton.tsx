@@ -1,13 +1,12 @@
 import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Dispatch } from "react";
 
 interface LineOptionModalCloseButton {
@@ -30,21 +29,23 @@ export default function LineOptionModalCloseButton({
   };
 
   return (
-    <Modal isOpen={isConfirmOpen} onClose={onConfirmClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>確認</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>CSS設定の変更が保存されていません。保存せずに閉じてもよろしいですか？</ModalBody>
-        <ModalFooter>
-          <Button variant="ghost" onClick={onConfirmClose} mr={3}>
+    <Dialog open={isConfirmOpen} onOpenChange={onConfirmClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>確認</DialogTitle>
+          <DialogDescription>
+            CSS設定の変更が保存されていません。保存せずに閉じてもよろしいですか？
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={onConfirmClose}>
             いいえ
           </Button>
-          <Button colorScheme="red" mr={3} onClick={handleConfirmClose}>
+          <Button variant="destructive" onClick={handleConfirmClose}>
             はい
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

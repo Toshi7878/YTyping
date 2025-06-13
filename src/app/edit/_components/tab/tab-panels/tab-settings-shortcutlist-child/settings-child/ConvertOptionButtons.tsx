@@ -2,13 +2,13 @@
 import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/atoms/storageAtoms";
 import { ConvertOptionsType } from "@/app/edit/ts/type";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/config/consts/charList";
-import { ThemeColors } from "@/types";
-import { Box, Button, FormLabel, HStack, RadioGroup, Stack, useTheme } from "@chakra-ui/react";
 import { useMemo } from "react";
 
 export default function ConvertOptionButtons() {
-  const theme: ThemeColors = useTheme();
   const wordConvertOption = useWordConvertOptionState();
   const setWordConvertOption = useSetWordConvertOption();
 
@@ -19,10 +19,10 @@ export default function ConvertOptionButtons() {
         label: "記号なし(一部除く)",
         value: "non_symbol",
         tooltipLabel: (
-          <Box>
-            <Box>一部の記号を除いてワードに記号を含まずよみ変換します。</Box>
-            <Box>変換される記号:{MANDATORY_SYMBOL_LIST.join(" ")}</Box>
-          </Box>
+          <div>
+            <div>一部の記号を除いてワードに記号を含まずよみ変換します。</div>
+            <div>変換される記号:{MANDATORY_SYMBOL_LIST.join(" ")}</div>
+          </div>
         ),
       },
       {
@@ -30,10 +30,10 @@ export default function ConvertOptionButtons() {
         label: "記号あり(一部)",
         value: "add_symbol",
         tooltipLabel: (
-          <Box>
-            <Box>一部の記号をよみ変換されるようにします。</Box>
-            <Box>変換される記号:{MANDATORY_SYMBOL_LIST.concat(LOOSE_SYMBOL_LIST).join(" ")}</Box>
-          </Box>
+          <div>
+            <div>一部の記号をよみ変換されるようにします。</div>
+            <div>変換される記号:{MANDATORY_SYMBOL_LIST.concat(LOOSE_SYMBOL_LIST).join(" ")}</div>
+          </div>
         ),
       },
       {
@@ -41,48 +41,51 @@ export default function ConvertOptionButtons() {
         label: "記号あり(すべて)",
         value: "add_symbol_all",
         tooltipLabel: (
-          <Box>
-            <Box>キーボードで入力できる全ての記号をよみ変換されるようにします。</Box>
-            <Box>
+          <div>
+            <div>キーボードで入力できる全ての記号をよみ変換されるようにします。</div>
+            <div>
               変換される記号:
               {MANDATORY_SYMBOL_LIST.concat(LOOSE_SYMBOL_LIST).concat(STRICT_SYMBOL_LIST).join(" ")}
-            </Box>
-          </Box>
+            </div>
+          </div>
         ),
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [theme]
+    []
   );
 
+  const getColorClasses = (colorScheme: string, isSelected: boolean) => {
+    const colorMap: { [key: string]: string } = {
+      green: isSelected ? "bg-green-500 hover:bg-green-600 text-white" : "border-green-500 text-green-600 hover:bg-green-50",
+      yellow: isSelected ? "bg-yellow-500 hover:bg-yellow-600 text-white" : "border-yellow-500 text-yellow-600 hover:bg-yellow-50",
+      red: isSelected ? "bg-red-500 hover:bg-red-600 text-white" : "border-red-500 text-red-600 hover:bg-red-50",
+    };
+    return colorMap[colorScheme] || "";
+  };
+
   return (
-    <HStack alignItems="baseline">
-      <FormLabel fontSize="sm">読み変換</FormLabel>
+    <div className="flex items-baseline gap-2">
+      <Label className="text-sm">読み変換</Label>
 
       <RadioGroup
-        onChange={(nextValue: string) => setWordConvertOption(nextValue as ConvertOptionsType)}
+        onValueChange={(nextValue: string) => setWordConvertOption(nextValue as ConvertOptionsType)}
         value={wordConvertOption}
       >
-        <Stack direction="row">
+        <div className="flex gap-2">
           {options.map((option) => (
             <CustomToolTip label={option.tooltipLabel} key={option.label} placement="bottom">
               <Button
-                variant={wordConvertOption === option.value ? "solid" : "outline"}
+                variant={wordConvertOption === option.value ? "default" : "outline"}
                 size="sm"
-                width="150px"
-                height="50px"
-                name="word-convert-option"
-                bg={wordConvertOption === option.value ? undefined : theme.colors.background.body}
-                colorScheme={option.colorScheme}
-                value={option.value}
+                className={`w-[150px] h-[50px] ${getColorClasses(option.colorScheme, wordConvertOption === option.value)}`}
                 onClick={() => setWordConvertOption(option.value as ConvertOptionsType)}
               >
                 {option.label}
               </Button>
             </CustomToolTip>
           ))}
-        </Stack>
+        </div>
       </RadioGroup>
-    </HStack>
+    </div>
   );
 }

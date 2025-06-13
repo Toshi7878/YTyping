@@ -1,6 +1,6 @@
 import { usePlayer, useTimeInput } from "@/app/edit/atoms/refAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { Input } from "@chakra-ui/react";
+import { Input } from "@/components/ui/input/input";
 import React, { useState } from "react";
 
 interface DirectEditTimeInputProps {
@@ -18,7 +18,7 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
     <CustomToolTip label={"↓↑: 0.05ずつ調整, Enter:再生"} placement="top">
       <Input
         ref={props.directEditTimeInputRef}
-        size="xs"
+        className="h-6 text-xs"
         type="number"
         value={editTime}
         onChange={(e) => {

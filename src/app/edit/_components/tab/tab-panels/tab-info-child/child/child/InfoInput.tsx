@@ -1,5 +1,6 @@
 import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
-import { FormLabel, Input } from "@chakra-ui/react";
+import { Input } from "@/components/ui/input/input";
+import { Label } from "@/components/ui/label";
 import { Dispatch } from "react";
 
 interface InfoInputProps {
@@ -14,16 +15,14 @@ const InfoInput = (props: InfoInputProps) => {
   const setCanUpload = useSetCanUpload();
   return (
     <>
-      <FormLabel mb="0" width="150px" fontWeight="bold" fontSize="sm">
+      <Label className="w-[150px] font-bold text-sm">
         {props.label}
-      </FormLabel>
+      </Label>
 
       <Input
-        isInvalid={!props.isGeminiLoading && props.isRequired && props.inputState === ""}
+        className={`h-8 ${!props.isGeminiLoading && props.isRequired && props.inputState === "" ? "border-destructive" : ""} ${props.isRequired ? "font-bold" : ""}`}
         placeholder={props.isGeminiLoading ? `${props.label}を生成中` : props.placeholder}
-        isDisabled={props.isGeminiLoading}
-        size="sm"
-        fontWeight={props.isRequired ? "bold" : "normal"}
+        disabled={props.isGeminiLoading}
         value={props.inputState}
         onChange={(e) => {
           setCanUpload(true);

@@ -1,19 +1,16 @@
-import { ThemeColors } from "@/types";
-import { Card, CardBody, Stack, useTheme } from "@chakra-ui/react";
+import { Card, CardContent } from "@/components/ui/card";
 import EditorSettingModal from "./tab-settings-shortcutlist-child/Settings";
 import ShortCutKeyList from "./tab-settings-shortcutlist-child/settings-child/ShortCutKeyList";
 
 const TabSettings = () => {
-  const theme: ThemeColors = useTheme();
-
   return (
-    <Card bg={theme.colors.background.card}>
-      <CardBody>
-        <Stack spacing={6}>
+    <Card className="bg-card">
+      <CardContent className="p-6">
+        <div className="space-y-6">
           <EditorSettingModal />
           <ShortCutKeyList />
-        </Stack>
-      </CardBody>
+        </div>
+      </CardContent>
     </Card>
   );
 };
