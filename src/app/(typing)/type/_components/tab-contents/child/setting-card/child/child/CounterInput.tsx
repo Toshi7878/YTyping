@@ -1,6 +1,7 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
-import { Button, Flex, Text, useTheme } from "@chakra-ui/react";
+import { Flex, Text, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 
 interface CounterInputProps {
   value: number;
@@ -54,11 +55,9 @@ const CounterInput = ({
         <CustomToolTip label={decrementTooltip} placement="top">
           <Button
             onClick={() => onCounterChange({ type: "decrement" })}
-            cursor="pointer"
-            variant="unstyled"
-            fontSize="xl"
-            position="relative"
-            bottom={0.5}
+            variant="ghost"
+            className="h-auto p-0 text-xl relative hover:bg-transparent"
+            style={{ bottom: "2px" }}
           >
             -
           </Button>
@@ -70,11 +69,9 @@ const CounterInput = ({
         <CustomToolTip label={incrementTooltip} placement="top">
           <Button
             onClick={() => onCounterChange({ type: "increment" })}
-            cursor="pointer"
-            variant="unstyled"
-            position="relative"
-            bottom={0.5}
-            fontSize="xl"
+            variant="ghost"
+            className="h-auto p-0 text-xl relative hover:bg-transparent"
+            style={{ bottom: "2px" }}
           >
             +
           </Button>

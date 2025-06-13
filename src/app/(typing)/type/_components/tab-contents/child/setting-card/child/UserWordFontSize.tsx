@@ -1,6 +1,7 @@
 "use client";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import { MdRestartAlt } from "react-icons/md";
 import CounterInput from "./child/CounterInput";
 
@@ -34,7 +35,8 @@ export const UserWordFontSize = () => {
         <Text fontSize="lg" fontWeight="semibold">
           ワードフォントサイズ 調整
         </Text>
-        <Button leftIcon={<MdRestartAlt />} size="sm" colorScheme="blue" variant="outline" onClick={resetToDefaults}>
+        <Button size="sm" variant="outline" onClick={resetToDefaults}>
+          <MdRestartAlt className="mr-2" />
           リセット
         </Button>
       </Flex>

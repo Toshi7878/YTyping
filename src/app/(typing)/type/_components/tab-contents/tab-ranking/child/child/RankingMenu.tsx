@@ -5,7 +5,8 @@ import { useRetry } from "@/app/(typing)/type/hooks/playing-hooks/retry";
 import { useSoundEffect } from "@/app/(typing)/type/hooks/playing-hooks/soundEffect";
 import { LocalClapState, ThemeColors, UploadResult } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
-import { Button, Stack, useTheme } from "@chakra-ui/react";
+import { Stack, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { Dispatch } from "react";
 import MenuClapButton from "./child/MenuClapButton";
@@ -81,10 +82,21 @@ const RankingMenu = ({
       top={{ base: "auto", md: "auto" }}
       fontSize={{ base: "3xl", md: "xl" }}
     >
-      <Button variant="rankingMenu" as="a" display="flex" href={`/user/${userId}`}>
-        ユーザーページへ
+      <Button 
+        variant="ghost" 
+        className="w-full justify-start" 
+        asChild
+      >
+        <a href={`/user/${userId}`}>
+          ユーザーページへ
+        </a>
       </Button>
-      <Button variant="rankingMenu" onClick={() => handleReplayClick()} isDisabled={sceneGroup === "Playing"}>
+      <Button 
+        variant="ghost" 
+        className="w-full justify-start"
+        onClick={() => handleReplayClick()} 
+        disabled={sceneGroup === "Playing"}
+      >
         リプレイ再生
       </Button>
       {session?.user.id ? (

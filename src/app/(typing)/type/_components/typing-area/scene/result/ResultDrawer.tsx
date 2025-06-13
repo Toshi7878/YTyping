@@ -1,10 +1,7 @@
 "use client";
 import { useSceneGroupState, useSceneState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { ThemeColors } from "@/types";
-import {
-  UseDisclosureReturn,
-  useTheme,
-} from "@chakra-ui/react";
+import { useTheme } from "@chakra-ui/react";
 import {
   Sheet,
   SheetContent,
@@ -15,7 +12,11 @@ import { useMemo } from "react";
 import ResultLineList from "./child/ResultLineList";
 
 interface ResultDrawerProps {
-  drawerClosure: UseDisclosureReturn;
+  drawerClosure: {
+    isOpen: boolean;
+    onOpen: () => void;
+    onClose: () => void;
+  };
 }
 
 function ResultDrawer({ drawerClosure }: ResultDrawerProps) {

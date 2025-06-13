@@ -2,8 +2,8 @@ import { useMapInfoRef } from "@/app/(typing)/type/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { ThemeColors } from "@/types";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
 import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { BiEdit } from "react-icons/bi";
@@ -27,10 +27,12 @@ const EditIcon = () => {
         <Link
           href={`/edit/${mapId}`}
           onClick={handleLinkClick}
-          _hover={{ color: theme.colors.text.body }}
-          cursor="pointer"
-          pr={3}
-          pl={0.5}
+          style={{
+            cursor: "pointer",
+            paddingRight: "12px",
+            paddingLeft: "2px"
+          }}
+          className="hover:opacity-80"
         >
           <BiEdit size={iconSize} />
         </Link>

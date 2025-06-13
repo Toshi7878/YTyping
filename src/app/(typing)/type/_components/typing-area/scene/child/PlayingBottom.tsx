@@ -1,7 +1,8 @@
 import { useSceneGroupState, useYTStartedState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import { Box, Button, Flex, HStack } from "@chakra-ui/react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import Progress from "./Progress";
 import PlayingSkipGuide from "./bottom-child/PlayingSkipGuide";
@@ -48,11 +49,7 @@ const PlayingBottom = function () {
       {sceneGroup === "Ready" && (
         <Link href={`/ime/${mapId}`} onClick={(event) => handleLinkClick(event, "replace")}>
           <Button
-            p={{ base: 8, md: "2" }}
-            fontSize={{ base: "2xl", md: "md" }}
-            position="absolute"
-            bottom="3"
-            right="10"
+            className="absolute bottom-3 right-10 p-8 text-2xl md:p-2 md:text-base"
           >
             変換有りタイピング
           </Button>
