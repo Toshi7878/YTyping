@@ -21,10 +21,6 @@ const SearchContent = () => {
         <Box mb={3}>
           <SearchInputs />
         </Box>
-        <Box mb={3}>
-          お知らせ:
-          ytyping.netドメインをcloudflareに移管するため、6/13夜頃よりしばらくの間アクセスできなくなる可能性があります。
-        </Box>
         <Flex
           justifyContent={isLogin ? "space-between" : "flex-end"}
           gap={isLogin ? 0 : 8}
