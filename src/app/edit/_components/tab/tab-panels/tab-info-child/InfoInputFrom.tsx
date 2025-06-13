@@ -1,4 +1,3 @@
-import { Stack } from "@chakra-ui/react";
 import ArtistNameInput from "./child/ArtistNameInput";
 import CreatorCommentInput from "./child/CreatorCommentInput";
 import MusicSourceInput from "./child/MusicSource";
@@ -11,15 +10,15 @@ interface InfoInputFormProps {
 
 const InfoInputForm = ({ isGeminiLoading }: InfoInputFormProps) => {
   return (
-    <Stack display="flex" flexDirection="column" gap="6">
+    <div className="flex flex-col gap-6">
       <VideoIdInput />
-      <Stack>
+      <div className="flex flex-col gap-4">
         <TitleInput isGeminiLoading={isGeminiLoading} />
         <ArtistNameInput isGeminiLoading={isGeminiLoading} />
         <MusicSourceInput isGeminiLoading={isGeminiLoading} />
-      </Stack>
+      </div>
       <CreatorCommentInput />
-    </Stack>
+    </div>
   );
 };
 

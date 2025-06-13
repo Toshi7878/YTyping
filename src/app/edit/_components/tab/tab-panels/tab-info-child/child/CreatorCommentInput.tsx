@@ -1,5 +1,4 @@
 import { useMapCommentState, useSetMapComment } from "@/app/edit/atoms/stateAtoms";
-import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
 const CreatorCommentInput = () => {
@@ -7,14 +6,14 @@ const CreatorCommentInput = () => {
   const creatorComment = useMapCommentState();
 
   return (
-    <Flex alignItems="center">
+    <div className="flex items-center">
       <InfoInput
         label={"コメント"}
         placeholder="譜面の情報や感想など、なんでもコメントOKです"
         inputState={creatorComment}
         setInputState={setCreatorComment}
       />
-    </Flex>
+    </div>
   );
 };
 

@@ -2,7 +2,7 @@ import { useMapTagsState, useSetCanUpload, useSetMapTags } from "@/app/edit/atom
 import "@/app/edit/style/reactTags.scss";
 import { TAG_MAX_LEN, TAG_MIN_LEN } from "@/app/edit/ts/const/editDefaultValues";
 import { Tag } from "@/types";
-import { Box, Flex, FormLabel, Text } from "@chakra-ui/react";
+import { Label } from "@/components/ui/label";
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input";
 
 const TagInput = () => {
@@ -34,7 +34,7 @@ const TagInput = () => {
   };
 
   return (
-    <Flex
+    <div
       {...(tags.length !== 0
         ? {
             onDrop: (event) => {
@@ -45,15 +45,15 @@ const TagInput = () => {
             },
           }
         : {})}
-      alignItems="center"
+      className="flex items-center"
     >
-      <FormLabel mb="0" width="150px" fontWeight="bold">
-        <Text as="span">
+      <Label className="w-[150px] font-bold">
+        <span>
           タグ {tags.length}
           {tags.length <= 1 ? `/${TAG_MIN_LEN}` : `/${TAG_MAX_LEN}`}
-        </Text>
-      </FormLabel>
-      <Box width={"100%"}>
+        </span>
+      </Label>
+      <div className="w-full">
         <ReactTags
           tags={tags}
           suggestions={suggestions}
@@ -77,8 +77,8 @@ const TagInput = () => {
           }}
           inline={false}
         />
-      </Box>
-    </Flex>
+      </div>
+    </div>
   );
 };
 

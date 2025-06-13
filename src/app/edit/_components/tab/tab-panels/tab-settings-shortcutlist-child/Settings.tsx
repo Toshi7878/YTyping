@@ -2,7 +2,6 @@
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { useUserAgent } from "@/utils/useUserAgent";
-import { HStack, VStack } from "@chakra-ui/react";
 import AllTimeAdjust from "./settings-child/AllTimeAdjust";
 import ConvertOptionButtons from "./settings-child/ConvertOptionButtons";
 import LrcConvertButton from "./settings-child/LrcConvertButton";
@@ -11,15 +10,15 @@ export default function EditSettings() {
   const { readPlayer } = usePlayer();
   const { isMobile } = useUserAgent();
   return (
-    <VStack align="start" spacing={4}>
-      <HStack spacing={10} alignItems="flex-end">
+    <div className="flex flex-col items-start gap-4">
+      <div className="flex gap-10 items-end">
         <AllTimeAdjust />
         {!isMobile && <VolumeRange player={readPlayer()} />}
-      </HStack>
-      <HStack spacing={10} alignItems="flex-end">
+      </div>
+      <div className="flex gap-10 items-end">
         <ConvertOptionButtons />
         <LrcConvertButton />
-      </HStack>
-    </VStack>
+      </div>
+    </div>
   );
 }

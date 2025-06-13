@@ -1,6 +1,5 @@
 "use client";
-import { ThemeColors } from "@/types";
-import { Textarea, useTheme } from "@chakra-ui/react";
+import { Textarea } from "@/components/ui/textarea";
 import { Dispatch } from "react";
 
 interface CSSInputProps {
@@ -11,15 +10,11 @@ interface CSSInputProps {
 }
 
 export default function CSSInput(props: CSSInputProps) {
-  const theme: ThemeColors = useTheme();
   return (
     <Textarea
-      bg={theme.colors.background.body}
       disabled={props.disabled}
       placeholder=""
-      resize={"vertical"}
-      size="md"
-      height={"200px"}
+      className="min-h-[200px] resize-y"
       value={props.CSSText}
       onChange={(e) => {
         props.setCSSText(e.target.value);

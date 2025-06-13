@@ -4,14 +4,14 @@ import { useMapReducer, useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import useTimeValidate from "@/app/edit/hooks/utils/useTimeValidate";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input/input";
+import { Label } from "@/components/ui/label";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
-import { Box, Button, FormLabel, HStack, Input, useTheme } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function AllTimeAdjust() {
   const setCanUpload = useSetCanUpload();
-  const theme: ThemeColors = useTheme();
   const toast = useCustomToast();
   const [totalAdjustValue, setTotalAdjustValue] = useState<string>("");
   const readMap = useReadMap();
@@ -64,21 +64,20 @@ export default function AllTimeAdjust() {
   };
 
   return (
-    <HStack alignItems="baseline">
+    <div className="flex items-baseline">
       <CustomToolTip
-        label={<Box>数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します</Box>}
+        label={<div>数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します</div>}
         placement="top"
       >
-        <HStack alignItems="baseline">
-          <FormLabel fontSize="sm">全体タイム調整</FormLabel>
+        <div className="flex items-baseline gap-2">
+          <Label className="text-sm">全体タイム調整</Label>
           <Input
             placeholder=""
             type="number"
-            size="md"
             step="0.05"
             min="-3"
             max="3"
-            className="max-w-[70px]"
+            className="max-w-[70px] h-8"
             value={totalAdjustValue}
             onChange={(e) => setTotalAdjustValue(e.target.value)}
             onKeyDown={(e) => {
@@ -89,11 +88,15 @@ export default function AllTimeAdjust() {
             }}
           />
 
-          <Button colorScheme="yellow" bg={theme.colors.background.body} variant={"outline"} onClick={allTimeAdjust}>
+          <Button 
+            variant="outline" 
+            className="h-8 border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+            onClick={allTimeAdjust}
+          >
             実行
           </Button>
-        </HStack>
+        </div>
       </CustomToolTip>
-    </HStack>
+    </div>
   );
 }

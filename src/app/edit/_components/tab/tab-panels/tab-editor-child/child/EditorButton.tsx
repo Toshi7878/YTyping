@@ -1,5 +1,4 @@
-import { ThemeColors } from "@/types";
-import { Button, useTheme } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import React from "react";
 
 interface EditorButtonProps {
@@ -11,23 +10,29 @@ interface EditorButtonProps {
 }
 
 const EditorButton = (props: EditorButtonProps) => {
-  const theme: ThemeColors = useTheme();
+  const getColorClasses = (colorScheme: string) => {
+    const colorMap: { [key: string]: string } = {
+      green: "hover:bg-green-500/50 border-green-500",
+      yellow: "hover:bg-yellow-500/50 border-yellow-500",
+      red: "hover:bg-red-500/50 border-red-500",
+      blue: "hover:bg-blue-500/50 border-blue-500",
+    };
+    return colorMap[colorScheme] || "hover:bg-gray-500/50 border-gray-500";
+  };
+
   return (
     <Button
-      isDisabled={props.isDisabled}
-      isLoading={props.isLoading}
+      disabled={props.isDisabled || props.isLoading}
       variant="outline"
       size="sm"
-      height="35px"
-      className="w-[50%] lg:w-[60%] xl:w-[70%]"
-      color={theme.colors.text.body}
-      bg={theme.colors.background.body}
-      _hover={{ bg: `${props.colorScheme}80` }}
-      borderColor={props.colorScheme}
+      className={`h-[35px] w-[50%] lg:w-[60%] xl:w-[70%] ${getColorClasses(props.colorScheme)}`}
       onClick={props.onClick}
-      sx={{ colorScheme: props.colorScheme }}
     >
-      {props.children}
+      {props.isLoading ? (
+        <span className="loading loading-spinner loading-xs" />
+      ) : (
+        props.children
+      )}
     </Button>
   );
 };

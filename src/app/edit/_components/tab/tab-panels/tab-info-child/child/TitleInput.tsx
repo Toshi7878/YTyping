@@ -1,5 +1,4 @@
 import { useMapTitleState, useSetMapTitle } from "@/app/edit/atoms/stateAtoms";
-import { Flex } from "@chakra-ui/react";
 import InfoInput from "./child/InfoInput";
 
 interface TitleInputProps {
@@ -11,7 +10,7 @@ const TitleInput = (props: TitleInputProps) => {
   const mapTitle = useMapTitleState();
 
   return (
-    <Flex alignItems="center">
+    <div className="flex items-center">
       <InfoInput
         label={"曲名タイトル"}
         placeholder="曲名タイトル"
@@ -20,7 +19,7 @@ const TitleInput = (props: TitleInputProps) => {
         isRequired={true}
         isGeminiLoading={props.isGeminiLoading}
       />
-    </Flex>
+    </div>
   );
 };
 

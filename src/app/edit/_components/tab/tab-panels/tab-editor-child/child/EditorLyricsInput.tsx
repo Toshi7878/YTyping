@@ -1,7 +1,7 @@
 import { useLyricsState, useSetLyrics } from "@/app/edit/atoms/stateAtoms";
 import { useAddRubyTagEvent } from "@/app/edit/hooks/utils/useAddRubyTag";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { Box, Input } from "@chakra-ui/react";
+import { Input } from "@/components/ui/input/input";
 import { useState } from "react";
 
 const EditorLyricsInput = () => {
@@ -12,14 +12,14 @@ const EditorLyricsInput = () => {
 
   return (
     <CustomToolTip
-      label={<Box fontSize="xs">Enterキーを押すとRubyタグを挿入できます。</Box>}
+      label={<span className="text-xs">Enterキーを押すとRubyタグを挿入できます。</span>}
       placement="top"
       isDisabled={!isLineLyricsSelected}
       isOpen={isLineLyricsSelected}
     >
       <Input
         placeholder="歌詞"
-        size="sm"
+        className="h-8"
         autoComplete="off"
         value={lyrics}
         onChange={(e) => setLyrics(e.target.value)}

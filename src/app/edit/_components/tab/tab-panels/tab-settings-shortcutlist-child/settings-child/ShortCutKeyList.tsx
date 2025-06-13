@@ -1,5 +1,3 @@
-import { ThemeColors } from "@/types";
-import { Box, Heading, HStack, Kbd, Text, useTheme } from "@chakra-ui/react";
 
 const shortCutList = [
   { keys: ["←", "→"], description: "3秒スキップ" },
@@ -19,38 +17,30 @@ const shortCutList = [
 ];
 
 const ShortCutKeyList = () => {
-  const theme: ThemeColors = useTheme();
-
   return (
-    <Box mt={2}>
-      <Heading size="sm" mb={4}>
+    <div className="mt-2">
+      <h3 className="text-lg font-semibold mb-4">
         ショートカットキー 一覧
-      </Heading>
-      <HStack spacing={6} wrap="wrap" fontSize="md">
+      </h3>
+      <div className="flex flex-wrap gap-6 text-base">
         {shortCutList.map((shortcut, index) => (
-          <Box key={index}>
+          <div key={index}>
             {shortcut.keys.map((key, index) => (
-              <Kbd
+              <kbd
                 key={index}
-                fontWeight="bold"
-                bg={theme.colors.background.body}
-                color={theme.colors.text.body}
-                borderColor={`${theme.colors.border.card}80`}
-                borderWidth="1px"
-                borderStyle="solid"
-                mr={1}
+                className="font-bold bg-background text-foreground border border-border/50 px-2 py-1 rounded mr-1"
               >
                 {key}
-              </Kbd>
+              </kbd>
             ))}
             :
-            <Text as="span" ml={1}>
+            <span className="ml-1">
               {shortcut.description}
-            </Text>
-          </Box>
+            </span>
+          </div>
         ))}
-      </HStack>
-    </Box>
+      </div>
+    </div>
   );
 };
 

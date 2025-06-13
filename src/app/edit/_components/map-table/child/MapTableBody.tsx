@@ -4,7 +4,6 @@ import { useSetCssLength } from "@/app/edit/atoms/stateAtoms";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useKeyDown";
 import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
 import { MapLineEdit } from "@/types/map";
-import { useDisclosure } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import LineRow from "./child/LineRow";
 import LineOptionModal from "./LineOptionModal";
@@ -13,7 +12,7 @@ function MapTableBody() {
 
   const [optionModalIndex, setOptionModalIndex] = useState<number | null>(null);
   const [lineOptions, setLineOptions] = useState<MapLineEdit["options"] | null>(null);
-  const optionClosure = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
 
   const setCustomStyleLength = useSetCssLength();
   const windowKeydownEvent = useWindowKeydownEvent();
@@ -48,7 +47,7 @@ function MapTableBody() {
             key={index}
             index={index}
             line={line}
-            onOpen={optionClosure.onOpen}
+            onOpen={() => setIsOpen(true)}
             setLineOptions={setLineOptions}
             setOptionModalIndex={setOptionModalIndex}
           />
@@ -89,10 +88,10 @@ function MapTableBody() {
       `}
       </style>
 
-      {optionClosure.isOpen && (
+      {isOpen && (
         <LineOptionModal
-          isOpen={optionClosure.isOpen}
-          onClose={optionClosure.onClose}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
           optionModalIndex={optionModalIndex}
           setOptionModalIndex={setOptionModalIndex}
           lineOptions={lineOptions}

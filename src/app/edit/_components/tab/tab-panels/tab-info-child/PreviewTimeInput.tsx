@@ -1,14 +1,11 @@
-import { Box, FormLabel, HStack, Input, Text, useTheme } from "@chakra-ui/react";
-
 import { useEditUtilsParams, usePlayer } from "@/app/edit/atoms/refAtoms";
 import { useMapPreviewTimeState, useSetCanUpload, useSetPreviewTime } from "@/app/edit/atoms/stateAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
+import { Input } from "@/components/ui/input/input";
+import { Label } from "@/components/ui/label";
 import { FaPlay } from "react-icons/fa";
 
 const PreviewTimeInput = () => {
-  const theme: ThemeColors = useTheme();
-
   const previewTime = useMapPreviewTimeState();
   const setPreviewTime = useSetPreviewTime();
   const setCanUpload = useSetCanUpload();
@@ -24,32 +21,29 @@ const PreviewTimeInput = () => {
     <CustomToolTip
       label={
         <>
-          <Box>
+          <div>
             譜面一覧でのプレビュー再生時に入力されているタイムから再生されるようになります。(サビのタイム推奨です)
-          </Box>
-          <Box>※ 小さい数値を指定すると最初のタイピングワードが存在するタイムが設定されます。</Box>
-          <Box>↑↓キー: 0.05ずつ調整, Enter:再生</Box>
+          </div>
+          <div>※ 小さい数値を指定すると最初のタイピングワードが存在するタイムが設定されます。</div>
+          <div>↑↓キー: 0.05ずつ調整, Enter:再生</div>
         </>
       }
       placement="top"
     >
-      <HStack alignItems="baseline">
-        <FormLabel fontSize="sm">
-          <HStack alignItems="baseline">
-            <Text as="small" mr={3}>
+      <div className="flex items-baseline">
+        <Label className="text-sm">
+          <div className="flex items-baseline gap-3">
+            <small className="mr-3">
               プレビュータイム
-            </Text>
+            </small>
 
             <Input
-              isInvalid={previewTime === ""}
+              className={`h-8 w-20 ${previewTime === "" ? "border-destructive" : ""}`}
               value={previewTime}
-              width="80px"
-              bg={theme.colors.background.body}
               type="number"
-              size="sm"
               step="0.05"
               min="0"
-              isRequired={true}
+              required
               onChange={(e) => {
                 setPreviewTime(e.target.value);
                 setCanUpload(true);
@@ -60,12 +54,15 @@ const PreviewTimeInput = () => {
                 }
               }}
             />
-            <Box cursor="pointer" _hover={{ outline: "solid 1px" }} onClick={handlePreviewClick}>
+            <div 
+              className="cursor-pointer hover:outline hover:outline-1 p-1" 
+              onClick={handlePreviewClick}
+            >
               <FaPlay size={15} />
-            </Box>
-          </HStack>
-        </FormLabel>
-      </HStack>
+            </div>
+          </div>
+        </Label>
+      </div>
     </CustomToolTip>
   );
 };

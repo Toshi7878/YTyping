@@ -1,25 +1,24 @@
 import { useMapTagsState } from "@/app/edit/atoms/stateAtoms";
 import { CHOICE_TAGS } from "@/app/edit/ts/const/editDefaultValues";
-import { Flex, Stack } from "@chakra-ui/react";
 import TagBadge from "./TagBadge";
 
 const TagSuggestions = () => {
   const tags = useMapTagsState();
 
   return (
-    <Flex direction="column" wrap="wrap">
-      <Stack direction="row" spacing={3} wrap="wrap">
+    <div className="flex flex-col flex-wrap">
+      <div className="flex flex-row gap-3 flex-wrap">
         {CHOICE_TAGS.map((label, index) => {
           const isSelected = tags.some((tag) => tag.id === label);
 
           if (isSelected) {
-            return "";
+            return null;
           } else {
-            return <TagBadge key={index} label={label} bg="teal.400" />;
+            return <TagBadge key={index} label={label} bg="#4fd1c5" />;
           }
         })}
-      </Stack>
-    </Flex>
+      </div>
+    </div>
   );
 };
 

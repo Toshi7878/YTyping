@@ -2,7 +2,7 @@
 import { useHistoryReducer } from "@/app/edit/atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
-import { Box, Button } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import { Dispatch } from "react";
 
 interface SaveOptionButtonProps {
@@ -66,10 +66,10 @@ export default function SaveOptionButton(props: SaveOptionButtonProps) {
   };
 
   return (
-    <Box display="flex" justifyContent="flex-end">
-      <Button colorScheme="teal" onClick={handleBtnClick}>
+    <div className="flex justify-end">
+      <Button onClick={handleBtnClick}>
         ラインオプションを保存
       </Button>
-    </Box>
+    </div>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 import { useSetIsLrcConverting } from "@/app/edit/atoms/stateAtoms";
 import { useImportMapFile } from "@/app/edit/hooks/utils/importMapFile";
+import { Button } from "@/components/ui/button";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
-import { Button, HStack } from "@chakra-ui/react";
 import { useRef } from "react";
 
 export default function LrcConvertButton() {
@@ -12,7 +12,7 @@ export default function LrcConvertButton() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const importMapFile = useImportMapFile();
   return (
-    <HStack alignItems="baseline">
+    <div className="flex items-baseline">
       <input
         type="file"
         hidden
@@ -38,9 +38,9 @@ export default function LrcConvertButton() {
         }}
       />
 
-      <Button colorScheme="teal" size="sm" onClick={() => fileInputRef.current?.click()}>
+      <Button size="sm" onClick={() => fileInputRef.current?.click()}>
         lrcインポート
       </Button>
-    </HStack>
+    </div>
   );
 }

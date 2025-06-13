@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { UseDisclosureReturn } from "@chakra-ui/react";
 import { Dispatch, useCallback, useRef } from "react";
 
 import { useEndLineIndex } from "@/app/edit/atoms/buttonDisableStateAtoms";
@@ -25,7 +24,7 @@ import DirectEditWordInput from "./child/DirectEditWordInput";
 interface LineRowProps {
   index: number;
   line: MapLine;
-  onOpen: UseDisclosureReturn["onOpen"];
+  onOpen: () => void;
   setOptionModalIndex: Dispatch<number>;
   setLineOptions: Dispatch<MapLineEdit["options"]>;
 }
