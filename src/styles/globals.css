@@ -133,7 +133,6 @@
   .indicator {
     animation: indicator-bar 800ms ease-in-out forwards;
   }
-
 }
 
 @layer base {

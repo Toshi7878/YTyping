@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "@/components/ui/link/link";
 import { leftLink, leftMenuItem } from "@/config/headerNav";
+import { ChevronDown } from "lucide-react";
 
 function LeftMenus() {
   return (
@@ -18,7 +19,7 @@ function LeftMenus() {
           variant="ghost"
           size="sm"
           asChild
-          className="text-muted-foreground hover:text-foreground text-sm"
+          className="text-header-foreground hover:text-foreground text-sm"
         >
           <Link href={link.href} className="w-full">
             {link.title}
@@ -33,8 +34,8 @@ const Menu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-sm">
-          Menu
+        <Button variant="unstyled" size="sm" className="text-header-foreground hover:text-foreground text-sm">
+          Menu <ChevronDown className="size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-fit">
