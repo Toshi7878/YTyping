@@ -17,7 +17,7 @@ const DualRangeSlider = React.forwardRef<React.ElementRef<typeof SliderPrimitive
     return (
       <SliderPrimitive.Root
         ref={ref}
-        className={cn("relative flex w-full touch-none items-center select-none", className)}
+        className={cn("relative flex w-full cursor-grab touch-none items-center select-none", className)}
         {...props}
       >
         <SliderPrimitive.Track className="bg-muted relative h-2 w-full grow overflow-hidden rounded-full">

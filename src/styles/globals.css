@@ -145,3 +145,12 @@
     color: var(--foreground);
   }
 }
+
+/*
+Select > コンボボックス表示時スクロールバーが非表示になる
+@see https://github.com/shadcn-ui/ui/issues/4227
+*/
+html body[data-scroll-locked] {
+  overflow: visible !important;
+  margin-right: 0 !important;
+}

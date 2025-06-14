@@ -28,7 +28,7 @@ export const SiteLogo = () => {
 
 function LeftMenus() {
   return (
-    <nav className="text-header-foreground hidden items-center md:flex">
+    <nav className="text-header-foreground hidden items-center select-none md:flex">
       <LinksDropdownMenu />
       {leftLink.map((link, index) => (
         <Button key={index} variant="unstyled" size="sm" asChild className="hover:text-foreground text-sm">

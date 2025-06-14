@@ -85,7 +85,7 @@ const FilterInputs = () => {
   });
 
   return (
-    <Card className="min-h-20 py-3">
+    <Card className="min-h-20 py-3 select-none">
       <CardContent>
         <div className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr]">
           {FILTER_CONTENT.map((filter, filterIndex) => (

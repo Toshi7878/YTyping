@@ -27,7 +27,7 @@ function MapInfo({ map }: MapInfoProps) {
           <Link
             href={`/type/${map.id}`}
             onClick={handleLinkClick}
-            className="text-secondary z-[1] truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
+            className="text-secondary z-1 truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
           >
             {map.title}
           </Link>

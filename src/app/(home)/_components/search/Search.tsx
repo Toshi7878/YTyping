@@ -38,7 +38,7 @@ const SearchInputs = () => {
 
   return (
     <form
-      className="flex items-center gap-3"
+      className="flex items-center gap-3 select-none"
       onSubmit={(e) => {
         e.preventDefault();
         handleSearch();
