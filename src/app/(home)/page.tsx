@@ -1,5 +1,5 @@
-import MapControlArea from "./components/MapControlArea";
-import MapList from "./components/MapList";
+import MapControlArea from "./_components/MapControlArea";
+import MapList from "./_components/MapList";
 import HomeProvider from "./HomeClientProvider";
 
 export default function Home() {

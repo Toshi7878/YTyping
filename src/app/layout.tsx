@@ -4,16 +4,22 @@ import "@/styles/globals.css";
 
 import type { Metadata } from "next";
 
-import LinkLoader from "@/components/ui/link-loader";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
 import { serverApi } from "@/trpc/server";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
+import { Noto_Sans_JP } from "next/font/google";
 import GlobalProvider from "./_components/global-provider/GlobalProvider";
 
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "YTyping",
@@ -30,13 +36,11 @@ export default async function RootLayout({
   const userOptions = process.env.NODE_ENV === "development" ? null : await serverApi.userOption.getUserOptions({});
 
   return (
-    <html lang="ja">
+    <html lang="ja" className={notoSansJP.className}>
       <head>
         <meta charSet="UTF-8" />
       </head>
       <body>
-        <LinkLoader />
-
           <SessionProvider session={session}>
             <TRPCProvider>
               <Header />

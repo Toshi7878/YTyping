@@ -106,7 +106,6 @@
   }
 }
 
-/* Map Card Hover Effect - Outside of @layer to ensure it works */
 .map-card-hover {
   box-shadow: none;
   transition: box-shadow 0.3s ease-in-out;
@@ -118,17 +117,32 @@
     0 3px 5px -2px color-mix(in oklch, var(--color-secondary-light) 30%, transparent) !important;
 }
 
-@layer utilities {
+@keyframes indicator-bar {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 90%;
+  }
+  100% {
+    width: 100%;
+  }
 }
 
-/* TODO: remove !important */
+@layer utilities {
+  .indicator {
+    animation: indicator-bar 800ms ease-in-out forwards;
+  }
+
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  html body {
+  html {
     @apply bg-background text-foreground;
-    background-color: var(--background) !important;
-    color: var(--foreground) !important;
+    background-color: var(--background);
+    color: var(--foreground);
   }
 }

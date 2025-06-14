@@ -7,7 +7,7 @@ interface MapCardProps {
 
 function MapCard({ children }: MapCardProps) {
   return (
-    <Card className="bg-card text-card-foreground map-card-hover py-0">
+    <Card variant="map">
       <CardContent className="flex items-start rounded-md border-0 p-0">{children}</CardContent>
     </Card>
   );

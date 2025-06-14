@@ -3,6 +3,7 @@
 import { useDifficultyRangeState, useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/shared/atoms";
 import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/shared/const";
 import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
+import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dural-range-slider";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
@@ -84,36 +85,38 @@ const FilterInputs = () => {
   });
 
   return (
-    <div className="bg-card border-border rounded-md border px-2 py-1 shadow-sm">
-      <div className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr]">
-        {FILTER_CONTENT.map((filter, filterIndex) => (
-          <React.Fragment key={`filter-${filterIndex}`}>
-            <p className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
-              {filter.label}
-            </p>
-            <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
-              {filter.params.map((param: FilterParam, paramIndex: number) => {
-                const isSelected = currentParams.find((p) => p.name === filter.name)?.value === param.value;
+    <Card className="min-h-20 py-3">
+      <CardContent>
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr]">
+          {FILTER_CONTENT.map((filter, filterIndex) => (
+            <React.Fragment key={`filter-${filterIndex}`}>
+              <p className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
+                {filter.label}
+              </p>
+              <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
+                {filter.params.map((param: FilterParam, paramIndex: number) => {
+                  const isSelected = currentParams.find((p) => p.name === filter.name)?.value === param.value;
 
-                return (
-                  <Link
-                    key={`${filter.name}-${paramIndex}`}
-                    href={`?${createQueryString(filter.name, param.value, isSelected)}`}
-                    onClick={() => setIsSearchingAtom(true)}
-                    className={cn(
-                      "hover:text-secondary-dark rounded px-2 py-1 text-sm transition-colors hover:underline",
-                      isSelected ? "text-secondary-dark font-bold underline" : "text-secondary-light font-normal",
-                    )}
-                  >
-                    {param.label}
-                  </Link>
-                );
-              })}
-            </div>
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
+                  return (
+                    <Link
+                      key={`${filter.name}-${paramIndex}`}
+                      href={`?${createQueryString(filter.name, param.value, isSelected)}`}
+                      onClick={() => setIsSearchingAtom(true)}
+                      className={cn(
+                        "hover:text-secondary-dark rounded px-2 py-1 text-sm transition-colors hover:underline",
+                        isSelected && "text-secondary-dark font-bold underline",
+                      )}
+                    >
+                      {param.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </React.Fragment>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -152,20 +155,22 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
   };
 
   return (
-    <div className="bg-card border-border flex min-h-[75px] w-52 rounded-md border p-1">
-      <div className="m-auto flex w-48 flex-col items-center gap-2 select-none" onKeyDown={handleKeyDown} {...rest}>
-        <DualRangeSlider
-          value={[difficultyRange.min, difficultyRange.max]}
-          onValueChange={handleChange}
-          min={min}
-          max={max}
-          step={step}
-        />
-        <div className="flex w-full justify-between">
-          <span>★{difficultyRange.min.toFixed(1)}</span>
-          <span>★{difficultyRange.max === max ? "∞" : difficultyRange.max.toFixed(1)}</span>
+    <Card className="min-h-23">
+      <CardContent>
+        <div className="flex mt-1 w-48 flex-col items-center gap-2 select-none" onKeyDown={handleKeyDown} {...rest}>
+          <DualRangeSlider
+            value={[difficultyRange.min, difficultyRange.max]}
+            onValueChange={handleChange}
+            min={min}
+            max={max}
+            step={step}
+          />
+          <div className="flex w-full justify-between">
+            <span>★{difficultyRange.min.toFixed(1)}</span>
+            <span>★{difficultyRange.max === max ? "∞" : difficultyRange.max.toFixed(1)}</span>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
