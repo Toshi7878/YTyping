@@ -12,9 +12,7 @@ import { serverApi } from "@/trpc/server";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import GlobalProvider from "./_components/global-provider/GlobalProvider";
-import ThemeProvider from "./_components/global-provider/ThemeProvider";
 
-// Next.js 15では ssr: false オプションを削除
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
 
 export const metadata: Metadata = {
@@ -38,7 +36,7 @@ export default async function RootLayout({
       </head>
       <body>
         <LinkLoader />
-        <ThemeProvider>
+
           <SessionProvider session={session}>
             <TRPCProvider>
               <Header />
@@ -54,7 +52,7 @@ export default async function RootLayout({
             </TRPCProvider>
           </SessionProvider>
           <Toaster />
-        </ThemeProvider>
+
       </body>
     </html>
   );
