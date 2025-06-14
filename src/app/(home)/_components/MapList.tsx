@@ -3,7 +3,7 @@ import SkeletonCard from "@/components/map-card/SkeletonCard";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardWithContent } from "@/components/ui/card";
 import Link from "@/components/ui/link/link";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
@@ -59,21 +59,19 @@ const MapList = () => {
         {data.pages.map((page: MapListResponse) =>
           page.maps.map((map: MapCardInfo) => {
             return (
-              <Card key={map.id} variant="map">
-                <CardContent variant="map">
-                  <MapLeftThumbnail
-                    alt={map.title}
-                    src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                    mapVideoId={map.video_id}
-                    mapPreviewTime={map.preview_time}
-                    size="home"
-                  />
-                  <MapCardRightInfo>
-                    <MapLink mapId={map.id} />
-                    <MapInfo map={map} />
-                  </MapCardRightInfo>
-                </CardContent>
-              </Card>
+              <CardWithContent key={map.id} variant="map">
+                <MapLeftThumbnail
+                  alt={map.title}
+                  src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
+                  mapVideoId={map.video_id}
+                  mapPreviewTime={map.preview_time}
+                  size="home"
+                />
+                <MapCardRightInfo>
+                  <MapLink mapId={map.id} />
+                  <MapInfo map={map} />
+                </MapCardRightInfo>
+              </CardWithContent>
             );
           }),
         )}

@@ -5,11 +5,11 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import MapBadges from "./MapBadgesLayout";
 
-interface MapCardProps {
+interface CompactMapCardProps {
   map: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number]["map"];
 }
 
-function NotificationMapInfo({ map }: MapCardProps) {
+function CompactMapInfo({ map }: CompactMapCardProps) {
   const handleLinkClick = useLinkClick();
 
   return (
@@ -33,4 +33,4 @@ function NotificationMapInfo({ map }: MapCardProps) {
   );
 }
 
-export default NotificationMapInfo;
+export default CompactMapInfo;

@@ -40,7 +40,9 @@ const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLA
           <Image unoptimized loading="lazy" alt={alt} src={src} fill className="rounded-md" />
         </div>
       ) : (
-        <div className={cn(mapLeftThumbnailVariants({ size }))} />
+        <div className={cn(mapLeftThumbnailVariants({ size }))}>
+          <div className="flex-start flex h-full w-full items-center justify-center">{alt}</div>
+        </div>
       )}
       {mapVideoId && mapPreviewTime && !PREVIEW_DISABLE_PATHNAMES.includes(pathSegment) && (
         <ThumbnailPreviewCover

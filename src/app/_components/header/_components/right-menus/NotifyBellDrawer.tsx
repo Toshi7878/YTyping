@@ -1,6 +1,6 @@
 "use client";
 
-import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
+import CompactMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import NotificationMapCard from "@/components/map-card-notification/NotificationMapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
@@ -92,7 +92,7 @@ const NotifyDrawerInnerContent = () => {
                           size="notification"
                         />
                         <NotificationMapCardRightInfo>
-                          <NotificationMapInfo map={map} />
+                          <CompactMapInfo map={map} />
                         </NotificationMapCardRightInfo>
                       </NotificationMapCard>
                       <div className="text-muted-foreground/80 text-right">

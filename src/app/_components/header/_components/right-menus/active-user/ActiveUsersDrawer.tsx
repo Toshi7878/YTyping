@@ -1,23 +1,24 @@
-import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
+import CompactMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardWithContent } from "@/components/ui/card";
 import Link from "@/components/ui/link/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { useOnlineUsersState } from "@/lib/global-atoms/globalAtoms";
 import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import { useState } from "react";
-import { useActiveUsers } from "./useActiveUser";
+import useActiveUsers from "./useActiveUser";
 
 const ActiveUsersDrawer = () => {
-  const { onlineUsers } = useActiveUsers();
+  useActiveUsers();
   const [open, setOpen] = useState(false);
+  const onlineUsers = useOnlineUsersState();
   const activeUserMapQuery = useQuery({
     ...useActiveUserQueries().userPlayingMaps(onlineUsers),
     enabled: open,
@@ -69,7 +70,7 @@ const ActiveUsersDrawer = () => {
                     </TableCell>
                     <TableCell className="px-0 py-2">
                       {user.state === "type" && user.map ? (
-                        <ActiveUserMapCard>
+                        <CardWithContent variant="map">
                           <MapLeftThumbnail
                             alt={user.map.title}
                             src={`https://i.ytimg.com/vi/${user.map.video_id}/mqdefault.jpg`}
@@ -78,21 +79,13 @@ const ActiveUsersDrawer = () => {
                             size="activeUser"
                           />
                           <NotificationMapCardRightInfo>
-                            <NotificationMapInfo map={user.map} />
+                            <CompactMapInfo map={user.map} />
                           </NotificationMapCardRightInfo>
-                        </ActiveUserMapCard>
+                        </CardWithContent>
                       ) : (
-                        <ActiveUserMapCard>
-                          <MapLeftThumbnail size="activeUser" />
-                          <div
-                            className={cn(
-                              "absolute top-1/2 -translate-y-1/2",
-                              user.state === "edit" ? "left-[20.5px]" : "left-[32.5px]",
-                            )}
-                          >
-                            {stateMsg}
-                          </div>
-                        </ActiveUserMapCard>
+                        <CardWithContent variant="map">
+                          <MapLeftThumbnail size="activeUser" alt={stateMsg} />
+                        </CardWithContent>
                       )}
                     </TableCell>
                   </TableRow>
@@ -104,17 +97,5 @@ const ActiveUsersDrawer = () => {
     </Sheet>
   );
 };
-
-interface ActiveUserMapCardProps {
-  children: React.ReactNode;
-}
-
-function ActiveUserMapCard({ children }: ActiveUserMapCardProps) {
-  return (
-    <Card variant="map">
-      <CardContent className="flex items-start rounded-md p-0">{children}</CardContent>
-    </Card>
-  );
-}
 
 export default ActiveUsersDrawer;

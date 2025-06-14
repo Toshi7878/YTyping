@@ -76,4 +76,19 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };
+function CardWithContent({
+  className,
+  variant,
+  children,
+  ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof cardVariants>) {
+  return (
+    <div data-slot="card" className={cn(cardVariants({ variant }), className)} {...props}>
+      <div data-slot="card-content" className={cn(cardContentVariants({ variant }))}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardWithContent };

@@ -6,7 +6,7 @@ import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { Card, CardContent } from "../ui/card";
+import { CardWithContent } from "../ui/card";
 
 interface CreatedCheckProps {
   videoId: string;
@@ -31,20 +31,18 @@ const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProp
         {data.map((map, index) => {
           return (
             <div key={index} className="mb-2 max-w-[610px]">
-              <Card variant="map">
-                <CardContent variant="map">
-                  <MapLeftThumbnail
-                    alt={map.title}
-                    src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                    mapVideoId={map.video_id}
-                    mapPreviewTime={map.preview_time}
-                    size="home"
-                  />
-                  <MapCardRightInfo>
-                    <MapInfo map={map} />
-                  </MapCardRightInfo>
-                </CardContent>
-              </Card>
+              <CardWithContent variant="map">
+                <MapLeftThumbnail
+                  alt={map.title}
+                  src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
+                  mapVideoId={map.video_id}
+                  mapPreviewTime={map.preview_time}
+                  size="home"
+                />
+                <MapCardRightInfo>
+                  <MapInfo map={map} />
+                </MapCardRightInfo>
+              </CardWithContent>
             </div>
           );
         })}
