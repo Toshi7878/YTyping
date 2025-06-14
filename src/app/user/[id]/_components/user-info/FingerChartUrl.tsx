@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/link/link";
 import { FiExternalLink } from "react-icons/fi";
 
 interface FingerChartUrlProps {
@@ -17,10 +17,10 @@ const FingerChartUrl = ({ url }: FingerChartUrlProps) => {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-500 hover:text-blue-600 hover:underline flex items-center gap-1 transition-colors"
+        className="flex items-center gap-1 text-blue-500 transition-colors hover:text-blue-600 hover:underline"
       >
         <span>運指表を見る</span>
-        <FiExternalLink className="w-4 h-4" />
+        <FiExternalLink className="h-4 w-4" />
       </Link>
     </div>
   );

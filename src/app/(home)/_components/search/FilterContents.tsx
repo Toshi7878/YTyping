@@ -5,9 +5,9 @@ import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/shared/const";
 import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dural-range-slider";
+import Link from "@/components/ui/link/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useState } from "react";
 
@@ -157,7 +157,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
   return (
     <Card className="min-h-23">
       <CardContent>
-        <div className="flex mt-1 w-48 flex-col items-center gap-2 select-none" onKeyDown={handleKeyDown} {...rest}>
+        <div className="mt-1 flex w-48 flex-col items-center gap-2 select-none" onKeyDown={handleKeyDown} {...rest}>
           <DualRangeSlider
             value={[difficultyRange.min, difficultyRange.max]}
             onValueChange={handleChange}

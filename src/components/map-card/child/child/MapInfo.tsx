@@ -1,8 +1,8 @@
 "use client";
+import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import Link from "next/link";
 import MapBadges from "./MapBadgesLayout";
 import MapCreateUser from "./MapCreateUser";
 
@@ -15,9 +15,7 @@ function MapInfo({ map }: MapInfoProps) {
   return (
     <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
       <div className="flex flex-col gap-1">
-        <TooltipWrapper
-          label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-        >
+        <TooltipWrapper label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}>
           <Link
             href={`/type/${map.id}`}
             onClick={handleLinkClick}

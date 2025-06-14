@@ -2,8 +2,8 @@
 import SkeletonCard from "@/components/map-card/SkeletonCard";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
-import MapLink from "@/components/map-card/child/child/MapLink";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import Link from "@/components/ui/link/link";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -98,6 +98,14 @@ const LoadingMapCard = ({ cardLength }: { cardLength: number }) => {
       ))}
     </>
   );
+};
+
+interface MapLinkProps {
+  mapId: number;
+}
+
+const MapLink = ({ mapId }: MapLinkProps) => {
+  return <Link className="absolute h-full w-full" href={`/type/${mapId}`} />;
 };
 
 export default MapList;

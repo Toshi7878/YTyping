@@ -5,12 +5,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "@/components/ui/link/link";
 import { leftLink, leftMenuItem } from "@/config/headerNav";
-import Link from "next/link";
 
 function LeftMenus() {
   return (
-    <nav className="hidden md:flex items-center">
+    <nav className="hidden items-center md:flex">
       <Menu />
       {leftLink.map((link, index) => (
         <Button

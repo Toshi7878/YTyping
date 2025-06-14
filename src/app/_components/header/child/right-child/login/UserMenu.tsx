@@ -6,9 +6,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "@/components/ui/link/link";
 import { loginMenuItem } from "@/config/headerNav";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import LogOutMenuItem from "./child/LogOutMenuItem";
 
 export default function UserMenu() {
@@ -17,7 +17,7 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-sm p-2">
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground p-2 text-sm">
           {session?.user?.name ? session?.user?.name : "名前未設定"}
         </Button>
       </DropdownMenuTrigger>

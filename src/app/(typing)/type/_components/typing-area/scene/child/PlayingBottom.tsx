@@ -1,7 +1,7 @@
 import { useSceneGroupState, useYTStartedState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import Link from "@/components/ui/link/link";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useParams } from "next/navigation";
 import Progress from "./Progress";
 import PlayingSkipGuide from "./bottom-child/PlayingSkipGuide";
@@ -20,7 +20,7 @@ const PlayingBottom = function () {
   return (
     <>
       <div
-        className="flex justify-between items-center mx-2 font-bold bottom-card-text text-5xl sm:text-[2.5rem] md:text-xl"
+        className="bottom-card-text mx-2 flex items-center justify-between text-5xl font-bold sm:text-[2.5rem] md:text-xl"
         style={{ visibility: isPlayed ? "visible" : "hidden" }}
       >
         <PlayingSkipGuide />
@@ -30,7 +30,7 @@ const PlayingBottom = function () {
         <Progress id="total_progress" />
       </div>
       <div
-        className="flex justify-between mx-3 mt-2 mb-4 font-bold"
+        className="mx-3 mt-2 mb-4 flex justify-between font-bold"
         style={{ visibility: isPlayed ? "visible" : "hidden" }}
       >
         <SpeedBadge />
@@ -39,11 +39,7 @@ const PlayingBottom = function () {
       </div>
       {sceneGroup === "Ready" && (
         <Link href={`/ime/${mapId}`} onClick={(event) => handleLinkClick(event, "replace")}>
-          <Button
-            className="absolute bottom-3 right-10 p-8 text-2xl md:p-2 md:text-base"
-          >
-            変換有りタイピング
-          </Button>
+          <Button className="absolute right-10 bottom-3 p-8 text-2xl md:p-2 md:text-base">変換有りタイピング</Button>
         </Link>
       )}
     </>

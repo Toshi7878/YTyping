@@ -1,7 +1,7 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
 import DateDistanceText from "@/components/share-components/text/DateDistanceText";
+import Link from "@/components/ui/link/link";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import Link from "next/link";
 
 interface ResultUserNameProps {
   result?: ResultCardInfo;

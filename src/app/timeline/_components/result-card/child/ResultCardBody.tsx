@@ -2,10 +2,10 @@ import { ResultCardInfo } from "@/app/timeline/ts/type";
 import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import Link from "next/link";
 import { HTMLAttributes } from "react";
 import { MapResultBadges } from "./child/MapResultBadgesLayout";
 import UserRank from "./child/UserRank";
@@ -92,10 +92,7 @@ function MapInfo({ map, isToggledInputMode, className, ...rest }: MapCardProps) 
 
   return (
     <div className={cn("mt-2 mb-3 flex flex-col justify-between", className)} {...rest}>
-      <TooltipWrapper
-        label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-
-      >
+      <TooltipWrapper label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}>
         <Link href={`/type/${map.id}`} onClick={handleLinkClick} className="text-secondary hover:underline">
           <div className="overflow-hidden text-base font-bold text-ellipsis whitespace-nowrap">
             {`${map.title} / ${map.artist_name}`}

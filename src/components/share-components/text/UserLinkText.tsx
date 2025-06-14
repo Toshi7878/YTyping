@@ -1,5 +1,5 @@
+import Link from "@/components/ui/link/link";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import Link from "next/link";
 
 interface UserLInkTextProps {
   userId: number;

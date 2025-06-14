@@ -1,13 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
+import Link from "@/components/ui/link/link";
 
 export default function Page() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold">クレジット</h1>
+    <div className="mx-auto w-xl space-y-4 px-4 py-8">
+      <h1 className="text-3xl font-bold">クレジット</h1>
       <Card>
-        <BorrowedMaterials />
-        <SpecialThanks />
+        <CardContent className="space-y-10">
+          <BorrowedMaterials />
+          <SpecialThanks />
+        </CardContent>
       </Card>
     </div>
   );
@@ -15,7 +17,7 @@ export default function Page() {
 
 const BorrowedMaterials = () => {
   return (
-    <CardContent className="flex flex-col gap-2">
+    <section className="flex flex-col gap-2">
       <h2 className="mb-4 text-2xl font-semibold">お借りした素材</h2>
       <ul className="space-y-4">
         <li>
@@ -24,7 +26,6 @@ const BorrowedMaterials = () => {
               href="http://www.kurage-kosho.info/system.html"
               className="text-blue-500 underline hover:text-blue-600"
               target="_blank"
-              rel="noopener noreferrer"
             >
               くらげ工匠
             </Link>
@@ -37,13 +38,13 @@ const BorrowedMaterials = () => {
           </div>
         </li>
       </ul>
-    </CardContent>
+    </section>
   );
 };
 
 const SpecialThanks = () => {
   return (
-    <CardContent className="flex flex-col gap-2">
+    <section className="flex flex-col gap-2">
       <h2 className="mb-4 text-2xl font-semibold">スペシャルサンクス</h2>
       <ul className="space-y-8">
         <li>
@@ -86,6 +87,6 @@ const SpecialThanks = () => {
           </h3>
         </li>
       </ul>
-    </CardContent>
+    </section>
   );
 };

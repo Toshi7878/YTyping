@@ -2,6 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "@/components/ui/link/link";
 import { Separator } from "@/components/ui/separator";
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
@@ -10,7 +11,6 @@ import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { GoLock } from "react-icons/go";
 import { IoMdInformationCircleOutline } from "react-icons/io";

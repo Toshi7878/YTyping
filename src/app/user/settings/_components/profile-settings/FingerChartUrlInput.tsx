@@ -2,12 +2,12 @@
 
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
+import Link from "@/components/ui/link/link";
 import { useTRPC } from "@/trpc/trpc";
 import { fingerChartUrlFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 interface FingerChartUrlInputProps {

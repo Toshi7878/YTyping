@@ -1,13 +1,14 @@
 "use client";
+import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import Link from "next/link";
 import MapBadges from "./MapBadgesLayout";
 
 interface MapCardProps {
   map: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number]["map"];
 }
+
 function NotificationMapInfo({ map }: MapCardProps) {
   const handleLinkClick = useLinkClick();
 
@@ -18,9 +19,7 @@ function NotificationMapInfo({ map }: MapCardProps) {
       onClick={handleLinkClick}
     >
       <div className="flex flex-col gap-1">
-        <TooltipWrapper
-          label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-        >
+        <TooltipWrapper label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}>
           <div className="text-secondary truncate overflow-hidden text-base font-bold whitespace-nowrap">
             {map.title}
           </div>

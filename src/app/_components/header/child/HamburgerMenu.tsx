@@ -8,11 +8,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "@/components/ui/link/link";
 import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { Menu } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
 import LogOutMenuItem from "./right-child/login/child/LogOutMenuItem";
 import SignInMenuItem from "./right-child/login/child/SignInMenuItem";

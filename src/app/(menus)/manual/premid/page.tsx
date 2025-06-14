@@ -1,20 +1,21 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { InstallationSteps } from "./components/InstallationSteps";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { InstallationSteps } from "./_components/InstallationSteps";
 
 export default function PreMidManual() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold">DiscordにYTypingのプレイ中ステータスを表示する</h1>
+    <article className="mx-auto space-y-4 px-4 py-8">
+      <h1 className="text-3xl font-bold">DiscordにYTypingのプレイ中ステータスを表示する</h1>
       <Card>
-        <CardContent className="flex flex-col gap-6">
-          <p className="text-xl">
+        <CardHeader>
+          <CardDescription className="text-foreground text-lg">
             PreMiDブラウザ拡張機能を使用すると、DiscordのステータスにYTypingをプレイしていることを表示できます。
-          </p>
-
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
           <h2 className="text-2xl font-semibold">インストール手順</h2>
           <InstallationSteps />
         </CardContent>
       </Card>
-    </div>
+    </article>
   );
 }
