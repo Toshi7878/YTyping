@@ -5,7 +5,10 @@ import { useSetGeminiTags, useSetMapInfo, useVideoIdState } from "@/app/edit/ato
 import useHasMapUploadPermission from "@/app/edit/hooks/useUserEditPermission";
 import { useUploadMap } from "@/app/edit/hooks/utils/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
+import { Button } from "@/components/ui/button";
+import Link from "@/components/ui/link/link";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
@@ -13,7 +16,6 @@ import { useActionState, useEffect } from "react";
 import InfoInputForm from "./tab-info-child/InfoInputFrom";
 import InfoTag from "./tab-info-child/InfoTag";
 import PreviewTimeInput from "./tab-info-child/PreviewTimeInput";
-import TypeLinkButton from "./tab-info-child/TypeLinkButton";
 import UploadButton from "./tab-info-child/UploadButton";
 
 export const NOT_EDIT_PERMISSION_TOAST_ID = "not-edit-permission-toast";
@@ -76,7 +78,7 @@ const TabInfoUpload = () => {
         <InfoTag isGeminiLoading={isFetching} />
         <div className="flex justify-between">
           {hasUploadPermission ? (
-            <form action={formAction} className="flex flex-col items-baseline gap-4 lg:flex-row">
+            <form action={formAction} className="flex flex-col items-baseline gap-4 xl:flex-row">
               <UploadButton state={state} />
               {mapId ? <TypeLinkButton /> : ""}
             </form>
@@ -87,6 +89,19 @@ const TabInfoUpload = () => {
         </div>
       </div>
     </CardWithContent>
+  );
+};
+
+const TypeLinkButton = () => {
+  const { id } = useParams();
+  const handleLinkClick = useLinkClick();
+
+  return (
+    <Link href={`/type/${id}`} onClick={handleLinkClick}>
+      <Button size="default" variant="outline">
+        タイピングページに移動
+      </Button>
+    </Link>
   );
 };
 

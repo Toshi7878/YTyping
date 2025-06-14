@@ -31,11 +31,11 @@ const PreviewTimeInput = () => {
     >
       <div className="flex items-baseline">
         <Label className="text-sm">
-          <div className="flex flex-wrap items-baseline gap-3">
-            <small className="mr-3">プレビュータイム</small>
+          <div className="flex flex-wrap items-center gap-3">
+            <small>プレビュータイム</small>
 
             <Input
-              className={`h-8 w-20 ${previewTime === "" ? "border-destructive" : ""}`}
+              className="h-8 w-20"
               value={previewTime}
               type="number"
               step="0.05"
