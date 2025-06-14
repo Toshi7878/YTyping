@@ -1,6 +1,6 @@
 "use client";
 
-import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { Tooltip as TooltipPrimitive } from "radix-ui";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -49,17 +49,24 @@ interface TooltipWrapperProps {
   children: React.ReactNode;
   label: React.ReactNode;
   delayDuration?: number;
+  open?: boolean;
+  disabled?: boolean;
 }
 
 const TooltipWrapper = ({
   children,
   label,
   delayDuration = 0,
+  open,
+  disabled,
   ...props
 }: TooltipWrapperProps & React.ComponentProps<typeof TooltipPrimitive.Content>) => {
-  return (
-    <Tooltip delayDuration={delayDuration}>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
+    return (
+    <Tooltip
+      delayDuration={delayDuration}
+      open={open}
+    >
+      <TooltipTrigger asChild disabled={disabled}>{children}</TooltipTrigger>
       <TooltipContent {...props}>{label}</TooltipContent>
     </Tooltip>
   );

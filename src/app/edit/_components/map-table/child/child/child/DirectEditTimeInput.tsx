@@ -1,6 +1,6 @@
 import { usePlayer, useTimeInput } from "@/app/edit/atoms/refAtoms";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Input } from "@/components/ui/input/input";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import React, { useState } from "react";
 
 interface DirectEditTimeInputProps {
@@ -15,7 +15,7 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
   const { readPlayer } = usePlayer();
 
   return (
-    <CustomToolTip label={"↓↑: 0.05ずつ調整, Enter:再生"} placement="top">
+    <TooltipWrapper label={"↓↑: 0.05ずつ調整, Enter:再生"}>
       <Input
         ref={props.directEditTimeInputRef}
         className="h-6 text-xs"
@@ -44,7 +44,7 @@ const DirectEditTimeInput = (props: DirectEditTimeInputProps) => {
           }
         }}
       />
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 };
 

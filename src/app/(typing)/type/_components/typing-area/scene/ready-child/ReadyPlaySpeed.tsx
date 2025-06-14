@@ -1,5 +1,5 @@
 import { usePlaySpeedState } from "@/app/(typing)/type/atoms/speedReducerAtoms";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import React from "react";
 import SpeedChangeButton from "./child/SpeedChangeButton";
 
@@ -11,12 +11,10 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   const { defaultSpeed } = usePlaySpeedState();
 
   return (
-    <CustomToolTip
+    <TooltipWrapper
       label="1.00倍速未満の場合は練習モードになります。"
-      placement="top"
-      isDisabled={defaultSpeed >= 1}
-      isOpen={defaultSpeed < 1}
-      top={3}
+      side="top"
+      delayDuration={0}
     >
       <div className="flex items-center border border-white border-solid px-8 py-6 md:py-3 rounded-lg shadow-md">
         <SpeedChangeButton buttonRef={props.speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} type="down" />
@@ -30,7 +28,7 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
 
         <SpeedChangeButton buttonRef={props.speedUpButtonRef} buttonLabel={{ text: "+", key: "F10" }} type="up" />
       </div>
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 };
 

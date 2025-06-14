@@ -1,6 +1,6 @@
 "use client";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Button } from "@/components/ui/button";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { cn } from "@/lib/utils";
 import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
@@ -30,7 +30,7 @@ function ResultClapButton({ resultId = 0, clapCount = 0, hasClap = false }: Resu
 
   return (
     <form action={session ? formAction : () => {}} className="inline-flex">
-      <CustomToolTip placement="top" isDisabled={!!session} label={"拍手はログイン後に可能です"}>
+      <TooltipWrapper disabled={!!session} label={"拍手はログイン後に可能です"}>
         <Button
           type="submit"
           variant="outline"
@@ -48,7 +48,7 @@ function ResultClapButton({ resultId = 0, clapCount = 0, hasClap = false }: Resu
             <span>×{clapOptimisticState.clapCount}</span>
           </div>
         </Button>
-      </CustomToolTip>
+      </TooltipWrapper>
     </form>
   );
 }

@@ -1,9 +1,6 @@
 import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/atoms/stateAtoms";
 import { usePickupTopPhrase } from "@/app/edit/hooks/manyPhrase";
 import { useFilterWordSymbol, useLyricsFormatUtils } from "@/app/edit/hooks/utils/useWordConverter";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
-import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +14,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
+import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import { useState } from "react";
 import { TiFilter } from "react-icons/ti";
 
@@ -111,14 +111,13 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
 
   return (
     <>
-      <CustomToolTip
+      <TooltipWrapper
         label={
           <>
             <div>読み変換で変換されない記号を削除します。</div>
             <div>※設定タブ内の読み変換設定によって削除される記号は変化します。</div>
           </>
         }
-        placement="top"
       >
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
           <AlertDialogTrigger asChild>
@@ -145,7 +144,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </CustomToolTip>
+      </TooltipWrapper>
     </>
   );
 };

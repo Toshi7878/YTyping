@@ -1,8 +1,8 @@
 import { useSearchResultModeState, useSetSearchResultMode } from "@/app/timeline/atoms/atoms";
 import useSearchKeydown from "@/app/timeline/hook/useSearchKeydown";
 import { FilterMode } from "@/app/timeline/ts/type";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -47,14 +47,14 @@ function RadioCard({ option, children, value, checked }: RadioCardProps) {
   };
 
   return (
-    <CustomToolTip label="Enterで検索" placement="top">
+    <TooltipWrapper label="Enterで検索">
       <label className="flex-1">
         <RadioGroupItem value={value} className="sr-only" />
         <div className={getCardStyles(option, checked)} style={getBackgroundStyle(option, checked)}>
           {children}
         </div>
       </label>
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 }
 

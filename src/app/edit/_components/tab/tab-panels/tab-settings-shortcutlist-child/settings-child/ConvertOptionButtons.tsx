@@ -1,10 +1,10 @@
 "use client";
 import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/atoms/storageAtoms";
 import { ConvertOptionsType } from "@/app/edit/ts/type";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/config/consts/charList";
 import { useMemo } from "react";
 
@@ -73,7 +73,7 @@ export default function ConvertOptionButtons() {
       >
         <div className="flex gap-2">
           {options.map((option) => (
-            <CustomToolTip label={option.tooltipLabel} key={option.label} placement="bottom">
+            <TooltipWrapper label={option.tooltipLabel} key={option.label} side="bottom">
               <Button
                 variant={wordConvertOption === option.value ? "default" : "outline"}
                 size="sm"
@@ -82,7 +82,7 @@ export default function ConvertOptionButtons() {
               >
                 {option.label}
               </Button>
-            </CustomToolTip>
+            </TooltipWrapper>
           ))}
         </div>
       </RadioGroup>

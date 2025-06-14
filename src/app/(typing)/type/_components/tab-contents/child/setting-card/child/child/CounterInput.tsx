@@ -1,5 +1,5 @@
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Button } from "@/components/ui/button";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface CounterInputProps {
@@ -47,7 +47,7 @@ const CounterInput = ({
         {label}
       </span>
       <div className="flex items-baseline border border-border/60 w-fit rounded-full py-0 px-2">
-        <CustomToolTip label={decrementTooltip} placement="top">
+        <TooltipWrapper label={decrementTooltip}>
           <Button
             onClick={() => onCounterChange({ type: "decrement" })}
             variant="ghost"
@@ -55,12 +55,12 @@ const CounterInput = ({
           >
             -
           </Button>
-        </CustomToolTip>
+        </TooltipWrapper>
         <div className={cn(sizeClasses[size], "flex gap-1 font-bold")}>
           {value.toFixed(valueDigits)}
           {unit && <span>{unit}</span>}
         </div>
-        <CustomToolTip label={incrementTooltip} placement="top">
+        <TooltipWrapper label={incrementTooltip}>
           <Button
             onClick={() => onCounterChange({ type: "increment" })}
             variant="ghost"
@@ -68,7 +68,7 @@ const CounterInput = ({
           >
             +
           </Button>
-        </CustomToolTip>
+        </TooltipWrapper>
       </div>
     </div>
   );

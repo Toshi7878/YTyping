@@ -1,11 +1,11 @@
 "use client";
 
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { Flex, FlexProps, HStack } from "@chakra-ui/react";
 import { Badge } from "@/components/ui/badge";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import { memo } from "react";
 
-interface ResultCardFooterProps {
+interface ResultCardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
   scoreCount?: number;
   point: number;
   tBonus: number;
@@ -14,6 +14,8 @@ interface ResultCardFooterProps {
   kpm: number;
   rkpm: number;
   lost: number;
+  flexDirection?: "row" | "column";
+  alignItems?: "flex-start" | "flex-end" | "center";
 }
 
 function ResultCardFooter({
@@ -25,36 +27,48 @@ function ResultCardFooter({
   kpm,
   rkpm,
   lost,
+  flexDirection = "row",
+  alignItems = "center",
+  className,
   ...props
-}: ResultCardFooterProps & FlexProps) {
+}: ResultCardFooterProps) {
   const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green";
 
   return (
-    <Flex gap={2} width="100%" justifyContent="space-between" py={2} {...props}>
-      <HStack>
-        <Badge 
+    <div
+      className={cn(
+        "flex gap-2 w-full justify-between py-2",
+        flexDirection === "column" && "flex-col",
+        alignItems === "flex-start" && "items-start",
+        alignItems === "flex-end" && "items-end",
+        alignItems === "center" && "items-center",
+        className
+      )}
+      {...props}
+    >
+      <div className="flex items-center gap-2">
+        <Badge
           variant={missColor === "gray" ? "outline" : missColor === "red" ? "destructive" : "default"}
           className="text-sm px-1.5 py-0.5"
         >
           ミス: {miss}, ロスト: {lost}
         </Badge>
-        <CustomToolTip label={`rkpm: ${rkpm}`} placement="top">
+        <TooltipWrapper label={`rkpm: ${rkpm}`} >
           <Badge variant="secondary" className="text-sm px-1.5 py-0.5">
             KPM: {kpm}
           </Badge>
-        </CustomToolTip>
-      </HStack>
+        </TooltipWrapper>
+      </div>
 
-      <CustomToolTip
+      <TooltipWrapper
         label={`合計ポイント: ${Number(point) + Number(tBonus)}${scoreCount ? ` スコア: ${scoreCount}` : ""}`}
-        placement="top"
       >
         <Badge variant="default" className="text-sm px-2 py-1 rounded-md">
           ポイント: {point}
           {tBonus ? `+${tBonus}` : ""}
         </Badge>
-      </CustomToolTip>
-    </Flex>
+      </TooltipWrapper>
+    </div>
   );
 }
 

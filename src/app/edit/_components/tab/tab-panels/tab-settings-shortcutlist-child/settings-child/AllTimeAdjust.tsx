@@ -3,10 +3,10 @@ import { useHistoryReducer } from "@/app/edit/atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCanUpload } from "@/app/edit/atoms/stateAtoms";
 import useTimeValidate from "@/app/edit/hooks/utils/useTimeValidate";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { Label } from "@/components/ui/label";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useState } from "react";
 
@@ -65,9 +65,8 @@ export default function AllTimeAdjust() {
 
   return (
     <div className="flex items-baseline">
-      <CustomToolTip
+      <TooltipWrapper
         label={<div>数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します</div>}
-        placement="top"
       >
         <div className="flex items-baseline gap-2">
           <Label className="text-sm">全体タイム調整</Label>
@@ -88,15 +87,15 @@ export default function AllTimeAdjust() {
             }}
           />
 
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="h-8 border-yellow-500 text-yellow-600 hover:bg-yellow-50"
             onClick={allTimeAdjust}
           >
             実行
           </Button>
         </div>
-      </CustomToolTip>
+      </TooltipWrapper>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { FaRankingStar } from "react-icons/fa6";
@@ -22,14 +22,14 @@ const RankingCountIcon = ({ myRank, rankingCount }: RankingCountProps) => {
   };
 
   return (
-    <CustomToolTip label={`自分の順位: ${myRank}位`} placement="top" isDisabled={!myRank || !session}>
+    <TooltipWrapper label={`自分の順位: ${myRank}位`} disabled={!myRank || !session}>
       <div className={cn("z-[1] mr-1 flex items-baseline", getColorClass())}>
         <div className="relative top-[3px] mr-1">
           <FaRankingStar size={20} />
         </div>
         <div className="font-mono text-lg">{rankingCount}</div>
       </div>
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 };
 

@@ -1,5 +1,5 @@
 "use client";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import Link from "next/link";
@@ -18,15 +18,13 @@ function NotificationMapInfo({ map }: MapCardProps) {
       onClick={handleLinkClick}
     >
       <div className="flex flex-col gap-1">
-        <CustomToolTip
+        <TooltipWrapper
           label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-          placement="top"
-          right={12}
         >
           <div className="text-secondary truncate overflow-hidden text-base font-bold whitespace-nowrap">
             {map.title}
           </div>
-        </CustomToolTip>
+        </TooltipWrapper>
         <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
           {map.artist_name || ""}
         </div>

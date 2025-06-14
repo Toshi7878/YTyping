@@ -1,5 +1,5 @@
 "use client";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import Link from "next/link";
@@ -15,10 +15,8 @@ function MapInfo({ map }: MapInfoProps) {
   return (
     <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
       <div className="flex flex-col gap-1">
-        <CustomToolTip
+        <TooltipWrapper
           label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-          placement="top"
-          right={24}
         >
           <Link
             href={`/type/${map.id}`}
@@ -27,7 +25,7 @@ function MapInfo({ map }: MapInfoProps) {
           >
             {map.title}
           </Link>
-        </CustomToolTip>
+        </TooltipWrapper>
 
         <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
           {map.artist_name || ""}

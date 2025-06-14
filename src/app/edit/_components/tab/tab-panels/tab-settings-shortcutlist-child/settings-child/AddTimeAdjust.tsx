@@ -1,8 +1,8 @@
 "use client";
 
 import { useSetTimeOffset, useTimeOffsetState } from "@/app/edit/atoms/storageAtoms";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Button } from "@/components/ui/button";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 
 const MAX_TIME_OFFSET = -0.1;
 const MIN_TIME_OFFSET = -0.4;
@@ -43,7 +43,7 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
   };
 
   return (
-    <CustomToolTip
+    <TooltipWrapper
       label={
         <>
           <div>再生中に追加・変更を行う場合に、数値分補正してタイムを記録します。</div>
@@ -58,17 +58,16 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
           </div>
         </>
       }
-      placement="top"
     >
       <div className="flex items-baseline">
         <span className="text-sm mr-2">
           {label}
         </span>
         <div className="flex items-baseline border rounded-full px-2 w-fit border-border/50">
-          <Button 
-            onClick={() => onCounterChange({ type: "decrement" })} 
-            size="sm" 
-            variant="ghost" 
+          <Button
+            onClick={() => onCounterChange({ type: "decrement" })}
+            size="sm"
+            variant="ghost"
             className="h-auto p-1"
           >
             -
@@ -86,6 +85,6 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
           </Button>
         </div>
       </div>
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 };

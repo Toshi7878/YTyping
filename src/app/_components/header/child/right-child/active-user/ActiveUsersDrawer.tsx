@@ -1,4 +1,3 @@
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import NotificationMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
 import { cn } from "@/lib/utils";
 import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
@@ -60,11 +60,11 @@ const ActiveUsersDrawer = () => {
                 return (
                   <TableRow key={user.id} className="border-border/30 border-b">
                     <TableCell className="px-0 py-2">
-                      <CustomToolTip label={user.name} placement="top" top={4} right={2}>
+                      <TooltipWrapper label={user.name}>
                         <Link href={`/user/${user.id}`} className="block truncate px-3 py-4 text-sm hover:underline">
                           {user.name}
                         </Link>
-                      </CustomToolTip>
+                      </TooltipWrapper>
                     </TableCell>
                     <TableCell className="px-0 py-2">
                       {user.state === "type" && user.map ? (

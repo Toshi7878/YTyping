@@ -1,6 +1,6 @@
 import useSearchKeydown from "@/app/timeline/hook/useSearchKeydown";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { DualRangeSlider } from "@/components/ui/dural-range-slider";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { Dispatch } from "react";
 
 interface SearchRangeProps {
@@ -20,7 +20,7 @@ const SearchRange = ({ label, min, max, step, value, setValue }: SearchRangeProp
       <div className="mb-2 text-sm">{`${value.minValue} - ${
         value.maxValue === 1200 && label === "kpm" ? "All" : value.maxValue
       } ${label}`}</div>
-      <CustomToolTip label="Enterで検索" placement="top">
+      <TooltipWrapper label="Enterで検索">
         <DualRangeSlider
           value={[value.minValue, value.maxValue]}
           min={min}
@@ -32,7 +32,7 @@ const SearchRange = ({ label, min, max, step, value, setValue }: SearchRangeProp
           onKeyDown={handleKeyDown}
           className="my-4"
         />
-      </CustomToolTip>
+      </TooltipWrapper>
     </div>
   );
 };
