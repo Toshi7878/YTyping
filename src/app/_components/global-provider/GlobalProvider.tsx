@@ -1,27 +1,25 @@
 "use client";
-import { getGlobalAtomStore, userOptionsAtom } from "@/lib/global-atoms/globalAtoms";
-import { RouterOutPuts } from "@/server/api/trpc";
-import { Provider as JotaiProvider } from "jotai";
-import { useHydrateAtoms } from "jotai/utils";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-interface GlobalProviderProps {
+interface ClientProviderProps {
   children: React.ReactNode;
-  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
 }
 
-const GlobalProvider = ({ children, userOptions }: GlobalProviderProps) => {
-  const globalAtomStore = getGlobalAtomStore();
+const ClientProvider = ({ children }: ClientProviderProps) => {
   const pathname = usePathname();
 
-  useHydrateAtoms([[userOptionsAtom, userOptions ?? userOptionsAtom.init]], { store: globalAtomStore });
-
   useEffect(() => {
-    window.getSelection()!.removeAllRanges();
+    if (typeof window === "undefined") return;
+    if (!window.getSelection) return;
+
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      selection.removeAllRanges();
+    }
   }, [pathname]);
 
-  return <JotaiProvider store={globalAtomStore}>{children}</JotaiProvider>;
+  return <>{children}</>;
 };
 
-export default GlobalProvider;
+export default ClientProvider;

@@ -1,23 +1,17 @@
-import { RouterOutPuts } from "@/server/api/trpc";
 import { ActiveUserStatus, YTPlayer } from "@/types/global-types";
-import { atom, createStore, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-const globalAtomStore = createStore();
-export const getGlobalAtomStore = () => globalAtomStore;
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, {
   getOnInit: false,
 });
 
-export const useVolumeState = () => useAtomValue(volumeAtom, { store: globalAtomStore });
-export const useSetVolume = () => useSetAtom(volumeAtom, { store: globalAtomStore });
+export const useVolumeState = () => useAtomValue(volumeAtom);
+export const useSetVolume = () => useSetAtom(volumeAtom);
 export const useVolumeStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(volumeAtom), []),
-    { store: globalAtomStore },
-  );
+  return useAtomCallback(useCallback((get) => get(volumeAtom), []));
 };
 
 const previewVideoAtom = atomWithReset<{
@@ -28,22 +22,12 @@ const previewVideoAtom = atomWithReset<{
 }>({ videoId: null, previewTime: null, previewSpeed: null, player: null });
 const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
 
-export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store: globalAtomStore });
-export const useSetPreviewVideo = () => useSetAtom(previewVideoAtom, { store: globalAtomStore });
-export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, { store: globalAtomStore });
-export const useSetPreviewPlayer = () => useSetAtom(previewPlayerFocusAtom, { store: globalAtomStore });
+export const usePreviewVideoState = () => useAtomValue(previewVideoAtom);
+export const useSetPreviewVideo = () => useSetAtom(previewVideoAtom);
+export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom);
+export const useSetPreviewPlayer = () => useSetAtom(previewPlayerFocusAtom);
 
 const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 
-export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom, { store: globalAtomStore });
-export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom, { store: globalAtomStore });
-
-export const userOptionsAtom = atom<NonNullable<RouterOutPuts["userOption"]["getUserOptions"]>>({
-  custom_user_active_state: "ONLINE" as const,
-  hide_user_stats: false,
-});
-
-export type UserOptions = ExtractAtomValue<typeof userOptionsAtom>;
-
-export const useUserOptionsState = () => useAtomValue(userOptionsAtom, { store: globalAtomStore });
-export const useSetUserOptions = () => useSetAtom(userOptionsAtom, { store: globalAtomStore });
+export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom);
+export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom);

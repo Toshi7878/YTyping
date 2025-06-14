@@ -1,12 +1,14 @@
-import { useSetOnlineUsers, useUserOptionsState } from "@/lib/global-atoms/globalAtoms";
+import { useSetOnlineUsers } from "@/lib/global-atoms/globalAtoms";
 import { supabase } from "@/lib/supabaseClient";
 import { ActiveUserStatus } from "@/types/global-types";
+import { useUserOptionsQueries } from "@/utils/queries/userOptions.queries";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 export default function useActiveUsers() {
-  const userOptions = useUserOptionsState();
+  const { data: userOptions } = useQuery(useUserOptionsQueries().myUserOptions());
 
   const { data: session } = useSession();
   const setOnlineUsers = useSetOnlineUsers();

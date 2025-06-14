@@ -3,12 +3,11 @@
 import { CheckboxFormField } from "@/components/ui/checkbox";
 import { Form } from "@/components/ui/form";
 import SelectFormField from "@/components/ui/select/select-form-field";
-import { useSetUserOptions } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/trpc";
 import { userOptionSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 type UserOptionFormValues = NonNullable<RouterOutPuts["userOption"]["getUserOptions"]>;
@@ -18,7 +17,6 @@ interface OptionSettingFormProps {
 }
 
 export const OptionSettingForm = ({ userOptions }: OptionSettingFormProps) => {
-  const setUserOptions = useSetUserOptions();
   const form = useForm<UserOptionFormValues>({
     resolver: zodResolver(userOptionSchema),
     defaultValues: {
@@ -26,11 +24,18 @@ export const OptionSettingForm = ({ userOptions }: OptionSettingFormProps) => {
       hide_user_stats: userOptions?.hide_user_stats ?? false,
     },
   });
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
-  const sendUserOption = useMutation(useTRPC().userOption.update.mutationOptions());
+  const sendUserOption = useMutation(
+    trpc.userOption.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(trpc.userOption.getUserOptions.queryOptions({}));
+      },
+    }),
+  );
 
   const onSubmit = (data: UserOptionFormValues) => {
-    setUserOptions(data);
     sendUserOption.mutate(data);
   };
 
