@@ -1,3 +1,5 @@
+"use client";
+
 import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
 import { cn } from "@/lib/utils";
 import { RESET } from "jotai/utils";

@@ -86,7 +86,7 @@
     "prisma": "^6.8.2",
     "supabase": "^2.22.12",
     "tw-animate-css": "^1.3.2",
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   },
   "overrides": {
     "@types/react": "19.1.6",

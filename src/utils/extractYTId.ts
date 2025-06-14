@@ -10,6 +10,14 @@ export function extractYouTubeVideoId(url: string) {
     if (shortUrlMatch && shortUrlMatch[1]) {
       return shortUrlMatch[1];
     }
+
+    // Try to match YouTube Shorts URL format
+    const shortsRegex = /youtube\.com\/shorts\/([^?&]+)/;
+    const shortsMatch = url.match(shortsRegex);
+
+    if (shortsMatch && shortsMatch[1]) {
+      return shortsMatch[1];
+    }
   }
 
   // Check if a match is found

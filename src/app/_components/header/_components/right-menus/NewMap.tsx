@@ -15,13 +15,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
-import { extractYouTubeVideoId } from "../../../../utils/extractYTId";
+import { extractYouTubeVideoId } from "../../../../../utils/extractYTId";
 
-export default function NewMap() {
+export default function NewMapPopover() {
   return (
     <CreateNewMapModal
       trigger={
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground p-2">
+        <Button variant="unstyled" size="icon" className="hover:text-foreground">
           <RiAddBoxFill size={20} />
         </Button>
       }
@@ -67,22 +67,19 @@ function CreateNewMapModal({ trigger }: CreateNewMapModalProps) {
       <TooltipWrapper label="譜面新規作成" delayDuration={600}>
         <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       </TooltipWrapper>
-      <PopoverContent className="w-[640px] border p-0" side="bottom" align="end" sideOffset={8}>
-        <div className="border-b px-6 py-4">
-          <h2 className="text-lg font-semibold">譜面新規作成</h2>
-        </div>
-
-        {/* Form コンポーネントの正しい使用法 */}
+      <PopoverContent className="w-[640px]" side="bottom" align="end" sideOffset={8}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
+            <h2 className="text-lg font-semibold">譜面新規作成</h2>
             <InputFormField
               name="videoId"
               label="譜面を作成したいYouTube動画のURLを入力"
               placeholder="YouTube URLを入力"
+              autoComplete="off"
             />
             <div className="flex items-center justify-between">
               <CreateMapBackUpButton backupData={backupData} onClose={() => setOpen(false)} />
-              <Button size="lg" type="submit" disabled={!extractedVideoId}>
+              <Button size="lg" className="w-30" type="submit" disabled={!extractedVideoId}>
                 作成
               </Button>
             </div>
@@ -116,9 +113,7 @@ function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
     >
       <Link
         href={`/edit?new=${props.backupData?.videoId}&backup=true`}
-        onClick={(event) => {
-          props.onClose();
-        }}
+        onClick={() => props.onClose}
         className={cn(!props.backupData?.videoId && "invisible")}
       >
         <Button variant="outline" size="sm">

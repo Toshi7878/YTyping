@@ -8,17 +8,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "@/components/ui/link/link";
 import { loginMenuItem } from "@/config/headerNav";
-import { useSession } from "next-auth/react";
-import LogOutMenuItem from "./child/LogOutMenuItem";
+import { cn } from "@/lib/utils";
+import { ChevronDown } from "lucide-react";
+import { LogOutDropdownItem } from "./login/AuthDropdownItems";
 
-export default function UserMenu() {
-  const { data: session } = useSession();
+interface UserMenuProps {
+  userName: string;
+  className: string;
+}
 
+export default function UserMenu({ userName, className }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground p-2 text-sm">
-          {session?.user?.name ? session?.user?.name : "名前未設定"}
+        <Button variant="unstyled" size="sm" className={cn("hover:text-foreground", className)}>
+          {userName}
+          <ChevronDown className="relative top-[1px] size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-fit">
@@ -32,9 +37,7 @@ export default function UserMenu() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem asChild>
-          <LogOutMenuItem />
-        </DropdownMenuItem>
+        <LogOutDropdownItem />
       </DropdownMenuContent>
     </DropdownMenu>
   );

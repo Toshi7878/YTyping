@@ -15,7 +15,7 @@ import { Bell, BellDot, Loader2 } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
-export default function NotifyBell() {
+export default function NotifyBellDrawer() {
   const { data: isNewNotification } = useQuery(useNotificationQueries().hasNewNotification());
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -35,7 +35,7 @@ export default function NotifyBell() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="p-2" onClick={notificationOpen}>
+        <Button variant="unstyled" size="icon" className="hover:text-foreground p-2" onClick={notificationOpen}>
           <TooltipWrapper label="通知" delayDuration={600}>
             <div className="relative">
               {isNewNotification ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}

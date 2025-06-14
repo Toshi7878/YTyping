@@ -21,7 +21,7 @@ const inputVariants = cva(
         info: "border-blue-500 focus-visible:border-blue-600 focus-visible:ring-blue-500/50",
       },
       size: {
-        default: "h-9 px-3 py-1",
+        default: "h-10 px-3 py-1",
         sm: "h-8 px-2 py-1 text-sm",
         lg: "h-11 px-4 py-2",
       },

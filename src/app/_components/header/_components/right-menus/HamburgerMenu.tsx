@@ -12,10 +12,9 @@ import Link from "@/components/ui/link/link";
 import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { Menu } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { BsDiscord, BsGoogle } from "react-icons/bs";
-import LogOutMenuItem from "./right-child/login/child/LogOutMenuItem";
-import SignInMenuItem from "./right-child/login/child/SignInMenuItem";
+import { signOut, useSession } from "next-auth/react";
+import { useActionState } from "react";
+import { SignInDropdownItems } from "./login/AuthDropdownItems";
 
 interface HamburgerMenuProps {
   className?: string;
@@ -26,6 +25,9 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { isMobile } = useUserAgent();
 
   const menus = leftMenuItem.concat(leftLink);
+  const [, formAction] = useActionState(async () => {
+    return await signOut({ redirect: false });
+  }, null);
 
   return (
     <div className={className}>
@@ -65,29 +67,16 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
                   </Link>
                 </DropdownMenuItem>
               ))}
-              <LogOutMenuItem />
+              <DropdownMenuItem
+                onClick={() => {
+                  formAction();
+                }}
+              >
+                ログアウト
+              </DropdownMenuItem>
             </>
           ) : (
-            !session && (
-              <>
-                <DropdownMenuItem asChild>
-                  <SignInMenuItem
-                    className="flex w-full items-center gap-2 hover:bg-[#7289DA] hover:text-white"
-                    text="Discordでログイン"
-                    leftIcon={<BsDiscord size="1.5em" />}
-                    provider="discord"
-                  />
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <SignInMenuItem
-                    className="flex w-full items-center gap-2 hover:bg-[#DB4437] hover:text-white"
-                    text="Googleでログイン"
-                    leftIcon={<BsGoogle size="1.5em" />}
-                    provider="google"
-                  />
-                </DropdownMenuItem>
-              </>
-            )
+            !session && <SignInDropdownItems />
           )}
         </DropdownMenuContent>
       </DropdownMenu>

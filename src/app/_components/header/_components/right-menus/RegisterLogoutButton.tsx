@@ -4,15 +4,14 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
-export function SignOutButton() {
-  const router = useRouter();
+const RegisterLogoutButton = () => {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <Button
-      type="button"
-      variant="link"
-      className="text-foreground/80 hover:text-foreground h-auto p-0 text-xs font-normal"
+      variant="unstyled"
+      className="hover:text-foreground"
       onClick={async () => {
         await signOut({ redirect: false });
         if (pathname === "/user/register") {
@@ -23,4 +22,6 @@ export function SignOutButton() {
       ログアウト
     </Button>
   );
-}
+};
+
+export default RegisterLogoutButton;

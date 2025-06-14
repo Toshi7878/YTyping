@@ -8,14 +8,14 @@ import Link from "@/components/ui/link/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useOnlineUsersAtom } from "@/lib/global-atoms/globalAtoms";
 import { cn } from "@/lib/utils";
 import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
+import { useActiveUsers } from "./useActiveUser";
 
 const ActiveUsersDrawer = () => {
-  const onlineUsers = useOnlineUsersAtom();
+  const { onlineUsers } = useActiveUsers();
   const activeUserMapQuery = useQuery(useActiveUserQueries().userPlayingMaps(onlineUsers));
 
   if (activeUserMapQuery.isPending) {
@@ -25,7 +25,7 @@ const ActiveUsersDrawer = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="unstyled" size="icon" className="hover:text-foreground">
           <Users size={18} strokeWidth={2.5} />
         </Button>
       </SheetTrigger>
