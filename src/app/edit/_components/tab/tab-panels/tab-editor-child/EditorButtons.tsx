@@ -10,8 +10,9 @@ import {
   useLineUpdateButtonEvent,
   useWordConvertButtonEvent,
 } from "@/app/edit/hooks/useButtonEvents";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import React from "react";
-import EditorButton from "./child/EditorButton";
 
 const EditorButtons = () => {
   const isAddButtonDisabled = useIsAddBtnDisabledState();
@@ -28,7 +29,7 @@ const EditorButtons = () => {
   const buttonConfigs = {
     add: {
       isDisabled: isAddButtonDisabled,
-      colorScheme: "green",
+      className: "hover:bg-success/50 border-success",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => lineAddButtonEvent(event.shiftKey),
       text: (
         <>
@@ -39,7 +40,7 @@ const EditorButtons = () => {
     },
     update: {
       isDisabled: isUpdateButtonDisabled,
-      colorScheme: "blue",
+      className: "hover:bg-info/50 border-info",
       onClick: lineUpdateButtonEvent,
       text: (
         <>
@@ -52,7 +53,7 @@ const EditorButtons = () => {
       isDisabled: false,
       ref: undefined,
       isLoading: isLoadWordConvert,
-      colorScheme: "blue",
+      className: "hover:bg-info/50 border-info",
       onClick: wordConvertButtonEvent,
       text: (
         <>
@@ -64,7 +65,7 @@ const EditorButtons = () => {
     },
     delete: {
       isDisabled: isDeleteButtonDisabled,
-      colorScheme: "red",
+      className: "hover:bg-error/50 border-error",
       onClick: lineDelete,
       text: (
         <>
@@ -76,17 +77,18 @@ const EditorButtons = () => {
   };
 
   return (
-    <div className="flex gap-3 w-[50%] lg:w-[60%] xl:w-[70%]">
+    <div className="flex w-[50%] gap-3 lg:w-[60%] xl:w-[70%]">
       {Object.values(buttonConfigs).map((config, index) => (
-        <EditorButton
+        <Button
           key={index}
-          isDisabled={config.isDisabled}
-          isLoading={config.isLoading}
-          colorScheme={config.colorScheme as string}
+          disabled={config.isDisabled || config.isLoading}
+          variant="outline"
+          size="sm"
+          className={cn("h-[35px] w-[100px]", config.className)}
           onClick={config.onClick}
         >
-          {config.text}
-        </EditorButton>
+          {config.isLoading ? <span className="loading loading-spinner loading-xs" /> : config.text}
+        </Button>
       ))}
     </div>
   );

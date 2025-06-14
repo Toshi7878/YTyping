@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { toast } from "sonner";
@@ -19,6 +20,7 @@ function Content() {
   const pathChangeReset = usePathChangeAtomReset();
   const canUpload = useCanUploadState();
   const hasUploadPermission = useHasMapUploadPermission();
+  const pathname = usePathname();
 
   useEffect(() => {
     addTimer();
@@ -28,7 +30,7 @@ function Content() {
       toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -48,18 +50,13 @@ function Content() {
   }, [canUpload, hasUploadPermission]);
 
   return (
-    <LoadingOverlayWrapper
-      active={isLrcConverting}
-      spinner={true}
-      text="Loading..."
-      className="w-full xl:w-[90%] 2xl:w-[80%]"
-    >
-      <div className="mx-0 md:mx-auto pt-4 lg:pt-0">
-        <section className="flex flex-col lg:flex-row w-full gap-2 lg:gap-6">
+    <LoadingOverlayWrapper active={isLrcConverting} spinner={true} text="Loading..." className="m-auto w-full">
+      <div className="mx-0 pt-4 md:mx-auto lg:pt-0">
+        <section className="flex w-full flex-col gap-2 lg:flex-row lg:gap-6">
           <EditYouTube className="aspect-video h-[286px] w-full select-none lg:w-[416px]" />
           <EditorTabContent />
         </section>
-        <section className="grid w-full my-1 grid-cols-[1fr_auto] gap-y-[1px] items-center">
+        <section className="my-1 grid w-full grid-cols-[1fr_auto] items-center gap-y-[1px]">
           <TimeRange />
         </section>
         <section className="w-full">

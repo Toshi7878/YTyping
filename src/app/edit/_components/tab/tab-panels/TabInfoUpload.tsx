@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { CardWithContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
 import { useSetGeminiTags, useSetMapInfo, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
@@ -70,28 +70,23 @@ const TabInfoUpload = () => {
   }, [hasUploadPermission]);
 
   return (
-    <Card className="bg-card shadow-lg text-foreground">
-      <CardContent className="p-6">
-        <div className="flex flex-col gap-6">
-          <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
-          <InfoTag isGeminiLoading={isFetching} />
-          <div className="flex justify-between">
-            {hasUploadPermission ? (
-              <form
-                action={formAction}
-                className="flex gap-4 items-baseline flex-col lg:flex-row"
-              >
-                <UploadButton state={state} />
-                {mapId ? <TypeLinkButton /> : ""}
-              </form>
-            ) : (
-              mapId && <TypeLinkButton />
-            )}
-            <PreviewTimeInput />
-          </div>
+    <CardWithContent>
+      <div className="flex flex-col gap-6">
+        <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
+        <InfoTag isGeminiLoading={isFetching} />
+        <div className="flex justify-between">
+          {hasUploadPermission ? (
+            <form action={formAction} className="flex flex-col items-baseline gap-4 lg:flex-row">
+              <UploadButton state={state} />
+              {mapId ? <TypeLinkButton /> : ""}
+            </form>
+          ) : (
+            mapId && <TypeLinkButton />
+          )}
+          <PreviewTimeInput />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </CardWithContent>
   );
 };
 

@@ -49,6 +49,11 @@
   --color-english: var(--english);
   --color-perfect: var(--perfect);
   --color-like: var(--like);
+
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
 }
 
 :root {
@@ -84,8 +89,13 @@
   --perfect: oklch(0.8659 0.1708 89.58);
   --like: oklch(0.7253 0.1752 349.76);
 
-  --ring: oklch(0.7547 0.1375 239.62);
+  --success: oklch(0.6392 0.1681 147.35);
+  --error: oklch(0.5897 0.1964 19.86);
+  --warning: oklch(0.8271 0.159 79.86);
+  --info: oklch(0.8021 0.1383 209.06);
   --chart-1: oklch(0.646 0.222 41.116);
+
+  --ring: oklch(0.7547 0.1375 239.62);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);

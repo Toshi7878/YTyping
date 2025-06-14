@@ -20,16 +20,16 @@ export default function EditorTabContent({ className }: EditorTabContentProps) {
   return (
     <Tabs
       value={TAB_VALUES[tabIndex]}
-      onValueChange={(value) => setTabIndex(TAB_VALUES.indexOf(value as typeof TAB_VALUES[number]) as TabIndex)}
+      onValueChange={(value) => setTabIndex(TAB_VALUES.indexOf(value as (typeof TAB_VALUES)[number]) as TabIndex)}
       className={`w-full ${className || ""}`}
     >
-      <TabsList className="h-[25px] w-full grid grid-cols-3 px-0 md:px-8 border-b border-foreground/60">
+      <TabsList className="grid h-[25px] w-full grid-cols-3 px-0 md:px-8">
         {TAB_LIST.map((tabName, index) => {
           return (
             <TabsTrigger
               key={index}
               value={TAB_VALUES[index]}
-              className={`truncate ${tabIndex === index ? "opacity-100" : "opacity-50"} hover:bg-secondary hover:opacity-80`}
+              className={`truncate ${tabIndex === index ? "opacity-100" : "opacity-50"}`}
             >
               {tabName}
             </TabsTrigger>
@@ -37,15 +37,15 @@ export default function EditorTabContent({ className }: EditorTabContentProps) {
         })}
       </TabsList>
 
-      <TabsContent value="info" className="px-0 pb-0 pt-2">
+      <TabsContent value="info" className="px-0 pt-2 pb-0">
         <TabInfoUpload />
       </TabsContent>
 
-      <TabsContent value="editor" className="px-0 pb-0 pt-2">
+      <TabsContent value="editor" className="px-0 pt-2 pb-0">
         <TabEditor />
       </TabsContent>
-      
-      <TabsContent value="settings" className="px-0 pb-0 pt-2">
+
+      <TabsContent value="settings" className="px-0 pt-2 pb-0">
         <TabSettings />
       </TabsContent>
     </Tabs>

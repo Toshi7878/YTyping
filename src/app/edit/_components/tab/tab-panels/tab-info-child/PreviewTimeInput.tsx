@@ -31,10 +31,8 @@ const PreviewTimeInput = () => {
     >
       <div className="flex items-baseline">
         <Label className="text-sm">
-          <div className="flex items-baseline gap-3">
-            <small className="mr-3">
-              プレビュータイム
-            </small>
+          <div className="flex flex-wrap items-baseline gap-3">
+            <small className="mr-3">プレビュータイム</small>
 
             <Input
               className={`h-8 w-20 ${previewTime === "" ? "border-destructive" : ""}`}
@@ -53,10 +51,7 @@ const PreviewTimeInput = () => {
                 }
               }}
             />
-            <div
-              className="cursor-pointer hover:outline hover:outline-1 p-1"
-              onClick={handlePreviewClick}
-            >
+            <div className="hover:outline-ring cursor-pointer p-1 hover:outline" onClick={handlePreviewClick}>
               <FaPlay size={15} />
             </div>
           </div>
