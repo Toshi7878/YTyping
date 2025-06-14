@@ -1,8 +1,8 @@
 import { useEditUtilsParams, usePlayer } from "@/app/edit/atoms/refAtoms";
 import { useMapPreviewTimeState, useSetCanUpload, useSetPreviewTime } from "@/app/edit/atoms/stateAtoms";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Input } from "@/components/ui/input/input";
 import { Label } from "@/components/ui/label";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { FaPlay } from "react-icons/fa";
 
 const PreviewTimeInput = () => {
@@ -18,7 +18,7 @@ const PreviewTimeInput = () => {
   };
 
   return (
-    <CustomToolTip
+    <TooltipWrapper
       label={
         <>
           <div>
@@ -28,7 +28,6 @@ const PreviewTimeInput = () => {
           <div>↑↓キー: 0.05ずつ調整, Enter:再生</div>
         </>
       }
-      placement="top"
     >
       <div className="flex items-baseline">
         <Label className="text-sm">
@@ -54,8 +53,8 @@ const PreviewTimeInput = () => {
                 }
               }}
             />
-            <div 
-              className="cursor-pointer hover:outline hover:outline-1 p-1" 
+            <div
+              className="cursor-pointer hover:outline hover:outline-1 p-1"
               onClick={handlePreviewClick}
             >
               <FaPlay size={15} />
@@ -63,7 +62,7 @@ const PreviewTimeInput = () => {
           </div>
         </Label>
       </div>
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 };
 

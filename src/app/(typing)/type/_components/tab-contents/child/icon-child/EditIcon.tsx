@@ -1,8 +1,8 @@
 import { useMapInfoRef } from "@/app/(typing)/type/atoms/stateAtoms";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BiEdit } from "react-icons/bi";
 
@@ -18,7 +18,7 @@ const EditIcon = () => {
 
   const tooltipLabel = `譜面のEditページに移動${Number(userId) !== creatorId && role === "USER" ? "(閲覧のみ)" : ""}`;
   return (
-    <CustomToolTip label={tooltipLabel} placement="top" right={1} top={1}>
+    <TooltipWrapper label={tooltipLabel}>
       <div className="h-[60px] flex items-center">
         <Link
           href={`/edit/${mapId}`}
@@ -28,7 +28,7 @@ const EditIcon = () => {
           <BiEdit className="w-[72px] h-[72px] md:w-9 md:h-9" />
         </Link>
       </div>
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 };
 

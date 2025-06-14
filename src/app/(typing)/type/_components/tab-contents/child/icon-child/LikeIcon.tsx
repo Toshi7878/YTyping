@@ -1,6 +1,6 @@
 import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/(typing)/type/atoms/stateAtoms";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { UploadResult } from "@/types";
@@ -19,7 +19,7 @@ const LikeIcon = () => {
     const handleResize = () => {
       setIconSize(window.innerWidth >= 768 ? 62 : 120);
     };
-    
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -40,11 +40,11 @@ const LikeIcon = () => {
 
   const [state, formAction] = useActionState(toggleLikeAction, INITIAL_STATE);
   return (
-    <CustomToolTip label="譜面にいいね" placement="top" top={1}>
+    <TooltipWrapper label="譜面にいいね">
       <form action={formAction} className="hover:opacity-80">
         <LikeButton size={iconSize} defaultLiked={isLikeAtom} />
       </form>
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 };
 

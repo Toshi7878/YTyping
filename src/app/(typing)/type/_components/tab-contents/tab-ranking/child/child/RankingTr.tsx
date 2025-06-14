@@ -2,16 +2,16 @@
 
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { RANKING_COLUMN_WIDTH } from "@/app/(typing)/type/ts/const/consts";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import ClapedText from "@/components/share-components/text/ClapedText";
 import ClearRateText from "@/components/share-components/text/ClearRateText";
 import DateDistanceText from "@/components/share-components/text/DateDistanceText";
 import RankText from "@/components/share-components/text/RankText";
 import ResultToolTipText from "@/components/share-components/text/ResultToolTipText";
 import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
-import { TableCell, TableRow } from "@/components/ui/table";
 import { useSession } from "next-auth/react";
 import { Dispatch, useEffect } from "react";
 import RankingMenu from "./RankingMenu";
@@ -117,7 +117,7 @@ const RankingTr = (props: RankingTrProps) => {
             overflow: "hidden",
           }}
         >
-          <CustomToolTip
+          <TooltipWrapper
             label={
               <ResultToolTipText
                 romaType={props.romaType}
@@ -141,12 +141,12 @@ const RankingTr = (props: RankingTrProps) => {
                 updatedAt={result.updated_at}
               />
             }
-            isOpen={(props.isHighlighted && window.innerWidth >= 768) || props.isHovered}
-            placement="bottom-end"
-            top={2}
+            open={(props.isHighlighted && window.innerWidth >= 768) || props.isHovered}
+            side="bottom"
+            delayDuration={0}
           >
             <span style={{ display: "block", width: 0, height: 0 }} />
-          </CustomToolTip>
+          </TooltipWrapper>
         </TableCell>
       </TableRow>
       {props.showMenu === props.index && (

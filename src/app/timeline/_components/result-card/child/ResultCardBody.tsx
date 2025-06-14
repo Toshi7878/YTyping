@@ -1,8 +1,8 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import Link from "next/link";
@@ -92,17 +92,16 @@ function MapInfo({ map, isToggledInputMode, className, ...rest }: MapCardProps) 
 
   return (
     <div className={cn("mt-2 mb-3 flex flex-col justify-between", className)} {...rest}>
-      <CustomToolTip
+      <TooltipWrapper
         label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-        placement="top"
-        right={19}
+
       >
         <Link href={`/type/${map.id}`} onClick={handleLinkClick} className="text-secondary hover:underline">
           <div className="overflow-hidden text-base font-bold text-ellipsis whitespace-nowrap">
             {`${map.title} / ${map.artist_name}`}
           </div>
         </Link>
-      </CustomToolTip>
+      </TooltipWrapper>
       <div className="text-xs">
         <span>
           制作者:{" "}

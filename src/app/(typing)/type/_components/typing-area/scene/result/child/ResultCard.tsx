@@ -2,9 +2,10 @@
 import { usePlaySpeedState } from "@/app/(typing)/type/atoms/speedReducerAtoms";
 import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/(typing)/type/ts/type";
-import { ThemeColors } from "@/types";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
-import { Card, CardBody, CardFooter, CardHeader, Divider, useTheme } from "@chakra-ui/react";
 import { memo } from "react";
 import ResultCardBody from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
@@ -33,7 +34,6 @@ function ResultCard({
 }: ResultCardProps) {
   const map = useMapState() as ParseMap;
   const scene = useSceneState();
-  const theme: ThemeColors = useTheme();
   const speedData = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();
 
@@ -56,23 +56,25 @@ function ResultCard({
 
   const seekTime = Number(map.mapData[count]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
 
+  const isSelected = selectIndex === lineIndex;
+
   return (
     <Card
       ref={(el) => {
         if (el) cardRefs.current![lineIndex] = el;
       }}
-      variant="practice"
       data-seek-time={seekTime}
       data-line-index={lineIndex}
       data-count={count}
-      style={{
-        ...(selectIndex === lineIndex && {
-          outline: `3px solid ${theme.colors.primary.main}`,
-        }),
-      }}
+      className={cn(
+        "z-[1] py-4 pl-1 mb-4 gap-1 select-none cursor-pointer shadow-lg",
+        "bg-card text-card-foreground border-card-foreground",
+        "hover:border-foreground hover:border-2",
+        isSelected && "border-primary border-[3px]"
+      )}
       onClick={() => handleCardClick(lineIndex)}
     >
-      <CardHeader py={0}>
+      <CardHeader className="py-0">
         <ResultCardHeader
           lineIndex={lineIndex}
           lineNotes={lineNotes}
@@ -81,16 +83,16 @@ function ResultCard({
           lineSpeed={lineSpeed}
         />
       </CardHeader>
-      <CardBody py={2} fontSize="md" className="word-font">
+      <CardContent className="py-2 text-base word-font">
         <ResultCardBody
           lineKanaWord={lineKanaWord}
           typeResult={lineResult.typeResult}
           lineTypeWord={lineTypeWord}
           lostWord={lostWord!}
         />
-      </CardBody>
-      <Divider width="88%" mx="auto" />
-      <CardFooter py={0} fontSize="lg" fontWeight="semibold">
+      </CardContent>
+      <Separator className="w-[88%] mx-auto" />
+      <CardFooter className="py-0 text-lg font-semibold">
         <ResultCardFooter
           scoreCount={scoreCount}
           point={point!}

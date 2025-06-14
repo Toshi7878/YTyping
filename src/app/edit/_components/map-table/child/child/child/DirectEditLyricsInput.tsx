@@ -1,7 +1,7 @@
 import { useLyricsState, useSetLyrics } from "@/app/edit/atoms/stateAtoms";
 import { useAddRubyTagEvent } from "@/app/edit/hooks/utils/useAddRubyTag";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
 import { Input } from "@/components/ui/input/input";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import React, { useState } from "react";
 
 interface DirectEditLyricsInputProps {
@@ -16,11 +16,10 @@ const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
   const handleEnterAddRuby = useAddRubyTagEvent();
 
   return (
-    <CustomToolTip
+    <TooltipWrapper
       label={<span className="text-xs">Enterキーを押すとRubyタグを挿入できます。</span>}
-      placement="top"
-      isDisabled={!isLineLyricsSelected}
-      isOpen={isLineLyricsSelected}
+      disabled={!isLineLyricsSelected}
+      open={isLineLyricsSelected}
     >
       <Input
         ref={props.directEditLyricsInputRef}
@@ -37,7 +36,7 @@ const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
         }}
         onBlur={() => setIsLineLyricsSelected(false)}
       />
-    </CustomToolTip>
+    </TooltipWrapper>
   );
 };
 

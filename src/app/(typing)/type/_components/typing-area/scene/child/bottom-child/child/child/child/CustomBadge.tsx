@@ -16,8 +16,8 @@ const CustomBadge = ({
   className,
   ...props
 }: CustomBadgeProps) => {
-  const isClickable = !isDisabled && !isKbdHidden && onClick;
-  
+  const isClickable = !isDisabled && !isKbdHidden && !!onClick;
+
   return (
     <Badge
       asChild={isClickable}

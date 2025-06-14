@@ -1,5 +1,5 @@
 import { useLyricsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Flex } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
 import parse from "html-react-parser";
 
 const Lyrics = () => {
@@ -7,28 +7,22 @@ const Lyrics = () => {
   const userOptionsAtom = useUserTypingOptionsState();
 
   return (
-    <Flex
-      fontWeight="bold"
-      fontSize={{ base: "5rem", sm: "4rem", md: "2.75rem" }}
+    <div
       id="lyrics"
-      alignItems="flex-end"
-      ml={1}
-      width="103%"
-      className="lyrics-font"
-      whiteSpace="nowrap"
-      sx={{
-        ...(userOptionsAtom.line_completed_display === "NEXT_WORD" && {
-          ".word-area-completed + &": {
-            visibility: "hidden",
-          },
-        }),
-      }}
+      className={cn(
+        "flex items-end ml-1 w-full max-w-[103%] whitespace-nowrap",
+        "text-5xl sm:text-4xl md:text-5xl font-bold",
+        "lyrics-font",
+        // 条件付きスタイル: 完了した単語エリアの後の歌詞を非表示にする
+        userOptionsAtom.line_completed_display === "NEXT_WORD" &&
+        "[.word-area-completed_+_&]:invisible"
+      )}
     >
       {parse(lyrics)}
       <ruby className="invisible">
         あ<rt>あ</rt>
       </ruby>
-    </Flex>
+    </div>
   );
 };
 
