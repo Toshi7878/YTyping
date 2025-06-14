@@ -29,9 +29,9 @@ const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonPro
   return (
     <div
       className={cn(
-        "z-[1] flex cursor-pointer items-baseline rounded-md pr-1",
+        "flex items-baseline rounded-md pr-1",
         likeOptimisticState.hasLike ? "text-like" : "text-muted-foreground/60",
-        session?.user.id && "hover:bg-like/40",
+        session?.user.id && "hover:bg-like/40 hover:cursor-pointer",
       )}
     >
       <div className="relative top-[10.25px] -m-1 -mt-4">
@@ -41,7 +41,6 @@ const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonPro
         type="button"
         className="relative top-0 font-mono text-lg"
         onClick={(event: React.MouseEvent) => {
-          // LikeButtonのクリックイベントをトリガー
           likeButtonRef.current!.click();
           event.stopPropagation();
           event.preventDefault();

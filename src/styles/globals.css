@@ -48,6 +48,7 @@
   --color-flick: var(--flick);
   --color-english: var(--english);
   --color-perfect: var(--perfect);
+  --color-like: var(--like);
 }
 
 :root {
@@ -81,6 +82,7 @@
   --flick: oklch(0.8029 0.2208 141.97);
   --english: oklch(0.7253 0.1752 349.76);
   --perfect: oklch(0.8659 0.1708 89.58);
+  --like: oklch(0.7253 0.1752 349.76);
 
   --ring: oklch(0.7547 0.1375 239.62);
   --chart-1: oklch(0.646 0.222 41.116);
