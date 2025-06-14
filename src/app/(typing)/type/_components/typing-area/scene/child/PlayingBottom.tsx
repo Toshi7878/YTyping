@@ -1,6 +1,5 @@
 import { useSceneGroupState, useYTStartedState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import { Box, Flex, HStack } from "@chakra-ui/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -20,32 +19,24 @@ const PlayingBottom = function () {
 
   return (
     <>
-      <HStack
-        justifyContent="space-between"
-        mx={2}
-        fontWeight="bold"
-        visibility={isPlayed ? "visible" : "hidden"}
-        className={"bottom-card-text"}
-        fontSize={{ base: "3rem", sm: "2.5rem", md: "xl" }}
+      <div
+        className="flex justify-between items-center mx-2 font-bold bottom-card-text text-5xl sm:text-[2.5rem] md:text-xl"
+        style={{ visibility: isPlayed ? "visible" : "hidden" }}
       >
         <PlayingSkipGuide />
         <PlayingTotalTime />
-      </HStack>
-      <Box>
+      </div>
+      <div>
         <Progress id="total_progress" />
-      </Box>
-      <Flex
-        justifyContent="space-between"
-        mx={3}
-        mt={2}
-        mb={4}
-        fontWeight="bold"
-        visibility={isPlayed ? "visible" : "hidden"}
+      </div>
+      <div
+        className="flex justify-between mx-3 mt-2 mb-4 font-bold"
+        style={{ visibility: isPlayed ? "visible" : "hidden" }}
       >
         <SpeedBadge />
         <PracticeBadges />
         <RetryBadge />
-      </Flex>
+      </div>
       {sceneGroup === "Ready" && (
         <Link href={`/ime/${mapId}`} onClick={(event) => handleLinkClick(event, "replace")}>
           <Button

@@ -3,7 +3,6 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { ParseMap } from "@/utils/parse-map/parseMap";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useUserAgent } from "@/utils/useUserAgent";
-import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
@@ -41,7 +40,16 @@ function Content({ mapInfo }: ContentProps) {
 
   const isLoadingOverlay = useIsLoadingOverlayState();
   const disableKeyHandle = useDisableKey();
-  const layoutMode = useBreakpointValue({ base: "column", md: "row" });
+  const [layoutMode, setLayoutMode] = useState<"column" | "row">("column");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setLayoutMode(window.innerWidth >= 768 ? "row" : "column");
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const [ytLayoutMode, setStartedYTLayoutMode] = useState(layoutMode);
   const setMap = useSetMap();
   const setLineResults = useSetLineResults();
@@ -112,32 +120,32 @@ function Content({ mapInfo }: ContentProps) {
         }),
       }}
     >
-      <Box style={style}>
-        <Flex direction="column">
-          <Flex width="100%" gap="6">
+      <div style={style}>
+        <div className="flex flex-col">
+          <div className="flex w-full gap-6">
             {ytLayoutMode === "row" && (
-              <Box position="relative">
+              <div className="relative">
                 {isMobile && <MobileCover />}
 
                 <TypeYouTubeContent className="w-[513px]" isMapLoading={isLoading} videoId={video_id} />
-              </Box>
+              </div>
             )}
-            <Box flex={{ base: "8" }} flexDirection="column">
+            <div className="flex-[8] flex flex-col">
               <TypeTabContent />
-            </Box>
-          </Flex>
-          <Box mt={5}>
+            </div>
+          </div>
+          <div className="mt-5">
             <MainGameCard />
-          </Box>
+          </div>
 
           {ytLayoutMode === "column" && (
-            <Box mt={5} position="relative">
+            <div className="mt-5 relative">
               {isMobile && <MobileCover />}
               <TypeYouTubeContent isMapLoading={isLoading} videoId={video_id} />
-            </Box>
+            </div>
           )}
-        </Flex>
-      </Box>
+        </div>
+      </div>
     </LoadingOverlayWrapper>
   );
 }

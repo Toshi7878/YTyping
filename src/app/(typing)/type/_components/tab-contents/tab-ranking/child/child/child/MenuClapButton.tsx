@@ -1,6 +1,6 @@
 import { INITIAL_STATE } from "@/config/consts/globalConst";
 import { LocalClapState, UploadResult } from "@/types";
-import { Box, Button, ButtonProps } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import { useActionState } from "react";
 
 interface MenuClapButtonProps {
@@ -14,18 +14,18 @@ const MenuClapButton = ({
   clapOptimisticState,
   toggleClapAction,
   ...rest
-}: MenuClapButtonProps & ButtonProps) => {
+}: MenuClapButtonProps & React.ComponentProps<typeof Button>) => {
   const [state, formAction] = useActionState(async () => {
     const result = await toggleClapAction(resultId);
 
     return result;
   }, INITIAL_STATE);
   return (
-    <Box as="form" action={formAction}>
-      <Button width="100%" variant="rankingMenu" type="submit" {...rest}>
+    <form action={formAction}>
+      <Button className="w-full" variant="outline" type="submit" {...rest}>
         {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
       </Button>
-    </Box>
+    </form>
   );
 };
 

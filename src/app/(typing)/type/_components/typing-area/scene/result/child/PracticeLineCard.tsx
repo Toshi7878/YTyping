@@ -8,7 +8,8 @@ import {
 import { useMoveLine } from "@/app/(typing)/type/hooks/playing-hooks/moveLine";
 import { useInteractJS } from "@/app/(typing)/type/hooks/useInteractJS";
 import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
-import { Card, CardBody, CardFooter, CardHeader, Divider } from "@chakra-ui/react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import ResultCardBody from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
@@ -51,13 +52,12 @@ const PracticeLineCard = () => {
   return (
     <Card
       ref={interact?.ref}
-      variant="practice"
-      outline={"1px solid"}
+      className="practice-card border"
       style={{
         ...interact?.style,
         height: "fit-content",
+        cursor: isDragging ? "move" : "pointer"
       }}
-      cursor={isDragging ? "move" : "pointer"}
       onMouseDown={() => setIsDragging(false)}
       onMouseMove={() => setIsDragging(true)}
       onClick={() => {
@@ -76,15 +76,15 @@ const PracticeLineCard = () => {
           lineSpeed={lineSpeed}
         />
       </CardHeader>
-      <CardBody className="word-font" py={2}>
+      <CardContent className="word-font py-2">
         <ResultCardBody
           lineKanaWord={lineKanaWord}
           typeResult={lineResult.typeResult}
           lineTypeWord={lineTypeWord}
           lostWord={lostWord!}
         />
-      </CardBody>
-      <Divider width="92%" mx="auto" />
+      </CardContent>
+      <Separator className="w-[92%] mx-auto" />
       <CardFooter>
         <ResultCardFooter
           point={point!}

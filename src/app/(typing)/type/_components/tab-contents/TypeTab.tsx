@@ -1,5 +1,4 @@
-import { ThemeColors } from "@/types";
-import { HStack, TabPanel, TabPanels, Tabs, useTheme } from "@chakra-ui/react";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useSetTabIndex, useTabIndexState } from "../../atoms/stateAtoms";
 import TabIcons from "./child/TabIcons";
 import TabLists from "./child/TabLists";
@@ -13,36 +12,37 @@ interface TypeTabContentProps {
 export default function TypeTabContent({ className }: TypeTabContentProps) {
   const tabIndex = useTabIndexState();
   const setTabIndex = useSetTabIndex();
-  const theme: ThemeColors = useTheme();
 
   const statusHeight = 208;
   const rankingHeight = 236;
+
   return (
     <Tabs
-      index={tabIndex}
-      onChange={(index: number) => setTabIndex(index as 0 | 1)}
+      value={tabIndex === 0 ? "status" : "ranking"}
+      onValueChange={(value) => setTabIndex(value === "status" ? 0 : 1)}
       className={className}
-      variant="unstyled"
     >
-      <HStack
-        justifyContent="space-between"
-        w="100%"
-        borderBottom={`1px solid ${theme.colors.text.body}55`}
-        userSelect="none"
+      <div
+        className="flex justify-between w-full select-none"
+        style={{ borderBottom: `1px solid rgba(255, 255, 255, 0.33)` }}
       >
         <TabLists tabIndex={tabIndex} />
         <TabIcons />
-      </HStack>
+      </div>
 
-      <TabPanels>
-        <TabPanel px={0}>
-          <TabStatusCard minH={{ base: `${statusHeight * 1.55}px`, md: `${statusHeight}px` }} />
-        </TabPanel>
+      <TabsContent value="status" className="px-0">
+        <TabStatusCard
+          className="min-h-[322px] md:min-h-[208px]"
+          style={{ minHeight: `${statusHeight}px` }}
+        />
+      </TabsContent>
 
-        <TabPanel px={0}>
-          <TabRanking minH={{ base: `${rankingHeight * 1.5}px`, md: `${rankingHeight}px` }} />
-        </TabPanel>
-      </TabPanels>
+      <TabsContent value="ranking" className="px-0">
+        <TabRanking
+          className="min-h-[354px] md:min-h-[236px]"
+          style={{ minHeight: `${rankingHeight}px` }}
+        />
+      </TabsContent>
     </Tabs>
   );
 }

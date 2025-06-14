@@ -1,5 +1,6 @@
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Box, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { $Enums } from "@prisma/client";
 
 const UserLineCompletedRadioButton = () => {
@@ -11,17 +12,23 @@ const UserLineCompletedRadioButton = () => {
   };
 
   return (
-    <Box>
-      <Text fontWeight="semibold" mb={2}>
+    <div>
+      <label className="font-semibold mb-2 block">
         打ち切り時のワード表示
-      </Text>
-      <RadioGroup size="lg" defaultValue={line_completed_display} onChange={changeRadio}>
-        <Stack direction="row" spacing={5}>
-          <Radio value="HIGH_LIGHT">ワードハイライト</Radio>
-          <Radio value="NEXT_WORD">次のワードを表示</Radio>
-        </Stack>
+      </label>
+      <RadioGroup value={line_completed_display} onValueChange={changeRadio}>
+        <div className="flex flex-row gap-5">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="HIGH_LIGHT" id="highlight" />
+            <Label htmlFor="highlight">ワードハイライト</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="NEXT_WORD" id="nextword" />
+            <Label htmlFor="nextword">次のワードを表示</Label>
+          </div>
+        </div>
       </RadioGroup>
-    </Box>
+    </div>
   );
 };
 
