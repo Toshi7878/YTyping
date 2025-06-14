@@ -5,18 +5,17 @@ import { useResultData } from "@/app/(typing)/type/hooks/end/useResultData";
 import { useTRPC } from "@/trpc/trpc";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Button,
-  useDisclosure,
-} from "@chakra-ui/react";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useRef } from "react";
 import AlertDialogButton from "./child/AlertDialogButton";
 import EndMainButton from "./child/EndMainButton";
 
@@ -31,8 +30,7 @@ const EndUploadButton = ({
   isSendResultBtnDisabled,
   setIsSendResultBtnDisabled,
 }: UploadButtonProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
   const { id: mapId } = useParams();
   const setTabIndex = useSetTabIndex();
   const toast = useCustomToast();
@@ -46,7 +44,7 @@ const EndUploadButton = ({
       onSuccess: () => {
         setIsSendResultBtnDisabled(true);
         queryClient.invalidateQueries(trpc.ranking.getMapRanking.queryFilter({ mapId: Number(mapId) }));
-        onClose();
+        setIsOpen(false);
         setTabIndex(1);
         toast({ type: "success", title: "ランキング登録が完了しました" });
       },
@@ -58,7 +56,7 @@ const EndUploadButton = ({
 
   const handleClick = async () => {
     if (!isScoreUpdated) {
-      onOpen();
+      setIsOpen(true);
     } else {
       sendResult.mutate(resultData());
     }
@@ -66,27 +64,26 @@ const EndUploadButton = ({
 
   return (
     <>
-      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef as any} onClose={onClose} isCentered>
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              スコア未更新
-            </AlertDialogHeader>
-            <AlertDialogBody>ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？</AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                キャンセル
-              </Button>
-              <AlertDialogButton onClick={() => sendResult.mutate(resultData())} isLoading={sendResult.isPending} />
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>スコア未更新</DialogTitle>
+            <DialogDescription>
+              ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsOpen(false)}>
+              キャンセル
+            </Button>
+            <AlertDialogButton onClick={() => sendResult.mutate(resultData())} isLoading={sendResult.isPending} />
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <EndMainButton
-        isDisabled={isSendResultBtnDisabled}
+        disabled={isSendResultBtnDisabled}
         onClick={handleClick}
         type={isScoreUpdated ? "submit" : "button"}
-        isLoading={sendResult.isPending}
       >
         {isSendResultBtnDisabled ? "ランキング登録完了" : "ランキング登録"}
       </EndMainButton>

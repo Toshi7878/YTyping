@@ -4,27 +4,34 @@ import {
   usePlayingInputModeState,
   useUserTypingOptionsState,
 } from "@/app/(typing)/type/atoms/stateAtoms";
-import { ThemeColors } from "@/types";
-import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 const TypingWords = () => {
   const lineWord = useLineWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
-  const theme: ThemeColors = useTheme();
   const userOptions = useUserTypingOptionsState();
 
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
   const kanaScroll = userOptions.kana_word_scroll > 0 ? userOptions.kana_word_scroll : 0;
   const romaScroll = userOptions.roma_word_scroll > 0 ? userOptions.roma_word_scroll : 0;
-  const kanaCorrectSlice = useBreakpointValue({ base: 5, md: kanaScroll }) as number;
-  const romaCorrectSlice = useBreakpointValue({ base: 8, md: romaScroll }) as number;
+
+  const [kanaCorrectSlice, setKanaCorrectSlice] = useState(5);
+  const [romaCorrectSlice, setRomaCorrectSlice] = useState(8);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setKanaCorrectSlice(window.innerWidth >= 768 ? kanaScroll : 5);
+      setRomaCorrectSlice(window.innerWidth >= 768 ? romaScroll : 8);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [kanaScroll, romaScroll]);
   return (
-    <Box
-      color={theme.colors.text.body}
-      fontSize={{ base: "5.5rem", sm: "4rem", md: "2.75rem" }}
-      className={`word-font outline-text ${isLineCompleted ? "word-area-completed" : ""}`}
-      style={{ letterSpacing: "0.1em" }}
+    <div
+      className={`word-font outline-text text-[5.5rem] sm:text-[4rem] md:text-[2.75rem] ${isLineCompleted ? "word-area-completed" : ""}`}
+      style={{ letterSpacing: "0.1em", }}
     >
       <Word
         id="main_word"
@@ -37,8 +44,7 @@ const TypingWords = () => {
         isLineCompleted={isLineCompleted}
         nextWord={nextLyrics.kanaWord}
         className="lowercase word-kana"
-        fontSize={`${userOptions.kana_word_font_size}%`}
-        bottom={userOptions.kana_word_top_position}
+        style={{ fontSize: `${userOptions.kana_word_font_size}%`, bottom: userOptions.kana_word_top_position  }}
       />
 
       <Word
@@ -52,14 +58,13 @@ const TypingWords = () => {
         className={`uppercase word-roma ${inputMode === "kana" ? "invisible" : ""}`}
         isLineCompleted={isLineCompleted}
         nextWord={nextLyrics.romaWord}
-        fontSize={`${userOptions.roma_word_font_size}%`}
-        bottom={userOptions.roma_word_top_position}
+        style={{ fontSize: `${userOptions.roma_word_font_size}%`, bottom: userOptions.roma_word_top_position }}
       />
-    </Box>
+    </div>
   );
 };
 
-import { BoxProps, Text } from "@chakra-ui/react";
+import { HTMLAttributes } from "react";
 
 interface WordProps {
   correct: string;
@@ -70,36 +75,34 @@ interface WordProps {
   nextWord: string;
 }
 
-const Word = ({ correct, nextChar, word, isLineCompleted, nextWord, ...rest }: WordProps & BoxProps) => {
+const Word = ({ correct, nextChar, word, isLineCompleted, nextWord, ...rest }: WordProps & HTMLAttributes<HTMLDivElement>) => {
   const remainWord = nextChar + word;
-  const theme: ThemeColors = useTheme();
   const userOptionsAtom = useUserTypingOptionsState();
   const isNextWordDisplay = userOptionsAtom.line_completed_display === "NEXT_WORD";
 
   return (
-    <Box {...rest} position="relative">
+    <div {...rest} className={`relative ${rest.className || ""}`} style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom }}>
       {isLineCompleted && isNextWordDisplay ? (
-        <Text as="span" className="next-line-word" color={theme.colors.semantic.word.nextWord}>
+        <span className="next-line-word" style={{ color: "#22c55e" }}>
           {nextWord}
-        </Text>
+        </span>
       ) : (
         <>
-          <Text
-            as="span"
-            color={remainWord.length === 0 ? theme.colors.semantic.word.completed : theme.colors.semantic.word.correct}
+          <span
+            style={{ color: remainWord.length === 0 ? "#3b82f6" : "#64748b" }}
             className={remainWord.length === 0 ? "word-completed" : "word-correct"}
           >
             {correct}
-          </Text>
-          <Text as="span" color={theme.colors.semantic.word.nextChar} className="word-next">
+          </span>
+          <span style={{ color: "#fff" }} className="word-next">
             {nextChar}
-          </Text>
-          <Text as="span" color={theme.colors.semantic.word.word} className="word">
+          </span>
+          <span style={{ color: "#fff" }} className="word">
             {word}
-          </Text>
+          </span>
         </>
       )}
-    </Box>
+    </div>
   );
 };
 

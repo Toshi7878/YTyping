@@ -1,6 +1,5 @@
 import { useSetTabIndex } from "@/app/(typing)/type/atoms/stateAtoms";
-import { ThemeColors } from "@/types";
-import { Tab, TabList, useTheme } from "@chakra-ui/react";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect } from "react";
 const tabLists = ["ステータス", "ランキング"];
 
@@ -9,7 +8,6 @@ interface TabListsProps {
 }
 
 const TabLists = ({ tabIndex }: TabListsProps) => {
-  const theme: ThemeColors = useTheme();
   const setTabIndex = useSetTabIndex();
 
   useEffect(() => {
@@ -22,26 +20,32 @@ const TabLists = ({ tabIndex }: TabListsProps) => {
   const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
     e.target.blur();
   };
+
   return (
-    <TabList height={{ base: "80px", md: "33px" }} px="8" w="100%">
-      {tabLists.map((tabName, index) => {
-        return (
-          <Tab
-            key={index}
-            fontSize={{ base: "3rem", md: "xl" }}
-            width={{ base: "400px", md: "200px" }}
-            opacity={tabIndex === index ? 1 : 0.5}
-            borderBottom={tabIndex === index ? `1px solid ${theme.colors.text.body}` : ""}
-            color={theme.colors.text.body}
-            _hover={{ bg: "rgba(0, 0, 0, 0.1)", color: theme.colors.text.body }}
-            _selected={{ color: theme.colors.text.body }}
-            onFocus={handleFocus}
-          >
-            {tabName}
-          </Tab>
-        );
-      })}
-    </TabList>
+    <TabsList className="h-20 md:h-[33px] px-8 w-full bg-transparent">
+      <TabsTrigger
+        value="status"
+        className="text-5xl md:text-xl w-[400px] md:w-[200px] data-[state=active]:opacity-100 opacity-50 hover:bg-black/10"
+        style={{
+          borderBottom: tabIndex === 0 ? `1px solid #fff` : "",
+          color: "#fff"
+        }}
+        onFocus={handleFocus}
+      >
+        {tabLists[0]}
+      </TabsTrigger>
+      <TabsTrigger
+        value="ranking"
+        className="text-5xl md:text-xl w-[400px] md:w-[200px] data-[state=active]:opacity-100 opacity-50 hover:bg-black/10"
+        style={{
+          borderBottom: tabIndex === 1 ? `1px solid #fff` : "",
+          color: "#fff"
+        }}
+        onFocus={handleFocus}
+      >
+        {tabLists[1]}
+      </TabsTrigger>
+    </TabsList>
   );
 };
 

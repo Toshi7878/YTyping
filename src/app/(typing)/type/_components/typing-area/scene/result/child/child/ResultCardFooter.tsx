@@ -1,7 +1,8 @@
 "use client";
 
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { Badge, Flex, FlexProps, HStack } from "@chakra-ui/react";
+import { Flex, FlexProps, HStack } from "@chakra-ui/react";
+import { Badge } from "@/components/ui/badge";
 import { memo } from "react";
 
 interface ResultCardFooterProps {
@@ -31,11 +32,14 @@ function ResultCardFooter({
   return (
     <Flex gap={2} width="100%" justifyContent="space-between" py={2} {...props}>
       <HStack>
-        <Badge colorScheme={missColor} fontSize="sm" px={1.5} py={0.5}>
+        <Badge 
+          variant={missColor === "gray" ? "outline" : missColor === "red" ? "destructive" : "default"}
+          className="text-sm px-1.5 py-0.5"
+        >
           ミス: {miss}, ロスト: {lost}
         </Badge>
         <CustomToolTip label={`rkpm: ${rkpm}`} placement="top">
-          <Badge colorScheme="blue" fontSize="sm" px={1.5} py={0.5}>
+          <Badge variant="secondary" className="text-sm px-1.5 py-0.5">
             KPM: {kpm}
           </Badge>
         </CustomToolTip>
@@ -45,7 +49,7 @@ function ResultCardFooter({
         label={`合計ポイント: ${Number(point) + Number(tBonus)}${scoreCount ? ` スコア: ${scoreCount}` : ""}`}
         placement="top"
       >
-        <Badge colorScheme="green" variant="solid" fontSize="sm" px={2} py={1} borderRadius="md">
+        <Badge variant="default" className="text-sm px-2 py-1 rounded-md">
           ポイント: {point}
           {tBonus ? `+${tBonus}` : ""}
         </Badge>

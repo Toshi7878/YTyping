@@ -1,8 +1,19 @@
-import { Button, ButtonProps } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import React from "react";
 
-const EndMainButton = ({ children, ...props }: ButtonProps) => {
+interface EndMainButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+}
+
+const EndMainButton = ({ children, className, ...props }: EndMainButtonProps) => {
   return (
-    <Button variant="endMain" {...props}>
+    <Button 
+      variant="primary-light" 
+      size="lg"
+      className={cn("text-xl font-bold", className)}
+      {...props}
+    >
       {children}
     </Button>
   );

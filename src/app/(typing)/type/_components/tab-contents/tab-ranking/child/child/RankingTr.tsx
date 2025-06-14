@@ -12,7 +12,8 @@ import { UserInputModeText } from "@/components/share-components/text/UserInputM
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ThemeColors } from "@/types";
 import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
-import { Td, Tr, useTheme } from "@chakra-ui/react";
+import { useTheme } from "@chakra-ui/react";
+import { TableCell, TableRow } from "@/components/ui/table";
 import { useSession } from "next-auth/react";
 import { Dispatch, useEffect } from "react";
 import RankingMenu from "./RankingMenu";
@@ -63,38 +64,48 @@ const RankingTr = (props: RankingTrProps) => {
 
   return (
     <>
-      <Tr
-        _hover={{ backgroundColor: theme.colors.button.sub.hover }}
-        backgroundColor={props.isHighlighted ? theme.colors.button.sub.hover : "transparent"}
-        cursor="pointer"
-        className={`${userId === result.user_id ? "my-result" : ""}`}
-        {...(userId === result.user_id && {
-          color: theme.colors.secondary.main,
-        })}
-        zIndex={5}
+      <TableRow
+        className={`cursor-pointer ${userId === result.user_id ? "my-result" : ""}`}
+        style={{
+          backgroundColor: props.isHighlighted ? theme.colors.button.sub.hover : "transparent",
+          ...(userId === result.user_id && {
+            color: theme.colors.secondary.main,
+          }),
+          zIndex: 5,
+        }}
         onClick={props.handleShowMenu}
         onMouseEnter={props.onMouseEnter}
         onMouseLeave={props.onMouseLeave}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = theme.colors.button.sub.hover;
+        }}
+        onMouseOut={(e) => {
+          if (!props.isHighlighted) {
+            e.currentTarget.style.backgroundColor = "transparent";
+          }
+        }}
       >
-        <Td width={RANKING_COLUMN_WIDTH.rank}>
+        <TableCell style={{ width: RANKING_COLUMN_WIDTH.rank }}>
           <RankText rank={props.rank}>{`#${props.rank}`}</RankText>
-        </Td>
-        <Td width={RANKING_COLUMN_WIDTH.score}>{status.score}</Td>
-        <Td width={RANKING_COLUMN_WIDTH.clearRate}>
+        </TableCell>
+        <TableCell style={{ width: RANKING_COLUMN_WIDTH.score }}>{status.score}</TableCell>
+        <TableCell style={{ width: RANKING_COLUMN_WIDTH.clearRate }}>
           <ClearRateText clearRate={status.clear_rate} isPerfect={isPerfect} />
-        </Td>
-        <Td
-          width={RANKING_COLUMN_WIDTH.userName}
-          isTruncated
-          whiteSpace="nowrap"
-          overflow="hidden"
-          textOverflow="ellipsis"
+        </TableCell>
+        <TableCell
+          className="truncate"
+          style={{
+            width: RANKING_COLUMN_WIDTH.userName,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
         >
           {result.user.name}
-        </Td>
+        </TableCell>
 
-        <Td width={RANKING_COLUMN_WIDTH.kpm}>{status.kpm}</Td>
-        <Td width={RANKING_COLUMN_WIDTH.inputMode}>
+        <TableCell style={{ width: RANKING_COLUMN_WIDTH.kpm }}>{status.kpm}</TableCell>
+        <TableCell style={{ width: RANKING_COLUMN_WIDTH.inputMode }}>
           <UserInputModeText
             kanaType={props.kanaType}
             romaType={props.romaType}
@@ -104,17 +115,14 @@ const RankingTr = (props: RankingTrProps) => {
             numType={result.status!.num_type}
             spaceType={result.status!.space_type}
           />
-        </Td>
-        <Td width={RANKING_COLUMN_WIDTH.updatedAt}>
+        </TableCell>
+        <TableCell style={{ width: RANKING_COLUMN_WIDTH.updatedAt }}>
           <DateDistanceText date={new Date(result.updated_at)} />
-        </Td>
-        <Td width={RANKING_COLUMN_WIDTH.clapCount} alignItems="center">
+        </TableCell>
+        <TableCell style={{ width: RANKING_COLUMN_WIDTH.clapCount }} className="text-center">
           <ClapedText clapOptimisticState={clapOptimisticState} />
-        </Td>
-        <Td
-          width="0"
-          padding="0"
-          border="none"
+        </TableCell>
+        <TableCell
           style={{
             width: 0,
             padding: 0,
@@ -152,8 +160,8 @@ const RankingTr = (props: RankingTrProps) => {
           >
             <span style={{ display: "block", width: 0, height: 0 }} />
           </CustomToolTip>
-        </Td>
-      </Tr>
+        </TableCell>
+      </TableRow>
       {props.showMenu === props.index && (
         <RankingMenu
           resultId={result.id}

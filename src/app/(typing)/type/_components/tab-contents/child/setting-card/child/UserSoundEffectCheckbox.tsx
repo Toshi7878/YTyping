@@ -2,7 +2,7 @@ import { usePlayer } from "@/app/(typing)/type/atoms/refAtoms";
 import { useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { useUserAgent } from "@/utils/useUserAgent";
-import { CheckboxGroup, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import CheckBoxOption from "./child/CheckBoxOption";
 
 const UserSoundEffectCheckbox = () => {
@@ -16,13 +16,11 @@ const UserSoundEffectCheckbox = () => {
         サウンド
       </Text>
       {!isMobile && <VolumeRange player={readPlayer()} />}
-      <CheckboxGroup>
-        <Flex flexDirection="row" gap={2}>
-          <CheckBoxOption label={"タイプ音"} name="type_sound" defaultChecked={type_sound} />
-          <CheckBoxOption label={"ミス音"} name="miss_sound" defaultChecked={miss_sound} />
-          <CheckBoxOption label={"打ち切り音"} name="line_clear_sound" defaultChecked={line_clear_sound} />
-        </Flex>
-      </CheckboxGroup>
+      <Flex flexDirection="row" gap={2}>
+        <CheckBoxOption label={"タイプ音"} name="type_sound" defaultChecked={type_sound} />
+        <CheckBoxOption label={"ミス音"} name="miss_sound" defaultChecked={miss_sound} />
+        <CheckBoxOption label={"打ち切り音"} name="line_clear_sound" defaultChecked={line_clear_sound} />
+      </Flex>
     </Flex>
   );
 };

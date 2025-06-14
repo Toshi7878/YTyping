@@ -4,25 +4,30 @@ import { useTRPC } from "@/trpc/trpc";
 import { ThemeColors } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Button,
-  Card,
-  CardBody,
-  Divider,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   useBreakpointValue,
-  useDisclosure,
   useTheme,
 } from "@chakra-ui/react";
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Dispatch, useEffect, useRef } from "react";
 import UserLineCompletedRadioButton from "./child/UserLineCompletedRadioButton";
@@ -44,7 +49,7 @@ const SettingCard = (props: SettingCardProps) => {
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
   const breakpoint = useBreakpointValue({ base: "base", md: "md" });
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useUserTypingOptionsStateRef();
@@ -119,66 +124,45 @@ const SettingCard = (props: SettingCardProps) => {
       {props.isCardVisible && (
         <Card
           ref={cardRef}
-          position="absolute"
-          zIndex={4}
-          width={"600px"}
-          bg={theme.colors.background.body}
-          color={theme.colors.text.body}
-          border="1px"
-          top={10}
-          right={0}
-          borderColor={theme.colors.border.card}
-          fontSize={"lg"}
-          boxShadow="lg"
-          borderRadius="md"
-          overflow="hidden"
+          className="absolute z-[4] w-[600px] text-lg shadow-lg rounded-md overflow-hidden"
+          style={{
+            backgroundColor: theme.colors.background.body,
+            color: theme.colors.text.body,
+            borderColor: theme.colors.border.card,
+            top: "2.5rem",
+            right: 0,
+          }}
         >
-          <CardBody padding={4}>
-            <Tabs variant="unstyled">
-              <TabList mb={4} gap={2} sx={{ display: "flex", flexWrap: "wrap" }}>
+          <CardContent className="p-4">
+            <Tabs defaultValue="0" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 mb-4">
                 {tabData.map((tab, index) => (
-                  <Tab
+                  <TabsTrigger
                     key={index}
-                    _selected={{
-                      bg: theme.colors.primary.main,
-                      color: theme.colors.text.body,
-                    }}
-                    _hover={{
-                      bg: theme.colors.primary.light,
-                      color: theme.colors.text.body,
-                    }}
-                    border={`1px solid ${theme.colors.border.card}`}
-                    color={theme.colors.text.body}
-                    rounded="md"
-                    bg={theme.colors.background.card}
+                    value={index.toString()}
+                    className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                   >
                     {tab.label}
-                  </Tab>
+                  </TabsTrigger>
                 ))}
-              </TabList>
-              <TabPanels>
-                {tabData.map((tab, index) => (
-                  <TabPanel key={index} px={2}>
-                    {tab.content}
-                  </TabPanel>
-                ))}
-              </TabPanels>
+              </TabsList>
+              {tabData.map((tab, index) => (
+                <TabsContent key={index} value={index.toString()} className="px-2">
+                  {tab.content}
+                </TabsContent>
+              ))}
             </Tabs>
 
             <Button
-              mt={4}
               size="sm"
-              colorScheme="red"
               variant="outline"
-              onClick={onOpen}
-              alignSelf="flex-end"
-              display="block"
-              ml="auto"
+              onClick={() => setIsResetModalOpen(true)}
+              className="mt-4 ml-auto block text-destructive hover:bg-destructive/10"
             >
               設定をリセット
             </Button>
-            <ResetSettingModal isOpen={isOpen} onClose={onClose} />
-          </CardBody>
+            <ResetSettingModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
+          </CardContent>
         </Card>
       )}
     </>
@@ -187,7 +171,7 @@ const SettingCard = (props: SettingCardProps) => {
 
 const SettingCardDivider = () => {
   const theme: ThemeColors = useTheme();
-  return <Divider bg={theme.colors.text.body} my={4} />;
+  return <Separator className="my-4" style={{ backgroundColor: theme.colors.text.body }} />;
 };
 
 interface ResetSettingModalProps {
@@ -198,7 +182,6 @@ interface ResetSettingModalProps {
 const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
   const theme: ThemeColors = useTheme();
   const toast = useCustomToast();
-  const cancelRef = useRef<HTMLButtonElement>(null);
   const { resetUserTypingOptions } = useSetUserTypingOptionsState();
 
   const handleResetOptions = () => {
@@ -210,24 +193,30 @@ const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
     onClose();
   };
   return (
-    <AlertDialog id="reset-setting-modal" isOpen={isOpen} leastDestructiveRef={cancelRef as any} onClose={onClose}>
-      <AlertDialogOverlay id="reset-setting-modal-overlay">
-        <AlertDialogContent bg={theme.colors.background.body} color={theme.colors.text.body}>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            設定のリセット
-          </AlertDialogHeader>
-          <AlertDialogBody>すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。</AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              キャンセル
-            </Button>
-            <Button colorScheme="red" onClick={handleResetOptions} ml={3}>
-              リセット
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent 
+        id="reset-setting-modal"
+        style={{
+          backgroundColor: theme.colors.background.body,
+          color: theme.colors.text.body
+        }}
+      >
+        <DialogHeader>
+          <DialogTitle>設定のリセット</DialogTitle>
+          <DialogDescription>
+            すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            キャンセル
+          </Button>
+          <Button variant="destructive" onClick={handleResetOptions}>
+            リセット
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 export default SettingCard;

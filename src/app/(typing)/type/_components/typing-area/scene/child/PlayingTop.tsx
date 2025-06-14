@@ -1,4 +1,3 @@
-import { HStack } from "@chakra-ui/react";
 import Progress from "./Progress";
 
 import { useSceneGroupState, useYTStartedState } from "@/app/(typing)/type/atoms/stateAtoms";
@@ -14,21 +13,14 @@ function PlayingTop() {
 
   return (
     <>
-      <HStack
-        justify="space-between"
-        mt={3}
-        mb={1}
-        mx={1}
-        fontWeight="bold"
-        fontFamily="mono"
-        visibility={isPlayed ? "visible" : "hidden"}
-        className={"top-card-text"}
-        fontSize={{ base: "3.5rem", sm: "2.7rem", md: "3xl" }}
+      <div
+        className="flex justify-between items-center mt-3 mb-1 mx-1 font-bold font-mono top-card-text text-[3.5rem] sm:text-[2.7rem] md:text-3xl"
+        style={{ visibility: isPlayed ? "visible" : "hidden" }}
       >
         <Combo />
         <PlayingNotify />
         <LineTime />
-      </HStack>
+      </div>
       <Progress id="line_progress" />
     </>
   );

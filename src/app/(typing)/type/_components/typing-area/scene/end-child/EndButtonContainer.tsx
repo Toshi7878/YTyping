@@ -1,7 +1,6 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/atoms/speedReducerAtoms";
 import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { HStack } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import EndUploadButton from "./EndRankingButton";
@@ -60,7 +59,7 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
   const playMode = scene === "play_end" ? "play" : scene === "practice_end" ? "practice" : "replay";
   return (
     <>
-      <HStack justifyContent="space-around" id="end_main_buttons">
+      <div className="flex items-center justify-around" id="end_main_buttons">
         {isDisplayRankingButton && (
           <EndUploadButton
             isScoreUpdated={isScoreUpdated}
@@ -70,8 +69,8 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
         )}
 
         <EndMainButton onClick={onOpen}>詳細リザルトを見る</EndMainButton>
-      </HStack>
-      <HStack spacing={14} justifyContent="flex-end" mx="12" id="end_sub_buttons">
+      </div>
+      <div className="flex items-center justify-end gap-14 mx-12" id="end_sub_buttons">
         <EndSubButton
           retryBtnRef={modeChangeBtnRef as any}
           retryMode={scene !== "play_end" ? "play" : "practice"}
@@ -82,7 +81,7 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
           retryMode={playMode}
           isRetryAlert={Boolean(isDisplayRankingButton && !isSendResultBtnDisabled)}
         />
-      </HStack>
+      </div>
     </>
   );
 };

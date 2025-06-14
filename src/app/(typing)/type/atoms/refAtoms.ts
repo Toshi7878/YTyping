@@ -1,5 +1,4 @@
 import { YTPlayer } from "@/types/global-types";
-import { UseDisclosureReturn } from "@chakra-ui/react";
 import { atom, ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
@@ -182,7 +181,7 @@ export const gameUtilityReferenceParamsAtom = atomWithReset({
   rankingScores: [] as number[],
   practiceMyResultId: null as number | null,
   isOptionEdited: false,
-  lineResultdrawerClosure: null as UseDisclosureReturn | null,
+  lineResultdrawerClosure: null as { isOpen: boolean; onOpen: () => void; onClose: () => void; } | null,
 });
 
 export const useGameUtilityReferenceParams = () => {

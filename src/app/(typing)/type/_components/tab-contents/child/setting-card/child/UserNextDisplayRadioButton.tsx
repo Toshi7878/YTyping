@@ -1,5 +1,6 @@
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Box, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { $Enums } from "@prisma/client";
 
 const UserNextDisplayRadioButton = () => {
@@ -11,17 +12,23 @@ const UserNextDisplayRadioButton = () => {
   };
 
   return (
-    <Box>
-      <Text fontSize="lg" fontWeight="semibold" mb={2}>
+    <div>
+      <label className="text-lg font-semibold mb-2 block">
         次の歌詞表示
-      </Text>
-      <RadioGroup size="lg" defaultValue={next_display} onChange={changeRadio}>
-        <Stack direction="row" spacing={5}>
-          <Radio value="LYRICS">歌詞</Radio>
-          <Radio value="WORD">ワード</Radio>
-        </Stack>
+      </label>
+      <RadioGroup value={next_display} onValueChange={changeRadio}>
+        <div className="flex flex-row gap-5">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="LYRICS" id="lyrics" />
+            <Label htmlFor="lyrics">歌詞</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="WORD" id="word" />
+            <Label htmlFor="word">ワード</Label>
+          </div>
+        </div>
       </RadioGroup>
-    </Box>
+    </div>
   );
 };
 
