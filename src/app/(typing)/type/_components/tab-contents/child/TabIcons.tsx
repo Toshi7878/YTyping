@@ -1,29 +1,31 @@
-import { ThemeColors } from "@/types";
-import { Box, Flex, useTheme } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import EditIcon from "./icon-child/EditIcon";
 import LikeIcon from "./icon-child/LikeIcon";
 import SettingIcon from "./icon-child/SettingIcon";
+
 const SettingCard = dynamic(() => import("./setting-card/SettingCard"), {
   ssr: false, // サーバーサイドレンダリングを無効にする場合、このオプションを有効にします
 });
-export default function TabIcons() {
-  const theme: ThemeColors = useTheme();
 
+export default function TabIcons() {
   const { data: session } = useSession();
   const [isCardVisible, setIsCardVisible] = useState(false);
 
   return (
     <>
-      <Box position="absolute" top={{ base: "-20px", md: "-20px" }} right="-10px" color={`${theme.colors.text.body}99`}>
-        <Flex alignItems="center" justifyContent="flex-end">
-          {session?.user.id ? <SettingIcon setIsCardVisible={setIsCardVisible} /> : null}
-          {session?.user.id ? <LikeIcon /> : null}
-          <EditIcon />
-        </Flex>
-      </Box>
+      <div
+        className={cn(
+          "absolute -top-5 -right-2.5 flex items-center justify-end",
+          "text-foreground/60"
+        )}
+      >
+        {session?.user.id ? <SettingIcon setIsCardVisible={setIsCardVisible} /> : null}
+        {session?.user.id ? <LikeIcon /> : null}
+        <EditIcon />
+      </div>
       <SettingCard isCardVisible={isCardVisible} setIsCardVisible={setIsCardVisible} />
     </>
   );

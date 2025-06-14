@@ -1,12 +1,7 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useTRPC } from "@/trpc/trpc";
-import { ThemeColors } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
-import {
-  useBreakpointValue,
-  useTheme,
-} from "@chakra-ui/react";
 import {
   Card,
   CardContent,
@@ -44,15 +39,24 @@ interface SettingCardProps {
 }
 
 const SettingCard = (props: SettingCardProps) => {
-  const theme: ThemeColors = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
-  const breakpoint = useBreakpointValue({ base: "base", md: "md" });
+  const [isMdScreen, setIsMdScreen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useUserTypingOptionsStateRef();
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMdScreen(window.innerWidth >= 768);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -107,7 +111,7 @@ const SettingCard = (props: SettingCardProps) => {
           <UserLineCompletedRadioButton />
           <SettingCardDivider />
           <UserWordFontSize />
-          {breakpoint === "md" && (
+          {isMdScreen && (
             <>
               <SettingCardDivider />
               <UserWordScrollChange />
@@ -124,14 +128,7 @@ const SettingCard = (props: SettingCardProps) => {
       {props.isCardVisible && (
         <Card
           ref={cardRef}
-          className="absolute z-[4] w-[600px] text-lg shadow-lg rounded-md overflow-hidden"
-          style={{
-            backgroundColor: theme.colors.background.body,
-            color: theme.colors.text.body,
-            borderColor: theme.colors.border.card,
-            top: "2.5rem",
-            right: 0,
-          }}
+          className="absolute z-[4] w-[600px] text-lg shadow-lg rounded-md overflow-hidden top-10 right-0 bg-background text-foreground border-border"
         >
           <CardContent className="p-4">
             <Tabs defaultValue="0" className="w-full">
@@ -170,8 +167,7 @@ const SettingCard = (props: SettingCardProps) => {
 };
 
 const SettingCardDivider = () => {
-  const theme: ThemeColors = useTheme();
-  return <Separator className="my-4" style={{ backgroundColor: theme.colors.text.body }} />;
+  return <Separator className="my-4 bg-foreground/20" />;
 };
 
 interface ResetSettingModalProps {
@@ -180,7 +176,6 @@ interface ResetSettingModalProps {
 }
 
 const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
-  const theme: ThemeColors = useTheme();
   const toast = useCustomToast();
   const { resetUserTypingOptions } = useSetUserTypingOptionsState();
 
@@ -196,10 +191,7 @@ const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent 
         id="reset-setting-modal"
-        style={{
-          backgroundColor: theme.colors.background.body,
-          color: theme.colors.text.body
-        }}
+        className="bg-background text-foreground"
       >
         <DialogHeader>
           <DialogTitle>設定のリセット</DialogTitle>

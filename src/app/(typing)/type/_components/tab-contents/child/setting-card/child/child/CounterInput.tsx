@@ -1,7 +1,6 @@
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { Flex, Text, useTheme } from "@chakra-ui/react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface CounterInputProps {
   value: number;
@@ -30,54 +29,48 @@ const CounterInput = ({
   onChange,
   size = "lg",
 }: CounterInputProps) => {
-  const theme: ThemeColors = useTheme();
-
   const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
     const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
     const newValueFixed = Number(newValue.toFixed(valueDigits));
     onChange(newValueFixed);
   };
 
+  const sizeClasses = {
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg"
+  };
+
   return (
-    <Flex alignItems="baseline">
-      <Text fontSize={size} mr={2}>
+    <div className="flex items-baseline">
+      <span className={cn(sizeClasses[size], "mr-2")}>
         {label}
-      </Text>
-      <Flex
-        alignItems="baseline"
-        border="1px"
-        borderColor={`${theme.colors.border.card}90`}
-        width="fit-content"
-        rounded="full"
-        py={0}
-        px={2}
-      >
+      </span>
+      <div className="flex items-baseline border border-border/60 w-fit rounded-full py-0 px-2">
         <CustomToolTip label={decrementTooltip} placement="top">
           <Button
             onClick={() => onCounterChange({ type: "decrement" })}
             variant="ghost"
-            className="h-auto p-0 text-xl relative hover:bg-transparent"
-            style={{ bottom: "2px" }}
+            className="h-auto p-0 text-xl relative -bottom-0.5 hover:bg-transparent"
           >
             -
           </Button>
         </CustomToolTip>
-        <Flex fontSize={size} gap={1} fontWeight="bold">
+        <div className={cn(sizeClasses[size], "flex gap-1 font-bold")}>
           {value.toFixed(valueDigits)}
-          {unit && <Text>{unit}</Text>}
-        </Flex>
+          {unit && <span>{unit}</span>}
+        </div>
         <CustomToolTip label={incrementTooltip} placement="top">
           <Button
             onClick={() => onCounterChange({ type: "increment" })}
             variant="ghost"
-            className="h-auto p-0 text-xl relative hover:bg-transparent"
-            style={{ bottom: "2px" }}
+            className="h-auto p-0 text-xl relative -bottom-0.5 hover:bg-transparent"
           >
             +
           </Button>
         </CustomToolTip>
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   );
 };
 

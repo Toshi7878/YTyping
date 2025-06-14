@@ -1,28 +1,22 @@
-import { Kbd, KbdProps } from "@chakra-ui/react";
-
 interface CustomKbdProps {
   isDisabled?: boolean;
   children: React.ReactNode;
+  onClick?: () => void;
+  hidden?: boolean;
+  [key: string]: any;
 }
 
-const CustomKbd = ({ isDisabled, children, onClick, ...rest }: CustomKbdProps & KbdProps) => {
+const CustomKbd = ({ isDisabled, children, onClick, hidden, ...rest }: CustomKbdProps) => {
   return (
-    <Kbd
-      variant="typeArea"
-      className="bottom-card-kbd"
-      cursor={isDisabled ? "not-allowed" : "pointer"}
-      opacity={isDisabled ? 0.5 : 0.8}
+    <kbd
+      className={`bottom-card-kbd text-3xl md:text-xl text-white bg-[#1f2427] border border-white border-b-[1px] px-1.5 py-0.5 rounded transition-transform duration-100 ease-in-out hover:scale-120 ${
+        isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer opacity-80"
+      } ${hidden ? "hidden" : ""}`}
       onClick={isDisabled ? undefined : onClick}
-      _hover={{
-        transform: isDisabled ? "none" : "scale(1.20)",
-      }}
-      sx={{
-        transition: "transform 0.1s ease-in-out",
-      }}
       {...rest}
     >
       {children}
-    </Kbd>
+    </kbd>
   );
 };
 

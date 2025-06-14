@@ -1,7 +1,6 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/atoms/speedReducerAtoms";
 import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Box, Text } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import RandomEmoji from "./child/RandomEmoji";
 
@@ -15,9 +14,9 @@ const EndText = () => {
   const scene = useSceneState();
 
   return (
-    <Box textAlign="left" fontSize={{ base: "3rem", md: "3xl" }} mx={2} id="end_text">
-      {isPerfect && scene === "play_end" && <Text as="span">パーフェクト！！</Text>}
-      <Text as="span">
+    <div className="text-left text-3xl md:text-3xl mx-2" id="end_text">
+      {isPerfect && scene === "play_end" && <span>パーフェクト！！</span>}
+      <span>
         {scene === "practice_end" ? (
           <>練習モード終了</>
         ) : scene === "replay_end" ? (
@@ -40,9 +39,9 @@ const EndText = () => {
             最高スコアは {myBestScore} です。記録更新まであと {myBestScore - status.score} です。
           </>
         )}
-      </Text>
-      {speed.defaultSpeed < 1 && <Box>1.00倍速以上でランキング登録できます。</Box>}
-    </Box>
+      </span>
+      {speed.defaultSpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
+    </div>
   );
 };
 

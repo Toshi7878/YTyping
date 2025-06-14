@@ -1,4 +1,3 @@
-import { Text } from "@chakra-ui/react";
 import { Atom, useAtomValue, useStore } from "jotai";
 import { memo } from "react";
 
@@ -14,10 +13,10 @@ const PointStatusValue = ({ atom, timeBonusAtom }: PointStatusValueProps) => {
   const timeBonusValue = useAtomValue(timeBonusAtom, { store: typeAtomStore });
 
   return (
-    <Text as="span" fontSize={{ base: "4rem", md: "4xl" }} className="value">
+    <span className="value text-4xl md:text-4xl">
       {value.toString()}
       <small>{timeBonusValue > 0 && `+${timeBonusValue.toString()}`}</small>
-    </Text>
+    </span>
   );
 };
 

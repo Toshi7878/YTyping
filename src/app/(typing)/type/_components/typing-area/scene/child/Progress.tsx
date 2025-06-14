@@ -1,13 +1,10 @@
 import { useProgress } from "@/app/(typing)/type/atoms/refAtoms";
-import { ThemeColors } from "@/types";
-import { Box, useTheme } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 
 interface ProgressProps {
   id: string;
 }
 const Progress = (props: ProgressProps) => {
-  const theme: ThemeColors = useTheme();
   const progressRef = React.useRef<HTMLProgressElement>(null);
 
   const { writeLineProgress, writeTotalProgress } = useProgress();
@@ -25,12 +22,12 @@ const Progress = (props: ProgressProps) => {
 
   return (
     <>
-      <Box>
+      <div>
         <progress id={props.id} ref={progressRef} className="w-full h-[20px] md:h-[10px]" />
-      </Box>
+      </div>
       <style>
         {`#${props.id}::-webkit-progress-value {
-          background: ${theme.colors.primary.main};
+          background: #3182CE;
             border-radius: 5px;
           }`}
       </style>

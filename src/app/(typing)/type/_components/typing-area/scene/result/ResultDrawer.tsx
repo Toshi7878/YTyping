@@ -1,7 +1,5 @@
 "use client";
 import { useSceneGroupState, useSceneState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { ThemeColors } from "@/types";
-import { useTheme } from "@chakra-ui/react";
 import {
   Sheet,
   SheetContent,
@@ -21,7 +19,6 @@ interface ResultDrawerProps {
 
 function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
   const { isOpen, onClose } = drawerClosure;
-  const theme: ThemeColors = useTheme();
   const scene = useSceneState();
   const sceneGroup = useSceneGroupState();
 
@@ -44,15 +41,14 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
       )}
       <SheetContent
         side="right"
-        className="h-screen overflow-y-auto pb-14"
+        className="h-screen overflow-y-auto pb-14 bg-[#1f2427dd]"
         style={{
           display: isOpen ? "block" : "none",
-          backgroundColor: `${theme.colors.background.body}dd`,
           width: scene === "practice" ? "20rem" : "24rem",
         }}
       >
         <SheetHeader className="py-2">
-          <SheetTitle style={{ color: theme.colors.text.body, fontSize: "1rem" }}>
+          <SheetTitle className="text-white text-base">
             {sceneGroup === "End" ? "詳細リザルト" : "練習リザルト"}
           </SheetTitle>
         </SheetHeader>

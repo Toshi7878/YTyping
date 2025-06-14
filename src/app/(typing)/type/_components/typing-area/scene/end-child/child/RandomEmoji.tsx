@@ -1,5 +1,4 @@
 import { HAPPY_EMOJI } from "@/config/emoji";
-import { Text } from "@chakra-ui/react";
 import { memo, useCallback } from "react";
 
 const RandomEmoji = () => {
@@ -9,9 +8,9 @@ const RandomEmoji = () => {
   }, []);
 
   return (
-    <Text as="span" fontFamily="Roboto, sans-serif">
+    <span className="font-sans">
       {getRandomEmoji()}
-    </Text>
+    </span>
   );
 };
 
