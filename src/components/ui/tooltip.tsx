@@ -58,12 +58,18 @@ const TooltipWrapper = ({
   label,
   delayDuration = 0,
   open,
-  disabled,
+  disabled = false,
   ...props
 }: TooltipWrapperProps & React.ComponentProps<typeof TooltipPrimitive.Content>) => {
   return (
-    <Tooltip delayDuration={delayDuration} open={open}>
-      <TooltipTrigger asChild disabled={disabled}>
+    <Tooltip delayDuration={delayDuration} open={disabled ? false : open}>
+      <TooltipTrigger
+        asChild
+        onPointerEnter={disabled ? (e) => e.preventDefault() : undefined}
+        onPointerLeave={disabled ? (e) => e.preventDefault() : undefined}
+        onFocus={disabled ? (e) => e.preventDefault() : undefined}
+        onBlur={disabled ? (e) => e.preventDefault() : undefined}
+      >
         {children}
       </TooltipTrigger>
       <TooltipContent {...props}>{label}</TooltipContent>

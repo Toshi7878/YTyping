@@ -47,6 +47,7 @@
   --color-kana: var(--kana);
   --color-flick: var(--flick);
   --color-english: var(--english);
+  --color-perfect: var(--perfect);
 }
 
 :root {
