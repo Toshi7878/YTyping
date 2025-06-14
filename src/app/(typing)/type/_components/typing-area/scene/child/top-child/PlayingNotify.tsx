@@ -1,6 +1,5 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { useNotifyState, useSceneState, useSetNotify } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Box } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion"; // 追加
 import { useEffect, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
@@ -57,9 +56,9 @@ const PlayingNotify = () => {
   }, [scene]);
 
   return (
-    <Box position="absolute" left="41%" whiteSpace="nowrap" textAlign="center" userSelect="none" id="playing_notify">
+    <div className="absolute left-[41%] whitespace-nowrap text-center select-none" id="playing_notify">
       {NON_ANIMATED.includes(notify.description || "") ? (
-        <Box className={notify.description === "Replay" || notify.description === "Practice" ? "opacity-30" : ""}>
+        <div className={notify.description === "Replay" || notify.description === "Practice" ? "opacity-30" : ""}>
           {notify.description === "ll" ? (
             <FaPause />
           ) : notify.description === "Replay" ? (
@@ -67,7 +66,7 @@ const PlayingNotify = () => {
           ) : (
             notify.description
           )}
-        </Box>
+        </div>
       ) : (
         <AnimatePresence mode="popLayout" key={Date.now()}>
           <motion.div
@@ -76,11 +75,11 @@ const PlayingNotify = () => {
             transition={{ duration: 0.5 }}
             exit={{ opacity: 0 }}
           >
-            <Box>{notify.description === "▶" ? <FaPlay /> : notify.description}</Box>
+            <div>{notify.description === "▶" ? <FaPlay /> : notify.description}</div>
           </motion.div>
         </AnimatePresence>
       )}
-    </Box>
+    </div>
   );
 };
 

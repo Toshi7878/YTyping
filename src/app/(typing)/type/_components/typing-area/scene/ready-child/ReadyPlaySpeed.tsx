@@ -1,7 +1,5 @@
 import { usePlaySpeedState } from "@/app/(typing)/type/atoms/speedReducerAtoms";
 import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { Box, HStack, Text, useTheme } from "@chakra-ui/react";
 import React from "react";
 import SpeedChangeButton from "./child/SpeedChangeButton";
 
@@ -11,7 +9,6 @@ interface ReadyPlaySpeedProps {
 }
 const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   const { defaultSpeed } = usePlaySpeedState();
-  const theme: ThemeColors = useTheme();
 
   return (
     <CustomToolTip
@@ -21,25 +18,18 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
       isOpen={defaultSpeed < 1}
       top={3}
     >
-      <HStack
-        borderColor={theme.colors.border.card}
-        border="1px solid"
-        px={8}
-        py={{ base: 6, md: 3 }}
-        className="rounded-lg"
-        boxShadow="md"
-      >
+      <div className="flex items-center border border-white border-solid px-8 py-6 md:py-3 rounded-lg shadow-md">
         <SpeedChangeButton buttonRef={props.speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} type="down" />
 
-        <Box fontWeight="bold" mx={8} fontSize={{ base: "3rem", md: "4xl" }} userSelect="none">
-          <Text as="span" id="speed">
+        <div className="font-bold mx-8 text-3xl md:text-4xl select-none">
+          <span id="speed">
             {defaultSpeed.toFixed(2)}
-          </Text>
+          </span>
           倍速
-        </Box>
+        </div>
 
         <SpeedChangeButton buttonRef={props.speedUpButtonRef} buttonLabel={{ text: "+", key: "F10" }} type="up" />
-      </HStack>
+      </div>
     </CustomToolTip>
   );
 };

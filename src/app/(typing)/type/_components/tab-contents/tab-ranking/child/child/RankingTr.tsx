@@ -10,9 +10,7 @@ import RankText from "@/components/share-components/text/RankText";
 import ResultToolTipText from "@/components/share-components/text/ResultToolTipText";
 import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ThemeColors } from "@/types";
 import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
-import { useTheme } from "@chakra-ui/react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { useSession } from "next-auth/react";
 import { Dispatch, useEffect } from "react";
@@ -39,7 +37,6 @@ interface RankingTrProps {
 const RankingTr = (props: RankingTrProps) => {
   const { result } = props;
   const { status } = result as { status: NonNullable<typeof result.status> };
-  const theme: ThemeColors = useTheme();
   const { data: session } = useSession();
   const userId = Number(session?.user.id);
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
@@ -65,25 +62,15 @@ const RankingTr = (props: RankingTrProps) => {
   return (
     <>
       <TableRow
-        className={`cursor-pointer ${userId === result.user_id ? "my-result" : ""}`}
+        className={`cursor-pointer transition-colors ${userId === result.user_id ? "my-result text-green-500" : ""} ${
+          props.isHighlighted ? "bg-white/20" : ""
+        } hover:bg-white/20`}
         style={{
-          backgroundColor: props.isHighlighted ? theme.colors.button.sub.hover : "transparent",
-          ...(userId === result.user_id && {
-            color: theme.colors.secondary.main,
-          }),
           zIndex: 5,
         }}
         onClick={props.handleShowMenu}
         onMouseEnter={props.onMouseEnter}
         onMouseLeave={props.onMouseLeave}
-        onMouseOver={(e) => {
-          e.currentTarget.style.backgroundColor = theme.colors.button.sub.hover;
-        }}
-        onMouseOut={(e) => {
-          if (!props.isHighlighted) {
-            e.currentTarget.style.backgroundColor = "transparent";
-          }
-        }}
       >
         <TableCell style={{ width: RANKING_COLUMN_WIDTH.rank }}>
           <RankText rank={props.rank}>{`#${props.rank}`}</RankText>

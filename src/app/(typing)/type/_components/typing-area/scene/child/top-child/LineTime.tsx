@@ -1,23 +1,22 @@
-import { Box, Text } from "@chakra-ui/react";
 import LineKpmText from "./child/LineKpmText";
 import LineRemainTimeText from "./child/LineRemainTimeText";
 
 const LineTime = () => {
   return (
-    <Box>
+    <div>
       <LineKpmText />
-      <Text as="span" ms={1} letterSpacing="1.5px">
+      <span className="ml-1 tracking-widest">
         kpm
-      </Text>
-      <Text as="span" mx={3}>
+      </span>
+      <span className="mx-3">
         -
-      </Text>
+      </span>
       残り
-      <Text as="span" me={1}>
+      <span className="mr-1">
         <LineRemainTimeText />
-      </Text>
+      </span>
       秒
-    </Box>
+    </div>
   );
 };
 

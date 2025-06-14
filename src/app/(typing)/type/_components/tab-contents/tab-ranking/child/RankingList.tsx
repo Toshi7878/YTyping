@@ -1,7 +1,6 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
 import { useSceneState, useSetTypingStatusRank } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useMapRankingQueries } from "@/utils/queries/mapRanking.queries";
-import { Box } from "@chakra-ui/react";
 import { Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -81,9 +80,9 @@ const RankingList = () => {
 
   if (isPending) {
     return (
-      <Box position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <Loader2 className="h-8 w-8 animate-spin" />
-      </Box>
+      </div>
     );
   }
   if (error) return <div>Error loading data</div>;

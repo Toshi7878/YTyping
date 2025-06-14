@@ -1,6 +1,4 @@
-import { ThemeColors } from "@/types";
-import { Text, useBreakpointValue, useTheme } from "@chakra-ui/react";
-import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 
 interface StatusUnderlineProps {
   children: React.ReactNode;
@@ -8,31 +6,32 @@ interface StatusUnderlineProps {
 }
 
 const StatusUnderline = ({ label, children }: StatusUnderlineProps) => {
-  const theme: ThemeColors = useTheme();
+  const [width, setWidth] = useState({ main: "159px", sub: "80px" });
 
-  const width = useBreakpointValue({
-    base: { main: "250px", sub: "140px" },
-    md: { main: "159px", sub: "80px" },
-  });
+  useEffect(() => {
+    const updateWidth = () => {
+      setWidth(
+        window.innerWidth < 768
+          ? { main: "250px", sub: "140px" }
+          : { main: "159px", sub: "80px" }
+      );
+    };
 
-  const UnderlinedSpan = styled(Text)<{ label: string }>`
-    position: relative;
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
 
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 2px;
-      width: ${({ label }) => (label === "score" || label === "point" ? width?.main : width?.sub)};
-      background-color: ${theme.colors.text.body};
-    }
-  `;
+  const underlineWidth = label === "score" || label === "point" ? width.main : width.sub;
 
   return (
-    <UnderlinedSpan as="span" label={label} className="status-underline">
+    <span className="status-underline relative">
       {children}
-    </UnderlinedSpan>
+      <div 
+        className="absolute bottom-0 left-0 h-0.5 bg-white"
+        style={{ width: underlineWidth }}
+      />
+    </span>
   );
 };
 

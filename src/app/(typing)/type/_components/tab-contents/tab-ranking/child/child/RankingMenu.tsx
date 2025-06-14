@@ -3,9 +3,8 @@ import { useMapInfoRef, useSceneGroupState, useSetTabIndex } from "@/app/(typing
 import { useLoadResultPlay } from "@/app/(typing)/type/hooks/loadResultPlay";
 import { useRetry } from "@/app/(typing)/type/hooks/playing-hooks/retry";
 import { useSoundEffect } from "@/app/(typing)/type/hooks/playing-hooks/soundEffect";
-import { LocalClapState, ThemeColors, UploadResult } from "@/types";
+import { LocalClapState, UploadResult } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
-import { Stack, useTheme } from "@chakra-ui/react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { Dispatch } from "react";
@@ -32,7 +31,6 @@ const RankingMenu = ({
   toggleClapAction,
 }: RankingMenuProps) => {
   const { data: session } = useSession();
-  const theme: ThemeColors = useTheme();
   const sceneGroup = useSceneGroupState();
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
@@ -69,18 +67,11 @@ const RankingMenu = ({
     }
   };
   return (
-    <Stack
-      className="rounded-md"
-      position="absolute"
-      zIndex="9999"
-      bg={theme.colors.background.body}
-      color={theme.colors.text.body}
-      boxShadow="md"
-      p={2}
-      border="0.5px"
-      borderColor={theme.colors.border.card}
-      top={{ base: "auto", md: "auto" }}
-      fontSize={{ base: "3xl", md: "xl" }}
+    <div
+      className="rounded-md absolute z-[9999] bg-background text-foreground shadow-md p-2 border border-border space-y-2 text-xl md:text-base"
+      style={{
+        top: "auto",
+      }}
     >
       <Button 
         variant="ghost" 
@@ -106,7 +97,7 @@ const RankingMenu = ({
           toggleClapAction={toggleClapAction}
         />
       ) : null}
-    </Stack>
+    </div>
   );
 };
 

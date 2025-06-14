@@ -1,8 +1,4 @@
 import {
-  Box,
-  useTheme,
-} from "@chakra-ui/react";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -16,8 +12,6 @@ import { useState } from "react";
 import { useSceneState } from "@/app/(typing)/type/atoms/stateAtoms";
 import { useRetry } from "@/app/(typing)/type/hooks/playing-hooks/retry";
 import { PlayMode } from "@/app/(typing)/type/ts/type";
-import { ThemeColors } from "@/types";
-import { useRef } from "react";
 
 interface EndSubButtonProps {
   retryMode: PlayMode;
@@ -27,7 +21,6 @@ interface EndSubButtonProps {
 
 const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const theme: ThemeColors = useTheme();
   const scene = useSceneState();
   const retry = useRetry();
 
@@ -55,8 +48,8 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
             <DialogTitle>リトライ確認</DialogTitle>
             <DialogDescription asChild>
               <div>
-                <Box>ランキング登録が完了していませんが、リトライしますか？</Box>
-                <Box>※リトライすると今回の記録は失われます</Box>
+                <div>ランキング登録が完了していませんが、リトライしますか？</div>
+                <div>※リトライすると今回の記録は失われます</div>
               </div>
             </DialogDescription>
           </DialogHeader>
@@ -83,11 +76,7 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
       <Button
         ref={retryBtnRef}
         variant="outline"
-        className="px-20 py-6 text-2xl h-auto"
-        style={{
-          borderColor: theme.colors.border.card,
-          color: theme.colors.text.body,
-        }}
+        className="px-20 py-6 text-2xl h-auto border-white text-white"
         onClick={handleRetry}
       >
         {getButtonText()}

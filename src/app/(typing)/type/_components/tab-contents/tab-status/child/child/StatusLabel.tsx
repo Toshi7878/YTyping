@@ -1,4 +1,3 @@
-import { Text } from "@chakra-ui/react";
 
 interface StatusLabelProps {
   label: string;
@@ -6,17 +5,14 @@ interface StatusLabelProps {
 
 const StatusLabel = ({ label }: StatusLabelProps) => {
   return (
-    <Text
-      as="span"
-      className="status-label"
-      position="relative"
-      right="8px"
-      fontSize={{ base: "3.5rem", md: "80%" }}
-      letterSpacing={label === "kpm" ? "0.2em" : ""}
-      textTransform="capitalize"
+    <span
+      className="status-label relative -right-2 text-[3.5rem] md:text-[80%] capitalize"
+      style={{
+        letterSpacing: label === "kpm" ? "0.2em" : "",
+      }}
     >
       {label}
-    </Text>
+    </span>
   );
 };
 

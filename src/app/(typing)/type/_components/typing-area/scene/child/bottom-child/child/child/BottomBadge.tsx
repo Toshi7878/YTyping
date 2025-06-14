@@ -1,5 +1,4 @@
 import { useNotifyState, useSceneGroupState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { HStack } from "@chakra-ui/react";
 import CustomBadge from "./child/CustomBadge";
 import CustomKbd from "./child/CustomKbd";
 
@@ -18,7 +17,7 @@ const BottomBadge = function (props: BottomBadgeProps) {
   const isHidden = sceneGroup === "Ready" || sceneGroup === "End";
 
   return (
-    <HStack visibility={isHidden ? "hidden" : "visible"}>
+    <div className={`flex items-center gap-2 ${isHidden ? "invisible" : "visible"}`}>
       <CustomBadge isDisabled={isDisabled} isKbdHidden={props.isKbdHidden} onClick={props.onClick}>
         {props.badgeText}
       </CustomBadge>
@@ -26,7 +25,7 @@ const BottomBadge = function (props: BottomBadgeProps) {
       <CustomKbd onClick={props.onClick} isDisabled={isDisabled} hidden={props.isKbdHidden}>
         {props.kbdText}
       </CustomKbd>
-    </HStack>
+    </div>
   );
 };
 
