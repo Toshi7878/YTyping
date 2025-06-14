@@ -1,15 +1,15 @@
 import MapLeftThumbnail from "../share-components/MapCardThumbnail";
-import MapCard from "./MapCard";
+import { Card, CardContent } from "../ui/card";
 import MapCardRightInfo from "./child/MapCardRightInfo";
 
 function SkeletonCard() {
   return (
-    <MapCard>
-      <MapLeftThumbnail size="home" />
-      <MapCardRightInfo>
-        <></>
-      </MapCardRightInfo>
-    </MapCard>
+    <Card variant="map">
+      <CardContent variant="map">
+        <MapLeftThumbnail size="home" />
+        <MapCardRightInfo />
+      </CardContent>
+    </Card>
   );
 }
 

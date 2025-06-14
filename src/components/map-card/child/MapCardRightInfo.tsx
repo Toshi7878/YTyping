@@ -1,7 +1,7 @@
 "use client";
 
 interface MapCardProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 function MapCardRightInfo({ children }: MapCardProps) {
   return (

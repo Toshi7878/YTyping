@@ -3,6 +3,7 @@ import SkeletonCard from "@/components/map-card/SkeletonCard";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "@/components/ui/link/link";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
@@ -10,7 +11,6 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import MapCard from "../../../components/map-card/MapCard";
 import { MapListResponse, useMapListQueryOptions } from "../../../utils/queries/mapList.queries";
 import { useIsSearchingState, useSetIsSearching } from "../shared/atoms";
 import { PARAM_NAME } from "../shared/const";
@@ -59,19 +59,21 @@ const MapList = () => {
         {data.pages.map((page: MapListResponse) =>
           page.maps.map((map: MapCardInfo) => {
             return (
-              <MapCard key={map.id}>
-                <MapLeftThumbnail
-                  alt={map.title}
-                  src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                  mapVideoId={map.video_id}
-                  mapPreviewTime={map.preview_time}
-                  size="home"
-                />
-                <MapCardRightInfo>
-                  <MapLink mapId={map.id} />
-                  <MapInfo map={map} />
-                </MapCardRightInfo>
-              </MapCard>
+              <Card key={map.id} variant="map">
+                <CardContent variant="map">
+                  <MapLeftThumbnail
+                    alt={map.title}
+                    src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
+                    mapVideoId={map.video_id}
+                    mapPreviewTime={map.preview_time}
+                    size="home"
+                  />
+                  <MapCardRightInfo>
+                    <MapLink mapId={map.id} />
+                    <MapInfo map={map} />
+                  </MapCardRightInfo>
+                </CardContent>
+              </Card>
             );
           }),
         )}
@@ -100,11 +102,7 @@ const LoadingMapCard = ({ cardLength }: { cardLength: number }) => {
   );
 };
 
-interface MapLinkProps {
-  mapId: number;
-}
-
-const MapLink = ({ mapId }: MapLinkProps) => {
+const MapLink = ({ mapId }: { mapId: number }) => {
   return <Link className="absolute h-full w-full" href={`/type/${mapId}`} />;
 };
 

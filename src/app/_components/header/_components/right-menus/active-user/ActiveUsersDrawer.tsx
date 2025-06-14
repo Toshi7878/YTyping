@@ -12,18 +12,19 @@ import { cn } from "@/lib/utils";
 import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
+import { useState } from "react";
 import { useActiveUsers } from "./useActiveUser";
 
 const ActiveUsersDrawer = () => {
   const { onlineUsers } = useActiveUsers();
-  const activeUserMapQuery = useQuery(useActiveUserQueries().userPlayingMaps(onlineUsers));
-
-  if (activeUserMapQuery.isPending) {
-    return;
-  }
+  const [open, setOpen] = useState(false);
+  const activeUserMapQuery = useQuery({
+    ...useActiveUserQueries().userPlayingMaps(onlineUsers),
+    enabled: open,
+  });
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="unstyled" size="icon" className="hover:text-foreground">
           <Users size={18} strokeWidth={2.5} />
@@ -110,10 +111,8 @@ interface ActiveUserMapCardProps {
 
 function ActiveUserMapCard({ children }: ActiveUserMapCardProps) {
   return (
-    <Card className="bg-card transition-shadow duration-300 hover:shadow-lg">
-      <CardContent className="text-card-foreground bg-card flex h-full items-start rounded-md border-none p-0">
-        {children}
-      </CardContent>
+    <Card variant="map">
+      <CardContent className="flex items-start rounded-md p-0">{children}</CardContent>
     </Card>
   );
 }

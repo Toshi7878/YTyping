@@ -4,12 +4,12 @@ import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import LeftMenus, { SiteLogo } from "./LeftMenus";
 import HamburgerMenu from "./right-menus/HamburgerMenu";
-import NewMapPopover from "./right-menus/NewMap";
-import NotifyBellDrawer from "./right-menus/NotifyBell";
+import NewMapPopover from "./right-menus/NewMapPopover";
+import NotifyBellDrawer from "./right-menus/NotifyBellDrawer";
 import RegisterLogoutButton from "./right-menus/RegisterLogoutButton";
 import SignInMenu from "./right-menus/SignInMenu";
 import UserMenu from "./right-menus/UserMenu";
-import ActiveUsersDrawer from "./right-menus/active-user/ActiveUsers";
+import ActiveUsersDrawer from "./right-menus/active-user/ActiveUsersDrawer";
 
 export const LeftNav = () => {
   const pathname = usePathname();

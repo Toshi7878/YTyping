@@ -3,6 +3,7 @@ import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
+import { useEffect, useState } from "react";
 import MapBadges from "./MapBadgesLayout";
 import MapCreateUser from "./MapCreateUser";
 
@@ -11,11 +12,18 @@ interface MapInfoProps {
 }
 function MapInfo({ map }: MapInfoProps) {
   const handleLinkClick = useLinkClick();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const musicSourceDisplay = isClient && map.music_source ? `【${map.music_source}】` : "";
 
   return (
     <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
       <div className="flex flex-col gap-1">
-        <TooltipWrapper label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}>
+        <TooltipWrapper label={`${map.title} / ${map.artist_name}${musicSourceDisplay}`}>
           <Link
             href={`/type/${map.id}`}
             onClick={handleLinkClick}
@@ -27,7 +35,7 @@ function MapInfo({ map }: MapInfoProps) {
 
         <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
           {map.artist_name || ""}
-          {map.music_source ? `【${map.music_source}】` : ""}
+          {musicSourceDisplay}
         </div>
       </div>
       <div className="flex flex-row items-baseline justify-between lg:flex-col">
