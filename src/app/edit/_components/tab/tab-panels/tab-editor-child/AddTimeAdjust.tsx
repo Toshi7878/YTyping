@@ -59,8 +59,8 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
         </>
       }
     >
-      <div className="flex items-baseline">
-        <span className="mr-2 text-sm">{label}</span>
+      <div className="flex flex-col items-center gap-2 md:flex-row md:items-baseline">
+        <span className="text-sm">{label}</span>
         <div className="border-border/50 flex w-fit items-baseline rounded-full border px-2">
           <Button
             onClick={() => onCounterChange({ type: "decrement" })}

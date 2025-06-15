@@ -1,18 +1,17 @@
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { CardWithContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import AllTimeAdjust from "./tab-settings/AllTimeAdjust";
 import ConvertOptionButtons from "./tab-settings/ConvertOptionButtons";
 import LrcConvertButton from "./tab-settings/LrcConvertButton";
 
-const TabSettings = ({ className }: { className: string }) => {
+const TabSettings = () => {
   const { readPlayer } = usePlayer();
 
   return (
-    <CardWithContent className={cn("py-4", className)}>
-      <article className="space-y-6">
-        <div className="flex items-center justify-between">
+    <CardWithContent className="py-4">
+      <article className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <VolumeRange player={readPlayer()} />
           <LrcConvertButton />
         </div>
@@ -44,23 +43,27 @@ const SHORTCUT_KEY_LIST = [
 const ShortCutKeyList = () => {
   return (
     <section className="mt-2">
-      <h3 className="mb-4 text-lg font-semibold">ショートカットキー 一覧</h3>
-      <div className="flex flex-wrap gap-6 text-base">
+      <h3 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">ショートカットキー 一覧</h3>
+      <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 sm:gap-4 sm:text-base lg:grid-cols-3">
         {SHORTCUT_KEY_LIST.map((shortcut, index) => (
-          <div key={index}>
-            {shortcut.keys.map((key, index) => (
-              <kbd
-                key={index}
-                className="bg-background text-foreground border-border/50 mr-1 rounded border px-2 py-1 font-bold"
-              >
-                {key}
-              </kbd>
-            ))}
-            :<span className="ml-1">{shortcut.description}</span>
+          <div key={index} className="flex flex-wrap items-center gap-1">
+            <div className="flex flex-wrap gap-1">
+              {shortcut.keys.map((key, keyIndex) => (
+                <kbd
+                  key={keyIndex}
+                  className="bg-background text-foreground border-border/50 rounded border px-1.5 py-0.5 text-xs font-bold sm:px-2 sm:py-1 sm:text-sm"
+                >
+                  {key}
+                </kbd>
+              ))}
+            </div>
+            <span className="text-muted-foreground">:</span>
+            <span className="break-words">{shortcut.description}</span>
           </div>
         ))}
       </div>
     </section>
   );
 };
+
 export default TabSettings;

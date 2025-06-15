@@ -5,7 +5,7 @@ import EditorWordInput from "./child/EditorWordInput";
 
 const EditorLineInput = () => {
   return (
-    <>
+    <section>
       <div className="flex items-center">
         <EditorTimeInput />
         <EditorLyricsInput />
@@ -14,7 +14,7 @@ const EditorLineInput = () => {
         <EditorSelectedLineCountInput />
         <EditorWordInput />
       </div>
-    </>
+    </section>
   );
 };
 

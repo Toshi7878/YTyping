@@ -7,7 +7,6 @@ import { useUploadMap } from "@/app/edit/hooks/utils/useUploadMap";
 import { INITIAL_SERVER_ACTIONS_STATE, NOT_EDIT_PERMISSION_TOAST_ID } from "@/app/edit/ts/const";
 import { Button } from "@/components/ui/button";
 import Link from "@/components/ui/link/link";
-import { cn } from "@/lib/utils";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
@@ -19,7 +18,7 @@ import InfoTag from "./tab-info-child/InfoTag";
 import PreviewTimeInput from "./tab-info-child/PreviewTimeInput";
 import UploadButton from "./tab-info-child/UploadButton";
 
-const TabInfoUpload = ({ className }: { className: string }) => {
+const TabInfoUpload = () => {
   const customToast = useCustomToast();
   const searchParams = useSearchParams();
   const isNewCreate = !!searchParams.get("new");
@@ -71,7 +70,7 @@ const TabInfoUpload = ({ className }: { className: string }) => {
   }, [hasUploadPermission]);
 
   return (
-    <CardWithContent className={cn("py-3", className)}>
+    <CardWithContent className="py-3">
       <div className="flex flex-col gap-6">
         <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
         <InfoTag isGeminiLoading={isFetching} />

@@ -75,9 +75,9 @@ function EditTabs() {
   const setTabName = useSetTabName();
 
   return (
-    <Tabs value={tabName} onValueChange={(value) => setTabName(value as (typeof TAB_NAMES)[number])}>
-      <TabsList className="grid h-[25px] w-full grid-cols-3 px-0 md:px-8">
-        {TAB_NAMES.map((name, index) => {
+    <Tabs value={tabName} onValueChange={(value) => setTabName(value as (typeof TAB_NAMES)[number])} className="w-full">
+      <TabsList className="grid w-full grid-cols-3">
+        {TAB_NAMES.map((name) => {
           return (
             <TabsTrigger
               key={name}
@@ -91,15 +91,15 @@ function EditTabs() {
       </TabsList>
 
       <TabsContent value="情報&保存">
-        <TabInfoUpload className="max-w-xl" />
+        <TabInfoUpload />
       </TabsContent>
 
       <TabsContent value="エディター">
-        <TabEditor className="max-w-xl" />
+        <TabEditor />
       </TabsContent>
 
       <TabsContent value="ショートカットキー&設定">
-        <TabSettings className="max-w-xl" />
+        <TabSettings />
       </TabsContent>
     </Tabs>
   );

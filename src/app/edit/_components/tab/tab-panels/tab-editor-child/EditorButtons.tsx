@@ -11,7 +11,6 @@ import {
   useWordConvertButtonEvent,
 } from "@/app/edit/hooks/useButtonEvents";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import React from "react";
 
 const EditorButtons = () => {
@@ -55,13 +54,7 @@ const EditorButtons = () => {
       isLoading: isLoadWordConvert,
       variant: "outline-info" as const,
       onClick: wordConvertButtonEvent,
-      text: (
-        <>
-          読み
-          <wbr />
-          変換
-        </>
-      ),
+      text: <>読み変換</>,
     },
     delete: {
       isDisabled: isDeleteButtonDisabled,
@@ -77,14 +70,14 @@ const EditorButtons = () => {
   };
 
   return (
-    <div className="flex w-[50%] gap-3 lg:w-[60%] xl:w-[70%]">
+    <div className="grid grid-cols-2 gap-2 sm:flex">
       {Object.values(buttonConfigs).map((config, index) => (
         <Button
           key={index}
           disabled={config.isDisabled || config.isLoading}
           variant={config.variant}
           size="sm"
-          className={cn("h-[35px] w-[100px]")}
+          className="md: w-28"
           onClick={config.onClick}
         >
           {config.isLoading ? <span className="loading loading-spinner loading-xs" /> : config.text}
