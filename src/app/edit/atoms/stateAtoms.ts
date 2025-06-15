@@ -51,6 +51,7 @@ export const useSetTabName = () => useSetAtom(tabNameAtom, { store });
 export const useGeminiTagsState = () => useAtomValue(geminiTagsAtom, { store });
 export const useSetGeminiTags = () => useSetAtom(geminiTagsAtom, { store });
 
+export const useTimeCountState = () => useAtomValue(timeCountAtom, { store });
 export const useSetTimeCount = () => useSetAtom(timeCountAtom, { store });
 
 export const useDirectEditIndexState = () => useAtomValue(directEditingIndexAtom, { store });

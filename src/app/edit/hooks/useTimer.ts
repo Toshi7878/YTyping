@@ -1,8 +1,7 @@
 import { Ticker } from "pixi.js";
 import { useReadMap } from "../atoms/mapReducerAtom";
 import { usePlayer, useTimeInput, useTimeRange } from "../atoms/refAtoms";
-import { useReadEditUtils, useSetIsTimeInputValid } from "../atoms/stateAtoms";
-import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
+import { useReadEditUtils, useSetIsTimeInputValid, useSetTimeCount } from "../atoms/stateAtoms";
 
 const editTicker = new Ticker();
 
@@ -40,7 +39,7 @@ export const useTimerControls = () => {
 };
 
 const useTimer = () => {
-  const updateCurrentLine = useUpdateCurrentTimeLine();
+  const setTimeCount = useSetTimeCount();
   const readEditUtils = useReadEditUtils();
 
   const { setTime } = useTimeInput();
@@ -68,7 +67,7 @@ const useTimer = () => {
     const map = readMap();
     const nextLine = map[nextCount];
     if (nextLine && Number(currentTime) >= Number(nextLine["time"])) {
-      updateCurrentLine(nextCount);
+      setTimeCount(nextCount);
     }
   };
 };

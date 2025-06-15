@@ -5,23 +5,25 @@ import { useReadMap } from "@/app/edit/atoms/mapReducerAtom";
 import { usePlayer } from "@/app/edit/atoms/refAtoms";
 import {
   useDirectEditIndexState,
+  useIsYTStartedState,
   useLineReducer,
+  useSelectIndexState,
   useSetDirectEditIndex,
   useSetOpenLineOptionDialogIndex,
   useSetSelectIndex,
   useSetTabName,
+  useTimeCountState,
 } from "@/app/edit/atoms/stateAtoms";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
-import { useChangeLineRowColor } from "@/app/edit/hooks/utils/useChangeLineRowColor";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { MapLine } from "@/types/map";
 import parse from "html-react-parser";
 import { useRef } from "react";
-import DirectEditLyricsInput from "./child/DirectEditLyricsInput";
-import DirectEditTimeInput from "./child/DirectEditTimeInput";
-import DirectEditWordInput from "./child/DirectEditWordInput";
-import LineOptionModal from "../LineOptionModal";
+import DirectEditLyricsInput from "./direct-edit/DirectEditLyricsInput";
+import DirectEditTimeInput from "./direct-edit/DirectEditTimeInput";
+import DirectEditWordInput from "./direct-edit/DirectEditWordInput";
 
 interface LineRowProps {
   index: number;
@@ -34,6 +36,7 @@ function LineRow({ line, index }: LineRowProps) {
   const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
 
   const directEditIndex = useDirectEditIndexState();
+  const selectIndex = useSelectIndexState();
   const endLineIndex = useEndLineIndex();
 
   const setTabName = useSetTabName();
@@ -41,10 +44,12 @@ function LineRow({ line, index }: LineRowProps) {
   const setDirectEditIndex = useSetDirectEditIndex();
   const setSelectLine = useLineReducer();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
-  const { allUpdateSelectColor } = useChangeLineRowColor();
+  const isYTStarted = useIsYTStartedState();
+
   const { readPlayer } = usePlayer();
   const readMap = useReadMap();
   const setOpenLineOptionDialogIndex = useSetOpenLineOptionDialogIndex();
+  const timeCount = useTimeCountState();
 
   const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectIndex: number) => {
     const map = readMap();
@@ -82,7 +87,6 @@ function LineRow({ line, index }: LineRowProps) {
     }
 
     setSelectIndex(selectIndex);
-    allUpdateSelectColor(selectIndex);
     setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex } });
   };
 
@@ -95,60 +99,56 @@ function LineRow({ line, index }: LineRowProps) {
   const isOptionEdited = Boolean(line.options?.isChangeCSS || line.options?.eternalCSS);
 
   return (
-    <>
-      <TableRow
-        id={`line_${index}`}
-        data-line-index={index}
-        className="relative cursor-pointer"
-        onClick={(event) => {
-          selectLine(event, index);
-          setTabName("エディター");
-        }}
-      >
-        <TableCell
-          className={`time-cell border-r ${index !== endLineIndex ? "border-b" : ""} ${directEditIndex === index ? "px-2" : "px-4"}`}
-          onClick={handleTimeClick}
-        >
-          {directEditIndex === index ? (
-            <DirectEditTimeInput directEditTimeInputRef={directEditTimeInputRef} editTime={line.time} />
-          ) : (
-            line.time
-          )}
-        </TableCell>
-        <TableCell className={`lyrics-cell ${index !== endLineIndex ? "border-b" : ""}`}>
-          {directEditIndex === index ? (
-            <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef} />
-          ) : (
-            parse(line.lyrics)
-          )}
-        </TableCell>
-        <TableCell className={`word-cell border-r ${index !== endLineIndex ? "border-b" : ""}`}>
-          {directEditIndex === index ? (
-            <DirectEditWordInput directEditWordInputRef={directEditWordInputRef} />
-          ) : (
-            line.word
-          )}
-        </TableCell>
-        <TableCell className={index !== endLineIndex ? "border-b" : ""}>
-          <Button
-            disabled={index === endLineIndex}
-            variant={isOptionEdited ? "default" : "outline"}
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (index !== endLineIndex) {
-                setOpenLineOptionDialogIndex(index);
-              }
-            }}
-          >
-            {isOptionEdited ? "設定有" : "未設定"}
-          </Button>
-        </TableCell>
-      </TableRow>
-        <LineOptionModal
-        />
+    <TableRow
+      id={`line_${index}`}
+      data-line-index={index}
+      className={cn(
+        "hover:bg-info/30 border-accent relative cursor-pointer border-b",
+        isYTStarted && timeCount === index && "bg-success/30",
+        selectIndex === index && "bg-info/80 hover:bg-info/80",
       )}
-    </>
+      onClick={(event) => {
+        selectLine(event, index);
+        setTabName("エディター");
+      }}
+    >
+      <TableCell className="time-cell" onClick={handleTimeClick}>
+        {directEditIndex === index ? (
+          <DirectEditTimeInput directEditTimeInputRef={directEditTimeInputRef} editTime={line.time} />
+        ) : (
+          line.time
+        )}
+      </TableCell>
+      <TableCell className="lyrics-cell border-accent border-l">
+        {directEditIndex === index ? (
+          <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef} />
+        ) : (
+          parse(line.lyrics)
+        )}
+      </TableCell>
+      <TableCell className="word-cell border-accent border-l">
+        {directEditIndex === index ? (
+          <DirectEditWordInput directEditWordInputRef={directEditWordInputRef} />
+        ) : (
+          line.word
+        )}
+      </TableCell>
+      <TableCell className="border-accent border-l">
+        <Button
+          disabled={index === endLineIndex}
+          variant={isOptionEdited ? "default" : "outline"}
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (index !== endLineIndex) {
+              setOpenLineOptionDialogIndex(index);
+            }
+          }}
+        >
+          {isOptionEdited ? "設定有" : "未設定"}
+        </Button>
+      </TableCell>
+    </TableRow>
   );
 }
 

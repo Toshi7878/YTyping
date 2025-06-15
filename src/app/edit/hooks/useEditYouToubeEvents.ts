@@ -1,9 +1,14 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YouTubeEvent, YTPlayer } from "@/types/global-types";
 import { useEditUtilsParams, usePlayer } from "../atoms/refAtoms";
-import { useSetIsYTPlaying, useSetIsYTReadied, useSetIsYTStarted, useSetTabName } from "../atoms/stateAtoms";
+import {
+  useSetIsYTPlaying,
+  useSetIsYTReadied,
+  useSetIsYTStarted,
+  useSetTabName,
+  useSetTimeCount,
+} from "../atoms/stateAtoms";
 import { useTimerControls } from "./useTimer";
-import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 import { useGetSeekCount } from "./utils/useGetSeekCount";
 
 export const useYTReadyEvent = () => {
@@ -69,11 +74,11 @@ export const useYTEndStopEvent = () => {
 
 export const useYTSeekEvent = () => {
   const getSeekCount = useGetSeekCount();
-  const updateCurrentLine = useUpdateCurrentTimeLine();
+  const setTimeCount = useSetTimeCount();
 
   return (event: YouTubeEvent) => {
     const time = event.target.getCurrentTime();
     console.log(`シークtime: ${time}`);
-    updateCurrentLine(getSeekCount(time));
+    setTimeCount(getSeekCount(time));
   };
 };

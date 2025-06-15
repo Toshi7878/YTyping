@@ -28,13 +28,13 @@ const ChangeLineVideoSpeedOption = (props: ChangeLineVideoSpeedOptionProps) => {
   };
   return (
     <div className="flex items-baseline">
-      <Button variant="ghost" size="sm" className="h-auto p-1" onClick={() => speedChange({ type: "down" })}>
+      <Button type="button" variant="ghost" size="sm" onClick={() => speedChange({ type: "down" })}>
         -
       </Button>
       <span className="mx-2">
         {changeVideoSpeed.toFixed(2)} {changeLabel}
       </span>
-      <Button variant="ghost" size="sm" className="h-auto p-1" onClick={() => speedChange({ type: "up" })}>
+      <Button type="button" variant="ghost" size="sm" onClick={() => speedChange({ type: "up" })}>
         +
       </Button>
     </div>

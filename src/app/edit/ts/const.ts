@@ -10,11 +10,6 @@ export const INITIAL_SERVER_ACTIONS_STATE: UploadResult = {
   status: 0,
 };
 
-export const LINE_ROW_SWITCH_CLASSNAMES = {
-  currentTime: "current-time-line",
-  selected: "selected-line",
-};
-
 export const CHOICE_TAGS = [
   "公式動画",
   "Cover/歌ってみた",

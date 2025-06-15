@@ -17,7 +17,6 @@ import {
 } from "../atoms/stateAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useButtonEvents";
-import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 import { useWordSearchReplace } from "./utils/useWordFindReplace";
 
 const useTbodyScroll = () => {
@@ -214,7 +213,6 @@ const useSeekNextPrev = () => {
   const lineDispatch = useLineReducer();
 
   const tbodyScroll = useTbodyScroll();
-  const { addLineSeekColor } = useChangeLineRowColor();
   const readEditUtils = useReadEditUtils();
   const readLineStatus = useReadLine();
   const { readPlayer } = usePlayer();
@@ -238,7 +236,6 @@ const useSeekNextPrev = () => {
           },
         });
         tbodyScroll(seekCount);
-        addLineSeekColor(seekCount);
       }
     }
   };

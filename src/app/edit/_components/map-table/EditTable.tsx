@@ -12,13 +12,13 @@ import { usePlayer, useTbody } from "../../atoms/refAtoms";
 import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms";
 
 import "@/app/edit/style/table.scss";
-import LineRow from "./child/child/LineRow";
+import LineRow from "./line-row/LineRow";
+import LineOptionDialog from "./LineOptionDialog";
 
 export default function EditTable() {
   const map = useMapState();
   const tbodyRef = useRef(null);
 
-  // Hooks
   const { id: mapId } = useParams<{ id: string }>();
   const { writeTbody } = useTbody();
   const { readPlayer } = usePlayer();
@@ -69,26 +69,30 @@ export default function EditTable() {
   }, [isYTReady, isYTStarted, readPlayer, readMap, mapDispatch]);
 
   return (
-    <CardWithContent className="p-0">
-      <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
-        <div className="max-h-[calc(100vh-100px)] overflow-y-auto md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]">
-          <Table className="mb-[65vh] text-sm md:mb-[60vh] 2xl:mb-[30vh]">
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[5%] text-center">Time</TableHead>
-                <TableHead>歌詞</TableHead>
-                <TableHead>ワード</TableHead>
-                <TableHead className="w-[3%] text-center">オプション</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody ref={tbodyRef}>
-              {map.map((line, index) => (
-                <LineRow key={index} index={index} line={line} />
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </LoadingOverlayWrapper>
-    </CardWithContent>
+    <>
+      <CardWithContent className="p-0">
+        <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
+          <div className="max-h-[calc(100vh-100px)] overflow-y-auto md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]">
+            <Table className="mb-[65vh] text-sm md:mb-[60vh] 2xl:mb-[30vh]">
+              <TableHeader>
+                <TableRow className="border-accent hover:bg-transparent">
+                  <TableHead>Time</TableHead>
+                  <TableHead>歌詞</TableHead>
+                  <TableHead>ワード</TableHead>
+                  <TableHead>オプション</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody ref={tbodyRef}>
+                {map.map((line, index) => (
+                  <LineRow key={index} index={index} line={line} />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </LoadingOverlayWrapper>
+      </CardWithContent>
+
+      <LineOptionDialog />
+    </>
   );
 }

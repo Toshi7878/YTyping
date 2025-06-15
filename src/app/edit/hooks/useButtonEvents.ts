@@ -8,6 +8,7 @@ import {
   useSetCanUpload,
   useSetDirectEditIndex,
   useSetIsUpdateUpdatedAt,
+  useSetSelectIndex,
   useSetWord,
 } from "../atoms/stateAtoms";
 
@@ -24,7 +25,6 @@ import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useReadTimeOffsetState } from "../atoms/storageAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import useHasMapUploadPermission from "./useUserEditPermission";
-import { useChangeLineRowColor } from "./utils/useChangeLineRowColor";
 import useTimeValidate from "./utils/useTimeValidate";
 import { useWordConverter } from "./utils/useWordConverter";
 
@@ -234,7 +234,6 @@ export const useLineDelete = () => {
 
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
-  const { removeSelectedLineColor } = useChangeLineRowColor();
   const readSelectLine = useReadLine();
 
   const mapDispatch = useMapReducer();
@@ -245,11 +244,12 @@ export const useLineDelete = () => {
   const readMapInfo = useReadMapInfo();
   const readTags = useReadMapTags();
   const readMap = useReadMap();
+  const setSelectIndex = useSetSelectIndex();
 
   return () => {
     const { selectIndex } = readSelectLine();
 
-    removeSelectedLineColor();
+    setSelectIndex(null);
     setDirectEdit(null);
     lineDispatch({ type: "reset" });
 
