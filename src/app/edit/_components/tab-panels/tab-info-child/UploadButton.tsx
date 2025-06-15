@@ -60,7 +60,7 @@ const UploadButton = ({ state }: UploadButtonProps) => {
             artistName: mapInfo.artist,
             musicSource: mapInfo.source,
             creatorComment: mapInfo.comment,
-            tags: tags.map((tag) => tag.text),
+            tags,
             previewTime: mapInfo.previewTime,
             mapData,
           });

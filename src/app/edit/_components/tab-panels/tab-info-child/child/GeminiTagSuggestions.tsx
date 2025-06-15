@@ -24,7 +24,7 @@ const GeminiTagSuggestions = (props: GeminiTagSuggestionsProps) => {
         <div className="flex flex-row flex-wrap gap-3">
           {geminiTags &&
             geminiTags.map((label, index) => {
-              const isSelected = tags.some((tag) => tag.id === label);
+              const isSelected = tags.some((tag) => tag === label);
 
               if (isSelected) {
                 return null;
