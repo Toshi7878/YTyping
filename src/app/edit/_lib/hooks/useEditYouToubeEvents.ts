@@ -1,28 +1,50 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { YouTubeEvent } from "react-youtube";
+import { useReadMap } from "../atoms/mapReducerAtom";
 import { useEditUtilsParams, usePlayer } from "../atoms/refAtoms";
 import {
+  useReadYtPlayerStatus,
   useSetIsYTPlaying,
-  useSetIsYTReadied,
   useSetIsYTStarted,
   useSetTabName,
   useSetTimeCount,
+  useSetYtPlayerStatus,
 } from "../atoms/stateAtoms";
 import { useGetSeekCount } from "./useGetSeekCount";
 import { useTimerControls } from "./useTimer";
+import { useUpdateEndTime } from "./useUpdateEndTime";
 
 export const useYTReadyEvent = () => {
-  const setIsYTReadied = useSetIsYTReadied();
   const volume = useVolumeState();
-
+  const readYTPlayerStatus = useReadYtPlayerStatus();
   const { writePlayer } = usePlayer();
-  return (event) => {
-    const player = event.target as YTPlayer;
+  const readMap = useReadMap();
+  const updateEndTime = useUpdateEndTime();
+  const setYTPlayerStatus = useSetYtPlayerStatus();
+
+  return (event: { target: YTPlayer }) => {
+    console.log("Ready");
+    const player = event.target;
+
+    const endLine = readMap().findLast((line) => line.lyrics === "end");
+    const { changingVideo } = readYTPlayerStatus();
+    const duration = player.getDuration();
+    if (changingVideo && duration.toFixed(0) !== Number(endLine?.time).toFixed(0)) {
+      updateEndTime(player);
+    }
 
     writePlayer(player);
     player.setVolume(volume);
-    setIsYTReadied(true);
+
+    setYTPlayerStatus((prev) => ({
+      ...prev,
+      changingVideo: false,
+      playing: false,
+      readied: true,
+      started: false,
+      duration,
+    }));
   };
 };
 

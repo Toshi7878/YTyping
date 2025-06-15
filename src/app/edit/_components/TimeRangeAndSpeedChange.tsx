@@ -1,14 +1,6 @@
 "use client";
 import "@/app/edit/_lib/style/editor.scss";
-import { useEffect } from "react";
-import {
-  useIsYTReadiedState,
-  useIsYTStartedState,
-  useSetTimeRangeValue,
-  useSetYTDuration,
-  useTimeRangeValueState,
-  useYTDurationState,
-} from "../_lib/atoms/stateAtoms";
+import { useSetTimeRangeValue, useTimeRangeValueState, useYTDurationState } from "../_lib/atoms/stateAtoms";
 
 import { useSpeedReducer, useYTSpeedState } from "@/app/edit/_lib/atoms/stateAtoms";
 import "@/app/edit/_lib/style/editor.scss";
@@ -29,13 +21,10 @@ export const TimeRangeAndSpeedChange = ({ className }: { className: string }) =>
 const TimeRange = () => {
   const { readPlayer } = usePlayer();
 
-  const isYTStarted = useIsYTStartedState();
-  const isYTReady = useIsYTReadiedState();
   const timeRangeValue = useTimeRangeValueState();
   const ytDuration = useYTDurationState();
 
   const setTimeRangeValue = useSetTimeRangeValue();
-  const setYTDuration = useSetYTDuration();
 
   const handleRangeChange = (value: number[]) => {
     const time = value[0];
@@ -44,16 +33,6 @@ const TimeRange = () => {
     player.playVideo();
     player.seekTo(time, true);
   };
-
-  useEffect(() => {
-    const player = readPlayer();
-    if (player && (isYTReady || isYTStarted)) {
-      const duration = player.getDuration().toFixed(3);
-      if (duration !== undefined) {
-        setYTDuration(Number(duration));
-      }
-    }
-  }, [isYTReady, isYTStarted, setYTDuration, readPlayer]);
 
   return (
     <Slider

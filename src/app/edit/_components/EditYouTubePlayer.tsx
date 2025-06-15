@@ -1,6 +1,8 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useCallback } from "react";
+import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube from "react-youtube";
 import { useVideoIdState } from "../_lib/atoms/stateAtoms";
 import {
@@ -42,21 +44,23 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
   );
 
   return (
-    <YouTube
-      className={className}
-      id="edit_youtube"
-      videoId={videoId}
-      opts={{
-        width: "100%",
-        height: "100%",
-        playerVars: { enablejsapi: 1 },
-      }}
-      onReady={onReady}
-      onPlay={onPlay}
-      onPause={onPause}
-      onEnd={onEndStop}
-      onStateChange={handleStateChange}
-    />
+    <LoadingOverlayWrapper className={className} active={!videoId} spinner={true}>
+      <YouTube
+        className={cn(className, !videoId && "invisible")}
+        id="edit_youtube"
+        videoId={videoId ?? ""}
+        opts={{
+          width: "100%",
+          height: "100%",
+          playerVars: { enablejsapi: 1 },
+        }}
+        onReady={onReady}
+        onPlay={onPlay}
+        onPause={onPause}
+        onEnd={onEndStop}
+        onStateChange={handleStateChange}
+      />
+    </LoadingOverlayWrapper>
   );
 };
 

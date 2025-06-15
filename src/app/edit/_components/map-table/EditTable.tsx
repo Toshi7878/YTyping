@@ -7,11 +7,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
-import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/mapReducerAtom";
+import { useMapReducer, useMapState } from "../../_lib/atoms/mapReducerAtom";
 import { usePlayer, useTbody } from "../../_lib/atoms/refAtoms";
 import { useIsYTReadiedState, useIsYTStartedState } from "../../_lib/atoms/stateAtoms";
 
 import "@/app/edit/_lib/style/table.scss";
+import { useUpdateEndTime } from "../../_lib/hooks/useUpdateEndTime";
 import LineRow from "./line-row/LineRow";
 import LineOptionDialog from "./LineOptionDialog";
 
@@ -21,9 +22,9 @@ export default function EditTable() {
 
   const { id: mapId } = useParams<{ id: string }>();
   const { writeTbody } = useTbody();
-  const { readPlayer } = usePlayer();
   const mapDispatch = useMapReducer();
-  const readMap = useReadMap();
+  const updateEndTime = useUpdateEndTime();
+  const { readPlayer } = usePlayer();
 
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
@@ -44,29 +45,10 @@ export default function EditTable() {
   }, [writeTbody]);
 
   useEffect(() => {
-    const handleEndLine = () => {
-      if (!isYTReady && !isYTStarted) return;
-
-      const duration = readPlayer().getDuration();
-      if (!duration) return;
-
-      const map = readMap();
-      const endLineIndex = map.findLastIndex((item) => item.lyrics === "end");
-      const endLine = {
-        time: duration.toFixed(3),
-        lyrics: "end",
-        word: "",
-      };
-
-      if (endLineIndex === -1) {
-        mapDispatch({ type: "add", payload: endLine });
-      } else {
-        mapDispatch({ type: "update", payload: endLine, index: endLineIndex });
-      }
-    };
-
-    handleEndLine();
-  }, [isYTReady, isYTStarted, readPlayer, readMap, mapDispatch]);
+    if (!isYTReady && !isYTStarted) return;
+    updateEndTime(readPlayer());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isYTReady, isYTStarted, readPlayer]);
 
   return (
     <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">

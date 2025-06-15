@@ -84,12 +84,13 @@ export const useTimeRangeValueState = () => useAtomValue(timeRangeValueAtom, { s
 export const useSetTimeRangeValue = () => useSetAtom(timeRangeValueAtom, { store });
 
 const ytPlayerStatusAtom = atomWithReset({
-  videoId: "",
+  videoId: null as string | null,
   readied: false,
   started: false,
   playing: false,
   speed: 1 as YouTubeSpeed,
   duration: 0,
+  changingVideo: false,
 });
 
 export const videoIdAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("videoId"));
@@ -98,6 +99,7 @@ const startedAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("started
 const playingAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("playing"));
 const ytDurationAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("duration"));
 const speedAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("speed"));
+const changingVideoAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("changingVideo"));
 
 export const useSetYtPlayerStatus = () => useSetAtom(ytPlayerStatusAtom, { store });
 export const useReadYtPlayerStatus = () => {
@@ -110,7 +112,6 @@ export const useYTSpeedState = () => useAtomValue(speedAtom, { store });
 export const useSetYTSpeed = () => useSetAtom(speedAtom, { store });
 
 export const useIsYTReadiedState = () => useAtomValue(readiedAtom, { store });
-export const useSetIsYTReadied = () => useSetAtom(readiedAtom, { store });
 
 export const useIsYTStartedState = () => useAtomValue(startedAtom, { store });
 export const useSetIsYTStarted = () => useSetAtom(startedAtom, { store });
@@ -122,6 +123,7 @@ export const useSetVideoId = () => useSetAtom(videoIdAtom, { store });
 
 export const useYTDurationState = () => useAtomValue(ytDurationAtom, { store });
 export const useSetYTDuration = () => useSetAtom(ytDurationAtom, { store });
+export const useSetYTChaningVideo = () => useSetAtom(changingVideoAtom, { store });
 
 store.sub(speedAtom, () => {
   const player = store.get(playerAtom);
