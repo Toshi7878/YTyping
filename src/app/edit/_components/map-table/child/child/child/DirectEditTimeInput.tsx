@@ -4,7 +4,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import React, { useState } from "react";
 
 interface DirectEditTimeInputProps {
-  directEditTimeInputRef: React.RefObject<HTMLInputElement>;
+  directEditTimeInputRef: React.RefObject<HTMLInputElement | null>;
   editTime: string;
 }
 

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 
 interface DirectEditWordInputProps {
-  directEditWordInputRef: React.RefObject<HTMLInputElement>;
+  directEditWordInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 const DirectEditWordInput = (props: DirectEditWordInputProps) => {
@@ -20,14 +20,10 @@ const DirectEditWordInput = (props: DirectEditWordInputProps) => {
         disabled={isLoadWordConvert}
         variant="outline"
         size="sm"
-        className="h-8 w-[8%] hover:bg-secondary/40"
+        className="hover:bg-secondary/40 h-8 w-[8%]"
         onClick={wordConvertButtonEvent}
       >
-        {isLoadWordConvert ? (
-          <span className="loading loading-spinner loading-xs" />
-        ) : (
-          "変換"
-        )}
+        {isLoadWordConvert ? <span className="loading loading-spinner loading-xs" /> : "変換"}
       </Button>
       <Input
         ref={props.directEditWordInputRef}

@@ -5,7 +5,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import React, { useState } from "react";
 
 interface DirectEditLyricsInputProps {
-  directEditLyricsInputRef: React.RefObject<HTMLInputElement>;
+  directEditLyricsInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {

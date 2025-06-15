@@ -1,9 +1,9 @@
 "use client";
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import "@/app/edit/style/table.scss";
+import { CardWithContent } from "@/components/ui/card";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -72,19 +72,16 @@ export default function EditTable() {
   }, [isYTReady, isYTStarted]);
 
   return (
-    <Card className="m-2">
+    <CardWithContent className="p-0">
       <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
         <div className="max-h-[calc(100vh-100px)] overflow-y-auto md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]">
           <Table className="mb-[65vh] text-sm md:mb-[60vh] 2xl:mb-[30vh]">
             <TableHeader>
               <TableRow>
-                <TableHead className="border-border w-[5%] border-r text-center">Time</TableHead>
-                <TableHead className="border-border border-r"></TableHead>
-                <TableHead className="border-border border-r">歌詞</TableHead>
-                <TableHead className="border-border border-r"></TableHead>
-                <TableHead className="border-border border-r">ワード</TableHead>
-                <TableHead className="border-border w-[3%] border-r text-center"></TableHead>
-                <TableHead className="border-border w-[3%] border-r text-center">オプション</TableHead>
+                <TableHead className="w-[5%] text-center">Time</TableHead>
+                <TableHead>歌詞</TableHead>
+                <TableHead>ワード</TableHead>
+                <TableHead className="w-[3%] text-center">オプション</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody ref={tbodyRef}>
@@ -93,6 +90,6 @@ export default function EditTable() {
           </Table>
         </div>
       </LoadingOverlayWrapper>
-    </Card>
+    </CardWithContent>
   );
 }

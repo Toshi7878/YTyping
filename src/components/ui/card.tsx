@@ -84,7 +84,7 @@ function CardWithContent({
 }: React.ComponentProps<"div"> & VariantProps<typeof cardVariants>) {
   return (
     <div data-slot="card" className={cn(cardVariants({ variant }), className)} {...props}>
-      <div data-slot="card-content" className={cn(cardContentVariants({ variant }))}>
+      <div data-slot="card-content" className={cn(cardContentVariants({ variant }), className)}>
         {children}
       </div>
     </div>

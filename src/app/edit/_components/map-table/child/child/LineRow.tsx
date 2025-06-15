@@ -34,8 +34,8 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
   const directEditLyricsInputRef = useRef<HTMLInputElement | null>(null);
   const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
   const directEditIndex = useDirectEditIndexState();
-  const setTabIndex = useSetTabName();
-  const setSelectedIndex = useSetSelectIndex();
+  const setTabName = useSetTabName();
+  const setSelectIndex = useSetSelectIndex();
   const setDirectEditIndex = useSetDirectEditIndex();
   const setSelectLine = useLineReducer();
   const endLineIndex = useEndLineIndex();
@@ -75,7 +75,7 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
         setDirectEditIndex(null);
       }
 
-      setSelectedIndex(selectIndex);
+      setSelectIndex(selectIndex);
       allUpdateSelectColor(selectIndex);
       setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex } });
     },
@@ -99,7 +99,7 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
       className="relative cursor-pointer"
       onClick={(event) => {
         selectLine(event, index);
-        setTabIndex("エディター");
+        setTabName("エディター");
       }}
     >
       <TableCell
@@ -107,21 +107,21 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
         onClick={(event) => clickTimeCell(event, index)}
       >
         {directEditIndex === index ? (
-          <DirectEditTimeInput directEditTimeInputRef={directEditTimeInputRef as any} editTime={line.time} />
+          <DirectEditTimeInput directEditTimeInputRef={directEditTimeInputRef} editTime={line.time} />
         ) : (
           line.time
         )}
       </TableCell>
-      <TableCell className={`lyrics-cell border-r ${index !== endLineIndex ? "border-b" : ""}`}>
+      <TableCell className={`lyrics-cell ${index !== endLineIndex ? "border-b" : ""}`}>
         {directEditIndex === index ? (
-          <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef as any} />
+          <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef} />
         ) : (
           parse(line.lyrics)
         )}
       </TableCell>
       <TableCell className={`word-cell border-r ${index !== endLineIndex ? "border-b" : ""}`}>
         {directEditIndex === index ? (
-          <DirectEditWordInput directEditWordInputRef={directEditWordInputRef as any} />
+          <DirectEditWordInput directEditWordInputRef={directEditWordInputRef} />
         ) : (
           line.word
         )}
