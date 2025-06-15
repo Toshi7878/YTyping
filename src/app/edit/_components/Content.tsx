@@ -4,17 +4,17 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { toast } from "sonner";
-import { usePathChangeAtomReset } from "../atoms/reset";
-import { useCanUploadState, useIsLrcConvertingState, useSetTabName, useTabNameState } from "../atoms/stateAtoms";
-import { useTimerRegistration } from "../hooks/useTimer";
-import useHasMapUploadPermission from "../hooks/useUserEditPermission";
-import { NOT_EDIT_PERMISSION_TOAST_ID, TAB_NAMES } from "../ts/const";
+import { usePathChangeAtomReset } from "../_lib/atoms/reset";
+import { useCanUploadState, useIsLrcConvertingState, useSetTabName, useTabNameState } from "../_lib/atoms/stateAtoms";
+import { NOT_EDIT_PERMISSION_TOAST_ID, TAB_NAMES } from "../_lib/const";
+import { useTimerRegistration } from "../_lib/hooks/useTimer";
+import useHasMapUploadPermission from "../_lib/hooks/useUserEditPermission";
+import EditYouTube from "./EditYouTubePlayer";
 import EditTable from "./map-table/EditTable";
-import TabEditor from "./tab/tab-panels/TabEditor";
-import TabInfoUpload from "./tab/tab-panels/TabInfoUpload";
-import TabSettings from "./tab/tab-panels/TabSettings";
-import TimeRange from "./time-range/TimeRange";
-import EditYouTube from "./youtube/EditYouTubePlayer";
+import TabEditor from "./tab-panels/TabEditor";
+import TabInfoUpload from "./tab-panels/TabInfoUpload";
+import TabSettings from "./tab-panels/TabSettings";
+import { TimeRangeAndSpeedChange } from "./TimeRangeAndSpeedChange";
 
 function Content() {
   const isLrcConverting = useIsLrcConvertingState();
@@ -59,12 +59,9 @@ function Content() {
           <EditYouTube className="aspect-video h-[286px] w-full select-none lg:w-[416px]" />
           <EditTabs />
         </section>
-        <section className="my-1 grid w-full grid-cols-[1fr_auto] items-center gap-y-[1px]">
-          <TimeRange />
-        </section>
-        <section className="w-full">
-          <EditTable />
-        </section>
+        <TimeRangeAndSpeedChange className="my-1 grid grid-cols-[1fr_auto]" />
+
+        <EditTable />
       </div>
     </LoadingOverlayWrapper>
   );

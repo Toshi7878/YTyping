@@ -7,11 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
-import { useMapReducer, useMapState, useReadMap } from "../../atoms/mapReducerAtom";
-import { usePlayer, useTbody } from "../../atoms/refAtoms";
-import { useIsYTReadiedState, useIsYTStartedState } from "../../atoms/stateAtoms";
+import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/mapReducerAtom";
+import { usePlayer, useTbody } from "../../_lib/atoms/refAtoms";
+import { useIsYTReadiedState, useIsYTStartedState } from "../../_lib/atoms/stateAtoms";
 
-import "@/app/edit/style/table.scss";
+import "@/app/edit/_lib/style/table.scss";
 import LineRow from "./line-row/LineRow";
 import LineOptionDialog from "./LineOptionDialog";
 
@@ -69,30 +69,26 @@ export default function EditTable() {
   }, [isYTReady, isYTStarted, readPlayer, readMap, mapDispatch]);
 
   return (
-    <>
+    <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
       <CardWithContent className="p-0">
-        <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
-          <div className="max-h-[calc(100vh-100px)] overflow-y-auto md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]">
-            <Table className="mb-[65vh] text-sm md:mb-[60vh] 2xl:mb-[30vh]">
-              <TableHeader>
-                <TableRow className="border-accent hover:bg-transparent">
-                  <TableHead>Time</TableHead>
-                  <TableHead>歌詞</TableHead>
-                  <TableHead>ワード</TableHead>
-                  <TableHead>オプション</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody ref={tbodyRef}>
-                {map.map((line, index) => (
-                  <LineRow key={index} index={index} line={line} />
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </LoadingOverlayWrapper>
+        <Table className="mb-[65vh] max-h-[calc(100vh-100px)] overflow-y-auto text-sm md:mb-[60vh] md:max-h-[500px] 2xl:mb-[30vh] 2xl:max-h-[calc(100vh-400px)]">
+          <TableHeader>
+            <TableRow className="border-accent hover:bg-transparent">
+              <TableHead>Time</TableHead>
+              <TableHead>歌詞</TableHead>
+              <TableHead>ワード</TableHead>
+              <TableHead className="w-1">オプション</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody ref={tbodyRef}>
+            {map.map((line, index) => (
+              <LineRow key={index} index={index} line={line} />
+            ))}
+          </TableBody>
+        </Table>
       </CardWithContent>
 
       <LineOptionDialog />
-    </>
+    </LoadingOverlayWrapper>
   );
 }

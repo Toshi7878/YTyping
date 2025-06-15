@@ -1,4 +1,4 @@
-import { EditorNewMapBackUpInfoData as NewMapBackUpData } from "@/app/edit/ts/type";
+import { EditorNewMapBackUpInfoData as NewMapBackUpData } from "@/app/edit/_lib/type";
 import Dexie, { type EntityTable } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 

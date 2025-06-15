@@ -1,5 +1,5 @@
 "use client";
-import { useCssLengthState } from "@/app/edit/atoms/stateAtoms";
+import { useCssLengthState } from "@/app/edit/_lib/atoms/stateAtoms";
 import { MapLineEdit } from "@/types/map";
 
 interface CSSTextLengthProps {
@@ -17,9 +17,7 @@ export default function CSSTextLength({ eternalCSSText, changeCSSText, lineOptio
   const calcAllCustomStyleLength =
     cssLength - loadLineCustomStyleLength + (eternalCSSText.length + changeCSSText.length);
   return (
-    <div
-      className={`text-right ${calcAllCustomStyleLength <= 10000 ? "" : "text-destructive"}`}
-    >
+    <div className={`text-right ${calcAllCustomStyleLength <= 10000 ? "" : "text-destructive"}`}>
       {calcAllCustomStyleLength} / 10000
     </div>
   );

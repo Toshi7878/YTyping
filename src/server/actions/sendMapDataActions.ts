@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { UploadResult } from "@/types";
-import { SendMapDifficulty, SendMapInfo } from "../../app/edit/ts/type";
+import { SendMapDifficulty, SendMapInfo } from "../../app/edit/_lib/type";
 
 const upsertMap = async (
   sendMapInfo: SendMapInfo,
@@ -12,7 +12,7 @@ const upsertMap = async (
   mapId: string,
   userId: number,
   isMapDataEdited: boolean,
-  mapData: MapLine[]
+  mapData: MapLine[],
 ) => {
   return await prisma.$transaction(async (tx) => {
     try {
@@ -53,7 +53,7 @@ const upsertMap = async (
           new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
           {
             upsert: true,
-          }
+          },
         );
 
       return newMapId;
@@ -72,7 +72,7 @@ export async function actions(
   sendMapDifficulty: SendMapDifficulty,
   mapData: MapLine[],
   isMapDataEdited: boolean,
-  mapId: string
+  mapId: string,
 ): Promise<UploadResult> {
   const validatedFields = mapSendSchema.safeParse({
     title: data.title,
@@ -163,7 +163,7 @@ const mapSendSchema = z.object({
     .refine(
       (lines) =>
         !lines.some((line) => Object.values(line).some((value) => typeof value === "string" && value.includes("http"))),
-      { message: "譜面データにはhttpから始まる文字を含めることはできません" }
+      { message: "譜面データにはhttpから始まる文字を含めることはできません" },
     )
     .refine((lines) => lines.some((line) => line.word && line.word.length > 0), {
       message: "タイピングワードが設定されていません",
@@ -180,7 +180,7 @@ const mapSendSchema = z.object({
           endAfterLineIndex === -1 || lines.every((line, index) => index <= endAfterLineIndex || line.lyrics === "end")
         );
       },
-      { message: "endの後に無効な行があります" }
+      { message: "endの後に無効な行があります" },
     )
     .refine(
       (lines) => {
@@ -192,7 +192,7 @@ const mapSendSchema = z.object({
 
         return totalCSSLength < 10000;
       },
-      { message: "カスタムCSSの合計文字数は10000文字以下になるようにしてください" }
+      { message: "カスタムCSSの合計文字数は10000文字以下になるようにしてください" },
     ),
   videoId: z.string().length(11),
   roma_kpm_max: z

@@ -1,12 +1,12 @@
 "use client";
 
-import { useHistoryReducer } from "@/app/edit/atoms/historyReducerAtom";
-import { useMapReducer, useReadMap } from "@/app/edit/atoms/mapReducerAtom";
+import { useHistoryReducer } from "@/app/edit/_lib/atoms/historyReducerAtom";
+import { useMapReducer, useReadMap } from "@/app/edit/_lib/atoms/mapReducerAtom";
 import {
   useOpenLineOptionDialogIndexState,
   useSetCanUpload,
   useSetOpenLineOptionDialogIndex,
-} from "@/app/edit/atoms/stateAtoms";
+} from "@/app/edit/_lib/atoms/stateAtoms";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

@@ -2,16 +2,11 @@ import { useLyricsState, useSetLyrics } from "@/app/edit/_lib/atoms/stateAtoms";
 import { useAddRubyTagEvent } from "@/app/edit/_lib/hooks/useAddRubyTag";
 import { Input } from "@/components/ui/input/input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import React, { useState } from "react";
+import { useState } from "react";
 
-interface DirectEditLyricsInputProps {
-  directEditLyricsInputRef: React.RefObject<HTMLInputElement | null>;
-}
-
-const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
+const EditorLyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
-  const selectLyrics = useLyricsState();
-
+  const lyrics = useLyricsState();
   const setLyrics = useSetLyrics();
   const handleEnterAddRuby = useAddRubyTagEvent();
 
@@ -22,12 +17,12 @@ const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
       open={isLineLyricsSelected}
     >
       <Input
-        ref={props.directEditLyricsInputRef}
+        placeholder="歌詞"
         className="h-8"
         autoComplete="off"
-        value={selectLyrics}
-        onKeyDown={handleEnterAddRuby}
+        value={lyrics}
         onChange={(e) => setLyrics(e.target.value)}
+        onKeyDown={handleEnterAddRuby}
         onSelect={(e) => {
           const start = e.currentTarget.selectionStart;
           const end = e.currentTarget.selectionEnd;
@@ -40,4 +35,4 @@ const DirectEditLyricsInput = (props: DirectEditLyricsInputProps) => {
   );
 };
 
-export default DirectEditLyricsInput;
+export default EditorLyricsInput;

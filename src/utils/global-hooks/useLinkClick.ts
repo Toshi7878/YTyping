@@ -1,5 +1,5 @@
-import { useCanUploadState } from "@/app/edit/atoms/stateAtoms";
-import useHasMapUploadPermission from "@/app/edit/hooks/useUserEditPermission";
+import { useCanUploadState } from "@/app/edit/_lib/atoms/stateAtoms";
+import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useUserEditPermission";
 import { usePathname, useRouter } from "next/navigation";
 
 export const useLinkClick = () => {

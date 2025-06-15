@@ -1,5 +1,5 @@
 import { MapLine } from "@/app/(typing)/type/ts/type";
-import { EditorNewMapBackUpInfoData } from "@/app/edit/ts/type";
+import { EditorNewMapBackUpInfoData } from "@/app/edit/_lib/type";
 
 export type HeaderMenu = { title: string; href: string; device?: "PC" };
 

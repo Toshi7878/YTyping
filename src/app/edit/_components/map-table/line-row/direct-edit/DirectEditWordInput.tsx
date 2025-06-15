@@ -1,5 +1,5 @@
-import { useIsWordConvertingState, useSetWord, useWordState } from "@/app/edit/atoms/stateAtoms";
-import { useWordConvertButtonEvent } from "@/app/edit/hooks/useButtonEvents";
+import { useIsWordConvertingState, useSetWord, useWordState } from "@/app/edit/_lib/atoms/stateAtoms";
+import { useWordConvertButtonEvent } from "@/app/edit/_lib/hooks/useButtonEvents";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 

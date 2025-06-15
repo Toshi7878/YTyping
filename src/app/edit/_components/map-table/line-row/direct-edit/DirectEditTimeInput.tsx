@@ -1,4 +1,4 @@
-import { usePlayer, useTimeInput } from "@/app/edit/atoms/refAtoms";
+import { usePlayer, useTimeInput } from "@/app/edit/_lib/atoms/refAtoms";
 import { Input } from "@/components/ui/input/input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import React, { useState } from "react";

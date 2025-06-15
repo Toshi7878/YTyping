@@ -1,8 +1,8 @@
 "use client";
 
-import { useEndLineIndex } from "@/app/edit/atoms/buttonDisableStateAtoms";
-import { useReadMap } from "@/app/edit/atoms/mapReducerAtom";
-import { usePlayer } from "@/app/edit/atoms/refAtoms";
+import { useEndLineIndex } from "@/app/edit/_lib/atoms/buttonDisableStateAtoms";
+import { useReadMap } from "@/app/edit/_lib/atoms/mapReducerAtom";
+import { usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
 import {
   useDirectEditIndexState,
   useIsYTStartedState,
@@ -13,8 +13,8 @@ import {
   useSetSelectIndex,
   useSetTabName,
   useTimeCountState,
-} from "@/app/edit/atoms/stateAtoms";
-import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
+} from "@/app/edit/_lib/atoms/stateAtoms";
+import { useLineUpdateButtonEvent } from "@/app/edit/_lib/hooks/useButtonEvents";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
@@ -136,7 +136,7 @@ function LineRow({ line, index }: LineRowProps) {
       <TableCell className="border-accent border-l">
         <Button
           disabled={index === endLineIndex}
-          variant={isOptionEdited ? "default" : "outline"}
+          variant={isOptionEdited ? "success" : "outline"}
           size="sm"
           onClick={(e) => {
             e.stopPropagation();

@@ -8,10 +8,10 @@ import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { useMapReducer } from "../atoms/mapReducerAtom";
-import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, useSetCanUpload, videoIdAtom } from "../atoms/stateAtoms";
-import { getEditAtomStore } from "../atoms/store";
-import { useWindowKeydownEvent } from "../hooks/useKeyDown";
+import { useMapReducer } from "../_lib/atoms/mapReducerAtom";
+import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, useSetCanUpload, videoIdAtom } from "../_lib/atoms/stateAtoms";
+import { getEditAtomStore } from "../_lib/atoms/store";
+import { useWindowKeydownEvent } from "../_lib/hooks/useKeyDown";
 
 interface EditProviderProps {
   mapInfo?: RouterOutPuts["map"]["getMapInfo"];
