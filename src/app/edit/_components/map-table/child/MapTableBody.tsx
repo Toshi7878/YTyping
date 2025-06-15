@@ -2,14 +2,13 @@
 import { useMapState } from "@/app/edit/atoms/mapReducerAtom";
 import { useSetCssLength } from "@/app/edit/atoms/stateAtoms";
 import { useWindowKeydownEvent } from "@/app/edit/hooks/useKeyDown";
-import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const/editDefaultValues";
+import { LINE_ROW_SWITCH_CLASSNAMES } from "@/app/edit/ts/const";
 import { MapLineEdit } from "@/types/map";
 import { useEffect, useMemo, useState } from "react";
 import LineRow from "./child/LineRow";
 import LineOptionModal from "./LineOptionModal";
 
 function MapTableBody() {
-
   const [optionModalIndex, setOptionModalIndex] = useState<number | null>(null);
   const [lineOptions, setLineOptions] = useState<MapLineEdit["options"] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -59,7 +58,7 @@ function MapTableBody() {
       return rows;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [map]
+    [map],
   );
 
   return (

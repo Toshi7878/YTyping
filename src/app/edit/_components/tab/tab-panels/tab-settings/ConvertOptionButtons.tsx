@@ -1,21 +1,29 @@
 "use client";
 import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/atoms/storageAtoms";
 import { ConvertOptionsType } from "@/app/edit/ts/type";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/config/consts/charList";
+import { VariantProps } from "class-variance-authority";
 import { useMemo } from "react";
+
+type OptionButton = {
+  variant: VariantProps<typeof buttonVariants>["variant"];
+  label: string;
+  value: ConvertOptionsType;
+  tooltipLabel: React.ReactNode;
+};
 
 export default function ConvertOptionButtons() {
   const wordConvertOption = useWordConvertOptionState();
   const setWordConvertOption = useSetWordConvertOption();
 
-  const options = useMemo(
+  const options: OptionButton[] = useMemo(
     () => [
       {
-        colorScheme: "green",
+        variant: wordConvertOption === "non_symbol" ? "success" : "outline-success",
         label: "記号なし(一部除く)",
         value: "non_symbol",
         tooltipLabel: (
@@ -26,7 +34,7 @@ export default function ConvertOptionButtons() {
         ),
       },
       {
-        colorScheme: "yellow",
+        variant: wordConvertOption === "add_symbol" ? "warning" : "outline-warning",
         label: "記号あり(一部)",
         value: "add_symbol",
         tooltipLabel: (
@@ -37,7 +45,7 @@ export default function ConvertOptionButtons() {
         ),
       },
       {
-        colorScheme: "red",
+        variant: wordConvertOption === "add_symbol_all" ? "error" : "outline-error",
         label: "記号あり(すべて)",
         value: "add_symbol_all",
         tooltipLabel: (
@@ -51,17 +59,8 @@ export default function ConvertOptionButtons() {
         ),
       },
     ],
-    []
+    [wordConvertOption],
   );
-
-  const getColorClasses = (colorScheme: string, isSelected: boolean) => {
-    const colorMap: { [key: string]: string } = {
-      green: isSelected ? "bg-green-500 hover:bg-green-600 text-white" : "border-green-500 text-green-600 hover:bg-green-50",
-      yellow: isSelected ? "bg-yellow-500 hover:bg-yellow-600 text-white" : "border-yellow-500 text-yellow-600 hover:bg-yellow-50",
-      red: isSelected ? "bg-red-500 hover:bg-red-600 text-white" : "border-red-500 text-red-600 hover:bg-red-50",
-    };
-    return colorMap[colorScheme] || "";
-  };
 
   return (
     <div className="flex items-baseline gap-2">
@@ -75,9 +74,9 @@ export default function ConvertOptionButtons() {
           {options.map((option) => (
             <TooltipWrapper label={option.tooltipLabel} key={option.label} side="bottom">
               <Button
-                variant={wordConvertOption === option.value ? "default" : "outline"}
+                variant={option.variant}
                 size="sm"
-                className={`w-[150px] h-[50px] ${getColorClasses(option.colorScheme, wordConvertOption === option.value)}`}
+                className={`h-[50px] w-[150px]`}
                 onClick={() => setWordConvertOption(option.value as ConvertOptionsType)}
               >
                 {option.label}

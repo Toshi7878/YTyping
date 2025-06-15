@@ -1,5 +1,5 @@
 import { useTbody } from "../../atoms/refAtoms";
-import { LINE_ROW_SWITCH_CLASSNAMES } from "../../ts/const/editDefaultValues";
+import { LINE_ROW_SWITCH_CLASSNAMES } from "../../ts/const";
 
 export const useChangeLineRowColor = () => {
   const { readTbody } = useTbody();
@@ -25,7 +25,7 @@ export const useChangeLineRowColor = () => {
     removeCurrentTimeLineColor();
     readTbody().children[seekCount].classList.add(
       LINE_ROW_SWITCH_CLASSNAMES.selected,
-      LINE_ROW_SWITCH_CLASSNAMES.currentTime
+      LINE_ROW_SWITCH_CLASSNAMES.currentTime,
     );
   };
 

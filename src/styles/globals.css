@@ -51,9 +51,13 @@
   --color-like: var(--like);
 
   --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
   --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
 }
 
 :root {
@@ -89,10 +93,14 @@
   --perfect: oklch(0.8659 0.1708 89.58);
   --like: oklch(0.7253 0.1752 349.76);
 
-  --success: oklch(0.6392 0.1681 147.35);
+  --success: oklch(0.5946 0.1875 146.76);
+  --success-foreground: oklch(0.985 0 0);
   --error: oklch(0.5897 0.1964 19.86);
+  --error-foreground: oklch(0.985 0 0);
   --warning: oklch(0.8271 0.159 79.86);
+  --warning-foreground: oklch(0.985 0 0);
   --info: oklch(0.8021 0.1383 209.06);
+  --info-foreground: oklch(0.985 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
 
   --ring: oklch(0.7547 0.1375 239.62);

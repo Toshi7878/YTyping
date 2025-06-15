@@ -4,13 +4,14 @@ import { atomWithReducer, atomWithReset, RESET, useAtomCallback } from "jotai/ut
 
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { TabIndex, TagsReducerAction, YTSpeedReducerActionType } from "../ts/type";
+import { TAB_NAMES } from "../ts/const";
+import { TagsReducerAction, YTSpeedReducerActionType } from "../ts/type";
 import { playerAtom, timeInputAtom } from "./refAtoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
 
 const editUtilsAtom = atomWithReset({
-  tabIndex: 0 as TabIndex,
+  tabName: "情報&保存" as (typeof TAB_NAMES)[number],
   geminiTags: [] as string[],
   timeCount: 0,
   directEditingIndex: null as number | null,
@@ -22,7 +23,7 @@ const editUtilsAtom = atomWithReset({
   isUpdateUpdatedAt: false,
   canUpload: false,
 });
-const tabIndexAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("tabIndex"));
+const tabNameAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("tabName"));
 export const geminiTagsAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("geminiTags"));
 const timeCountAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("timeCount"));
 const directEditingIndexAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("directEditingIndex"));
@@ -42,8 +43,8 @@ export const useReadEditUtils = () => {
   );
 };
 
-export const useTabIndexState = () => useAtomValue(tabIndexAtom, { store });
-export const useSetTabIndex = () => useSetAtom(tabIndexAtom, { store });
+export const useTabNameState = () => useAtomValue(tabNameAtom, { store });
+export const useSetTabName = () => useSetAtom(tabNameAtom, { store });
 
 export const useGeminiTagsState = () => useAtomValue(geminiTagsAtom, { store });
 export const useSetGeminiTags = () => useSetAtom(geminiTagsAtom, { store });

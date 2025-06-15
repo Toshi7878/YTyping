@@ -1,5 +1,4 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
-import { useUserAgent } from "@/utils/useUserAgent";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { usePlayer } from "../../atom/refAtoms";
@@ -21,7 +20,6 @@ const MenuBar = () => {
   const { readPlayer } = usePlayer();
   const { handleStart, handleEnd } = useSceneControl();
   const scene = useSceneState();
-  const userAgent = useUserAgent();
 
   const resultDialogDisclosure = useResultDialogDisclosure();
   const [isCardVisible, setIsCardVisible] = useState(false);
@@ -31,7 +29,7 @@ const MenuBar = () => {
       <div id="menu_bar" className="bg-card">
         <div className="mx-4 flex flex-col justify-between lg:flex-row">
           <div className="flex flex-col lg:flex-row">
-            {!userAgent.isMobile && <VolumeRange player={readPlayer()} />}
+            <VolumeRange player={readPlayer()} />
             <MenuSpeedButton disabled={true} image={metronome} title="倍速" />
           </div>
 

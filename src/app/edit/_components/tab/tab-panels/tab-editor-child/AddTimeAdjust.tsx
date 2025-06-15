@@ -60,10 +60,8 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
       }
     >
       <div className="flex items-baseline">
-        <span className="text-sm mr-2">
-          {label}
-        </span>
-        <div className="flex items-baseline border rounded-full px-2 w-fit border-border/50">
+        <span className="mr-2 text-sm">{label}</span>
+        <div className="border-border/50 flex w-fit items-baseline rounded-full border px-2">
           <Button
             onClick={() => onCounterChange({ type: "decrement" })}
             size="sm"
@@ -72,9 +70,7 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
           >
             -
           </Button>
-          <div className="text-xs px-2">
-            {value.toFixed(valueDigits)}
-          </div>
+          <div className="px-2 text-xs">{value.toFixed(valueDigits)}</div>
           <Button
             onClick={() => onCounterChange({ type: "increment" })}
             size="sm"

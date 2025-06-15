@@ -4,9 +4,10 @@ import { toast } from "sonner";
 import { useSetGeminiTags, useSetMapInfo, useVideoIdState } from "@/app/edit/atoms/stateAtoms";
 import useHasMapUploadPermission from "@/app/edit/hooks/useUserEditPermission";
 import { useUploadMap } from "@/app/edit/hooks/utils/useUploadMap";
-import { INITIAL_SERVER_ACTIONS_STATE } from "@/app/edit/ts/const/editDefaultValues";
+import { INITIAL_SERVER_ACTIONS_STATE, NOT_EDIT_PERMISSION_TOAST_ID } from "@/app/edit/ts/const";
 import { Button } from "@/components/ui/button";
 import Link from "@/components/ui/link/link";
+import { cn } from "@/lib/utils";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
@@ -18,9 +19,7 @@ import InfoTag from "./tab-info-child/InfoTag";
 import PreviewTimeInput from "./tab-info-child/PreviewTimeInput";
 import UploadButton from "./tab-info-child/UploadButton";
 
-export const NOT_EDIT_PERMISSION_TOAST_ID = "not-edit-permission-toast";
-
-const TabInfoUpload = () => {
+const TabInfoUpload = ({ className }: { className: string }) => {
   const customToast = useCustomToast();
   const searchParams = useSearchParams();
   const isNewCreate = !!searchParams.get("new");
@@ -72,7 +71,7 @@ const TabInfoUpload = () => {
   }, [hasUploadPermission]);
 
   return (
-    <CardWithContent>
+    <CardWithContent className={cn("py-3", className)}>
       <div className="flex flex-col gap-6">
         <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
         <InfoTag isGeminiLoading={isFetching} />

@@ -38,4 +38,3 @@ type TagsReducerActionType = "set" | "add" | "delete" | "reset";
 export type YTSpeedReducerActionType = "up" | "down";
 
 export type TagsReducerAction = { type: TagsReducerActionType; payload?: Tag | Tag[] };
-export type TabIndex = 0 | 1 | 2;

@@ -1,7 +1,7 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
 import { YouTubeEvent, YTPlayer } from "@/types/global-types";
 import { useEditUtilsParams, usePlayer } from "../atoms/refAtoms";
-import { useSetIsYTPlaying, useSetIsYTReadied, useSetIsYTStarted, useSetTabIndex } from "../atoms/stateAtoms";
+import { useSetIsYTPlaying, useSetIsYTReadied, useSetIsYTStarted, useSetTabName } from "../atoms/stateAtoms";
 import { useTimerControls } from "./useTimer";
 import { useUpdateCurrentTimeLine } from "./useUpdateCurrentTimeLine";
 import { useGetSeekCount } from "./utils/useGetSeekCount";
@@ -23,7 +23,7 @@ export const useYTReadyEvent = () => {
 export const useYTPlayEvent = () => {
   const setIsYTPlaying = useSetIsYTPlaying();
   const setIsYTStarted = useSetIsYTStarted();
-  const setTabIndex = useSetTabIndex();
+  const setTabName = useSetTabName();
 
   const { readEditUtils, writeEditUtils } = useEditUtilsParams();
   const { startTimer } = useTimerControls();
@@ -40,7 +40,7 @@ export const useYTPlayEvent = () => {
       writeEditUtils({ preventAutoTabToggle: false });
       return;
     }
-    setTabIndex(1);
+    setTabName("エディター");
   };
 };
 

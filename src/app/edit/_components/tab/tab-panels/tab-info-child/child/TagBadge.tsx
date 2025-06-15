@@ -1,7 +1,7 @@
 import { useMapTagsState, useSetCanUpload, useSetMapTags } from "@/app/edit/atoms/stateAtoms";
-import { TAG_MAX_LEN } from "@/app/edit/ts/const/editDefaultValues";
-import { Tag } from "@/types";
+import { TAG_MAX_LEN } from "@/app/edit/ts/const";
 import { Badge } from "@/components/ui/badge";
+import { Tag } from "@/types";
 
 interface TagBadgeProps {
   label: string;
@@ -25,7 +25,7 @@ const TagBadge = (props: TagBadgeProps) => {
   };
   return (
     <Badge
-      className={`cursor-pointer text-sm rounded-lg opacity-70 hover:opacity-100 normal-case`}
+      className={`cursor-pointer rounded-lg text-sm normal-case opacity-70 hover:opacity-100`}
       style={{ backgroundColor: props.bg }}
       onClick={() => {
         if (tags.length < TAG_MAX_LEN) {

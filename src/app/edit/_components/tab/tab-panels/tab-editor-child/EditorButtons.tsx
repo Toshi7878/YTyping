@@ -29,7 +29,7 @@ const EditorButtons = () => {
   const buttonConfigs = {
     add: {
       isDisabled: isAddButtonDisabled,
-      className: "hover:bg-success/50 border-success",
+      variant: "outline-success" as const,
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => lineAddButtonEvent(event.shiftKey),
       text: (
         <>
@@ -40,7 +40,7 @@ const EditorButtons = () => {
     },
     update: {
       isDisabled: isUpdateButtonDisabled,
-      className: "hover:bg-info/50 border-info",
+      variant: "outline-info" as const,
       onClick: lineUpdateButtonEvent,
       text: (
         <>
@@ -53,7 +53,7 @@ const EditorButtons = () => {
       isDisabled: false,
       ref: undefined,
       isLoading: isLoadWordConvert,
-      className: "hover:bg-info/50 border-info",
+      variant: "outline-info" as const,
       onClick: wordConvertButtonEvent,
       text: (
         <>
@@ -65,7 +65,7 @@ const EditorButtons = () => {
     },
     delete: {
       isDisabled: isDeleteButtonDisabled,
-      className: "hover:bg-error/50 border-error",
+      variant: "outline-error" as const,
       onClick: lineDelete,
       text: (
         <>
@@ -82,9 +82,9 @@ const EditorButtons = () => {
         <Button
           key={index}
           disabled={config.isDisabled || config.isLoading}
-          variant="outline"
+          variant={config.variant}
           size="sm"
-          className={cn("h-[35px] w-[100px]", config.className)}
+          className={cn("h-[35px] w-[100px]")}
           onClick={config.onClick}
         >
           {config.isLoading ? <span className="loading loading-spinner loading-xs" /> : config.text}

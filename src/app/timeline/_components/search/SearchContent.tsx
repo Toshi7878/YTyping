@@ -1,13 +1,11 @@
 "use client";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
-import { useUserAgent } from "@/utils/useUserAgent";
 import SearchInputs from "./child/SearchInputs";
 import SearchModal from "./child/SearchModal";
 
 const SearchContent = () => {
   const player = usePreviewPlayerState();
-  const { isMobile } = useUserAgent();
 
   return (
     <section className="mb-4 flex w-full items-center">
@@ -17,11 +15,7 @@ const SearchContent = () => {
         </div>
         <div className="flex justify-between">
           <SearchModal />
-          {!isMobile && (
-            <div className="flex justify-end">
-              <VolumeRange player={player} />
-            </div>
-          )}
+          <VolumeRange player={player} />
         </div>
       </div>
     </section>

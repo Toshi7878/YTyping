@@ -1,13 +1,14 @@
 import { CardWithContent } from "@/components/ui/card";
 
+import { cn } from "@/lib/utils";
+import AddTimeAdjust from "./tab-editor-child/AddTimeAdjust";
 import EditorButtons from "./tab-editor-child/EditorButtons";
 import EditorLineInput from "./tab-editor-child/EditorInputs";
 import ManyPhraseTextarea from "./tab-editor-child/ManyPhraseTextarea";
-import AddTimeAdjust from "./tab-settings-shortcutlist-child/settings-child/AddTimeAdjust";
 
-const TabEditor = () => {
+const TabEditor = ({ className }: { className: string }) => {
   return (
-    <CardWithContent className="py-3">
+    <CardWithContent className={cn("py-3", className)}>
       <div className="flex flex-col gap-1">
         <EditorLineInput />
 

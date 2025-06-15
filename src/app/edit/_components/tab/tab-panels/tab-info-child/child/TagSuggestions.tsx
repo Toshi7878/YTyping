@@ -1,5 +1,5 @@
 import { useMapTagsState } from "@/app/edit/atoms/stateAtoms";
-import { CHOICE_TAGS } from "@/app/edit/ts/const/editDefaultValues";
+import { CHOICE_TAGS } from "@/app/edit/ts/const";
 import TagBadge from "./TagBadge";
 
 const TagSuggestions = () => {
@@ -7,7 +7,7 @@ const TagSuggestions = () => {
 
   return (
     <div className="flex flex-col flex-wrap">
-      <div className="flex flex-row gap-3 flex-wrap">
+      <div className="flex flex-row flex-wrap gap-3">
         {CHOICE_TAGS.map((label, index) => {
           const isSelected = tags.some((tag) => tag.id === label);
 

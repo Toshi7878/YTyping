@@ -11,7 +11,7 @@ import {
   useLineReducer,
   useSetDirectEditIndex,
   useSetSelectIndex,
-  useSetTabIndex,
+  useSetTabName,
 } from "@/app/edit/atoms/stateAtoms";
 import { useLineUpdateButtonEvent } from "@/app/edit/hooks/useButtonEvents";
 import { useChangeLineRowColor } from "@/app/edit/hooks/utils/useChangeLineRowColor";
@@ -34,7 +34,7 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
   const directEditLyricsInputRef = useRef<HTMLInputElement | null>(null);
   const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
   const directEditIndex = useDirectEditIndexState();
-  const setTabIndex = useSetTabIndex();
+  const setTabIndex = useSetTabName();
   const setSelectedIndex = useSetSelectIndex();
   const setDirectEditIndex = useSetDirectEditIndex();
   const setSelectLine = useLineReducer();
@@ -81,7 +81,7 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [directEditIndex, endLineIndex]
+    [directEditIndex, endLineIndex],
   );
 
   const clickTimeCell = (event: React.MouseEvent<HTMLTableCellElement, MouseEvent>, index: number) => {
@@ -96,14 +96,14 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
     <TableRow
       id={`line_${index}`}
       data-line-index={index}
-      className="cursor-pointer relative"
+      className="relative cursor-pointer"
       onClick={(event) => {
         selectLine(event, index);
-        setTabIndex(1);
+        setTabIndex("エディター");
       }}
     >
       <TableCell
-        className={`time-cell border-r ${index !== endLineIndex ? 'border-b' : ''} ${directEditIndex === index ? 'px-2' : 'px-4'}`}
+        className={`time-cell border-r ${index !== endLineIndex ? "border-b" : ""} ${directEditIndex === index ? "px-2" : "px-4"}`}
         onClick={(event) => clickTimeCell(event, index)}
       >
         {directEditIndex === index ? (
@@ -112,27 +112,21 @@ function LineRow({ line, index, onOpen, setOptionModalIndex, setLineOptions }: L
           line.time
         )}
       </TableCell>
-      <TableCell
-        className={`lyrics-cell border-r ${index !== endLineIndex ? 'border-b' : ''}`}
-      >
+      <TableCell className={`lyrics-cell border-r ${index !== endLineIndex ? "border-b" : ""}`}>
         {directEditIndex === index ? (
           <DirectEditLyricsInput directEditLyricsInputRef={directEditLyricsInputRef as any} />
         ) : (
           parse(line.lyrics)
         )}
       </TableCell>
-      <TableCell
-        className={`word-cell border-r ${index !== endLineIndex ? 'border-b' : ''}`}
-      >
+      <TableCell className={`word-cell border-r ${index !== endLineIndex ? "border-b" : ""}`}>
         {directEditIndex === index ? (
           <DirectEditWordInput directEditWordInputRef={directEditWordInputRef as any} />
         ) : (
           line.word
         )}
       </TableCell>
-      <TableCell
-        className={index !== endLineIndex ? 'border-b' : ''}
-      >
+      <TableCell className={index !== endLineIndex ? "border-b" : ""}>
         <Button
           disabled={index === endLineIndex}
           variant={isOptionEdited ? "default" : "outline"}
