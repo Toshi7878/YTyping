@@ -1,6 +1,6 @@
 import { useGeminiTagsState, useMapTagsState } from "@/app/edit/_lib/atoms/stateAtoms";
 import { Skeleton } from "@/components/ui/skeleton";
-import TagBadge from "./TagBadge";
+import SuggestionTagBadge from "./TagBadge";
 
 interface GeminiTagSuggestionsProps {
   isGeminiLoading: boolean;
@@ -20,19 +20,17 @@ const GeminiTagSuggestions = (props: GeminiTagSuggestionsProps) => {
     );
   } else {
     return (
-      <div className="flex flex-col flex-wrap">
-        <div className="flex flex-row flex-wrap gap-3">
-          {geminiTags &&
-            geminiTags.map((label, index) => {
-              const isSelected = tags.some((tag) => tag === label);
+      <div className="flex flex-row flex-wrap gap-3">
+        {geminiTags &&
+          geminiTags.map((label, index) => {
+            const isSelected = tags.some((tag) => tag === label);
 
-              if (isSelected) {
-                return null;
-              } else {
-                return <TagBadge key={index} label={label} bg="#00bcd4" />;
-              }
-            })}
-        </div>
+            if (isSelected) {
+              return null;
+            } else {
+              return <SuggestionTagBadge key={index} label={label} variant="primary-light" />;
+            }
+          })}
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import { HeaderMenu } from "@/types";
+type HeaderMenu = { title: string; href: string; device?: "PC" };
 
 export const leftMenuItem: HeaderMenu[] = [
   { title: "更新履歴", href: "/changelog" },

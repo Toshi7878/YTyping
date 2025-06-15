@@ -5,7 +5,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      role: $Enums.Role;
+      role: $Enums.role;
       email_hash: string;
     } & DefaultSession["user"];
   }

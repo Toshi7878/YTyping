@@ -1,8 +1,3 @@
-export interface CreateMapBackUpInfo {
-  title: string;
-  videoId: string;
-}
-
 declare type YouTubeEvent<T = any> = {
   data: T;
   target: YTPlayer;
@@ -14,6 +9,15 @@ export interface ActiveUserStatus {
   onlineAt: Date;
   state: "type" | "edit" | "idle" | "askMe";
   mapId: number | null;
+}
+
+enum PlayerState {
+  UNSTARTED = -1,
+  ENDED = 0,
+  PLAYING = 1,
+  PAUSED = 2,
+  BUFFERING = 3,
+  VIDEO_CUED = 5,
 }
 
 export interface YTPlayer {
@@ -32,12 +36,7 @@ export interface YTPlayer {
   getOptions(module: string): Promise<object>;
   setOption(module: string, option: string, value: any): Promise<void>;
   setOptions(): Promise<void>;
-  cuePlaylist(
-    playlist: string | readonly string[],
-    index?: number,
-    startSeconds?: number,
-    suggestedQuality?: string
-  );
+  cuePlaylist(playlist: string | readonly string[], index?: number, startSeconds?: number, suggestedQuality?: string);
   cuePlaylist(playlist: {
     listType: string;
     list?: string | undefined;
@@ -45,12 +44,7 @@ export interface YTPlayer {
     startSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
   });
-  loadPlaylist(
-    playlist: string | readonly string[],
-    index?: number,
-    startSeconds?: number,
-    suggestedQuality?: string
-  );
+  loadPlaylist(playlist: string | readonly string[], index?: number, startSeconds?: number, suggestedQuality?: string);
   loadPlaylist(playlist: {
     listType: string;
     list?: string | undefined;
@@ -113,4 +107,11 @@ export interface YTPlayer {
   unMute(): void;
   on(eventType: "stateChange", listener: (event: CustomEvent & { data: number }) => void): void;
   on(eventType: EventType, listener: (event: CustomEvent) => void): void;
+}
+
+type EventType = "ready" | "stateChange" | "playbackQualityChange" | "playbackRateChange" | "error" | "apiChange";
+
+interface PlayerSize {
+  width: number;
+  height: number;
 }

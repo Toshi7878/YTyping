@@ -1,5 +1,5 @@
 import { useMapTagsState } from "@/app/edit/_lib/atoms/stateAtoms";
-import TagBadge from "./TagBadge";
+import SuggestionTagBadge from "./TagBadge";
 
 const CHOICE_TAGS = [
   "公式動画",
@@ -36,18 +36,16 @@ const TagSuggestions = () => {
   const tags = useMapTagsState();
 
   return (
-    <div className="flex flex-col flex-wrap">
-      <div className="flex flex-row flex-wrap gap-3">
-        {CHOICE_TAGS.map((label, index) => {
-          const isSelected = tags.some((tag) => tag.id === label);
+    <div className="flex flex-row flex-wrap gap-3">
+      {CHOICE_TAGS.map((label, index) => {
+        const isSelected = tags.some((tag) => tag === label);
 
-          if (isSelected) {
-            return null;
-          } else {
-            return <TagBadge key={index} label={label} bg="#4fd1c5" />;
-          }
-        })}
-      </div>
+        if (isSelected) {
+          return null;
+        } else {
+          return <SuggestionTagBadge key={index} label={label} variant="secondary-light" />;
+        }
+      })}
     </div>
   );
 };

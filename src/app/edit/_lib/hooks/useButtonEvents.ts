@@ -80,7 +80,7 @@ export const useLineAddButtonEvent = () => {
         artistName: mapInfo.artist,
         musicSource: mapInfo.source,
         creatorComment: mapInfo.comment,
-        tags: tags.map((tag) => tag.text),
+        tags,
         previewTime: mapInfo.previewTime,
         mapData,
       });
@@ -184,7 +184,7 @@ export const useLineUpdateButtonEvent = () => {
         artistName: mapInfo.artist,
         musicSource: mapInfo.source,
         creatorComment: mapInfo.comment,
-        tags: tags.map((tag) => tag.text),
+        tags: tags,
         previewTime: mapInfo.previewTime,
         mapData,
       });
@@ -279,7 +279,7 @@ export const useLineDelete = () => {
         artistName: mapInfo.artist,
         musicSource: mapInfo.source,
         creatorComment: mapInfo.comment,
-        tags: tags.map((tag) => tag.text),
+        tags: tags,
         previewTime: mapInfo.previewTime,
         mapData,
       });

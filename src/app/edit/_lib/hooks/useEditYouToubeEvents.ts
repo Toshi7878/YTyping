@@ -1,5 +1,6 @@
 import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
-import { YouTubeEvent, YTPlayer } from "@/types/global-types";
+import { YTPlayer } from "@/types/global-types";
+import { YouTubeEvent } from "react-youtube";
 import { useEditUtilsParams, usePlayer } from "../atoms/refAtoms";
 import {
   useSetIsYTPlaying,

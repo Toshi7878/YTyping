@@ -1,22 +1,19 @@
 import { useMapTagsState, useSetCanUpload, useSetMapTags } from "@/app/edit/_lib/atoms/stateAtoms";
-import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
-import { Badge } from "@/components/ui/badge";
-import { Tag } from "@/types";
+import { Badge, badgeVariants } from "@/components/ui/badge";
+import { VariantProps } from "class-variance-authority";
 
 interface TagBadgeProps {
   label: string;
-  bg: string;
+  variant?: VariantProps<typeof badgeVariants>["variant"];
 }
-const TagBadge = (props: TagBadgeProps) => {
+
+const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
   const tags = useMapTagsState();
   const setTags = useSetMapTags();
   const setCanUpload = useSetCanUpload();
 
-  const handleAddition = (tag: Tag) => {
-    tag.id = tag.id.trim();
-    tag.text = tag.text.trim();
-
-    const isTagAdded = tags.some((tags) => tags.id === tag.id);
+  const handleAddition = (tag: string) => {
+    const isTagAdded = tags.some((addedTag) => addedTag === tag);
 
     if (!isTagAdded) {
       setCanUpload(true);
@@ -25,17 +22,13 @@ const TagBadge = (props: TagBadgeProps) => {
   };
   return (
     <Badge
-      className={`cursor-pointer rounded-lg text-sm normal-case opacity-70 hover:opacity-100`}
-      style={{ backgroundColor: props.bg }}
-      onClick={() => {
-        if (tags.length < TAG_MAX_LEN) {
-          handleAddition({ id: props.label, text: props.label, className: "" });
-        }
-      }}
+      className="cursor-pointer rounded-lg text-sm normal-case opacity-70 hover:opacity-100"
+      variant={variant}
+      onClick={() => handleAddition(label)}
     >
-      {props.label}
+      {label}
     </Badge>
   );
 };
 
-export default TagBadge;
+export default SuggestionTagBadge;

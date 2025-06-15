@@ -1,30 +1,21 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
+import { cn } from "@/lib/utils";
+import { VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 import React, { KeyboardEvent, forwardRef, useState } from "react";
-import { cn } from "@/lib/utils";
-
-export interface TagInputTag {
-  id: string;
-  text: string;
-  className?: string;
-  [key: string]: string | undefined;
-}
 
 export interface TagInputProps {
-  tags: TagInputTag[];
-  onTagAdd: (tag: TagInputTag) => void;
+  tags: string[];
+  onTagAdd: (tag: string) => void;
   onTagRemove: (index: number) => void;
   placeholder?: string;
   maxTags?: number;
-  suggestions?: TagInputTag[];
   disabled?: boolean;
   enableDragDrop?: boolean;
   className?: string;
-  tagVariant?: "default" | "secondary" | "destructive" | "outline";
-  removeButtonAriaLabel?: string;
-  suggestionsLabel?: string;
+  tagVariant?: VariantProps<typeof badgeVariants>["variant"];
 }
 
 const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
@@ -35,16 +26,13 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
       onTagRemove,
       placeholder = "タグを追加",
       maxTags,
-      suggestions = [],
       disabled = false,
       enableDragDrop = true,
       className,
       tagVariant = "secondary",
-      removeButtonAriaLabel = "タグを削除",
-      suggestionsLabel = "提案:",
       ...props
     },
-    ref
+    ref,
   ) => {
     const [inputValue, setInputValue] = useState("");
 
@@ -52,21 +40,15 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
       const trimmedText = tagText.trim();
       if (!trimmedText) return;
 
-      const tag: TagInputTag = {
-        id: trimmedText,
-        text: trimmedText,
-        className: "",
-      };
-
-      const isTagAdded = tags.some((existingTag) => existingTag.id === tag.id);
+      const isTagAdded = tags.includes(trimmedText);
 
       if (!isTagAdded && (!maxTags || tags.length < maxTags)) {
-        onTagAdd(tag);
+        onTagAdd(trimmedText);
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" || e.key === ",") {
+      if (e.key === "Enter") {
         e.preventDefault();
         if (inputValue.trim()) {
           handleAddition(inputValue);
@@ -80,7 +62,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
 
     const handleDrop = (e: React.DragEvent) => {
       if (!enableDragDrop) return;
-      
+
       e.preventDefault();
       if (!maxTags || tags.length < maxTags) {
         const text = e.dataTransfer.getData("text").replace(/\s/g, "");
@@ -95,53 +77,42 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
       e.preventDefault();
     };
 
-    const filteredSuggestions = suggestions.filter(s => 
-      inputValue && s.text.includes(inputValue)
-    );
-
     return (
       <div className={cn("w-full", className)}>
         <div
           onDrop={handleDrop}
           onDragOver={handleDragOver}
-          className="flex flex-wrap gap-2 p-2 border border-input rounded-md min-h-[40px] focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+          className="border-border/50 focus-within:ring-ring flex min-h-[40px] flex-wrap gap-2 rounded-md border p-2 focus-within:ring-2 focus-within:ring-offset-2"
         >
           {tags.map((tag, index) => (
-            <Badge key={tag.id} variant={tagVariant} className="flex items-center gap-1">
-              {tag.text}
+            <Badge key={`${tag}-${index}`} variant={tagVariant} className="flex items-center gap-1 rounded-xs">
+              {tag}
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-4 w-4 p-0 hover:bg-transparent"
+                className="size-5 p-0 hover:bg-transparent"
                 onClick={() => onTagRemove(index)}
                 disabled={disabled}
               >
                 <X className="h-3 w-3" />
-                <span className="sr-only">{removeButtonAriaLabel}</span>
               </Button>
             </Badge>
           ))}
           <Input
             ref={ref}
-            type="text"
             value={inputValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="flex-1 border-0 bg-transparent p-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-w-[120px]"
+            className="min-w-[120px] flex-1 rounded-xs border bg-transparent px-2 py-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             disabled={disabled || (maxTags ? tags.length >= maxTags : false)}
             {...props}
           />
         </div>
-        {filteredSuggestions.length > 0 && (
-          <div className="mt-1 text-xs text-muted-foreground">
-            {suggestionsLabel} {filteredSuggestions.map(s => s.text).join(", ")}
-          </div>
-        )}
       </div>
     );
-  }
+  },
 );
 
 TagInput.displayName = "TagInput";

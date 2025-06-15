@@ -41,7 +41,7 @@ export function useUploadMap() {
       artist_name: artist,
       music_source: source ?? "",
       creator_comment: comment,
-      tags: tags.map((tag) => tag.id),
+      tags,
       preview_time: newPreviewTime,
       thumbnail_quality: (await getThumbnailQuality(video_id)) as $Enums.thumbnail_quality,
     };

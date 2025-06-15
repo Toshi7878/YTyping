@@ -34,7 +34,23 @@ export interface EditorNewMapBackUpInfoData {
   mapData: MapLine[];
 }
 
-type TagsReducerActionType = "set" | "add" | "delete" | "reset";
 export type YTSpeedReducerActionType = "up" | "down";
 
-export type TagsReducerAction = { type: TagsReducerActionType; payload?: Tag | Tag[] };
+type SetTagsReducerActionType = {
+  type: "set";
+  payload: string[];
+};
+
+type AddAndDeleteTagsReducerActionType = {
+  type: "add" | "delete";
+  payload: string;
+};
+
+type ResetTagsReducerActionType = {
+  type: "reset";
+};
+
+export type TagsReducerAction =
+  | SetTagsReducerActionType
+  | AddAndDeleteTagsReducerActionType
+  | ResetTagsReducerActionType;

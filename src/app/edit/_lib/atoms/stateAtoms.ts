@@ -1,4 +1,4 @@
-import { Tag, YouTubeSpeed } from "@/types";
+import { YouTubeSpeed } from "@/types";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReducer, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 
@@ -169,7 +169,8 @@ const mapCommentAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("comment"));
 const mapSourceAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("source"));
 const mapPreviewTimeAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("previewTime"));
 const mapCreatorIdAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("creatorId"));
-export const mapTagsAtom = atomWithReducer<Tag[], TagsReducerAction>([], tagsReducer);
+
+export const mapTagsAtom = atomWithReducer<string[], TagsReducerAction>([], tagsReducer);
 
 interface WriteVideoInfoAtomParams {
   title: ExtractAtomValue<typeof mapTitleAtom>;
@@ -209,26 +210,23 @@ export const useSetMapComment = () => useSetAtom(mapCommentAtom, { store });
 export const useMapSourceState = () => useAtomValue(mapSourceAtom, { store });
 export const useSetMapSource = () => useSetAtom(mapSourceAtom, { store });
 
-function tagsReducer(state: Tag[], action: TagsReducerAction): Tag[] {
+function tagsReducer(state: string[], action: TagsReducerAction): string[] {
   switch (action.type) {
     case "set":
-      const tags = action.payload as Tag[];
-      return tags;
+      return action.payload.filter(Boolean);
     case "add":
-      if (action.payload && !Array.isArray(action.payload)) {
-        return [...state, action.payload];
-      }
+      const newTag = action.payload.trim();
+      if (!newTag) return state;
+      return [...state, newTag];
     case "delete":
-      if (!Array.isArray(action.payload)) {
-        const deleteTag = action.payload as Tag; // 追加
-        return state.filter((tag) => tag.id !== deleteTag.id);
-      }
+      return state.filter((tag) => tag !== action.payload);
     case "reset":
       return [];
     default:
-      throw new Error(`Unknown action type: ${action.type}`);
+      throw new Error(`Unknown action type: ${action}`);
   }
 }
+
 export const useMapTagsState = () => useAtomValue(mapTagsAtom, { store });
 export const useSetMapTags = () => useSetAtom(mapTagsAtom, { store });
 export const useReadMapTags = () => {

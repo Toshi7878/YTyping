@@ -74,7 +74,7 @@ const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | unde
         mapTagsAtom,
         {
           type: "set",
-          payload: mapInfo.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
+          payload: mapInfo.tags,
         },
       ],
     );
@@ -125,7 +125,7 @@ const useLoadBackupData = () => {
           store.set(videoIdAtom, backupInfo.videoId);
           store.set(mapTagsAtom, {
             type: "set",
-            payload: backupInfo.tags?.map((tag) => ({ id: tag, text: tag, className: "" })) || [],
+            payload: backupInfo.tags,
           });
           mapDispatch({ type: "replaceAll", payload: mapData });
           setCanUpload(true);
