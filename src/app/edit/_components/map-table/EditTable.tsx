@@ -70,16 +70,22 @@ export default function EditTable() {
 
   return (
     <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
-      <CardWithContent className="p-0">
-        <Table className="mb-[65vh] max-h-[calc(100vh-100px)] overflow-y-auto text-sm md:mb-[60vh] md:max-h-[500px] 2xl:mb-[30vh] 2xl:max-h-[calc(100vh-400px)]">
+      <CardWithContent
+        className={{
+          card: "p-0",
+          cardContent: "max-h-[calc(100vh-100px)] overflow-y-auto p-0 md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]",
+        }}
+      >
+        <Table className="mb-[65vh] md:mb-[60vh] 2xl:mb-[30vh]">
           <TableHeader>
             <TableRow className="border-accent hover:bg-transparent">
-              <TableHead>Time</TableHead>
-              <TableHead>歌詞</TableHead>
-              <TableHead>ワード</TableHead>
-              <TableHead className="w-1">オプション</TableHead>
+              <TableHead className="h-8 text-xs">Time</TableHead>
+              <TableHead className="h-8 text-xs">歌詞</TableHead>
+              <TableHead className="h-8 text-xs">ワード</TableHead>
+              <TableHead className="h-8 w-1 text-xs">オプション</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody ref={tbodyRef}>
             {map.map((line, index) => (
               <LineRow key={index} index={index} line={line} />

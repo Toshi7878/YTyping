@@ -7,16 +7,14 @@ import ManyPhraseTextarea from "./tab-editor-child/ManyPhraseTextarea";
 
 const TabEditor = () => {
   return (
-    <CardWithContent className="py-3">
-      <div className="flex flex-col gap-1">
-        <EditorLineInput />
+    <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-1" }}>
+      <EditorLineInput />
 
-        <div className="flex items-center justify-between">
-          <EditorButtons />
-          <AddTimeAdjust />
-        </div>
-        <ManyPhraseTextarea />
+      <div className="flex items-center justify-between">
+        <EditorButtons />
+        <AddTimeAdjust />
       </div>
+      <ManyPhraseTextarea />
     </CardWithContent>
   );
 };

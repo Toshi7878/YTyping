@@ -9,16 +9,14 @@ const TabSettings = () => {
   const { readPlayer } = usePlayer();
 
   return (
-    <CardWithContent className="py-4">
-      <article className="space-y-4 sm:space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <VolumeRange player={readPlayer()} />
-          <LrcConvertButton />
-        </div>
-        <ConvertOptionButtons />
-        <ShortCutKeyList />
-        <AllTimeAdjust />
-      </article>
+    <CardWithContent className={{ card: "py-4", cardContent: "space-y-4 sm:space-y-6" }}>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <VolumeRange player={readPlayer()} />
+        <LrcConvertButton />
+      </div>
+      <ConvertOptionButtons />
+      <ShortCutKeyList />
+      <AllTimeAdjust />
     </CardWithContent>
   );
 };

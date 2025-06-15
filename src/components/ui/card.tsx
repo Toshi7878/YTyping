@@ -76,15 +76,19 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function CardWithContent({
-  className,
-  variant,
-  children,
-  ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof cardVariants>) {
+interface CardWithContentProps extends Omit<React.ComponentProps<"div">, "className"> {
+  variant?: VariantProps<typeof cardVariants>["variant"];
+  children: React.ReactNode;
+  className?: {
+    card?: string;
+    cardContent?: string;
+  };
+}
+
+function CardWithContent({ className, variant, children, ...props }: CardWithContentProps) {
   return (
-    <div data-slot="card" className={cn(cardVariants({ variant }), className)} {...props}>
-      <div data-slot="card-content" className={cn(cardContentVariants({ variant }), className)}>
+    <div data-slot="card" className={cn(cardVariants({ variant }), className?.card)} {...props}>
+      <div data-slot="card-content" className={cn(cardContentVariants({ variant }), className?.cardContent)}>
         {children}
       </div>
     </div>

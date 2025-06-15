@@ -78,21 +78,19 @@ const TabInfoUpload = () => {
   }, [hasUploadPermission]);
 
   return (
-    <CardWithContent className="py-3">
-      <div className="flex flex-col gap-6">
-        <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
-        <InfoTag isGeminiLoading={isFetching} />
-        <div className="flex justify-between">
-          {hasUploadPermission ? (
-            <form action={formAction} className="flex flex-col items-baseline gap-4 xl:flex-row">
-              <UploadButton state={state} />
-              {mapId ? <TypeLinkButton /> : ""}
-            </form>
-          ) : (
-            mapId && <TypeLinkButton />
-          )}
-          <PreviewTimeInput />
-        </div>
+    <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
+      <InfoInputForm isGeminiLoading={isFetching && isNewCreate} />
+      <InfoTag isGeminiLoading={isFetching} />
+      <div className="flex justify-between">
+        {hasUploadPermission ? (
+          <form action={formAction} className="flex flex-col items-baseline gap-4 xl:flex-row">
+            <UploadButton state={state} />
+            {mapId ? <TypeLinkButton /> : ""}
+          </form>
+        ) : (
+          mapId && <TypeLinkButton />
+        )}
+        <PreviewTimeInput />
       </div>
     </CardWithContent>
   );
