@@ -59,11 +59,11 @@ export const useWindowKeydownEvent = () => {
   const { undo, redo } = useUndoRedo();
   const seekByArrowKey = useSeekByArrowKey();
 
-  return (event: KeyboardEvent, optionModalIndex: number | null) => {
+  return (event: KeyboardEvent) => {
     const isFocusedInput = document.activeElement instanceof HTMLInputElement;
     const isFocusedManyPhraseTextArea = document.activeElement!.id === "many_phrase_textarea";
-    const { manyPhraseText } = readEditUtils();
-    const { playing, speed } = readYtPlayerStatus();
+    const { manyPhraseText, openLineOptionDialogIndex } = readEditUtils();
+    const { playing } = readYtPlayerStatus();
     const player = readPlayer();
 
     if (event.key === "Tab") {
@@ -78,7 +78,7 @@ export const useWindowKeydownEvent = () => {
         (document.activeElement as HTMLElement)?.blur();
       }
       event.preventDefault();
-    } else if (!isFocusedManyPhraseTextArea && !isFocusedInput && optionModalIndex === null) {
+    } else if (!isFocusedManyPhraseTextArea && !isFocusedInput && openLineOptionDialogIndex === null) {
       switch (event.code) {
         case "ArrowUp":
           seekNextPrev("prev");

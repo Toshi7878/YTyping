@@ -77,7 +77,7 @@ const EditorButtons = () => {
           disabled={config.isDisabled || config.isLoading}
           variant={config.variant}
           size="sm"
-          className="md: w-28"
+          className="w-20 xl:w-28"
           onClick={config.onClick}
         >
           {config.isLoading ? <span className="loading loading-spinner loading-xs" /> : config.text}

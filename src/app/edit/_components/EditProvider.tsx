@@ -11,6 +11,7 @@ import React, { useEffect } from "react";
 import { useMapReducer } from "../atoms/mapReducerAtom";
 import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, useSetCanUpload, videoIdAtom } from "../atoms/stateAtoms";
 import { getEditAtomStore } from "../atoms/store";
+import { useWindowKeydownEvent } from "../hooks/useKeyDown";
 
 interface EditProviderProps {
   mapInfo?: RouterOutPuts["map"]["getMapInfo"];
@@ -21,6 +22,13 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const store = getEditAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
   const loadBackupData = useLoadBackupData();
+  const windowKeydownEvent = useWindowKeydownEvent();
+  useEffect(() => {
+    window.addEventListener("keydown", windowKeydownEvent);
+    return () => {
+      window.removeEventListener("keydown", windowKeydownEvent);
+    };
+  }, [windowKeydownEvent]);
 
   useEffect(() => {
     setPreviewVideoState(RESET);
