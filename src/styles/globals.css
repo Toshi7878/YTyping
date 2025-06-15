@@ -119,17 +119,9 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
   body {
     @apply bg-background text-foreground;
   }
-}
-
-.map-card-hover {
-  box-shadow: none;
-  transition: box-shadow 0.3s ease-in-out;
 }
 
 .map-card-hover:hover {
@@ -157,9 +149,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
   html {
     @apply bg-background text-foreground;
     background-color: var(--background);

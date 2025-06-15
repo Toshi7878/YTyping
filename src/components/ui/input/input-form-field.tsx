@@ -8,6 +8,7 @@ import { VariantProps } from "class-variance-authority";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { FieldError, FieldErrorsImpl, Merge, useFormContext } from "react-hook-form";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form";
+import { FloatingLabelInput } from "./floating-label-input";
 
 interface InputFormFieldProps {
   name: string;
@@ -146,4 +147,50 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
   return null;
 };
 
-export { InputFormField, MutationInputFormField };
+interface FloatingLabelInputFormFieldProps {
+  name: string;
+  label?: string;
+  description?: React.ReactNode;
+  required?: boolean;
+  className?: string;
+  variant?: VariantProps<typeof inputVariants>["variant"];
+  size?: VariantProps<typeof inputVariants>["size"];
+  disabledFormMessage?: boolean;
+}
+
+const FloatingLabelInputFormField = ({
+  name,
+  label,
+  description,
+  required = false,
+  className,
+  size = "default",
+  disabledFormMessage = false,
+  ...inputProps
+}: FloatingLabelInputFormFieldProps & Omit<React.ComponentProps<"input">, "size">) => {
+  const { control } = useFormContext();
+
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => (
+        <FormItem className="w-full">
+          <FormControl className={cn(className)}>
+            <FloatingLabelInput
+              {...field}
+              {...inputProps}
+              label={label}
+              variant={fieldState.error ? "error" : "default"}
+              size={size}
+            />
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          {!disabledFormMessage && <FormMessage />}
+        </FormItem>
+      )}
+    />
+  );
+};
+
+export { FloatingLabelInputFormField, InputFormField, MutationInputFormField };

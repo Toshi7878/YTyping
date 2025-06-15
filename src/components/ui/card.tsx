@@ -7,7 +7,7 @@ const cardVariants = cva("bg-card text-card-foreground flex flex-col gap-6 round
   variants: {
     variant: {
       default: "",
-      map: "bg-card text-card-foreground map-card-hover py-0",
+      map: "py-0 map-card-hover transition-shadow duration-200",
     },
   },
   defaultVariants: {

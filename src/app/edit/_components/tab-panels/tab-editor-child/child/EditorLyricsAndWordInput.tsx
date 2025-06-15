@@ -1,10 +1,10 @@
-import { useLyricsState, useSetLyrics } from "@/app/edit/_lib/atoms/stateAtoms";
+import { useLyricsState, useSetLyrics, useSetWord, useWordState } from "@/app/edit/_lib/atoms/stateAtoms";
 import { useAddRubyTagEvent } from "@/app/edit/_lib/hooks/useAddRubyTag";
-import { Input } from "@/components/ui/input/input";
+import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useState } from "react";
 
-const EditorLyricsInput = () => {
+export const EditorLyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const lyrics = useLyricsState();
   const setLyrics = useSetLyrics();
@@ -16,8 +16,8 @@ const EditorLyricsInput = () => {
       disabled={!isLineLyricsSelected}
       open={isLineLyricsSelected}
     >
-      <Input
-        placeholder="歌詞"
+      <FloatingLabelInput
+        label="歌詞"
         className="h-8"
         autoComplete="off"
         value={lyrics}
@@ -35,4 +35,17 @@ const EditorLyricsInput = () => {
   );
 };
 
-export default EditorLyricsInput;
+export const EditorWordInput = () => {
+  const word = useWordState();
+  const setWord = useSetWord();
+
+  return (
+    <FloatingLabelInput
+      label="ワード"
+      className="h-8"
+      autoComplete="off"
+      value={word}
+      onChange={(e) => setWord(e.target.value)}
+    />
+  );
+};

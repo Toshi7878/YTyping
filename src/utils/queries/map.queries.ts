@@ -13,5 +13,14 @@ export const useMapQueries = () => {
           gcTime: Infinity,
         },
       ),
+    mapInfo: ({ mapId }: { mapId: number }) =>
+      trpc.map.getMapInfo.queryOptions(
+        { mapId },
+        {
+          enabled: !!mapId,
+          staleTime: Infinity,
+          gcTime: Infinity,
+        },
+      ),
   };
 };

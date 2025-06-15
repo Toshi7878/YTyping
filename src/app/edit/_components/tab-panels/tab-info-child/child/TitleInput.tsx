@@ -1,5 +1,5 @@
 import { useMapTitleState, useSetMapTitle } from "@/app/edit/_lib/atoms/stateAtoms";
-import InfoInput from "./child/InfoInput";
+import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
 
 interface TitleInputProps {
   isGeminiLoading: boolean;
@@ -11,13 +11,11 @@ const TitleInput = (props: TitleInputProps) => {
 
   return (
     <div className="flex items-center">
-      <InfoInput
+      <FloatingLabelInput
         label={"曲名タイトル"}
         placeholder="曲名タイトル"
-        inputState={mapTitle}
-        setInputState={setMapTitle}
-        isRequired={true}
-        isGeminiLoading={props.isGeminiLoading}
+        value={mapTitle}
+        // isGeminiLoading={props.isGeminiLoading}
       />
     </div>
   );

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { useCanUploadState, useIsLrcConvertingState, useSetTabName, useTabNameState } from "../_lib/atoms/stateAtoms";
 import { NOT_EDIT_PERMISSION_TOAST_ID, TAB_NAMES } from "../_lib/const";
+import { useWindowKeydownEvent } from "../_lib/hooks/useKeyDown";
 import { useTimerRegistration } from "../_lib/hooks/useTimer";
 import useHasMapUploadPermission from "../_lib/hooks/useUserEditPermission";
 import EditYouTube from "./EditYouTubePlayer";
@@ -51,6 +52,14 @@ function Content() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [canUpload, hasUploadPermission]);
+
+  const windowKeydownEvent = useWindowKeydownEvent();
+  useEffect(() => {
+    window.addEventListener("keydown", windowKeydownEvent);
+    return () => {
+      window.removeEventListener("keydown", windowKeydownEvent);
+    };
+  }, [windowKeydownEvent]);
 
   return (
     <LoadingOverlayWrapper active={isLrcConverting} spinner={true} text="Loading..." className="m-auto w-full">

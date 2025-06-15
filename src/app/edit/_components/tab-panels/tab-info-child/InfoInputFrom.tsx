@@ -1,7 +1,4 @@
-import ArtistNameInput from "./child/ArtistNameInput";
 import CreatorCommentInput from "./child/CreatorCommentInput";
-import MusicSourceInput from "./child/MusicSource";
-import TitleInput from "./child/TitleInput";
 import VideoIdInput from "./child/VideoIdInput";
 
 interface InfoInputFormProps {
@@ -13,9 +10,9 @@ const InfoInputForm = ({ isGeminiLoading }: InfoInputFormProps) => {
     <div className="flex flex-col gap-6">
       <VideoIdInput />
       <div className="flex flex-col gap-4">
-        <TitleInput isGeminiLoading={isGeminiLoading} />
-        <ArtistNameInput isGeminiLoading={isGeminiLoading} />
-        <MusicSourceInput isGeminiLoading={isGeminiLoading} />
+        {/* <TitleInput isGeminiLoading={isGeminiLoading} /> */}
+        {/* <ArtistNameInput isGeminiLoading={isGeminiLoading} /> */}
+        {/* <MusicSourceInput isGeminiLoading={isGeminiLoading} /> */}
       </div>
       <CreatorCommentInput />
     </div>

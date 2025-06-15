@@ -3,7 +3,7 @@ import { TAG_MAX_LEN, TAG_MIN_LEN } from "@/app/edit/_lib/const";
 import { TagInput as BaseTagInput } from "@/components/ui/input/tag-input";
 import { Label } from "@/components/ui/label";
 
-const TagInput = () => {
+const MapTagsInput = () => {
   const tags = useMapTagsState();
   const setTags = useSetMapTags();
 
@@ -20,7 +20,6 @@ const TagInput = () => {
         tags={tags}
         onTagAdd={(tag) => setTags({ type: "add", payload: tag })}
         onTagRemove={(index) => setTags({ type: "delete", payload: tags[index] })}
-        placeholder={tags.length <= 1 ? "タグを2つ以上追加してください" : "タグを追加"}
         maxTags={TAG_MAX_LEN}
         enableDragDrop={true}
       />
@@ -28,4 +27,4 @@ const TagInput = () => {
   );
 };
 
-export default TagInput;
+export default MapTagsInput;

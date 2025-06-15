@@ -147,10 +147,11 @@ const lineSchema = z.object({
 });
 
 const mapSendSchema = z.object({
-  title: z.string().min(1, { message: "タイトルは１文字以上必要です" }).max(MAX_SHORT_LENGTH),
+  title: z.string().min(1).max(MAX_SHORT_LENGTH),
+  artistName: z.string().min(1).max(MAX_SHORT_LENGTH),
   creatorComment: z.string().max(MAX_MAXIMUM_LENGTH).optional(),
   tags: z.array(z.string().max(MAX_SHORT_LENGTH)).min(2, { message: "タグは2つ以上必要です" }).max(10),
-  thumbnailQuality: z.nativeEnum(thumbnail_quality),
+  videoId: z.string().length(11),
   previewTime: z
     .string()
     .min(1, { message: "プレビュータイムを設定してください。" })
@@ -158,6 +159,8 @@ const mapSendSchema = z.object({
     .refine((value) => !isNaN(Number(value)), {
       message: "プレビュータイムは数値である必要があります",
     }),
+
+  thumbnailQuality: z.nativeEnum(thumbnail_quality),
   mapData: z
     .array(lineSchema)
     .refine(
@@ -194,7 +197,6 @@ const mapSendSchema = z.object({
       },
       { message: "カスタムCSSの合計文字数は10000文字以下になるようにしてください" },
     ),
-  videoId: z.string().length(11),
   roma_kpm_max: z
     .number()
     .refine((val) => Number.isFinite(val), { message: "同じタイムのラインが2つ以上存在しています。" }),

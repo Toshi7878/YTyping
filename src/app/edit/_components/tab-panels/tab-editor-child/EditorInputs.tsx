@@ -1,7 +1,6 @@
-import EditorLyricsInput from "./child/EditorLyricsInput";
+import { EditorLyricsInput, EditorWordInput } from "./child/EditorLyricsAndWordInput";
 import EditorSelectedLineCountInput from "./child/EditorSelectedLineCount";
 import EditorTimeInput from "./child/EditorTimeInput";
-import EditorWordInput from "./child/EditorWordInput";
 
 const EditorLineInput = () => {
   return (

@@ -1,18 +1,22 @@
+"use client";
+
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input/input";
 import { cn } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 import React, { KeyboardEvent, forwardRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "../form";
+import { FloatingLabelInput } from "./floating-label-input";
 
 export interface TagInputProps {
   tags: string[];
   onTagAdd: (tag: string) => void;
   onTagRemove: (index: number) => void;
-  placeholder?: string;
   maxTags?: number;
   disabled?: boolean;
+  label?: string;
   enableDragDrop?: boolean;
   className?: string;
   tagVariant?: VariantProps<typeof badgeVariants>["variant"];
@@ -24,9 +28,9 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
       tags,
       onTagAdd,
       onTagRemove,
-      placeholder = "タグを追加",
       maxTags,
       disabled = false,
+      label = "タグ",
       enableDragDrop = true,
       className,
       tagVariant = "secondary",
@@ -99,13 +103,13 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
               </Button>
             </Badge>
           ))}
-          <Input
+          <FloatingLabelInput
             ref={ref}
             value={inputValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            className="min-w-[120px] flex-1 rounded-xs border bg-transparent px-2 py-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            label={label}
+            className="min-w-[120px] flex-1 rounded-xs border px-2 py-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             disabled={disabled || (maxTags ? tags.length >= maxTags : false)}
             {...props}
           />
@@ -117,4 +121,60 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
 
 TagInput.displayName = "TagInput";
 
-export { TagInput };
+interface TagInputFormFieldProps {
+  name: string;
+  label?: string;
+  description?: React.ReactNode;
+  className?: string;
+  maxTags?: number;
+  enableDragDrop?: boolean;
+  tagVariant?: VariantProps<typeof badgeVariants>["variant"];
+  disabledFormMessage?: boolean;
+}
+
+const TagInputFormField = ({
+  name,
+  label,
+  description,
+  className,
+  maxTags,
+  enableDragDrop = true,
+  tagVariant = "secondary",
+  disabledFormMessage = false,
+}: TagInputFormFieldProps) => {
+  const { control } = useFormContext();
+
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="w-full">
+          <FormControl>
+            <TagInput
+              tags={field.value || []}
+              onTagAdd={(tag) => {
+                const currentTags = field.value || [];
+                field.onChange([...currentTags, tag]);
+              }}
+              onTagRemove={(index) => {
+                const currentTags = field.value || [];
+                const newTags = currentTags.filter((_, i) => i !== index);
+                field.onChange(newTags);
+              }}
+              label={label}
+              maxTags={maxTags}
+              enableDragDrop={enableDragDrop}
+              tagVariant={tagVariant}
+              className={className}
+            />
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          {!disabledFormMessage && <FormMessage />}
+        </FormItem>
+      )}
+    />
+  );
+};
+
+export { TagInput, TagInputFormField };

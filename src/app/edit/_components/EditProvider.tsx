@@ -9,9 +9,8 @@ import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useMapReducer } from "../_lib/atoms/mapReducerAtom";
-import { geminiTagsAtom, mapInfoAtom, mapTagsAtom, useSetCanUpload, videoIdAtom } from "../_lib/atoms/stateAtoms";
+import { geminiTagsAtom, mapTagsAtom, useSetCanUpload } from "../_lib/atoms/stateAtoms";
 import { getEditAtomStore } from "../_lib/atoms/store";
-import { useWindowKeydownEvent } from "../_lib/hooks/useKeyDown";
 
 interface EditProviderProps {
   mapInfo?: RouterOutPuts["map"]["getMapInfo"];
@@ -22,13 +21,6 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
   const store = getEditAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
   const loadBackupData = useLoadBackupData();
-  const windowKeydownEvent = useWindowKeydownEvent();
-  useEffect(() => {
-    window.addEventListener("keydown", windowKeydownEvent);
-    return () => {
-      window.removeEventListener("keydown", windowKeydownEvent);
-    };
-  }, [windowKeydownEvent]);
 
   useEffect(() => {
     setPreviewVideoState(RESET);
@@ -58,18 +50,18 @@ const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | unde
 
   if (mapInfo) {
     hydrationState.push(
-      [
-        mapInfoAtom,
-        {
-          title: mapInfo.title,
-          artist: mapInfo.artist_name,
-          creatorId: mapInfo.creator_id,
-          creatorComment: mapInfo.creator_comment,
-          source: mapInfo.music_source,
-          previewTime: mapInfo.preview_time,
-        },
-      ],
-      [videoIdAtom, videoId],
+      // [
+      //   mapInfoAtom,
+      //   {
+      //     title: mapInfo.title,
+      //     artist: mapInfo.artist_name,
+      //     creatorId: mapInfo.creator_id,
+      //     creatorComment: mapInfo.creator_comment,
+      //     source: mapInfo.music_source,
+      //     previewTime: mapInfo.preview_time,
+      //   },
+      // ],
+      // [videoIdAtom, videoId],
       [
         mapTagsAtom,
         {
@@ -80,18 +72,18 @@ const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | unde
     );
   } else {
     hydrationState.push(
-      [
-        mapInfoAtom,
-        {
-          title: geminiQueryData?.title || "",
-          artist: geminiQueryData?.artistName || "",
-          creatorId: null,
-          creatorComment: "",
-          source: geminiQueryData?.source || "",
-          previewTime: "",
-        },
-      ],
-      [videoIdAtom, newVideoId],
+      // [
+      //   mapInfoAtom,
+      //   {
+      //     title: geminiQueryData?.title || "",
+      //     artist: geminiQueryData?.artistName || "",
+      //     creatorId: null,
+      //     creatorComment: "",
+      //     source: geminiQueryData?.source || "",
+      //     previewTime: "",
+      //   },
+      // ],
+      // [videoIdAtom, newVideoId],
       [mapTagsAtom, { type: "reset" }],
     );
   }
@@ -113,20 +105,20 @@ const useLoadBackupData = () => {
         if (data) {
           const { id: _, mapData, ...backupInfo } = data;
 
-          store.set(mapInfoAtom, {
-            title: backupInfo.title,
-            artist: backupInfo.artistName,
-            creatorId: null,
-            comment: backupInfo.creatorComment,
-            source: backupInfo.musicSource,
-            previewTime: backupInfo.previewTime,
-          });
+          // store.set(mapInfoAtom, {
+          //   title: backupInfo.title,
+          //   artist: backupInfo.artistName,
+          //   creatorId: null,
+          //   comment: backupInfo.creatorComment,
+          //   source: backupInfo.musicSource,
+          //   previewTime: backupInfo.previewTime,
+          // });
 
-          store.set(videoIdAtom, backupInfo.videoId);
-          store.set(mapTagsAtom, {
-            type: "set",
-            payload: backupInfo.tags,
-          });
+          // store.set(videoIdAtom, backupInfo.videoId);
+          // store.set(mapTagsAtom, {
+          //   type: "set",
+          //   payload: backupInfo.tags,
+          // });
           mapDispatch({ type: "replaceAll", payload: mapData });
           setCanUpload(true);
         }
