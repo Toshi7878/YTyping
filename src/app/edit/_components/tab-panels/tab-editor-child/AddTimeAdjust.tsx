@@ -44,17 +44,19 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
 
   return (
     <TooltipWrapper
+      delayDuration={600}
       label={
         <>
           <div>再生中に追加・変更を行う場合に、数値分補正してタイムを記録します。</div>
           <div>
-            <span className="text-xs">
+            <div className="text-xs">
               譜面のタイムは、歌いだしの瞬間より-0.2 ~ -0.25秒程早めに設定すると丁度よいタイミングになります。
-            </span>
-            <span className="text-xs">※間奏などでワードが存在しない場合は追加タイム補正は適用されません。</span>
-            <span className="text-xs">
+            </div>
+            <br />
+            <div className="text-xs">※間奏などでワードが存在しない場合は追加タイム補正は適用されません。</div>
+            <div className="text-xs">
               Bluetoothキーボードや無線イヤホンなど環境に合わせて最適な補正値に調整してください。
-            </span>
+            </div>
           </div>
         </>
       }

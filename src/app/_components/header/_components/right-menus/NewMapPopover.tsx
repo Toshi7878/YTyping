@@ -11,7 +11,7 @@ import { useGetBackupTitleVideoIdLiveQuery } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
@@ -78,7 +78,7 @@ function CreateNewMapModal({ trigger }: CreateNewMapModalProps) {
               autoComplete="off"
             />
             <div className="flex items-center justify-between">
-              <CreateMapBackUpButton backupData={backupData} onClose={() => setOpen(false)} />
+              <CreateMapBackUpButton backupData={backupData} onOpenChange={setOpen} />
               <Button size="lg" className="w-30" type="submit" disabled={!extractedVideoId}>
                 作成
               </Button>
@@ -98,7 +98,7 @@ function CreateNewMapModal({ trigger }: CreateNewMapModalProps) {
 
 interface CreateMapBackUpButtonProps {
   backupData: { title: string; videoId: string } | undefined;
-  onClose: () => void;
+  onOpenChange: Dispatch<SetStateAction<boolean>>;
 }
 
 function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
@@ -113,10 +113,9 @@ function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
     >
       <Link
         href={`/edit?new=${props.backupData?.videoId}&backup=true`}
-        onClick={() => props.onClose}
         className={cn(!props.backupData?.videoId && "invisible")}
       >
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => props.onOpenChange(false)}>
           前回のバックアップデータが存在します。
         </Button>
       </Link>

@@ -4,7 +4,7 @@ import { atomWithReducer, atomWithReset, RESET, useAtomCallback } from "jotai/ut
 
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { TAB_NAMES } from "../const";
+import { TAB_NAMES, TAG_MAX_LEN } from "../const";
 import { TagsReducerAction, YTSpeedReducerActionType } from "../type";
 import { playerAtom, timeInputAtom } from "./refAtoms";
 import { getEditAtomStore } from "./store";
@@ -215,10 +215,15 @@ function tagsReducer(state: string[], action: TagsReducerAction): string[] {
     case "set":
       return action.payload.filter(Boolean);
     case "add":
-      const newTag = action.payload.trim();
-      if (!newTag) return state;
-      return [...state, newTag];
+      if (state.length < TAG_MAX_LEN) {
+        const newTag = action.payload.trim();
+        if (!newTag) return state;
+        store.set(canUploadAtom, true);
+        return [...state, newTag];
+      }
+      return state;
     case "delete":
+      store.set(canUploadAtom, true);
       return state.filter((tag) => tag !== action.payload);
     case "reset":
       return [];

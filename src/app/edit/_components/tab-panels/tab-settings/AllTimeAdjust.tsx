@@ -62,11 +62,8 @@ export default function AllTimeAdjust() {
   };
 
   return (
-    <TooltipWrapper
-      className="relative right-12"
-      label={<div>数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します</div>}
-    >
-      <form className="flex items-baseline gap-2">
+    <TooltipWrapper label={<div>数値を入力後、実行ボタンを押すと、全体のタイムが数値分増減します</div>}>
+      <form className="flex w-fit items-baseline gap-2">
         <Label className="text-sm">全体タイム調整</Label>
         <Input
           type="number"
@@ -84,12 +81,7 @@ export default function AllTimeAdjust() {
           }}
         />
 
-        <Button
-          variant="outline"
-          type="button"
-          className="h-8 border-yellow-500 text-yellow-600 hover:bg-yellow-50"
-          onClick={allTimeAdjust}
-        >
+        <Button variant="outline-warning" type="button" onClick={allTimeAdjust} className="font-bold">
           実行
         </Button>
       </form>

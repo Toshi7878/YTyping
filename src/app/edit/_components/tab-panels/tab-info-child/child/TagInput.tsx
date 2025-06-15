@@ -1,4 +1,4 @@
-import { useMapTagsState, useSetCanUpload, useSetMapTags } from "@/app/edit/_lib/atoms/stateAtoms";
+import { useMapTagsState, useSetMapTags } from "@/app/edit/_lib/atoms/stateAtoms";
 import { TAG_MAX_LEN, TAG_MIN_LEN } from "@/app/edit/_lib/const";
 import { TagInput as BaseTagInput } from "@/components/ui/input/tag-input";
 import { Label } from "@/components/ui/label";
@@ -6,19 +6,6 @@ import { Label } from "@/components/ui/label";
 const TagInput = () => {
   const tags = useMapTagsState();
   const setTags = useSetMapTags();
-  const setCanUpload = useSetCanUpload();
-
-  const handleDelete = (index: number) => {
-    setCanUpload(true);
-    setTags({ type: "delete", payload: tags[index] });
-  };
-
-  const handleAddition = (tag: string) => {
-    if (tags.length < TAG_MAX_LEN) {
-      setCanUpload(true);
-      setTags({ type: "add", payload: tag });
-    }
-  };
 
   return (
     <div className="flex items-center">
@@ -31,8 +18,8 @@ const TagInput = () => {
       <BaseTagInput
         tagVariant="primary-dark"
         tags={tags}
-        onTagAdd={handleAddition}
-        onTagRemove={handleDelete}
+        onTagAdd={(tag) => setTags({ type: "add", payload: tag })}
+        onTagRemove={(index) => setTags({ type: "delete", payload: tags[index] })}
         placeholder={tags.length <= 1 ? "タグを2つ以上追加してください" : "タグを追加"}
         maxTags={TAG_MAX_LEN}
         enableDragDrop={true}
