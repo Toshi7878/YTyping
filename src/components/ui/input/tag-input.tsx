@@ -110,7 +110,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
             onKeyDown={handleKeyDown}
             label={label}
             className="min-w-[120px] flex-1 rounded-xs border px-2 py-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-            disabled={disabled || (maxTags ? tags.length >= maxTags : false)}
+            disabled={disabled}
             {...props}
           />
         </div>

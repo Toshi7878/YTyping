@@ -1,32 +1,35 @@
-import { useMapTagsState, useSetMapTags } from "@/app/edit/_lib/atoms/stateAtoms";
-
-import { useGeminiTagsState } from "@/app/edit/_lib/atoms/stateAtoms";
+import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { VariantProps } from "class-variance-authority";
+import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 
 interface SuggestionTagsProps {
   isGeminiLoading: boolean;
+  geminiTags: string[];
 }
 
-export default function SuggestionTags({ isGeminiLoading }: SuggestionTagsProps) {
+export default function SuggestionTags({ isGeminiLoading, geminiTags }: SuggestionTagsProps) {
   return (
     <div className="flex flex-col gap-5">
       <TemplateTags />
-      <GeminiSuggestionTags isGeminiLoading={isGeminiLoading} />
+      <GeminiSuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiTags} />
     </div>
   );
 }
 
 interface GeminiTagSuggestionsProps {
   isGeminiLoading: boolean;
+  geminiTags: string[];
 }
 
-const GeminiSuggestionTags = (props: GeminiTagSuggestionsProps) => {
-  const tags = useMapTagsState();
-  const geminiTags = useGeminiTagsState();
+const GeminiSuggestionTags = ({ isGeminiLoading, geminiTags }: GeminiTagSuggestionsProps) => {
+  const control = useFormContext();
+  const tags = control.watch("tags");
 
-  if (props.isGeminiLoading) {
+  if (isGeminiLoading) {
     return (
       <div className="flex flex-col flex-wrap">
         <div className="flex flex-row flex-wrap gap-3">
@@ -39,7 +42,7 @@ const GeminiSuggestionTags = (props: GeminiTagSuggestionsProps) => {
       <div className="flex flex-row flex-wrap gap-3">
         {geminiTags &&
           geminiTags.map((label, index) => {
-            const isSelected = tags.some((tag) => tag === label);
+            const isSelected = tags.some((tag: string) => tag === label);
 
             if (isSelected) {
               return null;
@@ -84,12 +87,13 @@ const CHOICE_TAGS = [
 ];
 
 const TemplateTags = () => {
-  const tags = useMapTagsState();
+  const control = useFormContext();
+  const tags = control.watch("tags");
 
   return (
     <div className="flex flex-row flex-wrap gap-3">
       {CHOICE_TAGS.map((label, index) => {
-        const isSelected = tags.some((tag) => tag === label);
+        const isSelected = tags.some((tag: string) => tag === label);
 
         if (isSelected) {
           return null;
@@ -107,13 +111,24 @@ interface TagBadgeProps {
 }
 
 const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
-  const setTags = useSetMapTags();
+  const control = useFormContext();
+  const tags = control.watch("tags");
 
   return (
     <Badge
-      className="cursor-pointer rounded-lg text-sm opacity-70 hover:opacity-100"
+      className={cn(
+        "cursor-pointer rounded-lg text-sm opacity-70 hover:opacity-100",
+        tags.length >= TAG_MAX_LEN && "cursor-default opacity-50 hover:opacity-50",
+      )}
       variant={variant}
-      onClick={() => setTags({ type: "add", payload: label })}
+      onClick={() => {
+        const currentTags = tags;
+        if (currentTags.length < TAG_MAX_LEN) {
+          control.setValue("tags", [...currentTags, label]);
+        } else {
+          toast.warning("タグは最大10個まで追加できます");
+        }
+      }}
     >
       {label}
     </Badge>

@@ -34,14 +34,22 @@ export const myKeyboardApiSchema = myKeyboardBaseSchema;
 export const myKeyboardFormSchema = z.object({ myKeyboard: z.string().max(MAX_SHORT_LENGTH) });
 
 const mapInfoBaseSchema = z.object({
-  title: z.string().min(1).max(MAX_SHORT_LENGTH),
-  artistName: z.string().min(1).max(MAX_SHORT_LENGTH),
-  source: z.string().min(1).max(MAX_SHORT_LENGTH),
-  comment: z.string().min(1).max(MAX_SHORT_LENGTH),
-  creatorComment: z.string().max(MAX_MAXIMUM_LENGTH).optional(),
+  title: z
+    .string()
+    .min(1, { message: "曲名を入力してください" })
+    .max(MAX_SHORT_LENGTH, { message: `曲名は${MAX_SHORT_LENGTH}文字以下にしてください` }),
+  artist_name: z
+    .string()
+    .min(1, { message: "アーティスト名を入力してください" })
+    .max(MAX_SHORT_LENGTH, { message: `アーティスト名は${MAX_SHORT_LENGTH}文字以下にしてください` }),
+  music_source: z.string().max(MAX_SHORT_LENGTH, { message: `ソースは${MAX_SHORT_LENGTH}文字以下にしてください` }),
+  creator_comment: z
+    .string()
+    .max(MAX_MAXIMUM_LENGTH, { message: `コメントは${MAX_SHORT_LENGTH}文字以下にしてください` })
+    .optional(),
   tags: z.array(z.string().max(MAX_SHORT_LENGTH)).min(2, { message: "タグは2つ以上必要です" }).max(10),
-  videoId: z.string().length(11),
-  previewTime: z
+  video_id: z.string().length(11),
+  preview_time: z
     .string()
     .min(1, { message: "プレビュータイムを設定してください。" })
     .max(MAX_SHORT_LENGTH)

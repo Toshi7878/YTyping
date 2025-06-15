@@ -151,7 +151,6 @@ interface FloatingLabelInputFormFieldProps {
   name: string;
   label?: string;
   description?: React.ReactNode;
-  required?: boolean;
   className?: string;
   variant?: VariantProps<typeof inputVariants>["variant"];
   size?: VariantProps<typeof inputVariants>["size"];
@@ -162,7 +161,6 @@ const FloatingLabelInputFormField = ({
   name,
   label,
   description,
-  required = false,
   className,
   size = "default",
   disabledFormMessage = false,
