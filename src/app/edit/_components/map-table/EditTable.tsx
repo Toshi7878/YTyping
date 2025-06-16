@@ -13,8 +13,8 @@ import { useIsYTReadiedState, useIsYTStartedState } from "../../_lib/atoms/state
 
 import "@/app/edit/_lib/style/table.scss";
 import { useUpdateEndTime } from "../../_lib/hooks/useUpdateEndTime";
-import LineRow from "./line-row/LineRow";
 import LineOptionDialog from "./LineOptionDialog";
+import LineRow from "./LineRow";
 
 export default function EditTable() {
   const map = useMapState();
