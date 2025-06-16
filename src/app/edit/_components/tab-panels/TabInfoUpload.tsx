@@ -4,7 +4,6 @@ import { toast } from "sonner";
 
 import { useEditUtilsParams, usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
 import { NOT_EDIT_PERMISSION_TOAST_ID, TAG_MAX_LEN } from "@/app/edit/_lib/const";
-import { useUploadMap } from "@/app/edit/_lib/hooks/useUploadMap";
 import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useUserEditPermission";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -12,28 +11,32 @@ import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-fi
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { UploadResult } from "@/types";
+import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
+import { useTRPC } from "@/trpc/trpc";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
+import { ParseMap } from "@/utils/parse-map/parseMap";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { mapInfoFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import z from "zod";
-import { useCanUploadState, useSetVideoId, useSetYTChaningVideo, useVideoIdState } from "../../_lib/atoms/stateAtoms";
+import { useReadMap } from "../../_lib/atoms/mapReducerAtom";
+import {
+  useCanUploadState,
+  useReadEditUtils,
+  useSetCanUpload,
+  useSetVideoId,
+  useSetYTChaningVideo,
+  useVideoIdState,
+} from "../../_lib/atoms/stateAtoms";
+import { getThumbnailQuality } from "../../_lib/ts/getThumbailQuality";
 import SuggestionTags from "./tab-info-child/SuggestionTags";
-
-const INITIAL_SERVER_ACTIONS_STATE: UploadResult = {
-  id: null,
-  title: "",
-  message: "",
-  status: 0,
-};
 
 const TabInfoUpload = () => {
   const searchParams = useSearchParams();
@@ -41,16 +44,13 @@ const TabInfoUpload = () => {
   const isBackUp = searchParams.get("backup") === "true";
   const newCreateVideoId = searchParams.get("new");
   const hasUploadPermission = useHasMapUploadPermission();
-  const canUpload = useCanUploadState();
-
   const { data: mapInfoData } = useSuspenseQuery(useMapQueries().mapInfo({ mapId: Number(mapId) }));
   const videoId = useVideoIdState();
   const setVideoId = useSetVideoId();
-
   const {
     data: geminiInfoData,
     isFetching,
-    error,
+    error: geminiError,
   } = useQuery(
     useGeminiQueries().generateMapInfo(
       { videoId: videoId ?? "" },
@@ -71,11 +71,12 @@ const TabInfoUpload = () => {
       video_id: mapInfoData?.video_id ?? "",
     },
   });
+
   useEffect(() => {
-    if (error) {
-      toast.error(error.message);
+    if (geminiError) {
+      toast.error(geminiError.message);
     }
-  }, [error]);
+  }, [geminiError]);
 
   useEffect(() => {
     if (geminiInfoData) {
@@ -93,10 +94,6 @@ const TabInfoUpload = () => {
     setVideoId(form.getValues("video_id"));
   }, [form, setVideoId]);
 
-  const upload = useUploadMap();
-
-  const [state, formAction] = useActionState(upload, null);
-
   useEffect(() => {
     if (!hasUploadPermission) {
       toast.warning("編集保存権限がないため譜面の更新はできません", {
@@ -108,12 +105,14 @@ const TabInfoUpload = () => {
     }
   }, [hasUploadPermission]);
 
+  const onSubmit = useOnSubmit(form);
+
   const isGeminiLoading = isFetching && !!newCreateVideoId;
   const tags = form.watch("tags");
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>
-        <form action={formAction} className="flex w-full flex-col items-baseline gap-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
           <div className="flex w-full items-center gap-4">
             <VideoIdInput />
           </div>
@@ -165,8 +164,13 @@ const InfoFormButton = () => {
   return (
     <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
       {hasUploadPermission && (
-        <Button size="xl" disabled={!form.formState.isDirty && !canUpload} className="w-52">
-          {form.formState.isSubmitting ? "保存中..." : "保存"}
+        <Button
+          size="xl"
+          loading={form.formState.isSubmitting}
+          disabled={!form.formState.isDirty && !canUpload}
+          className="w-52"
+        >
+          保存
         </Button>
       )}
 
@@ -279,6 +283,96 @@ const TypeLinkButton = () => {
       </Button>
     </Link>
   );
+};
+
+const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormSchema>>>) => {
+  const { id: mapId } = useParams<{ id: string }>();
+  const readEditUtils = useReadEditUtils();
+  const { readPlayer } = usePlayer();
+  const searchParams = useSearchParams();
+  const newCreateVideoId = searchParams.get("new");
+  const router = useRouter();
+  const setCanUpload = useSetCanUpload();
+  const readMap = useReadMap();
+  const backupNewMap = useBackupNewMap();
+  const deleteBackupNewMap = useDeleteBackupNewMap();
+
+  const upsertMap = useMutation(
+    useTRPC().map.upsertMap.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(data.title, {
+          description: data.message,
+        });
+        if (data.id) {
+          router.push(`/edit/${data.id}`);
+          deleteBackupNewMap();
+        }
+        form.reset(form.getValues());
+        setCanUpload(false);
+      },
+      onError: (error) => {
+        toast.error(error.message);
+
+        if (newCreateVideoId) {
+          backupNewMap({
+            videoId: newCreateVideoId,
+            title: form.getValues("title"),
+            artistName: form.getValues("artist_name"),
+            musicSource: form.getValues("music_source"),
+            creatorComment: form.getValues("creator_comment"),
+            tags: form.getValues("tags"),
+            previewTime: form.getValues("preview_time"),
+            mapData: readMap(),
+          });
+        }
+      },
+    }),
+  );
+
+  return async (data: z.infer<typeof mapInfoFormSchema>) => {
+    const map = readMap();
+
+    const { title, artist_name, music_source, creator_comment, tags, preview_time } = data;
+    const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new ParseMap(map);
+
+    const { video_id } = readPlayer().getVideoData();
+    const videoDuration = readPlayer().getDuration();
+
+    const typingStartTime = Math.max(0, Number(map[startLine]["time"]) + 0.2);
+
+    const newPreviewTime =
+      Number(preview_time) > videoDuration || typingStartTime >= Number(preview_time)
+        ? typingStartTime.toFixed(3)
+        : preview_time;
+
+    const mapInfo = {
+      video_id,
+      title,
+      artist_name,
+      music_source,
+      creator_comment,
+      tags,
+      preview_time: newPreviewTime,
+      thumbnail_quality: await getThumbnailQuality(video_id),
+    };
+    const mapDifficulty = {
+      roma_kpm_median: speedDifficulty.median.r,
+      roma_kpm_max: speedDifficulty.max.r,
+      kana_kpm_median: speedDifficulty.median.r,
+      kana_kpm_max: speedDifficulty.max.r,
+      total_time: movieTotalTime,
+      roma_total_notes: totalNotes.r,
+      kana_total_notes: totalNotes.k,
+    };
+    const { isUpdateUpdatedAt } = readEditUtils();
+    await upsertMap.mutateAsync({
+      mapInfo,
+      mapDifficulty,
+      mapData: map,
+      isMapDataEdited: isUpdateUpdatedAt,
+      mapId: mapId || "new",
+    });
+  };
 };
 
 export default TabInfoUpload;

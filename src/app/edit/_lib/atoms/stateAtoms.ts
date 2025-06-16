@@ -5,7 +5,6 @@ import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
 import { TAB_NAMES } from "../const";
-import { YTSpeedReducerActionType } from "../type";
 import { playerAtom, timeInputAtom } from "./refAtoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
@@ -129,6 +128,7 @@ store.sub(speedAtom, () => {
   }
 });
 
+type YTSpeedReducerActionType = "up" | "down";
 export const useSpeedReducer = () => {
   const setYTSpeedAtom = useSetYTSpeed();
   return (actionType: YTSpeedReducerActionType) => {

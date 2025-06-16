@@ -1,4 +1,4 @@
-import { custom_user_active_state } from "@prisma/client";
+import { custom_user_active_state, thumbnail_quality } from "@prisma/client";
 import { MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "./const";
 import { z } from "./z";
 
@@ -45,8 +45,7 @@ const mapInfoBaseSchema = z.object({
   music_source: z.string().max(MAX_SHORT_LENGTH, { message: `ソースは${MAX_SHORT_LENGTH}文字以下にしてください` }),
   creator_comment: z
     .string()
-    .max(MAX_MAXIMUM_LENGTH, { message: `コメントは${MAX_SHORT_LENGTH}文字以下にしてください` })
-    .optional(),
+    .max(MAX_MAXIMUM_LENGTH, { message: `コメントは${MAX_SHORT_LENGTH}文字以下にしてください` }),
   tags: z.array(z.string().max(MAX_SHORT_LENGTH)).min(2, { message: "タグは2つ以上必要です" }).max(10),
   video_id: z.string().length(11),
   preview_time: z
@@ -59,4 +58,4 @@ const mapInfoBaseSchema = z.object({
 });
 
 export const mapInfoFormSchema = mapInfoBaseSchema;
-export const mapInfoApiSchema = mapInfoBaseSchema;
+export const mapInfoApiSchema = mapInfoBaseSchema.extend({ thumbnail_quality: z.nativeEnum(thumbnail_quality) });
