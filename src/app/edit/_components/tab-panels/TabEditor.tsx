@@ -1,9 +1,9 @@
 import { CardWithContent } from "@/components/ui/card";
 
-import AddTimeAdjust from "./tab-editor-child/AddTimeAdjust";
-import EditorButtons from "./tab-editor-child/EditorButtons";
-import EditorLineInput from "./tab-editor-child/EditorInputs";
-import ManyPhraseTextarea from "./tab-editor-child/ManyPhraseTextarea";
+import AddTimeAdjust from "./tab-editor-form/AddTimeAdjust";
+import EditorButtons from "./tab-editor-form/EditorButtons";
+import EditorLineInput from "./tab-editor-form/EditorInputs";
+import ManyPhraseTextarea from "./tab-editor-form/ManyPhraseTextarea";
 
 const TabEditor = () => {
   return (

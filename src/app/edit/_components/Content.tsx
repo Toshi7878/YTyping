@@ -13,7 +13,7 @@ import useHasMapUploadPermission from "../_lib/hooks/useUserEditPermission";
 import EditYouTube from "./EditYouTubePlayer";
 import EditTable from "./map-table/EditTable";
 import TabEditor from "./tab-panels/TabEditor";
-import TabInfoUpload from "./tab-panels/TabInfoUpload";
+import TabInfoForm from "./tab-panels/TabInfoForm";
 import TabSettings from "./tab-panels/TabSettings";
 import { TimeRangeAndSpeedChange } from "./TimeRangeAndSpeedChange";
 
@@ -97,7 +97,7 @@ function EditTabs() {
       </TabsList>
 
       <TabsContent value="情報&保存" forceMount>
-        <TabInfoUpload />
+        <TabInfoForm />
       </TabsContent>
 
       <TabsContent value="エディター" forceMount>

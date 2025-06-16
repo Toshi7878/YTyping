@@ -20,7 +20,7 @@ import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { mapInfoFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
@@ -36,9 +36,9 @@ import {
   useVideoIdState,
 } from "../../_lib/atoms/stateAtoms";
 import { getThumbnailQuality } from "../../_lib/ts/getThumbailQuality";
-import SuggestionTags from "./tab-info-child/SuggestionTags";
+import SuggestionTags from "./tab-info-form/SuggestionTags";
 
-const TabInfoUpload = () => {
+const TabInfoForm = () => {
   const searchParams = useSearchParams();
   const { id: mapId } = useParams();
   const isBackUp = searchParams.get("backup") === "true";
@@ -296,10 +296,14 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
   const readMap = useReadMap();
   const backupNewMap = useBackupNewMap();
   const deleteBackupNewMap = useDeleteBackupNewMap();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
       onSuccess: (data) => {
+        queryClient.invalidateQueries(trpc.map.getMap.queryFilter({ mapId }));
+
         toast.success(data.title, {
           description: data.message,
         });
@@ -375,4 +379,4 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
   };
 };
 
-export default TabInfoUpload;
+export default TabInfoForm;
