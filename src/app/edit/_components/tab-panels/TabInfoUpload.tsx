@@ -25,7 +25,7 @@ import { useActionState, useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import z from "zod";
-import { useSetVideoId, useSetYTChaningVideo, useVideoIdState } from "../../_lib/atoms/stateAtoms";
+import { useCanUploadState, useSetVideoId, useSetYTChaningVideo, useVideoIdState } from "../../_lib/atoms/stateAtoms";
 import SuggestionTags from "./tab-info-child/SuggestionTags";
 
 const INITIAL_SERVER_ACTIONS_STATE: UploadResult = {
@@ -41,6 +41,7 @@ const TabInfoUpload = () => {
   const isBackUp = searchParams.get("backup") === "true";
   const newCreateVideoId = searchParams.get("new");
   const hasUploadPermission = useHasMapUploadPermission();
+  const canUpload = useCanUploadState();
 
   const { data: mapInfoData } = useSuspenseQuery(useMapQueries().mapInfo({ mapId: Number(mapId) }));
   const videoId = useVideoIdState();
@@ -144,20 +145,33 @@ const TabInfoUpload = () => {
             label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LEN}`}
           />
           <SuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiInfoData?.otherTags ?? []} />
-          <div className="flex w-full justify-between">
-            {hasUploadPermission ? (
-              <form action={formAction} className="flex flex-col items-baseline gap-4 xl:flex-row">
-                {/* <UploadButton state={state} /> */}
-                {mapId ? <TypeLinkButton /> : ""}
-              </form>
-            ) : (
-              mapId && <TypeLinkButton />
-            )}
+
+          <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
+            <InfoFormButton />
             <PreviewTimeInput />
           </div>
         </form>
       </Form>
     </CardWithContent>
+  );
+};
+
+const InfoFormButton = () => {
+  const form = useFormContext();
+  const canUpload = useCanUploadState();
+  const hasUploadPermission = useHasMapUploadPermission();
+  const { id: mapId } = useParams();
+
+  return (
+    <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
+      {hasUploadPermission && (
+        <Button size="xl" disabled={!form.formState.isDirty && !canUpload} className="w-52">
+          {form.formState.isSubmitting ? "保存中..." : "保存"}
+        </Button>
+      )}
+
+      {mapId && <TypeLinkButton />}
+    </div>
   );
 };
 

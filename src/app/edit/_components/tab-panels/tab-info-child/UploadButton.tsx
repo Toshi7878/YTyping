@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 
 import { useReadMap } from "@/app/edit/_lib/atoms/mapReducerAtom";
 import { useCanUploadState, useSetCanUpload } from "@/app/edit/_lib/atoms/stateAtoms";
@@ -69,22 +68,7 @@ const UploadButton = ({ state }: UploadButtonProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
-  return (
-    <Button
-      className={`w-[200px] cursor-pointer border ${canUpload ? "opacity-100 hover:opacity-90" : "opacity-70"}`}
-      variant="default"
-      size="lg"
-      disabled={pending}
-      type="submit"
-      onClick={(e) => {
-        if (!canUpload) {
-          e.preventDefault();
-        }
-      }}
-    >
-      {pending ? "保存中..." : "保存"}
-    </Button>
-  );
+  return <div>UploadButton</div>;
 };
 
 export default UploadButton;

@@ -124,7 +124,10 @@ const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
       onClick={() => {
         const currentTags = tags;
         if (currentTags.length < TAG_MAX_LEN) {
-          control.setValue("tags", [...currentTags, label]);
+          control.setValue("tags", [...currentTags, label], {
+            shouldDirty: true,
+            shouldTouch: true,
+          });
         } else {
           toast.warning("タグは最大10個まで追加できます");
         }

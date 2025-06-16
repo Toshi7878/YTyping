@@ -142,7 +142,7 @@ const TagInputFormField = ({
   tagVariant = "secondary",
   disabledFormMessage = false,
 }: TagInputFormFieldProps) => {
-  const { control } = useFormContext();
+  const { control, setValue, trigger } = useFormContext();
 
   return (
     <FormField
@@ -154,13 +154,14 @@ const TagInputFormField = ({
             <TagInput
               tags={field.value || []}
               onTagAdd={(tag) => {
-                const currentTags = field.value || [];
-                field.onChange([...currentTags, tag]);
+                const newTags = [...field.value, tag];
+                setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
+                trigger(name);
               }}
               onTagRemove={(index) => {
-                const currentTags = field.value || [];
-                const newTags = currentTags.filter((_, i) => i !== index);
-                field.onChange(newTags);
+                const newTags = field.value.filter((_, i) => i !== index);
+                setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
+                trigger(name);
               }}
               label={label}
               maxTags={maxTags}
