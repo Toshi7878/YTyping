@@ -2,8 +2,6 @@ import {
   useLineReducer,
   useReadEditUtils,
   useReadLine,
-  useReadMapInfo,
-  useReadMapTags,
   useReadYtPlayerStatus,
   useSetCanUpload,
   useSetDirectEditIndex,
@@ -50,8 +48,6 @@ export const useLineAddButtonEvent = () => {
   const timeValidate = useTimeValidate();
   const { writeEditUtils } = useEditUtilsParams();
   const backupNewMap = useBackupNewMap();
-  const readMapInfo = useReadMapInfo();
-  const readTags = useReadMapTags();
   const readMap = useReadMap();
 
   return (isShiftKey: boolean) => {
@@ -70,20 +66,17 @@ export const useLineAddButtonEvent = () => {
     historyDispatch({ type: "add", payload: { actionType: "add", data: { ...newLine, lineIndex } } });
 
     if (newVideoId) {
-      const mapInfo = readMapInfo();
-      const tags = readTags();
-      const mapData = readMap();
-
-      backupNewMap({
-        videoId: newVideoId,
-        title: mapInfo.title,
-        artistName: mapInfo.artist,
-        musicSource: mapInfo.source,
-        creatorComment: mapInfo.comment,
-        tags,
-        previewTime: mapInfo.previewTime,
-        mapData,
-      });
+      // const mapData = readMap();
+      // backupNewMap({
+      //   videoId: newVideoId,
+      //   title: mapInfo.title,
+      //   artistName: mapInfo.artist,
+      //   musicSource: mapInfo.source,
+      //   creatorComment: mapInfo.comment,
+      //   tags,
+      //   previewTime: mapInfo.previewTime,
+      //   mapData,
+      // });
     }
 
     setCanUpload(true);
@@ -133,8 +126,6 @@ export const useLineUpdateButtonEvent = () => {
   const timeValidate = useTimeValidate();
 
   const backupNewMap = useBackupNewMap();
-  const readMapInfo = useReadMapInfo();
-  const readTags = useReadMapTags();
   const readMap = useReadMap();
   return () => {
     const map = readMap();
@@ -174,20 +165,19 @@ export const useLineUpdateButtonEvent = () => {
     }
 
     if (newVideoId) {
-      const mapInfo = readMapInfo();
-      const tags = readTags();
-      const mapData = readMap();
-
-      backupNewMap({
-        videoId: newVideoId,
-        title: mapInfo.title,
-        artistName: mapInfo.artist,
-        musicSource: mapInfo.source,
-        creatorComment: mapInfo.comment,
-        tags: tags,
-        previewTime: mapInfo.previewTime,
-        mapData,
-      });
+      //   const mapInfo = readMapInfo();
+      //   const tags = readTags();
+      //   const mapData = readMap();
+      //   backupNewMap({
+      //     videoId: newVideoId,
+      //     title: mapInfo.title,
+      //     artistName: mapInfo.artist,
+      //     musicSource: mapInfo.source,
+      //     creatorComment: mapInfo.comment,
+      //     tags: tags,
+      //     previewTime: mapInfo.previewTime,
+      //     mapData,
+      //   });
     }
 
     mapDispatch({ type: "update", payload: newLine, index: selectLineIndex });
@@ -241,8 +231,6 @@ export const useLineDelete = () => {
   const lineDispatch = useLineReducer();
 
   const backupNewMap = useBackupNewMap();
-  const readMapInfo = useReadMapInfo();
-  const readTags = useReadMapTags();
   const readMap = useReadMap();
   const setSelectIndex = useSetSelectIndex();
 
@@ -269,20 +257,19 @@ export const useLineDelete = () => {
     setIsUpdateUpdatedAt(true);
 
     if (newVideoId) {
-      const mapInfo = readMapInfo();
-      const tags = readTags();
-      const mapData = readMap();
-
-      backupNewMap({
-        videoId: newVideoId,
-        title: mapInfo.title,
-        artistName: mapInfo.artist,
-        musicSource: mapInfo.source,
-        creatorComment: mapInfo.comment,
-        tags: tags,
-        previewTime: mapInfo.previewTime,
-        mapData,
-      });
+      // const mapInfo = readMapInfo();
+      // const tags = readTags();
+      // const mapData = readMap();
+      // backupNewMap({
+      //   videoId: newVideoId,
+      //   title: mapInfo.title,
+      //   artistName: mapInfo.artist,
+      //   musicSource: mapInfo.source,
+      //   creatorComment: mapInfo.comment,
+      //   tags: tags,
+      //   previewTime: mapInfo.previewTime,
+      //   mapData,
+      // });
     }
   };
 };

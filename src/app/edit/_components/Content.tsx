@@ -96,11 +96,11 @@ function EditTabs() {
         })}
       </TabsList>
 
-      <TabsContent value="情報&保存" forceMount className="data-[state=inactive]:hidden">
+      <TabsContent value="情報&保存" forceMount>
         <TabInfoUpload />
       </TabsContent>
 
-      <TabsContent value="エディター">
+      <TabsContent value="エディター" forceMount>
         <TabEditor />
       </TabsContent>
 

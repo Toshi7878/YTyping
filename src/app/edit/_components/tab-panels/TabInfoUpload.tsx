@@ -2,6 +2,7 @@
 import { CardWithContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
+import { useEditUtilsParams, usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
 import { NOT_EDIT_PERMISSION_TOAST_ID, TAG_MAX_LEN } from "@/app/edit/_lib/const";
 import { useUploadMap } from "@/app/edit/_lib/hooks/useUploadMap";
 import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useUserEditPermission";
@@ -10,6 +11,7 @@ import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import Link from "@/components/ui/link/link";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { UploadResult } from "@/types";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
@@ -20,12 +22,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
 import { useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
+import { FaPlay } from "react-icons/fa";
 import z from "zod";
 import { useSetVideoId, useSetYTChaningVideo, useVideoIdState } from "../../_lib/atoms/stateAtoms";
-import PreviewTimeInput from "./tab-info-child/PreviewTimeInput";
 import SuggestionTags from "./tab-info-child/SuggestionTags";
-import UploadButton from "./tab-info-child/UploadButton";
 
 const INITIAL_SERVER_ACTIONS_STATE: UploadResult = {
   id: null,
@@ -44,7 +45,6 @@ const TabInfoUpload = () => {
   const { data: mapInfoData } = useSuspenseQuery(useMapQueries().mapInfo({ mapId: Number(mapId) }));
   const videoId = useVideoIdState();
   const setVideoId = useSetVideoId();
-  const setYTChaningVideo = useSetYTChaningVideo();
 
   const {
     data: geminiInfoData,
@@ -94,7 +94,7 @@ const TabInfoUpload = () => {
 
   const upload = useUploadMap();
 
-  const [state, formAction] = useActionState(upload, INITIAL_SERVER_ACTIONS_STATE);
+  const [state, formAction] = useActionState(upload, null);
 
   useEffect(() => {
     if (!hasUploadPermission) {
@@ -109,39 +109,12 @@ const TabInfoUpload = () => {
 
   const isGeminiLoading = isFetching && !!newCreateVideoId;
   const tags = form.watch("tags");
-  const formVideoId = form.watch("video_id");
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>
         <form action={formAction} className="flex w-full flex-col items-baseline gap-4">
           <div className="flex w-full items-center gap-4">
-            <FloatingLabelInputFormField
-              name="video_id"
-              label="動画ID"
-              maxLength={11}
-              onPaste={(e) => {
-                e.preventDefault();
-
-                const videoId = extractYouTubeVideoId(e.clipboardData.getData("text"));
-
-                if (videoId) {
-                  form.setValue("video_id", videoId);
-                }
-              }}
-            />
-            <Button
-              variant="outline-info"
-              disabled={!form.formState.dirtyFields.video_id || formVideoId.length !== 11}
-              onClick={(e) => {
-                e.preventDefault();
-                if (formVideoId.length !== 11) return;
-
-                setVideoId(form.getValues("video_id"));
-                setYTChaningVideo(true);
-              }}
-            >
-              動画切り替え
-            </Button>
+            <VideoIdInput />
           </div>
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
@@ -170,21 +143,114 @@ const TabInfoUpload = () => {
             maxTags={TAG_MAX_LEN}
             label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LEN}`}
           />
+          <SuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiInfoData?.otherTags ?? []} />
+          <div className="flex w-full justify-between">
+            {hasUploadPermission ? (
+              <form action={formAction} className="flex flex-col items-baseline gap-4 xl:flex-row">
+                {/* <UploadButton state={state} /> */}
+                {mapId ? <TypeLinkButton /> : ""}
+              </form>
+            ) : (
+              mapId && <TypeLinkButton />
+            )}
+            <PreviewTimeInput />
+          </div>
         </form>
-        <SuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiInfoData?.otherTags ?? []} />
       </Form>
-      <div className="flex justify-between">
-        {hasUploadPermission ? (
-          <form action={formAction} className="flex flex-col items-baseline gap-4 xl:flex-row">
-            <UploadButton state={state} />
-            {mapId ? <TypeLinkButton /> : ""}
-          </form>
-        ) : (
-          mapId && <TypeLinkButton />
-        )}
-        <PreviewTimeInput />
-      </div>
     </CardWithContent>
+  );
+};
+
+const VideoIdInput = () => {
+  const form = useFormContext();
+  const formVideoId = form.watch("video_id");
+  const setVideoId = useSetVideoId();
+  const setYTChaningVideo = useSetYTChaningVideo();
+
+  return (
+    <TooltipWrapper label="動画URLを貼り付けるとIDが自動入力されます">
+      <div className="flex-center flex gap-4">
+        <FloatingLabelInputFormField
+          name="video_id"
+          className="w-32"
+          label="動画ID"
+          maxLength={11}
+          onPaste={(e) => {
+            e.preventDefault();
+
+            const videoId = extractYouTubeVideoId(e.clipboardData.getData("text"));
+
+            if (videoId) {
+              form.setValue("video_id", videoId);
+            }
+          }}
+        />
+        <Button
+          variant="outline-info"
+          size="lg"
+          disabled={!form.formState.dirtyFields.video_id || formVideoId.length !== 11}
+          onClick={(e) => {
+            e.preventDefault();
+            if (formVideoId.length !== 11) return;
+
+            setVideoId(form.getValues("video_id"));
+            setYTChaningVideo(true);
+          }}
+        >
+          動画切り替え
+        </Button>
+      </div>
+    </TooltipWrapper>
+  );
+};
+
+const PreviewTimeInput = () => {
+  const { readPlayer } = usePlayer();
+  const { writeEditUtils } = useEditUtilsParams();
+  const form = useFormContext();
+  const previewTime = form.watch("preview_time");
+
+  const handlePreviewClick = () => {
+    writeEditUtils({ preventAutoTabToggle: true });
+    readPlayer().playVideo();
+    readPlayer().seekTo(Number(previewTime), true);
+  };
+
+  return (
+    <TooltipWrapper
+      label={
+        <>
+          <div>
+            譜面一覧でのプレビュー再生時に入力されているタイムから再生されるようになります。(サビのタイム推奨です)
+          </div>
+          <div>※ 小さい数値を指定すると最初のタイピングワードが存在するタイムが設定されます。</div>
+          <div>↑↓キー: 0.05ずつ調整, Enter:再生</div>
+        </>
+      }
+    >
+      <div className="flex flex-row items-center gap-3">
+        <div>
+          <FloatingLabelInputFormField
+            name="preview_time"
+            label="プレビュータイム"
+            className="w-36"
+            type="number"
+            step="0.05"
+            min="0"
+            required
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handlePreviewClick();
+              }
+            }}
+          />
+        </div>
+
+        <Button className="shrink-0" type="button" onClick={handlePreviewClick} variant="ghost" size="icon">
+          <FaPlay size={15} />
+        </Button>
+      </div>
+    </TooltipWrapper>
   );
 };
 

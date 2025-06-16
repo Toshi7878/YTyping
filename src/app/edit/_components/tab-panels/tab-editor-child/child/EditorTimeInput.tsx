@@ -22,6 +22,7 @@ const EditorTimeInput = () => {
       placeholder="Time"
       className="h-8 w-[90px]"
       type="number"
+      value={0}
       onChange={(e) => {
         setEditIsTimeInputValid(e.currentTarget.value ? false : true);
       }}

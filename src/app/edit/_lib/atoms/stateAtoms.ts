@@ -1,18 +1,17 @@
 import { YouTubeSpeed } from "@/types";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
-import { atomWithReducer, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
+import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { TAB_NAMES, TAG_MAX_LEN } from "../const";
-import { TagsReducerAction, YTSpeedReducerActionType } from "../type";
+import { TAB_NAMES } from "../const";
+import { YTSpeedReducerActionType } from "../type";
 import { playerAtom, timeInputAtom } from "./refAtoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();
 
 const editUtilsAtom = atomWithReset({
   tabName: "情報&保存" as (typeof TAB_NAMES)[number],
-  geminiTags: [] as string[],
   timeCount: 0,
   directEditingIndex: null as number | null,
   manyPhraseText: "",
@@ -26,7 +25,6 @@ const editUtilsAtom = atomWithReset({
   timeRangeValue: 0,
 });
 const tabNameAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("tabName"));
-export const geminiTagsAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("geminiTags"));
 const timeCountAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("timeCount"));
 const directEditingIndexAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("directEditingIndex"));
 const manyPhraseTextAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("manyPhraseText"));
@@ -49,9 +47,6 @@ export const useReadEditUtils = () => {
 
 export const useTabNameState = () => useAtomValue(tabNameAtom, { store });
 export const useSetTabName = () => useSetAtom(tabNameAtom, { store });
-
-export const useGeminiTagsState = () => useAtomValue(geminiTagsAtom, { store });
-export const useSetGeminiTags = () => useSetAtom(geminiTagsAtom, { store });
 
 export const useTimeCountState = () => useAtomValue(timeCountAtom, { store });
 export const useSetTimeCount = () => useSetAtom(timeCountAtom, { store });
@@ -154,93 +149,6 @@ export const useSpeedReducer = () => {
         break;
     }
   };
-};
-
-export const mapInfoAtom = atomWithReset({
-  title: "",
-  artist: "",
-  comment: "",
-  source: "",
-  previewTime: "",
-  creatorId: null as number | null,
-});
-
-const mapTitleAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("title"));
-const mapArtistAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("artist"));
-const mapCommentAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("comment"));
-const mapSourceAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("source"));
-const mapPreviewTimeAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("previewTime"));
-const mapCreatorIdAtom = focusAtom(mapInfoAtom, (optic) => optic.prop("creatorId"));
-
-export const mapTagsAtom = atomWithReducer<string[], TagsReducerAction>([], tagsReducer);
-
-interface WriteVideoInfoAtomParams {
-  title: ExtractAtomValue<typeof mapTitleAtom>;
-  artistName: ExtractAtomValue<typeof mapArtistAtom>;
-  source: ExtractAtomValue<typeof mapSourceAtom>;
-}
-const writeVideoInfoAtom = atom(null, (get, set, newVideoInfo: WriteVideoInfoAtomParams) => {
-  const { title, artistName, source } = newVideoInfo;
-
-  set(mapTitleAtom, title);
-  set(mapArtistAtom, artistName);
-  set(mapSourceAtom, source);
-});
-
-export const useSetMapInfo = () => useSetAtom(writeVideoInfoAtom, { store });
-export const useReadMapInfo = () => {
-  return useAtomCallback(
-    useCallback((get) => get(mapInfoAtom), []),
-    { store },
-  );
-};
-
-export const useMapTitleState = () => useAtomValue(mapTitleAtom, { store });
-export const useSetMapTitle = () => useSetAtom(mapTitleAtom, { store });
-
-export const useMapArtistState = () => useAtomValue(mapArtistAtom, { store });
-export const useSetMapArtist = () => useSetAtom(mapArtistAtom, { store });
-
-export const useMapPreviewTimeState = () => useAtomValue(mapPreviewTimeAtom, { store });
-export const useSetPreviewTime = () => useSetAtom(mapPreviewTimeAtom, { store });
-
-export const useMapCreatorIdState = () => useAtomValue(mapCreatorIdAtom, { store });
-
-export const useMapCommentState = () => useAtomValue(mapCommentAtom, { store });
-export const useSetMapComment = () => useSetAtom(mapCommentAtom, { store });
-
-export const useMapSourceState = () => useAtomValue(mapSourceAtom, { store });
-export const useSetMapSource = () => useSetAtom(mapSourceAtom, { store });
-
-function tagsReducer(state: string[], action: TagsReducerAction): string[] {
-  switch (action.type) {
-    case "set":
-      return action.payload.filter(Boolean);
-    case "add":
-      if (state.length < TAG_MAX_LEN) {
-        const newTag = action.payload.trim();
-        if (!newTag) return state;
-        store.set(canUploadAtom, true);
-        return [...state, newTag];
-      }
-      return state;
-    case "delete":
-      store.set(canUploadAtom, true);
-      return state.filter((tag) => tag !== action.payload);
-    case "reset":
-      return [];
-    default:
-      throw new Error(`Unknown action type: ${action}`);
-  }
-}
-
-export const useMapTagsState = () => useAtomValue(mapTagsAtom, { store });
-export const useSetMapTags = () => useSetAtom(mapTagsAtom, { store });
-export const useReadMapTags = () => {
-  return useAtomCallback(
-    useCallback((get) => get(mapTagsAtom), []),
-    { store },
-  );
 };
 
 const lineAtom = atomWithReset({

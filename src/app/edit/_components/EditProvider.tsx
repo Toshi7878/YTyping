@@ -2,14 +2,12 @@
 import { useFetchBackupData } from "@/lib/db";
 import { useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/trpc";
-import { useQueryClient } from "@tanstack/react-query";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useMapReducer } from "../_lib/atoms/mapReducerAtom";
-import { geminiTagsAtom, mapTagsAtom, useSetCanUpload } from "../_lib/atoms/stateAtoms";
+import { useSetCanUpload } from "../_lib/atoms/stateAtoms";
 import { getEditAtomStore } from "../_lib/atoms/store";
 
 interface EditProviderProps {
@@ -35,21 +33,12 @@ const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
 
 const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | undefined) => {
   const store = getEditAtomStore();
-  const searchParams = useSearchParams();
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const newVideoId = searchParams.get("new") || "";
 
-  const videoId = mapInfo ? mapInfo.video_id : newVideoId;
-  const geminiQueryData = queryClient.getQueryData(trpc.gemini.generateMapInfo.queryOptions({ videoId }).queryKey);
   const hydrationState: any[] = [];
 
-  if (geminiQueryData) {
-    hydrationState.push([geminiTagsAtom, geminiQueryData.otherTags]);
-  }
-
   if (mapInfo) {
-    hydrationState.push(
+    hydrationState
+      .push
       // [
       //   mapInfoAtom,
       //   {
@@ -62,16 +51,10 @@ const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | unde
       //   },
       // ],
       // [videoIdAtom, videoId],
-      [
-        mapTagsAtom,
-        {
-          type: "set",
-          payload: mapInfo.tags,
-        },
-      ],
-    );
+      ();
   } else {
-    hydrationState.push(
+    hydrationState
+      .push
       // [
       //   mapInfoAtom,
       //   {
@@ -84,8 +67,7 @@ const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | unde
       //   },
       // ],
       // [videoIdAtom, newVideoId],
-      [mapTagsAtom, { type: "reset" }],
-    );
+      ();
   }
 
   useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store });

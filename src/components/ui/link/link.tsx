@@ -1,4 +1,7 @@
+import { useCanUploadState } from "@/app/edit/_lib/atoms/stateAtoms";
+import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useUserEditPermission";
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { LinkIndicator } from "./indicator";
 
@@ -8,8 +11,21 @@ interface LinkProps {
 }
 
 export default function Link({ children, ...props }: LinkProps & NextLinkProps & React.ComponentProps<"a">) {
+  const pathname = usePathname();
+  const canUpload = useCanUploadState();
+  const hasUploadPermission = useHasMapUploadPermission();
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname.includes("/edit") && canUpload && hasUploadPermission) {
+      const confirmUpload = window.confirm("このページを離れると、行った変更が保存されない可能性があります。");
+      if (!confirmUpload) {
+        return;
+      }
+    }
+  };
+
   return (
-    <NextLink {...props}>
+    <NextLink {...props} onClick={handleClick}>
       {children}
       <LinkIndicator href={props.href.toString()} />
     </NextLink>
