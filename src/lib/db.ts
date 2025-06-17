@@ -40,8 +40,6 @@ export const useGetBackupTitleVideoIdLiveQuery = () => {
   return backupData ? { title: backupData?.title, videoId: backupData?.videoId } : undefined;
 };
 
-export const useFetchBackupData = () => {
-  return async () => {
-    return await db.mapBackup.get("current");
-  };
+export const fetchBackupMap = async () => {
+  return await db.mapBackup.get("current");
 };

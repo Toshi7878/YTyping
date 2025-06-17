@@ -1,112 +1,82 @@
 "use client";
-import { useFetchBackupData } from "@/lib/db";
 import { useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
-import { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
-import { RESET, useHydrateAtoms } from "jotai/utils";
-import { useSearchParams } from "next/navigation";
+import { RESET } from "jotai/utils";
+import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
-import { useMapReducer } from "../_lib/atoms/mapReducerAtom";
-import { useSetCanUpload } from "../_lib/atoms/stateAtoms";
+import { toast } from "sonner";
+import { usePathChangeAtomReset } from "../_lib/atoms/reset";
+import { useCanUploadState } from "../_lib/atoms/stateAtoms";
 import { getEditAtomStore } from "../_lib/atoms/store";
+import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
+import { useWindowKeydownEvent } from "../_lib/hooks/useKeyDown";
+import { useTimerRegistration } from "../_lib/hooks/useTimer";
+import useHasMapUploadPermission from "../_lib/hooks/useUserEditPermission";
 
 interface EditProviderProps {
-  mapInfo?: RouterOutPuts["map"]["getMapInfo"];
   children: React.ReactNode;
 }
 
-const EditProvider = ({ mapInfo, children }: EditProviderProps) => {
+const EditProvider = ({ children }: EditProviderProps) => {
   const store = getEditAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
-  const loadBackupData = useLoadBackupData();
+  const hasUploadPermission = useHasMapUploadPermission();
+  const canUpload = useCanUploadState();
+  const { addTimer, removeTimer } = useTimerRegistration();
+  const pathChangeReset = usePathChangeAtomReset();
+  const windowKeydownEvent = useWindowKeydownEvent();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    window.addEventListener("keydown", windowKeydownEvent);
+    return () => {
+      window.removeEventListener("keydown", windowKeydownEvent);
+    };
+  }, [windowKeydownEvent]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (canUpload) {
+        event.preventDefault();
+        return "このページを離れると、行った変更が保存されない可能性があります。";
+      }
+    };
+
+    if (hasUploadPermission) {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [canUpload, hasUploadPermission]);
 
   useEffect(() => {
     setPreviewVideoState(RESET);
-    loadBackupData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setPreviewVideoState]);
 
-  useSetHydrationState(mapInfo);
+  useEffect(() => {
+    if (!hasUploadPermission) {
+      toast.warning("編集保存権限がないため譜面の更新はできません", {
+        id: NOT_EDIT_PERMISSION_TOAST_ID,
+        duration: Infinity,
+      });
+    } else {
+      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
+    }
+  }, [hasUploadPermission]);
+
+  useEffect(() => {
+    addTimer();
+    return () => {
+      removeTimer();
+      pathChangeReset();
+      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return <JotaiProvider store={store}>{children}</JotaiProvider>;
-};
-
-const useSetHydrationState = (mapInfo: RouterOutPuts["map"]["getMapInfo"] | undefined) => {
-  const store = getEditAtomStore();
-
-  const hydrationState: any[] = [];
-
-  if (mapInfo) {
-    hydrationState
-      .push
-      // [
-      //   mapInfoAtom,
-      //   {
-      //     title: mapInfo.title,
-      //     artist: mapInfo.artist_name,
-      //     creatorId: mapInfo.creator_id,
-      //     creatorComment: mapInfo.creator_comment,
-      //     source: mapInfo.music_source,
-      //     previewTime: mapInfo.preview_time,
-      //   },
-      // ],
-      // [videoIdAtom, videoId],
-      ();
-  } else {
-    hydrationState
-      .push
-      // [
-      //   mapInfoAtom,
-      //   {
-      //     title: geminiQueryData?.title || "",
-      //     artist: geminiQueryData?.artistName || "",
-      //     creatorId: null,
-      //     creatorComment: "",
-      //     source: geminiQueryData?.source || "",
-      //     previewTime: "",
-      //   },
-      // ],
-      // [videoIdAtom, newVideoId],
-      ();
-  }
-
-  useHydrateAtoms(hydrationState, { dangerouslyForceHydrate: true, store });
-};
-
-const useLoadBackupData = () => {
-  const store = getEditAtomStore();
-  const searchParams = useSearchParams();
-  const isBackUp = searchParams.get("backup") === "true";
-  const fetchBackupData = useFetchBackupData();
-  const mapDispatch = useMapReducer();
-  const setCanUpload = useSetCanUpload();
-
-  return () => {
-    if (isBackUp) {
-      fetchBackupData().then((data) => {
-        if (data) {
-          const { id: _, mapData, ...backupInfo } = data;
-
-          // store.set(mapInfoAtom, {
-          //   title: backupInfo.title,
-          //   artist: backupInfo.artistName,
-          //   creatorId: null,
-          //   comment: backupInfo.creatorComment,
-          //   source: backupInfo.musicSource,
-          //   previewTime: backupInfo.previewTime,
-          // });
-
-          // store.set(videoIdAtom, backupInfo.videoId);
-          // store.set(mapTagsAtom, {
-          //   type: "set",
-          //   payload: backupInfo.tags,
-          // });
-          mapDispatch({ type: "replaceAll", payload: mapData });
-          setCanUpload(true);
-        }
-      });
-    }
-  };
 };
 
 export default EditProvider;

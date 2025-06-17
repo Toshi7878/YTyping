@@ -1,4 +1,6 @@
+import { fetchBackupMap } from "@/lib/db";
 import { useTRPC } from "@/trpc/trpc";
+import { queryOptions } from "@tanstack/react-query";
 
 export const useMapQueries = () => {
   const trpc = useTRPC();
@@ -22,5 +24,11 @@ export const useMapQueries = () => {
           gcTime: Infinity,
         },
       ),
+
+    editBackupMap: () =>
+      queryOptions({
+        queryKey: ["backup"],
+        queryFn: fetchBackupMap,
+      }),
   };
 };

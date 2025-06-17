@@ -3,7 +3,7 @@ import { CardWithContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
 import { useEditUtilsParams, usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
-import { NOT_EDIT_PERMISSION_TOAST_ID, TAG_MAX_LEN } from "@/app/edit/_lib/const";
+import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
 import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useUserEditPermission";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -20,13 +20,13 @@ import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { mapInfoFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import z from "zod";
-import { useReadMap } from "../../_lib/atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "../../_lib/atoms/mapReducerAtom";
 import {
   useCanUploadState,
   useReadEditUtils,
@@ -44,9 +44,77 @@ const TabInfoForm = () => {
   const isBackUp = searchParams.get("backup") === "true";
   const newCreateVideoId = searchParams.get("new");
   const hasUploadPermission = useHasMapUploadPermission();
-  const { data: mapInfoData } = useSuspenseQuery(useMapQueries().mapInfo({ mapId: Number(mapId) }));
+
+  const { data: mapInfoData } = useQuery({
+    ...useMapQueries().mapInfo({ mapId: Number(mapId) }),
+    enabled: !!mapId && !isBackUp,
+  });
+
+  const { data: backupMapData } = useQuery({
+    ...useMapQueries().editBackupMap(),
+    enabled: isBackUp,
+  });
+
   const videoId = useVideoIdState();
   const setVideoId = useSetVideoId();
+  const mapDispatch = useMapReducer();
+  const setCanUpload = useSetCanUpload();
+
+  const form = useForm<z.infer<typeof mapInfoFormSchema>>({
+    resolver: zodResolver(mapInfoFormSchema),
+    shouldUnregister: false,
+    defaultValues: {
+      title: "",
+      artist_name: "",
+      music_source: "",
+      preview_time: "",
+      creator_comment: "",
+      tags: [],
+      video_id: newCreateVideoId ?? "",
+    },
+  });
+
+  useEffect(() => {
+    if (mapInfoData && !isBackUp) {
+      form.reset({
+        title: mapInfoData.title,
+        artist_name: mapInfoData.artist_name,
+        music_source: mapInfoData.music_source,
+        preview_time: mapInfoData.preview_time,
+        creator_comment: mapInfoData.creator_comment,
+        tags: mapInfoData.tags,
+        video_id: mapInfoData.video_id,
+      });
+      setVideoId(mapInfoData.video_id);
+    }
+  }, [mapInfoData, isBackUp, form, setVideoId]);
+
+  useEffect(() => {
+    if (backupMapData && isBackUp && newCreateVideoId) {
+      form.reset({
+        title: backupMapData.title,
+        artist_name: backupMapData.artistName,
+        music_source: backupMapData.musicSource,
+        preview_time: backupMapData.previewTime,
+        creator_comment: backupMapData.creatorComment,
+        tags: backupMapData.tags,
+        video_id: newCreateVideoId,
+      });
+      mapDispatch({
+        type: "replaceAll",
+        payload: backupMapData.mapData,
+      });
+      setCanUpload(true);
+      setVideoId(newCreateVideoId);
+    }
+  }, [backupMapData, isBackUp, newCreateVideoId, form, mapDispatch, setCanUpload, setVideoId]);
+
+  useEffect(() => {
+    if (newCreateVideoId && !mapId && !isBackUp) {
+      setVideoId(newCreateVideoId);
+    }
+  }, [newCreateVideoId, mapId, isBackUp, setVideoId]);
+
   const {
     data: geminiInfoData,
     isFetching,
@@ -57,20 +125,6 @@ const TabInfoForm = () => {
       { enabled: !!(videoId && !isBackUp && hasUploadPermission) },
     ),
   );
-
-  const form = useForm<z.infer<typeof mapInfoFormSchema>>({
-    resolver: zodResolver(mapInfoFormSchema),
-    shouldUnregister: false,
-    defaultValues: {
-      title: mapInfoData?.title ?? "",
-      artist_name: mapInfoData?.artist_name ?? "",
-      music_source: mapInfoData?.music_source ?? "",
-      preview_time: mapInfoData?.preview_time ?? "",
-      creator_comment: mapInfoData?.creator_comment ?? "",
-      tags: mapInfoData?.tags ?? ([] as string[]),
-      video_id: mapInfoData?.video_id ?? "",
-    },
-  });
 
   useEffect(() => {
     if (geminiError) {
@@ -90,25 +144,11 @@ const TabInfoForm = () => {
     }
   }, [form, geminiInfoData, newCreateVideoId]);
 
-  useEffect(() => {
-    setVideoId(form.getValues("video_id"));
-  }, [form, setVideoId]);
-
-  useEffect(() => {
-    if (!hasUploadPermission) {
-      toast.warning("編集保存権限がないため譜面の更新はできません", {
-        id: NOT_EDIT_PERMISSION_TOAST_ID,
-        duration: Infinity,
-      });
-    } else {
-      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
-    }
-  }, [hasUploadPermission]);
-
   const onSubmit = useOnSubmit(form);
 
   const isGeminiLoading = isFetching && !!newCreateVideoId;
   const tags = form.watch("tags");
+
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>

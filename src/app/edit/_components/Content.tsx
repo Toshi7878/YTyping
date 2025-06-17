@@ -1,15 +1,8 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
-import { toast } from "sonner";
-import { usePathChangeAtomReset } from "../_lib/atoms/reset";
-import { useCanUploadState, useIsLrcConvertingState, useSetTabName, useTabNameState } from "../_lib/atoms/stateAtoms";
-import { NOT_EDIT_PERMISSION_TOAST_ID, TAB_NAMES } from "../_lib/const";
-import { useWindowKeydownEvent } from "../_lib/hooks/useKeyDown";
-import { useTimerRegistration } from "../_lib/hooks/useTimer";
-import useHasMapUploadPermission from "../_lib/hooks/useUserEditPermission";
+import { useIsLrcConvertingState, useSetTabName, useTabNameState } from "../_lib/atoms/stateAtoms";
+import { TAB_NAMES } from "../_lib/const";
 import EditYouTube from "./EditYouTubePlayer";
 import EditTable from "./map-table/EditTable";
 import TabEditor from "./tab-panels/TabEditor";
@@ -19,47 +12,6 @@ import { TimeRangeAndSpeedChange } from "./TimeRangeAndSpeedChange";
 
 function Content() {
   const isLrcConverting = useIsLrcConvertingState();
-
-  const { addTimer, removeTimer } = useTimerRegistration();
-  const pathChangeReset = usePathChangeAtomReset();
-  const canUpload = useCanUploadState();
-  const hasUploadPermission = useHasMapUploadPermission();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    addTimer();
-    return () => {
-      removeTimer();
-      pathChangeReset();
-      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (canUpload) {
-        event.preventDefault();
-        return "このページを離れると、行った変更が保存されない可能性があります。";
-      }
-    };
-
-    if (hasUploadPermission) {
-      window.addEventListener("beforeunload", handleBeforeUnload);
-    }
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [canUpload, hasUploadPermission]);
-
-  const windowKeydownEvent = useWindowKeydownEvent();
-  useEffect(() => {
-    window.addEventListener("keydown", windowKeydownEvent);
-    return () => {
-      window.removeEventListener("keydown", windowKeydownEvent);
-    };
-  }, [windowKeydownEvent]);
 
   return (
     <LoadingOverlayWrapper active={isLrcConverting} spinner={true} text="Loading..." className="m-auto w-full">
