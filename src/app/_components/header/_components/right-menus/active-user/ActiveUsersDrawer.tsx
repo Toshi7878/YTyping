@@ -1,3 +1,4 @@
+"use client";
 import CompactMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
 import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";

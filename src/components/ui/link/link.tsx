@@ -1,5 +1,6 @@
+"use client";
 import { useCanUploadState } from "@/app/edit/_lib/atoms/stateAtoms";
-import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useUserEditPermission";
+import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useHasMapUploadPermission";
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -16,9 +17,15 @@ export default function Link({ children, ...props }: LinkProps & NextLinkProps &
   const hasUploadPermission = useHasMapUploadPermission();
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname.includes("/user/register")) {
+      e.preventDefault();
+      return;
+    }
+
     if (pathname.includes("/edit") && canUpload && hasUploadPermission) {
       const confirmUpload = window.confirm("このページを離れると、行った変更が保存されない可能性があります。");
       if (!confirmUpload) {
+        e.preventDefault();
         return;
       }
     }

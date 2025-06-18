@@ -16,7 +16,7 @@ const editUtilsAtom = atomWithReset({
   manyPhraseText: "",
   cssTextLength: 0,
   isWordConverting: false,
-  isLrcConverting: false,
+  showLoadingOverlay: false,
   isTimeInputValid: true,
   isUpdateUpdatedAt: false,
   canUpload: false,
@@ -29,7 +29,7 @@ const directEditingIndexAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("d
 const manyPhraseTextAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("manyPhraseText"));
 const cssTextLengthAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("cssTextLength"));
 const isWordConvertingAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("isWordConverting"));
-const isLrcConvertingAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("isLrcConverting"));
+const showLoadingOverlayAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("showLoadingOverlay"));
 export const isTimeInputValidAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("isTimeInputValid"));
 const isUpdateUpdatedAtAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("isUpdateUpdatedAt"));
 const canUploadAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("canUpload"));
@@ -62,8 +62,12 @@ export const useSetCssLength = () => useSetAtom(cssTextLengthAtom, { store });
 export const useIsWordConvertingState = () => useAtomValue(isWordConvertingAtom, { store });
 export const useSetIsWordConverting = () => useSetAtom(isWordConvertingAtom, { store });
 
-export const useIsLrcConvertingState = () => useAtomValue(isLrcConvertingAtom, { store });
-export const useSetIsLrcConverting = () => useSetAtom(isLrcConvertingAtom, { store });
+export const useLoadingOverlayState = () => useAtomValue(showLoadingOverlayAtom, { store });
+export const useLoadingOverlay = () => {
+  const showLoadingOverlay = () => store.set(showLoadingOverlayAtom, true);
+  const hideLoadingOverlay = () => store.set(showLoadingOverlayAtom, false);
+  return { showLoadingOverlay, hideLoadingOverlay };
+};
 
 export const useCanUploadState = () => useAtomValue(canUploadAtom, { store });
 export const useSetCanUpload = () => useSetAtom(canUploadAtom, { store });

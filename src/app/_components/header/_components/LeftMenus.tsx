@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,13 +9,10 @@ import Link from "@/components/ui/link/link";
 import { leftLink, leftMenuItem } from "@/config/headerNav";
 import { ChevronDown } from "lucide-react";
 
-import { usePathname } from "next/navigation";
-
 export const SiteLogo = () => {
-  const pathname = usePathname();
   return (
     <Link
-      href={pathname === "/user/register" ? "/user/register" : "/"}
+      href="/"
       className="hover:bg-secondary/30 relative top-[-2.5px] px-2 text-2xl font-bold transition-colors duration-200"
     >
       <span>Y</span>

@@ -22,8 +22,8 @@ import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
 import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useReadTimeOffsetState } from "../atoms/storageAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
+import useHasMapUploadPermission from "./useHasMapUploadPermission";
 import useTimeValidate from "./useTimeValidate";
-import useHasMapUploadPermission from "./useUserEditPermission";
 import { useWordConverter } from "./useWordConverter";
 
 export const useLineAddButtonEvent = () => {

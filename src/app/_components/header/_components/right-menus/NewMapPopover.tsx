@@ -1,5 +1,4 @@
 "use client";
-
 import CreatedCheck from "@/components/share-components/CreatedCheck";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -17,30 +16,13 @@ import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
 import { extractYouTubeVideoId } from "../../../../../utils/extractYTId";
 
-export default function NewMapPopover() {
-  return (
-    <CreateNewMapModal
-      trigger={
-        <Button variant="unstyled" size="icon" className="hover:text-foreground">
-          <RiAddBoxFill size={20} />
-        </Button>
-      }
-    />
-  );
-}
-
-// Zodスキーマを定義
 const formSchema = z.object({
   videoId: z.string(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-interface CreateNewMapModalProps {
-  trigger: React.ReactNode;
-}
-
-function CreateNewMapModal({ trigger }: CreateNewMapModalProps) {
+export default function NewMapPopover() {
   const [open, setOpen] = useState(false);
   const backupData = useGetBackupTitleVideoIdLiveQuery();
   const router = useRouter();
@@ -65,9 +47,13 @@ function CreateNewMapModal({ trigger }: CreateNewMapModalProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <TooltipWrapper label="譜面新規作成" delayDuration={600}>
-        <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+        <PopoverTrigger asChild>
+          <Button variant="unstyled" size="icon" className="hover:text-foreground">
+            <RiAddBoxFill size={20} />
+          </Button>
+        </PopoverTrigger>
       </TooltipWrapper>
-      <PopoverContent className="w-[640px]" side="bottom" align="end" sideOffset={8}>
+      <PopoverContent className="w-[640px] p-1" side="bottom" align="end" sideOffset={8}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
             <h2 className="text-lg font-semibold">譜面新規作成</h2>

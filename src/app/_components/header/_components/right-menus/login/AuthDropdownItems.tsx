@@ -1,19 +1,9 @@
-"use client";
-
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { handleSignIn } from "@/server/actions/authActions";
-import { AuthProvider } from "@/types/next-auth";
-import { signOut } from "next-auth/react";
-import { useActionState } from "react";
+import { signIn, signOut } from "next-auth/react";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
 
 export const SignInDropdownItems = () => {
-  const [, formAction] = useActionState(async (state: void | null, provider: AuthProvider) => {
-    await handleSignIn(provider);
-    return null;
-  }, null);
-
   const items = [
     {
       text: "Discordでログイン",
@@ -34,8 +24,8 @@ export const SignInDropdownItems = () => {
       {items.map((item) => (
         <DropdownMenuItem
           key={item.provider}
-          onClick={() => {
-            formAction(item.provider as AuthProvider);
+          onClick={async () => {
+            await signIn(item.provider);
           }}
           className={cn("flex w-full items-center gap-3 p-3 px-6 text-white", item.hover)}
         >
@@ -48,18 +38,5 @@ export const SignInDropdownItems = () => {
 };
 
 export const LogOutDropdownItem = () => {
-  const [, formAction] = useActionState(async (state: void | null) => {
-    await signOut({ redirect: false });
-    return null;
-  }, null);
-
-  return (
-    <DropdownMenuItem
-      onClick={() => {
-        formAction();
-      }}
-    >
-      ログアウト
-    </DropdownMenuItem>
-  );
+  return <DropdownMenuItem onClick={async () => await signOut({ redirect: false })}>ログアウト</DropdownMenuItem>;
 };

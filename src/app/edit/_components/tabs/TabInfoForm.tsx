@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { useEditUtilsParams, usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
 import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
-import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useUserEditPermission";
+import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useHasMapUploadPermission";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
