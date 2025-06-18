@@ -1,5 +1,6 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
 import { CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface ResultInnerCardBodyWrapperProps {
   children: React.ReactNode;
@@ -7,24 +8,24 @@ interface ResultInnerCardBodyWrapperProps {
 }
 
 const ResultInnerCardBodyWrapper = ({ children, result }: ResultInnerCardBodyWrapperProps) => {
-  const src =
-    result?.map.thumbnail_quality === "maxresdefault"
+  const src = result
+    ? result.map.thumbnail_quality === "maxresdefault"
       ? `https://i.ytimg.com/vi_webp/${result.map.video_id}/maxresdefault.webp`
-      : `https://i.ytimg.com/vi/${result?.map.video_id}/mqdefault.jpg`;
+      : `https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg`
+    : null;
 
-  const backgroundStyle = result
-    ? {
-        background: `linear-gradient(to right, hsl(var(--background)), hsl(var(--background) / 0.87)), url(${src})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }
-    : {
-        background: "hsl(var(--background))",
-      };
+  const backgroundImageStyle = src ? ({ backgroundImage: `url(${src})` } as React.CSSProperties) : {};
 
   return (
-    <CardContent className="mx-6 flex items-start rounded-lg p-0" style={backgroundStyle}>
-      {children}
+    <CardContent
+      variant="result"
+      className={cn(
+        src ? "bg-cover bg-center bg-no-repeat" : "bg-background",
+      )}
+      style={backgroundImageStyle}
+    >
+      {src && <div className="from-background/95 to-background/70 absolute inset-0 bg-gradient-to-r" />}
+      <div className="relative z-10">{children}</div>
     </CardContent>
   );
 };

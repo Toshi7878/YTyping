@@ -70,6 +70,26 @@ function CardContent({
   return <div data-slot="card-content" className={cn(cardContentVariants({ variant }), className)} {...props} />;
 }
 
+const CardContentWithThumbnail = ({
+  children,
+  src,
+  className,
+  ...props
+}: { src: string | null } & React.ComponentProps<typeof CardContent>) => {
+  const backgroundImageStyle = src ? ({ backgroundImage: `url(${src})` } as React.CSSProperties) : {};
+
+  return (
+    <CardContent
+      className={cn("relative mx-6 flex rounded-sm py-4", src ? "bg-cover bg-center bg-no-repeat" : "", className)}
+      style={backgroundImageStyle}
+      {...props}
+    >
+      {src && <div className="from-background/95 to-background/70 absolute inset-0 rounded-sm bg-gradient-to-r" />}
+      <div className="z-10">{children}</div>
+    </CardContent>
+  );
+};
+
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div data-slot="card-footer" className={cn("flex items-center px-6 [.border-t]:pt-6", className)} {...props} />
@@ -95,4 +115,14 @@ function CardWithContent({ className, variant, children, ...props }: CardWithCon
   );
 }
 
-export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardWithContent };
+export {
+  Card,
+  CardAction,
+  CardContent,
+  CardContentWithThumbnail,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardWithContent,
+};

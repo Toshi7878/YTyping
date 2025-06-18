@@ -7,8 +7,8 @@ import { MapResultBadgesMobile } from "./child/child/MapResultBadgesLayout";
 
 function ResultSkeletonCard() {
   return (
-    <Card className="bg-card transition-shadow duration-300 hover:shadow-lg">
-      <CardHeader className="mx-2 rounded-md py-3">
+    <Card className="map-card-hover transition-shadow duration-300">
+      <CardHeader className="mx-2 flex flex-row justify-between rounded-md py-3">
         <ResultCardHeader />
       </CardHeader>
 
