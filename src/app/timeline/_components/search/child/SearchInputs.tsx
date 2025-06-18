@@ -34,7 +34,6 @@ const SearchInputs = () => {
       params.delete(PARAM_NAME.username);
     }
 
-    // 更新後のパラメータが現在のURLと同じ場合は何もしない
     const updatedParams = rangeParams(params).toString();
     const currentParams = searchParams.toString();
 
