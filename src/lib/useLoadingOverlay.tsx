@@ -1,63 +1,17 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React from "react";
+import { useLoadingState } from "./globalAtoms";
 
-interface LoadingState {
-  count: number;
-  message?: string;
-}
-
-interface LoadingContextType {
-  isLoading: boolean;
-  message?: string;
-  showLoading: (message?: string) => void;
-  hideLoading: () => void;
-}
-
-const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
-
-interface LoadingProviderProps {
-  children: React.ReactNode;
-}
-
-export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) => {
-  const [loadingState, setLoadingState] = useState<LoadingState>({ count: 0 });
-
-  const showLoading = useCallback((message?: string) => {
-    setLoadingState((prev) => ({
-      count: prev.count + 1,
-      message: message || prev.message,
-    }));
-  }, []);
-
-  const hideLoading = useCallback(() => {
-    setLoadingState((prev) => ({
-      count: Math.max(0, prev.count - 1),
-      message: prev.count <= 1 ? undefined : prev.message,
-    }));
-  }, []);
-
-  const value = {
-    isLoading: loadingState.count > 0,
-    message: loadingState.message,
-    showLoading,
-    hideLoading,
-  };
+export const LoadingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { message, isLoading } = useLoadingState();
 
   return (
-    <LoadingContext.Provider value={value}>
+    <>
       {children}
-      <LoadingOverlay isLoading={loadingState.count > 0} message={loadingState.message} />
-    </LoadingContext.Provider>
+      <LoadingOverlay isLoading={isLoading} message={message} />
+    </>
   );
-};
-
-export const useLoadingOverlay = () => {
-  const context = useContext(LoadingContext);
-  if (!context) {
-    throw new Error("useLoadingOverlay must be used within a LoadingProvider");
-  }
-  return context;
 };
 
 interface LoadingOverlayProps {

@@ -37,3 +37,27 @@ const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 
 export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom, { store });
 export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom, { store });
+
+interface LoadingState {
+  isLoading: boolean;
+  message?: string;
+}
+
+const loadingStateAtom = atom<LoadingState>({ isLoading: false });
+
+const showLoadingAtom = atom(null, (_get, set, message?: string) => {
+  set(loadingStateAtom, { isLoading: true, message });
+});
+
+const hideLoadingAtom = atom(null, (_get, set) => {
+  set(loadingStateAtom, { isLoading: false });
+});
+
+export const useLoadingState = () => useAtomValue(loadingStateAtom, { store });
+
+export const useLoadingOverlay = () => {
+  return {
+    showLoading: useSetAtom(showLoadingAtom, { store }),
+    hideLoading: useSetAtom(hideLoadingAtom, { store }),
+  };
+};
