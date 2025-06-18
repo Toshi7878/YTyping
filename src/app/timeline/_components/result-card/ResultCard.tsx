@@ -14,7 +14,7 @@ function ResultCard(props: ResultCardProps) {
   const { result } = props;
 
   return (
-    <Card className="bg-card transition-shadow duration-300 hover:shadow-lg">
+    <Card className="map-card-hover transition-shadow duration-300">
       <CardHeader className="mx-2 rounded-md py-3">
         <ResultCardHeader result={result} />
       </CardHeader>

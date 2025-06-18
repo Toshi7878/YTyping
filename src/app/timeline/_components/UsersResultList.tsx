@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
 import ResultCard from "./result-card/ResultCard";
-import ResultCardLayout from "./result-card/ResultCardLayout";
 import ResultSkeletonCard from "./result-card/ResultSkeletonCard";
 
 function LoadingResultCard({ cardLength }: { cardLength: number }) {
@@ -59,5 +58,9 @@ function UsersResultList() {
     </section>
   );
 }
+
+const ResultCardLayout = ({ children }: { children: React.ReactNode }) => {
+  return <div className="mb-3 grid grid-cols-1 gap-3">{children}</div>;
+};
 
 export default UsersResultList;

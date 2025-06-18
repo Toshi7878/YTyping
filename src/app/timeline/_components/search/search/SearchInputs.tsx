@@ -59,9 +59,9 @@ const SearchInputs = () => {
         }}
       />
       <Input
+        value={keyword.userName}
         placeholder="ユーザーネームで絞り込み"
         type="search"
-        value={keyword.userName}
         onChange={(e) => setKeyword((prev) => ({ ...prev, userName: e.target.value }))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {

@@ -1,8 +1,8 @@
 "use client";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import { usePreviewPlayerState } from "@/lib/globalAtoms";
-import SearchInputs from "./child/SearchInputs";
-import SearchModal from "./child/SearchModal";
+import SearchInputs from "./search/SearchInputs";
+import SearchPopover from "./search/SearchPopover";
 
 const SearchContent = () => {
   const player = usePreviewPlayerState();
@@ -14,7 +14,7 @@ const SearchContent = () => {
           <SearchInputs />
         </div>
         <div className="flex justify-between">
-          <SearchModal />
+          <SearchPopover />
           <VolumeRange player={player} />
         </div>
       </div>
