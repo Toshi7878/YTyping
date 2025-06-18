@@ -1,13 +1,12 @@
 "use client";
-import { useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
+import { useSetPreviewVideo } from "@/lib/globalAtoms";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET } from "jotai/utils";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
-import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { toast } from "sonner";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
-import { useCanUploadState, useLoadingOverlayState } from "../_lib/atoms/stateAtoms";
+import { useCanUploadState } from "../_lib/atoms/stateAtoms";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
 import useHasMapUploadPermission from "../_lib/hooks/useHasMapUploadPermission";
@@ -77,13 +76,7 @@ const EditProvider = ({ children }: EditProviderProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const isLoadingOverlay = useLoadingOverlayState();
-  return (
-    <JotaiProvider store={store}>
-      <LoadingOverlayWrapper active={isLoadingOverlay} spinner={true} text="Loading..." className="m-auto w-full" />
-      {children}
-    </JotaiProvider>
-  );
+  return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };
 
 export default EditProvider;

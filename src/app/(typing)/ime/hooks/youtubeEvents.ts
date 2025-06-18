@@ -1,4 +1,4 @@
-import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
+import { useVolumeState } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { usePlayer } from "../atom/refAtoms";
 import { useReadScene } from "../atom/stateAtoms";

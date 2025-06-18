@@ -1,6 +1,6 @@
 "use client";
 import VolumeRange from "@/components/share-components/VolumeRange";
-import { usePreviewPlayerState } from "@/lib/global-atoms/globalAtoms";
+import { usePreviewPlayerState } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import FilterContents from "./search/FilterContents";

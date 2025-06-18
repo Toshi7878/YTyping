@@ -1,12 +1,12 @@
 "use client";
-import { useLoadingOverlay } from "@/app/edit/_lib/atoms/stateAtoms";
 import { useImportMapFile } from "@/app/edit/_lib/hooks/importMapFile";
 import { Button } from "@/components/ui/button";
+import { useLoadingOverlay } from "@/lib/useLoadingOverlay";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useRef } from "react";
 
 export default function LrcConvertButton() {
-  const { showLoadingOverlay, hideLoadingOverlay } = useLoadingOverlay();
+  const { showLoading, hideLoading } = useLoadingOverlay();
   const toast = useCustomToast();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -21,7 +21,7 @@ export default function LrcConvertButton() {
         onChange={async (e) => {
           const file = e.target.files![0];
           try {
-            showLoadingOverlay();
+            showLoading("lrcインポート中...");
 
             await importMapFile(file);
             toast({ type: "success", title: "lrcインポート完了" });
@@ -33,7 +33,7 @@ export default function LrcConvertButton() {
             });
           } finally {
             e.target.value = "";
-            hideLoadingOverlay();
+            hideLoading();
           }
         }}
       />

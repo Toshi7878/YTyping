@@ -1,5 +1,5 @@
 import { PREVIEW_DISABLE_PATHNAMES } from "@/config/consts/globalConst";
-import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
+import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { RESET } from "jotai/utils";

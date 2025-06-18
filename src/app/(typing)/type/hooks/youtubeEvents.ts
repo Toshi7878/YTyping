@@ -1,4 +1,4 @@
-import { useVolumeState } from "@/lib/global-atoms/globalAtoms";
+import { useVolumeState } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { useGameUtilityReferenceParams, useLineCount, usePlayer, useProgress, useYTStatus } from "../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";

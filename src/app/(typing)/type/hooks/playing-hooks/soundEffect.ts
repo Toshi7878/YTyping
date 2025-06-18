@@ -1,4 +1,4 @@
-import { useVolumeStateRef } from "@/lib/global-atoms/globalAtoms";
+import { useVolumeStateRef } from "@/lib/globalAtoms";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";

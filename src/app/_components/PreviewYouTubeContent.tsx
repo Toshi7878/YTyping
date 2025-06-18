@@ -1,8 +1,8 @@
 "use client";
-
+import { RESET } from "jotai/utils";
 import { useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { usePreviewVideoState, useSetPreviewPlayer, useVolumeState } from "../../lib/global-atoms/globalAtoms";
+import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/globalAtoms";
 
 const PreviewYouTubeContent = function YouTubeContent() {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
@@ -57,9 +57,6 @@ const PreviewYouTubeContent = function YouTubeContent() {
     />
   );
 };
-
-import { RESET } from "jotai/utils";
-import { useSetPreviewVideo } from "../../lib/global-atoms/globalAtoms";
 
 const usePreviewYouTubeKeyDown = () => {
   const setPreviewVideo = useSetPreviewVideo();

@@ -9,7 +9,7 @@ import Link from "@/components/ui/link/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useOnlineUsersState } from "@/lib/global-atoms/globalAtoms";
+import { useOnlineUsersState } from "@/lib/globalAtoms";
 import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";

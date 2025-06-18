@@ -1,5 +1,5 @@
 "use client";
-import { useSetVolume, useVolumeState } from "@/lib/global-atoms/globalAtoms";
+import { useSetVolume, useVolumeState } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";

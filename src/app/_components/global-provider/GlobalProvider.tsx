@@ -1,4 +1,5 @@
 "use client";
+import { LoadingProvider } from "@/lib/useLoadingOverlay";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
@@ -19,7 +20,7 @@ const ClientProvider = ({ children }: ClientProviderProps) => {
     }
   }, [pathname]);
 
-  return <>{children}</>;
+  return <LoadingProvider>{children}</LoadingProvider>;
 };
 
 export default ClientProvider;

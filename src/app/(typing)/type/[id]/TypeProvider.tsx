@@ -1,5 +1,5 @@
 "use client";
-import { useSetPreviewVideo } from "@/lib/global-atoms/globalAtoms";
+import { useSetPreviewVideo } from "@/lib/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
@@ -19,7 +19,7 @@ const TypeProvider = ({ mapInfo, userTypingOptions, children }: TypeProviderProp
 
   useHydrateAtoms(
     [[mapInfoAtom, mapInfo], ...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : [])],
-    { dangerouslyForceHydrate: true, store: typeAtomStore }
+    { dangerouslyForceHydrate: true, store: typeAtomStore },
   );
 
   useEffect(() => {

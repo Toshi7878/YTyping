@@ -1,4 +1,4 @@
-import { useSetOnlineUsers } from "@/lib/global-atoms/globalAtoms";
+import { useSetOnlineUsers } from "@/lib/globalAtoms";
 import { supabase } from "@/lib/supabaseClient";
 import { ActiveUserStatus } from "@/types/global-types";
 import { useUserOptionsQueries } from "@/utils/queries/userOptions.queries";
