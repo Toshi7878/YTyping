@@ -9,7 +9,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
 
   const volume = useVolumeState();
   const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
-  const setPreviewPlayerState = useSetPreviewPlayer();
+  const setPreviewPlayer = useSetPreviewPlayer();
 
   useEffect(() => {
     window.addEventListener("keydown", previewYouTubeKeyDown);
@@ -29,7 +29,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
     player.setVolume(volume);
     player.seekTo(Number(previewTime), true);
     player.playVideo();
-    setPreviewPlayerState(player);
+    setPreviewPlayer(player);
   };
 
   const onPlay = (event: YouTubeEvent) => {

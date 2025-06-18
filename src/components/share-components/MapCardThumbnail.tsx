@@ -5,7 +5,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { RESET } from "jotai/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 
 const mapLeftThumbnailVariants = cva("relative", {
@@ -64,25 +64,21 @@ interface ThumbnailPreviewCoverProps {
 
 const ThumbnailPreviewCover = ({ mapVideoId, mapPreviewTime, mapPreviewSpeed = 1 }: ThumbnailPreviewCoverProps) => {
   const { videoId } = usePreviewVideoState();
-  const setPreviewVideoState = useSetPreviewVideo();
+  const setPreviewVideo = useSetPreviewVideo();
   const [isTouchMove, setIsTouchMove] = useState(false);
 
-  const previewYouTube = useCallback(
-    () => {
-      if (mapVideoId !== videoId) {
-        setPreviewVideoState((prev) => ({
-          ...prev,
-          videoId: mapVideoId,
-          previewTime: mapPreviewTime,
-          previewSpeed: mapPreviewSpeed.toString(),
-        }));
-      } else {
-        setPreviewVideoState(RESET);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId],
-  );
+  const previewYouTube = () => {
+    if (mapVideoId !== videoId) {
+      setPreviewVideo((prev) => ({
+        ...prev,
+        videoId: mapVideoId,
+        previewTime: mapPreviewTime,
+        previewSpeed: mapPreviewSpeed.toString(),
+      }));
+    } else {
+      setPreviewVideo(RESET);
+    }
+  };
 
   const handleTouchMove = () => {
     setIsTouchMove(true);

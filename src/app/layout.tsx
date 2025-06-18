@@ -10,7 +10,7 @@ import TRPCProvider from "@/trpc/provider";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
-import ClientProvider from "./_components/global-provider/GlobalProvider";
+import GlobalProvider from "./_components/global-provider/GlobalProvider";
 
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
 
@@ -41,7 +41,7 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <TRPCProvider>
             <Header />
-            <ClientProvider>
+            <GlobalProvider>
               <main
                 className="mx-auto flex min-h-screen max-w-[1300px] flex-col items-center justify-between px-0 pt-12 sm:px-6 md:pt-16 lg:px-8"
                 id="main_content"
@@ -49,7 +49,7 @@ export default async function RootLayout({
                 {children}
               </main>
               <PreviewYouTubeContent />
-            </ClientProvider>
+            </GlobalProvider>
           </TRPCProvider>
         </SessionProvider>
         <Toaster />

@@ -1,13 +1,15 @@
 "use client";
+import { getGlobalStore } from "@/lib/globalAtoms";
 import { LoadingProvider } from "@/lib/useLoadingOverlay";
+import { Provider as JotaiProvider } from "jotai";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-interface ClientProviderProps {
+interface GlobalProviderProps {
   children: React.ReactNode;
 }
 
-const ClientProvider = ({ children }: ClientProviderProps) => {
+const GlobalProvider = ({ children }: GlobalProviderProps) => {
   const pathname = usePathname();
 
   useEffect(() => {
@@ -20,7 +22,11 @@ const ClientProvider = ({ children }: ClientProviderProps) => {
     }
   }, [pathname]);
 
-  return <LoadingProvider>{children}</LoadingProvider>;
+  return (
+    <LoadingProvider>
+      <JotaiProvider store={getGlobalStore()}>{children}</JotaiProvider>
+    </LoadingProvider>
+  );
 };
 
-export default ClientProvider;
+export default GlobalProvider;
