@@ -1,4 +1,6 @@
 "use client";
+import Spinner from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 import { resultListQueries } from "@/utils/queries/resultList.queries";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
@@ -6,17 +8,6 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
 import ResultCard from "./result-card/ResultCard";
-import ResultSkeletonCard from "./result-card/ResultSkeletonCard";
-
-function LoadingResultCard({ cardLength }: { cardLength: number }) {
-  return (
-    <ResultCardLayout>
-      {[...Array(cardLength)].map((_, index) => (
-        <ResultSkeletonCard key={index} />
-      ))}
-    </ResultCardLayout>
-  );
-}
 
 function UsersResultList() {
   const searchParams = useSearchParams();
@@ -45,22 +36,11 @@ function UsersResultList() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <section className={`${isSearching ? "opacity-20" : "opacity-100"}`}>
-      <ResultCardLayout>
-        {data?.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
-      </ResultCardLayout>
-
-      {hasNextPage && (
-        <div ref={ref}>
-          <LoadingResultCard cardLength={1} />
-        </div>
-      )}
+    <section className={cn("grid grid-cols-1 gap-3", isSearching ? "opacity-20" : "opacity-100")}>
+      {data?.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
+      {hasNextPage && <Spinner ref={ref} />}
     </section>
   );
 }
-
-const ResultCardLayout = ({ children }: { children: React.ReactNode }) => {
-  return <div className="mb-3 grid grid-cols-1 gap-3">{children}</div>;
-};
 
 export default UsersResultList;

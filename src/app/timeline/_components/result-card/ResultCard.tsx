@@ -1,4 +1,3 @@
-"use client";
 import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
@@ -16,22 +15,21 @@ interface ResultCardProps {
 function ResultCard(props: ResultCardProps) {
   const { result } = props;
 
-  const src = result
-    ? result.map.thumbnail_quality === "maxresdefault"
+  const src =
+    result.map.thumbnail_quality === "maxresdefault"
       ? `https://i.ytimg.com/vi_webp/${result.map.video_id}/maxresdefault.webp`
-      : `https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg`
-    : null;
+      : `https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg`;
 
   return (
-    <Card className="map-card-hover block py-0 transition-shadow duration-300">
-      <ResultCardHeader result={result} className="py-4" />
+    <Card className="map-card-hover block w-full py-0 transition-shadow duration-300">
+      <ResultCardHeader result={result} className="mx-0 py-4 md:mx-6" />
 
-      <CardContentWithThumbnail src={src}>
-        {result && <MapIcons result={result} bottom="25px" left="35px" className="hidden md:flex" />}
+      <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
         <ResultInnerCardBody result={result} />
+        <MapIcons result={result} className="absolute bottom-1 z-2 hidden md:flex" />
       </CardContentWithThumbnail>
 
-      <CardFooter className="pb-6">
+      <CardFooter className="py-4">
         <MapResultBadgesMobile result={result} className="flex md:hidden" />
       </CardFooter>
     </Card>
@@ -48,15 +46,12 @@ interface MapIconsProps extends HTMLAttributes<HTMLDivElement> {
 
 const MapIcons = ({
   result,
-  top = "auto",
-  right = "auto",
-  bottom = "auto",
-  left = "auto",
+
   className,
   ...rest
 }: MapIconsProps) => {
   return (
-    <div className={cn("absolute z-[2]", className)} style={{ top, right, bottom, left }} {...rest}>
+    <div className={cn(className)} {...rest}>
       <RankingCountIcon myRank={result.map.results[0]?.rank} rankingCount={result.map.ranking_count} />
       <LikeCountIcon
         mapId={result.map.id}

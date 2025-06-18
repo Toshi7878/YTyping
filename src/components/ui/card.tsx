@@ -75,18 +75,18 @@ const CardContentWithThumbnail = ({
   src,
   className,
   ...props
-}: { src: string | null } & React.ComponentProps<typeof CardContent>) => {
-  const backgroundImageStyle = src ? ({ backgroundImage: `url(${src})` } as React.CSSProperties) : {};
-
+}: { src: string } & React.ComponentProps<typeof CardContent>) => {
   return (
-    <CardContent
-      className={cn("relative mx-6 flex rounded-sm py-4", src ? "bg-cover bg-center bg-no-repeat" : "", className)}
-      style={backgroundImageStyle}
+    <div
+      data-slot="card-content"
+      className={cn("rounded-sm px-4 py-4", className)}
+      style={{
+        background: `linear-gradient(to right, var(--color-background), color-mix(in oklch, var(--color-background) 80.7%, transparent)), url(${src}) center center / cover no-repeat`,
+      }}
       {...props}
     >
-      {src && <div className="from-background/95 to-background/70 absolute inset-0 rounded-sm bg-gradient-to-r" />}
-      <div className="z-10">{children}</div>
-    </CardContent>
+      {children}
+    </div>
   );
 };
 

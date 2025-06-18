@@ -26,15 +26,16 @@ interface MapLeftThumbnailPreviewCoverProps {
   mapPreviewTime?: string;
   mapPreviewSpeed?: number;
   size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
+  className?: string;
 }
 const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { src = "", alt = "", mapVideoId, mapPreviewTime, mapPreviewSpeed = 1, size, ...rest } = props;
+  const { src = "", alt = "", mapVideoId, mapPreviewTime, mapPreviewSpeed = 1, size, className, ...rest } = props;
 
   const pathname = usePathname();
   const pathSegment = pathname.split("/")[1];
 
   return (
-    <div className="group relative my-auto select-none" {...rest}>
+    <div className={cn("group relative my-auto select-none", className)} {...rest}>
       {src ? (
         <div className={cn(mapLeftThumbnailVariants({ size }))}>
           <Image unoptimized loading="lazy" alt={alt} src={src} fill className="rounded-md" />

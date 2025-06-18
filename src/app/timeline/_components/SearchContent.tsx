@@ -8,15 +8,12 @@ const SearchContent = () => {
   const player = usePreviewPlayerState();
 
   return (
-    <section className="mb-4 flex w-full items-center">
-      <div className="w-full">
-        <div className="mb-3">
-          <SearchInputs />
-        </div>
-        <div className="flex justify-between">
-          <SearchPopover />
-          <VolumeRange player={player} />
-        </div>
+    <section className="space-y-6">
+      <SearchInputs />
+
+      <div className="flex justify-between">
+        <SearchPopover />
+        <VolumeRange player={player} />
       </div>
     </section>
   );

@@ -1,42 +1,34 @@
 import { ResultCardInfo } from "@/app/timeline/ts/type";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import { Badge } from "@/components/ui/badge";
 import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { HTMLAttributes } from "react";
-import { MapResultBadges } from "./child/MapResultBadgesLayout";
-import UserRank from "./child/UserRank";
+import { MapResultStatus } from "./child/MapResultBadgesLayout";
 
-const ResultInnerCardBody = ({ result }: { result?: ResultCardInfo }) => {
-  const isToggledInputMode = result?.status.roma_type != 0 && result?.status.kana_type != 0;
+const ResultInnerCardBody = ({ result }: { result: ResultCardInfo }) => {
+  const isToggledInputMode = result.status.roma_type != 0 && result.status.kana_type != 0;
 
   return (
-    <div className="z-0 flex min-w-full flex-row items-center justify-between py-6">
-      <div className="flex w-full flex-row gap-4">
-        {result && <UserRank userRank={result.rank} className="hidden md:flex" />}
+    <div className="flex w-full items-center gap-4 py-6">
+      <Badge variant="result" className="hidden font-bold md:flex" size="lg">
+        Rank: #{result.rank}
+      </Badge>
 
-        <MapLeftThumbnail
-          alt={result ? result.map.title : ""}
-          src={result ? `https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg` : ""}
-          mapVideoId={result?.map.video_id}
-          mapPreviewTime={result?.map.preview_time}
-          mapPreviewSpeed={result?.status.default_speed}
-          size="timeline"
-        />
+      <MapLeftThumbnail
+        alt={result.map.title}
+        src={`https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg`}
+        mapVideoId={result?.map.video_id}
+        mapPreviewTime={result?.map.preview_time}
+        mapPreviewSpeed={result?.status.default_speed}
+        size="timeline"
+      />
 
-        {result && (
-          <MapInfo
-            map={result.map}
-            isToggledInputMode={isToggledInputMode}
-            className="overflow-hidden text-ellipsis whitespace-nowrap"
-          />
-        )}
+      <MapInfo map={result.map} isToggledInputMode={isToggledInputMode} className="flex-1" />
 
-        <div className="ml-auto hidden justify-end md:flex">
-          <MapResultBadges result={result} />
-        </div>
-      </div>
+      <MapResultStatus result={result} className="hidden md:flex" />
     </div>
   );
 };
@@ -50,21 +42,17 @@ function MapInfo({ map, isToggledInputMode, className, ...rest }: MapInfoProps) 
   const handleLinkClick = useLinkClick();
 
   return (
-    <div className={cn("mt-2 mb-3 flex flex-col justify-between", className)} {...rest}>
+    <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
       <TooltipWrapper label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}>
-        <Link href={`/type/${map.id}`} onClick={handleLinkClick} className="text-secondary hover:underline">
-          <div className="overflow-hidden text-base font-bold text-ellipsis whitespace-nowrap">
-            {`${map.title} / ${map.artist_name}`}
-          </div>
+        <Link href={`/type/${map.id}`} onClick={handleLinkClick} className="text-secondary block hover:underline">
+          <div className="truncate text-sm font-bold sm:text-base">{`${map.title} / ${map.artist_name}`}</div>
         </Link>
       </TooltipWrapper>
-      <div className="text-xs">
-        <span>
-          制作者:{" "}
-          <Link href={`/user/${map.creator.id}`} onClick={handleLinkClick} className="text-secondary hover:underline">
-            {map.creator.name}
-          </Link>
-        </span>
+      <div className="truncate text-xs">
+        制作者:{" "}
+        <Link href={`/user/${map.creator.id}`} onClick={handleLinkClick} className="text-secondary hover:underline">
+          {map.creator.name}
+        </Link>
       </div>
     </div>
   );

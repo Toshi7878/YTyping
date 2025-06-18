@@ -6,33 +6,22 @@ import { cn } from "@/lib/utils";
 import ResultClapButton from "./child/ResultClapButton";
 
 interface ResultCardHeaderProps {
-  result?: ResultCardInfo;
+  result: ResultCardInfo;
   className?: string;
 }
 
 const ResultCardHeader = ({ result, className }: ResultCardHeaderProps) => {
   return (
-    <CardHeader className={cn("mx-6 flex justify-between", className)}>
-      <ResultUserName result={result} />
-      <ResultClapButton resultId={result?.id} clapCount={result?.clap_count} hasClap={result?.hasClap} />
+    <CardHeader className={cn("flex items-center justify-between", className)}>
+      <div className="flex flex-row items-center gap-2">
+        <Link href={`/user/${result.player.id}`} className="text-secondary max-w-32 truncate font-bold hover:underline">
+          {result.player.name}
+        </Link>
+        {" - "}
+        <DateDistanceText date={new Date(result.updated_at)} />
+      </div>
+      <ResultClapButton resultId={result.id} clapCount={result.clap_count} hasClap={result.hasClap} />
     </CardHeader>
-  );
-};
-
-const ResultUserName = ({ result }: { result?: ResultCardInfo }) => {
-  return (
-    <div className="flex flex-row items-center gap-2">
-      {result ? (
-        <>
-          <Link href={`/user/${result.player.id}`} className="text-secondary font-bold hover:underline">
-            {result.player.name}
-          </Link>{" "}
-          - <DateDistanceText date={new Date(result.updated_at)} />
-        </>
-      ) : (
-        ""
-      )}
-    </div>
   );
 };
 
