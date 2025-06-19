@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { useLoadingState } from "./globalAtoms";
+import { useLoadingState, useLoadingOverlay } from "./globalAtoms";
+
+export { useLoadingOverlay };
 
 export const LoadingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { message, isLoading, hideSpinner } = useLoadingState();

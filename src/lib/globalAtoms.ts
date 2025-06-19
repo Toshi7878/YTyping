@@ -56,7 +56,7 @@ export const useLoadingOverlay = () => {
   const setLoadingState = useSetAtom(loadingStateAtom, { store });
 
   const showLoading = useCallback(
-    (message?: ReactNode, hideSpinner = false) => {
+    ({ message, hideSpinner }: { message?: ReactNode; hideSpinner?: boolean } = {}) => {
       setLoadingState({ isLoading: true, message, hideSpinner });
     },
     [setLoadingState],

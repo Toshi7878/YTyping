@@ -21,7 +21,7 @@ export default function LrcImportButton() {
         onChange={async (e) => {
           const file = e.target.files![0];
           try {
-            showLoading("lrcインポート中...");
+            showLoading({ message: "lrcインポート中..." });
 
             await importMapFile(file);
             toast({ type: "success", title: "lrcインポート完了" });
