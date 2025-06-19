@@ -5,14 +5,14 @@ import { useLoadingOverlay } from "@/lib/globalAtoms";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useRef } from "react";
 
-export default function LrcConvertButton() {
+export default function LrcImportButton() {
   const { showLoading, hideLoading } = useLoadingOverlay();
   const toast = useCustomToast();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const importMapFile = useImportMapFile();
   return (
-    <div className="flex items-baseline">
+    <div>
       <input
         type="file"
         hidden

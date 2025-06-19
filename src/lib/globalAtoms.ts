@@ -34,24 +34,17 @@ export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, 
 export const useSetPreviewPlayer = () => useSetAtom(previewPlayerFocusAtom, { store });
 
 const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
-
 export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom, { store });
 export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom, { store });
 
-interface LoadingState {
+const loadingStateAtom = atom<{
   isLoading: boolean;
   message?: string;
-}
-
-const loadingStateAtom = atom<LoadingState>({ isLoading: false });
-
-const showLoadingAtom = atom(null, (_get, set, message?: string) => {
-  set(loadingStateAtom, { isLoading: true, message });
-});
-
-const hideLoadingAtom = atom(null, (_get, set) => {
-  set(loadingStateAtom, { isLoading: false });
-});
+}>({ isLoading: false, message: undefined });
+const showLoadingAtom = atom(null, (_get, set, message?: string) =>
+  set(loadingStateAtom, { isLoading: true, message }),
+);
+const hideLoadingAtom = atom(null, (_get, set) => set(loadingStateAtom, { isLoading: false }));
 
 export const useLoadingState = () => useAtomValue(loadingStateAtom, { store });
 

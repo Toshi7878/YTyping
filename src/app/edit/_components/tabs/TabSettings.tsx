@@ -3,7 +3,7 @@ import VolumeRange from "@/components/share-components/VolumeRange";
 import { CardWithContent } from "@/components/ui/card";
 import AllTimeAdjust from "./tab-settings/AllTimeAdjust";
 import ConvertOptionButtons from "./tab-settings/ConvertOptionButtons";
-import LrcConvertButton from "./tab-settings/LrcConvertButton";
+import LrcImportButton from "./tab-settings/LrcConvertButton";
 
 const TabSettings = () => {
   const { readPlayer } = usePlayer();
@@ -12,7 +12,7 @@ const TabSettings = () => {
     <CardWithContent className={{ card: "py-4", cardContent: "space-y-4 sm:space-y-6" }}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <VolumeRange player={readPlayer()} />
-        <LrcConvertButton />
+        <LrcImportButton />
       </div>
       <ConvertOptionButtons />
       <ShortCutKeyList />

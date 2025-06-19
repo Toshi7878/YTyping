@@ -96,7 +96,6 @@ const TimeInput = () => {
   return (
     <Input
       ref={timeInputRef}
-      placeholder="Time"
       className="h-8 w-[90px]"
       type="number"
       value={0}

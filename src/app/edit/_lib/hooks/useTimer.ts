@@ -48,7 +48,7 @@ const useTimer = () => {
   const setTimeRangeValue = useSetTimeRangeValue();
 
   return () => {
-    const currentTime = readPlayer().getCurrentTime();
+    const currentTime = Number(readPlayer().getCurrentTime().toFixed(3));
 
     setTimeRangeValue(currentTime);
 
