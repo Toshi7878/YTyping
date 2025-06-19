@@ -1,4 +1,4 @@
-import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/shared/const";
+import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { QUERY_KEYS } from "@/config/consts/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/trpc";

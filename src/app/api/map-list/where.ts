@@ -1,4 +1,4 @@
-import { PARAM_NAME } from "@/app/(home)/shared/const";
+import { PARAM_NAME } from "@/app/(home)/_lib/const";
 import { Prisma } from "@prisma/client";
 
 interface GenerateMapListWhereParams {

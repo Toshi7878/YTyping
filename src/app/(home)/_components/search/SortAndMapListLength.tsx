@@ -1,6 +1,6 @@
-import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/shared/atoms";
-import { PARAM_NAME } from "@/app/(home)/shared/const";
-import { useDifficultyRangeParams } from "@/app/(home)/shared/useDifficultyRangeParams";
+import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
+import { PARAM_NAME } from "@/app/(home)/_lib/const";
+import { useDifficultyRangeParams } from "@/app/(home)/_lib/useDifficultyRangeParams";
 import { cn } from "@/lib/utils";
 import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
 import { useQuery } from "@tanstack/react-query";

@@ -1,4 +1,4 @@
-import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/shared/const";
+import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { prisma } from "@/server/db";
 import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";

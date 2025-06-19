@@ -12,8 +12,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { MapListResponse, useMapListQueryOptions } from "../../../utils/queries/mapList.queries";
-import { useIsSearchingState, useSetIsSearching } from "../shared/atoms";
-import { PARAM_NAME } from "../shared/const";
+import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
+import { PARAM_NAME } from "../_lib/const";
 
 type MapCardInfo = RouterOutPuts["mapList"]["getByVideoId"][number];
 
