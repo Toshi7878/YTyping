@@ -22,7 +22,7 @@ interface ContentProps {
 }
 
 function Content({ mapInfo }: ContentProps) {
-  const { video_id } = mapInfo!;
+  const { video_id } = mapInfo;
   const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
   const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
     minHeight: "calc(100vh - var(--header-height))",
@@ -111,18 +111,17 @@ function Content({ mapInfo }: ContentProps) {
     };
   }, [readScene, enableLargeVideoDisplay]);
 
-  const loadingMessage = tokenizerError ? (
-    <div className="flex h-full flex-col items-center justify-center gap-2">
-      ワード生成に失敗しました。
-      <Button onClick={() => loadMap(mapData!)} className="bg-green-600 hover:bg-green-700">
-        再試行
-      </Button>
-    </div>
-  ) : mapData !== undefined ? (
-    "ひらがな判定生成中..."
-  ) : (
-    "譜面読み込み中..."
-  );
+  const loadingMessage =
+    tokenizerError && mapData ? (
+      <div className="flex h-full flex-col items-center justify-center gap-2">
+        ワード生成に失敗しました。
+        <Button onClick={() => loadMap(mapData)}>再試行</Button>
+      </div>
+    ) : mapData !== undefined ? (
+      "ひらがな判定生成中..."
+    ) : (
+      "譜面読み込み中..."
+    );
 
   return (
     <main>

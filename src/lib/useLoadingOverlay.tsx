@@ -4,22 +4,23 @@ import React from "react";
 import { useLoadingState } from "./globalAtoms";
 
 export const LoadingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { message, isLoading } = useLoadingState();
+  const { message, isLoading, hideSpinner } = useLoadingState();
 
   return (
     <>
       {children}
-      <LoadingOverlay isLoading={isLoading} message={message} />
+      <LoadingOverlay isLoading={isLoading} message={message} hideSpinner={hideSpinner} />
     </>
   );
 };
 
 interface LoadingOverlayProps {
   isLoading: boolean;
-  message?: string;
+  message?: React.ReactNode;
+  hideSpinner?: boolean;
 }
 
-const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isLoading, message }) => {
+const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isLoading, message, hideSpinner }) => {
   if (!isLoading) return null;
 
   return (
@@ -29,8 +30,8 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isLoading, message }) =
       aria-label="Loading"
     >
       <div className="border-border bg-card relative flex flex-col items-center gap-4 rounded-xl border p-8 shadow-2xl">
-        <div className="border-muted border-t-primary h-12 w-12 animate-spin rounded-full border-4" />
-        {message && <p className="text-foreground text-sm font-medium">{message}</p>}
+        {!hideSpinner && <div className="border-muted border-t-primary h-12 w-12 animate-spin rounded-full border-4" />}
+        {message && <div className="text-foreground text-sm font-medium">{message}</div>}
       </div>
     </div>
   );

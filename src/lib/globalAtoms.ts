@@ -1,7 +1,8 @@
 import { ActiveUserStatus, YTPlayer } from "@/types/global-types";
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
-import { atomWithReset, atomWithStorage, useAtomCallback } from "jotai/utils";
+import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
+import type { ReactNode } from "react";
 import { useCallback } from "react";
 
 const store = createStore();
@@ -37,20 +38,33 @@ const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom, { store });
 export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom, { store });
 
-const loadingStateAtom = atom<{
+interface LoadingState {
   isLoading: boolean;
-  message?: string;
-}>({ isLoading: false, message: undefined });
-const showLoadingAtom = atom(null, (_get, set, message?: string) =>
-  set(loadingStateAtom, { isLoading: true, message }),
-);
-const hideLoadingAtom = atom(null, (_get, set) => set(loadingStateAtom, { isLoading: false }));
+  message?: ReactNode;
+  hideSpinner?: boolean;
+}
+
+const loadingStateAtom = atomWithReset<LoadingState>({
+  isLoading: false,
+  message: undefined,
+  hideSpinner: false,
+});
 
 export const useLoadingState = () => useAtomValue(loadingStateAtom, { store });
 
 export const useLoadingOverlay = () => {
-  return {
-    showLoading: useSetAtom(showLoadingAtom, { store }),
-    hideLoading: useSetAtom(hideLoadingAtom, { store }),
-  };
+  const setLoadingState = useSetAtom(loadingStateAtom, { store });
+
+  const showLoading = useCallback(
+    (message?: ReactNode, hideSpinner = false) => {
+      setLoadingState({ isLoading: true, message, hideSpinner });
+    },
+    [setLoadingState],
+  );
+
+  const hideLoading = useCallback(() => {
+    setLoadingState(RESET);
+  }, [setLoadingState]);
+
+  return { showLoading, hideLoading };
 };
