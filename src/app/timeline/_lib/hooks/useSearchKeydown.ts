@@ -1,6 +1,6 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import { useSetIsSearching } from "../atoms/atoms";
+import { useSetIsSearching } from "../atoms";
 import { useSetSearchParams } from "./useSetSearchParams";
 
 const useSearchKeydown = () => {

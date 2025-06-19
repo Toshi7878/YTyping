@@ -1,5 +1,5 @@
-import { useReadSearchRange } from "../atoms/atoms";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PARAM_NAME } from "../ts/const/consts";
+import { useReadSearchRange } from "../atoms";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PARAM_NAME } from "../consts";
 
 export const useSetSearchParams = () => {
   const readSearchRange = useReadSearchRange();

@@ -1,4 +1,4 @@
-import { ResultCardInfo } from "@/app/timeline/ts/type";
+import { ResultCardInfo } from "@/app/timeline/_lib/type";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import Link from "@/components/ui/link/link";

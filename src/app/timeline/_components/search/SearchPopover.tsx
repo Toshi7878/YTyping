@@ -8,10 +8,9 @@ import {
   useSetSearchResultKpm,
   useSetSearchResultMode,
   useSetSearchResultSpeed,
-} from "@/app/timeline/atoms/atoms";
-import useSearchKeydown from "@/app/timeline/hook/useSearchKeydown";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/ts/const/consts";
-import { FilterMode } from "@/app/timeline/ts/type";
+} from "@/app/timeline/_lib/atoms";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
+import { FilterMode } from "@/app/timeline/_lib/type";
 import { Button } from "@/components/ui/button";
 import { DualRangeSlider } from "@/components/ui/dural-range-slider";
 import { Label } from "@/components/ui/label";
@@ -19,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useCallback, useMemo } from "react";
+import useSearchKeydown from "../../_lib/hooks/useSearchKeydown";
 
 const SearchPopover = () => {
   const searchKpm = useSearchResultKpmState();

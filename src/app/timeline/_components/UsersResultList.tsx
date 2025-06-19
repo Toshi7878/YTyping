@@ -6,7 +6,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { useIsSearchingState, useSetIsSearching } from "../atoms/atoms";
+import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 import ResultCard from "./result-card/ResultCard";
 
 function UsersResultList() {

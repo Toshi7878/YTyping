@@ -3,7 +3,7 @@ import RankingCountIcon from "@/components/share-components/map-count-icon/Ranki
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { HTMLAttributes } from "react";
-import { ResultCardInfo } from "../../ts/type";
+import { ResultCardInfo } from "../../_lib/type";
 import { MapResultBadgesMobile } from "./child/MapResultStatus";
 import ResultCardContent from "./ResultCardContent";
 import ResultCardHeader from "./ResultCardHeader";

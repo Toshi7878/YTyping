@@ -2,8 +2,8 @@ import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "../ts/const/consts";
-import { FilterMode } from "../ts/type";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "./consts";
+import { FilterMode } from "./type";
 const store = createStore();
 export const getTimelineAtomStore = () => store;
 
@@ -26,7 +26,7 @@ const searchAtom = atomWithReset({
 export const useReadSearchRange = () => {
   return useAtomCallback(
     useCallback((get) => get(searchAtom), []),
-    { store }
+    { store },
   );
 };
 

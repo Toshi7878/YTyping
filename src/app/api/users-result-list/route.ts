@@ -6,8 +6,8 @@ import {
   DEFAULT_KPM_SEARCH_RANGE,
   PAGE_SIZE,
   PARAM_NAME,
-} from "@/app/timeline/ts/const/consts";
-import { FilterMode } from "@/app/timeline/ts/type";
+} from "@/app/timeline/_lib/consts";
+import { FilterMode } from "@/app/timeline/_lib/type";
 import { auth } from "@/server/auth";
 import { Prisma } from "@prisma/client";
 

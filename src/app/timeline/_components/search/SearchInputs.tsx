@@ -1,12 +1,12 @@
 "use client";
-import { useIsSearchingState, useSetIsSearching } from "@/app/timeline/atoms/atoms";
-import { useSetSearchParams } from "@/app/timeline/hook/useSetSearchParams";
-import { PARAM_NAME } from "@/app/timeline/ts/const/consts";
+import { useIsSearchingState, useSetIsSearching } from "@/app/timeline/_lib/atoms";
+import { PARAM_NAME } from "@/app/timeline/_lib/consts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useSetSearchParams } from "../../_lib/hooks/useSetSearchParams";
 
 const SearchInputs = () => {
   const searchParams = useSearchParams();

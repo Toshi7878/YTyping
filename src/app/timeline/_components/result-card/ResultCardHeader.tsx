@@ -1,4 +1,4 @@
-import { ResultCardInfo } from "@/app/timeline/ts/type";
+import { ResultCardInfo } from "@/app/timeline/_lib/type";
 import DateDistanceText from "@/components/share-components/text/DateDistanceText";
 import { CardHeader } from "@/components/ui/card";
 import Link from "@/components/ui/link/link";
