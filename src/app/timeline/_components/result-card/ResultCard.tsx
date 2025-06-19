@@ -4,9 +4,9 @@ import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card
 import { cn } from "@/lib/utils";
 import { HTMLAttributes } from "react";
 import { ResultCardInfo } from "../../ts/type";
-import { MapResultBadgesMobile } from "./child/child/MapResultBadgesLayout";
-import ResultInnerCardBody from "./child/ResultCardBody";
-import ResultCardHeader from "./child/ResultCardHeader";
+import { MapResultBadgesMobile } from "./child/MapResultStatus";
+import ResultCardContent from "./ResultCardContent";
+import ResultCardHeader from "./ResultCardHeader";
 
 interface ResultCardProps {
   result: ResultCardInfo;
@@ -25,7 +25,7 @@ function ResultCard(props: ResultCardProps) {
       <ResultCardHeader result={result} className="mx-0 py-4 md:mx-6" />
 
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
-        <ResultInnerCardBody result={result} />
+        <ResultCardContent result={result} />
         <MapIcons result={result} className="absolute bottom-1 z-2 hidden md:flex" />
       </CardContentWithThumbnail>
 

@@ -6,9 +6,9 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { HTMLAttributes } from "react";
-import { MapResultStatus } from "./child/MapResultBadgesLayout";
+import { MapResultStatus } from "./child/MapResultStatus";
 
-const ResultInnerCardBody = ({ result }: { result: ResultCardInfo }) => {
+const ResultCardContent = ({ result }: { result: ResultCardInfo }) => {
   const isToggledInputMode = result.status.roma_type != 0 && result.status.kana_type != 0;
 
   return (
@@ -58,4 +58,4 @@ function MapInfo({ map, isToggledInputMode, className, ...rest }: MapInfoProps) 
   );
 }
 
-export default ResultInnerCardBody;
+export default ResultCardContent;
