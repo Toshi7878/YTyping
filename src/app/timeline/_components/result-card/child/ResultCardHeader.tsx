@@ -14,7 +14,10 @@ const ResultCardHeader = ({ result, className }: ResultCardHeaderProps) => {
   return (
     <CardHeader className={cn("flex items-center justify-between", className)}>
       <div className="flex flex-row items-center gap-2">
-        <Link href={`/user/${result.player.id}`} className="text-secondary max-w-32 truncate font-bold hover:underline">
+        <Link
+          href={`/user/${result.player.id}`}
+          className="text-secondary max-w-32 truncate font-bold hover:underline sm:max-w-none"
+        >
           {result.player.name}
         </Link>
         {" - "}
