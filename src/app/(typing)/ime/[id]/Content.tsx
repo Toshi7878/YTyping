@@ -12,10 +12,10 @@ import InputTextarea from "../_components/InputTextarea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/Notifications";
 import ViewArea from "../_components/view-area/ViewArea";
-import { useEnableLargeVideoDisplayState, useMapState, useReadScene, useSetMap } from "../atom/stateAtoms";
-import { useParseImeMap } from "../hooks/parseImeMap";
-import { usePathChangeAtomReset } from "../hooks/reset";
-import { useUpdateTypingStats } from "../hooks/updateTypingStats";
+import { useEnableLargeVideoDisplayState, useMapState, useReadScene, useSetMap } from "../_lib/atoms/stateAtoms";
+import { useParseImeMap } from "../_lib/hooks/parseImeMap";
+import { usePathChangeAtomReset } from "../_lib/hooks/reset";
+import { useUpdateTypingStats } from "../_lib/hooks/updateTypingStats";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -150,7 +150,7 @@ function Content({ mapInfo }: ContentProps) {
 
       <div
         ref={lyricsViewAreaRef}
-        className="fixed bottom-0 left-0 w-full flex-col lg:bottom-[100px] xl:bottom-[150px]"
+        className="fixed bottom-0 left-0 flex w-full flex-col lg:bottom-[100px] xl:bottom-[150px]"
       >
         <ViewArea />
         <InputTextarea />

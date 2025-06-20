@@ -1,17 +1,17 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { PopoverContent } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/trpc";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { Dispatch, useEffect, useRef } from "react";
+import { Dispatch } from "react";
 import {
   useImeTypeOptionsState,
   useReadImeTypeOptions,
   useReadIsImeTypeOptionsEdited,
   useSetImetypeOptions,
   useSetMap,
-} from "../../../atom/stateAtoms";
-import { useParseImeMap } from "../../../hooks/parseImeMap";
+} from "../../../_lib/atoms/stateAtoms";
+import { useParseImeMap } from "../../../_lib/hooks/parseImeMap";
 import OptionCheckboxFormField from "./child/child/OptionCheckboxFormField";
 import OptionInputFormField from "./child/child/OptionInputFormField";
 
@@ -21,7 +21,6 @@ interface SettingCardProps {
 }
 
 const SettingCard = (props: SettingCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
   const trpc = useTRPC();
   const updateImeTypingOptions = useMutation(trpc.userTypingOption.updateImeTypeOptions.mutationOptions());
   const queryClient = useQueryClient();
@@ -31,42 +30,23 @@ const SettingCard = (props: SettingCardProps) => {
   const setMap = useSetMap();
   const { id: mapId } = useParams() as { id: string };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (
-        target.parentElement?.id !== "option_icon" &&
-        cardRef.current &&
-        !cardRef.current.contains(target) &&
-        target.closest("#reset-setting-modal-overlay") === null
-      ) {
-        props.setIsCardVisible(false);
+  const handleOpenChange = (open: boolean) => {
+    props.setIsCardVisible(open);
 
-        const isOptionEdited = readIsImeTypeOptionsEdited();
-        if (isOptionEdited) {
-          updateImeTypingOptions.mutate({ ...readImeTypeOptions() });
-          const mapData = queryClient.getQueryData(trpc.map.getMap.queryOptions({ mapId }).queryKey);
+    if (!open) {
+      const isOptionEdited = readIsImeTypeOptionsEdited();
+      if (isOptionEdited) {
+        updateImeTypingOptions.mutate({ ...readImeTypeOptions() });
+        const mapData = queryClient.getQueryData(trpc.map.getMap.queryOptions({ mapId }).queryKey);
 
-          if (mapData) {
-            parseImeMap(mapData).then((map) => {
-              setMap(map);
-            });
-          }
+        if (mapData) {
+          parseImeMap(mapData).then((map) => {
+            setMap(map);
+          });
         }
       }
-    };
-
-    if (props.isCardVisible) {
-      window.addEventListener("mousedown", handleClickOutside);
-    } else {
-      window.removeEventListener("mousedown", handleClickOutside);
     }
-
-    return () => {
-      window.removeEventListener("mousedown", handleClickOutside);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.isCardVisible]);
+  };
 
   const tabData = [
     {
@@ -76,35 +56,37 @@ const SettingCard = (props: SettingCardProps) => {
   ];
 
   return (
-    <>
-      {props.isCardVisible && (
-        <Card
-          ref={cardRef}
-          className="border-border bg-background text-foreground fixed right-5 bottom-[150px] z-[4] w-[600px] overflow-hidden rounded-md border text-lg shadow-lg"
-        >
-          <CardContent className="p-4">
-            <Tabs defaultValue="main" className="w-full">
-              <TabsList className="mb-4 flex flex-wrap gap-2 bg-transparent">
-                {tabData.map((tab, index) => (
-                  <TabsTrigger
-                    key={index}
-                    value={index === 0 ? "main" : `tab-${index}`}
-                    className="border-border bg-card text-foreground hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md border text-sm"
-                  >
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              {tabData.map((tab, index) => (
-                <TabsContent key={index} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
-                  {tab.content}
-                </TabsContent>
-              ))}
-            </Tabs>
-          </CardContent>
-        </Card>
-      )}
-    </>
+    <PopoverContent
+      className="w-[600px] p-4"
+      align="end"
+      side="top"
+      sideOffset={10}
+      onInteractOutside={(e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest("#reset-setting-modal-overlay")) {
+          e.preventDefault();
+        }
+      }}
+    >
+      <Tabs defaultValue="main" className="w-full">
+        <TabsList className="mb-4 flex flex-wrap gap-2 bg-transparent">
+          {tabData.map((tab, index) => (
+            <TabsTrigger
+              key={index}
+              value={index === 0 ? "main" : `tab-${index}`}
+              className="border-border bg-card text-foreground hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md border text-sm"
+            >
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {tabData.map((tab, index) => (
+          <TabsContent key={index} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
+            {tab.content}
+          </TabsContent>
+        ))}
+      </Tabs>
+    </PopoverContent>
   );
 };
 

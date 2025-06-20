@@ -2,8 +2,8 @@ import { useTRPC } from "@/trpc/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
-import { useInputTextarea, usePlayer } from "../atom/refAtoms";
-import { usePlaySpeedReducer } from "../atom/speedReducerAtoms";
+import { useInputTextarea, usePlayer } from "../atoms/refAtoms";
+import { usePlaySpeedReducer } from "../atoms/speedReducerAtoms";
 import {
   useInitWordResults,
   useReadScene,
@@ -14,7 +14,7 @@ import {
   useSetNotifications,
   useSetScene,
   useSetStatus,
-} from "../atom/stateAtoms";
+} from "../atoms/stateAtoms";
 
 export const useInitializePlayScene = () => {
   const setNextDisplayLine = useSetNextDisplayLine();

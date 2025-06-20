@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useSkipRemainTimeState } from "../../../atom/stateAtoms";
-import { useSkip } from "../../../hooks/skip";
+import { useSkipRemainTimeState } from "../../../_lib/atoms/stateAtoms";
+import { useSkip } from "../../../_lib/hooks/skip";
 
 interface SkipProps {
   className?: string;

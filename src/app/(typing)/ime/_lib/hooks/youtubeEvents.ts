@@ -1,7 +1,7 @@
 import { useVolumeState } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
-import { usePlayer } from "../atom/refAtoms";
-import { useReadScene } from "../atom/stateAtoms";
+import { usePlayer } from "../atoms/refAtoms";
+import { useReadScene } from "../atoms/stateAtoms";
 import { useInitializePlayScene } from "./reset";
 import { useTimerControls } from "./timer";
 

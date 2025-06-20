@@ -1,6 +1,6 @@
 import { Ticker } from "@pixi/ticker";
-import { useLyricsContainer } from "../atom/refAtoms";
-import { useReadPlaySpeed } from "../atom/speedReducerAtoms";
+import { useLyricsContainer } from "../atoms/refAtoms";
+import { useReadPlaySpeed } from "../atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
   useReadImeTypeOptions,
@@ -12,8 +12,8 @@ import {
   useSetSkipRemainTime,
   useSetTextareaPlaceholderType,
   useSetWipeCount,
-} from "../atom/stateAtoms";
-import { DISPLAY_LINE_LENGTH } from "../ts/const";
+} from "../atoms/stateAtoms";
+import { DISPLAY_LINE_LENGTH } from "../const";
 import { ParseMap } from "../type";
 import { useGetTime } from "./getYTTime";
 
@@ -220,7 +220,7 @@ const useCalcWipeProgress = () => {
     const wipeProgress = Math.round((wipeTime / wipeDuration) * 100 * 1000) / 1000;
 
     return `background:-webkit-linear-gradient(0deg, #ffa500 ${String(
-      wipeProgress
+      wipeProgress,
     )}%, white 0%); -webkit-background-clip:text;`;
   };
 

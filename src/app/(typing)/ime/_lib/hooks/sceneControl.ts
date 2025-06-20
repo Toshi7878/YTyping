@@ -1,5 +1,5 @@
-import { usePlayer } from "../atom/refAtoms";
-import { useReadScene, useSetScene, useSetTextareaPlaceholderType } from "../atom/stateAtoms";
+import { usePlayer } from "../atoms/refAtoms";
+import { useReadScene, useSetScene, useSetTextareaPlaceholderType } from "../atoms/stateAtoms";
 import { useInitializePlayScene } from "./reset";
 import { useTimerControls } from "./timer";
 import { useUpdateTypingStats } from "./updateTypingStats";

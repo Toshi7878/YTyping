@@ -1,5 +1,5 @@
 import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
-import { useReadImeTypeOptions } from "../atom/stateAtoms";
+import { useReadImeTypeOptions } from "../atoms/stateAtoms";
 
 const REGEX_LIST = ["^-ぁ-んゔ", "ァ-ンヴ", "一-龥", "\\w", "\\d", " ", "々%&@&=+ー～~\u00C0-\u00FF"];
 const HANGUL = ["\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uFFA0-\uFFDC\uFFA0-\uFFDC"];

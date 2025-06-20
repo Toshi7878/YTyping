@@ -1,5 +1,5 @@
 import { kanaToHira } from "@/utils/kanaToHira";
-import { useUserStats } from "../atom/refAtoms";
+import { useUserStats } from "../atoms/refAtoms";
 import {
   useReadGameUtilParams,
   useReadMap,
@@ -8,7 +8,7 @@ import {
   useSetNotifications,
   useSetStatus,
   useUpdateWordResults,
-} from "../atom/stateAtoms";
+} from "../atoms/stateAtoms";
 import { useFormatWord } from "./formatWord";
 
 export const useJudgeTargetWords = () => {

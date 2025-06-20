@@ -1,6 +1,6 @@
 import { useTRPC } from "@/trpc/trpc";
 import { useMutation } from "@tanstack/react-query";
-import { useUserStats } from "../atom/refAtoms";
+import { useUserStats } from "../atoms/refAtoms";
 
 export const useUpdateTypingStats = () => {
   const trpc = useTRPC();

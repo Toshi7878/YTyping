@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useNotificationsState } from "../atom/stateAtoms";
+import { useNotificationsState } from "../_lib/atoms/stateAtoms";
 
 const Notifications = ({ style }: { style: React.CSSProperties }) => {
   const notifications = useNotificationsState();

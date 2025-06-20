@@ -3,8 +3,8 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useEffect } from "react";
-import { imeTypeOptionsAtom } from "../atom/stateAtoms";
-import { getImeTypeAtomStore } from "../atom/store";
+import { imeTypeOptionsAtom } from "../_lib/atoms/stateAtoms";
+import { getImeTypeAtomStore } from "../_lib/atoms/store";
 
 interface ImeTypeProviderProps {
   children: React.ReactNode;

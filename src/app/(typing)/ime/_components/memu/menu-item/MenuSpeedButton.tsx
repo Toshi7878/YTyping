@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image, { StaticImageData } from "next/image";
-import { ICON_SIZE } from "../../../ts/const";
+import { ICON_SIZE } from "../../../_lib/const";
 
 interface MenuSpeedButtonProps {
   image: StaticImageData;
@@ -15,8 +15,8 @@ const MenuSpeedButton = ({
   ...props
 }: MenuSpeedButtonProps & React.ComponentProps<typeof Button>) => {
   return (
-    <Button variant="ghost" size="sm" onClick={onClick} title={title} className="gap-2" {...props}>
-      <Image src={image} alt={title} width={ICON_SIZE} height={ICON_SIZE} className="shrink-0" />
+    <Button variant="ghost" size="sm" onClick={onClick} title={title} {...props}>
+      <Image src={image} alt={title} width={ICON_SIZE} height={ICON_SIZE} />
       {title}
     </Button>
   );

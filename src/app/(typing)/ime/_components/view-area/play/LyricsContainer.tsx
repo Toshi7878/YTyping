@@ -1,22 +1,22 @@
+import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { HTMLAttributes, useEffect, useRef } from "react";
-import { useLyricsContainer } from "../../../atom/refAtoms";
+import { useLyricsContainer } from "../../../_lib/atoms/refAtoms";
 import {
   useCountState,
   useDisplayLinesState,
   useEnableNextLyricsOptionState,
   useMapState,
   useNextDisplayLineState,
-} from "../../../atom/stateAtoms";
-import { COMPLETED_WIPE_COLOR, INITIAL_WIPE_COLOR } from "../../../ts/const";
+} from "../../../_lib/atoms/stateAtoms";
 import "./lyrics-container.css";
 import Skip from "./Skip";
 
-const LyricsContainer = (props: HTMLAttributes<HTMLDivElement>) => {
+const LyricsContainer = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
   const enableNextLyricsOption = useEnableNextLyricsOptionState();
 
   return (
-    <div id="lyrics-container" className="relative mb-2 flex flex-col" {...props}>
+    <div id="lyrics-container" className={cn("relative mb-3 flex flex-col", className)} {...props}>
       <Lyrics />
       {enableNextLyricsOption && <NextLyrics />}
       <Skip className="absolute right-4 bottom-0.5 left-auto xl:right-auto xl:left-[-96px]" />
@@ -36,7 +36,7 @@ const Lyrics = () => {
   }, [writeLyricsContainer]);
 
   return (
-    <div className="my-1 min-h-[7.5rem]" ref={lyricsContainerRef}>
+    <div className="my-1 min-h-[7.5rem] leading-14" ref={lyricsContainerRef}>
       {displayLines.map((line, index) => (
         <div key={index}>
           <div className="shadow-layer">
@@ -64,6 +64,22 @@ const Lyrics = () => {
       ))}
     </div>
   );
+};
+
+const COMPLETED_WIPE_COLOR = {
+  background: "-webkit-linear-gradient(0deg, #ffa500 100%, white 0%)",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "transparent",
+  WebkitTextFillColor: "transparent",
+};
+
+const INITIAL_WIPE_COLOR = {
+  background: "-webkit-linear-gradient(0deg, #fff 100%, white 0%)",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "transparent",
+  WebkitTextFillColor: "transparent",
 };
 
 const NextLyrics = () => {

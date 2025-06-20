@@ -1,5 +1,5 @@
 import { MapLine } from "@/types/map";
-import { useReadImeTypeOptions } from "../atom/stateAtoms";
+import { useReadImeTypeOptions } from "../atoms/stateAtoms";
 import { WordResults } from "../type";
 import { useFormatWord } from "./formatWord";
 import { useGenerateTokenizedWords } from "./repl";
@@ -67,7 +67,7 @@ export const useParseImeMap = () => {
         }
 
         return words;
-      })
+      }),
     );
 
     const totalNotes = words.flat(2).reduce((acc, word) => acc + word[0].length, 0);
@@ -101,7 +101,7 @@ const shouldCreateNewLine = (
   lineChars: string[],
   nextLine: MapLine | undefined,
   nextTime: number,
-  lineTimes: number[]
+  lineTimes: number[],
 ): boolean => {
   return lineChars.length > 0 && (!nextLine || MIN_LINE_SECONDS < nextTime - lineTimes[0]);
 };

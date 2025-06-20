@@ -1,18 +1,18 @@
 import { Textarea } from "@/components/ui/textarea";
 import { Ticker } from "@pixi/ticker";
 import { useEffect, useRef } from "react";
-import { useInputTextarea, useUserStats } from "../atom/refAtoms";
+import { useInputTextarea, useUserStats } from "../_lib/atoms/refAtoms";
 import {
   useReadGameUtilParams,
   useReadMap,
   useResultDialogDisclosure,
   useSceneState,
   useTextareaPlaceholderTypeState,
-} from "../atom/stateAtoms";
-import { useJudgeTargetWords } from "../hooks/judgeTargetWords";
-import useSceneControl from "../hooks/sceneControl";
-import { useSkip } from "../hooks/skip";
-import { PlaceholderType, SceneType } from "../type";
+} from "../_lib/atoms/stateAtoms";
+import { useJudgeTargetWords } from "../_lib/hooks/judgeTargetWords";
+import useSceneControl from "../_lib/hooks/sceneControl";
+import { useSkip } from "../_lib/hooks/skip";
+import { PlaceholderType, SceneType } from "../_lib/type";
 
 const TICK_STOP_TIME = 1000;
 
@@ -80,10 +80,10 @@ const InputTextarea = () => {
   }, [writeLyricsTextarea]);
 
   return (
-    <div className="bg-card mx-auto flex w-[85%] items-center justify-center text-3xl">
+    <div className="z-2 mx-auto flex w-[85%] items-center justify-center">
       <Textarea
         ref={lyricsTextareaRef}
-        className="h-[130px] resize-none rounded-md px-4 text-[90%] font-bold tracking-widest text-white"
+        className="h-[130px] resize-none rounded-md px-4 text-2xl font-bold tracking-widest xl:text-3xl"
         autoComplete="off"
         placeholder={placeholder}
         onKeyDown={handleKeyDown}

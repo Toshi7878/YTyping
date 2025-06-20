@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image, { StaticImageData } from "next/image";
-import { ICON_SIZE } from "../../../ts/const";
+import { ICON_SIZE } from "../../../_lib/const";
 
 interface MenuButtonProps {
   image?: StaticImageData;

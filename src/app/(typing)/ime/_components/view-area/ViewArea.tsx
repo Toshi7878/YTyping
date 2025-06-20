@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { useInputTextarea, usePlayer, useUserStats } from "../../atom/refAtoms";
-import { useMapState, useSceneState } from "../../atom/stateAtoms";
+import { useInputTextarea, usePlayer, useUserStats } from "../../_lib/atoms/refAtoms";
+import { useMapState, useSceneState } from "../../_lib/atoms/stateAtoms";
 import ResultScore from "./end/ResultScore";
 import LyricsContainer from "./play/LyricsContainer";
 

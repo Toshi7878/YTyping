@@ -1,6 +1,6 @@
-import { useUserTypingOptionsStateRef } from "../../type/atoms/stateAtoms";
-import { usePlayer } from "../atom/refAtoms";
-import { useReadPlaySpeed } from "../atom/speedReducerAtoms";
+import { useUserTypingOptionsStateRef } from "../../../type/atoms/stateAtoms";
+import { usePlayer } from "../atoms/refAtoms";
+import { useReadPlaySpeed } from "../atoms/speedReducerAtoms";
 
 export const useGetTime = () => {
   const { readPlayer } = usePlayer();

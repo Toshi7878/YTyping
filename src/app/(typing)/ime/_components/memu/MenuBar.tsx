@@ -1,14 +1,15 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { usePlayer } from "../../atom/refAtoms";
-import { useResultDialogDisclosure, useSceneState } from "../../atom/stateAtoms";
-import useSceneControl from "../../hooks/sceneControl";
-import start from "../../img/control.png";
-import gear from "../../img/gear.png";
-import metronome from "../../img/metronome.png";
-import reportPencil from "../../img/report--pencil.png";
-import trophy from "../../img/trophy.png";
+import start from "../../_img/control.png";
+import gear from "../../_img/gear.png";
+import metronome from "../../_img/metronome.png";
+import reportPencil from "../../_img/report--pencil.png";
+import trophy from "../../_img/trophy.png";
+import { usePlayer } from "../../_lib/atoms/refAtoms";
+import { useResultDialogDisclosure, useSceneState } from "../../_lib/atoms/stateAtoms";
+import useSceneControl from "../../_lib/hooks/sceneControl";
 import LinkMenuButton from "./menu-item/LinkMenuButton";
 import MenuButton from "./menu-item/MenuButton";
 import MenuSpeedButton from "./menu-item/MenuSpeedButton";
@@ -45,13 +46,17 @@ const MenuBar = () => {
           </div>
 
           <div className="flex w-full justify-end lg:w-[30%]">
-            <MenuButton image={gear} title="設定" onClick={() => setIsCardVisible(true)} />
+            <Popover open={isCardVisible} onOpenChange={setIsCardVisible}>
+              <PopoverTrigger asChild>
+                <MenuButton image={gear} title="設定" />
+              </PopoverTrigger>
+              <SettingCard isCardVisible={isCardVisible} setIsCardVisible={setIsCardVisible} />
+            </Popover>
             <LinkMenuButton title="タイピングページに戻る" href={`/type/${mapId}`} />
           </div>
         </div>
       </div>
       <ResultDialog isOpen={resultDialogDisclosure.open} onClose={resultDialogDisclosure.onClose} />
-      <SettingCard isCardVisible={isCardVisible} setIsCardVisible={setIsCardVisible} />
     </>
   );
 };

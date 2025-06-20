@@ -2,7 +2,7 @@ import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { DISPLAY_LINE_LENGTH } from "../ts/const";
+import { DISPLAY_LINE_LENGTH } from "../const";
 import { ParseMap, PlaceholderType, SceneType, WordResults } from "../type";
 import { getImeTypeAtomStore } from "./store";
 
