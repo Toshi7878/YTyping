@@ -1,0 +1,108 @@
+"use client";
+import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
+import {
+  useReadGameUtilParams,
+  useSceneGroupState,
+  useSceneState,
+  useUserTypingOptionsState,
+  useYTStartedState,
+} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
+import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
+import { useToggleLineList } from "@/app/(typing)/type/_lib/hooks/playing-hooks/toggleLineList";
+import { cn } from "@/lib/utils";
+import { BottomBadge, BottomDoubleKeyBadge } from "./button-with-key";
+
+const BottomButtons = () => {
+  const isYTStarted = useYTStartedState();
+  const sceneGroup = useSceneGroupState();
+  const isPlayed = isYTStarted && sceneGroup === "Playing";
+  return (
+    <section className={cn("mx-3 mt-2 mb-4 flex w-full justify-between font-bold", !isPlayed && "hidden")}>
+      <SpeedBadge />
+      <PracticeBadges />
+      <RetryBadge />
+    </section>
+  );
+};
+
+const SpeedBadge = () => {
+  const scene = useSceneState();
+  const { playSpeed } = usePlaySpeedState();
+  const dispatchSpeed = usePlaySpeedReducer();
+  return (
+    <>
+      {scene === "practice" ? (
+        <BottomDoubleKeyBadge
+          badgeText={playSpeed.toFixed(2) + "倍速"}
+          kbdTextPrev="F9-"
+          kbdTextNext="+F10"
+          onClick={() => {}}
+          onClickPrev={() => dispatchSpeed({ type: "down" })}
+          onClickNext={() => dispatchSpeed({ type: "up" })}
+        />
+      ) : (
+        <BottomBadge
+          badgeText={playSpeed.toFixed(2) + "倍速"}
+          kbdText="F10"
+          onClick={() => dispatchSpeed({ type: "toggle" })}
+          isPauseDisabled={true}
+          isKbdHidden={scene === "replay" ? true : false}
+        />
+      )}
+    </>
+  );
+};
+
+const PracticeBadges = () => {
+  const scene = useSceneState();
+  const toggleLineListDrawer = useToggleLineList();
+  const { movePrevLine, moveNextLine } = useMoveLine();
+  const userOptions = useUserTypingOptionsState();
+
+  return (
+    <>
+      {scene !== "play" && (
+        <>
+          <BottomDoubleKeyBadge
+            badgeText="移動"
+            kbdTextPrev="←"
+            kbdTextNext="→"
+            onClick={() => {}}
+            onClickPrev={() => movePrevLine()}
+            onClickNext={() => moveNextLine()}
+          />
+          <BottomBadge
+            badgeText="リスト"
+            kbdText={userOptions.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
+            onClick={() => toggleLineListDrawer()}
+            isPauseDisabled={false}
+            isKbdHidden={false}
+          />
+        </>
+      )}
+    </>
+  );
+};
+
+const RetryBadge = () => {
+  const retry = useRetry();
+  const readGameStateUtils = useReadGameUtilParams();
+  return (
+    <BottomBadge
+      badgeText="やり直し"
+      kbdText="F4"
+      onClick={() => {
+        const { scene } = readGameStateUtils();
+
+        if (scene === "play" || scene === "practice" || scene === "replay") {
+          retry(scene);
+        }
+      }}
+      isPauseDisabled={true}
+      isKbdHidden={false}
+    />
+  );
+};
+
+export default BottomButtons;

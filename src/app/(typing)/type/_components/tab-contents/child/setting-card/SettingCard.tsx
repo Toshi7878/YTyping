@@ -1,17 +1,7 @@
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
-import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/(typing)/type/atoms/stateAtoms";
-import { useTRPC } from "@/trpc/trpc";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -20,11 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTRPC } from "@/trpc/trpc";
+import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useMutation } from "@tanstack/react-query";
-import { Dispatch, useEffect, useRef } from "react";
+import { Dispatch, useEffect, useRef, useState } from "react";
 import UserLineCompletedRadioButton from "./child/UserLineCompletedRadioButton";
 import UserNextDisplayRadioButton from "./child/UserNextDisplayRadioButton";
 import UserShortcutKeyCheckbox from "./child/UserShortcutKeyCheckbox";
@@ -52,10 +43,10 @@ const SettingCard = (props: SettingCardProps) => {
     const checkScreenSize = () => {
       setIsMdScreen(window.innerWidth >= 768);
     };
-    
+
     checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
   useEffect(() => {
@@ -128,11 +119,11 @@ const SettingCard = (props: SettingCardProps) => {
       {props.isCardVisible && (
         <Card
           ref={cardRef}
-          className="absolute z-[4] w-[600px] text-lg shadow-lg rounded-md overflow-hidden top-10 right-0 bg-background text-foreground border-border"
+          className="bg-background text-foreground border-border absolute top-10 right-0 z-[4] w-[600px] overflow-hidden rounded-md text-lg shadow-lg"
         >
           <CardContent className="p-4">
             <Tabs defaultValue="0" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-4">
+              <TabsList className="mb-4 grid w-full grid-cols-3">
                 {tabData.map((tab, index) => (
                   <TabsTrigger
                     key={index}
@@ -154,7 +145,7 @@ const SettingCard = (props: SettingCardProps) => {
               size="sm"
               variant="outline"
               onClick={() => setIsResetModalOpen(true)}
-              className="mt-4 ml-auto block text-destructive hover:bg-destructive/10"
+              className="text-destructive hover:bg-destructive/10 mt-4 ml-auto block"
             >
               設定をリセット
             </Button>
@@ -167,7 +158,7 @@ const SettingCard = (props: SettingCardProps) => {
 };
 
 const SettingCardDivider = () => {
-  return <Separator className="my-4 bg-foreground/20" />;
+  return <Separator className="bg-foreground/20 my-4" />;
 };
 
 interface ResetSettingModalProps {
@@ -189,15 +180,10 @@ const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
   };
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent 
-        id="reset-setting-modal"
-        className="bg-background text-foreground"
-      >
+      <DialogContent id="reset-setting-modal" className="bg-background text-foreground">
         <DialogHeader>
           <DialogTitle>設定のリセット</DialogTitle>
-          <DialogDescription>
-            すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。
-          </DialogDescription>
+          <DialogDescription>すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2022",
     "lib": [
       "dom",
       "dom.iterable",
@@ -27,7 +27,13 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": false,
+    "noUncheckedIndexedAccess": true
   },
   "include": [
     "next-env.d.ts",

@@ -1,13 +1,7 @@
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { RANKING_COLUMN_WIDTH } from "@/app/(typing)/type/ts/const/consts";
-import { FaHandsClapping } from "react-icons/fa6";
+import { RANKING_COLUMN_WIDTH } from "@/app/(typing)/type/_lib/const";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
+import { FaHandsClapping } from "react-icons/fa6";
 
 interface RankingTableProps {
   children: React.ReactNode;
@@ -34,9 +28,7 @@ const RankingTable = (props: RankingTableProps) => {
         ["--table-header-border-color" as any]: `rgba(255, 255, 255, 0.2)`,
       }}
     >
-      <TableHeader
-        className="sticky top-0 z-0 select-none bg-[#2b3035]"
-      >
+      <TableHeader className="sticky top-0 z-0 bg-[#2b3035] select-none">
         <TableRow>
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.rank }} className="text-white">
             順位

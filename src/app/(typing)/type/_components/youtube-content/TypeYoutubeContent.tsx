@@ -3,15 +3,15 @@ import { useCallback, useEffect, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
-import { useReadGameUtilParams } from "../../atoms/stateAtoms";
-import { useTimerRegistration } from "../../hooks/playing-hooks/timer-hooks/timer";
+import { useReadGameUtilParams } from "../../_lib/atoms/stateAtoms";
+import { useTimerRegistration } from "../../_lib/hooks/playing-hooks/timer-hooks/timer";
 import {
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
   useYTStopEvent,
-} from "../../hooks/youtubeEvents";
+} from "../../_lib/hooks/youtubeEvents";
 
 interface TypeYouTubeProps {
   isMapLoading: boolean;

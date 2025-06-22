@@ -1,5 +1,5 @@
 import { MapLine } from "@/types/map";
-import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../../app/(typing)/type/ts/type";
+import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../../app/(typing)/type/_lib/type";
 import { generateTypingWord } from "./generateTypingWord";
 import { KANA_TO_ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./romaMap";
 
@@ -45,7 +45,7 @@ export class ParseMap {
     const typingLineIndexes: number[] = [];
     const mapChangeCSSCounts: number[] = [];
     const inputMode = (
-      typeof window !== "undefined" ? localStorage.getItem("inputMode") ?? "roma" : "roma"
+      typeof window !== "undefined" ? (localStorage.getItem("inputMode") ?? "roma") : "roma"
     ) as InputMode;
     const validatedInputMode = ["roma", "kana", "flick"].includes(inputMode) ? inputMode : "roma";
     let startLine = 0;
@@ -152,7 +152,7 @@ export class ParseMap {
         acc.r += line.notes.r;
         return acc;
       },
-      { k: 0, r: 0 }
+      { k: 0, r: 0 },
     );
   }
 
@@ -189,7 +189,7 @@ function median(arr: number[]) {
 export function romaConvert(lineWord: LineWord) {
   const dakuten = lineWord.nextChar.orginalDakuChar;
   const tokenizedKanaWord = tokenizeKanaBySentenceRomaPatterns(
-    (dakuten ? dakuten : lineWord.nextChar["k"]) + lineWord.word.map((char) => char["k"]).join("")
+    (dakuten ? dakuten : lineWord.nextChar["k"]) + lineWord.word.map((char) => char["k"]).join(""),
   );
   const nextPoint = lineWord.nextChar["p"];
 

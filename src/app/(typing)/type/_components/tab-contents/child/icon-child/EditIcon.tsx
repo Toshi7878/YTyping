@@ -1,4 +1,4 @@
-import { useMapInfoRef } from "@/app/(typing)/type/atoms/stateAtoms";
+import { useMapInfoRef } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";

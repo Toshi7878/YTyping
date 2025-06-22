@@ -1,4 +1,4 @@
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { $Enums } from "@prisma/client";
@@ -13,9 +13,7 @@ const UserNextDisplayRadioButton = () => {
 
   return (
     <div>
-      <label className="text-lg font-semibold mb-2 block">
-        次の歌詞表示
-      </label>
+      <label className="mb-2 block text-lg font-semibold">次の歌詞表示</label>
       <RadioGroup value={next_display} onValueChange={changeRadio}>
         <div className="flex flex-row gap-5">
           <div className="flex items-center space-x-2">

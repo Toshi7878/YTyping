@@ -1,4 +1,4 @@
-import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/(typing)/type/atoms/stateAtoms";
+import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { INITIAL_STATE } from "@/config/consts/globalConst";

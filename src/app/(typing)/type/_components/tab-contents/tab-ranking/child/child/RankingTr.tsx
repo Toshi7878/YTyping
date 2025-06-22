@@ -1,7 +1,7 @@
 "use client";
 
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
-import { RANKING_COLUMN_WIDTH } from "@/app/(typing)/type/ts/const/consts";
+import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { RANKING_COLUMN_WIDTH } from "@/app/(typing)/type/_lib/const";
 import ClapedText from "@/components/share-components/text/ClapedText";
 import ClearRateText from "@/components/share-components/text/ClearRateText";
 import DateDistanceText from "@/components/share-components/text/DateDistanceText";

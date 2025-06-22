@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
-import { usePlayer, useYTStatus } from "../../atoms/refAtoms";
-import { useReadGameUtilParams } from "../../atoms/stateAtoms";
+import { usePlayer, useYTStatus } from "../../_lib/atoms/refAtoms";
+import { useReadGameUtilParams } from "../../_lib/atoms/stateAtoms";
 
 const MobileCover = () => {
   const windowFocus = useWindowFocus();

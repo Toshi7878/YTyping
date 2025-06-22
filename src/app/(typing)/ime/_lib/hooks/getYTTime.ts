@@ -1,4 +1,4 @@
-import { useUserTypingOptionsStateRef } from "../../../type/atoms/stateAtoms";
+import { useUserTypingOptionsStateRef } from "../../../type/_lib/atoms/stateAtoms";
 import { usePlayer } from "../atoms/refAtoms";
 import { useReadPlaySpeed } from "../atoms/speedReducerAtoms";
 

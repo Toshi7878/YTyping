@@ -1,4 +1,4 @@
-import { useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
+import { useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Checkbox } from "@/components/ui/checkbox";
 import * as React from "react";
 

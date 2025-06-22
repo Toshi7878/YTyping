@@ -23,6 +23,7 @@ const buttonVariants = cva(
         error: "bg-error text-error-foreground shadow-xs hover:bg-error/90",
         warning: "bg-warning text-warning-foreground shadow-xs hover:bg-warning/90",
         info: "bg-info text-info-foreground shadow-xs hover:bg-info/90",
+        accent: "bg-accent text-accent-foreground shadow-xs hover:bg-accent/90",
         "outline-success": "border border-success text-success shadow-xs hover:bg-success/50",
         "outline-error": "border border-error text-error shadow-xs hover:bg-error/50",
         "outline-warning": "border border-warning text-warning shadow-xs hover:bg-warning/50",

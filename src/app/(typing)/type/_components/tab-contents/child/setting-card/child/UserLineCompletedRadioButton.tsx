@@ -1,4 +1,4 @@
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { $Enums } from "@prisma/client";
@@ -13,9 +13,7 @@ const UserLineCompletedRadioButton = () => {
 
   return (
     <div>
-      <label className="font-semibold mb-2 block">
-        打ち切り時のワード表示
-      </label>
+      <label className="mb-2 block font-semibold">打ち切り時のワード表示</label>
       <RadioGroup value={line_completed_display} onValueChange={changeRadio}>
         <div className="flex flex-row gap-5">
           <div className="flex items-center space-x-2">

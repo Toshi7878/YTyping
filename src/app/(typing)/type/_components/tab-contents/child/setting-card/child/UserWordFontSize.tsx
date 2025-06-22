@@ -1,5 +1,5 @@
 "use client";
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Button } from "@/components/ui/button";
 import { MdRestartAlt } from "react-icons/md";
 import CounterInput from "./child/CounterInput";
@@ -30,10 +30,8 @@ export const UserWordFontSize = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <span className="text-lg font-semibold">
-          ワードフォントサイズ 調整
-        </span>
+      <div className="flex items-center justify-between">
+        <span className="text-lg font-semibold">ワードフォントサイズ 調整</span>
         <Button size="sm" variant="outline" onClick={resetToDefaults}>
           <MdRestartAlt className="mr-2" />
           リセット

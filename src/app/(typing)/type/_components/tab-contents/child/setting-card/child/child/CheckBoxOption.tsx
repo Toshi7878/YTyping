@@ -1,7 +1,6 @@
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { useSoundEffect } from "@/app/(typing)/type/hooks/playing-hooks/soundEffect";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/soundEffect";
 import { Checkbox } from "@/components/ui/checkbox";
-import React from "react";
 
 interface CheckBoxOptionProps {
   label: string;
@@ -31,15 +30,10 @@ const CheckBoxOption = ({ label, name, defaultChecked: isChecked = false }: Chec
 
   return (
     <div className="flex items-center space-x-2 px-2">
-      <Checkbox
-        id={name}
-        name={name}
-        checked={currentChecked}
-        onCheckedChange={onChange}
-      />
+      <Checkbox id={name} name={name} checked={currentChecked} onCheckedChange={onChange} />
       <label
         htmlFor={name}
-        className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        className="text-lg leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         {label}
       </label>

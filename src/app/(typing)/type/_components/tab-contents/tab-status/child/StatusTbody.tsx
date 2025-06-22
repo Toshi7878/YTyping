@@ -1,14 +1,18 @@
-import { focusTypingStatusAtoms } from "@/app/(typing)/type/atoms/stateAtoms";
-import { STATUS_LABEL } from "@/app/(typing)/type/ts/const/consts";
+import { focusTypingStatusAtoms } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import StatusLabel from "./child/StatusLabel";
 import StatusPointValue from "./child/StatusPointValue";
 import StatusUnderline from "./child/StatusUnderline";
 import StatusValue from "./child/StatusValue";
 
+const STATUS_LABEL = [
+  ["score", "type", "kpm", "rank"],
+  ["point", "miss", "lost", "line"],
+].flat();
+
 const StatusTbody = () => {
   return (
-    <TableBody className="text-[2rem] font-bold font-mono">
+    <TableBody className="font-mono text-[2rem] font-bold">
       <TableRow>
         {/* 1段目 */}
         {STATUS_LABEL.slice(0, STATUS_LABEL.length / 2).map((label) => {

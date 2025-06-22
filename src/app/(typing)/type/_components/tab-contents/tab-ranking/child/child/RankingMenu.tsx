@@ -1,11 +1,11 @@
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/atoms/refAtoms";
-import { useMapInfoRef, useSceneGroupState, useSetTabIndex } from "@/app/(typing)/type/atoms/stateAtoms";
-import { useLoadResultPlay } from "@/app/(typing)/type/hooks/loadResultPlay";
-import { useRetry } from "@/app/(typing)/type/hooks/playing-hooks/retry";
-import { useSoundEffect } from "@/app/(typing)/type/hooks/playing-hooks/soundEffect";
+import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { useMapInfoRef, useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useLoadResultPlay } from "@/app/(typing)/type/_lib/hooks/loadResultPlay";
+import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
+import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/soundEffect";
+import { Button } from "@/components/ui/button";
 import { LocalClapState, UploadResult } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
-import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { Dispatch } from "react";
 import MenuClapButton from "./child/MenuClapButton";
@@ -36,7 +36,7 @@ const RankingMenu = ({
   const { iosActiveSound } = useSoundEffect();
   const retry = useRetry();
   const loadResultPlay = useLoadResultPlay({ startMode: "replay", resultId });
-  const setTabIndex = useSetTabIndex();
+  const setTabName = useSetTabName();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readMapInfo } = useMapInfoRef();
@@ -57,7 +57,7 @@ const RankingMenu = ({
 
     setShowMenu(null);
     setHoveredIndex(null);
-    setTabIndex(0);
+    setTabName("ステータス");
     writeGameUtilRefParams({
       replayUserName: name,
     });
@@ -68,24 +68,18 @@ const RankingMenu = ({
   };
   return (
     <div
-      className="rounded-md absolute z-[9999] bg-background text-foreground shadow-md p-2 border border-border space-y-2 text-xl md:text-base"
+      className="bg-background text-foreground border-border absolute z-[9999] space-y-2 rounded-md border p-2 text-xl shadow-md md:text-base"
       style={{
         top: "auto",
       }}
     >
-      <Button 
-        variant="ghost" 
-        className="w-full justify-start" 
-        asChild
-      >
-        <a href={`/user/${userId}`}>
-          ユーザーページへ
-        </a>
+      <Button variant="ghost" className="w-full justify-start" asChild>
+        <a href={`/user/${userId}`}>ユーザーページへ</a>
       </Button>
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         className="w-full justify-start"
-        onClick={() => handleReplayClick()} 
+        onClick={() => handleReplayClick()}
         disabled={sceneGroup === "Playing"}
       >
         リプレイ再生

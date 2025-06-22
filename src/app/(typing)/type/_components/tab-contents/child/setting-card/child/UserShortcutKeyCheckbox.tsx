@@ -1,4 +1,4 @@
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select/select";
 import { $Enums } from "@prisma/client";
 
@@ -17,10 +17,8 @@ const UserShortcutKeyCheckbox = () => {
   return (
     <div className="flex">
       <div>
-        <label className="text-lg font-semibold mb-2 block">
-          ショートカットキー設定
-        </label>
-        <div className="flex items-baseline mb-4 gap-2">
+        <label className="mb-2 block text-lg font-semibold">ショートカットキー設定</label>
+        <div className="mb-4 flex items-baseline gap-2">
           <span className="mr-2">タイミング調整</span>
           <Select value={time_offset_key} onValueChange={changeTimeOffsetKey}>
             <SelectTrigger className="w-fit">

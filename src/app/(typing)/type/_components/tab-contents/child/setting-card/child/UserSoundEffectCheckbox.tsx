@@ -1,5 +1,5 @@
-import { usePlayer } from "@/app/(typing)/type/atoms/refAtoms";
-import { useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
+import { usePlayer } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import VolumeRange from "@/components/share-components/VolumeRange";
 import CheckBoxOption from "./child/CheckBoxOption";
 
