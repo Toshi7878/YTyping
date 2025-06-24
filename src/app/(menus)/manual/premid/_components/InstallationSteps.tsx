@@ -6,7 +6,7 @@ import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png
 import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
 import { useUserAgent } from "@/utils/useUserAgent";
 import Image from "next/image";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 const browserLinks = {
   Chrome: {

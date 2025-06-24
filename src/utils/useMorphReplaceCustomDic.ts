@@ -1,4 +1,4 @@
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMorphQueries } from "./queries/morph.queries";
 

@@ -137,7 +137,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
   const setDifficultyRangeAtom = useSetDifficultyRange();
   const setIsSearchingAtom = useSetIsSearching();
 
-  const handleChange = (val: number[]) => {
+  const handleChange = (val: [number, number]) => {
     setDifficultyRange({ min: val[0], max: val[1] });
     setDifficultyRangeAtom({ min: val[0], max: val[1] });
   };

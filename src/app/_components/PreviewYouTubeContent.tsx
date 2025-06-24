@@ -1,7 +1,7 @@
 "use client";
 import { RESET } from "jotai/utils";
 import { useEffect } from "react";
-import YouTube, { YouTubeEvent } from "react-youtube";
+import YouTube, { type YouTubeEvent } from "react-youtube";
 import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/globalAtoms";
 
 const PreviewYouTubeContent = function YouTubeContent() {

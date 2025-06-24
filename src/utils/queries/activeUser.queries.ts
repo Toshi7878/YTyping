@@ -1,5 +1,5 @@
 import { useTRPC } from "@/trpc/trpc";
-import { ActiveUserStatus } from "@/types/global-types";
+import type { ActiveUserStatus } from "@/types/global-types";
 
 export const useActiveUserQueries = () => {
   const trpc = useTRPC();

@@ -5,13 +5,14 @@ import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { CardWithContent } from "@/components/ui/card";
 import Link from "@/components/ui/link/link";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { MapListResponse, useMapListQueryOptions } from "../../../utils/queries/mapList.queries";
+import type { MapListResponse } from "../../../utils/queries/mapList.queries";
+import { useMapListQueryOptions } from "../../../utils/queries/mapList.queries";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 import { PARAM_NAME } from "../_lib/const";
 
