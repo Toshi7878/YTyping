@@ -1,7 +1,7 @@
 import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { INITIAL_STATE } from "@/config/consts/globalConst";
+import { INITIAL_STATE } from "@/config/globalConst";
 import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { UploadResult } from "@/types";
 import { useParams } from "next/navigation";

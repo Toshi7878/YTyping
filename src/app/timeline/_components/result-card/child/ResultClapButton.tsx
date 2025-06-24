@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { INITIAL_STATE } from "@/config/consts/globalConst";
+import { INITIAL_STATE } from "@/config/globalConst";
 import { cn } from "@/lib/utils";
 import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
 import { useSession } from "next-auth/react";

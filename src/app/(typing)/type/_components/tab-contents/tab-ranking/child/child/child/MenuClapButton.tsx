@@ -1,6 +1,6 @@
-import { INITIAL_STATE } from "@/config/consts/globalConst";
-import { LocalClapState, UploadResult } from "@/types";
 import { Button } from "@/components/ui/button";
+import { INITIAL_STATE } from "@/config/globalConst";
+import { LocalClapState, UploadResult } from "@/types";
 import { useActionState } from "react";
 
 interface MenuClapButtonProps {

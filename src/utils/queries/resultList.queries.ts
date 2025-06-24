@@ -1,5 +1,5 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/timeline/_lib/consts";
-import { QUERY_KEYS } from "@/config/consts/globalConst";
+import { QUERY_KEYS } from "@/config/globalConst";
 import { infiniteQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import { ReadonlyURLSearchParams } from "next/navigation";

@@ -1,5 +1,5 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/_lib/const";
-import { QUERY_KEYS } from "@/config/consts/globalConst";
+import { QUERY_KEYS } from "@/config/globalConst";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/trpc";
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";

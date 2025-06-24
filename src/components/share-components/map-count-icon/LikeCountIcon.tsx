@@ -1,5 +1,5 @@
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
-import { INITIAL_STATE } from "@/config/consts/globalConst";
+import { INITIAL_STATE } from "@/config/globalConst";
 import { cn } from "@/lib/utils";
 import { LocalLikeState } from "@/types";
 import { useLocalLikeServerActions } from "@/utils/global-hooks/useLocalLikeServerActions";

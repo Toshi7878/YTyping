@@ -1,4 +1,4 @@
-import { PREVIEW_DISABLE_PATHNAMES } from "@/config/consts/globalConst";
+import { PREVIEW_DISABLE_PATHNAMES } from "@/config/globalConst";
 import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";

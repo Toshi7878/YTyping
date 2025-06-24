@@ -6,7 +6,7 @@ import {
   MANDATORY_SYMBOL_LIST,
   NUM_LIST,
   STRICT_SYMBOL_LIST,
-} from "@/config/consts/charList";
+} from "@/config/charList";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { kanaToHira } from "@/utils/kanaToHira";
 import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
