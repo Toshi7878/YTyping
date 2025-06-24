@@ -3,7 +3,7 @@ import Link from "@/components/ui/link/link";
 
 export default function Page() {
   return (
-    <div className="mx-auto w-xl space-y-4 px-4 py-8">
+    <div className="mx-auto max-w-screen-xl space-y-4">
       <h1 className="text-3xl font-bold">クレジット</h1>
       <Card>
         <CardContent className="space-y-10">

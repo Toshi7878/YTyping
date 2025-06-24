@@ -1,9 +1,14 @@
+import { cn } from "@/lib/utils";
 import { LeftNav, RightNav } from "./_components/Nav";
 
-const Header = async () => {
+interface HeaderProps {
+  className: string;
+}
+
+const Header = ({ className }: HeaderProps) => {
   return (
-    <header id="header" className="bg-header-background text-header-foreground fixed z-30 w-full">
-      <nav className="mx-auto flex h-10 w-[90%] items-center justify-between xl:w-[80%]">
+    <header id="header" className={cn("bg-header-background text-header-foreground", className)}>
+      <nav className="mx-36 flex items-center justify-between">
         <LeftNav />
         <RightNav />
       </nav>

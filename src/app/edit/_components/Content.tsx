@@ -5,8 +5,8 @@ import { TimeRangeAndSpeedChange } from "./TimeRangeAndSpeedChange";
 
 function Content() {
   return (
-    <div className="mx-0 pt-4 md:mx-auto lg:pt-0">
-      <section className="flex w-full flex-col gap-2 lg:flex-row lg:gap-6">
+    <div className="mx-auto max-w-screen-lg xl:max-w-screen-xl">
+      <section className="flex flex-col gap-2 lg:flex-row lg:gap-6">
         <EditYouTube className="aspect-video h-[286px] w-full select-none lg:w-[416px]" />
         <EditTabs />
       </section>

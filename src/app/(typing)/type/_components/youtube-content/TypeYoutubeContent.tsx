@@ -1,4 +1,5 @@
 "use client";
+import { useUserAgent } from "@/utils/useUserAgent";
 import { useCallback, useEffect, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
@@ -12,14 +13,15 @@ import {
   useYTSeekEvent,
   useYTStopEvent,
 } from "../../_lib/hooks/youtubeEvents";
+import MobileCover from "./MobileCover";
 
-interface TypeYouTubeProps {
+interface YouTubeContentProps {
   isMapLoading: boolean;
   videoId: string;
   className?: string;
 }
 
-const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, className = "" }: TypeYouTubeProps) {
+const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeContentProps) => {
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -27,6 +29,7 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
   const { addTimer, removeTimer } = useTimerRegistration();
+  const { isMobile } = useUserAgent();
 
   const readGameStateUtils = useReadGameUtilParams();
 
@@ -103,9 +106,10 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
 
   return (
     <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
+      {isMobile && <MobileCover />}
       {memoizedYouTube}
     </LoadingOverlayWrapper>
   );
 };
 
-export default TypeYouTubeContent;
+export default YouTubeContent;

@@ -15,7 +15,7 @@ const FilterContents = () => {
   const { data: session } = useSession();
   const isLogin = !!session?.user?.id;
   return (
-    <div className="flex flex-col items-center gap-5 md:flex-row">
+    <div className="flex flex-col flex-wrap items-start gap-5 md:flex-row md:items-center">
       {isLogin && <FilterInputs />}
       <SearchRange step={0.1} />
     </div>

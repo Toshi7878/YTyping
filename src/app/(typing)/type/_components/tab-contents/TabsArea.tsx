@@ -3,11 +3,11 @@ import { TAB_NAMES, useSetTabName, useTabNameState } from "../../_lib/atoms/stat
 import TabRanking from "./tab-ranking/TabRanking";
 import TabStatusCard from "./tab-status/TabStatusCard";
 
-interface TypeTabContentProps {
+interface TabsAreaProps {
   className?: string;
 }
 
-export default function TypeTabContent({ className }: TypeTabContentProps) {
+export default function TabsArea({ className }: TabsAreaProps) {
   const tabName = useTabNameState();
   const setTabName = useSetTabName();
 
@@ -19,11 +19,11 @@ export default function TypeTabContent({ className }: TypeTabContentProps) {
     >
       <TabLists />
 
-      <TabsContent value="ステータス" className="px-0">
+      <TabsContent value="ステータス">
         <TabStatusCard className="min-h-[322px] md:min-h-[208px]" />
       </TabsContent>
 
-      <TabsContent value="ランキング" className="px-0">
+      <TabsContent value="ランキング">
         <TabRanking className="min-h-[354px] md:min-h-[236px]" />
       </TabsContent>
     </Tabs>

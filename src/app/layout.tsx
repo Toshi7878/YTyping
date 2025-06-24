@@ -40,12 +40,9 @@ export default async function RootLayout({
       <body>
         <SessionProvider session={session}>
           <TRPCProvider>
-            <Header />
+            <Header className="fixed z-30 h-10 w-full" />
             <GlobalProvider>
-              <main
-                className="mx-auto flex min-h-screen max-w-[1300px] flex-col items-center justify-between px-0 pt-12 sm:px-6 md:pt-16 lg:px-8"
-                id="main_content"
-              >
+              <main className="min-h-screen pt-12 md:pt-16" id="main_content">
                 {children}
               </main>
               <PreviewYouTubeContent />

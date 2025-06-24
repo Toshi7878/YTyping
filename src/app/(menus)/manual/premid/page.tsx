@@ -3,7 +3,7 @@ import { InstallationSteps } from "./_components/InstallationSteps";
 
 export default function PreMidManual() {
   return (
-    <article className="mx-auto space-y-4 px-4 py-8">
+    <article className="mx-auto max-w-screen-xl space-y-4">
       <h1 className="text-3xl font-bold">DiscordにYTypingのプレイ中ステータスを表示する</h1>
       <Card>
         <CardHeader>

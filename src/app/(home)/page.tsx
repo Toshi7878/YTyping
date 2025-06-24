@@ -5,7 +5,7 @@ import HomeProvider from "./HomeClientProvider";
 export default function Home() {
   return (
     <HomeProvider>
-      <div className="w-full">
+      <div className="mx-auto max-w-screen-xl lg:px-8">
         <MapControlArea />
         <MapList />
       </div>

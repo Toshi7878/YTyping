@@ -5,9 +5,9 @@ export default async function Page() {
   const buildingDate = await serverApi.vercel.getLatestDeployDate();
 
   return (
-    <article className="flex flex-col gap-4">
+    <article className="mx-auto max-w-screen-xl space-y-4">
       <p className="text-sm">最終更新: {buildingDate?.toLocaleString()}</p>
-      <h1>更新履歴</h1>
+      <h1 className="text-2xl font-bold">更新履歴</h1>
       <UpdateHistoryList />
     </article>
   );

@@ -33,8 +33,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
+  const { id: mapId } = await params;
+  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(mapId) });
   const userTypingOptions = await serverApi.userTypingOption.getUserTypingOptions();
 
   if (!mapInfo) {
@@ -42,8 +42,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   }
 
   return (
-    <TypeProvider mapInfo={mapInfo} userTypingOptions={userTypingOptions}>
-      <Content mapInfo={mapInfo} />
+    <TypeProvider mapInfo={mapInfo} userTypingOptions={userTypingOptions} mapId={mapId}>
+      <Content video_id={mapInfo.video_id} mapId={mapId} />
     </TypeProvider>
   );
 }
