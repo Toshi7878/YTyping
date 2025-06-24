@@ -124,7 +124,7 @@ function Content({ mapInfo }: ContentProps) {
     );
 
   return (
-    <main>
+    <>
       <LoadingOverlayWrapper
         active={map === null}
         spinner={!tokenizerError}
@@ -156,7 +156,7 @@ function Content({ mapInfo }: ContentProps) {
         <InputTextarea />
         <MenuBar />
       </div>
-    </main>
+    </>
   );
 }
 

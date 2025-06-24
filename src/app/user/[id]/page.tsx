@@ -14,7 +14,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   }
 
   return (
-    <div className="mx-auto flex max-w-screen-lg flex-col gap-4 pt-4">
+    <div className="mx-auto max-w-screen-lg space-y-4">
       <UserProfileCard userProfile={userProfile} />
       <UserStatsCard userStats={userStats} userOptions={userOptions} />
     </div>

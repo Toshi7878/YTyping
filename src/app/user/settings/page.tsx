@@ -13,7 +13,7 @@ export default async function Page() {
   const userOptions = await serverApi.userOption.getUserOptions({ userId: Number(session?.user.id) });
 
   return (
-    <div className="mx-auto flex w-full flex-col gap-5 pt-4 md:w-[70%]">
+    <div className="mx-auto max-w-screen-lg space-y-5">
       <ProfileSettingCard userProfile={userProfile} />
       <OptionSettingCard userOptions={userOptions} />
     </div>
