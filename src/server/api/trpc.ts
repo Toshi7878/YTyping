@@ -1,8 +1,8 @@
-import { inferRouterInputs, inferRouterOutputs, initTRPC } from "@trpc/server";
+import type { inferRouterInputs, inferRouterOutputs, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { auth } from "../auth";
 import { prisma } from "../db";
-import { AppRouter } from "./root";
+import type { AppRouter } from "./root";
 
 const createContext = async () => {
   const session = await auth();

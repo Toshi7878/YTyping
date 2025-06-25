@@ -3,7 +3,7 @@ import { QUERY_KEYS } from "@/config/globalConst";
 import { infiniteQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { ResultCardInfo } from "../../app/timeline/_lib/type";
+import type { ResultCardInfo } from "../../app/timeline/_lib/type";
 
 export const resultListQueries = {
   infiniteResultList: (searchParams: ReadonlyURLSearchParams) => {

@@ -1,10 +1,10 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { QUERY_KEYS } from "@/config/globalConst";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/trpc";
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import axios from "axios";
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
 type MapCardInfo = RouterOutPuts["mapList"]["getByVideoId"][number];
