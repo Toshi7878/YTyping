@@ -55,7 +55,7 @@ const MapList = () => {
   }
 
   return (
-    <div className={isSearching ? "opacity-20" : ""}>
+    <section className={isSearching ? "opacity-20" : ""}>
       <MapCardLayout>
         {data.pages.map((page: MapListResponse) =>
           page.maps.map((map: MapCardInfo) => {
@@ -83,7 +83,7 @@ const MapList = () => {
           <LoadingMapCard cardLength={2} />
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

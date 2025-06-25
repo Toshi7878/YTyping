@@ -1,16 +1,14 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { CardWithContent } from "@/components/ui/card";
 import Link from "@/components/ui/link/link";
 
 export default function Page() {
   return (
     <div className="mx-auto max-w-screen-xl space-y-4">
       <h1 className="text-3xl font-bold">クレジット</h1>
-      <Card>
-        <CardContent className="space-y-10">
-          <BorrowedMaterials />
-          <SpecialThanks />
-        </CardContent>
-      </Card>
+      <CardWithContent className={{ cardContent: "space-y-10" }}>
+        <BorrowedMaterials />
+        <SpecialThanks />
+      </CardWithContent>
     </div>
   );
 }

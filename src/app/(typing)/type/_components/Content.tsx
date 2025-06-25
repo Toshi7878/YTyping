@@ -48,7 +48,7 @@ function Content({ video_id, mapId }: ContentProps) {
   }, [mapData]);
 
   return (
-    <main className="flex w-full flex-col">
+    <div className="mx-auto w-[90%] pb-4">
       <section className="flex w-full flex-col gap-6 md:flex-row">
         <div className={`relative order-2 hidden md:order-1 md:block`}>
           <YouTubeContent className="w-full md:w-[513px]" isMapLoading={isLoading} videoId={video_id} />
@@ -61,7 +61,7 @@ function Content({ video_id, mapId }: ContentProps) {
       <div className="relative mt-5 block md:hidden">
         <YouTubeContent isMapLoading={isLoading} videoId={video_id} />
       </div>
-    </main>
+    </div>
   );
 }
 
