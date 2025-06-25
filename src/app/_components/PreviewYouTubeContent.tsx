@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/globalAtoms";
 
-const PreviewYouTubeContent = function YouTubeContent() {
+const PreviewYouTubeContent = () => {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
 
   const volume = useVolumeState();
@@ -24,7 +24,7 @@ const PreviewYouTubeContent = function YouTubeContent() {
     return null;
   }
 
-  const onReady = (event) => {
+  const onReady = (event: YouTubeEvent) => {
     const player = event.target;
     player.setVolume(volume);
     player.seekTo(Number(previewTime), true);
