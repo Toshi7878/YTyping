@@ -1,4 +1,4 @@
-import type { inferRouterInputs, inferRouterOutputs, initTRPC } from "@trpc/server";
+import { inferRouterInputs, inferRouterOutputs, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { auth } from "../auth";
 import { prisma } from "../db";
