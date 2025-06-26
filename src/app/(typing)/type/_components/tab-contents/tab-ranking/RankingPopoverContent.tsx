@@ -4,31 +4,31 @@ import { useLoadResultPlay } from "@/app/(typing)/type/_lib/hooks/loadResultPlay
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/soundEffect";
 import { Button } from "@/components/ui/button";
+import Link from "@/components/ui/link/link";
+import { PopoverContent } from "@/components/ui/popover";
+import { INITIAL_STATE } from "@/config/globalConst";
 import { LocalClapState, UploadResult } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useSession } from "next-auth/react";
-import { Dispatch } from "react";
-import MenuClapButton from "./child/MenuClapButton";
+import { useActionState } from "react";
 
 interface RankingMenuProps {
   resultId: number;
   userId: number;
   resultUpdatedAt: Date;
   name: string;
-  setShowMenu: Dispatch<number | null>;
-  setHoveredIndex: Dispatch<number | null>;
   clapOptimisticState: LocalClapState;
   toggleClapAction: (resultId: number) => Promise<UploadResult>;
+  onOpenChange?: (open: boolean) => void;
 }
 const RankingMenu = ({
   resultId,
   userId,
   resultUpdatedAt,
   name,
-  setShowMenu,
-  setHoveredIndex,
   clapOptimisticState,
   toggleClapAction,
+  onOpenChange,
 }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
@@ -55,8 +55,7 @@ const RankingMenu = ({
       });
     }
 
-    setShowMenu(null);
-    setHoveredIndex(null);
+    onOpenChange?.(false);
     setTabName("ステータス");
     writeGameUtilRefParams({
       replayUserName: name,
@@ -66,32 +65,34 @@ const RankingMenu = ({
       retry("replay");
     }
   };
+
+  const [state, formAction] = useActionState(async () => {
+    const result = await toggleClapAction(resultId);
+
+    return result;
+  }, INITIAL_STATE);
   return (
-    <div
-      className="bg-background text-foreground border-border absolute z-[9999] space-y-2 rounded-md border p-2 text-xl shadow-md md:text-base"
-      style={{
-        top: "auto",
-      }}
-    >
-      <Button variant="ghost" className="w-full justify-start" asChild>
-        <a href={`/user/${userId}`}>ユーザーページへ</a>
+    <PopoverContent side="bottom" align="start" className="flex w-fit flex-col items-center">
+      <Button variant="ghost" className="w-full">
+        <Link href={`/user/${userId}`}>ユーザーページへ </Link>
       </Button>
+
       <Button
         variant="ghost"
-        className="w-full justify-start"
+        className="w-full"
         onClick={() => handleReplayClick()}
         disabled={sceneGroup === "Playing"}
       >
         リプレイ再生
       </Button>
       {session?.user.id ? (
-        <MenuClapButton
-          resultId={resultId}
-          clapOptimisticState={clapOptimisticState}
-          toggleClapAction={toggleClapAction}
-        />
+        <form action={formAction} className="w-full">
+          <Button variant="ghost" type="submit" className="w-full">
+            {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
+          </Button>
+        </form>
       ) : null}
-    </div>
+    </PopoverContent>
   );
 };
 

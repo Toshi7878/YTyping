@@ -24,7 +24,7 @@ export default function TabsArea({ className }: TabsAreaProps) {
       </TabsContent>
 
       <TabsContent value="ランキング">
-        <TabRanking className="min-h-[354px] md:min-h-[236px]" />
+        <TabRanking className="h-64" />
       </TabsContent>
     </Tabs>
   );
