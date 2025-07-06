@@ -25,13 +25,14 @@ interface ContentProps {
 function Content({ video_id, mapId }: ContentProps) {
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
 
-  const setMap = useSetMap();
   const setLineResults = useSetLineResults();
   const setLineSelectIndex = useSetLineSelectIndex();
   const setTypingStatusLine = useSetTypingStatusLine();
 
   const { readTotalProgress } = useProgress();
   const { resetTypingStatus } = useSetTypingStatus();
+
+  const setMap = useSetMap();
 
   useEffect(() => {
     if (mapData) {
@@ -61,7 +62,7 @@ function Content({ video_id, mapId }: ContentProps) {
       <div style={style} className="h-fit">
         <section className="flex w-full flex-col gap-6 md:flex-row">
           <div className={`relative order-2 hidden md:order-1 md:block`}>
-            <YouTubeContent className="w-full md:w-[513px]" isMapLoading={isLoading} videoId={video_id} />
+            <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[513px]" />
           </div>
           <TabsArea className="order-1 flex flex-[8] flex-col md:order-2" />
         </section>

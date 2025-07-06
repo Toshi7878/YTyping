@@ -7,7 +7,7 @@ import LikeIcon from "./icon-child/LikeIcon";
 import SettingIcon from "./icon-child/SettingIcon";
 
 const SettingCard = dynamic(() => import("./setting-card/SettingCard"), {
-  ssr: false, // サーバーサイドレンダリングを無効にする場合、このオプションを有効にします
+  ssr: false,
 });
 
 export default function TabIcons() {
@@ -16,12 +16,7 @@ export default function TabIcons() {
 
   return (
     <>
-      <div
-        className={cn(
-          "absolute -top-5 -right-2.5 flex items-center justify-end",
-          "text-foreground/60"
-        )}
-      >
+      <div className={cn("absolute -top-5 -right-2.5 flex items-center justify-end", "text-foreground/60")}>
         {session?.user.id ? <SettingIcon setIsCardVisible={setIsCardVisible} /> : null}
         {session?.user.id ? <LikeIcon /> : null}
         <EditIcon />

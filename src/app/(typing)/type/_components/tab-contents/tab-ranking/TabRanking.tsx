@@ -100,7 +100,6 @@ const RankingList = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {" "}
         {data.map((result: (typeof data)[number], index: number) => {
           return (
             <RankingRow
