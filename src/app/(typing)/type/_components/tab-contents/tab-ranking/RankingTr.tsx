@@ -45,14 +45,14 @@ const RankingTr = forwardRef<HTMLTableRowElement, RankingTrProps>(
       <TableRow
         ref={ref}
         className={cn(
-          "cursor-pointer text-base font-bold",
+          "border-foreground cursor-pointer text-base font-bold",
           userId === result.user_id && "my-result text-secondary",
           isHighlighted && "bg-muted/50",
         )}
         {...props}
       >
         <TableCell style={{ width: RANKING_COLUMN_WIDTH.rank }}>
-          <RankText rank={rank}>{`#${rank}`}</RankText>
+          <RankText rank={rank}>#{rank}</RankText>
         </TableCell>
         <TableCell style={{ width: RANKING_COLUMN_WIDTH.score }}>{status.score}</TableCell>
         <TableCell style={{ width: RANKING_COLUMN_WIDTH.clearRate }}>

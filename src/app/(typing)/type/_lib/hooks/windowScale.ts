@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const CONTENT_WIDTH = 1500;
+export const CONTENT_WIDTH = 1350;
 const CONTENT_HEIGHT = 900;
 
 // ブレークポイント定義

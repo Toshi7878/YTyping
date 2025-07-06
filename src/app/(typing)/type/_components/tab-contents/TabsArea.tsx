@@ -21,11 +21,11 @@ export default function TabsArea({ className }: TabsAreaProps) {
       <TabLists />
 
       <TabsContent value="ステータス">
-        <TabStatusCard className="min-h-64" />
+        <TabStatusCard className="h-56" />
       </TabsContent>
 
       <TabsContent value="ランキング">
-        <TabRanking className="h-64" />
+        <TabRanking className="h-56" />
       </TabsContent>
     </Tabs>
   );

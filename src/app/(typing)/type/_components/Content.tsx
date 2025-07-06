@@ -62,7 +62,7 @@ function Content({ video_id, mapId }: ContentProps) {
       <div style={style} className="h-fit">
         <section className="flex w-full flex-col gap-6 md:flex-row">
           <div className={`relative order-2 hidden md:order-1 md:block`}>
-            <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[513px]" />
+            <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
           </div>
           <TabsArea className="order-1 flex flex-[8] flex-col md:order-2" />
         </section>

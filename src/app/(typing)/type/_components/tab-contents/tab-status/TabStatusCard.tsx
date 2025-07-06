@@ -7,25 +7,27 @@ const TabStatusCard = ({ className }: { className: string }) => {
   return (
     <CardWithContent
       className={{
-        card: "tab-card py-0",
-        cardContent: "overflow-auto",
+        card: cn("tab-card py-0", className),
+        cardContent: "my-auto overflow-auto",
       }}
     >
-      <Table className={cn("table-fixed overflow-hidden", className)}>
-        <TableBody className={cn("font-mono text-[2rem] font-bold", className)}>
-          <TableRow className="border-b-0 hover:bg-transparent">
-            {["score", "type", "kpm", "rank"].map((label) => {
-              return <StatusCell key={label} label={label} />;
-            })}
-          </TableRow>
-          <TableRow className="border-b-0 hover:bg-transparent">
-            {["point", "miss", "lost", "line"].map((label) => {
-              return <StatusCell key={label} label={label} />;
-            })}
-          </TableRow>
+      <Table className={cn("h-48 table-fixed overflow-hidden")}>
+        <TableBody className={cn("font-mono text-[2rem] font-bold")}>
+          <StatusTableRow labels={["score", "type", "kpm", "rank"]} />
+          <StatusTableRow labels={["point", "miss", "lost", "line"]} />
         </TableBody>
       </Table>
     </CardWithContent>
+  );
+};
+
+const StatusTableRow = ({ labels }: { labels: string[] }) => {
+  return (
+    <TableRow className="border-b-0 hover:bg-transparent">
+      {labels.map((label) => {
+        return <StatusCell key={label} label={label} />;
+      })}
+    </TableRow>
   );
 };
 
