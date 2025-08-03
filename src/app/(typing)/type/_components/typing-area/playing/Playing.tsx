@@ -2,11 +2,12 @@ import {
   useReadGameUtilParams,
   useReadMapState,
   useSceneState,
+  useSetLineResultDrawer,
   useSetNextLyrics,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useEffect } from "react";
 
-import { useLineCount, useSetLineResultDrawer, useUserStats } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { useLineCount, useUserStats } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/(typing)/type/_lib/hooks/playing-hooks/keydown-hooks/playingKeydown";
 import { useTimerControls } from "@/app/(typing)/type/_lib/hooks/playing-hooks/timer-hooks/timer";
 import { useSession } from "next-auth/react";

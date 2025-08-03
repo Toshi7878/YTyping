@@ -1,6 +1,6 @@
+import { useSetLineResultDrawer } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useSendUserStats } from "@/app/(typing)/type/_lib/hooks/playing-hooks/sendUserStats";
 import { useEffect } from "react";
-import { useSetLineResultDrawer } from "../../../_lib/atoms/refAtoms";
 import EndButtonContainer from "./end-child/EndButtonContainer";
 import EndText from "./end-child/EndText";
 

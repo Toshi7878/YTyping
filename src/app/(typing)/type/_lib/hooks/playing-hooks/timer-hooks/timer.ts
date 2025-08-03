@@ -272,7 +272,7 @@ const useCalcLineResult = () => {
 };
 
 export const useUpdateLine = () => {
-  const { setNextLyrics, resetNextLyrics } = useSetNextLyrics();
+  const { setNextLyrics } = useSetNextLyrics();
   const setLineKpm = useSetLineKpm();
   const setChangeCSSCount = useSetChangeCSSCount();
 

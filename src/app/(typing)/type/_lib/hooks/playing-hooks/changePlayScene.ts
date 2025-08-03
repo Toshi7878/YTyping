@@ -1,7 +1,13 @@
 import { YouTubeSpeed } from "@/types";
-import { useGameUtilityReferenceParams, useLineStatus, useSetLineResultDrawer } from "../../atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineStatus } from "../../atoms/refAtoms";
 import { usePlaySpeedReducer } from "../../atoms/speedReducerAtoms";
-import { useReadGameUtilParams, useSetNotify, useSetPlayingInputMode, useSetScene } from "../../atoms/stateAtoms";
+import {
+  useReadGameUtilParams,
+  useSetLineResultDrawer,
+  useSetNotify,
+  useSetPlayingInputMode,
+  useSetScene,
+} from "../../atoms/stateAtoms";
 import { useReadReadyInputMode } from "../../atoms/storageAtoms";
 import { useRetry } from "./retry";
 

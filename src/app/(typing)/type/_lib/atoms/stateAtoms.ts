@@ -100,7 +100,17 @@ const gameStateUtilParamsAtom = atomWithReset({
   isLoadingOverlay: false,
   lineSelectIndex: 0,
   isYTStarted: false,
+  lineResultdrawerClosure: false,
 });
+
+const lineResultDrawerClosure = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("lineResultdrawerClosure"));
+
+const writeLineResultDrawerAtom = atom(null, (_, set, value: boolean) => {
+  set(lineResultDrawerClosure, value);
+});
+
+export const useLineResultDrawerState = () => useAtomValue(lineResultDrawerClosure);
+export const useSetLineResultDrawer = () => useSetAtom(writeLineResultDrawerAtom);
 
 export const sceneAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("scene"));
 export const sceneGroupAtom = atom((get) => {

@@ -1,6 +1,10 @@
 "use client";
-import { useLineResultDrawerState, useSetLineResultDrawer } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { useSceneGroupState, useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import {
+  useLineResultDrawerState,
+  useSceneGroupState,
+  useSceneState,
+  useSetLineResultDrawer,
+} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useMemo } from "react";
 import ResultLineList from "./child/ResultLineList";
