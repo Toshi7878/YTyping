@@ -34,7 +34,6 @@ const RankingTr = forwardRef<HTMLTableRowElement, RankingTrProps>(
           practiceMyResultId: result.id,
         });
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!result.status) return null;

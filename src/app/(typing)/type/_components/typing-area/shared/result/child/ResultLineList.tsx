@@ -28,7 +28,6 @@ function ResultLineList() {
 
   useEffect(() => {
     writeResultCards(cardRefs.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneGroup]);
 
   const practiceReplayCardClick = useCallback(
@@ -38,7 +37,7 @@ function ResultLineList() {
       moveSetLine(seekCount);
       setLineSelectIndex(lineIndex);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [],
   );
 
@@ -81,7 +80,6 @@ function ResultLineList() {
       ticker.start();
       drawerSelectColorChange(lineIndex);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let lineIndex = 0;

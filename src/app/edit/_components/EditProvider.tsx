@@ -73,7 +73,6 @@ const EditProvider = ({ children }: EditProviderProps) => {
       pathChangeReset();
       toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return <JotaiProvider store={store}>{children}</JotaiProvider>;

@@ -17,15 +17,13 @@ export const useLocalLikeServerActions = ({ hasLike, likeCount }: useLocalLikeSe
     if (likeLocalState.hasLike !== hasLike) {
       setLikeLocalState({ hasLike, likeCount });
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasLike, likeCount]);
 
   const [likeOptimisticState, setLikeOptimisticState] = useOptimistic(
     likeLocalState.hasLike !== hasLike ? likeLocalState : { hasLike, likeCount },
     (currentState, newState) => {
       return newState as LocalLikeState;
-    }
+    },
   );
 
   const [isToggling, setIsToggling] = useState(false); // 連打対策用のフラグ

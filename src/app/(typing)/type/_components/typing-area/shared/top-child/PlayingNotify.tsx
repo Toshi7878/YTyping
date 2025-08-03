@@ -35,7 +35,6 @@ const PlayingNotify = () => {
         clearTimeout(timerRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notify.description]);
 
   const handleExitComplete = () => {
@@ -52,7 +51,6 @@ const PlayingNotify = () => {
     if (scene !== "play") {
       playModeNotify();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 
   return (

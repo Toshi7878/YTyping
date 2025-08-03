@@ -39,7 +39,7 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
         console.log("未スタート -1");
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [],
   );
 

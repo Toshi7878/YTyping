@@ -49,7 +49,6 @@ const RankingList = () => {
     });
 
     setTypingStatusRank(scores.length + 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
@@ -64,7 +63,6 @@ const RankingList = () => {
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene, data]);
 
   if (isPending) {

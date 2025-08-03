@@ -79,7 +79,6 @@ const SettingCard = (props: SettingCardProps) => {
     return () => {
       window.removeEventListener("mousedown", handleClickOutside);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.isCardVisible]);
 
   const tabData = [

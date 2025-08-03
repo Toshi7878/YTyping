@@ -22,7 +22,6 @@ const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProp
     return () => {
       htmlElement.style.overflow = "";
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useHydrateAtoms([[imeTypeOptionsAtom, userImeTypingOptions || RESET]], { store: imeTypeAtomStore });

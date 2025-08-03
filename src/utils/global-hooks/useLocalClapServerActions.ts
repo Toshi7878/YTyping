@@ -12,8 +12,6 @@ export const useLocalClapServerActions = ({ hasClap, clapCount }: LocalClapState
     if (clapLocalState.hasClap !== hasClap) {
       setClapLocalState({ hasClap, clapCount });
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasClap, clapCount]);
 
   const [clapOptimisticState, setClapOptimisticState] = useOptimistic(
@@ -32,9 +30,7 @@ export const useLocalClapServerActions = ({ hasClap, clapCount }: LocalClapState
     // 楽観的UI更新
     const newOptimisticState = {
       hasClap: !clapOptimisticState.hasClap,
-      clapCount: clapOptimisticState.hasClap
-        ? clapOptimisticState.clapCount - 1
-        : clapOptimisticState.clapCount + 1,
+      clapCount: clapOptimisticState.hasClap ? clapOptimisticState.clapCount - 1 : clapOptimisticState.clapCount + 1,
     };
 
     setClapOptimisticState(newOptimisticState);

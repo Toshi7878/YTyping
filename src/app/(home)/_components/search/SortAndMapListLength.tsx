@@ -66,7 +66,6 @@ const SortOptions = () => {
     const [direction] = paramValue?.match(/asc|desc/) || ["desc"];
     const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || ["ID"];
     setSortDirections({ ...getResetDirections(), [field as SortField]: direction as SortDirection });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const handleSort = (field: SortField) => {

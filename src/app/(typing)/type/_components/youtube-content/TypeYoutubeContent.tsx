@@ -39,7 +39,6 @@ const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeConten
     return () => {
       removeTimer();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStateChange = useCallback(
@@ -64,7 +63,7 @@ const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeConten
         ytStopEvent();
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [],
   );
 
@@ -100,7 +99,7 @@ const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeConten
         onError={handleError}
       />
     ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [videoId],
   );
 

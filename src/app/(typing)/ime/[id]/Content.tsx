@@ -55,8 +55,6 @@ function Content({ mapInfo }: ContentProps) {
     if (mapData) {
       loadMap(mapData);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
 
   useEffect(() => {
@@ -64,7 +62,6 @@ function Content({ mapInfo }: ContentProps) {
       updateTypingStats();
       pathChangeAtomReset();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId]);
 
   useEffect(() => {

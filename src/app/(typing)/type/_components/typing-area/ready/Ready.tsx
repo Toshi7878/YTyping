@@ -48,8 +48,6 @@ function Ready({ className }: ReadyProps) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readPlayer(), map]);
 
   return (

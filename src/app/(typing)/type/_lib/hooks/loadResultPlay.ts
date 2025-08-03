@@ -36,7 +36,6 @@ export const useLoadResultPlay = ({
       readPlayer().playVideo();
       setScene(startMode);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   return loadResultPlay;

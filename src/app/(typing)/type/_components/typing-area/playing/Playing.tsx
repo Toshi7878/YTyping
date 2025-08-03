@@ -66,7 +66,6 @@ const Playing = ({ className }: PlayingProps) => {
       window.removeEventListener("beforeunload", handleBeforeunload);
       window.removeEventListener("visibilitychange", handleVisibilitychange);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 
   useEffect(() => {
@@ -91,7 +90,6 @@ const Playing = ({ className }: PlayingProps) => {
     return () => {
       window.removeEventListener("keydown", handleKeydown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 
   return (

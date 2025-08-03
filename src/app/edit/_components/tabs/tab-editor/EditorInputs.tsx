@@ -90,7 +90,6 @@ const TimeInput = () => {
     if (timeInputRef.current) {
       writeTimeInput(timeInputRef.current);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

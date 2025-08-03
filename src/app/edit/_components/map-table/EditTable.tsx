@@ -47,7 +47,6 @@ export default function EditTable() {
   useEffect(() => {
     if (!isYTReady && !isYTStarted) return;
     updateEndTime(readPlayer());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isYTReady, isYTStarted, readPlayer]);
 
   return (

@@ -9,21 +9,17 @@ const MobileCover = () => {
   const { readYTStatus } = useYTStatus();
 
   const readGameStateUtils = useReadGameUtilParams();
-  const handleStart = useCallback(
-    async () => {
-      const { scene } = readGameStateUtils();
+  const handleStart = useCallback(async () => {
+    const { scene } = readGameStateUtils();
 
-      if (readYTStatus().isPaused || scene === "ready") {
-        readPlayer().playVideo();
-      } else {
-        readPlayer().pauseVideo();
-      }
+    if (readYTStatus().isPaused || scene === "ready") {
+      readPlayer().playVideo();
+    } else {
+      readPlayer().pauseVideo();
+    }
 
-      windowFocus();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+    windowFocus();
+  }, []);
 
   return (
     <div

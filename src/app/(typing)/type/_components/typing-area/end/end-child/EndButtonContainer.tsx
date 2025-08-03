@@ -52,8 +52,6 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const playMode = scene === "play_end" ? "play" : scene === "practice_end" ? "practice" : "replay";

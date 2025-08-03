@@ -17,7 +17,6 @@ const PreviewYouTubeContent = () => {
     return () => {
       window.removeEventListener("keydown", previewYouTubeKeyDown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
 
   if (!videoId) {

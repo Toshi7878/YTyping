@@ -79,7 +79,6 @@ export function useInteractJS(position: Partial<typeof initPosition> = initPosit
       disable();
     }
     return disable;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEnabled]);
 
   return {

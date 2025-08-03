@@ -46,8 +46,6 @@ function Content({ video_id, mapId }: ContentProps) {
     if (sceneGroup === "Ready") {
       setYtLayoutMode(breakpoint === "mobile" ? "column" : "row");
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breakpoint]);
 
   useEffect(() => {
@@ -62,7 +60,6 @@ function Content({ video_id, mapId }: ContentProps) {
       const totalProgress = readTotalProgress();
       totalProgress.max = map.movieTotalTime;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
 
   const { scale } = useWindowScale();
