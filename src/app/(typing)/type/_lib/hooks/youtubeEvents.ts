@@ -165,8 +165,8 @@ export const useYTReadyEvent = () => {
   const volumeAtom = useVolumeState();
   const { writePlayer } = usePlayer();
 
-  return (event) => {
-    const player = event.target as YTPlayer;
+  return (event: { target: YTPlayer }) => {
+    const player = event.target;
     player.setVolume(volumeAtom);
     writePlayer(player);
   };

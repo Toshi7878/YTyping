@@ -3,10 +3,11 @@ import { RouterOutPuts } from "@/server/api/trpc";
 import { ParseMap } from "@/utils/parse-map/parseMap";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
-import { CSSProperties, useEffect } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import useBreakpoint from "use-breakpoint";
 import { useProgress } from "../_lib/atoms/refAtoms";
 import {
+  useSceneGroupState,
   useSetLineResults,
   useSetLineSelectIndex,
   useSetMap,
@@ -37,10 +38,17 @@ function Content({ video_id, mapId }: ContentProps) {
   const { resetTypingStatus } = useSetTypingStatus();
 
   const setMap = useSetMap();
-
-  // ブレークポイントの状態を取得
+  const sceneGroup = useSceneGroupState();
   const { breakpoint } = useBreakpoint(BREAKPOINTS, "mobile");
-  const isMobileOrTablet = breakpoint === "mobile" || breakpoint === "tablet";
+
+  const [ytLayoutMode, setYtLayoutMode] = useState<"column" | "row">("column");
+  useEffect(() => {
+    if (sceneGroup === "Ready") {
+      setYtLayoutMode(breakpoint === "mobile" ? "column" : "row");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [breakpoint]);
 
   useEffect(() => {
     if (mapData) {
@@ -70,7 +78,7 @@ function Content({ video_id, mapId }: ContentProps) {
       <div style={style} className="h-fit">
         <section className="flex w-full flex-col gap-6 md:flex-row">
           <div className={`relative order-2 md:order-1`}>
-            {!isMobileOrTablet && (
+            {ytLayoutMode === "row" && (
               <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
             )}
           </div>
@@ -79,7 +87,7 @@ function Content({ video_id, mapId }: ContentProps) {
 
         <MainGameCard className="mt-5" />
 
-        {isMobileOrTablet && (
+        {ytLayoutMode === "column" && (
           <section className="relative mt-5">
             <YouTubeContent isMapLoading={isLoading} videoId={video_id} />
           </section>

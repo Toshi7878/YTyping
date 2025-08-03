@@ -10,6 +10,7 @@ import TRPCProvider from "@/trpc/provider";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
+import Script from "next/script";
 import GlobalProvider from "./_components/GlobalProvider";
 
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
@@ -36,6 +37,7 @@ export default async function RootLayout({
     <html lang="ja" className={notoSansJP.className}>
       <head>
         <meta charSet="UTF-8" />
+        <Script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
       </head>
       <body>
         <SessionProvider session={session}>

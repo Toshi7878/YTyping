@@ -97,7 +97,7 @@ const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeConten
         onPause={ytPauseEvent}
         onEnd={ytStopEvent}
         onStateChange={handleStateChange}
-        onError={handleError} // エラーハンドリングを追加
+        onError={handleError}
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
