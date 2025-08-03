@@ -28,6 +28,7 @@ const buttonVariants = cva(
         "outline-error": "border border-error text-error shadow-xs hover:bg-error/50",
         "outline-warning": "border border-warning text-warning shadow-xs hover:bg-warning/50",
         "outline-info": "border border-info text-info shadow-xs hover:bg-info/50",
+        "outline-accent": "border shadow-xs hover:bg-accent",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

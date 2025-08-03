@@ -1,10 +1,15 @@
 import { useSetLineResultDrawer } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useSendUserStats } from "@/app/(typing)/type/_lib/hooks/playing-hooks/sendUserStats";
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import EndButtonContainer from "./end-child/EndButtonContainer";
 import EndText from "./end-child/EndText";
 
-const End = () => {
+interface EndProps {
+  className?: string;
+}
+
+const End = ({ className }: EndProps) => {
   const { sendTypingStats } = useSendUserStats();
   const setLineResultDrawer = useSetLineResultDrawer();
 
@@ -14,7 +19,7 @@ const End = () => {
   }, []);
 
   return (
-    <div className="flex min-h-[460px] flex-col justify-between md:min-h-[320px]">
+    <div className={cn("flex flex-col justify-between", className)}>
       <EndText />
       <EndButtonContainer onOpen={() => setLineResultDrawer(true)} />
     </div>

@@ -4,6 +4,7 @@ import {
   usePlayingInputModeState,
   useUserTypingOptionsState,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 const TypingWords = () => {
@@ -43,7 +44,7 @@ const TypingWords = () => {
           .slice(0, 60)}
         isLineCompleted={isLineCompleted}
         nextWord={nextLyrics.kanaWord}
-        className="word-kana lowercase"
+        className="word-kana -ml-1 lowercase"
         style={{ fontSize: `${userOptions.kana_word_font_size}%`, bottom: userOptions.kana_word_top_position }}
       />
 
@@ -90,27 +91,16 @@ const Word = ({
   return (
     <div
       {...rest}
-      className={`relative ${rest.className || ""}`}
+      className={cn("relative", rest.className)}
       style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom }}
     >
       {isLineCompleted && isNextWordDisplay ? (
-        <span className="next-line-word" style={{ color: "#64748b" }}>
-          {nextWord}
-        </span>
+        <span className="next-line-word text-word-nextWord">{nextWord}</span>
       ) : (
         <>
-          <span
-            style={{ color: remainWord.length === 0 ? "#22c55e" : "#3b82f6" }}
-            className={remainWord.length === 0 ? "word-completed" : "word-correct"}
-          >
-            {correct}
-          </span>
-          <span style={{ color: "#fff" }} className="word-next">
-            {nextChar}
-          </span>
-          <span style={{ color: "#fff" }} className="word">
-            {word}
-          </span>
+          <span className={cn(remainWord.length === 0 ? "text-word-completed" : "text-word-correct")}>{correct}</span>
+          <span className="text-word-nextChar">{nextChar}</span>
+          <span className="text-word-word">{word}</span>
         </>
       )}
     </div>

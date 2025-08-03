@@ -21,7 +21,7 @@ function MainGameCard({ className }: { className?: string }) {
   return (
     <Card className={cn("typing-card block p-0", className)} id="typing_card">
       <GameCardHeader className="mx-3 block py-0" />
-      <GameCardContent className="mx-8 py-2" />
+      <GameCardContent className="mx-8 block pt-2" />
       <GameCardFooter className="mx-3 flex-col py-0 select-none" />
     </Card>
   );
@@ -50,11 +50,11 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
   return (
     <CardContent className={className}>
       {sceneGroup === "Ready" || !isYTStarted || !map ? (
-        <Ready />
+        <Ready className="min-h-[460px] md:min-h-[300px]" />
       ) : isPlayed ? (
-        <Playing />
+        <Playing className="min-h-[460px] md:min-h-[300px]" />
       ) : (
-        sceneGroup === "End" && <End />
+        sceneGroup === "End" && <End className="min-h-[460px] md:min-h-[300px]" />
       )}
 
       {(isPlayed || sceneGroup === "End") && (

@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useLineCount, useUserStats } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/(typing)/type/_lib/hooks/playing-hooks/keydown-hooks/playingKeydown";
 import { useTimerControls } from "@/app/(typing)/type/_lib/hooks/playing-hooks/timer-hooks/timer";
+import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { usePressSkip } from "../../../_lib/hooks/playing-hooks/pressSkip";
 import ChangeCSS from "./playing-child/ChangeCSS";
@@ -17,7 +18,11 @@ import Lyrics from "./playing-child/Lyrics";
 import NextLyrics from "./playing-child/NextLyrics";
 import TypingWords from "./playing-child/PlayingTypingWords";
 
-const Playing = () => {
+interface PlayingProps {
+  className?: string;
+}
+
+const Playing = ({ className }: PlayingProps) => {
   const pressSkip = usePressSkip();
   const readGameUtils = useReadGameUtilParams();
   const { data: session } = useSession();
@@ -91,7 +96,10 @@ const Playing = () => {
 
   return (
     <div
-      className="-ml-2 flex min-h-[320px] flex-1 cursor-none flex-col items-start justify-between truncate select-none"
+      className={cn(
+        "-ml-2 flex flex-1 cursor-none flex-col items-start justify-between truncate select-none",
+        className,
+      )}
       id="typing_scene"
       onTouchStart={() => {
         const { skip } = readGameUtils();

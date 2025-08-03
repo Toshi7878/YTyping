@@ -11,7 +11,7 @@ import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLi
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
 import { useToggleLineList } from "@/app/(typing)/type/_lib/hooks/playing-hooks/toggleLineList";
 import { cn } from "@/lib/utils";
-import { BottomBadge, BottomDoubleKeyBadge } from "./button-with-key";
+import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";
 
 const BottomButtons = () => {
   const isYTStarted = useYTStartedState();
@@ -19,21 +19,21 @@ const BottomButtons = () => {
   const isPlayed = isYTStarted && sceneGroup === "Playing";
   return (
     <section className={cn("mx-3 mt-2 mb-4 flex w-full justify-between font-bold", !isPlayed && "invisible")}>
-      <SpeedBadge />
-      <PracticeBadges />
-      <RetryBadge />
+      <SpeedButton />
+      <PracticeButtons />
+      <RetryButton />
     </section>
   );
 };
 
-const SpeedBadge = () => {
+const SpeedButton = () => {
   const scene = useSceneState();
   const { playSpeed } = usePlaySpeedState();
   const dispatchSpeed = usePlaySpeedReducer();
 
   if (scene === "practice") {
     return (
-      <BottomDoubleKeyBadge
+      <BottomDoubleKeyButton
         badgeText={playSpeed.toFixed(2) + "倍速"}
         kbdTextPrev="F9-"
         kbdTextNext="+F10"
@@ -45,7 +45,7 @@ const SpeedBadge = () => {
   }
 
   return (
-    <BottomBadge
+    <BottomButton
       badgeText={playSpeed.toFixed(2) + "倍速"}
       kbdText="F10"
       onClick={() => dispatchSpeed({ type: "toggle" })}
@@ -55,7 +55,7 @@ const SpeedBadge = () => {
   );
 };
 
-const PracticeBadges = () => {
+const PracticeButtons = () => {
   const scene = useSceneState();
   const toggleLineListDrawer = useToggleLineList();
   const { movePrevLine, moveNextLine } = useMoveLine();
@@ -64,7 +64,7 @@ const PracticeBadges = () => {
   return (
     (scene === "practice" || scene === "replay") && (
       <>
-        <BottomDoubleKeyBadge
+        <BottomDoubleKeyButton
           badgeText="移動"
           kbdTextPrev="←"
           kbdTextNext="→"
@@ -72,7 +72,7 @@ const PracticeBadges = () => {
           onClickPrev={() => movePrevLine()}
           onClickNext={() => moveNextLine()}
         />
-        <BottomBadge
+        <BottomButton
           badgeText="リスト"
           kbdText={userOptions.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
           onClick={() => toggleLineListDrawer()}
@@ -84,12 +84,12 @@ const PracticeBadges = () => {
   );
 };
 
-const RetryBadge = () => {
+const RetryButton = () => {
   const retry = useRetry();
   const readGameStateUtils = useReadGameUtilParams();
 
   return (
-    <BottomBadge
+    <BottomButton
       badgeText="やり直し"
       kbdText="F4"
       onClick={() => {

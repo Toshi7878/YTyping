@@ -11,7 +11,7 @@ interface BottomBadgeProps {
   onClick: () => void;
 }
 
-export const BottomBadge = function (props: BottomBadgeProps) {
+export const BottomButton = function (props: BottomBadgeProps) {
   const notify = useNotifyState();
   const sceneGroup = useSceneGroupState();
   const isDisabled = notify.description === "ll" && props.isPauseDisabled;
@@ -22,8 +22,8 @@ export const BottomBadge = function (props: BottomBadgeProps) {
       <Button
         disabled={isDisabled}
         onClick={props.onClick}
-        variant="accent"
-        className="rounded-full border hover:scale-105"
+        variant="outline-accent"
+        className="rounded-full text-xl font-bold hover:scale-105"
       >
         {props.badgeText}
       </Button>
@@ -44,7 +44,7 @@ interface BottomDoubleKeyBadgeProps {
   onClickNext: () => void;
 }
 
-export const BottomDoubleKeyBadge = function (props: BottomDoubleKeyBadgeProps) {
+export const BottomDoubleKeyButton = function (props: BottomDoubleKeyBadgeProps) {
   const notify = useNotifyState();
   const sceneGroup = useSceneGroupState();
   const isDisabled = notify.description === "ll";
@@ -59,7 +59,7 @@ export const BottomDoubleKeyBadge = function (props: BottomDoubleKeyBadgeProps) 
         disabled={isDisabled}
         onClick={props.onClick}
         variant="accent"
-        className="rounded-full border hover:scale-105"
+        className="rounded-full border font-bold hover:scale-105"
       >
         {props.badgeText}
       </Button>

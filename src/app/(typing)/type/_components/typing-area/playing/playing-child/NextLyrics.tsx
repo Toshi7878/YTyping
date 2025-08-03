@@ -11,7 +11,7 @@ const NextLyrics = () => {
       className={cn(
         "text-foreground lyrics-font opacity-60",
         "text-4xl sm:text-5xl md:text-3xl",
-        "ml-1 leading-[80px] sm:leading-[50px] md:leading-10",
+        "mt-5 ml-1 leading-[80px] sm:leading-[50px] md:leading-10",
       )}
     >
       <div id="next_lyrics" className={cn("flex items-end font-bold whitespace-nowrap", "text-[110%]")}>
