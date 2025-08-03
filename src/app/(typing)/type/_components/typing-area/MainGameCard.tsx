@@ -45,11 +45,12 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
   const sceneGroup = useSceneGroupState();
   const scene = useSceneState();
   const isYTStarted = useYTStartedState();
+  const isReady = sceneGroup === "Ready" || !isYTStarted || !map;
   const isPlayed = isYTStarted && sceneGroup === "Playing";
 
   return (
     <CardContent className={className}>
-      {sceneGroup === "Ready" || !isYTStarted || !map ? (
+      {isReady ? (
         <Ready className="min-h-[460px] md:min-h-[300px]" />
       ) : isPlayed ? (
         <Playing className="min-h-[460px] md:min-h-[300px]" />
