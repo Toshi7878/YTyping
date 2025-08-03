@@ -2,35 +2,8 @@
 import { useSetPlayingInputMode } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useReadyInputModeState, useSetReadyInputMode } from "@/app/(typing)/type/_lib/atoms/storageAtoms";
 import { InputMode } from "@/app/(typing)/type/_lib/type";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import React from "react";
-
-interface RadioCardProps {
-  option: InputMode;
-  value: string;
-  disabled?: boolean;
-  children: React.ReactNode;
-}
-function RadioCard({ option, value, disabled, children }: RadioCardProps) {
-  const romaBg = "#e53e3e";
-  const kanaBg = "#3182ce";
-  const flickBg = "#805ad5";
-  const selectedBg = option === "roma" ? romaBg : option === "kana" ? kanaBg : flickBg;
-
-  return (
-    <Label
-      htmlFor={value}
-      className={`border-border flex-1 cursor-pointer rounded border font-bold shadow-md transition-colors select-none ${disabled ? "cursor-not-allowed opacity-50" : ""} px-[60px] py-[2.6rem] text-center text-[2.75rem] hover:opacity-80 md:text-3xl`}
-      style={{
-        backgroundColor: selectedBg + "40",
-      }}
-    >
-      <RadioGroupItem id={value} value={value} disabled={disabled} className="sr-only" />
-      {children}
-    </Label>
-  );
-}
+import { RadioCard, RadioGroup } from "@/components/ui/radio-group";
+import { cn } from "@/lib/utils";
 
 function ReadyInputModeRadioCards() {
   const options: { value: InputMode; label: string }[] = [
@@ -52,7 +25,22 @@ function ReadyInputModeRadioCards() {
     <RadioGroup value={readyInputMode} onValueChange={handleChange} className="flex w-full gap-0">
       {options.map((option) => {
         return (
-          <RadioCard key={option.value} option={option.value} value={option.value} disabled={option.value === "flick"}>
+          <RadioCard
+            key={option.value}
+            value={option.value}
+            disabled={option.value === "flick"}
+            className={cn(
+              "border-border flex-1 cursor-pointer rounded border py-10 text-3xl font-bold shadow-md transition-colors select-none",
+              // 選択されていない場合のみhoverスタイルを適用
+              option.value === "roma" && readyInputMode !== option.value && "hover:bg-roma/50",
+              option.value === "kana" && readyInputMode !== option.value && "hover:bg-kana/50",
+              option.value === "flick" && readyInputMode !== option.value && "hover:bg-flick/50",
+              // 選択状態のスタイル
+              option.value === "roma" && readyInputMode === option.value && "bg-roma",
+              option.value === "kana" && readyInputMode === option.value && "bg-kana",
+              option.value === "flick" && readyInputMode === option.value && "bg-flick",
+            )}
+          >
             {option.label}
           </RadioCard>
         );
