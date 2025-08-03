@@ -10,13 +10,15 @@ interface NotificationMapCardProps {
 
 function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
   return (
-    <Card className="bg-card transition-shadow duration-300 hover:shadow-lg">
-      <CardHeader className="bg-header rounded-t-md px-2 py-2 text-sm">
-        <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name!} />
-        さんがスコア {notify.visitorResult.status!.score - notify.visitedResult.status!.score} 差で{" "}
-        {Number(notify.old_rank)}位 の記録を抜かしました
+    <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
+      <CardHeader className="bg-header-background rounded-t-md px-2 py-2 text-sm">
+        <span>
+          <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name!} />
+          さんがスコア {notify.visitorResult.status!.score - notify.visitedResult.status!.score} 差で{" "}
+          {Number(notify.old_rank)}位 の記録を抜かしました
+        </span>
       </CardHeader>
-      <CardContent className="text-muted-foreground bg-card flex h-full items-start rounded-md border-none p-0">
+      <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">
         {children}
       </CardContent>
     </Card>

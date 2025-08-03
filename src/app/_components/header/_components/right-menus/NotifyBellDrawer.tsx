@@ -44,7 +44,7 @@ export default function NotifyBellDrawer() {
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="right" className="w-auto lg:w-[450px]">
+      <SheetContent side="right" className="sm:max-w-md">
         <SheetHeader>
           <SheetTitle>通知</SheetTitle>
         </SheetHeader>
@@ -70,11 +70,11 @@ const NotifyDrawerInnerContent = () => {
   }, [inView, hasNextPage, fetchNextPage]);
 
   return (
-    <div className="px-3">
+    <div className="h-full overflow-y-auto px-3">
       {isPending ? (
         <LoadingSpinner />
       ) : (
-        <div>
+        <div className="h-full">
           {data?.pages.length ? (
             data.pages.map((page, index: number) => {
               return page.notifications.map((notify, index: number) => {
@@ -104,9 +104,11 @@ const NotifyDrawerInnerContent = () => {
               });
             })
           ) : (
-            <div>まだ通知はありません</div>
+            <div className="text-muted-foreground py-8 text-center">まだ通知はありません</div>
           )}
-          <div ref={ref}>{isFetchingNextPage && <LoadingSpinner />}</div>
+          <div ref={ref} className="py-4">
+            {isFetchingNextPage && <LoadingSpinner />}
+          </div>
         </div>
       )}
     </div>
