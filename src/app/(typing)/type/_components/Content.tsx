@@ -76,19 +76,18 @@ function Content({ video_id, mapId }: ContentProps) {
   return (
     <div className="fixed flex h-screen w-screen flex-col items-center">
       <div style={style} className="h-fit">
-        <section className="flex w-full flex-col gap-6 md:flex-row">
-          <div className={`relative order-2 md:order-1`}>
-            {ytLayoutMode === "row" && (
-              <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
-            )}
-          </div>
-          <TabsArea className="order-1 flex flex-[8] flex-col md:order-2" />
+        <section className="flex w-full gap-6 md:flex-row">
+          {ytLayoutMode === "row" && (
+            <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
+          )}
+
+          <TabsArea className="flex flex-[8] flex-col" />
         </section>
 
         <MainGameCard className="mt-5" />
 
         {ytLayoutMode === "column" && (
-          <section className="relative mt-5">
+          <section className="mt-5">
             <YouTubeContent isMapLoading={isLoading} videoId={video_id} />
           </section>
         )}
