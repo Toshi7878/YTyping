@@ -18,7 +18,7 @@ const BottomButtons = () => {
   const sceneGroup = useSceneGroupState();
   const isPlayed = isYTStarted && sceneGroup === "Playing";
   return (
-    <section className={cn("mx-3 mt-2 mb-4 flex w-full justify-between font-bold", !isPlayed && "hidden")}>
+    <section className={cn("mx-3 mt-2 mb-4 flex w-full justify-between font-bold", !isPlayed && "invisible")}>
       <SpeedBadge />
       <PracticeBadges />
       <RetryBadge />
@@ -30,27 +30,28 @@ const SpeedBadge = () => {
   const scene = useSceneState();
   const { playSpeed } = usePlaySpeedState();
   const dispatchSpeed = usePlaySpeedReducer();
+
+  if (scene === "practice") {
+    return (
+      <BottomDoubleKeyBadge
+        badgeText={playSpeed.toFixed(2) + "倍速"}
+        kbdTextPrev="F9-"
+        kbdTextNext="+F10"
+        onClick={() => {}}
+        onClickPrev={() => dispatchSpeed({ type: "down" })}
+        onClickNext={() => dispatchSpeed({ type: "up" })}
+      />
+    );
+  }
+
   return (
-    <>
-      {scene === "practice" ? (
-        <BottomDoubleKeyBadge
-          badgeText={playSpeed.toFixed(2) + "倍速"}
-          kbdTextPrev="F9-"
-          kbdTextNext="+F10"
-          onClick={() => {}}
-          onClickPrev={() => dispatchSpeed({ type: "down" })}
-          onClickNext={() => dispatchSpeed({ type: "up" })}
-        />
-      ) : (
-        <BottomBadge
-          badgeText={playSpeed.toFixed(2) + "倍速"}
-          kbdText="F10"
-          onClick={() => dispatchSpeed({ type: "toggle" })}
-          isPauseDisabled={true}
-          isKbdHidden={scene === "replay" ? true : false}
-        />
-      )}
-    </>
+    <BottomBadge
+      badgeText={playSpeed.toFixed(2) + "倍速"}
+      kbdText="F10"
+      onClick={() => dispatchSpeed({ type: "toggle" })}
+      isPauseDisabled={true}
+      isKbdHidden={scene === "replay" ? true : false}
+    />
   );
 };
 
@@ -61,33 +62,32 @@ const PracticeBadges = () => {
   const userOptions = useUserTypingOptionsState();
 
   return (
-    <>
-      {scene !== "play" && (
-        <>
-          <BottomDoubleKeyBadge
-            badgeText="移動"
-            kbdTextPrev="←"
-            kbdTextNext="→"
-            onClick={() => {}}
-            onClickPrev={() => movePrevLine()}
-            onClickNext={() => moveNextLine()}
-          />
-          <BottomBadge
-            badgeText="リスト"
-            kbdText={userOptions.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
-            onClick={() => toggleLineListDrawer()}
-            isPauseDisabled={false}
-            isKbdHidden={false}
-          />
-        </>
-      )}
-    </>
+    (scene === "practice" || scene === "replay") && (
+      <>
+        <BottomDoubleKeyBadge
+          badgeText="移動"
+          kbdTextPrev="←"
+          kbdTextNext="→"
+          onClick={() => {}}
+          onClickPrev={() => movePrevLine()}
+          onClickNext={() => moveNextLine()}
+        />
+        <BottomBadge
+          badgeText="リスト"
+          kbdText={userOptions.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
+          onClick={() => toggleLineListDrawer()}
+          isPauseDisabled={false}
+          isKbdHidden={false}
+        />
+      </>
+    )
   );
 };
 
 const RetryBadge = () => {
   const retry = useRetry();
   const readGameStateUtils = useReadGameUtilParams();
+
   return (
     <BottomBadge
       badgeText="やり直し"

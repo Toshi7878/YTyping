@@ -78,7 +78,7 @@ const usePlayingShortcutKey = () => {
       KEY_WHITE_LIST.includes(event.code) ||
       (event.ctrlKey && CTRL_KEY_WHITE_CODE_LIST.includes(event.code)) ||
       (event.altKey && !event.ctrlKey && ALT_KEY_WHITE_CODE_LIST.includes(event.code)) ||
-      (event.ctrlKey && OPEN_DRAWER_CTRL_KEY_CODE_LIST.includes(event.code) && drawerClosure!.isOpen)
+      (event.ctrlKey && OPEN_DRAWER_CTRL_KEY_CODE_LIST.includes(event.code) && drawerClosure)
     ) {
       return;
     }

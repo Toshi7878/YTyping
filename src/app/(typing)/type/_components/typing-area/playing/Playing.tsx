@@ -6,7 +6,12 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useEffect } from "react";
 
-import { useGameUtilityReferenceParams, useLineCount, useUserStats } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import {
+  useGameUtilityReferenceParams,
+  useLineCount,
+  useSetLineResultDrawer,
+  useUserStats,
+} from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/(typing)/type/_lib/hooks/playing-hooks/keydown-hooks/playingKeydown";
 import { useTimerControls } from "@/app/(typing)/type/_lib/hooks/playing-hooks/timer-hooks/timer";
 import { useSession } from "next-auth/react";
@@ -17,6 +22,8 @@ import NextLyrics from "./playing-child/NextLyrics";
 import TypingWords from "./playing-child/PlayingTypingWords";
 
 const Playing = () => {
+  const pressSkip = usePressSkip();
+  const readGameUtils = useReadGameUtilParams();
   const { data: session } = useSession();
   const { setNextLyrics } = useSetNextLyrics();
   const handleKeydown = useHandleKeydown();
@@ -26,6 +33,7 @@ const Playing = () => {
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
   const readMap = useReadMapState();
+  const setLineResultDrawer = useSetLineResultDrawer();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -64,7 +72,7 @@ const Playing = () => {
   useEffect(() => {
     if (scene === "practice") {
       const { lineResultdrawerClosure: drawerClosure } = readGameUtilRefParams();
-      drawerClosure!.onOpen();
+      setLineResultDrawer(true);
     }
 
     if (scene === "replay") {
@@ -88,23 +96,9 @@ const Playing = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 
-  return <PlayingCenter flex="1" />;
-};
-
-const CARD_BODY_MIN_HEIGHT = { base: "460px", md: "320px" };
-
-interface PlayingCenterProps {
-  flex: string;
-}
-
-const PlayingCenter = ({ flex }: PlayingCenterProps) => {
-  const pressSkip = usePressSkip();
-  const readGameUtils = useReadGameUtilParams();
-
   return (
     <div
-      className="-ml-2 flex cursor-none flex-col items-start justify-between truncate select-none"
-      style={{ flex: flex, minHeight: CARD_BODY_MIN_HEIGHT.md }}
+      className="-ml-2 flex min-h-[320px] flex-1 cursor-none flex-col items-start justify-between truncate select-none"
       id="typing_scene"
       onTouchStart={() => {
         const { skip } = readGameUtils();

@@ -5,8 +5,6 @@ import Link from "@/components/ui/link/link";
 import { cn } from "@/lib/utils";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useGameUtilityReferenceParams } from "../../_lib/atoms/refAtoms";
 import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_lib/atoms/stateAtoms";
 import "../../_lib/style/type.scss";
 import End from "./end/End";
@@ -20,23 +18,10 @@ import TimeProgress from "./shared/TimeProgress";
 import GameStatusHeader from "./shared/top-child/GameStatusHeader";
 
 function MainGameCard({ className }: { className?: string }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const drawerClosure = {
-    isOpen,
-    onOpen: () => setIsOpen(true),
-    onClose: () => setIsOpen(false),
-  };
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
-
-  useEffect(() => {
-    writeGameUtilRefParams({ lineResultdrawerClosure: drawerClosure });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drawerClosure]);
-
   return (
-    <Card className={cn("typing-card", className)} id="typing_card">
+    <Card className={cn("typing-card p-0", className)} id="typing_card">
       <GameCardHeader className="mx-3 py-0" />
-      <GameCardContent className="mx-8 py-3" drawerClosure={drawerClosure} />
+      <GameCardContent className="mx-8 py-3" />
       <GameCardFooter className="mx-3 w-full flex-col py-0 select-none" />
     </Card>
   );
@@ -51,20 +36,12 @@ const GameCardHeader = ({ className }: { className?: string }) => {
   );
 };
 
-interface DisclosureReturn {
-  isOpen: boolean;
-  onOpen: () => void;
-  onClose: () => void;
-}
-
 interface TypingCardBodyProps {
-  drawerClosure: DisclosureReturn;
   className?: string;
 }
 
-const GameCardContent = ({ drawerClosure, className }: TypingCardBodyProps) => {
+const GameCardContent = ({ className }: TypingCardBodyProps) => {
   const map = useMapState();
-  const { onOpen } = drawerClosure;
   const sceneGroup = useSceneGroupState();
   const scene = useSceneState();
   const isYTStarted = useYTStartedState();
@@ -77,12 +54,12 @@ const GameCardContent = ({ drawerClosure, className }: TypingCardBodyProps) => {
       ) : isPlayed ? (
         <Playing />
       ) : (
-        sceneGroup === "End" && <End onOpen={onOpen} />
+        sceneGroup === "End" && <End />
       )}
 
       {(isPlayed || sceneGroup === "End") && (
         <>
-          <ResultDrawer drawerClosure={drawerClosure} />
+          <ResultDrawer />
           {scene === "practice" && <PracticeLineCard />}
           {map?.mapData[0].options?.eternalCSS && <style>{map.mapData[0].options?.eternalCSS}</style>}
         </>

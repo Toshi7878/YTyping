@@ -1,14 +1,12 @@
 import { useSendUserStats } from "@/app/(typing)/type/_lib/hooks/playing-hooks/sendUserStats";
 import { useEffect } from "react";
+import { useSetLineResultDrawer } from "../../../_lib/atoms/refAtoms";
 import EndButtonContainer from "./end-child/EndButtonContainer";
 import EndText from "./end-child/EndText";
 
-interface EndProps {
-  onOpen: () => void;
-}
-
-const End = ({ onOpen }: EndProps) => {
+const End = () => {
   const { sendTypingStats } = useSendUserStats();
+  const setLineResultDrawer = useSetLineResultDrawer();
 
   useEffect(() => {
     sendTypingStats();
@@ -18,7 +16,7 @@ const End = ({ onOpen }: EndProps) => {
   return (
     <div className="flex min-h-[460px] flex-col justify-between md:min-h-[320px]">
       <EndText />
-      <EndButtonContainer onOpen={onOpen} />
+      <EndButtonContainer onOpen={() => setLineResultDrawer(true)} />
     </div>
   );
 };

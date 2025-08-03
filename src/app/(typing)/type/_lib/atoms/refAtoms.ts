@@ -1,5 +1,6 @@
 import { YTPlayer } from "@/types/global-types";
-import { atom, ExtractAtomValue } from "jotai";
+import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputMode, TypeResult } from "../type";
@@ -181,8 +182,18 @@ export const gameUtilityReferenceParamsAtom = atomWithReset({
   rankingScores: [] as number[],
   practiceMyResultId: null as number | null,
   isOptionEdited: false,
-  lineResultdrawerClosure: null as { isOpen: boolean; onOpen: () => void; onClose: () => void } | null,
+  lineResultdrawerClosure: false,
 });
+
+const lineResultDrawerClosure = focusAtom(gameUtilityReferenceParamsAtom, (optic) =>
+  optic.prop("lineResultdrawerClosure"),
+);
+
+const writeLineResultDrawerAtom = atom(null, (_, set, value: boolean) => {
+  set(lineResultDrawerClosure, value);
+});
+export const useLineResultDrawerState = () => useAtomValue(lineResultDrawerClosure);
+export const useSetLineResultDrawer = () => useSetAtom(writeLineResultDrawerAtom);
 
 export const useGameUtilityReferenceParams = () => {
   const readGameUtilRefParams = useAtomCallback(

@@ -1,7 +1,8 @@
-import { useGameUtilityReferenceParams } from "../../atoms/refAtoms";
+import { useGameUtilityReferenceParams, useSetLineResultDrawer } from "../../atoms/refAtoms";
 
 export const useToggleLineList = () => {
   const { readGameUtilRefParams } = useGameUtilityReferenceParams();
+  const setLineResultDrawer = useSetLineResultDrawer();
   return () => {
     const { lineResultdrawerClosure: drawerClosure } = readGameUtilRefParams();
 
@@ -9,11 +10,10 @@ export const useToggleLineList = () => {
       return;
     }
 
-    const { isOpen, onOpen, onClose } = drawerClosure;
-    if (!isOpen) {
-      onOpen();
+    if (!drawerClosure) {
+      setLineResultDrawer(true);
     } else {
-      onClose();
+      setLineResultDrawer(false);
     }
   };
 };

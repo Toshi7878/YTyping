@@ -94,13 +94,13 @@ const Word = ({
       style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom }}
     >
       {isLineCompleted && isNextWordDisplay ? (
-        <span className="next-line-word" style={{ color: "#22c55e" }}>
+        <span className="next-line-word" style={{ color: "#64748b" }}>
           {nextWord}
         </span>
       ) : (
         <>
           <span
-            style={{ color: remainWord.length === 0 ? "#3b82f6" : "#64748b" }}
+            style={{ color: remainWord.length === 0 ? "#22c55e" : "#3b82f6" }}
             className={remainWord.length === 0 ? "word-completed" : "word-correct"}
           >
             {correct}

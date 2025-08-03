@@ -1,19 +1,13 @@
 "use client";
+import { useLineResultDrawerState, useSetLineResultDrawer } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useSceneGroupState, useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useMemo } from "react";
 import ResultLineList from "./child/ResultLineList";
 
-interface ResultDrawerProps {
-  drawerClosure: {
-    isOpen: boolean;
-    onOpen: () => void;
-    onClose: () => void;
-  };
-}
-
-function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
-  const { isOpen, onClose } = drawerClosure;
+function ResultDrawer() {
+  const isOpen = useLineResultDrawerState();
+  const setLineResultDrawer = useSetLineResultDrawer();
   const scene = useSceneState();
   const sceneGroup = useSceneGroupState();
 
@@ -26,17 +20,19 @@ function ResultDrawer({ drawerClosure }: ResultDrawerProps) {
   const sheetOpen = sceneGroup === "End" ? isOpen : scene === "practice" || scene === "replay" ? true : false;
 
   return (
-    <Sheet open={sheetOpen} onOpenChange={(open) => !open && onClose()}>
+    <Sheet open={sheetOpen} onOpenChange={(open) => !open && setLineResultDrawer(false)}>
       {sheetOpen && (
         <div
           className="fixed inset-0 z-50 bg-transparent"
-          onClick={onClose}
+          onClick={() => setLineResultDrawer(false)}
           style={{ display: isOpen ? "block" : "none" }}
         />
       )}
+
       <SheetContent
         side="right"
         className="h-screen overflow-y-auto bg-[#1f2427dd] pb-14"
+        overlayClassName="bg-transparent"
         style={{
           display: isOpen ? "block" : "none",
           width: scene === "practice" ? "20rem" : "24rem",

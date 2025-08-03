@@ -1,5 +1,5 @@
 import { YouTubeSpeed } from "@/types";
-import { useGameUtilityReferenceParams, useLineStatus } from "../../atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineStatus, useSetLineResultDrawer } from "../../atoms/refAtoms";
 import { usePlaySpeedReducer } from "../../atoms/speedReducerAtoms";
 import { useReadGameUtilParams, useSetNotify, useSetPlayingInputMode, useSetScene } from "../../atoms/stateAtoms";
 import { useReadReadyInputMode } from "../../atoms/storageAtoms";
@@ -11,10 +11,11 @@ export const useChangePlayMode = () => {
   const retry = useRetry();
   const dispatchSpeed = usePlaySpeedReducer();
 
-  const { writeGameUtilRefParams, readGameUtilRefParams } = useGameUtilityReferenceParams();
+  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readLineStatus } = useLineStatus();
   const readGameUtilParams = useReadGameUtilParams();
   const setPlayingInputMode = useSetPlayingInputMode();
+  const setLineResultDrawer = useSetLineResultDrawer();
 
   const readReadyInputMode = useReadReadyInputMode();
 
@@ -31,11 +32,8 @@ export const useChangePlayMode = () => {
         const { startSpeed } = readLineStatus();
 
         writeGameUtilRefParams({ practiceMyResultId: null, replayKeyCount: 0, replayUserName: "" });
-        const { lineResultdrawerClosure: drawerClosure } = readGameUtilRefParams();
 
-        if (drawerClosure) {
-          drawerClosure.onClose();
-        }
+        setLineResultDrawer(false);
 
         if (scene === "replay") {
           setPlayingInputMode(readReadyInputMode());

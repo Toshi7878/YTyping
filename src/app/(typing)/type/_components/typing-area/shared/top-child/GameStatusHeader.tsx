@@ -18,7 +18,7 @@ const GameStatusHeader = () => {
     <section
       className={cn(
         "top-card-text mx-1 mt-3 mb-1 flex items-center justify-between font-mono text-[3.5rem] font-bold sm:text-[2.7rem] md:text-3xl",
-        !isPlayed && "hidden",
+        !isPlayed && "invisible",
       )}
     >
       <Combo />
