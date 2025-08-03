@@ -15,9 +15,9 @@ const SpeedChangeButton = (props: SpeedCHangeButtonProps) => {
 
   return (
     <Button
-      variant="link"
+      variant="unstyled"
       ref={props.buttonRef}
-      className="px-4 py-3 text-cyan-500 no-underline hover:text-cyan-600"
+      className="px-4 py-3 text-cyan-500 hover:text-cyan-600"
       onClick={() => dispatchSpeed({ type: props.type })}
     >
       <div className="relative top-1 text-3xl md:text-2xl">

@@ -11,7 +11,13 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   const { defaultSpeed } = usePlaySpeedState();
 
   return (
-    <TooltipWrapper label="1.00倍速未満の場合は練習モードになります。" side="top" delayDuration={0}>
+    <TooltipWrapper
+      label="1.00倍速未満の場合は練習モードになります。"
+      side="top"
+      delayDuration={0}
+      open={defaultSpeed < 1}
+      sideOffset={-20}
+    >
       <div className="flex items-center rounded-lg border border-solid border-white px-8 py-6 shadow-md md:py-3">
         <SpeedChangeButton buttonRef={props.speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} type="down" />
 
