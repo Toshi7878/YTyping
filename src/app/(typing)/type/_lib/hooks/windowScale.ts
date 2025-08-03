@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 
 export const CONTENT_WIDTH = 1350;
-const CONTENT_HEIGHT = 900;
-
-// ブレークポイント定義
-const BREAKPOINTS = {
-  mobile: 480,
-  tablet: 768,
-  desktop: 1024,
-  largeDesktop: 1440,
-} as const;
+export const CONTENT_HEIGHT = 900;
 
 const useWindowScale = () => {
   const [scale, setScale] = useState(1);
@@ -19,35 +11,13 @@ const useWindowScale = () => {
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
 
-      let targetScale = 1;
+      const scaleX = windowWidth / CONTENT_WIDTH;
+      const scaleY = windowHeight / CONTENT_HEIGHT;
 
-      // モバイル（480px未満）
-      if (windowWidth < BREAKPOINTS.mobile) {
-        targetScale = Math.min(windowWidth / 480, windowHeight / 800) * 0.65;
-      }
-      // タブレット（480px以上768px未満）
-      else if (windowWidth < BREAKPOINTS.tablet) {
-        targetScale = Math.min(windowWidth / 768, windowHeight / 900) * 0.75;
-      }
-      // デスクトップ（768px以上1024px未満）
-      else if (windowWidth < BREAKPOINTS.desktop) {
-        targetScale = Math.min(windowWidth / 1024, windowHeight / 1000) * 0.85;
-      }
-      // 大画面デスクトップ（1024px以上1440px未満）
-      else if (windowWidth < BREAKPOINTS.largeDesktop) {
-        targetScale = Math.min(windowWidth / 1440, windowHeight / 1000) * 0.95;
-      }
-      // 非常に大きい画面（1440px以上）
-      else {
-        const scaleX = windowWidth / CONTENT_WIDTH;
-        const scaleY = windowHeight / CONTENT_HEIGHT;
-        targetScale = Math.min(scaleX, scaleY, 1.2); // 最大120%まで
-      }
+      // 横幅と高さの縮小比率の中で最小のものを選ぶ
+      const dynamicScale = Math.min(scaleX, scaleY);
 
-      // 最小スケールを0.3、最大スケールを1.5に制限
-      targetScale = Math.max(0.3, Math.min(1.5, targetScale));
-
-      setScale(targetScale);
+      setScale(dynamicScale);
     }
 
     // 初回ロード時のサイズに基づいてスケーリング
