@@ -4,6 +4,7 @@ import { ParseMap } from "@/utils/parse-map/parseMap";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { CSSProperties, useEffect } from "react";
+import useBreakpoint from "use-breakpoint";
 import { useProgress } from "../_lib/atoms/refAtoms";
 import {
   useSetLineResults,
@@ -16,6 +17,9 @@ import useWindowScale, { CONTENT_WIDTH } from "../_lib/hooks/windowScale";
 import TabsArea from "./tab-contents/TabsArea";
 import MainGameCard from "./typing-area/MainGameCard";
 import YouTubeContent from "./youtube-content/TypeYoutubeContent";
+
+// TailwindのデフォルトブレークポイントにmatchするBreakpoint設定
+const BREAKPOINTS = { mobile: 0, tablet: 768, desktop: 1024 };
 
 interface ContentProps {
   video_id: RouterOutPuts["map"]["getMapInfo"]["video_id"];
@@ -33,6 +37,10 @@ function Content({ video_id, mapId }: ContentProps) {
   const { resetTypingStatus } = useSetTypingStatus();
 
   const setMap = useSetMap();
+
+  // ブレークポイントの状態を取得
+  const { breakpoint } = useBreakpoint(BREAKPOINTS, "mobile");
+  const isMobileOrTablet = breakpoint === "mobile" || breakpoint === "tablet";
 
   useEffect(() => {
     if (mapData) {
@@ -61,17 +69,21 @@ function Content({ video_id, mapId }: ContentProps) {
     <div className="fixed flex h-screen w-screen flex-col items-center">
       <div style={style} className="h-fit">
         <section className="flex w-full flex-col gap-6 md:flex-row">
-          <div className={`relative order-2 hidden md:order-1 md:block`}>
-            <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
+          <div className={`relative order-2 md:order-1`}>
+            {!isMobileOrTablet && (
+              <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
+            )}
           </div>
           <TabsArea className="order-1 flex flex-[8] flex-col md:order-2" />
         </section>
 
         <MainGameCard className="mt-5" />
 
-        <section className="relative mt-5 block md:hidden">
-          <YouTubeContent isMapLoading={isLoading} videoId={video_id} />
-        </section>
+        {isMobileOrTablet && (
+          <section className="relative mt-5">
+            <YouTubeContent isMapLoading={isLoading} videoId={video_id} />
+          </section>
+        )}
       </div>
     </div>
   );

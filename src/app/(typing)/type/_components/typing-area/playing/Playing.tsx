@@ -6,12 +6,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useEffect } from "react";
 
-import {
-  useGameUtilityReferenceParams,
-  useLineCount,
-  useSetLineResultDrawer,
-  useUserStats,
-} from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { useLineCount, useSetLineResultDrawer, useUserStats } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useHandleKeydown } from "@/app/(typing)/type/_lib/hooks/playing-hooks/keydown-hooks/playingKeydown";
 import { useTimerControls } from "@/app/(typing)/type/_lib/hooks/playing-hooks/timer-hooks/timer";
 import { useSession } from "next-auth/react";
@@ -28,7 +23,6 @@ const Playing = () => {
   const { setNextLyrics } = useSetNextLyrics();
   const handleKeydown = useHandleKeydown();
   const { readUserStats, resetUserStats } = useUserStats();
-  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readCount } = useLineCount();
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
@@ -71,12 +65,10 @@ const Playing = () => {
 
   useEffect(() => {
     if (scene === "practice") {
-      const { lineResultdrawerClosure: drawerClosure } = readGameUtilRefParams();
       setLineResultDrawer(true);
     }
 
     if (scene === "replay") {
-      // リプレイモードは制限なし
       setFrameRate(0);
     } else {
       setFrameRate(59.99);
