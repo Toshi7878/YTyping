@@ -30,12 +30,10 @@ function ReadyInputModeRadioCards() {
             value={option.value}
             disabled={option.value === "flick"}
             className={cn(
-              "border-border flex-1 cursor-pointer rounded border py-10 text-3xl font-bold shadow-md transition-colors select-none",
-              // 選択されていない場合のみhoverスタイルを適用
+              "border-border flex-1 cursor-pointer rounded border py-16 text-4xl font-bold shadow-md transition-colors select-none md:py-10 md:text-3xl",
               option.value === "roma" && readyInputMode !== option.value && "hover:bg-roma/50",
               option.value === "kana" && readyInputMode !== option.value && "hover:bg-kana/50",
               option.value === "flick" && readyInputMode !== option.value && "hover:bg-flick/50",
-              // 選択状態のスタイル
               option.value === "roma" && readyInputMode === option.value && "bg-roma",
               option.value === "kana" && readyInputMode === option.value && "bg-kana",
               option.value === "flick" && readyInputMode === option.value && "bg-flick",

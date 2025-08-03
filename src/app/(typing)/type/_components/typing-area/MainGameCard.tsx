@@ -48,14 +48,15 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
   const isReady = sceneGroup === "Ready" || !isYTStarted || !map;
   const isPlayed = isYTStarted && sceneGroup === "Playing";
 
+  const minHeight = "min-h-[460px] md:min-h-[300px]";
   return (
     <CardContent className={className}>
       {isReady ? (
-        <Ready className="min-h-[460px] md:min-h-[300px]" />
+        <Ready className={minHeight} />
       ) : isPlayed ? (
-        <Playing className="min-h-[460px] md:min-h-[300px]" />
+        <Playing className={minHeight} />
       ) : (
-        sceneGroup === "End" && <End className="min-h-[460px] md:min-h-[300px]" />
+        <End className={minHeight} />
       )}
 
       {(isPlayed || sceneGroup === "End") && (
