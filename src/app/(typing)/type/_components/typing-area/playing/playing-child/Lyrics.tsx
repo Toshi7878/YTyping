@@ -10,7 +10,7 @@ const Lyrics = () => {
     <div
       id="lyrics"
       className={cn(
-        "ml-1 flex w-full max-w-[103%] items-end whitespace-nowrap",
+        "flex w-full max-w-[103%] items-end whitespace-nowrap",
         "text-5xl font-bold sm:text-4xl md:text-5xl",
         "lyrics-font",
         // 条件付きスタイル: 完了した単語エリアの後の歌詞を非表示にする

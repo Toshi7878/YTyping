@@ -17,8 +17,8 @@ const SkipGuideAndTotalTime = () => {
   return (
     <section
       className={cn(
-        "bottom-card-text mx-2 flex w-full items-center justify-between text-5xl font-bold sm:text-[2.5rem] md:text-xl",
-        !isPlayed && "hidden",
+        "bottom-card-text flex w-full items-center justify-between px-4 text-5xl font-bold sm:text-[2.5rem] md:text-xl",
+        !isPlayed && "invisible",
       )}
     >
       <PlayingSkipGuide />

@@ -19,10 +19,10 @@ import GameStatusHeader from "./shared/top-child/GameStatusHeader";
 
 function MainGameCard({ className }: { className?: string }) {
   return (
-    <Card className={cn("typing-card p-0", className)} id="typing_card">
-      <GameCardHeader className="mx-3 py-0" />
-      <GameCardContent className="mx-8 py-3" />
-      <GameCardFooter className="mx-3 w-full flex-col py-0 select-none" />
+    <Card className={cn("typing-card block p-0", className)} id="typing_card">
+      <GameCardHeader className="mx-3 block py-0" />
+      <GameCardContent className="mx-8 py-2" />
+      <GameCardFooter className="mx-3 flex-col py-0 select-none" />
     </Card>
   );
 }
