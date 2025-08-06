@@ -423,7 +423,7 @@ export const useInputJudge = () => {
       if (event.code === "KeyF") {
         input.keys.push("ゎ");
       }
-      if (event.key === "0") {
+      if (event.code === "Digit0") {
         input.keys = ["を"];
       }
     }
