@@ -21,11 +21,9 @@ function ResultDrawer() {
     }
   }, [scene, sceneGroup]);
 
-  const sheetOpen = sceneGroup === "End" ? isOpen : scene === "practice" || scene === "replay" ? true : false;
-
   return (
-    <Sheet open={sheetOpen} onOpenChange={(open) => !open && setLineResultDrawer(false)}>
-      {sheetOpen && (
+    <Sheet open={isOpen} onOpenChange={(open) => !open && setLineResultDrawer(false)}>
+      {isOpen && (
         <div
           className="fixed inset-0 z-50 bg-transparent"
           onClick={() => setLineResultDrawer(false)}

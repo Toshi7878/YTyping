@@ -4,12 +4,12 @@ import {
   useReadGameUtilParams,
   useSceneGroupState,
   useSceneState,
+  useSetLineResultDrawer,
   useUserTypingOptionsState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
-import { useToggleLineList } from "@/app/(typing)/type/_lib/hooks/playing-hooks/toggleLineList";
 import { cn } from "@/lib/utils";
 import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";
 
@@ -57,7 +57,7 @@ const SpeedButton = () => {
 
 const PracticeButtons = () => {
   const scene = useSceneState();
-  const toggleLineListDrawer = useToggleLineList();
+  const setLineResultDrawer = useSetLineResultDrawer();
   const { movePrevLine, moveNextLine } = useMoveLine();
   const userOptions = useUserTypingOptionsState();
 
@@ -75,7 +75,7 @@ const PracticeButtons = () => {
         <BottomButton
           badgeText="リスト"
           kbdText={userOptions.toggle_input_mode_key === "TAB" ? "F1" : "Tab"}
-          onClick={() => toggleLineListDrawer()}
+          onClick={() => setLineResultDrawer(true)}
           isPauseDisabled={false}
           isKbdHidden={false}
         />

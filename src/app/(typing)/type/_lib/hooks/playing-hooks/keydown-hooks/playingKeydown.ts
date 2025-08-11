@@ -5,6 +5,7 @@ import {
   useReadLineWord,
   useReadMapState,
   useSceneState,
+  useSetLineResultDrawer,
   useSetNotify,
   useUserTypingOptionsStateRef,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
@@ -14,7 +15,6 @@ import { useInputModeChange } from "../inputModeChange";
 import { useMoveLine } from "../moveLine";
 import { usePressSkip } from "../pressSkip";
 import { useRetry } from "../retry";
-import { useToggleLineList } from "../toggleLineList";
 import { useTyping } from "./handleTyping";
 
 const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1;
@@ -58,7 +58,7 @@ const usePlayingShortcutKey = () => {
   const pressSkip = usePressSkip();
   const gamePause = useGamePause();
   const inputModeChange = useInputModeChange();
-  const toggleLineListDrawer = useToggleLineList();
+  const setLineResultDrawer = useSetLineResultDrawer();
   const changePlayMode = useChangePlayMode();
   const dispatchSpeed = usePlaySpeedReducer();
   const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine();
@@ -125,7 +125,7 @@ const usePlayingShortcutKey = () => {
       case "F1":
         if (typingOptions.toggle_input_mode_key === "TAB") {
           if (scene === "replay" || scene === "practice") {
-            toggleLineListDrawer();
+            setLineResultDrawer((prev) => !prev);
           }
         }
         break;
@@ -182,7 +182,7 @@ const usePlayingShortcutKey = () => {
           }
         } else {
           if (scene === "replay" || scene === "practice") {
-            toggleLineListDrawer();
+            setLineResultDrawer((prev) => !prev);
           }
         }
         break;
