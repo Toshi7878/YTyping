@@ -1,6 +1,7 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TAB_NAMES, useSetTabName, useTabNameState } from "../../_lib/atoms/stateAtoms";
+import TabIcons from "./child/TabIcons";
 import TabRanking from "./tab-ranking/TabRanking";
 import TabStatusCard from "./tab-status/TabStatusCard";
 
@@ -19,7 +20,7 @@ export default function TabsArea({ className }: TabsAreaProps) {
       className={className}
     >
       <TabLists />
-
+      <TabIcons />
       <TabsContent value="ステータス">
         <TabStatusCard className="h-56" />
       </TabsContent>
