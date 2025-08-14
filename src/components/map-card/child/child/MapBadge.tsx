@@ -9,7 +9,7 @@ interface MapBadgeProps {
 
 const MapBadge = ({ children, className, ...rest }: MapBadgeProps) => {
   return (
-    <Badge className={cn("rounded-full px-2 text-sm", className)} {...rest}>
+    <Badge variant="accent-light" className={cn("rounded-full px-2 text-sm", className)} {...rest}>
       {children}
     </Badge>
   );

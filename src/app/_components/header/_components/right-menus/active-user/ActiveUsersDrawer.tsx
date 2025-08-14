@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
 import Link from "@/components/ui/link/link";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useOnlineUsersState } from "@/lib/globalAtoms";
 import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
@@ -35,21 +35,16 @@ const ActiveUsersDrawer = () => {
         </TooltipWrapper>
       </SheetTrigger>
 
-      <SheetContent>
+      <SheetContent className="block">
+        <SheetHeader className="border-border/30 w-full border-b py-0">
+          <SheetTitle className="flex items-baseline gap-3 py-3">
+            <span>アクティブユーザー</span>
+            <Badge variant="secondary" className="text-xs">
+              {onlineUsers.length}人
+            </Badge>
+          </SheetTitle>
+        </SheetHeader>
         <Table className="table-fixed">
-          <TableHeader>
-            <TableRow className="text-sm">
-              <TableHead className="w-1/4 px-3">
-                <div className="flex items-baseline gap-1 whitespace-nowrap">
-                  <span>ユーザー</span>
-                  <Badge variant="secondary" className="text-xs">
-                    {onlineUsers.length}人
-                  </Badge>
-                </div>
-              </TableHead>
-              <TableHead className="w-3/4 px-[17.5px]">プレイ中譜面</TableHead>
-            </TableRow>
-          </TableHeader>
           <TableBody>
             {activeUserMapQuery.data &&
               activeUserMapQuery.data.map((user) => {

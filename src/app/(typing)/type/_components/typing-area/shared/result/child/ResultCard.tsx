@@ -2,12 +2,11 @@
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { LineData, LineResultData } from "@/app/(typing)/type/_lib/type";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
-import { memo } from "react";
-import ResultCardBody from "./child/ResultCardBody";
+import ResultCardContent from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
 import ResultCardHeader from "./child/ResultCardHeader";
 
@@ -67,30 +66,28 @@ function ResultCard({
       data-line-index={lineIndex}
       data-count={count}
       className={cn(
-        "z-[1] mb-4 cursor-pointer gap-1 py-4 pl-1 shadow-lg select-none",
+        "mb-4 cursor-pointer gap-1 py-4 pl-1 shadow-lg select-none",
         "bg-card text-card-foreground border-card-foreground",
-        "hover:border-foreground hover:border-2",
-        isSelected && "border-primary border-[3px]",
+        "hover:outline-foreground hover:outline-2",
+        isSelected && "outline-primary outline-2",
       )}
       onClick={() => handleCardClick(lineIndex)}
     >
-      <CardHeader className="py-0">
-        <ResultCardHeader
-          lineIndex={lineIndex}
-          lineNotes={lineNotes}
-          lineInputMode={lineInputMode}
-          lineKpm={lineKpm}
-          lineSpeed={lineSpeed}
-        />
-      </CardHeader>
-      <CardContent className="word-font py-2 text-base">
-        <ResultCardBody
-          lineKanaWord={lineKanaWord}
-          typeResult={lineResult.typeResult}
-          lineTypeWord={lineTypeWord}
-          lostWord={lostWord!}
-        />
-      </CardContent>
+      <ResultCardHeader
+        lineIndex={lineIndex}
+        lineNotes={lineNotes}
+        lineInputMode={lineInputMode}
+        lineKpm={lineKpm}
+        lineSpeed={lineSpeed}
+      />
+
+      <ResultCardContent
+        lineKanaWord={lineKanaWord}
+        typeResult={lineResult.typeResult}
+        lineTypeWord={lineTypeWord}
+        lostWord={lostWord!}
+      />
+
       <Separator className="mx-auto w-[88%]" />
       <CardFooter className="py-0 text-lg font-semibold">
         <ResultCardFooter
@@ -110,4 +107,4 @@ function ResultCard({
   );
 }
 
-export default memo(ResultCard);
+export default ResultCard;

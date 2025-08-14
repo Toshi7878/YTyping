@@ -1,20 +1,20 @@
 import { TypeResult } from "@/app/(typing)/type/_lib/type";
+import { CardContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { memo } from "react";
 
-interface ResultCardBodyProps {
+interface ResultCardContentProps {
   lineKanaWord: string;
   typeResult: TypeResult[];
   lineTypeWord: string;
   lostWord: string;
 }
 
-function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: ResultCardBodyProps) {
+function ResultCardContent({ lineKanaWord, typeResult, lineTypeWord, lostWord }: ResultCardContentProps) {
   let correctCount = 0;
 
   return (
-    <div className="flex flex-col gap-2">
+    <CardContent className="word-font gap-2 py-2 text-base">
       <div className="kana-word">
         <div>{lineKanaWord}</div>
       </div>
@@ -48,8 +48,8 @@ function ResultCardBody({ lineKanaWord, typeResult, lineTypeWord, lostWord }: Re
         })}
         <span className="break-all">{lostWord !== null ? lostWord : lineTypeWord}</span>
       </div>
-    </div>
+    </CardContent>
   );
 }
 
-export default memo(ResultCardBody);
+export default ResultCardContent;

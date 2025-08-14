@@ -7,11 +7,11 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
 import { useInteractJS } from "@/app/(typing)/type/_lib/hooks/useInteractJS";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
 import { useState } from "react";
-import ResultCardBody from "./child/ResultCardBody";
+import ResultCardContent from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
 import ResultCardHeader from "./child/ResultCardHeader";
 
@@ -52,7 +52,7 @@ const PracticeLineCard = () => {
   return (
     <Card
       ref={interact?.ref}
-      className="practice-card border"
+      className="practice-card z-10 block border py-2"
       style={{
         ...interact?.style,
         height: "fit-content",
@@ -67,23 +67,21 @@ const PracticeLineCard = () => {
         }
       }}
     >
-      <CardHeader>
-        <ResultCardHeader
-          lineIndex={lineSelectIndex}
-          lineNotes={lineNotes}
-          lineInputMode={lineInputMode}
-          lineKpm={lineKpm}
-          lineSpeed={lineSpeed}
-        />
-      </CardHeader>
-      <CardContent className="word-font py-2">
-        <ResultCardBody
-          lineKanaWord={lineKanaWord}
-          typeResult={lineResult.typeResult}
-          lineTypeWord={lineTypeWord}
-          lostWord={lostWord!}
-        />
-      </CardContent>
+      <ResultCardHeader
+        lineIndex={lineSelectIndex}
+        lineNotes={lineNotes}
+        lineInputMode={lineInputMode}
+        lineKpm={lineKpm}
+        lineSpeed={lineSpeed}
+      />
+
+      <ResultCardContent
+        lineKanaWord={lineKanaWord}
+        typeResult={lineResult.typeResult}
+        lineTypeWord={lineTypeWord}
+        lostWord={lostWord!}
+      />
+
       <Separator className="mx-auto w-[92%]" />
       <CardFooter>
         <ResultCardFooter

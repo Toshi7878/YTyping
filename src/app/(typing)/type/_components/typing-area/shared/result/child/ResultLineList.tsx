@@ -10,13 +10,12 @@ import { LineResultData } from "@/app/(typing)/type/_lib/type";
 
 import { useResultCards } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
-import { ParseMap } from "@/utils/parse-map/parseMap";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import ResultCard from "./ResultCard";
 
 function ResultLineList() {
-  const map = useMapState() as ParseMap;
+  const map = useMapState();
   const sceneGroup = useSceneGroupState();
   const lineResults = useLineResultsState();
   const { moveSetLine, drawerSelectColorChange } = useMoveLine();
@@ -32,9 +31,11 @@ function ResultLineList() {
 
   const practiceReplayCardClick = useCallback(
     (lineIndex: number) => {
-      const seekCount = map.typingLineIndexes[lineIndex - 1];
+      const seekCount = map?.typingLineIndexes[lineIndex - 1];
 
-      moveSetLine(seekCount);
+      if (seekCount) {
+        moveSetLine(seekCount);
+      }
       setLineSelectIndex(lineIndex);
     },
 
@@ -88,14 +89,14 @@ function ResultLineList() {
   return (
     <>
       {lineResults.map((lineResult: LineResultData, index: number) => {
-        const lineData = map.mapData[index];
+        const lineData = map?.mapData[index];
 
-        if (!lineData.notes.k) {
+        if (!lineData?.notes.k) {
           return null;
         }
 
         lineIndex++;
-        scoreCount += lineResult.status!.p! + lineResult.status!.tBonus!;
+        scoreCount += (lineResult.status?.p ?? 0) + (lineResult.status?.tBonus ?? 0);
 
         return (
           <ResultCard

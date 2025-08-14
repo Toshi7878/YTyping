@@ -1,10 +1,10 @@
 "use client";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { InputMode } from "@/app/(typing)/type/_lib/type";
+import { CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { ParseMap } from "@/utils/parse-map/parseMap";
-import { memo } from "react";
 
 interface ResultCardHeaderProps {
   lineNotes: number;
@@ -20,7 +20,7 @@ function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSp
   const inputModeText = lineInputMode === "roma" ? "(ローマ字)" : "(かな)";
 
   return (
-    <div>
+    <CardHeader className="flex flex-row items-center">
       <span>
         {lineIndex}/{map?.lineLength}
       </span>
@@ -34,8 +34,8 @@ function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSp
       <TooltipWrapper label={`要求打鍵数${inputModeText}`}>
         <span className={cn("line-notes hover:bg-border/20")}>{lineNotes}打</span>
       </TooltipWrapper>
-    </div>
+    </CardHeader>
   );
 }
 
-export default memo(ResultCardHeader);
+export default ResultCardHeader;
