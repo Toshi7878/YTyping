@@ -14,21 +14,23 @@ export default function TabsArea({ className }: TabsAreaProps) {
   const setTabName = useSetTabName();
 
   return (
-    <Tabs
-      value={tabName}
-      onValueChange={(value) => setTabName(value as (typeof TAB_NAMES)[number])}
-      className={className}
-    >
-      <TabLists />
-      <TabIcons />
-      <TabsContent value="ステータス">
-        <TabStatusCard className="h-56" />
-      </TabsContent>
+    <>
+      <Tabs
+        value={tabName}
+        onValueChange={(value) => setTabName(value as (typeof TAB_NAMES)[number])}
+        className={className}
+      >
+        <TabLists />
+        <TabIcons />
+        <TabsContent value="ステータス">
+          <TabStatusCard className="h-56" />
+        </TabsContent>
 
-      <TabsContent value="ランキング">
-        <TabRanking className="h-56" />
-      </TabsContent>
-    </Tabs>
+        <TabsContent value="ランキング">
+          <TabRanking className="h-56" />
+        </TabsContent>
+      </Tabs>
+    </>
   );
 }
 
@@ -38,9 +40,9 @@ const TabLists = () => {
   };
 
   return (
-    <TabsList className="w-full">
+    <TabsList variant="underline" className="flex w-full px-8">
       {TAB_NAMES.map((name) => (
-        <TabsTrigger key={name} value={name} onFocus={handleFocus}>
+        <TabsTrigger key={name} value={name} onFocus={handleFocus} variant="underline" className="max-w-60 flex-1">
           {name}
         </TabsTrigger>
       ))}
