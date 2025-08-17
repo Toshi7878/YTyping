@@ -1,3 +1,4 @@
+import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { LabeledInput } from "@/components/ui/input/labeled-input";
 import { PopoverContent } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +14,6 @@ import {
   useSetMap,
 } from "../../../_lib/atoms/stateAtoms";
 import { useParseImeMap } from "../../../_lib/hooks/parseImeMap";
-import OptionCheckboxFormField from "./child/child/OptionCheckboxFormField";
 
 interface SettingCardProps {
   isCardVisible: boolean;
@@ -103,13 +103,13 @@ const MainSettingTab = () => {
       <div className="flex flex-col gap-4">
         <LabeledInput
           label={
-            <OptionCheckboxFormField
+            <LabeledCheckbox
               label="判定文字追加を有効化"
               name="enableAddSymbol"
               defaultChecked={userImeTypeOptions.enable_add_symbol}
-              onChange={(e) => {
+              onCheckedChange={(value) => {
                 setUserImeTypeOptions({
-                  enable_add_symbol: e.target.checked,
+                  enable_add_symbol: value,
                 });
               }}
             />
@@ -125,23 +125,23 @@ const MainSettingTab = () => {
         />
       </div>
       <div className="flex">
-        <OptionCheckboxFormField
+        <LabeledCheckbox
           label="英語スペースを有効化"
           name="enableEngSpace"
           defaultChecked={userImeTypeOptions.enable_eng_space}
-          onChange={(e) => {
+          onCheckedChange={(value) => {
             setUserImeTypeOptions({
-              enable_eng_space: e.target.checked,
+              enable_eng_space: value,
             });
           }}
         />
-        <OptionCheckboxFormField
+        <LabeledCheckbox
           label="英語大文字判定を有効化"
           name="enableEngUpperCase"
           defaultChecked={userImeTypeOptions.enable_eng_upper_case}
-          onChange={(e) => {
+          onCheckedChange={(value) => {
             setUserImeTypeOptions({
-              enable_eng_upper_case: e.target.checked,
+              enable_eng_upper_case: value,
             });
           }}
         />
@@ -149,24 +149,24 @@ const MainSettingTab = () => {
 
       <SettingCardDivider />
 
-      <OptionCheckboxFormField
+      <LabeledCheckbox
         label="次の歌詞を表示"
         name="enableNextLyrics"
         defaultChecked={userImeTypeOptions.enable_next_lyrics}
-        onChange={(e) => {
+        onCheckedChange={(value) => {
           setUserImeTypeOptions({
-            enable_next_lyrics: e.target.checked,
+            enable_next_lyrics: value,
           });
         }}
       />
 
-      <OptionCheckboxFormField
+      <LabeledCheckbox
         label="動画を大きく表示"
         name="enableLargeVideoDisplay"
         defaultChecked={userImeTypeOptions.enable_large_video_display}
-        onChange={(e) => {
+        onCheckedChange={(value) => {
           setUserImeTypeOptions({
-            enable_large_video_display: e.target.checked,
+            enable_large_video_display: value,
           });
         }}
       />
