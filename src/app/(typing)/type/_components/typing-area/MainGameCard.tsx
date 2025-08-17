@@ -82,7 +82,9 @@ const GameCardFooter = ({ className }: { className?: string }) => {
       <BottomButtons />
       {sceneGroup === "Ready" && (
         <Link href={`/ime/${mapId}`} onClick={(event) => handleLinkClick(event, "replace")}>
-          <Button className="absolute right-10 bottom-3 p-8 text-2xl md:p-2 md:text-base">変換有りタイピング</Button>
+          <Button variant="outline" className="absolute right-10 bottom-3 p-8 text-2xl md:p-2 md:text-base">
+            変換有りタイピング
+          </Button>
         </Link>
       )}
     </CardFooter>

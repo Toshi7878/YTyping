@@ -1,3 +1,5 @@
+import { MapLine } from "@/types/map";
+
 export type InputMode = "roma" | "kana" | "flick";
 export type PlayMode = "play" | "replay" | "practice";
 export type SceneType = "ready" | PlayMode | "play_end" | "practice_end" | "replay_end";
@@ -10,7 +12,7 @@ export interface TypeChunk {
   kanaUnSupportedSymbol?: string;
 }
 
-interface NextTypeChunk extends TypeChunk {
+export interface NextTypeChunk extends TypeChunk {
   orginalDakuChar?: Dakuten | HanDakuten;
 }
 
