@@ -1,3 +1,4 @@
+import { LabeledInput } from "@/components/ui/input/labeled-input";
 import { PopoverContent } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/trpc";
@@ -13,7 +14,6 @@ import {
 } from "../../../_lib/atoms/stateAtoms";
 import { useParseImeMap } from "../../../_lib/hooks/parseImeMap";
 import OptionCheckboxFormField from "./child/child/OptionCheckboxFormField";
-import OptionInputFormField from "./child/child/OptionInputFormField";
 
 interface SettingCardProps {
   isCardVisible: boolean;
@@ -101,7 +101,7 @@ const MainSettingTab = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
-        <OptionInputFormField
+        <LabeledInput
           label={
             <OptionCheckboxFormField
               label="判定文字追加を有効化"
@@ -121,7 +121,7 @@ const MainSettingTab = () => {
           }}
           value={userImeTypeOptions.add_symbol_list}
           name="addSymbol"
-          isDisabled={!userImeTypeOptions.enable_add_symbol}
+          disabled={!userImeTypeOptions.enable_add_symbol}
         />
       </div>
       <div className="flex">
