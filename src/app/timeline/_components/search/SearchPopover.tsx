@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioCard, RadioGroup } from "@/components/ui/radio-group";
+import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useCallback, useMemo } from "react";
 import useSearchKeydown from "../../_lib/hooks/useSearchKeydown";

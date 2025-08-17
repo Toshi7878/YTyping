@@ -1,5 +1,9 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { useSetUserTypingOptionsState, useUserTypingOptionsStateRef } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import {
+  useSetUserTypingOptionsState,
+  useUserTypingOptionsState,
+  useUserTypingOptionsStateRef,
+} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -10,14 +14,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { LabeledRadioGroup, LabeledRadioItem } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/trpc";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
+import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { Dispatch, useEffect, useRef, useState } from "react";
-import UserLineCompletedRadioButton from "./child/UserLineCompletedRadioButton";
-import UserNextDisplayRadioButton from "./child/UserNextDisplayRadioButton";
 import UserShortcutKeyCheckbox from "./child/UserShortcutKeyCheckbox";
 import UserSoundEffectCheckbox from "./child/UserSoundEffectCheckbox";
 import UserTimeOffsetChange from "./child/UserTimeOffsetChange";
@@ -87,7 +91,7 @@ const SettingCard = (props: SettingCardProps) => {
       content: (
         <>
           <UserTimeOffsetChange />
-          <SettingCardDivider />
+          <Separator className="bg-foreground/20 my-4" />
           <UserSoundEffectCheckbox />
         </>
       ),
@@ -97,13 +101,13 @@ const SettingCard = (props: SettingCardProps) => {
       content: (
         <>
           <UserNextDisplayRadioButton />
-          <SettingCardDivider />
+          <Separator className="bg-foreground/20 my-4" />
           <UserLineCompletedRadioButton />
-          <SettingCardDivider />
+          <Separator className="bg-foreground/20 my-4" />
           <UserWordFontSize />
           {isMdScreen && (
             <>
-              <SettingCardDivider />
+              <Separator className="bg-foreground/20 my-4" />
               <UserWordScrollChange />
             </>
           )}
@@ -156,8 +160,48 @@ const SettingCard = (props: SettingCardProps) => {
   );
 };
 
-const SettingCardDivider = () => {
-  return <Separator className="bg-foreground/20 my-4" />;
+const UserLineCompletedRadioButton = () => {
+  const { setUserTypingOptions } = useSetUserTypingOptionsState();
+  const { line_completed_display } = useUserTypingOptionsState();
+
+  const changeRadio = (value: $Enums.line_completed_display) => {
+    setUserTypingOptions({ line_completed_display: value });
+  };
+
+  return (
+    <LabeledRadioGroup
+      label="打ち切り時のワード表示"
+      labelClassName="mb-2 block text-lg font-semibold"
+      value={line_completed_display}
+      onValueChange={changeRadio}
+      className="flex flex-row gap-5"
+    >
+      <LabeledRadioItem value="HIGH_LIGHT" label="ワードハイライト" />
+      <LabeledRadioItem value="NEXT_WORD" label="次のワードを表示" />
+    </LabeledRadioGroup>
+  );
+};
+
+const UserNextDisplayRadioButton = () => {
+  const { setUserTypingOptions } = useSetUserTypingOptionsState();
+  const { next_display } = useUserTypingOptionsState();
+
+  const changeRadio = (value: $Enums.next_display) => {
+    setUserTypingOptions({ next_display: value });
+  };
+
+  return (
+    <LabeledRadioGroup
+      value={next_display}
+      onValueChange={changeRadio}
+      label="次の歌詞表示"
+      className="flex flex-row gap-5"
+      labelClassName="text-lg font-semibold"
+    >
+      <LabeledRadioItem value="LYRICS" id="lyrics" label="歌詞" />
+      <LabeledRadioItem value="WORD" id="word" label="ワード" />
+    </LabeledRadioGroup>
+  );
 };
 
 interface ResetSettingModalProps {

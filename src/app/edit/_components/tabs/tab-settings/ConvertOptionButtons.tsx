@@ -3,7 +3,7 @@ import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/_
 import { ConvertOptionsType } from "@/app/edit/_lib/type";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { RadioGroup } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/config/charList";
 import { VariantProps } from "class-variance-authority";

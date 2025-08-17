@@ -2,7 +2,7 @@
 import { useSetPlayingInputMode } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useReadyInputModeState, useSetReadyInputMode } from "@/app/(typing)/type/_lib/atoms/storageAtoms";
 import { InputMode } from "@/app/(typing)/type/_lib/type";
-import { RadioCard, RadioGroup } from "@/components/ui/radio-group";
+import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { cn } from "@/lib/utils";
 
 function ReadyInputModeRadioCards() {
