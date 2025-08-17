@@ -4,7 +4,7 @@ import { useDifficultyRangeState, useSetDifficultyRange, useSetIsSearching } fro
 import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { useDifficultyRangeParams } from "@/app/(home)/_lib/useDifficultyRangeParams";
 import { Card, CardContent } from "@/components/ui/card";
-import { DualRangeSlider } from "@/components/ui/dural-range-slider";
+import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import Link from "@/components/ui/link/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";

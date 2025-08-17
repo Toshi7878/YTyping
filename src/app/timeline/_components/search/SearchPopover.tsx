@@ -12,7 +12,7 @@ import {
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
 import { FilterMode } from "@/app/timeline/_lib/type";
 import { Button } from "@/components/ui/button";
-import { DualRangeSlider } from "@/components/ui/dural-range-slider";
+import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group";
