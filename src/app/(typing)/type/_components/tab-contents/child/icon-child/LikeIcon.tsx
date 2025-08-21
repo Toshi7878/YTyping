@@ -2,28 +2,18 @@ import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/(typing)/type/_lib/atoms/
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { INITIAL_STATE } from "@/config/globalConst";
+import { useBreakPoint } from "@/lib/useBreakPoint";
 import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { UploadResult } from "@/types";
 import { useParams } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState } from "react";
 
 const LikeIcon = () => {
   const { id: mapId } = useParams();
-  const [iconSize, setIconSize] = useState(120);
+  const { isMdScreen } = useBreakPoint();
 
   const isLikeAtom = useIsLikeAtom();
-
   const setIsLikeAtom = useSetIsLikeAtom();
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIconSize(window.innerWidth >= 768 ? 62 : 120);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const toggleLikeAction = (state: UploadResult): Promise<UploadResult> => {
     const newHasLike = !isLikeAtom;
@@ -39,10 +29,11 @@ const LikeIcon = () => {
   };
 
   const [state, formAction] = useActionState(toggleLikeAction, INITIAL_STATE);
+
   return (
-    <TooltipWrapper label="譜面にいいね">
+    <TooltipWrapper label="譜面にいいね" sideOffset={-8}>
       <form action={formAction} className="hover:opacity-80">
-        <LikeButton size={iconSize} defaultLiked={isLikeAtom} />
+        <LikeButton size={isMdScreen ? 62 : 120} defaultLiked={isLikeAtom} />
       </form>
     </TooltipWrapper>
   );

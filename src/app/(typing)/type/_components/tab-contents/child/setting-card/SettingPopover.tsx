@@ -34,10 +34,25 @@ const SettingPopover = () => {
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
   const { isMdScreen } = useBreakPoint();
+  const [isOpen, setIsOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useUserTypingOptionsStateRef();
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+
+    if (!open) {
+      const isOptionEdited = readUserTypingOptions();
+
+      if (isOptionEdited) {
+        const userOptions = readUserTypingOptions();
+        updateTypingOptions.mutate(userOptions);
+        writeGameUtilRefParams({ isOptionEdited: false });
+      }
+    }
+  };
 
   const tabData = [
     {
@@ -72,8 +87,8 @@ const SettingPopover = () => {
   ];
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <Popover open={isOpen} onOpenChange={handleOpenChange}>
+      <PopoverTrigger>
         <SettingIcon />
       </PopoverTrigger>
       <PopoverContent
