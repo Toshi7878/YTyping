@@ -5,7 +5,6 @@ import {
   useUserTypingOptionsStateRef,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LabeledRadioGroup, LabeledRadioItem } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,20 +22,15 @@ import { useTRPC } from "@/trpc/trpc";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
-import { Dispatch, useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import SettingIcon from "../icon-child/SettingIcon";
 import UserShortcutKeyCheckbox from "./child/UserShortcutKeyCheckbox";
 import UserSoundEffectCheckbox from "./child/UserSoundEffectCheckbox";
 import UserTimeOffsetChange from "./child/UserTimeOffsetChange";
 import { UserWordFontSize } from "./child/UserWordFontSize";
 import { UserWordScrollChange } from "./child/UserWordScrollChange";
 
-interface SettingCardProps {
-  isCardVisible: boolean;
-  setIsCardVisible: Dispatch<boolean>;
-}
-
-const SettingCard = (props: SettingCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
+const SettingPopover = () => {
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
   const { isMdScreen } = useBreakPoint();
@@ -43,38 +38,6 @@ const SettingCard = (props: SettingCardProps) => {
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useUserTypingOptionsStateRef();
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (
-        target.parentElement?.id !== "option_icon" &&
-        cardRef.current &&
-        !cardRef.current.contains(target) &&
-        target.closest("#reset-setting-modal-overlay") === null
-      ) {
-        props.setIsCardVisible(false);
-
-        const isOptionEdited = readUserTypingOptions();
-
-        if (isOptionEdited) {
-          const userOptions = readUserTypingOptions();
-          updateTypingOptions.mutate(userOptions);
-          writeGameUtilRefParams({ isOptionEdited: false });
-        }
-      }
-    };
-
-    if (props.isCardVisible) {
-      window.addEventListener("mousedown", handleClickOutside);
-    } else {
-      window.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      window.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [props.isCardVisible]);
 
   const tabData = [
     {
@@ -109,45 +72,47 @@ const SettingCard = (props: SettingCardProps) => {
   ];
 
   return (
-    <>
-      {props.isCardVisible && (
-        <Card
-          ref={cardRef}
-          className="bg-background text-foreground border-border absolute top-10 right-0 z-[4] w-[600px] overflow-hidden rounded-md text-lg shadow-lg"
-        >
-          <CardContent className="p-4">
-            <Tabs defaultValue="0" className="w-full">
-              <TabsList className="mb-4 grid w-full grid-cols-3">
-                {tabData.map((tab, index) => (
-                  <TabsTrigger
-                    key={index}
-                    value={index.toString()}
-                    className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                  >
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              {tabData.map((tab, index) => (
-                <TabsContent key={index} value={index.toString()} className="px-2">
-                  {tab.content}
-                </TabsContent>
-              ))}
-            </Tabs>
+    <Popover>
+      <PopoverTrigger asChild>
+        <SettingIcon />
+      </PopoverTrigger>
+      <PopoverContent
+        className={isMdScreen ? "w-lg p-4" : "w-screen p-4"}
+        align={isMdScreen ? "end" : "center"}
+        side="bottom"
+        sideOffset={10}
+        alignOffset={isMdScreen ? -100 : 0}
+      >
+        <Tabs defaultValue="0" className="w-full">
+          <TabsList className="mb-4 grid w-full grid-cols-3">
+            {tabData.map((tab, index) => (
+              <TabsTrigger
+                key={index}
+                value={index.toString()}
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {tabData.map((tab, index) => (
+            <TabsContent key={index} value={index.toString()} className="px-2">
+              {tab.content}
+            </TabsContent>
+          ))}
+        </Tabs>
 
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setIsResetModalOpen(true)}
-              className="text-destructive hover:bg-destructive/10 mt-4 ml-auto block"
-            >
-              設定をリセット
-            </Button>
-            <ResetSettingModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
-          </CardContent>
-        </Card>
-      )}
-    </>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setIsResetModalOpen(true)}
+          className="text-destructive hover:bg-destructive/10 mt-4 ml-auto block"
+        >
+          設定をリセット
+        </Button>
+        <ResetSettingModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
+      </PopoverContent>
+    </Popover>
   );
 };
 
@@ -231,4 +196,5 @@ const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
     </Dialog>
   );
 };
-export default SettingCard;
+
+export default SettingPopover;

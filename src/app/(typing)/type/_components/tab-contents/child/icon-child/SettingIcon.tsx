@@ -1,23 +1,22 @@
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { Dispatch } from "react";
+import { forwardRef } from "react";
 import { IoMdSettings } from "react-icons/io";
 
-interface SettingIconProps {
-  setIsCardVisible: Dispatch<(prev: boolean) => boolean>;
-}
-
-const SettingIcon = ({ setIsCardVisible }: SettingIconProps) => {
+const SettingIcon = forwardRef<HTMLDivElement>((props, ref) => {
   return (
     <TooltipWrapper label="設定">
       <div
-        className="h-[60px] flex items-center cursor-pointer pl-3 pr-1 hover:opacity-80"
+        ref={ref}
+        className="flex h-[60px] cursor-pointer items-center pr-1 pl-3 hover:opacity-80"
         id="option_icon"
-        onClick={() => setIsCardVisible((prev) => !prev)}
+        {...props}
       >
-        <IoMdSettings className="w-[72px] h-[72px] md:w-9 md:h-9" />
+        <IoMdSettings className="h-[72px] w-[72px] md:h-9 md:w-9" />
       </div>
     </TooltipWrapper>
   );
-};
+});
+
+SettingIcon.displayName = "SettingIcon";
 
 export default SettingIcon;
