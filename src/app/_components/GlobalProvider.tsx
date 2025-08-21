@@ -1,6 +1,6 @@
 "use client";
+import { LoadingProvider } from "@/components/ui/loading-overlay";
 import { getGlobalStore } from "@/lib/globalAtoms";
-import { LoadingProvider } from "@/lib/useLoadingOverlay";
 import { Provider as JotaiProvider } from "jotai";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";

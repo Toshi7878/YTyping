@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useLoadingState, useLoadingOverlay } from "./globalAtoms";
+import { useLoadingOverlay, useLoadingState } from "../../lib/globalAtoms";
 
 export { useLoadingOverlay };
 

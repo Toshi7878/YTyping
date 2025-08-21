@@ -1,10 +1,10 @@
 "use client";
+import { useBreakPoint } from "@/lib/useBreakPoint";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ParseMap } from "@/utils/parse-map/parseMap";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { CSSProperties, useEffect, useState } from "react";
-import useBreakpoint from "use-breakpoint";
 import { useProgress } from "../_lib/atoms/refAtoms";
 import {
   useSceneGroupState,
@@ -18,9 +18,6 @@ import useWindowScale, { CONTENT_WIDTH } from "../_lib/hooks/windowScale";
 import TabsArea from "./tab-contents/TabsArea";
 import MainGameCard from "./typing-area/MainGameCard";
 import YouTubeContent from "./youtube-content/TypeYoutubeContent";
-
-// TailwindのデフォルトブレークポイントにmatchするBreakpoint設定
-const BREAKPOINTS = { mobile: 0, tablet: 768, desktop: 1024 };
 
 interface ContentProps {
   video_id: RouterOutPuts["map"]["getMapInfo"]["video_id"];
@@ -39,14 +36,14 @@ function Content({ video_id, mapId }: ContentProps) {
 
   const setMap = useSetMap();
   const sceneGroup = useSceneGroupState();
-  const { breakpoint } = useBreakpoint(BREAKPOINTS, "mobile");
+  const { isSmScreen } = useBreakPoint();
 
   const [ytLayoutMode, setYtLayoutMode] = useState<"column" | "row">("column");
   useEffect(() => {
     if (sceneGroup === "Ready") {
-      setYtLayoutMode(breakpoint === "mobile" ? "column" : "row");
+      setYtLayoutMode(isSmScreen ? "column" : "row");
     }
-  }, [breakpoint]);
+  }, [isSmScreen]);
 
   useEffect(() => {
     if (mapData) {

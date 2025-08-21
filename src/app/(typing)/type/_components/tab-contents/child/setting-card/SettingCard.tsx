@@ -17,6 +17,7 @@ import {
 import { LabeledRadioGroup, LabeledRadioItem } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBreakPoint } from "@/lib/useBreakPoint";
 import { useTRPC } from "@/trpc/trpc";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { $Enums } from "@prisma/client";
@@ -37,21 +38,11 @@ const SettingCard = (props: SettingCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
-  const [isMdScreen, setIsMdScreen] = useState(false);
+  const { isMdScreen } = useBreakPoint();
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useUserTypingOptionsStateRef();
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMdScreen(window.innerWidth >= 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -198,8 +189,8 @@ const UserNextDisplayRadioButton = () => {
       className="flex flex-row gap-5"
       labelClassName="text-lg font-semibold"
     >
-      <LabeledRadioItem value="LYRICS" id="lyrics" label="歌詞" />
-      <LabeledRadioItem value="WORD" id="word" label="ワード" />
+      <LabeledRadioItem value="LYRICS" label="歌詞" />
+      <LabeledRadioItem value="WORD" label="ワード" />
     </LabeledRadioGroup>
   );
 };
