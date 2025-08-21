@@ -19,11 +19,9 @@ const EditIcon = () => {
   const tooltipLabel = `譜面のEditページに移動${Number(userId) !== creatorId && role === "USER" ? "(閲覧のみ)" : ""}`;
   return (
     <TooltipWrapper label={tooltipLabel}>
-      <div className="flex h-[60px] items-center">
-        <Link href={`/edit/${mapId}`} onClick={handleLinkClick} className="cursor-pointer pr-3 pl-0.5 hover:opacity-80">
-          <BiEdit className="h-[72px] w-[72px] md:h-9 md:w-9" />
-        </Link>
-      </div>
+      <Link href={`/edit/${mapId}`} onClick={handleLinkClick} className="cursor-pointer p-1 hover:opacity-80">
+        <BiEdit className="h-9 w-9" />
+      </Link>
     </TooltipWrapper>
   );
 };

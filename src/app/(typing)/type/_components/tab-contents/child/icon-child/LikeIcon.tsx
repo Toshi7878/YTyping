@@ -2,7 +2,6 @@ import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/(typing)/type/_lib/atoms/
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { INITIAL_STATE } from "@/config/globalConst";
-import { useBreakPoint } from "@/lib/useBreakPoint";
 import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { UploadResult } from "@/types";
 import { useParams } from "next/navigation";
@@ -10,7 +9,6 @@ import { useActionState } from "react";
 
 const LikeIcon = () => {
   const { id: mapId } = useParams();
-  const { isMdScreen } = useBreakPoint();
 
   const isLikeAtom = useIsLikeAtom();
   const setIsLikeAtom = useSetIsLikeAtom();
@@ -32,8 +30,8 @@ const LikeIcon = () => {
 
   return (
     <TooltipWrapper label="譜面にいいね" sideOffset={-8}>
-      <form action={formAction} className="hover:opacity-80">
-        <LikeButton size={isMdScreen ? 62 : 120} defaultLiked={isLikeAtom} />
+      <form action={formAction} className="cursor-pointer hover:opacity-80">
+        <LikeButton size={64} defaultLiked={isLikeAtom} />
       </form>
     </TooltipWrapper>
   );

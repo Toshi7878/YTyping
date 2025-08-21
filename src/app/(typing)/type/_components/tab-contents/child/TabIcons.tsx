@@ -8,12 +8,10 @@ export default function TabIcons() {
   const { data: session } = useSession();
 
   return (
-    <>
-      <div className={cn("absolute -top-5 -right-2.5 flex items-center justify-end", "text-foreground/60")}>
-        {session?.user.id ? <SettingPopover /> : null}
-        {session?.user.id ? <LikeIcon /> : null}
-        <EditIcon />
-      </div>
-    </>
+    <div className={cn("text-foreground/60 mb-2.5 flex items-center justify-end")}>
+      {session?.user.id ? <SettingPopover /> : null}
+      {session?.user.id ? <LikeIcon /> : null}
+      <EditIcon />
+    </div>
   );
 }

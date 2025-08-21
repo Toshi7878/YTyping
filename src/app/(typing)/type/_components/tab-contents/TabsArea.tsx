@@ -20,7 +20,6 @@ export default function TabsArea({ className }: TabsAreaProps) {
       className={className}
     >
       <TabLists />
-      <TabIcons />
       <TabsContent value="ステータス">
         <TabStatusCard className="h-56" />
       </TabsContent>
@@ -38,12 +37,15 @@ const TabLists = () => {
   };
 
   return (
-    <TabsList variant="underline" className="flex w-full px-8">
+    <TabsList variant="underline" className="flex w-full pl-8">
       {TAB_NAMES.map((name) => (
         <TabsTrigger variant="underline" className="max-w-50 flex-1" key={name} value={name} onFocus={handleFocus}>
           {name}
         </TabsTrigger>
       ))}
+      <div className="ml-auto">
+        <TabIcons />
+      </div>
     </TabsList>
   );
 };
