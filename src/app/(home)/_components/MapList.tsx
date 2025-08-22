@@ -1,10 +1,10 @@
 "use client";
-import SkeletonCard from "@/components/map-card/SkeletonCard";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { CardWithContent } from "@/components/ui/card";
 import Link from "@/components/ui/link/link";
+import Spinner from "@/components/ui/spinner";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -14,7 +14,6 @@ import { useInView } from "react-intersection-observer";
 import type { MapListResponse } from "../../../utils/queries/mapList.queries";
 import { useMapListQueryOptions } from "../../../utils/queries/mapList.queries";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
-import { PARAM_NAME } from "../_lib/const";
 
 type MapCardInfo = RouterOutPuts["mapList"]["getByVideoId"][number];
 
@@ -45,14 +44,6 @@ const MapList = () => {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const isRandomSort = searchParams.get(PARAM_NAME.sort) === "random";
-
-  const isRandomLoading = (isFetching || isRefetching) && isRandomSort && !isFetchingNextPage;
-
-  if (isRandomLoading) {
-    return <LoadingMapCard cardLength={10} />;
-  }
-
   return (
     <section className={isSearching ? "opacity-20" : ""}>
       <MapCardLayout>
@@ -77,27 +68,13 @@ const MapList = () => {
         )}
       </MapCardLayout>
 
-      {hasNextPage && (
-        <div ref={ref}>
-          <LoadingMapCard cardLength={2} />
-        </div>
-      )}
+      {hasNextPage && <Spinner ref={ref} />}
     </section>
   );
 };
 
 const MapCardLayout = ({ children }: { children: React.ReactNode }) => {
   return <div className="grid grid-cols-1 gap-3 md:grid-cols-2">{children}</div>;
-};
-
-const LoadingMapCard = ({ cardLength }: { cardLength: number }) => {
-  return (
-    <>
-      {[...Array(cardLength)].map((_, index) => (
-        <SkeletonCard key={index} />
-      ))}
-    </>
-  );
 };
 
 const MapLink = ({ mapId }: { mapId: number }) => {

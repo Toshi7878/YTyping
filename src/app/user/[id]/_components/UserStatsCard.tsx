@@ -39,7 +39,7 @@ const UserStatsCard = ({ userStats, userOptions }: UserStatsProps) => {
 
   return (
     <Card>
-      <CardHeader className="mx-8 text-center">
+      <CardHeader className="mx-8 flex flex-col items-center">
         <CardTitle className="mb-2 text-xl">タイピング統計情報</CardTitle>
         <Badge variant="secondary" className="text-sm">
           統計情報はやり直し時・ページ離脱時・リザルト時に更新されます
@@ -133,7 +133,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
 
 const StatsCard = ({ label, value }: { label: string; value: string | number | React.ReactNode }) => {
   return (
-    <Card className="bg-background gap-1 rounded-sm border py-4 pl-8">
+    <Card className="bg-background border-accent-foreground gap-1 rounded-sm border py-4 pl-8">
       <CardTitle className="text-lg font-normal">{label}</CardTitle>
       <div className="text-2xl font-bold">{value}</div>
     </Card>

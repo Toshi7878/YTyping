@@ -13,7 +13,7 @@ interface LikeButtonProps {
 
 const UnauthenticatedLikeCountIcon = ({ likeOptimisticState }: LikeButtonProps) => {
   return (
-    <div className="text-muted-foreground/60 flex items-baseline rounded-md px-1">
+    <div className="text-muted-foreground flex items-baseline rounded-md px-1">
       <div className="relative top-[2.5px] mr-1">
         <FiHeart size={17} />
       </div>
@@ -30,7 +30,7 @@ const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonPro
     <div
       className={cn(
         "flex items-baseline rounded-md pr-1",
-        likeOptimisticState.hasLike ? "text-like" : "text-muted-foreground/60",
+        likeOptimisticState.hasLike ? "text-like" : "text-muted-foreground",
         session?.user.id && "hover:bg-like/40 hover:cursor-pointer",
       )}
     >

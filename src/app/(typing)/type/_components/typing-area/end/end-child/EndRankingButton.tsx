@@ -17,7 +17,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import AlertDialogButton from "./child/AlertDialogButton";
-import EndMainButton from "./child/EndMainButton";
 
 interface UploadButtonProps {
   isScoreUpdated: boolean;
@@ -80,13 +79,15 @@ const EndUploadButton = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <EndMainButton
+      <Button
+        size="4xl"
+        variant="primary-hover-light"
         disabled={isSendResultBtnDisabled}
         onClick={handleClick}
         type={isScoreUpdated ? "submit" : "button"}
       >
         {isSendResultBtnDisabled ? "ランキング登録完了" : "ランキング登録"}
-      </EndMainButton>
+      </Button>
     </>
   );
 };

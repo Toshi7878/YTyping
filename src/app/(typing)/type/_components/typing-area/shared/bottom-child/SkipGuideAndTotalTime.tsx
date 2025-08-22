@@ -17,7 +17,7 @@ const SkipGuideAndTotalTime = () => {
   return (
     <section
       className={cn(
-        "bottom-card-text flex w-full items-center justify-between px-4 text-5xl font-bold sm:text-[2.5rem] md:text-xl",
+        "bottom-card-text flex w-full items-center justify-between px-4 text-4xl font-bold md:text-xl",
         !isPlayed && "invisible",
       )}
     >

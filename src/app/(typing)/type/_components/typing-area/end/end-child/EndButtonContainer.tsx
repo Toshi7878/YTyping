@@ -1,10 +1,10 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import EndUploadButton from "./EndRankingButton";
-import EndMainButton from "./child/EndMainButton";
 import EndSubButton from "./child/EndSubButton";
 
 interface EndButtonContainerProps {
@@ -66,7 +66,7 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
           />
         )}
 
-        <EndMainButton onClick={onOpen}>詳細リザルトを見る</EndMainButton>
+        <Button onClick={onOpen}>詳細リザルトを見る</Button>
       </div>
       <div className="mx-12 flex items-center justify-end gap-14" id="end_sub_buttons">
         <EndSubButton

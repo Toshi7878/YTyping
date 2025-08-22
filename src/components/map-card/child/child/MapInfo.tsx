@@ -6,7 +6,6 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { formatTime } from "@/utils/formatTime";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import { useEffect, useState } from "react";
 import MapBadge from "./MapBadge";
 import MapCreateUser from "./MapCreateUser";
 
@@ -15,13 +14,8 @@ interface MapInfoProps {
 }
 function MapInfo({ map }: MapInfoProps) {
   const handleLinkClick = useLinkClick();
-  const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const musicSourceDisplay = isClient && map.music_source ? `【${map.music_source}】` : "";
+  const musicSourceDisplay = map.music_source ? `【${map.music_source}】` : "";
 
   return (
     <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
@@ -41,7 +35,7 @@ function MapInfo({ map }: MapInfoProps) {
           {musicSourceDisplay}
         </div>
       </div>
-      <div className="flex flex-row items-baseline justify-between lg:flex-col">
+      <div className="flex flex-row items-baseline justify-between space-y-1 lg:flex-col">
         <MapCreateUser map={map} />
         <MapInfoBottom map={map} />
       </div>

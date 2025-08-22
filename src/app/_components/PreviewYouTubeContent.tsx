@@ -39,7 +39,7 @@ const PreviewYouTubeContent = () => {
     <YouTube
       id="preview_youtube"
       videoId={videoId}
-      className="fixed right-2 bottom-2 z-10 2xl:right-5 2xl:bottom-5 [&_iframe]:h-[128px] [&_iframe]:w-[228px] [&_iframe]:2xl:h-[252px] [&_iframe]:2xl:w-[448px]"
+      className="fixed right-2 bottom-2 z-10 lg:right-4 lg:bottom-4 2xl:right-5 2xl:bottom-5 [&_iframe]:h-[128px] [&_iframe]:w-[228px] [&_iframe]:lg:h-[180px] [&_iframe]:lg:w-[320px] [&_iframe]:2xl:h-[252px] [&_iframe]:2xl:w-[448px]"
       opts={{
         playerVars: {
           enablejsapi: 1,
