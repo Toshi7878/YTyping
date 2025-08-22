@@ -65,13 +65,6 @@ const RankingList = () => {
     }
   }, [scene, data]);
 
-  if (isPending) {
-    return (
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
   if (error) return <div>Error loading data</div>;
 
   return (
@@ -82,7 +75,6 @@ const RankingList = () => {
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.score }}>Score</TableHead>
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.clearRate }}>クリア率</TableHead>
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.userName }}>名前</TableHead>
-
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.kpm }}>kpm</TableHead>
           <TableHead style={{ maxWidth: RANKING_COLUMN_WIDTH.inputMode }}>モード</TableHead>
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.updatedAt }}>時間</TableHead>
@@ -98,17 +90,27 @@ const RankingList = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((result: (typeof data)[number], index: number) => {
-          return (
-            <RankingRow
-              key={result.id}
-              result={result}
-              index={index}
-              openPopoverIndex={openPopoverIndex}
-              setOpenPopoverIndex={setOpenPopoverIndex}
-            />
-          );
-        })}
+        {isPending ? (
+          <TableRow>
+            <td colSpan={9} className="py-12 text-center">
+              <div className="flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            </td>
+          </TableRow>
+        ) : (
+          data?.map((result: (typeof data)[number], index: number) => {
+            return (
+              <RankingRow
+                key={result.id}
+                result={result}
+                index={index}
+                openPopoverIndex={openPopoverIndex}
+                setOpenPopoverIndex={setOpenPopoverIndex}
+              />
+            );
+          })
+        )}
       </TableBody>
     </Table>
   );
