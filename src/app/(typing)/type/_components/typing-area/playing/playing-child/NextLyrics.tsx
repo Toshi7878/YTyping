@@ -8,19 +8,15 @@ const NextLyrics = () => {
   return (
     <div
       id="next_lyrics_kpm"
-      className={cn(
-        "text-foreground lyrics-font opacity-60",
-        "text-4xl sm:text-5xl md:text-3xl",
-        "mt-5 ml-1 leading-[80px] sm:leading-[50px] md:leading-10",
-      )}
+      className={cn("text-foreground lyrics-font mt-4 text-4xl leading-10 opacity-60 md:text-3xl")}
     >
-      <div id="next_lyrics" className={cn("flex items-end font-bold whitespace-nowrap", "text-[110%]")}>
+      <div id="next_lyrics" className={"flex items-end text-[110%] font-bold whitespace-nowrap"}>
         {parse(lyrics)}
         <ruby className="invisible">
           あ<rt>あ</rt>
         </ruby>
       </div>
-      <div id="next_kpm" className="ml-0.5 text-[90%]">
+      <div id="next_kpm" className="text-[90%]">
         {Number(kpm) > 0 ? `NEXT: ${kpm}kpm` : ""}
       </div>
     </div>

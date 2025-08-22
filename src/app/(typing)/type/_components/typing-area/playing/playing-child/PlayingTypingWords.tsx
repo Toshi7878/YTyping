@@ -29,9 +29,13 @@ const TypingWords = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [kanaScroll, romaScroll]);
+
   return (
     <div
-      className={`word-font outline-text text-[5.5rem] sm:text-[4rem] md:text-[2.75rem] ${isLineCompleted ? "word-area-completed" : ""}`}
+      className={cn(
+        "word-font outline-text text-6xl leading-20 md:text-[2.6rem] md:leading-15",
+        isLineCompleted && "word-area-completed",
+      )}
       style={{ letterSpacing: "0.1em" }}
     >
       <Word
@@ -44,7 +48,7 @@ const TypingWords = () => {
           .slice(0, 60)}
         isLineCompleted={isLineCompleted}
         nextWord={nextLyrics.kanaWord}
-        className="word-kana -ml-1 lowercase"
+        className="word-kana lowercase"
         style={{ fontSize: `${userOptions.kana_word_font_size}%`, bottom: userOptions.kana_word_top_position }}
       />
 
@@ -56,7 +60,7 @@ const TypingWords = () => {
           .map((w) => w["r"][0])
           .join("")
           .slice(0, 60)}
-        className={`word-roma uppercase ${inputMode === "kana" ? "invisible" : ""}`}
+        className={cn("word-roma uppercase", inputMode === "kana" && "invisible")}
         isLineCompleted={isLineCompleted}
         nextWord={nextLyrics.romaWord}
         style={{ fontSize: `${userOptions.roma_word_font_size}%`, bottom: userOptions.roma_word_top_position }}

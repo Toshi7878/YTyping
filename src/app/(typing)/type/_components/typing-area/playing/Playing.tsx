@@ -94,10 +94,7 @@ const Playing = ({ className }: PlayingProps) => {
 
   return (
     <div
-      className={cn(
-        "-ml-2 flex flex-1 cursor-none flex-col items-start justify-between truncate select-none",
-        className,
-      )}
+      className={cn("flex cursor-none flex-col items-start justify-between truncate select-none", className)}
       id="typing_scene"
       onTouchStart={() => {
         const { skip } = readGameUtils();

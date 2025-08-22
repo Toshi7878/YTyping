@@ -21,7 +21,7 @@ function MainGameCard({ className }: { className?: string }) {
   return (
     <Card className={cn("typing-card block p-0", className)} id="typing_card">
       <GameCardHeader className="mx-3 block py-0" />
-      <GameCardContent className="mx-8 block pt-2" />
+      <GameCardContent className="block px-12 py-2" />
       <GameCardFooter className="mx-3 flex-col py-0 select-none" />
     </Card>
   );
