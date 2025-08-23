@@ -83,6 +83,7 @@ const EndUploadButton = ({
         size="4xl"
         variant="primary-hover-light"
         disabled={isSendResultBtnDisabled}
+        loading={sendResult.isPending}
         onClick={handleClick}
         type={isScoreUpdated ? "submit" : "button"}
       >
