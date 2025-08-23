@@ -4,7 +4,6 @@ import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useHasMapUploadPerm
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { LinkIndicator } from "./indicator";
 
 interface LinkProps {
   children?: React.ReactNode;
@@ -34,7 +33,6 @@ export default function Link({ children, ...props }: LinkProps & NextLinkProps &
   return (
     <NextLink {...props} onClick={handleClick}>
       {children}
-      <LinkIndicator href={props.href.toString()} />
     </NextLink>
   );
 }

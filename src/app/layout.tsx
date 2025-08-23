@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
 import Script from "next/script";
 import GlobalProvider from "./_components/GlobalProvider";
+import LinkProgressProvider from "./_components/LinkProgressProvider";
 
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
 
@@ -42,13 +43,15 @@ export default async function RootLayout({
       <body>
         <SessionProvider session={session}>
           <TRPCProvider>
-            <Header className="fixed z-30 h-10 w-full" />
-            <GlobalProvider>
-              <main className="min-h-screen pt-12 md:pt-16" id="main_content">
-                {children}
-              </main>
-              <PreviewYouTubeContent />
-            </GlobalProvider>
+            <LinkProgressProvider>
+              <Header className="fixed z-30 h-10 w-full" />
+              <GlobalProvider>
+                <main className="min-h-screen pt-12 md:pt-16" id="main_content">
+                  {children}
+                </main>
+                <PreviewYouTubeContent />
+              </GlobalProvider>
+            </LinkProgressProvider>
           </TRPCProvider>
         </SessionProvider>
         <Toaster />

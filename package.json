@@ -17,6 +17,7 @@
     "db:reset": "dotenv -e .env.local -- npx prisma migrate reset"
   },
   "dependencies": {
+    "@bprogress/next": "^3.2.12",
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.2.1",
     "@pixi/sound": "^6.0.1",
