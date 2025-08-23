@@ -292,13 +292,23 @@ const PreviewTimeInput = () => {
             name="preview_time"
             label="プレビュータイム"
             className="w-36"
-            type="number"
-            step="0.05"
+            type="decimal"
             min="0"
-            required
+            inputMode="decimal"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handlePreviewClick();
+              }
+              if (e.key === "ArrowUp") {
+                e.preventDefault();
+                const currentValue = Number(form.getValues("preview_time")) || 0;
+                form.setValue("preview_time", (currentValue + 0.05).toFixed(2));
+              }
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                const currentValue = Number(form.getValues("preview_time")) || 0;
+                const newValue = Math.max(0, currentValue - 0.05);
+                form.setValue("preview_time", newValue.toFixed(2));
               }
             }}
           />
