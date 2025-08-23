@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-8-23",
+    descriptions: ["UI更新"],
+  },
+  {
     date: "2025-5-28",
     descriptions: ["変換有りタイピングで小さいモニターサイズの表示に対応", "変換有りタイピングの設定メニューを追加"],
   },
