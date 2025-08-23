@@ -8,9 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "@/components/ui/link/link";
 import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { useUserAgent } from "@/utils/useUserAgent";
+import { useRouter } from "@bprogress/next/app";
 import { Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useActionState } from "react";
@@ -23,6 +23,7 @@ interface HamburgerMenuProps {
 const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { data: session } = useSession();
   const { isMobile } = useUserAgent();
+  const router = useRouter();
 
   const menus = leftMenuItem.concat(leftLink);
   const [, formAction] = useActionState(async () => {
@@ -31,7 +32,7 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
 
   return (
     <div className={className}>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="border-border/50 border border-solid p-2">
             <Menu className="h-4 w-4" />
@@ -46,10 +47,13 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
             }
             if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
               return (
-                <DropdownMenuItem key={index} asChild>
-                  <Link href={menuItem.href} className="w-full">
-                    {menuItem.title}
-                  </Link>
+                <DropdownMenuItem
+                  key={index}
+                  onSelect={() => {
+                    router.push(menuItem.href);
+                  }}
+                >
+                  {menuItem.title}
                 </DropdownMenuItem>
               );
             }
@@ -61,19 +65,11 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
           {session?.user?.name ? (
             <>
               {loginMenuItem.map((item, index) => (
-                <DropdownMenuItem key={index} asChild>
-                  <Link href={item.href} className="w-full">
-                    {item.title}
-                  </Link>
+                <DropdownMenuItem key={index} onSelect={() => router.push(item.href)}>
+                  {item.title}
                 </DropdownMenuItem>
               ))}
-              <DropdownMenuItem
-                onClick={() => {
-                  formAction();
-                }}
-              >
-                ログアウト
-              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => formAction()}>ログアウト</DropdownMenuItem>
             </>
           ) : (
             !session && <SignInDropdownItems />
