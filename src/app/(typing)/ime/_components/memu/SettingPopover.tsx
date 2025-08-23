@@ -1,26 +1,23 @@
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { LabeledInput } from "@/components/ui/input/labeled-input";
-import { PopoverContent } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/trpc";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { Dispatch } from "react";
+import { useState } from "react";
+import gear from "../../_img/gear.png";
 import {
   useImeTypeOptionsState,
   useReadImeTypeOptions,
   useReadIsImeTypeOptionsEdited,
   useSetImetypeOptions,
   useSetMap,
-} from "../../../_lib/atoms/stateAtoms";
-import { useParseImeMap } from "../../../_lib/hooks/parseImeMap";
+} from "../../_lib/atoms/stateAtoms";
+import { useParseImeMap } from "../../_lib/hooks/parseImeMap";
+import MenuButton from "./menu-item/MenuButton";
 
-interface SettingCardProps {
-  isCardVisible: boolean;
-  setIsCardVisible: Dispatch<boolean>;
-}
-
-const SettingCard = (props: SettingCardProps) => {
+const SettingPopover = () => {
   const trpc = useTRPC();
   const updateImeTypingOptions = useMutation(trpc.userTypingOption.updateImeTypeOptions.mutationOptions());
   const queryClient = useQueryClient();
@@ -29,9 +26,10 @@ const SettingCard = (props: SettingCardProps) => {
   const parseImeMap = useParseImeMap();
   const setMap = useSetMap();
   const { id: mapId } = useParams() as { id: string };
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
-    props.setIsCardVisible(open);
+    setIsOpen(open);
 
     if (!open) {
       const isOptionEdited = readIsImeTypeOptionsEdited();
@@ -56,37 +54,42 @@ const SettingCard = (props: SettingCardProps) => {
   ];
 
   return (
-    <PopoverContent
-      className="w-[600px] p-4"
-      align="end"
-      side="top"
-      sideOffset={10}
-      onInteractOutside={(e) => {
-        const target = e.target as HTMLElement;
-        if (target.closest("#reset-setting-modal-overlay")) {
-          e.preventDefault();
-        }
-      }}
-    >
-      <Tabs defaultValue="main" className="w-full">
-        <TabsList className="mb-4 flex flex-wrap gap-2 bg-transparent">
+    <Popover open={isOpen} onOpenChange={handleOpenChange}>
+      <PopoverTrigger asChild>
+        <MenuButton image={gear} title="設定" />
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-[600px] p-4"
+        align="end"
+        side="top"
+        sideOffset={10}
+        onInteractOutside={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest("#reset-setting-modal-overlay")) {
+            e.preventDefault();
+          }
+        }}
+      >
+        <Tabs defaultValue="main" className="w-full">
+          <TabsList className="mb-4 flex flex-wrap gap-2 bg-transparent">
+            {tabData.map((tab, index) => (
+              <TabsTrigger
+                key={index}
+                value={index === 0 ? "main" : `tab-${index}`}
+                className="border-border bg-card text-foreground hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md border text-sm"
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
           {tabData.map((tab, index) => (
-            <TabsTrigger
-              key={index}
-              value={index === 0 ? "main" : `tab-${index}`}
-              className="border-border bg-card text-foreground hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md border text-sm"
-            >
-              {tab.label}
-            </TabsTrigger>
+            <TabsContent key={index} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
+              {tab.content}
+            </TabsContent>
           ))}
-        </TabsList>
-        {tabData.map((tab, index) => (
-          <TabsContent key={index} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
-            {tab.content}
-          </TabsContent>
-        ))}
-      </Tabs>
-    </PopoverContent>
+        </Tabs>
+      </PopoverContent>
+    </Popover>
   );
 };
 
@@ -174,4 +177,4 @@ const MainSettingTab = () => {
   );
 };
 
-export default SettingCard;
+export default SettingPopover;
