@@ -295,7 +295,6 @@ const PreviewTimeInput = () => {
             type="number"
             step="0.05"
             min="0"
-            required
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handlePreviewClick();
