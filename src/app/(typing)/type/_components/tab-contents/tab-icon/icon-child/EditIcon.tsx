@@ -1,4 +1,5 @@
 import { useMapInfoRef } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { Button } from "@/components/ui/button";
 import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
@@ -8,7 +9,7 @@ import { BiEdit } from "react-icons/bi";
 
 const EditIcon = () => {
   const { readMapInfo } = useMapInfoRef();
-  const { id: mapId } = useParams();
+  const { id: mapId } = useParams<{ id: string }>();
   const handleLinkClick = useLinkClick();
   const { data: session } = useSession();
 
@@ -18,9 +19,11 @@ const EditIcon = () => {
 
   const tooltipLabel = `譜面のEditページに移動${Number(userId) !== creatorId && role === "USER" ? "(閲覧のみ)" : ""}`;
   return (
-    <TooltipWrapper label={tooltipLabel}>
-      <Link href={`/edit/${mapId}`} onClick={handleLinkClick} className="cursor-pointer p-1 hover:opacity-80">
-        <BiEdit className="h-9 w-9" />
+    <TooltipWrapper label={tooltipLabel} delayDuration={500} className="relative top-2">
+      <Link href={`/edit/${mapId}`} onClick={handleLinkClick}>
+        <Button variant="unstyled" size="icon" className="hover:text-foreground/90">
+          <BiEdit className="size-9" />
+        </Button>
       </Link>
     </TooltipWrapper>
   );

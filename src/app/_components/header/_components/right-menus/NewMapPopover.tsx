@@ -47,13 +47,13 @@ export default function NewMapPopover() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <TooltipWrapper label="譜面新規作成" delayDuration={600}>
-        <PopoverTrigger asChild>
+      <PopoverTrigger asChild>
+        <TooltipWrapper label="譜面新規作成" delayDuration={600} className="relative bottom-3">
           <Button variant="unstyled" size="icon" className="hover:text-foreground">
             <RiAddBoxFill size={20} />
           </Button>
-        </PopoverTrigger>
-      </TooltipWrapper>
+        </TooltipWrapper>
+      </PopoverTrigger>
       <PopoverContent className="w-[640px] p-1" side="bottom" align="end" sideOffset={8}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">

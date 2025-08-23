@@ -27,8 +27,8 @@ const ActiveUsersDrawer = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger>
-        <TooltipWrapper label="アクティブユーザー" delayDuration={600}>
+      <SheetTrigger asChild>
+        <TooltipWrapper label="アクティブユーザー" delayDuration={600} className="relative bottom-3">
           <Button variant="unstyled" size="icon" className="hover:text-foreground">
             <Users size={18} strokeWidth={2.5} />
           </Button>
