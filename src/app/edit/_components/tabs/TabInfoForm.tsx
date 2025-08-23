@@ -199,7 +199,7 @@ const InfoFormButton = () => {
   const form = useFormContext();
   const canUpload = useCanUploadState();
   const hasUploadPermission = useHasMapUploadPermission();
-  const { id: mapId } = useParams();
+  const { id: mapId } = useParams<{ id: string }>();
 
   return (
     <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -294,6 +294,7 @@ const PreviewTimeInput = () => {
             className="w-36"
             type="number"
             min="0"
+            step="0.001"
             inputMode="decimal"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -323,11 +324,11 @@ const PreviewTimeInput = () => {
 };
 
 const TypeLinkButton = () => {
-  const { id } = useParams();
+  const { id: mapId } = useParams<{ id: string }>();
   const handleLinkClick = useLinkClick();
 
   return (
-    <Link href={`/type/${id}`} onClick={handleLinkClick}>
+    <Link href={`/type/${mapId}`} onClick={handleLinkClick}>
       <Button size="default" variant="outline">
         タイピングページに移動
       </Button>
