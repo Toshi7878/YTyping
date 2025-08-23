@@ -34,9 +34,9 @@ function ResultCardContent({ lineKanaWord, typeResult, lineTypeWord, lostWord }:
                     "typed hover:bg-border/45 break-all",
                     type.is
                       ? lostWord === ""
-                        ? "text-[var(--color-secondary)]" // completed color
-                        : "text-[var(--color-primary)]" // correct color
-                      : "text-destructive", // error color
+                        ? "text-word-completed" // completed color
+                        : "text-word-correct" // correct color
+                      : "text-error", // error color
                   )}
                   data-time={type.t}
                 >
