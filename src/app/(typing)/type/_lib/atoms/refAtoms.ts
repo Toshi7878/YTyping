@@ -179,7 +179,6 @@ export const gameUtilityReferenceParamsAtom = atomWithReset({
   replayKeyCount: 0,
   replayUserName: "",
   rankingScores: [] as number[],
-  practiceMyResultId: null as number | null,
   isOptionEdited: false,
 });
 

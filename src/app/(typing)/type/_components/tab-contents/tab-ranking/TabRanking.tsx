@@ -68,7 +68,7 @@ const RankingList = () => {
   if (error) return <div>Error loading data</div>;
 
   return (
-    <Table className="ranking-table text-sm">
+    <Table className="ranking-table">
       <TableHeader className="select-none">
         <TableRow className="hover:bg-transparent">
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.rank }}>順位</TableHead>
@@ -94,7 +94,7 @@ const RankingList = () => {
           <TableRow>
             <td colSpan={9} className="py-12 text-center">
               <div className="flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin" />
+                <Loader2 className="size-10 animate-spin" />
               </div>
             </td>
           </TableRow>
