@@ -36,7 +36,7 @@ const TypingWords = () => {
         "word-font outline-text text-6xl leading-20 md:text-[2.6rem] md:leading-15",
         isLineCompleted && "word-area-completed",
       )}
-      style={{ letterSpacing: "0.1em" }}
+      style={{ letterSpacing: "0.08em" }}
     >
       <Word
         id="main_word"
