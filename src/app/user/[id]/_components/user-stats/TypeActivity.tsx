@@ -3,31 +3,42 @@
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { getCSSVariable } from "@/utils/getComputedColor";
 import { useUserStatsQueries } from "@/utils/queries/userStats.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
+import { cloneElement } from "react";
 import ActivityCalendar, { Activity } from "react-activity-calendar";
 
 const TypeActivity = () => {
   const { id: userId } = useParams() as { id: string };
   const { data, isPending, isError } = useQuery(useUserStatsQueries().userActivity({ userId: Number(userId) }));
 
-  // TODO:chakra ui 移行後 色指定を移行
-  const themeColors = {
-    roma: "#00b5d8",
-    kana: "#de781f",
-    flick: "#59e04d",
-    english: "#f472b6",
-    ime: "#FFFFFF",
-  };
-  const getThemeColors = () => {
-    const roma = [`${themeColors.roma}40`, `${themeColors.roma}a0`, themeColors.roma];
-    const kana = [`${themeColors.kana}40`, `${themeColors.kana}a0`, themeColors.kana];
-    const english = [`${themeColors.english}40`, `${themeColors.english}a0`, themeColors.english];
-    const ime = [`${themeColors.ime}40`, `${themeColors.ime}a0`, themeColors.ime];
+  const getBlockColors = () => {
+    const colors = {
+      roma: getCSSVariable("--roma"),
+      kana: getCSSVariable("--kana"),
+      flick: getCSSVariable("--flick"),
+      english: getCSSVariable("--english"),
+      ime: getCSSVariable("--foreground"),
+    };
+
+    // 透明度なしで色を3段階で返す（同じ色を3回）
+    const roma = [colors.roma, colors.roma, colors.roma];
+    const kana = [colors.kana, colors.kana, colors.kana];
+    const english = [colors.english, colors.english, colors.english];
+    const ime = [colors.ime, colors.ime, colors.ime];
 
     return ["#161b22"].concat(roma).concat(kana).concat(english).concat(ime);
+  };
+
+  const getOpacity = (level: number) => {
+    if (level === 0) return 1; // 活動なし
+    const modLevel = level % 3;
+    if (modLevel === 1) return 0.25; // レベル1
+    if (modLevel === 2) return 0.63; // レベル2
+    return 1; // レベル3
   };
 
   return (
@@ -50,16 +61,24 @@ const TypeActivity = () => {
               totalCount: "{{count}} 打鍵",
             }}
             theme={{
-              dark: getThemeColors(),
+              dark: getBlockColors(),
             }}
             colorScheme="dark"
             blockSize={14}
             blockMargin={3}
             maxLevel={12}
             renderBlock={(block, activity) => {
+              // blockにopacityスタイルを適用
+              const styledBlock = cloneElement(block, {
+                style: {
+                  ...block.props.style,
+                  opacity: getOpacity(activity.level),
+                },
+              });
+
               return (
                 <TooltipWrapper key={activity.date} label={<BlockToolTipLabel activity={activity} />}>
-                  {block}
+                  {styledBlock}
                 </TooltipWrapper>
               );
             }}
@@ -78,7 +97,9 @@ const TypeActivity = () => {
 
               return (
                 <TooltipWrapper key={level} label={label}>
-                  <div className={levelLabel === 3 ? "mr-2" : ""}>{color}</div>
+                  <div className={levelLabel === 3 ? "mr-2" : ""} style={{ opacity: getOpacity(level) }}>
+                    {color}
+                  </div>
                 </TooltipWrapper>
               );
             }}
