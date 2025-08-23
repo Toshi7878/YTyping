@@ -29,31 +29,20 @@ const ResultStatus = () => {
   );
 };
 
-const TD_WIDTHS = {
-  No: "5%",
-  Evaluation: "5%",
-  Input: "45%",
-  Song: "45%",
-};
-
 const ResultWordsTable = () => {
   const wordResults = useWordResultsState();
   const map = useMapState();
   const status = useStatusState();
 
   return (
-    <div className="max-h-[45vh] overflow-y-auto rounded-lg border shadow-sm">
+    <div className="max-h-[45vh] overflow-auto rounded-lg border shadow-sm">
       <Table>
-        <TableHeader className="bg-background sticky top-0 z-10 py-4">
+        <TableHeader className="bg-background sticky top-0 z-10">
           <TableRow>
-            <TableHead className="text-center" style={{ width: TD_WIDTHS.No }}>
-              No.
-            </TableHead>
-            <TableHead className="text-center" style={{ width: TD_WIDTHS.Evaluation }}>
-              判定
-            </TableHead>
-            <TableHead style={{ width: TD_WIDTHS.Input }}>入力</TableHead>
-            <TableHead style={{ width: TD_WIDTHS.Song }}>歌詞</TableHead>
+            <TableHead className="text-center">No.</TableHead>
+            <TableHead className="text-center">判定</TableHead>
+            <TableHead className="w-1/2">入力</TableHead>
+            <TableHead className="w-1/2">歌詞</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -61,20 +50,22 @@ const ResultWordsTable = () => {
             const isJudged = status.wordIndex > index || (status.wordIndex === index && result.evaluation !== "Skip");
 
             return (
-              <TableRow key={index} className="[&>td]:py-3">
-                <TableCell className="text-center font-mono" style={{ width: TD_WIDTHS.No }}>
-                  {index + 1}
-                </TableCell>
-                <TableCell className="text-center" style={{ width: TD_WIDTHS.Evaluation }}>
+              <TableRow key={index} className="[&>td]:py-2">
+                <TableCell className="text-center font-mono">{index + 1}</TableCell>
+                <TableCell className="text-center">
                   {isJudged ? <EvaluationText evaluation={result.evaluation} /> : "-"}
                 </TableCell>
-                <TableCell style={{ width: TD_WIDTHS.Input }} className="leading-6">
-                  {result.inputs.map((input, i) => (
-                    <div key={i}>{input}</div>
-                  ))}
+                <TableCell className="px-4 leading-6 break-words">
+                  <div className="space-y-1">
+                    {result.inputs.map((input, i) => (
+                      <div key={i} className="text-sm">
+                        {input}
+                      </div>
+                    ))}
+                  </div>
                 </TableCell>
-                <TableCell style={{ width: TD_WIDTHS.Song }}>
-                  {result.evaluation !== "Great" && map?.textWords[index]}
+                <TableCell className="px-4 break-words">
+                  <div className="text-sm">{result.evaluation !== "Great" && map?.textWords[index]}</div>
                 </TableCell>
               </TableRow>
             );
@@ -87,18 +78,18 @@ const ResultWordsTable = () => {
 
 const EvaluationText = ({ evaluation }: { evaluation: string }) => {
   if (evaluation === "Great") {
-    return <span className="outline-text text-yellow-500">Great!</span>;
+    return <span className="outline-text text-xs text-yellow-500">Great!</span>;
   }
 
   if (evaluation === "Good") {
-    return <span className="outline-text text-blue-400">Good</span>;
+    return <span className="outline-text text-xs text-blue-400">Good</span>;
   }
 
   if (evaluation === "None") {
-    return <span className="outline-text text-red-500">None</span>;
+    return <span className="outline-text text-xs text-red-500">None</span>;
   }
 
-  return <span className="outline-text text-foreground opacity-60">Skip</span>;
+  return <span className="outline-text text-foreground text-xs opacity-60">Skip</span>;
 };
 
 interface ResultDialogProps {
@@ -109,11 +100,11 @@ interface ResultDialogProps {
 const ResultDialog = ({ isOpen, onClose }: ResultDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-h-[80vh] max-w-6xl">
+      <DialogContent className="max-h-[85vh] w-full lg:min-w-4xl">
         <DialogHeader>
           <DialogTitle>採点結果</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-hidden">
           <ResultStatus />
           <ResultWordsTable />
         </div>

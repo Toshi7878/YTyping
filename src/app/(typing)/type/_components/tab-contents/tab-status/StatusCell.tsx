@@ -9,23 +9,20 @@ export default function StatusCell({ label }: { label: string }) {
       <StatusLabel label={label} />
       <StatusUnderline label={label} />
 
-      {label === "point" ? (
-        <PointStatusValue atom={focusTypingStatusAtoms[label]} timeBonusAtom={focusTypingStatusAtoms["timeBonus"]} />
-      ) : (
-        <StatusValue atom={focusTypingStatusAtoms[label]} />
-      )}
+      <span className="value text-[2.2rem]">
+        {label === "point" ? (
+          <PointStatusValue atom={focusTypingStatusAtoms[label]} timeBonusAtom={focusTypingStatusAtoms["timeBonus"]} />
+        ) : (
+          <StatusValue atom={focusTypingStatusAtoms[label]} />
+        )}
+      </span>
     </TableCell>
   );
 }
 
 const StatusLabel = ({ label }: { label: string }) => {
   return (
-    <span
-      className={cn(
-        "status-label relative mr-2 text-[3.5rem] capitalize md:text-[80%]",
-        label === "kpm" && "tracking-[0.2em]",
-      )}
-    >
+    <span className={cn("status-label relative mr-2 capitalize md:text-[80%]", label === "kpm" && "tracking-[0.2em]")}>
       {label}
     </span>
   );
@@ -43,10 +40,10 @@ const PointStatusValue = ({ atom, timeBonusAtom }: PointStatusValueProps) => {
   const timeBonusValue = useAtomValue(timeBonusAtom, { store: typeAtomStore });
 
   return (
-    <span className="value text-4xl md:text-4xl">
+    <>
       {value.toString()}
       <small>{timeBonusValue > 0 && `+${timeBonusValue.toString()}`}</small>
-    </span>
+    </>
   );
 };
 
@@ -54,7 +51,7 @@ const StatusValue = ({ atom }: { atom: Atom<number> }) => {
   const typeAtomStore = useStore();
   const value = useAtomValue(atom, { store: typeAtomStore });
 
-  return <span className="value text-4xl md:text-4xl">{value}</span>;
+  return <>{value}</>;
 };
 
 const StatusUnderline = ({ label }: { label: string }) => {

@@ -47,7 +47,9 @@
   --color-kana: var(--kana);
   --color-flick: var(--flick);
   --color-english: var(--english);
+  --color-other: var(--other);
   --color-perfect: var(--perfect);
+  --color-failure: var(--failure);
   --color-like: var(--like);
   --color-word-correct: var(--word-correct);
   --color-word-nextChar: var(--word-nextChar);
@@ -95,8 +97,9 @@
   --kana: oklch(0.6751 0.1566 54.98);
   --flick: oklch(0.8029 0.2208 141.97);
   --english: oklch(0.7253 0.1752 349.76);
-  --perfect: oklch(0.8659 0.1708 89.58);
+  --other: oklch(0.5844 0.214 316.96), --perfect: oklch(0.8659 0.1708 89.58);
   --like: oklch(0.7253 0.1752 349.76);
+  --failure: oklch(0.7012 0.1812 298.06);
 
   --word-correct: oklch(0.5946 0.1398 250.3);
   --word-nextChar: oklch(1 0 0);
@@ -104,9 +107,10 @@
   --word-completed: oklch(0.7864 0.1143 186.56);
   --word-nextWord: oklch(0.683 0 0);
 
-  --success: oklch(0.5946 0.1875 146.76);
+  --success: oklch(0.5521 0.1022 158.18);
   --success-foreground: oklch(0.985 0 0);
   --error: oklch(0.5897 0.1964 19.86);
+
   --error-foreground: oklch(0.985 0 0);
   --warning: oklch(0.8271 0.159 79.86);
   --warning-foreground: oklch(0.985 0 0);

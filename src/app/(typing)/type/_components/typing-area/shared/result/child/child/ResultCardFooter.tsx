@@ -14,8 +14,6 @@ interface ResultCardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
   kpm: number;
   rkpm: number;
   lost: number;
-  flexDirection?: "row" | "column";
-  alignItems?: "flex-start" | "flex-end" | "center";
 }
 
 function ResultCardFooter({
@@ -27,34 +25,22 @@ function ResultCardFooter({
   kpm,
   rkpm,
   lost,
-  flexDirection = "row",
-  alignItems = "center",
   className,
   ...props
 }: ResultCardFooterProps) {
   const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green";
 
   return (
-    <div
-      className={cn(
-        "flex gap-2 w-full justify-between py-2",
-        flexDirection === "column" && "flex-col",
-        alignItems === "flex-start" && "items-start",
-        alignItems === "flex-end" && "items-end",
-        alignItems === "center" && "items-center",
-        className
-      )}
-      {...props}
-    >
+    <div className={cn("flex w-full justify-between gap-2 py-2", className)} {...props}>
       <div className="flex items-center gap-2">
         <Badge
           variant={missColor === "gray" ? "outline" : missColor === "red" ? "destructive" : "default"}
-          className="text-sm px-1.5 py-0.5"
+          className="px-1.5 py-0.5 text-sm"
         >
           ミス: {miss}, ロスト: {lost}
         </Badge>
-        <TooltipWrapper label={`rkpm: ${rkpm}`} >
-          <Badge variant="secondary" className="text-sm px-1.5 py-0.5">
+        <TooltipWrapper label={`rkpm: ${rkpm}`}>
+          <Badge variant="secondary" className="px-1.5 py-0.5 text-sm">
             KPM: {kpm}
           </Badge>
         </TooltipWrapper>
@@ -63,7 +49,7 @@ function ResultCardFooter({
       <TooltipWrapper
         label={`合計ポイント: ${Number(point) + Number(tBonus)}${scoreCount ? ` スコア: ${scoreCount}` : ""}`}
       >
-        <Badge variant="default" className="text-sm px-2 py-1 rounded-md">
+        <Badge variant="default" className="rounded-md px-2 py-1 text-sm">
           ポイント: {point}
           {tBonus ? `+${tBonus}` : ""}
         </Badge>

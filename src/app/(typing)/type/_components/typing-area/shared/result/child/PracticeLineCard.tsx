@@ -92,7 +92,6 @@ const PracticeLineCard = () => {
           lost={lost!}
           kpm={kpm!}
           rkpm={rkpm!}
-          alignItems="flex-end"
         />
       </CardFooter>
     </Card>
