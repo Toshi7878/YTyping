@@ -101,16 +101,19 @@ export const mapRouter = {
       const userId = Number(ctx.user.id);
       const userRole = ctx.user.role;
 
-      const hasUpsertPermission = await prisma.maps
-        .findUnique({
-          where: { id: mapId === "new" ? undefined : Number(mapId) },
-          select: {
-            creator_id: true,
-          },
-        })
-        .then((res) => {
-          return mapId === "new" || res?.creator_id === userId || userRole === "ADMIN";
-        });
+      const hasUpsertPermission =
+        mapId === "new"
+          ? true
+          : await prisma.maps
+              .findUnique({
+                where: { id: Number(mapId) },
+                select: {
+                  creator_id: true,
+                },
+              })
+              .then((res) => {
+                return res?.creator_id === userId || userRole === "ADMIN";
+              });
 
       if (!hasUpsertPermission) {
         return {
@@ -166,10 +169,9 @@ const upsertMap = async ({
 }) => {
   return await prisma.$transaction(async (tx) => {
     try {
-      const mapIdNumber = mapId === "new" ? undefined : Number(mapId);
       const upsertedMap = await tx.maps.upsert({
         where: {
-          id: mapIdNumber,
+          id: mapId === "new" ? -1 : Number(mapId),
         },
         update: {
           ...mapInfo,

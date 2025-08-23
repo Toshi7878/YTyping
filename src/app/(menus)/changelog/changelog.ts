@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2025-8-23",
-    descriptions: ["UI更新"],
+    descriptions: ["譜面アップロード時にエラーが発生する問題を修正", "UI更新"],
   },
   {
     date: "2025-5-28",

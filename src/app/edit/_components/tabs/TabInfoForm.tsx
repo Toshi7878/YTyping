@@ -1,6 +1,5 @@
 "use client";
 import { CardWithContent } from "@/components/ui/card";
-import { toast } from "sonner";
 
 import { useEditUtilsParams, usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
 import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
@@ -25,6 +24,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
+import { toast } from "sonner";
 import z from "zod";
 import { useMapReducer, useReadMap } from "../../_lib/atoms/mapReducerAtom";
 import {
@@ -40,7 +40,7 @@ import SuggestionTags from "./tab-info-form/SuggestionTags";
 
 const TabInfoForm = () => {
   const searchParams = useSearchParams();
-  const { id: mapId } = useParams();
+  const { id: mapId } = useParams<{ id: string }>();
   const isBackUp = searchParams.get("backup") === "true";
   const newCreateVideoId = searchParams.get("new");
   const hasUploadPermission = useHasMapUploadPermission();
@@ -292,7 +292,7 @@ const PreviewTimeInput = () => {
             name="preview_time"
             label="プレビュータイム"
             className="w-36"
-            type="decimal"
+            type="number"
             min="0"
             inputMode="decimal"
             onKeyDown={(e) => {
@@ -398,6 +398,8 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
       Number(preview_time) > videoDuration || typingStartTime >= Number(preview_time)
         ? typingStartTime.toFixed(3)
         : preview_time;
+
+    form.setValue("preview_time", newPreviewTime);
 
     const mapInfo = {
       video_id,
