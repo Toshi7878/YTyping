@@ -8,8 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useGetBackupTitleVideoIdLiveQuery } from "@/lib/db";
 import { cn } from "@/lib/utils";
+import { useRouter } from "@bprogress/next";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
@@ -41,6 +41,7 @@ export default function NewMapPopover() {
     const videoId = extractYouTubeVideoId(data.videoId);
     if (videoId) {
       router.push(`/edit?new=${videoId}`);
+      setOpen(false);
     }
   };
 

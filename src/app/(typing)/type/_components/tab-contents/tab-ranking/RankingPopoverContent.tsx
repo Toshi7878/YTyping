@@ -21,7 +21,7 @@ interface RankingMenuProps {
   toggleClapAction: (resultId: number) => Promise<UploadResult>;
   onOpenChange?: (open: boolean) => void;
 }
-const RankingMenu = ({
+const RankingPopoverContent = ({
   resultId,
   userId,
   resultUpdatedAt,
@@ -35,13 +35,13 @@ const RankingMenu = ({
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const retry = useRetry();
-  const loadResultPlay = useResultPlay({ startMode: "replay" });
+  const resultPlay = useResultPlay({ startMode: "replay" });
   const setTabName = useSetTabName();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readMapInfo } = useMapInfoRef();
   const handleReplayClick = async () => {
-    await loadResultPlay(resultId);
+    await resultPlay(resultId);
 
     const mapUpdatedAt = readMapInfo().updated_at;
     const resultUpdatedAtDate = new Date(resultUpdatedAt);
@@ -96,4 +96,4 @@ const RankingMenu = ({
   );
 };
 
-export default RankingMenu;
+export default RankingPopoverContent;
