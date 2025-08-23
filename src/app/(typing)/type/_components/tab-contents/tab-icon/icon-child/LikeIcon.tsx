@@ -30,7 +30,7 @@ const LikeIcon = () => {
   const [state, formAction] = useActionState(toggleLikeAction, INITIAL_STATE);
 
   return (
-    <TooltipWrapper label="譜面にいいね" delayDuration={500} className="relative top-4">
+    <TooltipWrapper label="譜面にいいね" delayDuration={500} className="relative top-3.5">
       <form action={formAction}>
         <LikeButton
           size={64}
