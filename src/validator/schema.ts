@@ -50,7 +50,6 @@ const mapInfoBaseSchema = z.object({
   video_id: z.string().length(11),
   preview_time: z
     .string()
-    .min(1, { message: "プレビュータイムを設定してください。" })
     .max(MAX_SHORT_LENGTH)
     .refine((value) => !isNaN(Number(value)), {
       message: "プレビュータイムは数値である必要があります",
