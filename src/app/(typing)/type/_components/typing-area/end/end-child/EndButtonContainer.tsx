@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import EndUploadButton from "./EndRankingButton";
-import EndSubButton from "./child/EndSubButton";
+import { default as RetryButton } from "./child/EndSubButton";
 
 interface EndButtonContainerProps {
   onOpen: () => void;
@@ -66,16 +66,18 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
           />
         )}
 
-        <Button onClick={onOpen}>詳細リザルトを見る</Button>
+        <Button size="4xl" variant="primary-hover-light" onClick={onOpen}>
+          詳細リザルトを見る
+        </Button>
       </div>
       <div className="mx-12 flex items-center justify-end gap-14" id="end_sub_buttons">
-        <EndSubButton
-          retryBtnRef={modeChangeBtnRef as any}
+        <RetryButton
+          retryBtnRef={modeChangeBtnRef}
           retryMode={scene !== "play_end" ? "play" : "practice"}
           isRetryAlert={Boolean(isDisplayRankingButton && !isSendResultBtnDisabled)}
         />
-        <EndSubButton
-          retryBtnRef={retryBtnRef as any}
+        <RetryButton
+          retryBtnRef={retryBtnRef}
           retryMode={playMode}
           isRetryAlert={Boolean(isDisplayRankingButton && !isSendResultBtnDisabled)}
         />

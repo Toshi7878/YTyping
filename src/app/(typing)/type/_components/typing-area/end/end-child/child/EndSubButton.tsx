@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 
 import { useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
@@ -16,10 +9,10 @@ import { PlayMode } from "@/app/(typing)/type/_lib/type";
 interface EndSubButtonProps {
   retryMode: PlayMode;
   isRetryAlert: boolean;
-  retryBtnRef: React.RefObject<HTMLButtonElement>;
+  retryBtnRef: React.RefObject<HTMLButtonElement | null>;
 }
 
-const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps) => {
+const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const scene = useSceneState();
   const retry = useRetry();
@@ -42,34 +35,6 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>リトライ確認</DialogTitle>
-            <DialogDescription asChild>
-              <div>
-                <div>ランキング登録が完了していませんが、リトライしますか？</div>
-                <div>※リトライすると今回の記録は失われます</div>
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsOpen(false)}>
-              キャンセル
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                setIsOpen(false);
-                retry(retryMode);
-              }}
-            >
-              リトライ
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       <Button
         ref={retryBtnRef}
         variant="outline"
@@ -78,8 +43,27 @@ const EndSubButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProp
       >
         {getButtonText()}
       </Button>
+      <RetryAlertDialog isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
 };
 
-export default EndSubButton;
+const RetryAlertDialog = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (isOpen: boolean) => void }) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>リトライ確認</DialogTitle>
+          <DialogDescription asChild>
+            <div>
+              <div>ランキング登録が完了していませんが、リトライしますか？</div>
+              <div>※リトライすると今回の記録は失われます</div>
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default RetryButton;
