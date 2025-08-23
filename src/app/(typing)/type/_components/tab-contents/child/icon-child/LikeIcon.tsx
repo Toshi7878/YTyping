@@ -1,20 +1,16 @@
-import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/(typing)/type/atoms/stateAtoms";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import { useIsLikeAtom, useSetIsLikeAtom } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
-import { INITIAL_STATE } from "@/config/consts/globalConst";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { INITIAL_STATE } from "@/config/globalConst";
 import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
-import { ThemeColors, UploadResult } from "@/types";
-import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
+import { UploadResult } from "@/types";
 import { useParams } from "next/navigation";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 
 const LikeIcon = () => {
-  const theme: ThemeColors = useTheme();
-
   const { id: mapId } = useParams();
 
   const isLikeAtom = useIsLikeAtom();
-
   const setIsLikeAtom = useSetIsLikeAtom();
 
   const toggleLikeAction = (state: UploadResult): Promise<UploadResult> => {
@@ -30,14 +26,14 @@ const LikeIcon = () => {
     }
   };
 
-  const [state, formAction] = useFormState(toggleLikeAction, INITIAL_STATE);
-  const iconSize = useBreakpointValue({ base: 120, md: 62 });
+  const [state, formAction] = useActionState(toggleLikeAction, INITIAL_STATE);
+
   return (
-    <CustomToolTip label="譜面にいいね" placement="top" top={1}>
-      <Box as="form" action={formAction} _hover={{ color: theme.colors.text.body }}>
-        <LikeButton size={iconSize} defaultLiked={isLikeAtom} />
-      </Box>
-    </CustomToolTip>
+    <TooltipWrapper label="譜面にいいね" sideOffset={-8}>
+      <form action={formAction} className="cursor-pointer hover:opacity-80">
+        <LikeButton size={64} defaultLiked={isLikeAtom} />
+      </form>
+    </TooltipWrapper>
   );
 };
 

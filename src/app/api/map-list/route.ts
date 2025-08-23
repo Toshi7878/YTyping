@@ -1,4 +1,4 @@
-import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/ts/consts";
+import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { prisma } from "@/server/db";
 import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";
@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
       }),
       {
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("マップリスト取得エラー:", error);

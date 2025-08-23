@@ -1,10 +1,14 @@
-import Content from "./Content";
+import SearchContent from "./_components/SearchContent";
+import UsersResultList from "./_components/UsersResultList";
 import TimelineProvider from "./TimelineProvider";
 
 export default async function Home() {
   return (
     <TimelineProvider>
-      <Content />
+      <div className="mx-auto w-full space-y-8 lg:w-5xl">
+        <SearchContent />
+        <UsersResultList />
+      </div>
     </TimelineProvider>
   );
 }

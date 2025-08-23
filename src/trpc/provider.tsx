@@ -1,17 +1,24 @@
 "use client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
-import React, { useState } from "react";
-// @ts-ignore
 import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import React, { useState } from "react";
 
+import { AppRouter } from "@/server/api/root";
 import SuperJSON from "superjson";
-import { clientApi } from "./client-api";
+import { TRPCProvider } from "./trpc";
 
 function makeQueryClient() {
-  return new QueryClient();
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        // With SSR, we usually want to set some default staleTime
+        // above 0 to avoid refetching immediately on the client
+        staleTime: 60 * 1000,
+      },
+    },
+  });
 }
-
 let browserQueryClient: QueryClient | undefined = undefined;
 
 function getQueryClient() {
@@ -31,21 +38,21 @@ function getQueryClient() {
 export default function Provider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
   const [trpcClient] = useState(() =>
-    clientApi.createClient({
+    createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
           url: `${process.env.NEXT_PUBLIC_API_URL}/api/trpc`,
           transformer: SuperJSON,
         }),
       ],
-    })
+    }),
   );
   return (
-    <clientApi.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
         {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         <ReactQueryStreamedHydration>{children}</ReactQueryStreamedHydration>
-      </QueryClientProvider>
-    </clientApi.Provider>
+      </TRPCProvider>
+    </QueryClientProvider>
   );
 }

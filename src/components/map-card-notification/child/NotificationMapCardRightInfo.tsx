@@ -1,22 +1,14 @@
 "use client";
-import { Flex } from "@chakra-ui/react";
 
 interface MapCardProps {
   children: React.ReactNode;
 }
+
 function NotificationMapCardRightInfo({ children }: MapCardProps) {
   return (
-    <Flex
-      flexDirection="column"
-      justifyContent="space-between"
-      overflow="hidden"
-      width="100%"
-      pl={3}
-      py={1}
-      fontSize={{ base: "xs", sm: "sm", md: "md", lg: "lg" }}
-    >
+    <div className="flex w-full flex-col justify-between overflow-hidden py-1 pl-3 text-xs sm:text-sm md:text-base lg:text-lg">
       {children}
-    </Flex>
+    </div>
   );
 }
 

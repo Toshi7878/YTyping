@@ -1,25 +1,27 @@
 "use client";
+import { useUserAgent } from "@/utils/useUserAgent";
 import { useCallback, useEffect, useMemo } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useWindowFocus } from "../../../../../util/global-hooks/windowFocus";
-import { useReadGameUtilParams } from "../../atoms/stateAtoms";
-import { useTimerRegistration } from "../../hooks/playing-hooks/timer-hooks/timer";
+import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
+import { useReadGameUtilParams } from "../../_lib/atoms/stateAtoms";
+import { useTimerRegistration } from "../../_lib/hooks/playing-hooks/timer-hooks/timer";
 import {
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
   useYTStopEvent,
-} from "../../hooks/youtubeEvents";
+} from "../../_lib/hooks/youtubeEvents";
+import MobileCover from "./MobileCover";
 
-interface TypeYouTubeProps {
+interface YouTubeContentProps {
   isMapLoading: boolean;
   videoId: string;
   className?: string;
 }
 
-const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, className = "" }: TypeYouTubeProps) {
+const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeContentProps) => {
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -27,6 +29,7 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
   const { addTimer, removeTimer } = useTimerRegistration();
+  const { isMobile } = useUserAgent();
 
   const readGameStateUtils = useReadGameUtilParams();
 
@@ -36,7 +39,6 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
     return () => {
       removeTimer();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStateChange = useCallback(
@@ -61,8 +63,8 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
         ytStopEvent();
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+
+    [],
   );
 
   // YouTubeコンポーネントのエラーハンドリングを追加
@@ -73,7 +75,7 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
   const memoizedYouTube = useMemo(
     () => (
       <YouTube
-        className={`${className} aspect-video mt-2 select-none`}
+        className={`${className} mt-2 aspect-video select-none`}
         id="yt_player"
         videoId={videoId}
         opts={{
@@ -94,18 +96,19 @@ const TypeYouTubeContent = function YouTubeContent({ isMapLoading, videoId, clas
         onPause={ytPauseEvent}
         onEnd={ytStopEvent}
         onStateChange={handleStateChange}
-        onError={handleError} // エラーハンドリングを追加
+        onError={handleError}
       />
     ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId]
+
+    [videoId],
   );
 
   return (
     <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
+      {isMobile && <MobileCover />}
       {memoizedYouTube}
     </LoadingOverlayWrapper>
   );
 };
 
-export default TypeYouTubeContent;
+export default YouTubeContent;

@@ -1,20 +1,15 @@
-import { LocalClapState, ThemeColors } from "@/types";
-import { Text, useTheme } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
+import { LocalClapState } from "@/types";
 
 interface ClapedTextProps {
   clapOptimisticState: LocalClapState;
 }
 
-const ClapedText = (props: ClapedTextProps) => {
-  const theme: ThemeColors = useTheme();
+const ClapedText = ({ clapOptimisticState }: ClapedTextProps) => {
   return (
-    <Text
-      as="span"
-      {...(props.clapOptimisticState.hasClap && { color: theme.colors.semantic.clap })}
-      className={`${props.clapOptimisticState.hasClap ? "outline-text" : ""}`}
-    >
-      {props.clapOptimisticState.clapCount}
-    </Text>
+    <span className={cn(clapOptimisticState.hasClap && ["text-yellow-500", "outline-text"])}>
+      {clapOptimisticState.clapCount}
+    </span>
   );
 };
 

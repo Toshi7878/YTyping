@@ -1,12 +1,12 @@
 "use client";
 
-import { HOME_THUBNAIL_HEIGHT, HOME_THUBNAIL_WIDTH } from "@/app/(home)/ts/consts";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
-import MapCard from "@/components/map-card/MapCard";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import { useGetCreatedVideoIdMapListQuery } from "@/util/global-hooks/query/mapRouterQuery";
-import { Box, Spinner } from "@chakra-ui/react";
+import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
+import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { CardWithContent } from "../ui/card";
 
 interface CreatedCheckProps {
   videoId: string;
@@ -14,52 +14,42 @@ interface CreatedCheckProps {
 }
 
 const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProps) => {
-  const { data, isPending } = useGetCreatedVideoIdMapListQuery({ videoId });
+  const { data, isPending } = useQuery(useMapListQueryOptions().listByVideoId({ videoId }));
 
   if (isPending) {
-    return <Spinner size="sm" my={10} />;
+    return (
+      <div className="my-10 flex justify-center">
+        <Loader2 className="h-4 w-4 animate-spin" />
+      </div>
+    );
   }
 
   if (data && data.length) {
     return (
-      <Box>
-        <Box fontSize="lg" fontWeight="bold" my={3}>
-          この動画の譜面が{data.length}件見つかりました
-        </Box>
+      <div>
+        <div className="my-3 text-lg font-bold">この動画の譜面が{data.length}件見つかりました</div>
         {data.map((map, index) => {
-          const src =
-            map.thumbnail_quality === "maxresdefault"
-              ? `https://i.ytimg.com/vi_webp/${map.video_id}/maxresdefault.webp`
-              : `https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`;
-
           return (
-            <Box key={index} mb={2} maxW="610px">
-              <MapCard>
+            <div key={index} className="mb-2 max-w-[610px]">
+              <CardWithContent variant="map">
                 <MapLeftThumbnail
                   alt={map.title}
-                  fallbackSrc={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                  src={src}
+                  src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
                   mapVideoId={map.video_id}
                   mapPreviewTime={map.preview_time}
-                  thumbnailQuality={map.thumbnail_quality}
-                  thumnailWidth={HOME_THUBNAIL_WIDTH}
-                  thumnailHeight={HOME_THUBNAIL_HEIGHT}
+                  size="home"
                 />
                 <MapCardRightInfo>
                   <MapInfo map={map} />
                 </MapCardRightInfo>
-              </MapCard>
-            </Box>
+              </CardWithContent>
+            </div>
           );
         })}
-      </Box>
+      </div>
     );
   } else if (!disableNotFoundText) {
-    return (
-      <Box fontSize="lg" fontWeight="bold" my={3}>
-        この動画の譜面は見つかりませんでした
-      </Box>
-    );
+    return <div className="my-3 text-lg font-bold">この動画の譜面は見つかりませんでした</div>;
   }
   return null;
 };

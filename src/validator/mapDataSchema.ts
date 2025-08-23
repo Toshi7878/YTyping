@@ -1,0 +1,78 @@
+import z from "zod";
+
+const lineSchema = z.object({
+  time: z.string().max(20),
+  lyrics: z.string().optional(),
+  word: z.string().optional(),
+  options: z.object({ eternalCSS: z.string().optional(), changeCSS: z.string().optional() }).optional(),
+});
+
+const validateNoHttpContent = (lines: (typeof lineSchema._type)[]) => {
+  return !lines.some((line) =>
+    Object.values(line).some((value) => typeof value === "string" && value.includes("http")),
+  );
+};
+
+const validateHasTypingWords = (lines: (typeof lineSchema._type)[]) => {
+  return lines.some((line) => line.word && line.word.length > 0);
+};
+
+const validateEndsWithEnd = (lines: (typeof lineSchema._type)[]) => {
+  return lines[lines.length - 1]?.lyrics === "end";
+};
+
+const validateStartsWithZero = (lines: (typeof lineSchema._type)[]) => {
+  return lines[0]?.time === "0";
+};
+
+const validateAllTimesAreNumbers = (lines: (typeof lineSchema._type)[]) => {
+  return lines.every((line) => !isNaN(Number(line.time)));
+};
+
+const validateNoLinesAfterEnd = (lines: (typeof lineSchema._type)[]) => {
+  const endAfterLineIndex = lines.findIndex((line) => line.lyrics === "end");
+  return endAfterLineIndex === -1 || lines.every((line, index) => index <= endAfterLineIndex || line.lyrics === "end");
+};
+
+const validateUniqueTimeValues = (lines: (typeof lineSchema._type)[]) => {
+  const timeValues = lines.map((line) => line.time);
+  const uniqueTimeValues = new Set(timeValues);
+  return timeValues.length === uniqueTimeValues.size;
+};
+
+const validateCSSLength = (lines: (typeof lineSchema._type)[]) => {
+  const totalCSSLength = lines.reduce((total, line) => {
+    const eternalCSSLength = line.options?.eternalCSS?.length || 0;
+    const changeCSSLength = line.options?.changeCSS?.length || 0;
+    return total + eternalCSSLength + changeCSSLength;
+  }, 0);
+
+  return totalCSSLength < 10000;
+};
+
+export const mapDataSchema = z
+  .array(lineSchema)
+  .refine(validateNoHttpContent, {
+    message: "譜面データにはhttpから始まる文字を含めることはできません",
+  })
+  .refine(validateHasTypingWords, {
+    message: "タイピングワードが設定されていません",
+  })
+  .refine(validateEndsWithEnd, {
+    message: "最後の歌詞は'end'である必要があります",
+  })
+  .refine(validateStartsWithZero, {
+    message: "最初の時間は0である必要があります",
+  })
+  .refine(validateAllTimesAreNumbers, {
+    message: "timeはすべて数値である必要があります",
+  })
+  .refine(validateNoLinesAfterEnd, {
+    message: "endの後に無効な行があります",
+  })
+  .refine(validateUniqueTimeValues, {
+    message: "同じタイムのラインが2つ以上存在しています。",
+  })
+  .refine(validateCSSLength, {
+    message: "カスタムCSSの合計文字数は10000文字以下になるようにしてください",
+  });

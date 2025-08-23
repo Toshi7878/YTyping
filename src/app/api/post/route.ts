@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { prisma } from "@/server/db";
 import { MapLine } from "@/types/map";
-import { ParseMap } from "@/util/parse-map/parseMap";
+import { ParseMap } from "@/utils/parse-map/parseMap";
 
 export async function POST(request: Request) {
   try {

@@ -1,29 +1,55 @@
-import { usePlayer } from "@/app/(typing)/type/atoms/refAtoms";
-import { useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
+import { usePlayer } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/soundEffect";
 import VolumeRange from "@/components/share-components/VolumeRange";
-import { useUserAgent } from "@/util/useUserAgent";
-import { CheckboxGroup, Flex, Text } from "@chakra-ui/react";
-import CheckBoxOption from "./child/CheckBoxOption";
+import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 
 const UserSoundEffectCheckbox = () => {
   const { type_sound, miss_sound, line_clear_sound } = useUserTypingOptionsState();
   const { readPlayer } = usePlayer();
-  const { isMobile } = useUserAgent();
+  const { setUserTypingOptions } = useSetUserTypingOptionsState();
+  const { typeSoundPlay, missSoundPlay, clearTypeSoundPlay } = useSoundEffect();
 
   return (
-    <Flex flexDirection="column" gap={4}>
-      <Text fontSize="lg" fontWeight="semibold">
-        サウンド
-      </Text>
-      {!isMobile && <VolumeRange player={readPlayer()} />}
-      <CheckboxGroup>
-        <Flex flexDirection="row" gap={2}>
-          <CheckBoxOption label={"タイプ音"} name="type_sound" defaultChecked={type_sound} />
-          <CheckBoxOption label={"ミス音"} name="miss_sound" defaultChecked={miss_sound} />
-          <CheckBoxOption label={"打ち切り音"} name="line_clear_sound" defaultChecked={line_clear_sound} />
-        </Flex>
-      </CheckboxGroup>
-    </Flex>
+    <div className="flex flex-col gap-4">
+      <span className="text-lg font-semibold">サウンド</span>
+      <VolumeRange player={readPlayer()} />
+      <div className="flex flex-row gap-2">
+        <LabeledCheckbox
+          label="タイプ音"
+          name="type_sound"
+          defaultChecked={type_sound}
+          onCheckedChange={(value) => {
+            setUserTypingOptions({
+              type_sound: value,
+            });
+            if (value) typeSoundPlay();
+          }}
+        />
+        <LabeledCheckbox
+          label="ミス音"
+          name="miss_sound"
+          defaultChecked={miss_sound}
+          onCheckedChange={(value) => {
+            setUserTypingOptions({
+              miss_sound: value,
+            });
+            if (value) missSoundPlay();
+          }}
+        />
+        <LabeledCheckbox
+          label="打ち切り音"
+          name="line_clear_sound"
+          defaultChecked={line_clear_sound}
+          onCheckedChange={(value) => {
+            setUserTypingOptions({
+              line_clear_sound: value,
+            });
+            if (value) clearTypeSoundPlay();
+          }}
+        />
+      </div>
+    </div>
   );
 };
 

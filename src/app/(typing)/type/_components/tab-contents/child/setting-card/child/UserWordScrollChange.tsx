@@ -1,6 +1,5 @@
 "use client";
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Flex, Text } from "@chakra-ui/react";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import CounterInput from "./child/CounterInput";
 
 const MAX_SCROLL = 20;
@@ -12,11 +11,9 @@ export const UserWordScrollChange = () => {
   const { kana_word_scroll, roma_word_scroll } = useUserTypingOptionsState();
 
   return (
-    <Flex flexDirection="column" gap={4}>
-      <Text fontSize="lg" fontWeight="semibold">
-        ワードスクロール開始位置 調整
-      </Text>
-      <Flex gap={6}>
+    <div className="flex flex-col gap-4">
+      <span className="text-lg font-semibold">ワードスクロール開始位置 調整</span>
+      <div className="flex gap-6">
         <CounterInput
           onChange={(value) => setUserTypingOptions({ kana_word_scroll: value })}
           step={SCROLL_STEP}
@@ -37,7 +34,7 @@ export const UserWordScrollChange = () => {
           incrementTooltip="ローマ字表示スクロールタイミングを増やします。"
           decrementTooltip="ローマ字表示スクロールタイミングを減らします。"
         />
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   );
 };

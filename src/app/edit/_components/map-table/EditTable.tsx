@@ -1,133 +1,81 @@
 "use client";
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Card, Table, TableContainer, Tbody, Th, Thead, Tr, useTheme } from "@chakra-ui/react";
 
-import "@/app/edit/style/table.scss";
-import { db } from "@/lib/db";
-import { IndexDBOption, ThemeColors } from "@/types";
-import { MapLine } from "@/types/map";
-import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
-import { useParams, useSearchParams } from "next/navigation";
+import { CardWithContent } from "@/components/ui/card";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useMapQueries } from "@/utils/queries/map.queries";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
-import { useMapReducer, useMapStateRef } from "../../atoms/mapReducerAtom";
-import { usePlayer, useTbody } from "../../atoms/refAtoms";
-import { useIsYTReadiedState, useIsYTStartedState, useSetCanUpload } from "../../atoms/stateAtoms";
-import MapTableBody from "./child/MapTableBody";
+import { useMapReducer, useMapState } from "../../_lib/atoms/mapReducerAtom";
+import { usePlayer, useTbody } from "../../_lib/atoms/refAtoms";
+import { useIsYTReadiedState, useIsYTStartedState } from "../../_lib/atoms/stateAtoms";
+
+import "@/app/edit/_lib/style/table.scss";
+import { useUpdateEndTime } from "../../_lib/hooks/useUpdateEndTime";
+import LineOptionDialog from "./LineOptionDialog";
+import LineRow from "./LineRow";
 
 export default function EditTable() {
-  const theme: ThemeColors = useTheme();
+  const map = useMapState();
   const tbodyRef = useRef(null);
-  const { writeTbody } = useTbody();
 
-  const searchParams = useSearchParams();
   const { id: mapId } = useParams<{ id: string }>();
-  const newVideoId = searchParams.get("new") || "";
-  const { data: mapData, isLoading } = useMapQuery({ mapId });
-  const isBackUp = searchParams.get("backup") === "true";
-  const setCanUpload = useSetCanUpload();
-
+  const { writeTbody } = useTbody();
   const mapDispatch = useMapReducer();
+  const updateEndTime = useUpdateEndTime();
+  const { readPlayer } = usePlayer();
+
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
-  const { readPlayer } = usePlayer();
-  const readMap = useMapStateRef();
+
+  const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
 
   useEffect(() => {
     if (mapData) {
       mapDispatch({ type: "replaceAll", payload: mapData });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapData]);
-
-  useEffect(() => {
-    if (newVideoId && isBackUp) {
-      db.editorNewCreateBak.get({ optionName: "backupMapData" }).then((data: IndexDBOption | undefined) => {
-        if (data) {
-          mapDispatch({ type: "replaceAll", payload: data.value as MapLine[] });
-        }
-      });
-      setCanUpload(true);
-    } else {
-      setCanUpload(false);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapId, newVideoId]);
+  }, [mapData, mapDispatch]);
 
   useEffect(() => {
     const tbody = tbodyRef.current;
     if (tbody) {
       writeTbody(tbody);
     }
-  }, []);
+  }, [writeTbody]);
 
   useEffect(() => {
-    if ((isYTReady && !isYTStarted) || isYTStarted) {
-      const duration = readPlayer().getDuration();
-      const map = readMap();
-
-      const endLineIndex = map.findLastIndex((item) => item.lyrics === "end");
-
-      if (duration) {
-        const endLine = {
-          time: duration.toFixed(3),
-          lyrics: "end",
-          word: "",
-        };
-
-        if (endLineIndex === -1) {
-          mapDispatch({
-            type: "add",
-            payload: endLine,
-          });
-        } else {
-          mapDispatch({
-            type: "update",
-            payload: endLine,
-            index: endLineIndex,
-          });
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isYTReady, isYTStarted]);
+    if (!isYTReady && !isYTStarted) return;
+    updateEndTime(readPlayer());
+  }, [isYTReady, isYTStarted, readPlayer]);
 
   return (
-    <Card bg={theme.colors.background.card} color={theme.colors.text.body} m={2}>
-      <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
-        <TableContainer
-          maxH={{ sm: "calc(100vh - 100px)", md: "500px", "2xl": "calc(100vh - 400px)" }}
-          overflowY="auto"
-        >
-          <Table size="sm" variant="simple" mb={{ sm: "65vh", md: "60vh", "2xl": "30vh" }}>
-            <Thead>
-              <Tr>
-                <Th width="5%" borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
-                  Time
-                </Th>
-                <Th borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
-                  歌詞
-                </Th>
-                <Th borderRight="1px solid" borderRightColor={`${theme.colors.border.editorTable.right}`}>
-                  ワード
-                </Th>
-                <Th
-                  width="3%"
-                  textAlign="center"
-                  borderRight="1px solid"
-                  borderRightColor={`${theme.colors.border.editorTable.right}`}
-                >
-                  オプション
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody ref={tbodyRef}>
-              <MapTableBody />
-            </Tbody>
-          </Table>
-        </TableContainer>
-      </LoadingOverlayWrapper>
-    </Card>
+    <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
+      <CardWithContent
+        className={{
+          card: "p-0",
+          cardContent: "max-h-[calc(100vh-100px)] overflow-y-auto p-0 md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]",
+        }}
+      >
+        <Table className="mb-[65vh] md:mb-[60vh] 2xl:mb-[30vh]">
+          <TableHeader>
+            <TableRow className="border-accent hover:bg-transparent">
+              <TableHead className="h-8 text-xs">Time</TableHead>
+              <TableHead className="h-8 text-xs">歌詞</TableHead>
+              <TableHead className="h-8 text-xs">ワード</TableHead>
+              <TableHead className="h-8 w-1 text-xs">オプション</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody ref={tbodyRef}>
+            {map.map((line, index) => (
+              <LineRow key={index} index={index} line={line} />
+            ))}
+          </TableBody>
+        </Table>
+      </CardWithContent>
+
+      <LineOptionDialog />
+    </LoadingOverlayWrapper>
   );
 }

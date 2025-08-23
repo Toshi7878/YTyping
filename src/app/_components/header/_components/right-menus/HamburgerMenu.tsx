@@ -1,0 +1,83 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
+import { useUserAgent } from "@/utils/useUserAgent";
+import { useRouter } from "@bprogress/next/app";
+import { Menu } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import { useActionState } from "react";
+import { SignInDropdownItems } from "./login/AuthDropdownItems";
+
+interface HamburgerMenuProps {
+  className?: string;
+}
+
+const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
+  const { data: session } = useSession();
+  const { isMobile } = useUserAgent();
+  const router = useRouter();
+
+  const menus = leftMenuItem.concat(leftLink);
+  const [, formAction] = useActionState(async () => {
+    return await signOut({ redirect: false });
+  }, null);
+
+  return (
+    <div className={className}>
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="border-border/50 border border-solid p-2">
+            <Menu className="h-4 w-4" />
+            <span className="sr-only">メニューを開く</span>
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="end" className="w-56">
+          {menus.reverse().map((menuItem, index) => {
+            if (isMobile === undefined) {
+              return null;
+            }
+            if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
+              return (
+                <DropdownMenuItem
+                  key={index}
+                  onSelect={() => {
+                    router.push(menuItem.href);
+                  }}
+                >
+                  {menuItem.title}
+                </DropdownMenuItem>
+              );
+            }
+            return null;
+          })}
+
+          <DropdownMenuSeparator />
+
+          {session?.user?.name ? (
+            <>
+              {loginMenuItem.map((item, index) => (
+                <DropdownMenuItem key={index} onSelect={() => router.push(item.href)}>
+                  {item.title}
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuItem onSelect={() => formAction()}>ログアウト</DropdownMenuItem>
+            </>
+          ) : (
+            !session && <SignInDropdownItems />
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
+
+export default HamburgerMenu;

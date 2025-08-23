@@ -1,8 +1,8 @@
 import { z } from "@/validator/z";
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { protectedProcedure } from "../trpc";
 
 export const notificationRouter = {
-  newNotificationCheck: publicProcedure.query(async ({ ctx }) => {
+  hasNewNotification: protectedProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
 
     if (!user.id) {
@@ -27,7 +27,7 @@ export const notificationRouter = {
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.date().nullish(), // <-- "cursor" needs to exist, but can be any type
         direction: z.enum(["forward", "backward"]), // optional, useful for bi-directional query      }),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const { db, user } = ctx;

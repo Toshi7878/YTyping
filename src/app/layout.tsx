@@ -1,24 +1,27 @@
 import Header from "@/app/_components/header/Header";
 import "@/styles/globals.css";
-import "@/styles/nprogress.css";
-import { cookies } from "next/headers";
-import { fonts } from "../lib/fonts";
 // export const runtime = "edge";
 
 import type { Metadata } from "next";
 
-import { cn } from "@/lib/cn";
+import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
-import { serverApi } from "@/trpc/server";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
-import GlobalProvider from "./_components/global-provider/GlobalProvider";
-import ThemeProvider from "./_components/global-provider/ThemeProvider";
+import { Noto_Sans_JP } from "next/font/google";
+import Script from "next/script";
+import GlobalProvider from "./_components/GlobalProvider";
+import LinkProgressProvider from "./_components/LinkProgressProvider";
 
-const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"), {
-  ssr: false,
+const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
 });
+
 export const metadata: Metadata = {
   title: "YTyping",
   description: "",
@@ -29,34 +32,29 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookiesList = cookies();
-  const colorMode = cookiesList.get("chakra-ui-color-mode");
   const session = await auth();
 
-  const userOptions = process.env.NODE_ENV === "development" ? null : await serverApi.userOption.getUserOptions({});
-
   return (
-    <html lang="ja">
+    <html lang="ja" className={notoSansJP.className}>
       <head>
         <meta charSet="UTF-8" />
+        <Script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
       </head>
-      <body className={cn(fonts.rubik.variable, "no-ligatures")}>
-        <ThemeProvider colorMode={colorMode?.value}>
-          <SessionProvider session={session}>
-            <TRPCProvider>
-              <Header session={session} />
-              <GlobalProvider userOptions={userOptions}>
-                <main
-                  className="min-h-screen  flex flex-col items-center justify-between pt-12 md:pt-16 mx-auto max-w-screen-2xl"
-                  id="main_content"
-                >
+      <body>
+        <SessionProvider session={session}>
+          <TRPCProvider>
+            <LinkProgressProvider>
+              <Header className="fixed z-30 h-10 w-full" />
+              <GlobalProvider>
+                <main className="min-h-screen pt-12 md:pt-16" id="main_content">
                   {children}
                 </main>
                 <PreviewYouTubeContent />
               </GlobalProvider>
-            </TRPCProvider>
-          </SessionProvider>
-        </ThemeProvider>
+            </LinkProgressProvider>
+          </TRPCProvider>
+        </SessionProvider>
+        <Toaster />
       </body>
     </html>
   );

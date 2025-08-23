@@ -1,10 +1,10 @@
 "use client";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useReadScene } from "../atom/stateAtoms";
+import { useReadScene } from "../_lib/atoms/stateAtoms";
 
-import { useWindowFocus } from "@/util/global-hooks/windowFocus";
-import { useTimerRegistration } from "../hooks/timer";
+import { useWindowFocus } from "@/utils/global-hooks/windowFocus";
+import { useTimerRegistration } from "../_lib/hooks/timer";
 import {
   useYTEndEvent,
   useYTPauseEvent,
@@ -12,7 +12,7 @@ import {
   useYTReadyEvent,
   useYTSeekEvent,
   useYTStopEvent,
-} from "../hooks/youtubeEvents";
+} from "../_lib/hooks/youtubeEvents";
 
 interface ImeTypeYouTubeProps {
   videoId: string;
@@ -37,19 +37,19 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
     return () => {
       removeTimer();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [addTimer, removeTimer]);
 
-  const handleStateChange = useCallback(
-    (event: YouTubeEvent) => {
-      if (document.activeElement instanceof HTMLIFrameElement && document.activeElement.tagName === "IFRAME") {
-        windowFocus();
-      }
+  const handleStateChange = (event: YouTubeEvent) => {
+    if (document.activeElement instanceof HTMLIFrameElement && document.activeElement.tagName === "IFRAME") {
+      windowFocus();
+    }
 
-      if (event.data === 3) {
+    switch (event.data) {
+      case 3:
         // seek時の処理
         ytSeekEvent();
-      } else if (event.data === 1) {
+        break;
+      case 1:
         //	未スタート、他の動画に切り替えた時など
         console.log("未スタート -1");
 
@@ -57,54 +57,47 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
         if (scene === "ready") {
           event.target.seekTo(0, true);
         }
-      } else if (event.data === 5) {
+        break;
+      case 5:
+        // 動画強制停止
         console.log("動画強制停止");
         ytStopEvent();
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+        break;
+    }
+  };
 
   // YouTubeコンポーネントのエラーハンドリングを追加
   const handleError = useCallback((event: YouTubeEvent) => {
     console.error("YouTube Player Error:", event.data);
   }, []);
 
-  const memoizedYouTube = useMemo(
-    () => (
-      <YouTube
-        className={`${className} select-none`}
-        style={style}
-        id="yt_player"
-        videoId={videoId}
-        opts={{
-          width: "100%",
-          height: "100%",
-          playerVars: {
-            enablejsapi: 1,
-            controls: 0,
-            playsinline: 1,
-            iv_load_policy: 3,
-            modestbranding: 1,
-            rel: 0,
-            fs: 0,
-          },
-        }}
-        onReady={ytReadyEvent}
-        onPlay={ytPlayEvent}
-        onPause={ytPauseEvent}
-        onEnd={ytEndEvent}
-        onStop={ytStopEvent}
-        onStateChange={handleStateChange}
-        onError={handleError}
-      />
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [videoId, className, style]
+  return (
+    <YouTube
+      className={`${className} select-none`}
+      style={style}
+      id="yt_player"
+      videoId={videoId}
+      opts={{
+        width: "100%",
+        height: "100%",
+        playerVars: {
+          enablejsapi: 1,
+          controls: 0,
+          playsinline: 1,
+          iv_load_policy: 3,
+          modestbranding: 1,
+          rel: 0,
+          fs: 0,
+        },
+      }}
+      onReady={ytReadyEvent}
+      onPlay={ytPlayEvent}
+      onPause={ytPauseEvent}
+      onEnd={ytEndEvent}
+      onStateChange={handleStateChange}
+      onError={handleError}
+    />
   );
-
-  return memoizedYouTube;
 };
 
 export default ImeTypeYouTubeContent;

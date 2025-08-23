@@ -1,5 +1,4 @@
-import { ThemeColors } from "@/types";
-import { Text, useTheme } from "@chakra-ui/react";
+import { cn } from "@/lib/utils";
 import React from "react";
 
 interface RankTextProps {
@@ -7,19 +6,8 @@ interface RankTextProps {
   children: React.ReactNode;
 }
 
-const RankText = (props: RankTextProps) => {
-  const theme: ThemeColors = useTheme();
-
-  return (
-    <Text
-      as="span"
-      ml={1}
-      {...(props.rank === 1 && { color: theme.colors.semantic.perfect })}
-      className={`${props.rank === 1 ? "outline-text" : ""}`}
-    >
-      {props.children}
-    </Text>
-  );
+const RankText = ({ rank, children }: RankTextProps) => {
+  return <span className={cn("ml-1", rank === 1 && ["text-perfect", "outline-text"])}>{children}</span>;
 };
 
 export default RankText;

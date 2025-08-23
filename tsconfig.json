@@ -1,21 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "target": "ESNext",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
-    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "strict": true,
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true,
+    "allowJs": false,
     "noImplicitAny": false,
     "noEmit": true,
-    "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
     "plugins": [
@@ -27,16 +29,19 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "allowImportingTsExtensions": false,
+    "noUncheckedIndexedAccess": false,
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "next-env.d.ts",
     "types/next-auth.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/util/parse-map/parseMap.ts",
-    "src/types/declarations.d.ts"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

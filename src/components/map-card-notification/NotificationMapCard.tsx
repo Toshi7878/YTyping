@@ -1,37 +1,27 @@
 "use client";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ThemeColors } from "@/types";
-import { CardBody, CardHeader, useTheme } from "@chakra-ui/react";
-import CustomMapCard from "../custom-ui/CustomMapCard";
 import UserLinkText from "../share-components/text/UserLinkText";
 
 interface NotificationMapCardProps {
   notify: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number];
   children: React.ReactNode;
 }
-function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
-  const theme: ThemeColors = useTheme();
 
+function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
   return (
-    <CustomMapCard>
-      <CardHeader fontSize="sm" py={2} px={2} bg={theme.colors.background.header} roundedTop="md">
-        <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name!} />
-        さんがスコア {notify.visitorResult.status!.score -
-          notify.visitedResult.status!.score} 差で {Number(notify.old_rank)}位 の記録を抜かしました
+    <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
+      <CardHeader className="bg-header-background rounded-t-md px-2 py-2 text-sm">
+        <span>
+          <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name!} />
+          さんがスコア {notify.visitorResult.status!.score - notify.visitedResult.status!.score} 差で{" "}
+          {Number(notify.old_rank)}位 の記録を抜かしました
+        </span>
       </CardHeader>
-      <CardBody
-        color={theme.colors.text.body}
-        bg={theme.colors.background.card}
-        borderRadius="md"
-        display="flex"
-        alignItems="start"
-        border="none"
-        height="100%"
-        p={0}
-      >
+      <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">
         {children}
-      </CardBody>
-    </CustomMapCard>
+      </CardContent>
+    </Card>
   );
 }
 

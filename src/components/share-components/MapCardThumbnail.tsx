@@ -1,60 +1,49 @@
-import { PREVIEW_DISABLE_PATHNAMES } from "@/config/consts/globalConst";
-import { Image } from "@chakra-ui/next-js";
-import { Box, BoxProps } from "@chakra-ui/react";
-import { $Enums } from "@prisma/client";
+import { PREVIEW_DISABLE_PATHNAMES } from "@/config/globalConst";
+import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
+import { cn } from "@/lib/utils";
+import { cva, VariantProps } from "class-variance-authority";
+import { RESET } from "jotai/utils";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import ThumbnailPreviewCover from "../map-card/child/child/ThumbnailPreviewCover";
+import React, { useState } from "react";
+import { FaPause, FaPlay } from "react-icons/fa";
 
-interface UseImageSize {
-  thumnailWidth: Partial<Record<string, number>>;
-  thumnailHeight: Partial<Record<string, number>>;
-}
-interface MapLeftThumbnailProps extends BoxProps {
+const mapLeftThumbnailVariants = cva("relative", {
+  variants: {
+    size: {
+      home: "aspect-video w-[160px] sm:w-[220px]",
+      timeline: "aspect-video w-[120px]",
+      activeUser: "aspect-video w-[120px]",
+      notification: "aspect-video w-[150px]",
+    },
+  },
+});
+
+interface MapLeftThumbnailPreviewCoverProps {
   src?: string;
-  fallbackSrc?: string;
   alt?: string;
   mapVideoId?: string;
   mapPreviewTime?: string;
   mapPreviewSpeed?: number;
-  thumbnailQuality?: $Enums.thumbnail_quality;
+  size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
+  className?: string;
 }
-const MapLeftThumbnail = (props: MapLeftThumbnailProps & UseImageSize) => {
-  const {
-    src = "",
-    fallbackSrc = "",
-    alt = "",
-    mapVideoId,
-    mapPreviewTime,
-    mapPreviewSpeed = 1,
-    thumbnailQuality,
-    thumnailWidth,
-    thumnailHeight,
-    ...rest
-  } = props;
+const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
+  const { src = "", alt = "", mapVideoId, mapPreviewTime, mapPreviewSpeed = 1, size, className, ...rest } = props;
 
   const pathname = usePathname();
   const pathSegment = pathname.split("/")[1];
 
   return (
-    <Box position="relative" my="auto" className="group select-none" {...rest}>
-      {src || fallbackSrc ? (
-        <Box
-          width={thumnailWidth}
-          height={thumnailHeight}
-          minW={thumnailWidth}
-          minH={thumnailHeight}
-          position="relative"
-        >
-          <Image unoptimized loading="lazy" alt={alt} src={fallbackSrc} rounded={"md"} fill />
-        </Box>
+    <div className={cn("group relative my-auto select-none", className)} {...rest}>
+      {src ? (
+        <div className={cn(mapLeftThumbnailVariants({ size }))}>
+          <Image unoptimized loading="lazy" alt={alt} src={src} fill className="rounded-md" />
+        </div>
       ) : (
-        <Box
-          width={thumnailWidth}
-          height={thumnailHeight}
-          minW={thumnailWidth}
-          minH={thumnailHeight}
-          rounded="md"
-        />
+        <div className={cn(mapLeftThumbnailVariants({ size }))}>
+          <div className="flex-start flex h-full w-full items-center justify-center">{alt}</div>
+        </div>
       )}
       {mapVideoId && mapPreviewTime && !PREVIEW_DISABLE_PATHNAMES.includes(pathSegment) && (
         <ThumbnailPreviewCover
@@ -63,7 +52,61 @@ const MapLeftThumbnail = (props: MapLeftThumbnailProps & UseImageSize) => {
           mapPreviewSpeed={mapPreviewSpeed}
         />
       )}
-    </Box>
+    </div>
+  );
+};
+
+interface ThumbnailPreviewCoverProps {
+  mapVideoId: string;
+  mapPreviewTime: string;
+  mapPreviewSpeed?: number;
+}
+
+const ThumbnailPreviewCover = ({ mapVideoId, mapPreviewTime, mapPreviewSpeed = 1 }: ThumbnailPreviewCoverProps) => {
+  const { videoId } = usePreviewVideoState();
+  const setPreviewVideo = useSetPreviewVideo();
+  const [isTouchMove, setIsTouchMove] = useState(false);
+
+  const previewYouTube = () => {
+    if (mapVideoId !== videoId) {
+      setPreviewVideo((prev) => ({
+        ...prev,
+        videoId: mapVideoId,
+        previewTime: mapPreviewTime,
+        previewSpeed: mapPreviewSpeed.toString(),
+      }));
+    } else {
+      setPreviewVideo(RESET);
+    }
+  };
+
+  const handleTouchMove = () => {
+    setIsTouchMove(true);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isTouchMove) {
+      if (mapVideoId !== videoId) {
+        previewYouTube();
+      }
+    }
+    setIsTouchMove(false);
+  };
+
+  const isActive = videoId === mapVideoId;
+
+  return (
+    <div
+      className={cn(
+        "absolute inset-0 flex cursor-pointer items-center justify-center rounded-lg border-none",
+        isActive ? "bg-black/50 opacity-100" : "bg-black/30 opacity-0 group-hover:opacity-100",
+      )}
+      onClick={previewYouTube}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {isActive ? <FaPause color="white" size={35} /> : <FaPlay color="white" size={35} />}
+    </div>
   );
 };
 

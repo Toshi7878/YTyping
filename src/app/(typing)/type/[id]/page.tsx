@@ -1,11 +1,12 @@
 import { serverApi } from "@/trpc/server";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Content from "./Content";
-import TypeProvider from "./TypeProvider";
+import Content from "../_components/Content";
+import TypeProvider from "../_components/TypeProvider";
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(params.id) });
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
 
   const thumbnailUrl =
     mapInfo?.thumbnail_quality === "maxresdefault"
@@ -31,8 +32,9 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(params.id) });
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id: mapId } = await params;
+  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(mapId) });
   const userTypingOptions = await serverApi.userTypingOption.getUserTypingOptions();
 
   if (!mapInfo) {
@@ -40,8 +42,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   return (
-    <TypeProvider mapInfo={mapInfo} userTypingOptions={userTypingOptions}>
-      <Content mapInfo={mapInfo} />
+    <TypeProvider mapInfo={mapInfo} userTypingOptions={userTypingOptions} mapId={mapId}>
+      <Content video_id={mapInfo.video_id} mapId={mapId} />
     </TypeProvider>
   );
 }

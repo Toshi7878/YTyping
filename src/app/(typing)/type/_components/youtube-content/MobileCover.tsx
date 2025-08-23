@@ -1,8 +1,7 @@
-import { Box } from "@chakra-ui/react";
 import { useCallback } from "react";
-import { useWindowFocus } from "../../../../../util/global-hooks/windowFocus";
-import { usePlayer, useYTStatus } from "../../atoms/refAtoms";
-import { useReadGameUtilParams } from "../../atoms/stateAtoms";
+import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
+import { usePlayer, useYTStatus } from "../../_lib/atoms/refAtoms";
+import { useReadGameUtilParams } from "../../_lib/atoms/stateAtoms";
 
 const MobileCover = () => {
   const windowFocus = useWindowFocus();
@@ -10,32 +9,22 @@ const MobileCover = () => {
   const { readYTStatus } = useYTStatus();
 
   const readGameStateUtils = useReadGameUtilParams();
-  const handleStart = useCallback(
-    async () => {
-      const { scene } = readGameStateUtils();
+  const handleStart = useCallback(async () => {
+    const { scene } = readGameStateUtils();
 
-      if (readYTStatus().isPaused || scene === "ready") {
-        readPlayer().playVideo();
-      } else {
-        readPlayer().pauseVideo();
-      }
+    if (readYTStatus().isPaused || scene === "ready") {
+      readPlayer().playVideo();
+    } else {
+      readPlayer().pauseVideo();
+    }
 
-      windowFocus();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+    windowFocus();
+  }, []);
 
   return (
-    <Box
+    <div
       id="mobile_cover"
-      cursor="pointer"
-      position="absolute"
-      alignItems="center"
-      inset={0}
-      transition="opacity 0.3s"
-      borderRadius="lg"
-      zIndex={5}
+      className="absolute inset-0 z-[5] cursor-pointer items-center rounded-lg transition-opacity duration-300"
       onClick={handleStart}
     />
   );

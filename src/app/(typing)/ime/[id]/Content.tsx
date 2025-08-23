@@ -1,8 +1,9 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { MapLine } from "@/types/map";
-import { useMapQuery } from "@/util/global-hooks/query/mapRouterQuery";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { useMapQueries } from "@/utils/queries/map.queries";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -11,25 +12,25 @@ import InputTextarea from "../_components/InputTextarea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/Notifications";
 import ViewArea from "../_components/view-area/ViewArea";
-import { useEnableLargeVideoDisplayState, useMapState, useReadScene, useSetMap } from "../atom/stateAtoms";
-import { useParseImeMap } from "../hooks/parseImeMap";
-import { usePathChangeAtomReset } from "../hooks/reset";
-import { useUpdateTypingStats } from "../hooks/updateTypingStats";
+import { useEnableLargeVideoDisplayState, useMapState, useReadScene, useSetMap } from "../_lib/atoms/stateAtoms";
+import { useParseImeMap } from "../_lib/hooks/parseImeMap";
+import { usePathChangeAtomReset } from "../_lib/hooks/reset";
+import { useUpdateTypingStats } from "../_lib/hooks/updateTypingStats";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
 }
 
 function Content({ mapInfo }: ContentProps) {
-  const { video_id } = mapInfo!;
+  const { video_id } = mapInfo;
   const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
   const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
     minHeight: "calc(100vh - var(--header-height))",
     height: "calc(100vh - var(--header-height))",
   });
   const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
-  const { id: mapId } = useParams();
-  const { data: mapData } = useMapQuery({ mapId: mapId as string });
+  const { id: mapId } = useParams() as { id: string };
+  const { data: mapData } = useQuery(useMapQueries().map({ mapId }));
   const setMap = useSetMap();
   const parseImeMap = useParseImeMap();
   const map = useMapState();
@@ -54,8 +55,6 @@ function Content({ mapInfo }: ContentProps) {
     if (mapData) {
       loadMap(mapData);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapData]);
 
   useEffect(() => {
@@ -63,7 +62,6 @@ function Content({ mapInfo }: ContentProps) {
       updateTypingStats();
       pathChangeAtomReset();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapId]);
 
   useEffect(() => {
@@ -110,21 +108,20 @@ function Content({ mapInfo }: ContentProps) {
     };
   }, [readScene, enableLargeVideoDisplay]);
 
-  const loadingMessage = tokenizerError ? (
-    <Flex flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={2}>
-      ワード生成に失敗しました。
-      <Button onClick={() => loadMap(mapData!)} colorScheme="green">
-        再試行
-      </Button>
-    </Flex>
-  ) : mapData !== undefined ? (
-    "ひらがな判定生成中..."
-  ) : (
-    "譜面読み込み中..."
-  );
+  const loadingMessage =
+    tokenizerError && mapData ? (
+      <div className="flex h-full flex-col items-center justify-center gap-2">
+        ワード生成に失敗しました。
+        <Button onClick={() => loadMap(mapData)}>再試行</Button>
+      </div>
+    ) : mapData !== undefined ? (
+      "ひらがな判定生成中..."
+    ) : (
+      "譜面読み込み中..."
+    );
 
   return (
-    <Box as="main">
+    <>
       <LoadingOverlayWrapper
         active={map === null}
         spinner={!tokenizerError}
@@ -148,19 +145,15 @@ function Content({ mapInfo }: ContentProps) {
         style={{ height: youtubeHeight.height, minHeight: youtubeHeight.minHeight }}
       />
 
-      <Flex
+      <div
         ref={lyricsViewAreaRef}
-        width="100%"
-        position="fixed"
-        bottom={{ base: 0, lg: 100, xl: 150 }}
-        left="0"
-        flexDirection="column"
+        className="fixed bottom-0 left-0 flex w-full flex-col lg:bottom-[100px] xl:bottom-[150px]"
       >
         <ViewArea />
         <InputTextarea />
         <MenuBar />
-      </Flex>
-    </Box>
+      </div>
+    </>
   );
 }
 

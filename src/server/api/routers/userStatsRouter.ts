@@ -7,7 +7,7 @@ export const userStatsRouter = {
     .input(
       z.object({
         mapId: z.number(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;
@@ -42,7 +42,7 @@ export const userStatsRouter = {
       z.object({
         ime_type: z.number(),
         total_type_time: z.number(),
-      })
+      }),
     )
     .mutation(async ({ input: sendStats, ctx }) => {
       const { user } = ctx;
@@ -53,7 +53,7 @@ export const userStatsRouter = {
 
       axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-ime-typing-stats`,
-        JSON.stringify({ ...sendStats, userId: user.id })
+        JSON.stringify({ ...sendStats, userId: user.id }),
       );
     }),
 
@@ -69,7 +69,7 @@ export const userStatsRouter = {
         symbolType: z.number(),
         spaceType: z.number(),
         maxCombo: z.number(),
-      })
+      }),
     )
     .mutation(async ({ input: sendStats, ctx }) => {
       const { user } = ctx;
@@ -80,7 +80,7 @@ export const userStatsRouter = {
 
       axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
-        JSON.stringify({ ...sendStats, userId: user.id })
+        JSON.stringify({ ...sendStats, userId: user.id }),
       );
     }),
 
@@ -88,7 +88,7 @@ export const userStatsRouter = {
     .input(
       z.object({
         userId: z.number(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
@@ -119,7 +119,7 @@ export const userStatsRouter = {
     .input(
       z.object({
         userId: z.number(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
@@ -172,7 +172,7 @@ export const userStatsRouter = {
 
         const dominantType = typeCounts.reduce(
           (max, current) => (current.count > max.count ? current : max),
-          typeCounts[0]
+          typeCounts[0],
         );
 
         const totalTypeCount =
@@ -215,7 +215,7 @@ export const userStatsRouter = {
     }),
 };
 
-export const LEVELS = {
+const LEVELS = {
   roma: {
     3: 15000 as const,
     2: 5000 as const,

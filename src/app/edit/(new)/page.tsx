@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   description: "",
 };
 
-export default async function Home({ searchParams }: { searchParams: { new?: string } }) {
+export default async function Home(props: { searchParams: Promise<{ new?: string }> }) {
+  const searchParams = await props.searchParams;
   const videoId = searchParams.new;
 
   return (

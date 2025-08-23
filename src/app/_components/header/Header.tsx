@@ -1,18 +1,19 @@
-import { serverApi } from "@/trpc/server";
-import { Session } from "next-auth";
-import HeaderContent from "./HeaderContent";
-
-// export const runtime = "edge";
+import { cn } from "@/lib/utils";
+import { LeftNav, RightNav } from "./_components/Nav";
 
 interface HeaderProps {
-  session: Session | null;
+  className: string;
 }
 
-const Header = async ({ session }: HeaderProps) => {
-  const onVercel = process.env.NEXT_PUBLIC_API_URL !== "http://localhost:3000";
-  const isNewNotification =
-    onVercel && session?.user?.name ? await serverApi.notification.newNotificationCheck() : false;
-  return <HeaderContent isNewNotification={isNewNotification} />;
+const Header = ({ className }: HeaderProps) => {
+  return (
+    <header id="header" className={cn("bg-header-background text-header-foreground", className)}>
+      <nav className="mx-4 flex items-center justify-between md:mx-10 lg:mx-36">
+        <LeftNav />
+        <RightNav />
+      </nav>
+    </header>
+  );
 };
 
 export default Header;

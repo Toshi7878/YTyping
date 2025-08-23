@@ -1,0 +1,102 @@
+import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
+import {
+  useLineResultsState,
+  useLineSelectIndexState,
+  useMapState,
+  usePlayingInputModeState,
+} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
+import { useInteractJS } from "@/app/(typing)/type/_lib/hooks/useInteractJS";
+import { Card, CardFooter } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
+import { useState } from "react";
+import ResultCardContent from "./child/ResultCardBody";
+import ResultCardFooter from "./child/ResultCardFooter";
+import ResultCardHeader from "./child/ResultCardHeader";
+
+const PracticeLineCard = () => {
+  const map = useMapState() as ParseMap;
+  const lineResults = useLineResultsState();
+  const speedData = usePlaySpeedState();
+  const lineSelectIndex = useLineSelectIndexState();
+  const inputMode = usePlayingInputModeState();
+  const [isDragging, setIsDragging] = useState(false);
+  const { moveSetLine } = useMoveLine();
+  const interact = useInteractJS();
+
+  const index = map.typingLineIndexes[lineSelectIndex - 1] || map.typingLineIndexes[0];
+
+  const lineResult = lineResults[index];
+
+  const lineInputMode = lineResult.status.mode ?? inputMode;
+
+  const lineData = map.mapData[index];
+
+  const maxLinePoint = lineData.notes.r * CHAR_POINT;
+  const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
+  const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
+  const lineSpeed = lineResult?.status!.sp > speedData.defaultSpeed ? lineResult?.status!.sp : speedData.defaultSpeed;
+  const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
+
+  //ユーザーのLineリザルトデータ
+  const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
+  const lostWord = lineResult.status.lostW;
+  const point = lineResult.status.p;
+  const tBonus = lineResult.status.tBonus;
+  const kpm = lineResult.status.lKpm;
+  const rkpm = lineResult.status.lRkpm;
+  const miss = lineResult.status.lMiss;
+  const lost = lineResult.status.lLost;
+
+  return (
+    <Card
+      ref={interact?.ref}
+      className="practice-card z-10 block border py-2"
+      style={{
+        ...interact?.style,
+        height: "fit-content",
+        cursor: isDragging ? "move" : "pointer",
+      }}
+      onMouseDown={() => setIsDragging(false)}
+      onMouseMove={() => setIsDragging(true)}
+      onClick={() => {
+        if (!isDragging) {
+          const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
+          moveSetLine(seekCount);
+        }
+      }}
+    >
+      <ResultCardHeader
+        lineIndex={lineSelectIndex}
+        lineNotes={lineNotes}
+        lineInputMode={lineInputMode}
+        lineKpm={lineKpm}
+        lineSpeed={lineSpeed}
+      />
+
+      <ResultCardContent
+        lineKanaWord={lineKanaWord}
+        typeResult={lineResult.typeResult}
+        lineTypeWord={lineTypeWord}
+        lostWord={lostWord!}
+      />
+
+      <Separator className="mx-auto w-[92%]" />
+      <CardFooter>
+        <ResultCardFooter
+          point={point!}
+          tBonus={tBonus!}
+          maxLinePoint={maxLinePoint}
+          miss={miss!}
+          lost={lost!}
+          kpm={kpm!}
+          rkpm={rkpm!}
+          alignItems="flex-end"
+        />
+      </CardFooter>
+    </Card>
+  );
+};
+
+export default PracticeLineCard;

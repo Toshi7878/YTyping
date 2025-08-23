@@ -1,6 +1,6 @@
 "use client";
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/atoms/stateAtoms";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { Button } from "@/components/ui/button";
 import { MdRestartAlt } from "react-icons/md";
 import CounterInput from "./child/CounterInput";
 
@@ -29,16 +29,15 @@ export const UserWordFontSize = () => {
   };
 
   return (
-    <Flex flexDirection="column" gap={4}>
-      <Flex justifyContent="space-between" alignItems="center">
-        <Text fontSize="lg" fontWeight="semibold">
-          ワードフォントサイズ 調整
-        </Text>
-        <Button leftIcon={<MdRestartAlt />} size="sm" colorScheme="blue" variant="outline" onClick={resetToDefaults}>
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <span className="text-lg font-semibold">ワードフォントサイズ 調整</span>
+        <Button size="sm" variant="outline" onClick={resetToDefaults}>
+          <MdRestartAlt className="mr-2" />
           リセット
         </Button>
-      </Flex>
-      <Flex gap={6}>
+      </div>
+      <div className="flex gap-6">
         <CounterInput
           onChange={(value) => setUserTypingOptions({ kana_word_font_size: value })}
           step={FONT_SIZE_STEP}
@@ -61,8 +60,8 @@ export const UserWordFontSize = () => {
           decrementTooltip="ローマ字表示フォントサイズを小さくします。"
           unit="%"
         />
-      </Flex>
-      <Flex gap={6}>
+      </div>
+      <div className="flex gap-6">
         <CounterInput
           onChange={(value) => setUserTypingOptions({ kana_word_top_position: value })}
           step={TOP_POSITION_STEP}
@@ -87,7 +86,7 @@ export const UserWordFontSize = () => {
           decrementTooltip="ローマ字表示を下に移動します。"
           unit="px"
         />
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   );
 };

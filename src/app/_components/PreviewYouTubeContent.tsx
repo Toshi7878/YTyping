@@ -1,17 +1,15 @@
 "use client";
-
-import { PREVIEW_YOUTUBE_HEIGHT, PREVIEW_YOUTUBE_WIDTH } from "@/config/consts/globalConst";
-import { usePreviewYouTubeKeyDown } from "@/util/global-hooks/usePreviewYouTubeKeyDown";
-import { Box, useBreakpointValue } from "@chakra-ui/react";
+import { RESET } from "jotai/utils";
 import { useEffect } from "react";
-import YouTube, { YouTubeEvent } from "react-youtube";
-import { usePreviewVideoState, useSetPreviewPlayer, useVolumeState } from "../../lib/global-atoms/globalAtoms";
+import YouTube, { type YouTubeEvent } from "react-youtube";
+import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/globalAtoms";
 
-const PreviewYouTubeContent = function YouTubeContent() {
+const PreviewYouTubeContent = () => {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
+
   const volume = useVolumeState();
   const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
-  const setPreviewPlayerState = useSetPreviewPlayer();
+  const setPreviewPlayer = useSetPreviewPlayer();
 
   useEffect(() => {
     window.addEventListener("keydown", previewYouTubeKeyDown);
@@ -19,22 +17,18 @@ const PreviewYouTubeContent = function YouTubeContent() {
     return () => {
       window.removeEventListener("keydown", previewYouTubeKeyDown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
-
-  const width = useBreakpointValue(PREVIEW_YOUTUBE_WIDTH, { ssr: false });
-  const height = useBreakpointValue(PREVIEW_YOUTUBE_HEIGHT, { ssr: false });
 
   if (!videoId) {
     return null;
   }
 
-  const onReady = (event) => {
+  const onReady = (event: YouTubeEvent) => {
     const player = event.target;
     player.setVolume(volume);
     player.seekTo(Number(previewTime), true);
     player.playVideo();
-    setPreviewPlayerState(player);
+    setPreviewPlayer(player);
   };
 
   const onPlay = (event: YouTubeEvent) => {
@@ -42,28 +36,35 @@ const PreviewYouTubeContent = function YouTubeContent() {
   };
 
   return (
-    <Box zIndex={9} position="fixed" bottom={{ base: 2, lg: 5 }} right={{ base: 2, lg: 5 }}>
-      <YouTube
-        id="preview_youtube"
-        videoId={videoId}
-        opts={{
-          width: `${width}px`,
-          height: `${height}px`,
-          playerVars: {
-            enablejsapi: 1,
-            start: Number(previewTime),
-            playsinline: 1,
-            autoplay: 1,
-            iv_load_policy: 3,
-            modestbranding: 1,
-            rel: 0,
-          },
-        }}
-        onReady={onReady}
-        onPlay={onPlay}
-      />
-    </Box>
+    <YouTube
+      id="preview_youtube"
+      videoId={videoId}
+      className="fixed right-2 bottom-2 z-10 lg:right-4 lg:bottom-4 2xl:right-5 2xl:bottom-5 [&_iframe]:h-[128px] [&_iframe]:w-[228px] [&_iframe]:lg:h-[180px] [&_iframe]:lg:w-[320px] [&_iframe]:2xl:h-[252px] [&_iframe]:2xl:w-[448px]"
+      opts={{
+        playerVars: {
+          enablejsapi: 1,
+          start: Number(previewTime),
+          playsinline: 1,
+          autoplay: 1,
+          iv_load_policy: 3,
+          modestbranding: 1,
+          rel: 0,
+        },
+      }}
+      onReady={onReady}
+      onPlay={onPlay}
+    />
   );
+};
+
+const usePreviewYouTubeKeyDown = () => {
+  const setPreviewVideo = useSetPreviewVideo();
+
+  return (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      setPreviewVideo(RESET);
+    }
+  };
 };
 
 export default PreviewYouTubeContent;

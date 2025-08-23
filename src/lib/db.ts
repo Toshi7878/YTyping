@@ -1,35 +1,45 @@
-import { EditorNewMapBackUpInfoData } from "@/app/edit/ts/type";
-import { IndexDBOption } from "@/types";
-import { MapLine } from "@/types/map";
+import { EditorNewMapBackUpInfoData as NewMapBackUpData } from "@/app/edit/_lib/type";
 import Dexie, { type EntityTable } from "dexie";
+import { useLiveQuery } from "dexie-react-hooks";
 
-const db = new Dexie("AppDB") as Dexie & {
-  editorNewCreateBak: EntityTable<
-    IndexDBOption,
-    "id" // primary key "id" (for the typings only)
-  >;
-};
+interface MapBackupData extends NewMapBackUpData {
+  id: string;
+}
 
-// Schema declaration:
-db.version(14).stores({
-  editorOption: "optionName", // primary key "id" and unique "optionName"
-  editorNewCreateBak: "optionName",
-  globalOption: "optionName",
-  typingOption: "optionName",
-});
+class AppDB extends Dexie {
+  mapBackup!: EntityTable<MapBackupData, "id">;
 
-export const sendEditorNewCreateBakIndexedDBData = async (
-  newMapInfo: EditorNewMapBackUpInfoData,
-  newMapData: MapLine[]
-) => {
-  db.editorNewCreateBak.put({ optionName: "backupMapInfo", value: newMapInfo });
-  db.editorNewCreateBak.put({ optionName: "backupMapData", value: newMapData });
-};
+  constructor() {
+    super("AppDB");
 
-export const useInitializeEditorCreateBak = () => {
-  return async () => {
-    await db.editorNewCreateBak.clear();
+    // スキーマ定義
+    this.version(16).stores({
+      mapBackup: "id", // 固定キーのみ
+    });
+  }
+}
+
+const db = new AppDB();
+
+// 固定キーでバックアップを保存
+export const useBackupNewMap = () => {
+  return async (input: NewMapBackUpData) => {
+    await db.mapBackup.put({ ...input, id: "current" }); // 常に同じキーで上書き
   };
 };
 
-export { db };
+export const useDeleteBackupNewMap = () => {
+  return async (): Promise<void> => {
+    await db.mapBackup.clear();
+  };
+};
+
+export const useGetBackupTitleVideoIdLiveQuery = () => {
+  const backupData = useLiveQuery(() => db.mapBackup.get("current"));
+
+  return backupData ? { title: backupData?.title, videoId: backupData?.videoId } : undefined;
+};
+
+export const fetchBackupMap = async () => {
+  return await db.mapBackup.get("current");
+};

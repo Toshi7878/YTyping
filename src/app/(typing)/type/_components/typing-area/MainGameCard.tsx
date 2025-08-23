@@ -1,75 +1,94 @@
 "use client";
-import CustomCard from "@/components/custom-ui/CustomCard";
-import { CardBody, CardFooter, CardHeader, useDisclosure, UseDisclosureReturn } from "@chakra-ui/react";
-import { useEffect } from "react";
-import { useGameUtilityReferenceParams } from "../../atoms/refAtoms";
-import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../atoms/stateAtoms";
-import "../../style/type.scss";
-import PlayingBottom from "./scene/child/PlayingBottom";
-import PlayingTop from "./scene/child/PlayingTop";
-import End from "./scene/End";
-import Playing from "./scene/Playing";
-import Ready from "./scene/Ready";
-import PracticeLineCard from "./scene/result/child/PracticeLineCard";
-import ResultDrawer from "./scene/result/ResultDrawer";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import Link from "@/components/ui/link/link";
+import { cn } from "@/lib/utils";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
+import { useParams } from "next/navigation";
+import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_lib/atoms/stateAtoms";
+import "../../_lib/style/type.scss";
+import End from "./end/End";
+import Playing from "./playing/Playing";
+import Ready from "./ready/Ready";
+import BottomButtons from "./shared/bottom-child/BottomButtons";
+import SkipGuideAndTotalTime from "./shared/bottom-child/SkipGuideAndTotalTime";
+import PracticeLineCard from "./shared/result/child/PracticeLineCard";
+import ResultDrawer from "./shared/result/ResultDrawer";
+import TimeProgress from "./shared/TimeProgress";
+import GameStatusHeader from "./shared/top-child/GameStatusHeader";
 
-interface TypingCardBodyProps {
-  drawerClosure: UseDisclosureReturn;
+function MainGameCard({ className }: { className?: string }) {
+  return (
+    <Card className={cn("typing-card block p-0", className)} id="typing_card">
+      <GameCardHeader className="mx-3 block py-0" />
+      <GameCardContent className="block px-12 py-2" />
+      <GameCardFooter className="mx-3 flex-col py-0 select-none" />
+    </Card>
+  );
 }
 
-const GameCardBody = (props: TypingCardBodyProps) => {
-  const { drawerClosure } = props;
-  const map = useMapState();
-  const { onOpen } = drawerClosure;
-  const sceneGroup = useSceneGroupState();
-  const scene = useSceneState();
-  const isYTStarted = useYTStartedState();
-  const isPlayed = isYTStarted && sceneGroup === "Playing";
-
+const GameCardHeader = ({ className }: { className?: string }) => {
   return (
-    <CardBody mx={8} py={3}>
-      {sceneGroup === "Ready" || !isYTStarted || !map ? (
-        <Ready />
-      ) : isPlayed ? (
-        <>
-          <Playing />
-          <ResultDrawer drawerClosure={drawerClosure} />
-          {scene === "practice" && <PracticeLineCard />}
-          {map.mapData[0].options?.eternalCSS && <style>{map.mapData[0].options?.eternalCSS}</style>}
-        </>
-      ) : (
-        sceneGroup === "End" && (
-          <>
-            <End onOpen={onOpen} />
-            <ResultDrawer drawerClosure={drawerClosure} />
-            <style>{map.mapData[0].options?.eternalCSS}</style>
-          </>
-        )
-      )}
-    </CardBody>
+    <CardHeader className={className}>
+      <GameStatusHeader />
+      <TimeProgress id="line_progress" />
+    </CardHeader>
   );
 };
 
-function MainGameCard() {
-  const drawerClosure = useDisclosure();
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
+interface TypingCardBodyProps {
+  className?: string;
+}
 
-  useEffect(() => {
-    writeGameUtilRefParams({ lineResultdrawerClosure: drawerClosure });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drawerClosure]);
+const GameCardContent = ({ className }: TypingCardBodyProps) => {
+  const map = useMapState();
+  const sceneGroup = useSceneGroupState();
+  const scene = useSceneState();
+  const isYTStarted = useYTStartedState();
+  const isReady = sceneGroup === "Ready" || !isYTStarted || !map;
+  const isPlayed = isYTStarted && sceneGroup === "Playing";
+
+  const minHeight = "min-h-[460px] md:min-h-[300px]";
+  return (
+    <CardContent className={className}>
+      {isReady ? (
+        <Ready className={minHeight} />
+      ) : isPlayed ? (
+        <Playing className={minHeight} />
+      ) : (
+        <End className={minHeight} />
+      )}
+
+      {(isPlayed || sceneGroup === "End") && (
+        <>
+          <ResultDrawer />
+          {scene === "practice" && <PracticeLineCard />}
+          {map?.mapData[0].options?.eternalCSS && <style>{map.mapData[0].options?.eternalCSS}</style>}
+        </>
+      )}
+    </CardContent>
+  );
+};
+
+const GameCardFooter = ({ className }: { className?: string }) => {
+  const sceneGroup = useSceneGroupState();
+  const { id: mapId } = useParams();
+  const handleLinkClick = useLinkClick();
 
   return (
-    <CustomCard className="typing-card" id="typing_card">
-      <CardHeader py={0} mx={3}>
-        <PlayingTop />
-      </CardHeader>
-      <GameCardBody drawerClosure={drawerClosure} />
-      <CardFooter py={0} mx={3} flexDirection="column" userSelect="none">
-        <PlayingBottom />
-      </CardFooter>
-    </CustomCard>
+    <CardFooter className={className}>
+      <SkipGuideAndTotalTime />
+      <TimeProgress id="total_progress" />
+      <BottomButtons />
+      {sceneGroup === "Ready" && (
+        <Link href={`/ime/${mapId}`} onClick={(event) => handleLinkClick(event, "replace")}>
+          <Button variant="outline" className="absolute right-10 bottom-3 p-8 text-2xl md:p-2 md:text-base">
+            変換有りタイピング
+          </Button>
+        </Link>
+      )}
+    </CardFooter>
   );
-}
+};
 
 export default MainGameCard;

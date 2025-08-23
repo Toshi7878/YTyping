@@ -1,19 +1,15 @@
-import { useMapInfoRef } from "@/app/(typing)/type/atoms/stateAtoms";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
-import { ThemeColors } from "@/types";
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import { Box, useBreakpointValue, useTheme } from "@chakra-ui/react";
+import { useMapInfoRef } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import Link from "@/components/ui/link/link";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { BiEdit } from "react-icons/bi";
 
 const EditIcon = () => {
-  const theme: ThemeColors = useTheme();
   const { readMapInfo } = useMapInfoRef();
   const { id: mapId } = useParams();
   const handleLinkClick = useLinkClick();
-  const iconSize = useBreakpointValue({ base: 72, md: 36 });
   const { data: session } = useSession();
 
   const role = session?.user.role;
@@ -22,20 +18,11 @@ const EditIcon = () => {
 
   const tooltipLabel = `譜面のEditページに移動${Number(userId) !== creatorId && role === "USER" ? "(閲覧のみ)" : ""}`;
   return (
-    <CustomToolTip label={tooltipLabel} placement="top" right={1} top={1}>
-      <Box height="60px" display="flex" alignItems="center">
-        <Link
-          href={`/edit/${mapId}`}
-          onClick={handleLinkClick}
-          _hover={{ color: theme.colors.text.body }}
-          cursor="pointer"
-          pr={3}
-          pl={0.5}
-        >
-          <BiEdit size={iconSize} />
-        </Link>
-      </Box>
-    </CustomToolTip>
+    <TooltipWrapper label={tooltipLabel}>
+      <Link href={`/edit/${mapId}`} onClick={handleLinkClick} className="cursor-pointer p-1 hover:opacity-80">
+        <BiEdit className="h-9 w-9" />
+      </Link>
+    </TooltipWrapper>
   );
 };
 

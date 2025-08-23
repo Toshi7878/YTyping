@@ -3,8 +3,8 @@ import { Provider as JotaiProvider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React from "react";
-import { difficultyRangeAtom, getHomeAtomStore } from "./atoms/atoms";
-import { DIFFICULTY_RANGE, PARAM_NAME } from "./ts/consts";
+import { difficultyRangeAtom, getHomeAtomStore } from "./_lib/atoms";
+import { DIFFICULTY_RANGE, PARAM_NAME } from "./_lib/const";
 
 interface TimelineProviderProps {
   children: React.ReactNode;
@@ -26,7 +26,7 @@ const HomeClientProvider = ({ children }: TimelineProviderProps) => {
         },
       ],
     ],
-    { store: homeAtomStore }
+    { store: homeAtomStore },
   );
 
   return <JotaiProvider store={homeAtomStore}>{children}</JotaiProvider>;

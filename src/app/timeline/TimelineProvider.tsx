@@ -3,9 +3,9 @@ import { Provider as JotaiProvider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React from "react";
-import { getTimelineAtomStore, searchResultKpmAtom, searchResultModeAtom } from "./atoms/atoms";
-import { DEFAULT_KPM_SEARCH_RANGE } from "./ts/const/consts";
-import { FilterMode } from "./ts/type";
+import { getTimelineAtomStore, searchResultKpmAtom, searchResultModeAtom } from "./_lib/atoms";
+import { DEFAULT_KPM_SEARCH_RANGE } from "./_lib/consts";
+import { FilterMode } from "./_lib/type";
 
 interface TimelineProviderProps {
   children: React.ReactNode;
@@ -23,7 +23,7 @@ const TimelineProvider = ({ children }: TimelineProviderProps) => {
       [searchResultModeAtom, searchMode],
       [searchResultKpmAtom, { minValue: minKpm, maxValue: maxKpm }],
     ],
-    { store: timelineAtomStore }
+    { store: timelineAtomStore },
   );
 
   return <JotaiProvider store={timelineAtomStore}>{children}</JotaiProvider>;

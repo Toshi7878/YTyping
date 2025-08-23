@@ -1,70 +1,64 @@
 "use client";
-import CustomToolTip from "@/components/custom-ui/CustomToolTip";
+import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
+import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
+import Link from "@/components/ui/link/link";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ThemeColors } from "@/types";
-import { useLinkClick } from "@/util/global-hooks/useLinkClick";
-import { Link } from "@chakra-ui/next-js";
-import { Box, Flex, Stack, useTheme } from "@chakra-ui/react";
-import MapBadges from "./MapBadgesLayout";
+import { formatTime } from "@/utils/formatTime";
+import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
+import MapBadge from "./MapBadge";
 import MapCreateUser from "./MapCreateUser";
 
 interface MapInfoProps {
-  map: RouterOutPuts["map"]["getCreatedVideoIdMapList"][number];
+  map: RouterOutPuts["mapList"]["getByVideoId"][number];
 }
 function MapInfo({ map }: MapInfoProps) {
-  const theme: ThemeColors = useTheme();
   const handleLinkClick = useLinkClick();
 
+  const musicSourceDisplay = map.music_source ? `【${map.music_source}】` : "";
+
   return (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      flexDirection="column"
-      height="100%"
-      _hover={{ textDecoration: "none" }}
-      pl={3}
-      pt={2}
-    >
-      <Flex direction="column" gap={1}>
-        <CustomToolTip
-          label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-          placement="top"
-          right={24}
-        >
+    <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
+      <div className="flex flex-col gap-1">
+        <TooltipWrapper label={`${map.title} / ${map.artist_name}${musicSourceDisplay}`}>
           <Link
             href={`/type/${map.id}`}
             onClick={handleLinkClick}
-            zIndex={1}
-            _hover={{ textDecoration: "none" }}
-            color={theme.colors.secondary.main}
-            fontWeight="bold"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            whiteSpace="nowrap"
-            fontSize="md"
+            className="text-secondary z-1 truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
           >
             {map.title}
           </Link>
-        </CustomToolTip>
+        </TooltipWrapper>
 
-        <Box
-          fontSize={{ base: "xs", sm: "sm" }}
-          color={theme.colors.secondary.main}
-          fontWeight="bold"
-          overflow="hidden"
-          textOverflow="ellipsis"
-          whiteSpace="nowrap"
-        >
-          {map.artist_name || "\u00A0"}
-          {map.music_source ? `【${map.music_source}】` : "\u00A0"}
-        </Box>
-      </Flex>
-      <Stack justifyContent="space-between" alignItems="baseline" flexDirection={{ base: "row", lg: "column" }}>
+        <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
+          {map.artist_name || ""}
+          {musicSourceDisplay}
+        </div>
+      </div>
+      <div className="flex flex-row items-baseline justify-between space-y-1 lg:flex-col">
         <MapCreateUser map={map} />
-        <MapBadges map={map} />
-      </Stack>
-    </Box>
+        <MapInfoBottom map={map} />
+      </div>
+    </div>
   );
 }
+
+const MapInfoBottom = ({ map }: MapInfoProps) => {
+  return (
+    <div className="mr-3 flex w-fit justify-end md:justify-between lg:w-[98%]">
+      <div className="mr-2 flex items-center gap-2">
+        <MapBadge>
+          <span className="hidden text-xs sm:inline-block">★</span>
+          {(map.difficulty!.roma_kpm_median / 100).toFixed(1)}
+        </MapBadge>
+        <MapBadge className="hidden md:block">{formatTime(map.difficulty!.total_time)}</MapBadge>
+      </div>
+      <div className="flex">
+        <RankingCountIcon key={map.results[0]?.rank} myRank={map.results[0]?.rank} rankingCount={map.ranking_count} />
+        <LikeCountIcon mapId={map.id} isLiked={!!map.map_likes[0]?.is_liked} likeCount={map.like_count} />
+      </div>
+    </div>
+  );
+};
 
 export default MapInfo;

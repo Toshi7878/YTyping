@@ -1,60 +1,53 @@
 import VolumeRange from "@/components/share-components/VolumeRange";
-import { useUserAgent } from "@/util/useUserAgent";
-import { Box, Flex } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { usePlayer } from "../../atom/refAtoms";
-import { useResultDialogDisclosure, useSceneState } from "../../atom/stateAtoms";
-import useSceneControl from "../../hooks/sceneControl";
-import start from "../../img/control.png";
-import gear from "../../img/gear.png";
-import metronome from "../../img/metronome.png";
-import reportPencil from "../../img/report--pencil.png";
-import trophy from "../../img/trophy.png";
+import start from "../../_img/control.png";
+import metronome from "../../_img/metronome.png";
+import reportPencil from "../../_img/report--pencil.png";
+import trophy from "../../_img/trophy.png";
+import { usePlayer } from "../../_lib/atoms/refAtoms";
+import { useResultDialogDisclosure, useSceneState } from "../../_lib/atoms/stateAtoms";
+import useSceneControl from "../../_lib/hooks/sceneControl";
 import LinkMenuButton from "./menu-item/LinkMenuButton";
 import MenuButton from "./menu-item/MenuButton";
 import MenuSpeedButton from "./menu-item/MenuSpeedButton";
 import ResultDialog from "./ResultDialog";
-import SettingCard from "./setting-card/SettingCard";
 
 const MenuBar = () => {
   const { id: mapId } = useParams();
   const { readPlayer } = usePlayer();
   const { handleStart, handleEnd } = useSceneControl();
   const scene = useSceneState();
-  const userAgent = useUserAgent();
 
   const resultDialogDisclosure = useResultDialogDisclosure();
   const [isCardVisible, setIsCardVisible] = useState(false);
 
   return (
     <>
-      <Box id="menu_bar" bg="background.card">
-        <Flex justifyContent="space-between" mx={4} flexDirection={{ base: "column", lg: "row" }}>
-          <Flex flexDirection={{ base: "column", lg: "row" }}>
-            {!userAgent.isMobile && <VolumeRange player={readPlayer()} />}
-            <MenuSpeedButton isDisabled={true} image={metronome} title="倍速" />
-          </Flex>
+      <div id="menu_bar" className="bg-card">
+        <div className="mx-4 flex flex-col justify-between lg:flex-row">
+          <div className="flex flex-col lg:flex-row">
+            <VolumeRange player={readPlayer()} />
+            <MenuSpeedButton disabled={true} image={metronome} title="倍速" />
+          </div>
 
-          <Flex justifyContent="space-between" width={{ base: "100%", lg: "20%" }}>
-            <MenuButton image={start} isDisabled={scene === "play"} onClick={handleStart} title="開始" />
-            <MenuButton image={trophy} isDisabled={scene !== "play"} onClick={handleEnd} title="終了" />
+          <div className="flex w-full justify-between lg:w-1/5">
+            <MenuButton image={start} disabled={scene === "play"} onClick={handleStart} title="開始" />
+            <MenuButton image={trophy} disabled={scene !== "play"} onClick={handleEnd} title="終了" />
             <MenuButton
-              isDisabled={scene === "ready"}
+              disabled={scene === "ready"}
               onClick={resultDialogDisclosure.onOpen}
               image={reportPencil}
               title="採点結果"
             />
-          </Flex>
+          </div>
 
-          <Flex width={{ base: "100%", lg: "30%" }} justifyContent="flex-end">
-            <MenuButton image={gear} title="設定" onClick={() => setIsCardVisible(true)} />
+          <div className="flex w-full justify-end lg:w-[30%]">
             <LinkMenuButton title="タイピングページに戻る" href={`/type/${mapId}`} />
-          </Flex>
-        </Flex>
-      </Box>
+          </div>
+        </div>
+      </div>
       <ResultDialog isOpen={resultDialogDisclosure.open} onClose={resultDialogDisclosure.onClose} />
-      <SettingCard isCardVisible={isCardVisible} setIsCardVisible={setIsCardVisible} />
     </>
   );
 };
