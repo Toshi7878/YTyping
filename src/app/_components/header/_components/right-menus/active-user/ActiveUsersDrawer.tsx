@@ -59,7 +59,7 @@ const ActiveUsersDrawer = () => {
 
                 return (
                   <TableRow key={user.id} className="border-border/30 border-b">
-                    <TableCell className="px-0 py-2">
+                    <TableCell className="px-0 py-2" width={100}>
                       <TooltipWrapper label={user.name}>
                         <Link href={`/user/${user.id}`} className="block truncate px-3 py-4 text-sm hover:underline">
                           {user.name}
