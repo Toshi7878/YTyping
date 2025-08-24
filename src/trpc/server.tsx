@@ -7,6 +7,7 @@ import { cache } from "react";
 import type { AppRouter } from "@/server/api/root";
 import { appRouter } from "@/server/api/root";
 
+import { createCallerFactory } from "@/server/api/trpc";
 import { auth } from "@/server/auth";
 import { prisma } from "@/server/db";
 import { createQueryClient } from "./query-client";
@@ -30,6 +31,8 @@ const createContext = cache(async () => {
 });
 
 const getQueryClient = cache(createQueryClient);
+
+export const serverApi = createCallerFactory(appRouter)(createContext);
 
 export const trpc = createTRPCOptionsProxy<AppRouter>({
   router: appRouter,
