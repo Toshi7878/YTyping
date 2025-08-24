@@ -1,6 +1,8 @@
 "use client";
 import { useCanUploadState } from "@/app/edit/_lib/atoms/stateAtoms";
 import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useHasMapUploadPermission";
+
+// eslint-disable-next-line no-restricted-imports
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";

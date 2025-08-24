@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import useBreakpoint_ from "use-breakpoint";
 
 const BREAKPOINTS = { mobile: 0, tablet: 768, desktop: 1024 };
