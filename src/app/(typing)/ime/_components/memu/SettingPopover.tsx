@@ -2,7 +2,7 @@ import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { LabeledInput } from "@/components/ui/input/labeled-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useState } from "react";

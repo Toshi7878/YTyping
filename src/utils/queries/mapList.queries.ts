@@ -1,7 +1,7 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { QUERY_KEYS } from "@/config/globalConst";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import type { Session } from "next-auth";

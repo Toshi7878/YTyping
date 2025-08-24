@@ -1,5 +1,5 @@
 import { fetchBackupMap } from "@/lib/db";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { queryOptions } from "@tanstack/react-query";
 
 export const useMapQueries = () => {

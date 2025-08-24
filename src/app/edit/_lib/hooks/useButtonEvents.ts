@@ -11,7 +11,7 @@ import {
 } from "../atoms/stateAtoms";
 
 import { useBackupNewMap } from "@/lib/db";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { MapLine } from "@/types/map";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";

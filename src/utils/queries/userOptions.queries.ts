@@ -1,4 +1,4 @@
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 
 const INITIAL_DATA = {
   custom_user_active_state: "ONLINE" as const,

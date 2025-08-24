@@ -11,7 +11,7 @@ import { TagInputFormField } from "@/components/ui/input/tag-input";
 import Link from "@/components/ui/link/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { ParseMap } from "@/utils/parse-map/parseMap";
