@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { getBaseUrl } from "@/utils/getBaseUrl";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useInputTextarea, usePlayer, useUserStats } from "../../_lib/atoms/refAtoms";
@@ -66,7 +67,7 @@ const SceneView = () => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
         navigator.sendBeacon(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-ime-typing-stats`,
+          `${getBaseUrl()}/api/update-user-ime-typing-stats`,
           JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) }),
         );
 
@@ -75,7 +76,7 @@ const SceneView = () => {
     };
     const handleBeforeunload = () => {
       navigator.sendBeacon(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-ime-typing-stats`,
+        `${getBaseUrl()}/api/update-user-ime-typing-stats`,
         JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) }),
       );
 

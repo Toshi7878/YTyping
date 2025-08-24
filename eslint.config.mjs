@@ -87,6 +87,11 @@ export default [
               name: "next/link",
               message: "next/linkからのLinkコンポーネントのインポートは禁止されています。",
             },
+            {
+              name: "use-breakpoint",
+              message:
+                "use-breakpointパッケージからのインポートは禁止されています。代わりに@/lib/useBreakPointを使用してください。",
+            },
           ],
         },
       ],

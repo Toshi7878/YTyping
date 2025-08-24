@@ -4,6 +4,7 @@ import { infiniteQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import type { ResultCardInfo } from "../../app/timeline/_lib/type";
+import { getBaseUrl } from "../getBaseUrl";
 
 export const resultListQueries = {
   infiniteResultList: (searchParams: ReadonlyURLSearchParams) => {
@@ -44,7 +45,7 @@ interface GetResultListParams {
 }
 
 async function getResultList({ page, params }: GetResultListParams): Promise<ResultCardInfo[]> {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users-result-list`, {
+  const response = await axios.get(`${getBaseUrl()}/api/users-result-list`, {
     params: {
       page,
       ...params,

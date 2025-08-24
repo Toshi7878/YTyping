@@ -14,7 +14,7 @@ const ReadyPracticeButton = () => {
   return (
     <Button
       variant="outline"
-      className="hover:bg-secondary/80 h-auto px-16 py-6 text-5xl md:text-3xl"
+      className="h-auto px-16 py-6 text-5xl md:text-3xl"
       onClick={
         map
           ? async () => {

@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { z } from "@/validator/z";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory, SafetySetting } from "@google/generative-ai";
 import { TRPCError } from "@trpc/server";
@@ -21,7 +22,7 @@ const SAFETY_SETTINGS: SafetySetting[] = [
 ];
 
 const MODEL = "gemini-1.5-pro";
-const GCP_API_KEY = process.env.GCP_AUTH_KEY as string;
+const apiKey = env.GCP_AUTH_KEY;
 
 interface GeminiMapInfo {
   title: string;
@@ -32,7 +33,7 @@ interface GeminiMapInfo {
 
 export const geminiRouter = {
   generateMapInfo: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input }) => {
-    const genAI = new GoogleGenerativeAI(GCP_API_KEY);
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     const model = genAI.getGenerativeModel({
       model: MODEL,
@@ -81,7 +82,7 @@ interface YouTubeInfo {
 const getYouTubeInfo = async (videoId: string): Promise<YouTubeInfo> => {
   try {
     const videoResponse = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${GCP_API_KEY}`
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`,
     );
 
     if (!videoResponse.ok) {

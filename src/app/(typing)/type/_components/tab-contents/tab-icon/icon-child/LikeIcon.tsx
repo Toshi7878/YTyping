@@ -2,6 +2,7 @@ import { useIsLikeState, useSetIsLikeState as useSetIsLiked } from "@/app/(typin
 import { LikeButton } from "@/components/share-components/like-button/LikeButton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { INITIAL_STATE } from "@/config/globalConst";
+import { useBreakPoint } from "@/lib/useBreakPoint";
 import { cn } from "@/lib/utils";
 import { toggleLikeServerAction } from "@/server/actions/toggleLikeActions";
 import { UploadResult } from "@/types";
@@ -13,6 +14,7 @@ const LikeIcon = () => {
 
   const isLiked = useIsLikeState();
   const setIsLiked = useSetIsLiked();
+  const { isSmScreen } = useBreakPoint();
 
   const toggleLikeAction = (state: UploadResult): Promise<UploadResult> => {
     const newHasLike = !isLiked;
@@ -30,12 +32,12 @@ const LikeIcon = () => {
   const [state, formAction] = useActionState(toggleLikeAction, INITIAL_STATE);
 
   return (
-    <TooltipWrapper label="譜面にいいね" delayDuration={500} className="relative top-3.5">
+    <TooltipWrapper label="譜面にいいね" delayDuration={500} className="relative top-1">
       <form action={formAction}>
         <LikeButton
-          size={64}
+          size={isSmScreen ? 96 : 64}
           defaultLiked={isLiked}
-          className={cn("bottom-1 cursor-pointer", isLiked ? "hover:opacity-80" : "hover:text-foreground/90")}
+          className={cn("bottom-3.5 cursor-pointer", isLiked ? "hover:opacity-80" : "hover:text-foreground/90")}
         />
       </form>
     </TooltipWrapper>
