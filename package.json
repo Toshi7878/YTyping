@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --cache",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --cache",
-    "tsc": "tsc",
+    "typecheck": "tsc --noEmit",
     "reset": "rm -rf .next .tsbuildinfo node_modules package-lock.json && npm install",
     "db:migrate": "dotenv -e .env.local -- npx prisma migrate dev --name init",
     "studio": "dotenv -e .env.local -- npx prisma studio",
