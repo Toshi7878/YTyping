@@ -31,7 +31,7 @@ const SearchPopover = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button>詳細フィルター</Button>
+        <Button variant="outline">詳細フィルター</Button>
       </PopoverTrigger>
       <PopoverContent className="border-border w-xl" align="start">
         <SearchModeRadioCardGroup />
