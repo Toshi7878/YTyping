@@ -52,10 +52,10 @@ function Ready({ className }: ReadyProps) {
 
   return (
     <div className={cn("flex flex-col justify-between", className)}>
-      <H3>Enterキー / 動画をクリックして開始</H3>
-      <div className="flex justify-center text-center text-3xl">
-        <ReadyInputModeRadioCards />
-      </div>
+      <H3 className="text-4xl md:text-2xl">Enterキー / 動画をクリックして開始</H3>
+
+      <ReadyInputModeRadioCards />
+
       <div className="flex justify-between text-center">
         <ReadyPlaySpeed speedUpButtonRef={speedUpButtonRef as any} speedDownButtonRef={speedDownButtonRef as any} />
         <ReadyPracticeButton />
