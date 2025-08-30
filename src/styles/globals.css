@@ -29,11 +29,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -108,7 +103,7 @@
   --word-completed: oklch(0.7864 0.1143 186.56);
   --word-nextWord: oklch(0.683 0 0);
 
-  --success: oklch(0.5521 0.1022 158.18);
+  --success: oklch(0.6576 0.1796 158.18);
   --success-foreground: oklch(0.985 0 0);
   --error: oklch(0.5897 0.1964 19.86);
 
@@ -117,13 +112,9 @@
   --warning-foreground: oklch(0.985 0 0);
   --info: oklch(0.8021 0.1383 209.06);
   --info-foreground: oklch(0.985 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
 
   --ring: oklch(0.7547 0.1375 239.62);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -134,34 +125,44 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-@layer base {
-  body {
-    @apply bg-background text-foreground;
-    color-scheme: dark;
-  }
-}
-
-.map-card-hover:hover {
-  box-shadow:
-    0 8px 13px -3px color-mix(in oklch, var(--color-secondary-light) 50%, transparent),
-    0 3px 5px -2px color-mix(in oklch, var(--color-secondary-light) 30%, transparent) !important;
-}
-
-@keyframes indicator-bar {
-  0% {
-    width: 0;
-  }
-  50% {
-    width: 90%;
-  }
-  100% {
-    width: 100%;
-  }
-}
-
 @layer utilities {
-  .indicator {
-    animation: indicator-bar 800ms ease-in-out forwards;
+  .input-mode-outline-text {
+    text-shadow:
+      0.5px 0.5px 0px rgba(0, 0, 0, 0.5),
+      -0.5px 0.5px 0px rgba(0, 0, 0, 0.5),
+      0.5px -0.5px 0px rgba(0, 0, 0, 0.5),
+      -0.5px -0.5px 0px rgba(0, 0, 0, 0.5),
+      0.5px 0px 0px rgba(0, 0, 0, 0.5),
+      0px 0.5px 0px rgba(0, 0, 0, 0.5),
+      -0.5px 0px 0px rgba(0, 0, 0, 0.5),
+      0px -0.5px 0px rgba(0, 0, 0, 0.5);
+  }
+
+  .outline-text {
+    text-shadow:
+      1px 1px 0px #000000,
+      -1px 1px 0px #000000,
+      1px -1px 0px #000000,
+      -1px -1px 0px #000000,
+      1px 0px 0px #000000,
+      0px 1px 0px #000000,
+      -1px 0px 0px #000000,
+      0px -1px 0px #000000;
+  }
+
+  .word-font {
+    font-family:
+      Segoe UI,
+      "Yu Gothic",
+      "YuGothic",
+      sans-serif;
+    font-weight: 600;
+  }
+
+  .map-card-hover:hover {
+    box-shadow:
+      0 8px 13px -3px color-mix(in oklch, var(--color-secondary-light) 50%, transparent),
+      0 3px 5px -2px color-mix(in oklch, var(--color-secondary-light) 30%, transparent) !important;
   }
 }
 
@@ -171,13 +172,28 @@
     background-color: var(--background);
     color: var(--foreground);
   }
+
+  body {
+    @apply bg-background text-foreground;
+    color-scheme: dark;
+  }
 }
 
-/*
-Select > コンボボックス表示時スクロールバーが非表示になる
-@see https://github.com/shadcn-ui/ui/issues/4227
-*/
-html body[data-scroll-locked] {
-  overflow: visible !important;
-  margin-right: 0 !important;
+#main_word::before,
+#sub_word::before,
+#lyrics::before,
+#next_lyrics::before,
+#next_kpm::before {
+  content: "\200B";
+}
+
+progress {
+  appearance: none;
+  height: 0.6rem;
+  outline: solid 1.5px #000;
+  border-radius: 5px;
+}
+
+progress::-webkit-progress-bar {
+  background: color-mix(in oklch, var(--color-primary), transparent 90%);
 }

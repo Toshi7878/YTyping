@@ -1,4 +1,4 @@
-import { Ticker } from "pixi.js";
+import { Ticker } from "@pixi/ticker";
 import { useReadMap } from "../atoms/mapReducerAtom";
 import { usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useReadEditUtils, useSetIsTimeInputValid, useSetTimeCount, useSetTimeRangeValue } from "../atoms/stateAtoms";

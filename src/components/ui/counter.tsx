@@ -29,12 +29,12 @@ const counterVariants = cva("", {
     { size: "lg", element: "container", class: "px-3" },
     // Value
     { size: "sm", element: "value", class: "px-1 text-xs" },
-    { size: "default", element: "value", class: "px-2 text-xs" },
+    { size: "default", element: "value", class: "px-2 text-md" },
     { size: "lg", element: "value", class: "px-3 text-md" },
     // Label
     { size: "sm", element: "label", class: "text-sm" },
     { size: "default", element: "label", class: "text-md" },
-    { size: "lg", element: "label", class: "text-lg" },
+    { size: "lg", element: "label", class: "text-md" },
     // Button
     { size: "sm", element: "button", class: "p-0.5 w-6 text-sm" },
     { size: "default", element: "button", class: "p-1 w-6 text-md" },

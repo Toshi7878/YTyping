@@ -3,7 +3,6 @@ import { useMapState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { cn } from "@/lib/utils";
 import { useWindowFocus } from "@/utils/global-hooks/windowFocus";
 import { useEffect, useRef } from "react";
-import "../../../_lib/style/fKey.scss";
 import ReadyInputModeRadioCards from "./ready-child/ReadyInputModeRadioCards";
 import ReadyPlaySpeed from "./ready-child/ReadyPlaySpeed";
 import ReadyPracticeButton from "./ready-child/ReadyPracticeButton";

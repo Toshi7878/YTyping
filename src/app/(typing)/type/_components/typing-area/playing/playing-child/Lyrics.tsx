@@ -12,7 +12,7 @@ const Lyrics = () => {
       className={cn(
         "flex w-full max-w-[103%] items-end whitespace-nowrap",
         "text-6xl font-bold md:text-[2.5rem]",
-        "lyrics-font",
+        "font-[system-ui]",
         userOptionsAtom.line_completed_display === "NEXT_WORD" && "[.word-area-completed_+_&]:invisible",
       )}
     >
