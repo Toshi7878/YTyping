@@ -28,9 +28,9 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-fit">
         {loginMenuItem.map((item, index) => (
-          <DropdownMenuItem key={index} asChild>
-            <Link href={item.href}>{item.title}</Link>
-          </DropdownMenuItem>
+          <Link href={item.href} key={index}>
+            <DropdownMenuItem>{item.title}</DropdownMenuItem>
+          </Link>
         ))}
 
         <DropdownMenuSeparator />
