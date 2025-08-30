@@ -3,7 +3,6 @@ import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import Link from "next/link";
 import { HTMLAttributes } from "react";
 import { MapResultStatus } from "./child/MapResultStatus";
@@ -39,18 +38,16 @@ interface MapInfoProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 function MapInfo({ map, isToggledInputMode, className, ...rest }: MapInfoProps) {
-  const handleLinkClick = useLinkClick();
-
   return (
     <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
       <TooltipWrapper label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}>
-        <Link href={`/type/${map.id}`} onClick={handleLinkClick} className="text-secondary block hover:underline">
+        <Link href={`/type/${map.id}`} className="text-secondary block hover:underline">
           <div className="truncate text-sm font-bold sm:text-base">{`${map.title} / ${map.artist_name}`}</div>
         </Link>
       </TooltipWrapper>
       <div className="truncate text-xs">
         制作者:{" "}
-        <Link href={`/user/${map.creator.id}`} onClick={handleLinkClick} className="text-secondary hover:underline">
+        <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline">
           {map.creator.name}
         </Link>
       </div>

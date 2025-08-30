@@ -12,7 +12,6 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
-import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { ParseMap } from "@/utils/parse-map/parseMap";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
@@ -327,10 +326,9 @@ const PreviewTimeInput = () => {
 
 const TypeLinkButton = () => {
   const { id: mapId } = useParams<{ id: string }>();
-  const handleLinkClick = useLinkClick();
 
   return (
-    <Link href={`/type/${mapId}`} onClick={handleLinkClick}>
+    <Link href={`/type/${mapId}`}>
       <Button size="default" variant="outline">
         タイピングページに移動
       </Button>

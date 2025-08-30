@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -16,8 +15,7 @@ interface UserProfileCardProps {
 }
 
 const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
-  const handleLinkClick = useLinkClick();
-  const { id: userId } = useParams() as { id: string };
+  const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
   const myProfile = session?.user.id === userId;
 
@@ -39,7 +37,7 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
         {myProfile && (
           <TooltipWrapper label="プロフィール編集ページに移動">
             <Button variant="outline" size="icon" asChild>
-              <Link href="/user/settings" onClick={handleLinkClick}>
+              <Link href="/user/settings">
                 <MdOutlineEdit className="h-4 w-4" />
                 <span className="sr-only">編集</span>
               </Link>

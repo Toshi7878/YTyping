@@ -5,7 +5,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import { useSession } from "next-auth/react";
@@ -153,7 +152,6 @@ const MyHideOptionInfo = () => {
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
   const { id: userId } = useParams() as { id: string };
-  const handleLinkClick = useLinkClick();
 
   return (
     <InfoCard title="統計情報は非公開に設定されています" className="mb-4">
@@ -162,23 +160,17 @@ const MyHideOptionInfo = () => {
           <p>現在プロフィールは自分のみが閲覧できます</p>
           {!isHidePreview ? (
             <Button size="sm" asChild>
-              <Link href="?hidePreview=true" onClick={handleLinkClick}>
-                他の人が見ているページを見る
-              </Link>
+              <Link href="?hidePreview=true">他の人が見ているページを見る</Link>
             </Button>
           ) : (
             <Button size="sm" asChild>
-              <Link href={`/user/${userId}`} onClick={handleLinkClick}>
-                統計情報を表示
-              </Link>
+              <Link href={`/user/${userId}`}>統計情報を表示</Link>
             </Button>
           )}
         </div>
         <div className="flex justify-end">
           <Button size="sm" variant="outline" asChild>
-            <Link href="/user/settings#user-settings" onClick={handleLinkClick}>
-              設定を変更
-            </Link>
+            <Link href="/user/settings#user-settings">設定を変更</Link>
           </Button>
         </div>
       </div>

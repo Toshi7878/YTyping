@@ -1,4 +1,3 @@
-import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import Link from "next/link";
 
 interface UserLInkTextProps {
@@ -7,10 +6,8 @@ interface UserLInkTextProps {
 }
 
 const UserLinkText = ({ userId, userName }: UserLInkTextProps) => {
-  const handleLinkClick = useLinkClick();
-
   return (
-    <Link href={`/user/${userId}`} className="text-secondary relative z-1 hover:underline" onClick={handleLinkClick}>
+    <Link href={`/user/${userId}`} className="text-secondary relative z-1 hover:underline">
       {userName}
     </Link>
   );

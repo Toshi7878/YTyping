@@ -4,7 +4,6 @@ import RankingCountIcon from "@/components/share-components/map-count-icon/Ranki
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { formatTime } from "@/utils/formatTime";
-import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import Link from "next/link";
 import MapBadge from "./MapBadge";
 import MapCreateUser from "./MapCreateUser";
@@ -13,8 +12,6 @@ interface MapInfoProps {
   map: RouterOutPuts["mapList"]["getByVideoId"][number];
 }
 function MapInfo({ map }: MapInfoProps) {
-  const handleLinkClick = useLinkClick();
-
   const musicSourceDisplay = map.music_source ? `【${map.music_source}】` : "";
 
   return (
@@ -23,7 +20,6 @@ function MapInfo({ map }: MapInfoProps) {
         <TooltipWrapper label={`${map.title} / ${map.artist_name}${musicSourceDisplay}`}>
           <Link
             href={`/type/${map.id}`}
-            onClick={handleLinkClick}
             className="text-secondary z-1 truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
           >
             {map.title}
