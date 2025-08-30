@@ -44,9 +44,9 @@ const LinksDropdownMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-fit">
         {leftMenuItem.map((menuItem, index) => (
-          <DropdownMenuItem key={index} asChild>
-            <Link href={menuItem.href}>{menuItem.title}</Link>
-          </DropdownMenuItem>
+          <Link href={menuItem.href} key={index}>
+            <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
+          </Link>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>

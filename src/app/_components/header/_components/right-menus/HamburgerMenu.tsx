@@ -46,9 +46,9 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
             }
             if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
               return (
-                <DropdownMenuItem key={index} asChild>
-                  <Link href={menuItem.href}>{menuItem.title}</Link>
-                </DropdownMenuItem>
+                <Link href={menuItem.href} key={index}>
+                  <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
+                </Link>
               );
             }
             return null;
@@ -59,9 +59,9 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
           {session?.user?.name ? (
             <>
               {loginMenuItem.map((item, index) => (
-                <DropdownMenuItem key={index} asChild>
-                  <Link href={item.href}>{item.title}</Link>
-                </DropdownMenuItem>
+                <Link href={item.href} key={index}>
+                  <DropdownMenuItem>{item.title}</DropdownMenuItem>
+                </Link>
               ))}
               <DropdownMenuItem onSelect={() => formAction()}>ログアウト</DropdownMenuItem>
             </>

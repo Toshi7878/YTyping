@@ -10,6 +10,10 @@ export const { auth, handlers, signIn } = NextAuth({
   ...authConfig,
   secret: env.AUTH_SECRET,
   session: { strategy: "jwt" },
+  pages: {
+    error: "/",
+    newUser: "/user/register",
+  },
   callbacks: {
     async signIn({ user, account, profile }) {
       const email_hash = CryptoJS.MD5(user.email!).toString();
