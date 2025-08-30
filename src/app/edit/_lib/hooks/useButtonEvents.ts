@@ -10,7 +10,7 @@ import {
   useSetWord,
 } from "../atoms/stateAtoms";
 
-import { useBackupNewMap } from "@/lib/db";
+import { useBackupNewMap } from "@/lib/indexed-db";
 import { useTRPC } from "@/trpc/provider";
 import { MapLine } from "@/types/map";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";

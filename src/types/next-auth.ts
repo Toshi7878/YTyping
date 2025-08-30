@@ -10,5 +10,3 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 }
-
-export type AuthProvider = "discord" | "google";

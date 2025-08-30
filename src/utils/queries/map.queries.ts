@@ -1,4 +1,4 @@
-import { fetchBackupMap } from "@/lib/db";
+import { fetchBackupMap } from "@/lib/indexed-db";
 import { useTRPC } from "@/trpc/provider";
 import { queryOptions } from "@tanstack/react-query";
 

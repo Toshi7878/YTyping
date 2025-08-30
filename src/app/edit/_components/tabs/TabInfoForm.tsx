@@ -9,7 +9,7 @@ import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
+import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/indexed-db";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
 import { ParseMap } from "@/utils/parse-map/parseMap";
