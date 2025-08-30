@@ -17,13 +17,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { LabeledRadioGroup, LabeledRadioItem } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBreakPoint } from "@/lib/useBreakPoint";
 import { useTRPC } from "@/trpc/provider";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import SettingIcon from "../icon-child/SettingIcon";
+import { IoMdSettings } from "react-icons/io";
 import UserShortcutKeyCheckbox from "./child/UserShortcutKeyCheckbox";
 import UserSoundEffectCheckbox from "./child/UserSoundEffectCheckbox";
 import UserTimeOffsetChange from "./child/UserTimeOffsetChange";
@@ -89,7 +90,7 @@ const SettingPopover = () => {
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
       <PopoverTrigger>
-        <SettingIcon />
+        <SettingButton />
       </PopoverTrigger>
       <PopoverContent
         className={isMdScreen ? "w-lg p-4" : "w-screen p-4"}
@@ -128,6 +129,18 @@ const SettingPopover = () => {
         <ResetSettingModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
       </PopoverContent>
     </Popover>
+  );
+};
+
+const SettingButton = () => {
+  return (
+    <TooltipWrapper label="設定" delayDuration={500}>
+      <Button variant="unstyled" size="icon" className="hover:text-foreground/90" asChild>
+        <div>
+          <IoMdSettings className="size-16 md:size-9" />
+        </div>
+      </Button>
+    </TooltipWrapper>
   );
 };
 
