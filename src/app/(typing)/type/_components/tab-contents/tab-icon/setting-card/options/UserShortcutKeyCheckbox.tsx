@@ -1,5 +1,6 @@
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select/select";
+import { H4 } from "@/components/ui/typography";
 import { $Enums } from "@prisma/client";
 
 const UserShortcutKeyCheckbox = () => {
@@ -15,35 +16,33 @@ const UserShortcutKeyCheckbox = () => {
   };
 
   return (
-    <div className="flex">
-      <div>
-        <label className="mb-2 block text-lg font-semibold">ショートカットキー設定</label>
-        <div className="mb-4 flex items-baseline gap-2">
-          <span className="mr-2">タイミング調整</span>
-          <Select value={time_offset_key} onValueChange={changeTimeOffsetKey}>
-            <SelectTrigger className="w-fit">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="CTRL_LEFT_RIGHT">Ctrl+←→</SelectItem>
-              <SelectItem value="CTRL_ALT_LEFT_RIGHT">Ctrl+Alt+←→</SelectItem>
-              <SelectItem value="NONE">無効化</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className="mr-2">かな⇔ローマ字切り替え</span>
-          <Select value={toggle_input_mode_key} onValueChange={changeInputModeKey}>
-            <SelectTrigger className="w-fit">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALT_KANA">Alt+Kana</SelectItem>
-              <SelectItem value="TAB">Tab</SelectItem>
-              <SelectItem value="NONE">無効化</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+    <div className="flex flex-col gap-2">
+      <H4>ショートカットキー設定</H4>
+      <div className="mb-4 flex items-baseline gap-2">
+        <span className="mr-2">タイミング調整</span>
+        <Select value={time_offset_key} onValueChange={changeTimeOffsetKey}>
+          <SelectTrigger className="w-fit">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="CTRL_LEFT_RIGHT">Ctrl+←→</SelectItem>
+            <SelectItem value="CTRL_ALT_LEFT_RIGHT">Ctrl+Alt+←→</SelectItem>
+            <SelectItem value="NONE">無効化</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex items-baseline gap-2">
+        <span className="mr-2">かな⇔ローマ字切り替え</span>
+        <Select value={toggle_input_mode_key} onValueChange={changeInputModeKey}>
+          <SelectTrigger className="w-fit">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALT_KANA">Alt+Kana</SelectItem>
+            <SelectItem value="TAB">Tab</SelectItem>
+            <SelectItem value="NONE">無効化</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

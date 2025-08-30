@@ -110,7 +110,7 @@ const MainSettingTab = () => {
               label="判定文字追加を有効化"
               name="enableAddSymbol"
               defaultChecked={userImeTypeOptions.enable_add_symbol}
-              onCheckedChange={(value) => {
+              onCheckedChange={(value: boolean) => {
                 setUserImeTypeOptions({
                   enable_add_symbol: value,
                 });
@@ -132,7 +132,7 @@ const MainSettingTab = () => {
           label="英語スペースを有効化"
           name="enableEngSpace"
           defaultChecked={userImeTypeOptions.enable_eng_space}
-          onCheckedChange={(value) => {
+          onCheckedChange={(value: boolean) => {
             setUserImeTypeOptions({
               enable_eng_space: value,
             });
@@ -142,7 +142,7 @@ const MainSettingTab = () => {
           label="英語大文字判定を有効化"
           name="enableEngUpperCase"
           defaultChecked={userImeTypeOptions.enable_eng_upper_case}
-          onCheckedChange={(value) => {
+          onCheckedChange={(value: boolean) => {
             setUserImeTypeOptions({
               enable_eng_upper_case: value,
             });
@@ -156,7 +156,7 @@ const MainSettingTab = () => {
         label="次の歌詞を表示"
         name="enableNextLyrics"
         defaultChecked={userImeTypeOptions.enable_next_lyrics}
-        onCheckedChange={(value) => {
+        onCheckedChange={(value: boolean) => {
           setUserImeTypeOptions({
             enable_next_lyrics: value,
           });
@@ -167,7 +167,7 @@ const MainSettingTab = () => {
         label="動画を大きく表示"
         name="enableLargeVideoDisplay"
         defaultChecked={userImeTypeOptions.enable_large_video_display}
-        onCheckedChange={(value) => {
+        onCheckedChange={(value: boolean) => {
           setUserImeTypeOptions({
             enable_large_video_display: value,
           });
