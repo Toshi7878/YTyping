@@ -33,6 +33,7 @@ const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonPro
         likeOptimisticState.hasLike ? "text-like" : "text-muted-foreground",
         session?.user.id && "hover:bg-like/40 hover:cursor-pointer",
       )}
+      suppressHydrationWarning
     >
       <div className="relative top-[10.25px] -m-1 -mt-4">
         <LikeButton defaultLiked={likeOptimisticState.hasLike} size={34} likeButtonRef={likeButtonRef as any} />

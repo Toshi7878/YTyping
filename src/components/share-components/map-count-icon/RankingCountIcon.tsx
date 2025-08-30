@@ -1,3 +1,4 @@
+"use client";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
@@ -27,7 +28,7 @@ const RankingCountIcon = ({ myRank, rankingCount }: RankingCountProps) => {
 
   return (
     <TooltipWrapper label={`自分の順位: ${myRank}位`} disabled={!myRank || !session}>
-      <div className={cn("z-1 mr-1 flex items-baseline", getColorClass())}>
+      <div className={cn("z-1 mr-1 flex items-baseline", getColorClass())} suppressHydrationWarning>
         <div className="relative top-[3px] mr-1">
           <FaRankingStar size={20} />
         </div>

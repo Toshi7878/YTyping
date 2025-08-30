@@ -31,7 +31,7 @@ function MapInfo({ map }: MapInfoProps) {
         </TooltipWrapper>
 
         <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
-          {map.artist_name || ""}
+          {map.artist_name}
           {musicSourceDisplay}
         </div>
       </div>
