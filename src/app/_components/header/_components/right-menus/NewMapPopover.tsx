@@ -20,14 +20,12 @@ const formSchema = z.object({
   videoId: z.string(),
 });
 
-type FormData = z.infer<typeof formSchema>;
-
 export default function NewMapPopover() {
   const [open, setOpen] = useState(false);
   const backupData = useGetBackupTitleVideoIdLiveQuery();
   const router = useRouter();
 
-  const form = useForm<FormData>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       videoId: "",
@@ -37,7 +35,7 @@ export default function NewMapPopover() {
   const watchedVideoId = form.watch("videoId");
   const extractedVideoId = extractYouTubeVideoId(watchedVideoId);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
     const videoId = extractYouTubeVideoId(data.videoId);
     if (videoId) {
       router.push(`/edit?new=${videoId}`);

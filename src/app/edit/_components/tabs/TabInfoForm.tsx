@@ -60,7 +60,7 @@ const TabInfoForm = () => {
   const mapDispatch = useMapReducer();
   const setCanUpload = useSetCanUpload();
 
-  const form = useForm<z.infer<typeof mapInfoFormSchema>>({
+  const form = useForm({
     resolver: zodResolver(mapInfoFormSchema),
     shouldUnregister: false,
     defaultValues: {

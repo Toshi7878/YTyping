@@ -17,7 +17,7 @@ interface OptionSettingFormProps {
 }
 
 export const OptionSettingForm = ({ userOptions }: OptionSettingFormProps) => {
-  const form = useForm<UserOptionFormValues>({
+  const form = useForm({
     resolver: zodResolver(userOptionSchema),
     defaultValues: {
       custom_user_active_state: userOptions?.custom_user_active_state ?? "ONLINE",
