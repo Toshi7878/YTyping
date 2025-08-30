@@ -1,5 +1,6 @@
 import { usePlayer } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { useWindowFocus } from "@/utils/global-hooks/windowFocus";
 import { useEffect, useRef } from "react";
@@ -51,7 +52,7 @@ function Ready({ className }: ReadyProps) {
 
   return (
     <div className={cn("flex flex-col justify-between", className)}>
-      <div className="text-4xl font-bold select-none md:text-2xl">Enterキー / 動画をクリックして開始</div>
+      <H3>Enterキー / 動画をクリックして開始</H3>
       <div className="flex justify-center text-center text-3xl">
         <ReadyInputModeRadioCards />
       </div>

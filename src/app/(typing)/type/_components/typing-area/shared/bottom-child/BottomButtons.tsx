@@ -10,18 +10,37 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
+import { Button } from "@/components/ui/button";
+import Link from "@/components/ui/link";
 import { cn } from "@/lib/utils";
+import { useParams } from "next/navigation";
 import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";
 
 const BottomButtons = () => {
   const isYTStarted = useYTStartedState();
   const sceneGroup = useSceneGroupState();
-  const isPlayed = isYTStarted && sceneGroup === "Playing";
+  const isReady = sceneGroup === "Ready";
+  const isPlaying = isYTStarted && sceneGroup === "Playing";
+  const { id: mapId } = useParams<{ id: string }>();
+
   return (
-    <section className={cn("mx-3 mt-2 mb-4 flex w-full justify-between font-bold", !isPlayed && "invisible")}>
-      <SpeedButton />
-      <PracticeButtons />
-      <RetryButton />
+    <section
+      className={cn("mx-3 mt-2 mb-3 flex h-16 w-full justify-between font-bold md:h-10", isReady && "justify-end")}
+    >
+      {isReady && (
+        <Link href={`/ime/${mapId}`} replace>
+          <Button variant="outline" className="p-8 text-2xl md:p-2 md:text-base">
+            変換有りタイピング
+          </Button>
+        </Link>
+      )}
+      {isPlaying && (
+        <>
+          <SpeedButton />
+          <PracticeButtons />
+          <RetryButton />
+        </>
+      )}
     </section>
   );
 };

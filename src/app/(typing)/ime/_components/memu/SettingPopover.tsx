@@ -6,7 +6,6 @@ import { useTRPC } from "@/trpc/provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import gear from "../../_img/gear.png";
 import {
   useImeTypeOptionsState,
   useReadImeTypeOptions,
@@ -15,9 +14,12 @@ import {
   useSetMap,
 } from "../../_lib/atoms/stateAtoms";
 import { useParseImeMap } from "../../_lib/hooks/parseImeMap";
-import MenuButton from "./menu-item/MenuButton";
 
-const SettingPopover = () => {
+interface SettingPopoverProps {
+  triggerButton: React.ReactNode;
+}
+
+const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
   const trpc = useTRPC();
   const updateImeTypingOptions = useMutation(trpc.userTypingOption.updateImeTypeOptions.mutationOptions());
   const queryClient = useQueryClient();
@@ -55,9 +57,7 @@ const SettingPopover = () => {
 
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild>
-        <MenuButton image={gear} title="設定" />
-      </PopoverTrigger>
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent
         className="w-[600px] p-4"
         align="end"

@@ -1,10 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import Link from "@/components/ui/link";
 import { cn } from "@/lib/utils";
-import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
-import { useParams } from "next/navigation";
 import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_lib/atoms/stateAtoms";
 import End from "./end/End";
 import Playing from "./playing/Playing";
@@ -70,22 +66,11 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
 };
 
 const GameCardFooter = ({ className }: { className?: string }) => {
-  const sceneGroup = useSceneGroupState();
-  const { id: mapId } = useParams();
-  const handleLinkClick = useLinkClick();
-
   return (
     <CardFooter className={className}>
       <SkipGuideAndTotalTime />
       <TimeProgress id="total_progress" />
       <BottomButtons />
-      {sceneGroup === "Ready" && (
-        <Link href={`/ime/${mapId}`} onClick={(event) => handleLinkClick(event, "replace")}>
-          <Button variant="outline" className="absolute right-10 bottom-3 p-8 text-2xl md:p-2 md:text-base">
-            変換有りタイピング
-          </Button>
-        </Link>
-      )}
     </CardFooter>
   );
 };
