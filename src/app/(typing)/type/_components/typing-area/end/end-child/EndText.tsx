@@ -28,7 +28,7 @@ const EndText = () => {
           </>
         ) : myBestScore === 0 ? (
           <>初めての記録です！スコアは {status.score} です。</>
-        ) : status.score > myBestScore ? (
+        ) : status.score >= myBestScore ? (
           <>
             おめでとうございます！最高スコアが {myBestScore} から {status.score} に更新されました！
             <wbr />
