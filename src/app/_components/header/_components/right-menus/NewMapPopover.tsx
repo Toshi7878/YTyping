@@ -47,7 +47,7 @@ export default function NewMapPopover() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger>
         <TooltipWrapper label="譜面新規作成" delayDuration={600} className="relative bottom-3">
           <Button variant="unstyled" size="icon" className="hover:text-foreground">
             <RiAddBoxFill size={20} />
