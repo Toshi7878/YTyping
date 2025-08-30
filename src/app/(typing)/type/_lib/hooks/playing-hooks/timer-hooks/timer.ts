@@ -21,7 +21,7 @@ import {
   useSetTypingStatus,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/(typing)/type/_lib/hooks/playing-hooks/timer-hooks/displaySkipGuide";
-import { Ticker } from "pixi.js";
+import { Ticker } from "@pixi/ticker";
 import { LineData } from "../../../type";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";

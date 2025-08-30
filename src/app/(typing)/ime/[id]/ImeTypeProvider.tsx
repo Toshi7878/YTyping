@@ -1,7 +1,7 @@
 "use client";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
-import { RESET, useHydrateAtoms } from "jotai/utils";
+import { useHydrateAtoms } from "jotai/utils";
 import { useEffect } from "react";
 import { imeTypeOptionsAtom } from "../_lib/atoms/stateAtoms";
 import { getImeTypeAtomStore } from "../_lib/atoms/store";
@@ -10,6 +10,7 @@ interface ImeTypeProviderProps {
   children: React.ReactNode;
   userImeTypingOptions: RouterOutPuts["userTypingOption"]["getUserImeTypingOptions"];
 }
+
 const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProps) => {
   const imeTypeAtomStore = getImeTypeAtomStore();
 
@@ -24,7 +25,9 @@ const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProp
     };
   }, []);
 
-  useHydrateAtoms([[imeTypeOptionsAtom, userImeTypingOptions || RESET]], { store: imeTypeAtomStore });
+  useHydrateAtoms([[imeTypeOptionsAtom, userImeTypingOptions ?? imeTypeAtomStore.get(imeTypeOptionsAtom)]], {
+    store: imeTypeAtomStore,
+  });
 
   return <JotaiProvider store={imeTypeAtomStore}>{children}</JotaiProvider>;
 };
