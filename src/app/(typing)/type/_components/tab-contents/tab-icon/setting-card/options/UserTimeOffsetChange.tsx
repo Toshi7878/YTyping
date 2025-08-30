@@ -1,6 +1,6 @@
 "use client";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import CounterInput from "./child/CounterInput";
+import { CounterInput } from "@/components/ui/counter";
 
 const MAX_TIME_OFFSET = 1;
 const MIN_TIME_OFFSET = -1;
@@ -20,7 +20,8 @@ const UserTimeOffsetChange = () => {
       valueDigits={2}
       decrementTooltip="タイミングが早くなります"
       incrementTooltip="タイミングが遅くなります"
-      label={"全体タイミング調整"}
+      label="全体タイミング調整"
+      size="lg"
     />
   );
 };

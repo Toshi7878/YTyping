@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -62,15 +63,18 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
       style={buttonStyle}
       onClick={handleClick}
       type="submit"
+      suppressHydrationWarning
     >
       <div
         className={cn("like-base-64 absolute inset-0 flex items-center justify-center rounded-full")}
         style={backgroundStyle}
+        suppressHydrationWarning
       >
         <Heart
           className={cn(isLiked ? "fill-pink-400 text-pink-400" : "fill-transparent", getAnimationClass())}
           size={heartSize}
           strokeWidth={2.5}
+          suppressHydrationWarning
         />
       </div>
     </button>

@@ -1,6 +1,6 @@
 "use client";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import CounterInput from "./child/CounterInput";
+import { CounterInput } from "@/components/ui/counter";
 
 const MAX_SCROLL = 20;
 const MIN_SCROLL = 0;

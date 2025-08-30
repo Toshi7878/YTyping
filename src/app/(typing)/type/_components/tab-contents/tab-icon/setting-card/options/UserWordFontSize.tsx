@@ -1,8 +1,8 @@
 "use client";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Button } from "@/components/ui/button";
+import { CounterInput } from "@/components/ui/counter";
 import { MdRestartAlt } from "react-icons/md";
-import CounterInput from "./child/CounterInput";
 
 const FONT_SIZE_STEP = 1;
 const TOP_POSITION_STEP = 0.5;

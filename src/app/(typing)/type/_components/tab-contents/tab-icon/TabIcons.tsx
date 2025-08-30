@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import EditIcon from "./icon-child/EditIcon";
-import LikeIcon from "./icon-child/LikeIcon";
+import EditIcon from "./icons/EditIcon";
+import LikeIcon from "./icons/LikeIcon";
 import SettingPopover from "./setting-card/SettingPopover";
 
 export default function TabIcons({ className }: { className?: string }) {
