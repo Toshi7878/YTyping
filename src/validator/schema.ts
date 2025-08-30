@@ -2,6 +2,10 @@ import { custom_user_active_state, thumbnail_quality } from "@prisma/client";
 import z from "zod";
 import { MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "./const";
 
+import { ja } from "zod/locales";
+
+z.config(ja());
+
 export const nameSchema = z.object({
   newName: z
     .string()

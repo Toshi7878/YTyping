@@ -1,4 +1,5 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { H4 } from "@/components/ui/typography";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { auth } from "@/server/auth";
 import { serverApi } from "@/trpc/server";
@@ -28,7 +29,7 @@ const ProfileSettingCard = ({ userProfile }: ProfileSettingCardProps) => {
   return (
     <Card className="mx-8">
       <CardHeader>
-        <h3 className="text-lg font-medium">プロフィール設定</h3>
+        <H4>プロフィール設定</H4>
       </CardHeader>
       <CardContent>
         <div className="flex w-full flex-col gap-4">

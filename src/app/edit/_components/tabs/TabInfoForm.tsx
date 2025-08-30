@@ -182,6 +182,7 @@ const TabInfoForm = () => {
             name="tags"
             maxTags={TAG_MAX_LEN}
             label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LEN}`}
+            maxLength={100}
           />
           <SuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiInfoData?.otherTags ?? []} />
 

@@ -1,7 +1,6 @@
 import Header from "@/app/_components/header/Header";
 import "@/styles/globals.css";
 // export const runtime = "edge";
-
 import type { Metadata } from "next";
 
 import { Toaster } from "@/components/ui/sonner";

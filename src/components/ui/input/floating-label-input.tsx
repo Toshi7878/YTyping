@@ -34,6 +34,7 @@ interface FloatingLabelInputProps extends InputProps {
   label?: string;
   className?: string;
   containerClassName?: string;
+  maxLength?: number;
 }
 const FloatingLabelInput = React.forwardRef<
   React.ComponentRef<typeof FloatingInput>,
@@ -41,7 +42,7 @@ const FloatingLabelInput = React.forwardRef<
 >(({ id, label, className, containerClassName, ...props }, ref) => {
   return (
     <div className={cn("relative w-full", containerClassName)}>
-      <FloatingInput ref={ref} id={id} className={className} {...props} />
+      <FloatingInput ref={ref} id={id} className={className} {...props} maxLength={props.maxLength} />
       <FloatingLabel htmlFor={id}>{label}</FloatingLabel>
     </div>
   );

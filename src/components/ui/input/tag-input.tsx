@@ -20,6 +20,7 @@ export interface TagInputProps {
   enableDragDrop?: boolean;
   className?: string;
   tagVariant?: VariantProps<typeof badgeVariants>["variant"];
+  maxLength?: number;
 }
 
 const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
@@ -34,6 +35,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
       enableDragDrop = true,
       className,
       tagVariant = "secondary",
+      maxLength,
       ...props
     },
     ref,
@@ -112,6 +114,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
             className="min-w-[120px] flex-1 rounded-xs border px-2 py-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             disabled={disabled}
             {...props}
+            maxLength={maxLength}
           />
         </div>
       </div>
@@ -130,6 +133,7 @@ interface TagInputFormFieldProps {
   enableDragDrop?: boolean;
   tagVariant?: VariantProps<typeof badgeVariants>["variant"];
   disabledFormMessage?: boolean;
+  maxLength?: number;
 }
 
 const TagInputFormField = ({
@@ -141,6 +145,7 @@ const TagInputFormField = ({
   enableDragDrop = true,
   tagVariant = "secondary",
   disabledFormMessage = false,
+  maxLength,
 }: TagInputFormFieldProps) => {
   const { control, setValue, trigger } = useFormContext();
 
@@ -168,6 +173,7 @@ const TagInputFormField = ({
               enableDragDrop={enableDragDrop}
               tagVariant={tagVariant}
               className={className}
+              maxLength={maxLength}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
