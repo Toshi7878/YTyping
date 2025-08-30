@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
-import { SignInDropdownItems } from "./login/AuthDropdownItems";
+import { SignInDropdownItems } from "./AuthDropdownItems";
 
 export default function SignInMenu({ className }: { className: string }) {
   return (

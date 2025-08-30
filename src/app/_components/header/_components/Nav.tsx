@@ -6,10 +6,10 @@ import LeftMenus, { SiteLogo } from "./LeftMenus";
 import HamburgerMenu from "./right-menus/HamburgerMenu";
 import NewMapPopover from "./right-menus/NewMapPopover";
 import NotifyBellDrawer from "./right-menus/NotifyBellDrawer";
-import RegisterLogoutButton from "./right-menus/RegisterLogoutButton";
-import SignInMenu from "./right-menus/SignInMenu";
 import UserMenu from "./right-menus/UserMenu";
 import ActiveUsersDrawer from "./right-menus/active-user/ActiveUsersDrawer";
+import RegisterLogoutButton from "./right-menus/login/RegisterLogoutButton";
+import SignInMenu from "./right-menus/login/SignInMenu";
 
 export const LeftNav = () => {
   const pathname = usePathname();

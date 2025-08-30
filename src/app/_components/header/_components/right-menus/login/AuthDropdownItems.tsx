@@ -1,6 +1,6 @@
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useProgress } from "@bprogress/react";
+import { useProgress } from "@bprogress/next";
 import { signIn, signOut } from "next-auth/react";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
 
