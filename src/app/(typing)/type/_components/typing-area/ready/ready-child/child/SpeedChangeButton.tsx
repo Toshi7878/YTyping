@@ -1,7 +1,7 @@
 import { usePlaySpeedReducer } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import { Button } from "@/components/ui/button";
 
-interface SpeedCHangeButtonProps {
+interface SpeedChangeButtonProps {
   buttonRef: React.RefObject<HTMLButtonElement>;
   buttonLabel: {
     text: string;
@@ -10,7 +10,7 @@ interface SpeedCHangeButtonProps {
   type: "up" | "down";
 }
 
-const SpeedChangeButton = (props: SpeedCHangeButtonProps) => {
+const SpeedChangeButton = (props: SpeedChangeButtonProps) => {
   const dispatchSpeed = usePlaySpeedReducer();
 
   return (
@@ -22,7 +22,7 @@ const SpeedChangeButton = (props: SpeedCHangeButtonProps) => {
     >
       <div className="relative top-1 text-3xl md:text-2xl">
         {props.buttonLabel.text}
-        <small className="f-key">{props.buttonLabel.key}</small>
+        <small className="absolute -top-[0.9em] left-1/2 -translate-x-1/2 text-[65%]">{props.buttonLabel.key}</small>
       </div>
     </Button>
   );

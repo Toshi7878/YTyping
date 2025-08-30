@@ -11,7 +11,7 @@ import { useMapReducer, useMapState } from "../../_lib/atoms/mapReducerAtom";
 import { usePlayer, useTbody } from "../../_lib/atoms/refAtoms";
 import { useIsYTReadiedState, useIsYTStartedState } from "../../_lib/atoms/stateAtoms";
 
-import "@/app/edit/_lib/style/table.scss";
+import "@/app/edit/_lib/style/table.css";
 import { useUpdateEndTime } from "../../_lib/hooks/useUpdateEndTime";
 import LineOptionDialog from "./LineOptionDialog";
 import LineRow from "./LineRow";

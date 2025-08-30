@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useParams } from "next/navigation";
 import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_lib/atoms/stateAtoms";
-import "../../_lib/style/type.scss";
+import "../../_lib/style/type.css";
 import End from "./end/End";
 import Playing from "./playing/Playing";
 import Ready from "./ready/Ready";
