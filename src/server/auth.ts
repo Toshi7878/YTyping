@@ -1,4 +1,5 @@
 import authConfig from "@/config/auth.config";
+import { env } from "@/env";
 import { $Enums } from "@prisma/client";
 import CryptoJS from "crypto-js";
 import NextAuth from "next-auth";
@@ -7,7 +8,7 @@ import { prisma } from "./db";
 // export const runtime = "edge";
 export const { auth, handlers, signIn } = NextAuth({
   ...authConfig,
-  secret: process.env.AUTH_SECRET,
+  secret: env.AUTH_SECRET,
   session: { strategy: "jwt" },
   callbacks: {
     async signIn({ user, account, profile }) {

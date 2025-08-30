@@ -1,4 +1,4 @@
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 
 export const useResultQueries = () => {
   const trpc = useTRPC();

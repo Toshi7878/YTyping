@@ -37,7 +37,7 @@ export const useChangePlayMode = () => {
       if (window.confirm(confirmMessage)) {
         const { startSpeed } = readLineStatus();
 
-        writeGameUtilRefParams({ practiceMyResultId: null, replayKeyCount: 0, replayUserName: "" });
+        writeGameUtilRefParams({ replayKeyCount: 0, replayUserName: "" });
 
         setLineResultDrawer(false);
 

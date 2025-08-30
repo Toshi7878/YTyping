@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { nameSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";

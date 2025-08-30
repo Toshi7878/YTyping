@@ -5,7 +5,7 @@ import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -27,8 +27,8 @@ const ActiveUsersDrawer = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger>
-        <TooltipWrapper label="アクティブユーザー" delayDuration={600}>
+      <SheetTrigger asChild>
+        <TooltipWrapper label="アクティブユーザー" delayDuration={600} className="relative bottom-3">
           <Button variant="unstyled" size="icon" className="hover:text-foreground">
             <Users size={18} strokeWidth={2.5} />
           </Button>

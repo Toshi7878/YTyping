@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { RouterOutPuts } from "@/server/api/trpc";

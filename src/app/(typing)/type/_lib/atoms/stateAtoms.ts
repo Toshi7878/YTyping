@@ -76,8 +76,8 @@ export const useMapInfoRef = () => {
 };
 
 const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) => optic.valueOr({} as { isLiked: undefined }).prop("isLiked"));
-export const useIsLikeAtom = () => useAtomValue(mapLikeFocusAtom, { store });
-export const useSetIsLikeAtom = () => useSetAtom(mapLikeFocusAtom, { store });
+export const useIsLikeState = () => useAtomValue(mapLikeFocusAtom, { store });
+export const useSetIsLikeState = () => useSetAtom(mapLikeFocusAtom, { store });
 
 const mapAtom = atomWithReset<ParseMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });

@@ -8,7 +8,7 @@ import DateDistanceText from "@/components/share-components/text/DateDistanceTex
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot, Loader2 } from "lucide-react";
@@ -35,13 +35,11 @@ export default function NotifyBellDrawer() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="unstyled" size="icon" className="hover:text-foreground p-2" onClick={notificationOpen}>
-          <TooltipWrapper label="通知" delayDuration={600}>
-            <div className="relative">
-              {isNewNotification ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
-            </div>
-          </TooltipWrapper>
-        </Button>
+        <TooltipWrapper label="通知" delayDuration={600} className="relative bottom-3">
+          <Button variant="unstyled" size="icon" className="hover:text-foreground p-2" onClick={notificationOpen}>
+            {isNewNotification ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
+          </Button>
+        </TooltipWrapper>
       </SheetTrigger>
 
       <SheetContent side="right" className="sm:max-w-md">

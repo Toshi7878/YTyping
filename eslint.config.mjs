@@ -77,6 +77,24 @@ export default [
       "@typescript-eslint/no-empty-interface": "off",
       "@typescript-eslint/no-inferrable-types": "off",
       "@typescript-eslint/prefer-function-type": "off",
+
+      // Next.js Linkコンポーネントのインポートを禁止
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "next/link",
+              message: "next/linkからのLinkコンポーネントのインポートは禁止されています。",
+            },
+            {
+              name: "use-breakpoint",
+              message:
+                "use-breakpointパッケージからのインポートは禁止されています。代わりに@/lib/useBreakPointを使用してください。",
+            },
+          ],
+        },
+      ],
     },
   },
 ];

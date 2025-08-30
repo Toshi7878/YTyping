@@ -1,10 +1,16 @@
+import ClapedText from "@/components/share-components/text/ClapedText";
+import ClearRateText from "@/components/share-components/text/ClearRateText";
+import DateDistanceText from "@/components/share-components/text/DateDistanceText";
+import RankText from "@/components/share-components/text/RankText";
 import ResultToolTipText from "@/components/share-components/text/ResultToolTipText";
+import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";
 import { CardWithContent } from "@/components/ui/card";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { RouterOutPuts } from "@/server/api/trpc";
+import { LocalClapState } from "@/types";
 import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
 import { useMapRankingQueries } from "@/utils/queries/mapRanking.queries";
 import { useQuery } from "@tanstack/react-query";
@@ -14,10 +20,9 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { useGameUtilityReferenceParams } from "../../../_lib/atoms/refAtoms";
-import { useSceneState, useSetTypingStatusRank } from "../../../_lib/atoms/stateAtoms";
+import { useSetTypingStatusRank } from "../../../_lib/atoms/stateAtoms";
 import { RANKING_COLUMN_WIDTH } from "../../../_lib/const";
-import RankingMenu from "./RankingPopoverContent";
-import RankingTr from "./RankingTr";
+import RankingPopoverContent from "./RankingPopoverContent";
 
 const TabRanking = ({ className }: { className: string }) => {
   return (
@@ -30,9 +35,8 @@ const TabRanking = ({ className }: { className: string }) => {
     </CardWithContent>
   );
 };
+
 const RankingList = () => {
-  const { data: session } = useSession();
-  const scene = useSceneState();
   const { id: mapId } = useParams<{ id: string }>();
   const { data, error, isPending } = useQuery(useMapRankingQueries().mapRanking({ mapId }));
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
@@ -51,24 +55,10 @@ const RankingList = () => {
     setTypingStatusRank(scores.length + 1);
   }, [data]);
 
-  useEffect(() => {
-    const userId = Number(session?.user?.id);
-
-    if (scene === "play" && data) {
-      for (let i = 0; i < data.length; i++) {
-        if (userId === Number(data[i].user_id)) {
-          writeGameUtilRefParams({
-            myBestScore: data[i].status!.score,
-          });
-        }
-      }
-    }
-  }, [scene, data]);
-
   if (error) return <div>Error loading data</div>;
 
   return (
-    <Table className="ranking-table text-sm">
+    <Table className="ranking-table">
       <TableHeader className="select-none">
         <TableRow className="hover:bg-transparent">
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.rank }}>順位</TableHead>
@@ -94,7 +84,7 @@ const RankingList = () => {
           <TableRow>
             <td colSpan={9} className="py-12 text-center">
               <div className="flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin" />
+                <Loader2 className="size-10 animate-spin" />
               </div>
             </td>
           </TableRow>
@@ -188,7 +178,7 @@ const RankingRow = ({ result, index, openPopoverIndex, setOpenPopoverIndex }: Ra
           />
         </PopoverTrigger>
       </TooltipWrapper>
-      <RankingMenu
+      <RankingPopoverContent
         resultId={result.id}
         userId={result.user_id}
         resultUpdatedAt={result.updated_at}
@@ -199,4 +189,71 @@ const RankingRow = ({ result, index, openPopoverIndex, setOpenPopoverIndex }: Ra
     </Popover>
   );
 };
+
+interface RankingTrProps {
+  result: RouterOutPuts["ranking"]["getMapRanking"][number];
+  rank: number;
+  clapOptimisticState: LocalClapState;
+  isHighlighted?: boolean;
+}
+
+const RankingTr = ({ result, rank, clapOptimisticState, isHighlighted = false, ...props }: RankingTrProps) => {
+  const { status } = result;
+  const { data: session } = useSession();
+  const userId = Number(session?.user.id);
+
+  if (!status) return null;
+
+  const isPerfect = status.miss === 0 && status.lost === 0;
+
+  return (
+    <TableRow
+      className={cn(
+        "border-accent-foreground cursor-pointer text-3xl font-bold md:text-base",
+        userId === result.user_id && "my-result text-secondary",
+        isHighlighted && "bg-accent/50",
+      )}
+      {...props}
+    >
+      <TableCell style={{ width: RANKING_COLUMN_WIDTH.rank }}>
+        <RankText rank={rank}>#{rank}</RankText>
+      </TableCell>
+      <TableCell style={{ width: RANKING_COLUMN_WIDTH.score }}>{status.score}</TableCell>
+      <TableCell style={{ width: RANKING_COLUMN_WIDTH.clearRate }}>
+        <ClearRateText clearRate={status.clear_rate} isPerfect={isPerfect} />
+      </TableCell>
+      <TableCell
+        className="truncate"
+        style={{
+          width: RANKING_COLUMN_WIDTH.userName,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {result.user.name}
+      </TableCell>
+
+      <TableCell style={{ width: RANKING_COLUMN_WIDTH.kpm }}>{status.kpm}</TableCell>
+      <TableCell style={{ width: RANKING_COLUMN_WIDTH.inputMode }}>
+        <UserInputModeText
+          kanaType={status.kana_type}
+          romaType={status.roma_type}
+          flickType={status.flick_type}
+          englishType={status.english_type}
+          symbolType={status.symbol_type}
+          numType={status.num_type}
+          spaceType={status.space_type}
+        />
+      </TableCell>
+      <TableCell style={{ width: RANKING_COLUMN_WIDTH.updatedAt }}>
+        <DateDistanceText date={new Date(result.updated_at)} />
+      </TableCell>
+      <TableCell style={{ width: RANKING_COLUMN_WIDTH.clapCount }} className="text-center">
+        <ClapedText clapOptimisticState={clapOptimisticState} />
+      </TableCell>
+    </TableRow>
+  );
+};
+
 export default TabRanking;

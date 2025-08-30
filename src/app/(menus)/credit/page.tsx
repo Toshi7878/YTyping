@@ -1,5 +1,5 @@
 import { CardWithContent } from "@/components/ui/card";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 
 export default function Page() {
   return (

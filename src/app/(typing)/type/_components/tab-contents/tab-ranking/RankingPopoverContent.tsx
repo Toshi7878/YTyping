@@ -1,10 +1,10 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMapInfoRef, useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useLoadResultPlay } from "@/app/(typing)/type/_lib/hooks/loadResultPlay";
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/soundEffect";
+import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { PopoverContent } from "@/components/ui/popover";
 import { INITIAL_STATE } from "@/config/globalConst";
 import { LocalClapState, UploadResult } from "@/types";
@@ -21,7 +21,7 @@ interface RankingMenuProps {
   toggleClapAction: (resultId: number) => Promise<UploadResult>;
   onOpenChange?: (open: boolean) => void;
 }
-const RankingMenu = ({
+const RankingPopoverContent = ({
   resultId,
   userId,
   resultUpdatedAt,
@@ -35,13 +35,13 @@ const RankingMenu = ({
   const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const retry = useRetry();
-  const loadResultPlay = useLoadResultPlay({ startMode: "replay", resultId });
+  const resultPlay = useResultPlay({ startMode: "replay" });
   const setTabName = useSetTabName();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readMapInfo } = useMapInfoRef();
   const handleReplayClick = async () => {
-    await loadResultPlay();
+    await resultPlay(resultId);
 
     const mapUpdatedAt = readMapInfo().updated_at;
     const resultUpdatedAtDate = new Date(resultUpdatedAt);
@@ -96,4 +96,4 @@ const RankingMenu = ({
   );
 };
 
-export default RankingMenu;
+export default RankingPopoverContent;

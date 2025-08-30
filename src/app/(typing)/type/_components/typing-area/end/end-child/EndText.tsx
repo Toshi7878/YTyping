@@ -1,12 +1,12 @@
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/getMyRankingResult";
 import { useSession } from "next-auth/react";
 import RandomEmoji from "./child/RandomEmoji";
 
 const EndText = () => {
-  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { myBestScore } = readGameUtilRefParams();
+  const getMyRankingResult = useGetMyRankingResult();
+  const myBestScore = getMyRankingResult()?.status?.score ?? 0;
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
   const status = useTypingStatusState();

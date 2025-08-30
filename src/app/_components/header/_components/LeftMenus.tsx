@@ -5,16 +5,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { leftLink, leftMenuItem } from "@/config/headerNav";
-import { useRouter } from "@bprogress/next/app";
 import { ChevronDown } from "lucide-react";
 
 export const SiteLogo = () => {
   return (
     <Link
       href="/"
-      className="hover:bg-secondary/30 relative top-[-2.5px] px-2 text-2xl font-bold transition-colors duration-200"
+      className="hover:bg-secondary/30 relative top-[-2px] px-2 text-2xl font-bold transition-colors duration-200"
     >
       <span>Y</span>
       <span>Typing</span>
@@ -36,8 +35,6 @@ function LeftMenus() {
 }
 
 const LinksDropdownMenu = () => {
-  const router = useRouter();
-
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -47,8 +44,8 @@ const LinksDropdownMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-fit">
         {leftMenuItem.map((menuItem, index) => (
-          <DropdownMenuItem key={index} onSelect={() => router.push(menuItem.href)}>
-            {menuItem.title}
+          <DropdownMenuItem key={index} asChild>
+            <Link href={menuItem.href}>{menuItem.title}</Link>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

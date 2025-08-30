@@ -1,7 +1,7 @@
 import { ResultCardInfo } from "@/app/timeline/_lib/type";
 import DateDistanceText from "@/components/share-components/text/DateDistanceText";
 import { CardHeader } from "@/components/ui/card";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { cn } from "@/lib/utils";
 import ResultClapButton from "./child/ResultClapButton";
 

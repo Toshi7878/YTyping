@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import Image from "next/image";
 import { ICON_SIZE } from "../../../_lib/const";

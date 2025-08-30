@@ -1,7 +1,7 @@
 "use client";
 
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { myKeyboardFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";

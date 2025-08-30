@@ -1,4 +1,4 @@
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { FiExternalLink } from "react-icons/fi";
 
 interface FingerChartUrlProps {

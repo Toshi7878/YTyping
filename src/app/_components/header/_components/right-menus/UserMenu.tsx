@@ -6,9 +6,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "@/components/ui/link";
 import { loginMenuItem } from "@/config/headerNav";
 import { cn } from "@/lib/utils";
-import { useRouter } from "@bprogress/next/app";
 import { ChevronDown } from "lucide-react";
 import { LogOutDropdownItem } from "./login/AuthDropdownItems";
 
@@ -18,8 +18,6 @@ interface UserMenuProps {
 }
 
 export default function UserMenu({ userName, className }: UserMenuProps) {
-  const router = useRouter();
-
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -30,8 +28,8 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-fit">
         {loginMenuItem.map((item, index) => (
-          <DropdownMenuItem key={index} onSelect={() => router.push(item.href)}>
-            {item.title}
+          <DropdownMenuItem key={index} asChild>
+            <Link href={item.href}>{item.title}</Link>
           </DropdownMenuItem>
         ))}
 

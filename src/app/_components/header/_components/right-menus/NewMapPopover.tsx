@@ -3,13 +3,13 @@ import CreatedCheck from "@/components/share-components/CreatedCheck";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useGetBackupTitleVideoIdLiveQuery } from "@/lib/db";
 import { cn } from "@/lib/utils";
+import { useRouter } from "@bprogress/next";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
@@ -41,18 +41,19 @@ export default function NewMapPopover() {
     const videoId = extractYouTubeVideoId(data.videoId);
     if (videoId) {
       router.push(`/edit?new=${videoId}`);
+      setOpen(false);
     }
   };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <TooltipWrapper label="譜面新規作成" delayDuration={600}>
-        <PopoverTrigger asChild>
+      <PopoverTrigger asChild>
+        <TooltipWrapper label="譜面新規作成" delayDuration={600} className="relative bottom-3">
           <Button variant="unstyled" size="icon" className="hover:text-foreground">
             <RiAddBoxFill size={20} />
           </Button>
-        </PopoverTrigger>
-      </TooltipWrapper>
+        </TooltipWrapper>
+      </PopoverTrigger>
       <PopoverContent className="w-[640px] p-1" side="bottom" align="end" sideOffset={8}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">

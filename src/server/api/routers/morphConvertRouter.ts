@@ -1,16 +1,6 @@
+import { env } from "@/env";
 import { z } from "@/validator/z";
 import { protectedProcedure } from "../trpc";
-
-const AWS_API = {
-  FUGASHI_UNIDIC: {
-    apiKey: process.env.FUGASHI_UNIDIC_API_KEY as string,
-    url: "https://0bwyiswewg.execute-api.ap-northeast-1.amazonaws.com/dev/fugashi-unidic/parse",
-  },
-  SUDACHI_FULL: {
-    apiKey: process.env.SUDACHI_FULL_API_KEY as string,
-    url: "https://wdso812r5e.execute-api.ap-northeast-1.amazonaws.com/dev/sudachi-full/parse",
-  },
-} as const;
 
 export const morphConvertRouter = {
   tokenizeWordAws: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
@@ -60,14 +50,12 @@ export const morphConvertRouter = {
 };
 
 async function postAwsLambdaMorphApi(sentence: string): Promise<{ lyrics: string[]; readings: string[] }> {
-  const { apiKey, url } = AWS_API["SUDACHI_FULL"];
-
   try {
-    const response = await fetch(url, {
+    const response = await fetch(env.SUDACHI_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
+        "x-api-key": env.SUDACHI_API_KEY,
       },
       body: JSON.stringify({ text: sentence }),
     });
@@ -85,7 +73,7 @@ async function postAwsLambdaMorphApi(sentence: string): Promise<{ lyrics: string
 }
 
 async function fetchYahooMorphAnalysis(sentence: string): Promise<string> {
-  const apiKey = process.env.YAHOO_APP_ID as string;
+  const apiKey = env.YAHOO_APP_ID;
   const apiUrl = "https://jlp.yahooapis.jp/MAService/V2/parse";
 
   const response = await fetch(apiUrl, {

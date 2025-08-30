@@ -1,3 +1,4 @@
+import { getBaseUrl } from "@/utils/getBaseUrl";
 import { z } from "@/validator/z";
 import axios from "axios";
 import { protectedProcedure, publicProcedure } from "../trpc";
@@ -51,10 +52,7 @@ export const userStatsRouter = {
         return;
       }
 
-      axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-ime-typing-stats`,
-        JSON.stringify({ ...sendStats, userId: user.id }),
-      );
+      axios.post(`${getBaseUrl()}/api/update-user-ime-typing-stats`, JSON.stringify({ ...sendStats, userId: user.id }));
     }),
 
   incrementTypingStats: protectedProcedure
@@ -78,10 +76,7 @@ export const userStatsRouter = {
         return;
       }
 
-      axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
-        JSON.stringify({ ...sendStats, userId: user.id }),
-      );
+      axios.post(`${getBaseUrl()}/api/update-user-typing-stats`, JSON.stringify({ ...sendStats, userId: user.id }));
     }),
 
   getUserStats: publicProcedure

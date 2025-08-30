@@ -1,4 +1,4 @@
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 
 interface UserLInkTextProps {

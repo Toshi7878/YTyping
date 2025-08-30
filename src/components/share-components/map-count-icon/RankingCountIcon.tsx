@@ -12,9 +12,13 @@ const RankingCountIcon = ({ myRank, rankingCount }: RankingCountProps) => {
   const { data: session } = useSession();
 
   const getColorClass = () => {
-    if (myRank === 1 && session) {
+    if (!session) {
+      return "text-muted-foreground";
+    }
+
+    if (myRank === 1) {
       return "text-perfect";
-    } else if (myRank && session) {
+    } else if (myRank) {
       return "text-secondary";
     } else {
       return "text-muted-foreground";

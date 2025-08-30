@@ -16,7 +16,7 @@ function Tabs({
 const tabsListVariants = cva("text-card-foreground inline-flex items-center justify-center", {
   variants: {
     variant: {
-      default: "bg-card  rounded-lg p-[3px]",
+      default: "bg-card rounded-lg p-[3px]",
       underline: "bg-background justify-start rounded-none border-b p-0",
     },
     size: {

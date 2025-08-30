@@ -1,4 +1,4 @@
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 
 interface UseGenerateMapInfoQueryProps {
   videoId: string;

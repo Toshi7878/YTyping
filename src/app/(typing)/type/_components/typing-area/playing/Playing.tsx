@@ -11,6 +11,7 @@ import { useLineCount, useUserStats } from "@/app/(typing)/type/_lib/atoms/refAt
 import { useHandleKeydown } from "@/app/(typing)/type/_lib/hooks/playing-hooks/keydown-hooks/playingKeydown";
 import { useTimerControls } from "@/app/(typing)/type/_lib/hooks/playing-hooks/timer-hooks/timer";
 import { cn } from "@/lib/utils";
+import { getBaseUrl } from "@/utils/getBaseUrl";
 import { useSession } from "next-auth/react";
 import { usePressSkip } from "../../../_lib/hooks/playing-hooks/pressSkip";
 import ChangeCSS from "./playing-child/ChangeCSS";
@@ -41,7 +42,7 @@ const Playing = ({ className }: PlayingProps) => {
         const sendStats = readUserStats();
         const maxCombo = sendStats.maxCombo;
         navigator.sendBeacon(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
+          `${getBaseUrl()}/api/update-user-typing-stats`,
           JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) }),
         );
 
@@ -52,7 +53,7 @@ const Playing = ({ className }: PlayingProps) => {
       const sendStats = readUserStats();
       const maxCombo = sendStats.maxCombo;
       navigator.sendBeacon(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/update-user-typing-stats`,
+        `${getBaseUrl()}/api/update-user-typing-stats`,
         JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) }),
       );
       resetUserStats(structuredClone(maxCombo));

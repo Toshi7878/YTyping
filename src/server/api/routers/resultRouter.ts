@@ -1,3 +1,4 @@
+import { LineResultData } from "@/app/(typing)/type/_lib/type";
 import { supabase } from "@/lib/supabaseClient";
 import { z } from "@/validator/z";
 import { PrismaClient } from "@prisma/client";
@@ -19,7 +20,7 @@ export const resultRouter = {
       }
 
       const jsonString = await data.text();
-      const jsonData = JSON.parse(jsonString);
+      const jsonData: LineResultData[] = JSON.parse(jsonString);
 
       return jsonData;
     } catch (error) {
@@ -87,7 +88,7 @@ const processOvertakeNotifications = async (
   db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">,
   mapId: number,
   userId: number,
-  rankingList: { user_id: number; rank: number | null; status: { score: number } | null }[]
+  rankingList: { user_id: number; rank: number | null; status: { score: number } | null }[],
 ) => {
   const overtakeNotify = await db.notifications.findMany({
     where: {
@@ -132,7 +133,7 @@ const updateRanksAndCreateNotifications = async (
   db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">,
   mapId: number,
   userId: number,
-  rankingList: { user_id: number; rank: number | null; status: { score: number } | null }[]
+  rankingList: { user_id: number; rank: number | null; status: { score: number } | null }[],
 ) => {
   for (let i = 0; i < rankingList.length; i++) {
     const user = rankingList[i];
@@ -180,7 +181,7 @@ const updateRanksAndCreateNotifications = async (
 const updateMapRankingCount = async (
   db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">,
   mapId: number,
-  rankingCount: number
+  rankingCount: number,
 ) => {
   await db.maps.update({
     where: { id: mapId },

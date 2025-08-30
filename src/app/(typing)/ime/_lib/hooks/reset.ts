@@ -1,4 +1,4 @@
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { useMutation } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";

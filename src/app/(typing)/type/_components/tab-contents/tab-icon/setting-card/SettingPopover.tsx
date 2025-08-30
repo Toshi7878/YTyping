@@ -18,7 +18,7 @@ import { LabeledRadioGroup, LabeledRadioItem } from "@/components/ui/radio-group
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBreakPoint } from "@/lib/useBreakPoint";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";

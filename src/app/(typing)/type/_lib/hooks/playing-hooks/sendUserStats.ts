@@ -1,4 +1,4 @@
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTypingDetails, useUserStats } from "../../atoms/refAtoms";

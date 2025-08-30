@@ -1,11 +1,12 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { QUERY_KEYS } from "@/config/globalConst";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import { useTRPC } from "@/trpc/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import type { Session } from "next-auth";
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { getBaseUrl } from "../getBaseUrl";
 
 type MapCardInfo = RouterOutPuts["mapList"]["getByVideoId"][number];
 export type MapListResponse = { maps: MapCardInfo[] };
@@ -52,7 +53,7 @@ interface FetchMapListParams {
 
 const fetchMapList = async ({ page, session, params }: FetchMapListParams): Promise<MapListResponse> => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list`, {
+    const response = await axios.get(`${getBaseUrl()}/api/map-list`, {
       params: { page, userId: session?.user.id, ...params },
     });
 
@@ -69,7 +70,7 @@ const fetchMapList = async ({ page, session, params }: FetchMapListParams): Prom
 
 const fetchMapListLength = async ({ session, params }: Omit<FetchMapListParams, "page">): Promise<number> => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/map-list-length`, {
+    const response = await axios.get(`${getBaseUrl()}/api/map-list-length`, {
       params: { userId: session?.user.id, ...params },
     });
 

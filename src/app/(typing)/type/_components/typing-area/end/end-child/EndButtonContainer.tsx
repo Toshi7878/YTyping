@@ -1,6 +1,6 @@
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/getMyRankingResult";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
@@ -15,16 +15,15 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
   const status = useTypingStatusState();
-  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const retryBtnRef = useRef<HTMLButtonElement>(null);
   const modeChangeBtnRef = useRef<HTMLButtonElement>(null);
   const scene = useSceneState();
 
   const isPerfect = status.miss === 0 && status.lost === 0;
-  const { myBestScore } = readGameUtilRefParams();
+  const getMyRankingResult = useGetMyRankingResult();
 
   const isPlayingMode = scene === "play_end";
-  const isScoreUpdated = status.score >= myBestScore;
+  const isScoreUpdated = status.score >= (getMyRankingResult()?.status?.score ?? 0);
 
   const isDisplayRankingButton: boolean =
     !!session && status.score > 0 && (isScoreUpdated || isPerfect) && speed.defaultSpeed >= 1 && isPlayingMode;
