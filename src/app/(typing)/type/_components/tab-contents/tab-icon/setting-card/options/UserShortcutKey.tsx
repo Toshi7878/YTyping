@@ -18,7 +18,7 @@ const UserShortcutKeyCheckbox = () => {
   return (
     <section className="flex flex-col gap-2">
       <H5>ショートカットキー設定</H5>
-      <div className="mb-4 flex items-baseline gap-2">
+      <div className="flex items-baseline">
         <LabeledSelect
           label="タイミング調整"
           options={[

@@ -13,7 +13,7 @@ export interface LabeledSelectProps extends React.ComponentProps<typeof Select> 
 
 const LabeledSelect = ({ label, options, ...props }) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-1">
       <Label className={cn("text-sm font-normal")}>{label}</Label>
       <Select {...props}>
         <SelectTrigger className="w-fit">
