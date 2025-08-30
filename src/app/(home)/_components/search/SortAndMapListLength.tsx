@@ -6,7 +6,7 @@ import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 
@@ -45,7 +45,6 @@ const getResetDirections = (): Record<SortField, SortDirection> => ({
 });
 
 const SortOptions = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const setIsSearching = useSetIsSearching();
   const setDifficultyRangeParams = useDifficultyRangeParams();
@@ -90,7 +89,7 @@ const SortOptions = () => {
     }
 
     setIsSearching(true);
-    router.push(`?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
+    window.history.pushState(null, '', `?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
   };
 
   const getSortIcon = (field: SortField) => {

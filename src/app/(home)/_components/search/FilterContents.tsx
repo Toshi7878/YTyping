@@ -8,7 +8,7 @@ import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import Link from "@/components/ui/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useCallback, useState } from "react";
 
 const FilterContents = () => {
@@ -125,7 +125,6 @@ interface SearchRangeProps {
 }
 
 const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { min, max } = DIFFICULTY_RANGE;
   const [difficultyRange, setDifficultyRange] = useState<{ min: number; max: number }>({
@@ -149,7 +148,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
       const newParams = setDifficultyRangeParams(params, difficultyRange);
       if (newParams.toString() !== searchParams.toString()) {
         setIsSearchingAtom(true);
-        router.replace(`?${newParams.toString()}`);
+        window.history.replaceState(null, '', `?${newParams.toString()}`);
       }
     }
   };

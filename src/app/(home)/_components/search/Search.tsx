@@ -3,7 +3,7 @@
 import { useDifficultyRangeParams } from "@/app/(home)/_lib/useDifficultyRangeParams";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../_lib/atoms";
 
@@ -14,7 +14,6 @@ const SearchInputs = () => {
   const setIsSearching = useSetIsSearching();
   const setDifficultyRangeParams = useDifficultyRangeParams();
   const readDifficultyRange = useReadDifficultyRange();
-  const router = useRouter();
 
   const handleSearch = async () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -33,7 +32,7 @@ const SearchInputs = () => {
     }
 
     setIsSearching(true);
-    router.replace(`?${updatedParams}`);
+    window.history.replaceState(null, '', `?${updatedParams}`);
   };
 
   return (
