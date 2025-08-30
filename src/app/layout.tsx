@@ -35,7 +35,7 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <html lang="ja" className={notoSansJP.className}>
+    <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
       <head>
         <meta charSet="UTF-8" />
         <Script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
