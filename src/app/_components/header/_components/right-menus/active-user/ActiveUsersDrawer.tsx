@@ -5,7 +5,6 @@ import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
-import Link from "@/components/ui/link";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -13,6 +12,7 @@ import { useOnlineUsersState } from "@/lib/globalAtoms";
 import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import useActiveUsers from "./useActiveUser";
 

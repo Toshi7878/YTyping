@@ -11,8 +11,8 @@ import {
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
 import { Button } from "@/components/ui/button";
-import Link from "@/components/ui/link";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";
 

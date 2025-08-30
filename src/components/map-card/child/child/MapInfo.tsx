@@ -1,11 +1,11 @@
 "use client";
 import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
-import Link from "@/components/ui/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { formatTime } from "@/utils/formatTime";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
+import Link from "next/link";
 import MapBadge from "./MapBadge";
 import MapCreateUser from "./MapCreateUser";
 

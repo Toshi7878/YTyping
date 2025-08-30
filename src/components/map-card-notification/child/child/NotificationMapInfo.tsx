@@ -1,8 +1,8 @@
 "use client";
-import Link from "@/components/ui/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
+import Link from "next/link";
 import MapBadges from "./MapBadgesLayout";
 
 interface CompactMapCardProps {

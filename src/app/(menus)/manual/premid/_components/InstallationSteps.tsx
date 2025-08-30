@@ -1,11 +1,11 @@
 "use client";
-import Link from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
 import preMidLinks from "@/public/images/manual/premid/premid-link.png";
 import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
 import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
 import { useUserAgent } from "@/utils/useUserAgent";
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 const browserLinks = {

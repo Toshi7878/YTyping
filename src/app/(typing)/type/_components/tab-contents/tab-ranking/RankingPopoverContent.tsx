@@ -4,12 +4,12 @@ import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/soundEffect";
 import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
-import Link from "@/components/ui/link";
 import { PopoverContent } from "@/components/ui/popover";
 import { INITIAL_STATE } from "@/config/globalConst";
 import { LocalClapState, UploadResult } from "@/types";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useActionState } from "react";
 
 interface RankingMenuProps {

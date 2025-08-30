@@ -1,6 +1,5 @@
 import { CardWithContent } from "@/components/ui/card";
-import Link from "@/components/ui/link";
-
+import Link from "next/link";
 export default function Page() {
   return (
     <div className="mx-auto max-w-screen-xl space-y-4">

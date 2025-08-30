@@ -6,10 +6,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "@/components/ui/link";
 import { loginMenuItem } from "@/config/headerNav";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 import { LogOutDropdownItem } from "./login/AuthDropdownItems";
 
 interface UserMenuProps {

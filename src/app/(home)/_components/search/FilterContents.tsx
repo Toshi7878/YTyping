@@ -5,9 +5,9 @@ import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { useDifficultyRangeParams } from "@/app/(home)/_lib/useDifficultyRangeParams";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
-import Link from "@/components/ui/link";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useCallback, useState } from "react";
 
@@ -148,7 +148,7 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
       const newParams = setDifficultyRangeParams(params, difficultyRange);
       if (newParams.toString() !== searchParams.toString()) {
         setIsSearchingAtom(true);
-        window.history.replaceState(null, '', `?${newParams.toString()}`);
+        window.history.replaceState(null, "", `?${newParams.toString()}`);
       }
     }
   };
