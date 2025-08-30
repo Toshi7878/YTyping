@@ -25,11 +25,11 @@ import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
-import UserShortcutKeyCheckbox from "./child/UserShortcutKeyCheckbox";
-import UserSoundEffectCheckbox from "./child/UserSoundEffectCheckbox";
-import UserTimeOffsetChange from "./child/UserTimeOffsetChange";
-import { UserWordFontSize } from "./child/UserWordFontSize";
-import { UserWordScrollChange } from "./child/UserWordScrollChange";
+import UserShortcutKeyCheckbox from "./options/UserShortcutKeyCheckbox";
+import UserSoundEffectCheckbox from "./options/UserSoundEffectCheckbox";
+import UserTimeOffsetChange from "./options/UserTimeOffsetChange";
+import { UserWordFontSize } from "./options/UserWordFontSize";
+import { UserWordScrollChange } from "./options/UserWordScrollChange";
 
 const SettingPopover = () => {
   const trpc = useTRPC();
