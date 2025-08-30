@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
-import { useCanUploadState } from "../_lib/atoms/stateAtoms";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
 import useHasMapUploadPermission from "../_lib/hooks/useHasMapUploadPermission";
@@ -21,7 +20,6 @@ const EditProvider = ({ children }: EditProviderProps) => {
   const store = getEditAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
   const hasUploadPermission = useHasMapUploadPermission();
-  const canUpload = useCanUploadState();
   const { addTimer, removeTimer } = useTimerRegistration();
   const pathChangeReset = usePathChangeAtomReset();
   const windowKeydownEvent = useWindowKeydownEvent();
@@ -33,23 +31,6 @@ const EditProvider = ({ children }: EditProviderProps) => {
       window.removeEventListener("keydown", windowKeydownEvent);
     };
   }, [windowKeydownEvent]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (canUpload) {
-        event.preventDefault();
-        return "このページを離れると、行った変更が保存されない可能性があります。";
-      }
-    };
-
-    if (hasUploadPermission) {
-      window.addEventListener("beforeunload", handleBeforeUnload);
-    }
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [canUpload, hasUploadPermission]);
 
   useEffect(() => {
     setPreviewVideoState(RESET);

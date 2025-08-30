@@ -17,6 +17,7 @@ import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { ParseMap } from "@/utils/parse-map/parseMap";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
+import { useNavigationGuard } from "@/utils/use-navigation-guard";
 import { mapInfoFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -200,6 +201,7 @@ const InfoFormButton = () => {
   const canUpload = useCanUploadState();
   const hasUploadPermission = useHasMapUploadPermission();
   const { id: mapId } = useParams<{ id: string }>();
+  useNavigationGuard((form.formState.isDirty || canUpload) && hasUploadPermission);
 
   return (
     <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
