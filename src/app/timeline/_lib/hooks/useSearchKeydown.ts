@@ -1,4 +1,4 @@
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 import { useSetIsSearching } from "../atoms";
 import { useSetSearchParams } from "./useSetSearchParams";
@@ -6,7 +6,6 @@ import { useSetSearchParams } from "./useSetSearchParams";
 const useSearchKeydown = () => {
   const searchParams = useSearchParams();
   const rangeParams = useSetSearchParams();
-  const router = useRouter();
   const setIsSearching = useSetIsSearching();
 
   return (e: React.KeyboardEvent) => {
@@ -16,7 +15,7 @@ const useSearchKeydown = () => {
       const newParams = rangeParams(params);
       if (newParams.toString() !== searchParams.toString()) {
         setIsSearching(true);
-        router.replace(`?${newParams.toString()}`);
+        window.history.replaceState(null, '', `?${newParams.toString()}`);
       }
     }
   };

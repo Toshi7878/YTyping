@@ -4,7 +4,7 @@ import { PARAM_NAME } from "@/app/timeline/_lib/consts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { Loader2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useSetSearchParams } from "../../_lib/hooks/useSetSearchParams";
 
@@ -12,7 +12,6 @@ const SearchInputs = () => {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
-  const router = useRouter();
   const [keyword, setKeyword] = useState({
     mapKeyWord: searchParams?.get(PARAM_NAME.mapkeyword) || "",
     userName: searchParams?.get(PARAM_NAME.username) || "",
@@ -42,7 +41,7 @@ const SearchInputs = () => {
     }
 
     setIsSearching(true);
-    router.replace(`?${updatedParams}`);
+    window.history.replaceState(null, '', `?${updatedParams}`);
   };
 
   return (
