@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetTimeOffset, useTimeOffsetState } from "@/app/edit/_lib/atoms/storageAtoms";
-import { Button } from "@/components/ui/button";
+import { CounterInput } from "@/components/ui/counter";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 
 const MAX_TIME_OFFSET = -0.1;
@@ -11,36 +11,6 @@ const TIME_OFFSET_STEP = 0.01;
 export default function AddTimeAdjust() {
   const timeOffset = useTimeOffsetState();
   const setTimeOffset = useSetTimeOffset();
-
-  return (
-    <CounterInput
-      value={timeOffset}
-      onChange={(value) => setTimeOffset(value)}
-      step={TIME_OFFSET_STEP}
-      max={MAX_TIME_OFFSET}
-      min={MIN_TIME_OFFSET}
-      valueDigits={2}
-      label="タイム補正"
-    />
-  );
-}
-
-interface CounterInputProps {
-  value: number;
-  label: string;
-  max: number;
-  min: number;
-  step: number;
-  valueDigits: number;
-  onChange: (value: number) => void;
-}
-
-const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: CounterInputProps) => {
-  const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
-    const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
-    const newValueFixed = Number(newValue.toFixed(valueDigits));
-    onChange(newValueFixed);
-  };
 
   return (
     <TooltipWrapper
@@ -61,28 +31,15 @@ const CounterInput = ({ value, label, max, min, step, valueDigits, onChange }: C
         </>
       }
     >
-      <div className="flex flex-col items-center gap-2 md:flex-row md:items-baseline">
-        <span className="text-sm">{label}</span>
-        <div className="border-border/50 flex w-fit items-baseline rounded-full border px-2">
-          <Button
-            onClick={() => onCounterChange({ type: "decrement" })}
-            size="sm"
-            variant="ghost"
-            className="h-auto p-1"
-          >
-            -
-          </Button>
-          <div className="px-2 text-xs">{value.toFixed(valueDigits)}</div>
-          <Button
-            onClick={() => onCounterChange({ type: "increment" })}
-            size="sm"
-            variant="ghost"
-            className="h-auto p-1"
-          >
-            +
-          </Button>
-        </div>
-      </div>
+      <CounterInput
+        value={timeOffset}
+        onChange={(value) => setTimeOffset(value)}
+        step={TIME_OFFSET_STEP}
+        max={MAX_TIME_OFFSET}
+        min={MIN_TIME_OFFSET}
+        valueDigits={2}
+        label="タイム補正"
+      />
     </TooltipWrapper>
   );
-};
+}

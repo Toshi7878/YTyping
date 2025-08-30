@@ -1,33 +1,30 @@
-import { Button } from "@/components/ui/button";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { Button } from "./button";
+import { TooltipWrapper } from "./tooltip";
 
 interface CounterInputProps {
   value: number;
   label: string;
-  incrementTooltip: string;
-  decrementTooltip: string;
-  unit?: string;
   max: number;
   min: number;
   step: number;
   valueDigits?: number;
   onChange: (value: number) => void;
-  size?: "sm" | "md" | "lg";
+  unit?: string;
+  decrementTooltip?: string;
+  incrementTooltip?: string;
 }
 
-const CounterInput = ({
+export const CounterInput = ({
   value,
   label,
-  incrementTooltip,
-  decrementTooltip,
-  unit,
   max,
   min,
   step,
   valueDigits = 0,
   onChange,
-  size = "lg",
+  unit,
+  decrementTooltip,
+  incrementTooltip,
 }: CounterInputProps) => {
   const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
     const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
@@ -35,34 +32,31 @@ const CounterInput = ({
     onChange(newValueFixed);
   };
 
-  const sizeClasses = {
-    sm: "text-sm",
-    md: "text-base",
-    lg: "text-lg",
-  };
-
   return (
-    <div className="flex items-baseline">
-      <span className={cn(sizeClasses[size], "mr-2")}>{label}</span>
-      <div className="border-border/60 flex w-fit items-baseline rounded-full border px-2 py-0">
+    <div className="flex flex-col items-center gap-2 md:flex-row md:items-baseline">
+      <span className="text-sm">{label}</span>
+      <div className="border-border/50 flex w-fit items-baseline rounded-full border px-2">
         <TooltipWrapper label={decrementTooltip} disabled={!decrementTooltip}>
           <Button
             onClick={() => onCounterChange({ type: "decrement" })}
+            size="sm"
             variant="ghost"
-            className="relative -bottom-0.5 h-auto p-0 text-xl hover:bg-transparent"
+            className="h-auto p-1"
           >
             -
           </Button>
         </TooltipWrapper>
-        <div className={cn(sizeClasses[size], "flex gap-1 font-bold")}>
+        <div className="flex items-center gap-1 px-2 text-xs">
           {value.toFixed(valueDigits)}
           {unit && <span>{unit}</span>}
         </div>
+
         <TooltipWrapper label={incrementTooltip} disabled={!incrementTooltip}>
           <Button
             onClick={() => onCounterChange({ type: "increment" })}
+            size="sm"
             variant="ghost"
-            className="relative -bottom-0.5 h-auto p-0 text-xl hover:bg-transparent"
+            className="h-auto p-1"
           >
             +
           </Button>
@@ -71,5 +65,3 @@ const CounterInput = ({
     </div>
   );
 };
-
-// export default CounterInput;

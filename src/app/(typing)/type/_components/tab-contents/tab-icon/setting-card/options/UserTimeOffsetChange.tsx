@@ -1,6 +1,6 @@
 "use client";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import CounterInput from "./child/CounterInput";
+import { CounterInput } from "@/components/ui/counter";
 
 const MAX_TIME_OFFSET = 1;
 const MIN_TIME_OFFSET = -1;
