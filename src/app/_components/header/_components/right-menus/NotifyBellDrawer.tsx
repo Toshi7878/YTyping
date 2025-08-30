@@ -1,13 +1,14 @@
 "use client";
 
-import CompactMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
-import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
-import NotificationMapCard from "@/components/map-card-notification/NotificationMapCard";
-import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
-import DateDistanceText from "@/components/share-components/text/DateDistanceText";
+import CompactMapInfo from "@/components/shared/map-info/CompactMapInfo";
+import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
+import DateDistanceText from "@/components/shared/text/DateDistanceText";
+import UserLinkText from "@/components/shared/text/UserLinkText";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -74,12 +75,12 @@ const NotifyDrawerInnerContent = () => {
       ) : (
         <div className="h-full">
           {data?.pages.length ? (
-            data.pages.map((page, index: number) => {
-              return page.notifications.map((notify, index: number) => {
+            data.pages.map((page, pageIndex: number) => {
+              return page.notifications.map((notify, notifyIndex: number) => {
                 const { map } = notify;
 
                 return (
-                  <div key={index} className="mb-4">
+                  <div key={`${pageIndex}-${notifyIndex}`} className="mb-4">
                     <div className="mb-2">
                       <NotificationMapCard notify={notify}>
                         <MapLeftThumbnail
@@ -89,9 +90,8 @@ const NotifyDrawerInnerContent = () => {
                           mapPreviewTime={map.preview_time}
                           size="notification"
                         />
-                        <NotificationMapCardRightInfo>
-                          <CompactMapInfo map={map} />
-                        </NotificationMapCardRightInfo>
+
+                        <CompactMapInfo map={map} />
                       </NotificationMapCard>
                       <div className="text-muted-foreground/80 text-right">
                         <DateDistanceText date={new Date(notify.created_at)} />
@@ -112,6 +112,28 @@ const NotifyDrawerInnerContent = () => {
     </div>
   );
 };
+
+interface NotificationMapCardProps {
+  notify: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number];
+  children: React.ReactNode;
+}
+
+function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
+  return (
+    <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
+      <CardHeader className="bg-header-background rounded-t-md px-2 py-2 text-sm">
+        <span>
+          <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name!} />
+          さんがスコア {notify.visitorResult.status!.score - notify.visitedResult.status!.score} 差で{" "}
+          {Number(notify.old_rank)}位 の記録を抜かしました
+        </span>
+      </CardHeader>
+      <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">
+        {children}
+      </CardContent>
+    </Card>
+  );
+}
 
 const LoadingSpinner = () => {
   return (

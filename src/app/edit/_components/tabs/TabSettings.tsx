@@ -1,5 +1,5 @@
 import { usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
-import VolumeRange from "@/components/share-components/VolumeRange";
+import VolumeRange from "@/components/shared/VolumeRange";
 import { CardWithContent } from "@/components/ui/card";
 import AllTimeAdjust from "./tab-settings/AllTimeAdjust";
 import ConvertOptionButtons from "./tab-settings/ConvertOptionButtons";

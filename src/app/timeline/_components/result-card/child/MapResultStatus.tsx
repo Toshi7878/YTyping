@@ -1,6 +1,6 @@
 import { ResultCardInfo } from "@/app/timeline/_lib/type";
-import ClearRateText from "@/components/share-components/text/ClearRateText";
-import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";
+import ClearRateText from "@/components/shared/text/ClearRateText";
+import { UserInputModeText } from "@/components/shared/text/UserInputModeText";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 

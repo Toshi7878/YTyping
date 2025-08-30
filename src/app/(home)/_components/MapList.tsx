@@ -1,13 +1,11 @@
 "use client";
-import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
-import MapInfo from "@/components/map-card/child/child/MapInfo";
-import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import MapInfo from "@/components/shared/map-info/MapInfo";
+import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
 import { CardWithContent } from "@/components/ui/card";
 import Spinner from "@/components/ui/spinner";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -58,10 +56,8 @@ const MapList = () => {
                   mapPreviewTime={map.preview_time}
                   size="home"
                 />
-                <MapCardRightInfo>
-                  <MapLink mapId={map.id} />
-                  <MapInfo map={map} />
-                </MapCardRightInfo>
+
+                <MapInfo map={map} />
               </CardWithContent>
             );
           }),
@@ -75,10 +71,6 @@ const MapList = () => {
 
 const MapCardLayout = ({ children }: { children: React.ReactNode }) => {
   return <div className="grid grid-cols-1 gap-3 md:grid-cols-2">{children}</div>;
-};
-
-const MapLink = ({ mapId }: { mapId: number }) => {
-  return <Link className="absolute h-full w-full" href={`/type/${mapId}`} />;
 };
 
 export default MapList;

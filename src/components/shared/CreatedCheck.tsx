@@ -1,8 +1,7 @@
 "use client";
 
-import MapInfo from "@/components/map-card/child/child/MapInfo";
-import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
-import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import MapInfo from "@/components/shared/map-info/MapInfo";
+import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
 import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
@@ -39,9 +38,8 @@ const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProp
                   mapPreviewTime={map.preview_time}
                   size="home"
                 />
-                <MapCardRightInfo>
-                  <MapInfo map={map} />
-                </MapCardRightInfo>
+
+                <MapInfo map={map} />
               </CardWithContent>
             </div>
           );

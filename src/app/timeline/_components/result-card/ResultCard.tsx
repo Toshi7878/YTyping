@@ -1,5 +1,5 @@
-import LikeCountIcon from "@/components/share-components/map-count-icon/LikeCountIcon";
-import RankingCountIcon from "@/components/share-components/map-count-icon/RankingCountIcon";
+import LikeCountIcon from "@/components/shared/map-count-icon/LikeCountIcon";
+import RankingCountIcon from "@/components/shared/map-count-icon/RankingCountIcon";
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { HTMLAttributes } from "react";

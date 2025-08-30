@@ -1,7 +1,6 @@
 "use client";
-import CompactMapInfo from "@/components/map-card-notification/child/child/NotificationMapInfo";
-import NotificationMapCardRightInfo from "@/components/map-card-notification/child/NotificationMapCardRightInfo";
-import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
+import CompactMapInfo from "@/components/shared/map-info/CompactMapInfo";
+import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
@@ -76,9 +75,8 @@ const ActiveUsersDrawer = () => {
                             mapPreviewTime={user.map.preview_time}
                             size="activeUser"
                           />
-                          <NotificationMapCardRightInfo>
-                            <CompactMapInfo map={user.map} />
-                          </NotificationMapCardRightInfo>
+
+                          <CompactMapInfo map={user.map} />
                         </CardWithContent>
                       ) : (
                         <CardWithContent variant="map">

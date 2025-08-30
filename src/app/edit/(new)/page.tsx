@@ -1,4 +1,4 @@
-import CreatedCheck from "@/components/share-components/CreatedCheck";
+import CreatedCheck from "@/components/shared/CreatedCheck";
 import { Metadata } from "next";
 import Content from "../_components/Content";
 import EditProvider from "../_components/EditProvider";

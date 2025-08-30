@@ -1,9 +1,9 @@
-import ClapedText from "@/components/share-components/text/ClapedText";
-import ClearRateText from "@/components/share-components/text/ClearRateText";
-import DateDistanceText from "@/components/share-components/text/DateDistanceText";
-import RankText from "@/components/share-components/text/RankText";
-import ResultToolTipText from "@/components/share-components/text/ResultToolTipText";
-import { UserInputModeText } from "@/components/share-components/text/UserInputModeText";
+import ClapedText from "@/components/shared/text/ClapedText";
+import ClearRateText from "@/components/shared/text/ClearRateText";
+import DateDistanceText from "@/components/shared/text/DateDistanceText";
+import RankText from "@/components/shared/text/RankText";
+import ResultToolTipText from "@/components/shared/text/ResultToolTipText";
+import { UserInputModeText } from "@/components/shared/text/UserInputModeText";
 import { CardWithContent } from "@/components/ui/card";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";

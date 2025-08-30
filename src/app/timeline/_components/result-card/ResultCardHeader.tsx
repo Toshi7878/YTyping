@@ -1,5 +1,5 @@
 import { ResultCardInfo } from "@/app/timeline/_lib/type";
-import DateDistanceText from "@/components/share-components/text/DateDistanceText";
+import DateDistanceText from "@/components/shared/text/DateDistanceText";
 import { CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

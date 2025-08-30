@@ -1,5 +1,5 @@
 "use client";
-import CreatedCheck from "@/components/share-components/CreatedCheck";
+import CreatedCheck from "@/components/shared/CreatedCheck";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";

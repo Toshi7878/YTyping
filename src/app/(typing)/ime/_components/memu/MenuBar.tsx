@@ -1,4 +1,4 @@
-import VolumeRange from "@/components/share-components/VolumeRange";
+import VolumeRange from "@/components/shared/VolumeRange";
 import { Button } from "@/components/ui/button";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";

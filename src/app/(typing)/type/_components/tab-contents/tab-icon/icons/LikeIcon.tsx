@@ -1,5 +1,5 @@
 import { useIsLikeState, useSetIsLikeState as useSetIsLiked } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { LikeButton } from "@/components/share-components/like-button/LikeButton";
+import { LikeButton } from "@/components/shared/like-button/LikeButton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { INITIAL_STATE } from "@/config/globalConst";
 import { useBreakPoint } from "@/lib/useBreakPoint";
