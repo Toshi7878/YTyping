@@ -1,4 +1,4 @@
-import { z } from "@/validator/z";
+import z from "zod";
 import { publicProcedure } from "../trpc";
 
 export const userRouter = {
@@ -6,7 +6,7 @@ export const userRouter = {
     .input(
       z.object({
         userId: z.number(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const { db } = ctx;

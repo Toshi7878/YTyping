@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import { z } from "@/validator/z";
+import z from "zod";
 import { protectedProcedure } from "../trpc";
 
 export const morphConvertRouter = {

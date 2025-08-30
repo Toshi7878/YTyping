@@ -1,5 +1,5 @@
-import { z } from "@/validator/z";
 import { custom_user_active_state } from "@prisma/client";
+import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userOptionRouter = {
@@ -18,9 +18,9 @@ export const userOptionRouter = {
   update: protectedProcedure
     .input(
       z.object({
-        custom_user_active_state: z.nativeEnum(custom_user_active_state).optional(),
+        custom_user_active_state: z.enum(custom_user_active_state).optional(),
         hide_user_stats: z.boolean().optional(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;

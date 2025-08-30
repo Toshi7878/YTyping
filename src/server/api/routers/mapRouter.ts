@@ -3,8 +3,8 @@ import { prisma } from "@/server/db";
 import { MapLine } from "@/types/map";
 import { mapDataSchema } from "@/validator/mapDataSchema";
 import { mapInfoApiSchema } from "@/validator/schema";
-import { z } from "@/validator/z";
 import { TRPCError } from "@trpc/server";
+import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 const mapDifficultySchema = z.object({

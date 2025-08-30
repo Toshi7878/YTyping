@@ -1,6 +1,6 @@
 import { getBaseUrl } from "@/utils/getBaseUrl";
-import { z } from "@/validator/z";
 import axios from "axios";
+import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userStatsRouter = {

@@ -1,5 +1,5 @@
-import { z } from "@/validator/z";
 import { line_completed_display, next_display, time_offset_key, toggle_input_mode_key } from "@prisma/client";
+import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 const typingOptionSchema = z.object({
@@ -11,10 +11,10 @@ const typingOptionSchema = z.object({
   type_sound: z.boolean(),
   miss_sound: z.boolean(),
   line_clear_sound: z.boolean(),
-  line_completed_display: z.nativeEnum(line_completed_display),
-  next_display: z.nativeEnum(next_display),
-  time_offset_key: z.nativeEnum(time_offset_key),
-  toggle_input_mode_key: z.nativeEnum(toggle_input_mode_key),
+  line_completed_display: z.enum(line_completed_display),
+  next_display: z.enum(next_display),
+  time_offset_key: z.enum(time_offset_key),
+  toggle_input_mode_key: z.enum(toggle_input_mode_key),
 });
 
 const imeTypingOptionsSchema = z.object({

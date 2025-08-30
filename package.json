@@ -40,7 +40,6 @@
     "dexie-react-hooks": "^4.2.0",
     "framer-motion": "^12.23.12",
     "html-react-parser": "^5.2.6",
-    "i18next": "^25.4.2",
     "iconv-lite": "^0.7.0",
     "interactjs": "^1.10.27",
     "jotai": "^2.13.1",
@@ -67,8 +66,7 @@
     "tailwindcss-animate": "^1.0.7",
     "ua-parser-js": "^2.0.4",
     "use-breakpoint": "^4.0.6",
-    "zod": "^3.25.76",
-    "zod-i18n-map": "^2.27.0"
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@prisma/client": "^6.15.0",

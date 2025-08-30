@@ -1,7 +1,7 @@
 import { env } from "@/env";
-import { z } from "@/validator/z";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory, SafetySetting } from "@google/generative-ai";
 import { TRPCError } from "@trpc/server";
+import z from "zod";
 import { protectedProcedure } from "../trpc";
 
 const TEXT_PROMPT = `以下のJSONデータ情報を解析して{title:string; artistName:string; source:string; otherTags:string[];}の形式で出力してください。\n

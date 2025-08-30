@@ -1,7 +1,7 @@
 import { LineResultData } from "@/app/(typing)/type/_lib/type";
 import { supabase } from "@/lib/supabaseClient";
-import { z } from "@/validator/z";
 import { PrismaClient } from "@prisma/client";
+import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 import { sendResultSchema } from "./rankingRouter";
 

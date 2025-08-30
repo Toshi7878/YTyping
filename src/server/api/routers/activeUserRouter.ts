@@ -1,4 +1,4 @@
-import { z } from "@/validator/z";
+import z from "zod";
 import { publicProcedure } from "../trpc";
 
 const userStatusSchema = z.array(

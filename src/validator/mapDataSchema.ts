@@ -7,40 +7,40 @@ const lineSchema = z.object({
   options: z.object({ eternalCSS: z.string().optional(), changeCSS: z.string().optional() }).optional(),
 });
 
-const validateNoHttpContent = (lines: (typeof lineSchema._type)[]) => {
+const validateNoHttpContent = (lines: z.infer<typeof lineSchema>[]) => {
   return !lines.some((line) =>
     Object.values(line).some((value) => typeof value === "string" && value.includes("http")),
   );
 };
 
-const validateHasTypingWords = (lines: (typeof lineSchema._type)[]) => {
+const validateHasTypingWords = (lines: z.infer<typeof lineSchema>[]) => {
   return lines.some((line) => line.word && line.word.length > 0);
 };
 
-const validateEndsWithEnd = (lines: (typeof lineSchema._type)[]) => {
+const validateEndsWithEnd = (lines: z.infer<typeof lineSchema>[]) => {
   return lines[lines.length - 1]?.lyrics === "end";
 };
 
-const validateStartsWithZero = (lines: (typeof lineSchema._type)[]) => {
+const validateStartsWithZero = (lines: z.infer<typeof lineSchema>[]) => {
   return lines[0]?.time === "0";
 };
 
-const validateAllTimesAreNumbers = (lines: (typeof lineSchema._type)[]) => {
+const validateAllTimesAreNumbers = (lines: z.infer<typeof lineSchema>[]) => {
   return lines.every((line) => !isNaN(Number(line.time)));
 };
 
-const validateNoLinesAfterEnd = (lines: (typeof lineSchema._type)[]) => {
+const validateNoLinesAfterEnd = (lines: z.infer<typeof lineSchema>[]) => {
   const endAfterLineIndex = lines.findIndex((line) => line.lyrics === "end");
   return endAfterLineIndex === -1 || lines.every((line, index) => index <= endAfterLineIndex || line.lyrics === "end");
 };
 
-const validateUniqueTimeValues = (lines: (typeof lineSchema._type)[]) => {
+const validateUniqueTimeValues = (lines: z.infer<typeof lineSchema>[]) => {
   const timeValues = lines.map((line) => line.time);
   const uniqueTimeValues = new Set(timeValues);
   return timeValues.length === uniqueTimeValues.size;
 };
 
-const validateCSSLength = (lines: (typeof lineSchema._type)[]) => {
+const validateCSSLength = (lines: z.infer<typeof lineSchema>[]) => {
   const totalCSSLength = lines.reduce((total, line) => {
     const eternalCSSLength = line.options?.eternalCSS?.length || 0;
     const changeCSSLength = line.options?.changeCSS?.length || 0;

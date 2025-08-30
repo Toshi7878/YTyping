@@ -1,4 +1,4 @@
-import { z } from "@/validator/z";
+import z from "zod";
 import { publicProcedure } from "../trpc";
 
 export const sendResultSchema = z
@@ -47,9 +47,9 @@ export const sendResultSchema = z
             c: z.string().optional(),
             op: z.string().optional(),
             t: z.number(),
-          })
+          }),
         ),
-      })
+      }),
     ),
   })
   .refine(() => true, { message: "リザルトデータの形式が無効です" });
