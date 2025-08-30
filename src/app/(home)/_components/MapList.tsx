@@ -23,7 +23,7 @@ const MapList = () => {
   const isSearching = useIsSearchingState();
   const setIsSearchingAtom = useSetIsSearching();
 
-  const { data, isFetching, isRefetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
+  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
     useMapListQueryOptions().infiniteList(session, searchParams),
   );
 

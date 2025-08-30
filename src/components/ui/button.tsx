@@ -47,6 +47,22 @@ const buttonVariants = cva(
   },
 );
 
+const loadingVariants = cva("text-foreground/60 animate-spin", {
+  variants: {
+    size: {
+      default: "size-6",
+      sm: "size-6",
+      lg: "size-8",
+      xl: "size-8",
+      "4xl": "size-12",
+      icon: "size-6",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
+
 function Button({
   className,
   variant,
@@ -69,7 +85,7 @@ function Button({
       disabled={loading || props.disabled}
       {...props}
     >
-      {loading ? <Loader2 className="text-foreground/60 size-12 animate-spin" /> : children}
+      {!loading ? <Loader2 className={loadingVariants({ size })} /> : children}
     </Comp>
   );
 }
