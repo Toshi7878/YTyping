@@ -85,7 +85,7 @@ function Button({
       disabled={loading || props.disabled}
       {...props}
     >
-      {!loading ? <Loader2 className={loadingVariants({ size })} /> : children}
+      {loading ? <Loader2 className={loadingVariants({ size })} /> : children}
     </Comp>
   );
 }
