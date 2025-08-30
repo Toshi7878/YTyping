@@ -66,5 +66,5 @@ progress::-webkit-progress-bar {
 
 html,
 body {
-  overflow-x: hidden; // 横スクロールバーを非表示にする
+  overflow-x: hidden;
 }
