@@ -1,5 +1,5 @@
 "use client";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
 import preMidLinks from "@/public/images/manual/premid/premid-link.png";
 import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";

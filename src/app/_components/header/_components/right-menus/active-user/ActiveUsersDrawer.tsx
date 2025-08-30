@@ -5,7 +5,7 @@ import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";

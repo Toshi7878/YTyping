@@ -3,7 +3,7 @@ import MapCardRightInfo from "@/components/map-card/child/MapCardRightInfo";
 import MapInfo from "@/components/map-card/child/child/MapInfo";
 import MapLeftThumbnail from "@/components/share-components/MapCardThumbnail";
 import { CardWithContent } from "@/components/ui/card";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import Spinner from "@/components/ui/spinner";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";

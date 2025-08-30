@@ -1,5 +1,5 @@
 "use client";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { cn } from "@/lib/utils";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useParams } from "next/navigation";

@@ -2,7 +2,7 @@
 
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { useTRPC } from "@/trpc/provider";
 import { fingerChartUrlFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";

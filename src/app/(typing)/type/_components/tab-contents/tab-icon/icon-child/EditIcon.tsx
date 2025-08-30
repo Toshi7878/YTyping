@@ -1,6 +1,6 @@
 import { useMapInfoRef } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Button } from "@/components/ui/button";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useLinkClick } from "@/utils/global-hooks/useLinkClick";
 import { useSession } from "next-auth/react";

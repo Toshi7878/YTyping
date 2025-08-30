@@ -8,9 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "@/components/ui/link";
 import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { useUserAgent } from "@/utils/useUserAgent";
-import { useRouter } from "@bprogress/next/app";
 import { Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useActionState } from "react";
@@ -23,7 +23,6 @@ interface HamburgerMenuProps {
 const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { data: session } = useSession();
   const { isMobile } = useUserAgent();
-  const router = useRouter();
 
   const menus = leftMenuItem.concat(leftLink);
   const [, formAction] = useActionState(async () => {
@@ -47,13 +46,8 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
             }
             if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
               return (
-                <DropdownMenuItem
-                  key={index}
-                  onSelect={() => {
-                    router.push(menuItem.href);
-                  }}
-                >
-                  {menuItem.title}
+                <DropdownMenuItem key={index} asChild>
+                  <Link href={menuItem.href}>{menuItem.title}</Link>
                 </DropdownMenuItem>
               );
             }
@@ -65,8 +59,8 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
           {session?.user?.name ? (
             <>
               {loginMenuItem.map((item, index) => (
-                <DropdownMenuItem key={index} onSelect={() => router.push(item.href)}>
-                  {item.title}
+                <DropdownMenuItem key={index} asChild>
+                  <Link href={item.href}>{item.title}</Link>
                 </DropdownMenuItem>
               ))}
               <DropdownMenuItem onSelect={() => formAction()}>ログアウト</DropdownMenuItem>

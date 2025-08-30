@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
 import { TagInputFormField } from "@/components/ui/input/tag-input";
-import Link from "@/components/ui/link/link";
+import Link from "@/components/ui/link";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/db";
 import { useTRPC } from "@/trpc/provider";
