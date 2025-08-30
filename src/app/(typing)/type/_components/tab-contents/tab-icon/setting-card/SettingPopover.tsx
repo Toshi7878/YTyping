@@ -25,11 +25,11 @@ import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
-import UserShortcutKeyCheckbox from "./options/UserShortcutKeyCheckbox";
-import UserSoundEffectCheckbox from "./options/UserSoundEffectCheckbox";
-import UserTimeOffsetChange from "./options/UserTimeOffsetChange";
+import UserShortcutKeyCheckbox from "./options/UserShortcutKey";
+import UserSoundEffectCheckbox from "./options/UserSoundEffect";
+import UserTimeOffsetChange from "./options/UserTimeOffset";
 import { UserWordFontSize } from "./options/UserWordFontSize";
-import { UserWordScrollChange } from "./options/UserWordScrollChange";
+import { UserWordScrollChange } from "./options/UserWordScroll";
 
 const SettingPopover = () => {
   const trpc = useTRPC();
@@ -136,9 +136,7 @@ const SettingButton = () => {
   return (
     <TooltipWrapper label="設定" delayDuration={500}>
       <Button variant="unstyled" size="icon" className="hover:text-foreground/90" asChild>
-        <div>
-          <IoMdSettings className="size-16 md:size-9" />
-        </div>
+        <IoMdSettings className="size-16 md:size-9" />
       </Button>
     </TooltipWrapper>
   );

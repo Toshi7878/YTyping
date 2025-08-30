@@ -1,0 +1,34 @@
+import { cn } from "@/lib/utils";
+import * as React from "react";
+import { Label } from "../label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
+
+export interface LabeledSelectProps extends React.ComponentProps<typeof Select> {
+  label: React.ReactNode;
+  options: {
+    label: string;
+    value: string;
+  }[];
+}
+
+const LabeledSelect = ({ label, options, ...props }) => {
+  return (
+    <div className="flex items-center gap-2">
+      <Label className={cn("text-sm font-normal")}>{label}</Label>
+      <Select {...props}>
+        <SelectTrigger className="w-fit">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option: { label: string; value: string }) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
+export { LabeledSelect };

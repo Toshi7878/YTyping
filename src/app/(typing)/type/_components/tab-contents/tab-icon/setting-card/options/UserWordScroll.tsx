@@ -1,6 +1,7 @@
 "use client";
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { CounterInput } from "@/components/ui/counter";
+import { H5 } from "@/components/ui/typography";
 
 const MAX_SCROLL = 20;
 const MIN_SCROLL = 0;
@@ -11,8 +12,8 @@ export const UserWordScrollChange = () => {
   const { kana_word_scroll, roma_word_scroll } = useUserTypingOptionsState();
 
   return (
-    <div className="flex flex-col gap-4">
-      <span className="text-lg font-semibold">ワードスクロール開始位置 調整</span>
+    <section className="flex flex-col gap-4">
+      <H5>ワードスクロール開始位置 調整</H5>
       <div className="flex gap-6">
         <CounterInput
           onChange={(value) => setUserTypingOptions({ kana_word_scroll: value })}
@@ -35,6 +36,6 @@ export const UserWordScrollChange = () => {
           decrementTooltip="ローマ字表示スクロールタイミングを減らします。"
         />
       </div>
-    </div>
+    </section>
   );
 };

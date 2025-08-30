@@ -2,6 +2,7 @@
 import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
+import { H5 } from "@/components/ui/typography";
 import { MdRestartAlt } from "react-icons/md";
 
 const FONT_SIZE_STEP = 1;
@@ -29,14 +30,14 @@ export const UserWordFontSize = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <span className="text-lg font-semibold">ワードフォントサイズ 調整</span>
+    <section className="flex flex-col gap-4">
+      <header className="flex items-center justify-between">
+        <H5>ワードフォントサイズ 調整</H5>
         <Button size="sm" variant="outline" onClick={resetToDefaults}>
           <MdRestartAlt className="mr-2" />
           リセット
         </Button>
-      </div>
+      </header>
       <div className="flex gap-6">
         <CounterInput
           onChange={(value) => setUserTypingOptions({ kana_word_font_size: value })}
@@ -87,6 +88,6 @@ export const UserWordFontSize = () => {
           unit="px"
         />
       </div>
-    </div>
+    </section>
   );
 };
