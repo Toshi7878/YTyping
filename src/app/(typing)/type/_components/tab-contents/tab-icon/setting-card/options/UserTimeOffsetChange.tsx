@@ -20,7 +20,8 @@ const UserTimeOffsetChange = () => {
       valueDigits={2}
       decrementTooltip="タイミングが早くなります"
       incrementTooltip="タイミングが遅くなります"
-      label={"全体タイミング調整"}
+      label="全体タイミング調整"
+      size="lg"
     />
   );
 };

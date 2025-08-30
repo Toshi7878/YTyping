@@ -15,6 +15,7 @@ const counterVariants = cva("", {
       container: "border-border/50 flex w-fit items-baseline rounded-full border",
       value: "flex items-center gap-1 text-center",
       label: "",
+      button: "",
     },
   },
   compoundVariants: [
@@ -29,11 +30,15 @@ const counterVariants = cva("", {
     // Value
     { size: "sm", element: "value", class: "px-1 text-xs" },
     { size: "default", element: "value", class: "px-2 text-xs" },
-    { size: "lg", element: "value", class: "px-3 text-sm" },
+    { size: "lg", element: "value", class: "px-3 text-md" },
     // Label
-    { size: "sm", element: "label", class: "text-xs" },
-    { size: "default", element: "label", class: "text-sm" },
-    { size: "lg", element: "label", class: "text-base" },
+    { size: "sm", element: "label", class: "text-sm" },
+    { size: "default", element: "label", class: "text-md" },
+    { size: "lg", element: "label", class: "text-lg" },
+    // Button
+    { size: "sm", element: "button", class: "p-0.5 w-6 text-sm" },
+    { size: "default", element: "button", class: "p-1 w-6 text-md" },
+    { size: "lg", element: "button", class: "w-8 text-lg" },
   ],
   defaultVariants: {
     size: "default",
@@ -75,7 +80,6 @@ export const CounterInput = ({
   };
 
   const buttonSize = size === "sm" ? "sm" : size === "lg" ? "default" : "sm";
-  const buttonPadding = size === "sm" ? "p-0.5" : size === "lg" ? "p-2" : "p-1";
 
   return (
     <div className={cn(counterVariants({ size, element: "wrapper" }), className)}>
@@ -86,7 +90,7 @@ export const CounterInput = ({
             onClick={() => onCounterChange({ type: "decrement" })}
             size={buttonSize}
             variant="ghost"
-            className={cn("h-auto", buttonPadding)}
+            className={cn("h-auto", counterVariants({ size, element: "button" }))}
           >
             -
           </Button>
@@ -101,7 +105,7 @@ export const CounterInput = ({
             onClick={() => onCounterChange({ type: "increment" })}
             size={buttonSize}
             variant="ghost"
-            className={cn("h-auto", buttonPadding)}
+            className={cn("h-auto", counterVariants({ size, element: "button" }))}
           >
             +
           </Button>

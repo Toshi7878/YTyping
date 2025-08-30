@@ -39,6 +39,7 @@ export default function AddTimeAdjust() {
         min={MIN_TIME_OFFSET}
         valueDigits={2}
         label="タイム補正"
+        size="sm"
       />
     </TooltipWrapper>
   );
