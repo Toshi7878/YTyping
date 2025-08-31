@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useLoadingOverlay } from "@/lib/globalAtoms";
+import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { MapLine } from "@/types/map";
 import { useMapQueries } from "@/utils/queries/map.queries";
@@ -37,7 +37,7 @@ function Content({ mapInfo }: ContentProps) {
   const readScene = useReadScene();
   const updateTypingStats = useUpdateTypingStats();
   const enableLargeVideoDisplay = useEnableLargeVideoDisplayState();
-  const { showLoading, hideLoading } = useLoadingOverlay();
+  const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const loadMap = async (mapData: MapLine[]) => {
     showLoading({ message: "ひらがな判定生成中..." });

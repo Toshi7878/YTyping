@@ -1,7 +1,7 @@
 "use client";
+import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { useCallback, useEffect, useMemo } from "react";
-import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
 import { useReadGameUtilParams } from "../../_lib/atoms/stateAtoms";
@@ -104,10 +104,10 @@ const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeConten
   );
 
   return (
-    <LoadingOverlayWrapper active={isMapLoading} spinner={true} text="譜面読み込み中...">
+    <LoadingOverlayProvider isLoading={isMapLoading} message="譜面読み込み中...">
       {isMobile && <MobileCover />}
       {memoizedYouTube}
-    </LoadingOverlayWrapper>
+    </LoadingOverlayProvider>
   );
 };
 

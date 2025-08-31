@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { usePlayer } from "../atoms/refAtoms";
 
-import { useLoadingOverlay } from "@/lib/globalAtoms";
+import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
 import { useResultQueries } from "@/utils/queries/result.queries";
 import { useSetLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/stateAtoms";
 import { PlayMode } from "../type";
@@ -11,7 +11,7 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
   const { readPlayer } = usePlayer();
   const setPlayingInputModeState = useSetPlayingInputMode();
   const setScene = useSetScene();
-  const { showLoading, hideLoading } = useLoadingOverlay();
+  const { showLoading, hideLoading } = useGlobalLoadingOverlay();
   const queryClient = useQueryClient();
   const resultQueries = useResultQueries();
 

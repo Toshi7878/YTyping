@@ -49,9 +49,9 @@ const loadingStateAtom = atomWithReset<LoadingState>({
   hideSpinner: false,
 });
 
-export const useLoadingState = () => useAtomValue(loadingStateAtom, { store });
+export const useGlobalLoadingState = () => useAtomValue(loadingStateAtom, { store });
 
-export const useLoadingOverlay = () => {
+export const useGlobalLoadingOverlay = () => {
   const setLoadingState = useSetAtom(loadingStateAtom, { store });
 
   const showLoading = useCallback(

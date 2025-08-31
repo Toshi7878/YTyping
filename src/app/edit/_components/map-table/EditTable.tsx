@@ -6,12 +6,12 @@ import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
-import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { useMapReducer, useMapState } from "../../_lib/atoms/mapReducerAtom";
 import { usePlayer, useTbody } from "../../_lib/atoms/refAtoms";
 import { useIsYTReadiedState, useIsYTStartedState } from "../../_lib/atoms/stateAtoms";
 
 import "@/app/edit/_lib/style/table.css";
+import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUpdateEndTime } from "../../_lib/hooks/useUpdateEndTime";
 import LineOptionDialog from "./LineOptionDialog";
 import LineRow from "./LineRow";
@@ -50,7 +50,7 @@ export default function EditTable() {
   }, [isYTReady, isYTStarted, readPlayer]);
 
   return (
-    <LoadingOverlayWrapper active={isLoading} spinner={true} text="Loading...">
+    <LoadingOverlayProvider isLoading={isLoading} message="Loading...">
       <CardWithContent
         className={{
           card: "p-0",
@@ -76,6 +76,6 @@ export default function EditTable() {
       </CardWithContent>
 
       <LineOptionDialog />
-    </LoadingOverlayWrapper>
+    </LoadingOverlayProvider>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
-import { LoadingProvider } from "@/components/ui/loading-overlay";
+import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
+import { useGlobalLoadingState } from "@/lib/globalAtoms";
 import { useClearSelectionOnNavigate } from "@/utils/use-clear-selection-on-navigate";
 
 interface MainProviderProps {
@@ -8,8 +9,13 @@ interface MainProviderProps {
 
 const MainProvider = ({ children }: MainProviderProps) => {
   useClearSelectionOnNavigate();
+  const { message, isLoading, hideSpinner } = useGlobalLoadingState();
 
-  return <LoadingProvider>{children}</LoadingProvider>;
+  return (
+    <LoadingOverlayProvider message={message} isLoading={isLoading} hideSpinner={hideSpinner} asChild>
+      {children}
+    </LoadingOverlayProvider>
+  );
 };
 
 export default MainProvider;

@@ -2,13 +2,13 @@ import { useMapState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/getMyRankingResult";
 import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
-import { useLoadingOverlay } from "@/lib/globalAtoms";
+import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
 
 const ReadyPracticeButton = () => {
   const map = useMapState();
 
   const getMyRankingResult = useGetMyRankingResult();
-  const { showLoading } = useLoadingOverlay();
+  const { showLoading } = useGlobalLoadingOverlay();
   const handleClick = useResultPlay({ startMode: "practice" });
 
   return (

@@ -1,12 +1,12 @@
 "use client";
 import { useImportMapFile } from "@/app/edit/_lib/hooks/importMapFile";
 import { Button } from "@/components/ui/button";
-import { useLoadingOverlay } from "@/lib/globalAtoms";
+import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useRef } from "react";
 
 export default function LrcImportButton() {
-  const { showLoading, hideLoading } = useLoadingOverlay();
+  const { showLoading, hideLoading } = useGlobalLoadingOverlay();
   const toast = useCustomToast();
 
   const fileInputRef = useRef<HTMLInputElement>(null);

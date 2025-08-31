@@ -2,20 +2,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
-import { useLoadingOverlay, useLoadingState } from "../../lib/globalAtoms";
-
-export { useLoadingOverlay };
-
-export const LoadingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { message, isLoading, hideSpinner } = useLoadingState();
-
-  return (
-    <>
-      {children}
-      <LoadingOverlay isLoading={isLoading} message={message} hideSpinner={hideSpinner} />
-    </>
-  );
-};
 
 interface LoadingOverlayProps {
   isLoading: boolean;
@@ -23,7 +9,34 @@ interface LoadingOverlayProps {
   hideSpinner?: boolean;
 }
 
-const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isLoading, message, hideSpinner }) => {
+interface LoadingOverlayProviderProps extends LoadingOverlayProps {
+  children?: React.ReactNode;
+  asChild?: boolean;
+}
+
+export const LoadingOverlayProvider = ({
+  isLoading,
+  message,
+  hideSpinner,
+  children,
+  asChild,
+}: LoadingOverlayProviderProps) => {
+  const overlay = <LoadingOverlay isLoading={isLoading} message={message} hideSpinner={hideSpinner} />;
+
+  return asChild ? (
+    <>
+      {children}
+      {overlay}
+    </>
+  ) : (
+    <div className="relative">
+      {children}
+      {overlay}
+    </div>
+  );
+};
+
+const LoadingOverlay = ({ isLoading, message, hideSpinner }: LoadingOverlayProps) => {
   return (
     <AnimatePresence mode="wait">
       {isLoading && (
@@ -32,14 +45,13 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isLoading, message, hid
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{
-            duration: 0.2, // 0.2 → 0.1 に短縮
+            duration: 0.4,
             ease: "easeInOut",
           }}
           style={{
-            // CSS animation delay for minimum display time
             animationDelay: isLoading ? "0s" : "0.4s",
           }}
-          className="fixed inset-0 top-[40px] z-[25] flex flex-col items-center justify-center bg-black/70"
+          className="absolute inset-0 z-[25] flex flex-col items-center justify-center bg-black/70"
           aria-busy="true"
           aria-label="Loading"
         >
@@ -56,8 +68,8 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isLoading, message, hid
                 scale: 0.8,
               }}
               transition={{
-                opacity: { duration: 0.1 }, // 0.2 → 0.1 に短縮
-                scale: { duration: 0.1 }, // 0.2 → 0.1 に短縮
+                opacity: { duration: 0.1 },
+                scale: { duration: 0.1 },
                 rotate: {
                   duration: 1,
                   repeat: Infinity,
