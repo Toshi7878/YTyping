@@ -45,7 +45,7 @@ export const useResultData = () => {
       roma_kpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
       roma_rkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
       default_speed: minSp,
-      clear_rate: Number(clearRate.toFixed(1)),
+      clear_rate: Number(Math.max(0, clearRate).toFixed(1)),
     };
 
     return {

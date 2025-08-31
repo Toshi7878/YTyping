@@ -7,12 +7,10 @@ import RandomEmoji from "./child/RandomEmoji";
 
 const EndText = () => {
   const getMyRankingResult = useGetMyRankingResult();
-  const myBestScore = getMyRankingResult()?.status?.score ?? 0;
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
   const { score, miss, lost } = useTypingStatusState();
-  const [currentScore] = useState(score);
-  const [bestScore] = useState(myBestScore);
+  const [bestScore] = useState(() => getMyRankingResult()?.status?.score ?? 0);
   const isPerfect = miss === 0 && lost === 0;
   const scene = useSceneState();
 
@@ -26,20 +24,20 @@ const EndText = () => {
           <>リプレイ再生終了</>
         ) : !session ? (
           <>
-            スコアは{currentScore}
+            スコアは{score}
             です。ログインをするとランキングに登録することができます。
           </>
-        ) : myBestScore === 0 ? (
-          <>初めての記録です！スコアは {currentScore} です。</>
-        ) : currentScore >= bestScore ? (
+        ) : bestScore === 0 ? (
+          <>初めての記録です！スコアは {score} です。</>
+        ) : score >= bestScore ? (
           <>
-            おめでとうございます！最高スコアが {bestScore} から {currentScore} に更新されました！
+            おめでとうございます！最高スコアが {bestScore} から {score} に更新されました！
             <wbr />
             <RandomEmoji />
           </>
         ) : (
           <>
-            最高スコアは {bestScore} です。記録更新まであと {bestScore - currentScore} です。
+            最高スコアは {bestScore} です。記録更新まであと {bestScore - score} です。
           </>
         )}
       </span>
