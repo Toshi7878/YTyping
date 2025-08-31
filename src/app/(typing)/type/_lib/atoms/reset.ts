@@ -9,7 +9,7 @@ import {
 } from "./refAtoms";
 import { usePlaySpeedReducer } from "./speedReducerAtoms";
 import {
-  useInitializeLineResults,
+  useClearLineResults,
   useReadMap,
   useResetPlayingState,
   useSetCurrentLine,
@@ -33,12 +33,11 @@ export const usePathChangeAtomReset = () => {
   const { resetCurrentLine } = useSetCurrentLine();
   const { writePlayer } = usePlayer();
   const resetPlayingState = useResetPlayingState();
-  const initializeLineResults = useInitializeLineResults();
-
+  const clearAllLineResults = useClearLineResults();
   return () => {
     writePlayer(null);
     resetCurrentLine();
-    initializeLineResults(readMap().initialLineResultData);
+    clearAllLineResults();
     setGameUtils(RESET);
     dispatchSpeed({ type: "reset" });
     setMap(RESET);

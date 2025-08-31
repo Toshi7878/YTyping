@@ -239,7 +239,7 @@ export const useReadCurrentTime = () => {
   );
 };
 
-const lineResultAtomFamily = atomFamily((index: number) => atom<LineResultData | null>(null), deepEqual);
+const lineResultAtomFamily = atomFamily(() => atom<LineResultData | undefined>(undefined), deepEqual);
 
 export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
 
@@ -262,22 +262,56 @@ export const useReadLineResult = (index: number) => {
 export const useReadAllLineResult = () => {
   return useAtomCallback(
     useCallback((get): LineResultData[] => {
-      const map = get(mapAtom) as ParseMap;
-      if (!map) return [];
+      const results: LineResultData[] = [];
+      let index = 0;
 
-      return Array.from({ length: map.lineLength }, (_, index) => get(lineResultAtomFamily(index))).filter(
-        (result): result is LineResultData => result !== null,
-      );
+      while (true) {
+        const atom = lineResultAtomFamily(index);
+        const result = get(atom);
+
+        if (result !== undefined) {
+          results.push(result);
+          index++;
+        } else {
+          break;
+        }
+      }
+
+      return results;
     }, []),
     { store },
   );
 };
+
 export const useInitializeLineResults = () => {
   return useAtomCallback(
     useCallback((get, set, lineResults: LineResultData[]) => {
       lineResults.forEach((lineResult, index) => {
         set(lineResultAtomFamily(index), lineResult);
       });
+    }, []),
+    { store },
+  );
+};
+
+export const useClearLineResults = () => {
+  return useAtomCallback(
+    useCallback((get, set) => {
+      let index = 0;
+      while (true) {
+        try {
+          const atom = lineResultAtomFamily(index);
+          const result = get(atom);
+          if (result !== undefined) {
+            lineResultAtomFamily.remove(index);
+            index++;
+          } else {
+            break;
+          }
+        } catch {
+          break;
+        }
+      }
     }, []),
     { store },
   );
