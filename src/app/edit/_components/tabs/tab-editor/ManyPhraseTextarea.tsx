@@ -63,7 +63,7 @@ const ManyPhraseTextarea = () => {
 Sキー: 歌詞を追加
 Ctrl+Zキー: 歌詞追加のやり直し`}
         id="many_phrase_textarea"
-        className="h-[110px] resize-none"
+        className="h-[110px]"
         value={manyPhrase}
         onPaste={onPaste}
         onChange={onChange}

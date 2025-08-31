@@ -177,6 +177,7 @@
     @apply bg-background text-foreground;
     background-color: var(--background);
     color: var(--foreground);
+    scrollbar-gutter: stable;
   }
 
   body {
