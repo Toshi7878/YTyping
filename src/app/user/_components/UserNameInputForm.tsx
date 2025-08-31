@@ -11,10 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-
-interface FormData {
-  newName: string;
-}
+import z from "zod";
 
 interface UserNameInputFormProps {
   placeholder?: string;
@@ -27,7 +24,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   const pathname = usePathname();
   const trpc = useTRPC();
 
-  const form = useForm<FormData>({
+  const form = useForm({
     mode: "onChange",
     resolver: zodResolver(nameSchema),
     defaultValues: {
@@ -66,7 +63,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
     }),
   );
 
-  const onSubmit = (formData: FormData) => {
+  const onSubmit = (formData: z.infer<typeof nameSchema>) => {
     updateUserName.mutate(formData);
   };
 
