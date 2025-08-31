@@ -43,7 +43,10 @@ const FloatingLabelInput = React.forwardRef<
   return (
     <div className={cn("relative w-full", containerClassName)}>
       <FloatingInput ref={ref} id={id} className={className} {...props} maxLength={props.maxLength} />
-      <FloatingLabel htmlFor={id}>{label}</FloatingLabel>
+      <FloatingLabel htmlFor={id}>
+        {label}
+        {props.required && <span className="text-error/80">*</span>}
+      </FloatingLabel>
     </div>
   );
 });
