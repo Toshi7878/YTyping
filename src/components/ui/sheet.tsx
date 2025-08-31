@@ -35,19 +35,28 @@ function SheetOverlay({ className, ...props }: React.ComponentProps<typeof Sheet
   );
 }
 
-interface SheetContentProps extends React.ComponentProps<typeof SheetPrimitive.Content> {
+interface SheetContentProps extends Omit<React.ComponentProps<typeof SheetPrimitive.Content>, "forceMount"> {
   side?: "top" | "right" | "bottom" | "left";
   overlayClassName?: string;
+  forceMount?: true;
 }
 
-function SheetContent({ className, children, side = "right", overlayClassName, ...props }: SheetContentProps) {
+function SheetContent({
+  className,
+  children,
+  side = "right",
+  overlayClassName,
+  forceMount,
+  ...props
+}: SheetContentProps) {
   return (
-    <SheetPortal>
+    <SheetPortal forceMount={forceMount}>
       <SheetOverlay className={overlayClassName} />
       <SheetPrimitive.Content
         data-slot="sheet-content"
+        forceMount={forceMount}
         className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:hidden data-[state=closed]:duration-300 data-[state=open]:duration-500",
           side === "right" &&
             "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
           side === "left" &&

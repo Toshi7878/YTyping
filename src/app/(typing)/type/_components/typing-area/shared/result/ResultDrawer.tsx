@@ -13,8 +13,8 @@ function ResultDrawer() {
   const sceneGroup = useSceneGroupState();
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && setLineResultDrawer(false)}>
-      <SheetContent side="right" className="bg-accent/90 w-xs" overlayClassName="bg-transparent">
+    <Sheet modal={false} open={isOpen} onOpenChange={(open) => !open && setLineResultDrawer(false)}>
+      <SheetContent forceMount side="right" className="bg-accent/90 w-xs" overlayClassName="bg-transparent">
         <SheetHeader className="py-2">
           <SheetTitle>{sceneGroup === "End" ? "詳細リザルト" : "練習リザルト"}</SheetTitle>
         </SheetHeader>
