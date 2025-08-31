@@ -18,6 +18,7 @@ export default function TabsArea({ className }: TabsAreaProps) {
       value={tabName}
       onValueChange={(value) => setTabName(value as (typeof TAB_NAMES)[number])}
       className={className}
+      id="tabs-area"
     >
       <TabLists />
       <TabsContent value="ステータス">
