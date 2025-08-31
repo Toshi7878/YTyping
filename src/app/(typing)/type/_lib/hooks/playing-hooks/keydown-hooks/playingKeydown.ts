@@ -3,7 +3,7 @@ import { usePlaySpeedReducer } from "@/app/(typing)/type/_lib/atoms/speedReducer
 import {
   useReadGameUtilParams,
   useReadLineWord,
-  useReadMapState,
+  useReadMap,
   useSceneState,
   useSetLineResultDrawer,
   useSetNotify,
@@ -66,7 +66,7 @@ const usePlayingShortcutKey = () => {
 
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readTypingOptions = useUserTypingOptionsStateRef();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const readGameStateUtils = useReadGameUtilParams();
 
   return (event: KeyboardEvent) => {

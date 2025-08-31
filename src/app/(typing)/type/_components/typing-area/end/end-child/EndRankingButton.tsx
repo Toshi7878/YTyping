@@ -54,7 +54,9 @@ const EndRankingButton = ({
   );
 
   const handleSubmitResult = () => {
-    sendResult.mutate(resultData());
+    const result = resultData();
+    if (!result) return;
+    sendResult.mutate(result);
   };
 
   const handleClick = async () => {

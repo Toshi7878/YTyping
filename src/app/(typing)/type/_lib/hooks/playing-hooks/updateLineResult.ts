@@ -2,23 +2,23 @@ import { calcWordKanaNotes, CHAR_POINT, MISS_PENALTY } from "@/utils/parse-map/p
 import { useLineCount, useLineStatus, useTypingDetails, useYTStatus } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
+  useReadAllLineResult,
   useReadCombo,
   useReadGameUtilParams,
   useReadLineKpm,
-  useReadLineResults,
   useReadLineWord,
-  useReadMapState,
+  useReadMap,
   useReadTypingStatus,
-  useSetLineResults,
+  useSetLineResult,
   useSetTypingStatus,
 } from "../../atoms/stateAtoms";
 
 export const useUpdateLineResult = () => {
-  const setLineResults = useSetLineResults();
+  const setLineResult = useSetLineResult();
 
   const { readLineStatus } = useLineStatus();
   const { readStatus, writeStatus } = useTypingDetails();
-  const readLineResults = useReadLineResults();
+  const readAllLineResults = useReadAllLineResult();
   const { readCount } = useLineCount();
   const readCombo = useReadCombo();
   const readTypingResult = useReadTypingStatus();
@@ -27,7 +27,7 @@ export const useUpdateLineResult = () => {
   const readPlaySpeed = usePlaySpeedStateRef();
   const { readYTStatus } = useYTStatus();
   const readLineKpm = useReadLineKpm();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const { setTypingStatus } = useSetTypingStatus();
 
   const generateLostWord = () => {
@@ -56,15 +56,15 @@ export const useUpdateLineResult = () => {
   };
 
   const isLinePointUpdated = () => {
-    const lineResultList = readLineResults();
+    const lineResults = readAllLineResults();
     const count = readCount();
     const { miss: lineMiss } = readLineStatus();
-    const lineResult = lineResultList[count - 1];
+    const lineResult = lineResults[count - 1];
     const typingStatus = readTypingResult();
 
     const newLineScore = typingStatus.point + typingStatus.timeBonus + lineMiss * MISS_PENALTY;
     const oldLineScore =
-      (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0) + (lineResult.status.lMiss ?? 0) * MISS_PENALTY;
+      (lineResult?.status.p ?? 0) + (lineResult?.status.tBonus ?? 0) + (lineResult?.status.lMiss ?? 0) * MISS_PENALTY;
 
     const { isPaused } = readYTStatus();
     const { scene } = readGameStateUtils();
@@ -85,40 +85,36 @@ export const useUpdateLineResult = () => {
     const isTypingLine = map.mapData[count - 1].kpm.r > 0;
     const { totalTypeTime } = readStatus();
     const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
-    setLineResults((prev) => {
-      const newLineResults = [...prev];
 
-      if (isTypingLine) {
-        newLineResults[count - 1] = {
-          status: {
-            p: typingStatus.point,
-            tBonus: typingStatus.timeBonus,
-            lType: lineType,
-            lMiss: lineMiss,
-            lRkpm: lineRkpm,
-            lKpm: readLineKpm(),
-            lostW: lostWord,
-            lLost: actualLostNotes,
-            combo: readCombo(),
-            tTime: roundedTotalTypeTime,
-            mode: startInputMode,
-            sp: startSpeed,
+    setLineResult({
+      index: count - 1,
+      lineResult: isTypingLine
+        ? {
+            status: {
+              p: typingStatus.point,
+              tBonus: typingStatus.timeBonus,
+              lType: lineType,
+              lMiss: lineMiss,
+              lRkpm: lineRkpm,
+              lKpm: readLineKpm(),
+              lostW: lostWord,
+              lLost: actualLostNotes,
+              combo: readCombo(),
+              tTime: roundedTotalTypeTime,
+              mode: startInputMode,
+              sp: startSpeed,
+            },
+            typeResult,
+          }
+        : {
+            status: {
+              combo: readCombo(),
+              tTime: roundedTotalTypeTime,
+              mode: startInputMode,
+              sp: startSpeed,
+            },
+            typeResult,
           },
-          typeResult,
-        };
-      } else {
-        newLineResults[count - 1] = {
-          status: {
-            combo: readCombo(),
-            tTime: roundedTotalTypeTime,
-            mode: startInputMode,
-            sp: startSpeed,
-          },
-          typeResult,
-        };
-      }
-
-      return newLineResults;
     });
   };
 

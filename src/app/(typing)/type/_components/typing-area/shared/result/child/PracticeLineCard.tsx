@@ -1,6 +1,6 @@
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import {
-  useLineResultsState,
+  useLineResultState,
   useLineSelectIndexState,
   useMapState,
   usePlayingInputModeState,
@@ -9,15 +9,14 @@ import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLi
 import { useInteractJS } from "@/app/(typing)/type/_lib/hooks/useInteractJS";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
+import { CHAR_POINT } from "@/utils/parse-map/parseMap";
 import { useState } from "react";
 import ResultCardContent from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
 import ResultCardHeader from "./child/ResultCardHeader";
 
 const PracticeLineCard = () => {
-  const map = useMapState() as ParseMap;
-  const lineResults = useLineResultsState();
+  const map = useMapState();
   const speedData = usePlaySpeedState();
   const lineSelectIndex = useLineSelectIndexState();
   const inputMode = usePlayingInputModeState();
@@ -25,13 +24,16 @@ const PracticeLineCard = () => {
   const { moveSetLine } = useMoveLine();
   const interact = useInteractJS();
 
-  const index = map.typingLineIndexes[lineSelectIndex - 1] || map.typingLineIndexes[0];
+  const index = map?.typingLineIndexes[lineSelectIndex - 1] ?? map?.typingLineIndexes[0];
 
-  const lineResult = lineResults[index];
+  if (!index) return null;
+  const lineResult = useLineResultState(index);
+  if (!lineResult) return null;
 
   const lineInputMode = lineResult.status.mode ?? inputMode;
 
-  const lineData = map.mapData[index];
+  const lineData = map?.mapData[index];
+  if (!lineData) return null;
 
   const maxLinePoint = lineData.notes.r * CHAR_POINT;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");

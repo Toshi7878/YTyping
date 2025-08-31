@@ -1,4 +1,4 @@
-import { useReadGameUtilParams, useReadMapState, useSetLineWord } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useReadGameUtilParams, useReadMap, useSetLineWord } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useInputJudge } from "@/app/(typing)/type/_lib/hooks/playing-hooks/keydown-hooks/typingJudge";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";
@@ -20,7 +20,7 @@ export const useTyping = () => {
   const { isLinePointUpdated, updateLineResult } = useUpdateLineResult();
   const readGameStateUtils = useReadGameUtilParams();
   const updateAllStatus = useUpdateAllStatus();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
 
   return (event: KeyboardEvent) => {
     const { isSuccess, isFailed, isCompleted, newLineWord, ...inputResult } = inputJudge(event);

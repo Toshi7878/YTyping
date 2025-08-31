@@ -1,11 +1,11 @@
 import { useGameUtilityReferenceParams, useLineCount, usePlayer, useTypingDetails } from "../../atoms/refAtoms";
 import {
+  useInitializeLineResults,
   useReadGameUtilParams,
-  useReadMapState,
+  useReadMap,
   useReadTypingStatus,
   useSetCombo,
   useSetCurrentLine,
-  useSetLineResults,
   useSetNextLyrics,
   useSetNotify,
   useSetScene,
@@ -20,7 +20,7 @@ export const useRetry = () => {
   const { readPlayer } = usePlayer();
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
 
-  const setLineResults = useSetLineResults();
+  const initializeLineResults = useInitializeLineResults();
   const setCombo = useSetCombo();
   const setNotify = useSetNotify();
   const { setNextLyrics } = useSetNextLyrics();
@@ -29,7 +29,7 @@ export const useRetry = () => {
   const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
   const { resetStatus } = useTypingDetails();
   const readTypingStatus = useReadTypingStatus();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const readGameStateUtils = useReadGameUtilParams();
   const { writeCount } = useLineCount();
   const { resetCurrentLine } = useSetCurrentLine();
@@ -86,7 +86,7 @@ export const useRetry = () => {
     setScene(newPlayMode);
 
     if (newPlayMode === "play") {
-      setLineResults(structuredClone(map.initialLineResultData));
+      initializeLineResults(structuredClone(map.initialLineResultData));
     }
 
     if (newPlayMode !== "practice") {

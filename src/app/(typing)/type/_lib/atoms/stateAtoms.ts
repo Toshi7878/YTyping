@@ -1,9 +1,10 @@
 import { RouterOutPuts } from "@/server/api/trpc";
 import { ParseMap } from "@/utils/parse-map/parseMap";
 import { $Enums } from "@prisma/client";
+import deepEqual from "fast-deep-equal";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
-import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
+import { atomFamily, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../type";
 import {
@@ -82,7 +83,7 @@ export const useSetIsLikeState = () => useSetAtom(mapLikeFocusAtom, { store });
 const mapAtom = atomWithReset<ParseMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });
 export const useSetMap = () => useSetAtom(mapAtom, { store });
-export const useReadMapState = () => {
+export const useReadMap = () => {
   return useAtomCallback(
     useCallback((get) => get(mapAtom) as ParseMap, []),
     { store },
@@ -238,13 +239,44 @@ export const useReadCurrentTime = () => {
   );
 };
 
-const lineResultListAtom = atomWithReset<LineResultData[]>([]);
+const lineResultAtomFamily = atomFamily((index: number) => atom<LineResultData | null>(null), deepEqual);
 
-export const useLineResultsState = () => useAtomValue(lineResultListAtom, { store });
-export const useSetLineResults = () => useSetAtom(lineResultListAtom, { store });
-export const useReadLineResults = () => {
+export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
+
+export const useSetLineResult = () => {
   return useAtomCallback(
-    useCallback((get) => get(lineResultListAtom), []),
+    useCallback((get, set, { index, lineResult }: { index: number; lineResult: LineResultData }) => {
+      set(lineResultAtomFamily(index), lineResult);
+    }, []),
+    { store },
+  );
+};
+
+export const useReadLineResult = (index: number) => {
+  return useAtomCallback(
+    useCallback((get) => get(lineResultAtomFamily(index)), [index]),
+    { store },
+  );
+};
+
+export const useReadAllLineResult = () => {
+  return useAtomCallback(
+    useCallback((get) => {
+      const map = get(mapAtom) as ParseMap;
+      if (!map) return [];
+
+      return Array.from({ length: map.lineLength }, (_, index) => get(lineResultAtomFamily(index))).filter(Boolean);
+    }, []),
+    { store },
+  );
+};
+export const useInitializeLineResults = () => {
+  return useAtomCallback(
+    useCallback((get, set, lineResults: LineResultData[]) => {
+      lineResults.forEach((lineResult, index) => {
+        set(lineResultAtomFamily(index), lineResult);
+      });
+    }, []),
     { store },
   );
 };
@@ -380,7 +412,7 @@ export const useSetTypingStatusLine = () => useSetAtom(focusTypingStatusAtoms.li
 export const useSetTypingStatusRank = () => useSetAtom(focusTypingStatusAtoms.rank, { store });
 export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
 export const useSetTypingStatus = () => {
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const setTypingStatus = useSetAtom(typingStatusAtom, { store });
   const setLineCount = useSetTypingStatusLine();

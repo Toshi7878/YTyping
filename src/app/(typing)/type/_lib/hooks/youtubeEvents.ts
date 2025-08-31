@@ -4,7 +4,7 @@ import { useGameUtilityReferenceParams, useLineCount, usePlayer, useProgress, us
 import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
-  useReadMapState,
+  useReadMap,
   useSetNotify,
   useSetPlayingInputMode,
   useSetScene,
@@ -32,7 +32,7 @@ export const useYTPlayEvent = () => {
   const readReadyInputMode = useReadReadyInputMode();
   const readPlaySpeed = usePlaySpeedStateRef();
   const updateAllStatus = useUpdateAllStatus();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
 
   return async () => {
     console.log("再生 1");

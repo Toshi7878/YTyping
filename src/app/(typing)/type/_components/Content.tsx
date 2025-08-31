@@ -7,8 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { CSSProperties, useEffect, useState } from "react";
 import { useProgress } from "../_lib/atoms/refAtoms";
 import {
+  useInitializeLineResults,
   useSceneGroupState,
-  useSetLineResults,
   useSetLineSelectIndex,
   useSetMap,
   useSetTypingStatus,
@@ -27,9 +27,9 @@ interface ContentProps {
 function Content({ video_id, mapId }: ContentProps) {
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
 
-  const setLineResults = useSetLineResults();
   const setLineSelectIndex = useSetLineSelectIndex();
   const setTypingStatusLine = useSetTypingStatusLine();
+  const initializeLineResults = useInitializeLineResults();
 
   const { readTotalProgress } = useProgress();
   const { resetTypingStatus } = useSetTypingStatus();
@@ -49,7 +49,7 @@ function Content({ video_id, mapId }: ContentProps) {
     if (mapData) {
       const map = new ParseMap(mapData);
       setMap(map);
-      setLineResults(map.initialLineResultData);
+      initializeLineResults(map.initialLineResultData);
       setLineSelectIndex(map.typingLineIndexes[0]);
       setTypingStatusLine(map.lineLength);
       resetTypingStatus();

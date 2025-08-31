@@ -1,41 +1,48 @@
 "use client";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
-import { useMapState, usePlayingInputModeState, useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { LineData, LineResultData } from "@/app/(typing)/type/_lib/type";
+import {
+  useLineResultState,
+  useMapState,
+  usePlayingInputModeState,
+  useSceneState,
+} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { LineData } from "@/app/(typing)/type/_lib/type";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
-import { memo } from "react";
 import ResultCardContent from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
 import ResultCardHeader from "./child/ResultCardHeader";
 
-interface ResultCardProps {
-  lineResult: LineResultData;
+interface OptimizedResultCardProps {
   count: number;
   lineIndex: number;
   scoreCount: number;
-  lineData: LineData;
   cardRefs: React.RefObject<HTMLDivElement[]>;
   selectIndex: number;
   handleCardClick: (lineNumber: number) => void;
+  lineData: LineData;
 }
 
-function ResultCard({
-  lineResult,
+function OptimizedResultCard({
   count,
   lineIndex,
   scoreCount,
-  lineData,
   selectIndex,
   cardRefs,
   handleCardClick,
-}: ResultCardProps) {
+  lineData,
+}: OptimizedResultCardProps) {
+  const lineResult = useLineResultState(count);
   const map = useMapState() as ParseMap;
   const scene = useSceneState();
   const speedData = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();
+
+  if (!lineResult) {
+    return null;
+  }
 
   const lineSpeed = lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
@@ -107,13 +114,4 @@ function ResultCard({
   );
 }
 
-export default memo(ResultCard, (prevProps, nextProps) => {
-  return (
-    prevProps.lineResult === nextProps.lineResult &&
-    prevProps.selectIndex === nextProps.selectIndex &&
-    prevProps.count === nextProps.count &&
-    prevProps.lineIndex === nextProps.lineIndex &&
-    prevProps.scoreCount === nextProps.scoreCount &&
-    prevProps.lineData === nextProps.lineData
-  );
-});
+export default OptimizedResultCard;

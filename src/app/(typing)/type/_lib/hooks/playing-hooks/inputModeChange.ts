@@ -3,7 +3,7 @@ import { useLineCount, useLineStatus } from "../../atoms/refAtoms";
 import {
   useReadGameUtilParams,
   useReadLineWord,
-  useReadMapState,
+  useReadMap,
   useSetLineWord,
   useSetNextLyrics,
   useSetNotify,
@@ -22,7 +22,7 @@ export const useInputModeChange = () => {
   const { readLineStatus, writeLineStatus } = useLineStatus();
   const readGameStateUtils = useReadGameUtilParams();
   const readLineWord = useReadLineWord();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const { readCount } = useLineCount();
 
   return async (newInputMode: InputMode) => {

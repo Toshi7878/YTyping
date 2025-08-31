@@ -1,6 +1,6 @@
 import { useGameUtilityReferenceParams, useLineCount, usePlayer, useYTStatus } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
-import { useReadMapState, useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
+import { useReadMap, useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
 
 export const useGetTime = () => {
   const { readPlayer } = usePlayer();
@@ -8,7 +8,7 @@ export const useGetTime = () => {
   const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readTypingOptions = useUserTypingOptionsStateRef();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const { readCount } = useLineCount();
 
   const getCurrentOffsettedYTTime = () => {

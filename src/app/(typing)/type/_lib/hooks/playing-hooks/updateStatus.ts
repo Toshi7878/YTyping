@@ -1,11 +1,11 @@
 import { MISS_PENALTY } from "../../../../../../utils/parse-map/parseMap";
 import { useGameUtilityReferenceParams, useLineStatus, useTypingDetails, useUserStats } from "../../atoms/refAtoms";
 import {
+  useReadAllLineResult,
   useReadCombo,
   useReadGameUtilParams,
-  useReadLineResults,
   useReadLineWord,
-  useReadMapState,
+  useReadMap,
   useReadTypingStatus,
   useSetCombo,
   useSetLineKpm,
@@ -24,7 +24,7 @@ export const useTypeSuccess = () => {
   const readTypingStatus = useReadTypingStatus();
   const readGameStateUtils = useReadGameUtilParams();
 
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const readCombo = useReadCombo();
   const readLineWord = useReadLineWord();
 
@@ -212,7 +212,7 @@ export const useTypeMiss = () => {
   const { readLineStatus, writeLineStatus } = useLineStatus();
   const { readStatus, writeStatus } = useTypingDetails();
   const readTypingStatus = useReadTypingStatus();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
 
   const updateMissStatus = () => {
     const status = readTypingStatus();
@@ -253,7 +253,7 @@ export const useLineUpdateStatus = () => {
   const { setTypingStatus } = useSetTypingStatus();
   const { readStatus, writeStatus } = useTypingDetails();
   const readTypingStatus = useReadTypingStatus();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const readLineWord = useReadLineWord();
   const { readLineStatus } = useLineStatus();
   return ({ constantLineTime }: { constantLineTime: number }) => {
@@ -295,8 +295,8 @@ export const useLineUpdateStatus = () => {
 
 export const useUpdateAllStatus = () => {
   const calcCurrentRank = useCalcCurrentRank();
-  const readMap = useReadMapState();
-  const readLineResults = useReadLineResults();
+  const readMap = useReadMap();
+  const readLineResults = useReadAllLineResult();
   const { setTypingStatus } = useSetTypingStatus();
   const readGameStateUtils = useReadGameUtilParams();
   const setLineKpm = useSetLineKpm();
@@ -329,21 +329,21 @@ export const useUpdateAllStatus = () => {
 
     for (let i = 0; i <= count - 1; i++) {
       const lineResult = lineResults[i];
-      newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
-      newStatus.miss += lineResult.status.lMiss ?? 0;
-      newStatus.lost += lineResult.status.lLost ?? 0;
+      newStatus.score += (lineResult?.status.p ?? 0) + (lineResult?.status.tBonus ?? 0);
+      newStatus.miss += lineResult?.status.lMiss ?? 0;
+      newStatus.lost += lineResult?.status.lLost ?? 0;
 
       if (scene === "practice") {
-        newStatus.line -= lineResult.status.lLost === 0 ? 1 : 0;
+        newStatus.line -= lineResult?.status.lLost === 0 ? 1 : 0;
       } else if (scene === "replay") {
-        newStatus.line -= lineResult.status.lType !== undefined ? 1 : 0;
+        newStatus.line -= lineResult?.status.lType !== undefined ? 1 : 0;
       }
 
-      const typeResultLength = lineResult.typeResult.length;
+      const typeResultLength = lineResult?.typeResult.length;
       if (typeResultLength) {
-        totalTypeTime += lineResult.typeResult[typeResultLength - 1].t;
+        totalTypeTime += lineResult?.typeResult[typeResultLength - 1].t;
       }
-      newStatus.type += lineResult.status.lType ?? 0;
+      newStatus.type += lineResult?.status.lType ?? 0;
     }
 
     const lineResult = lineResults[count - 1];
@@ -351,8 +351,8 @@ export const useUpdateAllStatus = () => {
     newStatus.rank = calcCurrentRank(newStatus.score);
 
     if (updateType === "completed") {
-      newStatus.point = lineResult.status.p ?? 0;
-      newStatus.timeBonus = lineResult.status.tBonus ?? 0;
+      newStatus.point = lineResult?.status.p ?? 0;
+      newStatus.timeBonus = lineResult?.status.tBonus ?? 0;
     } else {
       newStatus.point = 0;
       newStatus.timeBonus = 0;
@@ -362,10 +362,10 @@ export const useUpdateAllStatus = () => {
       writeStatus({ totalTypeTime });
     } else if (scene === "replay") {
       writeStatus({
-        totalTypeTime: lineResult.status.tTime ?? 0,
+        totalTypeTime: lineResult?.status.tTime ?? 0,
       });
-      setCombo(lineResult.status.combo ?? 0);
-      setLineKpm(lineResult.status.lKpm ?? 0);
+      setCombo(lineResult?.status.combo ?? 0);
+      setLineKpm(lineResult?.status.lKpm ?? 0);
       writeLineStatus({ isCompleted: true });
     }
 

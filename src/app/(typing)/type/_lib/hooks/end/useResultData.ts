@@ -1,20 +1,20 @@
-import { sendResultSchema } from "@/server/api/routers/rankingRouter";
 import { useParams } from "next/navigation";
-import z from "zod";
 import { useTypingDetails } from "../../atoms/refAtoms";
-import { useReadLineResults, useReadTypingStatus } from "../../atoms/stateAtoms";
+import { useReadAllLineResult, useReadTypingStatus } from "../../atoms/stateAtoms";
+import { LineResultData, LineResultStatus } from "../../type";
 
 export const useResultData = () => {
   const { id: mapId } = useParams();
   const { readStatus } = useTypingDetails();
 
-  const readLineResults = useReadLineResults();
+  const readAllLineResults = useReadAllLineResult();
   const readTypingStatus = useReadTypingStatus();
 
-  const getMinSpeed = (lineResults: z.infer<typeof sendResultSchema>["lineResults"]) => {
+  const getMinSpeed = (lineResults: LineResultData[]) => {
     return lineResults.reduce((min, result) => {
-      if (result.status!.tTime !== 0) {
-        return Math.min(min, result.status!.sp);
+      const { status } = result;
+      if (status && status.tTime !== 0) {
+        return Math.min(min, status.sp);
       }
       return min;
     }, Infinity);
@@ -23,12 +23,13 @@ export const useResultData = () => {
   return () => {
     const { totalTypeTime, totalLatency, kanaToRomaConvertCount, clearRate, maxCombo } = readStatus();
     const { romaType, kanaType, flickType, englishType, spaceType, symbolType, numType } = readStatus();
-    const lineResults = readLineResults();
+    const lineResults = readAllLineResults();
+    if (lineResults) return;
     const minSp = getMinSpeed(lineResults);
     const rkpmTime = totalTypeTime - totalLatency;
     const typingStatus = readTypingStatus();
 
-    const sendStatus: z.infer<typeof sendResultSchema>["status"] = {
+    const sendStatus: LineResultStatus = {
       score: typingStatus.score,
       roma_type: romaType,
       kana_type: kanaType,

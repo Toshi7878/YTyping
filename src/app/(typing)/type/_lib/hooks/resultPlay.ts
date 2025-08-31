@@ -3,11 +3,11 @@ import { usePlayer } from "../atoms/refAtoms";
 
 import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
 import { useResultQueries } from "@/utils/queries/result.queries";
-import { useSetLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/stateAtoms";
+import { useInitializeLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/stateAtoms";
 import { PlayMode } from "../type";
 
 export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "playing"> }) => {
-  const setLineResults = useSetLineResults();
+  const initializeLineResults = useInitializeLineResults();
   const { readPlayer } = usePlayer();
   const setPlayingInputModeState = useSetPlayingInputMode();
   const setScene = useSetScene();
@@ -24,7 +24,7 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
         if (startMode === "replay") {
           setPlayingInputModeState(resultData[0].status.mode);
         }
-        setLineResults(resultData);
+        initializeLineResults(resultData);
       }
     } finally {
       hideLoading();

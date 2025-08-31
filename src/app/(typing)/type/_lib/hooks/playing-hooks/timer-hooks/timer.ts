@@ -11,7 +11,7 @@ import {
   useReadCurrentTime,
   useReadGameUtilParams,
   useReadLineWord,
-  useReadMapState,
+  useReadMap,
   useSetChangeCSSCount,
   useSetCurrentLine,
   useSetCurrentTime,
@@ -96,7 +96,7 @@ const useTimer = () => {
   const { readLineStatus } = useLineStatus();
   const readPlaySpeed = usePlaySpeedStateRef();
   const readGameStateUtils = useReadGameUtilParams();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const { readCount, writeCount } = useLineCount();
 
   const { pauseTimer } = useTimerControls();
@@ -231,7 +231,7 @@ const useCalcLineResult = () => {
 
   const { readLineStatus } = useLineStatus();
   const readGameStateUtils = useReadGameUtilParams();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const { readCount } = useLineCount();
   const { isLinePointUpdated, updateLineResult } = useUpdateLineResult();
   const updateStatus = useLineUpdateStatus();
@@ -281,7 +281,7 @@ export const useUpdateLine = () => {
   const { setTypingStatus } = useSetTypingStatus();
   const { setCurrentLine } = useSetCurrentLine();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const readGameStateUtils = useReadGameUtilParams();
   const updateAllStatus = useUpdateAllStatus();
 

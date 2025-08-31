@@ -1,4 +1,6 @@
+import { sendResultSchema } from "@/server/api/routers/rankingRouter";
 import { MapLine } from "@/types/map";
+import z from "zod";
 
 export type InputMode = "roma" | "kana" | "flick";
 export type PlayMode = "play" | "replay" | "practice";
@@ -33,30 +35,12 @@ export interface LineData {
   options?: MapLine["options"];
 }
 
-export interface TypeResult {
-  is?: boolean;
-  c?: string;
-  op?: string;
-  t: number;
-}
+export type TypeResult = z.infer<typeof sendResultSchema>["lineResults"][number]["typeResult"][number];
 
-export interface LineResultData {
-  status: {
-    p?: number;
-    tBonus?: number;
-    lType?: number;
-    lMiss?: number;
-    lRkpm?: number;
-    lKpm?: number;
-    lostW?: string | null;
-    lLost?: number;
-    combo: number;
-    tTime: number;
-    mode: InputMode;
-    sp: number;
-  };
-  typeResult: TypeResult[];
-}
+export type LineResultData = Omit<z.infer<typeof sendResultSchema>["lineResults"][number], "status"> & {
+  status: NonNullable<z.infer<typeof sendResultSchema>["lineResults"][number]["status"]>;
+};
+export type LineResultStatus = z.infer<typeof sendResultSchema>["status"];
 
 export type Dakuten =
   | "ゔ"

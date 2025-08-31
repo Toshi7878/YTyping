@@ -1,6 +1,6 @@
 import {
   useReadGameUtilParams,
-  useReadMapState,
+  useReadMap,
   useSceneState,
   useSetLineResultDrawer,
   useSetNextLyrics,
@@ -33,7 +33,7 @@ const Playing = ({ className }: PlayingProps) => {
   const { readCount } = useLineCount();
   const scene = useSceneState();
   const { setFrameRate } = useTimerControls();
-  const readMap = useReadMapState();
+  const readMap = useReadMap();
   const setLineResultDrawer = useSetLineResultDrawer();
 
   useEffect(() => {

@@ -1,8 +1,8 @@
 import { useGameUtilityReferenceParams, useLineCount } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import {
+  useReadAllLineResult,
   useReadGameUtilParams,
-  useReadLineResults,
   useReadLineWord,
   useSetLineWord,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
@@ -103,16 +103,21 @@ const usePlayBackKey = () => {
 
 export const useReplay = () => {
   const keyReplay = usePlayBackKey();
-  const readLineResults = useReadLineResults();
+  const readAllLineResults = useReadAllLineResult();
 
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readCount } = useLineCount();
 
   return ({ constantLineTime }: { constantLineTime: number }) => {
     const count = readCount();
-    const lineResults = readLineResults();
+    const lineResults = readAllLineResults();
 
-    const lineResult: LineResultData = lineResults[count - 1];
+    const lineResult = lineResults[count - 1];
+
+    if (!lineResult) {
+      return;
+    }
+
     const typeResults = lineResult.typeResult;
 
     if (typeResults.length === 0) {
@@ -139,12 +144,16 @@ export const useLineReplayUpdate = () => {
   const inputModeChange = useInputModeChange();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const readLineResults = useReadLineResults();
+  const readAllLineResults = useReadAllLineResult();
 
   return (newCurrentCount: number) => {
-    const lineResults = readLineResults();
+    const lineResults = readAllLineResults();
 
     const lineResult = lineResults[newCurrentCount];
+
+    if (!lineResult) {
+      return;
+    }
 
     inputModeChange(lineResult.status.mode);
     const speed = lineResult.status.sp as YouTubeSpeed;
