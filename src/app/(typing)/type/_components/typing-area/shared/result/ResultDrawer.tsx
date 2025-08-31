@@ -18,9 +18,8 @@ function ResultDrawer() {
         <SheetHeader className="py-2">
           <SheetTitle>{sceneGroup === "End" ? "詳細リザルト" : "練習リザルト"}</SheetTitle>
         </SheetHeader>
-        <div className="relative h-full overflow-y-auto px-4">
-          <ResultLineList />
-        </div>
+
+        <ResultLineList />
       </SheetContent>
     </Sheet>
   );

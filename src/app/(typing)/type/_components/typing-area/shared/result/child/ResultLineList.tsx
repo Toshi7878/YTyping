@@ -29,11 +29,9 @@ function ResultLineList() {
 
   const practiceReplayCardClick = useCallback(
     (lineIndex: number) => {
-      const seekCount = map?.typingLineIndexes[lineIndex - 1];
+      const seekCount = Math.max(0, map?.typingLineIndexes[lineIndex - 1] ?? 0);
 
-      if (seekCount) {
-        moveSetLine(seekCount);
-      }
+      moveSetLine(seekCount);
       setLineSelectIndex(lineIndex);
     },
     [map, moveSetLine, setLineSelectIndex],
@@ -87,11 +85,11 @@ function ResultLineList() {
   let scoreCount = 0;
 
   return (
-    <>
-      {map?.initialLineResultData.map((lineResult: LineResultData, index: number) => {
+    <div className="relative h-full overflow-y-auto px-4">
+      {map?.initialLineResultData.map((_: LineResultData, index: number) => {
         const lineData = map?.mapData[index];
 
-        if (!lineData) return null;
+        if (!lineData.kanaWord) return null;
 
         lineIndex++;
         // scoreCount += (lineResult.status?.p ?? 0) + (lineResult.status?.tBonus ?? 0);
@@ -109,7 +107,7 @@ function ResultLineList() {
           />
         );
       })}
-    </>
+    </div>
   );
 }
 
