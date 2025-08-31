@@ -2,21 +2,20 @@
 
 import { useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useResultData } from "@/app/(typing)/type/_lib/hooks/end/useResultData";
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/provider";
 import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import AlertDialogButton from "./child/AlertDialogButton";
 
 interface EndRankingButtonProps {
   isScoreUpdated: boolean;
@@ -98,20 +97,24 @@ interface ScoreDowngradeDialogProps {
 
 const ScoreDowngradeDialog = ({ isOpen, onOpenChange, onConfirm, isLoading }: ScoreDowngradeDialogProps) => {
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>スコア未更新</DialogTitle>
-          <DialogDescription>ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
+    <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>スコア未更新</AlertDialogTitle>
+          <AlertDialogDescription>
+            ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             キャンセル
           </Button>
-          <AlertDialogButton onClick={onConfirm} isLoading={isLoading} />
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <Button variant="warning-dark" onClick={onConfirm} loading={isLoading}>
+            ランキングに登録
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

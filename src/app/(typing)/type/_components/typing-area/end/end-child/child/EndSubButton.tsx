@@ -1,5 +1,12 @@
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 
 import { useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
@@ -43,26 +50,49 @@ const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps
       >
         {getButtonText()}
       </Button>
-      <RetryAlertDialog isOpen={isOpen} setIsOpen={setIsOpen} />
+      <RetryAlertDialog
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        onConfirm={() => {
+          setIsOpen(false);
+          retry(retryMode);
+        }}
+      />
     </>
   );
 };
 
-const RetryAlertDialog = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (isOpen: boolean) => void }) => {
+const RetryAlertDialog = ({
+  isOpen,
+  setIsOpen,
+  onConfirm,
+}: {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  onConfirm: () => void;
+}) => {
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>リトライ確認</DialogTitle>
-          <DialogDescription asChild>
-            <div>
-              <div>ランキング登録が完了していませんが、リトライしますか？</div>
-              <div>※リトライすると今回の記録は失われます</div>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>リトライ確認</AlertDialogTitle>
+          <AlertDialogDescription asChild>
+            <div className="space-y-1">
+              <p>ランキング登録が完了していませんが、リトライしますか？</p>
+              <p className="text-sm font-medium">※リトライすると今回の記録は失われます</p>
             </div>
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="gap-2">
+          <Button variant="outline" onClick={() => setIsOpen(false)}>
+            キャンセル
+          </Button>
+          <Button variant="warning-dark" onClick={onConfirm}>
+            リトライ
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
