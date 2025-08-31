@@ -1,5 +1,5 @@
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
-import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useSceneState, useSetLineResultDrawer, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/getMyRankingResult";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
@@ -7,17 +7,14 @@ import { useEffect, useRef, useState } from "react";
 import EndUploadButton from "./EndRankingButton";
 import { default as RetryButton } from "./child/EndSubButton";
 
-interface EndButtonContainerProps {
-  onOpen: () => void;
-}
-
-const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
+const EndButtonContainer = () => {
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
   const status = useTypingStatusState();
   const retryBtnRef = useRef<HTMLButtonElement>(null);
   const modeChangeBtnRef = useRef<HTMLButtonElement>(null);
   const scene = useSceneState();
+  const setLineResultDrawer = useSetLineResultDrawer();
 
   const isPerfect = status.miss === 0 && status.lost === 0;
   const getMyRankingResult = useGetMyRankingResult();
@@ -65,7 +62,7 @@ const EndButtonContainer = ({ onOpen }: EndButtonContainerProps) => {
           />
         )}
 
-        <Button size="4xl" variant="primary-hover-light" onClick={onOpen}>
+        <Button size="4xl" variant="primary-hover-light" onClick={() => setLineResultDrawer((prev) => !prev)}>
           詳細リザルトを見る
         </Button>
       </div>
