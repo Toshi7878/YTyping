@@ -24,7 +24,6 @@ export const useResultData = () => {
     const { totalTypeTime, totalLatency, kanaToRomaConvertCount, clearRate, maxCombo } = readStatus();
     const { romaType, kanaType, flickType, englishType, spaceType, symbolType, numType } = readStatus();
     const lineResults = readAllLineResults();
-    if (lineResults) return;
     const minSp = getMinSpeed(lineResults);
     const rkpmTime = totalTypeTime - totalLatency;
     const typingStatus = readTypingStatus();

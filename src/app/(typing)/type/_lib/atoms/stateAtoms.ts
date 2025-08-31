@@ -261,11 +261,13 @@ export const useReadLineResult = (index: number) => {
 
 export const useReadAllLineResult = () => {
   return useAtomCallback(
-    useCallback((get) => {
+    useCallback((get): LineResultData[] => {
       const map = get(mapAtom) as ParseMap;
       if (!map) return [];
 
-      return Array.from({ length: map.lineLength }, (_, index) => get(lineResultAtomFamily(index))).filter(Boolean);
+      return Array.from({ length: map.lineLength }, (_, index) => get(lineResultAtomFamily(index))).filter(
+        (result): result is LineResultData => result !== null,
+      );
     }, []),
     { store },
   );

@@ -40,9 +40,7 @@ function OptimizedResultCard({
   const speedData = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();
 
-  if (!lineResult) {
-    return null;
-  }
+  if (!lineResult) return;
 
   const lineSpeed = lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
