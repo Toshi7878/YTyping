@@ -69,7 +69,14 @@ const cleanJsonResponse = (responseText: string): GeminiMapInfo => {
     jsonData = responseText.replace(/```\n|\n```/g, "");
   }
 
-  return JSON.parse(jsonData.trim());
+  const result = JSON.parse(jsonData.trim()) as GeminiMapInfo;
+
+  return {
+    title: result?.title ?? "",
+    source: result?.source ?? "",
+    artistName: result?.artistName ?? "",
+    otherTags: result?.otherTags ?? [],
+  };
 };
 
 interface YouTubeInfo {
