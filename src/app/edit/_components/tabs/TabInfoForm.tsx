@@ -63,43 +63,29 @@ const TabInfoForm = () => {
   const form = useForm({
     resolver: zodResolver(mapInfoFormSchema),
     shouldUnregister: false,
-    defaultValues: {
-      title: "",
-      artist_name: "",
-      music_source: "",
-      preview_time: "",
-      creator_comment: "",
-      tags: [],
-      video_id: newCreateVideoId ?? "",
+    values: {
+      title: mapInfoData?.title ?? backupMapData?.title ?? "",
+      artist_name: mapInfoData?.artist_name ?? backupMapData?.artistName ?? "",
+      music_source: mapInfoData?.music_source ?? backupMapData?.musicSource ?? "",
+      preview_time: mapInfoData?.preview_time ?? backupMapData?.previewTime ?? "",
+      creator_comment: mapInfoData?.creator_comment ?? backupMapData?.creatorComment ?? "",
+      tags: mapInfoData?.tags ?? backupMapData?.tags ?? [],
+      video_id: mapInfoData?.video_id ?? newCreateVideoId ?? "",
+    },
+
+    resetOptions: {
+      keepDirtyValues: true,
     },
   });
 
   useEffect(() => {
     if (mapInfoData && !isBackUp) {
-      form.reset({
-        title: mapInfoData.title,
-        artist_name: mapInfoData.artist_name,
-        music_source: mapInfoData.music_source,
-        preview_time: mapInfoData.preview_time,
-        creator_comment: mapInfoData.creator_comment,
-        tags: mapInfoData.tags,
-        video_id: mapInfoData.video_id,
-      });
       setVideoId(mapInfoData.video_id);
     }
   }, [mapInfoData, isBackUp, form, setVideoId]);
 
   useEffect(() => {
     if (backupMapData && isBackUp && newCreateVideoId) {
-      form.reset({
-        title: backupMapData.title,
-        artist_name: backupMapData.artistName,
-        music_source: backupMapData.musicSource,
-        preview_time: backupMapData.previewTime,
-        creator_comment: backupMapData.creatorComment,
-        tags: backupMapData.tags,
-        video_id: newCreateVideoId,
-      });
       mapDispatch({
         type: "replaceAll",
         payload: backupMapData.mapData,
@@ -187,7 +173,11 @@ const TabInfoForm = () => {
           <SuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiInfoData?.otherTags ?? []} />
 
           <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
-            <InfoFormButton />
+            <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
+              <InfoFormButton />
+              {mapId && <TypeLinkButton />}
+            </div>
+
             <PreviewTimeInput />
           </div>
         </form>
@@ -200,24 +190,19 @@ const InfoFormButton = () => {
   const form = useFormContext();
   const canUpload = useCanUploadState();
   const hasUploadPermission = useHasMapUploadPermission();
-  const { id: mapId } = useParams<{ id: string }>();
   useNavigationGuard((form.formState.isDirty || canUpload) && hasUploadPermission);
 
-  return (
-    <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
-      {hasUploadPermission && (
-        <Button
-          size="xl"
-          loading={form.formState.isSubmitting}
-          disabled={(!form.formState.isDirty && !canUpload) || form.formState.isSubmitting}
-          className="w-52"
-        >
-          保存
-        </Button>
-      )}
+  if (!hasUploadPermission) return null;
 
-      {mapId && <TypeLinkButton />}
-    </div>
+  return (
+    <Button
+      size="xl"
+      loading={form.formState.isSubmitting}
+      disabled={(!form.formState.isDirty && !canUpload) || form.formState.isSubmitting}
+      className="w-52"
+    >
+      保存
+    </Button>
   );
 };
 
