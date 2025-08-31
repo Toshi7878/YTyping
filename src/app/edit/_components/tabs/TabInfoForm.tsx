@@ -209,7 +209,7 @@ const InfoFormButton = () => {
         <Button
           size="xl"
           loading={form.formState.isSubmitting}
-          disabled={!form.formState.isDirty && !canUpload}
+          disabled={(!form.formState.isDirty && !canUpload) || form.formState.isSubmitting}
           className="w-52"
         >
           保存
