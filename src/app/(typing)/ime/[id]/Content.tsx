@@ -1,18 +1,18 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useLoadingOverlay } from "@/lib/globalAtoms";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { MapLine } from "@/types/map";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import ImeTypeYouTubeContent from "../_components/ImeTypeYoutubeContent";
 import InputTextarea from "../_components/InputTextarea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/Notifications";
 import ViewArea from "../_components/view-area/ViewArea";
-import { useEnableLargeVideoDisplayState, useMapState, useReadScene, useSetMap } from "../_lib/atoms/stateAtoms";
+import { useEnableLargeVideoDisplayState, useReadScene, useSetMap } from "../_lib/atoms/stateAtoms";
 import { useParseImeMap } from "../_lib/hooks/parseImeMap";
 import { usePathChangeAtomReset } from "../_lib/hooks/reset";
 import { useUpdateTypingStats } from "../_lib/hooks/updateTypingStats";
@@ -29,38 +29,51 @@ function Content({ mapInfo }: ContentProps) {
     height: "calc(100vh - var(--header-height))",
   });
   const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
-  const { id: mapId } = useParams() as { id: string };
+  const { id: mapId } = useParams<{ id: string }>();
   const { data: mapData } = useQuery(useMapQueries().map({ mapId }));
   const setMap = useSetMap();
   const parseImeMap = useParseImeMap();
-  const map = useMapState();
   const pathChangeAtomReset = usePathChangeAtomReset();
   const readScene = useReadScene();
-  const [tokenizerError, setTokenizerError] = useState<boolean>(false);
   const updateTypingStats = useUpdateTypingStats();
   const enableLargeVideoDisplay = useEnableLargeVideoDisplayState();
+  const { showLoading, hideLoading } = useLoadingOverlay();
 
-  const loadMap = (mapData: MapLine[]) => {
+  const loadMap = async (mapData: MapLine[]) => {
+    showLoading({ message: "ひらがな判定生成中..." });
+
     parseImeMap(mapData)
       .then((map) => {
         setMap(map);
+        hideLoading();
       })
       .catch((error) => {
         console.error(error);
-        setTokenizerError(true);
+        showLoading({
+          message: (
+            <div className="flex h-full flex-col items-center justify-center gap-2">
+              ワード生成に失敗しました。
+              <Button onClick={() => loadMap(mapData)}>再試行</Button>
+            </div>
+          ),
+          hideSpinner: true,
+        });
       });
   };
 
   useEffect(() => {
     if (mapData) {
       loadMap(mapData);
+    } else {
+      showLoading({ message: "譜面読み込み中..." });
     }
-  }, [mapData]);
+  }, [mapData, showLoading]);
 
   useEffect(() => {
     return () => {
       updateTypingStats();
       pathChangeAtomReset();
+      hideLoading();
     };
   }, [mapId]);
 
@@ -108,36 +121,8 @@ function Content({ mapInfo }: ContentProps) {
     };
   }, [readScene, enableLargeVideoDisplay]);
 
-  const loadingMessage =
-    tokenizerError && mapData ? (
-      <div className="flex h-full flex-col items-center justify-center gap-2">
-        ワード生成に失敗しました。
-        <Button onClick={() => loadMap(mapData)}>再試行</Button>
-      </div>
-    ) : mapData !== undefined ? (
-      "ひらがな判定生成中..."
-    ) : (
-      "譜面読み込み中..."
-    );
-
   return (
     <>
-      <LoadingOverlayWrapper
-        active={map === null}
-        spinner={!tokenizerError}
-        text={loadingMessage}
-        styles={{
-          overlay: (base: React.CSSProperties) => ({
-            ...base,
-            position: "fixed",
-            top: "40px",
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: 9999,
-          }),
-        }}
-      />
       <Notifications style={{ height: notificationsHeight }} />
       <ImeTypeYouTubeContent
         videoId={video_id}

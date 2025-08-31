@@ -1,4 +1,4 @@
-import { useVolumeStateRef } from "@/lib/globalAtoms";
+import { useReadVolume } from "@/lib/globalAtoms";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
@@ -12,7 +12,7 @@ const manifest = [
 
 export const useSoundEffect = () => {
   const readTypingOptions = useUserTypingOptionsStateRef();
-  const readVolume = useVolumeStateRef();
+  const readVolume = useReadVolume();
   const { isMobile } = useUserAgent();
 
   useEffect(() => {

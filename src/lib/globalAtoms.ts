@@ -1,12 +1,11 @@
 import { ActiveUserStatus, YTPlayer } from "@/types/global-types";
-import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
+import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
 
-const store = createStore();
-export const getGlobalStore = () => store;
+const store = getDefaultStore();
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, {
   getOnInit: false,
@@ -14,12 +13,11 @@ const volumeAtom = atomWithStorage("volume", 30, undefined, {
 
 export const useVolumeState = () => useAtomValue(volumeAtom, { store });
 export const useSetVolume = () => useSetAtom(volumeAtom, { store });
-export const useVolumeStateRef = () => {
-  return useAtomCallback(
+export const useReadVolume = () =>
+  useAtomCallback(
     useCallback((get) => get(volumeAtom), []),
     { store },
   );
-};
 
 const previewVideoAtom = atomWithReset<{
   videoId: string | null;
@@ -27,6 +25,7 @@ const previewVideoAtom = atomWithReset<{
   previewSpeed: string | null;
   player: YTPlayer | null;
 }>({ videoId: null, previewTime: null, previewSpeed: null, player: null });
+
 const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
 
 export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store });

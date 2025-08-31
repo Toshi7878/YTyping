@@ -10,8 +10,8 @@ import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
 import Script from "next/script";
-import GlobalProvider from "./_components/GlobalProvider";
 import LinkProgressProvider from "./_components/LinkProgressProvider";
+import MainProvider from "./_components/MainProvider";
 
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
 
@@ -44,12 +44,12 @@ export default async function RootLayout({
           <TRPCProvider>
             <LinkProgressProvider>
               <Header className="fixed z-30 h-10 w-full" />
-              <GlobalProvider>
+              <MainProvider>
                 <main className="min-h-screen pt-12 md:pt-16" id="main_content">
                   {children}
                 </main>
                 <PreviewYouTubeContent />
-              </GlobalProvider>
+              </MainProvider>
             </LinkProgressProvider>
           </TRPCProvider>
         </SessionProvider>

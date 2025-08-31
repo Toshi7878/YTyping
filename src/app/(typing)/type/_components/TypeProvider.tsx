@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { mapInfoAtom, userTypingOptionsAtom } from "../_lib/atoms/stateAtoms";
 import { getTypeAtomStore } from "../_lib/atoms/store";
-import { useDisableKey } from "../_lib/hooks/disableKey";
 import { useSendUserStats } from "../_lib/hooks/playing-hooks/sendUserStats";
 
 interface TypeProviderProps {
@@ -20,7 +19,6 @@ interface TypeProviderProps {
 const TypeProvider = ({ mapInfo, userTypingOptions, mapId, children }: TypeProviderProps) => {
   const typeAtomStore = getTypeAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
-  const disableKeyHandle = useDisableKey();
   const { sendTypingStats } = useSendUserStats();
   const pathChangeAtomReset = usePathChangeAtomReset();
 
@@ -34,6 +32,14 @@ const TypeProvider = ({ mapInfo, userTypingOptions, mapId, children }: TypeProvi
   }, [setPreviewVideoState]);
 
   useEffect(() => {
+    const DISABLE_KEYS = ["Home", "End", "PageUp", "PageDown", "CapsLock", "Backquote", "F3", "F6", "Space"];
+
+    const disableKeyHandle = (event: KeyboardEvent) => {
+      if (DISABLE_KEYS.includes(event.code)) {
+        event.preventDefault();
+      }
+    };
+
     window.addEventListener("keydown", disableKeyHandle);
 
     return () => {
@@ -41,7 +47,7 @@ const TypeProvider = ({ mapInfo, userTypingOptions, mapId, children }: TypeProvi
       pathChangeAtomReset();
       sendTypingStats();
     };
-  }, [mapId, disableKeyHandle, pathChangeAtomReset, sendTypingStats]);
+  }, [mapId, pathChangeAtomReset, sendTypingStats]);
 
   return <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>;
 };
