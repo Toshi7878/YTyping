@@ -113,6 +113,7 @@ function DialogWithContent({
   children,
   open,
   onOpenChange,
+  className,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   open: boolean;
@@ -120,7 +121,9 @@ function DialogWithContent({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent {...props}>{children}</DialogContent>
+      <DialogContent className={cn("max-h-[90vh] overflow-y-auto", className)} {...props}>
+        {children}
+      </DialogContent>
     </Dialog>
   );
 }

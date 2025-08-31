@@ -1,12 +1,8 @@
 "use client";
 
 import { useHistoryReducer } from "@/app/edit/_lib/atoms/historyReducerAtom";
-import { useMapReducer, useReadMap } from "@/app/edit/_lib/atoms/mapReducerAtom";
-import {
-  useOpenLineOptionDialogIndexState,
-  useSetCanUpload,
-  useSetOpenLineOptionDialogIndex,
-} from "@/app/edit/_lib/atoms/stateAtoms";
+import { useMapReducer, useMapState, useReadMap } from "@/app/edit/_lib/atoms/mapReducerAtom";
+import { useSetCanUpload } from "@/app/edit/_lib/atoms/stateAtoms";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,37 +22,35 @@ import { Dispatch, useState } from "react";
 import { useForm } from "react-hook-form";
 import ChangeLineVideoSpeedOption from "./line-option/ChangeLineVideoSpeedOption";
 
-export default function LineOptionDialog() {
-  const openLineOptionDialogIndex = useOpenLineOptionDialogIndexState();
-  const setOpenLineOptionDialogIndex = useSetOpenLineOptionDialogIndex();
+interface LineOptionDialogProps {
+  index: number;
+  setOptionDialogIndex: Dispatch<number | null>;
+}
+
+export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOptionDialogProps) {
+  const map = useMapState();
 
   const form = useForm<NonNullable<MapLine["options"]>>({
     defaultValues: {
-      changeCSS: "",
-      eternalCSS: "",
-      isChangeCSS: false,
-      changeVideoSpeed: 0,
+      changeCSS: map[index]?.options?.changeCSS || "",
+      eternalCSS: map[index]?.options?.eternalCSS || "",
+      isChangeCSS: map[index]?.options?.isChangeCSS || false,
+      changeVideoSpeed: map[index]?.options?.changeVideoSpeed || 0,
     },
   });
   const [isEditedCSS, setIsEditedCSS] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  if (openLineOptionDialogIndex === null) return null;
-
   const handleModalClose = () => {
     if (isEditedCSS) {
       setIsConfirmOpen(true);
     } else {
-      setOpenLineOptionDialogIndex(null);
+      setOptionDialogIndex(null);
     }
   };
   return (
     <>
-      <DialogWithContent
-        open={openLineOptionDialogIndex !== null}
-        onOpenChange={handleModalClose}
-        className="bg-card text-foreground"
-      >
+      <DialogWithContent open={index !== null} onOpenChange={handleModalClose} className="bg-card text-foreground">
         <DialogHeader>
           <DialogTitle>ラインオプション</DialogTitle>
         </DialogHeader>
@@ -64,7 +58,7 @@ export default function LineOptionDialog() {
         <Form {...form}>
           <form className="space-y-4">
             <Badge variant="secondary" className="text-base">
-              選択ライン: {openLineOptionDialogIndex}
+              選択ライン: {index}
             </Badge>
 
             <div className="space-y-4">
@@ -81,7 +75,7 @@ export default function LineOptionDialog() {
                 )}
               />
 
-              {openLineOptionDialogIndex === 0 && (
+              {index === 0 && (
                 <TextareaFormField
                   name="eternalCSS"
                   label="永続的に適用するCSSを入力"
@@ -109,9 +103,9 @@ export default function LineOptionDialog() {
                 changeCSS={form.watch("changeCSS") || ""}
                 isEditedCSS={isEditedCSS}
                 isChangeCSS={form.watch("isChangeCSS") || false}
-                optionModalIndex={openLineOptionDialogIndex}
-                setOptionModalIndex={setOpenLineOptionDialogIndex}
-                onClose={() => setOpenLineOptionDialogIndex(null)}
+                optionModalIndex={index}
+                setOptionModalIndex={setOptionDialogIndex}
+                onClose={() => setOptionDialogIndex(null)}
                 setIsEditedCSS={setIsEditedCSS}
                 changeVideoSpeed={form.watch("changeVideoSpeed") || 0}
               />
@@ -121,32 +115,47 @@ export default function LineOptionDialog() {
 
         <DialogFooter />
       </DialogWithContent>
-
-      <Dialog open={isConfirmOpen} onOpenChange={() => setIsConfirmOpen(false)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>確認</DialogTitle>
-            <DialogDescription>CSS設定の変更が保存されていません。保存せずに閉じてもよろしいですか？</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>
-              いいえ
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                setOpenLineOptionDialogIndex(null);
-                setIsConfirmOpen(false);
-              }}
-            >
-              はい
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        isConfirmOpen={isConfirmOpen}
+        setIsConfirmOpen={setIsConfirmOpen}
+        setOptionDialogIndex={setOptionDialogIndex}
+      />
     </>
   );
 }
+
+interface ConfirmDialogProps {
+  isConfirmOpen: boolean;
+  setIsConfirmOpen: Dispatch<boolean>;
+  setOptionDialogIndex: Dispatch<number | null>;
+}
+
+const ConfirmDialog = ({ isConfirmOpen, setIsConfirmOpen, setOptionDialogIndex }: ConfirmDialogProps) => {
+  return (
+    <Dialog open={isConfirmOpen} onOpenChange={() => setIsConfirmOpen(false)}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>確認</DialogTitle>
+          <DialogDescription>CSS設定の変更が保存されていません。保存せずに閉じてもよろしいですか？</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>
+            いいえ
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              setOptionDialogIndex(null);
+              setIsConfirmOpen(false);
+            }}
+          >
+            はい
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 interface SaveOptionButtonProps {
   onClose: () => void;

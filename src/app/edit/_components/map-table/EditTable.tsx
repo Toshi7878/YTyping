@@ -5,7 +5,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMapReducer, useMapState } from "../../_lib/atoms/mapReducerAtom";
 import { usePlayer, useTbody } from "../../_lib/atoms/refAtoms";
 import { useIsYTReadiedState, useIsYTStartedState } from "../../_lib/atoms/stateAtoms";
@@ -25,6 +25,7 @@ export default function EditTable() {
   const mapDispatch = useMapReducer();
   const updateEndTime = useUpdateEndTime();
   const { readPlayer } = usePlayer();
+  const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
 
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
@@ -69,13 +70,15 @@ export default function EditTable() {
 
           <TableBody ref={tbodyRef}>
             {map.map((line, index) => (
-              <LineRow key={index} index={index} line={line} />
+              <LineRow key={index} index={index} line={line} setOptionDialogIndex={setOptionDialogIndex} />
             ))}
           </TableBody>
         </Table>
       </CardWithContent>
 
-      <LineOptionDialog />
+      {optionDialogIndex !== null && (
+        <LineOptionDialog index={optionDialogIndex} setOptionDialogIndex={setOptionDialogIndex} />
+      )}
     </LoadingOverlayProvider>
   );
 }

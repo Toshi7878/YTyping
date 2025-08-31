@@ -12,7 +12,6 @@ import {
   useSelectIndexState,
   useSetDirectEditIndex,
   useSetLyrics,
-  useSetOpenLineOptionDialogIndex,
   useSetSelectIndex,
   useSetTabName,
   useSetWord,
@@ -28,14 +27,15 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { MapLine } from "@/types/map";
 import parse from "html-react-parser";
-import { useRef, useState } from "react";
+import { Dispatch, useRef, useState } from "react";
 
 interface LineRowProps {
   index: number;
   line: MapLine;
+  setOptionDialogIndex: Dispatch<number | null>;
 }
 
-function LineRow({ line, index }: LineRowProps) {
+function LineRow({ line, index, setOptionDialogIndex }: LineRowProps) {
   const directEditTimeInputRef = useRef<HTMLInputElement | null>(null);
   const directEditLyricsInputRef = useRef<HTMLInputElement | null>(null);
   const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
@@ -53,7 +53,6 @@ function LineRow({ line, index }: LineRowProps) {
 
   const { readPlayer } = usePlayer();
   const readMap = useReadMap();
-  const setOpenLineOptionDialogIndex = useSetOpenLineOptionDialogIndex();
   const timeCount = useTimeCountState();
 
   const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectIndex: number) => {
@@ -134,7 +133,7 @@ function LineRow({ line, index }: LineRowProps) {
           onClick={(e) => {
             e.stopPropagation();
             if (index !== endLineIndex) {
-              setOpenLineOptionDialogIndex(index);
+              setOptionDialogIndex(index);
             }
           }}
         >

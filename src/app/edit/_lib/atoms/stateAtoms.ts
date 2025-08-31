@@ -19,7 +19,6 @@ const editUtilsAtom = atomWithReset({
   isTimeInputValid: true,
   isUpdateUpdatedAt: false,
   canUpload: false,
-  openLineOptionDialogIndex: null as number | null,
   timeRangeValue: 0,
 });
 const tabNameAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("tabName"));
@@ -31,7 +30,6 @@ const isWordConvertingAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("isW
 export const isTimeInputValidAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("isTimeInputValid"));
 const isUpdateUpdatedAtAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("isUpdateUpdatedAt"));
 const canUploadAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("canUpload"));
-const openLineOptionDialogIndexAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("openLineOptionDialogIndex"));
 const timeRangeValueAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("timeRangeValue"));
 
 export const useSetEditUtils = () => useSetAtom(editUtilsAtom, { store });
@@ -65,9 +63,6 @@ export const useSetCanUpload = () => useSetAtom(canUploadAtom, { store });
 
 export const useSetIsTimeInputValid = () => useSetAtom(isTimeInputValidAtom, { store });
 export const useSetIsUpdateUpdatedAt = () => useSetAtom(isUpdateUpdatedAtAtom, { store });
-
-export const useOpenLineOptionDialogIndexState = () => useAtomValue(openLineOptionDialogIndexAtom, { store });
-export const useSetOpenLineOptionDialogIndex = () => useSetAtom(openLineOptionDialogIndexAtom, { store });
 
 export const useTimeRangeValueState = () => useAtomValue(timeRangeValueAtom, { store });
 export const useSetTimeRangeValue = () => useSetAtom(timeRangeValueAtom, { store });
