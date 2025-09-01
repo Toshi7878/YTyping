@@ -130,6 +130,7 @@ export default function EditTable() {
       {
         header: "Time",
         accessorKey: "time",
+        size: 40,
         meta: {
           onClick: (event: React.MouseEvent<HTMLDivElement>, row: MapLine, index: number) => {
             if (directEditIndex !== index) {
@@ -152,6 +153,7 @@ export default function EditTable() {
       {
         header: "Lyrics",
         accessorKey: "lyrics",
+        size: 300,
         cell: ({ row }) => {
           const index = row.index;
 
@@ -166,6 +168,7 @@ export default function EditTable() {
       {
         header: "Word",
         accessorKey: "word",
+        size: 250,
         cell: ({ row }) => {
           const index = row.index;
 
@@ -181,6 +184,7 @@ export default function EditTable() {
       {
         header: "Option",
         accessorKey: "option",
+        size: 42,
         cell: ({ row }) => {
           const index = row.index;
           const isOptionEdited = Boolean(row.original.options?.isChangeCSS || row.original.options?.eternalCSS);

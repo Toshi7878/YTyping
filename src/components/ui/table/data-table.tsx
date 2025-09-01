@@ -36,7 +36,7 @@ export function DataTable<TData, TValue>({
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} style={{ maxWidth: header.column.getSize() }}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
@@ -46,37 +46,38 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows.map((row, index) => (
-              <TableRow
-                key={row.id}
-                data-state={selectedIndex === index ? "selected" : undefined}
-                onClick={(event) => onRowClick?.(event, row.original, index)}
-                className={cn(
-                  onRowClick && "hover:bg-info/30 cursor-pointer",
-                  timeLineIndex === index && "bg-success/30",
-                  "data-[state=selected]:bg-info/70",
-                )}
-              >
-                {row.getVisibleCells().map((cell) => {
-                  const columnMeta = cell.column.columnDef.meta as
-                    | { onClick?: (event: React.MouseEvent<HTMLDivElement>, row: TData, index: number) => void }
-                    | undefined;
-                  const hasColumnClick = columnMeta?.onClick;
+            <TableRow
+              key={row.id}
+              data-state={selectedIndex === index ? "selected" : undefined}
+              onClick={(event) => onRowClick?.(event, row.original, index)}
+              className={cn(
+                onRowClick && "hover:bg-info/30 cursor-pointer",
+                timeLineIndex === index && "bg-success/30",
+                "data-[state=selected]:bg-info/70",
+              )}
+            >
+              {row.getVisibleCells().map((cell) => {
+                const columnMeta = cell.column.columnDef.meta as
+                  | { onClick?: (event: React.MouseEvent<HTMLDivElement>, row: TData, index: number) => void }
+                  | undefined;
+                const hasColumnClick = columnMeta?.onClick;
 
-                  return (
-                    <TableCell
-                      key={cell.id}
-                      onClick={(event) => {
-                        if (hasColumnClick) {
+                return (
+                  <TableCell
+                    key={cell.id}
+                    onClick={(event) => {
+                      if (hasColumnClick) {
                         columnMeta?.onClick?.(event, row.original, index);
-                        }
-                      }}
-                      className={cn("border-r", hasColumnClick && "cursor-pointer")}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
+                      }
+                    }}
+                    style={{ maxWidth: cell.column.getSize() }}
+                    className={cn("border-r", hasColumnClick && "cursor-pointer")}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
           ))}
         </TableBody>
       </Table>
