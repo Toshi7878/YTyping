@@ -1,10 +1,5 @@
 import { useTRPC } from "@/trpc/provider";
 
-const INITIAL_DATA = {
-  custom_user_active_state: "ONLINE" as const,
-  hide_user_stats: false,
-};
-
 export const useUserOptionsQueries = () => {
   const trpc = useTRPC();
 
@@ -15,7 +10,6 @@ export const useUserOptionsQueries = () => {
         {
           gcTime: Infinity,
           staleTime: Infinity,
-          initialData: INITIAL_DATA,
         },
       ),
   };

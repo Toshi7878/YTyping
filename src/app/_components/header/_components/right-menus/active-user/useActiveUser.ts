@@ -8,7 +8,7 @@ import { useParams, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 export default function useActiveUsers() {
-  const { data: userOptions } = useQuery(useUserOptionsQueries().myUserOptions());
+  const { data: userOptions, isPending } = useQuery(useUserOptionsQueries().myUserOptions());
 
   const { data: session } = useSession();
   const setOnlineUsers = useSetOnlineUsers();
@@ -16,7 +16,7 @@ export default function useActiveUsers() {
   const { id: mapId } = useParams();
 
   useEffect(() => {
-    if (!session?.user?.name) return;
+    if (!session?.user?.name || isPending) return;
 
     let inactivityTimer: number;
     let currentChannel: ReturnType<typeof supabase.channel> | null = null;
@@ -114,5 +114,13 @@ export default function useActiveUsers() {
         currentChannel.unsubscribe();
       }
     };
-  }, [pathname, session?.user.name, setOnlineUsers, mapId, session?.user.id, userOptions?.custom_user_active_state]);
+  }, [
+    isPending,
+    pathname,
+    session?.user.name,
+    setOnlineUsers,
+    mapId,
+    session?.user.id,
+    userOptions?.custom_user_active_state,
+  ]);
 }
