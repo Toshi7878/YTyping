@@ -74,9 +74,6 @@ export default function EditTable() {
     if (!isYTReady && !isYTStarted) return;
     updateEndTime(readPlayer());
   }, [isYTReady, isYTStarted, readPlayer]);
-  const directEditTimeInputRef = useRef<HTMLInputElement | null>(null);
-  const directEditLyricsInputRef = useRef<HTMLInputElement | null>(null);
-  const directEditWordInputRef = useRef<HTMLInputElement | null>(null);
 
   const directEditIndex = useDirectEditIndexState();
   const selectIndex = useSelectIndexState();
@@ -101,11 +98,11 @@ export default function EditTable() {
     };
   }, [windowKeydownEvent, optionDialogIndex]);
 
-  const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectIndex: number) => {
+  const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
     const map = readMap();
-    const { time, lyrics, word } = map[selectIndex];
+    const { time, lyrics, word } = map[selectingIndex];
 
-    if (directEditIndex === selectIndex) {
+    if (directEditIndex === selectingIndex) {
       return null;
     }
 
@@ -113,16 +110,16 @@ export default function EditTable() {
       lineUpdateButtonEvent();
     }
 
-    const isDirectEditMode = event.ctrlKey && selectIndex !== 0 && selectIndex !== endLineIndex;
+    const isDirectEditMode = event.ctrlKey && selectingIndex !== 0 && selectingIndex !== endLineIndex;
 
     if (isDirectEditMode) {
-      setDirectEditIndex(selectIndex);
-    } else if (directEditIndex !== selectIndex) {
+      setDirectEditIndex(selectingIndex);
+    } else if (directEditIndex !== selectingIndex) {
       setDirectEditIndex(null);
     }
 
-    setSelectIndex(selectIndex);
-    setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex } });
+    setSelectIndex(selectingIndex);
+    setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
   };
 
   const columns: ColumnDef<MapLine>[] = useMemo(
@@ -130,7 +127,8 @@ export default function EditTable() {
       {
         header: "Time",
         accessorKey: "time",
-        size: 40,
+        size: 35,
+        headerClassName: "text-center text-xs font-semibold",
         meta: {
           onClick: (event: React.MouseEvent<HTMLDivElement>, row: MapLine, index: number) => {
             if (directEditIndex !== index) {
@@ -144,7 +142,7 @@ export default function EditTable() {
 
           return (
             <>
-              {directEditIndex === index && <DirectTimeInput ref={directEditTimeInputRef} time={time} />}
+              {directEditIndex === index && <DirectTimeInput time={time} />}
               {directEditIndex !== index && row.original.time}
             </>
           );
@@ -153,13 +151,14 @@ export default function EditTable() {
       {
         header: "Lyrics",
         accessorKey: "lyrics",
-        size: 300,
+        size: 200,
+        headerClassName: "text-center text-xs font-semibold",
         cell: ({ row }) => {
           const index = row.index;
 
           return (
             <>
-              {directEditIndex === index && <DirectLyricsInput ref={directEditLyricsInputRef} />}
+              {directEditIndex === index && <DirectLyricsInput />}
               {directEditIndex !== index && row.original.lyrics}
             </>
           );
@@ -169,12 +168,13 @@ export default function EditTable() {
         header: "Word",
         accessorKey: "word",
         size: 250,
+        headerClassName: "text-center text-xs font-semibold",
         cell: ({ row }) => {
           const index = row.index;
 
           return (
             <>
-              {directEditIndex === index && <DirectWordInput ref={directEditWordInputRef} />}
+              {directEditIndex === index && <DirectWordInput />}
               {directEditIndex !== index && row.original.word}
             </>
           );
@@ -184,7 +184,8 @@ export default function EditTable() {
       {
         header: "Option",
         accessorKey: "option",
-        size: 42,
+        size: 36,
+        headerClassName: "text-center text-xs font-semibold",
         cell: ({ row }) => {
           const index = row.index;
           const isOptionEdited = Boolean(row.original.options?.isChangeCSS || row.original.options?.eternalCSS);
@@ -207,14 +208,7 @@ export default function EditTable() {
         },
       },
     ],
-    [
-      directEditIndex,
-      endLineIndex,
-      readPlayer,
-      directEditTimeInputRef,
-      directEditLyricsInputRef,
-      directEditWordInputRef,
-    ],
+    [directEditIndex, endLineIndex, readPlayer],
   );
 
   return (
@@ -245,7 +239,10 @@ export default function EditTable() {
   );
 }
 
-const DirectTimeInput = ({ ref, time }: DirectEditTimeInputProps) => {
+interface DirectEditTimeInputProps {
+  time: string;
+}
+const DirectTimeInput = ({ time }: DirectEditTimeInputProps) => {
   const [editTime, setEditTime] = useState(time);
   const { setTime } = useTimeInput();
   const { readPlayer } = usePlayer();
@@ -253,10 +250,10 @@ const DirectTimeInput = ({ ref, time }: DirectEditTimeInputProps) => {
   return (
     <TooltipWrapper label={"↓↑: 0.05ずつ調整, Enter:再生"}>
       <Input
-        ref={ref}
-        className="h-6 text-xs"
+        className="h-8 [appearance:textfield] px-1 text-xs [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         type="number"
         value={editTime}
+        size="sm"
         onChange={(e) => {
           const newValue = e.target.value;
           setEditTime(newValue);
@@ -284,12 +281,7 @@ const DirectTimeInput = ({ ref, time }: DirectEditTimeInputProps) => {
   );
 };
 
-interface DirectEditTimeInputProps {
-  ref: React.RefObject<HTMLInputElement | null>;
-  time: string;
-}
-
-const DirectLyricsInput = ({ ref }: { ref: React.RefObject<HTMLInputElement | null> }) => {
+const DirectLyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const lyrics = useLyricsState();
 
@@ -303,7 +295,6 @@ const DirectLyricsInput = ({ ref }: { ref: React.RefObject<HTMLInputElement | nu
       open={isLineLyricsSelected}
     >
       <Input
-        ref={ref}
         className="h-8"
         autoComplete="off"
         value={lyrics}
@@ -321,7 +312,7 @@ const DirectLyricsInput = ({ ref }: { ref: React.RefObject<HTMLInputElement | nu
   );
 };
 
-const DirectWordInput = ({ ref }: { ref: React.RefObject<HTMLInputElement | null> }) => {
+const DirectWordInput = () => {
   const isLoadWordConvert = useIsWordConvertingState();
   const selectWord = useWordState();
   const wordConvertButtonEvent = useWordConvertButtonEvent();
@@ -338,13 +329,7 @@ const DirectWordInput = ({ ref }: { ref: React.RefObject<HTMLInputElement | null
       >
         {isLoadWordConvert ? <span className="loading loading-spinner loading-xs" /> : "変換"}
       </Button>
-      <Input
-        ref={ref}
-        className="h-8 w-[91%]"
-        autoComplete="off"
-        value={selectWord}
-        onChange={(e) => setWord(e.target.value)}
-      />
+      <Input className="h-8 w-[91%]" autoComplete="off" value={selectWord} onChange={(e) => setWord(e.target.value)} />
     </div>
   );
 };

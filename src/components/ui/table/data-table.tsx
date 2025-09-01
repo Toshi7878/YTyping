@@ -36,7 +36,11 @@ export function DataTable<TData, TValue>({
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id} style={{ maxWidth: header.column.getSize() }}>
+                  <TableHead
+                    className={cn("h-8", header.column.columnDef.headerClassName)}
+                    key={header.id}
+                    style={{ maxWidth: header.column.getSize() }}
+                  >
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 );
