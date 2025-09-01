@@ -3,7 +3,7 @@
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/mapReducerAtom";
 import { usePlayer, useTbody, useTimeInput } from "../../_lib/atoms/refAtoms";
 import {
@@ -26,7 +26,7 @@ import {
 import "@/app/edit/_lib/style/table.css";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
-import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
+import { Input } from "@/components/ui/input/input";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -127,33 +127,33 @@ export default function EditTable() {
 
   const columns: ColumnDef<MapLine>[] = useMemo(
     () => [
-    {
-      header: "Time",
-      accessorKey: "time",
-      meta: {
-        onClick: (event: React.MouseEvent<HTMLDivElement>, row: MapLine, index: number) => {
-          if (directEditIndex !== index) {
-            readPlayer().seekTo(Number(row.time), true);
-          }
+      {
+        header: "Time",
+        accessorKey: "time",
+        meta: {
+          onClick: (event: React.MouseEvent<HTMLDivElement>, row: MapLine, index: number) => {
+            if (directEditIndex !== index) {
+              readPlayer().seekTo(Number(row.time), true);
+            }
+          },
         },
-      },
-      cell: ({ row }) => {
-        const index = row.index;
-        const time = row.original.time;
+        cell: ({ row }) => {
+          const index = row.index;
+          const time = row.original.time;
 
           return (
             <>
               {directEditIndex === index && <DirectTimeInput ref={directEditTimeInputRef} time={time} />}
               {directEditIndex !== index && row.original.time}
             </>
-        );
+          );
+        },
       },
-    },
-    {
-      header: "Lyrics",
-      accessorKey: "lyrics",
-      cell: ({ row }) => {
-        const index = row.index;
+      {
+        header: "Lyrics",
+        accessorKey: "lyrics",
+        cell: ({ row }) => {
+          const index = row.index;
 
           return (
             <>
@@ -161,13 +161,13 @@ export default function EditTable() {
               {directEditIndex !== index && row.original.lyrics}
             </>
           );
+        },
       },
-    },
-    {
-      header: "Word",
-      accessorKey: "word",
-      cell: ({ row }) => {
-        const index = row.index;
+      {
+        header: "Word",
+        accessorKey: "word",
+        cell: ({ row }) => {
+          const index = row.index;
 
           return (
             <>
@@ -175,33 +175,33 @@ export default function EditTable() {
               {directEditIndex !== index && row.original.word}
             </>
           );
+        },
       },
-    },
 
-    {
-      header: "Option",
-      accessorKey: "option",
-      cell: ({ row }) => {
-        const index = row.index;
-        const isOptionEdited = Boolean(row.original.options?.isChangeCSS || row.original.options?.eternalCSS);
+      {
+        header: "Option",
+        accessorKey: "option",
+        cell: ({ row }) => {
+          const index = row.index;
+          const isOptionEdited = Boolean(row.original.options?.isChangeCSS || row.original.options?.eternalCSS);
 
-        return (
-          <Button
-            disabled={index === endLineIndex}
-            variant={isOptionEdited ? "success" : "outline"}
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (index !== endLineIndex) {
-                setOptionDialogIndex(index);
-              }
-            }}
-          >
-            {isOptionEdited ? "設定有" : "未設定"}
-          </Button>
-        );
+          return (
+            <Button
+              disabled={index === endLineIndex}
+              variant={isOptionEdited ? "success" : "outline"}
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (index !== endLineIndex) {
+                  setOptionDialogIndex(index);
+                }
+              }}
+            >
+              {isOptionEdited ? "設定有" : "未設定"}
+            </Button>
+          );
+        },
       },
-    },
     ],
     [
       directEditIndex,
