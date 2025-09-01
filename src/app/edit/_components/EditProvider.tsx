@@ -9,7 +9,6 @@ import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
 import useHasMapUploadPermission from "../_lib/hooks/useHasMapUploadPermission";
-import { useWindowKeydownEvent } from "../_lib/hooks/useKeyDown";
 import { useTimerRegistration } from "../_lib/hooks/useTimer";
 
 interface EditProviderProps {
@@ -22,15 +21,7 @@ const EditProvider = ({ children }: EditProviderProps) => {
   const hasUploadPermission = useHasMapUploadPermission();
   const { addTimer, removeTimer } = useTimerRegistration();
   const pathChangeReset = usePathChangeAtomReset();
-  const windowKeydownEvent = useWindowKeydownEvent();
   const pathname = usePathname();
-
-  useEffect(() => {
-    window.addEventListener("keydown", windowKeydownEvent);
-    return () => {
-      window.removeEventListener("keydown", windowKeydownEvent);
-    };
-  }, [windowKeydownEvent]);
 
   useEffect(() => {
     setPreviewVideoState(RESET);

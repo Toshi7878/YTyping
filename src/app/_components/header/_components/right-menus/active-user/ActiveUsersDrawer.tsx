@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useOnlineUsersState } from "@/lib/globalAtoms";
 import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";

@@ -6,7 +6,7 @@ import ResultToolTipText from "@/components/shared/text/ResultToolTipText";
 import { UserInputModeText } from "@/components/shared/text/UserInputModeText";
 import { CardWithContent } from "@/components/ui/card";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { RouterOutPuts } from "@/server/api/trpc";

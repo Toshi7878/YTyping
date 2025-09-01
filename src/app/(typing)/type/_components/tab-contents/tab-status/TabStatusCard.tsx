@@ -1,5 +1,5 @@
 import { CardWithContent } from "@/components/ui/card";
-import { Table, TableBody, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableRow } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
 import StatusCell from "./StatusCell";
 

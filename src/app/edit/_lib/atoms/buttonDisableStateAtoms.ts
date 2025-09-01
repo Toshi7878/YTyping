@@ -53,22 +53,22 @@ export const useIsAddBtnDisabledState = () => useAtomValue(isAddButtonDisabledAt
 export const useIsAddBtnDisabledStateRef = () => {
   return useAtomCallback(
     useCallback((get) => get(isAddButtonDisabledAtom), []),
-    { store }
+    { store },
   );
 };
 export const useIsUpdateBtnDisabledState = () => useAtomValue(isUpdateButtonDisabledAtom, { store });
 export const useIsUpdateBtnDisabledStateRef = () => {
   return useAtomCallback(
     useCallback((get) => get(isUpdateButtonDisabledAtom), []),
-    { store }
+    { store },
   );
 };
 export const useIsDeleteBtnDisabledState = () => useAtomValue(isDeleteButtonDisabledAtom, { store });
 export const useIsDeleteBtnDisabledStateRef = () => {
   return useAtomCallback(
     useCallback((get) => get(isDeleteButtonDisabledAtom), []),
-    { store }
+    { store },
   );
 };
 
-export const useEndLineIndex = () => useAtomValue(endLineIndexAtom, { store });
+export const useEndLineIndexState = () => useAtomValue(endLineIndexAtom, { store });
