@@ -58,10 +58,10 @@ export const useWindowKeydownEvent = () => {
   const { undo, redo } = useUndoRedo();
   const seekByArrowKey = useSeekByArrowKey();
 
-  return (event: KeyboardEvent) => {
+  return (event: KeyboardEvent, { disabled }: { disabled: boolean }) => {
     const isFocusedInput = document.activeElement instanceof HTMLInputElement;
-    const isFocusedManyPhraseTextArea = document.activeElement!.id === "many_phrase_textarea";
-    const { manyPhraseText, openLineOptionDialogIndex } = readEditUtils();
+    const isFocusedManyPhraseTextArea = document.activeElement?.id === "many_phrase_textarea";
+    const { manyPhraseText } = readEditUtils();
     const { playing } = readYtPlayerStatus();
     const player = readPlayer();
 
@@ -77,7 +77,7 @@ export const useWindowKeydownEvent = () => {
         (document.activeElement as HTMLElement)?.blur();
       }
       event.preventDefault();
-    } else if (!isFocusedManyPhraseTextArea && !isFocusedInput && openLineOptionDialogIndex === null) {
+    } else if (!isFocusedManyPhraseTextArea && !isFocusedInput && !disabled) {
       switch (event.code) {
         case "ArrowUp":
           seekNextPrev("prev");
