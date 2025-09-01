@@ -45,8 +45,7 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, index) => (
+          {table.getRowModel().rows.map((row, index) => (
               <TableRow
                 key={row.id}
                 data-state={selectedIndex === index ? "selected" : undefined}
@@ -68,8 +67,7 @@ export function DataTable<TData, TValue>({
                       key={cell.id}
                       onClick={(event) => {
                         if (hasColumnClick) {
-                          event.stopPropagation();
-                          columnMeta!.onClick!(event, row.original, index);
+                        columnMeta?.onClick?.(event, row.original, index);
                         }
                       }}
                       className={cn("border-r", hasColumnClick && "cursor-pointer")}
@@ -79,14 +77,7 @@ export function DataTable<TData, TValue>({
                   );
                 })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
     </div>

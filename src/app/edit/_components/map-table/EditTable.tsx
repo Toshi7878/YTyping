@@ -125,7 +125,8 @@ export default function EditTable() {
     setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex } });
   };
 
-  const columns: ColumnDef<MapLine>[] = [
+  const columns: ColumnDef<MapLine>[] = useMemo(
+    () => [
     {
       header: "Time",
       accessorKey: "time",
@@ -140,10 +141,11 @@ export default function EditTable() {
         const index = row.index;
         const time = row.original.time;
 
-        return directEditIndex === index ? (
-          <DirectTimeInput ref={directEditTimeInputRef} time={time} />
-        ) : (
-          row.original.time
+          return (
+            <>
+              {directEditIndex === index && <DirectTimeInput ref={directEditTimeInputRef} time={time} />}
+              {directEditIndex !== index && row.original.time}
+            </>
         );
       },
     },
@@ -153,7 +155,12 @@ export default function EditTable() {
       cell: ({ row }) => {
         const index = row.index;
 
-        return directEditIndex === index ? <DirectLyricsInput ref={directEditLyricsInputRef} /> : row.original.lyrics;
+          return (
+            <>
+              {directEditIndex === index && <DirectLyricsInput ref={directEditLyricsInputRef} />}
+              {directEditIndex !== index && row.original.lyrics}
+            </>
+          );
       },
     },
     {
@@ -162,7 +169,12 @@ export default function EditTable() {
       cell: ({ row }) => {
         const index = row.index;
 
-        return directEditIndex === index ? <DirectWordInput ref={directEditWordInputRef} /> : row.original.word;
+          return (
+            <>
+              {directEditIndex === index && <DirectWordInput ref={directEditWordInputRef} />}
+              {directEditIndex !== index && row.original.word}
+            </>
+          );
       },
     },
 
@@ -190,7 +202,16 @@ export default function EditTable() {
         );
       },
     },
-  ];
+    ],
+    [
+      directEditIndex,
+      endLineIndex,
+      readPlayer,
+      directEditTimeInputRef,
+      directEditLyricsInputRef,
+      directEditWordInputRef,
+    ],
+  );
 
   return (
     <LoadingOverlayProvider isLoading={isLoading} message="Loading...">
@@ -209,7 +230,7 @@ export default function EditTable() {
             selectLine(event, index);
             setTabName("エディター");
           }}
-          className="mb-24 border-none"
+          className="border-none pb-56"
         />
       </CardWithContent>
 
@@ -227,8 +248,7 @@ const DirectTimeInput = ({ ref, time }: DirectEditTimeInputProps) => {
 
   return (
     <TooltipWrapper label={"↓↑: 0.05ずつ調整, Enter:再生"}>
-      <FloatingLabelInput
-        label="Time"
+      <Input
         ref={ref}
         className="h-6 text-xs"
         type="number"
@@ -278,9 +298,8 @@ const DirectLyricsInput = ({ ref }: { ref: React.RefObject<HTMLInputElement | nu
       disabled={!isLineLyricsSelected}
       open={isLineLyricsSelected}
     >
-      <FloatingLabelInput
+      <Input
         ref={ref}
-        label="歌詞"
         className="h-8"
         autoComplete="off"
         value={lyrics}
@@ -315,8 +334,7 @@ const DirectWordInput = ({ ref }: { ref: React.RefObject<HTMLInputElement | null
       >
         {isLoadWordConvert ? <span className="loading loading-spinner loading-xs" /> : "変換"}
       </Button>
-      <FloatingLabelInput
-        label="ワード"
+      <Input
         ref={ref}
         className="h-8 w-[91%]"
         autoComplete="off"
