@@ -11,7 +11,7 @@ const store = getEditAtomStore();
 
 const editUtilsAtom = atomWithReset({
   tabName: "情報&保存" as (typeof TAB_NAMES)[number],
-  timeCount: 0,
+  timeLineIndex: 0,
   directEditingIndex: null as number | null,
   manyPhraseText: "",
   cssTextLength: 0,
@@ -22,7 +22,7 @@ const editUtilsAtom = atomWithReset({
   timeRangeValue: 0,
 });
 const tabNameAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("tabName"));
-const timeCountAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("timeCount"));
+const timeLineIndexAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("timeLineIndex"));
 const directEditingIndexAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("directEditingIndex"));
 const manyPhraseTextAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("manyPhraseText"));
 const cssTextLengthAtom = focusAtom(editUtilsAtom, (optic) => optic.prop("cssTextLength"));
@@ -43,8 +43,8 @@ export const useReadEditUtils = () => {
 export const useTabNameState = () => useAtomValue(tabNameAtom, { store });
 export const useSetTabName = () => useSetAtom(tabNameAtom, { store });
 
-export const useTimeCountState = () => useAtomValue(timeCountAtom, { store });
-export const useSetTimeCount = () => useSetAtom(timeCountAtom, { store });
+export const useTimeLineIndexState = () => useAtomValue(timeLineIndexAtom, { store });
+export const useSetTimeLineIndex = () => useSetAtom(timeLineIndexAtom, { store });
 
 export const useDirectEditIndexState = () => useAtomValue(directEditingIndexAtom, { store });
 export const useSetDirectEditIndex = () => useSetAtom(directEditingIndexAtom, { store });

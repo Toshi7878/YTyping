@@ -8,7 +8,7 @@ import {
   useSetIsYTPlaying,
   useSetIsYTStarted,
   useSetTabName,
-  useSetTimeCount,
+  useSetTimeLineIndex,
   useSetYtPlayerStatus,
 } from "../atoms/stateAtoms";
 import { useGetSeekCount } from "./useGetSeekCount";
@@ -97,11 +97,11 @@ export const useYTEndStopEvent = () => {
 
 export const useYTSeekEvent = () => {
   const getSeekCount = useGetSeekCount();
-  const setTimeCount = useSetTimeCount();
+  const setTimeLineIndex = useSetTimeLineIndex();
 
   return (event: YouTubeEvent) => {
     const time = event.target.getCurrentTime();
     console.log(`シークtime: ${time}`);
-    setTimeCount(getSeekCount(time));
+    setTimeLineIndex(getSeekCount(time));
   };
 };

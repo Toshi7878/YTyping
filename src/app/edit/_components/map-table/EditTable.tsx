@@ -19,6 +19,7 @@ import {
   useSetSelectIndex,
   useSetTabName,
   useSetWord,
+  useTimeLineIndexState as useTimeLineIndex,
   useWordState,
 } from "../../_lib/atoms/stateAtoms";
 
@@ -54,6 +55,7 @@ export default function EditTable() {
 
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
   const endLineIndex = useEndLineIndexState();
+  const timeLineIndex = useTimeLineIndex();
 
   useEffect(() => {
     if (mapData) {
@@ -115,21 +117,6 @@ export default function EditTable() {
 
     if (isDirectEditMode) {
       setDirectEditIndex(selectIndex);
-
-      const cellClassName = (event.target as HTMLElement).classList[0];
-      setTimeout(() => {
-        switch (cellClassName) {
-          case "time-cell":
-            directEditTimeInputRef.current?.focus();
-            break;
-          case "lyrics-cell":
-            directEditLyricsInputRef.current?.focus();
-            break;
-          case "word-cell":
-            directEditWordInputRef.current?.focus();
-            break;
-        }
-      }, 0);
     } else if (directEditIndex !== selectIndex) {
       setDirectEditIndex(null);
     }
@@ -142,15 +129,16 @@ export default function EditTable() {
     {
       header: "Time",
       accessorKey: "time",
+      meta: {
+        onClick: (event: React.MouseEvent<HTMLDivElement>, row: MapLine, index: number) => {
+          if (directEditIndex !== index) {
+            readPlayer().seekTo(Number(row.time), true);
+          }
+        },
+      },
       cell: ({ row }) => {
         const index = row.index;
         const time = row.original.time;
-
-        const handleTimeClick = () => {
-          if (directEditIndex !== index) {
-            readPlayer().seekTo(Number(time), true);
-          }
-        };
 
         return directEditIndex === index ? (
           <DirectTimeInput ref={directEditTimeInputRef} time={time} />
@@ -215,10 +203,13 @@ export default function EditTable() {
         <DataTable
           columns={columns}
           data={map}
+          selectedIndex={selectIndex}
+          timeLineIndex={timeLineIndex}
           onRowClick={(event, _, index) => {
             selectLine(event, index);
             setTabName("エディター");
           }}
+          className="mb-24 border-none"
         />
       </CardWithContent>
 
