@@ -66,18 +66,6 @@ export default [
       "@typescript-eslint": tseslint.plugin,
     },
     rules: {
-      // TypeScript基本ルール
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/prefer-as-const": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/consistent-type-imports": "off",
-      "@typescript-eslint/no-duplicate-enum-values": "off",
-      "@typescript-eslint/no-empty-interface": "off",
-      "@typescript-eslint/no-inferrable-types": "off",
-      "@typescript-eslint/prefer-function-type": "off",
-
-      // Next.js Linkコンポーネントのインポートを禁止
       "no-restricted-imports": [
         "error",
         {
