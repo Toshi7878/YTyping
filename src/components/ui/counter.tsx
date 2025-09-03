@@ -91,6 +91,8 @@ export const CounterInput = ({
             size={buttonSize}
             variant="ghost"
             className={cn("h-auto", counterVariants({ size, element: "button" }))}
+            type="button"
+            disabled={value === min}
           >
             -
           </Button>
@@ -106,6 +108,8 @@ export const CounterInput = ({
             size={buttonSize}
             variant="ghost"
             className={cn("h-auto", counterVariants({ size, element: "button" }))}
+            type="button"
+            disabled={value === max}
           >
             +
           </Button>

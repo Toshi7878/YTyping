@@ -243,10 +243,7 @@ export default function MapTable() {
   );
 }
 
-interface DirectEditTimeInputProps {
-  time: string;
-}
-const DirectTimeInput = ({ time }: DirectEditTimeInputProps) => {
+const DirectTimeInput = ({ time }: { time: string }) => {
   const [editTime, setEditTime] = useState(time);
   const { setTime } = useTimeInput();
   const { readPlayer } = usePlayer();

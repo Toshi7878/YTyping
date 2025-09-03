@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog/alert-dialog";
+} from "@/components/ui/alert-dialog";
 import { createContext, useCallback, useContext, useReducer, useRef } from "react";
 import { Button } from "../button";
 import { Input } from "../input/input";

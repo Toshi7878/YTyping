@@ -81,7 +81,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
       cancelButton: "キャンセル",
       actionButton: "削除する",
       cancelButtonVariant: "outline",
-      actionButtonVariant: "warning-dark",
+      actionButtonVariant: "warning",
     });
 
     if (!isConfirmed) return;

@@ -19,7 +19,7 @@ export default function AllTimeAdjust() {
   const timeValidate = useTimeValidate();
 
   const allTimeAdjust = () => {
-    if (!totalAdjustValue) {
+    if (!Number(totalAdjustValue)) {
       return;
     }
 

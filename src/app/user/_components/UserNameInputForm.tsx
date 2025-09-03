@@ -62,7 +62,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
     }),
   );
 
-  const onSubmit = (formData: z.infer<typeof nameSchema>) => {
+  const onSubmit = (formData: z.output<typeof nameSchema>) => {
     updateUserName.mutate(formData);
   };
 

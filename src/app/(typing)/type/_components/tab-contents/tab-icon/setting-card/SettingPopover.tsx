@@ -121,7 +121,7 @@ const SettingPopover = () => {
               body: "すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。",
               cancelButton: "キャンセル",
               actionButton: "リセットする",
-              actionButtonVariant: "warning-dark",
+              actionButtonVariant: "warning",
               cancelButtonVariant: "outline",
             });
             if (result) {

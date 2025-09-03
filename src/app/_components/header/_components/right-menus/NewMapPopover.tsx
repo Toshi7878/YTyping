@@ -35,7 +35,7 @@ export default function NewMapPopover() {
   const watchedVideoId = form.watch("videoId");
   const extractedVideoId = extractYouTubeVideoId(watchedVideoId);
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = (data: z.output<typeof formSchema>) => {
     const videoId = extractYouTubeVideoId(data.videoId);
     if (videoId) {
       router.push(`/edit?new=${videoId}`);

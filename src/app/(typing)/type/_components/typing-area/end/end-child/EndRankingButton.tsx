@@ -60,7 +60,7 @@ const EndRankingButton = ({
       cancelButton: "キャンセル",
       actionButton: "ランキングに登録",
       cancelButtonVariant: "outline",
-      actionButtonVariant: "warning-dark",
+      actionButtonVariant: "warning",
     });
 
     if (isConfirmed) {

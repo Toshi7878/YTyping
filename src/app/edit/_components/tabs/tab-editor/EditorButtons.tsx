@@ -79,6 +79,7 @@ const EditorButtons = () => {
           size="sm"
           className="w-20 font-bold xl:w-28"
           onClick={config.onClick}
+          loading={config.isLoading}
         >
           {config.isLoading ? <span className="loading loading-spinner loading-xs" /> : config.text}
         </Button>

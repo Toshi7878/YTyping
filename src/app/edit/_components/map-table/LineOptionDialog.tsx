@@ -1,26 +1,28 @@
 "use client";
 
 import { useHistoryReducer } from "@/app/edit/_lib/atoms/historyReducerAtom";
-import { useMapReducer, useMapState, useReadMap } from "@/app/edit/_lib/atoms/mapReducerAtom";
+import { useMapReducer, useMapState } from "@/app/edit/_lib/atoms/mapReducerAtom";
 import { useCssLengthState, useSetCanUpload } from "@/app/edit/_lib/atoms/stateAtoms";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogWithContent,
-} from "@/components/ui/dialog";
+import { CounterInput } from "@/components/ui/counter";
+import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/components/ui/dialog";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
-import { MapLine, MapLineEdit } from "@/types/map";
-import { Dispatch, useState } from "react";
+import { MapLineEdit } from "@/types/map";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Dispatch } from "react";
 import { useForm } from "react-hook-form";
-import ChangeLineVideoSpeedOption from "./line-option/ChangeLineVideoSpeedOption";
+import { z } from "zod";
+
+const lineOptionSchema = z.object({
+  changeCSS: z.string().optional(),
+  eternalCSS: z.string().optional(),
+  isChangeCSS: z.boolean().optional(),
+  changeVideoSpeed: z.number().min(-1.75).max(2).optional(),
+});
 
 interface LineOptionDialogProps {
   index: number;
@@ -29,8 +31,13 @@ interface LineOptionDialogProps {
 
 export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOptionDialogProps) {
   const map = useMapState();
+  const confirm = useConfirm();
+  const setCanUpload = useSetCanUpload();
+  const historyDispatch = useHistoryReducer();
+  const mapDispatch = useMapReducer();
 
-  const form = useForm<NonNullable<MapLine["options"]>>({
+  const form = useForm({
+    resolver: zodResolver(lineOptionSchema),
     defaultValues: {
       changeCSS: map[index]?.options?.changeCSS || "",
       eternalCSS: map[index]?.options?.eternalCSS || "",
@@ -38,89 +45,131 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
       changeVideoSpeed: map[index]?.options?.changeVideoSpeed || 0,
     },
   });
-  const [isEditedCSS, setIsEditedCSS] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const handleModalClose = async () => {
+    if (!isDirty) {
+      setOptionDialogIndex(null);
+      return;
+    }
 
-  const handleModalClose = () => {
-    if (isEditedCSS) {
-      setIsConfirmOpen(true);
-    } else {
+    const isConfirmed = await confirm({
+      title: "確認",
+      body: "CSS設定の変更が保存されていません。保存せずに閉じてもよろしいですか？",
+      cancelButton: "いいえ",
+      actionButton: "はい",
+      cancelButtonVariant: "outline",
+      actionButtonVariant: "warning",
+    });
+
+    if (isConfirmed) {
       setOptionDialogIndex(null);
     }
   };
+
+  const onSubmit = (data: z.output<typeof lineOptionSchema>) => {
+    const { time, lyrics, word } = map[index];
+
+    const newLine = {
+      time,
+      lyrics,
+      word,
+      options: {
+        ...(data.changeCSS && { changeCSS: data.changeCSS }),
+        ...(data.eternalCSS && { eternalCSS: data.eternalCSS }),
+        ...(data.isChangeCSS && { isChangeCSS: data.isChangeCSS }),
+        ...(data.changeVideoSpeed && { changeVideoSpeed: data.changeVideoSpeed }),
+      },
+    };
+    mapDispatch({ type: "update", payload: newLine, index });
+
+    historyDispatch({
+      type: "add",
+      payload: {
+        actionType: "update",
+        data: {
+          old: map[index],
+          new: newLine,
+          lineIndex: index,
+        },
+      },
+    });
+    setCanUpload(true);
+    setOptionDialogIndex(null);
+  };
+
+  const {
+    formState: { isDirty },
+  } = form;
+
   return (
-    <>
-      <DialogWithContent open={index !== null} onOpenChange={handleModalClose} className="bg-card text-foreground">
-        <DialogHeader>
-          <DialogTitle>ラインオプション</DialogTitle>
-        </DialogHeader>
+    <DialogWithContent
+      open={index !== null}
+      onOpenChange={handleModalClose}
+      className="bg-card text-card-foreground"
+      disableOutsideClick={true}
+    >
+      <DialogHeader>
+        <DialogTitle>ラインオプション</DialogTitle>
+      </DialogHeader>
 
-        <Form {...form}>
-          <form className="space-y-4">
-            <Badge variant="secondary" className="text-base">
-              選択ライン: {index}
-            </Badge>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <Badge variant="secondary" className="text-base">
+            選択ライン: {index}
+          </Badge>
 
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="changeVideoSpeed"
-                render={({ field }) => (
-                  <FormItem>
-                    <ChangeLineVideoSpeedOption
-                      changeVideoSpeed={field.value || 0}
-                      setChangeVideoSpeed={field.onChange}
-                    />
-                  </FormItem>
-                )}
-              />
-
-              {index === 0 && (
-                <TextareaFormField
-                  name="eternalCSS"
-                  label="永続的に適用するCSSを入力"
-                  className="min-h-[200px] resize-y"
-                />
+          <div className="space-y-4">
+            {/* TODO:現在の速度を表示する 現在の速度から加減上限を制御する */}
+            <FormField
+              control={form.control}
+              name="changeVideoSpeed"
+              render={({ field }) => (
+                <FormItem>
+                  <CounterInput
+                    label="速度変更"
+                    unit={Number(field.value ?? 0) < 0 ? "速度ダウン" : "速度アップ"}
+                    value={field.value ?? 0}
+                    onChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    min={-1.75}
+                    max={2}
+                    step={0.25}
+                    valueDigits={2} // 小数点以下2桁を表示
+                  />
+                </FormItem>
               )}
+            />
 
-              <SwitchFormField name="isChangeCSS" label="ライン切り替えを有効化" />
-
+            {index === 0 && (
               <TextareaFormField
-                name="changeCSS"
-                label="選択ラインから適用するCSSを入力"
+                name="eternalCSS"
+                label="永続的に適用するCSSを入力"
                 className="min-h-[200px] resize-y"
-                disabled={!form.watch("isChangeCSS")}
               />
+            )}
 
-              {/* <CSSTextLength
+            <SwitchFormField name="isChangeCSS" label="ライン切り替えを有効化" />
+
+            <TextareaFormField
+              name="changeCSS"
+              label="選択ラインから適用するCSSを入力"
+              className="min-h-[200px] resize-y"
+              disabled={!form.watch("isChangeCSS")}
+            />
+
+            {/* <CSSTextLength
                   eternalCSSText={form.watch("eternalCSS") || ""}
                   changeCSSText={field.value || ""}
                   lineOptions={form.getValues()}
                 /> */}
 
-              <SaveOptionButton
-                eternalCSS={form.watch("eternalCSS") || ""}
-                changeCSS={form.watch("changeCSS") || ""}
-                isEditedCSS={isEditedCSS}
-                isChangeCSS={form.watch("isChangeCSS") || false}
-                optionModalIndex={index}
-                setOptionModalIndex={setOptionDialogIndex}
-                onClose={() => setOptionDialogIndex(null)}
-                setIsEditedCSS={setIsEditedCSS}
-                changeVideoSpeed={form.watch("changeVideoSpeed") || 0}
-              />
-            </div>
-          </form>
-        </Form>
+            <Button type="submit">ラインオプションを保存</Button>
+          </div>
+        </form>
+      </Form>
 
-        <DialogFooter />
-      </DialogWithContent>
-      <ConfirmDialog
-        isConfirmOpen={isConfirmOpen}
-        setIsConfirmOpen={setIsConfirmOpen}
-        setOptionDialogIndex={setOptionDialogIndex}
-      />
-    </>
+      <DialogFooter />
+    </DialogWithContent>
   );
 }
 
@@ -141,106 +190,6 @@ function CSSTextLength({ eternalCSSText, changeCSSText, lineOptions }: CSSTextLe
   return (
     <div className={`text-right ${calcAllCustomStyleLength <= 10000 ? "" : "text-destructive"}`}>
       {calcAllCustomStyleLength} / 10000
-    </div>
-  );
-}
-
-interface ConfirmDialogProps {
-  isConfirmOpen: boolean;
-  setIsConfirmOpen: Dispatch<boolean>;
-  setOptionDialogIndex: Dispatch<number | null>;
-}
-
-const ConfirmDialog = ({ isConfirmOpen, setIsConfirmOpen, setOptionDialogIndex }: ConfirmDialogProps) => {
-  return (
-    <Dialog open={isConfirmOpen} onOpenChange={() => setIsConfirmOpen(false)}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>確認</DialogTitle>
-          <DialogDescription>CSS設定の変更が保存されていません。保存せずに閉じてもよろしいですか？</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>
-            いいえ
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => {
-              setOptionDialogIndex(null);
-              setIsConfirmOpen(false);
-            }}
-          >
-            はい
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-interface SaveOptionButtonProps {
-  onClose: () => void;
-  optionModalIndex: number | null;
-  setOptionModalIndex: Dispatch<number | null>;
-  changeCSS: string;
-  eternalCSS: string;
-  isEditedCSS: boolean;
-  isChangeCSS: boolean;
-  setIsEditedCSS: Dispatch<boolean>;
-  changeVideoSpeed: number;
-}
-
-function SaveOptionButton(props: SaveOptionButtonProps) {
-  const { changeCSS, eternalCSS, isChangeCSS, changeVideoSpeed, optionModalIndex, onClose, setIsEditedCSS } = props;
-  const setCanUpload = useSetCanUpload();
-  const historyDispatch = useHistoryReducer();
-  const mapDispatch = useMapReducer();
-  const readMap = useReadMap();
-  const handleBtnClick = () => {
-    const map = readMap();
-    if (!map || optionModalIndex === null) {
-      return;
-    }
-
-    const { time, lyrics, word } = map[optionModalIndex];
-
-    const newLine = {
-      time,
-      lyrics,
-      word,
-      options: {
-        ...(changeCSS && { changeCSS }),
-        ...(eternalCSS && { eternalCSS }),
-        ...(isChangeCSS && { isChangeCSS }),
-        ...(changeVideoSpeed && { changeVideoSpeed }),
-      },
-    };
-    mapDispatch({
-      type: "update",
-      payload: newLine,
-      index: optionModalIndex,
-    });
-
-    historyDispatch({
-      type: "add",
-      payload: {
-        actionType: "update",
-        data: {
-          old: map[optionModalIndex],
-          new: newLine,
-          lineIndex: optionModalIndex,
-        },
-      },
-    });
-    setCanUpload(true);
-    setIsEditedCSS(false);
-    onClose();
-    props.setOptionModalIndex(null);
-  };
-
-  return (
-    <div className="flex justify-end">
-      <Button onClick={handleBtnClick}>ラインオプションを保存</Button>
     </div>
   );
 }

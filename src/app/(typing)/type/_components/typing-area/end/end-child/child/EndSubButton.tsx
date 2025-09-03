@@ -28,7 +28,7 @@ const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps
       cancelButton: "キャンセル",
       actionButton: "リトライ",
       cancelButtonVariant: "outline",
-      actionButtonVariant: "warning-dark",
+      actionButtonVariant: "warning",
     });
 
     if (isConfirmed) {

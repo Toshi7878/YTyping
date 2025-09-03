@@ -187,28 +187,25 @@ const TabInfoForm = () => {
 };
 
 const InfoFormButton = () => {
-  const form = useFormContext();
+  const { formState } = useFormContext();
+  const { isDirty, isSubmitting } = formState;
   const canUpload = useCanUploadState();
   const hasUploadPermission = useHasMapUploadPermission();
-  useNavigationGuard((form.formState.isDirty || canUpload) && hasUploadPermission);
+  useNavigationGuard((isDirty || canUpload) && hasUploadPermission);
 
   if (!hasUploadPermission) return null;
 
   return (
-    <Button
-      size="xl"
-      loading={form.formState.isSubmitting}
-      disabled={(!form.formState.isDirty && !canUpload) || form.formState.isSubmitting}
-      className="w-52"
-    >
+    <Button size="xl" loading={isSubmitting} disabled={(!isDirty && !canUpload) || isSubmitting} className="w-52">
       保存
     </Button>
   );
 };
 
 const VideoIdInput = () => {
-  const form = useFormContext();
-  const formVideoId = form.watch("video_id");
+  const { watch, formState, setValue, getValues } = useFormContext();
+  const { dirtyFields } = formState;
+  const formVideoId = watch("video_id");
   const setVideoId = useSetVideoId();
   const setYTChaningVideo = useSetYTChaningVideo();
 
@@ -226,19 +223,19 @@ const VideoIdInput = () => {
             const videoId = extractYouTubeVideoId(e.clipboardData.getData("text"));
 
             if (videoId) {
-              form.setValue("video_id", videoId);
+              setValue("video_id", videoId);
             }
           }}
         />
         <Button
           variant="outline-info"
           size="lg"
-          disabled={!form.formState.dirtyFields.video_id || formVideoId.length !== 11}
+          disabled={!dirtyFields.video_id || formVideoId.length !== 11}
           onClick={(e) => {
             e.preventDefault();
             if (formVideoId.length !== 11) return;
 
-            setVideoId(form.getValues("video_id"));
+            setVideoId(getValues("video_id"));
             setYTChaningVideo(true);
           }}
         >
@@ -252,8 +249,8 @@ const VideoIdInput = () => {
 const PreviewTimeInput = () => {
   const { readPlayer } = usePlayer();
   const { writeEditUtils } = useEditUtilsParams();
-  const form = useFormContext();
-  const previewTime = form.watch("preview_time");
+  const { watch, setValue, getValues } = useFormContext();
+  const previewTime = watch("preview_time");
 
   const handlePreviewClick = () => {
     writeEditUtils({ preventAutoTabToggle: true });
@@ -289,14 +286,14 @@ const PreviewTimeInput = () => {
               }
               if (e.key === "ArrowUp") {
                 e.preventDefault();
-                const currentValue = Number(form.getValues("preview_time")) || 0;
-                form.setValue("preview_time", (currentValue + 0.05).toFixed(2));
+                const currentValue = Number(getValues("preview_time")) || 0;
+                setValue("preview_time", (currentValue + 0.05).toFixed(2));
               }
               if (e.key === "ArrowDown") {
                 e.preventDefault();
-                const currentValue = Number(form.getValues("preview_time")) || 0;
+                const currentValue = Number(getValues("preview_time")) || 0;
                 const newValue = Math.max(0, currentValue - 0.05);
-                form.setValue("preview_time", newValue.toFixed(2));
+                setValue("preview_time", newValue.toFixed(2));
               }
             }}
           />
@@ -370,7 +367,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
     }),
   );
 
-  return async (data: z.infer<typeof mapInfoFormSchema>) => {
+  return async (data: z.output<typeof mapInfoFormSchema>) => {
     const map = readMap();
 
     const { title, artist_name, music_source, creator_comment, tags, preview_time } = data;
