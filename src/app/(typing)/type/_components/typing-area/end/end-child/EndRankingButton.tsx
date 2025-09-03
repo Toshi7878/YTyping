@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/provider";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface EndRankingButtonProps {
   isScoreUpdated: boolean;
@@ -29,9 +29,8 @@ const EndRankingButton = ({
   setIsSendResultBtnDisabled,
 }: EndRankingButtonProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { id: mapId } = useParams();
+  const { id: mapId } = useParams<{ id: string }>();
   const setTabName = useSetTabName();
-  const toast = useCustomToast();
 
   const resultData = useResultData();
   const trpc = useTRPC();
@@ -44,7 +43,7 @@ const EndRankingButton = ({
         queryClient.invalidateQueries(trpc.ranking.getMapRanking.queryFilter({ mapId: Number(mapId) }));
         setIsDialogOpen(false);
         setTabName("ランキング");
-        toast({ type: "success", title: "ランキング登録が完了しました" });
+        toast.success("ランキング登録が完了しました");
       },
       onError: () => {
         setIsSendResultBtnDisabled(false);

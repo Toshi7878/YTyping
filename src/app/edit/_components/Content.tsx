@@ -1,5 +1,5 @@
 import EditYouTube from "./EditYouTubePlayer";
-import EditTable from "./map-table/EditTable";
+import MapTable from "./map-table/map-table";
 import EditTabs from "./tabs/Tabs";
 import { TimeRangeAndSpeedChange } from "./TimeRangeAndSpeedChange";
 
@@ -12,7 +12,7 @@ function Content() {
       </section>
       <TimeRangeAndSpeedChange className="my-1 grid grid-cols-[1fr_auto]" />
 
-      <EditTable />
+      <MapTable />
     </div>
   );
 }

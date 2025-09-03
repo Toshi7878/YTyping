@@ -4,15 +4,8 @@ import {
   useUserTypingOptionsState,
   useUserTypingOptionsStateRef,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LabeledRadioGroup, LabeledRadioItem } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";
@@ -20,11 +13,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBreakPoint } from "@/lib/useBreakPoint";
 import { useTRPC } from "@/trpc/provider";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
+import { toast } from "sonner";
 import UserShortcutKeyCheckbox from "./options/UserShortcutKey";
 import UserSoundEffectCheckbox from "./options/UserSoundEffect";
 import UserTimeOffsetChange from "./options/UserTimeOffset";
@@ -36,7 +29,8 @@ const SettingPopover = () => {
   const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const confirm = useConfirm();
+  const { resetUserTypingOptions } = useSetUserTypingOptionsState();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useUserTypingOptionsStateRef();
@@ -121,12 +115,24 @@ const SettingPopover = () => {
         <Button
           size="sm"
           variant="outline"
-          onClick={() => setIsResetModalOpen(true)}
+          onClick={async () => {
+            const result = await confirm({
+              title: "設定をリセット",
+              body: "すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。",
+              cancelButton: "キャンセル",
+              actionButton: "リセットする",
+              actionButtonVariant: "warning-dark",
+              cancelButtonVariant: "outline",
+            });
+            if (result) {
+              resetUserTypingOptions();
+              toast.success("設定をリセットしました");
+            }
+          }}
           className="text-destructive hover:bg-destructive/10 mt-4 ml-auto block"
         >
           設定をリセット
         </Button>
-        <ResetSettingModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
       </PopoverContent>
     </Popover>
   );
@@ -183,43 +189,6 @@ const UserNextDisplayRadioButton = () => {
       <LabeledRadioItem value="LYRICS" label="歌詞" />
       <LabeledRadioItem value="WORD" label="ワード" />
     </LabeledRadioGroup>
-  );
-};
-
-interface ResetSettingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const ResetSettingModal = ({ isOpen, onClose }: ResetSettingModalProps) => {
-  const toast = useCustomToast();
-  const { resetUserTypingOptions } = useSetUserTypingOptionsState();
-
-  const handleResetOptions = () => {
-    resetUserTypingOptions();
-    toast({
-      title: "設定をリセットしました",
-      type: "success",
-    });
-    onClose();
-  };
-  return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent id="reset-setting-modal" className="bg-background text-foreground">
-        <DialogHeader>
-          <DialogTitle>設定のリセット</DialogTitle>
-          <DialogDescription>すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            キャンセル
-          </Button>
-          <Button variant="destructive" onClick={handleResetOptions}>
-            リセット
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   );
 };
 

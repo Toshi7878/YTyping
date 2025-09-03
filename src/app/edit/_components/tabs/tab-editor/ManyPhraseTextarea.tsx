@@ -15,10 +15,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import { useState } from "react";
 import { TiFilter } from "react-icons/ti";
+import { toast } from "sonner";
 
 const ManyPhraseTextarea = () => {
   const manyPhrase = useManyPhraseState();
@@ -82,7 +82,6 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
   const filterWordSymbol = useFilterWordSymbol();
   const { formatSimilarChar, filterUnicodeSymbol } = useLyricsFormatUtils();
   const [isOpen, setIsOpen] = useState(false);
-  const toast = useCustomToast();
 
   const handleConfirm = () => {
     const cleanedText = filterUnicodeSymbol(
@@ -102,10 +101,8 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
     const topPhrase = cleanedText.split("\n")[0];
     pickupTopPhrase(topPhrase);
     setIsOpen(false);
-    toast({
-      title: "歌詞追加テキストエリアの記号を削除しました",
-      message: "読み変換で変換されない記号を削除しました",
-      type: "success",
+    toast.success("歌詞追加テキストエリアの記号を削除しました", {
+      description: "読み変換で変換されない記号を削除しました",
     });
   };
 

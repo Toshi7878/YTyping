@@ -2,9 +2,10 @@
 
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { cn } from "@/lib/utils";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import YouTube from "react-youtube";
-import { useVideoIdState } from "../_lib/atoms/stateAtoms";
+import { usePlayer } from "../_lib/atoms/refAtoms";
+import { useIsYTReadiedState, useIsYTStartedState, useVideoIdState } from "../_lib/atoms/stateAtoms";
 import {
   useYTEndStopEvent,
   useYTPauseEvent,
@@ -12,6 +13,7 @@ import {
   useYTReadyEvent,
   useYTSeekEvent,
 } from "../_lib/hooks/useEditYouToubeEvents";
+import { useUpdateEndTime } from "../_lib/hooks/useUpdateEndTime";
 
 interface EditorYouTubeProps {
   className: string;
@@ -24,6 +26,17 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
   const onPause = useYTPauseEvent();
   const onEndStop = useYTEndStopEvent();
   const onSeek = useYTSeekEvent();
+
+  const updateEndTime = useUpdateEndTime();
+  const { readPlayer } = usePlayer();
+
+  const isYTStarted = useIsYTStartedState();
+  const isYTReady = useIsYTReadiedState();
+
+  useEffect(() => {
+    if (!isYTReady && !isYTStarted) return;
+    updateEndTime(readPlayer());
+  }, [isYTReady, isYTStarted, readPlayer]);
 
   const handleStateChange = useCallback(
     (event) => {

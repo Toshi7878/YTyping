@@ -40,7 +40,7 @@ const SwitchFormField = ({
   description,
   required,
   ...props
-}: SwitchFormFieldProps & Omit<React.ComponentProps<typeof SwitchPrimitive.Root>, "name">) => {
+}: SwitchFormFieldProps & Omit<React.ComponentProps<typeof Switch>, "name">) => {
   const { control } = useFormContext();
 
   return (

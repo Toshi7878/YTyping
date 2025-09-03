@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import { INITIAL_STATE } from "@/config/globalConst";
 import { LocalClapState, UploadResult } from "@/types";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useActionState } from "react";
+import { toast } from "sonner";
 
 interface RankingMenuProps {
   resultId: number;
@@ -32,7 +32,6 @@ const RankingPopoverContent = ({
 }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
-  const toast = useCustomToast();
   const { iosActiveSound } = useSoundEffect();
   const retry = useRetry();
   const resultPlay = useResultPlay({ startMode: "replay" });
@@ -48,10 +47,8 @@ const RankingPopoverContent = ({
     iosActiveSound();
 
     if (mapUpdatedAt > resultUpdatedAtDate) {
-      toast({
-        type: "warning",
-        title: "リプレイ登録時より後に譜面が更新されています",
-        message: "正常に再生できない可能性があります",
+      toast.warning("リプレイ登録時より後に譜面が更新されています", {
+        description: "正常に再生できない可能性があります",
       });
     }
 

@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
 import { useTRPC } from "@/trpc/provider";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { nameSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 interface UserNameInputFormProps {
@@ -20,7 +20,6 @@ interface UserNameInputFormProps {
 export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameInputFormProps) => {
   const { data: session, update } = useSession();
   const router = useRouter();
-  const showToast = useCustomToast();
   const pathname = usePathname();
   const trpc = useTRPC();
 
@@ -44,7 +43,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
       onSuccess: async (result) => {
         await update({ ...session?.user, name: result.id });
         reset({ newName: result.id });
-        showToast({ type: "success", title: result.title });
+        toast.success(result.title);
 
         if (pathname === "/user/register") {
           router.push("/");

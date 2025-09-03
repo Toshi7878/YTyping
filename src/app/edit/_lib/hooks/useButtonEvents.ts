@@ -13,10 +13,10 @@ import {
 import { useBackupNewMap } from "@/lib/indexed-db";
 import { useTRPC } from "@/trpc/provider";
 import { MapLine } from "@/types/map";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
 import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
@@ -199,15 +199,11 @@ export const useWordConvertButtonEvent = () => {
   const wordConvert = useWordConverter();
   const readSelectLine = useReadLine();
   const hasEditPermission = useHasMapUploadPermission();
-  const toast = useCustomToast();
 
   const setWord = useSetWord();
   return async () => {
     if (!hasEditPermission) {
-      toast({
-        type: "warning",
-        title: "読み変換機能は編集保存権限が有効な場合に使用できます",
-      });
+      toast.warning("読み変換機能は編集保存権限が有効な場合に使用できます");
       return;
     }
 

@@ -7,13 +7,13 @@ import {
   NUM_LIST,
   STRICT_SYMBOL_LIST,
 } from "@/config/charList";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { kanaToHira } from "@/utils/kanaToHira";
 import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
 import { useMorphQueries } from "@/utils/queries/morph.queries";
 import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 import { useReadWordConvertOption } from "../atoms/storageAtoms";
 import { ConvertOptionsType } from "../type";
 
@@ -54,7 +54,6 @@ export const useWordConverter = () => {
 
 const useFetchMorph = () => {
   const setIsLoadWordConvert = useSetIsWordConverting();
-  const toast = useCustomToast();
   const replaceReadingWithCustomDic = useReplaceReadingWithCustomDic();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -75,7 +74,7 @@ const useFetchMorph = () => {
       return (await replaceReadingWithCustomDic(convertedWord)).readings.join("");
     } catch {
       const message = !session ? "読み変換機能はログイン後に使用できます" : undefined;
-      toast({ type: "error", title: "読み変換に失敗しました", message });
+      toast.error("読み変換に失敗しました", { description: message });
       return "";
     } finally {
       setIsLoadWordConvert(false);

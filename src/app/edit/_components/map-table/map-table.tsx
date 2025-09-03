@@ -9,8 +9,6 @@ import { usePlayer, useTbody, useTimeInput } from "../../_lib/atoms/refAtoms";
 import {
   useDirectEditIndexState,
   useIsWordConvertingState,
-  useIsYTReadiedState,
-  useIsYTStartedState,
   useLineReducer,
   useLyricsState,
   useSelectIndexState,
@@ -30,28 +28,24 @@ import { Input } from "@/components/ui/input/input";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import { MapLine } from "@/types/map";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEndLineIndexState } from "../../_lib/atoms/buttonDisableStateAtoms";
 import { useAddRubyTagEvent } from "../../_lib/hooks/useAddRubyTag";
 import { useLineUpdateButtonEvent, useWordConvertButtonEvent } from "../../_lib/hooks/useButtonEvents";
 import { useWindowKeydownEvent } from "../../_lib/hooks/useKeyDown";
-import { useUpdateEndTime } from "../../_lib/hooks/useUpdateEndTime";
 import LineOptionDialog from "./LineOptionDialog";
 
-export default function EditTable() {
+export default function MapTable() {
   const map = useMapState();
   const tbodyRef = useRef(null);
 
   const { id: mapId } = useParams<{ id: string }>();
   const { writeTbody } = useTbody();
   const mapDispatch = useMapReducer();
-  const updateEndTime = useUpdateEndTime();
   const { readPlayer } = usePlayer();
   const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
-
-  const isYTStarted = useIsYTStartedState();
-  const isYTReady = useIsYTReadiedState();
 
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
   const endLineIndex = useEndLineIndexState();
@@ -69,11 +63,6 @@ export default function EditTable() {
       writeTbody(tbody);
     }
   }, [writeTbody]);
-
-  useEffect(() => {
-    if (!isYTReady && !isYTStarted) return;
-    updateEndTime(readPlayer());
-  }, [isYTReady, isYTStarted, readPlayer]);
 
   const directEditIndex = useDirectEditIndexState();
   const selectIndex = useSelectIndexState();
@@ -122,13 +111,13 @@ export default function EditTable() {
     setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
   };
 
-  const columns: ColumnDef<MapLine>[] = useMemo(
-    () => [
+  const columns = useMemo(
+    (): ColumnDef<MapLine>[] => [
       {
         header: "Time",
         accessorKey: "time",
-        size: 35,
-        headerClassName: "text-center text-xs font-semibold",
+        maxSize: 35,
+        minSize: 35,
         meta: {
           onClick: (event: React.MouseEvent<HTMLDivElement>, row: MapLine, index: number) => {
             if (directEditIndex !== index) {
@@ -151,8 +140,10 @@ export default function EditTable() {
       {
         header: "Lyrics",
         accessorKey: "lyrics",
-        size: 200,
-        headerClassName: "text-center text-xs font-semibold",
+        maxSize: 200,
+        minSize: 200,
+
+        enableResizing: false,
         cell: ({ row }) => {
           const index = row.index;
 
@@ -167,8 +158,10 @@ export default function EditTable() {
       {
         header: "Word",
         accessorKey: "word",
-        size: 250,
-        headerClassName: "text-center text-xs font-semibold",
+        maxSize: 250,
+        minSize: 250,
+
+        enableResizing: false,
         cell: ({ row }) => {
           const index = row.index;
 
@@ -184,8 +177,9 @@ export default function EditTable() {
       {
         header: "Option",
         accessorKey: "option",
-        size: 36,
-        headerClassName: "text-center text-xs font-semibold",
+        maxSize: 34,
+        minSize: 34,
+        enableResizing: false,
         cell: ({ row }) => {
           const index = row.index;
           const isOptionEdited = Boolean(row.original.options?.isChangeCSS || row.original.options?.eternalCSS);
@@ -206,6 +200,9 @@ export default function EditTable() {
             </Button>
           );
         },
+        meta: {
+          headerClassName: "text-center",
+        },
       },
     ],
     [directEditIndex, endLineIndex, readPlayer],
@@ -222,13 +219,20 @@ export default function EditTable() {
         <DataTable
           columns={columns}
           data={map}
-          selectedIndex={selectIndex}
-          timeLineIndex={timeLineIndex}
           onRowClick={(event, _, index) => {
             selectLine(event, index);
             setTabName("エディター");
           }}
           className="border-none pb-56"
+          rowClassName={(index: number) => {
+            return cn(
+              "border-b",
+              "hover:bg-info/30",
+              selectIndex === index && "!bg-info/70",
+              timeLineIndex === index && "bg-success/30",
+            );
+          }}
+          cellClassName="border-r"
         />
       </CardWithContent>
 

@@ -2,12 +2,11 @@
 import { useImportMapFile } from "@/app/edit/_lib/hooks/importMapFile";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
-import { useCustomToast } from "@/utils/global-hooks/useCustomToast";
 import { useRef } from "react";
+import { toast } from "sonner";
 
 export default function LrcImportButton() {
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
-  const toast = useCustomToast();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const importMapFile = useImportMapFile();
@@ -24,12 +23,10 @@ export default function LrcImportButton() {
             showLoading({ message: "lrcインポート中..." });
 
             await importMapFile(file);
-            toast({ type: "success", title: "lrcインポート完了" });
+            toast.success("lrcインポート完了");
           } catch (error) {
-            toast({
-              type: "error",
-              title: "lrcエラー",
-              message: "ファイルの処理中にエラーが発生しました。",
+            toast.error("lrcエラー", {
+              description: "ファイルの処理中にエラーが発生しました。",
             });
           } finally {
             e.target.value = "";

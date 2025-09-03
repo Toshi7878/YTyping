@@ -2,7 +2,7 @@
 
 import { useHistoryReducer } from "@/app/edit/_lib/atoms/historyReducerAtom";
 import { useMapReducer, useMapState, useReadMap } from "@/app/edit/_lib/atoms/mapReducerAtom";
-import { useSetCanUpload } from "@/app/edit/_lib/atoms/stateAtoms";
+import { useCssLengthState, useSetCanUpload } from "@/app/edit/_lib/atoms/stateAtoms";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,7 @@ import {
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
-import { MapLine } from "@/types/map";
+import { MapLine, MapLineEdit } from "@/types/map";
 import { Dispatch, useState } from "react";
 import { useForm } from "react-hook-form";
 import ChangeLineVideoSpeedOption from "./line-option/ChangeLineVideoSpeedOption";
@@ -121,6 +121,27 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
         setOptionDialogIndex={setOptionDialogIndex}
       />
     </>
+  );
+}
+
+interface CSSTextLengthProps {
+  eternalCSSText: string;
+  changeCSSText: string;
+  lineOptions: MapLineEdit["options"] | null;
+}
+
+function CSSTextLength({ eternalCSSText, changeCSSText, lineOptions }: CSSTextLengthProps) {
+  const cssLength = useCssLengthState();
+
+  const loadLineCustomStyleLength =
+    Number(lineOptions?.eternalCSS?.length || 0) + Number(lineOptions?.changeCSS?.length || 0);
+
+  const calcAllCustomStyleLength =
+    cssLength - loadLineCustomStyleLength + (eternalCSSText.length + changeCSSText.length);
+  return (
+    <div className={`text-right ${calcAllCustomStyleLength <= 10000 ? "" : "text-destructive"}`}>
+      {calcAllCustomStyleLength} / 10000
+    </div>
   );
 }
 
