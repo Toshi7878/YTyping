@@ -2,19 +2,11 @@
 
 import { useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useResultData } from "@/app/(typing)/type/_lib/hooks/end/useResultData";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
 
 interface EndRankingButtonProps {
@@ -28,9 +20,9 @@ const EndRankingButton = ({
   isSendResultBtnDisabled,
   setIsSendResultBtnDisabled,
 }: EndRankingButtonProps) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { id: mapId } = useParams<{ id: string }>();
   const setTabName = useSetTabName();
+  const confirm = useConfirm();
 
   const resultData = useResultData();
   const trpc = useTRPC();
@@ -41,7 +33,6 @@ const EndRankingButton = ({
       onSuccess: () => {
         setIsSendResultBtnDisabled(true);
         queryClient.invalidateQueries(trpc.ranking.getMapRanking.queryFilter({ mapId: Number(mapId) }));
-        setIsDialogOpen(false);
         setTabName("ランキング");
         toast.success("ランキング登録が完了しました");
       },
@@ -51,28 +42,34 @@ const EndRankingButton = ({
     }),
   );
 
-  const handleSubmitResult = () => {
+  const submitResult = () => {
     const result = resultData();
     if (!result) return;
     sendResult.mutate(result);
   };
 
   const handleClick = async () => {
-    if (!isScoreUpdated) {
-      setIsDialogOpen(true);
-    } else {
-      handleSubmitResult();
+    if (isScoreUpdated) {
+      submitResult();
+      return;
+    }
+
+    const isConfirmed = await confirm({
+      title: "スコア未更新",
+      body: "ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？",
+      cancelButton: "キャンセル",
+      actionButton: "ランキングに登録",
+      cancelButtonVariant: "outline",
+      actionButtonVariant: "warning-dark",
+    });
+
+    if (isConfirmed) {
+      submitResult();
     }
   };
 
   return (
     <>
-      <ScoreDowngradeDialog
-        isOpen={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        onConfirm={handleSubmitResult}
-        isLoading={sendResult.isPending}
-      />
       <Button
         size="4xl"
         variant="primary-hover-light"
@@ -84,36 +81,6 @@ const EndRankingButton = ({
         {isSendResultBtnDisabled ? "ランキング登録完了" : "ランキング登録"}
       </Button>
     </>
-  );
-};
-
-interface ScoreDowngradeDialogProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
-  isLoading: boolean;
-}
-
-const ScoreDowngradeDialog = ({ isOpen, onOpenChange, onConfirm, isLoading }: ScoreDowngradeDialogProps) => {
-  return (
-    <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>スコア未更新</AlertDialogTitle>
-          <AlertDialogDescription>
-            ランキング登録済みのスコアから下がりますが、ランキングに登録しますか？
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            キャンセル
-          </Button>
-          <Button variant="warning-dark" onClick={onConfirm} loading={isLoading}>
-            ランキングに登録
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   );
 };
 

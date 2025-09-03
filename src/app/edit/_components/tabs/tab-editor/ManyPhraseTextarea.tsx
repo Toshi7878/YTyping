@@ -1,22 +1,12 @@
 import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/_lib/atoms/stateAtoms";
 import { usePickupTopPhrase } from "@/app/edit/_lib/hooks/manyPhrase";
 import { useFilterWordSymbol, useLyricsFormatUtils } from "@/app/edit/_lib/hooks/useWordConverter";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useDebounce } from "@/utils/global-hooks/useDebounce";
-import { useState } from "react";
 import { TiFilter } from "react-icons/ti";
 import { toast } from "sonner";
 
@@ -76,14 +66,26 @@ Ctrl+Zキー: 歌詞追加のやり直し`}
 interface FilterSymbolButtonProps {
   manyPhrase: string;
 }
+
 const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
   const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
   const filterWordSymbol = useFilterWordSymbol();
   const { formatSimilarChar, filterUnicodeSymbol } = useLyricsFormatUtils();
-  const [isOpen, setIsOpen] = useState(false);
+  const confirm = useConfirm();
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    const isConfirmed = await confirm({
+      title: "記号を削除",
+      body: "歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？",
+      cancelButton: "キャンセル",
+      actionButton: "削除する",
+      cancelButtonVariant: "outline",
+      actionButtonVariant: "warning-dark",
+    });
+
+    if (!isConfirmed) return;
+
     const cleanedText = filterUnicodeSymbol(
       filterWordSymbol({
         sentence: formatSimilarChar(manyPhrase),
@@ -100,7 +102,6 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
 
     const topPhrase = cleanedText.split("\n")[0];
     pickupTopPhrase(topPhrase);
-    setIsOpen(false);
     toast.success("歌詞追加テキストエリアの記号を削除しました", {
       description: "読み変換で変換されない記号を削除しました",
     });
@@ -116,31 +117,16 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
           </>
         }
       >
-        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-          <AlertDialogTrigger asChild>
-            <Button
-              aria-label="記号を削除"
-              size="sm"
-              variant="outline"
-              className="absolute right-5 bottom-2"
-              disabled={!manyPhrase}
-            >
-              <TiFilter size="18px" />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>記号を削除</AlertDialogTitle>
-              <AlertDialogDescription>
-                歌詞追加テキストエリアから読み変換で変換されない記号を削除します。この操作は元に戻せません。続行しますか？
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>キャンセル</AlertDialogCancel>
-              <AlertDialogAction onClick={handleConfirm}>削除する</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <Button
+          aria-label="記号を削除"
+          size="sm"
+          variant="outline"
+          className="absolute right-5 bottom-2"
+          disabled={!manyPhrase}
+          onClick={handleConfirm}
+        >
+          <TiFilter size="18px" />
+        </Button>
       </TooltipWrapper>
     </>
   );

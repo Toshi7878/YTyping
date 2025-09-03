@@ -1,17 +1,9 @@
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 import { useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
 import { PlayMode } from "@/app/(typing)/type/_lib/type";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 
 interface EndSubButtonProps {
   retryMode: PlayMode;
@@ -20,14 +12,26 @@ interface EndSubButtonProps {
 }
 
 const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps) => {
-  const [isOpen, setIsOpen] = useState(false);
   const scene = useSceneState();
   const retry = useRetry();
+  const confirm = useConfirm();
 
-  const handleRetry = () => {
-    if (isRetryAlert) {
-      setIsOpen(true);
-    } else {
+  const handleRetry = async () => {
+    if (!isRetryAlert) {
+      retry(retryMode);
+      return;
+    }
+
+    const isConfirmed = await confirm({
+      title: "リトライ確認",
+      body: "リトライすると今回の記録は失われますが、リトライしますか？",
+      cancelButton: "キャンセル",
+      actionButton: "リトライ",
+      cancelButtonVariant: "outline",
+      actionButtonVariant: "warning-dark",
+    });
+
+    if (isConfirmed) {
       retry(retryMode);
     }
   };
@@ -50,49 +54,7 @@ const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps
       >
         {getButtonText()}
       </Button>
-      <RetryAlertDialog
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        onConfirm={() => {
-          setIsOpen(false);
-          retry(retryMode);
-        }}
-      />
     </>
-  );
-};
-
-const RetryAlertDialog = ({
-  isOpen,
-  setIsOpen,
-  onConfirm,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  onConfirm: () => void;
-}) => {
-  return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>リトライ確認</AlertDialogTitle>
-          <AlertDialogDescription asChild>
-            <div className="space-y-1">
-              <p>ランキング登録が完了していませんが、リトライしますか？</p>
-              <p className="text-sm font-medium">※リトライすると今回の記録は失われます</p>
-            </div>
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => setIsOpen(false)}>
-            キャンセル
-          </Button>
-          <Button variant="warning-dark" onClick={onConfirm}>
-            リトライ
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   );
 };
 
