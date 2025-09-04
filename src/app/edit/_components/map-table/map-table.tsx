@@ -227,13 +227,13 @@ export default function MapTable() {
           className="border-none pb-56"
           rowClassName={(index: number) => {
             return cn(
-              "border-b",
+              "border-b transition-none",
               "hover:bg-info/30",
               selectIndex === index && "!bg-info/70",
               timeLineIndex === index && "bg-success/30",
             );
           }}
-          cellClassName="border-r truncate"
+          cellClassName="border-r whitespace-pre-wrap" // 改行を有効に
         />
       </CardWithContent>
 
