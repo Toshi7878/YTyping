@@ -233,7 +233,7 @@ export default function MapTable() {
               timeLineIndex === index && "bg-success/30",
             );
           }}
-          cellClassName="border-r whitespace-pre-wrap" // 改行を有効に
+          cellClassName="border-r whitespace-pre-wrap"
         />
       </CardWithContent>
 
