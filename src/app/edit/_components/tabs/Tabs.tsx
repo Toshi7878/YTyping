@@ -2,9 +2,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSetTabName, useTabNameState } from "../../_lib/atoms/stateAtoms";
 import { TAB_NAMES } from "../../_lib/const";
-import TabEditor from "./TabEditor";
-import TabInfoForm from "./TabInfoForm";
-import TabSettings from "./TabSettings";
+import TabEditor from "./tab-editor/TabEditor";
+import TabInfoForm from "./tab-info-form/TabInfoForm";
+import TabSettings from "./tab-settings/TabSettings";
 
 export default function EditTabs() {
   const tabName = useTabNameState();

@@ -108,27 +108,25 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
   };
 
   return (
-    <>
-      <TooltipWrapper
-        label={
-          <>
-            <div>読み変換で変換されない記号を削除します。</div>
-            <div>※設定タブ内の読み変換設定によって削除される記号は変化します。</div>
-          </>
-        }
+    <TooltipWrapper
+      label={
+        <>
+          <div>読み変換で変換されない記号を削除します。</div>
+          <div>※設定タブ内の読み変換設定によって削除される記号は変化します。</div>
+        </>
+      }
+    >
+      <Button
+        aria-label="記号を削除"
+        size="sm"
+        variant="outline"
+        className="absolute right-5 bottom-2"
+        disabled={!manyPhrase}
+        onClick={handleConfirm}
       >
-        <Button
-          aria-label="記号を削除"
-          size="sm"
-          variant="outline"
-          className="absolute right-5 bottom-2"
-          disabled={!manyPhrase}
-          onClick={handleConfirm}
-        >
-          <TiFilter size="18px" />
-        </Button>
-      </TooltipWrapper>
-    </>
+        <TiFilter size="18px" />
+      </Button>
+    </TooltipWrapper>
   );
 };
 

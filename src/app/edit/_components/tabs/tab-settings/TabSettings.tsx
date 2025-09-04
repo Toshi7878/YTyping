@@ -1,9 +1,9 @@
 import { usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
 import VolumeRange from "@/components/shared/VolumeRange";
 import { CardWithContent } from "@/components/ui/card";
-import AllTimeAdjust from "./tab-settings/AllTimeAdjust";
-import ConvertOptionButtons from "./tab-settings/ConvertOptionButtons";
-import LrcImportButton from "./tab-settings/LrcConvertButton";
+import AllTimeAdjust from "./AllTimeAdjust";
+import ConvertOptionButtons from "./ConvertOptionButtons";
+import LrcImportButton from "./LrcConvertButton";
 
 const TabSettings = () => {
   const { readPlayer } = usePlayer();

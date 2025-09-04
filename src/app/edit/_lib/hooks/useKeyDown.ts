@@ -13,7 +13,6 @@ import {
   useReadYtPlayerStatus,
   useSetDirectEditIndex,
   useSetManyPhrase,
-  useSpeedReducer,
 } from "../atoms/stateAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useButtonEvents";
@@ -37,7 +36,6 @@ const useTbodyScroll = () => {
 };
 
 export const useWindowKeydownEvent = () => {
-  const speedDispatch = useSpeedReducer();
   const lineDispatch = useLineReducer();
 
   const pickupTopPhrase = usePickupTopPhrase();
@@ -175,15 +173,15 @@ export const useWindowKeydownEvent = () => {
 
           break;
 
-        case "F9":
-          speedDispatch("down");
-          event.preventDefault();
+          // case "F9":
+          //   speedDispatch("down");
+          //   event.preventDefault();
 
-          break;
+          //   break;
 
-        case "F10":
-          speedDispatch("up");
-          event.preventDefault();
+          // case "F10":
+          //   speedDispatch("up");
+          //   event.preventDefault();
 
           break;
       }

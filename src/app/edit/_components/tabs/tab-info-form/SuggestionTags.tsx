@@ -37,22 +37,21 @@ const GeminiSuggestionTags = ({ isGeminiLoading, geminiTags }: GeminiTagSuggesti
         </div>
       </div>
     );
-  } else {
-    return (
-      <div className="flex flex-row flex-wrap gap-3">
-        {geminiTags &&
-          geminiTags.map((label, index) => {
-            const isSelected = tags.some((tag: string) => tag === label);
-
-            if (isSelected) {
-              return null;
-            } else {
-              return <SuggestionTagBadge key={index} label={label} variant="primary-light" />;
-            }
-          })}
-      </div>
-    );
   }
+
+  return (
+    <div className="flex flex-row flex-wrap gap-3">
+      {geminiTags.map((label, index) => {
+        const isSelected = tags.some((tag: string) => tag === label);
+
+        if (isSelected) {
+          return null;
+        } else {
+          return <SuggestionTagBadge key={index} label={label} variant="primary-light" />;
+        }
+      })}
+    </div>
+  );
 };
 
 const CHOICE_TAGS = [

@@ -117,29 +117,6 @@ store.sub(speedAtom, () => {
   }
 });
 
-type YTSpeedReducerActionType = "up" | "down";
-export const useSpeedReducer = () => {
-  const setYTSpeedAtom = useSetYTSpeed();
-  return (actionType: YTSpeedReducerActionType) => {
-    const speed = store.get(speedAtom);
-
-    switch (actionType) {
-      case "up":
-        {
-          const newSpeed = (speed < 2 ? speed + 0.25 : 2) as YouTubeSpeed;
-          setYTSpeedAtom(newSpeed);
-        }
-        break;
-      case "down":
-        {
-          const newSpeed = (speed > 0.25 ? speed - 0.25 : 0.25) as YouTubeSpeed;
-          setYTSpeedAtom(newSpeed);
-        }
-        break;
-    }
-  };
-};
-
 const lineAtom = atomWithReset({
   selectIndex: null as number | null,
   lyrics: "",

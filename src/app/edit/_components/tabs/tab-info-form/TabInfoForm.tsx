@@ -26,7 +26,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
 import z from "zod";
-import { useMapReducer, useReadMap } from "../../_lib/atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "../../../_lib/atoms/mapReducerAtom";
 import {
   useCanUploadState,
   useReadEditUtils,
@@ -34,9 +34,9 @@ import {
   useSetVideoId,
   useSetYTChaningVideo,
   useVideoIdState,
-} from "../../_lib/atoms/stateAtoms";
-import { getThumbnailQuality } from "../../_lib/ts/getThumbailQuality";
-import SuggestionTags from "./tab-info-form/SuggestionTags";
+} from "../../../_lib/atoms/stateAtoms";
+import { getThumbnailQuality } from "../../../_lib/ts/getThumbailQuality";
+import SuggestionTags from "./SuggestionTags";
 
 const TabInfoForm = () => {
   const searchParams = useSearchParams();
