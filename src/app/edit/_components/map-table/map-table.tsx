@@ -31,6 +31,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { MapLine } from "@/types/map";
 import { ColumnDef } from "@tanstack/react-table";
+import parse from "html-react-parser";
 import { useEndLineIndexState } from "../../_lib/atoms/buttonDisableStateAtoms";
 import { useAddRubyTagEvent } from "../../_lib/hooks/useAddRubyTag";
 import { useLineUpdateButtonEvent, useWordConvertButtonEvent } from "../../_lib/hooks/useButtonEvents";
@@ -150,7 +151,7 @@ export default function MapTable() {
           return (
             <>
               {directEditIndex === index && <DirectLyricsInput />}
-              {directEditIndex !== index && row.original.lyrics}
+              {directEditIndex !== index && parse(row.original.lyrics)}
             </>
           );
         },
@@ -232,7 +233,7 @@ export default function MapTable() {
               timeLineIndex === index && "bg-success/30",
             );
           }}
-          cellClassName="border-r"
+          cellClassName="border-r truncate"
         />
       </CardWithContent>
 
