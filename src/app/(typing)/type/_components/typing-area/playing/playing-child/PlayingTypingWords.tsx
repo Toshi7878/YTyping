@@ -41,8 +41,10 @@ const TypingWords = () => {
     nextWord: nextLyrics.kanaWord,
     className: cn(
       "word-kana lowercase",
-      userOptions.main_word_display === "ROMA_LOWERCASE_ONLY" ||
-        (userOptions.main_word_display === "ROMA_UPPERCASE_ONLY" && "invisible"),
+      (userOptions.main_word_display === "ROMA_LOWERCASE_ONLY" ||
+        userOptions.main_word_display === "ROMA_UPPERCASE_ONLY") &&
+        "invisible",
+      inputMode === "kana" && "visible",
     ),
     style: {
       fontSize: `${userOptions.kana_word_font_size}%`,
@@ -61,8 +63,9 @@ const TypingWords = () => {
     nextWord: nextLyrics.romaWord,
     className: cn(
       "word-roma",
-      userOptions.main_word_display === "KANA_ONLY" || inputMode === "kana" ? "invisible" : "",
       userOptions.main_word_display.includes("UPPERCASE") ? "uppercase" : "lowercase",
+      userOptions.main_word_display === "KANA_ONLY" && "invisible",
+      inputMode === "roma" && "visible",
     ),
     style: {
       fontSize: `${userOptions.roma_word_font_size}%`,
