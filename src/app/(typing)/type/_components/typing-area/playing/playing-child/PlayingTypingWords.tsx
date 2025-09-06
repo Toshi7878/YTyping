@@ -65,7 +65,7 @@ const TypingWords = () => {
       "word-roma",
       userOptions.main_word_display.includes("UPPERCASE") ? "uppercase" : "lowercase",
       inputMode === "roma" && "visible",
-      userOptions.main_word_display === "KANA_ONLY" && inputMode === "kana" && "invisible",
+      (userOptions.main_word_display === "KANA_ONLY" || inputMode === "kana") && "invisible",
     ),
     style: {
       fontSize: `${userOptions.roma_word_font_size}%`,
