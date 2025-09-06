@@ -85,6 +85,7 @@ const TimeInput = () => {
   const timeInputRef = useRef<HTMLInputElement>(null);
   const setEditIsTimeInputValid = useSetIsTimeInputValid();
   const { writeTimeInput } = useTimeInput();
+  const [time, setTime] = useState(0);
 
   useEffect(() => {
     if (timeInputRef.current) {
@@ -97,8 +98,9 @@ const TimeInput = () => {
       ref={timeInputRef}
       className="h-8 w-[90px]"
       type="number"
-      value={0}
+      value={time}
       onChange={(e) => {
+        setTime(Number(e.currentTarget.value));
         setEditIsTimeInputValid(e.currentTarget.value ? false : true);
       }}
       onKeyDown={(e) => {
