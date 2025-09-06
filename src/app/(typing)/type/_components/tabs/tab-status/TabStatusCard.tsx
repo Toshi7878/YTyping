@@ -6,6 +6,7 @@ import StatusCell from "./StatusCell";
 const TabStatusCard = ({ className }: { className: string }) => {
   return (
     <CardWithContent
+      id="tab-status-card"
       className={{
         card: cn("tab-card py-0", className),
         cardContent: "my-auto overflow-auto",

@@ -27,6 +27,7 @@ import RankingPopoverContent from "./RankingPopoverContent";
 const TabRanking = ({ className }: { className: string }) => {
   return (
     <CardWithContent
+      id="tab-ranking-card"
       className={{
         card: cn("tab-card overflow-y-scroll py-0", className),
       }}
