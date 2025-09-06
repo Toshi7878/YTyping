@@ -1,6 +1,5 @@
 "use client";
-import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storageAtoms";
-import { ConvertOptionsType } from "@/app/edit/_lib/type";
+import { ConvertOption, useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storageAtoms";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group/radio-group";
@@ -64,7 +63,7 @@ export default function ConvertOptionButtons() {
       <Label className="text-sm whitespace-nowrap">読み変換</Label>
       <RadioGroup
         value={wordConvertOption}
-        onValueChange={(value: string) => setWordConvertOption(value as ConvertOptionsType)}
+        onValueChange={(value: string) => setWordConvertOption(value as ConvertOption)}
         className="flex flex-col gap-2 sm:flex-row"
       >
         {optionButtons.map((option) => (

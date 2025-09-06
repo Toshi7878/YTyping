@@ -1,8 +1,18 @@
-import { EditorNewMapBackUpInfoData as NewMapBackUpData } from "@/app/edit/_lib/type";
+import { MapLine } from "@/types/map";
 import Dexie, { type EntityTable } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 
-interface MapBackupData extends NewMapBackUpData {
+interface MapBackUpInfoData {
+  title: string;
+  artistName: string;
+  musicSource: string;
+  videoId: string;
+  creatorComment: string;
+  tags: string[];
+  previewTime: string;
+  mapData: MapLine[];
+}
+interface MapBackupData extends MapBackUpInfoData {
   id: string;
 }
 
@@ -23,7 +33,7 @@ const db = new AppDB();
 
 // 固定キーでバックアップを保存
 export const useBackupNewMap = () => {
-  return async (input: NewMapBackUpData) => {
+  return async (input: MapBackUpInfoData) => {
     await db.mapBackup.put({ ...input, id: "current" }); // 常に同じキーで上書き
   };
 };

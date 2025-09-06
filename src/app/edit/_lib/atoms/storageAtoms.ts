@@ -1,7 +1,6 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { ConvertOptionsType } from "../type";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
@@ -19,9 +18,15 @@ export const useReadTimeOffsetState = () => {
   );
 };
 
-const wordConvertOptionAtom = atomWithStorage<ConvertOptionsType>("edit-word-convert-option", "non_symbol", undefined, {
-  getOnInit: true,
-});
+const wordConvertOptionAtom = atomWithStorage<"non_symbol" | "add_symbol" | "add_symbol_all">(
+  "edit-word-convert-option",
+  "non_symbol",
+  undefined,
+  {
+    getOnInit: true,
+  },
+);
+export type ConvertOption = ExtractAtomValue<typeof wordConvertOptionAtom>;
 
 export const useWordConvertOptionState = () => useAtomValue(wordConvertOptionAtom, { store });
 export const useSetWordConvertOption = () => useSetAtom(wordConvertOptionAtom, { store });

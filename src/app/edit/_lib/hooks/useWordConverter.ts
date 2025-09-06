@@ -14,8 +14,7 @@ import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { useReadWordConvertOption } from "../atoms/storageAtoms";
-import { ConvertOptionsType } from "../type";
+import { ConvertOption, useReadWordConvertOption } from "../atoms/storageAtoms";
 
 const allowedChars = new Set([
   ...KANA_LIST,
@@ -128,7 +127,7 @@ export const useLyricsFormatUtils = () => {
 export const useFilterWordSymbol = () => {
   const readWordConvertOption = useReadWordConvertOption();
 
-  const generateFilterRegExp = (convertOption: ConvertOptionsType) => {
+  const generateFilterRegExp = (convertOption: ConvertOption) => {
     if (convertOption === "non_symbol") {
       const filterChars = LOOSE_SYMBOL_LIST.concat(STRICT_SYMBOL_LIST)
         .map((s) => s.replace(/./g, "\\$&"))
