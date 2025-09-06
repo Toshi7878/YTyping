@@ -6,7 +6,6 @@ import {
   useSetCanUpload,
   useSetDirectEditIndex,
   useSetIsUpdateUpdatedAt,
-  useSetSelectIndex,
   useSetWord,
 } from "../atoms/stateAtoms";
 
@@ -211,12 +210,10 @@ export const useLineDelete = () => {
   const lineDispatch = useLineReducer();
 
   const readMap = useReadMap();
-  const setSelectIndex = useSetSelectIndex();
 
   return () => {
     const { selectIndex } = readSelectLine();
 
-    setSelectIndex(null);
     setDirectEdit(null);
     lineDispatch({ type: "reset" });
 

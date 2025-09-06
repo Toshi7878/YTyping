@@ -14,7 +14,6 @@ import {
   useSelectIndexState,
   useSetDirectEditIndex,
   useSetLyrics,
-  useSetSelectIndex,
   useSetTabName,
   useSetWord,
   useTimeLineIndexState as useTimeLineIndex,
@@ -96,7 +95,6 @@ export default function MapTable() {
   const selectIndex = useSelectIndexState();
 
   const setTabName = useSetTabName();
-  const setSelectIndex = useSetSelectIndex();
   const setDirectEditIndex = useSetDirectEditIndex();
   const setSelectLine = useLineReducer();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
@@ -122,8 +120,9 @@ export default function MapTable() {
       setDirectEditIndex(null);
     }
 
-    setSelectIndex(selectingIndex);
-    setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
+    setTimeout(() => {
+      setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
+    });
   };
 
   const columns = useMemo(
@@ -143,6 +142,12 @@ export default function MapTable() {
         cell: ({ row }) => {
           const index = row.index;
           const time = row.original.time;
+
+          const nextTime = map[index + 1]?.time;
+
+          if (nextTime && time === nextTime) {
+            return <div className="text-red-500">{time}</div>;
+          }
 
           return (
             <>

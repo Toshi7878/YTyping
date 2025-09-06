@@ -170,4 +170,3 @@ export const useWordState = () => useAtomValue(selectLineWordAtom, { store });
 export const useSetWord = () => useSetAtom(selectLineWordAtom, { store });
 
 export const useSelectIndexState = () => useAtomValue(selectLineIndexAtom, { store });
-export const useSetSelectIndex = () => useSetAtom(selectLineIndexAtom, { store });
