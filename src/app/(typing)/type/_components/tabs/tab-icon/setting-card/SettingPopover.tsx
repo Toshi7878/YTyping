@@ -107,11 +107,7 @@ const SettingPopover = () => {
             ))}
           </TabsList>
           {tabData.map((tab, index) => (
-            <TabsContent
-              key={index}
-              value={index.toString()}
-              className={cn("max-h-[50vh] overflow-y-scroll px-2 lg:max-h-max lg:overflow-y-auto")}
-            >
+            <TabsContent key={index} value={index.toString()} className={cn("max-h-[60vh] overflow-y-scroll px-2")}>
               {tab.content}
             </TabsContent>
           ))}
