@@ -9,14 +9,14 @@ import { mapInfoAtom, userTypingOptionsAtom } from "../_lib/atoms/stateAtoms";
 import { getTypeAtomStore } from "../_lib/atoms/store";
 import { useSendUserStats } from "../_lib/hooks/playing-hooks/sendUserStats";
 
-interface TypeProviderProps {
+interface ClientProviderProps {
   mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
   userTypingOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"];
   mapId: string;
   children: React.ReactNode;
 }
 
-const TypeProvider = ({ mapInfo, userTypingOptions, mapId, children }: TypeProviderProps) => {
+const ClientProvider = ({ mapInfo, userTypingOptions, mapId, children }: ClientProviderProps) => {
   const typeAtomStore = getTypeAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
   const { sendTypingStats } = useSendUserStats();
@@ -52,4 +52,4 @@ const TypeProvider = ({ mapInfo, userTypingOptions, mapId, children }: TypeProvi
   return <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>;
 };
 
-export default TypeProvider;
+export default ClientProvider;

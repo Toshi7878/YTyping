@@ -2,7 +2,7 @@ import { serverApi } from "@/trpc/server";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Content from "../_components/Content";
-import TypeProvider from "../_components/TypeProvider";
+import ClientProvider from "../_components/client-provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -42,8 +42,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   }
 
   return (
-    <TypeProvider mapInfo={mapInfo} userTypingOptions={userTypingOptions} mapId={mapId}>
+    <ClientProvider mapInfo={mapInfo} userTypingOptions={userTypingOptions} mapId={mapId}>
       <Content video_id={mapInfo.video_id} mapId={mapId} />
-    </TypeProvider>
+    </ClientProvider>
   );
 }

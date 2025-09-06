@@ -1,6 +1,6 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import {
-  useSetUserTypingOptionsState,
+  useSetUserTypingOptions,
   useUserTypingOptionsState,
   useUserTypingOptionsStateRef,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBreakPoint } from "@/lib/useBreakPoint";
+import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
@@ -21,7 +22,7 @@ import { toast } from "sonner";
 import UserShortcutKeyCheckbox from "./options/UserShortcutKey";
 import UserSoundEffectCheckbox from "./options/UserSoundEffect";
 import UserTimeOffsetChange from "./options/UserTimeOffset";
-import { UserWordFontSize } from "./options/UserWordFontSize";
+import { UserWordFontSize } from "./options/UserWordOptions";
 import { UserWordScrollChange } from "./options/UserWordScroll";
 
 const SettingPopover = () => {
@@ -30,7 +31,7 @@ const SettingPopover = () => {
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
   const confirm = useConfirm();
-  const { resetUserTypingOptions } = useSetUserTypingOptionsState();
+  const { resetUserTypingOptions } = useSetUserTypingOptions();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useUserTypingOptionsStateRef();
@@ -87,7 +88,7 @@ const SettingPopover = () => {
         <SettingButton />
       </PopoverTrigger>
       <PopoverContent
-        className={isMdScreen ? "w-lg p-4" : "w-screen p-4"}
+        className={cn(isMdScreen ? "w-lg p-4" : "w-screen p-4")}
         align={isMdScreen ? "end" : "center"}
         side="bottom"
         sideOffset={10}
@@ -106,7 +107,11 @@ const SettingPopover = () => {
             ))}
           </TabsList>
           {tabData.map((tab, index) => (
-            <TabsContent key={index} value={index.toString()} className="px-2">
+            <TabsContent
+              key={index}
+              value={index.toString()}
+              className={cn("max-h-[50vh] overflow-y-scroll px-2 lg:max-h-max lg:overflow-y-auto")}
+            >
               {tab.content}
             </TabsContent>
           ))}
@@ -149,7 +154,7 @@ const SettingButton = () => {
 };
 
 const UserLineCompletedRadioButton = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptionsState();
+  const { setUserTypingOptions } = useSetUserTypingOptions();
   const { line_completed_display } = useUserTypingOptionsState();
 
   const changeRadio = (value: $Enums.line_completed_display) => {
@@ -171,7 +176,7 @@ const UserLineCompletedRadioButton = () => {
 };
 
 const UserNextDisplayRadioButton = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptionsState();
+  const { setUserTypingOptions } = useSetUserTypingOptions();
   const { next_display } = useUserTypingOptionsState();
 
   const changeRadio = (value: $Enums.next_display) => {

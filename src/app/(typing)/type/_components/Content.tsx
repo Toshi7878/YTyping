@@ -15,9 +15,9 @@ import {
   useSetTypingStatusLine,
 } from "../_lib/atoms/stateAtoms";
 import useWindowScale, { CONTENT_WIDTH } from "../_lib/hooks/windowScale";
-import TabsArea from "./tab-contents/TabsArea";
+import TabsArea from "./tabs/tabs";
 import MainGameCard from "./typing-area/MainGameCard";
-import YouTubeContent from "./youtube-content/TypeYoutubeContent";
+import YouTubeContent from "./youtube";
 
 interface ContentProps {
   video_id: RouterOutPuts["map"]["getMapInfo"]["video_id"];

@@ -3,17 +3,17 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { useCallback, useEffect, useMemo } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useWindowFocus } from "../../../../../utils/global-hooks/windowFocus";
-import { useReadGameUtilParams } from "../../_lib/atoms/stateAtoms";
-import { useTimerRegistration } from "../../_lib/hooks/playing-hooks/timer-hooks/timer";
+import { useWindowFocus } from "../../../../utils/global-hooks/windowFocus";
+import { usePlayer, useYTStatus } from "../_lib/atoms/refAtoms";
+import { useReadGameUtilParams } from "../_lib/atoms/stateAtoms";
+import { useTimerRegistration } from "../_lib/hooks/playing-hooks/timer-hooks/timer";
 import {
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
   useYTStopEvent,
-} from "../../_lib/hooks/youtubeEvents";
-import MobileCover from "./MobileCover";
+} from "../_lib/hooks/youtubeEvents";
 
 interface YouTubeContentProps {
   isMapLoading: boolean;
@@ -108,6 +108,33 @@ const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeConten
       {isMobile && <MobileCover />}
       {memoizedYouTube}
     </LoadingOverlayProvider>
+  );
+};
+
+const MobileCover = () => {
+  const windowFocus = useWindowFocus();
+  const { readPlayer } = usePlayer();
+  const { readYTStatus } = useYTStatus();
+
+  const readGameStateUtils = useReadGameUtilParams();
+  const handleStart = useCallback(async () => {
+    const { scene } = readGameStateUtils();
+
+    if (readYTStatus().isPaused || scene === "ready") {
+      readPlayer().playVideo();
+    } else {
+      readPlayer().pauseVideo();
+    }
+
+    windowFocus();
+  }, []);
+
+  return (
+    <div
+      id="mobile_cover"
+      className="absolute inset-0 z-[5] cursor-pointer items-center rounded-lg transition-opacity duration-300"
+      onClick={handleStart}
+    />
   );
 };
 

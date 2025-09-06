@@ -224,6 +224,16 @@ enum toggle_input_mode_key {
   NONE
 }
 
+enum main_word_display {
+  KANA_ROMA_UPPERCASE
+  KANA_ROMA_LOWERCASE
+  ROMA_KANA_UPPERCASE
+  ROMA_KANA_LOWERCASE
+  KANA_ONLY
+  ROMA_UPPERCASE_ONLY
+  ROMA_LOWERCASE_ONLY
+}
+
 model user_typing_options {
   user_id                Int                    @id
   time_offset            Float                  @default(0)
@@ -240,6 +250,7 @@ model user_typing_options {
   line_completed_display line_completed_display @default(NEXT_WORD)
   time_offset_key        time_offset_key        @default(CTRL_LEFT_RIGHT)
   toggle_input_mode_key  toggle_input_mode_key  @default(ALT_KANA)
+  main_word_display      main_word_display      @default(KANA_ROMA_UPPERCASE)
   user                   users                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 

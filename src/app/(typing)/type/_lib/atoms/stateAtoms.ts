@@ -36,6 +36,7 @@ export const userTypingOptionsAtom = atomWithReset({
   line_completed_display: "NEXT_WORD" as $Enums.line_completed_display,
   time_offset_key: "CTRL_LEFT_RIGHT" as $Enums.time_offset_key,
   toggle_input_mode_key: "ALT_KANA" as $Enums.toggle_input_mode_key,
+  main_word_display: "KANA_DISPLAY" as $Enums.main_word_display,
 });
 
 const writeTypingOptionsAtom = atom(
@@ -47,7 +48,7 @@ const writeTypingOptionsAtom = atom(
 );
 
 export const useUserTypingOptionsState = () => useAtomValue(userTypingOptionsAtom, { store });
-export const useSetUserTypingOptionsState = () => {
+export const useSetUserTypingOptions = () => {
   const setUserTypingOptions = useSetAtom(writeTypingOptionsAtom, { store });
   const resetUserTypingOptions = useAtomCallback(
     useCallback((get, set) => {

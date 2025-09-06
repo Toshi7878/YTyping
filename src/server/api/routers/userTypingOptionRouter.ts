@@ -1,4 +1,10 @@
-import { line_completed_display, next_display, time_offset_key, toggle_input_mode_key } from "@prisma/client";
+import {
+  line_completed_display,
+  main_word_display,
+  next_display,
+  time_offset_key,
+  toggle_input_mode_key,
+} from "@prisma/client";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
@@ -15,6 +21,7 @@ const typingOptionSchema = z.object({
   next_display: z.enum(next_display),
   time_offset_key: z.enum(time_offset_key),
   toggle_input_mode_key: z.enum(toggle_input_mode_key),
+  main_word_display: z.enum(main_word_display),
 });
 
 const imeTypingOptionsSchema = z.object({

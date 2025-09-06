@@ -1,11 +1,11 @@
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H5 } from "@/components/ui/typography";
 import { $Enums } from "@prisma/client";
 
 const UserShortcutKeyCheckbox = () => {
   const { time_offset_key, toggle_input_mode_key } = useUserTypingOptionsState();
-  const { setUserTypingOptions } = useSetUserTypingOptionsState();
+  const { setUserTypingOptions } = useSetUserTypingOptions();
 
   const changeTimeOffsetKey = (value: string) => {
     setUserTypingOptions({ time_offset_key: value as $Enums.time_offset_key });

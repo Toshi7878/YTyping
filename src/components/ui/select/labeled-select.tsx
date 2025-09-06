@@ -11,7 +11,7 @@ export interface LabeledSelectProps extends React.ComponentProps<typeof Select> 
   }[];
 }
 
-const LabeledSelect = ({ label, options, ...props }) => {
+const LabeledSelect = ({ label, options, ...props }: LabeledSelectProps) => {
   return (
     <div className="flex flex-col gap-1">
       <Label className={cn("text-sm font-normal")}>{label}</Label>

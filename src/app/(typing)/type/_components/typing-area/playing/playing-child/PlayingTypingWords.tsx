@@ -30,6 +30,39 @@ const TypingWords = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [kanaScroll, romaScroll]);
 
+  const kanaWordProps = {
+    correct: lineWord.correct["k"].substr(-kanaCorrectSlice, kanaCorrectSlice).replace(/ /g, "ˍ"),
+    nextChar: lineWord.nextChar["k"],
+    word: lineWord.word
+      .map((w) => w["k"])
+      .join("")
+      .slice(0, 60),
+    isLineCompleted: isLineCompleted,
+    nextWord: nextLyrics.kanaWord,
+    className: cn(
+      "word-kana lowercase",
+      userOptions.main_word_display === "ROMA_LOWERCASE_ONLY" ||
+        (userOptions.main_word_display === "ROMA_UPPERCASE_ONLY" && "invisible"),
+    ),
+    style: { fontSize: `${userOptions.kana_word_font_size}%`, bottom: userOptions.kana_word_top_position },
+  };
+  const romaWordProps = {
+    correct: lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice).replace(/ /g, "ˍ"),
+    nextChar: lineWord.nextChar["r"][0],
+    word: lineWord.word
+      .map((w) => w["r"][0])
+      .join("")
+      .slice(0, 60),
+    isLineCompleted: isLineCompleted,
+    nextWord: nextLyrics.romaWord,
+    className: cn(
+      "word-roma",
+      userOptions.main_word_display === "KANA_ONLY" || inputMode === "kana" ? "invisible" : "",
+      userOptions.main_word_display.includes("UPPERCASE") ? "uppercase" : "lowercase",
+    ),
+    style: { fontSize: `${userOptions.roma_word_font_size}%`, bottom: userOptions.roma_word_top_position },
+  };
+
   return (
     <div
       className={cn(
@@ -40,30 +73,11 @@ const TypingWords = () => {
     >
       <Word
         id="main_word"
-        correct={lineWord.correct["k"].substr(-kanaCorrectSlice, kanaCorrectSlice).replace(/ /g, "ˍ")}
-        nextChar={lineWord.nextChar["k"]}
-        word={lineWord.word
-          .map((w) => w["k"])
-          .join("")
-          .slice(0, 60)}
-        isLineCompleted={isLineCompleted}
-        nextWord={nextLyrics.kanaWord}
-        className="word-kana lowercase"
-        style={{ fontSize: `${userOptions.kana_word_font_size}%`, bottom: userOptions.kana_word_top_position }}
+        {...(userOptions.main_word_display.match(/^KANA_/) || inputMode === "kana" ? kanaWordProps : romaWordProps)}
       />
-
       <Word
         id="sub_word"
-        correct={lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice).replace(/ /g, "ˍ")}
-        nextChar={lineWord.nextChar["r"][0]}
-        word={lineWord.word
-          .map((w) => w["r"][0])
-          .join("")
-          .slice(0, 60)}
-        className={cn("word-roma uppercase", inputMode === "kana" && "invisible")}
-        isLineCompleted={isLineCompleted}
-        nextWord={nextLyrics.romaWord}
-        style={{ fontSize: `${userOptions.roma_word_font_size}%`, bottom: userOptions.roma_word_top_position }}
+        {...(userOptions.main_word_display.match(/^KANA_/) || inputMode === "kana" ? romaWordProps : kanaWordProps)}
       />
     </div>
   );

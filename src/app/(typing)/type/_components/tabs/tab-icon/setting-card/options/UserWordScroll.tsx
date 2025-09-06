@@ -1,5 +1,5 @@
 "use client";
-import { useSetUserTypingOptionsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { CounterInput } from "@/components/ui/counter";
 import { H5 } from "@/components/ui/typography";
 
@@ -8,7 +8,7 @@ const MIN_SCROLL = 0;
 const SCROLL_STEP = 1;
 
 export const UserWordScrollChange = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptionsState();
+  const { setUserTypingOptions } = useSetUserTypingOptions();
   const { kana_word_scroll, roma_word_scroll } = useUserTypingOptionsState();
 
   return (
