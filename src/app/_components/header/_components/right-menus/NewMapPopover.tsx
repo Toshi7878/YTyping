@@ -5,7 +5,7 @@ import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useGuetBackupMapInfoLiveQuery } from "@/lib/indexed-db";
+import { useGetBackupMapInfoLiveQuery } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
 import { useRouter } from "@bprogress/next";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +22,7 @@ const formSchema = z.object({
 
 export default function NewMapPopover() {
   const [open, setOpen] = useState(false);
-  const backupMapInfo = useGuetBackupMapInfoLiveQuery();
+  const backupMapInfo = useGetBackupMapInfoLiveQuery();
   const router = useRouter();
 
   const form = useForm({

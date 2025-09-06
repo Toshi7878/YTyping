@@ -40,7 +40,7 @@ export const clearBackupMapWithInfo = async () => {
   await db.mapInfo.clear();
 };
 
-export const useGuetBackupMapInfoLiveQuery = () => {
+export const useGetBackupMapInfoLiveQuery = () => {
   const map = useLiveQuery(async () => {
     const map = await db.map.get("current");
     const mapInfo = await db.mapInfo.get("current");
