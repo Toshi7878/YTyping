@@ -8,7 +8,7 @@ import {
   useReadYtPlayerStatus,
   useSetManyPhrase,
 } from "../atoms/stateAtoms";
-import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
+import { useDeleteTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 
 const useTbodyScroll = () => {
   const { readTbody } = useTbody();
@@ -65,7 +65,7 @@ export const useUndoRedo = () => {
   const mapDispatch = useMapReducer();
   const pickupTopPhrase = usePickupTopPhrase();
   const readEditUtils = useReadEditUtils();
-  const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
+  const deleteTopPhrase = useDeleteTopPhrase();
   const { readPlayer } = usePlayer();
   const lineDispatch = useLineReducer();
   const setManyPhrase = useSetManyPhrase();
@@ -109,7 +109,7 @@ export const useUndoRedo = () => {
       switch (actionType) {
         case "add":
           mapDispatch({ type: "add", payload: data });
-          deleteAddingTopPhrase(data.lyrics);
+          deleteTopPhrase(data.lyrics);
           const { manyPhraseText } = readEditUtils();
           const topPhrase = manyPhraseText.split("\n")[0];
           pickupTopPhrase(topPhrase);

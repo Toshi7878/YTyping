@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 // export const runtime = "edge";
 import type { Metadata } from "next";
 
+import { AlertDialogProvider } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import TRPCProvider from "@/trpc/provider";
@@ -43,13 +44,15 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <TRPCProvider>
             <LinkProgressProvider>
-              <Header className="fixed z-30 h-10 w-full" />
-              <MainProvider>
-                <main className="min-h-screen pt-12 md:pt-16" id="main_content">
-                  {children}
-                </main>
-                <PreviewYouTubeContent />
-              </MainProvider>
+              <AlertDialogProvider>
+                <Header className="fixed z-30 h-10 w-full" />
+                <MainProvider>
+                  <main className="min-h-screen pt-12 md:pt-16" id="main_content">
+                    {children}
+                  </main>
+                  <PreviewYouTubeContent />
+                </MainProvider>
+              </AlertDialogProvider>
             </LinkProgressProvider>
           </TRPCProvider>
         </SessionProvider>

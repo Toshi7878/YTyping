@@ -31,19 +31,18 @@ export const usePickupTopPhrase = () => {
   };
 };
 
-export const useDeleteAddingTopPhrase = () => {
+export const useDeleteTopPhrase = () => {
   const setManyPhrase = useSetManyPhrase();
   const readEditUtils = useReadEditUtils();
 
   return (lyrics: string) => {
-    const lines = readEditUtils().manyPhraseText.split("\n") || [];
+    const { manyPhraseText } = readEditUtils();
+    const lines = manyPhraseText.split("\n") || [];
 
-    const firstLine = lines[0];
+    if (lyrics === lines[0].trim()) {
+      const newManyPhrase = lines.slice(1).join("\n");
 
-    if (lyrics === firstLine.trim()) {
-      const newText = lines.slice(1).join("\n");
-
-      setManyPhrase(newText);
+      setManyPhrase(newManyPhrase);
       setTimeout(() => {
         const textarea = document.getElementById("many_phrase_textarea");
         if (textarea) {

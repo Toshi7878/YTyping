@@ -35,12 +35,20 @@ export default function NewMapPopover() {
   const watchedVideoId = form.watch("videoId");
   const extractedVideoId = extractYouTubeVideoId(watchedVideoId);
 
-  const onSubmit = (data: z.output<typeof formSchema>) => {
+  const onSubmit = async (data: z.output<typeof formSchema>) => {
     const videoId = extractYouTubeVideoId(data.videoId);
-    if (videoId) {
-      router.push(`/edit?new=${videoId}`);
-      setOpen(false);
+
+    if (!videoId) return;
+
+    if (backupMapInfo) {
+      const result = confirm(
+        "新規作成バックアップデータが存在します。\n新しく譜面を作成する場合、バックアップデータは削除されますが新しく譜面を作成しますか？",
+      );
+      if (!result) return;
     }
+
+    router.push(`/edit?new=${videoId}`);
+    setOpen(false);
   };
 
   return (

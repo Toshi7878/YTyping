@@ -45,6 +45,7 @@ export const useGuetBackupMapInfoLiveQuery = () => {
     const map = await db.map.get("current");
     const mapInfo = await db.mapInfo.get("current");
 
+    if (map?.videoId !== mapInfo?.videoId) return;
     if (!map || !mapInfo) return;
     return mapInfo;
   });

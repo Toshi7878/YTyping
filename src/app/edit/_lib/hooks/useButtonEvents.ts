@@ -21,7 +21,7 @@ import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
 import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useReadTimeOffsetState } from "../atoms/storageAtoms";
-import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
+import { useDeleteTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import useHasMapUploadPermission from "./useHasMapUploadPermission";
 import useTimeValidate from "./useTimeValidate";
 import { useWordConverter } from "./useWordConverter";
@@ -33,8 +33,8 @@ export const useLineAddButtonEvent = () => {
   const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
 
   const setCanUpload = useSetCanUpload();
-  const deleteAddingTopPhrase = useDeleteAddingTopPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
+  const deleteTopPhrase = useDeleteTopPhrase();
 
   const readYtPlayerStatus = useReadYtPlayerStatus();
   const readSelectLine = useReadLine();
@@ -88,7 +88,7 @@ export const useLineAddButtonEvent = () => {
 
     lineDispatch({ type: "reset" });
     const lyricsCopy = structuredClone(lyrics);
-    deleteAddingTopPhrase(lyricsCopy);
+    deleteTopPhrase(lyricsCopy);
     const { manyPhraseText } = readEditUtils();
     const topPhrase = manyPhraseText.split("\n")[0];
     pickupTopPhrase(topPhrase);
