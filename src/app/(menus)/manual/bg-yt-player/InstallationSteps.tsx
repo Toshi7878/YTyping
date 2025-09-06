@@ -58,6 +58,11 @@ export function InstallationSteps() {
       <InstallationStep title="YTypingをプレイする">
         <p className="mt-2">YTypingをプレイすると、YouTubeの動画が背景に表示されます。</p>
       </InstallationStep>
+      <InstallationStep title="見た目を微調整する">
+        <p className="mt-2">
+          拡張機能のStylusアイコンからスタイルの編集を行うと、プレイヤーのサイズや透過度を調整できます。
+        </p>
+      </InstallationStep>
     </ol>
   );
 }
