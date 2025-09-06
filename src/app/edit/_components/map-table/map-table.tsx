@@ -200,7 +200,11 @@ export default function MapTable() {
         enableResizing: false,
         cell: ({ row }) => {
           const index = row.index;
-          const isOptionEdited = Boolean(row.original.options?.isChangeCSS || row.original.options?.eternalCSS);
+          const isOptionEdited = Boolean(
+            row.original.options?.isChangeCSS ||
+              row.original.options?.eternalCSS ||
+              row.original.options?.changeVideoSpeed,
+          );
 
           return (
             <Button

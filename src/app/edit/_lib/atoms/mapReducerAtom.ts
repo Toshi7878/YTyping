@@ -56,10 +56,10 @@ export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(init, (prev:
     case "update": {
       const newArray = [...prev];
 
-      const { lyrics, word } = action.payload;
+      const { lyrics, word, ...rest } = action.payload;
       const normalizedWord = normalizeSimilarSymbol(word);
 
-      newArray[action.index] = { ...action.payload, lyrics, word: normalizedWord };
+      newArray[action.index] = { lyrics, word: normalizedWord, ...rest };
 
       return newArray.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
     }
