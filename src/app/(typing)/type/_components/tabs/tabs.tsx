@@ -21,11 +21,11 @@ export default function TabsArea({ className }: TabsAreaProps) {
       id="tabs-area"
     >
       <TabLists />
-      <TabsContent value="ステータス">
+      <TabsContent value="ステータス" className="tab-card">
         <TabStatusCard className="h-56" />
       </TabsContent>
 
-      <TabsContent value="ランキング">
+      <TabsContent value="ランキング" className="tab-card">
         <TabRanking className="h-56" />
       </TabsContent>
     </Tabs>
