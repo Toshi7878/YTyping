@@ -60,8 +60,10 @@ const StatusUnderline = ({ label }: { label: string }) => {
   const underlineWidthClass = isMainWidth ? "w-[159px]" : "w-20";
 
   return (
-    <span className="status-underline relative">
-      <span className={cn("bg-card-foreground absolute bottom-0 left-0.5 h-0.5", underlineWidthClass)} />
+    <span className="relative">
+      <span
+        className={cn("status-underline bg-card-foreground absolute bottom-0 left-0.5 h-0.5", underlineWidthClass)}
+      />
     </span>
   );
 };
