@@ -21,7 +21,6 @@ import {
   useWordState,
 } from "../../_lib/atoms/stateAtoms";
 
-import "@/app/edit/_lib/style/table.css";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input/input";
@@ -32,21 +31,49 @@ import { cn } from "@/lib/utils";
 import { MapLine } from "@/types/map";
 import { ColumnDef } from "@tanstack/react-table";
 import parse from "html-react-parser";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useEndLineIndexState } from "../../_lib/atoms/buttonDisableStateAtoms";
 import { useAddRubyTagEvent } from "../../_lib/hooks/useAddRubyTag";
 import { useLineUpdateButtonEvent, useWordConvertButtonEvent } from "../../_lib/hooks/useButtonEvents";
-import { useWindowKeydownEvent } from "../../_lib/hooks/useKeyDown";
+import { useSeekNextPrev, useUndoRedo } from "../../_lib/hooks/useMapTableHotKey";
+import { useWordSearchReplace } from "../../_lib/hooks/useWordFindReplace";
 import LineOptionDialog from "./LineOptionDialog";
 
 export default function MapTable() {
   const map = useMapState();
+  const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
+  const seekNextPrev = useSeekNextPrev();
+  const { undo, redo } = useUndoRedo();
+  const lineDispatch = useLineReducer();
+  const wordSearchPeplace = useWordSearchReplace();
+
+  const hotKeyOptions = {
+    enableOnFormTags: false,
+    preventDefault: true,
+    enabled: optionDialogIndex === null,
+  };
+
+  useHotkeys("arrowUp", () => seekNextPrev("prev"), hotKeyOptions);
+  useHotkeys("arrowDown", () => seekNextPrev("next"), hotKeyOptions);
+  useHotkeys("ctrl+z", () => undo(), hotKeyOptions);
+  useHotkeys("ctrl+y", () => redo(), hotKeyOptions);
+  useHotkeys(
+    "d",
+    () => {
+      lineDispatch({ type: "reset" });
+      setDirectEditIndex(null);
+    },
+    hotKeyOptions,
+  );
+
+  useHotkeys("f", () => wordSearchPeplace(), hotKeyOptions);
+
   const tbodyRef = useRef(null);
 
   const { id: mapId } = useParams<{ id: string }>();
   const { writeTbody } = useTbody();
   const mapDispatch = useMapReducer();
   const { readPlayer } = usePlayer();
-  const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
 
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
   const endLineIndex = useEndLineIndexState();
@@ -74,19 +101,6 @@ export default function MapTable() {
   const setSelectLine = useLineReducer();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
   const readMap = useReadMap();
-
-  const windowKeydownEvent = useWindowKeydownEvent();
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      windowKeydownEvent(event, { disabled: optionDialogIndex !== null });
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [windowKeydownEvent, optionDialogIndex]);
 
   const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
     const map = readMap();

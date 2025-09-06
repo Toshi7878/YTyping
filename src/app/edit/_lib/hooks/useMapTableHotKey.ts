@@ -6,11 +6,9 @@ import {
   useReadEditUtils,
   useReadLine,
   useReadYtPlayerStatus,
-  useSetDirectEditIndex,
   useSetManyPhrase,
 } from "../atoms/stateAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
-import { useWordSearchReplace } from "./useWordFindReplace";
 
 const useTbodyScroll = () => {
   const { readTbody } = useTbody();
@@ -29,63 +27,7 @@ const useTbodyScroll = () => {
   };
 };
 
-export const useWindowKeydownEvent = () => {
-  const lineDispatch = useLineReducer();
-  const setDirectEdit = useSetDirectEditIndex();
-  const wordSearchPeplace = useWordSearchReplace();
-  const seekNextPrev = useSeekNextPrev();
-  const { undo, redo } = useUndoRedo();
-
-  return (event: KeyboardEvent, { disabled }: { disabled: boolean }) => {
-    const isFocusedInput = document.activeElement instanceof HTMLInputElement;
-    const isFocusedManyPhraseTextArea = document.activeElement?.id === "many_phrase_textarea";
-
-    if (!isFocusedManyPhraseTextArea && !isFocusedInput && !disabled) {
-      switch (event.code) {
-        case "ArrowUp":
-          seekNextPrev("prev");
-          event.preventDefault();
-          break;
-
-        case "ArrowDown":
-          seekNextPrev("next");
-          event.preventDefault();
-          break;
-
-        case "KeyZ":
-          if (event.ctrlKey) {
-            undo();
-            event.preventDefault();
-          }
-          break;
-
-        case "KeyY":
-          if (event.ctrlKey) {
-            redo();
-            event.preventDefault();
-          }
-
-          break;
-
-        case "KeyD":
-          lineDispatch({ type: "reset" });
-          setDirectEdit(null);
-          event.preventDefault();
-
-          break;
-
-        case "KeyF":
-          if (event.ctrlKey && event.shiftKey) {
-            wordSearchPeplace();
-            event.preventDefault();
-          }
-          break;
-      }
-    }
-  };
-};
-
-const useSeekNextPrev = () => {
+export const useSeekNextPrev = () => {
   const lineDispatch = useLineReducer();
 
   const tbodyScroll = useTbodyScroll();
@@ -117,7 +59,7 @@ const useSeekNextPrev = () => {
   };
 };
 
-const useUndoRedo = () => {
+export const useUndoRedo = () => {
   const readHistory = useEditHistoryRef();
   const historyDispatch = useHistoryReducer();
   const mapDispatch = useMapReducer();

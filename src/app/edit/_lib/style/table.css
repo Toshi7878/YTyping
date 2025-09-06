@@ -1,6 +1,0 @@
-.time-cell::before {
-  content: "▶";
-  font-size: small;
-  position: absolute;
-  margin: -15px;
-}
