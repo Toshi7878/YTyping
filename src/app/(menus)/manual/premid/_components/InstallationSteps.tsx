@@ -1,5 +1,6 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
+import { H6 } from "@/components/ui/typography";
 import preMidLinks from "@/public/images/manual/premid/premid-link.png";
 import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
 import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
@@ -42,7 +43,9 @@ export function InstallationSteps() {
     <ol className="list-inside list-decimal space-y-6">
       <InstallationStep title="PreMiDブラウザ拡張機能をインストールする">
         <p className="mt-2">
-          <Link href={browserLink.url}>{browserLink.text}</Link>
+          <Link href={browserLink.url} className="text-link hover:underline">
+            {browserLink.text}
+          </Link>
           から拡張機能をインストールします。
         </p>
       </InstallationStep>
@@ -51,7 +54,9 @@ export function InstallationSteps() {
 
       <InstallationStep title="YTypingのプレゼンス設定をPreMiD Storeからインストールする">
         <p className="mt-2">
-          <Link href="https://premid.app/store/presences/YTyping">YTyping - PreMiD Store</Link>
+          <Link href="https://premid.app/store/presences/YTyping" className="text-link hover:underline">
+            YTyping - PreMiD Store
+          </Link>
           からYTypingのプレゼンス設定を追加します。
         </p>
       </InstallationStep>
@@ -83,7 +88,7 @@ interface InstallationStepProps {
 function InstallationStep({ title, children }: InstallationStepProps) {
   return (
     <li>
-      <p className="inline font-bold">{title}</p>
+      <H6 className="inline">{title}</H6>
       {children}
     </li>
   );

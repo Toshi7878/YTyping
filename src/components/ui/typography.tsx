@@ -20,6 +20,14 @@ export function H5({ children }: { children: React.ReactNode }) {
   return <h5 className="scroll-m-20 text-lg font-semibold tracking-tight">{children}</h5>;
 }
 
-export function H6({ children }: { children: React.ReactNode }) {
-  return <h6 className="scroll-m-20 text-base font-semibold tracking-tight">{children}</h6>;
+export function H6({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <h6 className={cn("scroll-m-20 text-base font-semibold tracking-tight", className)}>{children}</h6>;
+}
+
+export function P({ children }: { children: React.ReactNode }) {
+  return <p className="leading-7 [&:not(:first-child)]:mt-6">{children}</p>;
+}
+
+export function Small({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <small className={cn("text-sm leading-none font-medium", className)}>{children}</small>;
 }

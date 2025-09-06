@@ -1,15 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { H2, H3 } from "@/components/ui/typography";
-import { InstallationSteps } from "./_components/InstallationSteps";
+import { InstallationSteps } from "./InstallationSteps";
 
-export default function PreMidManual() {
+export default function Page() {
   return (
     <article className="mx-auto max-w-screen-xl space-y-4">
-      <H2>DiscordにYTypingのプレイ中ステータスを表示する</H2>
+      <H2>YTyping YouTube Background Player</H2>
       <Card>
         <CardHeader>
           <CardDescription className="text-foreground text-lg">
-            PreMiDブラウザ拡張機能を使用すると、DiscordのステータスにYTypingをプレイしていることを表示できます。
+            タイピングページの背景にYouTubeの動画を表示する
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

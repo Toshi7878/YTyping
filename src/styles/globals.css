@@ -60,6 +60,7 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
+  --color-link: var(--link);
 
   --color-discord: var(--discord);
   --color-google: var(--google);
@@ -115,6 +116,7 @@
   --warning-foreground: oklch(0.985 0 0);
   --info: oklch(0.8021 0.1383 209.06);
   --info-foreground: oklch(0.985 0 0);
+  --link: oklch(0.7547 0.1375 239.62);
 
   --ring: oklch(0.7547 0.1375 239.62);
 
