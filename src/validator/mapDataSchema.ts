@@ -4,7 +4,14 @@ const lineSchema = z.object({
   time: z.string().max(20),
   lyrics: z.string().optional(),
   word: z.string().optional(),
-  options: z.object({ eternalCSS: z.string().optional(), changeCSS: z.string().optional() }).optional(),
+  options: z
+    .object({
+      eternalCSS: z.string().optional(),
+      changeCSS: z.string().optional(),
+      isChangeCSS: z.boolean().optional(),
+      changeVideoSpeed: z.number().optional(),
+    })
+    .optional(),
 });
 
 const validateNoHttpContent = (lines: z.infer<typeof lineSchema>[]) => {

@@ -38,14 +38,11 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
 
   const form = useForm({
     resolver: zodResolver(lineOptionSchema),
-    values: {
+    defaultValues: {
       changeCSS: map[index]?.options?.changeCSS || "",
       eternalCSS: map[index]?.options?.eternalCSS || "",
       isChangeCSS: map[index]?.options?.isChangeCSS || false,
       changeVideoSpeed: map[index]?.options?.changeVideoSpeed || 0,
-    },
-    resetOptions: {
-      keepValues: true,
     },
   });
   const handleModalClose = async () => {
