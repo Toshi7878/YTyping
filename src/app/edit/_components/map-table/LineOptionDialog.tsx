@@ -12,17 +12,11 @@ import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
 import { MapLineEdit } from "@/types/map";
+import { lineOptionSchema } from "@/validator/mapDataSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-const lineOptionSchema = z.object({
-  changeCSS: z.string().optional(),
-  eternalCSS: z.string().optional(),
-  isChangeCSS: z.boolean().optional(),
-  changeVideoSpeed: z.number().min(-1.75).max(2).optional(),
-});
 
 interface LineOptionDialogProps {
   index: number;
