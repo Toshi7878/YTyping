@@ -1,7 +1,8 @@
+import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 
 const kbdVariants = cva(
-  "bottom-card-kbd rounded border border-b-[1px] border-white bg-[#1f2427] px-1.5 py-0.5 text-3xl text-white transition-transform duration-100 ease-in-out hover:scale-120 md:text-xl",
+  "bottom-card-kbd rounded border border-b-[1px] border-white bg-background px-1.5 py-0.5 text-3xl text-white transition-transform duration-100 ease-in-out hover:scale-120 md:text-xl",
   {
     variants: {
       disabled: {
@@ -29,7 +30,7 @@ const Kbd = ({
   ...rest
 }: CustomKbdProps & React.ComponentPropsWithoutRef<"kbd">) => {
   return (
-    <kbd className={kbdVariants({ disabled })} onClick={disabled ? undefined : onClick} {...rest}>
+    <kbd className={cn(kbdVariants({ disabled }), className)} onClick={disabled ? undefined : onClick} {...rest}>
       {children}
     </kbd>
   );

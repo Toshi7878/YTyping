@@ -28,7 +28,7 @@ export const BottomButton = function (props: BottomBadgeProps) {
         {props.badgeText}
       </Button>
 
-      <Kbd onClick={props.onClick} disabled={isDisabled} hidden={props.isKbdHidden}>
+      <Kbd onClick={props.onClick} disabled={isDisabled} hidden={props.isKbdHidden} className="bg-transparent">
         {props.kbdText}
       </Kbd>
     </div>
@@ -52,7 +52,7 @@ export const BottomDoubleKeyButton = function (props: BottomDoubleKeyBadgeProps)
 
   return (
     <div className={cn("flex items-center gap-2", isHidden && "hidden")}>
-      <Kbd onClick={props.onClickPrev} disabled={isDisabled}>
+      <Kbd onClick={props.onClickPrev} disabled={isDisabled} className="bg-transparent">
         {props.kbdTextPrev}
       </Kbd>
       <Button
@@ -63,7 +63,7 @@ export const BottomDoubleKeyButton = function (props: BottomDoubleKeyBadgeProps)
       >
         {props.badgeText}
       </Button>
-      <Kbd onClick={props.onClickNext} disabled={isDisabled}>
+      <Kbd onClick={props.onClickNext} disabled={isDisabled} className="bg-transparent">
         {props.kbdTextNext}
       </Kbd>
     </div>
