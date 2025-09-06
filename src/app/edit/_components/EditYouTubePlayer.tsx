@@ -86,7 +86,7 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
 
   const handleStateChange = useCallback(
     (event) => {
-      if (document.activeElement instanceof HTMLIFrameElement && document.activeElement.tagName === "IFRAME") {
+      if (document.activeElement instanceof HTMLIFrameElement) {
         document.activeElement.blur();
       }
 
