@@ -5,7 +5,7 @@ import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useGetBackupTitleVideoIdLiveQuery } from "@/lib/indexed-db";
+import { useGuetBackupMapInfoLiveQuery } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
 import { useRouter } from "@bprogress/next";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +22,7 @@ const formSchema = z.object({
 
 export default function NewMapPopover() {
   const [open, setOpen] = useState(false);
-  const backupData = useGetBackupTitleVideoIdLiveQuery();
+  const backupMapInfo = useGuetBackupMapInfoLiveQuery();
   const router = useRouter();
 
   const form = useForm({
@@ -63,7 +63,7 @@ export default function NewMapPopover() {
               autoComplete="off"
             />
             <div className="flex items-center justify-between">
-              <CreateMapBackUpButton backupData={backupData} onOpenChange={setOpen} />
+              <CreateMapBackUpButton backupData={backupMapInfo} onOpenChange={setOpen} />
               <Button size="lg" className="w-30" type="submit" disabled={!extractedVideoId}>
                 作成
               </Button>
@@ -100,7 +100,7 @@ function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
         href={`/edit?new=${props.backupData?.videoId}&backup=true`}
         className={cn(!props.backupData?.videoId && "invisible")}
       >
-        <Button variant="outline" size="sm" onClick={() => props.onOpenChange(false)}>
+        <Button variant="outline" size="sm" onClick={() => props.onOpenChange(false)} type="button">
           前回のバックアップデータが存在します。
         </Button>
       </Link>

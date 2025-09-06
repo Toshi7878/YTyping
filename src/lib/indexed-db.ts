@@ -2,54 +2,63 @@ import { MapLine } from "@/types/map";
 import Dexie, { type EntityTable } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 
-interface MapBackUpInfoData {
+interface MapTable {
+  videoId: string;
+  map: MapLine[];
+}
+
+interface MapInfoTable {
+  videoId: string;
   title: string;
   artistName: string;
   musicSource: string;
-  videoId: string;
   creatorComment: string;
   tags: string[];
   previewTime: string;
-  mapData: MapLine[];
-}
-interface MapBackupData extends MapBackUpInfoData {
-  id: string;
 }
 
-class AppDB extends Dexie {
-  mapBackup!: EntityTable<MapBackupData, "id">;
-
-  constructor() {
-    super("AppDB");
-
-    // スキーマ定義
-    this.version(16).stores({
-      mapBackup: "id", // 固定キーのみ
-    });
-  }
-}
-
-const db = new AppDB();
-
-// 固定キーでバックアップを保存
-export const useBackupNewMap = () => {
-  return async (input: MapBackUpInfoData) => {
-    await db.mapBackup.put({ ...input, id: "current" }); // 常に同じキーで上書き
-  };
+const db = new Dexie("editMapBackup") as Dexie & {
+  map: EntityTable<MapTable & { id: string }, "id">;
+  mapInfo: EntityTable<MapInfoTable & { id: string }, "id">;
 };
 
-export const useDeleteBackupNewMap = () => {
-  return async (): Promise<void> => {
-    await db.mapBackup.clear();
-  };
+db.version(20).stores({
+  map: "id",
+  mapInfo: "id",
+});
+
+export const backupMap = async (input: MapTable) => {
+  await db.map.put({ ...input, id: "current" });
 };
 
-export const useGetBackupTitleVideoIdLiveQuery = () => {
-  const backupData = useLiveQuery(() => db.mapBackup.get("current"));
+export const backupMapInfo = async (input: MapInfoTable) => {
+  await db.mapInfo.put({ ...input, id: "current" });
+};
 
-  return backupData ? { title: backupData?.title, videoId: backupData?.videoId } : undefined;
+export const clearBackupMapWithInfo = async () => {
+  await db.map.clear();
+  await db.mapInfo.clear();
+};
+
+export const useGuetBackupMapInfoLiveQuery = () => {
+  const map = useLiveQuery(async () => {
+    const map = await db.map.get("current");
+    const mapInfo = await db.mapInfo.get("current");
+
+    if (!map || !mapInfo) return;
+    return mapInfo;
+  });
+
+  return map;
 };
 
 export const fetchBackupMap = async () => {
-  return await db.mapBackup.get("current");
+  const map = await db.map.get("current");
+  const mapInfo = await db.mapInfo.get("current");
+
+  if (map?.videoId !== mapInfo?.videoId) return;
+  if (!map || !mapInfo) return;
+  const { id, ...info } = mapInfo;
+
+  return { map: map.map, ...info };
 };

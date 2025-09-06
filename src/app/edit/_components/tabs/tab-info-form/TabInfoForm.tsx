@@ -9,9 +9,10 @@ import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useBackupNewMap, useDeleteBackupNewMap } from "@/lib/indexed-db";
+import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
+import { useDebounce } from "@/utils/global-hooks/useDebounce";
 import { ParseMap } from "@/utils/parse-map/parseMap";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
@@ -50,7 +51,7 @@ const TabInfoForm = () => {
     enabled: !!mapId && !isBackUp,
   });
 
-  const { data: backupMapData } = useQuery({
+  const { data: backupMap } = useQuery({
     ...useMapQueries().editBackupMap(),
     enabled: isBackUp,
   });
@@ -59,17 +60,18 @@ const TabInfoForm = () => {
   const setVideoId = useSetVideoId();
   const mapDispatch = useMapReducer();
   const setCanUpload = useSetCanUpload();
+  const { debounce } = useDebounce(500);
 
   const form = useForm({
     resolver: zodResolver(mapInfoFormSchema),
     shouldUnregister: false,
     values: {
-      title: mapInfoData?.title ?? backupMapData?.title ?? "",
-      artist_name: mapInfoData?.artist_name ?? backupMapData?.artistName ?? "",
-      music_source: mapInfoData?.music_source ?? backupMapData?.musicSource ?? "",
-      preview_time: mapInfoData?.preview_time ?? backupMapData?.previewTime ?? "",
-      creator_comment: mapInfoData?.creator_comment ?? backupMapData?.creatorComment ?? "",
-      tags: mapInfoData?.tags ?? backupMapData?.tags ?? [],
+      title: mapInfoData?.title ?? backupMap?.title ?? "",
+      artist_name: mapInfoData?.artist_name ?? backupMap?.artistName ?? "",
+      music_source: mapInfoData?.music_source ?? backupMap?.musicSource ?? "",
+      preview_time: mapInfoData?.preview_time ?? backupMap?.previewTime ?? "",
+      creator_comment: mapInfoData?.creator_comment ?? backupMap?.creatorComment ?? "",
+      tags: mapInfoData?.tags ?? backupMap?.tags ?? [],
       video_id: mapInfoData?.video_id ?? newCreateVideoId ?? "",
     },
 
@@ -85,15 +87,15 @@ const TabInfoForm = () => {
   }, [mapInfoData, isBackUp, form, setVideoId]);
 
   useEffect(() => {
-    if (backupMapData && isBackUp && newCreateVideoId) {
+    if (backupMap && isBackUp && newCreateVideoId) {
       mapDispatch({
         type: "replaceAll",
-        payload: backupMapData.mapData,
+        payload: backupMap.map,
       });
       setCanUpload(true);
       setVideoId(newCreateVideoId);
     }
-  }, [backupMapData, isBackUp, newCreateVideoId, form, mapDispatch, setCanUpload, setVideoId]);
+  }, [backupMap, isBackUp, newCreateVideoId, form, mapDispatch, setCanUpload, setVideoId]);
 
   useEffect(() => {
     if (newCreateVideoId && !mapId && !isBackUp) {
@@ -130,6 +132,27 @@ const TabInfoForm = () => {
     }
   }, [form, geminiInfoData, newCreateVideoId]);
 
+  useEffect(() => {
+    if (newCreateVideoId) {
+      const subscription = form.watch((value) => {
+        if (!value || !newCreateVideoId) return;
+
+        debounce(() => {
+          backupMapInfo({
+            videoId: newCreateVideoId,
+            title: value.title || "",
+            artistName: value.artist_name || "",
+            musicSource: value.music_source || "",
+            creatorComment: value.creator_comment || "",
+            tags: value.tags?.filter((tag): tag is string => typeof tag === "string" && tag !== undefined) || [],
+            previewTime: value.preview_time || "",
+          });
+        });
+      });
+      return () => subscription.unsubscribe();
+    }
+  }, [newCreateVideoId, form]);
+
   const onSubmit = useOnSubmit(form);
 
   const isGeminiLoading = isFetching && !!newCreateVideoId;
@@ -139,9 +162,8 @@ const TabInfoForm = () => {
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
-          <div className="flex w-full items-center gap-4">
-            <VideoIdInput />
-          </div>
+          {!newCreateVideoId && <VideoIdInput />}
+
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
               disabled={isGeminiLoading}
@@ -210,39 +232,41 @@ const VideoIdInput = () => {
   const setYTChaningVideo = useSetYTChaningVideo();
 
   return (
-    <TooltipWrapper label="動画URLを貼り付けるとIDが自動入力されます">
-      <div className="flex-center flex gap-4">
-        <FloatingLabelInputFormField
-          name="video_id"
-          className="w-32"
-          label="動画ID"
-          maxLength={11}
-          onPaste={(e) => {
-            e.preventDefault();
+    <div className="flex w-full items-center gap-4">
+      <TooltipWrapper label="動画URLを貼り付けるとIDが自動入力されます">
+        <div className="flex-center flex gap-4">
+          <FloatingLabelInputFormField
+            name="video_id"
+            className="w-32"
+            label="動画ID"
+            maxLength={11}
+            onPaste={(e) => {
+              e.preventDefault();
 
-            const videoId = extractYouTubeVideoId(e.clipboardData.getData("text"));
+              const videoId = extractYouTubeVideoId(e.clipboardData.getData("text"));
 
-            if (videoId) {
-              setValue("video_id", videoId);
-            }
-          }}
-        />
-        <Button
-          variant="outline-info"
-          size="lg"
-          disabled={!dirtyFields.video_id || formVideoId.length !== 11}
-          onClick={(e) => {
-            e.preventDefault();
-            if (formVideoId.length !== 11) return;
+              if (videoId) {
+                setValue("video_id", videoId);
+              }
+            }}
+          />
+          <Button
+            variant="outline-info"
+            size="lg"
+            disabled={!dirtyFields.video_id || formVideoId.length !== 11}
+            onClick={(e) => {
+              e.preventDefault();
+              if (formVideoId.length !== 11) return;
 
-            setVideoId(getValues("video_id"));
-            setYTChaningVideo(true);
-          }}
-        >
-          動画切り替え
-        </Button>
-      </div>
-    </TooltipWrapper>
+              setVideoId(getValues("video_id"));
+              setYTChaningVideo(true);
+            }}
+          >
+            動画切り替え
+          </Button>
+        </div>
+      </TooltipWrapper>
+    </div>
   );
 };
 
@@ -328,8 +352,6 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
   const router = useRouter();
   const setCanUpload = useSetCanUpload();
   const readMap = useReadMap();
-  const backupNewMap = useBackupNewMap();
-  const deleteBackupNewMap = useDeleteBackupNewMap();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -343,7 +365,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
         });
         if (data.id) {
           router.push(`/edit/${data.id}`);
-          deleteBackupNewMap();
+          clearBackupMapWithInfo();
         }
         form.reset(form.getValues());
         setCanUpload(false);
@@ -352,7 +374,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
         toast.error(error.message);
 
         if (newCreateVideoId) {
-          backupNewMap({
+          backupMapInfo({
             videoId: newCreateVideoId,
             title: form.getValues("title"),
             artistName: form.getValues("artist_name"),
@@ -360,7 +382,10 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
             creatorComment: form.getValues("creator_comment"),
             tags: form.getValues("tags"),
             previewTime: form.getValues("preview_time"),
-            mapData: readMap(),
+          });
+          backupMap({
+            videoId: newCreateVideoId,
+            map: readMap(),
           });
         }
       },
