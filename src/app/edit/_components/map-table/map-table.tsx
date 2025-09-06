@@ -145,14 +145,12 @@ export default function MapTable() {
 
           const nextTime = map[index + 1]?.time;
 
-          if (nextTime && time === nextTime) {
-            return <div className="text-red-500">{time}</div>;
-          }
-
           return (
             <>
               {directEditIndex === index && <DirectTimeInput time={time} />}
-              {directEditIndex !== index && row.original.time}
+              {directEditIndex !== index && (
+                <div className={cn(nextTime && time === nextTime && "text-red-500")}>{row.original.time}</div>
+              )}
             </>
           );
         },
