@@ -66,7 +66,7 @@ export default function MapTable() {
     hotKeyOptions,
   );
 
-  useHotkeys("f", () => wordSearchPeplace(), hotKeyOptions);
+  useHotkeys("ctrl+shift+f", () => wordSearchPeplace(), hotKeyOptions);
 
   const tbodyRef = useRef(null);
 

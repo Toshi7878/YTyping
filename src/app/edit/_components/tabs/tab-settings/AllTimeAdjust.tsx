@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 export default function AllTimeAdjust() {
   const setCanUpload = useSetCanUpload();
-  const [totalAdjustValue, setTotalAdjustValue] = useState<string>("0");
+  const [totalAdjustValue, setTotalAdjustValue] = useState("0");
   const readMap = useReadMap();
   const mapDispatch = useMapReducer();
   const historyDispatch = useHistoryReducer();

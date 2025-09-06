@@ -11,7 +11,6 @@ import {
   useSetTimeLineIndex,
   useSetYtPlayerStatus,
 } from "../atoms/stateAtoms";
-import { useGetSeekCount } from "./useGetSeekCount";
 import { useTimerControls } from "./useTimer";
 import { useUpdateEndTime } from "./useUpdateEndTime";
 
@@ -103,5 +102,27 @@ export const useYTSeekEvent = () => {
     const time = event.target.getCurrentTime();
     console.log(`シークtime: ${time}`);
     setTimeLineIndex(getSeekCount(time));
+  };
+};
+
+const useGetSeekCount = () => {
+  const readMap = useReadMap();
+
+  return (time: number) => {
+    let count = 0;
+
+    const map = readMap();
+    for (let i = 0; i < map.length; i++) {
+      if (Number(map[i]["time"]) - time >= 0) {
+        count = i - 1;
+        break;
+      }
+    }
+
+    if (count < 0) {
+      count = 0;
+    }
+
+    return count;
   };
 };
