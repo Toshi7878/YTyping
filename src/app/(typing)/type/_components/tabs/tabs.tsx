@@ -38,7 +38,7 @@ const TabLists = () => {
   };
 
   return (
-    <TabsList variant="underline" className="h-auto w-full pl-8 md:h-9">
+    <TabsList variant="underline" className="h-auto w-full bg-transparent pl-8 md:h-9">
       {TAB_NAMES.map((name) => (
         <TabsTrigger
           variant="underline"
