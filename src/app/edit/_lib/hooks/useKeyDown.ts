@@ -1,8 +1,3 @@
-import {
-  useIsAddBtnDisabledStateRef,
-  useIsDeleteBtnDisabledStateRef,
-  useIsUpdateBtnDisabledStateRef,
-} from "../atoms/buttonDisableStateAtoms";
 import { useEditHistoryRef, useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
 import { usePlayer, useTbody } from "../atoms/refAtoms";
@@ -15,7 +10,6 @@ import {
   useSetManyPhrase,
 } from "../atoms/stateAtoms";
 import { useDeleteAddingTopPhrase, usePickupTopPhrase } from "./manyPhrase";
-import { useLineAddButtonEvent, useLineDelete, useLineUpdateButtonEvent } from "./useButtonEvents";
 import { useWordSearchReplace } from "./useWordFindReplace";
 
 const useTbodyScroll = () => {
@@ -37,45 +31,16 @@ const useTbodyScroll = () => {
 
 export const useWindowKeydownEvent = () => {
   const lineDispatch = useLineReducer();
-
-  const pickupTopPhrase = usePickupTopPhrase();
   const setDirectEdit = useSetDirectEditIndex();
-
   const wordSearchPeplace = useWordSearchReplace();
-
-  const lineAddButtonEvent = useLineAddButtonEvent();
-  const lineUpdateButtonEvent = useLineUpdateButtonEvent();
-  const lineDelete = useLineDelete();
   const seekNextPrev = useSeekNextPrev();
-  const readEditUtils = useReadEditUtils();
-  const readYtPlayerStatus = useReadYtPlayerStatus();
-  const readIsAddBtnDisalbed = useIsAddBtnDisabledStateRef();
-  const readIsUpdateBtnDisalbed = useIsUpdateBtnDisabledStateRef();
-  const readIsDeleteBtnDisalbed = useIsDeleteBtnDisabledStateRef();
-  const { readPlayer } = usePlayer();
   const { undo, redo } = useUndoRedo();
-  const seekByArrowKey = useSeekByArrowKey();
 
   return (event: KeyboardEvent, { disabled }: { disabled: boolean }) => {
     const isFocusedInput = document.activeElement instanceof HTMLInputElement;
     const isFocusedManyPhraseTextArea = document.activeElement?.id === "many_phrase_textarea";
-    const { manyPhraseText } = readEditUtils();
-    const { playing } = readYtPlayerStatus();
-    const player = readPlayer();
 
-    if (event.key === "Tab") {
-      if (!isFocusedManyPhraseTextArea) {
-        const textarea = document.getElementById("many_phrase_textarea") as HTMLTextAreaElement;
-        if (textarea) {
-          textarea.focus();
-          textarea.scrollTop = 0;
-          textarea.setSelectionRange(0, 0);
-        }
-      } else if (isFocusedManyPhraseTextArea) {
-        (document.activeElement as HTMLElement)?.blur();
-      }
-      event.preventDefault();
-    } else if (!isFocusedManyPhraseTextArea && !isFocusedInput && !disabled) {
+    if (!isFocusedManyPhraseTextArea && !isFocusedInput && !disabled) {
       switch (event.code) {
         case "ArrowUp":
           seekNextPrev("prev");
@@ -84,34 +49,6 @@ export const useWindowKeydownEvent = () => {
 
         case "ArrowDown":
           seekNextPrev("next");
-          event.preventDefault();
-          break;
-
-        case "ArrowLeft":
-          seekByArrowKey("left");
-          event.preventDefault();
-          break;
-
-        case "ArrowRight":
-          seekByArrowKey("right");
-          event.preventDefault();
-          break;
-
-        case "KeyS":
-          const isAddBtnDisabled = readIsAddBtnDisalbed();
-
-          if (!isAddBtnDisabled) {
-            lineAddButtonEvent(event.shiftKey);
-          }
-          event.preventDefault();
-          break;
-
-        case "KeyU":
-          const isUpdateBtnDisabled = readIsUpdateBtnDisalbed();
-
-          if (!isUpdateBtnDisabled) {
-            lineUpdateButtonEvent();
-          }
           event.preventDefault();
           break;
 
@@ -137,72 +74,13 @@ export const useWindowKeydownEvent = () => {
 
           break;
 
-        case "Delete":
-          const isDeleteBtnDisabled = readIsDeleteBtnDisalbed();
-
-          if (!isDeleteBtnDisabled) {
-            lineDelete();
-          }
-          event.preventDefault();
-
-          break;
-
-        case "KeyQ":
-          const topPhrase = manyPhraseText.split("\n")[0];
-
-          pickupTopPhrase(topPhrase);
-          event.preventDefault();
-
-          break;
-
         case "KeyF":
           if (event.ctrlKey && event.shiftKey) {
             wordSearchPeplace();
             event.preventDefault();
           }
           break;
-
-        case "Escape":
-          if (!playing) {
-            player.playVideo();
-          } else {
-            player.pauseVideo();
-          }
-
-          event.preventDefault();
-
-          break;
-
-          // case "F9":
-          //   speedDispatch("down");
-          //   event.preventDefault();
-
-          //   break;
-
-          // case "F10":
-          //   speedDispatch("up");
-          //   event.preventDefault();
-
-          break;
       }
-    }
-  };
-};
-
-const ARROW_SEEK_SECONDS = 3;
-const useSeekByArrowKey = () => {
-  const readYtPlayerStatus = useReadYtPlayerStatus();
-  const { readPlayer } = usePlayer();
-
-  return (direction: "left" | "right") => {
-    const { speed } = readYtPlayerStatus();
-    const player = readPlayer();
-    const time = player.getCurrentTime();
-    const seekAmount = ARROW_SEEK_SECONDS * speed;
-    if (direction === "left") {
-      player.seekTo(time - seekAmount, true);
-    } else {
-      player.seekTo(time + seekAmount, true);
     }
   };
 };

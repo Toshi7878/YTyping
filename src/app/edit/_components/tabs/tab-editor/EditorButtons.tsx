@@ -11,25 +11,54 @@ import {
   useWordConvertButtonEvent,
 } from "@/app/edit/_lib/hooks/useButtonEvents";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const EditorButtons = () => {
   const isAddButtonDisabled = useIsAddBtnDisabledState();
   const isUpdateButtonDisabled = useIsUpdateBtnDisabledState();
+  const isWordConverting = useIsWordConvertingState();
   const isDeleteButtonDisabled = useIsDeleteBtnDisabledState();
-
   const lineAddButtonEvent = useLineAddButtonEvent();
   const lineUpdateButtonEvent = useLineUpdateButtonEvent();
   const wordConvertButtonEvent = useWordConvertButtonEvent();
   const lineDelete = useLineDelete();
+  useHotkeys(
+    ["shift+s", "s"],
+    (event) => {
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+      if (isDialogOpen || isAddButtonDisabled) return;
+      lineAddButtonEvent(event.shiftKey);
+    },
+    {
+      enableOnFormTags: false,
+      preventDefault: true,
+    },
+  );
 
-  const isLoadWordConvert = useIsWordConvertingState();
+  useHotkeys(
+    ["shift+u", "u"],
+    () => {
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+      if (isDialogOpen || isUpdateButtonDisabled) return;
+      lineUpdateButtonEvent();
+    },
+    {
+      enableOnFormTags: false,
+      preventDefault: true,
+    },
+  );
+
+  useHotkeys("delete", () => {
+    const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+    if (isDialogOpen || isDeleteButtonDisabled) return;
+    lineDelete();
+  });
 
   const buttonConfigs = {
     add: {
       isDisabled: isAddButtonDisabled,
-      variant: "outline-success" as const,
-      onClick: (event: React.MouseEvent<HTMLButtonElement>) => lineAddButtonEvent(event.shiftKey),
+      variant: "outline-success",
+      onClick: (event: { shiftKey: boolean }) => lineAddButtonEvent(event.shiftKey),
       text: (
         <>
           追加<small className="hidden sm:inline">(S)</small>
@@ -39,7 +68,7 @@ const EditorButtons = () => {
     },
     update: {
       isDisabled: isUpdateButtonDisabled,
-      variant: "outline-info" as const,
+      variant: "outline-info",
       onClick: lineUpdateButtonEvent,
       text: (
         <>
@@ -51,14 +80,14 @@ const EditorButtons = () => {
     wordConvert: {
       isDisabled: false,
       ref: undefined,
-      isLoading: isLoadWordConvert,
-      variant: "outline-info" as const,
+      isLoading: isWordConverting,
+      variant: "outline-info",
       onClick: wordConvertButtonEvent,
       text: <>読み変換</>,
     },
     delete: {
       isDisabled: isDeleteButtonDisabled,
-      variant: "outline-error" as const,
+      variant: "outline-error",
       onClick: lineDelete,
       text: (
         <>
@@ -67,7 +96,7 @@ const EditorButtons = () => {
       ),
       isLoading: false,
     },
-  };
+  } as const;
 
   return (
     <div className="grid grid-cols-2 gap-2 sm:flex">

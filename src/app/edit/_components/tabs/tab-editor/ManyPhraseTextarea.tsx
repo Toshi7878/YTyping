@@ -7,11 +7,46 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useDebounce } from "@/utils/global-hooks/useDebounce";
+import { useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { TiFilter } from "react-icons/ti";
 import { toast } from "sonner";
 
 const ManyPhraseTextarea = () => {
   const manyPhrase = useManyPhraseState();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  useHotkeys(
+    "tab",
+    () => {
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+
+      if (isDialogOpen) return;
+
+      const textarea = textareaRef.current;
+
+      if (textarea) {
+        if (document.activeElement === textarea) {
+          textarea.blur();
+        } else {
+          textarea.focus();
+          textarea.scrollTop = 0;
+          textarea.setSelectionRange(0, 0);
+        }
+      }
+    },
+    {
+      enableOnFormTags: false,
+      preventDefault: true,
+    },
+  );
+
+  useHotkeys("q", () => {
+    const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+    if (isDialogOpen) return;
+
+    const topPhrase = manyPhrase.split("\n")[0];
+    pickupTopPhrase(topPhrase);
+  });
 
   const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
@@ -57,6 +92,7 @@ Ctrl+Zキー: 歌詞追加のやり直し`}
         value={manyPhrase}
         onPaste={onPaste}
         onChange={onChange}
+        ref={textareaRef}
       />
       <FilterSymbolButton manyPhrase={manyPhrase} />
     </div>

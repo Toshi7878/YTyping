@@ -3,9 +3,15 @@
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
 import { usePlayer } from "../_lib/atoms/refAtoms";
-import { useIsYTReadiedState, useIsYTStartedState, useVideoIdState } from "../_lib/atoms/stateAtoms";
+import {
+  useIsYTReadiedState,
+  useIsYTStartedState,
+  useReadYtPlayerStatus,
+  useVideoIdState,
+} from "../_lib/atoms/stateAtoms";
 import {
   useYTEndStopEvent,
   useYTPauseEvent,
@@ -32,6 +38,46 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
 
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
+  const readYtPlayerStatus = useReadYtPlayerStatus();
+
+  useHotkeys(
+    "Escape",
+    () => {
+      const { playing } = readYtPlayerStatus();
+      if (!playing) {
+        readPlayer().playVideo();
+      } else {
+        readPlayer().pauseVideo();
+      }
+    },
+    {
+      enableOnFormTags: false,
+      preventDefault: true,
+    },
+  );
+
+  useHotkeys(
+    ["arrowleft", "arrowright"],
+    (event) => {
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+      if (isDialogOpen) return;
+
+      const ARROW_SEEK_SECONDS = 3;
+
+      const { speed } = readYtPlayerStatus();
+      const time = readPlayer().getCurrentTime();
+      const seekAmount = ARROW_SEEK_SECONDS * speed;
+      if (event.key === "ArrowLeft") {
+        readPlayer().seekTo(time - seekAmount, true);
+      } else {
+        readPlayer().seekTo(time + seekAmount, true);
+      }
+    },
+    {
+      enableOnFormTags: false,
+      preventDefault: true,
+    },
+  );
 
   useEffect(() => {
     if (!isYTReady && !isYTStarted) return;
