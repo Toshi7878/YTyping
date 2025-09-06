@@ -27,6 +27,8 @@ export const userTypingOptionsAtom = atomWithReset({
   roma_word_scroll: 9,
   roma_word_font_size: 100,
   kana_word_font_size: 100,
+  kana_word_spacing: 0.08,
+  roma_word_spacing: 0.08,
   kana_word_top_position: 0,
   roma_word_top_position: 0,
   type_sound: false,

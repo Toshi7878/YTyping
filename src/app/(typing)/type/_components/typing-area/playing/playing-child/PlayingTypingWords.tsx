@@ -44,7 +44,11 @@ const TypingWords = () => {
       userOptions.main_word_display === "ROMA_LOWERCASE_ONLY" ||
         (userOptions.main_word_display === "ROMA_UPPERCASE_ONLY" && "invisible"),
     ),
-    style: { fontSize: `${userOptions.kana_word_font_size}%`, bottom: userOptions.kana_word_top_position },
+    style: {
+      fontSize: `${userOptions.kana_word_font_size}%`,
+      bottom: userOptions.kana_word_top_position,
+      letterSpacing: `${userOptions.kana_word_spacing.toFixed(2)}em`,
+    },
   };
   const romaWordProps = {
     correct: lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice).replace(/ /g, "ˍ"),
@@ -60,7 +64,11 @@ const TypingWords = () => {
       userOptions.main_word_display === "KANA_ONLY" || inputMode === "kana" ? "invisible" : "",
       userOptions.main_word_display.includes("UPPERCASE") ? "uppercase" : "lowercase",
     ),
-    style: { fontSize: `${userOptions.roma_word_font_size}%`, bottom: userOptions.roma_word_top_position },
+    style: {
+      fontSize: `${userOptions.roma_word_font_size}%`,
+      bottom: userOptions.roma_word_top_position,
+      letterSpacing: `${userOptions.roma_word_spacing.toFixed(2)}em`,
+    },
   };
 
   return (
@@ -69,7 +77,6 @@ const TypingWords = () => {
         "word-font outline-text text-6xl leading-20 md:text-[2.6rem] md:leading-15",
         isLineCompleted && "word-area-completed",
       )}
-      style={{ letterSpacing: "0.08em" }}
     >
       <Word
         id="main_word"
@@ -110,7 +117,7 @@ const Word = ({
     <div
       {...rest}
       className={cn("relative", rest.className)}
-      style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom }}
+      style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom, letterSpacing: rest.style?.letterSpacing }}
     >
       {isLineCompleted && isNextWordDisplay ? (
         <span className="next-line-word text-word-nextWord">{nextWord}</span>

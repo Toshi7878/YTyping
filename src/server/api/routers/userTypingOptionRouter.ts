@@ -14,6 +14,8 @@ const typingOptionSchema = z.object({
   roma_word_scroll: z.number(),
   kana_word_font_size: z.number(),
   roma_word_font_size: z.number(),
+  kana_word_spacing: z.number(),
+  roma_word_spacing: z.number(),
   type_sound: z.boolean(),
   miss_sound: z.boolean(),
   line_clear_sound: z.boolean(),

@@ -243,6 +243,8 @@ model user_typing_options {
   roma_word_font_size    Int                    @default(100)
   kana_word_top_position Float                  @default(0)
   roma_word_top_position Float                  @default(0)
+  kana_word_spacing      Float                  @default(0.08)
+  roma_word_spacing      Float                  @default(0.08)
   type_sound             Boolean                @default(false)
   miss_sound             Boolean                @default(false)
   line_clear_sound       Boolean                @default(false)

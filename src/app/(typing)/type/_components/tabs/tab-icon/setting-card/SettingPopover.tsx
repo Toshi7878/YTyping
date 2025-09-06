@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import UserShortcutKeyCheckbox from "./options/UserShortcutKey";
 import UserSoundEffectCheckbox from "./options/UserSoundEffect";
 import UserTimeOffsetChange from "./options/UserTimeOffset";
-import { UserWordFontSize } from "./options/UserWordOptions";
+import { UserWordOptions } from "./options/UserWordOptions";
 import { UserWordScrollChange } from "./options/UserWordScroll";
 
 const SettingPopover = () => {
@@ -68,14 +68,14 @@ const SettingPopover = () => {
           <UserNextDisplayRadioButton />
           <Separator className="bg-foreground/20 my-4" />
           <UserLineCompletedRadioButton />
-          <Separator className="bg-foreground/20 my-4" />
-          <UserWordFontSize />
           {isMdScreen && (
             <>
               <Separator className="bg-foreground/20 my-4" />
               <UserWordScrollChange />
             </>
           )}
+          <Separator className="bg-foreground/20 my-4" />
+          <UserWordOptions />
         </>
       ),
     },
@@ -88,7 +88,7 @@ const SettingPopover = () => {
         <SettingButton />
       </PopoverTrigger>
       <PopoverContent
-        className={cn(isMdScreen ? "w-lg p-4" : "w-screen p-4")}
+        className={cn(isMdScreen ? "w-xl p-4" : "w-screen p-4")}
         align={isMdScreen ? "end" : "center"}
         side="bottom"
         sideOffset={10}
