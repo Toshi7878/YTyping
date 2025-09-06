@@ -18,7 +18,7 @@ const EditIcon = () => {
   const tooltipLabel = `譜面のEditページに移動${Number(userId) !== creatorId && role === "USER" ? "(閲覧のみ)" : ""}`;
   return (
     <TooltipWrapper label={tooltipLabel} delayDuration={500}>
-      <Link href={`/edit/${mapId}`}>
+      <Link href={`/edit/${mapId}`} replace>
         <Button variant="unstyled" size="icon" className="hover:text-foreground/90">
           <BiEdit className="size-16 md:size-9" />
         </Button>
