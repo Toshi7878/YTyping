@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { mapInfoAtom, userTypingOptionsAtom } from "../_lib/atoms/stateAtoms";
 import { getTypeAtomStore } from "../_lib/atoms/store";
-import { useSendUserStats } from "../_lib/hooks/playing-hooks/sendUserStats";
+import { useSendUserStats } from "../_lib/hooks/playing/sendUserStats";
 
 interface ClientProviderProps {
   mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;

@@ -3,9 +3,9 @@
 import { useReadGameUtilParams } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 
 import { cn } from "@/lib/utils";
-import { usePressSkip } from "../../../_lib/hooks/playing-hooks/pressSkip";
-import usePlayingKeydownEventListener from "../../../_lib/hooks/playing-hooks/use-playing-keydown-eventlistener";
-import useSendUserTypingStats from "../../../_lib/hooks/playing-hooks/use-send-user-typing-stats";
+import { usePressSkip } from "../../../_lib/hooks/playing/pressSkip";
+import usePlayingKeydownEventListener from "../../../_lib/hooks/playing/use-playing-keydown-eventlistener";
+import useSendUserTypingStats from "../../../_lib/hooks/playing/use-send-user-typing-stats";
 import ChangeCSS from "./playing-child/ChangeCSS";
 import Lyrics from "./playing-child/Lyrics";
 import NextLyrics from "./playing-child/NextLyrics";

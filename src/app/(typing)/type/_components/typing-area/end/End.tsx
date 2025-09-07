@@ -1,4 +1,4 @@
-import { useSendUserStats } from "@/app/(typing)/type/_lib/hooks/playing-hooks/sendUserStats";
+import { useSendUserStats } from "@/app/(typing)/type/_lib/hooks/playing/sendUserStats";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import EndButtonContainer from "./end-child/EndButtonContainer";

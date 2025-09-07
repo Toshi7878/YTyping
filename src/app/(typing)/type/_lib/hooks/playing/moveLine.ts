@@ -1,8 +1,8 @@
 import { useLineCount, usePlayer, useProgress, useResultCards } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import { useReadGameUtilParams, useReadMap, useSetLineSelectIndex, useSetNotify } from "../../atoms/stateAtoms";
-import { useGetSeekLineCount } from "./timer-hooks/getLineCountByTime";
-import { useTimerControls, useUpdateLine } from "./timer-hooks/timer";
+import { useGetSeekLineCount } from "./timer/getLineCountByTime";
+import { useTimerControls, useUpdateLine } from "./timer/timer";
 
 const SEEK_BUFFER_TIME = 0.8;
 
@@ -131,7 +131,6 @@ export const useMoveLine = () => {
     }
   };
   const scrollToCard = (newIndex: number) => {
-    const map = readMap();
     const resultCards = readResultCards();
 
     const card: HTMLDivElement = resultCards[newIndex];

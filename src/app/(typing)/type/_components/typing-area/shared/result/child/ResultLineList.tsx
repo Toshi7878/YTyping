@@ -7,7 +7,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 
 import { useResultCards } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
+import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/moveLine";
 import { LineResultData } from "@/app/(typing)/type/_lib/type";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";

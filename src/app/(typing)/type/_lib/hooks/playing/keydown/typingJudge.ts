@@ -1,7 +1,7 @@
 import { useReadGameUtilParams, useReadLineWord } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { CHAR_POINT } from "../../../../../../../utils/build-map/buildMap";
 import { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../../type";
-import { CODE_TO_KANA, KEY_TO_KANA } from "./kanaKeyMap";
+import { CODE_TO_KANA, KEY_TO_KANA } from "./const";
 
 const KEYBOARD_CHARS = [
   "0",

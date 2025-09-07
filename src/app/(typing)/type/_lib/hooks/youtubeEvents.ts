@@ -13,9 +13,9 @@ import {
 } from "../atoms/stateAtoms";
 import { useReadReadyInputMode } from "../atoms/storageAtoms";
 import { InputMode } from "../type";
-import { useSendUserStats } from "./playing-hooks/sendUserStats";
-import { useTimerControls } from "./playing-hooks/timer-hooks/timer";
-import { useUpdateAllStatus } from "./playing-hooks/updateStatus";
+import { useSendUserStats } from "./playing/sendUserStats";
+import { useTimerControls } from "./playing/timer/timer";
+import { useUpdateAllStatus } from "./playing/updateStatus";
 
 export const useYTPlayEvent = () => {
   const setScene = useSetScene();

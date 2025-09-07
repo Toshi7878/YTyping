@@ -1,6 +1,6 @@
 import { usePlayer } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/soundEffect";
+import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/soundEffect";
 import VolumeRange from "@/components/shared/VolumeRange";
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { H5 } from "@/components/ui/typography";

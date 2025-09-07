@@ -7,8 +7,8 @@ import {
   useSetLineResultDrawer,
   useSetNextLyrics,
 } from "../../atoms/stateAtoms";
-import { useHandleKeydown } from "./keydown-hooks/playingKeydown";
-import { useTimerControls } from "./timer-hooks/timer";
+import { useHandleKeydown } from "./keydown/playingKeydown";
+import { useTimerControls } from "./timer/timer";
 
 const usePlayingKeydownEventListener = () => {
   const { setNextLyrics, resetNextLyrics } = useSetNextLyrics();

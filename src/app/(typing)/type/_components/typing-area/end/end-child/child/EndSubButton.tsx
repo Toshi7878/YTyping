@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 
 import { useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
+import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
 import { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 

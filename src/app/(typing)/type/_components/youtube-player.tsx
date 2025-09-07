@@ -6,7 +6,7 @@ import YouTube, { YouTubeEvent } from "react-youtube";
 import { useWindowFocus } from "../../../../utils/hooks/windowFocus";
 import { usePlayer, useYTStatus } from "../_lib/atoms/refAtoms";
 import { useReadGameUtilParams } from "../_lib/atoms/stateAtoms";
-import { useTimerRegistration } from "../_lib/hooks/playing-hooks/timer-hooks/timer";
+import { useTimerRegistration } from "../_lib/hooks/playing/timer/timer";
 import {
   useYTPauseEvent,
   useYTPlayEvent,

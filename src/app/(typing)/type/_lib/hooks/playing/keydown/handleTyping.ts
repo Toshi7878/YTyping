@@ -1,5 +1,5 @@
 import { useReadGameUtilParams, useReadMap, useSetLineWord } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useInputJudge } from "@/app/(typing)/type/_lib/hooks/playing-hooks/keydown-hooks/typingJudge";
+import { useInputJudge } from "@/app/(typing)/type/_lib/hooks/playing/keydown/typingJudge";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";
 import { useSoundEffect } from "../soundEffect";

@@ -1,7 +1,7 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMapInfoRef, useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
-import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/soundEffect";
+import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
+import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/soundEffect";
 import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";

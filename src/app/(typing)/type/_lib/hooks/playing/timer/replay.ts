@@ -6,12 +6,12 @@ import {
   useReadLineWord,
   useSetLineWord,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/hooks/playing-hooks/calcTypeSpeed";
-import { useInputModeChange } from "@/app/(typing)/type/_lib/hooks/playing-hooks/inputModeChange";
+import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/hooks/playing/calcTypeSpeed";
+import { useInputModeChange } from "@/app/(typing)/type/_lib/hooks/playing/inputModeChange";
 import { YouTubeSpeed } from "@/types";
 import { LineResultData, TypeResult } from "../../../type";
 import { useGetTime } from "../getYTTime";
-import { KanaInput, RomaInput, TypingKeys } from "../keydown-hooks/typingJudge";
+import { KanaInput, RomaInput, TypingKeys } from "../keydown/typingJudge";
 import { useSoundEffect } from "../soundEffect";
 import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../updateStatus";
 

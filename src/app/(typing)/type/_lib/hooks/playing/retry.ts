@@ -14,7 +14,7 @@ import {
 } from "../../atoms/stateAtoms";
 import { PlayMode } from "../../type";
 import { useSendUserStats } from "./sendUserStats";
-import { useTimerControls } from "./timer-hooks/timer";
+import { useTimerControls } from "./timer/timer";
 
 export const useRetry = () => {
   const { readPlayer } = usePlayer();

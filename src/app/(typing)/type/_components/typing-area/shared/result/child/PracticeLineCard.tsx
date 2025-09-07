@@ -5,7 +5,7 @@ import {
   useMapState,
   usePlayingInputModeState,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
+import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/moveLine";
 import { useInteractJS } from "@/app/(typing)/type/_lib/hooks/useInteractJS";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";

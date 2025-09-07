@@ -8,8 +8,8 @@ import {
   useUserTypingOptionsState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLine";
-import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing-hooks/retry";
+import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/moveLine";
+import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
