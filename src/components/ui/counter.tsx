@@ -32,7 +32,7 @@ const counterVariants = cva("", {
     { size: "lg", element: "wrapper", class: "gap-3" },
 
     // Container - Default variant
-    { variant: "default", element: "container", class: "bg-background border-border/50" },
+    { variant: "default", element: "container", class: "bg-transparent border-border/50" },
     { variant: "outline", element: "container", class: "bg-transparent border-2 border-border" },
     { variant: "filled", element: "container", class: "bg-muted border-transparent" },
     { variant: "minimal", element: "container", class: "bg-transparent border-transparent" },
