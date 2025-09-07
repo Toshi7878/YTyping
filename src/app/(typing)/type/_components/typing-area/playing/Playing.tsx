@@ -13,6 +13,7 @@ import { useTimerControls } from "@/app/(typing)/type/_lib/hooks/playing-hooks/t
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/getBaseUrl";
 import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
 import { usePressSkip } from "../../../_lib/hooks/playing-hooks/pressSkip";
 import ChangeCSS from "./playing-child/ChangeCSS";
 import Lyrics from "./playing-child/Lyrics";
@@ -35,6 +36,7 @@ const Playing = ({ className }: PlayingProps) => {
   const { setFrameRate } = useTimerControls();
   const readMap = useReadMap();
   const setLineResultDrawer = useSetLineResultDrawer();
+  const { id: mapId } = useParams();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -67,7 +69,7 @@ const Playing = ({ className }: PlayingProps) => {
       window.removeEventListener("beforeunload", handleBeforeunload);
       window.removeEventListener("visibilitychange", handleVisibilitychange);
     };
-  }, [scene]);
+  }, [scene, mapId]);
 
   useEffect(() => {
     if (scene === "practice") {
@@ -96,7 +98,7 @@ const Playing = ({ className }: PlayingProps) => {
     return () => {
       window.removeEventListener("keydown", handleKeydown);
     };
-  }, [scene]);
+  }, [scene, mapId]);
 
   return (
     <div
