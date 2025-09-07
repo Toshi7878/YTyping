@@ -38,7 +38,7 @@ function Content({ video_id, mapId }: ContentProps) {
   const sceneGroup = useSceneGroupState();
   const { isSmScreen } = useBreakPoint();
 
-  const [ytLayoutMode, setYtLayoutMode] = useState<"column" | "row">("column");
+  const [ytLayoutMode, setYtLayoutMode] = useState<"column" | "row">("row");
   useEffect(() => {
     if (sceneGroup === "Ready") {
       setYtLayoutMode(isSmScreen ? "column" : "row");
