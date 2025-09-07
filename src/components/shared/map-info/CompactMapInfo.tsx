@@ -16,6 +16,7 @@ function CompactMapInfo({ map }: CompactMapCardProps) {
       <Link className="flex h-full flex-col justify-between hover:no-underline" href={`/type/${map.id}`}>
         <section className="flex flex-col gap-1">
           <TooltipWrapper
+            delayDuration={300}
             label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
           >
             <div className="text-secondary truncate overflow-hidden text-base font-bold whitespace-nowrap">

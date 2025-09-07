@@ -40,7 +40,10 @@ interface MapInfoProps extends HTMLAttributes<HTMLDivElement> {
 function MapInfo({ map, isToggledInputMode, className, ...rest }: MapInfoProps) {
   return (
     <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
-      <TooltipWrapper label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}>
+      <TooltipWrapper
+        delayDuration={300}
+        label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
+      >
         <Link href={`/type/${map.id}`} className="text-secondary block hover:underline">
           <div className="truncate text-sm font-bold sm:text-base">{`${map.title} / ${map.artist_name}`}</div>
         </Link>
