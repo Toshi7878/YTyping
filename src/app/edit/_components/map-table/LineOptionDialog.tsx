@@ -48,7 +48,7 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
 
     const isConfirmed = await confirm({
       title: "確認",
-      body: "CSS設定の変更が保存されていません。保存せずに閉じてもよろしいですか？",
+      body: "ラインオプションの変更が保存されていません。保存せずに閉じてもよろしいですか？",
       cancelButton: "いいえ",
       actionButton: "はい",
       cancelButtonVariant: "outline",
