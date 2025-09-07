@@ -1,7 +1,7 @@
 "use client";
 import { CardWithContent } from "@/components/ui/card";
 
-import { useEditUtilsParams, usePlayer } from "@/app/edit/_lib/atoms/refAtoms";
+import { usePlayer, useSetPreventEditortabAutoFocus } from "@/app/edit/_lib/atoms/refAtoms";
 import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
 import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useHasMapUploadPermission";
 import { Button } from "@/components/ui/button";
@@ -272,14 +272,14 @@ const VideoIdInput = () => {
 
 const PreviewTimeInput = () => {
   const { readPlayer } = usePlayer();
-  const { writeEditUtils } = useEditUtilsParams();
   const { watch, setValue, getValues } = useFormContext();
   const previewTime = watch("preview_time");
+  const setPreventEditortabAutoFocus = useSetPreventEditortabAutoFocus();
 
   const handlePreviewClick = () => {
-    writeEditUtils({ preventAutoTabToggle: true });
     readPlayer().playVideo();
     readPlayer().seekTo(Number(previewTime), true);
+    setPreventEditortabAutoFocus(true);
   };
 
   return (

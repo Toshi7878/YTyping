@@ -18,7 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
-import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
+import { usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useReadTimeOffsetState } from "../atoms/storageAtoms";
 import { useDeleteTopPhrase, usePickupTopPhrase } from "./manyPhrase";
 import { mapTableScroll } from "./map-table-scroll";
@@ -46,7 +46,6 @@ export const useLineAddButtonEvent = () => {
   const historyDispatch = useHistoryReducer();
   const lineDispatch = useLineReducer();
   const timeValidate = useTimeValidate();
-  const { writeEditUtils } = useEditUtilsParams();
   const readMap = useReadMap();
 
   return (isShiftKey: boolean) => {
@@ -75,7 +74,6 @@ export const useLineAddButtonEvent = () => {
 
     //フォーカスを外さないと追加ボタンクリック時にテーブルがスクロールされない
     (document.activeElement as HTMLElement)?.blur();
-    // writeEditUtils({ tableScrollIndex: lineIndex });
 
     setTimeout(() => mapTableScroll({ rowIndex: lineIndex }));
 

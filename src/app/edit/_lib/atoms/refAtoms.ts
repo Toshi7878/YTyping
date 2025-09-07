@@ -1,61 +1,10 @@
 import { YTPlayer } from "@/types/global-types";
-import { atom, ExtractAtomValue } from "jotai";
-import { focusAtom } from "jotai-optics";
-import { atomWithReset, useAtomCallback } from "jotai/utils";
+import { atom, useSetAtom } from "jotai";
+import { useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { mapReducerAtom } from "./mapReducerAtom";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
-
-const editUtilsParamsAtom = atomWithReset({
-  preventAutoTabToggle: false,
-  tableScrollIndex: null as number | null,
-});
-const tableScrollIndexAtom = focusAtom(editUtilsParamsAtom, (optic) => optic.prop("tableScrollIndex"));
-
-store.sub(tableScrollIndexAtom, () => {
-  const map = store.get(mapReducerAtom);
-  const scrollIndex = store.get(tableScrollIndexAtom);
-  const tbody = document.getElementById("map-table-tbody");
-
-  if (map.length > 0 && tbody) {
-    for (let i = map.length - 1; i >= 0; i--) {
-      if (i == scrollIndex) {
-        const targetRow = tbody.children[i];
-
-        if (targetRow && targetRow instanceof HTMLElement) {
-          const tableCard = targetRow.closest<HTMLDivElement>("#map-table-card");
-          if (tableCard) {
-            tableCard.scrollTo({
-              top: targetRow.offsetTop - tableCard.offsetTop - targetRow.offsetHeight,
-              behavior: "smooth",
-            });
-          }
-        }
-
-        break;
-      }
-    }
-  }
-});
-
-export const useEditUtilsParams = () => {
-  const readEditUtils = useAtomCallback(
-    useCallback((get) => get(editUtilsParamsAtom), []),
-    { store },
-  );
-
-  const writeEditUtils = useAtomCallback(
-    useCallback((get, set, newGameState: Partial<ExtractAtomValue<typeof editUtilsParamsAtom>>) => {
-      set(editUtilsParamsAtom, (prev) => {
-        return { ...prev, ...newGameState };
-      });
-    }, []),
-  );
-
-  return { readEditUtils, writeEditUtils };
-};
 
 export const timeInputAtom = atom<HTMLInputElement | null>(null);
 
@@ -103,3 +52,15 @@ export const usePlayer = () => {
 
   return { readPlayer, writePlayer };
 };
+
+export const preventEditorTabAutoFocusAtom = atom<boolean>(false);
+
+export const usePreventEditortabAutoFocus = () =>
+  useAtomCallback(
+    useCallback((get, set) => {
+      setTimeout(() => set(preventEditorTabAutoFocusAtom, false));
+      return get(preventEditorTabAutoFocusAtom);
+    }, []),
+    { store },
+  );
+export const useSetPreventEditortabAutoFocus = () => useSetAtom(preventEditorTabAutoFocusAtom, { store });

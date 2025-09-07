@@ -2,7 +2,7 @@ import { useVolumeState } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { YouTubeEvent } from "react-youtube";
 import { useReadMap } from "../atoms/mapReducerAtom";
-import { useEditUtilsParams, usePlayer } from "../atoms/refAtoms";
+import { usePlayer, usePreventEditortabAutoFocus } from "../atoms/refAtoms";
 import {
   useReadYtPlayerStatus,
   useSetIsYTPlaying,
@@ -52,8 +52,8 @@ export const useYTPlayEvent = () => {
   const setIsYTStarted = useSetIsYTStarted();
   const setTabName = useSetTabName();
 
-  const { readEditUtils, writeEditUtils } = useEditUtilsParams();
   const { startTimer } = useTimerControls();
+  const preventEditorTabAutoFocus = usePreventEditortabAutoFocus();
 
   return () => {
     console.log("再生 1");
@@ -62,11 +62,7 @@ export const useYTPlayEvent = () => {
     setIsYTPlaying(true);
     setIsYTStarted(true);
 
-    const { preventAutoTabToggle } = readEditUtils();
-    if (preventAutoTabToggle) {
-      writeEditUtils({ preventAutoTabToggle: false });
-      return;
-    }
+    if (preventEditorTabAutoFocus()) return;
     setTabName("エディター");
   };
 };
