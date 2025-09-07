@@ -28,7 +28,7 @@ import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { MapLine } from "@/types/map";
-import { ColumnDef } from "@tanstack/react-table";
+import { Cell, ColumnDef } from "@tanstack/react-table";
 import parse from "html-react-parser";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useEndLineIndexState } from "../../_lib/atoms/buttonDisableStateAtoms";
@@ -138,19 +138,23 @@ export default function MapTable() {
               readPlayer().seekTo(Number(row.time), true);
             }
           },
+          cellClassName: (cell: Cell<MapLine, unknown>, index: number) => {
+            const row = cell.row.original;
+            const nextTime = map[index + 1]?.time;
+            return nextTime && row.time === nextTime ? "bg-destructive/30 text-destructive" : "";
+          },
         },
         cell: ({ row }) => {
           const index = row.index;
-          const time = row.original.time;
-
           const nextTime = map[index + 1]?.time;
+          const label = nextTime && row.original.time === nextTime ? "同じ時間の行が存在します" : "";
 
           return (
             <>
-              {directEditIndex === index && <DirectTimeInput time={time} />}
-              {directEditIndex !== index && (
-                <div className={cn(nextTime && time === nextTime && "text-red-500")}>{row.original.time}</div>
-              )}
+              {directEditIndex === row.index && <DirectTimeInput time={row.original.time} />}
+              <TooltipWrapper label={label} disabled={!label}>
+                <div>{directEditIndex !== row.index && row.original.time}</div>
+              </TooltipWrapper>
             </>
           );
         },

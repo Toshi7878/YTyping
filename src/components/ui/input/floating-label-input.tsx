@@ -45,7 +45,7 @@ const FloatingLabelInput = React.forwardRef<
       <FloatingInput ref={ref} id={id} className={className} {...props} maxLength={props.maxLength} />
       <FloatingLabel htmlFor={id}>
         {label}
-        {props.required && <span className="text-error/80">*</span>}
+        {props.required && <span className="text-destructive/80">*</span>}
       </FloatingLabel>
     </div>
   );

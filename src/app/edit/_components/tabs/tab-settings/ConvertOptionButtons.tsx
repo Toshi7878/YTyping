@@ -27,8 +27,8 @@ const CONVERT_OPTIONS = [
   {
     value: "add_symbol_all",
     label: "記号あり(すべて)",
-    activeVariant: "error",
-    inactiveVariant: "outline-error",
+    activeVariant: "destructive",
+    inactiveVariant: "outline-destructive",
     description: "キーボードで入力できる全ての記号をよみ変換されるようにします。",
     symbolList: [...MANDATORY_SYMBOL_LIST, ...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST],
   },

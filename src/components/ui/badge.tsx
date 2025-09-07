@@ -23,6 +23,8 @@ const badgeVariants = cva(
 
         destructive:
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        "destructive-soft":
+          "border-transparent bg-destructive-light/50 text-destructive-foreground [a&]:hover:bg-destructive-soft/90",
         outline: "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         result: "bg-card  rounded-sm border border-border text-center normal-case",
       },

@@ -69,7 +69,11 @@ export function DataTable<TData, TValue>({
                       }
                     }}
                     style={{ maxWidth: cell.column.getSize(), minWidth: cell.column.getSize() }}
-                    className={cn(hasColumnClick && "cursor-pointer", cellClassName)}
+                    className={cn(
+                      hasColumnClick && "cursor-pointer",
+                      cellClassName,
+                      columnMeta?.cellClassName?.(cell, index),
+                    )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

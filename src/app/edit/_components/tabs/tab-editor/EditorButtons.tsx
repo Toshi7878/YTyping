@@ -87,7 +87,7 @@ const EditorButtons = () => {
     },
     delete: {
       isDisabled: isDeleteButtonDisabled,
-      variant: "outline-error",
+      variant: "outline-destructive",
       onClick: lineDelete,
       text: (
         <>

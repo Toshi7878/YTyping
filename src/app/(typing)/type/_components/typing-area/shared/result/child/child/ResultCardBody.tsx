@@ -36,7 +36,7 @@ function ResultCardContent({ lineKanaWord, typeResult, lineTypeWord, lostWord }:
                       ? lostWord === ""
                         ? "text-word-completed" // completed color
                         : "text-word-correct" // correct color
-                      : "text-error", // error color
+                      : "text-destructive", // error color
                   )}
                   data-time={type.t}
                 >
