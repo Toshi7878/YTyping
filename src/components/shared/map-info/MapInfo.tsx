@@ -21,7 +21,7 @@ function MapInfo({ map }: MapInfoProps) {
       <Link className="absolute h-full w-full" href={`/type/${map.id}`} />
       <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
         <section className="flex flex-col gap-1">
-          <TooltipWrapper label={`${map.title} / ${map.artist_name}${musicSourceDisplay}`}>
+          <TooltipWrapper delayDuration={300} label={`${map.title} / ${map.artist_name}${musicSourceDisplay}`}>
             <Link
               href={`/type/${map.id}`}
               className="text-secondary z-1 truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
