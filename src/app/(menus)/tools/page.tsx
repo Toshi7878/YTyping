@@ -45,7 +45,7 @@ export default function Page() {
                       {tool.title} {isExternal ? <ExternalLink className="inline-block" size={16} /> : null}
                     </H5>
                   </TextLink>
-                  <Small>
+                  <Small className="flex">
                     <span>by.</span>
                     <ByUser userId={tool.byUserId} />
                   </Small>
