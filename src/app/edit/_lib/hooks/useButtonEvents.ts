@@ -56,7 +56,7 @@ export const useLineAddButtonEvent = () => {
     const _time = playing ? readPlayer().getCurrentTime() + timeOffset : Number(readTime());
     const time = timeValidate(_time).toFixed(3);
     const newLine: MapLine = !isShiftKey
-      ? { time, lyrics: normalizeSimilarSymbol(lyrics), word: normalizeSimilarSymbol(word) }
+      ? { time, lyrics, word: normalizeSimilarSymbol(word) }
       : { time, lyrics: "", word: "" };
 
     mapDispatch({ type: "add", payload: newLine });
@@ -64,11 +64,8 @@ export const useLineAddButtonEvent = () => {
     historyDispatch({ type: "add", payload: { actionType: "add", data: { ...newLine, lineIndex } } });
 
     if (newVideoId) {
-      const mapData = readMap();
-      backupMap({
-        videoId: newVideoId,
-        map: mapData,
-      });
+      const map = readMap();
+      backupMap({ videoId: newVideoId, map });
     }
 
     setCanUpload(true);
@@ -77,13 +74,9 @@ export const useLineAddButtonEvent = () => {
 
     //フォーカスを外さないと追加ボタンクリック時にテーブルがスクロールされない
     (document.activeElement as HTMLElement)?.blur();
-    writeEditUtils({
-      tableScrollIndex: lineIndex,
-    });
+    writeEditUtils({ tableScrollIndex: lineIndex });
 
-    if (isShiftKey) {
-      return;
-    }
+    if (isShiftKey) return;
 
     lineDispatch({ type: "reset" });
     const lyricsCopy = structuredClone(lyrics);
@@ -156,11 +149,8 @@ export const useLineUpdateButtonEvent = () => {
     }
 
     if (newVideoId) {
-      const mapData = readMap();
-      backupMap({
-        videoId: newVideoId,
-        map: mapData,
-      });
+      const map = readMap();
+      backupMap({ videoId: newVideoId, map });
     }
 
     mapDispatch({ type: "update", payload: newLine, index: selectLineIndex });
@@ -170,10 +160,9 @@ export const useLineUpdateButtonEvent = () => {
 
     if (newLine.time === oldLine.time && newLine.lyrics === oldLine.lyrics && newLine.word !== oldLine.word) {
       const hasKanji = /[\u4e00-\u9faf]/.test(oldLine.lyrics);
+      if (!hasKanji) return;
 
-      if (hasKanji) {
-        postFixWordLog.mutate({ lyrics: oldLine.lyrics, word: oldLine.word });
-      }
+      postFixWordLog.mutate({ lyrics: oldLine.lyrics, word: oldLine.word });
     }
   };
 };
@@ -216,10 +205,7 @@ export const useLineDelete = () => {
 
     setDirectEdit(null);
     lineDispatch({ type: "reset" });
-
-    if (!selectIndex) {
-      return;
-    }
+    if (!selectIndex) return;
 
     const map = readMap();
 
@@ -233,11 +219,8 @@ export const useLineDelete = () => {
     setIsUpdateUpdatedAt(true);
 
     if (newVideoId) {
-      const mapData = readMap();
-      backupMap({
-        videoId: newVideoId,
-        map: mapData,
-      });
+      const map = readMap();
+      backupMap({ videoId: newVideoId, map });
     }
   };
 };
