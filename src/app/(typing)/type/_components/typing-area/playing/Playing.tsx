@@ -1,20 +1,11 @@
-import {
-  useReadGameUtilParams,
-  useReadMap,
-  useSceneState,
-  useSetLineResultDrawer,
-  useSetNextLyrics,
-} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useEffect } from "react";
+"use client";
 
-import { useLineCount, useUserStats } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { useHandleKeydown } from "@/app/(typing)/type/_lib/hooks/playing-hooks/keydown-hooks/playingKeydown";
-import { useTimerControls } from "@/app/(typing)/type/_lib/hooks/playing-hooks/timer-hooks/timer";
+import { useReadGameUtilParams } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+
 import { cn } from "@/lib/utils";
-import { getBaseUrl } from "@/utils/getBaseUrl";
-import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
 import { usePressSkip } from "../../../_lib/hooks/playing-hooks/pressSkip";
+import usePlayingKeydownEventListener from "../../../_lib/hooks/playing-hooks/use-playing-keydown-eventlistener";
+import useSendUserTypingStats from "../../../_lib/hooks/playing-hooks/use-send-user-typing-stats";
 import ChangeCSS from "./playing-child/ChangeCSS";
 import Lyrics from "./playing-child/Lyrics";
 import NextLyrics from "./playing-child/NextLyrics";
@@ -25,80 +16,10 @@ interface PlayingProps {
 }
 
 const Playing = ({ className }: PlayingProps) => {
+  useSendUserTypingStats();
+  usePlayingKeydownEventListener();
   const pressSkip = usePressSkip();
   const readGameUtils = useReadGameUtilParams();
-  const { data: session } = useSession();
-  const { setNextLyrics, resetNextLyrics } = useSetNextLyrics();
-  const handleKeydown = useHandleKeydown();
-  const { readUserStats, resetUserStats } = useUserStats();
-  const { readCount } = useLineCount();
-  const scene = useSceneState();
-  const { setFrameRate } = useTimerControls();
-  const readMap = useReadMap();
-  const setLineResultDrawer = useSetLineResultDrawer();
-  const { id: mapId } = useParams();
-
-  useEffect(() => {
-    const handleVisibilitychange = () => {
-      if (document.visibilityState === "hidden") {
-        const sendStats = readUserStats();
-        const maxCombo = sendStats.maxCombo;
-        navigator.sendBeacon(
-          `${getBaseUrl()}/api/update-user-typing-stats`,
-          JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) }),
-        );
-
-        resetUserStats(structuredClone(maxCombo));
-      }
-    };
-    const handleBeforeunload = () => {
-      const sendStats = readUserStats();
-      const maxCombo = sendStats.maxCombo;
-      navigator.sendBeacon(
-        `${getBaseUrl()}/api/update-user-typing-stats`,
-        JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) }),
-      );
-      resetUserStats(structuredClone(maxCombo));
-    };
-
-    if (scene === "play" || scene === "practice") {
-      window.addEventListener("beforeunload", handleBeforeunload);
-      window.addEventListener("visibilitychange", handleVisibilitychange);
-    }
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeunload);
-      window.removeEventListener("visibilitychange", handleVisibilitychange);
-    };
-  }, [scene, mapId]);
-
-  useEffect(() => {
-    if (scene === "practice") {
-      setLineResultDrawer(true);
-    }
-
-    if (scene === "replay") {
-      setFrameRate(0);
-    } else {
-      setFrameRate(59.99);
-    }
-
-    window.addEventListener("keydown", handleKeydown);
-
-    const count = readCount();
-    if (count === 0) {
-      const map = readMap();
-      if (map) {
-        setNextLyrics(map.mapData[1]);
-        return;
-      }
-
-      resetNextLyrics();
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleKeydown);
-    };
-  }, [scene, mapId]);
 
   return (
     <div
