@@ -25,17 +25,24 @@ export default function VolumeRange({ player, ...props }: VolumeRangeProps & Rea
   };
 
   return (
-    <div className="flex items-center gap-4" role="group" aria-label="音量調整" {...props}>
-      <VolumeIcon volume={volume} />
-      <Slider
-        value={[volume]}
-        onValueChange={handleChange}
-        max={100}
-        min={0}
-        step={1}
-        className="w-[200px]"
-        aria-label={`音量: ${volume}%`}
-      />
+    <div className="flex items-center">
+      <div
+        className="bg-card flex flex-row items-center gap-2 rounded-full px-4 py-2"
+        role="group"
+        aria-label="音量調整"
+        {...props}
+      >
+        <VolumeIcon volume={volume} />
+        <Slider
+          value={[volume]}
+          onValueChange={handleChange}
+          max={100}
+          min={0}
+          step={1}
+          className="w-[200px]"
+          aria-label={`音量: ${volume}%`}
+        />
+      </div>
     </div>
   );
 }

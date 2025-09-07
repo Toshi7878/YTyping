@@ -1,8 +1,8 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
+import TextLink from "@/components/ui/text-link";
 import { H6 } from "@/components/ui/typography";
 import { useUserAgent } from "@/utils/useUserAgent";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 const browserLinks = {
@@ -35,9 +35,7 @@ export function InstallationSteps() {
     <ol className="list-inside list-decimal space-y-6">
       <InstallationStep title="Stylusブラウザ拡張機能をインストールする">
         <p className="mt-2">
-          <Link href={browserLink.url} className="text-primary-light hover:underline">
-            {browserLink.text}
-          </Link>
+          <TextLink href={browserLink.url}>{browserLink.text}</TextLink>
           から拡張機能をインストールします。
         </p>
       </InstallationStep>
@@ -46,9 +44,9 @@ export function InstallationSteps() {
 
       <InstallationStep title="UserStyles.worldからスタイルをインストールする">
         <p className="mt-2">
-          <Link href="https://userstyles.world/style/24064" className="text-primary-light hover:underline">
+          <TextLink href="https://userstyles.world/style/24064">
             YTyping YouTube Background Player - userstyles.world
-          </Link>
+          </TextLink>
           からスタイルをインストールします。
         </p>
       </InstallationStep>

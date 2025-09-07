@@ -1,12 +1,12 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
+import TextLink from "@/components/ui/text-link";
 import { H6 } from "@/components/ui/typography";
 import preMidLinks from "@/public/images/manual/premid/premid-link.png";
 import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
 import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
 import { useUserAgent } from "@/utils/useUserAgent";
 import Image from "next/image";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 const browserLinks = {
@@ -43,9 +43,7 @@ export function InstallationSteps() {
     <ol className="list-inside list-decimal space-y-6">
       <InstallationStep title="PreMiDブラウザ拡張機能をインストールする">
         <p className="mt-2">
-          <Link href={browserLink.url} className="text-primary-light hover:underline">
-            {browserLink.text}
-          </Link>
+          <TextLink href={browserLink.url}>{browserLink.text}</TextLink>
           から拡張機能をインストールします。
         </p>
       </InstallationStep>
@@ -54,9 +52,7 @@ export function InstallationSteps() {
 
       <InstallationStep title="YTypingのプレゼンス設定をPreMiD Storeからインストールする">
         <p className="mt-2">
-          <Link href="https://premid.app/store/presences/YTyping" className="text-primary-light hover:underline">
-            YTyping - PreMiD Store
-          </Link>
+          <TextLink href="https://premid.app/store/presences/YTyping">YTyping - PreMiD Store</TextLink>
           からYTypingのプレゼンス設定を追加します。
         </p>
       </InstallationStep>

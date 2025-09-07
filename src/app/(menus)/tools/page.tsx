@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import TextLink from "@/components/ui/text-link";
 import { H2, H5, Small } from "@/components/ui/typography";
 import { ExternalLink } from "lucide-react";
-import Link from "next/link";
 import ByUser from "./by-user";
 
 const TOOLS = [
@@ -40,15 +40,11 @@ export default function Page() {
             return (
               <section className="space-y-2">
                 <div className="flex items-baseline gap-3">
-                  <Link
-                    href={tool.href}
-                    className="text-primary-light hover:underline"
-                    target={isExternal ? "_blank" : undefined}
-                  >
+                  <TextLink href={tool.href} target={isExternal ? "_blank" : undefined}>
                     <H5>
                       {tool.title} {isExternal ? <ExternalLink className="inline-block" size={16} /> : null}
                     </H5>
-                  </Link>
+                  </TextLink>
                   <Small>
                     <span>by.</span>
                     <ByUser userId={tool.byUserId} />

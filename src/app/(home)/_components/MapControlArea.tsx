@@ -16,7 +16,7 @@ const MapControlArea = () => {
   return (
     <section className="mb-4 flex w-full flex-col gap-4">
       <SearchInputs />
-      <div className={cn("flex flex-col md:flex-row", isLogin ? "justify-between gap-8" : "justify-end")}>
+      <div className={cn("flex flex-col md:flex-row", isLogin ? "justify-between" : "justify-end")}>
         <FilterContents />
         <VolumeRange player={player} />
       </div>

@@ -1,6 +1,6 @@
 import { CardWithContent } from "@/components/ui/card";
+import TextLink from "@/components/ui/text-link";
 import { H2, H3, H5, Small } from "@/components/ui/typography";
-import Link from "next/link";
 export default function Page() {
   return (
     <div className="mx-auto max-w-screen-xl space-y-4">
@@ -20,13 +20,9 @@ const BorrowedMaterials = () => {
       <ul className="space-y-6">
         <li className="space-y-2">
           <H5>
-            <Link
-              href="http://www.kurage-kosho.info/system.html"
-              className="text-primary-light hover:underline"
-              target="_blank"
-            >
+            <TextLink href="http://www.kurage-kosho.info/system.html" target="_blank">
               くらげ工匠
-            </Link>
+            </TextLink>
             <span className="ml-1">様</span>
           </H5>
           <div className="flex flex-col space-y-3 pl-4">
@@ -47,40 +43,25 @@ const SpecialThanks = () => {
       <ul className="space-y-6">
         <li>
           <H5>
-            <Link
-              href="http://unsi.nonip.net/"
-              className="text-primary-light hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <TextLink href="http://unsi.nonip.net/" target="_blank" rel="noopener noreferrer">
               みんなの運指表
-            </Link>
+            </TextLink>
             <span className="ml-1">様</span>
           </H5>
         </li>
         <li>
           <H5>
-            <Link
-              href="https://typing-tube.net/"
-              className="text-primary-light hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <TextLink href="https://typing-tube.net/" target="_blank" rel="noopener noreferrer">
               TypingTube
-            </Link>
+            </TextLink>
             <span className="ml-1">様</span>
           </H5>
         </li>
         <li>
           <H5>
-            <Link
-              href="https://github.com/jz5/namatyping"
-              className="text-primary-light hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <TextLink href="https://github.com/jz5/namatyping" target="_blank" rel="noopener noreferrer">
               ニコ生タイピング
-            </Link>
+            </TextLink>
             <span className="ml-1">様</span>
           </H5>
         </li>
