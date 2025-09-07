@@ -33,10 +33,12 @@ export const useYTPlayEvent = () => {
   const readPlaySpeed = usePlaySpeedStateRef();
   const updateAllStatus = useUpdateAllStatus();
   const readMap = useReadMap();
+  const volume = useVolumeState();
 
   return async () => {
     console.log("再生 1");
     const { scene, isYTStarted } = readGameStateUtils();
+    readPlayer().setVolume(volume);
 
     if (scene === "play" || scene === "practice" || scene === "replay") {
       startTimer();
@@ -163,12 +165,12 @@ export const useYTSeekEvent = () => {
 };
 
 export const useYTReadyEvent = () => {
-  const volumeAtom = useVolumeState();
+  const volume = useVolumeState();
   const { writePlayer } = usePlayer();
 
   return (event: { target: YTPlayer }) => {
     const player = event.target;
-    player.setVolume(volumeAtom);
+    player.setVolume(volume);
     writePlayer(player);
   };
 };
