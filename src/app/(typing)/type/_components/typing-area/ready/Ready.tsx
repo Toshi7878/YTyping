@@ -51,7 +51,7 @@ function Ready({ className }: ReadyProps) {
   }, [readPlayer(), map]);
 
   return (
-    <div className={cn("flex flex-col justify-between", className)}>
+    <div className={cn("flex flex-col justify-between select-none", className)}>
       <H3 className="text-4xl md:text-2xl">Enterキー / 動画をクリックして開始</H3>
 
       <ReadyInputModeRadioCards />

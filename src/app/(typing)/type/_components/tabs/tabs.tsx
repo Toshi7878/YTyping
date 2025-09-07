@@ -33,19 +33,15 @@ export default function TabsArea({ className }: TabsAreaProps) {
 }
 
 const TabLists = () => {
-  const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
-    e.target.blur();
-  };
-
   return (
-    <TabsList variant="underline" className="h-auto w-full bg-transparent pl-8 md:h-9">
+    <TabsList variant="underline" className="h-auto w-full bg-transparent pl-8 select-none md:h-9">
       {TAB_NAMES.map((name) => (
         <TabsTrigger
           variant="underline"
           className="flex max-w-50 flex-1 items-end"
           key={name}
           value={name}
-          onFocus={handleFocus}
+          onFocus={(e) => e.target.blur()}
         >
           {name}
         </TabsTrigger>
