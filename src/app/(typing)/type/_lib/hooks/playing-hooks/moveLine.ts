@@ -24,6 +24,7 @@ export const useMoveLine = () => {
 
   const movePrevLine = () => {
     const map = readMap();
+    if (!map) return;
     const { scene } = readGameStateUtils();
     const count = readCount() - (scene === "replay" ? 1 : 0);
     const prevCount = structuredClone(map.typingLineIndexes)
@@ -54,6 +55,7 @@ export const useMoveLine = () => {
 
   const moveNextLine = () => {
     const map = readMap();
+    if (!map) return;
     const { lineSelectIndex } = readGameStateUtils();
     const seekCount = lineSelectIndex ? map.typingLineIndexes[lineSelectIndex - 1] : null;
     const seekCountAdjust = seekCount && seekCount === readCount() ? 0 : -1;
@@ -92,6 +94,7 @@ export const useMoveLine = () => {
 
   const moveSetLine = (seekCount: number) => {
     const map = readMap();
+    if (!map) return;
     const playSpeed = readPlaySpeed().playSpeed;
     const { scene, lineSelectIndex } = readGameStateUtils();
     const seekBuffer = scene === "practice" ? SEEK_BUFFER_TIME * playSpeed : 0;

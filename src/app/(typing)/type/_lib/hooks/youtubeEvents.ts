@@ -72,9 +72,10 @@ export const useYTPlayEvent = () => {
 
       const readyInputMode = readReadyInputMode();
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
-      if (scene === "practice") {
+      const map = readMap();
+      if (map && scene === "practice") {
         updateAllStatus({
-          count: readMap().mapData.length - 1,
+          count: map.mapData.length - 1,
           updateType: "lineUpdate",
         });
       }

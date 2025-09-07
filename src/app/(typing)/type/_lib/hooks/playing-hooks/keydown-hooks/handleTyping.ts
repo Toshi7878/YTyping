@@ -55,8 +55,11 @@ export const useTyping = () => {
 
         const { scene } = readGameStateUtils();
         if (scene === "practice") {
+          const map = readMap();
+          if (!map) return;
+
           updateAllStatus({
-            count: readMap().mapData.length - 1,
+            count: map.mapData.length - 1,
             updateType: "completed",
           });
         }

@@ -15,6 +15,7 @@ export const usePressSkip = () => {
 
   return () => {
     const map = readMap();
+    if (!map) return;
     const userOptions = readUserOptions();
     const { timeOffset, isRetrySkip } = readGameUtilRefParams();
     const count = readCount();

@@ -88,7 +88,7 @@ export const useMapState = () => useAtomValue(mapAtom, { store });
 export const useSetMap = () => useSetAtom(mapAtom, { store });
 export const useReadMap = () => {
   return useAtomCallback(
-    useCallback((get) => get(mapAtom) as BuildMap, []),
+    useCallback((get) => get(mapAtom), []),
     { store },
   );
 };

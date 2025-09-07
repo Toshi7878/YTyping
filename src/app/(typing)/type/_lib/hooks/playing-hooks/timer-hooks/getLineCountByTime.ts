@@ -6,7 +6,7 @@ export const useGetSeekLineCount = () => {
   return (newTime: number): number => {
     const map = readMap();
 
-    const index = map.mapData.findIndex((line) => line.time >= newTime);
+    const index = map?.mapData.findIndex((line) => line.time >= newTime) ?? 0;
     return Math.max(index);
   };
 };

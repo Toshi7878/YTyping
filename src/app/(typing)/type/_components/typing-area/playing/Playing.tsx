@@ -27,7 +27,7 @@ const Playing = ({ className }: PlayingProps) => {
   const pressSkip = usePressSkip();
   const readGameUtils = useReadGameUtilParams();
   const { data: session } = useSession();
-  const { setNextLyrics } = useSetNextLyrics();
+  const { setNextLyrics, resetNextLyrics } = useSetNextLyrics();
   const handleKeydown = useHandleKeydown();
   const { readUserStats, resetUserStats } = useUserStats();
   const { readCount } = useLineCount();
@@ -85,7 +85,12 @@ const Playing = ({ className }: PlayingProps) => {
     const count = readCount();
     if (count === 0) {
       const map = readMap();
-      setNextLyrics(map.mapData[1]);
+      if (map) {
+        setNextLyrics(map.mapData[1]);
+        return;
+      }
+
+      resetNextLyrics();
     }
 
     return () => {

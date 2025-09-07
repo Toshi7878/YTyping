@@ -144,6 +144,9 @@ const useTimer = () => {
     currentOffesettedYTTime: number;
     constantOffesettedYTTime: number;
   }) => {
+    const map = readMap();
+    if (!map) return;
+
     setDisplayRemainTime(constantRemainLineTime);
 
     const { isCompleted } = readLineStatus();
@@ -156,7 +159,6 @@ const useTimer = () => {
     }
 
     const { isRetrySkip } = readGameUtilRefParams();
-    const map = readMap();
     const { playSpeed } = readPlaySpeed();
     if (isRetrySkip && map.mapData[map.startLine].time - 3 * playSpeed <= currentOffesettedYTTime) {
       writeGameUtilRefParams({ isRetrySkip: false });
@@ -178,6 +180,8 @@ const useTimer = () => {
 
   return () => {
     const map = readMap();
+    if (!map) return;
+
     const currentOffesettedYTTime = getCurrentOffsettedYTTime();
     const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
 
@@ -242,6 +246,7 @@ const useCalcLineResult = () => {
     const { isCompleted } = readLineStatus();
     const count = readCount();
 
+    if (!map) return;
     if (!isCompleted && count > 0) {
       const isTypingLine = map.mapData[count - 1].kpm.r > 0;
 
@@ -287,6 +292,7 @@ export const useUpdateLine = () => {
 
   return (newNextCount: number) => {
     const map = readMap();
+    if (!map) return;
     const newCurrentCount = newNextCount ? newNextCount - 1 : 0;
 
     const newCurrentLine = map.mapData[newCurrentCount];

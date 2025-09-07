@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-9-7",
+    descriptions: ["プレイ中にヘッダーの通知一覧などから別のタイピングページを開くとエラーが発生する問題を修正"],
+  },
+  {
     date: "2025-9-6",
     descriptions: [
       "ヘッダー > Menu > ツールページを追加",

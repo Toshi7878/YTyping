@@ -40,6 +40,7 @@ export const useRetry = () => {
   const { pauseTimer } = useTimerControls();
   return (newPlayMode: PlayMode) => {
     const map = readMap();
+    if (!map) return;
     resetCurrentLine();
     setNextLyrics(map.mapData[1]);
     writeCount(0);

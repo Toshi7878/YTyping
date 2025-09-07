@@ -24,6 +24,7 @@ export const useGetTime = () => {
 
   const getCurrentLineTime = (YTCurrentTime: number) => {
     const map = readMap();
+    if (!map) return 0;
     const count = readCount();
 
     if (count - 1 < 0) {
@@ -37,6 +38,8 @@ export const useGetTime = () => {
 
   const getCurrentLineRemainTime = (YTCurrentTime: number) => {
     const map = readMap();
+    if (!map) return 0;
+
     const count = readCount();
     const nextLine = map.mapData[count];
 
@@ -55,6 +58,7 @@ export const useGetTime = () => {
 
   const getConstantRemainLineTime = (lineConstantTime: number) => {
     const map = readMap();
+    if (!map) return 0;
     const count = readCount();
 
     const nextLine = map.mapData[count];

@@ -52,8 +52,10 @@ export const useTypeSuccess = () => {
       newStatus.timeBonus = timeBonus;
       newStatus.score += newStatus.point + timeBonus;
       const { completeCount, failureCount } = readStatus();
+      const map = readMap();
+      if (!map) return;
 
-      newStatus.line = readMap().lineLength - (completeCount + failureCount);
+      newStatus.line = map.lineLength - (completeCount + failureCount);
 
       newStatus.rank = calcCurrentRank(newStatus.score);
     }
@@ -227,6 +229,7 @@ export const useTypeMiss = () => {
 
   const updateMissRefStatus = ({ constantLineTime, failKey }) => {
     const map = readMap();
+    if (!map) return;
 
     writeStatus({
       clearRate: readStatus().clearRate - map.missRate,
@@ -258,6 +261,7 @@ export const useLineUpdateStatus = () => {
   const { readLineStatus } = useLineStatus();
   return ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
+    if (!map) return;
     const newStatus = readTypingStatus();
     const lineWord = readLineWord();
 
@@ -307,6 +311,7 @@ export const useUpdateAllStatus = () => {
 
   return ({ count, updateType }: { count: number; updateType: "lineUpdate" | "completed" }) => {
     const map = readMap();
+    if (!map) return;
 
     const newStatus = {
       score: 0,

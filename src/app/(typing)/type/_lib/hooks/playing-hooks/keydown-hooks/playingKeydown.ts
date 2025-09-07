@@ -71,6 +71,7 @@ const usePlayingShortcutKey = () => {
 
   return (event: KeyboardEvent) => {
     const map = readMap();
+    if (!map) return;
     const { lineResultdrawerClosure: drawerClosure } = readGameStateUtils();
     const typingOptions = readTypingOptions();
 

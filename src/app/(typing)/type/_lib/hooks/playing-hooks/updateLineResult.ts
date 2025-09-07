@@ -74,11 +74,12 @@ export const useUpdateLineResult = () => {
 
   const updateLineResult = () => {
     const { lostWord, actualLostNotes, pointLostNotes } = generateLostWord();
+    const map = readMap();
+    if (!map) return;
 
     if (actualLostNotes > 0) setTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
-    if (pointLostNotes > 0) writeStatus({ clearRate: readStatus().clearRate - readMap().keyRate * pointLostNotes });
+    if (pointLostNotes > 0) writeStatus({ clearRate: readStatus().clearRate - map.keyRate * pointLostNotes });
 
-    const map = readMap();
     const count = readCount();
     const typingStatus = readTypingResult();
     const { miss: lineMiss, type: lineType, typeResult, startSpeed, startInputMode, rkpm: lineRkpm } = readLineStatus();

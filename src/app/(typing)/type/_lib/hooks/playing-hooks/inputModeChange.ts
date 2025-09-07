@@ -27,6 +27,7 @@ export const useInputModeChange = () => {
 
   return async (newInputMode: InputMode) => {
     const map = readMap();
+    if (!map) return;
     const { inputMode, scene } = readGameStateUtils();
 
     if (newInputMode === inputMode) {
