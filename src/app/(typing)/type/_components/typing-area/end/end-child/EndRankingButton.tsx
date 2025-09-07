@@ -36,7 +36,7 @@ const EndRankingButton = ({
         setTabName("ランキング");
         toast.success("ランキング登録が完了しました");
       },
-      onError: () => {
+      onError: (error) => {
         setIsSendResultBtnDisabled(false);
       },
     }),
