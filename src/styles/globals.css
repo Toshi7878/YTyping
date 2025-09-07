@@ -115,7 +115,6 @@
   --warning-foreground: oklch(0.985 0 0);
   --info: oklch(0.8021 0.1383 209.06);
   --info-foreground: oklch(0.985 0 0);
-  --link: oklch(0.7547 0.1375 239.62);
 
   --ring: oklch(0.7547 0.1375 239.62);
 
@@ -184,6 +183,11 @@
   body {
     @apply bg-background text-foreground;
     color-scheme: dark;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
   }
 }
 

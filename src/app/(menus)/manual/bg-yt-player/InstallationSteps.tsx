@@ -35,7 +35,7 @@ export function InstallationSteps() {
     <ol className="list-inside list-decimal space-y-6">
       <InstallationStep title="Stylusブラウザ拡張機能をインストールする">
         <p className="mt-2">
-          <Link href={browserLink.url} className="text-link hover:underline">
+          <Link href={browserLink.url} className="text-primary-light hover:underline">
             {browserLink.text}
           </Link>
           から拡張機能をインストールします。
@@ -46,7 +46,7 @@ export function InstallationSteps() {
 
       <InstallationStep title="UserStyles.worldからスタイルをインストールする">
         <p className="mt-2">
-          <Link href="https://userstyles.world/style/24064" className="text-link hover:underline">
+          <Link href="https://userstyles.world/style/24064" className="text-primary-light hover:underline">
             YTyping YouTube Background Player - userstyles.world
           </Link>
           からスタイルをインストールします。

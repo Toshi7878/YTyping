@@ -42,7 +42,7 @@ export default function Page() {
                 <div className="flex items-baseline gap-3">
                   <Link
                     href={tool.href}
-                    className="text-link hover:underline"
+                    className="text-primary-light hover:underline"
                     target={isExternal ? "_blank" : undefined}
                   >
                     <H5>

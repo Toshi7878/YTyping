@@ -43,7 +43,7 @@ export function InstallationSteps() {
     <ol className="list-inside list-decimal space-y-6">
       <InstallationStep title="PreMiDブラウザ拡張機能をインストールする">
         <p className="mt-2">
-          <Link href={browserLink.url} className="text-link hover:underline">
+          <Link href={browserLink.url} className="text-primary-light hover:underline">
             {browserLink.text}
           </Link>
           から拡張機能をインストールします。
@@ -54,7 +54,7 @@ export function InstallationSteps() {
 
       <InstallationStep title="YTypingのプレゼンス設定をPreMiD Storeからインストールする">
         <p className="mt-2">
-          <Link href="https://premid.app/store/presences/YTyping" className="text-link hover:underline">
+          <Link href="https://premid.app/store/presences/YTyping" className="text-primary-light hover:underline">
             YTyping - PreMiD Store
           </Link>
           からYTypingのプレゼンス設定を追加します。

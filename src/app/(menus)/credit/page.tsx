@@ -20,7 +20,11 @@ const BorrowedMaterials = () => {
       <ul className="space-y-6">
         <li className="space-y-2">
           <H5>
-            <Link href="http://www.kurage-kosho.info/system.html" className="text-link hover:underline" target="_blank">
+            <Link
+              href="http://www.kurage-kosho.info/system.html"
+              className="text-primary-light hover:underline"
+              target="_blank"
+            >
               くらげ工匠
             </Link>
             <span className="ml-1">様</span>
@@ -45,7 +49,7 @@ const SpecialThanks = () => {
           <H5>
             <Link
               href="http://unsi.nonip.net/"
-              className="text-link hover:underline"
+              className="text-primary-light hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -58,7 +62,7 @@ const SpecialThanks = () => {
           <H5>
             <Link
               href="https://typing-tube.net/"
-              className="text-link hover:underline"
+              className="text-primary-light hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -71,7 +75,7 @@ const SpecialThanks = () => {
           <H5>
             <Link
               href="https://github.com/jz5/namatyping"
-              className="text-link hover:underline"
+              className="text-primary-light hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >

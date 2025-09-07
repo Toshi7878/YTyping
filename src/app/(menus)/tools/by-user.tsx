@@ -8,7 +8,7 @@ const ByUser = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.user.getUserName.queryOptions({ userId: Number(userId) }));
   return (
-    <Link href={`/user/${userId}`} className="text-link hover:underline">
+    <Link href={`/user/${userId}`} className="text-primary-light hover:underline">
       <span>{data?.name}</span>
     </Link>
   );
