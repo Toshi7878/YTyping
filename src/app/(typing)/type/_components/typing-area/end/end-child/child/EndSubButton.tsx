@@ -46,12 +46,7 @@ const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps
 
   return (
     <>
-      <Button
-        ref={retryBtnRef}
-        variant="outline"
-        className="h-auto border-white px-20 py-6 text-2xl text-white"
-        onClick={handleRetry}
-      >
+      <Button ref={retryBtnRef} variant="outline" className="h-auto px-20 py-6 text-2xl" onClick={handleRetry}>
         {getButtonText()}
       </Button>
     </>

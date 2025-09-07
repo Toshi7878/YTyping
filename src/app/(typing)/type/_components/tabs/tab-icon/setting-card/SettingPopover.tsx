@@ -97,11 +97,7 @@ const SettingPopover = () => {
         <Tabs defaultValue="0" className="w-full">
           <TabsList className="mb-4 grid w-full grid-cols-3">
             {tabData.map((tab, index) => (
-              <TabsTrigger
-                key={index}
-                value={index.toString()}
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              >
+              <TabsTrigger key={index} value={index.toString()}>
                 {tab.label}
               </TabsTrigger>
             ))}

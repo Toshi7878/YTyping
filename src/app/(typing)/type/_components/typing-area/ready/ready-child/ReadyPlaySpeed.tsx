@@ -18,7 +18,7 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
       open={defaultSpeed < 1}
       sideOffset={-20}
     >
-      <div className="flex items-center rounded-lg border border-solid border-white px-8 py-6 shadow-md md:py-3">
+      <div className="border-border flex items-center rounded-lg border border-solid px-8 py-6 shadow-md md:py-3">
         <SpeedChangeButton buttonRef={props.speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} type="down" />
 
         <div className="mx-8 text-3xl font-bold select-none md:text-4xl">
