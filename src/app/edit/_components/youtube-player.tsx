@@ -43,6 +43,9 @@ const YouTubePlayer = function ({ className }: YouTubePlayerProps) {
   useHotkeys(
     "Escape",
     () => {
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+      if (isDialogOpen) return;
+
       const { playing } = readYtPlayerStatus();
       if (!playing) {
         readPlayer().playVideo();

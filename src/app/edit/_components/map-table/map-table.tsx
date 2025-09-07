@@ -56,6 +56,7 @@ export default function MapTable() {
   useHotkeys("arrowDown", () => seekNextPrev("next"), hotKeyOptions);
   useHotkeys("ctrl+z", () => undo(), hotKeyOptions);
   useHotkeys("ctrl+y", () => redo(), hotKeyOptions);
+  useHotkeys("ctrl+shift+f", () => wordSearchPeplace(), hotKeyOptions);
   useHotkeys(
     "d",
     () => {
@@ -64,8 +65,6 @@ export default function MapTable() {
     },
     hotKeyOptions,
   );
-
-  useHotkeys("ctrl+shift+f", () => wordSearchPeplace(), hotKeyOptions);
 
   const tbodyRef = useRef(null);
 

@@ -41,7 +41,8 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
   });
   const handleModalClose = async () => {
     if (!isDirty) {
-      setOptionDialogIndex(null);
+      // エディターのEscapeキーのホットキーと競合するためsetTimeoutで遅延させる
+      setTimeout(() => setOptionDialogIndex(null));
       return;
     }
 
