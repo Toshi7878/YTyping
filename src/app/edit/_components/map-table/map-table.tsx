@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/mapReducerAtom";
-import { usePlayer, useTbody, useTimeInput } from "../../_lib/atoms/refAtoms";
+import { usePlayer, useTimeInput } from "../../_lib/atoms/refAtoms";
 import {
   useDirectEditIndexState,
   useIsWordConvertingState,
@@ -21,7 +21,7 @@ import {
 } from "../../_lib/atoms/stateAtoms";
 
 import { Button } from "@/components/ui/button";
-import { CardWithContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input/input";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { DataTable } from "@/components/ui/table/data-table";
@@ -69,7 +69,6 @@ export default function MapTable() {
   const tbodyRef = useRef(null);
 
   const { id: mapId } = useParams<{ id: string }>();
-  const { writeTbody } = useTbody();
   const mapDispatch = useMapReducer();
   const { readPlayer } = usePlayer();
 
@@ -82,13 +81,6 @@ export default function MapTable() {
       mapDispatch({ type: "replaceAll", payload: mapData });
     }
   }, [mapData, mapDispatch]);
-
-  useEffect(() => {
-    const tbody = tbodyRef.current;
-    if (tbody) {
-      writeTbody(tbody);
-    }
-  }, [writeTbody]);
 
   const directEditIndex = useDirectEditIndexState();
   const selectIndex = useSelectIndexState();
@@ -235,31 +227,32 @@ export default function MapTable() {
 
   return (
     <LoadingOverlayProvider isLoading={isLoading} message="Loading...">
-      <CardWithContent
-        className={{
-          card: "p-0",
-          cardContent: "max-h-[calc(100vh-100px)] overflow-y-auto p-0 md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]",
-        }}
-      >
-        <DataTable
-          columns={columns}
-          data={map}
-          onRowClick={(event, _, index) => {
-            selectLine(event, index);
-            setTabName("エディター");
-          }}
-          className="border-none pb-56"
-          rowClassName={(index: number) => {
-            return cn(
-              "border-b transition-none",
-              "hover:bg-info/30",
-              selectIndex === index && "!bg-info/70",
-              timeLineIndex === index && "bg-success/30",
-            );
-          }}
-          cellClassName="border-r whitespace-pre-wrap"
-        />
-      </CardWithContent>
+      <Card className="p-0">
+        <CardContent
+          className="max-h-[calc(100vh-100px)] overflow-y-auto p-0 md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]"
+          id="map-table-card"
+        >
+          <DataTable
+            columns={columns}
+            data={map}
+            onRowClick={(event, _, index) => {
+              selectLine(event, index);
+              setTabName("エディター");
+            }}
+            className="border-none pb-56"
+            rowClassName={(index: number) => {
+              return cn(
+                "border-b transition-none",
+                "hover:bg-info/30",
+                selectIndex === index && "!bg-info/70",
+                timeLineIndex === index && "bg-success/30",
+              );
+            }}
+            cellClassName="border-r whitespace-pre-wrap"
+            tbodyId="map-table-tbody"
+          />
+        </CardContent>
+      </Card>
 
       {optionDialogIndex !== null && (
         <LineOptionDialog index={optionDialogIndex} setOptionDialogIndex={setOptionDialogIndex} />

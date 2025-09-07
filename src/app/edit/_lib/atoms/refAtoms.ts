@@ -16,8 +16,8 @@ const tableScrollIndexAtom = focusAtom(editUtilsParamsAtom, (optic) => optic.pro
 
 store.sub(tableScrollIndexAtom, () => {
   const map = store.get(mapReducerAtom);
-  const tbody = store.get(tbodyAtom);
   const scrollIndex = store.get(tableScrollIndexAtom);
+  const tbody = document.getElementById("map-table-tbody");
 
   if (map.length > 0 && tbody) {
     for (let i = map.length - 1; i >= 0; i--) {
@@ -25,10 +25,10 @@ store.sub(tableScrollIndexAtom, () => {
         const targetRow = tbody.children[i];
 
         if (targetRow && targetRow instanceof HTMLElement) {
-          const parentElement = targetRow.parentElement!.parentElement!.parentElement;
-          if (parentElement && targetRow instanceof HTMLElement) {
-            parentElement.scrollTo({
-              top: targetRow.offsetTop - parentElement.offsetTop - targetRow.offsetHeight,
+          const tableCard = targetRow.closest<HTMLDivElement>("#map-table-card");
+          if (tableCard) {
+            tableCard.scrollTo({
+              top: targetRow.offsetTop - tableCard.offsetTop - targetRow.offsetHeight,
               behavior: "smooth",
             });
           }
@@ -84,24 +84,6 @@ export const useTimeInput = () => {
   );
 
   return { readTime, setTime, writeTimeInput };
-};
-
-const tbodyAtom = atom<HTMLElement | null>(null);
-
-export const useTbody = () => {
-  const readTbody = useAtomCallback(
-    useCallback((get) => get(tbodyAtom) as HTMLElement, []),
-    { store },
-  );
-
-  const writeTbody = useAtomCallback(
-    useCallback((get, set, tbody: HTMLElement) => {
-      set(tbodyAtom, tbody);
-    }, []),
-    { store },
-  );
-
-  return { readTbody, writeTbody };
 };
 
 export const playerAtom = atom<YTPlayer | null>(null);

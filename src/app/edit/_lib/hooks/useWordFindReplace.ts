@@ -1,6 +1,5 @@
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
-import { useTbody } from "../atoms/refAtoms";
 import { useSetCanUpload, useSetIsUpdateUpdatedAt } from "../atoms/stateAtoms";
 
 export const useWordSearchReplace = () => {
@@ -50,39 +49,28 @@ export const useWordSearchReplace = () => {
 };
 
 function useReplaceFoundFocus() {
-  const { readTbody } = useTbody();
   return ({ i, searchText }: { i: number; searchText: string }) => {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        const tbody = readTbody();
-        const targetRow = tbody.children[i];
+      const tbody = document.getElementById("map-table-tbody");
+      if (!tbody) return;
+      const targetRow = tbody.children[i];
 
-        if (targetRow) {
-          targetRow.scrollIntoView({ behavior: "auto", block: "center" });
+      if (targetRow) {
+        targetRow.scrollIntoView({ behavior: "auto", block: "center" });
+      }
+
+      let range = document.createRange();
+
+      const wordCell = tbody.children[i].children[2];
+      if (wordCell && wordCell.textContent) {
+        const textMatch = wordCell.textContent.match(new RegExp(searchText));
+        if (textMatch) {
+          range.selectNodeContents(wordCell);
         }
+        if (wordCell && wordCell.firstChild && textMatch && textMatch.index !== undefined) {
+          range.setStart(wordCell.firstChild, textMatch.index);
+          range.setEnd(wordCell.firstChild, textMatch.index + (textMatch[0]?.length || 0));
 
-        let range = document.createRange();
-
-        const WORD_NODE = tbody.children[i].children[2];
-        if (WORD_NODE && WORD_NODE.textContent) {
-          const textMatch = WORD_NODE.textContent.match(new RegExp(searchText));
-          if (textMatch) {
-            range.selectNodeContents(WORD_NODE);
-          }
-          if (WORD_NODE && WORD_NODE.firstChild && textMatch && textMatch.index !== undefined) {
-            range.setStart(WORD_NODE.firstChild, textMatch.index);
-            range.setEnd(WORD_NODE.firstChild, textMatch.index + (textMatch[0]?.length || 0));
-
-            const selection = window.getSelection();
-            if (selection) {
-              selection.removeAllRanges();
-              selection.addRange(range);
-            } else {
-              console.error("選択オブジェクトが見つかりませんでした。");
-            }
-          } else {
-            console.error("WORD_NODE または textMatch が見つかりませんでした。");
-          }
           const selection = window.getSelection();
           if (selection) {
             selection.removeAllRanges();
@@ -90,12 +78,21 @@ function useReplaceFoundFocus() {
           } else {
             console.error("選択オブジェクトが見つかりませんでした。");
           }
-
-          resolve(1);
-          console.error("検索語が見つかりませんでした。");
-          resolve(0);
+        } else {
+          console.error("WORD_NODE または textMatch が見つかりませんでした。");
         }
-      }, 50);
+        const selection = window.getSelection();
+        if (selection) {
+          selection.removeAllRanges();
+          selection.addRange(range);
+        } else {
+          console.error("選択オブジェクトが見つかりませんでした。");
+        }
+
+        resolve(1);
+        console.error("検索語が見つかりませんでした。");
+        resolve(0);
+      }
     });
   };
 }

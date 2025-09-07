@@ -21,6 +21,7 @@ import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
 import { useEditUtilsParams, usePlayer, useTimeInput } from "../atoms/refAtoms";
 import { useReadTimeOffsetState } from "../atoms/storageAtoms";
 import { useDeleteTopPhrase, usePickupTopPhrase } from "./manyPhrase";
+import { mapTableScroll } from "./map-table-scroll";
 import useHasMapUploadPermission from "./useHasMapUploadPermission";
 import useTimeValidate from "./useTimeValidate";
 import { useWordConverter } from "./useWordConverter";
@@ -74,7 +75,9 @@ export const useLineAddButtonEvent = () => {
 
     //フォーカスを外さないと追加ボタンクリック時にテーブルがスクロールされない
     (document.activeElement as HTMLElement)?.blur();
-    writeEditUtils({ tableScrollIndex: lineIndex });
+    // writeEditUtils({ tableScrollIndex: lineIndex });
+
+    setTimeout(() => mapTableScroll({ rowIndex: lineIndex }));
 
     if (isShiftKey) return;
 

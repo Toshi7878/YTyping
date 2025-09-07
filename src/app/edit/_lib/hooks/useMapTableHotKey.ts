@@ -1,6 +1,6 @@
 import { useEditHistoryRef, useHistoryReducer } from "../atoms/historyReducerAtom";
 import { useMapReducer, useReadMap } from "../atoms/mapReducerAtom";
-import { usePlayer, useTbody } from "../atoms/refAtoms";
+import { usePlayer } from "../atoms/refAtoms";
 import {
   useLineReducer,
   useReadEditUtils,
@@ -9,28 +9,11 @@ import {
   useSetManyPhrase,
 } from "../atoms/stateAtoms";
 import { useDeleteTopPhrase, usePickupTopPhrase } from "./manyPhrase";
-
-const useTbodyScroll = () => {
-  const { readTbody } = useTbody();
-  return (count: number) => {
-    const targetRow = readTbody().children[count];
-
-    if (targetRow && targetRow instanceof HTMLElement) {
-      const parentElement = targetRow.parentElement!.parentElement!.parentElement;
-      if (parentElement && targetRow instanceof HTMLElement) {
-        parentElement.scrollTo({
-          top: targetRow.offsetTop - parentElement.offsetTop - targetRow.offsetHeight,
-          behavior: "smooth",
-        });
-      }
-    }
-  };
-};
+import { mapTableScroll } from "./map-table-scroll";
 
 export const useSeekNextPrev = () => {
   const lineDispatch = useLineReducer();
 
-  const tbodyScroll = useTbodyScroll();
   const readEditUtils = useReadEditUtils();
   const readLineStatus = useReadLine();
   const { readPlayer } = usePlayer();
@@ -53,7 +36,7 @@ export const useSeekNextPrev = () => {
             selectIndex: seekCount,
           },
         });
-        tbodyScroll(seekCount);
+        mapTableScroll({ rowIndex: seekCount });
       }
     }
   };

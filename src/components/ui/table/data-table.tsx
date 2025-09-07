@@ -12,6 +12,7 @@ interface DataTableProps<TData, TValue> {
   className?: string;
   rowClassName?: (index: number) => string;
   cellClassName?: string;
+  tbodyId?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -21,6 +22,7 @@ export function DataTable<TData, TValue>({
   className,
   rowClassName,
   cellClassName,
+  tbodyId,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -48,7 +50,7 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody id={tbodyId}>
           {table.getRowModel().rows.map((row, index) => (
             <TableRow
               key={row.id}
