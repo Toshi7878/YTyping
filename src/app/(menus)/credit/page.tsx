@@ -19,7 +19,7 @@ const BorrowedMaterials = () => {
       <H3>お借りした素材</H3>
       <ul className="space-y-6">
         <li className="space-y-2">
-          <H5>
+          <H5 className="flex">
             <TextLink href="http://www.kurage-kosho.info/system.html" target="_blank">
               くらげ工匠
             </TextLink>
@@ -42,7 +42,7 @@ const SpecialThanks = () => {
       <H3>スペシャルサンクス</H3>
       <ul className="space-y-6">
         <li>
-          <H5>
+          <H5 className="flex">
             <TextLink href="http://unsi.nonip.net/" target="_blank" rel="noopener noreferrer">
               みんなの運指表
             </TextLink>
@@ -50,7 +50,7 @@ const SpecialThanks = () => {
           </H5>
         </li>
         <li>
-          <H5>
+          <H5 className="flex">
             <TextLink href="https://typing-tube.net/" target="_blank" rel="noopener noreferrer">
               TypingTube
             </TextLink>
@@ -58,7 +58,7 @@ const SpecialThanks = () => {
           </H5>
         </li>
         <li>
-          <H5>
+          <H5 className="flex">
             <TextLink href="https://github.com/jz5/namatyping" target="_blank" rel="noopener noreferrer">
               ニコ生タイピング
             </TextLink>

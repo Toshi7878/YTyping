@@ -20,8 +20,8 @@ export function H4({ children }: { children: React.ReactNode }) {
   return <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">{children}</h4>;
 }
 
-export function H5({ children }: { children: React.ReactNode }) {
-  return <h5 className="scroll-m-20 text-lg font-semibold tracking-tight">{children}</h5>;
+export function H5({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <h5 className={cn("scroll-m-20 text-lg font-semibold tracking-tight", className)}>{children}</h5>;
 }
 
 export function H6({ children, className }: { children: React.ReactNode; className?: string }) {
