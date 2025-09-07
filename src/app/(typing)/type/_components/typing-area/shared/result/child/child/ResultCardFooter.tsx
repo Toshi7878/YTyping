@@ -34,7 +34,7 @@ function ResultCardFooter({
     <div className={cn("flex w-full justify-between gap-2 py-2", className)} {...props}>
       <div className="flex items-center gap-2">
         <Badge
-          variant={missColor === "gray" ? "outline" : missColor === "red" ? "destructive-soft" : "default"}
+          variant={missColor === "gray" ? "outline" : missColor === "red" ? "destructive" : "default"}
           className="px-1.5 py-0.5 text-sm"
         >
           ミス: {miss}, ロスト: {lost}
