@@ -1,6 +1,6 @@
 import SearchContent from "./_components/SearchContent";
 import UsersResultList from "./_components/UsersResultList";
-import TimelineProvider from "./TimelineProvider";
+import TimelineProvider from "./client-provider";
 
 export default async function Home() {
   return (

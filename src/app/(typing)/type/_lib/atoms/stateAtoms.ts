@@ -1,5 +1,5 @@
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ParseMap } from "@/utils/parse-map/parseMap";
+import { BuildMap } from "@/utils/build-map/buildMap";
 import { $Enums } from "@prisma/client";
 import deepEqual from "fast-deep-equal";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
@@ -83,12 +83,12 @@ const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) => optic.valueOr({} as {
 export const useIsLikeState = () => useAtomValue(mapLikeFocusAtom, { store });
 export const useSetIsLikeState = () => useSetAtom(mapLikeFocusAtom, { store });
 
-const mapAtom = atomWithReset<ParseMap | null>(null);
+const mapAtom = atomWithReset<BuildMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });
 export const useSetMap = () => useSetAtom(mapAtom, { store });
 export const useReadMap = () => {
   return useAtomCallback(
-    useCallback((get) => get(mapAtom) as ParseMap, []),
+    useCallback((get) => get(mapAtom) as BuildMap, []),
     { store },
   );
 };
@@ -145,7 +145,7 @@ const writeSceneAtom = atom(null, (get, set, newScene: SceneType) => {
 });
 
 const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { newCurrentCount: number }) => {
-  const map = get(mapAtom) as ParseMap;
+  const map = get(mapAtom) as BuildMap;
 
   if (map.mapChangeCSSCounts.length) {
     const closestMin = map.mapChangeCSSCounts

@@ -1,7 +1,7 @@
 "use client";
 import { useBreakPoint } from "@/lib/useBreakPoint";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { ParseMap } from "@/utils/parse-map/parseMap";
+import { BuildMap } from "@/utils/build-map/buildMap";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { CSSProperties, useEffect, useState } from "react";
@@ -17,7 +17,7 @@ import {
 import useWindowScale, { CONTENT_WIDTH } from "../_lib/hooks/windowScale";
 import TabsArea from "./tabs/tabs";
 import MainGameCard from "./typing-area/MainGameCard";
-import YouTubeContent from "./youtube";
+import YouTubePlayer from "./youtube-player";
 
 interface ContentProps {
   video_id: RouterOutPuts["map"]["getMapInfo"]["video_id"];
@@ -47,7 +47,7 @@ function Content({ video_id, mapId }: ContentProps) {
 
   useEffect(() => {
     if (mapData) {
-      const map = new ParseMap(mapData);
+      const map = new BuildMap(mapData);
       setMap(map);
       initializeLineResults(map.initialLineResultData);
       setLineSelectIndex(map.typingLineIndexes[0]);
@@ -72,7 +72,7 @@ function Content({ video_id, mapId }: ContentProps) {
       <div style={style} className="h-fit">
         <section className="flex w-full gap-6 md:flex-row">
           {ytLayoutMode === "row" && (
-            <YouTubeContent isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
+            <YouTubePlayer isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
           )}
 
           <TabsArea className="flex flex-[8] flex-col" />
@@ -82,7 +82,7 @@ function Content({ video_id, mapId }: ContentProps) {
 
         {ytLayoutMode === "column" && (
           <section className="mt-5">
-            <YouTubeContent isMapLoading={isLoading} videoId={video_id} />
+            <YouTubePlayer isMapLoading={isLoading} videoId={video_id} />
           </section>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { LOGIN_MENU_ITEM } from "@/app/_components/header/lib/const";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -6,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { loginMenuItem } from "@/config/headerNav";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
@@ -27,7 +27,7 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-fit">
-        {loginMenuItem.map((item, index) => (
+        {LOGIN_MENU_ITEM.map((item, index) => (
           <Link href={item.href} key={index}>
             <DropdownMenuItem>{item.title}</DropdownMenuItem>
           </Link>

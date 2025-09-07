@@ -6,11 +6,11 @@ import React from "react";
 import { difficultyRangeAtom, getHomeAtomStore } from "./_lib/atoms";
 import { DIFFICULTY_RANGE, PARAM_NAME } from "./_lib/const";
 
-interface TimelineProviderProps {
+interface HomeClientProviderProps {
   children: React.ReactNode;
 }
 
-const HomeClientProvider = ({ children }: TimelineProviderProps) => {
+const HomeClientProvider = ({ children }: HomeClientProviderProps) => {
   const homeAtomStore = getHomeAtomStore();
   const searchParams = useSearchParams();
   const minRate = searchParams.get(PARAM_NAME.minRate);

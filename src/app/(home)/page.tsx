@@ -1,6 +1,6 @@
 import MapControlArea from "./_components/MapControlArea";
 import MapList from "./_components/MapList";
-import HomeProvider from "./HomeClientProvider";
+import HomeProvider from "./client-provider";
 
 export default function Home() {
   return (

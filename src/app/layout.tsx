@@ -14,7 +14,7 @@ import Script from "next/script";
 import LinkProgressProvider from "./_components/LinkProgressProvider";
 import MainProvider from "./_components/MainProvider";
 
-const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubeContent"));
+const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubePlayer"));
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],

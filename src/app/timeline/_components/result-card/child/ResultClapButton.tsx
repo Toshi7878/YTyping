@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { INITIAL_STATE } from "@/config/globalConst";
+import { INITIAL_STATE } from "@/config/const";
 import { cn } from "@/lib/utils";
-import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
+import { useLocalClapServerActions } from "@/utils/hooks/useLocalClapServerActions";
 import { useSession } from "next-auth/react";
 import { useActionState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";

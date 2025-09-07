@@ -1,4 +1,3 @@
-import { PREVIEW_DISABLE_PATHNAMES } from "@/config/globalConst";
 import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
@@ -28,6 +27,9 @@ interface MapLeftThumbnailPreviewCoverProps {
   size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
   className?: string;
 }
+
+const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
+
 const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
   const { src = "", alt = "", mapVideoId, mapPreviewTime, mapPreviewSpeed = 1, size, className, ...rest } = props;
 

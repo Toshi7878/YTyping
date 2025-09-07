@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useReadScene } from "../_lib/atoms/stateAtoms";
 
-import { useWindowFocus } from "@/utils/global-hooks/windowFocus";
+import { useWindowFocus } from "@/utils/hooks/windowFocus";
 import { useTimerRegistration } from "../_lib/hooks/timer";
 import {
   useYTEndEvent,
@@ -14,13 +14,13 @@ import {
   useYTStopEvent,
 } from "../_lib/hooks/youtubeEvents";
 
-interface ImeTypeYouTubeProps {
+interface YouTubePlayerProps {
   videoId: string;
   className?: string;
   style: React.CSSProperties;
 }
 
-const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTubeProps) => {
+const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) => {
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -100,4 +100,4 @@ const ImeTypeYouTubeContent = ({ videoId, className = "", style }: ImeTypeYouTub
   );
 };
 
-export default ImeTypeYouTubeContent;
+export default YouTubePlayer;

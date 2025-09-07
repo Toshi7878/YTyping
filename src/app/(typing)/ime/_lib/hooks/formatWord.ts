@@ -1,4 +1,4 @@
-import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
+import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
 import { useReadImeTypeOptions } from "../atoms/stateAtoms";
 
 const REGEX_LIST = ["^-ぁ-んゔ", "ァ-ンヴ", "一-龥", "\\w", "\\d", " ", "々%&@&=+ー～~\u00C0-\u00FF"];

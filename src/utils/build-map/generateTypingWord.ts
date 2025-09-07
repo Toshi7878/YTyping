@@ -1,7 +1,6 @@
 import { TypeChunk } from "@/app/(typing)/type/_lib/type";
-import { ALPHABET_LIST, NUM_LIST } from "@/config/charList";
-import { KANA_TO_ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "@/utils/parse-map/romaMap";
-import { CHAR_POINT } from "./parseMap";
+import { CHAR_POINT } from "./buildMap";
+import { ALPHABET_LIST, NUM_LIST, ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./const";
 
 // prettier-ignore
 const ZENKAKU_LIST = ["０", "１", "２", "３", "４", "５", "６", "７", "８", "９", "Ａ", "Ｂ", "Ｃ", "Ｄ", "Ｅ", "Ｆ", "Ｇ", "Ｈ", "Ｉ", "Ｊ", "Ｋ", "Ｌ", "Ｍ", "Ｎ", "Ｏ", "Ｐ", "Ｑ", "Ｒ", "Ｓ", "Ｔ", "Ｕ", "Ｖ", "Ｗ", "Ｘ", "Ｙ", "Ｚ", "ａ", "ｂ", "ｃ", "ｄ", "ｅ", "ｆ", "ｇ", "ｈ", "ｉ", "ｊ", "ｋ", "ｌ", "ｍ", "ｎ", "ｏ", "ｐ", "ｑ", "ｒ", "ｓ", "ｔ", "ｕ", "ｖ", "ｗ", "ｘ", "ｙ", "ｚ", "＆", "％", "！", "？", "＠", "＃", "＄", "（", "）", "｜", "｛", "｝", "｀", "＊", "＋", "：", "；", "＿", "＜", "＞", "＝", "＾", ]
@@ -13,7 +12,7 @@ const SOKUON_JOIN_LIST = ["ヰ", "ゐ", "ヱ", "ゑ", "ぁ", "ぃ", "ぅ", "ぇ"
 // prettier-ignore
 const KANA_UNSUPPORTED_SYMBOLS = ["←", "↓", "↑", "→"]
 
-export const generateTypingWord = (tokenizedKanaWord: string[]) => {
+const generateTypingWord = (tokenizedKanaWord: string[]) => {
   const hasWord = tokenizedKanaWord.length;
 
   if (hasWord) {
@@ -29,7 +28,7 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
   for (let i = 0; i < tokenizedKanaWord.length; i++) {
     const kanaChar = tokenizedKanaWord[i];
     const romaPatterns = [
-      ...(KANA_TO_ROMA_MAP.get(kanaChar) || SYMBOL_TO_ROMA_MAP.get(kanaChar) || [convertZenkakuToHankaku(kanaChar)]),
+      ...(ROMA_MAP.get(kanaChar) || SYMBOL_TO_ROMA_MAP.get(kanaChar) || [convertZenkakuToHankaku(kanaChar)]),
     ];
 
     typeChunks.push({
@@ -153,7 +152,7 @@ const joinSokuonPattern = ({ joinType, typeChunks }: { joinType: "normal" | "iun
 };
 
 const determineCharacterType = ({ kanaChar, romaChar }: { kanaChar: string; romaChar: string }): TypeChunk["t"] => {
-  if (KANA_TO_ROMA_MAP.has(kanaChar)) {
+  if (ROMA_MAP.has(kanaChar)) {
     return "kana";
   } else if (ALPHABET_LIST.includes(romaChar)) {
     return "alphabet";
@@ -173,3 +172,5 @@ const convertZenkakuToHankaku = (char: string) => {
 
   return char;
 };
+
+export { generateTypingWord };

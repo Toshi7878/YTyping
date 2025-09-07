@@ -2,7 +2,7 @@ import { usePlayer } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import { useWindowFocus } from "@/utils/global-hooks/windowFocus";
+import { useWindowFocus } from "@/utils/hooks/windowFocus";
 import { useEffect, useRef } from "react";
 import ReadyInputModeRadioCards from "./ready-child/ReadyInputModeRadioCards";
 import ReadyPlaySpeed from "./ready-child/ReadyPlaySpeed";

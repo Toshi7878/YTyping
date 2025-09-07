@@ -21,11 +21,11 @@ import {
 } from "../_lib/hooks/useEditYouToubeEvents";
 import { useUpdateEndTime } from "../_lib/hooks/useUpdateEndTime";
 
-interface EditorYouTubeProps {
+interface YouTubePlayerProps {
   className: string;
 }
 
-const EditYouTube = function ({ className }: EditorYouTubeProps) {
+const YouTubePlayer = function ({ className }: YouTubePlayerProps) {
   const videoId = useVideoIdState();
   const onReady = useYTReadyEvent();
   const onPlay = useYTPlayEvent();
@@ -125,4 +125,4 @@ const EditYouTube = function ({ className }: EditorYouTubeProps) {
   );
 };
 
-export default EditYouTube;
+export default YouTubePlayer;

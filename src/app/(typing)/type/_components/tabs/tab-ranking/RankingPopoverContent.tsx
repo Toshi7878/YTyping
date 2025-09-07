@@ -5,7 +5,7 @@ import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing-hooks/sou
 import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
-import { INITIAL_STATE } from "@/config/globalConst";
+import { INITIAL_STATE } from "@/config/const";
 import { LocalClapState, UploadResult } from "@/types";
 import { useSession } from "next-auth/react";
 import Link from "next/link";

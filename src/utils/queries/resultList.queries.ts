@@ -1,10 +1,10 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/timeline/_lib/consts";
-import { QUERY_KEYS } from "@/config/globalConst";
 import { infiniteQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import type { ResultCardInfo } from "../../app/timeline/_lib/type";
 import { getBaseUrl } from "../getBaseUrl";
+import { QUERY_KEYS } from "./const";
 
 export const resultListQueries = {
   infiniteResultList: (searchParams: ReadonlyURLSearchParams) => {

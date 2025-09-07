@@ -10,7 +10,7 @@ import { LineData } from "@/app/(typing)/type/_lib/type";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { CHAR_POINT, ParseMap } from "@/utils/parse-map/parseMap";
+import { BuildMap, CHAR_POINT } from "@/utils/build-map/buildMap";
 import ResultCardContent from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
 import ResultCardHeader from "./child/ResultCardHeader";
@@ -35,7 +35,7 @@ function OptimizedResultCard({
   lineData,
 }: OptimizedResultCardProps) {
   const lineResult = useLineResultState(count);
-  const map = useMapState() as ParseMap;
+  const map = useMapState() as BuildMap;
   const scene = useSceneState();
   const speedData = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();

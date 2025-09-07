@@ -1,7 +1,7 @@
 import CreatedCheck from "@/components/shared/CreatedCheck";
 import { Metadata } from "next";
 import Content from "../_components/Content";
-import EditProvider from "../_components/EditProvider";
+import EditProvider from "../_components/client-provider";
 
 export const metadata: Metadata = {
   title: `Edit New Map - YTyping`,

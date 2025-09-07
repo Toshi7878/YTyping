@@ -1,12 +1,12 @@
 import { MapLine } from "@/types/map";
 import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../../app/(typing)/type/_lib/type";
+import { ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./const";
 import { generateTypingWord } from "./generateTypingWord";
-import { KANA_TO_ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./romaMap";
 
 export const CHAR_POINT = 50;
 export const MISS_PENALTY = CHAR_POINT / 2;
 
-export class ParseMap {
+export class BuildMap {
   mapData: LineData[];
 
   startLine: number;
@@ -204,7 +204,7 @@ export const calcWordKanaNotes = ({ kanaWord }: { kanaWord: string }) => {
 };
 
 const tokenizeKanaBySentenceRomaPatterns = (kanaSentence: string) => {
-  const pattern = Array.from(KANA_TO_ROMA_MAP.keys()).concat(Array.from(SYMBOL_TO_ROMA_MAP.keys())).join("|");
+  const pattern = Array.from(ROMA_MAP.keys()).concat(Array.from(SYMBOL_TO_ROMA_MAP.keys())).join("|");
   const regex = new RegExp(`(${pattern})`, "g");
   const processed = kanaSentence.replace(regex, "\t$1\t");
 
@@ -214,7 +214,7 @@ const tokenizeKanaBySentenceRomaPatterns = (kanaSentence: string) => {
     const result: string[] = [];
 
     for (const word of splitLine) {
-      if (KANA_TO_ROMA_MAP.has(word) || SYMBOL_TO_ROMA_MAP.has(word)) {
+      if (ROMA_MAP.has(word) || SYMBOL_TO_ROMA_MAP.has(word)) {
         result.push(word);
       } else {
         for (let i = 0; i < word.length; i++) {

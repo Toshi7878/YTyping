@@ -7,11 +7,11 @@ import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import ImeTypeYouTubeContent from "../_components/ImeTypeYoutubeContent";
 import InputTextarea from "../_components/InputTextarea";
 import MenuBar from "../_components/memu/MenuBar";
 import Notifications from "../_components/Notifications";
 import ViewArea from "../_components/view-area/ViewArea";
+import YouTubePlayer from "../_components/youtube-player";
 import { useEnableLargeVideoDisplayState, useReadScene, useSetMap } from "../_lib/atoms/stateAtoms";
 import { useParseImeMap } from "../_lib/hooks/parseImeMap";
 import { usePathChangeAtomReset } from "../_lib/hooks/reset";
@@ -124,7 +124,7 @@ function Content({ mapInfo }: ContentProps) {
   return (
     <>
       <Notifications style={{ height: notificationsHeight }} />
-      <ImeTypeYouTubeContent
+      <YouTubePlayer
         videoId={video_id}
         className={"fixed top-[40px] left-0 w-full"}
         style={{ height: youtubeHeight.height, minHeight: youtubeHeight.minHeight }}

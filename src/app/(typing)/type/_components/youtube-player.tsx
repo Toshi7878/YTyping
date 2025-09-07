@@ -3,7 +3,7 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { useCallback, useEffect, useMemo } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
-import { useWindowFocus } from "../../../../utils/global-hooks/windowFocus";
+import { useWindowFocus } from "../../../../utils/hooks/windowFocus";
 import { usePlayer, useYTStatus } from "../_lib/atoms/refAtoms";
 import { useReadGameUtilParams } from "../_lib/atoms/stateAtoms";
 import { useTimerRegistration } from "../_lib/hooks/playing-hooks/timer-hooks/timer";
@@ -15,13 +15,13 @@ import {
   useYTStopEvent,
 } from "../_lib/hooks/youtubeEvents";
 
-interface YouTubeContentProps {
+interface YouTubePlayerProps {
   isMapLoading: boolean;
   videoId: string;
   className?: string;
 }
 
-const YouTubeContent = ({ isMapLoading, videoId, className = "" }: YouTubeContentProps) => {
+const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -138,4 +138,4 @@ const MobileCover = () => {
   );
 };
 
-export default YouTubeContent;
+export default YouTubePlayer;

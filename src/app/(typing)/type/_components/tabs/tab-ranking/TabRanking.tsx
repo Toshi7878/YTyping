@@ -11,7 +11,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { LocalClapState } from "@/types";
-import { useLocalClapServerActions } from "@/utils/global-hooks/useLocalClapServerActions";
+import { useLocalClapServerActions } from "@/utils/hooks/useLocalClapServerActions";
 import { useMapRankingQueries } from "@/utils/queries/mapRanking.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";

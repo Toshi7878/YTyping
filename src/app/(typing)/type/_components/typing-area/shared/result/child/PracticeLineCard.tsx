@@ -9,7 +9,7 @@ import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing-hooks/moveLi
 import { useInteractJS } from "@/app/(typing)/type/_lib/hooks/useInteractJS";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CHAR_POINT } from "@/utils/parse-map/parseMap";
+import { CHAR_POINT } from "@/utils/build-map/buildMap";
 import { useState } from "react";
 import ResultCardContent from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";

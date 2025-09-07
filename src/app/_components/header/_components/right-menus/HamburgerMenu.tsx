@@ -1,5 +1,6 @@
 "use client";
 
+import { LEFT_LINKS, LEFT_MENU_ITEM, LOGIN_MENU_ITEM } from "@/app/_components/header/lib/const";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,7 +9,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { leftLink, leftMenuItem, loginMenuItem } from "@/config/headerNav";
 import { useUserAgent } from "@/utils/useUserAgent";
 import { Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
@@ -24,7 +24,7 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { data: session } = useSession();
   const { isMobile } = useUserAgent();
 
-  const menus = leftMenuItem.concat(leftLink);
+  const menus = LEFT_MENU_ITEM.concat(LEFT_LINKS);
   const [, formAction] = useActionState(async () => {
     return await signOut({ redirect: false });
   }, null);
@@ -58,7 +58,7 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
 
           {session?.user?.name ? (
             <>
-              {loginMenuItem.map((item, index) => (
+              {LOGIN_MENU_ITEM.map((item, index) => (
                 <Link href={item.href} key={index}>
                   <DropdownMenuItem>{item.title}</DropdownMenuItem>
                 </Link>

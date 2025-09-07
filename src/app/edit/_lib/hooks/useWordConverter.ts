@@ -1,4 +1,5 @@
 import { useSetIsWordConverting } from "@/app/edit/_lib/atoms/stateAtoms";
+
 import {
   ALPHABET_LIST,
   KANA_LIST,
@@ -6,9 +7,9 @@ import {
   MANDATORY_SYMBOL_LIST,
   NUM_LIST,
   STRICT_SYMBOL_LIST,
-} from "@/config/charList";
+} from "@/utils/build-map/const";
+import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
 import { kanaToHira } from "@/utils/kanaToHira";
-import { normalizeSimilarSymbol } from "@/utils/parse-map/normalizeSimilarSymbol";
 import { useMorphQueries } from "@/utils/queries/morph.queries";
 import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic";
 import { useQueryClient } from "@tanstack/react-query";

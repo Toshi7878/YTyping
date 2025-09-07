@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/globalAtoms";
 
-const PreviewYouTubeContent = () => {
+const PreviewYouTubePlayer = () => {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
 
   const volume = useVolumeState();
@@ -67,4 +67,4 @@ const usePreviewYouTubeKeyDown = () => {
   };
 };
 
-export default PreviewYouTubeContent;
+export default PreviewYouTubePlayer;

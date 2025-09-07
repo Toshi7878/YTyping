@@ -1,3 +1,4 @@
+import { LEFT_LINKS, LEFT_MENU_ITEM } from "@/app/_components/header/lib/const";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -5,7 +6,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { leftLink, leftMenuItem } from "@/config/headerNav";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 
@@ -25,7 +25,7 @@ function LeftMenus() {
   return (
     <nav className="text-header-foreground hidden items-center select-none md:flex">
       <LinksDropdownMenu />
-      {leftLink.map((link, index) => (
+      {LEFT_LINKS.map((link, index) => (
         <Button key={index} variant="unstyled" size="sm" asChild className="hover:text-foreground text-sm">
           <Link href={link.href}>{link.title}</Link>
         </Button>
@@ -43,7 +43,7 @@ const LinksDropdownMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-fit">
-        {leftMenuItem.map((menuItem, index) => (
+        {LEFT_MENU_ITEM.map((menuItem, index) => (
           <Link href={menuItem.href} key={index}>
             <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
           </Link>

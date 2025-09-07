@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { prisma } from "@/server/db";
 import { MapLine } from "@/types/map";
-import { ParseMap } from "@/utils/parse-map/parseMap";
+import { BuildMap } from "@/utils/build-map/buildMap";
 
 export async function POST(request: Request) {
   try {
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         console.log("previewTime0 mapId: ", i);
         const rawMapData = await getMap(i);
 
-        const parsedMap = new ParseMap(rawMapData);
+        const parsedMap = new BuildMap(rawMapData);
 
         const newPreviewTime = Math.max(0, Number(parsedMap.mapData[parsedMap.startLine]["time"]) + 0.2).toFixed(3);
 

@@ -2,7 +2,7 @@
 
 import { Input, inputVariants } from "@/components/ui/input/input";
 import { cn } from "@/lib/utils";
-import { useDebounce } from "@/utils/global-hooks/useDebounce";
+import { useDebounce } from "@/utils/hooks/useDebounce";
 import { UseMutationResult } from "@tanstack/react-query";
 import { VariantProps } from "class-variance-authority";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";

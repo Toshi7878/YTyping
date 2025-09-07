@@ -11,9 +11,9 @@ import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
 import { useTRPC } from "@/trpc/provider";
+import { BuildMap } from "@/utils/build-map/buildMap";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
-import { useDebounce } from "@/utils/global-hooks/useDebounce";
-import { ParseMap } from "@/utils/parse-map/parseMap";
+import { useDebounce } from "@/utils/hooks/useDebounce";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useNavigationGuard } from "@/utils/use-navigation-guard";
@@ -396,7 +396,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
     const map = readMap();
 
     const { title, artist_name, music_source, creator_comment, tags, preview_time } = data;
-    const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new ParseMap(map);
+    const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new BuildMap(map);
 
     const { video_id } = readPlayer().getVideoData();
     const videoDuration = readPlayer().getDuration();

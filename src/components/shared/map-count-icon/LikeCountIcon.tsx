@@ -1,8 +1,8 @@
 import { LikeButton } from "@/components/shared/like-button/LikeButton";
-import { INITIAL_STATE } from "@/config/globalConst";
+import { INITIAL_STATE } from "@/config/const";
 import { cn } from "@/lib/utils";
 import { LocalLikeState } from "@/types";
-import { useLocalLikeServerActions } from "@/utils/global-hooks/useLocalLikeServerActions";
+import { useLocalLikeServerActions } from "@/utils/hooks/useLocalLikeServerActions";
 import { useSession } from "next-auth/react";
 import React, { memo, useActionState, useRef } from "react";
 import { FiHeart } from "react-icons/fi";
