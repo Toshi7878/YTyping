@@ -31,7 +31,7 @@ export const sendResultSchema = z
             tBonus: z.number().optional(),
             lType: z.number().optional(),
             lMiss: z.number().optional(),
-            lRkpm: z.number().positive().or(z.literal(Infinity)).optional(),
+            lRkpm: z.number().or(z.literal(Infinity)).optional(),
             lKpm: z.number().optional(),
             lostW: z.string().nullable().optional(),
             lLost: z.number().optional(),
