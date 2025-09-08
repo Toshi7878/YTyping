@@ -10,6 +10,8 @@ export const useMapRankingQueries = () => {
           mapId: Number(mapId),
         },
         {
+          refetchOnMount: false,
+          refetchOnWindowFocus: false,
           gcTime: Infinity,
         },
       ),
