@@ -45,14 +45,10 @@ const RankingList = () => {
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    const scores = data
-      ? data.map((result: (typeof data)[number]) => result.status?.score).filter((score) => score !== undefined)
-      : [];
+    if (!data) return;
 
-    writeGameUtilRefParams({
-      rankingScores: scores,
-    });
-
+    const scores = data.map((result) => result.status.score);
+    writeGameUtilRefParams({ rankingScores: scores });
     setTypingStatusRank(scores.length + 1);
   }, [data]);
 
@@ -69,12 +65,7 @@ const RankingList = () => {
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.kpm }}>kpm</TableHead>
           <TableHead style={{ maxWidth: RANKING_COLUMN_WIDTH.inputMode }}>モード</TableHead>
           <TableHead style={{ width: RANKING_COLUMN_WIDTH.updatedAt }}>時間</TableHead>
-          <TableHead
-            className="relative"
-            style={{
-              width: RANKING_COLUMN_WIDTH.clapCount,
-            }}
-          >
+          <TableHead className="relative" style={{ width: RANKING_COLUMN_WIDTH.clapCount }}>
             <FaHandsClapping size={16} />
           </TableHead>
           <TableHead className="w-0 border-none p-0" />
@@ -90,7 +81,7 @@ const RankingList = () => {
             </td>
           </TableRow>
         ) : (
-          data?.map((result: (typeof data)[number], index: number) => {
+          data.map((result, index: number) => {
             return (
               <RankingRow
                 key={result.id}
@@ -122,7 +113,6 @@ const RankingRow = ({ result, index, openPopoverIndex, setOpenPopoverIndex }: Ra
     clapCount: result.clap_count,
   });
 
-  if (!result.status) return null;
   const { status } = result;
 
   const { roma_type, kana_type, flick_type, english_type, num_type, symbol_type, space_type } = status;
@@ -134,12 +124,8 @@ const RankingRow = ({ result, index, openPopoverIndex, setOpenPopoverIndex }: Ra
   const isThisPopoverOpen = openPopoverIndex === index;
   const isAnyPopoverOpen = openPopoverIndex !== null;
 
-  const handleOpenChange = (open: boolean) => {
-    setOpenPopoverIndex(open ? index : null);
-  };
-
   return (
-    <Popover key={result.id} open={isThisPopoverOpen} onOpenChange={handleOpenChange}>
+    <Popover key={result.id} open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
       <TooltipWrapper
         open={isThisPopoverOpen ? true : undefined}
         disabled={isAnyPopoverOpen && !isThisPopoverOpen}
@@ -202,8 +188,6 @@ const RankingTr = ({ result, rank, clapOptimisticState, isHighlighted = false, .
   const { status } = result;
   const { data: session } = useSession();
   const userId = Number(session?.user.id);
-
-  if (!status) return null;
 
   const isPerfect = status.miss === 0 && status.lost === 0;
 
