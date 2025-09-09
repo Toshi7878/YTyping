@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
@@ -13,6 +14,7 @@ interface DataTableProps<TData, TValue> {
   rowClassName?: (index: number) => string;
   cellClassName?: string;
   tbodyId?: string;
+  rowWrapper?: (args: { row: TData; index: number; children: React.ReactNode }) => React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -23,6 +25,7 @@ export function DataTable<TData, TValue>({
   rowClassName,
   cellClassName,
   tbodyId,
+  rowWrapper,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -51,38 +54,50 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody id={tbodyId}>
-          {table.getRowModel().rows.map((row, index) => (
-            <TableRow
-              key={row.id}
-              data-state={row.getIsSelected() && "selected"}
-              onClick={(event) => onRowClick?.(event, row.original, index)}
-              className={cn(onRowClick && "cursor-pointer", rowClassName?.(index))}
-            >
-              {row.getVisibleCells().map((cell) => {
-                const columnMeta = cell.column.columnDef.meta;
-                const hasColumnClick = columnMeta?.onClick;
+          {table.getRowModel().rows.map((row, index) => {
+            const rowNode = (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                onClick={(event) => onRowClick?.(event, row.original, index)}
+                className={cn(onRowClick && "cursor-pointer", rowClassName?.(index))}
+              >
+                {row.getVisibleCells().map((cell) => {
+                  const columnMeta = cell.column.columnDef.meta;
+                  const hasColumnClick = columnMeta?.onClick;
 
-                return (
-                  <TableCell
-                    key={cell.id}
-                    onClick={(event) => {
-                      if (hasColumnClick) {
-                        columnMeta?.onClick?.(event, row.original, index);
-                      }
-                    }}
-                    style={{ maxWidth: cell.column.getSize(), minWidth: cell.column.getSize() }}
-                    className={cn(
-                      hasColumnClick && "cursor-pointer",
-                      cellClassName,
-                      columnMeta?.cellClassName?.(cell, index),
-                    )}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          ))}
+                  return (
+                    <TableCell
+                      key={cell.id}
+                      onClick={(event) => {
+                        if (hasColumnClick) {
+                          columnMeta?.onClick?.(event, row.original, index);
+                        }
+                      }}
+                      style={{ maxWidth: cell.column.getSize(), minWidth: cell.column.getSize() }}
+                      className={cn(
+                        hasColumnClick && "cursor-pointer",
+                        cellClassName,
+                        columnMeta?.cellClassName?.(cell, index),
+                      )}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+
+            if (rowWrapper) {
+              return (
+                <React.Fragment key={row.id}>
+                  {rowWrapper({ row: row.original, index, children: rowNode })}
+                </React.Fragment>
+              );
+            }
+
+            return rowNode;
+          })}
         </TableBody>
       </Table>
     </div>
