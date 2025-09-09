@@ -68,7 +68,6 @@ const RankingList = () => {
           <TableHead className="relative" style={{ width: RANKING_COLUMN_WIDTH.clapCount }}>
             <FaHandsClapping size={16} />
           </TableHead>
-          <TableHead className="w-0 border-none p-0" />
         </TableRow>
       </TableHeader>
       <TableBody>
