@@ -62,6 +62,7 @@ export const rankingRouter = {
     const rankingList = await db.results.findMany({
       where: {
         map_id: mapId,
+        status: { isNot: null },
       },
       select: {
         id: true,
@@ -110,6 +111,9 @@ export const rankingRouter = {
       },
     });
 
-    return rankingList;
+    // Ensure status is non-null in the returned type
+    const nonNullRankingList = rankingList.map((r) => ({ ...r, status: r.status! }));
+
+    return nonNullRankingList;
   }),
 };
