@@ -22,19 +22,6 @@ import { useGameUtilityReferenceParams } from "../../../_lib/atoms/refAtoms";
 import { useSetTypingStatusRank } from "../../../_lib/atoms/stateAtoms";
 import RankingPopoverContent from "./RankingPopoverContent";
 
-const TabRanking = ({ className }: { className: string }) => {
-  return (
-    <CardWithContent
-      id="tab-ranking-card"
-      className={{
-        card: cn("tab-card overflow-y-scroll py-0", className),
-      }}
-    >
-      <RankingList />
-    </CardWithContent>
-  );
-};
-
 type RankingResult = RouterOutPuts["ranking"]["getMapRanking"][number];
 
 const ClapCell = ({ result }: { result: RankingResult }) => {
@@ -46,7 +33,7 @@ const ClapCell = ({ result }: { result: RankingResult }) => {
   return <ClapedText clapOptimisticState={clapOptimisticState} />;
 };
 
-const RankingList = () => {
+const TabRanking = ({ className }: { className?: string }) => {
   const { id: mapId } = useParams<{ id: string }>();
   const { data, error } = useQuery(useMapRankingQueries().mapRanking({ mapId }));
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
@@ -71,16 +58,8 @@ const RankingList = () => {
         header: () => "順位",
         size: 10,
         cell: ({ row }) => {
-          const result = row.original;
-          const index = row.index;
+          const { original: result, index } = row;
           const rank = index + 1;
-          const { status } = result;
-          const { roma_type, kana_type, flick_type, english_type, num_type, symbol_type, space_type } = status;
-          const totalType = roma_type + kana_type + flick_type + english_type + num_type + symbol_type + space_type;
-          const isPerfect = status.miss === 0 && status.lost === 0;
-          const isKanaFlickTyped = kana_type > 0 || flick_type > 0;
-          const correctRate = ((totalType / (status.miss + totalType)) * 100).toFixed(1);
-
           const isThisPopoverOpen = openPopoverIndex === index;
 
           const { data: session } = useSession();
@@ -174,65 +153,72 @@ const RankingList = () => {
   }, [openPopoverIndex]);
 
   return (
-    <DataTable<RankingResult, unknown>
-      columns={columns}
-      data={data ?? []}
-      onRowClick={(_, __, index) => {
-        setOpenPopoverIndex((prev) => (prev === index ? null : index));
+    <CardWithContent
+      id="tab-ranking-card"
+      className={{
+        card: cn("tab-card overflow-y-scroll py-0", className),
       }}
-      className={cn("ranking-table overflow-visible rounded-none border-0")}
-      rowClassName={(index) =>
-        cn(
-          "border-accent-foreground cursor-pointer text-3xl font-bold md:text-base",
-          Number(session?.user.id) === data?.[index]?.user_id && "my-result text-secondary",
-          openPopoverIndex === index && "bg-accent/50",
-        )
-      }
-      tbodyId="ranking-tbody"
-      rowWrapper={({ row, index, children }) => {
-        const { status } = row;
-        const { roma_type, kana_type, flick_type, english_type, num_type, symbol_type, space_type } = status;
-        const totalType = roma_type + kana_type + flick_type + english_type + num_type + symbol_type + space_type;
-        const isPerfect = status.miss === 0 && status.lost === 0;
-        const isKanaFlickTyped = kana_type > 0 || flick_type > 0;
-        const correctRate = ((totalType / (status.miss + totalType)) * 100).toFixed(1);
+    >
+      <DataTable<RankingResult, unknown>
+        columns={columns}
+        data={data ?? []}
+        onRowClick={(_, __, index) => {
+          setOpenPopoverIndex((prev) => (prev === index ? null : index));
+        }}
+        className={cn("ranking-table overflow-visible rounded-none border-0")}
+        rowClassName={(index) =>
+          cn(
+            "border-accent-foreground cursor-pointer text-3xl font-bold md:text-base",
+            Number(session?.user.id) === data?.[index]?.user_id && "my-result text-secondary",
+            openPopoverIndex === index && "bg-accent/50",
+          )
+        }
+        tbodyId="ranking-tbody"
+        rowWrapper={({ row, index, children }) => {
+          const { status } = row;
+          const { roma_type, kana_type, flick_type, english_type, num_type, symbol_type, space_type } = status;
+          const totalType = roma_type + kana_type + flick_type + english_type + num_type + symbol_type + space_type;
+          const isPerfect = status.miss === 0 && status.lost === 0;
+          const isKanaFlickTyped = kana_type > 0 || flick_type > 0;
+          const correctRate = ((totalType / (status.miss + totalType)) * 100).toFixed(1);
 
-        return (
-          <TooltipWrapper
-            label={
-              <ResultToolTipText
-                romaType={roma_type}
-                kanaType={kana_type}
-                flickType={flick_type}
-                englishType={status.english_type}
-                numType={status.num_type}
-                symbolType={status.symbol_type}
-                spaceType={status.space_type}
-                correctRate={correctRate}
-                isPerfect={isPerfect}
-                isKanaFlickTyped={isKanaFlickTyped}
-                lost={status.lost}
-                miss={status.miss}
-                maxCombo={status.max_combo}
-                kpm={status.kpm}
-                rkpm={status.rkpm}
-                romaKpm={status.roma_kpm}
-                romaRkpm={status.roma_rkpm}
-                defaultSpeed={status.default_speed}
-                updatedAt={row.updated_at}
-              />
-            }
-            side="bottom"
-            align="end"
-            delayDuration={0}
-            disabled={openPopoverIndex !== null && openPopoverIndex !== index}
-            open={openPopoverIndex === null ? undefined : openPopoverIndex === index}
-          >
-            {children}
-          </TooltipWrapper>
-        );
-      }}
-    />
+          return (
+            <TooltipWrapper
+              label={
+                <ResultToolTipText
+                  romaType={roma_type}
+                  kanaType={kana_type}
+                  flickType={flick_type}
+                  englishType={status.english_type}
+                  numType={status.num_type}
+                  symbolType={status.symbol_type}
+                  spaceType={status.space_type}
+                  correctRate={correctRate}
+                  isPerfect={isPerfect}
+                  isKanaFlickTyped={isKanaFlickTyped}
+                  lost={status.lost}
+                  miss={status.miss}
+                  maxCombo={status.max_combo}
+                  kpm={status.kpm}
+                  rkpm={status.rkpm}
+                  romaKpm={status.roma_kpm}
+                  romaRkpm={status.roma_rkpm}
+                  defaultSpeed={status.default_speed}
+                  updatedAt={row.updated_at}
+                />
+              }
+              side="bottom"
+              align="end"
+              delayDuration={0}
+              disabled={openPopoverIndex !== null && openPopoverIndex !== index}
+              open={openPopoverIndex === null ? undefined : openPopoverIndex === index}
+            >
+              {children}
+            </TooltipWrapper>
+          );
+        }}
+      />
+    </CardWithContent>
   );
 };
 

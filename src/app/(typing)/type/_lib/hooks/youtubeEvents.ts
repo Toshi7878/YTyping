@@ -1,4 +1,4 @@
-import { useVolumeState } from "@/lib/globalAtoms";
+import { useReadVolume } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { useGameUtilityReferenceParams, useLineCount, usePlayer, useProgress, useYTStatus } from "../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";
@@ -33,12 +33,10 @@ export const useYTPlayEvent = () => {
   const readPlaySpeed = usePlaySpeedStateRef();
   const updateAllStatus = useUpdateAllStatus();
   const readMap = useReadMap();
-  const volume = useVolumeState();
 
   return async () => {
     console.log("再生 1");
     const { scene, isYTStarted } = readGameStateUtils();
-    readPlayer().setVolume(volume);
 
     if (scene === "play" || scene === "practice" || scene === "replay") {
       startTimer();
@@ -165,12 +163,12 @@ export const useYTSeekEvent = () => {
 };
 
 export const useYTReadyEvent = () => {
-  const volume = useVolumeState();
+  const readVolume = useReadVolume();
   const { writePlayer } = usePlayer();
 
   return (event: { target: YTPlayer }) => {
     const player = event.target;
-    player.setVolume(volume);
+    player.setVolume(readVolume());
     writePlayer(player);
   };
 };

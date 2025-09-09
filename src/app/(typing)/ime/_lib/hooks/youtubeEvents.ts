@@ -1,4 +1,4 @@
-import { useVolumeState } from "@/lib/globalAtoms";
+import { useReadVolume } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { usePlayer } from "../atoms/refAtoms";
 import { useReadScene } from "../atoms/stateAtoms";
@@ -66,12 +66,12 @@ export const useYTSeekEvent = () => {
 };
 
 export const useYTReadyEvent = () => {
-  const volumeAtom = useVolumeState();
   const { writePlayer } = usePlayer();
 
+  const readVolume = useReadVolume();
   return (event) => {
     const player = event.target as YTPlayer;
-    player.setVolume(volumeAtom);
+    player.setVolume(readVolume());
     writePlayer(player);
   };
 };

@@ -1,4 +1,4 @@
-import { useVolumeState } from "@/lib/globalAtoms";
+import { useReadVolume } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
 import { YouTubeEvent } from "react-youtube";
 import { useReadMap } from "../atoms/mapReducerAtom";
@@ -15,12 +15,12 @@ import { useTimerControls } from "./useTimer";
 import { useUpdateEndTime } from "./useUpdateEndTime";
 
 export const useYTReadyEvent = () => {
-  const volume = useVolumeState();
   const readYTPlayerStatus = useReadYtPlayerStatus();
   const { writePlayer } = usePlayer();
   const readMap = useReadMap();
   const updateEndTime = useUpdateEndTime();
   const setYTPlayerStatus = useSetYtPlayerStatus();
+  const readVolume = useReadVolume();
 
   return (event: { target: YTPlayer }) => {
     console.log("Ready");
@@ -34,7 +34,7 @@ export const useYTReadyEvent = () => {
     }
 
     writePlayer(player);
-    player.setVolume(volume);
+    player.setVolume(readVolume());
 
     setYTPlayerStatus((prev) => ({
       ...prev,
