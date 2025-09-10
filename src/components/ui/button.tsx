@@ -32,6 +32,7 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        xs: "h-6 px-2 py-1 has-[>svg]:px-1.5",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         xl: "h-12 rounded-md px-8 has-[>svg]:px-6 text-lg",
@@ -50,6 +51,7 @@ const loadingVariants = cva("text-foreground/60 animate-spin", {
   variants: {
     size: {
       default: "size-6",
+      xs: "size-2",
       sm: "size-6",
       lg: "size-8",
       xl: "size-8",

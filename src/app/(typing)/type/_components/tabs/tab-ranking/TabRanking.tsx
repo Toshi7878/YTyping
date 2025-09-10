@@ -10,7 +10,7 @@ import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { RouterOutPuts } from "@/server/api/trpc";
-import { useLocalClapServerActions } from "@/utils/hooks/useLocalClapServerActions";
+import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
 import { useMapRankingQueries } from "@/utils/queries/mapRanking.queries";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
@@ -23,15 +23,6 @@ import { useSetTypingStatusRank } from "../../../_lib/atoms/stateAtoms";
 import RankingPopoverContent from "./RankingPopoverContent";
 
 type RankingResult = RouterOutPuts["ranking"]["getMapRanking"][number];
-
-const ClapCell = ({ result }: { result: RankingResult }) => {
-  const { data: session } = useSession();
-  const { clapOptimisticState } = useLocalClapServerActions({
-    hasClap: !!result.claps[0]?.is_claped && !!session,
-    clapCount: result.clap_count,
-  });
-  return <ClapedText clapOptimisticState={clapOptimisticState} />;
-};
 
 const TabRanking = ({ className }: { className?: string }) => {
   const { id: mapId } = useParams<{ id: string }>();
@@ -49,6 +40,8 @@ const TabRanking = ({ className }: { className?: string }) => {
     setTypingStatusRank(scores.length + 1);
   }, [data]);
 
+  const toggleClap = useClapMutationRanking(Number(mapId));
+
   if (error) return <div>Error loading data</div>;
 
   const columns: ColumnDef<RankingResult, unknown>[] = useMemo(() => {
@@ -63,10 +56,7 @@ const TabRanking = ({ className }: { className?: string }) => {
           const isThisPopoverOpen = openPopoverIndex === index;
 
           const { data: session } = useSession();
-          const { clapOptimisticState, toggleClapAction } = useLocalClapServerActions({
-            hasClap: !!result.claps[0]?.is_claped && !!session,
-            clapCount: result.clap_count,
-          });
+          const hasClap = !!result.claps[0]?.is_claped && !!session;
 
           return (
             <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
@@ -79,8 +69,7 @@ const TabRanking = ({ className }: { className?: string }) => {
                 userId={result.user_id}
                 resultUpdatedAt={result.updated_at}
                 name={result.user.name ?? ""}
-                clapOptimisticState={clapOptimisticState}
-                toggleClapAction={toggleClapAction}
+                clapOptimisticState={{ hasClap, clapCount: result.clap_count }}
               />
             </Popover>
           );
@@ -147,10 +136,29 @@ const TabRanking = ({ className }: { className?: string }) => {
         id: "clap",
         header: () => <FaHandsClapping size={16} />,
         size: 20,
-        cell: ({ row }) => <ClapCell result={row.original} />,
+        cell: ({ row }) => {
+          const hasClap = !!row.original.claps[0]?.is_claped && !!session;
+          return (
+            <div className="ml-1" title={hasClap ? "拍手を取り消す" : "拍手する"}>
+              <ClapedText clapOptimisticState={{ hasClap, clapCount: row.original.clap_count }} />
+            </div>
+          );
+        },
+        meta: {
+          cellClassName: (cell) => {
+            const hasClap = !!cell.row.original.claps[0]?.is_claped && !!session;
+            return cn(toggleClap.isPending ? "opacity-80" : "", hasClap ? "" : "hover:bg-perfect/20");
+          },
+          onClick: (event, row) => {
+            if (!session?.user?.id || toggleClap.isPending) return;
+            event.preventDefault();
+            event.stopPropagation();
+            toggleClap.mutate({ resultId: row.id, optimisticState: !row.claps[0]?.is_claped });
+          },
+        },
       },
     ];
-  }, [openPopoverIndex]);
+  }, [openPopoverIndex, toggleClap.isPending]);
 
   return (
     <CardWithContent

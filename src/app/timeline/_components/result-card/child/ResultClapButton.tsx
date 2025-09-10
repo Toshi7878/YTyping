@@ -1,11 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { INITIAL_STATE } from "@/config/const";
 import { cn } from "@/lib/utils";
-import { useLocalClapServerActions } from "@/utils/hooks/useLocalClapServerActions";
+import { useClapMutationTimeline } from "@/utils/mutations/clap.mutations";
 import { useSession } from "next-auth/react";
-import { useActionState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 
 interface ResultClapButtonProps {
@@ -17,38 +15,37 @@ interface ResultClapButtonProps {
 function ResultClapButton({ resultId, clapCount, hasClap }: ResultClapButtonProps) {
   const { data: session } = useSession();
 
-  const { clapOptimisticState, toggleClapAction } = useLocalClapServerActions({
-    hasClap,
-    clapCount,
-  });
+  const toggleClapMutation = useClapMutationTimeline();
 
-  const [state, formAction] = useActionState(async () => {
-    const result = await toggleClapAction(resultId);
+  const onClick = () => {
+    if (!session) return;
+    toggleClapMutation.mutate({ resultId, optimisticState: !hasClap });
+  };
 
-    return result;
-  }, INITIAL_STATE);
+  const isPending = toggleClapMutation.isPending;
 
   return (
-    <form action={session ? formAction : () => {}} className="inline-flex">
+    <div className="inline-flex">
       <TooltipWrapper disabled={!!session} label={"拍手はログイン後に可能です"}>
         <Button
-          type="submit"
+          type="button"
           variant="outline"
           size="sm"
-          disabled={!session}
+          disabled={!session || isPending}
+          onClick={onClick}
           className={cn(
             "min-w-[100px] rounded-full border px-7",
-            clapOptimisticState.hasClap ? "bg-perfect/20 border-perfect text-perfect" : "",
+            hasClap ? "bg-perfect/20 border-perfect text-perfect" : "",
             session && "hover:bg-perfect/20 hover:text-perfect",
           )}
         >
           <div className="flex items-center space-x-1 tracking-wider">
             <FaHandsClapping />
-            <span>×{clapOptimisticState.clapCount}</span>
+            <span>×{clapCount}</span>
           </div>
         </Button>
       </TooltipWrapper>
-    </form>
+    </div>
   );
 }
 

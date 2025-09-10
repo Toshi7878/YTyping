@@ -5,11 +5,11 @@ import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/soundEffe
 import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
-import { INITIAL_STATE } from "@/config/const";
-import { LocalClapState, UploadResult } from "@/types";
+import { LocalClapState } from "@/types";
+import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
 interface RankingMenuProps {
@@ -18,7 +18,6 @@ interface RankingMenuProps {
   resultUpdatedAt: Date;
   name: string;
   clapOptimisticState: LocalClapState;
-  toggleClapAction: (resultId: number) => Promise<UploadResult>;
   onOpenChange?: (open: boolean) => void;
 }
 const RankingPopoverContent = ({
@@ -27,7 +26,6 @@ const RankingPopoverContent = ({
   resultUpdatedAt,
   name,
   clapOptimisticState,
-  toggleClapAction,
   onOpenChange,
 }: RankingMenuProps) => {
   const { data: session } = useSession();
@@ -39,6 +37,11 @@ const RankingPopoverContent = ({
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readMapInfo } = useMapInfoRef();
+  const { id: mapIdParam } = useParams<{ id: string }>();
+  const mapId = Number(mapIdParam);
+
+  const toggleClap = useClapMutationRanking(mapId);
+
   const handleReplayClick = async () => {
     await resultPlay(resultId);
 
@@ -63,11 +66,6 @@ const RankingPopoverContent = ({
     }
   };
 
-  const [state, formAction] = useActionState(async () => {
-    const result = await toggleClapAction(resultId);
-
-    return result;
-  }, INITIAL_STATE);
   return (
     <PopoverContent side="bottom" align="start" className="flex w-fit flex-col items-center">
       <Button variant="ghost" className="w-full">
@@ -83,11 +81,14 @@ const RankingPopoverContent = ({
         リプレイ再生
       </Button>
       {session?.user.id ? (
-        <form action={formAction} className="w-full">
-          <Button variant="ghost" type="submit" className="w-full">
-            {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
-          </Button>
-        </form>
+        <Button
+          variant="ghost"
+          type="button"
+          className="w-full"
+          onClick={() => toggleClap.mutate({ resultId, optimisticState: !clapOptimisticState.hasClap })}
+        >
+          {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
+        </Button>
       ) : null}
     </PopoverContent>
   );

@@ -1,4 +1,5 @@
 import { activeUserRouter } from "./routers/activeUserRouter";
+import { clapRouter } from "./routers/clapRouter";
 import { geminiRouter } from "./routers/geminiRouter";
 import { mapListRouter } from "./routers/mapListRouter";
 import { mapRouter } from "./routers/mapRouter";
@@ -29,6 +30,7 @@ export const appRouter = router({
   morphConvert: morphConvertRouter,
   gemini: geminiRouter,
   vercel: vercelRouter,
+  clap: clapRouter,
 });
 
 export type AppRouter = typeof appRouter;
