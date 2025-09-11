@@ -123,8 +123,8 @@ function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
       <CardHeader className="bg-header-background rounded-t-md px-2 py-2 text-sm">
         <span>
-          <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name!} />
-          さんがスコア {notify.visitorResult.status!.score - notify.visitedResult.status!.score} 差で{" "}
+          <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name} />
+          さんがスコア {notify.visitorResult.status.score - notify.visitedResult.status.score} 差で{" "}
           {Number(notify.old_rank)}位 の記録を抜かしました
         </span>
       </CardHeader>

@@ -1,53 +1,63 @@
 import { LikeButton } from "@/components/shared/like-button/LikeButton";
-import { INITIAL_STATE } from "@/config/const";
 import { cn } from "@/lib/utils";
-import { LocalLikeState } from "@/types";
-import { useLocalLikeServerActions } from "@/utils/hooks/useLocalLikeServerActions";
+import { useLikeMutationMapList } from "@/utils/mutations/like.mutations";
 import { useSession } from "next-auth/react";
-import React, { memo, useActionState, useRef } from "react";
+import React, { useRef } from "react";
 import { FiHeart } from "react-icons/fi";
 
 interface LikeButtonProps {
-  likeOptimisticState: LocalLikeState;
+  isLiked: boolean;
+  likeCount: number;
 }
 
-const UnauthenticatedLikeCountIcon = ({ likeOptimisticState }: LikeButtonProps) => {
+const UnauthenticatedLikeCountIcon = ({ likeCount }: LikeButtonProps) => {
   return (
     <div className="text-muted-foreground flex items-baseline rounded-md px-1">
       <div className="relative top-[2.5px] mr-1">
         <FiHeart size={17} />
       </div>
-      <div className="font-mono text-lg">{likeOptimisticState.likeCount}</div>
+      <div className="font-mono text-lg">{likeCount}</div>
     </div>
   );
 };
 
-const AuthenticatedLikeCountIconButton = ({ likeOptimisticState }: LikeButtonProps) => {
+const AuthenticatedLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeButtonProps & { mapId: number }) => {
   const { data: session } = useSession();
   const likeButtonRef = useRef<HTMLButtonElement>(null);
+  const toggleLikeList = useLikeMutationMapList();
+
+  const handleClick = (event: React.MouseEvent) => {
+    likeButtonRef.current?.click();
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (!session?.user?.id || toggleLikeList.isPending) return;
+
+    // propsに基づく次状態。キャッシュはmutationの楽観更新で即時反映される
+    const nextHasLike = !isLiked;
+    toggleLikeList.mutate({ mapId, optimisticState: nextHasLike });
+  };
 
   return (
     <div
       className={cn(
         "flex items-baseline rounded-md pr-1",
-        likeOptimisticState.hasLike ? "text-like" : "text-muted-foreground",
-        session?.user.id && "hover:bg-like/40 hover:cursor-pointer",
+        isLiked ? "text-like" : "text-muted-foreground",
+        session?.user.id && !toggleLikeList.isPending && "hover:bg-like/40 hover:cursor-pointer",
+        toggleLikeList.isPending && "pointer-events-none opacity-60",
       )}
       suppressHydrationWarning
     >
       <div className="relative top-[10.25px] -m-1 -mt-4">
-        <LikeButton defaultLiked={likeOptimisticState.hasLike} size={34} likeButtonRef={likeButtonRef as any} />
+        <LikeButton defaultLiked={isLiked} size={34} likeButtonRef={likeButtonRef as any} />
       </div>
       <button
         type="button"
         className="relative top-0 font-mono text-lg"
-        onClick={(event: React.MouseEvent) => {
-          likeButtonRef.current!.click();
-          event.stopPropagation();
-          event.preventDefault();
-        }}
+        onClick={handleClick}
+        disabled={toggleLikeList.isPending}
       >
-        {likeOptimisticState.likeCount}
+        {likeCount}
       </button>
     </div>
   );
@@ -61,33 +71,18 @@ interface LikeCountIconProps {
 
 const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
   const { data: session } = useSession();
-  const { likeOptimisticState, toggleLikeAction } = useLocalLikeServerActions({
-    hasLike: isLiked,
-    likeCount,
-  });
 
-  const [state, formAction] = useActionState(async () => {
-    const result = await toggleLikeAction(mapId);
-    return result;
-  }, INITIAL_STATE);
-
-  const preventClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-  };
+  const likeOptimisticState = { isLiked, likeCount };
 
   return (
-    <form
-      action={session?.user.id ? formAction : ""}
-      onClick={session?.user.id ? preventClick : undefined}
-      className="flex"
-    >
+    <div className="flex" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
       {session?.user.id ? (
-        <AuthenticatedLikeCountIconButton likeOptimisticState={likeOptimisticState} />
+        <AuthenticatedLikeCountIconButton isLiked={isLiked} likeCount={likeCount} mapId={mapId} />
       ) : (
-        <UnauthenticatedLikeCountIcon likeOptimisticState={likeOptimisticState} />
+        <UnauthenticatedLikeCountIcon isLiked={isLiked} likeCount={likeCount} />
       )}
-    </form>
+    </div>
   );
 };
 
-export default memo(LikeCountIcon);
+export default LikeCountIcon;

@@ -44,12 +44,7 @@ interface MapIconsProps extends HTMLAttributes<HTMLDivElement> {
   left?: string;
 }
 
-const MapIcons = ({
-  result,
-
-  className,
-  ...rest
-}: MapIconsProps) => {
+const MapIcons = ({ result, className, ...rest }: MapIconsProps) => {
   return (
     <div className={cn(className)} {...rest}>
       <RankingCountIcon myRank={result.map.results[0]?.rank} rankingCount={result.map.ranking_count} />

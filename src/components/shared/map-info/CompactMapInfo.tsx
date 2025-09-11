@@ -44,13 +44,13 @@ const MapBadges = ({ map }: MapBadgesProps) => {
         <TooltipWrapper
           label={
             <div>
-              <div>最高速度:{map.difficulty!.roma_kpm_max}kpm</div>
+              <div>最高速度:{map.difficulty.roma_kpm_max}kpm</div>
             </div>
           }
         >
           <Badge variant="accent-light" className="rounded-full px-2 text-sm">
             <span className="hidden text-xs sm:inline-block">★</span>
-            {(map.difficulty!.roma_kpm_median / 100).toFixed(1)}
+            {(map.difficulty.roma_kpm_median / 100).toFixed(1)}
           </Badge>
         </TooltipWrapper>
       </div>

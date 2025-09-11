@@ -50,10 +50,10 @@ const MapInfoBottom = ({ map }: MapInfoProps) => {
       <div className="mr-2 flex items-center gap-2">
         <Badge variant="accent-light" className="rounded-full px-2 text-sm">
           <span className="hidden text-xs sm:inline-block">★</span>
-          {(map.difficulty!.roma_kpm_median / 100).toFixed(1)}
+          {(map.difficulty.roma_kpm_median / 100).toFixed(1)}
         </Badge>
         <Badge variant="accent-light" className="hidden rounded-full px-2 text-sm md:block">
-          {formatTime(map.difficulty!.total_time)}
+          {formatTime(map.difficulty.total_time)}
         </Badge>
       </div>
       <div className="flex">

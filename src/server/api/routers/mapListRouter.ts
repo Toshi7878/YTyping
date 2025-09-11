@@ -57,6 +57,11 @@ export const mapListRouter = {
       },
     });
 
-    return mapList;
+    const withDifficulty = mapList.map((m) => ({
+      ...m,
+      difficulty: m.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
+    }));
+
+    return withDifficulty;
   }),
 };

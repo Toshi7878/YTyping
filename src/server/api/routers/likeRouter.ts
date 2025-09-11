@@ -2,7 +2,7 @@ import z from "zod";
 import { protectedProcedure } from "../trpc";
 
 export const likeRouter = {
-  toggleLike: protectedProcedure
+  setLike: protectedProcedure
     .input(
       z.object({
         mapId: z.number(),

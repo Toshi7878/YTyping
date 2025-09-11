@@ -121,13 +121,27 @@ export const notificationRouter = {
             },
           },
         });
+        const normalized = notifyList.map((n) => ({
+          ...n,
+          map: {
+            ...n.map,
+            difficulty: n.map.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
+          },
+          visitedResult: n.visitedResult
+            ? { ...n.visitedResult, status: n.visitedResult.status ?? { score: 0 } }
+            : { status: { score: 0 } },
+          visitorResult: n.visitorResult
+            ? { ...n.visitorResult, status: n.visitorResult.status ?? { score: 0 } }
+            : { status: { score: 0 } },
+        }));
+
         let nextCursor: typeof cursor | undefined = undefined;
-        if (notifyList.length > limit) {
-          const nextItem = notifyList.pop();
+        if (normalized.length > limit) {
+          const nextItem = normalized.pop();
           nextCursor = nextItem!.created_at;
         }
         return {
-          notifications: notifyList,
+          notifications: normalized,
           nextCursor,
         };
       } catch (error) {

@@ -64,7 +64,11 @@ export const activeUserRouter = {
           },
         });
 
-        return { ...activeUser, map: mapInfo };
+        const normalizedMap = mapInfo
+          ? { ...mapInfo, difficulty: mapInfo.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 } }
+          : null;
+
+        return { ...activeUser, map: normalizedMap };
       } else {
         return { ...activeUser, map: null };
       }
