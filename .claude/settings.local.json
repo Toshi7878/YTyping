@@ -5,7 +5,8 @@
       "Bash(npm view:*)",
       "Bash(npm run tsc:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "WebFetch(domain:motion.dev)"
     ],
     "deny": [],
     "ask": []

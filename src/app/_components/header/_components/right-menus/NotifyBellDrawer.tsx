@@ -35,13 +35,13 @@ export default function NotifyBellDrawer() {
 
   return (
     <Sheet>
-      <SheetTrigger>
-        <TooltipWrapper label="通知" delayDuration={600} className="relative bottom-3">
+      <TooltipWrapper label="通知" delayDuration={600} className="relative bottom-3">
+        <SheetTrigger asChild>
           <Button variant="unstyled" size="icon" className="hover:text-foreground p-2" onClick={notificationOpen}>
             {isNewNotification ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
           </Button>
-        </TooltipWrapper>
-      </SheetTrigger>
+        </SheetTrigger>
+      </TooltipWrapper>
 
       <SheetContent side="right" className="sm:max-w-md">
         <SheetHeader>

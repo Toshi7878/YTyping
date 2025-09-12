@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/
 import TextLink from "@/components/ui/text-link";
 import { H2, H5, Small } from "@/components/ui/typography";
 import { ExternalLink } from "lucide-react";
-import ByUser from "./by-user";
+import ByUser from "./_components/by-user";
 
 const TOOLS = [
   {

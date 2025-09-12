@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import "./css/render.css";
 
 type LikeButtonProps = {
@@ -9,17 +9,20 @@ type LikeButtonProps = {
   onClick?: (isLiked: boolean) => void;
   defaultLiked?: boolean;
   className?: string;
-  likeButtonRef?: React.RefObject<HTMLButtonElement>;
+  likeCount?: number;
+  disabled?: boolean;
 };
 
-export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className, likeButtonRef }: LikeButtonProps) => {
+export const LikeButton = ({
+  size = 50,
+  defaultLiked = false,
+  onClick,
+  className,
+  likeCount,
+  disabled,
+}: LikeButtonProps) => {
   const [isLiked, setIsLiked] = useState(defaultLiked);
   const [hasAnimated, setHasAnimated] = useState(false);
-
-  // defaultLikedが変更された時のみ状態を更新
-  useEffect(() => {
-    setIsLiked(defaultLiked);
-  }, [defaultLiked]);
 
   // サイズ関連の計算を分離
   const backgroundWidth = size * 25;
@@ -58,7 +61,7 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
 
   return (
     <button
-      ref={likeButtonRef}
+      disabled={disabled}
       className={cn("relative", className)}
       style={buttonStyle}
       onClick={handleClick}
@@ -71,12 +74,13 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
         suppressHydrationWarning
       >
         <Heart
-          className={cn(isLiked ? "fill-pink-400 text-pink-400" : "fill-transparent", getAnimationClass())}
+          className={cn(isLiked ? "fill-like text-like" : "fill-transparent", getAnimationClass())}
           size={heartSize}
           strokeWidth={2.5}
           suppressHydrationWarning
         />
       </div>
+      {typeof likeCount === "number" && <div className="absolute right-0 bottom-0 text-xs">{likeCount}</div>}
     </button>
   );
 };

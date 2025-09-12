@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --cache",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --cache",
     "typecheck": "tsc --noEmit",
-    "reset": "rm -rf .next .tsbuildinfo node_modules package-lock.json && npm install",
+    "reset": "pnpm dlx rimraf .next .tsbuildinfo node_modules package-lock.json && pnpm install",
     "db:migrate": "dotenv -e .env.local -- npx prisma migrate dev --name init",
     "studio": "dotenv -e .env.local -- npx prisma studio",
     "db:generate": "dotenv -e .env.local -- npx prisma generate",
