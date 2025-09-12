@@ -1,10 +1,10 @@
 import { TimelineResult } from "@/app/timeline/_lib/type";
-import { RouterOutPuts } from "@/server/api/trpc";
+import { RouterOutPuts, Trpc } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { InfiniteData, QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 
+type MapRankingFilter = ReturnType<Trpc["ranking"]["getMapRanking"]["queryFilter"]>;
 const predTimeline: QueryFilters["predicate"] = ({ queryKey }) => queryKey[0] === "usersResultList";
-const predRanking: QueryFilters["predicate"] = ({ queryKey }) => queryKey[0] === "ranking.getMapRanking";
 
 function setTimelineClapOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
@@ -49,7 +49,7 @@ function setTimelineClapServer(
 
 function setRankingClapOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
-  filter: any,
+  filter: MapRankingFilter,
   resultId: number,
   optimisticState: boolean,
 ) {
@@ -69,7 +69,7 @@ function setRankingClapOptimistic(
 
 function setRankingClapServer(
   queryClient: ReturnType<typeof useQueryClient>,
-  filter: any,
+  filter: MapRankingFilter,
   resultId: number,
   isClaped: boolean,
   clapCount: number,
