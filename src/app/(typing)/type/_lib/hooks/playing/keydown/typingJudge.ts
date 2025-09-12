@@ -220,7 +220,7 @@ export class RomaInput {
     }
 
     newLineWord.nextChar["r"] = this.updateNextRomaPattern(typingKeys, nextRomaPattern);
-    newLineWord = this.kanaFilter(kana, typingKeys["keys"][0], nextRomaPattern, newLineWord);
+    newLineWord = this.kanaFilter(kana, typingKeys["keys"][0], newLineWord);
 
     newLineWord = this.wordUpdate(typingKeys, newLineWord);
 
@@ -234,14 +234,14 @@ export class RomaInput {
       .filter((pattern) => pattern !== "");
   }
 
-  private kanaFilter(kana: string, typingKey: string, romaPattern: string[], newLineWord: LineWord) {
+  private kanaFilter(kana: string, typingKey: string, newLineWord: LineWord) {
+    const romaPattern = newLineWord.nextChar.r;
     if (kana.length >= 2 && romaPattern.length) {
-      const isSokuonYouon =
-        (kana[0] != "っ" && (romaPattern[0][0] === "x" || romaPattern[0][0] === "l")) ||
-        (kana[0] == "っ" && (typingKey === "u" || romaPattern[0][0] === typingKey));
+      const isSokuon = kana[0] === "っ" && (typingKey === "u" || romaPattern[0][0] === typingKey);
+      const isYoon = kana[0] !== "っ" && (romaPattern[0][0] === "x" || romaPattern[0][0] === "l");
 
       const isToriplePeriod = kana === "..." && typingKey === ",";
-      if (isSokuonYouon) {
+      if (isSokuon || isYoon) {
         newLineWord.correct["k"] += newLineWord.nextChar["k"].slice(0, 1);
         newLineWord.nextChar["k"] = newLineWord.nextChar["k"].slice(1);
       } else if (isToriplePeriod) {
