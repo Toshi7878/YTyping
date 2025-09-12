@@ -55,14 +55,14 @@ function setRankingClapOptimistic(
 ) {
   queryClient.setQueriesData<RouterOutPuts["ranking"]["getMapRanking"]>(filter, (old) => {
     if (!old) return old;
-    return old.map((r: any) =>
-      r.id === resultId
+    return old.map((result) =>
+      result.id === resultId
         ? {
-            ...r,
-            clap_count: optimisticState ? r.clap_count + 1 : Math.max(0, r.clap_count - 1),
+            ...result,
+            clap_count: optimisticState ? result.clap_count + 1 : Math.max(0, result.clap_count - 1),
             claps: [{ is_claped: optimisticState }],
           }
-        : r,
+        : result,
     );
   });
 }
