@@ -62,6 +62,7 @@
 
   --color-discord: var(--discord);
   --color-google: var(--google);
+  --color-outline-text: var(--outline-text);
 }
 
 :root {
@@ -69,7 +70,7 @@
   --background: oklch(0.2565 0.0092 234.09);
   --foreground: oklch(1 0 0);
   --header-background: oklch(0.458 0.0732 250.95);
-  --header-foreground: oklch(0.8857 0.0145 254.61);
+  --header-foreground: oklch(1 0 0);
   --card: oklch(0.3063 0.0114 248.2);
   --card-foreground: oklch(1 0 0);
   --popover: oklch(0.2565 0.0092 234.09);

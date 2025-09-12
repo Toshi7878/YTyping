@@ -37,7 +37,12 @@ export default function NotifyBellDrawer() {
     <Sheet>
       <TooltipWrapper label="通知" delayDuration={600} className="relative bottom-3">
         <SheetTrigger asChild>
-          <Button variant="unstyled" size="icon" className="hover:text-foreground p-2" onClick={notificationOpen}>
+          <Button
+            variant="unstyled"
+            size="icon"
+            className="hover:text-header-foreground text-header-foreground/80 p-2"
+            onClick={notificationOpen}
+          >
             {isNewNotification ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
           </Button>
         </SheetTrigger>

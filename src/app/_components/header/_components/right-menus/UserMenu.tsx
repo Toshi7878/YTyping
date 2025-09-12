@@ -21,7 +21,11 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="unstyled" size="sm" className={cn("hover:text-foreground", className)}>
+        <Button
+          variant="unstyled"
+          size="sm"
+          className={cn("hover:text-header-foreground text-header-foreground/80", className)}
+        >
           {userName}
           <ChevronDown className="relative top-[1px] size-4" />
         </Button>

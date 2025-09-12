@@ -13,7 +13,7 @@ export const SiteLogo = () => {
   return (
     <Link
       href="/"
-      className="hover:bg-secondary/30 relative top-[-2px] px-2 text-2xl font-bold transition-colors duration-200"
+      className="hover:bg-secondary/30 hover:text-header-foreground text-header-foreground/80 relative top-[-2px] px-2 text-2xl font-bold transition-colors duration-200"
     >
       <span>Y</span>
       <span>Typing</span>
@@ -23,10 +23,10 @@ export const SiteLogo = () => {
 
 function LeftMenus() {
   return (
-    <nav className="text-header-foreground hidden items-center select-none md:flex">
+    <nav className="text-header-foreground/80 hidden items-center select-none md:flex">
       <LinksDropdownMenu />
       {LEFT_LINKS.map((link, index) => (
-        <Button key={index} variant="unstyled" size="sm" asChild className="hover:text-foreground text-sm">
+        <Button key={index} variant="unstyled" size="sm" asChild className="hover:text-header-foreground text-sm">
           <Link href={link.href}>{link.title}</Link>
         </Button>
       ))}
@@ -38,7 +38,7 @@ const LinksDropdownMenu = () => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="unstyled" size="sm" className="hover:text-foreground text-sm">
+        <Button variant="unstyled" size="sm" className="hover:text-header-foreground text-sm">
           Menu <ChevronDown className="relative top-[1px] size-4" />
         </Button>
       </DropdownMenuTrigger>

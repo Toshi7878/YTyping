@@ -29,7 +29,7 @@ export const RightNav = () => {
   const isRegisterPage = pathname === "/user/register";
 
   return (
-    <div className="text-header-foreground flex items-center gap-2 select-none">
+    <div className="flex items-center gap-2 select-none">
       {session && session.user?.name && (
         <div className="flex items-center gap-2">
           <ActiveUsersDrawer />

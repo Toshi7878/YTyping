@@ -5,7 +5,7 @@ const RegisterLogoutButton = () => {
   return (
     <Button
       variant="unstyled"
-      className="hover:text-foreground"
+      className="hover:text-header-foreground"
       onClick={async () => await signOut({ redirect: true })}
     >
       ログアウト
