@@ -128,6 +128,9 @@
 
   --discord: oklch(0.6474 0.1243 270.62);
   --google: oklch(0.6019 0.1898 28.87);
+  --outline-text:
+    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000,
+    0 -1px 0 #000;
 }
 
 @layer utilities {
@@ -144,15 +147,7 @@
   }
 
   .outline-text {
-    text-shadow:
-      1px 1px 0px #000000,
-      -1px 1px 0px #000000,
-      1px -1px 0px #000000,
-      -1px -1px 0px #000000,
-      1px 0px 0px #000000,
-      0px 1px 0px #000000,
-      -1px 0px 0px #000000,
-      0px -1px 0px #000000;
+    text-shadow: var(--outline-text);
   }
 
   .word-font {
