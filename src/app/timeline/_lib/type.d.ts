@@ -2,7 +2,7 @@ import { $Enums } from "@prisma/client";
 
 export type FilterMode = "all" | "roma" | "kana" | "romakana" | "english";
 
-export interface ResultCardInfo {
+export interface TimelineResult {
   id: number;
   map_id: number;
   user_id: number;

@@ -1,11 +1,11 @@
-import { ResultCardInfo } from "@/app/timeline/_lib/type";
+import { TimelineResult } from "@/app/timeline/_lib/type";
 import ClearRateText from "@/components/shared/text/ClearRateText";
 import { UserInputModeText } from "@/components/shared/text/UserInputModeText";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface MapResultStatusProps {
-  result: ResultCardInfo;
+  result: TimelineResult;
   className?: string;
 }
 
@@ -53,7 +53,7 @@ export const MapResultStatus = ({ result, className }: MapResultStatusProps) => 
 
 interface MapResultBadgesMobileProps extends MapResultStatusProps {
   className?: string;
-  result: ResultCardInfo;
+  result: TimelineResult;
 }
 
 export const MapResultBadgesMobile = ({ result, className }: MapResultBadgesMobileProps) => {

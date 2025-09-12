@@ -1,27 +1,26 @@
+import { TimelineResult } from "@/app/timeline/_lib/type";
 import { useTRPC } from "@/trpc/provider";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
+import { MapListResponse } from "../queries/mapList.queries";
 
-// helpers
-function setMapListOptimistic(
-  queryClient: ReturnType<typeof useQueryClient>,
-  predicate: (q: any) => boolean,
-  mapId: number,
-  optimisticState: boolean,
-) {
-  queryClient.setQueriesData<any>({ predicate }, (old) => {
+const predMapList: QueryFilters["predicate"] = ({ queryKey }) => queryKey[0] === "mapList";
+const predTimeline: QueryFilters["predicate"] = ({ queryKey }) => queryKey[0] === "usersResultList";
+
+function setMapListOptimistic(queryClient: ReturnType<typeof useQueryClient>, mapId: number, optimisticState: boolean) {
+  queryClient.setQueriesData<InfiniteData<MapListResponse>>({ predicate: predMapList }, (old) => {
     if (!old || !old.pages) return old;
     return {
       ...old,
-      pages: old.pages.map((page: any) => ({
+      pages: old.pages.map((page) => ({
         ...page,
-        maps: page.maps?.map((m: any) =>
-          m.id === mapId
+        maps: page.maps?.map((map) =>
+          map.id === mapId
             ? {
-                ...m,
-                like_count: optimisticState ? m.like_count + 1 : Math.max(0, m.like_count - 1),
+                ...map,
+                like_count: optimisticState ? map.like_count + 1 : Math.max(0, map.like_count - 1),
                 map_likes: [{ is_liked: optimisticState }],
               }
-            : m,
+            : map,
         ),
       })),
     };
@@ -30,19 +29,18 @@ function setMapListOptimistic(
 
 function setMapListServer(
   queryClient: ReturnType<typeof useQueryClient>,
-  predicate: (q: any) => boolean,
   mapId: number,
   likeCount: number,
   isLiked: boolean,
 ) {
-  queryClient.setQueriesData<any>({ predicate }, (old) => {
+  queryClient.setQueriesData<InfiniteData<MapListResponse>>({ predicate: predMapList }, (old) => {
     if (!old || !old.pages) return old;
     return {
       ...old,
-      pages: old.pages.map((page: any) => ({
+      pages: old.pages.map((page) => ({
         ...page,
-        maps: page.maps?.map((m: any) =>
-          m.id === mapId ? { ...m, like_count: likeCount, map_likes: [{ is_liked: isLiked }] } : m,
+        maps: page.maps?.map((map) =>
+          map.id === mapId ? { ...map, like_count: likeCount, map_likes: [{ is_liked: isLiked }] } : map,
         ),
       })),
     };
@@ -51,26 +49,25 @@ function setMapListServer(
 
 function setTimelineOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
-  predicate: (q: any) => boolean,
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<any>({ predicate }, (old) => {
+  queryClient.setQueriesData<InfiniteData<TimelineResult[]>>({ predicate: predTimeline }, (old) => {
     if (!old || !old.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page: any[]) =>
-        page?.map((r: any) =>
-          r.map?.id === mapId
+        page?.map((result: any) =>
+          result.map?.id === mapId
             ? {
-                ...r,
+                ...result,
                 map: {
-                  ...r.map,
-                  like_count: optimisticState ? r.map.like_count + 1 : Math.max(0, r.map.like_count - 1),
+                  ...result.map,
+                  like_count: optimisticState ? result.map.like_count + 1 : Math.max(0, result.map.like_count - 1),
                   map_likes: [{ is_liked: optimisticState }],
                 },
               }
-            : r,
+            : result,
         ),
       ),
     };
@@ -79,23 +76,22 @@ function setTimelineOptimistic(
 
 function setTimelineServer(
   queryClient: ReturnType<typeof useQueryClient>,
-  predicate: (q: any) => boolean,
   mapId: number,
   likeCount: number,
   isLiked: boolean,
 ) {
-  queryClient.setQueriesData<any>({ predicate }, (old) => {
+  queryClient.setQueriesData<InfiniteData<TimelineResult[]>>({ predicate: predTimeline }, (old) => {
     if (!old || !old.pages) return old;
     return {
       ...old,
-      pages: old.pages.map((page: any[]) =>
-        page?.map((r: any) =>
-          r.map?.id === mapId
+      pages: old.pages.map((page) =>
+        page?.map((result) =>
+          result.map?.id === mapId
             ? {
-                ...r,
-                map: { ...r.map, like_count: likeCount, map_likes: [{ is_liked: isLiked }] },
+                ...result,
+                map: { ...result.map, like_count: likeCount, map_likes: [{ is_liked: isLiked }] },
               }
-            : r,
+            : result,
         ),
       ),
     };
@@ -109,9 +105,6 @@ export function useLikeMutationMapList() {
   return useMutation(
     trpc.like.setLike.mutationOptions({
       onMutate: async (input) => {
-        const predMapList = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "mapList";
-        const predTimeline = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "usersResultList";
-
         await queryClient.cancelQueries({ predicate: predMapList });
         await queryClient.cancelQueries({ predicate: predTimeline });
 
@@ -120,8 +113,8 @@ export function useLikeMutationMapList() {
           ...queryClient.getQueriesData({ predicate: predTimeline }),
         ];
 
-        setMapListOptimistic(queryClient, predMapList, input.mapId, input.isLiked);
-        setTimelineOptimistic(queryClient, predTimeline, input.mapId, input.isLiked);
+        setMapListOptimistic(queryClient, input.mapId, input.isLiked);
+        setTimelineOptimistic(queryClient, input.mapId, input.isLiked);
 
         return { previous };
       },
@@ -131,11 +124,8 @@ export function useLikeMutationMapList() {
         }
       },
       onSuccess: (server) => {
-        const predMapList = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "mapList";
-        const predTimeline = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "usersResultList";
-
-        setMapListServer(queryClient, predMapList, server.mapId, server.likeCount, server.isLiked);
-        setTimelineServer(queryClient, predTimeline, server.mapId, server.likeCount, server.isLiked);
+        setMapListServer(queryClient, server.mapId, server.likeCount, server.isLiked);
+        setTimelineServer(queryClient, server.mapId, server.likeCount, server.isLiked);
       },
     }),
   );
@@ -147,11 +137,9 @@ export function useLikeMutationMapInfo() {
 
   return useMutation(
     trpc.like.setLike.mutationOptions({
-      onSuccess: (server, _vars, ctx) => {
-        const predMapList = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "mapList";
-        const predTimeline = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "usersResultList";
-        setMapListServer(queryClient, predMapList, server.mapId, server.likeCount, server.isLiked);
-        setTimelineServer(queryClient, predTimeline, server.mapId, server.likeCount, server.isLiked);
+      onSuccess: (server, _vars) => {
+        setMapListServer(queryClient, server.mapId, server.likeCount, server.isLiked);
+        setTimelineServer(queryClient, server.mapId, server.likeCount, server.isLiked);
       },
     }),
   );

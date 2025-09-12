@@ -1,27 +1,29 @@
-import { ResultCardInfo } from "@/app/timeline/_lib/type";
+import { TimelineResult } from "@/app/timeline/_lib/type";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// helpers
+const predTimeline: QueryFilters["predicate"] = ({ queryKey }) => queryKey[0] === "usersResultList";
+const predRanking: QueryFilters["predicate"] = ({ queryKey }) => queryKey[0] === "ranking.getMapRanking";
+
 function setTimelineClapOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
-  predicate: (q: any) => boolean,
   resultId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<{ pages: ResultCardInfo[][]; pageParams: unknown[] }>({ predicate }, (old) => {
-    if (!old) return old;
+  queryClient.setQueriesData<InfiniteData<TimelineResult[]>>({ predicate: predTimeline }, (old) => {
+    if (!old || !old.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) =>
-        page.map((r) =>
-          r.id === resultId
+        page.map((result) =>
+          result.id === resultId
             ? {
-                ...r,
+                ...result,
                 hasClap: optimisticState,
-                clap_count: optimisticState ? r.clap_count + 1 : Math.max(0, r.clap_count - 1),
+                clap_count: optimisticState ? result.clap_count + 1 : Math.max(0, result.clap_count - 1),
               }
-            : r,
+            : result,
         ),
       ),
     };
@@ -30,12 +32,11 @@ function setTimelineClapOptimistic(
 
 function setTimelineClapServer(
   queryClient: ReturnType<typeof useQueryClient>,
-  predicate: (q: any) => boolean,
   resultId: number,
   isClaped: boolean,
   clapCount: number,
 ) {
-  queryClient.setQueriesData<{ pages: ResultCardInfo[][]; pageParams: unknown[] }>({ predicate }, (old) => {
+  queryClient.setQueriesData<InfiniteData<TimelineResult[]>>({ predicate: predTimeline }, (old) => {
     if (!old) return old;
     return {
       ...old,
@@ -52,7 +53,7 @@ function setRankingClapOptimistic(
   resultId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<any>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutPuts["ranking"]["getMapRanking"]>(filter, (old) => {
     if (!old) return old;
     return old.map((r: any) =>
       r.id === resultId
@@ -73,71 +74,35 @@ function setRankingClapServer(
   isClaped: boolean,
   clapCount: number,
 ) {
-  queryClient.setQueriesData<any>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutPuts["ranking"]["getMapRanking"]>(filter, (old) => {
     if (!old) return old;
-    return old.map((r: any) =>
-      r.id === resultId ? { ...r, clap_count: clapCount, claps: [{ is_claped: isClaped }] } : r,
+    return old.map((result) =>
+      result.id === resultId ? { ...result, clap_count: clapCount, claps: [{ is_claped: isClaped }] } : result,
     );
   });
 }
 
-function setRankingByPredicateOptimistic(
-  queryClient: ReturnType<typeof useQueryClient>,
-  predicate: (q: any) => boolean,
-  resultId: number,
-  optimisticState: boolean,
-) {
-  queryClient.setQueriesData<any>({ predicate }, (old) => {
-    if (!old) return old;
-    return old.map((r: any) =>
-      r.id === resultId
-        ? {
-            ...r,
-            clap_count: optimisticState ? r.clap_count + 1 : Math.max(0, r.clap_count - 1),
-            claps: [{ is_claped: optimisticState }],
-          }
-        : r,
-    );
-  });
-}
-
-function setRankingByPredicateServer(
-  queryClient: ReturnType<typeof useQueryClient>,
-  predicate: (q: any) => boolean,
-  resultId: number,
-  isClaped: boolean,
-  clapCount: number,
-) {
-  queryClient.setQueriesData<any>({ predicate }, (old) => {
-    if (!old) return old;
-    return old.map((r: any) =>
-      r.id === resultId ? { ...r, clap_count: clapCount, claps: [{ is_claped: isClaped }] } : r,
-    );
-  });
-}
-
-export function useClapMutationTimeline() {
+export function useClapMutationTimeline({ mapId }: { mapId: number }) {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   return useMutation(
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const predTimeline = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "usersResultList";
-        const predRanking = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "ranking.getMapRanking";
+        const mapRankingFilter = trpc.ranking.getMapRanking.queryFilter({ mapId });
 
         await queryClient.cancelQueries({ predicate: predTimeline });
-        await queryClient.cancelQueries({ predicate: predRanking });
+        await queryClient.cancelQueries(mapRankingFilter);
 
         const previous = [
           ...queryClient.getQueriesData({ predicate: predTimeline }),
-          ...queryClient.getQueriesData({ predicate: predRanking }),
+          ...queryClient.getQueriesData(mapRankingFilter),
         ];
 
-        setTimelineClapOptimistic(queryClient, predTimeline, input.resultId, input.optimisticState);
-        setRankingByPredicateOptimistic(queryClient, predRanking, input.resultId, input.optimisticState);
+        setTimelineClapOptimistic(queryClient, input.resultId, input.optimisticState);
+        setRankingClapOptimistic(queryClient, mapRankingFilter, input.resultId, input.optimisticState);
 
-        return { previous };
+        return { previous, mapRankingFilter };
       },
       onError: (_err, _vars, ctx) => {
         if (ctx?.previous) {
@@ -146,11 +111,9 @@ export function useClapMutationTimeline() {
           }
         }
       },
-      onSuccess: (server) => {
-        const predTimeline = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "usersResultList";
-        const predRanking = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "ranking.getMapRanking";
-        setTimelineClapServer(queryClient, predTimeline, server.resultId, server.isClaped, server.clapCount);
-        setRankingByPredicateServer(queryClient, predRanking, server.resultId, server.isClaped, server.clapCount);
+      onSuccess: (server, _vars, ctx) => {
+        setTimelineClapServer(queryClient, server.resultId, server.isClaped, server.clapCount);
+        setRankingClapServer(queryClient, ctx.mapRankingFilter, server.resultId, server.isClaped, server.clapCount);
       },
     }),
   );
@@ -163,19 +126,18 @@ export function useClapMutationRanking(mapId: number) {
   return useMutation(
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const filter = trpc.ranking.getMapRanking.queryFilter({ mapId });
-        const predTimeline = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "usersResultList";
+        const mapRankingFilter = trpc.ranking.getMapRanking.queryFilter({ mapId });
 
-        await queryClient.cancelQueries(filter);
+        await queryClient.cancelQueries(mapRankingFilter);
         await queryClient.cancelQueries({ predicate: predTimeline });
 
-        const previous = queryClient.getQueriesData(filter);
+        const previous = queryClient.getQueriesData(mapRankingFilter);
         const previousTimeline = queryClient.getQueriesData({ predicate: predTimeline });
 
-        setRankingClapOptimistic(queryClient, filter, input.resultId, input.optimisticState);
-        setTimelineClapOptimistic(queryClient, predTimeline, input.resultId, input.optimisticState);
+        setRankingClapOptimistic(queryClient, mapRankingFilter, input.resultId, input.optimisticState);
+        setTimelineClapOptimistic(queryClient, input.resultId, input.optimisticState);
 
-        return { previous, filter, previousTimeline };
+        return { previous, mapRankingFilter, previousTimeline };
       },
       onError: (_err, _vars, ctx) => {
         if (ctx?.previous) {
@@ -191,9 +153,8 @@ export function useClapMutationRanking(mapId: number) {
       },
       onSuccess: (server, _vars, ctx) => {
         if (!ctx) return;
-        const predTimeline = (q: any) => Array.isArray(q.queryKey) && q.queryKey[0] === "usersResultList";
-        setRankingClapServer(queryClient, ctx.filter, server.resultId, server.isClaped, server.clapCount);
-        setTimelineClapServer(queryClient, predTimeline, server.resultId, server.isClaped, server.clapCount);
+        setRankingClapServer(queryClient, ctx.mapRankingFilter, server.resultId, server.isClaped, server.clapCount);
+        setTimelineClapServer(queryClient, server.resultId, server.isClaped, server.clapCount);
       },
     }),
   );

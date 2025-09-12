@@ -3,13 +3,13 @@ import RankingCountIcon from "@/components/shared/map-count-icon/RankingCountIco
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { HTMLAttributes } from "react";
-import { ResultCardInfo } from "../../_lib/type";
+import { TimelineResult } from "../../_lib/type";
 import { MapResultBadgesMobile } from "./child/MapResultStatus";
 import ResultCardContent from "./ResultCardContent";
 import ResultCardHeader from "./ResultCardHeader";
 
 interface ResultCardProps {
-  result: ResultCardInfo;
+  result: TimelineResult;
 }
 
 function ResultCard(props: ResultCardProps) {
@@ -37,7 +37,7 @@ function ResultCard(props: ResultCardProps) {
 }
 
 interface MapIconsProps extends HTMLAttributes<HTMLDivElement> {
-  result: ResultCardInfo;
+  result: TimelineResult;
   top?: string;
   right?: string;
   bottom?: string;

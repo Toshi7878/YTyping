@@ -1,4 +1,4 @@
-import { ResultCardInfo } from "@/app/timeline/_lib/type";
+import { TimelineResult } from "@/app/timeline/_lib/type";
 import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -7,7 +7,7 @@ import Link from "next/link";
 import { HTMLAttributes } from "react";
 import { MapResultStatus } from "./child/MapResultStatus";
 
-const ResultCardContent = ({ result }: { result: ResultCardInfo }) => {
+const ResultCardContent = ({ result }: { result: TimelineResult }) => {
   const isToggledInputMode = result.status.roma_type != 0 && result.status.kana_type != 0;
 
   return (
@@ -33,7 +33,7 @@ const ResultCardContent = ({ result }: { result: ResultCardInfo }) => {
 };
 
 interface MapInfoProps extends HTMLAttributes<HTMLDivElement> {
-  map: ResultCardInfo["map"];
+  map: TimelineResult["map"];
   isToggledInputMode: boolean;
 }
 

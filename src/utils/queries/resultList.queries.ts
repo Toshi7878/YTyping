@@ -2,7 +2,7 @@ import { PAGE_SIZE, PARAM_NAME } from "@/app/timeline/_lib/consts";
 import { infiniteQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import type { ResultCardInfo } from "../../app/timeline/_lib/type";
+import type { TimelineResult } from "../../app/timeline/_lib/type";
 import { getBaseUrl } from "../getBaseUrl";
 import { QUERY_KEYS } from "./const";
 
@@ -44,7 +44,7 @@ interface GetResultListParams {
   params?: Partial<typeof PARAM_NAME>;
 }
 
-async function getResultList({ page, params }: GetResultListParams): Promise<ResultCardInfo[]> {
+async function getResultList({ page, params }: GetResultListParams): Promise<TimelineResult[]> {
   const response = await axios.get(`${getBaseUrl()}/api/users-result-list`, {
     params: {
       page,
