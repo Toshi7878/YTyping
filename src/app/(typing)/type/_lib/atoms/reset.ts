@@ -10,7 +10,6 @@ import {
 import { usePlaySpeedReducer } from "./speedReducerAtoms";
 import {
   useClearLineResults,
-  useReadMap,
   useResetPlayingState,
   useSetCurrentLine,
   useSetGameUtilParams,
@@ -21,7 +20,6 @@ import {
 export const usePathChangeAtomReset = () => {
   const dispatchSpeed = usePlaySpeedReducer();
   const setGameUtils = useSetGameUtilParams();
-  const readMap = useReadMap();
 
   const { resetTypingStatus } = useSetTypingStatus();
   const { resetGameUtilRefParams } = useGameUtilityReferenceParams();
