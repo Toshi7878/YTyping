@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./pink-theme.css";
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -107,6 +108,9 @@
   --word-word: oklch(1 0 0);
   --word-completed: oklch(0.7864 0.1143 186.56);
   --word-nextWord: oklch(0.683 0 0);
+  --word-outline-text:
+    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000,
+    0 -1px 0 #000;
 
   --success: oklch(0.6576 0.1796 158.18);
   --success-foreground: oklch(0.985 0 0);
@@ -132,6 +136,9 @@
   --outline-text:
     1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000,
     0 -1px 0 #000;
+  --custom-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+    var(--tw-shadow);
 }
 
 @layer utilities {
@@ -151,6 +158,10 @@
     text-shadow: var(--outline-text);
   }
 
+  .word-outline-text {
+    text-shadow: var(--word-outline-text);
+  }
+
   .word-font {
     font-family:
       Segoe UI,
@@ -158,6 +169,10 @@
       "YuGothic",
       sans-serif;
     font-weight: 600;
+  }
+
+  .custom-shadow {
+    box-shadow: var(--custom-shadow);
   }
 
   .map-card-hover:hover {

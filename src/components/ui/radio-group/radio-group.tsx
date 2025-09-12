@@ -83,14 +83,17 @@ const radioCardVariants = cva(
         destructive:
           "data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground data-[state=checked]:shadow-lg",
         outline: "data-[state=checked]:border-primary data-[state=checked]:border-2 data-[state=checked]:shadow-lg",
-        roma: "data-[state=checked]:bg-roma data-[state=checked]:text-white data-[state=checked]:shadow-lg",
-        kana: "data-[state=checked]:bg-kana data-[state=checked]:text-white data-[state=checked]:shadow-lg",
-        english: "data-[state=checked]:bg-english data-[state=checked]:text-white data-[state=checked]:shadow-lg",
+        roma: "data-[state=checked]:bg-roma data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
+        kana: "data-[state=checked]:bg-kana data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
+        english:
+          "data-[state=checked]:bg-english data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
         romakana:
-          "data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-roma data-[state=checked]:to-kana data-[state=checked]:text-white data-[state=checked]:shadow-lg",
-        flick: "data-[state=checked]:bg-flick data-[state=checked]:text-white data-[state=checked]:shadow-lg",
-        perfect: "data-[state=checked]:bg-perfect data-[state=checked]:text-white data-[state=checked]:shadow-lg",
-        all: "data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-roma data-[state=checked]:via-kana data-[state=checked]:to-english data-[state=checked]:text-white data-[state=checked]:shadow-lg",
+          "data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-roma data-[state=checked]:to-kana data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
+        flick:
+          "data-[state=checked]:bg-flick data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
+        perfect:
+          "data-[state=checked]:bg-perfect data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
+        all: "data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-roma data-[state=checked]:via-kana data-[state=checked]:to-english data-[state=checked]:text-primary-foreground data-[state=checked]:shadow-lg",
       },
       size: {
         default: "text-sm px-3 py-2",
