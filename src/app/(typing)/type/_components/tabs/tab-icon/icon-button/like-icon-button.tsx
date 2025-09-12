@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useLikeMutationMapInfo } from "@/utils/mutations/like.mutations";
 import { useParams } from "next/navigation";
 
-const LikeIcon = () => {
+const LikeIconButton = () => {
   const { id: mapId } = useParams<{ id: string }>();
 
   const isLiked = useIsLikeState();
@@ -19,7 +19,7 @@ const LikeIcon = () => {
     if (setMapLike.isPending) return;
 
     setMapLike.mutate(
-      { mapId: Number(mapId), isLiked: !isLiked },
+      { mapId: Number(mapId), likeValue: !isLiked },
       {
         onError: (err) => {
           console.log(err);
@@ -34,15 +34,14 @@ const LikeIcon = () => {
 
   return (
     <TooltipWrapper label="譜面にいいね" delayDuration={500} className="relative top-1">
-      <div onClick={handleClick}>
-        <LikeButton
-          size={isSmScreen ? 96 : 64}
-          defaultLiked={isLiked}
-          className={cn("bottom-3.5 cursor-pointer", isLiked ? "hover:opacity-80" : "hover:text-foreground/90")}
-        />
-      </div>
+      <LikeButton
+        onClick={handleClick}
+        size={isSmScreen ? 96 : 64}
+        defaultLiked={isLiked}
+        className={cn("bottom-3.5", isLiked ? "hover:opacity-80" : "hover:text-foreground/90")}
+      />
     </TooltipWrapper>
   );
 };
 
-export default LikeIcon;
+export default LikeIconButton;

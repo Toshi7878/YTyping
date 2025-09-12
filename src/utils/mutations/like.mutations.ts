@@ -113,8 +113,8 @@ export function useLikeMutationMapList() {
           ...queryClient.getQueriesData({ predicate: predTimeline }),
         ];
 
-        setMapListOptimistic(queryClient, input.mapId, input.isLiked);
-        setTimelineOptimistic(queryClient, input.mapId, input.isLiked);
+        setMapListOptimistic(queryClient, input.mapId, input.likeValue);
+        setTimelineOptimistic(queryClient, input.mapId, input.likeValue);
 
         return { previous };
       },

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BiEdit } from "react-icons/bi";
 
-const EditIcon = () => {
+const EditIconButton = () => {
   const { readMapInfo } = useMapInfoRef();
   const { id: mapId } = useParams<{ id: string }>();
   const { data: session } = useSession();
@@ -27,4 +27,4 @@ const EditIcon = () => {
   );
 };
 
-export default EditIcon;
+export default EditIconButton;

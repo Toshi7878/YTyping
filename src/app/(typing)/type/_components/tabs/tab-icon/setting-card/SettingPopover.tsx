@@ -7,7 +7,7 @@ import {
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { LabeledRadioGroup, LabeledRadioItem } from "@/components/ui/radio-group/labeled-radio-group";
+import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -153,6 +153,11 @@ const UserLineCompletedRadioButton = () => {
     setUserTypingOptions({ line_completed_display: value });
   };
 
+  const items = [
+    { label: "ワードハイライト", value: "HIGH_LIGHT" },
+    { label: "次のワードを表示", value: "NEXT_WORD" },
+  ];
+
   return (
     <LabeledRadioGroup
       label="打ち切り時のワード表示"
@@ -160,10 +165,8 @@ const UserLineCompletedRadioButton = () => {
       value={line_completed_display}
       onValueChange={changeRadio}
       className="flex flex-row gap-5"
-    >
-      <LabeledRadioItem value="HIGH_LIGHT" label="ワードハイライト" />
-      <LabeledRadioItem value="NEXT_WORD" label="次のワードを表示" />
-    </LabeledRadioGroup>
+      items={items}
+    />
   );
 };
 
@@ -175,6 +178,11 @@ const UserNextDisplayRadioButton = () => {
     setUserTypingOptions({ next_display: value });
   };
 
+  const items = [
+    { label: "歌詞", value: "LYRICS" },
+    { label: "ワード", value: "WORD" },
+  ];
+
   return (
     <LabeledRadioGroup
       value={next_display}
@@ -182,10 +190,8 @@ const UserNextDisplayRadioButton = () => {
       label="次の歌詞表示"
       className="flex flex-row gap-5"
       labelClassName="text-lg font-semibold"
-    >
-      <LabeledRadioItem value="LYRICS" label="歌詞" />
-      <LabeledRadioItem value="WORD" label="ワード" />
-    </LabeledRadioGroup>
+      items={items}
+    />
   );
 };
 

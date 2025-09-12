@@ -49,22 +49,24 @@ const LabeledRadioItem = React.forwardRef<React.ComponentRef<typeof RadioGroupIt
 LabeledRadioItem.displayName = "LabeledRadioItem";
 
 export interface LabeledRadioGroupProps extends React.ComponentProps<typeof RadioGroup> {
+  items: { label: string; value: string }[];
   label?: React.ReactNode;
   labelClassName?: string;
   containerClassName?: string;
   description?: React.ReactNode;
   error?: string;
-  children: React.ReactNode;
 }
 
 const LabeledRadioGroup = React.forwardRef<React.ComponentRef<typeof RadioGroup>, LabeledRadioGroupProps>(
-  ({ label, labelClassName, containerClassName, className, description, error, children, ...props }, ref) => {
+  ({ label, labelClassName, containerClassName, className, description, error, items, ...props }, ref) => {
     return (
       <div className={cn("space-y-3", containerClassName)}>
         {label && <Label className={cn("text-sm font-medium", labelClassName)}>{label}</Label>}
         {description && <p className="text-muted-foreground text-xs">{description}</p>}
         <RadioGroup ref={ref} className={cn(error && "border-destructive", className)} {...props}>
-          {children}
+          {items.map((item) => (
+            <LabeledRadioItem key={item.value} label={item.label} value={item.value} />
+          ))}
         </RadioGroup>
         {error && <p className="text-destructive text-sm">{error}</p>}
       </div>

@@ -6,12 +6,12 @@ export const likeRouter = {
     .input(
       z.object({
         mapId: z.number(),
-        isLiked: z.boolean(),
+        likeValue: z.boolean(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;
-      const { mapId, isLiked } = input;
+      const { mapId, likeValue } = input;
 
       const payload = await db.$transaction(async (tx) => {
         await tx.map_likes.upsert({
@@ -22,7 +22,7 @@ export const likeRouter = {
             },
           },
           update: {
-            is_liked: isLiked,
+            is_liked: likeValue,
           },
           create: {
             user_id: user.id,
@@ -43,7 +43,7 @@ export const likeRouter = {
           data: { like_count: newLikeCount },
         });
 
-        return { mapId, isLiked, likeCount: newLikeCount };
+        return { mapId, isLiked: likeValue, likeCount: newLikeCount };
       });
 
       return payload;

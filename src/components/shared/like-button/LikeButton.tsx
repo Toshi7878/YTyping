@@ -1,30 +1,21 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import "./css/render.css";
 
 type LikeButtonProps = {
   size?: number;
-  onClick?: (isLiked: boolean) => void;
+  onClick?: (event: React.MouseEvent, likeValue: boolean) => void;
   defaultLiked?: boolean;
   className?: string;
   likeCount?: number;
   disabled?: boolean;
 };
 
-export const LikeButton = ({
-  size = 50,
-  defaultLiked = false,
-  onClick,
-  className,
-  likeCount,
-  disabled,
-}: LikeButtonProps) => {
+export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className, disabled }: LikeButtonProps) => {
   const [isLiked, setIsLiked] = useState(defaultLiked);
-  const [hasAnimated, setHasAnimated] = useState(false);
 
-  // サイズ関連の計算を分離
   const backgroundWidth = size * 25;
   const heartSize = Math.floor(size / 2);
 
@@ -42,21 +33,59 @@ export const LikeButton = ({
     backgroundPosition: isLiked ? `-${backgroundWidth}px 0` : `0 0`,
   };
 
-  const handleClick = useCallback(() => {
-    const newLikedState = !isLiked;
-    setIsLiked(newLikedState);
+  return (
+    <button
+      disabled={disabled}
+      className={cn("relative cursor-pointer", className)}
+      style={buttonStyle}
+      type="button"
+      suppressHydrationWarning
+      onClick={(event: React.MouseEvent) => {
+        const newLikeValue = !isLiked;
+        setIsLiked(newLikeValue);
 
-    // アニメーション状態を更新（初回クリック時のみ）
-    if (!hasAnimated) {
-      setHasAnimated(true);
-    }
+        onClick?.(event, newLikeValue);
+      }}
+    >
+      <div
+        className={cn("like-base-64 absolute inset-0 flex items-center justify-center rounded-full")}
+        style={backgroundStyle}
+      >
+        <Heart
+          className={cn(isLiked ? "fill-like text-like like-animation" : "like-animation-end fill-transparent")}
+          size={heartSize}
+          strokeWidth={2.5}
+        />
+      </div>
+    </button>
+  );
+};
 
-    onClick?.(newLikedState);
-  }, [isLiked, hasAnimated, onClick]);
+export const LikeButtonWithCount = ({
+  size = 50,
+  defaultLiked = false,
+  onClick,
+  className,
+  likeCount,
+  disabled,
+}: LikeButtonProps & { likeCount: number }) => {
+  const [isLiked, setIsLiked] = useState(defaultLiked);
 
-  const getAnimationClass = () => {
-    if (!hasAnimated) return "";
-    return isLiked ? "like-animation" : "like-animation-end";
+  const backgroundWidth = size * 25;
+  const heartSize = Math.floor(size / 2);
+
+  const buttonStyle = {
+    width: `${size}px`,
+    height: `${size}px`,
+  };
+
+  const backgroundStyle = {
+    width: `${size}px`,
+    height: `${size}px`,
+    backgroundSize: `auto ${size}px`,
+    transition: `background-position steps(25)`,
+    transitionDuration: isLiked ? "1s" : "0s",
+    backgroundPosition: isLiked ? `-${backgroundWidth}px 0` : `0 0`,
   };
 
   return (
@@ -64,9 +93,14 @@ export const LikeButton = ({
       disabled={disabled}
       className={cn("relative", className)}
       style={buttonStyle}
-      onClick={handleClick}
-      type="submit"
+      type="button"
       suppressHydrationWarning
+      onClick={(event: React.MouseEvent) => {
+        const newLikeValue = !isLiked;
+        setIsLiked(newLikeValue);
+
+        onClick?.(event, newLikeValue);
+      }}
     >
       <div
         className={cn("like-base-64 absolute inset-0 flex items-center justify-center rounded-full")}
@@ -74,7 +108,7 @@ export const LikeButton = ({
         suppressHydrationWarning
       >
         <Heart
-          className={cn(isLiked ? "fill-like text-like" : "fill-transparent", getAnimationClass())}
+          className={cn(isLiked ? "fill-like text-like like-animation" : "like-animation-end fill-transparent")}
           size={heartSize}
           strokeWidth={2.5}
           suppressHydrationWarning

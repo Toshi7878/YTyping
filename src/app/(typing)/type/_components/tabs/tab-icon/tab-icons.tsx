@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import EditIcon from "./icons/EditIcon";
-import LikeIcon from "./icons/LikeIcon";
+import EditIconButton from "./icon-button/edit-icon-button";
+import LikeIconButton from "./icon-button/like-icon-button";
 import SettingPopover from "./setting-card/SettingPopover";
 
 export default function TabIcons({ className }: { className?: string }) {
@@ -10,8 +10,8 @@ export default function TabIcons({ className }: { className?: string }) {
   return (
     <div className={cn("text-foreground/60 relative flex md:bottom-1", className)}>
       {session?.user.id ? <SettingPopover /> : null}
-      {session?.user.id ? <LikeIcon /> : null}
-      <EditIcon />
+      {session?.user.id ? <LikeIconButton /> : null}
+      <EditIconButton />
     </div>
   );
 }

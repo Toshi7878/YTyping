@@ -1,4 +1,4 @@
-import { LikeButton } from "@/components/shared/like-button/LikeButton";
+import { LikeButtonWithCount } from "@/components/shared/like-button/LikeButton";
 import { cn } from "@/lib/utils";
 import { useLikeMutationMapList } from "@/utils/mutations/like.mutations";
 import { useSession } from "next-auth/react";
@@ -23,32 +23,30 @@ interface LikeCountIconProps {
 }
 
 const AuthenticatedLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconProps) => {
-  const { data: session } = useSession();
   const setLikeMutation = useLikeMutationMapList();
 
-  const handleClick = (event: React.MouseEvent) => {
-    if (setLikeMutation.isPending) return;
-
+  const handleClick = (event: React.MouseEvent, newLikeValue: boolean) => {
     event.stopPropagation();
     event.preventDefault();
 
-    if (!session?.user?.id || setLikeMutation.isPending) return;
+    if (setLikeMutation.isPending) return;
 
-    setLikeMutation.mutate({ mapId, isLiked: !isLiked });
+    setLikeMutation.mutate({ mapId, likeValue: newLikeValue });
   };
 
   return (
     <div
-      className={cn(
-        "flex items-baseline rounded-md pr-1",
-        isLiked ? "text-like" : "text-muted-foreground",
-        session?.user.id && !setLikeMutation.isPending && "hover:bg-like/40 hover:cursor-pointer",
-      )}
+      className={cn("flex items-baseline rounded-md pr-1", isLiked ? "text-like" : "text-muted-foreground")}
       suppressHydrationWarning
     >
-      <div className="relative top-0 flex items-center font-mono text-lg" onClick={handleClick}>
-        <LikeButton defaultLiked={isLiked} size={34} likeCount={likeCount} disabled={setLikeMutation.isPending} />
-      </div>
+      <LikeButtonWithCount
+        onClick={handleClick}
+        defaultLiked={isLiked}
+        size={34}
+        likeCount={likeCount}
+        disabled={setLikeMutation.isPending}
+        className="!hover:bg-like/40"
+      />
     </div>
   );
 };
