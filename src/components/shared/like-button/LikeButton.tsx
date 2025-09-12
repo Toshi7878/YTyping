@@ -75,8 +75,8 @@ export const LikeButtonWithCount = ({
   const heartSize = Math.floor(size / 2);
 
   const buttonStyle = {
-    width: `${size}px`,
     height: `${size}px`,
+    // width は auto にして内容に応じて調整
   };
 
   const backgroundStyle = {
@@ -91,30 +91,30 @@ export const LikeButtonWithCount = ({
   return (
     <button
       disabled={disabled}
-      className={cn("relative", className)}
+      className={cn(
+        "hover:bg-like/40 relative top-[0.09px] flex w-9 cursor-pointer items-center justify-center space-x-1 rounded-sm px-1",
+        isLiked ? "text-like" : "text-muted-foreground",
+        className,
+      )}
       style={buttonStyle}
       type="button"
-      suppressHydrationWarning
       onClick={(event: React.MouseEvent) => {
         const newLikeValue = !isLiked;
         setIsLiked(newLikeValue);
-
         onClick?.(event, newLikeValue);
       }}
     >
-      <div
-        className={cn("like-base-64 absolute inset-0 flex items-center justify-center rounded-full")}
-        style={backgroundStyle}
-        suppressHydrationWarning
-      >
+      <div className="relative top-0 flex items-center" style={{ width: `${size}px`, height: `${size}px` }}>
         <Heart
-          className={cn(isLiked ? "fill-like text-like like-animation" : "like-animation-end fill-transparent")}
+          className={cn("z-10", isLiked ? "fill-like text-like like-animation" : "like-animation-end fill-transparent")}
           size={heartSize}
           strokeWidth={2.5}
-          suppressHydrationWarning
         />
+        <div className={cn("like-base-64 absolute inset-y-0 -right-[8.25px]")} style={backgroundStyle} />
       </div>
-      {typeof likeCount === "number" && <div className="absolute right-0 bottom-0 text-xs">{likeCount}</div>}
+
+      {/* カウント表示 */}
+      {typeof likeCount === "number" && <span className="relative font-mono text-lg select-none">{likeCount}</span>}
     </button>
   );
 };

@@ -26,7 +26,7 @@ function ResultCard(props: ResultCardProps) {
 
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
         <ResultCardContent result={result} />
-        <MapIcons result={result} className="absolute bottom-1 z-2 hidden md:flex" />
+        <MapIcons result={result} className="absolute bottom-0 left-4 z-2 flex items-center space-x-1" />
       </CardContentWithThumbnail>
 
       <CardFooter className="py-4">
@@ -38,15 +38,11 @@ function ResultCard(props: ResultCardProps) {
 
 interface MapIconsProps extends HTMLAttributes<HTMLDivElement> {
   result: TimelineResult;
-  top?: string;
-  right?: string;
-  bottom?: string;
-  left?: string;
 }
 
-const MapIcons = ({ result, className, ...rest }: MapIconsProps) => {
+const MapIcons = ({ result, className }: MapIconsProps) => {
   return (
-    <div className={cn(className)} {...rest}>
+    <div className={cn(className)}>
       <RankingCountIcon myRank={result.map.results[0]?.rank} rankingCount={result.map.ranking_count} />
       <LikeCountIcon
         mapId={result.map.id}

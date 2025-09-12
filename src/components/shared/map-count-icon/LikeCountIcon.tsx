@@ -1,5 +1,4 @@
 import { LikeButtonWithCount } from "@/components/shared/like-button/LikeButton";
-import { cn } from "@/lib/utils";
 import { useLikeMutationMapList } from "@/utils/mutations/like.mutations";
 import { useSession } from "next-auth/react";
 import React from "react";
@@ -35,19 +34,13 @@ const AuthenticatedLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCou
   };
 
   return (
-    <div
-      className={cn("flex items-baseline rounded-md pr-1", isLiked ? "text-like" : "text-muted-foreground")}
-      suppressHydrationWarning
-    >
-      <LikeButtonWithCount
-        onClick={handleClick}
-        defaultLiked={isLiked}
-        size={34}
-        likeCount={likeCount}
-        disabled={setLikeMutation.isPending}
-        className="!hover:bg-like/40"
-      />
-    </div>
+    <LikeButtonWithCount
+      onClick={handleClick}
+      defaultLiked={isLiked}
+      size={34}
+      likeCount={likeCount}
+      disabled={setLikeMutation.isPending}
+    />
   );
 };
 
@@ -55,7 +48,7 @@ const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
   const { data: session } = useSession();
 
   return (
-    <div className="flex" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
+    <div onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
       {session?.user.id ? (
         <AuthenticatedLikeCountIconButton isLiked={isLiked} likeCount={likeCount} mapId={mapId} />
       ) : (

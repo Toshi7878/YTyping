@@ -56,7 +56,7 @@ const MapInfoBottom = ({ map }: MapInfoProps) => {
           {formatTime(map.difficulty.total_time)}
         </Badge>
       </div>
-      <div className="flex">
+      <div className="flex items-center space-x-1">
         <RankingCountIcon key={map.results[0]?.rank} myRank={map.results[0]?.rank} rankingCount={map.ranking_count} />
         <LikeCountIcon mapId={map.id} isLiked={!!map.map_likes[0]?.is_liked} likeCount={map.like_count} />
       </div>
