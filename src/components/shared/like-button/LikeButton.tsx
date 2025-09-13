@@ -66,7 +66,6 @@ export const LikeButtonWithCount = ({
   size = 50,
   defaultLiked = false,
   onClick,
-  className,
   likeCount,
   disabled,
 }: LikeButtonProps & { likeCount: number }) => {
@@ -92,11 +91,7 @@ export const LikeButtonWithCount = ({
   return (
     <button
       disabled={disabled}
-      className={cn(
-        "hover:bg-like/40 relative top-[0.09px] flex w-9 cursor-pointer items-center justify-center space-x-1 rounded-sm px-1",
-        isLiked ? "text-like" : "text-muted-foreground",
-        className,
-      )}
+      className="hover:bg-like/40 relative top-[0.09px] flex w-9 cursor-pointer items-center justify-center space-x-1 rounded-sm px-1"
       style={buttonStyle}
       type="button"
       onClick={(event: React.MouseEvent) => {
@@ -108,15 +103,22 @@ export const LikeButtonWithCount = ({
     >
       <div className="relative top-0 flex items-center" style={{ width: `${size}px`, height: `${size}px` }}>
         <Heart
-          className={cn("z-10", isLiked ? "fill-like text-like like-animation" : "like-animation-end fill-transparent")}
+          className={cn(
+            "z-10",
+            hasBeenClicked && isLiked ? "like-animation" : "like-animation-end",
+            isLiked ? "fill-like text-like" : "text-muted-foreground fill-transparent",
+          )}
           size={heartSize}
           strokeWidth={2.5}
         />
         <div className={cn("like-base-64 absolute inset-y-0 -right-[8.25px]")} style={backgroundStyle} />
       </div>
-
       {/* カウント表示 */}
-      {typeof likeCount === "number" && <span className="font-mono text-lg select-none">{likeCount}</span>}
+      {typeof likeCount === "number" && (
+        <span className={cn("font-mono text-lg select-none", isLiked ? "text-like" : "text-muted-foreground")}>
+          {likeCount}
+        </span>
+      )}
     </button>
   );
 };

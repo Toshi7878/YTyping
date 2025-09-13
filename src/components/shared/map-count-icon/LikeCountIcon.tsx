@@ -23,7 +23,6 @@ interface LikeCountIconProps {
 
 const ActiveLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconProps) => {
   const setLikeMutation = useLikeMutationMapList();
-  console.log("mapId", mapId, "isLiked", isLiked, "likeCount", likeCount);
 
   const handleClick = (event: React.MouseEvent, newLikeValue: boolean) => {
     event.stopPropagation();
