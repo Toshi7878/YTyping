@@ -19,7 +19,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { useGameUtilityReferenceParams } from "../../../_lib/atoms/refAtoms";
-import { useSetTypingStatusRank } from "../../../_lib/atoms/stateAtoms";
+import { useSceneGroupState, useSetTypingStatusRank } from "../../../_lib/atoms/stateAtoms";
 import RankingPopoverContent from "./RankingPopoverContent";
 
 type RankingResult = RouterOutPuts["ranking"]["getMapRanking"][number];
@@ -30,6 +30,7 @@ const TabRanking = ({ className }: { className?: string }) => {
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const setTypingStatusRank = useSetTypingStatusRank();
   const { data: session } = useSession();
+  const sceneGroup = useSceneGroupState();
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -37,8 +38,10 @@ const TabRanking = ({ className }: { className?: string }) => {
 
     const scores = data.map((result) => result.status.score);
     writeGameUtilRefParams({ rankingScores: scores });
+
+    if (sceneGroup !== "Ready") return;
     setTypingStatusRank(scores.length + 1);
-  }, [data]);
+  }, [data, sceneGroup, setTypingStatusRank, writeGameUtilRefParams]);
 
   const toggleClap = useClapMutationRanking(Number(mapId));
 
