@@ -57,9 +57,7 @@ const RankingPopoverContent = ({
 
     onOpenChange?.(false);
     setTabName("ステータス");
-    writeGameUtilRefParams({
-      replayUserName: name,
-    });
+    writeGameUtilRefParams({ replayUserName: name });
 
     if (sceneGroup === "End") {
       retry("replay");

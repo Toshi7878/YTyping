@@ -16,6 +16,8 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
   const resultQueries = useResultQueries();
 
   return async (resultId: number | null) => {
+    readPlayer().playVideo();
+    readPlayer().pauseVideo();
     try {
       if (resultId) {
         showLoading({ message: "リザルトデータを読込中..." });
