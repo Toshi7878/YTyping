@@ -12,9 +12,9 @@
   --primary: #ffc0dd;
   --primary-dark: #f6afcf;
   --primary-foreground: #6a6a6a;
-  --secondary-light: #ffa0cc;
-  --secondary: #f5a4cb;
-  --secondary-dark: #f5a4cb;
+  --secondary-light: #ff8ec4;
+  --secondary: #ff88c1;
+  --secondary-dark: #ee78b1;
   --secondary-foreground: oklch(1 0 0);
   --muted: #93897bb3;
   --muted-foreground: #93897b9e;
