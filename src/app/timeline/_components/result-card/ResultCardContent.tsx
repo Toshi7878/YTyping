@@ -12,7 +12,11 @@ const ResultCardContent = ({ result }: { result: TimelineResult }) => {
 
   return (
     <div className="flex w-full items-center gap-4 py-6">
-      <Badge variant="result" className={cn("hidden font-bold md:flex", result.rank === 1 && "text-perfect")} size="lg">
+      <Badge
+        variant="result"
+        className={cn("hidden font-bold md:flex", result.rank === 1 && "outline-text text-perfect")}
+        size="lg"
+      >
         Rank: #{result.rank}
       </Badge>
 
