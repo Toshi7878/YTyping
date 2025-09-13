@@ -242,8 +242,7 @@ export default function MapTable() {
             className="border-none pb-56"
             rowClassName={(index: number) => {
               return cn(
-                "border-b transition-none",
-                "hover:bg-info/30",
+                "border-b hover:bg-info/30",
                 selectIndex === index && "!bg-info/70",
                 timeLineIndex === index && "bg-success/30",
               );

@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
                 onClick={(event) => onRowClick?.(event, row.original, index)}
-                className={cn(onRowClick && "cursor-pointer", rowClassName?.(index))}
+                className={cn("transition-none", onRowClick && "cursor-pointer", rowClassName?.(index))}
               >
                 {row.getVisibleCells().map((cell) => {
                   const columnMeta = cell.column.columnDef.meta;
