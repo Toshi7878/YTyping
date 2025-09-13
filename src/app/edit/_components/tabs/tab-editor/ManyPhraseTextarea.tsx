@@ -17,7 +17,7 @@ const ManyPhraseTextarea = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useHotkeys(
     "tab",
-    () => {
+    (event) => {
       const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
 
       if (isDialogOpen) return;
@@ -35,7 +35,6 @@ const ManyPhraseTextarea = () => {
       }
     },
     {
-      enableOnFormTags: false,
       preventDefault: true,
     },
   );
@@ -159,6 +158,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
         className="absolute right-5 bottom-2"
         disabled={!manyPhrase}
         onClick={handleConfirm}
+        tabIndex={-1}
       >
         <TiFilter size="18px" />
       </Button>
