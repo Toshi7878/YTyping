@@ -44,7 +44,7 @@ const MapList = () => {
 
   return (
     <section className={isSearching ? "opacity-20" : ""}>
-      <MapCardLayout>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {data.pages.map((page: MapListResponse) =>
           page.maps.map((map: MapCardInfo) => {
             return (
@@ -62,15 +62,11 @@ const MapList = () => {
             );
           }),
         )}
-      </MapCardLayout>
+      </div>
 
       {hasNextPage && <Spinner ref={ref} />}
     </section>
   );
-};
-
-const MapCardLayout = ({ children }: { children: React.ReactNode }) => {
-  return <div className="grid grid-cols-1 gap-3 md:grid-cols-2">{children}</div>;
 };
 
 export default MapList;

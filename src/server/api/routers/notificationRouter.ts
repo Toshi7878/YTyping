@@ -102,6 +102,7 @@ export const notificationRouter = {
                   select: {
                     is_liked: true,
                   },
+                  take: 1,
                 },
                 results: {
                   where: {
@@ -121,19 +122,23 @@ export const notificationRouter = {
             },
           },
         });
-        const normalized = notifyList.map((n) => ({
-          ...n,
-          map: {
-            ...n.map,
-            difficulty: n.map.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
-          },
-          visitedResult: n.visitedResult
-            ? { ...n.visitedResult, status: n.visitedResult.status ?? { score: 0 } }
-            : { status: { score: 0 } },
-          visitorResult: n.visitorResult
-            ? { ...n.visitorResult, status: n.visitorResult.status ?? { score: 0 } }
-            : { status: { score: 0 } },
-        }));
+        const normalized = notifyList.map((n) => {
+          const { map_likes, difficulty, ...restMap } = n.map;
+          return {
+            ...n,
+            map: {
+              ...restMap,
+              difficulty: difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
+              is_liked: (map_likes?.length ?? 0) > 0,
+            },
+            visitedResult: n.visitedResult
+              ? { ...n.visitedResult, status: n.visitedResult.status ?? { score: 0 } }
+              : { status: { score: 0 } },
+            visitorResult: n.visitorResult
+              ? { ...n.visitorResult, status: n.visitorResult.status ?? { score: 0 } }
+              : { status: { score: 0 } },
+          };
+        });
 
         let nextCursor: typeof cursor | undefined = undefined;
         if (normalized.length > limit) {

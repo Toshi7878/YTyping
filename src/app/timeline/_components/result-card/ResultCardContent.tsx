@@ -23,9 +23,9 @@ const ResultCardContent = ({ result }: { result: TimelineResult }) => {
       <MapLeftThumbnail
         alt={result.map.title}
         src={`https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg`}
-        mapVideoId={result?.map.video_id}
-        mapPreviewTime={result?.map.preview_time}
-        mapPreviewSpeed={result?.status.default_speed}
+        mapVideoId={result.map.video_id}
+        mapPreviewTime={result.map.preview_time}
+        mapPreviewSpeed={result.status.default_speed}
         size="timeline"
       />
 

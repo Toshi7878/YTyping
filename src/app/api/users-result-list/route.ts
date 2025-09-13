@@ -99,6 +99,13 @@ export async function GET(req: NextRequest) {
       ),
       '[]'::json
     ),
+    'is_liked', EXISTS (
+      SELECT 1
+      FROM map_likes ml2
+      WHERE ml2."map_id" = map."id"
+      AND ml2."user_id" = ${userId}
+      AND ml2."is_liked" = true
+    ),
     'results', COALESCE(
       (
         SELECT json_agg(

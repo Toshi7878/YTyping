@@ -37,7 +37,7 @@ function UsersResultList() {
 
   return (
     <section className={cn("grid grid-cols-1 gap-3", isSearching ? "opacity-20" : "opacity-100")}>
-      {data?.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
+      {data.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
       {hasNextPage && <Spinner ref={ref} />}
     </section>
   );

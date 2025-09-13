@@ -21,7 +21,7 @@ const ResultCardHeader = ({ result, className }: ResultCardHeaderProps) => {
           {result.player.name}
         </Link>
         {" - "}
-        <DateDistanceText date={new Date(result.updated_at)} />
+        <DateDistanceText date={result.updated_at} />
       </div>
       <ResultClapButton
         mapId={result.map.id}

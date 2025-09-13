@@ -127,10 +127,16 @@ function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
   return (
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
       <CardHeader className="bg-header-background rounded-t-md px-2 py-2 text-sm">
-        <span>
-          <UserLinkText userId={notify.visitor_id} userName={notify.visitor.name} />
-          さんがスコア {notify.visitorResult.status.score - notify.visitedResult.status.score} 差で{" "}
-          {Number(notify.old_rank)}位 の記録を抜かしました
+        <span className="flex items-center gap-1">
+          <UserLinkText
+            className="text-header-foreground/80 hover:text-header-foreground"
+            userId={notify.visitor_id}
+            userName={notify.visitor.name}
+          />
+          <span>
+            さんがスコア {notify.visitorResult.status.score - notify.visitedResult.status.score} 差で{" "}
+            {Number(notify.old_rank)}位 の記録を抜かしました
+          </span>
         </span>
       </CardHeader>
       <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">

@@ -42,7 +42,7 @@ export interface TimelineResult {
       id: number;
       name: string;
     };
-    map_likes: { is_liked: boolean }[];
+    is_liked: boolean;
     results: { rank: number }[];
   };
   player: {

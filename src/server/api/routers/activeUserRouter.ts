@@ -46,6 +46,7 @@ export const activeUserRouter = {
               select: {
                 is_liked: true,
               },
+              take: 1,
             },
             results: {
               where: {
@@ -65,7 +66,14 @@ export const activeUserRouter = {
         });
 
         const normalizedMap = mapInfo
-          ? { ...mapInfo, difficulty: mapInfo.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 } }
+          ? (() => {
+              const { map_likes, difficulty, ...rest } = mapInfo;
+              return {
+                ...rest,
+                difficulty: difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
+                is_liked: (map_likes?.length ?? 0) > 0,
+              };
+            })()
           : null;
 
         return { ...activeUser, map: normalizedMap };

@@ -54,9 +54,9 @@ const MapBadges = ({ map }: MapBadgesProps) => {
           </Badge>
         </TooltipWrapper>
       </div>
-      <div className="flex space-x-1">
+      <div className="flex items-center space-x-1">
         <RankingCountIcon myRank={map.results[0]?.rank} rankingCount={map.ranking_count} />
-        <LikeCountIcon mapId={map.id} isLiked={!!map.map_likes[0]?.is_liked} likeCount={map.like_count} />
+        <LikeCountIcon mapId={map.id} isLiked={map.is_liked} likeCount={map.like_count} />
       </div>
     </div>
   );

@@ -62,7 +62,7 @@ export const MapResultBadgesMobile = ({ result, className }: MapResultBadgesMobi
   return (
     <div className={cn("visible flex w-full justify-around", className)}>
       <div className="mr-5 flex flex-col items-end gap-5">
-        <Badge variant="result" size="lg" className={cn(result.rank === 1 && "text-perfect")}>
+        <Badge variant="result" size="lg" className={cn(result.rank === 1 && "text-perfect outline-text")}>
           Rank: #{result.rank}
         </Badge>
         <Badge variant="result" size="lg">

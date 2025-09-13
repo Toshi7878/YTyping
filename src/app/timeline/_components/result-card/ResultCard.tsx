@@ -1,8 +1,7 @@
+"use client";
 import LikeCountIcon from "@/components/shared/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/shared/map-count-icon/RankingCountIcon";
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { HTMLAttributes } from "react";
 import { TimelineResult } from "../../_lib/type";
 import { MapResultBadgesMobile } from "./child/MapResultStatus";
 import ResultCardContent from "./ResultCardContent";
@@ -26,7 +25,10 @@ function ResultCard(props: ResultCardProps) {
 
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
         <ResultCardContent result={result} />
-        <MapIcons result={result} className="absolute bottom-0 left-4 z-2 flex items-center space-x-1" />
+        <div className="absolute bottom-0 left-4 z-2 flex items-center space-x-1">
+          <RankingCountIcon myRank={result.map.results[0].rank} rankingCount={result.map.ranking_count} />
+          <LikeCountIcon mapId={result.map.id} isLiked={result.map.is_liked} likeCount={result.map.like_count} />
+        </div>
       </CardContentWithThumbnail>
 
       <CardFooter className="py-4">
@@ -35,22 +37,5 @@ function ResultCard(props: ResultCardProps) {
     </Card>
   );
 }
-
-interface MapIconsProps extends HTMLAttributes<HTMLDivElement> {
-  result: TimelineResult;
-}
-
-const MapIcons = ({ result, className }: MapIconsProps) => {
-  return (
-    <div className={cn(className)}>
-      <RankingCountIcon myRank={result.map.results[0]?.rank} rankingCount={result.map.ranking_count} />
-      <LikeCountIcon
-        mapId={result.map.id}
-        isLiked={!!result.map.map_likes[0]?.is_liked}
-        likeCount={result.map.like_count}
-      />
-    </div>
-  );
-};
 
 export default ResultCard;

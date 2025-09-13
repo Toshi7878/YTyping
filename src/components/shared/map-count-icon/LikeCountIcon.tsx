@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import React from "react";
 import { FiHeart } from "react-icons/fi";
 
-const UnauthenticatedLikeCountIcon = ({ likeCount }: { likeCount: number }) => {
+const InactiveLikeCountIcon = ({ likeCount }: { likeCount: number }) => {
   return (
     <div className="text-muted-foreground flex items-baseline rounded-md px-1">
       <div className="relative top-[2.5px] mr-1">
@@ -21,8 +21,9 @@ interface LikeCountIconProps {
   likeCount: number;
 }
 
-const AuthenticatedLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconProps) => {
+const ActiveLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconProps) => {
   const setLikeMutation = useLikeMutationMapList();
+  console.log("mapId", mapId, "isLiked", isLiked, "likeCount", likeCount);
 
   const handleClick = (event: React.MouseEvent, newLikeValue: boolean) => {
     event.stopPropagation();
@@ -48,11 +49,11 @@ const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
   const { data: session } = useSession();
 
   return (
-    <div onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
+    <div className="z-45" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
       {session?.user.id ? (
-        <AuthenticatedLikeCountIconButton isLiked={isLiked} likeCount={likeCount} mapId={mapId} />
+        <ActiveLikeCountIconButton isLiked={isLiked} likeCount={likeCount} mapId={mapId} />
       ) : (
-        <UnauthenticatedLikeCountIcon likeCount={likeCount} />
+        <InactiveLikeCountIcon likeCount={likeCount} />
       )}
     </div>
   );

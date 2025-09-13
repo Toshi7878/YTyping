@@ -56,7 +56,15 @@ async function getResultList({ page, params }: GetResultListParams): Promise<Tim
     throw new Error("Failed to fetch data");
   }
 
-  return response.data;
+  const raw = response.data as Array<any>;
+  return raw.map((r) => ({
+    ...r,
+    updated_at: new Date(r.updated_at),
+    map: {
+      ...r.map,
+      updated_at: new Date(r.map.updated_at),
+    },
+  }));
 }
 
 function getSearchParams(searchParams: ReadonlyURLSearchParams) {

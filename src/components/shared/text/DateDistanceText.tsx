@@ -1,3 +1,4 @@
+"use client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 

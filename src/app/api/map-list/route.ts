@@ -33,21 +33,13 @@ export async function GET(req: NextRequest) {
       'roma_kpm_max', "difficulty"."roma_kpm_max",
       'total_time', "difficulty"."total_time"
     ) as "difficulty",
-    COALESCE(
-      (
-        SELECT json_agg(
-          json_build_object(
-            'is_liked', ml."is_liked",
-            'user_id', ml."user_id"
-          )
-        )
-        FROM map_likes ml
-        WHERE ml."map_id" = maps."id"
-        AND ml."user_id" = ${userId}
-        GROUP BY ml."map_id"
-      ),
-      '[]'::json
-    ) as map_likes,
+    EXISTS (
+      SELECT 1
+      FROM map_likes ml
+      WHERE ml."map_id" = maps."id"
+      AND ml."user_id" = ${userId}
+      AND ml."is_liked" = true
+    ) as is_liked,
     COALESCE(
       (
         SELECT json_agg(

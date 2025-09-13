@@ -36,12 +36,9 @@ export const mapListRouter = {
           },
         },
         map_likes: {
-          where: {
-            user_id: user.id,
-          },
-          select: {
-            is_liked: true,
-          },
+          where: { user_id: user.id, is_liked: true },
+          select: { is_liked: true },
+          take: 1,
         },
         results: {
           where: {
@@ -62,6 +59,6 @@ export const mapListRouter = {
       difficulty: m.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
     }));
 
-    return withDifficulty;
+    return withDifficulty.map(({ map_likes, ...rest }) => ({ ...rest, is_liked: (map_likes?.length ?? 0) > 0 }));
   }),
 };

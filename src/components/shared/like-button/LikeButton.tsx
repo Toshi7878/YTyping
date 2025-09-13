@@ -15,6 +15,7 @@ type LikeButtonProps = {
 
 export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className, disabled }: LikeButtonProps) => {
   const [isLiked, setIsLiked] = useState(defaultLiked);
+  const [hasBeenClicked, setHasBeenClicked] = useState(false);
 
   const backgroundWidth = size * 25;
   const heartSize = Math.floor(size / 2);
@@ -28,8 +29,8 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
     width: `${size}px`,
     height: `${size}px`,
     backgroundSize: `auto ${size}px`,
-    transition: `background-position steps(25)`,
-    transitionDuration: isLiked ? "1s" : "0s",
+    transition: hasBeenClicked ? `background-position steps(25)` : "none",
+    transitionDuration: hasBeenClicked && isLiked ? "1s" : "0s",
     backgroundPosition: isLiked ? `-${backgroundWidth}px 0` : `0 0`,
   };
 
@@ -39,10 +40,10 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
       className={cn("relative cursor-pointer", className)}
       style={buttonStyle}
       type="button"
-      suppressHydrationWarning
       onClick={(event: React.MouseEvent) => {
         const newLikeValue = !isLiked;
         setIsLiked(newLikeValue);
+        setHasBeenClicked(true);
 
         onClick?.(event, newLikeValue);
       }}
@@ -70,21 +71,21 @@ export const LikeButtonWithCount = ({
   disabled,
 }: LikeButtonProps & { likeCount: number }) => {
   const [isLiked, setIsLiked] = useState(defaultLiked);
+  const [hasBeenClicked, setHasBeenClicked] = useState(false);
 
   const backgroundWidth = size * 25;
   const heartSize = Math.floor(size / 2);
 
   const buttonStyle = {
     height: `${size}px`,
-    // width は auto にして内容に応じて調整
   };
 
   const backgroundStyle = {
     width: `${size}px`,
     height: `${size}px`,
     backgroundSize: `auto ${size}px`,
-    transition: `background-position steps(25)`,
-    transitionDuration: isLiked ? "1s" : "0s",
+    transition: hasBeenClicked ? `background-position steps(25)` : "none",
+    transitionDuration: hasBeenClicked && isLiked ? "1s" : "0s",
     backgroundPosition: isLiked ? `-${backgroundWidth}px 0` : `0 0`,
   };
 
@@ -101,6 +102,7 @@ export const LikeButtonWithCount = ({
       onClick={(event: React.MouseEvent) => {
         const newLikeValue = !isLiked;
         setIsLiked(newLikeValue);
+        setHasBeenClicked(true);
         onClick?.(event, newLikeValue);
       }}
     >
@@ -114,7 +116,7 @@ export const LikeButtonWithCount = ({
       </div>
 
       {/* カウント表示 */}
-      {typeof likeCount === "number" && <span className="relative font-mono text-lg select-none">{likeCount}</span>}
+      {typeof likeCount === "number" && <span className="font-mono text-lg select-none">{likeCount}</span>}
     </button>
   );
 };
