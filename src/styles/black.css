@@ -38,7 +38,7 @@
   --word-correct: transparent;
   --word-nextChar: #ffffff;
   --word-word: #ffffff;
-  --word-completed: #9ca3af;
+  --word-completed: oklch(0.7864 0.1143 186.56);
   --word-nextWord: #6b7280;
   --word-outline-text: none;
 
