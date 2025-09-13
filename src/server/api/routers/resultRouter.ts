@@ -1,6 +1,6 @@
 import { LineResultData } from "@/app/(typing)/type/_lib/type";
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PAGE_SIZE } from "@/app/timeline/_lib/consts";
-import { FilterMode } from "@/app/timeline/_lib/type";
+import { FilterMode, TimelineResult } from "@/app/timeline/_lib/type";
 import { supabase } from "@/lib/supabaseClient";
 import { Prisma, PrismaClient } from "@prisma/client";
 import z from "zod";
@@ -155,12 +155,14 @@ export const resultRouter = {
         `;
 
       // 型キャストと型を追加
-      const items = resultList as any[];
+      const items = resultList as TimelineResult[];
 
       let nextCursor: string | undefined = undefined;
       if (items.length > limit) {
         const nextItem = items.pop();
-        nextCursor = nextItem!.updated_at.toISOString();
+        if (nextItem) {
+          nextCursor = nextItem.updated_at.toISOString();
+        }
       }
 
       return {

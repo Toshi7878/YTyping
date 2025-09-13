@@ -1,7 +1,7 @@
+import { PAGE_SIZE } from "@/app/(home)/_lib/const";
+import { $Enums, Prisma } from "@prisma/client";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
-import { Prisma } from "@prisma/client";
-import { PAGE_SIZE } from "@/app/(home)/_lib/const";
 
 const mapListSchema = z.object({
   limit: z.number().min(1).max(100).default(PAGE_SIZE),
@@ -22,6 +22,32 @@ const mapListLengthSchema = z.object({
   keyword: z.string().default(""),
 });
 
+type MapItem = {
+  is_liked: boolean;
+  difficulty: {
+    roma_kpm_median: number;
+    roma_kpm_max: number;
+    total_time: number;
+  };
+  id: number;
+  video_id: string;
+  title: string;
+  artist_name: string;
+  music_source: string;
+  preview_time: string;
+  like_count: number;
+  ranking_count: number;
+  thumbnail_quality: $Enums.thumbnail_quality;
+  updated_at: Date;
+  creator: {
+    id: number;
+    name: string | null;
+  };
+  results: {
+    rank: number;
+  }[];
+};
+
 export const mapListRouter = {
   getList: publicProcedure.input(mapListSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
@@ -29,9 +55,7 @@ export const mapListRouter = {
     const limit = input.limit;
 
     // カーソル条件を作成
-    const cursorCondition = input.cursor
-      ? Prisma.sql`AND maps."id" < ${Number(input.cursor)}`
-      : Prisma.empty;
+    const cursorCondition = input.cursor ? Prisma.sql`AND maps."id" < ${Number(input.cursor)}` : Prisma.empty;
 
     const filterSql = getFilterSql({ filter: input.filter, userId });
     const difficultyFilterSql = getDifficultyFilterSql({
@@ -99,12 +123,14 @@ export const mapListRouter = {
         LIMIT ${limit + 1}
       `;
 
-      const items = mapList as any[];
+      const items = mapList as MapItem[];
 
       let nextCursor: string | undefined = undefined;
       if (items.length > limit) {
         const nextItem = items.pop();
-        nextCursor = nextItem!.id.toString();
+        if (nextItem) {
+          nextCursor = nextItem.id.toString();
+        }
       }
 
       return {

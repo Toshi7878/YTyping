@@ -1,23 +1,25 @@
-import { TimelineResult } from "@/app/timeline/_lib/type";
 import { RouterOutPuts, Trpc } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { InfiniteData, QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
-import { MapListResponse } from "../queries/mapList.queries";
+import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
 
+type MapListFilter = ReturnType<Trpc["mapList"]["getList"]["infiniteQueryFilter"]>;
+type TimeLineFilter = ReturnType<Trpc["result"]["usersResultList"]["infiniteQueryFilter"]>;
 type ActiveUserMapsFilter = ReturnType<Trpc["activeUser"]["getUserPlayingMaps"]["queryFilter"]>;
 type NotificationsMapFilter = ReturnType<Trpc["notification"]["getInfiniteUserNotifications"]["infiniteQueryFilter"]>;
 
-const predMapList: QueryFilters["predicate"] = ({ queryKey }) => queryKey[0] === "mapList";
-const predTimeline: QueryFilters["predicate"] = ({ queryKey }) => queryKey[0] === "usersResultList";
-
-function setMapListOptimistic(queryClient: ReturnType<typeof useQueryClient>, mapId: number, optimisticState: boolean) {
-  queryClient.setQueriesData<InfiniteData<MapListResponse>>({ predicate: predMapList }, (old) => {
+function setMapListOptimistic(
+  queryClient: ReturnType<typeof useQueryClient>,
+  filter: MapListFilter,
+  mapId: number,
+  optimisticState: boolean,
+) {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["mapList"]["getList"]>>(filter, (old) => {
     if (!old || !old.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
         ...page,
-        maps: page.maps?.map((map) =>
+        maps: page.maps.map((map) =>
           map.id === mapId
             ? {
                 ...map,
@@ -33,17 +35,18 @@ function setMapListOptimistic(queryClient: ReturnType<typeof useQueryClient>, ma
 
 function setMapListServer(
   queryClient: ReturnType<typeof useQueryClient>,
+  filter: MapListFilter,
   mapId: number,
   likeCount: number,
   isLiked: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<MapListResponse>>({ predicate: predMapList }, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["mapList"]["getList"]>>(filter, (old) => {
     if (!old || !old.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
         ...page,
-        maps: page.maps?.map((map) => (map.id === mapId ? { ...map, like_count: likeCount, is_liked: isLiked } : map)),
+        maps: page.maps.map((map) => (map.id === mapId ? { ...map, like_count: likeCount, is_liked: isLiked } : map)),
       })),
     };
   });
@@ -51,15 +54,17 @@ function setMapListServer(
 
 function setTimelineOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
+  filter: TimeLineFilter,
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<TimelineResult[]>>({ predicate: predTimeline }, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
     if (!old || !old.pages) return old;
     return {
       ...old,
-      pages: old.pages.map((page: any[]) =>
-        page?.map((result: any) =>
+      pages: old.pages.map((page) => ({
+        ...page,
+        items: page.items.map((result) =>
           result.map?.id === mapId
             ? {
                 ...result,
@@ -71,23 +76,25 @@ function setTimelineOptimistic(
               }
             : result,
         ),
-      ),
+      })),
     };
   });
 }
 
 function setTimelineServer(
   queryClient: ReturnType<typeof useQueryClient>,
+  filter: TimeLineFilter,
   mapId: number,
   likeCount: number,
   isLiked: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<TimelineResult[]>>({ predicate: predTimeline }, (old) => {
-    if (!old) return old;
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
+    if (!old || !old.pages) return old;
     return {
       ...old,
-      pages: old.pages.map((page) =>
-        page?.map((result) =>
+      pages: old.pages.map((page) => ({
+        ...page,
+        items: page.items.map((result) =>
           result.map?.id === mapId
             ? {
                 ...result,
@@ -95,7 +102,7 @@ function setTimelineServer(
               }
             : result,
         ),
-      ),
+      })),
     };
   });
 }
@@ -201,27 +208,29 @@ export function useLikeMutationMapList() {
   return useMutation(
     trpc.like.setLike.mutationOptions({
       onMutate: async (input) => {
+        const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
+        const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfiniteUserNotifications.infiniteQueryFilter();
         const activeUserMapsFilter = trpc.activeUser.getUserPlayingMaps.queryFilter();
 
-        await queryClient.cancelQueries({ predicate: predMapList });
-        await queryClient.cancelQueries({ predicate: predTimeline });
+        await queryClient.cancelQueries(mapListFilter);
+        await queryClient.cancelQueries(timelineFilter);
         await queryClient.cancelQueries(notificationsFilter);
         await queryClient.cancelQueries(activeUserMapsFilter);
 
         const previous = [
-          ...queryClient.getQueriesData({ predicate: predMapList }),
-          ...queryClient.getQueriesData({ predicate: predTimeline }),
+          ...queryClient.getQueriesData(mapListFilter),
+          ...queryClient.getQueriesData(timelineFilter),
           ...queryClient.getQueriesData(notificationsFilter),
           ...queryClient.getQueriesData(activeUserMapsFilter),
         ];
 
-        setMapListOptimistic(queryClient, input.mapId, input.likeValue);
-        setTimelineOptimistic(queryClient, input.mapId, input.likeValue);
+        setMapListOptimistic(queryClient, mapListFilter, input.mapId, input.likeValue);
+        setTimelineOptimistic(queryClient, timelineFilter, input.mapId, input.likeValue);
         setNotificationsOptimistic(queryClient, notificationsFilter, input.mapId, input.likeValue);
         setActiveUsersOptimistic(queryClient, activeUserMapsFilter, input.mapId, input.likeValue);
 
-        return { previous, notificationsFilter, activeUserMapsFilter };
+        return { previous, notificationsFilter, activeUserMapsFilter, mapListFilter, timelineFilter };
       },
       onError: (_e, _v, ctx) => {
         if (ctx?.previous) {
@@ -229,8 +238,8 @@ export function useLikeMutationMapList() {
         }
       },
       onSuccess: (server, _, ctx) => {
-        setMapListServer(queryClient, server.mapId, server.likeCount, server.isLiked);
-        setTimelineServer(queryClient, server.mapId, server.likeCount, server.isLiked);
+        setMapListServer(queryClient, ctx.mapListFilter, server.mapId, server.likeCount, server.isLiked);
+        setTimelineServer(queryClient, ctx.timelineFilter, server.mapId, server.likeCount, server.isLiked);
         setNotificationsServer(queryClient, ctx.notificationsFilter, server.mapId, server.likeCount, server.isLiked);
         setActiveUsersServer(queryClient, ctx.activeUserMapsFilter, server.mapId, server.likeCount, server.isLiked);
       },
@@ -245,8 +254,15 @@ export function useLikeMutationMapInfo() {
   return useMutation(
     trpc.like.setLike.mutationOptions({
       onSuccess: (server, _vars) => {
-        setMapListServer(queryClient, server.mapId, server.likeCount, server.isLiked);
-        setTimelineServer(queryClient, server.mapId, server.likeCount, server.isLiked);
+        const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
+        const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
+        const notificationsFilter = trpc.notification.getInfiniteUserNotifications.infiniteQueryFilter();
+        const activeUserMapsFilter = trpc.activeUser.getUserPlayingMaps.queryFilter();
+
+        setMapListServer(queryClient, mapListFilter, server.mapId, server.likeCount, server.isLiked);
+        setTimelineServer(queryClient, timelineFilter, server.mapId, server.likeCount, server.isLiked);
+        setNotificationsServer(queryClient, notificationsFilter, server.mapId, server.likeCount, server.isLiked);
+        setActiveUsersServer(queryClient, activeUserMapsFilter, server.mapId, server.likeCount, server.isLiked);
       },
     }),
   );

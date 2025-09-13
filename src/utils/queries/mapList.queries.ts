@@ -1,10 +1,6 @@
 import { PARAM_NAME } from "@/app/(home)/_lib/const";
-import type { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { ReadonlyURLSearchParams } from "next/navigation";
-
-type MapCardInfo = RouterOutPuts["mapList"]["getByVideoId"][number];
-export type MapListResponse = { maps: MapCardInfo[] };
 
 export const useMapListQueryOptions = () => {
   const trpc = useTRPC();
