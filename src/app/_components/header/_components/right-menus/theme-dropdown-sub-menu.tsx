@@ -1,8 +1,11 @@
 // src/components/ThemeSheet.tsx
 "use client";
 import {
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuPortal,
+  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -15,7 +18,7 @@ import { useEffect, useRef } from "react";
 export function ThemeDropdownSubmenu() {
   const { setTheme, resolvedTheme } = useTheme();
   const hoverTimerRef = useRef<number | null>(null);
-  const HOVER_DELAY_MS = 400;
+  const HOVER_DELAY_MS = 450;
 
   const clearHoverTimer = () => {
     if (hoverTimerRef.current != null) {
@@ -26,7 +29,8 @@ export function ThemeDropdownSubmenu() {
 
   const applyPreview = (theme: string) => {
     const html = document.documentElement;
-    for (const t of THEME_LIST) html.classList.remove(t.class);
+    for (const theme of THEME_LIST.dark) html.classList.remove(theme.class);
+    for (const theme of THEME_LIST.light) html.classList.remove(theme.class);
     html.classList.add(theme);
   };
 
@@ -40,7 +44,8 @@ export function ThemeDropdownSubmenu() {
   const resetPreview = () => {
     clearHoverTimer();
     const html = document.documentElement;
-    for (const t of THEME_LIST) html.classList.remove(t.class);
+    for (const theme of THEME_LIST.dark) html.classList.remove(theme.class);
+    for (const theme of THEME_LIST.light) html.classList.remove(theme.class);
     if (resolvedTheme) html.classList.add(resolvedTheme);
   };
 
@@ -55,22 +60,45 @@ export function ThemeDropdownSubmenu() {
       <DropdownMenuSubTrigger>テーマ切り替え</DropdownMenuSubTrigger>
       <DropdownMenuPortal>
         <DropdownMenuSubContent className="w-40" onMouseLeave={resetPreview}>
-          {THEME_LIST.map((theme) => (
-            <DropdownMenuItem
-              key={theme.class}
-              className={resolvedTheme === theme.class ? "font-bold" : undefined}
-              onMouseEnter={() => schedulePreview(theme.class)}
-              onFocus={() => schedulePreview(theme.class)}
-              onMouseLeave={clearHoverTimer}
-              onBlur={clearHoverTimer}
-              onClick={() => {
-                setTheme(theme.class);
-                applyFavicon(`/favicons/favicon-${theme.class}.ico`, theme.class);
-              }}
-            >
-              {theme.label}
-            </DropdownMenuItem>
-          ))}
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>ダークテーマ</DropdownMenuLabel>
+            {THEME_LIST.dark.map((theme) => (
+              <DropdownMenuItem
+                key={theme.class}
+                className={resolvedTheme === theme.class ? "font-bold" : undefined}
+                onMouseEnter={() => schedulePreview(theme.class)}
+                onFocus={() => schedulePreview(theme.class)}
+                onMouseLeave={clearHoverTimer}
+                onBlur={clearHoverTimer}
+                onClick={() => {
+                  setTheme(theme.class);
+                  applyFavicon(`/favicons/favicon-${theme.class}.ico`, theme.class);
+                }}
+              >
+                {theme.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>ライトテーマ</DropdownMenuLabel>
+            {THEME_LIST.light.map((theme) => (
+              <DropdownMenuItem
+                key={theme.class}
+                className={resolvedTheme === theme.class ? "font-bold" : undefined}
+                onMouseEnter={() => schedulePreview(theme.class)}
+                onFocus={() => schedulePreview(theme.class)}
+                onMouseLeave={clearHoverTimer}
+                onBlur={clearHoverTimer}
+                onClick={() => {
+                  setTheme(theme.class);
+                  applyFavicon(`/favicons/favicon-${theme.class}.ico`, theme.class);
+                }}
+              >
+                {theme.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuGroup>
         </DropdownMenuSubContent>
       </DropdownMenuPortal>
     </DropdownMenuSub>

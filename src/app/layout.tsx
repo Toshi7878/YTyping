@@ -50,7 +50,7 @@ export default async function RootLayout({
               defaultTheme="default"
               enableColorScheme
               disableTransitionOnChange
-              themes={THEME_LIST.map((theme) => theme.class)}
+              themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
             >
               <LinkProgressProvider>
                 <AlertDialogProvider>
