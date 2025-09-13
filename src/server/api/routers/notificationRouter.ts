@@ -138,7 +138,10 @@ export const notificationRouter = {
         let nextCursor: typeof cursor | undefined = undefined;
         if (normalized.length > limit) {
           const nextItem = normalized.pop();
-          nextCursor = nextItem!.created_at;
+
+          if (nextItem) {
+            nextCursor = nextItem.created_at;
+          }
         }
         return {
           notifications: normalized,

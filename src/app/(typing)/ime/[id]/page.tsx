@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
 
   const thumbnailUrl =
-    mapInfo?.thumbnail_quality === "maxresdefault"
+    mapInfo.thumbnail_quality === "maxresdefault"
       ? `https://i.ytimg.com/vi_webp/${mapInfo.video_id}/maxresdefault.webp`
       : `https://i.ytimg.com/vi/${mapInfo.video_id}/mqdefault.jpg`;
 
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       type: "website",
       images: thumbnailUrl,
     },
-    creator: mapInfo!.creatorName,
+    creator: mapInfo.creatorName,
     other: {
       "article:published_time": mapInfo.created_at.toISOString(),
       "article:modified_time": mapInfo.updated_at.toISOString(),
@@ -37,9 +37,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
   const userImeTypingOptions = await serverApi.userTypingOption.getUserImeTypingOptions();
 
-  if (!mapInfo) {
-    notFound();
-  }
+  if (!mapInfo) notFound();
 
   return (
     <ImeTypeProvider userImeTypingOptions={userImeTypingOptions}>

@@ -17,6 +17,7 @@ import ResultCardHeader from "./child/ResultCardHeader";
 
 const PracticeLineCard = () => {
   const map = useMapState();
+  if (!map) return null;
   const speedData = usePlaySpeedState();
   const lineSelectIndex = useLineSelectIndexState();
   const inputMode = usePlayingInputModeState();
@@ -24,7 +25,7 @@ const PracticeLineCard = () => {
   const { moveSetLine } = useMoveLine();
   const interact = useInteractJS();
 
-  const index = map?.typingLineIndexes[lineSelectIndex - 1] ?? map?.typingLineIndexes[0];
+  const index = map.typingLineIndexes[lineSelectIndex - 1] ?? map.typingLineIndexes[0];
 
   if (!index) return null;
   const lineResult = useLineResultState(index);
@@ -32,31 +33,31 @@ const PracticeLineCard = () => {
 
   const lineInputMode = lineResult.status.mode ?? inputMode;
 
-  const lineData = map?.mapData[index];
+  const lineData = map.mapData[index];
   if (!lineData) return null;
 
   const maxLinePoint = lineData.notes.r * CHAR_POINT;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
-  const lineSpeed = lineResult?.status!.sp > speedData.defaultSpeed ? lineResult?.status!.sp : speedData.defaultSpeed;
+  const lineSpeed = lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
   //ユーザーのLineリザルトデータ
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
   const lostWord = lineResult.status.lostW;
-  const point = lineResult.status.p;
-  const tBonus = lineResult.status.tBonus;
-  const kpm = lineResult.status.lKpm;
-  const rkpm = lineResult.status.lRkpm;
-  const miss = lineResult.status.lMiss;
-  const lost = lineResult.status.lLost;
+  const point = lineResult.status.p ?? 0;
+  const tBonus = lineResult.status.tBonus ?? 0;
+  const kpm = lineResult.status.lKpm ?? 0;
+  const rkpm = lineResult.status.lRkpm ?? 0;
+  const miss = lineResult.status.lMiss ?? 0;
+  const lost = lineResult.status.lLost ?? 0;
 
   return (
     <Card
-      ref={interact?.ref}
+      ref={interact.ref}
       className="practice-card z-10 block border py-2"
       style={{
-        ...interact?.style,
+        ...interact.style,
         height: "fit-content",
         cursor: isDragging ? "move" : "pointer",
       }}
@@ -87,13 +88,13 @@ const PracticeLineCard = () => {
       <Separator className="mx-auto w-[92%]" />
       <CardFooter>
         <ResultCardFooter
-          point={point!}
-          tBonus={tBonus!}
+          point={point}
+          tBonus={tBonus}
           maxLinePoint={maxLinePoint}
-          miss={miss!}
-          lost={lost!}
-          kpm={kpm!}
-          rkpm={rkpm!}
+          miss={miss}
+          lost={lost}
+          kpm={kpm}
+          rkpm={rkpm}
         />
       </CardFooter>
     </Card>
