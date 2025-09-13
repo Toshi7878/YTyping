@@ -15,7 +15,6 @@ import Script from "next/script";
 import LinkProgressProvider from "./_components/LinkProgressProvider";
 import MainProvider from "./_components/MainProvider";
 import { ThemeProvider } from "./_components/ThemeProvider";
-import { FaviconTheme } from "./_components/favicon-theme";
 
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubePlayer"));
 
@@ -53,7 +52,6 @@ export default async function RootLayout({
               disableTransitionOnChange
               themes={THEME_LIST.map((theme) => theme.class)}
             >
-              <FaviconTheme />
               <LinkProgressProvider>
                 <AlertDialogProvider>
                   <Header className="fixed z-50 h-10 w-full" />
