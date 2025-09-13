@@ -275,6 +275,7 @@ const PreviewTimeInput = () => {
   const { watch, setValue, getValues } = useFormContext();
   const previewTime = watch("preview_time");
   const setPreventEditortabAutoFocus = useSetPreventEditortabAutoFocus();
+  const setCanUpload = useSetCanUpload();
 
   const handlePreviewClick = () => {
     readPlayer().playVideo();
@@ -303,6 +304,7 @@ const PreviewTimeInput = () => {
             type="number"
             min="0"
             step="0.001"
+            onChange={() => setCanUpload(true)}
             inputMode="decimal"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -313,12 +315,14 @@ const PreviewTimeInput = () => {
                 e.preventDefault();
                 const currentValue = Number(getValues("preview_time")) || 0;
                 setValue("preview_time", (currentValue + 0.05).toFixed(2));
+                setCanUpload(true);
               }
               if (e.key === "ArrowDown") {
                 e.preventDefault();
                 const currentValue = Number(getValues("preview_time")) || 0;
                 const newValue = Math.max(0, currentValue - 0.05);
                 setValue("preview_time", newValue.toFixed(2));
+                setCanUpload(true);
               }
             }}
           />

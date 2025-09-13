@@ -14,7 +14,7 @@ export default function AddTimeAdjust() {
 
   return (
     <TooltipWrapper
-      delayDuration={600}
+      delayDuration={300}
       label={
         <>
           <div>再生中に追加・変更を行う場合に、数値分補正してタイムを記録します。</div>
@@ -25,22 +25,24 @@ export default function AddTimeAdjust() {
             <br />
             <div className="text-xs">※間奏などでワードが存在しない場合は追加タイム補正は適用されません。</div>
             <div className="text-xs">
-              Bluetoothキーボードや無線イヤホンなど環境に合わせて最適な補正値に調整してください。
+              Bluetoothキーボードや無線イヤホン使用時など環境に合わせて最適な補正値に調整してください。
             </div>
           </div>
         </>
       }
     >
-      <CounterInput
-        value={timeOffset}
-        onChange={(value) => setTimeOffset(value)}
-        step={TIME_OFFSET_STEP}
-        max={MAX_TIME_OFFSET}
-        min={MIN_TIME_OFFSET}
-        valueDigits={2}
-        label="タイム補正"
-        size="sm"
-      />
+      <div>
+        <CounterInput
+          value={timeOffset}
+          onChange={(value) => setTimeOffset(value)}
+          step={TIME_OFFSET_STEP}
+          max={MAX_TIME_OFFSET}
+          min={MIN_TIME_OFFSET}
+          valueDigits={2}
+          label="タイム補正"
+          size="sm"
+        />
+      </div>
     </TooltipWrapper>
   );
 }
