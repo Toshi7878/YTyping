@@ -16,19 +16,25 @@ export default function AddTimeAdjust() {
     <TooltipWrapper
       delayDuration={300}
       label={
-        <>
-          <div>再生中に追加・変更を行う場合に、数値分補正してタイムを記録します。</div>
+        <div>
           <div>
-            <div className="text-xs">
-              譜面のタイムは、歌いだしの瞬間より-0.2 ~ -0.25秒程早めに設定すると丁度よいタイミングになります。
+            <strong>推奨設定：補正値 -0.2～-0.25秒</strong>
+            <div className="mt-2 space-y-2">
+              <div>
+                <span className="font-medium">機能：</span>
+                YouTube再生中に行を追加・変更する際、設定値分だけタイムを自動補正して記録します
+              </div>
+              <div>
+                <span className="font-medium">効果：</span>
+                歌詞1行の歌いだしの瞬間に追加ボタンを押すと、タイミング良く記録することができます。
+              </div>
             </div>
-            <br />
-            <div className="text-xs">※間奏などでワードが存在しない場合は追加タイム補正は適用されません。</div>
-            <div className="text-xs">
-              Bluetoothキーボードや無線イヤホン使用時など環境に合わせて最適な補正値に調整してください。
+
+            <div className="mt-2">
+              Bluetoothキーボードや無線イヤホン使用時は、遅延に合わせて補正値を調整してください
             </div>
           </div>
-        </>
+        </div>
       }
     >
       <div>
@@ -39,7 +45,7 @@ export default function AddTimeAdjust() {
           max={MAX_TIME_OFFSET}
           min={MIN_TIME_OFFSET}
           valueDigits={2}
-          label="タイム補正"
+          label="追加タイム補正"
           size="sm"
         />
       </div>
