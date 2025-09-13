@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { H3 } from "@/components/ui/typography";
 import { RouterOutPuts } from "@/server/api/trpc";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -11,7 +12,7 @@ import FingerChartUrl from "./user-info/FingerChartUrl";
 import MyKeyBoard from "./user-info/MyKeyboard";
 
 interface UserProfileCardProps {
-  userProfile: NonNullable<RouterOutPuts["user"]["getUserProfile"]>;
+  userProfile: RouterOutPuts["user"]["getUserProfile"];
 }
 
 const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
@@ -27,9 +28,9 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
 
       <CardContent className="mx-8">
         <div className="space-y-4">
-          <h3 className="text-xl font-bold">{userProfile.name}</h3>
-          <FingerChartUrl url={userProfile.user_profiles[0].finger_chart_url} />
-          <MyKeyBoard myKeyboard={userProfile.user_profiles[0].my_keyboard} />
+          <H3>{userProfile?.name ?? ""}</H3>
+          <FingerChartUrl url={userProfile?.finger_chart_url ?? ""} />
+          <MyKeyBoard myKeyboard={userProfile?.my_keyboard ?? ""} />
         </div>
       </CardContent>
 

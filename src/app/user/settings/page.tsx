@@ -34,8 +34,8 @@ const ProfileSettingCard = ({ userProfile }: ProfileSettingCardProps) => {
       <CardContent>
         <div className="flex w-full flex-col gap-4">
           <UserNameInputForm />
-          <FingerChartUrlInput url={userProfile?.user_profiles?.[0]?.finger_chart_url ?? ""} />
-          <MyKeyboardInput myKeyboard={userProfile?.user_profiles?.[0]?.my_keyboard ?? ""} />
+          <FingerChartUrlInput url={userProfile?.finger_chart_url ?? ""} />
+          <MyKeyboardInput myKeyboard={userProfile?.my_keyboard ?? ""} />
         </div>
       </CardContent>
       <CardFooter />

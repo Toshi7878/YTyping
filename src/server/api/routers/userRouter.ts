@@ -25,7 +25,7 @@ export const userRouter = {
     )
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
-      return await db.users.findUnique({
+      const userInfo = await db.users.findUnique({
         where: { id: input.userId },
         select: {
           name: true,
@@ -34,8 +34,20 @@ export const userRouter = {
               finger_chart_url: true,
               my_keyboard: true,
             },
+            where: { user_id: input.userId },
           },
         },
       });
+
+      if (!userInfo) return;
+
+      const { name, user_profiles } = userInfo;
+
+      const profile = user_profiles[0];
+
+      return {
+        name,
+        ...profile,
+      };
     }),
 };
