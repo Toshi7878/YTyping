@@ -158,7 +158,7 @@ const TabRanking = ({ className }: { className?: string }) => {
         },
       },
     ];
-  }, [openPopoverIndex, toggleClap.isPending]);
+  }, [data, openPopoverIndex, toggleClap.isPending]);
 
   return (
     <CardWithContent

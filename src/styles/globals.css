@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "./pink-theme.css";
+@import "./pink.css";
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -64,9 +64,10 @@
   --color-discord: var(--discord);
   --color-google: var(--google);
   --color-outline-text: var(--outline-text);
+  --color-custom-shadow: var(--custom-shadow);
 }
 
-:root {
+.default {
   --radius: 0.625rem;
   --background: oklch(0.2565 0.0092 234.09);
   --foreground: oklch(1 0 0);

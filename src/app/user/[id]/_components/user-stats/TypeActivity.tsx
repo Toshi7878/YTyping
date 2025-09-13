@@ -17,6 +17,7 @@ const TypeActivity = () => {
 
   const getBlockColors = () => {
     const colors = {
+      background: getCSSVariable("--background"),
       roma: getCSSVariable("--roma"),
       kana: getCSSVariable("--kana"),
       flick: getCSSVariable("--flick"),
@@ -30,7 +31,7 @@ const TypeActivity = () => {
     const english = [colors.english, colors.english, colors.english];
     const ime = [colors.ime, colors.ime, colors.ime];
 
-    return ["#161b22"].concat(roma).concat(kana).concat(english).concat(ime);
+    return [colors.background].concat(roma).concat(kana).concat(english).concat(ime);
   };
 
   const getOpacity = (level: number) => {

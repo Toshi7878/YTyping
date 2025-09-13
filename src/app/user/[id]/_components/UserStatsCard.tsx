@@ -159,11 +159,11 @@ const MyHideOptionInfo = () => {
         <div className="flex items-center gap-4">
           <p>現在プロフィールは自分のみが閲覧できます</p>
           {!isHidePreview ? (
-            <Button size="sm" asChild>
+            <Button size="sm" variant="outline" asChild>
               <Link href="?hidePreview=true">他の人が見ているページを見る</Link>
             </Button>
           ) : (
-            <Button size="sm" asChild>
+            <Button size="sm" variant="outline" asChild>
               <Link href={`/user/${userId}`}>統計情報を表示</Link>
             </Button>
           )}
@@ -186,9 +186,9 @@ interface InfoCardProps {
 
 const InfoCard = ({ title, children, className }: InfoCardProps) => {
   return (
-    <Card className={cn("border-blue-500 bg-blue-50/50 dark:bg-blue-950/20", className)}>
+    <Card className={cn("border-primary bg-primary/50", className)}>
       <CardHeader className="flex flex-row items-center gap-2 pb-2">
-        <IoMdInformationCircleOutline size={20} className="text-blue-600 dark:text-blue-400" />
+        <IoMdInformationCircleOutline size={20} className="text-primary-foreground" />
         <CardTitle className="text-lg">{title}</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">{children}</CardContent>

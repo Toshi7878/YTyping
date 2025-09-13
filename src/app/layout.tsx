@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { AlertDialogProvider } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
+import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -13,6 +14,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import Script from "next/script";
 import LinkProgressProvider from "./_components/LinkProgressProvider";
 import MainProvider from "./_components/MainProvider";
+import { ThemeProvider } from "./_components/ThemeProvider";
 
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubePlayer"));
 
@@ -43,17 +45,19 @@ export default async function RootLayout({
       <body>
         <SessionProvider session={session}>
           <TRPCProvider>
-            <LinkProgressProvider>
-              <AlertDialogProvider>
-                <Header className="fixed z-30 h-10 w-full" />
-                <MainProvider>
-                  <main className="min-h-screen pt-12 md:pt-16" id="main_content">
-                    {children}
-                  </main>
-                  <PreviewYouTubeContent />
-                </MainProvider>
-              </AlertDialogProvider>
-            </LinkProgressProvider>
+            <ThemeProvider attribute="class" defaultTheme="default" enableSystem enableColorScheme themes={THEME_LIST}>
+              <LinkProgressProvider>
+                <AlertDialogProvider>
+                  <Header className="fixed z-30 h-10 w-full" />
+                  <MainProvider>
+                    <main className="min-h-screen pt-12 md:pt-16" id="main_content">
+                      {children}
+                    </main>
+                    <PreviewYouTubeContent />
+                  </MainProvider>
+                </AlertDialogProvider>
+              </LinkProgressProvider>
+            </ThemeProvider>
           </TRPCProvider>
         </SessionProvider>
         <Toaster />

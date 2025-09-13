@@ -1,4 +1,4 @@
-import { LOGIN_MENU_ITEM } from "@/app/_components/header/lib/const";
+import { LOGIN_MENU_LINK_ITEM } from "@/app/_components/header/lib/const";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { LogOutDropdownItem } from "./login/AuthDropdownItems";
+import { ThemeSheet } from "./theme/theme-drawer";
 
 interface UserMenuProps {
   userName: string;
@@ -31,11 +32,14 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-fit">
-        {LOGIN_MENU_ITEM.map((item, index) => (
+        {LOGIN_MENU_LINK_ITEM.map((item, index) => (
           <Link href={item.href} key={index}>
             <DropdownMenuItem>{item.title}</DropdownMenuItem>
           </Link>
         ))}
+        <DropdownMenuItem asChild>
+          <ThemeSheet />
+        </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 

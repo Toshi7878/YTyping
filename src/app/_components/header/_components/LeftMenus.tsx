@@ -1,4 +1,4 @@
-import { LEFT_LINKS, LEFT_MENU_ITEM } from "@/app/_components/header/lib/const";
+import { LEFT_LINKS, LEFT_MENU_LINK_ITEM } from "@/app/_components/header/lib/const";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -43,7 +43,7 @@ const LinksDropdownMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-fit">
-        {LEFT_MENU_ITEM.map((menuItem, index) => (
+        {LEFT_MENU_LINK_ITEM.map((menuItem, index) => (
           <Link href={menuItem.href} key={index}>
             <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
           </Link>
