@@ -6,18 +6,15 @@ import { useEffect, useState } from "react";
 import { FaRankingStar } from "react-icons/fa6";
 
 interface RankingCountProps {
-  myRank: number | undefined;
+  myRank: number | null;
   rankingCount: number;
 }
 
 const RankingCountIcon = ({ myRank, rankingCount }: RankingCountProps) => {
   const { data: session } = useSession();
   const [colorClass, setColorClass] = useState("text-muted-foreground");
-  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-
     if (!session) {
       setColorClass("text-muted-foreground");
       return;
@@ -33,7 +30,7 @@ const RankingCountIcon = ({ myRank, rankingCount }: RankingCountProps) => {
   }, [session, myRank]);
 
   return (
-    <TooltipWrapper label={`自分の順位: ${myRank}位`} disabled={!myRank || !isMounted || !session}>
+    <TooltipWrapper label={`自分の順位: ${myRank}位`} disabled={!myRank || !session}>
       <div className={cn("z-1 flex items-baseline", colorClass)}>
         <div className="relative top-[3px] mr-1">
           <FaRankingStar size={20} />

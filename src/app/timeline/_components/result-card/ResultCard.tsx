@@ -26,7 +26,7 @@ function ResultCard(props: ResultCardProps) {
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
         <ResultCardContent result={result} />
         <div className="absolute bottom-0 left-4 z-2 flex items-center space-x-1">
-          <RankingCountIcon myRank={result.map.results[0].rank} rankingCount={result.map.ranking_count} />
+          <RankingCountIcon myRank={result.map.myRank} rankingCount={result.map.ranking_count} />
           <LikeCountIcon mapId={result.map.id} isLiked={result.map.is_liked} likeCount={result.map.like_count} />
         </div>
       </CardContentWithThumbnail>

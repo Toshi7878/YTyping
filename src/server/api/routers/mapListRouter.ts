@@ -22,7 +22,7 @@ const mapListLengthSchema = z.object({
   keyword: z.string().default(""),
 });
 
-type MapItem = {
+export type MapItem = {
   is_liked: boolean;
   difficulty: {
     roma_kpm_median: number;
@@ -43,9 +43,7 @@ type MapItem = {
     id: number;
     name: string | null;
   };
-  results: {
-    rank: number;
-  }[];
+  myRank: number | null;
 };
 
 export const mapListRouter = {
@@ -54,7 +52,6 @@ export const mapListRouter = {
     const userId = user?.id ? Number(user.id) : null;
     const limit = input.limit;
 
-    // カーソル条件を作成
     const cursorCondition = input.cursor ? Prisma.sql`AND maps."id" < ${Number(input.cursor)}` : Prisma.empty;
 
     const filterSql = getFilterSql({ filter: input.filter, userId });
@@ -70,7 +67,7 @@ export const mapListRouter = {
     const orderBy = getSortSql({ sort: input.sort });
 
     try {
-      const mapList = await db.$queryRaw`
+      const items: MapItem[] = await db.$queryRaw`
         SELECT
         maps."id",
         maps."video_id",
@@ -98,22 +95,12 @@ export const mapListRouter = {
           AND ml."user_id" = ${userId}
           AND ml."is_liked" = true
         ) as is_liked,
-        COALESCE(
-          (
-            SELECT json_agg(
-              json_build_object(
-                'rank', r."rank"
-              )
-            )
-            FROM (
-              SELECT MIN(rank) as rank
-              FROM results
-              WHERE "map_id" = maps."id"
-              AND "user_id" = ${userId}
-            ) r
-          ),
-          '[]'::json
-        ) as results
+        (
+          SELECT MIN(r."rank")::int
+          FROM results r
+          WHERE r."map_id" = maps."id"
+          AND r."user_id" = ${userId}
+        ) as "myRank"
         FROM maps
         JOIN users AS creator ON maps."creator_id" = creator."id"
         JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
@@ -122,8 +109,6 @@ export const mapListRouter = {
         ORDER BY ${orderBy}
         LIMIT ${limit + 1}
       `;
-
-      const items = mapList as MapItem[];
 
       let nextCursor: string | undefined = undefined;
       if (items.length > limit) {
@@ -229,7 +214,11 @@ export const mapListRouter = {
       difficulty: m.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
     }));
 
-    return withDifficulty.map(({ map_likes, ...rest }) => ({ ...rest, is_liked: (map_likes?.length ?? 0) > 0 }));
+    return withDifficulty.map(({ map_likes, results, ...rest }) => ({
+      ...rest,
+      is_liked: (map_likes?.length ?? 0) > 0,
+      myRank: results[0]?.rank ?? null,
+    }));
   }),
 };
 

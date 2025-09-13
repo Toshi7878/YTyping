@@ -43,7 +43,7 @@ export interface TimelineResult {
       name: string;
     };
     is_liked: boolean;
-    results: { rank: number }[];
+    myRank: number | null;
   };
   player: {
     id: number;

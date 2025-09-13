@@ -123,13 +123,14 @@ export const notificationRouter = {
           },
         });
         const normalized = notifyList.map((n) => {
-          const { map_likes, difficulty, ...restMap } = n.map;
+          const { map_likes, results, difficulty, ...restMap } = n.map;
           return {
             ...n,
             map: {
               ...restMap,
               difficulty: difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
               is_liked: (map_likes?.length ?? 0) > 0,
+              myRank: results[0]?.rank ?? null,
             },
             visitedResult: n.visitedResult
               ? { ...n.visitedResult, status: n.visitedResult.status ?? { score: 0 } }

@@ -28,8 +28,8 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
       <CardContent className="mx-8">
         <div className="space-y-4">
           <h3 className="text-xl font-bold">{userProfile.name}</h3>
-          <FingerChartUrl url={userProfile.user_profiles?.[0]?.finger_chart_url ?? ""} />
-          <MyKeyBoard myKeyboard={userProfile.user_profiles?.[0]?.my_keyboard ?? ""} />
+          <FingerChartUrl url={userProfile.user_profiles[0].finger_chart_url} />
+          <MyKeyBoard myKeyboard={userProfile.user_profiles[0].my_keyboard} />
         </div>
       </CardContent>
 

@@ -36,21 +36,16 @@ const EndRankingButton = ({
         setTabName("ランキング");
         toast.success("ランキング登録が完了しました");
       },
-      onError: (error) => {
+      onError: () => {
         setIsSendResultBtnDisabled(false);
       },
     }),
   );
 
-  const submitResult = () => {
-    const result = resultData();
-    if (!result) return;
-    sendResult.mutate(result);
-  };
-
   const handleClick = async () => {
     if (isScoreUpdated) {
-      submitResult();
+      const result = resultData();
+      sendResult.mutate(result);
       return;
     }
 
@@ -64,23 +59,21 @@ const EndRankingButton = ({
     });
 
     if (isConfirmed) {
-      submitResult();
+      const result = resultData();
+      sendResult.mutate(result);
     }
   };
 
   return (
-    <>
-      <Button
-        size="4xl"
-        variant="primary-hover-light"
-        disabled={isSendResultBtnDisabled}
-        loading={sendResult.isPending}
-        onClick={handleClick}
-        type={isScoreUpdated ? "submit" : "button"}
-      >
-        {isSendResultBtnDisabled ? "ランキング登録完了" : "ランキング登録"}
-      </Button>
-    </>
+    <Button
+      size="4xl"
+      variant="primary-hover-light"
+      disabled={isSendResultBtnDisabled}
+      loading={sendResult.isPending}
+      onClick={handleClick}
+    >
+      {isSendResultBtnDisabled ? "ランキング登録完了" : "ランキング登録"}
+    </Button>
   );
 };
 

@@ -67,11 +67,12 @@ export const activeUserRouter = {
 
         const normalizedMap = mapInfo
           ? (() => {
-              const { map_likes, difficulty, ...rest } = mapInfo;
+              const { map_likes, difficulty, results, ...rest } = mapInfo;
               return {
                 ...rest,
                 difficulty: difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
                 is_liked: (map_likes?.length ?? 0) > 0,
+                myRank: results[0]?.rank ?? null,
               };
             })()
           : null;

@@ -2,7 +2,7 @@
 import LikeCountIcon from "@/components/shared/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/shared/map-count-icon/RankingCountIcon";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { RouterOutPuts } from "@/server/api/trpc";
+import { MapItem } from "@/server/api/routers/mapListRouter";
 import { formatTime } from "@/utils/formatTime";
 import Link from "next/link";
 import { Badge } from "../../ui/badge";
@@ -10,7 +10,7 @@ import DateDistanceText from "../text/DateDistanceText";
 import UserLinkText from "../text/UserLinkText";
 
 interface MapInfoProps {
-  map: RouterOutPuts["mapList"]["getByVideoId"][number];
+  map: MapItem;
 }
 
 function MapInfo({ map }: MapInfoProps) {
@@ -57,7 +57,7 @@ const MapInfoBottom = ({ map }: MapInfoProps) => {
         </Badge>
       </div>
       <div className="flex items-center space-x-1">
-        <RankingCountIcon key={map.results[0]?.rank} myRank={map.results[0]?.rank} rankingCount={map.ranking_count} />
+        <RankingCountIcon key={map.myRank} myRank={map.myRank} rankingCount={map.ranking_count} />
         <LikeCountIcon mapId={map.id} isLiked={map.is_liked} likeCount={map.like_count} />
       </div>
     </div>
@@ -65,7 +65,7 @@ const MapInfoBottom = ({ map }: MapInfoProps) => {
 };
 
 interface MapCreatorInfoProps {
-  creator: RouterOutPuts["mapList"]["getByVideoId"][number]["creator"];
+  creator: MapItem["creator"];
   updatedAt: Date;
 }
 
@@ -75,7 +75,7 @@ const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
       <UserLinkText userId={creator.id} userName={creator.name} />
       <span className="hidden text-xs md:inline-block">
         <span className="mx-1">
-          - <DateDistanceText date={new Date(updatedAt)} />
+          - <DateDistanceText date={updatedAt} />
         </span>
       </span>
     </small>

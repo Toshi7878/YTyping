@@ -55,7 +55,7 @@ export const resultRouter = {
 
     try {
       // limit + 1を取得して次のページの存在を確認
-      const resultList = await db.$queryRaw`
+      const items: TimelineResult[] = await db.$queryRaw`
           SELECT results."id",
           results."map_id",
           results."user_id",
@@ -93,21 +93,6 @@ export const resultRouter = {
               'id', creator."id",
               'name', creator."name"
             ),
-            'map_likes', COALESCE(
-          (
-            SELECT json_agg(
-              json_build_object(
-                'is_liked', ml."is_liked",
-                'user_id', ml."user_id"
-              )
-            )
-            FROM map_likes ml
-            WHERE ml."map_id" = map."id"
-            AND ml."user_id" = ${userId}
-            GROUP BY ml."map_id"
-          ),
-          '[]'::json
-        ),
         'is_liked', EXISTS (
           SELECT 1
           FROM map_likes ml2
@@ -115,21 +100,12 @@ export const resultRouter = {
           AND ml2."user_id" = ${userId}
           AND ml2."is_liked" = true
         ),
-        'results', COALESCE(
-          (
-            SELECT json_agg(
-              json_build_object(
-                'rank', r."rank"
-              )
-            )
-            FROM (
-              SELECT MIN(rank) as rank
-              FROM results
-              WHERE "map_id" = map."id"
-              AND "user_id" = ${userId}
-            ) r
-          ),
-          '[]'::json
+        'myRank',
+        (
+          SELECT MIN(r."rank")::int
+          FROM results r
+          WHERE r."map_id" = map."id"
+            AND r."user_id" = ${userId}
         )
           ) as "map",
          (
@@ -153,9 +129,6 @@ export const resultRouter = {
           ORDER BY results."updated_at" DESC
           LIMIT ${limit + 1}
         `;
-
-      // 型キャストと型を追加
-      const items = resultList as TimelineResult[];
 
       let nextCursor: string | undefined = undefined;
       if (items.length > limit) {

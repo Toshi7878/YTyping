@@ -2,12 +2,12 @@
 import LikeCountIcon from "@/components/shared/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/shared/map-count-icon/RankingCountIcon";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { RouterOutPuts } from "@/server/api/trpc";
+import { MapItem } from "@/server/api/routers/mapListRouter";
 import Link from "next/link";
 import { Badge } from "../../ui/badge";
 
 interface CompactMapCardProps {
-  map: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number]["map"];
+  map: MapItem;
 }
 
 function CompactMapInfo({ map }: CompactMapCardProps) {
@@ -34,7 +34,7 @@ function CompactMapInfo({ map }: CompactMapCardProps) {
 }
 
 interface MapBadgesProps {
-  map: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number]["map"];
+  map: MapItem;
 }
 
 const MapBadges = ({ map }: MapBadgesProps) => {
@@ -55,7 +55,7 @@ const MapBadges = ({ map }: MapBadgesProps) => {
         </TooltipWrapper>
       </div>
       <div className="flex items-center space-x-1">
-        <RankingCountIcon myRank={map.results[0]?.rank} rankingCount={map.ranking_count} />
+        <RankingCountIcon myRank={map.myRank} rankingCount={map.ranking_count} />
         <LikeCountIcon mapId={map.id} isLiked={map.is_liked} likeCount={map.like_count} />
       </div>
     </div>

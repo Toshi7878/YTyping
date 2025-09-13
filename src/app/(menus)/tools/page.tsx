@@ -8,19 +8,19 @@ const TOOLS = [
   {
     title: "YTyping - PreMiD",
     description: "DiscordにYTypingのプレイ中ステータスを表示する",
-    href: "/manual/premid",
+    href: "/manual/premid" as const,
     byUserId: "1",
   },
   {
     title: "kana-layout-extension",
     description: "月配列でタイピングすることが可能になるChrome拡張機能",
-    href: "https://chromewebstore.google.com/detail/kana-layout-extension/ojfbppdppiaflmgfpjjkfggdobdpgifp",
+    href: "https://chromewebstore.google.com/detail/kana-layout-extension/ojfbppdppiaflmgfpjjkfggdobdpgifp" as const,
     byUserId: "62",
   },
   {
     title: "YTyping YouTube Background Player",
     description: "タイピングページの背景にYouTubeの動画を表示する",
-    href: "/manual/bg-yt-player",
+    href: "/manual/bg-yt-player" as const,
     byUserId: "1",
   },
 ];

@@ -133,7 +133,7 @@ const TabRanking = ({ className }: { className?: string }) => {
         id: "time",
         header: () => "時間",
         size: 40,
-        cell: ({ row }) => <DateDistanceText date={new Date(row.original.updated_at)} />,
+        cell: ({ row }) => <DateDistanceText date={row.original.updated_at} />,
       },
       {
         id: "clap",

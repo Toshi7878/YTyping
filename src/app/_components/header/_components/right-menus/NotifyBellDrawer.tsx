@@ -99,7 +99,7 @@ const NotifyDrawerInnerContent = () => {
                         <CompactMapInfo map={map} />
                       </NotificationMapCard>
                       <div className="text-muted-foreground/80 text-right">
-                        <DateDistanceText date={new Date(notify.created_at)} />
+                        <DateDistanceText date={notify.created_at} />
                       </div>
                     </div>
                   </div>

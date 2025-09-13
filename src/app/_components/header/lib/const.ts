@@ -1,4 +1,6 @@
-type HeaderMenu = { title: string; href: string; device?: "PC" };
+import Link, { LinkProps } from "next/link";
+
+type HeaderMenu = { title: string; href: LinkProps<typeof Link>["href"]; device?: "PC" };
 
 export const LEFT_MENU_LINK_ITEM: HeaderMenu[] = [
   { title: "更新履歴", href: "/changelog" },
@@ -10,6 +12,6 @@ export const LEFT_MENU_LINK_ITEM: HeaderMenu[] = [
 export const LEFT_LINKS: HeaderMenu[] = [{ title: "タイムライン", href: "/timeline" }];
 
 export const LOGIN_MENU_LINK_ITEM: HeaderMenu[] = [
-  { title: "ユーザーページ", href: "/user/mypage" },
-  { title: "ユーザー設定", href: "/user/settings" },
+  { title: "ユーザーページ", href: { pathname: "/user/mypage" } },
+  { title: "ユーザー設定", href: { pathname: "/user/settings" } },
 ];
