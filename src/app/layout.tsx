@@ -44,16 +44,16 @@ export default async function RootLayout({
         <Script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
       </head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="default"
-          enableSystem
-          enableColorScheme
-          themes={THEME_LIST.map((theme) => theme.class)}
-        >
-          <FaviconTheme />
-          <SessionProvider session={session}>
-            <TRPCProvider>
+        <SessionProvider session={session}>
+          <TRPCProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="default"
+              enableColorScheme
+              disableTransitionOnChange
+              themes={THEME_LIST.map((theme) => theme.class)}
+            >
+              <FaviconTheme />
               <LinkProgressProvider>
                 <AlertDialogProvider>
                   <Header className="fixed z-30 h-10 w-full" />
@@ -65,9 +65,9 @@ export default async function RootLayout({
                   </MainProvider>
                 </AlertDialogProvider>
               </LinkProgressProvider>
-            </TRPCProvider>
-          </SessionProvider>
-        </ThemeProvider>
+            </ThemeProvider>
+          </TRPCProvider>
+        </SessionProvider>
         <Toaster />
       </body>
     </html>
