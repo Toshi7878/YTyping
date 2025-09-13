@@ -81,7 +81,7 @@ const CardContentWithThumbnail = ({
       data-slot="card-content"
       className={cn("rounded-sm px-4 py-4", className)}
       style={{
-        background: `linear-gradient(to right, var(--color-background), color-mix(in oklch, var(--color-background) 80.7%, transparent)), url(${src}) center center / cover no-repeat`,
+        background: `var(--card-with-thumbnail), url(${src}) center center / cover no-repeat`,
       }}
       {...props}
     >

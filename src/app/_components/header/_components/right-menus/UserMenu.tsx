@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { LogOutDropdownItem } from "./login/AuthDropdownItems";
-import { ThemeSheet } from "./theme/theme-drawer";
+import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
 interface UserMenuProps {
   userName: string;
@@ -37,9 +37,7 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
             <DropdownMenuItem>{item.title}</DropdownMenuItem>
           </Link>
         ))}
-        <DropdownMenuItem asChild>
-          <ThemeSheet />
-        </DropdownMenuItem>
+        <ThemeDropdownSubmenu />
 
         <DropdownMenuSeparator />
 

@@ -15,6 +15,7 @@ import Script from "next/script";
 import LinkProgressProvider from "./_components/LinkProgressProvider";
 import MainProvider from "./_components/MainProvider";
 import { ThemeProvider } from "./_components/ThemeProvider";
+import { FaviconTheme } from "./_components/favicon-theme";
 
 const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubePlayer"));
 
@@ -43,9 +44,16 @@ export default async function RootLayout({
         <Script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
       </head>
       <body>
-        <SessionProvider session={session}>
-          <TRPCProvider>
-            <ThemeProvider attribute="class" defaultTheme="default" enableSystem enableColorScheme themes={THEME_LIST}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="default"
+          enableSystem
+          enableColorScheme
+          themes={THEME_LIST.map((theme) => theme.class)}
+        >
+          <FaviconTheme />
+          <SessionProvider session={session}>
+            <TRPCProvider>
               <LinkProgressProvider>
                 <AlertDialogProvider>
                   <Header className="fixed z-30 h-10 w-full" />
@@ -57,9 +65,9 @@ export default async function RootLayout({
                   </MainProvider>
                 </AlertDialogProvider>
               </LinkProgressProvider>
-            </ThemeProvider>
-          </TRPCProvider>
-        </SessionProvider>
+            </TRPCProvider>
+          </SessionProvider>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>

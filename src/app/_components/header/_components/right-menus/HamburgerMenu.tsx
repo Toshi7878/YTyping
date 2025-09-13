@@ -15,6 +15,7 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useActionState } from "react";
 import { SignInDropdownItems } from "./login/AuthDropdownItems";
+import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
 interface HamburgerMenuProps {
   className?: string;
@@ -33,8 +34,12 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
     <div className={className}>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="border-border/50 border border-solid p-2">
-            <Menu className="h-4 w-4" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-header-foreground hover:bg-accent/50 border border-solid p-2"
+          >
+            <Menu className="text-header-foreground size-4" />
             <span className="sr-only">メニューを開く</span>
           </Button>
         </DropdownMenuTrigger>
@@ -54,6 +59,7 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
             return null;
           })}
 
+          <ThemeDropdownSubmenu />
           <DropdownMenuSeparator />
 
           {session?.user?.name ? (
