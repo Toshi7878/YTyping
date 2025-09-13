@@ -1,8 +1,7 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/(home)/_lib/const";
 import { prisma } from "@/server/db";
-import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";
-import { generateMapListWhere } from "./where";
+import { generateMapListWhere, getSortSql } from "./where";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -75,59 +74,5 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("マップリスト取得エラー:", error);
     return new Response("Internal Server Error", { status: 500 });
-  }
-}
-
-interface GetSortSql {
-  sort: string | null;
-}
-function getSortSql({ sort }: GetSortSql) {
-  if (!sort) {
-    return Prisma.raw(`maps."id" DESC`);
-  }
-
-  const isAsc = sort.includes("asc");
-
-  switch (true) {
-    case sort.includes("random"):
-      return Prisma.raw(`RANDOM()`);
-    case sort.includes("id"):
-      if (isAsc) {
-        return Prisma.raw(`maps."id" ASC`);
-      } else {
-        return Prisma.raw(`maps."id" DESC`);
-      }
-    case sort.includes("difficulty"):
-      if (isAsc) {
-        return Prisma.raw(`"difficulty"."roma_kpm_median" ASC`);
-      } else {
-        return Prisma.raw(`"difficulty"."roma_kpm_median" DESC`);
-      }
-    case sort.includes("ranking_count"):
-      if (isAsc) {
-        return Prisma.raw(`maps."ranking_count" ASC`);
-      } else {
-        return Prisma.raw(`maps."ranking_count" DESC`);
-      }
-    case sort.includes("like_count"):
-      if (isAsc) {
-        return Prisma.raw(`maps."like_count" ASC`);
-      } else {
-        return Prisma.raw(`maps."like_count" DESC`);
-      }
-    case sort.includes("duration"):
-      if (isAsc) {
-        return Prisma.raw(`"difficulty"."total_time" ASC`);
-      } else {
-        return Prisma.raw(`"difficulty"."total_time" DESC`);
-      }
-    case sort.includes("like"):
-      if (isAsc) {
-        return Prisma.raw(`"map_likes"."created_at" ASC`);
-      } else {
-        return Prisma.raw(`"map_likes"."created_at" DESC`);
-      }
-    default:
-      return Prisma.raw(`maps."id" DESC`);
   }
 }

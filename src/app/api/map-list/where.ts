@@ -37,7 +37,7 @@ function getFilterSql({ filter, userId }: GetFilterSql) {
 interface GetSortSql {
   sort: string | null;
 }
-function getSortSql({ sort }: GetSortSql) {
+export function getSortSql({ sort }: GetSortSql) {
   if (!sort) {
     return Prisma.raw(`maps."id" DESC`);
   }

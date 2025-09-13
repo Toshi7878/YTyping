@@ -1,7 +1,7 @@
 "use client";
 import Spinner from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { resultListQueries } from "@/utils/queries/resultList.queries";
+import { useResultListInfiniteQueryOptions } from "@/utils/queries/resultList.queries";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
@@ -14,7 +14,7 @@ function UsersResultList() {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
-    resultListQueries.infiniteResultList(session, searchParams),
+    useResultListInfiniteQueryOptions(session, searchParams),
   );
 
   const isSearching = useIsSearchingState();
@@ -41,7 +41,7 @@ function UsersResultList() {
 
   return (
     <section className={cn("grid grid-cols-1 gap-3", isSearching ? "opacity-20" : "opacity-100")}>
-      {data.pages.map((page) => page.map((result) => <ResultCard key={result.id} result={result} />))}
+      {data.pages.map((page) => page.items.map((result) => <ResultCard key={result.id} result={result} />))}
       {hasNextPage && <Spinner ref={ref} />}
     </section>
   );
