@@ -8,8 +8,12 @@ export default function SignInMenu({ className }: { className: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="unstyled" size="sm" className={cn("hover:text-header-foreground", className)}>
-          <span>ログイン</span>
+        <Button
+          variant="unstyled"
+          size="sm"
+          className={cn("hover:text-header-foreground text-header-foreground/80", className)}
+        >
+          ログイン
           <ChevronDown className="relative top-[1px] size-4" />
         </Button>
       </DropdownMenuTrigger>

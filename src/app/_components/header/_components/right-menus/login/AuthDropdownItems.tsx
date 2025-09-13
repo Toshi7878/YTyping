@@ -9,13 +9,13 @@ export const SignInDropdownItems = () => {
   const items = [
     {
       text: "Discordでログイン",
-      leftIcon: <BsDiscord className="size-6 text-white" />,
+      leftIcon: <BsDiscord className="text-primary-foreground size-6 group-focus:text-white" />,
       provider: "discord",
       className: "hover:bg-discord focus:bg-discord",
     },
     {
       text: "Googleでログイン",
-      leftIcon: <BsGoogle className="size-6 text-white" />,
+      leftIcon: <BsGoogle className="text-primary-foreground size-6 group-focus:text-white" />,
       provider: "google",
       className: "hover:bg-google focus:bg-google",
     },
@@ -30,7 +30,7 @@ export const SignInDropdownItems = () => {
             start();
             await signIn(item.provider);
           }}
-          className={cn("flex w-full items-center gap-3 p-3 px-6 text-white", item.className)}
+          className={cn("group flex w-full items-center gap-3 p-3 px-6 focus:text-white", item.className)}
         >
           {item.leftIcon}
           <span className="font-semibold">{item.text}</span>
