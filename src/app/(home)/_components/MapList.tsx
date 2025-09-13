@@ -5,7 +5,6 @@ import { CardWithContent } from "@/components/ui/card";
 import Spinner from "@/components/ui/spinner";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -17,12 +16,11 @@ type MapCardInfo = RouterOutPuts["mapList"]["getByVideoId"][number];
 
 const MapList = () => {
   const searchParams = useSearchParams();
-  const { data: session } = useSession();
   const isSearching = useIsSearchingState();
   const setIsSearchingAtom = useSetIsSearching();
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
-    useMapListQueryOptions().infiniteList(session, searchParams),
+    useMapListQueryOptions().infiniteList(searchParams),
   );
 
   const { ref, inView } = useInView({
