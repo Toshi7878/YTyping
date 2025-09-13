@@ -95,7 +95,7 @@ function setTimelineServer(
       pages: old.pages.map((page) => ({
         ...page,
         items: page.items.map((result) =>
-          result.map?.id === mapId
+          result.map.id === mapId
             ? {
                 ...result,
                 map: { ...result.map, like_count: likeCount, is_liked: isLiked },
