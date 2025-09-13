@@ -76,10 +76,6 @@ export const LikeButtonWithCount = ({
   const [isLiked, setIsLiked] = useState(defaultLiked);
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
 
-  useEffect(() => {
-    setIsLiked(defaultLiked);
-  }, [defaultLiked]);
-
   const backgroundWidth = size * 25;
   const heartSize = Math.floor(size / 2);
 
@@ -121,7 +117,6 @@ export const LikeButtonWithCount = ({
         />
         <div className={cn("like-base-64 absolute inset-y-0 -right-[8.25px]")} style={backgroundStyle} />
       </div>
-      {/* カウント表示 */}
       {typeof likeCount === "number" && (
         <span className={cn("font-mono text-lg select-none", isLiked ? "text-like" : "text-muted-foreground")}>
           {likeCount}

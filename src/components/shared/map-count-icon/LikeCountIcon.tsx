@@ -2,7 +2,7 @@ import { LikeButtonWithCount } from "@/components/shared/like-button/LikeButton"
 import { useLikeMutationMapList } from "@/utils/mutations/like.mutations";
 import { useProgress } from "@bprogress/next";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FiHeart } from "react-icons/fi";
 
 const InactiveLikeCountIcon = ({ likeCount }: { likeCount: number }) => {
@@ -49,19 +49,6 @@ const ActiveLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconP
 
 const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
   const { data: session } = useSession();
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return (
-      <div className="z-30">
-        <InactiveLikeCountIcon likeCount={likeCount} />
-      </div>
-    );
-  }
 
   return (
     <div className="z-30" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>

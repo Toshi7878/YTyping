@@ -13,13 +13,18 @@ const DateDistanceText = ({ date, text, addSuffix = true }: DateDistanceTextProp
   return (
     <time
       dateTime={dateObj.toISOString()}
-      title={dateObj.toLocaleString("ja-JP")}
+      title={new Intl.DateTimeFormat("ja-JP", {
+        timeZone: "Asia/Tokyo",
+        dateStyle: "short",
+        timeStyle: "medium",
+        hour12: false,
+      }).format(dateObj)}
       className="truncate overflow-hidden text-ellipsis whitespace-nowrap"
+      suppressHydrationWarning
     >
       {formatDistanceToNowStrict(dateObj, { addSuffix, locale: ja })}
       {text && text}
     </time>
   );
 };
-
 export default DateDistanceText;

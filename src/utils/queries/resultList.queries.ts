@@ -1,9 +1,7 @@
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PARAM_NAME } from "@/app/timeline/_lib/consts";
 import { useTRPC } from "@/trpc/provider";
-import type { Session } from "next-auth";
-import { ReadonlyURLSearchParams } from "next/navigation";
 
-export const useResultListInfiniteQueryOptions = (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
+export const useResultListInfiniteQueryOptions = (searchParams: URLSearchParams) => {
   const trpc = useTRPC();
   const params = getSearchParams(searchParams);
 
@@ -27,7 +25,7 @@ export const useResultListInfiniteQueryOptions = (session: Session | null, searc
   );
 };
 
-function getSearchParams(searchParams: ReadonlyURLSearchParams) {
+export function getSearchParams(searchParams: URLSearchParams) {
   const params: Partial<typeof PARAM_NAME> = {};
 
   for (const [key, value] of Array.from(searchParams.entries())) {
