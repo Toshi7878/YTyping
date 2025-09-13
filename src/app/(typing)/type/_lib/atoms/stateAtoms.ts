@@ -23,8 +23,8 @@ const initialInputMode: InputMode =
 
 export const userTypingOptionsAtom = atomWithReset({
   time_offset: 0,
-  kana_word_scroll: 6,
-  roma_word_scroll: 9,
+  kana_word_scroll: 10,
+  roma_word_scroll: 16,
   roma_word_font_size: 100,
   kana_word_font_size: 100,
   kana_word_spacing: 0.08,

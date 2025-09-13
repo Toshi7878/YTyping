@@ -237,8 +237,8 @@ enum main_word_display {
 model user_typing_options {
   user_id                Int                    @id
   time_offset            Float                  @default(0)
-  kana_word_scroll       Int                    @default(6)
-  roma_word_scroll       Int                    @default(9)
+  kana_word_scroll       Int                    @default(10)
+  roma_word_scroll       Int                    @default(16)
   kana_word_font_size    Int                    @default(100)
   roma_word_font_size    Int                    @default(100)
   kana_word_top_position Float                  @default(0)
