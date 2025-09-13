@@ -2,9 +2,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSetTabName, useTabNameState } from "../../_lib/atoms/stateAtoms";
 import { TAB_NAMES } from "../../_lib/const";
-import TabEditor from "./tab-editor/TabEditor";
-import TabInfoForm from "./tab-info-form/TabInfoForm";
-import TabSettings from "./tab-settings/TabSettings";
+import TabEditor from "./editor/TabEditor";
+import MapInfoForm from "./info-form/map-info-form";
+import TabSettings from "./settings/TabSettings";
 
 export default function EditTabs() {
   const tabName = useTabNameState();
@@ -27,7 +27,7 @@ export default function EditTabs() {
       </TabsList>
 
       <TabsContent value="情報&保存" forceMount>
-        <TabInfoForm />
+        <MapInfoForm />
       </TabsContent>
 
       <TabsContent value="エディター" forceMount>

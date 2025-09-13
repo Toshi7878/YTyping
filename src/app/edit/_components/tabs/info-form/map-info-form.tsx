@@ -39,7 +39,7 @@ import {
 import { getThumbnailQuality } from "../../../_lib/ts/getThumbailQuality";
 import SuggestionTags from "./SuggestionTags";
 
-const TabInfoForm = () => {
+const MapInfoForm = () => {
   const searchParams = useSearchParams();
   const { id: mapId } = useParams<{ id: string }>();
   const isBackUp = searchParams.get("backup") === "true";
@@ -306,6 +306,7 @@ const PreviewTimeInput = () => {
             inputMode="decimal"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
+                e.preventDefault();
                 handlePreviewClick();
               }
               if (e.key === "ArrowUp") {
@@ -440,4 +441,4 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
   };
 };
 
-export default TabInfoForm;
+export default MapInfoForm;
