@@ -52,7 +52,7 @@
   --destructive-foreground: oklch(0.985 0 0);
 
   --outline-text: none;
-  --custom-shadow:
+  --custom-card-shadow:
     0 0 8px rgba(255, 255, 255, 0.18), 0 0 16px rgba(255, 255, 255, 0.1), 0 0 24px rgba(255, 255, 255, 0.06);
   --card-with-thumbnail: linear-gradient(
     to right,

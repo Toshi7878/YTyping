@@ -6,7 +6,7 @@ import { cva, VariantProps } from "class-variance-authority";
 const cardVariants = cva("bg-card text-card-foreground flex flex-col gap-6 rounded-sm py-6 shadow-sm", {
   variants: {
     variant: {
-      default: "custom-shadow",
+      default: "custom-card-shadow",
       map: "py-0 map-card-hover transition-shadow duration-200",
     },
   },

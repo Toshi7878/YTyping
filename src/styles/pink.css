@@ -55,7 +55,7 @@
     1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000,
     0 -1px 0 #000;
 
-  --custom-shadow:
+  --custom-card-shadow:
     0 0 8px rgba(255, 255, 255, 0.4), 0 0 16px rgba(255, 192, 203, 0.2), 0 0 24px rgba(221, 160, 221, 0.15);
   --card-with-thumbnail: linear-gradient(
     to right,
