@@ -1,4 +1,5 @@
 .pink {
+  --color-scheme: light;
   --radius: 1.5rem;
   --background: #fafafa;
   --foreground: #fc98c8;

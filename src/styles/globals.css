@@ -3,6 +3,7 @@
 @import "./black.css";
 
 @theme inline {
+  --color-scheme: var(--color-scheme);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -64,6 +65,7 @@
 }
 
 .default {
+  --color-scheme: dark;
   --radius: 0.625rem;
   --background: oklch(0.2565 0.0092 234.09);
   --foreground: oklch(1 0 0);
@@ -178,12 +180,12 @@
     @apply bg-background text-foreground;
     background-color: var(--background);
     color: var(--foreground);
+    color-scheme: var(--color-scheme);
     scrollbar-gutter: stable;
   }
 
   body {
     @apply bg-background text-foreground;
-    color-scheme: dark;
   }
 
   ::selection {
