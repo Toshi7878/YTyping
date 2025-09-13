@@ -83,10 +83,10 @@ function Button({
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
-      disabled={!loading || props.disabled}
+      disabled={loading || props.disabled}
       {...props}
     >
-      {!loading ? <Loader2 className={loadingVariants({ size })} /> : children}
+      {loading ? <Loader2 className={loadingVariants({ size })} /> : children}
     </Comp>
   );
 }

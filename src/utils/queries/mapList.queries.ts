@@ -1,12 +1,11 @@
 import { PARAM_NAME } from "@/app/(home)/_lib/const";
 import { useTRPC } from "@/trpc/provider";
-import { ReadonlyURLSearchParams } from "next/navigation";
 
 export const useMapListQueryOptions = () => {
   const trpc = useTRPC();
 
   return {
-    infiniteList: (searchParams: ReadonlyURLSearchParams) => {
+    infiniteList: (searchParams: URLSearchParams) => {
       const params = getMapListSearchParams(searchParams);
 
       return trpc.mapList.getList.infiniteQueryOptions(
@@ -28,7 +27,7 @@ export const useMapListQueryOptions = () => {
 
     listByVideoId: ({ videoId }: { videoId: string }) => trpc.mapList.getByVideoId.queryOptions({ videoId }),
 
-    listLength: (searchParams: ReadonlyURLSearchParams) => {
+    listLength: (searchParams: URLSearchParams) => {
       const params = getMapListSearchParams(searchParams);
 
       return trpc.mapList.getListLength.queryOptions({
@@ -42,7 +41,7 @@ export const useMapListQueryOptions = () => {
   };
 };
 
-function getMapListSearchParams(searchParams: ReadonlyURLSearchParams) {
+export function getMapListSearchParams(searchParams: URLSearchParams) {
   const params: Partial<typeof PARAM_NAME> = {};
 
   for (const [key, value] of Array.from(searchParams.entries())) {
