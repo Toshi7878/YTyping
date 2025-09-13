@@ -15,11 +15,11 @@
   --primary-foreground: #111827;
   --secondary-light: oklch(0.7848 0.1267 182.05);
   --secondary: oklch(0.7048 0.158 160.55);
-  --secondary-dark: #111827;
+  --secondary-dark: oklch(0.6146 0.1368 161.02);
   --secondary-foreground: #ffffff;
   --muted: #1a1a1a;
   --muted-foreground: #9ca3af;
-  --accent: #383838c1;
+  --accent: #2b2b2b;
   --accent-foreground: #ffffff;
 
   --border: #9ca3af;
