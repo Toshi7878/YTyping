@@ -56,7 +56,7 @@ export default async function RootLayout({
               <FaviconTheme />
               <LinkProgressProvider>
                 <AlertDialogProvider>
-                  <Header className="fixed z-30 h-10 w-full" />
+                  <Header className="fixed z-50 h-10 w-full" />
                   <MainProvider>
                     <main className="min-h-screen pt-12 md:pt-16" id="main_content">
                       {children}

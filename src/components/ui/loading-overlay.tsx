@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
+import Spinner from "./spinner";
 
 interface LoadingOverlayProps {
   isLoading: boolean;
@@ -51,35 +52,12 @@ const LoadingOverlay = ({ isLoading, message, hideSpinner }: LoadingOverlayProps
           style={{
             animationDelay: isLoading ? "0s" : "0.4s",
           }}
-          className="absolute inset-0 z-[25] flex flex-col items-center justify-center bg-black/70"
+          className="bg-overlay-background absolute inset-0 z-[25] flex flex-col items-center justify-center"
           aria-busy="true"
           aria-label="Loading"
         >
-          {!hideSpinner && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                rotate: 360,
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.8,
-              }}
-              transition={{
-                opacity: { duration: 0.1 },
-                scale: { duration: 0.1 },
-                rotate: {
-                  duration: 1,
-                  repeat: Infinity,
-                  ease: "linear",
-                },
-              }}
-              className="h-8 w-8 rounded-full border-2 border-white/30 border-t-white"
-            />
-          )}
-          {message && <div className="mt-4 text-sm font-medium text-white">{message}</div>}
+          {!hideSpinner && <Spinner size="xl" />}
+          {message && <div className="text-overlay-foreground mt-4 font-medium">{message}</div>}
         </motion.div>
       )}
     </AnimatePresence>

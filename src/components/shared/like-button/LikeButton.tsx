@@ -106,13 +106,13 @@ export const LikeButtonWithCount = ({
         const newLikeValue = !isLiked;
         setIsLiked(newLikeValue);
         setHasBeenClicked(true);
+
         onClick?.(event, newLikeValue);
       }}
     >
       <div className="relative top-0 flex items-center" style={{ width: `${size}px`, height: `${size}px` }}>
         <Heart
           className={cn(
-            "z-10",
             hasBeenClicked && isLiked ? "like-animation" : "like-animation-end",
             isLiked ? "fill-like text-like" : "text-muted-foreground fill-transparent",
           )}

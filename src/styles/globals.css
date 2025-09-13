@@ -59,6 +59,8 @@
   --color-outline-text: var(--outline-text);
   --color-custom-shadow: var(--custom-shadow);
   --color-card-with-thumbnail: var(--card-with-thumbnail);
+  --color-overlay-background: var(--overlay-background);
+  --color-overlay-foreground: var(--overlay-foreground);
 }
 
 .default {
@@ -126,6 +128,8 @@
     var(--color-background),
     color-mix(in oklch, var(--color-background) 80.7%, transparent)
   );
+  --overlay-background: rgba(0, 0, 0, 0.7);
+  --overlay-foreground: #ffffff;
 }
 
 @layer utilities {

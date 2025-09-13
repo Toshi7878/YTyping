@@ -1,5 +1,6 @@
 import { LikeButtonWithCount } from "@/components/shared/like-button/LikeButton";
 import { useLikeMutationMapList } from "@/utils/mutations/like.mutations";
+import { useProgress } from "@bprogress/next";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { FiHeart } from "react-icons/fi";
@@ -23,6 +24,7 @@ interface LikeCountIconProps {
 
 const ActiveLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconProps) => {
   const setLikeMutation = useLikeMutationMapList();
+  const { stop } = useProgress();
 
   const handleClick = (event: React.MouseEvent, newLikeValue: boolean) => {
     event.stopPropagation();
@@ -31,6 +33,7 @@ const ActiveLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconP
     if (setLikeMutation.isPending) return;
 
     setLikeMutation.mutate({ mapId, likeValue: newLikeValue });
+    stop();
   };
 
   return (
@@ -54,14 +57,14 @@ const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
 
   if (!isMounted) {
     return (
-      <div className="z-45">
+      <div className="z-30">
         <InactiveLikeCountIcon likeCount={likeCount} />
       </div>
     );
   }
 
   return (
-    <div className="z-45" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
+    <div className="z-30" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
       {session?.user.id ? (
         <ActiveLikeCountIconButton isLiked={isLiked} likeCount={likeCount} mapId={mapId} />
       ) : (
