@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./css/render.css";
 
 type LikeButtonProps = {
@@ -16,6 +16,10 @@ type LikeButtonProps = {
 export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className, disabled }: LikeButtonProps) => {
   const [isLiked, setIsLiked] = useState(defaultLiked);
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
+
+  useEffect(() => {
+    setIsLiked(defaultLiked);
+  }, [defaultLiked]);
 
   const backgroundWidth = size * 25;
   const heartSize = Math.floor(size / 2);
@@ -71,6 +75,10 @@ export const LikeButtonWithCount = ({
 }: LikeButtonProps & { likeCount: number }) => {
   const [isLiked, setIsLiked] = useState(defaultLiked);
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
+
+  useEffect(() => {
+    setIsLiked(defaultLiked);
+  }, [defaultLiked]);
 
   const backgroundWidth = size * 25;
   const heartSize = Math.floor(size / 2);

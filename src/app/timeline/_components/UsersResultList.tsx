@@ -3,6 +3,7 @@ import Spinner from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { resultListQueries } from "@/utils/queries/resultList.queries";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -11,8 +12,9 @@ import ResultCard from "./result-card/ResultCard";
 
 function UsersResultList() {
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
-    resultListQueries.infiniteResultList(searchParams),
+    resultListQueries.infiniteResultList(session, searchParams),
   );
 
   const isSearching = useIsSearchingState();
@@ -34,6 +36,8 @@ function UsersResultList() {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  if (!data.pages) return null;
 
   return (
     <section className={cn("grid grid-cols-1 gap-3", isSearching ? "opacity-20" : "opacity-100")}>

@@ -1,38 +1,22 @@
 import { PAGE_SIZE, PARAM_NAME } from "@/app/timeline/_lib/consts";
 import { infiniteQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
+import type { Session } from "next-auth";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import type { TimelineResult } from "../../app/timeline/_lib/type";
 import { getBaseUrl } from "../getBaseUrl";
 import { QUERY_KEYS } from "./const";
 
 export const resultListQueries = {
-  infiniteResultList: (searchParams: ReadonlyURLSearchParams) => {
+  infiniteResultList: (session: Session | null, searchParams: ReadonlyURLSearchParams) => {
     const { queryKey, params } = getSearchParams(searchParams);
 
     return infiniteQueryOptions({
       queryKey,
-      queryFn: ({ pageParam = 0 }) =>
-        getResultList({
-          page: pageParam,
-          params,
-        }),
+      queryFn: ({ pageParam = 0 }) => getResultList({ page: pageParam, session, params }),
       initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length === PAGE_SIZE) {
-          const nextPage = allPages.length;
-          return nextPage;
-        }
-
-        return undefined;
-      },
-      getPreviousPageParam: (firstPage, allPages) => {
-        if (allPages.length > 1) {
-          return allPages.length - 2;
-        }
-
-        return undefined;
-      },
+      getNextPageParam: (lastPage, allPages) => (lastPage.length === PAGE_SIZE ? allPages.length : undefined),
+      getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 2 : undefined),
       refetchOnWindowFocus: false,
       gcTime: Infinity,
     });
@@ -41,30 +25,20 @@ export const resultListQueries = {
 
 interface GetResultListParams {
   page: number;
+  session: Session | null;
   params?: Partial<typeof PARAM_NAME>;
 }
 
-async function getResultList({ page, params }: GetResultListParams): Promise<TimelineResult[]> {
+async function getResultList({ page, session, params }: GetResultListParams): Promise<TimelineResult[]> {
   const response = await axios.get(`${getBaseUrl()}/api/users-result-list`, {
-    params: {
-      page,
-      ...params,
-    },
+    params: { page, userId: session?.user.id, ...params },
   });
 
   if (response.status !== 200) {
     throw new Error("Failed to fetch data");
   }
 
-  const raw = response.data as Array<any>;
-  return raw.map((r) => ({
-    ...r,
-    updated_at: new Date(r.updated_at),
-    map: {
-      ...r.map,
-      updated_at: new Date(r.map.updated_at),
-    },
-  }));
+  return response.data;
 }
 
 function getSearchParams(searchParams: ReadonlyURLSearchParams) {
