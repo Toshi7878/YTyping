@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import React from "react";
 
-const spinnerVariants = cva("border-muted border-t-primary animate-spin rounded-full", {
+const spinnerVariants = cva("border-muted-foreground/80 border-t-primary animate-spin rounded-full", {
   variants: {
     size: {
       xs: "h-4 w-4 border-2",
