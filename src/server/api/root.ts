@@ -1,4 +1,5 @@
 import { activeUserRouter } from "./routers/activeUserRouter";
+import { authRouter } from "./routers/authRouter";
 import { clapRouter } from "./routers/clapRouter";
 import { geminiRouter } from "./routers/geminiRouter";
 import { likeRouter } from "./routers/likeRouter";
@@ -33,6 +34,7 @@ export const appRouter = router({
   vercel: vercelRouter,
   clap: clapRouter,
   like: likeRouter,
+  auth: authRouter,
 });
 
 export type AppRouter = typeof appRouter;

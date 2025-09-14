@@ -5,7 +5,6 @@ import { MD5 } from "crypto-js";
 import NextAuth from "next-auth";
 import { prisma } from "./db";
 
-// export const runtime = "edge";
 export const { auth, handlers, signIn } = NextAuth({
   ...authConfig,
   secret: env.AUTH_SECRET,
@@ -88,7 +87,7 @@ export const { auth, handlers, signIn } = NextAuth({
       if (user) {
         if (!user?.email) return token;
 
-        const email_hash = CryptoJS.MD5(user.email).toString();
+        const email_hash = MD5(user.email).toString();
         const dbUser = await prisma.users.findUnique({
           where: { email_hash },
         });
