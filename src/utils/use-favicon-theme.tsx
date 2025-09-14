@@ -7,31 +7,29 @@ import { useEffect } from "react";
 export function applyFavicon(href: string, cacheKey?: string) {
   if (typeof document === "undefined") return;
 
-  const links = document.querySelectorAll<HTMLLinkElement>('link[rel~="icon"]');
   const withCacheBust = cacheKey ? `${href}?t=${encodeURIComponent(cacheKey)}` : href;
+  const id = "dynamic-favicon";
+  let link = document.getElementById(id) as HTMLLinkElement | null;
 
-  if (links.length === 0) {
-    const link = document.createElement("link");
+  if (!link) {
+    link = document.createElement("link");
+    link.id = id;
     link.rel = "icon";
     link.type = "image/x-icon";
-    link.href = withCacheBust;
     document.head.appendChild(link);
-    return;
   }
 
-  links.forEach((link) => {
-    link.type = "image/x-icon";
-    link.href = withCacheBust;
-  });
+  link.href = withCacheBust;
 }
 
 export function useFaviconTheme() {
-  const { theme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!theme) return;
-    const href = `/favicons/favicon-${theme}.ico`;
-    applyFavicon(href, theme);
-  }, [theme, pathname]);
+    const active = theme === "system" ? resolvedTheme : theme;
+    if (!active) return;
+    const href = `/favicons/favicon-${active}.ico`;
+    applyFavicon(href, active);
+  }, [theme, resolvedTheme, pathname]);
 }
