@@ -40,6 +40,7 @@
   --color-perfect: var(--perfect);
   --color-failure: var(--failure);
   --color-like: var(--like);
+  --opacity-word-correct: var(--opacity-word-correct);
   --color-word-correct: var(--word-correct);
   --color-word-nextChar: var(--word-nextChar);
   --color-word-word: var(--word-word);

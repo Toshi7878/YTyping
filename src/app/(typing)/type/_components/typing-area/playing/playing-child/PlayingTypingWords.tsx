@@ -126,7 +126,11 @@ const Word = ({
         <span className="next-line-word text-word-nextWord">{nextWord}</span>
       ) : (
         <>
-          <span className={cn(remainWord.length === 0 ? "text-word-completed" : "text-word-correct")}>{correct}</span>
+          <span
+            className={cn(remainWord.length === 0 ? "text-word-completed" : "text-word-correct opacity-word-correct")}
+          >
+            {correct}
+          </span>
           <span className="text-word-nextChar">{nextChar}</span>
           <span className="text-word-word">{word}</span>
         </>

@@ -35,12 +35,15 @@
   --like: oklch(0.7253 0.1752 349.76);
   --failure: oklch(0.7012 0.1812 298.06);
 
+  --opacity-word-correct: 0;
   --word-correct: transparent;
   --word-nextChar: #ffffff;
   --word-word: #ffffff;
   --word-completed: oklch(0.7864 0.1143 186.56);
   --word-nextWord: #6b7280;
-  --word-outline-text: none;
+  --word-outline-text:
+    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000,
+    0 -1px 0 #000;
 
   --info: oklch(0.8021 0.1383 209.06);
   --info-foreground: oklch(0.985 0 0);
