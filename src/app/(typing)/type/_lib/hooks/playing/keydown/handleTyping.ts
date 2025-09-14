@@ -1,5 +1,11 @@
-import { useReadGameUtilParams, useReadMap, useSetLineWord } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import {
+  useReadGameUtilParams,
+  useReadMap,
+  useSetCurrentLine,
+  useSetLineWord,
+} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useInputJudge } from "@/app/(typing)/type/_lib/hooks/playing/keydown/typingJudge";
+import { useLineCount, useReadYTStatus } from "../../../atoms/refAtoms";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";
 import { useSoundEffect } from "../soundEffect";
@@ -15,12 +21,16 @@ export const useTyping = () => {
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
   const { getCurrentLineTime, getCurrentOffsettedYTTime, getConstantLineTime, getConstantRemainLineTime } =
     useGetTime();
+  const { readYTStatus } = useReadYTStatus();
+
   const calcTypeSpeed = useCalcTypeSpeed();
   const inputJudge = useInputJudge();
   const { isLinePointUpdated, updateLineResult } = useUpdateLineResult();
   const readGameStateUtils = useReadGameUtilParams();
   const updateAllStatus = useUpdateAllStatus();
   const readMap = useReadMap();
+  const { readCount } = useLineCount();
+  const { setCurrentLine } = useSetCurrentLine();
 
   return (event: KeyboardEvent) => {
     const { isSuccess, isFailed, isCompleted, newLineWord, ...inputResult } = inputJudge(event);
@@ -42,11 +52,14 @@ export const useTyping = () => {
         lineRemainConstantTime: getConstantRemainLineTime(constantLineTime),
         updatePoint: inputResult.updatePoint,
       });
+      const { isPaused } = readYTStatus();
 
-      calcTypeSpeed({
-        updateType: isCompleted ? "completed" : "keydown",
-        constantLineTime,
-      });
+      if (!isPaused) {
+        calcTypeSpeed({
+          updateType: isCompleted ? "completed" : "keydown",
+          constantLineTime,
+        });
+      }
 
       if (isCompleted) {
         if (isLinePointUpdated()) {
@@ -62,6 +75,13 @@ export const useTyping = () => {
             count: map.mapData.length - 1,
             updateType: "completed",
           });
+
+          if (isPaused) {
+            const count = readCount();
+            const newCurrentLine = map.mapData[count - 1];
+            const newNextLine = map.mapData[count];
+            setCurrentLine({ newCurrentLine, newNextLine });
+          }
         }
       }
     } else if (isFailed) {
