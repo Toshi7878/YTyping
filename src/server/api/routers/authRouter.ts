@@ -1,10 +1,10 @@
-import { MD5 } from "crypto-js";
+import md5 from "md5";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const authRouter = router({
   registerIfNeeded: publicProcedure.input(z.object({ email: z.string().email() })).mutation(async ({ input, ctx }) => {
-    const email_hash = MD5(input.email).toString();
+    const email_hash = md5(input.email).toString();
     const existed = await ctx.db.users.findUnique({ where: { email_hash } });
     if (existed) return true;
 
