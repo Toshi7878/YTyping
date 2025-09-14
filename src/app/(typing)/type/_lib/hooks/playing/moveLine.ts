@@ -27,7 +27,11 @@ export const useMoveLine = () => {
     const map = readMap();
     if (!map) return;
     const { scene } = readGameStateUtils();
-    const count = readCount() - (scene === "replay" ? 1 : 0);
+    const isPaused = readPlayer().getPlayerState() === 2;
+
+    const isTimeBuffer = scene === "practice" && !isPaused;
+
+    const count = readCount() - (isTimeBuffer ? 0 : 1);
     const prevCount = structuredClone(map.typingLineIndexes)
       .reverse()
       .find((num) => num < count);
@@ -35,15 +39,13 @@ export const useMoveLine = () => {
     if (prevCount === undefined) return;
 
     const playSpeed = readPlaySpeed().playSpeed;
-    const isPaused = readPlayer().getPlayerState() === 2;
 
-    const isTimeBuffer = scene === "practice" && !isPaused;
     const prevTime = Number(map.mapData[prevCount]["time"]) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
     const newLineSelectIndex = map.typingLineIndexes.indexOf(prevCount) + 1;
-    setLineSelectIndex(newLineSelectIndex + (isTimeBuffer ? 0 : -1));
+    setLineSelectIndex(newLineSelectIndex);
     pauseTimer();
 
-    const newCount = getSeekLineCount(prevTime) + (isTimeBuffer ? 0 : -1);
+    const newCount = getSeekLineCount(prevTime);
     writeCount(newCount);
     updateLine(newCount);
 
