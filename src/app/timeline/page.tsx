@@ -1,5 +1,5 @@
 import { serverApi } from "@/trpc/server";
-import { getSearchParams } from "@/utils/queries/resultList.queries";
+import { parseResultListSearchParams } from "@/utils/queries/search-params/resultList";
 import SearchContent from "./_components/SearchContent";
 import UsersResultList from "./_components/UsersResultList";
 import TimelineProvider from "./client-provider";
@@ -12,7 +12,7 @@ export default async function Home({ searchParams }: PageProps<"/timeline">) {
     else if (typeof v === "string") usp.append(k, v);
   });
 
-  const params = getSearchParams(usp);
+  const params = parseResultListSearchParams(usp);
   const list = await serverApi.result.usersResultList(params);
 
   return (

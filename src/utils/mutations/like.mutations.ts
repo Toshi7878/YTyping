@@ -1,4 +1,5 @@
-import { RouterOutPuts, Trpc } from "@/server/api/trpc";
+import { RouterOutPuts } from "@/server/api/trpc";
+import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
 import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
 

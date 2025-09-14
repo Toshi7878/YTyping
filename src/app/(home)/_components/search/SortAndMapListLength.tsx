@@ -1,8 +1,8 @@
 import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
-import { PARAM_NAME } from "@/app/(home)/_lib/const";
 import { useDifficultyRangeParams } from "@/app/(home)/_lib/useDifficultyRangeParams";
 import { cn } from "@/lib/utils";
 import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
+import { PARAM_NAME } from "@/utils/queries/search-params/mapList";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";

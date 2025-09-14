@@ -40,8 +40,6 @@ const MapList = ({ list }: { list: RouterOutPuts["mapList"]["getList"] }) => {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (!data.pages) return null;
-
   return (
     <section className={isSearching ? "opacity-20" : ""}>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">

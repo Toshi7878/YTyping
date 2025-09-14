@@ -1,11 +1,12 @@
 "use client";
 
 import { useDifficultyRangeState, useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
-import { DIFFICULTY_RANGE, PARAM_NAME } from "@/app/(home)/_lib/const";
+import { DIFFICULTY_RANGE } from "@/app/(home)/_lib/const";
 import { useDifficultyRangeParams } from "@/app/(home)/_lib/useDifficultyRangeParams";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { cn } from "@/lib/utils";
+import { PARAM_NAME } from "@/utils/queries/search-params/mapList";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

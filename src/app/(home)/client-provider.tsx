@@ -1,10 +1,11 @@
 "use client";
+import { PARAM_NAME } from "@/utils/queries/search-params/mapList";
 import { Provider as JotaiProvider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import { difficultyRangeAtom, getHomeAtomStore } from "./_lib/atoms";
-import { DIFFICULTY_RANGE, PARAM_NAME } from "./_lib/const";
+import { DIFFICULTY_RANGE } from "./_lib/const";
 
 interface HomeClientProviderProps {
   children: React.ReactNode;

@@ -1,4 +1,3 @@
-import { useTRPC } from "@/trpc/provider";
 import { inferRouterInputs, inferRouterOutputs, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { auth } from "../auth";
@@ -44,4 +43,3 @@ export const protectedProcedure = t.procedure.use(function isAuthed(opts) {
 });
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutPuts = inferRouterOutputs<AppRouter>;
-export type Trpc = ReturnType<typeof useTRPC>;

@@ -1,4 +1,5 @@
-import { DIFFICULTY_RANGE, PARAM_NAME } from "./const";
+import { PARAM_NAME } from "@/utils/queries/search-params/mapList";
+import { DIFFICULTY_RANGE } from "./const";
 
 export const useDifficultyRangeParams = () => {
   return (params: URLSearchParams, difficultyRange: typeof DIFFICULTY_RANGE) => {

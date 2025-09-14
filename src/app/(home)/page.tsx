@@ -1,5 +1,5 @@
 import { serverApi } from "@/trpc/server";
-import { getMapListSearchParams } from "@/utils/queries/mapList.queries";
+import { parseMapListSearchParams } from "@/utils/queries/search-params/mapList";
 import MapControlArea from "./_components/MapControlArea";
 import MapList from "./_components/MapList";
 import HomeProvider from "./client-provider";
@@ -12,7 +12,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     else if (typeof v === "string") usp.append(k, v);
   });
 
-  const params = getMapListSearchParams(usp);
+  const params = parseMapListSearchParams(usp);
 
   const list = await serverApi.mapList.getList(params);
 
