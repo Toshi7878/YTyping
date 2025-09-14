@@ -58,8 +58,8 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody id={tbodyId}>
           {loading ? (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={columns.length} className="h-40 text-center">
                 <Spinner size="lg" />
               </TableCell>
             </TableRow>
