@@ -54,7 +54,7 @@ const PlayingNotify = () => {
   }, [scene]);
 
   const textForOffset = (notify.description ?? "").toString();
-  const offsetCh = Math.max(0, textForOffset.length - 1) * -0.2; // 1文字あたり0.06chだけ左へ
+  const offsetCh = Math.max(0, textForOffset.length - 1) * -0.2; // 1文字あたり-0.2chだけ左へ
 
   return (
     <div
