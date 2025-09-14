@@ -26,7 +26,7 @@ type RankingResult = RouterOutPuts["ranking"]["getMapRanking"][number];
 
 const TabRanking = ({ className }: { className?: string }) => {
   const { id: mapId } = useParams<{ id: string }>();
-  const { data, error } = useQuery(useMapRankingQueries().mapRanking({ mapId }));
+  const { data, error, isPending } = useQuery(useMapRankingQueries().mapRanking({ mapId }));
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const setTypingStatusRank = useSetTypingStatusRank();
   const { data: session } = useSession();
@@ -171,6 +171,7 @@ const TabRanking = ({ className }: { className?: string }) => {
       }}
     >
       <DataTable<RankingResult, unknown>
+        loading={isPending}
         columns={columns}
         data={data ?? []}
         onRowClick={(_, __, index) => {

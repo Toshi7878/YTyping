@@ -4,6 +4,7 @@ import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import Spinner from "../spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 
 interface DataTableProps<TData, TValue> {
@@ -15,6 +16,7 @@ interface DataTableProps<TData, TValue> {
   cellClassName?: string;
   tbodyId?: string;
   rowWrapper?: (args: { row: TData; index: number; children: React.ReactNode }) => React.ReactNode;
+  loading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -26,6 +28,7 @@ export function DataTable<TData, TValue>({
   cellClassName,
   tbodyId,
   rowWrapper,
+  loading,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -54,50 +57,58 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody id={tbodyId}>
-          {table.getRowModel().rows.map((row, index) => {
-            const rowNode = (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                onClick={(event) => onRowClick?.(event, row.original, index)}
-                className={cn("transition-none", onRowClick && "cursor-pointer", rowClassName?.(index))}
-              >
-                {row.getVisibleCells().map((cell) => {
-                  const columnMeta = cell.column.columnDef.meta;
-                  const hasColumnClick = columnMeta?.onClick;
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                <Spinner size="lg" />
+              </TableCell>
+            </TableRow>
+          ) : (
+            table.getRowModel().rows.map((row, index) => {
+              const rowNode = (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  onClick={(event) => onRowClick?.(event, row.original, index)}
+                  className={cn("transition-none", onRowClick && "cursor-pointer", rowClassName?.(index))}
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    const columnMeta = cell.column.columnDef.meta;
+                    const hasColumnClick = columnMeta?.onClick;
 
-                  return (
-                    <TableCell
-                      key={cell.id}
-                      onClick={(event) => {
-                        if (hasColumnClick) {
-                          columnMeta?.onClick?.(event, row.original, index);
-                        }
-                      }}
-                      style={{ maxWidth: cell.column.getSize(), minWidth: cell.column.getSize() }}
-                      className={cn(
-                        hasColumnClick && "cursor-pointer",
-                        cellClassName,
-                        columnMeta?.cellClassName?.(cell, index),
-                      )}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-
-            if (rowWrapper) {
-              return (
-                <React.Fragment key={row.id}>
-                  {rowWrapper({ row: row.original, index, children: rowNode })}
-                </React.Fragment>
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        onClick={(event) => {
+                          if (hasColumnClick) {
+                            columnMeta?.onClick?.(event, row.original, index);
+                          }
+                        }}
+                        style={{ maxWidth: cell.column.getSize(), minWidth: cell.column.getSize() }}
+                        className={cn(
+                          hasColumnClick && "cursor-pointer",
+                          cellClassName,
+                          columnMeta?.cellClassName?.(cell, index),
+                        )}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
               );
-            }
 
-            return rowNode;
-          })}
+              if (rowWrapper) {
+                return (
+                  <React.Fragment key={row.id}>
+                    {rowWrapper({ row: row.original, index, children: rowNode })}
+                  </React.Fragment>
+                );
+              }
+
+              return rowNode;
+            })
+          )}
         </TableBody>
       </Table>
     </div>
