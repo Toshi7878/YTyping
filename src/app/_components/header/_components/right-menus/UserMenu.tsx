@@ -25,7 +25,7 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
         <Button
           variant="unstyled"
           size="sm"
-          className={cn("hover:text-header-foreground text-header-foreground/80", className)}
+          className={cn("hover:text-header-foreground text-header-foreground/80 mb-0.5", className)}
         >
           {userName}
           <ChevronDown className="relative top-[1px] size-4" />

@@ -13,7 +13,7 @@ export const SiteLogo = () => {
   return (
     <Link
       href="/"
-      className="hover:bg-secondary/30 text-header-foreground relative top-[-2px] px-2 text-2xl font-bold transition-colors duration-200"
+      className="hover:bg-secondary/30 text-header-foreground h-9 px-2 text-2xl font-bold transition-colors duration-200"
     >
       <span>Y</span>
       <span>Typing</span>
