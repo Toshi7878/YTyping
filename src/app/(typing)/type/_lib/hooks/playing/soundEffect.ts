@@ -3,6 +3,7 @@ import { useUserAgent } from "@/utils/useUserAgent";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
+sound.disableAutoPause = true;
 
 const manifest = [
   { alias: "type", src: "/wav/key_type.wav" },
