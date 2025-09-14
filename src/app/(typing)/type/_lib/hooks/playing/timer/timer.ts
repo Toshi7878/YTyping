@@ -242,19 +242,16 @@ const useCalcLineResult = () => {
 
   return ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
+    if (!map) return;
     const { scene } = readGameStateUtils();
     const { isCompleted } = readLineStatus();
     const count = readCount();
 
-    if (!map) return;
     if (!isCompleted && count > 0) {
       const isTypingLine = map.mapData[count - 1].kpm.r > 0;
 
       if (isTypingLine) {
-        calcTypeSpeed({
-          updateType: "lineUpdate",
-          constantLineTime,
-        });
+        calcTypeSpeed({ updateType: "lineUpdate", constantLineTime });
       }
 
       if (isLinePointUpdated()) {
@@ -266,10 +263,7 @@ const useCalcLineResult = () => {
           updateStatus({ constantLineTime });
           break;
         case "practice":
-          updateAllStatus({
-            count: map.mapData.length - 1,
-            updateType: "lineUpdate",
-          });
+          updateAllStatus({ count: map.mapData.length - 1, updateType: "lineUpdate" });
           break;
       }
     }
