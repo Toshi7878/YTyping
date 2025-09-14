@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
-import Link, { LinkProps } from "next/link";
+import { Route } from "next";
+import Link from "next/link";
 
 interface TextLinkProps {
-  href: LinkProps<typeof Link>["href"];
+  href: Route;
   children: React.ReactNode;
   className?: string;
 }

@@ -6,11 +6,11 @@ import preMidLinks from "@/public/images/manual/premid/premid-link.png";
 import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
 import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
 import { useUserAgent } from "@/utils/useUserAgent";
+import type { Route } from "next";
 import Image from "next/image";
-import Link, { LinkProps } from "next/link";
 import type { ReactNode } from "react";
 
-const browserLinks: Record<string, { url: LinkProps<typeof Link>["href"]; text: string }> = {
+const browserLinks: Record<string, { url: Route; text: string }> = {
   Chrome: {
     url: "https://chromewebstore.google.com/detail/premid/agjnjboanicjcpenljmaaigopkgdnihi",
     text: "PreMiD - Chrome ウェブストア",

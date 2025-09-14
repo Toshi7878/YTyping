@@ -3,10 +3,10 @@ import { Separator } from "@/components/ui/separator";
 import TextLink from "@/components/ui/text-link";
 import { H6 } from "@/components/ui/typography";
 import { useUserAgent } from "@/utils/useUserAgent";
-import Link, { LinkProps } from "next/link";
+import type { Route } from "next";
 import type { ReactNode } from "react";
 
-const browserLinks: Record<string, { url: LinkProps<typeof Link>["href"]; text: string }> = {
+const browserLinks: Record<string, { url: Route; text: string }> = {
   Chrome: {
     url: "https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne?hl=ja",
     text: "Stylus - Chrome ウェブストア",

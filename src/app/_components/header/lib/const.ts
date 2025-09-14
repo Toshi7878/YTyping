@@ -1,6 +1,6 @@
-import Link, { LinkProps } from "next/link";
+import { Route } from "next";
 
-type HeaderMenu = { title: string; href: LinkProps<typeof Link>["href"]; device?: "PC" };
+type HeaderMenu = { title: string; href: Route; device?: "PC" };
 
 export const LEFT_MENU_LINK_ITEM: HeaderMenu[] = [
   { title: "更新履歴", href: "/changelog" },
