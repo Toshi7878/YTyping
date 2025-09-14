@@ -56,10 +56,7 @@ const speedReducerAtom = atom(
         break;
       case "set":
         if (value !== undefined) {
-          set(speedBaseAtom, (prev) => {
-            if (prev.playSpeed === value) {
-              return prev;
-            }
+          set(speedBaseAtom, () => {
             return {
               defaultSpeed: value,
               playSpeed: value,
@@ -78,7 +75,7 @@ const speedReducerAtom = atom(
         });
         break;
     }
-  }
+  },
 );
 
 export const usePlaySpeedState = () => useAtomValue(speedBaseAtom, { store });
@@ -86,6 +83,6 @@ export const usePlaySpeedReducer = () => useSetAtom(speedReducerAtom, { store })
 export const useReadPlaySpeed = () => {
   return useAtomCallback(
     useCallback((get) => get(speedBaseAtom), []),
-    { store }
+    { store },
   );
 };
