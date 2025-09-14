@@ -102,7 +102,7 @@ importers:
         specifier: ^15.5.3
         version: 15.5.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       next-auth:
-        specifier: ^5.0.0-beta.29
+        specifier: 5.0.0-beta.29
         version: 5.0.0-beta.29(next@15.5.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
       next-themes:
         specifier: ^0.4.6
