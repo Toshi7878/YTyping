@@ -88,7 +88,7 @@ const SortOptions = () => {
     }
 
     setIsSearching(true);
-    window.history.pushState(null, "", `?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
+    window.history.replaceState(null, "", `?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
   };
 
   const getSortIcon = (field: SortField) => {
@@ -134,7 +134,7 @@ const MapListLength = () => {
   const { data: mapListLength, isPending } = useQuery(useMapListQueryOptions().listLength(searchParams));
 
   return (
-    <div className="bg-accent text-accent-foreground flex items-center gap-2 rounded-md px-3 py-1 font-medium">
+    <div className="bg-accent text-accent-foreground flex items-center gap-4 rounded-md px-3 py-1 font-medium">
       <span>譜面数:</span>
       <div className="flex w-6 min-w-6 items-center justify-end">
         {isPending ? <Loader2 className="h-4 w-4" /> : mapListLength}

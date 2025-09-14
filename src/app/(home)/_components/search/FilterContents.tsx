@@ -102,7 +102,15 @@ const FilterInputs = () => {
                     <Link
                       key={`${filter.name}-${paramIndex}`}
                       href={`?${createQueryString(filter.name, param.value, isSelected)}`}
-                      onClick={() => setIsSearchingAtom(true)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsSearchingAtom(true);
+                        window.history.replaceState(
+                          null,
+                          "",
+                          `?${createQueryString(filter.name, param.value, isSelected)}`,
+                        );
+                      }}
                       className={cn(
                         "hover:text-secondary-dark rounded px-2 py-1 text-sm transition-colors hover:underline",
                         isSelected && "text-secondary-dark font-bold underline",
