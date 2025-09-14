@@ -1,5 +1,5 @@
 import { useGameUtilityReferenceParams, useLineCount, usePlayer, useReadYTStatus } from "../../atoms/refAtoms";
-import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
+import { useReadPlaySpeed } from "../../atoms/speedReducerAtoms";
 import { useReadMap, useSetSkip, useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
 
 export const usePressSkip = () => {
@@ -10,7 +10,7 @@ export const usePressSkip = () => {
   const { readYTStatus } = useReadYTStatus();
   const { readCount } = useLineCount();
   const readUserOptions = useUserTypingOptionsStateRef();
-  const readPlaySpeed = usePlaySpeedStateRef();
+  const readPlaySpeed = useReadPlaySpeed();
   const readMap = useReadMap();
 
   return () => {

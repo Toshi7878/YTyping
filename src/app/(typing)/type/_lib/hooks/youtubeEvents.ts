@@ -7,7 +7,7 @@ import {
   useProgress,
   useReadYTStatus,
 } from "../atoms/refAtoms";
-import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";
+import { useReadPlaySpeed } from "../atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
   useReadMap,
@@ -36,7 +36,7 @@ export const useYTPlayEvent = () => {
   const { readYTStatus, writeYTStatus } = useReadYTStatus();
   const readGameStateUtils = useReadGameUtilParams();
   const readReadyInputMode = useReadReadyInputMode();
-  const readPlaySpeed = usePlaySpeedStateRef();
+  const readPlaySpeed = useReadPlaySpeed();
   const updateAllStatus = useUpdateAllStatus();
   const readMap = useReadMap();
 

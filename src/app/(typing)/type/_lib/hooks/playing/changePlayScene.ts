@@ -1,6 +1,6 @@
 import { YouTubeSpeed } from "@/types";
-import { useGameUtilityReferenceParams, useLineStatus } from "../../atoms/refAtoms";
-import { usePlaySpeedReducer } from "../../atoms/speedReducerAtoms";
+import { useGameUtilityReferenceParams } from "../../atoms/refAtoms";
+import { usePlaySpeedReducer, useReadPlaySpeed } from "../../atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
   useSetLineResultDrawer,
@@ -18,11 +18,11 @@ export const useChangePlayMode = () => {
   const dispatchSpeed = usePlaySpeedReducer();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { readLineStatus } = useLineStatus();
   const readGameUtilParams = useReadGameUtilParams();
   const setPlayingInputMode = useSetPlayingInputMode();
   const setLineResultDrawer = useSetLineResultDrawer();
 
+  const readSpeed = useReadPlaySpeed();
   const readReadyInputMode = useReadReadyInputMode();
 
   return () => {
@@ -35,8 +35,6 @@ export const useChangePlayMode = () => {
     } else {
       const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
       if (window.confirm(confirmMessage)) {
-        const { startSpeed } = readLineStatus();
-
         writeGameUtilRefParams({ replayKeyCount: 0, replayUserName: "" });
 
         setLineResultDrawer(false);
@@ -45,7 +43,8 @@ export const useChangePlayMode = () => {
           setPlayingInputMode(readReadyInputMode());
         }
         retry("play");
-        dispatchSpeed({ type: "set", payload: 1 > startSpeed ? 1 : (startSpeed as YouTubeSpeed) });
+        const { playSpeed } = readSpeed();
+        dispatchSpeed({ type: "set", payload: 1 > playSpeed ? 1 : (playSpeed as YouTubeSpeed) });
       }
       setNotify(Symbol(""));
     }
