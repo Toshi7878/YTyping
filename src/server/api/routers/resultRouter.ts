@@ -9,7 +9,7 @@ import { sendResultSchema } from "./rankingRouter";
 
 const usersResultListSchema = z.object({
   limit: z.number().min(1).max(100).default(PAGE_SIZE),
-  cursor: z.string().optional(),
+  cursor: z.string().nullable().optional(),
   mode: z.string().default("all"),
   minKpm: z.number().default(DEFAULT_KPM_SEARCH_RANGE.min),
   maxKpm: z.number().default(DEFAULT_KPM_SEARCH_RANGE.max),

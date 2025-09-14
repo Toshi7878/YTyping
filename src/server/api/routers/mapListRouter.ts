@@ -5,7 +5,7 @@ import { protectedProcedure, publicProcedure } from "../trpc";
 
 const mapListSchema = z.object({
   limit: z.number().min(1).max(100).default(PAGE_SIZE),
-  cursor: z.string().optional(),
+  cursor: z.string().nullable().optional(),
   filter: z.string().optional(),
   minRate: z.number().optional(),
   maxRate: z.number().optional(),
@@ -346,6 +346,7 @@ function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
     case "not-first":
       return Prisma.raw(`EXISTS (
 		  SELECT 1 FROM results
+		  JOIN result_statuses ON results.id = result_statuses.result_id
 		  WHERE results.map_id = maps.id
 		  AND results.user_id = ${userId}
 		  AND results.rank > 1
