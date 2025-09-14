@@ -31,7 +31,7 @@ const TypingWords = () => {
   }, [kanaScroll, romaScroll]);
 
   const kanaWordProps = {
-    correct: lineWord.correct["k"].substr(-kanaCorrectSlice, kanaCorrectSlice).replace(/ /g, "ˍ"),
+    correct: lineWord.correct["k"].substr(-kanaCorrectSlice, kanaCorrectSlice),
     nextChar: lineWord.nextChar["k"].replace(/ /g, " "),
     word: lineWord.word
       .map((w) => w["k"])
@@ -54,7 +54,7 @@ const TypingWords = () => {
     },
   };
   const romaWordProps = {
-    correct: lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice).replace(/ /g, "ˍ"),
+    correct: lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice),
     nextChar: lineWord.nextChar["r"][0].replace(/ /g, " "),
     word: lineWord.word
       .map((w) => w["r"][0])
@@ -125,7 +125,7 @@ const Word = ({
       style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom, letterSpacing: rest.style?.letterSpacing }}
     >
       {isLineCompleted && isNextWordDisplay ? (
-        <span className="next-line-word text-word-nextWord">{nextWord}</span>
+        <span className="next-line-word text-word-nextWord">{nextWord.replace(/ /g, " ")}</span>
       ) : (
         <>
           <span
@@ -134,7 +134,7 @@ const Word = ({
               remainWord.length === 0 ? "text-word-completed" : "text-word-correct",
             )}
           >
-            {correct}
+            {correct.replace(/ /g, "ˍ")}
           </span>
           <span className="text-word-nextChar">{nextChar}</span>
           <span className="text-word-word">{word}</span>
