@@ -4,8 +4,9 @@ import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-export function applyFavicon(href: string, cacheKey?: string) {
+export function applyFavicon(cacheKey: string) {
   if (typeof document === "undefined") return;
+  const href = `/favicons/favicon-${cacheKey}.ico`;
 
   const withCacheBust = cacheKey ? `${href}?t=${encodeURIComponent(cacheKey)}` : href;
   const id = "dynamic-favicon";
@@ -29,7 +30,7 @@ export function useFaviconTheme() {
   useEffect(() => {
     const active = theme === "system" ? resolvedTheme : theme;
     if (!active) return;
-    const href = `/favicons/favicon-${active}.ico`;
-    applyFavicon(href, active);
+
+    applyFavicon(active);
   }, [theme, resolvedTheme, pathname]);
 }

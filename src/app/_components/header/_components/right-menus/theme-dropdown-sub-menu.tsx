@@ -18,6 +18,11 @@ import { useTheme } from "next-themes";
 export function ThemeDropdownSubmenu() {
   const { setTheme, resolvedTheme } = useTheme();
 
+  const handleThemeChange = (themeClass: string) => {
+    applyFavicon(themeClass);
+    setTheme(themeClass);
+  };
+
   return (
     <DropdownMenuSub>
       <DropdownMenuSubTrigger>テーマ切り替え</DropdownMenuSubTrigger>
@@ -30,10 +35,7 @@ export function ThemeDropdownSubmenu() {
                 key={theme.class}
                 className={resolvedTheme === theme.class ? "font-bold" : undefined}
                 onSelect={(e) => e.preventDefault()}
-                onClick={() => {
-                  setTheme(theme.class);
-                  applyFavicon(`/favicons/favicon-${theme.class}.ico`, theme.class);
-                }}
+                onClick={() => handleThemeChange(theme.class)}
               >
                 <span>{theme.label}</span>
                 {resolvedTheme === theme.class ? (
@@ -50,10 +52,7 @@ export function ThemeDropdownSubmenu() {
                 key={theme.class}
                 className={resolvedTheme === theme.class ? "font-bold" : undefined}
                 onSelect={(e) => e.preventDefault()}
-                onClick={() => {
-                  setTheme(theme.class);
-                  applyFavicon(`/favicons/favicon-${theme.class}.ico`, theme.class);
-                }}
+                onClick={() => handleThemeChange(theme.class)}
               >
                 <span>{theme.label}</span>
                 {resolvedTheme === theme.class ? (
