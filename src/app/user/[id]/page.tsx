@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import UserProfileCard from "./_components/UserProfileCard";
 import UserStatsCard from "./_components/UserStatsCard";
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({ params }: PageProps<"/user/[id]">) {
   const { id } = await params;
   const userProfile = await serverApi.user.getUserProfile({ userId: Number(id) });
   const userStats = await serverApi.userStats.getUserStats({ userId: Number(id) });

@@ -38,7 +38,7 @@ export default function Page() {
             const isExternal = tool.href.startsWith("http");
 
             return (
-              <section className="space-y-2">
+              <section key={tool.href} className="space-y-2">
                 <div className="flex items-baseline gap-3">
                   <TextLink href={tool.href} target={isExternal ? "_blank" : undefined}>
                     <H5>

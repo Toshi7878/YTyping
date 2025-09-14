@@ -7,8 +7,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 const ByUser = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.user.getUserName.queryOptions({ userId: Number(userId) }));
+
   return (
-    <TextLink href={{ pathname: "/user/[id]", query: { id: userId } }}>
+    <TextLink href={`/user/${userId}`}>
       <span>{data?.name}</span>
     </TextLink>
   );
