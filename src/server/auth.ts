@@ -48,10 +48,6 @@ export const { auth, handlers, signIn } = NextAuth({
 
           const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
 
-          if (pathname === "/user/mypage") {
-            return Response.redirect(new URL(`/user/${auth.user.id}`, nextUrl));
-          }
-
           if (isMaintenanceMode) {
             if (pathname !== "/maintenance") {
               return Response.redirect(new URL("/maintenance", nextUrl));

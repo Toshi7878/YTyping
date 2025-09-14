@@ -12,6 +12,6 @@ export const LEFT_MENU_LINK_ITEM: HeaderMenu[] = [
 export const LEFT_LINKS: HeaderMenu[] = [{ title: "タイムライン", href: "/timeline" }];
 
 export const LOGIN_MENU_LINK_ITEM: HeaderMenu[] = [
-  { title: "ユーザーページ", href: { pathname: "/user/mypage" } },
-  { title: "ユーザー設定", href: { pathname: "/user/settings" } },
+  { title: "ユーザーページ", href: "/user/mypage" },
+  { title: "ユーザー設定", href: "/user/settings" },
 ];
