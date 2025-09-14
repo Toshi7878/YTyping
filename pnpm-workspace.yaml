@@ -1,3 +1,7 @@
+packages:
+  - apps/*
+  - packages/*
+
 onlyBuiltDependencies:
-  - '@prisma/client'
-  - '@tailwindcss/oxide'
+  - "@prisma/client"
+  - "@tailwindcss/oxide"
