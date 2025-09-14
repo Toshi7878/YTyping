@@ -32,11 +32,12 @@ const TypingWords = () => {
 
   const kanaWordProps = {
     correct: lineWord.correct["k"].substr(-kanaCorrectSlice, kanaCorrectSlice).replace(/ /g, "ˍ"),
-    nextChar: lineWord.nextChar["k"],
+    nextChar: lineWord.nextChar["k"].replace(/ /g, " "),
     word: lineWord.word
       .map((w) => w["k"])
       .join("")
-      .slice(0, 60),
+      .slice(0, 60)
+      .replace(/ /g, " "),
     isLineCompleted: isLineCompleted,
     nextWord: nextLyrics.kanaWord,
     className: cn(
@@ -54,11 +55,12 @@ const TypingWords = () => {
   };
   const romaWordProps = {
     correct: lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice).replace(/ /g, "ˍ"),
-    nextChar: lineWord.nextChar["r"][0],
+    nextChar: lineWord.nextChar["r"][0].replace(/ /g, " "),
     word: lineWord.word
       .map((w) => w["r"][0])
       .join("")
-      .slice(0, 60),
+      .slice(0, 60)
+      .replace(/ /g, " "),
     isLineCompleted: isLineCompleted,
     nextWord: nextLyrics.romaWord,
     className: cn(
