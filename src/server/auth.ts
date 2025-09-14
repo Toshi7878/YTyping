@@ -1,7 +1,7 @@
 import authConfig from "@/config/auth.config";
 import { env } from "@/env";
 import { $Enums } from "@prisma/client";
-import CryptoJS from "crypto-js";
+import { MD5 } from "crypto-js";
 import NextAuth from "next-auth";
 import { prisma } from "./db";
 
@@ -16,7 +16,9 @@ export const { auth, handlers, signIn } = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      const email_hash = CryptoJS.MD5(user.email!).toString();
+      if (!user?.email) return false;
+
+      const email_hash = MD5(user.email).toString();
       const UserData = await prisma.users.findUnique({
         where: { email_hash },
       });
