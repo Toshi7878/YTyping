@@ -26,22 +26,35 @@ export const useMoveLine = () => {
   const movePrevLine = () => {
     const map = readMap();
     if (!map) return;
+
     const { scene } = readGameStateUtils();
     const isPaused = readPlayer().getPlayerState() === 2;
+    const isPracticeScene = scene === "practice";
+    const isTimeBuffer = isPracticeScene && !isPaused;
 
-    const isTimeBuffer = scene === "practice" && !isPaused;
+    const currentCount = readCount();
+    const referenceCount = currentCount - (isTimeBuffer ? 0 : 1);
 
-    const count = readCount() - (isTimeBuffer ? 0 : 1);
-    const prevCount = structuredClone(map.typingLineIndexes)
-      .reverse()
-      .find((num) => num < count);
+    const typingLineIndexes = map.typingLineIndexes;
+
+    let prevCount: number | undefined;
+    for (let i = typingLineIndexes.length - 1; i >= 0; i--) {
+      const candidate = typingLineIndexes[i];
+      if (candidate < referenceCount) {
+        prevCount = candidate;
+        break;
+      }
+    }
 
     if (prevCount === undefined) return;
 
     const playSpeed = readPlaySpeed().playSpeed;
 
-    const prevTime = Number(map.mapData[prevCount]["time"]) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
-    const newLineSelectIndex = map.typingLineIndexes.indexOf(prevCount) + 1;
+    const timeIndex = prevCount + (isTimeBuffer ? 0 : 1);
+    const prevTimeRaw = Number(map.mapData[timeIndex]["time"]);
+    const prevTime = prevTimeRaw - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
+
+    const newLineSelectIndex = typingLineIndexes.indexOf(prevCount) + 1;
     setLineSelectIndex(newLineSelectIndex);
     pauseTimer();
 
@@ -49,11 +62,12 @@ export const useMoveLine = () => {
     writeCount(newCount);
     updateLine(newCount);
 
-    readPlayer().seekTo(prevTime, true);
+    const seekTargetTime = isTimeBuffer ? prevTime : map.mapData[prevCount]["time"];
+    readPlayer().seekTo(seekTargetTime, true);
     setNotify(Symbol(`◁`));
     drawerSelectColorChange(newCount);
     scrollToCard(newLineSelectIndex);
-    readLineProgress().value = prevTime - map.mapData[newCount - 1].time;
+    readLineProgress().value = isTimeBuffer ? prevTime - map.mapData[newCount - 1].time : 0;
   };
 
   const moveNextLine = () => {

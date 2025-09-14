@@ -400,8 +400,9 @@ const writeCurrentLineAtom = atom(
 
     const { movieDuration } = get(ytStatusAtom);
     const lineProgress = get(lineProgressAtom);
+    const { isPaused } = get(ytStatusAtom);
 
-    if (lineProgress) {
+    if (lineProgress && !isPaused) {
       lineProgress.value = 0;
       lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
     }
