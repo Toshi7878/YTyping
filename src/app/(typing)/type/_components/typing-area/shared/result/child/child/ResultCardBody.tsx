@@ -18,7 +18,7 @@ function ResultCardContent({ lineKanaWord, typeResult, lineTypeWord, lostWord }:
       <div className="kana-word">
         <div>{lineKanaWord}</div>
       </div>
-      <div className={cn("text-foreground outline-text tracking-wider break-all uppercase")}>
+      <div className={cn("text-foreground word-outline-text tracking-wider break-all uppercase")}>
         {typeResult.map((type: TypeResult, index: number) => {
           if (type.is) {
             correctCount++;
@@ -32,11 +32,7 @@ function ResultCardContent({ lineKanaWord, typeResult, lineTypeWord, lostWord }:
                 <span
                   className={cn(
                     "typed hover:bg-border/45 break-all",
-                    type.is
-                      ? lostWord === ""
-                        ? "text-word-completed" // completed color
-                        : "text-word-correct" // correct color
-                      : "text-destructive", // error color
+                    type.is ? (lostWord === "" ? "text-word-completed" : "text-word-correct") : "text-destructive",
                   )}
                   data-time={type.t}
                 >
@@ -46,7 +42,7 @@ function ResultCardContent({ lineKanaWord, typeResult, lineTypeWord, lostWord }:
             )
           );
         })}
-        <span className="break-all">{lostWord !== null ? lostWord : lineTypeWord}</span>
+        <span className="text-word-word break-all">{lostWord !== null ? lostWord : lineTypeWord}</span>
       </div>
     </CardContent>
   );

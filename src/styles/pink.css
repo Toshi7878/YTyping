@@ -48,7 +48,7 @@
   --success-foreground: #fff;
   --warning: oklch(0.8701 0.0845 76.29);
   --warning-foreground: oklch(0.25 0.01 280);
-  --destructive: oklch(0.679 0.1407 19.86);
+  --destructive: oklch(0.6553 0.2668 19.86);
   --destructive-foreground: oklch(0.985 0 0);
 
   --outline-text:
