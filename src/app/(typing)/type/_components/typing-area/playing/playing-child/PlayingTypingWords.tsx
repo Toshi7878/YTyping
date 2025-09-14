@@ -32,12 +32,11 @@ const TypingWords = () => {
 
   const kanaWordProps = {
     correct: lineWord.correct["k"].substr(-kanaCorrectSlice, kanaCorrectSlice),
-    nextChar: lineWord.nextChar["k"].replace(/ /g, " "),
+    nextChar: lineWord.nextChar["k"],
     word: lineWord.word
       .map((w) => w["k"])
       .join("")
-      .slice(0, 60)
-      .replace(/ /g, " "),
+      .slice(0, 60),
     isLineCompleted: isLineCompleted,
     nextWord: nextLyrics.kanaWord,
     className: cn(
@@ -55,12 +54,11 @@ const TypingWords = () => {
   };
   const romaWordProps = {
     correct: lineWord.correct["r"].substr(-romaCorrectSlice, romaCorrectSlice),
-    nextChar: lineWord.nextChar["r"][0].replace(/ /g, " "),
+    nextChar: lineWord.nextChar["r"][0],
     word: lineWord.word
       .map((w) => w["r"][0])
       .join("")
-      .slice(0, 60)
-      .replace(/ /g, " "),
+      .slice(0, 60),
     isLineCompleted: isLineCompleted,
     nextWord: nextLyrics.romaWord,
     className: cn(
@@ -136,8 +134,8 @@ const Word = ({
           >
             {correct.replace(/ /g, "ˍ")}
           </span>
-          <span className="text-word-nextChar">{nextChar}</span>
-          <span className="text-word-word">{word}</span>
+          <span className="text-word-nextChar">{nextChar.replace(/ /g, " ")}</span>
+          <span className="text-word-word">{word.replace(/ /g, " ")}</span>
         </>
       )}
     </div>
