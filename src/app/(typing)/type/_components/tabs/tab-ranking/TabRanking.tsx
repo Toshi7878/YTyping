@@ -97,7 +97,7 @@ const TabRanking = ({ className }: { className?: string }) => {
       {
         id: "name",
         header: () => "名前",
-        size: 100,
+        size: 110,
         cell: ({ row }) => {
           const { name } = row.original.user;
           return <span className="truncate">{name}</span>;
@@ -138,7 +138,7 @@ const TabRanking = ({ className }: { className?: string }) => {
       {
         id: "clap",
         header: () => <FaHandsClapping size={16} />,
-        size: 20,
+        size: 15,
         cell: ({ row }) => {
           const hasClap = !!row.original.claps[0]?.is_claped && !!session;
           return (
