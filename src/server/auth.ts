@@ -18,71 +18,61 @@ export const { auth, handlers, signIn } = NextAuth({
       if (!user?.email) return false;
 
       const email_hash = MD5(user.email).toString();
-      const UserData = await prisma.users.findUnique({
-        where: { email_hash },
-      });
+      const dbUser = await prisma.users.findUnique({ where: { email_hash } });
+      if (dbUser) return true;
 
-      if (!UserData) {
-        try {
-          await prisma.users.create({
-            data: {
-              email_hash,
-              name: null,
-              role: "USER",
-            },
-          });
-        } catch (err) {
-          console.error("Error generating identicon:", err);
-          return false;
+      await prisma.users.create({
+        data: {
+          email_hash,
+          name: null,
+          role: "USER",
+        },
+      });
+      return true;
+    },
+
+    authorized({ request: { nextUrl }, auth }) {
+      const isLoggedIn = !!auth?.user;
+      const pathname = nextUrl.pathname;
+
+      if (isLoggedIn) {
+        const userName = auth.user.name;
+
+        const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
+
+        if (isMaintenanceMode) {
+          if (pathname !== "/maintenance") {
+            return Response.redirect(new URL("/maintenance", nextUrl));
+          }
+        } else {
+          if (pathname === "/maintenance") {
+            return Response.redirect(new URL("/404", nextUrl));
+          }
+        }
+
+        if (userName) {
+          if (pathname === "/user/register") {
+            return Response.redirect(new URL("/", nextUrl));
+          }
+        } else {
+          if (pathname !== "/user/register") {
+            return Response.redirect(new URL("/user/register", nextUrl));
+          }
+        }
+      } else {
+        const isAuthRoute = authRoutes.includes(pathname);
+
+        if (isAuthRoute) {
+          //ログアウト状態の場合は専用ページアクセス時にrootにリダイレクトさせる
+          return Response.redirect(new URL("/", nextUrl));
         }
       }
 
       return true;
     },
-    authorized({ request: { nextUrl }, auth }) {
-      try {
-        const isLoggedIn = !!auth?.user;
-        const pathname = nextUrl.pathname;
-
-        if (isLoggedIn) {
-          const userName = auth.user.name;
-
-          const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
-
-          if (isMaintenanceMode) {
-            if (pathname !== "/maintenance") {
-              return Response.redirect(new URL("/maintenance", nextUrl));
-            }
-          } else {
-            if (pathname === "/maintenance") {
-              return Response.redirect(new URL("/404", nextUrl));
-            }
-          }
-
-          if (userName) {
-            if (pathname === "/user/register") {
-              return Response.redirect(new URL("/", nextUrl));
-            }
-          } else {
-            if (pathname !== "/user/register") {
-              return Response.redirect(new URL("/user/register", nextUrl));
-            }
-          }
-        } else {
-          const isAuthRoute = authRoutes.includes(pathname);
-
-          if (isAuthRoute) {
-            //ログアウト状態の場合は専用ページアクセス時にrootにリダイレクトさせる
-            return Response.redirect(new URL("/", nextUrl));
-          }
-        }
-
-        return true;
-      } catch (err) {}
-    },
     async jwt({ token, trigger, session, user }) {
       if (trigger === "update") {
-        token.name = session.name;
+        token.name = session.name as string;
       }
       if (!user || !user?.email) return token;
 
