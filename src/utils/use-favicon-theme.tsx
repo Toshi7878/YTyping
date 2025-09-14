@@ -26,12 +26,12 @@ export function applyFavicon(href: string, cacheKey?: string) {
 }
 
 export function useFaviconTheme() {
-  const { resolvedTheme } = useTheme();
+  const { theme } = useTheme();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!resolvedTheme) return;
-    const href = `/favicons/favicon-${resolvedTheme}.ico`;
-    applyFavicon(href, resolvedTheme);
-  }, [resolvedTheme, pathname]);
+    if (!theme) return;
+    const href = `/favicons/favicon-${theme}.ico`;
+    applyFavicon(href, theme);
+  }, [theme, pathname]);
 }
