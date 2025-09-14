@@ -42,7 +42,7 @@ export function DataTable<TData, TValue>({
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead
-                    className={cn("h-8", header.column.columnDef.meta?.headerClassName)}
+                    className={cn("text-card-foreground h-8", header.column.columnDef.meta?.headerClassName)}
                     key={header.id}
                     style={{ maxWidth: header.column.getSize(), minWidth: header.column.getSize() }}
                   >

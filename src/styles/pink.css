@@ -9,7 +9,7 @@
   --card-foreground: #6a6a6a;
   --popover: #fff9f9;
   --popover-foreground: #6a6a6a;
-  --primary-light: #ffc0dd;
+  --primary-light: #fc98c8;
   --primary: #ffc0dd;
   --primary-dark: #f6afcf;
   --primary-foreground: #6a6a6a;
@@ -26,10 +26,10 @@
   --input: #fff9f9;
   --ring: #ffa0cc;
 
-  --roma: #e7f3fa;
-  --kana: #fefcd7;
+  --roma: oklch(0.9532 0.0266 233.02);
+  --kana: oklch(0.9532 0.0512 89.95);
   --flick: #c7e7e2;
-  --english: #fbe4e3;
+  --english: oklch(0.909 0.0467 20.62);
   --other: oklch(0.5844 0.214 316.96);
   --perfect: oklch(0.8659 0.1708 89.58);
   --like: oklch(0.7253 0.1752 349.76);
