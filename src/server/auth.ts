@@ -26,7 +26,7 @@ export const { auth, handlers, signIn } = NextAuth({
         try {
           await prisma.users.create({
             data: {
-              email_hash: email_hash!,
+              email_hash,
               name: null,
               role: "USER",
             },
@@ -84,21 +84,17 @@ export const { auth, handlers, signIn } = NextAuth({
       if (trigger === "update") {
         token.name = session.name;
       }
-      if (user) {
-        if (!user?.email) return token;
+      if (!user || !user?.email) return token;
 
-        const email_hash = MD5(user.email).toString();
-        const dbUser = await prisma.users.findUnique({
-          where: { email_hash },
-        });
-        if (dbUser) {
-          token.uid = dbUser.id.toString();
-          token.email_hash = email_hash;
-        }
-
-        token.name = dbUser?.name ?? null;
-        token.role = dbUser?.role ?? "USER";
+      const email_hash = MD5(user.email).toString();
+      const dbUser = await prisma.users.findUnique({ where: { email_hash } });
+      if (dbUser) {
+        token.uid = dbUser.id.toString();
+        token.email_hash = email_hash;
       }
+
+      token.name = dbUser?.name ?? null;
+      token.role = dbUser?.role ?? "USER";
 
       return token;
     },
