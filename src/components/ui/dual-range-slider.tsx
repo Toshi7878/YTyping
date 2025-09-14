@@ -20,7 +20,7 @@ const DualRangeSlider = React.forwardRef<React.ElementRef<typeof SliderPrimitive
         className={cn("relative flex w-full cursor-grab touch-none items-center select-none", className)}
         {...props}
       >
-        <SliderPrimitive.Track className="bg-muted relative h-2 w-full grow overflow-hidden rounded-full">
+        <SliderPrimitive.Track className="bg-muted-foreground/50 relative h-2 w-full grow overflow-hidden rounded-full">
           <SliderPrimitive.Range className="bg-primary absolute h-full" />
         </SliderPrimitive.Track>
         {initialValue.map((value, index) => (
