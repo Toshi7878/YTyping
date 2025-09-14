@@ -6,7 +6,7 @@ import {
   useSetLineSelectIndex,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 
-import { useResultCards } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { usePlayer, useResultCards } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/moveLine";
 import { LineResultData } from "@/app/(typing)/type/_lib/type";
 import { Ticker } from "@pixi/ticker";
@@ -20,6 +20,7 @@ function ResultLineList() {
   const { writeResultCards } = useResultCards();
   const lineSelectIndex = useLineSelectIndexState();
   const setLineSelectIndex = useSetLineSelectIndex();
+  const { readPlayer } = usePlayer();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
@@ -33,8 +34,9 @@ function ResultLineList() {
 
       moveSetLine(seekCount);
       setLineSelectIndex(lineIndex);
+      readPlayer().playVideo();
     },
-    [map, moveSetLine, setLineSelectIndex],
+    [map, moveSetLine, setLineSelectIndex, readPlayer],
   );
 
   const endCardClick = useCallback(
