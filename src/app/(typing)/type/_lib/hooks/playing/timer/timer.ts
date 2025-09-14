@@ -6,7 +6,7 @@ import {
   useProgress,
   useReadYTStatus,
 } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { usePlaySpeedStateRef } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
+import { useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import {
   useReadCurrentTime,
   useReadGameUtilParams,
@@ -94,7 +94,7 @@ const useTimer = () => {
   const readCurrentTime = useReadCurrentTime();
   const readLineWord = useReadLineWord();
   const { readLineStatus } = useLineStatus();
-  const readPlaySpeed = usePlaySpeedStateRef();
+  const readPlaySpeed = useReadPlaySpeed();
   const readGameStateUtils = useReadGameUtilParams();
   const readMap = useReadMap();
   const { readCount, writeCount } = useLineCount();
@@ -279,7 +279,7 @@ export const useUpdateLine = () => {
   const { resetLineStatus, writeLineStatus } = useLineStatus();
   const { setTypingStatus } = useSetTypingStatus();
   const { setCurrentLine } = useSetCurrentLine();
-  const readPlaySpeed = usePlaySpeedStateRef();
+  const readPlaySpeed = useReadPlaySpeed();
   const readMap = useReadMap();
   const readGameStateUtils = useReadGameUtilParams();
   const updateAllStatus = useUpdateAllStatus();
