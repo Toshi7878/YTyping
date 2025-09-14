@@ -1,4 +1,4 @@
-import { prefetch, trpc } from "@/trpc/server";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { parseResultListSearchParams } from "@/utils/queries/search-params/resultList";
 import SearchContent from "./_components/SearchContent";
 import UsersResultList from "./_components/UsersResultList";
@@ -16,11 +16,13 @@ export default async function Home({ searchParams }: PageProps<"/timeline">) {
   prefetch(trpc.result.usersResultList.infiniteQueryOptions(params));
 
   return (
-    <TimelineProvider>
-      <div className="mx-auto w-full space-y-8 lg:w-5xl">
-        <SearchContent />
-        <UsersResultList />
-      </div>
-    </TimelineProvider>
+    <HydrateClient>
+      <TimelineProvider>
+        <div className="mx-auto w-full space-y-8 lg:w-5xl">
+          <SearchContent />
+          <UsersResultList />
+        </div>
+      </TimelineProvider>
+    </HydrateClient>
   );
 }

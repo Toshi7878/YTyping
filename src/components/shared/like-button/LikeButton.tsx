@@ -57,7 +57,10 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
         style={backgroundStyle}
       >
         <Heart
-          className={cn(isLiked ? "fill-like text-like like-animation" : "like-animation-end fill-transparent")}
+          className={cn(
+            hasBeenClicked ? (isLiked ? "like-animation" : "like-animation-end") : "",
+            isLiked ? "fill-like text-like" : "fill-transparent",
+          )}
           size={heartSize}
           strokeWidth={2.5}
         />
@@ -75,6 +78,10 @@ export const LikeButtonWithCount = ({
 }: LikeButtonProps & { likeCount: number }) => {
   const [isLiked, setIsLiked] = useState(defaultLiked);
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
+
+  useEffect(() => {
+    setIsLiked(defaultLiked);
+  }, [defaultLiked]);
 
   const backgroundWidth = size * 25;
   const heartSize = Math.floor(size / 2);
@@ -109,7 +116,7 @@ export const LikeButtonWithCount = ({
       <div className="relative top-0 flex items-center" style={{ width: `${size}px`, height: `${size}px` }}>
         <Heart
           className={cn(
-            hasBeenClicked && isLiked ? "like-animation" : "like-animation-end",
+            hasBeenClicked ? (isLiked ? "like-animation" : "like-animation-end") : "",
             isLiked ? "fill-like text-like" : "text-muted-foreground fill-transparent",
           )}
           size={heartSize}
