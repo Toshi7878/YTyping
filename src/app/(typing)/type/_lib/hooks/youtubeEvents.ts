@@ -51,7 +51,10 @@ export const useYTPlayEvent = () => {
     const { isPaused } = readYTStatus();
     if (isPaused) {
       writeYTStatus({ isPaused: false });
-      setNotify(Symbol("▶"));
+
+      if (scene !== "practice") {
+        setNotify(Symbol("▶"));
+      }
     }
 
     if (isYTStarted) {

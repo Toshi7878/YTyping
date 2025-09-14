@@ -17,7 +17,7 @@ const GameStatusHeader = () => {
   return (
     <section
       className={cn(
-        "top-card-text mx-1 mt-3 mb-1 flex items-center justify-between font-mono text-[3.5rem] font-bold sm:text-[2.7rem] md:text-3xl",
+        "top-card-text relative mt-3 mr-2 mb-1 ml-1 flex items-center justify-between font-mono text-5xl font-bold md:text-3xl",
         !isPlayed && "invisible",
       )}
     >
@@ -36,15 +36,12 @@ const Combo = () => {
 
 const LineRemainTimeAndKpm = () => {
   return (
-    <div>
+    <div className="whitespace-nowrap">
       <LineKpm />
       <span className="ml-1 tracking-widest">kpm</span>
       <span className="mx-3">-</span>
       残り
-      <span className="mr-1">
-        <LineRemainTime />
-      </span>
-      秒
+      <LineRemainTime className="mr-1" />秒
     </div>
   );
 };
@@ -55,9 +52,9 @@ const LineKpm = () => {
   return <span>{displayLineKpm.toFixed(0)}</span>;
 };
 
-const LineRemainTime = () => {
+const LineRemainTime = ({ className }: { className: string }) => {
   const displayLineRemainTime = useLineRemainTimeState();
-  return <span>{displayLineRemainTime.toFixed(1)}</span>;
+  return <span className={className}>{displayLineRemainTime.toFixed(1)}</span>;
 };
 
 export default GameStatusHeader;

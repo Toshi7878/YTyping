@@ -53,8 +53,15 @@ const PlayingNotify = () => {
     }
   }, [scene]);
 
+  const textForOffset = (notify.description ?? "").toString();
+  const offsetCh = Math.max(0, textForOffset.length - 1) * -0.2; // 1文字あたり0.06chだけ左へ
+
   return (
-    <div className="absolute left-[41%] text-center whitespace-nowrap select-none" id="playing_notify">
+    <div
+      className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap select-none"
+      style={{ left: `calc(45% - ${offsetCh}ch)` }}
+      id="playing_notify"
+    >
       {NON_ANIMATED.includes(notify.description || "") ? (
         <div className={notify.description === "Replay" || notify.description === "Practice" ? "opacity-30" : ""}>
           {notify.description === "ll" ? (
