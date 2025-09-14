@@ -127,7 +127,10 @@ const Word = ({
       ) : (
         <>
           <span
-            className={cn(remainWord.length === 0 ? "text-word-completed" : "text-word-correct opacity-word-correct")}
+            className={cn(
+              "opacity-word-correct",
+              remainWord.length === 0 ? "text-word-completed" : "text-word-correct",
+            )}
           >
             {correct}
           </span>
