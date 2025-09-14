@@ -1,5 +1,5 @@
 import { useGameUtilityReferenceParams, useLineCount } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { usePlaySpeedReducer } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
+import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import {
   useReadAllLineResult,
   useReadGameUtilParams,
@@ -145,6 +145,7 @@ export const useLineReplayUpdate = () => {
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readAllLineResults = useReadAllLineResult();
+  const readPlaySpeed = useReadPlaySpeed();
 
   return (newCurrentCount: number) => {
     const lineResults = readAllLineResults();
@@ -156,8 +157,13 @@ export const useLineReplayUpdate = () => {
     }
 
     inputModeChange(lineResult.status.mode);
-    const speed = lineResult.status.sp as YouTubeSpeed;
-    dispatchSpeed({ type: "set", payload: speed });
+
     writeGameUtilRefParams({ replayKeyCount: 0 });
+
+    const { playSpeed } = readPlaySpeed();
+    const speed = lineResult.status.sp as YouTubeSpeed;
+
+    if (playSpeed === speed) return;
+    dispatchSpeed({ type: "set", payload: speed });
   };
 };
