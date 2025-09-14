@@ -3,24 +3,22 @@ import MapInfo from "@/components/shared/map-info/MapInfo";
 import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
 import { CardWithContent } from "@/components/ui/card";
 import Spinner from "@/components/ui/spinner";
-import { RouterOutPuts } from "@/server/api/trpc";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useMapListQueryOptions } from "../../../utils/queries/mapList.queries";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 
-const MapList = ({ list }: { list: RouterOutPuts["mapList"]["getList"] }) => {
+const MapList = () => {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingState();
   const setIsSearchingAtom = useSetIsSearching();
 
   const base = useMapListQueryOptions().infiniteList(searchParams);
-  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery({
+
+  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery({
     ...base,
-    initialData: { pages: [list], pageParams: [null] },
-    initialPageParam: null,
   });
 
   const { ref, inView } = useInView({

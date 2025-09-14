@@ -1,4 +1,4 @@
-import { serverApi } from "@/trpc/server";
+import { prefetch, trpc } from "@/trpc/server";
 import { parseResultListSearchParams } from "@/utils/queries/search-params/resultList";
 import SearchContent from "./_components/SearchContent";
 import UsersResultList from "./_components/UsersResultList";
@@ -13,13 +13,13 @@ export default async function Home({ searchParams }: PageProps<"/timeline">) {
   });
 
   const params = parseResultListSearchParams(usp);
-  const list = await serverApi.result.usersResultList(params);
+  prefetch(trpc.result.usersResultList.infiniteQueryOptions(params));
 
   return (
     <TimelineProvider>
       <div className="mx-auto w-full space-y-8 lg:w-5xl">
         <SearchContent />
-        <UsersResultList list={list} />
+        <UsersResultList />
       </div>
     </TimelineProvider>
   );

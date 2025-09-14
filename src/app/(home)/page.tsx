@@ -1,4 +1,4 @@
-import { serverApi } from "@/trpc/server";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { parseMapListSearchParams } from "@/utils/queries/search-params/mapList";
 import MapControlArea from "./_components/MapControlArea";
 import MapList from "./_components/MapList";
@@ -14,15 +14,17 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
   const params = parseMapListSearchParams(usp);
 
-  const list = await serverApi.mapList.getList(params);
+  prefetch(trpc.mapList.getList.infiniteQueryOptions(params));
 
   return (
-    <HomeProvider>
-      <div className="mx-auto max-w-screen-xl lg:px-8">
-        <MapControlArea />
+    <HydrateClient>
+      <HomeProvider>
+        <div className="mx-auto max-w-screen-xl lg:px-8">
+          <MapControlArea />
 
-        <MapList list={list} />
-      </div>
-    </HomeProvider>
+          <MapList />
+        </div>
+      </HomeProvider>
+    </HydrateClient>
   );
 }
