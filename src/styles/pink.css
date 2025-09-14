@@ -35,6 +35,7 @@
   --like: oklch(0.7253 0.1752 349.76);
   --failure: oklch(0.7012 0.1812 298.06);
 
+  --opacity-word-correct: 1;
   --word-correct: #f5a4cb;
   --word-nextChar: #6a6a6a;
   --word-word: #6a6a6a;
