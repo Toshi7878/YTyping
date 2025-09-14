@@ -86,7 +86,9 @@ export const { auth, handlers, signIn } = NextAuth({
         token.name = session.name;
       }
       if (user) {
-        const email_hash = CryptoJS.MD5(user.email!).toString();
+        if (!user?.email) return token;
+
+        const email_hash = CryptoJS.MD5(user.email).toString();
         const dbUser = await prisma.users.findUnique({
           where: { email_hash },
         });

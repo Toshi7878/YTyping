@@ -2,5 +2,4 @@ packages:
   - ./
 
 onlyBuiltDependencies:
-  - "@prisma/client"
   - "@tailwindcss/oxide"
