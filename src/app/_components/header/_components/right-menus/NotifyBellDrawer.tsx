@@ -129,7 +129,7 @@ function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
       <CardHeader className="bg-header-background rounded-t-md px-2 py-2 text-sm">
         <span className="flex items-center gap-1">
           <UserLinkText
-            className="text-header-foreground/80 hover:text-header-foreground"
+            className="text-header-foreground/80 hover:text-header-foreground underline"
             userId={notify.visitor_id}
             userName={notify.visitor.name}
           />
