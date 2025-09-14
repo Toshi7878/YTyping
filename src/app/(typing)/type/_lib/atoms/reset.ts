@@ -4,8 +4,8 @@ import {
   useLineCount,
   useLineStatus,
   usePlayer,
+  useReadYTStatus,
   useTypingDetails,
-  useYTStatus,
 } from "./refAtoms";
 import { usePlaySpeedReducer } from "./speedReducerAtoms";
 import {
@@ -23,7 +23,7 @@ export const usePathChangeAtomReset = () => {
 
   const { resetTypingStatus } = useSetTypingStatus();
   const { resetGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { resetYTStatus } = useYTStatus();
+  const { resetYTStatus } = useReadYTStatus();
   const { resetLineStatus } = useLineStatus();
   const { resetStatus } = useTypingDetails();
   const { writeCount } = useLineCount();

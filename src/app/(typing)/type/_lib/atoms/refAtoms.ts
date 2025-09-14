@@ -142,7 +142,7 @@ export const ytStatusAtom = atomWithReset({
   movieDuration: 0,
 });
 
-export const useYTStatus = () => {
+export const useReadYTStatus = () => {
   const readYTStatus = useAtomCallback(
     useCallback((get) => get(ytStatusAtom), []),
     { store },

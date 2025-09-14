@@ -1,6 +1,12 @@
 import { useReadVolume } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
-import { useGameUtilityReferenceParams, useLineCount, usePlayer, useProgress, useYTStatus } from "../atoms/refAtoms";
+import {
+  useGameUtilityReferenceParams,
+  useLineCount,
+  usePlayer,
+  useProgress,
+  useReadYTStatus,
+} from "../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
@@ -27,7 +33,7 @@ export const useYTPlayEvent = () => {
 
   const { readPlayer } = usePlayer();
   const setYTStarted = useSetYTStarted();
-  const { readYTStatus, writeYTStatus } = useYTStatus();
+  const { readYTStatus, writeYTStatus } = useReadYTStatus();
   const readGameStateUtils = useReadGameUtilParams();
   const readReadyInputMode = useReadReadyInputMode();
   const readPlaySpeed = usePlaySpeedStateRef();
@@ -128,17 +134,20 @@ export const useYTStopEvent = () => {
 
 export const useYTPauseEvent = () => {
   const setNotify = useSetNotify();
-  const { readYTStatus, writeYTStatus } = useYTStatus();
+  const { readYTStatus, writeYTStatus } = useReadYTStatus();
   const { pauseTimer } = useTimerControls();
+  const readGameUtilParams = useReadGameUtilParams();
 
   return () => {
     console.log("一時停止");
 
     pauseTimer();
 
-    const isPaused = readYTStatus().isPaused;
+    const { isPaused } = readYTStatus();
     if (!isPaused) {
       writeYTStatus({ isPaused: true });
+      const { scene } = readGameUtilParams();
+      if (scene === "practice") return;
       setNotify(Symbol("ll"));
     }
   };

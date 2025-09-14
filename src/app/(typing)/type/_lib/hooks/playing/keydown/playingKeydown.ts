@@ -1,4 +1,4 @@
-import { useGameUtilityReferenceParams, useYTStatus } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { useGameUtilityReferenceParams, useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { usePlaySpeedReducer } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
@@ -25,7 +25,7 @@ export const useHandleKeydown = () => {
   const playingShortcutKey = usePlayingShortcutKey();
   const pauseShortcutKey = usePauseShortcutKey();
 
-  const { readYTStatus } = useYTStatus();
+  const { readYTStatus } = useReadYTStatus();
   const readGameStateUtils = useReadGameUtilParams();
 
   return (event: KeyboardEvent) => {

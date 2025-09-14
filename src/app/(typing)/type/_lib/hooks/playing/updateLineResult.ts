@@ -1,5 +1,5 @@
 import { calcWordKanaNotes, CHAR_POINT, MISS_PENALTY } from "@/utils/build-map/buildMap";
-import { useLineCount, useLineStatus, useTypingDetails, useYTStatus } from "../../atoms/refAtoms";
+import { useLineCount, useLineStatus, useReadYTStatus, useTypingDetails } from "../../atoms/refAtoms";
 import { usePlaySpeedStateRef } from "../../atoms/speedReducerAtoms";
 import {
   useReadAllLineResult,
@@ -25,7 +25,7 @@ export const useUpdateLineResult = () => {
   const readLineWord = useReadLineWord();
   const readGameStateUtils = useReadGameUtilParams();
   const readPlaySpeed = usePlaySpeedStateRef();
-  const { readYTStatus } = useYTStatus();
+  const { readYTStatus } = useReadYTStatus();
   const readLineKpm = useReadLineKpm();
   const readMap = useReadMap();
   const { setTypingStatus } = useSetTypingStatus();

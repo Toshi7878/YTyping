@@ -4,7 +4,7 @@ import {
   useLineStatus,
   usePlayer,
   useProgress,
-  useYTStatus,
+  useReadYTStatus,
 } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { usePlaySpeedStateRef } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import {
@@ -90,7 +90,7 @@ const useTimer = () => {
 
   const { setLineProgressValue, setTotalProgressValue } = useProgress();
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { readYTStatus } = useYTStatus();
+  const { readYTStatus } = useReadYTStatus();
   const readCurrentTime = useReadCurrentTime();
   const readLineWord = useReadLineWord();
   const { readLineStatus } = useLineStatus();

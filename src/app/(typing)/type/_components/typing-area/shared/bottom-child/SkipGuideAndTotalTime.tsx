@@ -1,4 +1,4 @@
-import { useYTStatus } from "@/app/(typing)/type/_lib/atoms/refAtoms";
+import { useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
 import {
   useCurrentTimeState,
@@ -49,7 +49,7 @@ const VideoCurrentTime = () => {
 const VideoDurationTime = () => {
   const map = useMapState();
   const speedData = usePlaySpeedState();
-  const movieDuration = useYTStatus().readYTStatus().movieDuration;
+  const movieDuration = useReadYTStatus().readYTStatus().movieDuration;
   if (!map) {
     return;
   }

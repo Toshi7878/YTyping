@@ -4,7 +4,7 @@ import { useUserAgent } from "@/utils/useUserAgent";
 import { useCallback, useEffect, useMemo } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useWindowFocus } from "../../../../utils/hooks/windowFocus";
-import { usePlayer, useYTStatus } from "../_lib/atoms/refAtoms";
+import { usePlayer, useReadYTStatus } from "../_lib/atoms/refAtoms";
 import { useReadGameUtilParams } from "../_lib/atoms/stateAtoms";
 import { useTimerRegistration } from "../_lib/hooks/playing/timer/timer";
 import {
@@ -67,11 +67,6 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
     [],
   );
 
-  // YouTubeコンポーネントのエラーハンドリングを追加
-  const handleError = useCallback((event: YouTubeEvent) => {
-    console.error("YouTube Player Error:", event.data);
-  }, []);
-
   const memoizedYouTube = useMemo(
     () => (
       <YouTube
@@ -96,7 +91,6 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
         onPause={ytPauseEvent}
         onEnd={ytStopEvent}
         onStateChange={handleStateChange}
-        onError={handleError}
       />
     ),
 
@@ -114,7 +108,7 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
 const MobileCover = () => {
   const windowFocus = useWindowFocus();
   const { readPlayer } = usePlayer();
-  const { readYTStatus } = useYTStatus();
+  const { readYTStatus } = useReadYTStatus();
 
   const readGameStateUtils = useReadGameUtilParams();
   const handleStart = useCallback(async () => {

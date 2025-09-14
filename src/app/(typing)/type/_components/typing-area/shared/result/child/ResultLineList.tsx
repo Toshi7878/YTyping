@@ -15,6 +15,8 @@ import OptimizedResultCard from "./OptimizedResultCard";
 
 function ResultLineList() {
   const map = useMapState();
+  if (!map) return null;
+
   const sceneGroup = useSceneGroupState();
   const { moveSetLine, drawerSelectColorChange } = useMoveLine();
   const { writeResultCards } = useResultCards();
@@ -34,7 +36,6 @@ function ResultLineList() {
 
       moveSetLine(seekCount);
       setLineSelectIndex(lineIndex);
-      readPlayer().playVideo();
     },
     [map, moveSetLine, setLineSelectIndex, readPlayer],
   );
@@ -88,8 +89,8 @@ function ResultLineList() {
 
   return (
     <div className="relative h-full overflow-y-auto px-4">
-      {map?.initialLineResultData.map((_: LineResultData, index: number) => {
-        const lineData = map?.mapData[index];
+      {map.initialLineResultData.map((_: LineResultData, index: number) => {
+        const lineData = map.mapData[index];
 
         if (!lineData.kanaWord) return null;
 

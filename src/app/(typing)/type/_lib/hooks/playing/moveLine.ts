@@ -14,6 +14,7 @@ export const useMoveLine = () => {
   const getSeekLineCount = useGetSeekLineCount();
 
   const { readResultCards } = useResultCards();
+
   const readPlaySpeed = usePlaySpeedStateRef();
   const readMap = useReadMap();
   const { readCount, writeCount } = useLineCount();
@@ -31,18 +32,18 @@ export const useMoveLine = () => {
       .reverse()
       .find((num) => num < count);
 
-    if (prevCount === undefined) {
-      return;
-    }
-    const playSpeed = readPlaySpeed().playSpeed;
+    if (prevCount === undefined) return;
 
-    const seekBuffer = scene === "practice" ? SEEK_BUFFER_TIME * playSpeed : 0;
-    const prevTime = Number(map.mapData[prevCount]["time"]) - seekBuffer;
+    const playSpeed = readPlaySpeed().playSpeed;
+    const isPaused = readPlayer().getPlayerState() === 2;
+
+    const isTimeBuffer = scene === "practice" && !isPaused;
+    const prevTime = Number(map.mapData[prevCount]["time"]) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
     const newLineSelectIndex = map.typingLineIndexes.indexOf(prevCount) + 1;
-    setLineSelectIndex(newLineSelectIndex);
+    setLineSelectIndex(newLineSelectIndex + (isTimeBuffer ? 0 : -1));
     pauseTimer();
 
-    const newCount = getSeekLineCount(prevTime);
+    const newCount = getSeekLineCount(prevTime) + (isTimeBuffer ? 0 : -1);
     writeCount(newCount);
     updateLine(newCount);
 
@@ -63,9 +64,7 @@ export const useMoveLine = () => {
     const count = readCount() + seekCountAdjust;
     const nextCount = map.typingLineIndexes.find((num) => num > count);
 
-    if (nextCount === undefined) {
-      return;
-    }
+    if (nextCount === undefined) return;
 
     const playSpeed = readPlaySpeed().playSpeed;
 
@@ -73,15 +72,18 @@ export const useMoveLine = () => {
       (nextCount > 1 ? map.mapData[nextCount]["time"] - map.mapData[nextCount - 1]["time"] : 0) / playSpeed;
 
     const { scene } = readGameStateUtils();
-    const seekBuffer = scene === "practice" && prevLineTime > 1 ? SEEK_BUFFER_TIME * playSpeed : 0;
-    const nextTime = Number(map.mapData[nextCount]["time"]) - seekBuffer;
+
+    const isPaused = readPlayer().getPlayerState() === 2;
+    const isTimeBuffer = scene === "practice" && !isPaused && prevLineTime > 1;
+
+    const nextTime = Number(map.mapData[nextCount]["time"]) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 
     const newLineSelectIndex = map.typingLineIndexes.indexOf(nextCount) + 1;
 
     setLineSelectIndex(newLineSelectIndex);
     pauseTimer();
 
-    const newCount = getSeekLineCount(nextTime);
+    const newCount = getSeekLineCount(nextTime) + (isTimeBuffer ? 0 : 1);
     writeCount(newCount);
     updateLine(newCount);
 
@@ -95,16 +97,18 @@ export const useMoveLine = () => {
   const moveSetLine = (seekCount: number) => {
     const map = readMap();
     if (!map) return;
+    const isPaused = readPlayer().getPlayerState() === 2;
     const playSpeed = readPlaySpeed().playSpeed;
     const { scene, lineSelectIndex } = readGameStateUtils();
-    const seekBuffer = scene === "practice" ? SEEK_BUFFER_TIME * playSpeed : 0;
-    const seekTime = Number(map.mapData[seekCount]["time"]) - seekBuffer;
+    const isTimeBuffer = scene === "practice" && !isPaused;
+    const seekTime = Number(map.mapData[seekCount]["time"]) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 
     if (lineSelectIndex !== seekCount) {
       drawerSelectColorChange(seekCount);
     }
+
     readPlayer().seekTo(seekTime, true);
-    const newCount = getSeekLineCount(seekTime);
+    const newCount = getSeekLineCount(seekTime) + (isTimeBuffer ? 0 : 1);
     writeCount(newCount);
     updateLine(newCount);
     pauseTimer();
