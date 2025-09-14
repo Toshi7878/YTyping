@@ -3,6 +3,7 @@ import LikeCountIcon from "@/components/shared/map-count-icon/LikeCountIcon";
 import RankingCountIcon from "@/components/shared/map-count-icon/RankingCountIcon";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { MapItem } from "@/server/api/routers/mapListRouter";
+import { nolink } from "@/utils/no-link";
 import Link from "next/link";
 import { Badge } from "../../ui/badge";
 
@@ -11,20 +12,19 @@ interface CompactMapCardProps {
 }
 
 function CompactMapInfo({ map }: CompactMapCardProps) {
+  const musicSource = map.music_source ? `【${map.music_source}】` : "";
+
   return (
     <div className="flex w-full flex-col justify-between overflow-hidden py-1 pl-3 text-xs sm:text-sm md:text-base lg:text-lg">
       <Link className="flex h-full flex-col justify-between hover:no-underline" href={`/type/${map.id}`}>
         <section className="flex flex-col gap-1">
-          <TooltipWrapper
-            delayDuration={300}
-            label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-          >
+          <TooltipWrapper delayDuration={300} label={nolink(`${map.title} / ${map.artist_name}${musicSource}`)}>
             <div className="text-secondary truncate overflow-hidden text-base font-bold whitespace-nowrap">
-              {map.title}
+              {nolink(map.title)}
             </div>
           </TooltipWrapper>
           <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
-            {map.artist_name || ""}
+            {nolink(map.artist_name)}
           </div>
         </section>
         <MapBadges map={map} />

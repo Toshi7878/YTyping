@@ -3,6 +3,7 @@ import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { nolink } from "@/utils/no-link";
 import Link from "next/link";
 import { HTMLAttributes } from "react";
 import { MapResultStatus } from "./child/MapResultStatus";
@@ -42,14 +43,12 @@ interface MapInfoProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 function MapInfo({ map, isToggledInputMode, className, ...rest }: MapInfoProps) {
+  const musicSource = map.music_source ? `【${map.music_source}】` : "";
   return (
     <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
-      <TooltipWrapper
-        delayDuration={300}
-        label={`${map.title} / ${map.artist_name}${map.music_source ? `【${map.music_source}】` : ""}`}
-      >
+      <TooltipWrapper delayDuration={300} label={nolink(`${map.title} / ${map.artist_name}${musicSource}`)}>
         <Link href={`/type/${map.id}`} className="text-secondary block hover:underline">
-          <div className="truncate text-sm font-bold sm:text-base">{`${map.title} / ${map.artist_name}`}</div>
+          <div className="truncate text-sm font-bold sm:text-base">{nolink(`${map.title} / ${map.artist_name}`)}</div>
         </Link>
       </TooltipWrapper>
       <div className="truncate text-xs">

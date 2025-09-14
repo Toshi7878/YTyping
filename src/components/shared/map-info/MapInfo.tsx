@@ -4,6 +4,7 @@ import RankingCountIcon from "@/components/shared/map-count-icon/RankingCountIco
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { MapItem } from "@/server/api/routers/mapListRouter";
 import { formatTime } from "@/utils/formatTime";
+import { nolink } from "@/utils/no-link";
 import Link from "next/link";
 import { Badge } from "../../ui/badge";
 import DateDistanceText from "../text/DateDistanceText";
@@ -14,14 +15,14 @@ interface MapInfoProps {
 }
 
 function MapInfo({ map }: MapInfoProps) {
-  const musicSourceDisplay = map.music_source ? `【${map.music_source}】` : "";
+  const musicSource = map.music_source ? `【${map.music_source}】` : "";
 
   return (
     <div className="relative flex h-full w-full flex-col justify-between overflow-hidden text-xs sm:text-sm md:text-base lg:text-lg">
       <Link className="absolute h-full w-full" href={`/type/${map.id}`} />
       <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
         <section className="flex flex-col gap-1">
-          <TooltipWrapper delayDuration={300} label={`${map.title} / ${map.artist_name}${musicSourceDisplay}`}>
+          <TooltipWrapper delayDuration={300} label={nolink(`${map.title} / ${map.artist_name}${musicSource}`)}>
             <Link
               href={`/type/${map.id}`}
               className="text-secondary z-1 truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
@@ -31,8 +32,7 @@ function MapInfo({ map }: MapInfoProps) {
           </TooltipWrapper>
 
           <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
-            {map.artist_name}
-            {musicSourceDisplay}
+            {nolink(map.artist_name + musicSource)}
           </div>
         </section>
         <section className="flex flex-row items-baseline justify-between space-y-1 lg:flex-col">
