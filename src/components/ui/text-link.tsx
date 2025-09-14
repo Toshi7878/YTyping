@@ -13,7 +13,7 @@ const TextLink = ({ href, children, className, ...props }: TextLinkProps & React
     <Link
       href={href}
       className={cn(
-        "text-primary-light hover:text-primary-light/80 flex flex-row items-center gap-1 transition-colors hover:underline",
+        "text-primary-light hover:text-primary-light/80 flex flex-row items-center gap-1 underline transition-colors",
         className,
       )}
       {...props}
