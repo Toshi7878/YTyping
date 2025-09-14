@@ -13,17 +13,7 @@ export default async function Home({ searchParams }: PageProps<"/timeline">) {
   });
 
   const params = getSearchParams(usp);
-  const list = await serverApi.result.usersResultList({
-    mode: params.mode ?? undefined,
-    minKpm: params.minKpm ? Number(params.minKpm) : undefined,
-    maxKpm: params.maxKpm ? Number(params.maxKpm) : undefined,
-    minClearRate: params.minClearRate ? Number(params.minClearRate) : undefined,
-    maxClearRate: params.maxClearRate ? Number(params.maxClearRate) : undefined,
-    minPlaySpeed: params.minPlaySpeed ? Number(params.minPlaySpeed) : undefined,
-    maxPlaySpeed: params.maxPlaySpeed ? Number(params.maxPlaySpeed) : undefined,
-    username: params.username ?? undefined,
-    mapKeyword: params.mapkeyword ?? undefined,
-  });
+  const list = await serverApi.result.usersResultList(params);
 
   return (
     <TimelineProvider>

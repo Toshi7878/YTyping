@@ -5,24 +5,11 @@ export const useResultListInfiniteQueryOptions = (searchParams: URLSearchParams)
   const trpc = useTRPC();
   const params = getSearchParams(searchParams);
 
-  return trpc.result.usersResultList.infiniteQueryOptions(
-    {
-      mode: params.mode ?? "all",
-      minKpm: params.minKpm ? Number(params.minKpm) : DEFAULT_KPM_SEARCH_RANGE.min,
-      maxKpm: params.maxKpm ? Number(params.maxKpm) : DEFAULT_KPM_SEARCH_RANGE.max,
-      minClearRate: params.minClearRate ? Number(params.minClearRate) : DEFAULT_CLEAR_RATE_SEARCH_RANGE.min,
-      maxClearRate: params.maxClearRate ? Number(params.maxClearRate) : DEFAULT_CLEAR_RATE_SEARCH_RANGE.max,
-      minPlaySpeed: params.minPlaySpeed ? Number(params.minPlaySpeed) : 1,
-      maxPlaySpeed: params.maxPlaySpeed ? Number(params.maxPlaySpeed) : 2,
-      username: params.username ?? "",
-      mapKeyword: params.mapkeyword ?? "",
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-      refetchOnWindowFocus: false,
-      gcTime: Infinity,
-    },
-  );
+  return trpc.result.usersResultList.infiniteQueryOptions(params, {
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    refetchOnWindowFocus: false,
+    gcTime: Infinity,
+  });
 };
 
 export function getSearchParams(searchParams: URLSearchParams) {
@@ -34,5 +21,15 @@ export function getSearchParams(searchParams: URLSearchParams) {
     }
   }
 
-  return params;
+  return {
+    mode: params.mode ?? "all",
+    minKpm: params.minKpm ? Number(params.minKpm) : DEFAULT_KPM_SEARCH_RANGE.min,
+    maxKpm: params.maxKpm ? Number(params.maxKpm) : DEFAULT_KPM_SEARCH_RANGE.max,
+    minClearRate: params.minClearRate ? Number(params.minClearRate) : DEFAULT_CLEAR_RATE_SEARCH_RANGE.min,
+    maxClearRate: params.maxClearRate ? Number(params.maxClearRate) : DEFAULT_CLEAR_RATE_SEARCH_RANGE.max,
+    minPlaySpeed: params.minPlaySpeed ? Number(params.minPlaySpeed) : 1,
+    maxPlaySpeed: params.maxPlaySpeed ? Number(params.maxPlaySpeed) : 2,
+    username: params.username ?? "",
+    mapKeyword: params.mapkeyword ?? "",
+  };
 }

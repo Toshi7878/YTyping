@@ -11,16 +11,10 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     if (Array.isArray(v)) v.forEach((vv) => usp.append(k, vv));
     else if (typeof v === "string") usp.append(k, v);
   });
+
   const params = getMapListSearchParams(usp);
 
-  const list = await serverApi.mapList.getList({
-    filter: params.filter,
-    minRate: params.minRate ? Number(params.minRate) : undefined,
-    maxRate: params.maxRate ? Number(params.maxRate) : undefined,
-    played: params.played,
-    keyword: params.keyword ?? "",
-    sort: params.sort,
-  });
+  const list = await serverApi.mapList.getList(params);
 
   return (
     <HomeProvider>
