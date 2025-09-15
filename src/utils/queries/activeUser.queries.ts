@@ -5,6 +5,6 @@ export const useActiveUserQueries = () => {
   const trpc = useTRPC();
 
   return {
-    userPlayingMaps: (onlineUsers: ActiveUserStatus[]) => trpc.activeUser.getUserPlayingMaps.queryOptions(onlineUsers),
+    userPlayingMaps: (onlineUsers: ActiveUserStatus[]) => trpc.mapList.getUserPlayingMaps.queryOptions(onlineUsers),
   };
 };

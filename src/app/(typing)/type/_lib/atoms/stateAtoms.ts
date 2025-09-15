@@ -1,4 +1,3 @@
-import { RouterOutPuts } from "@/server/api/trpc";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import { BuildMap } from "@/utils/build-map/buildMap";
 import deepEqual from "fast-deep-equal";
@@ -50,20 +49,6 @@ export const useUserTypingOptionsStateRef = () => {
     { store },
   );
 };
-export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>();
-
-export const useMapInfoRef = () => {
-  const readMapInfo = useAtomCallback(
-    useCallback((get) => get(mapInfoAtom) as NonNullable<RouterOutPuts["map"]["getMapInfo"]>, []),
-    { store },
-  );
-
-  return { readMapInfo };
-};
-
-const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) => optic.valueOr({} as { isLiked: undefined }).prop("isLiked"));
-export const useIsLikeState = () => useAtomValue(mapLikeFocusAtom, { store });
-export const useSetIsLikeState = () => useSetAtom(mapLikeFocusAtom, { store });
 
 const mapAtom = atomWithReset<BuildMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });

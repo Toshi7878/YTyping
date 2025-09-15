@@ -1,106 +1,9 @@
 {
-  "id": "600e0dcb-c854-4384-8437-ace1127d17c8",
+  "id": "270d5909-2e3b-4be9-a9a0-30f822703489",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.fix_word_edit_logs": {
-      "name": "fix_word_edit_logs",
-      "schema": "",
-      "columns": {
-        "lyrics": {
-          "name": "lyrics",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "word": {
-          "name": "word",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.ime_results": {
-      "name": "ime_results",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "map_id": {
-          "name": "map_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type_count": {
-          "name": "type_count",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "score": {
-          "name": "score",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "ime_results_user_id_users_id_fk": {
-          "name": "ime_results_user_id_users_id_fk",
-          "tableFrom": "ime_results",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "ime_results_map_id_maps_id_fk": {
-          "name": "ime_results_map_id_maps_id_fk",
-          "tableFrom": "ime_results",
-          "tableTo": "maps",
-          "columnsFrom": [
-            "map_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.map_difficulties": {
       "name": "map_difficulties",
       "schema": "",
@@ -415,6 +318,31 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.fix_word_edit_logs": {
+      "name": "fix_word_edit_logs",
+      "schema": "",
+      "columns": {
+        "lyrics": {
+          "name": "lyrics",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "word": {
+          "name": "word",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.morph_convert_kana_dic": {
       "name": "morph_convert_kana_dic",
       "schema": "",
@@ -566,8 +494,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "notifications_visitor_id_visited_id_map_id_action_unique": {
-          "name": "notifications_visitor_id_visited_id_map_id_action_unique",
+        "uq_notifications_visitor_visited_map_action": {
+          "name": "uq_notifications_visitor_visited_map_action",
           "nullsNotDistinct": false,
           "columns": [
             "visitor_id",
@@ -577,6 +505,78 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.ime_results": {
+      "name": "ime_results",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type_count": {
+          "name": "type_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "score": {
+          "name": "score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "ime_results_user_id_users_id_fk": {
+          "name": "ime_results_user_id_users_id_fk",
+          "tableFrom": "ime_results",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "ime_results_map_id_maps_id_fk": {
+          "name": "ime_results_map_id_maps_id_fk",
+          "tableFrom": "ime_results",
+          "tableTo": "maps",
+          "columnsFrom": [
+            "map_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1028,7 +1028,7 @@
         },
         "add_symbol_list": {
           "name": "add_symbol_list",
-          "type": "text",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true,
           "default": "''"
@@ -1137,14 +1137,14 @@
         },
         "finger_chart_url": {
           "name": "finger_chart_url",
-          "type": "text",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true,
           "default": "''"
         },
         "my_keyboard": {
           "name": "my_keyboard",
-          "type": "text",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true,
           "default": "''"
@@ -1191,7 +1191,7 @@
         },
         "total_typing_time": {
           "name": "total_typing_time",
-          "type": "double precision",
+          "type": "real",
           "primaryKey": false,
           "notNull": true,
           "default": 0
@@ -1308,7 +1308,7 @@
         },
         "time_offset": {
           "name": "time_offset",
-          "type": "double precision",
+          "type": "real",
           "primaryKey": false,
           "notNull": true,
           "default": 0
@@ -1343,28 +1343,28 @@
         },
         "kana_word_top_position": {
           "name": "kana_word_top_position",
-          "type": "double precision",
+          "type": "real",
           "primaryKey": false,
           "notNull": true,
           "default": 0
         },
         "roma_word_top_position": {
           "name": "roma_word_top_position",
-          "type": "double precision",
+          "type": "real",
           "primaryKey": false,
           "notNull": true,
           "default": 0
         },
         "kana_word_spacing": {
           "name": "kana_word_spacing",
-          "type": "double precision",
+          "type": "real",
           "primaryKey": false,
           "notNull": true,
           "default": 0.08
         },
         "roma_word_spacing": {
           "name": "roma_word_spacing",
-          "type": "double precision",
+          "type": "real",
           "primaryKey": false,
           "notNull": true,
           "default": 0.08
@@ -1523,20 +1523,36 @@
     }
   },
   "enums": {
-    "public.action": {
-      "name": "action",
-      "schema": "public",
-      "values": [
-        "LIKE",
-        "OVER_TAKE"
-      ]
-    },
     "public.category": {
       "name": "category",
       "schema": "public",
       "values": [
         "CSS",
         "SPEED_SHIFT"
+      ]
+    },
+    "public.thumbnail_quality": {
+      "name": "thumbnail_quality",
+      "schema": "public",
+      "values": [
+        "mqdefault",
+        "maxresdefault"
+      ]
+    },
+    "public.morph_convert_kana_dic_type": {
+      "name": "morph_convert_kana_dic_type",
+      "schema": "public",
+      "values": [
+        "DICTIONARY",
+        "REGEX"
+      ]
+    },
+    "public.action": {
+      "name": "action",
+      "schema": "public",
+      "values": [
+        "LIKE",
+        "OVER_TAKE"
       ]
     },
     "public.custom_user_active_state": {
@@ -1569,14 +1585,6 @@
         "ROMA_LOWERCASE_ONLY"
       ]
     },
-    "public.morph_convert_kana_dic_type": {
-      "name": "morph_convert_kana_dic_type",
-      "schema": "public",
-      "values": [
-        "DICTIONARY",
-        "REGEX"
-      ]
-    },
     "public.next_display": {
       "name": "next_display",
       "schema": "public",
@@ -1591,14 +1599,6 @@
       "values": [
         "USER",
         "ADMIN"
-      ]
-    },
-    "public.thumbnail_quality": {
-      "name": "thumbnail_quality",
-      "schema": "public",
-      "values": [
-        "mqdefault",
-        "maxresdefault"
       ]
     },
     "public.time_offset_key": {

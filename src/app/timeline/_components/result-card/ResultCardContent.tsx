@@ -1,15 +1,15 @@
-import { TimelineResult } from "@/app/timeline/_lib/type";
 import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { RouterOutPuts } from "@/server/api/trpc";
 import { nolink } from "@/utils/no-link";
 import Link from "next/link";
 import { HTMLAttributes } from "react";
 import { MapResultStatus } from "./child/MapResultStatus";
 
-const ResultCardContent = ({ result }: { result: TimelineResult }) => {
-  const isToggledInputMode = result.status.roma_type != 0 && result.status.kana_type != 0;
+const ResultCardContent = ({ result }: { result: RouterOutPuts["result"]["usersResultList"]["items"][number] }) => {
+  const isToggledInputMode = result.status.romaType != 0 && result.status.kanaType != 0;
 
   return (
     <div className="flex w-full items-center gap-4 py-6">
@@ -23,10 +23,10 @@ const ResultCardContent = ({ result }: { result: TimelineResult }) => {
 
       <MapLeftThumbnail
         alt={result.map.title}
-        src={`https://i.ytimg.com/vi/${result.map.video_id}/mqdefault.jpg`}
-        mapVideoId={result.map.video_id}
-        mapPreviewTime={result.map.preview_time}
-        mapPreviewSpeed={result.status.default_speed}
+        src={`https://i.ytimg.com/vi/${result.map.videoId}/mqdefault.jpg`}
+        mapVideoId={result.map.videoId}
+        mapPreviewTime={result.map.previewTime}
+        mapPreviewSpeed={result.status.playSpeed}
         size="timeline"
       />
 
@@ -38,23 +38,23 @@ const ResultCardContent = ({ result }: { result: TimelineResult }) => {
 };
 
 interface MapInfoProps extends HTMLAttributes<HTMLDivElement> {
-  map: TimelineResult["map"];
+  map: RouterOutPuts["result"]["usersResultList"]["items"][number]["map"];
   isToggledInputMode: boolean;
 }
 
 function MapInfo({ map, isToggledInputMode, className, ...rest }: MapInfoProps) {
-  const musicSource = map.music_source ? `【${map.music_source}】` : "";
+  const musicSource = map.musicSource ? `【${map.musicSource}】` : "";
   return (
     <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
-      <TooltipWrapper delayDuration={300} label={nolink(`${map.title} / ${map.artist_name}${musicSource}`)}>
+      <TooltipWrapper delayDuration={300} label={nolink(`${map.title} / ${map.artistName}${musicSource}`)}>
         <Link href={`/type/${map.id}`} className="text-secondary block hover:underline">
-          <div className="truncate text-sm font-bold sm:text-base">{nolink(`${map.title} / ${map.artist_name}`)}</div>
+          <div className="truncate text-sm font-bold sm:text-base">{nolink(`${map.title} / ${map.artistName}`)}</div>
         </Link>
       </TooltipWrapper>
       <div className="truncate text-xs">
         制作者:{" "}
-        <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline">
-          {map.creator.name}
+        <Link href={`/user/${map.creatorId}`} className="text-secondary hover:underline">
+          {map.creatorName}
         </Link>
       </div>
     </div>

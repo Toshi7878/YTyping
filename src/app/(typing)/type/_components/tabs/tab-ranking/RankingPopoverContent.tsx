@@ -1,12 +1,14 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { useMapInfoRef, useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/soundEffect";
 import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
+import { useTRPC } from "@/trpc/provider";
 import { LocalClapState } from "@/types";
 import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -36,20 +38,20 @@ const RankingPopoverContent = ({
   const setTabName = useSetTabName();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { readMapInfo } = useMapInfoRef();
-  const { id: mapIdParam } = useParams<{ id: string }>();
-  const mapId = Number(mapIdParam);
+  const trpc = useTRPC();
+  const { id: mapId } = useParams<{ id: string }>();
+  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
 
-  const toggleClap = useClapMutationRanking(mapId);
+  const toggleClap = useClapMutationRanking(Number(mapId));
 
   const handleReplayClick = async () => {
     await resultPlay(resultId);
 
-    const mapUpdatedAt = readMapInfo().updated_at;
+    const mapUpdatedAt = mapInfo?.updatedAt;
     const resultUpdatedAtDate = new Date(resultUpdatedAt);
     iosActiveSound();
 
-    if (mapUpdatedAt > resultUpdatedAtDate) {
+    if (mapUpdatedAt && resultUpdatedAtDate > mapUpdatedAt) {
       toast.warning("リプレイ登録時より後に譜面が更新されています", {
         description: "正常に再生できない可能性があります",
       });

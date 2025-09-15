@@ -67,12 +67,12 @@ const MapInfoForm = () => {
     shouldUnregister: false,
     values: {
       title: mapInfoData?.title ?? backupMap?.title ?? "",
-      artist_name: mapInfoData?.artist_name ?? backupMap?.artistName ?? "",
-      music_source: mapInfoData?.music_source ?? backupMap?.musicSource ?? "",
-      preview_time: mapInfoData?.preview_time ?? backupMap?.previewTime ?? "",
-      creator_comment: mapInfoData?.creator_comment ?? backupMap?.creatorComment ?? "",
+      artistName: mapInfoData?.artistName ?? backupMap?.artistName ?? "",
+      musicSource: mapInfoData?.musicSource ?? backupMap?.musicSource ?? "",
+      previewTime: mapInfoData?.previewTime ?? backupMap?.previewTime ?? 0,
+      creatorComment: mapInfoData?.creator.name ?? backupMap?.creatorComment ?? "",
       tags: mapInfoData?.tags ?? backupMap?.tags ?? [],
-      video_id: mapInfoData?.video_id ?? newCreateVideoId ?? "",
+      videoId: mapInfoData?.videoId ?? newCreateVideoId ?? "",
     },
 
     resetOptions: {
@@ -82,7 +82,7 @@ const MapInfoForm = () => {
 
   useEffect(() => {
     if (mapInfoData && !isBackUp) {
-      setVideoId(mapInfoData.video_id);
+      setVideoId(mapInfoData.videoId);
     }
   }, [mapInfoData, isBackUp, form, setVideoId]);
 
@@ -126,8 +126,8 @@ const MapInfoForm = () => {
 
       if (newCreateVideoId) {
         form.setValue("title", title);
-        form.setValue("artist_name", artistName);
-        form.setValue("music_source", source);
+        form.setValue("artistName", artistName);
+        form.setValue("musicSource", source);
       }
     }
   }, [form, geminiInfoData, newCreateVideoId]);
@@ -141,11 +141,11 @@ const MapInfoForm = () => {
           backupMapInfo({
             videoId: newCreateVideoId,
             title: value.title || "",
-            artistName: value.artist_name || "",
-            musicSource: value.music_source || "",
-            creatorComment: value.creator_comment || "",
+            artistName: value.artistName || "",
+            musicSource: value.musicSource || "",
+            creatorComment: value.creatorComment || "",
             tags: value.tags?.filter((tag): tag is string => typeof tag === "string" && tag !== undefined) || [],
-            previewTime: value.preview_time || "",
+            previewTime: value.previewTime || 0,
           });
         });
       });
@@ -227,7 +227,7 @@ const InfoFormButton = () => {
 const VideoIdInput = () => {
   const { watch, formState, setValue, getValues } = useFormContext();
   const { dirtyFields } = formState;
-  const formVideoId = watch("video_id");
+  const formVideoId = watch("videoId");
   const setVideoId = useSetVideoId();
   const setYTChaningVideo = useSetYTChaningVideo();
 
@@ -236,7 +236,7 @@ const VideoIdInput = () => {
       <TooltipWrapper label="動画URLを貼り付けるとIDが自動入力されます">
         <div className="flex-center flex gap-4">
           <FloatingLabelInputFormField
-            name="video_id"
+            name="videoId"
             className="w-32"
             label="動画ID"
             maxLength={11}
@@ -246,19 +246,19 @@ const VideoIdInput = () => {
               const videoId = extractYouTubeVideoId(e.clipboardData.getData("text"));
 
               if (videoId) {
-                setValue("video_id", videoId);
+                setValue("videoId", videoId);
               }
             }}
           />
           <Button
             variant="outline-info"
             size="lg"
-            disabled={!dirtyFields.video_id || formVideoId.length !== 11}
+            disabled={!dirtyFields.videoId || formVideoId.length !== 11}
             onClick={(e) => {
               e.preventDefault();
               if (formVideoId.length !== 11) return;
 
-              setVideoId(getValues("video_id"));
+              setVideoId(getValues("videoId"));
               setYTChaningVideo(true);
             }}
           >
@@ -273,7 +273,7 @@ const VideoIdInput = () => {
 const PreviewTimeInput = () => {
   const { readPlayer } = usePlayer();
   const { watch, setValue, getValues } = useFormContext();
-  const previewTime = watch("preview_time");
+  const previewTime = watch("previewTime");
   const setPreventEditortabAutoFocus = useSetPreventEditortabAutoFocus();
   const setCanUpload = useSetCanUpload();
 
@@ -298,7 +298,7 @@ const PreviewTimeInput = () => {
       <div className="flex flex-row items-center gap-3">
         <div>
           <FloatingLabelInputFormField
-            name="preview_time"
+            name="previewTime"
             label="プレビュータイム"
             className="w-36"
             type="number"
@@ -313,15 +313,15 @@ const PreviewTimeInput = () => {
               }
               if (e.key === "ArrowUp") {
                 e.preventDefault();
-                const currentValue = Number(getValues("preview_time")) || 0;
-                setValue("preview_time", (currentValue + 0.05).toFixed(2));
+                const currentValue = Number(getValues("previewTime")) || 0;
+                setValue("previewTime", (currentValue + 0.05).toFixed(2));
                 setCanUpload(true);
               }
               if (e.key === "ArrowDown") {
                 e.preventDefault();
-                const currentValue = Number(getValues("preview_time")) || 0;
+                const currentValue = Number(getValues("previewTime")) || 0;
                 const newValue = Math.max(0, currentValue - 0.05);
-                setValue("preview_time", newValue.toFixed(2));
+                setValue("previewTime", newValue.toFixed(2));
                 setCanUpload(true);
               }
             }}
@@ -382,11 +382,11 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
           backupMapInfo({
             videoId: newCreateVideoId,
             title: form.getValues("title"),
-            artistName: form.getValues("artist_name"),
-            musicSource: form.getValues("music_source"),
-            creatorComment: form.getValues("creator_comment"),
+            artistName: form.getValues("artistName"),
+            musicSource: form.getValues("musicSource"),
+            creatorComment: form.getValues("creatorComment"),
             tags: form.getValues("tags"),
-            previewTime: form.getValues("preview_time"),
+            previewTime: form.getValues("previewTime"),
           });
           backupMap({
             videoId: newCreateVideoId,
@@ -400,7 +400,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
   return async (data: z.output<typeof mapInfoFormSchema>) => {
     const map = readMap();
 
-    const { title, artist_name, music_source, creator_comment, tags, preview_time } = data;
+    const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
     const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new BuildMap(map);
 
     const { video_id } = readPlayer().getVideoData();
@@ -409,21 +409,21 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
     const typingStartTime = Math.max(0, Number(map[startLine]["time"]) + 0.2);
 
     const newPreviewTime =
-      Number(preview_time) > videoDuration || typingStartTime >= Number(preview_time)
+      Number(previewTime) > videoDuration || typingStartTime >= Number(previewTime)
         ? typingStartTime.toFixed(3)
-        : preview_time;
+        : previewTime;
 
-    form.setValue("preview_time", newPreviewTime);
+    form.setValue("previewTime", Number(newPreviewTime));
 
     const mapInfo = {
-      video_id,
+      videoId: video_id,
       title,
-      artist_name,
-      music_source,
-      creator_comment,
+      artistName,
+      musicSource,
+      creatorComment,
       tags,
-      preview_time: newPreviewTime,
-      thumbnail_quality: await getThumbnailQuality(video_id),
+      previewTime: Number(newPreviewTime),
+      thumbnailQuality: await getThumbnailQuality(video_id),
     };
     const mapDifficulty = {
       roma_kpm_median: speedDifficulty.median.r,

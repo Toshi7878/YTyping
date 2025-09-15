@@ -10,15 +10,9 @@ interface UserInputModeTextProps {
   symbolType: number;
 }
 
-export const UserInputModeText = ({
-  kanaType,
-  romaType,
-  flickType,
-  englishType,
-  spaceType,
-  numType,
-  symbolType,
-}: UserInputModeTextProps) => {
+export const UserInputModeText = (props: UserInputModeTextProps) => {
+  const { kanaType, romaType, flickType, englishType, spaceType, numType, symbolType } = props;
+
   const colors = {
     roma: "text-roma",
     kana: "text-kana",
@@ -31,7 +25,7 @@ export const UserInputModeText = ({
     <span className={cn(colorClass, "input-mode-outline-text")}>{label}</span>
   );
 
-  const total = romaType + kanaType + flickType + englishType + spaceType + numType + symbolType;
+  const total = Object.values(props).reduce((acc, curr) => acc + curr, 0);
 
   if (romaType && kanaType) {
     const isRomaFirst = romaType >= kanaType;

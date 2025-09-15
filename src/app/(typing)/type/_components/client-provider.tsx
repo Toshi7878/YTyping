@@ -5,27 +5,26 @@ import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useEffect } from "react";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
-import { mapInfoAtom, userTypingOptionsAtom } from "../_lib/atoms/stateAtoms";
+import { userTypingOptionsAtom } from "../_lib/atoms/stateAtoms";
 import { getTypeAtomStore } from "../_lib/atoms/store";
 import { useSendUserStats } from "../_lib/hooks/playing/sendUserStats";
 
 interface ClientProviderProps {
-  mapInfo: NonNullable<RouterOutPuts["map"]["getMapInfo"]>;
   userTypingOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"];
   mapId: string;
   children: React.ReactNode;
 }
 
-const ClientProvider = ({ mapInfo, userTypingOptions, mapId, children }: ClientProviderProps) => {
+const ClientProvider = ({ userTypingOptions, mapId, children }: ClientProviderProps) => {
   const typeAtomStore = getTypeAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
   const { sendTypingStats } = useSendUserStats();
   const pathChangeAtomReset = usePathChangeAtomReset();
 
-  useHydrateAtoms(
-    [[mapInfoAtom, mapInfo], ...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : [])],
-    { dangerouslyForceHydrate: true, store: typeAtomStore },
-  );
+  useHydrateAtoms([...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : [])], {
+    dangerouslyForceHydrate: true,
+    store: typeAtomStore,
+  });
 
   useEffect(() => {
     setPreviewVideoState(RESET);

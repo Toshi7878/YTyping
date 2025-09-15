@@ -1,5 +1,5 @@
-import { schema } from "@/server/drizzle/client";
-import { and, eq, sql } from "drizzle-orm";
+import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
+import { and, desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure } from "../trpc";
 
@@ -7,8 +7,8 @@ export const notificationRouter = {
   hasNewNotification: protectedProcedure.query(async ({ ctx }) => {
     const rows = await ctx.db
       .select({ one: sql`1` })
-      .from(schema.Notifications)
-      .where(and(eq(schema.Notifications.visitedId, ctx.user.id), eq(schema.Notifications.checked, false)))
+      .from(Notifications)
+      .where(and(eq(Notifications.visitedId, ctx.user.id), eq(Notifications.checked, false)))
       .limit(1);
 
     return rows.length > 0;
@@ -16,102 +16,95 @@ export const notificationRouter = {
   getInfiniteUserNotifications: protectedProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.date().nullish(), // <-- "cursor" needs to exist, but can be any type
-        direction: z.enum(["forward", "backward"]), // optional, useful for bi-directional query      }),
+        // Use page-index style cursor for offset pagination
+        cursor: z.string().nullable().optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
       const { db, user } = ctx;
-      const { cursor } = input;
-      const limit = input.limit ?? 20;
+      const PAGE_SIZE = 20;
+
+      const page = input.cursor ? Number(input.cursor) : 0;
+      const offset = isNaN(page) ? 0 : page * PAGE_SIZE;
 
       try {
-        const cond = cursor ? sql`AND n."created_at" < ${cursor}` : sql``;
-        const notifyRows = (
-          await db.execute(sql`
-          SELECT
-            n."created_at",
-            n."action",
-            n."visitor_id",
-            n."old_rank",
-            u."name" as visitor_name,
-            (
-              SELECT rs."score" FROM results r
-              JOIN result_statuses rs ON rs."result_id" = r."id"
-              WHERE r."map_id" = n."map_id" AND r."user_id" = n."visited_id"
-              ORDER BY rs."score" DESC
-              LIMIT 1
-            ) as visited_score,
-            (
-              SELECT rs2."score" FROM results r2
-              JOIN result_statuses rs2 ON rs2."result_id" = r2."id"
-              WHERE r2."map_id" = n."map_id" AND r2."user_id" = n."visitor_id"
-              ORDER BY rs2."score" DESC
-              LIMIT 1
-            ) as visitor_score,
-            json_build_object(
-              'id', m."id",
-              'title', m."title",
-              'artist_name', m."artist_name",
-              'music_source', m."music_source",
-              'video_id', m."video_id",
-              'creator_id', m."creator_id",
-              'updated_at', m."updated_at",
-              'preview_time', m."preview_time",
-              'thumbnail_quality', m."thumbnail_quality",
-              'like_count', m."like_count",
-              'ranking_count', m."ranking_count",
-              'difficulty', json_build_object(
-                'roma_kpm_median', d."roma_kpm_median",
-                'roma_kpm_max', d."roma_kpm_max",
-                'total_time', d."total_time"
-              ),
-              'creator', json_build_object('id', cu."id", 'name', cu."name"),
-              'is_liked', EXISTS (
-                SELECT 1 FROM map_likes ml WHERE ml."map_id" = m."id" AND ml."user_id" = ${user.id} AND ml."is_liked" = true
-              ),
-              'myRank', (
-                SELECT MIN(r3."rank")::int FROM results r3 WHERE r3."map_id" = m."id" AND r3."user_id" = ${user.id}
-              )
-            ) as "map"
-          FROM notifications n
-          JOIN users u ON u."id" = n."visitor_id"
-          JOIN maps m ON m."id" = n."map_id"
-          LEFT JOIN map_difficulties d ON d."map_id" = m."id"
-          LEFT JOIN users cu ON cu."id" = m."creator_id"
-          WHERE n."visited_id" = ${user.id}
-          ${cond}
-          ORDER BY n."created_at" DESC
-          LIMIT ${limit + 1}
-        `)
-        ).rows as any[];
-        const normalized = notifyRows.map((n) => ({
-          created_at: n.created_at,
+        const notifications = await db.query.Notifications.findMany({
+          where: eq(Notifications.visitedId, user.id),
+          orderBy: desc(Notifications.createdAt),
+          limit: PAGE_SIZE + 1,
+          offset,
+          with: {
+            visitor: { columns: { id: true, name: true } },
+            map: {
+              columns: {
+                creatorComment: false,
+                category: false,
+                createdAt: false,
+                creatorId: false,
+                playCount: false,
+                tags: false,
+              },
+              with: {
+                creator: { columns: { id: true, name: true } },
+                difficulty: { columns: { totalTime: true, romaKpmMedian: true, romaKpmMax: true } },
+                mapLikes: {
+                  where: and(eq(MapLikes.userId, user.id)),
+                  columns: { isLiked: true },
+                  limit: 1,
+                },
+                results: {
+                  where: and(eq(Results.userId, user.id)),
+                  columns: { rank: true },
+                  limit: 1,
+                },
+              },
+            },
+            // 結果は (user_id, map_id) が一意なので max は不要
+            visitedResult: { with: { status: { columns: { score: true } } } },
+            visitorResult: { with: { status: { columns: { score: true } } } },
+          },
+        });
+
+        const items = notifications.map((n) => ({
+          created_at: n.createdAt,
           action: n.action,
-          visitor_id: n.visitor_id,
-          old_rank: n.old_rank,
-          visitor: { name: n.visitor_name },
-          visitedResult: { status: { score: n.visited_score ?? 0 } },
-          visitorResult: { status: { score: n.visitor_score ?? 0 } },
+          visitor: {
+            id: n.visitorId,
+            name: n.visitor?.name ?? null,
+            score: n.visitorResult?.status?.score ?? null,
+          },
+          myResult: {
+            old_rank: n.oldRank,
+            score: n.visitedResult?.status?.score ?? null,
+          },
           map: {
-            ...n.map,
-            difficulty: n.map?.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
+            id: n.map.id,
+            videoId: n.map.videoId,
+            title: n.map.title,
+            artistName: n.map.artistName,
+            musicSource: n.map.musicSource,
+            previewTime: n.map.previewTime,
+            thumbnailQuality: n.map.thumbnailQuality,
+            likeCount: n.map.likeCount,
+            rankingCount: n.map.rankingCount,
+            updatedAt: n.map.updatedAt,
+            creator: { id: n.map.creator.id, name: n.map.creator.name },
+            totalTime: n.map.difficulty.totalTime,
+            difficulty: {
+              romaKpmMedian: n.map.difficulty.romaKpmMedian,
+              romaKpmMax: n.map.difficulty.romaKpmMax,
+            },
+            hasLiked: n.map.mapLikes?.[0]?.isLiked,
+            myRank: n.map.results?.[0]?.rank ?? null,
           },
         }));
 
-        let nextCursor: typeof cursor | undefined = undefined;
-        if (normalized.length > limit) {
-          const nextItem = normalized.pop();
-
-          if (nextItem) {
-            nextCursor = nextItem.created_at;
-          }
+        let nextCursor: string | undefined = undefined;
+        if (items.length > PAGE_SIZE) {
+          items.pop();
+          nextCursor = String(isNaN(page) ? 1 : page + 1);
         }
-        return {
-          notifications: normalized,
-          nextCursor,
-        };
+        return { notifications: items, nextCursor };
       } catch (error) {
         console.error("Error fetching notification list:", error);
         throw new Error("Internal Server Error");
@@ -121,9 +114,9 @@ export const notificationRouter = {
     const { db, user } = ctx;
 
     await db
-      .update(schema.Notifications)
+      .update(Notifications)
       .set({ checked: true })
-      .where(and(eq(schema.Notifications.visitedId, user.id), eq(schema.Notifications.checked, false)));
+      .where(and(eq(Notifications.visitedId, user.id), eq(Notifications.checked, false)));
 
     return new Response("Notifications marked as read", { status: 200 });
   }),

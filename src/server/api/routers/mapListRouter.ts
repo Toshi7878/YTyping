@@ -1,5 +1,5 @@
-import { sql } from "drizzle-orm";
-import { schema } from "@/server/drizzle/client";
+import { MapDifficulties, MapLikes, Maps, Results, ResultStatuses, Users } from "@/server/drizzle/schema";
+import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, SQL, sql } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
@@ -21,28 +21,38 @@ const mapListLengthSchema = z.object({
   keyword: z.string().default(""),
 });
 
-export type MapItem = {
-  is_liked: boolean;
-  difficulty: {
-    roma_kpm_median: number;
-    roma_kpm_max: number;
-    total_time: number;
-  };
-  id: number;
-  video_id: string;
-  title: string;
-  artist_name: string;
-  music_source: string;
-  preview_time: string;
-  like_count: number;
-  ranking_count: number;
-  thumbnail_quality: (typeof schema.thumbnailQualityEnum.enumValues)[number];
-  updated_at: Date;
+const userStatusSchema = z.array(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+    onlineAt: z.coerce.date(),
+    state: z.string(),
+    mapId: z.number().nullable(),
+  }),
+);
+
+export const MAP_LIST_FIELDS = {
+  id: Maps.id,
+  videoId: Maps.videoId,
+  title: Maps.title,
+  artistName: Maps.artistName,
+  musicSource: Maps.musicSource,
+  previewTime: Maps.previewTime,
+  thumbnailQuality: Maps.thumbnailQuality,
+  likeCount: Maps.likeCount,
+  rankingCount: Maps.rankingCount,
+  totalTime: MapDifficulties.totalTime,
   creator: {
-    id: number;
-    name: string | null;
-  };
-  myRank: number | null;
+    id: Users.id,
+    name: Users.name,
+  },
+  difficulty: {
+    romaKpmMedian: MapDifficulties.romaKpmMedian,
+    romaKpmMax: MapDifficulties.romaKpmMax,
+  },
+  hasLiked: MapLikes.isLiked,
+  myRank: Results.rank,
+  updatedAt: Maps.updatedAt,
 };
 
 export const mapListRouter = {
@@ -54,73 +64,36 @@ export const mapListRouter = {
     const page = input.cursor ? Number(input.cursor) : 0;
     const offset = isNaN(page) ? 0 : page * PAGE_SIZE;
 
-    const filterSql = getFilterSql({ filter: input.filter, userId });
-    const difficultyFilterSql = getDifficultyFilterSql({
-      minRate: input.minRate,
-      maxRate: input.maxRate,
-    });
-    const playedSql = getPlayedFilterSql({ played: input.played, userId });
-    const keywordFilterSql = generateKeywordFilterSql({ mapKeyword: input.keyword });
-
-    const whereConditions = [filterSql, difficultyFilterSql, keywordFilterSql, playedSql];
-    const where = sql`${sql.join(whereConditions, sql` AND `)}`;
-    const orderBy = getSortSql({ sort: input.sort });
-
     try {
-      const items: MapItem[] = (await db.execute(sql`
-        SELECT
-        maps."id",
-        maps."video_id",
-        maps."title",
-        maps."artist_name",
-        maps."preview_time",
-        maps."like_count",
-        maps."ranking_count",
-        maps."updated_at",
-        maps."thumbnail_quality",
-        maps."music_source",
-        json_build_object(
-          'id', creator."id",
-          'name', creator."name"
-        ) as "creator",
-        json_build_object(
-          'roma_kpm_median', "difficulty"."roma_kpm_median",
-          'roma_kpm_max', "difficulty"."roma_kpm_max",
-          'total_time', "difficulty"."total_time"
-        ) as "difficulty",
-        EXISTS (
-          SELECT 1
-          FROM map_likes ml
-          WHERE ml."map_id" = maps."id"
-          AND ml."user_id" = ${userId}
-          AND ml."is_liked" = true
-        ) as is_liked,
-        (
-          SELECT MIN(r."rank")::int
-          FROM results r
-          WHERE r."map_id" = maps."id"
-          AND r."user_id" = ${userId}
-        ) as "myRank"
-        FROM maps
-        JOIN users AS creator ON maps."creator_id" = creator."id"
-        JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
-        LEFT JOIN map_likes ON maps."id" = map_likes."map_id" AND map_likes."user_id" = ${userId}
-        WHERE ${where}
-        ORDER BY ${orderBy}
-        LIMIT ${PAGE_SIZE + 1}
-        OFFSET ${offset}
-      `)).rows as any;
+      const whereConds = buildWhereConditions({
+        filter: input.filter,
+        minRate: input.minRate,
+        maxRate: input.maxRate,
+        played: input.played,
+        keyword: input.keyword,
+        userId,
+      });
+      const orderers = getSortSql({ sort: input.sort });
+
+      const maps = await db
+        .select(MAP_LIST_FIELDS)
+        .from(Maps)
+        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+        .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
+        .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
+        .innerJoin(Users, eq(Users.id, Maps.creatorId))
+        .where(whereConds.length ? and(...whereConds) : undefined)
+        .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
+        .limit(PAGE_SIZE + 1)
+        .offset(offset);
 
       let nextCursor: string | undefined = undefined;
-      if (items.length > PAGE_SIZE) {
-        items.pop();
+      if (maps.length > PAGE_SIZE) {
+        maps.pop();
         nextCursor = String(isNaN(page) ? 1 : page + 1);
       }
 
-      return {
-        maps: items,
-        nextCursor,
-      };
+      return { maps, nextCursor };
     } catch (error) {
       throw new Error("Failed to fetch map list");
     }
@@ -129,29 +102,28 @@ export const mapListRouter = {
     const { db, user } = ctx;
     const userId = user?.id ? Number(user.id) : null;
 
-    const filterSql = getFilterSql({ filter: input.filter, userId });
-    const difficultyFilterSql = getDifficultyFilterSql({
+    const whereConds = buildWhereConditions({
+      filter: input.filter,
       minRate: input.minRate,
       maxRate: input.maxRate,
+      played: input.played,
+      keyword: input.keyword,
+      userId,
     });
-    const playedSql = getPlayedFilterSql({ played: input.played, userId });
-    const keywordFilterSql = generateKeywordFilterSql({ mapKeyword: input.keyword });
-
-    const whereConditions = [filterSql, difficultyFilterSql, keywordFilterSql, playedSql];
-    const where = sql`${sql.join(whereConditions, sql` AND `)}`;
 
     try {
-      const result = await db.execute(sql`
-        SELECT COUNT(*) as total_count
-        FROM maps
-        JOIN users AS creator ON maps."creator_id" = creator."id"
-        JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
-        LEFT JOIN map_likes ON maps."id" = map_likes."map_id" AND map_likes."user_id" = ${userId}
-        WHERE ${where}
-      `);
+      const totalCount = await db
+        .select({ total: count() })
+        .from(Maps)
+        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+        .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
+        .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
+        .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+        .innerJoin(Users, eq(Users.id, Maps.creatorId))
+        .where(whereConds.length ? and(...whereConds) : undefined)
+        .then((rows) => rows[0]?.total ?? 0);
 
-      const totalCount = (result as any)[0].total_count;
-      return Number(totalCount);
+      return totalCount;
     } catch (error) {
       throw new Error("Failed to fetch map list length");
     }
@@ -160,45 +132,42 @@ export const mapListRouter = {
     const { db, user } = ctx;
     const { videoId } = input;
 
-    const rows = (await db.execute(sql`
-      SELECT
-        maps."id",
-        maps."title",
-        maps."artist_name",
-        maps."music_source",
-        maps."video_id",
-        maps."updated_at",
-        maps."preview_time",
-        maps."thumbnail_quality",
-        maps."like_count",
-        maps."ranking_count",
-        json_build_object(
-          'roma_kpm_median', "difficulty"."roma_kpm_median",
-          'roma_kpm_max', "difficulty"."roma_kpm_max",
-          'total_time', "difficulty"."total_time"
-        ) as "difficulty",
-        json_build_object('id', creator."id", 'name', creator."name") as "creator",
-        EXISTS (
-          SELECT 1 FROM map_likes ml
-          WHERE ml."map_id" = maps."id" AND ml."user_id" = ${user.id} AND ml."is_liked" = true
-        ) as is_liked,
-        (
-          SELECT MIN(r."rank")::int FROM results r
-          WHERE r."map_id" = maps."id" AND r."user_id" = ${user.id}
-        ) as "myRank"
-      FROM maps
-      JOIN users AS creator ON maps."creator_id" = creator."id"
-      LEFT JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
-      WHERE maps."video_id" = ${videoId}
-      ORDER BY maps."id" DESC
-    `)).rows as any[];
+    const rows = await db
+      .select(MAP_LIST_FIELDS)
+      .from(Maps)
+      .innerJoin(Users, eq(Users.id, Maps.creatorId))
+      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
+      .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
+      .where(eq(Maps.videoId, videoId))
+      .orderBy(desc(Maps.id));
 
-    const withDifficulty = rows.map((m) => ({
-      ...m,
-      difficulty: m.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
-    }));
+    return rows;
+  }),
 
-    return withDifficulty as any;
+  getUserPlayingMaps: publicProcedure.input(userStatusSchema).query(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+
+    const userListPromises = input.map(async (activeUser) => {
+      if (activeUser.state === "type" && activeUser.mapId) {
+        const map = await db
+          .select(MAP_LIST_FIELDS)
+          .from(Maps)
+          .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+          .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
+          .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
+          .innerJoin(Users, eq(Users.id, Maps.creatorId))
+          .where(eq(Maps.id, activeUser.mapId))
+          .then((rows) => rows[0]);
+
+        return { ...activeUser, map };
+      } else {
+        return { ...activeUser, map: null };
+      }
+    });
+
+    const userList = await Promise.all(userListPromises);
+    return userList;
   }),
 };
 
@@ -209,15 +178,15 @@ interface GetFilterSql {
 }
 
 function getFilterSql({ filter, userId }: GetFilterSql) {
-  if (!userId) return sql.raw("1=1");
-
   switch (filter) {
     case "liked":
-      return sql.raw(`map_likes."is_liked" = true`);
+      if (!userId) return undefined;
+      return eq(MapLikes.isLiked, true);
     case "my-map":
-      return sql.raw(`creator."id" = ${userId}`);
+      if (!userId) return undefined;
+      return eq(Maps.creatorId, userId);
     default:
-      return sql.raw("1=1");
+      return undefined;
   }
 }
 
@@ -226,53 +195,27 @@ interface GetSortSql {
 }
 
 function getSortSql({ sort }: GetSortSql) {
-  if (!sort) {
-    return sql.raw(`maps."id" DESC`);
-  }
+  if (!sort) return [desc(Maps.id)];
 
   const isAsc = sort.includes("asc");
 
   switch (true) {
     case sort.includes("random"):
-      return sql.raw(`RANDOM()`);
+      return [sql`RANDOM()`];
     case sort.includes("id"):
-      if (isAsc) {
-        return sql.raw(`maps."id" ASC`);
-      } else {
-        return sql.raw(`maps."id" DESC`);
-      }
+      return [isAsc ? asc(Maps.id) : desc(Maps.id)];
     case sort.includes("difficulty"):
-      if (isAsc) {
-        return sql.raw(`"difficulty"."roma_kpm_median" ASC`);
-      } else {
-        return sql.raw(`"difficulty"."roma_kpm_median" DESC`);
-      }
+      return [isAsc ? asc(MapDifficulties.romaKpmMedian) : desc(MapDifficulties.romaKpmMedian)];
     case sort.includes("ranking_count"):
-      if (isAsc) {
-        return sql.raw(`maps."ranking_count" ASC, maps."id" ASC`);
-      } else {
-        return sql.raw(`maps."ranking_count" DESC, maps."id" DESC`);
-      }
+      return [isAsc ? asc(Maps.rankingCount) : desc(Maps.rankingCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
     case sort.includes("like_count"):
-      if (isAsc) {
-        return sql.raw(`maps."like_count" ASC, maps."id" ASC`);
-      } else {
-        return sql.raw(`maps."like_count" DESC, maps."id" DESC`);
-      }
+      return [isAsc ? asc(Maps.likeCount) : desc(Maps.likeCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
     case sort.includes("duration"):
-      if (isAsc) {
-        return sql.raw(`"difficulty"."total_time" ASC`);
-      } else {
-        return sql.raw(`"difficulty"."total_time" DESC`);
-      }
+      return [isAsc ? asc(MapDifficulties.totalTime) : desc(MapDifficulties.totalTime)];
     case sort.includes("like"):
-      if (isAsc) {
-        return sql.raw(`"map_likes"."created_at" ASC`);
-      } else {
-        return sql.raw(`"map_likes"."created_at" DESC`);
-      }
+      return [isAsc ? asc(MapLikes.createdAt) : desc(MapLikes.createdAt)];
     default:
-      return sql.raw(`maps."id" DESC`);
+      return [desc(Maps.id)];
   }
 }
 
@@ -281,18 +224,23 @@ interface GetDifficultyFilterSql {
   maxRate: number | null | undefined;
 }
 
+const rateSchema = z.coerce.number().min(0).max(1200).optional();
+
 function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSql) {
-  const conditions: string[] = [];
+  const conditions: SQL<unknown>[] = [];
 
-  if (minRate && !isNaN(Number(minRate))) {
-    conditions.push(`"difficulty"."roma_kpm_median" >= ${Number(minRate) * 100}`);
+  const validMinRate = rateSchema.safeParse(minRate);
+  const validMaxRate = rateSchema.safeParse(maxRate);
+
+  if (validMinRate.success && validMinRate.data) {
+    conditions.push(gte(MapDifficulties.romaKpmMedian, validMinRate.data * 100));
   }
 
-  if (maxRate && !isNaN(Number(maxRate))) {
-    conditions.push(`"difficulty"."roma_kpm_median" <= ${Number(maxRate) * 100}`);
+  if (validMaxRate.success && validMaxRate.data) {
+    conditions.push(lte(MapDifficulties.romaKpmMedian, validMaxRate.data * 100));
   }
 
-  return conditions.length > 0 ? sql.raw(conditions.join(" AND ")) : sql.raw("1=1");
+  return conditions;
 }
 
 interface GetPlayedFilterSql {
@@ -301,58 +249,59 @@ interface GetPlayedFilterSql {
 }
 
 function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
-  if (!userId) return sql.raw("1=1");
+  if (!userId) return undefined;
 
   switch (played) {
     case "played":
-      return sql.raw(`EXISTS (
-		  SELECT 1 FROM results
-		  WHERE results.map_id = maps.id
-		  AND results.user_id = ${userId}
-		)`);
+      return isNotNull(Results.id);
     case "unplayed":
-      return sql.raw(`NOT EXISTS (
-		  SELECT 1 FROM results
-		  WHERE results.map_id = maps.id
-		  AND results.user_id = ${userId}
-		)`);
+      return isNull(Results.id);
     case "1st":
-      return sql.raw(`EXISTS (
-		  SELECT 1 FROM results
-		  WHERE results.map_id = maps.id
-		  AND results.user_id = ${userId}
-		  AND results.rank = 1
-		)`);
+      return eq(Results.rank, 1);
     case "not-first":
-      return sql.raw(`EXISTS (
-		  SELECT 1 FROM results
-		  JOIN result_statuses ON results.id = result_statuses.result_id
-		  WHERE results.map_id = maps.id
-		  AND results.user_id = ${userId}
-		  AND results.rank > 1
-		)`);
+      return sql`${Results.rank} > 1`;
     case "perfect":
-      return sql.raw(`EXISTS (
-		  SELECT 1 FROM results
-		  JOIN result_statuses ON results.id = result_statuses.result_id
-		  WHERE results.map_id = maps.id
-		  AND results.user_id = ${userId}
-		  AND result_statuses.miss = 0
-		  AND result_statuses.lost = 0
-		)`);
+      return and(eq(ResultStatuses.miss, 0), eq(ResultStatuses.lost, 0));
     default:
-      return sql.raw("1=1");
+      return undefined;
   }
 }
 
 const generateKeywordFilterSql = ({ mapKeyword }: { mapKeyword: string }) => {
-  return mapKeyword !== ""
-    ? sql`(
-  maps."title" &@~ ${mapKeyword} OR
-  maps."artist_name" &@~ ${mapKeyword} OR
-  maps."music_source" &@~ ${mapKeyword} OR
-  maps."tags" &@~ ${mapKeyword} OR
-  creator."name" &@~ ${mapKeyword}
-  )`
-    : sql`TRUE`;
+  if (!mapKeyword || mapKeyword.trim() === "") return undefined;
+  const pattern = `%${mapKeyword}%`;
+  return or(
+    ilike(Maps.title, pattern),
+    ilike(Maps.artistName, pattern),
+    ilike(Maps.musicSource, pattern),
+    ilike(Maps.tags, pattern),
+    ilike(Users.name, pattern),
+  );
 };
+
+function buildWhereConditions({
+  filter,
+  minRate,
+  maxRate,
+  played,
+  keyword,
+  userId,
+}: {
+  filter: string | undefined;
+  minRate?: number;
+  maxRate?: number;
+  played?: string;
+  keyword?: string;
+  userId: number | null;
+}) {
+  const conditions: SQL<unknown>[] = [];
+  const filterCond = getFilterSql({ filter, userId });
+  if (filterCond) conditions.push(filterCond);
+  const diffConds = getDifficultyFilterSql({ minRate, maxRate });
+  conditions.push(...diffConds);
+  const playedCond = getPlayedFilterSql({ played, userId });
+  if (playedCond) conditions.push(playedCond);
+  const keywordCond = generateKeywordFilterSql({ mapKeyword: keyword ?? "" });
+  if (keywordCond) conditions.push(keywordCond);
+  return conditions;
+}

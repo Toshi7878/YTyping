@@ -17,7 +17,7 @@ export const useGetMyRankingResult = () => {
       return null;
     }
 
-    const myResult = results.find((result) => result.user_id === Number(session.user.id));
+    const myResult = results.find((result) => result.player.id === Number(session.user.id));
     return myResult ?? null;
   };
 };

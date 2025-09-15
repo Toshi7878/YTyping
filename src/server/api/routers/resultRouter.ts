@@ -1,9 +1,11 @@
 import { LineResultData } from "@/app/(typing)/type/_lib/type";
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
-import { FilterMode, TimelineResult } from "@/app/timeline/_lib/type";
+import { FilterMode } from "@/app/timeline/_lib/type";
 import { supabase } from "@/lib/supabaseClient";
 import { db as drizzleDb, schema } from "@/server/drizzle/client";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { MapLikes, Maps, ResultClaps, Results, ResultStatuses, Users } from "@/server/drizzle/schema";
+import { and, desc, eq, gt, gte, ilike, lte, or, SQL } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 import { sendResultSchema } from "./rankingRouter";
@@ -23,113 +25,84 @@ const usersResultListSchema = z.object({
 
 export const resultRouter = {
   usersResultList: publicProcedure.input(usersResultListSchema).query(async ({ input, ctx }) => {
-    const { user } = ctx;
+    const { db, user } = ctx;
     const PAGE_SIZE = 25;
 
     const userId = user?.id ? Number(user.id) : null;
     const page = input.cursor ? Number(input.cursor) : 0;
     const offset = isNaN(page) ? 0 : page * PAGE_SIZE;
 
-    const modeFilter = generateModeFilterSql({ mode: input.mode as FilterMode });
-    const kpmFilter = generateKpmFilterSql({
-      minKpm: input.minKpm,
-      maxKpm: input.maxKpm,
-    });
-    const clearRateFilter = generateClearRateFilterSql({
-      minClearRate: input.minClearRate,
-      maxClearRate: input.maxClearRate,
-    });
-    const playSpeedFilter = generatePlaySpeedFilterSql({
-      minPlaySpeed: input.minPlaySpeed,
-      maxPlaySpeed: input.maxPlaySpeed,
-    });
-    const keywordFilter = generateKeywordFilterSql({
-      username: input.username,
-      mapKeyword: input.mapKeyword,
-    });
+    const Creator = alias(Users, "creator");
+    const Player = alias(Users, "Player");
+    const MyResult = alias(Results, "MyResult");
 
-    const whereConditions = [modeFilter, kpmFilter, clearRateFilter, playSpeedFilter, ...keywordFilter];
-    const where = sql`${sql.join(whereConditions, sql` AND `)}`;
+    const whereConds = [
+      ...generateModeFilter({ mode: input.mode as FilterMode }),
+      ...generateKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
+      ...generateClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
+      ...generatePlaySpeedFilter({ minPlaySpeed: input.minPlaySpeed, maxPlaySpeed: input.maxPlaySpeed }),
+      ...generateKeywordFilter({ username: input.username, mapKeyword: input.mapKeyword }),
+    ];
 
     try {
-      // limit + 1を取得して次のページの存在を確認
-      const items: TimelineResult[] = (
-        await drizzleDb.execute(sql`
-          SELECT results."id",
-          results."map_id",
-          results."user_id",
-          results."updated_at",
-          results."clap_count",
-          results."rank",
-          json_build_object(
-            'score', "status"."score",
-            'miss', "status"."miss",
-            'lost', "status"."lost",
-            'roma_type', "status"."roma_type",
-            'kana_type', "status"."kana_type",
-            'flick_type', "status"."flick_type",
-            'english_type', "status"."english_type",
-            'num_type', "status"."num_type",
-            'symbol_type', "status"."symbol_type",
-            'space_type', "status"."space_type",
-            'kpm', "status"."kpm",
-            'roma_kpm', "status"."roma_kpm",
-            'clear_rate', "status"."clear_rate",
-            'default_speed', "status"."default_speed"
-          ) as "status",
-          json_build_object(
-            'id', map."id",
-            'video_id', map."video_id",
-            'title', map."title",
-            'artist_name', map."artist_name",
-            'music_source', map."music_source",
-            'preview_time', map."preview_time",
-            'thumbnail_quality', map."thumbnail_quality",
-            'like_count', map."like_count",
-            'ranking_count', map."ranking_count",
-            'updated_at', map."updated_at",
-            'creator', json_build_object(
-              'id', creator."id",
-              'name', creator."name"
-            ),
-        'is_liked', EXISTS (
-          SELECT 1
-          FROM map_likes ml2
-          WHERE ml2."map_id" = map."id"
-          AND ml2."user_id" = ${userId}
-          AND ml2."is_liked" = true
-        ),
-        'myRank',
-        (
-          SELECT MIN(r."rank")::int
-          FROM results r
-          WHERE r."map_id" = map."id"
-            AND r."user_id" = ${userId}
-        )
-          ) as "map",
-         (
-             SELECT "is_claped"
-             FROM result_claps
-             WHERE result_claps."result_id" = results."id"
-             AND result_claps."user_id" = ${userId}
-             LIMIT 1
-           ) as "hasClap",
-          json_build_object(
-            'id', "Player"."id",
-            'name', "Player"."name"
-          ) as "player"
-
-          FROM results
-          JOIN maps AS map ON results."map_id" = map."id"
-          JOIN result_statuses AS "status" ON results."id" = "status"."result_id"
-          JOIN users AS creator ON map."creator_id" = creator."id"
-          JOIN users AS "Player" ON results."user_id" = "Player"."id"
-          WHERE ${where}
-          ORDER BY results."updated_at" DESC
-          LIMIT ${PAGE_SIZE + 1}
-          OFFSET ${offset}
-        `)
-      ).rows as any;
+      const items = await db
+        .select({
+          id: Results.id,
+          updatedAt: Results.updatedAt,
+          rank: Results.rank,
+          player: {
+            id: Player.id,
+            name: Player.name,
+          },
+          status: {
+            score: ResultStatuses.score,
+            miss: ResultStatuses.miss,
+            lost: ResultStatuses.lost,
+            romaType: ResultStatuses.romaType,
+            kanaType: ResultStatuses.kanaType,
+            flickType: ResultStatuses.flickType,
+            englishType: ResultStatuses.englishType,
+            numType: ResultStatuses.numType,
+            symbolType: ResultStatuses.symbolType,
+            spaceType: ResultStatuses.spaceType,
+            kpm: ResultStatuses.kpm,
+            romaKpm: ResultStatuses.romaKpm,
+            clearRate: ResultStatuses.clearRate,
+            playSpeed: ResultStatuses.defaultSpeed,
+          },
+          map: {
+            id: Maps.id,
+            videoId: Maps.videoId,
+            title: Maps.title,
+            artistName: Maps.artistName,
+            musicSource: Maps.musicSource,
+            previewTime: Maps.previewTime,
+            thumbnailQuality: Maps.thumbnailQuality,
+            likeCount: Maps.likeCount,
+            rankingCount: Maps.rankingCount,
+            updatedAt: Maps.updatedAt,
+            creatorId: Creator.id,
+            creatorName: Creator.name,
+            hasLiked: MapLikes.isLiked,
+            myRank: MyResult.rank,
+          },
+          clap: {
+            count: Results.clapCount,
+            hasClaped: ResultClaps.isClaped,
+          },
+        })
+        .from(Results)
+        .innerJoin(Maps, eq(Maps.id, Results.mapId))
+        .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+        .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
+        .innerJoin(Player, eq(Player.id, Results.userId))
+        .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, userId ?? 0)))
+        .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, userId ?? 0)))
+        .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, userId ?? 0)))
+        .where(whereConds.length ? and(...whereConds) : undefined)
+        .orderBy(desc(Results.updatedAt))
+        .limit(PAGE_SIZE + 1)
+        .offset(offset);
 
       let nextCursor: string | undefined = undefined;
       if (items.length > PAGE_SIZE) {
@@ -137,10 +110,7 @@ export const resultRouter = {
         nextCursor = String(isNaN(page) ? 1 : page + 1);
       }
 
-      return {
-        items,
-        nextCursor,
-      };
+      return { items, nextCursor };
     } catch (error) {
       throw new Error("Failed to fetch users result list");
     }
@@ -377,78 +347,87 @@ const sendResult = async ({
 };
 
 // Helper functions for SQL generation
-interface GenerateModeFilterSql {
+interface GenerateModeFilter {
   mode: string;
 }
 
-function generateModeFilterSql({ mode }: GenerateModeFilterSql) {
-  if (mode === "all") return sql.raw("1=1");
-
-  return sql`(
-    CASE
-      WHEN ${mode} = 'roma' THEN "status"."roma_type" > 0 AND "status"."kana_type" = 0
-      WHEN ${mode} = 'kana' THEN "status"."kana_type" > 0 AND "status"."roma_type" = 0
-      WHEN ${mode} = 'romakana' THEN "status"."kana_type" > 0 AND "status"."roma_type" > 0
-      WHEN ${mode} = 'english' THEN "status"."kana_type" = 0 AND "status"."roma_type" = 0 AND "status"."english_type" > 0
-    END
-  )`;
+function generateModeFilter({ mode }: GenerateModeFilter) {
+  switch (mode) {
+    case "roma":
+      return [gt(ResultStatuses.romaType, 0), eq(ResultStatuses.kanaType, 0)];
+    case "kana":
+      return [gt(ResultStatuses.kanaType, 0), eq(ResultStatuses.romaType, 0)];
+    case "romakana":
+      return [gt(ResultStatuses.kanaType, 0), gt(ResultStatuses.romaType, 0)];
+    case "english":
+      return [eq(ResultStatuses.kanaType, 0), eq(ResultStatuses.romaType, 0), gt(ResultStatuses.englishType, 0)];
+    case "all":
+    default:
+      return [];
+  }
 }
 
-interface GenerateKpmFilterSql {
+interface GenerateKpmFilter {
   minKpm: number;
   maxKpm: number;
 }
 
-function generateKpmFilterSql({ minKpm, maxKpm }: GenerateKpmFilterSql) {
-  if (maxKpm === 0) return sql.raw("1=1");
-
-  if (maxKpm === DEFAULT_KPM_SEARCH_RANGE.max) {
-    return sql`("status"."roma_kpm" >= ${minKpm})`;
+function generateKpmFilter({ minKpm, maxKpm }: GenerateKpmFilter) {
+  if (maxKpm === 0) return [] as any[];
+  const conds: any[] = [];
+  if (typeof minKpm === "number") conds.push(gte(ResultStatuses.romaKpm, minKpm));
+  if (typeof maxKpm === "number") {
+    if (maxKpm !== DEFAULT_KPM_SEARCH_RANGE.max) conds.push(lte(ResultStatuses.romaKpm, maxKpm));
   }
-
-  return sql`("status"."roma_kpm" BETWEEN ${minKpm} AND ${maxKpm})`;
+  return conds;
 }
 
-interface GenerateClearRateFilterSql {
+interface GenerateClearRateFilter {
   minClearRate: number;
   maxClearRate: number;
 }
 
-function generateClearRateFilterSql({ minClearRate, maxClearRate }: GenerateClearRateFilterSql) {
-  if (maxClearRate === 0) return sql.raw("1=1");
-
-  return sql`("status"."clear_rate" BETWEEN ${minClearRate} AND ${maxClearRate})`;
+function generateClearRateFilter({ minClearRate, maxClearRate }: GenerateClearRateFilter) {
+  if (maxClearRate === 0) return [] as any[];
+  const conds: any[] = [];
+  if (typeof minClearRate === "number") conds.push(gte(ResultStatuses.clearRate, minClearRate));
+  if (typeof maxClearRate === "number") conds.push(lte(ResultStatuses.clearRate, maxClearRate));
+  return conds;
 }
 
-interface GeneratePlaySpeedFilterSql {
+interface GeneratePlaySpeedFilter {
   minPlaySpeed: number;
   maxPlaySpeed: number;
 }
 
-function generatePlaySpeedFilterSql({ minPlaySpeed, maxPlaySpeed }: GeneratePlaySpeedFilterSql) {
-  if (maxPlaySpeed === 0) return sql.raw("1=1");
-
-  return sql`("status"."default_speed" BETWEEN ${minPlaySpeed} AND ${maxPlaySpeed})`;
+function generatePlaySpeedFilter({ minPlaySpeed, maxPlaySpeed }: GeneratePlaySpeedFilter) {
+  if (maxPlaySpeed === 0) return [] as any[];
+  const conds: any[] = [];
+  if (typeof minPlaySpeed === "number") conds.push(gte(ResultStatuses.defaultSpeed, minPlaySpeed));
+  if (typeof maxPlaySpeed === "number") conds.push(lte(ResultStatuses.defaultSpeed, maxPlaySpeed));
+  return conds;
 }
 
-interface GenerateKeywordFilterSql {
+interface GenerateKeywordFilter {
   username: string;
   mapKeyword: string;
 }
 
-function generateKeywordFilterSql({ username, mapKeyword }: GenerateKeywordFilterSql) {
-  const usernameCondition = username !== "" ? sql`("Player"."name" &@~ ${username})` : sql.raw("1=1");
-
-  const mapKeywordCondition =
-    mapKeyword !== ""
-      ? sql`(
-      map."title" &@~ ${mapKeyword} OR
-      map."artist_name" &@~ ${mapKeyword} OR
-      map."music_source" &@~ ${mapKeyword} OR
-      map."tags" &@~ ${mapKeyword} OR
-      creator."name" &@~ ${mapKeyword}
-      )`
-      : sql.raw("1=1");
-
-  return [usernameCondition, mapKeywordCondition];
+function generateKeywordFilter({ username, mapKeyword }: GenerateKeywordFilter) {
+  const conds: SQL<unknown>[] = [];
+  if (username && username.trim() !== "") {
+    const pattern = `%${username}%`;
+    conds.push(ilike(Users.name, pattern));
+  }
+  if (mapKeyword && mapKeyword.trim() !== "") {
+    const pattern = `%${mapKeyword}%`;
+    const keywordOr: SQL<unknown> = or(
+      ilike(Maps.title, pattern),
+      ilike(Maps.artistName, pattern),
+      ilike(Maps.musicSource, pattern),
+      ilike(Users.name, pattern),
+    ) as unknown as SQL<unknown>;
+    conds.push(keywordOr);
+  }
+  return conds;
 }

@@ -1,6 +1,5 @@
 "use client";
 import { useBreakPoint } from "@/lib/useBreakPoint";
-import { RouterOutPuts } from "@/server/api/trpc";
 import { BuildMap } from "@/utils/build-map/buildMap";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
@@ -20,11 +19,11 @@ import MainGameCard from "./typing-area/MainGameCard";
 import YouTubePlayer from "./youtube-player";
 
 interface ContentProps {
-  video_id: RouterOutPuts["map"]["getMapInfo"]["video_id"];
+  videoId: string;
   mapId: string;
 }
 
-function Content({ video_id, mapId }: ContentProps) {
+function Content({ videoId, mapId }: ContentProps) {
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
 
   const setLineSelectIndex = useSetLineSelectIndex();
@@ -72,7 +71,7 @@ function Content({ video_id, mapId }: ContentProps) {
       <div style={style} className="h-fit">
         <section className="flex w-full gap-6 md:flex-row">
           {ytLayoutMode === "row" && (
-            <YouTubePlayer isMapLoading={isLoading} videoId={video_id} className="w-full md:w-[460px]" />
+            <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-full md:w-[460px]" />
           )}
 
           <TabsArea className="flex flex-[8] flex-col" />
@@ -82,7 +81,7 @@ function Content({ video_id, mapId }: ContentProps) {
 
         {ytLayoutMode === "column" && (
           <section className="mt-5">
-            <YouTubePlayer isMapLoading={isLoading} videoId={video_id} />
+            <YouTubePlayer isMapLoading={isLoading} videoId={videoId} />
           </section>
         )}
       </div>

@@ -8,10 +8,10 @@ const useHasMapUploadPermission = () => {
   const { id: mapId } = useParams<{ id: string }>();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const mapInfo = queryClient.getQueryData(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }).queryKey);
 
-  const mapCreatorId = queryClient.getQueryData(
-    trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }).queryKey,
-  )?.creator_id;
+  const mapCreatorId = mapInfo?.creator.id;
+
   const isEditPage = usePathname().includes("/edit");
 
   const searchParams = useSearchParams();

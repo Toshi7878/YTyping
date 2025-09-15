@@ -1,10 +1,11 @@
 import { supabase } from "@/lib/supabaseClient";
-import { db as drizzleDb, schema } from "@/server/drizzle/client";
+import { db as drizzleDb } from "@/server/drizzle/client";
+import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { MapLine } from "@/types/map";
 import { mapDataSchema } from "@/validator/mapDataSchema";
 import { mapInfoApiSchema } from "@/validator/schema";
 import { TRPCError } from "@trpc/server";
-import { eq, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
@@ -23,42 +24,38 @@ export const mapRouter = {
     const { db, user } = ctx;
     const { mapId } = input;
 
-    const rows = (
-      await db.execute(sql`
-      SELECT
-        m."title",
-        m."artist_name",
-        m."music_source",
-        m."creator_comment",
-        m."creator_id",
-        m."tags",
-        m."video_id",
-        m."preview_time",
-        m."created_at",
-        m."updated_at",
-        m."thumbnail_quality",
-        EXISTS (
-          SELECT 1 FROM map_likes ml WHERE ml."map_id" = m."id" AND ml."user_id" = ${user.id} AND ml."is_liked" = true
-        ) as is_liked,
-        u."name" as creator_name
-      FROM maps m
-      JOIN users u ON u."id" = m."creator_id"
-      WHERE m."id" = ${mapId}
-      LIMIT 1
-    `)
-    ).rows as any[];
-
-    const mapInfo = rows[0];
+    const mapInfo = await db
+      .select({
+        title: Maps.title,
+        videoId: Maps.videoId,
+        artistName: Maps.artistName,
+        musicSource: Maps.musicSource,
+        previewTime: Maps.previewTime,
+        thumbnailQuality: Maps.thumbnailQuality,
+        hasLiked: MapLikes.isLiked,
+        tags: Maps.tags,
+        creator: {
+          id: Users.id,
+          name: Users.name,
+          comment: Maps.creatorComment,
+        },
+        createdAt: Maps.createdAt,
+        updatedAt: Maps.updatedAt,
+      })
+      .from(Maps)
+      .innerJoin(Users, eq(Users.id, Maps.creatorId))
+      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
+      .where(eq(Maps.id, mapId))
+      .limit(1)
+      .then((rows) => rows[0]);
 
     if (!mapInfo) {
       throw new TRPCError({
-        code: "BAD_REQUEST",
+        code: "NOT_FOUND",
       });
     }
 
-    const { is_liked, creator_name, ...restMapInfo } = mapInfo;
-
-    return { ...restMapInfo, isLiked: !!is_liked, creatorName: creator_name };
+    return mapInfo;
   }),
 
   getMap: publicProcedure.input(z.object({ mapId: z.string() })).query(async ({ input }) => {
@@ -103,9 +100,9 @@ export const mapRouter = {
         mapId === "new"
           ? true
           : await ctx.db
-              .select({ creator_id: schema.Maps.creatorId })
-              .from(schema.Maps)
-              .where(eq(schema.Maps.id, Number(mapId)))
+              .select({ creator_id: Maps.creatorId })
+              .from(Maps)
+              .where(eq(Maps.id, Number(mapId)))
               .limit(1)
               .then((rows) => rows[0]?.creator_id === userId || userRole === "ADMIN");
 
@@ -164,25 +161,25 @@ const upsertMap = async ({
   return await drizzleDb.transaction(async (tx) => {
     try {
       const mapValues = {
-        videoId: mapInfo.video_id,
+        videoId: mapInfo.videoId,
         title: mapInfo.title,
-        artistName: mapInfo.artist_name,
-        musicSource: mapInfo.music_source,
-        creatorComment: mapInfo.creator_comment,
+        artistName: mapInfo.artistName,
+        musicSource: mapInfo.musicSource,
+        creatorComment: mapInfo.creatorComment,
         tags: mapInfo.tags,
         creatorId: userId,
-        previewTime: Number(mapInfo.preview_time),
-        thumbnailQuality: mapInfo.thumbnail_quality,
+        previewTime: Number(mapInfo.previewTime),
+        thumbnailQuality: mapInfo.thumbnailQuality,
       } as const;
 
       const inserted = await tx
-        .insert(schema.Maps)
+        .insert(Maps)
         .values(mapValues)
         .onConflictDoUpdate({
-          target: [schema.Maps.id],
+          target: [Maps.id],
           set: { ...mapValues, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) },
         })
-        .returning({ id: schema.Maps.id });
+        .returning({ id: Maps.id });
 
       const newMapId = mapId === "new" ? inserted[0]!.id : Number(mapId);
 
@@ -201,9 +198,9 @@ const upsertMap = async ({
       } as const;
 
       await tx
-        .insert(schema.MapDifficulties)
+        .insert(MapDifficulties)
         .values(diffValues)
-        .onConflictDoUpdate({ target: [schema.MapDifficulties.mapId], set: { ...diffValues } });
+        .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: { ...diffValues } });
 
       await supabase.storage
         .from("map-data")

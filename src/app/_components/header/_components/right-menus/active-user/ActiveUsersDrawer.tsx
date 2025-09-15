@@ -19,7 +19,7 @@ const ActiveUsersDrawer = () => {
   useActiveUsers();
   const [open, setOpen] = useState(false);
   const onlineUsers = useOnlineUsersState();
-  const activeUserMapQuery = useQuery({
+  const { data: activeUsersWithMap } = useQuery({
     ...useActiveUserQueries().userPlayingMaps(onlineUsers),
     enabled: open,
   });
@@ -45,8 +45,8 @@ const ActiveUsersDrawer = () => {
         </SheetHeader>
         <Table className="table-fixed">
           <TableBody>
-            {activeUserMapQuery.data &&
-              activeUserMapQuery.data.map((user) => {
+            {activeUsersWithMap &&
+              activeUsersWithMap.map((user) => {
                 const stateMsg =
                   user.state === "askMe"
                     ? "Ask Me"
@@ -70,9 +70,9 @@ const ActiveUsersDrawer = () => {
                         <CardWithContent variant="map">
                           <MapLeftThumbnail
                             alt={user.map.title}
-                            src={`https://i.ytimg.com/vi/${user.map.video_id}/mqdefault.jpg`}
-                            mapVideoId={user.map.video_id}
-                            mapPreviewTime={user.map.preview_time}
+                            src={`https://i.ytimg.com/vi/${user.map.videoId}/mqdefault.jpg`}
+                            mapVideoId={user.map.videoId}
+                            mapPreviewTime={user.map.previewTime}
                             size="activeUser"
                           />
 

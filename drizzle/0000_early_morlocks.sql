@@ -1,27 +1,14 @@
-CREATE TYPE "public"."action" AS ENUM('LIKE', 'OVER_TAKE');--> statement-breakpoint
 CREATE TYPE "public"."category" AS ENUM('CSS', 'SPEED_SHIFT');--> statement-breakpoint
+CREATE TYPE "public"."thumbnail_quality" AS ENUM('mqdefault', 'maxresdefault');--> statement-breakpoint
+CREATE TYPE "public"."morph_convert_kana_dic_type" AS ENUM('DICTIONARY', 'REGEX');--> statement-breakpoint
+CREATE TYPE "public"."action" AS ENUM('LIKE', 'OVER_TAKE');--> statement-breakpoint
 CREATE TYPE "public"."custom_user_active_state" AS ENUM('ONLINE', 'ASK_ME', 'HIDE_ONLINE');--> statement-breakpoint
 CREATE TYPE "public"."line_completed_display" AS ENUM('HIGH_LIGHT', 'NEXT_WORD');--> statement-breakpoint
 CREATE TYPE "public"."main_word_display" AS ENUM('KANA_ROMA_UPPERCASE', 'KANA_ROMA_LOWERCASE', 'ROMA_KANA_UPPERCASE', 'ROMA_KANA_LOWERCASE', 'KANA_ONLY', 'ROMA_UPPERCASE_ONLY', 'ROMA_LOWERCASE_ONLY');--> statement-breakpoint
-CREATE TYPE "public"."morph_convert_kana_dic_type" AS ENUM('DICTIONARY', 'REGEX');--> statement-breakpoint
 CREATE TYPE "public"."next_display" AS ENUM('LYRICS', 'WORD');--> statement-breakpoint
 CREATE TYPE "public"."role" AS ENUM('USER', 'ADMIN');--> statement-breakpoint
-CREATE TYPE "public"."thumbnail_quality" AS ENUM('mqdefault', 'maxresdefault');--> statement-breakpoint
 CREATE TYPE "public"."time_offset_key" AS ENUM('CTRL_LEFT_RIGHT', 'CTRL_ALT_LEFT_RIGHT', 'NONE');--> statement-breakpoint
 CREATE TYPE "public"."toggle_input_mode_key" AS ENUM('ALT_KANA', 'TAB', 'NONE');--> statement-breakpoint
-CREATE TABLE "fix_word_edit_logs" (
-	"lyrics" varchar PRIMARY KEY NOT NULL,
-	"word" varchar NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "ime_results" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"user_id" integer NOT NULL,
-	"map_id" integer NOT NULL,
-	"type_count" integer DEFAULT 0 NOT NULL,
-	"score" integer DEFAULT 0 NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE "map_difficulties" (
 	"map_id" integer PRIMARY KEY NOT NULL,
 	"roma_kpm_median" integer DEFAULT 0 NOT NULL,
@@ -63,6 +50,11 @@ CREATE TABLE "maps" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "fix_word_edit_logs" (
+	"lyrics" varchar PRIMARY KEY NOT NULL,
+	"word" varchar NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "morph_convert_kana_dic" (
 	"surface" varchar PRIMARY KEY NOT NULL,
 	"reading" varchar NOT NULL,
@@ -78,7 +70,15 @@ CREATE TABLE "notifications" (
 	"old_rank" integer,
 	"checked" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "notifications_visitor_id_visited_id_map_id_action_unique" UNIQUE("visitor_id","visited_id","map_id","action")
+	CONSTRAINT "uq_notifications_visitor_visited_map_action" UNIQUE("visitor_id","visited_id","map_id","action")
+);
+--> statement-breakpoint
+CREATE TABLE "ime_results" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"user_id" integer NOT NULL,
+	"map_id" integer NOT NULL,
+	"type_count" integer DEFAULT 0 NOT NULL,
+	"score" integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "result_claps" (
@@ -139,7 +139,7 @@ CREATE TABLE "user_ime_typing_options" (
 	"enable_eng_space" boolean DEFAULT false NOT NULL,
 	"enable_eng_upper_case" boolean DEFAULT false NOT NULL,
 	"enable_next_lyrics" boolean DEFAULT true NOT NULL,
-	"add_symbol_list" text DEFAULT '' NOT NULL,
+	"add_symbol_list" varchar DEFAULT '' NOT NULL,
 	"enable_large_video_display" boolean DEFAULT false NOT NULL
 );
 --> statement-breakpoint
@@ -153,14 +153,14 @@ CREATE TABLE "user_options" (
 --> statement-breakpoint
 CREATE TABLE "user_profiles" (
 	"user_id" integer PRIMARY KEY NOT NULL,
-	"finger_chart_url" text DEFAULT '' NOT NULL,
-	"my_keyboard" text DEFAULT '' NOT NULL
+	"finger_chart_url" varchar DEFAULT '' NOT NULL,
+	"my_keyboard" varchar DEFAULT '' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user_stats" (
 	"user_id" integer PRIMARY KEY NOT NULL,
 	"total_ranking_count" integer DEFAULT 0 NOT NULL,
-	"total_typing_time" double precision DEFAULT 0 NOT NULL,
+	"total_typing_time" real DEFAULT 0 NOT NULL,
 	"roma_type_total_count" integer DEFAULT 0 NOT NULL,
 	"kana_type_total_count" integer DEFAULT 0 NOT NULL,
 	"flick_type_total_count" integer DEFAULT 0 NOT NULL,
@@ -176,15 +176,15 @@ CREATE TABLE "user_stats" (
 --> statement-breakpoint
 CREATE TABLE "user_typing_options" (
 	"user_id" integer PRIMARY KEY NOT NULL,
-	"time_offset" double precision DEFAULT 0 NOT NULL,
+	"time_offset" real DEFAULT 0 NOT NULL,
 	"kana_word_scroll" integer DEFAULT 10 NOT NULL,
 	"roma_word_scroll" integer DEFAULT 16 NOT NULL,
 	"kana_word_font_size" integer DEFAULT 100 NOT NULL,
 	"roma_word_font_size" integer DEFAULT 100 NOT NULL,
-	"kana_word_top_position" double precision DEFAULT 0 NOT NULL,
-	"roma_word_top_position" double precision DEFAULT 0 NOT NULL,
-	"kana_word_spacing" double precision DEFAULT 0.08 NOT NULL,
-	"roma_word_spacing" double precision DEFAULT 0.08 NOT NULL,
+	"kana_word_top_position" real DEFAULT 0 NOT NULL,
+	"roma_word_top_position" real DEFAULT 0 NOT NULL,
+	"kana_word_spacing" real DEFAULT 0.08 NOT NULL,
+	"roma_word_spacing" real DEFAULT 0.08 NOT NULL,
 	"type_sound" boolean DEFAULT false NOT NULL,
 	"miss_sound" boolean DEFAULT false NOT NULL,
 	"line_clear_sound" boolean DEFAULT false NOT NULL,
@@ -206,8 +206,6 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_email_hash_unique" UNIQUE("email_hash")
 );
 --> statement-breakpoint
-ALTER TABLE "ime_results" ADD CONSTRAINT "ime_results_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "ime_results" ADD CONSTRAINT "ime_results_map_id_maps_id_fk" FOREIGN KEY ("map_id") REFERENCES "public"."maps"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "map_difficulties" ADD CONSTRAINT "map_difficulties_map_id_maps_id_fk" FOREIGN KEY ("map_id") REFERENCES "public"."maps"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "map_likes" ADD CONSTRAINT "map_likes_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "map_likes" ADD CONSTRAINT "map_likes_map_id_maps_id_fk" FOREIGN KEY ("map_id") REFERENCES "public"."maps"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -216,6 +214,8 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_visitor_id_users_id_fk
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_map_id_maps_id_fk" FOREIGN KEY ("map_id") REFERENCES "public"."maps"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_visitor_result_fk" FOREIGN KEY ("visitor_id","map_id") REFERENCES "public"."results"("user_id","map_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_visited_result_fk" FOREIGN KEY ("visited_id","map_id") REFERENCES "public"."results"("user_id","map_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "ime_results" ADD CONSTRAINT "ime_results_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "ime_results" ADD CONSTRAINT "ime_results_map_id_maps_id_fk" FOREIGN KEY ("map_id") REFERENCES "public"."maps"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "result_claps" ADD CONSTRAINT "result_claps_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "result_claps" ADD CONSTRAINT "result_claps_result_id_results_id_fk" FOREIGN KEY ("result_id") REFERENCES "public"."results"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "result_statuses" ADD CONSTRAINT "result_statuses_result_id_results_id_fk" FOREIGN KEY ("result_id") REFERENCES "public"."results"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

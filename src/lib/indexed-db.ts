@@ -14,7 +14,7 @@ interface MapInfoTable {
   musicSource: string;
   creatorComment: string;
   tags: string[];
-  previewTime: string;
+  previewTime: number;
 }
 
 const db = new Dexie("editMapBackup") as Dexie & {

@@ -1,5 +1,6 @@
+import { ResultClaps, Results, ResultStatuses, Users } from "@/server/drizzle/schema";
+import { and, desc, eq } from "drizzle-orm";
 import z from "zod";
-import { sql } from "drizzle-orm";
 import { publicProcedure } from "../trpc";
 
 export const sendResultSchema = z
@@ -60,45 +61,41 @@ export const rankingRouter = {
     const { db, user } = ctx;
     const { mapId } = input;
 
-    const rows = (await db.execute(sql`
-      SELECT
-        results."id",
-        results."user_id",
-        results."clap_count",
-        results."updated_at",
-        json_build_object(
-          'score', rs."score",
-          'default_speed', rs."default_speed",
-          'kpm', rs."kpm",
-          'rkpm', rs."rkpm",
-          'roma_kpm', rs."roma_kpm",
-          'roma_rkpm', rs."roma_rkpm",
-          'roma_type', rs."roma_type",
-          'kana_type', rs."kana_type",
-          'flick_type', rs."flick_type",
-          'english_type', rs."english_type",
-          'symbol_type', rs."symbol_type",
-          'space_type', rs."space_type",
-          'num_type', rs."num_type",
-          'miss', rs."miss",
-          'lost', rs."lost",
-          'max_combo', rs."max_combo",
-          'clear_rate', rs."clear_rate"
-        ) as "status",
-        json_build_object('name', u."name") as "user",
-        (
-          SELECT rc."is_claped"
-          FROM result_claps rc
-          WHERE rc."result_id" = results."id" AND rc."user_id" = ${user.id}
-          LIMIT 1
-        ) as "claps"
-      FROM results
-      JOIN result_statuses rs ON rs."result_id" = results."id"
-      JOIN users u ON u."id" = results."user_id"
-      WHERE results."map_id" = ${mapId}
-      ORDER BY rs."score" DESC
-    `)).rows as any[];
-
-    return rows;
+    return db
+      .select({
+        id: Results.id,
+        updatedAt: Results.updatedAt,
+        player: { id: Results.userId, name: Users.name },
+        clap: { count: Results.clapCount, hasClaped: ResultClaps.isClaped },
+        score: ResultStatuses.score,
+        otherStatus: {
+          playSpeed: ResultStatuses.defaultSpeed,
+          miss: ResultStatuses.miss,
+          lost: ResultStatuses.lost,
+          maxCombo: ResultStatuses.maxCombo,
+          clearRate: ResultStatuses.clearRate,
+        },
+        typeSpeed: {
+          kpm: ResultStatuses.kpm,
+          rkpm: ResultStatuses.rkpm,
+          romaKpm: ResultStatuses.romaKpm,
+          romaRkpm: ResultStatuses.romaRkpm,
+        },
+        typeCounts: {
+          romaType: ResultStatuses.romaType,
+          kanaType: ResultStatuses.kanaType,
+          flickType: ResultStatuses.flickType,
+          englishType: ResultStatuses.englishType,
+          symbolType: ResultStatuses.symbolType,
+          spaceType: ResultStatuses.spaceType,
+          numType: ResultStatuses.numType,
+        },
+      })
+      .from(Results)
+      .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+      .innerJoin(Users, eq(Users.id, Results.userId))
+      .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, user.id ?? 0)))
+      .where(eq(Results.mapId, mapId))
+      .orderBy(desc(ResultStatuses.score));
   }),
 };

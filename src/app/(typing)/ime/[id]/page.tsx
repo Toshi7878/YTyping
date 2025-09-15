@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       "article:modified_time": mapInfo.updated_at.toISOString(),
       "article:youtube_id": mapInfo.video_id,
       "article:title": mapInfo.title,
-      "article:artist": mapInfo.artist_name,
+      "article:artist": mapInfo.artistName,
       "article:tag": mapInfo.tags,
     },
   };

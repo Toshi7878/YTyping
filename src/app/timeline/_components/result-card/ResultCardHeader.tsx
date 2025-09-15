@@ -1,12 +1,12 @@
-import { TimelineResult } from "@/app/timeline/_lib/type";
 import DateDistanceText from "@/components/shared/text/DateDistanceText";
 import { CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { RouterOutPuts } from "@/server/api/trpc";
 import Link from "next/link";
 import ResultClapButton from "./child/ResultClapButton";
 
 interface ResultCardHeaderProps {
-  result: TimelineResult;
+  result: RouterOutPuts["result"]["usersResultList"]["items"][number];
   className?: string;
 }
 
@@ -21,13 +21,13 @@ const ResultCardHeader = ({ result, className }: ResultCardHeaderProps) => {
           {result.player.name}
         </Link>
         {" - "}
-        <DateDistanceText date={result.updated_at} />
+        <DateDistanceText date={result.updatedAt} />
       </div>
       <ResultClapButton
         mapId={result.map.id}
         resultId={result.id}
-        clapCount={result.clap_count}
-        hasClap={result.hasClap}
+        clapCount={result.clap.count}
+        hasClap={result.clap.hasClaped ?? false}
       />
     </CardHeader>
   );

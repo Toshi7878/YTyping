@@ -22,8 +22,10 @@ function setTimelineClapOptimistic(
           result.id === resultId
             ? {
                 ...result,
-                hasClap: optimisticState,
-                clap_count: optimisticState ? result.clap_count + 1 : Math.max(0, result.clap_count - 1),
+                clap: {
+                  count: optimisticState ? result.clap.count + 1 : Math.max(0, result.clap.count - 1),
+                  hasClaped: optimisticState,
+                },
               }
             : result,
         ),
@@ -36,7 +38,7 @@ function setTimelineClapServer(
   queryClient: ReturnType<typeof useQueryClient>,
   filter: TimelineFilter,
   resultId: number,
-  isClaped: boolean,
+  hasClaped: boolean,
   clapCount: number,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
@@ -46,7 +48,7 @@ function setTimelineClapServer(
       pages: old.pages.map((page) => ({
         ...page,
         items: page.items.map((result) =>
-          result.id === resultId ? { ...result, hasClap: isClaped, clap_count: clapCount } : result,
+          result.id === resultId ? { ...result, clap: { hasClaped, count: clapCount } } : result,
         ),
       })),
     };
@@ -65,8 +67,11 @@ function setRankingClapOptimistic(
       result.id === resultId
         ? {
             ...result,
-            clap_count: optimisticState ? result.clap_count + 1 : Math.max(0, result.clap_count - 1),
-            claps: [{ is_claped: optimisticState }],
+            clap: {
+              ...result.clap,
+              hasClaped: optimisticState,
+              count: optimisticState ? result.clap.count + 1 : Math.max(0, result.clap.count - 1),
+            },
           }
         : result,
     );
@@ -83,7 +88,16 @@ function setRankingClapServer(
   queryClient.setQueriesData<RouterOutPuts["ranking"]["getMapRanking"]>(filter, (old) => {
     if (!old) return old;
     return old.map((result) =>
-      result.id === resultId ? { ...result, clap_count: clapCount, claps: [{ is_claped: isClaped }] } : result,
+      result.id === resultId
+        ? {
+            ...result,
+            clap: {
+              ...result.clap,
+              hasClaped: isClaped,
+              count: clapCount,
+            },
+          }
+        : result,
     );
   });
 }
