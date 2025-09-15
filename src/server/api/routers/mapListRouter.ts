@@ -1,10 +1,8 @@
-import { PAGE_SIZE } from "@/app/(home)/_lib/const";
 import { $Enums, Prisma } from "@prisma/client";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 const mapListSchema = z.object({
-  limit: z.number().min(1).max(100).default(PAGE_SIZE),
   cursor: z.string().nullable().optional(),
   filter: z.string().optional(),
   minRate: z.number().optional(),
@@ -50,9 +48,10 @@ export const mapListRouter = {
   getList: publicProcedure.input(mapListSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const userId = user?.id ? Number(user.id) : null;
-    const limit = input.limit;
+    const PAGE_SIZE = 30;
 
-    const cursorCondition = input.cursor ? Prisma.sql`AND maps."id" < ${Number(input.cursor)}` : Prisma.empty;
+    const page = input.cursor ? Number(input.cursor) : 0;
+    const offset = isNaN(page) ? 0 : page * PAGE_SIZE;
 
     const filterSql = getFilterSql({ filter: input.filter, userId });
     const difficultyFilterSql = getDifficultyFilterSql({
@@ -63,7 +62,7 @@ export const mapListRouter = {
     const keywordFilterSql = generateKeywordFilterSql({ mapKeyword: input.keyword });
 
     const whereConditions = [filterSql, difficultyFilterSql, keywordFilterSql, playedSql];
-    const where = Prisma.sql`${Prisma.join(whereConditions, ` AND `)} ${cursorCondition}`;
+    const where = Prisma.sql`${Prisma.join(whereConditions, ` AND `)}`;
     const orderBy = getSortSql({ sort: input.sort });
 
     try {
@@ -107,15 +106,14 @@ export const mapListRouter = {
         LEFT JOIN map_likes ON maps."id" = map_likes."map_id" AND map_likes."user_id" = ${userId}
         WHERE ${where}
         ORDER BY ${orderBy}
-        LIMIT ${limit + 1}
+        LIMIT ${PAGE_SIZE + 1}
+        OFFSET ${offset}
       `;
 
       let nextCursor: string | undefined = undefined;
-      if (items.length > limit) {
-        const nextItem = items.pop();
-        if (nextItem) {
-          nextCursor = nextItem.id.toString();
-        }
+      if (items.length > PAGE_SIZE) {
+        items.pop();
+        nextCursor = String(isNaN(page) ? 1 : page + 1);
       }
 
       return {
@@ -269,15 +267,15 @@ function getSortSql({ sort }: GetSortSql) {
       }
     case sort.includes("ranking_count"):
       if (isAsc) {
-        return Prisma.raw(`maps."ranking_count" ASC`);
+        return Prisma.raw(`maps."ranking_count" ASC, maps."id" ASC`);
       } else {
-        return Prisma.raw(`maps."ranking_count" DESC`);
+        return Prisma.raw(`maps."ranking_count" DESC, maps."id" DESC`);
       }
     case sort.includes("like_count"):
       if (isAsc) {
-        return Prisma.raw(`maps."like_count" ASC`);
+        return Prisma.raw(`maps."like_count" ASC, maps."id" ASC`);
       } else {
-        return Prisma.raw(`maps."like_count" DESC`);
+        return Prisma.raw(`maps."like_count" DESC, maps."id" DESC`);
       }
     case sort.includes("duration"):
       if (isAsc) {

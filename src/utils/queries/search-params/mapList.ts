@@ -1,11 +1,11 @@
 export const PARAM_NAME = {
-  keyword: "keyword" as const,
-  minRate: "minRate" as const,
-  maxRate: "maxRate" as const,
-  sort: "sort" as const,
-  filter: "filter" as const,
-  played: "played" as const,
-};
+  keyword: "keyword",
+  minRate: "minRate",
+  maxRate: "maxRate",
+  sort: "sort",
+  filter: "filter",
+  played: "played",
+} as const;
 
 export function parseMapListSearchParams(searchParams: URLSearchParams) {
   const params: Partial<typeof PARAM_NAME> = {};
