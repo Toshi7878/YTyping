@@ -12,5 +12,3 @@ export const PARAM_NAME = {
   minPlaySpeed: "minPlaySpeed",
   maxPlaySpeed: "maxPlaySpeed",
 } as const;
-
-export const PAGE_SIZE = 30;

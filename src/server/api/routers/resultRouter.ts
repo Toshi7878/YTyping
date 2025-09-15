@@ -1,5 +1,5 @@
 import { LineResultData } from "@/app/(typing)/type/_lib/type";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PAGE_SIZE } from "@/app/timeline/_lib/consts";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
 import { FilterMode, TimelineResult } from "@/app/timeline/_lib/type";
 import { supabase } from "@/lib/supabaseClient";
 import { Prisma, PrismaClient } from "@prisma/client";
@@ -8,7 +8,6 @@ import { protectedProcedure, publicProcedure } from "../trpc";
 import { sendResultSchema } from "./rankingRouter";
 
 const usersResultListSchema = z.object({
-  limit: z.number().min(1).max(100).default(PAGE_SIZE),
   cursor: z.string().nullable().optional(),
   mode: z.string().default("all"),
   minKpm: z.number().default(DEFAULT_KPM_SEARCH_RANGE.min),
@@ -24,13 +23,11 @@ const usersResultListSchema = z.object({
 export const resultRouter = {
   usersResultList: publicProcedure.input(usersResultListSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    const userId = user?.id ? Number(user.id) : null;
-    const limit = input.limit;
+    const PAGE_SIZE = 25;
 
-    // カーソル条件を作成
-    const cursorCondition = input.cursor
-      ? Prisma.sql`AND results."updated_at" < ${new Date(input.cursor)}`
-      : Prisma.empty;
+    const userId = user?.id ? Number(user.id) : null;
+    const page = input.cursor ? Number(input.cursor) : 0;
+    const offset = isNaN(page) ? 0 : page * PAGE_SIZE;
 
     const modeFilter = generateModeFilterSql({ mode: input.mode as FilterMode });
     const kpmFilter = generateKpmFilterSql({
@@ -51,7 +48,7 @@ export const resultRouter = {
     });
 
     const whereConditions = [modeFilter, kpmFilter, clearRateFilter, playSpeedFilter, ...keywordFilter];
-    const where = Prisma.sql`${Prisma.join(whereConditions, ` AND `)} ${cursorCondition}`;
+    const where = Prisma.sql`${Prisma.join(whereConditions, ` AND `)}`;
 
     try {
       // limit + 1を取得して次のページの存在を確認
@@ -127,15 +124,14 @@ export const resultRouter = {
           JOIN users AS "Player" ON results."user_id" = "Player"."id"
           WHERE ${where}
           ORDER BY results."updated_at" DESC
-          LIMIT ${limit + 1}
+          LIMIT ${PAGE_SIZE + 1}
+          OFFSET ${offset}
         `;
 
       let nextCursor: string | undefined = undefined;
-      if (items.length > limit) {
-        const nextItem = items.pop();
-        if (nextItem) {
-          nextCursor = nextItem.updated_at.toISOString();
-        }
+      if (items.length > PAGE_SIZE) {
+        items.pop();
+        nextCursor = String(isNaN(page) ? 1 : page + 1);
       }
 
       return {
