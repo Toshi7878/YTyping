@@ -12,9 +12,9 @@ export async function POST(request: Request) {
     const { userId, ...input }: Input & UserId = JSON.parse(bodyText);
 
     const currentStats = await db
-      .select({ max_combo: schema.userStats.maxCombo })
-      .from(schema.userStats)
-      .where(eq(schema.userStats.userId, userId))
+      .select({ max_combo: schema.UserStats.maxCombo })
+      .from(schema.UserStats)
+      .where(eq(schema.UserStats.userId, userId))
       .limit(1);
 
     const currentMax = currentStats[0]?.max_combo ?? 0;
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const { romaType, kanaType, flickType, englishType, numType, symbolType, spaceType } = input;
 
     await db
-      .insert(schema.userStats)
+      .insert(schema.UserStats)
       .values({
         userId,
         romaTypeTotalCount: romaType,
@@ -37,16 +37,16 @@ export async function POST(request: Request) {
         maxCombo: input.maxCombo,
       })
       .onConflictDoUpdate({
-        target: [schema.userStats.userId],
+        target: [schema.UserStats.userId],
         set: {
-          romaTypeTotalCount: sql`${schema.userStats.romaTypeTotalCount} + ${romaType}`,
-          kanaTypeTotalCount: sql`${schema.userStats.kanaTypeTotalCount} + ${kanaType}`,
-          flickTypeTotalCount: sql`${schema.userStats.flickTypeTotalCount} + ${flickType}`,
-          englishTypeTotalCount: sql`${schema.userStats.englishTypeTotalCount} + ${englishType}`,
-          numTypeTotalCount: sql`${schema.userStats.numTypeTotalCount} + ${numType}`,
-          symbolTypeTotalCount: sql`${schema.userStats.symbolTypeTotalCount} + ${symbolType}`,
-          spaceTypeTotalCount: sql`${schema.userStats.spaceTypeTotalCount} + ${spaceType}`,
-          totalTypingTime: sql`${schema.userStats.totalTypingTime} + ${input.totalTypeTime}`,
+          romaTypeTotalCount: sql`${schema.UserStats.romaTypeTotalCount} + ${romaType}`,
+          kanaTypeTotalCount: sql`${schema.UserStats.kanaTypeTotalCount} + ${kanaType}`,
+          flickTypeTotalCount: sql`${schema.UserStats.flickTypeTotalCount} + ${flickType}`,
+          englishTypeTotalCount: sql`${schema.UserStats.englishTypeTotalCount} + ${englishType}`,
+          numTypeTotalCount: sql`${schema.UserStats.numTypeTotalCount} + ${numType}`,
+          symbolTypeTotalCount: sql`${schema.UserStats.symbolTypeTotalCount} + ${symbolType}`,
+          spaceTypeTotalCount: sql`${schema.UserStats.spaceTypeTotalCount} + ${spaceType}`,
+          totalTypingTime: sql`${schema.UserStats.totalTypingTime} + ${input.totalTypeTime}`,
           ...(isUpdateMaxCombo ? { maxCombo: input.maxCombo } : {}),
         },
       });
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
 
     await db
-      .insert(schema.userDailyTypeCounts)
+      .insert(schema.UserDailyTypeCounts)
       .values({
         userId,
         createdAt: dbDate,
@@ -75,13 +75,13 @@ export async function POST(request: Request) {
         otherTypeCount: spaceType + numType + symbolType,
       })
       .onConflictDoUpdate({
-        target: [schema.userDailyTypeCounts.userId, schema.userDailyTypeCounts.createdAt],
+        target: [schema.UserDailyTypeCounts.userId, schema.UserDailyTypeCounts.createdAt],
         set: {
-          romaTypeCount: sql`${schema.userDailyTypeCounts.romaTypeCount} + ${romaType}`,
-          kanaTypeCount: sql`${schema.userDailyTypeCounts.kanaTypeCount} + ${kanaType}`,
-          flickTypeCount: sql`${schema.userDailyTypeCounts.flickTypeCount} + ${flickType}`,
-          englishTypeCount: sql`${schema.userDailyTypeCounts.englishTypeCount} + ${englishType}`,
-          otherTypeCount: sql`${schema.userDailyTypeCounts.otherTypeCount} + ${spaceType + numType + symbolType}`,
+          romaTypeCount: sql`${schema.UserDailyTypeCounts.romaTypeCount} + ${romaType}`,
+          kanaTypeCount: sql`${schema.UserDailyTypeCounts.kanaTypeCount} + ${kanaType}`,
+          flickTypeCount: sql`${schema.UserDailyTypeCounts.flickTypeCount} + ${flickType}`,
+          englishTypeCount: sql`${schema.UserDailyTypeCounts.englishTypeCount} + ${englishType}`,
+          otherTypeCount: sql`${schema.UserDailyTypeCounts.otherTypeCount} + ${spaceType + numType + symbolType}`,
         },
       });
 

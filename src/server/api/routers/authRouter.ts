@@ -1,20 +1,20 @@
+import { schema } from "@/server/drizzle/client";
+import { eq } from "drizzle-orm";
 import md5 from "md5";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
-import { schema } from "@/server/drizzle/client";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const authRouter = router({
   registerIfNeeded: publicProcedure.input(z.object({ email: z.string().email() })).mutation(async ({ input, ctx }) => {
     const email_hash = md5(input.email).toString();
     const existed = await ctx.db
-      .select({ id: schema.users.id })
-      .from(schema.users)
-      .where(eq(schema.users.emailHash, email_hash))
+      .select({ id: schema.Users.id })
+      .from(schema.Users)
+      .where(eq(schema.Users.emailHash, email_hash))
       .limit(1);
     if (existed.length > 0) return true;
 
-    await ctx.db.insert(schema.users).values({
+    await ctx.db.insert(schema.Users).values({
       emailHash: email_hash,
       name: null,
       role: "USER",
@@ -27,9 +27,14 @@ export const authRouter = router({
     const userId = Number(ctx.user?.id);
     if (!userId) return null;
     const users = await ctx.db
-      .select({ id: schema.users.id, name: schema.users.name, role: schema.users.role, emailHash: schema.users.emailHash })
-      .from(schema.users)
-      .where(eq(schema.users.id, userId))
+      .select({
+        id: schema.Users.id,
+        name: schema.Users.name,
+        role: schema.Users.role,
+        emailHash: schema.Users.emailHash,
+      })
+      .from(schema.Users)
+      .where(eq(schema.Users.id, userId))
       .limit(1);
     const user = users[0];
     if (!user) return null;

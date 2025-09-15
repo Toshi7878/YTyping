@@ -1,6 +1,6 @@
-import z from "zod";
-import { eq } from "drizzle-orm";
 import { schema } from "@/server/drizzle/client";
+import { eq } from "drizzle-orm";
+import z from "zod";
 import { publicProcedure } from "../trpc";
 
 export const userRouter = {
@@ -12,9 +12,9 @@ export const userRouter = {
     )
     .query(async ({ input, ctx }) => {
       const rows = await ctx.db
-        .select({ name: schema.users.name })
-        .from(schema.users)
-        .where(eq(schema.users.id, input.userId))
+        .select({ name: schema.Users.name })
+        .from(schema.Users)
+        .where(eq(schema.Users.id, input.userId))
         .limit(1);
       return rows[0] ?? null;
     }),
@@ -29,13 +29,13 @@ export const userRouter = {
       const { db } = ctx;
       const rows = await db
         .select({
-          name: schema.users.name,
-          finger_chart_url: schema.userProfiles.fingerChartUrl,
-          my_keyboard: schema.userProfiles.myKeyboard,
+          name: schema.Users.name,
+          finger_chart_url: schema.UserProfiles.fingerChartUrl,
+          my_keyboard: schema.UserProfiles.myKeyboard,
         })
-        .from(schema.users)
-        .leftJoin(schema.userProfiles, eq(schema.userProfiles.userId, schema.users.id))
-        .where(eq(schema.users.id, input.userId))
+        .from(schema.Users)
+        .leftJoin(schema.UserProfiles, eq(schema.UserProfiles.userId, schema.Users.id))
+        .where(eq(schema.Users.id, input.userId))
         .limit(1);
 
       const row = rows[0];

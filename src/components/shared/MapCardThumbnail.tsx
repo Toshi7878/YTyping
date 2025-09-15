@@ -22,7 +22,7 @@ interface MapLeftThumbnailPreviewCoverProps {
   src?: string;
   alt?: string;
   mapVideoId?: string;
-  mapPreviewTime?: string;
+  mapPreviewTime?: number;
   mapPreviewSpeed?: number;
   size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
   className?: string;
@@ -60,7 +60,7 @@ const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLA
 
 interface ThumbnailPreviewCoverProps {
   mapVideoId: string;
-  mapPreviewTime: string;
+  mapPreviewTime: number;
   mapPreviewSpeed?: number;
 }
 
@@ -75,7 +75,7 @@ const ThumbnailPreviewCover = ({ mapVideoId, mapPreviewTime, mapPreviewSpeed = 1
         ...prev,
         videoId: mapVideoId,
         previewTime: mapPreviewTime,
-        previewSpeed: mapPreviewSpeed.toString(),
+        previewSpeed: mapPreviewSpeed,
       }));
     } else {
       setPreviewVideo(RESET);

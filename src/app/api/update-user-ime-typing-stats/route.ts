@@ -1,6 +1,6 @@
 import { RouterInputs } from "@/server/api/trpc";
 import { db as drizzleDb, schema } from "@/server/drizzle/client";
-import { eq, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 type Input = RouterInputs["userStats"]["incrementImeStats"];
@@ -13,17 +13,17 @@ export async function POST(request: Request) {
 
     // Upsert user_stats with increments
     await drizzleDb
-      .insert(schema.userStats)
+      .insert(schema.UserStats)
       .values({
         userId,
         imeTypeTotalCount: input.ime_type,
         totalTypingTime: input.total_type_time,
       })
       .onConflictDoUpdate({
-        target: [schema.userStats.userId],
+        target: [schema.UserStats.userId],
         set: {
-          imeTypeTotalCount: sql`${schema.userStats.imeTypeTotalCount} + ${input.ime_type}`,
-          totalTypingTime: sql`${schema.userStats.totalTypingTime} + ${input.total_type_time}`,
+          imeTypeTotalCount: sql`${schema.UserStats.imeTypeTotalCount} + ${input.ime_type}`,
+          totalTypingTime: sql`${schema.UserStats.totalTypingTime} + ${input.total_type_time}`,
         },
       });
 
@@ -40,11 +40,11 @@ export async function POST(request: Request) {
     const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
 
     await drizzleDb
-      .insert(schema.userDailyTypeCounts)
+      .insert(schema.UserDailyTypeCounts)
       .values({ userId, createdAt: dbDate, imeTypeCount: input.ime_type })
       .onConflictDoUpdate({
-        target: [schema.userDailyTypeCounts.userId, schema.userDailyTypeCounts.createdAt],
-        set: { imeTypeCount: sql`${schema.userDailyTypeCounts.imeTypeCount} + ${input.ime_type}` },
+        target: [schema.UserDailyTypeCounts.userId, schema.UserDailyTypeCounts.createdAt],
+        set: { imeTypeCount: sql`${schema.UserDailyTypeCounts.imeTypeCount} + ${input.ime_type}` },
       });
 
     return NextResponse.json({ success: true });

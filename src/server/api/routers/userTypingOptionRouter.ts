@@ -1,6 +1,6 @@
-import z from "zod";
-import { eq } from "drizzle-orm";
 import { schema } from "@/server/drizzle/client";
+import { eq } from "drizzle-orm";
+import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 const typingOptionSchema = z.object({
@@ -36,24 +36,24 @@ export const userTypingOptionRouter = {
 
     const rows = await db
       .select({
-        time_offset: schema.userTypingOptions.timeOffset,
-        kana_word_scroll: schema.userTypingOptions.kanaWordScroll,
-        roma_word_scroll: schema.userTypingOptions.romaWordScroll,
-        kana_word_font_size: schema.userTypingOptions.kanaWordFontSize,
-        roma_word_font_size: schema.userTypingOptions.romaWordFontSize,
-        kana_word_spacing: schema.userTypingOptions.kanaWordSpacing,
-        roma_word_spacing: schema.userTypingOptions.romaWordSpacing,
-        type_sound: schema.userTypingOptions.typeSound,
-        miss_sound: schema.userTypingOptions.missSound,
-        line_clear_sound: schema.userTypingOptions.lineClearSound,
-        line_completed_display: schema.userTypingOptions.lineCompletedDisplay,
-        next_display: schema.userTypingOptions.nextDisplay,
-        time_offset_key: schema.userTypingOptions.timeOffsetKey,
-        toggle_input_mode_key: schema.userTypingOptions.toggleInputModeKey,
-        main_word_display: schema.userTypingOptions.mainWordDisplay,
+        time_offset: schema.UserTypingOptions.timeOffset,
+        kana_word_scroll: schema.UserTypingOptions.kanaWordScroll,
+        roma_word_scroll: schema.UserTypingOptions.romaWordScroll,
+        kana_word_font_size: schema.UserTypingOptions.kanaWordFontSize,
+        roma_word_font_size: schema.UserTypingOptions.romaWordFontSize,
+        kana_word_spacing: schema.UserTypingOptions.kanaWordSpacing,
+        roma_word_spacing: schema.UserTypingOptions.romaWordSpacing,
+        type_sound: schema.UserTypingOptions.typeSound,
+        miss_sound: schema.UserTypingOptions.missSound,
+        line_clear_sound: schema.UserTypingOptions.lineClearSound,
+        line_completed_display: schema.UserTypingOptions.lineCompletedDisplay,
+        next_display: schema.UserTypingOptions.nextDisplay,
+        time_offset_key: schema.UserTypingOptions.timeOffsetKey,
+        toggle_input_mode_key: schema.UserTypingOptions.toggleInputModeKey,
+        main_word_display: schema.UserTypingOptions.mainWordDisplay,
       })
-      .from(schema.userTypingOptions)
-      .where(eq(schema.userTypingOptions.userId, user.id))
+      .from(schema.UserTypingOptions)
+      .where(eq(schema.UserTypingOptions.userId, user.id))
       .limit(1);
 
     return rows[0] ?? null;
@@ -63,15 +63,15 @@ export const userTypingOptionRouter = {
 
     const rows = await db
       .select({
-        enable_add_symbol: schema.userImeTypingOptions.enableAddSymbol,
-        enable_eng_space: schema.userImeTypingOptions.enableEngSpace,
-        enable_eng_upper_case: schema.userImeTypingOptions.enableEngUpperCase,
-        add_symbol_list: schema.userImeTypingOptions.addSymbolList,
-        enable_next_lyrics: schema.userImeTypingOptions.enableNextLyrics,
-        enable_large_video_display: schema.userImeTypingOptions.enableLargeVideoDisplay,
+        enable_add_symbol: schema.UserImeTypingOptions.enableAddSymbol,
+        enable_eng_space: schema.UserImeTypingOptions.enableEngSpace,
+        enable_eng_upper_case: schema.UserImeTypingOptions.enableEngUpperCase,
+        add_symbol_list: schema.UserImeTypingOptions.addSymbolList,
+        enable_next_lyrics: schema.UserImeTypingOptions.enableNextLyrics,
+        enable_large_video_display: schema.UserImeTypingOptions.enableLargeVideoDisplay,
       })
-      .from(schema.userImeTypingOptions)
-      .where(eq(schema.userImeTypingOptions.userId, user.id))
+      .from(schema.UserImeTypingOptions)
+      .where(eq(schema.UserImeTypingOptions.userId, user.id))
       .limit(1);
 
     return rows[0] ?? null;
@@ -99,25 +99,25 @@ export const userTypingOptionRouter = {
     } as const;
 
     const res = await db
-      .insert(schema.userTypingOptions)
+      .insert(schema.UserTypingOptions)
       .values(values)
-      .onConflictDoUpdate({ target: [schema.userTypingOptions.userId], set: { ...values } })
+      .onConflictDoUpdate({ target: [schema.UserTypingOptions.userId], set: { ...values } })
       .returning({
-        time_offset: schema.userTypingOptions.timeOffset,
-        kana_word_scroll: schema.userTypingOptions.kanaWordScroll,
-        roma_word_scroll: schema.userTypingOptions.romaWordScroll,
-        kana_word_font_size: schema.userTypingOptions.kanaWordFontSize,
-        roma_word_font_size: schema.userTypingOptions.romaWordFontSize,
-        kana_word_spacing: schema.userTypingOptions.kanaWordSpacing,
-        roma_word_spacing: schema.userTypingOptions.romaWordSpacing,
-        type_sound: schema.userTypingOptions.typeSound,
-        miss_sound: schema.userTypingOptions.missSound,
-        line_clear_sound: schema.userTypingOptions.lineClearSound,
-        line_completed_display: schema.userTypingOptions.lineCompletedDisplay,
-        next_display: schema.userTypingOptions.nextDisplay,
-        time_offset_key: schema.userTypingOptions.timeOffsetKey,
-        toggle_input_mode_key: schema.userTypingOptions.toggleInputModeKey,
-        main_word_display: schema.userTypingOptions.mainWordDisplay,
+        time_offset: schema.UserTypingOptions.timeOffset,
+        kana_word_scroll: schema.UserTypingOptions.kanaWordScroll,
+        roma_word_scroll: schema.UserTypingOptions.romaWordScroll,
+        kana_word_font_size: schema.UserTypingOptions.kanaWordFontSize,
+        roma_word_font_size: schema.UserTypingOptions.romaWordFontSize,
+        kana_word_spacing: schema.UserTypingOptions.kanaWordSpacing,
+        roma_word_spacing: schema.UserTypingOptions.romaWordSpacing,
+        type_sound: schema.UserTypingOptions.typeSound,
+        miss_sound: schema.UserTypingOptions.missSound,
+        line_clear_sound: schema.UserTypingOptions.lineClearSound,
+        line_completed_display: schema.UserTypingOptions.lineCompletedDisplay,
+        next_display: schema.UserTypingOptions.nextDisplay,
+        time_offset_key: schema.UserTypingOptions.timeOffsetKey,
+        toggle_input_mode_key: schema.UserTypingOptions.toggleInputModeKey,
+        main_word_display: schema.UserTypingOptions.mainWordDisplay,
       });
 
     return res[0] ?? null;
@@ -137,16 +137,16 @@ export const userTypingOptionRouter = {
     } as const;
 
     const res = await db
-      .insert(schema.userImeTypingOptions)
+      .insert(schema.UserImeTypingOptions)
       .values(values)
-      .onConflictDoUpdate({ target: [schema.userImeTypingOptions.userId], set: { ...values } })
+      .onConflictDoUpdate({ target: [schema.UserImeTypingOptions.userId], set: { ...values } })
       .returning({
-        enable_add_symbol: schema.userImeTypingOptions.enableAddSymbol,
-        enable_eng_space: schema.userImeTypingOptions.enableEngSpace,
-        enable_eng_upper_case: schema.userImeTypingOptions.enableEngUpperCase,
-        add_symbol_list: schema.userImeTypingOptions.addSymbolList,
-        enable_next_lyrics: schema.userImeTypingOptions.enableNextLyrics,
-        enable_large_video_display: schema.userImeTypingOptions.enableLargeVideoDisplay,
+        enable_add_symbol: schema.UserImeTypingOptions.enableAddSymbol,
+        enable_eng_space: schema.UserImeTypingOptions.enableEngSpace,
+        enable_eng_upper_case: schema.UserImeTypingOptions.enableEngUpperCase,
+        add_symbol_list: schema.UserImeTypingOptions.addSymbolList,
+        enable_next_lyrics: schema.UserImeTypingOptions.enableNextLyrics,
+        enable_large_video_display: schema.UserImeTypingOptions.enableLargeVideoDisplay,
       });
 
     return res[0] ?? null;

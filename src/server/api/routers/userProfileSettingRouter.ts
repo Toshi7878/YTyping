@@ -1,8 +1,8 @@
+import { schema } from "@/server/drizzle/client";
 import { fingerChartUrlApiSchema, myKeyboardApiSchema, nameSchema as userNameSchema } from "@/validator/schema";
 import { TRPCError } from "@trpc/server";
-import z from "zod";
 import { and, eq, ne } from "drizzle-orm";
-import { schema } from "@/server/drizzle/client";
+import z from "zod";
 import { protectedProcedure } from "../trpc";
 
 export const userProfileSettingRouter = {
@@ -18,7 +18,7 @@ export const userProfileSettingRouter = {
     }
 
     try {
-      await db.update(schema.users).set({ name: input.newName }).where(eq(schema.users.emailHash, email_hash));
+      await db.update(schema.Users).set({ name: input.newName }).where(eq(schema.Users.emailHash, email_hash));
 
       return { id: input.newName, title: "Name updated", message: "", status: 200 };
     } catch {
@@ -28,9 +28,9 @@ export const userProfileSettingRouter = {
   isNameAvailable: protectedProcedure.input(z.string().min(1)).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const existing = await db
-      .select({ id: schema.users.id })
-      .from(schema.users)
-      .where(and(eq(schema.users.name, input), ne(schema.users.id, user.id)))
+      .select({ id: schema.Users.id })
+      .from(schema.Users)
+      .where(and(eq(schema.Users.name, input), ne(schema.Users.id, user.id)))
       .limit(1);
 
     if (existing.length > 0) {
@@ -48,9 +48,9 @@ export const userProfileSettingRouter = {
     const { db, user } = ctx;
 
     await db
-      .insert(schema.userProfiles)
+      .insert(schema.UserProfiles)
       .values({ userId: user.id, fingerChartUrl: input, myKeyboard: "" })
-      .onConflictDoUpdate({ target: [schema.userProfiles.userId], set: { fingerChartUrl: input } });
+      .onConflictDoUpdate({ target: [schema.UserProfiles.userId], set: { fingerChartUrl: input } });
 
     return input;
   }),
@@ -58,11 +58,10 @@ export const userProfileSettingRouter = {
     const { db, user } = ctx;
 
     await db
-      .insert(schema.userProfiles)
+      .insert(schema.UserProfiles)
       .values({ userId: user.id, myKeyboard: input, fingerChartUrl: "" })
-      .onConflictDoUpdate({ target: [schema.userProfiles.userId], set: { myKeyboard: input } });
+      .onConflictDoUpdate({ target: [schema.UserProfiles.userId], set: { myKeyboard: input } });
 
     return input;
   }),
 };
-

@@ -2,8 +2,8 @@ import { LineResultData } from "@/app/(typing)/type/_lib/type";
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
 import { FilterMode, TimelineResult } from "@/app/timeline/_lib/type";
 import { supabase } from "@/lib/supabaseClient";
-import { sql, and, desc, eq } from "drizzle-orm";
 import { db as drizzleDb, schema } from "@/server/drizzle/client";
+import { and, desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 import { sendResultSchema } from "./rankingRouter";
@@ -53,7 +53,8 @@ export const resultRouter = {
 
     try {
       // limit + 1を取得して次のページの存在を確認
-      const items: TimelineResult[] = (await drizzleDb.execute(sql`
+      const items: TimelineResult[] = (
+        await drizzleDb.execute(sql`
           SELECT results."id",
           results."map_id",
           results."user_id",
@@ -127,7 +128,8 @@ export const resultRouter = {
           ORDER BY results."updated_at" DESC
           LIMIT ${PAGE_SIZE + 1}
           OFFSET ${offset}
-        `)).rows as any;
+        `)
+      ).rows as any;
 
       let nextCursor: string | undefined = undefined;
       if (items.length > PAGE_SIZE) {
@@ -190,26 +192,18 @@ export const resultRouter = {
   }),
 };
 
-const calcRank = async ({
-  db,
-  mapId,
-  userId,
-}: {
-  db: any;
-  mapId: number;
-  userId: number;
-}) => {
+const calcRank = async ({ db, mapId, userId }: { db: any; mapId: number; userId: number }) => {
   try {
     const rankingList = await db
       .select({
-        user_id: schema.results.userId,
-        rank: schema.results.rank,
-        score: schema.resultStatuses.score,
+        user_id: schema.Results.userId,
+        rank: schema.Results.rank,
+        score: schema.ResultStatuses.score,
       })
-      .from(schema.results)
-      .leftJoin(schema.resultStatuses, eq(schema.resultStatuses.resultId, schema.results.id))
-      .where(eq(schema.results.mapId, mapId))
-      .orderBy(desc(schema.resultStatuses.score));
+      .from(schema.Results)
+      .leftJoin(schema.ResultStatuses, eq(schema.ResultStatuses.resultId, schema.Results.id))
+      .where(eq(schema.Results.mapId, mapId))
+      .orderBy(desc(schema.ResultStatuses.score));
 
     const shaped = rankingList.map((r: any) => ({
       user_id: r.user_id,
@@ -236,16 +230,25 @@ const processOvertakeNotifications = async (
 ) => {
   const overtakeNotify = await db
     .select({
-      visitorUserId: schema.results.userId,
-      visitorScore: schema.resultStatuses.score,
+      visitorUserId: schema.Results.userId,
+      visitorScore: schema.ResultStatuses.score,
     })
-    .from(schema.notifications)
+    .from(schema.Notifications)
     .innerJoin(
-      schema.results,
-      and(eq(schema.results.userId, schema.notifications.visitorId), eq(schema.results.mapId, schema.notifications.mapId)),
+      schema.Results,
+      and(
+        eq(schema.Results.userId, schema.Notifications.visitorId),
+        eq(schema.Results.mapId, schema.Notifications.mapId),
+      ),
     )
-    .leftJoin(schema.resultStatuses, eq(schema.resultStatuses.resultId, schema.results.id))
-    .where(and(eq(schema.notifications.visitedId, userId), eq(schema.notifications.mapId, mapId), eq(schema.notifications.action, "OVER_TAKE" as any)));
+    .leftJoin(schema.ResultStatuses, eq(schema.ResultStatuses.resultId, schema.Results.id))
+    .where(
+      and(
+        eq(schema.Notifications.visitedId, userId),
+        eq(schema.Notifications.mapId, mapId),
+        eq(schema.Notifications.action, "OVER_TAKE" as any),
+      ),
+    );
 
   const myResult = rankingList.find((record) => record.user_id === userId);
   if (!myResult || !myResult.status) return;
@@ -257,13 +260,13 @@ const processOvertakeNotifications = async (
     if (!visitorScore || visitorScore - myScore <= 0) {
       const visitorId = notification.visitorUserId;
       await db
-        .delete(schema.notifications)
+        .delete(schema.Notifications)
         .where(
           and(
-            eq(schema.notifications.visitorId, visitorId),
-            eq(schema.notifications.visitedId, userId),
-            eq(schema.notifications.mapId, mapId),
-            eq(schema.notifications.action, "OVER_TAKE" as any),
+            eq(schema.Notifications.visitorId, visitorId),
+            eq(schema.Notifications.visitedId, userId),
+            eq(schema.Notifications.mapId, mapId),
+            eq(schema.Notifications.action, "OVER_TAKE" as any),
           ),
         );
     }
@@ -282,14 +285,14 @@ const updateRanksAndCreateNotifications = async (
     const oldRank = user.rank;
 
     await db
-      .update(schema.results)
+      .update(schema.Results)
       .set({ rank: newRank })
-      .where(and(eq(schema.results.mapId, mapId), eq(schema.results.userId, user.user_id)));
+      .where(and(eq(schema.Results.mapId, mapId), eq(schema.Results.userId, user.user_id)));
 
     const isOtherUser = user.user_id !== userId;
     if (isOtherUser && oldRank !== null && oldRank <= 5 && oldRank !== newRank) {
       await db
-        .insert(schema.notifications)
+        .insert(schema.Notifications)
         .values({
           visitorId: userId,
           visitedId: user.user_id,
@@ -298,19 +301,20 @@ const updateRanksAndCreateNotifications = async (
           oldRank: oldRank ?? undefined,
         })
         .onConflictDoUpdate({
-          target: [schema.notifications.visitorId, schema.notifications.visitedId, schema.notifications.mapId, schema.notifications.action],
+          target: [
+            schema.Notifications.visitorId,
+            schema.Notifications.visitedId,
+            schema.Notifications.mapId,
+            schema.Notifications.action,
+          ],
           set: { checked: false, createdAt: new Date(), oldRank: oldRank ?? null },
         });
     }
   }
 };
 
-const updateMapRankingCount = async (
-  db: any,
-  mapId: number,
-  rankingCount: number,
-) => {
-  await db.update(schema.maps).set({ rankingCount }).where(eq(schema.maps.id, mapId));
+const updateMapRankingCount = async (db: any, mapId: number, rankingCount: number) => {
+  await db.update(schema.Maps).set({ rankingCount }).where(eq(schema.Maps.id, mapId));
 };
 
 const sendResult = async ({
@@ -327,13 +331,13 @@ const sendResult = async ({
   userId: number;
 }) => {
   const inserted = await db
-    .insert(schema.results)
+    .insert(schema.Results)
     .values({ mapId: map_id, userId })
     .onConflictDoUpdate({
-      target: [schema.results.userId, schema.results.mapId],
+      target: [schema.Results.userId, schema.Results.mapId],
       set: { updatedAt: new Date() },
     })
-    .returning({ id: schema.results.id });
+    .returning({ id: schema.Results.id });
 
   const resultId = inserted[0]!.id;
 
@@ -359,9 +363,9 @@ const sendResult = async ({
   } as const;
 
   await db
-    .insert(schema.resultStatuses)
+    .insert(schema.ResultStatuses)
     .values(mappedStatus)
-    .onConflictDoUpdate({ target: [schema.resultStatuses.resultId], set: { ...mappedStatus } });
+    .onConflictDoUpdate({ target: [schema.ResultStatuses.resultId], set: { ...mappedStatus } });
 
   const jsonString = JSON.stringify(lineResults, null, 2);
 

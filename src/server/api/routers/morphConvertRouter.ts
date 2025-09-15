@@ -1,7 +1,7 @@
 import { env } from "@/env";
-import z from "zod";
-import { eq } from "drizzle-orm";
 import { schema } from "@/server/drizzle/client";
+import { eq } from "drizzle-orm";
+import z from "zod";
 import { protectedProcedure } from "../trpc";
 
 export const morphConvertRouter = {
@@ -15,13 +15,21 @@ export const morphConvertRouter = {
 
   getCustomDic: protectedProcedure.query(async ({ ctx }) => {
     const customDic = await ctx.db
-      .select({ surface: schema.morphConvertKanaDic.surface, reading: schema.morphConvertKanaDic.reading, type: schema.morphConvertKanaDic.type })
-      .from(schema.morphConvertKanaDic)
-      .where(eq(schema.morphConvertKanaDic.type, "DICTIONARY"));
+      .select({
+        surface: schema.MorphConvertKanaDic.surface,
+        reading: schema.MorphConvertKanaDic.reading,
+        type: schema.MorphConvertKanaDic.type,
+      })
+      .from(schema.MorphConvertKanaDic)
+      .where(eq(schema.MorphConvertKanaDic.type, "DICTIONARY"));
     const customRegexDic = await ctx.db
-      .select({ surface: schema.morphConvertKanaDic.surface, reading: schema.morphConvertKanaDic.reading, type: schema.morphConvertKanaDic.type })
-      .from(schema.morphConvertKanaDic)
-      .where(eq(schema.morphConvertKanaDic.type, "REGEX"));
+      .select({
+        surface: schema.MorphConvertKanaDic.surface,
+        reading: schema.MorphConvertKanaDic.reading,
+        type: schema.MorphConvertKanaDic.type,
+      })
+      .from(schema.MorphConvertKanaDic)
+      .where(eq(schema.MorphConvertKanaDic.type, "REGEX"));
 
     return { customDic, customRegexDic };
   }),
@@ -31,7 +39,7 @@ export const morphConvertRouter = {
     .mutation(async ({ input, ctx }) => {
       const { surface, reading } = input;
 
-      await ctx.db.insert(schema.morphConvertKanaDic).values({ surface, reading });
+      await ctx.db.insert(schema.MorphConvertKanaDic).values({ surface, reading });
 
       return { success: true };
     }),
@@ -41,7 +49,7 @@ export const morphConvertRouter = {
     .mutation(async ({ input, ctx }) => {
       const { lyrics, word } = input;
 
-      await ctx.db.insert(schema.fixWordEditLogs).values({ lyrics, word });
+      await ctx.db.insert(schema.FixWordEditLogs).values({ lyrics, word });
 
       return { success: true };
     }),

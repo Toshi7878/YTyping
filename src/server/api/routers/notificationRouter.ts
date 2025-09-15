@@ -7,8 +7,8 @@ export const notificationRouter = {
   hasNewNotification: protectedProcedure.query(async ({ ctx }) => {
     const rows = await ctx.db
       .select({ one: sql`1` })
-      .from(schema.notifications)
-      .where(and(eq(schema.notifications.visitedId, ctx.user.id), eq(schema.notifications.checked, false)))
+      .from(schema.Notifications)
+      .where(and(eq(schema.Notifications.visitedId, ctx.user.id), eq(schema.Notifications.checked, false)))
       .limit(1);
 
     return rows.length > 0;
@@ -121,9 +121,9 @@ export const notificationRouter = {
     const { db, user } = ctx;
 
     await db
-      .update(schema.notifications)
+      .update(schema.Notifications)
       .set({ checked: true })
-      .where(and(eq(schema.notifications.visitedId, user.id), eq(schema.notifications.checked, false)));
+      .where(and(eq(schema.Notifications.visitedId, user.id), eq(schema.Notifications.checked, false)));
 
     return new Response("Notifications marked as read", { status: 200 });
   }),

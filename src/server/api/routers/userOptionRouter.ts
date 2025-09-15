@@ -1,6 +1,6 @@
-import z from "zod";
-import { eq } from "drizzle-orm";
 import { schema } from "@/server/drizzle/client";
+import { eq } from "drizzle-orm";
+import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userOptionRouter = {
@@ -11,11 +11,11 @@ export const userOptionRouter = {
 
     const rows = await db
       .select({
-        custom_user_active_state: schema.userOptions.customUserActiveState,
-        hide_user_stats: schema.userOptions.hideUserStats,
+        custom_user_active_state: schema.UserOptions.customUserActiveState,
+        hide_user_stats: schema.UserOptions.hideUserStats,
       })
-      .from(schema.userOptions)
-      .where(eq(schema.userOptions.userId, targetId))
+      .from(schema.UserOptions)
+      .where(eq(schema.UserOptions.userId, targetId))
       .limit(1);
 
     return rows[0] ?? null;
@@ -40,12 +40,12 @@ export const userOptionRouter = {
       } as const;
 
       const res = await db
-        .insert(schema.userOptions)
+        .insert(schema.UserOptions)
         .values(values)
-        .onConflictDoUpdate({ target: [schema.userOptions.userId], set: { ...values } })
+        .onConflictDoUpdate({ target: [schema.UserOptions.userId], set: { ...values } })
         .returning({
-          custom_user_active_state: schema.userOptions.customUserActiveState,
-          hide_user_stats: schema.userOptions.hideUserStats,
+          custom_user_active_state: schema.UserOptions.customUserActiveState,
+          hide_user_stats: schema.UserOptions.hideUserStats,
         });
 
       return res[0] ?? null;

@@ -31,7 +31,7 @@ export interface TimelineResult {
     title: string;
     artist_name: string;
     music_source: string;
-    preview_time: string;
+    preview_time: number;
     thumbnail_quality: $Enums.ThumbnailQuality;
     updated_at: string;
     like_count: number;

@@ -2,7 +2,6 @@ import authConfig from "@/config/auth.config";
 import { env } from "@/env";
 import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
-// Avoid importing Node-only DB client at module scope; load dynamically in Node runtime callbacks
 
 export const { auth, handlers, signIn } = NextAuth({
   ...authConfig,
@@ -18,15 +17,18 @@ export const { auth, handlers, signIn } = NextAuth({
 
       const md5 = (await import("md5")).default;
       const email_hash = md5(user.email).toString();
-      const { db: drizzleDb, schema } = await import("./drizzle/client");
+      const {
+        db: drizzleDb,
+        schema: { Users },
+      } = await import("./drizzle/client");
       const existed = await drizzleDb
-        .select({ id: schema.users.id })
-        .from(schema.users)
-        .where(eq(schema.users.emailHash, email_hash))
+        .select({ id: Users.id })
+        .from(Users)
+        .where(eq(Users.emailHash, email_hash))
         .limit(1);
       if (existed.length > 0) return true;
 
-      await drizzleDb.insert(schema.users).values({
+      await drizzleDb.insert(Users).values({
         emailHash: email_hash,
         name: null,
         role: "USER",
@@ -81,11 +83,14 @@ export const { auth, handlers, signIn } = NextAuth({
 
       const md5 = (await import("md5")).default;
       const email_hash = md5(user.email).toString();
-      const { db: drizzleDb, schema } = await import("./drizzle/client");
-      const rows = await drizzleDb
-        .select({ id: schema.users.id, name: schema.users.name, role: schema.users.role })
-        .from(schema.users)
-        .where(eq(schema.users.emailHash, email_hash))
+      const {
+        db,
+        schema: { Users },
+      } = await import("./drizzle/client");
+      const rows = await db
+        .select({ id: Users.id, name: Users.name, role: Users.role })
+        .from(Users)
+        .where(eq(Users.emailHash, email_hash))
         .limit(1);
 
       const dbUser = rows[0];

@@ -1,10 +1,10 @@
 import { supabase } from "@/lib/supabaseClient";
 import { db as drizzleDb, schema } from "@/server/drizzle/client";
-import { sql, and, eq } from "drizzle-orm";
 import { MapLine } from "@/types/map";
 import { mapDataSchema } from "@/validator/mapDataSchema";
 import { mapInfoApiSchema } from "@/validator/schema";
 import { TRPCError } from "@trpc/server";
+import { eq, sql } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
@@ -23,7 +23,8 @@ export const mapRouter = {
     const { db, user } = ctx;
     const { mapId } = input;
 
-    const rows = (await db.execute(sql`
+    const rows = (
+      await db.execute(sql`
       SELECT
         m."title",
         m."artist_name",
@@ -44,7 +45,8 @@ export const mapRouter = {
       JOIN users u ON u."id" = m."creator_id"
       WHERE m."id" = ${mapId}
       LIMIT 1
-    `)).rows as any[];
+    `)
+    ).rows as any[];
 
     const mapInfo = rows[0];
 
@@ -101,9 +103,9 @@ export const mapRouter = {
         mapId === "new"
           ? true
           : await ctx.db
-              .select({ creator_id: schema.maps.creatorId })
-              .from(schema.maps)
-              .where(eq(schema.maps.id, Number(mapId)))
+              .select({ creator_id: schema.Maps.creatorId })
+              .from(schema.Maps)
+              .where(eq(schema.Maps.id, Number(mapId)))
               .limit(1)
               .then((rows) => rows[0]?.creator_id === userId || userRole === "ADMIN");
 
@@ -174,13 +176,13 @@ const upsertMap = async ({
       } as const;
 
       const inserted = await tx
-        .insert(schema.maps)
+        .insert(schema.Maps)
         .values(mapValues)
         .onConflictDoUpdate({
-          target: [schema.maps.id],
+          target: [schema.Maps.id],
           set: { ...mapValues, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) },
         })
-        .returning({ id: schema.maps.id });
+        .returning({ id: schema.Maps.id });
 
       const newMapId = mapId === "new" ? inserted[0]!.id : Number(mapId);
 
@@ -199,9 +201,9 @@ const upsertMap = async ({
       } as const;
 
       await tx
-        .insert(schema.mapDifficulties)
+        .insert(schema.MapDifficulties)
         .values(diffValues)
-        .onConflictDoUpdate({ target: [schema.mapDifficulties.mapId], set: { ...diffValues } });
+        .onConflictDoUpdate({ target: [schema.MapDifficulties.mapId], set: { ...diffValues } });
 
       await supabase.storage
         .from("map-data")

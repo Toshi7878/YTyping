@@ -21,8 +21,8 @@ export const useReadVolume = () =>
 
 const previewVideoAtom = atomWithReset<{
   videoId: string | null;
-  previewTime: string | null;
-  previewSpeed: string | null;
+  previewTime: number | null;
+  previewSpeed: number | null;
   player: YTPlayer | null;
 }>({ videoId: null, previewTime: null, previewSpeed: null, player: null });
 

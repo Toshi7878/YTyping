@@ -1,13 +1,13 @@
+// Central limits for data sizes stored in DB
+// Aligns with existing validators in `src/validator/const.ts` and UI usage.
+
 import {
   lineCompletedDisplayEnum,
   mainWordDisplayEnum,
   nextDisplayEnum,
   timeOffsetKeyEnum,
   toggleInputModeKeyEnum,
-} from "./schema";
-
-// Central limits for data sizes stored in DB
-// Aligns with existing validators in `src/validator/const.ts` and UI usage.
+} from "./schema/user";
 
 // Generic buckets
 export const MAX_SHORT_LENGTH = 256;
