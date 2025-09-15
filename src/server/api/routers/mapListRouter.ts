@@ -1,4 +1,5 @@
-import { $Enums, Prisma } from "@prisma/client";
+import { sql } from "drizzle-orm";
+import { schema } from "@/server/drizzle/client";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
@@ -35,7 +36,7 @@ export type MapItem = {
   preview_time: string;
   like_count: number;
   ranking_count: number;
-  thumbnail_quality: $Enums.thumbnail_quality;
+  thumbnail_quality: (typeof schema.thumbnailQualityEnum.enumValues)[number];
   updated_at: Date;
   creator: {
     id: number;
@@ -62,11 +63,11 @@ export const mapListRouter = {
     const keywordFilterSql = generateKeywordFilterSql({ mapKeyword: input.keyword });
 
     const whereConditions = [filterSql, difficultyFilterSql, keywordFilterSql, playedSql];
-    const where = Prisma.sql`${Prisma.join(whereConditions, ` AND `)}`;
+    const where = sql`${sql.join(whereConditions, sql` AND `)}`;
     const orderBy = getSortSql({ sort: input.sort });
 
     try {
-      const items: MapItem[] = await db.$queryRaw`
+      const items: MapItem[] = (await db.execute(sql`
         SELECT
         maps."id",
         maps."video_id",
@@ -108,7 +109,7 @@ export const mapListRouter = {
         ORDER BY ${orderBy}
         LIMIT ${PAGE_SIZE + 1}
         OFFSET ${offset}
-      `;
+      `)).rows as any;
 
       let nextCursor: string | undefined = undefined;
       if (items.length > PAGE_SIZE) {
@@ -137,17 +138,17 @@ export const mapListRouter = {
     const keywordFilterSql = generateKeywordFilterSql({ mapKeyword: input.keyword });
 
     const whereConditions = [filterSql, difficultyFilterSql, keywordFilterSql, playedSql];
-    const where = Prisma.sql`${Prisma.join(whereConditions, ` AND `)}`;
+    const where = sql`${sql.join(whereConditions, sql` AND `)}`;
 
     try {
-      const result = await db.$queryRaw`
+      const result = await db.execute(sql`
         SELECT COUNT(*) as total_count
         FROM maps
         JOIN users AS creator ON maps."creator_id" = creator."id"
         JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
         LEFT JOIN map_likes ON maps."id" = map_likes."map_id" AND map_likes."user_id" = ${userId}
         WHERE ${where}
-      `;
+      `);
 
       const totalCount = (result as any)[0].total_count;
       return Number(totalCount);
@@ -159,64 +160,45 @@ export const mapListRouter = {
     const { db, user } = ctx;
     const { videoId } = input;
 
-    const mapList = await db.maps.findMany({
-      where: {
-        video_id: videoId,
-      },
-      select: {
-        id: true,
-        title: true,
-        artist_name: true,
-        music_source: true,
+    const rows = (await db.execute(sql`
+      SELECT
+        maps."id",
+        maps."title",
+        maps."artist_name",
+        maps."music_source",
+        maps."video_id",
+        maps."updated_at",
+        maps."preview_time",
+        maps."thumbnail_quality",
+        maps."like_count",
+        maps."ranking_count",
+        json_build_object(
+          'roma_kpm_median', "difficulty"."roma_kpm_median",
+          'roma_kpm_max', "difficulty"."roma_kpm_max",
+          'total_time', "difficulty"."total_time"
+        ) as "difficulty",
+        json_build_object('id', creator."id", 'name', creator."name") as "creator",
+        EXISTS (
+          SELECT 1 FROM map_likes ml
+          WHERE ml."map_id" = maps."id" AND ml."user_id" = ${user.id} AND ml."is_liked" = true
+        ) as is_liked,
+        (
+          SELECT MIN(r."rank")::int FROM results r
+          WHERE r."map_id" = maps."id" AND r."user_id" = ${user.id}
+        ) as "myRank"
+      FROM maps
+      JOIN users AS creator ON maps."creator_id" = creator."id"
+      LEFT JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
+      WHERE maps."video_id" = ${videoId}
+      ORDER BY maps."id" DESC
+    `)).rows as any[];
 
-        video_id: true,
-        updated_at: true,
-        preview_time: true,
-        thumbnail_quality: true,
-        like_count: true,
-        ranking_count: true,
-        difficulty: {
-          select: {
-            roma_kpm_median: true,
-            roma_kpm_max: true,
-            total_time: true,
-          },
-        },
-        creator: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        map_likes: {
-          where: { user_id: user.id, is_liked: true },
-          select: { is_liked: true },
-          take: 1,
-        },
-        results: {
-          where: {
-            user_id: user.id,
-          },
-          select: {
-            rank: true,
-          },
-        },
-      },
-      orderBy: {
-        id: "desc",
-      },
-    });
-
-    const withDifficulty = mapList.map((m) => ({
+    const withDifficulty = rows.map((m) => ({
       ...m,
       difficulty: m.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
     }));
 
-    return withDifficulty.map(({ map_likes, results, ...rest }) => ({
-      ...rest,
-      is_liked: (map_likes?.length ?? 0) > 0,
-      myRank: results[0]?.rank ?? null,
-    }));
+    return withDifficulty as any;
   }),
 };
 
@@ -227,15 +209,15 @@ interface GetFilterSql {
 }
 
 function getFilterSql({ filter, userId }: GetFilterSql) {
-  if (!userId) return Prisma.raw("1=1");
+  if (!userId) return sql.raw("1=1");
 
   switch (filter) {
     case "liked":
-      return Prisma.raw(`map_likes."is_liked" = true`);
+      return sql.raw(`map_likes."is_liked" = true`);
     case "my-map":
-      return Prisma.raw(`creator."id" = ${userId}`);
+      return sql.raw(`creator."id" = ${userId}`);
     default:
-      return Prisma.raw("1=1");
+      return sql.raw("1=1");
   }
 }
 
@@ -245,52 +227,52 @@ interface GetSortSql {
 
 function getSortSql({ sort }: GetSortSql) {
   if (!sort) {
-    return Prisma.raw(`maps."id" DESC`);
+    return sql.raw(`maps."id" DESC`);
   }
 
   const isAsc = sort.includes("asc");
 
   switch (true) {
     case sort.includes("random"):
-      return Prisma.raw(`RANDOM()`);
+      return sql.raw(`RANDOM()`);
     case sort.includes("id"):
       if (isAsc) {
-        return Prisma.raw(`maps."id" ASC`);
+        return sql.raw(`maps."id" ASC`);
       } else {
-        return Prisma.raw(`maps."id" DESC`);
+        return sql.raw(`maps."id" DESC`);
       }
     case sort.includes("difficulty"):
       if (isAsc) {
-        return Prisma.raw(`"difficulty"."roma_kpm_median" ASC`);
+        return sql.raw(`"difficulty"."roma_kpm_median" ASC`);
       } else {
-        return Prisma.raw(`"difficulty"."roma_kpm_median" DESC`);
+        return sql.raw(`"difficulty"."roma_kpm_median" DESC`);
       }
     case sort.includes("ranking_count"):
       if (isAsc) {
-        return Prisma.raw(`maps."ranking_count" ASC, maps."id" ASC`);
+        return sql.raw(`maps."ranking_count" ASC, maps."id" ASC`);
       } else {
-        return Prisma.raw(`maps."ranking_count" DESC, maps."id" DESC`);
+        return sql.raw(`maps."ranking_count" DESC, maps."id" DESC`);
       }
     case sort.includes("like_count"):
       if (isAsc) {
-        return Prisma.raw(`maps."like_count" ASC, maps."id" ASC`);
+        return sql.raw(`maps."like_count" ASC, maps."id" ASC`);
       } else {
-        return Prisma.raw(`maps."like_count" DESC, maps."id" DESC`);
+        return sql.raw(`maps."like_count" DESC, maps."id" DESC`);
       }
     case sort.includes("duration"):
       if (isAsc) {
-        return Prisma.raw(`"difficulty"."total_time" ASC`);
+        return sql.raw(`"difficulty"."total_time" ASC`);
       } else {
-        return Prisma.raw(`"difficulty"."total_time" DESC`);
+        return sql.raw(`"difficulty"."total_time" DESC`);
       }
     case sort.includes("like"):
       if (isAsc) {
-        return Prisma.raw(`"map_likes"."created_at" ASC`);
+        return sql.raw(`"map_likes"."created_at" ASC`);
       } else {
-        return Prisma.raw(`"map_likes"."created_at" DESC`);
+        return sql.raw(`"map_likes"."created_at" DESC`);
       }
     default:
-      return Prisma.raw(`maps."id" DESC`);
+      return sql.raw(`maps."id" DESC`);
   }
 }
 
@@ -310,7 +292,7 @@ function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSql) {
     conditions.push(`"difficulty"."roma_kpm_median" <= ${Number(maxRate) * 100}`);
   }
 
-  return conditions.length > 0 ? Prisma.raw(conditions.join(" AND ")) : Prisma.raw("1=1");
+  return conditions.length > 0 ? sql.raw(conditions.join(" AND ")) : sql.raw("1=1");
 }
 
 interface GetPlayedFilterSql {
@@ -319,30 +301,30 @@ interface GetPlayedFilterSql {
 }
 
 function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
-  if (!userId) return Prisma.raw("1=1");
+  if (!userId) return sql.raw("1=1");
 
   switch (played) {
     case "played":
-      return Prisma.raw(`EXISTS (
+      return sql.raw(`EXISTS (
 		  SELECT 1 FROM results
 		  WHERE results.map_id = maps.id
 		  AND results.user_id = ${userId}
 		)`);
     case "unplayed":
-      return Prisma.raw(`NOT EXISTS (
+      return sql.raw(`NOT EXISTS (
 		  SELECT 1 FROM results
 		  WHERE results.map_id = maps.id
 		  AND results.user_id = ${userId}
 		)`);
     case "1st":
-      return Prisma.raw(`EXISTS (
+      return sql.raw(`EXISTS (
 		  SELECT 1 FROM results
 		  WHERE results.map_id = maps.id
 		  AND results.user_id = ${userId}
 		  AND results.rank = 1
 		)`);
     case "not-first":
-      return Prisma.raw(`EXISTS (
+      return sql.raw(`EXISTS (
 		  SELECT 1 FROM results
 		  JOIN result_statuses ON results.id = result_statuses.result_id
 		  WHERE results.map_id = maps.id
@@ -350,7 +332,7 @@ function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
 		  AND results.rank > 1
 		)`);
     case "perfect":
-      return Prisma.raw(`EXISTS (
+      return sql.raw(`EXISTS (
 		  SELECT 1 FROM results
 		  JOIN result_statuses ON results.id = result_statuses.result_id
 		  WHERE results.map_id = maps.id
@@ -359,18 +341,18 @@ function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
 		  AND result_statuses.lost = 0
 		)`);
     default:
-      return Prisma.raw("1=1");
+      return sql.raw("1=1");
   }
 }
 
 const generateKeywordFilterSql = ({ mapKeyword }: { mapKeyword: string }) => {
   return mapKeyword !== ""
-    ? Prisma.sql`(
+    ? sql`(
   maps."title" &@~ ${mapKeyword} OR
   maps."artist_name" &@~ ${mapKeyword} OR
   maps."music_source" &@~ ${mapKeyword} OR
   maps."tags" &@~ ${mapKeyword} OR
   creator."name" &@~ ${mapKeyword}
   )`
-    : Prisma.sql`TRUE`;
+    : sql`TRUE`;
 };

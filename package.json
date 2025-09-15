@@ -4,17 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
-    "postinstall": "prisma generate || exit 0",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --cache",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --cache",
     "typecheck": "tsc --noEmit",
     "reset": "pnpm dlx rimraf .next .tsbuildinfo node_modules package-lock.json && pnpm install",
-    "db:migrate": "dotenv -e .env.local -- npx prisma migrate dev --name init",
-    "studio": "dotenv -e .env.local -- npx prisma studio",
-    "db:generate": "dotenv -e .env.local -- npx prisma generate",
-    "db:reset": "dotenv -e .env.local -- npx prisma migrate reset"
+    "db:migrate": "dotenv -e .env.local -- drizzle-kit push",
+    "studio": "dotenv -e .env.local -- drizzle-kit studio",
+    "db:generate": "dotenv -e .env.local -- drizzle-kit generate",
+    "db:reset": "dotenv -e .env.local -- drizzle-kit push --force"
   },
   "dependencies": {
     "@bprogress/next": "^3.2.12",
@@ -72,8 +71,8 @@
     "zod": "^4.1.8"
   },
   "devDependencies": {
-    "@prisma/client": "^6.16.1",
     "@types/md5": "^2.3.5",
+    "@types/node": "^24.4.0",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "dotenv-cli": "^10.0.0",
@@ -84,7 +83,6 @@
     "globals": "^16.4.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
-    "prisma": "^6.16.1",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.43.0"

@@ -1,9 +1,8 @@
 import authConfig from "@/config/auth.config";
 import { env } from "@/env";
-import { $Enums } from "@prisma/client";
-import md5 from "md5";
+import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
-import { prisma } from "./db";
+// Avoid importing Node-only DB client at module scope; load dynamically in Node runtime callbacks
 
 export const { auth, handlers, signIn } = NextAuth({
   ...authConfig,
@@ -17,16 +16,20 @@ export const { auth, handlers, signIn } = NextAuth({
     async signIn({ user, account, profile }) {
       if (!user?.email) return false;
 
+      const md5 = (await import("md5")).default;
       const email_hash = md5(user.email).toString();
-      const dbUser = await prisma.users.findUnique({ where: { email_hash } });
-      if (dbUser) return true;
+      const { db: drizzleDb, schema } = await import("./drizzle/client");
+      const existed = await drizzleDb
+        .select({ id: schema.users.id })
+        .from(schema.users)
+        .where(eq(schema.users.emailHash, email_hash))
+        .limit(1);
+      if (existed.length > 0) return true;
 
-      await prisma.users.create({
-        data: {
-          email_hash,
-          name: null,
-          role: "USER",
-        },
+      await drizzleDb.insert(schema.users).values({
+        emailHash: email_hash,
+        name: null,
+        role: "USER",
       });
       return true;
     },
@@ -38,7 +41,7 @@ export const { auth, handlers, signIn } = NextAuth({
       if (isLoggedIn) {
         const userName = auth.user.name;
 
-        const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
+        const isMaintenanceMode = env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
 
         if (isMaintenanceMode) {
           if (pathname !== "/maintenance") {
@@ -76,15 +79,24 @@ export const { auth, handlers, signIn } = NextAuth({
       }
       if (!user || !user?.email) return token;
 
+      const md5 = (await import("md5")).default;
       const email_hash = md5(user.email).toString();
-      const dbUser = await prisma.users.findUnique({ where: { email_hash } });
+      const { db: drizzleDb, schema } = await import("./drizzle/client");
+      const rows = await drizzleDb
+        .select({ id: schema.users.id, name: schema.users.name, role: schema.users.role })
+        .from(schema.users)
+        .where(eq(schema.users.emailHash, email_hash))
+        .limit(1);
+
+      const dbUser = rows[0];
       if (dbUser) {
         token.uid = dbUser.id.toString();
         token.email_hash = email_hash;
+        token.name = dbUser.name ?? null;
+        token.role = dbUser.role ?? "USER";
+      } else {
+        token.role = "USER";
       }
-
-      token.name = dbUser?.name ?? null;
-      token.role = dbUser?.role ?? "USER";
 
       return token;
     },
@@ -93,7 +105,7 @@ export const { auth, handlers, signIn } = NextAuth({
         session.user.id = token.uid as string;
         session.user.name = token.name;
         session.user.email_hash = token.email_hash as string;
-        session.user.role = token.role as $Enums.role;
+        session.user.role = token.role as "USER" | "ADMIN";
       }
       return session;
     },

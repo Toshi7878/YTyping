@@ -1,7 +1,7 @@
-import { custom_user_active_state, thumbnail_quality } from "@prisma/client";
 import z from "zod";
 import { MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "./const";
 
+import { customUserActiveStateEnum, thumbnailQualityEnum } from "@/server/drizzle/schema";
 import { ja } from "zod/locales";
 
 z.config(ja());
@@ -19,7 +19,7 @@ export const nameSchema = z.object({
 });
 
 export const userOptionSchema = z.object({
-  custom_user_active_state: z.enum(custom_user_active_state),
+  custom_user_active_state: z.enum(customUserActiveStateEnum.enumValues),
   hide_user_stats: z.boolean(),
 });
 
@@ -61,4 +61,6 @@ const mapInfoBaseSchema = z.object({
 });
 
 export const mapInfoFormSchema = mapInfoBaseSchema;
-export const mapInfoApiSchema = mapInfoBaseSchema.extend({ thumbnail_quality: z.enum(thumbnail_quality) });
+export const mapInfoApiSchema = mapInfoBaseSchema.extend({
+  thumbnail_quality: z.enum(thumbnailQualityEnum.enumValues),
+});

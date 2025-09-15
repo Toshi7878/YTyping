@@ -1,7 +1,7 @@
 import { inferRouterInputs, inferRouterOutputs, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { auth } from "../auth";
-import { prisma } from "../db";
+import { db as drizzleDb } from "../drizzle/client";
 import type { AppRouter } from "./root";
 
 const createContext = async () => {
@@ -9,7 +9,7 @@ const createContext = async () => {
 
   const user = { ...session?.user, id: Number(session?.user.id ?? 0) };
   return {
-    db: prisma,
+    db: drizzleDb,
     user,
   };
 };
@@ -36,7 +36,7 @@ export const protectedProcedure = t.procedure.use(function isAuthed(opts) {
 
   return opts.next({
     ctx: {
-      db: prisma,
+      db: drizzleDb,
       user: { ...opts.ctx.user, id: Number(opts.ctx.user.id) },
     },
   });

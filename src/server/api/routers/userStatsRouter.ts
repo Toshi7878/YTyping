@@ -1,6 +1,8 @@
 import { getBaseUrl } from "@/utils/getBaseUrl";
 import axios from "axios";
 import z from "zod";
+import { sql, and, gte, asc, eq } from "drizzle-orm";
+import { schema } from "@/server/drizzle/client";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userStatsRouter = {
@@ -14,28 +16,19 @@ export const userStatsRouter = {
       const { db, user } = ctx;
       const { mapId } = input;
       if (user.id) {
-        await db.user_stats.upsert({
-          where: {
-            user_id: user.id,
-          },
-          update: {
-            total_play_count: { increment: 1 },
-          },
-          create: {
-            user_id: user.id,
-            total_play_count: 1,
-          },
-        });
+        await db
+          .insert(schema.userStats)
+          .values({ userId: user.id, totalPlayCount: 1 })
+          .onConflictDoUpdate({
+            target: [schema.userStats.userId],
+            set: { totalPlayCount: sql`${schema.userStats.totalPlayCount} + 1` },
+          });
       }
 
-      await db.maps.update({
-        where: {
-          id: mapId,
-        },
-        data: {
-          play_count: { increment: 1 },
-        },
-      });
+      await db
+        .update(schema.maps)
+        .set({ playCount: sql`${schema.maps.playCount} + 1` })
+        .where(eq(schema.maps.id, mapId));
     }),
 
   incrementImeStats: protectedProcedure
@@ -88,26 +81,27 @@ export const userStatsRouter = {
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
 
-      const userTypingOptions = await db.user_stats.findUnique({
-        where: { user_id: input.userId },
-        select: {
-          total_ranking_count: true,
-          total_typing_time: true,
-          roma_type_total_count: true,
-          kana_type_total_count: true,
-          flick_type_total_count: true,
-          english_type_total_count: true,
-          symbol_type_total_count: true,
-          num_type_total_count: true,
-          space_type_total_count: true,
-          ime_type_total_count: true,
-          total_play_count: true,
-          max_combo: true,
-          created_at: true,
-        },
-      });
+      const rows = await db
+        .select({
+          total_ranking_count: schema.userStats.totalRankingCount,
+          total_typing_time: schema.userStats.totalTypingTime,
+          roma_type_total_count: schema.userStats.romaTypeTotalCount,
+          kana_type_total_count: schema.userStats.kanaTypeTotalCount,
+          flick_type_total_count: schema.userStats.flickTypeTotalCount,
+          english_type_total_count: schema.userStats.englishTypeTotalCount,
+          symbol_type_total_count: schema.userStats.symbolTypeTotalCount,
+          num_type_total_count: schema.userStats.numTypeTotalCount,
+          space_type_total_count: schema.userStats.spaceTypeTotalCount,
+          ime_type_total_count: schema.userStats.imeTypeTotalCount,
+          total_play_count: schema.userStats.totalPlayCount,
+          max_combo: schema.userStats.maxCombo,
+          created_at: schema.userStats.createdAt,
+        })
+        .from(schema.userStats)
+        .where(eq(schema.userStats.userId, input.userId))
+        .limit(1);
 
-      return userTypingOptions;
+      return rows[0] ?? null;
     }),
 
   getUserActivity: publicProcedure
@@ -122,26 +116,19 @@ export const userStatsRouter = {
       const oneYearAgo = new Date();
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-      const userTypingOptions = await db.user_daily_type_counts.findMany({
-        where: {
-          user_id: input.userId,
-          created_at: {
-            gte: oneYearAgo,
-          },
-        },
-        select: {
-          created_at: true,
-          roma_type_count: true,
-          kana_type_count: true,
-          flick_type_count: true,
-          english_type_count: true,
-          other_type_count: true,
-          ime_type_count: true,
-        },
-        orderBy: {
-          created_at: "asc",
-        },
-      });
+      const userTypingOptions = await db
+        .select({
+          created_at: schema.userDailyTypeCounts.createdAt,
+          roma_type_count: schema.userDailyTypeCounts.romaTypeCount,
+          kana_type_count: schema.userDailyTypeCounts.kanaTypeCount,
+          flick_type_count: schema.userDailyTypeCounts.flickTypeCount,
+          english_type_count: schema.userDailyTypeCounts.englishTypeCount,
+          other_type_count: schema.userDailyTypeCounts.otherTypeCount,
+          ime_type_count: schema.userDailyTypeCounts.imeTypeCount,
+        })
+        .from(schema.userDailyTypeCounts)
+        .where(and(eq(schema.userDailyTypeCounts.userId, input.userId), gte(schema.userDailyTypeCounts.createdAt, oneYearAgo)))
+        .orderBy(asc(schema.userDailyTypeCounts.createdAt));
 
       const dailyTotals: {
         date: string;

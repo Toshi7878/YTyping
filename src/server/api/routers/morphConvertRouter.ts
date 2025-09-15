@@ -1,5 +1,7 @@
 import { env } from "@/env";
 import z from "zod";
+import { eq } from "drizzle-orm";
+import { schema } from "@/server/drizzle/client";
 import { protectedProcedure } from "../trpc";
 
 export const morphConvertRouter = {
@@ -12,8 +14,14 @@ export const morphConvertRouter = {
   }),
 
   getCustomDic: protectedProcedure.query(async ({ ctx }) => {
-    const customDic = await ctx.db.morph_convert_kana_dic.findMany({ where: { type: "DICTIONARY" } });
-    const customRegexDic = await ctx.db.morph_convert_kana_dic.findMany({ where: { type: "REGEX" } });
+    const customDic = await ctx.db
+      .select({ surface: schema.morphConvertKanaDic.surface, reading: schema.morphConvertKanaDic.reading, type: schema.morphConvertKanaDic.type })
+      .from(schema.morphConvertKanaDic)
+      .where(eq(schema.morphConvertKanaDic.type, "DICTIONARY"));
+    const customRegexDic = await ctx.db
+      .select({ surface: schema.morphConvertKanaDic.surface, reading: schema.morphConvertKanaDic.reading, type: schema.morphConvertKanaDic.type })
+      .from(schema.morphConvertKanaDic)
+      .where(eq(schema.morphConvertKanaDic.type, "REGEX"));
 
     return { customDic, customRegexDic };
   }),
@@ -23,12 +31,7 @@ export const morphConvertRouter = {
     .mutation(async ({ input, ctx }) => {
       const { surface, reading } = input;
 
-      await ctx.db.morph_convert_kana_dic.create({
-        data: {
-          surface,
-          reading,
-        },
-      });
+      await ctx.db.insert(schema.morphConvertKanaDic).values({ surface, reading });
 
       return { success: true };
     }),
@@ -38,12 +41,7 @@ export const morphConvertRouter = {
     .mutation(async ({ input, ctx }) => {
       const { lyrics, word } = input;
 
-      await ctx.db.fix_word_edit_logs.create({
-        data: {
-          lyrics,
-          word,
-        },
-      });
+      await ctx.db.insert(schema.fixWordEditLogs).values({ lyrics, word });
 
       return { success: true };
     }),

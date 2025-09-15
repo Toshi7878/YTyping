@@ -1,43 +1,53 @@
-import { custom_user_active_state } from "@prisma/client";
 import z from "zod";
+import { eq } from "drizzle-orm";
+import { schema } from "@/server/drizzle/client";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userOptionRouter = {
   getUserOptions: publicProcedure.input(z.object({ userId: z.number().optional() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { userId } = input;
+    const targetId = userId ? userId : user.id;
 
-    const userOptions = await db.user_options.findUnique({
-      where: { user_id: userId ? userId : user.id },
-      select: { custom_user_active_state: true, hide_user_stats: true },
-    });
+    const rows = await db
+      .select({
+        custom_user_active_state: schema.userOptions.customUserActiveState,
+        hide_user_stats: schema.userOptions.hideUserStats,
+      })
+      .from(schema.userOptions)
+      .where(eq(schema.userOptions.userId, targetId))
+      .limit(1);
 
-    return userOptions;
+    return rows[0] ?? null;
   }),
 
   update: protectedProcedure
     .input(
       z.object({
-        custom_user_active_state: z.enum(custom_user_active_state).optional(),
+        custom_user_active_state: z.enum(schema.customUserActiveStateEnum.enumValues).optional(),
         hide_user_stats: z.boolean().optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;
 
-      const updated = await db.user_options.upsert({
-        where: {
-          user_id: user.id,
-        },
-        update: {
-          ...input,
-        },
-        create: {
-          user_id: user.id,
-          ...input,
-        },
-      });
+      const values = {
+        userId: user.id,
+        ...(input.custom_user_active_state !== undefined && {
+          customUserActiveState: input.custom_user_active_state,
+        }),
+        ...(input.hide_user_stats !== undefined && { hideUserStats: input.hide_user_stats }),
+      } as const;
 
-      return updated;
+      const res = await db
+        .insert(schema.userOptions)
+        .values(values)
+        .onConflictDoUpdate({ target: [schema.userOptions.userId], set: { ...values } })
+        .returning({
+          custom_user_active_state: schema.userOptions.customUserActiveState,
+          hide_user_stats: schema.userOptions.hideUserStats,
+        });
+
+      return res[0] ?? null;
     }),
 };

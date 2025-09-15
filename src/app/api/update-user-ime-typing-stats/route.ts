@@ -1,6 +1,6 @@
 import { RouterInputs } from "@/server/api/trpc";
-import { prisma } from "@/server/db";
-import { Prisma } from "@prisma/client";
+import { db as drizzleDb, schema } from "@/server/drizzle/client";
+import { eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 type Input = RouterInputs["userStats"]["incrementImeStats"];
@@ -11,22 +11,21 @@ export async function POST(request: Request) {
     const bodyText = await request.text();
     const { userId, ...input }: Input & UserId = JSON.parse(bodyText);
 
-    const updateData: Prisma.user_statsUpdateInput = {
-      ime_type_total_count: { increment: input.ime_type },
-      total_typing_time: { increment: input.total_type_time },
-    };
-
-    await prisma.user_stats.upsert({
-      where: {
-        user_id: userId,
-      },
-      update: updateData,
-      create: {
-        user_id: userId,
-        ime_type_total_count: input.ime_type,
-        total_typing_time: input.total_type_time,
-      },
-    });
+    // Upsert user_stats with increments
+    await drizzleDb
+      .insert(schema.userStats)
+      .values({
+        userId,
+        imeTypeTotalCount: input.ime_type,
+        totalTypingTime: input.total_type_time,
+      })
+      .onConflictDoUpdate({
+        target: [schema.userStats.userId],
+        set: {
+          imeTypeTotalCount: sql`${schema.userStats.imeTypeTotalCount} + ${input.ime_type}`,
+          totalTypingTime: sql`${schema.userStats.totalTypingTime} + ${input.total_type_time}`,
+        },
+      });
 
     // DBの日付変更基準（15:00）に合わせて日付を計算
     const now = new Date();
@@ -40,22 +39,13 @@ export async function POST(request: Request) {
 
     const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
 
-    await prisma.user_daily_type_counts.upsert({
-      where: {
-        user_id_created_at: {
-          user_id: userId,
-          created_at: dbDate,
-        },
-      },
-      update: {
-        ime_type_count: { increment: input.ime_type },
-      },
-      create: {
-        user_id: userId,
-        created_at: dbDate,
-        ime_type_count: input.ime_type,
-      },
-    });
+    await drizzleDb
+      .insert(schema.userDailyTypeCounts)
+      .values({ userId, createdAt: dbDate, imeTypeCount: input.ime_type })
+      .onConflictDoUpdate({
+        target: [schema.userDailyTypeCounts.userId, schema.userDailyTypeCounts.createdAt],
+        set: { imeTypeCount: sql`${schema.userDailyTypeCounts.imeTypeCount} + ${input.ime_type}` },
+      });
 
     return NextResponse.json({ success: true });
   } catch (error) {

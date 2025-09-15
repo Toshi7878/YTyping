@@ -1,18 +1,18 @@
 import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H5 } from "@/components/ui/typography";
-import { $Enums } from "@prisma/client";
+import { timeOffsetKeyEnum, toggleInputModeKeyEnum } from "@/server/drizzle/schema";
 
 const UserShortcutKeyCheckbox = () => {
   const { time_offset_key, toggle_input_mode_key } = useUserTypingOptionsState();
   const { setUserTypingOptions } = useSetUserTypingOptions();
 
   const changeTimeOffsetKey = (value: string) => {
-    setUserTypingOptions({ time_offset_key: value as $Enums.time_offset_key });
+    setUserTypingOptions({ time_offset_key: value as (typeof timeOffsetKeyEnum.enumValues)[number] });
   };
 
   const changeInputModeKey = (value: string) => {
-    setUserTypingOptions({ toggle_input_mode_key: value as $Enums.toggle_input_mode_key });
+    setUserTypingOptions({ toggle_input_mode_key: value as (typeof toggleInputModeKeyEnum.enumValues)[number] });
   };
 
   return (

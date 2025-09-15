@@ -1,4 +1,5 @@
 import z from "zod";
+import { sql } from "drizzle-orm";
 import { publicProcedure } from "../trpc";
 
 export const sendResultSchema = z
@@ -59,61 +60,45 @@ export const rankingRouter = {
     const { db, user } = ctx;
     const { mapId } = input;
 
-    const rankingList = await db.results.findMany({
-      where: {
-        map_id: mapId,
-        status: { isNot: null },
-      },
-      select: {
-        id: true,
-        user_id: true,
-        clap_count: true,
-        updated_at: true,
-        status: {
-          select: {
-            score: true,
-            default_speed: true,
-            kpm: true,
-            rkpm: true,
-            roma_kpm: true,
-            roma_rkpm: true,
-            roma_type: true,
-            kana_type: true,
-            flick_type: true,
-            english_type: true,
-            symbol_type: true,
-            space_type: true,
-            num_type: true,
-            miss: true,
-            lost: true,
-            max_combo: true,
-            clear_rate: true,
-          },
-        },
-        user: {
-          select: {
-            name: true,
-          },
-        },
-        claps: {
-          where: {
-            user_id: user.id,
-          },
-          select: {
-            is_claped: true,
-          },
-        },
-      },
-      orderBy: {
-        status: {
-          score: "desc",
-        },
-      },
-    });
+    const rows = (await db.execute(sql`
+      SELECT
+        results."id",
+        results."user_id",
+        results."clap_count",
+        results."updated_at",
+        json_build_object(
+          'score', rs."score",
+          'default_speed', rs."default_speed",
+          'kpm', rs."kpm",
+          'rkpm', rs."rkpm",
+          'roma_kpm', rs."roma_kpm",
+          'roma_rkpm', rs."roma_rkpm",
+          'roma_type', rs."roma_type",
+          'kana_type', rs."kana_type",
+          'flick_type', rs."flick_type",
+          'english_type', rs."english_type",
+          'symbol_type', rs."symbol_type",
+          'space_type', rs."space_type",
+          'num_type', rs."num_type",
+          'miss', rs."miss",
+          'lost', rs."lost",
+          'max_combo', rs."max_combo",
+          'clear_rate', rs."clear_rate"
+        ) as "status",
+        json_build_object('name', u."name") as "user",
+        (
+          SELECT rc."is_claped"
+          FROM result_claps rc
+          WHERE rc."result_id" = results."id" AND rc."user_id" = ${user.id}
+          LIMIT 1
+        ) as "claps"
+      FROM results
+      JOIN result_statuses rs ON rs."result_id" = results."id"
+      JOIN users u ON u."id" = results."user_id"
+      WHERE results."map_id" = ${mapId}
+      ORDER BY rs."score" DESC
+    `)).rows as any[];
 
-    // Ensure status is non-null in the returned type
-    const nonNullRankingList = rankingList.map((r) => ({ ...r, status: r.status! }));
-
-    return nonNullRankingList;
+    return rows;
   }),
 };

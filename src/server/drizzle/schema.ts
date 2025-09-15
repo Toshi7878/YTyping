@@ -4,19 +4,9 @@ import { boolean, char, check, doublePrecision, foreignKey, integer, pgEnum, pgT
 import { DEFAULT_TYPING_OPTIONS } from "./const";
 
 // ===== Enums =====
-export const thumbnailQualityEnum = pgEnum("thumbnail_quality", ["mqdefault", "maxresdefault"]);
-
-export const categoryEnum = pgEnum("category", ["CSS", "SPEED_SHIFT"]);
-
-export const actionEnum = pgEnum("action", ["LIKE", "OVER_TAKE"]);
-
-export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
-
-export const customUserActiveStateEnum = pgEnum("custom_user_active_state", ["ONLINE", "ASK_ME", "HIDE_ONLINE"]);
-
-export const morphConvertKanaDicTypeEnum = pgEnum("morph_convert_kana_dic_type", ["DICTIONARY", "REGEX"]);
 
 // ===== Tables =====
+export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: varchar("name").unique(),
@@ -26,6 +16,8 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
+export const categoryEnum = pgEnum("category", ["CSS", "SPEED_SHIFT"]);
+export const thumbnailQualityEnum = pgEnum("thumbnail_quality", ["mqdefault", "maxresdefault"]);
 export const maps = pgTable("maps", {
   id: serial("id").primaryKey(),
   videoId: char("video_id", { length: 11 }).notNull(),
@@ -155,6 +147,7 @@ export const resultClaps = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.resultId] })],
 );
 
+export const actionEnum = pgEnum("action", ["LIKE", "OVER_TAKE"]);
 export const notifications = pgTable(
   "notifications",
   {
@@ -194,6 +187,7 @@ export const userProfiles = pgTable("user_profiles", {
   myKeyboard: text("my_keyboard").notNull().default(""),
 });
 
+export const customUserActiveStateEnum = pgEnum("custom_user_active_state", ["ONLINE", "ASK_ME", "HIDE_ONLINE"]);
 export const userOptions = pgTable("user_options", {
   userId: integer("user_id")
     .primaryKey()
@@ -297,6 +291,7 @@ export const userDailyTypeCounts = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.createdAt] })],
 );
 
+export const morphConvertKanaDicTypeEnum = pgEnum("morph_convert_kana_dic_type", ["DICTIONARY", "REGEX"]);
 export const morphConvertKanaDic = pgTable("morph_convert_kana_dic", {
   surface: varchar("surface").primaryKey(),
   reading: varchar("reading").notNull(),

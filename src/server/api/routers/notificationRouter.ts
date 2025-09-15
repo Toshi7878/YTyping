@@ -1,25 +1,17 @@
+import { schema } from "@/server/drizzle/client";
+import { and, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure } from "../trpc";
 
 export const notificationRouter = {
   hasNewNotification: protectedProcedure.query(async ({ ctx }) => {
-    const { db, user } = ctx;
+    const rows = await ctx.db
+      .select({ one: sql`1` })
+      .from(schema.notifications)
+      .where(and(eq(schema.notifications.visitedId, ctx.user.id), eq(schema.notifications.checked, false)))
+      .limit(1);
 
-    if (!user.id) {
-      return false;
-    }
-
-    const data = await db.notifications.findFirst({
-      where: {
-        visited_id: user.id,
-        checked: false,
-      },
-      select: {
-        checked: true,
-      },
-    });
-
-    return data === null ? false : true;
+    return rows.length > 0;
   }),
   getInfiniteUserNotifications: protectedProcedure
     .input(
@@ -35,111 +27,78 @@ export const notificationRouter = {
       const limit = input.limit ?? 20;
 
       try {
-        const notifyList = await db.notifications.findMany({
-          where: {
-            visited_id: user.id,
+        const cond = cursor ? sql`AND n."created_at" < ${cursor}` : sql``;
+        const notifyRows = (
+          await db.execute(sql`
+          SELECT
+            n."created_at",
+            n."action",
+            n."visitor_id",
+            n."old_rank",
+            u."name" as visitor_name,
+            (
+              SELECT rs."score" FROM results r
+              JOIN result_statuses rs ON rs."result_id" = r."id"
+              WHERE r."map_id" = n."map_id" AND r."user_id" = n."visited_id"
+              ORDER BY rs."score" DESC
+              LIMIT 1
+            ) as visited_score,
+            (
+              SELECT rs2."score" FROM results r2
+              JOIN result_statuses rs2 ON rs2."result_id" = r2."id"
+              WHERE r2."map_id" = n."map_id" AND r2."user_id" = n."visitor_id"
+              ORDER BY rs2."score" DESC
+              LIMIT 1
+            ) as visitor_score,
+            json_build_object(
+              'id', m."id",
+              'title', m."title",
+              'artist_name', m."artist_name",
+              'music_source', m."music_source",
+              'video_id', m."video_id",
+              'creator_id', m."creator_id",
+              'updated_at', m."updated_at",
+              'preview_time', m."preview_time",
+              'thumbnail_quality', m."thumbnail_quality",
+              'like_count', m."like_count",
+              'ranking_count', m."ranking_count",
+              'difficulty', json_build_object(
+                'roma_kpm_median', d."roma_kpm_median",
+                'roma_kpm_max', d."roma_kpm_max",
+                'total_time', d."total_time"
+              ),
+              'creator', json_build_object('id', cu."id", 'name', cu."name"),
+              'is_liked', EXISTS (
+                SELECT 1 FROM map_likes ml WHERE ml."map_id" = m."id" AND ml."user_id" = ${user.id} AND ml."is_liked" = true
+              ),
+              'myRank', (
+                SELECT MIN(r3."rank")::int FROM results r3 WHERE r3."map_id" = m."id" AND r3."user_id" = ${user.id}
+              )
+            ) as "map"
+          FROM notifications n
+          JOIN users u ON u."id" = n."visitor_id"
+          JOIN maps m ON m."id" = n."map_id"
+          LEFT JOIN map_difficulties d ON d."map_id" = m."id"
+          LEFT JOIN users cu ON cu."id" = m."creator_id"
+          WHERE n."visited_id" = ${user.id}
+          ${cond}
+          ORDER BY n."created_at" DESC
+          LIMIT ${limit + 1}
+        `)
+        ).rows as any[];
+        const normalized = notifyRows.map((n) => ({
+          created_at: n.created_at,
+          action: n.action,
+          visitor_id: n.visitor_id,
+          old_rank: n.old_rank,
+          visitor: { name: n.visitor_name },
+          visitedResult: { status: { score: n.visited_score ?? 0 } },
+          visitorResult: { status: { score: n.visitor_score ?? 0 } },
+          map: {
+            ...n.map,
+            difficulty: n.map?.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
           },
-          take: limit + 1,
-          cursor: cursor ? { created_at: cursor } : undefined,
-
-          orderBy: {
-            created_at: "desc",
-          },
-          select: {
-            created_at: true,
-            action: true,
-            visitor_id: true,
-            old_rank: true,
-            visitor: {
-              select: {
-                name: true,
-              },
-            },
-            visitedResult: {
-              select: {
-                status: {
-                  select: {
-                    score: true,
-                  },
-                },
-              },
-            },
-
-            visitorResult: {
-              select: {
-                status: {
-                  select: {
-                    score: true,
-                  },
-                },
-              },
-            },
-            map: {
-              select: {
-                id: true,
-                title: true,
-                artist_name: true,
-                music_source: true,
-                video_id: true,
-                creator_id: true,
-                updated_at: true,
-                preview_time: true,
-                thumbnail_quality: true,
-                like_count: true,
-                ranking_count: true,
-
-                difficulty: {
-                  select: {
-                    roma_kpm_median: true,
-                    roma_kpm_max: true,
-                    total_time: true,
-                  },
-                },
-                map_likes: {
-                  where: {
-                    user_id: user?.id,
-                  },
-                  select: {
-                    is_liked: true,
-                  },
-                  take: 1,
-                },
-                results: {
-                  where: {
-                    user_id: user?.id,
-                  },
-                  select: {
-                    rank: true,
-                  },
-                },
-                creator: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        });
-        const normalized = notifyList.map((n) => {
-          const { map_likes, results, difficulty, ...restMap } = n.map;
-          return {
-            ...n,
-            map: {
-              ...restMap,
-              difficulty: difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
-              is_liked: (map_likes?.length ?? 0) > 0,
-              myRank: results[0]?.rank ?? null,
-            },
-            visitedResult: n.visitedResult
-              ? { ...n.visitedResult, status: n.visitedResult.status ?? { score: 0 } }
-              : { status: { score: 0 } },
-            visitorResult: n.visitorResult
-              ? { ...n.visitorResult, status: n.visitorResult.status ?? { score: 0 } }
-              : { status: { score: 0 } },
-          };
-        });
+        }));
 
         let nextCursor: typeof cursor | undefined = undefined;
         if (normalized.length > limit) {
@@ -161,15 +120,10 @@ export const notificationRouter = {
   postUserNotificationRead: protectedProcedure.mutation(async ({ ctx }) => {
     const { db, user } = ctx;
 
-    await db.notifications.updateMany({
-      where: {
-        visited_id: user.id,
-        checked: false,
-      },
-      data: {
-        checked: true,
-      },
-    });
+    await db
+      .update(schema.notifications)
+      .set({ checked: true })
+      .where(and(eq(schema.notifications.visitedId, user.id), eq(schema.notifications.checked, false)));
 
     return new Response("Notifications marked as read", { status: 200 });
   }),

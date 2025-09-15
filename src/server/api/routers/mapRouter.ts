@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabaseClient";
-import { prisma } from "@/server/db";
+import { db as drizzleDb, schema } from "@/server/drizzle/client";
+import { sql, and, eq } from "drizzle-orm";
 import { MapLine } from "@/types/map";
 import { mapDataSchema } from "@/validator/mapDataSchema";
 import { mapInfoApiSchema } from "@/validator/schema";
@@ -22,31 +23,30 @@ export const mapRouter = {
     const { db, user } = ctx;
     const { mapId } = input;
 
-    const mapInfo = await db.maps.findUnique({
-      where: { id: mapId },
-      select: {
-        title: true,
-        artist_name: true,
-        music_source: true,
-        creator_comment: true,
-        creator_id: true,
-        tags: true,
-        video_id: true,
-        preview_time: true,
-        created_at: true,
-        updated_at: true,
-        thumbnail_quality: true,
-        map_likes: {
-          where: { user_id: user.id },
-          select: { is_liked: true },
-        },
-        creator: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
+    const rows = (await db.execute(sql`
+      SELECT
+        m."title",
+        m."artist_name",
+        m."music_source",
+        m."creator_comment",
+        m."creator_id",
+        m."tags",
+        m."video_id",
+        m."preview_time",
+        m."created_at",
+        m."updated_at",
+        m."thumbnail_quality",
+        EXISTS (
+          SELECT 1 FROM map_likes ml WHERE ml."map_id" = m."id" AND ml."user_id" = ${user.id} AND ml."is_liked" = true
+        ) as is_liked,
+        u."name" as creator_name
+      FROM maps m
+      JOIN users u ON u."id" = m."creator_id"
+      WHERE m."id" = ${mapId}
+      LIMIT 1
+    `)).rows as any[];
+
+    const mapInfo = rows[0];
 
     if (!mapInfo) {
       throw new TRPCError({
@@ -54,13 +54,9 @@ export const mapRouter = {
       });
     }
 
-    const isLiked = !!mapInfo?.map_likes?.[0]?.is_liked;
-    const creatorName = mapInfo?.creator.name;
+    const { is_liked, creator_name, ...restMapInfo } = mapInfo;
 
-    // map_likesプロパティを除外して返す
-    const { map_likes, creator, ...restMapInfo } = mapInfo;
-
-    return { ...restMapInfo, isLiked, creatorName };
+    return { ...restMapInfo, isLiked: !!is_liked, creatorName: creator_name };
   }),
 
   getMap: publicProcedure.input(z.object({ mapId: z.string() })).query(async ({ input }) => {
@@ -104,16 +100,12 @@ export const mapRouter = {
       const hasUpsertPermission =
         mapId === "new"
           ? true
-          : await prisma.maps
-              .findUnique({
-                where: { id: Number(mapId) },
-                select: {
-                  creator_id: true,
-                },
-              })
-              .then((res) => {
-                return res?.creator_id === userId || userRole === "ADMIN";
-              });
+          : await ctx.db
+              .select({ creator_id: schema.maps.creatorId })
+              .from(schema.maps)
+              .where(eq(schema.maps.id, Number(mapId)))
+              .limit(1)
+              .then((rows) => rows[0]?.creator_id === userId || userRole === "ADMIN");
 
       if (!hasUpsertPermission) {
         return {
@@ -167,36 +159,49 @@ const upsertMap = async ({
   isMapDataEdited: boolean;
   mapData: z.infer<typeof mapDataSchema>;
 }) => {
-  return await prisma.$transaction(async (tx) => {
+  return await drizzleDb.transaction(async (tx) => {
     try {
-      const upsertedMap = await tx.maps.upsert({
-        where: {
-          id: mapId === "new" ? -1 : Number(mapId),
-        },
-        update: {
-          ...mapInfo,
-          ...(isMapDataEdited && { updated_at: new Date() }),
-        },
-        create: {
-          ...mapInfo,
-          creator_id: userId,
-        },
-      });
+      const mapValues = {
+        videoId: mapInfo.video_id,
+        title: mapInfo.title,
+        artistName: mapInfo.artist_name,
+        musicSource: mapInfo.music_source,
+        creatorComment: mapInfo.creator_comment,
+        tags: mapInfo.tags,
+        creatorId: userId,
+        previewTime: Number(mapInfo.preview_time),
+        thumbnailQuality: mapInfo.thumbnail_quality,
+      } as const;
 
-      const newMapId = upsertedMap.id;
+      const inserted = await tx
+        .insert(schema.maps)
+        .values(mapValues)
+        .onConflictDoUpdate({
+          target: [schema.maps.id],
+          set: { ...mapValues, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) },
+        })
+        .returning({ id: schema.maps.id });
 
-      await tx.map_difficulties.upsert({
-        where: {
-          map_id: newMapId,
-        },
-        update: {
-          ...mapDifficulty,
-        },
-        create: {
-          map_id: newMapId,
-          ...mapDifficulty,
-        },
-      });
+      const newMapId = mapId === "new" ? inserted[0]!.id : Number(mapId);
+
+      const diffValues = {
+        mapId: newMapId,
+        romaKpmMedian: mapDifficulty.roma_kpm_median,
+        romaKpmMax: mapDifficulty.roma_kpm_max,
+        kanaKpmMedian: mapDifficulty.kana_kpm_median,
+        kanaKpmMax: mapDifficulty.kana_kpm_max,
+        totalTime: mapDifficulty.total_time,
+        romaTotalNotes: mapDifficulty.roma_total_notes,
+        kanaTotalNotes: mapDifficulty.kana_total_notes,
+        englishTotalNotes: 0,
+        symbolTotalNotes: 0,
+        intTotalNotes: 0,
+      } as const;
+
+      await tx
+        .insert(schema.mapDifficulties)
+        .values(diffValues)
+        .onConflictDoUpdate({ target: [schema.mapDifficulties.mapId], set: { ...diffValues } });
 
       await supabase.storage
         .from("map-data")
@@ -210,7 +215,7 @@ const upsertMap = async ({
 
       return newMapId;
     } catch (error) {
-      console.error("Prisma Error:", error);
+      console.error("DB Error:", error);
       if (error instanceof Error) {
         throw new Error(`データベース操作に失敗しました: ${error.message}`);
       }

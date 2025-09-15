@@ -1,4 +1,6 @@
 import z from "zod";
+import { eq } from "drizzle-orm";
+import { schema } from "@/server/drizzle/client";
 import { publicProcedure } from "../trpc";
 
 export const userRouter = {
@@ -9,12 +11,12 @@ export const userRouter = {
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.users.findUnique({
-        where: { id: input.userId },
-        select: {
-          name: true,
-        },
-      });
+      const rows = await ctx.db
+        .select({ name: schema.users.name })
+        .from(schema.users)
+        .where(eq(schema.users.id, input.userId))
+        .limit(1);
+      return rows[0] ?? null;
     }),
 
   getUserProfile: publicProcedure
@@ -25,29 +27,26 @@ export const userRouter = {
     )
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
-      const userInfo = await db.users.findUnique({
-        where: { id: input.userId },
-        select: {
-          name: true,
-          user_profiles: {
-            select: {
-              finger_chart_url: true,
-              my_keyboard: true,
-            },
-            where: { user_id: input.userId },
-          },
-        },
-      });
+      const rows = await db
+        .select({
+          name: schema.users.name,
+          finger_chart_url: schema.userProfiles.fingerChartUrl,
+          my_keyboard: schema.userProfiles.myKeyboard,
+        })
+        .from(schema.users)
+        .leftJoin(schema.userProfiles, eq(schema.userProfiles.userId, schema.users.id))
+        .where(eq(schema.users.id, input.userId))
+        .limit(1);
 
-      if (!userInfo) return;
+      const row = rows[0];
+      if (!row) return;
 
-      const { name, user_profiles } = userInfo;
-
-      const profile = user_profiles[0];
+      const { name, finger_chart_url, my_keyboard } = row;
 
       return {
         name,
-        ...profile,
+        finger_chart_url: finger_chart_url ?? "",
+        my_keyboard: my_keyboard ?? "",
       };
     }),
 };

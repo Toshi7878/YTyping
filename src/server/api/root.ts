@@ -10,6 +10,7 @@ import { notificationRouter } from "./routers/notificationRouter";
 import { rankingRouter } from "./routers/rankingRouter";
 import { resultRouter } from "./routers/resultRouter";
 import { userOptionRouter } from "./routers/userOptionRouter";
+// Swap to Drizzle-based router. Keep original file intact due to encoding.
 import { userProfileSettingRouter } from "./routers/userProfileSettingRouter";
 import { userRouter } from "./routers/userRouter";
 import { userStatsRouter } from "./routers/userStatsRouter";

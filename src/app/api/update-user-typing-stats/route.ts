@@ -1,6 +1,6 @@
 import { RouterInputs } from "@/server/api/trpc";
-import { prisma } from "@/server/db";
-import { Prisma } from "@prisma/client";
+import { db, schema } from "@/server/drizzle/client";
+import { eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 type Input = RouterInputs["userStats"]["incrementTypingStats"];
@@ -10,46 +10,46 @@ export async function POST(request: Request) {
   try {
     const bodyText = await request.text();
     const { userId, ...input }: Input & UserId = JSON.parse(bodyText);
-    const currentStats = await prisma.user_stats.findUnique({
-      where: { user_id: userId },
-      select: { max_combo: true },
-    });
 
-    const updateData: Prisma.user_statsUpdateInput = {
-      roma_type_total_count: { increment: input.romaType },
-      kana_type_total_count: { increment: input.kanaType },
-      flick_type_total_count: { increment: input.flickType },
-      english_type_total_count: { increment: input.englishType },
-      num_type_total_count: { increment: input.numType },
-      symbol_type_total_count: { increment: input.symbolType },
-      space_type_total_count: { increment: input.spaceType },
-      total_typing_time: { increment: input.totalTypeTime },
-    };
+    const currentStats = await db
+      .select({ max_combo: schema.userStats.maxCombo })
+      .from(schema.userStats)
+      .where(eq(schema.userStats.userId, userId))
+      .limit(1);
 
-    const isUpdateMaxCombo = !currentStats || input.maxCombo > (currentStats?.max_combo || 0);
-    if (isUpdateMaxCombo) {
-      updateData.max_combo = input.maxCombo;
-    }
+    const currentMax = currentStats[0]?.max_combo ?? 0;
+    const isUpdateMaxCombo = input.maxCombo > currentMax;
 
     const { romaType, kanaType, flickType, englishType, numType, symbolType, spaceType } = input;
-    await prisma.user_stats.upsert({
-      where: {
-        user_id: userId,
-      },
-      update: updateData,
-      create: {
-        user_id: userId,
-        roma_type_total_count: romaType,
-        kana_type_total_count: kanaType,
-        flick_type_total_count: flickType,
-        english_type_total_count: englishType,
-        num_type_total_count: numType,
-        symbol_type_total_count: symbolType,
-        space_type_total_count: spaceType,
-        total_typing_time: input.totalTypeTime,
-        max_combo: input.maxCombo,
-      },
-    });
+
+    await db
+      .insert(schema.userStats)
+      .values({
+        userId,
+        romaTypeTotalCount: romaType,
+        kanaTypeTotalCount: kanaType,
+        flickTypeTotalCount: flickType,
+        englishTypeTotalCount: englishType,
+        numTypeTotalCount: numType,
+        symbolTypeTotalCount: symbolType,
+        spaceTypeTotalCount: spaceType,
+        totalTypingTime: input.totalTypeTime,
+        maxCombo: input.maxCombo,
+      })
+      .onConflictDoUpdate({
+        target: [schema.userStats.userId],
+        set: {
+          romaTypeTotalCount: sql`${schema.userStats.romaTypeTotalCount} + ${romaType}`,
+          kanaTypeTotalCount: sql`${schema.userStats.kanaTypeTotalCount} + ${kanaType}`,
+          flickTypeTotalCount: sql`${schema.userStats.flickTypeTotalCount} + ${flickType}`,
+          englishTypeTotalCount: sql`${schema.userStats.englishTypeTotalCount} + ${englishType}`,
+          numTypeTotalCount: sql`${schema.userStats.numTypeTotalCount} + ${numType}`,
+          symbolTypeTotalCount: sql`${schema.userStats.symbolTypeTotalCount} + ${symbolType}`,
+          spaceTypeTotalCount: sql`${schema.userStats.spaceTypeTotalCount} + ${spaceType}`,
+          totalTypingTime: sql`${schema.userStats.totalTypingTime} + ${input.totalTypeTime}`,
+          ...(isUpdateMaxCombo ? { maxCombo: input.maxCombo } : {}),
+        },
+      });
 
     // DBの日付変更基準（15:00）に合わせて日付を計算
     const now = new Date();
@@ -63,30 +63,27 @@ export async function POST(request: Request) {
 
     const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
 
-    await prisma.user_daily_type_counts.upsert({
-      where: {
-        user_id_created_at: {
-          user_id: userId,
-          created_at: dbDate,
+    await db
+      .insert(schema.userDailyTypeCounts)
+      .values({
+        userId,
+        createdAt: dbDate,
+        romaTypeCount: romaType,
+        kanaTypeCount: kanaType,
+        flickTypeCount: flickType,
+        englishTypeCount: englishType,
+        otherTypeCount: spaceType + numType + symbolType,
+      })
+      .onConflictDoUpdate({
+        target: [schema.userDailyTypeCounts.userId, schema.userDailyTypeCounts.createdAt],
+        set: {
+          romaTypeCount: sql`${schema.userDailyTypeCounts.romaTypeCount} + ${romaType}`,
+          kanaTypeCount: sql`${schema.userDailyTypeCounts.kanaTypeCount} + ${kanaType}`,
+          flickTypeCount: sql`${schema.userDailyTypeCounts.flickTypeCount} + ${flickType}`,
+          englishTypeCount: sql`${schema.userDailyTypeCounts.englishTypeCount} + ${englishType}`,
+          otherTypeCount: sql`${schema.userDailyTypeCounts.otherTypeCount} + ${spaceType + numType + symbolType}`,
         },
-      },
-      update: {
-        roma_type_count: { increment: romaType },
-        kana_type_count: { increment: kanaType },
-        flick_type_count: { increment: flickType },
-        english_type_count: { increment: englishType },
-        other_type_count: { increment: spaceType + numType + symbolType },
-      },
-      create: {
-        user_id: userId,
-        created_at: dbDate,
-        roma_type_count: romaType,
-        kana_type_count: kanaType,
-        flick_type_count: flickType,
-        english_type_count: englishType,
-        other_type_count: spaceType + numType + symbolType,
-      },
-    });
+      });
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -13,8 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBreakPoint } from "@/lib/useBreakPoint";
 import { cn } from "@/lib/utils";
+import { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
-import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
@@ -149,7 +149,7 @@ const UserLineCompletedRadioButton = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { line_completed_display } = useUserTypingOptionsState();
 
-  const changeRadio = (value: $Enums.line_completed_display) => {
+  const changeRadio = (value: (typeof lineCompletedDisplayEnum.enumValues)[number]) => {
     setUserTypingOptions({ line_completed_display: value });
   };
 
@@ -174,7 +174,7 @@ const UserNextDisplayRadioButton = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { next_display } = useUserTypingOptionsState();
 
-  const changeRadio = (value: $Enums.next_display) => {
+  const changeRadio = (value: (typeof nextDisplayEnum.enumValues)[number]) => {
     setUserTypingOptions({ next_display: value });
   };
 

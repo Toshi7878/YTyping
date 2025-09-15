@@ -1,4 +1,6 @@
 import z from "zod";
+import { and, count, eq } from "drizzle-orm";
+import { schema } from "@/server/drizzle/client";
 import { protectedProcedure } from "../trpc";
 
 export const clapRouter = {
@@ -13,41 +15,22 @@ export const clapRouter = {
       const { db, user } = ctx;
       const { resultId, optimisticState } = input;
 
-      const payload = await db.$transaction(async (tx) => {
-        const claped = await tx.result_claps.upsert({
-          where: {
-            user_id_result_id: {
-              user_id: user.id,
-              result_id: resultId,
-            },
-          },
-          update: {
-            is_claped: optimisticState,
-          },
-          create: {
-            user_id: user.id,
-            result_id: resultId,
-            is_claped: true,
-          },
-        });
+      const payload = await db.transaction(async (tx) => {
+        const res = await tx
+          .insert(schema.resultClaps)
+          .values({ userId: user.id, resultId, isClaped: true })
+          .onConflictDoUpdate({ target: [schema.resultClaps.userId, schema.resultClaps.resultId], set: { isClaped: optimisticState } })
+          .returning({ is_claped: schema.resultClaps.isClaped });
 
-        const newClapCount = await tx.result_claps.count({
-          where: {
-            result_id: resultId,
-            is_claped: true,
-          },
-        });
+        const newClapCountRow = await tx
+          .select({ c: count() })
+          .from(schema.resultClaps)
+          .where(and(eq(schema.resultClaps.resultId, resultId), eq(schema.resultClaps.isClaped, true)));
+        const newClapCount = newClapCountRow[0]?.c ?? 0;
 
-        await tx.results.update({
-          where: {
-            id: resultId,
-          },
-          data: {
-            clap_count: newClapCount,
-          },
-        });
+        await tx.update(schema.results).set({ clapCount: newClapCount }).where(eq(schema.results.id, resultId));
 
-        return { resultId, isClaped: claped.is_claped, clapCount: newClapCount };
+        return { resultId, isClaped: res[0]?.is_claped ?? optimisticState, clapCount: newClapCount };
       });
 
       return payload;

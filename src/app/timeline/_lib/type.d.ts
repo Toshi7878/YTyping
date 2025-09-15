@@ -1,5 +1,3 @@
-import { $Enums } from "@prisma/client";
-
 export type FilterMode = "all" | "roma" | "kana" | "romakana" | "english";
 
 export interface TimelineResult {

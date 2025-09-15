@@ -1,4 +1,5 @@
 import z from "zod";
+import { sql } from "drizzle-orm";
 import { publicProcedure } from "../trpc";
 
 const userStatusSchema = z.array(
@@ -17,64 +18,43 @@ export const activeUserRouter = {
 
     const userListPromises = input.map(async (activeUser) => {
       if (activeUser.state === "type" && activeUser.mapId) {
-        const mapInfo = await db.maps.findUnique({
-          where: { id: activeUser.mapId },
-          select: {
-            id: true,
-            title: true,
-            artist_name: true,
-            music_source: true,
-            video_id: true,
-            creator_id: true,
-            updated_at: true,
-            preview_time: true,
-            thumbnail_quality: true,
-            like_count: true,
-            ranking_count: true,
+        const rows = (await db.execute(sql`
+          SELECT
+            maps."id",
+            maps."title",
+            maps."artist_name",
+            maps."music_source",
+            maps."video_id",
+            maps."creator_id",
+            maps."updated_at",
+            maps."preview_time",
+            maps."thumbnail_quality",
+            maps."like_count",
+            maps."ranking_count",
+            json_build_object(
+              'roma_kpm_median', "difficulty"."roma_kpm_median",
+              'roma_kpm_max', "difficulty"."roma_kpm_max",
+              'total_time', "difficulty"."total_time"
+            ) as "difficulty",
+            EXISTS (
+              SELECT 1 FROM map_likes ml
+              WHERE ml."map_id" = maps."id" AND ml."user_id" = ${user.id} AND ml."is_liked" = true
+            ) as is_liked,
+            (
+              SELECT MIN(r."rank")::int FROM results r
+              WHERE r."map_id" = maps."id" AND r."user_id" = ${user.id}
+            ) as "myRank",
+            json_build_object('id', creator."id", 'name', creator."name") as "creator"
+          FROM maps
+          JOIN users AS creator ON maps."creator_id" = creator."id"
+          LEFT JOIN map_difficulties AS "difficulty" ON maps."id" = "difficulty"."map_id"
+          WHERE maps."id" = ${activeUser.mapId}
+          LIMIT 1
+        `)).rows as any[];
 
-            difficulty: {
-              select: {
-                roma_kpm_median: true,
-                roma_kpm_max: true,
-                total_time: true,
-              },
-            },
-            map_likes: {
-              where: {
-                user_id: user.id,
-              },
-              select: {
-                is_liked: true,
-              },
-              take: 1,
-            },
-            results: {
-              where: {
-                user_id: user.id,
-              },
-              select: {
-                rank: true,
-              },
-            },
-            creator: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        });
-
+        const mapInfo = rows[0] ?? null;
         const normalizedMap = mapInfo
-          ? (() => {
-              const { map_likes, difficulty, results, ...rest } = mapInfo;
-              return {
-                ...rest,
-                difficulty: difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 },
-                is_liked: (map_likes?.length ?? 0) > 0,
-                myRank: results[0]?.rank ?? null,
-              };
-            })()
+          ? { ...mapInfo, difficulty: mapInfo.difficulty ?? { roma_kpm_median: 0, roma_kpm_max: 0, total_time: 0 } }
           : null;
 
         return { ...activeUser, map: normalizedMap };

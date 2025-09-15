@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H5 } from "@/components/ui/typography";
-import { $Enums } from "@prisma/client";
+import { mainWordDisplayEnum } from "@/server/drizzle/schema";
 import { MdRestartAlt } from "react-icons/md";
 
 const WORD_OPTIONS_CONFIG = {
@@ -148,7 +148,9 @@ export const UserWordOptions = () => {
           { label: "ローマ字大文字のみ", value: "ROMA_UPPERCASE_ONLY" },
           { label: "ローマ字小文字のみ", value: "ROMA_LOWERCASE_ONLY" },
         ]}
-        onValueChange={(value: $Enums.main_word_display) => setUserTypingOptions({ main_word_display: value })}
+        onValueChange={(value: (typeof mainWordDisplayEnum.enumValues)[number]) =>
+          setUserTypingOptions({ main_word_display: value })
+        }
         value={main_word_display}
       />
     </section>

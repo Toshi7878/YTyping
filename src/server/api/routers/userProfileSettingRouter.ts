@@ -1,6 +1,8 @@
 import { fingerChartUrlApiSchema, myKeyboardApiSchema, nameSchema as userNameSchema } from "@/validator/schema";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
+import { and, eq, ne } from "drizzle-orm";
+import { schema } from "@/server/drizzle/client";
 import { protectedProcedure } from "../trpc";
 
 export const userProfileSettingRouter = {
@@ -11,72 +13,56 @@ export const userProfileSettingRouter = {
     if (!email_hash) {
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "ユーザーの認証情報を確認できませんでした。",
+        message: "Missing user auth info",
       });
     }
 
     try {
-      await db.users.update({
-        where: { email_hash },
-        data: { name: input.newName },
-      });
+      await db.update(schema.users).set({ name: input.newName }).where(eq(schema.users.emailHash, email_hash));
 
-      return { id: input.newName, title: "名前が更新されました", message: "", status: 200 };
+      return { id: input.newName, title: "Name updated", message: "", status: 200 };
     } catch {
-      return { id: "", title: "名前の更新中にエラーが発生しました", message: "", status: 500 };
+      return { id: "", title: "Failed to update name", message: "", status: 500 };
     }
   }),
   isNameAvailable: protectedProcedure.input(z.string().min(1)).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    const existingUser = await db.users.findFirst({
-      where: {
-        name: input,
-        NOT: {
-          id: user.id,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
+    const existing = await db
+      .select({ id: schema.users.id })
+      .from(schema.users)
+      .where(and(eq(schema.users.name, input), ne(schema.users.id, user.id)))
+      .limit(1);
 
-    if (existingUser) {
+    if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: "この名前は既に使用されています",
+        message: "Name already in use",
       });
     }
 
-    // true: 利用可能, false: 既に使用済み
-    return !existingUser;
+    // true: available, false: taken
+    return true;
   }),
 
   upsertFingerChartUrl: protectedProcedure.input(fingerChartUrlApiSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
-    await db.user_profiles.upsert({
-      where: { user_id: user.id },
-      update: { finger_chart_url: input },
-      create: {
-        user_id: user.id,
-        finger_chart_url: input,
-      },
-    });
+    await db
+      .insert(schema.userProfiles)
+      .values({ userId: user.id, fingerChartUrl: input, myKeyboard: "" })
+      .onConflictDoUpdate({ target: [schema.userProfiles.userId], set: { fingerChartUrl: input } });
 
     return input;
   }),
   upsertMyKeyboard: protectedProcedure.input(myKeyboardApiSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
-    await db.user_profiles.upsert({
-      where: { user_id: user.id },
-      update: { my_keyboard: input },
-      create: {
-        user_id: user.id,
-        my_keyboard: input,
-      },
-    });
+    await db
+      .insert(schema.userProfiles)
+      .values({ userId: user.id, myKeyboard: input, fingerChartUrl: "" })
+      .onConflictDoUpdate({ target: [schema.userProfiles.userId], set: { myKeyboard: input } });
 
     return input;
   }),
 };
+

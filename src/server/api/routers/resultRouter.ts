@@ -2,7 +2,8 @@ import { LineResultData } from "@/app/(typing)/type/_lib/type";
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
 import { FilterMode, TimelineResult } from "@/app/timeline/_lib/type";
 import { supabase } from "@/lib/supabaseClient";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { sql, and, desc, eq } from "drizzle-orm";
+import { db as drizzleDb, schema } from "@/server/drizzle/client";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 import { sendResultSchema } from "./rankingRouter";
@@ -22,7 +23,7 @@ const usersResultListSchema = z.object({
 
 export const resultRouter = {
   usersResultList: publicProcedure.input(usersResultListSchema).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { user } = ctx;
     const PAGE_SIZE = 25;
 
     const userId = user?.id ? Number(user.id) : null;
@@ -48,11 +49,11 @@ export const resultRouter = {
     });
 
     const whereConditions = [modeFilter, kpmFilter, clearRateFilter, playSpeedFilter, ...keywordFilter];
-    const where = Prisma.sql`${Prisma.join(whereConditions, ` AND `)}`;
+    const where = sql`${sql.join(whereConditions, sql` AND `)}`;
 
     try {
       // limit + 1を取得して次のページの存在を確認
-      const items: TimelineResult[] = await db.$queryRaw`
+      const items: TimelineResult[] = (await drizzleDb.execute(sql`
           SELECT results."id",
           results."map_id",
           results."user_id",
@@ -126,7 +127,7 @@ export const resultRouter = {
           ORDER BY results."updated_at" DESC
           LIMIT ${PAGE_SIZE + 1}
           OFFSET ${offset}
-        `;
+        `)).rows as any;
 
       let nextCursor: string | undefined = undefined;
       if (items.length > PAGE_SIZE) {
@@ -165,11 +166,11 @@ export const resultRouter = {
     }
   }),
   sendResult: protectedProcedure.input(sendResultSchema).mutation(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { user } = ctx;
     const mapId = input.mapId;
     const lineResults = input.lineResults;
 
-    return await db.$transaction(async (tx) => {
+    return await drizzleDb.transaction(async (tx) => {
       await sendResult({
         db: tx,
         lineResults,
@@ -194,24 +195,31 @@ const calcRank = async ({
   mapId,
   userId,
 }: {
-  db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">;
+  db: any;
   mapId: number;
   userId: number;
 }) => {
   try {
-    const rankingList = await db.results.findMany({
-      where: { map_id: mapId },
-      select: {
-        user_id: true,
-        rank: true,
-        status: { select: { score: true } },
-      },
-      orderBy: { status: { score: "desc" } },
-    });
+    const rankingList = await db
+      .select({
+        user_id: schema.results.userId,
+        rank: schema.results.rank,
+        score: schema.resultStatuses.score,
+      })
+      .from(schema.results)
+      .leftJoin(schema.resultStatuses, eq(schema.resultStatuses.resultId, schema.results.id))
+      .where(eq(schema.results.mapId, mapId))
+      .orderBy(desc(schema.resultStatuses.score));
 
-    await processOvertakeNotifications(db, mapId, userId, rankingList);
+    const shaped = rankingList.map((r: any) => ({
+      user_id: r.user_id,
+      rank: r.rank,
+      status: { score: r.score ?? 0 },
+    }));
 
-    await updateRanksAndCreateNotifications(db, mapId, userId, rankingList);
+    await processOvertakeNotifications(db, mapId, userId, shaped);
+
+    await updateRanksAndCreateNotifications(db, mapId, userId, shaped);
 
     await updateMapRankingCount(db, mapId, rankingList.length);
   } catch (error) {
@@ -221,26 +229,23 @@ const calcRank = async ({
 };
 
 const processOvertakeNotifications = async (
-  db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">,
+  db: any,
   mapId: number,
   userId: number,
   rankingList: { user_id: number; rank: number | null; status: { score: number } | null }[],
 ) => {
-  const overtakeNotify = await db.notifications.findMany({
-    where: {
-      visited_id: userId,
-      map_id: mapId,
-      action: "OVER_TAKE",
-    },
-    select: {
-      visitorResult: {
-        select: {
-          user_id: true,
-          status: { select: { score: true } },
-        },
-      },
-    },
-  });
+  const overtakeNotify = await db
+    .select({
+      visitorUserId: schema.results.userId,
+      visitorScore: schema.resultStatuses.score,
+    })
+    .from(schema.notifications)
+    .innerJoin(
+      schema.results,
+      and(eq(schema.results.userId, schema.notifications.visitorId), eq(schema.results.mapId, schema.notifications.mapId)),
+    )
+    .leftJoin(schema.resultStatuses, eq(schema.resultStatuses.resultId, schema.results.id))
+    .where(and(eq(schema.notifications.visitedId, userId), eq(schema.notifications.mapId, mapId), eq(schema.notifications.action, "OVER_TAKE" as any)));
 
   const myResult = rankingList.find((record) => record.user_id === userId);
   if (!myResult || !myResult.status) return;
@@ -248,25 +253,25 @@ const processOvertakeNotifications = async (
   const myScore = myResult.status.score;
 
   for (const notification of overtakeNotify) {
-    const visitorScore = notification.visitorResult.status?.score;
+    const visitorScore = notification.visitorScore ?? null;
     if (!visitorScore || visitorScore - myScore <= 0) {
-      const visitorId = notification.visitorResult.user_id;
-      await db.notifications.delete({
-        where: {
-          visitor_id_visited_id_map_id_action: {
-            visitor_id: visitorId,
-            visited_id: userId,
-            map_id: mapId,
-            action: "OVER_TAKE",
-          },
-        },
-      });
+      const visitorId = notification.visitorUserId;
+      await db
+        .delete(schema.notifications)
+        .where(
+          and(
+            eq(schema.notifications.visitorId, visitorId),
+            eq(schema.notifications.visitedId, userId),
+            eq(schema.notifications.mapId, mapId),
+            eq(schema.notifications.action, "OVER_TAKE" as any),
+          ),
+        );
     }
   }
 };
 
 const updateRanksAndCreateNotifications = async (
-  db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">,
+  db: any,
   mapId: number,
   userId: number,
   rankingList: { user_id: number; rank: number | null; status: { score: number } | null }[],
@@ -276,53 +281,36 @@ const updateRanksAndCreateNotifications = async (
     const newRank = i + 1;
     const oldRank = user.rank;
 
-    await db.results.update({
-      where: {
-        user_id_map_id: {
-          map_id: mapId,
-          user_id: user.user_id,
-        },
-      },
-      data: { rank: newRank },
-    });
+    await db
+      .update(schema.results)
+      .set({ rank: newRank })
+      .where(and(eq(schema.results.mapId, mapId), eq(schema.results.userId, user.user_id)));
 
     const isOtherUser = user.user_id !== userId;
     if (isOtherUser && oldRank !== null && oldRank <= 5 && oldRank !== newRank) {
-      await db.notifications.upsert({
-        where: {
-          visitor_id_visited_id_map_id_action: {
-            visitor_id: userId,
-            visited_id: user.user_id,
-            map_id: mapId,
-            action: "OVER_TAKE",
-          },
-        },
-        update: {
-          checked: false,
-          created_at: new Date(),
-          old_rank: oldRank,
-        },
-        create: {
-          visitor_id: userId,
-          visited_id: user.user_id,
-          map_id: mapId,
-          action: "OVER_TAKE",
-          old_rank: oldRank,
-        },
-      });
+      await db
+        .insert(schema.notifications)
+        .values({
+          visitorId: userId,
+          visitedId: user.user_id,
+          mapId,
+          action: "OVER_TAKE" as any,
+          oldRank: oldRank ?? undefined,
+        })
+        .onConflictDoUpdate({
+          target: [schema.notifications.visitorId, schema.notifications.visitedId, schema.notifications.mapId, schema.notifications.action],
+          set: { checked: false, createdAt: new Date(), oldRank: oldRank ?? null },
+        });
     }
   }
 };
 
 const updateMapRankingCount = async (
-  db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">,
+  db: any,
   mapId: number,
   rankingCount: number,
 ) => {
-  await db.maps.update({
-    where: { id: mapId },
-    data: { ranking_count: rankingCount },
-  });
+  await db.update(schema.maps).set({ rankingCount }).where(eq(schema.maps.id, mapId));
 };
 
 const sendResult = async ({
@@ -332,40 +320,48 @@ const sendResult = async ({
   lineResults,
   userId,
 }: {
-  db: Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">;
+  db: any;
   map_id: number;
   status: z.infer<typeof sendResultSchema>["status"];
   lineResults: z.infer<typeof sendResultSchema>["lineResults"];
   userId: number;
 }) => {
-  const { id: resultId } = await db.results.upsert({
-    where: {
-      user_id_map_id: {
-        user_id: userId,
-        map_id,
-      },
-    },
-    update: {
-      updated_at: new Date(),
-    },
-    create: {
-      map_id: map_id,
-      user_id: userId,
-    },
-  });
+  const inserted = await db
+    .insert(schema.results)
+    .values({ mapId: map_id, userId })
+    .onConflictDoUpdate({
+      target: [schema.results.userId, schema.results.mapId],
+      set: { updatedAt: new Date() },
+    })
+    .returning({ id: schema.results.id });
 
-  await db.result_statuses.upsert({
-    where: {
-      result_id: resultId,
-    },
-    update: {
-      ...status,
-    },
-    create: {
-      result_id: resultId,
-      ...status,
-    },
-  });
+  const resultId = inserted[0]!.id;
+
+  const mappedStatus = {
+    resultId,
+    score: status.score,
+    kanaType: status.kana_type,
+    romaType: status.roma_type,
+    flickType: status.flick_type,
+    englishType: status.english_type,
+    spaceType: status.space_type,
+    symbolType: status.symbol_type,
+    numType: status.num_type,
+    miss: status.miss,
+    lost: status.lost,
+    maxCombo: status.max_combo,
+    kpm: status.kpm,
+    rkpm: status.rkpm,
+    romaKpm: status.roma_kpm,
+    romaRkpm: status.roma_rkpm,
+    defaultSpeed: status.default_speed,
+    clearRate: status.clear_rate,
+  } as const;
+
+  await db
+    .insert(schema.resultStatuses)
+    .values(mappedStatus)
+    .onConflictDoUpdate({ target: [schema.resultStatuses.resultId], set: { ...mappedStatus } });
 
   const jsonString = JSON.stringify(lineResults, null, 2);
 
@@ -382,9 +378,9 @@ interface GenerateModeFilterSql {
 }
 
 function generateModeFilterSql({ mode }: GenerateModeFilterSql) {
-  if (mode === "all") return Prisma.raw("1=1");
+  if (mode === "all") return sql.raw("1=1");
 
-  return Prisma.sql`(
+  return sql`(
     CASE
       WHEN ${mode} = 'roma' THEN "status"."roma_type" > 0 AND "status"."kana_type" = 0
       WHEN ${mode} = 'kana' THEN "status"."kana_type" > 0 AND "status"."roma_type" = 0
@@ -400,13 +396,13 @@ interface GenerateKpmFilterSql {
 }
 
 function generateKpmFilterSql({ minKpm, maxKpm }: GenerateKpmFilterSql) {
-  if (maxKpm === 0) return Prisma.raw("1=1");
+  if (maxKpm === 0) return sql.raw("1=1");
 
   if (maxKpm === DEFAULT_KPM_SEARCH_RANGE.max) {
-    return Prisma.sql`("status"."roma_kpm" >= ${minKpm})`;
+    return sql`("status"."roma_kpm" >= ${minKpm})`;
   }
 
-  return Prisma.sql`("status"."roma_kpm" BETWEEN ${minKpm} AND ${maxKpm})`;
+  return sql`("status"."roma_kpm" BETWEEN ${minKpm} AND ${maxKpm})`;
 }
 
 interface GenerateClearRateFilterSql {
@@ -415,9 +411,9 @@ interface GenerateClearRateFilterSql {
 }
 
 function generateClearRateFilterSql({ minClearRate, maxClearRate }: GenerateClearRateFilterSql) {
-  if (maxClearRate === 0) return Prisma.raw("1=1");
+  if (maxClearRate === 0) return sql.raw("1=1");
 
-  return Prisma.sql`("status"."clear_rate" BETWEEN ${minClearRate} AND ${maxClearRate})`;
+  return sql`("status"."clear_rate" BETWEEN ${minClearRate} AND ${maxClearRate})`;
 }
 
 interface GeneratePlaySpeedFilterSql {
@@ -426,9 +422,9 @@ interface GeneratePlaySpeedFilterSql {
 }
 
 function generatePlaySpeedFilterSql({ minPlaySpeed, maxPlaySpeed }: GeneratePlaySpeedFilterSql) {
-  if (maxPlaySpeed === 0) return Prisma.raw("1=1");
+  if (maxPlaySpeed === 0) return sql.raw("1=1");
 
-  return Prisma.sql`("status"."default_speed" BETWEEN ${minPlaySpeed} AND ${maxPlaySpeed})`;
+  return sql`("status"."default_speed" BETWEEN ${minPlaySpeed} AND ${maxPlaySpeed})`;
 }
 
 interface GenerateKeywordFilterSql {
@@ -437,18 +433,18 @@ interface GenerateKeywordFilterSql {
 }
 
 function generateKeywordFilterSql({ username, mapKeyword }: GenerateKeywordFilterSql) {
-  const usernameCondition = username !== "" ? Prisma.sql`("Player"."name" &@~ ${username})` : Prisma.raw("1=1");
+  const usernameCondition = username !== "" ? sql`("Player"."name" &@~ ${username})` : sql.raw("1=1");
 
   const mapKeywordCondition =
     mapKeyword !== ""
-      ? Prisma.sql`(
+      ? sql`(
       map."title" &@~ ${mapKeyword} OR
       map."artist_name" &@~ ${mapKeyword} OR
       map."music_source" &@~ ${mapKeyword} OR
       map."tags" &@~ ${mapKeyword} OR
       creator."name" &@~ ${mapKeyword}
       )`
-      : Prisma.raw("1=1");
+      : sql.raw("1=1");
 
   return [usernameCondition, mapKeywordCondition];
 }
