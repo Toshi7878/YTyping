@@ -1,6 +1,6 @@
 import { RouterOutPuts } from "@/server/api/trpc";
+import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import { BuildMap } from "@/utils/build-map/buildMap";
-import { $Enums } from "@prisma/client";
 import deepEqual from "fast-deep-equal";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
@@ -21,25 +21,7 @@ const store = getTypeAtomStore();
 const initialInputMode: InputMode =
   typeof window !== "undefined" ? (localStorage.getItem("inputMode") as InputMode) || "roma" : "roma";
 
-export const userTypingOptionsAtom = atomWithReset({
-  time_offset: 0,
-  kana_word_scroll: 10,
-  roma_word_scroll: 16,
-  roma_word_font_size: 100,
-  kana_word_font_size: 100,
-  kana_word_spacing: 0.08,
-  roma_word_spacing: 0.08,
-  kana_word_top_position: 0,
-  roma_word_top_position: 0,
-  type_sound: false,
-  miss_sound: false,
-  line_clear_sound: false,
-  next_display: "LYRICS" as $Enums.next_display,
-  line_completed_display: "NEXT_WORD" as $Enums.line_completed_display,
-  time_offset_key: "CTRL_LEFT_RIGHT" as $Enums.time_offset_key,
-  toggle_input_mode_key: "ALT_KANA" as $Enums.toggle_input_mode_key,
-  main_word_display: "KANA_DISPLAY" as $Enums.main_word_display,
-});
+export const userTypingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
 
 const writeTypingOptionsAtom = atom(
   null,
