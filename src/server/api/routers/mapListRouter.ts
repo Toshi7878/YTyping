@@ -269,7 +269,7 @@ const generateKeywordFilterSql = ({ mapKeyword }: { mapKeyword: string }) => {
     ilike(Maps.title, pattern),
     ilike(Maps.artistName, pattern),
     ilike(Maps.musicSource, pattern),
-    ilike(Maps.tags, pattern),
+    sql`array_to_string(${Maps.tags}, ',') ilike ${`%${mapKeyword}%`}`,
     ilike(Users.name, pattern),
   );
 };

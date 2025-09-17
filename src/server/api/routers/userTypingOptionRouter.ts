@@ -29,7 +29,7 @@ export const userOptionRouter = {
 
     return db.query.UserTypingOptions.findFirst({
       columns: { userId: false },
-      where: eq(Users.id, user.id),
+      where: eq(UserTypingOptions.userId, user.id),
     });
   }),
   getUserImeTypingOptions: optionalAuthProcedure.query(async ({ ctx }) => {

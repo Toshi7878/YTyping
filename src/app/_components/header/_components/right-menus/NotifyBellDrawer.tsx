@@ -128,7 +128,7 @@ function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
             userName={notify.visitor.name}
           />
           <span>
-            さんがスコア {notify.myResult.score - notify.visitor.score} 差で {Number(notify.myResult.old_rank)}位
+            さんがスコア {notify.visitor.score - notify.myResult.score} 差で {Number(notify.myResult.old_rank)}位
             の記録を抜かしました
           </span>
         </span>
