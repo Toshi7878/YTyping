@@ -20,7 +20,7 @@ function ResultClapButton({ mapId, resultId, clapCount, hasClap }: ResultClapBut
 
   const onClick = () => {
     if (!session) return;
-    toggleClapMutation.mutate({ resultId, optimisticState: !hasClap });
+    toggleClapMutation.mutate({ resultId, newState: !hasClap });
   };
 
   const isPending = toggleClapMutation.isPending;

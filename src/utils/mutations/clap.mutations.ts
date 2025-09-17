@@ -3,7 +3,7 @@ import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
 import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
 
-type MapRankingFilter = ReturnType<Trpc["ranking"]["getMapRanking"]["queryFilter"]>;
+type MapRankingFilter = ReturnType<Trpc["result"]["getMapRanking"]["queryFilter"]>;
 type TimelineFilter = ReturnType<Trpc["result"]["usersResultList"]["infiniteQueryFilter"]>;
 
 function setTimelineClapOptimistic(
@@ -61,7 +61,7 @@ function setRankingClapOptimistic(
   resultId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["ranking"]["getMapRanking"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutPuts["result"]["getMapRanking"]>(filter, (old) => {
     if (!old) return old;
     return old.map((result) =>
       result.id === resultId
@@ -85,7 +85,7 @@ function setRankingClapServer(
   isClaped: boolean,
   clapCount: number,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["ranking"]["getMapRanking"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutPuts["result"]["getMapRanking"]>(filter, (old) => {
     if (!old) return old;
     return old.map((result) =>
       result.id === resultId
@@ -115,7 +115,7 @@ export function useClapMutationTimeline({ mapId }: { mapId: number }) {
 
         const previous = [...queryClient.getQueriesData(timelineFilter)];
 
-        setTimelineClapOptimistic(queryClient, timelineFilter, input.resultId, input.optimisticState);
+        setTimelineClapOptimistic(queryClient, timelineFilter, input.resultId, input.newState);
 
         return { previous, timelineFilter };
       },
@@ -127,7 +127,7 @@ export function useClapMutationTimeline({ mapId }: { mapId: number }) {
         }
       },
       onSuccess: (server, _vars, ctx) => {
-        const mapRankingFilter = trpc.ranking.getMapRanking.queryFilter({ mapId });
+        const mapRankingFilter = trpc.result.getMapRanking.queryFilter({ mapId });
 
         setTimelineClapServer(queryClient, ctx.timelineFilter, server.resultId, server.isClaped, server.clapCount);
         setRankingClapServer(queryClient, mapRankingFilter, server.resultId, server.isClaped, server.clapCount);
@@ -143,13 +143,12 @@ export function useClapMutationRanking(mapId: number) {
   return useMutation(
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const mapRankingFilter = trpc.ranking.getMapRanking.queryFilter({ mapId });
+        const mapRankingFilter = trpc.result.getMapRanking.queryFilter({ mapId });
 
         await queryClient.cancelQueries(mapRankingFilter);
-
         const previous = queryClient.getQueriesData(mapRankingFilter);
 
-        setRankingClapOptimistic(queryClient, mapRankingFilter, input.resultId, input.optimisticState);
+        setRankingClapOptimistic(queryClient, mapRankingFilter, input.resultId, input.newState);
 
         return { previous, mapRankingFilter };
       },

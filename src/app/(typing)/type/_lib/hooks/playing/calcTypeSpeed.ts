@@ -59,7 +59,7 @@ export const useCalcTypeSpeed = () => {
 
       if (readLineStatus().type !== 0) {
         writeUserStats({
-          totalTypeTime: readUserStats().totalTypeTime + constantLineTime,
+          typingTime: readUserStats().typingTime + constantLineTime,
         });
       }
       calcLineRkpm({ lineKpm, constantLineTime });

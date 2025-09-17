@@ -85,7 +85,7 @@ const RankingPopoverContent = ({
           variant="ghost"
           type="button"
           className="w-full"
-          onClick={() => toggleClap.mutate({ resultId, optimisticState: !clapOptimisticState.hasClap })}
+          onClick={() => toggleClap.mutate({ resultId, newState: !clapOptimisticState.hasClap })}
         >
           {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
         </Button>

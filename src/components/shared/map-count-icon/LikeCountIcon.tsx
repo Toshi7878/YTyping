@@ -26,13 +26,13 @@ const ActiveLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconP
   const setLikeMutation = useLikeMutationMapList();
   const { stop } = useProgress();
 
-  const handleClick = (event: React.MouseEvent, newLikeValue: boolean) => {
+  const handleClick = (event: React.MouseEvent, newState: boolean) => {
     event.stopPropagation();
     event.preventDefault();
 
     if (setLikeMutation.isPending) return;
 
-    setLikeMutation.mutate({ mapId, likeValue: newLikeValue });
+    setLikeMutation.mutate({ mapId, newState: newState });
     stop();
   };
 

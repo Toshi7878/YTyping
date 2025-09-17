@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useTypingDetails, useUserStats } from "../../atoms/refAtoms";
 
 export function useSendUserStats() {
-  const { id: mapId } = useParams() as { id: string };
+  const { id: mapId } = useParams<{ id: string }>();
   const trpc = useTRPC();
 
   const incrementTypingStats = useMutation(trpc.userStats.incrementTypingStats.mutationOptions());
@@ -20,9 +20,7 @@ export function useSendUserStats() {
     const userStats = readUserStats();
     const { maxCombo } = readStatus();
 
-    incrementTypingStats.mutate({
-      ...userStats,
-    });
+    incrementTypingStats.mutate(userStats);
 
     resetUserStats(maxCombo);
   };

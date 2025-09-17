@@ -1,5 +1,6 @@
+import { ResultData } from "@/server/drizzle/validator/result";
 import { MapLine } from "@/types/map";
-import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../../app/(typing)/type/_lib/type";
+import { InputMode, LineData, LineWord, TypeChunk } from "../../app/(typing)/type/_lib/type";
 import { ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./const";
 import { generateTypingWord } from "./generateTypingWord";
 
@@ -13,7 +14,7 @@ export class BuildMap {
   lineLength: number;
   typingLineIndexes: number[];
   mapChangeCSSCounts: number[];
-  initialLineResultData: LineResultData[];
+  initialLineResultData: ResultData;
   totalNotes: LineData["notes"];
   speedDifficulty: { median: { r: number; k: number }; max: { r: number; k: number } };
   movieTotalTime: number;
@@ -41,7 +42,7 @@ export class BuildMap {
 
   private create({ data }: { data: MapLine[] }) {
     const wordsData: LineData[] = [];
-    const initialLineResultData: LineResultData[] = [];
+    const initialLineResultData: ResultData = [];
     const typingLineIndexes: number[] = [];
     const mapChangeCSSCounts: number[] = [];
     const inputMode = (

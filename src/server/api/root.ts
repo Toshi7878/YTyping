@@ -5,14 +5,11 @@ import { mapListRouter } from "./routers/mapListRouter";
 import { mapRouter } from "./routers/mapRouter";
 import { morphConvertRouter } from "./routers/morphConvertRouter";
 import { notificationRouter } from "./routers/notificationRouter";
-import { rankingRouter } from "./routers/rankingRouter";
 import { resultRouter } from "./routers/resultRouter";
-import { userOptionRouter } from "./routers/userOptionRouter";
-// Swap to Drizzle-based router. Keep original file intact due to encoding.
 import { userProfileSettingRouter } from "./routers/userProfileSettingRouter";
 import { userRouter } from "./routers/userRouter";
 import { userStatsRouter } from "./routers/userStatsRouter";
-import { userTypingOptionRouter } from "./routers/userTypingOptionRouter";
+import { userOptionRouter } from "./routers/userTypingOptionRouter";
 import { vercelRouter } from "./routers/vercelRouter";
 import { router } from "./trpc";
 
@@ -20,12 +17,10 @@ export const appRouter = router({
   map: mapRouter,
   mapList: mapListRouter,
   notification: notificationRouter,
-  ranking: rankingRouter,
   result: resultRouter,
-  userTypingOption: userTypingOptionRouter,
+  userOption: userOptionRouter,
   userProfileSetting: userProfileSettingRouter,
   userStats: userStatsRouter,
-  userOption: userOptionRouter,
   user: userRouter,
   morphConvert: morphConvertRouter,
   gemini: geminiRouter,

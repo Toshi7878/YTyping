@@ -4,6 +4,6 @@ export const useResultQueries = () => {
   const trpc = useTRPC();
 
   return {
-    result: ({ resultId }: { resultId: number | null }) => trpc.result.getUserResultData.queryOptions({ resultId }),
+    result: ({ resultId }: { resultId: number | null }) => trpc.result.getTypingResultJson.queryOptions({ resultId }),
   };
 };

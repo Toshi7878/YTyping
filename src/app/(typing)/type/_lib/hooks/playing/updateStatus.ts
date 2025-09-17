@@ -78,31 +78,21 @@ export const useTypeSuccess = () => {
     const { scene } = readGameStateUtils();
     const lineTypingStatusRef = readLineStatus();
     const { maxCombo, completeCount } = readStatus();
-    writeStatus({
-      missCombo: 0,
-    });
+    writeStatus({ missCombo: 0 });
 
     if (lineTypingStatusRef.type === 0) {
-      writeLineStatus({
-        latency: constantLineTime,
-      });
+      writeLineStatus({ latency: constantLineTime });
 
       const { totalLatency } = readStatus();
-      writeStatus({
-        totalLatency: totalLatency + constantLineTime,
-      });
+      writeStatus({ totalLatency: totalLatency + constantLineTime });
     }
 
     const newCombo = readCombo() + 1;
     if (scene === "play") {
       if (newCombo > maxCombo) {
-        writeStatus({
-          maxCombo: newCombo,
-        });
+        writeStatus({ maxCombo: newCombo });
 
-        writeUserStats({
-          maxCombo: newCombo,
-        });
+        writeUserStats({ maxCombo: newCombo });
       }
     }
 

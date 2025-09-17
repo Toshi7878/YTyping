@@ -10,6 +10,7 @@ import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-fi
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
+import { MapInfoFormSchema } from "@/server/drizzle/validator/map";
 import { useTRPC } from "@/trpc/provider";
 import { BuildMap } from "@/utils/build-map/buildMap";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
@@ -17,11 +18,10 @@ import { useDebounce } from "@/utils/hooks/useDebounce";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useNavigationGuard } from "@/utils/use-navigation-guard";
-import { mapInfoFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
@@ -63,7 +63,7 @@ const MapInfoForm = () => {
   const { debounce } = useDebounce(500);
 
   const form = useForm({
-    resolver: zodResolver(mapInfoFormSchema),
+    resolver: zodResolver(MapInfoFormSchema),
     shouldUnregister: false,
     values: {
       title: mapInfoData?.title ?? backupMap?.title ?? "",
@@ -88,10 +88,7 @@ const MapInfoForm = () => {
 
   useEffect(() => {
     if (backupMap && isBackUp && newCreateVideoId) {
-      mapDispatch({
-        type: "replaceAll",
-        payload: backupMap.map,
-      });
+      mapDispatch({ type: "replaceAll", payload: backupMap.map });
       setCanUpload(true);
       setVideoId(newCreateVideoId);
     }
@@ -105,8 +102,8 @@ const MapInfoForm = () => {
 
   const {
     data: geminiInfoData,
-    isFetching,
     error: geminiError,
+    isFetching,
   } = useQuery(
     useGeminiQueries().generateMapInfo(
       { videoId: videoId ?? "" },
@@ -348,13 +345,12 @@ const TypeLinkButton = () => {
   );
 };
 
-const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormSchema>>>) => {
+const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormSchema>>>) => {
   const { id: mapId } = useParams<{ id: string }>();
   const readEditUtils = useReadEditUtils();
   const { readPlayer } = usePlayer();
   const searchParams = useSearchParams();
   const newCreateVideoId = searchParams.get("new");
-  const router = useRouter();
   const setCanUpload = useSetCanUpload();
   const readMap = useReadMap();
   const trpc = useTRPC();
@@ -363,20 +359,25 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
       onSuccess: (data) => {
-        queryClient.invalidateQueries(trpc.map.getMap.queryFilter({ mapId }));
+        queryClient.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId }));
 
-        toast.success(data.title, {
-          description: data.message,
-        });
-        if (data.id) {
-          router.push(`/edit/${data.id}`);
+        toast.success(data.title);
+        if (data.id && data.id === Number(mapId)) {
+          window.history.pushState(null, "", `/edit/${data.id}`);
           clearBackupMapWithInfo();
         }
         form.reset(form.getValues());
         setCanUpload(false);
       },
       onError: (error) => {
-        toast.error(error.message);
+        switch (error.data?.code) {
+          case "FORBIDDEN":
+            toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" });
+            return;
+          case "BAD_GATEWAY":
+            toast.error("保存に失敗しました", { description: "しばらく時間をおいてから再度お試しください。" });
+            return;
+        }
 
         if (newCreateVideoId) {
           backupMapInfo({
@@ -388,6 +389,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
             tags: form.getValues("tags"),
             previewTime: form.getValues("previewTime"),
           });
+
           backupMap({
             videoId: newCreateVideoId,
             map: readMap(),
@@ -397,13 +399,13 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
     }),
   );
 
-  return async (data: z.output<typeof mapInfoFormSchema>) => {
+  return async (data: z.output<typeof MapInfoFormSchema>) => {
     const map = readMap();
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
     const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new BuildMap(map);
 
-    const { video_id } = readPlayer().getVideoData();
+    const { video_id: videoId } = readPlayer().getVideoData();
     const videoDuration = readPlayer().getDuration();
 
     const typingStartTime = Math.max(0, Number(map[startLine]["time"]) + 0.2);
@@ -416,23 +418,24 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
     form.setValue("previewTime", Number(newPreviewTime));
 
     const mapInfo = {
-      videoId: video_id,
+      videoId,
       title,
       artistName,
       musicSource,
       creatorComment,
       tags,
       previewTime: Number(newPreviewTime),
-      thumbnailQuality: await getThumbnailQuality(video_id),
+      thumbnailQuality: await getThumbnailQuality(videoId),
     };
+
     const mapDifficulty = {
-      roma_kpm_median: speedDifficulty.median.r,
-      roma_kpm_max: speedDifficulty.max.r,
-      kana_kpm_median: speedDifficulty.median.r,
-      kana_kpm_max: speedDifficulty.max.r,
-      total_time: movieTotalTime,
-      roma_total_notes: totalNotes.r,
-      kana_total_notes: totalNotes.k,
+      romaKpmMedian: speedDifficulty.median.r,
+      romaKpmMax: speedDifficulty.max.r,
+      kanaKpmMedian: speedDifficulty.median.r,
+      kanaKpmMax: speedDifficulty.max.r,
+      totalTime: movieTotalTime,
+      romaTotalNotes: totalNotes.r,
+      kanaTotalNotes: totalNotes.k,
     };
     const { isUpdateUpdatedAt } = readEditUtils();
     await upsertMap.mutateAsync({
@@ -440,7 +443,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
       mapDifficulty,
       mapData: map,
       isMapDataEdited: isUpdateUpdatedAt,
-      mapId: mapId || "new",
+      mapId: mapId ? Number(mapId) : null,
     });
   };
 };

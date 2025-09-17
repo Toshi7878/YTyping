@@ -1,11 +1,12 @@
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
+import { ResultData } from "@/server/drizzle/validator/result";
 import { BuildMap } from "@/utils/build-map/buildMap";
 import deepEqual from "fast-deep-equal";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomFamily, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../type";
+import { InputMode, LineData, LineWord, SceneType } from "../type";
 import {
   gameUtilityReferenceParamsAtom,
   lineProgressAtom,
@@ -209,13 +210,13 @@ export const useReadCurrentTime = () => {
   );
 };
 
-const lineResultAtomFamily = atomFamily(() => atom<LineResultData | undefined>(undefined), deepEqual);
+const lineResultAtomFamily = atomFamily(() => atom<ResultData[number] | undefined>(undefined), deepEqual);
 
 export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
 
 export const useSetLineResult = () => {
   return useAtomCallback(
-    useCallback((get, set, { index, lineResult }: { index: number; lineResult: LineResultData }) => {
+    useCallback((get, set, { index, lineResult }: { index: number; lineResult: ResultData[number] }) => {
       set(lineResultAtomFamily(index), lineResult);
     }, []),
     { store },
@@ -231,8 +232,8 @@ export const useReadLineResult = (index: number) => {
 
 export const useReadAllLineResult = () => {
   return useAtomCallback(
-    useCallback((get): LineResultData[] => {
-      const results: LineResultData[] = [];
+    useCallback((get): ResultData => {
+      const results: ResultData = [];
       let index = 0;
 
       while (true) {
@@ -255,7 +256,7 @@ export const useReadAllLineResult = () => {
 
 export const useInitializeLineResults = () => {
   return useAtomCallback(
-    useCallback((get, set, lineResults: LineResultData[]) => {
+    useCallback((get, set, lineResults: ResultData) => {
       lineResults.forEach((lineResult, index) => {
         set(lineResultAtomFamily(index), lineResult);
       });
@@ -304,7 +305,7 @@ const writeNextLyricsAtom = atom(null, (get, set, line: LineData) => {
   set(nextLyricsAtom, () => {
     if (line.kanaWord) {
       return {
-        lyrics: typingOptions.next_display === "WORD" ? line.kanaWord : line["lyrics"],
+        lyrics: typingOptions.nextDisplay === "WORD" ? line.kanaWord : line["lyrics"],
         kpm: nextKpm.toFixed(0),
         kanaWord: line.kanaWord.slice(0, 60),
         romaWord: line.word

@@ -8,8 +8,8 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/hooks/playing/calcTypeSpeed";
 import { useInputModeChange } from "@/app/(typing)/type/_lib/hooks/playing/inputModeChange";
+import { ResultData, TypeResult } from "@/server/drizzle/validator/result";
 import { YouTubeSpeed } from "@/types";
-import { LineResultData, TypeResult } from "../../../type";
 import { useGetTime } from "../getYTTime";
 import { KanaInput, RomaInput, TypingKeys } from "../keydown/typingJudge";
 import { useSoundEffect } from "../soundEffect";
@@ -18,7 +18,7 @@ import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../updateStatus
 interface UseKeyReplayProps {
   constantLineTime: number;
   typeResult: TypeResult;
-  lineResult: LineResultData;
+  lineResult: ResultData[number];
 }
 
 const usePlayBackKey = () => {
@@ -113,22 +113,14 @@ export const useReplay = () => {
     const lineResults = readAllLineResults();
 
     const lineResult = lineResults[count - 1];
-
-    if (!lineResult) {
-      return;
-    }
-
+    if (!lineResult) return;
     const typeResults = lineResult.typeResult;
+    if (typeResults.length === 0) return;
 
-    if (typeResults.length === 0) {
-      return;
-    }
     const { replayKeyCount } = readGameUtilRefParams();
     const typeData = typeResults[replayKeyCount];
 
-    if (!typeData) {
-      return;
-    }
+    if (!typeData) return;
 
     const keyTime = typeData.t;
 

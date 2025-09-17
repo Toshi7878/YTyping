@@ -14,8 +14,8 @@ const TypingWords = () => {
   const userOptions = useUserTypingOptionsState();
 
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
-  const kanaScroll = userOptions.kana_word_scroll > 0 ? userOptions.kana_word_scroll : 0;
-  const romaScroll = userOptions.roma_word_scroll > 0 ? userOptions.roma_word_scroll : 0;
+  const kanaScroll = userOptions.kanaWordScroll > 0 ? userOptions.kanaWordScroll : 0;
+  const romaScroll = userOptions.romaWordScroll > 0 ? userOptions.romaWordScroll : 0;
 
   const [kanaCorrectSlice, setKanaCorrectSlice] = useState(5);
   const [romaCorrectSlice, setRomaCorrectSlice] = useState(8);
@@ -41,15 +41,14 @@ const TypingWords = () => {
     nextWord: nextLyrics.kanaWord,
     className: cn(
       "word-kana lowercase",
-      (userOptions.main_word_display === "ROMA_LOWERCASE_ONLY" ||
-        userOptions.main_word_display === "ROMA_UPPERCASE_ONLY") &&
+      (userOptions.wordDisplay === "ROMA_LOWERCASE_ONLY" || userOptions.wordDisplay === "ROMA_UPPERCASE_ONLY") &&
         "invisible",
       inputMode === "kana" && "visible",
     ),
     style: {
-      fontSize: `${userOptions.kana_word_font_size}%`,
-      bottom: userOptions.kana_word_top_position,
-      letterSpacing: `${userOptions.kana_word_spacing.toFixed(2)}em`,
+      fontSize: `${userOptions.kanaWordFontSize}%`,
+      bottom: userOptions.kanaWordTopPosition,
+      letterSpacing: `${userOptions.kanaWordSpacing.toFixed(2)}em`,
     },
   };
   const romaWordProps = {
@@ -63,14 +62,14 @@ const TypingWords = () => {
     nextWord: nextLyrics.romaWord,
     className: cn(
       "word-roma",
-      userOptions.main_word_display.includes("UPPERCASE") ? "uppercase" : "lowercase",
+      userOptions.wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase",
       inputMode === "roma" && "visible",
-      (userOptions.main_word_display === "KANA_ONLY" || inputMode === "kana") && "invisible",
+      (userOptions.wordDisplay === "KANA_ONLY" || inputMode === "kana") && "invisible",
     ),
     style: {
-      fontSize: `${userOptions.roma_word_font_size}%`,
-      bottom: userOptions.roma_word_top_position,
-      letterSpacing: `${userOptions.roma_word_spacing.toFixed(2)}em`,
+      fontSize: `${userOptions.romaWordFontSize}%`,
+      bottom: userOptions.romaWordTopPosition,
+      letterSpacing: `${userOptions.romaWordSpacing.toFixed(2)}em`,
     },
   };
 
@@ -83,11 +82,11 @@ const TypingWords = () => {
     >
       <Word
         id="main_word"
-        {...(userOptions.main_word_display.match(/^KANA_/) || inputMode === "kana" ? kanaWordProps : romaWordProps)}
+        {...(userOptions.wordDisplay.match(/^KANA_/) || inputMode === "kana" ? kanaWordProps : romaWordProps)}
       />
       <Word
         id="sub_word"
-        {...(userOptions.main_word_display.match(/^KANA_/) || inputMode === "kana" ? romaWordProps : kanaWordProps)}
+        {...(userOptions.wordDisplay.match(/^KANA_/) || inputMode === "kana" ? romaWordProps : kanaWordProps)}
       />
     </div>
   );
@@ -114,7 +113,7 @@ const Word = ({
 }: WordProps & HTMLAttributes<HTMLDivElement>) => {
   const remainWord = nextChar + word;
   const userOptionsAtom = useUserTypingOptionsState();
-  const isNextWordDisplay = userOptionsAtom.line_completed_display === "NEXT_WORD";
+  const isNextWordDisplay = userOptionsAtom.lineCompletedDisplay === "NEXT_WORD";
 
   return (
     <div

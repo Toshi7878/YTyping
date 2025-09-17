@@ -106,11 +106,11 @@ export const LikeButtonWithCount = ({
       style={buttonStyle}
       type="button"
       onClick={(event: React.MouseEvent) => {
-        const newLikeValue = !isLiked;
-        setIsLiked(newLikeValue);
+        const newState = !isLiked;
+        setIsLiked(newState);
         setHasBeenClicked(true);
 
-        onClick?.(event, newLikeValue);
+        onClick?.(event, newState);
       }}
     >
       <div className="relative top-0 flex items-center" style={{ width: `${size}px`, height: `${size}px` }}>

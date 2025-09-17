@@ -8,12 +8,9 @@ export const useUpdateTypingStats = () => {
   const { readUserStats, resetUserStats } = useUserStats();
 
   return async () => {
-    const { ime_type, total_type_time } = readUserStats();
+    const { imeTypeCount, typingTime } = readUserStats();
 
-    updateTypingStats.mutate({
-      ime_type,
-      total_type_time,
-    });
+    updateTypingStats.mutate({ imeTypeCount, typingTime });
 
     resetUserStats();
   };

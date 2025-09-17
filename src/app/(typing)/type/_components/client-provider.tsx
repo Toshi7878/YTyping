@@ -10,7 +10,7 @@ import { getTypeAtomStore } from "../_lib/atoms/store";
 import { useSendUserStats } from "../_lib/hooks/playing/sendUserStats";
 
 interface ClientProviderProps {
-  userTypingOptions: RouterOutPuts["userTypingOption"]["getUserTypingOptions"];
+  userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
   mapId: string;
   children: React.ReactNode;
 }

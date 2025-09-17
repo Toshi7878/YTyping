@@ -1,8 +1,9 @@
+import { TypeResult } from "@/server/drizzle/validator/result";
 import { YTPlayer } from "@/types/global-types";
 import { atom, ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputMode, TypeResult } from "../type";
+import { InputMode } from "../type";
 import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 
@@ -108,7 +109,7 @@ const userStatsAtom = atomWithReset({
   spaceType: 0,
   symbolType: 0,
   numType: 0,
-  totalTypeTime: 0,
+  typingTime: 0,
   maxCombo: 0,
 });
 

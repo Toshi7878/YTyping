@@ -27,7 +27,7 @@ import { UserWordScrollChange } from "./options/UserWordScroll";
 
 const SettingPopover = () => {
   const trpc = useTRPC();
-  const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
+  const updateTypingOptions = useMutation(trpc.userOption.updateTypeOptions.mutationOptions());
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
   const confirm = useConfirm();
@@ -147,10 +147,10 @@ const SettingButton = () => {
 
 const UserLineCompletedRadioButton = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { line_completed_display } = useUserTypingOptionsState();
+  const { lineCompletedDisplay: line_completed_display } = useUserTypingOptionsState();
 
   const changeRadio = (value: (typeof lineCompletedDisplayEnum.enumValues)[number]) => {
-    setUserTypingOptions({ line_completed_display: value });
+    setUserTypingOptions({ lineCompletedDisplay: value });
   };
 
   const items = [
@@ -172,10 +172,10 @@ const UserLineCompletedRadioButton = () => {
 
 const UserNextDisplayRadioButton = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { next_display } = useUserTypingOptionsState();
+  const { nextDisplay: next_display } = useUserTypingOptionsState();
 
   const changeRadio = (value: (typeof nextDisplayEnum.enumValues)[number]) => {
-    setUserTypingOptions({ next_display: value });
+    setUserTypingOptions({ nextDisplay: value });
   };
 
   const items = [

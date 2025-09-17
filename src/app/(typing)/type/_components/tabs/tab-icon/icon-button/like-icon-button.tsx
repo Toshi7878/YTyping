@@ -20,7 +20,7 @@ const LikeIconButton = () => {
   const handleClick = () => {
     if (setMapLike.isPending) return;
 
-    setMapLike.mutate({ mapId: Number(mapId), likeValue: !isLiked });
+    setMapLike.mutate({ mapId: Number(mapId), newState: !isLiked });
   };
 
   return (

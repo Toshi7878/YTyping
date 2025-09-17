@@ -29,8 +29,8 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
       <CardContent className="mx-8">
         <div className="space-y-4">
           <H3>{userProfile?.name ?? ""}</H3>
-          <FingerChartUrl url={userProfile?.finger_chart_url ?? ""} />
-          <MyKeyBoard myKeyboard={userProfile?.my_keyboard ?? ""} />
+          <FingerChartUrl url={userProfile.fingerChartUrl} />
+          <MyKeyBoard myKeyboard={userProfile.myKeyboard} />
         </div>
       </CardContent>
 

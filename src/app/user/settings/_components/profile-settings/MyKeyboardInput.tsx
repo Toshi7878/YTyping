@@ -1,8 +1,8 @@
 "use client";
 
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
+import { MyKeyboardFormSchema } from "@/server/drizzle/validator/user-setting";
 import { useTRPC } from "@/trpc/provider";
-import { myKeyboardFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
@@ -14,10 +14,8 @@ interface MyKeyboardInputProps {
 export const MyKeyboardInput = ({ myKeyboard }: MyKeyboardInputProps) => {
   const form = useForm({
     mode: "onChange",
-    resolver: zodResolver(myKeyboardFormSchema),
-    defaultValues: {
-      myKeyboard,
-    },
+    resolver: zodResolver(MyKeyboardFormSchema),
+    defaultValues: { myKeyboard },
   });
 
   const { reset } = form;

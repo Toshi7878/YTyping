@@ -1,23 +1,13 @@
 import { supabase } from "@/lib/supabaseClient";
-import { db as drizzleDb } from "@/server/drizzle/client";
+import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
+import { CreateMapDifficultySchema, MapInfoApiSchema } from "@/server/drizzle/validator/map";
+import { mapDataSchema } from "@/server/drizzle/validator/map-json";
 import { MapLine } from "@/types/map";
-import { mapDataSchema } from "@/validator/mapDataSchema";
-import { mapInfoApiSchema } from "@/validator/schema";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
-
-const mapDifficultySchema = z.object({
-  roma_kpm_median: z.number(),
-  roma_kpm_max: z.number(),
-  kana_kpm_median: z.number(),
-  kana_kpm_max: z.number(),
-  total_time: z.number(),
-  roma_total_notes: z.number(),
-  kana_total_notes: z.number(),
-});
 
 export const mapRouter = {
   getMapInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
@@ -50,175 +40,93 @@ export const mapRouter = {
       .then((rows) => rows[0]);
 
     if (!mapInfo) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-      });
+      throw new TRPCError({ code: "NOT_FOUND" });
     }
 
     return mapInfo;
   }),
 
-  getMap: publicProcedure.input(z.object({ mapId: z.string() })).query(async ({ input }) => {
-    try {
-      const timestamp = new Date().getTime();
+  getMapJson: publicProcedure.input(z.object({ mapId: z.string() })).query(async ({ input }) => {
+    const timestamp = new Date().getTime();
 
-      const { data, error } = await supabase.storage
-        .from("map-data") // バケット名を指定
-        .download(`public/${input.mapId}.json?timestamp=${timestamp}`);
+    const { data, error } = await supabase.storage
+      .from("map-data")
+      .download(`public/${input.mapId}.json?timestamp=${timestamp}`);
 
-      if (error) {
-        console.error("Error downloading from Supabase:", error);
-        throw error;
-      }
-
-      const jsonString = await data.text();
-      const rawMapData: MapLine[] = JSON.parse(jsonString);
-
-      return rawMapData;
-    } catch (error) {
-      console.error("Error processing the downloaded file:", error);
-      throw error;
+    if (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     }
+
+    const jsonString = await data.text();
+    const mapJson: MapLine[] = JSON.parse(jsonString);
+
+    return mapJson;
   }),
 
   upsertMap: protectedProcedure
     .input(
       z.object({
-        mapInfo: mapInfoApiSchema,
-        mapDifficulty: mapDifficultySchema,
+        mapId: z.number().nullable(),
+        mapInfo: MapInfoApiSchema,
+        mapDifficulty: CreateMapDifficultySchema,
         mapData: mapDataSchema,
         isMapDataEdited: z.boolean(),
-        mapId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       const { mapId, isMapDataEdited, mapData, mapInfo, mapDifficulty } = input;
-      const userId = Number(ctx.user.id);
+      const userId = ctx.user.id;
       const userRole = ctx.user.role;
 
       const hasUpsertPermission =
-        mapId === "new"
+        mapId === null
           ? true
-          : await ctx.db
-              .select({ creator_id: Maps.creatorId })
-              .from(Maps)
-              .where(eq(Maps.id, Number(mapId)))
-              .limit(1)
-              .then((rows) => rows[0]?.creator_id === userId || userRole === "ADMIN");
+          : await ctx.db.query.Maps.findFirst({
+              columns: { creatorId: true },
+              where: eq(Maps.id, mapId),
+            }).then((row) => row?.creatorId === userId || userRole === "ADMIN");
 
       if (!hasUpsertPermission) {
-        return {
-          id: null,
-          title: "保存に失敗しました",
+        throw new TRPCError({
+          code: "FORBIDDEN",
           message: "この譜面を保存する権限がありません",
-          status: 403,
-        };
+        });
       }
 
       try {
-        const newMapId = await upsertMap({
-          mapInfo,
-          mapDifficulty,
-          mapId,
-          userId,
-          isMapDataEdited,
-          mapData,
+        const newMapId = await db.transaction(async (tx) => {
+          const newMapId = await tx
+            .insert(Maps)
+            .values({ ...mapInfo, creatorId: userId })
+            .onConflictDoUpdate({
+              target: [Maps.id],
+              set: { ...mapInfo, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) },
+            })
+            .returning({ id: Maps.id })
+            .then((rows) => (mapId === null ? rows[0].id : Number(mapId)));
+
+          await tx
+            .insert(MapDifficulties)
+            .values({ mapId: newMapId, ...mapDifficulty })
+            .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: mapDifficulty });
+
+          await supabase.storage
+            .from("map-data")
+            .upload(
+              `public/${mapId === null ? newMapId : mapId}.json`,
+              new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
+              { upsert: true },
+            );
+
+          return newMapId;
         });
 
         return {
-          id: mapId === "new" ? newMapId : null,
-          title: mapId === "new" ? "アップロード完了" : "アップデート完了",
-          message: "",
-          status: 200,
+          id: mapId === null ? newMapId : mapId,
+          title: mapId === null ? "アップロード完了" : "アップデート完了",
         };
       } catch (error) {
-        return {
-          id: null,
-          title: "サーバー側で問題が発生しました",
-          message: "しばらく時間をおいてから再度お試しください。",
-          status: 500,
-          errorObject: error instanceof Error ? error.message : String(error),
-        };
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
     }),
-};
-
-const upsertMap = async ({
-  mapInfo,
-  mapDifficulty,
-  mapId,
-  userId,
-  isMapDataEdited,
-  mapData,
-}: {
-  mapInfo: z.infer<typeof mapInfoApiSchema>;
-  mapDifficulty: z.infer<typeof mapDifficultySchema>;
-  mapId: string;
-  userId: number;
-  isMapDataEdited: boolean;
-  mapData: z.infer<typeof mapDataSchema>;
-}) => {
-  return await drizzleDb.transaction(async (tx) => {
-    try {
-      const mapValues = {
-        videoId: mapInfo.videoId,
-        title: mapInfo.title,
-        artistName: mapInfo.artistName,
-        musicSource: mapInfo.musicSource,
-        creatorComment: mapInfo.creatorComment,
-        tags: mapInfo.tags,
-        creatorId: userId,
-        previewTime: Number(mapInfo.previewTime),
-        thumbnailQuality: mapInfo.thumbnailQuality,
-      } as const;
-
-      const inserted = await tx
-        .insert(Maps)
-        .values(mapValues)
-        .onConflictDoUpdate({
-          target: [Maps.id],
-          set: { ...mapValues, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) },
-        })
-        .returning({ id: Maps.id });
-
-      const newMapId = mapId === "new" ? inserted[0]!.id : Number(mapId);
-
-      const diffValues = {
-        mapId: newMapId,
-        romaKpmMedian: mapDifficulty.roma_kpm_median,
-        romaKpmMax: mapDifficulty.roma_kpm_max,
-        kanaKpmMedian: mapDifficulty.kana_kpm_median,
-        kanaKpmMax: mapDifficulty.kana_kpm_max,
-        totalTime: mapDifficulty.total_time,
-        romaTotalNotes: mapDifficulty.roma_total_notes,
-        kanaTotalNotes: mapDifficulty.kana_total_notes,
-        englishTotalNotes: 0,
-        symbolTotalNotes: 0,
-        intTotalNotes: 0,
-      } as const;
-
-      await tx
-        .insert(MapDifficulties)
-        .values(diffValues)
-        .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: { ...diffValues } });
-
-      await supabase.storage
-        .from("map-data")
-        .upload(
-          `public/${mapId === "new" ? newMapId : mapId}.json`,
-          new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
-          {
-            upsert: true,
-          },
-        );
-
-      return newMapId;
-    } catch (error) {
-      console.error("DB Error:", error);
-      if (error instanceof Error) {
-        throw new Error(`データベース操作に失敗しました: ${error.message}`);
-      }
-      throw new Error("データベース操作に失敗しました");
-    }
-  });
 };

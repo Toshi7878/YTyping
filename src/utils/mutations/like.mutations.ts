@@ -5,7 +5,7 @@ import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query
 
 type MapListFilter = ReturnType<Trpc["mapList"]["getList"]["infiniteQueryFilter"]>;
 type TimeLineFilter = ReturnType<Trpc["result"]["usersResultList"]["infiniteQueryFilter"]>;
-type ActiveUserMapsFilter = ReturnType<Trpc["mapList"]["getUserPlayingMaps"]["queryFilter"]>;
+type ActiveUserMapsFilter = ReturnType<Trpc["mapList"]["getActiveUserPlayingMaps"]["queryFilter"]>;
 type NotificationsMapFilter = ReturnType<Trpc["notification"]["getInfiniteUserNotifications"]["infiniteQueryFilter"]>;
 
 function setMapListOptimistic(
@@ -170,7 +170,7 @@ function setActiveUsersOptimistic(
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["mapList"]["getUserPlayingMaps"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutPuts["mapList"]["getActiveUserPlayingMaps"]>(filter, (old) => {
     if (!old) return old;
     return old.map((user) =>
       user.map?.id === mapId
@@ -194,7 +194,7 @@ function setActiveUsersServer(
   likeCount: number,
   isLiked: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["mapList"]["getUserPlayingMaps"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutPuts["mapList"]["getActiveUserPlayingMaps"]>(filter, (old) => {
     if (!old) return old;
     return old.map((user) =>
       user.map?.id === mapId ? { ...user, map: { ...user.map, hasLiked: isLiked, likeCount } } : user,
@@ -235,12 +235,12 @@ export function useLikeMutationMapList() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.like.setLike.mutationOptions({
+    trpc.like.toggleLike.mutationOptions({
       onMutate: async (input) => {
         const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
         const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfiniteUserNotifications.infiniteQueryFilter();
-        const activeUserMapsFilter = trpc.mapList.getUserPlayingMaps.queryFilter();
+        const activeUserMapsFilter = trpc.mapList.getActiveUserPlayingMaps.queryFilter();
 
         await queryClient.cancelQueries(mapListFilter);
         await queryClient.cancelQueries(timelineFilter);
@@ -254,10 +254,10 @@ export function useLikeMutationMapList() {
           ...queryClient.getQueriesData(activeUserMapsFilter),
         ];
 
-        setMapListOptimistic(queryClient, mapListFilter, input.mapId, input.likeValue);
-        setTimelineOptimistic(queryClient, timelineFilter, input.mapId, input.likeValue);
-        setNotificationsOptimistic(queryClient, notificationsFilter, input.mapId, input.likeValue);
-        setActiveUsersOptimistic(queryClient, activeUserMapsFilter, input.mapId, input.likeValue);
+        setMapListOptimistic(queryClient, mapListFilter, input.mapId, input.newState);
+        setTimelineOptimistic(queryClient, timelineFilter, input.mapId, input.newState);
+        setNotificationsOptimistic(queryClient, notificationsFilter, input.mapId, input.newState);
+        setActiveUsersOptimistic(queryClient, activeUserMapsFilter, input.mapId, input.newState);
 
         return { previous, notificationsFilter, activeUserMapsFilter, mapListFilter, timelineFilter };
       },
@@ -281,13 +281,13 @@ export function useLikeMutationMapInfo() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.like.setLike.mutationOptions({
+    trpc.like.toggleLike.mutationOptions({
       onMutate: async (input) => {
         const mapInfoFilter = trpc.map.getMapInfo.queryFilter();
         const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
         const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfiniteUserNotifications.infiniteQueryFilter();
-        const activeUserMapsFilter = trpc.mapList.getUserPlayingMaps.queryFilter();
+        const activeUserMapsFilter = trpc.mapList.getActiveUserPlayingMaps.queryFilter();
 
         await queryClient.cancelQueries(mapInfoFilter);
         await queryClient.cancelQueries(mapListFilter);
@@ -303,11 +303,11 @@ export function useLikeMutationMapInfo() {
           ...queryClient.getQueriesData(activeUserMapsFilter),
         ];
 
-        setMapInfoOptimistic(queryClient, mapInfoFilter, input.likeValue);
-        setMapListOptimistic(queryClient, mapListFilter, input.mapId, input.likeValue);
-        setTimelineOptimistic(queryClient, timelineFilter, input.mapId, input.likeValue);
-        setNotificationsOptimistic(queryClient, notificationsFilter, input.mapId, input.likeValue);
-        setActiveUsersOptimistic(queryClient, activeUserMapsFilter, input.mapId, input.likeValue);
+        setMapInfoOptimistic(queryClient, mapInfoFilter, input.newState);
+        setMapListOptimistic(queryClient, mapListFilter, input.mapId, input.newState);
+        setTimelineOptimistic(queryClient, timelineFilter, input.mapId, input.newState);
+        setNotificationsOptimistic(queryClient, notificationsFilter, input.mapId, input.newState);
+        setActiveUsersOptimistic(queryClient, activeUserMapsFilter, input.mapId, input.newState);
 
         return { previous, mapInfoFilter, mapListFilter, timelineFilter, notificationsFilter, activeUserMapsFilter };
       },

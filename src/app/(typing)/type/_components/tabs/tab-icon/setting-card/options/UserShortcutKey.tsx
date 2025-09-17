@@ -4,15 +4,15 @@ import { H5 } from "@/components/ui/typography";
 import { timeOffsetKeyEnum, toggleInputModeKeyEnum } from "@/server/drizzle/schema";
 
 const UserShortcutKeyCheckbox = () => {
-  const { time_offset_key, toggle_input_mode_key } = useUserTypingOptionsState();
+  const { timeOffsetKey: time_offset_key, toggleInputModeKey: toggle_input_mode_key } = useUserTypingOptionsState();
   const { setUserTypingOptions } = useSetUserTypingOptions();
 
   const changeTimeOffsetKey = (value: string) => {
-    setUserTypingOptions({ time_offset_key: value as (typeof timeOffsetKeyEnum.enumValues)[number] });
+    setUserTypingOptions({ timeOffsetKey: value as (typeof timeOffsetKeyEnum.enumValues)[number] });
   };
 
   const changeInputModeKey = (value: string) => {
-    setUserTypingOptions({ toggle_input_mode_key: value as (typeof toggleInputModeKeyEnum.enumValues)[number] });
+    setUserTypingOptions({ toggleInputModeKey: value as (typeof toggleInputModeKeyEnum.enumValues)[number] });
   };
 
   return (

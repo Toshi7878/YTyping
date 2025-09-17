@@ -6,7 +6,11 @@ import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { H5 } from "@/components/ui/typography";
 
 const UserSoundEffectCheckbox = () => {
-  const { type_sound, miss_sound, line_clear_sound } = useUserTypingOptionsState();
+  const {
+    typeSound: type_sound,
+    missSound: miss_sound,
+    lineClearSound: line_clear_sound,
+  } = useUserTypingOptionsState();
   const { readPlayer } = usePlayer();
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { typeSoundPlay, missSoundPlay, clearTypeSoundPlay } = useSoundEffect();
@@ -22,7 +26,7 @@ const UserSoundEffectCheckbox = () => {
           defaultChecked={type_sound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
-              type_sound: value,
+              typeSound: value,
             });
             if (value) typeSoundPlay();
           }}
@@ -33,7 +37,7 @@ const UserSoundEffectCheckbox = () => {
           defaultChecked={miss_sound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
-              miss_sound: value,
+              missSound: value,
             });
             if (value) missSoundPlay();
           }}
@@ -44,7 +48,7 @@ const UserSoundEffectCheckbox = () => {
           defaultChecked={line_clear_sound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
-              line_clear_sound: value,
+              lineClearSound: value,
             });
             if (value) clearTypeSoundPlay();
           }}

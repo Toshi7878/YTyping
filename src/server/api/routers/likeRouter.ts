@@ -1,35 +1,30 @@
-import { schema } from "@/server/drizzle/client";
+import { MapLikes, Maps } from "@/server/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure } from "../trpc";
 
 export const likeRouter = {
-  setLike: protectedProcedure
-    .input(
-      z.object({
-        mapId: z.number(),
-        likeValue: z.boolean(),
-      }),
-    )
+  toggleLike: protectedProcedure
+    .input(z.object({ mapId: z.number(), newState: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;
-      const { mapId, likeValue } = input;
+      const { mapId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
         await tx
-          .insert(schema.MapLikes)
+          .insert(MapLikes)
           .values({ userId: user.id, mapId, isLiked: true })
-          .onConflictDoUpdate({ target: [schema.MapLikes.userId, schema.MapLikes.mapId], set: { isLiked: likeValue } });
+          .onConflictDoUpdate({ target: [MapLikes.userId, MapLikes.mapId], set: { isLiked: newState } });
 
-        const likeCountRows = await tx
+        const newLikeCount = await tx
           .select({ c: count() })
-          .from(schema.MapLikes)
-          .where(and(eq(schema.MapLikes.mapId, mapId), eq(schema.MapLikes.isLiked, true)));
-        const newLikeCount = likeCountRows[0]?.c ?? 0;
+          .from(MapLikes)
+          .where(and(eq(MapLikes.mapId, mapId), eq(MapLikes.isLiked, true)))
+          .then((rows) => rows[0]?.c ?? 0);
 
-        await tx.update(schema.Maps).set({ likeCount: newLikeCount }).where(eq(schema.Maps.id, mapId));
+        await tx.update(Maps).set({ likeCount: newLikeCount }).where(eq(Maps.id, mapId));
 
-        return { mapId, isLiked: likeValue, likeCount: newLikeCount };
+        return { mapId, isLiked: newState, likeCount: newLikeCount };
       });
 
       return payload;

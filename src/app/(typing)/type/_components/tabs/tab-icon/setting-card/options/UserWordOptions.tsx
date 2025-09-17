@@ -31,24 +31,24 @@ const WORD_OPTIONS_CONFIG = {
 export const UserWordOptions = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const {
-    kana_word_font_size,
-    roma_word_font_size,
-    kana_word_top_position,
-    roma_word_top_position,
-    kana_word_spacing,
-    roma_word_spacing,
-    main_word_display,
+    kanaWordFontSize: kana_word_font_size,
+    romaWordFontSize: roma_word_font_size,
+    kanaWordTopPosition: kana_word_top_position,
+    romaWordTopPosition: roma_word_top_position,
+    kanaWordSpacing: kana_word_spacing,
+    romaWordSpacing: roma_word_spacing,
+    wordDisplay: main_word_display,
   } = useUserTypingOptionsState();
 
   const resetToDefaults = () => {
     setUserTypingOptions({
-      kana_word_font_size: WORD_OPTIONS_CONFIG.fontSize.default,
-      roma_word_font_size: WORD_OPTIONS_CONFIG.fontSize.default,
-      kana_word_top_position: WORD_OPTIONS_CONFIG.topPosition.default,
-      roma_word_top_position: WORD_OPTIONS_CONFIG.topPosition.default,
-      kana_word_spacing: WORD_OPTIONS_CONFIG.spacing.default,
-      roma_word_spacing: WORD_OPTIONS_CONFIG.spacing.default,
-      main_word_display: "KANA_ROMA_UPPERCASE",
+      kanaWordFontSize: WORD_OPTIONS_CONFIG.fontSize.default,
+      romaWordFontSize: WORD_OPTIONS_CONFIG.fontSize.default,
+      kanaWordTopPosition: WORD_OPTIONS_CONFIG.topPosition.default,
+      romaWordTopPosition: WORD_OPTIONS_CONFIG.topPosition.default,
+      kanaWordSpacing: WORD_OPTIONS_CONFIG.spacing.default,
+      romaWordSpacing: WORD_OPTIONS_CONFIG.spacing.default,
+      wordDisplay: "KANA_ROMA_UPPERCASE",
     });
   };
 
@@ -63,7 +63,7 @@ export const UserWordOptions = () => {
       </header>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ kana_word_font_size: value })}
+          onChange={(value) => setUserTypingOptions({ kanaWordFontSize: value })}
           step={WORD_OPTIONS_CONFIG.fontSize.step}
           max={WORD_OPTIONS_CONFIG.fontSize.max}
           min={WORD_OPTIONS_CONFIG.fontSize.min}
@@ -74,7 +74,7 @@ export const UserWordOptions = () => {
           unit="%"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ roma_word_font_size: value })}
+          onChange={(value) => setUserTypingOptions({ romaWordFontSize: value })}
           step={WORD_OPTIONS_CONFIG.fontSize.step}
           max={WORD_OPTIONS_CONFIG.fontSize.max}
           min={WORD_OPTIONS_CONFIG.fontSize.min}
@@ -87,7 +87,7 @@ export const UserWordOptions = () => {
       </div>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ kana_word_top_position: value })}
+          onChange={(value) => setUserTypingOptions({ kanaWordTopPosition: value })}
           step={WORD_OPTIONS_CONFIG.topPosition.step}
           max={WORD_OPTIONS_CONFIG.topPosition.max}
           min={WORD_OPTIONS_CONFIG.topPosition.min}
@@ -99,7 +99,7 @@ export const UserWordOptions = () => {
           unit="px"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ roma_word_top_position: value })}
+          onChange={(value) => setUserTypingOptions({ romaWordTopPosition: value })}
           step={WORD_OPTIONS_CONFIG.topPosition.step}
           max={WORD_OPTIONS_CONFIG.topPosition.max}
           min={WORD_OPTIONS_CONFIG.topPosition.min}
@@ -113,7 +113,7 @@ export const UserWordOptions = () => {
       </div>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ kana_word_spacing: value })}
+          onChange={(value) => setUserTypingOptions({ kanaWordSpacing: value })}
           step={WORD_OPTIONS_CONFIG.spacing.step}
           max={WORD_OPTIONS_CONFIG.spacing.max}
           min={WORD_OPTIONS_CONFIG.spacing.min}
@@ -125,7 +125,7 @@ export const UserWordOptions = () => {
           unit="em"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ roma_word_spacing: value })}
+          onChange={(value) => setUserTypingOptions({ romaWordSpacing: value })}
           step={WORD_OPTIONS_CONFIG.spacing.step}
           max={WORD_OPTIONS_CONFIG.spacing.max}
           min={WORD_OPTIONS_CONFIG.spacing.min}
@@ -149,7 +149,7 @@ export const UserWordOptions = () => {
           { label: "ローマ字小文字のみ", value: "ROMA_LOWERCASE_ONLY" },
         ]}
         onValueChange={(value: (typeof mainWordDisplayEnum.enumValues)[number]) =>
-          setUserTypingOptions({ main_word_display: value })
+          setUserTypingOptions({ wordDisplay: value })
         }
         value={main_word_display}
       />

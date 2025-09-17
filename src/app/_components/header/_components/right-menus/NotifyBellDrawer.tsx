@@ -13,11 +13,11 @@ import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot, Loader2 } from "lucide-react";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
 export default function NotifyBellDrawer() {
-  const { data: isNewNotification } = useQuery(useNotificationQueries().hasNewNotification());
+  const { data: isNewNotificationFound } = useQuery(useNotificationQueries().hasNewNotification());
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -29,10 +29,6 @@ export default function NotifyBellDrawer() {
     }),
   );
 
-  const notificationOpen = useCallback(() => {
-    postUserNotificationRead.mutate();
-  }, [postUserNotificationRead]);
-
   return (
     <Sheet>
       <TooltipWrapper label="通知" delayDuration={600} className="relative bottom-3">
@@ -41,9 +37,9 @@ export default function NotifyBellDrawer() {
             variant="unstyled"
             size="icon"
             className="hover:text-header-foreground text-header-foreground/80 p-2"
-            onClick={notificationOpen}
+            onClick={() => postUserNotificationRead.mutate()}
           >
-            {isNewNotification ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
+            {isNewNotificationFound ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
           </Button>
         </SheetTrigger>
       </TooltipWrapper>
@@ -59,9 +55,7 @@ export default function NotifyBellDrawer() {
 }
 
 const NotifyDrawerInnerContent = () => {
-  const { ref, inView } = useInView({
-    threshold: 0.8,
-  });
+  const { ref, inView } = useInView({ threshold: 0.8 });
 
   const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(
     useNotificationQueries().infiniteNotifications(),

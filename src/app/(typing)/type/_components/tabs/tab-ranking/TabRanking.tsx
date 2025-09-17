@@ -22,7 +22,7 @@ import { useGameUtilityReferenceParams } from "../../../_lib/atoms/refAtoms";
 import { useSceneGroupState, useSetTypingStatusRank } from "../../../_lib/atoms/stateAtoms";
 import RankingPopoverContent from "./RankingPopoverContent";
 
-type RankingResult = RouterOutPuts["ranking"]["getMapRanking"][number];
+type RankingResult = RouterOutPuts["result"]["getMapRanking"][number];
 
 const TabRanking = ({ className }: { className?: string }) => {
   const { id: mapId } = useParams<{ id: string }>();
@@ -145,7 +145,7 @@ const TabRanking = ({ className }: { className?: string }) => {
             if (!session?.user?.id || toggleClap.isPending) return;
             event.preventDefault();
             event.stopPropagation();
-            toggleClap.mutate({ resultId: row.id, optimisticState: !row.clap.hasClaped });
+            toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClaped });
           },
         },
       },

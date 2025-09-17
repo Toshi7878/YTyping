@@ -9,9 +9,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
 
   const thumbnailUrl =
-    mapInfo.thumbnail_quality === "maxresdefault"
-      ? `https://i.ytimg.com/vi_webp/${mapInfo.video_id}/maxresdefault.webp`
-      : `https://i.ytimg.com/vi/${mapInfo.video_id}/mqdefault.jpg`;
+    mapInfo.thumbnailQuality === "maxresdefault"
+      ? `https://i.ytimg.com/vi_webp/${mapInfo.videoId}/maxresdefault.webp`
+      : `https://i.ytimg.com/vi/${mapInfo.videoId}/mqdefault.jpg`;
 
   return {
     title: `${mapInfo.title} - YTyping`,
@@ -20,11 +20,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       type: "website",
       images: thumbnailUrl,
     },
-    creator: mapInfo.creatorName,
+    creator: mapInfo.creator.name,
     other: {
-      "article:published_time": mapInfo.created_at.toISOString(),
-      "article:modified_time": mapInfo.updated_at.toISOString(),
-      "article:youtube_id": mapInfo.video_id,
+      "article:published_time": mapInfo.createdAt.toISOString(),
+      "article:modified_time": mapInfo.updatedAt.toISOString(),
+      "article:youtube_id": mapInfo.videoId,
       "article:title": mapInfo.title,
       "article:artist": mapInfo.artistName,
       "article:tag": mapInfo.tags,
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
-  const userImeTypingOptions = await serverApi.userTypingOption.getUserImeTypingOptions();
+  const userImeTypingOptions = await serverApi.userOption.getUserImeTypingOptions();
 
   if (!mapInfo) notFound();
 

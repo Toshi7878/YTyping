@@ -2,8 +2,8 @@
 
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
+import { FingerChartUrlFormSchema } from "@/server/drizzle/validator/user-setting";
 import { useTRPC } from "@/trpc/provider";
-import { fingerChartUrlFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
@@ -17,10 +17,8 @@ interface FingerChartUrlInputProps {
 export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
   const form = useForm({
     mode: "onChange",
-    resolver: zodResolver(fingerChartUrlFormSchema),
-    defaultValues: {
-      url: url,
-    },
+    resolver: zodResolver(FingerChartUrlFormSchema),
+    defaultValues: { url },
   });
 
   const { reset } = form;

@@ -16,8 +16,8 @@ interface ResultToolTipTextProps {
   maxCombo: number;
   kpm: number;
   rkpm: number;
-  romaKpm: number;
-  romaRkpm: number;
+  kanaToRomaConvertKpm: number;
+  kanaToRomaConvertRkpm: number;
   isKanaFlickTyped: boolean;
   defaultSpeed: number;
   updatedAt: Date;
@@ -38,8 +38,8 @@ const ResultToolTipText = ({
   maxCombo,
   kpm,
   rkpm,
-  romaKpm,
-  romaRkpm,
+  kanaToRomaConvertKpm,
+  kanaToRomaConvertRkpm,
   isKanaFlickTyped,
   defaultSpeed,
   updatedAt,
@@ -79,11 +79,11 @@ const ResultToolTipText = ({
           <span className="text-base font-bold">{rkpm}</span>
         </div>
 
-        {isKanaFlickTyped && kpm !== romaKpm && (
+        {isKanaFlickTyped && kpm !== kanaToRomaConvertKpm && (
           <div className="flex gap-2">
             <span>ローマ字換算kpm:</span>
             <span className="text-base font-bold">
-              {romaKpm} {romaRkpm ? `(rkpm:${romaRkpm})` : ""}
+              {kanaToRomaConvertKpm} {kanaToRomaConvertRkpm ? `(rkpm:${kanaToRomaConvertRkpm})` : ""}
             </span>
           </div>
         )}

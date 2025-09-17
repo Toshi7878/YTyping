@@ -8,7 +8,7 @@ import { getImeTypeAtomStore } from "../_lib/atoms/store";
 
 interface ImeTypeProviderProps {
   children: React.ReactNode;
-  userImeTypingOptions: RouterOutPuts["userTypingOption"]["getUserImeTypingOptions"];
+  userImeTypingOptions: RouterOutPuts["userOption"]["getUserImeTypingOptions"];
 }
 
 const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProps) => {

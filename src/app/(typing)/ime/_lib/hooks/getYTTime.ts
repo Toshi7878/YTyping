@@ -9,7 +9,7 @@ export const useGetTime = () => {
 
   const getCurrentOffsettedYTTime = () => {
     const typingOptions = readTypingOptions();
-    const result = readPlayer().getCurrentTime() - typingOptions.time_offset;
+    const result = readPlayer().getCurrentTime() - typingOptions.timeOffset;
     return result;
   };
 

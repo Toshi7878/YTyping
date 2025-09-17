@@ -9,7 +9,6 @@ import {
   toggleInputModeKeyEnum,
 } from "./schema/user";
 
-// Generic buckets
 export const MAX_SHORT_LENGTH = 256;
 export const MAX_MEDIUM_LENGTH = 512;
 export const MAX_MAXIMUM_LENGTH = 1024;
@@ -48,23 +47,23 @@ type ToggleInputModeKey = (typeof toggleInputModeKeyEnum.enumValues)[number];
 type MainWordDisplay = (typeof mainWordDisplayEnum.enumValues)[number];
 
 export const DEFAULT_TYPING_OPTIONS = {
-  time_offset: 0,
-  kana_word_scroll: 10,
-  roma_word_scroll: 16,
-  roma_word_font_size: 100,
-  kana_word_font_size: 100,
-  kana_word_spacing: 0.08,
-  roma_word_spacing: 0.08,
-  kana_word_top_position: 0,
-  roma_word_top_position: 0,
-  type_sound: false,
-  miss_sound: false,
-  line_clear_sound: false,
-  next_display: "LYRICS" as NextDisplay,
-  line_completed_display: "NEXT_WORD" as LineCompletedDisplay,
-  time_offset_key: "CTRL_LEFT_RIGHT" as TimeOffsetKey,
-  toggle_input_mode_key: "ALT_KANA" as ToggleInputModeKey,
-  main_word_display: "KANA_ROMA_UPPERCASE" as MainWordDisplay,
+  timeOffset: 0,
+  kanaWordScroll: 10,
+  romaWordScroll: 16,
+  romaWordFontSize: 100,
+  kanaWordFontSize: 100,
+  kanaWordSpacing: 0.08,
+  romaWordSpacing: 0.08,
+  kanaWordTopPosition: 0,
+  romaWordTopPosition: 0,
+  typeSound: false,
+  missSound: false,
+  lineClearSound: false,
+  nextDisplay: "LYRICS" as NextDisplay,
+  lineCompletedDisplay: "NEXT_WORD" as LineCompletedDisplay,
+  timeOffsetKey: "CTRL_LEFT_RIGHT" as TimeOffsetKey,
+  toggleInputModeKey: "ALT_KANA" as ToggleInputModeKey,
+  wordDisplay: "KANA_ROMA_UPPERCASE" as MainWordDisplay,
 };
 
 // Structured mapping per table/column (optional, for clarity)

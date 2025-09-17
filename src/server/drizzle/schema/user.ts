@@ -1,5 +1,5 @@
 import { boolean, integer, pgEnum, pgTable, primaryKey, real, serial, timestamp, varchar } from "drizzle-orm/pg-core";
-import { DEFAULT_TYPING_OPTIONS } from "../const";
+import { DEFAULT_TYPING_OPTIONS, MAX_SHORT_LENGTH } from "../const";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
 export const Users = pgTable("users", {
@@ -48,39 +48,51 @@ export const UserTypingOptions = pgTable("user_typing_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
-  timeOffset: real("time_offset").notNull().default(DEFAULT_TYPING_OPTIONS.time_offset),
-  kanaWordScroll: integer("kana_word_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.kana_word_scroll),
-  romaWordScroll: integer("roma_word_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.roma_word_scroll),
-  kanaWordFontSize: integer("kana_word_font_size").notNull().default(DEFAULT_TYPING_OPTIONS.kana_word_font_size),
-  romaWordFontSize: integer("roma_word_font_size").notNull().default(DEFAULT_TYPING_OPTIONS.roma_word_font_size),
-  kanaWordTopPosition: real("kana_word_top_position").notNull().default(DEFAULT_TYPING_OPTIONS.kana_word_top_position),
-  romaWordTopPosition: real("roma_word_top_position").notNull().default(DEFAULT_TYPING_OPTIONS.roma_word_top_position),
-  kanaWordSpacing: real("kana_word_spacing").notNull().default(DEFAULT_TYPING_OPTIONS.kana_word_spacing),
-  romaWordSpacing: real("roma_word_spacing").notNull().default(DEFAULT_TYPING_OPTIONS.roma_word_spacing),
-  typeSound: boolean("type_sound").notNull().default(DEFAULT_TYPING_OPTIONS.type_sound),
-  missSound: boolean("miss_sound").notNull().default(DEFAULT_TYPING_OPTIONS.miss_sound),
-  lineClearSound: boolean("line_clear_sound").notNull().default(DEFAULT_TYPING_OPTIONS.line_clear_sound),
-  nextDisplay: nextDisplayEnum("next_display").notNull().default(DEFAULT_TYPING_OPTIONS.next_display),
+  timeOffset: real("time_offset").notNull().default(DEFAULT_TYPING_OPTIONS.timeOffset),
+  kanaWordScroll: integer("kana_word_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.kanaWordScroll),
+  romaWordScroll: integer("roma_word_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.romaWordScroll),
+  kanaWordFontSize: integer("kana_word_font_size").notNull().default(DEFAULT_TYPING_OPTIONS.kanaWordFontSize),
+  romaWordFontSize: integer("roma_word_font_size").notNull().default(DEFAULT_TYPING_OPTIONS.romaWordFontSize),
+  kanaWordTopPosition: real("kana_word_top_position").notNull().default(DEFAULT_TYPING_OPTIONS.kanaWordTopPosition),
+  romaWordTopPosition: real("roma_word_top_position").notNull().default(DEFAULT_TYPING_OPTIONS.romaWordTopPosition),
+  kanaWordSpacing: real("kana_word_spacing").notNull().default(DEFAULT_TYPING_OPTIONS.kanaWordSpacing),
+  romaWordSpacing: real("roma_word_spacing").notNull().default(DEFAULT_TYPING_OPTIONS.romaWordSpacing),
+  typeSound: boolean("type_sound").notNull().default(DEFAULT_TYPING_OPTIONS.typeSound),
+  missSound: boolean("miss_sound").notNull().default(DEFAULT_TYPING_OPTIONS.missSound),
+  lineClearSound: boolean("line_clear_sound").notNull().default(DEFAULT_TYPING_OPTIONS.lineClearSound),
+  nextDisplay: nextDisplayEnum("next_display").notNull().default(DEFAULT_TYPING_OPTIONS.nextDisplay),
   lineCompletedDisplay: lineCompletedDisplayEnum("line_completed_display")
     .notNull()
-    .default(DEFAULT_TYPING_OPTIONS.line_completed_display),
-  timeOffsetKey: timeOffsetKeyEnum("time_offset_key").notNull().default(DEFAULT_TYPING_OPTIONS.time_offset_key),
+    .default(DEFAULT_TYPING_OPTIONS.lineCompletedDisplay),
+  timeOffsetKey: timeOffsetKeyEnum("time_offset_key").notNull().default(DEFAULT_TYPING_OPTIONS.timeOffsetKey),
   toggleInputModeKey: toggleInputModeKeyEnum("toggle_input_mode_key")
     .notNull()
-    .default(DEFAULT_TYPING_OPTIONS.toggle_input_mode_key),
-  mainWordDisplay: mainWordDisplayEnum("main_word_display").notNull().default(DEFAULT_TYPING_OPTIONS.main_word_display),
+    .default(DEFAULT_TYPING_OPTIONS.toggleInputModeKey),
+  wordDisplay: mainWordDisplayEnum("main_word_display").notNull().default(DEFAULT_TYPING_OPTIONS.wordDisplay),
 });
 
+export const DEFAULT_IME_OPTIONS = {
+  enableAddSymbol: false,
+  enableEngUpperCase: false,
+  enableEngSpace: false,
+  addSymbolList: "",
+  enableNextLyrics: true,
+  enableLargeVideoDisplay: false,
+};
 export const UserImeTypingOptions = pgTable("user_ime_typing_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
-  enableAddSymbol: boolean("enable_add_symbol").notNull().default(false),
-  enableEngSpace: boolean("enable_eng_space").notNull().default(false),
-  enableEngUpperCase: boolean("enable_eng_upper_case").notNull().default(false),
-  enableNextLyrics: boolean("enable_next_lyrics").notNull().default(true),
-  addSymbolList: varchar("add_symbol_list").notNull().default(""),
-  enableLargeVideoDisplay: boolean("enable_large_video_display").notNull().default(false),
+  enableAddSymbol: boolean("enable_add_symbol").notNull().default(DEFAULT_IME_OPTIONS.enableAddSymbol),
+  enableEngSpace: boolean("enable_eng_space").notNull().default(DEFAULT_IME_OPTIONS.enableEngSpace),
+  enableEngUpperCase: boolean("enable_eng_upper_case").notNull().default(DEFAULT_IME_OPTIONS.enableEngUpperCase),
+  enableNextLyrics: boolean("enable_next_lyrics").notNull().default(DEFAULT_IME_OPTIONS.enableNextLyrics),
+  addSymbolList: varchar("add_symbol_list", { length: MAX_SHORT_LENGTH })
+    .notNull()
+    .default(DEFAULT_IME_OPTIONS.addSymbolList),
+  enableLargeVideoDisplay: boolean("enable_large_video_display")
+    .notNull()
+    .default(DEFAULT_IME_OPTIONS.enableLargeVideoDisplay),
 });
 
 export const UserStats = pgTable("user_stats", {

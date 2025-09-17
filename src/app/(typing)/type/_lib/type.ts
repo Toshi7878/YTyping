@@ -1,6 +1,4 @@
-import { sendResultSchema } from "@/server/api/routers/rankingRouter";
 import { MapLine } from "@/types/map";
-import z from "zod";
 
 export type InputMode = "roma" | "kana" | "flick";
 export type PlayMode = "play" | "replay" | "practice";
@@ -34,13 +32,6 @@ export interface LineData {
   kanaWord: string;
   options?: MapLine["options"];
 }
-
-export type TypeResult = z.infer<typeof sendResultSchema>["lineResults"][number]["typeResult"][number];
-
-export type LineResultData = Omit<z.infer<typeof sendResultSchema>["lineResults"][number], "status"> & {
-  status: NonNullable<z.infer<typeof sendResultSchema>["lineResults"][number]["status"]>;
-};
-export type LineResultStatus = z.infer<typeof sendResultSchema>["status"];
 
 export type Dakuten =
   | "ゔ"

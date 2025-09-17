@@ -1,205 +1,279 @@
-import { schema } from "@/server/drizzle/client";
-import { getBaseUrl } from "@/utils/getBaseUrl";
-import axios from "axios";
+import { Maps, UserDailyTypeCounts, UserOptions, UserStats } from "@/server/drizzle/schema";
+import {
+  IncrementImeTypeCountStatsSchema,
+  IncrementTypingCountStatsSchema,
+} from "@/server/drizzle/validator/user-stats";
 import { and, asc, eq, gte, sql } from "drizzle-orm";
+import { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { optionalAuthProcedure, protectedProcedure, publicProcedure } from "../trpc";
 
 export const userStatsRouter = {
-  incrementPlayCountStats: publicProcedure
-    .input(
-      z.object({
-        mapId: z.number(),
-      }),
-    )
+  getUserStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
+    const { db } = ctx;
+
+    const userStats = await db
+      .select({
+        createdAt: UserStats.createdAt,
+        totalPlayCount: UserStats.totalPlayCount,
+        totalRankingCount: UserStats.totalRankingCount,
+        maxCombo: UserStats.maxCombo,
+        totalTypingTime: UserStats.totalTypingTime,
+        typeCounts: {
+          romaTypeTotalCount: UserStats.romaTypeTotalCount,
+          kanaTypeTotalCount: UserStats.kanaTypeTotalCount,
+          flickTypeTotalCount: UserStats.flickTypeTotalCount,
+          englishTypeTotalCount: UserStats.englishTypeTotalCount,
+          spaceTypeTotalCount: UserStats.spaceTypeTotalCount,
+          symbolTypeTotalCount: UserStats.symbolTypeTotalCount,
+          numTypeTotalCount: UserStats.numTypeTotalCount,
+          totalPlayCount: UserStats.totalPlayCount,
+          imeTypeTotalCount: UserStats.imeTypeTotalCount,
+        },
+        options: {
+          hideUserStats: UserOptions.hideUserStats,
+        },
+      })
+      .from(UserStats)
+      .leftJoin(UserOptions, eq(UserOptions.userId, input.userId))
+      .where(eq(UserStats.userId, input.userId))
+      .limit(1)
+      .then((rows) => rows[0]);
+
+    return userStats;
+  }),
+  incrementPlayCountStats: optionalAuthProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/user-stats/play-count/increment",
+        protect: false,
+        tags: ["UserStats"],
+        summary: "Increment map play count and user total play count",
+        contentTypes: ["application/json" as OpenApiContentType],
+      },
+    })
+    .input(z.object({ mapId: z.number() }))
+    .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;
       const { mapId } = input;
-      if (user.id) {
-        await db
-          .insert(schema.UserStats)
-          .values({ userId: user.id, totalPlayCount: 1 })
-          .onConflictDoUpdate({
-            target: [schema.UserStats.userId],
-            set: { totalPlayCount: sql`${schema.UserStats.totalPlayCount} + 1` },
-          });
-      }
 
       await db
-        .update(schema.Maps)
-        .set({ playCount: sql`${schema.Maps.playCount} + 1` })
-        .where(eq(schema.Maps.id, mapId));
+        .update(Maps)
+        .set({ playCount: sql`${Maps.playCount} + 1` })
+        .where(eq(Maps.id, mapId));
+
+      if (!user) return;
+
+      await db
+        .insert(UserStats)
+        .values({ userId: user.id, totalPlayCount: 1 })
+        .onConflictDoUpdate({
+          target: [UserStats.userId],
+          set: { totalPlayCount: sql`${UserStats.totalPlayCount} + 1` },
+        });
     }),
 
   incrementImeStats: protectedProcedure
-    .input(
-      z.object({
-        ime_type: z.number(),
-        total_type_time: z.number(),
-      }),
-    )
-    .mutation(async ({ input: sendStats, ctx }) => {
-      const { user } = ctx;
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/user-stats/ime/increment",
+        protect: true,
+        tags: ["UserStats"],
+        summary: "Increment IME typing stats",
+        contentTypes: ["application/json" as OpenApiContentType],
+      },
+    })
+    .input(IncrementImeTypeCountStatsSchema)
+    .output(z.void())
+    .mutation(async ({ input, ctx }) => {
+      const { user, db } = ctx;
 
-      if (!user.id) {
-        return;
+      await db
+        .insert(UserStats)
+        .values({ userId: user.id, ...input })
+        .onConflictDoUpdate({
+          target: [UserStats.userId],
+          set: {
+            imeTypeTotalCount: sql`${UserStats.imeTypeTotalCount} + ${input.imeTypeCount}`,
+            totalTypingTime: sql`${UserStats.totalTypingTime} + ${input.typingTime}`,
+          },
+        });
+
+      // DBの日付変更基準（15:00）に合わせて日付を計算
+      const now = new Date();
+      const isAfterCutoff = now.getHours() >= 15;
+      const targetDate = new Date();
+
+      // 15時前なら前日の日付、15時以降なら当日の日付
+      if (isAfterCutoff) {
+        targetDate.setDate(targetDate.getDate() + 1);
       }
 
-      axios.post(`${getBaseUrl()}/api/update-user-ime-typing-stats`, JSON.stringify({ ...sendStats, userId: user.id }));
+      const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+
+      await db
+        .insert(UserDailyTypeCounts)
+        .values({ userId: user.id, createdAt: dbDate, imeTypeCount: input.imeTypeCount })
+        .onConflictDoUpdate({
+          target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.createdAt],
+          set: { imeTypeCount: sql`${UserDailyTypeCounts.imeTypeCount} + ${input.imeTypeCount}` },
+        });
     }),
 
   incrementTypingStats: protectedProcedure
-    .input(
-      z.object({
-        romaType: z.number(),
-        kanaType: z.number(),
-        flickType: z.number(),
-        totalTypeTime: z.number(),
-        englishType: z.number(),
-        numType: z.number(),
-        symbolType: z.number(),
-        spaceType: z.number(),
-        maxCombo: z.number(),
-      }),
-    )
-    .mutation(async ({ input: sendStats, ctx }) => {
-      const { user } = ctx;
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/user-stats/typing/increment",
+        protect: true,
+        tags: ["UserStats"],
+        summary: "Increment typing stats",
+        contentTypes: ["application/json" as OpenApiContentType],
+      },
+    })
+    .input(IncrementTypingCountStatsSchema)
+    .output(z.void())
+    .mutation(async ({ input, ctx }) => {
+      const { user, db } = ctx;
 
-      if (!user.id) {
-        return;
-      }
+      const currentMaxCombo = await db.query.UserStats.findFirst({
+        columns: { maxCombo: true },
+        where: eq(UserStats.userId, user.id),
+      }).then((res) => res?.maxCombo ?? 0);
 
-      axios.post(`${getBaseUrl()}/api/update-user-typing-stats`, JSON.stringify({ ...sendStats, userId: user.id }));
-    }),
+      const isUpdateMaxCombo = input.maxCombo > currentMaxCombo;
 
-  getUserStats: publicProcedure
-    .input(
-      z.object({
-        userId: z.number(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const { db } = ctx;
-
-      const rows = await db
-        .select({
-          total_ranking_count: schema.UserStats.totalRankingCount,
-          total_typing_time: schema.UserStats.totalTypingTime,
-          roma_type_total_count: schema.UserStats.romaTypeTotalCount,
-          kana_type_total_count: schema.UserStats.kanaTypeTotalCount,
-          flick_type_total_count: schema.UserStats.flickTypeTotalCount,
-          english_type_total_count: schema.UserStats.englishTypeTotalCount,
-          symbol_type_total_count: schema.UserStats.symbolTypeTotalCount,
-          num_type_total_count: schema.UserStats.numTypeTotalCount,
-          space_type_total_count: schema.UserStats.spaceTypeTotalCount,
-          ime_type_total_count: schema.UserStats.imeTypeTotalCount,
-          total_play_count: schema.UserStats.totalPlayCount,
-          max_combo: schema.UserStats.maxCombo,
-          created_at: schema.UserStats.createdAt,
-        })
-        .from(schema.UserStats)
-        .where(eq(schema.UserStats.userId, input.userId))
-        .limit(1);
-
-      return rows[0] ?? null;
-    }),
-
-  getUserActivity: publicProcedure
-    .input(
-      z.object({
-        userId: z.number(),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const { db } = ctx;
-
-      const oneYearAgo = new Date();
-      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
-      const userTypingOptions = await db
-        .select({
-          created_at: schema.UserDailyTypeCounts.createdAt,
-          roma_type_count: schema.UserDailyTypeCounts.romaTypeCount,
-          kana_type_count: schema.UserDailyTypeCounts.kanaTypeCount,
-          flick_type_count: schema.UserDailyTypeCounts.flickTypeCount,
-          english_type_count: schema.UserDailyTypeCounts.englishTypeCount,
-          other_type_count: schema.UserDailyTypeCounts.otherTypeCount,
-          ime_type_count: schema.UserDailyTypeCounts.imeTypeCount,
-        })
-        .from(schema.UserDailyTypeCounts)
-        .where(
-          and(
-            eq(schema.UserDailyTypeCounts.userId, input.userId),
-            gte(schema.UserDailyTypeCounts.createdAt, oneYearAgo),
-          ),
-        )
-        .orderBy(asc(schema.UserDailyTypeCounts.createdAt));
-
-      const dailyTotals: {
-        date: string;
-        count: number;
-        level: number;
-        data: (typeof userTypingOptions)[number] | undefined;
-      }[] = userTypingOptions.map((day) => {
-        const {
-          roma_type_count,
-          kana_type_count,
-          flick_type_count,
-          english_type_count,
-          other_type_count,
-          ime_type_count,
-        } = day;
-
-        const typeCounts = [
-          { type: "roma" as const, count: roma_type_count },
-          { type: "kana" as const, count: kana_type_count },
-          { type: "other" as const, count: flick_type_count + english_type_count + other_type_count },
-          { type: "ime" as const, count: ime_type_count },
-        ];
-
-        const dominantType = typeCounts.reduce(
-          (max, current) => (current.count > max.count ? current : max),
-          typeCounts[0],
-        );
-
-        const totalTypeCount =
-          roma_type_count + kana_type_count + flick_type_count + english_type_count + other_type_count + ime_type_count;
-        const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
-
-        const dateObj = new Date(day.created_at);
-        const formattedDate = dateObj.toISOString().split("T")[0];
-
-        return {
-          date: formattedDate,
-          count: totalTypeCount,
-          level,
-          data: day,
-        };
-      });
-
-      const currentYear = new Date().getFullYear();
-      const startOfYear = new Date(currentYear, 0, 1);
-      if (!dailyTotals.length || startOfYear !== new Date(dailyTotals[0].date)) {
-        dailyTotals.unshift({
-          date: startOfYear.toISOString().split("T")[0],
-          count: 0,
-          level: 0,
-          data: undefined,
+      await db
+        .insert(UserStats)
+        .values({ userId: user.id, ...input })
+        .onConflictDoUpdate({
+          target: [UserStats.userId],
+          set: {
+            romaTypeTotalCount: sql`${UserStats.romaTypeTotalCount} + ${input.romaType}`,
+            kanaTypeTotalCount: sql`${UserStats.kanaTypeTotalCount} + ${input.kanaType}`,
+            flickTypeTotalCount: sql`${UserStats.flickTypeTotalCount} + ${input.flickType}`,
+            englishTypeTotalCount: sql`${UserStats.englishTypeTotalCount} + ${input.englishType}`,
+            numTypeTotalCount: sql`${UserStats.numTypeTotalCount} + ${input.numType}`,
+            symbolTypeTotalCount: sql`${UserStats.symbolTypeTotalCount} + ${input.symbolType}`,
+            spaceTypeTotalCount: sql`${UserStats.spaceTypeTotalCount} + ${input.spaceType}`,
+            totalTypingTime: sql`${UserStats.totalTypingTime} + ${input.typingTime}`,
+            ...(isUpdateMaxCombo ? { maxCombo: input.maxCombo } : {}),
+          },
         });
+
+      // DBの日付変更基準（15:00）に合わせて日付を計算
+      const now = new Date();
+      const isAfterCutoff = now.getHours() >= 15;
+      const targetDate = new Date();
+
+      // 15時前なら前日の日付、15時以降なら当日の日付
+      if (isAfterCutoff) {
+        targetDate.setDate(targetDate.getDate() + 1);
       }
 
-      const endOfYear = new Date(currentYear, 11, 31);
-      if (!dailyTotals.length || endOfYear !== new Date(dailyTotals[dailyTotals.length - 1].date)) {
-        dailyTotals.push({
-          date: endOfYear.toISOString().split("T")[0],
-          count: 0,
-          level: 0,
-          data: undefined,
+      const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+
+      await db
+        .insert(UserDailyTypeCounts)
+        .values({
+          userId: user.id,
+          createdAt: dbDate,
+          romaTypeCount: input.romaType,
+          kanaTypeCount: input.kanaType,
+          flickTypeCount: input.flickType,
+          englishTypeCount: input.englishType,
+          otherTypeCount: input.spaceType + input.numType + input.symbolType,
+        })
+        .onConflictDoUpdate({
+          target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.createdAt],
+          set: {
+            romaTypeCount: sql`${UserDailyTypeCounts.romaTypeCount} + ${input.romaType}`,
+            kanaTypeCount: sql`${UserDailyTypeCounts.kanaTypeCount} + ${input.kanaType}`,
+            flickTypeCount: sql`${UserDailyTypeCounts.flickTypeCount} + ${input.flickType}`,
+            englishTypeCount: sql`${UserDailyTypeCounts.englishTypeCount} + ${input.englishType}`,
+            otherTypeCount: sql`${UserDailyTypeCounts.otherTypeCount} + ${input.spaceType + input.numType + input.symbolType}`,
+          },
         });
-      }
-
-      return dailyTotals;
     }),
+  getUserActivity: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
+    const { db } = ctx;
+
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+    const userActivityTypeCounts = await db.query.UserDailyTypeCounts.findMany({
+      columns: {
+        romaTypeCount: true,
+        kanaTypeCount: true,
+        flickTypeCount: true,
+        englishTypeCount: true,
+        otherTypeCount: true,
+        imeTypeCount: true,
+        createdAt: true,
+      },
+      where: and(eq(UserDailyTypeCounts.userId, input.userId), gte(UserDailyTypeCounts.createdAt, oneYearAgo)),
+      orderBy: asc(UserDailyTypeCounts.createdAt),
+    });
+
+    const dailyTotals = userActivityTypeCounts.map(({ createdAt, ...day }) => {
+      const typeCounts = [
+        { type: "roma" as const, count: day.romaTypeCount },
+        { type: "kana" as const, count: day.kanaTypeCount },
+        { type: "other" as const, count: day.flickTypeCount + day.englishTypeCount + day.otherTypeCount },
+        { type: "ime" as const, count: day.imeTypeCount },
+      ];
+
+      const dominantType = typeCounts.reduce(
+        (max, current) => (current.count > max.count ? current : max),
+        typeCounts[0],
+      );
+      const totalTypeCount = Object.values(day).reduce((total, count) => total + count, 0);
+
+      const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
+
+      const dateObj = new Date(createdAt);
+      const formattedDate = dateObj.toISOString().split("T")[0];
+
+      return { date: formattedDate, count: totalTypeCount, level, data: day as typeof day | undefined };
+    });
+
+    const currentYear = new Date().getFullYear();
+    const createEmptyDayEntry = (date: Date) => ({
+      date: date.toISOString().split("T")[0],
+      count: 0,
+      level: 0,
+      data: undefined,
+    });
+
+    const startOfYear = new Date(currentYear, 0, 1);
+    if (!dailyTotals.length || startOfYear !== new Date(dailyTotals[0].date)) {
+      dailyTotals.unshift(createEmptyDayEntry(startOfYear));
+    }
+
+    const endOfYear = new Date(currentYear, 11, 31);
+    if (!dailyTotals.length || endOfYear !== new Date(dailyTotals[dailyTotals.length - 1].date)) {
+      dailyTotals.unshift(createEmptyDayEntry(endOfYear));
+    }
+
+    return dailyTotals;
+  }),
+};
+
+const getActivityLevel = ({ type, totalTypeCount }: { type: keyof typeof LEVELS; totalTypeCount: number }): number => {
+  const sortedLevels = Object.entries(LEVELS[type])
+    .map(([level, threshold]) => ({ level: parseInt(level), threshold }))
+    .sort((a, b) => b.level - a.level);
+
+  for (const { level, threshold } of sortedLevels) {
+    if (totalTypeCount >= threshold) {
+      return level;
+    }
+  }
+
+  return 0;
 };
 
 const LEVELS = {
@@ -223,18 +297,4 @@ const LEVELS = {
     11: 1000 as const,
     10: 1 as const,
   },
-};
-
-const getActivityLevel = ({ type, totalTypeCount }: { type: keyof typeof LEVELS; totalTypeCount: number }): number => {
-  const sortedLevels = Object.entries(LEVELS[type])
-    .map(([level, threshold]) => ({ level: parseInt(level), threshold }))
-    .sort((a, b) => b.level - a.level);
-
-  for (const { level, threshold } of sortedLevels) {
-    if (totalTypeCount >= threshold) {
-      return level;
-    }
-  }
-
-  return 0;
 };

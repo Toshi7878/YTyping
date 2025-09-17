@@ -3,25 +3,20 @@ import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, SQL,
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
-const mapListSchema = z.object({
-  cursor: z.string().nullable().optional(),
+const SelectMapFilterSchema = z.object({
   filter: z.string().optional(),
   minRate: z.number().optional(),
   maxRate: z.number().optional(),
   played: z.string().optional(),
   keyword: z.string().default(""),
+});
+
+const SelectInfiniteMapListSchema = SelectMapFilterSchema.extend({
+  cursor: z.string().nullable().optional(),
   sort: z.string().optional(),
 });
 
-const mapListLengthSchema = z.object({
-  filter: z.string().optional(),
-  minRate: z.number().optional(),
-  maxRate: z.number().optional(),
-  played: z.string().optional(),
-  keyword: z.string().default(""),
-});
-
-const userStatusSchema = z.array(
+const SelectActiveUserPlayingMapSchema = z.array(
   z.object({
     id: z.number(),
     name: z.string(),
@@ -56,9 +51,9 @@ export const MAP_LIST_FIELDS = {
 };
 
 export const mapListRouter = {
-  getList: publicProcedure.input(mapListSchema).query(async ({ input, ctx }) => {
+  getList: publicProcedure.input(SelectInfiniteMapListSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    const userId = user?.id ? Number(user.id) : null;
+    const userId = user?.id ? user.id : null;
     const PAGE_SIZE = 30;
 
     const page = input.cursor ? Number(input.cursor) : 0;
@@ -79,9 +74,9 @@ export const mapListRouter = {
         .select(MAP_LIST_FIELDS)
         .from(Maps)
         .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+        .innerJoin(Users, eq(Users.id, Maps.creatorId))
         .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
         .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
-        .innerJoin(Users, eq(Users.id, Maps.creatorId))
         .where(whereConds.length ? and(...whereConds) : undefined)
         .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
         .limit(PAGE_SIZE + 1)
@@ -98,7 +93,7 @@ export const mapListRouter = {
       throw new Error("Failed to fetch map list");
     }
   }),
-  getListLength: publicProcedure.input(mapListLengthSchema).query(async ({ input, ctx }) => {
+  getListLength: publicProcedure.input(SelectMapFilterSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const userId = user?.id ? Number(user.id) : null;
 
@@ -116,10 +111,10 @@ export const mapListRouter = {
         .select({ total: count() })
         .from(Maps)
         .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+        .innerJoin(Users, eq(Users.id, Maps.creatorId))
         .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
         .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
         .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-        .innerJoin(Users, eq(Users.id, Maps.creatorId))
         .where(whereConds.length ? and(...whereConds) : undefined)
         .then((rows) => rows[0]?.total ?? 0);
 
@@ -145,7 +140,7 @@ export const mapListRouter = {
     return rows;
   }),
 
-  getUserPlayingMaps: publicProcedure.input(userStatusSchema).query(async ({ input, ctx }) => {
+  getActiveUserPlayingMaps: protectedProcedure.input(SelectActiveUserPlayingMapSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
     const userListPromises = input.map(async (activeUser) => {

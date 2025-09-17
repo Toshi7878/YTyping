@@ -66,19 +66,22 @@ const SceneView = () => {
 
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        navigator.sendBeacon(
-          `${getBaseUrl()}/api/update-user-ime-typing-stats`,
-          JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) }),
-        );
+        const url = `${getBaseUrl()}/api/user-stats/ime/increment`;
+        const body = new Blob([JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) })], {
+          type: "application/json",
+        });
+        navigator.sendBeacon(url, body);
 
         resetUserStats();
       }
     };
     const handleBeforeunload = () => {
-      navigator.sendBeacon(
-        `${getBaseUrl()}/api/update-user-ime-typing-stats`,
-        JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) }),
-      );
+      const url = `${getBaseUrl()}/api/user-stats/ime/increment`;
+      const body = new Blob([JSON.stringify({ ...readUserStats(), userId: Number(session?.user.id ?? 0) })], {
+        type: "application/json",
+      });
+
+      navigator.sendBeacon(url, body);
 
       resetUserStats();
     };

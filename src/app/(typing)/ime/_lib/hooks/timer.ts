@@ -160,8 +160,8 @@ const useTimer = () => {
     if (nextDisplayLine.length === 0) {
       const nextTime = nextLine[0].time / readPlaySpeed().playSpeed;
 
-      const { enable_next_lyrics } = readImeTypeOptions();
-      if (enable_next_lyrics && nextTime - constantOffsettedYTTime < 3) {
+      const { enableNextLyrics } = readImeTypeOptions();
+      if (enableNextLyrics && nextTime - constantOffsettedYTTime < 3) {
         setNextDisplayLine(nextLine);
         setJudgedWords(getJudgedWords(count + 1));
       }

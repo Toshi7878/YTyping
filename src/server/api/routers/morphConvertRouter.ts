@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import { schema } from "@/server/drizzle/client";
+import { FixWordEditLogs, MorphConvertKanaDic } from "@/server/drizzle/schema";
 import { eq } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure } from "../trpc";
@@ -16,42 +16,30 @@ export const morphConvertRouter = {
   getCustomDic: protectedProcedure.query(async ({ ctx }) => {
     const customDic = await ctx.db
       .select({
-        surface: schema.MorphConvertKanaDic.surface,
-        reading: schema.MorphConvertKanaDic.reading,
-        type: schema.MorphConvertKanaDic.type,
+        surface: MorphConvertKanaDic.surface,
+        reading: MorphConvertKanaDic.reading,
+        type: MorphConvertKanaDic.type,
       })
-      .from(schema.MorphConvertKanaDic)
-      .where(eq(schema.MorphConvertKanaDic.type, "DICTIONARY"));
+      .from(MorphConvertKanaDic)
+      .where(eq(MorphConvertKanaDic.type, "DICTIONARY"));
     const customRegexDic = await ctx.db
       .select({
-        surface: schema.MorphConvertKanaDic.surface,
-        reading: schema.MorphConvertKanaDic.reading,
-        type: schema.MorphConvertKanaDic.type,
+        surface: MorphConvertKanaDic.surface,
+        reading: MorphConvertKanaDic.reading,
+        type: MorphConvertKanaDic.type,
       })
-      .from(schema.MorphConvertKanaDic)
-      .where(eq(schema.MorphConvertKanaDic.type, "REGEX"));
+      .from(MorphConvertKanaDic)
+      .where(eq(MorphConvertKanaDic.type, "REGEX"));
 
     return { customDic, customRegexDic };
   }),
 
-  registerCustomDic: protectedProcedure
-    .input(z.object({ surface: z.string().min(2), reading: z.string().min(2) }))
-    .mutation(async ({ input, ctx }) => {
-      const { surface, reading } = input;
-
-      await ctx.db.insert(schema.MorphConvertKanaDic).values({ surface, reading });
-
-      return { success: true };
-    }),
-
-  post_fix_word_log: protectedProcedure
-    .input(z.object({ lyrics: z.string().min(2), word: z.string().min(2) }))
+  fixWordLog: protectedProcedure
+    .input(z.object({ lyrics: z.string(), word: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const { lyrics, word } = input;
 
-      await ctx.db.insert(schema.FixWordEditLogs).values({ lyrics, word });
-
-      return { success: true };
+      await ctx.db.insert(FixWordEditLogs).values({ lyrics, word });
     }),
 };
 

@@ -11,8 +11,8 @@ import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/co
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
+import { lineOptionSchema } from "@/server/drizzle/validator/map-json";
 import { MapLineEdit } from "@/types/map";
-import { lineOptionSchema } from "@/validator/mapDataSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch } from "react";
 import { useForm } from "react-hook-form";
