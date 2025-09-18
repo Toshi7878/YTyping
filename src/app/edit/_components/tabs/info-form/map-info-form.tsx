@@ -19,9 +19,9 @@ import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useNavigationGuard } from "@/utils/use-navigation-guard";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
@@ -41,12 +41,13 @@ import SuggestionTags from "./SuggestionTags";
 
 const MapInfoForm = () => {
   const searchParams = useSearchParams();
-  const { id: mapId } = useParams<{ id: string }>();
+  const mapId = usePathname().split("/")[2];
+
   const isBackUp = searchParams.get("backup") === "true";
   const newCreateVideoId = searchParams.get("new");
   const hasUploadPermission = useHasMapUploadPermission();
 
-  const { data: mapInfoData } = useQuery({
+  const { data: mapInfo } = useQuery({
     ...useMapQueries().mapInfo({ mapId: Number(mapId) }),
     enabled: !!mapId && !isBackUp,
   });
@@ -66,13 +67,13 @@ const MapInfoForm = () => {
     resolver: zodResolver(MapInfoFormSchema),
     shouldUnregister: false,
     values: {
-      title: mapInfoData?.title ?? backupMap?.title ?? "",
-      artistName: mapInfoData?.artistName ?? backupMap?.artistName ?? "",
-      musicSource: mapInfoData?.musicSource ?? backupMap?.musicSource ?? "",
-      previewTime: mapInfoData?.previewTime ?? backupMap?.previewTime ?? 0,
-      creatorComment: mapInfoData?.creator.name ?? backupMap?.creatorComment ?? "",
-      tags: mapInfoData?.tags ?? backupMap?.tags ?? [],
-      videoId: mapInfoData?.videoId ?? newCreateVideoId ?? "",
+      title: mapInfo?.title ?? backupMap?.title ?? "",
+      artistName: mapInfo?.artistName ?? backupMap?.artistName ?? "",
+      musicSource: mapInfo?.musicSource ?? backupMap?.musicSource ?? "",
+      previewTime: mapInfo?.previewTime ?? backupMap?.previewTime ?? 0,
+      creatorComment: mapInfo?.creator.comment ?? backupMap?.creatorComment ?? "",
+      tags: mapInfo?.tags ?? backupMap?.tags ?? [],
+      videoId: mapInfo?.videoId ?? newCreateVideoId ?? "",
     },
 
     resetOptions: {
@@ -81,10 +82,10 @@ const MapInfoForm = () => {
   });
 
   useEffect(() => {
-    if (mapInfoData && !isBackUp) {
-      setVideoId(mapInfoData.videoId);
+    if (mapInfo && !isBackUp) {
+      setVideoId(mapInfo.videoId);
     }
-  }, [mapInfoData, isBackUp, form, setVideoId]);
+  }, [mapInfo, isBackUp, form, setVideoId]);
 
   useEffect(() => {
     if (backupMap && isBackUp && newCreateVideoId) {
@@ -170,7 +171,7 @@ const MapInfoForm = () => {
             />
             <FloatingLabelInputFormField
               disabled={isGeminiLoading}
-              name="artist_name"
+              name="artistName"
               label={isGeminiLoading ? "アーティスト名を生成中..." : "アーティスト名"}
               required
             />
@@ -178,10 +179,10 @@ const MapInfoForm = () => {
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
               disabled={isGeminiLoading}
-              name="music_source"
+              name="musicSource"
               label={isGeminiLoading ? "ソースを生成中..." : "ソース"}
             />
-            <FloatingLabelInputFormField name="creator_comment" label="コメント" />
+            <FloatingLabelInputFormField name="creatorComment" label="コメント" />
           </div>
           <TagInputFormField
             name="tags"
@@ -334,7 +335,9 @@ const PreviewTimeInput = () => {
 };
 
 const TypeLinkButton = () => {
-  const { id: mapId } = useParams<{ id: string }>();
+  const mapId = usePathname().split("/")[2];
+
+  if (!mapId) return null;
 
   return (
     <Link href={`/type/${mapId}`}>
@@ -346,7 +349,7 @@ const TypeLinkButton = () => {
 };
 
 const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormSchema>>>) => {
-  const { id: mapId } = useParams<{ id: string }>();
+  const mapId = usePathname().split("/")[2];
   const readEditUtils = useReadEditUtils();
   const { readPlayer } = usePlayer();
   const searchParams = useSearchParams();
@@ -354,29 +357,29 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
   const setCanUpload = useSetCanUpload();
   const readMap = useReadMap();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
 
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId }));
+      onSuccess: async (data, variables, _, context) => {
+        await context.client.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId: data.id }));
+        await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: data.id }));
+        await context.client.invalidateQueries(trpc.mapList.getList.queryFilter());
 
-        toast.success(data.title);
-        if (data.id && data.id === Number(mapId)) {
-          window.history.pushState(null, "", `/edit/${data.id}`);
+        if (data.id && mapId === undefined) {
+          window.history.replaceState(null, "", `/edit/${data.id}`);
           clearBackupMapWithInfo();
         }
         form.reset(form.getValues());
         setCanUpload(false);
+        toast.success(data.title);
       },
       onError: (error) => {
         switch (error.data?.code) {
           case "FORBIDDEN":
             toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" });
             return;
-          case "BAD_GATEWAY":
+          default:
             toast.error("保存に失敗しました", { description: "しばらく時間をおいてから再度お試しください。" });
-            return;
         }
 
         if (newCreateVideoId) {

@@ -2,6 +2,7 @@ import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
 import { MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
 import { MapDifficulties, thumbnailQualityEnum } from "../schema";
+import { mapDataSchema } from "./map-json";
 
 const MapInfoBaseSchema = z.object({
   title: z
@@ -22,15 +23,23 @@ const MapInfoBaseSchema = z.object({
     message: "プレビュータイムは数値である必要があります",
   }),
 });
-
 export const MapInfoFormSchema = MapInfoBaseSchema;
-export const MapInfoApiSchema = MapInfoBaseSchema.extend({
+
+const MapInfoApiSchema = MapInfoBaseSchema.extend({
   thumbnailQuality: z.enum(thumbnailQualityEnum.enumValues),
 });
 
-export const CreateMapDifficultySchema = createInsertSchema(MapDifficulties).omit({
+const CreateMapDifficultySchema = createInsertSchema(MapDifficulties).omit({
   intTotalNotes: true,
   englishTotalNotes: true,
   mapId: true,
   symbolTotalNotes: true,
+});
+
+export const UpsertMapSchema = z.object({
+  mapId: z.number().nullable(),
+  mapInfo: MapInfoApiSchema,
+  mapDifficulty: CreateMapDifficultySchema,
+  mapData: mapDataSchema,
+  isMapDataEdited: z.boolean(),
 });

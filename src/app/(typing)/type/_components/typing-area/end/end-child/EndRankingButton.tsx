@@ -38,6 +38,7 @@ const EndRankingButton = ({
       },
       onError: () => {
         setIsSendResultBtnDisabled(false);
+        toast.error("ランキング登録に失敗しました");
       },
     }),
   );

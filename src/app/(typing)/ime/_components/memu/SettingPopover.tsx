@@ -37,7 +37,7 @@ const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
       const isOptionEdited = readIsImeTypeOptionsEdited();
       if (isOptionEdited) {
         updateImeTypingOptions.mutate({ ...readImeTypeOptions() });
-        const mapData = queryClient.getQueryData(trpc.map.getMapJson.queryOptions({ mapId }).queryKey);
+        const mapData = queryClient.getQueryData(trpc.map.getMapJson.queryOptions({ mapId: Number(mapId) }).queryKey);
 
         if (mapData) {
           parseImeMap(mapData).then((map) => {
@@ -108,7 +108,6 @@ const MainSettingTab = () => {
           label={
             <LabeledCheckbox
               label="判定文字追加を有効化"
-              name="enableAddSymbol"
               defaultChecked={userImeTypeOptions.enableAddSymbol}
               onCheckedChange={(value: boolean) => {
                 setUserImeTypeOptions({ enableAddSymbol: value });
@@ -119,14 +118,12 @@ const MainSettingTab = () => {
             setUserImeTypeOptions({ addSymbolList: e.currentTarget.value });
           }}
           value={userImeTypeOptions.addSymbolList}
-          name="addSymbol"
           disabled={!userImeTypeOptions.enableAddSymbol}
         />
       </div>
       <div className="flex">
         <LabeledCheckbox
           label="英語スペースを有効化"
-          name="enableEngSpace"
           defaultChecked={userImeTypeOptions.enableEngSpace}
           onCheckedChange={(value: boolean) => {
             setUserImeTypeOptions({ enableEngSpace: value });
@@ -134,7 +131,6 @@ const MainSettingTab = () => {
         />
         <LabeledCheckbox
           label="英語大文字判定を有効化"
-          name="enableEngUpperCase"
           defaultChecked={userImeTypeOptions.enableEngUpperCase}
           onCheckedChange={(value: boolean) => {
             setUserImeTypeOptions({ enableEngUpperCase: value });
@@ -146,7 +142,6 @@ const MainSettingTab = () => {
 
       <LabeledCheckbox
         label="次の歌詞を表示"
-        name="enableNextLyrics"
         defaultChecked={userImeTypeOptions.enableNextLyrics}
         onCheckedChange={(value: boolean) => {
           setUserImeTypeOptions({ enableNextLyrics: value });
@@ -155,7 +150,6 @@ const MainSettingTab = () => {
 
       <LabeledCheckbox
         label="動画を大きく表示"
-        name="enableLargeVideoDisplay"
         defaultChecked={userImeTypeOptions.enableLargeVideoDisplay}
         onCheckedChange={(value: boolean) => {
           setUserImeTypeOptions({ enableLargeVideoDisplay: value });

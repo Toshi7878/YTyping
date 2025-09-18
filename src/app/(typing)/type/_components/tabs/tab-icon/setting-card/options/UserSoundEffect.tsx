@@ -6,11 +6,7 @@ import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { H5 } from "@/components/ui/typography";
 
 const UserSoundEffectCheckbox = () => {
-  const {
-    typeSound: type_sound,
-    missSound: miss_sound,
-    lineClearSound: line_clear_sound,
-  } = useUserTypingOptionsState();
+  const { typeSound, missSound, lineClearSound } = useUserTypingOptionsState();
   const { readPlayer } = usePlayer();
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { typeSoundPlay, missSoundPlay, clearTypeSoundPlay } = useSoundEffect();
@@ -22,8 +18,7 @@ const UserSoundEffectCheckbox = () => {
       <div className="flex flex-row gap-4">
         <LabeledCheckbox
           label="タイプ音"
-          name="type_sound"
-          defaultChecked={type_sound}
+          defaultChecked={typeSound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
               typeSound: value,
@@ -33,8 +28,7 @@ const UserSoundEffectCheckbox = () => {
         />
         <LabeledCheckbox
           label="ミス音"
-          name="miss_sound"
-          defaultChecked={miss_sound}
+          defaultChecked={missSound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
               missSound: value,
@@ -44,8 +38,7 @@ const UserSoundEffectCheckbox = () => {
         />
         <LabeledCheckbox
           label="打ち切り音"
-          name="line_clear_sound"
-          defaultChecked={line_clear_sound}
+          defaultChecked={lineClearSound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
               lineClearSound: value,

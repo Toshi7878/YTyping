@@ -3,7 +3,7 @@ import {
   IncrementImeTypeCountStatsSchema,
   IncrementTypingCountStatsSchema,
 } from "@/server/drizzle/validator/user-stats";
-import { and, asc, eq, gte, sql } from "drizzle-orm";
+import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
 import { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import { optionalAuthProcedure, protectedProcedure, publicProcedure } from "../trpc";
@@ -201,8 +201,9 @@ export const userStatsRouter = {
   getUserActivity: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
     const { db } = ctx;
 
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const currentYear = new Date().getFullYear();
+    const startOfYear = new Date(currentYear, 0, 1);
+    const endOfYear = new Date(currentYear, 11, 31);
 
     const userActivityTypeCounts = await db.query.UserDailyTypeCounts.findMany({
       columns: {
@@ -214,51 +215,66 @@ export const userStatsRouter = {
         imeTypeCount: true,
         createdAt: true,
       },
-      where: and(eq(UserDailyTypeCounts.userId, input.userId), gte(UserDailyTypeCounts.createdAt, oneYearAgo)),
+      where: and(
+        eq(UserDailyTypeCounts.userId, input.userId),
+        gte(UserDailyTypeCounts.createdAt, startOfYear),
+        lte(UserDailyTypeCounts.createdAt, endOfYear),
+      ),
       orderBy: asc(UserDailyTypeCounts.createdAt),
     });
 
-    const dailyTotals = userActivityTypeCounts.map(({ createdAt, ...day }) => {
-      const typeCounts = [
-        { type: "roma" as const, count: day.romaTypeCount },
-        { type: "kana" as const, count: day.kanaTypeCount },
-        { type: "other" as const, count: day.flickTypeCount + day.englishTypeCount + day.otherTypeCount },
-        { type: "ime" as const, count: day.imeTypeCount },
-      ];
-
-      const dominantType = typeCounts.reduce(
-        (max, current) => (current.count > max.count ? current : max),
-        typeCounts[0],
-      );
-      const totalTypeCount = Object.values(day).reduce((total, count) => total + count, 0);
-
-      const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
-
-      const dateObj = new Date(createdAt);
-      const formattedDate = dateObj.toISOString().split("T")[0];
-
-      return { date: formattedDate, count: totalTypeCount, level, data: day as typeof day | undefined };
+    type DayCounts = Omit<(typeof userActivityTypeCounts)[number], "createdAt">;
+    const dataMap = new Map<string, DayCounts>();
+    userActivityTypeCounts.forEach((record) => {
+      const dateKey = new Date(record.createdAt).toISOString().split("T")[0];
+      const { createdAt, ...dayData } = record;
+      dataMap.set(dateKey, dayData);
     });
 
-    const currentYear = new Date().getFullYear();
-    const createEmptyDayEntry = (date: Date) => ({
-      date: date.toISOString().split("T")[0],
-      count: 0,
-      level: 0,
-      data: undefined,
-    });
+    const fullYearData: { date: string; count: number; level: number; data: DayCounts | undefined }[] = [];
+    const currentDate = new Date(startOfYear);
 
-    const startOfYear = new Date(currentYear, 0, 1);
-    if (!dailyTotals.length || startOfYear !== new Date(dailyTotals[0].date)) {
-      dailyTotals.unshift(createEmptyDayEntry(startOfYear));
+    while (currentDate <= endOfYear) {
+      const dateKey = currentDate.toISOString().split("T")[0];
+      const existingData = dataMap.get(dateKey);
+
+      if (existingData) {
+        const typeCounts = [
+          { type: "roma" as const, count: existingData.romaTypeCount },
+          { type: "kana" as const, count: existingData.kanaTypeCount },
+          {
+            type: "other" as const,
+            count: existingData.flickTypeCount + existingData.englishTypeCount + existingData.otherTypeCount,
+          },
+          { type: "ime" as const, count: existingData.imeTypeCount },
+        ];
+
+        const dominantType = typeCounts.reduce(
+          (max, current) => (current.count > max.count ? current : max),
+          typeCounts[0],
+        );
+        const totalTypeCount = (Object.values(existingData) as number[]).reduce((total, count) => total + count, 0);
+        const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
+
+        fullYearData.push({
+          date: dateKey,
+          count: totalTypeCount,
+          level,
+          data: existingData,
+        });
+      } else {
+        fullYearData.push({
+          date: dateKey,
+          count: 0,
+          level: 0,
+          data: undefined,
+        });
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    const endOfYear = new Date(currentYear, 11, 31);
-    if (!dailyTotals.length || endOfYear !== new Date(dailyTotals[dailyTotals.length - 1].date)) {
-      dailyTotals.unshift(createEmptyDayEntry(endOfYear));
-    }
-
-    return dailyTotals;
+    return fullYearData;
   }),
 };
 

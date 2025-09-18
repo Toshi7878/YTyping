@@ -17,7 +17,7 @@ const ManyPhraseTextarea = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useHotkeys(
     "tab",
-    (event) => {
+    () => {
       const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
 
       if (isDialogOpen) return;
@@ -57,7 +57,7 @@ const ManyPhraseTextarea = () => {
 
     const topPhrase = e.target.value.split("\n")[0];
     if (topPhrase !== lyrics) {
-      debounce(() => pickupTopPhrase(topPhrase));
+      debounce(() => pickupTopPhrase(topPhrase.trim()));
     }
 
     setManyPhrase(e.target.value);

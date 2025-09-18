@@ -133,8 +133,8 @@ export class BuildMap {
   }
 
   private calcLineKpm({ notes, lineDuration: remainTime }: { notes: LineData["notes"]; lineDuration: number }) {
-    const romaKpm = Math.floor((notes.r / remainTime) * 60);
-    const kanaKpm = Math.floor((notes.k / remainTime) * 60);
+    const romaKpm = Math.max(1, Math.floor((notes.r / remainTime) * 60));
+    const kanaKpm = Math.max(1, Math.floor((notes.k / remainTime) * 60));
     return { r: romaKpm, k: kanaKpm };
   }
 

@@ -267,6 +267,7 @@ export function useLikeMutationMapList() {
         }
       },
       onSuccess: (server, _, ctx) => {
+        if (!ctx) return;
         setMapListServer(queryClient, ctx.mapListFilter, server.mapId, server.likeCount, server.isLiked);
         setTimelineServer(queryClient, ctx.timelineFilter, server.mapId, server.likeCount, server.isLiked);
         setNotificationsServer(queryClient, ctx.notificationsFilter, server.mapId, server.likeCount, server.isLiked);
@@ -317,7 +318,7 @@ export function useLikeMutationMapInfo() {
         }
       },
       onSuccess: (server, _vars, ctx) => {
-        // server: { mapId, likeCount, isLiked }
+        if (!ctx) return;
         setMapInfoServer(queryClient, ctx.mapInfoFilter, server.isLiked);
         setMapListServer(queryClient, ctx.mapListFilter, server.mapId, server.likeCount, server.isLiked);
         setTimelineServer(queryClient, ctx.timelineFilter, server.mapId, server.likeCount, server.isLiked);

@@ -11,12 +11,12 @@ import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/co
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
-import { lineOptionSchema } from "@/server/drizzle/validator/map-json";
+import { LineOptionSchema } from "@/server/drizzle/validator/map-json";
 import { MapLineEdit } from "@/types/map";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import z from "zod";
 
 interface LineOptionDialogProps {
   index: number;
@@ -31,7 +31,7 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
   const mapDispatch = useMapReducer();
 
   const form = useForm({
-    resolver: zodResolver(lineOptionSchema),
+    resolver: zodResolver(LineOptionSchema),
     defaultValues: {
       changeCSS: map[index]?.options?.changeCSS || "",
       eternalCSS: map[index]?.options?.eternalCSS || "",
@@ -48,7 +48,7 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
 
     const isConfirmed = await confirm({
       title: "確認",
-      body: "ラインオプション\の変更が保存されていません。保存せずに閉じてもよろしいですか？",
+      body: "ラインオプションの変更が保存されていません。保存せずに閉じてもよろしいですか？",
       cancelButton: "いいえ",
       actionButton: "はい",
       cancelButtonVariant: "outline",
@@ -60,7 +60,7 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
     }
   };
 
-  const onSubmit = (data: z.output<typeof lineOptionSchema>) => {
+  const onSubmit = (data: z.output<typeof LineOptionSchema>) => {
     const { time, lyrics, word } = map[index];
 
     const newLine = {
@@ -129,7 +129,7 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
                     min={-1.75}
                     max={2}
                     step={0.25}
-                    valueDigits={2} // 小数点以下2桁を表示
+                    valueDigits={2}
                   />
                 </FormItem>
               )}

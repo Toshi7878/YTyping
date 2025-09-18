@@ -1,16 +1,17 @@
 import z from "zod";
 
-export const lineOptionSchema = z.object({
+export const LineOptionSchema = z.object({
   changeCSS: z.string().optional(),
   eternalCSS: z.string().optional(),
   isChangeCSS: z.boolean().optional(),
   changeVideoSpeed: z.number().min(-1.75).max(2).optional(),
 });
+
 const lineSchema = z.object({
   time: z.string().max(20),
   lyrics: z.string().optional(),
   word: z.string().optional(),
-  options: lineOptionSchema.optional(),
+  options: LineOptionSchema.optional(),
 });
 
 const validateNoHttpContent = (lines: z.infer<typeof lineSchema>[]) => {

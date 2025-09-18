@@ -8,7 +8,7 @@ export const useMapQueries = () => {
   return {
     map: ({ mapId }: { mapId: string }) =>
       trpc.map.getMapJson.queryOptions(
-        { mapId },
+        { mapId: Number(mapId) },
         {
           enabled: !!mapId,
           staleTime: Infinity,

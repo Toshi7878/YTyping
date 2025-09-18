@@ -128,9 +128,10 @@ export function useClapMutationTimeline({ mapId }: { mapId: number }) {
       },
       onSuccess: (server, _vars, ctx) => {
         const mapRankingFilter = trpc.result.getMapRanking.queryFilter({ mapId });
-
-        setTimelineClapServer(queryClient, ctx.timelineFilter, server.resultId, server.isClaped, server.clapCount);
         setRankingClapServer(queryClient, mapRankingFilter, server.resultId, server.isClaped, server.clapCount);
+
+        if (!ctx) return;
+        setTimelineClapServer(queryClient, ctx.timelineFilter, server.resultId, server.isClaped, server.clapCount);
       },
     }),
   );
@@ -162,8 +163,9 @@ export function useClapMutationRanking(mapId: number) {
       onSuccess: (server, _vars, ctx) => {
         const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
 
-        setRankingClapServer(queryClient, ctx.mapRankingFilter, server.resultId, server.isClaped, server.clapCount);
         setTimelineClapServer(queryClient, timelineFilter, server.resultId, server.isClaped, server.clapCount);
+        if (!ctx) return;
+        setRankingClapServer(queryClient, ctx.mapRankingFilter, server.resultId, server.isClaped, server.clapCount);
       },
     }),
   );

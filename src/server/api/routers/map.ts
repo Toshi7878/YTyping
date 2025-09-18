@@ -1,8 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
-import { CreateMapDifficultySchema, MapInfoApiSchema } from "@/server/drizzle/validator/map";
-import { mapDataSchema } from "@/server/drizzle/validator/map-json";
+import { UpsertMapSchema } from "@/server/drizzle/validator/map";
 import { MapLine } from "@/types/map";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
@@ -46,7 +45,7 @@ export const mapRouter = {
     return mapInfo;
   }),
 
-  getMapJson: publicProcedure.input(z.object({ mapId: z.string() })).query(async ({ input }) => {
+  getMapJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
     const timestamp = new Date().getTime();
 
     const { data, error } = await supabase.storage
@@ -63,70 +62,63 @@ export const mapRouter = {
     return mapJson;
   }),
 
-  upsertMap: protectedProcedure
-    .input(
-      z.object({
-        mapId: z.number().nullable(),
-        mapInfo: MapInfoApiSchema,
-        mapDifficulty: CreateMapDifficultySchema,
-        mapData: mapDataSchema,
-        isMapDataEdited: z.boolean(),
-      }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      const { mapId, isMapDataEdited, mapData, mapInfo, mapDifficulty } = input;
-      const userId = ctx.user.id;
-      const userRole = ctx.user.role;
+  upsertMap: protectedProcedure.input(UpsertMapSchema).mutation(async ({ input, ctx }) => {
+    const { mapId, isMapDataEdited, mapData, mapInfo, mapDifficulty } = input;
+    const userId = ctx.user.id;
+    const userRole = ctx.user.role;
 
-      const hasUpsertPermission =
-        mapId === null
-          ? true
-          : await ctx.db.query.Maps.findFirst({
-              columns: { creatorId: true },
-              where: eq(Maps.id, mapId),
-            }).then((row) => row?.creatorId === userId || userRole === "ADMIN");
+    const hasUpsertPermission =
+      mapId === null
+        ? true
+        : await ctx.db.query.Maps.findFirst({
+            columns: { creatorId: true },
+            where: eq(Maps.id, mapId),
+          }).then((row) => row?.creatorId === userId || userRole === "ADMIN");
 
-      if (!hasUpsertPermission) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "この譜面を保存する権限がありません",
-        });
+    if (!hasUpsertPermission) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "この譜面を保存する権限がありません",
+      });
+    }
+
+    const newMapId = await db.transaction(async (tx) => {
+      let newMapId: number;
+
+      if (mapId === null) {
+        newMapId = await tx
+          .insert(Maps)
+          .values({ ...mapInfo, creatorId: userId })
+          .returning({ id: Maps.id })
+          .then((res) => res[0].id);
+      } else {
+        newMapId = await tx
+          .update(Maps)
+          .set({ ...mapInfo, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) })
+          .where(eq(Maps.id, mapId))
+          .returning({ id: Maps.id })
+          .then((res) => res[0].id);
       }
 
-      try {
-        const newMapId = await db.transaction(async (tx) => {
-          const newMapId = await tx
-            .insert(Maps)
-            .values({ ...mapInfo, creatorId: userId })
-            .onConflictDoUpdate({
-              target: [Maps.id],
-              set: { ...mapInfo, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) },
-            })
-            .returning({ id: Maps.id })
-            .then((rows) => (mapId === null ? rows[0].id : Number(mapId)));
+      await tx
+        .insert(MapDifficulties)
+        .values({ mapId: newMapId, ...mapDifficulty })
+        .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: mapDifficulty });
 
-          await tx
-            .insert(MapDifficulties)
-            .values({ mapId: newMapId, ...mapDifficulty })
-            .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: mapDifficulty });
+      await supabase.storage
+        .from("map-data")
+        .upload(
+          `public/${mapId === null ? newMapId : mapId}.json`,
+          new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
+          { upsert: true },
+        );
 
-          await supabase.storage
-            .from("map-data")
-            .upload(
-              `public/${mapId === null ? newMapId : mapId}.json`,
-              new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
-              { upsert: true },
-            );
+      return newMapId;
+    });
 
-          return newMapId;
-        });
-
-        return {
-          id: mapId === null ? newMapId : mapId,
-          title: mapId === null ? "アップロード完了" : "アップデート完了",
-        };
-      } catch (error) {
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-      }
-    }),
+    return {
+      id: mapId === null ? newMapId : mapId,
+      title: mapId === null ? "アップロード完了" : "アップデート完了",
+    };
+  }),
 };
