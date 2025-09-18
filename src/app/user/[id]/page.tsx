@@ -5,7 +5,7 @@ import UserStatsCard from "./_components/UserStatsCard";
 
 export default async function Page({ params }: PageProps<"/user/[id]">) {
   const { id } = await params;
-  const userProfile = await serverApi.user.getUserProfile({ userId: Number(id) });
+  const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(id) });
   const userStats = await serverApi.userStats.getUserStats({ userId: Number(id) });
 
   if (!userProfile) {

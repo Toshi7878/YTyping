@@ -3,9 +3,41 @@ import { FingerChartUrlApiSchema, MyKeyboardApiSchema, UserNameSchema } from "@/
 import { TRPCError } from "@trpc/server";
 import { and, eq, ne } from "drizzle-orm";
 import z from "zod";
-import { protectedProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
-export const userProfileSettingRouter = {
+export const userProfileRouter = {
+  getUserProfile: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
+    const { db } = ctx;
+    const userProfile = await db
+      .select({
+        name: Users.name,
+        fingerChartUrl: UserProfiles.fingerChartUrl,
+        myKeyboard: UserProfiles.myKeyboard,
+      })
+      .from(UserProfiles)
+      .innerJoin(Users, eq(Users.id, input.userId))
+      .where(eq(UserProfiles.userId, input.userId))
+      .limit(1)
+      .then((rows) => rows[0]);
+
+    if (!userProfile) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+
+    return userProfile;
+  }),
+  getUserName: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
+    const userName = await ctx.db.query.Users.findFirst({
+      columns: { name: true },
+      where: eq(Users.id, input.userId),
+    }).then((res) => res?.name);
+
+    if (!userName) {
+      throw new TRPCError({ code: "NOT_FOUND" });
+    }
+
+    return userName;
+  }),
   updateName: protectedProcedure.input(UserNameSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
 

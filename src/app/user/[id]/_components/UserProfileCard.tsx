@@ -12,7 +12,7 @@ import FingerChartUrl from "./user-info/FingerChartUrl";
 import MyKeyBoard from "./user-info/MyKeyboard";
 
 interface UserProfileCardProps {
-  userProfile: RouterOutPuts["user"]["getUserProfile"];
+  userProfile: RouterOutPuts["userProfile"]["getUserProfile"];
 }
 
 const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {

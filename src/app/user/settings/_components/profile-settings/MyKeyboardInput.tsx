@@ -21,7 +21,7 @@ export const MyKeyboardInput = ({ myKeyboard }: MyKeyboardInputProps) => {
   const { reset } = form;
 
   const trpc = useTRPC();
-  const updateMyKeyboard = useMutation(trpc.userProfileSetting.upsertMyKeyboard.mutationOptions());
+  const updateMyKeyboard = useMutation(trpc.userProfile.upsertMyKeyboard.mutationOptions());
 
   return (
     <FormProvider {...form}>

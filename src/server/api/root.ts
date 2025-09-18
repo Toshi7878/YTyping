@@ -1,16 +1,15 @@
-import { clapRouter } from "./routers/clapRouter";
-import { geminiRouter } from "./routers/geminiRouter";
-import { likeRouter } from "./routers/likeRouter";
-import { mapListRouter } from "./routers/mapListRouter";
-import { mapRouter } from "./routers/mapRouter";
-import { morphConvertRouter } from "./routers/morphConvertRouter";
-import { notificationRouter } from "./routers/notificationRouter";
-import { resultRouter } from "./routers/resultRouter";
-import { userProfileSettingRouter } from "./routers/userProfileSettingRouter";
-import { userRouter } from "./routers/userRouter";
-import { userStatsRouter } from "./routers/userStatsRouter";
-import { userOptionRouter } from "./routers/userTypingOptionRouter";
-import { vercelRouter } from "./routers/vercelRouter";
+import { clapRouter } from "./routers/clap";
+import { geminiRouter } from "./routers/gemini";
+import { likeRouter } from "./routers/like";
+import { mapRouter } from "./routers/map";
+import { mapListRouter } from "./routers/map-list";
+import { morphConvertRouter } from "./routers/morph";
+import { notificationRouter } from "./routers/notification";
+import { resultRouter } from "./routers/result";
+import { userOptionRouter } from "./routers/typing-option";
+import { userProfileRouter } from "./routers/user-profile";
+import { userStatsRouter } from "./routers/user-stats";
+import { vercelRouter } from "./routers/vercel";
 import { router } from "./trpc";
 
 export const appRouter = router({
@@ -19,9 +18,8 @@ export const appRouter = router({
   notification: notificationRouter,
   result: resultRouter,
   userOption: userOptionRouter,
-  userProfileSetting: userProfileSettingRouter,
+  userProfile: userProfileRouter,
   userStats: userStatsRouter,
-  user: userRouter,
   morphConvert: morphConvertRouter,
   gemini: geminiRouter,
   vercel: vercelRouter,

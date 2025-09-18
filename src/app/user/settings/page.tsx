@@ -19,7 +19,7 @@ export default async function Page() {
 
 const ProfileSettingCard = async () => {
   const session = await auth();
-  const userProfile = await serverApi.user.getUserProfile({ userId: Number(session?.user.id) });
+  const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(session?.user.id) });
 
   if (!userProfile) {
     notFound();
