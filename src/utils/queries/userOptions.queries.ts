@@ -5,12 +5,9 @@ export const useUserOptionsQueries = () => {
 
   return {
     myUserOptions: () =>
-      trpc.userOption.getUserOptions.queryOptions(
-        {},
-        {
-          gcTime: Infinity,
-          staleTime: Infinity,
-        },
-      ),
+      trpc.userOption.getUserOptions.queryOptions(undefined, {
+        gcTime: Infinity,
+        staleTime: Infinity,
+      }),
   };
 };

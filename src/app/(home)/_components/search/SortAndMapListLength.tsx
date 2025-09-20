@@ -105,9 +105,9 @@ const SortOptions = () => {
   return (
     <div className="flex flex-wrap items-center gap-2 select-none">
       {Object.keys(FIELD_TO_PARAMS).map((option) => {
-        const isLikedSort = option === "いいね";
-        const isFilterLiked = searchParams.get("filter") === "liked";
-        if (isLikedSort && !isFilterLiked) {
+        const likedSort = option === "いいね";
+        const filterLiked = searchParams.get("filter") === "liked";
+        if (likedSort && !filterLiked) {
           return null;
         }
         return (

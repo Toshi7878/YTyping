@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useOnlineUsersState } from "@/lib/globalAtoms";
-import { useActiveUserQueries } from "@/utils/queries/activeUser.queries";
+import { useTRPC } from "@/trpc/provider";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import Link from "next/link";
@@ -19,8 +19,9 @@ const ActiveUsersDrawer = () => {
   useActiveUsers();
   const [open, setOpen] = useState(false);
   const onlineUsers = useOnlineUsersState();
-  const activeUserMapQuery = useQuery({
-    ...useActiveUserQueries().userPlayingMaps(onlineUsers),
+  const trpc = useTRPC();
+  const { data: activeUsersWithMap } = useQuery({
+    ...trpc.mapList.getActiveUserPlayingMaps.queryOptions(onlineUsers),
     enabled: open,
   });
 
@@ -45,8 +46,8 @@ const ActiveUsersDrawer = () => {
         </SheetHeader>
         <Table className="table-fixed">
           <TableBody>
-            {activeUserMapQuery.data &&
-              activeUserMapQuery.data.map((user) => {
+            {activeUsersWithMap &&
+              activeUsersWithMap.map((user) => {
                 const stateMsg =
                   user.state === "askMe"
                     ? "Ask Me"
@@ -68,13 +69,7 @@ const ActiveUsersDrawer = () => {
                     <TableCell className="px-0 py-2">
                       {user.state === "type" && user.map ? (
                         <CardWithContent variant="map">
-                          <MapLeftThumbnail
-                            alt={user.map.title}
-                            src={`https://i.ytimg.com/vi/${user.map.video_id}/mqdefault.jpg`}
-                            mapVideoId={user.map.video_id}
-                            mapPreviewTime={user.map.preview_time}
-                            size="activeUser"
-                          />
+                          <MapLeftThumbnail alt={user.map.info.title} media={user.map.media} size="activeUser" />
 
                           <CompactMapInfo map={user.map} />
                         </CardWithContent>

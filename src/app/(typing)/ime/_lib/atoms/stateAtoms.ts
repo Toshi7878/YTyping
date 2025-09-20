@@ -1,3 +1,4 @@
+import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
@@ -153,17 +154,10 @@ export const useResultDialogDisclosure = () => {
 };
 
 const isImeTypeOptionsEditedAtom = atom(false);
-export const imeTypeOptionsAtom = atomWithReset({
-  enable_add_symbol: false,
-  enable_eng_upper_case: false,
-  enable_eng_space: false,
-  add_symbol_list: "",
-  enable_next_lyrics: true,
-  enable_large_video_display: false,
-});
+export const imeTypeOptionsAtom = atomWithReset(DEFAULT_IME_OPTIONS);
 
-const enableNextLyricsOptionAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enable_next_lyrics"));
-const enableLargeVideoDisplayAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enable_large_video_display"));
+const enableNextLyricsOptionAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableNextLyrics"));
+const enableLargeVideoDisplayAtom = focusAtom(imeTypeOptionsAtom, (optic) => optic.prop("enableLargeVideoDisplay"));
 
 store.sub(imeTypeOptionsAtom, () => {
   store.set(isImeTypeOptionsEditedAtom, true);

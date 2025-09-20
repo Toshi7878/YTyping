@@ -13,7 +13,7 @@ const Lyrics = () => {
         "text-word-word w-full max-w-[103%] whitespace-nowrap",
         "text-6xl font-bold md:text-[2.5rem]",
         "font-[system-ui]",
-        userOptionsAtom.line_completed_display === "NEXT_WORD" && "[.word-area-completed_+_&]:invisible",
+        userOptionsAtom.lineCompletedDisplay === "NEXT_WORD" && "[.word-area-completed_+_&]:invisible",
       )}
     >
       {parse(lyrics)}

@@ -1,6 +1,5 @@
 import { Ticker } from "@pixi/ticker";
 import { useLyricsContainer } from "../atoms/refAtoms";
-import { useReadPlaySpeed } from "../atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
   useReadImeTypeOptions,
@@ -60,7 +59,6 @@ const useTimer = () => {
 
   const setNextDisplayLine = useSetNextDisplayLine();
   const setDisplayLines = useSetDisplayLines();
-  const readPlaySpeed = useReadPlaySpeed();
   const { readGameUtilParams, readWipeLine } = useReadGameUtilParams();
 
   const { getCurrentOffsettedYTTime, getConstantOffsettedYTTime } = useGetTime();
@@ -158,10 +156,10 @@ const useTimer = () => {
   }) => {
     const { nextDisplayLine } = readGameUtilParams();
     if (nextDisplayLine.length === 0) {
-      const nextTime = nextLine[0].time / readPlaySpeed().playSpeed;
+      const nextTime = nextLine[0].time;
 
-      const { enable_next_lyrics } = readImeTypeOptions();
-      if (enable_next_lyrics && nextTime - constantOffsettedYTTime < 3) {
+      const { enableNextLyrics } = readImeTypeOptions();
+      if (enableNextLyrics && nextTime - constantOffsettedYTTime < 3) {
         setNextDisplayLine(nextLine);
         setJudgedWords(getJudgedWords(count + 1));
       }
@@ -183,7 +181,7 @@ const useTimer = () => {
       return;
     }
 
-    const nextLineStartTime = nextLine[0]?.time / readPlaySpeed().playSpeed;
+    const nextLineStartTime = nextLine[0]?.time;
 
     updateNextDisplayLine({ nextLine, constantOffsettedYTTime, count });
     if (currentOffesettedYTTime > nextLineStartTime) {

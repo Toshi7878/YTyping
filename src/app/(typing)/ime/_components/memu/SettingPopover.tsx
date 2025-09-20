@@ -21,7 +21,7 @@ interface SettingPopoverProps {
 
 const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
   const trpc = useTRPC();
-  const updateImeTypingOptions = useMutation(trpc.userTypingOption.updateImeTypeOptions.mutationOptions());
+  const updateImeTypingOptions = useMutation(trpc.userOption.updateImeTypeOptions.mutationOptions());
   const queryClient = useQueryClient();
   const readIsImeTypeOptionsEdited = useReadIsImeTypeOptionsEdited();
   const readImeTypeOptions = useReadImeTypeOptions();
@@ -37,7 +37,7 @@ const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
       const isOptionEdited = readIsImeTypeOptionsEdited();
       if (isOptionEdited) {
         updateImeTypingOptions.mutate({ ...readImeTypeOptions() });
-        const mapData = queryClient.getQueryData(trpc.map.getMap.queryOptions({ mapId }).queryKey);
+        const mapData = queryClient.getQueryData(trpc.map.getMapJson.queryOptions({ mapId: Number(mapId) }).queryKey);
 
         if (mapData) {
           parseImeMap(mapData).then((map) => {
@@ -108,44 +108,32 @@ const MainSettingTab = () => {
           label={
             <LabeledCheckbox
               label="判定文字追加を有効化"
-              name="enableAddSymbol"
-              defaultChecked={userImeTypeOptions.enable_add_symbol}
+              defaultChecked={userImeTypeOptions.enableAddSymbol}
               onCheckedChange={(value: boolean) => {
-                setUserImeTypeOptions({
-                  enable_add_symbol: value,
-                });
+                setUserImeTypeOptions({ enableAddSymbol: value });
               }}
             />
           }
           onInput={(e: React.FormEvent<HTMLInputElement>) => {
-            setUserImeTypeOptions({
-              add_symbol_list: e.currentTarget.value,
-            });
+            setUserImeTypeOptions({ addSymbolList: e.currentTarget.value });
           }}
-          value={userImeTypeOptions.add_symbol_list}
-          name="addSymbol"
-          disabled={!userImeTypeOptions.enable_add_symbol}
+          value={userImeTypeOptions.addSymbolList}
+          disabled={!userImeTypeOptions.enableAddSymbol}
         />
       </div>
       <div className="flex">
         <LabeledCheckbox
           label="英語スペースを有効化"
-          name="enableEngSpace"
-          defaultChecked={userImeTypeOptions.enable_eng_space}
+          defaultChecked={userImeTypeOptions.enableEngSpace}
           onCheckedChange={(value: boolean) => {
-            setUserImeTypeOptions({
-              enable_eng_space: value,
-            });
+            setUserImeTypeOptions({ enableEngSpace: value });
           }}
         />
         <LabeledCheckbox
           label="英語大文字判定を有効化"
-          name="enableEngUpperCase"
-          defaultChecked={userImeTypeOptions.enable_eng_upper_case}
+          defaultChecked={userImeTypeOptions.enableEngUpperCase}
           onCheckedChange={(value: boolean) => {
-            setUserImeTypeOptions({
-              enable_eng_upper_case: value,
-            });
+            setUserImeTypeOptions({ enableEngUpperCase: value });
           }}
         />
       </div>
@@ -154,23 +142,17 @@ const MainSettingTab = () => {
 
       <LabeledCheckbox
         label="次の歌詞を表示"
-        name="enableNextLyrics"
-        defaultChecked={userImeTypeOptions.enable_next_lyrics}
+        defaultChecked={userImeTypeOptions.enableNextLyrics}
         onCheckedChange={(value: boolean) => {
-          setUserImeTypeOptions({
-            enable_next_lyrics: value,
-          });
+          setUserImeTypeOptions({ enableNextLyrics: value });
         }}
       />
 
       <LabeledCheckbox
         label="動画を大きく表示"
-        name="enableLargeVideoDisplay"
-        defaultChecked={userImeTypeOptions.enable_large_video_display}
+        defaultChecked={userImeTypeOptions.enableLargeVideoDisplay}
         onCheckedChange={(value: boolean) => {
-          setUserImeTypeOptions({
-            enable_large_video_display: value,
-          });
+          setUserImeTypeOptions({ enableLargeVideoDisplay: value });
         }}
       />
     </div>

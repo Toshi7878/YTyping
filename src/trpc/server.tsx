@@ -9,7 +9,7 @@ import { appRouter } from "@/server/api/root";
 
 import { createCallerFactory } from "@/server/api/trpc";
 import { auth } from "@/server/auth";
-import { prisma } from "@/server/db";
+import { db } from "@/server/drizzle/client";
 import { createQueryClient } from "./query-client";
 
 /**
@@ -25,7 +25,7 @@ const createContext = cache(async () => {
 
   return {
     headers: heads,
-    db: prisma,
+    db,
     user,
   };
 });

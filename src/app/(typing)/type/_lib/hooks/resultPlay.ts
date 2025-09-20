@@ -24,13 +24,14 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
         const resultData = await queryClient.ensureQueryData(resultQueries.result({ resultId }));
 
         if (startMode === "replay") {
-          setPlayingInputModeState(resultData[0].status.mode);
+          const mode = resultData[0]?.status?.mode ?? "roma";
+          setPlayingInputModeState(mode);
         }
         initializeLineResults(resultData);
       }
     } finally {
-      hideLoading();
       readPlayer().playVideo();
+      hideLoading();
       setScene(startMode);
     }
   };

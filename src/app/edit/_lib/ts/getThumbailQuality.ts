@@ -1,9 +1,9 @@
-import { $Enums } from "@prisma/client";
+import { thumbnailQualityEnum } from "@/server/drizzle/schema";
 
 export const getThumbnailQuality = (videoId: string) => {
   const img = new window.Image();
   img.src = `https://i.ytimg.com/vi_webp/${videoId}/maxresdefault.webp`;
-  return new Promise<$Enums.thumbnail_quality>((resolve) => {
+  return new Promise<(typeof thumbnailQualityEnum.enumValues)[number]>((resolve) => {
     img.onload = () => {
       if (img.width !== 120) {
         resolve("maxresdefault");

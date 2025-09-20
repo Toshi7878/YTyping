@@ -7,11 +7,11 @@ import { Route } from "next";
 
 const ByUser = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.user.getUserName.queryOptions({ userId: Number(userId) }));
+  const { data: userName } = useSuspenseQuery(trpc.userProfile.getUserName.queryOptions({ userId: Number(userId) }));
 
   return (
     <TextLink href={`/user/${userId}` as Route}>
-      <span>{data?.name}</span>
+      <span>{userName}</span>
     </TextLink>
   );
 };

@@ -1,7 +1,8 @@
+import { CreateResultStatusSchema, ResultData } from "@/server/drizzle/validator/result";
 import { useParams } from "next/navigation";
+import z from "zod";
 import { useTypingDetails } from "../../atoms/refAtoms";
 import { useReadAllLineResult, useReadTypingStatus } from "../../atoms/stateAtoms";
-import { LineResultData, LineResultStatus } from "../../type";
 
 export const useResultData = () => {
   const { id: mapId } = useParams();
@@ -10,7 +11,7 @@ export const useResultData = () => {
   const readAllLineResults = useReadAllLineResult();
   const readTypingStatus = useReadTypingStatus();
 
-  const getMinSpeed = (lineResults: LineResultData[]) => {
+  const getMinSpeed = (lineResults: ResultData) => {
     return lineResults.reduce((min, result) => {
       const { status } = result;
       if (status && status.tTime !== 0) {
@@ -21,31 +22,44 @@ export const useResultData = () => {
   };
 
   return () => {
-    const { totalTypeTime, totalLatency, kanaToRomaConvertCount, clearRate, maxCombo } = readStatus();
-    const { romaType, kanaType, flickType, englishType, spaceType, symbolType, numType } = readStatus();
+    const {
+      totalTypeTime,
+      totalLatency,
+      kanaToRomaConvertCount,
+      clearRate,
+      romaType,
+      kanaType,
+      flickType,
+      englishType,
+      spaceType,
+      symbolType,
+      numType,
+      maxCombo,
+    } = readStatus();
+    const {} = readStatus();
     const lineResults = readAllLineResults();
-    const minSp = getMinSpeed(lineResults);
+    const minPlaySpeed = getMinSpeed(lineResults);
     const rkpmTime = totalTypeTime - totalLatency;
     const typingStatus = readTypingStatus();
 
-    const sendStatus: LineResultStatus = {
+    const sendStatus: z.output<typeof CreateResultStatusSchema> = {
       score: typingStatus.score,
-      roma_type: romaType,
-      kana_type: kanaType,
-      flick_type: flickType,
-      english_type: englishType,
-      space_type: spaceType,
-      symbol_type: symbolType,
-      num_type: numType,
+      rkpm: Math.floor((typingStatus.type / rkpmTime) * 60),
+      kpm: typingStatus.kpm,
       miss: typingStatus.miss,
       lost: typingStatus.lost,
-      rkpm: Math.floor((typingStatus.type / rkpmTime) * 60),
-      max_combo: maxCombo,
-      kpm: typingStatus.kpm,
-      roma_kpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
-      roma_rkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
-      default_speed: minSp,
-      clear_rate: Number(Math.max(0, clearRate).toFixed(1)),
+      romaType,
+      kanaType,
+      flickType,
+      englishType,
+      spaceType,
+      symbolType,
+      numType,
+      maxCombo,
+      minPlaySpeed,
+      kanaToRomaKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
+      kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
+      clearRate: Number(Math.max(0, clearRate).toFixed(1)),
     };
 
     return {

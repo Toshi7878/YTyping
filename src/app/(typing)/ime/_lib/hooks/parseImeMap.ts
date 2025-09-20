@@ -55,14 +55,14 @@ export const useParseImeMap = () => {
 
     const words = await generateTokenizedWords(
       lines.map((line) => {
-        const { enable_eng_space } = readImeTypeOptions();
+        const { enableEngSpace } = readImeTypeOptions();
 
         const words = line
           .map((chunk) => chunk.word.split(" "))
           .flat()
           .filter((char) => char !== "");
 
-        if (enable_eng_space) {
+        if (enableEngSpace) {
           return insertSpacesEng(words);
         }
 

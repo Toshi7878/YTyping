@@ -23,15 +23,14 @@ const formatTime = (totalSeconds: number) => {
 
 interface UserStatsProps {
   userStats: RouterOutPuts["userStats"]["getUserStats"];
-  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
 }
 
-const UserStatsCard = ({ userStats, userOptions }: UserStatsProps) => {
+const UserStatsCard = ({ userStats }: UserStatsProps) => {
   const { id: userId } = useParams() as { id: string };
   const { data: session } = useSession();
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
-  const isHideUserStats = userOptions?.hide_user_stats ?? false;
+  const isHideUserStats = userStats?.options?.hideUserStats ?? false;
   const isMyStats = session?.user?.id === userId;
   const isMyStatsWithHide = isMyStats && isHideUserStats;
 
@@ -62,28 +61,21 @@ interface UserStatsContentProps {
 
 const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProps) => {
   if (!userStats) {
-    return null;
+    return <div>データがありません</div>;
   }
+  const { typeCounts } = userStats;
 
-  const totalKeystrokes =
-    userStats.roma_type_total_count +
-    userStats.kana_type_total_count +
-    userStats.flick_type_total_count +
-    userStats.english_type_total_count +
-    userStats.space_type_total_count +
-    userStats.num_type_total_count +
-    userStats.symbol_type_total_count +
-    userStats.ime_type_total_count;
+  const totalKeystrokes = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0);
 
   const keystrokeStatsData = [
-    { label: "ローマ字 打鍵数", value: userStats.roma_type_total_count },
-    { label: "かな入力 打鍵数", value: userStats.kana_type_total_count },
-    { label: "英語 打鍵数", value: userStats.english_type_total_count },
-    { label: "スペース 打鍵数", value: userStats.space_type_total_count },
-    { label: "数字 打鍵数", value: userStats.num_type_total_count },
-    { label: "記号 打鍵数", value: userStats.symbol_type_total_count },
-    { label: "フリック 打鍵数", value: userStats.flick_type_total_count },
-    { label: "変換有り 打鍵数", value: userStats.ime_type_total_count },
+    { label: "ローマ字 打鍵数", value: typeCounts.romaTypeTotalCount },
+    { label: "かな入力 打鍵数", value: typeCounts.kanaTypeTotalCount },
+    { label: "英語 打鍵数", value: typeCounts.englishTypeTotalCount },
+    { label: "スペース 打鍵数", value: typeCounts.spaceTypeTotalCount },
+    { label: "数字 打鍵数", value: typeCounts.numTypeTotalCount },
+    { label: "記号 打鍵数", value: typeCounts.symbolTypeTotalCount },
+    { label: "フリック 打鍵数", value: typeCounts.flickTypeTotalCount },
+    { label: "変換有り 打鍵数", value: typeCounts.imeTypeTotalCount },
     { label: "合計 打鍵数", value: totalKeystrokes },
   ];
 
@@ -92,16 +84,16 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
       label: "計測開始日",
       value: (
         <div className="flex items-center gap-2">
-          <span>{userStats.created_at.toLocaleDateString()}</span>
+          <span>{userStats.createdAt.toLocaleDateString()}</span>
           <span className="text-muted-foreground text-sm">
-            ({formatDistanceToNowStrict(userStats.created_at, { addSuffix: true, locale: ja })})
+            ({formatDistanceToNowStrict(userStats.createdAt, { addSuffix: true, locale: ja })})
           </span>
         </div>
       ),
     },
-    { label: "タイピング時間", value: formatTime(userStats.total_typing_time) },
-    { label: "プレイ回数", value: userStats.total_play_count },
-    { label: "最大コンボ", value: userStats.max_combo },
+    { label: "タイピング時間", value: formatTime(userStats.totalTypingTime) },
+    { label: "プレイ回数", value: userStats.totalPlayCount },
+    { label: "最大コンボ", value: userStats.maxCombo },
   ];
 
   return (

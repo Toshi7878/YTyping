@@ -10,17 +10,17 @@ interface ResultClapButtonProps {
   mapId: number;
   resultId: number;
   clapCount: number;
-  hasClap: boolean;
+  hasClapped: boolean;
 }
 
-function ResultClapButton({ mapId, resultId, clapCount, hasClap }: ResultClapButtonProps) {
+function ResultClapButton({ mapId, resultId, clapCount, hasClapped: hasClap }: ResultClapButtonProps) {
   const { data: session } = useSession();
 
   const toggleClapMutation = useClapMutationTimeline({ mapId });
 
   const onClick = () => {
     if (!session) return;
-    toggleClapMutation.mutate({ resultId, optimisticState: !hasClap });
+    toggleClapMutation.mutate({ resultId, newState: !hasClap });
   };
 
   const isPending = toggleClapMutation.isPending;
@@ -36,7 +36,7 @@ function ResultClapButton({ mapId, resultId, clapCount, hasClap }: ResultClapBut
           onClick={onClick}
           className={cn(
             "min-w-[100px] rounded-full border px-7",
-            hasClap ? "bg-perfect/20 border-perfect text-perfect" : "",
+            hasClap && session ? "bg-perfect/20 border-perfect text-perfect" : "",
             session && "hover:bg-perfect/20 hover:text-perfect",
           )}
         >

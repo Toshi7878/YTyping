@@ -18,28 +18,28 @@ const InactiveLikeCountIcon = ({ likeCount }: { likeCount: number }) => {
 
 interface LikeCountIconProps {
   mapId: number;
-  isLiked: boolean;
+  hasLiked: boolean;
   likeCount: number;
 }
 
-const ActiveLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconProps) => {
+const ActiveLikeCountIconButton = ({ hasLiked, likeCount, mapId }: LikeCountIconProps) => {
   const setLikeMutation = useLikeMutationMapList();
   const { stop } = useProgress();
 
-  const handleClick = (event: React.MouseEvent, newLikeValue: boolean) => {
+  const handleClick = (event: React.MouseEvent, newState: boolean) => {
     event.stopPropagation();
     event.preventDefault();
 
     if (setLikeMutation.isPending) return;
 
-    setLikeMutation.mutate({ mapId, likeValue: newLikeValue });
+    setLikeMutation.mutate({ mapId, newState: newState });
     stop();
   };
 
   return (
     <LikeButtonWithCount
       onClick={handleClick}
-      defaultLiked={isLiked}
+      defaultLiked={hasLiked}
       size={34}
       likeCount={likeCount}
       disabled={setLikeMutation.isPending}
@@ -47,13 +47,13 @@ const ActiveLikeCountIconButton = ({ isLiked, likeCount, mapId }: LikeCountIconP
   );
 };
 
-const LikeCountIcon = ({ mapId, isLiked, likeCount }: LikeCountIconProps) => {
+const LikeCountIcon = ({ mapId, hasLiked, likeCount }: LikeCountIconProps) => {
   const { data: session } = useSession();
 
   return (
     <div className="z-30" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
       {session?.user.id ? (
-        <ActiveLikeCountIconButton isLiked={isLiked} likeCount={likeCount} mapId={mapId} />
+        <ActiveLikeCountIconButton hasLiked={hasLiked} likeCount={likeCount} mapId={mapId} />
       ) : (
         <InactiveLikeCountIcon likeCount={likeCount} />
       )}

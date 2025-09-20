@@ -1,31 +1,30 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { H4 } from "@/components/ui/typography";
-import { RouterOutPuts } from "@/server/api/trpc";
 import { auth } from "@/server/auth";
 import { serverApi } from "@/trpc/server";
+import { notFound } from "next/navigation";
 import { UserNameInputForm } from "../_components/UserNameInputForm";
-import { OptionSettingForm } from "./_components/option-settings/OptionSettingForm";
+import { OptionForm } from "./_components/option/OptionForm";
 import { FingerChartUrlInput } from "./_components/profile-settings/FingerChartUrlInput";
-import { MyKeyboardInput } from "./_components/profile-settings/MyKeyboardInput";
+import { KeyboardInput } from "./_components/profile-settings/keyboardInput";
 
 export default async function Page() {
-  const session = await auth();
-  const userProfile = await serverApi.user.getUserProfile({ userId: Number(session?.user.id) });
-  const userOptions = await serverApi.userOption.getUserOptions({ userId: Number(session?.user.id) });
-
   return (
     <div className="mx-auto max-w-screen-lg space-y-5">
-      <ProfileSettingCard userProfile={userProfile} />
-      <OptionSettingCard userOptions={userOptions} />
+      <ProfileSettingCard />
+      <OptionSettingCard />
     </div>
   );
 }
 
-interface ProfileSettingCardProps {
-  userProfile: RouterOutPuts["user"]["getUserProfile"];
-}
+const ProfileSettingCard = async () => {
+  const session = await auth();
+  const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(session?.user.id) });
 
-const ProfileSettingCard = ({ userProfile }: ProfileSettingCardProps) => {
+  if (!userProfile) {
+    notFound();
+  }
+
   return (
     <Card className="mx-8">
       <CardHeader>
@@ -34,8 +33,8 @@ const ProfileSettingCard = ({ userProfile }: ProfileSettingCardProps) => {
       <CardContent>
         <div className="flex w-full flex-col gap-4">
           <UserNameInputForm />
-          <FingerChartUrlInput url={userProfile?.finger_chart_url ?? ""} />
-          <MyKeyboardInput myKeyboard={userProfile?.my_keyboard ?? ""} />
+          <FingerChartUrlInput url={userProfile.fingerChartUrl} />
+          <KeyboardInput keyboard={userProfile.keyboard} />
         </div>
       </CardContent>
       <CardFooter />
@@ -43,21 +42,17 @@ const ProfileSettingCard = ({ userProfile }: ProfileSettingCardProps) => {
   );
 };
 
-interface OptionSettingCardProps {
-  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
-}
+const OptionSettingCard = async () => {
+  const userOptions = await serverApi.userOption.getUserOptions();
 
-const OptionSettingCard = ({ userOptions }: OptionSettingCardProps) => {
   return (
     <Card className="mx-8">
       <CardHeader>
-        <h3 className="text-lg font-medium" id="user-settings">
-          ユーザー設定
-        </h3>
+        <H4 id="user-settings">ユーザー設定</H4>
       </CardHeader>
       <CardContent>
         <div className="flex w-full">
-          <OptionSettingForm userOptions={userOptions} />
+          <OptionForm userOptions={userOptions} />
         </div>
       </CardContent>
       <CardFooter />

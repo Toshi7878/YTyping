@@ -1,7 +1,11 @@
 import { cn } from "@/lib/utils";
 
-export function H1({ children }: { children: React.ReactNode }) {
-  return <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">{children}</h1>;
+export function H1({ children, ...props }: { children: React.ReactNode } & React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance" {...props}>
+      {children}
+    </h1>
+  );
 }
 
 export function H2({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -16,8 +20,12 @@ export function H3({ children, className }: { children: React.ReactNode; classNa
   return <h3 className={cn("scroll-m-20 text-2xl font-semibold tracking-tight", className)}>{children}</h3>;
 }
 
-export function H4({ children }: { children: React.ReactNode }) {
-  return <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">{children}</h4>;
+export function H4({ children, ...props }: { children: React.ReactNode } & React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h4 className="scroll-m-20 text-xl font-semibold tracking-tight" {...props}>
+      {children}
+    </h4>
+  );
 }
 
 export function H5({ children, className }: { children: React.ReactNode; className?: string }) {

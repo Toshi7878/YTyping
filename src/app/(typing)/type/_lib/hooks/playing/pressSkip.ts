@@ -24,7 +24,7 @@ export const usePressSkip = () => {
 
     const skippedTime =
       (isRetrySkip ? Number(map.mapData[map.startLine]["time"]) : Number(nextLine["time"])) +
-      userOptions.time_offset +
+      userOptions.timeOffset +
       timeOffset;
 
     const { playSpeed } = readPlaySpeed();

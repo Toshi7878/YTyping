@@ -1,4 +1,4 @@
-import { YouTubeSpeed } from "@/types";
+import { YouTubeSpeed } from "@/types/global-types";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
@@ -11,7 +11,7 @@ const store = getTypeAtomStore();
 type SpeedActionType = "up" | "down" | "set" | "reset" | "toggle";
 
 export const speedBaseAtom = atomWithReset({
-  defaultSpeed: 1,
+  minPlaySpeed: 1,
   playSpeed: 1,
 });
 
@@ -33,7 +33,7 @@ store.sub(speedBaseAtom, () => {
 const speedReducerAtom = atom(
   null,
   (get, set, { type, payload: value }: { type: SpeedActionType; payload?: YouTubeSpeed }) => {
-    const { playSpeed, defaultSpeed } = get(speedBaseAtom);
+    const { playSpeed, minPlaySpeed } = get(speedBaseAtom);
     const scene = get(sceneAtom);
     const isUpdateDefaultSp = scene !== "play";
 
@@ -41,7 +41,7 @@ const speedReducerAtom = atom(
       case "up":
         if (playSpeed < 2) {
           set(speedBaseAtom, {
-            defaultSpeed: isUpdateDefaultSp ? defaultSpeed + 0.25 : defaultSpeed,
+            minPlaySpeed: isUpdateDefaultSp ? minPlaySpeed + 0.25 : minPlaySpeed,
             playSpeed: playSpeed + 0.25,
           });
         }
@@ -49,7 +49,7 @@ const speedReducerAtom = atom(
       case "down":
         if (playSpeed > 0.25) {
           set(speedBaseAtom, {
-            defaultSpeed: isUpdateDefaultSp ? defaultSpeed - 0.25 : defaultSpeed,
+            minPlaySpeed: isUpdateDefaultSp ? minPlaySpeed - 0.25 : minPlaySpeed,
             playSpeed: playSpeed - 0.25,
           });
         }
@@ -58,7 +58,7 @@ const speedReducerAtom = atom(
         if (value !== undefined) {
           set(speedBaseAtom, () => {
             return {
-              defaultSpeed: value,
+              minPlaySpeed: value,
               playSpeed: value,
             };
           });
@@ -68,10 +68,10 @@ const speedReducerAtom = atom(
         set(speedBaseAtom, RESET);
         break;
       case "toggle":
-        const newPlaySpeed = playSpeed + 0.25 <= 2 ? playSpeed + 0.25 : defaultSpeed;
+        const newPlaySpeed = playSpeed + 0.25 <= 2 ? playSpeed + 0.25 : minPlaySpeed;
         set(speedBaseAtom, {
           playSpeed: newPlaySpeed,
-          defaultSpeed,
+          minPlaySpeed: minPlaySpeed,
         });
         break;
     }

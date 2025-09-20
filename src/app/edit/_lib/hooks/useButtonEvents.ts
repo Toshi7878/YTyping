@@ -10,10 +10,8 @@ import {
 } from "../atoms/stateAtoms";
 
 import { backupMap } from "@/lib/indexed-db";
-import { useTRPC } from "@/trpc/provider";
 import { MapLine } from "@/types/map";
 import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
-import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useHistoryReducer } from "../atoms/historyReducerAtom";
@@ -106,8 +104,10 @@ export const useLineUpdateButtonEvent = () => {
   const { readTime } = useTimeInput();
   const { readPlayer } = usePlayer();
   const readUtilsState = useReadEditUtils();
-  const trpc = useTRPC();
-  const postFixWordLog = useMutation(trpc.morphConvert.post_fix_word_log.mutationOptions());
+
+  // const trpc = useTRPC();
+  // 読み修正編集履歴ログを送信するmutation
+  // const postFixWordLog = useMutation(trpc.morphConvert.post_fix_word_log.mutationOptions());
 
   const timeValidate = useTimeValidate();
 
@@ -163,7 +163,7 @@ export const useLineUpdateButtonEvent = () => {
       const hasKanji = /[\u4e00-\u9faf]/.test(oldLine.lyrics);
       if (!hasKanji) return;
 
-      postFixWordLog.mutate({ lyrics: oldLine.lyrics, word: oldLine.word });
+      // postFixWordLog.mutate({ lyrics: oldLine.lyrics, word: oldLine.word });
     }
   };
 };

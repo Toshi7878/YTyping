@@ -20,10 +20,10 @@ const EndButtonContainer = () => {
   const getMyRankingResult = useGetMyRankingResult();
 
   const isPlayingMode = scene === "play_end";
-  const isScoreUpdated = status.score >= (getMyRankingResult()?.status?.score ?? 0);
+  const isScoreUpdated = status.score >= (getMyRankingResult()?.score ?? 0);
 
   const isDisplayRankingButton: boolean =
-    !!session && status.score > 0 && (isScoreUpdated || isPerfect) && speed.defaultSpeed >= 1 && isPlayingMode;
+    !!session && status.score > 0 && (isScoreUpdated || isPerfect) && speed.minPlaySpeed >= 1 && isPlayingMode;
 
   const [isSendResultBtnDisabled, setIsSendResultBtnDisabled] = useState(false);
 

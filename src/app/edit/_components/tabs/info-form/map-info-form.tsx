@@ -10,6 +10,7 @@ import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-fi
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
+import { MapInfoFormSchema } from "@/server/drizzle/validator/map";
 import { useTRPC } from "@/trpc/provider";
 import { BuildMap } from "@/utils/build-map/buildMap";
 import { extractYouTubeVideoId } from "@/utils/extractYTId";
@@ -17,11 +18,10 @@ import { useDebounce } from "@/utils/hooks/useDebounce";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useNavigationGuard } from "@/utils/use-navigation-guard";
-import { mapInfoFormSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
@@ -41,12 +41,13 @@ import SuggestionTags from "./SuggestionTags";
 
 const MapInfoForm = () => {
   const searchParams = useSearchParams();
-  const { id: mapId } = useParams<{ id: string }>();
+  const mapId = usePathname().split("/")[2];
+
   const isBackUp = searchParams.get("backup") === "true";
   const newCreateVideoId = searchParams.get("new");
   const hasUploadPermission = useHasMapUploadPermission();
 
-  const { data: mapInfoData } = useQuery({
+  const { data: mapInfo } = useQuery({
     ...useMapQueries().mapInfo({ mapId: Number(mapId) }),
     enabled: !!mapId && !isBackUp,
   });
@@ -63,16 +64,16 @@ const MapInfoForm = () => {
   const { debounce } = useDebounce(500);
 
   const form = useForm({
-    resolver: zodResolver(mapInfoFormSchema),
+    resolver: zodResolver(MapInfoFormSchema),
     shouldUnregister: false,
     values: {
-      title: mapInfoData?.title ?? backupMap?.title ?? "",
-      artist_name: mapInfoData?.artist_name ?? backupMap?.artistName ?? "",
-      music_source: mapInfoData?.music_source ?? backupMap?.musicSource ?? "",
-      preview_time: mapInfoData?.preview_time ?? backupMap?.previewTime ?? "",
-      creator_comment: mapInfoData?.creator_comment ?? backupMap?.creatorComment ?? "",
-      tags: mapInfoData?.tags ?? backupMap?.tags ?? [],
-      video_id: mapInfoData?.video_id ?? newCreateVideoId ?? "",
+      title: mapInfo?.title ?? backupMap?.title ?? "",
+      artistName: mapInfo?.artistName ?? backupMap?.artistName ?? "",
+      musicSource: mapInfo?.musicSource ?? backupMap?.musicSource ?? "",
+      previewTime: mapInfo?.previewTime ?? backupMap?.previewTime ?? 0,
+      creatorComment: mapInfo?.creator.comment ?? backupMap?.creatorComment ?? "",
+      tags: mapInfo?.tags ?? backupMap?.tags ?? [],
+      videoId: mapInfo?.videoId ?? newCreateVideoId ?? "",
     },
 
     resetOptions: {
@@ -81,17 +82,14 @@ const MapInfoForm = () => {
   });
 
   useEffect(() => {
-    if (mapInfoData && !isBackUp) {
-      setVideoId(mapInfoData.video_id);
+    if (mapInfo && !isBackUp) {
+      setVideoId(mapInfo.videoId);
     }
-  }, [mapInfoData, isBackUp, form, setVideoId]);
+  }, [mapInfo, isBackUp, form, setVideoId]);
 
   useEffect(() => {
     if (backupMap && isBackUp && newCreateVideoId) {
-      mapDispatch({
-        type: "replaceAll",
-        payload: backupMap.map,
-      });
+      mapDispatch({ type: "replaceAll", payload: backupMap.map });
       setCanUpload(true);
       setVideoId(newCreateVideoId);
     }
@@ -105,8 +103,8 @@ const MapInfoForm = () => {
 
   const {
     data: geminiInfoData,
-    isFetching,
     error: geminiError,
+    isFetching,
   } = useQuery(
     useGeminiQueries().generateMapInfo(
       { videoId: videoId ?? "" },
@@ -126,8 +124,8 @@ const MapInfoForm = () => {
 
       if (newCreateVideoId) {
         form.setValue("title", title);
-        form.setValue("artist_name", artistName);
-        form.setValue("music_source", source);
+        form.setValue("artistName", artistName);
+        form.setValue("musicSource", source);
       }
     }
   }, [form, geminiInfoData, newCreateVideoId]);
@@ -141,11 +139,11 @@ const MapInfoForm = () => {
           backupMapInfo({
             videoId: newCreateVideoId,
             title: value.title || "",
-            artistName: value.artist_name || "",
-            musicSource: value.music_source || "",
-            creatorComment: value.creator_comment || "",
+            artistName: value.artistName || "",
+            musicSource: value.musicSource || "",
+            creatorComment: value.creatorComment || "",
             tags: value.tags?.filter((tag): tag is string => typeof tag === "string" && tag !== undefined) || [],
-            previewTime: value.preview_time || "",
+            previewTime: value.previewTime || 0,
           });
         });
       });
@@ -173,7 +171,7 @@ const MapInfoForm = () => {
             />
             <FloatingLabelInputFormField
               disabled={isGeminiLoading}
-              name="artist_name"
+              name="artistName"
               label={isGeminiLoading ? "アーティスト名を生成中..." : "アーティスト名"}
               required
             />
@@ -181,10 +179,10 @@ const MapInfoForm = () => {
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
               disabled={isGeminiLoading}
-              name="music_source"
+              name="musicSource"
               label={isGeminiLoading ? "ソースを生成中..." : "ソース"}
             />
-            <FloatingLabelInputFormField name="creator_comment" label="コメント" />
+            <FloatingLabelInputFormField name="creatorComment" label="コメント" />
           </div>
           <TagInputFormField
             name="tags"
@@ -227,7 +225,7 @@ const InfoFormButton = () => {
 const VideoIdInput = () => {
   const { watch, formState, setValue, getValues } = useFormContext();
   const { dirtyFields } = formState;
-  const formVideoId = watch("video_id");
+  const formVideoId = watch("videoId");
   const setVideoId = useSetVideoId();
   const setYTChaningVideo = useSetYTChaningVideo();
 
@@ -236,7 +234,7 @@ const VideoIdInput = () => {
       <TooltipWrapper label="動画URLを貼り付けるとIDが自動入力されます">
         <div className="flex-center flex gap-4">
           <FloatingLabelInputFormField
-            name="video_id"
+            name="videoId"
             className="w-32"
             label="動画ID"
             maxLength={11}
@@ -246,19 +244,19 @@ const VideoIdInput = () => {
               const videoId = extractYouTubeVideoId(e.clipboardData.getData("text"));
 
               if (videoId) {
-                setValue("video_id", videoId);
+                setValue("videoId", videoId);
               }
             }}
           />
           <Button
             variant="outline-info"
             size="lg"
-            disabled={!dirtyFields.video_id || formVideoId.length !== 11}
+            disabled={!dirtyFields.videoId || formVideoId.length !== 11}
             onClick={(e) => {
               e.preventDefault();
               if (formVideoId.length !== 11) return;
 
-              setVideoId(getValues("video_id"));
+              setVideoId(getValues("videoId"));
               setYTChaningVideo(true);
             }}
           >
@@ -273,7 +271,7 @@ const VideoIdInput = () => {
 const PreviewTimeInput = () => {
   const { readPlayer } = usePlayer();
   const { watch, setValue, getValues } = useFormContext();
-  const previewTime = watch("preview_time");
+  const previewTime = watch("previewTime");
   const setPreventEditortabAutoFocus = useSetPreventEditortabAutoFocus();
   const setCanUpload = useSetCanUpload();
 
@@ -298,13 +296,15 @@ const PreviewTimeInput = () => {
       <div className="flex flex-row items-center gap-3">
         <div>
           <FloatingLabelInputFormField
-            name="preview_time"
+            name="previewTime"
             label="プレビュータイム"
             className="w-36"
             type="number"
             min="0"
             step="0.001"
-            onChange={() => setCanUpload(true)}
+            onChange={() => {
+              setCanUpload(true);
+            }}
             inputMode="decimal"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -313,15 +313,15 @@ const PreviewTimeInput = () => {
               }
               if (e.key === "ArrowUp") {
                 e.preventDefault();
-                const currentValue = Number(getValues("preview_time")) || 0;
-                setValue("preview_time", (currentValue + 0.05).toFixed(2));
+                const currentValue = Number(getValues("previewTime")) || 0;
+                setValue("previewTime", Number((currentValue + 0.05).toFixed(2)));
                 setCanUpload(true);
               }
               if (e.key === "ArrowDown") {
                 e.preventDefault();
-                const currentValue = Number(getValues("preview_time")) || 0;
+                const currentValue = Number(getValues("previewTime")) || 0;
                 const newValue = Math.max(0, currentValue - 0.05);
-                setValue("preview_time", newValue.toFixed(2));
+                setValue("previewTime", Number(newValue.toFixed(2)));
                 setCanUpload(true);
               }
             }}
@@ -337,7 +337,9 @@ const PreviewTimeInput = () => {
 };
 
 const TypeLinkButton = () => {
-  const { id: mapId } = useParams<{ id: string }>();
+  const mapId = usePathname().split("/")[2];
+
+  if (!mapId) return null;
 
   return (
     <Link href={`/type/${mapId}`}>
@@ -348,46 +350,51 @@ const TypeLinkButton = () => {
   );
 };
 
-const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormSchema>>>) => {
-  const { id: mapId } = useParams<{ id: string }>();
+const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormSchema>>>) => {
+  const mapId = usePathname().split("/")[2];
   const readEditUtils = useReadEditUtils();
   const { readPlayer } = usePlayer();
   const searchParams = useSearchParams();
   const newCreateVideoId = searchParams.get("new");
-  const router = useRouter();
   const setCanUpload = useSetCanUpload();
   const readMap = useReadMap();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
 
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(trpc.map.getMap.queryFilter({ mapId }));
+      onSuccess: async (data, variables, _, context) => {
+        await context.client.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId: data.id }));
+        await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: data.id }));
+        await context.client.invalidateQueries(trpc.mapList.getList.queryFilter());
 
-        toast.success(data.title, {
-          description: data.message,
-        });
-        if (data.id) {
-          router.push(`/edit/${data.id}`);
+        if (data.id && mapId === undefined) {
+          window.history.replaceState(null, "", `/edit/${data.id}`);
           clearBackupMapWithInfo();
         }
         form.reset(form.getValues());
         setCanUpload(false);
+        toast.success(data.title);
       },
       onError: (error) => {
-        toast.error(error.message);
+        switch (error.data?.code) {
+          case "FORBIDDEN":
+            toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" });
+            return;
+          default:
+            toast.error("保存に失敗しました", { description: "しばらく時間をおいてから再度お試しください。" });
+        }
 
         if (newCreateVideoId) {
           backupMapInfo({
             videoId: newCreateVideoId,
             title: form.getValues("title"),
-            artistName: form.getValues("artist_name"),
-            musicSource: form.getValues("music_source"),
-            creatorComment: form.getValues("creator_comment"),
+            artistName: form.getValues("artistName"),
+            musicSource: form.getValues("musicSource"),
+            creatorComment: form.getValues("creatorComment"),
             tags: form.getValues("tags"),
-            previewTime: form.getValues("preview_time"),
+            previewTime: form.getValues("previewTime"),
           });
+
           backupMap({
             videoId: newCreateVideoId,
             map: readMap(),
@@ -397,42 +404,43 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
     }),
   );
 
-  return async (data: z.output<typeof mapInfoFormSchema>) => {
+  return async (data: z.output<typeof MapInfoFormSchema>) => {
     const map = readMap();
 
-    const { title, artist_name, music_source, creator_comment, tags, preview_time } = data;
-    const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new BuildMap(map);
+    const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
+    const { speedDifficulty, duration, totalNotes, startLine } = new BuildMap(map);
 
-    const { video_id } = readPlayer().getVideoData();
+    const { video_id: videoId } = readPlayer().getVideoData();
     const videoDuration = readPlayer().getDuration();
 
     const typingStartTime = Math.max(0, Number(map[startLine]["time"]) + 0.2);
 
     const newPreviewTime =
-      Number(preview_time) > videoDuration || typingStartTime >= Number(preview_time)
+      Number(previewTime) > videoDuration || typingStartTime >= Number(previewTime)
         ? typingStartTime.toFixed(3)
-        : preview_time;
+        : previewTime;
 
-    form.setValue("preview_time", newPreviewTime);
+    form.setValue("previewTime", Number(newPreviewTime));
 
     const mapInfo = {
-      video_id,
+      videoId,
       title,
-      artist_name,
-      music_source,
-      creator_comment,
+      artistName,
+      musicSource,
+      creatorComment,
       tags,
-      preview_time: newPreviewTime,
-      thumbnail_quality: await getThumbnailQuality(video_id),
+      previewTime: Number(newPreviewTime),
+      thumbnailQuality: await getThumbnailQuality(videoId),
+      duration,
     };
+
     const mapDifficulty = {
-      roma_kpm_median: speedDifficulty.median.r,
-      roma_kpm_max: speedDifficulty.max.r,
-      kana_kpm_median: speedDifficulty.median.r,
-      kana_kpm_max: speedDifficulty.max.r,
-      total_time: movieTotalTime,
-      roma_total_notes: totalNotes.r,
-      kana_total_notes: totalNotes.k,
+      romaKpmMedian: speedDifficulty.median.r,
+      romaKpmMax: speedDifficulty.max.r,
+      kanaKpmMedian: speedDifficulty.median.r,
+      kanaKpmMax: speedDifficulty.max.r,
+      romaTotalNotes: totalNotes.r,
+      kanaTotalNotes: totalNotes.k,
     };
     const { isUpdateUpdatedAt } = readEditUtils();
     await upsertMap.mutateAsync({
@@ -440,7 +448,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof mapInfoFormS
       mapDifficulty,
       mapData: map,
       isMapDataEdited: isUpdateUpdatedAt,
-      mapId: mapId || "new",
+      mapId: mapId ? Number(mapId) : null,
     });
   };
 };

@@ -1,4 +1,4 @@
-import { YouTubeSpeed } from "@/types";
+import { YouTubeSpeed } from "@/types/global-types";
 import { useGameUtilityReferenceParams } from "../../atoms/refAtoms";
 import { usePlaySpeedReducer, useReadPlaySpeed } from "../../atoms/speedReducerAtoms";
 import {

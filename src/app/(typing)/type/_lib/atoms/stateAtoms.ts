@@ -1,12 +1,12 @@
-import { RouterOutPuts } from "@/server/api/trpc";
+import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
+import { ResultData } from "@/server/drizzle/validator/result";
 import { BuildMap } from "@/utils/build-map/buildMap";
-import { $Enums } from "@prisma/client";
 import deepEqual from "fast-deep-equal";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomFamily, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputMode, LineData, LineResultData, LineWord, SceneType } from "../type";
+import { InputMode, LineData, LineWord, SceneType } from "../type";
 import {
   gameUtilityReferenceParamsAtom,
   lineProgressAtom,
@@ -21,25 +21,7 @@ const store = getTypeAtomStore();
 const initialInputMode: InputMode =
   typeof window !== "undefined" ? (localStorage.getItem("inputMode") as InputMode) || "roma" : "roma";
 
-export const userTypingOptionsAtom = atomWithReset({
-  time_offset: 0,
-  kana_word_scroll: 10,
-  roma_word_scroll: 16,
-  roma_word_font_size: 100,
-  kana_word_font_size: 100,
-  kana_word_spacing: 0.08,
-  roma_word_spacing: 0.08,
-  kana_word_top_position: 0,
-  roma_word_top_position: 0,
-  type_sound: false,
-  miss_sound: false,
-  line_clear_sound: false,
-  next_display: "LYRICS" as $Enums.next_display,
-  line_completed_display: "NEXT_WORD" as $Enums.line_completed_display,
-  time_offset_key: "CTRL_LEFT_RIGHT" as $Enums.time_offset_key,
-  toggle_input_mode_key: "ALT_KANA" as $Enums.toggle_input_mode_key,
-  main_word_display: "KANA_DISPLAY" as $Enums.main_word_display,
-});
+export const userTypingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
 
 const writeTypingOptionsAtom = atom(
   null,
@@ -68,20 +50,6 @@ export const useUserTypingOptionsStateRef = () => {
     { store },
   );
 };
-export const mapInfoAtom = atom<RouterOutPuts["map"]["getMapInfo"]>();
-
-export const useMapInfoRef = () => {
-  const readMapInfo = useAtomCallback(
-    useCallback((get) => get(mapInfoAtom) as NonNullable<RouterOutPuts["map"]["getMapInfo"]>, []),
-    { store },
-  );
-
-  return { readMapInfo };
-};
-
-const mapLikeFocusAtom = focusAtom(mapInfoAtom, (optic) => optic.valueOr({} as { isLiked: undefined }).prop("isLiked"));
-export const useIsLikeState = () => useAtomValue(mapLikeFocusAtom, { store });
-export const useSetIsLikeState = () => useSetAtom(mapLikeFocusAtom, { store });
 
 const mapAtom = atomWithReset<BuildMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });
@@ -187,7 +155,40 @@ export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { s
 export const useSetChangeCSSCount = () => useSetAtom(writeChangeCSSCountAtom, { store });
 
 export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
-export const useSetLineSelectIndex = () => useSetAtom(lineSelectIndexAtom);
+
+export const useSetLineSelectIndex = () => {
+  return useAtomCallback(
+    useCallback((get, set, index: number) => {
+      const prevSelectedIndex = get(lineSelectIndexAtom);
+      if (prevSelectedIndex !== null) {
+        const prevAtom = lineResultAtomFamily(prevSelectedIndex);
+        const prevResult = get(prevAtom);
+        if (prevResult) {
+          set(prevAtom, {
+            ...prevResult,
+            isSelected: false,
+          });
+        }
+      }
+
+      // 指定されたインデックスの行が存在するかチェック
+      const targetAtom = lineResultAtomFamily(index);
+      const targetResult = get(targetAtom);
+
+      if (!targetResult) {
+        return; // 存在しない行は選択できない
+      }
+
+      // 新しい行を選択
+      set(lineSelectIndexAtom, index);
+      set(targetAtom, {
+        ...targetResult,
+        isSelected: true,
+      });
+    }, []), // 依存関係配列を追加
+    { store },
+  );
+};
 
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const useSetYTStarted = () => useSetAtom(isYTStartedAtom);
@@ -242,14 +243,22 @@ export const useReadCurrentTime = () => {
   );
 };
 
-const lineResultAtomFamily = atomFamily(() => atom<LineResultData | undefined>(undefined), deepEqual);
+const lineResultAtomFamily = atomFamily(
+  () => atom<{ isSelected: Boolean; lineResult: ResultData[number] } | undefined>(undefined),
+  deepEqual,
+);
 
 export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
 
 export const useSetLineResult = () => {
   return useAtomCallback(
-    useCallback((get, set, { index, lineResult }: { index: number; lineResult: LineResultData }) => {
-      set(lineResultAtomFamily(index), lineResult);
+    useCallback((get, set, { index, lineResult }: { index: number; lineResult: ResultData[number] }) => {
+      const prev = get(lineResultAtomFamily(index));
+      if (!prev) return;
+      set(lineResultAtomFamily(index), {
+        ...prev,
+        lineResult,
+      });
     }, []),
     { store },
   );
@@ -264,8 +273,8 @@ export const useReadLineResult = (index: number) => {
 
 export const useReadAllLineResult = () => {
   return useAtomCallback(
-    useCallback((get): LineResultData[] => {
-      const results: LineResultData[] = [];
+    useCallback((get): ResultData => {
+      const results: ResultData = [];
       let index = 0;
 
       while (true) {
@@ -273,7 +282,7 @@ export const useReadAllLineResult = () => {
         const result = get(atom);
 
         if (result !== undefined) {
-          results.push(result);
+          results.push(result.lineResult);
           index++;
         } else {
           break;
@@ -288,9 +297,9 @@ export const useReadAllLineResult = () => {
 
 export const useInitializeLineResults = () => {
   return useAtomCallback(
-    useCallback((get, set, lineResults: LineResultData[]) => {
+    useCallback((get, set, lineResults: ResultData) => {
       lineResults.forEach((lineResult, index) => {
-        set(lineResultAtomFamily(index), lineResult);
+        set(lineResultAtomFamily(index), { isSelected: false, lineResult });
       });
     }, []),
     { store },
@@ -337,7 +346,7 @@ const writeNextLyricsAtom = atom(null, (get, set, line: LineData) => {
   set(nextLyricsAtom, () => {
     if (line.kanaWord) {
       return {
-        lyrics: typingOptions.next_display === "WORD" ? line.kanaWord : line["lyrics"],
+        lyrics: typingOptions.nextDisplay === "WORD" ? line.kanaWord : line["lyrics"],
         kpm: nextKpm.toFixed(0),
         kanaWord: line.kanaWord.slice(0, 60),
         romaWord: line.word

@@ -45,13 +45,7 @@ const MapList = () => {
           page.maps.map((map) => {
             return (
               <CardWithContent key={map.id} variant="map">
-                <MapLeftThumbnail
-                  alt={map.title}
-                  src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                  mapVideoId={map.video_id}
-                  mapPreviewTime={map.preview_time}
-                  size="home"
-                />
+                <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
 
                 <MapInfo map={map} />
               </CardWithContent>

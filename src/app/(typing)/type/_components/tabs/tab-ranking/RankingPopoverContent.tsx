@@ -1,12 +1,13 @@
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { useMapInfoRef, useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/soundEffect";
 import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
-import { LocalClapState } from "@/types";
+import { useTRPC } from "@/trpc/provider";
 import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -17,7 +18,7 @@ interface RankingMenuProps {
   userId: number;
   resultUpdatedAt: Date;
   name: string;
-  clapOptimisticState: LocalClapState;
+  hasClapped: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 const RankingPopoverContent = ({
@@ -25,7 +26,7 @@ const RankingPopoverContent = ({
   userId,
   resultUpdatedAt,
   name,
-  clapOptimisticState,
+  hasClapped,
   onOpenChange,
 }: RankingMenuProps) => {
   const { data: session } = useSession();
@@ -36,20 +37,20 @@ const RankingPopoverContent = ({
   const setTabName = useSetTabName();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { readMapInfo } = useMapInfoRef();
-  const { id: mapIdParam } = useParams<{ id: string }>();
-  const mapId = Number(mapIdParam);
+  const trpc = useTRPC();
+  const { id: mapId } = useParams<{ id: string }>();
+  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
 
-  const toggleClap = useClapMutationRanking(mapId);
+  const toggleClap = useClapMutationRanking(Number(mapId));
 
   const handleReplayClick = async () => {
     await resultPlay(resultId);
 
-    const mapUpdatedAt = readMapInfo().updated_at;
+    const mapUpdatedAt = mapInfo?.updatedAt;
     const resultUpdatedAtDate = new Date(resultUpdatedAt);
     iosActiveSound();
 
-    if (mapUpdatedAt > resultUpdatedAtDate) {
+    if (mapUpdatedAt && mapUpdatedAt > resultUpdatedAtDate) {
       toast.warning("リプレイ登録時より後に譜面が更新されています", {
         description: "正常に再生できない可能性があります",
       });
@@ -78,14 +79,14 @@ const RankingPopoverContent = ({
       >
         リプレイ再生
       </Button>
-      {session?.user.id ? (
+      {session ? (
         <Button
           variant="ghost"
           type="button"
           className="w-full"
-          onClick={() => toggleClap.mutate({ resultId, optimisticState: !clapOptimisticState.hasClap })}
+          onClick={() => toggleClap.mutate({ resultId, newState: !hasClapped })}
         >
-          {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
+          {hasClapped ? "拍手済み" : "記録に拍手"}
         </Button>
       ) : null}
     </PopoverContent>
