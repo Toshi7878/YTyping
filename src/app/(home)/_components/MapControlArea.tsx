@@ -1,5 +1,6 @@
 "use client";
 import VolumeRange from "@/components/shared/VolumeRange";
+import { H6 } from "@/components/ui/typography";
 import { usePreviewPlayerState } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
@@ -16,6 +17,14 @@ const MapControlArea = () => {
   return (
     <section className="mb-4 flex w-full flex-col gap-4">
       <SearchInputs />
+      <div className="flex flex-col gap-4">
+        <H6>お知らせ</H6>
+        <p>
+          9/20 21:00から9/21にかけてメンテナンスを行います。
+          <br />
+          メンテナンス作業中は、一時的にご利用いただけなくなります。
+        </p>
+      </div>
       <div className={cn("flex flex-col md:flex-row", isLogin ? "justify-between" : "justify-end")}>
         <FilterContents />
         <VolumeRange player={player} />
