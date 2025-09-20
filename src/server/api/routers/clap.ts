@@ -13,22 +13,27 @@ export const clapRouter = {
       const payload = await db.transaction(async (tx) => {
         await tx
           .insert(ResultClaps)
-          .values({ userId: user.id, resultId, isClaped: true })
+          .values({ userId: user.id, resultId, hasClapped: true })
           .onConflictDoUpdate({
             target: [ResultClaps.userId, ResultClaps.resultId],
-            set: { isClaped: newState },
+            set: { hasClapped: newState },
           })
-          .returning({ isClaped: ResultClaps.isClaped });
+          .returning({ hasClapped: ResultClaps.hasClapped });
 
         const newClapCount = await tx
           .select({ c: count() })
           .from(ResultClaps)
-          .where(and(eq(ResultClaps.resultId, resultId), eq(ResultClaps.isClaped, true)))
+          .where(and(eq(ResultClaps.resultId, resultId), eq(ResultClaps.hasClapped, true)))
           .then((rows) => rows[0]?.c);
 
-        await tx.update(Results).set({ clapCount: newClapCount }).where(eq(Results.id, resultId));
+        const mapId = await tx
+          .update(Results)
+          .set({ clapCount: newClapCount })
+          .where(eq(Results.id, resultId))
+          .returning({ mapId: Results.mapId })
+          .then((res) => res[0].mapId);
 
-        return { resultId, isClaped: newState, clapCount: newClapCount };
+        return { resultId, mapId, hasClapped: newState, clapCount: newClapCount };
       });
 
       return payload;

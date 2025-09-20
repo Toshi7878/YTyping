@@ -17,7 +17,7 @@ export class BuildMap {
   initialLineResultData: ResultData;
   totalNotes: LineData["notes"];
   speedDifficulty: { median: { r: number; k: number }; max: { r: number; k: number } };
-  movieTotalTime: number;
+  duration: number;
   keyRate: number;
   missRate: number;
 
@@ -35,7 +35,7 @@ export class BuildMap {
     this.totalNotes = this.calculateTotalNotes(result.words);
     this.speedDifficulty = this.calculateSpeedDifficulty(result.words);
 
-    this.movieTotalTime = Number(this.mapData[result.words.length - 1].time);
+    this.duration = Number(this.mapData[result.words.length - 1].time);
     this.keyRate = 100 / this.totalNotes.r;
     this.missRate = this.keyRate / 2;
   }

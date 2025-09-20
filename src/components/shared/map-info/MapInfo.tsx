@@ -15,24 +15,27 @@ interface MapInfoProps {
 }
 
 function MapInfo({ map }: MapInfoProps) {
-  const musicSource = map.musicSource ? `【${map.musicSource}】` : "";
+  const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
     <div className="relative flex h-full w-full flex-col justify-between overflow-hidden text-xs sm:text-sm md:text-base lg:text-lg">
       <Link className="absolute h-full w-full" href={`/type/${map.id}`} />
       <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
         <section className="flex flex-col gap-1">
-          <TooltipWrapper delayDuration={300} label={nolink(`${map.title} / ${map.artistName}${musicSource}`)}>
+          <TooltipWrapper
+            delayDuration={300}
+            label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}
+          >
             <Link
               href={`/type/${map.id}`}
               className="text-secondary z-1 truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
             >
-              {map.title}
+              {map.info.title}
             </Link>
           </TooltipWrapper>
 
           <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
-            {nolink(map.artistName + musicSource)}
+            {nolink(map.info.artistName + musicSource)}
           </div>
         </section>
         <section className="flex flex-row items-baseline justify-between space-y-1 lg:flex-col">
@@ -53,12 +56,12 @@ const MapInfoBottom = ({ map }: MapInfoProps) => {
           {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
         </Badge>
         <Badge variant="accent-light" className="hidden rounded-full px-2 text-sm md:block">
-          {formatTime(map.totalTime)}
+          {formatTime(map.info.duration)}
         </Badge>
       </div>
       <div className="flex items-center space-x-1">
-        <RankingCountIcon key={map.myRank} myRank={map.myRank} rankingCount={map.rankingCount} />
-        <LikeCountIcon mapId={map.id} isLiked={map.hasLiked ?? false} likeCount={map.likeCount} />
+        <RankingCountIcon key={map.ranking.myRank} myRank={map.ranking.myRank} rankingCount={map.ranking.count} />
+        <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
       </div>
     </div>
   );

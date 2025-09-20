@@ -1,13 +1,23 @@
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
 import { supabase } from "@/lib/supabaseClient";
 import { db, TXType } from "@/server/drizzle/client";
-import { MapLikes, Maps, Notifications, ResultClaps, Results, ResultStatuses, Users } from "@/server/drizzle/schema";
+import {
+  MapDifficulties,
+  MapLikes,
+  Maps,
+  Notifications,
+  ResultClaps,
+  Results,
+  ResultStatuses,
+  Users,
+} from "@/server/drizzle/schema";
 import { CreateResultSchema, ResultData } from "@/server/drizzle/validator/result";
 import { TRPCError } from "@trpc/server";
 import { and, desc, eq, gt, gte, ilike, inArray, lte, or, SQL } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
+import { MapListItem } from "./map-list";
 
 const SelectFilterUserResultListSchema = z.object({
   mode: z.string().default("all"),
@@ -25,6 +35,49 @@ const SelectUsersResultInfiniteListSchema = SelectFilterUserResultListSchema.ext
   cursor: z.string().nullable().optional(),
 });
 
+const resultSelectSchema = () => {
+  const Player = alias(Users, "Player");
+
+  return {
+    schema: {
+      id: Results.id,
+      updatedAt: Results.updatedAt,
+      rank: Results.rank,
+      score: ResultStatuses.score,
+      player: {
+        id: Player.id,
+        name: Player.name,
+      },
+      typeCounts: {
+        romaType: ResultStatuses.romaType,
+        kanaType: ResultStatuses.kanaType,
+        flickType: ResultStatuses.flickType,
+        englishType: ResultStatuses.englishType,
+        symbolType: ResultStatuses.symbolType,
+        spaceType: ResultStatuses.spaceType,
+        numType: ResultStatuses.numType,
+      },
+      otherStatus: {
+        playSpeed: ResultStatuses.defaultSpeed,
+        miss: ResultStatuses.miss,
+        lost: ResultStatuses.lost,
+        maxCombo: ResultStatuses.maxCombo,
+        clearRate: ResultStatuses.clearRate,
+      },
+      typeSpeed: {
+        kpm: ResultStatuses.kpm,
+        rkpm: ResultStatuses.rkpm,
+        kanaToRomaKpm: ResultStatuses.kanaToRomaKpm,
+        kanaToRomaRkpm: ResultStatuses.kanaToRomaRkpm,
+      },
+      clap: { count: Results.clapCount, hasClapped: ResultClaps.hasClapped },
+    },
+    Player,
+  };
+};
+
+export type ResultListItem = Awaited<ReturnType<typeof resultRouter.usersResultList>>["items"][number];
+
 export const resultRouter = {
   usersResultList: publicProcedure.input(SelectUsersResultInfiniteListSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
@@ -35,7 +88,6 @@ export const resultRouter = {
     const offset = isNaN(page) ? 0 : page * PAGE_SIZE;
 
     const Creator = alias(Users, "creator");
-    const Player = alias(Users, "Player");
     const MyResult = alias(Results, "MyResult");
 
     const whereConds = [
@@ -46,31 +98,11 @@ export const resultRouter = {
       ...generateKeywordFilter({ username: input.username, mapKeyword: input.mapKeyword }),
     ];
 
+    const { schema, Player } = resultSelectSchema();
+
     const items = await db
       .select({
-        id: Results.id,
-        updatedAt: Results.updatedAt,
-        rank: Results.rank,
-        player: {
-          id: Player.id,
-          name: Player.name,
-        },
-        status: {
-          score: ResultStatuses.score,
-          miss: ResultStatuses.miss,
-          lost: ResultStatuses.lost,
-          romaType: ResultStatuses.romaType,
-          kanaType: ResultStatuses.kanaType,
-          flickType: ResultStatuses.flickType,
-          englishType: ResultStatuses.englishType,
-          numType: ResultStatuses.numType,
-          symbolType: ResultStatuses.symbolType,
-          spaceType: ResultStatuses.spaceType,
-          kpm: ResultStatuses.kpm,
-          romaKpm: ResultStatuses.kanaToRomaConvertKpm,
-          clearRate: ResultStatuses.clearRate,
-          playSpeed: ResultStatuses.defaultSpeed,
-        },
+        ...schema,
         map: {
           id: Maps.id,
           videoId: Maps.videoId,
@@ -84,12 +116,11 @@ export const resultRouter = {
           updatedAt: Maps.updatedAt,
           creatorId: Creator.id,
           creatorName: Creator.name,
-          hasLiked: MapLikes.isLiked,
+          duration: Maps.duration,
+          romaKpmMedian: MapDifficulties.romaKpmMedian,
+          romaKpmMax: MapDifficulties.romaKpmMax,
+          hasLiked: MapLikes.hasLiked,
           myRank: MyResult.rank,
-        },
-        clap: {
-          count: Results.clapCount,
-          hasClaped: ResultClaps.isClaped,
         },
       })
       .from(Results)
@@ -97,6 +128,7 @@ export const resultRouter = {
       .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
       .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
       .innerJoin(Player, eq(Player.id, Results.userId))
+      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
       .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, userId ?? 0)))
       .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, userId ?? 0)))
       .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, userId ?? 0)))
@@ -111,7 +143,27 @@ export const resultRouter = {
       nextCursor = String(isNaN(page) ? 1 : page + 1);
     }
 
-    return { items, nextCursor };
+    const results = items.map(({ map: m, ...rest }) => {
+      return {
+        ...rest,
+        map: {
+          id: m.id,
+          updatedAt: m.updatedAt,
+          media: {
+            videoId: m.videoId,
+            previewTime: m.previewTime,
+            thumbnailQuality: m.thumbnailQuality,
+            previewSpeed: rest.otherStatus.playSpeed,
+          },
+          info: { title: m.title, artistName: m.artistName, source: m.musicSource, duration: m.duration },
+          creator: { id: m.creatorId, name: m.creatorName },
+          difficulty: { romaKpmMedian: m.romaKpmMedian, romaKpmMax: m.romaKpmMax },
+          like: { count: m.likeCount, hasLiked: m.hasLiked },
+          ranking: { count: m.rankingCount, myRank: m.myRank },
+        } satisfies MapListItem,
+      };
+    });
+    return { items: results, nextCursor };
   }),
   getTypingResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
     const timestamp = new Date().getTime();
@@ -134,39 +186,13 @@ export const resultRouter = {
     const { db, user } = ctx;
     const { mapId } = input;
 
+    const { schema, Player } = resultSelectSchema();
+
     return db
-      .select({
-        id: Results.id,
-        updatedAt: Results.updatedAt,
-        player: { id: Results.userId, name: Users.name },
-        clap: { count: Results.clapCount, hasClaped: ResultClaps.isClaped },
-        score: ResultStatuses.score,
-        otherStatus: {
-          playSpeed: ResultStatuses.defaultSpeed,
-          miss: ResultStatuses.miss,
-          lost: ResultStatuses.lost,
-          maxCombo: ResultStatuses.maxCombo,
-          clearRate: ResultStatuses.clearRate,
-        },
-        typeSpeed: {
-          kpm: ResultStatuses.kpm,
-          rkpm: ResultStatuses.rkpm,
-          kanaToRomaConvertKpm: ResultStatuses.kanaToRomaConvertKpm,
-          kanaToRomaConvertRkpm: ResultStatuses.kanaToRomaConvertRKpm,
-        },
-        typeCounts: {
-          romaType: ResultStatuses.romaType,
-          kanaType: ResultStatuses.kanaType,
-          flickType: ResultStatuses.flickType,
-          englishType: ResultStatuses.englishType,
-          symbolType: ResultStatuses.symbolType,
-          spaceType: ResultStatuses.spaceType,
-          numType: ResultStatuses.numType,
-        },
-      })
+      .select(schema)
       .from(Results)
       .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-      .innerJoin(Users, eq(Users.id, Results.userId))
+      .innerJoin(Player, eq(Player.id, Results.userId))
       .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, user.id ?? 0)))
       .where(eq(Results.mapId, mapId))
       .orderBy(desc(ResultStatuses.score));
@@ -328,9 +354,9 @@ function generateModeFilter({ mode }: { mode: string }) {
 function generateKpmFilter({ minKpm, maxKpm }: { minKpm: number; maxKpm: number }) {
   if (maxKpm === 0) return [];
   const conds: SQL<unknown>[] = [];
-  if (typeof minKpm === "number") conds.push(gte(ResultStatuses.kanaToRomaConvertKpm, minKpm));
+  if (typeof minKpm === "number") conds.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
   if (typeof maxKpm === "number") {
-    if (maxKpm !== DEFAULT_KPM_SEARCH_RANGE.max) conds.push(lte(ResultStatuses.kanaToRomaConvertKpm, maxKpm));
+    if (maxKpm !== DEFAULT_KPM_SEARCH_RANGE.max) conds.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
   }
   return conds;
 }

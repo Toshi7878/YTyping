@@ -1,5 +1,5 @@
 import { UserProfiles, Users } from "@/server/drizzle/schema";
-import { FingerChartUrlApiSchema, MyKeyboardApiSchema, UserNameSchema } from "@/server/drizzle/validator/user-setting";
+import { FingerChartUrlApiSchema, keyboardApiSchema, UserNameSchema } from "@/server/drizzle/validator/user-setting";
 import { TRPCError } from "@trpc/server";
 import { and, eq, ne } from "drizzle-orm";
 import z from "zod";
@@ -12,7 +12,7 @@ export const userProfileRouter = {
       .select({
         name: Users.name,
         fingerChartUrl: UserProfiles.fingerChartUrl,
-        myKeyboard: UserProfiles.myKeyboard,
+        keyboard: UserProfiles.keyboard,
       })
       .from(UserProfiles)
       .innerJoin(Users, eq(Users.id, input.userId))
@@ -79,12 +79,12 @@ export const userProfileRouter = {
       .onConflictDoUpdate({ target: [UserProfiles.userId], set: { fingerChartUrl: input } });
   }),
 
-  upsertMyKeyboard: protectedProcedure.input(MyKeyboardApiSchema).mutation(async ({ input, ctx }) => {
+  upsertKeyboard: protectedProcedure.input(keyboardApiSchema).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
     await db
       .insert(UserProfiles)
-      .values({ userId: user.id, myKeyboard: input })
-      .onConflictDoUpdate({ target: [UserProfiles.userId], set: { myKeyboard: input } });
+      .values({ userId: user.id, keyboard: input })
+      .onConflictDoUpdate({ target: [UserProfiles.userId], set: { keyboard: input } });
   }),
 };

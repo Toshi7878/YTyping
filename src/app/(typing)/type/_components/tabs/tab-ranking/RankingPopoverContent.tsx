@@ -18,7 +18,7 @@ interface RankingMenuProps {
   userId: number;
   resultUpdatedAt: Date;
   name: string;
-  hasClaped: boolean;
+  hasClapped: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 const RankingPopoverContent = ({
@@ -26,7 +26,7 @@ const RankingPopoverContent = ({
   userId,
   resultUpdatedAt,
   name,
-  hasClaped,
+  hasClapped,
   onOpenChange,
 }: RankingMenuProps) => {
   const { data: session } = useSession();
@@ -84,9 +84,9 @@ const RankingPopoverContent = ({
           variant="ghost"
           type="button"
           className="w-full"
-          onClick={() => toggleClap.mutate({ resultId, newState: !hasClaped })}
+          onClick={() => toggleClap.mutate({ resultId, newState: !hasClapped })}
         >
-          {hasClaped ? "拍手済み" : "記録に拍手"}
+          {hasClapped ? "拍手済み" : "記録に拍手"}
         </Button>
       ) : null}
     </PopoverContent>

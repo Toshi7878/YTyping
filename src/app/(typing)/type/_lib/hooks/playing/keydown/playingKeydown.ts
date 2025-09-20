@@ -86,8 +86,9 @@ const usePlayingShortcutKey = () => {
 
     const { inputMode, skip } = readGameStateUtils();
 
-    const isCtrlLeftRight = typingOptions.timeOffsetKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
-    const isCtrlAltLeftRight = typingOptions.timeOffsetKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
+    const isCtrlLeftRight = typingOptions.timeOffsetAdjustKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
+    const isCtrlAltLeftRight =
+      typingOptions.timeOffsetAdjustKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
 
     switch (event.code) {
       case "Escape": //Escでポーズ
@@ -124,7 +125,7 @@ const usePlayingShortcutKey = () => {
         }
         break;
       case "F1":
-        if (typingOptions.toggleInputModeKey === "TAB") {
+        if (typingOptions.InputModeToggleKey === "TAB") {
           if (scene === "replay" || scene === "practice") {
             setLineResultDrawer((prev) => !prev);
           }
@@ -154,7 +155,7 @@ const usePlayingShortcutKey = () => {
         break;
       case "KanaMode":
       case "Romaji":
-        if (typingOptions.toggleInputModeKey === "ALT_KANA") {
+        if (typingOptions.InputModeToggleKey === "ALT_KANA") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
               inputModeChange("kana");
@@ -173,7 +174,7 @@ const usePlayingShortcutKey = () => {
         break;
 
       case "Tab":
-        if (typingOptions.toggleInputModeKey === "TAB") {
+        if (typingOptions.InputModeToggleKey === "TAB") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
               inputModeChange("kana");

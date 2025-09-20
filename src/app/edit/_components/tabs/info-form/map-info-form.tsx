@@ -406,7 +406,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
     const map = readMap();
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
-    const { speedDifficulty, movieTotalTime, totalNotes, startLine } = new BuildMap(map);
+    const { speedDifficulty, duration, totalNotes, startLine } = new BuildMap(map);
 
     const { video_id: videoId } = readPlayer().getVideoData();
     const videoDuration = readPlayer().getDuration();
@@ -436,7 +436,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
       romaKpmMax: speedDifficulty.max.r,
       kanaKpmMedian: speedDifficulty.median.r,
       kanaKpmMax: speedDifficulty.max.r,
-      totalTime: movieTotalTime,
+      duration,
       romaTotalNotes: totalNotes.r,
       kanaTotalNotes: totalNotes.k,
     };

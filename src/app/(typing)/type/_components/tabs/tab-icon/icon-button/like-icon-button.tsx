@@ -11,7 +11,7 @@ const LikeIconButton = () => {
   const { id: mapId } = useParams<{ id: string }>();
   const trpc = useTRPC();
   const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
-  const isLiked = mapInfo?.hasLiked;
+  const hasLiked = mapInfo?.hasLiked;
 
   const { isSmScreen } = useBreakPoint();
 
@@ -20,7 +20,7 @@ const LikeIconButton = () => {
   const handleClick = () => {
     if (setMapLike.isPending) return;
 
-    setMapLike.mutate({ mapId: Number(mapId), newState: !isLiked });
+    setMapLike.mutate({ mapId: Number(mapId), newState: !hasLiked });
   };
 
   return (
@@ -28,8 +28,8 @@ const LikeIconButton = () => {
       <LikeButton
         onClick={handleClick}
         size={isSmScreen ? 96 : 64}
-        defaultLiked={isLiked ?? false}
-        className={cn("bottom-3.5", isLiked ? "hover:opacity-80" : "hover:text-foreground/90")}
+        defaultLiked={hasLiked ?? false}
+        className={cn("bottom-3.5", hasLiked ? "hover:opacity-80" : "hover:text-foreground/90")}
       />
     </TooltipWrapper>
   );

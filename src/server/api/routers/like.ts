@@ -13,18 +13,18 @@ export const likeRouter = {
       const payload = await db.transaction(async (tx) => {
         await tx
           .insert(MapLikes)
-          .values({ userId: user.id, mapId, isLiked: true })
-          .onConflictDoUpdate({ target: [MapLikes.userId, MapLikes.mapId], set: { isLiked: newState } });
+          .values({ userId: user.id, mapId, hasLiked: true })
+          .onConflictDoUpdate({ target: [MapLikes.userId, MapLikes.mapId], set: { hasLiked: newState } });
 
         const newLikeCount = await tx
           .select({ c: count() })
           .from(MapLikes)
-          .where(and(eq(MapLikes.mapId, mapId), eq(MapLikes.isLiked, true)))
+          .where(and(eq(MapLikes.mapId, mapId), eq(MapLikes.hasLiked, true)))
           .then((rows) => rows[0]?.c ?? 0);
 
         await tx.update(Maps).set({ likeCount: newLikeCount }).where(eq(Maps.id, mapId));
 
-        return { mapId, isLiked: newState, likeCount: newLikeCount };
+        return { mapId, hasLiked: newState, likeCount: newLikeCount };
       });
 
       return payload;

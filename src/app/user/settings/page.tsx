@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { UserNameInputForm } from "../_components/UserNameInputForm";
 import { OptionForm } from "./_components/option/OptionForm";
 import { FingerChartUrlInput } from "./_components/profile-settings/FingerChartUrlInput";
-import { MyKeyboardInput } from "./_components/profile-settings/MyKeyboardInput";
+import { KeyboardInput } from "./_components/profile-settings/keyboardInput";
 
 export default async function Page() {
   return (
@@ -34,7 +34,7 @@ const ProfileSettingCard = async () => {
         <div className="flex w-full flex-col gap-4">
           <UserNameInputForm />
           <FingerChartUrlInput url={userProfile.fingerChartUrl} />
-          <MyKeyboardInput myKeyboard={userProfile.myKeyboard} />
+          <KeyboardInput keyboard={userProfile.keyboard} />
         </div>
       </CardContent>
       <CardFooter />

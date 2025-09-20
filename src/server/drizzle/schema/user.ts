@@ -16,7 +16,7 @@ export const UserProfiles = pgTable("user_profiles", {
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
   fingerChartUrl: varchar("finger_chart_url").notNull().default(""),
-  myKeyboard: varchar("my_keyboard").notNull().default(""),
+  keyboard: varchar("keyboard").notNull().default(""),
 });
 
 export const customUserActiveStateEnum = pgEnum("custom_user_active_state", ["ONLINE", "ASK_ME", "HIDE_ONLINE"]);
@@ -32,8 +32,8 @@ export const UserOptions = pgTable("user_options", {
 
 export const nextDisplayEnum = pgEnum("next_display", ["LYRICS", "WORD"]);
 export const lineCompletedDisplayEnum = pgEnum("line_completed_display", ["HIGH_LIGHT", "NEXT_WORD"]);
-export const timeOffsetKeyEnum = pgEnum("time_offset_key", ["CTRL_LEFT_RIGHT", "CTRL_ALT_LEFT_RIGHT", "NONE"]);
-export const toggleInputModeKeyEnum = pgEnum("toggle_input_mode_key", ["ALT_KANA", "TAB", "NONE"]);
+export const timeOffsetAdjustKeyEnum = pgEnum("time_offset_key", ["CTRL_LEFT_RIGHT", "CTRL_ALT_LEFT_RIGHT", "NONE"]);
+export const InputModeToggleKeyEnum = pgEnum("toggle_input_mode_key", ["ALT_KANA", "TAB", "NONE"]);
 export const mainWordDisplayEnum = pgEnum("main_word_display", [
   "KANA_ROMA_UPPERCASE",
   "KANA_ROMA_LOWERCASE",
@@ -59,15 +59,17 @@ export const UserTypingOptions = pgTable("user_typing_options", {
   romaWordSpacing: real("roma_word_spacing").notNull().default(DEFAULT_TYPING_OPTIONS.romaWordSpacing),
   typeSound: boolean("type_sound").notNull().default(DEFAULT_TYPING_OPTIONS.typeSound),
   missSound: boolean("miss_sound").notNull().default(DEFAULT_TYPING_OPTIONS.missSound),
-  lineClearSound: boolean("line_clear_sound").notNull().default(DEFAULT_TYPING_OPTIONS.lineClearSound),
+  lineCompletedSound: boolean("line_completed_sound").notNull().default(DEFAULT_TYPING_OPTIONS.lineCompletedSound),
   nextDisplay: nextDisplayEnum("next_display").notNull().default(DEFAULT_TYPING_OPTIONS.nextDisplay),
   lineCompletedDisplay: lineCompletedDisplayEnum("line_completed_display")
     .notNull()
     .default(DEFAULT_TYPING_OPTIONS.lineCompletedDisplay),
-  timeOffsetKey: timeOffsetKeyEnum("time_offset_key").notNull().default(DEFAULT_TYPING_OPTIONS.timeOffsetKey),
-  toggleInputModeKey: toggleInputModeKeyEnum("toggle_input_mode_key")
+  timeOffsetAdjustKey: timeOffsetAdjustKeyEnum("time_offset_adjust_key")
     .notNull()
-    .default(DEFAULT_TYPING_OPTIONS.toggleInputModeKey),
+    .default(DEFAULT_TYPING_OPTIONS.timeOffsetAdjustKey),
+  InputModeToggleKey: InputModeToggleKeyEnum("input_mode_toggle_key")
+    .notNull()
+    .default(DEFAULT_TYPING_OPTIONS.InputModeToggleKey),
   wordDisplay: mainWordDisplayEnum("main_word_display").notNull().default(DEFAULT_TYPING_OPTIONS.wordDisplay),
 });
 

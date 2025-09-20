@@ -9,7 +9,7 @@ import { HTMLAttributes } from "react";
 import { MapResultStatus } from "./child/MapResultStatus";
 
 const ResultCardContent = ({ result }: { result: RouterOutPuts["result"]["usersResultList"]["items"][number] }) => {
-  const isToggledInputMode = result.status.romaType != 0 && result.status.kanaType != 0;
+  const isToggledInputMode = result.typeCounts.romaType != 0 && result.typeCounts.kanaType != 0;
 
   return (
     <div className="flex w-full items-center gap-4 py-6">
@@ -21,14 +21,7 @@ const ResultCardContent = ({ result }: { result: RouterOutPuts["result"]["usersR
         Rank: #{result.rank}
       </Badge>
 
-      <MapLeftThumbnail
-        alt={result.map.title}
-        src={`https://i.ytimg.com/vi/${result.map.videoId}/mqdefault.jpg`}
-        mapVideoId={result.map.videoId}
-        mapPreviewTime={result.map.previewTime}
-        mapPreviewSpeed={result.status.playSpeed}
-        size="timeline"
-      />
+      <MapLeftThumbnail alt={result.map.info.title} media={result.map.media} size="timeline" />
 
       <MapInfo map={result.map} isToggledInputMode={isToggledInputMode} className="flex-1" />
 
@@ -43,18 +36,20 @@ interface MapInfoProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 function MapInfo({ map, isToggledInputMode, className, ...rest }: MapInfoProps) {
-  const musicSource = map.musicSource ? `【${map.musicSource}】` : "";
+  const musicSource = map.info.source ? `【${map.info.source}】` : "";
   return (
     <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
-      <TooltipWrapper delayDuration={300} label={nolink(`${map.title} / ${map.artistName}${musicSource}`)}>
+      <TooltipWrapper delayDuration={300} label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}>
         <Link href={`/type/${map.id}`} className="text-secondary block hover:underline">
-          <div className="truncate text-sm font-bold sm:text-base">{nolink(`${map.title} / ${map.artistName}`)}</div>
+          <div className="truncate text-sm font-bold sm:text-base">
+            {nolink(`${map.info.title} / ${map.info.artistName}`)}
+          </div>
         </Link>
       </TooltipWrapper>
       <div className="truncate text-xs">
         制作者:{" "}
-        <Link href={`/user/${map.creatorId}`} className="text-secondary hover:underline">
-          {map.creatorName}
+        <Link href={`/user/${map.creator.id}`} className="text-secondary hover:underline">
+          {map.creator.name}
         </Link>
       </div>
     </div>

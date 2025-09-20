@@ -51,7 +51,7 @@ export const useSoundEffect = () => {
     const typingOptions = readTypingOptions();
 
     if (isCompleted) {
-      if (typingOptions.lineClearSound) {
+      if (typingOptions.lineCompletedSound) {
         clearTypeSoundPlay();
       } else if (typingOptions.typeSound) {
         typeSoundPlay();

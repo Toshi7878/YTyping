@@ -14,11 +14,11 @@ type LikeButtonProps = {
 };
 
 export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className, disabled }: LikeButtonProps) => {
-  const [isLiked, setIsLiked] = useState(defaultLiked);
+  const [hasLiked, setHasLiked] = useState(defaultLiked);
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
 
   useEffect(() => {
-    setIsLiked(defaultLiked);
+    setHasLiked(defaultLiked);
   }, [defaultLiked]);
 
   const backgroundWidth = size * 25;
@@ -34,8 +34,8 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
     height: `${size}px`,
     backgroundSize: `auto ${size}px`,
     transition: hasBeenClicked ? `background-position steps(25)` : "none",
-    transitionDuration: hasBeenClicked && isLiked ? "1s" : "0s",
-    backgroundPosition: isLiked ? `-${backgroundWidth}px 0` : `0 0`,
+    transitionDuration: hasBeenClicked && hasLiked ? "1s" : "0s",
+    backgroundPosition: hasLiked ? `-${backgroundWidth}px 0` : `0 0`,
   };
 
   return (
@@ -45,8 +45,8 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
       style={buttonStyle}
       type="button"
       onClick={(event: React.MouseEvent) => {
-        const newLikeValue = !isLiked;
-        setIsLiked(newLikeValue);
+        const newLikeValue = !hasLiked;
+        setHasLiked(newLikeValue);
         setHasBeenClicked(true);
 
         onClick?.(event, newLikeValue);
@@ -58,8 +58,8 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
       >
         <Heart
           className={cn(
-            hasBeenClicked ? (isLiked ? "like-animation" : "like-animation-end") : "",
-            isLiked ? "fill-like text-like" : "fill-transparent",
+            hasBeenClicked ? (hasLiked ? "like-animation" : "like-animation-end") : "",
+            hasLiked ? "fill-like text-like" : "fill-transparent",
           )}
           size={heartSize}
           strokeWidth={2.5}
@@ -76,11 +76,11 @@ export const LikeButtonWithCount = ({
   likeCount,
   disabled,
 }: LikeButtonProps & { likeCount: number }) => {
-  const [isLiked, setIsLiked] = useState(defaultLiked);
+  const [hasLiked, setHasLiked] = useState(defaultLiked);
   const [hasBeenClicked, setHasBeenClicked] = useState(false);
 
   useEffect(() => {
-    setIsLiked(defaultLiked);
+    setHasLiked(defaultLiked);
   }, [defaultLiked]);
 
   const backgroundWidth = size * 25;
@@ -95,8 +95,8 @@ export const LikeButtonWithCount = ({
     height: `${size}px`,
     backgroundSize: `auto ${size}px`,
     transition: hasBeenClicked ? `background-position steps(25)` : "none",
-    transitionDuration: hasBeenClicked && isLiked ? "1s" : "0s",
-    backgroundPosition: isLiked ? `-${backgroundWidth}px 0` : `0 0`,
+    transitionDuration: hasBeenClicked && hasLiked ? "1s" : "0s",
+    backgroundPosition: hasLiked ? `-${backgroundWidth}px 0` : `0 0`,
   };
 
   return (
@@ -106,8 +106,8 @@ export const LikeButtonWithCount = ({
       style={buttonStyle}
       type="button"
       onClick={(event: React.MouseEvent) => {
-        const newState = !isLiked;
-        setIsLiked(newState);
+        const newState = !hasLiked;
+        setHasLiked(newState);
         setHasBeenClicked(true);
 
         onClick?.(event, newState);
@@ -116,8 +116,8 @@ export const LikeButtonWithCount = ({
       <div className="relative top-0 flex items-center" style={{ width: `${size}px`, height: `${size}px` }}>
         <Heart
           className={cn(
-            hasBeenClicked ? (isLiked ? "like-animation" : "like-animation-end") : "",
-            isLiked ? "fill-like text-like" : "text-muted-foreground fill-transparent",
+            hasBeenClicked ? (hasLiked ? "like-animation" : "like-animation-end") : "",
+            hasLiked ? "fill-like text-like" : "text-muted-foreground fill-transparent",
           )}
           size={heartSize}
           strokeWidth={2.5}
@@ -125,7 +125,7 @@ export const LikeButtonWithCount = ({
         <div className={cn("like-base-64 absolute inset-y-0 -right-[8.25px]")} style={backgroundStyle} />
       </div>
       {typeof likeCount === "number" && (
-        <span className={cn("font-mono text-lg select-none", isLiked ? "text-like" : "text-muted-foreground")}>
+        <span className={cn("font-mono text-lg select-none", hasLiked ? "text-like" : "text-muted-foreground")}>
           {likeCount}
         </span>
       )}

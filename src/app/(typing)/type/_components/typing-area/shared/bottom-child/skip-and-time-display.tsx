@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/utils/formatTime";
 
-const SkipGuideAndTotalTime = () => {
+const SkipAndTimeDisplay = () => {
   const isYTStarted = useYTStartedState();
   const sceneGroup = useSceneGroupState();
   const isPlayed = isYTStarted && sceneGroup === "Playing";
@@ -22,7 +22,7 @@ const SkipGuideAndTotalTime = () => {
       )}
     >
       <PlayingSkipGuide />
-      <PlayingTotalTime />
+      <PlayingTimeDisplay />
     </section>
   );
 };
@@ -33,7 +33,7 @@ const PlayingSkipGuide = () => {
   return <div className="opacity-60">{skip ? `Type ${skip} key to Skip. ⏩` : ""}</div>;
 };
 
-const PlayingTotalTime = () => {
+const PlayingTimeDisplay = () => {
   return (
     <div className="font-mono" id="movie_time">
       <VideoCurrentTime /> / <VideoDurationTime />
@@ -53,10 +53,10 @@ const VideoDurationTime = () => {
   if (!map) {
     return;
   }
-  const duration = map.movieTotalTime > movieDuration ? movieDuration : map?.movieTotalTime;
+  const duration = map.duration > movieDuration ? movieDuration : map?.duration;
   const totalTime = formatTime(Number(duration) / speedData.playSpeed);
 
   return <span id="total_time">{totalTime}</span>;
 };
 
-export default SkipGuideAndTotalTime;
+export default SkipAndTimeDisplay;

@@ -2,11 +2,11 @@
 // Aligns with existing validators in `src/validator/const.ts` and UI usage.
 
 import {
+  InputModeToggleKeyEnum,
   lineCompletedDisplayEnum,
   mainWordDisplayEnum,
   nextDisplayEnum,
-  timeOffsetKeyEnum,
-  toggleInputModeKeyEnum,
+  timeOffsetAdjustKeyEnum,
 } from "./schema/user";
 
 export const MAX_SHORT_LENGTH = 256;
@@ -42,8 +42,8 @@ export const FIX_WORD_WORD_MAX_LENGTH = MAX_SHORT_LENGTH;
 // Enum value union types
 type NextDisplay = (typeof nextDisplayEnum.enumValues)[number];
 type LineCompletedDisplay = (typeof lineCompletedDisplayEnum.enumValues)[number];
-type TimeOffsetKey = (typeof timeOffsetKeyEnum.enumValues)[number];
-type ToggleInputModeKey = (typeof toggleInputModeKeyEnum.enumValues)[number];
+type TimeOffsetAdjustKey = (typeof timeOffsetAdjustKeyEnum.enumValues)[number];
+type ToggleInputModeKey = (typeof InputModeToggleKeyEnum.enumValues)[number];
 type MainWordDisplay = (typeof mainWordDisplayEnum.enumValues)[number];
 
 export const DEFAULT_TYPING_OPTIONS = {
@@ -58,11 +58,11 @@ export const DEFAULT_TYPING_OPTIONS = {
   romaWordTopPosition: 0,
   typeSound: false,
   missSound: false,
-  lineClearSound: false,
+  lineCompletedSound: false,
   nextDisplay: "LYRICS" as NextDisplay,
   lineCompletedDisplay: "NEXT_WORD" as LineCompletedDisplay,
-  timeOffsetKey: "CTRL_LEFT_RIGHT" as TimeOffsetKey,
-  toggleInputModeKey: "ALT_KANA" as ToggleInputModeKey,
+  timeOffsetAdjustKey: "CTRL_LEFT_RIGHT" as TimeOffsetAdjustKey,
+  InputModeToggleKey: "ALT_KANA" as ToggleInputModeKey,
   wordDisplay: "KANA_ROMA_UPPERCASE" as MainWordDisplay,
 };
 

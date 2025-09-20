@@ -21,7 +21,7 @@ export const mapRouter = {
         musicSource: Maps.musicSource,
         previewTime: Maps.previewTime,
         thumbnailQuality: Maps.thumbnailQuality,
-        hasLiked: MapLikes.isLiked,
+        hasLiked: MapLikes.hasLiked,
         tags: Maps.tags,
         creator: {
           id: Users.id,

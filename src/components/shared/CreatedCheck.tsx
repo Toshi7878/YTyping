@@ -31,13 +31,7 @@ const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProp
           return (
             <div key={index} className="mb-2 max-w-[610px]">
               <CardWithContent variant="map">
-                <MapLeftThumbnail
-                  alt={map.title}
-                  src={`https://i.ytimg.com/vi/${map.videoId}/mqdefault.jpg`}
-                  mapVideoId={map.videoId}
-                  mapPreviewTime={map.previewTime}
-                  size="home"
-                />
+                <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
 
                 <MapInfo map={map} />
               </CardWithContent>

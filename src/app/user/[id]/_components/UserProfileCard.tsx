@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
 import FingerChartUrl from "./user-info/FingerChartUrl";
-import MyKeyBoard from "./user-info/MyKeyboard";
+import KeyBoard from "./user-info/Keyboard";
 
 interface UserProfileCardProps {
   userProfile: RouterOutPuts["userProfile"]["getUserProfile"];
@@ -30,7 +30,7 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
         <div className="space-y-4">
           <H3>{userProfile?.name ?? ""}</H3>
           <FingerChartUrl url={userProfile.fingerChartUrl} />
-          <MyKeyBoard myKeyboard={userProfile.myKeyboard} />
+          <KeyBoard keyboard={userProfile.keyboard} />
         </div>
       </CardContent>
 

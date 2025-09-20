@@ -26,17 +26,20 @@ const SelectActiveUserPlayingMapSchema = z.array(
   }),
 );
 
-export const MAP_LIST_FIELDS = {
+const MAP_LIST_FIELDS = {
   id: Maps.id,
-  videoId: Maps.videoId,
-  title: Maps.title,
-  artistName: Maps.artistName,
-  musicSource: Maps.musicSource,
-  previewTime: Maps.previewTime,
-  thumbnailQuality: Maps.thumbnailQuality,
-  likeCount: Maps.likeCount,
-  rankingCount: Maps.rankingCount,
-  totalTime: MapDifficulties.totalTime,
+  updatedAt: Maps.updatedAt,
+  media: {
+    videoId: Maps.videoId,
+    previewTime: Maps.previewTime,
+    thumbnailQuality: Maps.thumbnailQuality,
+  },
+  info: {
+    title: Maps.title,
+    artistName: Maps.artistName,
+    source: Maps.musicSource,
+    duration: Maps.duration,
+  },
   creator: {
     id: Users.id,
     name: Users.name,
@@ -45,9 +48,18 @@ export const MAP_LIST_FIELDS = {
     romaKpmMedian: MapDifficulties.romaKpmMedian,
     romaKpmMax: MapDifficulties.romaKpmMax,
   },
-  hasLiked: MapLikes.isLiked,
-  myRank: Results.rank,
-  updatedAt: Maps.updatedAt,
+  like: {
+    count: Maps.likeCount,
+    hasLiked: MapLikes.hasLiked,
+  },
+  ranking: {
+    count: Maps.rankingCount,
+    myRank: Results.rank,
+  },
+};
+
+export type MapListItem = Omit<Awaited<ReturnType<typeof mapListRouter.getList>>["maps"][number], "media"> & {
+  media: Awaited<ReturnType<typeof mapListRouter.getList>>["maps"][number]["media"] & { previewSpeed?: number };
 };
 
 export const mapListRouter = {
@@ -176,7 +188,7 @@ function getFilterSql({ filter, userId }: GetFilterSql) {
   switch (filter) {
     case "liked":
       if (!userId) return undefined;
-      return eq(MapLikes.isLiked, true);
+      return eq(MapLikes.hasLiked, true);
     case "my-map":
       if (!userId) return undefined;
       return eq(Maps.creatorId, userId);
@@ -206,7 +218,7 @@ function getSortSql({ sort }: GetSortSql) {
     case sort.includes("like_count"):
       return [isAsc ? asc(Maps.likeCount) : desc(Maps.likeCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
     case sort.includes("duration"):
-      return [isAsc ? asc(MapDifficulties.totalTime) : desc(MapDifficulties.totalTime)];
+      return [isAsc ? asc(Maps.duration) : desc(Maps.duration)];
     case sort.includes("like"):
       return [isAsc ? asc(MapLikes.createdAt) : desc(MapLikes.createdAt)];
     default:

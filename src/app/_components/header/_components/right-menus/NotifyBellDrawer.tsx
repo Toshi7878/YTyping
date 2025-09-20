@@ -82,13 +82,7 @@ const NotifyDrawerInnerContent = () => {
                   <div key={`${pageIndex}-${notifyIndex}`} className="mb-4">
                     <div className="mb-2">
                       <NotificationMapCard notify={notify}>
-                        <MapLeftThumbnail
-                          alt={map.title}
-                          src={`https://i.ytimg.com/vi/${map.videoId}/mqdefault.jpg`}
-                          mapVideoId={map.videoId}
-                          mapPreviewTime={map.previewTime}
-                          size="notification"
-                        />
+                        <MapLeftThumbnail alt={map.info.title} media={map.media} size="notification" />
 
                         <CompactMapInfo map={map} />
                       </NotificationMapCard>

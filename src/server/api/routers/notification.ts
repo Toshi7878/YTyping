@@ -2,6 +2,7 @@ import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
 import { and, desc, eq } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure } from "../trpc";
+import { MapListItem } from "./map-list";
 
 export const notificationRouter = {
   hasNewNotification: protectedProcedure.query(async ({ ctx }) => {
@@ -39,10 +40,10 @@ export const notificationRouter = {
             },
             with: {
               creator: { columns: { id: true, name: true } },
-              difficulty: { columns: { totalTime: true, romaKpmMedian: true, romaKpmMax: true } },
+              difficulty: { columns: { romaKpmMedian: true, romaKpmMax: true } },
               mapLikes: {
                 where: and(eq(MapLikes.userId, user.id)),
-                columns: { isLiked: true },
+                columns: { hasLiked: true },
                 limit: 1,
               },
               results: {
@@ -57,38 +58,46 @@ export const notificationRouter = {
         },
       });
 
-      const items = notifications.map((n) => ({
-        created_at: n.createdAt,
-        action: n.action,
+      const items = notifications.map(({ map: m, ...rest }) => ({
+        created_at: rest.createdAt,
+        action: rest.action,
         visitor: {
-          id: n.visitorId,
-          name: n.visitor?.name ?? null,
-          score: n.visitorResult?.status?.score ?? null,
+          id: rest.visitorId,
+          name: rest.visitor?.name ?? null,
+          score: rest.visitorResult?.status?.score ?? null,
         },
         myResult: {
-          old_rank: n.oldRank,
-          score: n.visitedResult?.status?.score ?? null,
+          old_rank: rest.oldRank,
+          score: rest.visitedResult?.status?.score ?? null,
         },
         map: {
-          id: n.map.id,
-          videoId: n.map.videoId,
-          title: n.map.title,
-          artistName: n.map.artistName,
-          musicSource: n.map.musicSource,
-          previewTime: n.map.previewTime,
-          thumbnailQuality: n.map.thumbnailQuality,
-          likeCount: n.map.likeCount,
-          rankingCount: n.map.rankingCount,
-          updatedAt: n.map.updatedAt,
-          creator: { id: n.map.creator.id, name: n.map.creator.name },
-          totalTime: n.map.difficulty.totalTime,
-          difficulty: {
-            romaKpmMedian: n.map.difficulty.romaKpmMedian,
-            romaKpmMax: n.map.difficulty.romaKpmMax,
+          id: m.id,
+          updatedAt: m.updatedAt,
+          media: {
+            videoId: m.videoId,
+            previewTime: m.previewTime,
+            thumbnailQuality: m.thumbnailQuality,
           },
-          hasLiked: n.map.mapLikes?.[0]?.isLiked,
-          myRank: n.map.results?.[0]?.rank ?? null,
-        },
+          info: {
+            title: m.title,
+            artistName: m.artistName,
+            source: m.musicSource,
+            duration: m.duration,
+          },
+          creator: m.creator,
+          difficulty: {
+            romaKpmMedian: m.difficulty.romaKpmMedian,
+            romaKpmMax: m.difficulty.romaKpmMax,
+          },
+          like: {
+            count: m.likeCount,
+            hasLiked: m.mapLikes?.[0]?.hasLiked ?? false,
+          },
+          ranking: {
+            count: m.rankingCount,
+            myRank: m.results?.[0]?.rank ?? null,
+          },
+        } satisfies MapListItem,
       }));
 
       let nextCursor: string | undefined = undefined;

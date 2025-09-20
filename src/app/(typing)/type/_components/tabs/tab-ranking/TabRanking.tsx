@@ -67,7 +67,7 @@ const TabRanking = ({ className }: { className?: string }) => {
                 userId={result.player.id}
                 resultUpdatedAt={result.updatedAt}
                 name={result.player.name ?? ""}
-                hasClaped={result.clap.hasClaped ?? false}
+                hasClapped={result.clap.hasClapped ?? false}
               />
             </Popover>
           );
@@ -110,7 +110,7 @@ const TabRanking = ({ className }: { className?: string }) => {
         size: 60,
         cell: ({ row }) => {
           const { typeCounts } = row.original;
-          return <UserInputModeText {...typeCounts} />;
+          return <UserInputModeText typeCounts={typeCounts} />;
         },
       },
       {
@@ -126,11 +126,11 @@ const TabRanking = ({ className }: { className?: string }) => {
         cell: ({ row }) => {
           const { data: session } = useSession();
           const { clap } = row.original;
-          const hasClaped = clap.hasClaped && session ? true : false;
+          const hasClapped = clap.hasClapped && session ? true : false;
 
           return (
-            <div className="ml-1" title={clap.hasClaped ? "拍手を取り消す" : "拍手する"}>
-              <span className={cn(hasClaped && "outline-text text-yellow-500")}>{clap.count}</span>;{" "}
+            <div className="ml-1" title={clap.hasClapped ? "拍手を取り消す" : "拍手する"}>
+              <span className={cn(hasClapped && "outline-text text-yellow-500")}>{clap.count}</span>;{" "}
             </div>
           );
         },
@@ -138,14 +138,14 @@ const TabRanking = ({ className }: { className?: string }) => {
           cellClassName: (cell) => {
             return cn(
               toggleClap.isPending ? "opacity-80" : "",
-              cell.row.original.clap.hasClaped ? "" : "hover:bg-perfect/20",
+              cell.row.original.clap.hasClapped ? "" : "hover:bg-perfect/20",
             );
           },
           onClick: (event, row) => {
             if (!session?.user?.id || toggleClap.isPending) return;
             event.preventDefault();
             event.stopPropagation();
-            toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClaped });
+            toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClapped });
           },
         },
       },

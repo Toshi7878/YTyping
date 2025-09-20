@@ -12,19 +12,22 @@ interface CompactMapCardProps {
 }
 
 function CompactMapInfo({ map }: CompactMapCardProps) {
-  const musicSource = map.musicSource ? `【${map.musicSource}】` : "";
+  const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
     <div className="flex w-full flex-col justify-between overflow-hidden py-1 pl-3 text-xs sm:text-sm md:text-base lg:text-lg">
       <Link className="flex h-full flex-col justify-between hover:no-underline" href={`/type/${map.id}`}>
         <section className="flex flex-col gap-1">
-          <TooltipWrapper delayDuration={300} label={nolink(`${map.title} / ${map.artistName}${musicSource}`)}>
+          <TooltipWrapper
+            delayDuration={300}
+            label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}
+          >
             <div className="text-secondary truncate overflow-hidden text-base font-bold whitespace-nowrap">
-              {nolink(map.title)}
+              {nolink(map.info.title)}
             </div>
           </TooltipWrapper>
           <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
-            {nolink(map.artistName)}
+            {nolink(map.info.artistName)}
           </div>
         </section>
         <MapBadges map={map} />
@@ -55,8 +58,8 @@ const MapBadges = ({ map }: MapBadgesProps) => {
         </TooltipWrapper>
       </div>
       <div className="flex items-center space-x-1">
-        <RankingCountIcon myRank={map.myRank ?? 0} rankingCount={map.rankingCount} />
-        <LikeCountIcon mapId={map.id} isLiked={map.hasLiked ?? false} likeCount={map.likeCount} />
+        <RankingCountIcon myRank={map.ranking.myRank ?? 0} rankingCount={map.ranking.count} />
+        <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
       </div>
     </div>
   );

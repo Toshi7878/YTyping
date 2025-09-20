@@ -42,8 +42,8 @@ export const ResultStatuses = pgTable(
     defaultSpeed: real("default_speed").notNull().default(1),
     kpm: integer("kpm").notNull().default(0),
     rkpm: integer("rkpm").notNull().default(0),
-    kanaToRomaConvertKpm: integer("roma_kpm").notNull().default(0),
-    kanaToRomaConvertRKpm: integer("roma_rkpm").notNull().default(0),
+    kanaToRomaKpm: integer("kana_to_roma_kpm").notNull().default(0),
+    kanaToRomaRkpm: integer("kana_to_roma_rkpm").notNull().default(0),
     romaType: integer("roma_type").notNull().default(0),
     kanaType: integer("kana_type").notNull().default(0),
     flickType: integer("flick_type").notNull().default(0),
@@ -68,7 +68,7 @@ export const ResultClaps = pgTable(
     resultId: integer("result_id")
       .notNull()
       .references(() => Results.id, { onDelete: "cascade" }),
-    isClaped: boolean("is_claped").notNull(),
+    hasClapped: boolean("has_clapped").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.resultId] })],

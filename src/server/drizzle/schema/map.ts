@@ -33,6 +33,7 @@ export const Maps = pgTable("maps", {
     .notNull()
     .references(() => Users.id),
   previewTime: real("preview_time").notNull().default(0),
+  duration: doublePrecision("duration").notNull().default(0),
   playCount: integer("play_count").notNull().default(0),
   likeCount: integer("like_count").notNull().default(0),
   rankingCount: integer("ranking_count").notNull().default(0),
@@ -53,7 +54,6 @@ export const MapDifficulties = pgTable("map_difficulties", {
   romaKpmMax: integer("roma_kpm_max").notNull().default(0),
   kanaKpmMedian: integer("kana_kpm_median").notNull().default(0),
   kanaKpmMax: integer("kana_kpm_max").notNull().default(0),
-  totalTime: doublePrecision("total_time").notNull().default(0),
   romaTotalNotes: integer("roma_total_notes").notNull().default(0),
   kanaTotalNotes: integer("kana_total_notes").notNull().default(0),
   englishTotalNotes: integer("english_total_notes").notNull().default(0),
@@ -70,7 +70,7 @@ export const MapLikes = pgTable(
     mapId: integer("map_id")
       .notNull()
       .references(() => Maps.id, { onDelete: "cascade" }),
-    isLiked: boolean("is_liked").notNull(),
+    hasLiked: boolean("has_liked").notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.mapId] })],

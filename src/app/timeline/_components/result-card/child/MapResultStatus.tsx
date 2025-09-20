@@ -10,38 +10,31 @@ interface MapResultStatusProps {
 }
 
 export const MapResultStatus = ({ result, className }: MapResultStatusProps) => {
-  const isPerfect = result?.status.miss === 0 && result?.status.lost === 0;
+  const { typeCounts, otherStatus, typeSpeed } = result;
+  const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
 
   return (
     <div className={cn("flex flex-col items-end gap-5", className)}>
       <div className="mb-2 flex flex-row gap-2">
         <Badge variant="result" size="lg">
-          <UserInputModeText
-            romaType={result.status.romaType}
-            kanaType={result.status.kanaType}
-            flickType={result.status.flickType}
-            englishType={result.status.englishType}
-            symbolType={result.status.symbolType}
-            numType={result.status.numType}
-            spaceType={result.status.spaceType}
-          />
+          <UserInputModeText typeCounts={typeCounts} />
         </Badge>
         <Badge variant="result" size="lg">
-          {result?.status.score}
+          {result.score}
         </Badge>
         <Badge variant="result" size="lg">
-          <ClearRateText clearRate={result?.status.clearRate ?? 0} isPerfect={isPerfect} />
+          <ClearRateText clearRate={result.otherStatus.clearRate ?? 0} isPerfect={isPerfect} />
         </Badge>
       </div>
       <div className="flex flex-row gap-2">
         <Badge variant="result" size="lg">
-          {result && result.status.playSpeed.toFixed(2)}
+          {result.otherStatus.playSpeed.toFixed(2)}
           <span className="ml-1" style={{ letterSpacing: "2px" }}>
             倍速
           </span>
         </Badge>
         <Badge variant="result" size="lg">
-          {result && result.status.kpm}
+          {typeSpeed.kpm}
           <span className="ml-1" style={{ letterSpacing: "2px" }}>
             kpm
           </span>
@@ -57,7 +50,8 @@ interface MapResultBadgesMobileProps extends MapResultStatusProps {
 }
 
 export const MapResultBadgesMobile = ({ result, className }: MapResultBadgesMobileProps) => {
-  const isPerfect = result?.status.miss === 0 && result.status.lost === 0;
+  const { typeCounts, otherStatus, typeSpeed } = result;
+  const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
 
   return (
     <div className={cn("visible flex w-full justify-around", className)}>
@@ -66,25 +60,15 @@ export const MapResultBadgesMobile = ({ result, className }: MapResultBadgesMobi
           Rank: #{result.rank}
         </Badge>
         <Badge variant="result" size="lg">
-          {result && (
-            <UserInputModeText
-              romaType={result.status.romaType}
-              kanaType={result.status.kanaType}
-              flickType={result.status.flickType}
-              englishType={result.status.englishType}
-              symbolType={result.status.symbolType}
-              numType={result.status.numType}
-              spaceType={result.status.spaceType}
-            />
-          )}
+          <UserInputModeText typeCounts={typeCounts} />
         </Badge>
       </div>
       <div className="mr-5 flex flex-col items-end gap-5">
         <Badge variant="result" size="lg">
-          {result.status.score}
+          {result.score}
         </Badge>
         <Badge variant="result" size="lg">
-          {result.status.kpm}
+          {typeSpeed.kpm}
           <span className="ml-1" style={{ letterSpacing: "2px" }}>
             kpm
           </span>
@@ -92,10 +76,10 @@ export const MapResultBadgesMobile = ({ result, className }: MapResultBadgesMobi
       </div>
       <div className="mr-5 flex flex-col items-end gap-5">
         <Badge variant="result" size="lg">
-          <ClearRateText clearRate={result.status.clearRate} isPerfect={isPerfect} />
+          <ClearRateText clearRate={result.otherStatus.clearRate ?? 0} isPerfect={isPerfect} />
         </Badge>
         <Badge variant="result" size="lg">
-          {result.status.playSpeed.toFixed(2)}
+          {result.otherStatus.playSpeed.toFixed(2)}
           <span className="ml-1" style={{ letterSpacing: "2px" }}>
             倍速
           </span>

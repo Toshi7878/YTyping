@@ -54,7 +54,7 @@ function Content({ videoId, mapId }: ContentProps) {
       resetTypingStatus();
 
       const totalProgress = readTotalProgress();
-      totalProgress.max = map.movieTotalTime;
+      totalProgress.max = map.duration;
     }
   }, [mapData]);
 

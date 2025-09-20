@@ -6,7 +6,7 @@ import End from "./end/End";
 import Playing from "./playing/Playing";
 import Ready from "./ready/Ready";
 import BottomButtons from "./shared/bottom-child/BottomButtons";
-import SkipGuideAndTotalTime from "./shared/bottom-child/SkipGuideAndTotalTime";
+import SkipAndTimeDisplay from "./shared/bottom-child/skip-and-time-display";
 import PracticeLineCard from "./shared/result/child/PracticeLineCard";
 import ResultDrawer from "./shared/result/ResultDrawer";
 import TimeProgress from "./shared/TimeProgress";
@@ -68,7 +68,7 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
 const GameCardFooter = ({ className }: { className?: string }) => {
   return (
     <CardFooter className={className}>
-      <SkipGuideAndTotalTime />
+      <SkipAndTimeDisplay />
       <TimeProgress id="total_progress" />
       <BottomButtons />
     </CardFooter>

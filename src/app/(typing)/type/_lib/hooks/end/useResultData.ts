@@ -57,8 +57,8 @@ export const useResultData = () => {
       numType,
       maxCombo,
       defaultSpeed: minSp,
-      kanaToRomaConvertKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
-      kanaToRomaConvertRKpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
+      kanaToRomaKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
+      kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
       clearRate: Number(Math.max(0, clearRate).toFixed(1)),
     };
 

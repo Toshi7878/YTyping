@@ -27,6 +27,6 @@ const FingerChartUrlBaseSchema = z
 export const FingerChartUrlFormSchema = z.object({ url: FingerChartUrlBaseSchema });
 export const FingerChartUrlApiSchema = FingerChartUrlBaseSchema;
 
-const MyKeyboardBaseSchema = z.string().max(MAX_SHORT_LENGTH);
-export const MyKeyboardFormSchema = z.object({ myKeyboard: MyKeyboardBaseSchema });
-export const MyKeyboardApiSchema = MyKeyboardBaseSchema;
+const keyboardBaseSchema = z.string().max(MAX_SHORT_LENGTH);
+export const keyboardFormSchema = z.object({ keyboard: keyboardBaseSchema });
+export const keyboardApiSchema = keyboardBaseSchema;

@@ -22,7 +22,7 @@ const ResultToolTipText = ({
   updatedAt,
 }: ResultToolTipTextProps) => {
   const { miss, lost, maxCombo, playSpeed } = otherStatus;
-  const { kpm, rkpm, kanaToRomaConvertKpm, kanaToRomaConvertRkpm } = typeSpeed;
+  const { kpm, rkpm, kanaToRomaKpm, kanaToRomaRkpm } = typeSpeed;
 
   return (
     <div className="min-w-48 space-y-3 p-4 text-base">
@@ -53,12 +53,12 @@ const ResultToolTipText = ({
           <span>{rkpm}</span>
         </div>
 
-        {isKanaFlickTyped && kpm !== kanaToRomaConvertKpm && (
+        {isKanaFlickTyped && kpm !== kanaToRomaKpm && (
           <div className="flex items-center justify-between">
             <span>ローマ字換算kpm: </span>
             <span>
-              {kanaToRomaConvertKpm}
-              {kanaToRomaConvertRkpm && <span>(rkpm:{kanaToRomaConvertRkpm})</span>}
+              {kanaToRomaKpm}
+              {kanaToRomaRkpm && <span>(rkpm:{kanaToRomaRkpm})</span>}
             </span>
           </div>
         )}

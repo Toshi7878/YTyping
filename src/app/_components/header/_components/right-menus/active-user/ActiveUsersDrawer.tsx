@@ -69,13 +69,7 @@ const ActiveUsersDrawer = () => {
                     <TableCell className="px-0 py-2">
                       {user.state === "type" && user.map ? (
                         <CardWithContent variant="map">
-                          <MapLeftThumbnail
-                            alt={user.map.title}
-                            src={`https://i.ytimg.com/vi/${user.map.videoId}/mqdefault.jpg`}
-                            mapVideoId={user.map.videoId}
-                            mapPreviewTime={user.map.previewTime}
-                            size="activeUser"
-                          />
+                          <MapLeftThumbnail alt={user.map.info.title} media={user.map.media} size="activeUser" />
 
                           <CompactMapInfo map={user.map} />
                         </CardWithContent>
