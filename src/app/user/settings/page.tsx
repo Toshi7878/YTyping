@@ -2,7 +2,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { H4 } from "@/components/ui/typography";
 import { auth } from "@/server/auth";
 import { serverApi } from "@/trpc/server";
-import { notFound } from "next/navigation";
 import { UserNameInputForm } from "../_components/UserNameInputForm";
 import { OptionForm } from "./_components/option/OptionForm";
 import { FingerChartUrlInput } from "./_components/profile-settings/FingerChartUrlInput";
@@ -20,10 +19,6 @@ export default async function Page() {
 const ProfileSettingCard = async () => {
   const session = await auth();
   const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(session?.user.id) });
-
-  if (!userProfile) {
-    notFound();
-  }
 
   return (
     <Card className="mx-8">
