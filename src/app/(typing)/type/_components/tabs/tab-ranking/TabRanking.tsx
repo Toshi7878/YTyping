@@ -59,7 +59,7 @@ const TabRanking = ({ className }: { className?: string }) => {
           return (
             <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
               <PopoverTrigger asChild>
-                <span className={cn("ml-1", rank === 1 && "text-perfect outline-text")}>{rank}</span>
+                <span className={cn("ml-1", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
               </PopoverTrigger>
               <PopoverAnchor />
               <RankingPopoverContent

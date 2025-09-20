@@ -435,12 +435,12 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
     };
 
     const mapDifficulty = {
-      romaKpmMedian: speedDifficulty.median.r,
-      romaKpmMax: speedDifficulty.max.r,
-      kanaKpmMedian: speedDifficulty.median.r,
-      kanaKpmMax: speedDifficulty.max.r,
-      romaTotalNotes: totalNotes.r,
-      kanaTotalNotes: totalNotes.k,
+      romaKpmMedian: Math.floor(speedDifficulty.median.r),
+      romaKpmMax: Math.floor(speedDifficulty.max.r),
+      kanaKpmMedian: Math.floor(speedDifficulty.median.r),
+      kanaKpmMax: Math.floor(speedDifficulty.max.r),
+      romaTotalNotes: Math.floor(totalNotes.r),
+      kanaTotalNotes: Math.floor(totalNotes.k),
     };
     const { isUpdateUpdatedAt } = readEditUtils();
     await upsertMap.mutateAsync({
