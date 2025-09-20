@@ -1,10 +1,5 @@
 "use client";
-import {
-  useLineSelectIndexState,
-  useMapState,
-  useSceneGroupState,
-  useSetLineSelectIndex,
-} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useMapState, useSceneGroupState, useSetLineSelectIndex } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 
 import { usePlayer, useResultCards } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/moveLine";
@@ -20,7 +15,6 @@ function ResultLineList() {
   const sceneGroup = useSceneGroupState();
   const { moveSetLine, drawerSelectColorChange } = useMoveLine();
   const { writeResultCards } = useResultCards();
-  const lineSelectIndex = useLineSelectIndexState();
   const setLineSelectIndex = useSetLineSelectIndex();
   const { readPlayer } = usePlayer();
 
@@ -106,7 +100,6 @@ function ResultLineList() {
             cardRefs={cardRefs}
             lineData={lineData}
             handleCardClick={sceneGroup === "End" ? endCardClick : practiceReplayCardClick}
-            selectIndex={lineSelectIndex}
           />
         );
       })}

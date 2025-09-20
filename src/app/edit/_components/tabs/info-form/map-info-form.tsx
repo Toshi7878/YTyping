@@ -302,7 +302,9 @@ const PreviewTimeInput = () => {
             type="number"
             min="0"
             step="0.001"
-            onChange={() => setCanUpload(true)}
+            onChange={() => {
+              setCanUpload(true);
+            }}
             inputMode="decimal"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -312,14 +314,14 @@ const PreviewTimeInput = () => {
               if (e.key === "ArrowUp") {
                 e.preventDefault();
                 const currentValue = Number(getValues("previewTime")) || 0;
-                setValue("previewTime", (currentValue + 0.05).toFixed(2));
+                setValue("previewTime", Number((currentValue + 0.05).toFixed(2)));
                 setCanUpload(true);
               }
               if (e.key === "ArrowDown") {
                 e.preventDefault();
                 const currentValue = Number(getValues("previewTime")) || 0;
                 const newValue = Math.max(0, currentValue - 0.05);
-                setValue("previewTime", newValue.toFixed(2));
+                setValue("previewTime", Number(newValue.toFixed(2)));
                 setCanUpload(true);
               }
             }}
@@ -429,6 +431,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
       tags,
       previewTime: Number(newPreviewTime),
       thumbnailQuality: await getThumbnailQuality(videoId),
+      duration,
     };
 
     const mapDifficulty = {
@@ -436,7 +439,6 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
       romaKpmMax: speedDifficulty.max.r,
       kanaKpmMedian: speedDifficulty.median.r,
       kanaKpmMax: speedDifficulty.max.r,
-      duration,
       romaTotalNotes: totalNotes.r,
       kanaTotalNotes: totalNotes.k,
     };

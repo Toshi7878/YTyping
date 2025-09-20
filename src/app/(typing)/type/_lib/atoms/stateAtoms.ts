@@ -155,7 +155,40 @@ export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { s
 export const useSetChangeCSSCount = () => useSetAtom(writeChangeCSSCountAtom, { store });
 
 export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
-export const useSetLineSelectIndex = () => useSetAtom(lineSelectIndexAtom);
+
+export const useSetLineSelectIndex = () => {
+  return useAtomCallback(
+    useCallback((get, set, index: number) => {
+      const prevSelectedIndex = get(lineSelectIndexAtom);
+      if (prevSelectedIndex !== null) {
+        const prevAtom = lineResultAtomFamily(prevSelectedIndex);
+        const prevResult = get(prevAtom);
+        if (prevResult) {
+          set(prevAtom, {
+            ...prevResult,
+            isSelected: false,
+          });
+        }
+      }
+
+      // 指定されたインデックスの行が存在するかチェック
+      const targetAtom = lineResultAtomFamily(index);
+      const targetResult = get(targetAtom);
+
+      if (!targetResult) {
+        return; // 存在しない行は選択できない
+      }
+
+      // 新しい行を選択
+      set(lineSelectIndexAtom, index);
+      set(targetAtom, {
+        ...targetResult,
+        isSelected: true,
+      });
+    }, []), // 依存関係配列を追加
+    { store },
+  );
+};
 
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const useSetYTStarted = () => useSetAtom(isYTStartedAtom);
@@ -210,14 +243,22 @@ export const useReadCurrentTime = () => {
   );
 };
 
-const lineResultAtomFamily = atomFamily(() => atom<ResultData[number] | undefined>(undefined), deepEqual);
+const lineResultAtomFamily = atomFamily(
+  () => atom<{ isSelected: Boolean; lineResult: ResultData[number] } | undefined>(undefined),
+  deepEqual,
+);
 
 export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
 
 export const useSetLineResult = () => {
   return useAtomCallback(
     useCallback((get, set, { index, lineResult }: { index: number; lineResult: ResultData[number] }) => {
-      set(lineResultAtomFamily(index), lineResult);
+      const prev = get(lineResultAtomFamily(index));
+      if (!prev) return;
+      set(lineResultAtomFamily(index), {
+        ...prev,
+        lineResult,
+      });
     }, []),
     { store },
   );
@@ -241,7 +282,7 @@ export const useReadAllLineResult = () => {
         const result = get(atom);
 
         if (result !== undefined) {
-          results.push(result);
+          results.push(result.lineResult);
           index++;
         } else {
           break;
@@ -258,7 +299,7 @@ export const useInitializeLineResults = () => {
   return useAtomCallback(
     useCallback((get, set, lineResults: ResultData) => {
       lineResults.forEach((lineResult, index) => {
-        set(lineResultAtomFamily(index), lineResult);
+        set(lineResultAtomFamily(index), { isSelected: false, lineResult });
       });
     }, []),
     { store },

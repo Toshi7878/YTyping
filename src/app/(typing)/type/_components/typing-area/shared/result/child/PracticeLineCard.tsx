@@ -28,8 +28,9 @@ const PracticeLineCard = () => {
   const index = map.typingLineIndexes[lineSelectIndex - 1] ?? map.typingLineIndexes[0];
 
   if (!index) return null;
-  const lineResult = useLineResultState(index);
-  if (!lineResult) return null;
+  const _lineResult = useLineResultState(index);
+  if (!_lineResult) return null;
+  const { lineResult } = _lineResult;
 
   const lineInputMode = lineResult.status.mode ?? inputMode;
 

@@ -27,6 +27,7 @@ export const MapInfoFormSchema = MapInfoBaseSchema;
 
 const MapInfoApiSchema = MapInfoBaseSchema.extend({
   thumbnailQuality: z.enum(thumbnailQualityEnum.enumValues),
+  duration: z.number(),
 });
 
 const CreateMapDifficultySchema = createInsertSchema(MapDifficulties).omit({

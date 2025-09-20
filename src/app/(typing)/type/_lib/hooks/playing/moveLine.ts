@@ -1,4 +1,4 @@
-import { useLineCount, usePlayer, useProgress, useResultCards } from "../../atoms/refAtoms";
+import { useLineCount, usePlayer, useProgress, useReadYTStatus, useResultCards } from "../../atoms/refAtoms";
 import { useReadPlaySpeed } from "../../atoms/speedReducerAtoms";
 import { useReadGameUtilParams, useReadMap, useSetLineSelectIndex, useSetNotify } from "../../atoms/stateAtoms";
 import { useGetSeekLineCount } from "./timer/getLineCountByTime";
@@ -18,6 +18,7 @@ export const useMoveLine = () => {
   const readPlaySpeed = useReadPlaySpeed();
   const readMap = useReadMap();
   const { readCount, writeCount } = useLineCount();
+  const { readYTStatus } = useReadYTStatus();
 
   const { pauseTimer } = useTimerControls();
   const readGameStateUtils = useReadGameUtilParams();
@@ -28,7 +29,7 @@ export const useMoveLine = () => {
     if (!map) return;
 
     const { scene } = readGameStateUtils();
-    const isPaused = readPlayer().getPlayerState() === 2;
+    const { isPaused } = readYTStatus();
     const isPracticeScene = scene === "practice";
     const isTimeBuffer = isPracticeScene && !isPaused;
 
@@ -48,7 +49,7 @@ export const useMoveLine = () => {
 
     if (prevCount === undefined) return;
 
-    const playSpeed = readPlaySpeed().playSpeed;
+    const { playSpeed } = readPlaySpeed();
 
     const timeIndex = prevCount + (isTimeBuffer ? 0 : 1);
     const prevTimeRaw = Number(map.mapData[timeIndex]["time"]);
@@ -67,7 +68,9 @@ export const useMoveLine = () => {
     setNotify(Symbol(`◁`));
     drawerSelectColorChange(newCount);
     scrollToCard(newLineSelectIndex);
-    readLineProgress().value = isTimeBuffer ? prevTime - map.mapData[newCount - 1].time : 0;
+
+    const prevLine = map.mapData[newCount - 1];
+    readLineProgress().value = isTimeBuffer && prevLine ? prevTime - prevLine.time : 0;
   };
 
   const moveNextLine = () => {
@@ -82,14 +85,15 @@ export const useMoveLine = () => {
 
     if (nextCount === undefined) return;
 
-    const playSpeed = readPlaySpeed().playSpeed;
+    const { playSpeed } = readPlaySpeed();
 
     const prevLineTime =
       (nextCount > 1 ? map.mapData[nextCount]["time"] - map.mapData[nextCount - 1]["time"] : 0) / playSpeed;
 
     const { scene } = readGameStateUtils();
 
-    const isPaused = readPlayer().getPlayerState() === 2;
+    const { isPaused } = readYTStatus();
+
     const isTimeBuffer = scene === "practice" && !isPaused && prevLineTime > 1;
 
     const nextTime = Number(map.mapData[nextCount]["time"]) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
@@ -113,8 +117,9 @@ export const useMoveLine = () => {
   const moveSetLine = (seekCount: number) => {
     const map = readMap();
     if (!map) return;
-    const isPaused = readPlayer().getPlayerState() === 2;
-    const playSpeed = readPlaySpeed().playSpeed;
+
+    const { isPaused } = readYTStatus();
+    const { playSpeed } = readPlaySpeed();
     const { scene, lineSelectIndex } = readGameStateUtils();
     const isTimeBuffer = scene === "practice" && !isPaused;
     const seekTime = Number(map.mapData[seekCount]["time"]) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);

@@ -20,7 +20,6 @@ interface OptimizedResultCardProps {
   lineIndex: number;
   scoreCount: number;
   cardRefs: React.RefObject<HTMLDivElement[]>;
-  selectIndex: number;
   handleCardClick: (lineNumber: number) => void;
   lineData: LineData;
 }
@@ -29,20 +28,20 @@ function OptimizedResultCard({
   count,
   lineIndex,
   scoreCount,
-  selectIndex,
   cardRefs,
   handleCardClick,
   lineData,
 }: OptimizedResultCardProps) {
-  const lineResult = useLineResultState(count);
+  const _lineResult = useLineResultState(count);
+  if (!_lineResult) return;
+
+  const { isSelected, lineResult } = _lineResult;
   const map = useMapState() as BuildMap;
   const scene = useSceneState();
-  const speedData = usePlaySpeedState();
+  const { minPlaySpeed, playSpeed } = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();
 
-  if (!lineResult) return;
-
-  const lineSpeed = lineResult.status.sp > speedData.minPlaySpeed ? lineResult.status.sp : speedData.minPlaySpeed;
+  const lineSpeed = lineResult.status.sp > minPlaySpeed ? lineResult.status.sp : minPlaySpeed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;
@@ -59,9 +58,7 @@ function OptimizedResultCard({
   const lostWord = lineResult.status.lostW;
   const lost = lineResult.status.lLost;
 
-  const seekTime = Number(map.mapData[count]["time"]) - (scene === "replay" ? 0 : 1 * speedData.playSpeed);
-
-  const isSelected = selectIndex === lineIndex;
+  const seekTime = Number(map.mapData[count]["time"]) - (scene === "replay" ? 0 : 1 * playSpeed);
 
   return (
     <Card
