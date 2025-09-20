@@ -1,10 +1,8 @@
 import { useUserTypingOptionsStateRef } from "../../../type/_lib/atoms/stateAtoms";
 import { usePlayer } from "../atoms/refAtoms";
-import { useReadPlaySpeed } from "../atoms/speedReducerAtoms";
 
 export const useGetTime = () => {
   const { readPlayer } = usePlayer();
-  const readPlaySpeed = useReadPlaySpeed();
   const readTypingOptions = useUserTypingOptionsStateRef();
 
   const getCurrentOffsettedYTTime = () => {
@@ -14,7 +12,7 @@ export const useGetTime = () => {
   };
 
   const getConstantOffsettedYTTime = (YTCurrentTime: number) => {
-    return YTCurrentTime / readPlaySpeed().playSpeed;
+    return YTCurrentTime;
   };
 
   return {

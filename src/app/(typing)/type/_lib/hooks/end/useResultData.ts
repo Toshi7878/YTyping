@@ -56,7 +56,7 @@ export const useResultData = () => {
       symbolType,
       numType,
       maxCombo,
-      minPlaySpeed: minPlaySpeed.toFixed(2),
+      minPlaySpeed,
       kanaToRomaKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
       kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
       clearRate: Number(Math.max(0, clearRate).toFixed(1)),
