@@ -1,4 +1,4 @@
-import { UserImeTypingOptions, UserOptions, Users, UserTypingOptions } from "@/server/drizzle/schema";
+import { UserImeTypingOptions, UserOptions, UserTypingOptions } from "@/server/drizzle/schema";
 import {
   CreateUserImeTypingOptionSchema,
   CreateUserOptionSchema,
@@ -10,7 +10,7 @@ import { optionalAuthProcedure, protectedProcedure } from "../trpc";
 export const userOptionRouter = {
   getUserOptions: optionalAuthProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
-    if (!user) return;
+    if (!user) return null;
 
     const userOption = await db.query.UserOptions.findFirst({
       columns: {
@@ -21,25 +21,29 @@ export const userOptionRouter = {
       where: eq(UserOptions.userId, user.id),
     });
 
-    return userOption;
+    return userOption ?? null;
   }),
   getUserTypingOptions: optionalAuthProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
-    if (!user) return;
+    if (!user) return null;
 
-    return db.query.UserTypingOptions.findFirst({
-      columns: { userId: false },
-      where: eq(UserTypingOptions.userId, user.id),
-    });
+    return (
+      (await db.query.UserTypingOptions.findFirst({
+        columns: { userId: false },
+        where: eq(UserTypingOptions.userId, user.id),
+      })) ?? null
+    );
   }),
   getUserImeTypingOptions: optionalAuthProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
-    if (!user) return;
+    if (!user) return null;
 
-    return db.query.UserImeTypingOptions.findFirst({
-      columns: { userId: false },
-      where: eq(Users.id, user.id),
-    });
+    return (
+      (await db.query.UserImeTypingOptions.findFirst({
+        columns: { userId: false },
+        where: eq(UserImeTypingOptions.userId, user.id),
+      })) ?? null
+    );
   }),
 
   updateTypeOptions: protectedProcedure.input(CreateUserTypingOptionSchema).mutation(async ({ input, ctx }) => {
