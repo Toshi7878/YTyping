@@ -14,15 +14,11 @@ export const userProfileRouter = {
         fingerChartUrl: UserProfiles.fingerChartUrl,
         keyboard: UserProfiles.keyboard,
       })
-      .from(UserProfiles)
-      .innerJoin(Users, eq(Users.id, input.userId))
-      .where(eq(UserProfiles.userId, input.userId))
+      .from(Users)
+      .leftJoin(UserProfiles, eq(UserProfiles.userId, input.userId))
+      .where(eq(Users.id, input.userId))
       .limit(1)
       .then((rows) => rows[0]);
-
-    if (!userProfile) {
-      throw new TRPCError({ code: "NOT_FOUND" });
-    }
 
     return userProfile;
   }),
