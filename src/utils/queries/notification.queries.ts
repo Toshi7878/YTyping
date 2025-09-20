@@ -6,12 +6,11 @@ export const useNotificationQueries = () => {
     hasNewNotification: () => trpc.notification.hasNewNotification.queryOptions(),
     infiniteNotifications: () =>
       trpc.notification.getInfiniteUserNotifications.infiniteQueryOptions(
-        {
-          limit: 20,
-          direction: "forward" as const,
-        },
+        {},
         {
           getNextPageParam: (lastPage) => lastPage.nextCursor,
+          refetchOnWindowFocus: false,
+          gcTime: Infinity,
         },
       ),
   };

@@ -29,15 +29,16 @@ const EndRankingButton = ({
   const queryClient = useQueryClient();
 
   const sendResult = useMutation(
-    trpc.result.sendResult.mutationOptions({
+    trpc.result.createResult.mutationOptions({
       onSuccess: async () => {
         setIsSendResultBtnDisabled(true);
-        await queryClient.invalidateQueries(trpc.ranking.getMapRanking.queryOptions({ mapId: Number(mapId) }));
+        await queryClient.invalidateQueries(trpc.result.getMapRanking.queryOptions({ mapId: Number(mapId) }));
         setTabName("ランキング");
         toast.success("ランキング登録が完了しました");
       },
       onError: () => {
         setIsSendResultBtnDisabled(false);
+        toast.error("ランキング登録に失敗しました");
       },
     }),
   );

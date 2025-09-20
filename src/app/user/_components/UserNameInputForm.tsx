@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
+import { UserNameSchema } from "@/server/drizzle/validator/user-setting";
 import { useTRPC } from "@/trpc/provider";
-import { nameSchema } from "@/validator/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -25,9 +25,9 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
 
   const form = useForm({
     mode: "onChange",
-    resolver: zodResolver(nameSchema),
+    resolver: zodResolver(UserNameSchema),
     defaultValues: {
-      newName: session?.user?.name || "",
+      newName: session?.user?.name ?? "",
     },
   });
 
@@ -39,11 +39,11 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   } = form;
 
   const updateUserName = useMutation(
-    trpc.userProfileSetting.updateName.mutationOptions({
-      onSuccess: async (result) => {
-        await update({ ...session?.user, name: result.id });
-        reset({ newName: result.id });
-        toast.success(result.title);
+    trpc.userProfile.updateName.mutationOptions({
+      onSuccess: async (newName) => {
+        await update({ ...session?.user, name: newName });
+        reset({ newName });
+        toast.success("名前を更新しました");
 
         if (pathname === "/user/register") {
           router.push("/");
@@ -53,7 +53,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   );
 
   const checkNameAvailability = useMutation(
-    trpc.userProfileSetting.isNameAvailable.mutationOptions({
+    trpc.userProfile.isNameAvailable.mutationOptions({
       onError: (error) => {
         if (error.data?.code === "CONFLICT") {
           setError("newName", { message: error.message });
@@ -62,7 +62,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
     }),
   );
 
-  const onSubmit = (formData: z.output<typeof nameSchema>) => {
+  const onSubmit = (formData: z.output<typeof UserNameSchema>) => {
     updateUserName.mutate(formData);
   };
 

@@ -22,7 +22,7 @@ interface ContentProps {
 }
 
 function Content({ mapInfo }: ContentProps) {
-  const { video_id } = mapInfo;
+  const { videoId } = mapInfo;
   const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
   const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
     minHeight: "calc(100vh - var(--header-height))",
@@ -125,7 +125,7 @@ function Content({ mapInfo }: ContentProps) {
     <>
       <Notifications style={{ height: notificationsHeight }} />
       <YouTubePlayer
-        videoId={video_id}
+        videoId={videoId}
         className={"fixed top-[40px] left-0 w-full"}
         style={{ height: youtubeHeight.height, minHeight: youtubeHeight.minHeight }}
       />

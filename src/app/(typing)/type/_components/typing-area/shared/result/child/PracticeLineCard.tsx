@@ -28,8 +28,9 @@ const PracticeLineCard = () => {
   const index = map.typingLineIndexes[lineSelectIndex - 1] ?? map.typingLineIndexes[0];
 
   if (!index) return null;
-  const lineResult = useLineResultState(index);
-  if (!lineResult) return null;
+  const _lineResult = useLineResultState(index);
+  if (!_lineResult) return null;
+  const { lineResult } = _lineResult;
 
   const lineInputMode = lineResult.status.mode ?? inputMode;
 
@@ -39,7 +40,7 @@ const PracticeLineCard = () => {
   const maxLinePoint = lineData.notes.r * CHAR_POINT;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
-  const lineSpeed = lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
+  const lineSpeed = lineResult.status.sp > speedData.minPlaySpeed ? lineResult.status.sp : speedData.minPlaySpeed;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
   //ユーザーのLineリザルトデータ
@@ -80,7 +81,7 @@ const PracticeLineCard = () => {
 
       <ResultCardContent
         lineKanaWord={lineKanaWord}
-        typeResult={lineResult.typeResult}
+        types={lineResult.types}
         lineTypeWord={lineTypeWord}
         lostWord={lostWord!}
       />

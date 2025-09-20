@@ -5,18 +5,17 @@ import UserStatsCard from "./_components/UserStatsCard";
 
 export default async function Page({ params }: PageProps<"/user/[id]">) {
   const { id } = await params;
-  const userProfile = await serverApi.user.getUserProfile({ userId: Number(id) });
+  const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(id) });
   const userStats = await serverApi.userStats.getUserStats({ userId: Number(id) });
-  const userOptions = await serverApi.userOption.getUserOptions({ userId: Number(id) });
 
   if (!userProfile) {
-    return notFound();
+    notFound();
   }
 
   return (
     <div className="mx-auto max-w-screen-lg space-y-4">
       <UserProfileCard userProfile={userProfile} />
-      <UserStatsCard userStats={userStats} userOptions={userOptions} />
+      <UserStatsCard userStats={userStats} />
     </div>
   );
 }

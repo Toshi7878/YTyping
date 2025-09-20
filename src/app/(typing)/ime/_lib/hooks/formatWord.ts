@@ -20,8 +20,8 @@ export const useFormatWord = () => {
 
     text = normalizeSimilarSymbol(text); //記号整形
 
-    const { enable_eng_upper_case, add_symbol_list, enable_add_symbol } = readImeTypeOptions();
-    if (enable_eng_upper_case) {
+    const { enableEngUpperCase, addSymbolList, enableAddSymbol } = readImeTypeOptions();
+    if (enableEngUpperCase) {
       text = text.normalize("NFKC"); //全角を半角に変換
     } else {
       text = text.normalize("NFKC").toLowerCase(); //全角を半角に変換 & 小文字に変換;
@@ -32,9 +32,9 @@ export const useFormatWord = () => {
     text = text.replace(/([ぁ-んゔァ-ンヴ一-龥])([a-zA-Z])/g, "$1 $2"); // 日本語文字の後にアルファベットがある場合
 
     text = text.replace(new RegExp(FILTER_SYMBOLS, "g"), ""); //記号削除　TODO: ホワイトリストに含まれる機能はFILTERしない
-    if (enable_add_symbol) {
+    if (enableAddSymbol) {
       text = text.replace(
-        new RegExp(`[${LYRICS_FORMAT_REGEX.concat([add_symbol_list.replace(/./g, "\\$&")]).join("")}]`, "g"),
+        new RegExp(`[${LYRICS_FORMAT_REGEX.concat([addSymbolList.replace(/./g, "\\$&")]).join("")}]`, "g"),
         "",
       ); //regexListに含まれていない文字を削除
     } else {

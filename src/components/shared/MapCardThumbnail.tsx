@@ -1,5 +1,6 @@
 import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
+import { MapListItem } from "@/server/api/routers/map-list";
 import { cva, VariantProps } from "class-variance-authority";
 import { RESET } from "jotai/utils";
 import Image from "next/image";
@@ -21,9 +22,7 @@ const mapLeftThumbnailVariants = cva("relative", {
 interface MapLeftThumbnailPreviewCoverProps {
   src?: string;
   alt?: string;
-  mapVideoId?: string;
-  mapPreviewTime?: string;
-  mapPreviewSpeed?: number;
+  media?: MapListItem["media"];
   size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
   className?: string;
 }
@@ -31,51 +30,43 @@ interface MapLeftThumbnailPreviewCoverProps {
 const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
 
 const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { src = "", alt = "", mapVideoId, mapPreviewTime, mapPreviewSpeed = 1, size, className, ...rest } = props;
+  const { alt = "", media, size, className, ...rest } = props;
 
+  const src = `https://i.ytimg.com/vi/${media?.videoId}/mqdefault.jpg`;
   const pathname = usePathname();
   const pathSegment = pathname.split("/")[1];
 
   return (
     <div className={cn("group relative my-auto select-none", className)} {...rest}>
-      {src ? (
-        <div className={cn(mapLeftThumbnailVariants({ size }))}>
-          <Image unoptimized loading="lazy" alt={alt} src={src} fill className="rounded-md" />
-        </div>
+      {media ? (
+        <>
+          <div className={cn(mapLeftThumbnailVariants({ size }))}>
+            <Image unoptimized loading="lazy" alt={alt} src={src} fill className="rounded-md" />
+          </div>
+          {!PREVIEW_DISABLE_PATHNAMES.includes(pathSegment) && <ThumbnailPreviewCover {...media} />}
+        </>
       ) : (
         <div className={cn(mapLeftThumbnailVariants({ size }))}>
           <div className="flex-start flex h-full w-full items-center justify-center">{alt}</div>
         </div>
       )}
-      {mapVideoId && mapPreviewTime && !PREVIEW_DISABLE_PATHNAMES.includes(pathSegment) && (
-        <ThumbnailPreviewCover
-          mapPreviewTime={mapPreviewTime}
-          mapVideoId={mapVideoId}
-          mapPreviewSpeed={mapPreviewSpeed}
-        />
-      )}
     </div>
   );
 };
 
-interface ThumbnailPreviewCoverProps {
-  mapVideoId: string;
-  mapPreviewTime: string;
-  mapPreviewSpeed?: number;
-}
-
-const ThumbnailPreviewCover = ({ mapVideoId, mapPreviewTime, mapPreviewSpeed = 1 }: ThumbnailPreviewCoverProps) => {
+const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
+  const { videoId: mapVideoId, previewTime: mapPreviewTime, previewSpeed: mapPreviewSpeed } = props;
   const { videoId } = usePreviewVideoState();
   const setPreviewVideo = useSetPreviewVideo();
   const [isTouchMove, setIsTouchMove] = useState(false);
 
   const previewYouTube = () => {
-    if (mapVideoId !== videoId) {
+    if (videoId !== mapVideoId) {
       setPreviewVideo((prev) => ({
         ...prev,
         videoId: mapVideoId,
         previewTime: mapPreviewTime,
-        previewSpeed: mapPreviewSpeed.toString(),
+        previewSpeed: mapPreviewSpeed ?? 1,
       }));
     } else {
       setPreviewVideo(RESET);
@@ -88,7 +79,7 @@ const ThumbnailPreviewCover = ({ mapVideoId, mapPreviewTime, mapPreviewSpeed = 1
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!isTouchMove) {
-      if (mapVideoId !== videoId) {
+      if (videoId !== mapVideoId) {
         previewYouTube();
       }
     }

@@ -2,8 +2,7 @@
 
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/mapReducerAtom";
 import { usePlayer, useTimeInput } from "../../_lib/atoms/refAtoms";
 import {
@@ -30,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { MapLine } from "@/types/map";
 import { Cell, ColumnDef } from "@tanstack/react-table";
 import parse from "html-react-parser";
+import { usePathname } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useEndLineIndexState } from "../../_lib/atoms/buttonDisableStateAtoms";
 import { useAddRubyTagEvent } from "../../_lib/hooks/useAddRubyTag";
@@ -66,9 +66,8 @@ export default function MapTable() {
     hotKeyOptions,
   );
 
-  const tbodyRef = useRef(null);
+  const mapId = usePathname().split("/")[2];
 
-  const { id: mapId } = useParams<{ id: string }>();
   const mapDispatch = useMapReducer();
   const { readPlayer } = usePlayer();
 

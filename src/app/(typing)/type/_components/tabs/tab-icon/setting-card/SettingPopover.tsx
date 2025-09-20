@@ -13,8 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBreakPoint } from "@/lib/useBreakPoint";
 import { cn } from "@/lib/utils";
+import { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
-import { $Enums } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
@@ -27,7 +27,7 @@ import { UserWordScrollChange } from "./options/UserWordScroll";
 
 const SettingPopover = () => {
   const trpc = useTRPC();
-  const updateTypingOptions = useMutation(trpc.userTypingOption.updateTypeOptions.mutationOptions());
+  const updateTypingOptions = useMutation(trpc.userOption.updateTypeOptions.mutationOptions());
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
   const confirm = useConfirm();
@@ -147,10 +147,10 @@ const SettingButton = () => {
 
 const UserLineCompletedRadioButton = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { line_completed_display } = useUserTypingOptionsState();
+  const { lineCompletedDisplay: line_completed_display } = useUserTypingOptionsState();
 
-  const changeRadio = (value: $Enums.line_completed_display) => {
-    setUserTypingOptions({ line_completed_display: value });
+  const changeRadio = (value: (typeof lineCompletedDisplayEnum.enumValues)[number]) => {
+    setUserTypingOptions({ lineCompletedDisplay: value });
   };
 
   const items = [
@@ -172,10 +172,10 @@ const UserLineCompletedRadioButton = () => {
 
 const UserNextDisplayRadioButton = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { next_display } = useUserTypingOptionsState();
+  const { nextDisplay: next_display } = useUserTypingOptionsState();
 
-  const changeRadio = (value: $Enums.next_display) => {
-    setUserTypingOptions({ next_display: value });
+  const changeRadio = (value: (typeof nextDisplayEnum.enumValues)[number]) => {
+    setUserTypingOptions({ nextDisplay: value });
   };
 
   const items = [

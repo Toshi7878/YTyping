@@ -1,16 +1,16 @@
-import { TypeResult } from "@/app/(typing)/type/_lib/type";
 import { CardContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { TypeResult } from "@/server/drizzle/validator/result";
 
 interface ResultCardContentProps {
   lineKanaWord: string;
-  typeResult: TypeResult[];
+  types: TypeResult[];
   lineTypeWord: string;
   lostWord: string;
 }
 
-function ResultCardContent({ lineKanaWord, typeResult, lineTypeWord, lostWord }: ResultCardContentProps) {
+function ResultCardContent({ lineKanaWord, types, lineTypeWord, lostWord }: ResultCardContentProps) {
   let correctCount = 0;
 
   return (
@@ -19,7 +19,7 @@ function ResultCardContent({ lineKanaWord, typeResult, lineTypeWord, lostWord }:
         <div>{lineKanaWord}</div>
       </div>
       <div className={cn("text-foreground word-outline-text tracking-wider break-all uppercase")}>
-        {typeResult.map((type: TypeResult, index: number) => {
+        {types.map((type: TypeResult, index: number) => {
           if (type.is) {
             correctCount++;
           }

@@ -11,14 +11,14 @@ export const playerAtom = atom<YTPlayer | null>(null);
 export const usePlayer = () => {
   const readPlayer = useAtomCallback(
     useCallback((get) => get(playerAtom) as YTPlayer, []),
-    { store }
+    { store },
   );
 
   const writePlayer = useAtomCallback(
     useCallback((get, set, newPlayer: YTPlayer | null) => {
       set(playerAtom, newPlayer);
     }, []),
-    { store }
+    { store },
   );
 
   return { readPlayer, writePlayer };
@@ -29,14 +29,14 @@ const lyricsContainerAtom = atom<HTMLDivElement | null>(null);
 export const useLyricsContainer = () => {
   const readLyricsContainer = useAtomCallback(
     useCallback((get) => get(lyricsContainerAtom) as HTMLDivElement, []),
-    { store }
+    { store },
   );
 
   const writeLyricsContainer = useAtomCallback(
     useCallback((get, set, newLyricsContainer: HTMLDivElement) => {
       set(lyricsContainerAtom, newLyricsContainer);
     }, []),
-    { store }
+    { store },
   );
 
   return { readLyricsContainer, writeLyricsContainer };
@@ -47,51 +47,48 @@ const inputTextareaAtom = atom<HTMLTextAreaElement | null>(null);
 export const useInputTextarea = () => {
   const readInputTextarea = useAtomCallback(
     useCallback((get) => get(inputTextareaAtom) as HTMLTextAreaElement, []),
-    { store }
+    { store },
   );
 
   const writeInputTextarea = useAtomCallback(
     useCallback((get, set, newLyricsTextarea: HTMLTextAreaElement) => {
       set(inputTextareaAtom, newLyricsTextarea);
     }, []),
-    { store }
+    { store },
   );
 
   return { readInputTextarea, writeInputTextarea };
 };
 
-const userStatsAtom = atomWithReset({
-  ime_type: 0,
-  total_type_time: 0,
-});
+const userStatsAtom = atomWithReset({ imeTypeCount: 0, typingTime: 0 });
 
-const totalTypingTimeAtom = focusAtom(userStatsAtom, (optic) => optic.prop("total_type_time"));
-const totalImeTypeAtom = focusAtom(userStatsAtom, (optic) => optic.prop("ime_type"));
+const typingTimeAtom = focusAtom(userStatsAtom, (optic) => optic.prop("typingTime"));
+const imeTypeCountAtom = focusAtom(userStatsAtom, (optic) => optic.prop("imeTypeCount"));
 
 export const useUserStats = () => {
   const readUserStats = useAtomCallback(
     useCallback((get) => get(userStatsAtom), []),
-    { store }
+    { store },
   );
 
   const incrementTypingTime = useAtomCallback(
     useCallback((get, set, time: number) => {
-      set(totalTypingTimeAtom, (prev) => prev + time);
+      set(typingTimeAtom, (prev) => prev + time);
     }, []),
-    { store }
+    { store },
   );
 
   const incrementImeType = useAtomCallback(
     useCallback((get, set, imeTypeCount: number) => {
-      set(totalImeTypeAtom, (prev) => prev + imeTypeCount);
-    }, [])
+      set(imeTypeCountAtom, (prev) => prev + imeTypeCount);
+    }, []),
   );
 
   const resetUserStats = useAtomCallback(
     useCallback((get, set) => {
       set(userStatsAtom, RESET);
     }, []),
-    { store }
+    { store },
   );
 
   return { readUserStats, resetUserStats, incrementImeType, incrementTypingTime };

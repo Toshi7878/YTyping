@@ -14,7 +14,7 @@ export const useGetTime = () => {
   const getCurrentOffsettedYTTime = () => {
     const { timeOffset } = readGameUtilRefParams();
     const typingOptions = readTypingOptions();
-    const result = readPlayer().getCurrentTime() - typingOptions.time_offset - timeOffset;
+    const result = readPlayer().getCurrentTime() - typingOptions.timeOffset - timeOffset;
     return result;
   };
 

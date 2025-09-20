@@ -10,7 +10,7 @@ const EndText = () => {
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
   const { score, miss, lost } = useTypingStatusState();
-  const [bestScore] = useState(() => getMyRankingResult()?.status?.score ?? 0);
+  const [bestScore] = useState(() => getMyRankingResult()?.score ?? 0);
   const isPerfect = miss === 0 && lost === 0;
   const scene = useSceneState();
 
@@ -41,7 +41,7 @@ const EndText = () => {
           </>
         )}
       </span>
-      {speed.defaultSpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
+      {speed.minPlaySpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
     </div>
   );
 };

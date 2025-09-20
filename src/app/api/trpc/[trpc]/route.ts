@@ -1,6 +1,6 @@
 import { appRouter } from "@/server/api/root";
 import { auth } from "@/server/auth";
-import { prisma } from "@/server/db";
+import { db } from "@/server/drizzle/client";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 const handler = async (req: Request) =>
@@ -11,7 +11,7 @@ const handler = async (req: Request) =>
     createContext: async () => {
       const session = await auth();
       return {
-        db: prisma,
+        db,
         user: { ...session?.user, id: Number(session?.user.id ?? 0) },
       };
     },

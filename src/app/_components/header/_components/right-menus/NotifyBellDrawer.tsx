@@ -13,11 +13,11 @@ import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot, Loader2 } from "lucide-react";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
 export default function NotifyBellDrawer() {
-  const { data: isNewNotification } = useQuery(useNotificationQueries().hasNewNotification());
+  const { data: isNewNotificationFound } = useQuery(useNotificationQueries().hasNewNotification());
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -29,10 +29,6 @@ export default function NotifyBellDrawer() {
     }),
   );
 
-  const notificationOpen = useCallback(() => {
-    postUserNotificationRead.mutate();
-  }, [postUserNotificationRead]);
-
   return (
     <Sheet>
       <TooltipWrapper label="通知" delayDuration={600} className="relative bottom-3">
@@ -41,9 +37,9 @@ export default function NotifyBellDrawer() {
             variant="unstyled"
             size="icon"
             className="hover:text-header-foreground text-header-foreground/80 p-2"
-            onClick={notificationOpen}
+            onClick={() => postUserNotificationRead.mutate()}
           >
-            {isNewNotification ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
+            {isNewNotificationFound ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
           </Button>
         </SheetTrigger>
       </TooltipWrapper>
@@ -59,9 +55,7 @@ export default function NotifyBellDrawer() {
 }
 
 const NotifyDrawerInnerContent = () => {
-  const { ref, inView } = useInView({
-    threshold: 0.8,
-  });
+  const { ref, inView } = useInView({ threshold: 0.8 });
 
   const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(
     useNotificationQueries().infiniteNotifications(),
@@ -88,13 +82,7 @@ const NotifyDrawerInnerContent = () => {
                   <div key={`${pageIndex}-${notifyIndex}`} className="mb-4">
                     <div className="mb-2">
                       <NotificationMapCard notify={notify}>
-                        <MapLeftThumbnail
-                          alt={map.title}
-                          src={`https://i.ytimg.com/vi/${map.video_id}/mqdefault.jpg`}
-                          mapVideoId={map.video_id}
-                          mapPreviewTime={map.preview_time}
-                          size="notification"
-                        />
+                        <MapLeftThumbnail alt={map.info.title} media={map.media} size="notification" />
 
                         <CompactMapInfo map={map} />
                       </NotificationMapCard>
@@ -130,12 +118,12 @@ function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
         <span className="flex items-center gap-1">
           <UserLinkText
             className="text-header-foreground/80 hover:text-header-foreground underline"
-            userId={notify.visitor_id}
+            userId={notify.visitor.id}
             userName={notify.visitor.name}
           />
           <span>
-            さんがスコア {notify.visitorResult.status.score - notify.visitedResult.status.score} 差で{" "}
-            {Number(notify.old_rank)}位 の記録を抜かしました
+            さんがスコア {notify.visitor.score - notify.myResult.score} 差で {Number(notify.myResult.old_rank)}位
+            の記録を抜かしました
           </span>
         </span>
       </CardHeader>

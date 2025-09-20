@@ -38,10 +38,11 @@ const Playing = ({ className }: PlayingProps) => {
       if (document.visibilityState === "hidden") {
         const sendStats = readUserStats();
         const maxCombo = sendStats.maxCombo;
-        navigator.sendBeacon(
-          `${getBaseUrl()}/api/update-user-typing-stats`,
-          JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) }),
-        );
+        const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
+        const body = new Blob([JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })], {
+          type: "application/json",
+        });
+        navigator.sendBeacon(url, body);
 
         resetUserStats(structuredClone(maxCombo));
       }
@@ -49,10 +50,11 @@ const Playing = ({ className }: PlayingProps) => {
     const handleBeforeunload = () => {
       const sendStats = readUserStats();
       const maxCombo = sendStats.maxCombo;
-      navigator.sendBeacon(
-        `${getBaseUrl()}/api/update-user-typing-stats`,
-        JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) }),
-      );
+      const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
+      const body = new Blob([JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })], {
+        type: "application/json",
+      });
+      navigator.sendBeacon(url, body);
       resetUserStats(structuredClone(maxCombo));
     };
 

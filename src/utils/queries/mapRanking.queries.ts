@@ -5,13 +5,6 @@ export const useMapRankingQueries = () => {
 
   return {
     mapRanking: ({ mapId }: { mapId: string | number }) =>
-      trpc.ranking.getMapRanking.queryOptions(
-        {
-          mapId: Number(mapId),
-        },
-        {
-          gcTime: Infinity,
-        },
-      ),
+      trpc.result.getMapRanking.queryOptions({ mapId: Number(mapId) }, { gcTime: Infinity }),
   };
 };

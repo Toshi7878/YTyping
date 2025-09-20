@@ -27,7 +27,7 @@ export default function useActiveUsers() {
       const isEdit = pathname.match("/edit");
 
       const currentState =
-        userOptions?.custom_user_active_state === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
+        userOptions?.customUserActiveState === "ASK_ME" ? "askMe" : isType ? "type" : isEdit ? "edit" : "idle";
 
       const userStatus: ActiveUserStatus = {
         id: Number(session.user.id),
@@ -77,7 +77,7 @@ export default function useActiveUsers() {
       // 初回 subscribe
       channel.subscribe(async (status) => {
         if (status !== "SUBSCRIBED" || !session?.user?.name) return;
-        if (userOptions?.custom_user_active_state !== "HIDE_ONLINE") {
+        if (userOptions?.customUserActiveState !== "HIDE_ONLINE") {
           await updateUserStatus(channel);
         }
       });
@@ -121,6 +121,6 @@ export default function useActiveUsers() {
     setOnlineUsers,
     mapId,
     session?.user.id,
-    userOptions?.custom_user_active_state,
+    userOptions?.customUserActiveState,
   ]);
 }

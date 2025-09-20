@@ -9,14 +9,14 @@ const SCROLL_STEP = 1;
 
 export const UserWordScrollChange = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { kana_word_scroll, roma_word_scroll } = useUserTypingOptionsState();
+  const { kanaWordScroll: kana_word_scroll, romaWordScroll: roma_word_scroll } = useUserTypingOptionsState();
 
   return (
     <section className="flex flex-col gap-4">
       <H5>ワードスクロール開始位置 調整</H5>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ kana_word_scroll: value })}
+          onChange={(value) => setUserTypingOptions({ kanaWordScroll: value })}
           step={SCROLL_STEP}
           max={MAX_SCROLL}
           min={MIN_SCROLL}
@@ -26,7 +26,7 @@ export const UserWordScrollChange = () => {
           decrementTooltip="かな表示スクロールタイミングを減らします。"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ roma_word_scroll: value })}
+          onChange={(value) => setUserTypingOptions({ romaWordScroll: value })}
           step={SCROLL_STEP}
           max={MAX_SCROLL}
           min={MIN_SCROLL}

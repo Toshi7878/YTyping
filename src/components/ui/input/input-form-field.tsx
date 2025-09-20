@@ -181,6 +181,10 @@ const FloatingLabelInputFormField = ({
               label={label}
               variant={fieldState.error ? "error" : "default"}
               size={size}
+              onChange={(e) => {
+                field.onChange(e);
+                inputProps.onChange?.(e);
+              }}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}

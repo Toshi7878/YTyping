@@ -1,5 +1,6 @@
+import { ResultData } from "@/server/drizzle/validator/result";
 import { MapLine } from "@/types/map";
-import { InputMode, LineData, LineResultData, LineWord, TypeChunk } from "../../app/(typing)/type/_lib/type";
+import { InputMode, LineData, LineWord, TypeChunk } from "../../app/(typing)/type/_lib/type";
 import { ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./const";
 import { generateTypingWord } from "./generateTypingWord";
 
@@ -13,10 +14,10 @@ export class BuildMap {
   lineLength: number;
   typingLineIndexes: number[];
   mapChangeCSSCounts: number[];
-  initialLineResultData: LineResultData[];
+  initialLineResultData: ResultData;
   totalNotes: LineData["notes"];
   speedDifficulty: { median: { r: number; k: number }; max: { r: number; k: number } };
-  movieTotalTime: number;
+  duration: number;
   keyRate: number;
   missRate: number;
 
@@ -34,14 +35,14 @@ export class BuildMap {
     this.totalNotes = this.calculateTotalNotes(result.words);
     this.speedDifficulty = this.calculateSpeedDifficulty(result.words);
 
-    this.movieTotalTime = Number(this.mapData[result.words.length - 1].time);
+    this.duration = Number(this.mapData[result.words.length - 1].time);
     this.keyRate = 100 / this.totalNotes.r;
     this.missRate = this.keyRate / 2;
   }
 
   private create({ data }: { data: MapLine[] }) {
     const wordsData: LineData[] = [];
-    const initialLineResultData: LineResultData[] = [];
+    const initialLineResultData: ResultData = [];
     const typingLineIndexes: number[] = [];
     const mapChangeCSSCounts: number[] = [];
     const inputMode = (
@@ -100,7 +101,7 @@ export class BuildMap {
             mode: validatedInputMode,
             sp: 1,
           },
-          typeResult: [],
+          types: [],
         });
       } else {
         wordsData.push({
@@ -116,7 +117,7 @@ export class BuildMap {
             mode: validatedInputMode,
             sp: 1,
           },
-          typeResult: [],
+          types: [],
         });
       }
     }
@@ -132,8 +133,8 @@ export class BuildMap {
   }
 
   private calcLineKpm({ notes, lineDuration: remainTime }: { notes: LineData["notes"]; lineDuration: number }) {
-    const romaKpm = Math.floor((notes.r / remainTime) * 60);
-    const kanaKpm = Math.floor((notes.k / remainTime) * 60);
+    const romaKpm = Math.max(1, Math.floor((notes.r / remainTime) * 60));
+    const kanaKpm = Math.max(1, Math.floor((notes.k / remainTime) * 60));
     return { r: romaKpm, k: kanaKpm };
   }
 

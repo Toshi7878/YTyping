@@ -115,10 +115,10 @@ const TypeActivity = () => {
 const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
   const { data } = activity as RouterOutPuts["userStats"]["getUserActivity"][number];
   const sortedTypeData = [
-    { label: "ローマ字", count: data?.roma_type_count ?? 0 },
-    { label: "かな", count: data?.kana_type_count ?? 0 },
-    { label: "英数字記号", count: data?.english_type_count ?? 0 },
-    { label: "変換有りタイプ数", count: data?.ime_type_count ?? 0 },
+    { label: "ローマ字", count: data?.romaTypeCount ?? 0 },
+    { label: "かな", count: data?.kanaTypeCount ?? 0 },
+    { label: "英数字記号", count: data?.englishTypeCount ?? 0 },
+    { label: "変換有りタイプ数", count: data?.imeTypeCount ?? 0 },
   ].sort((a, b) => b.count - a.count);
 
   const sortedTypeDataString = sortedTypeData.map((item) => {

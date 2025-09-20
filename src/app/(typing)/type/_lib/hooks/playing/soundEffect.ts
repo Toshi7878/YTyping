@@ -51,20 +51,20 @@ export const useSoundEffect = () => {
     const typingOptions = readTypingOptions();
 
     if (isCompleted) {
-      if (typingOptions.line_clear_sound) {
+      if (typingOptions.completedTypeSound) {
         clearTypeSoundPlay();
-      } else if (typingOptions.type_sound) {
+      } else if (typingOptions.typeSound) {
         typeSoundPlay();
       }
     } else {
-      if (typingOptions.type_sound) {
+      if (typingOptions.typeSound) {
         typeSoundPlay();
       }
     }
   };
 
   const triggerMissSound = () => {
-    if (readTypingOptions().miss_sound) {
+    if (readTypingOptions().missSound) {
       missSoundPlay();
     }
   };

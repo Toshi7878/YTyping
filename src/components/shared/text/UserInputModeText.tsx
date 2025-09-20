@@ -1,24 +1,13 @@
 import { cn } from "@/lib/utils";
+import { RouterOutPuts } from "@/server/api/trpc";
 
 interface UserInputModeTextProps {
-  kanaType: number;
-  romaType: number;
-  flickType: number;
-  englishType: number;
-  spaceType: number;
-  numType: number;
-  symbolType: number;
+  typeCounts: RouterOutPuts["result"]["usersResultList"]["items"][number]["typeCounts"];
 }
 
-export const UserInputModeText = ({
-  kanaType,
-  romaType,
-  flickType,
-  englishType,
-  spaceType,
-  numType,
-  symbolType,
-}: UserInputModeTextProps) => {
+export const UserInputModeText = ({ typeCounts }: UserInputModeTextProps) => {
+  const { kanaType, romaType, flickType, englishType, spaceType, numType, symbolType } = typeCounts;
+
   const colors = {
     roma: "text-roma",
     kana: "text-kana",
@@ -31,7 +20,7 @@ export const UserInputModeText = ({
     <span className={cn(colorClass, "input-mode-outline-text")}>{label}</span>
   );
 
-  const total = romaType + kanaType + flickType + englishType + spaceType + numType + symbolType;
+  const total = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0);
 
   if (romaType && kanaType) {
     const isRomaFirst = romaType >= kanaType;

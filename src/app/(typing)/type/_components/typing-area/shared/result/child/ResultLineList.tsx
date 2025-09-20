@@ -1,14 +1,9 @@
 "use client";
-import {
-  useLineSelectIndexState,
-  useMapState,
-  useSceneGroupState,
-  useSetLineSelectIndex,
-} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useMapState, useSceneGroupState, useSetLineSelectIndex } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 
 import { usePlayer, useResultCards } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/moveLine";
-import { LineResultData } from "@/app/(typing)/type/_lib/type";
+import { ResultData } from "@/server/drizzle/validator/result";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import OptimizedResultCard from "./OptimizedResultCard";
@@ -20,7 +15,6 @@ function ResultLineList() {
   const sceneGroup = useSceneGroupState();
   const { moveSetLine, drawerSelectColorChange } = useMoveLine();
   const { writeResultCards } = useResultCards();
-  const lineSelectIndex = useLineSelectIndexState();
   const setLineSelectIndex = useSetLineSelectIndex();
   const { readPlayer } = usePlayer();
 
@@ -89,7 +83,7 @@ function ResultLineList() {
 
   return (
     <div className="relative h-full overflow-y-auto px-4">
-      {map.initialLineResultData.map((_: LineResultData, index: number) => {
+      {map.initialLineResultData.map((_: ResultData[number], index: number) => {
         const lineData = map.mapData[index];
 
         if (!lineData.kanaWord) return null;
@@ -106,7 +100,6 @@ function ResultLineList() {
             cardRefs={cardRefs}
             lineData={lineData}
             handleCardClick={sceneGroup === "End" ? endCardClick : practiceReplayCardClick}
-            selectIndex={lineSelectIndex}
           />
         );
       })}

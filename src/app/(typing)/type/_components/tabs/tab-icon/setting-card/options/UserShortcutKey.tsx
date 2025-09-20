@@ -1,18 +1,18 @@
 import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H5 } from "@/components/ui/typography";
-import { $Enums } from "@prisma/client";
+import { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
 
 const UserShortcutKeyCheckbox = () => {
-  const { time_offset_key, toggle_input_mode_key } = useUserTypingOptionsState();
+  const { timeOffsetAdjustKey, InputModeToggleKey } = useUserTypingOptionsState();
   const { setUserTypingOptions } = useSetUserTypingOptions();
 
-  const changeTimeOffsetKey = (value: string) => {
-    setUserTypingOptions({ time_offset_key: value as $Enums.time_offset_key });
+  const changeTimeOffsetAdjustKey = (value: string) => {
+    setUserTypingOptions({ timeOffsetAdjustKey: value as (typeof timeOffsetAdjustKeyEnum.enumValues)[number] });
   };
 
   const changeInputModeKey = (value: string) => {
-    setUserTypingOptions({ toggle_input_mode_key: value as $Enums.toggle_input_mode_key });
+    setUserTypingOptions({ InputModeToggleKey: value as (typeof InputModeToggleKeyEnum.enumValues)[number] });
   };
 
   return (
@@ -26,8 +26,8 @@ const UserShortcutKeyCheckbox = () => {
             { label: "Ctrl+Alt+←→", value: "CTRL_ALT_LEFT_RIGHT" },
             { label: "無効化", value: "NONE" },
           ]}
-          value={time_offset_key}
-          onValueChange={changeTimeOffsetKey}
+          value={timeOffsetAdjustKey}
+          onValueChange={changeTimeOffsetAdjustKey}
         />
       </div>
       <div className="flex items-baseline gap-2">
@@ -38,7 +38,7 @@ const UserShortcutKeyCheckbox = () => {
             { label: "Tab", value: "TAB" },
             { label: "無効化", value: "NONE" },
           ]}
-          value={toggle_input_mode_key}
+          value={InputModeToggleKey}
           onValueChange={changeInputModeKey}
         />
       </div>

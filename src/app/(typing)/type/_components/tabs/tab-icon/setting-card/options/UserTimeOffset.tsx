@@ -8,12 +8,12 @@ const TIME_OFFSET_STEP = 0.05;
 
 const UserTimeOffsetChange = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { time_offset } = useUserTypingOptionsState();
+  const { timeOffset: time_offset } = useUserTypingOptionsState();
 
   return (
     <CounterInput
       value={time_offset}
-      onChange={(value) => setUserTypingOptions({ time_offset: value })}
+      onChange={(value) => setUserTypingOptions({ timeOffset: value })}
       step={TIME_OFFSET_STEP}
       max={MAX_TIME_OFFSET}
       min={MIN_TIME_OFFSET}

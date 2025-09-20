@@ -1,40 +1,30 @@
-import { activeUserRouter } from "./routers/activeUserRouter";
-import { authRouter } from "./routers/authRouter";
-import { clapRouter } from "./routers/clapRouter";
-import { geminiRouter } from "./routers/geminiRouter";
-import { likeRouter } from "./routers/likeRouter";
-import { mapListRouter } from "./routers/mapListRouter";
-import { mapRouter } from "./routers/mapRouter";
-import { morphConvertRouter } from "./routers/morphConvertRouter";
-import { notificationRouter } from "./routers/notificationRouter";
-import { rankingRouter } from "./routers/rankingRouter";
-import { resultRouter } from "./routers/resultRouter";
-import { userOptionRouter } from "./routers/userOptionRouter";
-import { userProfileSettingRouter } from "./routers/userProfileSettingRouter";
-import { userRouter } from "./routers/userRouter";
-import { userStatsRouter } from "./routers/userStatsRouter";
-import { userTypingOptionRouter } from "./routers/userTypingOptionRouter";
-import { vercelRouter } from "./routers/vercelRouter";
+import { clapRouter } from "./routers/clap";
+import { geminiRouter } from "./routers/gemini";
+import { likeRouter } from "./routers/like";
+import { mapRouter } from "./routers/map";
+import { mapListRouter } from "./routers/map-list";
+import { morphConvertRouter } from "./routers/morph";
+import { notificationRouter } from "./routers/notification";
+import { resultRouter } from "./routers/result";
+import { userOptionRouter } from "./routers/typing-option";
+import { userProfileRouter } from "./routers/user-profile";
+import { userStatsRouter } from "./routers/user-stats";
+import { vercelRouter } from "./routers/vercel";
 import { router } from "./trpc";
 
 export const appRouter = router({
   map: mapRouter,
   mapList: mapListRouter,
   notification: notificationRouter,
-  ranking: rankingRouter,
   result: resultRouter,
-  userTypingOption: userTypingOptionRouter,
-  userProfileSetting: userProfileSettingRouter,
-  userStats: userStatsRouter,
   userOption: userOptionRouter,
-  user: userRouter,
-  activeUser: activeUserRouter,
+  userProfile: userProfileRouter,
+  userStats: userStatsRouter,
   morphConvert: morphConvertRouter,
   gemini: geminiRouter,
   vercel: vercelRouter,
   clap: clapRouter,
   like: likeRouter,
-  auth: authRouter,
 });
 
 export type AppRouter = typeof appRouter;

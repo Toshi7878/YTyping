@@ -1,7 +1,7 @@
-import { YouTubeSpeed } from "@/types";
 import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 
+import { YouTubeSpeed } from "@/types/global-types";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
 import { TAB_NAMES } from "../const";

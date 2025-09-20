@@ -1,23 +1,27 @@
 import { inferRouterInputs, inferRouterOutputs, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { auth } from "../auth";
-import { prisma } from "../db";
+import { db as drizzleDb } from "../drizzle/client";
 import type { AppRouter } from "./root";
+import { OpenApiMeta } from "trpc-to-openapi";
 
-const createContext = async () => {
+export const createContext = async () => {
   const session = await auth();
 
   const user = { ...session?.user, id: Number(session?.user.id ?? 0) };
   return {
-    db: prisma,
+    db: drizzleDb,
     user,
   };
 };
 
 type Context = Awaited<ReturnType<typeof createContext>>;
-const t = initTRPC.context<Context>().create({
-  transformer: superjson,
-});
+const t = initTRPC
+  .context<Context>()
+  .meta<OpenApiMeta>()
+  .create({
+    transformer: superjson,
+  });
 
 t.procedure.use((opts) => {
   opts.ctx;
@@ -29,6 +33,14 @@ export const router = t.router;
 export const createCallerFactory = t.createCallerFactory;
 
 export const publicProcedure = t.procedure;
+export const optionalAuthProcedure = t.procedure.use(function optionalAuth(opts) {
+  return opts.next({
+    ctx: {
+      db: drizzleDb,
+      user: opts.ctx.user ? { ...opts.ctx.user, id: Number(opts.ctx.user.id) } : undefined,
+    },
+  });
+});
 export const protectedProcedure = t.procedure.use(function isAuthed(opts) {
   if (!opts.ctx.user) {
     throw new Error("認証が必要です");
@@ -36,7 +48,7 @@ export const protectedProcedure = t.procedure.use(function isAuthed(opts) {
 
   return opts.next({
     ctx: {
-      db: prisma,
+      db: drizzleDb,
       user: { ...opts.ctx.user, id: Number(opts.ctx.user.id) },
     },
   });
