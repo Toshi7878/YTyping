@@ -46,7 +46,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
         toast.success("名前を更新しました");
 
         if (pathname === "/user/register") {
-          router.push("/");
+          router.refresh();
         }
       },
     }),
