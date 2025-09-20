@@ -101,7 +101,7 @@ export class BuildMap {
             mode: validatedInputMode,
             sp: 1,
           },
-          typeResult: [],
+          types: [],
         });
       } else {
         wordsData.push({
@@ -117,7 +117,7 @@ export class BuildMap {
             mode: validatedInputMode,
             sp: 1,
           },
-          typeResult: [],
+          types: [],
         });
       }
     }

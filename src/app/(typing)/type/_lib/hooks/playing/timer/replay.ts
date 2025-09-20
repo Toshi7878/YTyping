@@ -17,7 +17,7 @@ import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../updateStatus
 
 interface UseKeyReplayProps {
   constantLineTime: number;
-  typeResult: TypeResult;
+  type: TypeResult;
   lineResult: ResultData[number];
 }
 
@@ -39,10 +39,8 @@ const usePlayBackKey = () => {
   const readGameStateUtils = useReadGameUtilParams();
   const { readCount } = useLineCount();
 
-  return ({ constantLineTime, typeResult }: UseKeyReplayProps) => {
-    const key = typeResult.c;
-    const isSuccess = typeResult.is;
-    const option = typeResult.op;
+  return ({ constantLineTime, type }: UseKeyReplayProps) => {
+    const { c: key, is: isSuccess, op: option } = type;
     const count = readCount();
 
     if (key) {
@@ -114,18 +112,17 @@ export const useReplay = () => {
 
     const lineResult = lineResults[count - 1];
     if (!lineResult) return;
-    const typeResults = lineResult.typeResult;
-    if (typeResults.length === 0) return;
+    const { types } = lineResult;
+    if (types.length === 0) return;
 
     const { replayKeyCount } = readGameUtilRefParams();
-    const typeData = typeResults[replayKeyCount];
+    const type = types[replayKeyCount];
+    if (!type) return;
 
-    if (!typeData) return;
-
-    const keyTime = typeData.t;
+    const keyTime = type.t;
 
     if (constantLineTime >= keyTime) {
-      keyReplay({ constantLineTime: constantLineTime, lineResult, typeResult: typeData });
+      keyReplay({ constantLineTime: constantLineTime, lineResult, type });
       writeGameUtilRefParams({ replayKeyCount: replayKeyCount + 1 });
     }
   };

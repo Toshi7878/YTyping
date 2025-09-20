@@ -89,7 +89,7 @@ function OptimizedResultCard({
 
       <ResultCardContent
         lineKanaWord={lineKanaWord}
-        typeResult={lineResult.typeResult}
+        types={lineResult.types}
         lineTypeWord={lineTypeWord}
         lostWord={lostWord!}
       />

@@ -18,7 +18,7 @@ const CreateTypingResultJsonSchema = z.array(
       mode: z.enum(["roma", "kana", "flick"]),
       sp: z.number(),
     }),
-    typeResult: z.array(
+    types: z.array(
       z.object({
         is: z.boolean().optional(),
         c: z.string().optional(),
@@ -39,5 +39,5 @@ export const CreateResultSchema = z
   .refine(() => true, { message: "リザルトデータの形式が無効です" });
 
 export type ResultData = z.output<typeof CreateTypingResultJsonSchema>;
-export type TypeResult = ResultData[number]["typeResult"][number];
+export type TypeResult = ResultData[number]["types"][number];
 export type LineResultStatus = ResultData[number]["status"];

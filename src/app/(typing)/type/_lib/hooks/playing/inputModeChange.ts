@@ -63,8 +63,8 @@ export const useInputModeChange = () => {
     if (scene === "play") {
       const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
       writeLineStatus({
-        typeResult: [
-          ...readLineStatus().typeResult,
+        types: [
+          ...readLineStatus().types,
           {
             op: newInputMode,
             t: Math.floor(lineTime * 1000) / 1000,

@@ -71,7 +71,7 @@ export const lineStatusAtom = atomWithReset({
   type: 0,
   miss: 0,
   latency: 0,
-  typeResult: [] as TypeResult[],
+  types: [] as TypeResult[],
   startSpeed: 1,
   startInputMode: "roma" as InputMode,
   isCompleted: false,

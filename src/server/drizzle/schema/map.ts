@@ -2,7 +2,6 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   char,
-  doublePrecision,
   integer,
   pgEnum,
   pgTable,
@@ -33,7 +32,7 @@ export const Maps = pgTable("maps", {
     .notNull()
     .references(() => Users.id),
   previewTime: real("preview_time").notNull().default(0),
-  duration: doublePrecision("duration").notNull().default(0),
+  duration: real("duration").notNull().default(0),
   playCount: integer("play_count").notNull().default(0),
   likeCount: integer("like_count").notNull().default(0),
   rankingCount: integer("ranking_count").notNull().default(0),
