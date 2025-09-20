@@ -130,7 +130,7 @@ const TabRanking = ({ className }: { className?: string }) => {
 
           return (
             <div className="ml-1" title={clap.hasClapped ? "拍手を取り消す" : "拍手する"}>
-              <span className={cn(hasClapped && "outline-text text-yellow-500")}>{clap.count}</span>;{" "}
+              <span className={cn(hasClapped && "outline-text text-yellow-500")}>{clap.count}</span>
             </div>
           );
         },

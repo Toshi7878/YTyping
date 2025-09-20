@@ -1,8 +1,8 @@
-import { supabase } from "@/lib/supabaseClient";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/server/drizzle/validator/map";
 import { MapLine } from "@/types/map";
+import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import z from "zod";
@@ -46,20 +46,23 @@ export const mapRouter = {
   }),
 
   getMapJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
-    const timestamp = new Date().getTime();
+    try {
+      const data = await downloadFile({
+        key: `map-json/${input.mapId}.json`,
+      });
 
-    const { data, error } = await supabase.storage
-      .from("map-data")
-      .download(`public/${input.mapId}.json?timestamp=${timestamp}`);
+      if (!data) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Map data not found" });
+      }
 
-    if (error) {
+      const jsonString = new TextDecoder().decode(data);
+      const mapJson: MapLine[] = JSON.parse(jsonString);
+
+      return mapJson;
+    } catch (error) {
+      console.error("Error fetching map data from R2:", error);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     }
-
-    const jsonString = await data.text();
-    const mapJson: MapLine[] = JSON.parse(jsonString);
-
-    return mapJson;
   }),
 
   upsertMap: protectedProcedure.input(UpsertMapSchema).mutation(async ({ input, ctx }) => {
@@ -105,13 +108,11 @@ export const mapRouter = {
         .values({ mapId: newMapId, ...mapDifficulty })
         .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: mapDifficulty });
 
-      await supabase.storage
-        .from("map-data")
-        .upload(
-          `public/${mapId === null ? newMapId : mapId}.json`,
-          new Blob([JSON.stringify(mapData, null, 2)], { type: "application/json" }),
-          { upsert: true },
-        );
+      await upsertFile({
+        key: `map-json/${mapId === null ? newMapId : mapId}.json`,
+        body: JSON.stringify(mapData, null, 2),
+        contentType: "application/json",
+      });
 
       return newMapId;
     });

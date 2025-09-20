@@ -50,7 +50,7 @@ const RankingPopoverContent = ({
     const resultUpdatedAtDate = new Date(resultUpdatedAt);
     iosActiveSound();
 
-    if (mapUpdatedAt && resultUpdatedAtDate > mapUpdatedAt) {
+    if (mapUpdatedAt && mapUpdatedAt > resultUpdatedAtDate) {
       toast.warning("リプレイ登録時より後に譜面が更新されています", {
         description: "正常に再生できない可能性があります",
       });

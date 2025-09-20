@@ -1,5 +1,4 @@
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
-import { supabase } from "@/lib/supabaseClient";
 import { db, TXType } from "@/server/drizzle/client";
 import {
   MapDifficulties,
@@ -12,6 +11,7 @@ import {
   Users,
 } from "@/server/drizzle/schema";
 import { CreateResultSchema, ResultData } from "@/server/drizzle/validator/result";
+import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { TRPCError } from "@trpc/server";
 import { and, desc, eq, gt, gte, ilike, inArray, lte, or, SQL } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
@@ -166,20 +166,23 @@ export const resultRouter = {
     return { items: results, nextCursor };
   }),
   getTypingResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
-    const timestamp = new Date().getTime();
+    try {
+      const data = await downloadFile({
+        key: `result-json/${input.resultId}.json`,
+      });
 
-    const { data, error } = await supabase.storage
-      .from("user-result")
-      .download(`public/${input.resultId}.json?timestamp=${timestamp}`);
+      if (!data) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
+      }
 
-    if (error) {
+      const jsonString = new TextDecoder().decode(data);
+      const jsonData: ResultData = JSON.parse(jsonString);
+
+      return jsonData;
+    } catch (error) {
+      console.error("Error fetching result data from R2:", error);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     }
-
-    const jsonString = await data.text();
-    const jsonData: ResultData = JSON.parse(jsonString);
-
-    return jsonData;
   }),
 
   getMapRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
@@ -216,15 +219,15 @@ export const resultRouter = {
 
       await tx
         .insert(ResultStatuses)
-        .values({ resultId })
+        .values({ resultId, ...status })
         .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
 
       const jsonString = JSON.stringify(lineResults, null, 2);
-      await supabase.storage
-        .from("user-result")
-        .upload(`public/${resultId}.json`, new Blob([jsonString], { type: "application/json" }), {
-          upsert: true,
-        });
+      await upsertFile({
+        key: `result-json/${resultId}.json`,
+        body: jsonString,
+        contentType: "application/json",
+      });
 
       const rankedUsers = await tx
         .select({
