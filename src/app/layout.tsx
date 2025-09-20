@@ -11,6 +11,7 @@ import TRPCProvider from "@/trpc/provider";
 import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
+import { headers } from "next/headers";
 import Script from "next/script";
 import LinkProgressProvider from "./_components/LinkProgressProvider";
 import MainProvider from "./_components/MainProvider";
@@ -35,6 +36,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  const userAgent = (await headers()).get("user-agent") ?? "";
 
   return (
     <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
@@ -55,7 +57,7 @@ export default async function RootLayout({
               <LinkProgressProvider>
                 <AlertDialogProvider>
                   <Header className="fixed z-50 h-10 w-full" />
-                  <MainProvider>
+                  <MainProvider userAgent={userAgent}>
                     <main className="min-h-screen pt-12 md:pt-16" id="main_content">
                       {children}
                     </main>

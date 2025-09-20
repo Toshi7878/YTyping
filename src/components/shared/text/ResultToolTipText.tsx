@@ -1,105 +1,79 @@
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { RouterOutPuts } from "@/server/api/trpc";
 
 interface ResultToolTipTextProps {
-  romaType: number;
-  kanaType: number;
-  flickType: number;
-  englishType: number;
-  numType: number;
-  spaceType: number;
-  symbolType: number;
-  miss: number;
-  correctRate: string;
-  lost: number;
+  typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"];
+  otherStatus: RouterOutPuts["result"]["getMapRanking"][number]["otherStatus"];
+  typeSpeed: RouterOutPuts["result"]["getMapRanking"][number]["typeSpeed"];
+  missRate: string;
   isPerfect: boolean;
-  maxCombo: number;
-  kpm: number;
-  rkpm: number;
-  kanaToRomaConvertKpm: number;
-  kanaToRomaConvertRkpm: number;
   isKanaFlickTyped: boolean;
-  defaultSpeed: number;
   updatedAt: Date;
 }
 
 const ResultToolTipText = ({
-  romaType,
-  kanaType,
-  flickType,
-  englishType,
-  numType,
-  spaceType,
-  symbolType,
-  miss,
-  correctRate,
-  lost,
+  typeCounts,
+  otherStatus,
   isPerfect,
-  maxCombo,
-  kpm,
-  rkpm,
-  kanaToRomaConvertKpm,
-  kanaToRomaConvertRkpm,
+  missRate,
+  typeSpeed,
   isKanaFlickTyped,
-  defaultSpeed,
   updatedAt,
 }: ResultToolTipTextProps) => {
+  const { miss, lost, maxCombo, playSpeed } = otherStatus;
+  const { kpm, rkpm, kanaToRomaConvertKpm, kanaToRomaConvertRkpm } = typeSpeed;
+
   return (
-    <div className="p-4">
-      <div className="flex flex-col items-start gap-3">
-        <TypeCountResult
-          romaType={romaType}
-          kanaType={kanaType}
-          flickType={flickType}
-          englishType={englishType}
-          numType={numType}
-          symbolType={symbolType}
-          spaceType={spaceType}
-        />
-        <Separator />
-        <div className="flex gap-2">
-          <span>ミス数:</span>
-          <span className="text-base font-bold">
-            {miss} ({correctRate}%)
+    <div className="min-w-48 space-y-3 p-4 text-base">
+      <TypeCountResult typeCounts={typeCounts} />
+
+      <Separator />
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span>ミス数</span>
+          <span>
+            {miss} <span>({missRate}%)</span>
           </span>
         </div>
 
-        <div className="flex gap-2">
-          <span>ロスト数:</span>
-          <span className="text-base font-bold">{lost}</span>
+        <div className="flex items-center justify-between">
+          <span>ロスト数</span>
+          <span>{lost}</span>
         </div>
 
-        <div className="flex gap-2">
-          <span>最大コンボ:</span>
-          <span className={cn("text-base font-bold", isPerfect && ["text-perfect", "outline-text"])}>{maxCombo}</span>
+        <div className="flex items-center justify-between">
+          <span>最大コンボ</span>
+          <span className={cn(isPerfect && "text-perfect outline-text")}>{maxCombo}</span>
         </div>
 
-        <div className="flex gap-2">
-          <span>rkpm:</span>
-          <span className="text-base font-bold">{rkpm}</span>
+        <div className="flex items-center justify-between">
+          <span>rkpm</span>
+          <span>{rkpm}</span>
         </div>
 
         {isKanaFlickTyped && kpm !== kanaToRomaConvertKpm && (
-          <div className="flex gap-2">
-            <span>ローマ字換算kpm:</span>
-            <span className="text-base font-bold">
-              {kanaToRomaConvertKpm} {kanaToRomaConvertRkpm ? `(rkpm:${kanaToRomaConvertRkpm})` : ""}
+          <div className="flex items-center justify-between">
+            <span>ローマ字換算kpm: </span>
+            <span>
+              {kanaToRomaConvertKpm}
+              {kanaToRomaConvertRkpm && <span>(rkpm:{kanaToRomaConvertRkpm})</span>}
             </span>
           </div>
         )}
 
-        {defaultSpeed > 1 && (
-          <div className="flex gap-2">
-            <span>倍速:</span>
-            <span className="text-base font-bold">{defaultSpeed.toFixed(2)}x</span>
+        {playSpeed > 1 && (
+          <div className="flex items-center justify-between">
+            <span>倍速</span>
+            <span>{playSpeed.toFixed(2)}x</span>
           </div>
         )}
 
-        <div className="flex gap-2">
-          <span>日時:</span>
-          <span className="text-base">
+        <div className="flex items-center justify-between pt-2">
+          <span>日時</span>
+          <span>
             {new Date(updatedAt).toLocaleString("ja-JP", {
-              year: "numeric",
               month: "2-digit",
               day: "2-digit",
               hour: "2-digit",
@@ -113,30 +87,17 @@ const ResultToolTipText = ({
 };
 
 interface TypeCountResultProps {
-  romaType: number;
-  kanaType: number;
-  flickType: number;
-  englishType: number;
-  numType: number;
-  spaceType: number;
-  symbolType: number;
+  typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"];
 }
 
-const TypeCountResult = ({
-  romaType,
-  kanaType,
-  flickType,
-  englishType,
-  numType,
-  spaceType,
-  symbolType,
-}: TypeCountResultProps) => {
+const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
+  const { romaType, kanaType, flickType, englishType, numType, spaceType, symbolType } = typeCounts;
   const types = [
-    { label: "ローマ字タイプ数", value: romaType },
-    { label: "かな入力タイプ数", value: kanaType },
-    { label: "フリック入力タイプ数", value: flickType },
+    { label: "ローマ字", value: romaType },
+    { label: "かな入力", value: kanaType },
+    { label: "フリック", value: flickType },
     {
-      label: "英数字記号タイプ数",
+      label: "英数字記号",
       value: englishType + numType + symbolType + spaceType,
     },
   ];
@@ -145,20 +106,20 @@ const TypeCountResult = ({
   const typesUsedCount = types.filter((type) => type.value > 0).length;
 
   return (
-    <div className="flex flex-col items-start gap-1">
+    <div className="space-y-1">
       {types.map(
         (type, index) =>
           type.value > 0 && (
-            <div key={index} className="flex gap-2">
-              <span>{type.label}:</span>
-              <span className="text-base font-bold">{type.value}</span>
+            <div key={index} className="flex items-center justify-between">
+              <span>{type.label}</span>
+              <span>{type.value}</span>
             </div>
           ),
       )}
       {typesUsedCount > 1 && (
-        <div className="flex gap-2">
-          <span>合計タイプ数:</span>
-          <span className="text-base font-bold">{total}</span>
+        <div className="flex items-center justify-between pt-1">
+          <span>合計</span>
+          <span>{total}</span>
         </div>
       )}
     </div>

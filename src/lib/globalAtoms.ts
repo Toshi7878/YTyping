@@ -4,8 +4,12 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
+import { UAParser } from "ua-parser-js";
 
 const store = getDefaultStore();
+
+export const userAgentAtom = atom<UAParser | null>(null);
+export const useUserAgent = () => useAtomValue(userAgentAtom, { store });
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, {
   getOnInit: false,

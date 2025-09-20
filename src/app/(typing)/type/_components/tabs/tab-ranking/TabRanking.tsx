@@ -1,7 +1,5 @@
-import ClapedText from "@/components/shared/text/ClapedText";
 import ClearRateText from "@/components/shared/text/ClearRateText";
 import DateDistanceText from "@/components/shared/text/DateDistanceText";
-import RankText from "@/components/shared/text/RankText";
 import ResultToolTipText from "@/components/shared/text/ResultToolTipText";
 import { UserInputModeText } from "@/components/shared/text/UserInputModeText";
 import { CardWithContent } from "@/components/ui/card";
@@ -58,13 +56,10 @@ const TabRanking = ({ className }: { className?: string }) => {
           const rank = index + 1;
           const isThisPopoverOpen = openPopoverIndex === index;
 
-          const { data: session } = useSession();
-          const hasClap = !!result.clap.hasClaped && !!session;
-
           return (
             <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
               <PopoverTrigger asChild>
-                <RankText rank={rank}>#{rank}</RankText>
+                <span className={cn("ml-1", rank === 1 && "text-perfect outline-text")}>{rank}</span>
               </PopoverTrigger>
               <PopoverAnchor />
               <RankingPopoverContent
@@ -72,7 +67,7 @@ const TabRanking = ({ className }: { className?: string }) => {
                 userId={result.player.id}
                 resultUpdatedAt={result.updatedAt}
                 name={result.player.name ?? ""}
-                clapOptimisticState={{ hasClap, clapCount: result.clap.count }}
+                hasClaped={result.clap.hasClaped ?? false}
               />
             </Popover>
           );
@@ -129,17 +124,22 @@ const TabRanking = ({ className }: { className?: string }) => {
         header: () => <FaHandsClapping size={16} />,
         size: 15,
         cell: ({ row }) => {
-          const hasClap = !!row.original.clap.hasClaped && !!session;
+          const { data: session } = useSession();
+          const { clap } = row.original;
+          const hasClaped = clap.hasClaped && session ? true : false;
+
           return (
-            <div className="ml-1" title={hasClap ? "拍手を取り消す" : "拍手する"}>
-              <ClapedText clapOptimisticState={{ hasClap, clapCount: row.original.clap.count }} />
+            <div className="ml-1" title={clap.hasClaped ? "拍手を取り消す" : "拍手する"}>
+              <span className={cn(hasClaped && "outline-text text-yellow-500")}>{clap.count}</span>;{" "}
             </div>
           );
         },
         meta: {
           cellClassName: (cell) => {
-            const hasClap = !!cell.row.original.clap.hasClaped && !!session;
-            return cn(toggleClap.isPending ? "opacity-80" : "", hasClap ? "" : "hover:bg-perfect/20");
+            return cn(
+              toggleClap.isPending ? "opacity-80" : "",
+              cell.row.original.clap.hasClaped ? "" : "hover:bg-perfect/20",
+            );
           },
           onClick: (event, row) => {
             if (!session?.user?.id || toggleClap.isPending) return;
@@ -181,21 +181,18 @@ const TabRanking = ({ className }: { className?: string }) => {
           const totalType = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0);
           const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
           const isKanaFlickTyped = kanaType > 0 || flickType > 0;
-          const correctRate = ((totalType / (otherStatus.miss + totalType)) * 100).toFixed(1);
+          const missRate = ((totalType / (otherStatus.miss + totalType)) * 100).toFixed(1);
 
           return (
             <TooltipWrapper
               label={
                 <ResultToolTipText
-                  {...typeCounts}
-                  {...typeSpeed}
-                  correctRate={correctRate}
+                  typeCounts={typeCounts}
+                  otherStatus={otherStatus}
+                  missRate={missRate}
+                  typeSpeed={typeSpeed}
                   isPerfect={isPerfect}
                   isKanaFlickTyped={isKanaFlickTyped}
-                  lost={otherStatus.lost}
-                  miss={otherStatus.miss}
-                  maxCombo={otherStatus.maxCombo}
-                  defaultSpeed={otherStatus.playSpeed}
                   updatedAt={row.updatedAt}
                 />
               }

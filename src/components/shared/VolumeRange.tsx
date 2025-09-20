@@ -1,7 +1,6 @@
 "use client";
-import { useSetVolume, useVolumeState } from "@/lib/globalAtoms";
+import { useSetVolume, useUserAgent, useVolumeState } from "@/lib/globalAtoms";
 import { YTPlayer } from "@/types/global-types";
-import { useUserAgent } from "@/utils/useUserAgent";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
 import { Slider } from "../ui/slider";
 
@@ -12,7 +11,9 @@ interface VolumeRangeProps {
 export default function VolumeRange({ player, ...props }: VolumeRangeProps & React.HTMLAttributes<HTMLDivElement>) {
   const volume = useVolumeState();
   const setVolume = useSetVolume();
-  const { isMobile } = useUserAgent();
+  // const { isMobile } = useUserAgent();
+  const userAgent = useUserAgent();
+  const isMobile = userAgent?.getDevice().type === "mobile";
 
   if (isMobile) return null;
 

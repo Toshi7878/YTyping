@@ -6,7 +6,6 @@ import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/resultPlay";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import { useTRPC } from "@/trpc/provider";
-import { LocalClapState } from "@/types";
 import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -19,7 +18,7 @@ interface RankingMenuProps {
   userId: number;
   resultUpdatedAt: Date;
   name: string;
-  clapOptimisticState: LocalClapState;
+  hasClaped: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 const RankingPopoverContent = ({
@@ -27,7 +26,7 @@ const RankingPopoverContent = ({
   userId,
   resultUpdatedAt,
   name,
-  clapOptimisticState,
+  hasClaped,
   onOpenChange,
 }: RankingMenuProps) => {
   const { data: session } = useSession();
@@ -80,14 +79,14 @@ const RankingPopoverContent = ({
       >
         リプレイ再生
       </Button>
-      {session?.user.id ? (
+      {session ? (
         <Button
           variant="ghost"
           type="button"
           className="w-full"
-          onClick={() => toggleClap.mutate({ resultId, newState: !clapOptimisticState.hasClap })}
+          onClick={() => toggleClap.mutate({ resultId, newState: !hasClaped })}
         >
-          {clapOptimisticState.hasClap ? "拍手済み" : "記録に拍手"}
+          {hasClaped ? "拍手済み" : "記録に拍手"}
         </Button>
       ) : null}
     </PopoverContent>
