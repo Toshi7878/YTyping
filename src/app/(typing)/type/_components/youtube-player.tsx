@@ -1,6 +1,6 @@
 "use client";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
-import { useUserAgent } from "@/utils/useUserAgent";
+import { useUserAgent } from "@/lib/globalAtoms";
 import { useCallback, useEffect, useMemo } from "react";
 import YouTube, { YouTubeEvent } from "react-youtube";
 import { useWindowFocus } from "../../../../utils/hooks/windowFocus";
@@ -29,7 +29,7 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
   const ytSeekEvent = useYTSeekEvent();
   const windowFocus = useWindowFocus();
   const { addTimer, removeTimer } = useTimerRegistration();
-  const { isMobile } = useUserAgent();
+  const isMobile = useUserAgent()?.getDevice().type === "mobile";
 
   const readGameStateUtils = useReadGameUtilParams();
 

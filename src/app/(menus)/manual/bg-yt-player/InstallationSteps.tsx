@@ -2,7 +2,7 @@
 import { Separator } from "@/components/ui/separator";
 import TextLink from "@/components/ui/text-link";
 import { H6 } from "@/components/ui/typography";
-import { useUserAgent } from "@/utils/useUserAgent";
+import { useUserAgent } from "@/lib/globalAtoms";
 import type { Route } from "next";
 import type { ReactNode } from "react";
 
@@ -23,7 +23,7 @@ const browserLinks: Record<string, { url: Route; text: string }> = {
 
 const useBrowserLink = () => {
   const userAgent = useUserAgent();
-  const browserType = userAgent?.browser?.name;
+  const browserType = userAgent?.getBrowser().name;
   const browserLink = browserLinks[browserType as keyof typeof browserLinks];
   if (!browserLink) return browserLinks.Chrome;
 

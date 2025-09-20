@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUserAgent } from "@/utils/useUserAgent";
+import { useUserAgent } from "@/lib/globalAtoms";
 import { Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -23,7 +23,7 @@ interface HamburgerMenuProps {
 
 const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { data: session } = useSession();
-  const { isMobile } = useUserAgent();
+  const isMobile = useUserAgent()?.getDevice().type === "mobile";
 
   const menus = LEFT_MENU_LINK_ITEM.concat(LEFT_LINKS);
   const [, formAction] = useActionState(async () => {

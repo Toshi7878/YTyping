@@ -2,10 +2,10 @@
 import { Separator } from "@/components/ui/separator";
 import TextLink from "@/components/ui/text-link";
 import { H6 } from "@/components/ui/typography";
+import { useUserAgent } from "@/lib/globalAtoms";
 import preMidLinks from "@/public/images/manual/premid/premid-link.png";
 import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
 import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
-import { useUserAgent } from "@/utils/useUserAgent";
 import type { Route } from "next";
 import Image from "next/image";
 import type { ReactNode } from "react";
@@ -31,7 +31,7 @@ const browserLinks: Record<string, { url: Route; text: string }> = {
 
 const useBrowserLink = () => {
   const userAgent = useUserAgent();
-  const browserType = userAgent?.browser?.name;
+  const browserType = userAgent?.getBrowser().name;
   const browserLink = browserLinks[browserType as keyof typeof browserLinks];
   if (!browserLink) return browserLinks.Chrome;
 

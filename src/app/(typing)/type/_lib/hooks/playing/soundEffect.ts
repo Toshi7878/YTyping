@@ -1,20 +1,19 @@
-import { useReadVolume } from "@/lib/globalAtoms";
-import { useUserAgent } from "@/utils/useUserAgent";
+import { useReadVolume, useUserAgent } from "@/lib/globalAtoms";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
 sound.disableAutoPause = true;
 
 const manifest = [
-  { alias: "type", src: "/wav/key_type.wav" },
-  { alias: "miss", src: "/wav/miss_type.wav" },
-  { alias: "lineClear", src: "/wav/clear_type.wav" },
+  { alias: "type", src: "/wav/type.wav" },
+  { alias: "miss", src: "/wav/miss.wav" },
+  { alias: "lineClear", src: "/wav/completed-type.wav" },
 ];
 
 export const useSoundEffect = () => {
   const readTypingOptions = useUserTypingOptionsStateRef();
   const readVolume = useReadVolume();
-  const { isMobile } = useUserAgent();
+  const isMobile = useUserAgent()?.getDevice().type === "mobile";
 
   useEffect(() => {
     manifest.forEach(({ alias, src }) => {
