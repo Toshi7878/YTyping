@@ -23,9 +23,10 @@ import { useUpdateEndTime } from "../_lib/hooks/useUpdateEndTime";
 
 interface YouTubePlayerProps {
   className: string;
+  videoId?: string;
 }
 
-const YouTubePlayer = function ({ className }: YouTubePlayerProps) {
+const YouTubePlayer = function ({ className, videoId: mapVideoId }: YouTubePlayerProps) {
   const videoId = useVideoIdState();
   const onReady = useYTReadyEvent();
   const onPlay = useYTPlayEvent();
@@ -83,9 +84,9 @@ const YouTubePlayer = function ({ className }: YouTubePlayerProps) {
   );
 
   useEffect(() => {
-    if (!isYTReady && !isYTStarted) return;
+    if ((!isYTReady && !isYTStarted) || videoId === mapVideoId) return;
     updateEndTime(readPlayer());
-  }, [isYTReady, isYTStarted, readPlayer]);
+  }, [isYTReady, isYTStarted, readPlayer, videoId, updateEndTime, mapVideoId]);
 
   const handleStateChange = useCallback(
     (event) => {

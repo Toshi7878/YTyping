@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
   return (
     <EditProvider>
-      <Content />
+      <Content videoId={mapInfo.videoId} />
     </EditProvider>
   );
 }

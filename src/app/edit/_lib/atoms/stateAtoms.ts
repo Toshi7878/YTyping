@@ -77,7 +77,7 @@ const ytPlayerStatusAtom = atomWithReset({
   changingVideo: false,
 });
 
-const videoIdAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("videoId"));
+export const videoIdAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("videoId"));
 const readiedAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("readied"));
 const startedAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("started"));
 const playingAtom = focusAtom(ytPlayerStatusAtom, (optic) => optic.prop("playing"));

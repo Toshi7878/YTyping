@@ -16,12 +16,7 @@ export const usePathChangeAtomReset = () => {
   return () => {
     setEditUtils(RESET);
     setYTSpeed(1);
-    setYtPlayerStatus((prev) => ({
-      ...prev,
-      playing: false,
-      readied: false,
-      started: false,
-    }));
+    setYtPlayerStatus(RESET);
     mapDispatch({ type: "reset" });
     setSelectLine({ type: "reset" });
     historyDispatch({ type: "reset" });
