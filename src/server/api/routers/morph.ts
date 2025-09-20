@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import { FixWordEditLogs, MorphConvertKanaDic } from "@/server/drizzle/schema";
+import { FixWordEditLogs, readingConversionDic } from "@/server/drizzle/schema";
 import { eq } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure } from "../trpc";
@@ -16,20 +16,20 @@ export const morphConvertRouter = {
   getCustomDic: protectedProcedure.query(async ({ ctx }) => {
     const customDic = await ctx.db
       .select({
-        surface: MorphConvertKanaDic.surface,
-        reading: MorphConvertKanaDic.reading,
-        type: MorphConvertKanaDic.type,
+        surface: readingConversionDic.surface,
+        reading: readingConversionDic.reading,
+        type: readingConversionDic.type,
       })
-      .from(MorphConvertKanaDic)
-      .where(eq(MorphConvertKanaDic.type, "DICTIONARY"));
+      .from(readingConversionDic)
+      .where(eq(readingConversionDic.type, "DICTIONARY"));
     const customRegexDic = await ctx.db
       .select({
-        surface: MorphConvertKanaDic.surface,
-        reading: MorphConvertKanaDic.reading,
-        type: MorphConvertKanaDic.type,
+        surface: readingConversionDic.surface,
+        reading: readingConversionDic.reading,
+        type: readingConversionDic.type,
       })
-      .from(MorphConvertKanaDic)
-      .where(eq(MorphConvertKanaDic.type, "REGEX"));
+      .from(readingConversionDic)
+      .where(eq(readingConversionDic.type, "REGEX"));
 
     return { customDic, customRegexDic };
   }),

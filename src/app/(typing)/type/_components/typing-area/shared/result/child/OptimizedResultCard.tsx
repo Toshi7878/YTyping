@@ -42,7 +42,7 @@ function OptimizedResultCard({
 
   if (!lineResult) return;
 
-  const lineSpeed = lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
+  const lineSpeed = lineResult.status.sp > speedData.minPlaySpeed ? lineResult.status.sp : speedData.minPlaySpeed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w["r"][0]).join("") : lineKanaWord;

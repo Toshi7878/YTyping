@@ -58,7 +58,7 @@ const resultSelectSchema = () => {
         numType: ResultStatuses.numType,
       },
       otherStatus: {
-        playSpeed: ResultStatuses.defaultSpeed,
+        playSpeed: ResultStatuses.minPlaySpeed,
         miss: ResultStatuses.miss,
         lost: ResultStatuses.lost,
         maxCombo: ResultStatuses.maxCombo,
@@ -372,8 +372,8 @@ function generateClearRateFilter({ minClearRate, maxClearRate }: { minClearRate:
 function generatePlaySpeedFilter({ minPlaySpeed, maxPlaySpeed }: { minPlaySpeed: number; maxPlaySpeed: number }) {
   if (maxPlaySpeed === 0) return [];
   const conds: SQL<unknown>[] = [];
-  if (typeof minPlaySpeed === "number") conds.push(gte(ResultStatuses.defaultSpeed, minPlaySpeed));
-  if (typeof maxPlaySpeed === "number") conds.push(lte(ResultStatuses.defaultSpeed, maxPlaySpeed));
+  if (typeof minPlaySpeed === "number") conds.push(gte(ResultStatuses.minPlaySpeed, minPlaySpeed));
+  if (typeof maxPlaySpeed === "number") conds.push(lte(ResultStatuses.minPlaySpeed, maxPlaySpeed));
   return conds;
 }
 

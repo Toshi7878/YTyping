@@ -64,7 +64,7 @@ export const useYTPlayEvent = () => {
     const movieDuration = readPlayer().getDuration();
     writeYTStatus({ movieDuration });
 
-    const { defaultSpeed } = readPlaySpeed();
+    const { minPlaySpeed } = readPlaySpeed();
     const { isLoadingOverlay } = readGameStateUtils();
 
     if (isLoadingOverlay) {
@@ -73,7 +73,7 @@ export const useYTPlayEvent = () => {
     }
 
     if (scene !== "replay") {
-      if (1 > defaultSpeed) {
+      if (1 > minPlaySpeed) {
         setScene("practice");
       } else if (scene === "ready") {
         setScene("play");

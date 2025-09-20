@@ -6,7 +6,7 @@ import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { H5 } from "@/components/ui/typography";
 
 const UserSoundEffectCheckbox = () => {
-  const { typeSound, missSound, lineCompletedSound } = useUserTypingOptionsState();
+  const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
   const { readPlayer } = usePlayer();
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { typeSoundPlay, missSoundPlay, clearTypeSoundPlay } = useSoundEffect();
@@ -38,10 +38,10 @@ const UserSoundEffectCheckbox = () => {
         />
         <LabeledCheckbox
           label="打ち切り音"
-          defaultChecked={lineCompletedSound}
+          defaultChecked={completedTypeSound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
-              lineCompletedSound: value,
+              completedTypeSound: value,
             });
             if (value) clearTypeSoundPlay();
           }}

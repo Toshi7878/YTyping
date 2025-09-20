@@ -41,7 +41,7 @@ const EndText = () => {
           </>
         )}
       </span>
-      {speed.defaultSpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
+      {speed.minPlaySpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
     </div>
   );
 };

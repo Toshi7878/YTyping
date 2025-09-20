@@ -58,7 +58,7 @@ export const DEFAULT_TYPING_OPTIONS = {
   romaWordTopPosition: 0,
   typeSound: false,
   missSound: false,
-  lineCompletedSound: false,
+  completedTypeSound: false,
   nextDisplay: "LYRICS" as NextDisplay,
   lineCompletedDisplay: "NEXT_WORD" as LineCompletedDisplay,
   timeOffsetAdjustKey: "CTRL_LEFT_RIGHT" as TimeOffsetAdjustKey,

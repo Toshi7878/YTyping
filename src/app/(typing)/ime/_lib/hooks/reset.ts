@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
 import { useInputTextarea, usePlayer } from "../atoms/refAtoms";
-import { usePlaySpeedReducer } from "../atoms/speedReducerAtoms";
 import {
   useInitWordResults,
   useReadScene,
@@ -51,7 +50,6 @@ export const useInitializePlayScene = () => {
 };
 
 export const usePathChangeAtomReset = () => {
-  const dispatchSpeed = usePlaySpeedReducer();
   const resetGameUtils = useResetGameUtilParams();
   const setScene = useSetScene();
   const setMap = useSetMap();
@@ -63,7 +61,6 @@ export const usePathChangeAtomReset = () => {
   return () => {
     resetGameUtils();
     writePlayer(null);
-    dispatchSpeed({ type: "reset" });
     setMap(RESET);
     setScene(RESET);
     setNextDisplayLine([]);

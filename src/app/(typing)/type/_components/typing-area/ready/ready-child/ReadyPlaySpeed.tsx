@@ -8,21 +8,21 @@ interface ReadyPlaySpeedProps {
   speedDownButtonRef: React.RefObject<HTMLButtonElement>;
 }
 const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
-  const { defaultSpeed } = usePlaySpeedState();
+  const { minPlaySpeed } = usePlaySpeedState();
 
   return (
     <TooltipWrapper
       label="1.00倍速未満の場合は練習モードになります。"
       side="top"
       delayDuration={0}
-      open={defaultSpeed < 1}
+      open={minPlaySpeed < 1}
       sideOffset={-20}
     >
       <div className="border-border flex items-center rounded-lg border border-solid px-8 py-6 shadow-md md:py-3">
         <SpeedChangeButton buttonRef={props.speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} type="down" />
 
         <div className="mx-8 text-3xl font-bold select-none md:text-4xl">
-          <span id="speed">{defaultSpeed.toFixed(2)}</span>
+          <span id="speed">{minPlaySpeed.toFixed(2)}</span>
           倍速
         </div>
 

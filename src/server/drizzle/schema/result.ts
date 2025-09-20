@@ -39,7 +39,7 @@ export const ResultStatuses = pgTable(
       .primaryKey()
       .references(() => Results.id, { onDelete: "cascade" }),
     score: integer("score").notNull().default(0),
-    defaultSpeed: real("default_speed").notNull().default(1),
+    minPlaySpeed: real("min_play_speed").notNull().default(1),
     kpm: integer("kpm").notNull().default(0),
     rkpm: integer("rkpm").notNull().default(0),
     kanaToRomaKpm: integer("kana_to_roma_kpm").notNull().default(0),
@@ -56,7 +56,7 @@ export const ResultStatuses = pgTable(
     maxCombo: integer("max_combo").notNull().default(0),
     clearRate: real("clear_rate").notNull().default(0),
   },
-  (t) => [check("default_speed_check", sql`${t.defaultSpeed} IN (0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00)`)],
+  (t) => [check("valid_play_speed_values", sql`${t.minPlaySpeed} IN (0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00)`)],
 );
 
 export const ResultClaps = pgTable(

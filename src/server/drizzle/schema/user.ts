@@ -59,7 +59,7 @@ export const UserTypingOptions = pgTable("user_typing_options", {
   romaWordSpacing: real("roma_word_spacing").notNull().default(DEFAULT_TYPING_OPTIONS.romaWordSpacing),
   typeSound: boolean("type_sound").notNull().default(DEFAULT_TYPING_OPTIONS.typeSound),
   missSound: boolean("miss_sound").notNull().default(DEFAULT_TYPING_OPTIONS.missSound),
-  lineCompletedSound: boolean("line_completed_sound").notNull().default(DEFAULT_TYPING_OPTIONS.lineCompletedSound),
+  completedTypeSound: boolean("completed_type_sound").notNull().default(DEFAULT_TYPING_OPTIONS.completedTypeSound),
   nextDisplay: nextDisplayEnum("next_display").notNull().default(DEFAULT_TYPING_OPTIONS.nextDisplay),
   lineCompletedDisplay: lineCompletedDisplayEnum("line_completed_display")
     .notNull()

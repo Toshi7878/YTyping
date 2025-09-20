@@ -39,7 +39,7 @@ const PracticeLineCard = () => {
   const maxLinePoint = lineData.notes.r * CHAR_POINT;
   const lineKanaWord = lineData.word.map((w) => w["k"]).join("");
   const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
-  const lineSpeed = lineResult.status.sp > speedData.defaultSpeed ? lineResult.status.sp : speedData.defaultSpeed;
+  const lineSpeed = lineResult.status.sp > speedData.minPlaySpeed ? lineResult.status.sp : speedData.minPlaySpeed;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
   //ユーザーのLineリザルトデータ

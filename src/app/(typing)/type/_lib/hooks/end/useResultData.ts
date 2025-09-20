@@ -38,7 +38,7 @@ export const useResultData = () => {
     } = readStatus();
     const {} = readStatus();
     const lineResults = readAllLineResults();
-    const minSp = getMinSpeed(lineResults);
+    const minPlaySpeed = getMinSpeed(lineResults);
     const rkpmTime = totalTypeTime - totalLatency;
     const typingStatus = readTypingStatus();
 
@@ -56,7 +56,7 @@ export const useResultData = () => {
       symbolType,
       numType,
       maxCombo,
-      defaultSpeed: minSp,
+      minPlaySpeed: minPlaySpeed.toFixed(2),
       kanaToRomaKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
       kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
       clearRate: Number(Math.max(0, clearRate).toFixed(1)),
