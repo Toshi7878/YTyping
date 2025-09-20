@@ -1,6 +1,7 @@
 import authConfig from "@/config/auth.config";
 import { env } from "@/env";
 import { eq } from "drizzle-orm";
+import md5 from "md5";
 import NextAuth from "next-auth";
 
 export const { auth, handlers, signIn } = NextAuth({
@@ -15,7 +16,6 @@ export const { auth, handlers, signIn } = NextAuth({
     async signIn({ user, account, profile }) {
       if (!user?.email) return false;
 
-      const md5 = (await import("md5")).default;
       const email_hash = md5(user.email).toString();
       const {
         db: drizzleDb,
@@ -81,7 +81,6 @@ export const { auth, handlers, signIn } = NextAuth({
       }
       if (!user || !user?.email) return token;
 
-      const md5 = (await import("md5")).default;
       const email_hash = md5(user.email).toString();
       const {
         db,
