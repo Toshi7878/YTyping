@@ -49,7 +49,7 @@ export const userProfileRouter = {
     return input.newName;
   }),
 
-  isNameAvailable: protectedProcedure.input(z.string().min(1)).mutation(async ({ input, ctx }) => {
+  checkUsernameAvailability: protectedProcedure.input(z.string().min(1)).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const existing = await db.query.Users.findFirst({
       columns: { name: true },
@@ -59,7 +59,7 @@ export const userProfileRouter = {
     if (existing) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: "Name already in use",
+        message: "この名前は既に使用されています",
       });
     }
 

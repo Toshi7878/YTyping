@@ -6,7 +6,7 @@ import { useDebounce } from "@/utils/hooks/useDebounce";
 import { UseMutationResult } from "@tanstack/react-query";
 import { VariantProps } from "class-variance-authority";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import { FieldError, FieldErrorsImpl, Merge, useFormContext } from "react-hook-form";
+import { ControllerRenderProps, FieldError, FieldErrorsImpl, Merge, useFormContext } from "react-hook-form";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form";
 import { FloatingLabelInput } from "./floating-label-input";
 
@@ -19,6 +19,7 @@ interface InputFormFieldProps {
   variant?: VariantProps<typeof inputVariants>["variant"];
   size?: VariantProps<typeof inputVariants>["size"];
   disabledFormMessage?: boolean;
+  onChange?: ControllerRenderProps["onChange"];
 }
 
 const InputFormField = ({
@@ -29,8 +30,9 @@ const InputFormField = ({
   className,
   size = "default",
   disabledFormMessage = false,
+  onChange,
   ...inputProps
-}: InputFormFieldProps & Omit<React.ComponentProps<"input">, "size">) => {
+}: InputFormFieldProps & Omit<React.ComponentProps<typeof Input>, "size" | keyof ControllerRenderProps>) => {
   const { control } = useFormContext();
 
   return (
@@ -46,7 +48,16 @@ const InputFormField = ({
             </FormLabel>
           )}
           <FormControl className={cn(className)}>
-            <Input {...field} {...inputProps} variant={fieldState.error ? "error" : "default"} size={size} />
+            <Input
+              {...inputProps}
+              {...field}
+              variant={fieldState.error ? "error" : "default"}
+              size={size}
+              onChange={(e) => {
+                field.onChange(e);
+                onChange?.(e);
+              }}
+            />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           {!disabledFormMessage && <FormMessage />}
@@ -92,22 +103,22 @@ const MutationInputFormField = ({
           />
         </div>
       }
-      onChangeCapture={(e) => {
-        props.onChangeCapture?.(e);
+      disabledFormMessage={true}
+      {...props}
+      onChange={(e) => {
+        props.onChange?.(e);
         mutation.reset();
         clearErrors(props.name);
         cancel();
         const value = e.currentTarget.value;
 
         debounce(async () => {
-          if (isDirty && !errors[props.name] && value) {
+          if (!errors[props.name] && value) {
             await mutation.mutateAsync(value);
             onSuccess?.(value);
           }
         });
       }}
-      disabledFormMessage={true}
-      {...props}
     />
   );
 };

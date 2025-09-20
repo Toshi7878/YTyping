@@ -53,7 +53,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   );
 
   const checkNameAvailability = useMutation(
-    trpc.userProfile.isNameAvailable.mutationOptions({
+    trpc.userProfile.checkUsernameAvailability.mutationOptions({
       onError: (error) => {
         if (error.data?.code === "CONFLICT") {
           setError("newName", { message: error.message });
