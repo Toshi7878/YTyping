@@ -33,8 +33,8 @@ const ProfileSettingCard = async () => {
       <CardContent>
         <div className="flex w-full flex-col gap-4">
           <UserNameInputForm />
-          <FingerChartUrlInput url={userProfile.fingerChartUrl} />
-          <KeyboardInput keyboard={userProfile.keyboard} />
+          <FingerChartUrlInput url={userProfile?.fingerChartUrl ?? ""} />
+          <KeyboardInput keyboard={userProfile?.keyboard ?? ""} />
         </div>
       </CardContent>
       <CardFooter />
