@@ -67,7 +67,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
         previewTime: mapPreviewTime,
         previewSpeed: mapPreviewSpeed ?? 1,
       }));
-      player?.cueVideoById({
+      await player?.cueVideoById({
         videoId: mapVideoId,
         startSeconds: mapPreviewTime,
         suggestedQuality: "small",
