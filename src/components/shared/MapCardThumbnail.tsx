@@ -1,3 +1,4 @@
+import { useSetPreviewIsHidden } from "@/app/_components/preview-youtube-player";
 import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
 import { MapListItem } from "@/server/api/routers/map-list";
@@ -58,6 +59,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
   const { videoId, player } = usePreviewVideoState();
   const setPreviewVideo = useSetPreviewVideo();
   const [isTouchMove, setIsTouchMove] = useState(false);
+  const setPreviewIsHidden = useSetPreviewIsHidden();
 
   const previewYouTube = async () => {
     if (videoId !== mapVideoId) {
@@ -77,6 +79,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
       // player?.playVideo();
     } else {
       player?.pauseVideo();
+      setPreviewIsHidden(true);
       setPreviewVideo((prev) => ({
         ...prev,
         videoId: "",
@@ -109,7 +112,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
       )}
       onClick={previewYouTube}
       onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      // onTouchEnd={handleTouchEnd}
     >
       {isActive ? <FaPause color="white" size={35} /> : <FaPlay color="white" size={35} />}
     </div>
