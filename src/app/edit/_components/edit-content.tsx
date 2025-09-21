@@ -1,5 +1,5 @@
 import MapTable from "./map-table/map-table";
-import EditTabs from "./tabs/tabs";
+import EditTabs from "./tabs/edit-tabs";
 import { TimeRangeAndSpeedChange } from "./time-range-and-speed-change";
 import YouTubePlayer from "./youtube-player";
 
