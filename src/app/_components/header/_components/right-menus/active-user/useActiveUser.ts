@@ -92,7 +92,7 @@ export default function useActiveUsers() {
       ensureChannel();
       inactivityTimer = window.setTimeout(() => {
         if (currentChannel) {
-          currentChannel.unsubscribe();
+          void currentChannel.unsubscribe();
           currentChannel = null;
         }
       }, 60 * 1000);
@@ -107,7 +107,7 @@ export default function useActiveUsers() {
       activityEvents.forEach((event) => window.removeEventListener(event, resetInactivityTimer));
       if (inactivityTimer) clearTimeout(inactivityTimer);
       if (currentChannel) {
-        currentChannel.unsubscribe();
+        void currentChannel.unsubscribe();
       }
     };
   }, [

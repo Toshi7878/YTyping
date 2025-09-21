@@ -136,7 +136,7 @@ const MapInfoForm = () => {
         if (!value || !newCreateVideoId) return;
 
         debounce(() => {
-          backupMapInfo({
+          void backupMapInfo({
             videoId: newCreateVideoId,
             title: value.title || "",
             artistName: value.artistName || "",
@@ -369,13 +369,13 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
 
         if (data.id && mapId === undefined) {
           window.history.replaceState(null, "", `/edit/${data.id}`);
-          clearBackupMapWithInfo();
+          void clearBackupMapWithInfo();
         }
         form.reset(form.getValues());
         setCanUpload(false);
         toast.success(data.title);
       },
-      onError: (error) => {
+      onError: async (error) => {
         switch (error.data?.code) {
           case "FORBIDDEN":
             toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" });
@@ -385,7 +385,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
         }
 
         if (newCreateVideoId) {
-          backupMapInfo({
+          await backupMapInfo({
             videoId: newCreateVideoId,
             title: form.getValues("title"),
             artistName: form.getValues("artistName"),
@@ -395,7 +395,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
             previewTime: form.getValues("previewTime"),
           });
 
-          backupMap({
+          void backupMap({
             videoId: newCreateVideoId,
             map: readMap(),
           });

@@ -63,7 +63,7 @@ function Content({ mapInfo }: ContentProps) {
 
   useEffect(() => {
     if (mapData) {
-      loadMap(mapData);
+      void loadMap(mapData);
     } else {
       showLoading({ message: "譜面読み込み中..." });
     }
@@ -71,7 +71,7 @@ function Content({ mapInfo }: ContentProps) {
 
   useEffect(() => {
     return () => {
-      updateTypingStats();
+      void updateTypingStats();
       pathChangeAtomReset();
       hideLoading();
     };

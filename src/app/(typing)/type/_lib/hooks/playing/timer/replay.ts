@@ -87,10 +87,10 @@ const usePlayBackKey = () => {
     } else if (option) {
       switch (option) {
         case "roma":
-          inputModeChange("roma");
+          void inputModeChange("roma");
           break;
         case "kana":
-          inputModeChange("kana");
+          void inputModeChange("kana");
           break;
         case "speedChange":
           dispatchSpeed({ type: "toggle" });
@@ -146,7 +146,7 @@ export const useLineReplayUpdate = () => {
       return;
     }
 
-    inputModeChange(lineResult.status.mode);
+    void inputModeChange(lineResult.status.mode);
 
     writeGameUtilRefParams({ replayKeyCount: 0 });
 

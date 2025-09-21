@@ -32,7 +32,7 @@ const SearchInputs = () => {
     }
 
     setIsSearching(true);
-    window.history.replaceState(null, '', `?${updatedParams}`);
+    window.history.replaceState(null, "", `?${updatedParams}`);
   };
 
   return (
@@ -40,7 +40,7 @@ const SearchInputs = () => {
       className="flex items-center gap-3 select-none"
       onSubmit={(e) => {
         e.preventDefault();
-        handleSearch();
+        void handleSearch();
       }}
     >
       <Input

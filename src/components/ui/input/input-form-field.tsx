@@ -167,6 +167,7 @@ interface FloatingLabelInputFormFieldProps {
   className?: string;
   variant?: VariantProps<typeof inputVariants>["variant"];
   size?: VariantProps<typeof inputVariants>["size"];
+  disabled?: boolean;
   onChange?: ControllerRenderProps["onChange"];
   disabledFormMessage?: boolean;
 }
@@ -179,6 +180,7 @@ const FloatingLabelInputFormField = ({
   size = "default",
   disabledFormMessage = false,
   onChange,
+  disabled = false,
   ...inputProps
 }: FloatingLabelInputFormFieldProps & Omit<ComponentProps<typeof Input>, "size" | keyof ControllerRenderProps>) => {
   const { control } = useFormContext();
@@ -187,6 +189,7 @@ const FloatingLabelInputFormField = ({
     <FormField
       control={control}
       name={name}
+      disabled={disabled}
       render={({ field, fieldState }) => (
         <FormItem className="w-full">
           <FormControl className={cn(className)}>

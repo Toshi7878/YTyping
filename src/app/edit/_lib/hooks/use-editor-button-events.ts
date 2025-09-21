@@ -63,7 +63,7 @@ export const useLineAddButtonEvent = () => {
 
     if (newVideoId) {
       const map = readMap();
-      backupMap({ videoId: newVideoId, map });
+      void backupMap({ videoId: newVideoId, map });
     }
 
     setCanUpload(true);
@@ -82,7 +82,7 @@ export const useLineAddButtonEvent = () => {
     deleteTopPhrase(lyricsCopy);
     const { manyPhraseText } = readEditUtils();
     const topPhrase = manyPhraseText.split("\n")[0];
-    pickupTopPhrase(topPhrase);
+    void pickupTopPhrase(topPhrase);
   };
 };
 
@@ -151,7 +151,7 @@ export const useLineUpdateButtonEvent = () => {
 
     if (newVideoId) {
       const map = readMap();
-      backupMap({ videoId: newVideoId, map });
+      void backupMap({ videoId: newVideoId, map });
     }
 
     mapDispatch({ type: "update", payload: newLine, index: selectLineIndex });
@@ -221,7 +221,7 @@ export const useLineDelete = () => {
 
     if (newVideoId) {
       const map = readMap();
-      backupMap({ videoId: newVideoId, map });
+      void backupMap({ videoId: newVideoId, map });
     }
   };
 };

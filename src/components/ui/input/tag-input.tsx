@@ -163,12 +163,12 @@ const TagInputFormField = ({
               onTagAdd={(tag) => {
                 const newTags = [...field.value, tag];
                 setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
-                trigger(name);
+                void trigger(name);
               }}
               onTagRemove={(index) => {
                 const newTags = field.value.filter((_, i) => i !== index);
                 setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
-                trigger(name);
+                void trigger(name);
               }}
               label={label}
               maxTags={maxTags}

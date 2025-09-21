@@ -158,9 +158,9 @@ const usePlayingShortcutKey = () => {
         if (typingOptions.InputModeToggleKey === "ALT_KANA") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
-              inputModeChange("kana");
+              void inputModeChange("kana");
             } else {
-              inputModeChange("roma");
+              void inputModeChange("roma");
             }
           }
         }
@@ -177,9 +177,9 @@ const usePlayingShortcutKey = () => {
         if (typingOptions.InputModeToggleKey === "TAB") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
-              inputModeChange("kana");
+              void inputModeChange("kana");
             } else {
-              inputModeChange("roma");
+              void inputModeChange("roma");
             }
           }
         } else {

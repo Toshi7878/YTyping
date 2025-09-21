@@ -95,7 +95,7 @@ export const useUndoRedo = () => {
           deleteTopPhrase(data.lyrics);
           const { manyPhraseText } = readEditUtils();
           const topPhrase = manyPhraseText.split("\n")[0];
-          pickupTopPhrase(topPhrase);
+          void pickupTopPhrase(topPhrase);
           break;
         case "update":
           mapDispatch({ type: "update", payload: data.new, index: data.lineIndex });

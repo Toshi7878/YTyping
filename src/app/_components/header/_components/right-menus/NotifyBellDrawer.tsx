@@ -25,7 +25,7 @@ export default function NotifyBellDrawer() {
   const postUserNotificationRead = useMutation(
     trpc.notification.postUserNotificationRead.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries(trpc.notification.hasUnread.queryFilter());
+        void queryClient.invalidateQueries(trpc.notification.hasUnread.queryFilter());
       },
     }),
   );
@@ -64,7 +64,7 @@ const NotifyDrawerInnerContent = () => {
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      fetchNextPage();
+      void fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage]);
 

@@ -29,23 +29,23 @@ export const useSoundEffect = () => {
 
   const clearTypeSoundPlay = () => {
     const volume = (isMobile ? 100 : readVolume()) / 100;
-    sound.play("lineClear", { volume });
+    void sound.play("lineClear", { volume });
   };
 
   const typeSoundPlay = () => {
     const volume = (isMobile ? 100 : readVolume()) / 100;
-    sound.play("type", { volume, start: 0.005 });
+    void sound.play("type", { volume, start: 0.005 });
   };
 
   const missSoundPlay = () => {
     const volume = (isMobile ? 100 : readVolume()) / 100;
-    sound.play("miss", { volume });
+    void sound.play("miss", { volume });
   };
 
   const iosActiveSound = () => {
-    sound.play("lineClear", { volume: 0 });
-    sound.play("type", { volume: 0 });
-    sound.play("miss", { volume: 0 });
+    void sound.play("lineClear", { volume: 0 });
+    void sound.play("type", { volume: 0 });
+    void sound.play("miss", { volume: 0 });
   };
   const triggerTypingSound = ({ isCompleted }: { isCompleted: boolean }) => {
     const typingOptions = readTypingOptions();

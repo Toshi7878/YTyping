@@ -53,7 +53,7 @@ const SearchInputs = () => {
         onChange={(e) => setKeyword((prev) => ({ ...prev, mapKeyWord: e.target.value }))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            handleSearch();
+            void handleSearch();
           }
         }}
       />
@@ -64,7 +64,7 @@ const SearchInputs = () => {
         onChange={(e) => setKeyword((prev) => ({ ...prev, userName: e.target.value }))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            handleSearch();
+            void handleSearch();
           }
         }}
       />

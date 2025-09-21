@@ -108,7 +108,8 @@ export default [
       "object-shorthand": "error",
       "prefer-template": "error",
       "import/newline-after-import": ["error", { count: 1 }],
-
+      "@typescript-eslint/no-floating-promises": "error",
+      // "@typescript-eslint/no-misused-promises": "error",
       "no-restricted-imports": [
         "error",
         {

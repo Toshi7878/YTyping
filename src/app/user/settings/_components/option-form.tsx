@@ -29,7 +29,7 @@ export const OptionForm = ({ userOptions }: OptionFormProps) => {
   const sendUserOption = useMutation(
     trpc.userOption.updateOptions.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries(trpc.userOption.getUserOptions.queryOptions());
+        void queryClient.invalidateQueries(trpc.userOption.getUserOptions.queryOptions());
       },
     }),
   );
