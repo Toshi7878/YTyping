@@ -35,11 +35,8 @@ const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) =
 
   useEffect(() => {
     addTimer();
-
-    return () => {
-      removeTimer();
-    };
-  }, [addTimer, removeTimer]);
+    return () => removeTimer();
+  }, []);
 
   const handleStateChange = (event: YouTubeEvent) => {
     if (document.activeElement instanceof HTMLIFrameElement && document.activeElement.tagName === "IFRAME") {

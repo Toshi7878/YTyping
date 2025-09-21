@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { FixWordEditLogs, ReadingConversionDict } from "@/server/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure } from "../trpc";
 
@@ -21,7 +21,9 @@ export const morphConvertRouter = {
         type: ReadingConversionDict.type,
       })
       .from(ReadingConversionDict)
-      .where(eq(ReadingConversionDict.type, "DICTIONARY"));
+      .where(eq(ReadingConversionDict.type, "DICTIONARY"))
+      .orderBy(desc(sql`char_length(${ReadingConversionDict.surface})`));
+
     const customRegexDic = await ctx.db
       .select({
         surface: ReadingConversionDict.surface,
@@ -29,7 +31,8 @@ export const morphConvertRouter = {
         type: ReadingConversionDict.type,
       })
       .from(ReadingConversionDict)
-      .where(eq(ReadingConversionDict.type, "REGEX"));
+      .where(eq(ReadingConversionDict.type, "REGEX"))
+      .orderBy(desc(sql`char_length(${ReadingConversionDict.surface})`));
 
     return { customDic, customRegexDic };
   }),

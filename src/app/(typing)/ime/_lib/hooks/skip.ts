@@ -18,7 +18,7 @@ export const useSkip = () => {
 
     const nextStartTime = Number(nextLine[0]["time"]);
 
-    const seekTime = nextStartTime - SKIP_BUFFER_TIME + SKIP_BUFFER_TIME;
+    const seekTime = nextStartTime - SKIP_BUFFER_TIME;
 
     readPlayer().seekTo(seekTime, true);
 

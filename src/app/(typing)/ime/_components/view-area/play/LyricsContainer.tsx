@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import type { HTMLAttributes} from "react";
-import { useEffect, useRef } from "react";
+import type { HTMLAttributes } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { useLyricsContainer } from "../../../_lib/atoms/refAtoms";
 import {
   useCountState,
@@ -42,23 +42,18 @@ const Lyrics = () => {
         <div key={index}>
           <div className="shadow-layer">
             {line.map((chunk) => (
-              <>
-                <span key={String(chunk.time)} className="text-transparent">
-                  {chunk.word}
-                </span>{" "}
-              </>
+              <Fragment key={String(chunk.time)}>
+                <span className="text-transparent">{chunk.word}</span>{" "}
+              </Fragment>
             ))}
           </div>
           <div className="wipe-layer">
             {line.map((chunk) => (
-              <>
-                <span
-                  key={String(chunk.time)}
-                  style={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}
-                >
+              <Fragment key={String(chunk.time)}>
+                <span style={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}>
                   {chunk.word}
                 </span>{" "}
-              </>
+              </Fragment>
             ))}
           </div>
         </div>
@@ -102,9 +97,9 @@ const NextLyrics = () => {
             style={{ display: "inline" }}
           >
             {nextDisplayLine.map((chunk) => (
-              <>
-                <span key={String(chunk.time)}>{chunk.word}</span>{" "}
-              </>
+              <Fragment key={String(chunk.time)}>
+                <span>{chunk.word}</span>{" "}
+              </Fragment>
             ))}
           </motion.div>
         )}

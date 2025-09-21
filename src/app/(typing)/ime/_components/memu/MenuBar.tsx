@@ -28,8 +28,8 @@ const MenuBar = () => {
   return (
     <>
       <div id="menu_bar" className="bg-card">
-        <div className="mx-4 flex flex-col justify-between lg:flex-row">
-          <div className="flex flex-col lg:flex-row">
+        <div className="mx-4 flex flex-col items-center justify-between lg:flex-row">
+          <div className="flex flex-col items-center lg:flex-row">
             <VolumeRange player={readPlayer()} />
             <MenuButton disabled={true} image={metronome} title="倍速" />
           </div>
