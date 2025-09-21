@@ -2,7 +2,4 @@ packages:
   - ./
 
 onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-
-overrides:
-  esbuild@<=0.24.2: '>=0.25.0'
+  - "@tailwindcss/oxide"
