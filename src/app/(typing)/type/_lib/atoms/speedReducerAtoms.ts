@@ -33,13 +33,13 @@ const speedReducerAtom = atom(
   (get, set, { type, payload: value }: { type: SpeedActionType; payload?: YouTubeSpeed }) => {
     const { playSpeed, minPlaySpeed } = get(speedBaseAtom);
     const scene = get(sceneAtom);
-    const isUpdateDefaultSp = scene !== "play";
+    const isUpdateMinSpeed = scene !== "play";
 
     switch (type) {
       case "up":
         if (playSpeed < 2) {
           set(speedBaseAtom, {
-            minPlaySpeed: isUpdateDefaultSp ? minPlaySpeed + 0.25 : minPlaySpeed,
+            minPlaySpeed: isUpdateMinSpeed ? minPlaySpeed + 0.25 : minPlaySpeed,
             playSpeed: playSpeed + 0.25,
           });
         }
@@ -47,7 +47,7 @@ const speedReducerAtom = atom(
       case "down":
         if (playSpeed > 0.25) {
           set(speedBaseAtom, {
-            minPlaySpeed: isUpdateDefaultSp ? minPlaySpeed - 0.25 : minPlaySpeed,
+            minPlaySpeed: isUpdateMinSpeed ? minPlaySpeed - 0.25 : minPlaySpeed,
             playSpeed: playSpeed - 0.25,
           });
         }

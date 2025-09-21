@@ -67,7 +67,6 @@ export const useYTPlayEvent = () => {
     const { playSpeed, minPlaySpeed } = readPlaySpeed();
     const { isLoadingOverlay } = readGameStateUtils();
 
-    readPlayer().setPlaybackRate(playSpeed);
     if (isLoadingOverlay) {
       readPlayer().pauseVideo();
       return;
@@ -91,6 +90,7 @@ export const useYTPlayEvent = () => {
     sendPlayCountStats();
     setTabName("ステータス");
     setYTStarted(true);
+    setTimeout(() => readPlayer().setPlaybackRate(playSpeed));
   };
 };
 
