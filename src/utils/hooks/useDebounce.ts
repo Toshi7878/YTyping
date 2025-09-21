@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
-type Debounce = (fn: () => void) => void;
+type Debounce = (fn: () => void | Promise<void>) => void;
 
 interface UseDebounceReturn {
   debounce: Debounce;
@@ -23,7 +23,7 @@ export const useDebounce = (timeout: number): UseDebounceReturn => {
       setIsPending(true);
 
       timer.current = setTimeout(() => {
-        fn();
+        void fn();
         setIsPending(false);
       }, timeout);
     },

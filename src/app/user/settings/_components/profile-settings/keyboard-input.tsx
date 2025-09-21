@@ -30,9 +30,7 @@ export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
         label="使用キーボード"
         successMessage="更新しました"
         name="keyboard"
-        onSuccess={async (value: string) => {
-          reset({ keyboard: value });
-        }}
+        onSuccess={(value) => reset({ keyboard: value })}
         className="w-md"
       />
     </FormProvider>

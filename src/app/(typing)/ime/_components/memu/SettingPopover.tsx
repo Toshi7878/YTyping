@@ -41,7 +41,7 @@ const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
         const mapData = queryClient.getQueryData(trpc.map.getMapJson.queryOptions({ mapId: Number(mapId) }).queryKey);
 
         if (mapData) {
-          parseImeMap(mapData).then((map) => {
+          void parseImeMap(mapData).then((map) => {
             setMap(map);
           });
         }

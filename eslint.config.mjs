@@ -109,7 +109,13 @@ export default [
       "prefer-template": "error",
       "import/newline-after-import": ["error", { count: 1 }],
       "@typescript-eslint/no-floating-promises": "error",
-      // "@typescript-eslint/no-misused-promises": "error",
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        {
+          checksVoidReturn: false, // ← これで async コールバック許容
+        },
+      ],
+      // "@typescript-eslint/explicit-function-return-type": ["warn", { allowExpressions: true }],
       "no-restricted-imports": [
         "error",
         {

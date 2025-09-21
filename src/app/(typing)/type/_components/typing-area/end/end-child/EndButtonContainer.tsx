@@ -28,7 +28,7 @@ const EndButtonContainer = () => {
   const [isSendResultBtnDisabled, setIsSendResultBtnDisabled] = useState(false);
 
   useEffect(() => {
-    const handleKeyDown = async (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.code) {
         case "F4":
           retryBtnRef.current?.click();

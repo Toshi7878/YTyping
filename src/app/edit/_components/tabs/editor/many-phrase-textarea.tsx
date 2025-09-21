@@ -57,13 +57,13 @@ const ManyPhraseTextarea = () => {
 
     const topPhrase = e.target.value.split("\n")[0];
     if (topPhrase !== lyrics) {
-      debounce(() => pickupTopPhrase(topPhrase.trim()));
+      debounce(() => void pickupTopPhrase(topPhrase.trim()));
     }
 
     setManyPhrase(e.target.value);
   };
 
-  const onPaste = async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+  const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const target = event.currentTarget;
 
     if (!target.value) {

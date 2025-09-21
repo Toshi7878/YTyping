@@ -82,6 +82,21 @@ const SettingPopover = () => {
     { label: "キーボード設定", content: <UserShortcutKeyCheckbox /> },
   ];
 
+  const handleReset = async () => {
+    const result = await confirm({
+      title: "設定をリセット",
+      body: "すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。",
+      cancelButton: "キャンセル",
+      actionButton: "リセットする",
+      actionButtonVariant: "warning",
+      cancelButtonVariant: "outline",
+    });
+
+    if (result) {
+      resetUserTypingOptions();
+      toast.success("設定をリセットしました");
+    }
+  };
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
       <PopoverTrigger>
@@ -112,20 +127,7 @@ const SettingPopover = () => {
         <Button
           size="sm"
           variant="outline"
-          onClick={async () => {
-            const result = await confirm({
-              title: "設定をリセット",
-              body: "すべての設定をデフォルトにリセットしますか？この操作は元に戻せません。",
-              cancelButton: "キャンセル",
-              actionButton: "リセットする",
-              actionButtonVariant: "warning",
-              cancelButtonVariant: "outline",
-            });
-            if (result) {
-              resetUserTypingOptions();
-              toast.success("設定をリセットしました");
-            }
-          }}
+          onClick={void handleReset}
           className="text-destructive hover:bg-destructive/10 mt-4 ml-auto block"
         >
           設定をリセット

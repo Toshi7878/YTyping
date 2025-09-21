@@ -71,12 +71,7 @@ const RankingPopoverContent = ({
         <Link href={`/user/${userId}`}>ユーザーページへ </Link>
       </Button>
 
-      <Button
-        variant="ghost"
-        className="w-full"
-        onClick={() => handleReplayClick()}
-        disabled={sceneGroup === "Playing"}
-      >
+      <Button variant="ghost" className="w-full" onClick={void handleReplayClick} disabled={sceneGroup === "Playing"}>
         リプレイ再生
       </Button>
       {session ? (
@@ -84,7 +79,7 @@ const RankingPopoverContent = ({
           variant="ghost"
           type="button"
           className="w-full"
-          onClick={() => toggleClap.mutate({ resultId, newState: !hasClapped })}
+          onClick={void toggleClap.mutate({ resultId, newState: !hasClapped })}
         >
           {hasClapped ? "拍手済み" : "記録に拍手"}
         </Button>

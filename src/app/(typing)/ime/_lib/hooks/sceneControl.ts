@@ -25,7 +25,7 @@ const useSceneControl = () => {
     setScene("end");
     setTextareaPlaceholderType("normal");
     pauseTimer();
-    updateTypingStats();
+    void updateTypingStats();
   };
 
   return { handleStart, handleEnd };
