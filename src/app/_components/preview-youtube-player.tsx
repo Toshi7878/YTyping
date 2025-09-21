@@ -27,7 +27,7 @@ const PreviewYouTubePlayer = () => {
   };
 
   const onPlay = (event: YouTubeEvent) => {
-    event.target.setPlaybackRate(previewSpeed ?? 1);
+    setTimeout(() => event.target.setPlaybackRate(previewSpeed ?? 1), 300);
   };
 
   return (

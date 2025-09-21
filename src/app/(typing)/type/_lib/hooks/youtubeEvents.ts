@@ -90,7 +90,7 @@ export const useYTPlayEvent = () => {
     sendPlayCountStats();
     setTabName("ステータス");
     setYTStarted(true);
-    setTimeout(() => readPlayer().setPlaybackRate(playSpeed), 500);
+    setTimeout(() => readPlayer().setPlaybackRate(playSpeed), 300);
   };
 };
 
