@@ -266,8 +266,7 @@ const useIsKeydownTyped = () => {
     const activeElement = document.activeElement as HTMLInputElement | null;
     if (!activeElement || activeElement.type === "text") return false;
 
-    const keyCode = event.keyCode;
-    const code = event.code;
+    const { keyCode, code } = event;
 
     const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code);
     if (!isType) return false;

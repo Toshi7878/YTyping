@@ -308,7 +308,7 @@ export class KanaInput {
     let newLineWord = { ...lineWord };
 
     const nextKana = lineWord.nextChar["k"];
-    const keys = typingKeys.keys;
+    const { keys } = typingKeys;
     const isdakuHandaku = DAKU_HANDAKU_LIST.includes(nextKana[0]);
 
     const dakuHanDakuData: DakuHandakuData = isdakuHandaku

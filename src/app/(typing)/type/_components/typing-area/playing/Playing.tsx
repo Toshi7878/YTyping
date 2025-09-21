@@ -37,7 +37,7 @@ const Playing = ({ className }: PlayingProps) => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
         const sendStats = readUserStats();
-        const maxCombo = sendStats.maxCombo;
+        const { maxCombo } = sendStats;
         const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
         const body = new Blob([JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })], {
           type: "application/json",
@@ -49,7 +49,7 @@ const Playing = ({ className }: PlayingProps) => {
     };
     const handleBeforeunload = () => {
       const sendStats = readUserStats();
-      const maxCombo = sendStats.maxCombo;
+      const { maxCombo } = sendStats;
       const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
       const body = new Blob([JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })], {
         type: "application/json",

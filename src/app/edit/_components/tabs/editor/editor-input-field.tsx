@@ -104,7 +104,7 @@ const TimeInput = () => {
         setEditIsTimeInputValid(e.currentTarget.value ? false : true);
       }}
       onKeyDown={(e) => {
-        const value = e.currentTarget.value;
+        const { value } = e.currentTarget;
 
         if (e.code === "ArrowDown") {
           const newValue = (Number(value) - 0.05).toFixed(3);

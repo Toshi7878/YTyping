@@ -135,7 +135,7 @@ export default function MapTable() {
           },
         },
         cell: ({ row }) => {
-          const index = row.index;
+          const { index } = row;
           const nextTime = map[index + 1]?.time;
           const label = nextTime && row.original.time === nextTime ? "同じ時間の行が存在します" : "";
 
@@ -157,7 +157,7 @@ export default function MapTable() {
 
         enableResizing: false,
         cell: ({ row }) => {
-          const index = row.index;
+          const { index } = row;
 
           return (
             <>
@@ -175,7 +175,7 @@ export default function MapTable() {
 
         enableResizing: false,
         cell: ({ row }) => {
-          const index = row.index;
+          const { index } = row;
 
           return (
             <>
@@ -193,7 +193,7 @@ export default function MapTable() {
         minSize: 34,
         enableResizing: false,
         cell: ({ row }) => {
-          const index = row.index;
+          const { index } = row;
           const isOptionEdited = Boolean(
             row.original.options?.isChangeCSS ||
               row.original.options?.eternalCSS ||
@@ -277,7 +277,7 @@ const DirectTimeInput = ({ time }: { time: string }) => {
           setTime(newValue);
         }}
         onKeyDown={(e) => {
-          const value = e.currentTarget.value;
+          const { value } = e.currentTarget;
 
           if (e.code === "ArrowUp") {
             const newValue = (Number(value) - 0.05).toFixed(3);

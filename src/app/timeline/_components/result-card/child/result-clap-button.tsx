@@ -22,8 +22,6 @@ function ResultClapButton({ resultId, clapCount, hasClapped: hasClap }: ResultCl
     toggleClapMutation.mutate({ resultId, newState: !hasClap });
   };
 
-  const isPending = toggleClapMutation.isPending;
-
   return (
     <div className="inline-flex">
       <TooltipWrapper disabled={!!session} label={"拍手はログイン後に可能です"}>
@@ -31,7 +29,7 @@ function ResultClapButton({ resultId, clapCount, hasClapped: hasClap }: ResultCl
           type="button"
           variant="outline"
           size="sm"
-          disabled={!session || isPending}
+          disabled={!session || toggleClapMutation.isPending}
           onClick={onClick}
           className={cn(
             "min-w-[100px] rounded-full border px-7",

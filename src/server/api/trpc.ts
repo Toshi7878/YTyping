@@ -27,8 +27,7 @@ t.procedure.use((opts) => {
   return opts.next();
 });
 
-export const router = t.router;
-export const createCallerFactory = t.createCallerFactory;
+export const { router, createCallerFactory } = t;
 
 export const publicProcedure = t.procedure;
 export const optionalAuthProcedure = t.procedure.use((opts) => {

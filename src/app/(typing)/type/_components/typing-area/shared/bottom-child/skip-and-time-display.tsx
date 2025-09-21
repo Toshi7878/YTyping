@@ -49,7 +49,7 @@ const VideoCurrentTime = () => {
 const VideoDurationTime = () => {
   const map = useMapState();
   const speedData = usePlaySpeedState();
-  const movieDuration = useReadYTStatus().readYTStatus().movieDuration;
+  const { movieDuration } = useReadYTStatus().readYTStatus();
   if (!map) {
     return;
   }

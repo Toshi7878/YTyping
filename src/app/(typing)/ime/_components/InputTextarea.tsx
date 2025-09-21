@@ -32,7 +32,7 @@ const InputTextarea = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
-      const value = e.currentTarget.value;
+      const { value } = e.currentTarget;
       e.preventDefault();
       judgeTargetWords(value);
       stopTicker();

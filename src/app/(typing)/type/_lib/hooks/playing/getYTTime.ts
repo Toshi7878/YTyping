@@ -43,7 +43,7 @@ export const useGetTime = () => {
     const count = readCount();
     const nextLine = map.mapData[count];
 
-    const movieDuration = readYTStatus().movieDuration;
+    const { movieDuration } = readYTStatus();
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainTime = (nextLineTime - YTCurrentTime) / readPlaySpeed().playSpeed;
@@ -63,7 +63,7 @@ export const useGetTime = () => {
 
     const nextLine = map.mapData[count];
     const currentLine = map.mapData[count - 1];
-    const movieDuration = readYTStatus().movieDuration;
+    const { movieDuration } = readYTStatus();
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainConstantTime = nextLineTime - currentLine.time - lineConstantTime;

@@ -54,7 +54,9 @@ export function useInteractJS(position: Partial<typeof initPosition> = initPosit
         });
       })
       .on("resizemove", (event) => {
+        // eslint-disable-next-line prefer-destructuring
         width = event.rect.width;
+        // eslint-disable-next-line prefer-destructuring
         height = event.rect.height;
         x += event.deltaRect.left;
         y += event.deltaRect.top;

@@ -61,7 +61,7 @@ export const useRetry = () => {
       case "play": {
         const { type: totalTypeCount } = readTypingStatus();
         if (totalTypeCount) {
-          const retryCount = readGameUtilRefParams().retryCount;
+          const { retryCount } = readGameUtilRefParams();
           writeGameUtilRefParams({ retryCount: retryCount + 1 });
           if (totalTypeCount >= 10) {
             sendPlayCountStats();

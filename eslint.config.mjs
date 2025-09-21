@@ -120,7 +120,7 @@ export default [
 
       // // コード品質
       "no-return-await": "error",
-      // "prefer-destructuring": ["error", { array: true, object: true }],
+      "prefer-destructuring": ["error", { array: false, object: true }],
       // "prefer-rest-params": "error",
       // "prefer-spread": "error",
       "no-restricted-imports": [

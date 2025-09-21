@@ -36,7 +36,7 @@ export const useMoveLine = () => {
     const currentCount = readCount();
     const referenceCount = currentCount - (isTimeBuffer ? 0 : 1);
 
-    const typingLineIndexes = map.typingLineIndexes;
+    const { typingLineIndexes } = map;
 
     let prevCount: number | undefined;
     for (let i = typingLineIndexes.length - 1; i >= 0; i--) {

@@ -4,7 +4,7 @@ export const useGamePause = () => {
   const { readPlayer } = usePlayer();
   const { readYTStatus } = useReadYTStatus();
   return () => {
-    const isPaused = readYTStatus().isPaused;
+    const { isPaused } = readYTStatus();
     if (isPaused) {
       readPlayer().playVideo();
     } else {

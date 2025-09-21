@@ -112,7 +112,7 @@ const MutationInputFormField = ({
         mutation.reset();
         clearErrors(props.name);
         cancel();
-        const value = e.currentTarget.value;
+        const { value } = e.currentTarget;
 
         debounce(async () => {
           if (!errors[props.name] && value) {

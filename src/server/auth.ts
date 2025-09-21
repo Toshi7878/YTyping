@@ -38,7 +38,7 @@ export const { auth, handlers, signIn } = NextAuth({
 
     authorized({ request: { nextUrl }, auth }) {
       const isLoggedIn = !!auth?.user;
-      const pathname = nextUrl.pathname;
+      const { pathname } = nextUrl;
 
       if (isLoggedIn) {
         const userName = auth.user.name;

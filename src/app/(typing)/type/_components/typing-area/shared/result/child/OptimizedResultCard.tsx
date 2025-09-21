@@ -56,7 +56,7 @@ function OptimizedResultCard({
   const rkpm = lineResult.status.lRkpm;
   const point = lineResult.status.p;
   const miss = lineResult.status.lMiss;
-  const tBonus = lineResult.status.tBonus;
+  const { tBonus } = lineResult.status;
   const lostWord = lineResult.status.lostW;
   const lost = lineResult.status.lLost;
 
