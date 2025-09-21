@@ -17,16 +17,16 @@ export const speedBaseAtom = atomWithReset({
 
 store.sub(speedBaseAtom, () => {
   const sceneGroup = store.get(sceneGroupAtom);
-  const { playSpeed } = store.get(speedBaseAtom);
+  const { playSpeed, minPlaySpeed } = store.get(speedBaseAtom);
   const isPlaying = sceneGroup === "Playing";
   const player = store.get(playerAtom);
-
-  if (player) {
-    player.setPlaybackRate(playSpeed);
-  }
+  if (!player) return;
 
   if (isPlaying) {
+    player.setPlaybackRate(playSpeed);
     store.set(notifyAtom, Symbol(`${playSpeed.toFixed(2)}x`));
+  } else {
+    player.setPlaybackRate(minPlaySpeed);
   }
 });
 
