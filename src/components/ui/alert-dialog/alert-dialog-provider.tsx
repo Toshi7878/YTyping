@@ -101,6 +101,7 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
     actionButtonVariant: "default",
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const resolveRef = useRef<((tf: any) => void) | undefined>(undefined);
 
   function close() {

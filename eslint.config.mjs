@@ -1,3 +1,4 @@
+import nextPlugin from "@next/eslint-plugin-next";
 import importPlugin from "eslint-plugin-import";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -69,6 +70,7 @@ export default [
     plugins: {
       "@typescript-eslint": tseslint.plugin,
       import: importPlugin,
+      "@next/next": nextPlugin,
     },
 
     rules: {
@@ -109,13 +111,18 @@ export default [
       "prefer-template": "error",
       "import/newline-after-import": ["error", { count: 1 }],
       "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/no-misused-promises": [
-        "error",
-        {
-          checksVoidReturn: false, // ← これで async コールバック許容
-        },
-      ],
-      // "@typescript-eslint/explicit-function-return-type": ["warn", { allowExpressions: true }],
+      "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: false }],
+
+      "@typescript-eslint/no-explicit-any": "warn",
+
+      "@next/next/no-img-element": "error",
+      "@next/next/no-html-link-for-pages": "error",
+
+      // // コード品質
+      // "no-return-await": "error",
+      // "prefer-destructuring": ["error", { array: true, object: true }],
+      // "prefer-rest-params": "error",
+      // "prefer-spread": "error",
       "no-restricted-imports": [
         "error",
         {

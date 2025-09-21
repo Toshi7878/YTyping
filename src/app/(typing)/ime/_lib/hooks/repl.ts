@@ -32,6 +32,7 @@ const parseRepl = (tokenizedWords: RouterOutPuts["morphConvert"]["tokenizeWordAw
   return Array.from(repl).sort((a, b) => b[0].length - a[0].length);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const marge = (comparisonLyrics: any, repl: string[][]) => {
   for (let i = 0; i < comparisonLyrics.length; i++) {
     for (let j = 0; j < comparisonLyrics[i].length; j++) {

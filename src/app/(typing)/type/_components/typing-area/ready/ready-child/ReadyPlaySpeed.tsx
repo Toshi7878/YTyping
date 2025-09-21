@@ -4,8 +4,8 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import React from "react";
 
 interface ReadyPlaySpeedProps {
-  speedUpButtonRef: React.RefObject<HTMLButtonElement>;
-  speedDownButtonRef: React.RefObject<HTMLButtonElement>;
+  speedUpButtonRef: React.RefObject<HTMLButtonElement | null>;
+  speedDownButtonRef: React.RefObject<HTMLButtonElement | null>;
 }
 const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   const { minPlaySpeed } = usePlaySpeedState();
@@ -33,7 +33,7 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
 };
 
 interface SpeedChangeButtonProps {
-  buttonRef: React.RefObject<HTMLButtonElement>;
+  buttonRef: React.RefObject<HTMLButtonElement | null>;
   buttonLabel: {
     text: string;
     key: string;

@@ -177,6 +177,9 @@ importers:
         specifier: ^4.1.8
         version: 4.1.8
     devDependencies:
+      '@next/eslint-plugin-next':
+        specifier: ^15.5.3
+        version: 15.5.3
       '@types/md5':
         specifier: ^2.3.5
         version: 2.3.5

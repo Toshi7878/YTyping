@@ -28,27 +28,25 @@ export interface YTPlayer {
   getCurrentTime(): number;
   getDuration(): number;
   getIframe(): HTMLIFrameElement;
-  getOption(module: string, option: string): Promise<any>;
+  // getOption(module: string, option: string): Promise<>;
   getOptions(): Promise<string[]>;
   getOptions(module: string): Promise<object>;
-  setOption(module: string, option: string, value: any): Promise<void>;
+  // setOption(module: string, option: string, value: any): Promise<void>;
   setOptions(): Promise<void>;
-  cuePlaylist(playlist: string | readonly string[], index?: number, startSeconds?: number, suggestedQuality?: string);
   cuePlaylist(playlist: {
     listType: string;
     list?: string | undefined;
     index?: number | undefined;
     startSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  });
-  loadPlaylist(playlist: string | readonly string[], index?: number, startSeconds?: number, suggestedQuality?: string);
+  }): void;
   loadPlaylist(playlist: {
     listType: string;
     list?: string | undefined;
     index?: number | undefined;
     startSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  });
+  }): void;
   getPlaybackQuality(): string;
   getPlaybackRate(): number;
   getPlayerState(): PlayerState;
@@ -63,29 +61,26 @@ export interface YTPlayer {
     endSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
   });
-  cueVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string);
   cueVideoByUrl(video: {
     mediaContentUrl: string;
     startSeconds?: number | undefined;
     endSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  });
-  loadVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string);
+  }): void;
   loadVideoByUrl(video: {
     mediaContentUrl: string;
     startSeconds?: number | undefined;
     endSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  });
-  loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string);
+  }): void;
   loadVideoById(video: {
     videoId: string;
     startSeconds?: number | undefined;
     endSeconds?: number | undefined;
     suggestedQuality?: string | undefined;
-  });
-  isMuted();
-  mute();
+  }): void;
+  isMuted(): void;
+  mute(): void;
   nextVideo(): void;
   pauseVideo(): void;
   playVideo(): void;

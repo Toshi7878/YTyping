@@ -57,7 +57,7 @@ function Ready({ className }: ReadyProps) {
       <ReadyInputModeRadioCards />
 
       <div className="flex justify-between text-center">
-        <ReadyPlaySpeed speedUpButtonRef={speedUpButtonRef as any} speedDownButtonRef={speedDownButtonRef as any} />
+        <ReadyPlaySpeed speedUpButtonRef={speedUpButtonRef} speedDownButtonRef={speedDownButtonRef} />
         <ReadyPracticeButton />
       </div>
     </div>

@@ -73,7 +73,7 @@ const InputFormField = ({
 interface MutationInputFormFieldProps {
   label: string;
   successMessage: string;
-  mutation: UseMutationResult<any, any, any, any>;
+  mutation: UseMutationResult;
   debounceDelay?: number;
   onSuccess?: (value: string) => void;
 }
@@ -129,7 +129,7 @@ interface MutateMessageProps {
   isPending: boolean;
   isSuccess: boolean;
   successMessage: string;
-  errorMessage: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+  errorMessage: FieldError | Merge<FieldError, FieldErrorsImpl> | undefined;
 }
 
 const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: MutateMessageProps) => {
