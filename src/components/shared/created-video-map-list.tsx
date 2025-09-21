@@ -24,7 +24,7 @@ const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedV
     );
   }
 
-  if (data && data.length) {
+  if (data?.length) {
     return (
       <div>
         <div className="my-3 text-lg font-bold">この動画の譜面が{data.length}件見つかりました</div>

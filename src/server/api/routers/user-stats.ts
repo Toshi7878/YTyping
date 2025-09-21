@@ -253,7 +253,7 @@ export const userStatsRouter = {
           (max, current) => (current.count > max.count ? current : max),
           typeCounts[0],
         );
-        const totalTypeCount = (Object.values(existingData) as number[]).reduce((total, count) => total + count, 0);
+        const totalTypeCount = Object.values(existingData).reduce((total, count) => total + count, 0);
         const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
 
         fullYearData.push({

@@ -29,7 +29,7 @@ export const useInitializePlayScene = () => {
   const trpc = useTRPC();
   const incrementPlayCountStats = useMutation(trpc.userStats.incrementPlayCountStats.mutationOptions());
 
-  const { id: mapId } = useParams() as { id: string };
+  const { id: mapId } = useParams<{ id: string }>();
   const readScene = useReadScene();
 
   return () => {

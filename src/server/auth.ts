@@ -79,7 +79,7 @@ export const { auth, handlers, signIn } = NextAuth({
       if (trigger === "update") {
         token.name = session.name as string;
       }
-      if (!user || !user?.email) return token;
+      if (!user?.email) return token;
 
       const email_hash = md5(user.email).toString();
       const {

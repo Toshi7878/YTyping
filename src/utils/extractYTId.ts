@@ -1,30 +1,22 @@
 export function extractYouTubeVideoId(url: string) {
-  const regex = /[?&]v=([^?&]+)/;
-  const match = url.match(regex);
-
-  // If match is not found, try to match using short URL format
-  if (!match) {
-    const shortUrlRegex = /youtu\.be\/([^?&]+)/;
-    const shortUrlMatch = url.match(shortUrlRegex);
-
-    if (shortUrlMatch && shortUrlMatch[1]) {
-      return shortUrlMatch[1];
-    }
-
-    // Try to match YouTube Shorts URL format
-    const shortsRegex = /youtube\.com\/shorts\/([^?&]+)/;
-    const shortsMatch = url.match(shortsRegex);
-
-    if (shortsMatch && shortsMatch[1]) {
-      return shortsMatch[1];
-    }
+  // 通常の watch?v=xxx
+  const match = url.match(/[?&]v=([^?&]+)/)?.[1];
+  if (match?.length === 11) {
+    return match;
   }
 
-  // Check if a match is found
-  if (match && match[1] && match[1].length === 11) {
-    return match[1];
-  } else {
-    // No match found or invalid URL
-    return undefined;
+  // 短縮 URL (youtu.be/xxx)
+  const shortUrlMatch = url.match(/youtu\.be\/([^?&]+)/)?.[1];
+  if (shortUrlMatch?.length === 11) {
+    return shortUrlMatch;
   }
+
+  // Shorts URL (youtube.com/shorts/xxx)
+  const shortsMatch = url.match(/youtube\.com\/shorts\/([^?&]+)/)?.[1];
+  if (shortsMatch?.length === 11) {
+    return shortsMatch;
+  }
+
+  // 見つからなければ undefined
+  return undefined;
 }

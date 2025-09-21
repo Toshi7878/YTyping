@@ -13,7 +13,7 @@ import type { Activity } from "react-activity-calendar";
 import ActivityCalendar from "react-activity-calendar";
 
 const TypeActivity = () => {
-  const { id: userId } = useParams() as { id: string };
+  const { id: userId } = useParams<{ id: string }>();
   const { data, isPending, isError } = useQuery(useUserStatsQueries().userActivity({ userId: Number(userId) }));
 
   const getBlockColors = () => {

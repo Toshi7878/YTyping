@@ -286,7 +286,7 @@ const lineResultCardsAtom = atom<HTMLDivElement[]>([]);
 
 export const useResultCards = () => {
   const readResultCards = useAtomCallback(
-    useCallback((get) => get(lineResultCardsAtom) as HTMLDivElement[], []),
+    useCallback((get) => get(lineResultCardsAtom), []),
     { store },
   );
 

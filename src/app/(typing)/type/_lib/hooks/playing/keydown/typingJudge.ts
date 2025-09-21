@@ -199,7 +199,7 @@ export class RomaInput {
     const processed = new ProcessedLineWord({ typingKeys, lineWord });
     this.updatePoint = processed.updatePoint;
     const result = this.hasRomaPattern(typingKeys, processed.newLineWord);
-    this.newLineWord = result.newLineWord as LineWord;
+    this.newLineWord = result.newLineWord;
     this.successKey = result.successKey;
     this.failKey = result.failKey ?? "";
   }

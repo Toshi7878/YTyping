@@ -30,7 +30,7 @@ export const RightNav = () => {
 
   return (
     <div className="flex items-center gap-2 select-none">
-      {session && session.user?.name && (
+      {session?.user?.name && (
         <div className="flex items-center gap-2">
           <ActiveUsersDrawer />
           <NotifyBellDrawer />
@@ -50,7 +50,7 @@ export const RightNav = () => {
 
 const RightDropDownMenu = ({ className }: { className: string }) => {
   const { data: session } = useSession();
-  if (session && session.user?.name) {
+  if (session?.user?.name) {
     return <UserMenu userName={session.user.name} className={className} />;
   }
 

@@ -28,7 +28,7 @@ const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
   const readImeTypeOptions = useReadImeTypeOptions();
   const parseImeMap = useParseImeMap();
   const setMap = useSetMap();
-  const { id: mapId } = useParams() as { id: string };
+  const { id: mapId } = useParams<{ id: string }>();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
@@ -41,9 +41,7 @@ const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
         const mapData = queryClient.getQueryData(trpc.map.getMapJson.queryOptions({ mapId: Number(mapId) }).queryKey);
 
         if (mapData) {
-          void parseImeMap(mapData).then((map) => {
-            setMap(map);
-          });
+          void parseImeMap(mapData).then((map) => setMap(map));
         }
       }
     }

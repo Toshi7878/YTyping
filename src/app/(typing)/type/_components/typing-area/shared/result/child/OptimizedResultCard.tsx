@@ -65,7 +65,7 @@ function OptimizedResultCard({
   return (
     <Card
       ref={(el) => {
-        if (el) cardRefs.current![lineIndex] = el;
+        if (el) cardRefs.current[lineIndex] = el;
       }}
       data-seek-time={seekTime}
       data-line-index={lineIndex}

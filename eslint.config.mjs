@@ -118,11 +118,17 @@ export default [
       "@next/next/no-img-element": "error",
       "@next/next/no-html-link-for-pages": "error",
 
-      // // コード品質
+      "@typescript-eslint/no-unnecessary-type-assertion": "error",
       "no-return-await": "error",
       "prefer-destructuring": ["error", { array: false, object: true }],
       "prefer-rest-params": "error",
       "prefer-spread": "error",
+      "@typescript-eslint/consistent-type-assertions": [
+        "error",
+        { assertionStyle: "as", objectLiteralTypeAssertions: "allow" },
+      ],
+      "@typescript-eslint/prefer-optional-chain": "error",
+
       "no-restricted-imports": [
         "error",
         {

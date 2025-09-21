@@ -37,7 +37,7 @@ function ResultLineList() {
   const endCardClick = useCallback(
     (lineIndex: number) => {
       let nextTypedCount = 0;
-      const typedElements = cardRefs.current[lineIndex].querySelectorAll(".typed") as NodeListOf<HTMLElement>;
+      const typedElements = cardRefs.current[lineIndex].querySelectorAll<HTMLElement>(".typed");
 
       const lastTypedChildClassList = typedElements[typedElements.length - 1].classList;
 

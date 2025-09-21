@@ -60,12 +60,12 @@ function useReplaceFoundFocus() {
       const range = document.createRange();
 
       const wordCell = tbody.children[i].children[2];
-      if (wordCell && wordCell.textContent) {
+      if (wordCell.textContent) {
         const textMatch = wordCell.textContent.match(new RegExp(searchText));
         if (textMatch) {
           range.selectNodeContents(wordCell);
         }
-        if (wordCell && wordCell.firstChild && textMatch && textMatch.index !== undefined) {
+        if (wordCell.firstChild && textMatch?.index !== undefined) {
           range.setStart(wordCell.firstChild, textMatch.index);
           range.setEnd(wordCell.firstChild, textMatch.index + (textMatch[0]?.length || 0));
 

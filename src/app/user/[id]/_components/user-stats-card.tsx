@@ -27,7 +27,7 @@ interface UserStatsProps {
 }
 
 const UserStatsCard = ({ userStats }: UserStatsProps) => {
-  const { id: userId } = useParams() as { id: string };
+  const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
@@ -144,7 +144,7 @@ const HideUserStats = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) =>
 const MyHideOptionInfo = () => {
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
-  const { id: userId } = useParams() as { id: string };
+  const { id: userId } = useParams<{ id: string }>();
 
   return (
     <InfoCard title="統計情報は非公開に設定されています" className="mb-4">

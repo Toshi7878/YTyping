@@ -46,42 +46,41 @@ const ActiveUsersDrawer = () => {
         </SheetHeader>
         <Table className="table-fixed">
           <TableBody>
-            {activeUsersWithMap &&
-              activeUsersWithMap.map((user) => {
-                const stateMsg =
-                  user.state === "askMe"
-                    ? "Ask Me"
-                    : user.state === "type"
-                      ? "プレイ中"
-                      : user.state === "edit"
-                        ? "譜面編集中"
-                        : "待機中";
+            {activeUsersWithMap?.map((user) => {
+              const stateMsg =
+                user.state === "askMe"
+                  ? "Ask Me"
+                  : user.state === "type"
+                    ? "プレイ中"
+                    : user.state === "edit"
+                      ? "譜面編集中"
+                      : "待機中";
 
-                return (
-                  <TableRow key={user.id} className="border-border/30 border-b">
-                    <TableCell className="px-0 py-2" width={100}>
-                      <TooltipWrapper label={user.name}>
-                        <Link href={`/user/${user.id}`} className="block truncate px-3 py-4 text-sm hover:underline">
-                          {user.name}
-                        </Link>
-                      </TooltipWrapper>
-                    </TableCell>
-                    <TableCell className="px-0 py-2">
-                      {user.state === "type" && user.map ? (
-                        <CardWithContent variant="map">
-                          <MapLeftThumbnail alt={user.map.info.title} media={user.map.media} size="activeUser" />
+              return (
+                <TableRow key={user.id} className="border-border/30 border-b">
+                  <TableCell className="px-0 py-2" width={100}>
+                    <TooltipWrapper label={user.name}>
+                      <Link href={`/user/${user.id}`} className="block truncate px-3 py-4 text-sm hover:underline">
+                        {user.name}
+                      </Link>
+                    </TooltipWrapper>
+                  </TableCell>
+                  <TableCell className="px-0 py-2">
+                    {user.state === "type" && user.map ? (
+                      <CardWithContent variant="map">
+                        <MapLeftThumbnail alt={user.map.info.title} media={user.map.media} size="activeUser" />
 
-                          <CompactMapInfo map={user.map} />
-                        </CardWithContent>
-                      ) : (
-                        <CardWithContent variant="map">
-                          <MapLeftThumbnail size="activeUser" alt={stateMsg} />
-                        </CardWithContent>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                        <CompactMapInfo map={user.map} />
+                      </CardWithContent>
+                    ) : (
+                      <CardWithContent variant="map">
+                        <MapLeftThumbnail size="activeUser" alt={stateMsg} />
+                      </CardWithContent>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </SheetContent>

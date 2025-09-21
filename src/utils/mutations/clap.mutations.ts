@@ -15,7 +15,7 @@ function setTimelineClapOptimistic(
   optimisticState: boolean,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
-    if (!old || !old.pages) return old;
+    if (!old?.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
@@ -44,7 +44,7 @@ function setTimelineClapServer(
   clapCount: number,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
-    if (!old || !old.pages) return old;
+    if (!old?.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({

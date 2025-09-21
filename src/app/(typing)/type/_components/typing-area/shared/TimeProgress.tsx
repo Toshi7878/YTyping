@@ -12,9 +12,9 @@ const TimeProgress = (props: TimeProgressProps) => {
   useEffect(() => {
     if (progressRef.current) {
       if (props.id === "line_progress") {
-        writeLineProgress(progressRef.current!);
+        writeLineProgress(progressRef.current);
       } else {
-        writeTotalProgress(progressRef.current!);
+        writeTotalProgress(progressRef.current);
       }
     }
   }, []);

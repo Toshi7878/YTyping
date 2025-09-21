@@ -17,7 +17,7 @@ function setMapListOptimistic(
   optimisticState: boolean,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["mapList"]["getList"]>>(filter, (old) => {
-    if (!old || !old.pages) return old;
+    if (!old?.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
@@ -46,7 +46,7 @@ function setMapListServer(
   hasLiked: boolean,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["mapList"]["getList"]>>(filter, (old) => {
-    if (!old || !old.pages) return old;
+    if (!old?.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
@@ -66,7 +66,7 @@ function setTimelineOptimistic(
   optimisticState: boolean,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
-    if (!old || !old.pages) return old;
+    if (!old?.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
@@ -98,7 +98,7 @@ function setTimelineServer(
   hasLiked: boolean,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
-    if (!old || !old.pages) return old;
+    if (!old?.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
@@ -123,7 +123,7 @@ function setNotificationsOptimistic(
   optimisticState: boolean,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["notification"]["getInfinite"]>>(filter, (old) => {
-    if (!old || !old.pages) return old;
+    if (!old?.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
@@ -155,7 +155,7 @@ function setNotificationsServer(
   hasLiked: boolean,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["notification"]["getInfinite"]>>(filter, (old) => {
-    if (!old || !old.pages) return old;
+    if (!old?.pages) return old;
     return {
       ...old,
       pages: old.pages.map((page) => ({
