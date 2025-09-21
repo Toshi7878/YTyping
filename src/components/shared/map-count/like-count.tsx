@@ -32,7 +32,7 @@ const ActiveLikeCountButton = ({ hasLiked, likeCount, mapId }: LikeCountIconProp
 
     if (setLikeMutation.isPending) return;
 
-    setLikeMutation.mutate({ mapId, newState: newState });
+    setLikeMutation.mutate({ mapId, newState });
     stop();
   };
 

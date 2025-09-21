@@ -159,12 +159,12 @@ export const useLineUpdateButtonEvent = () => {
     setDirectEdit(null);
     setCanUpload(true);
 
-    if (newLine.time === oldLine.time && newLine.lyrics === oldLine.lyrics && newLine.word !== oldLine.word) {
-      const hasKanji = /[\u4e00-\u9faf]/.test(oldLine.lyrics);
-      if (!hasKanji) return;
+    // if (newLine.time === oldLine.time && newLine.lyrics === oldLine.lyrics && newLine.word !== oldLine.word) {
+    //   const hasKanji = /[\u4e00-\u9faf]/.test(oldLine.lyrics);
+    // if (!hasKanji) return;
 
-      // postFixWordLog.mutate({ lyrics: oldLine.lyrics, word: oldLine.word });
-    }
+    // postFixWordLog.mutate({ lyrics: oldLine.lyrics, word: oldLine.word });
+    // }
   };
 };
 

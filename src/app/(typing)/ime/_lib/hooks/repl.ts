@@ -37,7 +37,7 @@ const marge = (comparisonLyrics: any, repl: string[][]) => {
     for (let j = 0; j < comparisonLyrics[i].length; j++) {
       if (/[一-龥]/.test(comparisonLyrics[i])) {
         for (let m = 0; m < repl.length; m++) {
-          comparisonLyrics[i][j] = comparisonLyrics[i][j].replace(RegExp(repl[m][0], "g"), "\t@@" + m + "@@\t");
+          comparisonLyrics[i][j] = comparisonLyrics[i][j].replace(RegExp(repl[m][0], "g"), `\t@@${m}@@\t`);
         }
       }
     }
@@ -48,7 +48,7 @@ const marge = (comparisonLyrics: any, repl: string[][]) => {
       const line = comparisonLyrics[i][j].split("\t").filter((x) => x !== "");
 
       for (let m = 0; m < line.length; m++) {
-        if (line[m].slice(0, 2) == "@@" && line[m].slice(-2) == "@@" && repl[parseFloat(line[m].slice(2))]) {
+        if (line[m].slice(0, 2) === "@@" && line[m].slice(-2) === "@@" && repl[parseFloat(line[m].slice(2))]) {
           line[m] = repl[parseFloat(line[m].slice(2))];
         } else {
           line[m] = [line[m]];

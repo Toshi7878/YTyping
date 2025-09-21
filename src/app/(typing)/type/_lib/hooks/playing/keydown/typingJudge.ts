@@ -162,7 +162,7 @@ class ProcessedLineWord {
 
   private zCommand({ typingKeys, lineWord }: JudgeType) {
     const newLineWord = { ...lineWord };
-    if (typingKeys.code == "KeyZ" && !typingKeys.shift) {
+    if (typingKeys.code === "KeyZ" && !typingKeys.shift) {
       const doublePeriod = newLineWord.nextChar.k === "." && newLineWord.word[0]?.k === ".";
       if (doublePeriod) {
         const triplePeriod = doublePeriod && newLineWord.word[1]?.k === ".";
@@ -215,7 +215,7 @@ export class RomaInput {
       return { newLineWord, successKey: "", failKey: typingKeys.key };
     }
 
-    if (kana == "ん" && newLineWord.word[0]) {
+    if (kana === "ん" && newLineWord.word[0]) {
       newLineWord.word[0]["r"] = this.nextNNFilter(typingKeys["keys"][0], newLineWord);
     }
 
@@ -257,7 +257,7 @@ export class RomaInput {
 
   private nextNNFilter(typingKey: string, newLineWord: LineWord) {
     const nextToNextChar = newLineWord.word[0]["r"];
-    const isXN = typingKey == "x" && nextToNextChar[0] && nextToNextChar[0][0] != "n" && nextToNextChar[0][0] != "N";
+    const isXN = typingKey === "x" && nextToNextChar[0] && nextToNextChar[0][0] !== "n" && nextToNextChar[0][0] !== "N";
 
     if (isXN) {
       return nextToNextChar.filter((value: string) => {
@@ -431,7 +431,7 @@ export const useInputJudge = () => {
     if (KEYBOARD_CHARS.includes(event.key)) {
       input.keys.push(
         event.key.toLowerCase(),
-        event.key.toLowerCase().replace(event.key.toLowerCase(), function (s) {
+        event.key.toLowerCase().replace(event.key.toLowerCase(), (s) => {
           return String.fromCharCode(s.charCodeAt(0) + 0xfee0);
         }),
       );

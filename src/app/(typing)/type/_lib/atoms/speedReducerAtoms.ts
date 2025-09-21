@@ -71,7 +71,7 @@ const speedReducerAtom = atom(
         const newPlaySpeed = playSpeed + 0.25 <= 2 ? playSpeed + 0.25 : minPlaySpeed;
         set(speedBaseAtom, {
           playSpeed: newPlaySpeed,
-          minPlaySpeed: minPlaySpeed,
+          minPlaySpeed,
         });
         break;
     }

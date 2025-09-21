@@ -1,3 +1,4 @@
+import importPlugin from "eslint-plugin-import";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -67,6 +68,7 @@ export default [
     },
     plugins: {
       "@typescript-eslint": tseslint.plugin,
+      import: importPlugin,
     },
 
     rules: {
@@ -81,31 +83,30 @@ export default [
       "@typescript-eslint/consistent-type-imports": [
         "error",
         {
-          prefer: "type-imports", // import type を必須にする
+          prefer: "type-imports",
           disallowTypeAnnotations: false,
         },
       ],
       "no-undef": "error",
 
-      // Common stylistic rules (same as JS section)
       // "no-console": "warn",
       "no-debugger": "error",
       "prefer-const": "error",
-      // "no-var": "error",
-      // eqeqeq: "error",
+      "no-var": "error",
+      eqeqeq: "error",
       curly: "off",
-      // "no-eval": "error",
-      // "no-implied-eval": "error",
-      // "no-new-func": "error",
-      // "no-script-url": "error",
+      "no-eval": "error",
+      "no-implied-eval": "error",
+      "no-new-func": "error",
+      "no-script-url": "error",
       // "no-alert": "warn",
-      // "no-empty": "error",
-      // "no-duplicate-imports": "error",
-      // "no-useless-return": "error",
-      // "prefer-arrow-callback": "error",
-      // "arrow-spacing": "error",
-      // "object-shorthand": "error",
-      // "prefer-template": "error",
+      "no-empty": "error",
+      "import/no-duplicates": ["error", { considerQueryString: true }],
+      "no-useless-return": "error",
+      "prefer-arrow-callback": "error",
+      "arrow-spacing": "error",
+      "object-shorthand": "error",
+      "prefer-template": "error",
 
       "no-restricted-imports": [
         "error",

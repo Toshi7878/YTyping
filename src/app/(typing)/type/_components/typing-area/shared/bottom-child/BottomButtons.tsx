@@ -53,7 +53,7 @@ const SpeedButton = () => {
   if (scene === "practice") {
     return (
       <BottomDoubleKeyButton
-        badgeText={playSpeed.toFixed(2) + "倍速"}
+        badgeText={`${playSpeed.toFixed(2)}倍速`}
         kbdTextPrev="F9-"
         kbdTextNext="+F10"
         onClick={() => {}}
@@ -65,7 +65,7 @@ const SpeedButton = () => {
 
   return (
     <BottomButton
-      badgeText={playSpeed.toFixed(2) + "倍速"}
+      badgeText={`${playSpeed.toFixed(2)}倍速`}
       kbdText="F10"
       onClick={() => dispatchSpeed({ type: "toggle" })}
       isPauseDisabled={true}

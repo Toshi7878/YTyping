@@ -15,7 +15,6 @@ export const useNavigationGuard = (isDirty: boolean) => {
       if (isDirty) {
         event.preventDefault();
         event.returnValue = "";
-        return;
       }
     };
 

@@ -67,7 +67,7 @@ export const useUndoRedo = () => {
           readPlayer().seekTo(Number(data.time) - 3 * speed, true);
           lineDispatch({ type: "set", line: { time, lyrics, word, selectIndex: null } });
           const { manyPhraseText } = readEditUtils();
-          setManyPhrase(data.lyrics + "\n" + manyPhraseText);
+          setManyPhrase(`${data.lyrics}\n${manyPhraseText}`);
           break;
         case "update":
           mapDispatch({ type: "update", payload: data.old, index: data.lineIndex });

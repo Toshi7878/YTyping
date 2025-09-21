@@ -128,7 +128,7 @@ function useReplaceDialog() {
           let n = 0;
 
           const newWord = word.replace(searchReg, (match) => {
-            if (++n == 1) return replace;
+            if (++n === 1) return replace;
             else return match;
           });
 

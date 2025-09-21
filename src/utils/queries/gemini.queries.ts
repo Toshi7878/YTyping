@@ -10,7 +10,7 @@ export const useGeminiQueries = () => {
   return {
     generateMapInfo: ({ videoId }: UseGenerateMapInfoQueryProps, { enabled }: { enabled: boolean }) =>
       trpc.gemini.generateMapInfo.queryOptions(
-        { videoId: videoId },
+        { videoId },
         {
           enabled,
           staleTime: Infinity,

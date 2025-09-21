@@ -128,7 +128,6 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
         open={state.open}
         onOpenChange={(open) => {
           if (!open) close();
-          return;
         }}
       >
         <AlertDialogContent asChild>

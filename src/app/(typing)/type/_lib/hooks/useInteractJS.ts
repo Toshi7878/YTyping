@@ -1,5 +1,5 @@
 import interact from "interactjs";
-import type { CSSProperties} from "react";
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 
 type Partial<T> = {
@@ -86,8 +86,8 @@ export function useInteractJS(position: Partial<typeof initPosition> = initPosit
     ref: interactRef,
     style: {
       transform: `translate3D(${_position.x}px, ${_position.y}px, 0)`,
-      width: _position.width + "px",
-      height: _position.height + "px",
+      width: `${_position.width}px`,
+      height: `${_position.height}px`,
       position: "absolute" as CSSProperties["position"],
     },
     position: _position,

@@ -105,7 +105,7 @@ export const useUpdateLineResult = () => {
               mode: startInputMode,
               sp: startSpeed,
             },
-            types: types,
+            types,
           }
         : {
             status: {
@@ -114,7 +114,7 @@ export const useUpdateLineResult = () => {
               mode: startInputMode,
               sp: startSpeed,
             },
-            types: types,
+            types,
           },
     });
   };

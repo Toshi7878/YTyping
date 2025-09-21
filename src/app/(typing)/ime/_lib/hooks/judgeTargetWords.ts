@@ -201,6 +201,7 @@ function useFormatComment() {
 
     //テキストの末尾が半角ならば末尾に半角スペース追加
     if (/[!-~]$/.test(text)) {
+      // eslint-disable-next-line prefer-template
       text = text + " ";
     }
     return text;

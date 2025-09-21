@@ -51,7 +51,7 @@ function setTimelineClapServer(
         ...page,
         items: page.items.map((result) =>
           result.id === resultId
-            ? { ...result, clap: { hasClapped: hasClapped, count: clapCount } satisfies ResultListItem["clap"] }
+            ? { ...result, clap: { hasClapped, count: clapCount } satisfies ResultListItem["clap"] }
             : result,
         ),
       })),

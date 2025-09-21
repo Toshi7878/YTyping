@@ -63,7 +63,6 @@ export const useCalcTypeSpeed = () => {
         });
       }
       calcLineRkpm({ lineKpm, constantLineTime });
-      return;
     }
   };
 };

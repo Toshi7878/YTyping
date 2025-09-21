@@ -31,7 +31,7 @@ export const router = t.router;
 export const createCallerFactory = t.createCallerFactory;
 
 export const publicProcedure = t.procedure;
-export const optionalAuthProcedure = t.procedure.use(function optionalAuth(opts) {
+export const optionalAuthProcedure = t.procedure.use((opts) => {
   return opts.next({
     ctx: {
       db: drizzleDb,
@@ -39,7 +39,8 @@ export const optionalAuthProcedure = t.procedure.use(function optionalAuth(opts)
     },
   });
 });
-export const protectedProcedure = t.procedure.use(function isAuthed(opts) {
+
+export const protectedProcedure = t.procedure.use((opts) => {
   if (!opts.ctx.user) {
     throw new Error("認証が必要です");
   }

@@ -87,7 +87,7 @@ const useTimer = () => {
   }) => {
     const SKIP_REMAIN_TIME = 5;
 
-    const isWipeCompleted = count == 0 || (count >= 0 && currentLine.length == wipeCount + 1) ? true : false;
+    const isWipeCompleted = count === 0 || (count >= 0 && currentLine.length === wipeCount + 1) ? true : false;
 
     const remainTime = nextLineStartTime - constantOffsettedYTTime;
     if (remainTime > SKIP_REMAIN_TIME && isWipeCompleted) {

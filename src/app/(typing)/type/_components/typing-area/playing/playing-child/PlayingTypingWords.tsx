@@ -37,7 +37,7 @@ const TypingWords = () => {
       .map((w) => w["k"])
       .join("")
       .slice(0, 60),
-    isLineCompleted: isLineCompleted,
+    isLineCompleted,
     nextWord: nextLyrics.kanaWord,
     className: cn(
       "word-kana lowercase",
@@ -58,7 +58,7 @@ const TypingWords = () => {
       .map((w) => w["r"][0])
       .join("")
       .slice(0, 60),
-    isLineCompleted: isLineCompleted,
+    isLineCompleted,
     nextWord: nextLyrics.romaWord,
     className: cn(
       "word-roma",

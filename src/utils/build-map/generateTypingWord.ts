@@ -35,7 +35,7 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
       k: kanaChar,
       r: romaPatterns,
       p: CHAR_POINT * romaPatterns[0].length,
-      t: determineCharacterType({ kanaChar: kanaChar, romaChar: romaPatterns[0] }),
+      t: determineCharacterType({ kanaChar, romaChar: romaPatterns[0] }),
       ...(KANA_UNSUPPORTED_SYMBOLS.includes(kanaChar) && { kanaUnSupportedSymbol: kanaChar }),
     });
 
@@ -49,9 +49,9 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
         const currentKanaChar = typeChunks[typeChunks.length - 1]["k"][0];
 
         if (SOKUON_JOIN_LIST.includes(currentKanaChar)) {
-          typeChunks = joinSokuonPattern({ typeChunks: typeChunks, joinType: "normal" });
+          typeChunks = joinSokuonPattern({ typeChunks, joinType: "normal" });
         } else if (["い", "う", "ん"].includes(currentKanaChar)) {
-          typeChunks = joinSokuonPattern({ typeChunks: typeChunks, joinType: "iun" });
+          typeChunks = joinSokuonPattern({ typeChunks, joinType: "iun" });
         }
       }
     }
@@ -87,8 +87,8 @@ const applyDoubleNTypePattern = (typeChunks: TypeChunk[]) => {
     const currentRomaPatternsLength = currentRomaPatterns.length;
 
     for (let i = 0; i < currentRomaPatternsLength; i++) {
-      typeChunks[typeChunks.length - 1]["r"].push("n" + currentRomaPatterns[i]);
-      typeChunks[typeChunks.length - 1]["r"].push("'" + currentRomaPatterns[i]);
+      typeChunks[typeChunks.length - 1]["r"].push(`n${currentRomaPatterns[i]}`);
+      typeChunks[typeChunks.length - 1]["r"].push(`'${currentRomaPatterns[i]}`);
     }
   }
 
@@ -108,7 +108,7 @@ const replaceNWithNN = (typeChunks: TypeChunk[]) => {
       romaPattern === "n";
 
     if (isNnPattern) {
-      typeChunks[typeChunks.length - 2]["r"][i] = prevRomaPatterns[i] + "n";
+      typeChunks[typeChunks.length - 2]["r"][i] = `${prevRomaPatterns[i]}n`;
       typeChunks[typeChunks.length - 2]["r"].push("n'");
       typeChunks[typeChunks.length - 2]["p"] = CHAR_POINT * prevRomaPatterns[i].length;
     }
@@ -139,10 +139,10 @@ const joinSokuonPattern = ({ joinType, typeChunks }: { joinType: "normal" | "iun
       continuous.push(romaPatterns[i][0].repeat(sokuonLength) + romaPatterns[i]);
     }
 
-    xtu.push("x".repeat(sokuonLength) + "tu" + romaPatterns[i]);
-    ltu.push("l".repeat(sokuonLength) + "tu" + romaPatterns[i]);
-    xtsu.push("x".repeat(sokuonLength) + "tsu" + romaPatterns[i]);
-    ltsu.push("l".repeat(sokuonLength) + "tsu" + romaPatterns[i]);
+    xtu.push(`${"x".repeat(sokuonLength)}tu${romaPatterns[i]}`);
+    ltu.push(`${"l".repeat(sokuonLength)}tu${romaPatterns[i]}`);
+    xtsu.push(`${"x".repeat(sokuonLength)}tsu${romaPatterns[i]}`);
+    ltsu.push(`${"l".repeat(sokuonLength)}tsu${romaPatterns[i]}`);
   }
 
   typeChunks[typeChunks.length - 1]["r"] = [...continuous, ...xtu, ...ltu, ...xtsu, ...ltsu];

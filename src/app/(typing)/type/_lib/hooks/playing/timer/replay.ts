@@ -47,7 +47,7 @@ const usePlayBackKey = () => {
     if (key) {
       const typingKeys: TypingKeys = {
         keys: [key],
-        key: key,
+        key,
         code: `Key${key.toUpperCase()}`,
       };
 
@@ -123,7 +123,7 @@ export const useReplay = () => {
     const keyTime = type.t;
 
     if (constantLineTime >= keyTime) {
-      keyReplay({ constantLineTime: constantLineTime, lineResult, type });
+      keyReplay({ constantLineTime, lineResult, type });
       writeGameUtilRefParams({ replayKeyCount: replayKeyCount + 1 });
     }
   };
