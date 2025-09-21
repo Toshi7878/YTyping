@@ -91,7 +91,7 @@ const TimeInput = () => {
     if (timeInputRef.current) {
       writeTimeInput(timeInputRef.current);
     }
-  }, []);
+  }, [writeTimeInput]);
 
   return (
     <Input

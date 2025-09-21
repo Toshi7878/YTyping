@@ -216,12 +216,10 @@ export default function MapTable() {
             </Button>
           );
         },
-        meta: {
-          headerClassName: "text-center",
-        },
+        meta: { headerClassName: "text-center" },
       },
     ],
-    [directEditIndex, endLineIndex, readPlayer],
+    [directEditIndex, endLineIndex, readPlayer, map],
   );
 
   return (

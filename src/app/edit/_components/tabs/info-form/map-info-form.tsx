@@ -149,7 +149,7 @@ const MapInfoForm = () => {
       });
       return () => subscription.unsubscribe();
     }
-  }, [newCreateVideoId, form]);
+  }, [newCreateVideoId, form, debounce]);
 
   const onSubmit = useOnSubmit(form);
 

@@ -102,8 +102,7 @@ const YouTubePlayer = function ({ className, videoId: mapVideoId }: YouTubePlaye
         console.log("未スタート -1");
       }
     },
-
-    [],
+    [onSeek],
   );
 
   return (

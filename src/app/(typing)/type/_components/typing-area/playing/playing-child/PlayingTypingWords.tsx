@@ -7,6 +7,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
+import type { HTMLAttributes } from "react";
+
 const TypingWords = () => {
   const lineWord = useLineWordState();
   const inputMode = usePlayingInputModeState();
@@ -91,8 +93,6 @@ const TypingWords = () => {
     </div>
   );
 };
-
-import type { HTMLAttributes } from "react";
 
 interface WordProps {
   correct: string;

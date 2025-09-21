@@ -1,5 +1,7 @@
 import nextPlugin from "@next/eslint-plugin-next";
 import importPlugin from "eslint-plugin-import";
+import reactPlugin from "eslint-plugin-react";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -71,6 +73,8 @@ export default [
       "@typescript-eslint": tseslint.plugin,
       import: importPlugin,
       "@next/next": nextPlugin,
+      react: reactPlugin,
+      "react-hooks": reactHooksPlugin,
     },
 
     rules: {
@@ -127,7 +131,17 @@ export default [
         "error",
         { assertionStyle: "as", objectLiteralTypeAssertions: "allow" },
       ],
+      "import/no-useless-path-segments": "error",
+      "prefer-object-spread": "error",
+      "no-constant-condition": ["error", { checkLoops: false }],
+      "no-useless-concat": "error",
+      "react/self-closing-comp": "error",
+      "react-hooks/exhaustive-deps": "error",
+      // "no-nested-ternary": "warn",
+
       "@typescript-eslint/prefer-optional-chain": "error",
+      "import/first": "error",
+      "import/no-mutable-exports": "error",
 
       "no-restricted-imports": [
         "error",
