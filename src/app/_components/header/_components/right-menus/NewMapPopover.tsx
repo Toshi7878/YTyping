@@ -1,5 +1,5 @@
 "use client";
-import CreatedCheck from "@/components/shared/CreatedCheck";
+import CreatedVideoMapList from "@/components/shared/created-video-map-list";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";
@@ -81,7 +81,7 @@ export default function NewMapPopover() {
 
         {extractedVideoId && (
           <div className="px-6 pb-6">
-            <CreatedCheck videoId={extractedVideoId} />
+            <CreatedVideoMapList videoId={extractedVideoId} />
           </div>
         )}
       </PopoverContent>

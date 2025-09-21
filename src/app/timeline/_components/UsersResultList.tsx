@@ -11,9 +11,9 @@ import ResultCard from "./result-card/ResultCard";
 
 function UsersResultList() {
   const searchParams = useSearchParams();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery({
-    ...useResultListInfiniteQueryOptions(searchParams),
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
+    useResultListInfiniteQueryOptions(searchParams),
+  );
 
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();

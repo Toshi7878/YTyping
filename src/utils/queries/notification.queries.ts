@@ -3,9 +3,8 @@ import { useTRPC } from "@/trpc/provider";
 export const useNotificationQueries = () => {
   const trpc = useTRPC();
   return {
-    hasNewNotification: () => trpc.notification.hasNewNotification.queryOptions(),
-    infiniteNotifications: () =>
-      trpc.notification.getInfiniteUserNotifications.infiniteQueryOptions(
+    infinite: () =>
+      trpc.notification.getInfinite.infiniteQueryOptions(
         {},
         {
           getNextPageParam: (lastPage) => lastPage.nextCursor,

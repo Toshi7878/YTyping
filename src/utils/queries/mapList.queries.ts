@@ -14,19 +14,5 @@ export const useMapListQueryOptions = () => {
         gcTime: Infinity,
       });
     },
-
-    listByVideoId: ({ videoId }: { videoId: string }) => trpc.mapList.getByVideoId.queryOptions({ videoId }),
-
-    listLength: (searchParams: URLSearchParams) => {
-      const params = parseMapListSearchParams(searchParams);
-
-      return trpc.mapList.getListLength.queryOptions({
-        filter: params.filter,
-        minRate: params.minRate ? Number(params.minRate) : undefined,
-        maxRate: params.maxRate ? Number(params.maxRate) : undefined,
-        played: params.played,
-        keyword: params.keyword ?? "",
-      });
-    },
   };
 };

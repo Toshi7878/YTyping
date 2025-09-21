@@ -165,7 +165,7 @@ export const resultRouter = {
     });
     return { items: results, nextCursor };
   }),
-  getTypingResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
+  getResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
     try {
       const data = await downloadFile({
         key: `result-json/${input.resultId}.json`,

@@ -2,18 +2,19 @@
 
 import MapInfo from "@/components/shared/map-info/MapInfo";
 import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
-import { useMapListQueryOptions } from "@/utils/queries/mapList.queries";
+import { useTRPC } from "@/trpc/provider";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { CardWithContent } from "../ui/card";
 
-interface CreatedCheckProps {
+interface CreatedVideoMapListProps {
   videoId: string;
-  disableNotFoundText?: boolean;
+  disabledNotFoundText?: boolean;
 }
 
-const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProps) => {
-  const { data, isPending } = useQuery(useMapListQueryOptions().listByVideoId({ videoId }));
+const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedVideoMapListProps) => {
+  const trpc = useTRPC();
+  const { data, isPending } = useQuery(trpc.mapList.getByVideoId.queryOptions({ videoId }));
 
   if (isPending) {
     return (
@@ -40,10 +41,10 @@ const CreatedCheck = ({ videoId, disableNotFoundText = false }: CreatedCheckProp
         })}
       </div>
     );
-  } else if (!disableNotFoundText) {
+  } else if (!disabledNotFoundText) {
     return <div className="my-3 text-lg font-bold">この動画の譜面は見つかりませんでした</div>;
   }
   return null;
 };
 
-export default CreatedCheck;
+export default CreatedVideoMapList;

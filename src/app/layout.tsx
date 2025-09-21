@@ -12,11 +12,11 @@ import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
-import LinkProgressProvider from "./_components/LinkProgressProvider";
-import MainProvider from "./_components/MainProvider";
-import { ThemeProvider } from "./_components/ThemeProvider";
+import LinkProgressProvider from "./_components/link-progress-provider";
+import MainProvider from "./_components/main-provider";
+import { ThemeProvider } from "./_components/theme-provider";
 
-const PreviewYouTubeContent = dynamic(() => import("@/app/_components/PreviewYouTubePlayer"));
+const PreviewYouTubeContent = dynamic(() => import("@/app/_components/preview-youtube-player"));
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],

@@ -5,7 +5,7 @@ import { protectedProcedure } from "../trpc";
 import { MapListItem } from "./map-list";
 
 export const notificationRouter = {
-  hasNewNotification: protectedProcedure.query(async ({ ctx }) => {
+  hasUnread: protectedProcedure.query(async ({ ctx }) => {
     const isUnreadNotificationFound = await ctx.db.query.Notifications.findFirst({
       columns: { checked: true },
       where: and(eq(Notifications.visitedId, ctx.user.id), eq(Notifications.checked, false)),
@@ -13,7 +13,7 @@ export const notificationRouter = {
 
     return isUnreadNotificationFound;
   }),
-  getInfiniteUserNotifications: protectedProcedure
+  getInfinite: protectedProcedure
     .input(z.object({ cursor: z.string().nullable().optional() }))
     .query(async ({ input, ctx }) => {
       const { db, user } = ctx;

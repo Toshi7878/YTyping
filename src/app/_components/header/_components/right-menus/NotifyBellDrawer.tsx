@@ -17,14 +17,14 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
 export default function NotifyBellDrawer() {
-  const { data: isNewNotificationFound } = useQuery(useNotificationQueries().hasNewNotification());
   const trpc = useTRPC();
+  const { data: isNewNotificationFound } = useQuery(trpc.notification.hasUnread.queryOptions());
   const queryClient = useQueryClient();
 
   const postUserNotificationRead = useMutation(
     trpc.notification.postUserNotificationRead.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries(trpc.notification.hasNewNotification.queryFilter());
+        queryClient.invalidateQueries(trpc.notification.hasUnread.queryFilter());
       },
     }),
   );
@@ -58,7 +58,7 @@ const NotifyDrawerInnerContent = () => {
   const { ref, inView } = useInView({ threshold: 0.8 });
 
   const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(
-    useNotificationQueries().infiniteNotifications(),
+    useNotificationQueries().infinite(),
   );
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const NotifyDrawerInnerContent = () => {
 };
 
 interface NotificationMapCardProps {
-  notify: RouterOutPuts["notification"]["getInfiniteUserNotifications"]["notifications"][number];
+  notify: RouterOutPuts["notification"]["getInfinite"]["notifications"][number];
   children: React.ReactNode;
 }
 

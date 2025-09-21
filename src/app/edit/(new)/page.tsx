@@ -1,4 +1,4 @@
-import CreatedCheck from "@/components/shared/CreatedCheck";
+import CreatedVideoMapList from "@/components/shared/created-video-map-list";
 import { Metadata } from "next";
 import Content from "../_components/Content";
 import EditProvider from "../_components/client-provider";
@@ -15,7 +15,7 @@ export default async function Home(props: { searchParams: Promise<{ new?: string
   return (
     <EditProvider>
       <Content />
-      {videoId && <CreatedCheck videoId={videoId} disableNotFoundText />}
+      {videoId && <CreatedVideoMapList videoId={videoId} disabledNotFoundText />}
     </EditProvider>
   );
 }

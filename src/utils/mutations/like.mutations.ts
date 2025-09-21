@@ -7,7 +7,7 @@ import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query
 type MapListFilter = ReturnType<Trpc["mapList"]["getList"]["infiniteQueryFilter"]>;
 type TimeLineFilter = ReturnType<Trpc["result"]["usersResultList"]["infiniteQueryFilter"]>;
 type ActiveUserMapsFilter = ReturnType<Trpc["mapList"]["getActiveUserPlayingMaps"]["queryFilter"]>;
-type NotificationsMapFilter = ReturnType<Trpc["notification"]["getInfiniteUserNotifications"]["infiniteQueryFilter"]>;
+type NotificationsMapFilter = ReturnType<Trpc["notification"]["getInfinite"]["infiniteQueryFilter"]>;
 
 function setMapListOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
@@ -121,32 +121,29 @@ function setNotificationsOptimistic(
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["notification"]["getInfiniteUserNotifications"]>>(
-    filter,
-    (old) => {
-      if (!old || !old.pages) return old;
-      return {
-        ...old,
-        pages: old.pages.map((page) => ({
-          ...page,
-          notifications: page.notifications.map((n) =>
-            n.map.id === mapId
-              ? {
-                  ...n,
-                  map: {
-                    ...n.map,
-                    like: {
-                      hasLiked: optimisticState,
-                      count: optimisticState ? n.map.like.count + 1 : Math.max(0, n.map.like.count - 1),
-                    },
-                  } satisfies MapListItem,
-                }
-              : n,
-          ),
-        })),
-      };
-    },
-  );
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["notification"]["getInfinite"]>>(filter, (old) => {
+    if (!old || !old.pages) return old;
+    return {
+      ...old,
+      pages: old.pages.map((page) => ({
+        ...page,
+        notifications: page.notifications.map((n) =>
+          n.map.id === mapId
+            ? {
+                ...n,
+                map: {
+                  ...n.map,
+                  like: {
+                    hasLiked: optimisticState,
+                    count: optimisticState ? n.map.like.count + 1 : Math.max(0, n.map.like.count - 1),
+                  },
+                } satisfies MapListItem,
+              }
+            : n,
+        ),
+      })),
+    };
+  });
 }
 
 function setNotificationsServer(
@@ -156,23 +153,20 @@ function setNotificationsServer(
   likeCount: number,
   hasLiked: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["notification"]["getInfiniteUserNotifications"]>>(
-    filter,
-    (old) => {
-      if (!old || !old.pages) return old;
-      return {
-        ...old,
-        pages: old.pages.map((page) => ({
-          ...page,
-          notifications: page.notifications.map((map) =>
-            map.map.id === mapId
-              ? { ...map, map: { ...map.map, like: { hasLiked, count: likeCount } } satisfies MapListItem }
-              : map,
-          ),
-        })),
-      };
-    },
-  );
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["notification"]["getInfinite"]>>(filter, (old) => {
+    if (!old || !old.pages) return old;
+    return {
+      ...old,
+      pages: old.pages.map((page) => ({
+        ...page,
+        notifications: page.notifications.map((map) =>
+          map.map.id === mapId
+            ? { ...map, map: { ...map.map, like: { hasLiked, count: likeCount } } satisfies MapListItem }
+            : map,
+        ),
+      })),
+    };
+  });
 }
 
 function setActiveUsersOptimistic(
@@ -249,7 +243,7 @@ export function useLikeMutationMapList() {
       onMutate: async (input) => {
         const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
         const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
-        const notificationsFilter = trpc.notification.getInfiniteUserNotifications.infiniteQueryFilter();
+        const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
         const activeUserMapsFilter = trpc.mapList.getActiveUserPlayingMaps.queryFilter();
 
         await queryClient.cancelQueries(mapListFilter);
@@ -297,7 +291,7 @@ export function useLikeMutationMapInfo() {
         const mapInfoFilter = trpc.map.getMapInfo.queryFilter();
         const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
         const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
-        const notificationsFilter = trpc.notification.getInfiniteUserNotifications.infiniteQueryFilter();
+        const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
         const activeUserMapsFilter = trpc.mapList.getActiveUserPlayingMaps.queryFilter();
 
         await queryClient.cancelQueries(mapInfoFilter);
