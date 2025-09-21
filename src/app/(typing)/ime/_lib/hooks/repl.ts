@@ -21,7 +21,7 @@ export const useGenerateTokenizedWords = () => {
 };
 
 const parseRepl = (tokenizedWords: RouterOutPuts["morphConvert"]["tokenizeWordAws"]) => {
-  let repl = new Set<string[]>();
+  const repl = new Set<string[]>();
 
   for (let i = 0; i < tokenizedWords.lyrics.length; i++) {
     if (/[一-龥]/.test(tokenizedWords.lyrics[i])) {
@@ -45,7 +45,7 @@ const marge = (comparisonLyrics: any, repl: string[][]) => {
 
   for (let i = 0; i < comparisonLyrics.length; i++) {
     for (let j = 0; j < comparisonLyrics[i].length; j++) {
-      let line = comparisonLyrics[i][j].split("\t").filter((x) => x !== "");
+      const line = comparisonLyrics[i][j].split("\t").filter((x) => x !== "");
 
       for (let m = 0; m < line.length; m++) {
         if (line[m].slice(0, 2) == "@@" && line[m].slice(-2) == "@@" && repl[parseFloat(line[m].slice(2))]) {

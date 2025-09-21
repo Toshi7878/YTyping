@@ -1,6 +1,6 @@
 import { Textarea } from "@/components/ui/textarea";
 import { Ticker } from "@pixi/ticker";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useInputTextarea, useUserStats } from "../_lib/atoms/refAtoms";
 import {
   useReadGameUtilParams,

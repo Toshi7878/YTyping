@@ -3,6 +3,7 @@ import { useSetPreviewVideo } from "@/lib/globalAtoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
+import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { userTypingOptionsAtom } from "../_lib/atoms/stateAtoms";
@@ -12,7 +13,7 @@ import { useSendUserStats } from "../_lib/hooks/playing/sendUserStats";
 interface ClientProviderProps {
   userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
   mapId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const ClientProvider = ({ userTypingOptions, mapId, children }: ClientProviderProps) => {

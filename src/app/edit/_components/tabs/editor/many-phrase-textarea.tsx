@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/useDebounce";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { TiFilter } from "react-icons/ti";
 import { toast } from "sonner";

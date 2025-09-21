@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import type { ComponentProps, DetailedHTMLProps, InputHTMLAttributes, PropsWithoutRef, ReactNode } from "react";
 import { createContext, useCallback, useContext, useReducer, useRef } from "react";
 import { Button } from "../button";
 import { Input } from "../input/input";
@@ -16,7 +17,7 @@ export const AlertDialogContext = createContext<
   <T extends AlertAction>(params: T) => Promise<T["type"] extends "alert" | "confirm" ? boolean : null | string>
 >(() => null!);
 
-type ButtonVariant = React.ComponentProps<typeof Button>["variant"];
+type ButtonVariant = ComponentProps<typeof Button>["variant"];
 
 const defaultCancelButtonText: string = "Cancel";
 const defaultActionButtonText: string = "Okay";
@@ -47,7 +48,7 @@ export type AlertAction =
       defaultValue?: string;
       cancelButtonVariant?: ButtonVariant;
       actionButtonVariant?: ButtonVariant;
-      inputProps?: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+      inputProps?: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     }
   | { type: "close" };
 
@@ -61,8 +62,8 @@ interface AlertDialogState {
   cancelButtonVariant: ButtonVariant;
   actionButtonVariant: ButtonVariant;
   defaultValue?: string;
-  inputProps?: React.PropsWithoutRef<
-    Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "size">
+  inputProps?: PropsWithoutRef<
+    Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "size">
   >;
 }
 
@@ -88,7 +89,7 @@ export function alertDialogReducer(state: AlertDialogState, action: AlertAction)
   }
 }
 
-export function AlertDialogProvider({ children }: { children: React.ReactNode }) {
+export function AlertDialogProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(alertDialogReducer, {
     open: false,
     title: "",

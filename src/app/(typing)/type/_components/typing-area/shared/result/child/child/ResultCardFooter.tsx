@@ -3,8 +3,9 @@
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import type { HTMLAttributes } from "react";
 
-interface ResultCardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ResultCardFooterProps extends HTMLAttributes<HTMLDivElement> {
   scoreCount?: number;
   point: number;
   tBonus: number;

@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react";
 import { useFormContext } from "react-hook-form";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form";
 import { Checkbox } from "./checkbox";
@@ -15,7 +16,7 @@ export const CheckboxFormField = ({
   description,
   onCheckedChange,
   ...props
-}: CheckboxFormFieldProps & React.ComponentProps<typeof Checkbox>) => {
+}: CheckboxFormFieldProps & ComponentProps<typeof Checkbox>) => {
   const form = useFormContext();
 
   return (

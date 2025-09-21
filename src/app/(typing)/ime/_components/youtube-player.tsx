@@ -1,4 +1,5 @@
 "use client";
+import type { CSSProperties } from "react";
 import { useCallback, useEffect } from "react";
 import type { YouTubeEvent } from "react-youtube";
 import YouTube from "react-youtube";
@@ -18,7 +19,7 @@ import {
 interface YouTubePlayerProps {
   videoId: string;
   className?: string;
-  style: React.CSSProperties;
+  style: CSSProperties;
 }
 
 const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) => {

@@ -1,7 +1,8 @@
+import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
 import { useNotificationsState } from "../_lib/atoms/stateAtoms";
 
-const Notifications = ({ style }: { style: React.CSSProperties }) => {
+const Notifications = ({ style }: { style: CSSProperties }) => {
   const notifications = useNotificationsState();
   const containerRef = useRef<HTMLDivElement>(null);
 

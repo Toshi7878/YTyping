@@ -13,6 +13,7 @@ import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot, Loader2 } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -108,7 +109,7 @@ const NotifyDrawerInnerContent = () => {
 
 interface NotificationMapCardProps {
   notify: RouterOutPuts["notification"]["getInfinite"]["notifications"][number];
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function NotificationMapCard({ notify, children }: NotificationMapCardProps) {

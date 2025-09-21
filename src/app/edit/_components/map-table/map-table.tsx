@@ -2,7 +2,7 @@
 
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/map-reducer-atom";
 import { usePlayer, useTimeInput } from "../../_lib/atoms/read-atoms";
 import {
@@ -123,7 +123,7 @@ export default function MapTable() {
         maxSize: 35,
         minSize: 35,
         meta: {
-          onClick: (event: React.MouseEvent<HTMLDivElement>, row: MapLine, index: number) => {
+          onClick: (event, row: MapLine, index: number) => {
             if (directEditIndex !== index) {
               readPlayer().seekTo(Number(row.time), true);
             }

@@ -1,3 +1,4 @@
+import type React from "react";
 import { useSetLyrics } from "../atoms/state-atoms";
 
 export const useAddRubyTagEvent = () => {

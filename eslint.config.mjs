@@ -53,6 +53,7 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
+        PageProps: "readonly",
       },
       parser: tseslint.parser,
       ecmaVersion: "latest",
@@ -67,6 +68,7 @@ export default [
     plugins: {
       "@typescript-eslint": tseslint.plugin,
     },
+
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -88,7 +90,7 @@ export default [
       // Common stylistic rules (same as JS section)
       // "no-console": "warn",
       "no-debugger": "error",
-      // "prefer-const": "error",
+      "prefer-const": "error",
       // "no-var": "error",
       // eqeqeq: "error",
       curly: "off",

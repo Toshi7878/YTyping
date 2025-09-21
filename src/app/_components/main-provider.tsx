@@ -3,10 +3,11 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useGlobalLoadingState, userAgentAtom } from "@/lib/globalAtoms";
 import { useClearSelectionOnNavigate } from "@/utils/use-clear-selection-on-navigate";
 import { useHydrateAtoms } from "jotai/utils";
+import type { ReactNode } from "react";
 import { UAParser } from "ua-parser-js";
 
 interface MainProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
   userAgent: string;
 }
 

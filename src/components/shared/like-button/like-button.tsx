@@ -1,12 +1,15 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
+import type React from "react";
 import { useEffect, useState } from "react";
+
 import "./css/render.css";
 
 type LikeButtonProps = {
   size?: number;
-  onClick?: (event: React.MouseEvent, likeValue: boolean) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>, likeValue: boolean) => void;
   defaultLiked?: boolean;
   className?: string;
   likeCount?: number;
@@ -44,7 +47,7 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
       className={cn("relative cursor-pointer", className)}
       style={buttonStyle}
       type="button"
-      onClick={(event: React.MouseEvent) => {
+      onClick={(event) => {
         const newLikeValue = !hasLiked;
         setHasLiked(newLikeValue);
         setHasBeenClicked(true);
@@ -105,7 +108,7 @@ export const LikeButtonWithCount = ({
       className="hover:bg-like/40 relative top-[0.09px] flex w-9 cursor-pointer items-center justify-center space-x-1 rounded-sm px-1"
       style={buttonStyle}
       type="button"
-      onClick={(event: React.MouseEvent) => {
+      onClick={(event) => {
         const newState = !hasLiked;
         setHasLiked(newState);
         setHasBeenClicked(true);

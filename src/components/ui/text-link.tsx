@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { Route } from "next";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 interface TextLinkProps {
   href: Route;
@@ -9,7 +9,7 @@ interface TextLinkProps {
   className?: string;
 }
 
-const TextLink = ({ href, children, className, ...props }: TextLinkProps & React.ComponentProps<typeof Link>) => {
+const TextLink = ({ href, children, className, ...props }: TextLinkProps & ComponentProps<typeof Link>) => {
   return (
     <Link
       href={href}

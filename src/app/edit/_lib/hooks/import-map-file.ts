@@ -18,7 +18,7 @@ export const useImportMapFile = () => {
     const fileReader = new FileReader();
     fileReader.readAsArrayBuffer(file);
 
-    let data = await new Promise((resolve) => {
+    const data = await new Promise((resolve) => {
       fileReader.onload = (event: ProgressEvent<FileReader>) => resolve((event.target as FileReader).result);
     });
 

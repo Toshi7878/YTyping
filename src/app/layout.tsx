@@ -12,6 +12,7 @@ import { SessionProvider } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
+import type { ReactNode } from "react";
 import LinkProgressProvider from "./_components/link-progress-provider";
 import MainProvider from "./_components/main-provider";
 import { ThemeProvider } from "./_components/theme-provider";
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   const session = await auth();
   const userAgent = (await headers()).get("user-agent") ?? "";

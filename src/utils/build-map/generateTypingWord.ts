@@ -118,11 +118,11 @@ const replaceNWithNN = (typeChunks: TypeChunk[]) => {
 };
 
 const joinSokuonPattern = ({ joinType, typeChunks }: { joinType: "normal" | "iun"; typeChunks: TypeChunk[] }) => {
-  let continuous: string[] = [];
-  let xtu: string[] = [];
-  let ltu: string[] = [];
-  let xtsu: string[] = [];
-  let ltsu: string[] = [];
+  const continuous: string[] = [];
+  const xtu: string[] = [];
+  const ltu: string[] = [];
+  const xtsu: string[] = [];
+  const ltsu: string[] = [];
 
   const prevKanaChar = typeChunks[typeChunks.length - 2]["k"];
   const currentKanaChar = typeChunks[typeChunks.length - 1]["k"];

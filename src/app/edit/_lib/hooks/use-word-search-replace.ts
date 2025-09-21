@@ -57,7 +57,7 @@ function useReplaceFoundFocus() {
         targetRow.scrollIntoView({ behavior: "auto", block: "center" });
       }
 
-      let range = document.createRange();
+      const range = document.createRange();
 
       const wordCell = tbody.children[i].children[2];
       if (wordCell && wordCell.textContent) {

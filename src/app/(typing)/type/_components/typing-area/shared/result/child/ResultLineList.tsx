@@ -79,7 +79,7 @@ function ResultLineList() {
   );
 
   let lineIndex = 0;
-  let scoreCount = 0;
+  const scoreCount = 0;
 
   return (
     <div className="relative h-full overflow-y-auto px-4">

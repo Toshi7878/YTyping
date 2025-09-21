@@ -142,7 +142,7 @@ class ProcessedLineWord {
   }
 
   private processNNRouteKey({ typingKeys, lineWord }: JudgeType) {
-    let newLineWord = { ...lineWord };
+    const newLineWord = { ...lineWord };
     if (typingKeys.code === "KeyX" || typingKeys.code === "KeyW") {
       const expectedNextKey = typingKeys.code === "KeyX" ? "ん" : "う";
       const isNNRoute =
@@ -161,7 +161,7 @@ class ProcessedLineWord {
   }
 
   private zCommand({ typingKeys, lineWord }: JudgeType) {
-    let newLineWord = { ...lineWord };
+    const newLineWord = { ...lineWord };
     if (typingKeys.code == "KeyZ" && !typingKeys.shift) {
       const doublePeriod = newLineWord.nextChar.k === "." && newLineWord.word[0]?.k === ".";
       if (doublePeriod) {

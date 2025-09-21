@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import {
   useImeTypeOptionsState,
@@ -16,7 +17,7 @@ import {
 import { useParseImeMap } from "../../_lib/hooks/parseImeMap";
 
 interface SettingPopoverProps {
-  triggerButton: React.ReactNode;
+  triggerButton: ReactNode;
 }
 
 const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
@@ -114,7 +115,7 @@ const MainSettingTab = () => {
               }}
             />
           }
-          onInput={(e: React.FormEvent<HTMLInputElement>) => {
+          onInput={(e) => {
             setUserImeTypeOptions({ addSymbolList: e.currentTarget.value });
           }}
           value={userImeTypeOptions.addSymbolList}

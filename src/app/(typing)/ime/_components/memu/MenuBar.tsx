@@ -4,6 +4,7 @@ import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import type { ComponentProps } from "react";
 import start from "../../_img/control.png";
 import gear from "../../_img/gear.png";
 import metronome from "../../_img/metronome.png";
@@ -63,7 +64,7 @@ interface MenuButtonProps {
   onClick?: () => void;
 }
 
-const MenuButton = ({ image, title, onClick, ...props }: MenuButtonProps & React.ComponentProps<typeof Button>) => {
+const MenuButton = ({ image, title, onClick, ...props }: MenuButtonProps & ComponentProps<typeof Button>) => {
   return (
     <Button variant="ghost" size="sm" onClick={onClick} className="gap-2" {...props}>
       {image && <Image src={image} alt={title} width={ICON_SIZE} height={ICON_SIZE} className="shrink-0" />}

@@ -10,7 +10,7 @@ const PlayingNotify = () => {
   const notify = useNotifyState();
   const setNotify = useSetNotify();
   const scene = useSceneState();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { readGameUtilRefParams } = useGameUtilityReferenceParams();
 
   const playModeNotify = () => {

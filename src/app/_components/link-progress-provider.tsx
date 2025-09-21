@@ -2,8 +2,9 @@
 
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 
-const LinkProgressProvider = ({ children }: { children: React.ReactNode }) => {
+const LinkProgressProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   return (
     <ProgressProvider

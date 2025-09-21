@@ -4,11 +4,12 @@ import { useSceneState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import type { RefObject } from "react";
 
 interface EndSubButtonProps {
   retryMode: PlayMode;
   isRetryAlert: boolean;
-  retryBtnRef: React.RefObject<HTMLButtonElement | null>;
+  retryBtnRef: RefObject<HTMLButtonElement | null>;
 }
 
 const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: EndSubButtonProps) => {

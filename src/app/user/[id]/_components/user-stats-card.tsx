@@ -10,6 +10,7 @@ import { ja } from "date-fns/locale";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
+import type { ReactNode } from "react";
 import { GoLock } from "react-icons/go";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import TypeActivity from "./user-stats/type-activity";
@@ -119,7 +120,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
   );
 };
 
-const StatsCard = ({ label, value }: { label: string; value: string | number | React.ReactNode }) => {
+const StatsCard = ({ label, value }: { label: string; value: string | number | ReactNode }) => {
   return (
     <Card className="bg-background border-accent-foreground/50 gap-1 rounded-sm border py-4 pl-8">
       <CardTitle className="text-lg font-normal">{label}</CardTitle>
@@ -172,7 +173,7 @@ const MyHideOptionInfo = () => {
 
 interface InfoCardProps {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
