@@ -54,13 +54,13 @@ export interface YTPlayer {
   getVideoLoadedFraction(): number;
   getVideoUrl(): string;
   getVolume(): number;
-  cueVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string): Promise<void>;
+  cueVideoById(video: { videoId: string; startSeconds?: number; suggestedQuality?: string }): void;
 
   cueVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string): void;
 
   loadVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string): void;
 
-  loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string): Promise<void>;
+  loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string): void;
 
   isMuted(): void;
   mute(): void;
