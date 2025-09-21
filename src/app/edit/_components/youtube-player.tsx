@@ -4,6 +4,7 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import type { YouTubeEvent } from "react-youtube";
 import YouTube from "react-youtube";
 import { usePlayer } from "../_lib/atoms/read-atoms";
 import {
@@ -54,10 +55,7 @@ const YouTubePlayer = function ({ className, videoId: mapVideoId }: YouTubePlaye
         readPlayer().pauseVideo();
       }
     },
-    {
-      enableOnFormTags: false,
-      preventDefault: true,
-    },
+    { enableOnFormTags: false, preventDefault: true },
   );
 
   useHotkeys(
@@ -80,6 +78,7 @@ const YouTubePlayer = function ({ className, videoId: mapVideoId }: YouTubePlaye
     {
       enableOnFormTags: false,
       preventDefault: true,
+      ignoreModifiers: true,
     },
   );
 
@@ -89,7 +88,7 @@ const YouTubePlayer = function ({ className, videoId: mapVideoId }: YouTubePlaye
   }, [isYTReady, isYTStarted, readPlayer, videoId, updateEndTime, mapVideoId]);
 
   const handleStateChange = useCallback(
-    (event) => {
+    (event: YouTubeEvent) => {
       if (document.activeElement instanceof HTMLIFrameElement) {
         document.activeElement.blur();
       }
