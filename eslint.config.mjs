@@ -119,7 +119,7 @@ export default [
       "@next/next/no-html-link-for-pages": "error",
 
       // // コード品質
-      // "no-return-await": "error",
+      "no-return-await": "error",
       // "prefer-destructuring": ["error", { array: true, object: true }],
       // "prefer-rest-params": "error",
       // "prefer-spread": "error",

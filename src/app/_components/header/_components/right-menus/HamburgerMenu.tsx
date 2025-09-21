@@ -26,9 +26,7 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const isMobile = useUserAgent()?.getDevice().type === "mobile";
 
   const menus = LEFT_MENU_LINK_ITEM.concat(LEFT_LINKS);
-  const [, formAction] = useActionState(async () => {
-    return await signOut({ redirect: false });
-  }, null);
+  const [, formAction] = useActionState(() => signOut({ redirect: false }), null);
 
   return (
     <div className={className}>

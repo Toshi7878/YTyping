@@ -209,7 +209,7 @@ export const resultRouter = {
     const userId = user.id;
     const { mapId, lineResults, status } = input;
 
-    return await db.transaction(async (tx) => {
+    return db.transaction(async (tx) => {
       const resultId = await tx
         .insert(Results)
         .values({ mapId, userId })

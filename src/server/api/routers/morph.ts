@@ -6,11 +6,11 @@ import { protectedProcedure } from "../trpc";
 
 export const morphConvertRouter = {
   tokenizeWordAws: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
-    return await postAwsLambdaMorphApi(input.sentence);
+    return postAwsLambdaMorphApi(input.sentence);
   }),
 
   getKanaWordYahoo: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
-    return await fetchYahooMorphAnalysis(input.sentence);
+    return fetchYahooMorphAnalysis(input.sentence);
   }),
 
   getCustomDic: protectedProcedure.query(async ({ ctx }) => {
