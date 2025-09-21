@@ -2,7 +2,7 @@ import { serverApi } from "@/trpc/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import EditProvider from "../_components/client-provider";
-import Content from "../_components/content";
+import Content from "../_components/edit-content";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
