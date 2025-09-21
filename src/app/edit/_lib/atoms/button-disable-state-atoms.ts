@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { mapReducerAtom } from "./map-reducer-atom";
 import { isTimeInputValidAtom, selectLineIndexAtom } from "./state-atoms";
 import { getEditAtomStore } from "./store";
+
 const store = getEditAtomStore();
 
 const isNotSelectLineAtom = atom((get) => {

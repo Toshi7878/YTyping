@@ -107,6 +107,7 @@ export default [
       "arrow-spacing": "error",
       "object-shorthand": "error",
       "prefer-template": "error",
+      "import/newline-after-import": ["error", { count: 1 }],
 
       "no-restricted-imports": [
         "error",

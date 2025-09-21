@@ -1,13 +1,13 @@
-import type { ExtractAtomValue} from "jotai";
-import { atom, useAtomValue, useSetAtom } from "jotai";
-import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
-
 import type { YouTubeSpeed } from "@/types/global-types";
+import type { ExtractAtomValue } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
+import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import type { TAB_NAMES } from "../const";
 import { playerAtom, timeInputAtom } from "./read-atoms";
 import { getEditAtomStore } from "./store";
+
 const store = getEditAtomStore();
 
 const editUtilsAtom = atomWithReset({

@@ -4,6 +4,7 @@ import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "./consts";
 import type { FilterMode } from "./type";
+
 const store = createStore();
 export const getTimelineAtomStore = () => store;
 

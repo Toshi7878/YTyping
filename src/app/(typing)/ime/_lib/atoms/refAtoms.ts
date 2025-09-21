@@ -4,6 +4,7 @@ import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { getImeTypeAtomStore } from "./store";
+
 const store = getImeTypeAtomStore();
 
 export const playerAtom = atom<YTPlayer | null>(null);

@@ -2,6 +2,7 @@ import { useReadVolume, useUserAgent } from "@/lib/globalAtoms";
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
+
 sound.disableAutoPause = true;
 
 const manifest = [

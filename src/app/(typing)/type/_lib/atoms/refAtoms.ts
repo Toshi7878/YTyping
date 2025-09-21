@@ -6,6 +6,7 @@ import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import type { InputMode } from "../type";
 import { getTypeAtomStore } from "./store";
+
 const store = getTypeAtomStore();
 
 const lineCountAtom = atomWithReset(0);
