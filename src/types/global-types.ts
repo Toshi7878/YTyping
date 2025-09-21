@@ -33,20 +33,22 @@ export interface YTPlayer {
   getOptions(module: string): Promise<object>;
   setOption(module: string, option: string, value: any): Promise<void>;
   setOptions(): Promise<void>;
-  cuePlaylist(
-    playlist: string | readonly string[],
-    index?: number,
-    startSeconds?: number,
-    suggestedQuality?: string,
-  ): void;
-
-  loadPlaylist(
-    playlist: string | readonly string[],
-    index?: number,
-    startSeconds?: number,
-    suggestedQuality?: string,
-  ): void;
-
+  cuePlaylist(playlist: string | readonly string[], index?: number, startSeconds?: number, suggestedQuality?: string);
+  cuePlaylist(playlist: {
+    listType: string;
+    list?: string | undefined;
+    index?: number | undefined;
+    startSeconds?: number | undefined;
+    suggestedQuality?: string | undefined;
+  });
+  loadPlaylist(playlist: string | readonly string[], index?: number, startSeconds?: number, suggestedQuality?: string);
+  loadPlaylist(playlist: {
+    listType: string;
+    list?: string | undefined;
+    index?: number | undefined;
+    startSeconds?: number | undefined;
+    suggestedQuality?: string | undefined;
+  });
   getPlaybackQuality(): string;
   getPlaybackRate(): number;
   getPlayerState(): PlayerState;
@@ -55,15 +57,35 @@ export interface YTPlayer {
   getVideoUrl(): string;
   getVolume(): number;
   cueVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string): Promise<void>;
-
-  cueVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string): void;
-
-  loadVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string): void;
-
-  loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string): Promise<void>;
-
-  isMuted(): void;
-  mute(): void;
+  cueVideoById(video: {
+    videoId: string;
+    startSeconds?: number | undefined;
+    endSeconds?: number | undefined;
+    suggestedQuality?: string | undefined;
+  });
+  cueVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string);
+  cueVideoByUrl(video: {
+    mediaContentUrl: string;
+    startSeconds?: number | undefined;
+    endSeconds?: number | undefined;
+    suggestedQuality?: string | undefined;
+  });
+  loadVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: string);
+  loadVideoByUrl(video: {
+    mediaContentUrl: string;
+    startSeconds?: number | undefined;
+    endSeconds?: number | undefined;
+    suggestedQuality?: string | undefined;
+  });
+  loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: string);
+  loadVideoById(video: {
+    videoId: string;
+    startSeconds?: number | undefined;
+    endSeconds?: number | undefined;
+    suggestedQuality?: string | undefined;
+  });
+  isMuted();
+  mute();
   nextVideo(): void;
   pauseVideo(): void;
   playVideo(): void;

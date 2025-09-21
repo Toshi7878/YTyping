@@ -2,6 +2,7 @@ import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
 import { MapListItem } from "@/server/api/routers/map-list";
 import { cva, VariantProps } from "class-variance-authority";
+import { RESET } from "jotai/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
@@ -55,11 +56,11 @@ const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLA
 
 const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
   const { videoId: mapVideoId, previewTime: mapPreviewTime, previewSpeed: mapPreviewSpeed } = props;
-  const { videoId, player } = usePreviewVideoState();
+  const { videoId } = usePreviewVideoState();
   const setPreviewVideo = useSetPreviewVideo();
   const [isTouchMove, setIsTouchMove] = useState(false);
 
-  const previewYouTube = async () => {
+  const previewYouTube = () => {
     if (videoId !== mapVideoId) {
       setPreviewVideo((prev) => ({
         ...prev,
@@ -67,22 +68,8 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
         previewTime: mapPreviewTime,
         previewSpeed: mapPreviewSpeed ?? 1,
       }));
-      await player?.cueVideoById({
-        videoId: mapVideoId,
-        startSeconds: mapPreviewTime,
-        suggestedQuality: "small",
-      });
-
-      // await new Promise((resolve) => setTimeout(resolve, 120));
-      // player?.playVideo();
     } else {
-      player?.pauseVideo();
-      setPreviewVideo((prev) => ({
-        ...prev,
-        videoId: "",
-        previewTime: 0,
-        previewSpeed: 1,
-      }));
+      setPreviewVideo(RESET);
     }
   };
 
