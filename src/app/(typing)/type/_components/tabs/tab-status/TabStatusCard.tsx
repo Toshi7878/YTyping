@@ -25,9 +25,9 @@ const TabStatusCard = ({ className }: { className: string }) => {
 const StatusTableRow = ({ labels }: { labels: string[] }) => {
   return (
     <TableRow className="border-b-0 hover:bg-transparent">
-      {labels.map((label) => {
-        return <StatusCell key={label} label={label} />;
-      })}
+      {labels.map((label) => (
+        <StatusCell key={label} label={label} />
+      ))}
     </TableRow>
   );
 };

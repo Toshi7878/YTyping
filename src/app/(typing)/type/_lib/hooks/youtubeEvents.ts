@@ -110,7 +110,7 @@ export const useYTEndEvent = () => {
 export const useYTStopEvent = () => {
   const setScene = useSetScene();
   const { readLineProgress, readTotalProgress } = useProgress();
-  const { pauseTimer } = useTimerControls();
+  // const { pauseTimer } = useTimerControls();
   const readGameStateUtils = useReadGameUtilParams();
   return () => {
     console.log("動画停止");
@@ -131,7 +131,7 @@ export const useYTStopEvent = () => {
       setScene("replay_end");
     }
 
-    pauseTimer();
+    // pauseTimer();
   };
 };
 

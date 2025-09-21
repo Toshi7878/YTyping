@@ -194,11 +194,7 @@ const useTimer = () => {
 
     if (isUpdateLine) {
       const constantLineTime = getConstantLineTime(currentLineTime);
-      update({
-        currentOffesettedYTTime,
-        constantLineTime,
-        nextLine,
-      });
+      update({ currentOffesettedYTTime, constantLineTime, nextLine });
       return;
     }
 

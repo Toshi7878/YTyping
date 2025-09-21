@@ -21,7 +21,6 @@ export const useTypeSuccess = () => {
   const { readUserStats, writeUserStats } = useUserStats();
   const { readLineStatus, writeLineStatus } = useLineStatus();
   const { readStatus, writeStatus } = useTypingDetails();
-  const readTypingStatus = useReadTypingStatus();
   const readGameStateUtils = useReadGameUtilParams();
 
   const readMap = useReadMap();
@@ -37,30 +36,35 @@ export const useTypeSuccess = () => {
     lineRemainConstantTime: number;
     updatePoint: number;
   }) => {
-    const newStatus = readTypingStatus();
     const lineTypeCount = readLineStatus().type;
+    const { completeCount, failureCount } = readStatus();
+    const map = readMap();
 
-    if (lineTypeCount === 1) {
-      newStatus.point = updatePoint;
-    } else if (updatePoint > 0) {
-      newStatus.point += updatePoint;
-    }
-    newStatus.type++;
+    setTypingStatus((prev) => {
+      let { point } = prev;
+      if (lineTypeCount === 1) point = updatePoint;
+      else if (updatePoint > 0) point = prev.point + updatePoint;
 
-    if (isCompleted) {
-      const timeBonus = Math.floor(lineRemainConstantTime * 100);
-      newStatus.timeBonus = timeBonus;
-      newStatus.score += newStatus.point + timeBonus;
-      const { completeCount, failureCount } = readStatus();
-      const map = readMap();
-      if (!map) return;
+      const type = prev.type + 1;
 
-      newStatus.line = map.lineLength - (completeCount + failureCount);
+      let { timeBonus } = prev;
+      let { score } = prev;
+      let { line } = prev;
+      let { rank } = prev;
 
-      newStatus.rank = calcCurrentRank(newStatus.score);
-    }
+      if (isCompleted) {
+        const tb = Math.floor(lineRemainConstantTime * 100);
+        timeBonus = tb;
+        score = prev.score + point + tb;
+        if (map) {
+          line = map.lineLength - (completeCount + failureCount);
+        }
+        rank = calcCurrentRank(score);
+      }
 
-    setTypingStatus(newStatus);
+      return { ...prev, point, type, timeBonus, score, line, rank };
+    });
+
     setCombo((prev) => prev + 1);
   };
 
@@ -245,14 +249,12 @@ export const useLineUpdateStatus = () => {
   const calcCurrentRank = useCalcCurrentRank();
   const { setTypingStatus } = useSetTypingStatus();
   const { readStatus, writeStatus } = useTypingDetails();
-  const readTypingStatus = useReadTypingStatus();
   const readMap = useReadMap();
   const readLineWord = useReadLineWord();
   const { readLineStatus } = useLineStatus();
   return ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
     if (!map) return;
-    const newStatus = readTypingStatus();
     const lineWord = readLineWord();
 
     writeStatus({
@@ -261,29 +263,30 @@ export const useLineUpdateStatus = () => {
 
     const isFailured = lineWord.nextChar["k"];
     if (isFailured) {
-      const { failureCount, completeCount } = readStatus();
+      const status = readStatus();
 
-      const newFailureCount = failureCount + 1;
-
-      writeStatus({
-        failureCount: newFailureCount,
-      });
-
-      newStatus.line = map.lineLength - (completeCount + newFailureCount);
-      newStatus.score += newStatus.point;
-      newStatus.rank = calcCurrentRank(newStatus.score);
+      writeStatus({ failureCount: status.failureCount + 1 });
 
       const { totalLatency } = readStatus();
       const { type: lineType } = readLineStatus();
 
-      writeStatus({
-        totalLatency: lineType === 0 ? totalLatency + constantLineTime : totalLatency,
-      });
+      writeStatus({ totalLatency: lineType === 0 ? totalLatency + constantLineTime : totalLatency });
     }
 
-    newStatus.timeBonus = 0;
-    newStatus.point = 0;
-    setTypingStatus(newStatus);
+    setTypingStatus((prev) => {
+      let { score } = prev;
+      let { line } = prev;
+      let { rank } = prev;
+      const { completeCount, failureCount } = readStatus();
+
+      if (isFailured) {
+        score = prev.score + prev.point;
+        line = map.lineLength - (completeCount + failureCount);
+        rank = calcCurrentRank(score);
+      }
+
+      return { ...prev, timeBonus: 0, point: 0, score, line, rank };
+    });
   };
 };
 
