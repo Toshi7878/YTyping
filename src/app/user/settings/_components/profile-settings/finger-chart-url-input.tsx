@@ -35,9 +35,7 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
           placeholder="http://unsi.nonip.net/user/[id] のURLを貼り付け"
           successMessage="URLを更新しました"
           name="url"
-          onSuccess={(value: string) => {
-            reset({ url: value });
-          }}
+          onSuccess={(value) => reset({ url: value })}
           mutation={update}
         />
       </Form>

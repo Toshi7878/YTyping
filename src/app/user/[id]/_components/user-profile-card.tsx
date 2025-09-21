@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MdOutlineEdit } from "react-icons/md";
 import FingerChartUrl from "./user-info/finger-chart-url";
-import KeyBoard from "./user-info/keyboard";
+import KeyBoard from "./user-info/usage-keyboard";
 
 interface UserProfileCardProps {
   userProfile: RouterOutPuts["userProfile"]["getUserProfile"];

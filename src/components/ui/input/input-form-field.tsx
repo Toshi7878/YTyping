@@ -73,7 +73,7 @@ const InputFormField = ({
 interface MutationInputFormFieldProps {
   label: string;
   successMessage: string;
-  mutation: UseMutationResult;
+  mutation: UseMutationResult<unknown, unknown, string>;
   debounceDelay?: number;
   onSuccess?: (value: string) => void;
 }
