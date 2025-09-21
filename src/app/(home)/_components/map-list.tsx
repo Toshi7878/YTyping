@@ -15,16 +15,11 @@ const MapList = () => {
   const isSearching = useIsSearchingState();
   const setIsSearchingAtom = useSetIsSearching();
 
-  const base = useMapListQueryOptions().infiniteList(searchParams);
+  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
+    useMapListQueryOptions().infiniteList(searchParams),
+  );
 
-  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery({
-    ...base,
-  });
-
-  const { ref, inView } = useInView({
-    threshold: 0,
-    rootMargin: "1800px 0px",
-  });
+  const { ref, inView } = useInView({ threshold: 0, rootMargin: "1800px 0px" });
 
   useEffect(() => {
     if (data) {
@@ -46,7 +41,6 @@ const MapList = () => {
             return (
               <CardWithContent key={map.id} variant="map">
                 <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
-
                 <MapInfo map={map} />
               </CardWithContent>
             );
