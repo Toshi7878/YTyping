@@ -36,10 +36,7 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
 
   useEffect(() => {
     addTimer();
-
-    return () => {
-      removeTimer();
-    };
+    return () => removeTimer();
   }, []);
 
   const handleStateChange = useCallback(
