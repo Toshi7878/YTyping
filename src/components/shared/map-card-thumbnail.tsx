@@ -1,7 +1,8 @@
 import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
-import { MapListItem } from "@/server/api/routers/map-list";
-import { cva, VariantProps } from "class-variance-authority";
+import type { MapListItem } from "@/server/api/routers/map-list";
+import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { RESET } from "jotai/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -77,7 +78,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
     setIsTouchMove(true);
   };
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+  const handleTouchEnd = () => {
     if (!isTouchMove) {
       if (videoId !== mapVideoId) {
         previewYouTube();

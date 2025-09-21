@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import type React from "react";
 import { useSetIsSearching } from "../atoms";
 import { useSetSearchParams } from "./use-set-search-params";
 

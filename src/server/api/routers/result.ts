@@ -1,5 +1,6 @@
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
-import { db, TXType } from "@/server/drizzle/client";
+import type { TXType } from "@/server/drizzle/client";
+import { db } from "@/server/drizzle/client";
 import {
   MapDifficulties,
   MapLikes,
@@ -10,14 +11,16 @@ import {
   ResultStatuses,
   Users,
 } from "@/server/drizzle/schema";
-import { CreateResultSchema, ResultData } from "@/server/drizzle/validator/result";
+import type { ResultData } from "@/server/drizzle/validator/result";
+import { CreateResultSchema } from "@/server/drizzle/validator/result";
 import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, gt, gte, ilike, inArray, lte, or, SQL } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
+import { and, desc, eq, gt, gte, ilike, inArray, lte, or } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
-import { MapListItem } from "./map-list";
+import type { MapListItem } from "./map-list";
 
 const SelectFilterUserResultListSchema = z.object({
   mode: z.string().default("all"),

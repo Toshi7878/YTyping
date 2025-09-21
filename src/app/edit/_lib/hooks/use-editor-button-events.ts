@@ -10,7 +10,7 @@ import {
 } from "../atoms/state-atoms";
 
 import { backupMap } from "@/lib/indexed-db";
-import { MapLine } from "@/types/map";
+import type { MapLine } from "@/types/map";
 import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";

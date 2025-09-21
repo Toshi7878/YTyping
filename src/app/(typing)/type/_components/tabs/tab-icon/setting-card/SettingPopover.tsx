@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useBreakPoint } from "@/lib/useBreakPoint";
 import { cn } from "@/lib/utils";
-import { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
+import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";

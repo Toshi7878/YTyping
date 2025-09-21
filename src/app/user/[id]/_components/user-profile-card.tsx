@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { H3 } from "@/components/ui/typography";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";

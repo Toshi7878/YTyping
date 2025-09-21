@@ -1,10 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { VariantProps } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Label } from "../label";
-import { Input, inputVariants } from "./input";
+import type { inputVariants } from "./input";
+import { Input } from "./input";
 
 export interface LabeledInputProps
   extends Omit<React.ComponentProps<"input">, "size">,

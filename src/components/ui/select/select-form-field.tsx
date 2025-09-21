@@ -1,6 +1,7 @@
 "use client";
 
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import type { ComponentProps } from "react";
 import { useFormContext } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 
@@ -24,7 +25,7 @@ const SelectFormField = ({
   description,
   options,
   ...props
-}: SelectFormFieldProps & React.ComponentProps<typeof Select>) => {
+}: SelectFormFieldProps & ComponentProps<typeof Select>) => {
   const form = useFormContext();
 
   return (

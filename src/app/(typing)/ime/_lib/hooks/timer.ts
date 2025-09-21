@@ -13,7 +13,7 @@ import {
   useSetWipeCount,
 } from "../atoms/stateAtoms";
 import { DISPLAY_LINE_LENGTH } from "../const";
-import { ParseMap } from "../type";
+import type { ParseMap } from "../type";
 import { useGetTime } from "./getYTTime";
 
 const imeTypeTicker = new Ticker();

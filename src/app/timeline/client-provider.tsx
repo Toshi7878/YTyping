@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import React from "react";
 import { getTimelineAtomStore, searchResultKpmAtom, searchResultModeAtom } from "./_lib/atoms";
 import { DEFAULT_KPM_SEARCH_RANGE } from "./_lib/consts";
-import { FilterMode } from "./_lib/type";
+import type { FilterMode } from "./_lib/type";
 
 interface TimelineProviderProps {
   children: React.ReactNode;

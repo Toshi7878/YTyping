@@ -1,4 +1,4 @@
-import { thumbnailQualityEnum } from "@/server/drizzle/schema";
+import type { thumbnailQualityEnum } from "@/server/drizzle/schema";
 
 export const getThumbnailQuality = (videoId: string) => {
   const img = new window.Image();

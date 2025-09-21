@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 
 interface ResultToolTipTextProps {
   typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"];

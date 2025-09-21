@@ -9,7 +9,7 @@ import {
   useSetNotify,
   useSetPlayingInputMode,
 } from "../../atoms/stateAtoms";
-import { InputMode } from "../../type";
+import type { InputMode } from "../../type";
 import { useGetTime } from "./getYTTime";
 
 export const useInputModeChange = () => {

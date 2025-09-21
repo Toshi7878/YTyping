@@ -1,10 +1,11 @@
-import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import type { ExtractAtomValue} from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 
-import { YouTubeSpeed } from "@/types/global-types";
+import type { YouTubeSpeed } from "@/types/global-types";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { TAB_NAMES } from "../const";
+import type { TAB_NAMES } from "../const";
 import { playerAtom, timeInputAtom } from "./read-atoms";
 import { getEditAtomStore } from "./store";
 const store = getEditAtomStore();

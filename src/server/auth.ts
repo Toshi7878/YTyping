@@ -13,7 +13,7 @@ export const { auth, handlers, signIn } = NextAuth({
     newUser: "/user/register",
   },
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       if (!user?.email) return false;
 
       const email_hash = md5(user.email).toString();

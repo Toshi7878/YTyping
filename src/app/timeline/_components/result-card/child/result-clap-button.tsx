@@ -7,16 +7,15 @@ import { useSession } from "next-auth/react";
 import { FaHandsClapping } from "react-icons/fa6";
 
 interface ResultClapButtonProps {
-  mapId: number;
   resultId: number;
   clapCount: number;
   hasClapped: boolean;
 }
 
-function ResultClapButton({ mapId, resultId, clapCount, hasClapped: hasClap }: ResultClapButtonProps) {
+function ResultClapButton({ resultId, clapCount, hasClapped: hasClap }: ResultClapButtonProps) {
   const { data: session } = useSession();
 
-  const toggleClapMutation = useClapMutationTimeline({ mapId });
+  const toggleClapMutation = useClapMutationTimeline();
 
   const onClick = () => {
     if (!session) return;

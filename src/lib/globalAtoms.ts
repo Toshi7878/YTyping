@@ -1,10 +1,10 @@
-import { ActiveUserStatus, YTPlayer } from "@/types/global-types";
+import type { ActiveUserStatus, YTPlayer } from "@/types/global-types";
 import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
-import { UAParser } from "ua-parser-js";
+import type { UAParser } from "ua-parser-js";
 
 const store = getDefaultStore();
 

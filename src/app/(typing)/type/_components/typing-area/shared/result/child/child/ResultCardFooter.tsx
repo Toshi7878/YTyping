@@ -3,7 +3,6 @@
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { memo } from "react";
 
 interface ResultCardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
   scoreCount?: number;
@@ -51,11 +50,11 @@ function ResultCardFooter({
       >
         <Badge variant="default" className="rounded-md px-2 py-1 text-sm">
           ポイント: {point}
-          {tBonus ? `+${tBonus}` : ""}
+          {tBonus ? `+${tBonus}` : ""} / {maxLinePoint}
         </Badge>
       </TooltipWrapper>
     </div>
   );
 }
 
-export default memo(ResultCardFooter);
+export default ResultCardFooter;

@@ -1,9 +1,10 @@
-import { TypeResult } from "@/server/drizzle/validator/result";
-import { YTPlayer } from "@/types/global-types";
-import { atom, ExtractAtomValue } from "jotai";
+import type { TypeResult } from "@/server/drizzle/validator/result";
+import type { YTPlayer } from "@/types/global-types";
+import type { ExtractAtomValue } from "jotai";
+import { atom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputMode } from "../type";
+import type { InputMode } from "../type";
 import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 

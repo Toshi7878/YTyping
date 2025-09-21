@@ -1,6 +1,7 @@
 import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import { Atom, useAtomValue, useStore } from "jotai";
+import type { Atom} from "jotai";
+import { useAtomValue, useStore } from "jotai";
 import { focusTypingStatusAtoms } from "../../../_lib/atoms/stateAtoms";
 
 export default function StatusCell({ label }: { label: string }) {

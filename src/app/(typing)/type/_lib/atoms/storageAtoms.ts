@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputMode } from "../type";
+import type { InputMode } from "../type";
 import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 

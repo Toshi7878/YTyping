@@ -1,5 +1,6 @@
 import interact from "interactjs";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import type { CSSProperties} from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Partial<T> = {
   [P in keyof T]?: T[P];

@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
+import type { ReactNode } from "react";
 
 const kbdVariants = cva(
   "bottom-card-kbd rounded border border-b-[1px] border-border bg-background px-1.5 py-0.5 text-3xl  transition-transform duration-100 ease-in-out hover:scale-120 md:text-xl",
@@ -13,22 +14,14 @@ const kbdVariants = cva(
   },
 );
 
-interface CustomKbdProps {
+interface KbdProps {
   disabled?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   onClick?: () => void;
-  hidden?: boolean;
   className?: string;
 }
 
-const Kbd = ({
-  disabled,
-  children,
-  onClick,
-  hidden,
-  className,
-  ...rest
-}: CustomKbdProps & React.ComponentPropsWithoutRef<"kbd">) => {
+const Kbd = ({ disabled, children, onClick, className, ...rest }: KbdProps & React.ComponentPropsWithoutRef<"kbd">) => {
   return (
     <kbd className={cn(kbdVariants({ disabled }), className)} onClick={disabled ? undefined : onClick} {...rest}>
       {children}

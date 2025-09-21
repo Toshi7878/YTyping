@@ -2,7 +2,7 @@ import ClearRateText from "@/components/shared/text/clear-rate-text";
 import { InputModeText } from "@/components/shared/text/input-mode-text";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 
 interface ResultStatusProps {
   result: RouterOutPuts["result"]["usersResultList"]["items"][number];

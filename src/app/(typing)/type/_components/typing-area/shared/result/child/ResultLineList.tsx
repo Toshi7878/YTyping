@@ -3,7 +3,7 @@ import { useMapState, useSceneGroupState, useSetLineSelectIndex } from "@/app/(t
 
 import { usePlayer, useResultCards } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/moveLine";
-import { ResultData } from "@/server/drizzle/validator/result";
+import type { ResultData } from "@/server/drizzle/validator/result";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import OptimizedResultCard from "./OptimizedResultCard";

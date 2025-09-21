@@ -4,7 +4,7 @@ import {
   IncrementTypingCountStatsSchema,
 } from "@/server/drizzle/validator/user-stats";
 import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
-import { OpenApiContentType } from "trpc-to-openapi";
+import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import { optionalAuthProcedure, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -227,7 +227,7 @@ export const userStatsRouter = {
     const dataMap = new Map<string, DayCounts>();
     userActivityTypeCounts.forEach((record) => {
       const dateKey = new Date(record.createdAt).toISOString().split("T")[0];
-      const { createdAt, ...dayData } = record;
+      const { createdAt: _, ...dayData } = record;
       dataMap.set(dateKey, dayData);
     });
 

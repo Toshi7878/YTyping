@@ -92,7 +92,7 @@ const TypingWords = () => {
   );
 };
 
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 
 interface WordProps {
   correct: string;

@@ -1,7 +1,7 @@
 // Central limits for data sizes stored in DB
 // Aligns with existing validators in `src/validator/const.ts` and UI usage.
 
-import {
+import type {
   InputModeToggleKeyEnum,
   lineCompletedDisplayEnum,
   mainWordDisplayEnum,

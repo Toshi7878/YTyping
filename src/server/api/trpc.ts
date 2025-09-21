@@ -1,9 +1,10 @@
-import { inferRouterInputs, inferRouterOutputs, initTRPC } from "@trpc/server";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
+import type { OpenApiMeta } from "trpc-to-openapi";
 import { auth } from "../auth";
 import { db as drizzleDb } from "../drizzle/client";
 import type { AppRouter } from "./root";
-import { OpenApiMeta } from "trpc-to-openapi";
 
 export const createContext = async () => {
   const session = await auth();
@@ -16,12 +17,9 @@ export const createContext = async () => {
 };
 
 type Context = Awaited<ReturnType<typeof createContext>>;
-const t = initTRPC
-  .context<Context>()
-  .meta<OpenApiMeta>()
-  .create({
-    transformer: superjson,
-  });
+const t = initTRPC.context<Context>().meta<OpenApiMeta>().create({
+  transformer: superjson,
+});
 
 t.procedure.use((opts) => {
   opts.ctx;

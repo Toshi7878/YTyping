@@ -1,6 +1,6 @@
-import { CreateResultStatusSchema, ResultData } from "@/server/drizzle/validator/result";
+import type { CreateResultStatusSchema, ResultData } from "@/server/drizzle/validator/result";
 import { useParams } from "next/navigation";
-import z from "zod";
+import type z from "zod";
 import { useTypingDetails } from "../../atoms/refAtoms";
 import { useReadAllLineResult, useReadTypingStatus } from "../../atoms/stateAtoms";
 

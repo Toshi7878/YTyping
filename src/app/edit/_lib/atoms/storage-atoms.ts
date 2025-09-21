@@ -1,4 +1,5 @@
-import { ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import type { ExtractAtomValue} from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithStorage, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { getEditAtomStore } from "./store";

@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 import { useStatusState } from "../../../_lib/atoms/stateAtoms";
 
 const ResultScore = (props: HTMLAttributes<HTMLDivElement>) => {

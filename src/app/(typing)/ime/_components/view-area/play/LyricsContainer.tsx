@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { HTMLAttributes, useEffect, useRef } from "react";
+import type { HTMLAttributes} from "react";
+import { useEffect, useRef } from "react";
 import { useLyricsContainer } from "../../../_lib/atoms/refAtoms";
 import {
   useCountState,

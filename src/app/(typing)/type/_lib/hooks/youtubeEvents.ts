@@ -1,5 +1,5 @@
 import { useReadVolume } from "@/lib/globalAtoms";
-import { YTPlayer } from "@/types/global-types";
+import type { YTPlayer } from "@/types/global-types";
 import {
   useGameUtilityReferenceParams,
   useLineCount,
@@ -18,7 +18,7 @@ import {
   useSetYTStarted,
 } from "../atoms/stateAtoms";
 import { useReadReadyInputMode } from "../atoms/storageAtoms";
-import { InputMode } from "../type";
+import type { InputMode } from "../type";
 import { useSendUserStats } from "./playing/sendUserStats";
 import { useTimerControls } from "./playing/timer/timer";
 import { useUpdateAllStatus } from "./playing/updateStatus";

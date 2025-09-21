@@ -1,5 +1,5 @@
 import { serverApi } from "@/trpc/server";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import EditProvider from "../_components/client-provider";
 import Content from "../_components/content";

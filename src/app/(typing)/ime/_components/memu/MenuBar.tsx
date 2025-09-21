@@ -1,6 +1,7 @@
 import VolumeRange from "@/components/shared/volume-range";
 import { Button } from "@/components/ui/button";
-import Image, { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import start from "../../_img/control.png";

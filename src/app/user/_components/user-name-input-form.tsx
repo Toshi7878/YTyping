@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
+import type z from "zod";
 
 interface UserNameInputFormProps {
   placeholder?: string;

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

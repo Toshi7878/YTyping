@@ -1,4 +1,4 @@
-import { MapLine } from "@/types/map";
+import type { MapLine } from "@/types/map";
 import Dexie, { type EntityTable } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 
@@ -59,7 +59,7 @@ export const fetchBackupMap = async () => {
 
   if (map?.videoId !== mapInfo?.videoId) return;
   if (!map || !mapInfo) return;
-  const { id, ...info } = mapInfo;
+  const { id: _, ...info } = mapInfo;
 
   return { map: map.map, ...info };
 };

@@ -2,7 +2,7 @@
 import LikeCountIcon from "@/components/shared/map-count/like-count";
 import RankingCount from "@/components/shared/map-count/ranking-count";
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { ResultBadgesMobile } from "./child/result-status";
 import ResultCardContent from "./result-card-content";
 import ResultCardHeader from "./result-card-header";
@@ -24,7 +24,6 @@ function ResultCard({ result }: ResultCardProps) {
         resultId={result.id}
         updatedAt={result.updatedAt}
         clap={result.clap}
-        map={result.map}
         className="mx-0 py-4 md:mx-6"
       />
 

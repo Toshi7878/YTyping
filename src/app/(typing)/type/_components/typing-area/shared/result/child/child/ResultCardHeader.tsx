@@ -1,10 +1,10 @@
 "use client";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { InputMode } from "@/app/(typing)/type/_lib/type";
+import type { InputMode } from "@/app/(typing)/type/_lib/type";
 import { CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { BuildMap } from "@/utils/build-map/buildMap";
+import type { BuildMap } from "@/utils/build-map/buildMap";
 
 interface ResultCardHeaderProps {
   lineNotes: number;

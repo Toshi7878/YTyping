@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H5 } from "@/components/ui/typography";
-import { mainWordDisplayEnum } from "@/server/drizzle/schema";
+import type { mainWordDisplayEnum } from "@/server/drizzle/schema";
 import { MdRestartAlt } from "react-icons/md";
 
 const WORD_OPTIONS_CONFIG = {

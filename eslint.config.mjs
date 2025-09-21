@@ -42,7 +42,9 @@ export default [
       "arrow-spacing": "error",
       "object-shorthand": "error",
       "prefer-template": "error",
-      "react-hooks/exhaustive-deps": "off",
+      // NOTE: Remove plugin-scoped rules unless the plugin is installed and configured.
+      // The 'react-hooks/exhaustive-deps' rule requires 'eslint-plugin-react-hooks'.
+      // Keeping it here without the plugin causes the editor ESLint to fail to load.
     },
   },
   {
@@ -66,6 +68,43 @@ export default [
       "@typescript-eslint": tseslint.plugin,
     },
     rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          prefer: "type-imports", // import type を必須にする
+          disallowTypeAnnotations: false,
+        },
+      ],
+      "no-undef": "error",
+
+      // Common stylistic rules (same as JS section)
+      // "no-console": "warn",
+      "no-debugger": "error",
+      // "prefer-const": "error",
+      // "no-var": "error",
+      // eqeqeq: "error",
+      curly: "off",
+      // "no-eval": "error",
+      // "no-implied-eval": "error",
+      // "no-new-func": "error",
+      // "no-script-url": "error",
+      // "no-alert": "warn",
+      // "no-empty": "error",
+      // "no-duplicate-imports": "error",
+      // "no-useless-return": "error",
+      // "prefer-arrow-callback": "error",
+      // "arrow-spacing": "error",
+      // "object-shorthand": "error",
+      // "prefer-template": "error",
+
       "no-restricted-imports": [
         "error",
         {

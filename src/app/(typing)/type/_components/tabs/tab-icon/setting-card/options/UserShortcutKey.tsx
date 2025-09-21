@@ -1,7 +1,7 @@
 import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H5 } from "@/components/ui/typography";
-import { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
+import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
 
 const UserShortcutKeyCheckbox = () => {
   const { timeOffsetAdjustKey, InputModeToggleKey } = useUserTypingOptionsState();

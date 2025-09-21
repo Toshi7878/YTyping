@@ -7,11 +7,11 @@ import { Popover, PopoverAnchor, PopoverTrigger } from "@/components/ui/popover"
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
 import { useMapRankingQueries } from "@/utils/queries/mapRanking.queries";
 import { useQuery } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";

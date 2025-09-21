@@ -1,11 +1,13 @@
 "use client";
 
-import { Badge, badgeVariants } from "@/components/ui/badge";
+import type { badgeVariants } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { VariantProps } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
-import React, { KeyboardEvent, forwardRef, useState } from "react";
+import type { KeyboardEvent } from "react";
+import React, { forwardRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "../form";
 import { FloatingLabelInput } from "./floating-label-input";

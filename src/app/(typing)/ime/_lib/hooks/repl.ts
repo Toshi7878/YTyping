@@ -1,4 +1,4 @@
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { useMorphQueries } from "@/utils/queries/morph.queries";
 import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic";
 import { useQueryClient } from "@tanstack/react-query";

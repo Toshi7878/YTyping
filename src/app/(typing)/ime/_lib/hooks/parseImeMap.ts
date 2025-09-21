@@ -1,6 +1,6 @@
-import { MapLine } from "@/types/map";
+import type { MapLine } from "@/types/map";
 import { useReadImeTypeOptions } from "../atoms/stateAtoms";
-import { WordResults } from "../type";
+import type { WordResults } from "../type";
 import { useFormatWord } from "./formatWord";
 import { useGenerateTokenizedWords } from "./repl";
 

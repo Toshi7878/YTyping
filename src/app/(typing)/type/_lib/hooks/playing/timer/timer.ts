@@ -22,7 +22,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { useDisplaySkipGuide } from "@/app/(typing)/type/_lib/hooks/playing/timer/displaySkipGuide";
 import { Ticker } from "@pixi/ticker";
-import { LineData } from "../../../type";
+import type { LineData } from "../../../type";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";
 import { useUpdateLineResult } from "../updateLineResult";

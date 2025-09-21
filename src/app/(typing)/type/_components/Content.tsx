@@ -3,7 +3,8 @@ import { useBreakPoint } from "@/lib/useBreakPoint";
 import { BuildMap } from "@/utils/build-map/buildMap";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
-import { CSSProperties, useEffect, useState } from "react";
+import type { CSSProperties} from "react";
+import { useEffect, useState } from "react";
 import { useProgress } from "../_lib/atoms/refAtoms";
 import {
   useInitializeLineResults,

@@ -15,7 +15,8 @@ import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { ConvertOption, useReadWordConvertOption } from "../atoms/storage-atoms";
+import type { ConvertOption} from "../atoms/storage-atoms";
+import { useReadWordConvertOption } from "../atoms/storage-atoms";
 
 const allowedChars = new Set([
   ...KANA_LIST,

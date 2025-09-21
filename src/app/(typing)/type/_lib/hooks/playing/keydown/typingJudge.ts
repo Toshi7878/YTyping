@@ -1,6 +1,6 @@
 import { useReadGameUtilParams, useReadLineWord } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { CHAR_POINT } from "../../../../../../../utils/build-map/buildMap";
-import { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../../type";
+import type { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../../type";
 import { CODE_TO_KANA, KEY_TO_KANA } from "./const";
 
 const KEYBOARD_CHARS = [
@@ -117,13 +117,13 @@ const DAKU_LIST = [
 const HANDAKU_KANA_LIST = ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"];
 
 const DAKU_HANDAKU_LIST = DAKU_LIST.concat(HANDAKU_KANA_LIST);
-const yoonFlickList = ["ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "っ", "ゎ"];
-const yoonFlickListLarge = ["あ", "い", "う", "え", "お", "や", "ゆ", "よ", "つ", "わ"];
-const smallKanaList = ["っ", "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "ゎ", "ヵ", "ヶ", "ん"];
-const OptimisationWhiteList = ["っっ", "っん", "っい", "っう"];
+// const yoonFlickList = ["ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "っ", "ゎ"];
+// const yoonFlickListLarge = ["あ", "い", "う", "え", "お", "や", "ゆ", "よ", "つ", "わ"];
+// const smallKanaList = ["っ", "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "ゎ", "ヵ", "ヶ", "ん"];
+// const OptimisationWhiteList = ["っっ", "っん", "っい", "っう"];
 
-const kana_mode_convert_rule_before = ["←", "↓", "↑", "→", "『", "』"];
-const kana_mode_convert_rule_after = ["ひだり", "した", "うえ", "みぎ", "「", "」"];
+// const kana_mode_convert_rule_before = ["←", "↓", "↑", "→", "『", "』"];
+// const kana_mode_convert_rule_after = ["ひだり", "した", "うえ", "みぎ", "「", "」"];
 
 const Z_COMMAND_MAP = {
   "...": { k: "...", r: ["z.", "z,."], p: CHAR_POINT * 3, t: "symbol" as const },

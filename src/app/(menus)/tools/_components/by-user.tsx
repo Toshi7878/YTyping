@@ -3,7 +3,7 @@
 import TextLink from "@/components/ui/text-link";
 import { useTRPC } from "@/trpc/provider";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Route } from "next";
+import type { Route } from "next";
 
 const ByUser = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();

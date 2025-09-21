@@ -1,8 +1,9 @@
-import { MapListItem } from "@/server/api/routers/map-list";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { MapListItem } from "@/server/api/routers/map-list";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
-import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { InfiniteData } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type MapListFilter = ReturnType<Trpc["mapList"]["getList"]["infiniteQueryFilter"]>;
 type TimeLineFilter = ReturnType<Trpc["result"]["usersResultList"]["infiniteQueryFilter"]>;

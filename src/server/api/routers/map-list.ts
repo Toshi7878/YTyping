@@ -1,5 +1,6 @@
 import { MapDifficulties, MapLikes, Maps, Results, ResultStatuses, Users } from "@/server/drizzle/schema";
-import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, SQL, sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
@@ -71,39 +72,35 @@ export const mapListRouter = {
     const page = input.cursor ? Number(input.cursor) : 0;
     const offset = isNaN(page) ? 0 : page * PAGE_SIZE;
 
-    try {
-      const whereConds = buildWhereConditions({
-        filter: input.filter,
-        minRate: input.minRate,
-        maxRate: input.maxRate,
-        played: input.played,
-        keyword: input.keyword,
-        userId,
-      });
-      const orderers = getSortSql({ sort: input.sort });
+    const whereConds = buildWhereConditions({
+      filter: input.filter,
+      minRate: input.minRate,
+      maxRate: input.maxRate,
+      played: input.played,
+      keyword: input.keyword,
+      userId,
+    });
+    const orderers = getSortSql({ sort: input.sort });
 
-      const maps = await db
-        .select(MAP_LIST_FIELDS)
-        .from(Maps)
-        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-        .innerJoin(Users, eq(Users.id, Maps.creatorId))
-        .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
-        .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
-        .where(whereConds.length ? and(...whereConds) : undefined)
-        .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
-        .limit(PAGE_SIZE + 1)
-        .offset(offset);
+    const maps = await db
+      .select(MAP_LIST_FIELDS)
+      .from(Maps)
+      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+      .innerJoin(Users, eq(Users.id, Maps.creatorId))
+      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
+      .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
+      .where(whereConds.length ? and(...whereConds) : undefined)
+      .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
+      .limit(PAGE_SIZE + 1)
+      .offset(offset);
 
-      let nextCursor: string | undefined = undefined;
-      if (maps.length > PAGE_SIZE) {
-        maps.pop();
-        nextCursor = String(isNaN(page) ? 1 : page + 1);
-      }
-
-      return { maps, nextCursor };
-    } catch (error) {
-      throw new Error("Failed to fetch map list");
+    let nextCursor: string | undefined = undefined;
+    if (maps.length > PAGE_SIZE) {
+      maps.pop();
+      nextCursor = String(isNaN(page) ? 1 : page + 1);
     }
+
+    return { maps, nextCursor };
   }),
   getListLength: publicProcedure.input(SelectMapFilterSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
@@ -118,22 +115,18 @@ export const mapListRouter = {
       userId,
     });
 
-    try {
-      const totalCount = await db
-        .select({ total: count() })
-        .from(Maps)
-        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-        .innerJoin(Users, eq(Users.id, Maps.creatorId))
-        .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
-        .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
-        .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-        .where(whereConds.length ? and(...whereConds) : undefined)
-        .then((rows) => rows[0]?.total ?? 0);
+    const totalCount = await db
+      .select({ total: count() })
+      .from(Maps)
+      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+      .innerJoin(Users, eq(Users.id, Maps.creatorId))
+      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
+      .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
+      .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+      .where(whereConds.length ? and(...whereConds) : undefined)
+      .then((rows) => rows[0]?.total ?? 0);
 
-      return totalCount;
-    } catch (error) {
-      throw new Error("Failed to fetch map list length");
-    }
+    return totalCount;
   }),
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;

@@ -1,6 +1,6 @@
 import { useSetOnlineUsers } from "@/lib/globalAtoms";
 import { supabase } from "@/lib/supabaseClient";
-import { ActiveUserStatus } from "@/types/global-types";
+import type { ActiveUserStatus } from "@/types/global-types";
 import { useUserOptionsQueries } from "@/utils/queries/userOptions.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -62,13 +62,9 @@ export default function useActiveUsers() {
         setOnlineUsers(users);
       });
 
-      channel.on(
-        "presence",
-        { event: "join" },
-        ({ key, newPresences }: { key: string; newPresences: ActiveUserStatus[] }) => {
-          setOnlineUsers((prev) => [...prev, ...newPresences]);
-        },
-      );
+      channel.on("presence", { event: "join" }, ({ newPresences }: { newPresences: ActiveUserStatus[] }) => {
+        setOnlineUsers((prev) => [...prev, ...newPresences]);
+      });
 
       channel.on("presence", { event: "leave" }, ({ key }: { key: string }) => {
         setOnlineUsers((prev) => prev.filter((user) => user.id.toString() !== key));

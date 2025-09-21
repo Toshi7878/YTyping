@@ -11,7 +11,7 @@ import {
   useSetLineKpm,
   useSetTypingStatus,
 } from "../../atoms/stateAtoms";
-import { NextTypeChunk } from "../../type";
+import type { NextTypeChunk } from "../../type";
 
 export const useTypeSuccess = () => {
   const setCombo = useSetCombo();

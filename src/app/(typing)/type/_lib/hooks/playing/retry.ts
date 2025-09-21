@@ -12,7 +12,7 @@ import {
   useSetTabName,
   useSetTypingStatus,
 } from "../../atoms/stateAtoms";
-import { PlayMode } from "../../type";
+import type { PlayMode } from "../../type";
 import { useSendUserStats } from "./sendUserStats";
 import { useTimerControls } from "./timer/timer";
 

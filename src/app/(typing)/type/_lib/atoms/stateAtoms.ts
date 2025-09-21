@@ -1,12 +1,13 @@
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
-import { ResultData } from "@/server/drizzle/validator/result";
-import { BuildMap } from "@/utils/build-map/buildMap";
+import type { ResultData } from "@/server/drizzle/validator/result";
+import type { BuildMap } from "@/utils/build-map/buildMap";
 import deepEqual from "fast-deep-equal";
-import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import type { ExtractAtomValue} from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomFamily, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { InputMode, LineData, LineWord, SceneType } from "../type";
+import type { InputMode, LineData, LineWord, SceneType } from "../type";
 import {
   gameUtilityReferenceParamsAtom,
   lineProgressAtom,
@@ -308,7 +309,7 @@ export const useInitializeLineResults = () => {
 
 export const useClearLineResults = () => {
   return useAtomCallback(
-    useCallback((get, set) => {
+    useCallback((get) => {
       let index = 0;
       while (true) {
         try {

@@ -2,14 +2,15 @@
 
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { getCSSVariable } from "@/utils/getComputedColor";
 import { useUserStatsQueries } from "@/utils/queries/userStats.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { cloneElement } from "react";
-import ActivityCalendar, { Activity } from "react-activity-calendar";
+import type { Activity } from "react-activity-calendar";
+import ActivityCalendar from "react-activity-calendar";
 
 const TypeActivity = () => {
   const { id: userId } = useParams() as { id: string };

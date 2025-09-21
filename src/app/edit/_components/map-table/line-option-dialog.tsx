@@ -2,7 +2,7 @@
 
 import { useHistoryReducer } from "@/app/edit/_lib/atoms/history-reducer-atom";
 import { useMapReducer, useMapState } from "@/app/edit/_lib/atoms/map-reducer-atom";
-import { useCssLengthState, useSetCanUpload } from "@/app/edit/_lib/atoms/state-atoms";
+import { useSetCanUpload } from "@/app/edit/_lib/atoms/state-atoms";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,10 @@ import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
 import { LineOptionSchema } from "@/server/drizzle/validator/map-json";
-import { MapLineEdit } from "@/types/map";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch } from "react";
+import type { Dispatch } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import type z from "zod";
 
 interface LineOptionDialogProps {
   index: number;
@@ -168,23 +167,23 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
   );
 }
 
-interface CSSTextLengthProps {
-  eternalCSSText: string;
-  changeCSSText: string;
-  lineOptions: MapLineEdit["options"] | null;
-}
+// interface CSSTextLengthProps {
+//   eternalCSSText: string;
+//   changeCSSText: string;
+//   lineOptions: MapLineEdit["options"] | null;
+// }
 
-function CSSTextLength({ eternalCSSText, changeCSSText, lineOptions }: CSSTextLengthProps) {
-  const cssLength = useCssLengthState();
+// function CSSTextLength({ eternalCSSText, changeCSSText, lineOptions }: CSSTextLengthProps) {
+//   const cssLength = useCssLengthState();
 
-  const loadLineCustomStyleLength =
-    Number(lineOptions?.eternalCSS?.length || 0) + Number(lineOptions?.changeCSS?.length || 0);
+//   const loadLineCustomStyleLength =
+//     Number(lineOptions?.eternalCSS?.length || 0) + Number(lineOptions?.changeCSS?.length || 0);
 
-  const calcAllCustomStyleLength =
-    cssLength - loadLineCustomStyleLength + (eternalCSSText.length + changeCSSText.length);
-  return (
-    <div className={`text-right ${calcAllCustomStyleLength <= 10000 ? "" : "text-destructive"}`}>
-      {calcAllCustomStyleLength} / 10000
-    </div>
-  );
-}
+//   const calcAllCustomStyleLength =
+//     cssLength - loadLineCustomStyleLength + (eternalCSSText.length + changeCSSText.length);
+//   return (
+//     <div className={`text-right ${calcAllCustomStyleLength <= 10000 ? "" : "text-destructive"}`}>
+//       {calcAllCustomStyleLength} / 10000
+//     </div>
+//   );
+// }

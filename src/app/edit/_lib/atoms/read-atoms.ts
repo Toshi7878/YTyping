@@ -1,4 +1,4 @@
-import { YTPlayer } from "@/types/global-types";
+import type { YTPlayer } from "@/types/global-types";
 import { atom, useSetAtom } from "jotai";
 import { useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";

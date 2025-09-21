@@ -1,5 +1,6 @@
 import { env } from "@/env";
-import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory, SafetySetting } from "@google/generative-ai";
+import type { SafetySetting } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { protectedProcedure } from "../trpc";

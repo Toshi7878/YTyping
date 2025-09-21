@@ -1,5 +1,5 @@
 import { serverApi } from "@/trpc/server";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Content from "./Content";
 import ImeTypeProvider from "./ImeTypeProvider";

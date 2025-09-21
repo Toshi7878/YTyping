@@ -2,7 +2,7 @@
 import LikeCountIcon from "@/components/shared/map-count/like-count";
 import RankingCount from "@/components/shared/map-count/ranking-count";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { formatTime } from "@/utils/formatTime";
 import { nolink } from "@/utils/no-link";
 import Link from "next/link";

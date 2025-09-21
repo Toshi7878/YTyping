@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import { useSession } from "next-auth/react";

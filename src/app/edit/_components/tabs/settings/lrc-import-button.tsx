@@ -24,7 +24,7 @@ export default function LrcImportButton() {
 
             await importMapFile(file);
             toast.success("lrcインポート完了");
-          } catch (error) {
+          } catch {
             toast.error("lrcエラー", {
               description: "ファイルの処理中にエラーが発生しました。",
             });

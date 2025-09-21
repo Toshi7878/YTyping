@@ -1,5 +1,6 @@
 "use client";
-import { ConvertOption, useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage-atoms";
+import type { ConvertOption} from "@/app/edit/_lib/atoms/storage-atoms";
+import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage-atoms";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group/radio-group";

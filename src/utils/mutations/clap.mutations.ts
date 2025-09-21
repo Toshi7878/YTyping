@@ -1,8 +1,9 @@
-import { ResultListItem } from "@/server/api/routers/result";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { ResultListItem } from "@/server/api/routers/result";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
-import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { InfiniteData } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type MapRankingFilter = ReturnType<Trpc["result"]["getMapRanking"]["queryFilter"]>;
 type TimelineFilter = ReturnType<Trpc["result"]["usersResultList"]["infiniteQueryFilter"]>;
@@ -100,7 +101,7 @@ function setRankingClapServer(
   });
 }
 
-export function useClapMutationTimeline({ mapId }: { mapId: number }) {
+export function useClapMutationTimeline() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 

@@ -1,10 +1,11 @@
 import { cn } from "@/lib/utils";
-import { Route } from "next";
+import type { Route } from "next";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 interface TextLinkProps {
   href: Route;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 

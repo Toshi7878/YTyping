@@ -35,13 +35,11 @@ export const useWordSearchReplace = () => {
         continue;
       }
       let replacedWord = map[i]["word"];
-      let replacedLength = 0;
 
       for (let j = 1; j < match.length + 1; j++) {
         replaceFoundFocus({ i, searchText });
         await replaceDialog(i, searchReg, replace, matchLength);
         replacedWord = replacedWord.replace(searchText, "");
-        replacedLength += searchText.length;
         matchLength--;
       }
     }

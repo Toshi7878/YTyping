@@ -26,7 +26,7 @@ import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
-import z from "zod";
+import type z from "zod";
 import { useMapReducer, useReadMap } from "../../../_lib/atoms/map-reducer-atom";
 import {
   useCanUploadState,

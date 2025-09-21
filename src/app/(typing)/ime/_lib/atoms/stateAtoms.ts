@@ -1,10 +1,11 @@
 import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
-import { atom, ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import type { ExtractAtomValue} from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import { DISPLAY_LINE_LENGTH } from "../const";
-import { ParseMap, PlaceholderType, SceneType, WordResults } from "../type";
+import type { ParseMap, PlaceholderType, SceneType, WordResults } from "../type";
 import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();

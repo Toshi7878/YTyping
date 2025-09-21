@@ -1,5 +1,5 @@
 import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Content from "../_components/Content";
 import ClientProvider from "../_components/client-provider";

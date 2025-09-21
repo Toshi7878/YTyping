@@ -1,5 +1,5 @@
 "use client";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useEffect } from "react";

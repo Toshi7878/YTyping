@@ -1,4 +1,4 @@
-import { TypeChunk } from "@/app/(typing)/type/_lib/type";
+import type { TypeChunk } from "@/app/(typing)/type/_lib/type";
 import { CHAR_POINT } from "./buildMap";
 import { ALPHABET_LIST, NUM_LIST, ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./const";
 

@@ -3,13 +3,13 @@
 import { CheckboxFormField } from "@/components/ui/checkbox/checkbox-form-field";
 import { Form } from "@/components/ui/form";
 import SelectFormField from "@/components/ui/select/select-form-field";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { CreateUserOptionSchema } from "@/server/drizzle/validator/user-option";
 import { useTRPC } from "@/trpc/provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import type z from "zod";
 
 interface OptionFormProps {
   userOptions: RouterOutPuts["userOption"]["getUserOptions"];

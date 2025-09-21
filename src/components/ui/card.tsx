@@ -1,7 +1,8 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { cva, VariantProps } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 
 const cardVariants = cva("bg-card text-card-foreground flex flex-col gap-6 rounded-sm py-6 shadow-sm", {
   variants: {

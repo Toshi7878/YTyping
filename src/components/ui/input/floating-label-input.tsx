@@ -2,8 +2,10 @@ import * as React from "react";
 
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { VariantProps } from "class-variance-authority";
-import { Input, inputVariants } from "./input";
+import type { VariantProps } from "class-variance-authority";
+import type { ComponentRef, PropsWithoutRef } from "react";
+import type { inputVariants } from "./input";
+import { Input } from "./input";
 
 export interface InputProps extends Omit<React.ComponentProps<"input">, "size">, VariantProps<typeof inputVariants> {}
 
@@ -37,8 +39,8 @@ interface FloatingLabelInputProps extends InputProps {
   maxLength?: number;
 }
 const FloatingLabelInput = React.forwardRef<
-  React.ComponentRef<typeof FloatingInput>,
-  React.PropsWithoutRef<FloatingLabelInputProps>
+  ComponentRef<typeof FloatingInput>,
+  PropsWithoutRef<FloatingLabelInputProps>
 >(({ id, label, className, containerClassName, ...props }, ref) => {
   return (
     <div className={cn("relative w-full", containerClassName)}>

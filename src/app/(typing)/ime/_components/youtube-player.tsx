@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect } from "react";
-import YouTube, { YouTubeEvent } from "react-youtube";
+import type { YouTubeEvent } from "react-youtube";
+import YouTube from "react-youtube";
 import { useReadScene } from "../_lib/atoms/stateAtoms";
 
 import { useWindowFocus } from "@/utils/hooks/windowFocus";

@@ -1,5 +1,5 @@
 import { useReadVolume } from "@/lib/globalAtoms";
-import { YTPlayer } from "@/types/global-types";
+import type { YTPlayer } from "@/types/global-types";
 import { usePlayer } from "../atoms/refAtoms";
 import { useReadScene } from "../atoms/stateAtoms";
 import { useInitializePlayScene } from "./reset";
@@ -56,11 +56,7 @@ export const useYTPauseEvent = () => {
 };
 
 export const useYTSeekEvent = () => {
-  const { readPlayer } = usePlayer();
-
   return () => {
-    const time = readPlayer().getCurrentTime();
-
     console.log("シーク");
   };
 };

@@ -1,6 +1,6 @@
 import { useReadVolume } from "@/lib/globalAtoms";
-import { YTPlayer } from "@/types/global-types";
-import { YouTubeEvent } from "react-youtube";
+import type { YTPlayer } from "@/types/global-types";
+import type { YouTubeEvent } from "react-youtube";
 import { useReadMap } from "../atoms/map-reducer-atom";
 import { usePlayer, usePreventEditortabAutoFocus } from "../atoms/read-atoms";
 import {

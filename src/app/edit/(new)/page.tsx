@@ -1,5 +1,5 @@
 import CreatedVideoMapList from "@/components/shared/created-video-map-list";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import EditProvider from "../_components/client-provider";
 import Content from "../_components/content";
 

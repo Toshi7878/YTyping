@@ -6,11 +6,12 @@ import {
   usePlayingInputModeState,
   useSceneState,
 } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { LineData } from "@/app/(typing)/type/_lib/type";
+import type { LineData } from "@/app/(typing)/type/_lib/type";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { BuildMap, CHAR_POINT } from "@/utils/build-map/buildMap";
+import type { BuildMap} from "@/utils/build-map/buildMap";
+import { CHAR_POINT } from "@/utils/build-map/buildMap";
 import ResultCardContent from "./child/ResultCardBody";
 import ResultCardFooter from "./child/ResultCardFooter";
 import ResultCardHeader from "./child/ResultCardHeader";

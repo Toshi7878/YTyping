@@ -12,7 +12,7 @@ import {
 import { useJudgeTargetWords } from "../_lib/hooks/judgeTargetWords";
 import useSceneControl from "../_lib/hooks/sceneControl";
 import { useSkip } from "../_lib/hooks/skip";
-import { PlaceholderType, SceneType } from "../_lib/type";
+import type { PlaceholderType, SceneType } from "../_lib/type";
 
 const TICK_STOP_TIME = 1000;
 

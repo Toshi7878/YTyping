@@ -28,7 +28,7 @@ export const BottomButton = function (props: BottomBadgeProps) {
         {props.badgeText}
       </Button>
 
-      <Kbd onClick={props.onClick} disabled={isDisabled} hidden={props.isKbdHidden} className="bg-transparent">
+      <Kbd onClick={props.onClick} disabled={isDisabled} className="bg-transparent">
         {props.kbdText}
       </Kbd>
     </div>

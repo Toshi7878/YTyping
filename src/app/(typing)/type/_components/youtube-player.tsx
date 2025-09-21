@@ -2,7 +2,8 @@
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUserAgent } from "@/lib/globalAtoms";
 import { useCallback, useEffect, useMemo } from "react";
-import YouTube, { YouTubeEvent } from "react-youtube";
+import type { YouTubeEvent } from "react-youtube";
+import YouTube from "react-youtube";
 import { useWindowFocus } from "../../../../utils/hooks/windowFocus";
 import { usePlayer, useReadYTStatus } from "../_lib/atoms/refAtoms";
 import { useReadGameUtilParams } from "../_lib/atoms/stateAtoms";

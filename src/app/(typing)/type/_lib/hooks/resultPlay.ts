@@ -4,7 +4,7 @@ import { usePlayer } from "../atoms/refAtoms";
 import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
 import { useTRPC } from "@/trpc/provider";
 import { useInitializeLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/stateAtoms";
-import { PlayMode } from "../type";
+import type { PlayMode } from "../type";
 
 export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "playing"> }) => {
   const initializeLineResults = useInitializeLineResults();

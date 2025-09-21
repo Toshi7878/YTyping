@@ -1,6 +1,6 @@
 "use client";
 import { useSetPreviewVideo } from "@/lib/globalAtoms";
-import { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import { useEffect } from "react";

@@ -2,7 +2,7 @@ import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
 import { and, desc, eq } from "drizzle-orm";
 import z from "zod";
 import { protectedProcedure } from "../trpc";
-import { MapListItem } from "./map-list";
+import type { MapListItem } from "./map-list";
 
 export const notificationRouter = {
   hasUnread: protectedProcedure.query(async ({ ctx }) => {

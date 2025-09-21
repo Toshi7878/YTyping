@@ -1,8 +1,8 @@
-import { MapLine, MapLineEdit } from "@/types/map";
+import type { MapLine, MapLineEdit } from "@/types/map";
 import { useSetAtom } from "jotai";
 import { atomWithReducer, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer-atom";
+import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer-atom";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
