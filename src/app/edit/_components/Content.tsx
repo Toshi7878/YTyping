@@ -1,6 +1,6 @@
 import MapTable from "./map-table/map-table";
-import EditTabs from "./tabs/Tabs";
-import { TimeRangeAndSpeedChange } from "./TimeRangeAndSpeedChange";
+import EditTabs from "./tabs/tabs";
+import { TimeRangeAndSpeedChange } from "./time-range-and-speed-change";
 import YouTubePlayer from "./youtube-player";
 
 function Content({ videoId }: { videoId?: string }) {

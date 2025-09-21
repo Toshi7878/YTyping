@@ -1,9 +1,9 @@
 "use client";
 import { CardWithContent } from "@/components/ui/card";
 
-import { usePlayer, useSetPreventEditortabAutoFocus } from "@/app/edit/_lib/atoms/refAtoms";
+import { usePlayer, useSetPreventEditortabAutoFocus } from "@/app/edit/_lib/atoms/read-atoms";
 import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
-import useHasMapUploadPermission from "@/app/edit/_lib/hooks/useHasMapUploadPermission";
+import useHasMapUploadPermission from "@/app/edit/_lib/hooks/use-has-map-upload-permission";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
@@ -27,7 +27,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
 import z from "zod";
-import { useMapReducer, useReadMap } from "../../../_lib/atoms/mapReducerAtom";
+import { useMapReducer, useReadMap } from "../../../_lib/atoms/map-reducer-atom";
 import {
   useCanUploadState,
   useReadEditUtils,
@@ -35,9 +35,9 @@ import {
   useSetVideoId,
   useSetYTChaningVideo,
   useVideoIdState,
-} from "../../../_lib/atoms/stateAtoms";
-import { getThumbnailQuality } from "../../../_lib/ts/getThumbailQuality";
-import SuggestionTags from "./SuggestionTags";
+} from "../../../_lib/atoms/state-atoms";
+import { getThumbnailQuality } from "../../../_lib/ts/get-thumbail-quality";
+import SuggestionTags from "./suggestion-tags";
 
 const MapInfoForm = () => {
   const searchParams = useSearchParams();

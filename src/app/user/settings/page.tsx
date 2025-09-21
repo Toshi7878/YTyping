@@ -2,10 +2,10 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { H4 } from "@/components/ui/typography";
 import { auth } from "@/server/auth";
 import { serverApi } from "@/trpc/server";
-import { UserNameInputForm } from "../_components/UserNameInputForm";
-import { OptionForm } from "./_components/option/OptionForm";
-import { FingerChartUrlInput } from "./_components/profile-settings/FingerChartUrlInput";
-import { KeyboardInput } from "./_components/profile-settings/keyboardInput";
+import { UserNameInputForm } from "../_components/user-name-input-form";
+import { OptionForm } from "./_components/option-form";
+import { FingerChartUrlInput } from "./_components/profile-settings/finger-chart-url-input";
+import { KeyboardInput } from "./_components/profile-settings/keyboard-input";
 
 export default async function Page() {
   return (

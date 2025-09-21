@@ -1,5 +1,5 @@
 "use client";
-import VolumeRange from "@/components/shared/VolumeRange";
+import VolumeRange from "@/components/shared/volume-range";
 import { usePreviewPlayerState } from "@/lib/globalAtoms";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";

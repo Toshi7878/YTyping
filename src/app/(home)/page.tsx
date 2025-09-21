@@ -1,7 +1,7 @@
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { parseMapListSearchParams } from "@/utils/queries/search-params/mapList";
 import MapControlArea from "./_components/MapControlArea";
-import MapList from "./_components/MapList";
+import MapList from "./_components/map-list";
 import HomeProvider from "./client-provider";
 
 export default async function Home({ searchParams }: PageProps<"/">) {

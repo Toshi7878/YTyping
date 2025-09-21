@@ -8,8 +8,8 @@ import { toast } from "sonner";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
-import useHasMapUploadPermission from "../_lib/hooks/useHasMapUploadPermission";
-import { useTimerRegistration } from "../_lib/hooks/useTimer";
+import useHasMapUploadPermission from "../_lib/hooks/use-has-map-upload-permission";
+import { useTimerRegistration } from "../_lib/hooks/use-timer";
 
 interface EditProviderProps {
   children: React.ReactNode;

@@ -1,9 +1,9 @@
 "use client";
 
-import CompactMapInfo from "@/components/shared/map-info/CompactMapInfo";
-import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
-import DateDistanceText from "@/components/shared/text/DateDistanceText";
-import UserLinkText from "@/components/shared/text/UserLinkText";
+import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
+import CompactMapInfo from "@/components/shared/map-info/compact-map-info";
+import DateDistanceText from "@/components/shared/text/date-distance-text";
+import UserNameLinkText from "@/components/shared/text/user-name-link-text";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -116,7 +116,7 @@ function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
       <CardHeader className="bg-header-background rounded-t-md px-2 py-2 text-sm">
         <span className="flex items-center gap-1">
-          <UserLinkText
+          <UserNameLinkText
             className="text-header-foreground/80 hover:text-header-foreground underline"
             userId={notify.visitor.id}
             userName={notify.visitor.name}

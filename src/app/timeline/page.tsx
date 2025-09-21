@@ -1,7 +1,7 @@
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { parseResultListSearchParams } from "@/utils/queries/search-params/resultList";
-import SearchContent from "./_components/SearchContent";
-import UsersResultList from "./_components/UsersResultList";
+import SearchContent from "./_components/search-content";
+import UsersResultList from "./_components/users-result-list";
 import TimelineProvider from "./client-provider";
 
 export default async function Home({ searchParams }: PageProps<"/timeline">) {

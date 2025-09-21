@@ -1,6 +1,6 @@
 "use client";
-import CompactMapInfo from "@/components/shared/map-info/CompactMapInfo";
-import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
+import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
+import CompactMapInfo from "@/components/shared/map-info/compact-map-info";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";

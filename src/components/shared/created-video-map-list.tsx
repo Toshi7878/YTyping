@@ -1,7 +1,7 @@
 "use client";
 
-import MapInfo from "@/components/shared/map-info/MapInfo";
-import MapLeftThumbnail from "@/components/shared/MapCardThumbnail";
+import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
+import MapInfo from "@/components/shared/map-info/map-info";
 import { useTRPC } from "@/trpc/provider";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";

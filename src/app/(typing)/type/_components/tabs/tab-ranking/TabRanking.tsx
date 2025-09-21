@@ -1,7 +1,7 @@
-import ClearRateText from "@/components/shared/text/ClearRateText";
-import DateDistanceText from "@/components/shared/text/DateDistanceText";
-import ResultToolTipText from "@/components/shared/text/ResultToolTipText";
-import { UserInputModeText } from "@/components/shared/text/UserInputModeText";
+import ClearRateText from "@/components/shared/text/clear-rate-text";
+import DateDistanceText from "@/components/shared/text/date-distance-text";
+import { InputModeText } from "@/components/shared/text/input-mode-text";
+import ResultToolTipText from "@/components/shared/text/result-tooltip-text";
 import { CardWithContent } from "@/components/ui/card";
 import { Popover, PopoverAnchor, PopoverTrigger } from "@/components/ui/popover";
 import { DataTable } from "@/components/ui/table/data-table";
@@ -110,7 +110,7 @@ const TabRanking = ({ className }: { className?: string }) => {
         size: 60,
         cell: ({ row }) => {
           const { typeCounts } = row.original;
-          return <UserInputModeText typeCounts={typeCounts} />;
+          return <InputModeText typeCounts={typeCounts} />;
         },
       },
       {

@@ -5,21 +5,21 @@ import { cn } from "@/lib/utils";
 import { useCallback, useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
-import { usePlayer } from "../_lib/atoms/refAtoms";
+import { usePlayer } from "../_lib/atoms/read-atoms";
 import {
   useIsYTReadiedState,
   useIsYTStartedState,
   useReadYtPlayerStatus,
   useVideoIdState,
-} from "../_lib/atoms/stateAtoms";
+} from "../_lib/atoms/state-atoms";
+import { useUpdateEndTime } from "../_lib/hooks/use-update-end-time";
 import {
   useYTEndStopEvent,
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
-} from "../_lib/hooks/useEditYouToubeEvents";
-import { useUpdateEndTime } from "../_lib/hooks/useUpdateEndTime";
+} from "../_lib/hooks/use-youtube-events";
 
 interface YouTubePlayerProps {
   className: string;

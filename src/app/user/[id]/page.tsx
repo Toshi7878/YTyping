@@ -1,6 +1,6 @@
 import { serverApi } from "@/trpc/server";
-import UserProfileCard from "./_components/UserProfileCard";
-import UserStatsCard from "./_components/UserStatsCard";
+import UserProfileCard from "./_components/user-profile-card";
+import UserStatsCard from "./_components/user-stats-card";
 
 export default async function Page({ params }: PageProps<"/user/[id]">) {
   const { id } = await params;

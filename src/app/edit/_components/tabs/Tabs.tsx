@@ -1,10 +1,10 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSetTabName, useTabNameState } from "../../_lib/atoms/stateAtoms";
+import { useSetTabName, useTabNameState } from "../../_lib/atoms/state-atoms";
 import { TAB_NAMES } from "../../_lib/const";
-import TabEditor from "./editor/TabEditor";
+import TabEditor from "./editor/editor";
 import MapInfoForm from "./info-form/map-info-form";
-import TabSettings from "./settings/TabSettings";
+import TabSettings from "./settings/settings";
 
 export default function EditTabs() {
   const tabName = useTabNameState();

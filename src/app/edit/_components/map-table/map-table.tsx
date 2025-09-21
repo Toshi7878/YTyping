@@ -3,8 +3,8 @@
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/mapReducerAtom";
-import { usePlayer, useTimeInput } from "../../_lib/atoms/refAtoms";
+import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/map-reducer-atom";
+import { usePlayer, useTimeInput } from "../../_lib/atoms/read-atoms";
 import {
   useDirectEditIndexState,
   useIsWordConvertingState,
@@ -17,7 +17,7 @@ import {
   useSetWord,
   useTimeLineIndexState as useTimeLineIndex,
   useWordState,
-} from "../../_lib/atoms/stateAtoms";
+} from "../../_lib/atoms/state-atoms";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,12 +31,12 @@ import { Cell, ColumnDef } from "@tanstack/react-table";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useEndLineIndexState } from "../../_lib/atoms/buttonDisableStateAtoms";
-import { useAddRubyTagEvent } from "../../_lib/hooks/useAddRubyTag";
-import { useLineUpdateButtonEvent, useWordConvertButtonEvent } from "../../_lib/hooks/useButtonEvents";
-import { useSeekNextPrev, useUndoRedo } from "../../_lib/hooks/useMapTableHotKey";
-import { useWordSearchReplace } from "../../_lib/hooks/useWordFindReplace";
-import LineOptionDialog from "./LineOptionDialog";
+import { useEndLineIndexState } from "../../_lib/atoms/button-disable-state-atoms";
+import { useAddRubyTagEvent } from "../../_lib/hooks/use-add-ruby-tag";
+import { useLineUpdateButtonEvent, useWordConvertButtonEvent } from "../../_lib/hooks/use-editor-button-events";
+import { useSeekNextPrev, useUndoRedo } from "../../_lib/hooks/use-map-table-hotkey";
+import { useWordSearchReplace } from "../../_lib/hooks/use-word-search-replace";
+import LineOptionDialog from "./line-option-dialog";
 
 export default function MapTable() {
   const map = useMapState();
