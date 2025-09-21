@@ -1,18 +1,12 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { atom, useAtomValue, useSetAtom } from "jotai";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/globalAtoms";
 
-const previewIsHiddenAtom = atom(true);
-const usePreviewIsHidden = () => useAtomValue(previewIsHiddenAtom);
-export const useSetPreviewIsHidden = () => useSetAtom(previewIsHiddenAtom);
-
 const PreviewYouTubePlayer = () => {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
-  const isHidden = usePreviewIsHidden();
-  const setPreviewIsHidden = useSetPreviewIsHidden();
+  const [isHidden, setIsHidden] = useState(true);
 
   const volume = useVolumeState();
   const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
@@ -43,6 +37,7 @@ const PreviewYouTubePlayer = () => {
       case 1:
         break;
       case 3:
+        setIsHidden(true);
         break;
       case 5:
         event.target.playVideo();
@@ -52,7 +47,7 @@ const PreviewYouTubePlayer = () => {
   };
 
   const onPlay = (event: YouTubeEvent) => {
-    setPreviewIsHidden(false);
+    setIsHidden(false);
 
     event.target.setPlaybackRate(Number(previewSpeed));
   };
@@ -85,19 +80,10 @@ const PreviewYouTubePlayer = () => {
 
 const usePreviewYouTubeKeyDown = () => {
   const setPreviewVideo = useSetPreviewVideo();
-  const setPreviewIsHidden = useSetPreviewIsHidden();
 
   return (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      setPreviewIsHidden(true);
-      setPreviewVideo((prev) => {
-        return {
-          ...prev,
-          videoId: "",
-          previewTime: 0,
-          previewSpeed: 1,
-        };
-      });
+      // setPreviewVideo(RESET);
     }
   };
 };
