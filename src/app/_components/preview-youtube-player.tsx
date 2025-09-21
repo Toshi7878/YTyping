@@ -1,13 +1,13 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/globalAtoms";
 
 const previewIsHiddenAtom = atom(true);
-const usePreviewIsHidden = () => useAtomValue(previewIsHiddenAtom);
-export const useSetPreviewIsHidden = () => useSetAtom(previewIsHiddenAtom);
+const usePreviewIsHidden = () => useAtomValue(previewIsHiddenAtom, { store: getDefaultStore() });
+export const useSetPreviewIsHidden = () => useSetAtom(previewIsHiddenAtom, { store: getDefaultStore() });
 
 const PreviewYouTubePlayer = () => {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
