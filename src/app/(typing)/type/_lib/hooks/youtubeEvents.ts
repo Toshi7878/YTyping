@@ -64,9 +64,10 @@ export const useYTPlayEvent = () => {
     const movieDuration = readPlayer().getDuration();
     writeYTStatus({ movieDuration });
 
-    const { minPlaySpeed } = readPlaySpeed();
+    const { playSpeed, minPlaySpeed } = readPlaySpeed();
     const { isLoadingOverlay } = readGameStateUtils();
 
+    readPlayer().setPlaybackRate(playSpeed);
     if (isLoadingOverlay) {
       readPlayer().pauseVideo();
       return;
@@ -83,10 +84,7 @@ export const useYTPlayEvent = () => {
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
       const map = readMap();
       if (map && scene === "practice") {
-        updateAllStatus({
-          count: map.mapData.length - 1,
-          updateType: "lineUpdate",
-        });
+        updateAllStatus({ count: map.mapData.length - 1, updateType: "lineUpdate" });
       }
     }
 
