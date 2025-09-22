@@ -15,7 +15,7 @@ import type { ResultData } from "@/server/drizzle/validator/result";
 import { CreateResultSchema } from "@/server/drizzle/validator/result";
 import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { TRPCError } from "@trpc/server";
-import type { SQL } from "drizzle-orm";
+import type { AnyColumn, SQL } from "drizzle-orm";
 import { and, desc, eq, gt, gte, ilike, inArray, lte, or } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
@@ -93,15 +93,20 @@ export const resultRouter = {
     const Creator = alias(Users, "creator");
     const MyResult = alias(Results, "MyResult");
 
+    const { schema, Player } = resultSelectSchema();
+
     const whereConds = [
       ...generateModeFilter({ mode: input.mode }),
       ...generateKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
       ...generateClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
       ...generatePlaySpeedFilter({ minPlaySpeed: input.minPlaySpeed, maxPlaySpeed: input.maxPlaySpeed }),
-      ...generateKeywordFilter({ username: input.username, mapKeyword: input.mapKeyword }),
+      ...generateKeywordFilter({
+        username: input.username,
+        mapKeyword: input.mapKeyword,
+        playerName: Player.name,
+        creatorName: Creator.name,
+      }),
     ];
-
-    const { schema, Player } = resultSelectSchema();
 
     const items = await db
       .select({
@@ -383,11 +388,21 @@ function generatePlaySpeedFilter({ minPlaySpeed, maxPlaySpeed }: { minPlaySpeed:
   return conds;
 }
 
-function generateKeywordFilter({ username, mapKeyword }: { username: string; mapKeyword: string }) {
+function generateKeywordFilter({
+  username,
+  mapKeyword,
+  playerName,
+  creatorName,
+}: {
+  username: string;
+  mapKeyword: string;
+  playerName: AnyColumn;
+  creatorName: AnyColumn;
+}) {
   const conds: SQL<unknown>[] = [];
   if (username && username.trim() !== "") {
     const pattern = `%${username}%`;
-    conds.push(ilike(Users.name, pattern));
+    conds.push(ilike(playerName, pattern));
   }
   if (mapKeyword && mapKeyword.trim() !== "") {
     const pattern = `%${mapKeyword}%`;
@@ -395,7 +410,7 @@ function generateKeywordFilter({ username, mapKeyword }: { username: string; map
       ilike(Maps.title, pattern),
       ilike(Maps.artistName, pattern),
       ilike(Maps.musicSource, pattern),
-      ilike(Users.name, pattern),
+      ilike(creatorName, pattern),
     ) as unknown as SQL<unknown>;
     conds.push(keywordOr);
   }
