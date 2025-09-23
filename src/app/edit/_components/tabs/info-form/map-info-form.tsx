@@ -70,7 +70,7 @@ const MapInfoForm = () => {
       title: mapInfo?.title ?? backupMap?.title ?? "",
       artistName: mapInfo?.artistName ?? backupMap?.artistName ?? "",
       musicSource: mapInfo?.musicSource ?? backupMap?.musicSource ?? "",
-      previewTime: mapInfo?.previewTime ?? backupMap?.previewTime ?? 0,
+      previewTime: Number(mapInfo?.previewTime ?? backupMap?.previewTime ?? 0),
       creatorComment: mapInfo?.creator.comment ?? backupMap?.creatorComment ?? "",
       tags: mapInfo?.tags ?? backupMap?.tags ?? [],
       videoId: mapInfo?.videoId ?? newCreateVideoId ?? "",
@@ -143,7 +143,7 @@ const MapInfoForm = () => {
             musicSource: value.musicSource || "",
             creatorComment: value.creatorComment || "",
             tags: value.tags?.filter((tag): tag is string => typeof tag === "string" && tag !== undefined) || [],
-            previewTime: value.previewTime || 0,
+            previewTime: Number(value.previewTime) || 0,
           });
         });
       });
@@ -302,6 +302,7 @@ const PreviewTimeInput = () => {
             type="number"
             min="0"
             step="0.001"
+            onFocus={(e) => e.target.select()}
             onChange={() => {
               setCanUpload(true);
             }}
@@ -350,7 +351,7 @@ const TypeLinkButton = () => {
   );
 };
 
-const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormSchema>>>) => {
+const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormSchema>>>) => {
   const mapId = usePathname().split("/")[2];
   const readEditUtils = useReadEditUtils();
   const { readPlayer } = usePlayer();
@@ -392,7 +393,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
             musicSource: form.getValues("musicSource"),
             creatorComment: form.getValues("creatorComment"),
             tags: form.getValues("tags"),
-            previewTime: form.getValues("previewTime"),
+            previewTime: Number(form.getValues("previewTime") ?? 0),
           });
 
           void backupMap({
@@ -404,7 +405,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.infer<typeof MapInfoFormS
     }),
   );
 
-  return async (data: z.output<typeof MapInfoFormSchema>) => {
+  return async (data: z.input<typeof MapInfoFormSchema>) => {
     const map = readMap();
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
