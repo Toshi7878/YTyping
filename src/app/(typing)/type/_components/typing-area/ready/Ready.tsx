@@ -2,7 +2,7 @@ import { usePlayer } from "@/app/(typing)/type/_lib/atoms/refAtoms";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import { useWindowFocus } from "@/utils/hooks/windowFocus";
+import { windowFocus } from "@/utils/hooks/windowFocus";
 import { useEffect, useRef } from "react";
 import ReadyInputModeRadioCards from "./ready-child/ReadyInputModeRadioCards";
 import ReadyPlaySpeed from "./ready-child/ReadyPlaySpeed";
@@ -16,7 +16,6 @@ function Ready({ className }: ReadyProps) {
   const speedUpButtonRef = useRef<HTMLButtonElement>(null);
   const speedDownButtonRef = useRef<HTMLButtonElement>(null);
   const map = useMapState();
-  const windowFocus = useWindowFocus();
   const { readPlayer } = usePlayer();
 
   useEffect(() => {

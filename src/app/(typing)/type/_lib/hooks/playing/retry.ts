@@ -37,7 +37,7 @@ export const useRetry = () => {
 
   const setScene = useSetScene();
 
-  const { pauseTimer } = useTimerControls();
+  const { stopTimer } = useTimerControls();
   return (newPlayMode: PlayMode) => {
     const map = readMap();
     if (!map) return;
@@ -101,7 +101,7 @@ export const useRetry = () => {
     }
 
     readPlayer().seekTo(0, true);
-    pauseTimer();
+    stopTimer();
     readPlayer().playVideo();
   };
 };

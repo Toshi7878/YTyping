@@ -5,7 +5,7 @@ import type { YouTubeEvent } from "react-youtube";
 import YouTube from "react-youtube";
 import { useReadScene } from "../_lib/atoms/stateAtoms";
 
-import { useWindowFocus } from "@/utils/hooks/windowFocus";
+import { windowFocus } from "@/utils/hooks/windowFocus";
 import { useTimerRegistration } from "../_lib/hooks/timer";
 import {
   useYTEndEvent,
@@ -29,7 +29,6 @@ const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) =
   const ytStopEvent = useYTStopEvent();
   const ytEndEvent = useYTEndEvent();
   const ytSeekEvent = useYTSeekEvent();
-  const windowFocus = useWindowFocus();
   const { addTimer, removeTimer } = useTimerRegistration();
   const readScene = useReadScene();
 
@@ -39,9 +38,7 @@ const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) =
   }, []);
 
   const handleStateChange = (event: YouTubeEvent) => {
-    if (document.activeElement instanceof HTMLIFrameElement && document.activeElement.tagName === "IFRAME") {
-      windowFocus();
-    }
+    windowFocus();
 
     switch (event.data) {
       case 3:

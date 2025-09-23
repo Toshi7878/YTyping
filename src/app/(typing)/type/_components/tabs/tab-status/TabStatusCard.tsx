@@ -9,7 +9,7 @@ const TabStatusCard = ({ className }: { className: string }) => {
       id="tab-status-card"
       className={{
         card: cn("tab-card py-0", className),
-        cardContent: "my-auto overflow-auto",
+        cardContent: "my-auto overflow-auto pl-[70px] md:pl-6",
       }}
     >
       <Table className={cn("h-48 table-fixed overflow-hidden")}>

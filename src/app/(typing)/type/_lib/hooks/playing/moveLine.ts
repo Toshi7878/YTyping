@@ -20,7 +20,7 @@ export const useMoveLine = () => {
   const { readCount, writeCount } = useLineCount();
   const { readYTStatus } = useReadYTStatus();
 
-  const { pauseTimer } = useTimerControls();
+  const { stopTimer } = useTimerControls();
   const readGameStateUtils = useReadGameUtilParams();
   const { readLineProgress } = useProgress();
 
@@ -57,7 +57,7 @@ export const useMoveLine = () => {
 
     const newLineSelectIndex = typingLineIndexes.indexOf(prevCount) + 1;
     setLineSelectIndex(newLineSelectIndex);
-    pauseTimer();
+    stopTimer();
 
     const newCount = getSeekLineCount(prevTime);
     writeCount(newCount);
@@ -101,7 +101,7 @@ export const useMoveLine = () => {
     const newLineSelectIndex = map.typingLineIndexes.indexOf(nextCount) + 1;
 
     setLineSelectIndex(newLineSelectIndex);
-    pauseTimer();
+    stopTimer();
 
     const newCount = getSeekLineCount(nextTime) + (isTimeBuffer ? 0 : 1);
     writeCount(newCount);
@@ -132,7 +132,7 @@ export const useMoveLine = () => {
     const newCount = getSeekLineCount(seekTime) + (isTimeBuffer ? 0 : 1);
     writeCount(newCount);
     updateLine(newCount);
-    pauseTimer();
+    stopTimer();
 
     readLineProgress().value = seekTime - map.mapData[newCount - 1].time;
   };

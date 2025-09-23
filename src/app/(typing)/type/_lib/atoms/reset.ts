@@ -7,7 +7,7 @@ import {
   useReadYTStatus,
   useTypingDetails,
 } from "./refAtoms";
-import { usePlaySpeedReducer } from "./speedReducerAtoms";
+import { useSetSpeed as useSetPlaySpeed } from "./speedReducerAtoms";
 import {
   useClearLineResults,
   useResetPlayingState,
@@ -18,8 +18,8 @@ import {
 } from "./stateAtoms";
 
 export const usePathChangeAtomReset = () => {
-  const dispatchSpeed = usePlaySpeedReducer();
   const setGameUtils = useSetGameUtilParams();
+  const setPlaySpeed = useSetPlaySpeed();
 
   const { resetTypingStatus } = useSetTypingStatus();
   const { resetGameUtilRefParams } = useGameUtilityReferenceParams();
@@ -37,7 +37,7 @@ export const usePathChangeAtomReset = () => {
     resetCurrentLine();
     clearAllLineResults();
     setGameUtils(RESET);
-    dispatchSpeed({ type: "reset" });
+    setPlaySpeed(RESET);
     setMap(RESET);
     resetTypingStatus();
     resetGameUtilRefParams();

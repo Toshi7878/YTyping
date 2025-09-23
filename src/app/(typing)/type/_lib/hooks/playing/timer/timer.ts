@@ -51,12 +51,14 @@ export const useTimerControls = () => {
   const startTimer = () => {
     if (!typeTicker.started) {
       typeTicker.start();
+      console.log("startTimer");
     }
   };
 
-  const pauseTimer = () => {
+  const stopTimer = () => {
     if (typeTicker.started) {
       typeTicker.stop();
+      console.log("stopTimer");
     }
   };
 
@@ -65,12 +67,10 @@ export const useTimerControls = () => {
     typeTicker.minFPS = rate;
   };
 
-  return { startTimer, pauseTimer, setFrameRate };
+  return { startTimer, stopTimer, setFrameRate };
 };
 
 const useTimer = () => {
-  const { readPlayer } = usePlayer();
-
   const setCurrentTime = useSetCurrentTime();
   const setDisplayRemainTime = useSetLineRemainTime();
   const displaySkipGuide = useDisplaySkipGuide();
@@ -98,8 +98,8 @@ const useTimer = () => {
   const readGameStateUtils = useReadGameUtilParams();
   const readMap = useReadMap();
   const { readCount, writeCount } = useLineCount();
-
-  const { pauseTimer } = useTimerControls();
+  const { readPlayer } = usePlayer();
+  const { stopTimer } = useTimerControls();
   const update = ({
     currentOffesettedYTTime,
     constantLineTime,
@@ -117,8 +117,10 @@ const useTimer = () => {
 
     const { movieDuration } = readYTStatus();
     if (nextLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
-      readPlayer().stopVideo();
-      pauseTimer();
+      stopTimer();
+      const player = readPlayer();
+      player.stopVideo();
+      player.cueVideoById(player.getVideoData().video_id);
       return;
     }
 
@@ -189,8 +191,7 @@ const useTimer = () => {
     const count = readCount();
     const nextLine = map.mapData[count];
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
-    const isUpdateLine =
-      currentOffesettedYTTime >= nextLineTime || currentOffesettedYTTime >= readYTStatus().movieDuration;
+    const isUpdateLine = currentOffesettedYTTime >= nextLineTime;
 
     if (isUpdateLine) {
       const constantLineTime = getConstantLineTime(currentLineTime);
@@ -201,21 +202,19 @@ const useTimer = () => {
     const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
     const isUpdateMs = Math.abs(constantOffesettedYTTime - readGameUtilRefParams().updateMsTimeCount) >= 0.1;
 
+    const constantLineTime = getConstantLineTime(currentLineTime);
     if (isUpdateMs) {
       const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
-      const constantLineTime = getConstantLineTime(currentLineTime);
       updateMs({
         currentOffesettedYTTime,
         constantOffesettedYTTime,
         constantLineTime,
         constantRemainLineTime,
       });
-      writeGameUtilRefParams({
-        updateMsTimeCount: constantOffesettedYTTime,
-      });
+      writeGameUtilRefParams({ updateMsTimeCount: constantOffesettedYTTime });
     }
 
-    setLineProgressValue(currentOffesettedYTTime < 0 ? nextLine.time + currentOffesettedYTTime : currentLineTime);
+    setLineProgressValue(constantLineTime);
     const { scene } = readGameStateUtils();
 
     if (scene === "replay" && count && currentLineTime) {
@@ -256,6 +255,7 @@ const useCalcLineResult = () => {
 
       switch (scene) {
         case "play":
+        case "play_end":
           updateStatus({ constantLineTime });
           break;
         case "practice":

@@ -1,5 +1,4 @@
 import { useReadVolume } from "@/lib/globalAtoms";
-import type { YTPlayer } from "@/types/global-types";
 import { usePlayer } from "../atoms/refAtoms";
 import { useReadScene } from "../atoms/stateAtoms";
 import { useInitializePlayScene } from "./reset";
@@ -66,7 +65,7 @@ export const useYTReadyEvent = () => {
 
   const readVolume = useReadVolume();
   return (event) => {
-    const player = event.target as YTPlayer;
+    const player = event.target as YT.Player;
     player.setVolume(readVolume());
     writePlayer(player);
   };

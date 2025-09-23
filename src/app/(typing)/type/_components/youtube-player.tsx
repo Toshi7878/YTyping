@@ -1,20 +1,17 @@
 "use client";
+
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUserAgent } from "@/lib/globalAtoms";
 import { useCallback, useEffect, useMemo } from "react";
-import type { YouTubeEvent } from "react-youtube";
-import YouTube from "react-youtube";
-import { useWindowFocus } from "../../../../utils/hooks/windowFocus";
 import { usePlayer, useReadYTStatus } from "../_lib/atoms/refAtoms";
 import { useReadGameUtilParams } from "../_lib/atoms/stateAtoms";
 import { useTimerRegistration } from "../_lib/hooks/playing/timer/timer";
-import {
-  useYTPauseEvent,
-  useYTPlayEvent,
-  useYTReadyEvent,
-  useYTSeekEvent,
-  useYTStopEvent,
-} from "../_lib/hooks/youtubeEvents";
+
+import { cn } from "@/lib/utils";
+import { windowFocus } from "@/utils/hooks/windowFocus";
+import type { YouTubeEvent } from "react-youtube";
+import YouTube from "react-youtube";
+import { useOnEnd, useOnPause, useOnPlay, useOnRateChange, useOnReady, useOnSeeked } from "../_lib/hooks/youtubeEvents";
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;
@@ -23,42 +20,52 @@ interface YouTubePlayerProps {
 }
 
 const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
-  const ytReadyEvent = useYTReadyEvent();
-  const ytPlayEvent = useYTPlayEvent();
-  const ytPauseEvent = useYTPauseEvent();
-  const ytStopEvent = useYTStopEvent();
-  const ytSeekEvent = useYTSeekEvent();
-  const windowFocus = useWindowFocus();
+  const onReady = useOnReady();
+  const onPlay = useOnPlay();
+  const onPause = useOnPause();
+  const onEnd = useOnEnd();
+  const onSeeked = useOnSeeked();
+  const onRateChange = useOnRateChange();
   const { addTimer, removeTimer } = useTimerRegistration();
   const isMobile = useUserAgent()?.getDevice().type === "mobile";
-
-  const readGameStateUtils = useReadGameUtilParams();
-
   useEffect(() => {
     addTimer();
     return () => removeTimer();
   }, []);
 
-  const handleStateChange = useCallback(
+  // const memorizedYouTubePlayer = useMemo(() => {
+  //   return (
+  //     <ReactPlayer
+  //       className={cn("mt-2 select-none", className)}
+  //       width={width}
+  //       height={height}
+  //       id="yt_player"
+  //       src={`https://www.youtube.com/watch?v=${videoId}`}
+  //       controls={false}
+  //       playsInline={true}
+  //       config={{
+  //         youtube: {
+  //           enablejsapi: 1,
+  //           rel: 0,
+  //           fs: 0,
+  //         },
+  //       }}
+  //       onLoadedMetadata={({ target }) => onReady((target as unknown as { api: YT.Player }).api)}
+  //       // onStart / onPlay / onPlaying
+  //       onStart={({ target }) => onStart((target as unknown as { api: YT.Player }).api)}
+  //       onPlaying={() => onPlay()}
+  //       onPause={() => onPause()}
+  //       onEnded={({ target }) => onEnd((target as unknown as { api: YT.Player }).api)}
+  //       onSeeked={({ target }) => onSeeked((target as unknown as { api: YT.Player }).api)}
+  //       onRateChange={({ target }) => onRateChange((target as unknown as { api: YT.Player }).api)}
+  //     />
+  //   );
+  // }, [videoId, className, width, height]);
+
+  const onStateChange = useCallback(
     (event: YouTubeEvent) => {
-      if (document.activeElement instanceof HTMLIFrameElement && document.activeElement.tagName === "IFRAME") {
-        windowFocus();
-      }
-
-      if (event.data === 3) {
-        // seek時の処理
-        ytSeekEvent();
-      } else if (event.data === 1) {
-        //	未スタート、他の動画に切り替えた時など
-        console.log("未スタート -1");
-
-        const { scene } = readGameStateUtils();
-        if (scene === "ready") {
-          event.target.seekTo(0, true);
-        }
-      } else if (event.data === 5) {
-        console.log("動画強制停止");
-        ytStopEvent();
+      if (event.data === YT.PlayerState.BUFFERING) {
+        onSeeked(event.target as YT.Player);
       }
     },
 
@@ -68,7 +75,7 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
   const memoizedYouTube = useMemo(
     () => (
       <YouTube
-        className={`${className} mt-2 aspect-video select-none`}
+        className={cn("mt-2 aspect-video select-none", className)}
         id="yt_player"
         videoId={videoId}
         opts={{
@@ -84,11 +91,12 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
             fs: 0,
           },
         }}
-        onReady={ytReadyEvent}
-        onPlay={ytPlayEvent}
-        onPause={ytPauseEvent}
-        onEnd={ytStopEvent}
-        onStateChange={handleStateChange}
+        onReady={({ target }) => onReady(target as YT.Player)}
+        onPlay={({ target }) => onPlay(target as YT.Player)}
+        onPause={() => onPause()}
+        onEnd={onEnd}
+        onStateChange={onStateChange}
+        onPlaybackRateChange={({ target }) => onRateChange(target as YT.Player)}
       />
     ),
 
@@ -104,7 +112,6 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
 };
 
 const MobileCover = () => {
-  const windowFocus = useWindowFocus();
   const { readPlayer } = usePlayer();
   const { readYTStatus } = useReadYTStatus();
 
@@ -119,7 +126,7 @@ const MobileCover = () => {
     }
 
     windowFocus();
-  }, []);
+  }, [readGameStateUtils, readPlayer, readYTStatus]);
 
   return (
     <div

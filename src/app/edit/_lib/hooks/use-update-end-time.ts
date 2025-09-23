@@ -1,11 +1,10 @@
-import type { YTPlayer } from "@/types/global-types";
 import { useMapReducer, useReadMap } from "../atoms/map-reducer-atom";
 
 export const useUpdateEndTime = () => {
   const readMap = useReadMap();
   const mapDispatch = useMapReducer();
 
-  return (player: YTPlayer) => {
+  return (player: YT.Player) => {
     const duration = player.getDuration();
     if (!duration) return;
 

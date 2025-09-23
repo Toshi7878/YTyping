@@ -1,5 +1,5 @@
 import { useReadVolume } from "@/lib/globalAtoms";
-import type { YTPlayer } from "@/types/global-types";
+import { windowFocus } from "@/utils/hooks/windowFocus";
 import {
   useGameUtilityReferenceParams,
   useLineCount,
@@ -7,7 +7,7 @@ import {
   useProgress,
   useReadYTStatus,
 } from "../atoms/refAtoms";
-import { useReadPlaySpeed } from "../atoms/speedReducerAtoms";
+import { useReadPlaySpeed, useSetSpeed } from "../atoms/speedReducerAtoms";
 import {
   useReadGameUtilParams,
   useReadMap,
@@ -23,54 +23,35 @@ import { useSendUserStats } from "./playing/sendUserStats";
 import { useTimerControls } from "./playing/timer/timer";
 import { useUpdateAllStatus } from "./playing/updateStatus";
 
-export const useYTPlayEvent = () => {
+export const useOnStart = () => {
   const setScene = useSetScene();
-  const setNotify = useSetNotify();
   const setPlayingInputMode = useSetPlayingInputMode();
   const { sendPlayCountStats } = useSendUserStats();
   const setTabName = useSetTabName();
   const { startTimer } = useTimerControls();
 
-  const { readPlayer } = usePlayer();
   const setYTStarted = useSetYTStarted();
-  const { readYTStatus, writeYTStatus } = useReadYTStatus();
+  const { writeYTStatus } = useReadYTStatus();
   const readGameStateUtils = useReadGameUtilParams();
   const readReadyInputMode = useReadReadyInputMode();
   const readPlaySpeed = useReadPlaySpeed();
   const updateAllStatus = useUpdateAllStatus();
   const readMap = useReadMap();
+  const { readPlayer } = usePlayer();
 
-  return async () => {
-    console.log("再生 1");
-    const { scene, isYTStarted } = readGameStateUtils();
+  return (player: YT.Player) => {
+    const { scene } = readGameStateUtils();
 
-    if (scene === "play" || scene === "practice" || scene === "replay") {
+    if (scene === "ready") {
       startTimer();
     }
 
-    const { isPaused } = readYTStatus();
-    if (isPaused) {
-      writeYTStatus({ isPaused: false });
-
-      if (scene !== "practice") {
-        setNotify(Symbol("▶"));
-      }
-    }
-
-    if (isYTStarted) {
-      return;
-    }
-
-    const movieDuration = readPlayer().getDuration();
+    const movieDuration = player.getDuration();
     writeYTStatus({ movieDuration });
 
-    const { playSpeed, minPlaySpeed } = readPlaySpeed();
-    const { isLoadingOverlay } = readGameStateUtils();
+    const { minPlaySpeed } = readPlaySpeed();
 
-    if (isLoadingOverlay) {
-      readPlayer().pauseVideo();
-      return;
-    }
+    setTimeout(() => readPlayer().setPlaybackRate(minPlaySpeed), 500);
 
     if (scene !== "replay") {
       if (1 > minPlaySpeed) {
@@ -90,7 +71,41 @@ export const useYTPlayEvent = () => {
     sendPlayCountStats();
     setTabName("ステータス");
     setYTStarted(true);
-    setTimeout(() => readPlayer().setPlaybackRate(playSpeed), 300);
+    player.seekTo(0, true);
+  };
+};
+
+export const useOnPlay = () => {
+  const setNotify = useSetNotify();
+  const { startTimer } = useTimerControls();
+
+  const { readYTStatus, writeYTStatus } = useReadYTStatus();
+  const readGameStateUtils = useReadGameUtilParams();
+  const onStart = useOnStart();
+
+  return async (player: YT.Player) => {
+    windowFocus();
+
+    console.log("再生 1");
+
+    const { scene, isYTStarted } = readGameStateUtils();
+
+    if (!isYTStarted) {
+      onStart(player);
+    }
+
+    if (scene === "play" || scene === "practice" || scene === "replay") {
+      startTimer();
+    }
+
+    const { isPaused } = readYTStatus();
+    if (isPaused) {
+      writeYTStatus({ isPaused: false });
+
+      if (scene !== "practice") {
+        setNotify(Symbol("▶"));
+      }
+    }
   };
 };
 
@@ -105,18 +120,17 @@ export const useYTEndEvent = () => {
   };
 };
 
-export const useYTStopEvent = () => {
+export const useOnEnd = () => {
   const setScene = useSetScene();
   const { readLineProgress, readTotalProgress } = useProgress();
-  // const { pauseTimer } = useTimerControls();
   const readGameStateUtils = useReadGameUtilParams();
   return () => {
-    console.log("動画停止");
+    console.log("終了");
 
     const lineProgress = readLineProgress();
     const totalProgress = readTotalProgress();
 
-    lineProgress.value = lineProgress.max;
+    lineProgress.max = 0;
     totalProgress.value = totalProgress.max;
 
     const { scene } = readGameStateUtils();
@@ -128,15 +142,13 @@ export const useYTStopEvent = () => {
     } else if (scene === "replay") {
       setScene("replay_end");
     }
-
-    // pauseTimer();
   };
 };
 
-export const useYTPauseEvent = () => {
+export const useOnPause = () => {
   const setNotify = useSetNotify();
   const { readYTStatus, writeYTStatus } = useReadYTStatus();
-  const { pauseTimer } = useTimerControls();
+  const { stopTimer: pauseTimer } = useTimerControls();
   const readGameUtilParams = useReadGameUtilParams();
 
   return () => {
@@ -154,13 +166,12 @@ export const useYTPauseEvent = () => {
   };
 };
 
-export const useYTSeekEvent = () => {
-  const { readPlayer } = usePlayer();
+export const useOnSeeked = () => {
   const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const { writeCount } = useLineCount();
 
-  return () => {
-    const time = readPlayer().getCurrentTime();
+  return (player: YT.Player) => {
+    const time = player.getCurrentTime();
 
     const { isRetrySkip } = readGameUtilRefParams();
 
@@ -172,13 +183,38 @@ export const useYTSeekEvent = () => {
   };
 };
 
-export const useYTReadyEvent = () => {
+export const useOnReady = () => {
   const readVolume = useReadVolume();
   const { writePlayer } = usePlayer();
 
-  return (event: { target: YTPlayer }) => {
-    const player = event.target;
+  return (player: YT.Player) => {
     player.setVolume(readVolume());
     writePlayer(player);
+  };
+};
+
+export const useOnRateChange = () => {
+  const setNotify = useSetNotify();
+
+  const { readLineProgress } = useProgress();
+  const readMap = useReadMap();
+  const { readCount } = useLineCount();
+  const setSpeed = useSetSpeed();
+
+  return (player: YT.Player) => {
+    const speed = player.getPlaybackRate();
+
+    setSpeed((prev) => ({ ...prev, playSpeed: speed }));
+
+    setNotify(Symbol(`x${speed.toFixed(2)}`));
+    const lineProgress = readLineProgress();
+    if (lineProgress) {
+      lineProgress.value = 0;
+      const map = readMap();
+      if (!map) return;
+      const count = readCount();
+
+      lineProgress.max = (map.mapData[count].time - (map.mapData[count - 1]?.time ?? 0)) / speed;
+    }
   };
 };

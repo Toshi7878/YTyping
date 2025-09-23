@@ -13,9 +13,10 @@ export const useGetTime = () => {
 
   const getCurrentOffsettedYTTime = () => {
     const { timeOffset } = readGameUtilRefParams();
+    const { movieDuration } = readYTStatus();
     const typingOptions = readTypingOptions();
     const result = readPlayer().getCurrentTime() - typingOptions.timeOffset - timeOffset;
-    return result;
+    return isNaN(result) ? movieDuration : result;
   };
 
   const getConstantOffsettedYTTime = (YTCurrentTime: number) => {
@@ -32,8 +33,7 @@ export const useGetTime = () => {
     }
 
     const prevLine = map.mapData[count - 1];
-    const lineTime = YTCurrentTime - Number(prevLine.time);
-    return lineTime;
+    return YTCurrentTime - Number(prevLine.time);
   };
 
   const getCurrentLineRemainTime = (YTCurrentTime: number) => {

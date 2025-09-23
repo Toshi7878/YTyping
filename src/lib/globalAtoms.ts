@@ -1,4 +1,4 @@
-import type { ActiveUserStatus, YTPlayer } from "@/types/global-types";
+import type { ActiveUserStatus } from "@/types/global-types";
 import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
@@ -27,7 +27,7 @@ const previewVideoAtom = atomWithReset<{
   videoId: string | null;
   previewTime: number | null;
   previewSpeed: number | null;
-  player: YTPlayer | null;
+  player: YT.Player | null;
 }>({ videoId: null, previewTime: null, previewSpeed: null, player: null });
 
 const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));

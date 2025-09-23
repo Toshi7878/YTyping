@@ -3,7 +3,7 @@ import { useBreakPoint } from "@/lib/useBreakPoint";
 import { BuildMap } from "@/utils/build-map/buildMap";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
-import type { CSSProperties} from "react";
+import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useProgress } from "../_lib/atoms/refAtoms";
 import {
@@ -71,9 +71,7 @@ function Content({ videoId, mapId }: ContentProps) {
     <div className="fixed flex h-screen w-screen flex-col items-center">
       <div style={style} className="h-fit">
         <section className="flex w-full gap-6 md:flex-row">
-          {ytLayoutMode === "row" && (
-            <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-full md:w-[460px]" />
-          )}
+          {ytLayoutMode === "row" && <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-[460px]" />}
 
           <TabsArea className="flex flex-[8] flex-col" />
         </section>

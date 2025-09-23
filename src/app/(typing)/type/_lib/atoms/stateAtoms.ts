@@ -2,7 +2,7 @@ import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import type { BuildMap } from "@/utils/build-map/buildMap";
 import deepEqual from "fast-deep-equal";
-import type { ExtractAtomValue} from "jotai";
+import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomFamily, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
@@ -70,7 +70,6 @@ const gameStateUtilParamsAtom = atomWithReset({
   notify: Symbol(""),
   skip: "" as "Space" | "",
   changeCSSCount: 0,
-  isLoadingOverlay: false,
   lineSelectIndex: 0,
   isYTStarted: false,
   lineResultdrawerClosure: false,
@@ -105,7 +104,6 @@ export const notifyAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.pr
 const skipAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("skip"));
 const changeCSSCountAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("changeCSSCount"));
 const lineSelectIndexAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("lineSelectIndex"));
-const isLoadingOverlayAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("isLoadingOverlay"));
 const playingInputModeAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("inputMode"));
 const isYTStartedAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("isYTStarted"));
 
@@ -143,8 +141,6 @@ export const useSetScene = () => useSetAtom(writeSceneAtom, { store });
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });
 export const useSetPlayingInputMode = () => useSetAtom(playingInputModeAtom, { store });
-
-export const useIsLoadingOverlayState = () => useAtomValue(isLoadingOverlayAtom);
 
 export const useSkipState = () => useAtomValue(skipAtom, { store });
 export const useSetSkip = () => useSetAtom(skipAtom, { store });
@@ -406,15 +402,13 @@ const writeCurrentLineAtom = atom(
       lyrics: newCurrentLine["lyrics"],
     });
 
-    const nextTime = Number(newNextLine["time"]);
-
-    const { movieDuration } = get(ytStatusAtom);
     const lineProgress = get(lineProgressAtom);
     const { isPaused } = get(ytStatusAtom);
 
     if (lineProgress && !isPaused) {
       lineProgress.value = 0;
-      lineProgress.max = (nextTime > movieDuration ? movieDuration : nextTime) - Number(newCurrentLine["time"]);
+      const { playSpeed } = get(speedBaseAtom);
+      lineProgress.max = (newNextLine.time - newCurrentLine.time) / playSpeed;
     }
   },
 );
@@ -425,10 +419,11 @@ export const useSetCurrentLine = () => {
     store.set(currentLineAtom, RESET);
     const map = store.get(mapAtom);
     const lineProgress = store.get(lineProgressAtom);
+    const { playSpeed } = store.get(speedBaseAtom);
 
     if (lineProgress && map) {
       lineProgress.value = 0;
-      lineProgress.max = map.mapData[1]["time"];
+      lineProgress.max = map.mapData[1].time / playSpeed;
     }
   }, []);
 

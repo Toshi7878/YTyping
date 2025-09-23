@@ -1,4 +1,4 @@
-import type { YTPlayer } from "@/types/global-types";
+import type {} from "@/types/global-types";
 import { atom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
@@ -7,16 +7,16 @@ import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
 
-export const playerAtom = atom<YTPlayer | null>(null);
+export const playerAtom = atom<YT.Player | null>(null);
 
 export const usePlayer = () => {
   const readPlayer = useAtomCallback(
-    useCallback((get) => get(playerAtom) as YTPlayer, []),
+    useCallback((get) => get(playerAtom) as YT.Player, []),
     { store },
   );
 
   const writePlayer = useAtomCallback(
-    useCallback((get, set, newPlayer: YTPlayer | null) => {
+    useCallback((get, set, newPlayer: YT.Player | null) => {
       set(playerAtom, newPlayer);
     }, []),
     { store },

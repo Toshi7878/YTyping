@@ -1,5 +1,4 @@
 import type { TypeResult } from "@/server/drizzle/validator/result";
-import type { YTPlayer } from "@/types/global-types";
 import type { ExtractAtomValue } from "jotai";
 import { atom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
@@ -211,16 +210,16 @@ export const useGameUtilityReferenceParams = () => {
   };
 };
 
-export const playerAtom = atom<YTPlayer | null>(null);
+export const playerAtom = atom<YT.Player | null>(null);
 
 export const usePlayer = () => {
   const readPlayer = useAtomCallback(
-    useCallback((get) => get(playerAtom) as YTPlayer, []),
+    useCallback((get) => get(playerAtom) as YT.Player, []),
     { store },
   );
 
   const writePlayer = useAtomCallback(
-    useCallback((get, set, newPlayer: YTPlayer | null) => {
+    useCallback((get, set, newPlayer: YT.Player | null) => {
       set(playerAtom, newPlayer);
     }, []),
     { store },

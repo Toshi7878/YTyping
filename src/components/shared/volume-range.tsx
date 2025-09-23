@@ -1,12 +1,11 @@
 "use client";
 import { useSetVolume, useUserAgent, useVolumeState } from "@/lib/globalAtoms";
-import type { YTPlayer } from "@/types/global-types";
 import type { HTMLAttributes } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
 import { Slider } from "../ui/slider";
 
 interface VolumeRangeProps {
-  player: YTPlayer | null;
+  player: YT.Player | null;
 }
 
 export default function VolumeRange({ player, ...props }: VolumeRangeProps & HTMLAttributes<HTMLDivElement>) {

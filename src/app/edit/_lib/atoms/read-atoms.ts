@@ -1,4 +1,3 @@
-import type { YTPlayer } from "@/types/global-types";
 import { atom, useSetAtom } from "jotai";
 import { useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
@@ -35,16 +34,16 @@ export const useTimeInput = () => {
   return { readTime, setTime, writeTimeInput };
 };
 
-export const playerAtom = atom<YTPlayer | null>(null);
+export const playerAtom = atom<YT.Player | null>(null);
 
 export const usePlayer = () => {
   const readPlayer = useAtomCallback(
-    useCallback((get) => get(playerAtom) as YTPlayer, []),
+    useCallback((get) => get(playerAtom) as YT.Player, []),
     { store },
   );
 
   const writePlayer = useAtomCallback(
-    useCallback((get, set, player: YTPlayer) => {
+    useCallback((get, set, player: YT.Player) => {
       set(playerAtom, player);
     }, []),
     { store },

@@ -56,6 +56,7 @@ export default [
         ...globals.browser,
         ...globals.node,
         PageProps: "readonly",
+        YT: "readonly",
       },
       parser: tseslint.parser,
       ecmaVersion: "latest",
