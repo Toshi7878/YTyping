@@ -130,7 +130,7 @@ export const useOnEnd = () => {
     const lineProgress = readLineProgress();
     const totalProgress = readTotalProgress();
 
-    lineProgress.max = 0;
+    lineProgress.value = lineProgress.max;
     totalProgress.value = totalProgress.max;
 
     const { scene } = readGameStateUtils();
