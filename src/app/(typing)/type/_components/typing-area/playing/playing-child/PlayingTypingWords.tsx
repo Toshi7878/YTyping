@@ -19,13 +19,13 @@ const TypingWords = () => {
   const kanaScroll = userOptions.kanaWordScroll > 0 ? userOptions.kanaWordScroll : 0;
   const romaScroll = userOptions.romaWordScroll > 0 ? userOptions.romaWordScroll : 0;
 
-  const [kanaCorrectSlice, setKanaCorrectSlice] = useState(5);
-  const [romaCorrectSlice, setRomaCorrectSlice] = useState(8);
+  const [kanaCorrectSlice, setKanaCorrectSlice] = useState(userOptions.kanaWordScroll);
+  const [romaCorrectSlice, setRomaCorrectSlice] = useState(userOptions.romaWordScroll);
 
   useEffect(() => {
     const handleResize = () => {
-      setKanaCorrectSlice(window.innerWidth >= 768 ? kanaScroll : 5);
-      setRomaCorrectSlice(window.innerWidth >= 768 ? romaScroll : 8);
+      setKanaCorrectSlice(window.innerWidth >= 768 ? kanaScroll : 7);
+      setRomaCorrectSlice(window.innerWidth >= 768 ? romaScroll : 10);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -78,7 +78,7 @@ const TypingWords = () => {
   return (
     <div
       className={cn(
-        "word-font word-outline-text text-6xl leading-20 md:text-[2.6rem] md:leading-15",
+        "word-font word-outline-text text-7xl leading-24 md:text-[2.6rem] md:leading-15",
         isLineCompleted && "word-area-completed",
       )}
     >

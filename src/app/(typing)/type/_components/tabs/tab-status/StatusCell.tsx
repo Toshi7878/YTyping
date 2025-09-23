@@ -11,7 +11,7 @@ export default function StatusCell({ label }: { label: string }) {
       <StatusLabel label={label} />
       <StatusUnderline label={label} />
 
-      <span className="value text-[2.2rem]">
+      <span className="value text-5xl md:text-[2.2rem]">
         {label === "point" ? (
           <PointStatusValue atom={focusTypingStatusAtoms[label]} timeBonusAtom={focusTypingStatusAtoms["timeBonus"]} />
         ) : (

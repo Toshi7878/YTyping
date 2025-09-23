@@ -25,7 +25,7 @@ const ResultToolTipText = ({
   const { kpm, rkpm, kanaToRomaKpm, kanaToRomaRkpm } = typeSpeed;
 
   return (
-    <div className="min-w-48 space-y-3 p-4 text-base">
+    <div className="min-w-36 space-y-3 p-4 text-xs md:min-w-48 md:text-base">
       <TypeCountResult typeCounts={typeCounts} />
 
       <Separator />
@@ -54,7 +54,7 @@ const ResultToolTipText = ({
         </div>
 
         {isKanaFlickTyped && kpm !== kanaToRomaKpm && (
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-center justify-between md:flex-row">
             <span>ローマ字換算kpm: </span>
             <span>
               {kanaToRomaKpm}

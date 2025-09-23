@@ -5,12 +5,13 @@ import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { H4 } from "@/components/ui/typography";
 import { useGetBackupMapInfoLiveQuery } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
 import { useRouter } from "@bprogress/next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import type { Dispatch, SetStateAction} from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
@@ -61,10 +62,10 @@ export default function NewMapPopover() {
           </Button>
         </PopoverTrigger>
       </TooltipWrapper>
-      <PopoverContent className="w-[640px] p-1" side="bottom" align="end" sideOffset={8}>
+      <PopoverContent className="w-full p-1 md:w-[640px]" side="bottom" align="end" sideOffset={8}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
-            <h2 className="text-lg font-semibold">譜面新規作成</h2>
+            <H4>譜面新規作成</H4>
             <InputFormField
               name="videoId"
               label="譜面を作成したいYouTube動画のURLを入力"

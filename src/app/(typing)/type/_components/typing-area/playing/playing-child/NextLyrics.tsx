@@ -8,7 +8,9 @@ const NextLyrics = () => {
   return (
     <div
       id="next_lyrics_kpm"
-      className={cn("text-card-foreground mt-4 font-[system-ui] text-4xl leading-10 opacity-60 md:text-3xl")}
+      className={cn(
+        "text-card-foreground mt-4 font-[system-ui] text-5xl leading-14 opacity-60 md:text-3xl md:leading-10",
+      )}
     >
       <div id="next_lyrics" className={"flex items-end text-[110%] font-bold whitespace-nowrap"}>
         {parse(lyrics)}

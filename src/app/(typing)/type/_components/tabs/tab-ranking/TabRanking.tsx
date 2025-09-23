@@ -169,7 +169,7 @@ const TabRanking = ({ className }: { className?: string }) => {
         className={cn("ranking-table overflow-visible rounded-none border-0")}
         rowClassName={(index) =>
           cn(
-            "border-accent-foreground  cursor-pointer text-3xl font-bold md:text-base",
+            "border-accent-foreground cursor-pointer text-4xl font-bold md:text-base h-20 md:h-auto",
             Number(session?.user.id) === data?.[index]?.player.id && "my-result text-secondary",
             openPopoverIndex === index && "bg-accent/50",
           )
