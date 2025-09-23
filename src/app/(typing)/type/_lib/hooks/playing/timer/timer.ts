@@ -116,7 +116,13 @@ const useTimer = () => {
     }
 
     const { movieDuration } = readYTStatus();
-    if (nextLine?.["lyrics"] === "end" || currentOffesettedYTTime >= movieDuration) {
+
+    const isEnd =
+      nextLine?.["lyrics"] === "end" ||
+      currentOffesettedYTTime >= movieDuration ||
+      readPlayer().getPlayerState() === YT.PlayerState.ENDED;
+
+    if (isEnd) {
       stopTimer();
       const player = readPlayer();
       player.stopVideo();
