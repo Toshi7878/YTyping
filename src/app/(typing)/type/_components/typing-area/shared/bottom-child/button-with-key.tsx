@@ -8,7 +8,8 @@ interface BottomBadgeProps {
   kbdText: string;
   isPauseDisabled: boolean;
   isKbdHidden: boolean;
-  onClick: () => void;
+  onClick?: () => void;
+  onClickCapture?: () => void;
 }
 
 export const BottomButton = function (props: BottomBadgeProps) {
@@ -22,13 +23,19 @@ export const BottomButton = function (props: BottomBadgeProps) {
       <Button
         disabled={isDisabled}
         onClick={props.onClick}
+        onClickCapture={props.onClickCapture}
         variant="outline-accent"
         className="rounded-full text-xl font-bold hover:scale-105"
       >
         {props.badgeText}
       </Button>
 
-      <Kbd onClick={props.onClick} disabled={isDisabled} className="bg-transparent">
+      <Kbd
+        onClick={props.onClick}
+        onClickCapture={props.onClickCapture}
+        disabled={isDisabled}
+        className="bg-transparent"
+      >
         {props.kbdText}
       </Kbd>
     </div>

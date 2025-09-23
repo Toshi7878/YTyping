@@ -94,7 +94,7 @@ const PracticeButtons = () => {
         <BottomButton
           badgeText="リスト"
           kbdText={userOptions.InputModeToggleKey === "TAB" ? "F1" : "Tab"}
-          onClick={() => setLineResultDrawer(true)}
+          onClickCapture={() => setLineResultDrawer(true)}
           isPauseDisabled={false}
           isKbdHidden={false}
         />

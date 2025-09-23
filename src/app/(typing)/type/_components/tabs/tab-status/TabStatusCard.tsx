@@ -12,8 +12,8 @@ const TabStatusCard = ({ className }: { className: string }) => {
         cardContent: "my-auto overflow-auto pl-24 md:pl-6",
       }}
     >
-      <Table className={cn("h-48 table-fixed overflow-hidden")}>
-        <TableBody className={cn("font-mono text-5xl font-bold md:text-[2rem]")}>
+      <Table className="h-48 table-fixed overflow-hidden">
+        <TableBody className="font-mono text-5xl font-bold md:text-[2rem]">
           <StatusTableRow labels={["score", "type", "kpm", "rank"]} />
           <StatusTableRow labels={["point", "miss", "lost", "line"]} />
         </TableBody>
