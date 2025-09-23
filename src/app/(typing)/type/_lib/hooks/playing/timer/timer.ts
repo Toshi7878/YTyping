@@ -23,6 +23,7 @@ import {
 import { useDisplaySkipGuide } from "@/app/(typing)/type/_lib/hooks/playing/timer/displaySkipGuide";
 import { Ticker } from "@pixi/ticker";
 import type { LineData } from "../../../type";
+import { useOnEnd } from "../../youtubeEvents";
 import { useCalcTypeSpeed } from "../calcTypeSpeed";
 import { useGetTime } from "../getYTTime";
 import { useUpdateLineResult } from "../updateLineResult";
@@ -100,6 +101,8 @@ const useTimer = () => {
   const { readCount, writeCount } = useLineCount();
   const { readPlayer } = usePlayer();
   const { stopTimer } = useTimerControls();
+  const onEnd = useOnEnd();
+
   const update = ({
     currentOffesettedYTTime,
     constantLineTime,
@@ -127,6 +130,7 @@ const useTimer = () => {
       const player = readPlayer();
       player.stopVideo();
       player.cueVideoById(player.getVideoData().video_id);
+      onEnd();
       return;
     }
 
