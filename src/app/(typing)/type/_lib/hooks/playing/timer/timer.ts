@@ -191,7 +191,8 @@ const useTimer = () => {
     const count = readCount();
     const nextLine = map.mapData[count];
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
-    const isUpdateLine = currentOffesettedYTTime >= nextLineTime;
+    const isUpdateLine =
+      currentOffesettedYTTime >= nextLineTime || readPlayer().getPlayerState() === YT.PlayerState.ENDED;
 
     if (isUpdateLine) {
       const constantLineTime = getConstantLineTime(currentLineTime);

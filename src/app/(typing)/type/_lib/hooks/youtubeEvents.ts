@@ -51,7 +51,9 @@ export const useOnStart = () => {
 
     const { minPlaySpeed } = readPlaySpeed();
 
-    setTimeout(() => readPlayer().setPlaybackRate(minPlaySpeed), 500);
+    if (minPlaySpeed !== 1 && scene !== "replay") {
+      setTimeout(() => readPlayer().setPlaybackRate(minPlaySpeed), 500);
+    }
 
     if (scene !== "replay") {
       if (1 > minPlaySpeed) {
