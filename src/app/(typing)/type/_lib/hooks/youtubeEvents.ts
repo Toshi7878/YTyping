@@ -111,17 +111,6 @@ export const useOnPlay = () => {
   };
 };
 
-export const useYTEndEvent = () => {
-  const { readPlayer } = usePlayer();
-
-  return () => {
-    console.log("プレイ終了");
-
-    readPlayer().seekTo(0, true);
-    readPlayer().stopVideo();
-  };
-};
-
 export const useOnEnd = () => {
   const setScene = useSetScene();
   const { readLineProgress, readTotalProgress } = useProgress();
