@@ -1,6 +1,7 @@
 import { useNotifyState, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import React from "react";
 import Kbd from "../../../../../../../components/ui/kbd";
 
 interface BottomBadgeProps {
@@ -8,8 +9,8 @@ interface BottomBadgeProps {
   kbdText: string;
   isPauseDisabled: boolean;
   isKbdHidden: boolean;
-  onClick?: () => void;
-  onClickCapture?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onClickCapture?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export const BottomButton = function (props: BottomBadgeProps) {

@@ -17,7 +17,6 @@ const kbdVariants = cva(
 interface KbdProps {
   disabled?: boolean;
   children: ReactNode;
-  onClick?: () => void;
   className?: string;
 }
 
