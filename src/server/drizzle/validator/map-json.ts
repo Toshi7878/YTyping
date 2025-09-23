@@ -60,26 +60,26 @@ const validateCSSLength = (lines: z.infer<typeof lineSchema>[]) => {
 export const mapDataSchema = z
   .array(lineSchema)
   .refine(validateNoHttpContent, {
-    message: "譜面データにはhttpから始まる文字を含めることはできません",
+    error: "譜面データにはhttpから始まる文字を含めることはできません",
   })
   .refine(validateHasTypingWords, {
-    message: "タイピングワードが設定されていません",
+    error: "タイピングワードが設定されていません",
   })
   .refine(validateEndsWithEnd, {
-    message: "最後の歌詞は'end'である必要があります",
+    error: "最後の歌詞は'end'である必要があります",
   })
   .refine(validateStartsWithZero, {
-    message: "最初の時間は0である必要があります",
+    error: "最初の時間は0である必要があります",
   })
   .refine(validateAllTimesAreNumbers, {
-    message: "timeはすべて数値である必要があります",
+    error: "timeはすべて数値である必要があります",
   })
   .refine(validateNoLinesAfterEnd, {
-    message: "endの後に無効な行があります",
+    error: "endの後に無効な行があります",
   })
   .refine(validateUniqueTimeValues, {
-    message: "同じタイムのラインが2つ以上存在しています。",
+    error: "同じタイムのラインが2つ以上存在しています。",
   })
   .refine(validateCSSLength, {
-    message: "カスタムCSSの合計文字数は10000文字以下になるようにしてください",
+    error: "カスタムCSSの合計文字数は10000文字以下になるようにしてください",
   });

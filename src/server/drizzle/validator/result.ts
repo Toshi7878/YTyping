@@ -36,7 +36,7 @@ export const CreateResultSchema = z
     status: CreateResultStatusSchema.required(),
     lineResults: CreateTypingResultJsonSchema,
   })
-  .refine(() => true, { message: "リザルトデータの形式が無効です" });
+  .refine(() => true, { error: "リザルトデータの形式が無効です" });
 
 export type ResultData = z.output<typeof CreateTypingResultJsonSchema>;
 export type TypeResult = ResultData[number]["types"][number];
