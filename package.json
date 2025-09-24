@@ -2,6 +2,7 @@
   "name": "ytyping",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.13.1",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -92,7 +93,9 @@
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.43.0"
   },
-  "patchedDependencies": {
-    "@pixi/sound": "patches/@pixi__sound.patch"
+  "pnpm": {
+    "patchedDependencies": {
+      "@pixi/sound": "patches/@pixi__sound.patch"
+    }
   }
 }
