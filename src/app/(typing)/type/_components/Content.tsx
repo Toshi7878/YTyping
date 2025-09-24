@@ -59,12 +59,13 @@ function Content({ videoId, mapId }: ContentProps) {
     }
   }, [mapData]);
 
-  const { scale } = useWindowScale();
+  const { scale, ready } = useWindowScale();
 
   const style: CSSProperties = {
     transform: `scale(${scale})`,
     transformOrigin: "top",
     width: `${CONTENT_WIDTH}px`,
+    visibility: ready ? "visible" : "hidden",
   };
 
   return (

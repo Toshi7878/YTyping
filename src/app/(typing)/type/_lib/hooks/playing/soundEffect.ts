@@ -3,8 +3,6 @@ import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useUserTypingOptionsStateRef } from "../../atoms/stateAtoms";
 
-sound.disableAutoPause = true;
-
 const manifest = [
   { alias: "type", src: "/wav/type.wav" },
   { alias: "miss", src: "/wav/miss.wav" },
@@ -17,6 +15,8 @@ export const useSoundEffect = () => {
   const isMobile = useUserAgent()?.getDevice().type === "mobile";
 
   useEffect(() => {
+    sound.disableAutoPause = true;
+
     manifest.forEach(({ alias, src }) => {
       if (!sound.exists(alias)) {
         sound.add(alias, {

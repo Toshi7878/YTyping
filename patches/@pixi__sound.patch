@@ -1,0 +1,89 @@
+diff --git a/lib/index.js b/lib/index.js
+index eee72e1e529789c8fa408ccd550d685910f6b213..d15cfa8febe9bdf3d7872dad52b689d4f30c8d1c 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -1,4 +1,5 @@
+ 'use strict';
++if (typeof window !== "undefined") {
+ 
+ var index = require('./filters/index.js');
+ var index$1 = require('./htmlaudio/index.js');
+@@ -13,7 +14,6 @@ var soundAsset = require('./soundAsset.js');
+ var SoundSprite = require('./SoundSprite.js');
+ 
+ const sound = instance.setInstance(new SoundLibrary.SoundLibrary());
+-
+ exports.filters = index;
+ exports.htmlaudio = index$1;
+ exports.SoundLibrary = SoundLibrary.SoundLibrary;
+@@ -26,3 +26,5 @@ exports.soundAsset = soundAsset.soundAsset;
+ exports.SoundSprite = SoundSprite.SoundSprite;
+ exports.sound = sound;
+ //# sourceMappingURL=index.js.map
++}
++
+diff --git a/lib/index.mjs b/lib/index.mjs
+index 5765e018f53bf9633b06d329ae183f38295ed590..6a8b5f5815a8e4b0d54dc0ea97f45769fd12af1a 100644
+--- a/lib/index.mjs
++++ b/lib/index.mjs
+@@ -1,20 +1,20 @@
+ import * as index from './filters/index.mjs';
+-export { index as filters };
+ import * as index$1 from './htmlaudio/index.mjs';
+-export { index$1 as htmlaudio };
+ import { setInstance } from './instance.mjs';
+ import { SoundLibrary } from './SoundLibrary.mjs';
+ import * as index$2 from './utils/index.mjs';
+-export { index$2 as utils };
+ import * as index$3 from './webaudio/index.mjs';
+-export { index$3 as webaudio };
+ export { Filterable } from './Filterable.mjs';
+ export { Filter } from './filters/Filter.mjs';
+ export { Sound } from './Sound.mjs';
+ export { soundAsset } from './soundAsset.mjs';
+ export { SoundSprite } from './SoundSprite.mjs';
++export { index as filters, index$1 as htmlaudio, index$2 as utils, index$3 as webaudio };
+ 
+-const sound = setInstance(new SoundLibrary());
++let sound = null;
++if (typeof window !== "undefined") {
++  sound = setInstance(new SoundLibrary());
++}
+ 
+-export { SoundLibrary, sound };
++export { sound, SoundLibrary };
+ //# sourceMappingURL=index.mjs.map
+diff --git a/lib/utils/supported.mjs b/lib/utils/supported.mjs
+index 7abe989d7f71ee315d72a63823dc5257d6335988..f1ff45fedeffd33b7627609c73fec49838c4640b 100644
+--- a/lib/utils/supported.mjs
++++ b/lib/utils/supported.mjs
+@@ -24,6 +24,9 @@ function validateFormats(typeOverrides) {
+     caf: 'audio/x-caf; codecs="opus"',
+     ...typeOverrides || {}
+   };
++  if (typeof document === "undefined") {
++    return;
++  }
+   const audio = document.createElement("audio");
+   const formats = {};
+   const no = /^no$/;
+diff --git a/lib/webaudio/index.js b/lib/webaudio/index.js
+index 566e3fef0d9591b2655983010fadd2f76b31dded..b2f684b091a0479ba3ab9fd8083499747a6e6fa6 100644
+--- a/lib/webaudio/index.js
++++ b/lib/webaudio/index.js
+@@ -6,11 +6,12 @@ var WebAudioMedia = require('./WebAudioMedia.js');
+ var WebAudioNodes = require('./WebAudioNodes.js');
+ var WebAudioUtils = require('./WebAudioUtils.js');
+ 
+-
++if (typeof window !== "undefined") {
+ 
+ exports.WebAudioContext = WebAudioContext.WebAudioContext;
+ exports.WebAudioInstance = WebAudioInstance.WebAudioInstance;
+ exports.WebAudioMedia = WebAudioMedia.WebAudioMedia;
+-exports.WebAudioNodes = WebAudioNodes.WebAudioNodes;
+-exports.WebAudioUtils = WebAudioUtils.WebAudioUtils;
++  exports.WebAudioNodes = WebAudioNodes.WebAudioNodes;
++  exports.WebAudioUtils = WebAudioUtils.WebAudioUtils;
++}
+ //# sourceMappingURL=index.js.map

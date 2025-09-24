@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@pixi/sound':
+    hash: b0300d5c2c0d3f9f1449ff45b40a439b01f7914f0d33b2c999aa58251be1a9dd
+    path: patches/@pixi__sound.patch
+
 importers:
 
   .:
@@ -22,7 +27,7 @@ importers:
         version: 5.2.1(react-hook-form@7.62.0(react@19.1.1))
       '@pixi/sound':
         specifier: ^6.0.1
-        version: 6.0.1(pixi.js@8.12.0)
+        version: 6.0.1(patch_hash=b0300d5c2c0d3f9f1449ff45b40a439b01f7914f0d33b2c999aa58251be1a9dd)(pixi.js@8.12.0)
       '@pixi/ticker':
         specifier: ^7.4.3
         version: 7.4.3
@@ -5585,7 +5590,7 @@ snapshots:
       '@types/css-font-loading-module': 0.0.12
       ismobilejs: 1.1.1
 
-  '@pixi/sound@6.0.1(pixi.js@8.12.0)':
+  '@pixi/sound@6.0.1(patch_hash=b0300d5c2c0d3f9f1449ff45b40a439b01f7914f0d33b2c999aa58251be1a9dd)(pixi.js@8.12.0)':
     dependencies:
       pixi.js: 8.12.0
 

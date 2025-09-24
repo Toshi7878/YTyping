@@ -5,6 +5,7 @@ export const CONTENT_HEIGHT = 900;
 
 const useWindowScale = () => {
   const [scale, setScale] = useState(1);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     function handleResize() {
@@ -18,6 +19,7 @@ const useWindowScale = () => {
       const dynamicScale = Math.min(scaleX, scaleY);
 
       setScale(dynamicScale);
+      setReady(true);
     }
 
     // 初回ロード時のサイズに基づいてスケーリング
@@ -30,7 +32,7 @@ const useWindowScale = () => {
     };
   }, []);
 
-  return { scale };
+  return { scale, ready };
 };
 
 export default useWindowScale;

@@ -2,4 +2,7 @@ packages:
   - ./
 
 onlyBuiltDependencies:
-  - "@tailwindcss/oxide"
+  - '@tailwindcss/oxide'
+
+patchedDependencies:
+  '@pixi/sound': patches/@pixi__sound.patch
