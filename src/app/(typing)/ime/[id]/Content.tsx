@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import type { MapLine } from "@/types/map";
+import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";

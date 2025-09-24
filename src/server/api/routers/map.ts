@@ -1,7 +1,7 @@
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/server/drizzle/validator/map";
-import type { MapLine } from "@/types/map";
+import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";

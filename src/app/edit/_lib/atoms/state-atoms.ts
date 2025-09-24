@@ -1,4 +1,4 @@
-import type { YouTubeSpeed } from "@/types/global-types";
+import type { YouTubeSpeed } from "@/types/types";
 import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";

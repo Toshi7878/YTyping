@@ -1,7 +1,7 @@
 export type SceneType = "ready" | "play" | "end";
 
 // parseImeMapの戻り値の型を定義
-type ParseMap = {
+export type ParseMap = {
   lines: {
     time: number;
     word: string;

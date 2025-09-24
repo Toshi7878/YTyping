@@ -26,7 +26,7 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type { MapLine } from "@/types/map";
+import type { MapLine } from "@/server/drizzle/validator/map-json";
 import type { Cell, ColumnDef } from "@tanstack/react-table";
 import parse from "html-react-parser";
 import { usePathname } from "next/navigation";

@@ -1,4 +1,4 @@
-import type { MapLine } from "@/types/map";
+import type { MapLine } from "@/server/drizzle/validator/map-json";
 
 export type InputMode = "roma" | "kana" | "flick";
 export type PlayMode = "play" | "replay" | "practice";

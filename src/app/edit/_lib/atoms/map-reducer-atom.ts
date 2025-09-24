@@ -1,4 +1,4 @@
-import type { MapLine } from "@/types/map";
+import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithReducer, useAtomCallback } from "jotai/utils";

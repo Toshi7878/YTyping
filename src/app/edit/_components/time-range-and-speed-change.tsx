@@ -10,7 +10,7 @@ import { useYTSpeedState } from "@/app/edit/_lib/atoms/state-atoms";
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import type { YouTubeSpeed } from "@/types/global-types";
+import type { YouTubeSpeed } from "@/types/types";
 import { usePlayer } from "../_lib/atoms/read-atoms";
 
 export const TimeRangeAndSpeedChange = ({ className }: { className: string }) => {

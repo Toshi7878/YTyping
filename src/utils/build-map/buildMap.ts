@@ -1,5 +1,5 @@
+import type { MapLine } from "@/server/drizzle/validator/map-json";
 import type { ResultData } from "@/server/drizzle/validator/result";
-import type { MapLine } from "@/types/map";
 import type { InputMode, LineData, LineWord, TypeChunk } from "../../app/(typing)/type/_lib/type";
 import { ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./const";
 import { generateTypingWord } from "./generateTypingWord";

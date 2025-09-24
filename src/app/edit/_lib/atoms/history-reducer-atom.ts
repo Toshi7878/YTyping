@@ -1,9 +1,13 @@
-import type { MapLine, MapLineEdit } from "@/types/map";
+import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { useSetAtom } from "jotai";
 import { atomWithReducer, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer-atom";
 import { getEditAtomStore } from "./store";
+
+type MapLineEdit = MapLine & {
+  lineIndex: number;
+};
 
 const store = getEditAtomStore();
 

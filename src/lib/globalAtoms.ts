@@ -1,4 +1,3 @@
-import type { ActiveUserStatus } from "@/types/global-types";
 import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { focusAtom } from "jotai-optics";
 import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
@@ -37,7 +36,16 @@ export const useSetPreviewVideo = () => useSetAtom(previewVideoAtom, { store });
 export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, { store });
 export const useSetPreviewPlayer = () => useSetAtom(previewPlayerFocusAtom, { store });
 
+export interface ActiveUserStatus {
+  id: number;
+  name: string;
+  onlineAt: Date;
+  state: "type" | "edit" | "idle" | "askMe";
+  mapId: number | null;
+}
+
 const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
+
 export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom, { store });
 export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom, { store });
 

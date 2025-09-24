@@ -1,6 +1,6 @@
+import type { ActiveUserStatus } from "@/lib/globalAtoms";
 import { useSetOnlineUsers } from "@/lib/globalAtoms";
 import { supabase } from "@/lib/supabaseClient";
-import type { ActiveUserStatus } from "@/types/global-types";
 import { useUserOptionsQueries } from "@/utils/queries/userOptions.queries";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";

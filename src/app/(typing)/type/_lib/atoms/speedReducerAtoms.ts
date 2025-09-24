@@ -1,4 +1,4 @@
-import type { YouTubeSpeed } from "@/types/global-types";
+import type { YouTubeSpeed } from "@/types/types";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";

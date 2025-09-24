@@ -11,11 +11,13 @@ import metronome from "../../_img/metronome.png";
 import reportPencil from "../../_img/report--pencil.png";
 import trophy from "../../_img/trophy.png";
 import { usePlayer } from "../../_lib/atoms/refAtoms";
+
 import { useResultDialogDisclosure, useSceneState } from "../../_lib/atoms/stateAtoms";
-import { ICON_SIZE } from "../../_lib/const";
 import useSceneControl from "../../_lib/hooks/sceneControl";
 import ResultDialog from "./ResultDialog";
 import SettingPopover from "./SettingPopover";
+
+export const ICON_SIZE = "16";
 
 const MenuBar = () => {
   const { id: mapId } = useParams();

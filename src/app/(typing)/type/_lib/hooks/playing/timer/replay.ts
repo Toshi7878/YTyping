@@ -9,7 +9,7 @@ import {
 import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/hooks/playing/calcTypeSpeed";
 import { useInputModeChange } from "@/app/(typing)/type/_lib/hooks/playing/inputModeChange";
 import type { ResultData, TypeResult } from "@/server/drizzle/validator/result";
-import type { YouTubeSpeed } from "@/types/global-types";
+import type { YouTubeSpeed } from "@/types/types";
 import { useGetTime } from "../getYTTime";
 import type { TypingKeys } from "../keydown/typingJudge";
 import { KanaInput, RomaInput } from "../keydown/typingJudge";

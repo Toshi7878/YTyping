@@ -1,4 +1,4 @@
-import type { MapLine } from "@/types/map";
+import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { useReadImeTypeOptions } from "../atoms/stateAtoms";
 import type { WordResults } from "../type";
 import { useFormatWord } from "./formatWord";

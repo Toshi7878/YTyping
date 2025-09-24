@@ -7,47 +7,49 @@ export const LineOptionSchema = z.object({
   changeVideoSpeed: z.number().min(-1.75).max(2).optional(),
 });
 
-const lineSchema = z.object({
+const LineSchema = z.object({
   time: z.string().max(20),
-  lyrics: z.string().optional(),
-  word: z.string().optional(),
+  lyrics: z.string(),
+  word: z.string(),
   options: LineOptionSchema.optional(),
 });
 
-const validateNoHttpContent = (lines: z.infer<typeof lineSchema>[]) => {
+export type MapLine = z.infer<typeof LineSchema>;
+
+const validateNoHttpContent = (lines: MapLine[]) => {
   return !lines.some((line) =>
     Object.values(line).some((value) => typeof value === "string" && value.includes("http")),
   );
 };
 
-const validateHasTypingWords = (lines: z.infer<typeof lineSchema>[]) => {
+const validateHasTypingWords = (lines: MapLine[]) => {
   return lines.some((line) => line.word && line.word.length > 0);
 };
 
-const validateEndsWithEnd = (lines: z.infer<typeof lineSchema>[]) => {
+const validateEndsWithEnd = (lines: MapLine[]) => {
   return lines[lines.length - 1]?.lyrics === "end";
 };
 
-const validateStartsWithZero = (lines: z.infer<typeof lineSchema>[]) => {
+const validateStartsWithZero = (lines: MapLine[]) => {
   return lines[0]?.time === "0";
 };
 
-const validateAllTimesAreNumbers = (lines: z.infer<typeof lineSchema>[]) => {
+const validateAllTimesAreNumbers = (lines: MapLine[]) => {
   return lines.every((line) => !isNaN(Number(line.time)));
 };
 
-const validateNoLinesAfterEnd = (lines: z.infer<typeof lineSchema>[]) => {
+const validateNoLinesAfterEnd = (lines: MapLine[]) => {
   const endAfterLineIndex = lines.findIndex((line) => line.lyrics === "end");
   return endAfterLineIndex === -1 || lines.every((line, index) => index <= endAfterLineIndex || line.lyrics === "end");
 };
 
-const validateUniqueTimeValues = (lines: z.infer<typeof lineSchema>[]) => {
+const validateUniqueTimeValues = (lines: MapLine[]) => {
   const timeValues = lines.map((line) => line.time);
   const uniqueTimeValues = new Set(timeValues);
   return timeValues.length === uniqueTimeValues.size;
 };
 
-const validateCSSLength = (lines: z.infer<typeof lineSchema>[]) => {
+const validateCSSLength = (lines: MapLine[]) => {
   const totalCSSLength = lines.reduce((total, line) => {
     const eternalCSSLength = line.options?.eternalCSS?.length || 0;
     const changeCSSLength = line.options?.changeCSS?.length || 0;
@@ -58,7 +60,7 @@ const validateCSSLength = (lines: z.infer<typeof lineSchema>[]) => {
 };
 
 export const mapDataSchema = z
-  .array(lineSchema)
+  .array(LineSchema)
   .refine(validateNoHttpContent, {
     error: "譜面データにはhttpから始まる文字を含めることはできません",
   })
