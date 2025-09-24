@@ -60,7 +60,7 @@ export const useUndoRedo = () => {
     if (present) {
       const { actionType, data } = present;
       switch (actionType) {
-        case "add":
+        case "add": {
           const { lineIndex, time, lyrics, word } = data;
           mapDispatch({ type: "delete", index: lineIndex });
           const { speed } = readYtPlayerStatus();
@@ -69,6 +69,7 @@ export const useUndoRedo = () => {
           const { manyPhraseText } = readEditUtils();
           setManyPhrase(`${data.lyrics}\n${manyPhraseText}`);
           break;
+        }
         case "update":
           mapDispatch({ type: "update", payload: data.old, index: data.lineIndex });
           break;
@@ -90,13 +91,14 @@ export const useUndoRedo = () => {
       const { actionType, data } = future[future.length - 1];
 
       switch (actionType) {
-        case "add":
+        case "add": {
           mapDispatch({ type: "add", payload: data });
           deleteTopPhrase(data.lyrics);
           const { manyPhraseText } = readEditUtils();
           const topPhrase = manyPhraseText.split("\n")[0];
           void pickupTopPhrase(topPhrase);
           break;
+        }
         case "update":
           mapDispatch({ type: "update", payload: data.new, index: data.lineIndex });
           break;

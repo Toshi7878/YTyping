@@ -241,7 +241,7 @@ export const useReadCurrentTime = () => {
 };
 
 const lineResultAtomFamily = atomFamily(
-  () => atom<{ isSelected: Boolean; lineResult: ResultData[number] } | undefined>(undefined),
+  () => atom<{ isSelected: boolean; lineResult: ResultData[number] } | undefined>(undefined),
   deepEqual,
 );
 

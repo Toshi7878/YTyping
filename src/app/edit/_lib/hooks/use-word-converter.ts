@@ -15,7 +15,7 @@ import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import type { ConvertOption} from "../atoms/storage-atoms";
+import type { ConvertOption } from "../atoms/storage-atoms";
 import { useReadWordConvertOption } from "../atoms/storage-atoms";
 
 const allowedChars = new Set([
@@ -115,10 +115,10 @@ export const useLyricsFormatUtils = () => {
 
   const transformSymbolBasedOnPreviousChar = (reading: string) => {
     const convertedText = reading
-      .replace(/([^\x01-\x7E])(!+)/g, (_, p1, p2) => p1 + "！".repeat(p2.length))
-      .replace(/([^\x01-\x7E])(\?+)/g, (_, p1, p2) => p1 + "？".repeat(p2.length))
-      .replace(/([\x01-\x7E])(！+)/g, (_, p1, p2) => p1 + "!".repeat(p2.length))
-      .replace(/([\x01-\x7E])(？+)/g, (_, p1, p2) => p1 + "?".repeat(p2.length));
+      .replace(/([^\u0020-\u007E])(!+)/g, (_, p1, p2) => p1 + "！".repeat(p2.length))
+      .replace(/([^\u0020-\u007E])(\?+)/g, (_, p1, p2) => p1 + "？".repeat(p2.length))
+      .replace(/([\u0020-\u007E])(！+)/g, (_, p1, p2) => p1 + "!".repeat(p2.length))
+      .replace(/([\u0020-\u007E])(？+)/g, (_, p1, p2) => p1 + "?".repeat(p2.length));
 
     return convertedText;
   };
@@ -162,8 +162,8 @@ export const useFilterWordSymbol = () => {
       return sentence;
     } else {
       //全角文字の前後のスペースをフィルター
-      const zenkakuAfterSpaceReg = /([^\x01-\x7E]) /g;
-      const zenkakuBeforeSpaceReg = / ([^\x01-\x7E])/g;
+      const zenkakuAfterSpaceReg = /([^\u0020-\u007E]) /g;
+      const zenkakuBeforeSpaceReg = / ([^\u0020-\u007E])/g;
 
       let result = sentence.replace(filterSymbolRegExp, replaceChar);
 

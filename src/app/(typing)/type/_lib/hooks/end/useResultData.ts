@@ -36,7 +36,6 @@ export const useResultData = () => {
       numType,
       maxCombo,
     } = readStatus();
-    const {} = readStatus();
     const lineResults = readAllLineResults();
     const minPlaySpeed = getMinSpeed(lineResults);
     const rkpmTime = totalTypeTime - totalLatency;

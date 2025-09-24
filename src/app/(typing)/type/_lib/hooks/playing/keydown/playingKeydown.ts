@@ -132,12 +132,13 @@ const usePlayingShortcutKey = () => {
         }
         break;
 
-      case "F4":
+      case "F4": {
         const isPlaying = scene === "play" || scene === "practice" || scene === "replay";
         if (isPlaying) {
           retry(scene);
         }
         break;
+      }
       case "F7":
         changePlayMode();
         break;

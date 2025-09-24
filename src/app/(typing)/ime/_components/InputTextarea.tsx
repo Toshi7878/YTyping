@@ -38,19 +38,21 @@ const InputTextarea = () => {
       stopTicker();
 
       switch (value.toLowerCase().trim()) {
-        case "skip":
+        case "skip": {
           const { skipRemainTime } = readGameUtilParams();
           if (skipRemainTime !== null) {
             handleSkip();
           }
           break;
-        case "end":
+        }
+        case "end": {
           const map = readMap();
           const { count } = readGameUtilParams();
           if (!map.lines[count]) {
             handleEnd();
           }
           break;
+        }
         case "result":
           if (scene === "end") {
             onOpen();

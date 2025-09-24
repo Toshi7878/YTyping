@@ -127,7 +127,7 @@ const insertSpacesEng = (words: string[]) => {
 
     if (isCurrentWordAllHankaku && nextWord) {
       if (/^[!-~]*$/.test(nextWord[0])) {
-        // eslint-disable-next-line prefer-template
+         
         words[i] = words[i] + " ";
       }
     }

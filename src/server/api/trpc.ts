@@ -22,8 +22,6 @@ const t = initTRPC.context<Context>().meta<OpenApiMeta>().create({
 });
 
 t.procedure.use((opts) => {
-  opts.ctx;
-
   return opts.next();
 });
 

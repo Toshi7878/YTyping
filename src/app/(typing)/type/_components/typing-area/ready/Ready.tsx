@@ -21,7 +21,7 @@ function Ready({ className }: ReadyProps) {
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {
       switch (event.code) {
-        case "Enter":
+        case "Enter": {
           const player = readPlayer();
           if (player && map) {
             player.playVideo();
@@ -29,6 +29,7 @@ function Ready({ className }: ReadyProps) {
           }
           event.preventDefault();
           break;
+        }
         case "F9":
           speedDownButtonRef.current?.click();
           event.preventDefault();

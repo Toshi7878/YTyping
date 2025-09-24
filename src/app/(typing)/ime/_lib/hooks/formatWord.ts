@@ -13,7 +13,7 @@ export const useFormatWord = () => {
 
   return (text: string) => {
     text = text.replace(/<[^>]*?style>[\s\S]*?<[^>]*?\/style[^>]*?>/g, ""); //styleタグ全体削除
-    text = text.replace(/[（\(].*?[\)）]/g, ""); //()（）の歌詞を削除
+    text = text.replace(/[（(].*?[)）]/g, ""); //()（）の歌詞を削除
     text = text.replace(/<[^>]*>(.*?)<[^>]*?\/[^>]*>/g, "$1"); //HTMLタグの中の文字を取り出す
 
     text = text.replace(/<[^>]*>/, ""); //単体のHTMLタグを削除
@@ -31,7 +31,7 @@ export const useFormatWord = () => {
     text = text.replace(/([a-zA-Z])([ぁ-んゔァ-ンヴ一-龥])/g, "$1 $2"); // アルファベットの後に日本語文字がある場合
     text = text.replace(/([ぁ-んゔァ-ンヴ一-龥])([a-zA-Z])/g, "$1 $2"); // 日本語文字の後にアルファベットがある場合
 
-    text = text.replace(new RegExp(FILTER_SYMBOLS, "g"), ""); //記号削除　TODO: ホワイトリストに含まれる機能はFILTERしない
+    text = text.replace(new RegExp(FILTER_SYMBOLS, "g"), ""); //記号削除 TODO: ホワイトリストに含まれる機能はFILTERしない
     if (enableAddSymbol) {
       text = text.replace(
         new RegExp(`[${LYRICS_FORMAT_REGEX.concat([addSymbolList.replace(/./g, "\\$&")]).join("")}]`, "g"),

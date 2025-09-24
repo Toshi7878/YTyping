@@ -45,7 +45,7 @@ const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) =
         // seek時の処理
         ytSeekEvent();
         break;
-      case 1:
+      case 1: {
         //	未スタート、他の動画に切り替えた時など
         console.log("未スタート -1");
 
@@ -54,11 +54,13 @@ const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) =
           event.target.seekTo(0, true);
         }
         break;
-      case 5:
+      }
+      case 5: {
         // 動画強制停止
         console.log("動画強制停止");
         ytStopEvent();
         break;
+      }
     }
   };
 
