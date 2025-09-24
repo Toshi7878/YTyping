@@ -70,7 +70,7 @@ const MapInfoForm = () => {
       title: mapInfo?.title ?? backupMap?.title ?? "",
       artistName: mapInfo?.artistName ?? backupMap?.artistName ?? "",
       musicSource: mapInfo?.musicSource ?? backupMap?.musicSource ?? "",
-      previewTime: Number(mapInfo?.previewTime ?? backupMap?.previewTime ?? 0),
+      previewTime: mapInfo?.previewTime ?? backupMap?.previewTime ?? 0,
       creatorComment: mapInfo?.creator.comment ?? backupMap?.creatorComment ?? "",
       tags: mapInfo?.tags ?? backupMap?.tags ?? [],
       videoId: mapInfo?.videoId ?? newCreateVideoId ?? "",
@@ -315,14 +315,13 @@ const PreviewTimeInput = () => {
               if (e.key === "ArrowUp") {
                 e.preventDefault();
                 const currentValue = Number(getValues("previewTime")) || 0;
-                setValue("previewTime", Number((currentValue + 0.05).toFixed(2)));
+                setValue("previewTime", (currentValue + 0.05).toFixed(3));
                 setCanUpload(true);
               }
               if (e.key === "ArrowDown") {
                 e.preventDefault();
                 const currentValue = Number(getValues("previewTime")) || 0;
-                const newValue = Math.max(0, currentValue - 0.05);
-                setValue("previewTime", Number(newValue.toFixed(2)));
+                setValue("previewTime", Math.max(0, currentValue - 0.05).toFixed(3));
                 setCanUpload(true);
               }
             }}
