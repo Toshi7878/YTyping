@@ -1,6 +1,6 @@
 "use client";
 import VolumeRange from "@/components/shared/volume-range";
-import { usePreviewPlayerState } from "@/lib/globalAtoms";
+import { usePreviewPlayerState } from "@/lib/global-atoms";
 import SearchInputs from "./search/search-input-field";
 import SearchPopover from "./search/search-popover";
 

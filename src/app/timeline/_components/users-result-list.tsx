@@ -1,7 +1,7 @@
 "use client";
 import Spinner from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { useResultListInfiniteQueryOptions } from "@/utils/queries/resultList.queries";
+import { useResultListInfiniteQueryOptions } from "@/utils/queries/result-list.queries";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";

@@ -1,5 +1,5 @@
-import { useInputTextarea, usePlayer } from "../atoms/refAtoms";
-import { useReadGameUtilParams, useReadMap, useSetSkipRemainTime } from "../atoms/stateAtoms";
+import { useInputTextarea, usePlayer } from "../atoms/read-atoms";
+import { useReadGameUtilParams, useReadMap, useSetSkipRemainTime } from "../atoms/state-atoms";
 
 const SKIP_BUFFER_TIME = 3;
 

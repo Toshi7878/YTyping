@@ -6,12 +6,12 @@ import React, { useState } from "react";
 
 import { env } from "@/env";
 import type { AppRouter } from "@/server/api/root";
-import { getBaseUrl } from "@/utils/getBaseUrl";
+import { getBaseUrl } from "@/utils/get-base-url";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 import SuperJSON from "superjson";
 import { createQueryClient } from "./query-client";
 
-let clientQueryClientSingleton: QueryClient | undefined = undefined;
+let clientQueryClientSingleton: QueryClient | undefined;
 const getQueryClient = () => {
   if (typeof window === "undefined") {
     // Server: always make a new query client

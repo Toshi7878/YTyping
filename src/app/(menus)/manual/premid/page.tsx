@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { H2, H3 } from "@/components/ui/typography";
-import { InstallationSteps } from "./_components/InstallationSteps";
+import { InstallationSteps } from "./_components/installation-steps";
 
 export default function PreMidManual() {
   return (

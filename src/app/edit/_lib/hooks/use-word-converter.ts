@@ -8,8 +8,8 @@ import {
   NUM_LIST,
   STRICT_SYMBOL_LIST,
 } from "@/utils/build-map/const";
-import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
-import { kanaToHira } from "@/utils/kanaToHira";
+import { normalizeSimilarSymbol } from "@/utils/build-map/normalize-similar-symbol";
+import { kanaToHira } from "@/utils/kana-to-hira";
 import { useMorphQueries } from "@/utils/queries/morph.queries";
 import { useReplaceReadingWithCustomDict } from "@/utils/use-replace-reading-with-custom-dict";
 import { useQueryClient } from "@tanstack/react-query";

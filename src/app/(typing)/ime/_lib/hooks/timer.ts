@@ -1,5 +1,5 @@
 import { Ticker } from "@pixi/ticker";
-import { useLyricsContainer } from "../atoms/refAtoms";
+import { useLyricsContainer } from "../atoms/read-atoms";
 import {
   useReadGameUtilParams,
   useReadImeTypeOptions,
@@ -11,10 +11,10 @@ import {
   useSetSkipRemainTime,
   useSetTextareaPlaceholderType,
   useSetWipeCount,
-} from "../atoms/stateAtoms";
+} from "../atoms/state-atoms";
 import { DISPLAY_LINE_LENGTH } from "../const";
 import type { ParseMap } from "../type";
-import { useGetTime } from "./getYTTime";
+import { useGetYouTubeTime } from "./get-youtube-time";
 
 const imeTypeTicker = new Ticker();
 
@@ -61,7 +61,7 @@ const useTimer = () => {
   const setDisplayLines = useSetDisplayLines();
   const { readGameUtilParams, readWipeLine } = useReadGameUtilParams();
 
-  const { getCurrentOffsettedYTTime, getConstantOffsettedYTTime } = useGetTime();
+  const { getCurrentOffsettedYTTime, getConstantOffsettedYTTime } = useGetYouTubeTime();
   const { readLyricsContainer } = useLyricsContainer();
   const { calcWipeProgress, completeWipe } = useCalcWipeProgress();
   const getJudgedWords = useGetJudgedWords();

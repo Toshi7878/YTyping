@@ -1,4 +1,4 @@
-import Header from "@/app/_components/header/Header";
+import Header from "@/app/_components/header/header-component";
 import "@/styles/globals.css";
 // export const runtime = "edge";
 import type { Metadata } from "next";

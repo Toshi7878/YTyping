@@ -2,7 +2,7 @@ import { useTRPC } from "@/trpc/provider";
 import { useMutation } from "@tanstack/react-query";
 import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
-import { useInputTextarea, usePlayer } from "../atoms/refAtoms";
+import { useInputTextarea, usePlayer } from "../atoms/read-atoms";
 import {
   useInitWordResults,
   useReadScene,
@@ -13,7 +13,7 @@ import {
   useSetNotifications,
   useSetScene,
   useSetStatus,
-} from "../atoms/stateAtoms";
+} from "../atoms/state-atoms";
 
 export const useInitializePlayScene = () => {
   const setNextDisplayLine = useSetNextDisplayLine();

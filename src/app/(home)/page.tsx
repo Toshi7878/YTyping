@@ -1,6 +1,6 @@
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { parseMapListSearchParams } from "@/utils/queries/search-params/mapList";
-import MapControlArea from "./_components/MapControlArea";
+import { parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
+import MapControlArea from "./_components/map-control-area";
 import MapList from "./_components/map-list";
 import HomeProvider from "./client-provider";
 

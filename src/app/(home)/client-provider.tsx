@@ -1,5 +1,5 @@
 "use client";
-import { PARAM_NAME } from "@/utils/queries/search-params/mapList";
+import { PARAM_NAME } from "@/utils/queries/search-params/map-list";
 import { Provider as JotaiProvider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";

@@ -7,7 +7,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { useMapListQueryOptions } from "../../../utils/queries/mapList.queries";
+import { useMapListQueryOptions } from "../../../utils/queries/map-list.queries";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 
 const MapList = () => {

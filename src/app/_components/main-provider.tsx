@@ -1,6 +1,6 @@
 "use client";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
-import { useGlobalLoadingState, userAgentAtom } from "@/lib/globalAtoms";
+import { useGlobalLoadingState, userAgentAtom } from "@/lib/global-atoms";
 import { useClearSelectionOnNavigate } from "@/utils/use-clear-selection-on-navigate";
 import { useHydrateAtoms } from "jotai/utils";
 import type { ReactNode } from "react";

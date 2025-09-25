@@ -1,4 +1,4 @@
-import { useNotifyState, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+import { useNotifyState, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import React from "react";

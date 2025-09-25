@@ -1,6 +1,6 @@
 import { LikeButton } from "@/components/shared/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useBreakPoint } from "@/lib/useBreakPoint";
+import { useBreakPoint } from "@/lib/use-break-point";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useLikeMutationMapInfo } from "@/utils/mutations/like.mutations";

@@ -1,5 +1,5 @@
 "use client";
-import { useSetVolume, useUserAgent, useVolumeState } from "@/lib/globalAtoms";
+import { useSetVolume, useUserAgent, useVolumeState } from "@/lib/global-atoms";
 import type { HTMLAttributes } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
 import { Slider } from "../ui/slider";

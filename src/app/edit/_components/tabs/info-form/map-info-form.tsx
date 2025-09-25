@@ -12,9 +12,9 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
 import { MapInfoFormSchema } from "@/server/drizzle/validator/map";
 import { useTRPC } from "@/trpc/provider";
-import { BuildMap } from "@/utils/build-map/buildMap";
-import { extractYouTubeVideoId } from "@/utils/extractYTId";
-import { useDebounce } from "@/utils/hooks/useDebounce";
+import { BuildMap } from "@/utils/build-map/build-map";
+import { extractYouTubeId } from "@/utils/extract-youtube-id";
+import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useGeminiQueries } from "@/utils/queries/gemini.queries";
 import { useMapQueries } from "@/utils/queries/map.queries";
 import { useNavigationGuard } from "@/utils/use-navigation-guard";
@@ -241,7 +241,7 @@ const VideoIdInput = () => {
             onPaste={(e) => {
               e.preventDefault();
 
-              const videoId = extractYouTubeVideoId(e.clipboardData.getData("text"));
+              const videoId = extractYouTubeId(e.clipboardData.getData("text"));
 
               if (videoId) {
                 setValue("videoId", videoId);

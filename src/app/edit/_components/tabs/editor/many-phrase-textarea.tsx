@@ -1,12 +1,12 @@
 import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/_lib/atoms/state-atoms";
 import { usePickupTopPhrase } from "@/app/edit/_lib/hooks/many-phrase";
-import { useFilterWordSymbol, useLyricsFormatUtils } from "@/app/edit/_lib/hooks/use-word-converter";
+import { filterUnicodeSymbol, formatSimilarChar, useFilterWordSymbol } from "@/app/edit/_lib/hooks/use-word-converter";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useDebounce } from "@/utils/hooks/useDebounce";
+import { useDebounce } from "@/utils/hooks/use-debounce";
 import React, { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { TiFilter } from "react-icons/ti";
@@ -106,7 +106,6 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
   const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
   const filterWordSymbol = useFilterWordSymbol();
-  const { formatSimilarChar, filterUnicodeSymbol } = useLyricsFormatUtils();
   const confirm = useConfirm();
 
   const handleConfirm = async () => {

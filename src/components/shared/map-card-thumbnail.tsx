@@ -1,4 +1,4 @@
-import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/globalAtoms";
+import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map-list";
 import type { VariantProps } from "class-variance-authority";

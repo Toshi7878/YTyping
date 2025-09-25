@@ -1,20 +1,20 @@
-import { useGameUtilityReferenceParams, useLineCount } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
+import { useGameUtilityReferenceParams, useLineCount } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadAllLineResult,
   useReadGameUtilParams,
   useReadLineWord,
   useSetLineWord,
-} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/hooks/playing/calcTypeSpeed";
-import { useInputModeChange } from "@/app/(typing)/type/_lib/hooks/playing/inputModeChange";
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/hooks/playing/calc-type-speed";
+import { useInputModeChange } from "@/app/(typing)/type/_lib/hooks/playing/input-mode-change";
 import type { ResultData, TypeResult } from "@/server/drizzle/validator/result";
 import type { YouTubeSpeed } from "@/types/types";
-import { useGetTime } from "../getYTTime";
-import type { TypingKeys } from "../keydown/typingJudge";
-import { KanaInput, RomaInput } from "../keydown/typingJudge";
-import { useSoundEffect } from "../soundEffect";
-import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../updateStatus";
+import { useGetTime } from "../get-youtube-time";
+import type { TypingKeys } from "../keydown/typing-judge";
+import { KanaInput, RomaInput } from "../keydown/typing-judge";
+import { useSoundEffect } from "../sound-effect";
+import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../update-status";
 
 interface UseKeyReplayProps {
   constantLineTime: number;

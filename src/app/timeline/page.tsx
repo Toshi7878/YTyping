@@ -1,5 +1,5 @@
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { parseResultListSearchParams } from "@/utils/queries/search-params/resultList";
+import { parseResultListSearchParams } from "@/utils/queries/search-params/result-list";
 import SearchContent from "./_components/search-content";
 import UsersResultList from "./_components/users-result-list";
 import TimelineProvider from "./client-provider";

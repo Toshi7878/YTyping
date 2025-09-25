@@ -5,8 +5,8 @@ import {
   usePlayer,
   useProgress,
   useReadYTStatus,
-} from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
+} from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadCurrentTime,
   useReadGameUtilParams,
@@ -19,16 +19,16 @@ import {
   useSetLineRemainTime,
   useSetNextLyrics,
   useSetTypingStatus,
-} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
-import { useDisplaySkipGuide } from "@/app/(typing)/type/_lib/hooks/playing/timer/displaySkipGuide";
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useDisplaySkipGuide } from "@/app/(typing)/type/_lib/hooks/playing/timer/display-skip-guide";
 import { Ticker } from "@pixi/ticker";
 import type { LineData } from "../../../type";
-import { useOnEnd } from "../../youtubeEvents";
-import { useCalcTypeSpeed } from "../calcTypeSpeed";
-import { useGetTime } from "../getYTTime";
-import { useUpdateLineResult } from "../updateLineResult";
-import { useLineUpdateStatus, useUpdateAllStatus } from "../updateStatus";
-import { useGetSeekLineCount } from "./getLineCountByTime";
+import { useOnEnd } from "../../youtube-events";
+import { useCalcTypeSpeed } from "../calc-type-speed";
+import { useGetTime } from "../get-youtube-time";
+import { useUpdateLineResult } from "../update-line-result";
+import { useLineUpdateStatus, useUpdateAllStatus } from "../update-status";
+import { useGetSeekLineCount } from "./get-line-count-by-time";
 import { useLineReplayUpdate, useReplay } from "./replay";
 
 const typeTicker = new Ticker();

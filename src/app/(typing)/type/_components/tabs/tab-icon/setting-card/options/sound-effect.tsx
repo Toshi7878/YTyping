@@ -1,0 +1,54 @@
+import { usePlayer } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/sound-effect";
+import VolumeRange from "@/components/shared/volume-range";
+import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
+import { H5 } from "@/components/ui/typography";
+
+const UserSoundEffectCheckbox = () => {
+  const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
+  const { readPlayer } = usePlayer();
+  const { setUserTypingOptions } = useSetUserTypingOptions();
+  const { typeSoundPlay, missSoundPlay, clearTypeSoundPlay } = useSoundEffect();
+
+  return (
+    <section className="space-y-4">
+      <H5>サウンド</H5>
+      <VolumeRange player={readPlayer()} />
+      <div className="flex flex-row gap-4">
+        <LabeledCheckbox
+          label="タイプ音"
+          defaultChecked={typeSound}
+          onCheckedChange={(value: boolean) => {
+            setUserTypingOptions({
+              typeSound: value,
+            });
+            if (value) typeSoundPlay();
+          }}
+        />
+        <LabeledCheckbox
+          label="ミス音"
+          defaultChecked={missSound}
+          onCheckedChange={(value: boolean) => {
+            setUserTypingOptions({
+              missSound: value,
+            });
+            if (value) missSoundPlay();
+          }}
+        />
+        <LabeledCheckbox
+          label="打ち切り音"
+          defaultChecked={completedTypeSound}
+          onCheckedChange={(value: boolean) => {
+            setUserTypingOptions({
+              completedTypeSound: value,
+            });
+            if (value) clearTypeSoundPlay();
+          }}
+        />
+      </div>
+    </section>
+  );
+};
+
+export default UserSoundEffectCheckbox;

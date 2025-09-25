@@ -11,7 +11,7 @@ import {
 
 import { backupMap } from "@/lib/indexed-db";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
-import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
+import { normalizeSimilarSymbol } from "@/utils/build-map/normalize-similar-symbol";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useHistoryReducer } from "../atoms/history-reducer-atom";

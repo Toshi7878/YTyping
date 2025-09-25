@@ -2,7 +2,7 @@
 import { RESET } from "jotai/utils";
 import { useEffect } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
-import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/globalAtoms";
+import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/global-atoms";
 
 const PreviewYouTubePlayer = () => {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();

@@ -1,5 +1,5 @@
 "use client";
-import { useSetPreviewVideo } from "@/lib/globalAtoms";
+import { useSetPreviewVideo } from "@/lib/global-atoms";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET } from "jotai/utils";
 import { usePathname } from "next/navigation";

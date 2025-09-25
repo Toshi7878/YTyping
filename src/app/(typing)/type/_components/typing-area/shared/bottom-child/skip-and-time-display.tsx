@@ -1,14 +1,14 @@
-import { useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/refAtoms";
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speedReducerAtoms";
+import { useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useCurrentTimeState,
   useMapState,
   useSceneGroupState,
   useSkipState,
   useYTStartedState,
-} from "@/app/(typing)/type/_lib/atoms/stateAtoms";
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
-import { formatTime } from "@/utils/formatTime";
+import { formatTime } from "@/utils/format-time";
 
 const SkipAndTimeDisplay = () => {
   const isYTStarted = useYTStartedState();

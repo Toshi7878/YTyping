@@ -145,7 +145,7 @@ export const resultRouter = {
       .limit(PAGE_SIZE + 1)
       .offset(offset);
 
-    let nextCursor: string | undefined = undefined;
+    let nextCursor: string | undefined;
     if (items.length > PAGE_SIZE) {
       items.pop();
       nextCursor = String(isNaN(page) ? 1 : page + 1);

@@ -2,7 +2,7 @@ import { useMapReducer, useReadMap } from "@/app/edit/_lib/atoms/map-reducer-ato
 import { usePlayer } from "@/app/edit/_lib/atoms/read-atoms";
 import { useWordConverter } from "@/app/edit/_lib/hooks/use-word-converter";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
-import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
+import { normalizeSimilarSymbol } from "@/utils/build-map/normalize-similar-symbol";
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
 import { useHistoryReducer } from "../atoms/history-reducer-atom";

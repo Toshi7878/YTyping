@@ -94,7 +94,7 @@ export const mapListRouter = {
       .limit(PAGE_SIZE + 1)
       .offset(offset);
 
-    let nextCursor: string | undefined = undefined;
+    let nextCursor: string | undefined;
     if (maps.length > PAGE_SIZE) {
       maps.pop();
       nextCursor = String(isNaN(page) ? 1 : page + 1);
@@ -180,13 +180,13 @@ interface GetFilterSql {
 function getFilterSql({ filter, userId }: GetFilterSql) {
   switch (filter) {
     case "liked":
-      if (!userId) return undefined;
+      if (!userId) return;
       return eq(MapLikes.hasLiked, true);
     case "my-map":
-      if (!userId) return undefined;
+      if (!userId) return;
       return eq(Maps.creatorId, userId);
     default:
-      return undefined;
+      return;
   }
 }
 
@@ -249,7 +249,7 @@ interface GetPlayedFilterSql {
 }
 
 function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
-  if (!userId) return undefined;
+  if (!userId) return;
 
   switch (played) {
     case "played":
@@ -263,12 +263,12 @@ function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
     case "perfect":
       return and(eq(ResultStatuses.miss, 0), eq(ResultStatuses.lost, 0));
     default:
-      return undefined;
+      return;
   }
 }
 
 const generateKeywordFilterSql = ({ mapKeyword }: { mapKeyword: string }) => {
-  if (!mapKeyword || mapKeyword.trim() === "") return undefined;
+  if (!mapKeyword || mapKeyword.trim() === "") return;
   const pattern = `%${mapKeyword}%`;
   return or(
     ilike(Maps.title, pattern),

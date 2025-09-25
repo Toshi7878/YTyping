@@ -1,17 +1,24 @@
 "use client";
 
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
-import { useUserAgent } from "@/lib/globalAtoms";
+import { useUserAgent } from "@/lib/global-atoms";
 import { useCallback, useEffect, useMemo } from "react";
-import { usePlayer, useReadYTStatus } from "../_lib/atoms/refAtoms";
-import { useReadGameUtilParams } from "../_lib/atoms/stateAtoms";
+import { usePlayer, useReadYTStatus } from "../_lib/atoms/ref-atoms";
+import { useReadGameUtilParams } from "../_lib/atoms/state-atoms";
 import { useTimerRegistration } from "../_lib/hooks/playing/timer/timer";
 
 import { cn } from "@/lib/utils";
-import { windowFocus } from "@/utils/hooks/windowFocus";
+import { windowFocus } from "@/utils/hooks/window-focus";
 import type { YouTubeEvent } from "react-youtube";
 import YouTube from "react-youtube";
-import { useOnEnd, useOnPause, useOnPlay, useOnRateChange, useOnReady, useOnSeeked } from "../_lib/hooks/youtubeEvents";
+import {
+  useOnEnd,
+  useOnPause,
+  useOnPlay,
+  useOnRateChange,
+  useOnReady,
+  useOnSeeked,
+} from "../_lib/hooks/youtube-events";
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;

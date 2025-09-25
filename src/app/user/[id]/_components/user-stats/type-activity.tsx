@@ -3,8 +3,8 @@
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import { getCSSVariable } from "@/utils/getComputedColor";
-import { useUserStatsQueries } from "@/utils/queries/userStats.queries";
+import { getCSSVariable } from "@/utils/get-computed-color";
+import { useUserStatsQueries } from "@/utils/queries/user-stats.queries";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";

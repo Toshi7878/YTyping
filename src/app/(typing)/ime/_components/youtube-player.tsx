@@ -3,9 +3,9 @@ import type { CSSProperties } from "react";
 import { useCallback, useEffect } from "react";
 import type { YouTubeEvent } from "react-youtube";
 import YouTube from "react-youtube";
-import { useReadScene } from "../_lib/atoms/stateAtoms";
+import { useReadScene } from "../_lib/atoms/state-atoms";
 
-import { windowFocus } from "@/utils/hooks/windowFocus";
+import { windowFocus } from "@/utils/hooks/window-focus";
 import { useTimerRegistration } from "../_lib/hooks/timer";
 import {
   useYTEndEvent,
@@ -14,7 +14,7 @@ import {
   useYTReadyEvent,
   useYTSeekEvent,
   useYTStopEvent,
-} from "../_lib/hooks/youtubeEvents";
+} from "../_lib/hooks/youtube-events";
 
 interface YouTubePlayerProps {
   videoId: string;

@@ -1,4 +1,4 @@
-import { useGameUtilityReferenceParams, useLineCount, usePlayer, useTypingDetails } from "../../atoms/refAtoms";
+import { useGameUtilityReferenceParams, useLineCount, usePlayer, useTypingDetails } from "../../atoms/ref-atoms";
 import {
   useInitializeLineResults,
   useReadGameUtilParams,
@@ -11,9 +11,9 @@ import {
   useSetScene,
   useSetTabName,
   useSetTypingStatus,
-} from "../../atoms/stateAtoms";
+} from "../../atoms/state-atoms";
 import type { PlayMode } from "../../type";
-import { useSendUserStats } from "./sendUserStats";
+import { useSendUserStats } from "./send-user-stats";
 import { useTimerControls } from "./timer/timer";
 
 export const useRetry = () => {

@@ -8,7 +8,16 @@ import tseslint from "typescript-eslint";
 
 export default [
   {
-    ignores: [".next/**", "node_modules/**", "dist/**", "build/**", ".turbo/**", "eslint.config.*", "next-env.d.ts"],
+    ignores: [
+      "next.config.js",
+      ".next/**",
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      ".turbo/**",
+      "eslint.config.*",
+      "next-env.d.ts",
+    ],
   },
 
   tseslint.configs.eslintRecommended,
@@ -76,9 +85,10 @@ export default [
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
 
-      ...eslintPluginUnicorn.configs.recommended.rules,
       "unicorn/prefer-global-this": "off",
       "unicorn/prevent-abbreviations": "off",
+      "unicorn/no-useless-undefined": "warn",
+      "unicorn/filename-case": "error",
     },
   },
 ];

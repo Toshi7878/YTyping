@@ -1,7 +1,7 @@
 "use client";
 import { useImportMapFile } from "@/app/edit/_lib/hooks/import-map-file";
 import { Button } from "@/components/ui/button";
-import { useGlobalLoadingOverlay } from "@/lib/globalAtoms";
+import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
 import React, { useRef } from "react";
 import { toast } from "sonner";
 

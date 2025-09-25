@@ -1,14 +1,14 @@
 "use client";
-import { useSetPreviewVideo } from "@/lib/globalAtoms";
+import { useSetPreviewVideo } from "@/lib/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
-import { userTypingOptionsAtom } from "../_lib/atoms/stateAtoms";
+import { userTypingOptionsAtom } from "../_lib/atoms/state-atoms";
 import { getTypeAtomStore } from "../_lib/atoms/store";
-import { useSendUserStats } from "../_lib/hooks/playing/sendUserStats";
+import { useSendUserStats } from "../_lib/hooks/playing/send-user-stats";
 
 interface ClientProviderProps {
   userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
