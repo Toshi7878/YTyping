@@ -1,10 +1,14 @@
 import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Content from "../_components/Content";
 import ClientProvider from "../_components/client-provider";
+import Content from "../_components/contents";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const { id } = await params;
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
 

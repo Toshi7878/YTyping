@@ -7,8 +7,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --cache",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --cache",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
     "typecheck": "tsc --noEmit",
     "reset": "pnpm dlx rimraf .next .tsbuildinfo node_modules package-lock.json && pnpm install",
     "db:migrate": "dotenv -e .env.local -- drizzle-kit push",
@@ -78,8 +78,7 @@
     "zod": "^4.1.8"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "@next/eslint-plugin-next": "^15.5.3",
+    "@biomejs/biome": "2.2.4",
     "@types/md5": "^2.3.5",
     "@types/node": "^24.4.0",
     "@types/react": "^19.1.13",
@@ -87,16 +86,8 @@
     "@types/youtube": "^0.1.2",
     "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.4",
-    "eslint": "^9.35.0",
-    "eslint-config-next": "^15.5.3",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-react": "^7.37.2",
-    "globals": "^16.4.0",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.14",
     "tw-animate-css": "^1.3.8",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.43.0"
+    "typescript": "^5.9.2"
   },
   "pnpm": {
     "patchedDependencies": {
