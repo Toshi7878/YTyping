@@ -31,10 +31,10 @@ const getMultipleCSSVariables = (variableNames: string[]): Record<string, string
   const computedStyle = getComputedStyle(document.documentElement);
   const result: Record<string, string> = {};
 
-  variableNames.forEach((name) => {
+  for (const name of variableNames) {
     const cssVar = name.startsWith("--") ? name : `--${name}`;
     result[name] = computedStyle.getPropertyValue(cssVar).trim();
-  });
+  }
 
   return result;
 };

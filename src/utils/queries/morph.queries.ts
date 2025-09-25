@@ -5,7 +5,7 @@ export const useMorphQueries = () => {
 
   return {
     customDic: () =>
-      trpc.morphConvert.getCustomDic.queryOptions(undefined, {
+      trpc.morphConvert.getCustomDict.queryOptions(undefined, {
         staleTime: Infinity,
         gcTime: Infinity,
       }),

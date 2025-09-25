@@ -18,5 +18,5 @@ export function extractYouTubeVideoId(url: string) {
   }
 
   // 見つからなければ undefined
-  return undefined;
+  return;
 }

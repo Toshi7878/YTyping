@@ -6,7 +6,7 @@ type ResultParams = Partial<Record<ResultParamKeys, string>>;
 export function parseResultListSearchParams(searchParams: URLSearchParams) {
   const params: ResultParams = {};
 
-  for (const [key, value] of Array.from(searchParams.entries())) {
+  for (const [key, value] of searchParams.entries()) {
     if (key in PARAM_NAME) {
       params[key as ResultParamKeys] = value;
     }

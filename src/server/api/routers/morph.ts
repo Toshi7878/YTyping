@@ -13,28 +13,26 @@ export const morphConvertRouter = {
     return fetchYahooMorphAnalysis(input.sentence);
   }),
 
-  getCustomDic: protectedProcedure.query(async ({ ctx }) => {
-    const customDic = await ctx.db
+  getCustomDict: protectedProcedure.query(async ({ ctx }) => {
+    const dictionaryDict = await ctx.db
       .select({
         surface: ReadingConversionDict.surface,
         reading: ReadingConversionDict.reading,
-        type: ReadingConversionDict.type,
       })
       .from(ReadingConversionDict)
       .where(eq(ReadingConversionDict.type, "DICTIONARY"))
       .orderBy(desc(sql`char_length(${ReadingConversionDict.surface})`));
 
-    const customRegexDic = await ctx.db
+    const regexDict = await ctx.db
       .select({
         surface: ReadingConversionDict.surface,
         reading: ReadingConversionDict.reading,
-        type: ReadingConversionDict.type,
       })
       .from(ReadingConversionDict)
       .where(eq(ReadingConversionDict.type, "REGEX"))
       .orderBy(desc(sql`char_length(${ReadingConversionDict.surface})`));
 
-    return { customDic, customRegexDic };
+    return { dictionaryDict, regexDict };
   }),
 
   fixWordLog: protectedProcedure

@@ -10,7 +10,7 @@ export const PARAM_NAME = {
 export function parseMapListSearchParams(searchParams: URLSearchParams) {
   const params: Partial<typeof PARAM_NAME> = {};
 
-  for (const [key, value] of Array.from(searchParams.entries())) {
+  for (const [key, value] of searchParams.entries()) {
     if (key in PARAM_NAME) {
       params[key] = value;
     }

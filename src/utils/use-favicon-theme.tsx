@@ -17,7 +17,7 @@ export function applyFavicon(cacheKey: string) {
     link.id = id;
     link.rel = "icon";
     link.type = "image/x-icon";
-    document.head.appendChild(link);
+    document.head.append(link);
   }
 
   link.href = withCacheBust;

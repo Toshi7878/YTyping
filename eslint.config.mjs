@@ -1,12 +1,14 @@
 import js from "@eslint/js";
 import nextPlugin from "@next/eslint-plugin-next";
 import importPlugin from "eslint-plugin-import";
+import reactPlugin from "eslint-plugin-react";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default [
   {
-    ignores: [".next/**", "node_modules/**", "dist/**", "build/**", ".turbo/**", "eslint.config.*"],
+    ignores: [".next/**", "node_modules/**", "dist/**", "build/**", ".turbo/**", "eslint.config.*", "next-env.d.ts"],
   },
 
   tseslint.configs.eslintRecommended,
@@ -16,7 +18,7 @@ export default [
     ...js.configs.recommended,
     ...nextPlugin.configs.recommended,
 
-    files: ["**/*.{ts,tsx}"],
+    files: ["**/*.{js,ts,tsx}"],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -36,6 +38,13 @@ export default [
       "@typescript-eslint": tseslint.plugin,
       import: importPlugin,
       "@next/next": nextPlugin,
+      react: reactPlugin,
+      unicorn: eslintPluginUnicorn,
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
     rules: {
       "@typescript-eslint/no-unused-vars": [
@@ -62,6 +71,14 @@ export default [
           ],
         },
       ],
+
+      ...reactPlugin.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+
+      ...eslintPluginUnicorn.configs.recommended.rules,
+      "unicorn/prefer-global-this": "off",
+      "unicorn/prevent-abbreviations": "off",
     },
   },
 ];

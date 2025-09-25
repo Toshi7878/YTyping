@@ -11,7 +11,7 @@ interface UseDebounceReturn {
 }
 
 export const useDebounce = (timeout: number): UseDebounceReturn => {
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [isPending, setIsPending] = useState(false);
 
   const debounce: Debounce = useCallback(
@@ -33,7 +33,7 @@ export const useDebounce = (timeout: number): UseDebounceReturn => {
   const cancel = useCallback(() => {
     if (timer.current) {
       clearTimeout(timer.current);
-      timer.current = null;
+      timer.current = undefined;
     }
     setIsPending(false);
   }, []);

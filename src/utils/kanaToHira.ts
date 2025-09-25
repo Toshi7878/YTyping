@@ -1,8 +1,11 @@
 export const kanaToHira = (lyrics: string) => {
   return lyrics
-    .replace(/[\u30a1-\u30f6]/g, (match) => {
-      const chr = match.charCodeAt(0) - 0x60;
-      return String.fromCharCode(chr);
+    .replaceAll(/[\u30A1-\u30F6]/g, (match) => {
+      const codePoint = match.codePointAt(0);
+      if (codePoint == undefined) return match;
+      const chr = codePoint - 0x60;
+
+      return String.fromCodePoint(chr);
     })
-    .replace(/ヴ/g, "ゔ");
+    .replaceAll("ヴ", "ゔ");
 };

@@ -11,7 +11,7 @@ import {
 import { normalizeSimilarSymbol } from "@/utils/build-map/normalizeSimilarSymbol";
 import { kanaToHira } from "@/utils/kanaToHira";
 import { useMorphQueries } from "@/utils/queries/morph.queries";
-import { useReplaceReadingWithCustomDic } from "@/utils/useMorphReplaceCustomDic";
+import { useReplaceReadingWithCustomDict } from "@/utils/use-replace-reading-with-custom-dict";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
@@ -27,20 +27,18 @@ const allowedChars = new Set([
   ...NUM_LIST,
 ]);
 
+const filterAllowedCharacters = (text: string): string => {
+  return [...text].filter((char) => allowedChars.has(char)).join("");
+};
+
 export const useWordConverter = () => {
   const fetchMorph = useFetchMorph();
   const filterWordSymbol = useFilterWordSymbol();
-  const { rubyKanaConvert, formatSimilarChar, transformSymbolBasedOnPreviousChar } = useLyricsFormatUtils();
+  const { rubyKanaConvert, formatSimilarChar, transformSymbolBasedOnPreviousChar } = useLyricsFormatUtilities();
 
   return async (lyrics: string) => {
     const formatedLyrics = formatSimilarChar(kanaToHira(rubyKanaConvert(lyrics)));
     const isNeedsConversion = /[\u4E00-\u9FFF]/.test(formatedLyrics);
-
-    const filterAllowedCharacters = (text: string): string => {
-      return Array.from(text)
-        .filter((char) => allowedChars.has(char))
-        .join("");
-    };
 
     if (isNeedsConversion) {
       const convertedWord = await fetchMorph(formatedLyrics);
@@ -55,7 +53,7 @@ export const useWordConverter = () => {
 
 const useFetchMorph = () => {
   const setIsLoadWordConvert = useSetIsWordConverting();
-  const replaceReadingWithCustomDic = useReplaceReadingWithCustomDic();
+  const replaceReadingWithCustomDic = useReplaceReadingWithCustomDict();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const morphQueries = useMorphQueries();
@@ -63,18 +61,19 @@ const useFetchMorph = () => {
   return async (sentence: string) => {
     setIsLoadWordConvert(true);
     try {
-      const { customRegexDic } = await queryClient.ensureQueryData(morphQueries.customDic());
+      const { regexDict } = await queryClient.ensureQueryData(morphQueries.customDic());
 
-      sentence = customRegexDic.reduce((acc, { surface, reading }) => {
+      for (const { surface, reading } of regexDict) {
         const regex = new RegExp(surface, "g");
-        return acc.replace(regex, reading);
-      }, sentence);
+        sentence = sentence.replace(regex, reading);
+      }
 
       const convertedWord = await queryClient.ensureQueryData(morphQueries.tokenizeSentence({ sentence }));
 
-      return (await replaceReadingWithCustomDic(convertedWord)).readings.join("");
+      const result = await replaceReadingWithCustomDic(convertedWord);
+      return result.readings.join("");
     } catch {
-      const message = !session ? "読み変換機能はログイン後に使用できます" : undefined;
+      const message = session ? undefined : "読み変換機能はログイン後に使用できます";
       toast.error("読み変換に失敗しました", { description: message });
       return "";
     } finally {
@@ -83,42 +82,42 @@ const useFetchMorph = () => {
   };
 };
 
-export const useLyricsFormatUtils = () => {
+export const filterUnicodeSymbol = (text: string): string => {
+  const allowedSymbols = new Set([...MANDATORY_SYMBOL_LIST, ...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST]);
+
+  return text.replaceAll(/[^\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{ASCII}\d\s]/gu, (char) =>
+    allowedSymbols.has(char) ? char : "",
+  );
+};
+
+export const formatSimilarChar = (lyrics: string) => {
+  return normalizeSimilarSymbol(lyrics)
+    .replaceAll(/[０-９]/g, (s) => String.fromCodePoint(s.codePointAt(0) - 0xfe_e0))
+    .replaceAll(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCodePoint(s.codePointAt(0) - 0xfe_e0));
+};
+
+export const useLyricsFormatUtilities = () => {
   const rubyKanaConvert = (lyrics: string) => {
     const rubyConvert = lyrics.match(/<*ruby(?: .+?)?>.*?<*\/ruby*>/g);
 
     if (rubyConvert) {
-      for (let v = 0; v < rubyConvert.length; v++) {
-        const start = rubyConvert[v].indexOf("<rt>") + 4;
-        const end = rubyConvert[v].indexOf("</rt>");
-        const ruby = rubyConvert[v].slice(start, end);
-        lyrics = lyrics.replace(rubyConvert[v], ruby);
+      for (const element of rubyConvert) {
+        const start = element.indexOf("<rt>") + 4;
+        const end = element.indexOf("</rt>");
+        const ruby = element.slice(start, end);
+        lyrics = lyrics.replace(element, ruby);
       }
     }
 
     return lyrics;
   };
 
-  const formatSimilarChar = (lyrics: string) => {
-    return normalizeSimilarSymbol(lyrics)
-      .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
-  };
-
-  const filterUnicodeSymbol = (text: string): string => {
-    const allowedSymbols = [...MANDATORY_SYMBOL_LIST, ...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST];
-
-    return text.replace(/[^\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{ASCII}\d\s]/gu, (char) =>
-      allowedSymbols.includes(char) ? char : "",
-    );
-  };
-
   const transformSymbolBasedOnPreviousChar = (reading: string) => {
     const convertedText = reading
-      .replace(/([^\u0020-\u007E])(!+)/g, (_, p1, p2) => p1 + "！".repeat(p2.length))
-      .replace(/([^\u0020-\u007E])(\?+)/g, (_, p1, p2) => p1 + "？".repeat(p2.length))
-      .replace(/([\u0020-\u007E])(！+)/g, (_, p1, p2) => p1 + "!".repeat(p2.length))
-      .replace(/([\u0020-\u007E])(？+)/g, (_, p1, p2) => p1 + "?".repeat(p2.length));
+      .replaceAll(/([^\u0020-\u007E])(!+)/g, (_, p1, p2) => p1 + "！".repeat(p2.length))
+      .replaceAll(/([^\u0020-\u007E])(\?+)/g, (_, p1, p2) => p1 + "？".repeat(p2.length))
+      .replaceAll(/([\u0020-\u007E])(！+)/g, (_, p1, p2) => p1 + "!".repeat(p2.length))
+      .replaceAll(/([\u0020-\u007E])(？+)/g, (_, p1, p2) => p1 + "?".repeat(p2.length));
 
     return convertedText;
   };
@@ -131,15 +130,15 @@ export const useFilterWordSymbol = () => {
 
   const generateFilterRegExp = (convertOption: ConvertOption) => {
     if (convertOption === "non_symbol") {
-      const filterChars = LOOSE_SYMBOL_LIST.concat(STRICT_SYMBOL_LIST)
-        .map((s) => s.replace(/./g, "\\$&"))
+      const filterChars = [...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST]
+        .map((s) => s.replaceAll(/./g, String.raw`\$&`))
         .join("");
 
       return new RegExp(`[${filterChars}]`, "g");
     }
 
     if (convertOption === "add_symbol") {
-      const filterChars = STRICT_SYMBOL_LIST.map((s) => s.replace(/./g, "\\$&")).join("");
+      const filterChars = STRICT_SYMBOL_LIST.map((s) => s.replaceAll(/./g, String.raw`\$&`)).join("");
 
       return new RegExp(`[${filterChars}]`, "g");
     }
@@ -168,7 +167,7 @@ export const useFilterWordSymbol = () => {
       let result = sentence.replace(filterSymbolRegExp, replaceChar);
 
       if (filterType === "wordConvert") {
-        result = result.replace(zenkakuAfterSpaceReg, "$1").replace(zenkakuBeforeSpaceReg, "$1");
+        result = result.replaceAll(zenkakuAfterSpaceReg, "$1").replaceAll(zenkakuBeforeSpaceReg, "$1");
       }
 
       return result;
