@@ -15,6 +15,9 @@ export const useGeminiQueries = () => {
           enabled,
           staleTime: Infinity,
           gcTime: Infinity,
+          retry: false,
+          refetchOnMount: false,
+          refetchOnWindowFocus: false,
         },
       ),
   }
