@@ -126,11 +126,11 @@ const useTimer = () => {
       readPlayer().getPlayerState() === YT.PlayerState.ENDED
 
     if (isEnd) {
+      onEnd()
       stopTimer()
       const player = readPlayer()
       player.stopVideo()
       player.cueVideoById(player.getVideoData().video_id)
-      onEnd()
       return
     }
 
