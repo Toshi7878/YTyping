@@ -32,8 +32,7 @@
       "bracketSpacing": true,
       "semicolons": "asNeeded",
       "trailingCommas": "all"
-    },
-    "globals": []
+    }
   },
   "linter": {
     "enabled": true,
@@ -62,18 +61,7 @@
         "useAsConstAssertion": "error",
         "useTemplate": "off"
       }
-    },
-    "includes": [
-      "**",
-      "!next.config.js",
-      "!.next/**",
-      "!node_modules/**",
-      "!dist/**",
-      "!build/**",
-      "!.turbo/**",
-      "!eslint.config.*",
-      "!next-env.d.ts"
-    ]
+    }
   },
   "html": {
     "formatter": {
@@ -82,7 +70,12 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+      "includes": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.mts",
+        "**/*.cts"
+      ],
       "linter": {
         "rules": {
           "complexity": {
@@ -118,7 +111,12 @@
       }
     },
     {
-      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+      "includes": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.mts",
+        "**/*.cts"
+      ],
       "linter": {
         "rules": {
           "complexity": {
@@ -154,7 +152,9 @@
       }
     },
     {
-      "includes": ["**/*.{js,ts,tsx}"],
+      "includes": [
+        "**/*.{js,ts,tsx}"
+      ],
       "javascript": {
         "globals": [
           "onanimationend",
