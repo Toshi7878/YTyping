@@ -22,7 +22,7 @@ const SAFETY_SETTINGS: SafetySetting[] = [
   { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
 ]
 
-const MODEL = "gemini-1.5-pro"
+const MODEL = "gemini-2.0-flash-lite"
 const apiKey = env.GCP_AUTH_KEY
 
 interface GeminiMapInfo {
