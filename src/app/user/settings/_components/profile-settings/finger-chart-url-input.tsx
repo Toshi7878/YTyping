@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
-import { Form } from "@/components/ui/form";
-import { MutationInputFormField } from "@/components/ui/input/input-form-field";
-import { FingerChartUrlFormSchema } from "@/server/drizzle/validator/user-setting";
-import { useTRPC } from "@/trpc/provider";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { ExternalLink } from "lucide-react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ExternalLink } from "lucide-react"
+import Link from "next/link"
+import { useForm } from "react-hook-form"
+import { Form } from "@/components/ui/form"
+import { MutationInputFormField } from "@/components/ui/input/input-form-field"
+import { FingerChartUrlFormSchema } from "@/server/drizzle/validator/user-setting"
+import { useTRPC } from "@/trpc/provider"
 
 interface FingerChartUrlInputProps {
-  url: string;
+  url: string
 }
 
 export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
@@ -19,12 +19,12 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
     mode: "onChange",
     resolver: zodResolver(FingerChartUrlFormSchema),
     defaultValues: { url },
-  });
+  })
 
-  const { reset } = form;
+  const { reset } = form
 
-  const trpc = useTRPC();
-  const update = useMutation(trpc.userProfile.upsertFingerChartUrl.mutationOptions());
+  const trpc = useTRPC()
+  const update = useMutation(trpc.userProfile.upsertFingerChartUrl.mutationOptions())
 
   return (
     <div className="flex flex-col gap-2">
@@ -41,8 +41,8 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
       </Form>
       <UnsiLink />
     </div>
-  );
-};
+  )
+}
 
 const UnsiLink = () => {
   return (
@@ -54,5 +54,5 @@ const UnsiLink = () => {
       運指表作成はこちら
       <ExternalLink className="h-3 w-3" />
     </Link>
-  );
-};
+  )
+}

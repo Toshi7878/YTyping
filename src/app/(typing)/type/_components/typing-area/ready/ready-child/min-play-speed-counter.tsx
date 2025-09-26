@@ -1,14 +1,14 @@
-import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
-import { Button } from "@/components/ui/button";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import React from "react";
+import type React from "react"
+import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms"
+import { Button } from "@/components/ui/button"
+import { TooltipWrapper } from "@/components/ui/tooltip"
 
 interface ReadyPlaySpeedProps {
-  speedUpButtonRef: React.RefObject<HTMLButtonElement | null>;
-  speedDownButtonRef: React.RefObject<HTMLButtonElement | null>;
+  speedUpButtonRef: React.RefObject<HTMLButtonElement | null>
+  speedDownButtonRef: React.RefObject<HTMLButtonElement | null>
 }
 const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
-  const { minPlaySpeed } = usePlaySpeedState();
+  const { minPlaySpeed } = usePlaySpeedState()
 
   return (
     <TooltipWrapper
@@ -29,20 +29,20 @@ const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
         <SpeedChangeButton buttonRef={props.speedUpButtonRef} buttonLabel={{ text: "+", key: "F10" }} type="up" />
       </div>
     </TooltipWrapper>
-  );
-};
+  )
+}
 
 interface SpeedChangeButtonProps {
-  buttonRef: React.RefObject<HTMLButtonElement | null>;
+  buttonRef: React.RefObject<HTMLButtonElement | null>
   buttonLabel: {
-    text: string;
-    key: string;
-  };
-  type: "up" | "down";
+    text: string
+    key: string
+  }
+  type: "up" | "down"
 }
 
 const SpeedChangeButton = (props: SpeedChangeButtonProps) => {
-  const dispatchSpeed = usePlaySpeedReducer();
+  const dispatchSpeed = usePlaySpeedReducer()
 
   return (
     <Button
@@ -56,7 +56,7 @@ const SpeedChangeButton = (props: SpeedChangeButtonProps) => {
         <small className="absolute -top-[0.9em] left-1/2 -translate-x-1/2 text-[65%]">{props.buttonLabel.key}</small>
       </div>
     </Button>
-  );
-};
+  )
+}
 
-export default ReadyPlaySpeed;
+export default ReadyPlaySpeed

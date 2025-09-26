@@ -110,8 +110,8 @@
   --word-completed: oklch(0.7864 0.1143 186.56);
   --word-nextWord: oklch(0.683 0 0);
   --word-outline-text:
-    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000,
-    0 -1px 0 #000;
+    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000, 0
+    -1px 0 #000;
 
   --info: oklch(0.8021 0.1383 209.06);
   --info-foreground: oklch(0.985 0 0);
@@ -123,8 +123,8 @@
   --destructive-foreground: oklch(0.985 0 0);
 
   --outline-text:
-    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000,
-    0 -1px 0 #000;
+    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000, 0
+    -1px 0 #000;
   --custom-card-shadow:
     var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
     var(--tw-shadow);

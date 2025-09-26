@@ -1,9 +1,9 @@
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
-import type { VariantProps } from "class-variance-authority";
-import { cva } from "class-variance-authority";
-import * as React from "react";
-import { useFormContext } from "react-hook-form";
+import type { VariantProps } from "class-variance-authority"
+import { cva } from "class-variance-authority"
+import type * as React from "react"
+import { useFormContext } from "react-hook-form"
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { cn } from "@/lib/utils"
 
 const textareaVariants = cva(
   "border-border/50 placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-input flex field-sizing-content min-h-16 w-full rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
@@ -22,23 +22,23 @@ const textareaVariants = cva(
       size: "default",
     },
   },
-);
+)
 
 function Textarea({
   className,
   size = "default",
   ...props
 }: React.ComponentProps<"textarea"> & VariantProps<typeof textareaVariants>) {
-  return <textarea data-slot="textarea" className={cn(textareaVariants({ size }), className)} {...props} />;
+  return <textarea data-slot="textarea" className={cn(textareaVariants({ size }), className)} {...props} />
 }
 
 interface TextareaFormFieldProps {
-  name: string;
-  label?: string;
-  description?: string;
-  required?: boolean;
-  className?: string;
-  disabledFormMessage?: boolean;
+  name: string
+  label?: string
+  description?: string
+  required?: boolean
+  className?: string
+  disabledFormMessage?: boolean
 }
 
 const TextareaFormField = ({
@@ -50,7 +50,7 @@ const TextareaFormField = ({
   disabledFormMessage = false,
   ...textareaProps
 }: TextareaFormFieldProps & Omit<React.ComponentProps<"textarea">, "name" | "className">) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext()
 
   return (
     <FormField
@@ -76,7 +76,7 @@ const TextareaFormField = ({
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
-export { Textarea, TextareaFormField };
+export { Textarea, TextareaFormField }

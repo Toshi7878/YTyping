@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import { useFaviconTheme } from "@/utils/use-favicon-theme";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import * as React from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes"
+import type * as React from "react"
+import { useFaviconTheme } from "@/utils/use-favicon-theme"
 
 export function ThemeProvider({ children, ...props }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
@@ -10,10 +10,10 @@ export function ThemeProvider({ children, ...props }: React.ComponentProps<typeo
       <FaviconTheme />
       {children}
     </NextThemesProvider>
-  );
+  )
 }
 
 export const FaviconTheme = () => {
-  useFaviconTheme();
-  return null;
-};
+  useFaviconTheme()
+  return null
+}

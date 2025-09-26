@@ -1,26 +1,26 @@
-import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
-import { and, desc, eq } from "drizzle-orm";
-import z from "zod";
-import { protectedProcedure } from "../trpc";
-import type { MapListItem } from "./map-list";
+import { and, desc, eq } from "drizzle-orm"
+import z from "zod"
+import { MapLikes, Notifications, Results } from "@/server/drizzle/schema"
+import { protectedProcedure } from "../trpc"
+import type { MapListItem } from "./map-list"
 
 export const notificationRouter = {
   hasUnread: protectedProcedure.query(async ({ ctx }) => {
     const isUnreadNotificationFound = await ctx.db.query.Notifications.findFirst({
       columns: { checked: true },
       where: and(eq(Notifications.visitedId, ctx.user.id), eq(Notifications.checked, false)),
-    }).then((res) => res !== undefined);
+    }).then((res) => res !== undefined)
 
-    return isUnreadNotificationFound;
+    return isUnreadNotificationFound
   }),
   getInfinite: protectedProcedure
     .input(z.object({ cursor: z.string().nullable().optional() }))
     .query(async ({ input, ctx }) => {
-      const { db, user } = ctx;
-      const PAGE_SIZE = 20;
+      const { db, user } = ctx
+      const PAGE_SIZE = 20
 
-      const page = input.cursor ? Number(input.cursor) : 0;
-      const offset = isNaN(page) ? 0 : page * PAGE_SIZE;
+      const page = input.cursor ? Number(input.cursor) : 0
+      const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE
 
       const notifications = await db.query.Notifications.findMany({
         where: eq(Notifications.visitedId, user.id),
@@ -56,7 +56,7 @@ export const notificationRouter = {
           visitedResult: { with: { status: { columns: { score: true } } } },
           visitorResult: { with: { status: { columns: { score: true } } } },
         },
-      });
+      })
 
       const items = notifications.map(({ map: m, ...rest }) => ({
         created_at: rest.createdAt,
@@ -98,23 +98,23 @@ export const notificationRouter = {
             myRank: m.results?.[0]?.rank ?? null,
           },
         } satisfies MapListItem,
-      }));
+      }))
 
-      let nextCursor: string | undefined;
+      let nextCursor: string | undefined
       if (items.length > PAGE_SIZE) {
-        items.pop();
-        nextCursor = String(isNaN(page) ? 1 : page + 1);
+        items.pop()
+        nextCursor = String(Number.isNaN(page) ? 1 : page + 1)
       }
 
-      return { notifications: items, nextCursor };
+      return { notifications: items, nextCursor }
     }),
 
   postUserNotificationRead: protectedProcedure.mutation(async ({ ctx }) => {
-    const { db, user } = ctx;
+    const { db, user } = ctx
 
     await db
       .update(Notifications)
       .set({ checked: true })
-      .where(and(eq(Notifications.visitedId, user.id), eq(Notifications.checked, false)));
+      .where(and(eq(Notifications.visitedId, user.id), eq(Notifications.checked, false)))
   }),
-};
+}

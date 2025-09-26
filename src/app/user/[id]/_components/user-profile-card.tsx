@@ -1,24 +1,24 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import { H3 } from "@/components/ui/typography";
-import type { RouterOutPuts } from "@/server/api/trpc";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { MdOutlineEdit } from "react-icons/md";
-import FingerChartUrl from "./user-info/finger-chart-url";
-import KeyBoard from "./user-info/usage-keyboard";
+"use client"
+import Link from "next/link"
+import { useParams } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { MdOutlineEdit } from "react-icons/md"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { TooltipWrapper } from "@/components/ui/tooltip"
+import { H3 } from "@/components/ui/typography"
+import type { RouterOutPuts } from "@/server/api/trpc"
+import FingerChartUrl from "./user-info/finger-chart-url"
+import KeyBoard from "./user-info/usage-keyboard"
 
 interface UserProfileCardProps {
-  userProfile: RouterOutPuts["userProfile"]["getUserProfile"];
+  userProfile: RouterOutPuts["userProfile"]["getUserProfile"]
 }
 
 const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
-  const { id: userId } = useParams<{ id: string }>();
-  const { data: session } = useSession();
-  const myProfile = session?.user.id === userId;
+  const { id: userId } = useParams<{ id: string }>()
+  const { data: session } = useSession()
+  const myProfile = session?.user.id === userId
 
   return (
     <Card>
@@ -47,7 +47,7 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
         )}
       </CardFooter>
     </Card>
-  );
-};
+  )
+}
 
-export default UserProfileCard;
+export default UserProfileCard

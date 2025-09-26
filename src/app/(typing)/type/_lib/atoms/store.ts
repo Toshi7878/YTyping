@@ -1,4 +1,4 @@
-import { createStore } from "jotai";
+import { createStore } from "jotai"
 
-const store = createStore();
-export const getTypeAtomStore = () => store;
+const store = createStore()
+export const getTypeAtomStore = () => store

@@ -1,15 +1,15 @@
-import { usePlayer } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/sound-effect";
-import VolumeRange from "@/components/shared/volume-range";
-import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
-import { H5 } from "@/components/ui/typography";
+import { usePlayer } from "@/app/(typing)/type/_lib/atoms/ref-atoms"
+import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/sound-effect"
+import VolumeRange from "@/components/shared/volume-range"
+import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox"
+import { H5 } from "@/components/ui/typography"
 
 const UserSoundEffectCheckbox = () => {
-  const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
-  const { readPlayer } = usePlayer();
-  const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { typeSoundPlay, missSoundPlay, clearTypeSoundPlay } = useSoundEffect();
+  const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState()
+  const { readPlayer } = usePlayer()
+  const { setUserTypingOptions } = useSetUserTypingOptions()
+  const { typeSoundPlay, missSoundPlay, clearTypeSoundPlay } = useSoundEffect()
 
   return (
     <section className="space-y-4">
@@ -22,8 +22,8 @@ const UserSoundEffectCheckbox = () => {
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
               typeSound: value,
-            });
-            if (value) typeSoundPlay();
+            })
+            if (value) typeSoundPlay()
           }}
         />
         <LabeledCheckbox
@@ -32,8 +32,8 @@ const UserSoundEffectCheckbox = () => {
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
               missSound: value,
-            });
-            if (value) missSoundPlay();
+            })
+            if (value) missSoundPlay()
           }}
         />
         <LabeledCheckbox
@@ -42,13 +42,13 @@ const UserSoundEffectCheckbox = () => {
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({
               completedTypeSound: value,
-            });
-            if (value) clearTypeSoundPlay();
+            })
+            if (value) clearTypeSoundPlay()
           }}
         />
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default UserSoundEffectCheckbox;
+export default UserSoundEffectCheckbox

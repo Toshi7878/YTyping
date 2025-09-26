@@ -92,7 +92,7 @@ export const KEY_TO_KANA = new Map([
   ["}", ["」"]],
   [":", ["け"]],
   ["*", ["け"]],
-]);
+])
 
 export const CODE_TO_KANA = new Map([
   ["IntlYen", ["ー", "￥", "\\"]],
@@ -113,4 +113,4 @@ export const CODE_TO_KANA = new Map([
   ["NumpadSubtract", []],
   ["NumpadAdd", []],
   ["NumpadDecimal", []],
-]);
+])

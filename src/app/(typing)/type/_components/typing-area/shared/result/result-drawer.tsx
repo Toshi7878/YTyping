@@ -1,16 +1,16 @@
-"use client";
+"use client"
 import {
   useLineResultDrawerState,
   useSceneGroupState,
   useSetLineResultDrawer,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import ResultLineList from "./child/result-line-list";
+} from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import ResultLineList from "./child/result-line-list"
 
 function ResultDrawer() {
-  const isOpen = useLineResultDrawerState();
-  const sceneGroup = useSceneGroupState();
-  const setLineResultDrawer = useSetLineResultDrawer();
+  const isOpen = useLineResultDrawerState()
+  const sceneGroup = useSceneGroupState()
+  const setLineResultDrawer = useSetLineResultDrawer()
 
   return (
     <Sheet modal={false} open={isOpen} onOpenChange={setLineResultDrawer}>
@@ -22,7 +22,7 @@ function ResultDrawer() {
         <ResultLineList />
       </SheetContent>
     </Sheet>
-  );
+  )
 }
 
-export default ResultDrawer;
+export default ResultDrawer

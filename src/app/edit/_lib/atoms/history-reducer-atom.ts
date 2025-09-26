@@ -1,101 +1,106 @@
-import type { MapLine } from "@/server/drizzle/validator/map-json";
-import { useSetAtom } from "jotai";
-import { atomWithReducer, useAtomCallback } from "jotai/utils";
-import { useCallback } from "react";
-import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer-atom";
-import { getEditAtomStore } from "./store";
+import { useSetAtom } from "jotai"
+import { atomWithReducer, useAtomCallback } from "jotai/utils"
+import { useCallback } from "react"
+import type { MapLine } from "@/server/drizzle/validator/map-json"
+import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer-atom"
+import { getEditAtomStore } from "./store"
 
 type MapLineEdit = MapLine & {
-  lineIndex: number;
-};
+  lineIndex: number
+}
 
-const store = getEditAtomStore();
+const store = getEditAtomStore()
 
-type Add = { actionType: MapAddAction["type"]; data: MapLineEdit };
+type Add = { actionType: MapAddAction["type"]; data: MapLineEdit }
 type Update = {
-  actionType: MapUpdateAction["type"];
+  actionType: MapUpdateAction["type"]
   data: {
-    old: MapLine;
-    new: MapLine;
-    lineIndex: number;
-  };
-};
-type Delete = { actionType: MapDeleteAction["type"]; data: MapLineEdit };
+    old: MapLine
+    new: MapLine
+    lineIndex: number
+  }
+}
+type Delete = { actionType: MapDeleteAction["type"]; data: MapLineEdit }
 type ReplaceAll = {
-  actionType: MapReplaceAllAction["type"];
+  actionType: MapReplaceAllAction["type"]
   data: {
-    old: MapLine[];
-    new: MapLine[];
-  };
-};
+    old: MapLine[]
+    new: MapLine[]
+  }
+}
 
-type History = Add | Update | Delete | ReplaceAll;
+type History = Add | Update | Delete | ReplaceAll
 
 const initialState = {
   past: [] as History[],
   present: null as History | null,
   future: [] as History[],
-};
+}
 interface AddAction {
-  type: "add";
-  payload: History;
+  type: "add"
+  payload: History
 }
 
 interface OtherAction {
-  type: "undo" | "redo" | "reset";
+  type: "undo" | "redo" | "reset"
 }
 
 const historyReducer = (prev: typeof initialState, action: AddAction | OtherAction): typeof initialState => {
   switch (action.type) {
     case "undo": {
-      prev.future.push(prev.present!);
+      if (!prev.present) return prev
+
+      prev.future.push(prev.present)
       if (prev.past.length > 0) {
-        const previous = prev.past.pop();
-        prev.present = previous!;
+        const previous = prev.past.pop()
+        prev.present = previous ?? null
       } else {
-        prev.present = null;
+        prev.present = null
       }
 
-      return prev;
+      return prev
     }
 
     case "redo": {
+      if (!prev.present) return prev
+
       if (prev.future.length > 0) {
-        const next = prev.future.pop();
-        prev.past.push(prev.present!);
-        prev.present = next!;
+        const next = prev.future.pop()
+        if (!next) prev
+        prev.past.push(prev.present)
+        prev.present = next ?? null
       }
 
-      return prev;
+      return prev
     }
     case "add": {
       if (prev.present !== null) {
-        prev.past.push(prev.present);
+        prev.past.push(prev.present)
       }
-      prev.present = action.payload;
-      prev.future = [];
+      prev.present = action.payload
+      prev.future = []
 
-      return prev;
+      return prev
     }
 
     case "reset": {
-      prev.past = initialState.past;
-      prev.future = initialState.future;
-      prev.present = initialState.present;
+      prev.past = initialState.past
+      prev.future = initialState.future
+      prev.present = initialState.present
 
-      return prev;
+      return prev
     }
     default:
-      return prev;
+      return prev
   }
-};
+}
 
-const historyReducerAtom = atomWithReducer(initialState, historyReducer);
+const historyReducerAtom = atomWithReducer(initialState, historyReducer)
 
-export const useHistoryReducer = () => useSetAtom(historyReducerAtom, { store });
+export const useHistoryReducer = () => useSetAtom(historyReducerAtom, { store })
 export const useEditHistoryRef = () => {
   return useAtomCallback(
     useCallback((get) => get(historyReducerAtom), []),
     { store },
-  );
-};
+  )
+}

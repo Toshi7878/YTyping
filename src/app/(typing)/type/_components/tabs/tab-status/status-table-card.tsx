@@ -1,7 +1,7 @@
-import { CardWithContent } from "@/components/ui/card";
-import { Table, TableBody, TableRow } from "@/components/ui/table/table";
-import { cn } from "@/lib/utils";
-import StatusCell from "./status-cell";
+import { CardWithContent } from "@/components/ui/card"
+import { Table, TableBody, TableRow } from "@/components/ui/table/table"
+import { cn } from "@/lib/utils"
+import StatusCell from "./status-cell"
 
 const StatusCard = ({ className }: { className: string }) => {
   return (
@@ -19,8 +19,8 @@ const StatusCard = ({ className }: { className: string }) => {
         </TableBody>
       </Table>
     </CardWithContent>
-  );
-};
+  )
+}
 
 const StatusTableRow = ({ labels }: { labels: string[] }) => {
   return (
@@ -29,7 +29,7 @@ const StatusTableRow = ({ labels }: { labels: string[] }) => {
         <StatusCell key={label} label={label} />
       ))}
     </TableRow>
-  );
-};
+  )
+}
 
-export default StatusCard;
+export default StatusCard

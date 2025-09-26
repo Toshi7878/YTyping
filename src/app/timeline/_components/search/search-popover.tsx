@@ -1,4 +1,5 @@
-"use client";
+"use client"
+import { useCallback, useMemo } from "react"
 import {
   useSearchResultClearRateState,
   useSearchResultKpmState,
@@ -8,25 +9,24 @@ import {
   useSetSearchResultKpm,
   useSetSearchResultMode,
   useSetSearchResultSpeed,
-} from "@/app/timeline/_lib/atoms";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
-import type { FilterMode } from "@/app/timeline/_lib/type";
-import { Button } from "@/components/ui/button";
-import { DualRangeSlider } from "@/components/ui/dual-range-slider";
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useCallback, useMemo } from "react";
-import useSearchKeydown from "../../_lib/hooks/use-search-keydown";
+} from "@/app/timeline/_lib/atoms"
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts"
+import type { FilterMode } from "@/app/timeline/_lib/type"
+import { Button } from "@/components/ui/button"
+import { DualRangeSlider } from "@/components/ui/dual-range-slider"
+import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group"
+import { TooltipWrapper } from "@/components/ui/tooltip"
+import useSearchKeydown from "../../_lib/hooks/use-search-keydown"
 
 const SearchPopover = () => {
-  const searchKpm = useSearchResultKpmState();
-  const searchClearRate = useSearchResultClearRateState();
-  const searchSpeed = useSearchResultSpeedState();
-  const setSearchKpm = useSetSearchResultKpm();
-  const setSearchClearRate = useSetSearchResultClearRate();
-  const setSearchSpeed = useSetSearchResultSpeed();
+  const searchKpm = useSearchResultKpmState()
+  const searchClearRate = useSearchResultClearRateState()
+  const searchSpeed = useSearchResultSpeedState()
+  const setSearchKpm = useSetSearchResultKpm()
+  const setSearchClearRate = useSetSearchResultClearRate()
+  const setSearchSpeed = useSetSearchResultSpeed()
 
   return (
     <Popover>
@@ -55,8 +55,8 @@ const SearchPopover = () => {
         <SearchRange label={"倍速"} min={1} max={2} step={0.25} value={searchSpeed} setValue={setSearchSpeed} />
       </PopoverContent>
     </Popover>
-  );
-};
+  )
+}
 
 const MODE_RADIO_CARDS: { value: FilterMode; label: string }[] = [
   { value: "all", label: "全て" },
@@ -64,12 +64,12 @@ const MODE_RADIO_CARDS: { value: FilterMode; label: string }[] = [
   { value: "kana", label: "かな" },
   { value: "romakana", label: "ローマ字&かな" },
   { value: "english", label: "英語" },
-];
+]
 
 const SearchModeRadioCardGroup = () => {
-  const modeAtom = useSearchResultModeState();
-  const setModeAtom = useSetSearchResultMode();
-  const handleKeyDown = useSearchKeydown();
+  const modeAtom = useSearchResultModeState()
+  const setModeAtom = useSetSearchResultMode()
+  const handleKeyDown = useSearchKeydown()
 
   return (
     <RadioGroup
@@ -79,7 +79,7 @@ const SearchModeRadioCardGroup = () => {
       onKeyDown={handleKeyDown}
     >
       {MODE_RADIO_CARDS.map((option) => {
-        const isSelected = modeAtom === option.value;
+        const isSelected = modeAtom === option.value
 
         return (
           <TooltipWrapper key={option.value} label="Enterで検索" disabled={!isSelected}>
@@ -93,27 +93,27 @@ const SearchModeRadioCardGroup = () => {
               {option.label}
             </RadioCard>
           </TooltipWrapper>
-        );
+        )
       })}
     </RadioGroup>
-  );
-};
+  )
+}
 
 interface RangeValue {
-  minValue: number;
-  maxValue: number;
+  minValue: number
+  maxValue: number
 }
 
 interface SearchRangeProps {
-  label: string;
-  min: number;
-  max: number;
-  step?: number;
-  value: RangeValue;
-  setValue: (value: RangeValue) => void;
-  disabled?: boolean;
-  tooltipLabel?: string;
-  isMaxLabel?: boolean;
+  label: string
+  min: number
+  max: number
+  step?: number
+  value: RangeValue
+  setValue: (value: RangeValue) => void
+  disabled?: boolean
+  tooltipLabel?: string
+  isMaxLabel?: boolean
 }
 
 const SearchRange = ({
@@ -127,21 +127,21 @@ const SearchRange = ({
   isMaxLabel = false,
   tooltipLabel = "Enterで検索",
 }: SearchRangeProps) => {
-  const handleKeyDown = useSearchKeydown();
+  const handleKeyDown = useSearchKeydown()
 
   const handleValueChange = useCallback(
     (newValue: number[]) => {
-      setValue({ minValue: newValue[0], maxValue: newValue[1] });
+      setValue({ minValue: newValue[0], maxValue: newValue[1] })
     },
     [setValue],
-  );
+  )
 
   const displayValue = useMemo(() => {
-    const maxLabel = isMaxLabel && value.maxValue === max ? "最大" : value.maxValue;
-    const displayUnit = label;
+    const maxLabel = isMaxLabel && value.maxValue === max ? "最大" : value.maxValue
+    const displayUnit = label
 
-    return `${value.minValue} - ${maxLabel} ${displayUnit}`;
-  }, [value, label, isMaxLabel, max]);
+    return `${value.minValue} - ${maxLabel} ${displayUnit}`
+  }, [value, label, isMaxLabel, max])
 
   return (
     <div className="space-y-3 py-4">
@@ -159,7 +159,7 @@ const SearchRange = ({
         />
       </TooltipWrapper>
     </div>
-  );
-};
+  )
+}
 
-export default SearchPopover;
+export default SearchPopover

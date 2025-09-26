@@ -1,15 +1,15 @@
-import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
-import type { badgeVariants } from "@/components/ui/badge";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import type { VariantProps } from "class-variance-authority";
-import { useFormContext } from "react-hook-form";
-import { toast } from "sonner";
+import type { VariantProps } from "class-variance-authority"
+import { useFormContext } from "react-hook-form"
+import { toast } from "sonner"
+import { TAG_MAX_LEN } from "@/app/edit/_lib/const"
+import type { badgeVariants } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
 
 interface SuggestionTagsProps {
-  isGeminiLoading: boolean;
-  geminiTags: string[];
+  isGeminiLoading: boolean
+  geminiTags: string[]
 }
 
 export default function SuggestionTags({ isGeminiLoading, geminiTags }: SuggestionTagsProps) {
@@ -18,17 +18,17 @@ export default function SuggestionTags({ isGeminiLoading, geminiTags }: Suggesti
       <TemplateTags />
       <GeminiSuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiTags} />
     </div>
-  );
+  )
 }
 
 interface GeminiTagSuggestionsProps {
-  isGeminiLoading: boolean;
-  geminiTags: string[];
+  isGeminiLoading: boolean
+  geminiTags: string[]
 }
 
 const GeminiSuggestionTags = ({ isGeminiLoading, geminiTags }: GeminiTagSuggestionsProps) => {
-  const control = useFormContext();
-  const tags = control.watch("tags");
+  const control = useFormContext()
+  const tags = control.watch("tags")
 
   if (isGeminiLoading) {
     return (
@@ -37,23 +37,23 @@ const GeminiSuggestionTags = ({ isGeminiLoading, geminiTags }: GeminiTagSuggesti
           <Skeleton className="h-5 w-full" />
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div className="flex flex-row flex-wrap gap-3">
       {geminiTags.map((label, index) => {
-        const isSelected = tags.some((tag: string) => tag === label);
+        const isSelected = tags.some((tag: string) => tag === label)
 
         if (isSelected) {
-          return null;
+          return null
         } else {
-          return <SuggestionTagBadge key={index} label={label} variant="primary-light" />;
+          return <SuggestionTagBadge key={index} label={label} variant="primary-light" />
         }
       })}
     </div>
-  );
-};
+  )
+}
 
 const CHOICE_TAGS = [
   "公式動画",
@@ -84,35 +84,35 @@ const CHOICE_TAGS = [
   "装飾譜面",
   "ギミック譜面",
   "YouTube Premium",
-];
+]
 
 const TemplateTags = () => {
-  const control = useFormContext();
-  const tags = control.watch("tags");
+  const control = useFormContext()
+  const tags = control.watch("tags")
 
   return (
     <div className="flex flex-row flex-wrap gap-3">
       {CHOICE_TAGS.map((label, index) => {
-        const isSelected = tags.some((tag: string) => tag === label);
+        const isSelected = tags.some((tag: string) => tag === label)
 
         if (isSelected) {
-          return null;
+          return null
         } else {
-          return <SuggestionTagBadge key={index} label={label} variant="secondary-light" />;
+          return <SuggestionTagBadge key={index} label={label} variant="secondary-light" />
         }
       })}
     </div>
-  );
-};
+  )
+}
 
 interface TagBadgeProps {
-  label: string;
-  variant?: VariantProps<typeof badgeVariants>["variant"];
+  label: string
+  variant?: VariantProps<typeof badgeVariants>["variant"]
 }
 
 const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
-  const control = useFormContext();
-  const tags = control.watch("tags");
+  const control = useFormContext()
+  const tags = control.watch("tags")
 
   return (
     <Badge
@@ -122,18 +122,18 @@ const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
       )}
       variant={variant}
       onClick={() => {
-        const currentTags = tags;
+        const currentTags = tags
         if (currentTags.length < TAG_MAX_LEN) {
           control.setValue("tags", [...currentTags, label], {
             shouldDirty: true,
             shouldTouch: true,
-          });
+          })
         } else {
-          toast.warning("タグは最大10個まで追加できます");
+          toast.warning("タグは最大10個まで追加できます")
         }
       }}
     >
       {label}
     </Badge>
-  );
-};
+  )
+}

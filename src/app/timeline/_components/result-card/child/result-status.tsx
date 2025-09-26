@@ -1,17 +1,17 @@
-import ClearRateText from "@/components/shared/text/clear-rate-text";
-import { InputModeText } from "@/components/shared/text/input-mode-text";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import ClearRateText from "@/components/shared/text/clear-rate-text"
+import { InputModeText } from "@/components/shared/text/input-mode-text"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+import type { RouterOutPuts } from "@/server/api/trpc"
 
 interface ResultStatusProps {
-  result: RouterOutPuts["result"]["usersResultList"]["items"][number];
-  className?: string;
+  result: RouterOutPuts["result"]["usersResultList"]["items"][number]
+  className?: string
 }
 
 export const ResultStatus = ({ result, className }: ResultStatusProps) => {
-  const { typeCounts, otherStatus, typeSpeed } = result;
-  const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
+  const { typeCounts, otherStatus, typeSpeed } = result
+  const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0
 
   return (
     <div className={cn("flex flex-col items-end gap-5", className)}>
@@ -41,17 +41,17 @@ export const ResultStatus = ({ result, className }: ResultStatusProps) => {
         </Badge>
       </div>
     </div>
-  );
-};
+  )
+}
 
 interface ResultBadgesMobileProps extends ResultStatusProps {
-  className?: string;
-  result: RouterOutPuts["result"]["usersResultList"]["items"][number];
+  className?: string
+  result: RouterOutPuts["result"]["usersResultList"]["items"][number]
 }
 
 export const ResultBadgesMobile = ({ result, className }: ResultBadgesMobileProps) => {
-  const { typeCounts, otherStatus, typeSpeed } = result;
-  const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
+  const { typeCounts, otherStatus, typeSpeed } = result
+  const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0
 
   return (
     <div className={cn("visible flex w-full justify-around", className)}>
@@ -86,5 +86,5 @@ export const ResultBadgesMobile = ({ result, className }: ResultBadgesMobileProp
         </Badge>
       </div>
     </div>
-  );
-};
+  )
+}

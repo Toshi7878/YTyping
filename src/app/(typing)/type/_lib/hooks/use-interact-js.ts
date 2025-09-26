@@ -1,17 +1,17 @@
-import interact from "interactjs";
-import type { CSSProperties } from "react";
-import { useEffect, useRef, useState } from "react";
+import interact from "interactjs"
+import type { CSSProperties } from "react"
+import { useEffect, useRef, useState } from "react"
 
 type Partial<T> = {
-  [P in keyof T]?: T[P];
-};
+  [P in keyof T]?: T[P]
+}
 
 const initPosition = {
   width: 500,
   height: 150,
   x: 1000,
   y: -100,
-};
+}
 
 /**
  * HTML要素を動かせるようにする
@@ -23,18 +23,18 @@ export function useInteractJS(position: Partial<typeof initPosition> = initPosit
   const [_position, setPosition] = useState({
     ...initPosition,
     ...position,
-  });
-  const [isEnabled, setEnable] = useState(true);
+  })
+  const [isEnabled, setEnable] = useState(true)
 
-  const interactRef = useRef(null);
-  let { x, y, width, height } = _position;
+  const interactRef = useRef(null)
+  let { x, y, width, height } = _position
 
   const enable = () => {
     interact(interactRef.current as unknown as HTMLElement)
       .draggable({
         inertia: false,
         cursorChecker: (interacting) => {
-          return interacting ? "move" : "pointer";
+          return interacting ? "move" : "pointer"
         },
       })
       .resizable({
@@ -44,45 +44,44 @@ export function useInteractJS(position: Partial<typeof initPosition> = initPosit
         inertia: false,
       })
       .on("dragmove", (event) => {
-        x += event.dx;
-        y += event.dy;
+        x += event.dx
+        y += event.dy
         setPosition({
           width,
           height,
           x,
           y,
-        });
+        })
       })
       .on("resizemove", (event) => {
-         
-        width = event.rect.width;
-         
-        height = event.rect.height;
-        x += event.deltaRect.left;
-        y += event.deltaRect.top;
+        width = event.rect.width
+
+        height = event.rect.height
+        x += event.deltaRect.left
+        y += event.deltaRect.top
         setPosition({
           x,
           y,
           width,
           height,
-        });
-      });
-  };
+        })
+      })
+  }
 
   const disable = () => {
     if (interactRef.current) {
-      interact(interactRef.current as unknown as HTMLElement).unset();
+      interact(interactRef.current as unknown as HTMLElement).unset()
     }
-  };
+  }
 
   useEffect(() => {
     if (isEnabled) {
-      enable();
+      enable()
     } else {
-      disable();
+      disable()
     }
-    return disable;
-  }, [isEnabled]);
+    return disable
+  }, [isEnabled])
 
   return {
     ref: interactRef,
@@ -96,5 +95,5 @@ export function useInteractJS(position: Partial<typeof initPosition> = initPosit
     isEnabled,
     enable: () => setEnable(true),
     disable: () => setEnable(false),
-  };
+  }
 }

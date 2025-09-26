@@ -1,11 +1,11 @@
-import { auth } from "@/server/auth";
-import { redirect } from "next/navigation";
+import { redirect } from "next/navigation"
+import { auth } from "@/server/auth"
 
 export default async function Page() {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const session = await auth()
+  const userId = session?.user?.id
   if (!userId) {
-    redirect("/");
+    redirect("/")
   }
-  redirect(`/user/${userId}`);
+  redirect(`/user/${userId}`)
 }

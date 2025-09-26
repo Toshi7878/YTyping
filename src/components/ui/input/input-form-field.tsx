@@ -1,28 +1,28 @@
-"use client";
+"use client"
 
-import type { inputVariants } from "@/components/ui/input/input";
-import { Input } from "@/components/ui/input/input";
-import { cn } from "@/lib/utils";
-import { useDebounce } from "@/utils/hooks/use-debounce";
-import type { UseMutationResult } from "@tanstack/react-query";
-import type { VariantProps } from "class-variance-authority";
-import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import type { ComponentProps, ReactNode } from "react";
-import type { ControllerRenderProps, FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
-import { useFormContext } from "react-hook-form";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form";
-import { FloatingLabelInput } from "./floating-label-input";
+import type { UseMutationResult } from "@tanstack/react-query"
+import type { VariantProps } from "class-variance-authority"
+import { CheckCircle, Loader2, XCircle } from "lucide-react"
+import type { ComponentProps, ReactNode } from "react"
+import type { ControllerRenderProps, FieldError, FieldErrorsImpl, Merge } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
+import type { inputVariants } from "@/components/ui/input/input"
+import { Input } from "@/components/ui/input/input"
+import { cn } from "@/lib/utils"
+import { useDebounce } from "@/utils/hooks/use-debounce"
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form"
+import { FloatingLabelInput } from "./floating-label-input"
 
 interface InputFormFieldProps {
-  name: string;
-  label?: ReactNode;
-  description?: ReactNode;
-  required?: boolean;
-  className?: string;
-  variant?: VariantProps<typeof inputVariants>["variant"];
-  size?: VariantProps<typeof inputVariants>["size"];
-  disabledFormMessage?: boolean;
-  onChange?: ControllerRenderProps["onChange"];
+  name: string
+  label?: ReactNode
+  description?: ReactNode
+  required?: boolean
+  className?: string
+  variant?: VariantProps<typeof inputVariants>["variant"]
+  size?: VariantProps<typeof inputVariants>["size"]
+  disabledFormMessage?: boolean
+  onChange?: ControllerRenderProps["onChange"]
 }
 
 const InputFormField = ({
@@ -36,7 +36,7 @@ const InputFormField = ({
   onChange,
   ...inputProps
 }: InputFormFieldProps & Omit<ComponentProps<typeof Input>, "size" | keyof ControllerRenderProps>) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext()
 
   return (
     <FormField
@@ -57,8 +57,8 @@ const InputFormField = ({
               variant={fieldState.error ? "error" : "default"}
               size={size}
               onChange={(e) => {
-                field.onChange(e);
-                onChange?.(e);
+                field.onChange(e)
+                onChange?.(e)
               }}
             />
           </FormControl>
@@ -67,15 +67,15 @@ const InputFormField = ({
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
 interface MutationInputFormFieldProps {
-  label: string;
-  successMessage: string;
-  mutation: UseMutationResult<unknown, unknown, string>;
-  debounceDelay?: number;
-  onSuccess?: (value: string) => void;
+  label: string
+  successMessage: string
+  mutation: UseMutationResult<unknown, unknown, string>
+  debounceDelay?: number
+  onSuccess?: (value: string) => void
 }
 
 const MutationInputFormField = ({
@@ -86,11 +86,11 @@ const MutationInputFormField = ({
   onSuccess,
   ...props
 }: MutationInputFormFieldProps & Omit<ComponentProps<typeof InputFormField>, "label" | "disabledFormMessage">) => {
-  const { debounce, isPending, cancel } = useDebounce(debounceDelay);
+  const { debounce, isPending, cancel } = useDebounce(debounceDelay)
   const {
     formState: { errors },
     clearErrors,
-  } = useFormContext();
+  } = useFormContext()
 
   return (
     <InputFormField
@@ -108,44 +108,44 @@ const MutationInputFormField = ({
       disabledFormMessage={true}
       {...props}
       onChange={(e) => {
-        props.onChange?.(e);
-        mutation.reset();
-        clearErrors(props.name);
-        cancel();
-        const { value } = e.currentTarget;
+        props.onChange?.(e)
+        mutation.reset()
+        clearErrors(props.name)
+        cancel()
+        const { value } = e.currentTarget
 
         debounce(async () => {
           if (!errors[props.name] && value) {
-            await mutation.mutateAsync(value);
-            onSuccess?.(value);
+            await mutation.mutateAsync(value)
+            onSuccess?.(value)
           }
-        });
+        })
       }}
     />
-  );
-};
+  )
+}
 
 interface MutateMessageProps {
-  isPending: boolean;
-  isSuccess: boolean;
-  successMessage: string;
-  errorMessage: FieldError | Merge<FieldError, FieldErrorsImpl> | undefined;
+  isPending: boolean
+  isSuccess: boolean
+  successMessage: string
+  errorMessage: FieldError | Merge<FieldError, FieldErrorsImpl> | undefined
 }
 
 const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: MutateMessageProps) => {
   if (errorMessage?.message) {
     const messageText =
-      typeof errorMessage.message === "string" ? errorMessage.message : JSON.stringify(errorMessage.message);
+      typeof errorMessage.message === "string" ? errorMessage.message : JSON.stringify(errorMessage.message)
 
     return (
       <div className="flex items-center gap-1">
         <XCircle className="text-destructive h-4 w-4" />
         <span className="text-destructive text-xs">{messageText}</span>
       </div>
-    );
+    )
   }
   if (isPending) {
-    return <Loader2 className="h-4 w-4 animate-spin" />;
+    return <Loader2 className="h-4 w-4 animate-spin" />
   }
 
   if (isSuccess) {
@@ -154,22 +154,22 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
         <CheckCircle className="h-4 w-4 text-green-600" />
         <span className="text-xs text-green-600">{successMessage}</span>
       </div>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
 interface FloatingLabelInputFormFieldProps {
-  name: string;
-  label?: string;
-  description?: ReactNode;
-  className?: string;
-  variant?: VariantProps<typeof inputVariants>["variant"];
-  size?: VariantProps<typeof inputVariants>["size"];
-  disabled?: boolean;
-  onChange?: ControllerRenderProps["onChange"];
-  disabledFormMessage?: boolean;
+  name: string
+  label?: string
+  description?: ReactNode
+  className?: string
+  variant?: VariantProps<typeof inputVariants>["variant"]
+  size?: VariantProps<typeof inputVariants>["size"]
+  disabled?: boolean
+  onChange?: ControllerRenderProps["onChange"]
+  disabledFormMessage?: boolean
 }
 
 const FloatingLabelInputFormField = ({
@@ -183,7 +183,7 @@ const FloatingLabelInputFormField = ({
   disabled = false,
   ...inputProps
 }: FloatingLabelInputFormFieldProps & Omit<ComponentProps<typeof Input>, "size" | keyof ControllerRenderProps>) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext()
 
   return (
     <FormField
@@ -200,8 +200,8 @@ const FloatingLabelInputFormField = ({
               variant={fieldState.error ? "error" : "default"}
               size={size}
               onChange={(e) => {
-                field.onChange(e);
-                onChange?.(e);
+                field.onChange(e)
+                onChange?.(e)
               }}
             />
           </FormControl>
@@ -210,7 +210,7 @@ const FloatingLabelInputFormField = ({
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
-export { FloatingLabelInputFormField, InputFormField, MutationInputFormField };
+export { FloatingLabelInputFormField, InputFormField, MutationInputFormField }

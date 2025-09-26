@@ -1,36 +1,36 @@
-"use client";
+"use client"
 
-import { cn } from "@/lib/utils";
-import { Heart } from "lucide-react";
-import type React from "react";
-import { useEffect, useState } from "react";
+import { Heart } from "lucide-react"
+import type React from "react"
+import { useEffect, useState } from "react"
+import { cn } from "@/lib/utils"
 
-import "./css/render.css";
+import "./css/render.css"
 
 type LikeButtonProps = {
-  size?: number;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>, likeValue: boolean) => void;
-  defaultLiked?: boolean;
-  className?: string;
-  likeCount?: number;
-  disabled?: boolean;
-};
+  size?: number
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>, likeValue: boolean) => void
+  defaultLiked?: boolean
+  className?: string
+  likeCount?: number
+  disabled?: boolean
+}
 
 export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className, disabled }: LikeButtonProps) => {
-  const [hasLiked, setHasLiked] = useState(defaultLiked);
-  const [hasBeenClicked, setHasBeenClicked] = useState(false);
+  const [hasLiked, setHasLiked] = useState(defaultLiked)
+  const [hasBeenClicked, setHasBeenClicked] = useState(false)
 
   useEffect(() => {
-    setHasLiked(defaultLiked);
-  }, [defaultLiked]);
+    setHasLiked(defaultLiked)
+  }, [defaultLiked])
 
-  const backgroundWidth = size * 25;
-  const heartSize = Math.floor(size / 2);
+  const backgroundWidth = size * 25
+  const heartSize = Math.floor(size / 2)
 
   const buttonStyle = {
     width: `${size}px`,
     height: `${size}px`,
-  };
+  }
 
   const backgroundStyle = {
     width: `${size}px`,
@@ -39,7 +39,7 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
     transition: hasBeenClicked ? `background-position steps(25)` : "none",
     transitionDuration: hasBeenClicked && hasLiked ? "1s" : "0s",
     backgroundPosition: hasLiked ? `-${backgroundWidth}px 0` : `0 0`,
-  };
+  }
 
   return (
     <button
@@ -48,11 +48,11 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
       style={buttonStyle}
       type="button"
       onClick={(event) => {
-        const newLikeValue = !hasLiked;
-        setHasLiked(newLikeValue);
-        setHasBeenClicked(true);
+        const newLikeValue = !hasLiked
+        setHasLiked(newLikeValue)
+        setHasBeenClicked(true)
 
-        onClick?.(event, newLikeValue);
+        onClick?.(event, newLikeValue)
       }}
     >
       <div
@@ -69,8 +69,8 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
         />
       </div>
     </button>
-  );
-};
+  )
+}
 
 export const LikeButtonWithCount = ({
   size = 50,
@@ -79,19 +79,19 @@ export const LikeButtonWithCount = ({
   likeCount,
   disabled,
 }: LikeButtonProps & { likeCount: number }) => {
-  const [hasLiked, setHasLiked] = useState(defaultLiked);
-  const [hasBeenClicked, setHasBeenClicked] = useState(false);
+  const [hasLiked, setHasLiked] = useState(defaultLiked)
+  const [hasBeenClicked, setHasBeenClicked] = useState(false)
 
   useEffect(() => {
-    setHasLiked(defaultLiked);
-  }, [defaultLiked]);
+    setHasLiked(defaultLiked)
+  }, [defaultLiked])
 
-  const backgroundWidth = size * 25;
-  const heartSize = Math.floor(size / 2);
+  const backgroundWidth = size * 25
+  const heartSize = Math.floor(size / 2)
 
   const buttonStyle = {
     height: `${size}px`,
-  };
+  }
 
   const backgroundStyle = {
     width: `${size}px`,
@@ -100,7 +100,7 @@ export const LikeButtonWithCount = ({
     transition: hasBeenClicked ? `background-position steps(25)` : "none",
     transitionDuration: hasBeenClicked && hasLiked ? "1s" : "0s",
     backgroundPosition: hasLiked ? `-${backgroundWidth}px 0` : `0 0`,
-  };
+  }
 
   return (
     <button
@@ -109,11 +109,11 @@ export const LikeButtonWithCount = ({
       style={buttonStyle}
       type="button"
       onClick={(event) => {
-        const newState = !hasLiked;
-        setHasLiked(newState);
-        setHasBeenClicked(true);
+        const newState = !hasLiked
+        setHasLiked(newState)
+        setHasBeenClicked(true)
 
-        onClick?.(event, newState);
+        onClick?.(event, newState)
       }}
     >
       <div className="relative top-0 flex items-center" style={{ width: `${size}px`, height: `${size}px` }}>
@@ -133,5 +133,5 @@ export const LikeButtonWithCount = ({
         </span>
       )}
     </button>
-  );
-};
+  )
+}

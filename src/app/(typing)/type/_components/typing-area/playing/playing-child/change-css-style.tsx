@@ -1,15 +1,15 @@
-import { useChangeCSSCountState, useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useChangeCSSCountState, useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
 
 const ChangeCSS = () => {
-  const map = useMapState();
-  const changeCSSCount = useChangeCSSCountState();
+  const map = useMapState()
+  const changeCSSCount = useChangeCSSCountState()
 
   if (changeCSSCount === null) {
-    return;
+    return
   }
-  const changeCSS = map?.mapData[changeCSSCount].options?.changeCSS;
+  const changeCSS = map?.mapData[changeCSSCount].options?.changeCSS
 
-  return <style>{changeCSS}</style>;
-};
+  return <style>{changeCSS}</style>
+}
 
-export default ChangeCSS;
+export default ChangeCSS

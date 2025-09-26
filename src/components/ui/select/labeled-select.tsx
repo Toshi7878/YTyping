@@ -1,14 +1,14 @@
-import { cn } from "@/lib/utils";
-import * as React from "react";
-import { Label } from "../label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
+import type * as React from "react"
+import { cn } from "@/lib/utils"
+import { Label } from "../label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select"
 
 export interface LabeledSelectProps extends React.ComponentProps<typeof Select> {
-  label: React.ReactNode;
+  label: React.ReactNode
   options: {
-    label: string;
-    value: string;
-  }[];
+    label: string
+    value: string
+  }[]
 }
 
 const LabeledSelect = ({ label, options, ...props }: LabeledSelectProps) => {
@@ -28,7 +28,7 @@ const LabeledSelect = ({ label, options, ...props }: LabeledSelectProps) => {
         </SelectContent>
       </Select>
     </div>
-  );
-};
+  )
+}
 
-export { LabeledSelect };
+export { LabeledSelect }

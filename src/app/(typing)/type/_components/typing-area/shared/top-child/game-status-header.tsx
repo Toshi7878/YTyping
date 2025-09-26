@@ -4,15 +4,15 @@ import {
   useLineRemainTimeState,
   useSceneGroupState,
   useYTStartedState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { cn } from "@/lib/utils";
-import PlayingNotify from "./playing-notify";
+} from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { cn } from "@/lib/utils"
+import PlayingNotify from "./playing-notify"
 
 const GameStatusHeader = () => {
-  const sceneGroup = useSceneGroupState();
-  const isYTStarted = useYTStartedState();
+  const sceneGroup = useSceneGroupState()
+  const isYTStarted = useYTStartedState()
 
-  const isPlayed = isYTStarted && sceneGroup === "Playing";
+  const isPlayed = isYTStarted && sceneGroup === "Playing"
 
   return (
     <section
@@ -25,14 +25,14 @@ const GameStatusHeader = () => {
       <PlayingNotify />
       <LineRemainTimeAndKpm />
     </section>
-  );
-};
+  )
+}
 
 const Combo = () => {
-  const combo = useComboState();
+  const combo = useComboState()
 
-  return <div>{combo}</div>;
-};
+  return <div>{combo}</div>
+}
 
 const LineRemainTimeAndKpm = () => {
   return (
@@ -43,18 +43,18 @@ const LineRemainTimeAndKpm = () => {
       残り
       <LineRemainTime className="mr-1" />秒
     </div>
-  );
-};
+  )
+}
 
 const LineKpm = () => {
-  const displayLineKpm = useLineKpmState();
+  const displayLineKpm = useLineKpmState()
 
-  return <span>{displayLineKpm.toFixed(0)}</span>;
-};
+  return <span>{displayLineKpm.toFixed(0)}</span>
+}
 
 const LineRemainTime = ({ className }: { className: string }) => {
-  const displayLineRemainTime = useLineRemainTimeState();
-  return <span className={className}>{displayLineRemainTime.toFixed(1)}</span>;
-};
+  const displayLineRemainTime = useLineRemainTimeState()
+  return <span className={className}>{displayLineRemainTime.toFixed(1)}</span>
+}
 
-export default GameStatusHeader;
+export default GameStatusHeader

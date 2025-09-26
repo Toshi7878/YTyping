@@ -1,36 +1,36 @@
-import type { MapLine } from "@/server/drizzle/validator/map-json";
+import type { MapLine } from "@/server/drizzle/validator/map-json"
 
-export type InputMode = "roma" | "kana" | "flick";
-export type PlayMode = "play" | "replay" | "practice";
-export type SceneType = "ready" | PlayMode | "play_end" | "practice_end" | "replay_end";
+export type InputMode = "roma" | "kana" | "flick"
+export type PlayMode = "play" | "replay" | "practice"
+export type SceneType = "ready" | PlayMode | "play_end" | "practice_end" | "replay_end"
 
 export interface TypeChunk {
-  k: string;
-  r: string[];
-  p: number;
-  t: "kana" | "alphabet" | "num" | "symbol" | "space" | undefined;
-  kanaUnSupportedSymbol?: string;
+  k: string
+  r: string[]
+  p: number
+  t: "kana" | "alphabet" | "num" | "symbol" | "space" | undefined
+  kanaUnSupportedSymbol?: string
 }
 
 export interface NextTypeChunk extends TypeChunk {
-  orginalDakuChar?: Dakuten | HanDakuten;
+  orginalDakuChar?: Dakuten | HanDakuten
 }
 
 export interface LineWord {
-  correct: { k: string; r: string };
-  nextChar: NextTypeChunk;
-  word: TypeChunk[];
+  correct: { k: string; r: string }
+  nextChar: NextTypeChunk
+  word: TypeChunk[]
 }
 
 export interface LineData {
-  time: number;
-  word: TypeChunk[];
-  lyrics: string;
-  kpm: { k: number; r: number };
-  notes: { k: number; r: number };
-  lineCount?: number;
-  kanaWord: string;
-  options?: MapLine["options"];
+  time: number
+  word: TypeChunk[]
+  lyrics: string
+  kpm: { k: number; r: number }
+  notes: { k: number; r: number }
+  lineCount?: number
+  kanaWord: string
+  options?: MapLine["options"]
 }
 
 export type Dakuten =
@@ -54,7 +54,7 @@ export type Dakuten =
   | "び"
   | "ぶ"
   | "べ"
-  | "ぼ";
+  | "ぼ"
 
 export type NormalizeHirakana =
   | "う"
@@ -77,6 +77,6 @@ export type NormalizeHirakana =
   | "ひ"
   | "ふ"
   | "へ"
-  | "ほ";
+  | "ほ"
 
-export type HanDakuten = "ぱ" | "ぴ" | "ぷ" | "ぺ" | "ぽ";
+export type HanDakuten = "ぱ" | "ぴ" | "ぷ" | "ぺ" | "ぽ"

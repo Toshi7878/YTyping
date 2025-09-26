@@ -1,26 +1,26 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { useClapMutationTimeline } from "@/utils/mutations/clap.mutations";
-import { useSession } from "next-auth/react";
-import { FaHandsClapping } from "react-icons/fa6";
+"use client"
+import { useSession } from "next-auth/react"
+import { FaHandsClapping } from "react-icons/fa6"
+import { Button } from "@/components/ui/button"
+import { TooltipWrapper } from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
+import { useClapMutationTimeline } from "@/utils/mutations/clap.mutations"
 
 interface ResultClapButtonProps {
-  resultId: number;
-  clapCount: number;
-  hasClapped: boolean;
+  resultId: number
+  clapCount: number
+  hasClapped: boolean
 }
 
 function ResultClapButton({ resultId, clapCount, hasClapped: hasClap }: ResultClapButtonProps) {
-  const { data: session } = useSession();
+  const { data: session } = useSession()
 
-  const toggleClapMutation = useClapMutationTimeline();
+  const toggleClapMutation = useClapMutationTimeline()
 
   const onClick = () => {
-    if (!session) return;
-    toggleClapMutation.mutate({ resultId, newState: !hasClap });
-  };
+    if (!session) return
+    toggleClapMutation.mutate({ resultId, newState: !hasClap })
+  }
 
   return (
     <div className="inline-flex">
@@ -44,7 +44,7 @@ function ResultClapButton({ resultId, clapCount, hasClapped: hasClap }: ResultCl
         </Button>
       </TooltipWrapper>
     </div>
-  );
+  )
 }
 
-export default ResultClapButton;
+export default ResultClapButton

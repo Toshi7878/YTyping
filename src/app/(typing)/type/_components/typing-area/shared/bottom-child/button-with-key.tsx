@@ -1,23 +1,23 @@
-import { useNotifyState, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import React from "react";
-import Kbd from "../../../../../../../components/ui/kbd";
+import type React from "react"
+import { useNotifyState, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import Kbd from "../../../../../../../components/ui/kbd"
 
 interface BottomBadgeProps {
-  badgeText: string;
-  kbdText: string;
-  isPauseDisabled: boolean;
-  isKbdHidden: boolean;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  onClickCapture?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  badgeText: string
+  kbdText: string
+  isPauseDisabled: boolean
+  isKbdHidden: boolean
+  onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+  onClickCapture?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }
 
-export const BottomButton = function (props: BottomBadgeProps) {
-  const notify = useNotifyState();
-  const sceneGroup = useSceneGroupState();
-  const isDisabled = notify.description === "ll" && props.isPauseDisabled;
-  const isHidden = sceneGroup === "Ready" || sceneGroup === "End";
+export const BottomButton = (props: BottomBadgeProps) => {
+  const notify = useNotifyState()
+  const sceneGroup = useSceneGroupState()
+  const isDisabled = notify.description === "ll" && props.isPauseDisabled
+  const isHidden = sceneGroup === "Ready" || sceneGroup === "End"
 
   return (
     <div className={`flex items-center gap-2 ${isHidden ? "invisible" : "visible"}`}>
@@ -40,23 +40,23 @@ export const BottomButton = function (props: BottomBadgeProps) {
         {props.kbdText}
       </Kbd>
     </div>
-  );
-};
-
-interface BottomDoubleKeyBadgeProps {
-  badgeText: string;
-  kbdTextPrev: string;
-  kbdTextNext: string;
-  onClick: () => void;
-  onClickPrev: () => void;
-  onClickNext: () => void;
+  )
 }
 
-export const BottomDoubleKeyButton = function (props: BottomDoubleKeyBadgeProps) {
-  const notify = useNotifyState();
-  const sceneGroup = useSceneGroupState();
-  const isDisabled = notify.description === "ll";
-  const isHidden = sceneGroup === "Ready" || sceneGroup === "End";
+interface BottomDoubleKeyBadgeProps {
+  badgeText: string
+  kbdTextPrev: string
+  kbdTextNext: string
+  onClick: () => void
+  onClickPrev: () => void
+  onClickNext: () => void
+}
+
+export const BottomDoubleKeyButton = (props: BottomDoubleKeyBadgeProps) => {
+  const notify = useNotifyState()
+  const sceneGroup = useSceneGroupState()
+  const isDisabled = notify.description === "ll"
+  const isHidden = sceneGroup === "Ready" || sceneGroup === "End"
 
   return (
     <div className={cn("flex items-center gap-2", isHidden && "hidden")}>
@@ -75,5 +75,5 @@ export const BottomDoubleKeyButton = function (props: BottomDoubleKeyBadgeProps)
         {props.kbdTextNext}
       </Kbd>
     </div>
-  );
-};
+  )
+}

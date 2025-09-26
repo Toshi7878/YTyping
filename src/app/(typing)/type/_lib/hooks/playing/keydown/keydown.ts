@@ -1,5 +1,5 @@
-import { useGameUtilityReferenceParams, useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
-import { usePlaySpeedReducer } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+import { useGameUtilityReferenceParams, useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/ref-atoms"
+import { usePlaySpeedReducer } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms"
 import {
   useReadGameUtilParams,
   useReadLineWord,
@@ -8,72 +8,72 @@ import {
   useSetLineResultDrawer,
   useSetNotify,
   useUserTypingOptionsStateRef,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useChangePlayMode } from "../change-play-mode";
-import { useGamePause } from "../game-pause";
-import { useInputModeChange } from "../input-mode-change";
-import { useMoveLine } from "../move-line";
-import { usePressSkip } from "../press-skip";
-import { useRetry } from "../retry";
-import { useTyping } from "./handle-typing";
+} from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { useChangePlayMode } from "../change-play-mode"
+import { useGamePause } from "../game-pause"
+import { useInputModeChange } from "../input-mode-change"
+import { useMoveLine } from "../move-line"
+import { usePressSkip } from "../press-skip"
+import { useRetry } from "../retry"
+import { useTyping } from "./handle-typing"
 
-const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1;
+const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1
 
 export const useHandleKeydown = () => {
-  const isKeydownTyped = useIsKeydownTyped();
-  const typing = useTyping();
-  const playingShortcutKey = usePlayingShortcutKey();
-  const pauseShortcutKey = usePauseShortcutKey();
+  const isKeydownTyped = useIsKeydownTyped()
+  const typing = useTyping()
+  const playingShortcutKey = usePlayingShortcutKey()
+  const pauseShortcutKey = usePauseShortcutKey()
 
-  const { readYTStatus } = useReadYTStatus();
-  const readGameStateUtils = useReadGameUtilParams();
+  const { readYTStatus } = useReadYTStatus()
+  const readGameStateUtils = useReadGameUtilParams()
 
   return (event: KeyboardEvent) => {
-    const { isPaused } = readYTStatus();
-    const { scene } = readGameStateUtils();
+    const { isPaused } = readYTStatus()
+    const { scene } = readGameStateUtils()
 
     if (!isPaused || scene === "practice") {
       if (isKeydownTyped(event)) {
-        event.preventDefault();
+        event.preventDefault()
 
-        typing(event);
+        typing(event)
       } else {
-        playingShortcutKey(event);
+        playingShortcutKey(event)
       }
     } else if (isPaused) {
-      pauseShortcutKey(event);
+      pauseShortcutKey(event)
     }
-  };
-};
+  }
+}
 
-const KEY_WHITE_LIST = ["F5"];
-const CTRL_KEY_WHITE_CODE_LIST = ["KeyC", "KeyV", "KeyZ", "KeyY", "KeyX"];
-const ALT_KEY_WHITE_CODE_LIST = ["ArrowLeft", "ArrowRight"];
-const OPEN_DRAWER_CTRL_KEY_CODE_LIST = ["KeyF"];
+const KEY_WHITE_LIST = ["F5"]
+const CTRL_KEY_WHITE_CODE_LIST = ["KeyC", "KeyV", "KeyZ", "KeyY", "KeyX"]
+const ALT_KEY_WHITE_CODE_LIST = ["ArrowLeft", "ArrowRight"]
+const OPEN_DRAWER_CTRL_KEY_CODE_LIST = ["KeyF"]
 
 const usePlayingShortcutKey = () => {
-  const scene = useSceneState();
+  const scene = useSceneState()
 
-  const retry = useRetry();
-  const pressSkip = usePressSkip();
-  const gamePause = useGamePause();
-  const inputModeChange = useInputModeChange();
-  const setLineResultDrawer = useSetLineResultDrawer();
-  const changePlayMode = useChangePlayMode();
-  const dispatchSpeed = usePlaySpeedReducer();
-  const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine();
-  const setNotify = useSetNotify();
+  const retry = useRetry()
+  const pressSkip = usePressSkip()
+  const gamePause = useGamePause()
+  const inputModeChange = useInputModeChange()
+  const setLineResultDrawer = useSetLineResultDrawer()
+  const changePlayMode = useChangePlayMode()
+  const dispatchSpeed = usePlaySpeedReducer()
+  const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine()
+  const setNotify = useSetNotify()
 
-  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const readTypingOptions = useUserTypingOptionsStateRef();
-  const readMap = useReadMap();
-  const readGameStateUtils = useReadGameUtilParams();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams()
+  const readTypingOptions = useUserTypingOptionsStateRef()
+  const readMap = useReadMap()
+  const readGameStateUtils = useReadGameUtilParams()
 
   return (event: KeyboardEvent) => {
-    const map = readMap();
-    if (!map) return;
-    const { lineResultdrawerClosure: drawerClosure } = readGameStateUtils();
-    const typingOptions = readTypingOptions();
+    const map = readMap()
+    if (!map) return
+    const { lineResultdrawerClosure: drawerClosure } = readGameStateUtils()
+    const typingOptions = readTypingOptions()
 
     if (
       KEY_WHITE_LIST.includes(event.code) ||
@@ -81,131 +81,131 @@ const usePlayingShortcutKey = () => {
       (event.altKey && !event.ctrlKey && ALT_KEY_WHITE_CODE_LIST.includes(event.code)) ||
       (event.ctrlKey && OPEN_DRAWER_CTRL_KEY_CODE_LIST.includes(event.code) && drawerClosure)
     ) {
-      return;
+      return
     }
 
-    const { inputMode, skip } = readGameStateUtils();
+    const { inputMode, skip } = readGameStateUtils()
 
-    const isCtrlLeftRight = typingOptions.timeOffsetAdjustKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
+    const isCtrlLeftRight = typingOptions.timeOffsetAdjustKey === "CTRL_LEFT_RIGHT" && event.ctrlKey
     const isCtrlAltLeftRight =
-      typingOptions.timeOffsetAdjustKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
+      typingOptions.timeOffsetAdjustKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey
 
     switch (event.code) {
       case "Escape": //Escでポーズ
-        gamePause();
-        break;
+        gamePause()
+        break
       case "ArrowUp":
-        break;
+        break
       case "ArrowDown":
-        break;
+        break
       case "ArrowRight":
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
-          const { timeOffset } = readGameUtilRefParams();
-          const newTimeOffset = Math.round((timeOffset + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-          writeGameUtilRefParams({ timeOffset: newTimeOffset });
-          setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
+          const { timeOffset } = readGameUtilRefParams()
+          const newTimeOffset = Math.round((timeOffset + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100
+          writeGameUtilRefParams({ timeOffset: newTimeOffset })
+          setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`))
         } else if (scene === "replay" || scene === "practice") {
-          moveNextLine();
+          moveNextLine()
         }
 
-        break;
+        break
       case "ArrowLeft":
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
-          const { timeOffset } = readGameUtilRefParams();
-          const newTimeOffset = Math.round((timeOffset - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-          writeGameUtilRefParams({ timeOffset: newTimeOffset });
-          setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
+          const { timeOffset } = readGameUtilRefParams()
+          const newTimeOffset = Math.round((timeOffset - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100
+          writeGameUtilRefParams({ timeOffset: newTimeOffset })
+          setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`))
         } else if (scene === "replay" || scene === "practice") {
-          movePrevLine();
+          movePrevLine()
         }
-        break;
+        break
       case skip:
         if (skip !== "") {
-          pressSkip();
+          pressSkip()
         }
-        break;
+        break
       case "F1":
         if (typingOptions.InputModeToggleKey === "TAB") {
           if (scene === "replay" || scene === "practice") {
-            setLineResultDrawer((prev) => !prev);
+            setLineResultDrawer((prev) => !prev)
           }
         }
-        break;
+        break
 
       case "F4": {
-        const isPlaying = scene === "play" || scene === "practice" || scene === "replay";
+        const isPlaying = scene === "play" || scene === "practice" || scene === "replay"
         if (isPlaying) {
-          retry(scene);
+          retry(scene)
         }
-        break;
+        break
       }
       case "F7":
-        changePlayMode();
-        break;
+        changePlayMode()
+        break
       case "F9":
         if (scene === "practice") {
-          dispatchSpeed({ type: "down" });
+          dispatchSpeed({ type: "down" })
         }
-        break;
+        break
       case "F10":
         if (scene === "play") {
-          dispatchSpeed({ type: "toggle" });
+          dispatchSpeed({ type: "toggle" })
         } else if (scene === "practice") {
-          dispatchSpeed({ type: "up" });
+          dispatchSpeed({ type: "up" })
         }
-        break;
+        break
       case "KanaMode":
       case "Romaji":
         if (typingOptions.InputModeToggleKey === "ALT_KANA") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
-              void inputModeChange("kana");
+              void inputModeChange("kana")
             } else {
-              void inputModeChange("roma");
+              void inputModeChange("roma")
             }
           }
         }
-        break;
+        break
       case "Backspace":
         if (scene === "replay" || scene === "practice") {
-          const { lineSelectIndex } = readGameStateUtils();
-          const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
-          moveSetLine(seekCount);
+          const { lineSelectIndex } = readGameStateUtils()
+          const seekCount = map.typingLineIndexes[lineSelectIndex - 1]
+          moveSetLine(seekCount)
         }
-        break;
+        break
 
       case "Tab":
         if (typingOptions.InputModeToggleKey === "TAB") {
           if (scene !== "replay") {
             if (inputMode === "roma") {
-              void inputModeChange("kana");
+              void inputModeChange("kana")
             } else {
-              void inputModeChange("roma");
+              void inputModeChange("roma")
             }
           }
         } else {
           if (scene === "replay" || scene === "practice") {
-            setLineResultDrawer((prev) => !prev);
+            setLineResultDrawer((prev) => !prev)
           }
         }
-        break;
+        break
     }
-    event.preventDefault();
-  };
-};
+    event.preventDefault()
+  }
+}
 
 const usePauseShortcutKey = () => {
-  const gamePause = useGamePause();
+  const gamePause = useGamePause()
 
   return (event: KeyboardEvent) => {
     switch (event.code) {
       case "Escape": //Escでポーズ
-        gamePause();
-        event.preventDefault();
-        break;
+        gamePause()
+        event.preventDefault()
+        break
     }
-  };
-};
+  }
+}
 
 const CODES_SET = new Set([
   "Space",
@@ -234,7 +234,7 @@ const CODES_SET = new Set([
   "Slash",
   "IntlRo",
   "Unidentified",
-]);
+])
 
 const TENKEYS_SET = new Set([
   "Numpad1",
@@ -252,27 +252,27 @@ const TENKEYS_SET = new Set([
   "NumpadSubtract",
   "NumpadAdd",
   "NumpadDecimal",
-]);
+])
 
 const useIsKeydownTyped = () => {
-  const readGameStateUtils = useReadGameUtilParams();
-  const readLineWord = useReadLineWord();
+  const readGameStateUtils = useReadGameUtilParams()
+  const readLineWord = useReadLineWord()
 
   return (event: KeyboardEvent) => {
-    const { scene } = readGameStateUtils();
+    const { scene } = readGameStateUtils()
 
-    if (scene === "replay") return false;
-    if (event.ctrlKey || event.altKey) return false;
+    if (scene === "replay") return false
+    if (event.ctrlKey || event.altKey) return false
 
-    const activeElement = document.activeElement as HTMLInputElement | null;
-    if (!activeElement || activeElement.type === "text") return false;
+    const activeElement = document.activeElement as HTMLInputElement | null
+    if (!activeElement || activeElement.type === "text") return false
 
-    const { keyCode, code } = event;
+    const { keyCode, code } = event
 
-    const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code);
-    if (!isType) return false;
+    const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code)
+    if (!isType) return false
 
-    const lineWord = readLineWord();
-    return Boolean(lineWord.nextChar["k"]);
-  };
-};
+    const lineWord = readLineWord()
+    return Boolean(lineWord.nextChar.k)
+  }
+}

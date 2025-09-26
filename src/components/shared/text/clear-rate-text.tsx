@@ -1,12 +1,12 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 interface ClearRateTextProps {
-  isPerfect: boolean;
-  clearRate: number;
+  isPerfect: boolean
+  clearRate: number
 }
 
 const ClearRateText = ({ isPerfect, clearRate }: ClearRateTextProps) => {
-  return <span className={cn(isPerfect && ["text-perfect", "outline-text"])}>{clearRate.toFixed(1)}%</span>;
-};
+  return <span className={cn(isPerfect && ["text-perfect", "outline-text"])}>{clearRate.toFixed(1)}%</span>
+}
 
-export default ClearRateText;
+export default ClearRateText

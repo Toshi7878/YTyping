@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "denoland.vscode-deno",
-    "dbaeumer.vscode-eslint"
-  ]
+  "recommendations": ["biomejs.biome"]
 }

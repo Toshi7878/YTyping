@@ -1,12 +1,12 @@
-import { FiExternalLink } from "react-icons/fi";
+import { FiExternalLink } from "react-icons/fi"
 
 interface FingerChartUrlProps {
-  url: string;
+  url: string
 }
 
 const FingerChartUrl = ({ url }: FingerChartUrlProps) => {
   if (!url) {
-    return <p>運指表はありません</p>;
+    return <p>運指表はありません</p>
   }
 
   return (
@@ -22,7 +22,7 @@ const FingerChartUrl = ({ url }: FingerChartUrlProps) => {
         <FiExternalLink className="h-4 w-4" />
       </a>
     </div>
-  );
-};
+  )
+}
 
-export default FingerChartUrl;
+export default FingerChartUrl

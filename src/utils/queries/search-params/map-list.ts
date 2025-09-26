@@ -5,14 +5,14 @@ export const PARAM_NAME = {
   sort: "sort",
   filter: "filter",
   played: "played",
-} as const;
+} as const
 
 export function parseMapListSearchParams(searchParams: URLSearchParams) {
-  const params: Partial<typeof PARAM_NAME> = {};
+  const params: Partial<typeof PARAM_NAME> = {}
 
   for (const [key, value] of searchParams.entries()) {
     if (key in PARAM_NAME) {
-      params[key] = value;
+      params[key] = value
     }
   }
 
@@ -23,5 +23,5 @@ export function parseMapListSearchParams(searchParams: URLSearchParams) {
     played: params.played,
     keyword: params.keyword ?? "",
     sort: params.sort,
-  };
+  }
 }

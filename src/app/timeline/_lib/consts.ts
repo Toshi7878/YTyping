@@ -1,5 +1,5 @@
-export const DEFAULT_KPM_SEARCH_RANGE = { min: 0, max: 1200 };
-export const DEFAULT_CLEAR_RATE_SEARCH_RANGE = { min: 0, max: 100 };
+export const DEFAULT_KPM_SEARCH_RANGE = { min: 0, max: 1200 }
+export const DEFAULT_CLEAR_RATE_SEARCH_RANGE = { min: 0, max: 100 }
 
 export const PARAM_NAME = {
   username: "username",
@@ -11,4 +11,4 @@ export const PARAM_NAME = {
   maxClearRate: "maxClearRate",
   minPlaySpeed: "minPlaySpeed",
   maxPlaySpeed: "maxPlaySpeed",
-} as const;
+} as const

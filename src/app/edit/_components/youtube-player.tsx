@@ -1,78 +1,78 @@
-"use client";
+"use client"
 
-import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
-import { cn } from "@/lib/utils";
-import { useCallback, useEffect } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
-import type { YouTubeEvent } from "react-youtube";
-import YouTube from "react-youtube";
-import { usePlayer } from "../_lib/atoms/read-atoms";
+import { useCallback, useEffect } from "react"
+import { useHotkeys } from "react-hotkeys-hook"
+import type { YouTubeEvent } from "react-youtube"
+import YouTube from "react-youtube"
+import { LoadingOverlayProvider } from "@/components/ui/loading-overlay"
+import { cn } from "@/lib/utils"
+import { usePlayer } from "../_lib/atoms/read-atoms"
 import {
   useIsYTReadiedState,
   useIsYTStartedState,
   useReadYtPlayerStatus,
   useVideoIdState,
-} from "../_lib/atoms/state-atoms";
-import { useUpdateEndTime } from "../_lib/hooks/use-update-end-time";
+} from "../_lib/atoms/state-atoms"
+import { useUpdateEndTime } from "../_lib/hooks/use-update-end-time"
 import {
   useYTEndStopEvent,
   useYTPauseEvent,
   useYTPlayEvent,
   useYTReadyEvent,
   useYTSeekEvent,
-} from "../_lib/hooks/use-youtube-events";
+} from "../_lib/hooks/use-youtube-events"
 
 interface YouTubePlayerProps {
-  className: string;
-  videoId?: string;
+  className: string
+  videoId?: string
 }
 
-const YouTubePlayer = function ({ className, videoId: mapVideoId }: YouTubePlayerProps) {
-  const videoId = useVideoIdState();
-  const onReady = useYTReadyEvent();
-  const onPlay = useYTPlayEvent();
-  const onPause = useYTPauseEvent();
-  const onEndStop = useYTEndStopEvent();
-  const onSeek = useYTSeekEvent();
+const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerProps) => {
+  const videoId = useVideoIdState()
+  const onReady = useYTReadyEvent()
+  const onPlay = useYTPlayEvent()
+  const onPause = useYTPauseEvent()
+  const onEndStop = useYTEndStopEvent()
+  const onSeek = useYTSeekEvent()
 
-  const updateEndTime = useUpdateEndTime();
-  const { readPlayer } = usePlayer();
+  const updateEndTime = useUpdateEndTime()
+  const { readPlayer } = usePlayer()
 
-  const isYTStarted = useIsYTStartedState();
-  const isYTReady = useIsYTReadiedState();
-  const readYtPlayerStatus = useReadYtPlayerStatus();
+  const isYTStarted = useIsYTStartedState()
+  const isYTReady = useIsYTReadiedState()
+  const readYtPlayerStatus = useReadYtPlayerStatus()
 
   useHotkeys(
     "Escape",
     () => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen) return;
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null
+      if (isDialogOpen) return
 
-      const { playing } = readYtPlayerStatus();
+      const { playing } = readYtPlayerStatus()
       if (!playing) {
-        readPlayer().playVideo();
+        readPlayer().playVideo()
       } else {
-        readPlayer().pauseVideo();
+        readPlayer().pauseVideo()
       }
     },
     { enableOnFormTags: false, preventDefault: true },
-  );
+  )
 
   useHotkeys(
     ["arrowleft", "arrowright"],
     (event) => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen) return;
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null
+      if (isDialogOpen) return
 
-      const ARROW_SEEK_SECONDS = 3;
+      const ARROW_SEEK_SECONDS = 3
 
-      const { speed } = readYtPlayerStatus();
-      const time = readPlayer().getCurrentTime();
-      const seekAmount = ARROW_SEEK_SECONDS * speed;
+      const { speed } = readYtPlayerStatus()
+      const time = readPlayer().getCurrentTime()
+      const seekAmount = ARROW_SEEK_SECONDS * speed
       if (event.key === "ArrowLeft") {
-        readPlayer().seekTo(time - seekAmount, true);
+        readPlayer().seekTo(time - seekAmount, true)
       } else {
-        readPlayer().seekTo(time + seekAmount, true);
+        readPlayer().seekTo(time + seekAmount, true)
       }
     },
     {
@@ -80,29 +80,29 @@ const YouTubePlayer = function ({ className, videoId: mapVideoId }: YouTubePlaye
       preventDefault: true,
       ignoreModifiers: true,
     },
-  );
+  )
 
   useEffect(() => {
-    if ((!isYTReady && !isYTStarted) || videoId === mapVideoId) return;
-    updateEndTime(readPlayer());
-  }, [isYTReady, isYTStarted, readPlayer, videoId, updateEndTime, mapVideoId]);
+    if ((!isYTReady && !isYTStarted) || videoId === mapVideoId) return
+    updateEndTime(readPlayer())
+  }, [isYTReady, isYTStarted, readPlayer, videoId, updateEndTime, mapVideoId])
 
   const handleStateChange = useCallback(
     (event: YouTubeEvent) => {
       if (document.activeElement instanceof HTMLIFrameElement) {
-        document.activeElement.blur();
+        document.activeElement.blur()
       }
 
       if (event.data === 3) {
         // seek時の処理
-        onSeek(event);
+        onSeek(event)
       } else if (event.data === 1) {
         //	未スタート、他の動画に切り替えた時など
-        console.log("未スタート -1");
+        console.log("未スタート -1")
       }
     },
     [onSeek],
-  );
+  )
 
   return (
     <div className="relative h-fit">
@@ -124,7 +124,7 @@ const YouTubePlayer = function ({ className, videoId: mapVideoId }: YouTubePlaye
         />
       </LoadingOverlayProvider>
     </div>
-  );
-};
+  )
+}
 
-export default YouTubePlayer;
+export default YouTubePlayer

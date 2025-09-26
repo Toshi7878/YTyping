@@ -1,34 +1,34 @@
-import { usePlayer } from "../atoms/read-atoms";
-import { useReadScene, useSetScene, useSetTextareaPlaceholderType } from "../atoms/state-atoms";
-import { useInitializePlayScene } from "./reset";
-import { useTimerControls } from "./timer";
-import { useUpdateTypingStats } from "./update-typing-stats";
+import { usePlayer } from "../atoms/read-atoms"
+import { useReadScene, useSetScene, useSetTextareaPlaceholderType } from "../atoms/state-atoms"
+import { useInitializePlayScene } from "./reset"
+import { useTimerControls } from "./timer"
+import { useUpdateTypingStats } from "./update-typing-stats"
 
 const useSceneControl = () => {
-  const { readPlayer } = usePlayer();
-  const setScene = useSetScene();
-  const initializePlayScene = useInitializePlayScene();
-  const { pauseTimer } = useTimerControls();
-  const setTextareaPlaceholderType = useSetTextareaPlaceholderType();
-  const updateTypingStats = useUpdateTypingStats();
-  const readScene = useReadScene();
+  const { readPlayer } = usePlayer()
+  const setScene = useSetScene()
+  const initializePlayScene = useInitializePlayScene()
+  const { pauseTimer } = useTimerControls()
+  const setTextareaPlaceholderType = useSetTextareaPlaceholderType()
+  const updateTypingStats = useUpdateTypingStats()
+  const readScene = useReadScene()
 
   const handleStart = () => {
-    readPlayer().stopVideo();
+    readPlayer().stopVideo()
     if (readScene() !== "ready") {
-      initializePlayScene();
+      initializePlayScene()
     }
-    readPlayer().playVideo();
-  };
+    readPlayer().playVideo()
+  }
 
   const handleEnd = () => {
-    setScene("end");
-    setTextareaPlaceholderType("normal");
-    pauseTimer();
-    void updateTypingStats();
-  };
+    setScene("end")
+    setTextareaPlaceholderType("normal")
+    pauseTimer()
+    void updateTypingStats()
+  }
 
-  return { handleStart, handleEnd };
-};
+  return { handleStart, handleEnd }
+}
 
-export default useSceneControl;
+export default useSceneControl

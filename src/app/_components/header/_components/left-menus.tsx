@@ -1,13 +1,8 @@
-import { LEFT_LINKS, LEFT_MENU_LINK_ITEM } from "@/app/_components/header/lib/const";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
-import Link from "next/link";
+import { ChevronDown } from "lucide-react"
+import Link from "next/link"
+import { LEFT_LINKS, LEFT_MENU_LINK_ITEM } from "@/app/_components/header/lib/const"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export const SiteLogo = () => {
   return (
@@ -18,8 +13,8 @@ export const SiteLogo = () => {
       <span>Y</span>
       <span>Typing</span>
     </Link>
-  );
-};
+  )
+}
 
 function LeftMenus() {
   return (
@@ -31,7 +26,7 @@ function LeftMenus() {
         </Button>
       ))}
     </nav>
-  );
+  )
 }
 
 const LinksDropdownMenu = () => {
@@ -50,7 +45,7 @@ const LinksDropdownMenu = () => {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}
 
-export default LeftMenus;
+export default LeftMenus

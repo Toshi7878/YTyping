@@ -1,7 +1,7 @@
-import MapTable from "./map-table/map-table";
-import EditTabs from "./tabs/edit-tabs";
-import { TimeRangeAndSpeedChange } from "./time-range-and-speed-change";
-import YouTubePlayer from "./youtube-player";
+import MapTable from "./map-table/map-table"
+import EditTabs from "./tabs/edit-tabs"
+import { TimeRangeAndSpeedChange } from "./time-range-and-speed-change"
+import YouTubePlayer from "./youtube-player"
 
 function Content({ videoId }: { videoId?: string }) {
   return (
@@ -14,7 +14,7 @@ function Content({ videoId }: { videoId?: string }) {
 
       <MapTable />
     </div>
-  );
+  )
 }
 
-export default Content;
+export default Content

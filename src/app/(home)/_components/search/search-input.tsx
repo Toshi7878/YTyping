@@ -1,46 +1,46 @@
-"use client";
+"use client"
 
-import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input/input";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../_lib/atoms";
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input/input"
+import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../_lib/atoms"
 
 const SearchInput = () => {
-  const searchParams = useSearchParams();
-  const [keyword, setKeyword] = useState(searchParams?.get("keyword") || "");
-  const isSearching = useIsSearchingState();
-  const setIsSearching = useSetIsSearching();
-  const setDifficultyRangeParams = useDifficultyRangeParams();
-  const readDifficultyRange = useReadDifficultyRange();
+  const searchParams = useSearchParams()
+  const [keyword, setKeyword] = useState(searchParams?.get("keyword") || "")
+  const isSearching = useIsSearchingState()
+  const setIsSearching = useSetIsSearching()
+  const setDifficultyRangeParams = useDifficultyRangeParams()
+  const readDifficultyRange = useReadDifficultyRange()
 
   const handleSearch = async () => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString())
 
     if (keyword.trim()) {
-      params.set("keyword", keyword.trim());
+      params.set("keyword", keyword.trim())
     } else {
-      params.delete("keyword");
+      params.delete("keyword")
     }
 
-    const updatedParams = setDifficultyRangeParams(params, readDifficultyRange()).toString();
-    const currentParams = searchParams.toString();
+    const updatedParams = setDifficultyRangeParams(params, readDifficultyRange()).toString()
+    const currentParams = searchParams.toString()
 
     if (updatedParams === currentParams) {
-      return;
+      return
     }
 
-    setIsSearching(true);
-    window.history.replaceState(null, "", `?${updatedParams}`);
-  };
+    setIsSearching(true)
+    window.history.replaceState(null, "", `?${updatedParams}`)
+  }
 
   return (
     <form
       className="flex items-center gap-3 select-none"
       onSubmit={(e) => {
-        e.preventDefault();
-        void handleSearch();
+        e.preventDefault()
+        void handleSearch()
       }}
     >
       <Input
@@ -55,7 +55,7 @@ const SearchInput = () => {
         {isSearching ? "検索中" : "検索"}
       </Button>
     </form>
-  );
-};
+  )
+}
 
-export default SearchInput;
+export default SearchInput

@@ -1,9 +1,8 @@
-import z from "zod";
-import { MAX_SHORT_LENGTH } from "./const";
+import z from "zod"
+import { ja } from "zod/locales"
+import { MAX_SHORT_LENGTH } from "./const"
 
-import { ja } from "zod/locales";
-
-z.config(ja());
+z.config(ja())
 
 export const UserNameSchema = z.object({
   newName: z
@@ -14,17 +13,17 @@ export const UserNameSchema = z.object({
       error: "文字列の両端にスペースを含めることはできません",
     })
     .refine((val) => !/[\u200B]/.test(val), { error: "ゼロ幅スペースを含めることはできません" }),
-});
+})
 
 const FingerChartUrlBaseSchema = z
   .string()
   .max(100)
   .refine((val) => val === "" || /^http?:\/\/unsi\.nonip\.net\/user\/[0-9]+$/.test(val), {
     error: "URLは「http://unsi.nonip.net/user/{id}」形式のURLである必要があります。",
-  });
-export const FingerChartUrlFormSchema = z.object({ url: FingerChartUrlBaseSchema });
-export const FingerChartUrlApiSchema = FingerChartUrlBaseSchema;
+  })
+export const FingerChartUrlFormSchema = z.object({ url: FingerChartUrlBaseSchema })
+export const FingerChartUrlApiSchema = FingerChartUrlBaseSchema
 
-const keyboardBaseSchema = z.string().max(MAX_SHORT_LENGTH);
-export const keyboardFormSchema = z.object({ keyboard: keyboardBaseSchema });
-export const keyboardApiSchema = keyboardBaseSchema;
+const keyboardBaseSchema = z.string().max(MAX_SHORT_LENGTH)
+export const keyboardFormSchema = z.object({ keyboard: keyboardBaseSchema })
+export const keyboardApiSchema = keyboardBaseSchema

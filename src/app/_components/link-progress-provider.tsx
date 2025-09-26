@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
-import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { AppProgressProvider as ProgressProvider } from "@bprogress/next"
+import { usePathname } from "next/navigation"
+import type { ReactNode } from "react"
 
 const LinkProgressProvider = ({ children }: { children: ReactNode }) => {
-  const pathname = usePathname();
+  const pathname = usePathname()
   return (
     <ProgressProvider
       targetPreprocessor={(url) => {
         if (url.pathname === pathname) {
-          return url;
+          return url
         }
-        return new URL(url.pathname, window.location.origin);
+        return new URL(url.pathname, window.location.origin)
       }}
       disableSameURL
       height="2px"
@@ -22,7 +22,7 @@ const LinkProgressProvider = ({ children }: { children: ReactNode }) => {
     >
       {children}
     </ProgressProvider>
-  );
-};
+  )
+}
 
-export default LinkProgressProvider;
+export default LinkProgressProvider

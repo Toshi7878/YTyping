@@ -1,16 +1,16 @@
-import { Maps, UserDailyTypeCounts, UserOptions, UserStats } from "@/server/drizzle/schema";
+import { and, asc, eq, gte, lte, sql } from "drizzle-orm"
+import type { OpenApiContentType } from "trpc-to-openapi"
+import z from "zod"
+import { Maps, UserDailyTypeCounts, UserOptions, UserStats } from "@/server/drizzle/schema"
 import {
   IncrementImeTypeCountStatsSchema,
   IncrementTypingCountStatsSchema,
-} from "@/server/drizzle/validator/user-stats";
-import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
-import type { OpenApiContentType } from "trpc-to-openapi";
-import z from "zod";
-import { optionalAuthProcedure, protectedProcedure, publicProcedure } from "../trpc";
+} from "@/server/drizzle/validator/user-stats"
+import { optionalAuthProcedure, protectedProcedure, publicProcedure } from "../trpc"
 
 export const userStatsRouter = {
   getUserStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db } = ctx;
+    const { db } = ctx
 
     const userStats = await db
       .select({
@@ -38,9 +38,9 @@ export const userStatsRouter = {
       .leftJoin(UserOptions, eq(UserOptions.userId, input.userId))
       .where(eq(UserStats.userId, input.userId))
       .limit(1)
-      .then((rows) => rows[0]);
+      .then((rows) => rows[0])
 
-    return userStats;
+    return userStats
   }),
   incrementPlayCountStats: optionalAuthProcedure
     .meta({
@@ -56,15 +56,15 @@ export const userStatsRouter = {
     .input(z.object({ mapId: z.number() }))
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
-      const { mapId } = input;
+      const { db, user } = ctx
+      const { mapId } = input
 
       await db
         .update(Maps)
         .set({ playCount: sql`${Maps.playCount} + 1` })
-        .where(eq(Maps.id, mapId));
+        .where(eq(Maps.id, mapId))
 
-      if (!user) return;
+      if (!user) return
 
       await db
         .insert(UserStats)
@@ -72,7 +72,7 @@ export const userStatsRouter = {
         .onConflictDoUpdate({
           target: [UserStats.userId],
           set: { totalPlayCount: sql`${UserStats.totalPlayCount} + 1` },
-        });
+        })
     }),
 
   incrementImeStats: protectedProcedure
@@ -89,7 +89,7 @@ export const userStatsRouter = {
     .input(IncrementImeTypeCountStatsSchema)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { user, db } = ctx;
+      const { user, db } = ctx
 
       await db
         .insert(UserStats)
@@ -100,19 +100,19 @@ export const userStatsRouter = {
             imeTypeTotalCount: sql`${UserStats.imeTypeTotalCount} + ${input.imeTypeCount}`,
             totalTypingTime: sql`${UserStats.totalTypingTime} + ${input.typingTime}`,
           },
-        });
+        })
 
       // DBの日付変更基準（15:00）に合わせて日付を計算
-      const now = new Date();
-      const isAfterCutoff = now.getHours() >= 15;
-      const targetDate = new Date();
+      const now = new Date()
+      const isAfterCutoff = now.getHours() >= 15
+      const targetDate = new Date()
 
       // 15時前なら前日の日付、15時以降なら当日の日付
       if (isAfterCutoff) {
-        targetDate.setDate(targetDate.getDate() + 1);
+        targetDate.setDate(targetDate.getDate() + 1)
       }
 
-      const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+      const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0)
 
       await db
         .insert(UserDailyTypeCounts)
@@ -120,7 +120,7 @@ export const userStatsRouter = {
         .onConflictDoUpdate({
           target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.createdAt],
           set: { imeTypeCount: sql`${UserDailyTypeCounts.imeTypeCount} + ${input.imeTypeCount}` },
-        });
+        })
     }),
 
   incrementTypingStats: protectedProcedure
@@ -137,14 +137,14 @@ export const userStatsRouter = {
     .input(IncrementTypingCountStatsSchema)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { user, db } = ctx;
+      const { user, db } = ctx
 
       const currentMaxCombo = await db.query.UserStats.findFirst({
         columns: { maxCombo: true },
         where: eq(UserStats.userId, user.id),
-      }).then((res) => res?.maxCombo ?? 0);
+      }).then((res) => res?.maxCombo ?? 0)
 
-      const isUpdateMaxCombo = input.maxCombo > currentMaxCombo;
+      const isUpdateMaxCombo = input.maxCombo > currentMaxCombo
 
       await db
         .insert(UserStats)
@@ -162,19 +162,19 @@ export const userStatsRouter = {
             totalTypingTime: sql`${UserStats.totalTypingTime} + ${input.typingTime}`,
             ...(isUpdateMaxCombo ? { maxCombo: input.maxCombo } : {}),
           },
-        });
+        })
 
       // DBの日付変更基準（15:00）に合わせて日付を計算
-      const now = new Date();
-      const isAfterCutoff = now.getHours() >= 15;
-      const targetDate = new Date();
+      const now = new Date()
+      const isAfterCutoff = now.getHours() >= 15
+      const targetDate = new Date()
 
       // 15時前なら前日の日付、15時以降なら当日の日付
       if (isAfterCutoff) {
-        targetDate.setDate(targetDate.getDate() + 1);
+        targetDate.setDate(targetDate.getDate() + 1)
       }
 
-      const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+      const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0)
 
       await db
         .insert(UserDailyTypeCounts)
@@ -196,14 +196,14 @@ export const userStatsRouter = {
             englishTypeCount: sql`${UserDailyTypeCounts.englishTypeCount} + ${input.englishType}`,
             otherTypeCount: sql`${UserDailyTypeCounts.otherTypeCount} + ${input.spaceType + input.numType + input.symbolType}`,
           },
-        });
+        })
     }),
   getUserActivity: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db } = ctx;
+    const { db } = ctx
 
-    const currentYear = new Date().getFullYear();
-    const startOfYear = new Date(currentYear, 0, 1);
-    const endOfYear = new Date(currentYear, 11, 31);
+    const currentYear = new Date().getFullYear()
+    const startOfYear = new Date(currentYear, 0, 1)
+    const endOfYear = new Date(currentYear, 11, 31)
 
     const userActivityTypeCounts = await db.query.UserDailyTypeCounts.findMany({
       columns: {
@@ -221,22 +221,22 @@ export const userStatsRouter = {
         lte(UserDailyTypeCounts.createdAt, endOfYear),
       ),
       orderBy: asc(UserDailyTypeCounts.createdAt),
-    });
+    })
 
-    type DayCounts = Omit<(typeof userActivityTypeCounts)[number], "createdAt">;
-    const dataMap = new Map<string, DayCounts>();
+    type DayCounts = Omit<(typeof userActivityTypeCounts)[number], "createdAt">
+    const dataMap = new Map<string, DayCounts>()
     userActivityTypeCounts.forEach((record) => {
-      const dateKey = new Date(record.createdAt).toISOString().split("T")[0];
-      const { createdAt: _, ...dayData } = record;
-      dataMap.set(dateKey, dayData);
-    });
+      const dateKey = new Date(record.createdAt).toISOString().split("T")[0]
+      const { createdAt: _, ...dayData } = record
+      dataMap.set(dateKey, dayData)
+    })
 
-    const fullYearData: { date: string; count: number; level: number; data: DayCounts | undefined }[] = [];
-    const currentDate = new Date(startOfYear);
+    const fullYearData: { date: string; count: number; level: number; data: DayCounts | undefined }[] = []
+    const currentDate = new Date(startOfYear)
 
     while (currentDate <= endOfYear) {
-      const dateKey = currentDate.toISOString().split("T")[0];
-      const existingData = dataMap.get(dateKey);
+      const dateKey = currentDate.toISOString().split("T")[0]
+      const existingData = dataMap.get(dateKey)
 
       if (existingData) {
         const typeCounts = [
@@ -247,50 +247,50 @@ export const userStatsRouter = {
             count: existingData.flickTypeCount + existingData.englishTypeCount + existingData.otherTypeCount,
           },
           { type: "ime" as const, count: existingData.imeTypeCount },
-        ];
+        ]
 
         const dominantType = typeCounts.reduce(
           (max, current) => (current.count > max.count ? current : max),
           typeCounts[0],
-        );
-        const totalTypeCount = Object.values(existingData).reduce((total, count) => total + count, 0);
-        const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
+        )
+        const totalTypeCount = Object.values(existingData).reduce((total, count) => total + count, 0)
+        const level = getActivityLevel({ type: dominantType.type, totalTypeCount })
 
         fullYearData.push({
           date: dateKey,
           count: totalTypeCount,
           level,
           data: existingData,
-        });
+        })
       } else {
         fullYearData.push({
           date: dateKey,
           count: 0,
           level: 0,
           data: undefined,
-        });
+        })
       }
 
-      currentDate.setDate(currentDate.getDate() + 1);
+      currentDate.setDate(currentDate.getDate() + 1)
     }
 
-    return fullYearData;
+    return fullYearData
   }),
-};
+}
 
 const getActivityLevel = ({ type, totalTypeCount }: { type: keyof typeof LEVELS; totalTypeCount: number }): number => {
   const sortedLevels = Object.entries(LEVELS[type])
-    .map(([level, threshold]) => ({ level: parseInt(level), threshold }))
-    .sort((a, b) => b.level - a.level);
+    .map(([level, threshold]) => ({ level: parseInt(level, 10), threshold }))
+    .sort((a, b) => b.level - a.level)
 
   for (const { level, threshold } of sortedLevels) {
     if (totalTypeCount >= threshold) {
-      return level;
+      return level
     }
   }
 
-  return 0;
-};
+  return 0
+}
 
 const LEVELS = {
   roma: {
@@ -313,4 +313,4 @@ const LEVELS = {
     11: 1000 as const,
     10: 1 as const,
   },
-};
+}

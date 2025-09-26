@@ -1,10 +1,10 @@
-import { useLyricsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { cn } from "@/lib/utils";
-import parse from "html-react-parser";
+import parse from "html-react-parser"
+import { useLyricsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { cn } from "@/lib/utils"
 
 const Lyrics = () => {
-  const lyrics = useLyricsState();
-  const userOptionsAtom = useUserTypingOptionsState();
+  const lyrics = useLyricsState()
+  const userOptionsAtom = useUserTypingOptionsState()
 
   return (
     <div
@@ -21,7 +21,7 @@ const Lyrics = () => {
         あ<rt>あ</rt>
       </ruby>
     </div>
-  );
-};
+  )
+}
 
-export default Lyrics;
+export default Lyrics

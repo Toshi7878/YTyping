@@ -1,16 +1,16 @@
-import type { CSSProperties } from "react";
-import { useEffect, useRef } from "react";
-import { useNotificationsState } from "../_lib/atoms/state-atoms";
+import type { CSSProperties } from "react"
+import { useEffect, useRef } from "react"
+import { useNotificationsState } from "../_lib/atoms/state-atoms"
 
 const Notifications = ({ style }: { style: CSSProperties }) => {
-  const notifications = useNotificationsState();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const notifications = useNotificationsState()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      containerRef.current.scrollTop = containerRef.current.scrollHeight
     }
-  }, [notifications]);
+  }, [notifications.length])
 
   return (
     <div
@@ -22,11 +22,11 @@ const Notifications = ({ style }: { style: CSSProperties }) => {
         ...style,
       }}
     >
-      {notifications.map((notification, index) => (
-        <div key={index}>{notification}</div>
+      {notifications.map((notification) => (
+        <div key={notification}>{notification}</div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default Notifications;
+export default Notifications

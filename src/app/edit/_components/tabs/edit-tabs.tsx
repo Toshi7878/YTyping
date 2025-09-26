@@ -1,14 +1,14 @@
-"use client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSetTabName, useTabNameState } from "../../_lib/atoms/state-atoms";
-import { TAB_NAMES } from "../../_lib/const";
-import TabEditor from "./editor/editor";
-import MapInfoForm from "./info-form/map-info-form";
-import TabSettings from "./settings/settings";
+"use client"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useSetTabName, useTabNameState } from "../../_lib/atoms/state-atoms"
+import { TAB_NAMES } from "../../_lib/const"
+import TabEditor from "./editor/editor"
+import MapInfoForm from "./info-form/map-info-form"
+import TabSettings from "./settings/settings"
 
 export default function EditTabs() {
-  const tabName = useTabNameState();
-  const setTabName = useSetTabName();
+  const tabName = useTabNameState()
+  const setTabName = useSetTabName()
 
   return (
     <Tabs value={tabName} onValueChange={(value) => setTabName(value as (typeof TAB_NAMES)[number])} className="w-full">
@@ -22,7 +22,7 @@ export default function EditTabs() {
             >
               {name}
             </TabsTrigger>
-          );
+          )
         })}
       </TabsList>
 
@@ -38,5 +38,5 @@ export default function EditTabs() {
         <TabSettings />
       </TabsContent>
     </Tabs>
-  );
+  )
 }

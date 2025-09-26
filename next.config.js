@@ -2,6 +2,6 @@
 const nextConfig = {
   reactStrictMode: false,
   typedRoutes: true,
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

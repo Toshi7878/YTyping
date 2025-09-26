@@ -1,7 +1,7 @@
-import { useTRPC } from "@/trpc/provider";
+import { useTRPC } from "@/trpc/provider"
 
 export const useUserStatsQueries = () => {
-  const trpc = useTRPC();
+  const trpc = useTRPC()
 
   return {
     userActivity: ({ userId }: { userId: number }) =>
@@ -12,5 +12,5 @@ export const useUserStatsQueries = () => {
           gcTime: Infinity,
         },
       ),
-  };
-};
+  }
+}

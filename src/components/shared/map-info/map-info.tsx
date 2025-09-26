@@ -1,21 +1,21 @@
-"use client";
-import LikeCountIcon from "@/components/shared/map-count/like-count";
-import RankingCount from "@/components/shared/map-count/ranking-count";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import type { RouterOutPuts } from "@/server/api/trpc";
-import { formatTime } from "@/utils/format-time";
-import { nolink } from "@/utils/no-link";
-import Link from "next/link";
-import { Badge } from "../../ui/badge";
-import DateDistanceText from "../text/date-distance-text";
-import UserNameLinkText from "../text/user-name-link-text";
+"use client"
+import Link from "next/link"
+import LikeCountIcon from "@/components/shared/map-count/like-count"
+import RankingCount from "@/components/shared/map-count/ranking-count"
+import { TooltipWrapper } from "@/components/ui/tooltip"
+import type { RouterOutPuts } from "@/server/api/trpc"
+import { formatTime } from "@/utils/format-time"
+import { nolink } from "@/utils/no-link"
+import { Badge } from "../../ui/badge"
+import DateDistanceText from "../text/date-distance-text"
+import UserNameLinkText from "../text/user-name-link-text"
 
 interface MapInfoProps {
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: RouterOutPuts["mapList"]["getList"]["maps"][number]
 }
 
 function MapInfo({ map }: MapInfoProps) {
-  const musicSource = map.info.source ? `【${map.info.source}】` : "";
+  const musicSource = map.info.source ? `【${map.info.source}】` : ""
 
   return (
     <div className="relative flex h-full w-full flex-col justify-between overflow-hidden text-xs sm:text-sm md:text-base lg:text-lg">
@@ -44,7 +44,7 @@ function MapInfo({ map }: MapInfoProps) {
         </section>
       </div>
     </div>
-  );
+  )
 }
 
 const MapInfoBottom = ({ map }: MapInfoProps) => {
@@ -64,12 +64,12 @@ const MapInfoBottom = ({ map }: MapInfoProps) => {
         <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
       </div>
     </div>
-  );
-};
+  )
+}
 
 interface MapCreatorInfoProps {
-  creator: RouterOutPuts["mapList"]["getList"]["maps"][number]["creator"];
-  updatedAt: Date;
+  creator: RouterOutPuts["mapList"]["getList"]["maps"][number]["creator"]
+  updatedAt: Date
 }
 
 const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
@@ -82,7 +82,7 @@ const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
         </span>
       </span>
     </small>
-  );
-};
+  )
+}
 
-export default MapInfo;
+export default MapInfo

@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import { MutationInputFormField } from "@/components/ui/input/input-form-field";
-import { keyboardFormSchema } from "@/server/drizzle/validator/user-setting";
-import { useTRPC } from "@/trpc/provider";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { FormProvider, useForm } from "react-hook-form"
+import { MutationInputFormField } from "@/components/ui/input/input-form-field"
+import { keyboardFormSchema } from "@/server/drizzle/validator/user-setting"
+import { useTRPC } from "@/trpc/provider"
 
 interface KeyboardInputProps {
-  keyboard: string;
+  keyboard: string
 }
 
 export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
@@ -16,12 +16,12 @@ export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
     mode: "onChange",
     resolver: zodResolver(keyboardFormSchema),
     defaultValues: { keyboard },
-  });
+  })
 
-  const { reset } = form;
+  const { reset } = form
 
-  const trpc = useTRPC();
-  const updateKeyboard = useMutation(trpc.userProfile.upsertKeyboard.mutationOptions());
+  const trpc = useTRPC()
+  const updateKeyboard = useMutation(trpc.userProfile.upsertKeyboard.mutationOptions())
 
   return (
     <FormProvider {...form}>
@@ -34,5 +34,5 @@ export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
         className="w-md"
       />
     </FormProvider>
-  );
-};
+  )
+}

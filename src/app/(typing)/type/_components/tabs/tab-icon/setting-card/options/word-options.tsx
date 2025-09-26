@@ -1,11 +1,11 @@
-"use client";
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { Button } from "@/components/ui/button";
-import { CounterInput } from "@/components/ui/counter";
-import { LabeledSelect } from "@/components/ui/select/labeled-select";
-import { H5 } from "@/components/ui/typography";
-import type { mainWordDisplayEnum } from "@/server/drizzle/schema";
-import { MdRestartAlt } from "react-icons/md";
+"use client"
+import { MdRestartAlt } from "react-icons/md"
+import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { Button } from "@/components/ui/button"
+import { CounterInput } from "@/components/ui/counter"
+import { LabeledSelect } from "@/components/ui/select/labeled-select"
+import { H5 } from "@/components/ui/typography"
+import type { mainWordDisplayEnum } from "@/server/drizzle/schema"
 
 const WORD_OPTIONS_CONFIG = {
   fontSize: {
@@ -26,10 +26,10 @@ const WORD_OPTIONS_CONFIG = {
     max: 0.2,
     min: -0.05,
   },
-};
+}
 
 export const UserWordOptions = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions();
+  const { setUserTypingOptions } = useSetUserTypingOptions()
   const {
     kanaWordFontSize: kana_word_font_size,
     romaWordFontSize: roma_word_font_size,
@@ -38,7 +38,7 @@ export const UserWordOptions = () => {
     kanaWordSpacing: kana_word_spacing,
     romaWordSpacing: roma_word_spacing,
     wordDisplay: main_word_display,
-  } = useUserTypingOptionsState();
+  } = useUserTypingOptionsState()
 
   const resetToDefaults = () => {
     setUserTypingOptions({
@@ -49,8 +49,8 @@ export const UserWordOptions = () => {
       kanaWordSpacing: WORD_OPTIONS_CONFIG.spacing.default,
       romaWordSpacing: WORD_OPTIONS_CONFIG.spacing.default,
       wordDisplay: "KANA_ROMA_UPPERCASE",
-    });
-  };
+    })
+  }
 
   return (
     <section className="flex flex-col gap-4">
@@ -154,5 +154,5 @@ export const UserWordOptions = () => {
         value={main_word_display}
       />
     </section>
-  );
-};
+  )
+}

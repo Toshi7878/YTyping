@@ -1,5 +1,5 @@
-import { romaConvert } from "../../../../../../utils/build-map/build-map";
-import { useLineCount, useLineStatus } from "../../atoms/ref-atoms";
+import { romaConvert } from "../../../../../../utils/build-map/build-map"
+import { useLineCount, useLineStatus } from "../../atoms/ref-atoms"
 import {
   useReadGameUtilParams,
   useReadLineWord,
@@ -8,60 +8,60 @@ import {
   useSetNextLyrics,
   useSetNotify,
   useSetPlayingInputMode,
-} from "../../atoms/state-atoms";
-import type { InputMode } from "../../type";
-import { useGetTime } from "./get-youtube-time";
+} from "../../atoms/state-atoms"
+import type { InputMode } from "../../type"
+import { useGetTime } from "./get-youtube-time"
 
 export const useInputModeChange = () => {
-  const setPlayingInputMode = useSetPlayingInputMode();
-  const setNotify = useSetNotify();
-  const { setNextLyrics } = useSetNextLyrics();
-  const setLineWord = useSetLineWord();
+  const setPlayingInputMode = useSetPlayingInputMode()
+  const setNotify = useSetNotify()
+  const { setNextLyrics } = useSetNextLyrics()
+  const setLineWord = useSetLineWord()
 
-  const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
-  const { readLineStatus, writeLineStatus } = useLineStatus();
-  const readGameStateUtils = useReadGameUtilParams();
-  const readLineWord = useReadLineWord();
-  const readMap = useReadMap();
-  const { readCount } = useLineCount();
+  const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime()
+  const { readLineStatus, writeLineStatus } = useLineStatus()
+  const readGameStateUtils = useReadGameUtilParams()
+  const readLineWord = useReadLineWord()
+  const readMap = useReadMap()
+  const { readCount } = useLineCount()
 
   return async (newInputMode: InputMode) => {
-    const map = readMap();
-    if (!map) return;
-    const { inputMode, scene } = readGameStateUtils();
+    const map = readMap()
+    if (!map) return
+    const { inputMode, scene } = readGameStateUtils()
 
     if (newInputMode === inputMode) {
-      return;
+      return
     }
 
-    setPlayingInputMode(newInputMode);
+    setPlayingInputMode(newInputMode)
 
     if (newInputMode === "kana") {
-      setNotify(Symbol("KanaMode"));
+      setNotify(Symbol("KanaMode"))
     } else {
-      setNotify(Symbol("Romaji"));
-      const lineWord = readLineWord();
+      setNotify(Symbol("Romaji"))
+      const lineWord = readLineWord()
 
-      if (lineWord.nextChar["k"]) {
-        const wordFix = romaConvert(lineWord);
+      if (lineWord.nextChar.k) {
+        const wordFix = romaConvert(lineWord)
 
         setLineWord({
           correct: lineWord.correct,
           nextChar: wordFix.nextChar,
           word: wordFix.word,
-        });
+        })
       }
     }
 
-    const count = readCount();
-    const nextLine = map.mapData[count];
+    const count = readCount()
+    const nextLine = map.mapData[count]
 
     if (nextLine.kanaWord) {
-      setNextLyrics(nextLine);
+      setNextLyrics(nextLine)
     }
 
     if (scene === "play") {
-      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime())
       writeLineStatus({
         types: [
           ...readLineStatus().types,
@@ -70,7 +70,7 @@ export const useInputModeChange = () => {
             t: Math.floor(lineTime * 1000) / 1000,
           },
         ],
-      });
+      })
     }
-  };
-};
+  }
+}

@@ -1,39 +1,39 @@
-"use client";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { H3 } from "@/components/ui/typography";
-import { cn } from "@/lib/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
-import { formatDistanceToNowStrict } from "date-fns";
-import { ja } from "date-fns/locale";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
-import type { ReactNode } from "react";
-import { GoLock } from "react-icons/go";
-import { IoMdInformationCircleOutline } from "react-icons/io";
-import TypeActivity from "./user-stats/type-activity";
+"use client"
+import { formatDistanceToNowStrict } from "date-fns"
+import { ja } from "date-fns/locale"
+import Link from "next/link"
+import { useParams, useSearchParams } from "next/navigation"
+import { useSession } from "next-auth/react"
+import type { ReactNode } from "react"
+import { GoLock } from "react-icons/go"
+import { IoMdInformationCircleOutline } from "react-icons/io"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { H3 } from "@/components/ui/typography"
+import { cn } from "@/lib/utils"
+import type { RouterOutPuts } from "@/server/api/trpc"
+import TypeActivity from "./user-stats/type-activity"
 
 const formatTime = (totalSeconds: number) => {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return `${hours}時間 ${minutes}分 ${seconds.toFixed()}秒`;
-};
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+  return `${hours}時間 ${minutes}分 ${seconds.toFixed()}秒`
+}
 
 interface UserStatsProps {
-  userStats: RouterOutPuts["userStats"]["getUserStats"];
+  userStats: RouterOutPuts["userStats"]["getUserStats"]
 }
 
 const UserStatsCard = ({ userStats }: UserStatsProps) => {
-  const { id: userId } = useParams<{ id: string }>();
-  const { data: session } = useSession();
-  const userSearchParams = useSearchParams();
-  const isHidePreview = userSearchParams.get("hidePreview") === "true";
-  const isHideUserStats = userStats?.options?.hideUserStats ?? false;
-  const isMyStats = session?.user?.id === userId;
-  const isMyStatsWithHide = isMyStats && isHideUserStats;
+  const { id: userId } = useParams<{ id: string }>()
+  const { data: session } = useSession()
+  const userSearchParams = useSearchParams()
+  const isHidePreview = userSearchParams.get("hidePreview") === "true"
+  const isHideUserStats = userStats?.options?.hideUserStats ?? false
+  const isMyStats = session?.user?.id === userId
+  const isMyStatsWithHide = isMyStats && isHideUserStats
 
   return (
     <Card>
@@ -52,21 +52,21 @@ const UserStatsCard = ({ userStats }: UserStatsProps) => {
       </CardContent>
       <CardFooter className="mx-8" />
     </Card>
-  );
-};
+  )
+}
 
 interface UserStatsContentProps {
-  userStats: RouterOutPuts["userStats"]["getUserStats"];
-  isMyStatsWithHide: boolean;
+  userStats: RouterOutPuts["userStats"]["getUserStats"]
+  isMyStatsWithHide: boolean
 }
 
 const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProps) => {
   if (!userStats) {
-    return <div>データがありません</div>;
+    return <div>データがありません</div>
   }
-  const { typeCounts } = userStats;
+  const { typeCounts } = userStats
 
-  const totalKeystrokes = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0);
+  const totalKeystrokes = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0)
 
   const keystrokeStatsData = [
     { label: "ローマ字 打鍵数", value: typeCounts.romaTypeTotalCount },
@@ -78,7 +78,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
     { label: "フリック 打鍵数", value: typeCounts.flickTypeTotalCount },
     { label: "変換有り 打鍵数", value: typeCounts.imeTypeTotalCount },
     { label: "合計 打鍵数", value: totalKeystrokes },
-  ];
+  ]
 
   const generalStatsData = [
     {
@@ -95,7 +95,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
     { label: "タイピング時間", value: formatTime(userStats.totalTypingTime) },
     { label: "プレイ回数", value: userStats.totalPlayCount },
     { label: "最大コンボ", value: userStats.maxCombo },
-  ];
+  ]
 
   return (
     <div className="flex flex-col gap-4">
@@ -117,8 +117,8 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const StatsCard = ({ label, value }: { label: string; value: string | number | ReactNode }) => {
   return (
@@ -126,8 +126,8 @@ const StatsCard = ({ label, value }: { label: string; value: string | number | R
       <CardTitle className="text-lg font-normal">{label}</CardTitle>
       <div className="text-2xl font-bold">{value}</div>
     </Card>
-  );
-};
+  )
+}
 
 const HideUserStats = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) => {
   return (
@@ -138,13 +138,13 @@ const HideUserStats = ({ isMyStatsWithHide }: { isMyStatsWithHide: boolean }) =>
         <p>タイピング統計情報は非公開にしています</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const MyHideOptionInfo = () => {
-  const userSearchParams = useSearchParams();
-  const isHidePreview = userSearchParams.get("hidePreview") === "true";
-  const { id: userId } = useParams<{ id: string }>();
+  const userSearchParams = useSearchParams()
+  const isHidePreview = userSearchParams.get("hidePreview") === "true"
+  const { id: userId } = useParams<{ id: string }>()
 
   return (
     <InfoCard title="統計情報は非公開に設定されています" className="mb-4">
@@ -168,13 +168,13 @@ const MyHideOptionInfo = () => {
         </div>
       </div>
     </InfoCard>
-  );
-};
+  )
+}
 
 interface InfoCardProps {
-  title: string;
-  children: ReactNode;
-  className?: string;
+  title: string
+  children: ReactNode
+  className?: string
 }
 
 const InfoCard = ({ title, children, className }: InfoCardProps) => {
@@ -186,7 +186,7 @@ const InfoCard = ({ title, children, className }: InfoCardProps) => {
       </CardHeader>
       <CardContent className="pt-0">{children}</CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default UserStatsCard;
+export default UserStatsCard

@@ -1,4 +1,4 @@
-import { UserNameInputForm } from "@/app/user/_components/user-name-input-form";
+import { UserNameInputForm } from "@/app/user/_components/user-name-input-form"
 
 export default async function Home() {
   return (
@@ -13,5 +13,5 @@ export default async function Home() {
         </p>
       </div>
     </div>
-  );
+  )
 }

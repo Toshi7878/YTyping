@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import { cva, type VariantProps } from "class-variance-authority";
-import { CircleIcon } from "lucide-react";
-import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
-import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority"
+import { CircleIcon } from "lucide-react"
+import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
+import * as React from "react"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 function RadioGroup({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
-  return <RadioGroupPrimitive.Root data-slot="radio-group" className={cn("grid gap-3", className)} {...props} />;
+  return <RadioGroupPrimitive.Root data-slot="radio-group" className={cn("grid gap-3", className)} {...props} />
 }
 
 const radioGroupItemVariants = cva(
@@ -31,7 +31,7 @@ const radioGroupItemVariants = cva(
       size: "md",
     },
   },
-);
+)
 
 const radioGroupIndicatorVariants = cva("fill-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2", {
   variants: {
@@ -44,7 +44,7 @@ const radioGroupIndicatorVariants = cva("fill-primary absolute top-1/2 left-1/2 
   defaultVariants: {
     size: "md",
   },
-});
+})
 
 export interface RadioGroupItemProps
   extends React.ComponentProps<typeof RadioGroupPrimitive.Item>,
@@ -64,7 +64,7 @@ function RadioGroupItem({ className, size, ...props }: RadioGroupItemProps) {
         <CircleIcon className={cn(radioGroupIndicatorVariants({ size }))} />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
-  );
+  )
 }
 
 const radioCardVariants = cva(
@@ -106,19 +106,21 @@ const radioCardVariants = cva(
       size: "default",
     },
   },
-);
+)
 
 export interface RadioCardProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof radioCardVariants> {
-  value: string;
-  disabled?: boolean;
-  asChild?: boolean;
+  value: string
+  disabled?: boolean
+  asChild?: boolean
 }
 
 const RadioCard = React.forwardRef<HTMLDivElement, RadioCardProps>(
   ({ className, variant, size, value, disabled, children, ...props }, ref) => {
+    const id = React.useId()
+
     return (
-      <label className="flex-1">
-        <RadioGroupItem value={value} className="sr-only" disabled={disabled} />
+      <label className="flex-1" htmlFor={id}>
+        <RadioGroupItem id={id} value={value} className="sr-only" disabled={disabled} />
         <div
           ref={ref}
           className={cn(radioCardVariants({ variant, size, className }))}
@@ -128,9 +130,9 @@ const RadioCard = React.forwardRef<HTMLDivElement, RadioCardProps>(
           {children}
         </div>
       </label>
-    );
+    )
   },
-);
-RadioCard.displayName = "RadioCard";
+)
+RadioCard.displayName = "RadioCard"
 
-export { RadioCard, radioCardVariants, RadioGroup, RadioGroupItem };
+export { RadioCard, radioCardVariants, RadioGroup, RadioGroupItem }

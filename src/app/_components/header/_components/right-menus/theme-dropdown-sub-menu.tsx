@@ -1,5 +1,7 @@
 // src/components/ThemeSheet.tsx
-"use client";
+"use client"
+import { Check } from "lucide-react"
+import { useTheme } from "next-themes"
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -9,19 +11,17 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-} from "@/components/ui/dropdown-menu";
-import { THEME_LIST } from "@/styles/const";
-import { applyFavicon } from "@/utils/use-favicon-theme";
-import { Check } from "lucide-react";
-import { useTheme } from "next-themes";
+} from "@/components/ui/dropdown-menu"
+import { THEME_LIST } from "@/styles/const"
+import { applyFavicon } from "@/utils/use-favicon-theme"
 
 export function ThemeDropdownSubmenu() {
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme()
 
   const handleThemeChange = (themeClass: string) => {
-    applyFavicon(themeClass);
-    setTheme(themeClass);
-  };
+    applyFavicon(themeClass)
+    setTheme(themeClass)
+  }
 
   return (
     <DropdownMenuSub>
@@ -64,5 +64,5 @@ export function ThemeDropdownSubmenu() {
         </DropdownMenuSubContent>
       </DropdownMenuPortal>
     </DropdownMenuSub>
-  );
+  )
 }

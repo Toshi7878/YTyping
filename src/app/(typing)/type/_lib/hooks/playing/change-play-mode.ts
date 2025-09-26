@@ -1,53 +1,53 @@
-import type { YouTubeSpeed } from "@/types/types";
-import { useGameUtilityReferenceParams } from "../../atoms/ref-atoms";
-import { usePlaySpeedReducer, useReadPlaySpeed } from "../../atoms/speed-reducer-atoms";
+import type { YouTubeSpeed } from "@/types/types"
+import { useGameUtilityReferenceParams } from "../../atoms/ref-atoms"
+import { usePlaySpeedReducer, useReadPlaySpeed } from "../../atoms/speed-reducer-atoms"
 import {
   useReadGameUtilParams,
   useSetLineResultDrawer,
   useSetNotify,
   useSetPlayingInputMode,
   useSetScene,
-} from "../../atoms/state-atoms";
-import { useReadReadyInputMode } from "../../atoms/storage-atoms";
-import { useRetry } from "./retry";
+} from "../../atoms/state-atoms"
+import { useReadReadyInputMode } from "../../atoms/storage-atoms"
+import { useRetry } from "./retry"
 
 export const useChangePlayMode = () => {
-  const setScene = useSetScene();
-  const setNotify = useSetNotify();
-  const retry = useRetry();
-  const dispatchSpeed = usePlaySpeedReducer();
+  const setScene = useSetScene()
+  const setNotify = useSetNotify()
+  const retry = useRetry()
+  const dispatchSpeed = usePlaySpeedReducer()
 
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const readGameUtilParams = useReadGameUtilParams();
-  const setPlayingInputMode = useSetPlayingInputMode();
-  const setLineResultDrawer = useSetLineResultDrawer();
+  const { writeGameUtilRefParams } = useGameUtilityReferenceParams()
+  const readGameUtilParams = useReadGameUtilParams()
+  const setPlayingInputMode = useSetPlayingInputMode()
+  const setLineResultDrawer = useSetLineResultDrawer()
 
-  const readSpeed = useReadPlaySpeed();
-  const readReadyInputMode = useReadReadyInputMode();
+  const readSpeed = useReadPlaySpeed()
+  const readReadyInputMode = useReadReadyInputMode()
 
   return () => {
-    const { scene } = readGameUtilParams();
+    const { scene } = readGameUtilParams()
     if (scene === "play") {
-      const confirmMessage = "練習モードに移動しますか？";
+      const confirmMessage = "練習モードに移動しますか？"
       if (window.confirm(confirmMessage)) {
-        setScene("practice");
+        setScene("practice")
       }
     } else {
-      const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
+      const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。"
       if (window.confirm(confirmMessage)) {
-        writeGameUtilRefParams({ replayKeyCount: 0, replayUserName: "" });
+        writeGameUtilRefParams({ replayKeyCount: 0, replayUserName: "" })
 
-        setLineResultDrawer(false);
+        setLineResultDrawer(false)
 
         if (scene === "replay") {
-          setPlayingInputMode(readReadyInputMode());
+          setPlayingInputMode(readReadyInputMode())
         }
-        const { playSpeed } = readSpeed();
-        dispatchSpeed({ type: "set", payload: 1 > playSpeed ? 1 : (playSpeed as YouTubeSpeed) });
+        const { playSpeed } = readSpeed()
+        dispatchSpeed({ type: "set", payload: 1 > playSpeed ? 1 : (playSpeed as YouTubeSpeed) })
 
-        retry("play");
+        retry("play")
       }
-      setNotify(Symbol(""));
+      setNotify(Symbol(""))
     }
-  };
-};
+  }
+}

@@ -1,58 +1,58 @@
+import { useHotkeys } from "react-hotkeys-hook"
 import {
   useIsAddBtnDisabledState,
   useIsDeleteBtnDisabledState,
   useIsUpdateBtnDisabledState,
-} from "@/app/edit/_lib/atoms/button-disable-state-atoms";
-import { useIsWordConvertingState } from "@/app/edit/_lib/atoms/state-atoms";
+} from "@/app/edit/_lib/atoms/button-disable-state-atoms"
+import { useIsWordConvertingState } from "@/app/edit/_lib/atoms/state-atoms"
 import {
   useLineAddButtonEvent,
   useLineDelete,
   useLineUpdateButtonEvent,
   useWordConvertButtonEvent,
-} from "@/app/edit/_lib/hooks/use-editor-button-events";
-import { Button } from "@/components/ui/button";
-import { useHotkeys } from "react-hotkeys-hook";
+} from "@/app/edit/_lib/hooks/use-editor-button-events"
+import { Button } from "@/components/ui/button"
 
 const EditorButtons = () => {
-  const isAddButtonDisabled = useIsAddBtnDisabledState();
-  const isUpdateButtonDisabled = useIsUpdateBtnDisabledState();
-  const isWordConverting = useIsWordConvertingState();
-  const isDeleteButtonDisabled = useIsDeleteBtnDisabledState();
-  const lineAddButtonEvent = useLineAddButtonEvent();
-  const lineUpdateButtonEvent = useLineUpdateButtonEvent();
-  const wordConvertButtonEvent = useWordConvertButtonEvent();
-  const lineDelete = useLineDelete();
+  const isAddButtonDisabled = useIsAddBtnDisabledState()
+  const isUpdateButtonDisabled = useIsUpdateBtnDisabledState()
+  const isWordConverting = useIsWordConvertingState()
+  const isDeleteButtonDisabled = useIsDeleteBtnDisabledState()
+  const lineAddButtonEvent = useLineAddButtonEvent()
+  const lineUpdateButtonEvent = useLineUpdateButtonEvent()
+  const wordConvertButtonEvent = useWordConvertButtonEvent()
+  const lineDelete = useLineDelete()
   useHotkeys(
     ["shift+s", "s"],
     (event) => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen || isAddButtonDisabled) return;
-      lineAddButtonEvent(event.shiftKey);
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null
+      if (isDialogOpen || isAddButtonDisabled) return
+      lineAddButtonEvent(event.shiftKey)
     },
     {
       enableOnFormTags: false,
       preventDefault: true,
     },
-  );
+  )
 
   useHotkeys(
     ["shift+u", "u"],
     () => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen || isUpdateButtonDisabled) return;
-      lineUpdateButtonEvent();
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null
+      if (isDialogOpen || isUpdateButtonDisabled) return
+      lineUpdateButtonEvent()
     },
     {
       enableOnFormTags: false,
       preventDefault: true,
     },
-  );
+  )
 
   useHotkeys("delete", () => {
-    const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-    if (isDialogOpen || isDeleteButtonDisabled) return;
-    lineDelete();
-  });
+    const isDialogOpen = document.querySelector('[role="dialog"]') !== null
+    if (isDialogOpen || isDeleteButtonDisabled) return
+    lineDelete()
+  })
 
   const buttonConfigs = {
     add: {
@@ -96,7 +96,7 @@ const EditorButtons = () => {
       ),
       isLoading: false,
     },
-  } as const;
+  } as const
 
   return (
     <div className="grid grid-cols-2 gap-2 sm:flex">
@@ -114,7 +114,7 @@ const EditorButtons = () => {
         </Button>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default EditorButtons;
+export default EditorButtons

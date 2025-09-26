@@ -1,25 +1,25 @@
-import type { CreateResultStatusSchema, ResultData } from "@/server/drizzle/validator/result";
-import { useParams } from "next/navigation";
-import type z from "zod";
-import { useTypingDetails } from "../../atoms/ref-atoms";
-import { useReadAllLineResult, useReadTypingStatus } from "../../atoms/state-atoms";
+import { useParams } from "next/navigation"
+import type z from "zod"
+import type { CreateResultStatusSchema, ResultData } from "@/server/drizzle/validator/result"
+import { useTypingDetails } from "../../atoms/ref-atoms"
+import { useReadAllLineResult, useReadTypingStatus } from "../../atoms/state-atoms"
 
 export const useResultData = () => {
-  const { id: mapId } = useParams();
-  const { readStatus } = useTypingDetails();
+  const { id: mapId } = useParams()
+  const { readStatus } = useTypingDetails()
 
-  const readAllLineResults = useReadAllLineResult();
-  const readTypingStatus = useReadTypingStatus();
+  const readAllLineResults = useReadAllLineResult()
+  const readTypingStatus = useReadTypingStatus()
 
   const getMinSpeed = (lineResults: ResultData) => {
     return lineResults.reduce((min, result) => {
-      const { status } = result;
+      const { status } = result
       if (status && status.tTime !== 0) {
-        return Math.min(min, status.sp);
+        return Math.min(min, status.sp)
       }
-      return min;
-    }, Infinity);
-  };
+      return min
+    }, Infinity)
+  }
 
   return () => {
     const {
@@ -35,11 +35,11 @@ export const useResultData = () => {
       symbolType,
       numType,
       maxCombo,
-    } = readStatus();
-    const lineResults = readAllLineResults();
-    const minPlaySpeed = getMinSpeed(lineResults);
-    const rkpmTime = totalTypeTime - totalLatency;
-    const typingStatus = readTypingStatus();
+    } = readStatus()
+    const lineResults = readAllLineResults()
+    const minPlaySpeed = getMinSpeed(lineResults)
+    const rkpmTime = totalTypeTime - totalLatency
+    const typingStatus = readTypingStatus()
 
     const sendStatus: z.output<typeof CreateResultStatusSchema> = {
       score: typingStatus.score,
@@ -59,12 +59,12 @@ export const useResultData = () => {
       kanaToRomaKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
       kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
       clearRate: Number(Math.max(0, clearRate).toFixed(1)),
-    };
+    }
 
     return {
       mapId: Number(mapId),
       status: sendStatus,
       lineResults,
-    };
-  };
-};
+    }
+  }
+}

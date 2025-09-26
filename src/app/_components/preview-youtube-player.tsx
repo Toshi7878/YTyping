@@ -1,34 +1,34 @@
-"use client";
-import { RESET } from "jotai/utils";
-import { useEffect } from "react";
-import YouTube, { type YouTubeEvent } from "react-youtube";
-import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/global-atoms";
+"use client"
+import { RESET } from "jotai/utils"
+import { useEffect } from "react"
+import YouTube, { type YouTubeEvent } from "react-youtube"
+import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/global-atoms"
 
 const PreviewYouTubePlayer = () => {
-  const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
+  const { videoId, previewTime, previewSpeed } = usePreviewVideoState()
 
-  const volume = useVolumeState();
-  const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
-  const setPreviewPlayer = useSetPreviewPlayer();
+  const volume = useVolumeState()
+  const previewYouTubeKeyDown = usePreviewYouTubeKeyDown()
+  const setPreviewPlayer = useSetPreviewPlayer()
 
   useEffect(() => {
-    window.addEventListener("keydown", previewYouTubeKeyDown);
-    return () => window.removeEventListener("keydown", previewYouTubeKeyDown);
-  }, [videoId]);
+    window.addEventListener("keydown", previewYouTubeKeyDown)
+    return () => window.removeEventListener("keydown", previewYouTubeKeyDown)
+  }, [videoId])
 
-  if (!videoId) return null;
+  if (!videoId) return null
 
   const onReady = (event: YouTubeEvent) => {
-    const player = event.target;
-    player.setVolume(volume);
-    player.seekTo(Number(previewTime), true);
-    player.playVideo();
-    setPreviewPlayer(player);
-  };
+    const player = event.target
+    player.setVolume(volume)
+    player.seekTo(Number(previewTime), true)
+    player.playVideo()
+    setPreviewPlayer(player)
+  }
 
   const onPlay = (event: YouTubeEvent) => {
-    setTimeout(() => event.target.setPlaybackRate(previewSpeed ?? 1), 300);
-  };
+    setTimeout(() => event.target.setPlaybackRate(previewSpeed ?? 1), 300)
+  }
 
   return (
     <YouTube
@@ -49,17 +49,17 @@ const PreviewYouTubePlayer = () => {
       onReady={onReady}
       onPlay={onPlay}
     />
-  );
-};
+  )
+}
 
 const usePreviewYouTubeKeyDown = () => {
-  const setPreviewVideo = useSetPreviewVideo();
+  const setPreviewVideo = useSetPreviewVideo()
 
   return (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      setPreviewVideo(RESET);
+      setPreviewVideo(RESET)
     }
-  };
-};
+  }
+}
 
-export default PreviewYouTubePlayer;
+export default PreviewYouTubePlayer

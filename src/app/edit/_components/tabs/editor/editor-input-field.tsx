@@ -1,4 +1,5 @@
-import { useTimeInput } from "@/app/edit/_lib/atoms/read-atoms";
+import { useEffect, useRef, useState } from "react"
+import { useTimeInput } from "@/app/edit/_lib/atoms/read-atoms"
 import {
   useLyricsState,
   useSelectIndexState,
@@ -6,12 +7,11 @@ import {
   useSetLyrics,
   useSetWord,
   useWordState,
-} from "@/app/edit/_lib/atoms/state-atoms";
-import { useAddRubyTagEvent } from "@/app/edit/_lib/hooks/use-add-ruby-tag";
-import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
-import { Input } from "@/components/ui/input/input";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useEffect, useRef, useState } from "react";
+} from "@/app/edit/_lib/atoms/state-atoms"
+import { useAddRubyTagEvent } from "@/app/edit/_lib/hooks/use-add-ruby-tag"
+import { FloatingLabelInput } from "@/components/ui/input/floating-label-input"
+import { Input } from "@/components/ui/input/input"
+import { TooltipWrapper } from "@/components/ui/tooltip"
 
 const EditorLineInput = () => {
   return (
@@ -25,14 +25,14 @@ const EditorLineInput = () => {
         <WordInput />
       </div>
     </section>
-  );
-};
+  )
+}
 
 const LyricsInput = () => {
-  const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
-  const lyrics = useLyricsState();
-  const setLyrics = useSetLyrics();
-  const handleEnterAddRuby = useAddRubyTagEvent();
+  const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false)
+  const lyrics = useLyricsState()
+  const setLyrics = useSetLyrics()
+  const handleEnterAddRuby = useAddRubyTagEvent()
 
   return (
     <TooltipWrapper
@@ -48,20 +48,20 @@ const LyricsInput = () => {
         onChange={(e) => setLyrics(e.target.value)}
         onKeyDown={handleEnterAddRuby}
         onSelect={(e) => {
-          const start = e.currentTarget.selectionStart;
-          const end = e.currentTarget.selectionEnd;
-          const isSelected = end !== null && start !== null && end - start > 0;
-          setIsLineLyricsSelected(isSelected);
+          const start = e.currentTarget.selectionStart
+          const end = e.currentTarget.selectionEnd
+          const isSelected = end !== null && start !== null && end - start > 0
+          setIsLineLyricsSelected(isSelected)
         }}
         onBlur={() => setIsLineLyricsSelected(false)}
       />
     </TooltipWrapper>
-  );
-};
+  )
+}
 
 const WordInput = () => {
-  const word = useWordState();
-  const setWord = useSetWord();
+  const word = useWordState()
+  const setWord = useSetWord()
 
   return (
     <FloatingLabelInput
@@ -71,27 +71,27 @@ const WordInput = () => {
       value={word}
       onChange={(e) => setWord(e.target.value)}
     />
-  );
-};
+  )
+}
 
 const SelectedLineIndex = () => {
-  const selectedLineIndex = useSelectIndexState();
+  const selectedLineIndex = useSelectIndexState()
   return (
     <Input placeholder="No." className="bg-muted h-8 w-[90px] opacity-100" disabled value={selectedLineIndex ?? ""} />
-  );
-};
+  )
+}
 
 const TimeInput = () => {
-  const timeInputRef = useRef<HTMLInputElement>(null);
-  const setEditIsTimeInputValid = useSetIsTimeInputValid();
-  const { writeTimeInput } = useTimeInput();
-  const [time, setTime] = useState("0");
+  const timeInputRef = useRef<HTMLInputElement>(null)
+  const setEditIsTimeInputValid = useSetIsTimeInputValid()
+  const { writeTimeInput } = useTimeInput()
+  const [time, setTime] = useState("0")
 
   useEffect(() => {
     if (timeInputRef.current) {
-      writeTimeInput(timeInputRef.current);
+      writeTimeInput(timeInputRef.current)
     }
-  }, [writeTimeInput]);
+  }, [writeTimeInput])
 
   return (
     <Input
@@ -100,25 +100,25 @@ const TimeInput = () => {
       type="number"
       value={time}
       onChange={(e) => {
-        setTime(e.currentTarget.value);
-        setEditIsTimeInputValid(e.currentTarget.value ? false : true);
+        setTime(e.currentTarget.value)
+        setEditIsTimeInputValid(e.currentTarget.value !== "")
       }}
       onKeyDown={(e) => {
-        const { value } = e.currentTarget;
+        const { value } = e.currentTarget
 
         if (e.code === "ArrowDown") {
-          const newValue = (Number(value) - 0.05).toFixed(3);
-          e.currentTarget.value = newValue;
+          const newValue = (Number(value) - 0.05).toFixed(3)
+          e.currentTarget.value = newValue
 
-          e.preventDefault();
+          e.preventDefault()
         } else if (e.code === "ArrowUp") {
-          const newValue = (Number(value) + 0.05).toFixed(3);
-          e.currentTarget.value = newValue;
-          e.preventDefault();
+          const newValue = (Number(value) + 0.05).toFixed(3)
+          e.currentTarget.value = newValue
+          e.preventDefault()
         }
       }}
     />
-  );
-};
+  )
+}
 
-export default EditorLineInput;
+export default EditorLineInput

@@ -7,7 +7,7 @@ const MaintenancePage = () => {
         <p className="text-muted-foreground text-base">メンテナンス終了予定：準備中</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MaintenancePage;
+export default MaintenancePage

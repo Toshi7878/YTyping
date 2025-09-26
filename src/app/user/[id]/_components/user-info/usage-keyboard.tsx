@@ -1,10 +1,10 @@
 interface KeyBoardProps {
-  keyboard: string;
+  keyboard: string
 }
 
 const KeyBoard = ({ keyboard }: KeyBoardProps) => {
   if (!keyboard) {
-    return <p>使用キーボードは未設定です</p>;
+    return <p>使用キーボードは未設定です</p>
   }
 
   return (
@@ -12,7 +12,7 @@ const KeyBoard = ({ keyboard }: KeyBoardProps) => {
       <span className="font-medium">使用キーボード:</span>
       <span>{keyboard}</span>
     </div>
-  );
-};
+  )
+}
 
-export default KeyBoard;
+export default KeyBoard

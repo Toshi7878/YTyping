@@ -1,13 +1,14 @@
-import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/global-atoms";
-import { cn } from "@/lib/utils";
-import type { MapListItem } from "@/server/api/routers/map-list";
-import type { VariantProps } from "class-variance-authority";
-import { cva } from "class-variance-authority";
-import { RESET } from "jotai/utils";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import React, { useState } from "react";
-import { FaPause, FaPlay } from "react-icons/fa";
+import type { VariantProps } from "class-variance-authority"
+import { cva } from "class-variance-authority"
+import { RESET } from "jotai/utils"
+import Image from "next/image"
+import { usePathname } from "next/navigation"
+import type React from "react"
+import { useState } from "react"
+import { FaPause, FaPlay } from "react-icons/fa"
+import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/global-atoms"
+import { cn } from "@/lib/utils"
+import type { MapListItem } from "@/server/api/routers/map-list"
 
 const mapLeftThumbnailVariants = cva("relative", {
   variants: {
@@ -18,24 +19,24 @@ const mapLeftThumbnailVariants = cva("relative", {
       notification: "aspect-video w-[150px]",
     },
   },
-});
+})
 
 interface MapLeftThumbnailPreviewCoverProps {
-  src?: string;
-  alt?: string;
-  media?: MapListItem["media"];
-  size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
-  className?: string;
+  src?: string
+  alt?: string
+  media?: MapListItem["media"]
+  size: VariantProps<typeof mapLeftThumbnailVariants>["size"]
+  className?: string
 }
 
-const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
+const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"]
 
 const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { alt = "", media, size, className, ...rest } = props;
+  const { alt = "", media, size, className, ...rest } = props
 
-  const src = `https://i.ytimg.com/vi/${media?.videoId}/mqdefault.jpg`;
-  const pathname = usePathname();
-  const pathSegment = pathname.split("/")[1];
+  const src = `https://i.ytimg.com/vi/${media?.videoId}/mqdefault.jpg`
+  const pathname = usePathname()
+  const pathSegment = pathname.split("/")[1]
 
   return (
     <div className={cn("group relative my-auto select-none", className)} {...rest}>
@@ -52,14 +53,14 @@ const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLA
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
-  const { videoId: mapVideoId, previewTime: mapPreviewTime, previewSpeed: mapPreviewSpeed } = props;
-  const { videoId } = usePreviewVideoState();
-  const setPreviewVideo = useSetPreviewVideo();
-  const [isTouchMove, setIsTouchMove] = useState(false);
+  const { videoId: mapVideoId, previewTime: mapPreviewTime, previewSpeed: mapPreviewSpeed } = props
+  const { videoId } = usePreviewVideoState()
+  const setPreviewVideo = useSetPreviewVideo()
+  const [isTouchMove, setIsTouchMove] = useState(false)
 
   const previewYouTube = () => {
     if (videoId !== mapVideoId) {
@@ -68,26 +69,26 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
         videoId: mapVideoId,
         previewTime: mapPreviewTime,
         previewSpeed: mapPreviewSpeed ?? 1,
-      }));
+      }))
     } else {
-      setPreviewVideo(RESET);
+      setPreviewVideo(RESET)
     }
-  };
+  }
 
   const handleTouchMove = () => {
-    setIsTouchMove(true);
-  };
+    setIsTouchMove(true)
+  }
 
   const handleTouchEnd = () => {
     if (!isTouchMove) {
       if (videoId !== mapVideoId) {
-        previewYouTube();
+        previewYouTube()
       }
     }
-    setIsTouchMove(false);
-  };
+    setIsTouchMove(false)
+  }
 
-  const isActive = videoId === mapVideoId;
+  const isActive = videoId === mapVideoId
 
   return (
     <div
@@ -101,7 +102,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
     >
       {isActive ? <FaPause color="white" size={35} /> : <FaPlay color="white" size={35} />}
     </div>
-  );
-};
+  )
+}
 
-export default MapLeftThumbnail;
+export default MapLeftThumbnail

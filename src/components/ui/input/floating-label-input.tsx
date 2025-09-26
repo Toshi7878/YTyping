@@ -1,20 +1,19 @@
-import * as React from "react";
-
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import type { VariantProps } from "class-variance-authority";
-import type { ComponentRef, PropsWithoutRef } from "react";
-import type { inputVariants } from "./input";
-import { Input } from "./input";
+import type { VariantProps } from "class-variance-authority"
+import type { ComponentRef, PropsWithoutRef } from "react"
+import * as React from "react"
+import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
+import type { inputVariants } from "./input"
+import { Input } from "./input"
 
 export interface InputProps extends Omit<React.ComponentProps<"input">, "size">, VariantProps<typeof inputVariants> {}
 
 const FloatingInput = React.forwardRef<React.ComponentRef<typeof Input>, React.PropsWithoutRef<InputProps>>(
   ({ className, ...props }, ref) => {
-    return <Input placeholder=" " className={cn("peer", className)} ref={ref} {...props} />;
+    return <Input placeholder=" " className={cn("peer", className)} ref={ref} {...props} />
   },
-);
-FloatingInput.displayName = "FloatingInput";
+)
+FloatingInput.displayName = "FloatingInput"
 
 const FloatingLabel = React.forwardRef<React.ComponentRef<typeof Label>, React.ComponentPropsWithoutRef<typeof Label>>(
   ({ className, ...props }, ref) => {
@@ -27,16 +26,16 @@ const FloatingLabel = React.forwardRef<React.ComponentRef<typeof Label>, React.C
         ref={ref}
         {...props}
       />
-    );
+    )
   },
-);
-FloatingLabel.displayName = "FloatingLabel";
+)
+FloatingLabel.displayName = "FloatingLabel"
 
 interface FloatingLabelInputProps extends InputProps {
-  label?: string;
-  className?: string;
-  containerClassName?: string;
-  maxLength?: number;
+  label?: string
+  className?: string
+  containerClassName?: string
+  maxLength?: number
 }
 const FloatingLabelInput = React.forwardRef<
   ComponentRef<typeof FloatingInput>,
@@ -50,8 +49,8 @@ const FloatingLabelInput = React.forwardRef<
         {props.required && <span className="text-destructive/80">*</span>}
       </FloatingLabel>
     </div>
-  );
-});
-FloatingLabelInput.displayName = "FloatingLabelInput";
+  )
+})
+FloatingLabelInput.displayName = "FloatingLabelInput"
 
-export { FloatingInput, FloatingLabel, FloatingLabelInput };
+export { FloatingInput, FloatingLabel, FloatingLabelInput }

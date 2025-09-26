@@ -1,54 +1,54 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
-import type { RouterOutPuts } from "@/server/api/trpc";
-import type { MapLine } from "@/server/drizzle/validator/map-json";
-import { useMapQueries } from "@/utils/queries/map.queries";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import InputTextarea from "../_components/input-textarea";
-import MenuBar from "../_components/memu/menu-bar";
-import Notifications from "../_components/notifications-display";
-import ViewArea from "../_components/view-area/view-area";
-import YouTubePlayer from "../_components/youtube-player";
-import { useEnableLargeVideoDisplayState, useReadScene, useSetMap } from "../_lib/atoms/state-atoms";
-import { useBuildImeMap } from "../_lib/hooks/bulid-ime-map";
-import { usePathChangeAtomReset } from "../_lib/hooks/reset";
-import { useUpdateTypingStats } from "../_lib/hooks/update-typing-stats";
+"use client"
+import { useQuery } from "@tanstack/react-query"
+import { useParams } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { useGlobalLoadingOverlay } from "@/lib/global-atoms"
+import type { RouterOutPuts } from "@/server/api/trpc"
+import type { MapLine } from "@/server/drizzle/validator/map-json"
+import { useMapQueries } from "@/utils/queries/map.queries"
+import InputTextarea from "../_components/input-textarea"
+import MenuBar from "../_components/memu/menu-bar"
+import Notifications from "../_components/notifications-display"
+import ViewArea from "../_components/view-area/view-area"
+import YouTubePlayer from "../_components/youtube-player"
+import { useEnableLargeVideoDisplayState, useReadScene, useSetMap } from "../_lib/atoms/state-atoms"
+import { useBuildImeMap } from "../_lib/hooks/bulid-ime-map"
+import { usePathChangeAtomReset } from "../_lib/hooks/reset"
+import { useUpdateTypingStats } from "../_lib/hooks/update-typing-stats"
 
 interface ContentProps {
-  mapInfo: RouterOutPuts["map"]["getMapInfo"];
+  mapInfo: RouterOutPuts["map"]["getMapInfo"]
 }
 
 function Content({ mapInfo }: ContentProps) {
-  const { videoId } = mapInfo;
-  const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
+  const { videoId } = mapInfo
+  const lyricsViewAreaRef = useRef<HTMLDivElement>(null)
   const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
     minHeight: "calc(100vh - var(--header-height))",
     height: "calc(100vh - var(--header-height))",
-  });
-  const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
-  const { id: mapId } = useParams<{ id: string }>();
-  const { data: mapData } = useQuery(useMapQueries().map({ mapId }));
-  const setMap = useSetMap();
-  const parseImeMap = useBuildImeMap();
-  const pathChangeAtomReset = usePathChangeAtomReset();
-  const readScene = useReadScene();
-  const updateTypingStats = useUpdateTypingStats();
-  const enableLargeVideoDisplay = useEnableLargeVideoDisplayState();
-  const { showLoading, hideLoading } = useGlobalLoadingOverlay();
+  })
+  const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))")
+  const { id: mapId } = useParams<{ id: string }>()
+  const { data: mapData } = useQuery(useMapQueries().map({ mapId }))
+  const setMap = useSetMap()
+  const parseImeMap = useBuildImeMap()
+  const pathChangeAtomReset = usePathChangeAtomReset()
+  const readScene = useReadScene()
+  const updateTypingStats = useUpdateTypingStats()
+  const enableLargeVideoDisplay = useEnableLargeVideoDisplayState()
+  const { showLoading, hideLoading } = useGlobalLoadingOverlay()
 
   const loadMap = async (mapData: MapLine[]) => {
-    showLoading({ message: "ひらがな判定生成中..." });
+    showLoading({ message: "ひらがな判定生成中..." })
 
     parseImeMap(mapData)
       .then((map) => {
-        setMap(map);
-        hideLoading();
+        setMap(map)
+        hideLoading()
       })
       .catch((error) => {
-        console.error(error);
+        console.error(error)
         showLoading({
           message: (
             <div className="flex h-full flex-col items-center justify-center gap-2">
@@ -57,69 +57,69 @@ function Content({ mapInfo }: ContentProps) {
             </div>
           ),
           hideSpinner: true,
-        });
-      });
-  };
+        })
+      })
+  }
 
   useEffect(() => {
     if (mapData) {
-      void loadMap(mapData);
+      void loadMap(mapData)
     } else {
-      showLoading({ message: "譜面読み込み中..." });
+      showLoading({ message: "譜面読み込み中..." })
     }
-  }, [mapData, showLoading]);
+  }, [mapData, showLoading])
 
   useEffect(() => {
     return () => {
-      void updateTypingStats();
-      pathChangeAtomReset();
-      hideLoading();
-    };
-  }, [mapId]);
+      void updateTypingStats()
+      pathChangeAtomReset()
+      hideLoading()
+    }
+  }, [mapId])
 
   useEffect(() => {
-    const lyricsViewAreaElement = lyricsViewAreaRef.current;
-    if (!lyricsViewAreaElement) return;
+    const lyricsViewAreaElement = lyricsViewAreaRef.current
+    if (!lyricsViewAreaElement) return
 
     const updateHeights = () => {
-      const lyricsViewAreaHeight = lyricsViewAreaElement.offsetHeight || 0;
-      const computedStyle = window.getComputedStyle(lyricsViewAreaElement);
-      const bottomValue = computedStyle.bottom;
-      const bottomPx = bottomValue === "auto" ? 0 : parseInt(bottomValue, 10) || 0;
+      const lyricsViewAreaHeight = lyricsViewAreaElement.offsetHeight || 0
+      const computedStyle = window.getComputedStyle(lyricsViewAreaElement)
+      const bottomValue = computedStyle.bottom
+      const bottomPx = bottomValue === "auto" ? 0 : parseInt(bottomValue, 10) || 0
 
       // 画面幅がmd（768px）以下の場合はlyricsViewAreaHeightを引かない
-      const isMdOrBelow = window.innerWidth <= 1280;
-      const textareaHeight = lyricsViewAreaElement.querySelector("textarea")?.offsetHeight || 0;
-      const menuBarHeight = document.getElementById("menu_bar")?.offsetHeight || 0;
-      const viewheight = isMdOrBelow || enableLargeVideoDisplay ? textareaHeight + menuBarHeight : lyricsViewAreaHeight;
+      const isMdOrBelow = window.innerWidth <= 1280
+      const textareaHeight = lyricsViewAreaElement.querySelector("textarea")?.offsetHeight || 0
+      const menuBarHeight = document.getElementById("menu_bar")?.offsetHeight || 0
+      const viewheight = isMdOrBelow || enableLargeVideoDisplay ? textareaHeight + menuBarHeight : lyricsViewAreaHeight
 
       if (readScene() === "ready") {
         setYoutubeHeight({
           minHeight: `calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`,
           height: `calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`,
-        });
+        })
       } else {
         setYoutubeHeight((prev) => ({
           ...prev,
           height: `calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`,
-        }));
+        }))
       }
 
-      setNotificationsHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px - 20px)`);
-    };
+      setNotificationsHeight(`calc(100vh - 40px - ${lyricsViewAreaHeight}px - ${bottomPx}px - 20px)`)
+    }
 
-    updateHeights();
+    updateHeights()
 
     const resizeObserver = new ResizeObserver(() => {
-      updateHeights();
-    });
+      updateHeights()
+    })
 
-    resizeObserver.observe(lyricsViewAreaElement);
+    resizeObserver.observe(lyricsViewAreaElement)
 
     return () => {
-      resizeObserver.disconnect();
-    };
-  }, [readScene, enableLargeVideoDisplay]);
+      resizeObserver.disconnect()
+    }
+  }, [readScene, enableLargeVideoDisplay])
 
   return (
     <>
@@ -139,7 +139,7 @@ function Content({ mapInfo }: ContentProps) {
         <MenuBar />
       </div>
     </>
-  );
+  )
 }
 
-export default Content;
+export default Content

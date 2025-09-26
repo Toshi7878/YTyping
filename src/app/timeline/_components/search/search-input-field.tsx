@@ -1,48 +1,48 @@
-"use client";
-import { useIsSearchingState, useSetIsSearching } from "@/app/timeline/_lib/atoms";
-import { PARAM_NAME } from "@/app/timeline/_lib/consts";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input/input";
-import { Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { useSetSearchParams } from "../../_lib/hooks/use-set-search-params";
+"use client"
+import { Loader2 } from "lucide-react"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { useIsSearchingState, useSetIsSearching } from "@/app/timeline/_lib/atoms"
+import { PARAM_NAME } from "@/app/timeline/_lib/consts"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input/input"
+import { useSetSearchParams } from "../../_lib/hooks/use-set-search-params"
 
 const SearchInputs = () => {
-  const searchParams = useSearchParams();
-  const isSearching = useIsSearchingState();
-  const setIsSearching = useSetIsSearching();
+  const searchParams = useSearchParams()
+  const isSearching = useIsSearchingState()
+  const setIsSearching = useSetIsSearching()
   const [keyword, setKeyword] = useState({
     mapKeyWord: searchParams?.get(PARAM_NAME.mapkeyword) || "",
     userName: searchParams?.get(PARAM_NAME.username) || "",
-  });
-  const rangeParams = useSetSearchParams();
+  })
+  const rangeParams = useSetSearchParams()
 
   const handleSearch = async () => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString())
 
     if (keyword.mapKeyWord.trim()) {
-      params.set(PARAM_NAME.mapkeyword, keyword.mapKeyWord.trim());
+      params.set(PARAM_NAME.mapkeyword, keyword.mapKeyWord.trim())
     } else {
-      params.delete(PARAM_NAME.mapkeyword);
+      params.delete(PARAM_NAME.mapkeyword)
     }
 
     if (keyword.userName.trim()) {
-      params.set(PARAM_NAME.username, keyword.userName.trim());
+      params.set(PARAM_NAME.username, keyword.userName.trim())
     } else {
-      params.delete(PARAM_NAME.username);
+      params.delete(PARAM_NAME.username)
     }
 
-    const updatedParams = rangeParams(params).toString();
-    const currentParams = searchParams.toString();
+    const updatedParams = rangeParams(params).toString()
+    const currentParams = searchParams.toString()
 
     if (updatedParams === currentParams) {
-      return;
+      return
     }
 
-    setIsSearching(true);
-    window.history.replaceState(null, "", `?${updatedParams}`);
-  };
+    setIsSearching(true)
+    window.history.replaceState(null, "", `?${updatedParams}`)
+  }
 
   return (
     <div className="flex gap-2">
@@ -53,7 +53,7 @@ const SearchInputs = () => {
         onChange={(e) => setKeyword((prev) => ({ ...prev, mapKeyWord: e.target.value }))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            void handleSearch();
+            void handleSearch()
           }
         }}
       />
@@ -64,7 +64,7 @@ const SearchInputs = () => {
         onChange={(e) => setKeyword((prev) => ({ ...prev, userName: e.target.value }))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            void handleSearch();
+            void handleSearch()
           }
         }}
       />
@@ -73,7 +73,7 @@ const SearchInputs = () => {
         検索
       </Button>
     </div>
-  );
-};
+  )
+}
 
-export default SearchInputs;
+export default SearchInputs

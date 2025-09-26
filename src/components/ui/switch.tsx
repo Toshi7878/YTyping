@@ -1,11 +1,10 @@
-"use client";
+"use client"
 
-import { Switch as SwitchPrimitive } from "radix-ui";
-import * as React from "react";
-
-import { cn } from "@/lib/utils";
-import { useFormContext } from "react-hook-form";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "./form";
+import { Switch as SwitchPrimitive } from "radix-ui"
+import type * as React from "react"
+import { useFormContext } from "react-hook-form"
+import { cn } from "@/lib/utils"
+import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "./form"
 
 function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimitive.Root>) {
   return (
@@ -24,14 +23,14 @@ function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimi
         )}
       />
     </SwitchPrimitive.Root>
-  );
+  )
 }
 
 interface SwitchFormFieldProps {
-  name: string;
-  label?: string;
-  description?: string;
-  required?: boolean;
+  name: string
+  label?: string
+  description?: string
+  required?: boolean
 }
 
 const SwitchFormField = ({
@@ -41,7 +40,7 @@ const SwitchFormField = ({
   required,
   ...props
 }: SwitchFormFieldProps & Omit<React.ComponentProps<typeof Switch>, "name">) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext()
 
   return (
     <FormField
@@ -59,7 +58,7 @@ const SwitchFormField = ({
       rules={{ required }}
       {...props}
     />
-  );
-};
+  )
+}
 
-export { Switch, SwitchFormField };
+export { Switch, SwitchFormField }

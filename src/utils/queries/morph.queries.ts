@@ -1,7 +1,7 @@
-import { useTRPC } from "@/trpc/provider";
+import { useTRPC } from "@/trpc/provider"
 
 export const useMorphQueries = () => {
-  const trpc = useTRPC();
+  const trpc = useTRPC()
 
   return {
     customDic: () =>
@@ -18,5 +18,5 @@ export const useMorphQueries = () => {
           gcTime: Infinity,
         },
       ),
-  };
-};
+  }
+}

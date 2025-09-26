@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority"
+import type * as React from "react"
+import { cn } from "@/lib/utils"
 
 const inputVariants = cva(
   [
@@ -31,12 +31,12 @@ const inputVariants = cva(
       size: "default",
     },
   },
-);
+)
 
 export interface InputProps extends Omit<React.ComponentProps<"input">, "size">, VariantProps<typeof inputVariants> {}
 
 function Input({ className, type, variant, size, ...props }: InputProps) {
-  return <input type={type} data-slot="input" className={cn(inputVariants({ variant, size }), className)} {...props} />;
+  return <input type={type} data-slot="input" className={cn(inputVariants({ variant, size }), className)} {...props} />
 }
 
-export { Input, inputVariants };
+export { Input, inputVariants }

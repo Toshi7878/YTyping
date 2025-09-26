@@ -13,5 +13,5 @@ export const normalizeSimilarSymbol = (text: string) => {
     .replaceAll("－", "ー")
     .replaceAll("　", " ")
     .replaceAll(/ {2,}/g, " ")
-    .trim();
-};
+    .trim()
+}

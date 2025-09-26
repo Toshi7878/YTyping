@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
-import { ChevronDown } from "lucide-react";
-import { SignInDropdownItems } from "./auth-dropdown-items";
+import { ChevronDown } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
+import { SignInDropdownItems } from "./auth-dropdown-items"
 
 export default function SignInMenu({ className }: { className: string }) {
   return (
@@ -21,5 +21,5 @@ export default function SignInMenu({ className }: { className: string }) {
         <SignInDropdownItems />
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

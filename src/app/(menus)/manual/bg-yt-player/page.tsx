@@ -1,6 +1,6 @@
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import { H2, H3 } from "@/components/ui/typography";
-import { InstallationSteps } from "./installation-steps";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
+import { H2, H3 } from "@/components/ui/typography"
+import { InstallationSteps } from "./installation-steps"
 
 export default function Page() {
   return (
@@ -18,5 +18,5 @@ export default function Page() {
         </CardContent>
       </Card>
     </article>
-  );
+  )
 }

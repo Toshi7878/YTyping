@@ -1,7 +1,7 @@
-import { useTRPC } from "@/trpc/provider";
+import { useTRPC } from "@/trpc/provider"
 
 export const useUserOptionsQueries = () => {
-  const trpc = useTRPC();
+  const trpc = useTRPC()
 
   return {
     myUserOptions: () =>
@@ -9,5 +9,5 @@ export const useUserOptionsQueries = () => {
         gcTime: Infinity,
         staleTime: Infinity,
       }),
-  };
-};
+  }
+}

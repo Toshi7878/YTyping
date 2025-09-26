@@ -1,18 +1,18 @@
-"use client";
-import LikeCountIcon from "@/components/shared/map-count/like-count";
-import RankingCount from "@/components/shared/map-count/ranking-count";
-import { TooltipWrapper } from "@/components/ui/tooltip";
-import type { RouterOutPuts } from "@/server/api/trpc";
-import { nolink } from "@/utils/no-link";
-import Link from "next/link";
-import { Badge } from "../../ui/badge";
+"use client"
+import Link from "next/link"
+import LikeCountIcon from "@/components/shared/map-count/like-count"
+import RankingCount from "@/components/shared/map-count/ranking-count"
+import { TooltipWrapper } from "@/components/ui/tooltip"
+import type { RouterOutPuts } from "@/server/api/trpc"
+import { nolink } from "@/utils/no-link"
+import { Badge } from "../../ui/badge"
 
 interface CompactMapCardProps {
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: RouterOutPuts["mapList"]["getList"]["maps"][number]
 }
 
 function CompactMapInfo({ map }: CompactMapCardProps) {
-  const musicSource = map.info.source ? `【${map.info.source}】` : "";
+  const musicSource = map.info.source ? `【${map.info.source}】` : ""
 
   return (
     <div className="flex w-full flex-col justify-between overflow-hidden py-1 pl-3 text-xs sm:text-sm md:text-base lg:text-lg">
@@ -33,11 +33,11 @@ function CompactMapInfo({ map }: CompactMapCardProps) {
         <MapBadges map={map} />
       </Link>
     </div>
-  );
+  )
 }
 
 interface MapBadgesProps {
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: RouterOutPuts["mapList"]["getList"]["maps"][number]
 }
 
 const MapBadges = ({ map }: MapBadgesProps) => {
@@ -62,7 +62,7 @@ const MapBadges = ({ map }: MapBadgesProps) => {
         <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CompactMapInfo;
+export default CompactMapInfo

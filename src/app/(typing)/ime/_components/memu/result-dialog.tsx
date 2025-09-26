@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table";
-import { cn } from "@/lib/utils";
-import { useMapState, useStatusState, useWordResultsState } from "../../_lib/atoms/state-atoms";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table"
+import { cn } from "@/lib/utils"
+import { useMapState, useStatusState, useWordResultsState } from "../../_lib/atoms/state-atoms"
 
 interface ResultDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 export default function ResultDialog({ isOpen, onClose }: ResultDialogProps) {
@@ -21,14 +21,14 @@ export default function ResultDialog({ isOpen, onClose }: ResultDialogProps) {
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
 const ResultStatus = () => {
-  const status = useStatusState();
-  const map = useMapState();
+  const status = useStatusState()
+  const map = useMapState()
 
-  const isPerfect = status.score === 1000;
+  const isPerfect = status.score === 1000
 
   return (
     <section>
@@ -47,13 +47,13 @@ const ResultStatus = () => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 const ResultWordsTable = () => {
-  const wordResults = useWordResultsState();
-  const map = useMapState();
-  const status = useStatusState();
+  const wordResults = useWordResultsState()
+  const map = useMapState()
+  const status = useStatusState()
 
   return (
     <div className="max-h-[45vh] overflow-auto rounded-lg border shadow-sm">
@@ -68,7 +68,7 @@ const ResultWordsTable = () => {
         </TableHeader>
         <TableBody>
           {wordResults.map((result, index) => {
-            const isJudged = status.wordIndex > index || (status.wordIndex === index && result.evaluation !== "Skip");
+            const isJudged = status.wordIndex > index || (status.wordIndex === index && result.evaluation !== "Skip")
 
             return (
               <TableRow key={index} className="[&>td]:py-2">
@@ -89,26 +89,26 @@ const ResultWordsTable = () => {
                   <div className="text-sm">{result.evaluation !== "Great" && map?.textWords[index]}</div>
                 </TableCell>
               </TableRow>
-            );
+            )
           })}
         </TableBody>
       </Table>
     </div>
-  );
-};
+  )
+}
 
 const EvaluationText = ({ evaluation }: { evaluation: string }) => {
   if (evaluation === "Great") {
-    return <span className="outline-text text-xs text-yellow-500">Great!</span>;
+    return <span className="outline-text text-xs text-yellow-500">Great!</span>
   }
 
   if (evaluation === "Good") {
-    return <span className="outline-text text-xs text-blue-400">Good</span>;
+    return <span className="outline-text text-xs text-blue-400">Good</span>
   }
 
   if (evaluation === "None") {
-    return <span className="outline-text text-xs text-red-500">None</span>;
+    return <span className="outline-text text-xs text-red-500">None</span>
   }
 
-  return <span className="outline-text text-foreground text-xs opacity-60">Skip</span>;
-};
+  return <span className="outline-text text-foreground text-xs opacity-60">Skip</span>
+}

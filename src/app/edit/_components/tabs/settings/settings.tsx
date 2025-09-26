@@ -1,12 +1,12 @@
-import { usePlayer } from "@/app/edit/_lib/atoms/read-atoms";
-import VolumeRange from "@/components/shared/volume-range";
-import { CardWithContent } from "@/components/ui/card";
-import AllTimeAdjust from "./all-time-adjust-input-field";
-import ConvertOptionButtons from "./convert-option-buttons";
-import LrcImportButton from "./lrc-import-button";
+import { usePlayer } from "@/app/edit/_lib/atoms/read-atoms"
+import VolumeRange from "@/components/shared/volume-range"
+import { CardWithContent } from "@/components/ui/card"
+import AllTimeAdjust from "./all-time-adjust-input-field"
+import ConvertOptionButtons from "./convert-option-buttons"
+import LrcImportButton from "./lrc-import-button"
 
 const TabSettings = () => {
-  const { readPlayer } = usePlayer();
+  const { readPlayer } = usePlayer()
 
   return (
     <CardWithContent className={{ card: "py-4", cardContent: "space-y-4 sm:space-y-6" }}>
@@ -18,8 +18,8 @@ const TabSettings = () => {
       <ShortCutKeyList />
       <AllTimeAdjust />
     </CardWithContent>
-  );
-};
+  )
+}
 
 const SHORTCUT_KEY_LIST = [
   { keys: ["←", "→"], description: "3秒スキップ" },
@@ -34,9 +34,12 @@ const SHORTCUT_KEY_LIST = [
   { keys: ["Ctrl+Shift+F"], description: "全体よみ置換" },
   { keys: ["Ctrl+Z"], description: "元に戻す" },
   { keys: ["Ctrl+Y"], description: "繰り返し" },
-  { keys: ["Enter"], description: "歌詞テキストボックスの選択した文字にRubyタグを挿入" },
+  {
+    keys: ["Enter"],
+    description: "歌詞テキストボックスの選択した文字にRubyタグを挿入",
+  },
   { keys: ["Ctrl+登録済み歌詞クリック"], description: "直接編集モード" },
-];
+]
 
 const ShortCutKeyList = () => {
   return (
@@ -61,7 +64,7 @@ const ShortCutKeyList = () => {
         ))}
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default TabSettings;
+export default TabSettings

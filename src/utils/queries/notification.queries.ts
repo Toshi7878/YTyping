@@ -1,7 +1,7 @@
-import { useTRPC } from "@/trpc/provider";
+import { useTRPC } from "@/trpc/provider"
 
 export const useNotificationQueries = () => {
-  const trpc = useTRPC();
+  const trpc = useTRPC()
   return {
     infinite: () =>
       trpc.notification.getInfinite.infiniteQueryOptions(
@@ -12,5 +12,5 @@ export const useNotificationQueries = () => {
           gcTime: Infinity,
         },
       ),
-  };
-};
+  }
+}

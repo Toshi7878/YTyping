@@ -1,4 +1,4 @@
-import z from "zod";
+import z from "zod"
 
 export const IncrementTypingCountStatsSchema = z.object({
   romaType: z.number().int().min(0),
@@ -10,9 +10,9 @@ export const IncrementTypingCountStatsSchema = z.object({
   numType: z.number().int().min(0),
   typingTime: z.number().min(0),
   maxCombo: z.number().int().min(0),
-});
+})
 
 export const IncrementImeTypeCountStatsSchema = z.object({
   typingTime: z.number().min(0),
   imeTypeCount: z.number().min(0),
-});
+})

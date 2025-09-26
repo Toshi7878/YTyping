@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql } from "drizzle-orm"
 import {
   boolean,
   char,
@@ -11,12 +11,12 @@ import {
   text,
   timestamp,
   varchar,
-} from "drizzle-orm/pg-core";
-import { MAX_SHORT_LENGTH } from "../const";
-import { Users } from "./user";
+} from "drizzle-orm/pg-core"
+import { MAX_SHORT_LENGTH } from "../const"
+import { Users } from "./user"
 
-export const categoryEnum = pgEnum("category", ["CSS", "SPEED_SHIFT"]);
-export const thumbnailQualityEnum = pgEnum("thumbnail_quality", ["mqdefault", "maxresdefault"]);
+export const categoryEnum = pgEnum("category", ["CSS", "SPEED_SHIFT"])
+export const thumbnailQualityEnum = pgEnum("thumbnail_quality", ["mqdefault", "maxresdefault"])
 export const Maps = pgTable("maps", {
   id: serial("id").primaryKey(),
   videoId: char("video_id", { length: 11 }).notNull(),
@@ -24,10 +24,7 @@ export const Maps = pgTable("maps", {
   artistName: varchar("artist_name", { length: MAX_SHORT_LENGTH }).notNull().default(""),
   musicSource: varchar("music_source", { length: MAX_SHORT_LENGTH }).notNull().default(""),
   creatorComment: varchar("creator_comment", { length: MAX_SHORT_LENGTH }).notNull().default(""),
-  tags: text("tags")
-    .array()
-    .notNull()
-    .default(sql`ARRAY[]::text[]`),
+  tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
   creatorId: integer("creator_id")
     .notNull()
     .references(() => Users.id),
@@ -36,14 +33,11 @@ export const Maps = pgTable("maps", {
   playCount: integer("play_count").notNull().default(0),
   likeCount: integer("like_count").notNull().default(0),
   rankingCount: integer("ranking_count").notNull().default(0),
-  category: categoryEnum("category")
-    .array()
-    .notNull()
-    .default(sql`ARRAY[]::category[]`),
+  category: categoryEnum("category").array().notNull().default(sql`ARRAY[]::category[]`),
   thumbnailQuality: thumbnailQualityEnum("thumbnail_quality").notNull().default("mqdefault"),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
-});
+})
 
 export const MapDifficulties = pgTable("map_difficulties", {
   mapId: integer("map_id")
@@ -58,7 +52,7 @@ export const MapDifficulties = pgTable("map_difficulties", {
   englishTotalNotes: integer("english_total_notes").notNull().default(0),
   symbolTotalNotes: integer("symbol_total_notes").notNull().default(0),
   intTotalNotes: integer("int_total_notes").notNull().default(0),
-});
+})
 
 export const MapLikes = pgTable(
   "map_likes",
@@ -73,4 +67,4 @@ export const MapLikes = pgTable(
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.mapId] })],
-);
+)

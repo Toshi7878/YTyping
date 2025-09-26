@@ -1,13 +1,13 @@
-import type { ComponentProps } from "react";
-import { useFormContext } from "react-hook-form";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form";
-import { Checkbox } from "./checkbox";
+import type { ComponentProps } from "react"
+import { useFormContext } from "react-hook-form"
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../form"
+import { Checkbox } from "./checkbox"
 
 interface CheckboxFormFieldProps {
-  name: string;
-  label: string;
-  description?: string;
-  onCheckedChange?: (checked: boolean) => void;
+  name: string
+  label: string
+  description?: string
+  onCheckedChange?: (checked: boolean) => void
 }
 
 export const CheckboxFormField = ({
@@ -17,7 +17,7 @@ export const CheckboxFormField = ({
   onCheckedChange,
   ...props
 }: CheckboxFormFieldProps & ComponentProps<typeof Checkbox>) => {
-  const form = useFormContext();
+  const form = useFormContext()
 
   return (
     <FormField
@@ -29,8 +29,8 @@ export const CheckboxFormField = ({
             <Checkbox
               checked={field.value}
               onCheckedChange={(checked) => {
-                field.onChange(checked);
-                onCheckedChange?.(checked);
+                field.onChange(checked)
+                onCheckedChange?.(checked)
               }}
               {...props}
             />
@@ -42,5 +42,5 @@ export const CheckboxFormField = ({
         </FormItem>
       )}
     />
-  );
-};
+  )
+}

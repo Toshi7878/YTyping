@@ -1,1 +1,1 @@
-export const DISPLAY_LINE_LENGTH = 3;
+export const DISPLAY_LINE_LENGTH = 3

@@ -20,7 +20,7 @@
   --muted: #ffcae1bd;
   --muted-foreground: #93897b9e;
   --accent: #fee2f7;
-  --accent-foreground: ##93897b99;
+  --accent-foreground: #93897b99;
 
   --border: oklch(0.85 0.03 20);
   --input: #fff9f9;
@@ -53,8 +53,8 @@
   --destructive-foreground: oklch(0.985 0 0);
 
   --outline-text:
-    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000,
-    0 -1px 0 #000;
+    1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000, 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000, 0
+    -1px 0 #000;
 
   --custom-card-shadow:
     0 0 8px rgba(255, 255, 255, 0.4), 0 0 16px rgba(255, 192, 203, 0.2), 0 0 24px rgba(221, 160, 221, 0.15);

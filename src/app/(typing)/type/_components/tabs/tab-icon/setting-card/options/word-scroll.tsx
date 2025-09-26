@@ -1,15 +1,15 @@
-"use client";
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { CounterInput } from "@/components/ui/counter";
-import { H5 } from "@/components/ui/typography";
+"use client"
+import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { CounterInput } from "@/components/ui/counter"
+import { H5 } from "@/components/ui/typography"
 
-const MAX_SCROLL = 20;
-const MIN_SCROLL = 0;
-const SCROLL_STEP = 1;
+const MAX_SCROLL = 20
+const MIN_SCROLL = 0
+const SCROLL_STEP = 1
 
 export const UserWordScrollChange = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { kanaWordScroll: kana_word_scroll, romaWordScroll: roma_word_scroll } = useUserTypingOptionsState();
+  const { setUserTypingOptions } = useSetUserTypingOptions()
+  const { kanaWordScroll: kana_word_scroll, romaWordScroll: roma_word_scroll } = useUserTypingOptionsState()
 
   return (
     <section className="flex flex-col gap-4">
@@ -37,5 +37,5 @@ export const UserWordScrollChange = () => {
         />
       </div>
     </section>
-  );
-};
+  )
+}

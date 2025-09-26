@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import type { ColumnDef } from "@tanstack/react-table";
-import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import * as React from "react";
+import type { ColumnDef } from "@tanstack/react-table"
+import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
+import * as React from "react"
 
-import { cn } from "@/lib/utils";
-import Spinner from "../spinner";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
+import { cn } from "@/lib/utils"
+import Spinner from "../spinner"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table"
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  onRowClick?: (event: React.MouseEvent<HTMLTableRowElement>, row: TData, index: number) => void;
-  className?: string;
-  rowClassName?: (index: number) => string;
-  cellClassName?: string;
-  tbodyId?: string;
-  rowWrapper?: (args: { row: TData; index: number; children: React.ReactNode }) => React.ReactNode;
-  loading?: boolean;
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
+  onRowClick?: (event: React.MouseEvent<HTMLTableRowElement>, row: TData, index: number) => void
+  className?: string
+  rowClassName?: (index: number) => string
+  cellClassName?: string
+  tbodyId?: string
+  rowWrapper?: (args: { row: TData; index: number; children: React.ReactNode }) => React.ReactNode
+  loading?: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -35,7 +35,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  });
+  })
 
   return (
     <div className={cn("overflow-hidden rounded-md border", className)}>
@@ -52,7 +52,7 @@ export function DataTable<TData, TValue>({
                   >
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
-                );
+                )
               })}
             </TableRow>
           ))}
@@ -74,15 +74,15 @@ export function DataTable<TData, TValue>({
                   className={cn("transition-none", onRowClick && "cursor-pointer", rowClassName?.(index))}
                 >
                   {row.getVisibleCells().map((cell) => {
-                    const columnMeta = cell.column.columnDef.meta;
-                    const hasColumnClick = columnMeta?.onClick;
+                    const columnMeta = cell.column.columnDef.meta
+                    const hasColumnClick = columnMeta?.onClick
 
                     return (
                       <TableCell
                         key={cell.id}
                         onClick={(event) => {
                           if (hasColumnClick) {
-                            columnMeta?.onClick?.(event, row.original, index);
+                            columnMeta?.onClick?.(event, row.original, index)
                           }
                         }}
                         style={{ maxWidth: cell.column.getSize(), minWidth: cell.column.getSize() }}
@@ -94,24 +94,24 @@ export function DataTable<TData, TValue>({
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
-                    );
+                    )
                   })}
                 </TableRow>
-              );
+              )
 
               if (rowWrapper) {
                 return (
                   <React.Fragment key={row.id}>
                     {rowWrapper({ row: row.original, index, children: rowNode })}
                   </React.Fragment>
-                );
+                )
               }
 
-              return rowNode;
+              return rowNode
             })
           )}
         </TableBody>
       </Table>
     </div>
-  );
+  )
 }

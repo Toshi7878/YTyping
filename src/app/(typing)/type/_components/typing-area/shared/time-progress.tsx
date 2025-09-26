@@ -1,23 +1,23 @@
-import { useProgress } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
-import React, { useEffect } from "react";
+import React, { useEffect } from "react"
+import { useProgress } from "@/app/(typing)/type/_lib/atoms/ref-atoms"
 
 interface TimeProgressProps {
-  id: string;
+  id: string
 }
 const TimeProgress = (props: TimeProgressProps) => {
-  const progressRef = React.useRef<HTMLProgressElement>(null);
+  const progressRef = React.useRef<HTMLProgressElement>(null)
 
-  const { writeLineProgress, writeTotalProgress } = useProgress();
+  const { writeLineProgress, writeTotalProgress } = useProgress()
 
   useEffect(() => {
     if (progressRef.current) {
       if (props.id === "line_progress") {
-        writeLineProgress(progressRef.current);
+        writeLineProgress(progressRef.current)
       } else {
-        writeTotalProgress(progressRef.current);
+        writeTotalProgress(progressRef.current)
       }
     }
-  }, []);
+  }, [])
 
   return (
     <section className="w-full">
@@ -29,7 +29,7 @@ const TimeProgress = (props: TimeProgressProps) => {
         }
       />
     </section>
-  );
-};
+  )
+}
 
-export default TimeProgress;
+export default TimeProgress

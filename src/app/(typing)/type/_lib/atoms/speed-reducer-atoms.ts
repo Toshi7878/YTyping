@@ -1,81 +1,81 @@
-import type { YouTubeSpeed } from "@/types/types";
-import { useAtomValue, useSetAtom } from "jotai";
-import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
-import { useCallback } from "react";
-import { playerAtom } from "./ref-atoms";
-import { sceneAtom } from "./state-atoms";
-import { getTypeAtomStore } from "./store";
+import { useAtomValue, useSetAtom } from "jotai"
+import { atomWithReset, RESET, useAtomCallback } from "jotai/utils"
+import { useCallback } from "react"
+import type { YouTubeSpeed } from "@/types/types"
+import { playerAtom } from "./ref-atoms"
+import { sceneAtom } from "./state-atoms"
+import { getTypeAtomStore } from "./store"
 
-const store = getTypeAtomStore();
+const store = getTypeAtomStore()
 
-type SpeedActionType = "up" | "down" | "set" | "reset" | "toggle";
+type SpeedActionType = "up" | "down" | "set" | "reset" | "toggle"
 
 export const speedBaseAtom = atomWithReset({
   minPlaySpeed: 1,
   playSpeed: 1,
-});
+})
 
-export const useSetSpeed = () => useSetAtom(speedBaseAtom, { store });
+export const useSetSpeed = () => useSetAtom(speedBaseAtom, { store })
 
-export const usePlaySpeedState = () => useAtomValue(speedBaseAtom, { store });
+export const usePlaySpeedState = () => useAtomValue(speedBaseAtom, { store })
 export const useReadPlaySpeed = () => {
   return useAtomCallback(
     useCallback((get) => get(speedBaseAtom), []),
     { store },
-  );
-};
+  )
+}
 
 export const usePlaySpeedReducer =
   () =>
   ({ type, payload: value }: { type: SpeedActionType; payload?: YouTubeSpeed }) => {
-    const player = store.get(playerAtom);
-    const { minPlaySpeed } = store.get(speedBaseAtom);
-    const playSpeed = player?.getPlaybackRate();
-    if (!playSpeed) return;
-    const scene = store.get(sceneAtom);
-    const isUpdateMinSpeed = scene !== "play";
+    const player = store.get(playerAtom)
+    const { minPlaySpeed } = store.get(speedBaseAtom)
+    const playSpeed = player?.getPlaybackRate()
+    if (!playSpeed) return
+    const scene = store.get(sceneAtom)
+    const isUpdateMinSpeed = scene !== "play"
 
     switch (type) {
       case "up":
         if (playSpeed < 2) {
           if (scene !== "ready") {
-            player?.setPlaybackRate(playSpeed + 0.25);
+            player?.setPlaybackRate(playSpeed + 0.25)
           }
 
           store.set(speedBaseAtom, (prev) => ({
             ...prev,
             minPlaySpeed: isUpdateMinSpeed ? minPlaySpeed + 0.25 : minPlaySpeed,
-          }));
+          }))
         }
-        break;
+        break
       case "down":
         if (playSpeed > 0.25) {
           if (scene !== "ready") {
-            player?.setPlaybackRate(playSpeed - 0.25);
+            player?.setPlaybackRate(playSpeed - 0.25)
           }
 
           store.set(speedBaseAtom, (prev) => ({
             ...prev,
             minPlaySpeed: isUpdateMinSpeed ? minPlaySpeed - 0.25 : minPlaySpeed,
-          }));
+          }))
         }
-        break;
+        break
       case "set":
         if (value !== undefined) {
-          player?.setPlaybackRate(value);
+          player?.setPlaybackRate(value)
 
           store.set(speedBaseAtom, (prev) => ({
             ...prev,
             minPlaySpeed: value,
-          }));
+          }))
         }
-        break;
+        break
       case "reset":
-        player?.setPlaybackRate(1);
-        store.set(speedBaseAtom, RESET);
-        break;
+        player?.setPlaybackRate(1)
+        store.set(speedBaseAtom, RESET)
+        break
       case "toggle":
-        player?.setPlaybackRate(playSpeed + 0.25 <= 2 ? playSpeed + 0.25 : minPlaySpeed);
-        break;
+        player?.setPlaybackRate(playSpeed + 0.25 <= 2 ? playSpeed + 0.25 : minPlaySpeed)
+        break
     }
-  };
+  }

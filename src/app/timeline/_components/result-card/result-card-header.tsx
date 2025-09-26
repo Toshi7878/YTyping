@@ -1,16 +1,16 @@
-import DateDistanceText from "@/components/shared/text/date-distance-text";
-import { CardHeader } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
-import Link from "next/link";
-import ResultClapButton from "./child/result-clap-button";
+import Link from "next/link"
+import DateDistanceText from "@/components/shared/text/date-distance-text"
+import { CardHeader } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+import type { RouterOutPuts } from "@/server/api/trpc"
+import ResultClapButton from "./child/result-clap-button"
 
 interface ResultCardHeaderProps {
-  player: RouterOutPuts["result"]["usersResultList"]["items"][number]["player"];
-  resultId: RouterOutPuts["result"]["usersResultList"]["items"][number]["id"];
-  updatedAt: RouterOutPuts["result"]["usersResultList"]["items"][number]["updatedAt"];
-  clap: RouterOutPuts["result"]["usersResultList"]["items"][number]["clap"];
-  className?: string;
+  player: RouterOutPuts["result"]["usersResultList"]["items"][number]["player"]
+  resultId: RouterOutPuts["result"]["usersResultList"]["items"][number]["id"]
+  updatedAt: RouterOutPuts["result"]["usersResultList"]["items"][number]["updatedAt"]
+  clap: RouterOutPuts["result"]["usersResultList"]["items"][number]["clap"]
+  className?: string
 }
 
 const ResultCardHeader = ({ player, resultId, updatedAt, clap, className }: ResultCardHeaderProps) => {
@@ -28,7 +28,7 @@ const ResultCardHeader = ({ player, resultId, updatedAt, clap, className }: Resu
       </div>
       <ResultClapButton resultId={resultId} clapCount={clap.count} hasClapped={clap.hasClapped ?? false} />
     </CardHeader>
-  );
-};
+  )
+}
 
-export default ResultCardHeader;
+export default ResultCardHeader

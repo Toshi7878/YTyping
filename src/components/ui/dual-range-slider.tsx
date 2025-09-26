@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import { Slider as SliderPrimitive } from "radix-ui";
-import * as React from "react";
+import { Slider as SliderPrimitive } from "radix-ui"
+import * as React from "react"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 interface DualRangeSliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
-  labelPosition?: "top" | "bottom";
-  label?: (value: number | undefined) => React.ReactNode;
+  labelPosition?: "top" | "bottom"
+  label?: (value: number | undefined) => React.ReactNode
 }
 
 const DualRangeSlider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, DualRangeSliderProps>(
   ({ className, label, labelPosition = "top", ...props }, ref) => {
-    const initialValue = Array.isArray(props.value) ? props.value : [props.min, props.max];
+    const initialValue = Array.isArray(props.value) ? props.value : [props.min, props.max]
 
     return (
       <SliderPrimitive.Root
@@ -41,9 +41,9 @@ const DualRangeSlider = React.forwardRef<React.ElementRef<typeof SliderPrimitive
           </React.Fragment>
         ))}
       </SliderPrimitive.Root>
-    );
+    )
   },
-);
-DualRangeSlider.displayName = "DualRangeSlider";
+)
+DualRangeSlider.displayName = "DualRangeSlider"
 
-export { DualRangeSlider };
+export { DualRangeSlider }

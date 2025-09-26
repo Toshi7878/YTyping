@@ -1,12 +1,12 @@
-import { cn } from "@/lib/utils";
-import type { Route } from "next";
-import Link from "next/link";
-import type { ComponentProps, ReactNode } from "react";
+import type { Route } from "next"
+import Link from "next/link"
+import type { ComponentProps, ReactNode } from "react"
+import { cn } from "@/lib/utils"
 
 interface TextLinkProps {
-  href: Route;
-  children: ReactNode;
-  className?: string;
+  href: Route
+  children: ReactNode
+  className?: string
 }
 
 const TextLink = ({ href, children, className, ...props }: TextLinkProps & ComponentProps<typeof Link>) => {
@@ -21,7 +21,7 @@ const TextLink = ({ href, children, className, ...props }: TextLinkProps & Compo
     >
       {children}
     </Link>
-  );
-};
+  )
+}
 
-export default TextLink;
+export default TextLink
