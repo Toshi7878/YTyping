@@ -17,7 +17,7 @@ import type { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
 
-export const NotifyBellSheet = () => {
+export const NotificationSheet = () => {
   const trpc = useTRPC();
   const { data: isNewNotificationFound } = useQuery(trpc.notification.hasUnread.queryOptions());
   const queryClient = useQueryClient();
@@ -31,7 +31,7 @@ export const NotifyBellSheet = () => {
   );
 
   return (
-    <Sheet>
+    <Sheet modal={false}>
       <TooltipWrapper label="通知" delayDuration={600} className="relative bottom-3">
         <SheetTrigger asChild>
           <Button
@@ -49,13 +49,13 @@ export const NotifyBellSheet = () => {
         <SheetHeader>
           <SheetTitle>通知</SheetTitle>
         </SheetHeader>
-        <NotifyDrawerInnerContent />
+        <NotificationContent />
       </SheetContent>
     </Sheet>
   );
 };
 
-const NotifyDrawerInnerContent = () => {
+const NotificationContent = () => {
   const { ref, inView } = useInView({ threshold: 0.8 });
 
   const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(

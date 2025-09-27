@@ -8,7 +8,7 @@ import { RegisterLogoutButton } from "./right-menus/auth/register-logout-button"
 import { SignInMenu } from "./right-menus/auth/sign-in-menu";
 import { HamburgerMenu } from "./right-menus/hamburger-menu";
 import { NewMapPopover } from "./right-menus/new-map-popover";
-import { NotifyBellSheet } from "./right-menus/notify-bell-sheet";
+import { NotificationSheet } from "./right-menus/notification-sheet";
 import { UserMenu } from "./right-menus/user-menu";
 
 export const LeftNav = () => {
@@ -33,7 +33,7 @@ export const RightNav = () => {
       {session?.user?.name && (
         <div className="flex items-center gap-2">
           <ActiveUsersSheet />
-          <NotifyBellSheet />
+          <NotificationSheet />
           <NewMapPopover />
         </div>
       )}
