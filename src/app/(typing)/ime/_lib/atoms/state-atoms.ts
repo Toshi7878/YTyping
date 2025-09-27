@@ -5,17 +5,17 @@ import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
 import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
 import { DISPLAY_LINE_LENGTH } from "../const";
-import type { ParseMap, PlaceholderType, SceneType, WordResults } from "../type";
+import type { BuildMap, PlaceholderType, SceneType, WordResults } from "../type";
 import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
 
-const mapAtom = atomWithReset<ParseMap | null>(null);
+const mapAtom = atomWithReset<BuildMap | null>(null);
 export const useMapState = () => useAtomValue(mapAtom, { store });
 export const useSetMap = () => useSetAtom(mapAtom, { store });
 export const useReadMap = () => {
   return useAtomCallback(
-    useCallback((get) => get(mapAtom) as NonNullable<ParseMap>, []),
+    useCallback((get) => get(mapAtom) as NonNullable<BuildMap>, []),
     { store },
   );
 };
@@ -34,8 +34,8 @@ const gameStateUtilParamsAtom = atomWithReset({
   skipRemainTime: null as number | null,
   count: 0,
   wipeCount: 0,
-  displayLines: new Array(DISPLAY_LINE_LENGTH).fill([]) as ParseMap["lines"][number][],
-  nextDisplayLine: [] as ParseMap["lines"][number],
+  displayLines: new Array(DISPLAY_LINE_LENGTH).fill([]) as BuildMap["lines"][number][],
+  nextDisplayLine: [] as BuildMap["lines"][number],
   judgedWords: [] as string[][][],
   textareaPlaceholderType: "normal" as PlaceholderType,
 });

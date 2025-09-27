@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { serverApi } from "@/trpc/server";
-import { Content } from "./contents";
+import { Content } from "./content";
 import { ImeTypeProvider } from "./ime-provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {

@@ -3,7 +3,6 @@ import { usePlayer } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import { windowFocus } from "@/utils/hooks/window-focus";
 import { ReadyInputModeRadioCards } from "./ready-child/input-mode-radio-cards";
 import { ReadyPlaySpeed } from "./ready-child/min-play-speed-counter";
 import { ReadyPracticeButton } from "./ready-child/practice-button";
@@ -25,7 +24,6 @@ export const ReadyScene = ({ className }: ReadyProps) => {
           const player = readPlayer();
           if (player && map) {
             player.playVideo();
-            windowFocus();
           }
           event.preventDefault();
           break;

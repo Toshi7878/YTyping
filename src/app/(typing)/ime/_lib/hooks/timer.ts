@@ -13,7 +13,7 @@ import {
   useSetWipeCount,
 } from "../atoms/state-atoms";
 import { DISPLAY_LINE_LENGTH } from "../const";
-import type { ParseMap } from "../type";
+import type { BuildMap } from "../type";
 import { useGetYouTubeTime } from "./get-youtube-time";
 
 const imeTypeTicker = new Ticker();
@@ -79,7 +79,7 @@ const useTimer = () => {
     constantOffsettedYTTime,
     wipeCount,
   }: {
-    currentLine: ParseMap["lines"][number];
+    currentLine: BuildMap["lines"][number];
     count: number;
     nextLineStartTime: number;
     constantOffsettedYTTime: number;
@@ -150,7 +150,7 @@ const useTimer = () => {
     constantOffsettedYTTime,
     count,
   }: {
-    nextLine: ParseMap["lines"][number];
+    nextLine: BuildMap["lines"][number];
     constantOffsettedYTTime: number;
     count: number;
   }) => {
@@ -197,7 +197,7 @@ const useTimer = () => {
   };
 };
 
-type WipeChunk = ParseMap["lines"][number][number];
+type WipeChunk = BuildMap["lines"][number][number];
 const useCalcWipeProgress = () => {
   const completeWipe = () => {
     return "background:-webkit-linear-gradient(0deg, #ffa500 100%, white 0%);-webkit-background-clip:text;";
