@@ -27,6 +27,7 @@ export const env = createEnv({
     SUDACHI_API_URL: z.string().min(1),
     YAHOO_APP_ID: z.string().min(1),
     NODE_ENV: z.enum(["development", "production"]).optional(),
+    NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
 
     DATABASE_URL: z.string().min(1),
 
