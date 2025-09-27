@@ -1,33 +1,33 @@
-"use client"
-import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
-import { FaRankingStar } from "react-icons/fa6"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+"use client";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { FaRankingStar } from "react-icons/fa6";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface RankingCountProps {
-  myRank: number | null
-  rankingCount: number
+  myRank: number | null;
+  rankingCount: number;
 }
 
 const RankingCount = ({ myRank, rankingCount }: RankingCountProps) => {
-  const { data: session } = useSession()
-  const [colorClass, setColorClass] = useState("text-muted-foreground")
+  const { data: session } = useSession();
+  const [colorClass, setColorClass] = useState("text-muted-foreground");
 
   useEffect(() => {
     if (!session) {
-      setColorClass("text-muted-foreground")
-      return
+      setColorClass("text-muted-foreground");
+      return;
     }
 
     if (myRank === 1) {
-      setColorClass("text-perfect")
+      setColorClass("text-perfect");
     } else if (myRank) {
-      setColorClass("text-secondary")
+      setColorClass("text-secondary");
     } else {
-      setColorClass("text-muted-foreground")
+      setColorClass("text-muted-foreground");
     }
-  }, [session, myRank])
+  }, [session, myRank]);
 
   return (
     <TooltipWrapper label={`自分の順位: ${myRank}位`} disabled={!myRank || !session}>
@@ -38,7 +38,7 @@ const RankingCount = ({ myRank, rankingCount }: RankingCountProps) => {
         <div className="font-mono text-lg">{rankingCount}</div>
       </div>
     </TooltipWrapper>
-  )
-}
+  );
+};
 
-export default RankingCount
+export default RankingCount;

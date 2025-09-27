@@ -92,6 +92,10 @@
     "patchedDependencies": {
       "@pixi/sound": "patches/@pixi__sound.patch"
     },
-    "onlyBuiltDependencies": ["@tailwindcss/oxide", "esbuild", "sharp"]
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp"
+    ]
   }
 }

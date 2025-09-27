@@ -1,54 +1,54 @@
-"use client"
-import { Provider as JotaiProvider } from "jotai"
-import { RESET } from "jotai/utils"
-import { usePathname } from "next/navigation"
-import type React from "react"
-import { useEffect } from "react"
-import { toast } from "sonner"
-import { useSetPreviewVideo } from "@/lib/global-atoms"
-import { usePathChangeAtomReset } from "../_lib/atoms/reset"
-import { getEditAtomStore } from "../_lib/atoms/store"
-import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const"
-import useHasMapUploadPermission from "../_lib/hooks/use-has-map-upload-permission"
-import { useTimerRegistration } from "../_lib/hooks/use-timer"
+"use client";
+import { Provider as JotaiProvider } from "jotai";
+import { RESET } from "jotai/utils";
+import { usePathname } from "next/navigation";
+import type React from "react";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { useSetPreviewVideo } from "@/lib/global-atoms";
+import { usePathChangeAtomReset } from "../_lib/atoms/reset";
+import { getEditAtomStore } from "../_lib/atoms/store";
+import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
+import useHasMapUploadPermission from "../_lib/hooks/use-has-map-upload-permission";
+import { useTimerRegistration } from "../_lib/hooks/use-timer";
 
 interface EditProviderProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const EditProvider = ({ children }: EditProviderProps) => {
-  const store = getEditAtomStore()
-  const setPreviewVideoState = useSetPreviewVideo()
-  const hasUploadPermission = useHasMapUploadPermission()
-  const { addTimer, removeTimer } = useTimerRegistration()
-  const pathChangeReset = usePathChangeAtomReset()
-  const pathname = usePathname()
+  const store = getEditAtomStore();
+  const setPreviewVideoState = useSetPreviewVideo();
+  const hasUploadPermission = useHasMapUploadPermission();
+  const { addTimer, removeTimer } = useTimerRegistration();
+  const pathChangeReset = usePathChangeAtomReset();
+  const pathname = usePathname();
 
   useEffect(() => {
-    setPreviewVideoState(RESET)
-  }, [setPreviewVideoState])
+    setPreviewVideoState(RESET);
+  }, [setPreviewVideoState]);
 
   useEffect(() => {
     if (!hasUploadPermission) {
       toast.warning("編集保存権限がないため譜面の更新はできません", {
         id: NOT_EDIT_PERMISSION_TOAST_ID,
         duration: Infinity,
-      })
+      });
     } else {
-      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID)
+      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
     }
-  }, [hasUploadPermission])
+  }, [hasUploadPermission]);
 
   useEffect(() => {
-    addTimer()
+    addTimer();
     return () => {
-      removeTimer()
-      pathChangeReset()
-      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID)
-    }
-  }, [pathname])
+      removeTimer();
+      pathChangeReset();
+      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
+    };
+  }, [pathname]);
 
-  return <JotaiProvider store={store}>{children}</JotaiProvider>
-}
+  return <JotaiProvider store={store}>{children}</JotaiProvider>;
+};
 
-export default EditProvider
+export default EditProvider;

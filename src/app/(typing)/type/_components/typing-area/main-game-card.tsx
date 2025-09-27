@@ -1,16 +1,16 @@
-"use client"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_lib/atoms/state-atoms"
-import End from "./end/end-scene"
-import Playing from "./playing/playing-scene"
-import Ready from "./ready/ready-scene"
-import BottomButtons from "./shared/bottom-child/bottom-buttons"
-import SkipAndTimeDisplay from "./shared/bottom-child/skip-and-time-display"
-import PracticeLineCard from "./shared/result/child/practice-line-card"
-import ResultDrawer from "./shared/result/result-drawer"
-import TimeProgress from "./shared/time-progress"
-import GameStatusHeader from "./shared/top-child/game-status-header"
+"use client";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_lib/atoms/state-atoms";
+import End from "./end/end-scene";
+import Playing from "./playing/playing-scene";
+import Ready from "./ready/ready-scene";
+import BottomButtons from "./shared/bottom-child/bottom-buttons";
+import SkipAndTimeDisplay from "./shared/bottom-child/skip-and-time-display";
+import PracticeLineCard from "./shared/result/child/practice-line-card";
+import ResultDrawer from "./shared/result/result-drawer";
+import TimeProgress from "./shared/time-progress";
+import GameStatusHeader from "./shared/top-child/game-status-header";
 
 function MainGameCard({ className }: { className?: string }) {
   return (
@@ -19,7 +19,7 @@ function MainGameCard({ className }: { className?: string }) {
       <GameCardContent className="block px-12 py-2" />
       <GameCardFooter className="mx-3 flex-col py-0 select-none" />
     </Card>
-  )
+  );
 }
 
 const GameCardHeader = ({ className }: { className?: string }) => {
@@ -28,22 +28,22 @@ const GameCardHeader = ({ className }: { className?: string }) => {
       <GameStatusHeader />
       <TimeProgress id="line_progress" />
     </CardHeader>
-  )
-}
+  );
+};
 
 interface TypingCardBodyProps {
-  className?: string
+  className?: string;
 }
 
 const GameCardContent = ({ className }: TypingCardBodyProps) => {
-  const map = useMapState()
-  const sceneGroup = useSceneGroupState()
-  const scene = useSceneState()
-  const isYTStarted = useYTStartedState()
-  const isReady = sceneGroup === "Ready" || !isYTStarted || !map
-  const isPlayed = isYTStarted && sceneGroup === "Playing"
+  const map = useMapState();
+  const sceneGroup = useSceneGroupState();
+  const scene = useSceneState();
+  const isYTStarted = useYTStartedState();
+  const isReady = sceneGroup === "Ready" || !isYTStarted || !map;
+  const isPlayed = isYTStarted && sceneGroup === "Playing";
 
-  const minHeight = "min-h-[460px] md:min-h-[300px]"
+  const minHeight = "min-h-[460px] md:min-h-[300px]";
   return (
     <CardContent className={className}>
       {isReady ? (
@@ -62,8 +62,8 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
         </>
       )}
     </CardContent>
-  )
-}
+  );
+};
 
 const GameCardFooter = ({ className }: { className?: string }) => {
   return (
@@ -72,7 +72,7 @@ const GameCardFooter = ({ className }: { className?: string }) => {
       <TimeProgress id="total_progress" />
       <BottomButtons />
     </CardFooter>
-  )
-}
+  );
+};
 
-export default MainGameCard
+export default MainGameCard;

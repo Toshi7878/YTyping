@@ -1,14 +1,14 @@
-"use client"
-import type { Route } from "next"
-import Image from "next/image"
-import type { ReactNode } from "react"
-import { Separator } from "@/components/ui/separator"
-import TextLink from "@/components/ui/text-link"
-import { H6 } from "@/components/ui/typography"
-import { useUserAgent } from "@/lib/global-atoms"
-import preMidLinks from "@/public/images/manual/premid/premid-link.png"
-import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png"
-import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png"
+"use client";
+import type { Route } from "next";
+import Image from "next/image";
+import type { ReactNode } from "react";
+import { Separator } from "@/components/ui/separator";
+import TextLink from "@/components/ui/text-link";
+import { H6 } from "@/components/ui/typography";
+import { useUserAgent } from "@/lib/global-atoms";
+import preMidLinks from "@/public/images/manual/premid/premid-link.png";
+import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
+import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
 
 const browserLinks: Record<string, { url: Route; text: string }> = {
   Chrome: {
@@ -27,19 +27,19 @@ const browserLinks: Record<string, { url: Route; text: string }> = {
     url: "https://premid.app/downloads",
     text: "PreMiD Downloads",
   },
-}
+};
 
 const useBrowserLink = () => {
-  const userAgent = useUserAgent()
-  const browserType = userAgent?.getBrowser().name
-  const browserLink = browserLinks[browserType as keyof typeof browserLinks]
-  if (!browserLink) return browserLinks.Chrome
+  const userAgent = useUserAgent();
+  const browserType = userAgent?.getBrowser().name;
+  const browserLink = browserLinks[browserType as keyof typeof browserLinks];
+  if (!browserLink) return browserLinks.Chrome;
 
-  return browserLink
-}
+  return browserLink;
+};
 
 export function InstallationSteps() {
-  const browserLink = useBrowserLink()
+  const browserLink = useBrowserLink();
   return (
     <ol className="list-inside list-decimal space-y-6">
       <InstallationStep title="PreMiDブラウザ拡張機能をインストールする">
@@ -74,12 +74,12 @@ export function InstallationSteps() {
         <PreMidPresenceImages />
       </InstallationStep>
     </ol>
-  )
+  );
 }
 
 interface InstallationStepProps {
-  title: string
-  children: ReactNode
+  title: string;
+  children: ReactNode;
 }
 
 function InstallationStep({ title, children }: InstallationStepProps) {
@@ -88,7 +88,7 @@ function InstallationStep({ title, children }: InstallationStepProps) {
       <H6 className="inline">{title}</H6>
       {children}
     </li>
-  )
+  );
 }
 
 export function PreMidLinkImage() {
@@ -100,7 +100,7 @@ export function PreMidLinkImage() {
       height={0}
       className="border-border mt-2 rounded border"
     />
-  )
+  );
 }
 
 export function PreMidPresenceImages() {
@@ -121,5 +121,5 @@ export function PreMidPresenceImages() {
         className="border-border rounded border"
       />
     </div>
-  )
+  );
 }

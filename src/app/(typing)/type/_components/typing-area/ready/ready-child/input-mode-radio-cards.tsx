@@ -1,25 +1,25 @@
-"use client"
-import { useSetPlayingInputMode } from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { useReadyInputModeState, useSetReadyInputMode } from "@/app/(typing)/type/_lib/atoms/storage-atoms"
-import type { InputMode } from "@/app/(typing)/type/_lib/type"
-import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group"
-import { cn } from "@/lib/utils"
+"use client";
+import { useSetPlayingInputMode } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useReadyInputModeState, useSetReadyInputMode } from "@/app/(typing)/type/_lib/atoms/storage-atoms";
+import type { InputMode } from "@/app/(typing)/type/_lib/type";
+import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
+import { cn } from "@/lib/utils";
 
 function ReadyInputModeRadioCards() {
   const options: { value: InputMode; label: string }[] = [
     { value: "roma", label: "ローマ字入力" },
     { value: "kana", label: "かな入力" },
     { value: "flick", label: "フリック入力" },
-  ]
+  ];
 
-  const readyInputMode = useReadyInputModeState()
-  const setReadyInputMode = useSetReadyInputMode()
-  const setPlayingInputMode = useSetPlayingInputMode()
+  const readyInputMode = useReadyInputModeState();
+  const setReadyInputMode = useSetReadyInputMode();
+  const setPlayingInputMode = useSetPlayingInputMode();
 
   const handleChange = (value: string) => {
-    setReadyInputMode(value as InputMode)
-    setPlayingInputMode(value as InputMode)
-  }
+    setReadyInputMode(value as InputMode);
+    setPlayingInputMode(value as InputMode);
+  };
 
   return (
     <RadioGroup value={readyInputMode} onValueChange={handleChange} className="flex w-full gap-0">
@@ -41,10 +41,10 @@ function ReadyInputModeRadioCards() {
           >
             {option.label}
           </RadioCard>
-        )
+        );
       })}
     </RadioGroup>
-  )
+  );
 }
 
-export default ReadyInputModeRadioCards
+export default ReadyInputModeRadioCards;

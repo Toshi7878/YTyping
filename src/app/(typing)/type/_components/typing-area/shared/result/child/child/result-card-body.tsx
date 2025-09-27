@@ -1,17 +1,17 @@
-import { CardContent } from "@/components/ui/card"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
-import type { TypeResult } from "@/server/drizzle/validator/result"
+import { CardContent } from "@/components/ui/card";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import type { TypeResult } from "@/server/drizzle/validator/result";
 
 interface ResultCardContentProps {
-  lineKanaWord: string
-  types: TypeResult[]
-  lineTypeWord: string
-  lostWord: string
+  lineKanaWord: string;
+  types: TypeResult[];
+  lineTypeWord: string;
+  lostWord: string;
 }
 
 function ResultCardContent({ lineKanaWord, types, lineTypeWord, lostWord }: ResultCardContentProps) {
-  let correctCount = 0
+  let correctCount = 0;
 
   return (
     <CardContent className="word-font gap-2 py-2 text-base">
@@ -21,10 +21,10 @@ function ResultCardContent({ lineKanaWord, types, lineTypeWord, lostWord }: Resu
       <div className={cn("text-foreground word-outline-text tracking-wider break-all uppercase")}>
         {types.map((type: TypeResult, index: number) => {
           if (type.is) {
-            correctCount++
+            correctCount++;
           }
 
-          const label = `time: ${type.t.toFixed(3)}, kpm: ${Math.floor(correctCount / (type.t / 60))}`
+          const label = `time: ${type.t.toFixed(3)}, kpm: ${Math.floor(correctCount / (type.t / 60))}`;
 
           return (
             type.c && (
@@ -40,12 +40,12 @@ function ResultCardContent({ lineKanaWord, types, lineTypeWord, lostWord }: Resu
                 </span>
               </TooltipWrapper>
             )
-          )
+          );
         })}
         <span className="text-word-word break-all">{lostWord !== null ? lostWord : lineTypeWord}</span>
       </div>
     </CardContent>
-  )
+  );
 }
 
-export default ResultCardContent
+export default ResultCardContent;

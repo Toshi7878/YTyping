@@ -1,6 +1,6 @@
-import { createInsertSchema } from "drizzle-zod"
-import z from "zod"
-import { ResultStatuses } from "@/server/drizzle/schema"
+import { createInsertSchema } from "drizzle-zod";
+import z from "zod";
+import { ResultStatuses } from "@/server/drizzle/schema";
 
 const CreateTypingResultJsonSchema = z.array(
   z.object({
@@ -27,8 +27,8 @@ const CreateTypingResultJsonSchema = z.array(
       }),
     ),
   }),
-)
-export const CreateResultStatusSchema = createInsertSchema(ResultStatuses).omit({ resultId: true }).required()
+);
+export const CreateResultStatusSchema = createInsertSchema(ResultStatuses).omit({ resultId: true }).required();
 
 export const CreateResultSchema = z
   .object({
@@ -36,8 +36,8 @@ export const CreateResultSchema = z
     status: CreateResultStatusSchema.required(),
     lineResults: CreateTypingResultJsonSchema,
   })
-  .refine(() => true, { error: "リザルトデータの形式が無効です" })
+  .refine(() => true, { error: "リザルトデータの形式が無効です" });
 
-export type ResultData = z.output<typeof CreateTypingResultJsonSchema>
-export type TypeResult = ResultData[number]["types"][number]
-export type LineResultStatus = ResultData[number]["status"]
+export type ResultData = z.output<typeof CreateTypingResultJsonSchema>;
+export type TypeResult = ResultData[number]["types"][number];
+export type LineResultStatus = ResultData[number]["status"];

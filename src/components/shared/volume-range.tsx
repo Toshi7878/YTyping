@@ -1,28 +1,28 @@
-"use client"
-import type { HTMLAttributes } from "react"
-import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io"
-import { useSetVolume, useUserAgent, useVolumeState } from "@/lib/global-atoms"
-import { Slider } from "../ui/slider"
+"use client";
+import type { HTMLAttributes } from "react";
+import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
+import { useSetVolume, useUserAgent, useVolumeState } from "@/lib/global-atoms";
+import { Slider } from "../ui/slider";
 
 interface VolumeRangeProps {
-  player: YT.Player | null
+  player: YT.Player | null;
 }
 
 export default function VolumeRange({ player, ...props }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) {
-  const volume = useVolumeState()
-  const setVolume = useSetVolume()
-  const userAgent = useUserAgent()
-  const isMobile = userAgent?.getDevice().type === "mobile"
+  const volume = useVolumeState();
+  const setVolume = useSetVolume();
+  const userAgent = useUserAgent();
+  const isMobile = userAgent?.getDevice().type === "mobile";
 
-  if (isMobile) return null
+  if (isMobile) return null;
 
   const handleChange = (value: number[]) => {
-    const newVolume = value[0]
-    setVolume(newVolume)
+    const newVolume = value[0];
+    setVolume(newVolume);
     if (player) {
-      player.setVolume(newVolume)
+      player.setVolume(newVolume);
     }
-  }
+  };
 
   return (
     <div className="flex items-center">
@@ -43,15 +43,15 @@ export default function VolumeRange({ player, ...props }: VolumeRangeProps & HTM
         />
       </fieldset>
     </div>
-  )
+  );
 }
 
 const VolumeIcon = ({ volume }: { volume: number }) => {
   if (volume === 0) {
-    return <IoMdVolumeMute size={24} aria-label="ミュート" />
+    return <IoMdVolumeMute size={24} aria-label="ミュート" />;
   }
   if (volume < 50) {
-    return <IoMdVolumeLow size={24} aria-label="音量低" />
+    return <IoMdVolumeLow size={24} aria-label="音量低" />;
   }
-  return <IoMdVolumeHigh size={24} aria-label="音量高" />
-}
+  return <IoMdVolumeHigh size={24} aria-label="音量高" />;
+};

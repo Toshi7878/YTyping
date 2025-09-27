@@ -1,9 +1,9 @@
-import parse from "html-react-parser"
-import { useNextLyricsState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { cn } from "@/lib/utils"
+import parse from "html-react-parser";
+import { useNextLyricsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { cn } from "@/lib/utils";
 
 const NextLyrics = () => {
-  const { lyrics, kpm } = useNextLyricsState()
+  const { lyrics, kpm } = useNextLyricsState();
 
   return (
     <div
@@ -22,7 +22,7 @@ const NextLyrics = () => {
         {Number(kpm) > 0 ? `NEXT: ${kpm}kpm` : ""}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NextLyrics
+export default NextLyrics;

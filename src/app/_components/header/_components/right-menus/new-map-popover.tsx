@@ -1,57 +1,57 @@
-"use client"
-import { useRouter } from "@bprogress/next"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
-import type { Dispatch, SetStateAction } from "react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { RiAddBoxFill } from "react-icons/ri"
-import z from "zod"
-import CreatedVideoMapList from "@/components/shared/created-video-map-list"
-import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
-import { InputFormField } from "@/components/ui/input/input-form-field"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { H4 } from "@/components/ui/typography"
-import { useGetBackupMapInfoLiveQuery } from "@/lib/indexed-db"
-import { cn } from "@/lib/utils"
-import { extractYouTubeId } from "../../../../../utils/extract-youtube-id"
+"use client";
+import { useRouter } from "@bprogress/next";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import type { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { RiAddBoxFill } from "react-icons/ri";
+import z from "zod";
+import CreatedVideoMapList from "@/components/shared/created-video-map-list";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { InputFormField } from "@/components/ui/input/input-form-field";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { H4 } from "@/components/ui/typography";
+import { useGetBackupMapInfoLiveQuery } from "@/lib/indexed-db";
+import { cn } from "@/lib/utils";
+import { extractYouTubeId } from "../../../../../utils/extract-youtube-id";
 
 const formSchema = z.object({
   videoId: z.string(),
-})
+});
 
 export default function NewMapPopover() {
-  const [open, setOpen] = useState(false)
-  const backupMapInfo = useGetBackupMapInfoLiveQuery()
-  const router = useRouter()
+  const [open, setOpen] = useState(false);
+  const backupMapInfo = useGetBackupMapInfoLiveQuery();
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       videoId: "",
     },
-  })
+  });
 
-  const watchedVideoId = form.watch("videoId")
-  const extractedVideoId = extractYouTubeId(watchedVideoId)
+  const watchedVideoId = form.watch("videoId");
+  const extractedVideoId = extractYouTubeId(watchedVideoId);
 
   const onSubmit = async (data: z.output<typeof formSchema>) => {
-    const videoId = extractYouTubeId(data.videoId)
+    const videoId = extractYouTubeId(data.videoId);
 
-    if (!videoId) return
+    if (!videoId) return;
 
     if (backupMapInfo) {
       const result = confirm(
         "新規作成バックアップデータが存在します。\n新しく譜面を作成する場合、バックアップデータは削除されますが新しく譜面を作成しますか？",
-      )
-      if (!result) return
+      );
+      if (!result) return;
     }
 
-    router.push(`/edit?new=${videoId}`)
-    setOpen(false)
-  }
+    router.push(`/edit?new=${videoId}`);
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -88,12 +88,12 @@ export default function NewMapPopover() {
         )}
       </PopoverContent>
     </Popover>
-  )
+  );
 }
 
 interface CreateMapBackUpButtonProps {
-  backupData: { title: string; videoId: string } | undefined
-  onOpenChange: Dispatch<SetStateAction<boolean>>
+  backupData: { title: string; videoId: string } | undefined;
+  onOpenChange: Dispatch<SetStateAction<boolean>>;
 }
 
 function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
@@ -115,5 +115,5 @@ function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
         </Button>
       </Link>
     </TooltipWrapper>
-  )
+  );
 }

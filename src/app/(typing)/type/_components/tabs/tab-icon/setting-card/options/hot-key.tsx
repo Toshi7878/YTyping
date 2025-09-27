@@ -1,19 +1,19 @@
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { LabeledSelect } from "@/components/ui/select/labeled-select"
-import { H5 } from "@/components/ui/typography"
-import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema"
+import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { LabeledSelect } from "@/components/ui/select/labeled-select";
+import { H5 } from "@/components/ui/typography";
+import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
 
 const HotKeySelectFields = () => {
-  const { timeOffsetAdjustKey, InputModeToggleKey } = useUserTypingOptionsState()
-  const { setUserTypingOptions } = useSetUserTypingOptions()
+  const { timeOffsetAdjustKey, InputModeToggleKey } = useUserTypingOptionsState();
+  const { setUserTypingOptions } = useSetUserTypingOptions();
 
   const changeTimeOffsetAdjustKey = (value: string) => {
-    setUserTypingOptions({ timeOffsetAdjustKey: value as (typeof timeOffsetAdjustKeyEnum.enumValues)[number] })
-  }
+    setUserTypingOptions({ timeOffsetAdjustKey: value as (typeof timeOffsetAdjustKeyEnum.enumValues)[number] });
+  };
 
   const changeInputModeKey = (value: string) => {
-    setUserTypingOptions({ InputModeToggleKey: value as (typeof InputModeToggleKeyEnum.enumValues)[number] })
-  }
+    setUserTypingOptions({ InputModeToggleKey: value as (typeof InputModeToggleKeyEnum.enumValues)[number] });
+  };
 
   return (
     <section className="flex flex-col gap-2">
@@ -43,7 +43,7 @@ const HotKeySelectFields = () => {
         />
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default HotKeySelectFields
+export default HotKeySelectFields;

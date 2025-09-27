@@ -1,11 +1,11 @@
-import { TRPCError } from "@trpc/server"
-import type { AnyColumn, SQL } from "drizzle-orm"
-import { and, desc, eq, gt, gte, ilike, inArray, lte, or } from "drizzle-orm"
-import { alias } from "drizzle-orm/pg-core"
-import z from "zod"
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts"
-import type { TXType } from "@/server/drizzle/client"
-import { db } from "@/server/drizzle/client"
+import { TRPCError } from "@trpc/server";
+import type { AnyColumn, SQL } from "drizzle-orm";
+import { and, desc, eq, gt, gte, ilike, inArray, lte, or } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
+import z from "zod";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
+import type { TXType } from "@/server/drizzle/client";
+import { db } from "@/server/drizzle/client";
 import {
   MapDifficulties,
   MapLikes,
@@ -15,12 +15,12 @@ import {
   ResultStatuses,
   Results,
   Users,
-} from "@/server/drizzle/schema"
-import type { ResultData } from "@/server/drizzle/validator/result"
-import { CreateResultSchema } from "@/server/drizzle/validator/result"
-import { downloadFile, upsertFile } from "@/utils/r2-storage"
-import { protectedProcedure, publicProcedure } from "../trpc"
-import type { MapListItem } from "./map-list"
+} from "@/server/drizzle/schema";
+import type { ResultData } from "@/server/drizzle/validator/result";
+import { CreateResultSchema } from "@/server/drizzle/validator/result";
+import { downloadFile, upsertFile } from "@/utils/r2-storage";
+import { protectedProcedure, publicProcedure } from "../trpc";
+import type { MapListItem } from "./map-list";
 
 const SelectFilterUserResultListSchema = z.object({
   mode: z.string().default("all"),
@@ -32,14 +32,14 @@ const SelectFilterUserResultListSchema = z.object({
   maxPlaySpeed: z.number().default(2),
   username: z.string().default(""),
   mapKeyword: z.string().default(""),
-})
+});
 
 const SelectUsersResultInfiniteListSchema = SelectFilterUserResultListSchema.extend({
   cursor: z.string().nullable().optional(),
-})
+});
 
 const resultSelectSchema = () => {
-  const Player = alias(Users, "Player")
+  const Player = alias(Users, "Player");
 
   return {
     schema: {
@@ -76,24 +76,24 @@ const resultSelectSchema = () => {
       clap: { count: Results.clapCount, hasClapped: ResultClaps.hasClapped },
     },
     Player,
-  }
-}
+  };
+};
 
-export type ResultListItem = Awaited<ReturnType<typeof resultRouter.usersResultList>>["items"][number]
+export type ResultListItem = Awaited<ReturnType<typeof resultRouter.usersResultList>>["items"][number];
 
 export const resultRouter = {
   usersResultList: publicProcedure.input(SelectUsersResultInfiniteListSchema).query(async ({ input, ctx }) => {
-    const { db, user } = ctx
-    const PAGE_SIZE = 25
+    const { db, user } = ctx;
+    const PAGE_SIZE = 25;
 
-    const userId = user?.id ? user.id : null
-    const page = input.cursor ? Number(input.cursor) : 0
-    const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE
+    const userId = user?.id ? user.id : null;
+    const page = input.cursor ? Number(input.cursor) : 0;
+    const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
 
-    const Creator = alias(Users, "creator")
-    const MyResult = alias(Results, "MyResult")
+    const Creator = alias(Users, "creator");
+    const MyResult = alias(Results, "MyResult");
 
-    const { schema, Player } = resultSelectSchema()
+    const { schema, Player } = resultSelectSchema();
 
     const whereConds = [
       ...generateModeFilter({ mode: input.mode }),
@@ -106,7 +106,7 @@ export const resultRouter = {
         playerName: Player.name,
         creatorName: Creator.name,
       }),
-    ]
+    ];
 
     const items = await db
       .select({
@@ -143,12 +143,12 @@ export const resultRouter = {
       .where(whereConds.length ? and(...whereConds) : undefined)
       .orderBy(desc(Results.updatedAt))
       .limit(PAGE_SIZE + 1)
-      .offset(offset)
+      .offset(offset);
 
-    let nextCursor: string | undefined
+    let nextCursor: string | undefined;
     if (items.length > PAGE_SIZE) {
-      items.pop()
-      nextCursor = String(Number.isNaN(page) ? 1 : page + 1)
+      items.pop();
+      nextCursor = String(Number.isNaN(page) ? 1 : page + 1);
     }
 
     const results = items.map(({ map: m, ...rest }) => {
@@ -169,35 +169,35 @@ export const resultRouter = {
           like: { count: m.likeCount, hasLiked: m.hasLiked },
           ranking: { count: m.rankingCount, myRank: m.myRank },
         } satisfies MapListItem,
-      }
-    })
-    return { items: results, nextCursor }
+      };
+    });
+    return { items: results, nextCursor };
   }),
   getResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
     try {
       const data = await downloadFile({
         key: `result-json/${input.resultId}.json`,
-      })
+      });
 
       if (!data) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" })
+        throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
       }
 
-      const jsonString = new TextDecoder().decode(data)
-      const jsonData: ResultData = JSON.parse(jsonString)
+      const jsonString = new TextDecoder().decode(data);
+      const jsonData: ResultData = JSON.parse(jsonString);
 
-      return jsonData
+      return jsonData;
     } catch (error) {
-      console.error("Error fetching result data from R2:", error)
-      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+      console.error("Error fetching result data from R2:", error);
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
     }
   }),
 
   getMapRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx
-    const { mapId } = input
+    const { db, user } = ctx;
+    const { mapId } = input;
 
-    const { schema, Player } = resultSelectSchema()
+    const { schema, Player } = resultSelectSchema();
 
     return db
       .select(schema)
@@ -206,13 +206,13 @@ export const resultRouter = {
       .innerJoin(Player, eq(Player.id, Results.userId))
       .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, user.id ?? 0)))
       .where(eq(Results.mapId, mapId))
-      .orderBy(desc(ResultStatuses.score))
+      .orderBy(desc(ResultStatuses.score));
   }),
 
   createResult: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
-    const { user } = ctx
-    const userId = user.id
-    const { mapId, lineResults, status } = input
+    const { user } = ctx;
+    const userId = user.id;
+    const { mapId, lineResults, status } = input;
 
     return db.transaction(async (tx) => {
       const resultId = await tx
@@ -223,19 +223,19 @@ export const resultRouter = {
           set: { updatedAt: new Date() },
         })
         .returning({ id: Results.id })
-        .then((res) => res[0].id)
+        .then((res) => res[0].id);
 
       await tx
         .insert(ResultStatuses)
         .values({ resultId, ...status })
-        .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status })
+        .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
 
-      const jsonString = JSON.stringify(lineResults, null, 2)
+      const jsonString = JSON.stringify(lineResults, null, 2);
       await upsertFile({
         key: `result-json/${resultId}.json`,
         body: jsonString,
         contentType: "application/json",
-      })
+      });
 
       const rankedUsers = await tx
         .select({
@@ -246,17 +246,17 @@ export const resultRouter = {
         .from(Results)
         .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
         .where(eq(Results.mapId, mapId))
-        .orderBy(desc(ResultStatuses.score))
+        .orderBy(desc(ResultStatuses.score));
 
-      await cleanupOutdatedOvertakeNotifications({ tx, mapId, userId, rankedUsers })
-      await updateRankingsAndNotifyOvertakes({ tx, mapId, userId, rankedUsers })
+      await cleanupOutdatedOvertakeNotifications({ tx, mapId, userId, rankedUsers });
+      await updateRankingsAndNotifyOvertakes({ tx, mapId, userId, rankedUsers });
 
-      await tx.update(Maps).set({ rankingCount: rankedUsers.length }).where(eq(Maps.id, mapId))
+      await tx.update(Maps).set({ rankingCount: rankedUsers.length }).where(eq(Maps.id, mapId));
 
-      return true
-    })
+      return true;
+    });
   }),
-}
+};
 
 const cleanupOutdatedOvertakeNotifications = async ({
   tx,
@@ -264,13 +264,13 @@ const cleanupOutdatedOvertakeNotifications = async ({
   userId,
   rankedUsers,
 }: {
-  tx: TXType
-  mapId: number
-  userId: number
-  rankedUsers: { userId: number; rank: number; score: number }[]
+  tx: TXType;
+  mapId: number;
+  userId: number;
+  rankedUsers: { userId: number; rank: number; score: number }[];
 }) => {
-  const myResult = rankedUsers.find((record) => record.userId === userId)
-  if (!myResult) return
+  const myResult = rankedUsers.find((record) => record.userId === userId);
+  if (!myResult) return;
 
   const overtakeNotifications = await tx
     .select({
@@ -282,11 +282,11 @@ const cleanupOutdatedOvertakeNotifications = async ({
     .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
     .where(
       and(eq(Notifications.visitedId, userId), eq(Notifications.mapId, mapId), eq(Notifications.action, "OVER_TAKE")),
-    )
+    );
 
   const notificationsToDelete = overtakeNotifications
     .filter((notification) => notification.visitorScore <= myResult.score)
-    .map((notification) => notification.visitorId)
+    .map((notification) => notification.visitorId);
 
   if (notificationsToDelete.length > 0) {
     await tx
@@ -298,9 +298,9 @@ const cleanupOutdatedOvertakeNotifications = async ({
           eq(Notifications.mapId, mapId),
           eq(Notifications.action, "OVER_TAKE"),
         ),
-      )
+      );
   }
-}
+};
 
 const updateRankingsAndNotifyOvertakes = async ({
   tx,
@@ -308,22 +308,22 @@ const updateRankingsAndNotifyOvertakes = async ({
   userId,
   rankedUsers,
 }: {
-  tx: TXType
-  mapId: number
-  userId: number
-  rankedUsers: { userId: number; rank: number; score: number }[]
+  tx: TXType;
+  mapId: number;
+  userId: number;
+  rankedUsers: { userId: number; rank: number; score: number }[];
 }) => {
   for (let index = 0; index < rankedUsers.length; index++) {
-    const currentUser = rankedUsers[index]
-    const updatedRank = index + 1
-    const previousRank = currentUser.rank
+    const currentUser = rankedUsers[index];
+    const updatedRank = index + 1;
+    const previousRank = currentUser.rank;
 
     await tx
       .update(Results)
       .set({ rank: updatedRank })
-      .where(and(eq(Results.mapId, mapId), eq(Results.userId, currentUser.userId)))
+      .where(and(eq(Results.mapId, mapId), eq(Results.userId, currentUser.userId)));
 
-    const isNotCurrentUser = currentUser.userId !== userId
+    const isNotCurrentUser = currentUser.userId !== userId;
     if (isNotCurrentUser && previousRank !== null && previousRank <= 5 && previousRank !== updatedRank) {
       await tx
         .insert(Notifications)
@@ -341,50 +341,50 @@ const updateRankingsAndNotifyOvertakes = async ({
             createdAt: new Date(),
             oldRank: previousRank ?? null,
           },
-        })
+        });
     }
   }
-}
+};
 
 function generateModeFilter({ mode }: { mode: string }) {
   switch (mode) {
     case "roma":
-      return [gt(ResultStatuses.romaType, 0), eq(ResultStatuses.kanaType, 0)]
+      return [gt(ResultStatuses.romaType, 0), eq(ResultStatuses.kanaType, 0)];
     case "kana":
-      return [gt(ResultStatuses.kanaType, 0), eq(ResultStatuses.romaType, 0)]
+      return [gt(ResultStatuses.kanaType, 0), eq(ResultStatuses.romaType, 0)];
     case "romakana":
-      return [gt(ResultStatuses.kanaType, 0), gt(ResultStatuses.romaType, 0)]
+      return [gt(ResultStatuses.kanaType, 0), gt(ResultStatuses.romaType, 0)];
     case "english":
-      return [eq(ResultStatuses.kanaType, 0), eq(ResultStatuses.romaType, 0), gt(ResultStatuses.englishType, 0)]
+      return [eq(ResultStatuses.kanaType, 0), eq(ResultStatuses.romaType, 0), gt(ResultStatuses.englishType, 0)];
     default:
-      return []
+      return [];
   }
 }
 
 function generateKpmFilter({ minKpm, maxKpm }: { minKpm: number; maxKpm: number }) {
-  if (maxKpm === 0) return []
-  const conds: SQL<unknown>[] = []
-  if (typeof minKpm === "number") conds.push(gte(ResultStatuses.kanaToRomaKpm, minKpm))
+  if (maxKpm === 0) return [];
+  const conds: SQL<unknown>[] = [];
+  if (typeof minKpm === "number") conds.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
   if (typeof maxKpm === "number") {
-    if (maxKpm !== DEFAULT_KPM_SEARCH_RANGE.max) conds.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm))
+    if (maxKpm !== DEFAULT_KPM_SEARCH_RANGE.max) conds.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
   }
-  return conds
+  return conds;
 }
 
 function generateClearRateFilter({ minClearRate, maxClearRate }: { minClearRate: number; maxClearRate: number }) {
-  if (maxClearRate === 0) return []
-  const conds: SQL<unknown>[] = []
-  if (typeof minClearRate === "number") conds.push(gte(ResultStatuses.clearRate, minClearRate))
-  if (typeof maxClearRate === "number") conds.push(lte(ResultStatuses.clearRate, maxClearRate))
-  return conds
+  if (maxClearRate === 0) return [];
+  const conds: SQL<unknown>[] = [];
+  if (typeof minClearRate === "number") conds.push(gte(ResultStatuses.clearRate, minClearRate));
+  if (typeof maxClearRate === "number") conds.push(lte(ResultStatuses.clearRate, maxClearRate));
+  return conds;
 }
 
 function generatePlaySpeedFilter({ minPlaySpeed, maxPlaySpeed }: { minPlaySpeed: number; maxPlaySpeed: number }) {
-  if (maxPlaySpeed === 0) return []
-  const conds: SQL<unknown>[] = []
-  if (typeof minPlaySpeed === "number") conds.push(gte(ResultStatuses.minPlaySpeed, minPlaySpeed))
-  if (typeof maxPlaySpeed === "number") conds.push(lte(ResultStatuses.minPlaySpeed, maxPlaySpeed))
-  return conds
+  if (maxPlaySpeed === 0) return [];
+  const conds: SQL<unknown>[] = [];
+  if (typeof minPlaySpeed === "number") conds.push(gte(ResultStatuses.minPlaySpeed, minPlaySpeed));
+  if (typeof maxPlaySpeed === "number") conds.push(lte(ResultStatuses.minPlaySpeed, maxPlaySpeed));
+  return conds;
 }
 
 function generateKeywordFilter({
@@ -393,25 +393,25 @@ function generateKeywordFilter({
   playerName,
   creatorName,
 }: {
-  username: string
-  mapKeyword: string
-  playerName: AnyColumn
-  creatorName: AnyColumn
+  username: string;
+  mapKeyword: string;
+  playerName: AnyColumn;
+  creatorName: AnyColumn;
 }) {
-  const conds: SQL<unknown>[] = []
+  const conds: SQL<unknown>[] = [];
   if (username && username.trim() !== "") {
-    const pattern = `%${username}%`
-    conds.push(ilike(playerName, pattern))
+    const pattern = `%${username}%`;
+    conds.push(ilike(playerName, pattern));
   }
   if (mapKeyword && mapKeyword.trim() !== "") {
-    const pattern = `%${mapKeyword}%`
+    const pattern = `%${mapKeyword}%`;
     const keywordOr: SQL<unknown> = or(
       ilike(Maps.title, pattern),
       ilike(Maps.artistName, pattern),
       ilike(Maps.musicSource, pattern),
       ilike(creatorName, pattern),
-    ) as unknown as SQL<unknown>
-    conds.push(keywordOr)
+    ) as unknown as SQL<unknown>;
+    conds.push(keywordOr);
   }
-  return conds
+  return conds;
 }

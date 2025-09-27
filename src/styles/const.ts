@@ -4,4 +4,4 @@ export const THEME_LIST = {
     { class: "black", label: "black" },
   ],
   light: [{ class: "pink", label: "pink" }],
-}
+};

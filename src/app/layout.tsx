@@ -1,41 +1,41 @@
-import Header from "@/app/_components/header/header-component"
-import "@/styles/globals.css"
+import Header from "@/app/_components/header/header-component";
+import "@/styles/globals.css";
 // export const runtime = "edge";
-import type { Metadata } from "next"
-import dynamic from "next/dynamic"
-import { Noto_Sans_JP } from "next/font/google"
-import { headers } from "next/headers"
-import { SessionProvider } from "next-auth/react"
-import type { ReactNode } from "react"
-import { AlertDialogProvider } from "@/components/ui/alert-dialog/alert-dialog-provider"
-import { Toaster } from "@/components/ui/sonner"
-import { auth } from "@/server/auth"
-import { THEME_LIST } from "@/styles/const"
-import TRPCProvider from "@/trpc/provider"
-import LinkProgressProvider from "./_components/link-progress-provider"
-import MainProvider from "./_components/main-provider"
-import { ThemeProvider } from "./_components/theme-provider"
+import type { Metadata } from "next";
+import dynamic from "next/dynamic";
+import { Noto_Sans_JP } from "next/font/google";
+import { headers } from "next/headers";
+import { SessionProvider } from "next-auth/react";
+import type { ReactNode } from "react";
+import { AlertDialogProvider } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { auth } from "@/server/auth";
+import { THEME_LIST } from "@/styles/const";
+import TRPCProvider from "@/trpc/provider";
+import LinkProgressProvider from "./_components/link-progress-provider";
+import MainProvider from "./_components/main-provider";
+import { ThemeProvider } from "./_components/theme-provider";
 
-const PreviewYouTubeContent = dynamic(() => import("@/app/_components/preview-youtube-player"))
+const PreviewYouTubeContent = dynamic(() => import("@/app/_components/preview-youtube-player"));
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   display: "swap",
-})
+});
 
 export const metadata: Metadata = {
   title: "YTyping",
   description: "",
-}
+};
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: ReactNode
+  children: ReactNode;
 }>) {
-  const session = await auth()
-  const userAgent = (await headers()).get("user-agent") ?? ""
+  const session = await auth();
+  const userAgent = (await headers()).get("user-agent") ?? "";
 
   return (
     <html lang="ja" className={notoSansJP.className} suppressHydrationWarning>
@@ -69,5 +69,5 @@ export default async function RootLayout({
         <Toaster />
       </body>
     </html>
-  )
+  );
 }

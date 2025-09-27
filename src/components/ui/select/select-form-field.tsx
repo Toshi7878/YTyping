@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import type { ComponentProps } from "react"
-import { useFormContext } from "react-hook-form"
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select"
+import type { ComponentProps } from "react";
+import { useFormContext } from "react-hook-form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 
 interface SelectOption {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 interface SelectFormFieldProps {
-  name: string
-  label: string
-  placeholder?: string
-  description?: string
-  options: SelectOption[]
+  name: string;
+  label: string;
+  placeholder?: string;
+  description?: string;
+  options: SelectOption[];
 }
 
 const SelectFormField = ({
@@ -26,7 +26,7 @@ const SelectFormField = ({
   options,
   ...props
 }: SelectFormFieldProps & ComponentProps<typeof Select>) => {
-  const form = useFormContext()
+  const form = useFormContext();
 
   return (
     <FormField
@@ -54,7 +54,7 @@ const SelectFormField = ({
         </FormItem>
       )}
     />
-  )
-}
+  );
+};
 
-export default SelectFormField
+export default SelectFormField;

@@ -1,8 +1,8 @@
-import { ExternalLink } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
-import TextLink from "@/components/ui/text-link"
-import { H2, H5, Small } from "@/components/ui/typography"
-import ByUser from "./_components/by-user"
+import { ExternalLink } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import TextLink from "@/components/ui/text-link";
+import { H2, H5, Small } from "@/components/ui/typography";
+import ByUser from "./_components/by-user";
 
 const TOOLS = [
   {
@@ -23,7 +23,7 @@ const TOOLS = [
     href: "/manual/bg-yt-player" as const,
     byUserId: "1",
   },
-]
+];
 
 export default function Page() {
   return (
@@ -35,7 +35,7 @@ export default function Page() {
         </CardHeader>
         <CardContent className="space-y-6">
           {TOOLS.map((tool) => {
-            const isExternal = tool.href.startsWith("http")
+            const isExternal = tool.href.startsWith("http");
 
             return (
               <section key={tool.href} className="space-y-2">
@@ -52,10 +52,10 @@ export default function Page() {
                 </div>
                 <Small>{tool.description}</Small>
               </section>
-            )
+            );
           })}
         </CardContent>
       </Card>
     </article>
-  )
+  );
 }

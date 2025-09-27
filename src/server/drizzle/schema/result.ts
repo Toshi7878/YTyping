@@ -1,7 +1,7 @@
-import { sql } from "drizzle-orm"
-import { boolean, check, integer, pgTable, primaryKey, real, serial, timestamp, unique } from "drizzle-orm/pg-core"
-import { Maps } from "./map"
-import { Users } from "./user"
+import { sql } from "drizzle-orm";
+import { boolean, check, integer, pgTable, primaryKey, real, serial, timestamp, unique } from "drizzle-orm/pg-core";
+import { Maps } from "./map";
+import { Users } from "./user";
 
 export const Results = pgTable(
   "results",
@@ -18,7 +18,7 @@ export const Results = pgTable(
     rank: integer("rank").notNull().default(1),
   },
   (t) => [unique("uq_user_id_map_id").on(t.userId, t.mapId)],
-)
+);
 
 export const ImeResults = pgTable("ime_results", {
   id: serial("id").primaryKey(),
@@ -30,7 +30,7 @@ export const ImeResults = pgTable("ime_results", {
     .references(() => Maps.id, { onDelete: "cascade" }),
   typeCount: integer("type_count").notNull().default(0),
   score: integer("score").notNull().default(0),
-})
+});
 
 export const ResultStatuses = pgTable(
   "result_statuses",
@@ -57,7 +57,7 @@ export const ResultStatuses = pgTable(
     clearRate: real("clear_rate").notNull().default(0),
   },
   (t) => [check("valid_play_speed_values", sql`${t.minPlaySpeed} IN (0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00)`)],
-)
+);
 
 export const ResultClaps = pgTable(
   "result_claps",
@@ -72,4 +72,4 @@ export const ResultClaps = pgTable(
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.resultId] })],
-)
+);

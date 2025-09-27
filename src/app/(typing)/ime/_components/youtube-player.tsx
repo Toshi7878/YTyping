@@ -1,11 +1,11 @@
-"use client"
-import type { CSSProperties } from "react"
-import { useCallback, useEffect } from "react"
-import type { YouTubeEvent } from "react-youtube"
-import YouTube from "react-youtube"
-import { windowFocus } from "@/utils/hooks/window-focus"
-import { useReadScene } from "../_lib/atoms/state-atoms"
-import { useTimerRegistration } from "../_lib/hooks/timer"
+"use client";
+import type { CSSProperties } from "react";
+import { useCallback, useEffect } from "react";
+import type { YouTubeEvent } from "react-youtube";
+import YouTube from "react-youtube";
+import { windowFocus } from "@/utils/hooks/window-focus";
+import { useReadScene } from "../_lib/atoms/state-atoms";
+import { useTimerRegistration } from "../_lib/hooks/timer";
 import {
   useYTEndEvent,
   useYTPauseEvent,
@@ -13,60 +13,60 @@ import {
   useYTReadyEvent,
   useYTSeekEvent,
   useYTStopEvent,
-} from "../_lib/hooks/youtube-events"
+} from "../_lib/hooks/youtube-events";
 
 interface YouTubePlayerProps {
-  videoId: string
-  className?: string
-  style: CSSProperties
+  videoId: string;
+  className?: string;
+  style: CSSProperties;
 }
 
 const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) => {
-  const ytReadyEvent = useYTReadyEvent()
-  const ytPlayEvent = useYTPlayEvent()
-  const ytPauseEvent = useYTPauseEvent()
-  const ytStopEvent = useYTStopEvent()
-  const ytEndEvent = useYTEndEvent()
-  const ytSeekEvent = useYTSeekEvent()
-  const { addTimer, removeTimer } = useTimerRegistration()
-  const readScene = useReadScene()
+  const ytReadyEvent = useYTReadyEvent();
+  const ytPlayEvent = useYTPlayEvent();
+  const ytPauseEvent = useYTPauseEvent();
+  const ytStopEvent = useYTStopEvent();
+  const ytEndEvent = useYTEndEvent();
+  const ytSeekEvent = useYTSeekEvent();
+  const { addTimer, removeTimer } = useTimerRegistration();
+  const readScene = useReadScene();
 
   useEffect(() => {
-    addTimer()
-    return () => removeTimer()
-  }, [])
+    addTimer();
+    return () => removeTimer();
+  }, []);
 
   const handleStateChange = (event: YouTubeEvent) => {
-    windowFocus()
+    windowFocus();
 
     switch (event.data) {
       case 3:
         // seek時の処理
-        ytSeekEvent()
-        break
+        ytSeekEvent();
+        break;
       case 1: {
         //	未スタート、他の動画に切り替えた時など
-        console.log("未スタート -1")
+        console.log("未スタート -1");
 
-        const scene = readScene()
+        const scene = readScene();
         if (scene === "ready") {
-          event.target.seekTo(0, true)
+          event.target.seekTo(0, true);
         }
-        break
+        break;
       }
       case 5: {
         // 動画強制停止
-        console.log("動画強制停止")
-        ytStopEvent()
-        break
+        console.log("動画強制停止");
+        ytStopEvent();
+        break;
       }
     }
-  }
+  };
 
   // YouTubeコンポーネントのエラーハンドリングを追加
   const handleError = useCallback((event: YouTubeEvent) => {
-    console.error("YouTube Player Error:", event.data)
-  }, [])
+    console.error("YouTube Player Error:", event.data);
+  }, []);
 
   return (
     <YouTube
@@ -94,7 +94,7 @@ const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) =
       onStateChange={handleStateChange}
       onError={handleError}
     />
-  )
-}
+  );
+};
 
-export default YouTubePlayer
+export default YouTubePlayer;

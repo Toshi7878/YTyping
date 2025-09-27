@@ -1,18 +1,18 @@
-import { usePlayer } from "../atoms/read-atoms"
+import { usePlayer } from "../atoms/read-atoms";
 
 const useTimeValidate = () => {
-  const { readPlayer } = usePlayer()
+  const { readPlayer } = usePlayer();
 
   return (time: number) => {
-    const duration = readPlayer().getDuration()
+    const duration = readPlayer().getDuration();
     if (0 >= time) {
-      return 0.001
+      return 0.001;
     } else if (time >= duration) {
-      return duration - 0.001
+      return duration - 0.001;
     } else {
-      return time
+      return time;
     }
-  }
-}
+  };
+};
 
-export default useTimeValidate
+export default useTimeValidate;

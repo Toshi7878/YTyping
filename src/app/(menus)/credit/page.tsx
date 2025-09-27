@@ -1,6 +1,6 @@
-import { CardWithContent } from "@/components/ui/card"
-import TextLink from "@/components/ui/text-link"
-import { H2, H3, H5, Small } from "@/components/ui/typography"
+import { CardWithContent } from "@/components/ui/card";
+import TextLink from "@/components/ui/text-link";
+import { H2, H3, H5, Small } from "@/components/ui/typography";
 
 export default function Page() {
   return (
@@ -11,7 +11,7 @@ export default function Page() {
         <SpecialThanks />
       </CardWithContent>
     </div>
-  )
+  );
 }
 
 const BorrowedMaterials = () => {
@@ -34,8 +34,8 @@ const BorrowedMaterials = () => {
         </li>
       </ul>
     </section>
-  )
-}
+  );
+};
 
 const SpecialThanks = () => {
   return (
@@ -68,5 +68,5 @@ const SpecialThanks = () => {
         </li>
       </ul>
     </section>
-  )
-}
+  );
+};

@@ -1,23 +1,23 @@
-import { HydrateClient, prefetch, trpc } from "@/trpc/server"
-import { parseMapListSearchParams } from "@/utils/queries/search-params/map-list"
-import MapControlArea from "./_components/map-control-area"
-import MapList from "./_components/map-list"
-import HomeProvider from "./client-provider"
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
+import MapControlArea from "./_components/map-control-area";
+import MapList from "./_components/map-list";
+import HomeProvider from "./client-provider";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
-  const raw = await searchParams
-  const usp = new URLSearchParams()
+  const raw = await searchParams;
+  const usp = new URLSearchParams();
   for (const [key, value] of Object.entries(raw)) {
     if (Array.isArray(value)) {
-      for (const v of value) usp.append(key, v)
+      for (const v of value) usp.append(key, v);
     } else if (typeof value === "string") {
-      usp.append(key, value)
+      usp.append(key, value);
     }
   }
 
-  const params = parseMapListSearchParams(usp)
+  const params = parseMapListSearchParams(usp);
 
-  prefetch(trpc.mapList.getList.infiniteQueryOptions(params))
+  prefetch(trpc.mapList.getList.infiniteQueryOptions(params));
 
   return (
     <HydrateClient>
@@ -29,5 +29,5 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </div>
       </HomeProvider>
     </HydrateClient>
-  )
+  );
 }

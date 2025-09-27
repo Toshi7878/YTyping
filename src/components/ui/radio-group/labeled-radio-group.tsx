@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { Label } from "../label"
-import { RadioGroup, RadioGroupItem } from "./radio-group"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Label } from "../label";
+import { RadioGroup, RadioGroupItem } from "./radio-group";
 
 export interface LabeledRadioItemProps extends Omit<React.ComponentProps<typeof RadioGroupItem>, "onCheckedChange"> {
-  label: React.ReactNode
-  labelClassName?: string
-  containerClassName?: string
-  description?: React.ReactNode
-  error?: string
-  value: string
+  label: React.ReactNode;
+  labelClassName?: string;
+  containerClassName?: string;
+  description?: React.ReactNode;
+  error?: string;
+  value: string;
 }
 
 const LabeledRadioItem = ({
@@ -26,7 +26,7 @@ const LabeledRadioItem = ({
   ref,
   ...props
 }: LabeledRadioItemProps) => {
-  const radioId = React.useId()
+  const radioId = React.useId();
 
   return (
     <div className={cn("space-y-2", containerClassName)}>
@@ -52,16 +52,16 @@ const LabeledRadioItem = ({
       {description && <p className="text-muted-foreground ml-6 text-xs">{description}</p>}
       {error && <p className="text-destructive ml-6 text-sm">{error}</p>}
     </div>
-  )
-}
+  );
+};
 
 export interface LabeledRadioGroupProps extends React.ComponentProps<typeof RadioGroup> {
-  items: { label: string; value: string }[]
-  label?: React.ReactNode
-  labelClassName?: string
-  containerClassName?: string
-  description?: React.ReactNode
-  error?: string
+  items: { label: string; value: string }[];
+  label?: React.ReactNode;
+  labelClassName?: string;
+  containerClassName?: string;
+  description?: React.ReactNode;
+  error?: string;
 }
 
 const LabeledRadioGroup = React.forwardRef<React.ComponentRef<typeof RadioGroup>, LabeledRadioGroupProps>(
@@ -77,10 +77,10 @@ const LabeledRadioGroup = React.forwardRef<React.ComponentRef<typeof RadioGroup>
         </RadioGroup>
         {error && <p className="text-destructive text-sm">{error}</p>}
       </div>
-    )
+    );
   },
-)
+);
 
-LabeledRadioGroup.displayName = "LabeledRadioGroup"
+LabeledRadioGroup.displayName = "LabeledRadioGroup";
 
-export { LabeledRadioGroup, LabeledRadioItem }
+export { LabeledRadioGroup, LabeledRadioItem };

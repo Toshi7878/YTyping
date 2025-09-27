@@ -1,28 +1,28 @@
-"use client"
-import type { RefObject } from "react"
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms"
+"use client";
+import type { RefObject } from "react";
+import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useLineResultState,
   useMapState,
   usePlayingInputModeState,
   useSceneState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import type { LineData } from "@/app/(typing)/type/_lib/type"
-import { Card, CardFooter } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { cn } from "@/lib/utils"
-import { CHAR_POINT } from "@/utils/build-map/build-map"
-import ResultCardContent from "./child/result-card-body"
-import ResultCardFooter from "./child/result-card-footer"
-import ResultCardHeader from "./child/result-card-header"
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import type { LineData } from "@/app/(typing)/type/_lib/type";
+import { Card, CardFooter } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import { CHAR_POINT } from "@/utils/build-map/build-map";
+import ResultCardContent from "./child/result-card-body";
+import ResultCardFooter from "./child/result-card-footer";
+import ResultCardHeader from "./child/result-card-header";
 
 interface OptimizedResultCardProps {
-  count: number
-  lineIndex: number
-  scoreCount: number
-  cardRefs: RefObject<HTMLDivElement[]>
-  handleCardClick: (lineNumber: number) => void
-  lineData: LineData
+  count: number;
+  lineIndex: number;
+  scoreCount: number;
+  cardRefs: RefObject<HTMLDivElement[]>;
+  handleCardClick: (lineNumber: number) => void;
+  lineData: LineData;
 }
 
 function OptimizedResultCard({
@@ -33,40 +33,40 @@ function OptimizedResultCard({
   handleCardClick,
   lineData,
 }: OptimizedResultCardProps) {
-  const _lineResult = useLineResultState(count)
+  const _lineResult = useLineResultState(count);
 
-  const map = useMapState()
-  const scene = useSceneState()
-  const { minPlaySpeed, playSpeed } = usePlaySpeedState()
-  const inputMode = usePlayingInputModeState()
+  const map = useMapState();
+  const scene = useSceneState();
+  const { minPlaySpeed, playSpeed } = usePlaySpeedState();
+  const inputMode = usePlayingInputModeState();
 
-  if (!map || !_lineResult) return null
+  if (!map || !_lineResult) return null;
 
-  const { isSelected, lineResult } = _lineResult
+  const { isSelected, lineResult } = _lineResult;
 
-  const lineSpeed = lineResult.status.sp > minPlaySpeed ? lineResult.status.sp : minPlaySpeed
-  const lineInputMode = lineResult.status.mode ?? inputMode
-  const lineKanaWord = lineData.word.map((w) => w.k).join("")
-  const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w.r[0]).join("") : lineKanaWord
-  const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k
-  const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed
+  const lineSpeed = lineResult.status.sp > minPlaySpeed ? lineResult.status.sp : minPlaySpeed;
+  const lineInputMode = lineResult.status.mode ?? inputMode;
+  const lineKanaWord = lineData.word.map((w) => w.k).join("");
+  const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w.r[0]).join("") : lineKanaWord;
+  const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
+  const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
 
-  const maxLinePoint = lineData.notes.r * CHAR_POINT
+  const maxLinePoint = lineData.notes.r * CHAR_POINT;
 
-  const kpm = lineResult.status.lKpm ?? 0
-  const rkpm = lineResult.status.lRkpm ?? 0
-  const point = lineResult.status.p ?? 0
-  const miss = lineResult.status.lMiss ?? 0
-  const tBonus = lineResult.status?.tBonus ?? 0
-  const lostWord = lineResult.status.lostW ?? ""
-  const lost = lineResult.status.lLost ?? 0
+  const kpm = lineResult.status.lKpm ?? 0;
+  const rkpm = lineResult.status.lRkpm ?? 0;
+  const point = lineResult.status.p ?? 0;
+  const miss = lineResult.status.lMiss ?? 0;
+  const tBonus = lineResult.status?.tBonus ?? 0;
+  const lostWord = lineResult.status.lostW ?? "";
+  const lost = lineResult.status.lLost ?? 0;
 
-  const seekTime = Number(map.mapData[count].time) - (scene === "replay" ? 0 : 1 * playSpeed)
+  const seekTime = Number(map.mapData[count].time) - (scene === "replay" ? 0 : 1 * playSpeed);
 
   return (
     <Card
       ref={(el) => {
-        if (el) cardRefs.current[lineIndex] = el
+        if (el) cardRefs.current[lineIndex] = el;
       }}
       data-seek-time={seekTime}
       data-line-index={lineIndex}
@@ -109,7 +109,7 @@ function OptimizedResultCard({
         />
       </CardFooter>
     </Card>
-  )
+  );
 }
 
-export default OptimizedResultCard
+export default OptimizedResultCard;

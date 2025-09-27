@@ -1,54 +1,54 @@
-import { useEffect, useRef } from "react"
-import { usePlayer } from "@/app/(typing)/type/_lib/atoms/ref-atoms"
-import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { H3 } from "@/components/ui/typography"
-import { cn } from "@/lib/utils"
-import { windowFocus } from "@/utils/hooks/window-focus"
-import ReadyInputModeRadioCards from "./ready-child/input-mode-radio-cards"
-import ReadyPlaySpeed from "./ready-child/min-play-speed-counter"
-import ReadyPracticeButton from "./ready-child/practice-button"
+import { useEffect, useRef } from "react";
+import { usePlayer } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { H3 } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
+import { windowFocus } from "@/utils/hooks/window-focus";
+import ReadyInputModeRadioCards from "./ready-child/input-mode-radio-cards";
+import ReadyPlaySpeed from "./ready-child/min-play-speed-counter";
+import ReadyPracticeButton from "./ready-child/practice-button";
 
 interface ReadyProps {
-  className?: string
+  className?: string;
 }
 
 function Ready({ className }: ReadyProps) {
-  const speedUpButtonRef = useRef<HTMLButtonElement>(null)
-  const speedDownButtonRef = useRef<HTMLButtonElement>(null)
-  const map = useMapState()
-  const { readPlayer } = usePlayer()
+  const speedUpButtonRef = useRef<HTMLButtonElement>(null);
+  const speedDownButtonRef = useRef<HTMLButtonElement>(null);
+  const map = useMapState();
+  const { readPlayer } = usePlayer();
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {
       switch (event.code) {
         case "Enter": {
-          const player = readPlayer()
+          const player = readPlayer();
           if (player && map) {
-            player.playVideo()
-            windowFocus()
+            player.playVideo();
+            windowFocus();
           }
-          event.preventDefault()
-          break
+          event.preventDefault();
+          break;
         }
         case "F9":
-          speedDownButtonRef.current?.click()
-          event.preventDefault()
+          speedDownButtonRef.current?.click();
+          event.preventDefault();
 
-          break
+          break;
         case "F10":
-          speedUpButtonRef.current?.click()
-          event.preventDefault()
+          speedUpButtonRef.current?.click();
+          event.preventDefault();
 
-          break
+          break;
       }
-    }
+    };
 
-    window.addEventListener("keydown", handleKeyDown)
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [readPlayer(), map])
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [readPlayer(), map]);
 
   return (
     <div className={cn("flex flex-col justify-between select-none", className)}>
@@ -61,7 +61,7 @@ function Ready({ className }: ReadyProps) {
         <ReadyPracticeButton />
       </div>
     </div>
-  )
+  );
 }
 
-export default Ready
+export default Ready;

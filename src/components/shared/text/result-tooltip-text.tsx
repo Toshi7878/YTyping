@@ -1,15 +1,15 @@
-import { Separator } from "@/components/ui/separator"
-import { cn } from "@/lib/utils"
-import type { RouterOutPuts } from "@/server/api/trpc"
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import type { RouterOutPuts } from "@/server/api/trpc";
 
 interface ResultToolTipTextProps {
-  typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"]
-  otherStatus: RouterOutPuts["result"]["getMapRanking"][number]["otherStatus"]
-  typeSpeed: RouterOutPuts["result"]["getMapRanking"][number]["typeSpeed"]
-  missRate: string
-  isPerfect: boolean
-  isKanaFlickTyped: boolean
-  updatedAt: Date
+  typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"];
+  otherStatus: RouterOutPuts["result"]["getMapRanking"][number]["otherStatus"];
+  typeSpeed: RouterOutPuts["result"]["getMapRanking"][number]["typeSpeed"];
+  missRate: string;
+  isPerfect: boolean;
+  isKanaFlickTyped: boolean;
+  updatedAt: Date;
 }
 
 const ResultToolTipText = ({
@@ -21,8 +21,8 @@ const ResultToolTipText = ({
   isKanaFlickTyped,
   updatedAt,
 }: ResultToolTipTextProps) => {
-  const { miss, lost, maxCombo, playSpeed } = otherStatus
-  const { kpm, rkpm, kanaToRomaKpm, kanaToRomaRkpm } = typeSpeed
+  const { miss, lost, maxCombo, playSpeed } = otherStatus;
+  const { kpm, rkpm, kanaToRomaKpm, kanaToRomaRkpm } = typeSpeed;
 
   return (
     <div className="min-w-36 space-y-3 p-4 text-xs md:min-w-48 md:text-base">
@@ -83,15 +83,15 @@ const ResultToolTipText = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 interface TypeCountResultProps {
-  typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"]
+  typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"];
 }
 
 const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
-  const { romaType, kanaType, flickType, englishType, numType, spaceType, symbolType } = typeCounts
+  const { romaType, kanaType, flickType, englishType, numType, spaceType, symbolType } = typeCounts;
   const types = [
     { label: "ローマ字", value: romaType },
     { label: "かな入力", value: kanaType },
@@ -100,10 +100,10 @@ const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
       label: "英数字記号",
       value: englishType + numType + symbolType + spaceType,
     },
-  ]
+  ];
 
-  const total = types.reduce((sum, type) => sum + type.value, 0)
-  const typesUsedCount = types.filter((type) => type.value > 0).length
+  const total = types.reduce((sum, type) => sum + type.value, 0);
+  const typesUsedCount = types.filter((type) => type.value > 0).length;
 
   return (
     <div className="space-y-1">
@@ -123,7 +123,7 @@ const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ResultToolTipText
+export default ResultToolTipText;

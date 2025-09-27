@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import type z from "zod"
-import { CheckboxFormField } from "@/components/ui/checkbox/checkbox-form-field"
-import { Form } from "@/components/ui/form"
-import SelectFormField from "@/components/ui/select/select-form-field"
-import type { RouterOutPuts } from "@/server/api/trpc"
-import { CreateUserOptionSchema } from "@/server/drizzle/validator/user-option"
-import { useTRPC } from "@/trpc/provider"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import type z from "zod";
+import { CheckboxFormField } from "@/components/ui/checkbox/checkbox-form-field";
+import { Form } from "@/components/ui/form";
+import SelectFormField from "@/components/ui/select/select-form-field";
+import type { RouterOutPuts } from "@/server/api/trpc";
+import { CreateUserOptionSchema } from "@/server/drizzle/validator/user-option";
+import { useTRPC } from "@/trpc/provider";
 
 interface OptionFormProps {
-  userOptions: RouterOutPuts["userOption"]["getUserOptions"]
+  userOptions: RouterOutPuts["userOption"]["getUserOptions"];
 }
 
 export const OptionForm = ({ userOptions }: OptionFormProps) => {
@@ -22,21 +22,21 @@ export const OptionForm = ({ userOptions }: OptionFormProps) => {
       customUserActiveState: userOptions?.customUserActiveState ?? "ONLINE",
       hideUserStats: userOptions?.hideUserStats ?? false,
     },
-  })
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
+  });
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
   const sendUserOption = useMutation(
     trpc.userOption.updateOptions.mutationOptions({
       onSuccess: () => {
-        void queryClient.invalidateQueries(trpc.userOption.getUserOptions.queryOptions())
+        void queryClient.invalidateQueries(trpc.userOption.getUserOptions.queryOptions());
       },
     }),
-  )
+  );
 
   const onSubmit = (data: z.output<typeof CreateUserOptionSchema>) => {
-    sendUserOption.mutate(data)
-  }
+    sendUserOption.mutate(data);
+  };
 
   return (
     <Form {...form}>
@@ -53,7 +53,7 @@ export const OptionForm = ({ userOptions }: OptionFormProps) => {
             onSubmit({
               customUserActiveState: value as z.output<typeof CreateUserOptionSchema>["customUserActiveState"],
               hideUserStats: form.getValues("hideUserStats"),
-            })
+            });
           }}
         />
         <CheckboxFormField
@@ -63,10 +63,10 @@ export const OptionForm = ({ userOptions }: OptionFormProps) => {
             onSubmit({
               customUserActiveState: form.getValues("customUserActiveState"),
               hideUserStats: value,
-            })
+            });
           }}
         />
       </form>
     </Form>
-  )
-}
+  );
+};

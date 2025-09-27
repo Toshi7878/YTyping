@@ -1,7 +1,7 @@
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch"
-import { appRouter } from "@/server/api/root"
-import { auth } from "@/server/auth"
-import { db } from "@/server/drizzle/client"
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { appRouter } from "@/server/api/root";
+import { auth } from "@/server/auth";
+import { db } from "@/server/drizzle/client";
 
 const handler = async (req: Request) =>
   fetchRequestHandler({
@@ -9,12 +9,12 @@ const handler = async (req: Request) =>
     req,
     router: appRouter,
     createContext: async () => {
-      const session = await auth()
+      const session = await auth();
       return {
         db,
         user: { ...session?.user, id: Number(session?.user.id ?? 0) },
-      }
+      };
     },
-  })
+  });
 
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST };

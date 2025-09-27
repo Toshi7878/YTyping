@@ -1,18 +1,18 @@
-import { useSession } from "next-auth/react"
-import { useState } from "react"
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms"
-import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/use-get-my-ranking-result"
-import RandomEmoji from "./child/random-emoji"
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/use-get-my-ranking-result";
+import RandomEmoji from "./child/random-emoji";
 
 const EndText = () => {
-  const getMyRankingResult = useGetMyRankingResult()
-  const { data: session } = useSession()
-  const speed = usePlaySpeedState()
-  const { score, miss, lost } = useTypingStatusState()
-  const [bestScore] = useState(() => getMyRankingResult()?.score ?? 0)
-  const isPerfect = miss === 0 && lost === 0
-  const scene = useSceneState()
+  const getMyRankingResult = useGetMyRankingResult();
+  const { data: session } = useSession();
+  const speed = usePlaySpeedState();
+  const { score, miss, lost } = useTypingStatusState();
+  const [bestScore] = useState(() => getMyRankingResult()?.score ?? 0);
+  const isPerfect = miss === 0 && lost === 0;
+  const scene = useSceneState();
 
   return (
     <div className="mx-2 text-left text-3xl md:text-3xl" id="end_text">
@@ -40,7 +40,7 @@ const EndText = () => {
       </span>
       {speed.minPlaySpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
     </div>
-  )
-}
+  );
+};
 
-export default EndText
+export default EndText;

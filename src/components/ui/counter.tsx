@@ -1,8 +1,8 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import { useHotkeys } from "react-hotkeys-hook"
-import { cn } from "@/lib/utils"
-import { Button } from "./button"
-import { TooltipWrapper } from "./tooltip"
+import { cva, type VariantProps } from "class-variance-authority";
+import { useHotkeys } from "react-hotkeys-hook";
+import { cn } from "@/lib/utils";
+import { Button } from "./button";
+import { TooltipWrapper } from "./tooltip";
 
 const counterVariants = cva("", {
   variants: {
@@ -67,22 +67,22 @@ const counterVariants = cva("", {
     variant: "outline",
     size: "default",
   },
-})
+});
 
 interface CounterInputProps extends VariantProps<typeof counterVariants> {
-  value: number
-  label?: string
-  max: number
-  min: number
-  step: number
-  valueDigits?: number
-  onChange: (value: number) => void
-  unit?: string
-  decrementTooltip?: string
-  incrementTooltip?: string
-  className?: string
-  minusButtonHotkey?: string
-  plusButtonHotkey?: string
+  value: number;
+  label?: string;
+  max: number;
+  min: number;
+  step: number;
+  valueDigits?: number;
+  onChange: (value: number) => void;
+  unit?: string;
+  decrementTooltip?: string;
+  incrementTooltip?: string;
+  className?: string;
+  minusButtonHotkey?: string;
+  plusButtonHotkey?: string;
 }
 
 export const CounterInput = ({
@@ -105,19 +105,19 @@ export const CounterInput = ({
   useHotkeys(minusButtonHotkey, () => onCounterChange({ type: "decrement" }), {
     enableOnFormTags: false,
     preventDefault: true,
-  })
+  });
   useHotkeys(plusButtonHotkey, () => onCounterChange({ type: "increment" }), {
     enableOnFormTags: false,
     preventDefault: true,
-  })
+  });
 
   const onCounterChange = ({ type }: { type: "increment" | "decrement" }) => {
-    const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step)
-    const newValueFixed = valueDigits ? Number(newValue.toFixed(valueDigits)) : newValue
-    onChange(newValueFixed)
-  }
+    const newValue = type === "increment" ? Math.min(max, value + step) : Math.max(min, value - step);
+    const newValueFixed = valueDigits ? Number(newValue.toFixed(valueDigits)) : newValue;
+    onChange(newValueFixed);
+  };
 
-  const buttonSize = size === "sm" ? "sm" : size === "lg" ? "default" : "sm"
+  const buttonSize = size === "sm" ? "sm" : size === "lg" ? "default" : "sm";
 
   return (
     <div className={cn(counterVariants({ variant, size, element: "wrapper" }), className)}>
@@ -168,5 +168,5 @@ export const CounterInput = ({
         </TooltipWrapper>
       </div>
     </div>
-  )
-}
+  );
+};

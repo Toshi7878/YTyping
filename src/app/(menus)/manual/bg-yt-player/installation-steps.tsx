@@ -1,10 +1,10 @@
-"use client"
-import type { Route } from "next"
-import type { ReactNode } from "react"
-import { Separator } from "@/components/ui/separator"
-import TextLink from "@/components/ui/text-link"
-import { H6 } from "@/components/ui/typography"
-import { useUserAgent } from "@/lib/global-atoms"
+"use client";
+import type { Route } from "next";
+import type { ReactNode } from "react";
+import { Separator } from "@/components/ui/separator";
+import TextLink from "@/components/ui/text-link";
+import { H6 } from "@/components/ui/typography";
+import { useUserAgent } from "@/lib/global-atoms";
 
 const browserLinks: Record<string, { url: Route; text: string }> = {
   Chrome: {
@@ -19,19 +19,19 @@ const browserLinks: Record<string, { url: Route; text: string }> = {
     url: "https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne?hl=ja",
     text: "Stylus - Chrome ウェブストア",
   },
-}
+};
 
 const useBrowserLink = () => {
-  const userAgent = useUserAgent()
-  const browserType = userAgent?.getBrowser().name
-  const browserLink = browserLinks[browserType as keyof typeof browserLinks]
-  if (!browserLink) return browserLinks.Chrome
+  const userAgent = useUserAgent();
+  const browserType = userAgent?.getBrowser().name;
+  const browserLink = browserLinks[browserType as keyof typeof browserLinks];
+  if (!browserLink) return browserLinks.Chrome;
 
-  return browserLink
-}
+  return browserLink;
+};
 
 export function InstallationSteps() {
-  const browserLink = useBrowserLink()
+  const browserLink = useBrowserLink();
   return (
     <ol className="list-inside list-decimal space-y-6">
       <InstallationStep title="Stylusブラウザ拡張機能をインストールする">
@@ -63,12 +63,12 @@ export function InstallationSteps() {
         </p>
       </InstallationStep>
     </ol>
-  )
+  );
 }
 
 interface InstallationStepProps {
-  title: string
-  children: ReactNode
+  title: string;
+  children: ReactNode;
 }
 
 function InstallationStep({ title, children }: InstallationStepProps) {
@@ -77,5 +77,5 @@ function InstallationStep({ title, children }: InstallationStepProps) {
       <H6 className="inline">{title}</H6>
       {children}
     </li>
-  )
+  );
 }

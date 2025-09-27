@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server"
-import { generateOpenApiDocument } from "trpc-to-openapi"
-import { appRouter } from "@/server/api/root"
+import { NextResponse } from "next/server";
+import { generateOpenApiDocument } from "trpc-to-openapi";
+import { appRouter } from "@/server/api/root";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const url = new URL(request.url)
-  const baseUrl = `${url.origin}/api`
+  const url = new URL(request.url);
+  const baseUrl = `${url.origin}/api`;
 
   const doc = generateOpenApiDocument(appRouter, {
     title: "YTyping API",
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     baseUrl,
     description: "OpenAPI for selected tRPC procedures",
     tags: ["UserStats"],
-  })
+  });
 
-  return NextResponse.json(doc)
+  return NextResponse.json(doc);
 }

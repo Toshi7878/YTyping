@@ -1,11 +1,11 @@
-import { useTRPC } from "@/trpc/provider"
+import { useTRPC } from "@/trpc/provider";
 
 interface UseGenerateMapInfoQueryProps {
-  videoId: string
+  videoId: string;
 }
 
 export const useGeminiQueries = () => {
-  const trpc = useTRPC()
+  const trpc = useTRPC();
 
   return {
     generateMapInfo: ({ videoId }: UseGenerateMapInfoQueryProps, { enabled }: { enabled: boolean }) =>
@@ -20,5 +20,5 @@ export const useGeminiQueries = () => {
           refetchOnWindowFocus: false,
         },
       ),
-  }
-}
+  };
+};

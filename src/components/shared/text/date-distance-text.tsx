@@ -1,15 +1,15 @@
-"use client"
-import { formatDistanceToNowStrict } from "date-fns"
-import { ja } from "date-fns/locale"
+"use client";
+import { formatDistanceToNowStrict } from "date-fns";
+import { ja } from "date-fns/locale";
 
 interface DateDistanceTextProps {
-  date: Date | string
-  text?: string
-  addSuffix?: boolean
+  date: Date | string;
+  text?: string;
+  addSuffix?: boolean;
 }
 
 const DateDistanceText = ({ date, text, addSuffix = true }: DateDistanceTextProps) => {
-  const dateObj = typeof date === "string" ? new Date(date) : date
+  const dateObj = typeof date === "string" ? new Date(date) : date;
 
   return (
     <time
@@ -26,6 +26,6 @@ const DateDistanceText = ({ date, text, addSuffix = true }: DateDistanceTextProp
       {formatDistanceToNowStrict(dateObj, { addSuffix, locale: ja })}
       {text && text}
     </time>
-  )
-}
-export default DateDistanceText
+  );
+};
+export default DateDistanceText;

@@ -1,32 +1,32 @@
-"use client"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
-import { useEffect } from "react"
-import { useForm, useFormContext } from "react-hook-form"
-import { FaPlay } from "react-icons/fa"
-import { toast } from "sonner"
-import type z from "zod"
-import { usePlayer, useSetPreventEditortabAutoFocus } from "@/app/edit/_lib/atoms/read-atoms"
-import { TAG_MAX_LEN } from "@/app/edit/_lib/const"
-import useHasMapUploadPermission from "@/app/edit/_lib/hooks/use-has-map-upload-permission"
-import { Button } from "@/components/ui/button"
-import { CardWithContent } from "@/components/ui/card"
-import { Form } from "@/components/ui/form"
-import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field"
-import { TagInputFormField } from "@/components/ui/input/tag-input"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db"
-import { MapInfoFormSchema } from "@/server/drizzle/validator/map"
-import { useTRPC } from "@/trpc/provider"
-import { BuildMap } from "@/utils/build-map/build-map"
-import { extractYouTubeId } from "@/utils/extract-youtube-id"
-import { useDebounce } from "@/utils/hooks/use-debounce"
-import { useGeminiQueries } from "@/utils/queries/gemini.queries"
-import { useMapQueries } from "@/utils/queries/map.queries"
-import { useNavigationGuard } from "@/utils/use-navigation-guard"
-import { useMapReducer, useReadMap } from "../../../_lib/atoms/map-reducer-atom"
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useForm, useFormContext } from "react-hook-form";
+import { FaPlay } from "react-icons/fa";
+import { toast } from "sonner";
+import type z from "zod";
+import { usePlayer, useSetPreventEditortabAutoFocus } from "@/app/edit/_lib/atoms/read-atoms";
+import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
+import useHasMapUploadPermission from "@/app/edit/_lib/hooks/use-has-map-upload-permission";
+import { Button } from "@/components/ui/button";
+import { CardWithContent } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
+import { TagInputFormField } from "@/components/ui/input/tag-input";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
+import { MapInfoFormSchema } from "@/server/drizzle/validator/map";
+import { useTRPC } from "@/trpc/provider";
+import { BuildMap } from "@/utils/build-map/build-map";
+import { extractYouTubeId } from "@/utils/extract-youtube-id";
+import { useDebounce } from "@/utils/hooks/use-debounce";
+import { useGeminiQueries } from "@/utils/queries/gemini.queries";
+import { useMapQueries } from "@/utils/queries/map.queries";
+import { useNavigationGuard } from "@/utils/use-navigation-guard";
+import { useMapReducer, useReadMap } from "../../../_lib/atoms/map-reducer-atom";
 import {
   useCanUploadState,
   useReadEditUtils,
@@ -34,33 +34,33 @@ import {
   useSetVideoId,
   useSetYTChaningVideo,
   useVideoIdState,
-} from "../../../_lib/atoms/state-atoms"
-import { getThumbnailQuality } from "../../../_lib/ts/get-thumbail-quality"
-import SuggestionTags from "./suggestion-tags"
+} from "../../../_lib/atoms/state-atoms";
+import { getThumbnailQuality } from "../../../_lib/ts/get-thumbail-quality";
+import SuggestionTags from "./suggestion-tags";
 
 const MapInfoForm = () => {
-  const searchParams = useSearchParams()
-  const mapId = usePathname().split("/")[2]
+  const searchParams = useSearchParams();
+  const mapId = usePathname().split("/")[2];
 
-  const isBackUp = searchParams.get("backup") === "true"
-  const newCreateVideoId = searchParams.get("new")
-  const hasUploadPermission = useHasMapUploadPermission()
+  const isBackUp = searchParams.get("backup") === "true";
+  const newCreateVideoId = searchParams.get("new");
+  const hasUploadPermission = useHasMapUploadPermission();
 
   const { data: mapInfo } = useQuery({
     ...useMapQueries().mapInfo({ mapId: Number(mapId) }),
     enabled: !!mapId && !isBackUp,
-  })
+  });
 
   const { data: backupMap } = useQuery({
     ...useMapQueries().editBackupMap(),
     enabled: isBackUp,
-  })
+  });
 
-  const videoId = useVideoIdState()
-  const setVideoId = useSetVideoId()
-  const mapDispatch = useMapReducer()
-  const setCanUpload = useSetCanUpload()
-  const { debounce } = useDebounce(500)
+  const videoId = useVideoIdState();
+  const setVideoId = useSetVideoId();
+  const mapDispatch = useMapReducer();
+  const setCanUpload = useSetCanUpload();
+  const { debounce } = useDebounce(500);
 
   const form = useForm({
     resolver: zodResolver(MapInfoFormSchema),
@@ -78,27 +78,27 @@ const MapInfoForm = () => {
     resetOptions: {
       keepDirtyValues: true,
     },
-  })
+  });
 
   useEffect(() => {
     if (mapInfo && !isBackUp) {
-      setVideoId(mapInfo.videoId)
+      setVideoId(mapInfo.videoId);
     }
-  }, [mapInfo, isBackUp, form, setVideoId])
+  }, [mapInfo, isBackUp, form, setVideoId]);
 
   useEffect(() => {
     if (backupMap && isBackUp && newCreateVideoId) {
-      mapDispatch({ type: "replaceAll", payload: backupMap.map })
-      setCanUpload(true)
-      setVideoId(newCreateVideoId)
+      mapDispatch({ type: "replaceAll", payload: backupMap.map });
+      setCanUpload(true);
+      setVideoId(newCreateVideoId);
     }
-  }, [backupMap, isBackUp, newCreateVideoId, form, mapDispatch, setCanUpload, setVideoId])
+  }, [backupMap, isBackUp, newCreateVideoId, form, mapDispatch, setCanUpload, setVideoId]);
 
   useEffect(() => {
     if (newCreateVideoId && !mapId && !isBackUp) {
-      setVideoId(newCreateVideoId)
+      setVideoId(newCreateVideoId);
     }
-  }, [newCreateVideoId, mapId, isBackUp, setVideoId])
+  }, [newCreateVideoId, mapId, isBackUp, setVideoId]);
 
   const {
     data: geminiInfoData,
@@ -109,30 +109,30 @@ const MapInfoForm = () => {
       { videoId: videoId ?? "" },
       { enabled: !!(videoId && !isBackUp && hasUploadPermission) },
     ),
-  )
+  );
 
   useEffect(() => {
     if (geminiError) {
-      toast.error(geminiError.message)
+      toast.error(geminiError.message);
     }
-  }, [geminiError])
+  }, [geminiError]);
 
   useEffect(() => {
     if (geminiInfoData) {
-      const { title, artistName, source } = geminiInfoData
+      const { title, artistName, source } = geminiInfoData;
 
       if (newCreateVideoId) {
-        form.setValue("title", title)
-        form.setValue("artistName", artistName)
-        form.setValue("musicSource", source)
+        form.setValue("title", title);
+        form.setValue("artistName", artistName);
+        form.setValue("musicSource", source);
       }
     }
-  }, [form, geminiInfoData, newCreateVideoId])
+  }, [form, geminiInfoData, newCreateVideoId]);
 
   useEffect(() => {
     if (newCreateVideoId) {
       const subscription = form.watch((value) => {
-        if (!value || !newCreateVideoId) return
+        if (!value || !newCreateVideoId) return;
 
         debounce(() => {
           void backupMapInfo({
@@ -143,17 +143,17 @@ const MapInfoForm = () => {
             creatorComment: value.creatorComment || "",
             tags: value.tags?.filter((tag): tag is string => typeof tag === "string" && tag !== undefined) || [],
             previewTime: Number(value.previewTime) || 0,
-          })
-        })
-      })
-      return () => subscription.unsubscribe()
+          });
+        });
+      });
+      return () => subscription.unsubscribe();
     }
-  }, [newCreateVideoId, form, debounce])
+  }, [newCreateVideoId, form, debounce]);
 
-  const onSubmit = useOnSubmit(form)
+  const onSubmit = useOnSubmit(form);
 
-  const isGeminiLoading = isFetching && !!newCreateVideoId
-  const tags = form.watch("tags")
+  const isGeminiLoading = isFetching && !!newCreateVideoId;
+  const tags = form.watch("tags");
 
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
@@ -202,31 +202,31 @@ const MapInfoForm = () => {
         </form>
       </Form>
     </CardWithContent>
-  )
-}
+  );
+};
 
 const InfoFormButton = () => {
-  const { formState } = useFormContext()
-  const { isDirty, isSubmitting } = formState
-  const canUpload = useCanUploadState()
-  const hasUploadPermission = useHasMapUploadPermission()
-  useNavigationGuard((isDirty || canUpload) && hasUploadPermission)
+  const { formState } = useFormContext();
+  const { isDirty, isSubmitting } = formState;
+  const canUpload = useCanUploadState();
+  const hasUploadPermission = useHasMapUploadPermission();
+  useNavigationGuard((isDirty || canUpload) && hasUploadPermission);
 
-  if (!hasUploadPermission) return null
+  if (!hasUploadPermission) return null;
 
   return (
     <Button size="xl" loading={isSubmitting} disabled={(!isDirty && !canUpload) || isSubmitting} className="w-52">
       保存
     </Button>
-  )
-}
+  );
+};
 
 const VideoIdInput = () => {
-  const { watch, formState, setValue, getValues } = useFormContext()
-  const { dirtyFields } = formState
-  const formVideoId = watch("videoId")
-  const setVideoId = useSetVideoId()
-  const setYTChaningVideo = useSetYTChaningVideo()
+  const { watch, formState, setValue, getValues } = useFormContext();
+  const { dirtyFields } = formState;
+  const formVideoId = watch("videoId");
+  const setVideoId = useSetVideoId();
+  const setYTChaningVideo = useSetYTChaningVideo();
 
   return (
     <div className="flex w-full items-center gap-4">
@@ -238,12 +238,12 @@ const VideoIdInput = () => {
             label="動画ID"
             maxLength={11}
             onPaste={(e) => {
-              e.preventDefault()
+              e.preventDefault();
 
-              const videoId = extractYouTubeId(e.clipboardData.getData("text"))
+              const videoId = extractYouTubeId(e.clipboardData.getData("text"));
 
               if (videoId) {
-                setValue("videoId", videoId)
+                setValue("videoId", videoId);
               }
             }}
           />
@@ -252,11 +252,11 @@ const VideoIdInput = () => {
             size="lg"
             disabled={!dirtyFields.videoId || formVideoId.length !== 11}
             onClick={(e) => {
-              e.preventDefault()
-              if (formVideoId.length !== 11) return
+              e.preventDefault();
+              if (formVideoId.length !== 11) return;
 
-              setVideoId(getValues("videoId"))
-              setYTChaningVideo(true)
+              setVideoId(getValues("videoId"));
+              setYTChaningVideo(true);
             }}
           >
             動画切り替え
@@ -264,21 +264,21 @@ const VideoIdInput = () => {
         </div>
       </TooltipWrapper>
     </div>
-  )
-}
+  );
+};
 
 const PreviewTimeInput = () => {
-  const { readPlayer } = usePlayer()
-  const { watch, setValue, getValues } = useFormContext()
-  const previewTime = watch("previewTime")
-  const setPreventEditortabAutoFocus = useSetPreventEditortabAutoFocus()
-  const setCanUpload = useSetCanUpload()
+  const { readPlayer } = usePlayer();
+  const { watch, setValue, getValues } = useFormContext();
+  const previewTime = watch("previewTime");
+  const setPreventEditortabAutoFocus = useSetPreventEditortabAutoFocus();
+  const setCanUpload = useSetCanUpload();
 
   const handlePreviewClick = () => {
-    readPlayer().playVideo()
-    readPlayer().seekTo(Number(previewTime), true)
-    setPreventEditortabAutoFocus(true)
-  }
+    readPlayer().playVideo();
+    readPlayer().seekTo(Number(previewTime), true);
+    setPreventEditortabAutoFocus(true);
+  };
 
   return (
     <TooltipWrapper
@@ -303,25 +303,25 @@ const PreviewTimeInput = () => {
             step="0.001"
             onFocus={(e) => e.target.select()}
             onChange={() => {
-              setCanUpload(true)
+              setCanUpload(true);
             }}
             inputMode="decimal"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                e.preventDefault()
-                handlePreviewClick()
+                e.preventDefault();
+                handlePreviewClick();
               }
               if (e.key === "ArrowUp") {
-                e.preventDefault()
-                const currentValue = Number(getValues("previewTime")) || 0
-                setValue("previewTime", (currentValue + 0.05).toFixed(3))
-                setCanUpload(true)
+                e.preventDefault();
+                const currentValue = Number(getValues("previewTime")) || 0;
+                setValue("previewTime", (currentValue + 0.05).toFixed(3));
+                setCanUpload(true);
               }
               if (e.key === "ArrowDown") {
-                e.preventDefault()
-                const currentValue = Number(getValues("previewTime")) || 0
-                setValue("previewTime", Math.max(0, currentValue - 0.05).toFixed(3))
-                setCanUpload(true)
+                e.preventDefault();
+                const currentValue = Number(getValues("previewTime")) || 0;
+                setValue("previewTime", Math.max(0, currentValue - 0.05).toFixed(3));
+                setCanUpload(true);
               }
             }}
           />
@@ -332,13 +332,13 @@ const PreviewTimeInput = () => {
         </Button>
       </div>
     </TooltipWrapper>
-  )
-}
+  );
+};
 
 const TypeLinkButton = () => {
-  const mapId = usePathname().split("/")[2]
+  const mapId = usePathname().split("/")[2];
 
-  if (!mapId) return null
+  if (!mapId) return null;
 
   return (
     <Link href={`/type/${mapId}`}>
@@ -346,41 +346,41 @@ const TypeLinkButton = () => {
         タイピングページに移動
       </Button>
     </Link>
-  )
-}
+  );
+};
 
 const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormSchema>>>) => {
-  const mapId = usePathname().split("/")[2]
-  const readEditUtils = useReadEditUtils()
-  const { readPlayer } = usePlayer()
-  const searchParams = useSearchParams()
-  const newCreateVideoId = searchParams.get("new")
-  const setCanUpload = useSetCanUpload()
-  const readMap = useReadMap()
-  const trpc = useTRPC()
+  const mapId = usePathname().split("/")[2];
+  const readEditUtils = useReadEditUtils();
+  const { readPlayer } = usePlayer();
+  const searchParams = useSearchParams();
+  const newCreateVideoId = searchParams.get("new");
+  const setCanUpload = useSetCanUpload();
+  const readMap = useReadMap();
+  const trpc = useTRPC();
 
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
       onSuccess: async (data, _variables, _, context) => {
-        await context.client.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId: data.id }))
-        await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: data.id }))
-        await context.client.invalidateQueries(trpc.mapList.getList.queryFilter())
+        await context.client.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId: data.id }));
+        await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: data.id }));
+        await context.client.invalidateQueries(trpc.mapList.getList.queryFilter());
 
         if (data.id && mapId === undefined) {
-          window.history.replaceState(null, "", `/edit/${data.id}`)
-          void clearBackupMapWithInfo()
+          window.history.replaceState(null, "", `/edit/${data.id}`);
+          void clearBackupMapWithInfo();
         }
-        form.reset(form.getValues())
-        setCanUpload(false)
-        toast.success(data.title)
+        form.reset(form.getValues());
+        setCanUpload(false);
+        toast.success(data.title);
       },
       onError: async (error) => {
         switch (error.data?.code) {
           case "FORBIDDEN":
-            toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" })
-            return
+            toast.error("保存に失敗しました", { description: "この譜面を編集する権限がありません。" });
+            return;
           default:
-            toast.error("保存に失敗しました", { description: "しばらく時間をおいてから再度お試しください。" })
+            toast.error("保存に失敗しました", { description: "しばらく時間をおいてから再度お試しください。" });
         }
 
         if (newCreateVideoId) {
@@ -392,34 +392,34 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
             creatorComment: form.getValues("creatorComment"),
             tags: form.getValues("tags"),
             previewTime: Number(form.getValues("previewTime") ?? 0),
-          })
+          });
 
           void backupMap({
             videoId: newCreateVideoId,
             map: readMap(),
-          })
+          });
         }
       },
     }),
-  )
+  );
 
   return async (data: z.input<typeof MapInfoFormSchema>) => {
-    const map = readMap()
+    const map = readMap();
 
-    const { title, artistName, musicSource, creatorComment, tags, previewTime } = data
-    const { speedDifficulty, duration, totalNotes, startLine } = new BuildMap(map)
+    const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
+    const { speedDifficulty, duration, totalNotes, startLine } = new BuildMap(map);
 
-    const { video_id: videoId } = readPlayer().getVideoData()
-    const videoDuration = readPlayer().getDuration()
+    const { video_id: videoId } = readPlayer().getVideoData();
+    const videoDuration = readPlayer().getDuration();
 
-    const typingStartTime = Math.max(0, Number(map[startLine].time) + 0.2)
+    const typingStartTime = Math.max(0, Number(map[startLine].time) + 0.2);
 
     const newPreviewTime =
       Number(previewTime) > videoDuration || typingStartTime >= Number(previewTime)
         ? typingStartTime.toFixed(3)
-        : previewTime
+        : previewTime;
 
-    form.setValue("previewTime", Number(newPreviewTime))
+    form.setValue("previewTime", Number(newPreviewTime));
 
     const mapInfo = {
       videoId,
@@ -431,7 +431,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
       previewTime: Number(newPreviewTime),
       thumbnailQuality: await getThumbnailQuality(videoId),
       duration,
-    }
+    };
 
     const mapDifficulty = {
       romaKpmMedian: Math.floor(speedDifficulty.median.r),
@@ -440,16 +440,16 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
       kanaKpmMax: Math.floor(speedDifficulty.max.r),
       romaTotalNotes: Math.floor(totalNotes.r),
       kanaTotalNotes: Math.floor(totalNotes.k),
-    }
-    const { isUpdateUpdatedAt } = readEditUtils()
+    };
+    const { isUpdateUpdatedAt } = readEditUtils();
     await upsertMap.mutateAsync({
       mapInfo,
       mapDifficulty,
       mapData: map,
       isMapDataEdited: isUpdateUpdatedAt,
       mapId: mapId ? Number(mapId) : null,
-    })
-  }
-}
+    });
+  };
+};
 
-export default MapInfoForm
+export default MapInfoForm;

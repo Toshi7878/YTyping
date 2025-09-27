@@ -1,54 +1,54 @@
-import { useMutation } from "@tanstack/react-query"
-import { useState } from "react"
-import { IoMdSettings } from "react-icons/io"
-import { toast } from "sonner"
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/ref-atoms"
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { IoMdSettings } from "react-icons/io";
+import { toast } from "sonner";
+import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
 import {
   useSetUserTypingOptions,
   useUserTypingOptionsState,
   useUserTypingOptionsStateRef,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider"
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { useBreakPoint } from "@/lib/use-break-point"
-import { cn } from "@/lib/utils"
-import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema"
-import { useTRPC } from "@/trpc/provider"
-import HotKeySelectFields from "./options/hot-key"
-import UserSoundEffectCheckbox from "./options/sound-effect"
-import UserTimeOffsetChange from "./options/time-offset"
-import { UserWordOptions } from "./options/word-options"
-import { UserWordScrollChange } from "./options/word-scroll"
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useBreakPoint } from "@/lib/use-break-point";
+import { cn } from "@/lib/utils";
+import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
+import { useTRPC } from "@/trpc/provider";
+import HotKeySelectFields from "./options/hot-key";
+import UserSoundEffectCheckbox from "./options/sound-effect";
+import UserTimeOffsetChange from "./options/time-offset";
+import { UserWordOptions } from "./options/word-options";
+import { UserWordScrollChange } from "./options/word-scroll";
 
 const SettingPopover = () => {
-  const trpc = useTRPC()
-  const updateTypingOptions = useMutation(trpc.userOption.updateTypeOptions.mutationOptions())
-  const { isMdScreen } = useBreakPoint()
-  const [isOpen, setIsOpen] = useState(false)
-  const confirm = useConfirm()
-  const { resetUserTypingOptions } = useSetUserTypingOptions()
+  const trpc = useTRPC();
+  const updateTypingOptions = useMutation(trpc.userOption.updateTypeOptions.mutationOptions());
+  const { isMdScreen } = useBreakPoint();
+  const [isOpen, setIsOpen] = useState(false);
+  const confirm = useConfirm();
+  const { resetUserTypingOptions } = useSetUserTypingOptions();
 
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams()
-  const readUserTypingOptions = useUserTypingOptionsStateRef()
+  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
+  const readUserTypingOptions = useUserTypingOptionsStateRef();
 
   const handleOpenChange = (open: boolean) => {
-    setIsOpen(open)
+    setIsOpen(open);
 
     if (!open) {
-      const isOptionEdited = readUserTypingOptions()
+      const isOptionEdited = readUserTypingOptions();
 
       if (isOptionEdited) {
-        const userOptions = readUserTypingOptions()
-        updateTypingOptions.mutate(userOptions)
-        writeGameUtilRefParams({ isOptionEdited: false })
+        const userOptions = readUserTypingOptions();
+        updateTypingOptions.mutate(userOptions);
+        writeGameUtilRefParams({ isOptionEdited: false });
       }
     }
-  }
+  };
 
   const tabData = [
     {
@@ -80,7 +80,7 @@ const SettingPopover = () => {
       ),
     },
     { label: "キーボード設定", content: <HotKeySelectFields /> },
-  ]
+  ];
 
   const handleReset = async () => {
     const result = await confirm({
@@ -90,13 +90,13 @@ const SettingPopover = () => {
       actionButton: "リセットする",
       actionButtonVariant: "warning",
       cancelButtonVariant: "outline",
-    })
+    });
 
     if (result) {
-      resetUserTypingOptions()
-      toast.success("設定をリセットしました")
+      resetUserTypingOptions();
+      toast.success("設定をリセットしました");
     }
-  }
+  };
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
       <PopoverTrigger>
@@ -134,8 +134,8 @@ const SettingPopover = () => {
         </Button>
       </PopoverContent>
     </Popover>
-  )
-}
+  );
+};
 
 const SettingButton = () => {
   return (
@@ -144,21 +144,21 @@ const SettingButton = () => {
         <IoMdSettings className="size-16 md:size-9" />
       </Button>
     </TooltipWrapper>
-  )
-}
+  );
+};
 
 const UserLineCompletedRadioButton = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions()
-  const { lineCompletedDisplay: line_completed_display } = useUserTypingOptionsState()
+  const { setUserTypingOptions } = useSetUserTypingOptions();
+  const { lineCompletedDisplay: line_completed_display } = useUserTypingOptionsState();
 
   const changeRadio = (value: (typeof lineCompletedDisplayEnum.enumValues)[number]) => {
-    setUserTypingOptions({ lineCompletedDisplay: value })
-  }
+    setUserTypingOptions({ lineCompletedDisplay: value });
+  };
 
   const items = [
     { label: "ワードハイライト", value: "HIGH_LIGHT" },
     { label: "次のワードを表示", value: "NEXT_WORD" },
-  ]
+  ];
 
   return (
     <LabeledRadioGroup
@@ -169,21 +169,21 @@ const UserLineCompletedRadioButton = () => {
       className="flex flex-row gap-5"
       items={items}
     />
-  )
-}
+  );
+};
 
 const UserNextDisplayRadioButton = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions()
-  const { nextDisplay: next_display } = useUserTypingOptionsState()
+  const { setUserTypingOptions } = useSetUserTypingOptions();
+  const { nextDisplay: next_display } = useUserTypingOptionsState();
 
   const changeRadio = (value: (typeof nextDisplayEnum.enumValues)[number]) => {
-    setUserTypingOptions({ nextDisplay: value })
-  }
+    setUserTypingOptions({ nextDisplay: value });
+  };
 
   const items = [
     { label: "歌詞", value: "LYRICS" },
     { label: "ワード", value: "WORD" },
-  ]
+  ];
 
   return (
     <LabeledRadioGroup
@@ -194,7 +194,7 @@ const UserNextDisplayRadioButton = () => {
       labelClassName="text-lg font-semibold"
       items={items}
     />
-  )
-}
+  );
+};
 
-export default SettingPopover
+export default SettingPopover;

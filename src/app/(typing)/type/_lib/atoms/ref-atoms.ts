@@ -1,29 +1,29 @@
-import type { ExtractAtomValue } from "jotai"
-import { atom } from "jotai"
-import { atomWithReset, RESET, useAtomCallback } from "jotai/utils"
-import { useCallback } from "react"
-import type { TypeResult } from "@/server/drizzle/validator/result"
-import type { InputMode } from "../type"
-import { getTypeAtomStore } from "./store"
+import type { ExtractAtomValue } from "jotai";
+import { atom } from "jotai";
+import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
+import { useCallback } from "react";
+import type { TypeResult } from "@/server/drizzle/validator/result";
+import type { InputMode } from "../type";
+import { getTypeAtomStore } from "./store";
 
-const store = getTypeAtomStore()
+const store = getTypeAtomStore();
 
-const lineCountAtom = atomWithReset(0)
+const lineCountAtom = atomWithReset(0);
 
 export const useLineCount = () => {
   const readCount = useAtomCallback(
     useCallback((get) => get(lineCountAtom), []),
     { store },
-  )
+  );
   const writeCount = useAtomCallback(
     useCallback((_get, set, newCount: number) => {
-      set(lineCountAtom, newCount)
+      set(lineCountAtom, newCount);
     }, []),
     { store },
-  )
+  );
 
-  return { readCount, writeCount }
-}
+  return { readCount, writeCount };
+};
 
 const typingDetailsAtom = atomWithReset({
   romaType: 0,
@@ -42,31 +42,31 @@ const typingDetailsAtom = atomWithReset({
   totalLatency: 0,
   completeCount: 0,
   failureCount: 0,
-})
+});
 
 export const useTypingDetails = () => {
   const readStatus = useAtomCallback(
     useCallback((get) => get(typingDetailsAtom), []),
     { store },
-  )
+  );
   const writeStatus = useAtomCallback(
     useCallback((_get, set, newUserStats: Partial<ExtractAtomValue<typeof typingDetailsAtom>>) => {
       set(typingDetailsAtom, (prev) => {
-        return { ...prev, ...newUserStats }
-      })
+        return { ...prev, ...newUserStats };
+      });
     }, []),
     { store },
-  )
+  );
 
   const resetStatus = useAtomCallback(
     useCallback((_get, set) => {
-      set(typingDetailsAtom, RESET)
+      set(typingDetailsAtom, RESET);
     }, []),
     { store },
-  )
+  );
 
-  return { readStatus, writeStatus, resetStatus }
-}
+  return { readStatus, writeStatus, resetStatus };
+};
 
 export const lineStatusAtom = atomWithReset({
   type: 0,
@@ -77,30 +77,30 @@ export const lineStatusAtom = atomWithReset({
   startInputMode: "roma" as InputMode,
   isCompleted: false,
   rkpm: 0,
-})
+});
 
 export const useLineStatus = () => {
   const readLineStatus = useAtomCallback(
     useCallback((get) => get(lineStatusAtom), []),
     { store },
-  )
+  );
   const writeLineStatus = useAtomCallback(
     useCallback((_get, set, newUserStats: Partial<ExtractAtomValue<typeof lineStatusAtom>>) => {
       set(lineStatusAtom, (prev) => {
-        return { ...prev, ...newUserStats }
-      })
+        return { ...prev, ...newUserStats };
+      });
     }, []),
     { store },
-  )
+  );
   const resetLineStatus = useAtomCallback(
     useCallback((_get, set) => {
-      set(lineStatusAtom, RESET)
+      set(lineStatusAtom, RESET);
     }, []),
     { store },
-  )
+  );
 
-  return { readLineStatus, writeLineStatus, resetLineStatus }
-}
+  return { readLineStatus, writeLineStatus, resetLineStatus };
+};
 
 const userStatsAtom = atomWithReset({
   romaType: 0,
@@ -112,60 +112,60 @@ const userStatsAtom = atomWithReset({
   numType: 0,
   typingTime: 0,
   maxCombo: 0,
-})
+});
 
 export const useUserStats = () => {
   const readUserStats = useAtomCallback(
     useCallback((get) => get(userStatsAtom), []),
     { store },
-  )
+  );
 
   const writeUserStats = useAtomCallback(
     useCallback((_get, set, newUserStats: Partial<ExtractAtomValue<typeof userStatsAtom>>) => {
       set(userStatsAtom, (prev) => {
-        return { ...prev, ...newUserStats }
-      })
+        return { ...prev, ...newUserStats };
+      });
     }, []),
     { store },
-  )
+  );
   const resetUserStats = useAtomCallback(
     useCallback((_get, set, maxCombo = 0) => {
-      set(userStatsAtom, RESET)
-      set(userStatsAtom, (prev) => ({ ...prev, maxCombo }))
+      set(userStatsAtom, RESET);
+      set(userStatsAtom, (prev) => ({ ...prev, maxCombo }));
     }, []),
     { store },
-  )
+  );
 
-  return { readUserStats, writeUserStats, resetUserStats }
-}
+  return { readUserStats, writeUserStats, resetUserStats };
+};
 
 export const ytStatusAtom = atomWithReset({
   isPaused: false,
   movieDuration: 0,
-})
+});
 
 export const useReadYTStatus = () => {
   const readYTStatus = useAtomCallback(
     useCallback((get) => get(ytStatusAtom), []),
     { store },
-  )
+  );
   const writeYTStatus = useAtomCallback(
     useCallback((_get, set, newYTStatus: Partial<ExtractAtomValue<typeof ytStatusAtom>>) => {
       set(ytStatusAtom, (prev) => {
-        return { ...prev, ...newYTStatus }
-      })
+        return { ...prev, ...newYTStatus };
+      });
     }, []),
     { store },
-  )
+  );
   const resetYTStatus = useAtomCallback(
     useCallback((_get, set) => {
-      set(ytStatusAtom, RESET)
+      set(ytStatusAtom, RESET);
     }, []),
     { store },
-  )
+  );
 
-  return { readYTStatus, writeYTStatus, resetYTStatus }
-}
+  return { readYTStatus, writeYTStatus, resetYTStatus };
+};
 
 export const gameUtilityReferenceParamsAtom = atomWithReset({
   isRetrySkip: false,
@@ -177,95 +177,95 @@ export const gameUtilityReferenceParamsAtom = atomWithReset({
   replayUserName: "",
   rankingScores: [] as number[],
   isOptionEdited: false,
-})
+});
 
 export const useGameUtilityReferenceParams = () => {
   const readGameUtilRefParams = useAtomCallback(
     useCallback((get) => get(gameUtilityReferenceParamsAtom), []),
     { store },
-  )
+  );
   const writeGameUtilRefParams = useAtomCallback(
     useCallback((_get, set, newGameState: Partial<ExtractAtomValue<typeof gameUtilityReferenceParamsAtom>>) => {
       set(gameUtilityReferenceParamsAtom, (prev) => {
-        return { ...prev, ...newGameState }
-      })
+        return { ...prev, ...newGameState };
+      });
     }, []),
     { store },
-  )
+  );
   const resetGameUtilRefParams = useAtomCallback(
     useCallback((_get, set) => {
-      set(gameUtilityReferenceParamsAtom, RESET)
+      set(gameUtilityReferenceParamsAtom, RESET);
     }, []),
     { store },
-  )
+  );
 
   return {
     readGameUtilRefParams,
     writeGameUtilRefParams,
     resetGameUtilRefParams,
-  }
-}
+  };
+};
 
-export const playerAtom = atom<YT.Player | null>(null)
+export const playerAtom = atom<YT.Player | null>(null);
 
 export const usePlayer = () => {
   const readPlayer = useAtomCallback(
     useCallback((get) => get(playerAtom) as YT.Player, []),
     { store },
-  )
+  );
 
   const writePlayer = useAtomCallback(
     useCallback((_get, set, newPlayer: YT.Player | null) => {
-      set(playerAtom, newPlayer)
+      set(playerAtom, newPlayer);
     }, []),
     { store },
-  )
+  );
 
-  return { readPlayer, writePlayer }
-}
+  return { readPlayer, writePlayer };
+};
 
-export const lineProgressAtom = atom<HTMLProgressElement | null>(null)
-const totalProgressAtom = atom<HTMLProgressElement | null>(null)
+export const lineProgressAtom = atom<HTMLProgressElement | null>(null);
+const totalProgressAtom = atom<HTMLProgressElement | null>(null);
 
 export const useProgress = () => {
   const readLineProgress = useAtomCallback(
     useCallback((get) => get(lineProgressAtom) as HTMLProgressElement, []),
     { store },
-  )
+  );
   const readTotalProgress = useAtomCallback(
     useCallback((get) => get(totalProgressAtom) as HTMLProgressElement, []),
     { store },
-  )
+  );
 
   const writeLineProgress = useAtomCallback(
     useCallback((_get, set, newProgress: HTMLProgressElement | null) => {
-      set(lineProgressAtom, newProgress)
+      set(lineProgressAtom, newProgress);
     }, []),
     { store },
-  )
+  );
 
   const writeTotalProgress = useAtomCallback(
     useCallback((_get, set, newProgress: HTMLProgressElement | null) => {
-      set(totalProgressAtom, newProgress)
+      set(totalProgressAtom, newProgress);
     }, []),
     { store },
-  )
+  );
 
   const setLineProgressValue = useAtomCallback(
     useCallback((get, _set, value: number) => {
-      const lineProgress = get(lineProgressAtom) as HTMLProgressElement
-      lineProgress.value = value
+      const lineProgress = get(lineProgressAtom) as HTMLProgressElement;
+      lineProgress.value = value;
     }, []),
     { store },
-  )
+  );
 
   const setTotalProgressValue = useAtomCallback(
     useCallback((get, _set, value: number) => {
-      const totalProgress = get(totalProgressAtom) as HTMLProgressElement
-      totalProgress.value = value
+      const totalProgress = get(totalProgressAtom) as HTMLProgressElement;
+      totalProgress.value = value;
     }, []),
     { store },
-  )
+  );
 
   return {
     readTotalProgress,
@@ -274,23 +274,23 @@ export const useProgress = () => {
     writeTotalProgress,
     setLineProgressValue,
     setTotalProgressValue,
-  }
-}
+  };
+};
 
-const lineResultCardsAtom = atom<HTMLDivElement[]>([])
+const lineResultCardsAtom = atom<HTMLDivElement[]>([]);
 
 export const useResultCards = () => {
   const readResultCards = useAtomCallback(
     useCallback((get) => get(lineResultCardsAtom), []),
     { store },
-  )
+  );
 
   const writeResultCards = useAtomCallback(
     useCallback((_get, set, newCards: HTMLDivElement[]) => {
-      set(lineResultCardsAtom, newCards)
+      set(lineResultCardsAtom, newCards);
     }, []),
     { store },
-  )
+  );
 
-  return { readResultCards, writeResultCards }
-}
+  return { readResultCards, writeResultCards };
+};

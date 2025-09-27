@@ -1,12 +1,12 @@
-"use client"
-import { useMemo } from "react"
-import type { ConvertOption } from "@/app/edit/_lib/atoms/storage-atoms"
-import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage-atoms"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { RadioGroup } from "@/components/ui/radio-group/radio-group"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/utils/build-map/const"
+"use client";
+import { useMemo } from "react";
+import type { ConvertOption } from "@/app/edit/_lib/atoms/storage-atoms";
+import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage-atoms";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup } from "@/components/ui/radio-group/radio-group";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/utils/build-map/const";
 
 const CONVERT_OPTIONS = [
   {
@@ -33,17 +33,17 @@ const CONVERT_OPTIONS = [
     description: "キーボードで入力できる全ての記号をよみ変換されるようにします。",
     symbolList: [...MANDATORY_SYMBOL_LIST, ...LOOSE_SYMBOL_LIST, ...STRICT_SYMBOL_LIST],
   },
-] as const
+] as const;
 
 export default function ConvertOptionButtons() {
-  const wordConvertOption = useWordConvertOptionState()
-  const setWordConvertOption = useSetWordConvertOption()
+  const wordConvertOption = useWordConvertOptionState();
+  const setWordConvertOption = useSetWordConvertOption();
 
   const optionButtons = useMemo(
     () =>
       CONVERT_OPTIONS.map((option) => {
-        const { activeVariant, inactiveVariant, description, symbolList } = option
-        const isActive = wordConvertOption === option.value
+        const { activeVariant, inactiveVariant, description, symbolList } = option;
+        const isActive = wordConvertOption === option.value;
 
         return {
           ...option,
@@ -54,10 +54,10 @@ export default function ConvertOptionButtons() {
               <div>変換される記号: {symbolList.join(" ")}</div>
             </div>
           ),
-        }
+        };
       }),
     [wordConvertOption],
-  )
+  );
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline">
@@ -81,5 +81,5 @@ export default function ConvertOptionButtons() {
         ))}
       </RadioGroup>
     </div>
-  )
+  );
 }

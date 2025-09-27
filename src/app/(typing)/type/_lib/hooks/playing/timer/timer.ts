@@ -1,4 +1,4 @@
-import { Ticker } from "@pixi/ticker"
+import { Ticker } from "@pixi/ticker";
 import {
   useGameUtilityReferenceParams,
   useLineCount,
@@ -6,8 +6,8 @@ import {
   usePlayer,
   useProgress,
   useReadYTStatus,
-} from "@/app/(typing)/type/_lib/atoms/ref-atoms"
-import { useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms"
+} from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadCurrentTime,
   useReadGameUtilParams,
@@ -20,65 +20,65 @@ import {
   useSetLineRemainTime,
   useSetNextLyrics,
   useSetTypingStatus,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { useDisplaySkipGuide } from "@/app/(typing)/type/_lib/hooks/playing/timer/display-skip-guide"
-import type { LineData } from "../../../type"
-import { useOnEnd } from "../../youtube-events"
-import { useCalcTypeSpeed } from "../calc-type-speed"
-import { useGetTime } from "../get-youtube-time"
-import { useUpdateLineResult } from "../update-line-result"
-import { useLineUpdateStatus, useUpdateAllStatus } from "../update-status"
-import { useGetSeekLineCount } from "./get-line-count-by-time"
-import { useLineReplayUpdate, useReplay } from "./replay"
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useDisplaySkipGuide } from "@/app/(typing)/type/_lib/hooks/playing/timer/display-skip-guide";
+import type { LineData } from "../../../type";
+import { useOnEnd } from "../../youtube-events";
+import { useCalcTypeSpeed } from "../calc-type-speed";
+import { useGetTime } from "../get-youtube-time";
+import { useUpdateLineResult } from "../update-line-result";
+import { useLineUpdateStatus, useUpdateAllStatus } from "../update-status";
+import { useGetSeekLineCount } from "./get-line-count-by-time";
+import { useLineReplayUpdate, useReplay } from "./replay";
 
-const typeTicker = new Ticker()
+const typeTicker = new Ticker();
 
 export const useTimerRegistration = () => {
-  const playTimer = useTimer()
+  const playTimer = useTimer();
 
   const addTimer = () => {
-    typeTicker.add(playTimer)
-  }
+    typeTicker.add(playTimer);
+  };
 
   const removeTimer = () => {
-    typeTicker.stop()
-    typeTicker.remove(playTimer)
-  }
+    typeTicker.stop();
+    typeTicker.remove(playTimer);
+  };
 
-  return { addTimer, removeTimer }
-}
+  return { addTimer, removeTimer };
+};
 
 export const useTimerControls = () => {
   const startTimer = () => {
     if (!typeTicker.started) {
-      typeTicker.start()
-      console.log("startTimer")
+      typeTicker.start();
+      console.log("startTimer");
     }
-  }
+  };
 
   const stopTimer = () => {
     if (typeTicker.started) {
-      typeTicker.stop()
-      console.log("stopTimer")
+      typeTicker.stop();
+      console.log("stopTimer");
     }
-  }
+  };
 
   const setFrameRate = (rate: number) => {
-    typeTicker.maxFPS = rate
-    typeTicker.minFPS = rate
-  }
+    typeTicker.maxFPS = rate;
+    typeTicker.minFPS = rate;
+  };
 
-  return { startTimer, stopTimer, setFrameRate }
-}
+  return { startTimer, stopTimer, setFrameRate };
+};
 
 const useTimer = () => {
-  const setCurrentTime = useSetCurrentTime()
-  const setDisplayRemainTime = useSetLineRemainTime()
-  const displaySkipGuide = useDisplaySkipGuide()
-  const updateLine = useUpdateLine()
-  const calcLineResult = useCalcLineResult()
-  const replay = useReplay()
-  const getSeekLineCount = useGetSeekLineCount()
+  const setCurrentTime = useSetCurrentTime();
+  const setDisplayRemainTime = useSetLineRemainTime();
+  const displaySkipGuide = useDisplaySkipGuide();
+  const updateLine = useUpdateLine();
+  const calcLineResult = useCalcLineResult();
+  const replay = useReplay();
+  const getSeekLineCount = useGetSeekLineCount();
 
   const {
     getCurrentOffsettedYTTime,
@@ -86,64 +86,64 @@ const useTimer = () => {
     getCurrentLineTime,
     getCurrentLineRemainTime,
     getConstantLineTime,
-  } = useGetTime()
-  const calcTypeSpeed = useCalcTypeSpeed()
+  } = useGetTime();
+  const calcTypeSpeed = useCalcTypeSpeed();
 
-  const { setLineProgressValue, setTotalProgressValue } = useProgress()
-  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams()
-  const { readYTStatus } = useReadYTStatus()
-  const readCurrentTime = useReadCurrentTime()
-  const readLineWord = useReadLineWord()
-  const { readLineStatus } = useLineStatus()
-  const readPlaySpeed = useReadPlaySpeed()
-  const readGameStateUtils = useReadGameUtilParams()
-  const readMap = useReadMap()
-  const { readCount, writeCount } = useLineCount()
-  const { readPlayer } = usePlayer()
-  const { stopTimer } = useTimerControls()
-  const onEnd = useOnEnd()
+  const { setLineProgressValue, setTotalProgressValue } = useProgress();
+  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
+  const { readYTStatus } = useReadYTStatus();
+  const readCurrentTime = useReadCurrentTime();
+  const readLineWord = useReadLineWord();
+  const { readLineStatus } = useLineStatus();
+  const readPlaySpeed = useReadPlaySpeed();
+  const readGameStateUtils = useReadGameUtilParams();
+  const readMap = useReadMap();
+  const { readCount, writeCount } = useLineCount();
+  const { readPlayer } = usePlayer();
+  const { stopTimer } = useTimerControls();
+  const onEnd = useOnEnd();
 
   const update = ({
     currentOffesettedYTTime,
     constantLineTime,
     nextLine,
   }: {
-    currentOffesettedYTTime: number
-    constantLineTime: number
-    nextLine: LineData
+    currentOffesettedYTTime: number;
+    constantLineTime: number;
+    nextLine: LineData;
   }) => {
-    const { scene } = readGameStateUtils()
+    const { scene } = readGameStateUtils();
 
     if (scene !== "replay") {
-      calcLineResult({ constantLineTime })
+      calcLineResult({ constantLineTime });
     }
 
-    const { movieDuration } = readYTStatus()
+    const { movieDuration } = readYTStatus();
 
     const isEnd =
       nextLine?.lyrics === "end" ||
       currentOffesettedYTTime >= movieDuration ||
-      readPlayer().getPlayerState() === YT.PlayerState.ENDED
+      readPlayer().getPlayerState() === YT.PlayerState.ENDED;
 
     if (isEnd) {
-      onEnd()
-      stopTimer()
-      const player = readPlayer()
-      player.stopVideo()
-      player.cueVideoById(player.getVideoData().video_id)
-      return
+      onEnd();
+      stopTimer();
+      const player = readPlayer();
+      player.stopVideo();
+      player.cueVideoById(player.getVideoData().video_id);
+      return;
     }
 
     if (nextLine) {
       if (scene === "play") {
-        writeCount(readCount() + 1)
+        writeCount(readCount() + 1);
       } else {
-        writeCount(getSeekLineCount(currentOffesettedYTTime))
+        writeCount(getSeekLineCount(currentOffesettedYTTime));
       }
 
-      updateLine(readCount())
+      updateLine(readCount());
     }
-  }
+  };
 
   const updateMs = ({
     constantLineTime,
@@ -151,29 +151,29 @@ const useTimer = () => {
     currentOffesettedYTTime,
     constantOffesettedYTTime,
   }: {
-    constantLineTime: number
-    constantRemainLineTime: number
-    currentOffesettedYTTime: number
-    constantOffesettedYTTime: number
+    constantLineTime: number;
+    constantRemainLineTime: number;
+    currentOffesettedYTTime: number;
+    constantOffesettedYTTime: number;
   }) => {
-    const map = readMap()
-    if (!map) return
+    const map = readMap();
+    if (!map) return;
 
-    setDisplayRemainTime(constantRemainLineTime)
+    setDisplayRemainTime(constantRemainLineTime);
 
-    const { isCompleted } = readLineStatus()
+    const { isCompleted } = readLineStatus();
 
     if (!isCompleted) {
       calcTypeSpeed({
         updateType: "timer",
         constantLineTime,
-      })
+      });
     }
 
-    const { isRetrySkip } = readGameUtilRefParams()
-    const { playSpeed } = readPlaySpeed()
+    const { isRetrySkip } = readGameUtilRefParams();
+    const { playSpeed } = readPlaySpeed();
     if (isRetrySkip && map.mapData[map.startLine].time - 3 * playSpeed <= currentOffesettedYTTime) {
-      writeGameUtilRefParams({ isRetrySkip: false })
+      writeGameUtilRefParams({ isRetrySkip: false });
     }
 
     displaySkipGuide({
@@ -181,148 +181,148 @@ const useTimer = () => {
       lineConstantTime: constantLineTime,
       lineRemainTime: constantRemainLineTime,
       isRetrySkip,
-    })
+    });
 
-    setTotalProgressValue(currentOffesettedYTTime)
-    const currentTime = readCurrentTime()
+    setTotalProgressValue(currentOffesettedYTTime);
+    const currentTime = readCurrentTime();
     if (Math.abs(constantOffesettedYTTime - currentTime) >= 1) {
-      setCurrentTime(constantOffesettedYTTime)
+      setCurrentTime(constantOffesettedYTTime);
     }
-  }
+  };
 
   return () => {
-    const map = readMap()
-    if (!map) return
+    const map = readMap();
+    if (!map) return;
 
-    const currentOffesettedYTTime = getCurrentOffsettedYTTime()
-    const currentLineTime = getCurrentLineTime(currentOffesettedYTTime)
+    const currentOffesettedYTTime = getCurrentOffsettedYTTime();
+    const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
 
-    const { movieDuration } = readYTStatus()
-    const count = readCount()
-    const nextLine = map.mapData[count]
-    const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time
+    const { movieDuration } = readYTStatus();
+    const count = readCount();
+    const nextLine = map.mapData[count];
+    const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
     const isUpdateLine =
-      currentOffesettedYTTime >= nextLineTime || readPlayer().getPlayerState() === YT.PlayerState.ENDED
+      currentOffesettedYTTime >= nextLineTime || readPlayer().getPlayerState() === YT.PlayerState.ENDED;
 
     if (isUpdateLine) {
-      const constantLineTime = getConstantLineTime(currentLineTime)
-      update({ currentOffesettedYTTime, constantLineTime, nextLine })
-      return
+      const constantLineTime = getConstantLineTime(currentLineTime);
+      update({ currentOffesettedYTTime, constantLineTime, nextLine });
+      return;
     }
 
-    const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime)
-    const isUpdateMs = Math.abs(constantOffesettedYTTime - readGameUtilRefParams().updateMsTimeCount) >= 0.1
+    const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
+    const isUpdateMs = Math.abs(constantOffesettedYTTime - readGameUtilRefParams().updateMsTimeCount) >= 0.1;
 
-    const constantLineTime = getConstantLineTime(currentLineTime)
+    const constantLineTime = getConstantLineTime(currentLineTime);
     if (isUpdateMs) {
-      const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime)
+      const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
       updateMs({
         currentOffesettedYTTime,
         constantOffesettedYTTime,
         constantLineTime,
         constantRemainLineTime,
-      })
-      writeGameUtilRefParams({ updateMsTimeCount: constantOffesettedYTTime })
+      });
+      writeGameUtilRefParams({ updateMsTimeCount: constantOffesettedYTTime });
     }
 
-    setLineProgressValue(currentLineTime)
-    const { scene } = readGameStateUtils()
+    setLineProgressValue(currentLineTime);
+    const { scene } = readGameStateUtils();
 
     if (scene === "replay" && count && currentLineTime) {
-      const constantLineTime = getConstantLineTime(currentLineTime)
-      replay({ constantLineTime })
+      const constantLineTime = getConstantLineTime(currentLineTime);
+      replay({ constantLineTime });
     }
-  }
-}
+  };
+};
 
 const useCalcLineResult = () => {
-  const calcTypeSpeed = useCalcTypeSpeed()
-  const updateAllStatus = useUpdateAllStatus()
+  const calcTypeSpeed = useCalcTypeSpeed();
+  const updateAllStatus = useUpdateAllStatus();
 
-  const { readLineStatus } = useLineStatus()
-  const readGameStateUtils = useReadGameUtilParams()
-  const readMap = useReadMap()
-  const { readCount } = useLineCount()
-  const { isLinePointUpdated, updateLineResult } = useUpdateLineResult()
-  const updateStatus = useLineUpdateStatus()
+  const { readLineStatus } = useLineStatus();
+  const readGameStateUtils = useReadGameUtilParams();
+  const readMap = useReadMap();
+  const { readCount } = useLineCount();
+  const { isLinePointUpdated, updateLineResult } = useUpdateLineResult();
+  const updateStatus = useLineUpdateStatus();
 
   return ({ constantLineTime }: { constantLineTime: number }) => {
-    const map = readMap()
-    if (!map) return
-    const { scene } = readGameStateUtils()
-    const { isCompleted } = readLineStatus()
-    const count = readCount()
+    const map = readMap();
+    if (!map) return;
+    const { scene } = readGameStateUtils();
+    const { isCompleted } = readLineStatus();
+    const count = readCount();
 
     if (!isCompleted && count > 0) {
-      const isTypingLine = map.mapData[count - 1].kpm.r > 0
+      const isTypingLine = map.mapData[count - 1].kpm.r > 0;
 
       if (isTypingLine) {
-        calcTypeSpeed({ updateType: "lineUpdate", constantLineTime })
+        calcTypeSpeed({ updateType: "lineUpdate", constantLineTime });
       }
 
       if (isLinePointUpdated()) {
-        updateLineResult()
+        updateLineResult();
       }
 
       switch (scene) {
         case "play":
         case "play_end":
-          updateStatus({ constantLineTime })
-          break
+          updateStatus({ constantLineTime });
+          break;
         case "practice":
-          updateAllStatus({ count: map.mapData.length - 1, updateType: "lineUpdate" })
-          break
+          updateAllStatus({ count: map.mapData.length - 1, updateType: "lineUpdate" });
+          break;
       }
     }
-  }
-}
+  };
+};
 
 export const useUpdateLine = () => {
-  const { setNextLyrics } = useSetNextLyrics()
-  const setLineKpm = useSetLineKpm()
-  const setChangeCSSCount = useSetChangeCSSCount()
+  const { setNextLyrics } = useSetNextLyrics();
+  const setLineKpm = useSetLineKpm();
+  const setChangeCSSCount = useSetChangeCSSCount();
 
-  const lineReplayUpdate = useLineReplayUpdate()
-  const { resetLineStatus, writeLineStatus } = useLineStatus()
-  const { setTypingStatus } = useSetTypingStatus()
-  const { setCurrentLine } = useSetCurrentLine()
-  const readPlaySpeed = useReadPlaySpeed()
-  const readMap = useReadMap()
-  const readGameStateUtils = useReadGameUtilParams()
-  const updateAllStatus = useUpdateAllStatus()
+  const lineReplayUpdate = useLineReplayUpdate();
+  const { resetLineStatus, writeLineStatus } = useLineStatus();
+  const { setTypingStatus } = useSetTypingStatus();
+  const { setCurrentLine } = useSetCurrentLine();
+  const readPlaySpeed = useReadPlaySpeed();
+  const readMap = useReadMap();
+  const readGameStateUtils = useReadGameUtilParams();
+  const updateAllStatus = useUpdateAllStatus();
 
   return (newNextCount: number) => {
-    const map = readMap()
-    if (!map) return
-    const newCurrentCount = newNextCount ? newNextCount - 1 : 0
+    const map = readMap();
+    if (!map) return;
+    const newCurrentCount = newNextCount ? newNextCount - 1 : 0;
 
-    const newCurrentLine = map.mapData[newCurrentCount]
-    const newNextLine = map.mapData[newNextCount]
-    setCurrentLine({ newCurrentLine, newNextLine })
-    resetLineStatus()
+    const newCurrentLine = map.mapData[newCurrentCount];
+    const newNextLine = map.mapData[newNextCount];
+    setCurrentLine({ newCurrentLine, newNextLine });
+    resetLineStatus();
 
-    const { inputMode, scene } = readGameStateUtils()
-    const { playSpeed } = readPlaySpeed()
+    const { inputMode, scene } = readGameStateUtils();
+    const { playSpeed } = readPlaySpeed();
     if (scene === "replay") {
-      lineReplayUpdate(newCurrentCount)
-      updateAllStatus({ count: newCurrentCount, updateType: "lineUpdate" })
+      lineReplayUpdate(newCurrentCount);
+      updateAllStatus({ count: newCurrentCount, updateType: "lineUpdate" });
     }
 
     writeLineStatus({
       startSpeed: playSpeed,
       startInputMode: inputMode,
-    })
+    });
 
     setTypingStatus((prev) => ({
       ...prev,
       point: 0,
       timeBonus: 0,
-    }))
+    }));
 
-    setLineKpm(0)
+    setLineKpm(0);
 
-    setNextLyrics(newNextLine)
+    setNextLyrics(newNextLine);
 
-    setChangeCSSCount({ newCurrentCount })
-  }
-}
+    setChangeCSSCount({ newCurrentCount });
+  };
+};

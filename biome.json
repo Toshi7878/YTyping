@@ -9,35 +9,11 @@
     "ignoreUnknown": false
   },
   "formatter": {
-    "enabled": true,
-    "formatWithErrors": false,
     "indentStyle": "space",
-    "indentWidth": 2,
-    "lineEnding": "lf",
-    "lineWidth": 120,
-    "attributePosition": "auto",
-    "bracketSameLine": false,
-    "bracketSpacing": true,
-    "expand": "auto",
-    "useEditorconfig": false
-  },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "double",
-      "attributePosition": "auto",
-      "arrowParentheses": "always",
-      "bracketSameLine": false,
-      "jsxQuoteStyle": "double",
-      "quoteProperties": "asNeeded",
-      "bracketSpacing": true,
-      "semicolons": "asNeeded",
-      "trailingCommas": "all"
-    }
+    "lineWidth": 120
   },
   "linter": {
-    "enabled": true,
     "rules": {
-      "recommended": true,
       "correctness": {
         "useUniqueElementIds": "off",
         "useExhaustiveDependencies": "off"
@@ -70,12 +46,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts"
-      ],
+      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "linter": {
         "rules": {
           "complexity": {
@@ -111,12 +82,7 @@
       }
     },
     {
-      "includes": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts"
-      ],
+      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "linter": {
         "rules": {
           "complexity": {
@@ -152,9 +118,7 @@
       }
     },
     {
-      "includes": [
-        "**/*.{js,ts,tsx}"
-      ],
+      "includes": ["**/*.{js,ts,tsx}"],
       "javascript": {
         "globals": [
           "onanimationend",

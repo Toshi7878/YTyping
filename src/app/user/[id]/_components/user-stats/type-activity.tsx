@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useQuery } from "@tanstack/react-query"
-import { Loader2 } from "lucide-react"
-import { useParams } from "next/navigation"
-import { cloneElement } from "react"
-import type { Activity } from "react-activity-calendar"
-import ActivityCalendar from "react-activity-calendar"
-import { Separator } from "@/components/ui/separator"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import type { RouterOutPuts } from "@/server/api/trpc"
-import { getCSSVariable } from "@/utils/get-computed-color"
-import { useUserStatsQueries } from "@/utils/queries/user-stats.queries"
+import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { cloneElement } from "react";
+import type { Activity } from "react-activity-calendar";
+import ActivityCalendar from "react-activity-calendar";
+import { Separator } from "@/components/ui/separator";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import type { RouterOutPuts } from "@/server/api/trpc";
+import { getCSSVariable } from "@/utils/get-computed-color";
+import { useUserStatsQueries } from "@/utils/queries/user-stats.queries";
 
 const TypeActivity = () => {
-  const { id: userId } = useParams<{ id: string }>()
-  const { data, isPending, isError } = useQuery(useUserStatsQueries().userActivity({ userId: Number(userId) }))
+  const { id: userId } = useParams<{ id: string }>();
+  const { data, isPending, isError } = useQuery(useUserStatsQueries().userActivity({ userId: Number(userId) }));
 
   const getBlockColors = () => {
     const colors = {
@@ -24,24 +24,24 @@ const TypeActivity = () => {
       flick: getCSSVariable("--flick"),
       english: getCSSVariable("--english"),
       ime: getCSSVariable("--foreground"),
-    }
+    };
 
     // 透明度なしで色を3段階で返す（同じ色を3回）
-    const roma = [colors.roma, colors.roma, colors.roma]
-    const kana = [colors.kana, colors.kana, colors.kana]
-    const english = [colors.english, colors.english, colors.english]
-    const ime = [colors.ime, colors.ime, colors.ime]
+    const roma = [colors.roma, colors.roma, colors.roma];
+    const kana = [colors.kana, colors.kana, colors.kana];
+    const english = [colors.english, colors.english, colors.english];
+    const ime = [colors.ime, colors.ime, colors.ime];
 
-    return [colors.background].concat(roma).concat(kana).concat(english).concat(ime)
-  }
+    return [colors.background].concat(roma).concat(kana).concat(english).concat(ime);
+  };
 
   const getOpacity = (level: number) => {
-    if (level === 0) return 1 // 活動なし
-    const modLevel = level % 3
-    if (modLevel === 1) return 0.25 // レベル1
-    if (modLevel === 2) return 0.63 // レベル2
-    return 1 // レベル3
-  }
+    if (level === 0) return 1; // 活動なし
+    const modLevel = level % 3;
+    if (modLevel === 1) return 0.25; // レベル1
+    if (modLevel === 2) return 0.63; // レベル2
+    return 1; // レベル3
+  };
 
   return (
     <div className="relative flex min-h-[200px] w-full justify-center">
@@ -76,16 +76,16 @@ const TypeActivity = () => {
                   ...block.props.style,
                   opacity: getOpacity(activity.level),
                 },
-              })
+              });
 
               return (
                 <TooltipWrapper key={activity.date} label={<BlockToolTipLabel activity={activity} />}>
                   {styledBlock}
                 </TooltipWrapper>
-              )
+              );
             }}
             renderColorLegend={(color, level) => {
-              const levelLabel = level % 3 === 0 ? 3 : level % 3
+              const levelLabel = level % 3 === 0 ? 3 : level % 3;
               const label =
                 level === 0
                   ? "活動なし"
@@ -95,7 +95,7 @@ const TypeActivity = () => {
                       ? `かな level: ${levelLabel}`
                       : level <= 9
                         ? `英数字記号 level: ${levelLabel}`
-                        : `変換有りタイプ数 level: ${levelLabel}`
+                        : `変換有りタイプ数 level: ${levelLabel}`;
 
               return (
                 <TooltipWrapper key={level} label={label}>
@@ -103,32 +103,32 @@ const TypeActivity = () => {
                     {color}
                   </div>
                 </TooltipWrapper>
-              )
+              );
             }}
             weekStart={1}
           />
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
-  const { data } = activity as RouterOutPuts["userStats"]["getUserActivity"][number]
+  const { data } = activity as RouterOutPuts["userStats"]["getUserActivity"][number];
   const sortedTypeData = [
     { label: "ローマ字", count: data?.romaTypeCount ?? 0 },
     { label: "かな", count: data?.kanaTypeCount ?? 0 },
     { label: "英数字記号", count: data?.englishTypeCount ?? 0 },
     { label: "変換有りタイプ数", count: data?.imeTypeCount ?? 0 },
-  ].sort((a, b) => b.count - a.count)
+  ].sort((a, b) => b.count - a.count);
 
   const sortedTypeDataString = sortedTypeData.map((item) => {
     return (
       <div key={item.label} className="text-xs">
         {item.label}: {item.count}
       </div>
-    )
-  })
+    );
+  });
 
   return (
     <div className="flex flex-col gap-2">
@@ -137,7 +137,7 @@ const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
       <div>合計打鍵数: {activity.count}</div>
       <div>日付: {activity.date}</div>
     </div>
-  )
-}
+  );
+};
 
-export default TypeActivity
+export default TypeActivity;

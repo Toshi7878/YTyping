@@ -1,14 +1,14 @@
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PARAM_NAME } from "@/app/timeline/_lib/consts"
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PARAM_NAME } from "@/app/timeline/_lib/consts";
 
-type ResultParamKeys = keyof typeof PARAM_NAME
-type ResultParams = Partial<Record<ResultParamKeys, string>>
+type ResultParamKeys = keyof typeof PARAM_NAME;
+type ResultParams = Partial<Record<ResultParamKeys, string>>;
 
 export function parseResultListSearchParams(searchParams: URLSearchParams) {
-  const params: ResultParams = {}
+  const params: ResultParams = {};
 
   for (const [key, value] of searchParams.entries()) {
     if (key in PARAM_NAME) {
-      params[key as ResultParamKeys] = value
+      params[key as ResultParamKeys] = value;
     }
   }
 
@@ -22,5 +22,5 @@ export function parseResultListSearchParams(searchParams: URLSearchParams) {
     maxPlaySpeed: params.maxPlaySpeed ? Number(params.maxPlaySpeed) : 2,
     username: params.username ?? "",
     mapKeyword: params.mapkeyword ?? "",
-  }
+  };
 }

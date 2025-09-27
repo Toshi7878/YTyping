@@ -1,5 +1,5 @@
-import { defaultShouldDehydrateQuery, QueryClient } from "@tanstack/react-query"
-import SuperJSON from "superjson"
+import { defaultShouldDehydrateQuery, QueryClient } from "@tanstack/react-query";
+import SuperJSON from "superjson";
 
 export const createQueryClient = () =>
   new QueryClient({
@@ -18,11 +18,11 @@ export const createQueryClient = () =>
           // so we cannot redact them.
           // Next.js also automatically redacts errors for us
           // with better digests.
-          return false
+          return false;
         },
       },
       hydrate: {
         deserializeData: SuperJSON.deserialize,
       },
     },
-  })
+  });

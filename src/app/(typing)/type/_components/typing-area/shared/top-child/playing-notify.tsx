@@ -1,60 +1,60 @@
-import { AnimatePresence, motion } from "framer-motion" // 追加
-import { useEffect, useRef } from "react"
-import { FaPause, FaPlay } from "react-icons/fa6"
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/ref-atoms"
-import { useNotifyState, useSceneState, useSetNotify } from "@/app/(typing)/type/_lib/atoms/state-atoms"
+import { AnimatePresence, motion } from "framer-motion"; // 追加
+import { useEffect, useRef } from "react";
+import { FaPause, FaPlay } from "react-icons/fa6";
+import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useNotifyState, useSceneState, useSetNotify } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 
-const NON_ANIMATED = ["ll", "Replay", "Practice"]
+const NON_ANIMATED = ["ll", "Replay", "Practice"];
 
 const PlayingNotify = () => {
-  const notify = useNotifyState()
-  const setNotify = useSetNotify()
-  const scene = useSceneState()
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const { readGameUtilRefParams } = useGameUtilityReferenceParams()
+  const notify = useNotifyState();
+  const setNotify = useSetNotify();
+  const scene = useSceneState();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
 
   const playModeNotify = () => {
     if (scene === "play") {
-      setNotify(Symbol(""))
+      setNotify(Symbol(""));
     } else if (scene === "replay") {
-      setNotify(Symbol(`Replay`))
+      setNotify(Symbol(`Replay`));
     } else if (scene === "practice") {
-      setNotify(Symbol("Practice"))
+      setNotify(Symbol("Practice"));
     }
-  }
+  };
 
   useEffect(() => {
     if (!NON_ANIMATED.includes(notify.description || "")) {
       timerRef.current = setTimeout(() => {
-        handleExitComplete()
-      }, 800)
+        handleExitComplete();
+      }, 800);
     }
 
     return () => {
       if (timerRef.current) {
-        clearTimeout(timerRef.current)
+        clearTimeout(timerRef.current);
       }
-    }
-  }, [notify.description])
+    };
+  }, [notify.description]);
 
   const handleExitComplete = () => {
     if (timerRef.current) {
-      clearTimeout(timerRef.current)
+      clearTimeout(timerRef.current);
     }
 
     if (!NON_ANIMATED.includes(notify.description || "")) {
-      playModeNotify()
+      playModeNotify();
     }
-  }
+  };
 
   useEffect(() => {
     if (scene !== "play") {
-      playModeNotify()
+      playModeNotify();
     }
-  }, [scene])
+  }, [scene]);
 
-  const textForOffset = (notify.description ?? "").toString()
-  const offsetCh = Math.max(0, textForOffset.length - 1) * -0.2 // 1文字あたり-0.2chだけ左へ
+  const textForOffset = (notify.description ?? "").toString();
+  const offsetCh = Math.max(0, textForOffset.length - 1) * -0.2; // 1文字あたり-0.2chだけ左へ
 
   return (
     <div
@@ -85,7 +85,7 @@ const PlayingNotify = () => {
         </AnimatePresence>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default PlayingNotify
+export default PlayingNotify;

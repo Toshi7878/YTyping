@@ -1,8 +1,8 @@
-import { cn } from "@/lib/utils"
-import { LeftNav, RightNav } from "./_components/navs"
+import { cn } from "@/lib/utils";
+import { LeftNav, RightNav } from "./_components/navs";
 
 interface HeaderProps {
-  className: string
+  className: string;
 }
 
 const Header = ({ className }: HeaderProps) => {
@@ -13,7 +13,7 @@ const Header = ({ className }: HeaderProps) => {
         <RightNav />
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

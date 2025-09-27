@@ -1,21 +1,21 @@
-import { ChevronDown } from "lucide-react"
-import Link from "next/link"
-import { LOGIN_MENU_LINK_ITEM } from "@/app/_components/header/lib/const"
-import { Button } from "@/components/ui/button"
+import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { LOGIN_MENU_LINK_ITEM } from "@/app/_components/header/lib/const";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
-import { LogOutDropdownItem } from "./auth/auth-dropdown-items"
-import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu"
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { LogOutDropdownItem } from "./auth/auth-dropdown-items";
+import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
 interface UserMenuProps {
-  userName: string
-  className: string
+  userName: string;
+  className: string;
 }
 
 export default function UserMenu({ userName, className }: UserMenuProps) {
@@ -44,5 +44,5 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
         <LogOutDropdownItem />
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

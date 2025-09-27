@@ -1,11 +1,11 @@
-"use client"
-import VolumeRange from "@/components/shared/volume-range"
-import { usePreviewPlayerState } from "@/lib/global-atoms"
-import SearchInputs from "./search/search-input-field"
-import SearchPopover from "./search/search-popover"
+"use client";
+import VolumeRange from "@/components/shared/volume-range";
+import { usePreviewPlayerState } from "@/lib/global-atoms";
+import SearchInputs from "./search/search-input-field";
+import SearchPopover from "./search/search-popover";
 
 const SearchContent = () => {
-  const player = usePreviewPlayerState()
+  const player = usePreviewPlayerState();
 
   return (
     <section className="space-y-6">
@@ -16,7 +16,7 @@ const SearchContent = () => {
         <VolumeRange player={player} />
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default SearchContent
+export default SearchContent;

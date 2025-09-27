@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import type { VariantProps } from "class-variance-authority"
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { Label } from "../label"
-import type { inputVariants } from "./input"
-import { Input } from "./input"
+import type { VariantProps } from "class-variance-authority";
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Label } from "../label";
+import type { inputVariants } from "./input";
+import { Input } from "./input";
 
 export interface LabeledInputProps
   extends Omit<React.ComponentPropsWithRef<typeof Input>, "size">,
     VariantProps<typeof inputVariants> {
-  label?: React.ReactNode
-  labelClassName?: string
-  containerClassName?: string
-  required?: boolean
-  error?: string
-  description?: React.ReactNode
+  label?: React.ReactNode;
+  labelClassName?: string;
+  containerClassName?: string;
+  required?: boolean;
+  error?: string;
+  description?: React.ReactNode;
 }
 
 const LabeledInput = ({
@@ -32,8 +32,8 @@ const LabeledInput = ({
   ref,
   ...props
 }: LabeledInputProps) => {
-  const inputId = React.useId()
-  const errorVariant = error ? "error" : variant
+  const inputId = React.useId();
+  const errorVariant = error ? "error" : variant;
 
   return (
     <div className={cn("space-y-2", containerClassName)}>
@@ -54,7 +54,7 @@ const LabeledInput = ({
       {description && <p className="text-muted-foreground text-sm">{description}</p>}
       {error && <p className="text-destructive text-sm">{error}</p>}
     </div>
-  )
-}
+  );
+};
 
-export { LabeledInput }
+export { LabeledInput };

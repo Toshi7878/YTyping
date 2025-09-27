@@ -1,81 +1,81 @@
-import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai"
-import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils"
-import { focusAtom } from "jotai-optics"
-import type { ReactNode } from "react"
-import { useCallback } from "react"
-import type { UAParser } from "ua-parser-js"
+import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
+import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
+import { focusAtom } from "jotai-optics";
+import type { ReactNode } from "react";
+import { useCallback } from "react";
+import type { UAParser } from "ua-parser-js";
 
-const store = getDefaultStore()
+const store = getDefaultStore();
 
-export const userAgentAtom = atom<UAParser | null>(null)
-export const useUserAgent = () => useAtomValue(userAgentAtom, { store })
+export const userAgentAtom = atom<UAParser | null>(null);
+export const useUserAgent = () => useAtomValue(userAgentAtom, { store });
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, {
   getOnInit: false,
-})
+});
 
-export const useVolumeState = () => useAtomValue(volumeAtom, { store })
-export const useSetVolume = () => useSetAtom(volumeAtom, { store })
+export const useVolumeState = () => useAtomValue(volumeAtom, { store });
+export const useSetVolume = () => useSetAtom(volumeAtom, { store });
 export const useReadVolume = () =>
   useAtomCallback(
     useCallback((get) => get(volumeAtom), []),
     { store },
-  )
+  );
 
 const previewVideoAtom = atomWithReset<{
-  videoId: string | null
-  previewTime: number | null
-  previewSpeed: number | null
-  player: YT.Player | null
-}>({ videoId: null, previewTime: null, previewSpeed: null, player: null })
+  videoId: string | null;
+  previewTime: number | null;
+  previewSpeed: number | null;
+  player: YT.Player | null;
+}>({ videoId: null, previewTime: null, previewSpeed: null, player: null });
 
-const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"))
+const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
 
-export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store })
-export const useSetPreviewVideo = () => useSetAtom(previewVideoAtom, { store })
-export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, { store })
-export const useSetPreviewPlayer = () => useSetAtom(previewPlayerFocusAtom, { store })
+export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store });
+export const useSetPreviewVideo = () => useSetAtom(previewVideoAtom, { store });
+export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, { store });
+export const useSetPreviewPlayer = () => useSetAtom(previewPlayerFocusAtom, { store });
 
 export interface ActiveUserStatus {
-  id: number
-  name: string
-  onlineAt: Date
-  state: "type" | "edit" | "idle" | "askMe"
-  mapId: number | null
+  id: number;
+  name: string;
+  onlineAt: Date;
+  state: "type" | "edit" | "idle" | "askMe";
+  mapId: number | null;
 }
 
-const onlineUsersAtom = atom<ActiveUserStatus[]>([])
+const onlineUsersAtom = atom<ActiveUserStatus[]>([]);
 
-export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom, { store })
-export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom, { store })
+export const useOnlineUsersState = () => useAtomValue(onlineUsersAtom, { store });
+export const useSetOnlineUsers = () => useSetAtom(onlineUsersAtom, { store });
 
 interface LoadingState {
-  isLoading: boolean
-  message?: ReactNode
-  hideSpinner?: boolean
+  isLoading: boolean;
+  message?: ReactNode;
+  hideSpinner?: boolean;
 }
 
 const loadingStateAtom = atomWithReset<LoadingState>({
   isLoading: false,
   message: undefined,
   hideSpinner: false,
-})
+});
 
-export const useGlobalLoadingState = () => useAtomValue(loadingStateAtom, { store })
+export const useGlobalLoadingState = () => useAtomValue(loadingStateAtom, { store });
 
 export const useGlobalLoadingOverlay = () => {
-  const setLoadingState = useSetAtom(loadingStateAtom, { store })
+  const setLoadingState = useSetAtom(loadingStateAtom, { store });
 
   const showLoading = useCallback(
     ({ message, hideSpinner }: { message?: ReactNode; hideSpinner?: boolean } = {}) => {
-      setLoadingState({ isLoading: true, message, hideSpinner })
+      setLoadingState({ isLoading: true, message, hideSpinner });
     },
     [setLoadingState],
-  )
+  );
 
   const hideLoading = useCallback(() => {
-    setLoadingState(RESET)
-  }, [setLoadingState])
+    setLoadingState(RESET);
+  }, [setLoadingState]);
 
-  return { showLoading, hideLoading }
-}
+  return { showLoading, hideLoading };
+};

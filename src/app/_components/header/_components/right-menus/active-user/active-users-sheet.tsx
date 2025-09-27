@@ -1,29 +1,29 @@
-"use client"
-import { useQuery } from "@tanstack/react-query"
-import { Users } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import MapLeftThumbnail from "@/components/shared/map-card-thumbnail"
-import CompactMapInfo from "@/components/shared/map-info/compact-map-info"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { CardWithContent } from "@/components/ui/card"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table/table"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { useOnlineUsersState } from "@/lib/global-atoms"
-import { useTRPC } from "@/trpc/provider"
-import useActiveUsers from "./use-active-user"
+"use client";
+import { useQuery } from "@tanstack/react-query";
+import { Users } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
+import CompactMapInfo from "@/components/shared/map-info/compact-map-info";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CardWithContent } from "@/components/ui/card";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table/table";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useOnlineUsersState } from "@/lib/global-atoms";
+import { useTRPC } from "@/trpc/provider";
+import useActiveUsers from "./use-active-user";
 
 const ActiveUsersSheet = () => {
-  useActiveUsers()
-  const [open, setOpen] = useState(false)
-  const onlineUsers = useOnlineUsersState()
-  const trpc = useTRPC()
+  useActiveUsers();
+  const [open, setOpen] = useState(false);
+  const onlineUsers = useOnlineUsersState();
+  const trpc = useTRPC();
   const { data: activeUsersWithMap } = useQuery({
     ...trpc.mapList.getActiveUserPlayingMaps.queryOptions(onlineUsers),
     enabled: open,
-  })
+  });
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -54,7 +54,7 @@ const ActiveUsersSheet = () => {
                     ? "プレイ中"
                     : user.state === "edit"
                       ? "譜面編集中"
-                      : "待機中"
+                      : "待機中";
 
               return (
                 <TableRow key={user.id} className="border-border/30 border-b">
@@ -79,13 +79,13 @@ const ActiveUsersSheet = () => {
                     )}
                   </TableCell>
                 </TableRow>
-              )
+              );
             })}
           </TableBody>
         </Table>
       </SheetContent>
     </Sheet>
-  )
-}
+  );
+};
 
-export default ActiveUsersSheet
+export default ActiveUsersSheet;

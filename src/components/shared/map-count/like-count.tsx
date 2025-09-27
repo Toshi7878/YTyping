@@ -1,9 +1,9 @@
-import { useProgress } from "@bprogress/next"
-import { useSession } from "next-auth/react"
-import type React from "react"
-import { FiHeart } from "react-icons/fi"
-import { LikeButtonWithCount } from "@/components/shared/like-button/like-button"
-import { useLikeMutationMapList } from "@/utils/mutations/like.mutations"
+import { useProgress } from "@bprogress/next";
+import { useSession } from "next-auth/react";
+import type React from "react";
+import { FiHeart } from "react-icons/fi";
+import { LikeButtonWithCount } from "@/components/shared/like-button/like-button";
+import { useLikeMutationMapList } from "@/utils/mutations/like.mutations";
 
 const InactiveLikeCount = ({ likeCount }: { likeCount: number }) => {
   return (
@@ -13,28 +13,28 @@ const InactiveLikeCount = ({ likeCount }: { likeCount: number }) => {
       </div>
       <div className="font-mono text-lg">{likeCount}</div>
     </div>
-  )
-}
+  );
+};
 
 interface LikeCountIconProps {
-  mapId: number
-  hasLiked: boolean
-  likeCount: number
+  mapId: number;
+  hasLiked: boolean;
+  likeCount: number;
 }
 
 const ActiveLikeCountButton = ({ hasLiked, likeCount, mapId }: LikeCountIconProps) => {
-  const setLikeMutation = useLikeMutationMapList()
-  const { stop } = useProgress()
+  const setLikeMutation = useLikeMutationMapList();
+  const { stop } = useProgress();
 
   const handleClick = (event: React.MouseEvent, newState: boolean) => {
-    event.stopPropagation()
-    event.preventDefault()
+    event.stopPropagation();
+    event.preventDefault();
 
-    if (setLikeMutation.isPending) return
+    if (setLikeMutation.isPending) return;
 
-    setLikeMutation.mutate({ mapId, newState })
-    stop()
-  }
+    setLikeMutation.mutate({ mapId, newState });
+    stop();
+  };
 
   return (
     <LikeButtonWithCount
@@ -44,11 +44,11 @@ const ActiveLikeCountButton = ({ hasLiked, likeCount, mapId }: LikeCountIconProp
       likeCount={likeCount}
       disabled={setLikeMutation.isPending}
     />
-  )
-}
+  );
+};
 
 const LikeCountIcon = ({ mapId, hasLiked, likeCount }: LikeCountIconProps) => {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   return (
     <div className="z-30" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
@@ -58,7 +58,7 @@ const LikeCountIcon = ({ mapId, hasLiked, likeCount }: LikeCountIconProps) => {
         <InactiveLikeCount likeCount={likeCount} />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default LikeCountIcon
+export default LikeCountIcon;

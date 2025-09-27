@@ -1,17 +1,17 @@
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import { serverApi } from "@/trpc/server"
-import Content from "./contents"
-import ImeTypeProvider from "./ime-provider"
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { serverApi } from "@/trpc/server";
+import Content from "./contents";
+import ImeTypeProvider from "./ime-provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-  const { id } = await params
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) })
+  const { id } = await params;
+  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
 
   const thumbnailUrl =
     mapInfo.thumbnailQuality === "maxresdefault"
       ? `https://i.ytimg.com/vi_webp/${mapInfo.videoId}/maxresdefault.webp`
-      : `https://i.ytimg.com/vi/${mapInfo.videoId}/mqdefault.jpg`
+      : `https://i.ytimg.com/vi/${mapInfo.videoId}/mqdefault.jpg`;
 
   return {
     title: `${mapInfo.title} - YTyping`,
@@ -29,19 +29,19 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       "article:artist": mapInfo.artistName,
       "article:tag": mapInfo.tags,
     },
-  }
+  };
 }
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) })
-  const userImeTypingOptions = await serverApi.userOption.getUserImeTypingOptions()
+  const { id } = await params;
+  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
+  const userImeTypingOptions = await serverApi.userOption.getUserImeTypingOptions();
 
-  if (!mapInfo) notFound()
+  if (!mapInfo) notFound();
 
   return (
     <ImeTypeProvider userImeTypingOptions={userImeTypingOptions}>
       <Content mapInfo={mapInfo} />
     </ImeTypeProvider>
-  )
+  );
 }

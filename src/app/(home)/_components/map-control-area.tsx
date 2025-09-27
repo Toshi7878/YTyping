@@ -1,17 +1,17 @@
-"use client"
-import { useSession } from "next-auth/react"
-import VolumeRange from "@/components/shared/volume-range"
-import { usePreviewPlayerState } from "@/lib/global-atoms"
-import { cn } from "@/lib/utils"
-import MapFilter from "./search/map-filter"
-import SearchInput from "./search/search-input"
-import SortAndMapListLength from "./search/sort-and-map-list-length"
+"use client";
+import { useSession } from "next-auth/react";
+import VolumeRange from "@/components/shared/volume-range";
+import { usePreviewPlayerState } from "@/lib/global-atoms";
+import { cn } from "@/lib/utils";
+import MapFilter from "./search/map-filter";
+import SearchInput from "./search/search-input";
+import SortAndMapListLength from "./search/sort-and-map-list-length";
 
 const MapControlArea = () => {
-  const { data: session } = useSession()
-  const player = usePreviewPlayerState()
+  const { data: session } = useSession();
+  const player = usePreviewPlayerState();
 
-  const isLogin = !!session?.user?.id
+  const isLogin = !!session?.user?.id;
 
   return (
     <section className="mb-4 flex w-full flex-col gap-4">
@@ -22,7 +22,7 @@ const MapControlArea = () => {
       </div>
       <SortAndMapListLength />
     </section>
-  )
-}
+  );
+};
 
-export default MapControlArea
+export default MapControlArea;

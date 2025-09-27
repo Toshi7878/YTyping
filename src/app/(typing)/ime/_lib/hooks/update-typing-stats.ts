@@ -1,17 +1,17 @@
-import { useMutation } from "@tanstack/react-query"
-import { useTRPC } from "@/trpc/provider"
-import { useUserStats } from "../atoms/read-atoms"
+import { useMutation } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/provider";
+import { useUserStats } from "../atoms/read-atoms";
 
 export const useUpdateTypingStats = () => {
-  const trpc = useTRPC()
-  const updateTypingStats = useMutation(trpc.userStats.incrementImeStats.mutationOptions())
-  const { readUserStats, resetUserStats } = useUserStats()
+  const trpc = useTRPC();
+  const updateTypingStats = useMutation(trpc.userStats.incrementImeStats.mutationOptions());
+  const { readUserStats, resetUserStats } = useUserStats();
 
   return async () => {
-    const { imeTypeCount, typingTime } = readUserStats()
+    const { imeTypeCount, typingTime } = readUserStats();
 
-    updateTypingStats.mutate({ imeTypeCount, typingTime })
+    updateTypingStats.mutate({ imeTypeCount, typingTime });
 
-    resetUserStats()
-  }
-}
+    resetUserStats();
+  };
+};

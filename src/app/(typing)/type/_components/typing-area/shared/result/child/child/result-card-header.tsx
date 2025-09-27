@@ -1,23 +1,23 @@
-"use client"
-import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import type { InputMode } from "@/app/(typing)/type/_lib/type"
-import { CardHeader } from "@/components/ui/card"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
-import type { BuildMap } from "@/utils/build-map/build-map"
+"use client";
+import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import type { InputMode } from "@/app/(typing)/type/_lib/type";
+import { CardHeader } from "@/components/ui/card";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import type { BuildMap } from "@/utils/build-map/build-map";
 
 interface ResultCardHeaderProps {
-  lineNotes: number
-  lineIndex: number
-  lineInputMode: InputMode
-  lineKpm: number
-  lineSpeed: number
+  lineNotes: number;
+  lineIndex: number;
+  lineInputMode: InputMode;
+  lineKpm: number;
+  lineSpeed: number;
 }
 
 function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSpeed }: ResultCardHeaderProps) {
-  const map = useMapState() as BuildMap
+  const map = useMapState() as BuildMap;
 
-  const inputModeText = lineInputMode === "roma" ? "(ローマ字)" : "(かな)"
+  const inputModeText = lineInputMode === "roma" ? "(ローマ字)" : "(かな)";
 
   return (
     <CardHeader className="flex flex-row items-center">
@@ -35,7 +35,7 @@ function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSp
         <span className={cn("line-notes hover:bg-border/20")}>{lineNotes}打</span>
       </TooltipWrapper>
     </CardHeader>
-  )
+  );
 }
 
-export default ResultCardHeader
+export default ResultCardHeader;

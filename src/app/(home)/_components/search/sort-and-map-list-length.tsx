@@ -1,13 +1,13 @@
-import { useQuery } from "@tanstack/react-query"
-import { Loader2 } from "lucide-react"
-import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa"
-import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms"
-import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params"
-import { cn } from "@/lib/utils"
-import { useTRPC } from "@/trpc/provider"
-import { PARAM_NAME, parseMapListSearchParams } from "@/utils/queries/search-params/map-list"
+import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
+import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params";
+import { cn } from "@/lib/utils";
+import { useTRPC } from "@/trpc/provider";
+import { PARAM_NAME, parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
 
 const SortAndMapListLength = () => {
   return (
@@ -15,13 +15,13 @@ const SortAndMapListLength = () => {
       <SortOptions />
       <MapListLength />
     </div>
-  )
-}
+  );
+};
 
-export default SortAndMapListLength
+export default SortAndMapListLength;
 
-type SortField = keyof typeof FIELD_TO_PARAMS
-type SortDirection = "asc" | "desc" | null
+type SortField = keyof typeof FIELD_TO_PARAMS;
+type SortDirection = "asc" | "desc" | null;
 
 const FIELD_TO_PARAMS = {
   ID: "id" as const,
@@ -31,7 +31,7 @@ const FIELD_TO_PARAMS = {
   曲の長さ: "duration" as const,
   ランダム: "random" as const,
   いいね: "like" as const,
-}
+};
 
 const getResetDirections = (): Record<SortField, SortDirection> => ({
   ID: null,
@@ -41,74 +41,74 @@ const getResetDirections = (): Record<SortField, SortDirection> => ({
   曲の長さ: null,
   ランダム: null,
   いいね: null,
-})
+});
 
 const SortOptions = () => {
-  const searchParams = useSearchParams()
-  const setIsSearching = useSetIsSearching()
-  const setDifficultyRangeParams = useDifficultyRangeParams()
-  const readDifficultyRange = useReadDifficultyRange()
+  const searchParams = useSearchParams();
+  const setIsSearching = useSetIsSearching();
+  const setDifficultyRangeParams = useDifficultyRangeParams();
+  const readDifficultyRange = useReadDifficultyRange();
 
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>(() => {
-    const paramValue = searchParams.get(PARAM_NAME.sort)
-    const [direction] = paramValue?.match(/asc|desc/) || ["desc"]
-    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || ["ID"]
+    const paramValue = searchParams.get(PARAM_NAME.sort);
+    const [direction] = paramValue?.match(/asc|desc/) || ["desc"];
+    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || ["ID"];
     return {
       ...getResetDirections(),
       [field as SortField]: direction as SortDirection,
-    }
-  })
+    };
+  });
 
   useEffect(() => {
-    const paramValue = searchParams.get(PARAM_NAME.sort)
-    const [direction] = paramValue?.match(/asc|desc/) || ["desc"]
-    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || ["ID"]
-    setSortDirections({ ...getResetDirections(), [field as SortField]: direction as SortDirection })
-  }, [searchParams])
+    const paramValue = searchParams.get(PARAM_NAME.sort);
+    const [direction] = paramValue?.match(/asc|desc/) || ["desc"];
+    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || ["ID"];
+    setSortDirections({ ...getResetDirections(), [field as SortField]: direction as SortDirection });
+  }, [searchParams]);
 
   const handleSort = (field: SortField) => {
-    const currentDirection = sortDirections[field]
-    const params = new URLSearchParams(searchParams.toString())
+    const currentDirection = sortDirections[field];
+    const params = new URLSearchParams(searchParams.toString());
 
     if (currentDirection === null) {
       if (field === "ID") {
-        params.delete(PARAM_NAME.sort)
+        params.delete(PARAM_NAME.sort);
       } else if (field === "ランダム") {
-        params.set(PARAM_NAME.sort, "random")
+        params.set(PARAM_NAME.sort, "random");
       } else {
-        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`)
+        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
       }
-      setSortDirections({ ...getResetDirections(), [field]: "desc" })
+      setSortDirections({ ...getResetDirections(), [field]: "desc" });
     } else if (currentDirection === "desc" && field !== "ランダム") {
-      params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_asc`)
-      setSortDirections({ ...getResetDirections(), [field]: "asc" })
+      params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_asc`);
+      setSortDirections({ ...getResetDirections(), [field]: "asc" });
     } else {
-      params.delete(PARAM_NAME.sort)
-      setSortDirections({ ...getResetDirections(), ID: "desc" })
+      params.delete(PARAM_NAME.sort);
+      setSortDirections({ ...getResetDirections(), ID: "desc" });
     }
 
-    setIsSearching(true)
-    window.history.replaceState(null, "", `?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`)
-  }
+    setIsSearching(true);
+    window.history.replaceState(null, "", `?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
+  };
 
   const getSortIcon = (field: SortField) => {
     if (field === "ランダム") {
-      return <FaSort className={cn(sortDirections[field] ? "visible" : "invisible", "group-hover:visible")} />
+      return <FaSort className={cn(sortDirections[field] ? "visible" : "invisible", "group-hover:visible")} />;
     }
 
-    const direction = sortDirections[field]
-    if (direction === "asc") return <FaSortUp />
-    if (direction === "desc") return <FaSortDown />
-    return <FaSortDown className="invisible group-hover:visible" />
-  }
+    const direction = sortDirections[field];
+    if (direction === "asc") return <FaSortUp />;
+    if (direction === "desc") return <FaSortDown />;
+    return <FaSortDown className="invisible group-hover:visible" />;
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-2 select-none">
       {Object.keys(FIELD_TO_PARAMS).map((option) => {
-        const likedSort = option === "いいね"
-        const filterLiked = searchParams.get("filter") === "liked"
+        const likedSort = option === "いいね";
+        const filterLiked = searchParams.get("filter") === "liked";
         if (likedSort && !filterLiked) {
-          return null
+          return null;
         }
         return (
           <div
@@ -122,17 +122,17 @@ const SortOptions = () => {
             <span className="mr-1">{option}</span>
             {getSortIcon(option as SortField)}
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
 const MapListLength = () => {
-  const searchParams = useSearchParams()
-  const trpc = useTRPC()
-  const params = parseMapListSearchParams(searchParams)
-  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getListLength.queryOptions(params))
+  const searchParams = useSearchParams();
+  const trpc = useTRPC();
+  const params = parseMapListSearchParams(searchParams);
+  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getListLength.queryOptions(params));
 
   return (
     <div className="bg-accent text-accent-foreground flex items-center gap-4 rounded-md px-3 py-1 font-medium">
@@ -141,5 +141,5 @@ const MapListLength = () => {
         {isPending ? <Loader2 className="h-4 w-4" /> : mapListLength}
       </div>
     </div>
-  )
-}
+  );
+};

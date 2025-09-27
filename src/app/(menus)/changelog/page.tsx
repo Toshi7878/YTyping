@@ -1,10 +1,10 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { H2, H5, Small } from "@/components/ui/typography"
-import { serverApi } from "@/trpc/server"
-import { changelog } from "./changelog"
+import { Card, CardContent } from "@/components/ui/card";
+import { H2, H5, Small } from "@/components/ui/typography";
+import { serverApi } from "@/trpc/server";
+import { changelog } from "./changelog";
 
 export default async function Page() {
-  const buildingDate = await serverApi.vercel.getLatestDeployDate()
+  const buildingDate = await serverApi.vercel.getLatestDeployDate();
 
   return (
     <article className="mx-auto max-w-screen-xl space-y-4">
@@ -13,7 +13,7 @@ export default async function Page() {
       </H2>
       <UpdateHistoryList />
     </article>
-  )
+  );
 }
 
 const UpdateHistoryList = () => {
@@ -32,5 +32,5 @@ const UpdateHistoryList = () => {
         ))}
       </CardContent>
     </Card>
-  )
-}
+  );
+};

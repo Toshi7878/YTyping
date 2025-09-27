@@ -1,6 +1,6 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import type React from "react"
-import { cn } from "@/lib/utils"
+import { cva, type VariantProps } from "class-variance-authority";
+import type React from "react";
+import { cn } from "@/lib/utils";
 
 const spinnerVariants = cva("border-muted-foreground/80 border-t-primary animate-spin rounded-full", {
   variants: {
@@ -15,7 +15,7 @@ const spinnerVariants = cva("border-muted-foreground/80 border-t-primary animate
   defaultVariants: {
     size: "md",
   },
-})
+});
 
 interface SpinnerProps extends React.ComponentPropsWithRef<"div">, VariantProps<typeof spinnerVariants> {}
 
@@ -24,7 +24,7 @@ const Spinner = ({ size, className, ...rest }: SpinnerProps) => {
     <div className={cn("flex justify-center py-8", className)} {...rest}>
       <div className={spinnerVariants({ size })} />
     </div>
-  )
-}
+  );
+};
 
-export default Spinner
+export default Spinner;

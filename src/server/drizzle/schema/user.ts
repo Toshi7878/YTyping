@@ -1,7 +1,7 @@
-import { boolean, integer, pgEnum, pgTable, primaryKey, real, serial, timestamp, varchar } from "drizzle-orm/pg-core"
-import { DEFAULT_TYPING_OPTIONS, MAX_SHORT_LENGTH } from "../const"
+import { boolean, integer, pgEnum, pgTable, primaryKey, real, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { DEFAULT_TYPING_OPTIONS, MAX_SHORT_LENGTH } from "../const";
 
-export const roleEnum = pgEnum("role", ["USER", "ADMIN"])
+export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
 export const Users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: varchar("name").unique(),
@@ -9,7 +9,7 @@ export const Users = pgTable("users", {
   role: roleEnum("role").notNull().default("USER"),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
-})
+});
 
 export const UserProfiles = pgTable("user_profiles", {
   userId: integer("user_id")
@@ -17,9 +17,9 @@ export const UserProfiles = pgTable("user_profiles", {
     .references(() => Users.id, { onDelete: "cascade" }),
   fingerChartUrl: varchar("finger_chart_url").notNull().default(""),
   keyboard: varchar("keyboard").notNull().default(""),
-})
+});
 
-export const customUserActiveStateEnum = pgEnum("custom_user_active_state", ["ONLINE", "ASK_ME", "HIDE_ONLINE"])
+export const customUserActiveStateEnum = pgEnum("custom_user_active_state", ["ONLINE", "ASK_ME", "HIDE_ONLINE"]);
 export const UserOptions = pgTable("user_options", {
   userId: integer("user_id")
     .primaryKey()
@@ -28,12 +28,12 @@ export const UserOptions = pgTable("user_options", {
   overTakeNotify: integer("over_take_notify").notNull().default(5),
   customUserActiveState: customUserActiveStateEnum("custom_user_active_state").notNull().default("ONLINE"),
   hideUserStats: boolean("hide_user_stats").notNull().default(false),
-})
+});
 
-export const nextDisplayEnum = pgEnum("next_display", ["LYRICS", "WORD"])
-export const lineCompletedDisplayEnum = pgEnum("line_completed_display", ["HIGH_LIGHT", "NEXT_WORD"])
-export const timeOffsetAdjustKeyEnum = pgEnum("time_offset_key", ["CTRL_LEFT_RIGHT", "CTRL_ALT_LEFT_RIGHT", "NONE"])
-export const InputModeToggleKeyEnum = pgEnum("toggle_input_mode_key", ["ALT_KANA", "TAB", "NONE"])
+export const nextDisplayEnum = pgEnum("next_display", ["LYRICS", "WORD"]);
+export const lineCompletedDisplayEnum = pgEnum("line_completed_display", ["HIGH_LIGHT", "NEXT_WORD"]);
+export const timeOffsetAdjustKeyEnum = pgEnum("time_offset_key", ["CTRL_LEFT_RIGHT", "CTRL_ALT_LEFT_RIGHT", "NONE"]);
+export const InputModeToggleKeyEnum = pgEnum("toggle_input_mode_key", ["ALT_KANA", "TAB", "NONE"]);
 export const mainWordDisplayEnum = pgEnum("main_word_display", [
   "KANA_ROMA_UPPERCASE",
   "KANA_ROMA_LOWERCASE",
@@ -42,7 +42,7 @@ export const mainWordDisplayEnum = pgEnum("main_word_display", [
   "KANA_ONLY",
   "ROMA_UPPERCASE_ONLY",
   "ROMA_LOWERCASE_ONLY",
-])
+]);
 
 export const UserTypingOptions = pgTable("user_typing_options", {
   userId: integer("user_id")
@@ -71,7 +71,7 @@ export const UserTypingOptions = pgTable("user_typing_options", {
     .notNull()
     .default(DEFAULT_TYPING_OPTIONS.InputModeToggleKey),
   wordDisplay: mainWordDisplayEnum("main_word_display").notNull().default(DEFAULT_TYPING_OPTIONS.wordDisplay),
-})
+});
 
 export const DEFAULT_IME_OPTIONS = {
   enableAddSymbol: false,
@@ -80,7 +80,7 @@ export const DEFAULT_IME_OPTIONS = {
   addSymbolList: "",
   enableNextLyrics: true,
   enableLargeVideoDisplay: false,
-}
+};
 export const UserImeTypingOptions = pgTable("user_ime_typing_options", {
   userId: integer("user_id")
     .primaryKey()
@@ -95,7 +95,7 @@ export const UserImeTypingOptions = pgTable("user_ime_typing_options", {
   enableLargeVideoDisplay: boolean("enable_large_video_display")
     .notNull()
     .default(DEFAULT_IME_OPTIONS.enableLargeVideoDisplay),
-})
+});
 
 export const UserStats = pgTable("user_stats", {
   userId: integer("user_id")
@@ -114,7 +114,7 @@ export const UserStats = pgTable("user_stats", {
   imeTypeTotalCount: integer("ime_type_total_count").notNull().default(0),
   maxCombo: integer("max_combo").notNull().default(0),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-})
+});
 
 export const UserDailyTypeCounts = pgTable(
   "user_daily_type_counts",
@@ -131,4 +131,4 @@ export const UserDailyTypeCounts = pgTable(
     otherTypeCount: integer("other_type_count").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.userId, t.createdAt] })],
-)
+);

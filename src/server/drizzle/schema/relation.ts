@@ -1,8 +1,8 @@
-import { relations } from "drizzle-orm/relations"
+import { relations } from "drizzle-orm/relations";
 
-import { MapDifficulties, MapLikes, Maps } from "./map"
-import { Notifications } from "./notification"
-import { ImeResults, ResultClaps, ResultStatuses, Results } from "./result"
+import { MapDifficulties, MapLikes, Maps } from "./map";
+import { Notifications } from "./notification";
+import { ImeResults, ResultClaps, ResultStatuses, Results } from "./result";
 import {
   UserDailyTypeCounts,
   UserImeTypingOptions,
@@ -11,7 +11,7 @@ import {
   UserStats,
   Users,
   UserTypingOptions,
-} from "./user"
+} from "./user";
 
 export const UsersRelations = relations(Users, ({ many, one }) => {
   return {
@@ -42,8 +42,8 @@ export const UsersRelations = relations(Users, ({ many, one }) => {
       references: [UserImeTypingOptions.userId],
     }),
     imeResults: many(ImeResults),
-  }
-})
+  };
+});
 
 export const MapsRelations = relations(Maps, ({ one, many }) => ({
   creator: one(Users, {
@@ -59,14 +59,14 @@ export const MapsRelations = relations(Maps, ({ one, many }) => ({
     references: [MapDifficulties.mapId],
   }),
   imeResults: many(ImeResults),
-}))
+}));
 
 export const MapDifficultiesRelations = relations(MapDifficulties, ({ one }) => ({
   map: one(Maps, {
     fields: [MapDifficulties.mapId],
     references: [Maps.id],
   }),
-}))
+}));
 
 export const MapLikesRelations = relations(MapLikes, ({ one }) => ({
   user: one(Users, {
@@ -77,7 +77,7 @@ export const MapLikesRelations = relations(MapLikes, ({ one }) => ({
     fields: [MapLikes.mapId],
     references: [Maps.id],
   }),
-}))
+}));
 
 export const ResultsRelations = relations(Results, ({ one, many }) => ({
   user: one(Users, { fields: [Results.userId], references: [Users.id] }),
@@ -89,24 +89,24 @@ export const ResultsRelations = relations(Results, ({ one, many }) => ({
   claps: many(ResultClaps),
   notificationsAsVisitor: many(Notifications, { relationName: "VisitorResult" }),
   notificationsAsVisited: many(Notifications, { relationName: "VisitedResult" }),
-}))
+}));
 
 export const ImeResultsRelations = relations(ImeResults, ({ one }) => ({
   user: one(Users, { fields: [ImeResults.userId], references: [Users.id] }),
   map: one(Maps, { fields: [ImeResults.mapId], references: [Maps.id] }),
-}))
+}));
 
 export const ResultStatusesRelations = relations(ResultStatuses, ({ one }) => ({
   result: one(Results, {
     fields: [ResultStatuses.resultId],
     references: [Results.id],
   }),
-}))
+}));
 
 export const ResultClapsRelations = relations(ResultClaps, ({ one }) => ({
   user: one(Users, { fields: [ResultClaps.userId], references: [Users.id] }),
   result: one(Results, { fields: [ResultClaps.resultId], references: [Results.id] }),
-}))
+}));
 
 export const NotificationsRelations = relations(Notifications, ({ one }) => ({
   visitor: one(Users, {
@@ -125,37 +125,37 @@ export const NotificationsRelations = relations(Notifications, ({ one }) => ({
     references: [Results.userId, Results.mapId],
     relationName: "VisitedResult",
   }),
-}))
+}));
 
 export const UserProfilesRelations = relations(UserProfiles, ({ one }) => ({
   user: one(Users, { fields: [UserProfiles.userId], references: [Users.id] }),
-}))
+}));
 
 export const UserOptionsRelations = relations(UserOptions, ({ one }) => ({
   user: one(Users, { fields: [UserOptions.userId], references: [Users.id] }),
-}))
+}));
 
 export const UserTypingOptionsRelations = relations(UserTypingOptions, ({ one }) => ({
   user: one(Users, {
     fields: [UserTypingOptions.userId],
     references: [Users.id],
   }),
-}))
+}));
 
 export const UserImeTypingOptionsRelations = relations(UserImeTypingOptions, ({ one }) => ({
   user: one(Users, {
     fields: [UserImeTypingOptions.userId],
     references: [Users.id],
   }),
-}))
+}));
 
 export const UserStatsRelations = relations(UserStats, ({ one }) => ({
   user: one(Users, { fields: [UserStats.userId], references: [Users.id] }),
-}))
+}));
 
 export const UserDailyTypeCountsRelations = relations(UserDailyTypeCounts, ({ one }) => ({
   user: one(Users, {
     fields: [UserDailyTypeCounts.userId],
     references: [Users.id],
   }),
-}))
+}));

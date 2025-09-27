@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useYTSpeedState } from "@/app/edit/_lib/atoms/state-atoms"
-import { CounterInput } from "@/components/ui/counter"
-import { Slider } from "@/components/ui/slider"
-import { cn } from "@/lib/utils"
-import type { YouTubeSpeed } from "@/types/types"
-import { usePlayer } from "../_lib/atoms/read-atoms"
+import { useYTSpeedState } from "@/app/edit/_lib/atoms/state-atoms";
+import { CounterInput } from "@/components/ui/counter";
+import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib/utils";
+import type { YouTubeSpeed } from "@/types/types";
+import { usePlayer } from "../_lib/atoms/read-atoms";
 import {
   useSetTimeRangeValue,
   useSetYTSpeed,
   useTimeRangeValueState,
   useYTDurationState,
-} from "../_lib/atoms/state-atoms"
+} from "../_lib/atoms/state-atoms";
 
 export const TimeRangeAndSpeedChange = ({ className }: { className: string }) => {
   return (
@@ -19,24 +19,24 @@ export const TimeRangeAndSpeedChange = ({ className }: { className: string }) =>
       <TimeRange />
       <EditSpeedChange />
     </section>
-  )
-}
+  );
+};
 
 const TimeRange = () => {
-  const { readPlayer } = usePlayer()
+  const { readPlayer } = usePlayer();
 
-  const timeRangeValue = useTimeRangeValueState()
-  const ytDuration = useYTDurationState()
+  const timeRangeValue = useTimeRangeValueState();
+  const ytDuration = useYTDurationState();
 
-  const setTimeRangeValue = useSetTimeRangeValue()
+  const setTimeRangeValue = useSetTimeRangeValue();
 
   const handleRangeChange = (value: number[]) => {
-    const time = value[0]
-    setTimeRangeValue(time)
-    const player = readPlayer()
-    player.playVideo()
-    player.seekTo(time, true)
-  }
+    const time = value[0];
+    setTimeRangeValue(time);
+    const player = readPlayer();
+    player.playVideo();
+    player.seekTo(time, true);
+  };
 
   return (
     <Slider
@@ -48,12 +48,12 @@ const TimeRange = () => {
       max={ytDuration}
       className="w-full"
     />
-  )
-}
+  );
+};
 
 const EditSpeedChange = () => {
-  const speed = useYTSpeedState()
-  const setYTSpeed = useSetYTSpeed()
+  const speed = useYTSpeedState();
+  const setYTSpeed = useSetYTSpeed();
 
   return (
     <CounterInput
@@ -68,5 +68,5 @@ const EditSpeedChange = () => {
       minusButtonHotkey="f9"
       plusButtonHotkey="f10"
     />
-  )
-}
+  );
+};

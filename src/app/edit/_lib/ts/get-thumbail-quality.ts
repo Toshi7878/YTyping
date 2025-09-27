@@ -1,19 +1,19 @@
-import type { thumbnailQualityEnum } from "@/server/drizzle/schema"
+import type { thumbnailQualityEnum } from "@/server/drizzle/schema";
 
 export const getThumbnailQuality = (videoId: string) => {
-  const img = new window.Image()
-  img.src = `https://i.ytimg.com/vi_webp/${videoId}/maxresdefault.webp`
+  const img = new window.Image();
+  img.src = `https://i.ytimg.com/vi_webp/${videoId}/maxresdefault.webp`;
   return new Promise<(typeof thumbnailQualityEnum.enumValues)[number]>((resolve) => {
     img.onload = () => {
       if (img.width !== 120) {
-        resolve("maxresdefault")
+        resolve("maxresdefault");
       } else {
-        resolve("mqdefault")
+        resolve("mqdefault");
       }
-    }
+    };
     img.onerror = () => {
-      console.error("画像の読み込みに失敗しました")
-      resolve("mqdefault")
-    }
-  })
-}
+      console.error("画像の読み込みに失敗しました");
+      resolve("mqdefault");
+    };
+  });
+};

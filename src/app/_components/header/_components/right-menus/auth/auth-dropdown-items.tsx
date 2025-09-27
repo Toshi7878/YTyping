@@ -1,11 +1,11 @@
-import { useProgress } from "@bprogress/next"
-import { signIn, signOut } from "next-auth/react"
-import { BsDiscord, BsGoogle } from "react-icons/bs"
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
+import { useProgress } from "@bprogress/next";
+import { signIn, signOut } from "next-auth/react";
+import { BsDiscord, BsGoogle } from "react-icons/bs";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 export const SignInDropdownItems = () => {
-  const { start } = useProgress()
+  const { start } = useProgress();
   const items = [
     {
       text: "Discordでログイン",
@@ -19,7 +19,7 @@ export const SignInDropdownItems = () => {
       provider: "google",
       className: "hover:bg-google focus:bg-google",
     },
-  ]
+  ];
 
   return (
     <>
@@ -27,8 +27,8 @@ export const SignInDropdownItems = () => {
         <DropdownMenuItem
           key={item.provider}
           onSelect={async () => {
-            start()
-            await signIn(item.provider)
+            start();
+            await signIn(item.provider);
           }}
           className={cn("group flex w-full items-center gap-3 p-3 px-6 focus:text-white", item.className)}
         >
@@ -37,20 +37,20 @@ export const SignInDropdownItems = () => {
         </DropdownMenuItem>
       ))}
     </>
-  )
-}
+  );
+};
 
 export const LogOutDropdownItem = () => {
-  const { start, stop } = useProgress()
+  const { start, stop } = useProgress();
   return (
     <DropdownMenuItem
       onClick={async () => {
-        start()
-        await signOut({ redirect: false })
-        stop()
+        start();
+        await signOut({ redirect: false });
+        stop();
       }}
     >
       ログアウト
     </DropdownMenuItem>
-  )
-}
+  );
+};

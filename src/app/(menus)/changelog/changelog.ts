@@ -563,4 +563,4 @@ export const changelog = [
     ],
   },
   { date: "2024-08-15", descriptions: ["更新履歴ページを追加"] },
-]
+];

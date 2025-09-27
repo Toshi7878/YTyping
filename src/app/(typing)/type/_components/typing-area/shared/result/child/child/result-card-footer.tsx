@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import type { HTMLAttributes } from "react"
-import { Badge } from "@/components/ui/badge"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+import type { HTMLAttributes } from "react";
+import { Badge } from "@/components/ui/badge";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface ResultCardFooterProps extends HTMLAttributes<HTMLDivElement> {
-  scoreCount?: number
-  point: number
-  tBonus: number
-  maxLinePoint: number
-  miss: number
-  kpm: number
-  rkpm: number
-  lost: number
+  scoreCount?: number;
+  point: number;
+  tBonus: number;
+  maxLinePoint: number;
+  miss: number;
+  kpm: number;
+  rkpm: number;
+  lost: number;
 }
 
 function ResultCardFooter({
@@ -28,7 +28,7 @@ function ResultCardFooter({
   className,
   ...props
 }: ResultCardFooterProps) {
-  const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green"
+  const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green";
 
   return (
     <div className={cn("flex w-full justify-between gap-2 py-2", className)} {...props}>
@@ -55,7 +55,7 @@ function ResultCardFooter({
         </Badge>
       </TooltipWrapper>
     </div>
-  )
+  );
 }
 
-export default ResultCardFooter
+export default ResultCardFooter;

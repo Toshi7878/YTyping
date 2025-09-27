@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { AnimatePresence, motion } from "framer-motion"
-import type React from "react"
-import Spinner from "./spinner"
+import { AnimatePresence, motion } from "framer-motion";
+import type React from "react";
+import Spinner from "./spinner";
 
 interface LoadingOverlayProps {
-  isLoading: boolean
-  message?: React.ReactNode
-  hideSpinner?: boolean
+  isLoading: boolean;
+  message?: React.ReactNode;
+  hideSpinner?: boolean;
 }
 
 interface LoadingOverlayProviderProps extends LoadingOverlayProps {
-  children?: React.ReactNode
-  asChild?: boolean
+  children?: React.ReactNode;
+  asChild?: boolean;
 }
 
 export const LoadingOverlayProvider = ({
@@ -22,7 +22,7 @@ export const LoadingOverlayProvider = ({
   children,
   asChild,
 }: LoadingOverlayProviderProps) => {
-  const overlay = <LoadingOverlay isLoading={isLoading} message={message} hideSpinner={hideSpinner} />
+  const overlay = <LoadingOverlay isLoading={isLoading} message={message} hideSpinner={hideSpinner} />;
 
   return asChild ? (
     <>
@@ -34,8 +34,8 @@ export const LoadingOverlayProvider = ({
       {children}
       {overlay}
     </div>
-  )
-}
+  );
+};
 
 const LoadingOverlay = ({ isLoading, message, hideSpinner }: LoadingOverlayProps) => {
   return (
@@ -61,5 +61,5 @@ const LoadingOverlay = ({ isLoading, message, hideSpinner }: LoadingOverlayProps
         </motion.div>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};

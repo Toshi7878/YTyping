@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import type { Dispatch } from "react"
-import { useForm } from "react-hook-form"
-import type z from "zod"
-import { useHistoryReducer } from "@/app/edit/_lib/atoms/history-reducer-atom"
-import { useMapReducer, useMapState } from "@/app/edit/_lib/atoms/map-reducer-atom"
-import { useSetCanUpload } from "@/app/edit/_lib/atoms/state-atoms"
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { CounterInput } from "@/components/ui/counter"
-import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/components/ui/dialog"
-import { Form, FormField, FormItem } from "@/components/ui/form"
-import { SwitchFormField } from "@/components/ui/switch"
-import { TextareaFormField } from "@/components/ui/textarea"
-import { LineOptionSchema } from "@/server/drizzle/validator/map-json"
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { Dispatch } from "react";
+import { useForm } from "react-hook-form";
+import type z from "zod";
+import { useHistoryReducer } from "@/app/edit/_lib/atoms/history-reducer-atom";
+import { useMapReducer, useMapState } from "@/app/edit/_lib/atoms/map-reducer-atom";
+import { useSetCanUpload } from "@/app/edit/_lib/atoms/state-atoms";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CounterInput } from "@/components/ui/counter";
+import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/components/ui/dialog";
+import { Form, FormField, FormItem } from "@/components/ui/form";
+import { SwitchFormField } from "@/components/ui/switch";
+import { TextareaFormField } from "@/components/ui/textarea";
+import { LineOptionSchema } from "@/server/drizzle/validator/map-json";
 
 interface LineOptionDialogProps {
-  index: number
-  setOptionDialogIndex: Dispatch<number | null>
+  index: number;
+  setOptionDialogIndex: Dispatch<number | null>;
 }
 
 export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOptionDialogProps) {
-  const map = useMapState()
-  const confirm = useConfirm()
-  const setCanUpload = useSetCanUpload()
-  const historyDispatch = useHistoryReducer()
-  const mapDispatch = useMapReducer()
+  const map = useMapState();
+  const confirm = useConfirm();
+  const setCanUpload = useSetCanUpload();
+  const historyDispatch = useHistoryReducer();
+  const mapDispatch = useMapReducer();
 
   const form = useForm({
     resolver: zodResolver(LineOptionSchema),
@@ -37,12 +37,12 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
       isChangeCSS: map[index]?.options?.isChangeCSS || false,
       changeVideoSpeed: map[index]?.options?.changeVideoSpeed || 0,
     },
-  })
+  });
   const handleModalClose = async () => {
     if (!isDirty) {
       // エディターのEscapeキーのホットキーと競合するためsetTimeoutで遅延させる
-      setTimeout(() => setOptionDialogIndex(null))
-      return
+      setTimeout(() => setOptionDialogIndex(null));
+      return;
     }
 
     const isConfirmed = await confirm({
@@ -52,15 +52,15 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
       actionButton: "はい",
       cancelButtonVariant: "outline",
       actionButtonVariant: "warning",
-    })
+    });
 
     if (isConfirmed) {
-      setOptionDialogIndex(null)
+      setOptionDialogIndex(null);
     }
-  }
+  };
 
   const onSubmit = (data: z.output<typeof LineOptionSchema>) => {
-    const { time, lyrics, word } = map[index]
+    const { time, lyrics, word } = map[index];
 
     const newLine = {
       time,
@@ -72,8 +72,8 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
         ...(data.isChangeCSS && { isChangeCSS: data.isChangeCSS }),
         ...(data.changeVideoSpeed && { changeVideoSpeed: data.changeVideoSpeed }),
       },
-    }
-    mapDispatch({ type: "update", payload: newLine, index })
+    };
+    mapDispatch({ type: "update", payload: newLine, index });
 
     historyDispatch({
       type: "add",
@@ -85,14 +85,14 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
           lineIndex: index,
         },
       },
-    })
-    setCanUpload(true)
-    setOptionDialogIndex(null)
-  }
+    });
+    setCanUpload(true);
+    setOptionDialogIndex(null);
+  };
 
   const {
     formState: { isDirty },
-  } = form
+  } = form;
 
   return (
     <DialogWithContent
@@ -123,7 +123,7 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
                     unit={Number(field.value ?? 0) < 0 ? "速度ダウン" : "速度アップ"}
                     value={field.value ?? 0}
                     onChange={(value) => {
-                      field.onChange(value)
+                      field.onChange(value);
                     }}
                     min={-1.75}
                     max={2}
@@ -164,7 +164,7 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
 
       <DialogFooter />
     </DialogWithContent>
-  )
+  );
 }
 
 // interface CSSTextLengthProps {

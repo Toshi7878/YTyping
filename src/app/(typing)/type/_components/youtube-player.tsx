@@ -1,36 +1,43 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useMemo } from "react"
-import type { YouTubeEvent } from "react-youtube"
-import YouTube from "react-youtube"
-import { LoadingOverlayProvider } from "@/components/ui/loading-overlay"
-import { useUserAgent } from "@/lib/global-atoms"
-import { cn } from "@/lib/utils"
-import { windowFocus } from "@/utils/hooks/window-focus"
-import { usePlayer, useReadYTStatus } from "../_lib/atoms/ref-atoms"
-import { useReadGameUtilParams } from "../_lib/atoms/state-atoms"
-import { useTimerRegistration } from "../_lib/hooks/playing/timer/timer"
-import { useOnEnd, useOnPause, useOnPlay, useOnRateChange, useOnReady, useOnSeeked } from "../_lib/hooks/youtube-events"
+import { useCallback, useEffect, useMemo } from "react";
+import type { YouTubeEvent } from "react-youtube";
+import YouTube from "react-youtube";
+import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
+import { useUserAgent } from "@/lib/global-atoms";
+import { cn } from "@/lib/utils";
+import { windowFocus } from "@/utils/hooks/window-focus";
+import { usePlayer, useReadYTStatus } from "../_lib/atoms/ref-atoms";
+import { useReadGameUtilParams } from "../_lib/atoms/state-atoms";
+import { useTimerRegistration } from "../_lib/hooks/playing/timer/timer";
+import {
+  useOnEnd,
+  useOnPause,
+  useOnPlay,
+  useOnRateChange,
+  useOnReady,
+  useOnSeeked,
+} from "../_lib/hooks/youtube-events";
 
 interface YouTubePlayerProps {
-  isMapLoading: boolean
-  videoId: string
-  className?: string
+  isMapLoading: boolean;
+  videoId: string;
+  className?: string;
 }
 
 const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
-  const onReady = useOnReady()
-  const onPlay = useOnPlay()
-  const onPause = useOnPause()
-  const onEnd = useOnEnd()
-  const onSeeked = useOnSeeked()
-  const onRateChange = useOnRateChange()
-  const { addTimer, removeTimer } = useTimerRegistration()
-  const isMobile = useUserAgent()?.getDevice().type === "mobile"
+  const onReady = useOnReady();
+  const onPlay = useOnPlay();
+  const onPause = useOnPause();
+  const onEnd = useOnEnd();
+  const onSeeked = useOnSeeked();
+  const onRateChange = useOnRateChange();
+  const { addTimer, removeTimer } = useTimerRegistration();
+  const isMobile = useUserAgent()?.getDevice().type === "mobile";
   useEffect(() => {
-    addTimer()
-    return () => removeTimer()
-  }, [])
+    addTimer();
+    return () => removeTimer();
+  }, []);
 
   // const memorizedYouTubePlayer = useMemo(() => {
   //   return (
@@ -64,12 +71,12 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
   const onStateChange = useCallback(
     (event: YouTubeEvent) => {
       if (event.data === YT.PlayerState.BUFFERING) {
-        onSeeked(event.target as YT.Player)
+        onSeeked(event.target as YT.Player);
       }
     },
 
     [],
-  )
+  );
 
   const memoizedYouTube = useMemo(
     () => (
@@ -100,32 +107,32 @@ const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerP
     ),
 
     [videoId],
-  )
+  );
 
   return (
     <LoadingOverlayProvider isLoading={isMapLoading} message="譜面読み込み中...">
       {isMobile && <MobileCover />}
       {memoizedYouTube}
     </LoadingOverlayProvider>
-  )
-}
+  );
+};
 
 const MobileCover = () => {
-  const { readPlayer } = usePlayer()
-  const { readYTStatus } = useReadYTStatus()
+  const { readPlayer } = usePlayer();
+  const { readYTStatus } = useReadYTStatus();
 
-  const readGameStateUtils = useReadGameUtilParams()
+  const readGameStateUtils = useReadGameUtilParams();
   const handleStart = useCallback(async () => {
-    const { scene } = readGameStateUtils()
+    const { scene } = readGameStateUtils();
 
     if (readYTStatus().isPaused || scene === "ready") {
-      readPlayer().playVideo()
+      readPlayer().playVideo();
     } else {
-      readPlayer().pauseVideo()
+      readPlayer().pauseVideo();
     }
 
-    windowFocus()
-  }, [readGameStateUtils, readPlayer, readYTStatus])
+    windowFocus();
+  }, [readGameStateUtils, readPlayer, readYTStatus]);
 
   return (
     <div
@@ -133,7 +140,7 @@ const MobileCover = () => {
       className="absolute inset-0 z-[5] cursor-pointer items-center rounded-lg transition-opacity duration-300"
       onClick={handleStart}
     />
-  )
-}
+  );
+};
 
-export default YouTubePlayer
+export default YouTubePlayer;

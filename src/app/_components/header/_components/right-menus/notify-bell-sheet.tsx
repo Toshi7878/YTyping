@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Bell, BellDot, Loader2 } from "lucide-react"
-import type { ReactNode } from "react"
-import { useEffect } from "react"
-import { useInView } from "react-intersection-observer"
-import MapLeftThumbnail from "@/components/shared/map-card-thumbnail"
-import CompactMapInfo from "@/components/shared/map-info/compact-map-info"
-import DateDistanceText from "@/components/shared/text/date-distance-text"
-import UserNameLinkText from "@/components/shared/text/user-name-link-text"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import type { RouterOutPuts } from "@/server/api/trpc"
-import { useTRPC } from "@/trpc/provider"
-import { useNotificationQueries } from "@/utils/queries/notification.queries"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Bell, BellDot, Loader2 } from "lucide-react";
+import type { ReactNode } from "react";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
+import CompactMapInfo from "@/components/shared/map-info/compact-map-info";
+import DateDistanceText from "@/components/shared/text/date-distance-text";
+import UserNameLinkText from "@/components/shared/text/user-name-link-text";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import type { RouterOutPuts } from "@/server/api/trpc";
+import { useTRPC } from "@/trpc/provider";
+import { useNotificationQueries } from "@/utils/queries/notification.queries";
 
 export default function NotifyBellSheet() {
-  const trpc = useTRPC()
-  const { data: isNewNotificationFound } = useQuery(trpc.notification.hasUnread.queryOptions())
-  const queryClient = useQueryClient()
+  const trpc = useTRPC();
+  const { data: isNewNotificationFound } = useQuery(trpc.notification.hasUnread.queryOptions());
+  const queryClient = useQueryClient();
 
   const postUserNotificationRead = useMutation(
     trpc.notification.postUserNotificationRead.mutationOptions({
       onSuccess: () => {
-        void queryClient.invalidateQueries(trpc.notification.hasUnread.queryFilter())
+        void queryClient.invalidateQueries(trpc.notification.hasUnread.queryFilter());
       },
     }),
-  )
+  );
 
   return (
     <Sheet>
@@ -52,21 +52,21 @@ export default function NotifyBellSheet() {
         <NotifyDrawerInnerContent />
       </SheetContent>
     </Sheet>
-  )
+  );
 }
 
 const NotifyDrawerInnerContent = () => {
-  const { ref, inView } = useInView({ threshold: 0.8 })
+  const { ref, inView } = useInView({ threshold: 0.8 });
 
   const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(
     useNotificationQueries().infinite(),
-  )
+  );
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      void fetchNextPage()
+      void fetchNextPage();
     }
-  }, [inView, hasNextPage, fetchNextPage])
+  }, [inView, hasNextPage, fetchNextPage]);
 
   return (
     <div className="h-full overflow-y-auto px-3">
@@ -77,7 +77,7 @@ const NotifyDrawerInnerContent = () => {
           {data?.pages.length ? (
             data.pages.map((page, pageIndex: number) => {
               return page.notifications.map((notify, notifyIndex: number) => {
-                const { map } = notify
+                const { map } = notify;
 
                 return (
                   <div key={`${pageIndex}-${notifyIndex}`} className="mb-4">
@@ -92,8 +92,8 @@ const NotifyDrawerInnerContent = () => {
                       </div>
                     </div>
                   </div>
-                )
-              })
+                );
+              });
             })
           ) : (
             <div className="text-muted-foreground py-8 text-center">まだ通知はありません</div>
@@ -104,12 +104,12 @@ const NotifyDrawerInnerContent = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 interface NotificationMapCardProps {
-  notify: RouterOutPuts["notification"]["getInfinite"]["notifications"][number]
-  children: ReactNode
+  notify: RouterOutPuts["notification"]["getInfinite"]["notifications"][number];
+  children: ReactNode;
 }
 
 function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
@@ -132,7 +132,7 @@ function NotificationMapCard({ notify, children }: NotificationMapCardProps) {
         {children}
       </CardContent>
     </Card>
-  )
+  );
 }
 
 const LoadingSpinner = () => {
@@ -140,5 +140,5 @@ const LoadingSpinner = () => {
     <div className="mt-10 flex items-center justify-center">
       <Loader2 className="h-6 w-6 animate-spin" />
     </div>
-  )
-}
+  );
+};

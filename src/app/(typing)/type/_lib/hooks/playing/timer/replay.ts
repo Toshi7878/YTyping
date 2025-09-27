@@ -1,159 +1,159 @@
-import { useGameUtilityReferenceParams, useLineCount } from "@/app/(typing)/type/_lib/atoms/ref-atoms"
-import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms"
+import { useGameUtilityReferenceParams, useLineCount } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadAllLineResult,
   useReadGameUtilParams,
   useReadLineWord,
   useSetLineWord,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/hooks/playing/calc-type-speed"
-import { useInputModeChange } from "@/app/(typing)/type/_lib/hooks/playing/input-mode-change"
-import type { ResultData, TypeResult } from "@/server/drizzle/validator/result"
-import type { YouTubeSpeed } from "@/types/types"
-import { useGetTime } from "../get-youtube-time"
-import type { TypingKeys } from "../keydown/typing-judge"
-import { KanaInput, RomaInput } from "../keydown/typing-judge"
-import { useSoundEffect } from "../sound-effect"
-import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../update-status"
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/hooks/playing/calc-type-speed";
+import { useInputModeChange } from "@/app/(typing)/type/_lib/hooks/playing/input-mode-change";
+import type { ResultData, TypeResult } from "@/server/drizzle/validator/result";
+import type { YouTubeSpeed } from "@/types/types";
+import { useGetTime } from "../get-youtube-time";
+import type { TypingKeys } from "../keydown/typing-judge";
+import { KanaInput, RomaInput } from "../keydown/typing-judge";
+import { useSoundEffect } from "../sound-effect";
+import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../update-status";
 
 interface UseKeyReplayProps {
-  constantLineTime: number
-  type: TypeResult
-  lineResult: ResultData[number]
+  constantLineTime: number;
+  type: TypeResult;
+  lineResult: ResultData[number];
 }
 
 const usePlayBackKey = () => {
-  const setLineWord = useSetLineWord()
+  const setLineWord = useSetLineWord();
 
-  const inputModeChange = useInputModeChange()
-  const dispatchSpeed = usePlaySpeedReducer()
-  const { getConstantRemainLineTime } = useGetTime()
+  const inputModeChange = useInputModeChange();
+  const dispatchSpeed = usePlaySpeedReducer();
+  const { getConstantRemainLineTime } = useGetTime();
 
-  const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess()
+  const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
 
-  const { updateMissStatus, updateMissRefStatus } = useTypeMiss()
-  const { triggerTypingSound, triggerMissSound } = useSoundEffect()
-  const calcTypeSpeed = useCalcTypeSpeed()
-  const updateAllStatus = useUpdateAllStatus()
+  const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
+  const { triggerTypingSound, triggerMissSound } = useSoundEffect();
+  const calcTypeSpeed = useCalcTypeSpeed();
+  const updateAllStatus = useUpdateAllStatus();
 
-  const readLineWord = useReadLineWord()
-  const readGameStateUtils = useReadGameUtilParams()
-  const { readCount } = useLineCount()
+  const readLineWord = useReadLineWord();
+  const readGameStateUtils = useReadGameUtilParams();
+  const { readCount } = useLineCount();
 
   return ({ constantLineTime, type }: UseKeyReplayProps) => {
-    const { c: key, is: isSuccess, op: option } = type
-    const count = readCount()
+    const { c: key, is: isSuccess, op: option } = type;
+    const count = readCount();
 
     if (key) {
       const typingKeys: TypingKeys = {
         keys: [key],
         key,
         code: `Key${key.toUpperCase()}`,
-      }
+      };
 
       if (isSuccess) {
-        const { inputMode } = readGameStateUtils()
-        const lineWord = readLineWord()
+        const { inputMode } = readGameStateUtils();
+        const lineWord = readLineWord();
         const result =
-          inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord })
-        setLineWord(result.newLineWord)
-        const isCompleted = result.newLineWord.nextChar.k === ""
-        triggerTypingSound({ isCompleted })
+          inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
+        setLineWord(result.newLineWord);
+        const isCompleted = result.newLineWord.nextChar.k === "";
+        triggerTypingSound({ isCompleted });
 
-        const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime)
+        const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
         calcTypeSpeed({
           updateType: "keydown",
           constantLineTime,
-        })
+        });
 
         updateSuccessStatusRefs({
           constantLineTime,
           successKey: result.successKey,
-        })
+        });
 
         if (!isCompleted) {
           updateSuccessStatus({
             lineRemainConstantTime,
             updatePoint: result.updatePoint,
-          })
+          });
         } else {
-          updateAllStatus({ count, updateType: "completed" })
+          updateAllStatus({ count, updateType: "completed" });
         }
       } else {
-        triggerMissSound()
-        updateMissStatus()
-        updateMissRefStatus({ constantLineTime, failKey: key })
+        triggerMissSound();
+        updateMissStatus();
+        updateMissRefStatus({ constantLineTime, failKey: key });
       }
     } else if (option) {
       switch (option) {
         case "roma":
-          void inputModeChange("roma")
-          break
+          void inputModeChange("roma");
+          break;
         case "kana":
-          void inputModeChange("kana")
-          break
+          void inputModeChange("kana");
+          break;
         case "speedChange":
-          dispatchSpeed({ type: "toggle" })
-          break
+          dispatchSpeed({ type: "toggle" });
+          break;
       }
     }
-  }
-}
+  };
+};
 
 export const useReplay = () => {
-  const keyReplay = usePlayBackKey()
-  const readAllLineResults = useReadAllLineResult()
+  const keyReplay = usePlayBackKey();
+  const readAllLineResults = useReadAllLineResult();
 
-  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams()
-  const { readCount } = useLineCount()
+  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
+  const { readCount } = useLineCount();
 
   return ({ constantLineTime }: { constantLineTime: number }) => {
-    const count = readCount()
-    const lineResults = readAllLineResults()
+    const count = readCount();
+    const lineResults = readAllLineResults();
 
-    const lineResult = lineResults[count - 1]
-    if (!lineResult) return
-    const { types } = lineResult
-    if (types.length === 0) return
+    const lineResult = lineResults[count - 1];
+    if (!lineResult) return;
+    const { types } = lineResult;
+    if (types.length === 0) return;
 
-    const { replayKeyCount } = readGameUtilRefParams()
-    const type = types[replayKeyCount]
-    if (!type) return
+    const { replayKeyCount } = readGameUtilRefParams();
+    const type = types[replayKeyCount];
+    if (!type) return;
 
-    const keyTime = type.t
+    const keyTime = type.t;
 
     if (constantLineTime >= keyTime) {
-      keyReplay({ constantLineTime, lineResult, type })
-      writeGameUtilRefParams({ replayKeyCount: replayKeyCount + 1 })
+      keyReplay({ constantLineTime, lineResult, type });
+      writeGameUtilRefParams({ replayKeyCount: replayKeyCount + 1 });
     }
-  }
-}
+  };
+};
 
 export const useLineReplayUpdate = () => {
-  const dispatchSpeed = usePlaySpeedReducer()
-  const inputModeChange = useInputModeChange()
+  const dispatchSpeed = usePlaySpeedReducer();
+  const inputModeChange = useInputModeChange();
 
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams()
-  const readAllLineResults = useReadAllLineResult()
-  const readPlaySpeed = useReadPlaySpeed()
+  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
+  const readAllLineResults = useReadAllLineResult();
+  const readPlaySpeed = useReadPlaySpeed();
 
   return (newCurrentCount: number) => {
-    const lineResults = readAllLineResults()
+    const lineResults = readAllLineResults();
 
-    const lineResult = lineResults[newCurrentCount]
+    const lineResult = lineResults[newCurrentCount];
 
     if (!lineResult) {
-      return
+      return;
     }
 
-    void inputModeChange(lineResult.status.mode)
+    void inputModeChange(lineResult.status.mode);
 
-    writeGameUtilRefParams({ replayKeyCount: 0 })
+    writeGameUtilRefParams({ replayKeyCount: 0 });
 
-    const { playSpeed } = readPlaySpeed()
-    const speed = lineResult.status.sp as YouTubeSpeed
+    const { playSpeed } = readPlaySpeed();
+    const speed = lineResult.status.sp as YouTubeSpeed;
 
-    if (playSpeed === speed) return
-    dispatchSpeed({ type: "set", payload: speed })
-  }
-}
+    if (playSpeed === speed) return;
+    dispatchSpeed({ type: "set", payload: speed });
+  };
+};

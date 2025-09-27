@@ -1,9 +1,9 @@
-import { boolean, foreignKey, integer, pgEnum, pgTable, serial, timestamp, unique } from "drizzle-orm/pg-core"
-import { Maps } from "./map"
-import { Results } from "./result"
-import { Users } from "./user"
+import { boolean, foreignKey, integer, pgEnum, pgTable, serial, timestamp, unique } from "drizzle-orm/pg-core";
+import { Maps } from "./map";
+import { Results } from "./result";
+import { Users } from "./user";
 
-export const actionEnum = pgEnum("action", ["LIKE", "OVER_TAKE"])
+export const actionEnum = pgEnum("action", ["LIKE", "OVER_TAKE"]);
 export const Notifications = pgTable(
   "notifications",
   {
@@ -34,4 +34,4 @@ export const Notifications = pgTable(
 
     unique("uq_notifications_visitor_visited_map_action").on(t.visitorId, t.visitedId, t.mapId, t.action),
   ],
-)
+);

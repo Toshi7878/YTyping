@@ -1,35 +1,35 @@
-import type { HTMLAttributes } from "react"
-import { useEffect, useState } from "react"
+import type { HTMLAttributes } from "react";
+import { useEffect, useState } from "react";
 import {
   useLineWordState,
   useNextLyricsState,
   usePlayingInputModeState,
   useUserTypingOptionsState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { cn } from "@/lib/utils"
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { cn } from "@/lib/utils";
 
 const TypingWords = () => {
-  const lineWord = useLineWordState()
-  const inputMode = usePlayingInputModeState()
-  const nextLyrics = useNextLyricsState()
-  const userOptions = useUserTypingOptionsState()
+  const lineWord = useLineWordState();
+  const inputMode = usePlayingInputModeState();
+  const nextLyrics = useNextLyricsState();
+  const userOptions = useUserTypingOptionsState();
 
-  const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k
-  const kanaScroll = userOptions.kanaWordScroll > 0 ? userOptions.kanaWordScroll : 0
-  const romaScroll = userOptions.romaWordScroll > 0 ? userOptions.romaWordScroll : 0
+  const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
+  const kanaScroll = userOptions.kanaWordScroll > 0 ? userOptions.kanaWordScroll : 0;
+  const romaScroll = userOptions.romaWordScroll > 0 ? userOptions.romaWordScroll : 0;
 
-  const [kanaCorrectSlice, setKanaCorrectSlice] = useState(userOptions.kanaWordScroll)
-  const [romaCorrectSlice, setRomaCorrectSlice] = useState(userOptions.romaWordScroll)
+  const [kanaCorrectSlice, setKanaCorrectSlice] = useState(userOptions.kanaWordScroll);
+  const [romaCorrectSlice, setRomaCorrectSlice] = useState(userOptions.romaWordScroll);
 
   useEffect(() => {
     const handleResize = () => {
-      setKanaCorrectSlice(window.innerWidth >= 768 ? kanaScroll : 7)
-      setRomaCorrectSlice(window.innerWidth >= 768 ? romaScroll : 10)
-    }
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [kanaScroll, romaScroll])
+      setKanaCorrectSlice(window.innerWidth >= 768 ? kanaScroll : 7);
+      setRomaCorrectSlice(window.innerWidth >= 768 ? romaScroll : 10);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [kanaScroll, romaScroll]);
 
   const kanaWordProps = {
     correct: lineWord.correct.k.substr(-kanaCorrectSlice, kanaCorrectSlice),
@@ -51,7 +51,7 @@ const TypingWords = () => {
       bottom: userOptions.kanaWordTopPosition,
       letterSpacing: `${userOptions.kanaWordSpacing.toFixed(2)}em`,
     },
-  }
+  };
   const romaWordProps = {
     correct: lineWord.correct.r.substr(-romaCorrectSlice, romaCorrectSlice),
     nextChar: lineWord.nextChar.r[0],
@@ -72,7 +72,7 @@ const TypingWords = () => {
       bottom: userOptions.romaWordTopPosition,
       letterSpacing: `${userOptions.romaWordSpacing.toFixed(2)}em`,
     },
-  }
+  };
 
   return (
     <div
@@ -90,16 +90,16 @@ const TypingWords = () => {
         {...(userOptions.wordDisplay.match(/^KANA_/) || inputMode === "kana" ? romaWordProps : kanaWordProps)}
       />
     </div>
-  )
-}
+  );
+};
 
 interface WordProps {
-  correct: string
-  nextChar: string
-  word: string
-  id: string
-  isLineCompleted: boolean
-  nextWord: string
+  correct: string;
+  nextChar: string;
+  word: string;
+  id: string;
+  isLineCompleted: boolean;
+  nextWord: string;
 }
 
 const Word = ({
@@ -110,9 +110,9 @@ const Word = ({
   nextWord,
   ...rest
 }: WordProps & HTMLAttributes<HTMLDivElement>) => {
-  const remainWord = nextChar + word
-  const userOptionsAtom = useUserTypingOptionsState()
-  const isNextWordDisplay = userOptionsAtom.lineCompletedDisplay === "NEXT_WORD"
+  const remainWord = nextChar + word;
+  const userOptionsAtom = useUserTypingOptionsState();
+  const isNextWordDisplay = userOptionsAtom.lineCompletedDisplay === "NEXT_WORD";
 
   return (
     <div
@@ -137,7 +137,7 @@ const Word = ({
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default TypingWords
+export default TypingWords;

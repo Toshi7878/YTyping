@@ -1,7 +1,7 @@
-"use client"
-import Link from "next/link"
-import { useParams } from "next/navigation"
-import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms"
+"use client";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadGameUtilParams,
   useSceneGroupState,
@@ -9,19 +9,19 @@ import {
   useSetLineResultDrawer,
   useUserTypingOptionsState,
   useYTStartedState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms"
-import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/move-line"
-import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { BottomButton, BottomDoubleKeyButton } from "./button-with-key"
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/move-line";
+import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";
 
 const BottomButtons = () => {
-  const isYTStarted = useYTStartedState()
-  const sceneGroup = useSceneGroupState()
-  const isReady = sceneGroup === "Ready"
-  const isPlaying = isYTStarted && sceneGroup === "Playing"
-  const { id: mapId } = useParams<{ id: string }>()
+  const isYTStarted = useYTStartedState();
+  const sceneGroup = useSceneGroupState();
+  const isReady = sceneGroup === "Ready";
+  const isPlaying = isYTStarted && sceneGroup === "Playing";
+  const { id: mapId } = useParams<{ id: string }>();
 
   return (
     <section
@@ -42,13 +42,13 @@ const BottomButtons = () => {
         </>
       )}
     </section>
-  )
-}
+  );
+};
 
 const SpeedButton = () => {
-  const scene = useSceneState()
-  const { playSpeed } = usePlaySpeedState()
-  const dispatchSpeed = usePlaySpeedReducer()
+  const scene = useSceneState();
+  const { playSpeed } = usePlaySpeedState();
+  const dispatchSpeed = usePlaySpeedReducer();
 
   if (scene === "practice") {
     return (
@@ -60,7 +60,7 @@ const SpeedButton = () => {
         onClickPrev={() => dispatchSpeed({ type: "down" })}
         onClickNext={() => dispatchSpeed({ type: "up" })}
       />
-    )
+    );
   }
 
   return (
@@ -71,14 +71,14 @@ const SpeedButton = () => {
       isPauseDisabled={true}
       isKbdHidden={scene === "replay"}
     />
-  )
-}
+  );
+};
 
 const PracticeButtons = () => {
-  const scene = useSceneState()
-  const setLineResultDrawer = useSetLineResultDrawer()
-  const { movePrevLine, moveNextLine } = useMoveLine()
-  const userOptions = useUserTypingOptionsState()
+  const scene = useSceneState();
+  const setLineResultDrawer = useSetLineResultDrawer();
+  const { movePrevLine, moveNextLine } = useMoveLine();
+  const userOptions = useUserTypingOptionsState();
 
   return (
     (scene === "practice" || scene === "replay") && (
@@ -95,36 +95,36 @@ const PracticeButtons = () => {
           badgeText="リスト"
           kbdText={userOptions.InputModeToggleKey === "TAB" ? "F1" : "Tab"}
           onClickCapture={(event) => {
-            event.stopPropagation()
-            setLineResultDrawer(true)
+            event.stopPropagation();
+            setLineResultDrawer(true);
           }}
           isPauseDisabled={false}
           isKbdHidden={false}
         />
       </>
     )
-  )
-}
+  );
+};
 
 const RetryButton = () => {
-  const retry = useRetry()
-  const readGameStateUtils = useReadGameUtilParams()
+  const retry = useRetry();
+  const readGameStateUtils = useReadGameUtilParams();
 
   return (
     <BottomButton
       badgeText="やり直し"
       kbdText="F4"
       onClick={() => {
-        const { scene } = readGameStateUtils()
+        const { scene } = readGameStateUtils();
 
         if (scene === "play" || scene === "practice" || scene === "replay") {
-          retry(scene)
+          retry(scene);
         }
       }}
       isPauseDisabled={true}
       isKbdHidden={false}
     />
-  )
-}
+  );
+};
 
-export default BottomButtons
+export default BottomButtons;

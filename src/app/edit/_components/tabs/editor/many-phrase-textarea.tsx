@@ -1,84 +1,84 @@
-import type React from "react"
-import { useRef } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
-import { TiFilter } from "react-icons/ti"
-import { toast } from "sonner"
-import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/_lib/atoms/state-atoms"
-import { usePickupTopPhrase } from "@/app/edit/_lib/hooks/many-phrase"
-import { filterUnicodeSymbol, formatSimilarChar, useFilterWordSymbol } from "@/app/edit/_lib/hooks/use-word-converter"
-import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { TooltipWrapper } from "@/components/ui/tooltip"
-import { useDebounce } from "@/utils/hooks/use-debounce"
+import type React from "react";
+import { useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { TiFilter } from "react-icons/ti";
+import { toast } from "sonner";
+import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/_lib/atoms/state-atoms";
+import { usePickupTopPhrase } from "@/app/edit/_lib/hooks/many-phrase";
+import { filterUnicodeSymbol, formatSimilarChar, useFilterWordSymbol } from "@/app/edit/_lib/hooks/use-word-converter";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useDebounce } from "@/utils/hooks/use-debounce";
 
 const ManyPhraseTextarea = () => {
-  const manyPhrase = useManyPhraseState()
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const manyPhrase = useManyPhraseState();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   useHotkeys(
     "tab",
     () => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
 
-      if (isDialogOpen) return
+      if (isDialogOpen) return;
 
-      const textarea = textareaRef.current
+      const textarea = textareaRef.current;
 
       if (textarea) {
         if (document.activeElement === textarea) {
-          textarea.blur()
+          textarea.blur();
         } else {
-          textarea.focus()
-          textarea.scrollTop = 0
-          textarea.setSelectionRange(0, 0)
+          textarea.focus();
+          textarea.scrollTop = 0;
+          textarea.setSelectionRange(0, 0);
         }
       }
     },
     {
       preventDefault: true,
     },
-  )
+  );
 
   useHotkeys("q", () => {
-    const isDialogOpen = document.querySelector('[role="dialog"]') !== null
-    if (isDialogOpen) return
+    const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+    if (isDialogOpen) return;
 
-    const topPhrase = manyPhrase.split("\n")[0]
-    void pickupTopPhrase(topPhrase)
-  })
+    const topPhrase = manyPhrase.split("\n")[0];
+    void pickupTopPhrase(topPhrase);
+  });
 
-  const setManyPhrase = useSetManyPhrase()
-  const pickupTopPhrase = usePickupTopPhrase()
-  const readSelectLine = useReadLine()
-  const { debounce } = useDebounce(500)
+  const setManyPhrase = useSetManyPhrase();
+  const pickupTopPhrase = usePickupTopPhrase();
+  const readSelectLine = useReadLine();
+  const { debounce } = useDebounce(500);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { lyrics } = readSelectLine()
+    const { lyrics } = readSelectLine();
 
-    const topPhrase = e.target.value.split("\n")[0]
+    const topPhrase = e.target.value.split("\n")[0];
     if (topPhrase !== lyrics) {
-      debounce(() => void pickupTopPhrase(topPhrase.trim()))
+      debounce(() => void pickupTopPhrase(topPhrase.trim()));
     }
 
-    setManyPhrase(e.target.value)
-  }
+    setManyPhrase(e.target.value);
+  };
 
   const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    const target = event.currentTarget
+    const target = event.currentTarget;
 
     if (!target.value) {
       setTimeout(() => {
         if (document.activeElement instanceof HTMLElement) {
-          document.activeElement.scrollTop = 0
-          document.activeElement.blur()
+          document.activeElement.scrollTop = 0;
+          document.activeElement.blur();
         }
-      })
+      });
     }
 
-    const topPhrase = target.value.split("\n")[0]
+    const topPhrase = target.value.split("\n")[0];
 
-    void pickupTopPhrase(topPhrase)
-  }
+    void pickupTopPhrase(topPhrase);
+  };
 
   return (
     <div className="relative flex items-center">
@@ -95,18 +95,18 @@ Ctrl+Zキー: 歌詞追加のやり直し`}
       />
       <FilterSymbolButton manyPhrase={manyPhrase} />
     </div>
-  )
-}
+  );
+};
 
 interface FilterSymbolButtonProps {
-  manyPhrase: string
+  manyPhrase: string;
 }
 
 const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
-  const setManyPhrase = useSetManyPhrase()
-  const pickupTopPhrase = usePickupTopPhrase()
-  const filterWordSymbol = useFilterWordSymbol()
-  const confirm = useConfirm()
+  const setManyPhrase = useSetManyPhrase();
+  const pickupTopPhrase = usePickupTopPhrase();
+  const filterWordSymbol = useFilterWordSymbol();
+  const confirm = useConfirm();
 
   const handleConfirm = async () => {
     const isConfirmed = await confirm({
@@ -116,9 +116,9 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
       actionButton: "削除する",
       cancelButtonVariant: "outline",
       actionButtonVariant: "warning",
-    })
+    });
 
-    if (!isConfirmed) return
+    if (!isConfirmed) return;
 
     const cleanedText = filterUnicodeSymbol(
       filterWordSymbol({
@@ -130,16 +130,16 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
       .replace(/ {2,}/g, " ")
       .split("\n")
       .map((line) => line.trim())
-      .join("\n")
+      .join("\n");
 
-    setManyPhrase(cleanedText)
+    setManyPhrase(cleanedText);
 
-    const topPhrase = cleanedText.split("\n")[0]
-    void pickupTopPhrase(topPhrase)
+    const topPhrase = cleanedText.split("\n")[0];
+    void pickupTopPhrase(topPhrase);
     toast.success("歌詞追加テキストエリアの記号を削除しました", {
       description: "読み変換で変換されない記号を削除しました",
-    })
-  }
+    });
+  };
 
   return (
     <TooltipWrapper
@@ -162,7 +162,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
         <TiFilter size="18px" />
       </Button>
     </TooltipWrapper>
-  )
-}
+  );
+};
 
-export default ManyPhraseTextarea
+export default ManyPhraseTextarea;

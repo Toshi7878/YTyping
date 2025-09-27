@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import type { ComponentProps, ReactNode } from "react"
-import { cn } from "@/lib/utils"
-import { Label } from "../label"
-import { Checkbox } from "./checkbox"
+import type { ComponentProps, ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { Label } from "../label";
+import { Checkbox } from "./checkbox";
 
 export interface LabeledCheckboxProps extends ComponentProps<typeof Checkbox> {
-  label: ReactNode
+  label: ReactNode;
 }
 
 const LabeledCheckbox = ({ label, ...props }: LabeledCheckboxProps) => {
@@ -17,7 +17,7 @@ const LabeledCheckbox = ({ label, ...props }: LabeledCheckboxProps) => {
         {label}
       </Label>
     </div>
-  )
-}
+  );
+};
 
-export { LabeledCheckbox }
+export { LabeledCheckbox };

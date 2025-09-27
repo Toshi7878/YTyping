@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import type { VariantProps } from "class-variance-authority"
-import { X } from "lucide-react"
-import type React from "react"
-import type { KeyboardEvent } from "react"
-import { forwardRef, useState } from "react"
-import { useFormContext } from "react-hook-form"
-import type { badgeVariants } from "@/components/ui/badge"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "../form"
-import { FloatingLabelInput } from "./floating-label-input"
+import type { VariantProps } from "class-variance-authority";
+import { X } from "lucide-react";
+import type React from "react";
+import type { KeyboardEvent } from "react";
+import { forwardRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import type { badgeVariants } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "../form";
+import { FloatingLabelInput } from "./floating-label-input";
 
 export interface TagInputProps {
-  tags: string[]
-  onTagAdd: (tag: string) => void
-  onTagRemove: (index: number) => void
-  maxTags?: number
-  disabled?: boolean
-  label?: string
-  enableDragDrop?: boolean
-  className?: string
-  tagVariant?: VariantProps<typeof badgeVariants>["variant"]
-  maxLength?: number
+  tags: string[];
+  onTagAdd: (tag: string) => void;
+  onTagRemove: (index: number) => void;
+  maxTags?: number;
+  disabled?: boolean;
+  label?: string;
+  enableDragDrop?: boolean;
+  className?: string;
+  tagVariant?: VariantProps<typeof badgeVariants>["variant"];
+  maxLength?: number;
 }
 
 const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
@@ -43,48 +43,48 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
     },
     ref,
   ) => {
-    const [inputValue, setInputValue] = useState("")
+    const [inputValue, setInputValue] = useState("");
 
     const handleAddition = (tagText: string) => {
-      const trimmedText = tagText.trim()
-      if (!trimmedText) return
+      const trimmedText = tagText.trim();
+      if (!trimmedText) return;
 
-      const isTagAdded = tags.includes(trimmedText)
+      const isTagAdded = tags.includes(trimmedText);
 
       if (!isTagAdded && (!maxTags || tags.length < maxTags)) {
-        onTagAdd(trimmedText)
+        onTagAdd(trimmedText);
       }
-    }
+    };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        e.preventDefault()
+        e.preventDefault();
         if (inputValue.trim()) {
-          handleAddition(inputValue)
-          setInputValue("")
+          handleAddition(inputValue);
+          setInputValue("");
         }
       } else if (e.key === "Backspace" && inputValue === "" && tags.length > 0) {
-        e.preventDefault()
-        onTagRemove(tags.length - 1)
+        e.preventDefault();
+        onTagRemove(tags.length - 1);
       }
-    }
+    };
 
     const handleDrop = (e: React.DragEvent) => {
-      if (!enableDragDrop) return
+      if (!enableDragDrop) return;
 
-      e.preventDefault()
+      e.preventDefault();
       if (!maxTags || tags.length < maxTags) {
-        const text = e.dataTransfer.getData("text").replace(/\s/g, "")
+        const text = e.dataTransfer.getData("text").replace(/\s/g, "");
         if (text) {
-          handleAddition(text)
+          handleAddition(text);
         }
       }
-    }
+    };
 
     const handleDragOver = (e: React.DragEvent) => {
-      if (!enableDragDrop) return
-      e.preventDefault()
-    }
+      if (!enableDragDrop) return;
+      e.preventDefault();
+    };
 
     return (
       <div className={cn("w-full", className)}>
@@ -121,22 +121,22 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
           />
         </div>
       </div>
-    )
+    );
   },
-)
+);
 
-TagInput.displayName = "TagInput"
+TagInput.displayName = "TagInput";
 
 interface TagInputFormFieldProps {
-  name: string
-  label?: string
-  description?: React.ReactNode
-  className?: string
-  maxTags?: number
-  enableDragDrop?: boolean
-  tagVariant?: VariantProps<typeof badgeVariants>["variant"]
-  disabledFormMessage?: boolean
-  maxLength?: number
+  name: string;
+  label?: string;
+  description?: React.ReactNode;
+  className?: string;
+  maxTags?: number;
+  enableDragDrop?: boolean;
+  tagVariant?: VariantProps<typeof badgeVariants>["variant"];
+  disabledFormMessage?: boolean;
+  maxLength?: number;
 }
 
 const TagInputFormField = ({
@@ -150,7 +150,7 @@ const TagInputFormField = ({
   disabledFormMessage = false,
   maxLength,
 }: TagInputFormFieldProps) => {
-  const { control, setValue, trigger } = useFormContext()
+  const { control, setValue, trigger } = useFormContext();
 
   return (
     <FormField
@@ -162,14 +162,14 @@ const TagInputFormField = ({
             <TagInput
               tags={field.value || []}
               onTagAdd={(tag) => {
-                const newTags = [...field.value, tag]
-                setValue(name, newTags, { shouldDirty: true, shouldTouch: true })
-                void trigger(name)
+                const newTags = [...field.value, tag];
+                setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
+                void trigger(name);
               }}
               onTagRemove={(index) => {
-                const newTags = field.value.filter((_, i) => i !== index)
-                setValue(name, newTags, { shouldDirty: true, shouldTouch: true })
-                void trigger(name)
+                const newTags = field.value.filter((_, i) => i !== index);
+                setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
+                void trigger(name);
               }}
               label={label}
               maxTags={maxTags}
@@ -184,7 +184,7 @@ const TagInputFormField = ({
         </FormItem>
       )}
     />
-  )
-}
+  );
+};
 
-export { TagInput, TagInputFormField }
+export { TagInput, TagInputFormField };

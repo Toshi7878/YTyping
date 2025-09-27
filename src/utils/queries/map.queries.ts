@@ -1,9 +1,9 @@
-import { queryOptions } from "@tanstack/react-query"
-import { fetchBackupMap } from "@/lib/indexed-db"
-import { useTRPC } from "@/trpc/provider"
+import { queryOptions } from "@tanstack/react-query";
+import { fetchBackupMap } from "@/lib/indexed-db";
+import { useTRPC } from "@/trpc/provider";
 
 export const useMapQueries = () => {
-  const trpc = useTRPC()
+  const trpc = useTRPC();
 
   return {
     map: ({ mapId }: { mapId: string }) =>
@@ -30,5 +30,5 @@ export const useMapQueries = () => {
         queryKey: ["backup"],
         queryFn: fetchBackupMap,
       }),
-  }
-}
+  };
+};

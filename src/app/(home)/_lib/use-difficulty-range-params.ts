@@ -1,20 +1,20 @@
-import { PARAM_NAME } from "@/utils/queries/search-params/map-list"
-import { DIFFICULTY_RANGE } from "./const"
+import { PARAM_NAME } from "@/utils/queries/search-params/map-list";
+import { DIFFICULTY_RANGE } from "./const";
 
 export const useDifficultyRangeParams = () => {
   return (params: URLSearchParams, difficultyRange: typeof DIFFICULTY_RANGE) => {
     if (difficultyRange.min !== DIFFICULTY_RANGE.min) {
-      params.set(PARAM_NAME.minRate, difficultyRange.min.toFixed(1))
+      params.set(PARAM_NAME.minRate, difficultyRange.min.toFixed(1));
     } else {
-      params.delete(PARAM_NAME.minRate)
+      params.delete(PARAM_NAME.minRate);
     }
 
     if (difficultyRange.max !== DIFFICULTY_RANGE.max) {
-      params.set(PARAM_NAME.maxRate, difficultyRange.max.toFixed(1))
+      params.set(PARAM_NAME.maxRate, difficultyRange.max.toFixed(1));
     } else {
-      params.delete(PARAM_NAME.maxRate)
+      params.delete(PARAM_NAME.maxRate);
     }
 
-    return params
-  }
-}
+    return params;
+  };
+};
