@@ -16,7 +16,7 @@ export const MapFilter = () => {
   const { data: session } = useSession();
   const isLogin = !!session?.user?.id;
   return (
-    <div className="flex flex-col justify-between flex-wrap items-start gap-5 md:flex-row md:items-center">
+    <div className="flex flex-col flex-wrap items-start gap-5 md:flex-row md:items-center">
       {isLogin && <FilterInputs />}
       <SearchRange step={0.1} />
     </div>
