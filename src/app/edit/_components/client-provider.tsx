@@ -1,7 +1,7 @@
 "use client";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET } from "jotai/utils";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import type React from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -22,7 +22,7 @@ export const EditProvider = ({ children }: EditProviderProps) => {
   const hasUploadPermission = useHasMapUploadPermission();
   const { addTimer, removeTimer } = useTimerRegistration();
   const pathChangeReset = usePathChangeAtomReset();
-  const pathname = usePathname();
+  const { id: mapId } = useParams();
 
   useEffect(() => {
     setPreviewVideoState(RESET);
@@ -46,7 +46,7 @@ export const EditProvider = ({ children }: EditProviderProps) => {
       pathChangeReset();
       toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
     };
-  }, [pathname]);
+  }, [mapId]);
 
   return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };
