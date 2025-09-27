@@ -32,8 +32,8 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-fit">
-        {LOGIN_MENU_LINK_ITEM.map((item, index) => (
-          <Link href={item.href} key={index}>
+        {LOGIN_MENU_LINK_ITEM.map((item) => (
+          <Link href={item.href} key={item.title}>
             <DropdownMenuItem>{item.title}</DropdownMenuItem>
           </Link>
         ))}

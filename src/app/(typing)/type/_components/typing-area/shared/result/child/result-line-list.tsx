@@ -91,6 +91,7 @@ function ResultLineList() {
 
         return (
           <OptimizedResultCard
+            // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
             key={index}
             count={index}
             lineIndex={lineIndex}

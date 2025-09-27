@@ -94,7 +94,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
           className="border-border/50 focus-within:ring-ring flex min-h-[40px] flex-wrap gap-2 rounded-md border p-2 focus-within:ring-2 focus-within:ring-offset-2"
         >
           {tags.map((tag, index) => (
-            <Badge key={`${tag}-${index}`} variant={tagVariant} className="flex items-center gap-1 rounded-xs">
+            <Badge key={tag} variant={tagVariant} className="flex items-center gap-1 rounded-xs">
               {tag}
               <Button
                 type="button"

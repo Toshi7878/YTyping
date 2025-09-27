@@ -108,9 +108,9 @@ const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
   return (
     <div className="space-y-1">
       {types.map(
-        (type, index) =>
+        (type) =>
           type.value > 0 && (
-            <div key={index} className="flex items-center justify-between">
+            <div key={type.label} className="flex items-center justify-between">
               <span>{type.label}</span>
               <span>{type.value}</span>
             </div>

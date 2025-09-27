@@ -43,13 +43,13 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-56">
-          {menus.reverse().map((menuItem, index) => {
+          {menus.reverse().map((menuItem) => {
             if (isMobile === undefined) {
               return null;
             }
             if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
               return (
-                <Link href={menuItem.href} key={index}>
+                <Link href={menuItem.href} key={menuItem.title}>
                   <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
                 </Link>
               );
@@ -62,8 +62,8 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
 
           {session?.user?.name ? (
             <>
-              {LOGIN_MENU_LINK_ITEM.map((item, index) => (
-                <Link href={item.href} key={index}>
+              {LOGIN_MENU_LINK_ITEM.map((item) => (
+                <Link href={item.href} key={item.title}>
                   <DropdownMenuItem>{item.title}</DropdownMenuItem>
                 </Link>
               ))}

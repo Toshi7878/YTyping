@@ -59,7 +59,7 @@ const EditorButtons = () => {
       isDisabled: isAddButtonDisabled,
       variant: "outline-success",
       onClick: (event: { shiftKey: boolean }) => lineAddButtonEvent(event.shiftKey),
-      text: (
+      node: (
         <>
           追加<small className="hidden sm:inline">(S)</small>
         </>
@@ -70,7 +70,7 @@ const EditorButtons = () => {
       isDisabled: isUpdateButtonDisabled,
       variant: "outline-info",
       onClick: lineUpdateButtonEvent,
-      text: (
+      node: (
         <>
           変更<small className="hidden sm:inline">(U)</small>
         </>
@@ -83,13 +83,13 @@ const EditorButtons = () => {
       isLoading: isWordConverting,
       variant: "outline-info",
       onClick: wordConvertButtonEvent,
-      text: <>読み変換</>,
+      node: "読み変換",
     },
     delete: {
       isDisabled: isDeleteButtonDisabled,
       variant: "outline-destructive",
       onClick: lineDelete,
-      text: (
+      node: (
         <>
           削除<small className="hidden sm:inline">(Del)</small>
         </>
@@ -102,6 +102,7 @@ const EditorButtons = () => {
     <div className="grid grid-cols-2 gap-2 sm:flex">
       {Object.values(buttonConfigs).map((config, index) => (
         <Button
+          // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex許可>
           key={index}
           disabled={config.isDisabled || config.isLoading}
           variant={config.variant}
@@ -110,7 +111,7 @@ const EditorButtons = () => {
           onClick={config.onClick}
           loading={config.isLoading}
         >
-          {config.isLoading ? <span className="loading loading-spinner loading-xs" /> : config.text}
+          {config.isLoading ? <span className="loading loading-spinner loading-xs" /> : config.node}
         </Button>
       ))}
     </div>

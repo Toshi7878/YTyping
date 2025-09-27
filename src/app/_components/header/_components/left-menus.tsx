@@ -25,8 +25,8 @@ function LeftMenus() {
   return (
     <nav className="text-header-foreground/80 hidden items-center select-none md:flex">
       <LinksDropdownMenu />
-      {LEFT_LINKS.map((link, index) => (
-        <Button key={index} variant="unstyled" size="sm" asChild className="hover:text-header-foreground text-sm">
+      {LEFT_LINKS.map((link) => (
+        <Button key={link.title} variant="unstyled" size="sm" asChild className="hover:text-header-foreground text-sm">
           <Link href={link.href}>{link.title}</Link>
         </Button>
       ))}
@@ -43,8 +43,8 @@ const LinksDropdownMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-fit">
-        {LEFT_MENU_LINK_ITEM.map((menuItem, index) => (
-          <Link href={menuItem.href} key={index}>
+        {LEFT_MENU_LINK_ITEM.map((menuItem) => (
+          <Link href={menuItem.href} key={menuItem.title}>
             <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
           </Link>
         ))}

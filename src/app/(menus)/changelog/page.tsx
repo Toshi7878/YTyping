@@ -21,11 +21,11 @@ const UpdateHistoryList = () => {
     <Card>
       <CardContent className="space-y-6">
         {changelog.map((update, index) => (
-          <div key={index} className="space-y-2">
+          <div key={`${index}-${update.date}`} className="space-y-2">
             <H5>{update.date}</H5>
             <ul className="list-disc space-y-2 pl-5">
               {update.descriptions.map((desc, i) => (
-                <li key={i}>{desc}</li>
+                <li key={`${i}-${desc}`}>{desc}</li>
               ))}
             </ul>
           </div>

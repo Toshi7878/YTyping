@@ -112,13 +112,17 @@ const SettingPopover = () => {
         <Tabs defaultValue="0" className="w-full">
           <TabsList className="mb-4 grid w-full grid-cols-3">
             {tabData.map((tab, index) => (
-              <TabsTrigger key={index} value={index.toString()}>
+              <TabsTrigger key={`${index}-${tab.label}`} value={index.toString()}>
                 {tab.label}
               </TabsTrigger>
             ))}
           </TabsList>
           {tabData.map((tab, index) => (
-            <TabsContent key={index} value={index.toString()} className={cn("max-h-[60vh] overflow-y-scroll px-2")}>
+            <TabsContent
+              key={`${index}-${tab.label}`}
+              value={index.toString()}
+              className={cn("max-h-[60vh] overflow-y-scroll px-2")}
+            >
               {tab.content}
             </TabsContent>
           ))}

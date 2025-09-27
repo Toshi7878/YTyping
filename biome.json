@@ -18,11 +18,9 @@
     },
     "rules": {
       "correctness": {
-        "useUniqueElementIds": "off",
         "useExhaustiveDependencies": "off"
       },
       "suspicious": {
-        "noArrayIndexKey": "off",
         "noUnknownAtRules": "off"
       },
       "complexity": {

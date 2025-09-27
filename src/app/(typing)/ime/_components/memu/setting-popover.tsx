@@ -73,7 +73,7 @@ const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
           <TabsList className="mb-4 flex flex-wrap gap-2 bg-transparent">
             {tabData.map((tab, index) => (
               <TabsTrigger
-                key={index}
+                key={`${index}-${tab.label}`}
                 value={index === 0 ? "main" : `tab-${index}`}
                 className="border-border bg-card text-foreground hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md border text-sm"
               >
@@ -82,7 +82,7 @@ const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
             ))}
           </TabsList>
           {tabData.map((tab, index) => (
-            <TabsContent key={index} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
+            <TabsContent key={`${index}-${tab.label}`} value={index === 0 ? "main" : `tab-${index}`} className="px-2">
               {tab.content}
             </TabsContent>
           ))}

@@ -24,6 +24,7 @@ const DualRangeSlider = React.forwardRef<React.ElementRef<typeof SliderPrimitive
           <SliderPrimitive.Range className="bg-primary absolute h-full" />
         </SliderPrimitive.Track>
         {initialValue.map((value, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
           <React.Fragment key={index}>
             <SliderPrimitive.Thumb className="border-primary bg-foreground ring-offset-background focus-visible:ring-ring relative block h-4 w-4 rounded-full border-2 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
               {label && (

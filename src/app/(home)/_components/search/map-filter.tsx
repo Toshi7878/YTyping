@@ -90,7 +90,7 @@ const FilterInputs = () => {
       <CardContent>
         <div className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr]">
           {FILTER_CONTENTS.map((filter, filterIndex) => (
-            <React.Fragment key={`filter-${filterIndex}`}>
+            <React.Fragment key={`${filterIndex}-${filter.label}`}>
               <p className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
                 {filter.label}
               </p>

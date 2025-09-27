@@ -28,9 +28,9 @@ const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedV
     return (
       <div>
         <div className="my-3 text-lg font-bold">この動画の譜面が{data.length}件見つかりました</div>
-        {data.map((map, index) => {
+        {data.map((map) => {
           return (
-            <div key={index} className="mb-2 max-w-[610px]">
+            <div key={map.id} className="mb-2 max-w-[610px]">
               <CardWithContent variant="map">
                 <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
 

@@ -102,8 +102,8 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
       {isMyStatsWithHide && <MyHideOptionInfo />}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {generalStatsData.map((item, index) => (
-          <StatsCard key={index} label={item.label} value={item.value} />
+        {generalStatsData.map((item) => (
+          <StatsCard key={item.label} label={item.label} value={item.value} />
         ))}
       </div>
 
@@ -112,8 +112,8 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
       <TypeActivity />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {keystrokeStatsData.map((item, index) => (
-          <StatsCard key={index} label={item.label} value={item.value} />
+        {keystrokeStatsData.map((item) => (
+          <StatsCard key={item.label} label={item.label} value={item.value} />
         ))}
       </div>
     </div>

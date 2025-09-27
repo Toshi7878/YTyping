@@ -75,12 +75,12 @@ const NotifyDrawerInnerContent = () => {
       ) : (
         <div className="h-full">
           {data?.pages.length ? (
-            data.pages.map((page, pageIndex: number) => {
-              return page.notifications.map((notify, notifyIndex: number) => {
+            data.pages.map((page) => {
+              return page.notifications.map((notify) => {
                 const { map } = notify;
 
                 return (
-                  <div key={`${pageIndex}-${notifyIndex}`} className="mb-4">
+                  <div key={`${notify.visitor.id}-${notify.map.id}`} className="mb-4">
                     <div className="mb-2">
                       <NotificationMapCard notify={notify}>
                         <MapLeftThumbnail alt={map.info.title} media={map.media} size="notification" />

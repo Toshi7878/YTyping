@@ -28,7 +28,7 @@ function ResultCardContent({ lineKanaWord, types, lineTypeWord, lostWord }: Resu
 
           return (
             type.c && (
-              <TooltipWrapper key={index} label={label} side="top">
+              <TooltipWrapper key={`${index}-${type.c}`} label={label} side="top">
                 <span
                   className={cn(
                     "typed hover:bg-border/45 break-all",

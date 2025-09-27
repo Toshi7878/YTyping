@@ -39,6 +39,7 @@ const Lyrics = () => {
   return (
     <div className="my-1 min-h-[7.5rem] leading-14" ref={lyricsContainerRef}>
       {displayLines.map((line, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
         <div key={index}>
           <div className="shadow-layer">
             {line.map((chunk) => (
