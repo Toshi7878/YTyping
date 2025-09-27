@@ -26,7 +26,7 @@ export const ActiveUsersSheet = () => {
   });
 
   return (
-    <Sheet modal={false} open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <TooltipWrapper label="アクティブユーザー" delayDuration={600} className="relative bottom-3">
         <SheetTrigger asChild>
           <Button variant="unstyled" size="icon" className="hover:text-header-foreground text-header-foreground/80">
