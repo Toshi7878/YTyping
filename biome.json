@@ -40,7 +40,8 @@
         "noDoneCallback": "error",
         "noEnum": "error",
         "noExportedImports": "error",
-        "noParameterAssign": "error"
+        "noParameterAssign": "error",
+        "noProcessEnv": "error"
       }
     }
   },

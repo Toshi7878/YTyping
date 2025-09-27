@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noProcessEnv: ランタイムでの環境変数露出とツリーシェイク防止のため process.env が必要 */
 import { createEnv } from "@t3-oss/env-nextjs";
 import { vercel } from "@t3-oss/env-nextjs/presets-zod";
 import { z } from "zod/v4";
@@ -7,6 +8,7 @@ export const env = createEnv({
 
   shared: {
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    PORT: z.string().optional(),
   },
   /**
    * Specify your server-side environment variables schema here.
@@ -54,6 +56,7 @@ export const env = createEnv({
     NEXT_PUBLIC_MAINTENANCE_MODE: process.env.NEXT_PUBLIC_MAINTENANCE_MODE,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    PORT: process.env.PORT,
   },
 
   skipValidation: !!process.env.CI || process.env.npm_lifecycle_event === "lint",
