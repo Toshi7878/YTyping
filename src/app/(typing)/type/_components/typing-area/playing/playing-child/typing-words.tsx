@@ -63,8 +63,8 @@ export const TypingWords = () => {
       (userOptions.wordDisplay === "KANA_ONLY" || inputMode === "kana") && "invisible",
     ),
     style: {
-      fontSize: `${userOptions.romaWordFontSize}%`,
-      bottom: userOptions.romaWordTopPosition,
+      fontSize: `${userOptions.subWordFontSize}%`,
+      bottom: userOptions.subWordTopPosition,
       letterSpacing: `${userOptions.romaWordSpacing.toFixed(2)}em`,
     },
   };
@@ -87,8 +87,8 @@ export const TypingWords = () => {
         id="main_word"
         {...(mainWord === "kana" ? kanaWordProps : romaWordProps)}
         style={{
-          fontSize: `${userOptions.kanaWordFontSize}%`,
-          bottom: userOptions.kanaWordTopPosition,
+          fontSize: `${userOptions.mainWordFontSize}%`,
+          bottom: userOptions.mainWordTopPosition,
           letterSpacing: mainWord === "kana" ? style.kanaLetterSpacing : style.romaLetterSpacing,
         }}
       />
@@ -96,8 +96,8 @@ export const TypingWords = () => {
         id="sub_word"
         {...(mainWord === "kana" ? romaWordProps : kanaWordProps)}
         style={{
-          fontSize: `${userOptions.romaWordFontSize}%`,
-          bottom: userOptions.romaWordTopPosition,
+          fontSize: `${userOptions.subWordFontSize}%`,
+          bottom: userOptions.subWordTopPosition,
           letterSpacing: mainWord === "kana" ? style.romaLetterSpacing : style.kanaLetterSpacing,
         }}
       />

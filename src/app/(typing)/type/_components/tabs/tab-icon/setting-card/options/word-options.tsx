@@ -29,10 +29,10 @@ const WORD_OPTIONS_CONFIG = {
 export const UserWordOptions = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const {
-    kanaWordFontSize,
-    romaWordFontSize,
-    kanaWordTopPosition,
-    romaWordTopPosition,
+    mainWordFontSize,
+    subWordFontSize,
+    mainWordTopPosition,
+    subWordTopPosition,
     kanaWordSpacing,
     romaWordSpacing,
     wordDisplay,
@@ -40,10 +40,10 @@ export const UserWordOptions = () => {
 
   const resetToDefaults = () => {
     setUserTypingOptions({
-      kanaWordFontSize: DEFAULT_TYPING_OPTIONS.kanaWordFontSize,
-      romaWordFontSize: DEFAULT_TYPING_OPTIONS.romaWordFontSize,
-      kanaWordTopPosition: DEFAULT_TYPING_OPTIONS.kanaWordTopPosition,
-      romaWordTopPosition: DEFAULT_TYPING_OPTIONS.romaWordTopPosition,
+      mainWordFontSize: DEFAULT_TYPING_OPTIONS.mainWordFontSize,
+      subWordFontSize: DEFAULT_TYPING_OPTIONS.subWordFontSize,
+      mainWordTopPosition: DEFAULT_TYPING_OPTIONS.mainWordTopPosition,
+      subWordTopPosition: DEFAULT_TYPING_OPTIONS.subWordTopPosition,
       kanaWordSpacing: DEFAULT_TYPING_OPTIONS.kanaWordSpacing,
       romaWordSpacing: DEFAULT_TYPING_OPTIONS.romaWordSpacing,
       wordDisplay: DEFAULT_TYPING_OPTIONS.wordDisplay,
@@ -61,22 +61,22 @@ export const UserWordOptions = () => {
       </header>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ kanaWordFontSize: value })}
+          onChange={(value) => setUserTypingOptions({ mainWordFontSize: value })}
           step={WORD_OPTIONS_CONFIG.fontSize.step}
           max={WORD_OPTIONS_CONFIG.fontSize.max}
           min={WORD_OPTIONS_CONFIG.fontSize.min}
-          value={kanaWordFontSize}
+          value={mainWordFontSize}
           label="メインサイズ"
           incrementTooltip="かな表示フォントサイズを大きくします。"
           decrementTooltip="かな表示フォントサイズを小さくします。"
           unit="%"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ romaWordFontSize: value })}
+          onChange={(value) => setUserTypingOptions({ subWordFontSize: value })}
           step={WORD_OPTIONS_CONFIG.fontSize.step}
           max={WORD_OPTIONS_CONFIG.fontSize.max}
           min={WORD_OPTIONS_CONFIG.fontSize.min}
-          value={romaWordFontSize}
+          value={subWordFontSize}
           label="サブサイズ"
           incrementTooltip="ローマ字表示フォントサイズを大きくします。"
           decrementTooltip="ローマ字表示フォントサイズを小さくします。"
@@ -85,11 +85,11 @@ export const UserWordOptions = () => {
       </div>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ kanaWordTopPosition: value })}
+          onChange={(value) => setUserTypingOptions({ mainWordTopPosition: value })}
           step={WORD_OPTIONS_CONFIG.topPosition.step}
           max={WORD_OPTIONS_CONFIG.topPosition.max}
           min={WORD_OPTIONS_CONFIG.topPosition.min}
-          value={kanaWordTopPosition}
+          value={mainWordTopPosition}
           valueDigits={1}
           label="メイン位置"
           incrementTooltip="かな表示を上に移動します。"
@@ -97,11 +97,11 @@ export const UserWordOptions = () => {
           unit="px"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ romaWordTopPosition: value })}
+          onChange={(value) => setUserTypingOptions({ subWordTopPosition: value })}
           step={WORD_OPTIONS_CONFIG.topPosition.step}
           max={WORD_OPTIONS_CONFIG.topPosition.max}
           min={WORD_OPTIONS_CONFIG.topPosition.min}
-          value={romaWordTopPosition}
+          value={subWordTopPosition}
           valueDigits={1}
           label="サブ位置"
           incrementTooltip="ローマ字表示を上に移動します。"

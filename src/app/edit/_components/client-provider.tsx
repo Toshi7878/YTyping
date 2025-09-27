@@ -1,7 +1,7 @@
 "use client";
 import { Provider as JotaiProvider } from "jotai";
 import { RESET } from "jotai/utils";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import type React from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
