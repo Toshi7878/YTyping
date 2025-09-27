@@ -44,12 +44,9 @@ const GeminiSuggestionTags = ({ isGeminiLoading, geminiTags }: GeminiTagSuggesti
     <div className="flex flex-row flex-wrap gap-3">
       {geminiTags.map((label) => {
         const isSelected = tags.some((tag: string) => tag === label);
+        if (isSelected) return null;
 
-        if (isSelected) {
-          return null;
-        } else {
-          return <SuggestionTagBadge key={label} label={label} variant="primary-light" />;
-        }
+        return <SuggestionTagBadge key={label} label={label} variant="primary-light" />;
       })}
     </div>
   );
@@ -94,12 +91,9 @@ const TemplateTags = () => {
     <div className="flex flex-row flex-wrap gap-3">
       {CHOICE_TAGS.map((label, index) => {
         const isSelected = tags.some((tag: string) => tag === label);
+        if (isSelected) return null;
 
-        if (isSelected) {
-          return null;
-        } else {
-          return <SuggestionTagBadge key={`${index}-${label}`} label={label} variant="secondary-light" />;
-        }
+        return <SuggestionTagBadge key={`${index}-${label}`} label={label} variant="secondary-light" />;
       })}
     </div>
   );

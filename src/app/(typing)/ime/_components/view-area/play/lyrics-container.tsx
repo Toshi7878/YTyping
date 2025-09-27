@@ -87,7 +87,7 @@ const NextLyrics = () => {
   const nextLine = map?.lines?.[count];
   return (
     <div id="next_lyrics" className="text-[60%] text-gray-400 select-none">
-      {nextLine && <span>{`NEXT: `}</span>}
+      {nextLine && <span>{"NEXT: "}</span>}
       <AnimatePresence>
         {nextDisplayLine.length > 0 && (
           <motion.div

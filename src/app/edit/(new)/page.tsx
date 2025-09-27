@@ -4,7 +4,7 @@ import { EditProvider } from "../_components/client-provider";
 import { Content } from "../_components/content";
 
 export const metadata: Metadata = {
-  title: `Edit New Map - YTyping`,
+  title: "Edit Nw Map - YTyping",
   description: "",
 };
 

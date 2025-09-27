@@ -41,7 +41,27 @@
         "noEnum": "error",
         "noExportedImports": "error",
         "noParameterAssign": "error",
-        "noProcessEnv": "error"
+        "noProcessEnv": "error",
+        "noShoutyConstants": "error",
+        "noUnusedTemplateLiteral": "error",
+        "noUselessElse": "error",
+        "noYodaExpression": "error",
+        "useCollapsedElseIf": "error",
+        "useObjectSpread": "error",
+        "useSingleVarDeclarator": "error",
+        "useThrowNewError": "error",
+        "useFilenamingConvention": {
+          "options": {
+            "filenameCases": ["kebab-case"]
+          }
+        },
+        "noRestrictedImports": {
+          "options": {
+            "paths": {
+              "use-breakpoint": "Using use-breakpoint is not encouraged"
+            }
+          }
+        }
       }
     }
   },

@@ -65,7 +65,7 @@ export const useMoveLine = () => {
 
     const seekTargetTime = isTimeBuffer ? prevTime : map.mapData[prevCount].time;
     readPlayer().seekTo(seekTargetTime, true);
-    setNotify(Symbol(`◁`));
+    setNotify(Symbol("◁"));
     drawerSelectColorChange(newCount);
     scrollToCard(newLineSelectIndex);
 
@@ -108,7 +108,7 @@ export const useMoveLine = () => {
     updateLine(newCount);
 
     readPlayer().seekTo(nextTime, true);
-    setNotify(Symbol(`▷`));
+    setNotify(Symbol("▷"));
     drawerSelectColorChange(newCount);
     scrollToCard(newLineSelectIndex);
     readLineProgress().value = nextTime - map.mapData[newCount - 1].time;

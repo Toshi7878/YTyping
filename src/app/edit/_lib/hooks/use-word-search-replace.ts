@@ -129,7 +129,8 @@ function useReplaceDialog() {
 
           const newWord = word.replace(searchReg, (match) => {
             if (++n === 1) return replace;
-            else return match;
+
+            return match;
           });
 
           mapDispatch({

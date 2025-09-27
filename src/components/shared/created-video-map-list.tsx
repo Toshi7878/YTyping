@@ -40,8 +40,11 @@ export const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: C
         })}
       </div>
     );
-  } else if (!disabledNotFoundText) {
+  }
+
+  if (!disabledNotFoundText) {
     return <div className="my-3 text-lg font-bold">この動画の譜面は見つかりませんでした</div>;
   }
+
   return null;
 };

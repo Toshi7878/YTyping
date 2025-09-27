@@ -51,7 +51,7 @@ export const useOnStart = () => {
     const { minPlaySpeed } = readPlaySpeed();
 
     if (scene !== "replay") {
-      if (1 > minPlaySpeed) {
+      if (minPlaySpeed < 1) {
         setScene("practice");
       } else if (scene === "ready") {
         setScene("play");

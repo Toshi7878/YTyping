@@ -200,7 +200,7 @@ const useTimer = () => {
 type WipeChunk = ParseMap["lines"][number][number];
 const useCalcWipeProgress = () => {
   const completeWipe = () => {
-    return `background:-webkit-linear-gradient(0deg, #ffa500 100%, white 0%);-webkit-background-clip:text;`;
+    return "background:-webkit-linear-gradient(0deg, #ffa500 100%, white 0%);-webkit-background-clip:text;";
   };
 
   const calcWipeProgress = ({

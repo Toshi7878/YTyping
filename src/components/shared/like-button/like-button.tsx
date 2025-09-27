@@ -36,9 +36,9 @@ export const LikeButton = ({ size = 50, defaultLiked = false, onClick, className
     width: `${size}px`,
     height: `${size}px`,
     backgroundSize: `auto ${size}px`,
-    transition: hasBeenClicked ? `background-position steps(25)` : "none",
+    transition: hasBeenClicked ? "background-position steps(25)" : "none",
     transitionDuration: hasBeenClicked && hasLiked ? "1s" : "0s",
-    backgroundPosition: hasLiked ? `-${backgroundWidth}px 0` : `0 0`,
+    backgroundPosition: hasLiked ? `-${backgroundWidth}px 0` : "0 0",
   };
 
   return (
@@ -97,9 +97,9 @@ export const LikeButtonWithCount = ({
     width: `${size}px`,
     height: `${size}px`,
     backgroundSize: `auto ${size}px`,
-    transition: hasBeenClicked ? `background-position steps(25)` : "none",
+    transition: hasBeenClicked ? "background-position steps(25)" : "none",
     transitionDuration: hasBeenClicked && hasLiked ? "1s" : "0s",
-    backgroundPosition: hasLiked ? `-${backgroundWidth}px 0` : `0 0`,
+    backgroundPosition: hasLiked ? `-${backgroundWidth}px 0` : "0 0",
   };
 
   return (

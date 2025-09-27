@@ -112,9 +112,10 @@ const writeSceneAtom = atom(null, (_get, set, newScene: SceneType) => {
 });
 
 const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { newCurrentCount: number }) => {
-  const map = get(mapAtom) as BuildMap;
+  const map = get(mapAtom);
+  if (!map) return;
 
-  if (map.mapChangeCSSCounts.length) {
+  if (map.mapChangeCSSCounts.length > 0) {
     const closestMin = map.mapChangeCSSCounts
       .filter((count) => count <= newCurrentCount)
       .reduce((prev, curr) => (prev === undefined || curr > prev ? curr : prev), 0);
@@ -351,9 +352,9 @@ const writeNextLyricsAtom = atom(null, (get, set, line: LineData) => {
           .join("")
           .slice(0, 60),
       };
-    } else {
-      return RESET;
     }
+
+    return RESET;
   });
 });
 

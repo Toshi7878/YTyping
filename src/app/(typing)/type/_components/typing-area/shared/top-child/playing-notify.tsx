@@ -17,7 +17,7 @@ export const PlayingNotify = () => {
     if (scene === "play") {
       setNotify(Symbol(""));
     } else if (scene === "replay") {
-      setNotify(Symbol(`Replay`));
+      setNotify(Symbol("Replay"));
     } else if (scene === "practice") {
       setNotify(Symbol("Practice"));
     }

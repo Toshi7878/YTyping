@@ -5,12 +5,14 @@ export const useTimeValidate = () => {
 
   return (time: number) => {
     const duration = readPlayer().getDuration();
-    if (0 >= time) {
+    if (time <= 0) {
       return 0.001;
-    } else if (time >= duration) {
-      return duration - 0.001;
-    } else {
-      return time;
     }
+
+    if (time >= duration) {
+      return duration - 0.001;
+    }
+
+    return time;
   };
 };

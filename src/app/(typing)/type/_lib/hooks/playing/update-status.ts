@@ -318,7 +318,7 @@ export const useUpdateAllStatus = () => {
       line: map.lineLength,
     };
 
-    if (0 >= count) {
+    if (count <= 0) {
       return newStatus;
     }
     const lineResults = readLineResults();

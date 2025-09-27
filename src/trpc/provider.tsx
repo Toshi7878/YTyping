@@ -16,12 +16,11 @@ const getQueryClient = () => {
   if (typeof window === "undefined") {
     // Server: always make a new query client
     return createQueryClient();
-  } else {
-    // Browser: use singleton pattern to keep the same query client
-
-    // biome-ignore lint/suspicious/noAssignInExpressions: intentional use of ||= (nullish coalescing assignment)
-    return (clientQueryClientSingleton ??= createQueryClient());
   }
+
+  // Browser: use singleton pattern to keep the same query client
+  // biome-ignore lint/suspicious/noAssignInExpressions: intentional use of ||= (nullish coalescing assignment)
+  return (clientQueryClientSingleton ??= createQueryClient());
 };
 
 export const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();

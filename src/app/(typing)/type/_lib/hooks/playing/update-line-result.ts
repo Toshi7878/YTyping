@@ -48,11 +48,11 @@ export const useUpdateLineResult = () => {
       const romaLostWord = lineWord.nextChar.r[0] + romaLostWordOmitNextChar;
       const actualLostNotes = romaLostWord.length;
       return { lostWord: romaLostWord, actualLostNotes, pointLostNotes };
-    } else {
-      const kanaLostWord = lineWord.nextChar.k + lineWord.word.map((w) => w.k).join("");
-      const actualLostNotes = calcWordKanaNotes({ kanaWord: kanaLostWord });
-      return { lostWord: kanaLostWord, actualLostNotes, pointLostNotes };
     }
+
+    const kanaLostWord = lineWord.nextChar.k + lineWord.word.map((w) => w.k).join("");
+    const actualLostNotes = calcWordKanaNotes({ kanaWord: kanaLostWord });
+    return { lostWord: kanaLostWord, actualLostNotes, pointLostNotes };
   };
 
   const isLinePointUpdated = () => {

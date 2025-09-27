@@ -49,20 +49,16 @@ export const { auth, handlers, signIn } = NextAuth({
           if (pathname !== "/maintenance") {
             return Response.redirect(new URL("/maintenance", nextUrl));
           }
-        } else {
-          if (pathname === "/maintenance") {
-            return Response.redirect(new URL("/404", nextUrl));
-          }
+        } else if (pathname === "/maintenance") {
+          return Response.redirect(new URL("/404", nextUrl));
         }
 
         if (userName) {
           if (pathname === "/user/register") {
             return Response.redirect(new URL("/", nextUrl));
           }
-        } else {
-          if (pathname !== "/user/register") {
-            return Response.redirect(new URL("/user/register", nextUrl));
-          }
+        } else if (pathname !== "/user/register") {
+          return Response.redirect(new URL("/user/register", nextUrl));
         }
       } else {
         const isAuthRoute = authRoutes.includes(pathname);

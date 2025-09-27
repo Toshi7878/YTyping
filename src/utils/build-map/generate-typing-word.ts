@@ -211,9 +211,8 @@ const generateTypingWord = (tokenizedKanaWord: string[]) => {
 
   if (hasWord) {
     return generateTypeChunks(tokenizedKanaWord);
-  } else {
-    return [{ k: "", r: [""], p: 0, t: undefined }];
   }
+  return [{ k: "", r: [""], p: 0, t: undefined }];
 };
 
 const generateTypeChunks = (tokenizedKanaWord: string[]) => {
@@ -348,15 +347,21 @@ const joinSokuonPattern = ({ joinType, typeChunks }: { joinType: "normal" | "iun
 const determineCharacterType = ({ kanaChar, romaChar }: { kanaChar: string; romaChar: string }): TypeChunk["t"] => {
   if (ROMA_MAP.has(kanaChar)) {
     return "kana";
-  } else if (ALPHABET_LIST.includes(romaChar)) {
-    return "alphabet";
-  } else if (NUM_LIST.includes(romaChar)) {
-    return "num";
-  } else if (romaChar === " ") {
-    return "space";
-  } else {
-    return "symbol";
   }
+
+  if (ALPHABET_LIST.includes(romaChar)) {
+    return "alphabet";
+  }
+
+  if (NUM_LIST.includes(romaChar)) {
+    return "num";
+  }
+
+  if (romaChar === " ") {
+    return "space";
+  }
+
+  return "symbol";
 };
 
 const convertZenkakuToHankaku = (char: string) => {

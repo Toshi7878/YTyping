@@ -161,9 +161,9 @@ export const mapListRouter = {
           .then((rows) => rows[0]);
 
         return { ...activeUser, map };
-      } else {
-        return { ...activeUser, map: null };
       }
+
+      return { ...activeUser, map: null };
     });
 
     const userList = await Promise.all(userListPromises);

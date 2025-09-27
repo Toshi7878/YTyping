@@ -56,10 +56,8 @@ export const useSoundEffect = () => {
       } else if (typingOptions.typeSound) {
         typeSoundPlay();
       }
-    } else {
-      if (typingOptions.typeSound) {
-        typeSoundPlay();
-      }
+    } else if (typingOptions.typeSound) {
+      typeSoundPlay();
     }
   };
 

@@ -42,11 +42,8 @@ export const useWordConverter = () => {
     if (isNeedsConversion) {
       const convertedWord = await fetchMorph(formatedLyrics);
       return transformSymbolBasedOnPreviousChar(filterAllowedCharacters(filterWordSymbol({ sentence: convertedWord })));
-    } else {
-      return transformSymbolBasedOnPreviousChar(
-        filterAllowedCharacters(filterWordSymbol({ sentence: formatedLyrics })),
-      );
     }
+    return transformSymbolBasedOnPreviousChar(filterAllowedCharacters(filterWordSymbol({ sentence: formatedLyrics })));
   };
 };
 
@@ -173,18 +170,18 @@ export const useFilterWordSymbol = () => {
     const filterSymbolRegExp = generateFilterRegExp(convertOption);
     if (convertOption === "add_symbol_all") {
       return sentence;
-    } else {
-      //全角文字の前後のスペースをフィルター
-      const zenkakuAfterSpaceReg = /([^\u0020-\u007E]) /g;
-      const zenkakuBeforeSpaceReg = / ([^\u0020-\u007E])/g;
-
-      let result = sentence.replace(filterSymbolRegExp, replaceChar);
-
-      if (filterType === "wordConvert") {
-        result = result.replaceAll(zenkakuAfterSpaceReg, "$1").replaceAll(zenkakuBeforeSpaceReg, "$1");
-      }
-
-      return result;
     }
+
+    //全角文字の前後のスペースをフィルター
+    const zenkakuAfterSpaceReg = /([^\u0020-\u007E]) /g;
+    const zenkakuBeforeSpaceReg = / ([^\u0020-\u007E])/g;
+
+    let result = sentence.replace(filterSymbolRegExp, replaceChar);
+
+    if (filterType === "wordConvert") {
+      result = result.replaceAll(zenkakuAfterSpaceReg, "$1").replaceAll(zenkakuBeforeSpaceReg, "$1");
+    }
+
+    return result;
   };
 };

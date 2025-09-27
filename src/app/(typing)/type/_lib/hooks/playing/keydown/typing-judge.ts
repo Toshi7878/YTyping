@@ -261,9 +261,9 @@ export class RomaInput {
       return nextToNextChar.filter((value: string) => {
         return value.match(/^(?!(n|')).*$/);
       });
-    } else {
-      return nextToNextChar;
     }
+
+    return nextToNextChar;
   }
 
   private wordUpdate(typingKeys: TypingKeys, newLineWord: LineWord) {
@@ -339,13 +339,11 @@ export class KanaInput {
       const yoon = nextKana.length >= 2 && dakuHanDakuData.type ? nextKana[1] : "";
       newLineWord.nextChar.k = dakuHanDakuData.type + yoon;
       newLineWord.nextChar.orginalDakuChar = dakuHanDakuData.originalKana as Dakuten | HanDakuten;
+    } else if (nextKana.length >= 2) {
+      newLineWord.correct.k += typingKey;
+      newLineWord.nextChar.k = newLineWord.nextChar.k.slice(1);
     } else {
-      if (nextKana.length >= 2) {
-        newLineWord.correct.k += typingKey;
-        newLineWord.nextChar.k = newLineWord.nextChar.k.slice(1);
-      } else {
-        newLineWord = this.wordUpdate(typingKey, newLineWord);
-      }
+      newLineWord = this.wordUpdate(typingKey, newLineWord);
     }
 
     return {

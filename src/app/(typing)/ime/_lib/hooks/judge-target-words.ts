@@ -166,12 +166,14 @@ function judgeComment(judgedWords: string[][], comment: string) {
           currentComment = currentComment.slice(target.length);
           judge = "Good";
           break;
-        } else if (reSearchFlag) {
+        }
+
+        if (reSearchFlag) {
           // 再帰的に再判定
           return judgeComment(judgedWords, currentComment);
-        } else {
-          return { correcting, judge: "None" as const, currentComment };
         }
+
+        return { correcting, judge: "None" as const, currentComment };
       }
     }
   }

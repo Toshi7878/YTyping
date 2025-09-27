@@ -183,10 +183,8 @@ const usePlayingShortcutKey = () => {
               void inputModeChange("roma");
             }
           }
-        } else {
-          if (scene === "replay" || scene === "practice") {
-            setLineResultDrawer((prev) => !prev);
-          }
+        } else if (scene === "replay" || scene === "practice") {
+          setLineResultDrawer((prev) => !prev);
         }
         break;
     }

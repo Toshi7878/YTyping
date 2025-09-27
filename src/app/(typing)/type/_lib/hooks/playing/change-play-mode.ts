@@ -43,7 +43,7 @@ export const useChangePlayMode = () => {
           setPlayingInputMode(readReadyInputMode());
         }
         const { playSpeed } = readSpeed();
-        dispatchSpeed({ type: "set", payload: 1 > playSpeed ? 1 : (playSpeed as YouTubeSpeed) });
+        dispatchSpeed({ type: "set", payload: playSpeed < 1 ? 1 : (playSpeed as YouTubeSpeed) });
 
         retry("play");
       }

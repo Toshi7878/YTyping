@@ -31,28 +31,20 @@ export const AllTimeAdjust = () => {
             ...item,
             time: "0",
           };
-        } else if (index === map.length - 1) {
-          return {
-            ...item,
-            time: item.time,
-          };
-        } else {
-          const newTime = timeValidate(Number(item.time) + Number(totalAdjustValue));
-          return {
-            ...item,
-            time: newTime.toFixed(3),
-          };
         }
-      });
-      setCanUpload(true);
+        if (index === map.length - 1) {
+          return { ...item, time: item.time };
+        }
 
+        const newTime = timeValidate(Number(item.time) + Number(totalAdjustValue));
+        return { ...item, time: newTime.toFixed(3) };
+      });
+
+      setCanUpload(true);
       mapDispatch({ type: "replaceAll", payload: [...newMap] });
       historyDispatch({
         type: "add",
-        payload: {
-          actionType: "replaceAll",
-          data: { old: readMap(), new: newMap },
-        },
+        payload: { actionType: "replaceAll", data: { old: readMap(), new: newMap } },
       });
     }
 
