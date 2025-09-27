@@ -38,9 +38,7 @@ export const usePlaySpeedReducer =
     switch (type) {
       case "up":
         if (playSpeed < 2) {
-          if (scene !== "ready") {
-            player?.setPlaybackRate(playSpeed + 0.25)
-          }
+          player?.setPlaybackRate(playSpeed + 0.25)
 
           store.set(speedBaseAtom, (prev) => ({
             ...prev,
@@ -50,9 +48,7 @@ export const usePlaySpeedReducer =
         break
       case "down":
         if (playSpeed > 0.25) {
-          if (scene !== "ready") {
-            player?.setPlaybackRate(playSpeed - 0.25)
-          }
+          player?.setPlaybackRate(playSpeed - 0.25)
 
           store.set(speedBaseAtom, (prev) => ({
             ...prev,

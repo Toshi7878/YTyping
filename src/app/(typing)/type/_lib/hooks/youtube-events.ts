@@ -37,7 +37,6 @@ export const useOnStart = () => {
   const readPlaySpeed = useReadPlaySpeed()
   const updateAllStatus = useUpdateAllStatus()
   const readMap = useReadMap()
-  const { readPlayer } = usePlayer()
 
   return (player: YT.Player) => {
     const { scene } = readGameStateUtils()
@@ -50,10 +49,6 @@ export const useOnStart = () => {
     writeYTStatus({ movieDuration })
 
     const { minPlaySpeed } = readPlaySpeed()
-
-    if (minPlaySpeed !== 1 && scene !== "replay") {
-      setTimeout(() => readPlayer().setPlaybackRate(minPlaySpeed), 500)
-    }
 
     if (scene !== "replay") {
       if (1 > minPlaySpeed) {
