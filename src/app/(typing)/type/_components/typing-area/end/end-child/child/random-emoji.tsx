@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 
 const HAPPY_EMOJI = [
   "((o(｡>ω<｡)o))",
@@ -30,11 +30,11 @@ const HAPPY_EMOJI = [
   "(＞⩊＜)",
 ];
 
-export const RandomEmoji = () => {
+export const RandomEmoji = memo(() => {
   const getRandomEmoji = useCallback(() => {
     const randomIndex = Math.floor(Math.random() * HAPPY_EMOJI.length);
     return HAPPY_EMOJI[randomIndex];
   }, []);
 
   return <span className="font-sans">{getRandomEmoji()}</span>;
-};
+});
