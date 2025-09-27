@@ -26,8 +26,6 @@ export const InputTextarea = () => {
   const textareaPlaceholderType = useTextareaPlaceholderTypeState();
   const scene = useSceneState();
 
-  const placeholder = usePlaceholder({ scene, textareaPlaceholderType });
-
   const { startTicker, stopTicker, tickerRef, tickStartRef } = useTypingTimeTimer();
   const { onOpen } = useResultDialogDisclosure();
 
@@ -88,7 +86,7 @@ export const InputTextarea = () => {
         ref={lyricsTextareaRef}
         className="h-[130px] resize-none rounded-md px-4 text-2xl font-bold tracking-widest xl:text-3xl"
         autoComplete="off"
-        placeholder={placeholder}
+        placeholder={textareaPlaceholder({ scene, textareaPlaceholderType })}
         onKeyDown={handleKeyDown}
         onInput={handleInput}
       />
@@ -96,7 +94,7 @@ export const InputTextarea = () => {
   );
 };
 
-const usePlaceholder = ({
+const textareaPlaceholder = ({
   scene,
   textareaPlaceholderType,
 }: {

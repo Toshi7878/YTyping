@@ -3,17 +3,9 @@ import type { CSSProperties } from "react";
 import { useCallback, useEffect } from "react";
 import type { YouTubeEvent } from "react-youtube";
 import YouTube from "react-youtube";
-import { windowFocus } from "@/utils/hooks/window-focus";
 import { useReadScene } from "../_lib/atoms/state-atoms";
 import { useTimerRegistration } from "../_lib/hooks/timer";
-import {
-  useYTEndEvent,
-  useYTPauseEvent,
-  useYTPlayEvent,
-  useYTReadyEvent,
-  useYTSeekEvent,
-  useYTStopEvent,
-} from "../_lib/hooks/youtube-events";
+import { useOnEnd, useOnPause, useOnPlay, useOnReady, useOnSeek, useOnStop } from "../_lib/hooks/youtube-events";
 
 interface YouTubePlayerProps {
   videoId: string;
@@ -22,12 +14,12 @@ interface YouTubePlayerProps {
 }
 
 export const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) => {
-  const ytReadyEvent = useYTReadyEvent();
-  const ytPlayEvent = useYTPlayEvent();
-  const ytPauseEvent = useYTPauseEvent();
-  const ytStopEvent = useYTStopEvent();
-  const ytEndEvent = useYTEndEvent();
-  const ytSeekEvent = useYTSeekEvent();
+  const onReady = useOnReady();
+  const onPlay = useOnPlay();
+  const onPause = useOnPause();
+  const onStop = useOnStop();
+  const onEnd = useOnEnd();
+  const onSeek = useOnSeek();
   const { addTimer, removeTimer } = useTimerRegistration();
   const readScene = useReadScene();
 
@@ -37,12 +29,10 @@ export const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerP
   }, []);
 
   const handleStateChange = (event: YouTubeEvent) => {
-    windowFocus();
-
     switch (event.data) {
       case 3:
         // seek時の処理
-        ytSeekEvent();
+        onSeek();
         break;
       case 1: {
         //	未スタート、他の動画に切り替えた時など
@@ -57,7 +47,7 @@ export const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerP
       case 5: {
         // 動画強制停止
         console.log("動画強制停止");
-        ytStopEvent();
+        onStop();
         break;
       }
     }
@@ -87,10 +77,10 @@ export const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerP
           fs: 0,
         },
       }}
-      onReady={ytReadyEvent}
-      onPlay={ytPlayEvent}
-      onPause={ytPauseEvent}
-      onEnd={ytEndEvent}
+      onReady={onReady}
+      onPlay={onPlay}
+      onPause={onPause}
+      onEnd={onEnd}
       onStateChange={handleStateChange}
       onError={handleError}
     />

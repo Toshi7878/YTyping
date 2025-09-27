@@ -43,6 +43,7 @@ export const useInitializePlayScene = () => {
     initWordResults();
 
     setNotifications(RESET);
+
     readInputTextarea().focus();
 
     setScene("play");

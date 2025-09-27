@@ -15,17 +15,6 @@ interface ImeTypeProviderProps {
 export const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProps) => {
   const imeTypeAtomStore = getImeTypeAtomStore();
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0 });
-
-    const htmlElement = document.documentElement;
-    htmlElement.style.overflow = "hidden";
-
-    return () => {
-      htmlElement.style.overflow = "";
-    };
-  }, []);
-
   useHydrateAtoms([[imeTypeOptionsAtom, userImeTypingOptions ?? imeTypeAtomStore.get(imeTypeOptionsAtom)]], {
     store: imeTypeAtomStore,
   });

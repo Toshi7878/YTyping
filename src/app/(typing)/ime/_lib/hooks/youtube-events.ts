@@ -1,13 +1,27 @@
+import type { YouTubeEvent } from "react-youtube";
 import { useReadVolume } from "@/lib/global-atoms";
 import { usePlayer } from "../atoms/read-atoms";
 import { useReadScene } from "../atoms/state-atoms";
 import { useInitializePlayScene } from "./reset";
 import { useTimerControls } from "./timer";
 
-export const useYTPlayEvent = () => {
-  const { startTimer } = useTimerControls();
-  const initializePlayScene = useInitializePlayScene();
+export const useOnStart = () => {
   const readScene = useReadScene();
+  const initializePlayScene = useInitializePlayScene();
+
+  return async () => {
+    const scene = readScene();
+
+    if (scene === "ready") {
+      initializePlayScene();
+    }
+  };
+};
+
+export const useOnPlay = () => {
+  const { startTimer } = useTimerControls();
+  const readScene = useReadScene();
+  const onStart = useOnStart();
 
   return async () => {
     console.log("再生 1");
@@ -17,13 +31,11 @@ export const useYTPlayEvent = () => {
       startTimer();
     }
 
-    if (scene === "ready") {
-      initializePlayScene();
-    }
+    onStart();
   };
 };
 
-export const useYTEndEvent = () => {
+export const useOnEnd = () => {
   const { readPlayer } = usePlayer();
   const { pauseTimer } = useTimerControls();
 
@@ -36,7 +48,7 @@ export const useYTEndEvent = () => {
   };
 };
 
-export const useYTStopEvent = () => {
+export const useOnStop = () => {
   const { pauseTimer } = useTimerControls();
   return () => {
     console.log("動画停止");
@@ -44,7 +56,7 @@ export const useYTStopEvent = () => {
   };
 };
 
-export const useYTPauseEvent = () => {
+export const useOnPause = () => {
   const { pauseTimer } = useTimerControls();
 
   return () => {
@@ -54,17 +66,17 @@ export const useYTPauseEvent = () => {
   };
 };
 
-export const useYTSeekEvent = () => {
+export const useOnSeek = () => {
   return () => {
     console.log("シーク");
   };
 };
 
-export const useYTReadyEvent = () => {
+export const useOnReady = () => {
   const { writePlayer } = usePlayer();
 
   const readVolume = useReadVolume();
-  return (event) => {
+  return (event: YouTubeEvent) => {
     const player = event.target as YT.Player;
     player.setVolume(readVolume());
     writePlayer(player);
