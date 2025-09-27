@@ -50,7 +50,8 @@ export const DEFAULT_TYPING_OPTIONS = {
   timeOffset: 0,
   kanaWordScroll: 10,
   romaWordScroll: 16,
-  romaWordFontSize: 100,
+  //TODO: fontSize, TopPositionの命名をmain / subに変更
+  romaWordFontSize: 90,
   kanaWordFontSize: 100,
   kanaWordSpacing: 0.08,
   romaWordSpacing: 0.08,

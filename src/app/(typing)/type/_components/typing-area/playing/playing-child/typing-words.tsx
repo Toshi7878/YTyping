@@ -46,11 +46,6 @@ export const TypingWords = () => {
         "invisible",
       inputMode === "kana" && "visible",
     ),
-    style: {
-      fontSize: `${userOptions.kanaWordFontSize}%`,
-      bottom: userOptions.kanaWordTopPosition,
-      letterSpacing: `${userOptions.kanaWordSpacing.toFixed(2)}em`,
-    },
   };
   const romaWordProps = {
     correct: lineWord.correct.r.substr(-romaCorrectSlice, romaCorrectSlice),
@@ -74,6 +69,13 @@ export const TypingWords = () => {
     },
   };
 
+  const mainWord = userOptions.wordDisplay.match(/^KANA_/) || inputMode === "kana" ? "kana" : "roma";
+
+  const style = {
+    kanaLetterSpacing: `${userOptions.kanaWordSpacing.toFixed(2)}em`,
+    romaLetterSpacing: `${userOptions.romaWordSpacing.toFixed(2)}em`,
+  };
+
   return (
     <div
       className={cn(
@@ -83,11 +85,21 @@ export const TypingWords = () => {
     >
       <Word
         id="main_word"
-        {...(userOptions.wordDisplay.match(/^KANA_/) || inputMode === "kana" ? kanaWordProps : romaWordProps)}
+        {...(mainWord === "kana" ? kanaWordProps : romaWordProps)}
+        style={{
+          fontSize: `${userOptions.kanaWordFontSize}%`,
+          bottom: userOptions.kanaWordTopPosition,
+          letterSpacing: mainWord === "kana" ? style.kanaLetterSpacing : style.romaLetterSpacing,
+        }}
       />
       <Word
         id="sub_word"
-        {...(userOptions.wordDisplay.match(/^KANA_/) || inputMode === "kana" ? romaWordProps : kanaWordProps)}
+        {...(mainWord === "kana" ? romaWordProps : kanaWordProps)}
+        style={{
+          fontSize: `${userOptions.romaWordFontSize}%`,
+          bottom: userOptions.romaWordTopPosition,
+          letterSpacing: mainWord === "kana" ? style.romaLetterSpacing : style.kanaLetterSpacing,
+        }}
       />
     </div>
   );
