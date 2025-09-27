@@ -3,11 +3,11 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Cell, ColumnDef } from "@tanstack/react-table";
 import parse from "html-react-parser";
+import { Play } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input/input";
@@ -132,7 +132,7 @@ export const MapTable = () => {
           cellClassName: (cell: Cell<MapLine, unknown>, index: number) => {
             const row = cell.row.original;
             const nextTime = map[index + 1]?.time;
-            return nextTime && row.time === nextTime ? "bg-destructive/30 text-destructive" : "";
+            return cn("text-center group", nextTime && row.time === nextTime && "bg-destructive/30 text-destructive");
           },
         },
         cell: ({ row }) => {
@@ -140,13 +140,17 @@ export const MapTable = () => {
           const nextTime = map[index + 1]?.time;
           const label = nextTime && row.original.time === nextTime ? "同じ時間の行が存在します" : "";
 
+          if (directEditIndex === row.index) {
+            return <DirectTimeInput time={row.original.time} />;
+          }
+
           return (
-            <>
-              {directEditIndex === row.index && <DirectTimeInput time={row.original.time} />}
-              <TooltipWrapper label={label} disabled={!label}>
-                <div>{directEditIndex !== row.index && row.original.time}</div>
-              </TooltipWrapper>
-            </>
+            <TooltipWrapper label={label} disabled={!label}>
+              <div className="flex items-center gap-1">
+                <Play className="size-3.5 hidden xl:block relative top-[0.7px] text-muted-foreground group-hover:text-white" />
+                <span>{row.original.time}</span>
+              </div>
+            </TooltipWrapper>
           );
         },
       },

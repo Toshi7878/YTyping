@@ -101,7 +101,7 @@ const TimeInput = () => {
       value={time}
       onChange={(e) => {
         setTime(e.currentTarget.value);
-        setEditIsTimeInputValid(e.currentTarget.value !== "");
+        setEditIsTimeInputValid(e.currentTarget.value === "");
       }}
       onKeyDown={(e) => {
         const { value } = e.currentTarget;
