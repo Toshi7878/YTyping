@@ -4,7 +4,7 @@ import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/use-result-play";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
 
-const ReadyPracticeButton = () => {
+export const ReadyPracticeButton = () => {
   const map = useMapState();
 
   const getMyRankingResult = useGetMyRankingResult();
@@ -24,5 +24,3 @@ const ReadyPracticeButton = () => {
     </Button>
   );
 };
-
-export default ReadyPracticeButton;

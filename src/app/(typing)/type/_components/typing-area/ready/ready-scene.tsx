@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/hooks/window-focus";
 import ReadyInputModeRadioCards from "./ready-child/input-mode-radio-cards";
 import ReadyPlaySpeed from "./ready-child/min-play-speed-counter";
-import ReadyPracticeButton from "./ready-child/practice-button";
+import { ReadyPracticeButton } from "./ready-child/practice-button";
 
 interface ReadyProps {
   className?: string;
