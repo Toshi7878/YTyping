@@ -13,7 +13,7 @@ export const MapControlArea = () => {
   return (
     <section className="mb-4 flex w-full flex-col gap-4">
       <SearchInput />
-      <div className={cn("flex flex-col md:flex-row space-y-4 justify-between")}>
+      <div className="flex flex-col md:flex-row space-y-0 md:space-y-4 justify-between">
         <MapFilter />
         <VolumeRange player={player} />
       </div>
