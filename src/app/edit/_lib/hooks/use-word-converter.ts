@@ -62,12 +62,15 @@ const useFetchMorph = () => {
     try {
       const { regexDict } = await queryClient.ensureQueryData(morphQueries.customDic());
 
+      let processedSentence = sentence;
       for (const { surface, reading } of regexDict) {
         const regex = new RegExp(surface, "g");
-        sentence = sentence.replace(regex, reading);
+        processedSentence = processedSentence.replace(regex, reading);
       }
 
-      const convertedWord = await queryClient.ensureQueryData(morphQueries.tokenizeSentence({ sentence }));
+      const convertedWord = await queryClient.ensureQueryData(
+        morphQueries.tokenizeSentence({ sentence: processedSentence }),
+      );
 
       const result = await replaceReadingWithCustomDic(convertedWord);
       return result.readings.join("");
@@ -105,16 +108,17 @@ export const useLyricsFormatUtilities = () => {
   const rubyKanaConvert = (lyrics: string) => {
     const rubyConvert = lyrics.match(/<*ruby(?: .+?)?>.*?<*\/ruby*>/g);
 
+    let convertedLyrics = lyrics;
     if (rubyConvert) {
       for (const element of rubyConvert) {
         const start = element.indexOf("<rt>") + 4;
         const end = element.indexOf("</rt>");
         const ruby = element.slice(start, end);
-        lyrics = lyrics.replace(element, ruby);
+        convertedLyrics = convertedLyrics.replace(element, ruby);
       }
     }
 
-    return lyrics;
+    return convertedLyrics;
   };
 
   const transformSymbolBasedOnPreviousChar = (reading: string) => {

@@ -105,29 +105,31 @@ const shouldCreateNewLine = (
 
 const deleteRubyTag = (text: string) => {
   const ruby_convert = text.match(/<*ruby(?: .+?)?>.*?<.*?\/ruby*>/g);
+  let deletedRubyTagText = text;
   if (ruby_convert) {
     for (let v = 0; v < ruby_convert.length; v++) {
       const start = ruby_convert[v].indexOf(">") + 1;
       const end = ruby_convert[v].indexOf("<rt>");
       const ruby = ruby_convert[v].slice(start, end);
-      text = text.replace(ruby_convert[v], ruby);
+      deletedRubyTagText = deletedRubyTagText.replace(ruby_convert[v], ruby);
     }
   }
-  return text;
+  return deletedRubyTagText;
 };
 
 const insertSpacesEng = (words: string[]) => {
-  for (let i = 0; i < words.length; i++) {
-    const currentWord = words[i];
+  const insertedSpaceWords = words;
+  for (let i = 0; i < insertedSpaceWords.length; i++) {
+    const currentWord = insertedSpaceWords[i];
     const isCurrentWordAllHankaku = /^[!-~]*$/.test(currentWord);
-    const nextWord = words[i + 1];
+    const nextWord = insertedSpaceWords[i + 1];
 
     if (isCurrentWordAllHankaku && nextWord) {
       if (/^[!-~]*$/.test(nextWord[0])) {
-        words[i] = words[i] + " ";
+        insertedSpaceWords[i] = insertedSpaceWords[i] + " ";
       }
     }
   }
 
-  return words;
+  return insertedSpaceWords;
 };

@@ -12,35 +12,36 @@ export const useFormatWord = () => {
   const readImeTypeOptions = useReadImeTypeOptions();
 
   return (text: string) => {
-    text = text.replace(/<[^>]*?style>[\s\S]*?<[^>]*?\/style[^>]*?>/g, ""); //styleタグ全体削除
-    text = text.replace(/[（(].*?[)）]/g, ""); //()（）の歌詞を削除
-    text = text.replace(/<[^>]*>(.*?)<[^>]*?\/[^>]*>/g, "$1"); //HTMLタグの中の文字を取り出す
+    let formattedText = text;
+    formattedText = formattedText.replace(/<[^>]*?style>[\s\S]*?<[^>]*?\/style[^>]*?>/g, ""); //styleタグ全体削除
+    formattedText = formattedText.replace(/[（(].*?[)）]/g, ""); //()（）の歌詞を削除
+    formattedText = formattedText.replace(/<[^>]*>(.*?)<[^>]*?\/[^>]*>/g, "$1"); //HTMLタグの中の文字を取り出す
 
-    text = text.replace(/<[^>]*>/, ""); //単体のHTMLタグを削除
+    formattedText = formattedText.replace(/<[^>]*>/, ""); //単体のHTMLタグを削除
 
-    text = normalizeSimilarSymbol(text); //記号整形
+    formattedText = normalizeSimilarSymbol(formattedText); //記号整形
 
     const { enableEngUpperCase, addSymbolList, enableAddSymbol } = readImeTypeOptions();
     if (enableEngUpperCase) {
-      text = text.normalize("NFKC"); //全角を半角に変換
+      formattedText = formattedText.normalize("NFKC"); //全角を半角に変換
     } else {
-      text = text.normalize("NFKC").toLowerCase(); //全角を半角に変換 & 小文字に変換;
+      formattedText = formattedText.normalize("NFKC").toLowerCase(); //全角を半角に変換 & 小文字に変換;
     }
 
     // アルファベットと全角文字の間にスペースを追加
-    text = text.replace(/([a-zA-Z])([ぁ-んゔァ-ンヴ一-龥])/g, "$1 $2"); // アルファベットの後に日本語文字がある場合
-    text = text.replace(/([ぁ-んゔァ-ンヴ一-龥])([a-zA-Z])/g, "$1 $2"); // 日本語文字の後にアルファベットがある場合
+    formattedText = formattedText.replace(/([a-zA-Z])([ぁ-んゔァ-ンヴ一-龥])/g, "$1 $2"); // アルファベットの後に日本語文字がある場合
+    formattedText = formattedText.replace(/([ぁ-んゔァ-ンヴ一-龥])([a-zA-Z])/g, "$1 $2"); // 日本語文字の後にアルファベットがある場合
 
-    text = text.replace(new RegExp(FILTER_SYMBOLS, "g"), ""); //記号削除 TODO: ホワイトリストに含まれる機能はFILTERしない
+    formattedText = formattedText.replace(new RegExp(FILTER_SYMBOLS, "g"), ""); //記号削除 TODO: ホワイトリストに含まれる機能はFILTERしない
     if (enableAddSymbol) {
-      text = text.replace(
+      formattedText = formattedText.replace(
         new RegExp(`[${LYRICS_FORMAT_REGEX.concat([addSymbolList.replace(/./g, "\\$&")]).join("")}]`, "g"),
         "",
       ); //regexListに含まれていない文字を削除
     } else {
-      text = text.replace(new RegExp(`[${LYRICS_FORMAT_REGEX.join("")}]`, "g"), ""); //regexListに含まれていない文字を削除
+      formattedText = formattedText.replace(new RegExp(`[${LYRICS_FORMAT_REGEX.join("")}]`, "g"), ""); //regexListに含まれていない文字を削除
     }
 
-    return text;
+    return formattedText;
   };
 };

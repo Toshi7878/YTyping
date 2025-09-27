@@ -360,11 +360,12 @@ const determineCharacterType = ({ kanaChar, romaChar }: { kanaChar: string; roma
 };
 
 const convertZenkakuToHankaku = (char: string) => {
+  let convertedChar = char;
   if (ZENKAKU_LIST.includes(char)) {
-    char = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
+    convertedChar = String.fromCharCode(char.charCodeAt(0) - 0xfee0);
   }
 
-  return char;
+  return convertedChar;
 };
 
 export { generateTypingWord };

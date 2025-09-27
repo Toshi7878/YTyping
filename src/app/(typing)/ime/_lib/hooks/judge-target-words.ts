@@ -122,20 +122,22 @@ function judgeComment(judgedWords: string[][], comment: string) {
   let correcting = "";
   let reSearchFlag = false;
 
+  let currentComment = comment;
+
   for (let i = 0; i < judgedWords.length; i++) {
     for (let m = 0; m < judgedWords[i].length; m++) {
       const target = judgedWords[i][m];
-      let search = comment.search(escapeRegExp(target));
+      let search = currentComment.search(escapeRegExp(target));
 
       // Great判定
       if (m === 0) {
         if (i === 0 && search > 0) {
-          comment = comment.slice(search);
+          currentComment = currentComment.slice(search);
           search = 0;
         }
         if (search === 0) {
           correcting += target;
-          comment = comment.slice(target.length);
+          currentComment = currentComment.slice(target.length);
           break;
         }
       }
@@ -146,12 +148,12 @@ function judgeComment(judgedWords: string[][], comment: string) {
 
       // 最後の候補でGood/None判定
       if (m === judgedWords[i].length - 1) {
-        const commentHira = kanaToHira(comment.toLowerCase());
+        const commentHira = kanaToHira(currentComment.toLowerCase());
         const targetHira = kanaToHira(target.toLowerCase());
         let replSearch = commentHira.search(escapeRegExp(targetHira));
 
         if (i === 0 && replSearch > 0) {
-          comment = comment.slice(replSearch);
+          currentComment = currentComment.slice(replSearch);
           replSearch = 0;
         }
 
@@ -160,21 +162,21 @@ function judgeComment(judgedWords: string[][], comment: string) {
         }
 
         if (replSearch === 0) {
-          correcting += comment.slice(0, target.length);
-          comment = comment.slice(target.length);
+          correcting += currentComment.slice(0, target.length);
+          currentComment = currentComment.slice(target.length);
           judge = "Good";
           break;
         } else if (reSearchFlag) {
           // 再帰的に再判定
-          return judgeComment(judgedWords, comment);
+          return judgeComment(judgedWords, currentComment);
         } else {
-          return { correcting, judge: "None" as const, comment };
+          return { correcting, judge: "None" as const, currentComment };
         }
       }
     }
   }
 
-  return { correcting, judge, comment };
+  return { correcting, judge, currentComment };
 }
 
 // function generateCombinations(input: string, index: number = 0, current: string = "") {
@@ -194,16 +196,17 @@ function useFormatComment() {
   const formatWord = useFormatWord();
 
   return (text: string) => {
-    text = formatWord(text);
+    let formattedComment = text;
+    formattedComment = formatWord(formattedComment);
 
     //全角の前後のスペースを削除
-    text = text.replace(/(\s+)([^!-~])/g, "$2").replace(/([^!-~])(\s+)/g, "$1");
+    formattedComment = formattedComment.replace(/(\s+)([^!-~])/g, "$2").replace(/([^!-~])(\s+)/g, "$1");
 
     //テキストの末尾が半角ならば末尾に半角スペース追加
-    if (/[!-~]$/.test(text)) {
-      text = text + " ";
+    if (/[!-~]$/.test(formattedComment)) {
+      formattedComment = formattedComment + " ";
     }
-    return text;
+    return formattedComment;
   };
 }
 

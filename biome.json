@@ -23,21 +23,24 @@
         "useExhaustiveDependencies": "info"
       },
       "suspicious": {
-        "noUnknownAtRules": "off"
+        "noUnknownAtRules": "info"
       },
       "complexity": {
-        "noImportantStyles": "off"
+        "noImportantStyles": "info"
       },
       "a11y": {
-        "useKeyWithClickEvents": "off",
-        "noStaticElementInteractions": "off"
+        "useKeyWithClickEvents": "info",
+        "noStaticElementInteractions": "info"
       },
       "style": {
         "noCommonJs": "error",
         "noDefaultExport": "error",
         "noNamespace": "error",
         "useAsConstAssertion": "error",
-        "useTemplate": "off"
+        "noDoneCallback": "error",
+        "noEnum": "error",
+        "noExportedImports": "error",
+        "noParameterAssign": "error"
       }
     }
   },

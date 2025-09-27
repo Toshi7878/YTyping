@@ -174,10 +174,10 @@ export class BuildMap {
 }
 
 function median(arr: number[]) {
-  arr = arr.filter((a) => a !== 0);
+  const nonZeroArray = arr.filter((a) => a !== 0);
 
-  const half = (arr.length / 2) | 0;
-  const temp = arr.sort((a, b) => a - b);
+  const temp = [...nonZeroArray].sort((a, b) => a - b);
+  const half = (temp.length / 2) | 0;
 
   if (temp.length % 2) {
     return temp[half];
