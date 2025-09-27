@@ -184,7 +184,6 @@ export const useOnRateChange = () => {
 
   const { readLineProgress } = useProgress()
   const readMap = useReadMap()
-  const { readCount } = useLineCount()
   const setSpeed = useSetSpeed()
 
   return (player: YT.Player) => {
@@ -195,12 +194,8 @@ export const useOnRateChange = () => {
     setNotify(Symbol(`x${speed.toFixed(2)}`))
     const lineProgress = readLineProgress()
     if (lineProgress) {
-      lineProgress.value = 0
       const map = readMap()
       if (!map) return
-      const count = readCount()
-
-      lineProgress.max = (map.mapData[count].time - (map.mapData[count - 1]?.time ?? 0)) / speed
     }
   }
 }

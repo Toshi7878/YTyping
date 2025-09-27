@@ -225,7 +225,7 @@ const useTimer = () => {
       writeGameUtilRefParams({ updateMsTimeCount: constantOffesettedYTTime })
     }
 
-    setLineProgressValue(constantLineTime)
+    setLineProgressValue(currentLineTime)
     const { scene } = readGameStateUtils()
 
     if (scene === "replay" && count && currentLineTime) {

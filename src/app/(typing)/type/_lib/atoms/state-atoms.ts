@@ -407,8 +407,7 @@ const writeCurrentLineAtom = atom(
 
     if (lineProgress && !isPaused) {
       lineProgress.value = 0
-      const { playSpeed } = get(speedBaseAtom)
-      lineProgress.max = (newNextLine.time - newCurrentLine.time) / playSpeed
+      lineProgress.max = newNextLine.time - newCurrentLine.time
     }
   },
 )
@@ -419,11 +418,10 @@ export const useSetCurrentLine = () => {
     store.set(currentLineAtom, RESET)
     const map = store.get(mapAtom)
     const lineProgress = store.get(lineProgressAtom)
-    const { playSpeed } = store.get(speedBaseAtom)
 
     if (lineProgress && map) {
       lineProgress.value = 0
-      lineProgress.max = map.mapData[1].time / playSpeed
+      lineProgress.max = map.mapData[1].time
     }
   }, [])
 
