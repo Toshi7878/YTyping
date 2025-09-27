@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
-import CreatedVideoMapList from "@/components/shared/created-video-map-list";
+import { CreatedVideoMapList } from "@/components/shared/created-video-map-list";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";
@@ -22,7 +22,7 @@ const formSchema = z.object({
   videoId: z.string(),
 });
 
-export default function NewMapPopover() {
+export const NewMapPopover = () => {
   const [open, setOpen] = useState(false);
   const backupMapInfo = useGetBackupMapInfoLiveQuery();
   const router = useRouter();
@@ -89,7 +89,7 @@ export default function NewMapPopover() {
       </PopoverContent>
     </Popover>
   );
-}
+};
 
 interface CreateMapBackUpButtonProps {
   backupData: { title: string; videoId: string } | undefined;

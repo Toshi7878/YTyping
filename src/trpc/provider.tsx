@@ -27,6 +27,7 @@ const getQueryClient = () => {
 export const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();
 export type Trpc = ReturnType<typeof useTRPC>;
 
+// biome-ignore lint/style/noDefaultExport: <名前空間が被るため>
 export default function Provider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
   const [trpcClient] = useState(() =>

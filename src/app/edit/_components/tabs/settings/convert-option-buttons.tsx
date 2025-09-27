@@ -35,7 +35,7 @@ const CONVERT_OPTIONS = [
   },
 ] as const;
 
-export default function ConvertOptionButtons() {
+export const ConvertOptionButtons = () => {
   const wordConvertOption = useWordConvertOptionState();
   const setWordConvertOption = useSetWordConvertOption();
 
@@ -82,4 +82,4 @@ export default function ConvertOptionButtons() {
       </RadioGroup>
     </div>
   );
-}
+};

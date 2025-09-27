@@ -22,7 +22,7 @@ interface LineOptionDialogProps {
   setOptionDialogIndex: Dispatch<number | null>;
 }
 
-export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOptionDialogProps) {
+export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDialogProps) => {
   const map = useMapState();
   const confirm = useConfirm();
   const setCanUpload = useSetCanUpload();
@@ -165,7 +165,7 @@ export default function LineOptionDialog({ index, setOptionDialogIndex }: LineOp
       <DialogFooter />
     </DialogWithContent>
   );
-}
+};
 
 // interface CSSTextLengthProps {
 //   eternalCSSText: string;

@@ -12,7 +12,7 @@ interface ResultClapButtonProps {
   hasClapped: boolean;
 }
 
-function ResultClapButton({ resultId, clapCount, hasClapped: hasClap }: ResultClapButtonProps) {
+export const ResultClapButton = ({ resultId, clapCount, hasClapped: hasClap }: ResultClapButtonProps) => {
   const { data: session } = useSession();
 
   const toggleClapMutation = useClapMutationTimeline();
@@ -45,6 +45,4 @@ function ResultClapButton({ resultId, clapCount, hasClapped: hasClap }: ResultCl
       </TooltipWrapper>
     </div>
   );
-}
-
-export default ResultClapButton;
+};

@@ -37,9 +37,9 @@ import { useAddRubyTagEvent } from "../../_lib/hooks/use-add-ruby-tag";
 import { useLineUpdateButtonEvent, useWordConvertButtonEvent } from "../../_lib/hooks/use-editor-button-events";
 import { useSeekNextPrev, useUndoRedo } from "../../_lib/hooks/use-map-table-hotkey";
 import { useWordSearchReplace } from "../../_lib/hooks/use-word-search-replace";
-import LineOptionDialog from "./line-option-dialog";
+import { LineOptionDialog } from "./line-option-dialog";
 
-export default function MapTable() {
+export const MapTable = () => {
   const map = useMapState();
   const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
   const seekNextPrev = useSeekNextPrev();
@@ -256,7 +256,7 @@ export default function MapTable() {
       )}
     </LoadingOverlayProvider>
   );
-}
+};
 
 const DirectTimeInput = ({ time }: { time: string }) => {
   const [editTime, setEditTime] = useState(time);

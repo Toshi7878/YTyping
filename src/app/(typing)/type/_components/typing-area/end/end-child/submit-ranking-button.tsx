@@ -15,7 +15,7 @@ interface SubmitRankingButtonProps {
   setIsSendResultBtnDisabled: (isDisabled: boolean) => void;
 }
 
-const SubmitRankingButton = ({
+export const SubmitRankingButton = ({
   isScoreUpdated,
   isSendResultBtnDisabled,
   setIsSendResultBtnDisabled,
@@ -77,5 +77,3 @@ const SubmitRankingButton = ({
     </Button>
   );
 };
-
-export default SubmitRankingButton;

@@ -18,9 +18,9 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import useSearchKeydown from "../../_lib/hooks/use-search-keydown";
+import { useSearchKeydown } from "../../_lib/hooks/use-search-keydown";
 
-const SearchPopover = () => {
+export const SearchPopover = () => {
   const searchKpm = useSearchResultKpmState();
   const searchClearRate = useSearchResultClearRateState();
   const searchSpeed = useSearchResultSpeedState();
@@ -161,5 +161,3 @@ const SearchRange = ({
     </div>
   );
 };
-
-export default SearchPopover;

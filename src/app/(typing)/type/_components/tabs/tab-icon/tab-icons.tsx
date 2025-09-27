@@ -1,10 +1,10 @@
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import EditIconButton from "./icon-button/edit-icon-button";
-import LikeIconButton from "./icon-button/like-icon-button";
-import SettingPopover from "./setting-card/setting-popover";
+import { EditIconButton } from "./icon-button/edit-icon-button";
+import { LikeIconButton } from "./icon-button/like-icon-button";
+import { SettingPopover } from "./setting-card/setting-popover";
 
-export default function TabIcons({ className }: { className?: string }) {
+export const TabIcons = ({ className }: { className?: string }) => {
   const { data: session } = useSession();
 
   return (
@@ -14,4 +14,4 @@ export default function TabIcons({ className }: { className?: string }) {
       <EditIconButton />
     </div>
   );
-}
+};

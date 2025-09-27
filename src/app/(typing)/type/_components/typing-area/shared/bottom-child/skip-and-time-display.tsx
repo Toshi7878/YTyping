@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/utils/format-time";
 
-const SkipAndTimeDisplay = () => {
+export const SkipAndTimeDisplay = () => {
   const isYTStarted = useYTStartedState();
   const sceneGroup = useSceneGroupState();
   const isPlayed = isYTStarted && sceneGroup === "Playing";
@@ -58,5 +58,3 @@ const VideoDurationTime = () => {
 
   return <span id="total_time">{totalTime}</span>;
 };
-
-export default SkipAndTimeDisplay;

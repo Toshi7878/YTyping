@@ -12,9 +12,9 @@ import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { CHAR_POINT } from "@/utils/build-map/build-map";
-import ResultCardContent from "./child/result-card-body";
-import ResultCardFooter from "./child/result-card-footer";
-import ResultCardHeader from "./child/result-card-header";
+import { ResultCardContent } from "./child/result-card-body";
+import { ResultCardFooter } from "./child/result-card-footer";
+import { ResultCardHeader } from "./child/result-card-header";
 
 interface OptimizedResultCardProps {
   count: number;
@@ -25,14 +25,14 @@ interface OptimizedResultCardProps {
   lineData: LineData;
 }
 
-function OptimizedResultCard({
+export const OptimizedResultCard = ({
   count,
   lineIndex,
   scoreCount,
   cardRefs,
   handleCardClick,
   lineData,
-}: OptimizedResultCardProps) {
+}: OptimizedResultCardProps) => {
   const _lineResult = useLineResultState(count);
 
   const map = useMapState();
@@ -110,6 +110,4 @@ function OptimizedResultCard({
       </CardFooter>
     </Card>
   );
-}
-
-export default OptimizedResultCard;
+};

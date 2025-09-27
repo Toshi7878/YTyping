@@ -16,7 +16,7 @@ interface ClientProviderProps {
   children: ReactNode;
 }
 
-const ClientProvider = ({ userTypingOptions, mapId, children }: ClientProviderProps) => {
+export const ClientProvider = ({ userTypingOptions, mapId, children }: ClientProviderProps) => {
   const typeAtomStore = getTypeAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
   const { sendTypingStats } = useSendUserStats();
@@ -51,5 +51,3 @@ const ClientProvider = ({ userTypingOptions, mapId, children }: ClientProviderPr
 
   return <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>;
 };
-
-export default ClientProvider;

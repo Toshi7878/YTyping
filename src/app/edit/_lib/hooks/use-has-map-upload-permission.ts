@@ -3,7 +3,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTRPC } from "@/trpc/provider";
 
-const useHasMapUploadPermission = () => {
+export const useHasMapUploadPermission = () => {
   const { data: session } = useSession();
   const mapId = usePathname().split("/")[2];
   const trpc = useTRPC();
@@ -21,5 +21,3 @@ const useHasMapUploadPermission = () => {
 
   return isNewCreate || (myUserId && (!mapCreatorId || Number(myUserId) === mapCreatorId)) || isAdmin;
 };
-
-export default useHasMapUploadPermission;

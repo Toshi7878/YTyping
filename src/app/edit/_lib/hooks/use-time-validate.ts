@@ -1,6 +1,6 @@
 import { usePlayer } from "../atoms/read-atoms";
 
-const useTimeValidate = () => {
+export const useTimeValidate = () => {
   const { readPlayer } = usePlayer();
 
   return (time: number) => {
@@ -14,5 +14,3 @@ const useTimeValidate = () => {
     }
   };
 };
-
-export default useTimeValidate;

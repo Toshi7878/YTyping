@@ -2,17 +2,17 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
-import MapInfo from "@/components/shared/map-info/map-info";
 import { useTRPC } from "@/trpc/provider";
 import { CardWithContent } from "../ui/card";
+import { MapLeftThumbnail } from "./map-card-thumbnail";
+import { MapInfo } from "./map-info/map-info";
 
 interface CreatedVideoMapListProps {
   videoId: string;
   disabledNotFoundText?: boolean;
 }
 
-const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedVideoMapListProps) => {
+export const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedVideoMapListProps) => {
   const trpc = useTRPC();
   const { data, isPending } = useQuery(trpc.mapList.getByVideoId.queryOptions({ videoId }));
 
@@ -33,7 +33,6 @@ const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedV
             <div key={map.id} className="mb-2 max-w-[610px]">
               <CardWithContent variant="map">
                 <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
-
                 <MapInfo map={map} />
               </CardWithContent>
             </div>
@@ -46,5 +45,3 @@ const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedV
   }
   return null;
 };
-
-export default CreatedVideoMapList;

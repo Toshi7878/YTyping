@@ -1,9 +1,9 @@
 import Link from "next/link";
-import DateDistanceText from "@/components/shared/text/date-distance-text";
+import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import ResultClapButton from "./child/result-clap-button";
+import { ResultClapButton } from "./child/result-clap-button";
 
 interface ResultCardHeaderProps {
   player: RouterOutPuts["result"]["usersResultList"]["items"][number]["player"];
@@ -13,7 +13,7 @@ interface ResultCardHeaderProps {
   className?: string;
 }
 
-const ResultCardHeader = ({ player, resultId, updatedAt, clap, className }: ResultCardHeaderProps) => {
+export const ResultCardHeader = ({ player, resultId, updatedAt, clap, className }: ResultCardHeaderProps) => {
   return (
     <CardHeader className={cn("flex items-center justify-between", className)}>
       <div className="flex flex-row items-center gap-2">
@@ -30,5 +30,3 @@ const ResultCardHeader = ({ player, resultId, updatedAt, clap, className }: Resu
     </CardHeader>
   );
 };
-
-export default ResultCardHeader;

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export const CONTENT_WIDTH = 1350;
 export const CONTENT_HEIGHT = 900;
 
-const useWindowScale = () => {
+export const useWindowScale = () => {
   const [scale, setScale] = useState(1);
   const [ready, setReady] = useState(false);
 
@@ -34,5 +34,3 @@ const useWindowScale = () => {
 
   return { scale, ready };
 };
-
-export default useWindowScale;

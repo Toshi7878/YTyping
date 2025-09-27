@@ -5,9 +5,9 @@ import {
   useSetLineResultDrawer,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import ResultLineList from "./child/result-line-list";
+import { ResultLineList } from "./child/result-line-list";
 
-function ResultDrawer() {
+export const ResultDrawer = () => {
   const isOpen = useLineResultDrawerState();
   const sceneGroup = useSceneGroupState();
   const setLineResultDrawer = useSetLineResultDrawer();
@@ -23,6 +23,4 @@ function ResultDrawer() {
       </SheetContent>
     </Sheet>
   );
-}
-
-export default ResultDrawer;
+};

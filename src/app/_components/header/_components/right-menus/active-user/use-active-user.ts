@@ -7,7 +7,7 @@ import { useSetOnlineUsers } from "@/lib/global-atoms";
 import { supabase } from "@/lib/supabase-client";
 import { useUserOptionsQueries } from "@/utils/queries/user-options.queries";
 
-export default function useActiveUsers() {
+export const useActiveUsers = () => {
   const { data: userOptions, isPending } = useQuery(useUserOptionsQueries().myUserOptions());
 
   const { data: session } = useSession();
@@ -122,4 +122,4 @@ export default function useActiveUsers() {
     session?.user.id,
     userOptions?.customUserActiveState,
   ]);
-}
+};

@@ -12,7 +12,7 @@ import type { RouterOutPuts } from "@/server/api/trpc";
 import { getCSSVariable } from "@/utils/get-computed-color";
 import { useUserStatsQueries } from "@/utils/queries/user-stats.queries";
 
-const TypeActivity = () => {
+export const TypeActivity = () => {
   const { id: userId } = useParams<{ id: string }>();
   const { data, isPending, isError } = useQuery(useUserStatsQueries().userActivity({ userId: Number(userId) }));
 
@@ -139,5 +139,3 @@ const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
     </div>
   );
 };
-
-export default TypeActivity;

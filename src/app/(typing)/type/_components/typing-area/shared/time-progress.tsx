@@ -4,7 +4,7 @@ import { useProgress } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
 interface TimeProgressProps {
   id: string;
 }
-const TimeProgress = (props: TimeProgressProps) => {
+export const TimeProgress = (props: TimeProgressProps) => {
   const progressRef = React.useRef<HTMLProgressElement>(null);
 
   const { writeLineProgress, writeTotalProgress } = useProgress();
@@ -31,5 +31,3 @@ const TimeProgress = (props: TimeProgressProps) => {
     </section>
   );
 };
-
-export default TimeProgress;

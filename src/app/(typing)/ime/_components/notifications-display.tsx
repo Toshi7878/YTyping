@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
 import { useNotificationsState } from "../_lib/atoms/state-atoms";
 
-const Notifications = ({ style }: { style: CSSProperties }) => {
+export const Notifications = ({ style }: { style: CSSProperties }) => {
   const notifications = useNotificationsState();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -28,5 +28,3 @@ const Notifications = ({ style }: { style: CSSProperties }) => {
     </div>
   );
 };
-
-export default Notifications;

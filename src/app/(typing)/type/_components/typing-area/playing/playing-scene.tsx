@@ -15,16 +15,16 @@ import { useLineCount, useUserStats } from "../../../_lib/atoms/ref-atoms";
 import { useHandleKeydown } from "../../../_lib/hooks/playing/keydown/keydown";
 import { usePressSkip } from "../../../_lib/hooks/playing/press-skip";
 import { useTimerControls } from "../../../_lib/hooks/playing/timer/timer";
-import ChangeCSS from "./playing-child/change-css-style";
-import Lyrics from "./playing-child/lyrics-text";
-import NextLyrics from "./playing-child/next-lyrics";
-import TypingWords from "./playing-child/typing-words";
+import { ChangeCSS } from "./playing-child/change-css-style";
+import { Lyrics } from "./playing-child/lyrics-text";
+import { NextLyrics } from "./playing-child/next-lyrics";
+import { TypingWords } from "./playing-child/typing-words";
 
 interface PlayingProps {
   className?: string;
 }
 
-const Playing = ({ className }: PlayingProps) => {
+export const PlayingScene = ({ className }: PlayingProps) => {
   const pressSkip = usePressSkip();
   const readGameUtils = useReadGameUtilParams();
 
@@ -118,5 +118,3 @@ const Playing = ({ className }: PlayingProps) => {
     </div>
   );
 };
-
-export default Playing;

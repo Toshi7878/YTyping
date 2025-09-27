@@ -3,7 +3,7 @@ import type { Route } from "next";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
-import TextLink from "@/components/ui/text-link";
+import { TextLink } from "@/components/ui/text-link";
 import { H6 } from "@/components/ui/typography";
 import { useUserAgent } from "@/lib/global-atoms";
 import preMidLinks from "@/public/images/manual/premid/premid-link.png";

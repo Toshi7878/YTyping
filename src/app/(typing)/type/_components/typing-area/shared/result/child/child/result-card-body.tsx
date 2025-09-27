@@ -10,7 +10,7 @@ interface ResultCardContentProps {
   lostWord: string;
 }
 
-function ResultCardContent({ lineKanaWord, types, lineTypeWord, lostWord }: ResultCardContentProps) {
+export const ResultCardContent = ({ lineKanaWord, types, lineTypeWord, lostWord }: ResultCardContentProps) => {
   let correctCount = 0;
 
   return (
@@ -46,6 +46,4 @@ function ResultCardContent({ lineKanaWord, types, lineTypeWord, lostWord }: Resu
       </div>
     </CardContent>
   );
-}
-
-export default ResultCardContent;
+};

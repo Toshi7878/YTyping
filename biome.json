@@ -40,5 +40,27 @@
         "useTemplate": "off"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "next.config.js",
+        "drizzle.config.ts",
+        "postcss.config.mjs",
+        "**/layout.tsx",
+        "**/page.tsx",
+        "**/loading.tsx",
+        "**/error.tsx",
+        "**/not-found.tsx",
+        "**/auth.config.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": "off"
+          }
+        }
+      }
+    }
+  ]
 }

@@ -5,10 +5,10 @@ import { Bell, BellDot, Loader2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
-import CompactMapInfo from "@/components/shared/map-info/compact-map-info";
-import DateDistanceText from "@/components/shared/text/date-distance-text";
-import UserNameLinkText from "@/components/shared/text/user-name-link-text";
+import { MapLeftThumbnail } from "@/components/shared/map-card-thumbnail";
+import { CompactMapInfo } from "@/components/shared/map-info/compact-map-info";
+import { DateDistanceText } from "@/components/shared/text/date-distance-text";
+import { UserNameLinkText } from "@/components/shared/text/user-name-link-text";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -17,7 +17,7 @@ import type { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
 
-export default function NotifyBellSheet() {
+export const NotifyBellSheet = () => {
   const trpc = useTRPC();
   const { data: isNewNotificationFound } = useQuery(trpc.notification.hasUnread.queryOptions());
   const queryClient = useQueryClient();
@@ -53,7 +53,7 @@ export default function NotifyBellSheet() {
       </SheetContent>
     </Sheet>
   );
-}
+};
 
 const NotifyDrawerInnerContent = () => {
   const { ref, inView } = useInView({ threshold: 0.8 });

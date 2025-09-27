@@ -21,7 +21,7 @@ export const SiteLogo = () => {
   );
 };
 
-function LeftMenus() {
+export const LeftMenus = () => {
   return (
     <nav className="text-header-foreground/80 hidden items-center select-none md:flex">
       <LinksDropdownMenu />
@@ -32,7 +32,7 @@ function LeftMenus() {
       ))}
     </nav>
   );
-}
+};
 
 const LinksDropdownMenu = () => {
   return (
@@ -52,5 +52,3 @@ const LinksDropdownMenu = () => {
     </DropdownMenu>
   );
 };
-
-export default LeftMenus;

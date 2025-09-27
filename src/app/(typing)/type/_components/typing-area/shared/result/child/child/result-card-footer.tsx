@@ -16,7 +16,7 @@ interface ResultCardFooterProps extends HTMLAttributes<HTMLDivElement> {
   lost: number;
 }
 
-function ResultCardFooter({
+export const ResultCardFooter = ({
   scoreCount,
   point,
   tBonus,
@@ -27,7 +27,7 @@ function ResultCardFooter({
   lost,
   className,
   ...props
-}: ResultCardFooterProps) {
+}: ResultCardFooterProps) => {
   const missColor = point === 0 ? "gray" : miss > 0 || lost > 0 ? "red" : "green";
 
   return (
@@ -56,6 +56,4 @@ function ResultCardFooter({
       </TooltipWrapper>
     </div>
   );
-}
-
-export default ResultCardFooter;
+};

@@ -20,12 +20,16 @@ interface KbdProps {
   className?: string;
 }
 
-const Kbd = ({ disabled, children, onClick, className, ...rest }: KbdProps & ComponentPropsWithoutRef<"kbd">) => {
+export const Kbd = ({
+  disabled,
+  children,
+  onClick,
+  className,
+  ...rest
+}: KbdProps & ComponentPropsWithoutRef<"kbd">) => {
   return (
     <kbd className={cn(kbdVariants({ disabled }), className)} onClick={disabled ? undefined : onClick} {...rest}>
       {children}
     </kbd>
   );
 };
-
-export default Kbd;

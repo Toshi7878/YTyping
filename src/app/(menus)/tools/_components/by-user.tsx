@@ -2,10 +2,10 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Route } from "next";
-import TextLink from "@/components/ui/text-link";
+import { TextLink } from "@/components/ui/text-link";
 import { useTRPC } from "@/trpc/provider";
 
-const ByUser = ({ userId }: { userId: string }) => {
+export const ByUser = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();
   const { data: userName } = useSuspenseQuery(trpc.userProfile.getUserName.queryOptions({ userId: Number(userId) }));
 
@@ -15,5 +15,3 @@ const ByUser = ({ userId }: { userId: string }) => {
     </TextLink>
   );
 };
-
-export default ByUser;

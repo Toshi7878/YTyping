@@ -4,7 +4,7 @@ import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-const LinkProgressProvider = ({ children }: { children: ReactNode }) => {
+export const LinkProgressProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   return (
     <ProgressProvider
@@ -24,5 +24,3 @@ const LinkProgressProvider = ({ children }: { children: ReactNode }) => {
     </ProgressProvider>
   );
 };
-
-export default LinkProgressProvider;

@@ -1,9 +1,9 @@
 import { CardWithContent } from "@/components/ui/card";
 import { Table, TableBody, TableRow } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import StatusCell from "./status-cell";
+import { StatusCell } from "./status-cell";
 
-const StatusCard = ({ className }: { className: string }) => {
+export const StatusCard = ({ className }: { className: string }) => {
   return (
     <CardWithContent
       id="tab-status-card"
@@ -31,5 +31,3 @@ const StatusTableRow = ({ labels }: { labels: string[] }) => {
     </TableRow>
   );
 };
-
-export default StatusCard;

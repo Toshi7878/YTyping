@@ -14,17 +14,17 @@ import {
   useSetTypingStatus,
   useSetTypingStatusLine,
 } from "../_lib/atoms/state-atoms";
-import useWindowScale, { CONTENT_WIDTH } from "../_lib/hooks/use-window-scale";
-import TabsArea from "./tabs/tabs";
-import MainGameCard from "./typing-area/main-game-card";
-import YouTubePlayer from "./youtube-player";
+import { CONTENT_WIDTH, useWindowScale } from "../_lib/hooks/use-window-scale";
+import { TabsArea } from "./tabs/tabs";
+import { MainGameCard } from "./typing-area/main-game-card";
+import { YouTubePlayer } from "./youtube-player";
 
 interface ContentProps {
   videoId: string;
   mapId: string;
 }
 
-function Content({ videoId, mapId }: ContentProps) {
+export const Content = ({ videoId, mapId }: ContentProps) => {
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
 
   const setLineSelectIndex = useSetLineSelectIndex();
@@ -87,6 +87,4 @@ function Content({ videoId, mapId }: ContentProps) {
       </div>
     </div>
   );
-}
-
-export default Content;
+};

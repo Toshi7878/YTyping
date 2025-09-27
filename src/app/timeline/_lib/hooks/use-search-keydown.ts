@@ -3,7 +3,7 @@ import type React from "react";
 import { useSetIsSearching } from "../atoms";
 import { useSetSearchParams } from "./use-set-search-params";
 
-const useSearchKeydown = () => {
+export const useSearchKeydown = () => {
   const searchParams = useSearchParams();
   const rangeParams = useSetSearchParams();
   const setIsSearching = useSetIsSearching();
@@ -20,5 +20,3 @@ const useSearchKeydown = () => {
     }
   };
 };
-
-export default useSearchKeydown;

@@ -31,7 +31,7 @@ interface MapLeftThumbnailPreviewCoverProps {
 
 const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
 
-const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
+export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
   const { alt = "", media, size, className, ...rest } = props;
 
   const src = `https://i.ytimg.com/vi/${media?.videoId}/mqdefault.jpg`;
@@ -104,5 +104,3 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
     </div>
   );
 };
-
-export default MapLeftThumbnail;

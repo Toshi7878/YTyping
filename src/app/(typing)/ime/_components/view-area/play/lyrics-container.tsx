@@ -11,9 +11,9 @@ import {
   useNextDisplayLineState,
 } from "../../../_lib/atoms/state-atoms";
 import "./lyrics-container.css";
-import Skip from "./skip-display";
+import { Skip } from "./skip-display";
 
-const LyricsContainer = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
+export const LyricsContainer = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
   const enableNextLyricsOption = useEnableNextLyricsOptionState();
 
   return (
@@ -108,5 +108,3 @@ const NextLyrics = () => {
     </div>
   );
 };
-
-export default LyricsContainer;

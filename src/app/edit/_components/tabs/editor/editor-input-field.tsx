@@ -13,7 +13,7 @@ import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
 import { Input } from "@/components/ui/input/input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 
-const EditorLineInput = () => {
+export const EditorLineInput = () => {
   return (
     <section>
       <div className="flex items-center">
@@ -120,5 +120,3 @@ const TimeInput = () => {
     />
   );
 };
-
-export default EditorLineInput;

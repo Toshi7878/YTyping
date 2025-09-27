@@ -18,7 +18,7 @@ interface UserMenuProps {
   className: string;
 }
 
-export default function UserMenu({ userName, className }: UserMenuProps) {
+export const UserMenu = ({ userName, className }: UserMenuProps) => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -45,4 +45,4 @@ export default function UserMenu({ userName, className }: UserMenuProps) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

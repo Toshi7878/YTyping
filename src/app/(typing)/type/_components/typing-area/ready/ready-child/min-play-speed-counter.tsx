@@ -7,7 +7,7 @@ interface ReadyPlaySpeedProps {
   speedUpButtonRef: React.RefObject<HTMLButtonElement | null>;
   speedDownButtonRef: React.RefObject<HTMLButtonElement | null>;
 }
-const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
+export const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
   const { minPlaySpeed } = usePlaySpeedState();
 
   return (
@@ -58,5 +58,3 @@ const SpeedChangeButton = (props: SpeedChangeButtonProps) => {
     </Button>
   );
 };
-
-export default ReadyPlaySpeed;

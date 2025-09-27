@@ -8,7 +8,7 @@ interface VolumeRangeProps {
   player: YT.Player | null;
 }
 
-export default function VolumeRange({ player, ...props }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) {
+export const VolumeRange = ({ player, ...props }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) => {
   const volume = useVolumeState();
   const setVolume = useSetVolume();
   const userAgent = useUserAgent();
@@ -44,7 +44,7 @@ export default function VolumeRange({ player, ...props }: VolumeRangeProps & HTM
       </fieldset>
     </div>
   );
-}
+};
 
 const VolumeIcon = ({ volume }: { volume: number }) => {
   if (volume === 0) {

@@ -4,7 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/compon
 import { cn } from "@/lib/utils";
 import { SignInDropdownItems } from "./auth-dropdown-items";
 
-export default function SignInMenu({ className }: { className: string }) {
+export const SignInMenu = ({ className }: { className: string }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,4 +22,4 @@ export default function SignInMenu({ className }: { className: string }) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

@@ -11,13 +11,13 @@ import {
   useTextareaPlaceholderTypeState,
 } from "../_lib/atoms/state-atoms";
 import { useJudgeTargetWords } from "../_lib/hooks/judge-target-words";
-import useSceneControl from "../_lib/hooks/scene-control";
+import { useSceneControl } from "../_lib/hooks/scene-control";
 import { useSkip } from "../_lib/hooks/skip";
 import type { PlaceholderType, SceneType } from "../_lib/type";
 
 const TICK_STOP_TIME = 1000;
 
-const InputTextarea = () => {
+export const InputTextarea = () => {
   const judgeTargetWords = useJudgeTargetWords();
   const handleSkip = useSkip();
   const { handleEnd } = useSceneControl();
@@ -157,5 +157,3 @@ const useTypingTimeTimer = () => {
 
   return { startTicker, stopTicker, tickerRef, tickStartRef };
 };
-
-export default InputTextarea;

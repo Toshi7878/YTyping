@@ -3,9 +3,9 @@ import { useState } from "react";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/use-get-my-ranking-result";
-import RandomEmoji from "./child/random-emoji";
+import { RandomEmoji } from "./child/random-emoji";
 
-const EndText = () => {
+export const EndText = () => {
   const getMyRankingResult = useGetMyRankingResult();
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
@@ -42,5 +42,3 @@ const EndText = () => {
     </div>
   );
 };
-
-export default EndText;

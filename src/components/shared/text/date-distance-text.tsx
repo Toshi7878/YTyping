@@ -8,7 +8,7 @@ interface DateDistanceTextProps {
   addSuffix?: boolean;
 }
 
-const DateDistanceText = ({ date, text, addSuffix = true }: DateDistanceTextProps) => {
+export const DateDistanceText = ({ date, text, addSuffix = true }: DateDistanceTextProps) => {
   const dateObj = typeof date === "string" ? new Date(date) : date;
 
   return (
@@ -28,4 +28,3 @@ const DateDistanceText = ({ date, text, addSuffix = true }: DateDistanceTextProp
     </time>
   );
 };
-export default DateDistanceText;

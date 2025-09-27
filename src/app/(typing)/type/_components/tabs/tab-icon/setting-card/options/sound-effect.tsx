@@ -1,11 +1,11 @@
 import { usePlayer } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
 import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/sound-effect";
-import VolumeRange from "@/components/shared/volume-range";
+import { VolumeRange } from "@/components/shared/volume-range";
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { H5 } from "@/components/ui/typography";
 
-const UserSoundEffectCheckbox = () => {
+export const UserSoundEffectCheckbox = () => {
   const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
   const { readPlayer } = usePlayer();
   const { setUserTypingOptions } = useSetUserTypingOptions();
@@ -50,5 +50,3 @@ const UserSoundEffectCheckbox = () => {
     </section>
   );
 };
-
-export default UserSoundEffectCheckbox;

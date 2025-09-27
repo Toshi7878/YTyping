@@ -4,7 +4,7 @@ interface FingerChartUrlProps {
   url: string;
 }
 
-const FingerChartUrl = ({ url }: FingerChartUrlProps) => {
+export const FingerChartUrl = ({ url }: FingerChartUrlProps) => {
   if (!url) {
     return <p>運指表はありません</p>;
   }
@@ -24,5 +24,3 @@ const FingerChartUrl = ({ url }: FingerChartUrlProps) => {
     </div>
   );
 };
-
-export default FingerChartUrl;

@@ -5,7 +5,7 @@ import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
 import { focusTypingStatusAtoms } from "../../../_lib/atoms/state-atoms";
 
-export default function StatusCell({ label }: { label: string }) {
+export const StatusCell = ({ label }: { label: string }) => {
   return (
     <TableCell id={label} style={{ width: label === "score" || label === "point" ? "20%" : "14%" }}>
       <StatusLabel label={label} />
@@ -20,7 +20,7 @@ export default function StatusCell({ label }: { label: string }) {
       </span>
     </TableCell>
   );
-}
+};
 
 const StatusLabel = ({ label }: { label: string }) => {
   return (

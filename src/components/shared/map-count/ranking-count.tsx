@@ -10,7 +10,7 @@ interface RankingCountProps {
   rankingCount: number;
 }
 
-const RankingCount = ({ myRank, rankingCount }: RankingCountProps) => {
+export const RankingCount = ({ myRank, rankingCount }: RankingCountProps) => {
   const { data: session } = useSession();
   const [colorClass, setColorClass] = useState("text-muted-foreground");
 
@@ -40,5 +40,3 @@ const RankingCount = ({ myRank, rankingCount }: RankingCountProps) => {
     </TooltipWrapper>
   );
 };
-
-export default RankingCount;

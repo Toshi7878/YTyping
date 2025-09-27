@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { PARAM_NAME, parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
 
-const SortAndMapListLength = () => {
+export const SortAndMapListLength = () => {
   return (
     <div className="bg-card flex w-full flex-wrap items-center justify-between gap-1 overflow-x-auto rounded-md p-2 md:flex-nowrap">
       <SortOptions />
@@ -17,8 +17,6 @@ const SortAndMapListLength = () => {
     </div>
   );
 };
-
-export default SortAndMapListLength;
 
 type SortField = keyof typeof FIELD_TO_PARAMS;
 type SortDirection = "asc" | "desc" | null;

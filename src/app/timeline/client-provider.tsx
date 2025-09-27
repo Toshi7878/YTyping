@@ -11,7 +11,7 @@ interface TimelineProviderProps {
   children: React.ReactNode;
 }
 
-const TimelineProvider = ({ children }: TimelineProviderProps) => {
+export const TimelineProvider = ({ children }: TimelineProviderProps) => {
   const searchParams = useSearchParams();
   const timelineAtomStore = getTimelineAtomStore();
   const searchMode = (searchParams.get("mode") || "all") as FilterMode;
@@ -28,5 +28,3 @@ const TimelineProvider = ({ children }: TimelineProviderProps) => {
 
   return <JotaiProvider store={timelineAtomStore}>{children}</JotaiProvider>;
 };
-
-export default TimelineProvider;

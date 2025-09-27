@@ -4,10 +4,10 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
-import ClearRateText from "@/components/shared/text/clear-rate-text";
-import DateDistanceText from "@/components/shared/text/date-distance-text";
+import { ClearRateText } from "@/components/shared/text/clear-rate-text";
+import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { InputModeText } from "@/components/shared/text/input-mode-text";
-import ResultToolTipText from "@/components/shared/text/result-tooltip-text";
+import { ResultToolTipText } from "@/components/shared/text/result-tooltip-text";
 import { CardWithContent } from "@/components/ui/card";
 import { Popover, PopoverAnchor, PopoverTrigger } from "@/components/ui/popover";
 import { DataTable } from "@/components/ui/table/data-table";
@@ -18,11 +18,11 @@ import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
 import { useMapRankingQueries } from "@/utils/queries/map-ranking.queries";
 import { useGameUtilityReferenceParams } from "../../../_lib/atoms/ref-atoms";
 import { useSceneGroupState, useSetTypingStatusRank } from "../../../_lib/atoms/state-atoms";
-import RankingPopoverContent from "./ranking-popover-menu";
+import { RankingPopoverContent } from "./ranking-popover-menu";
 
 type RankingResult = RouterOutPuts["result"]["getMapRanking"][number];
 
-const TabRanking = ({ className }: { className?: string }) => {
+export const RankingTableCard = ({ className }: { className?: string }) => {
   const { id: mapId } = useParams<{ id: string }>();
   const { data, error, isPending } = useQuery(useMapRankingQueries().mapRanking({ mapId }));
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
@@ -209,5 +209,3 @@ const TabRanking = ({ className }: { className?: string }) => {
     </CardWithContent>
   );
 };
-
-export default TabRanking;

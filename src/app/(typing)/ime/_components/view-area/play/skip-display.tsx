@@ -6,7 +6,7 @@ interface SkipProps {
   className?: string;
 }
 
-const Skip = ({ className }: SkipProps) => {
+export const Skip = ({ className }: SkipProps) => {
   const skipRemainTime = useSkipRemainTimeState();
   const handleSkip = useSkip();
 
@@ -32,5 +32,3 @@ const Skip = ({ className }: SkipProps) => {
     </AnimatePresence>
   );
 };
-
-export default Skip;

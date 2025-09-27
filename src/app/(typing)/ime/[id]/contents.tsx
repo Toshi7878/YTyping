@@ -7,11 +7,11 @@ import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { useMapQueries } from "@/utils/queries/map.queries";
-import InputTextarea from "../_components/input-textarea";
-import MenuBar from "../_components/memu/menu-bar";
-import Notifications from "../_components/notifications-display";
-import ViewArea from "../_components/view-area/view-area";
-import YouTubePlayer from "../_components/youtube-player";
+import { InputTextarea } from "../_components/input-textarea";
+import { MenuBar } from "../_components/memu/menu-bar";
+import { Notifications } from "../_components/notifications-display";
+import { ViewArea } from "../_components/view-area/view-area";
+import { YouTubePlayer } from "../_components/youtube-player";
 import { useEnableLargeVideoDisplayState, useReadScene, useSetMap } from "../_lib/atoms/state-atoms";
 import { useBuildImeMap } from "../_lib/hooks/bulid-ime-map";
 import { usePathChangeAtomReset } from "../_lib/hooks/reset";
@@ -21,7 +21,7 @@ interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
 }
 
-function Content({ mapInfo }: ContentProps) {
+export const Content = ({ mapInfo }: ContentProps) => {
   const { videoId } = mapInfo;
   const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
   const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
@@ -140,6 +140,4 @@ function Content({ mapInfo }: ContentProps) {
       </div>
     </>
   );
-}
-
-export default Content;
+};

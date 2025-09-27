@@ -21,7 +21,7 @@ interface HamburgerMenuProps {
   className?: string;
 }
 
-const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
+export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { data: session } = useSession();
   const isMobile = useUserAgent()?.getDevice().type === "mobile";
 
@@ -77,5 +77,3 @@ const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
     </div>
   );
 };
-
-export default HamburgerMenu;

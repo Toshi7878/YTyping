@@ -1,8 +1,8 @@
 import type React from "react";
 import { useNotifyState, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import { cn } from "@/lib/utils";
-import Kbd from "../../../../../../../components/ui/kbd";
 
 interface BottomBadgeProps {
   badgeText: string;

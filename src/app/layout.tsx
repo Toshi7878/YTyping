@@ -1,6 +1,5 @@
-import Header from "@/app/_components/header/header-component";
+import { Header } from "@/app/_components/header/header-component";
 import "@/styles/globals.css";
-// export const runtime = "edge";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
@@ -12,11 +11,11 @@ import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
-import LinkProgressProvider from "./_components/link-progress-provider";
-import MainProvider from "./_components/main-provider";
+import { LinkProgressProvider } from "./_components/link-progress-provider";
+import { MainProvider } from "./_components/main-provider";
 import { ThemeProvider } from "./_components/theme-provider";
 
-const PreviewYouTubeContent = dynamic(() => import("@/app/_components/preview-youtube-player"));
+const PreviewYouTubePlayer = dynamic(() => import("@/app/_components/preview-youtube-player"));
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -59,7 +58,7 @@ export default async function RootLayout({
                     <main className="min-h-screen pt-12 md:pt-16" id="main_content">
                       {children}
                     </main>
-                    <PreviewYouTubeContent />
+                    <PreviewYouTubePlayer />
                   </MainProvider>
                 </AlertDialogProvider>
               </LinkProgressProvider>

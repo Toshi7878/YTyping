@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
-import ClientProvider from "../_components/client-provider";
-import Content from "../_components/contents";
+import { ClientProvider } from "../_components/client-provider";
+import { Content } from "../_components/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;

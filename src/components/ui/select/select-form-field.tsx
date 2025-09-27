@@ -18,7 +18,7 @@ interface SelectFormFieldProps {
   options: SelectOption[];
 }
 
-const SelectFormField = ({
+export const SelectFormField = ({
   name,
   label,
   placeholder = "選択してください",
@@ -56,5 +56,3 @@ const SelectFormField = ({
     />
   );
 };
-
-export default SelectFormField;

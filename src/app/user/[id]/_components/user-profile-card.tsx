@@ -8,14 +8,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { H3 } from "@/components/ui/typography";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import FingerChartUrl from "./user-info/finger-chart-url";
-import KeyBoard from "./user-info/usage-keyboard";
+import { FingerChartUrl } from "./user-info/finger-chart-url";
+import { KeyBoard } from "./user-info/usage-keyboard";
 
 interface UserProfileCardProps {
   userProfile: RouterOutPuts["userProfile"]["getUserProfile"];
 }
 
-const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
+export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
   const myProfile = session?.user.id === userId;
@@ -49,5 +49,3 @@ const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
     </Card>
   );
 };
-
-export default UserProfileCard;

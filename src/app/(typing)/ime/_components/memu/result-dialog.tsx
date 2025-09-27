@@ -8,7 +8,7 @@ interface ResultDialogProps {
   onClose: () => void;
 }
 
-export default function ResultDialog({ isOpen, onClose }: ResultDialogProps) {
+export const ResultDialog = ({ isOpen, onClose }: ResultDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[85vh] w-full lg:min-w-4xl">
@@ -22,7 +22,7 @@ export default function ResultDialog({ isOpen, onClose }: ResultDialogProps) {
       </DialogContent>
     </Dialog>
   );
-}
+};
 
 const ResultStatus = () => {
   const status = useStatusState();

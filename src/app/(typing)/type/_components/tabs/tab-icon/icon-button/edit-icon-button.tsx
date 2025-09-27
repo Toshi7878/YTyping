@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useTRPC } from "@/trpc/provider";
 
-const EditIconButton = () => {
+export const EditIconButton = () => {
   const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();
   const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
@@ -28,5 +28,3 @@ const EditIconButton = () => {
     </TooltipWrapper>
   );
 };
-
-export default EditIconButton;

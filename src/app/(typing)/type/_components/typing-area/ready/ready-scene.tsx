@@ -4,15 +4,15 @@ import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/hooks/window-focus";
-import ReadyInputModeRadioCards from "./ready-child/input-mode-radio-cards";
-import ReadyPlaySpeed from "./ready-child/min-play-speed-counter";
+import { ReadyInputModeRadioCards } from "./ready-child/input-mode-radio-cards";
+import { ReadyPlaySpeed } from "./ready-child/min-play-speed-counter";
 import { ReadyPracticeButton } from "./ready-child/practice-button";
 
 interface ReadyProps {
   className?: string;
 }
 
-function Ready({ className }: ReadyProps) {
+export const ReadyScene = ({ className }: ReadyProps) => {
   const speedUpButtonRef = useRef<HTMLButtonElement>(null);
   const speedDownButtonRef = useRef<HTMLButtonElement>(null);
   const map = useMapState();
@@ -62,6 +62,4 @@ function Ready({ className }: ReadyProps) {
       </div>
     </div>
   );
-}
-
-export default Ready;
+};

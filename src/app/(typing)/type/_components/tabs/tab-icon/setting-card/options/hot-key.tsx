@@ -3,7 +3,7 @@ import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H5 } from "@/components/ui/typography";
 import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
 
-const HotKeySelectFields = () => {
+export const HotKeySelectFields = () => {
   const { timeOffsetAdjustKey, InputModeToggleKey } = useUserTypingOptionsState();
   const { setUserTypingOptions } = useSetUserTypingOptions();
 
@@ -45,5 +45,3 @@ const HotKeySelectFields = () => {
     </section>
   );
 };
-
-export default HotKeySelectFields;

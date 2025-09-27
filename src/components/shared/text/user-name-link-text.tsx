@@ -7,7 +7,7 @@ interface UserNameLinkTextProps {
   className?: string;
 }
 
-const UserNameLinkText = ({ userId, userName, className }: UserNameLinkTextProps) => {
+export const UserNameLinkText = ({ userId, userName, className }: UserNameLinkTextProps) => {
   if (!userName) return null;
 
   return (
@@ -16,5 +16,3 @@ const UserNameLinkText = ({ userId, userName, className }: UserNameLinkTextProps
     </Link>
   );
 };
-
-export default UserNameLinkText;

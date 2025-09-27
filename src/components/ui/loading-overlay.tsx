@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
-import Spinner from "./spinner";
+import { Spinner } from "./spinner";
 
 interface LoadingOverlayProps {
   isLoading: boolean;

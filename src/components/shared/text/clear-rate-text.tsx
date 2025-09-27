@@ -5,8 +5,6 @@ interface ClearRateTextProps {
   clearRate: number;
 }
 
-const ClearRateText = ({ isPerfect, clearRate }: ClearRateTextProps) => {
+export const ClearRateText = ({ isPerfect, clearRate }: ClearRateTextProps) => {
   return <span className={cn(isPerfect && ["text-perfect", "outline-text"])}>{clearRate.toFixed(1)}%</span>;
 };
-
-export default ClearRateText;

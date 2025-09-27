@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../_lib/atoms";
 
-const SearchInput = () => {
+export const SearchInput = () => {
   const searchParams = useSearchParams();
   const [keyword, setKeyword] = useState(searchParams?.get("keyword") || "");
   const isSearching = useIsSearchingState();
@@ -57,5 +57,3 @@ const SearchInput = () => {
     </form>
   );
 };
-
-export default SearchInput;

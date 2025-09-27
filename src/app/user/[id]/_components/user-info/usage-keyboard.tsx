@@ -2,7 +2,7 @@ interface KeyBoardProps {
   keyboard: string;
 }
 
-const KeyBoard = ({ keyboard }: KeyBoardProps) => {
+export const KeyBoard = ({ keyboard }: KeyBoardProps) => {
   if (!keyboard) {
     return <p>使用キーボードは未設定です</p>;
   }
@@ -14,5 +14,3 @@ const KeyBoard = ({ keyboard }: KeyBoardProps) => {
     </div>
   );
 };
-
-export default KeyBoard;

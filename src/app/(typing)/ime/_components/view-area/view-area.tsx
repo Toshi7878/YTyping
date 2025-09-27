@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useInputTextarea, usePlayer, useUserStats } from "../../_lib/atoms/read-atoms";
 import { useMapState, useSceneState } from "../../_lib/atoms/state-atoms";
-import ResultScore from "./end/result-score";
-import LyricsContainer from "./play/lyrics-container";
+import { ResultScore } from "./end/result-score";
+import { LyricsContainer } from "./play/lyrics-container";
 
-const ViewArea = () => {
+export const ViewArea = () => {
   const { readPlayer } = usePlayer();
   const { readInputTextarea } = useInputTextarea();
   const scene = useSceneState();
@@ -109,5 +109,3 @@ const SceneView = () => {
     </div>
   );
 };
-
-export default ViewArea;

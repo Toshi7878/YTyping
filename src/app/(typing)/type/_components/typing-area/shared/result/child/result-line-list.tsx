@@ -5,9 +5,9 @@ import { usePlayer, useResultCards } from "@/app/(typing)/type/_lib/atoms/ref-at
 import { useMapState, useSceneGroupState, useSetLineSelectIndex } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/move-line";
 import type { ResultData } from "@/server/drizzle/validator/result";
-import OptimizedResultCard from "./optimized-result-card";
+import { OptimizedResultCard } from "./optimized-result-card";
 
-function ResultLineList() {
+export const ResultLineList = () => {
   const map = useMapState();
 
   const sceneGroup = useSceneGroupState();
@@ -104,6 +104,4 @@ function ResultLineList() {
       })}
     </div>
   );
-}
-
-export default ResultLineList;
+};

@@ -27,7 +27,7 @@ interface YouTubePlayerProps {
   videoId?: string;
 }
 
-const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerProps) => {
+export const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerProps) => {
   const videoId = useVideoIdState();
   const onReady = useYTReadyEvent();
   const onPlay = useYTPlayEvent();
@@ -126,5 +126,3 @@ const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerProps) =
     </div>
   );
 };
-
-export default YouTubePlayer;

@@ -19,13 +19,13 @@ import { useBreakPoint } from "@/lib/use-break-point";
 import { cn } from "@/lib/utils";
 import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
-import HotKeySelectFields from "./options/hot-key";
-import UserSoundEffectCheckbox from "./options/sound-effect";
-import UserTimeOffsetChange from "./options/time-offset";
+import { HotKeySelectFields } from "./options/hot-key";
+import { UserSoundEffectCheckbox } from "./options/sound-effect";
+import { UserTimeOffsetChange } from "./options/time-offset";
 import { UserWordOptions } from "./options/word-options";
 import { UserWordScrollChange } from "./options/word-scroll";
 
-const SettingPopover = () => {
+export const SettingPopover = () => {
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.userOption.updateTypeOptions.mutationOptions());
   const { isMdScreen } = useBreakPoint();
@@ -200,5 +200,3 @@ const UserNextDisplayRadioButton = () => {
     />
   );
 };
-
-export default SettingPopover;

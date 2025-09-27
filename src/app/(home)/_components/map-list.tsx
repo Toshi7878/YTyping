@@ -3,14 +3,14 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
-import MapInfo from "@/components/shared/map-info/map-info";
+import { MapLeftThumbnail } from "@/components/shared/map-card-thumbnail";
+import { MapInfo } from "@/components/shared/map-info/map-info";
 import { CardWithContent } from "@/components/ui/card";
-import Spinner from "@/components/ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { useMapListQueryOptions } from "../../../utils/queries/map-list.queries";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 
-const MapList = () => {
+export const MapList = () => {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingState();
   const setIsSearchingAtom = useSetIsSearching();
@@ -52,5 +52,3 @@ const MapList = () => {
     </section>
   );
 };
-
-export default MapList;

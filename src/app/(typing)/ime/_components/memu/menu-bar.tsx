@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import type { ComponentProps } from "react";
-import VolumeRange from "@/components/shared/volume-range";
+import { VolumeRange } from "@/components/shared/volume-range";
 import { Button } from "@/components/ui/button";
 import start from "../../_img/control.png";
 import gear from "../../_img/gear.png";
@@ -13,13 +13,13 @@ import trophy from "../../_img/trophy.png";
 import { usePlayer } from "../../_lib/atoms/read-atoms";
 
 import { useResultDialogDisclosure, useSceneState } from "../../_lib/atoms/state-atoms";
-import useSceneControl from "../../_lib/hooks/scene-control";
-import ResultDialog from "./result-dialog";
-import SettingPopover from "./setting-popover";
+import { useSceneControl } from "../../_lib/hooks/scene-control";
+import { ResultDialog } from "./result-dialog";
+import { SettingPopover } from "./setting-popover";
 
 export const ICON_SIZE = "16";
 
-const MenuBar = () => {
+export const MenuBar = () => {
   const { id: mapId } = useParams();
   const { readPlayer } = usePlayer();
   const { handleStart, handleEnd } = useSceneControl();
@@ -74,5 +74,3 @@ const MenuButton = ({ image, title, onClick, ...props }: MenuButtonProps & Compo
     </Button>
   );
 };
-
-export default MenuBar;

@@ -11,7 +11,7 @@ interface MainProviderProps {
   userAgent: string;
 }
 
-const MainProvider = ({ children, userAgent }: MainProviderProps) => {
+export const MainProvider = ({ children, userAgent }: MainProviderProps) => {
   useClearSelectionOnNavigate();
   const { message, isLoading, hideSpinner } = useGlobalLoadingState();
 
@@ -23,5 +23,3 @@ const MainProvider = ({ children, userAgent }: MainProviderProps) => {
     </LoadingOverlayProvider>
   );
 };
-
-export default MainProvider;

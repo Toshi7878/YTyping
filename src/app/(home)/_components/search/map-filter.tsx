@@ -12,7 +12,7 @@ import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { cn } from "@/lib/utils";
 import { PARAM_NAME } from "@/utils/queries/search-params/map-list";
 
-const MapFilter = () => {
+export const MapFilter = () => {
   const { data: session } = useSession();
   const isLogin = !!session?.user?.id;
   return (
@@ -22,8 +22,6 @@ const MapFilter = () => {
     </div>
   );
 };
-
-export default MapFilter;
 
 const USER_FILTER_MENU = {
   name: PARAM_NAME.filter,

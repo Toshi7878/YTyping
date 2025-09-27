@@ -11,11 +11,11 @@ import { useInteractJS } from "@/app/(typing)/type/_lib/hooks/use-interact-js";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CHAR_POINT } from "@/utils/build-map/build-map";
-import ResultCardContent from "./child/result-card-body";
-import ResultCardFooter from "./child/result-card-footer";
-import ResultCardHeader from "./child/result-card-header";
+import { ResultCardContent } from "./child/result-card-body";
+import { ResultCardFooter } from "./child/result-card-footer";
+import { ResultCardHeader } from "./child/result-card-header";
 
-const PracticeLineCard = () => {
+export const PracticeLineCard = () => {
   const map = useMapState();
   const speedData = usePlaySpeedState();
   const lineSelectIndex = useLineSelectIndexState();
@@ -98,5 +98,3 @@ const PracticeLineCard = () => {
     </Card>
   );
 };
-
-export default PracticeLineCard;

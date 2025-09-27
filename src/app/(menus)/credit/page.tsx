@@ -1,5 +1,5 @@
 import { CardWithContent } from "@/components/ui/card";
-import TextLink from "@/components/ui/text-link";
+import { TextLink } from "@/components/ui/text-link";
 import { H2, H3, H5, Small } from "@/components/ui/typography";
 
 export default function Page() {

@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/global-atoms";
 
-const PreviewYouTubePlayer = () => {
+// biome-ignore lint/style/noDefaultExport: <dynamic importを使うため>
+export default function PreviewYouTubePlayer() {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
 
   const volume = useVolumeState();
@@ -50,7 +51,7 @@ const PreviewYouTubePlayer = () => {
       onPlay={onPlay}
     />
   );
-};
+}
 
 const usePreviewYouTubeKeyDown = () => {
   const setPreviewVideo = useSetPreviewVideo();
@@ -61,5 +62,3 @@ const usePreviewYouTubeKeyDown = () => {
     }
   };
 };
-
-export default PreviewYouTubePlayer;

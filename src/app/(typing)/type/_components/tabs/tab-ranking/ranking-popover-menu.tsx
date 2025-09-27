@@ -21,7 +21,7 @@ interface RankingMenuProps {
   hasClapped: boolean;
   onOpenChange?: (open: boolean) => void;
 }
-const RankingPopoverContent = ({
+export const RankingPopoverContent = ({
   resultId,
   userId,
   resultUpdatedAt,
@@ -87,5 +87,3 @@ const RankingPopoverContent = ({
     </PopoverContent>
   );
 };
-
-export default RankingPopoverContent;

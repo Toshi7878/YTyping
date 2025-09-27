@@ -1,6 +1,6 @@
 import { useChangeCSSCountState, useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 
-const ChangeCSS = () => {
+export const ChangeCSS = () => {
   const map = useMapState();
   const changeCSSCount = useChangeCSSCountState();
 
@@ -11,5 +11,3 @@ const ChangeCSS = () => {
 
   return <style>{changeCSS}</style>;
 };
-
-export default ChangeCSS;

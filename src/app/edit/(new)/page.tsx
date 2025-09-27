@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import CreatedVideoMapList from "@/components/shared/created-video-map-list";
-import EditProvider from "../_components/client-provider";
-import Content from "../_components/edit-content";
+import { CreatedVideoMapList } from "@/components/shared/created-video-map-list";
+import { EditProvider } from "../_components/client-provider";
+import { Content } from "../_components/content";
 
 export const metadata: Metadata = {
   title: `Edit New Map - YTyping`,

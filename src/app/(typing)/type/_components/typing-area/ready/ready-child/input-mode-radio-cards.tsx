@@ -5,7 +5,7 @@ import type { InputMode } from "@/app/(typing)/type/_lib/type";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { cn } from "@/lib/utils";
 
-function ReadyInputModeRadioCards() {
+export const ReadyInputModeRadioCards = () => {
   const options: { value: InputMode; label: string }[] = [
     { value: "roma", label: "ローマ字入力" },
     { value: "kana", label: "かな入力" },
@@ -45,6 +45,4 @@ function ReadyInputModeRadioCards() {
       })}
     </RadioGroup>
   );
-}
-
-export default ReadyInputModeRadioCards;
+};

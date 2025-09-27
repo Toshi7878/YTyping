@@ -12,7 +12,7 @@ interface ImeTypeProviderProps {
   userImeTypingOptions: RouterOutPuts["userOption"]["getUserImeTypingOptions"];
 }
 
-const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProps) => {
+export const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProps) => {
   const imeTypeAtomStore = getImeTypeAtomStore();
 
   useEffect(() => {
@@ -32,5 +32,3 @@ const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProp
 
   return <JotaiProvider store={imeTypeAtomStore}>{children}</JotaiProvider>;
 };
-
-export default ImeTypeProvider;

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useLikeMutationMapInfo } from "@/utils/mutations/like.mutations";
 
-const LikeIconButton = () => {
+export const LikeIconButton = () => {
   const { id: mapId } = useParams<{ id: string }>();
   const trpc = useTRPC();
   const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
@@ -34,5 +34,3 @@ const LikeIconButton = () => {
     </TooltipWrapper>
   );
 };
-
-export default LikeIconButton;

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
-import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
+import { MapLeftThumbnail } from "@/components/shared/map-card-thumbnail";
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -8,7 +8,11 @@ import type { RouterOutPuts } from "@/server/api/trpc";
 import { nolink } from "@/utils/no-link";
 import { ResultStatus } from "./child/result-status";
 
-const ResultCardContent = ({ result }: { result: RouterOutPuts["result"]["usersResultList"]["items"][number] }) => {
+export const ResultCardContent = ({
+  result,
+}: {
+  result: RouterOutPuts["result"]["usersResultList"]["items"][number];
+}) => {
   return (
     <div className="flex w-full items-center gap-4 py-6">
       <Badge
@@ -52,5 +56,3 @@ function MapInfo({ map, className, ...rest }: MapInfoProps) {
     </div>
   );
 }
-
-export default ResultCardContent;

@@ -1,20 +1,20 @@
 "use client";
 import Link from "next/link";
-import LikeCountIcon from "@/components/shared/map-count/like-count";
-import RankingCount from "@/components/shared/map-count/ranking-count";
+import { LikeCountIcon } from "@/components/shared/map-count/like-count";
+import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
-import DateDistanceText from "../text/date-distance-text";
-import UserNameLinkText from "../text/user-name-link-text";
+import { DateDistanceText } from "../text/date-distance-text";
+import { UserNameLinkText } from "../text/user-name-link-text";
 
 interface MapInfoProps {
   map: RouterOutPuts["mapList"]["getList"]["maps"][number];
 }
 
-function MapInfo({ map }: MapInfoProps) {
+export const MapInfo = ({ map }: MapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
@@ -45,7 +45,7 @@ function MapInfo({ map }: MapInfoProps) {
       </div>
     </div>
   );
-}
+};
 
 const MapInfoBottom = ({ map }: MapInfoProps) => {
   return (
@@ -84,5 +84,3 @@ const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
     </small>
   );
 };
-
-export default MapInfo;

@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import MapLeftThumbnail from "@/components/shared/map-card-thumbnail";
-import CompactMapInfo from "@/components/shared/map-info/compact-map-info";
+import { MapLeftThumbnail } from "@/components/shared/map-card-thumbnail";
+import { CompactMapInfo } from "@/components/shared/map-info/compact-map-info";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
@@ -13,9 +13,9 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table/tab
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useOnlineUsersState } from "@/lib/global-atoms";
 import { useTRPC } from "@/trpc/provider";
-import useActiveUsers from "./use-active-user";
+import { useActiveUsers } from "./use-active-user";
 
-const ActiveUsersSheet = () => {
+export const ActiveUsersSheet = () => {
   useActiveUsers();
   const [open, setOpen] = useState(false);
   const onlineUsers = useOnlineUsersState();
@@ -87,5 +87,3 @@ const ActiveUsersSheet = () => {
     </Sheet>
   );
 };
-
-export default ActiveUsersSheet;

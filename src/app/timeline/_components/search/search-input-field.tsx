@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { useSetSearchParams } from "../../_lib/hooks/use-set-search-params";
 
-const SearchInputs = () => {
+export const SearchInputs = () => {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
@@ -75,5 +75,3 @@ const SearchInputs = () => {
     </div>
   );
 };
-
-export default SearchInputs;

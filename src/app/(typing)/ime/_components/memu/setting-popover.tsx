@@ -20,7 +20,7 @@ interface SettingPopoverProps {
   triggerButton: ReactNode;
 }
 
-const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
+export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
   const trpc = useTRPC();
   const updateImeTypingOptions = useMutation(trpc.userOption.updateImeTypeOptions.mutationOptions());
   const queryClient = useQueryClient();
@@ -157,5 +157,3 @@ const MainSettingTab = () => {
     </div>
   );
 };
-
-export default SettingPopover;

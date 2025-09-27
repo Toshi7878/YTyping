@@ -5,7 +5,7 @@ import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-tabl
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import Spinner from "../spinner";
+import { Spinner } from "../spinner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 
 interface DataTableProps<TData, TValue> {

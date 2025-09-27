@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";
 
-const BottomButtons = () => {
+export const BottomButtons = () => {
   const isYTStarted = useYTStartedState();
   const sceneGroup = useSceneGroupState();
   const isReady = sceneGroup === "Ready";
@@ -126,5 +126,3 @@ const RetryButton = () => {
     />
   );
 };
-
-export default BottomButtons;

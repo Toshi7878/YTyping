@@ -14,7 +14,13 @@ interface ResultCardHeaderProps {
   lineSpeed: number;
 }
 
-function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSpeed }: ResultCardHeaderProps) {
+export const ResultCardHeader = ({
+  lineNotes,
+  lineIndex,
+  lineInputMode,
+  lineKpm,
+  lineSpeed,
+}: ResultCardHeaderProps) => {
   const map = useMapState() as BuildMap;
 
   const inputModeText = lineInputMode === "roma" ? "(ローマ字)" : "(かな)";
@@ -36,6 +42,4 @@ function ResultCardHeader({ lineNotes, lineIndex, lineInputMode, lineKpm, lineSp
       </TooltipWrapper>
     </CardHeader>
   );
-}
-
-export default ResultCardHeader;
+};

@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useSendUserStats } from "@/app/(typing)/type/_lib/hooks/playing/send-user-stats";
 import { cn } from "@/lib/utils";
-import EndButtonContainer from "./end-child/end-button-container";
-import EndText from "./end-child/end-text";
+import { EndButtonContainer } from "./end-child/end-button-container";
+import { EndText } from "./end-child/end-text";
 
 interface EndProps {
   className?: string;
 }
 
-const End = ({ className }: EndProps) => {
+export const EndScene = ({ className }: EndProps) => {
   const { sendTypingStats } = useSendUserStats();
 
   useEffect(() => {
@@ -22,5 +22,3 @@ const End = ({ className }: EndProps) => {
     </div>
   );
 };
-
-export default End;

@@ -2,7 +2,7 @@ import parse from "html-react-parser";
 import { useLyricsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
 
-const Lyrics = () => {
+export const Lyrics = () => {
   const lyrics = useLyricsState();
   const userOptionsAtom = useUserTypingOptionsState();
 
@@ -23,5 +23,3 @@ const Lyrics = () => {
     </div>
   );
 };
-
-export default Lyrics;

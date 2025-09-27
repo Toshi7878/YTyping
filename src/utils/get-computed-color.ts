@@ -82,13 +82,3 @@ export {
   getTailwindColor,
   hasCSSVariable,
 };
-
-// デフォルトエクスポート
-export default {
-  getCSSVariable,
-  getTailwindColor,
-  getMultipleCSSVariables,
-  getAllTailwindVariables,
-  hasCSSVariable,
-  getComputedColors,
-};

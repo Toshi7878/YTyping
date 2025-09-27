@@ -1,9 +1,9 @@
-import MapTable from "./map-table/map-table";
-import EditTabs from "./tabs/edit-tabs";
+import { MapTable } from "./map-table/map-table";
+import { EditTabs } from "./tabs/edit-tabs";
 import { TimeRangeAndSpeedChange } from "./time-range-and-speed-change";
-import YouTubePlayer from "./youtube-player";
+import { YouTubePlayer } from "./youtube-player";
 
-function Content({ videoId }: { videoId?: string }) {
+export const Content = ({ videoId }: { videoId?: string }) => {
   return (
     <div className="mx-auto max-w-screen-lg xl:max-w-screen-xl">
       <section className="flex flex-col gap-2 lg:flex-row lg:gap-6">
@@ -15,6 +15,4 @@ function Content({ videoId }: { videoId?: string }) {
       <MapTable />
     </div>
   );
-}
-
-export default Content;
+};

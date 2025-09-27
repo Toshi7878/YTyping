@@ -19,12 +19,10 @@ const spinnerVariants = cva("border-muted-foreground/80 border-t-primary animate
 
 interface SpinnerProps extends React.ComponentPropsWithRef<"div">, VariantProps<typeof spinnerVariants> {}
 
-const Spinner = ({ size, className, ...rest }: SpinnerProps) => {
+export const Spinner = ({ size, className, ...rest }: SpinnerProps) => {
   return (
     <div className={cn("flex justify-center py-8", className)} {...rest}>
       <div className={spinnerVariants({ size })} />
     </div>
   );
 };
-
-export default Spinner;

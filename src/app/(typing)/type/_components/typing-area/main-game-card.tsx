@@ -2,17 +2,18 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_lib/atoms/state-atoms";
-import End from "./end/end-scene";
-import Playing from "./playing/playing-scene";
-import Ready from "./ready/ready-scene";
-import BottomButtons from "./shared/bottom-child/bottom-buttons";
-import SkipAndTimeDisplay from "./shared/bottom-child/skip-and-time-display";
-import PracticeLineCard from "./shared/result/child/practice-line-card";
-import ResultDrawer from "./shared/result/result-drawer";
-import TimeProgress from "./shared/time-progress";
-import GameStatusHeader from "./shared/top-child/game-status-header";
+import { EndScene } from "./end/end-scene";
+import { PlayingScene } from "./playing/playing-scene";
+import { ReadyScene } from "./ready/ready-scene";
 
-function MainGameCard({ className }: { className?: string }) {
+import { BottomButtons } from "./shared/bottom-child/bottom-buttons";
+import { SkipAndTimeDisplay } from "./shared/bottom-child/skip-and-time-display";
+import { PracticeLineCard } from "./shared/result/child/practice-line-card";
+import { ResultDrawer } from "./shared/result/result-drawer";
+import { TimeProgress } from "./shared/time-progress";
+import { GameStatusHeader } from "./shared/top-child/game-status-header";
+
+export const MainGameCard = ({ className }: { className?: string }) => {
   return (
     <Card className={cn("typing-card block p-0", className)} id="typing_card">
       <GameCardHeader className="mx-3 block py-0" />
@@ -20,7 +21,7 @@ function MainGameCard({ className }: { className?: string }) {
       <GameCardFooter className="mx-3 flex-col py-0 select-none" />
     </Card>
   );
-}
+};
 
 const GameCardHeader = ({ className }: { className?: string }) => {
   return (
@@ -47,11 +48,11 @@ const GameCardContent = ({ className }: TypingCardBodyProps) => {
   return (
     <CardContent className={className}>
       {isReady ? (
-        <Ready className={minHeight} />
+        <ReadyScene className={minHeight} />
       ) : isPlayed ? (
-        <Playing className={minHeight} />
+        <PlayingScene className={minHeight} />
       ) : (
-        <End className={minHeight} />
+        <EndScene className={minHeight} />
       )}
 
       {(isPlayed || sceneGroup === "End") && (
@@ -74,5 +75,3 @@ const GameCardFooter = ({ className }: { className?: string }) => {
     </CardFooter>
   );
 };
-
-export default MainGameCard;

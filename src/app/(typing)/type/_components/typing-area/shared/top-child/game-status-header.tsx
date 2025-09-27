@@ -6,9 +6,9 @@ import {
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
-import PlayingNotify from "./playing-notify";
+import { PlayingNotify } from "./playing-notify";
 
-const GameStatusHeader = () => {
+export const GameStatusHeader = () => {
   const sceneGroup = useSceneGroupState();
   const isYTStarted = useYTStartedState();
 
@@ -56,5 +56,3 @@ const LineRemainTime = ({ className }: { className: string }) => {
   const displayLineRemainTime = useLineRemainTimeState();
   return <span className={className}>{displayLineRemainTime.toFixed(1)}</span>;
 };
-
-export default GameStatusHeader;

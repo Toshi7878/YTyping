@@ -12,14 +12,14 @@ interface SuggestionTagsProps {
   geminiTags: string[];
 }
 
-export default function SuggestionTags({ isGeminiLoading, geminiTags }: SuggestionTagsProps) {
+export const SuggestionTags = ({ isGeminiLoading, geminiTags }: SuggestionTagsProps) => {
   return (
     <div className="flex flex-col gap-5">
       <TemplateTags />
       <GeminiSuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiTags} />
     </div>
   );
-}
+};
 
 interface GeminiTagSuggestionsProps {
   isGeminiLoading: boolean;

@@ -21,7 +21,7 @@ interface YouTubePlayerProps {
   style: CSSProperties;
 }
 
-const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) => {
+export const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) => {
   const ytReadyEvent = useYTReadyEvent();
   const ytPlayEvent = useYTPlayEvent();
   const ytPauseEvent = useYTPauseEvent();
@@ -96,5 +96,3 @@ const YouTubePlayer = ({ videoId, className = "", style }: YouTubePlayerProps) =
     />
   );
 };
-
-export default YouTubePlayer;

@@ -1,11 +1,11 @@
 import { usePlayer } from "@/app/edit/_lib/atoms/read-atoms";
-import VolumeRange from "@/components/shared/volume-range";
+import { VolumeRange } from "@/components/shared/volume-range";
 import { CardWithContent } from "@/components/ui/card";
-import AllTimeAdjust from "./all-time-adjust-input-field";
-import ConvertOptionButtons from "./convert-option-buttons";
-import LrcImportButton from "./lrc-import-button";
+import { AllTimeAdjust } from "./all-time-adjust-input-field";
+import { ConvertOptionButtons } from "./convert-option-buttons";
+import { LrcImportButton } from "./lrc-import-button";
 
-const TabSettings = () => {
+export const SettingsCard = () => {
   const { readPlayer } = usePlayer();
 
   return (
@@ -66,5 +66,3 @@ const ShortCutKeyList = () => {
     </section>
   );
 };
-
-export default TabSettings;

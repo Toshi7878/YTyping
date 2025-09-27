@@ -47,7 +47,7 @@ const ActiveLikeCountButton = ({ hasLiked, likeCount, mapId }: LikeCountIconProp
   );
 };
 
-const LikeCountIcon = ({ mapId, hasLiked, likeCount }: LikeCountIconProps) => {
+export const LikeCountIcon = ({ mapId, hasLiked, likeCount }: LikeCountIconProps) => {
   const { data: session } = useSession();
 
   return (
@@ -60,5 +60,3 @@ const LikeCountIcon = ({ mapId, hasLiked, likeCount }: LikeCountIconProps) => {
     </div>
   );
 };
-
-export default LikeCountIcon;

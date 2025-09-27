@@ -12,7 +12,7 @@ interface ResultToolTipTextProps {
   updatedAt: Date;
 }
 
-const ResultToolTipText = ({
+export const ResultToolTipText = ({
   typeCounts,
   otherStatus,
   isPerfect,
@@ -90,7 +90,7 @@ interface TypeCountResultProps {
   typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"];
 }
 
-const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
+export const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
   const { romaType, kanaType, flickType, englishType, numType, spaceType, symbolType } = typeCounts;
   const types = [
     { label: "ローマ字", value: romaType },
@@ -125,5 +125,3 @@ const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
     </div>
   );
 };
-
-export default ResultToolTipText;

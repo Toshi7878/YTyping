@@ -6,7 +6,7 @@ import { useNotifyState, useSceneState, useSetNotify } from "@/app/(typing)/type
 
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
 
-const PlayingNotify = () => {
+export const PlayingNotify = () => {
   const notify = useNotifyState();
   const setNotify = useSetNotify();
   const scene = useSceneState();
@@ -87,5 +87,3 @@ const PlayingNotify = () => {
     </div>
   );
 };
-
-export default PlayingNotify;

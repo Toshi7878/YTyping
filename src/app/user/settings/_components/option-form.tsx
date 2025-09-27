@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import type z from "zod";
 import { CheckboxFormField } from "@/components/ui/checkbox/checkbox-form-field";
 import { Form } from "@/components/ui/form";
-import SelectFormField from "@/components/ui/select/select-form-field";
+import { SelectFormField } from "@/components/ui/select/select-form-field";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { CreateUserOptionSchema } from "@/server/drizzle/validator/user-option";
 import { useTRPC } from "@/trpc/provider";

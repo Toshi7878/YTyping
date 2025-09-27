@@ -4,7 +4,7 @@ import { useInitializePlayScene } from "./reset";
 import { useTimerControls } from "./timer";
 import { useUpdateTypingStats } from "./update-typing-stats";
 
-const useSceneControl = () => {
+export const useSceneControl = () => {
   const { readPlayer } = usePlayer();
   const setScene = useSetScene();
   const initializePlayScene = useInitializePlayScene();
@@ -30,5 +30,3 @@ const useSceneControl = () => {
 
   return { handleStart, handleEnd };
 };
-
-export default useSceneControl;

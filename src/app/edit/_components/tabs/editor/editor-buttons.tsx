@@ -13,7 +13,7 @@ import {
 } from "@/app/edit/_lib/hooks/use-editor-button-events";
 import { Button } from "@/components/ui/button";
 
-const EditorButtons = () => {
+export const EditorButtons = () => {
   const isAddButtonDisabled = useIsAddBtnDisabledState();
   const isUpdateButtonDisabled = useIsUpdateBtnDisabledState();
   const isWordConverting = useIsWordConvertingState();
@@ -117,5 +117,3 @@ const EditorButtons = () => {
     </div>
   );
 };
-
-export default EditorButtons;

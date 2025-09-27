@@ -25,7 +25,7 @@ interface YouTubePlayerProps {
   className?: string;
 }
 
-const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
+export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
   const onReady = useOnReady();
   const onPlay = useOnPlay();
   const onPause = useOnPause();
@@ -142,5 +142,3 @@ const MobileCover = () => {
     />
   );
 };
-
-export default YouTubePlayer;

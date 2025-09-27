@@ -3,13 +3,13 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import Spinner from "@/components/ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { useResultListInfiniteQueryOptions } from "@/utils/queries/result-list.queries";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
-import ResultCard from "./result-card/result-card";
+import { ResultCard } from "./result-card/result-card";
 
-function UsersResultList() {
+export const UsersResultList = () => {
   const searchParams = useSearchParams();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     useResultListInfiniteQueryOptions(searchParams),
@@ -41,6 +41,4 @@ function UsersResultList() {
       {hasNextPage && <Spinner ref={ref} />}
     </section>
   );
-}
-
-export default UsersResultList;
+};

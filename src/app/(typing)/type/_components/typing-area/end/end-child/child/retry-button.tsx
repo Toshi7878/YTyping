@@ -12,7 +12,7 @@ interface RetryButtonProps {
   retryBtnRef: RefObject<HTMLButtonElement | null>;
 }
 
-const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: RetryButtonProps) => {
+export const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: RetryButtonProps) => {
   const scene = useSceneState();
   const retry = useRetry();
   const confirm = useConfirm();
@@ -51,5 +51,3 @@ const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: RetryButtonProps)
     </Button>
   );
 };
-
-export default RetryButton;

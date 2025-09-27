@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import type z from "zod";
 import { usePlayer, useSetPreventEditortabAutoFocus } from "@/app/edit/_lib/atoms/read-atoms";
 import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
-import useHasMapUploadPermission from "@/app/edit/_lib/hooks/use-has-map-upload-permission";
+import { useHasMapUploadPermission } from "@/app/edit/_lib/hooks/use-has-map-upload-permission";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -36,9 +36,9 @@ import {
   useVideoIdState,
 } from "../../../_lib/atoms/state-atoms";
 import { getThumbnailQuality } from "../../../_lib/ts/get-thumbail-quality";
-import SuggestionTags from "./suggestion-tags";
+import { SuggestionTags } from "./suggestion-tags";
 
-const MapInfoForm = () => {
+export const MapInfoFormCard = () => {
   const searchParams = useSearchParams();
   const mapId = usePathname().split("/")[2];
 
@@ -451,5 +451,3 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
     });
   };
 };
-
-export default MapInfoForm;

@@ -6,7 +6,7 @@ const MAX_TIME_OFFSET = 1;
 const MIN_TIME_OFFSET = -1;
 const TIME_OFFSET_STEP = 0.05;
 
-const UserTimeOffsetChange = () => {
+export const UserTimeOffsetChange = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { timeOffset: time_offset } = useUserTypingOptionsState();
 
@@ -25,5 +25,3 @@ const UserTimeOffsetChange = () => {
     />
   );
 };
-
-export default UserTimeOffsetChange;

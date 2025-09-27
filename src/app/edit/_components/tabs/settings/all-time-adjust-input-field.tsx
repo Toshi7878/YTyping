@@ -4,13 +4,13 @@ import { toast } from "sonner";
 import { useHistoryReducer } from "@/app/edit/_lib/atoms/history-reducer-atom";
 import { useMapReducer, useReadMap } from "@/app/edit/_lib/atoms/map-reducer-atom";
 import { useSetCanUpload } from "@/app/edit/_lib/atoms/state-atoms";
-import useTimeValidate from "@/app/edit/_lib/hooks/use-time-validate";
+import { useTimeValidate } from "@/app/edit/_lib/hooks/use-time-validate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { Label } from "@/components/ui/label";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 
-export default function AllTimeAdjust() {
+export const AllTimeAdjust = () => {
   const setCanUpload = useSetCanUpload();
   const [totalAdjustValue, setTotalAdjustValue] = useState("0");
   const readMap = useReadMap();
@@ -87,4 +87,4 @@ export default function AllTimeAdjust() {
       </form>
     </TooltipWrapper>
   );
-}
+};

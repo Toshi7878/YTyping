@@ -2,7 +2,7 @@ import parse from "html-react-parser";
 import { useNextLyricsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
 
-const NextLyrics = () => {
+export const NextLyrics = () => {
   const { lyrics, kpm } = useNextLyricsState();
 
   return (
@@ -24,5 +24,3 @@ const NextLyrics = () => {
     </div>
   );
 };
-
-export default NextLyrics;

@@ -1,17 +1,17 @@
 "use client";
-import LikeCountIcon from "@/components/shared/map-count/like-count";
-import RankingCount from "@/components/shared/map-count/ranking-count";
+import { LikeCountIcon } from "@/components/shared/map-count/like-count";
+import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { ResultBadgesMobile } from "./child/result-status";
-import ResultCardContent from "./result-card-content";
-import ResultCardHeader from "./result-card-header";
+import { ResultCardContent } from "./result-card-content";
+import { ResultCardHeader } from "./result-card-header";
 
 interface ResultCardProps {
   result: RouterOutPuts["result"]["usersResultList"]["items"][number];
 }
 
-function ResultCard({ result }: ResultCardProps) {
+export const ResultCard = ({ result }: ResultCardProps) => {
   const src =
     result.map.media.thumbnailQuality === "maxresdefault"
       ? `https://i.ytimg.com/vi_webp/${result.map.media.videoId}/maxresdefault.webp`
@@ -44,6 +44,4 @@ function ResultCard({ result }: ResultCardProps) {
       </CardFooter>
     </Card>
   );
-}
-
-export default ResultCard;
+};

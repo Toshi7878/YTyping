@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import LikeCountIcon from "@/components/shared/map-count/like-count";
-import RankingCount from "@/components/shared/map-count/ranking-count";
+import { LikeCountIcon } from "@/components/shared/map-count/like-count";
+import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { nolink } from "@/utils/no-link";
@@ -11,7 +11,7 @@ interface CompactMapCardProps {
   map: RouterOutPuts["mapList"]["getList"]["maps"][number];
 }
 
-function CompactMapInfo({ map }: CompactMapCardProps) {
+export const CompactMapInfo = ({ map }: CompactMapCardProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
@@ -34,7 +34,7 @@ function CompactMapInfo({ map }: CompactMapCardProps) {
       </Link>
     </div>
   );
-}
+};
 
 interface MapBadgesProps {
   map: RouterOutPuts["mapList"]["getList"]["maps"][number];
@@ -64,5 +64,3 @@ const MapBadges = ({ map }: MapBadgesProps) => {
     </div>
   );
 };
-
-export default CompactMapInfo;

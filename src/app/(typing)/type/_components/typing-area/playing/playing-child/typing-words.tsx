@@ -8,7 +8,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
 
-const TypingWords = () => {
+export const TypingWords = () => {
   const lineWord = useLineWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
@@ -139,5 +139,3 @@ const Word = ({
     </div>
   );
 };
-
-export default TypingWords;

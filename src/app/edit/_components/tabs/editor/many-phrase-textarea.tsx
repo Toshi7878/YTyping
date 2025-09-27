@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 
-const ManyPhraseTextarea = () => {
+export const ManyPhraseTextarea = () => {
   const manyPhrase = useManyPhraseState();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useHotkeys(
@@ -164,5 +164,3 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
     </TooltipWrapper>
   );
 };
-
-export default ManyPhraseTextarea;

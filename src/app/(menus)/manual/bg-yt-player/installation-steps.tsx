@@ -2,7 +2,7 @@
 import type { Route } from "next";
 import type { ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
-import TextLink from "@/components/ui/text-link";
+import { TextLink } from "@/components/ui/text-link";
 import { H6 } from "@/components/ui/typography";
 import { useUserAgent } from "@/lib/global-atoms";
 

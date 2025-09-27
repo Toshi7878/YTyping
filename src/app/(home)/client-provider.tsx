@@ -11,7 +11,7 @@ interface HomeClientProviderProps {
   children: React.ReactNode;
 }
 
-const HomeClientProvider = ({ children }: HomeClientProviderProps) => {
+export const HomeClientProvider = ({ children }: HomeClientProviderProps) => {
   const homeAtomStore = getHomeAtomStore();
   const searchParams = useSearchParams();
   const minRate = searchParams.get(PARAM_NAME.minRate);
@@ -32,5 +32,3 @@ const HomeClientProvider = ({ children }: HomeClientProviderProps) => {
 
   return <JotaiProvider store={homeAtomStore}>{children}</JotaiProvider>;
 };
-
-export default HomeClientProvider;

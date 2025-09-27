@@ -1,11 +1,10 @@
 import { CardWithContent } from "@/components/ui/card";
+import { AddTimeAdjust } from "./add-time-adjust";
+import { EditorButtons } from "./editor-buttons";
+import { EditorLineInput } from "./editor-input-field";
+import { ManyPhraseTextarea } from "./many-phrase-textarea";
 
-import AddTimeAdjust from "./add-time-adjust";
-import EditorButtons from "./editor-buttons";
-import EditorLineInput from "./editor-input-field";
-import ManyPhraseTextarea from "./many-phrase-textarea";
-
-const TabEditor = () => {
+export const EditorCard = () => {
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-1" }}>
       <EditorLineInput />
@@ -18,5 +17,3 @@ const TabEditor = () => {
     </CardWithContent>
   );
 };
-
-export default TabEditor;

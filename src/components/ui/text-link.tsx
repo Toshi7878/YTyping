@@ -9,7 +9,7 @@ interface TextLinkProps {
   className?: string;
 }
 
-const TextLink = ({ href, children, className, ...props }: TextLinkProps & ComponentProps<typeof Link>) => {
+export const TextLink = ({ href, children, className, ...props }: TextLinkProps & ComponentProps<typeof Link>) => {
   return (
     <Link
       href={href}
@@ -23,5 +23,3 @@ const TextLink = ({ href, children, className, ...props }: TextLinkProps & Compo
     </Link>
   );
 };
-
-export default TextLink;

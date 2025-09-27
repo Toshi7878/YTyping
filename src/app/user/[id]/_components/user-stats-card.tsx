@@ -13,7 +13,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import TypeActivity from "./user-stats/type-activity";
+import { TypeActivity } from "./user-stats/type-activity";
 
 const formatTime = (totalSeconds: number) => {
   const hours = Math.floor(totalSeconds / 3600);
@@ -26,7 +26,7 @@ interface UserStatsProps {
   userStats: RouterOutPuts["userStats"]["getUserStats"];
 }
 
-const UserStatsCard = ({ userStats }: UserStatsProps) => {
+export const UserStatsCard = ({ userStats }: UserStatsProps) => {
   const { id: userId } = useParams<{ id: string }>();
   const { data: session } = useSession();
   const userSearchParams = useSearchParams();
@@ -188,5 +188,3 @@ const InfoCard = ({ title, children, className }: InfoCardProps) => {
     </Card>
   );
 };
-
-export default UserStatsCard;

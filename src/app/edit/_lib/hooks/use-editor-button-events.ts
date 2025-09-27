@@ -19,8 +19,8 @@ import {
 import { useReadTimeOffsetState } from "../atoms/storage-atoms";
 import { useDeleteTopPhrase, usePickupTopPhrase } from "./many-phrase";
 import { mapTableScroll } from "./map-table-scroll";
-import useHasMapUploadPermission from "./use-has-map-upload-permission";
-import useTimeValidate from "./use-time-validate";
+import { useHasMapUploadPermission } from "./use-has-map-upload-permission";
+import { useTimeValidate } from "./use-time-validate";
 import { useWordConverter } from "./use-word-converter";
 
 export const useLineAddButtonEvent = () => {

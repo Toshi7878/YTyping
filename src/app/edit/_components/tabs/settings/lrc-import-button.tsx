@@ -6,7 +6,7 @@ import { useImportMapFile } from "@/app/edit/_lib/hooks/import-map-file";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
 
-export default function LrcImportButton() {
+export const LrcImportButton = () => {
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,4 +39,4 @@ export default function LrcImportButton() {
       </Button>
     </div>
   );
-}
+};

@@ -8,7 +8,7 @@ const MAX_TIME_OFFSET = -0.1;
 const MIN_TIME_OFFSET = -0.4;
 const TIME_OFFSET_STEP = 0.01;
 
-export default function AddTimeAdjust() {
+export const AddTimeAdjust = () => {
   const timeOffset = useTimeOffsetState();
   const setTimeOffset = useSetTimeOffset();
 
@@ -51,4 +51,4 @@ export default function AddTimeAdjust() {
       </div>
     </TooltipWrapper>
   );
-}
+};

@@ -1,15 +1,15 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TAB_NAMES, useSetTabName, useTabNameState } from "../../_lib/atoms/state-atoms";
-import TabIcons from "./tab-icon/tab-icons";
-import TabRanking from "./tab-ranking/ranking-table-card";
-import StatusCard from "./tab-status/status-table-card";
+import { TabIcons } from "./tab-icon/tab-icons";
+import { RankingTableCard } from "./tab-ranking/ranking-table-card";
+import { StatusCard } from "./tab-status/status-table-card";
 
 interface TabsAreaProps {
   className?: string;
 }
 
-export default function TabsArea({ className }: TabsAreaProps) {
+export const TabsArea = ({ className }: TabsAreaProps) => {
   const tabName = useTabNameState();
   const setTabName = useSetTabName();
 
@@ -26,11 +26,11 @@ export default function TabsArea({ className }: TabsAreaProps) {
       </TabsContent>
 
       <TabsContent value="ランキング" className="tab-card">
-        <TabRanking className="h-72 md:h-56" />
+        <RankingTableCard className="h-72 md:h-56" />
       </TabsContent>
     </Tabs>
   );
-}
+};
 
 const TabLists = () => {
   return (

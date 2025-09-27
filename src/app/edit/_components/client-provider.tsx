@@ -9,14 +9,14 @@ import { useSetPreviewVideo } from "@/lib/global-atoms";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
-import useHasMapUploadPermission from "../_lib/hooks/use-has-map-upload-permission";
+import { useHasMapUploadPermission } from "../_lib/hooks/use-has-map-upload-permission";
 import { useTimerRegistration } from "../_lib/hooks/use-timer";
 
 interface EditProviderProps {
   children: React.ReactNode;
 }
 
-const EditProvider = ({ children }: EditProviderProps) => {
+export const EditProvider = ({ children }: EditProviderProps) => {
   const store = getEditAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
   const hasUploadPermission = useHasMapUploadPermission();
@@ -50,5 +50,3 @@ const EditProvider = ({ children }: EditProviderProps) => {
 
   return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };
-
-export default EditProvider;
