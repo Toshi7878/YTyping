@@ -77,7 +77,7 @@ export const TypingWords = () => {
   return (
     <div
       className={cn(
-        "word-font word-outline-text text-7xl leading-24 md:text-[2.6rem] md:leading-15",
+        "word-font word-outline-text text-7xl leading-24 md:text-[2.8rem] md:leading-15",
         isLineCompleted && "word-area-completed",
       )}
     >
