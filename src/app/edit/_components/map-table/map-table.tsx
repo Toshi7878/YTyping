@@ -147,7 +147,7 @@ export const MapTable = () => {
           return (
             <TooltipWrapper label={label} disabled={!label}>
               <div className="flex items-center gap-1">
-                <Play className="size-3.5 hidden xl:block relative top-[0.9px] text-muted-foreground group-hover:text-white" />
+                <Play className="size-3.5 hidden xl:block relative top-[1px] text-muted-foreground group-hover:text-white" />
                 <span>{row.original.time}</span>
               </div>
             </TooltipWrapper>
