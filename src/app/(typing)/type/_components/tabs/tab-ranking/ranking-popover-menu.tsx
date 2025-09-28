@@ -10,6 +10,7 @@ import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/sound-eff
 import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/use-result-play";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
 
@@ -19,16 +20,8 @@ interface RankingMenuProps {
   resultUpdatedAt: Date;
   name: string;
   hasClapped: boolean;
-  onOpenChange?: (open: boolean) => void;
 }
-export const RankingPopoverContent = ({
-  resultId,
-  userId,
-  resultUpdatedAt,
-  name,
-  hasClapped,
-  onOpenChange,
-}: RankingMenuProps) => {
+export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name, hasClapped }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
   const { iosActiveSound } = useSoundEffect();
@@ -56,7 +49,6 @@ export const RankingPopoverContent = ({
       });
     }
 
-    onOpenChange?.(false);
     setTabName("ステータス");
     writeGameUtilRefParams({ replayUserName: name });
 
@@ -67,24 +59,26 @@ export const RankingPopoverContent = ({
 
   return (
     <PopoverContent
-      onOpenAutoFocus={(event) => event.preventDefault()}
       side="bottom"
       align="start"
-      className="flex w-fit flex-col items-center px-0 py-2"
+      className="flex w-fit flex-col items-center px-0 py-2 [&>button]:w-full"
     >
-      <Button variant="ghost" className="w-full">
+      <Button variant="ghost">
         <Link href={`/user/${userId}`}>ユーザーページへ </Link>
       </Button>
 
-      <Button variant="ghost" className="w-full" onClick={handleReplayClick} disabled={sceneGroup === "Playing"}>
+      <Button variant="ghost" onClick={handleReplayClick} disabled={sceneGroup === "Playing"}>
         リプレイ再生
       </Button>
       {session ? (
         <Button
           variant="ghost"
           type="button"
-          className="w-full"
-          onClick={() => toggleClap.mutate({ resultId, newState: !hasClapped })}
+          className={cn(hasClapped && "hover:text-perfect text-perfect outline-text")}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleClap.mutate({ resultId, newState: !hasClapped });
+          }}
         >
           {hasClapped ? "拍手済み" : "記録に拍手"}
         </Button>

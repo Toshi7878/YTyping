@@ -19,6 +19,9 @@ export const ReadyScene = ({ className }: ReadyProps) => {
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {
+      const isOpenDialog = !!document.querySelector("[role='dialog']");
+      if (isOpenDialog) return;
+
       switch (event.code) {
         case "Enter": {
           const player = readPlayer();
