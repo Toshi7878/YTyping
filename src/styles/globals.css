@@ -186,7 +186,6 @@
     color-scheme: var(--color-scheme);
   }
 
-
   body {
     @apply bg-background text-foreground;
     scrollbar-gutter: stable;

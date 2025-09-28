@@ -9,7 +9,7 @@ import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { InputModeText } from "@/components/shared/text/input-mode-text";
 import { ResultToolTipText } from "@/components/shared/text/result-tooltip-text";
 import { CardWithContent } from "@/components/ui/card";
-import { Popover, PopoverAnchor, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverAnchor } from "@/components/ui/popover";
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";

@@ -2,7 +2,6 @@
 import { Provider as JotaiProvider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import type { ReactNode } from "react";
-import { useEffect } from "react";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { imeTypeOptionsAtom } from "../_lib/atoms/state-atoms";
 import { getImeTypeAtomStore } from "../_lib/atoms/store";
