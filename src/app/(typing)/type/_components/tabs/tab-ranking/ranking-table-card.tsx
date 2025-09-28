@@ -147,7 +147,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
         },
       },
     ];
-  }, [data, openPopoverIndex, toggleClap.isPending]);
+  }, [data, openPopoverIndex, toggleClap.isPending, session?.user?.id, toggleClap.mutate]);
 
   if (error) return <div>Error loading data</div>;
 
@@ -184,6 +184,9 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
 
           return (
             <TooltipWrapper
+              toolTipTriggerProps={{
+                onPointerDown: (event) => event.preventDefault(),
+              }}
               label={
                 <ResultToolTipText
                   typeCounts={typeCounts}
@@ -197,8 +200,9 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
               }
               side="bottom"
               align="end"
+              sideOffset={-12}
               delayDuration={0}
-              disabled={openPopoverIndex !== null && openPopoverIndex !== index}
+              onPointerDownOutside={(event) => event.preventDefault()}
               open={openPopoverIndex === null ? undefined : openPopoverIndex === index}
             >
               {children}
