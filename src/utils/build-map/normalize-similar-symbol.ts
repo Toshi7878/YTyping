@@ -5,6 +5,7 @@ export const normalizeSimilarSymbol = (text: string) => {
     .replaceAll("･", "・")
     .replaceAll("“", '"')
     .replaceAll("”", '"')
+    .replaceAll("’", "'")
     .replaceAll("〜", "～")
     .replaceAll("｢", "「")
     .replaceAll("｣", "」")
