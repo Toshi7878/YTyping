@@ -45,7 +45,7 @@ export const NotificationSheet = () => {
         </SheetTrigger>
       </TooltipWrapper>
 
-      <SheetContent side="right" className="sm:max-w-md">
+      <SheetContent side="right" className="block sm:max-w-md">
         <SheetHeader>
           <SheetTitle>通知</SheetTitle>
         </SheetHeader>
