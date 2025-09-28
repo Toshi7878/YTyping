@@ -66,7 +66,12 @@ export const RankingPopoverContent = ({
   };
 
   return (
-    <PopoverContent side="bottom" align="start" className="flex w-fit flex-col items-center">
+    <PopoverContent
+      onOpenAutoFocus={(event) => event.preventDefault()}
+      side="bottom"
+      align="start"
+      className="flex w-fit flex-col items-center px-0 py-2"
+    >
       <Button variant="ghost" className="w-full">
         <Link href={`/user/${userId}`}>ユーザーページへ </Link>
       </Button>
