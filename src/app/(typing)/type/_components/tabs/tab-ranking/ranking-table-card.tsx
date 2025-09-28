@@ -49,25 +49,26 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
         id: "rank",
         header: () => "順位",
         size: 10,
+
         cell: ({ row }) => {
           const { original: result, index } = row;
           const rank = index + 1;
           const isThisPopoverOpen = openPopoverIndex === index;
 
           return (
-            <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
-              <PopoverTrigger asChild>
-                <span className={cn("ml-1", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
-              </PopoverTrigger>
-              <PopoverAnchor />
-              <RankingPopoverContent
-                resultId={result.id}
-                userId={result.player.id}
-                resultUpdatedAt={result.updatedAt}
-                name={result.player.name ?? ""}
-                hasClapped={result.clap.hasClapped ?? false}
-              />
-            </Popover>
+            <>
+              <span className={cn("ml-1 pointer-events-none", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
+              <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
+                <PopoverAnchor />
+                <RankingPopoverContent
+                  resultId={result.id}
+                  userId={result.player.id}
+                  resultUpdatedAt={result.updatedAt}
+                  name={result.player.name ?? ""}
+                  hasClapped={result.clap.hasClapped ?? false}
+                />
+              </Popover>
+            </>
           );
         },
       },
@@ -84,7 +85,9 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
         cell: ({ row }) => {
           const { otherStatus } = row.original;
           const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
-          return <ClearRateText clearRate={otherStatus.clearRate} isPerfect={isPerfect} />;
+          return (
+            <ClearRateText clearRate={otherStatus.clearRate} isPerfect={isPerfect} className="pointer-events-none" />
+          );
         },
       },
       {
@@ -93,7 +96,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
         size: 110,
         cell: ({ row }) => {
           const { name } = row.original.player;
-          return <span className="truncate">{name}</span>;
+          return <span className="truncate pointer-events-none">{name}</span>;
         },
       },
       {
@@ -115,7 +118,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
         id: "time",
         header: () => "時間",
         size: 40,
-        cell: ({ row }) => <DateDistanceText date={row.original.updatedAt} />,
+        cell: ({ row }) => <DateDistanceText date={row.original.updatedAt} className="pointer-events-none" />,
       },
       {
         id: "clap",
