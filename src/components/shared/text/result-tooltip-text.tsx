@@ -25,63 +25,33 @@ export const ResultToolTipText = ({
   const { kpm, rkpm, kanaToRomaKpm, kanaToRomaRkpm } = typeSpeed;
 
   return (
-    <div className="min-w-36 space-y-3 p-4 text-xs md:min-w-48 md:text-base">
+    <div className="min-w-32 space-y-1 p-1 text-xs md:min-w-48 md:text-base">
       <TypeCountResult typeCounts={typeCounts} />
+      <Separator className="my-3" />
 
-      <Separator />
+      <LabelValue label="ミス数" value={`${miss} (${missRate}%)`} />
+      <LabelValue label="ロスト数" value={lost} />
+      <LabelValue label="最大コンボ" value={maxCombo} />
+      <LabelValue label="rkpm" value={rkpm} />
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span>ミス数</span>
-          <span>
-            {miss} <span>({missRate}%)</span>
-          </span>
-        </div>
+      {isKanaFlickTyped && kpm !== kanaToRomaKpm && (
+        <>
+          <LabelValue label="ﾛﾏ換算kpm" value={kanaToRomaKpm} />
+          {kanaToRomaRkpm > 0 && <LabelValue label="ﾛﾏ換算rkpm" value={kanaToRomaRkpm} />}
+        </>
+      )}
 
-        <div className="flex items-center justify-between">
-          <span>ロスト数</span>
-          <span>{lost}</span>
-        </div>
+      {playSpeed > 1 && <LabelValue label="倍速" value={playSpeed.toFixed(2)} />}
 
-        <div className="flex items-center justify-between">
-          <span>最大コンボ</span>
-          <span className={cn(isPerfect && "text-perfect outline-text")}>{maxCombo}</span>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span>rkpm</span>
-          <span>{rkpm}</span>
-        </div>
-
-        {isKanaFlickTyped && kpm !== kanaToRomaKpm && (
-          <div className="flex flex-col items-center justify-between md:flex-row">
-            <span>ローマ字換算kpm: </span>
-            <span>
-              {kanaToRomaKpm}
-              {kanaToRomaRkpm && <span>(rkpm:{kanaToRomaRkpm})</span>}
-            </span>
-          </div>
-        )}
-
-        {playSpeed > 1 && (
-          <div className="flex items-center justify-between">
-            <span>倍速</span>
-            <span>{playSpeed.toFixed(2)}x</span>
-          </div>
-        )}
-
-        <div className="flex items-center justify-between pt-2">
-          <span>日時</span>
-          <span>
-            {new Date(updatedAt).toLocaleString("ja-JP", {
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </span>
-        </div>
-      </div>
+      <LabelValue
+        label="日時"
+        value={new Date(updatedAt).toLocaleString("ja-JP", {
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      />
     </div>
   );
 };
@@ -105,23 +75,22 @@ export const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
   const total = types.reduce((sum, type) => sum + type.value, 0);
   const typesUsedCount = types.filter((type) => type.value > 0).length;
 
+  const hasMultipleTypes = typesUsedCount > 1;
+  const totalLabel = hasMultipleTypes ? "合計打数" : "打数";
   return (
-    <div className="space-y-1">
-      {types.map(
-        (type) =>
-          type.value > 0 && (
-            <div key={type.label} className="flex items-center justify-between">
-              <span>{type.label}</span>
-              <span>{type.value}</span>
-            </div>
-          ),
-      )}
-      {typesUsedCount > 1 && (
-        <div className="flex items-center justify-between pt-1">
-          <span>合計</span>
-          <span>{total}</span>
-        </div>
-      )}
+    <div className="space-y-2">
+      {hasMultipleTypes &&
+        types.map((type) => type.value > 0 && <LabelValue key={type.label} label={type.label} value={type.value} />)}
+      {<LabelValue label={totalLabel} value={total} />}
+    </div>
+  );
+};
+
+const LabelValue = ({ label, value }: { label: string; value: string | number }) => {
+  return (
+    <div className="flex items-center justify-between">
+      <span>{label}</span>
+      <span>{value}</span>
     </div>
   );
 };
