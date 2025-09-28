@@ -65,11 +65,11 @@ const useFetchMorph = () => {
         processedSentence = processedSentence.replace(regex, reading);
       }
 
-      const convertedWord = await queryClient.ensureQueryData(
+      const tokenizedWord = await queryClient.ensureQueryData(
         morphQueries.tokenizeSentence({ sentence: processedSentence }),
       );
 
-      const result = await replaceReadingWithCustomDic(convertedWord);
+      const result = await replaceReadingWithCustomDic(tokenizedWord);
       return result.readings.join("");
     } catch {
       const message = session ? undefined : "読み変換機能はログイン後に使用できます";

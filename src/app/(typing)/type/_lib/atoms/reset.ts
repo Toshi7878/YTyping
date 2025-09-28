@@ -11,6 +11,7 @@ import { useSetSpeed as useSetPlaySpeed } from "./speed-reducer-atoms";
 import {
   useClearLineResults,
   useResetPlayingState,
+  useSetCombo,
   useSetCurrentLine,
   useSetGameUtilParams,
   useSetMap,
@@ -32,7 +33,9 @@ export const usePathChangeAtomReset = () => {
   const { writePlayer } = usePlayer();
   const resetPlayingState = useResetPlayingState();
   const clearAllLineResults = useClearLineResults();
+  const setCombo = useSetCombo();
   return () => {
+    setCombo(0);
     writePlayer(null);
     resetCurrentLine();
     clearAllLineResults();
