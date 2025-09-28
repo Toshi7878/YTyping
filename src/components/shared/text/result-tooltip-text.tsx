@@ -7,7 +7,6 @@ interface ResultToolTipTextProps {
   otherStatus: RouterOutPuts["result"]["getMapRanking"][number]["otherStatus"];
   typeSpeed: RouterOutPuts["result"]["getMapRanking"][number]["typeSpeed"];
   missRate: string;
-  isPerfect: boolean;
   isKanaFlickTyped: boolean;
   updatedAt: Date;
 }
@@ -15,7 +14,6 @@ interface ResultToolTipTextProps {
 export const ResultToolTipText = ({
   typeCounts,
   otherStatus,
-  isPerfect,
   missRate,
   typeSpeed,
   isKanaFlickTyped,
@@ -46,6 +44,7 @@ export const ResultToolTipText = ({
       <LabelValue
         label="日時"
         value={new Date(updatedAt).toLocaleString("ja-JP", {
+          year: "numeric",
           month: "2-digit",
           day: "2-digit",
           hour: "2-digit",

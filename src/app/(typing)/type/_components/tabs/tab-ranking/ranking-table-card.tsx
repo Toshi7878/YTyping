@@ -196,7 +196,6 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
                   otherStatus={otherStatus}
                   missRate={missRate}
                   typeSpeed={typeSpeed}
-                  isPerfect={isPerfect}
                   isKanaFlickTyped={isKanaFlickTyped}
                   updatedAt={row.updatedAt}
                 />
