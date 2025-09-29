@@ -2,7 +2,7 @@
 
 import { Tooltip as TooltipPrimitive } from "radix-ui";
 import type * as React from "react";
-
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 function TooltipProvider({ delayDuration = 0, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
@@ -63,8 +63,9 @@ const TooltipWrapper = ({
   toolTipTriggerProps,
   ...props
 }: TooltipWrapperProps & React.ComponentProps<typeof TooltipPrimitive.Content>) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Tooltip delayDuration={delayDuration} open={disabled ? false : open}>
+    <Tooltip delayDuration={delayDuration} open={disabled ? false : (open ?? isOpen)} onOpenChange={setIsOpen}>
       <TooltipTrigger
         asChild
         onPointerEnter={disabled ? (e) => e.preventDefault() : undefined}
@@ -75,7 +76,9 @@ const TooltipWrapper = ({
       >
         {children}
       </TooltipTrigger>
-      <TooltipContent {...props}>{label}</TooltipContent>
+      <TooltipContent {...props} onMouseEnter={() => setIsOpen(false)}>
+        {label}
+      </TooltipContent>
     </Tooltip>
   );
 };
