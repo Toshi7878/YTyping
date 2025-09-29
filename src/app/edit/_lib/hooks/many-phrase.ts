@@ -8,7 +8,7 @@ export const usePickupTopPhrase = () => {
   const lineDispatch = useLineReducer();
   const { readPlayer } = usePlayer();
   const readSelectLine = useReadLine();
-  const setWordState = useSetWord();
+  const setWord = useSetWord();
   const readEditUtils = useReadEditUtils();
   const readHistory = useReadEditHistory();
   const historyDispatch = useHistoryReducer();
@@ -31,7 +31,7 @@ export const usePickupTopPhrase = () => {
     const { lyrics } = readSelectLine();
 
     if (lyrics === topPhrase) {
-      setWordState(word);
+      setWord(word);
       return;
     }
 

@@ -7,9 +7,11 @@ import {
   useReadLine,
   useReadYtPlayerStatus,
   useSetManyPhrase,
+  useSetWord,
 } from "../atoms/state-atoms";
 import { useDeleteTopPhrase, usePickupTopPhrase } from "./many-phrase";
 import { mapTableScroll } from "./map-table-scroll";
+import { useWordConverter } from "./use-word-converter";
 
 export const useSeekNextPrev = () => {
   const lineDispatch = useLineReducer();
@@ -53,8 +55,10 @@ export const useUndoRedo = () => {
   const lineDispatch = useLineReducer();
   const setManyPhrase = useSetManyPhrase();
   const readYtPlayerStatus = useReadYtPlayerStatus();
+  const wordConvert = useWordConverter();
+  const setWord = useSetWord();
 
-  const undo = () => {
+  const undo = async () => {
     const { present } = readHistory();
 
     if (present) {
@@ -67,7 +71,12 @@ export const useUndoRedo = () => {
           readPlayer().seekTo(Number(data.time) - 3 * speed, true);
           lineDispatch({ type: "set", line: { time, lyrics, word, selectIndex: null } });
           const { manyPhraseText } = readEditUtils();
-          setManyPhrase(`${data.lyrics}\n${manyPhraseText}`);
+          setManyPhrase(`${lyrics}\n${manyPhraseText}`);
+
+          if (!word) {
+            const word = await wordConvert(lyrics);
+            setWord(word);
+          }
           break;
         }
         case "update":
