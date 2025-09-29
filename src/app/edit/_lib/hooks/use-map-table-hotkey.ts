@@ -1,4 +1,4 @@
-import { useEditHistoryRef, useHistoryReducer } from "../atoms/history-reducer-atom";
+import { useHistoryReducer, useReadEditHistory } from "../atoms/history-reducer-atom";
 import { useMapReducer, useReadMap } from "../atoms/map-reducer-atom";
 import { usePlayer } from "../atoms/read-atoms";
 import {
@@ -43,7 +43,7 @@ export const useSeekNextPrev = () => {
 };
 
 export const useUndoRedo = () => {
-  const readHistory = useEditHistoryRef();
+  const readHistory = useReadEditHistory();
   const historyDispatch = useHistoryReducer();
   const mapDispatch = useMapReducer();
   const pickupTopPhrase = usePickupTopPhrase();

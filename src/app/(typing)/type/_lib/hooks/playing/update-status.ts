@@ -345,7 +345,7 @@ export const useUpdateAllStatus = () => {
     }
 
     const lineResult = lineResults[count - 1];
-    newStatus.kpm = totalTypeTime ? Math.floor((newStatus.type / totalTypeTime) * 60) : 0;
+    newStatus.kpm = totalTypeTime > 0 ? Math.floor((newStatus.type / totalTypeTime) * 60) : 0;
     newStatus.rank = calcCurrentRank(newStatus.score);
 
     if (updateType === "completed") {

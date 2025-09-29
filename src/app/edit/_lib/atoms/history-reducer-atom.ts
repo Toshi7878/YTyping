@@ -36,8 +36,8 @@ const initialState = {
   present: null as History | null,
   future: [] as History[],
 };
-interface AddAction {
-  type: "add";
+interface PayloadAction {
+  type: "add" | "overwrite";
   payload: History;
 }
 
@@ -45,7 +45,7 @@ interface OtherAction {
   type: "undo" | "redo" | "reset";
 }
 
-const historyReducer = (prev: typeof initialState, action: AddAction | OtherAction): typeof initialState => {
+const historyReducer = (prev: typeof initialState, action: PayloadAction | OtherAction): typeof initialState => {
   switch (action.type) {
     case "undo": {
       if (!prev.present) return prev;
@@ -90,6 +90,12 @@ const historyReducer = (prev: typeof initialState, action: AddAction | OtherActi
 
       return prev;
     }
+
+    case "overwrite": {
+      prev.present = action.payload;
+      return prev;
+    }
+
     default:
       return prev;
   }
@@ -98,7 +104,7 @@ const historyReducer = (prev: typeof initialState, action: AddAction | OtherActi
 const historyReducerAtom = atomWithReducer(initialState, historyReducer);
 
 export const useHistoryReducer = () => useSetAtom(historyReducerAtom, { store });
-export const useEditHistoryRef = () => {
+export const useReadEditHistory = () => {
   return useAtomCallback(
     useCallback((get) => get(historyReducerAtom), []),
     { store },

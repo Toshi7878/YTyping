@@ -1,3 +1,5 @@
+import { useHistoryReducer, useReadEditHistory } from "../atoms/history-reducer-atom";
+import { useMapReducer } from "../atoms/map-reducer-atom";
 import { usePlayer } from "../atoms/read-atoms";
 import { useLineReducer, useReadEditUtils, useReadLine, useSetManyPhrase, useSetWord } from "../atoms/state-atoms";
 import { useWordConverter } from "./use-word-converter";
@@ -8,6 +10,9 @@ export const usePickupTopPhrase = () => {
   const readSelectLine = useReadLine();
   const setWordState = useSetWord();
   const readEditUtils = useReadEditUtils();
+  const readHistory = useReadEditHistory();
+  const historyDispatch = useHistoryReducer();
+  const mapDispatch = useMapReducer();
 
   const wordConvert = useWordConverter();
   return async (topPhrase: string) => {
@@ -27,6 +32,21 @@ export const usePickupTopPhrase = () => {
 
     if (lyrics === topPhrase) {
       setWordState(word);
+      return;
+    }
+
+    const { present } = readHistory();
+    if (present) {
+      const { actionType, data } = present;
+      if (actionType === "add") {
+        if (data.lyrics === topPhrase) {
+          const { lineIndex, ...line } = present.data;
+          const newLine = { ...line, word };
+          mapDispatch({ type: "update", payload: newLine, index: lineIndex });
+          historyDispatch({ type: "overwrite", payload: { ...present, data: { ...present.data, word } } });
+          return;
+        }
+      }
     }
   };
 };
