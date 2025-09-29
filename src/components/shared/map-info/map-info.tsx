@@ -23,7 +23,7 @@ export const MapInfo = ({ map }: MapInfoProps) => {
       <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
         <section className="flex flex-col gap-1">
           <TooltipWrapper
-            delayDuration={300}
+            delayDuration={500}
             label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}
           >
             <Link
