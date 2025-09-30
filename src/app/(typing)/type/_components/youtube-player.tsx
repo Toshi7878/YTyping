@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/hooks/window-focus";
 import { usePlayer, useReadYTStatus } from "../_lib/atoms/ref-atoms";
 import { useReadGameUtilParams } from "../_lib/atoms/state-atoms";
+import { useSoundEffect } from "../_lib/hooks/playing/sound-effect";
 import { useTimerRegistration } from "../_lib/hooks/playing/timer/timer";
 import {
   useOnEnd,
@@ -120,19 +121,23 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
 const MobileCover = () => {
   const { readPlayer } = usePlayer();
   const { readYTStatus } = useReadYTStatus();
-
+  const { iosActiveSound } = useSoundEffect();
   const readGameStateUtils = useReadGameUtilParams();
-  const handleStart = useCallback(async () => {
+  const handleStart = () => {
     const { scene } = readGameStateUtils();
+    const { isPaused } = readYTStatus();
+    const player = readPlayer();
 
-    if (readYTStatus().isPaused || scene === "ready") {
-      readPlayer().playVideo();
+    iosActiveSound();
+
+    if (isPaused || scene === "ready") {
+      player.playVideo();
     } else {
-      readPlayer().pauseVideo();
+      player.pauseVideo();
     }
 
     windowFocus();
-  }, [readGameStateUtils, readPlayer, readYTStatus]);
+  };
 
   return (
     <div

@@ -32,7 +32,7 @@ const usePlayBackKey = () => {
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
-  const { triggerTypingSound, triggerMissSound } = useSoundEffect();
+  const { triggerTypeSound, triggerMissSound } = useSoundEffect();
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
 
@@ -58,7 +58,7 @@ const usePlayBackKey = () => {
           inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
         setLineWord(result.newLineWord);
         const isCompleted = result.newLineWord.nextChar.k === "";
-        triggerTypingSound({ isCompleted });
+        triggerTypeSound({ isCompleted });
 
         const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
         calcTypeSpeed({

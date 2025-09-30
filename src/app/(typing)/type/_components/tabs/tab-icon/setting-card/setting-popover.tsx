@@ -4,9 +4,9 @@ import { IoMdSettings } from "react-icons/io";
 import { toast } from "sonner";
 import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
 import {
+  useReadUserTypingOptions,
   useSetUserTypingOptions,
   useUserTypingOptionsState,
-  useUserTypingOptionsStateRef,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ export const SettingPopover = () => {
   const { resetUserTypingOptions } = useSetUserTypingOptions();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const readUserTypingOptions = useUserTypingOptionsStateRef();
+  const readUserTypingOptions = useReadUserTypingOptions();
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);

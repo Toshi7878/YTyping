@@ -45,7 +45,7 @@ export const useSetUserTypingOptions = () => {
 
   return { setUserTypingOptions, resetUserTypingOptions };
 };
-export const useUserTypingOptionsStateRef = () => {
+export const useReadUserTypingOptions = () => {
   return useAtomCallback(
     useCallback((get) => get(userTypingOptionsAtom), []),
     { store },

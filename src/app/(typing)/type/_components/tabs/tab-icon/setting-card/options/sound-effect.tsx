@@ -9,7 +9,7 @@ export const UserSoundEffectCheckbox = () => {
   const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
   const { readPlayer } = usePlayer();
   const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { typeSoundPlay, missSoundPlay, clearTypeSoundPlay } = useSoundEffect();
+  const { playSoundEffect } = useSoundEffect();
 
   return (
     <section className="space-y-4">
@@ -23,7 +23,7 @@ export const UserSoundEffectCheckbox = () => {
             setUserTypingOptions({
               typeSound: value,
             });
-            if (value) typeSoundPlay();
+            if (value) playSoundEffect("type");
           }}
         />
         <LabeledCheckbox
@@ -33,7 +33,7 @@ export const UserSoundEffectCheckbox = () => {
             setUserTypingOptions({
               missSound: value,
             });
-            if (value) missSoundPlay();
+            if (value) playSoundEffect("miss");
           }}
         />
         <LabeledCheckbox
@@ -43,7 +43,7 @@ export const UserSoundEffectCheckbox = () => {
             setUserTypingOptions({
               completedTypeSound: value,
             });
-            if (value) clearTypeSoundPlay();
+            if (value) playSoundEffect("typeCompleted");
           }}
         />
       </div>

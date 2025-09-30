@@ -13,7 +13,7 @@ import { useUpdateLineResult } from "../update-line-result";
 import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../update-status";
 
 export const useTyping = () => {
-  const { triggerTypingSound, triggerMissSound } = useSoundEffect();
+  const { triggerTypeSound, triggerMissSound } = useSoundEffect();
 
   const setLineWord = useSetLineWord();
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
@@ -38,7 +38,7 @@ export const useTyping = () => {
 
     if (isSuccess) {
       setLineWord(newLineWord);
-      triggerTypingSound({ isCompleted });
+      triggerTypeSound({ isCompleted });
 
       updateSuccessStatusRefs({
         constantLineTime,

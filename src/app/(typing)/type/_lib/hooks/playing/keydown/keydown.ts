@@ -4,10 +4,10 @@ import {
   useReadGameUtilParams,
   useReadLineWord,
   useReadMap,
+  useReadUserTypingOptions,
   useSceneState,
   useSetLineResultDrawer,
   useSetNotify,
-  useUserTypingOptionsStateRef,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useChangePlayMode } from "../change-play-mode";
 import { useGamePause } from "../game-pause";
@@ -65,7 +65,7 @@ const usePlayingShortcutKey = () => {
   const setNotify = useSetNotify();
 
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const readTypingOptions = useUserTypingOptionsStateRef();
+  const readTypingOptions = useReadUserTypingOptions();
   const readMap = useReadMap();
   const readGameStateUtils = useReadGameUtilParams();
 
