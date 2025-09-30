@@ -6,7 +6,7 @@ import {
   IncrementImeTypeCountStatsSchema,
   IncrementTypingCountStatsSchema,
 } from "@/server/drizzle/validator/user-stats";
-import { optionalAuthProcedure, protectedProcedure, publicProcedure } from "../trpc";
+import { optionalAuthProcedure, publicProcedure } from "../trpc";
 
 export const userStatsRouter = {
   getUserStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
@@ -65,7 +65,6 @@ export const userStatsRouter = {
         .where(eq(Maps.id, mapId));
 
       if (!user) return;
-
       await db
         .insert(UserStats)
         .values({ userId: user.id, totalPlayCount: 1 })
@@ -75,7 +74,7 @@ export const userStatsRouter = {
         });
     }),
 
-  incrementImeStats: protectedProcedure
+  incrementImeStats: optionalAuthProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -90,6 +89,7 @@ export const userStatsRouter = {
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { user, db } = ctx;
+      if (!user) return;
 
       await db
         .insert(UserStats)
@@ -123,7 +123,7 @@ export const userStatsRouter = {
         });
     }),
 
-  incrementTypingStats: protectedProcedure
+  incrementTypingStats: optionalAuthProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -138,6 +138,7 @@ export const userStatsRouter = {
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { user, db } = ctx;
+      if (!user) return;
 
       const currentMaxCombo = await db.query.UserStats.findFirst({
         columns: { maxCombo: true },
