@@ -101,24 +101,24 @@ const FilterInputs = () => {
               </p>
               <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
                 {filter.params.map((param: FilterParam, paramIndex: number) => {
-                  const isSelected = currentParams.find((p) => p.name === filter.name)?.value === param.value;
+                  const isActive = currentParams.find((p) => p.name === filter.name)?.value === param.value;
 
                   return (
                     <Link
                       key={`${filter.name}-${paramIndex}`}
-                      href={`?${createQueryString(filter.name, param.value, !isSelected)}`}
+                      href={`?${createQueryString(filter.name, param.value, !isActive)}`}
                       onClick={(e) => {
                         e.preventDefault();
                         setIsSearchingAtom(true);
                         window.history.replaceState(
                           null,
                           "",
-                          `?${createQueryString(filter.name, param.value, !isSelected)}`,
+                          `?${createQueryString(filter.name, param.value, !isActive)}`,
                         );
                       }}
                       className={cn(
                         "hover:text-secondary-dark rounded px-2 py-1 text-sm transition-colors hover:underline",
-                        isSelected && "text-secondary-dark font-bold underline",
+                        isActive && "text-secondary-dark font-bold underline",
                       )}
                     >
                       {param.label}
