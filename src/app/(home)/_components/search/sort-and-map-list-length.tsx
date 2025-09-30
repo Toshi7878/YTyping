@@ -30,7 +30,7 @@ const FIELD_TO_PARAMS = {
   曲の長さ: "duration" as const,
   ランダム: "random" as const,
   いいね: "like" as const,
-  登録日: "ranking_register" as const,
+  記録登録日: "ranking_register" as const,
 };
 
 const getResetDirections = (): Record<SortField, SortDirection> => ({
@@ -41,7 +41,7 @@ const getResetDirections = (): Record<SortField, SortDirection> => ({
   曲の長さ: null,
   ランダム: null,
   いいね: null,
-  登録日: null,
+  記録登録日: null,
 });
 
 const SortOptions = () => {
@@ -122,7 +122,7 @@ const SortOptions = () => {
           searchParams.get(PARAM_NAME.played) as (typeof filterRankingRegisteredParams)[number],
         );
 
-        if (option === "ランキング登録日" && !isFilterRankingRegistered) {
+        if (option === "記録登録日" && !isFilterRankingRegistered) {
           return null;
         }
 

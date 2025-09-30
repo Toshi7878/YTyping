@@ -59,26 +59,23 @@ const FilterInputs = () => {
 
       // Toggle the target param
       if (isSelected) {
-        params.delete(name);
-      } else {
         params.set(name, value);
+      } else {
+        params.delete(name);
       }
 
-      // Keep sort in sync with "liked" filter
-      const isLikedActive = params.get(USER_FILTER_MENU.name) === "liked";
+      const isSelectLikedFilter = name === USER_FILTER_MENU.name && params.get(USER_FILTER_MENU.name) === "liked";
+      const isSelectPlayedFilter =
+        name === PLAY_STATUS_FILTER_MENU.name && params.get(PLAY_STATUS_FILTER_MENU.name) !== "unplayed";
 
-      if (isLikedActive) {
-        params.set("sort", "like");
-      } else {
-        params.delete("sort");
-      }
-
-      // Keep sort in sync with "played" filter
-      const isPlayedActive = params.get(PLAY_STATUS_FILTER_MENU.name) !== "unplayed";
-      if (isPlayedActive) {
-        params.set("sort", "ranking_register_desc");
-      } else {
-        params.delete("sort");
+      if (isSelected) {
+        if (isSelectLikedFilter) {
+          params.set("sort", "like");
+        } else if (isSelectPlayedFilter) {
+          params.set("sort", "ranking_register_desc");
+        } else {
+          params.delete("sort");
+        }
       }
 
       return setDifficultyRangeParams(params, difficultyRange).toString();
@@ -109,14 +106,14 @@ const FilterInputs = () => {
                   return (
                     <Link
                       key={`${filter.name}-${paramIndex}`}
-                      href={`?${createQueryString(filter.name, param.value, isSelected)}`}
+                      href={`?${createQueryString(filter.name, param.value, !isSelected)}`}
                       onClick={(e) => {
                         e.preventDefault();
                         setIsSearchingAtom(true);
                         window.history.replaceState(
                           null,
                           "",
-                          `?${createQueryString(filter.name, param.value, isSelected)}`,
+                          `?${createQueryString(filter.name, param.value, !isSelected)}`,
                         );
                       }}
                       className={cn(
