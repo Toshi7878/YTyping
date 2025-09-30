@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
+/** biome-ignore-all lint/style/noProcessEnv: <process.envを使用する必要がある> */
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig = {
   reactStrictMode: false,
   typedRoutes: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
 };
 
 // biome-ignore lint/style/noDefaultExport: <default exportする必要がある>
@@ -15,7 +19,6 @@ export default withSentryConfig(nextConfig, {
   project: "javascript-nextjs",
 
   // Only print logs for uploading source maps in CI
-  // biome-ignore lint/style/noProcessEnv: <process.envを使用する必要がある>
   silent: !process.env.CI,
 
   // For all available options, see:
