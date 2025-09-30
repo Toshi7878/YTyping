@@ -54,11 +54,11 @@ const FilterInputs = () => {
   const difficultyRange = useDifficultyRangeState();
 
   const createQueryString = useCallback(
-    (name: string, value: string, isSelected: boolean) => {
+    (name: string, value: string, isApply: boolean) => {
       const params = new URLSearchParams(searchParams.toString());
 
       // Toggle the target param
-      if (isSelected) {
+      if (isApply) {
         params.set(name, value);
       } else {
         params.delete(name);
@@ -68,7 +68,7 @@ const FilterInputs = () => {
       const isSelectPlayedFilter =
         name === PLAY_STATUS_FILTER_MENU.name && params.get(PLAY_STATUS_FILTER_MENU.name) !== "unplayed";
 
-      if (isSelected) {
+      if (isApply) {
         if (isSelectLikedFilter) {
           params.set("sort", "like");
         } else if (isSelectPlayedFilter) {
