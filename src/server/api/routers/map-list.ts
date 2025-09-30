@@ -90,7 +90,7 @@ export const mapListRouter = {
       .innerJoin(Users, eq(Users.id, Maps.creatorId))
       .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
       .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
-      .innerJoin(ResultStatuses, and(eq(ResultStatuses.resultId, Results.id)))
+      .leftJoin(ResultStatuses, and(eq(ResultStatuses.resultId, Results.id)))
       .where(whereConds.length ? and(...whereConds) : undefined)
       .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
       .limit(PAGE_SIZE + 1)
