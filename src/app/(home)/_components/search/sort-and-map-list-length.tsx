@@ -8,6 +8,7 @@ import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { PARAM_NAME, parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
+import type { PLAY_STATUS_FILTER_MENU } from "./map-filter";
 
 export const SortAndMapListLength = () => {
   return (
@@ -29,6 +30,7 @@ const FIELD_TO_PARAMS = {
   曲の長さ: "duration" as const,
   ランダム: "random" as const,
   いいね: "like" as const,
+  登録日: "ranking_register" as const,
 };
 
 const getResetDirections = (): Record<SortField, SortDirection> => ({
@@ -39,6 +41,7 @@ const getResetDirections = (): Record<SortField, SortDirection> => ({
   曲の長さ: null,
   ランダム: null,
   いいね: null,
+  登録日: null,
 });
 
 const SortOptions = () => {
@@ -103,11 +106,26 @@ const SortOptions = () => {
   return (
     <div className="flex flex-wrap items-center gap-2 select-none">
       {Object.keys(FIELD_TO_PARAMS).map((option) => {
-        const likedSort = option === "いいね";
         const filterLiked = searchParams.get("filter") === "liked";
-        if (likedSort && !filterLiked) {
+        if (option === "いいね" && !filterLiked) {
           return null;
         }
+
+        const filterRankingRegisteredParams = [
+          "1st",
+          "not-first",
+          "played",
+          "perfect",
+        ] satisfies (typeof PLAY_STATUS_FILTER_MENU.params)[number]["value"][];
+
+        const isFilterRankingRegistered = filterRankingRegisteredParams.includes(
+          searchParams.get(PARAM_NAME.played) as (typeof filterRankingRegisteredParams)[number],
+        );
+
+        if (option === "ランキング登録日" && !isFilterRankingRegistered) {
+          return null;
+        }
+
         return (
           <div
             key={option}

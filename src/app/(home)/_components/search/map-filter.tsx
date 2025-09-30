@@ -32,7 +32,7 @@ const USER_FILTER_MENU = {
   ],
 };
 
-const PLAY_STATUS_FILTER_MENU = {
+export const PLAY_STATUS_FILTER_MENU = {
   name: PARAM_NAME.played,
   label: "ランキング",
   params: [
@@ -57,18 +57,28 @@ const FilterInputs = () => {
     (name: string, value: string, isSelected: boolean) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (!isSelected) {
-        params.set(name, value);
-        if (name === USER_FILTER_MENU.name && value === "liked") {
-          params.set("sort", "like");
-        } else if (name === USER_FILTER_MENU.name) {
-          params.delete("sort");
-        }
-      } else {
+      // Toggle the target param
+      if (isSelected) {
         params.delete(name);
-        if (name === USER_FILTER_MENU.name && value === "liked") {
-          params.delete("sort");
-        }
+      } else {
+        params.set(name, value);
+      }
+
+      // Keep sort in sync with "liked" filter
+      const isLikedActive = params.get(USER_FILTER_MENU.name) === "liked";
+
+      if (isLikedActive) {
+        params.set("sort", "like");
+      } else {
+        params.delete("sort");
+      }
+
+      // Keep sort in sync with "played" filter
+      const isPlayedActive = params.get(PLAY_STATUS_FILTER_MENU.name) !== "unplayed";
+      if (isPlayedActive) {
+        params.set("sort", "ranking_register_desc");
+      } else {
+        params.delete("sort");
       }
 
       return setDifficultyRangeParams(params, difficultyRange).toString();

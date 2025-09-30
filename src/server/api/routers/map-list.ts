@@ -89,6 +89,7 @@ export const mapListRouter = {
       .innerJoin(Users, eq(Users.id, Maps.creatorId))
       .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
       .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
+      .innerJoin(ResultStatuses, and(eq(ResultStatuses.resultId, Results.id)))
       .where(whereConds.length ? and(...whereConds) : undefined)
       .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
       .limit(PAGE_SIZE + 1)
@@ -208,6 +209,8 @@ function getSortSql({ sort }: GetSortSql) {
       return [isAsc ? asc(MapDifficulties.romaKpmMedian) : desc(MapDifficulties.romaKpmMedian)];
     case sort.includes("ranking_count"):
       return [isAsc ? asc(Maps.rankingCount) : desc(Maps.rankingCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
+    case sort.includes("ranking_register"):
+      return [isAsc ? asc(Results.updatedAt) : desc(Results.updatedAt), isAsc ? asc(Maps.id) : desc(Maps.id)];
     case sort.includes("like_count"):
       return [isAsc ? asc(Maps.likeCount) : desc(Maps.likeCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
     case sort.includes("duration"):
