@@ -56,6 +56,7 @@ const MAP_LIST_FIELDS = {
   ranking: {
     count: Maps.rankingCount,
     myRank: Results.rank,
+    myRankUpdatedAt: Results.updatedAt,
   },
 };
 

@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 interface RankingCountProps {
   myRank: number | null;
   rankingCount: number;
+  myRankUpdatedAt: Date | null;
 }
 
-export const RankingCount = ({ myRank, rankingCount }: RankingCountProps) => {
+export const RankingCount = ({ myRank, rankingCount, myRankUpdatedAt }: RankingCountProps) => {
   const { data: session } = useSession();
   const [colorClass, setColorClass] = useState("text-muted-foreground");
 
@@ -30,7 +31,22 @@ export const RankingCount = ({ myRank, rankingCount }: RankingCountProps) => {
   }, [session, myRank]);
 
   return (
-    <TooltipWrapper label={`自分の順位: ${myRank}位`} disabled={!myRank || !session}>
+    <TooltipWrapper
+      label={
+        <div>
+          <p>
+            自分の順位: <span className="font-bold">{myRank}位</span> (
+            {myRankUpdatedAt?.toLocaleDateString("ja-JP", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            })}
+            )
+          </p>
+        </div>
+      }
+      disabled={!myRank || !session}
+    >
       <div className={cn("z-1 flex items-baseline", colorClass)}>
         <div className="relative top-[3px] mr-1">
           <FaRankingStar size={20} />

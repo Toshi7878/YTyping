@@ -129,6 +129,7 @@ export const resultRouter = {
           romaKpmMax: MapDifficulties.romaKpmMax,
           hasLiked: MapLikes.hasLiked,
           myRank: MyResult.rank,
+          myRankUpdatedAt: MyResult.updatedAt,
         },
       })
       .from(Results)
@@ -167,7 +168,7 @@ export const resultRouter = {
           creator: { id: m.creatorId, name: m.creatorName },
           difficulty: { romaKpmMedian: m.romaKpmMedian, romaKpmMax: m.romaKpmMax },
           like: { count: m.likeCount, hasLiked: m.hasLiked },
-          ranking: { count: m.rankingCount, myRank: m.myRank },
+          ranking: { count: m.rankingCount, myRank: m.myRank, myRankUpdatedAt: m.myRankUpdatedAt },
         } satisfies MapListItem,
       };
     });

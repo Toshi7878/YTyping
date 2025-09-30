@@ -30,7 +30,12 @@ export const ResultCard = ({ result }: ResultCardProps) => {
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
         <ResultCardContent result={result} />
         <div className="absolute bottom-0 left-4 z-2 flex items-center space-x-1">
-          <RankingCount myRank={result.map.ranking.myRank} rankingCount={result.map.ranking.count} />
+          <RankingCount
+            key={result.map.ranking.myRank}
+            myRank={result.map.ranking.myRank}
+            rankingCount={result.map.ranking.count}
+            myRankUpdatedAt={result.map.ranking.myRankUpdatedAt}
+          />
           <LikeCountIcon
             mapId={result.map.id}
             hasLiked={result.map.like.hasLiked ?? false}

@@ -48,7 +48,7 @@ export const notificationRouter = {
               },
               results: {
                 where: and(eq(Results.userId, user.id)),
-                columns: { rank: true },
+                columns: { rank: true, updatedAt: true },
                 limit: 1,
               },
             },
@@ -96,6 +96,7 @@ export const notificationRouter = {
           ranking: {
             count: m.rankingCount,
             myRank: m.results?.[0]?.rank ?? null,
+            myRankUpdatedAt: m.results?.[0]?.updatedAt ?? null,
           },
         } satisfies MapListItem,
       }));

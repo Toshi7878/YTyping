@@ -60,7 +60,12 @@ const MapInfoBottom = ({ map }: MapInfoProps) => {
         </Badge>
       </div>
       <div className="flex items-center space-x-1">
-        <RankingCount key={map.ranking.myRank} myRank={map.ranking.myRank} rankingCount={map.ranking.count} />
+        <RankingCount
+          key={map.ranking.myRank}
+          myRank={map.ranking.myRank}
+          rankingCount={map.ranking.count}
+          myRankUpdatedAt={map.ranking.myRankUpdatedAt}
+        />
         <LikeCountIcon mapId={map.id} hasLiked={map.like.hasLiked ?? false} likeCount={map.like.count} />
       </div>
     </div>
