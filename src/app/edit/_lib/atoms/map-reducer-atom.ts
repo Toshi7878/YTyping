@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithReducer, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
-import { normalizeSimilarSymbol } from "@/utils/build-map/normalize-similar-symbol";
+import { normalizeSymbols } from "@/utils/string-transform";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
@@ -46,7 +46,7 @@ export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(init, (prev:
   switch (action.type) {
     case "add": {
       const { lyrics, word } = action.payload;
-      const normalizedWord = normalizeSimilarSymbol(word);
+      const normalizedWord = normalizeSymbols(word);
 
       return [...prev, { ...action.payload, lyrics, word: normalizedWord }].sort(
         (a, b) => parseFloat(a.time) - parseFloat(b.time),
@@ -57,7 +57,7 @@ export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(init, (prev:
       const newArray = [...prev];
 
       const { lyrics, word, ...rest } = action.payload;
-      const normalizedWord = normalizeSimilarSymbol(word);
+      const normalizedWord = normalizeSymbols(word);
 
       newArray[action.index] = { lyrics, word: normalizedWord, ...rest };
 

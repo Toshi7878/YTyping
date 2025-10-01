@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { usePlayer } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { usePlayer } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { H3 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";

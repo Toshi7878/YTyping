@@ -2,7 +2,7 @@
 import type React from "react";
 import { useRef } from "react";
 import { toast } from "sonner";
-import { useImportMapFile } from "@/app/edit/_lib/hooks/import-map-file";
+import { useImportMapFile } from "@/app/edit/_lib/editor/use-import-map-file";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
 

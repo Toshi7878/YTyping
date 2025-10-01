@@ -1,6 +1,6 @@
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/use-get-my-ranking-result";
-import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/use-result-play";
+import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/ranking/use-get-my-ranking-result";
+import { useResultPlay } from "@/app/(typing)/type/_lib/ready/use-result-play";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
 

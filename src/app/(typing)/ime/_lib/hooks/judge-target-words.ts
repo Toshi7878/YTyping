@@ -1,4 +1,4 @@
-import { kanaToHira } from "@/utils/kana-to-hira";
+import { kanaToHira } from "@/utils/string-transform";
 import { useUserStats } from "../atoms/read-atoms";
 import {
   useReadGameUtilParams,

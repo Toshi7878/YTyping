@@ -6,7 +6,7 @@ import {
   usePlayer,
   useReadYTStatus,
   useTypingDetails,
-} from "./ref-atoms";
+} from "./read-atoms";
 import { useSetSpeed as useSetPlaySpeed } from "./speed-reducer-atoms";
 import {
   useClearLineResults,

@@ -3,16 +3,16 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
-import { useSoundEffect } from "@/app/(typing)/type/_lib/hooks/playing/sound-effect";
-import { useResultPlay } from "@/app/(typing)/type/_lib/hooks/use-result-play";
+import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
+import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
+import { useResultPlay } from "../../../_lib/ready/use-result-play";
 
 interface RankingMenuProps {
   resultId: number;
@@ -21,6 +21,7 @@ interface RankingMenuProps {
   name: string;
   hasClapped: boolean;
 }
+
 export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name, hasClapped }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();

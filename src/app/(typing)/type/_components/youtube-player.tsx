@@ -7,10 +7,10 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUserAgent } from "@/lib/global-atoms";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/hooks/window-focus";
-import { usePlayer, useReadYTStatus } from "../_lib/atoms/ref-atoms";
+import { usePlayer, useReadYTStatus } from "../_lib/atoms/read-atoms";
 import { useReadGameUtilParams } from "../_lib/atoms/state-atoms";
-import { useSoundEffect } from "../_lib/hooks/playing/sound-effect";
-import { useTimerRegistration } from "../_lib/hooks/playing/timer/timer";
+import { useTimerRegistration } from "../_lib/playing/timer/use-timer";
+import { useSoundEffect } from "../_lib/playing/use-sound-effect";
 import {
   useOnEnd,
   useOnPause,
@@ -18,7 +18,7 @@ import {
   useOnRateChange,
   useOnReady,
   useOnSeeked,
-} from "../_lib/hooks/youtube-events";
+} from "../_lib/youtube-player/use-youtube-events";
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;

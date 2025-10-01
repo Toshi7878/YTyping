@@ -1,4 +1,4 @@
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PARAM_NAME } from "@/app/timeline/_lib/consts";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE, PARAM_NAME } from "@/app/timeline/_lib/const";
 
 type ResultParamKeys = keyof typeof PARAM_NAME;
 type ResultParams = Partial<Record<ResultParamKeys, string>>;

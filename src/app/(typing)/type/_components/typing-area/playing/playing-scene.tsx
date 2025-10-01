@@ -11,10 +11,10 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
-import { useLineCount, useUserStats } from "../../../_lib/atoms/ref-atoms";
-import { useHandleKeydown } from "../../../_lib/hooks/playing/keydown/keydown";
-import { usePressSkip } from "../../../_lib/hooks/playing/press-skip";
-import { useTimerControls } from "../../../_lib/hooks/playing/timer/timer";
+import { useLineCount, useUserStats } from "../../../_lib/atoms/read-atoms";
+import { usePressSkip } from "../../../_lib/playing/keydown/hot-key/use-press-skip";
+import { useOnKeydown } from "../../../_lib/playing/keydown/use-keydown-event";
+import { timerControls } from "../../../_lib/playing/timer/use-timer";
 import { ChangeCSS } from "./playing-child/change-css-style";
 import { Lyrics } from "./playing-child/lyrics-text";
 import { NextLyrics } from "./playing-child/next-lyrics";
@@ -68,9 +68,8 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   }, [scene]);
 
   const { setNextLyrics, resetNextLyrics } = useSetNextLyrics();
-  const handleKeydown = useHandleKeydown();
+  const handleKeydown = useOnKeydown();
   const { readCount } = useLineCount();
-  const { setFrameRate } = useTimerControls();
   const setLineResultDrawer = useSetLineResultDrawer();
   const map = useMapState();
 
@@ -80,9 +79,9 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     }
 
     if (scene === "replay") {
-      setFrameRate(0);
+      timerControls.setFrameRate(0);
     } else {
-      setFrameRate(59.99);
+      timerControls.setFrameRate(59.99);
     }
 
     window.addEventListener("keydown", handleKeydown);

@@ -4,13 +4,15 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { TiFilter } from "react-icons/ti";
 import { toast } from "sonner";
 import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/_lib/atoms/state-atoms";
-import { usePickupTopPhrase } from "@/app/edit/_lib/hooks/many-phrase";
-import { filterUnicodeSymbol, formatSimilarChar, useFilterWordSymbol } from "@/app/edit/_lib/hooks/use-word-converter";
+import { filterWordSymbolsByOption } from "@/app/edit/_lib/editor/typable-word-converter";
+import { usePickupTopPhrase } from "@/app/edit/_lib/editor/use-many-phrase";
+import { sanitizeToAllowedSymbols } from "@/app/edit/_lib/utils/filter-word";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/use-debounce";
+import { normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";
 
 export const ManyPhraseTextarea = () => {
   const manyPhrase = useManyPhraseState();
@@ -105,7 +107,7 @@ interface FilterSymbolButtonProps {
 const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
   const setManyPhrase = useSetManyPhrase();
   const pickupTopPhrase = usePickupTopPhrase();
-  const filterWordSymbol = useFilterWordSymbol();
+  const filterWordSymbol = filterWordSymbolsByOption();
   const confirm = useConfirm();
 
   const handleConfirm = async () => {
@@ -120,9 +122,9 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
 
     if (!isConfirmed) return;
 
-    const cleanedText = filterUnicodeSymbol(
+    const cleanedText = sanitizeToAllowedSymbols(
       filterWordSymbol({
-        sentence: formatSimilarChar(manyPhrase),
+        sentence: normalizeSymbols(normalizeFullWidthAlnum(manyPhrase)),
         filterType: "lyricsWithFilterSymbol",
         replaceChar: " ",
       }),

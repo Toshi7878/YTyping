@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import type z from "zod";
 import { usePlayer, useSetPreventEditortabAutoFocus } from "@/app/edit/_lib/atoms/read-atoms";
 import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
-import { useHasMapUploadPermission } from "@/app/edit/_lib/hooks/use-has-map-upload-permission";
+import { useHasMapUploadPermission } from "@/app/edit/_lib/utils/use-has-map-upload-permission";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -35,7 +35,7 @@ import {
   useSetYTChaningVideo,
   useVideoIdState,
 } from "../../../_lib/atoms/state-atoms";
-import { getThumbnailQuality } from "../../../_lib/ts/get-thumbail-quality";
+import { getThumbnailQuality } from "../../../_lib/utils/get-thumbail-quality";
 import { SuggestionTags } from "./suggestion-tags";
 
 export const MapInfoFormCard = () => {

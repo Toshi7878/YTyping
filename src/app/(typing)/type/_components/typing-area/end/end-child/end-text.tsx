@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/use-get-my-ranking-result";
+import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/ranking/use-get-my-ranking-result";
 import { RandomEmoji } from "./child/random-emoji";
 
 export const EndText = () => {

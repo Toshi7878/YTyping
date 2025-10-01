@@ -6,11 +6,11 @@ import {
 } from "@/app/edit/_lib/atoms/button-disable-state-atoms";
 import { useIsWordConvertingState } from "@/app/edit/_lib/atoms/state-atoms";
 import {
-  useLineAddButtonEvent,
-  useLineDelete,
-  useLineUpdateButtonEvent,
-  useWordConvertButtonEvent,
-} from "@/app/edit/_lib/hooks/use-editor-button-events";
+  useAddLineAction,
+  useDeleteLineAction,
+  useUpdateLineAction,
+  useWordConvertAction,
+} from "@/app/edit/_lib/editor/use-editor-actions";
 import { Button } from "@/components/ui/button";
 
 export const EditorButtons = () => {
@@ -18,10 +18,10 @@ export const EditorButtons = () => {
   const isUpdateButtonDisabled = useIsUpdateBtnDisabledState();
   const isWordConverting = useIsWordConvertingState();
   const isDeleteButtonDisabled = useIsDeleteBtnDisabledState();
-  const lineAddButtonEvent = useLineAddButtonEvent();
-  const lineUpdateButtonEvent = useLineUpdateButtonEvent();
-  const wordConvertButtonEvent = useWordConvertButtonEvent();
-  const lineDelete = useLineDelete();
+  const lineAddButtonEvent = useAddLineAction();
+  const lineUpdateButtonEvent = useUpdateLineAction();
+  const wordConvertButtonEvent = useWordConvertAction();
+  const lineDelete = useDeleteLineAction();
   useHotkeys(
     ["shift+s", "s"],
     (event) => {
@@ -102,7 +102,7 @@ export const EditorButtons = () => {
     <div className="grid grid-cols-2 gap-2 sm:flex">
       {Object.values(buttonConfigs).map((config, index) => (
         <Button
-          // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex許可>
+          // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列のためindex許可>
           key={index}
           disabled={config.isDisabled || config.isLoading}
           variant={config.variant}

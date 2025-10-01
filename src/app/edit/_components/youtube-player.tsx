@@ -13,14 +13,8 @@ import {
   useReadYtPlayerStatus,
   useVideoIdState,
 } from "../_lib/atoms/state-atoms";
-import { useUpdateEndTime } from "../_lib/hooks/use-update-end-time";
-import {
-  useYTEndStopEvent,
-  useYTPauseEvent,
-  useYTPlayEvent,
-  useYTReadyEvent,
-  useYTSeekEvent,
-} from "../_lib/hooks/use-youtube-events";
+import { useUpdateEndTime } from "../_lib/map-table/use-update-end-time";
+import { useOnEnd, useOnPause, useOnPlay, useOnReady, useOnSeeked } from "../_lib/youtube-player/use-youtube-event";
 
 interface YouTubePlayerProps {
   className: string;
@@ -29,11 +23,11 @@ interface YouTubePlayerProps {
 
 export const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerProps) => {
   const videoId = useVideoIdState();
-  const onReady = useYTReadyEvent();
-  const onPlay = useYTPlayEvent();
-  const onPause = useYTPauseEvent();
-  const onEndStop = useYTEndStopEvent();
-  const onSeek = useYTSeekEvent();
+  const onReady = useOnReady();
+  const onPlay = useOnPlay();
+  const onPause = useOnPause();
+  const onEnd = useOnEnd();
+  const onSeek = useOnSeeked();
 
   const updateEndTime = useUpdateEndTime();
   const { readPlayer } = usePlayer();
@@ -87,7 +81,7 @@ export const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerP
     updateEndTime(readPlayer());
   }, [isYTReady, isYTStarted, readPlayer, videoId, updateEndTime, mapVideoId]);
 
-  const handleStateChange = useCallback(
+  const onStateChange = useCallback(
     (event: YouTubeEvent) => {
       if (document.activeElement instanceof HTMLIFrameElement) {
         document.activeElement.blur();
@@ -119,8 +113,8 @@ export const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerP
           onReady={onReady}
           onPlay={onPlay}
           onPause={onPause}
-          onEnd={onEndStop}
-          onStateChange={handleStateChange}
+          onEnd={onEnd}
+          onStateChange={onStateChange}
         />
       </LoadingOverlayProvider>
     </div>

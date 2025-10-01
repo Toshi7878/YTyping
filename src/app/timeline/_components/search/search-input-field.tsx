@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useIsSearchingState, useSetIsSearching } from "@/app/timeline/_lib/atoms";
-import { PARAM_NAME } from "@/app/timeline/_lib/consts";
+import { PARAM_NAME } from "@/app/timeline/_lib/const";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { useSetSearchParams } from "../../_lib/hooks/use-set-search-params";

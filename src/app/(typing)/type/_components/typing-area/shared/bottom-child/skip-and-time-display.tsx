@@ -1,4 +1,4 @@
-import { useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useCurrentTimeState,

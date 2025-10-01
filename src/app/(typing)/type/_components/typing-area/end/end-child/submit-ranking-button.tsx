@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { useSetTabName } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useResultData } from "@/app/(typing)/type/_lib/hooks/end/use-result-data";
+import { useResultData } from "@/app/(typing)/type/_lib/end/use-result-data";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/provider";

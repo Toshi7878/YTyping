@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useProgress } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useProgress } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 
 interface TimeProgressProps {
   id: string;

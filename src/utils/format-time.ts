@@ -1,3 +1,4 @@
+const padZero = (num: number): string => num.toString().padStart(2, "0");
 export const formatTime = (totalSeconds: number): string => {
   const absSeconds = Math.abs(Math.floor(totalSeconds));
 
@@ -10,5 +11,3 @@ export const formatTime = (totalSeconds: number): string => {
 
   return hours > 0 ? `${hours}:${MM}:${SS}` : `${MM}:${SS}`;
 };
-
-const padZero = (num: number): string => num.toString().padStart(2, "0");

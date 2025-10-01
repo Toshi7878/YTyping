@@ -8,7 +8,7 @@ import type { RouterOutPuts } from "@/server/api/trpc";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { userTypingOptionsAtom } from "../_lib/atoms/state-atoms";
 import { getTypeAtomStore } from "../_lib/atoms/store";
-import { useSendUserStats } from "../_lib/hooks/playing/send-user-stats";
+import { useSendUserStats } from "../_lib/playing/use-send-user-stats";
 
 interface ClientProviderProps {
   userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];

@@ -2,7 +2,7 @@ import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "./consts";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "./const";
 import type { FilterMode } from "./type";
 
 const store = createStore();

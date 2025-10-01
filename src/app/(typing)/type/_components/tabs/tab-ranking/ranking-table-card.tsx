@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { useClapMutationRanking } from "@/utils/mutations/clap.mutations";
 import { useMapRankingQueries } from "@/utils/queries/map-ranking.queries";
-import { useGameUtilityReferenceParams } from "../../../_lib/atoms/ref-atoms";
+import { useGameUtilityReferenceParams } from "../../../_lib/atoms/read-atoms";
 import { useSceneGroupState, useSetTypingStatusRank } from "../../../_lib/atoms/state-atoms";
 import { RankingPopoverContent } from "./ranking-popover-menu";
 

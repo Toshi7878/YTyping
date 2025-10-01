@@ -6,7 +6,7 @@ import {
   useSetLineResultDrawer,
   useTypingStatusState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/hooks/use-get-my-ranking-result";
+import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/ranking/use-get-my-ranking-result";
 import { Button } from "@/components/ui/button";
 import { RetryButton } from "./child/retry-button";
 import { SubmitRankingButton } from "./submit-ranking-button";

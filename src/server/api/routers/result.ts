@@ -3,7 +3,7 @@ import type { AnyColumn, SQL } from "drizzle-orm";
 import { and, desc, eq, gt, gte, ilike, inArray, lte, or } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/consts";
+import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/const";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import {

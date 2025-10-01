@@ -1,4 +1,4 @@
-import { normalizeSimilarSymbol } from "@/utils/build-map/normalize-similar-symbol";
+import { normalizeSymbols } from "@/utils/string-transform";
 import { useReadImeTypeOptions } from "../atoms/state-atoms";
 
 const REGEX_LIST = ["^-ぁ-んゔ", "ァ-ンヴ", "一-龥", "\\w", "\\d", " ", "々%&@&=+ー～~\u00C0-\u00FF"];
@@ -17,15 +17,15 @@ export const useFormatWord = () => {
     formattedText = formattedText.replace(/[（(].*?[)）]/g, ""); //()（）の歌詞を削除
     formattedText = formattedText.replace(/<[^>]*>(.*?)<[^>]*?\/[^>]*>/g, "$1"); //HTMLタグの中の文字を取り出す
 
-    formattedText = formattedText.replace(/<[^>]*>/, ""); //単体のHTMLタグを削除
+    formattedText = formattedText.replace(/<[^>]*>/, "");
 
-    formattedText = normalizeSimilarSymbol(formattedText); //記号整形
+    formattedText = normalizeSymbols(formattedText);
 
     const { enableEngUpperCase, addSymbolList, enableAddSymbol } = readImeTypeOptions();
     if (enableEngUpperCase) {
-      formattedText = formattedText.normalize("NFKC"); //全角を半角に変換
+      formattedText = formattedText.normalize("NFKC");
     } else {
-      formattedText = formattedText.normalize("NFKC").toLowerCase(); //全角を半角に変換 & 小文字に変換;
+      formattedText = formattedText.normalize("NFKC").toLowerCase();
     }
 
     // アルファベットと全角文字の間にスペースを追加

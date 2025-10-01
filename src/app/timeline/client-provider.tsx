@@ -4,7 +4,7 @@ import { useHydrateAtoms } from "jotai/utils";
 import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { getTimelineAtomStore, searchResultKpmAtom, searchResultModeAtom } from "./_lib/atoms";
-import { DEFAULT_KPM_SEARCH_RANGE } from "./_lib/consts";
+import { DEFAULT_KPM_SEARCH_RANGE } from "./_lib/const";
 import type { FilterMode } from "./_lib/type";
 
 interface TimelineProviderProps {

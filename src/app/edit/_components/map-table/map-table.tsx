@@ -33,10 +33,10 @@ import {
   useTimeLineIndexState as useTimeLineIndex,
   useWordState,
 } from "../../_lib/atoms/state-atoms";
-import { useAddRubyTagEvent } from "../../_lib/hooks/use-add-ruby-tag";
-import { useLineUpdateButtonEvent, useWordConvertButtonEvent } from "../../_lib/hooks/use-editor-button-events";
-import { useSeekNextPrev, useUndoRedo } from "../../_lib/hooks/use-map-table-hotkey";
-import { useWordSearchReplace } from "../../_lib/hooks/use-word-search-replace";
+import { useUpdateLineAction, useWordConvertAction } from "../../_lib/editor/use-editor-actions";
+import { useLyricsRubyTagHandler } from "../../_lib/editor/use-lyrics-ruby-tag-handler";
+import { useSeekNextPrev, useUndoRedo } from "../../_lib/map-table/use-map-table-hotkey";
+import { useWordSearchReplace } from "../../_lib/utils/use-word-search-replace";
 import { LineOptionDialog } from "./line-option-dialog";
 
 export const MapTable = () => {
@@ -88,7 +88,7 @@ export const MapTable = () => {
   const setTabName = useSetTabName();
   const setDirectEditIndex = useSetDirectEditIndex();
   const setSelectLine = useLineReducer();
-  const lineUpdateButtonEvent = useLineUpdateButtonEvent();
+  const lineUpdateButtonEvent = useUpdateLineAction();
   const readMap = useReadMap();
 
   const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
@@ -306,7 +306,7 @@ const DirectLyricsInput = () => {
   const lyrics = useLyricsState();
 
   const setLyrics = useSetLyrics();
-  const handleEnterAddRuby = useAddRubyTagEvent();
+  const handleEnterAddRuby = useLyricsRubyTagHandler();
 
   return (
     <TooltipWrapper
@@ -335,7 +335,7 @@ const DirectLyricsInput = () => {
 const DirectWordInput = () => {
   const isLoadWordConvert = useIsWordConvertingState();
   const selectWord = useWordState();
-  const wordConvertButtonEvent = useWordConvertButtonEvent();
+  const wordConvertButtonEvent = useWordConvertAction();
   const setWord = useSetWord();
 
   return (

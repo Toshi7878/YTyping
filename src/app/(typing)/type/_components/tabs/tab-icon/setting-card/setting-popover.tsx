@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
 import { toast } from "sonner";
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/ref-atoms";
+import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import {
   useReadUserTypingOptions,
   useSetUserTypingOptions,

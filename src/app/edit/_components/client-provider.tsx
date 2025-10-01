@@ -9,8 +9,8 @@ import { useSetPreviewVideo } from "@/lib/global-atoms";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
-import { useHasMapUploadPermission } from "../_lib/hooks/use-has-map-upload-permission";
-import { useTimerRegistration } from "../_lib/hooks/use-timer";
+import { useHasMapUploadPermission } from "../_lib/utils/use-has-map-upload-permission";
+import { useTimerRegistration } from "../_lib/youtube-player/use-timer";
 
 interface EditProviderProps {
   children: React.ReactNode;

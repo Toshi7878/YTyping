@@ -8,7 +8,7 @@ import {
   useSetWord,
   useWordState,
 } from "@/app/edit/_lib/atoms/state-atoms";
-import { useAddRubyTagEvent } from "@/app/edit/_lib/hooks/use-add-ruby-tag";
+import { useLyricsRubyTagHandler } from "@/app/edit/_lib/editor/use-lyrics-ruby-tag-handler";
 import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
 import { Input } from "@/components/ui/input/input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -32,7 +32,7 @@ const LyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const lyrics = useLyricsState();
   const setLyrics = useSetLyrics();
-  const handleEnterAddRuby = useAddRubyTagEvent();
+  const handleEnterAddRuby = useLyricsRubyTagHandler();
 
   return (
     <TooltipWrapper

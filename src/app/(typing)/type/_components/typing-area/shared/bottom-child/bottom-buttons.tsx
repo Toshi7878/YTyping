@@ -10,8 +10,8 @@ import {
   useUserTypingOptionsState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useMoveLine } from "@/app/(typing)/type/_lib/hooks/playing/move-line";
-import { useRetry } from "@/app/(typing)/type/_lib/hooks/playing/retry";
+import { useMoveLine } from "@/app/(typing)/type/_lib/playing/practice-replay/use-move-line";
+import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";

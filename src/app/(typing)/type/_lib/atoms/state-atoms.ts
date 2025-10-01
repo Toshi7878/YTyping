@@ -13,7 +13,7 @@ import {
   lineProgressAtom,
   useGameUtilityReferenceParams,
   ytStatusAtom,
-} from "./ref-atoms";
+} from "./read-atoms";
 import { speedBaseAtom } from "./speed-reducer-atoms";
 import { getTypeAtomStore } from "./store";
 

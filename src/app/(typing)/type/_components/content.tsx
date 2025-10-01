@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useBreakPoint } from "@/lib/use-break-point";
 import { BuildMap } from "@/utils/build-map/build-map";
 import { useMapQueries } from "@/utils/queries/map.queries";
-import { useProgress } from "../_lib/atoms/ref-atoms";
+import { useProgress } from "../_lib/atoms/read-atoms";
 import {
   useInitializeLineResults,
   useSceneGroupState,
@@ -14,7 +14,7 @@ import {
   useSetTypingStatus,
   useSetTypingStatusLine,
 } from "../_lib/atoms/state-atoms";
-import { CONTENT_WIDTH, useWindowScale } from "../_lib/hooks/use-window-scale";
+import { CONTENT_WIDTH, useWindowScale } from "../_lib/global/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
 import { MainGameCard } from "./typing-area/main-game-card";
 import { YouTubePlayer } from "./youtube-player";
