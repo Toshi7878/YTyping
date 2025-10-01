@@ -4,11 +4,13 @@ export const PARAM_NAME = {
   maxRate: "maxRate",
   sort: "sort",
   filter: "filter",
-  played: "played",
+  rankingStatus: "rankingStatus",
 } as const;
 
+type MapListParams = Partial<Record<keyof typeof PARAM_NAME, string>>;
+
 export function parseMapListSearchParams(searchParams: URLSearchParams) {
-  const params: Partial<typeof PARAM_NAME> = {};
+  const params: MapListParams = {};
 
   for (const [key, value] of searchParams.entries()) {
     if (key in PARAM_NAME) {
@@ -20,8 +22,8 @@ export function parseMapListSearchParams(searchParams: URLSearchParams) {
     filter: params.filter,
     minRate: params.minRate ? Number(params.minRate) : undefined,
     maxRate: params.maxRate ? Number(params.maxRate) : undefined,
-    played: params.played,
-    keyword: params.keyword ?? "",
+    rankingStatus: params.rankingStatus,
+    keyword: params.keyword,
     sort: params.sort,
   };
 }

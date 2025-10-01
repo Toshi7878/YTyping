@@ -32,19 +32,19 @@ const USER_FILTER_MENU = {
   ],
 };
 
-export const PLAY_STATUS_FILTER_MENU = {
-  name: PARAM_NAME.played,
+export const RANKING_STATUS_FILTER_MENU = {
+  name: PARAM_NAME.rankingStatus,
   label: "ランキング",
   params: [
     { label: "1位", value: "1st" as const },
     { label: "2位以下", value: "not-first" as const },
-    { label: "登録済", value: "played" as const },
-    { label: "未登録", value: "unplayed" as const },
+    { label: "登録済", value: "registerd" as const },
+    { label: "未登録", value: "unregisterd" as const },
     { label: "パーフェクト", value: "perfect" as const },
   ],
 };
 
-const FILTER_CONTENTS = [USER_FILTER_MENU, PLAY_STATUS_FILTER_MENU];
+const FILTER_CONTENTS = [USER_FILTER_MENU, RANKING_STATUS_FILTER_MENU];
 type FilterParam = (typeof FILTER_CONTENTS)[number]["params"][number];
 
 const FilterInputs = () => {
@@ -57,25 +57,40 @@ const FilterInputs = () => {
     (name: string, value: string, isApply: boolean) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      // Toggle the target param
       if (isApply) {
         params.set(name, value);
       } else {
         params.delete(name);
       }
 
-      const isSelectLikedFilter = name === USER_FILTER_MENU.name && params.get(USER_FILTER_MENU.name) === "liked";
-      const isSelectPlayedFilter =
-        name === PLAY_STATUS_FILTER_MENU.name && params.get(PLAY_STATUS_FILTER_MENU.name) !== "unplayed";
+      const isFilterItem = name === USER_FILTER_MENU.name;
+      const isRankingStatusItem = name === RANKING_STATUS_FILTER_MENU.name;
+
+      const rankingRegisteredStatuses: (typeof RANKING_STATUS_FILTER_MENU.params)[number]["value"][] = [
+        "1st",
+        "not-first",
+        "registerd",
+        "unregisterd",
+        "perfect",
+      ];
+
+      const hasRankingRegisteredStatusFilter = rankingRegisteredStatuses.includes(
+        params.get(RANKING_STATUS_FILTER_MENU.name) as (typeof rankingRegisteredStatuses)[number],
+      );
+      const hasLikedFilter = params.get(USER_FILTER_MENU.name) === "liked";
 
       if (isApply) {
-        if (isSelectLikedFilter) {
+        if (isFilterItem && hasLikedFilter) {
           params.set("sort", "like");
-        } else if (isSelectPlayedFilter) {
+        } else if (isRankingStatusItem && hasRankingRegisteredStatusFilter) {
           params.set("sort", "ranking_register_desc");
-        } else {
-          params.delete("sort");
         }
+      } else if (isFilterItem && hasRankingRegisteredStatusFilter) {
+        params.set("sort", "ranking_register_desc");
+      } else if (isRankingStatusItem && hasLikedFilter) {
+        params.set("sort", "like");
+      } else {
+        params.delete("sort");
       }
 
       return setDifficultyRangeParams(params, difficultyRange).toString();

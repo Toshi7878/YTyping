@@ -2,13 +2,14 @@ import type { SQL } from "drizzle-orm";
 import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import z from "zod";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
+import type { parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 const SelectMapFilterSchema = z.object({
   filter: z.string().optional(),
   minRate: z.number().optional(),
   maxRate: z.number().optional(),
-  played: z.string().optional(),
+  rankingStatus: z.string().optional(),
   keyword: z.string().default(""),
 });
 
@@ -64,6 +65,8 @@ export type MapListItem = Omit<Awaited<ReturnType<typeof mapListRouter.getList>>
   media: Awaited<ReturnType<typeof mapListRouter.getList>>["maps"][number]["media"] & { previewSpeed?: number };
 };
 
+type MapListSearchParams = ReturnType<typeof parseMapListSearchParams>;
+
 export const mapListRouter = {
   getList: publicProcedure.input(SelectInfiniteMapListSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
@@ -77,7 +80,7 @@ export const mapListRouter = {
       filter: input.filter,
       minRate: input.minRate,
       maxRate: input.maxRate,
-      played: input.played,
+      rankingStatus: input.rankingStatus,
       keyword: input.keyword,
       userId,
     });
@@ -112,12 +115,12 @@ export const mapListRouter = {
       filter: input.filter,
       minRate: input.minRate,
       maxRate: input.maxRate,
-      played: input.played,
+      rankingStatus: input.rankingStatus,
       keyword: input.keyword,
       userId,
     });
 
-    const totalCount = await db
+    return db
       .select({ total: count() })
       .from(Maps)
       .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
@@ -127,14 +130,12 @@ export const mapListRouter = {
       .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
       .where(whereConds.length ? and(...whereConds) : undefined)
       .then((rows) => rows[0]?.total ?? 0);
-
-    return totalCount;
   }),
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { videoId } = input;
 
-    const rows = await db
+    return db
       .select(MAP_LIST_FIELDS)
       .from(Maps)
       .innerJoin(Users, eq(Users.id, Maps.creatorId))
@@ -143,8 +144,6 @@ export const mapListRouter = {
       .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
       .where(eq(Maps.videoId, videoId))
       .orderBy(desc(Maps.id));
-
-    return rows;
   }),
 
   getActiveUserPlayingMaps: protectedProcedure.input(SelectActiveUserPlayingMapSchema).query(async ({ input, ctx }) => {
@@ -174,12 +173,12 @@ export const mapListRouter = {
 };
 
 // Helper functions (移植元: where.ts)
-interface GetFilterSql {
-  filter: string | null | undefined;
+interface GetFilterSqlParams {
+  filter: MapListSearchParams["filter"];
   userId: number | null;
 }
 
-function getFilterSql({ filter, userId }: GetFilterSql) {
+function getFilterSql({ filter, userId }: GetFilterSqlParams) {
   switch (filter) {
     case "liked":
       if (!userId) return;
@@ -192,11 +191,11 @@ function getFilterSql({ filter, userId }: GetFilterSql) {
   }
 }
 
-interface GetSortSql {
-  sort: string | null | undefined;
+interface GetSortSqlParams {
+  sort: MapListSearchParams["sort"];
 }
 
-function getSortSql({ sort }: GetSortSql) {
+function getSortSql({ sort }: GetSortSqlParams) {
   if (!sort) return [desc(Maps.id)];
 
   const isAsc = sort.includes("asc");
@@ -223,14 +222,14 @@ function getSortSql({ sort }: GetSortSql) {
   }
 }
 
-interface GetDifficultyFilterSql {
-  minRate: number | null | undefined;
-  maxRate: number | null | undefined;
+interface GetDifficultyFilterSqlParams {
+  minRate: MapListSearchParams["minRate"];
+  maxRate: MapListSearchParams["maxRate"];
 }
 
 const rateSchema = z.coerce.number().min(0).max(1200).optional();
 
-function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSql) {
+function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
   const conditions: SQL<unknown>[] = [];
 
   const validMinRate = rateSchema.safeParse(minRate);
@@ -247,18 +246,18 @@ function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSql) {
   return conditions;
 }
 
-interface GetPlayedFilterSql {
-  played: string | null | undefined;
+interface getRankingStatusFilterSqlParams {
+  rankingStatus: MapListSearchParams["rankingStatus"];
   userId: number | null;
 }
 
-function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
+function getRankingStatusFilterSql({ rankingStatus, userId }: getRankingStatusFilterSqlParams) {
   if (!userId) return;
 
-  switch (played) {
-    case "played":
+  switch (rankingStatus) {
+    case "registerd":
       return isNotNull(Results.id);
-    case "unplayed":
+    case "unregisterd":
       return isNull(Results.id);
     case "1st":
       return eq(Results.rank, 1);
@@ -271,14 +270,14 @@ function getPlayedFilterSql({ played, userId }: GetPlayedFilterSql) {
   }
 }
 
-const generateKeywordFilterSql = ({ mapKeyword }: { mapKeyword: string }) => {
-  if (!mapKeyword || mapKeyword.trim() === "") return;
-  const pattern = `%${mapKeyword}%`;
+const generateKeywordFilterSql = ({ keyword }: { keyword: MapListSearchParams["keyword"] }) => {
+  if (keyword === undefined || keyword.trim() === "") return;
+  const pattern = `%${keyword}%`;
   return or(
     ilike(Maps.title, pattern),
     ilike(Maps.artistName, pattern),
     ilike(Maps.musicSource, pattern),
-    sql`array_to_string(${Maps.tags}, ',') ilike ${`%${mapKeyword}%`}`,
+    sql`array_to_string(${Maps.tags}, ',') ilike ${`%${keyword}%`}`,
     ilike(Users.name, pattern),
   );
 };
@@ -287,25 +286,18 @@ function buildWhereConditions({
   filter,
   minRate,
   maxRate,
-  played,
+  rankingStatus,
   keyword,
   userId,
-}: {
-  filter: string | undefined;
-  minRate?: number;
-  maxRate?: number;
-  played?: string;
-  keyword?: string;
-  userId: number | null;
-}) {
+}: Omit<MapListSearchParams, "sort"> & { userId: number | null }) {
   const conditions: SQL<unknown>[] = [];
   const filterCond = getFilterSql({ filter, userId });
   if (filterCond) conditions.push(filterCond);
   const diffConds = getDifficultyFilterSql({ minRate, maxRate });
   conditions.push(...diffConds);
-  const playedCond = getPlayedFilterSql({ played, userId });
-  if (playedCond) conditions.push(playedCond);
-  const keywordCond = generateKeywordFilterSql({ mapKeyword: keyword ?? "" });
+  const rankingStatusCond = getRankingStatusFilterSql({ rankingStatus, userId });
+  if (rankingStatusCond) conditions.push(rankingStatusCond);
+  const keywordCond = generateKeywordFilterSql({ keyword });
   if (keywordCond) conditions.push(keywordCond);
   return conditions;
 }
