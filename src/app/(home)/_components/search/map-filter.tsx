@@ -115,12 +115,12 @@ const FilterInputs = () => {
                 {filter.label}
               </p>
               <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
-                {filter.params.map((param: FilterParam, paramIndex: number) => {
+                {filter.params.map((param: FilterParam, index: number) => {
                   const isActived = currentParams.find((p) => p.name === filter.name)?.value === param.value;
 
                   return (
                     <Link
-                      key={`${filter.name}-${paramIndex}`}
+                      key={`${filter.name}-${index}`}
                       href={`?${createQueryString(filter.name, param.value, !isActived)}`}
                       onClick={(e) => {
                         e.preventDefault();

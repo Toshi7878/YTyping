@@ -24,7 +24,6 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       <HomeClientProvider>
         <div className="mx-auto max-w-screen-xl lg:px-8">
           <MapControlArea />
-
           <MapList />
         </div>
       </HomeClientProvider>

@@ -8,12 +8,12 @@ export function parseResultListSearchParams(searchParams: URLSearchParams) {
 
   for (const [key, value] of searchParams.entries()) {
     if (key in PARAM_NAME) {
-      params[key as ResultParamKeys] = value;
+      params[key] = value;
     }
   }
 
   return {
-    mode: params.mode ?? "all",
+    mode: params.mode,
     minKpm: params.minKpm ? Number(params.minKpm) : DEFAULT_KPM_SEARCH_RANGE.min,
     maxKpm: params.maxKpm ? Number(params.maxKpm) : DEFAULT_KPM_SEARCH_RANGE.max,
     minClearRate: params.minClearRate ? Number(params.minClearRate) : DEFAULT_CLEAR_RATE_SEARCH_RANGE.min,
