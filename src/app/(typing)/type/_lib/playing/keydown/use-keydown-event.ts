@@ -7,8 +7,8 @@ import {
   useSetLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useLineCount } from "../../atoms/read-atoms";
+import { useGetTime } from "../../youtube-player/use-get-youtube-time";
 import { useCalcTypeSpeed } from "../use-calc-type-speed";
-import { useGetTime } from "../use-get-youtube-time";
 import { useSoundEffect } from "../use-sound-effect";
 import { useUpdateLineResult } from "../use-update-line-result";
 import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../use-update-status";

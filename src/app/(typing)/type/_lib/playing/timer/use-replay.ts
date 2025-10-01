@@ -10,8 +10,8 @@ import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/playing/use-calc-type
 import { useInputModeChange } from "@/app/(typing)/type/_lib/playing/use-input-mode-change";
 import type { ResultData, TypeResult } from "@/server/drizzle/validator/result";
 import type { YouTubeSpeed } from "@/types/types";
+import { useGetTime } from "../../youtube-player/use-get-youtube-time";
 import { KanaInput, RomaInput, type TypingKeys } from "../keydown/use-typing-judge";
-import { useGetTime } from "../use-get-youtube-time";
 import { useSoundEffect } from "../use-sound-effect";
 import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../use-update-status";
 

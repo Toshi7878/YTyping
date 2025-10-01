@@ -23,9 +23,9 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useDisplaySkipGuide } from "@/app/(typing)/type/_lib/playing/timer/use-display-skip-guide";
 import type { LineData } from "../../type";
+import { useGetTime } from "../../youtube-player/use-get-youtube-time";
 import { useOnEnd } from "../../youtube-player/use-youtube-events";
 import { useCalcTypeSpeed } from "../use-calc-type-speed";
-import { useGetTime } from "../use-get-youtube-time";
 import { useUpdateLineResult } from "../use-update-line-result";
 import { useLineUpdateStatus, useUpdateAllStatus } from "../use-update-status";
 import { useGetLineCountByTime } from "./use-get-line-count-by-time";
