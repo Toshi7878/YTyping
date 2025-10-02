@@ -10,7 +10,7 @@ import {
   useSetPlayingInputMode,
 } from "../atoms/state-atoms";
 import type { InputMode } from "../type";
-import { useGetTime } from "../youtube-player/use-get-youtube-time";
+import { useGetYouTubeTime } from "../youtube-player/use-get-youtube-time";
 
 export const useInputModeChange = () => {
   const setPlayingInputMode = useSetPlayingInputMode();
@@ -18,7 +18,7 @@ export const useInputModeChange = () => {
   const { setNextLyrics } = useSetNextLyrics();
   const setLineWord = useSetLineWord();
 
-  const { getCurrentLineTime, getCurrentOffsettedYTTime } = useGetTime();
+  const getCurrentTime = useGetYouTubeTime();
   const { readLineStatus, writeLineStatus } = useLineStatus();
   const readGameStateUtils = useReadGameUtilParams();
   const readLineWord = useReadLineWord();
@@ -61,13 +61,13 @@ export const useInputModeChange = () => {
     }
 
     if (scene === "play") {
-      const lineTime = getCurrentLineTime(getCurrentOffsettedYTTime());
+      const { currentLineTime } = getCurrentTime({ type: "lineTime" });
       writeLineStatus({
         types: [
           ...readLineStatus().types,
           {
             op: newInputMode,
-            t: Math.floor(lineTime * 1000) / 1000,
+            t: Math.floor(currentLineTime * 1000) / 1000,
           },
         ],
       });

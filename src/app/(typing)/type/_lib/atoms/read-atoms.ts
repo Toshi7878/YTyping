@@ -172,7 +172,6 @@ export const gameUtilityReferenceParamsAtom = atomWithReset({
   retryCount: 1,
   timeOffset: 0,
   startPlaySpeed: 1,
-  updateMsTimeCount: 0,
   replayKeyCount: 0,
   replayUserName: "",
   rankingScores: [] as number[],

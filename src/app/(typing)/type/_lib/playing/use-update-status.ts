@@ -29,11 +29,11 @@ export const useTypeSuccess = () => {
 
   const updateSuccessStatus = ({
     isCompleted,
-    lineRemainConstantTime,
+    constantRemainLineTime,
     updatePoint,
   }: {
     isCompleted?: boolean;
-    lineRemainConstantTime: number;
+    constantRemainLineTime: number;
     updatePoint: number;
   }) => {
     const lineTypeCount = readLineStatus().type;
@@ -53,7 +53,7 @@ export const useTypeSuccess = () => {
       let { rank } = prev;
 
       if (isCompleted) {
-        const tb = Math.floor(lineRemainConstantTime * 100);
+        const tb = Math.floor(constantRemainLineTime * 100);
         timeBonus = tb;
         score = prev.score + point + tb;
         if (map) {

@@ -1,7 +1,7 @@
 import { useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
-  useCurrentTimeState,
+  useElapsedSecTimeState,
   useMapState,
   useSceneGroupState,
   useSkipState,
@@ -36,25 +36,23 @@ const PlayingSkipGuide = () => {
 const PlayingTimeDisplay = () => {
   return (
     <div className="font-mono" id="movie_time">
-      <VideoCurrentTime /> / <VideoDurationTime />
+      <ElapsedMmSsDisplay /> / <VideoDurationTime />
     </div>
   );
 };
 
-const VideoCurrentTime = () => {
-  const currentTimeSSMM = useCurrentTimeState();
-  return <span id="current_time">{formatTime(currentTimeSSMM)}</span>;
+const ElapsedMmSsDisplay = () => {
+  const elapsedSecTime = useElapsedSecTimeState();
+  return <span id="elapsed_sec_time">{formatTime(elapsedSecTime)}</span>;
 };
 
 const VideoDurationTime = () => {
   const map = useMapState();
   const speedData = usePlaySpeedState();
   const { movieDuration } = useReadYTStatus().readYTStatus();
-  if (!map) {
-    return;
-  }
+  if (!map) return;
   const duration = map.duration > movieDuration ? movieDuration : map?.duration;
   const totalTime = formatTime(Number(duration) / speedData.playSpeed);
 
-  return <span id="total_time">{totalTime}</span>;
+  return <span id="constant_duration_count">{totalTime}</span>;
 };

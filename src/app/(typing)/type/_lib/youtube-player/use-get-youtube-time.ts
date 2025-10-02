@@ -1,8 +1,31 @@
+import { useRef } from "react";
 import { useGameUtilityReferenceParams, useLineCount, usePlayer, useReadYTStatus } from "../atoms/read-atoms";
 import { useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
 import { useReadMap, useReadUserTypingOptions } from "../atoms/state-atoms";
 
-export const useGetTime = () => {
+type GetTimeKey = { type: "time" } | { type: "lineTime" } | { type: "remainLineTime" };
+type CurrentTimeResult = {
+  currentTime: number;
+  constantTime: number;
+};
+
+type CurrentLineTimeResult = CurrentTimeResult & {
+  currentLineTime: number;
+  constantLineTime: number;
+};
+
+type CurrentRemainLineTimeResult = CurrentLineTimeResult & {
+  currentRemainLineTime: number;
+  constantRemainLineTime: number;
+};
+
+type TimeResultMap = {
+  time: CurrentTimeResult;
+  lineTime: CurrentLineTimeResult;
+  remainLineTime: CurrentRemainLineTimeResult;
+};
+
+export const useGetYouTubeTime = () => {
   const { readPlayer } = usePlayer();
   const { readYTStatus } = useReadYTStatus();
   const { readGameUtilRefParams } = useGameUtilityReferenceParams();
@@ -19,24 +42,24 @@ export const useGetTime = () => {
     return Number.isNaN(result) ? movieDuration : result;
   };
 
-  const getConstantOffsettedYTTime = (YTCurrentTime: number) => {
-    return YTCurrentTime / readPlaySpeed().playSpeed;
+  const getConstantOffsettedYTTime = ({ currentTime }: { currentTime: number }) => {
+    return currentTime / readPlaySpeed().playSpeed;
   };
 
-  const getCurrentLineTime = (YTCurrentTime: number) => {
+  const getCurrentLineTime = ({ currentTime }: { currentTime: number }) => {
     const map = readMap();
     if (!map) return 0;
     const count = readCount();
 
     if (count - 1 < 0) {
-      return YTCurrentTime;
+      return currentTime;
     }
 
     const prevLine = map.mapData[count - 1];
-    return YTCurrentTime - Number(prevLine.time);
+    return currentTime - Number(prevLine.time);
   };
 
-  const getCurrentLineRemainTime = (YTCurrentTime: number) => {
+  const getCurrentLineRemainTime = ({ currentTime }: { currentTime: number }) => {
     const map = readMap();
     if (!map) return 0;
 
@@ -46,36 +69,62 @@ export const useGetTime = () => {
     const { movieDuration } = readYTStatus();
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
-    const lineRemainTime = (nextLineTime - YTCurrentTime) / readPlaySpeed().playSpeed;
+    const lineRemainTime = (nextLineTime - currentTime) / readPlaySpeed().playSpeed;
 
     return lineRemainTime;
   };
 
-  const getConstantLineTime = (lineTime: number) => {
-    const lineConstantTime = Math.floor((lineTime / readPlaySpeed().playSpeed) * 1000) / 1000;
+  const getConstantLineTime = ({ currentLineTime }: { currentLineTime: number }) => {
+    const lineConstantTime = Math.floor((currentLineTime / readPlaySpeed().playSpeed) * 1000) / 1000;
     return lineConstantTime;
   };
 
-  const getConstantRemainLineTime = (lineConstantTime: number) => {
+  const getConstantRemainLineTime = ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
     if (!map) return 0;
     const count = readCount();
 
     const nextLine = map.mapData[count];
     const currentLine = map.mapData[count - 1];
+    if (!currentLine) return 0;
+
     const { movieDuration } = readYTStatus();
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
-    const lineRemainConstantTime = nextLineTime - currentLine.time - lineConstantTime;
+    const lineRemainConstantTime = nextLineTime - currentLine.time - constantLineTime;
     return lineRemainConstantTime;
   };
 
-  return {
-    getCurrentOffsettedYTTime,
-    getConstantOffsettedYTTime,
-    getCurrentLineTime,
-    getConstantLineTime,
-    getConstantRemainLineTime,
-    getCurrentLineRemainTime,
-  };
+  function getTimes(arg: { type: "time" }): TimeResultMap["time"];
+  function getTimes(arg: { type: "lineTime" }): TimeResultMap["lineTime"];
+  function getTimes(arg: { type: "remainLineTime" }): TimeResultMap["remainLineTime"];
+  function getTimes({ type }: GetTimeKey) {
+    const currentTime = getCurrentOffsettedYTTime();
+    const constantTime = getConstantOffsettedYTTime({ currentTime });
+
+    if (type === "time") {
+      return { currentTime, constantTime };
+    }
+
+    const currentLineTime = getCurrentLineTime({ currentTime });
+    const constantLineTime = getConstantLineTime({ currentLineTime });
+
+    if (type === "lineTime") {
+      return { currentTime, constantTime, currentLineTime, constantLineTime };
+    }
+
+    const currentRemainLineTime = getCurrentLineRemainTime({ currentTime });
+    const constantRemainLineTime = getConstantRemainLineTime({ constantLineTime });
+
+    return {
+      currentTime,
+      constantTime,
+      currentLineTime,
+      constantLineTime,
+      currentRemainLineTime,
+      constantRemainLineTime,
+    };
+  }
+
+  return getTimes;
 };

@@ -192,7 +192,7 @@ export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const useSetYTStarted = () => useSetAtom(isYTStartedAtom);
 
 const playingStateAtom = atomWithReset({
-  currentTime: 0,
+  elapsedSecTime: 0,
   lineRemainTime: 0,
   lineKpm: 0,
   combo: 0,
@@ -206,7 +206,7 @@ export const useResetPlayingState = () => {
   };
 };
 
-const currentTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("currentTime"));
+const elapsedSecTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("elapsedSecTime"));
 const lineRemainTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineRemainTime"));
 const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm"));
 const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
@@ -232,11 +232,11 @@ export const useReadCombo = () => {
   );
 };
 
-export const useCurrentTimeState = () => useAtomValue(currentTimeAtom, { store });
-export const useSetCurrentTime = () => useSetAtom(currentTimeAtom, { store });
-export const useReadCurrentTime = () => {
+export const useElapsedSecTimeState = () => useAtomValue(elapsedSecTimeAtom, { store });
+export const useSetElapsedSecTime = () => useSetAtom(elapsedSecTimeAtom, { store });
+export const useReadElapsedSecTime = () => {
   return useAtomCallback(
-    useCallback((get) => get(currentTimeAtom), []),
+    useCallback((get) => get(elapsedSecTimeAtom), []),
     { store },
   );
 };

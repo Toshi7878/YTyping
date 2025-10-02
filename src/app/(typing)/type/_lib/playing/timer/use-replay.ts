@@ -10,15 +10,15 @@ import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/playing/use-calc-type
 import { useInputModeChange } from "@/app/(typing)/type/_lib/playing/use-input-mode-change";
 import type { ResultData, TypeResult } from "@/server/drizzle/validator/result";
 import type { YouTubeSpeed } from "@/types/types";
-import { useGetTime } from "../../youtube-player/use-get-youtube-time";
+import { useGetYouTubeTime } from "../../youtube-player/use-get-youtube-time";
 import { KanaInput, RomaInput, type TypingKeys } from "../keydown/use-typing-judge";
 import { useSoundEffect } from "../use-sound-effect";
 import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../use-update-status";
 
 interface UseKeyReplayProps {
   constantLineTime: number;
+  constantRemainLineTime: number;
   type: TypeResult;
-  lineResult: ResultData[number];
 }
 
 const usePlayBackKey = () => {
@@ -26,7 +26,6 @@ const usePlayBackKey = () => {
 
   const inputModeChange = useInputModeChange();
   const dispatchSpeed = usePlaySpeedReducer();
-  const { getConstantRemainLineTime } = useGetTime();
 
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
 
@@ -39,7 +38,7 @@ const usePlayBackKey = () => {
   const readGameStateUtils = useReadGameUtilParams();
   const { readCount } = useLineCount();
 
-  return ({ constantLineTime, type }: UseKeyReplayProps) => {
+  return ({ constantLineTime, constantRemainLineTime, type }: UseKeyReplayProps) => {
     const { c: key, is: isSuccess, op: option } = type;
     const count = readCount();
 
@@ -59,7 +58,6 @@ const usePlayBackKey = () => {
         const isCompleted = result.newLineWord.nextChar.k === "";
         triggerTypeSound({ isCompleted });
 
-        const lineRemainConstantTime = getConstantRemainLineTime(constantLineTime);
         calcTypeSpeed({
           updateType: "keydown",
           constantLineTime,
@@ -71,10 +69,7 @@ const usePlayBackKey = () => {
         });
 
         if (!isCompleted) {
-          updateSuccessStatus({
-            lineRemainConstantTime,
-            updatePoint: result.updatePoint,
-          });
+          updateSuccessStatus({ constantRemainLineTime, updatePoint: result.updatePoint });
         } else {
           updateAllStatus({ count, updateType: "completed" });
         }
@@ -100,13 +95,19 @@ const usePlayBackKey = () => {
 };
 
 export const useReplay = () => {
-  const keyReplay = usePlayBackKey();
+  const playBackKey = usePlayBackKey();
   const readAllLineResults = useReadAllLineResult();
 
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readCount } = useLineCount();
 
-  return ({ constantLineTime }: { constantLineTime: number }) => {
+  return ({
+    constantLineTime,
+    constantRemainLineTime,
+  }: {
+    constantLineTime: number;
+    constantRemainLineTime: number;
+  }) => {
     const count = readCount();
     const lineResults = readAllLineResults();
 
@@ -122,7 +123,7 @@ export const useReplay = () => {
     const keyTime = type.t;
 
     if (constantLineTime >= keyTime) {
-      keyReplay({ constantLineTime, lineResult, type });
+      playBackKey({ constantLineTime, constantRemainLineTime, type });
       writeGameUtilRefParams({ replayKeyCount: replayKeyCount + 1 });
     }
   };

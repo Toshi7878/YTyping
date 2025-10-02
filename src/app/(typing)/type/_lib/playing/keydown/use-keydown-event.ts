@@ -7,7 +7,7 @@ import {
   useSetLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useLineCount } from "../../atoms/read-atoms";
-import { useGetTime } from "../../youtube-player/use-get-youtube-time";
+import { useGetYouTubeTime } from "../../youtube-player/use-get-youtube-time";
 import { useCalcTypeSpeed } from "../use-calc-type-speed";
 import { useSoundEffect } from "../use-sound-effect";
 import { useUpdateLineResult } from "../use-update-line-result";
@@ -136,7 +136,7 @@ const useTyping = () => {
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
-  const getTime = useGetTime();
+  const getTime = useGetYouTubeTime();
   const { readYTStatus } = useReadYTStatus();
 
   const calcTypeSpeed = useCalcTypeSpeed();
@@ -150,7 +150,7 @@ const useTyping = () => {
 
   return (event: KeyboardEvent) => {
     const { isSuccess, isFailed, isCompleted, newLineWord, ...inputResult } = inputJudge(event);
-    const constantLineTime = getTime("constantLine");
+    const { constantLineTime, constantRemainLineTime } = getTime({ type: "remainLineTime" });
 
     if (isSuccess) {
       setLineWord(newLineWord);
@@ -165,7 +165,7 @@ const useTyping = () => {
 
       updateSuccessStatus({
         isCompleted,
-        lineRemainConstantTime: getTime("constantRemainLine"),
+        constantRemainLineTime,
         updatePoint: inputResult.updatePoint,
       });
       const { isPaused } = readYTStatus();
