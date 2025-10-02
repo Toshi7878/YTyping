@@ -136,8 +136,7 @@ const useTyping = () => {
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
-  const { getCurrentLineTime, getCurrentOffsettedYTTime, getConstantLineTime, getConstantRemainLineTime } =
-    useGetTime();
+  const getTime = useGetTime();
   const { readYTStatus } = useReadYTStatus();
 
   const calcTypeSpeed = useCalcTypeSpeed();
@@ -151,7 +150,7 @@ const useTyping = () => {
 
   return (event: KeyboardEvent) => {
     const { isSuccess, isFailed, isCompleted, newLineWord, ...inputResult } = inputJudge(event);
-    const constantLineTime = getConstantLineTime(getCurrentLineTime(getCurrentOffsettedYTTime()));
+    const constantLineTime = getTime("constantLine");
 
     if (isSuccess) {
       setLineWord(newLineWord);
@@ -166,7 +165,7 @@ const useTyping = () => {
 
       updateSuccessStatus({
         isCompleted,
-        lineRemainConstantTime: getConstantRemainLineTime(constantLineTime),
+        lineRemainConstantTime: getTime("constantRemainLine"),
         updatePoint: inputResult.updatePoint,
       });
       const { isPaused } = readYTStatus();

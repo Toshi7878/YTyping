@@ -76,13 +76,7 @@ const useTimer = () => {
   const replay = useReplay();
   const getSeekLineCount = useGetLineCountByTime();
 
-  const {
-    getCurrentOffsettedYTTime,
-    getConstantOffsettedYTTime,
-    getCurrentLineTime,
-    getCurrentLineRemainTime,
-    getConstantLineTime,
-  } = useGetTime();
+  const getTime = useGetTime();
   const calcTypeSpeed = useCalcTypeSpeed();
 
   const { setLineProgressValue, setTotalProgressValue } = useProgress();
@@ -189,8 +183,8 @@ const useTimer = () => {
     const map = readMap();
     if (!map) return;
 
-    const currentOffesettedYTTime = getCurrentOffsettedYTTime();
-    const currentLineTime = getCurrentLineTime(currentOffesettedYTTime);
+    const currentOffesettedYTTime = getTime("currentOffsettedYT");
+    const currentLineTime = getTime("currentLine");
 
     const { movieDuration } = readYTStatus();
     const count = readCount();
@@ -200,17 +194,17 @@ const useTimer = () => {
       currentOffesettedYTTime >= nextLineTime || readPlayer().getPlayerState() === YT.PlayerState.ENDED;
 
     if (isUpdateLine) {
-      const constantLineTime = getConstantLineTime(currentLineTime);
+      const constantLineTime = getTime("constantLine");
       update({ currentOffesettedYTTime, constantLineTime, nextLine });
       return;
     }
 
-    const constantOffesettedYTTime = getConstantOffsettedYTTime(currentOffesettedYTTime);
+    const constantOffesettedYTTime = getTime("constantOffsettedYT");
     const isUpdateMs = Math.abs(constantOffesettedYTTime - readGameUtilRefParams().updateMsTimeCount) >= 0.1;
 
-    const constantLineTime = getConstantLineTime(currentLineTime);
+    const constantLineTime = getTime("constantLine");
     if (isUpdateMs) {
-      const constantRemainLineTime = getCurrentLineRemainTime(currentOffesettedYTTime);
+      const constantRemainLineTime = getTime("constantRemainLine");
       updateMs({
         currentOffesettedYTTime,
         constantOffesettedYTTime,
