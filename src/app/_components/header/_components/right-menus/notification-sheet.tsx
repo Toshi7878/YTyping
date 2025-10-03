@@ -2,8 +2,6 @@
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot } from "lucide-react";
-import { useEffect } from "react";
-import { useInView } from "react-intersection-observer";
 import { NotificationMapCard } from "@/components/shared/map-card/compact-card";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Button } from "@/components/ui/button";
@@ -12,6 +10,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useTRPC } from "@/trpc/provider";
 import { useNotificationQueries } from "@/utils/queries/notification.queries";
+import { useInfiniteScroll } from "@/utils/use-infinite-scroll";
 
 export const NotificationSheet = () => {
   const trpc = useTRPC();
@@ -52,18 +51,11 @@ export const NotificationSheet = () => {
 };
 
 const NotificationContent = () => {
-  const { ref, inView } = useInView({ threshold: 0.8 });
-
   const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(
     useNotificationQueries().infinite(),
   );
 
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      void fetchNextPage();
-    }
-  }, [inView, hasNextPage, fetchNextPage]);
-
+  const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage }, { threshold: 0.8 });
   return (
     <div className="h-full overflow-y-auto px-3">
       {isPending ? (

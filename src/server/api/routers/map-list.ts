@@ -1,11 +1,17 @@
 import type { SQL } from "drizzle-orm";
 import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
+import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import type { parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
-const SelectMapFilterSchema = z.object({
+const InfiniteMapListBaseSchema = z.object({
+  cursor: z.string().nullable().optional(),
+  sort: z.string().optional(),
+});
+
+const MapSearchParamsSchema = z.object({
   filter: z.string().optional(),
   minRate: z.number().optional(),
   maxRate: z.number().optional(),
@@ -13,10 +19,7 @@ const SelectMapFilterSchema = z.object({
   keyword: z.string().default(""),
 });
 
-const SelectInfiniteMapListSchema = SelectMapFilterSchema.extend({
-  cursor: z.string().nullable().optional(),
-  sort: z.string().optional(),
-});
+const SelectInfiniteMapListSchema = InfiniteMapListBaseSchema.extend(MapSearchParamsSchema.shape);
 
 const SelectActiveUserPlayingMapSchema = z.array(
   z.object({
@@ -60,44 +63,51 @@ const MAP_LIST_FIELDS = {
     myRankUpdatedAt: Results.updatedAt,
   },
 };
+const PAGE_SIZE = 30;
+
+const createBaseSelect = ({
+  userId,
+  orderers,
+  offset,
+}: {
+  userId: number;
+  orderers: SQL<unknown>[];
+  offset: number;
+}) => {
+  return db
+    .select(MAP_LIST_FIELDS)
+    .from(Maps)
+    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+    .innerJoin(Users, eq(Users.id, Maps.creatorId))
+    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, userId)))
+    .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, userId)))
+    .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+    .limit(PAGE_SIZE + 1)
+    .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
+    .offset(offset);
+};
 
 export type MapListItem = Omit<Awaited<ReturnType<typeof mapListRouter.getList>>["maps"][number], "media"> & {
   media: Awaited<ReturnType<typeof mapListRouter.getList>>["maps"][number]["media"] & { previewSpeed?: number };
 };
 
-type MapListSearchParams = ReturnType<typeof parseMapListSearchParams>;
+type MapListWhereParams = z.output<typeof MapSearchParamsSchema> & { userId: number | null };
 
 export const mapListRouter = {
   getList: publicProcedure.input(SelectInfiniteMapListSchema).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { user } = ctx;
     const userId = user?.id ? user.id : null;
-    const PAGE_SIZE = 30;
 
-    const page = input.cursor ? Number(input.cursor) : 0;
+    const { sort, cursor, ...filterParams } = input;
+    const page = cursor ? Number(cursor) : 0;
     const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
 
-    const whereConds = buildWhereConditions({
-      filter: input.filter,
-      minRate: input.minRate,
-      maxRate: input.maxRate,
-      rankingStatus: input.rankingStatus,
-      keyword: input.keyword,
-      userId,
-    });
-    const orderers = getSortSql({ sort: input.sort });
+    const whereConds = buildWhereConditions({ ...filterParams, userId });
+    const orderers = getSortSql({ sort });
 
-    const maps = await db
-      .select(MAP_LIST_FIELDS)
-      .from(Maps)
-      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-      .innerJoin(Users, eq(Users.id, Maps.creatorId))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
-      .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
-      .leftJoin(ResultStatuses, and(eq(ResultStatuses.resultId, Results.id)))
-      .where(whereConds.length ? and(...whereConds) : undefined)
-      .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
-      .limit(PAGE_SIZE + 1)
-      .offset(offset);
+    const maps = await createBaseSelect({ userId: user.id, orderers, offset }).where(
+      whereConds.length ? and(...whereConds) : undefined,
+    );
 
     let nextCursor: string | undefined;
     if (maps.length > PAGE_SIZE) {
@@ -107,18 +117,60 @@ export const mapListRouter = {
 
     return { maps, nextCursor };
   }),
-  getListLength: publicProcedure.input(SelectMapFilterSchema).query(async ({ input, ctx }) => {
+
+  getListByCreatorId: publicProcedure
+    .input(InfiniteMapListBaseSchema.extend({ creatorId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const { user } = ctx;
+
+      const { sort, cursor, creatorId } = input;
+      const page = cursor ? Number(cursor) : 0;
+      const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
+
+      const orderers = getSortSql({ sort });
+
+      const maps = await createBaseSelect({ userId: user.id, orderers, offset }).where(eq(Maps.creatorId, creatorId));
+
+      let nextCursor: string | undefined;
+      if (maps.length > PAGE_SIZE) {
+        maps.pop();
+        nextCursor = String(Number.isNaN(page) ? 1 : page + 1);
+      }
+
+      return { maps, nextCursor };
+    }),
+
+  getLikeListByUserId: publicProcedure
+    .input(InfiniteMapListBaseSchema.extend({ likedUserId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const { db, user } = ctx;
+
+      const { sort, cursor, likedUserId: likeUserId } = input;
+      const page = cursor ? Number(cursor) : 0;
+      const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
+
+      const orderers = getSortSql({ sort });
+
+      const UserLikes = alias(MapLikes, "UserLikes");
+
+      const maps = await createBaseSelect({ userId: user.id, orderers, offset })
+        .innerJoin(UserLikes, and(eq(UserLikes.mapId, Maps.id), eq(UserLikes.userId, likeUserId)))
+        .where(and(eq(UserLikes.userId, likeUserId), eq(UserLikes.hasLiked, true)));
+
+      let nextCursor: string | undefined;
+      if (maps.length > PAGE_SIZE) {
+        maps.pop();
+        nextCursor = String(Number.isNaN(page) ? 1 : page + 1);
+      }
+
+      return { maps, nextCursor };
+    }),
+
+  getListLength: publicProcedure.input(MapSearchParamsSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const userId = user?.id ? Number(user.id) : null;
 
-    const whereConds = buildWhereConditions({
-      filter: input.filter,
-      minRate: input.minRate,
-      maxRate: input.maxRate,
-      rankingStatus: input.rankingStatus,
-      keyword: input.keyword,
-      userId,
-    });
+    const whereConds = buildWhereConditions({ ...input, userId });
 
     return db
       .select({ total: count() })
@@ -130,20 +182,6 @@ export const mapListRouter = {
       .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
       .where(whereConds.length ? and(...whereConds) : undefined)
       .then((rows) => rows[0]?.total ?? 0);
-  }),
-  getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
-    const { videoId } = input;
-
-    return db
-      .select(MAP_LIST_FIELDS)
-      .from(Maps)
-      .innerJoin(Users, eq(Users.id, Maps.creatorId))
-      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
-      .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
-      .where(eq(Maps.videoId, videoId))
-      .orderBy(desc(Maps.id));
   }),
 
   getActiveUserPlayingMaps: protectedProcedure.input(SelectActiveUserPlayingMapSchema).query(async ({ input, ctx }) => {
@@ -172,17 +210,17 @@ export const mapListRouter = {
   }),
 };
 
-// Helper functions (移植元: where.ts)
 interface GetFilterSqlParams {
-  filter: MapListSearchParams["filter"];
+  filter: MapListWhereParams["filter"];
   userId: number | null;
+  likedUserId?: number;
 }
 
 function getFilterSql({ filter, userId }: GetFilterSqlParams) {
   switch (filter) {
-    case "liked":
-      if (!userId) return;
+    case "liked": {
       return eq(MapLikes.hasLiked, true);
+    }
     case "my-map":
       if (!userId) return;
       return eq(Maps.creatorId, userId);
@@ -192,7 +230,7 @@ function getFilterSql({ filter, userId }: GetFilterSqlParams) {
 }
 
 interface GetSortSqlParams {
-  sort: MapListSearchParams["sort"];
+  sort: string | undefined;
 }
 
 function getSortSql({ sort }: GetSortSqlParams) {
@@ -223,8 +261,8 @@ function getSortSql({ sort }: GetSortSqlParams) {
 }
 
 interface GetDifficultyFilterSqlParams {
-  minRate: MapListSearchParams["minRate"];
-  maxRate: MapListSearchParams["maxRate"];
+  minRate: MapListWhereParams["minRate"];
+  maxRate: MapListWhereParams["maxRate"];
 }
 
 const rateSchema = z.coerce.number().min(0).max(1200).optional();
@@ -247,7 +285,7 @@ function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSqlPara
 }
 
 interface getRankingStatusFilterSqlParams {
-  rankingStatus: MapListSearchParams["rankingStatus"];
+  rankingStatus: MapListWhereParams["rankingStatus"];
   userId: number | null;
 }
 
@@ -270,7 +308,7 @@ function getRankingStatusFilterSql({ rankingStatus, userId }: getRankingStatusFi
   }
 }
 
-const generateKeywordFilterSql = ({ keyword }: { keyword: MapListSearchParams["keyword"] }) => {
+const generateKeywordFilterSql = ({ keyword }: { keyword: MapListWhereParams["keyword"] }) => {
   if (keyword === undefined || keyword.trim() === "") return;
   const pattern = `%${keyword}%`;
   return or(
@@ -282,15 +320,9 @@ const generateKeywordFilterSql = ({ keyword }: { keyword: MapListSearchParams["k
   );
 };
 
-function buildWhereConditions({
-  filter,
-  minRate,
-  maxRate,
-  rankingStatus,
-  keyword,
-  userId,
-}: Omit<MapListSearchParams, "sort"> & { userId: number | null }) {
+function buildWhereConditions({ filter, minRate, maxRate, rankingStatus, keyword, userId }: MapListWhereParams) {
   const conditions: SQL<unknown>[] = [];
+
   const filterCond = getFilterSql({ filter, userId });
   if (filterCond) conditions.push(filterCond);
   const diffConds = getDifficultyFilterSql({ minRate, maxRate });
