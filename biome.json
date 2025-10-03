@@ -49,9 +49,7 @@
         "useThrowNewError": "error",
         "useFilenamingConvention": {
           "options": {
-            "filenameCases": [
-              "kebab-case"
-            ]
+            "filenameCases": ["kebab-case"]
           }
         },
         "noRestrictedImports": {
@@ -66,13 +64,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "**/layout.tsx",
-        "**/page.tsx",
-        "**/loading.tsx",
-        "**/error.tsx",
-        "**/not-found.tsx"
-      ],
+      "includes": ["**/layout.tsx", "**/page.tsx", "**/loading.tsx", "**/error.tsx", "**/not-found.tsx"],
       "linter": {
         "rules": {
           "style": {

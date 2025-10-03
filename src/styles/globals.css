@@ -185,7 +185,6 @@
     color: var(--foreground);
     color-scheme: var(--color-scheme);
     scrollbar-gutter: stable;
-
   }
 
   body[data-scroll-locked] {

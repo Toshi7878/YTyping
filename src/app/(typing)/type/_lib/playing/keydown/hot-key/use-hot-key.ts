@@ -147,16 +147,3 @@ export const usePlayingHotKey = () => {
     event.preventDefault();
   };
 };
-
-const usePauseShortcutKey = () => {
-  const gamePause = useGamePause();
-
-  return (event: KeyboardEvent) => {
-    switch (event.code) {
-      case "Escape": //Escでポーズ
-        gamePause();
-        event.preventDefault();
-        break;
-    }
-  };
-};

@@ -65,15 +65,7 @@ const MAP_LIST_FIELDS = {
 };
 const PAGE_SIZE = 30;
 
-const createBaseSelect = ({
-  userId,
-  orderers,
-  offset,
-}: {
-  userId: number;
-  orderers: SQL<unknown>[];
-  offset: number;
-}) => {
+const createBaseSelect = ({ userId }: { userId: number }) => {
   return db
     .select(MAP_LIST_FIELDS)
     .from(Maps)
@@ -81,10 +73,7 @@ const createBaseSelect = ({
     .innerJoin(Users, eq(Users.id, Maps.creatorId))
     .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, userId)))
     .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, userId)))
-    .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-    .limit(PAGE_SIZE + 1)
-    .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
-    .offset(offset);
+    .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id));
 };
 
 export type MapListItem = Omit<Awaited<ReturnType<typeof mapListRouter.getList>>["maps"][number], "media"> & {
@@ -103,9 +92,11 @@ export const mapListRouter = {
     const whereConds = buildWhereConditions({ ...filterParams, userId: user.id });
     const orderers = getSortSql({ sort });
 
-    const maps = await createBaseSelect({ userId: user.id, orderers, offset }).where(
-      whereConds.length ? and(...whereConds) : undefined,
-    );
+    const maps = await createBaseSelect({ userId: user.id })
+      .limit(PAGE_SIZE + 1)
+      .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
+      .offset(offset)
+      .where(whereConds.length ? and(...whereConds) : undefined);
 
     let nextCursor: string | undefined;
     if (maps.length > PAGE_SIZE) {
@@ -126,7 +117,11 @@ export const mapListRouter = {
       const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
       const orderers = getSortSql({ sort });
 
-      const maps = await createBaseSelect({ userId: user.id, orderers, offset }).where(eq(Maps.creatorId, creatorId));
+      const maps = await createBaseSelect({ userId: user.id })
+        .limit(PAGE_SIZE + 1)
+        .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
+        .offset(offset)
+        .where(eq(Maps.creatorId, creatorId));
 
       let nextCursor: string | undefined;
       if (maps.length > PAGE_SIZE) {
@@ -148,8 +143,11 @@ export const mapListRouter = {
       const orderers = getSortSql({ sort });
       const UserLikes = alias(MapLikes, "UserLikes");
 
-      const maps = await createBaseSelect({ userId: user.id, orderers, offset })
+      const maps = await createBaseSelect({ userId: user.id })
         .innerJoin(UserLikes, and(eq(UserLikes.mapId, Maps.id), eq(UserLikes.userId, likeUserId)))
+        .limit(PAGE_SIZE + 1)
+        .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
+        .offset(offset)
         .where(and(eq(UserLikes.userId, likeUserId), eq(UserLikes.hasLiked, true)));
 
       let nextCursor: string | undefined;
@@ -179,18 +177,19 @@ export const mapListRouter = {
       .then((rows) => rows[0]?.total ?? 0);
   }),
 
+  getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
+    const { user } = ctx;
+    const { videoId } = input;
+
+    return await createBaseSelect({ userId: user.id }).where(eq(Maps.videoId, videoId)).orderBy(desc(Maps.id));
+  }),
+
   getActiveUserPlayingMaps: protectedProcedure.input(SelectActiveUserPlayingMapSchema).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+    const { user } = ctx;
 
     const userListPromises = input.map(async (activeUser) => {
       if (activeUser.state === "type" && activeUser.mapId) {
-        const map = await db
-          .select(MAP_LIST_FIELDS)
-          .from(Maps)
-          .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-          .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
-          .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
-          .innerJoin(Users, eq(Users.id, Maps.creatorId))
+        const map = await createBaseSelect({ userId: user.id })
           .where(eq(Maps.id, activeUser.mapId))
           .then((rows) => rows[0]);
 
