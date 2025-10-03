@@ -10,7 +10,7 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { H3 } from "@/components/ui/typography";
+import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { TypeActivity } from "./user-stats/type-activity";
@@ -38,7 +38,6 @@ export const UserStatsCard = ({ userStats }: UserStatsProps) => {
   return (
     <Card>
       <CardHeader className="mx-8 flex flex-col items-center">
-        <CardTitle className="mb-2 text-2xl">タイピング統計情報</CardTitle>
         <Badge variant="secondary" className="text-sm">
           統計情報はやり直し時・ページ離脱時・リザルト時に更新されます
         </Badge>
@@ -107,7 +106,7 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
         ))}
       </div>
 
-      <H3>打鍵情報</H3>
+      <H2>打鍵情報</H2>
 
       <TypeActivity />
 

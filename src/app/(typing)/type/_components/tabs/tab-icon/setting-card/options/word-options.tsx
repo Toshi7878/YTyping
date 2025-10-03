@@ -4,7 +4,7 @@ import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typin
 import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
-import { H5 } from "@/components/ui/typography";
+import { H4 } from "@/components/ui/typography";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { mainWordDisplayEnum } from "@/server/drizzle/schema";
 
@@ -53,7 +53,7 @@ export const UserWordOptions = () => {
   return (
     <section className="flex flex-col gap-4">
       <header className="flex items-center justify-between">
-        <H5>ワード表示調整</H5>
+        <H4>ワード表示調整</H4>
         <Button size="sm" variant="outline" onClick={resetToDefaults}>
           <MdRestartAlt className="mr-2" />
           リセット

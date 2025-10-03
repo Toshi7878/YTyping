@@ -10,13 +10,13 @@ import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map-list";
 
-const mapLeftThumbnailVariants = cva("relative", {
+const mapLeftThumbnailVariants = cva("relative aspect-video", {
   variants: {
     size: {
-      home: "aspect-video w-[160px] sm:w-[220px]",
-      timeline: "aspect-video w-[120px]",
-      activeUser: "aspect-video w-[120px]",
-      notification: "aspect-video w-[150px]",
+      home: "w-[160px] sm:w-[220px]",
+      timeline: "w-[120px]",
+      activeUser: "w-[120px]",
+      notification: "w-[160px]",
     },
   },
 });
@@ -27,12 +27,13 @@ interface MapLeftThumbnailPreviewCoverProps {
   media?: MapListItem["media"];
   size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
   className?: string;
+  imageClassName?: string;
 }
 
 const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
 
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { alt = "", media, size, className, ...rest } = props;
+  const { alt = "", media, size, className, imageClassName, ...rest } = props;
 
   const src = `https://i.ytimg.com/vi/${media?.videoId}/mqdefault.jpg`;
   const pathname = usePathname();
@@ -42,10 +43,12 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
     <div className={cn("group relative my-auto select-none", className)} {...rest}>
       {media ? (
         <>
-          <div className={cn(mapLeftThumbnailVariants({ size }))}>
-            <Image unoptimized loading="lazy" alt={alt} src={src} fill className="rounded-md" />
+          <div className={mapLeftThumbnailVariants({ size })}>
+            <Image unoptimized loading="lazy" alt={alt} src={src} fill className={cn("rounded-md", imageClassName)} />
           </div>
-          {!PREVIEW_DISABLE_PATHNAMES.includes(pathSegment) && <ThumbnailPreviewCover {...media} />}
+          {!PREVIEW_DISABLE_PATHNAMES.includes(pathSegment) && (
+            <ThumbnailPreviewCover {...media} className={imageClassName} />
+          )}
         </>
       ) : (
         <div className={cn(mapLeftThumbnailVariants({ size }))}>
@@ -56,7 +59,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
   );
 };
 
-const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
+const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: string }) => {
   const { videoId: mapVideoId, previewTime: mapPreviewTime, previewSpeed: mapPreviewSpeed } = props;
   const { videoId } = usePreviewVideoState();
   const setPreviewVideo = useSetPreviewVideo();
@@ -95,6 +98,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"]) => {
       className={cn(
         "absolute inset-0 flex cursor-pointer items-center justify-center rounded-lg border-none",
         isActive ? "bg-black/50 opacity-100" : "bg-black/30 opacity-0 group-hover:opacity-100",
+        props.className,
       )}
       onClick={previewYouTube}
       onTouchMove={handleTouchMove}

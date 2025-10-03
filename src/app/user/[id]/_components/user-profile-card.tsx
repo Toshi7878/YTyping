@@ -4,9 +4,9 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { MdOutlineEdit } from "react-icons/md";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { H3 } from "@/components/ui/typography";
+import { H2 } from "@/components/ui/typography";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { FingerChartUrl } from "./user-info/finger-chart-url";
 import { KeyBoard } from "./user-info/usage-keyboard";
@@ -22,13 +22,9 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
 
   return (
     <Card>
-      <CardHeader className="mx-8">
-        <CardTitle className="text-lg">ユーザー情報</CardTitle>
-      </CardHeader>
-
       <CardContent className="mx-8">
         <div className="space-y-4">
-          <H3>{userProfile?.name ?? ""}</H3>
+          <H2>{userProfile?.name ?? ""}</H2>
           <FingerChartUrl url={userProfile?.fingerChartUrl ?? ""} />
           <KeyBoard keyboard={userProfile?.keyboard ?? ""} />
         </div>

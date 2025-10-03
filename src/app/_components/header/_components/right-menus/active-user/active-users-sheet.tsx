@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { CompactMapCard } from "@/components/shared/map-card/compact-card";
 import { MapLeftThumbnail } from "@/components/shared/map-card-thumbnail";
-import { CompactMapInfo } from "@/components/shared/map-info/compact-map-info";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
@@ -67,11 +67,7 @@ export const ActiveUsersSheet = () => {
                   </TableCell>
                   <TableCell className="px-0 py-2">
                     {user.state === "type" && user.map ? (
-                      <CardWithContent variant="map">
-                        <MapLeftThumbnail alt={user.map.info.title} media={user.map.media} size="activeUser" />
-
-                        <CompactMapInfo map={user.map} />
-                      </CardWithContent>
+                      <CompactMapCard map={user.map} thumbnailSize="activeUser" />
                     ) : (
                       <CardWithContent variant="map">
                         <MapLeftThumbnail size="activeUser" alt={stateMsg} />

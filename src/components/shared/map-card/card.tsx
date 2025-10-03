@@ -2,19 +2,35 @@
 import Link from "next/link";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
+import { CardWithContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
+import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";
+
+interface MapCardProps {
+  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  className?: string;
+}
+
+export const MapCard = ({ map, className }: MapCardProps) => {
+  return (
+    <CardWithContent variant="map" className={{ card: className }}>
+      <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
+      <MapInfo map={map} />
+    </CardWithContent>
+  );
+};
 
 interface MapInfoProps {
   map: RouterOutPuts["mapList"]["getList"]["maps"][number];
 }
 
-export const MapInfo = ({ map }: MapInfoProps) => {
+const MapInfo = ({ map }: MapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (

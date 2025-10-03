@@ -184,11 +184,16 @@
     background-color: var(--background);
     color: var(--foreground);
     color-scheme: var(--color-scheme);
+    scrollbar-gutter: stable;
+
+  }
+
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
   }
 
   body {
     @apply bg-background text-foreground;
-    scrollbar-gutter: stable;
   }
 
   ::selection {

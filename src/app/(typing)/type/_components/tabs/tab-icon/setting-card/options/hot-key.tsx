@@ -1,6 +1,6 @@
 import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
-import { H5 } from "@/components/ui/typography";
+import { H4 } from "@/components/ui/typography";
 import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
 
 export const HotKeySelectFields = () => {
@@ -17,7 +17,7 @@ export const HotKeySelectFields = () => {
 
   return (
     <section className="flex flex-col gap-2">
-      <H5>ショートカットキー設定</H5>
+      <H4>ショートカットキー設定</H4>
       <div className="flex items-baseline">
         <LabeledSelect
           label="タイミング調整"

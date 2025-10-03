@@ -3,7 +3,7 @@ import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typin
 import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
-import { H5 } from "@/components/ui/typography";
+import { H4 } from "@/components/ui/typography";
 
 export const UserSoundEffectCheckbox = () => {
   const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
@@ -13,7 +13,7 @@ export const UserSoundEffectCheckbox = () => {
 
   return (
     <section className="space-y-4">
-      <H5>サウンド</H5>
+      <H4>サウンド</H4>
       <VolumeRange player={readPlayer()} />
       <div className="flex flex-row gap-4">
         <LabeledCheckbox

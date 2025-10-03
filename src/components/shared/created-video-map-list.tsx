@@ -1,11 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { useTRPC } from "@/trpc/provider";
-import { CardWithContent } from "../ui/card";
-import { MapLeftThumbnail } from "./map-card-thumbnail";
-import { MapInfo } from "./map-info/map-info";
+import { Spinner } from "../ui/spinner";
+import { MapCard } from "./map-card/card";
 
 interface CreatedVideoMapListProps {
   videoId: string;
@@ -15,29 +13,17 @@ interface CreatedVideoMapListProps {
 export const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedVideoMapListProps) => {
   const trpc = useTRPC();
   const { data, isPending } = useQuery(trpc.mapList.getByVideoId.queryOptions({ videoId }));
-
-  if (isPending) {
-    return (
-      <div className="my-10 flex justify-center">
-        <Loader2 className="h-4 w-4 animate-spin" />
-      </div>
-    );
-  }
+  if (isPending) return <Spinner />;
 
   if (data?.length) {
     return (
-      <div>
-        <div className="my-3 text-lg font-bold">この動画の譜面が{data.length}件見つかりました</div>
-        {data.map((map) => {
-          return (
-            <div key={map.id} className="mb-2 max-w-[610px]">
-              <CardWithContent variant="map">
-                <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
-                <MapInfo map={map} />
-              </CardWithContent>
-            </div>
-          );
-        })}
+      <div className="space-y-3">
+        <div className="text-lg font-bold">この動画の譜面が{data.length}件見つかりました</div>
+        <div className="space-y-3">
+          {data.map((map) => (
+            <MapCard key={map.id} map={map} />
+          ))}
+        </div>
       </div>
     );
   }

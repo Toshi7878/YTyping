@@ -1,7 +1,7 @@
 "use client";
 import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { CounterInput } from "@/components/ui/counter";
-import { H5 } from "@/components/ui/typography";
+import { H4 } from "@/components/ui/typography";
 
 const MAX_SCROLL = 20;
 const MIN_SCROLL = 0;
@@ -13,7 +13,7 @@ export const UserWordScrollChange = () => {
 
   return (
     <section className="flex flex-col gap-4">
-      <H5>ワードスクロール開始位置 調整</H5>
+      <H4>ワードスクロール開始位置 調整</H4>
       <div className="flex gap-6">
         <CounterInput
           onChange={(value) => setUserTypingOptions({ kanaWordScroll: value })}

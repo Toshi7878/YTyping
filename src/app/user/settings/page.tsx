@@ -1,5 +1,5 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { H4 } from "@/components/ui/typography";
+import { H2 } from "@/components/ui/typography";
 import { auth } from "@/server/auth";
 import { serverApi } from "@/trpc/server";
 import { UserNameInputForm } from "../_components/user-name-input-form";
@@ -23,7 +23,7 @@ const ProfileSettingCard = async () => {
   return (
     <Card className="mx-8">
       <CardHeader>
-        <H4>プロフィール設定</H4>
+        <H2>プロフィール設定</H2>
       </CardHeader>
       <CardContent>
         <div className="flex w-full flex-col gap-4">
@@ -43,7 +43,7 @@ const OptionSettingCard = async () => {
   return (
     <Card className="mx-8">
       <CardHeader>
-        <H4 id="user-settings">ユーザー設定</H4>
+        <H2 id="user-settings">ユーザー設定</H2>
       </CardHeader>
       <CardContent>
         <div className="flex w-full">

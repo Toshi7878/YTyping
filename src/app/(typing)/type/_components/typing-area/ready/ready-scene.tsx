@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { usePlayer } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { H3 } from "@/components/ui/typography";
+import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { ReadyInputModeRadioCards } from "./ready-child/input-mode-radio-cards";
 import { ReadyPlaySpeed } from "./ready-child/min-play-speed-counter";
@@ -53,7 +53,7 @@ export const ReadyScene = ({ className }: ReadyProps) => {
 
   return (
     <div className={cn("flex flex-col justify-between select-none", className)}>
-      <H3 className="text-4xl md:text-2xl">Enterキー / 動画をクリックして開始</H3>
+      <H2 className="text-4xl md:text-2xl">Enterキー / 動画をクリックして開始</H2>
 
       <ReadyInputModeRadioCards />
 

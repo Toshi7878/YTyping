@@ -1,9 +1,8 @@
 "use client";
 import type { Route } from "next";
-import type { ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
 import { TextLink } from "@/components/ui/text-link";
-import { H6 } from "@/components/ui/typography";
+import { H3, OList, P } from "@/components/ui/typography";
 import { useUserAgent } from "@/lib/global-atoms";
 
 const browserLinks: Record<string, { url: Route; text: string }> = {
@@ -32,50 +31,48 @@ const useBrowserLink = () => {
 
 export function InstallationSteps() {
   const browserLink = useBrowserLink();
-  return (
-    <ol className="list-inside list-decimal space-y-6">
-      <InstallationStep title="Stylusブラウザ拡張機能をインストールする">
-        <p className="mt-2">
+  const steps = [
+    {
+      title: "Stylusブラウザ拡張機能をインストールする",
+      content: (
+        <P>
           <TextLink href={browserLink.url}>{browserLink.text}</TextLink>
           から拡張機能をインストールします。
-        </p>
-      </InstallationStep>
-
-      <Separator className="my-4" />
-
-      <InstallationStep title="UserStyles.worldからスタイルをインストールする">
-        <p className="mt-2">
+        </P>
+      ),
+    },
+    {
+      title: "UserStyles.worldからスタイルをインストールする",
+      content: (
+        <P>
           <TextLink href="https://userstyles.world/style/24064">
             YTyping YouTube Background Player - userstyles.world
           </TextLink>
           からスタイルをインストールします。
-        </p>
-      </InstallationStep>
+        </P>
+      ),
+    },
+    {
+      title: "YTypingをプレイする",
+      content: <P>YTypingをプレイすると、YouTubeの動画が背景に表示されます。</P>,
+    },
+    {
+      title: "見た目を微調整する",
+      content: <P>拡張機能のStylusアイコンからスタイルの編集を行うと、プレイヤーのサイズや透過度を調整できます。</P>,
+    },
+  ];
 
-      <Separator className="my-4" />
-
-      <InstallationStep title="YTypingをプレイする">
-        <p className="mt-2">YTypingをプレイすると、YouTubeの動画が背景に表示されます。</p>
-      </InstallationStep>
-      <InstallationStep title="見た目を微調整する">
-        <p className="mt-2">
-          拡張機能のStylusアイコンからスタイルの編集を行うと、プレイヤーのサイズや透過度を調整できます。
-        </p>
-      </InstallationStep>
-    </ol>
-  );
-}
-
-interface InstallationStepProps {
-  title: string;
-  children: ReactNode;
-}
-
-function InstallationStep({ title, children }: InstallationStepProps) {
   return (
-    <li>
-      <H6 className="inline">{title}</H6>
-      {children}
-    </li>
+    <OList
+      className="list-inside list-decimal space-y-6"
+      listClassName="marker:text-lg marker:font-semibold"
+      items={steps.map((step, i) => (
+        <>
+          <H3 className="inline">{step.title}</H3>
+          {step.content}
+          {i !== steps.length - 1 && <Separator className="my-4" />}
+        </>
+      ))}
+    />
   );
 }

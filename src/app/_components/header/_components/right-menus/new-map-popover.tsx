@@ -13,7 +13,7 @@ import { Form } from "@/components/ui/form";
 import { InputFormField } from "@/components/ui/input/input-form-field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { H4 } from "@/components/ui/typography";
+import { H3 } from "@/components/ui/typography";
 import { useGetBackupMapInfoLiveQuery } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
 import { extractYouTubeId } from "../../../../../utils/extract-youtube-id";
@@ -65,7 +65,7 @@ export const NewMapPopover = () => {
       <PopoverContent className="w-full p-1 md:w-[640px]" side="bottom" align="end" sideOffset={8}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
-            <H4>譜面新規作成</H4>
+            <H3>譜面新規作成</H3>
             <InputFormField
               name="videoId"
               label="譜面を作成したいYouTube動画のURLを入力"

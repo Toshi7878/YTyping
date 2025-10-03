@@ -1,10 +1,9 @@
 "use client";
 import type { Route } from "next";
 import Image from "next/image";
-import type { ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
 import { TextLink } from "@/components/ui/text-link";
-import { H6 } from "@/components/ui/typography";
+import { H3, OList, P } from "@/components/ui/typography";
 import { useUserAgent } from "@/lib/global-atoms";
 import preMidLinks from "@/public/images/manual/premid/premid-link.png";
 import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
@@ -40,58 +39,56 @@ const useBrowserLink = () => {
 
 export function InstallationSteps() {
   const browserLink = useBrowserLink();
-  return (
-    <ol className="list-inside list-decimal space-y-6">
-      <InstallationStep title="PreMiDブラウザ拡張機能をインストールする">
-        <p className="mt-2">
+
+  const steps = [
+    {
+      title: "PreMiDブラウザ拡張機能をインストールする",
+      content: (
+        <P>
           <TextLink href={browserLink.url}>{browserLink.text}</TextLink>
           から拡張機能をインストールします。
-        </p>
-      </InstallationStep>
-
-      <Separator className="my-4" />
-
-      <InstallationStep title="YTypingのプレゼンス設定をPreMiD Storeからインストールする">
-        <p className="mt-2">
+        </P>
+      ),
+    },
+    {
+      title: "YTypingのプレゼンス設定をPreMiD Storeからインストールする",
+      content: (
+        <P>
           <TextLink href="https://premid.app/store/presences/YTyping">YTyping - PreMiD Store</TextLink>
           からYTypingのプレゼンス設定を追加します。
-        </p>
-      </InstallationStep>
+        </P>
+      ),
+    },
 
-      <Separator className="my-4" />
+    {
+      title: "PreMiD拡張機能を開いてDiscordアカウントとリンクします。",
+      content: <P>PreMiD拡張機能を初めて開くと、以下の表示が出てくるので、表示したいDiscordアカウントとリンクする</P>,
+      images: <PreMidLinkImage />,
+    },
+    {
+      title: "YTypingをプレイする",
+      content: <P>YTypingをプレイすると、自動的にDiscordのステータスに表示されます。</P>,
+      images: <PreMidPresenceImages />,
+    },
+  ];
 
-      <InstallationStep title="PreMiD拡張機能を開いてDiscordアカウントとリンクします。">
-        <div className="mt-2">
-          <p>PreMiD拡張機能を初めて開くと、以下の表示が出てくるので、表示したいDiscordアカウントとリンクする</p>
-          <PreMidLinkImage />
-        </div>
-      </InstallationStep>
-
-      <Separator className="my-4" />
-
-      <InstallationStep title="YTypingをプレイする">
-        <p className="mt-2">YTypingをプレイすると、自動的にDiscordのステータスに表示されます。</p>
-        <PreMidPresenceImages />
-      </InstallationStep>
-    </ol>
-  );
-}
-
-interface InstallationStepProps {
-  title: string;
-  children: ReactNode;
-}
-
-function InstallationStep({ title, children }: InstallationStepProps) {
   return (
-    <li>
-      <H6 className="inline">{title}</H6>
-      {children}
-    </li>
+    <OList
+      className="space-y-6"
+      listClassName="marker:text-lg marker:font-semibold"
+      items={steps.map((step, i) => (
+        <>
+          <H3>{step.title}</H3>
+          {step.content}
+          {step.images}
+          {i !== steps.length - 1 && <Separator className="my-4" />}
+        </>
+      ))}
+    />
   );
 }
 
-export function PreMidLinkImage() {
+function PreMidLinkImage() {
   return (
     <Image
       alt="PreMID拡張機能を開いてDiscordアカウントとリンクします。"
@@ -103,7 +100,7 @@ export function PreMidLinkImage() {
   );
 }
 
-export function PreMidPresenceImages() {
+function PreMidPresenceImages() {
   return (
     <div className="mt-2 flex flex-col gap-4">
       <Image
