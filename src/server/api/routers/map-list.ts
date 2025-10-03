@@ -96,13 +96,11 @@ type MapListWhereParams = z.output<typeof MapSearchParamsSchema> & { userId: num
 export const mapListRouter = {
   getList: publicProcedure.input(SelectInfiniteMapListSchema).query(async ({ input, ctx }) => {
     const { user } = ctx;
-    const userId = user?.id ? user.id : null;
 
     const { sort, cursor, ...filterParams } = input;
     const page = cursor ? Number(cursor) : 0;
     const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
-
-    const whereConds = buildWhereConditions({ ...filterParams, userId });
+    const whereConds = buildWhereConditions({ ...filterParams, userId: user.id });
     const orderers = getSortSql({ sort });
 
     const maps = await createBaseSelect({ userId: user.id, orderers, offset }).where(
@@ -126,7 +124,6 @@ export const mapListRouter = {
       const { sort, cursor, creatorId } = input;
       const page = cursor ? Number(cursor) : 0;
       const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
-
       const orderers = getSortSql({ sort });
 
       const maps = await createBaseSelect({ userId: user.id, orderers, offset }).where(eq(Maps.creatorId, creatorId));
@@ -143,14 +140,12 @@ export const mapListRouter = {
   getLikeListByUserId: publicProcedure
     .input(InfiniteMapListBaseSchema.extend({ likedUserId: z.number() }))
     .query(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+      const { user } = ctx;
 
       const { sort, cursor, likedUserId: likeUserId } = input;
       const page = cursor ? Number(cursor) : 0;
       const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
-
       const orderers = getSortSql({ sort });
-
       const UserLikes = alias(MapLikes, "UserLikes");
 
       const maps = await createBaseSelect({ userId: user.id, orderers, offset })

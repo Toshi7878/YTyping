@@ -40,8 +40,8 @@ export const NotificationSheet = () => {
         </SheetTrigger>
       </TooltipWrapper>
 
-      <SheetContent side="right" className="block sm:max-w-md">
-        <SheetHeader>
+      <SheetContent side="right" className="sm:max-w-md">
+        <SheetHeader className="py-2">
           <SheetTitle>通知</SheetTitle>
         </SheetHeader>
         <NotificationContent />
@@ -61,18 +61,16 @@ const NotificationContent = () => {
       {isPending ? (
         <Spinner />
       ) : (
-        <div className="h-full">
+        <div className="h-full space-y-4">
           {data?.pages.length ? (
             data.pages.map((page) => {
               return page.notifications.map((notify) => {
                 const { map } = notify;
 
                 return (
-                  <div key={`${notify.visitor.id}-${notify.map.id}`} className="mb-4">
-                    <div className="mb-2">
-                      <NotificationMapCard notify={notify} map={map} />
-                      <DateDistanceText date={notify.created_at} className="text-muted-foreground flex justify-end" />
-                    </div>
+                  <div key={`${notify.visitor.id}-${notify.map.id}`}>
+                    <NotificationMapCard notify={notify} map={map} />
+                    <DateDistanceText date={notify.created_at} className="text-muted-foreground flex justify-end" />
                   </div>
                 );
               });
