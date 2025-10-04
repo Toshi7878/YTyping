@@ -69,6 +69,7 @@ export const SubmitRankingButton = ({
     <Button
       size="4xl"
       variant="primary-hover-light"
+      className="max-sm:text-5xl max-sm:h-40 max-sm:w-xl"
       disabled={isSendResultBtnDisabled}
       loading={sendResult.isPending}
       onClick={handleClick}

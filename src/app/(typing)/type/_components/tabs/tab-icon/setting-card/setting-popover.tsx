@@ -145,7 +145,7 @@ const SettingButton = () => {
   return (
     <TooltipWrapper label="設定" delayDuration={500}>
       <Button variant="unstyled" size="icon" className="hover:text-foreground/90" asChild>
-        <IoMdSettings className="size-16 md:size-9" />
+        <IoMdSettings className="size-24 md:size-9" />
       </Button>
     </TooltipWrapper>
   );

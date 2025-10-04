@@ -15,7 +15,7 @@ export const EndText = () => {
   const scene = useSceneState();
 
   return (
-    <div className="mx-2 text-left text-3xl md:text-3xl" id="end_text">
+    <div className="mx-2 text-left text-5xl md:text-3xl" id="end_text">
       {isPerfect && scene === "play_end" && <span>パーフェクト！！</span>}
       <span>
         {scene === "practice_end" ? (

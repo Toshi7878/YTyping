@@ -8,7 +8,7 @@ export const TabIcons = ({ className }: { className?: string }) => {
   const { data: session } = useSession();
 
   return (
-    <div className={cn("text-foreground/60 relative flex md:bottom-1", className)}>
+    <div className={cn("text-foreground/60 relative flex md:bottom-1 max-sm:pr-10", className)}>
       {session?.user.id ? <SettingPopover /> : null}
       {session?.user.id ? <LikeIconButton /> : null}
       <EditIconButton />

@@ -26,7 +26,7 @@ export const BottomButton = (props: BottomBadgeProps) => {
         onClick={props.onClick}
         onClickCapture={props.onClickCapture}
         variant="outline-accent"
-        className="rounded-full text-xl font-bold hover:scale-105"
+        className="rounded-full max-sm:p-9 text-4xl md:text-xl font-bold md:scale-100 hover:scale-105"
       >
         {props.badgeText}
       </Button>
@@ -35,7 +35,7 @@ export const BottomButton = (props: BottomBadgeProps) => {
         onClick={props.onClick}
         onClickCapture={props.onClickCapture}
         disabled={isDisabled}
-        className="bg-transparent"
+        className="bg-transparent text-xl hidden md:block"
       >
         {props.kbdText}
       </Kbd>
@@ -60,18 +60,18 @@ export const BottomDoubleKeyButton = (props: BottomDoubleKeyBadgeProps) => {
 
   return (
     <div className={cn("flex items-center gap-2", isHidden && "hidden")}>
-      <Kbd onClick={props.onClickPrev} disabled={isDisabled} className="bg-transparent">
+      <Kbd onClick={props.onClickPrev} disabled={isDisabled} className="bg-transparent text-5xl md:text-xl">
         {props.kbdTextPrev}
       </Kbd>
       <Button
         disabled={isDisabled}
         onClick={props.onClick}
         variant="accent"
-        className="rounded-full border font-bold hover:scale-105"
+        className="rounded-full border max-sm:p-9 text-4xl md:text-xl font-bold hover:scale-105"
       >
         {props.badgeText}
       </Button>
-      <Kbd onClick={props.onClickNext} disabled={isDisabled} className="bg-transparent">
+      <Kbd onClick={props.onClickNext} disabled={isDisabled} className="bg-transparent text-5xl md:text-xl">
         {props.kbdTextNext}
       </Kbd>
     </div>

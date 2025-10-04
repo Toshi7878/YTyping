@@ -27,9 +27,9 @@ export const LikeIconButton = () => {
     <TooltipWrapper label="譜面にいいね" delayDuration={500} className="relative top-1">
       <LikeButton
         onClick={handleClick}
-        size={isSmScreen ? 96 : 64}
+        size={isSmScreen ? 164 : 64}
         defaultLiked={hasLiked ?? false}
-        className={cn("bottom-3.5", hasLiked ? "hover:opacity-80" : "hover:text-foreground/90")}
+        className={cn("bottom-3.5 max-sm:mb-[-25px]", hasLiked ? "hover:opacity-80" : "hover:text-foreground/90")}
       />
     </TooltipWrapper>
   );

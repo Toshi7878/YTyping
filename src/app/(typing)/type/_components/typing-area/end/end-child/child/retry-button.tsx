@@ -46,7 +46,12 @@ export const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: RetryButto
   };
 
   return (
-    <Button ref={retryBtnRef} variant="outline" className="h-auto px-20 py-6 text-2xl" onClick={handleRetry}>
+    <Button
+      ref={retryBtnRef}
+      variant="outline"
+      className="max-sm:text-5xl max-sm:h-32 max-sm:w-md h-auto px-20 py-6 text-2xl"
+      onClick={handleRetry}
+    >
       {getButtonText()}
     </Button>
   );

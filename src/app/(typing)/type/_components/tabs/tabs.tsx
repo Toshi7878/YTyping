@@ -38,7 +38,7 @@ const TabLists = () => {
       {TAB_NAMES.map((name) => (
         <TabsTrigger
           variant="underline"
-          className="flex max-w-50 flex-1 items-end"
+          className="flex max-sm:pb-5 max-w-96 md:max-w-50 flex-1 items-end text-5xl md:text-xl"
           key={name}
           value={name}
           onFocus={(e) => e.target.blur()}
