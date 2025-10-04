@@ -1,6 +1,7 @@
 "use client";
 
-import { useSuspenseInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { ResultCard } from "@/components/shared/result-card/result-card";
 import { Spinner } from "@/components/ui/spinner";
 import { Large, Small } from "@/components/ui/typography";
@@ -35,7 +36,17 @@ export const UserResultList = ({ id }: { id: string }) => {
 
 const StatsList = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();
-  const { data: stats } = useSuspenseQuery(trpc.result.getUserResultStats.queryOptions({ userId: Number(userId) }));
+  const { data: stats, isPending } = useQuery(trpc.result.getUserResultStats.queryOptions({ userId: Number(userId) }));
+
+  if (isPending) {
+    return (
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3 mt-1">
+        <StatsItem label="登録数" loading />
+        <StatsItem label="1位数" loading />
+        <StatsItem label="1位率" loading />
+      </section>
+    );
+  }
 
   const total = stats?.totalResults ?? 0;
   const first = stats?.firstRankCount ?? 0;
@@ -50,11 +61,12 @@ const StatsList = ({ userId }: { userId: string }) => {
   );
 };
 
-const StatsItem = ({ label, value }: { label: string; value: string }) => {
+const StatsItem = ({ label, value, loading }: { label: string; value?: string; loading?: boolean }) => {
   return (
-    <div className="rounded-sm border p-4">
+    <div className="rounded-sm border p-4 relative">
       <Small className="text-muted-foreground">{label}</Small>
-      <Large>{value}</Large>
+      {loading && <Loader2 className="animate-spin size-7" />}
+      {value && <Large>{value}</Large>}
     </div>
   );
 };
