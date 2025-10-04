@@ -44,4 +44,4 @@ jobs:
         run: pnpm run check
 
       - name: Run Type check
-        run: pnpm next typegen && pnpm type-check
+        run: pnpm next typegen && pnpm typecheck
