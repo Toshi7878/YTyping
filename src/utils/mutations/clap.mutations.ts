@@ -7,6 +7,7 @@ import { useTRPC } from "@/trpc/provider";
 
 type MapRankingFilter = ReturnType<Trpc["result"]["getMapRanking"]["queryFilter"]>;
 type TimelineFilter = ReturnType<Trpc["result"]["getAllWithMap"]["infiniteQueryFilter"]>;
+type UserResultsFilter = ReturnType<Trpc["result"]["getAllWithMapByUserId"]["infiniteQueryFilter"]>;
 
 function setTimelineClapOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
@@ -44,6 +45,57 @@ function setTimelineClapServer(
   clapCount: number,
 ) {
   queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMap"]>>(filter, (old) => {
+    if (!old?.pages) return old;
+    return {
+      ...old,
+      pages: old.pages.map((page) => ({
+        ...page,
+        items: page.items.map((result) =>
+          result.id === resultId
+            ? { ...result, clap: { hasClapped, count: clapCount } satisfies ResultWithMapItem["clap"] }
+            : result,
+        ),
+      })),
+    };
+  });
+}
+
+function setUserResultsClapOptimistic(
+  queryClient: ReturnType<typeof useQueryClient>,
+  filter: UserResultsFilter,
+  resultId: number,
+  optimisticState: boolean,
+) {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMapByUserId"]>>(filter, (old) => {
+    if (!old?.pages) return old;
+    return {
+      ...old,
+      pages: old.pages.map((page) => ({
+        ...page,
+        items: page.items.map((result) =>
+          result.id === resultId
+            ? {
+                ...result,
+                clap: {
+                  count: optimisticState ? result.clap.count + 1 : Math.max(0, result.clap.count - 1),
+                  hasClapped: optimisticState,
+                } satisfies ResultWithMapItem["clap"],
+              }
+            : result,
+        ),
+      })),
+    };
+  });
+}
+
+function setUserResultsClapServer(
+  queryClient: ReturnType<typeof useQueryClient>,
+  filter: UserResultsFilter,
+  resultId: number,
+  hasClapped: boolean,
+  clapCount: number,
+) {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMapByUserId"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -109,14 +161,20 @@ export function useClapMutationTimeline() {
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
         const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
+        const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
 
         await queryClient.cancelQueries(timelineFilter);
+        await queryClient.cancelQueries(userResultsFilter);
 
-        const previous = [...queryClient.getQueriesData(timelineFilter)];
+        const previous = [
+          ...queryClient.getQueriesData(timelineFilter),
+          ...queryClient.getQueriesData(userResultsFilter),
+        ];
 
         setTimelineClapOptimistic(queryClient, timelineFilter, input.resultId, input.newState);
+        setUserResultsClapOptimistic(queryClient, userResultsFilter, input.resultId, input.newState);
 
-        return { previous, timelineFilter };
+        return { previous, timelineFilter, userResultsFilter };
       },
       onError: (_err, _vars, ctx) => {
         if (ctx?.previous) {
@@ -132,6 +190,7 @@ export function useClapMutationTimeline() {
 
         if (!ctx) return;
         setTimelineClapServer(queryClient, ctx.timelineFilter, resultId, hasClapped, clapCount);
+        setUserResultsClapServer(queryClient, ctx.userResultsFilter, resultId, hasClapped, clapCount);
       },
     }),
   );
@@ -162,8 +221,10 @@ export function useClapMutationRanking(mapId: number) {
       },
       onSuccess: (server, _vars, ctx) => {
         const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
+        const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
 
         setTimelineClapServer(queryClient, timelineFilter, server.resultId, server.hasClapped, server.clapCount);
+        setUserResultsClapServer(queryClient, userResultsFilter, server.resultId, server.hasClapped, server.clapCount);
         if (!ctx) return;
         setRankingClapServer(queryClient, ctx.mapRankingFilter, server.resultId, server.hasClapped, server.clapCount);
       },
