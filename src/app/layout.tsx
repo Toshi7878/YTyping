@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { SessionProvider } from "next-auth/react";
-import type { ReactNode } from "react";
 import { AlertDialogProvider } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
@@ -28,11 +27,7 @@ export const metadata: Metadata = {
   description: "",
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
   const session = await auth();
   const userAgent = (await headers()).get("user-agent") ?? "";
 
