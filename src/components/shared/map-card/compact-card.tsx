@@ -4,6 +4,7 @@ import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { Card, CardContent, CardHeader, CardWithContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import type { MapListItem } from "@/server/api/routers/map-list";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
@@ -12,7 +13,7 @@ import { UserNameLinkText } from "../text/user-name-link-text";
 
 interface NotificationMapCardProps {
   notify: RouterOutPuts["notification"]["getInfinite"]["notifications"][number];
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: MapListItem;
 }
 
 export const NotificationMapCard = ({ notify, map }: NotificationMapCardProps) => {
@@ -45,7 +46,7 @@ export const NotificationMapCard = ({ notify, map }: NotificationMapCardProps) =
 };
 
 interface CompactMapCardProps {
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: MapListItem;
   thumbnailSize: "activeUser";
 }
 
@@ -59,7 +60,7 @@ export const CompactMapCard = ({ map, thumbnailSize }: CompactMapCardProps) => {
 };
 
 interface CompactMapInfoProps {
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: MapListItem;
 }
 
 const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
@@ -91,7 +92,7 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
 };
 
 interface MapBadgesProps {
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: MapListItem;
 }
 
 const MapBadges = ({ map }: MapBadgesProps) => {
@@ -115,8 +116,8 @@ const MapBadges = ({ map }: MapBadgesProps) => {
 
 interface MapCountIconsProps {
   mapId: number;
-  ranking: RouterOutPuts["mapList"]["getList"]["maps"][number]["ranking"];
-  like: RouterOutPuts["mapList"]["getList"]["maps"][number]["like"];
+  ranking: MapListItem["ranking"];
+  like: MapListItem["like"];
 }
 
 const MapCountIcons = ({ mapId, ranking, like }: MapCountIconsProps) => {

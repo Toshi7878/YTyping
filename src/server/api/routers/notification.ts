@@ -1,3 +1,4 @@
+import type { TRPCRouterRecord } from "@trpc/server";
 import { and, desc, eq } from "drizzle-orm";
 import z from "zod";
 import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
@@ -118,4 +119,4 @@ export const notificationRouter = {
       .set({ checked: true })
       .where(and(eq(Notifications.visitedId, user.id), eq(Notifications.checked, false)));
   }),
-};
+} satisfies TRPCRouterRecord;

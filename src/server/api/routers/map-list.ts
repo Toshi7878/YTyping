@@ -1,3 +1,4 @@
+import type { TRPCRouterRecord } from "@trpc/server";
 import type { SQL } from "drizzle-orm";
 import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
@@ -5,6 +6,7 @@ import z from "zod";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import { protectedProcedure, publicProcedure } from "../trpc";
+import { applyCursorPagination, parseCursor } from "../utils/pagination";
 
 const InfiniteMapListBaseSchema = z.object({
   cursor: z.string().nullable().optional(),
@@ -19,55 +21,40 @@ const MapSearchParamsSchema = z.object({
   keyword: z.string().default(""),
 });
 
-const SelectInfiniteMapListSchema = InfiniteMapListBaseSchema.extend(MapSearchParamsSchema.shape);
-
-const SelectActiveUserPlayingMapSchema = z.array(
-  z.object({
-    id: z.number(),
-    name: z.string(),
-    onlineAt: z.coerce.date(),
-    state: z.string(),
-    mapId: z.number().nullable(),
-  }),
-);
-
-const MAP_LIST_FIELDS = {
-  id: Maps.id,
-  updatedAt: Maps.updatedAt,
-  media: {
-    videoId: Maps.videoId,
-    previewTime: Maps.previewTime,
-    thumbnailQuality: Maps.thumbnailQuality,
-  },
-  info: {
-    title: Maps.title,
-    artistName: Maps.artistName,
-    source: Maps.musicSource,
-    duration: Maps.duration,
-  },
-  creator: {
-    id: Users.id,
-    name: Users.name,
-  },
-  difficulty: {
-    romaKpmMedian: MapDifficulties.romaKpmMedian,
-    romaKpmMax: MapDifficulties.romaKpmMax,
-  },
-  like: {
-    count: Maps.likeCount,
-    hasLiked: MapLikes.hasLiked,
-  },
-  ranking: {
-    count: Maps.rankingCount,
-    myRank: Results.rank,
-    myRankUpdatedAt: Results.updatedAt,
-  },
-};
-const PAGE_SIZE = 30;
-
 const createBaseSelect = ({ userId }: { userId: number }) => {
   return db
-    .select(MAP_LIST_FIELDS)
+    .select({
+      id: Maps.id,
+      updatedAt: Maps.updatedAt,
+      media: {
+        videoId: Maps.videoId,
+        previewTime: Maps.previewTime,
+        thumbnailQuality: Maps.thumbnailQuality,
+      },
+      info: {
+        title: Maps.title,
+        artistName: Maps.artistName,
+        source: Maps.musicSource,
+        duration: Maps.duration,
+      },
+      creator: {
+        id: Users.id,
+        name: Users.name,
+      },
+      difficulty: {
+        romaKpmMedian: MapDifficulties.romaKpmMedian,
+        romaKpmMax: MapDifficulties.romaKpmMax,
+      },
+      like: {
+        count: Maps.likeCount,
+        hasLiked: MapLikes.hasLiked,
+      },
+      ranking: {
+        count: Maps.rankingCount,
+        myRank: Results.rank,
+        myRankUpdatedAt: Results.updatedAt,
+      },
+    })
     .from(Maps)
     .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
     .innerJoin(Users, eq(Users.id, Maps.creatorId))
@@ -76,45 +63,42 @@ const createBaseSelect = ({ userId }: { userId: number }) => {
     .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id));
 };
 
-export type MapListItem = Omit<Awaited<ReturnType<typeof mapListRouter.getList>>["maps"][number], "media"> & {
-  media: Awaited<ReturnType<typeof mapListRouter.getList>>["maps"][number]["media"] & { previewSpeed?: number };
+type BaseSelectItem = Awaited<ReturnType<typeof createBaseSelect>>[number];
+
+export type MapListItem = Omit<BaseSelectItem, "media"> & {
+  media: BaseSelectItem["media"] & {
+    previewSpeed?: number;
+  };
 };
 
-type MapListWhereParams = z.output<typeof MapSearchParamsSchema> & { userId: number | null };
+const PAGE_SIZE = 30;
+const mapListRoute = {
+  getList: publicProcedure
+    .input(InfiniteMapListBaseSchema.extend(MapSearchParamsSchema.shape))
+    .query(async ({ input, ctx }) => {
+      const { sort, cursor, ...filterParams } = input;
+      const { user } = ctx;
 
-export const mapListRouter = {
-  getList: publicProcedure.input(SelectInfiniteMapListSchema).query(async ({ input, ctx }) => {
-    const { user } = ctx;
+      const { page, offset } = parseCursor(cursor, PAGE_SIZE);
+      const whereConds = buildWhereConditions({ ...filterParams, userId: user.id });
+      const orderers = getSortSql({ sort });
 
-    const { sort, cursor, ...filterParams } = input;
-    const page = cursor ? Number(cursor) : 0;
-    const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
-    const whereConds = buildWhereConditions({ ...filterParams, userId: user.id });
-    const orderers = getSortSql({ sort });
+      const maps = await createBaseSelect({ userId: user.id })
+        .limit(PAGE_SIZE + 1)
+        .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
+        .offset(offset)
+        .where(whereConds.length ? and(...whereConds) : undefined);
 
-    const maps = await createBaseSelect({ userId: user.id })
-      .limit(PAGE_SIZE + 1)
-      .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
-      .offset(offset)
-      .where(whereConds.length ? and(...whereConds) : undefined);
-
-    let nextCursor: string | undefined;
-    if (maps.length > PAGE_SIZE) {
-      maps.pop();
-      nextCursor = String(Number.isNaN(page) ? 1 : page + 1);
-    }
-
-    return { maps, nextCursor };
-  }),
+      return applyCursorPagination(maps, page, PAGE_SIZE);
+    }),
 
   getListByCreatorId: publicProcedure
     .input(InfiniteMapListBaseSchema.extend({ creatorId: z.number() }))
     .query(async ({ input, ctx }) => {
+      const { sort, cursor, creatorId } = input;
       const { user } = ctx;
 
-      const { sort, cursor, creatorId } = input;
-      const page = cursor ? Number(cursor) : 0;
-      const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
+      const { page, offset } = parseCursor(cursor, PAGE_SIZE);
       const orderers = getSortSql({ sort });
 
       const maps = await createBaseSelect({ userId: user.id })
@@ -123,42 +107,69 @@ export const mapListRouter = {
         .offset(offset)
         .where(eq(Maps.creatorId, creatorId));
 
-      let nextCursor: string | undefined;
-      if (maps.length > PAGE_SIZE) {
-        maps.pop();
-        nextCursor = String(Number.isNaN(page) ? 1 : page + 1);
-      }
-
-      return { maps, nextCursor };
+      return applyCursorPagination(maps, page, PAGE_SIZE);
     }),
 
   getLikeListByUserId: publicProcedure
     .input(InfiniteMapListBaseSchema.extend({ likedUserId: z.number() }))
     .query(async ({ input, ctx }) => {
+      const { sort, cursor, likedUserId } = input;
       const { user } = ctx;
 
-      const { sort, cursor, likedUserId: likeUserId } = input;
-      const page = cursor ? Number(cursor) : 0;
-      const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
+      const { page, offset } = parseCursor(cursor, PAGE_SIZE);
       const orderers = getSortSql({ sort });
       const UserLikes = alias(MapLikes, "UserLikes");
 
       const maps = await createBaseSelect({ userId: user.id })
-        .innerJoin(UserLikes, and(eq(UserLikes.mapId, Maps.id), eq(UserLikes.userId, likeUserId)))
+        .innerJoin(UserLikes, and(eq(UserLikes.mapId, Maps.id), eq(UserLikes.userId, likedUserId)))
         .limit(PAGE_SIZE + 1)
         .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
         .offset(offset)
-        .where(and(eq(UserLikes.userId, likeUserId), eq(UserLikes.hasLiked, true)));
+        .where(and(eq(UserLikes.userId, likedUserId), eq(UserLikes.hasLiked, true)));
 
-      let nextCursor: string | undefined;
-      if (maps.length > PAGE_SIZE) {
-        maps.pop();
-        nextCursor = String(Number.isNaN(page) ? 1 : page + 1);
-      }
-
-      return { maps, nextCursor };
+      return applyCursorPagination(maps, page, PAGE_SIZE);
     }),
 
+  getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
+    const { user } = ctx;
+    const { videoId } = input;
+
+    return createBaseSelect({ userId: user.id }).where(eq(Maps.videoId, videoId)).orderBy(desc(Maps.id));
+  }),
+
+  getActiveUserPlayingMaps: protectedProcedure
+    .input(
+      z.array(
+        z.object({
+          id: z.number(),
+          name: z.string(),
+          onlineAt: z.coerce.date(),
+          state: z.string(),
+          mapId: z.number().nullable(),
+        }),
+      ),
+    )
+    .query(async ({ input, ctx }) => {
+      const { user } = ctx;
+
+      const userListPromises = input.map(async (activeUser) => {
+        if (activeUser.state === "type" && activeUser.mapId) {
+          const map = await createBaseSelect({ userId: user.id })
+            .where(eq(Maps.id, activeUser.mapId))
+            .then((rows) => rows[0]);
+
+          return { ...activeUser, map };
+        }
+
+        return { ...activeUser, map: null };
+      });
+
+      const userList = await Promise.all(userListPromises);
+      return userList;
+    }),
+} satisfies TRPCRouterRecord;
+
+const mapListCountRoute = {
   getListLength: publicProcedure.input(MapSearchParamsSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const userId = user?.id ? Number(user.id) : null;
@@ -170,40 +181,20 @@ export const mapListRouter = {
       .from(Maps)
       .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
       .innerJoin(Users, eq(Users.id, Maps.creatorId))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
-      .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)))
+      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), userId !== null ? eq(MapLikes.userId, userId) : undefined))
+      .leftJoin(Results, and(eq(Results.mapId, Maps.id), userId !== null ? eq(Results.userId, userId) : undefined))
       .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
       .where(whereConds.length ? and(...whereConds) : undefined)
       .then((rows) => rows[0]?.total ?? 0);
   }),
+} satisfies TRPCRouterRecord;
 
-  getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
-    const { user } = ctx;
-    const { videoId } = input;
+export const mapListRouter = {
+  ...mapListRoute,
+  ...mapListCountRoute,
+} satisfies TRPCRouterRecord;
 
-    return await createBaseSelect({ userId: user.id }).where(eq(Maps.videoId, videoId)).orderBy(desc(Maps.id));
-  }),
-
-  getActiveUserPlayingMaps: protectedProcedure.input(SelectActiveUserPlayingMapSchema).query(async ({ input, ctx }) => {
-    const { user } = ctx;
-
-    const userListPromises = input.map(async (activeUser) => {
-      if (activeUser.state === "type" && activeUser.mapId) {
-        const map = await createBaseSelect({ userId: user.id })
-          .where(eq(Maps.id, activeUser.mapId))
-          .then((rows) => rows[0]);
-
-        return { ...activeUser, map };
-      }
-
-      return { ...activeUser, map: null };
-    });
-
-    const userList = await Promise.all(userListPromises);
-    return userList;
-  }),
-};
-
+type MapListWhereParams = z.output<typeof MapSearchParamsSchema> & { userId: number | null };
 interface GetFilterSqlParams {
   filter: MapListWhereParams["filter"];
   userId: number | null;

@@ -1,3 +1,4 @@
+import type { TRPCRouterRecord } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { UserImeTypingOptions, UserOptions, UserTypingOptions } from "@/server/drizzle/schema";
 import {
@@ -77,4 +78,4 @@ export const userOptionRouter = {
         hideUserStats: UserOptions.hideUserStats,
       });
   }),
-};
+} satisfies TRPCRouterRecord;

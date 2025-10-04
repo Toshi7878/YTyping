@@ -1,3 +1,4 @@
+import type { TRPCRouterRecord } from "@trpc/server";
 import axios from "axios";
 import { env } from "@/env";
 import { publicProcedure } from "../trpc";
@@ -12,4 +13,4 @@ export const vercelRouter = {
     const latestDeployment = response.data.deployments[0];
     return new Date(latestDeployment.buildingAt);
   }),
-};
+} satisfies TRPCRouterRecord;

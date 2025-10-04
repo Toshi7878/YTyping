@@ -149,13 +149,14 @@ const MapListLength = () => {
   const searchParams = useSearchParams();
   const trpc = useTRPC();
   const params = parseMapListSearchParams(searchParams);
-  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getListLength.queryOptions(params));
+  const { sort: _, ...queryParams } = params;
+  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getListLength.queryOptions(queryParams));
 
   return (
     <div className="bg-accent text-accent-foreground flex items-center gap-4 rounded-md px-3 py-1 font-medium">
       <span>譜面数:</span>
       <div className="flex w-6 min-w-6 items-center justify-end">
-        {isPending ? <Loader2 className="h-4 w-4" /> : mapListLength}
+        {isPending ? <Loader2 className="size-4 animate-spin" /> : mapListLength}
       </div>
     </div>
   );

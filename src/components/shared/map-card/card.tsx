@@ -4,7 +4,7 @@ import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardWithContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { MapListItem } from "@/server/api/routers/map-list";
 import { formatTime } from "@/utils/format-time";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
@@ -13,7 +13,7 @@ import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";
 
 interface MapCardProps {
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: MapListItem;
   className?: string;
 }
 
@@ -27,7 +27,7 @@ export const MapCard = ({ map, className }: MapCardProps) => {
 };
 
 interface MapInfoProps {
-  map: RouterOutPuts["mapList"]["getList"]["maps"][number];
+  map: MapListItem;
 }
 
 const MapInfo = ({ map }: MapInfoProps) => {
@@ -89,7 +89,7 @@ const MapInfoBottom = ({ map }: MapInfoProps) => {
 };
 
 interface MapCreatorInfoProps {
-  creator: RouterOutPuts["mapList"]["getList"]["maps"][number]["creator"];
+  creator: MapListItem["creator"];
   updatedAt: Date;
 }
 

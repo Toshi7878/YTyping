@@ -1,12 +1,12 @@
 import type { InfiniteData } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ResultListItem } from "@/server/api/routers/result";
+import type { ResultWithMapItem } from "@/server/api/routers/result";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
 
 type MapRankingFilter = ReturnType<Trpc["result"]["getMapRanking"]["queryFilter"]>;
-type TimelineFilter = ReturnType<Trpc["result"]["usersResultList"]["infiniteQueryFilter"]>;
+type TimelineFilter = ReturnType<Trpc["result"]["getAllResultWithMap"]["infiniteQueryFilter"]>;
 
 function setTimelineClapOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
@@ -14,7 +14,7 @@ function setTimelineClapOptimistic(
   resultId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllResultWithMap"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -27,7 +27,7 @@ function setTimelineClapOptimistic(
                 clap: {
                   count: optimisticState ? result.clap.count + 1 : Math.max(0, result.clap.count - 1),
                   hasClapped: optimisticState,
-                } satisfies ResultListItem["clap"],
+                } satisfies ResultWithMapItem["clap"],
               }
             : result,
         ),
@@ -43,7 +43,7 @@ function setTimelineClapServer(
   hasClapped: boolean,
   clapCount: number,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllResultWithMap"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -51,7 +51,7 @@ function setTimelineClapServer(
         ...page,
         items: page.items.map((result) =>
           result.id === resultId
-            ? { ...result, clap: { hasClapped, count: clapCount } satisfies ResultListItem["clap"] }
+            ? { ...result, clap: { hasClapped, count: clapCount } satisfies ResultWithMapItem["clap"] }
             : result,
         ),
       })),
@@ -74,7 +74,7 @@ function setRankingClapOptimistic(
             clap: {
               hasClapped: optimisticState,
               count: optimisticState ? result.clap.count + 1 : Math.max(0, result.clap.count - 1),
-            } satisfies ResultListItem["clap"],
+            } satisfies ResultWithMapItem["clap"],
           }
         : result,
     );
@@ -94,7 +94,7 @@ function setRankingClapServer(
       result.id === resultId
         ? {
             ...result,
-            clap: { hasClapped, count: clapCount } satisfies ResultListItem["clap"],
+            clap: { hasClapped, count: clapCount } satisfies ResultWithMapItem["clap"],
           }
         : result,
     );
@@ -108,7 +108,7 @@ export function useClapMutationTimeline() {
   return useMutation(
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
+        const timelineFilter = trpc.result.getAllResultWithMap.infiniteQueryFilter();
 
         await queryClient.cancelQueries(timelineFilter);
 
@@ -161,7 +161,7 @@ export function useClapMutationRanking(mapId: number) {
         }
       },
       onSuccess: (server, _vars, ctx) => {
-        const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
+        const timelineFilter = trpc.result.getAllResultWithMap.infiniteQueryFilter();
 
         setTimelineClapServer(queryClient, timelineFilter, server.resultId, server.hasClapped, server.clapCount);
         if (!ctx) return;

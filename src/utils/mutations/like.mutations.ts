@@ -6,7 +6,7 @@ import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
 
 type MapListFilter = ReturnType<Trpc["mapList"]["getList"]["infiniteQueryFilter"]>;
-type TimeLineFilter = ReturnType<Trpc["result"]["usersResultList"]["infiniteQueryFilter"]>;
+type TimeLineFilter = ReturnType<Trpc["result"]["getAllResultWithMap"]["infiniteQueryFilter"]>;
 type ActiveUserMapsFilter = ReturnType<Trpc["mapList"]["getActiveUserPlayingMaps"]["queryFilter"]>;
 type NotificationsMapFilter = ReturnType<Trpc["notification"]["getInfinite"]["infiniteQueryFilter"]>;
 
@@ -22,7 +22,7 @@ function setMapListOptimistic(
       ...old,
       pages: old.pages.map((page) => ({
         ...page,
-        maps: page.maps.map((map) =>
+        maps: page.items.map((map) =>
           map.id === mapId
             ? ({
                 ...map,
@@ -51,7 +51,7 @@ function setMapListServer(
       ...old,
       pages: old.pages.map((page) => ({
         ...page,
-        maps: page.maps.map((map) =>
+        maps: page.items.map((map) =>
           map.id === mapId ? ({ ...map, like: { count: likeCount, hasLiked } } satisfies MapListItem) : map,
         ),
       })),
@@ -65,7 +65,7 @@ function setTimelineOptimistic(
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllResultWithMap"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -97,7 +97,7 @@ function setTimelineServer(
   likeCount: number,
   hasLiked: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["usersResultList"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllResultWithMap"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -243,7 +243,7 @@ export function useLikeMutationMapList() {
     trpc.like.toggleLike.mutationOptions({
       onMutate: async (input) => {
         const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
-        const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
+        const timelineFilter = trpc.result.getAllResultWithMap.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
         const activeUserMapsFilter = trpc.mapList.getActiveUserPlayingMaps.queryFilter();
 
@@ -291,7 +291,7 @@ export function useLikeMutationMapInfo() {
       onMutate: async (input) => {
         const mapInfoFilter = trpc.map.getMapInfo.queryFilter();
         const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
-        const timelineFilter = trpc.result.usersResultList.infiniteQueryFilter();
+        const timelineFilter = trpc.result.getAllResultWithMap.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
         const activeUserMapsFilter = trpc.mapList.getActiveUserPlayingMaps.queryFilter();
 

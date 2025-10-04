@@ -1,7 +1,7 @@
-import { TRPCError } from "@trpc/server";
-import type { AnyColumn, SQL } from "drizzle-orm";
+import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
+import type { SQL } from "drizzle-orm";
 import { and, desc, eq, gt, gte, ilike, inArray, lte, or } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
+import { alias, type BuildAliasTable } from "drizzle-orm/pg-core";
 import z from "zod";
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/const";
 import type { TXType } from "@/server/drizzle/client";
@@ -20,9 +20,14 @@ import type { ResultData } from "@/server/drizzle/validator/result";
 import { CreateResultSchema } from "@/server/drizzle/validator/result";
 import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { protectedProcedure, publicProcedure } from "../trpc";
+import { applyCursorPagination, parseCursor } from "../utils/pagination";
 import type { MapListItem } from "./map-list";
 
-const SelectFilterUserResultListSchema = z.object({
+const InfiniteResultListBaseSchema = z.object({
+  cursor: z.string().nullable().optional(),
+});
+
+const ResultSearchParamsSchema = z.object({
   mode: z.string().default("all"),
   minKpm: z.number().default(DEFAULT_KPM_SEARCH_RANGE.min),
   maxKpm: z.number().default(DEFAULT_KPM_SEARCH_RANGE.max),
@@ -34,171 +39,167 @@ const SelectFilterUserResultListSchema = z.object({
   mapKeyword: z.string().default(""),
 });
 
-const SelectUsersResultInfiniteListSchema = SelectFilterUserResultListSchema.extend({
-  cursor: z.string().nullable().optional(),
-});
-
-const resultSelectSchema = () => {
-  const Player = alias(Users, "Player");
-
+const createResultBaseFields = (Player: BuildAliasTable<typeof Users, "Player">) => {
   return {
-    schema: {
-      id: Results.id,
-      updatedAt: Results.updatedAt,
-      rank: Results.rank,
-      score: ResultStatuses.score,
-      player: {
-        id: Player.id,
-        name: Player.name,
-      },
-      typeCounts: {
-        romaType: ResultStatuses.romaType,
-        kanaType: ResultStatuses.kanaType,
-        flickType: ResultStatuses.flickType,
-        englishType: ResultStatuses.englishType,
-        symbolType: ResultStatuses.symbolType,
-        spaceType: ResultStatuses.spaceType,
-        numType: ResultStatuses.numType,
-      },
-      otherStatus: {
-        playSpeed: ResultStatuses.minPlaySpeed,
-        miss: ResultStatuses.miss,
-        lost: ResultStatuses.lost,
-        maxCombo: ResultStatuses.maxCombo,
-        clearRate: ResultStatuses.clearRate,
-      },
-      typeSpeed: {
-        kpm: ResultStatuses.kpm,
-        rkpm: ResultStatuses.rkpm,
-        kanaToRomaKpm: ResultStatuses.kanaToRomaKpm,
-        kanaToRomaRkpm: ResultStatuses.kanaToRomaRkpm,
-      },
-      clap: { count: Results.clapCount, hasClapped: ResultClaps.hasClapped },
+    id: Results.id,
+    updatedAt: Results.updatedAt,
+    rank: Results.rank,
+    score: ResultStatuses.score,
+    player: { id: Player.id, name: Player.name },
+    typeCounts: {
+      romaType: ResultStatuses.romaType,
+      kanaType: ResultStatuses.kanaType,
+      flickType: ResultStatuses.flickType,
+      englishType: ResultStatuses.englishType,
+      symbolType: ResultStatuses.symbolType,
+      spaceType: ResultStatuses.spaceType,
+      numType: ResultStatuses.numType,
     },
-    Player,
+    otherStatus: {
+      playSpeed: ResultStatuses.minPlaySpeed,
+      miss: ResultStatuses.miss,
+      lost: ResultStatuses.lost,
+      maxCombo: ResultStatuses.maxCombo,
+      clearRate: ResultStatuses.clearRate,
+    },
+    typeSpeed: {
+      kpm: ResultStatuses.kpm,
+      rkpm: ResultStatuses.rkpm,
+      kanaToRomaKpm: ResultStatuses.kanaToRomaKpm,
+      kanaToRomaRkpm: ResultStatuses.kanaToRomaRkpm,
+    },
+    clap: { count: Results.clapCount, hasClapped: ResultClaps.hasClapped },
   };
 };
 
-export type ResultListItem = Awaited<ReturnType<typeof resultRouter.usersResultList>>["items"][number];
+const createResultWithMapBaseSelect = ({
+  userId,
+  alias: tableAlias,
+}: {
+  userId: number | null;
+  alias: {
+    Player: BuildAliasTable<typeof Users, "Player">;
+    Creator: BuildAliasTable<typeof Users, "Creator">;
+  };
+}) => {
+  const { Player, Creator } = tableAlias;
+  const resultSelectFields = createResultBaseFields(Player);
 
-export const resultRouter = {
-  usersResultList: publicProcedure.input(SelectUsersResultInfiniteListSchema).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
-    const PAGE_SIZE = 25;
+  const MyResult = alias(Results, "MyResult");
 
-    const userId = user?.id ? user.id : null;
-    const page = input.cursor ? Number(input.cursor) : 0;
-    const offset = Number.isNaN(page) ? 0 : page * PAGE_SIZE;
+  const mapSelectFields = {
+    id: Maps.id,
+    videoId: Maps.videoId,
+    title: Maps.title,
+    artistName: Maps.artistName,
+    musicSource: Maps.musicSource,
+    previewTime: Maps.previewTime,
+    thumbnailQuality: Maps.thumbnailQuality,
+    likeCount: Maps.likeCount,
+    rankingCount: Maps.rankingCount,
+    updatedAt: Maps.updatedAt,
+    creatorId: Creator.id,
+    creatorName: Creator.name,
+    duration: Maps.duration,
+    romaKpmMedian: MapDifficulties.romaKpmMedian,
+    romaKpmMax: MapDifficulties.romaKpmMax,
+    hasLiked: MapLikes.hasLiked,
+    myRank: MyResult.rank,
+    myRankUpdatedAt: MyResult.updatedAt,
+  };
 
-    const Creator = alias(Users, "creator");
-    const MyResult = alias(Results, "MyResult");
+  return db
+    .select({ ...resultSelectFields, map: mapSelectFields })
+    .from(Results)
+    .innerJoin(Maps, eq(Maps.id, Results.mapId))
+    .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+    .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
+    .innerJoin(Player, eq(Player.id, Results.userId))
+    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, userId ?? 0)))
+    .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, userId ?? 0)))
+    .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, userId ?? 0)));
+};
 
-    const { schema, Player } = resultSelectSchema();
-
-    const whereConds = [
-      ...generateModeFilter({ mode: input.mode }),
-      ...generateKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
-      ...generateClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
-      ...generatePlaySpeedFilter({ minPlaySpeed: input.minPlaySpeed, maxPlaySpeed: input.maxPlaySpeed }),
-      ...generateKeywordFilter({
-        username: input.username,
-        mapKeyword: input.mapKeyword,
-        playerName: Player.name,
-        creatorName: Creator.name,
-      }),
-    ];
-
-    const items = await db
-      .select({
-        ...schema,
-        map: {
-          id: Maps.id,
-          videoId: Maps.videoId,
-          title: Maps.title,
-          artistName: Maps.artistName,
-          musicSource: Maps.musicSource,
-          previewTime: Maps.previewTime,
-          thumbnailQuality: Maps.thumbnailQuality,
-          likeCount: Maps.likeCount,
-          rankingCount: Maps.rankingCount,
-          updatedAt: Maps.updatedAt,
-          creatorId: Creator.id,
-          creatorName: Creator.name,
-          duration: Maps.duration,
-          romaKpmMedian: MapDifficulties.romaKpmMedian,
-          romaKpmMax: MapDifficulties.romaKpmMax,
-          hasLiked: MapLikes.hasLiked,
-          myRank: MyResult.rank,
-          myRankUpdatedAt: MyResult.updatedAt,
+const toMapListItem = (items: Awaited<ReturnType<typeof createResultWithMapBaseSelect>>) => {
+  return items.map(({ map: m, ...rest }) => {
+    return {
+      ...rest,
+      map: {
+        id: m.id,
+        updatedAt: m.updatedAt,
+        media: {
+          videoId: m.videoId,
+          previewTime: m.previewTime,
+          thumbnailQuality: m.thumbnailQuality,
+          previewSpeed: rest.otherStatus.playSpeed,
         },
-      })
-      .from(Results)
-      .innerJoin(Maps, eq(Maps.id, Results.mapId))
-      .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-      .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
-      .innerJoin(Player, eq(Player.id, Results.userId))
-      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, userId ?? 0)))
-      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, userId ?? 0)))
-      .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, userId ?? 0)))
-      .where(whereConds.length ? and(...whereConds) : undefined)
-      .orderBy(desc(Results.updatedAt))
-      .limit(PAGE_SIZE + 1)
-      .offset(offset);
+        info: { title: m.title, artistName: m.artistName, source: m.musicSource, duration: m.duration },
+        creator: { id: m.creatorId, name: m.creatorName },
+        difficulty: { romaKpmMedian: m.romaKpmMedian, romaKpmMax: m.romaKpmMax },
+        like: { count: m.likeCount, hasLiked: m.hasLiked },
+        ranking: { count: m.rankingCount, myRank: m.myRank, myRankUpdatedAt: m.myRankUpdatedAt },
+      } satisfies MapListItem,
+    };
+  });
+};
 
-    let nextCursor: string | undefined;
-    if (items.length > PAGE_SIZE) {
-      items.pop();
-      nextCursor = String(Number.isNaN(page) ? 1 : page + 1);
-    }
+export type ResultWithMapItem = ReturnType<typeof toMapListItem>;
 
-    const results = items.map(({ map: m, ...rest }) => {
-      return {
-        ...rest,
-        map: {
-          id: m.id,
-          updatedAt: m.updatedAt,
-          media: {
-            videoId: m.videoId,
-            previewTime: m.previewTime,
-            thumbnailQuality: m.thumbnailQuality,
-            previewSpeed: rest.otherStatus.playSpeed,
-          },
-          info: { title: m.title, artistName: m.artistName, source: m.musicSource, duration: m.duration },
-          creator: { id: m.creatorId, name: m.creatorName },
-          difficulty: { romaKpmMedian: m.romaKpmMedian, romaKpmMax: m.romaKpmMax },
-          like: { count: m.likeCount, hasLiked: m.hasLiked },
-          ranking: { count: m.rankingCount, myRank: m.myRank, myRankUpdatedAt: m.myRankUpdatedAt },
-        } satisfies MapListItem,
-      };
-    });
-    return { items: results, nextCursor };
-  }),
+const PAGE_SIZE = 25;
+export const resultRouter = {
+  getAllResultWithMap: publicProcedure
+    .input(InfiniteResultListBaseSchema.extend(ResultSearchParamsSchema.shape))
+    .query(async ({ input, ctx }) => {
+      const { user } = ctx;
+
+      const userId = user?.id ? user.id : null;
+      const { page, offset } = parseCursor(input.cursor, PAGE_SIZE);
+
+      const Player = alias(Users, "Player");
+      const Creator = alias(Users, "Creator");
+
+      const whereConds = [
+        ...generateModeFilter({ mode: input.mode }),
+        ...generateKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
+        ...generateClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
+        ...generatePlaySpeedFilter({ minPlaySpeed: input.minPlaySpeed, maxPlaySpeed: input.maxPlaySpeed }),
+        ...generateKeywordFilter({
+          username: input.username,
+          mapKeyword: input.mapKeyword,
+          PlayerName: Player.name,
+          CreatorName: Creator.name,
+        }),
+      ];
+
+      const items = await createResultWithMapBaseSelect({ userId, alias: { Player, Creator } })
+        .where(whereConds.length ? and(...whereConds) : undefined)
+        .orderBy(desc(Results.updatedAt))
+        .limit(PAGE_SIZE + 1)
+        .offset(offset);
+
+      return applyCursorPagination(toMapListItem(items), page, PAGE_SIZE);
+    }),
+
   getResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
-    try {
-      const data = await downloadFile({
-        key: `result-json/${input.resultId}.json`,
-      });
+    const data = await downloadFile({ key: `result-json/${input.resultId}.json` });
 
-      if (!data) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
-      }
-
-      const jsonString = new TextDecoder().decode(data);
-      const jsonData: ResultData = JSON.parse(jsonString);
-
-      return jsonData;
-    } catch (error) {
-      console.error("Error fetching result data from R2:", error);
-      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    if (!data) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
     }
+
+    const jsonString = new TextDecoder().decode(data);
+    const jsonData: ResultData = JSON.parse(jsonString);
+
+    return jsonData;
   }),
 
   getMapRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { mapId } = input;
 
-    const { schema, Player } = resultSelectSchema();
+    const Player = alias(Users, "Player");
+    const schema = createResultBaseFields(Player);
 
     return db
       .select(schema)
@@ -257,7 +258,7 @@ export const resultRouter = {
       return true;
     });
   }),
-};
+} satisfies TRPCRouterRecord;
 
 const cleanupOutdatedOvertakeNotifications = async ({
   tx,
@@ -337,11 +338,7 @@ const updateRankingsAndNotifyOvertakes = async ({
         })
         .onConflictDoUpdate({
           target: [Notifications.visitorId, Notifications.visitedId, Notifications.mapId, Notifications.action],
-          set: {
-            checked: false,
-            createdAt: new Date(),
-            oldRank: previousRank ?? null,
-          },
+          set: { checked: false, createdAt: new Date(), oldRank: previousRank ?? null },
         });
     }
   }
@@ -391,28 +388,31 @@ function generatePlaySpeedFilter({ minPlaySpeed, maxPlaySpeed }: { minPlaySpeed:
 function generateKeywordFilter({
   username,
   mapKeyword,
-  playerName,
-  creatorName,
+  PlayerName,
+  CreatorName,
 }: {
   username: string;
   mapKeyword: string;
-  playerName: AnyColumn;
-  creatorName: AnyColumn;
+  PlayerName: BuildAliasTable<typeof Users, "Player">["name"];
+  CreatorName: BuildAliasTable<typeof Users, "Creator">["name"];
 }) {
   const conds: SQL<unknown>[] = [];
+
   if (username && username.trim() !== "") {
     const pattern = `%${username}%`;
-    conds.push(ilike(playerName, pattern));
+    conds.push(ilike(PlayerName, pattern));
   }
+
   if (mapKeyword && mapKeyword.trim() !== "") {
     const pattern = `%${mapKeyword}%`;
     const keywordOr: SQL<unknown> = or(
       ilike(Maps.title, pattern),
       ilike(Maps.artistName, pattern),
       ilike(Maps.musicSource, pattern),
-      ilike(creatorName, pattern),
+      ilike(CreatorName, pattern),
     ) as unknown as SQL<unknown>;
     conds.push(keywordOr);
   }
+
   return conds;
 }

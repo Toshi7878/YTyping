@@ -1,3 +1,4 @@
+import type { TRPCRouterRecord } from "@trpc/server";
 import { desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { env } from "@/env";
@@ -42,7 +43,7 @@ export const morphConvertRouter = {
 
       await ctx.db.insert(FixWordEditLogs).values({ lyrics, word });
     }),
-};
+} satisfies TRPCRouterRecord;
 
 async function postAwsLambdaMorphApi(sentence: string): Promise<{ lyrics: string[]; readings: string[] }> {
   try {

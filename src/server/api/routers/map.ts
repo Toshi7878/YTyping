@@ -1,4 +1,4 @@
-import { TRPCError } from "@trpc/server";
+import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import z from "zod";
 import { db } from "@/server/drizzle/client";
@@ -122,4 +122,4 @@ export const mapRouter = {
       title: mapId === null ? "アップロード完了" : "アップデート完了",
     };
   }),
-};
+} satisfies TRPCRouterRecord;

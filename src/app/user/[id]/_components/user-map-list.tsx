@@ -24,7 +24,7 @@ export const UserCreatedMapList = ({ id }: { id: string }) => {
   return (
     <section>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {data.pages.map((page) => page.maps.map((map) => <MapCard key={map.id} map={map} />))}
+        {data.pages.map((page) => page.items.map((map) => <MapCard key={map.id} map={map} />))}
       </div>
 
       {hasNextPage && <Spinner ref={ref} />}
@@ -50,7 +50,7 @@ export const UserLikedMapList = ({ id }: { id: string }) => {
   return (
     <section>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {data.pages.map((page) => page.maps.map((map) => <MapCard key={map.id} map={map} />))}
+        {data.pages.map((page) => page.items.map((map) => <MapCard key={map.id} map={map} />))}
       </div>
 
       {hasNextPage && <Spinner ref={ref} />}

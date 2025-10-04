@@ -1,3 +1,4 @@
+import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { ResultClaps, Results } from "@/server/drizzle/schema";
@@ -38,4 +39,4 @@ export const clapRouter = {
 
       return payload;
     }),
-};
+} satisfies TRPCRouterRecord;

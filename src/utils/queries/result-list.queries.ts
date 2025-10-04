@@ -5,7 +5,7 @@ export const useResultListInfiniteQueryOptions = (searchParams: URLSearchParams)
   const trpc = useTRPC();
   const params = parseResultListSearchParams(searchParams);
 
-  return trpc.result.usersResultList.infiniteQueryOptions(params, {
+  return trpc.result.getAllResultWithMap.infiniteQueryOptions(params, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     refetchOnWindowFocus: false,
     gcTime: Infinity,

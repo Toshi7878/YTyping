@@ -1,3 +1,4 @@
+import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { MapLikes, Maps } from "@/server/drizzle/schema";
@@ -29,4 +30,4 @@ export const likeRouter = {
 
       return payload;
     }),
-};
+} satisfies TRPCRouterRecord;

@@ -1,3 +1,4 @@
+import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
@@ -277,7 +278,7 @@ export const userStatsRouter = {
 
     return fullYearData;
   }),
-};
+} satisfies TRPCRouterRecord;
 
 const getActivityLevel = ({ type, totalTypeCount }: { type: keyof typeof LEVELS; totalTypeCount: number }): number => {
   const sortedLevels = Object.entries(LEVELS[type])

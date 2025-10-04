@@ -1,6 +1,6 @@
 import type { SafetySetting } from "@google/generative-ai";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
-import { TRPCError } from "@trpc/server";
+import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import z from "zod";
 import { env } from "@/env";
 import { protectedProcedure } from "../trpc";
@@ -59,7 +59,7 @@ export const geminiRouter = {
       });
     }
   }),
-};
+} satisfies TRPCRouterRecord;
 
 const cleanJsonResponse = (responseText: string): GeminiMapInfo => {
   let jsonData = responseText;

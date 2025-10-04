@@ -16,7 +16,7 @@ export default async function Home({ searchParams }: PageProps<"/timeline">) {
   }
 
   const params = parseResultListSearchParams(usp);
-  prefetch(trpc.result.usersResultList.infiniteQueryOptions(params));
+  prefetch(trpc.result.getAllResultWithMap.infiniteQueryOptions(params));
 
   return (
     <HydrateClient>
