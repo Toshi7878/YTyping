@@ -22,13 +22,11 @@ const createContext = cache(async () => {
   heads.set("x-trpc-source", "rsc");
 
   const session = await auth();
-  const user = { ...session?.user, id: Number(session?.user.id ?? 0) };
+  if (!session) {
+    return { headers: heads, db, user: null };
+  }
 
-  return {
-    headers: heads,
-    db,
-    user,
-  };
+  return { headers: heads, db, user: { ...session.user, id: Number(session.user.id) } };
 });
 
 const getQueryClient = cache(createQueryClient);

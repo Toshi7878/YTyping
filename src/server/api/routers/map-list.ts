@@ -5,7 +5,7 @@ import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { applyCursorPagination, parseCursor } from "../utils/pagination";
 
 const InfiniteMapListBaseSchema = z.object({
@@ -21,7 +21,7 @@ const MapSearchParamsSchema = z.object({
   keyword: z.string().default(""),
 });
 
-const createBaseSelect = ({ userId }: { userId: number }) => {
+const createBaseSelect = ({ user }: { user: Context["user"] }) => {
   return db
     .select({
       id: Maps.id,
@@ -58,8 +58,8 @@ const createBaseSelect = ({ userId }: { userId: number }) => {
     .from(Maps)
     .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
     .innerJoin(Users, eq(Users.id, Maps.creatorId))
-    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, userId)))
-    .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, userId)))
+    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), user ? eq(MapLikes.userId, user.id) : undefined))
+    .leftJoin(Results, and(eq(Results.mapId, Maps.id), user ? eq(Results.userId, user.id) : undefined))
     .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id));
 };
 
@@ -80,10 +80,10 @@ const mapListRoute = {
       const { user } = ctx;
 
       const { page, offset } = parseCursor(cursor, PAGE_SIZE);
-      const whereConds = buildWhereConditions({ ...filterParams, userId: user.id });
+      const whereConds = buildWhereConditions({ ...filterParams, user });
       const orderers = getSortSql({ sort });
 
-      const maps = await createBaseSelect({ userId: user.id })
+      const maps = await createBaseSelect({ user })
         .limit(PAGE_SIZE + 1)
         .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
         .offset(offset)
@@ -101,7 +101,7 @@ const mapListRoute = {
       const { page, offset } = parseCursor(cursor, PAGE_SIZE);
       const orderers = getSortSql({ sort });
 
-      const maps = await createBaseSelect({ userId: user.id })
+      const maps = await createBaseSelect({ user })
         .limit(PAGE_SIZE + 1)
         .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
         .offset(offset)
@@ -120,7 +120,7 @@ const mapListRoute = {
       const orderers = getSortSql({ sort });
       const UserLikes = alias(MapLikes, "UserLikes");
 
-      const maps = await createBaseSelect({ userId: user.id })
+      const maps = await createBaseSelect({ user })
         .innerJoin(UserLikes, and(eq(UserLikes.mapId, Maps.id), eq(UserLikes.userId, likedUserId)))
         .limit(PAGE_SIZE + 1)
         .orderBy(...(orderers.length ? orderers : [desc(Maps.id)]))
@@ -134,7 +134,7 @@ const mapListRoute = {
     const { user } = ctx;
     const { videoId } = input;
 
-    return createBaseSelect({ userId: user.id }).where(eq(Maps.videoId, videoId)).orderBy(desc(Maps.id));
+    return createBaseSelect({ user }).where(eq(Maps.videoId, videoId)).orderBy(desc(Maps.id));
   }),
 
   getActiveUserPlayingMaps: protectedProcedure
@@ -154,7 +154,7 @@ const mapListRoute = {
 
       const userListPromises = input.map(async (activeUser) => {
         if (activeUser.state === "type" && activeUser.mapId) {
-          const map = await createBaseSelect({ userId: user.id })
+          const map = await createBaseSelect({ user })
             .where(eq(Maps.id, activeUser.mapId))
             .then((rows) => rows[0]);
 
@@ -174,7 +174,7 @@ const mapListCountRoute = {
     const { db, user } = ctx;
     const userId = user?.id ? Number(user.id) : null;
 
-    const whereConds = buildWhereConditions({ ...input, userId });
+    const whereConds = buildWhereConditions({ ...input, user });
 
     return db
       .select({ total: count() })
@@ -194,21 +194,22 @@ export const mapListRouter = {
   ...mapListCountRoute,
 } satisfies TRPCRouterRecord;
 
-type MapListWhereParams = z.output<typeof MapSearchParamsSchema> & { userId: number | null };
+type MapListWhereParams = z.output<typeof MapSearchParamsSchema> & { user: Context["user"] };
 interface GetFilterSqlParams {
   filter: MapListWhereParams["filter"];
-  userId: number | null;
+  user: Context["user"];
   likedUserId?: number;
 }
 
-function getFilterSql({ filter, userId }: GetFilterSqlParams) {
+function getFilterSql({ filter, user }: GetFilterSqlParams) {
+  if (!user) return;
+
   switch (filter) {
     case "liked": {
       return eq(MapLikes.hasLiked, true);
     }
     case "my-map":
-      if (!userId) return;
-      return eq(Maps.creatorId, userId);
+      return eq(Maps.creatorId, user.id);
     default:
       return;
   }
@@ -271,11 +272,11 @@ function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSqlPara
 
 interface getRankingStatusFilterSqlParams {
   rankingStatus: MapListWhereParams["rankingStatus"];
-  userId: number | null;
+  user: Context["user"];
 }
 
-function getRankingStatusFilterSql({ rankingStatus, userId }: getRankingStatusFilterSqlParams) {
-  if (!userId) return;
+function getRankingStatusFilterSql({ rankingStatus, user }: getRankingStatusFilterSqlParams) {
+  if (!user) return;
 
   switch (rankingStatus) {
     case "registerd":
@@ -305,14 +306,14 @@ const generateKeywordFilterSql = ({ keyword }: { keyword: MapListWhereParams["ke
   );
 };
 
-function buildWhereConditions({ filter, minRate, maxRate, rankingStatus, keyword, userId }: MapListWhereParams) {
+function buildWhereConditions({ filter, minRate, maxRate, rankingStatus, keyword, user }: MapListWhereParams) {
   const conditions: SQL<unknown>[] = [];
 
-  const filterCond = getFilterSql({ filter, userId });
+  const filterCond = getFilterSql({ filter, user });
   if (filterCond) conditions.push(filterCond);
   const diffConds = getDifficultyFilterSql({ minRate, maxRate });
   conditions.push(...diffConds);
-  const rankingStatusCond = getRankingStatusFilterSql({ rankingStatus, userId });
+  const rankingStatusCond = getRankingStatusFilterSql({ rankingStatus, user });
   if (rankingStatusCond) conditions.push(rankingStatusCond);
   const keywordCond = generateKeywordFilterSql({ keyword });
   if (keywordCond) conditions.push(keywordCond);

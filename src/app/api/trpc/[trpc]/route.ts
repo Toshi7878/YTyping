@@ -10,10 +10,12 @@ const handler = async (req: Request) =>
     router: appRouter,
     createContext: async () => {
       const session = await auth();
-      return {
-        db,
-        user: { ...session?.user, id: Number(session?.user.id ?? 0) },
-      };
+
+      if (!session) {
+        return { db, user: null };
+      }
+
+      return { db, user: { ...session.user, id: Number(session.user.id) } };
     },
   });
 

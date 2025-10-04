@@ -7,7 +7,7 @@ import {
   IncrementImeTypeCountStatsSchema,
   IncrementTypingCountStatsSchema,
 } from "@/server/drizzle/validator/user-stats";
-import { optionalAuthProcedure, publicProcedure } from "../trpc";
+import { publicProcedure } from "../trpc";
 
 export const userStatsRouter = {
   getUserStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
@@ -43,7 +43,7 @@ export const userStatsRouter = {
 
     return userStats;
   }),
-  incrementPlayCountStats: optionalAuthProcedure
+  incrementPlayCountStats: publicProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -75,7 +75,7 @@ export const userStatsRouter = {
         });
     }),
 
-  incrementImeStats: optionalAuthProcedure
+  incrementImeStats: publicProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -124,7 +124,7 @@ export const userStatsRouter = {
         });
     }),
 
-  incrementTypingStats: optionalAuthProcedure
+  incrementTypingStats: publicProcedure
     .meta({
       openapi: {
         method: "POST",

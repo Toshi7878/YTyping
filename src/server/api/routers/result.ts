@@ -19,7 +19,7 @@ import {
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { CreateResultSchema } from "@/server/drizzle/validator/result";
 import { downloadFile, upsertFile } from "@/utils/r2-storage";
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { applyCursorPagination, parseCursor } from "../utils/pagination";
 import type { MapListItem } from "./map-list";
 
@@ -73,10 +73,10 @@ const createResultBaseFields = (Player: BuildAliasTable<typeof Users, "Player">)
 };
 
 const createResultWithMapBaseSelect = ({
-  userId,
+  user,
   alias: tableAlias,
 }: {
-  userId: number | null;
+  user: Context["user"];
   alias: {
     Player: BuildAliasTable<typeof Users, "Player">;
     Creator: BuildAliasTable<typeof Users, "Creator">;
@@ -116,9 +116,12 @@ const createResultWithMapBaseSelect = ({
     .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
     .innerJoin(Player, eq(Player.id, Results.userId))
     .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, userId ?? 0)))
-    .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, userId ?? 0)))
-    .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, userId ?? 0)));
+    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), user ? eq(MapLikes.userId, user.id) : undefined))
+    .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), user ? eq(MyResult.userId, user.id) : undefined))
+    .leftJoin(
+      ResultClaps,
+      and(eq(ResultClaps.resultId, Results.id), user ? eq(ResultClaps.userId, user.id) : undefined),
+    );
 };
 
 const toMapListItem = (items: Awaited<ReturnType<typeof createResultWithMapBaseSelect>>) => {
@@ -153,7 +156,6 @@ const resultListWithMapRoute = {
     .query(async ({ input, ctx }) => {
       const { user } = ctx;
 
-      const userId = user?.id ? user.id : null;
       const { page, offset } = parseCursor(input.cursor, PAGE_SIZE);
 
       const Player = alias(Users, "Player");
@@ -172,7 +174,7 @@ const resultListWithMapRoute = {
         }),
       ];
 
-      const items = await createResultWithMapBaseSelect({ userId, alias: { Player, Creator } })
+      const items = await createResultWithMapBaseSelect({ user, alias: { Player, Creator } })
         .where(whereConds.length ? and(...whereConds) : undefined)
         .orderBy(desc(Results.updatedAt))
         .limit(PAGE_SIZE + 1)
@@ -191,7 +193,7 @@ const resultListWithMapRoute = {
       const Player = alias(Users, "Player");
       const Creator = alias(Users, "Creator");
 
-      const items = await createResultWithMapBaseSelect({ userId: user.id, alias: { Player, Creator } })
+      const items = await createResultWithMapBaseSelect({ user, alias: { Player, Creator } })
         .where(eq(Results.userId, playerId))
         .orderBy(desc(Results.updatedAt))
         .limit(PAGE_SIZE + 1)
@@ -242,7 +244,10 @@ export const resultRouter = {
       .from(Results)
       .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
       .innerJoin(Player, eq(Player.id, Results.userId))
-      .leftJoin(ResultClaps, and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, user.id ?? 0)))
+      .leftJoin(
+        ResultClaps,
+        and(eq(ResultClaps.resultId, Results.id), user ? eq(ResultClaps.userId, user.id) : undefined),
+      )
       .where(eq(Results.mapId, mapId))
       .orderBy(desc(ResultStatuses.score));
   }),
@@ -311,10 +316,7 @@ const cleanupOutdatedOvertakeNotifications = async ({
   if (!myResult) return;
 
   const overtakeNotifications = await tx
-    .select({
-      visitorId: Notifications.visitorId,
-      visitorScore: ResultStatuses.score,
-    })
+    .select({ visitorId: Notifications.visitorId, visitorScore: ResultStatuses.score })
     .from(Notifications)
     .innerJoin(Results, and(eq(Results.userId, Notifications.visitorId), eq(Results.mapId, Notifications.mapId)))
     .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))

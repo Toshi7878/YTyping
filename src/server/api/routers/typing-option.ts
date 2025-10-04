@@ -6,10 +6,10 @@ import {
   CreateUserOptionSchema,
   CreateUserTypingOptionSchema,
 } from "@/server/drizzle/validator/user-option";
-import { optionalAuthProcedure, protectedProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userOptionRouter = {
-  getUserOptions: optionalAuthProcedure.query(async ({ ctx }) => {
+  getUserOptions: publicProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
     if (!user) return null;
 
@@ -24,7 +24,7 @@ export const userOptionRouter = {
 
     return userOption ?? null;
   }),
-  getUserTypingOptions: optionalAuthProcedure.query(async ({ ctx }) => {
+  getUserTypingOptions: publicProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
     if (!user) return null;
 
@@ -35,7 +35,7 @@ export const userOptionRouter = {
       })) ?? null
     );
   }),
-  getUserImeTypingOptions: optionalAuthProcedure.query(async ({ ctx }) => {
+  getUserImeTypingOptions: publicProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
     if (!user) return null;
 
