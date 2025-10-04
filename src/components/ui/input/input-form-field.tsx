@@ -3,7 +3,7 @@
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { VariantProps } from "class-variance-authority";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, ComponentPropsWithRef, ReactNode } from "react";
 import type { ControllerRenderProps, FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 import { useFormContext } from "react-hook-form";
 import type { inputVariants } from "@/components/ui/input/input";
@@ -22,6 +22,7 @@ interface InputFormFieldProps {
   variant?: VariantProps<typeof inputVariants>["variant"];
   size?: VariantProps<typeof inputVariants>["size"];
   disabledFormMessage?: boolean;
+  ref?: ComponentPropsWithRef<typeof Input>["ref"];
   onChange?: ControllerRenderProps["onChange"];
 }
 
@@ -35,7 +36,7 @@ const InputFormField = ({
   disabledFormMessage = false,
   onChange,
   ...inputProps
-}: InputFormFieldProps & Omit<ComponentProps<typeof Input>, "size" | keyof ControllerRenderProps>) => {
+}: InputFormFieldProps & Omit<ComponentPropsWithRef<typeof Input>, "size" | keyof ControllerRenderProps>) => {
   const { control } = useFormContext();
 
   return (

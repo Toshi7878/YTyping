@@ -3,7 +3,7 @@ import { useRouter } from "@bprogress/next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import type { Dispatch, SetStateAction } from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiAddBoxFill } from "react-icons/ri";
 import z from "zod";
@@ -53,6 +53,8 @@ export const NewMapPopover = () => {
     setOpen(false);
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <TooltipWrapper label="譜面新規作成" delayDuration={600} className="relative bottom-3">
@@ -62,7 +64,13 @@ export const NewMapPopover = () => {
           </Button>
         </PopoverTrigger>
       </TooltipWrapper>
-      <PopoverContent className="w-full p-1 md:w-[640px]" side="bottom" align="end" sideOffset={8}>
+      <PopoverContent
+        onOpenAutoFocus={() => inputRef.current?.focus()}
+        className="w-full p-1 md:w-[640px]"
+        side="bottom"
+        align="end"
+        sideOffset={8}
+      >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
             <H3>譜面新規作成</H3>
@@ -71,6 +79,7 @@ export const NewMapPopover = () => {
               label="譜面を作成したいYouTube動画のURLを入力"
               placeholder="YouTube URLを入力"
               autoComplete="off"
+              ref={inputRef}
             />
             <div className="flex items-center justify-between">
               <CreateMapBackUpButton backupData={backupMapInfo} onOpenChange={setOpen} />
