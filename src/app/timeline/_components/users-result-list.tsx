@@ -2,7 +2,7 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { ResultCard } from "@/components/shared/result-card/result-card";
+import { ResultCard } from "@/components/shared/result-card/card";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { useResultListInfiniteQueryOptions } from "@/utils/queries/result-list.queries";

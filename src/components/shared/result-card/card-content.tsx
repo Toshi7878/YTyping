@@ -6,7 +6,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result";
 import { nolink } from "@/utils/no-link";
-import { ResultStatus } from "./child/result-status";
+import { ResultStatusBadges } from "./status-badges";
 
 export const ResultCardContent = ({ result }: { result: ResultWithMapItem }) => {
   return (
@@ -23,7 +23,7 @@ export const ResultCardContent = ({ result }: { result: ResultWithMapItem }) => 
 
       <MapInfo map={result.map} className="flex-1" />
 
-      <ResultStatus result={result} className="hidden md:flex" />
+      <ResultStatusBadges result={result} className="hidden md:flex" />
     </div>
   );
 };

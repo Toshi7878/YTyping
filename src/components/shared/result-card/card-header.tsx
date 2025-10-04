@@ -3,7 +3,7 @@ import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result";
-import { ResultClapButton } from "./child/result-clap-button";
+import { ResultClapButton } from "./clap-button";
 
 interface ResultCardHeaderProps {
   player: ResultWithMapItem["player"];

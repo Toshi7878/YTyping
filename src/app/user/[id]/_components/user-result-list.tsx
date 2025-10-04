@@ -2,7 +2,7 @@
 
 import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { ResultCard } from "@/components/shared/result-card/result-card";
+import { ResultCard } from "@/components/shared/result-card/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Large, Small } from "@/components/ui/typography";
 import { useTRPC } from "@/trpc/provider";
@@ -13,7 +13,7 @@ export const UserResultList = ({ id }: { id: string }) => {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     trpc.result.getAllWithMapByUserId.infiniteQueryOptions(
-      { userId: Number(id) },
+      { playerId: Number(id) },
       { getNextPageParam: (lastPage) => lastPage.nextCursor, refetchOnWindowFocus: false, gcTime: Infinity },
     ),
   );

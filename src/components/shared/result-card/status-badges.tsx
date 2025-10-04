@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result";
 
-interface ResultStatusProps {
+interface ResultStatusBadgesProps {
   result: ResultWithMapItem;
   className?: string;
 }
 
-export const ResultStatus = ({ result, className }: ResultStatusProps) => {
+export const ResultStatusBadges = ({ result, className }: ResultStatusBadgesProps) => {
   const { typeCounts, otherStatus, typeSpeed } = result;
   const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
 
@@ -44,7 +44,7 @@ export const ResultStatus = ({ result, className }: ResultStatusProps) => {
   );
 };
 
-interface ResultBadgesMobileProps extends ResultStatusProps {
+interface ResultBadgesMobileProps extends ResultStatusBadgesProps {
   className?: string;
   result: ResultWithMapItem;
 }

@@ -182,16 +182,17 @@ const resultListWithMapRoute = {
     }),
 
   getAllWithMapByUserId: publicProcedure
-    .input(InfiniteResultListBaseSchema.extend({ userId: z.number() }))
-    .query(async ({ input }) => {
-      const { userId } = input;
+    .input(InfiniteResultListBaseSchema.extend({ playerId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const { user } = ctx;
+      const { playerId } = input;
       const { page, offset } = parseCursor(input.cursor, PAGE_SIZE);
 
       const Player = alias(Users, "Player");
       const Creator = alias(Users, "Creator");
 
-      const items = await createResultWithMapBaseSelect({ userId: input.userId, alias: { Player, Creator } })
-        .where(eq(Results.userId, userId))
+      const items = await createResultWithMapBaseSelect({ userId: user.id, alias: { Player, Creator } })
+        .where(eq(Results.userId, playerId))
         .orderBy(desc(Results.updatedAt))
         .limit(PAGE_SIZE + 1)
         .offset(offset);
