@@ -6,7 +6,7 @@ import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
 
 type MapRankingFilter = ReturnType<Trpc["result"]["getMapRanking"]["queryFilter"]>;
-type TimelineFilter = ReturnType<Trpc["result"]["getAllResultWithMap"]["infiniteQueryFilter"]>;
+type TimelineFilter = ReturnType<Trpc["result"]["getAllWithMap"]["infiniteQueryFilter"]>;
 
 function setTimelineClapOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
@@ -14,7 +14,7 @@ function setTimelineClapOptimistic(
   resultId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllResultWithMap"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMap"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -43,7 +43,7 @@ function setTimelineClapServer(
   hasClapped: boolean,
   clapCount: number,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllResultWithMap"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMap"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -108,7 +108,7 @@ export function useClapMutationTimeline() {
   return useMutation(
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const timelineFilter = trpc.result.getAllResultWithMap.infiniteQueryFilter();
+        const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
 
         await queryClient.cancelQueries(timelineFilter);
 
@@ -161,7 +161,7 @@ export function useClapMutationRanking(mapId: number) {
         }
       },
       onSuccess: (server, _vars, ctx) => {
-        const timelineFilter = trpc.result.getAllResultWithMap.infiniteQueryFilter();
+        const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
 
         setTimelineClapServer(queryClient, timelineFilter, server.resultId, server.hasClapped, server.clapCount);
         if (!ctx) return;

@@ -8,8 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { H2 } from "@/components/ui/typography";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import { FingerChartUrl } from "./user-info/finger-chart-url";
-import { KeyBoard } from "./user-info/usage-keyboard";
+import { FingerChartUrl } from "./finger-chart-url";
+import { KeyBoard } from "./usage-keyboard";
 
 interface UserProfileCardProps {
   userProfile: RouterOutPuts["userProfile"]["getUserProfile"];

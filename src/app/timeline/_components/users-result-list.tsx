@@ -2,12 +2,12 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { ResultCard } from "@/components/shared/result-card/result-card";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { useResultListInfiniteQueryOptions } from "@/utils/queries/result-list.queries";
 import { useInfiniteScroll } from "@/utils/use-infinite-scroll";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
-import { ResultCard } from "./result-card/result-card";
 
 export const UsersResultList = () => {
   const searchParams = useSearchParams();

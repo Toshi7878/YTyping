@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserCreatedMapList, UserLikedMapList } from "./user-map-list";
-import { UserStatsCard } from "./user-stats-card";
+import { UserCreatedMapList, UserLikedMapList } from "./map-list";
+import { UserResultList } from "./user-result-list";
+import { UserStatsCard } from "./user-stats/card";
 
 const tabs = [
   {
@@ -12,6 +13,10 @@ const tabs = [
   {
     label: "制作譜面",
     value: "maps",
+  },
+  {
+    label: "ランキング履歴",
+    value: "results",
   },
   {
     label: "いいねした譜面",
@@ -54,11 +59,15 @@ export const UserTabs = ({ id }: { id: string }) => {
           <TabsContent value="maps">
             <UserCreatedMapList id={id} />
           </TabsContent>
+          <TabsContent value="results">
+            <UserResultList id={id} />
+          </TabsContent>
           <TabsContent value="liked">
             <UserLikedMapList id={id} />
           </TabsContent>
         </>
       )}
+      ;
     </Tabs>
   );
 };

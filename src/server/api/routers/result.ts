@@ -1,6 +1,6 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import type { SQL } from "drizzle-orm";
-import { and, desc, eq, gt, gte, ilike, inArray, lte, or } from "drizzle-orm";
+import { and, count, desc, eq, gt, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import { alias, type BuildAliasTable } from "drizzle-orm/pg-core";
 import z from "zod";
 import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/const";
@@ -147,8 +147,8 @@ const toMapListItem = (items: Awaited<ReturnType<typeof createResultWithMapBaseS
 export type ResultWithMapItem = ReturnType<typeof toMapListItem>[number];
 
 const PAGE_SIZE = 25;
-export const resultRouter = {
-  getAllResultWithMap: publicProcedure
+const resultListWithMapRoute = {
+  getAllWithMap: publicProcedure
     .input(InfiniteResultListBaseSchema.extend(ResultSearchParamsSchema.shape))
     .query(async ({ input, ctx }) => {
       const { user } = ctx;
@@ -181,6 +181,41 @@ export const resultRouter = {
       return applyCursorPagination(toMapListItem(items), page, PAGE_SIZE);
     }),
 
+  getAllWithMapByUserId: publicProcedure
+    .input(InfiniteResultListBaseSchema.extend({ userId: z.number() }))
+    .query(async ({ input }) => {
+      const { userId } = input;
+      const { page, offset } = parseCursor(input.cursor, PAGE_SIZE);
+
+      const Player = alias(Users, "Player");
+      const Creator = alias(Users, "Creator");
+
+      const items = await createResultWithMapBaseSelect({ userId: input.userId, alias: { Player, Creator } })
+        .where(eq(Results.userId, userId))
+        .orderBy(desc(Results.updatedAt))
+        .limit(PAGE_SIZE + 1)
+        .offset(offset);
+
+      return applyCursorPagination(toMapListItem(items), page, PAGE_SIZE);
+    }),
+
+  getUserResultStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
+    const { db } = ctx;
+    const { userId } = input;
+
+    return db
+      .select({
+        totalResults: count(),
+        firstRankCount: sql<number>`cast(count(*) filter (where ${Results.rank} = 1) as int)`,
+      })
+      .from(Results)
+      .where(eq(Results.userId, userId))
+      .then((rows) => rows[0] ?? { totalResults: 0, firstRankCount: 0 });
+  }),
+} satisfies TRPCRouterRecord;
+
+export const resultRouter = {
+  ...resultListWithMapRoute,
   getResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
     const data = await downloadFile({ key: `result-json/${input.resultId}.json` });
 

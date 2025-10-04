@@ -15,7 +15,7 @@ import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { TypeActivity } from "./user-stats/type-activity";
+import { TypeActivity } from "./type-activity";
 
 const formatTime = (totalSeconds: number) => {
   const hours = Math.floor(totalSeconds / 3600);
