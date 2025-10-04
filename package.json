@@ -41,7 +41,7 @@
     "dexie-react-hooks": "^4.2.0",
     "drizzle-orm": "^0.44.5",
     "drizzle-zod": "^0.8.3",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^6.0.0",
     "eslint-plugin-tailwindcss": "^3.18.2",
     "eslint-plugin-unicorn": "^61.0.2",
     "fast-deep-equal": "^3.1.3",
