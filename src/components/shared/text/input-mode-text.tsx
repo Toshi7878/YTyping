@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
 
 interface InputModeTextProps {
-  typeCounts: RouterOutPuts["result"]["usersResultList"]["items"][number]["typeCounts"];
+  typeCounts: RouterOutPuts["result"]["getAllResultWithMap"]["items"][number]["typeCounts"];
 }
 
 export const InputModeText = ({ typeCounts }: InputModeTextProps) => {

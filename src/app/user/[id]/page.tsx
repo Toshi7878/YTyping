@@ -8,7 +8,7 @@ export default async function Page({ params }: PageProps<"/user/[id]">) {
   const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(id) });
 
   return (
-    <div className="mx-auto max-w-screen-lg space-y-4">
+    <div className="mx-auto max-w-screen-lg space-y-4 pb-10">
       <H1>プレイヤー情報</H1>
       <UserProfileCard userProfile={userProfile} />
       <UserTabs id={id} />

@@ -144,7 +144,7 @@ const toMapListItem = (items: Awaited<ReturnType<typeof createResultWithMapBaseS
   });
 };
 
-export type ResultWithMapItem = ReturnType<typeof toMapListItem>;
+export type ResultWithMapItem = ReturnType<typeof toMapListItem>[number];
 
 const PAGE_SIZE = 25;
 export const resultRouter = {

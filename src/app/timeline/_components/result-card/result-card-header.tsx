@@ -2,14 +2,14 @@ import Link from "next/link";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { ResultWithMapItem } from "@/server/api/routers/result";
 import { ResultClapButton } from "./child/result-clap-button";
 
 interface ResultCardHeaderProps {
-  player: RouterOutPuts["result"]["usersResultList"]["items"][number]["player"];
-  resultId: RouterOutPuts["result"]["usersResultList"]["items"][number]["id"];
-  updatedAt: RouterOutPuts["result"]["usersResultList"]["items"][number]["updatedAt"];
-  clap: RouterOutPuts["result"]["usersResultList"]["items"][number]["clap"];
+  player: ResultWithMapItem["player"];
+  resultId: ResultWithMapItem["id"];
+  updatedAt: ResultWithMapItem["updatedAt"];
+  clap: ResultWithMapItem["clap"];
   className?: string;
 }
 

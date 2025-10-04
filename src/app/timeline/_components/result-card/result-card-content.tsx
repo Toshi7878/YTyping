@@ -4,15 +4,11 @@ import { MapLeftThumbnail } from "@/components/shared/map-card-thumbnail";
 import { Badge } from "@/components/ui/badge";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { ResultWithMapItem } from "@/server/api/routers/result";
 import { nolink } from "@/utils/no-link";
 import { ResultStatus } from "./child/result-status";
 
-export const ResultCardContent = ({
-  result,
-}: {
-  result: RouterOutPuts["result"]["usersResultList"]["items"][number];
-}) => {
+export const ResultCardContent = ({ result }: { result: ResultWithMapItem }) => {
   return (
     <div className="flex w-full items-center gap-4 py-6">
       <Badge
@@ -33,7 +29,7 @@ export const ResultCardContent = ({
 };
 
 interface MapInfoProps extends HTMLAttributes<HTMLDivElement> {
-  map: RouterOutPuts["result"]["usersResultList"]["items"][number]["map"];
+  map: ResultWithMapItem["map"];
 }
 
 function MapInfo({ map, className, ...rest }: MapInfoProps) {

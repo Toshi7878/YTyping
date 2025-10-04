@@ -2,10 +2,10 @@ import { ClearRateText } from "@/components/shared/text/clear-rate-text";
 import { InputModeText } from "@/components/shared/text/input-mode-text";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { ResultWithMapItem } from "@/server/api/routers/result";
 
 interface ResultStatusProps {
-  result: RouterOutPuts["result"]["usersResultList"]["items"][number];
+  result: ResultWithMapItem;
   className?: string;
 }
 
@@ -46,7 +46,7 @@ export const ResultStatus = ({ result, className }: ResultStatusProps) => {
 
 interface ResultBadgesMobileProps extends ResultStatusProps {
   className?: string;
-  result: RouterOutPuts["result"]["usersResultList"]["items"][number];
+  result: ResultWithMapItem;
 }
 
 export const ResultBadgesMobile = ({ result, className }: ResultBadgesMobileProps) => {

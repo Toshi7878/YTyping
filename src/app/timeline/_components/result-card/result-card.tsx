@@ -2,13 +2,13 @@
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { ResultWithMapItem } from "@/server/api/routers/result";
 import { ResultBadgesMobile } from "./child/result-status";
 import { ResultCardContent } from "./result-card-content";
 import { ResultCardHeader } from "./result-card-header";
 
 interface ResultCardProps {
-  result: RouterOutPuts["result"]["usersResultList"]["items"][number];
+  result: ResultWithMapItem;
 }
 
 export const ResultCard = ({ result }: ResultCardProps) => {
