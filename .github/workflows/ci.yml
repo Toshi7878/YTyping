@@ -6,7 +6,7 @@ on:
 
 jobs:
   biome:
-    name: Biome Check
+    name: Biome & Type Check
     runs-on: ubuntu-latest
 
     steps:
@@ -25,11 +25,23 @@ jobs:
           node-version: 24
           cache: 'pnpm'
 
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Run Biome check
         run: pnpm biome check --diagnostic-level=warn --reporter=summary .
 
-      - name: Run type check
-        run: pnpm tsc
+      - name: Run Next.js type check
+        run: pnpx next type-check
