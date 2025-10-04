@@ -181,7 +181,6 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
           const { otherStatus, typeCounts, typeSpeed } = row;
           const { kanaType, flickType } = typeCounts;
           const totalType = Object.values(typeCounts).reduce((acc, curr) => acc + curr, 0);
-          const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
           const isKanaFlickTyped = kanaType > 0 || flickType > 0;
           const missRate = ((totalType / (otherStatus.miss + totalType)) * 100).toFixed(1);
 
