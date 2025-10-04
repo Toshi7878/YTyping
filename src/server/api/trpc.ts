@@ -8,34 +8,23 @@ import type { AppRouter } from "./root";
 
 export const createContext = async () => {
   const session = await auth();
+  if (!session) {
+    return { db: drizzleDb, user: null };
+  }
 
-  const user = { ...session?.user, id: Number(session?.user.id ?? 0) };
-  return {
-    db: drizzleDb,
-    user,
-  };
+  return { db: drizzleDb, user: { ...session.user, id: Number(session.user.id) } };
 };
 
-type Context = Awaited<ReturnType<typeof createContext>>;
+export type Context = Awaited<ReturnType<typeof createContext>>;
 const t = initTRPC.context<Context>().meta<OpenApiMeta>().create({
   transformer: superjson,
 });
 
-t.procedure.use((opts) => {
-  return opts.next();
-});
+t.procedure.use((opts) => opts.next());
 
 export const { router, createCallerFactory } = t;
 
 export const publicProcedure = t.procedure;
-export const optionalAuthProcedure = t.procedure.use((opts) => {
-  return opts.next({
-    ctx: {
-      db: drizzleDb,
-      user: opts.ctx.user ? { ...opts.ctx.user, id: Number(opts.ctx.user.id) } : undefined,
-    },
-  });
-});
 
 export const protectedProcedure = t.procedure.use((opts) => {
   if (!opts.ctx.user) {
@@ -49,5 +38,6 @@ export const protectedProcedure = t.procedure.use((opts) => {
     },
   });
 });
+
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutPuts = inferRouterOutputs<AppRouter>;

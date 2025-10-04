@@ -33,7 +33,7 @@ export const mapRouter = {
       })
       .from(Maps)
       .innerJoin(Users, eq(Users.id, Maps.creatorId))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)))
+      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), user ? eq(MapLikes.userId, user.id) : undefined))
       .where(eq(Maps.id, mapId))
       .limit(1)
       .then((rows) => rows[0]);
