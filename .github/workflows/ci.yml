@@ -41,7 +41,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run Biome check
-        run: pnpm run biome:check
+        run: pnpm run check
 
       - name: Run Type check
-        run: pnpm run typecheck
+        run: pnpm next typegen && pnpm type-check
