@@ -116,14 +116,8 @@ const createResultWithMapBaseSelect = ({
     .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
     .innerJoin(Player, eq(Player.id, Results.userId))
     .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-    .leftJoin(
-      MapLikes,
-      user ? and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)) : eq(MapLikes.mapId, Maps.id),
-    )
-    .leftJoin(
-      MyResult,
-      user ? and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)) : eq(MyResult.mapId, Maps.id),
-    )
+    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
+    .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user?.id ?? 0)))
     .leftJoin(
       ResultClaps,
       user
