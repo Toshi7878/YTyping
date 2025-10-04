@@ -6,16 +6,17 @@ import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
 
 type MapRankingFilter = ReturnType<Trpc["result"]["getMapRanking"]["queryFilter"]>;
-type TimelineFilter = ReturnType<Trpc["result"]["getAllWithMap"]["infiniteQueryFilter"]>;
-type UserResultsFilter = ReturnType<Trpc["result"]["getAllWithMapByUserId"]["infiniteQueryFilter"]>;
+type ResultInfiniteFilter =
+  | ReturnType<Trpc["result"]["getAllWithMap"]["infiniteQueryFilter"]>
+  | ReturnType<Trpc["result"]["getAllWithMapByUserId"]["infiniteQueryFilter"]>;
 
-function setTimelineClapOptimistic(
+function setResultsClapOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
-  filter: TimelineFilter,
+  filter: ResultInfiniteFilter,
   resultId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMap"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<{ items: ResultWithMapItem[] }>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -37,14 +38,14 @@ function setTimelineClapOptimistic(
   });
 }
 
-function setTimelineClapServer(
+function setResultsClapServer(
   queryClient: ReturnType<typeof useQueryClient>,
-  filter: TimelineFilter,
+  filter: ResultInfiniteFilter,
   resultId: number,
   hasClapped: boolean,
   clapCount: number,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMap"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<{ items: ResultWithMapItem[] }>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -60,56 +61,7 @@ function setTimelineClapServer(
   });
 }
 
-function setUserResultsClapOptimistic(
-  queryClient: ReturnType<typeof useQueryClient>,
-  filter: UserResultsFilter,
-  resultId: number,
-  optimisticState: boolean,
-) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMapByUserId"]>>(filter, (old) => {
-    if (!old?.pages) return old;
-    return {
-      ...old,
-      pages: old.pages.map((page) => ({
-        ...page,
-        items: page.items.map((result) =>
-          result.id === resultId
-            ? {
-                ...result,
-                clap: {
-                  count: optimisticState ? result.clap.count + 1 : Math.max(0, result.clap.count - 1),
-                  hasClapped: optimisticState,
-                } satisfies ResultWithMapItem["clap"],
-              }
-            : result,
-        ),
-      })),
-    };
-  });
-}
-
-function setUserResultsClapServer(
-  queryClient: ReturnType<typeof useQueryClient>,
-  filter: UserResultsFilter,
-  resultId: number,
-  hasClapped: boolean,
-  clapCount: number,
-) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["result"]["getAllWithMapByUserId"]>>(filter, (old) => {
-    if (!old?.pages) return old;
-    return {
-      ...old,
-      pages: old.pages.map((page) => ({
-        ...page,
-        items: page.items.map((result) =>
-          result.id === resultId
-            ? { ...result, clap: { hasClapped, count: clapCount } satisfies ResultWithMapItem["clap"] }
-            : result,
-        ),
-      })),
-    };
-  });
-}
+// End of common helpers
 
 function setRankingClapOptimistic(
   queryClient: ReturnType<typeof useQueryClient>,
@@ -171,8 +123,8 @@ export function useClapMutationTimeline() {
           ...queryClient.getQueriesData(userResultsFilter),
         ];
 
-        setTimelineClapOptimistic(queryClient, timelineFilter, input.resultId, input.newState);
-        setUserResultsClapOptimistic(queryClient, userResultsFilter, input.resultId, input.newState);
+        setResultsClapOptimistic(queryClient, timelineFilter, input.resultId, input.newState);
+        setResultsClapOptimistic(queryClient, userResultsFilter, input.resultId, input.newState);
 
         return { previous, timelineFilter, userResultsFilter };
       },
@@ -189,8 +141,8 @@ export function useClapMutationTimeline() {
         setRankingClapServer(queryClient, mapRankingFilter, resultId, hasClapped, clapCount);
 
         if (!ctx) return;
-        setTimelineClapServer(queryClient, ctx.timelineFilter, resultId, hasClapped, clapCount);
-        setUserResultsClapServer(queryClient, ctx.userResultsFilter, resultId, hasClapped, clapCount);
+        setResultsClapServer(queryClient, ctx.timelineFilter, resultId, hasClapped, clapCount);
+        setResultsClapServer(queryClient, ctx.userResultsFilter, resultId, hasClapped, clapCount);
       },
     }),
   );
@@ -223,8 +175,8 @@ export function useClapMutationRanking(mapId: number) {
         const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
 
-        setTimelineClapServer(queryClient, timelineFilter, server.resultId, server.hasClapped, server.clapCount);
-        setUserResultsClapServer(queryClient, userResultsFilter, server.resultId, server.hasClapped, server.clapCount);
+        setResultsClapServer(queryClient, timelineFilter, server.resultId, server.hasClapped, server.clapCount);
+        setResultsClapServer(queryClient, userResultsFilter, server.resultId, server.hasClapped, server.clapCount);
         if (!ctx) return;
         setRankingClapServer(queryClient, ctx.mapRankingFilter, server.resultId, server.hasClapped, server.clapCount);
       },
