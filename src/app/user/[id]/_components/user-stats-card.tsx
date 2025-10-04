@@ -1,4 +1,5 @@
 "use client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
@@ -13,6 +14,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { TypeActivity } from "./user-stats/type-activity";
 
 const formatTime = (totalSeconds: number) => {
@@ -22,12 +24,12 @@ const formatTime = (totalSeconds: number) => {
   return `${hours}時間 ${minutes}分 ${seconds.toFixed()}秒`;
 };
 
-interface UserStatsProps {
-  userStats: RouterOutPuts["userStats"]["getUserStats"];
-}
+export const UserStatsCard = () => {
+  const trpc = useTRPC();
 
-export const UserStatsCard = ({ userStats }: UserStatsProps) => {
   const { id: userId } = useParams<{ id: string }>();
+  const { data: userStats } = useSuspenseQuery(trpc.userStats.getUserStats.queryOptions({ userId: Number(userId) }));
+
   const { data: session } = useSession();
   const userSearchParams = useSearchParams();
   const isHidePreview = userSearchParams.get("hidePreview") === "true";
