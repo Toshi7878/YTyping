@@ -58,8 +58,11 @@ const createBaseSelect = ({ user }: { user: Context["user"] }) => {
     .from(Maps)
     .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
     .innerJoin(Users, eq(Users.id, Maps.creatorId))
-    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), user ? eq(MapLikes.userId, user.id) : undefined))
-    .leftJoin(Results, and(eq(Results.mapId, Maps.id), user ? eq(Results.userId, user.id) : undefined))
+    .leftJoin(
+      MapLikes,
+      user ? and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)) : eq(MapLikes.mapId, Maps.id),
+    )
+    .leftJoin(Results, user ? and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)) : eq(Results.mapId, Maps.id))
     .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id));
 };
 
@@ -172,7 +175,6 @@ const mapListRoute = {
 const mapListCountRoute = {
   getListLength: publicProcedure.input(MapSearchParamsSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    const userId = user?.id ? Number(user.id) : null;
 
     const whereConds = buildWhereConditions({ ...input, user });
 
@@ -181,8 +183,14 @@ const mapListCountRoute = {
       .from(Maps)
       .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
       .innerJoin(Users, eq(Users.id, Maps.creatorId))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), userId !== null ? eq(MapLikes.userId, userId) : undefined))
-      .leftJoin(Results, and(eq(Results.mapId, Maps.id), userId !== null ? eq(Results.userId, userId) : undefined))
+      .leftJoin(
+        MapLikes,
+        user ? and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)) : eq(MapLikes.mapId, Maps.id),
+      )
+      .leftJoin(
+        Results,
+        user ? and(eq(Results.mapId, Maps.id), eq(Results.userId, user.id)) : eq(Results.mapId, Maps.id),
+      )
       .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
       .where(whereConds.length ? and(...whereConds) : undefined)
       .then((rows) => rows[0]?.total ?? 0);

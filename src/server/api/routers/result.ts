@@ -116,11 +116,19 @@ const createResultWithMapBaseSelect = ({
     .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
     .innerJoin(Player, eq(Player.id, Results.userId))
     .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), user ? eq(MapLikes.userId, user.id) : undefined))
-    .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), user ? eq(MyResult.userId, user.id) : undefined))
+    .leftJoin(
+      MapLikes,
+      user ? and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user.id)) : eq(MapLikes.mapId, Maps.id),
+    )
+    .leftJoin(
+      MyResult,
+      user ? and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)) : eq(MyResult.mapId, Maps.id),
+    )
     .leftJoin(
       ResultClaps,
-      and(eq(ResultClaps.resultId, Results.id), user ? eq(ResultClaps.userId, user.id) : undefined),
+      user
+        ? and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, user.id))
+        : eq(ResultClaps.resultId, Results.id),
     );
 };
 
@@ -246,7 +254,9 @@ export const resultRouter = {
       .innerJoin(Player, eq(Player.id, Results.userId))
       .leftJoin(
         ResultClaps,
-        and(eq(ResultClaps.resultId, Results.id), user ? eq(ResultClaps.userId, user.id) : undefined),
+        user
+          ? and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, user.id))
+          : eq(ResultClaps.resultId, Results.id),
       )
       .where(eq(Results.mapId, mapId))
       .orderBy(desc(ResultStatuses.score));
