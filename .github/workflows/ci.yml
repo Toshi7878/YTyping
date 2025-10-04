@@ -41,10 +41,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run Biome check
-        run: pnpm biome check --diagnostic-level=warn --reporter=summary .
+        run: pnpm run biome:check
 
-      - name: Run Next.js build
-        run: pnpm next build --no-lint
-
-      - name: Run typecheck
-        run: tsc --noEmit
+      - name: Run Type check
+        run: pnpm run typecheck

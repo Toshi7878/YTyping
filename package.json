@@ -9,7 +9,7 @@
     "start": "next start",
     "check": "biome check --diagnostic-level=warn --reporter=summary",
     "check:fix": "biome check --diagnostic-level=warn --reporter=summary --write",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "reset": "pnpm dlx rimraf .next .tsbuildinfo node_modules package-lock.json && pnpm install",
     "db:migrate": "drizzle-kit push",
     "studio": "drizzle-kit studio",
