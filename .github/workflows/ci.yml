@@ -5,7 +5,7 @@ on:
     branches: [main, dev]
 
 jobs:
-  biome:
+  check:
     name: Biome & Type Check
     runs-on: ubuntu-latest
 
@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 24
-          cache: 'pnpm'
+          cache: pnpm
 
       - name: Get pnpm store directory
         id: pnpm-cache

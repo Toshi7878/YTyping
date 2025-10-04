@@ -265,12 +265,7 @@ export const userStatsRouter = {
           data: existingData,
         });
       } else {
-        fullYearData.push({
-          date: dateKey,
-          count: 0,
-          level: 0,
-          data: undefined,
-        });
+        fullYearData.push({ date: dateKey, count: 0, level: 0, data: undefined });
       }
 
       currentDate.setDate(currentDate.getDate() + 1);
