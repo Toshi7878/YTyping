@@ -43,5 +43,8 @@ jobs:
       - name: Run Biome check
         run: pnpm biome check --diagnostic-level=warn --reporter=summary .
 
+      - name: Run Next.js build
+        run: pnpm next build --no-lint
+
       - name: Run typecheck
         run: tsc --noEmit
