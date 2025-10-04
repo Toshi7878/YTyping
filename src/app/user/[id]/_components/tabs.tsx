@@ -67,7 +67,6 @@ export const UserTabs = ({ id }: { id: string }) => {
           </TabsContent>
         </>
       )}
-      ;
     </Tabs>
   );
 };
