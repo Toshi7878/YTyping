@@ -54,16 +54,16 @@ const StatsList = ({ userId }: { userId: string }) => {
 
   return (
     <section className="grid grid-cols-1 gap-3 sm:grid-cols-3 mt-1">
-      <StatsItem label="登録数" value={total.toLocaleString()} />
-      <StatsItem label="1位数" value={first.toLocaleString()} />
-      <StatsItem label="1位率" value={`${rate.toFixed(1)}%`} />
+      <StatsItem label="登録済み譜面数" value={total.toLocaleString()} />
+      <StatsItem label="1位譜面数" value={first.toLocaleString()} />
+      <StatsItem label="1位譜面率" value={`${rate.toFixed(1)}%`} />
     </section>
   );
 };
 
 const StatsItem = ({ label, value, loading }: { label: string; value?: string; loading?: boolean }) => {
   return (
-    <div className="rounded-sm border p-4 relative">
+    <div className="rounded-sm border p-3 relative">
       <Small className="text-muted-foreground">{label}</Small>
       {loading && <Loader2 className="animate-spin size-7" />}
       {value && <Large>{value}</Large>}
