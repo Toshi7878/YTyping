@@ -50,7 +50,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <AlertDialogProvider>
                   <Header className="fixed z-50 h-10 w-full" />
                   <MainProvider userAgent={userAgent}>
-                    <main className="min-h-screen pt-12 md:pt-16" id="main_content">
+                    <main className="min-h-screen pt-12 lg:pt-14 2xl:pt-16" id="main_content">
                       {children}
                     </main>
                     <PreviewYouTubePlayer />
