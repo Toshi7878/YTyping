@@ -2,7 +2,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Route } from "next";
-import { TextLink } from "@/components/ui/text-link";
+import { LinkText } from "@/components/ui/typography";
 import { useTRPC } from "@/trpc/provider";
 
 export const ByUser = ({ userId }: { userId: string }) => {
@@ -10,8 +10,8 @@ export const ByUser = ({ userId }: { userId: string }) => {
   const { data: userName } = useSuspenseQuery(trpc.userProfile.getUserName.queryOptions({ userId: Number(userId) }));
 
   return (
-    <TextLink href={`/user/${userId}` as Route}>
+    <LinkText href={`/user/${userId}` as Route}>
       <span>{userName}</span>
-    </TextLink>
+    </LinkText>
   );
 };

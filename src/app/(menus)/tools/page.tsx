@@ -1,7 +1,6 @@
 import { ExternalLink } from "lucide-react";
 import { CardWithContent } from "@/components/ui/card";
-import { TextLink } from "@/components/ui/text-link";
-import { H1, Large, P, Small, UList } from "@/components/ui/typography";
+import { H1, Large, LinkText, P, Small, UList } from "@/components/ui/typography";
 import { ByUser } from "./_components/by-user";
 
 const TOOLS = [
@@ -40,11 +39,11 @@ export default function Page() {
               return (
                 <div key={tool.href}>
                   <div className="flex items-baseline gap-3">
-                    <TextLink href={tool.href} target={isExternal ? "_blank" : undefined}>
+                    <LinkText href={tool.href} target={isExternal ? "_blank" : undefined}>
                       <Large>
                         {tool.title} {isExternal ? <ExternalLink className="inline-block" size={16} /> : null}
                       </Large>
-                    </TextLink>
+                    </LinkText>
                     <Small className="flex">
                       <span>by.</span>
                       <ByUser userId={tool.byUserId} />

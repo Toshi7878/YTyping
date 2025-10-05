@@ -1,11 +1,14 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { Route } from "next";
+import Link from "next/link";
+import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-export function H1({
-  children,
-  className,
-  ...props
-}: { children: ReactNode; className?: string } & HTMLAttributes<HTMLHeadingElement>) {
+interface H1Props {
+  children: ReactNode;
+  className?: string;
+}
+
+export function H1({ children, className, ...props }: H1Props & HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h1
       className={cn("scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0", className)}
@@ -16,11 +19,12 @@ export function H1({
   );
 }
 
-export function H2({
-  children,
-  className,
-  ...props
-}: { children: ReactNode; className?: string } & HTMLAttributes<HTMLHeadingElement>) {
+interface H2Props {
+  children: ReactNode;
+  className?: string;
+}
+
+export function H2({ children, className, ...props }: H2Props & HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h2 className={cn("scroll-m-20 text-2xl font-semibold tracking-tight", className)} {...props}>
       {children}
@@ -28,11 +32,12 @@ export function H2({
   );
 }
 
-export function H3({
-  children,
-  className,
-  ...props
-}: { children: ReactNode; className?: string } & HTMLAttributes<HTMLHeadingElement>) {
+interface H3Props {
+  children: ReactNode;
+  className?: string;
+}
+
+export function H3({ children, className, ...props }: H3Props & HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3 className={cn("scroll-m-20 text-xl font-semibold tracking-tight", className)} {...props}>
       {children}
@@ -56,6 +61,27 @@ export function Small({ children, className }: { children: ReactNode; className?
   return <small className={cn("text-sm leading-none font-medium", className)}>{children}</small>;
 }
 
+interface LinkTextProps {
+  href: Route;
+  children: ReactNode;
+  className?: string;
+}
+
+export const LinkText = ({ href, children, className, ...props }: LinkTextProps & ComponentProps<typeof Link>) => {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "text-primary-light hover:text-primary-light/80 flex flex-row items-center gap-1 underline transition-colors",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </Link>
+  );
+};
+
 export function UList({ items, className }: { items: ReactNode[]; className?: string }) {
   return (
     <ul className={cn("my-6 ml-6 list-disc space-y-2", className)}>
@@ -67,15 +93,13 @@ export function UList({ items, className }: { items: ReactNode[]; className?: st
   );
 }
 
-export function OList({
-  items,
-  className,
-  listClassName,
-}: {
+interface OListProps {
   items: ReactNode[];
   className?: string;
   listClassName?: string;
-}) {
+}
+
+export function OList({ items, className, listClassName }: OListProps) {
   return (
     <ol className={cn("my-6 ml-6 list-decimal space-y-2", className)}>
       {items.map((item, i) => (

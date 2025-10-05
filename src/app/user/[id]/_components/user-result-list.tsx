@@ -41,9 +41,9 @@ const StatsList = ({ userId }: { userId: string }) => {
   if (isPending) {
     return (
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-3 mt-1">
-        <StatsItem label="登録数" loading />
-        <StatsItem label="1位数" loading />
-        <StatsItem label="1位率" loading />
+        <StatsItem label="登録済み譜面数" loading />
+        <StatsItem label="1位譜面数" loading />
+        <StatsItem label="1位譜面率" loading />
       </section>
     );
   }

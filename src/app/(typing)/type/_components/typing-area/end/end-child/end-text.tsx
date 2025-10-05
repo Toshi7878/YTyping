@@ -33,9 +33,7 @@ export const EndText = () => {
             <RandomEmoji />
           </>
         ) : (
-          <>
-            最高スコアは {bestScore} です。記録更新まであと {bestScore - score} です。
-          </>
+          `最高スコアは ${bestScore} です。記録更新まであと ${bestScore - score} です。`
         )}
       </span>
       {speed.minPlaySpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}

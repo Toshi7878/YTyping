@@ -1,8 +1,7 @@
 "use client";
 import type { Route } from "next";
 import { Separator } from "@/components/ui/separator";
-import { TextLink } from "@/components/ui/text-link";
-import { H3, OList, P } from "@/components/ui/typography";
+import { H3, LinkText, OList, P } from "@/components/ui/typography";
 import { useUserAgent } from "@/lib/global-atoms";
 
 const browserLinks: Record<string, { url: Route; text: string }> = {
@@ -36,7 +35,7 @@ export function InstallationSteps() {
       title: "Stylusブラウザ拡張機能をインストールする",
       content: (
         <P>
-          <TextLink href={browserLink.url}>{browserLink.text}</TextLink>
+          <LinkText href={browserLink.url}>{browserLink.text}</LinkText>
           から拡張機能をインストールします。
         </P>
       ),
@@ -45,9 +44,9 @@ export function InstallationSteps() {
       title: "UserStyles.worldからスタイルをインストールする",
       content: (
         <P>
-          <TextLink href="https://userstyles.world/style/24064">
+          <LinkText href="https://userstyles.world/style/24064">
             YTyping YouTube Background Player - userstyles.world
-          </TextLink>
+          </LinkText>
           からスタイルをインストールします。
         </P>
       ),

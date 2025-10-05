@@ -2,8 +2,7 @@
 import type { Route } from "next";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
-import { TextLink } from "@/components/ui/text-link";
-import { H3, OList, P } from "@/components/ui/typography";
+import { H3, LinkText, OList, P } from "@/components/ui/typography";
 import { useUserAgent } from "@/lib/global-atoms";
 import preMidLinks from "@/public/images/manual/premid/premid-link.png";
 import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
@@ -45,7 +44,7 @@ export function InstallationSteps() {
       title: "PreMiDブラウザ拡張機能をインストールする",
       content: (
         <P>
-          <TextLink href={browserLink.url}>{browserLink.text}</TextLink>
+          <LinkText href={browserLink.url}>{browserLink.text}</LinkText>
           から拡張機能をインストールします。
         </P>
       ),
@@ -54,7 +53,7 @@ export function InstallationSteps() {
       title: "YTypingのプレゼンス設定をPreMiD Storeからインストールする",
       content: (
         <P>
-          <TextLink href="https://premid.app/store/presences/YTyping">YTyping - PreMiD Store</TextLink>
+          <LinkText href="https://premid.app/store/presences/YTyping">YTyping - PreMiD Store</LinkText>
           からYTypingのプレゼンス設定を追加します。
         </P>
       ),

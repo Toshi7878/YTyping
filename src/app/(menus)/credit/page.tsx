@@ -1,7 +1,6 @@
 import type { Route } from "next";
 import { CardWithContent } from "@/components/ui/card";
-import { TextLink } from "@/components/ui/text-link";
-import { H1, H2, Large, UList } from "@/components/ui/typography";
+import { H1, H2, Large, LinkText, UList } from "@/components/ui/typography";
 
 export default function Page() {
   return (
@@ -30,9 +29,9 @@ const BorrowedMaterials = () => {
         items={BORROWED_MATERIALS.map(({ name, url, materials }) => (
           <div key={name}>
             <Large className="flex">
-              <TextLink href={url as Route} target="_blank" rel="noopener noreferrer">
+              <LinkText href={url as Route} target="_blank" rel="noopener noreferrer">
                 {name}
-              </TextLink>
+              </LinkText>
               <span className="ml-1">様</span>
             </Large>
             <UList items={materials.map((material) => <div key={material}>{material}</div>)} />
@@ -66,9 +65,9 @@ const SpecialThanks = () => {
         className="list-none ml-2 space-y-5"
         items={SPECIAL_THANKS.map(({ name, url }) => (
           <Large className="flex" key={name}>
-            <TextLink href={url as Route} target="_blank" rel="noopener noreferrer">
+            <LinkText href={url as Route} target="_blank" rel="noopener noreferrer">
               {name}
-            </TextLink>
+            </LinkText>
             <span className="ml-1">様</span>
           </Large>
         ))}
