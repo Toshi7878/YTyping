@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { SessionProvider } from "next-auth/react";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { AlertDialogProvider } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
@@ -37,29 +38,31 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <meta charSet="UTF-8" />
       </head>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="default"
-          enableColorScheme
-          disableTransitionOnChange
-          themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
-        >
-          <SessionProvider session={session}>
-            <TRPCProvider>
-              <LinkProgressProvider>
-                <AlertDialogProvider>
-                  <Header className="fixed z-50 h-10 w-full" />
-                  <MainProvider userAgent={userAgent}>
-                    <main className="min-h-screen pt-12 md:pt-16" id="main_content">
-                      {children}
-                    </main>
-                    <PreviewYouTubePlayer />
-                  </MainProvider>
-                </AlertDialogProvider>
-              </LinkProgressProvider>
-            </TRPCProvider>
-          </SessionProvider>
-        </ThemeProvider>
+        <NuqsAdapter>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="default"
+            enableColorScheme
+            disableTransitionOnChange
+            themes={[...THEME_LIST.dark.map((theme) => theme.class), ...THEME_LIST.light.map((theme) => theme.class)]}
+          >
+            <SessionProvider session={session}>
+              <TRPCProvider>
+                <LinkProgressProvider>
+                  <AlertDialogProvider>
+                    <Header className="fixed z-50 h-10 w-full" />
+                    <MainProvider userAgent={userAgent}>
+                      <main className="min-h-screen pt-12 md:pt-16" id="main_content">
+                        {children}
+                      </main>
+                      <PreviewYouTubePlayer />
+                    </MainProvider>
+                  </AlertDialogProvider>
+                </LinkProgressProvider>
+              </TRPCProvider>
+            </SessionProvider>
+          </ThemeProvider>
+        </NuqsAdapter>
         <Toaster />
       </body>
     </html>

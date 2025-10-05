@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
-import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params";
+import { useSetIsSearching } from "@/app/(home)/_lib/atoms";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { PARAM_NAME, parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
+import { mapListSearchParams, type SortFieldType } from "@/utils/queries/search-params/map-list";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
 export const SortAndMapListLength = () => {
@@ -19,81 +19,74 @@ export const SortAndMapListLength = () => {
   );
 };
 
-type SortField = keyof typeof FIELD_TO_PARAMS;
 type SortDirection = "asc" | "desc" | null;
 
-const FIELD_TO_PARAMS = {
-  ID: "id",
-  難易度: "difficulty",
-  ランキング数: "ranking_count",
-  いいね数: "like_count",
-  曲の長さ: "duration",
-  ランダム: "random",
-  いいね: "like",
-  記録登録日: "ranking_register",
-} as const;
+const SORT_FIELDS = [
+  { label: "ID", value: "id" },
+  { label: "難易度", value: "difficulty" },
+  { label: "ランキング数", value: "ranking_count" },
+  { label: "いいね数", value: "like_count" },
+  { label: "曲の長さ", value: "duration" },
+  { label: "ランダム", value: "random" },
+  { label: "いいね", value: "like" },
+  { label: "記録登録日", value: "ranking_register" },
+] as const satisfies { label: string; value: SortFieldType }[];
 
-const getResetDirections = (): Record<SortField, SortDirection> => ({
-  ID: null,
-  難易度: null,
-  ランキング数: null,
-  いいね数: null,
-  曲の長さ: null,
-  ランダム: null,
-  いいね: null,
-  記録登録日: null,
-});
+const getResetDirections = () => Object.fromEntries(SORT_FIELDS.map((s) => [s.label, null]));
+
+const getValueByLabel = (label: string): SortFieldType | undefined => SORT_FIELDS.find((s) => s.label === label)?.value;
+
+const getLabelByValue = (value?: string | null): string =>
+  SORT_FIELDS.find((s) => (value ?? "").includes(s.value))?.label ?? "ID";
 
 const SortOptions = () => {
-  const searchParams = useSearchParams();
+  const [params, setParams] = useQueryStates(mapListSearchParams);
   const setIsSearching = useSetIsSearching();
-  const setDifficultyRangeParams = useDifficultyRangeParams();
-  const readDifficultyRange = useReadDifficultyRange();
 
-  const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>(() => {
-    const paramValue = searchParams.get(PARAM_NAME.sort);
+  const [sortDirections, setSortDirections] = useState<Record<string, SortDirection>>(() => {
+    const paramValue = params.sort;
     const [direction] = paramValue?.match(/asc|desc/) || ["desc"];
-    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || ["ID"];
-    return {
-      ...getResetDirections(),
-      [field as SortField]: direction as SortDirection,
-    };
+    const field = getLabelByValue(paramValue);
+    return { ...getResetDirections(), [field]: direction as SortDirection };
   });
 
   useEffect(() => {
-    const paramValue = searchParams.get(PARAM_NAME.sort);
+    const paramValue = params.sort;
     const [direction] = paramValue?.match(/asc|desc/) || ["desc"];
-    const [field] = Object.entries(FIELD_TO_PARAMS).find(([_, value]) => paramValue?.includes(value)) || ["ID"];
-    setSortDirections({ ...getResetDirections(), [field as SortField]: direction as SortDirection });
-  }, [searchParams]);
+    const field = getLabelByValue(paramValue);
+    setSortDirections({ ...getResetDirections(), [field]: direction as SortDirection });
+  }, [params.sort]);
 
-  const handleSort = (field: SortField) => {
+  const handleSort = (field: (typeof SORT_FIELDS)[number]["label"]) => {
     const currentDirection = sortDirections[field];
-    const params = new URLSearchParams(searchParams.toString());
+    const value = getValueByLabel(field);
 
+    let nextSort: string | null = null;
     if (currentDirection === null) {
       if (field === "ID") {
-        params.delete(PARAM_NAME.sort);
-      } else if (field === "ランダム") {
-        params.set(PARAM_NAME.sort, "random");
+        nextSort = null;
+      } else if (value === "random") {
+        nextSort = "random";
       } else {
-        params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_desc`);
+        nextSort = `${value}_desc`;
       }
+
       setSortDirections({ ...getResetDirections(), [field]: "desc" });
-    } else if (currentDirection === "desc" && field !== "ランダム") {
-      params.set(PARAM_NAME.sort, `${FIELD_TO_PARAMS[field]}_asc`);
+    } else if (currentDirection === "desc" && value !== "random") {
+      nextSort = `${value}_asc`;
       setSortDirections({ ...getResetDirections(), [field]: "asc" });
     } else {
-      params.delete(PARAM_NAME.sort);
+      nextSort = null;
       setSortDirections({ ...getResetDirections(), ID: "desc" });
     }
 
     setIsSearching(true);
-    window.history.replaceState(null, "", `?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
+    setParams({ sort: (nextSort as typeof params.sort) ?? null }, { history: "replace" });
   };
 
-  const getSortIcon = (field: SortField) => {
-    if (field === "ランダム") {
+  const getSortIcon = (field: (typeof SORT_FIELDS)[number]["label"]) => {
+    const value = getValueByLabel(field);
+    if (value === "random") {
       return <FaSort className={cn(sortDirections[field] ? "visible" : "invisible", "group-hover:visible")} />;
     }
 
@@ -104,12 +97,10 @@ const SortOptions = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 select-none">
-      {Object.keys(FIELD_TO_PARAMS).map((option) => {
-        const filterLiked = searchParams.get("filter") === "liked";
-        if (option === "いいね" && !filterLiked) {
-          return null;
-        }
+    <div className="flex flex-wrap items-center gap-1 xl:gap-2 select-none">
+      {SORT_FIELDS.map(({ label, value }) => {
+        const filterLiked = params.filter === "liked";
+        if (value === "like" && !filterLiked) return null;
 
         const rankingRegisteredStatus = [
           "1st",
@@ -117,28 +108,27 @@ const SortOptions = () => {
           "registerd",
           "unregisterd",
           "perfect",
-        ] satisfies (typeof RANKING_STATUS_FILTER_MENU.params)[number]["value"][];
+        ] satisfies (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"][];
 
         const isFilterRankingRegistered = rankingRegisteredStatus.includes(
-          searchParams.get(PARAM_NAME.rankingStatus) as (typeof rankingRegisteredStatus)[number],
+          (params.rankingStatus ?? "") as (typeof rankingRegisteredStatus)[number],
         );
 
-        if (option === "記録登録日" && !isFilterRankingRegistered) {
-          return null;
-        }
+        if (value === "ranking_register" && !isFilterRankingRegistered) return null;
 
         return (
-          <div
-            key={option}
+          <Button
+            variant="ghost"
+            key={label}
             className={cn(
-              "group hover:bg-accent flex cursor-pointer items-center justify-center rounded-sm px-3 py-1",
-              sortDirections[option as SortField] ? "text-secondary-light bg-accent font-bold" : "font-normal",
+              "group transition-none text-base gap-1",
+              sortDirections[label] && "text-secondary-light bg-accent font-bold hover:text-secondary-light",
             )}
-            onClick={() => handleSort(option as SortField)}
+            onClick={() => handleSort(label)}
           >
-            <span className="mr-1">{option}</span>
-            {getSortIcon(option as SortField)}
-          </div>
+            <span>{label}</span>
+            {getSortIcon(label)}
+          </Button>
         );
       })}
     </div>
@@ -146,9 +136,8 @@ const SortOptions = () => {
 };
 
 const MapListLength = () => {
-  const searchParams = useSearchParams();
   const trpc = useTRPC();
-  const params = parseMapListSearchParams(searchParams);
+  const [params] = useQueryStates(mapListSearchParams);
   const { sort: _, ...queryParams } = params;
   const { data: mapListLength, isPending } = useQuery(trpc.mapList.getListLength.queryOptions(queryParams));
 

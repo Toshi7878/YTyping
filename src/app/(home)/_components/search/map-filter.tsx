@@ -1,16 +1,15 @@
-"use client";
+﻿"use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import React, { useCallback, useState } from "react";
-import { useDifficultyRangeState, useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
+import { useQueryStates } from "nuqs";
+import React, { useCallback, useMemo, useState } from "react";
+import { useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
 import { DIFFICULTY_RANGE } from "@/app/(home)/_lib/const";
-import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { cn } from "@/lib/utils";
-import { PARAM_NAME } from "@/utils/queries/search-params/map-list";
+import { mapListSearchParams } from "@/utils/queries/search-params/map-list";
 
 export const MapFilter = () => {
   const { data: session } = useSession();
@@ -23,50 +22,58 @@ export const MapFilter = () => {
   );
 };
 
-const USER_FILTER_MENU = {
-  name: PARAM_NAME.filter,
+type FilterMenu<K extends keyof typeof mapListSearchParams> = {
+  name: K;
+  label: string;
+  options: {
+    label: string;
+    value: NonNullable<ReturnType<(typeof mapListSearchParams)[K]["parse"]>>;
+  }[];
+};
+
+const USER_FILTER_MENU: FilterMenu<"filter"> = {
+  name: "filter",
   label: "フィルター",
-  params: [
-    { label: "いいね済", value: "liked" as const },
-    { label: "作成した譜面", value: "my-map" as const },
+  options: [
+    { label: "いいね済み", value: "liked" },
+    { label: "作成した譜面", value: "my-map" },
   ],
 };
 
-export const RANKING_STATUS_FILTER_MENU = {
-  name: PARAM_NAME.rankingStatus,
+export const RANKING_STATUS_FILTER_MENU: FilterMenu<"rankingStatus"> = {
+  name: "rankingStatus",
   label: "ランキング",
-  params: [
-    { label: "1位", value: "1st" as const },
-    { label: "2位以下", value: "not-first" as const },
-    { label: "登録済", value: "registerd" as const },
-    { label: "未登録", value: "unregisterd" as const },
-    { label: "パーフェクト", value: "perfect" as const },
+  options: [
+    { label: "1位", value: "1st" },
+    { label: "2位以下", value: "not-first" },
+    { label: "登録済み", value: "registerd" },
+    { label: "未登録", value: "unregisterd" },
+    { label: "パーフェクト", value: "perfect" },
   ],
 };
 
 const FILTER_CONTENTS = [USER_FILTER_MENU, RANKING_STATUS_FILTER_MENU];
-type FilterParam = (typeof FILTER_CONTENTS)[number]["params"][number];
+type FilterParam = (typeof FILTER_CONTENTS)[number]["options"][number];
 
 const FilterInputs = () => {
-  const searchParams = useSearchParams();
+  const [params, setParams] = useQueryStates(mapListSearchParams);
   const setIsSearchingAtom = useSetIsSearching();
-  const setDifficultyRangeParams = useDifficultyRangeParams();
-  const difficultyRange = useDifficultyRangeState();
 
-  const createQueryString = useCallback(
-    (name: string, value: string, isApply: boolean) => {
-      const params = new URLSearchParams(searchParams.toString());
+  const currentParams = useMemo(
+    () =>
+      FILTER_CONTENTS.map((filterParam) => ({
+        name: filterParam.name,
+        value: (params as Record<string, unknown>)[filterParam.name] ?? "",
+      })),
+    [params],
+  );
 
-      if (isApply) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
-
+  const handleApply = useCallback(
+    (name: string, value: FilterParam["value"], isApply: boolean) => {
       const isFilterItem = name === USER_FILTER_MENU.name;
       const isRankingStatusItem = name === RANKING_STATUS_FILTER_MENU.name;
 
-      const rankingRegisteredStatuses: (typeof RANKING_STATUS_FILTER_MENU.params)[number]["value"][] = [
+      const rankingRegisteredStatuses: (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"][] = [
         "1st",
         "not-first",
         "registerd",
@@ -74,70 +81,67 @@ const FilterInputs = () => {
         "perfect",
       ];
 
-      const hasRankingRegisteredStatusFilter = rankingRegisteredStatuses.includes(
-        params.get(RANKING_STATUS_FILTER_MENU.name) as (typeof rankingRegisteredStatuses)[number],
-      );
-      const hasLikedFilter = params.get(USER_FILTER_MENU.name) === "liked";
+      const nextFilter = (isFilterItem ? (isApply ? (value as typeof params.filter) : null) : params.filter) ?? null;
+      const nextRankingStatus =
+        (isRankingStatusItem ? (isApply ? (value as typeof params.rankingStatus) : null) : params.rankingStatus) ??
+        null;
 
-      if (isApply) {
-        if (isFilterItem && hasLikedFilter) {
-          params.set("sort", "like");
-        } else if (isRankingStatusItem && hasRankingRegisteredStatusFilter) {
-          params.set("sort", "ranking_register_desc");
+      const hasRankingRegisteredStatusFilter = nextRankingStatus
+        ? rankingRegisteredStatuses.includes(nextRankingStatus)
+        : false;
+      const hasLikedFilter = nextFilter === "liked";
+
+      const updates: Partial<
+        typeof params & { sort: string | null } & { filter: typeof params.filter | null } & {
+          rankingStatus: typeof params.rankingStatus | null;
         }
-      } else if (isFilterItem && hasRankingRegisteredStatusFilter) {
-        params.set("sort", "ranking_register_desc");
-      } else if (isRankingStatusItem && hasLikedFilter) {
-        params.set("sort", "like");
+      > = {};
+
+      if (isFilterItem) updates.filter = isApply ? (value as typeof params.filter) : null;
+      if (isRankingStatusItem) updates.rankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
+
+      if (hasLikedFilter) {
+        updates.sort = "like_desc";
+      } else if (hasRankingRegisteredStatusFilter) {
+        updates.sort = "ranking_register_desc";
       } else {
-        params.delete("sort");
+        updates.sort = null;
       }
 
-      return setDifficultyRangeParams(params, difficultyRange).toString();
+      setIsSearchingAtom(true);
+      setParams(updates, { history: "replace" });
     },
-    [searchParams, difficultyRange, setDifficultyRangeParams],
+    [params, setParams, setIsSearchingAtom],
   );
-
-  const currentParams = FILTER_CONTENTS.map((filterParam) => {
-    return {
-      name: filterParam.name,
-      value: searchParams.get(filterParam.name) || "",
-    };
-  });
 
   return (
     <Card className="min-h-20 py-3 select-none">
       <CardContent>
-        <div className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr]">
+        <div className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr] items-center">
           {FILTER_CONTENTS.map((filter, filterIndex) => (
             <React.Fragment key={`${filterIndex}-${filter.label}`}>
-              <p className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
+              <div className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
                 {filter.label}
-              </p>
+              </div>
               <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
-                {filter.params.map((param: FilterParam, index: number) => {
+                {filter.options.map((param: FilterParam, index: number) => {
                   const isActived = currentParams.find((p) => p.name === filter.name)?.value === param.value;
 
                   return (
-                    <Link
+                    <Button
                       key={`${filter.name}-${index}`}
-                      href={`?${createQueryString(filter.name, param.value, !isActived)}`}
+                      variant="ghost"
                       onClick={(e) => {
                         e.preventDefault();
-                        setIsSearchingAtom(true);
-                        window.history.replaceState(
-                          null,
-                          "",
-                          `?${createQueryString(filter.name, param.value, !isActived)}`,
-                        );
+                        handleApply(filter.name, param.value, !isActived);
                       }}
                       className={cn(
-                        "hover:text-secondary-dark rounded px-2 py-1 text-sm transition-colors hover:underline",
+                        "transition-none hover:text-secondary-dark rounded px-2 py-1 text-sm hover:underline",
                         isActived && "text-secondary-dark font-bold underline",
                       )}
                     >
                       {param.label}
-                    </Link>
+                    </Button>
                   );
                 })}
               </div>
@@ -154,14 +158,13 @@ interface SearchRangeProps {
 }
 
 const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const searchParams = useSearchParams();
+  const [params, setParams] = useQueryStates(mapListSearchParams);
   const { min, max } = DIFFICULTY_RANGE;
   const [difficultyRange, setDifficultyRange] = useState<{ min: number; max: number }>({
-    min: Number(searchParams.get(PARAM_NAME.minRate)) || min,
-    max: Number(searchParams.get(PARAM_NAME.maxRate)) || max,
+    min: (typeof params.minRate === "number" && params.minRate) || min,
+    max: (typeof params.maxRate === "number" && params.maxRate) || max,
   });
 
-  const setDifficultyRangeParams = useDifficultyRangeParams();
   const setDifficultyRangeAtom = useSetDifficultyRange();
   const setIsSearchingAtom = useSetIsSearching();
 
@@ -172,12 +175,15 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      const params = new URLSearchParams(searchParams.toString());
+      const next: Partial<typeof params> = {};
+      next.minRate = difficultyRange.min !== min ? difficultyRange.min : (null as unknown as number);
+      next.maxRate = difficultyRange.max !== max ? difficultyRange.max : (null as unknown as number);
 
-      const newParams = setDifficultyRangeParams(params, difficultyRange);
-      if (newParams.toString() !== searchParams.toString()) {
+      const changed =
+        (params.minRate ?? min) !== difficultyRange.min || (params.maxRate ?? max) !== difficultyRange.max;
+      if (changed) {
         setIsSearchingAtom(true);
-        window.history.replaceState(null, "", `?${newParams.toString()}`);
+        setParams(next, { history: "replace" });
       }
     }
   };
@@ -194,8 +200,8 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
             step={step}
           />
           <div className="flex w-full justify-between">
-            <span>★{difficultyRange.min.toFixed(1)}</span>
-            <span>★{difficultyRange.max === max ? "∞" : difficultyRange.max.toFixed(1)}</span>
+            <span>{difficultyRange.min.toFixed(1)}</span>
+            <span>{difficultyRange.max.toFixed(1)}</span>
           </div>
         </div>
       </CardContent>
