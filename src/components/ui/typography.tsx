@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
+import { FiExternalLink } from "react-icons/fi";
 import { cn } from "@/lib/utils";
 
 interface H1Props {
@@ -54,7 +55,7 @@ export function Large({ children, className }: { children: ReactNode; className?
 }
 
 export function P({ children }: { children: ReactNode }) {
-  return <p className="leading-7 [&:not(:first-child)]:mt-3">{children}</p>;
+  return <p className="leading-7">{children}</p>;
 }
 
 export function Small({ children, className }: { children: ReactNode; className?: string }) {
@@ -68,6 +69,7 @@ interface LinkTextProps {
 }
 
 export const LinkText = ({ href, children, className, ...props }: LinkTextProps & ComponentProps<typeof Link>) => {
+  const isExternal = href.startsWith("http");
   return (
     <Link
       href={href}
@@ -76,8 +78,11 @@ export const LinkText = ({ href, children, className, ...props }: LinkTextProps 
         className,
       )}
       {...props}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
     >
       {children}
+      {isExternal && <FiExternalLink className="h-4 w-4" />}
     </Link>
   );
 };

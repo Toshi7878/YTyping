@@ -1,4 +1,3 @@
-import { ExternalLink } from "lucide-react";
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, LinkText, P, Small, UList } from "@/components/ui/typography";
 import { ByUser } from "./_components/by-user";
@@ -34,15 +33,11 @@ export default function Page() {
           <UList
             className="list-none ml-2 space-y-4"
             items={TOOLS.map((tool) => {
-              const isExternal = tool.href.startsWith("http");
-
               return (
                 <div key={tool.href}>
                   <div className="flex items-baseline gap-3">
-                    <LinkText href={tool.href} target={isExternal ? "_blank" : undefined}>
-                      <Large>
-                        {tool.title} {isExternal ? <ExternalLink className="inline-block" size={16} /> : null}
-                      </Large>
+                    <LinkText href={tool.href}>
+                      <Large>{tool.title}</Large>
                     </LinkText>
                     <Small className="flex">
                       <span>by.</span>

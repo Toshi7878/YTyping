@@ -1,7 +1,7 @@
 import { H1 } from "@/components/ui/typography";
 import { serverApi } from "@/trpc/server";
 import { UserTabs } from "./_components/tabs";
-import { UserProfileCard } from "./_components/user-profile/card";
+import { UserProfileCard } from "./_components/user-profile-card";
 
 export default async function Page({ params }: PageProps<"/user/[id]">) {
   const { id } = await params;

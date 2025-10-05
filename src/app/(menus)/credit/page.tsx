@@ -29,9 +29,7 @@ const BorrowedMaterials = () => {
         items={BORROWED_MATERIALS.map(({ name, url, materials }) => (
           <div key={name}>
             <Large className="flex">
-              <LinkText href={url as Route} target="_blank" rel="noopener noreferrer">
-                {name}
-              </LinkText>
+              <LinkText href={url as Route}>{name}</LinkText>
               <span className="ml-1">様</span>
             </Large>
             <UList items={materials.map((material) => <div key={material}>{material}</div>)} />

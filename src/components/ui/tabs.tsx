@@ -52,7 +52,7 @@ const tabsTriggerVariants = cva(
         default:
           "hover:data-[state=inactive]:bg-accent/40 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground focus-visible:ring-ring/50 focus-visible:outline-ring font-medium text-foreground text-sm",
         underline:
-          "data-[state=active]:border-b-accent-foreground/80 text-muted-foreground  data-[state=active]:text-foreground text-lg data-[state=active]:font-medium h-full rounded-none border-b-2 data-[state=active]:shadow-none hover:text-foreground/80",
+          "data-[state=active]:border-b-accent-foreground/80 text-muted-foreground data-[state=active]:text-foreground text-lg data-[state=active]:font-medium h-full rounded-none border-b-2 data-[state=active]:shadow-none hover:text-foreground/80",
       },
     },
     defaultVariants: {
