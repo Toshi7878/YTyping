@@ -12,11 +12,9 @@ interface ImeTypeProviderProps {
 }
 
 export const ImeTypeProvider = ({ children, userImeTypingOptions }: ImeTypeProviderProps) => {
-  const imeTypeAtomStore = getImeTypeAtomStore();
+  const store = getImeTypeAtomStore();
 
-  useHydrateAtoms([[imeTypeOptionsAtom, userImeTypingOptions ?? imeTypeAtomStore.get(imeTypeOptionsAtom)]], {
-    store: imeTypeAtomStore,
-  });
+  useHydrateAtoms([[imeTypeOptionsAtom, userImeTypingOptions ?? store.get(imeTypeOptionsAtom)]], { store });
 
-  return <JotaiProvider store={imeTypeAtomStore}>{children}</JotaiProvider>;
+  return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };

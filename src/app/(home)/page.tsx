@@ -5,19 +5,23 @@ import { MapList } from "./_components/map-list";
 import { HomeClientProvider } from "./client-provider";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
-  const raw = await searchParams;
-  const usp = new URLSearchParams();
-  for (const [key, value] of Object.entries(raw)) {
+  const searchParamEntries = await searchParams;
+
+  console.log(searchParamEntries);
+  const searchParamsObject = new URLSearchParams();
+  for (const [key, value] of Object.entries(searchParamEntries)) {
     if (Array.isArray(value)) {
-      for (const v of value) usp.append(key, v);
+      for (const v of value) searchParamsObject.append(key, v);
     } else if (typeof value === "string") {
-      usp.append(key, value);
+      searchParamsObject.append(key, value);
     }
   }
 
-  const params = parseMapListSearchParams(usp);
+  console.log(searchParamsObject);
 
-  prefetch(trpc.mapList.getList.infiniteQueryOptions(params));
+  const mapListQueryParams = parseMapListSearchParams(searchParamsObject);
+
+  prefetch(trpc.mapList.getList.infiniteQueryOptions(mapListQueryParams));
 
   return (
     <HydrateClient>

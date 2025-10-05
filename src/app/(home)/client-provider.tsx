@@ -12,7 +12,7 @@ interface HomeClientProviderProps {
 }
 
 export const HomeClientProvider = ({ children }: HomeClientProviderProps) => {
-  const homeAtomStore = getHomeAtomStore();
+  const store = getHomeAtomStore();
   const searchParams = useSearchParams();
   const minRate = searchParams.get(PARAM_NAME.minRate);
   const maxRate = searchParams.get(PARAM_NAME.maxRate);
@@ -21,14 +21,11 @@ export const HomeClientProvider = ({ children }: HomeClientProviderProps) => {
     [
       [
         difficultyRangeAtom,
-        {
-          min: Number(minRate) || DIFFICULTY_RANGE.min,
-          max: Number(maxRate) || DIFFICULTY_RANGE.max,
-        },
+        { min: Number(minRate) || DIFFICULTY_RANGE.min, max: Number(maxRate) || DIFFICULTY_RANGE.max },
       ],
     ],
-    { store: homeAtomStore },
+    { store },
   );
 
-  return <JotaiProvider store={homeAtomStore}>{children}</JotaiProvider>;
+  return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };

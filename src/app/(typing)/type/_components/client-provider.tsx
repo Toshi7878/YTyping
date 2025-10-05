@@ -17,14 +17,14 @@ interface ClientProviderProps {
 }
 
 export const ClientProvider = ({ userTypingOptions, mapId, children }: ClientProviderProps) => {
-  const typeAtomStore = getTypeAtomStore();
+  const store = getTypeAtomStore();
   const setPreviewVideoState = useSetPreviewVideo();
   const { sendTypingStats } = useSendUserStats();
   const pathChangeAtomReset = usePathChangeAtomReset();
 
   useHydrateAtoms([...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : [])], {
     dangerouslyForceHydrate: true,
-    store: typeAtomStore,
+    store,
   });
 
   useEffect(() => {
@@ -49,5 +49,5 @@ export const ClientProvider = ({ userTypingOptions, mapId, children }: ClientPro
     };
   }, [mapId, pathChangeAtomReset, sendTypingStats]);
 
-  return <JotaiProvider store={typeAtomStore}>{children}</JotaiProvider>;
+  return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };
