@@ -3,11 +3,12 @@ import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
-import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params";
+import { useReadDifficultyRange } from "@/app/(home)/_lib/atoms";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { PARAM_NAME, parseMapListSearchParams } from "@/utils/queries/search-params/map-list";
+import { applyDifficultyRangeParams } from "../../_lib/use-difficulty-range-params";
+import { useExecuteSearch } from "../../_lib/use-execute-search";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
 export const SortAndMapListLength = () => {
@@ -46,8 +47,7 @@ const getResetDirections = (): Record<SortField, SortDirection> => ({
 
 const SortOptions = () => {
   const searchParams = useSearchParams();
-  const setIsSearching = useSetIsSearching();
-  const setDifficultyRangeParams = useDifficultyRangeParams();
+  const executeSearch = useExecuteSearch();
   const readDifficultyRange = useReadDifficultyRange();
 
   const [sortDirections, setSortDirections] = useState<Record<SortField, SortDirection>>(() => {
@@ -88,8 +88,7 @@ const SortOptions = () => {
       setSortDirections({ ...getResetDirections(), ID: "desc" });
     }
 
-    setIsSearching(true);
-    window.history.replaceState(null, "", `?${setDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
+    executeSearch(`?${applyDifficultyRangeParams(params, readDifficultyRange()).toString()}`);
   };
 
   const getSortIcon = (field: SortField) => {

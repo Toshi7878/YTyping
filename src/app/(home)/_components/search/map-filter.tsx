@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import React, { useCallback, useState } from "react";
-import { useDifficultyRangeState, useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
+import { useDifficultyRangeState, useSetDifficultyRange } from "@/app/(home)/_lib/atoms";
 import { DIFFICULTY_RANGE } from "@/app/(home)/_lib/const";
-import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params";
+import { applyDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { cn } from "@/lib/utils";
 import { PARAM_NAME } from "@/utils/queries/search-params/map-list";
+import { useExecuteSearch } from "../../_lib/use-execute-search";
 
 export const MapFilter = () => {
   const { data: session } = useSession();
@@ -49,8 +50,7 @@ type FilterParam = (typeof FILTER_CONTENTS)[number]["params"][number];
 
 const FilterInputs = () => {
   const searchParams = useSearchParams();
-  const setIsSearchingAtom = useSetIsSearching();
-  const setDifficultyRangeParams = useDifficultyRangeParams();
+  const executeSearch = useExecuteSearch();
   const difficultyRange = useDifficultyRangeState();
 
   const createQueryString = useCallback(
@@ -93,9 +93,9 @@ const FilterInputs = () => {
         params.delete("sort");
       }
 
-      return setDifficultyRangeParams(params, difficultyRange).toString();
+      return applyDifficultyRangeParams(params, difficultyRange).toString();
     },
-    [searchParams, difficultyRange, setDifficultyRangeParams],
+    [searchParams, difficultyRange],
   );
 
   const currentParams = FILTER_CONTENTS.map((filterParam) => {
@@ -124,12 +124,7 @@ const FilterInputs = () => {
                       href={`?${createQueryString(filter.name, param.value, !isActived)}`}
                       onClick={(e) => {
                         e.preventDefault();
-                        setIsSearchingAtom(true);
-                        window.history.replaceState(
-                          null,
-                          "",
-                          `?${createQueryString(filter.name, param.value, !isActived)}`,
-                        );
+                        executeSearch(`?${createQueryString(filter.name, param.value, !isActived)}`);
                       }}
                       className={cn(
                         "hover:text-secondary-dark rounded px-2 py-1 text-sm transition-colors hover:underline",
@@ -161,9 +156,8 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
     max: Number(searchParams.get(PARAM_NAME.maxRate)) || max,
   });
 
-  const setDifficultyRangeParams = useDifficultyRangeParams();
   const setDifficultyRangeAtom = useSetDifficultyRange();
-  const setIsSearchingAtom = useSetIsSearching();
+  const executeSearch = useExecuteSearch();
 
   const handleChange = (val: [number, number]) => {
     setDifficultyRange({ min: val[0], max: val[1] });
@@ -173,12 +167,10 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       const params = new URLSearchParams(searchParams.toString());
+      const newParams = applyDifficultyRangeParams(params, difficultyRange);
+      if (newParams.toString() === searchParams.toString()) return;
 
-      const newParams = setDifficultyRangeParams(params, difficultyRange);
-      if (newParams.toString() !== searchParams.toString()) {
-        setIsSearchingAtom(true);
-        window.history.replaceState(null, "", `?${newParams.toString()}`);
-      }
+      executeSearch(`?${newParams.toString()}`);
     }
   };
 

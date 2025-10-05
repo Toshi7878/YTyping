@@ -11,7 +11,7 @@ import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 export const MapList = () => {
   const searchParams = useSearchParams();
   const isSearching = useIsSearchingState();
-  const setIsSearchingAtom = useSetIsSearching();
+  const setIsSearching = useSetIsSearching();
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
     useMapListQueryOptions().infiniteList(searchParams),
@@ -19,7 +19,7 @@ export const MapList = () => {
 
   useEffect(() => {
     if (data) {
-      setIsSearchingAtom(false);
+      setIsSearching(false);
     }
   }, [data]);
 

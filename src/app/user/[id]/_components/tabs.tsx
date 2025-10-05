@@ -5,7 +5,7 @@ import { UserCreatedMapList, UserLikedMapList } from "./map-list";
 import { UserResultList } from "./user-result-list";
 import { UserStatsCard } from "./user-stats/card";
 
-const tabs = [
+const TABS = [
   {
     label: "タイピング統計情報",
     value: "stats",
@@ -29,7 +29,7 @@ export const UserTabs = ({ id }: { id: string }) => {
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");
-    if (tabs.some((t) => t.value === hash)) {
+    if (TABS.some((t) => t.value === hash)) {
       setTab(hash);
     } else {
       setTab("stats");
@@ -45,7 +45,7 @@ export const UserTabs = ({ id }: { id: string }) => {
       }}
     >
       <TabsList variant="underline" className="max-sm:h-fit flex flex-wrap w-full">
-        {tabs.map((tab) => (
+        {TABS.map((tab) => (
           <TabsTrigger key={tab.value} value={tab.value} variant="underline">
             {tab.label}
           </TabsTrigger>

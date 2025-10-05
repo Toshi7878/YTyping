@@ -20,31 +20,36 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
   const { data: session } = useSession();
   const isMyProfilePage = session?.user.id === userId;
 
+  const profile = [
+    {
+      label: "運指表",
+      value: userProfile?.fingerChartUrl ? (
+        <LinkText href={userProfile.fingerChartUrl as Route}>運指表を見る</LinkText>
+      ) : (
+        <span className="text-muted-foreground">運指表は未設定です</span>
+      ),
+    },
+    {
+      label: "使用キーボード",
+      value: userProfile?.keyboard ? (
+        <span>{userProfile.keyboard}</span>
+      ) : (
+        <span className="text-muted-foreground">使用キーボードは未設定です</span>
+      ),
+    },
+  ];
+
   return (
     <Card>
       <CardContent className=" md:mx-8 flex flex-col gap-4">
         <H2>{userProfile?.name ?? ""}</H2>
         <DataList orientation="vertical" className="gap-3">
-          <DataListItem>
-            <DataListLabel>運指表:</DataListLabel>
-            <DataListValue>
-              {userProfile?.fingerChartUrl ? (
-                <LinkText href={userProfile.fingerChartUrl as Route}>運指表を見る</LinkText>
-              ) : (
-                <span className="text-muted-foreground">運指表は未設定です</span>
-              )}
-            </DataListValue>
-          </DataListItem>
-          <DataListItem>
-            <DataListLabel>使用キーボード:</DataListLabel>
-            <DataListValue>
-              {userProfile?.keyboard ? (
-                <span>{userProfile.keyboard}</span>
-              ) : (
-                <span className="text-muted-foreground">使用キーボードは未設定です</span>
-              )}
-            </DataListValue>
-          </DataListItem>
+          {profile.map((item) => (
+            <DataListItem key={item.label}>
+              <DataListLabel>{item.label}:</DataListLabel>
+              <DataListValue>{item.value}</DataListValue>
+            </DataListItem>
+          ))}
         </DataList>
         {isMyProfilePage && (
           <div className="flex justify-end">
