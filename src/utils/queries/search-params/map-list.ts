@@ -1,11 +1,12 @@
 import { createLoader, parseAsFloat, parseAsString, parseAsStringEnum } from "nuqs/server";
 import z from "zod";
 
-const baseFields = ["id", "difficulty", "ranking_count", "ranking_register", "like_count", "duration", "like"] as const;
+const baseFields = ["id", "difficulty", "ranking-count", "ranking-register", "like-count", "duration", "like"] as const;
 
 const generatedSortKeys = baseFields.flatMap((f) => [`${f}_asc`, `${f}_desc`] as const);
 export const MapListSortEnum = z.enum([...generatedSortKeys, "random"]);
 export type SortFieldType = (typeof baseFields)[number] | "random";
+export type SortAndDirection = z.output<typeof MapListSortEnum>;
 
 const FilterEnum = z.enum(["liked", "my-map"]);
 const RankingStatusEnum = z.enum(["1st", "not-first", "registerd", "unregisterd", "perfect"]);

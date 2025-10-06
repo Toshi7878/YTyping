@@ -223,11 +223,11 @@ function getSortSql({ sort }: GetSortSqlParams) {
       return [isAsc ? asc(Maps.id) : desc(Maps.id)];
     case sort.includes("difficulty"):
       return [isAsc ? asc(MapDifficulties.romaKpmMedian) : desc(MapDifficulties.romaKpmMedian)];
-    case sort.includes("ranking_count"):
+    case sort.includes("ranking-count"):
       return [isAsc ? asc(Maps.rankingCount) : desc(Maps.rankingCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
-    case sort.includes("ranking_register"):
+    case sort.includes("ranking-register"):
       return [isAsc ? asc(Results.updatedAt) : desc(Results.updatedAt), isAsc ? asc(Maps.id) : desc(Maps.id)];
-    case sort.includes("like_count"):
+    case sort.includes("like-count"):
       return [isAsc ? asc(Maps.likeCount) : desc(Maps.likeCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
     case sort.includes("duration"):
       return [isAsc ? asc(Maps.duration) : desc(Maps.duration)];

@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
 import { DIFFICULTY_RANGE } from "@/app/(home)/_lib/const";
 import { Button } from "@/components/ui/button";
@@ -59,19 +59,15 @@ const FilterInputs = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const setIsSearchingAtom = useSetIsSearching();
 
-  const currentParams = useMemo(
-    () =>
-      FILTER_CONTENTS.map((filterParam) => ({
-        name: filterParam.name,
-        value: (params as Record<string, unknown>)[filterParam.name] ?? "",
-      })),
-    [params],
-  );
+  const current = FILTER_CONTENTS.map((filter) => ({
+    name: filter.name,
+    value: params[filter.name],
+  }));
 
   const handleApply = useCallback(
-    (name: string, value: FilterParam["value"], isApply: boolean) => {
-      const isFilterItem = name === USER_FILTER_MENU.name;
-      const isRankingStatusItem = name === RANKING_STATUS_FILTER_MENU.name;
+    (name: "filter" | "rankingStatus", value: FilterParam["value"], isApply: boolean) => {
+      const isFilterOption = name === "filter";
+      const isRankingStatusOption = name === "rankingStatus";
 
       const rankingRegisteredStatuses: (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"][] = [
         "1st",
@@ -81,9 +77,9 @@ const FilterInputs = () => {
         "perfect",
       ];
 
-      const nextFilter = (isFilterItem ? (isApply ? (value as typeof params.filter) : null) : params.filter) ?? null;
+      const nextFilter = (isFilterOption ? (isApply ? (value as typeof params.filter) : null) : params.filter) ?? null;
       const nextRankingStatus =
-        (isRankingStatusItem ? (isApply ? (value as typeof params.rankingStatus) : null) : params.rankingStatus) ??
+        (isRankingStatusOption ? (isApply ? (value as typeof params.rankingStatus) : null) : params.rankingStatus) ??
         null;
 
       const hasRankingRegisteredStatusFilter = nextRankingStatus
@@ -97,13 +93,13 @@ const FilterInputs = () => {
         }
       > = {};
 
-      if (isFilterItem) updates.filter = isApply ? (value as typeof params.filter) : null;
-      if (isRankingStatusItem) updates.rankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
+      if (isFilterOption) updates.filter = isApply ? (value as typeof params.filter) : null;
+      if (isRankingStatusOption) updates.rankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
 
       if (hasLikedFilter) {
         updates.sort = "like_desc";
       } else if (hasRankingRegisteredStatusFilter) {
-        updates.sort = "ranking_register_desc";
+        updates.sort = "ranking-register_desc";
       } else {
         updates.sort = null;
       }
@@ -125,7 +121,7 @@ const FilterInputs = () => {
               </div>
               <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
                 {filter.options.map((param: FilterParam, index: number) => {
-                  const isActived = currentParams.find((p) => p.name === filter.name)?.value === param.value;
+                  const isActived = current.find((p) => p.name === filter.name)?.value === param.value;
 
                   return (
                     <Button
