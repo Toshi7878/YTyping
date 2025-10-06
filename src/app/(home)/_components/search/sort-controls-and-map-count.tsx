@@ -11,20 +11,18 @@ import { useTRPC } from "@/trpc/provider";
 import { mapListSearchParams, type SortAndDirection, type SortFieldType } from "@/utils/queries/search-params/map-list";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
-export const SortAndMapListLength = () => {
+export const SortControlsAndMapCount = () => {
   return (
     <Card className="p-0">
       <CardContent className="p-1.5 flex flex-wrap items-center justify-between">
-        <SortOptions />
-        <MapListLengthBadge />
+        <SortControls />
+        <MapCountBadge />
       </CardContent>
     </Card>
   );
 };
 
-type SortDirection = "asc" | "desc" | null;
-
-const SORT_FIELDS = [
+const SORT_OPTIONS: { label: string; value: SortFieldType }[] = [
   { label: "ID", value: "id" },
   { label: "難易度", value: "difficulty" },
   { label: "ランキング数", value: "ranking-count" },
@@ -33,9 +31,10 @@ const SORT_FIELDS = [
   { label: "ランダム", value: "random" },
   { label: "いいね", value: "like" },
   { label: "記録登録日", value: "ranking-register" },
-] as const satisfies { label: string; value: SortFieldType }[];
+];
 
-const parseSort = (sort: SortAndDirection | null): { value: SortFieldType; direction: SortDirection } => {
+type SortDirection = "asc" | "desc" | null;
+const parseSortParam = (sort: SortAndDirection | null): { value: SortFieldType; direction: SortDirection } => {
   switch (sort) {
     case "random":
       return { value: "random", direction: null };
@@ -72,47 +71,43 @@ const parseSort = (sort: SortAndDirection | null): { value: SortFieldType; direc
   }
 };
 
-const SortOptions = () => {
+const SortControls = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const setIsSearching = useSetIsSearching();
   const readDifficultyRange = useReadDifficultyRange();
 
-  const currentSort = parseSort(params.sort);
+  const currentSortState = parseSortParam(params.sort);
 
-  const handleSort = (value: SortFieldType) => {
-    let nextSort: SortAndDirection | null = null;
+  const deriveNextSortParam = (value: SortFieldType): SortAndDirection | null => {
     if (value === "random") {
-      nextSort = currentSort.value === "random" ? null : "random";
-    } else if (currentSort.value !== value) {
-      nextSort = `${value}_desc`;
-    } else if (currentSort.direction === "desc") {
-      nextSort = `${value}_asc`;
-    } else {
-      nextSort = null;
+      return currentSortState.value === "random" ? null : "random";
+    }
+    if (currentSortState.value !== value) {
+      return `${value}_desc`;
+    }
+    if (currentSortState.direction === "desc") {
+      return `${value}_asc`;
     }
 
-    setIsSearching(true);
-    setParams({ sort: nextSort, ...readDifficultyRange() }, { history: "replace" });
+    return null;
   };
 
   return (
     <div className="flex flex-wrap items-center gap-1 select-none">
-      {SORT_FIELDS.map(({ label, value }) => {
-        const filterLiked = params.filter === "liked";
-        if (value === "like" && !filterLiked) return null;
+      {SORT_OPTIONS.map(({ label, value }) => {
+        const isLikedFilterActive = params.filter === "liked";
+        if (value === "like" && !isLikedFilterActive) return null;
 
-        const rankingRegisteredStatus: (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"][] = [
+        const RANKING_STATUS_FOR_REGISTER_SORT: (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"][] = [
           "1st",
           "not-first",
           "registerd",
           "perfect",
         ];
 
-        const isFilterRankingRegistered = rankingRegisteredStatus.includes(
-          params.rankingStatus as (typeof rankingRegisteredStatus)[number],
-        );
-
-        if (value === "ranking-register" && !isFilterRankingRegistered) return null;
+        const rs = params.rankingStatus;
+        const isRegisterSortAvailable = rs !== null && RANKING_STATUS_FOR_REGISTER_SORT.includes(rs);
+        if (value === "ranking-register" && !isRegisterSortAvailable) return null;
 
         return (
           <Button
@@ -120,12 +115,16 @@ const SortOptions = () => {
             key={value}
             className={cn(
               "group transition-none text-base gap-1",
-              currentSort.value === value && "text-secondary-light bg-accent font-bold hover:text-secondary-light",
+              currentSortState.value === value && "text-secondary-light bg-accent font-bold hover:text-secondary-light",
             )}
-            onClick={() => handleSort(value)}
+            onClick={() => {
+              const nextSort = deriveNextSortParam(value);
+              setIsSearching(true);
+              setParams({ sort: nextSort, ...readDifficultyRange() }, { history: "replace" });
+            }}
           >
             <span>{label}</span>
-            <SortIcon value={value} currentSort={currentSort} />
+            <SortIndicator value={value} currentSort={currentSortState} />
           </Button>
         );
       })}
@@ -133,12 +132,12 @@ const SortOptions = () => {
   );
 };
 
-interface SortIconProps {
+interface SortIndicatorProps {
   value: SortFieldType;
   currentSort: { value: SortFieldType; direction: SortDirection };
 }
 
-const SortIcon = ({ value, currentSort }: SortIconProps) => {
+const SortIndicator = ({ value, currentSort }: SortIndicatorProps) => {
   if (value === "random") {
     return <FaSort className={cn(currentSort.value === "random" ? "visible" : "invisible", "group-hover:visible")} />;
   }
@@ -147,7 +146,7 @@ const SortIcon = ({ value, currentSort }: SortIconProps) => {
   return <FaSortDown className="invisible group-hover:visible" />;
 };
 
-const MapListLengthBadge = () => {
+const MapCountBadge = () => {
   const trpc = useTRPC();
   const [params] = useQueryStates(mapListSearchParams);
   const { sort: _, ...queryParams } = params;

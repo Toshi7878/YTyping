@@ -3,7 +3,7 @@ import { VolumeRange } from "@/components/shared/volume-range";
 import { usePreviewPlayerState } from "@/lib/global-atoms";
 import { MapFilter } from "./search/map-filter";
 import { SearchInput } from "./search/search-input";
-import { SortAndMapListLength } from "./search/sort-and-map-list-length";
+import { SortControlsAndMapCount } from "./search/sort-controls-and-map-count";
 
 export const MapControlArea = () => {
   const player = usePreviewPlayerState();
@@ -15,7 +15,7 @@ export const MapControlArea = () => {
         <MapFilter />
         <VolumeRange player={player} />
       </div>
-      <SortAndMapListLength />
+      <SortControlsAndMapCount />
     </section>
   );
 };

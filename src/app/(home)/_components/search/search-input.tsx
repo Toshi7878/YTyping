@@ -14,18 +14,13 @@ export const SearchInput = () => {
   const setIsSearching = useSetIsSearching();
   const readDifficultyRange = useReadDifficultyRange();
 
-  const handleSearch = async () => {
-    setIsSearching(true);
-
-    setParams({ keyword: keyword.trim(), ...readDifficultyRange() }, { history: "replace" });
-  };
-
   return (
     <form
       className="flex items-center gap-3 select-none"
       onSubmit={(e) => {
         e.preventDefault();
-        void handleSearch();
+        setIsSearching(true);
+        setParams({ keyword: keyword.trim(), ...readDifficultyRange() }, { history: "replace" });
       }}
     >
       <Input

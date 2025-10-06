@@ -22,22 +22,22 @@ export const MapFilter = () => {
   const isLogin = !!session?.user?.id;
   return (
     <div className="flex flex-col flex-wrap items-start gap-5 md:flex-row md:items-center">
-      {isLogin && <FilterInputs />}
-      <SearchRange step={0.1} />
+      {isLogin && <FilterControls />}
+      <DifficultyRangeControl step={0.1} />
     </div>
   );
 };
 
-type FilterMenu<K extends keyof typeof mapListSearchParams> = {
+type FilterMenuConfig<K extends keyof typeof mapListSearchParams> = {
   name: K;
   label: string;
   options: {
     label: string;
-    value: NonNullable<ReturnType<(typeof mapListSearchParams)[K]["parse"]>>;
+    value: ReturnType<(typeof mapListSearchParams)[K]["parse"]>;
   }[];
 };
 
-const USER_FILTER_MENU: FilterMenu<"filter"> = {
+const USER_FILTER_MENU: FilterMenuConfig<"filter"> = {
   name: "filter",
   label: "フィルター",
   options: [
@@ -46,7 +46,7 @@ const USER_FILTER_MENU: FilterMenu<"filter"> = {
   ],
 };
 
-export const RANKING_STATUS_FILTER_MENU: FilterMenu<"rankingStatus"> = {
+export const RANKING_STATUS_FILTER_MENU: FilterMenuConfig<"rankingStatus"> = {
   name: "rankingStatus",
   label: "ランキング",
   options: [
@@ -58,17 +58,23 @@ export const RANKING_STATUS_FILTER_MENU: FilterMenu<"rankingStatus"> = {
   ],
 };
 
-const FILTER_CONTENTS = [USER_FILTER_MENU, RANKING_STATUS_FILTER_MENU];
-type FilterParam = (typeof FILTER_CONTENTS)[number]["options"][number];
+const FILTER_MENUS = [USER_FILTER_MENU, RANKING_STATUS_FILTER_MENU];
+type FilterParam = (typeof FILTER_MENUS)[number]["options"][number];
 
-const FilterInputs = () => {
+const FilterControls = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const setIsSearching = useSetIsSearching();
   const readDifficultyRange = useReadDifficultyRange();
 
-  const deriveSortKey = (selectedFilter: typeof params.filter, selectedRankingStatus: typeof params.rankingStatus) => {
-    if (selectedFilter === "liked") return "like_desc";
-    switch (selectedRankingStatus) {
+  const deriveSortParam = ({
+    filter,
+    rankingStatus,
+  }: {
+    filter: typeof params.filter;
+    rankingStatus: typeof params.rankingStatus;
+  }) => {
+    if (filter === "liked") return "like_desc";
+    switch (rankingStatus) {
       case "1st":
       case "not-first":
       case "registerd":
@@ -79,7 +85,7 @@ const FilterInputs = () => {
     return null;
   };
 
-  const handleApply = (name: "filter" | "rankingStatus", value: FilterParam["value"], isApply: boolean) => {
+  const getNextFilterParams = (name: "filter" | "rankingStatus", value: FilterParam["value"], isApply: boolean) => {
     let selectedFilter = params.filter;
     if (name === "filter") {
       selectedFilter = isApply ? (value as typeof params.filter) : null;
@@ -89,19 +95,13 @@ const FilterInputs = () => {
     if (name === "rankingStatus") {
       selectedRankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
     }
-
-    const sort = deriveSortKey(selectedFilter, selectedRankingStatus);
-    setIsSearching(true);
-    setParams(
-      { filter: selectedFilter, rankingStatus: selectedRankingStatus, sort, ...readDifficultyRange() },
-      { history: "replace" },
-    );
+    return { filter: selectedFilter, rankingStatus: selectedRankingStatus };
   };
 
   return (
     <Card className="min-h-20 py-3 select-none">
       <CardContent className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr] items-center">
-        {FILTER_CONTENTS.map((filter, filterIndex) => (
+        {FILTER_MENUS.map((filter, filterIndex) => (
           <React.Fragment key={`${filterIndex}-${filter.label}`}>
             <div className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
               {filter.label}
@@ -109,7 +109,7 @@ const FilterInputs = () => {
             <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
               {filter.options.map((param, index) => {
                 const currentValue = filter.name === "filter" ? params.filter : params.rankingStatus;
-                const isActived = currentValue === param.value;
+                const isActive = currentValue === param.value;
 
                 return (
                   <Button
@@ -117,11 +117,14 @@ const FilterInputs = () => {
                     variant="ghost"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleApply(filter.name, param.value, !isActived);
+                      setIsSearching(true);
+                      const nextParams = getNextFilterParams(filter.name, param.value, !isActive);
+                      const sort = deriveSortParam(nextParams);
+                      setParams({ ...nextParams, sort, ...readDifficultyRange() }, { history: "replace" });
                     }}
                     className={cn(
                       "transition-none hover:text-secondary-dark rounded px-2 py-1 text-sm hover:underline",
-                      isActived && "text-secondary-dark font-bold underline",
+                      isActive && "text-secondary-dark font-bold underline",
                     )}
                   >
                     {param.label}
@@ -136,21 +139,21 @@ const FilterInputs = () => {
   );
 };
 
-interface SearchRangeProps {
+interface DifficultyRangeControlProps {
   step: number;
 }
 
-const SearchRange = ({ step }: SearchRangeProps) => {
+const DifficultyRangeControl = ({ step }: DifficultyRangeControlProps) => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const { minRate, maxRate } = useDifficultyRangeState();
   const setDifficultyRange = useSetDifficultyRange();
   const setIsSearching = useSetIsSearching();
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleEnterKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      const changed = params.minRate !== minRate || params.maxRate !== maxRate;
+      const isChanged = params.minRate !== minRate || params.maxRate !== maxRate;
 
-      if (changed) {
+      if (isChanged) {
         setIsSearching(true);
         setParams({ minRate, maxRate }, { history: "replace" });
       }
@@ -168,7 +171,7 @@ const SearchRange = ({ step }: SearchRangeProps) => {
             min={mapListSearchParams.minRate.defaultValue}
             max={mapListSearchParams.maxRate.defaultValue}
             step={step}
-            onKeyDown={handleKeyDown}
+            onKeyDown={handleEnterKeyDown}
           />
         </TooltipWrapper>
         <div className="flex w-full justify-between">
