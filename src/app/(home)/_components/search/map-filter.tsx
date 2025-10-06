@@ -123,8 +123,8 @@ const FilterControls = () => {
                       setParams({ ...nextParams, sort, ...readDifficultyRange() }, { history: "replace" });
                     }}
                     className={cn(
-                      "transition-none hover:text-secondary-dark rounded px-2 py-1 text-sm hover:underline",
-                      isActive && "text-secondary-dark font-bold underline",
+                      "transition-none  rounded px-2 py-1 text-sm hover:underline",
+                      isActive && "text-secondary-light hover:text-secondary-light font-bold  bg-accent/40",
                     )}
                   >
                     {param.label}
