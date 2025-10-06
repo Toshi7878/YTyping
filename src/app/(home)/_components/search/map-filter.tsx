@@ -114,38 +114,36 @@ const FilterInputs = () => {
 
   return (
     <Card className="min-h-20 py-3 select-none">
-      <CardContent>
-        <div className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr] items-center">
-          {FILTER_CONTENTS.map((filter, filterIndex) => (
-            <React.Fragment key={`${filterIndex}-${filter.label}`}>
-              <div className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
-                {filter.label}
-              </div>
-              <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
-                {filter.options.map((param: FilterParam, index: number) => {
-                  const isActived = current.find((p) => p.name === filter.name)?.value === param.value;
+      <CardContent className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr] items-center">
+        {FILTER_CONTENTS.map((filter, filterIndex) => (
+          <React.Fragment key={`${filterIndex}-${filter.label}`}>
+            <div className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
+              {filter.label}
+            </div>
+            <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
+              {filter.options.map((param: FilterParam, index: number) => {
+                const isActived = current.find((p) => p.name === filter.name)?.value === param.value;
 
-                  return (
-                    <Button
-                      key={`${filter.name}-${index}`}
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleApply(filter.name, param.value, !isActived);
-                      }}
-                      className={cn(
-                        "transition-none hover:text-secondary-dark rounded px-2 py-1 text-sm hover:underline",
-                        isActived && "text-secondary-dark font-bold underline",
-                      )}
-                    >
-                      {param.label}
-                    </Button>
-                  );
-                })}
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
+                return (
+                  <Button
+                    key={`${filter.name}-${index}`}
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleApply(filter.name, param.value, !isActived);
+                    }}
+                    className={cn(
+                      "transition-none hover:text-secondary-dark rounded px-2 py-1 text-sm hover:underline",
+                      isActived && "text-secondary-dark font-bold underline",
+                    )}
+                  >
+                    {param.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </React.Fragment>
+        ))}
       </CardContent>
     </Card>
   );
