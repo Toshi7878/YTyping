@@ -7,7 +7,7 @@ import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import { MapListSortEnum, MapSearchParamsSchema } from "@/utils/queries/search-params/map-list";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
-import { applyCursorPagination, parseCursor } from "../utils/pagination";
+import { createCursorPager } from "../utils/pagination";
 
 const InfiniteMapListBaseSchema = z.object({
   cursor: z.string().nullable().optional(),
@@ -72,7 +72,8 @@ const mapListRoute = {
       const { sort, cursor, ...filterParams } = input;
       const { user } = ctx;
 
-      const { page, offset } = parseCursor(cursor, PAGE_SIZE);
+      const { parse, paginate } = createCursorPager(PAGE_SIZE);
+      const { page, offset } = parse(cursor);
       const whereConds = buildWhereConditions({ ...filterParams, user });
       const orderers = getSortSql({ sort });
 
@@ -82,7 +83,7 @@ const mapListRoute = {
         .offset(offset)
         .where(whereConds.length ? and(...whereConds) : undefined);
 
-      return applyCursorPagination(maps, page, PAGE_SIZE);
+      return paginate(maps, page);
     }),
 
   getListByCreatorId: publicProcedure
@@ -91,7 +92,8 @@ const mapListRoute = {
       const { sort, cursor, creatorId } = input;
       const { user } = ctx;
 
-      const { page, offset } = parseCursor(cursor, PAGE_SIZE);
+      const { parse, paginate } = createCursorPager(PAGE_SIZE);
+      const { page, offset } = parse(cursor);
       const orderers = getSortSql({ sort });
 
       const maps = await createBaseSelect({ user })
@@ -100,7 +102,7 @@ const mapListRoute = {
         .offset(offset)
         .where(eq(Maps.creatorId, creatorId));
 
-      return applyCursorPagination(maps, page, PAGE_SIZE);
+      return paginate(maps, page);
     }),
 
   getLikeListByUserId: publicProcedure
@@ -109,7 +111,8 @@ const mapListRoute = {
       const { sort, cursor, likedUserId } = input;
       const { user } = ctx;
 
-      const { page, offset } = parseCursor(cursor, PAGE_SIZE);
+      const { parse, paginate } = createCursorPager(PAGE_SIZE);
+      const { page, offset } = parse(cursor);
       const orderers = getSortSql({ sort });
       const UserLikes = alias(MapLikes, "UserLikes");
 
@@ -120,7 +123,7 @@ const mapListRoute = {
         .offset(offset)
         .where(and(eq(UserLikes.userId, likedUserId), eq(UserLikes.hasLiked, true)));
 
-      return applyCursorPagination(maps, page, PAGE_SIZE);
+      return paginate(maps, page);
     }),
 
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
@@ -243,7 +246,7 @@ interface GetDifficultyFilterSqlParams {
   maxRate: MapListWhereParams["maxRate"];
 }
 
-const rateSchema = z.coerce.number().min(0).max(1200).optional();
+const rateSchema = z.coerce.number().min(0).max(12).optional();
 
 function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
   const conditions: SQL<unknown>[] = [];

@@ -20,7 +20,7 @@ import type { ResultData } from "@/server/drizzle/validator/result";
 import { CreateResultSchema } from "@/server/drizzle/validator/result";
 import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
-import { applyCursorPagination, parseCursor } from "../utils/pagination";
+import { createCursorPager } from "../utils/pagination";
 import type { MapListItem } from "./map-list";
 
 const InfiniteResultListBaseSchema = z.object({
@@ -158,7 +158,8 @@ const resultListWithMapRoute = {
     .query(async ({ input, ctx }) => {
       const { user } = ctx;
 
-      const { page, offset } = parseCursor(input.cursor, PAGE_SIZE);
+      const { parse, paginate } = createCursorPager(PAGE_SIZE);
+      const { page, offset } = parse(input.cursor);
 
       const Player = alias(Users, "Player");
       const Creator = alias(Users, "Creator");
@@ -182,7 +183,7 @@ const resultListWithMapRoute = {
         .limit(PAGE_SIZE + 1)
         .offset(offset);
 
-      return applyCursorPagination(toMapListItem(items), page, PAGE_SIZE);
+      return paginate(toMapListItem(items), page);
     }),
 
   getAllWithMapByUserId: publicProcedure
@@ -190,7 +191,8 @@ const resultListWithMapRoute = {
     .query(async ({ input, ctx }) => {
       const { user } = ctx;
       const { playerId } = input;
-      const { page, offset } = parseCursor(input.cursor, PAGE_SIZE);
+      const { parse, paginate } = createCursorPager(PAGE_SIZE);
+      const { page, offset } = parse(input.cursor);
 
       const Player = alias(Users, "Player");
       const Creator = alias(Users, "Creator");
@@ -201,7 +203,7 @@ const resultListWithMapRoute = {
         .limit(PAGE_SIZE + 1)
         .offset(offset);
 
-      return applyCursorPagination(toMapListItem(items), page, PAGE_SIZE);
+      return paginate(toMapListItem(items), page);
     }),
 
   getUserResultStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
