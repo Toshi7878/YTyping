@@ -1,38 +1,24 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import { useState } from "react";
-import { useDifficultyRangeParams } from "@/app/(home)/_lib/use-difficulty-range-params";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
+import { mapListSearchParams } from "@/utils/queries/search-params/map-list";
 import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../_lib/atoms";
 
 export const SearchInput = () => {
-  const searchParams = useSearchParams();
-  const [keyword, setKeyword] = useState(searchParams?.get("keyword") || "");
+  const [params, setParams] = useQueryStates(mapListSearchParams);
+  const [keyword, setKeyword] = useState(params.keyword ?? "");
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
-  const setDifficultyRangeParams = useDifficultyRangeParams();
   const readDifficultyRange = useReadDifficultyRange();
 
   const handleSearch = async () => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (keyword.trim()) {
-      params.set("keyword", keyword.trim());
-    } else {
-      params.delete("keyword");
-    }
-
-    const updatedParams = setDifficultyRangeParams(params, readDifficultyRange()).toString();
-    const currentParams = searchParams.toString();
-
-    if (updatedParams === currentParams) {
-      return;
-    }
+    const { minRate, maxRate } = readDifficultyRange();
 
     setIsSearching(true);
-    window.history.replaceState(null, "", `?${updatedParams}`);
+    setParams({ keyword: keyword.trim(), minRate, maxRate }, { history: "replace" });
   };
 
   return (

@@ -1,31 +1,17 @@
 "use client";
-import { Provider as JotaiProvider } from "jotai";
+import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
-import { useSearchParams } from "next/navigation";
 import type React from "react";
-import { PARAM_NAME } from "@/utils/queries/search-params/map-list";
-import { difficultyRangeAtom, getHomeAtomStore } from "./_lib/atoms";
-import { DIFFICULTY_RANGE } from "./_lib/const";
+import { difficultyRateRangeAtom, getHomeAtomStore } from "./_lib/atoms";
 
-interface HomeClientProviderProps {
+interface JotaiProviderProps {
   children: React.ReactNode;
+  minRate: number;
+  maxRate: number;
 }
 
-export const HomeClientProvider = ({ children }: HomeClientProviderProps) => {
+export const JotaiProvider = ({ children, minRate, maxRate }: JotaiProviderProps) => {
   const store = getHomeAtomStore();
-  const searchParams = useSearchParams();
-  const minRate = searchParams.get(PARAM_NAME.minRate);
-  const maxRate = searchParams.get(PARAM_NAME.maxRate);
-
-  useHydrateAtoms(
-    [
-      [
-        difficultyRangeAtom,
-        { min: Number(minRate) || DIFFICULTY_RANGE.min, max: Number(maxRate) || DIFFICULTY_RANGE.max },
-      ],
-    ],
-    { store },
-  );
-
-  return <JotaiProvider store={store}>{children}</JotaiProvider>;
+  useHydrateAtoms([[difficultyRateRangeAtom, { minRate, maxRate }]], { dangerouslyForceHydrate: true, store });
+  return <Provider store={store}>{children}</Provider>;
 };

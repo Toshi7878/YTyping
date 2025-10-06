@@ -2,9 +2,8 @@
 
 import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
-import React, { useCallback, useState } from "react";
-import { useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
-import { DIFFICULTY_RANGE } from "@/app/(home)/_lib/const";
+import React from "react";
+import { useDifficultyRangeState, useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
@@ -61,56 +60,34 @@ const FilterInputs = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const setIsSearchingAtom = useSetIsSearching();
 
-  const current = FILTER_CONTENTS.map((filter) => ({
-    name: filter.name,
-    value: params[filter.name],
-  }));
+  const deriveSortKey = (selectedFilter: typeof params.filter, selectedRankingStatus: typeof params.rankingStatus) => {
+    if (selectedFilter === "liked") return "like_desc";
+    switch (selectedRankingStatus) {
+      case "1st":
+      case "not-first":
+      case "registerd":
+      case "perfect":
+        return "ranking-register_desc";
+    }
 
-  const handleApply = useCallback(
-    (name: "filter" | "rankingStatus", value: FilterParam["value"], isApply: boolean) => {
-      const isFilterOption = name === "filter";
-      const isRankingStatusOption = name === "rankingStatus";
+    return null;
+  };
 
-      const rankingRegisteredStatuses: (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"][] = [
-        "1st",
-        "not-first",
-        "registerd",
-        "unregisterd",
-        "perfect",
-      ];
+  const handleApply = (name: "filter" | "rankingStatus", value: FilterParam["value"], isApply: boolean) => {
+    let selectedFilter = params.filter;
+    if (name === "filter") {
+      selectedFilter = isApply ? (value as typeof params.filter) : null;
+    }
 
-      const nextFilter = (isFilterOption ? (isApply ? (value as typeof params.filter) : null) : params.filter) ?? null;
-      const nextRankingStatus =
-        (isRankingStatusOption ? (isApply ? (value as typeof params.rankingStatus) : null) : params.rankingStatus) ??
-        null;
+    let selectedRankingStatus = params.rankingStatus;
+    if (name === "rankingStatus") {
+      selectedRankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
+    }
 
-      const hasRankingRegisteredStatusFilter = nextRankingStatus
-        ? rankingRegisteredStatuses.includes(nextRankingStatus)
-        : false;
-      const hasLikedFilter = nextFilter === "liked";
-
-      const updates: Partial<
-        typeof params & { sort: string | null } & { filter: typeof params.filter | null } & {
-          rankingStatus: typeof params.rankingStatus | null;
-        }
-      > = {};
-
-      if (isFilterOption) updates.filter = isApply ? (value as typeof params.filter) : null;
-      if (isRankingStatusOption) updates.rankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
-
-      if (hasLikedFilter) {
-        updates.sort = "like_desc";
-      } else if (hasRankingRegisteredStatusFilter) {
-        updates.sort = "ranking-register_desc";
-      } else {
-        updates.sort = null;
-      }
-
-      setIsSearchingAtom(true);
-      setParams(updates, { history: "replace" });
-    },
-    [params, setParams, setIsSearchingAtom],
-  );
+    const sort = deriveSortKey(selectedFilter, selectedRankingStatus);
+    setIsSearchingAtom(true);
+    setParams({ filter: selectedFilter, rankingStatus: selectedRankingStatus, sort }, { history: "replace" });
+  };
 
   return (
     <Card className="min-h-20 py-3 select-none">
@@ -121,8 +98,9 @@ const FilterInputs = () => {
               {filter.label}
             </div>
             <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
-              {filter.options.map((param: FilterParam, index: number) => {
-                const isActived = current.find((p) => p.name === filter.name)?.value === param.value;
+              {filter.options.map((param, index) => {
+                const currentValue = filter.name === "filter" ? params.filter : params.rankingStatus;
+                const isActived = currentValue === param.value;
 
                 return (
                   <Button
@@ -155,31 +133,17 @@ interface SearchRangeProps {
 
 const SearchRange = ({ step }: SearchRangeProps) => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
-  const { min, max } = DIFFICULTY_RANGE;
-  const [difficultyRange, setDifficultyRange] = useState<{ min: number; max: number }>({
-    min: (typeof params.minRate === "number" && params.minRate) || min,
-    max: (typeof params.maxRate === "number" && params.maxRate) || max,
-  });
-
-  const setDifficultyRangeAtom = useSetDifficultyRange();
-  const setIsSearchingAtom = useSetIsSearching();
-
-  const handleChange = (val: [number, number]) => {
-    setDifficultyRange({ min: val[0], max: val[1] });
-    setDifficultyRangeAtom({ min: val[0], max: val[1] });
-  };
+  const { minRate, maxRate } = useDifficultyRangeState();
+  const setDifficultyRange = useSetDifficultyRange();
+  const setIsSearching = useSetIsSearching();
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      const next: Partial<typeof params> = {};
-      next.minRate = difficultyRange.min !== min ? difficultyRange.min : (null as unknown as number);
-      next.maxRate = difficultyRange.max !== max ? difficultyRange.max : (null as unknown as number);
+      const changed = params.minRate !== minRate || params.maxRate !== maxRate;
 
-      const changed =
-        (params.minRate ?? min) !== difficultyRange.min || (params.maxRate ?? max) !== difficultyRange.max;
       if (changed) {
-        setIsSearchingAtom(true);
-        setParams(next, { history: "replace" });
+        setIsSearching(true);
+        setParams({ minRate, maxRate }, { history: "replace" });
       }
     }
   };
@@ -190,17 +154,17 @@ const SearchRange = ({ step }: SearchRangeProps) => {
         <Small>難易度</Small>
         <TooltipWrapper label="Enterで検索" sideOffset={24}>
           <DualRangeSlider
-            value={[difficultyRange.min, difficultyRange.max]}
-            onValueChange={handleChange}
-            min={min}
-            max={max}
+            value={[minRate, maxRate]}
+            onValueChange={(val) => setDifficultyRange({ minRate: val[0], maxRate: val[1] })}
+            min={mapListSearchParams.minRate.defaultValue}
+            max={mapListSearchParams.maxRate.defaultValue}
             step={step}
             onKeyDown={handleKeyDown}
           />
         </TooltipWrapper>
         <div className="flex w-full justify-between">
-          <span>★{difficultyRange.min.toFixed(1)}</span>
-          <span>★{difficultyRange.max.toFixed(1)}</span>
+          <span>★{minRate.toFixed(1)}</span>
+          <span>★{maxRate.toFixed(1)}</span>
         </div>
       </CardContent>
     </Card>
