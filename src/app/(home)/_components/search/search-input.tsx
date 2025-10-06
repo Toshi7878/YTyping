@@ -15,10 +15,9 @@ export const SearchInput = () => {
   const readDifficultyRange = useReadDifficultyRange();
 
   const handleSearch = async () => {
-    const { minRate, maxRate } = readDifficultyRange();
-
     setIsSearching(true);
-    setParams({ keyword: keyword.trim(), minRate, maxRate }, { history: "replace" });
+
+    setParams({ keyword: keyword.trim(), ...readDifficultyRange() }, { history: "replace" });
   };
 
   return (

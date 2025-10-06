@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useQueryStates } from "nuqs";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import { useSetIsSearching } from "@/app/(home)/_lib/atoms";
+import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -75,6 +75,7 @@ const parseSort = (sort: SortAndDirection | null): { value: SortFieldType; direc
 const SortOptions = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const setIsSearching = useSetIsSearching();
+  const readDifficultyRange = useReadDifficultyRange();
 
   const currentSort = parseSort(params.sort);
 
@@ -91,7 +92,7 @@ const SortOptions = () => {
     }
 
     setIsSearching(true);
-    setParams({ sort: nextSort }, { history: "replace" });
+    setParams({ sort: nextSort, ...readDifficultyRange() }, { history: "replace" });
   };
 
   return (

@@ -5,13 +5,13 @@ import { mapListSearchParams } from "@/utils/queries/search-params/map-list";
 const store = createStore();
 export const getHomeAtomStore = () => store;
 
-export const difficultyRateRangeAtom = atomWithReset({
+export const difficultyRangeAtom = atomWithReset({
   minRate: mapListSearchParams.minRate.defaultValue,
   maxRate: mapListSearchParams.maxRate.defaultValue,
 });
-export const useReadDifficultyRange = () => () => store.get(difficultyRateRangeAtom);
-export const useDifficultyRangeState = () => useAtomValue(difficultyRateRangeAtom, { store });
-export const useSetDifficultyRange = () => useSetAtom(difficultyRateRangeAtom, { store });
+export const useReadDifficultyRange = () => () => store.get(difficultyRangeAtom);
+export const useDifficultyRangeState = () => useAtomValue(difficultyRangeAtom, { store });
+export const useSetDifficultyRange = () => useSetAtom(difficultyRangeAtom, { store });
 
 const isSearchingAtom = atom(false);
 export const useIsSearchingState = () => useAtomValue(isSearchingAtom, { store });

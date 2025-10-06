@@ -3,7 +3,12 @@
 import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
 import React from "react";
-import { useDifficultyRangeState, useSetDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
+import {
+  useDifficultyRangeState,
+  useReadDifficultyRange,
+  useSetDifficultyRange,
+  useSetIsSearching,
+} from "@/app/(home)/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
@@ -58,7 +63,8 @@ type FilterParam = (typeof FILTER_CONTENTS)[number]["options"][number];
 
 const FilterInputs = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
-  const setIsSearchingAtom = useSetIsSearching();
+  const setIsSearching = useSetIsSearching();
+  const readDifficultyRange = useReadDifficultyRange();
 
   const deriveSortKey = (selectedFilter: typeof params.filter, selectedRankingStatus: typeof params.rankingStatus) => {
     if (selectedFilter === "liked") return "like_desc";
@@ -85,8 +91,11 @@ const FilterInputs = () => {
     }
 
     const sort = deriveSortKey(selectedFilter, selectedRankingStatus);
-    setIsSearchingAtom(true);
-    setParams({ filter: selectedFilter, rankingStatus: selectedRankingStatus, sort }, { history: "replace" });
+    setIsSearching(true);
+    setParams(
+      { filter: selectedFilter, rankingStatus: selectedRankingStatus, sort, ...readDifficultyRange() },
+      { history: "replace" },
+    );
   };
 
   return (

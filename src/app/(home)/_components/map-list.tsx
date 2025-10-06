@@ -11,7 +11,7 @@ import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 
 export const MapList = () => {
   const isSearching = useIsSearchingState();
-  const setIsSearchingAtom = useSetIsSearching();
+  const setIsSearching = useSetIsSearching();
   const trpc = useTRPC();
   const [params] = useQueryStates(mapListSearchParams);
 
@@ -25,7 +25,7 @@ export const MapList = () => {
 
   useEffect(() => {
     if (data) {
-      setIsSearchingAtom(false);
+      setIsSearching(false);
     }
   }, [data]);
 

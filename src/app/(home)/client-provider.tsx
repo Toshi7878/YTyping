@@ -2,7 +2,7 @@
 import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import type React from "react";
-import { difficultyRateRangeAtom, getHomeAtomStore } from "./_lib/atoms";
+import { difficultyRangeAtom, getHomeAtomStore } from "./_lib/atoms";
 
 interface JotaiProviderProps {
   children: React.ReactNode;
@@ -12,6 +12,6 @@ interface JotaiProviderProps {
 
 export const JotaiProvider = ({ children, minRate, maxRate }: JotaiProviderProps) => {
   const store = getHomeAtomStore();
-  useHydrateAtoms([[difficultyRateRangeAtom, { minRate, maxRate }]], { dangerouslyForceHydrate: true, store });
+  useHydrateAtoms([[difficultyRangeAtom, { minRate, maxRate }]], { dangerouslyForceHydrate: true, store });
   return <Provider store={store}>{children}</Provider>;
 };
