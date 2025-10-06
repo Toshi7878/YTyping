@@ -7,7 +7,7 @@ import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import { MapListSortEnum, MapSearchParamsSchema } from "@/utils/queries/search-params/map-list";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
-import { createCursorPager } from "../utils/pagination";
+import { createCursorPager } from "../utils/cursor-pager";
 
 const InfiniteMapListBaseSchema = z.object({
   cursor: z.string().nullable().optional(),

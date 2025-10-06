@@ -20,7 +20,7 @@ import type { ResultData } from "@/server/drizzle/validator/result";
 import { CreateResultSchema } from "@/server/drizzle/validator/result";
 import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
-import { createCursorPager } from "../utils/pagination";
+import { createCursorPager } from "../utils/cursor-pager";
 import type { MapListItem } from "./map-list";
 
 const InfiniteResultListBaseSchema = z.object({
