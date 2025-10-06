@@ -2,7 +2,7 @@
 import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import type React from "react";
-import { difficultyRangeAtom, getHomeAtomStore } from "./_lib/atoms";
+import { difficultyRangeAtom, getHomeAtomStore } from "../_lib/atoms";
 
 interface JotaiProviderProps {
   children: React.ReactNode;
