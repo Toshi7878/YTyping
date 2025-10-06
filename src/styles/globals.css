@@ -211,7 +211,6 @@
 
 progress {
   appearance: none;
-  height: 0.6rem;
   outline: solid 1.5px #000;
   border-radius: 5px;
 }

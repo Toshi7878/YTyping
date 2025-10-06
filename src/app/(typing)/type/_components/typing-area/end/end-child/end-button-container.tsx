@@ -70,7 +70,10 @@ export const EndButtonContainer = () => {
           size="4xl"
           variant="primary-hover-light"
           className="max-sm:text-5xl max-sm:h-40 max-sm:w-xl"
-          onClick={() => setLineResultDrawer((prev) => !prev)}
+          onClickCapture={(event) => {
+            event.stopPropagation();
+            setLineResultDrawer((prev) => !prev);
+          }}
         >
           詳細リザルトを見る
         </Button>

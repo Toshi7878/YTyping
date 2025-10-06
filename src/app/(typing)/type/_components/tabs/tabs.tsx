@@ -22,11 +22,11 @@ export const TabsArea = ({ className }: TabsAreaProps) => {
     >
       <TabLists />
       <TabsContent value="ステータス" className="tab-card">
-        <StatusCard className="h-72 md:h-56" />
+        <StatusCard className="h-96 md:h-56" />
       </TabsContent>
 
       <TabsContent value="ランキング" className="tab-card">
-        <RankingTableCard className="h-72 md:h-56" />
+        <RankingTableCard className="h-96 md:h-56" />
       </TabsContent>
     </Tabs>
   );
@@ -34,7 +34,7 @@ export const TabsArea = ({ className }: TabsAreaProps) => {
 
 const TabLists = () => {
   return (
-    <TabsList variant="underline" className="h-auto w-full bg-transparent pl-8 select-none md:h-9">
+    <TabsList variant="underline" className="h-28 w-full bg-transparent pl-8 select-none md:h-9">
       {TAB_NAMES.map((name) => (
         <TabsTrigger
           variant="underline"
