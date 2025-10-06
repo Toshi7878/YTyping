@@ -172,7 +172,7 @@ const DifficultyRangeControl = () => {
         </TooltipWrapper>
         <div className="flex w-full justify-between">
           <span>★{minRate.toFixed(1)}</span>
-          <span>★{maxRate.toFixed(1)}</span>
+          <span>★{maxRate === 12 ? "∞" : maxRate.toFixed(1)}</span>
         </div>
       </CardContent>
     </Card>
