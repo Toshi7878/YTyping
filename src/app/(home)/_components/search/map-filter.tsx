@@ -23,7 +23,7 @@ export const MapFilter = () => {
   return (
     <div className="flex flex-col flex-wrap items-start gap-5 md:flex-row md:items-center">
       {isLogin && <FilterControls />}
-      <DifficultyRangeControl step={0.1} />
+      <DifficultyRangeControl />
     </div>
   );
 };
@@ -139,11 +139,7 @@ const FilterControls = () => {
   );
 };
 
-interface DifficultyRangeControlProps {
-  step: number;
-}
-
-const DifficultyRangeControl = ({ step }: DifficultyRangeControlProps) => {
+const DifficultyRangeControl = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const { minRate, maxRate } = useDifficultyRangeState();
   const setDifficultyRange = useSetDifficultyRange();
@@ -170,7 +166,7 @@ const DifficultyRangeControl = ({ step }: DifficultyRangeControlProps) => {
             onValueChange={(val) => setDifficultyRange({ minRate: val[0], maxRate: val[1] })}
             min={mapListSearchParams.minRate.defaultValue}
             max={mapListSearchParams.maxRate.defaultValue}
-            step={step}
+            step={0.1}
             onKeyDown={handleEnterKeyDown}
           />
         </TooltipWrapper>
