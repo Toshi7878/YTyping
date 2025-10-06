@@ -8,6 +8,8 @@ import { DIFFICULTY_RANGE } from "@/app/(home)/_lib/const";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
+import { TooltipWrapper } from "@/components/ui/tooltip";
+import { Small } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { mapListSearchParams } from "@/utils/queries/search-params/map-list";
 
@@ -153,7 +155,7 @@ interface SearchRangeProps {
   step: number;
 }
 
-const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<HTMLDivElement>) => {
+const SearchRange = ({ step }: SearchRangeProps) => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const { min, max } = DIFFICULTY_RANGE;
   const [difficultyRange, setDifficultyRange] = useState<{ min: number; max: number }>({
@@ -185,20 +187,22 @@ const SearchRange = ({ step, ...rest }: SearchRangeProps & React.HTMLAttributes<
   };
 
   return (
-    <Card className="min-h-23">
-      <CardContent>
-        <div className="mt-1 flex w-48 flex-col items-center gap-2 select-none" onKeyDown={handleKeyDown} {...rest}>
+    <Card className="min-h-23 py-3">
+      <CardContent className="mt-1 space-y-1 flex w-56 flex-col items-center gap-2 select-none">
+        <Small>難易度</Small>
+        <TooltipWrapper label="Enterで検索" sideOffset={24}>
           <DualRangeSlider
             value={[difficultyRange.min, difficultyRange.max]}
             onValueChange={handleChange}
             min={min}
             max={max}
             step={step}
+            onKeyDown={handleKeyDown}
           />
-          <div className="flex w-full justify-between">
-            <span>{difficultyRange.min.toFixed(1)}</span>
-            <span>{difficultyRange.max.toFixed(1)}</span>
-          </div>
+        </TooltipWrapper>
+        <div className="flex w-full justify-between">
+          <span>★{difficultyRange.min.toFixed(1)}</span>
+          <span>★{difficultyRange.max.toFixed(1)}</span>
         </div>
       </CardContent>
     </Card>
