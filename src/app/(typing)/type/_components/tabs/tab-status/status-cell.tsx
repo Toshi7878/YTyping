@@ -11,7 +11,7 @@ export const StatusCell = ({ label }: { label: string }) => {
       <StatusLabel label={label} />
       <StatusUnderline label={label} />
 
-      <span className="value text-5xl md:text-[2.2rem]">
+      <span className="value text-6xl md:text-[2.2rem]">
         {label === "point" ? (
           <PointStatusValue atom={focusTypingStatusAtoms[label]} timeBonusAtom={focusTypingStatusAtoms.timeBonus} />
         ) : (
@@ -36,10 +36,10 @@ interface PointStatusValueProps {
 }
 
 const PointStatusValue = ({ atom, timeBonusAtom }: PointStatusValueProps) => {
-  const typeAtomStore = useStore();
+  const store = useStore();
 
-  const value = useAtomValue(atom, { store: typeAtomStore });
-  const timeBonusValue = useAtomValue(timeBonusAtom, { store: typeAtomStore });
+  const value = useAtomValue(atom, { store });
+  const timeBonusValue = useAtomValue(timeBonusAtom, { store });
 
   return (
     <>
@@ -50,8 +50,8 @@ const PointStatusValue = ({ atom, timeBonusAtom }: PointStatusValueProps) => {
 };
 
 const StatusValue = ({ atom }: { atom: Atom<number> }) => {
-  const typeAtomStore = useStore();
-  const value = useAtomValue(atom, { store: typeAtomStore });
+  const store = useStore();
+  const value = useAtomValue(atom, { store });
 
   return <>{value}</>;
 };
@@ -59,7 +59,7 @@ const StatusValue = ({ atom }: { atom: Atom<number> }) => {
 const StatusUnderline = ({ label }: { label: string }) => {
   const isMainWidth = label === "score" || label === "point";
 
-  const underlineWidthClass = isMainWidth ? "w-[159px]" : "w-20";
+  const underlineWidthClass = isMainWidth ? "w-[240px] md:w-[159px]" : "w-28 md:w-20";
 
   return (
     <span className="relative">

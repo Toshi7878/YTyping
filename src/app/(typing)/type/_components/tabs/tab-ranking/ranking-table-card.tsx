@@ -122,7 +122,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
       },
       {
         id: "clap",
-        header: () => <FaHandsClapping size={16} />,
+        header: () => <FaHandsClapping size={16} className="size-10 md:size-4" />,
         size: 15,
         cell: ({ row }) => {
           const { clap } = row.original;
@@ -176,6 +176,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
             openPopoverIndex === index && "bg-accent/50",
           )
         }
+        headerRowClassName="text-3xl font-bold md:text-base h-20 md:h-auto"
         tbodyId="ranking-tbody"
         rowWrapper={({ row, index, children }) => {
           const { otherStatus, typeCounts, typeSpeed } = row;

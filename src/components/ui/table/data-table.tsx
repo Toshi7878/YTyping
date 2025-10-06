@@ -16,6 +16,7 @@ interface DataTableProps<TData, TValue> {
   rowClassName?: (index: number) => string;
   cellClassName?: string;
   tbodyId?: string;
+  headerRowClassName?: string;
   rowWrapper?: (args: { row: TData; index: number; children: React.ReactNode }) => React.ReactNode;
   loading?: boolean;
 }
@@ -28,6 +29,7 @@ export function DataTable<TData, TValue>({
   rowClassName,
   cellClassName,
   tbodyId,
+  headerRowClassName,
   rowWrapper,
   loading,
 }: DataTableProps<TData, TValue>) {
@@ -42,7 +44,7 @@ export function DataTable<TData, TValue>({
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="hover:bg-transparent">
+            <TableRow key={headerGroup.id} className={cn("hover:bg-transparent", headerRowClassName)}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead

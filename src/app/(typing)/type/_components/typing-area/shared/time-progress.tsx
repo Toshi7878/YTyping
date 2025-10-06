@@ -25,7 +25,7 @@ export const TimeProgress = (props: TimeProgressProps) => {
         id={props.id}
         ref={progressRef}
         className={
-          "[&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:bg-primary h-[20px] w-full md:h-[10px] [&::-moz-progress-bar]:rounded-lg [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-bar]:bg-gray-200 [&::-webkit-progress-value]:rounded-lg"
+          "[&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:bg-primary h-[16px] max-sm:my-2 w-full md:h-[10px] [&::-moz-progress-bar]:rounded-lg [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-bar]:bg-gray-200 [&::-webkit-progress-value]:rounded-lg"
         }
       />
     </section>

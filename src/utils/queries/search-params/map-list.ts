@@ -1,3 +1,34 @@
+import { createLoader, parseAsFloat, parseAsString, parseAsStringEnum } from "nuqs/server";
+import z from "zod";
+
+const baseFields = ["id", "difficulty", "ranking-count", "ranking-register", "like-count", "duration", "like"] as const;
+
+const generatedSortKeys = baseFields.flatMap((f) => [`${f}_asc`, `${f}_desc`] as const);
+export const MapListSortEnum = z.enum([...generatedSortKeys, "random"]);
+export type SortFieldType = (typeof baseFields)[number] | "random";
+export type SortAndDirection = z.output<typeof MapListSortEnum>;
+
+const FilterEnum = z.enum(["liked", "my-map"]);
+const RankingStatusEnum = z.enum(["1st", "not-first", "registerd", "unregisterd", "perfect"]);
+
+export const MapSearchParamsSchema = z.object({
+  filter: FilterEnum.nullable(),
+  rankingStatus: RankingStatusEnum.nullable(),
+  keyword: z.string().default(""),
+  minRate: z.number(),
+  maxRate: z.number(),
+});
+
+export const mapListSearchParams = {
+  sort: parseAsStringEnum(MapListSortEnum.options),
+  keyword: parseAsString.withDefault(""),
+  minRate: parseAsFloat.withDefault(0),
+  maxRate: parseAsFloat.withDefault(12),
+  filter: parseAsStringEnum(FilterEnum.options),
+  rankingStatus: parseAsStringEnum(RankingStatusEnum.options),
+};
+export const loadSearchParams = createLoader(mapListSearchParams);
+
 export const PARAM_NAME = {
   keyword: "keyword",
   minRate: "minRate",
@@ -6,24 +37,3 @@ export const PARAM_NAME = {
   filter: "filter",
   rankingStatus: "rankingStatus",
 } as const;
-
-type MapListParams = Partial<Record<keyof typeof PARAM_NAME, string>>;
-
-export function parseMapListSearchParams(searchParams: URLSearchParams) {
-  const params: MapListParams = {};
-
-  for (const [key, value] of searchParams.entries()) {
-    if (key in PARAM_NAME) {
-      params[key] = value;
-    }
-  }
-
-  return {
-    filter: params.filter,
-    minRate: params.minRate ? Number(params.minRate) : undefined,
-    maxRate: params.maxRate ? Number(params.maxRate) : undefined,
-    rankingStatus: params.rankingStatus,
-    keyword: params.keyword,
-    sort: params.sort,
-  };
-}
