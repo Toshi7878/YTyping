@@ -1,7 +1,7 @@
 "use client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { MapCard } from "@/components/shared/map-card/card";
 import { Spinner } from "@/components/ui/spinner";
 import { useTRPC } from "@/trpc/provider";
@@ -10,12 +10,13 @@ import { useInfiniteScroll } from "@/utils/use-infinite-scroll";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 
 export const MapList = () => {
+  useSearchParamsTracker();
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
   const trpc = useTRPC();
   const [params] = useQueryStates(mapListSearchParams);
 
-  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
     trpc.mapList.getList.infiniteQueryOptions(params, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       refetchOnWindowFocus: false,
@@ -24,10 +25,10 @@ export const MapList = () => {
   );
 
   useEffect(() => {
-    if (data) {
+    if (!isFetching) {
       setIsSearching(false);
     }
-  }, [data]);
+  }, [isFetching, setIsSearching]);
 
   const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
   return (
@@ -39,4 +40,26 @@ export const MapList = () => {
       {hasNextPage && <Spinner ref={ref} />}
     </section>
   );
+};
+
+const useSearchParamsTracker = () => {
+  const [params] = useQueryStates(mapListSearchParams);
+  const setIsSearching = useSetIsSearching();
+  const prevParamsRef = useRef<string | null>(null);
+  const isMountedRef = useRef(false);
+
+  useEffect(() => {
+    const current = JSON.stringify(params);
+
+    if (!isMountedRef.current) {
+      isMountedRef.current = true;
+      prevParamsRef.current = current;
+      return;
+    }
+
+    if (prevParamsRef.current !== current) {
+      setIsSearching(true);
+      prevParamsRef.current = current;
+    }
+  }, [params, setIsSearching]);
 };

@@ -6,7 +6,6 @@ import React from "react";
 import {
   usePendingDifficultyRangeState,
   useReadPendingDifficultyRange,
-  useSetIsSearching,
   useSetPendingDifficultyRange,
 } from "@/app/(home)/_lib/atoms";
 import { Button } from "@/components/ui/button";
@@ -63,7 +62,6 @@ type FilterParam = (typeof FILTER_MENUS)[number]["options"][number];
 
 const FilterControls = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
-  const setIsSearching = useSetIsSearching();
   const readPendingDifficultyRange = useReadPendingDifficultyRange();
 
   const deriveSortParam = ({
@@ -121,14 +119,9 @@ const FilterControls = () => {
                     variant="ghost"
                     onClick={(e) => {
                       e.preventDefault();
-                      setIsSearching(true);
                       const nextParams = getNextFilterParams(filter.name, param.value, !isActive);
                       const sort = deriveSortParam(nextParams);
                       const newParams = { ...nextParams, sort, ...readPendingDifficultyRange() };
-                      const isChanged = JSON.stringify(newParams) !== JSON.stringify(params);
-                      if (isChanged) {
-                        setIsSearching(true);
-                      }
 
                       setParams(newParams, { shallow: true });
                     }}
@@ -150,20 +143,21 @@ const FilterControls = () => {
 };
 
 const DifficultyRangeControl = () => {
-  const [params, setParams] = useQueryStates(mapListSearchParams);
+  const [params, setParams] = useQueryStates(
+    {
+      minRate: mapListSearchParams.minRate,
+      maxRate: mapListSearchParams.maxRate,
+    },
+    { shallow: true, scroll: false },
+  );
   const { pendingMinRate, pendingMaxRate } = usePendingDifficultyRangeState();
   const setPendingDifficultyRange = useSetPendingDifficultyRange();
-  const setIsSearching = useSetIsSearching();
-
-  const currentMinRate = params.minRate;
-  const currentMaxRate = params.maxRate;
 
   const handleEnterKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      const isChanged = currentMinRate !== pendingMinRate || currentMaxRate !== pendingMaxRate;
+      const isChanged = params.minRate !== pendingMinRate || params.maxRate !== pendingMaxRate;
 
       if (isChanged) {
-        setIsSearching(true);
         setParams({ minRate: pendingMinRate, maxRate: pendingMaxRate }, { shallow: true });
       }
     }
