@@ -25,7 +25,7 @@ export const MapList = () => {
   );
 
   useEffect(() => {
-    if (isFetching) {
+    if (!isFetching) {
       setIsSearching(false);
     }
   }, [isFetching, setIsSearching, data]);
