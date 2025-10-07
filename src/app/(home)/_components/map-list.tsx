@@ -16,7 +16,7 @@ export const MapList = () => {
   const trpc = useTRPC();
   const [params] = useQueryStates(mapListSearchParams);
 
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
+  const { data, isFetchingNextPage, fetchNextPage, hasNextPage, isFetching } = useSuspenseInfiniteQuery(
     trpc.mapList.getList.infiniteQueryOptions(params, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       refetchOnWindowFocus: false,
@@ -25,10 +25,10 @@ export const MapList = () => {
   );
 
   useEffect(() => {
-    if (!isFetching) {
+    if (isFetching) {
       setIsSearching(false);
     }
-  }, [isFetching, setIsSearching]);
+  }, [isFetching, setIsSearching, data]);
 
   const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
   return (
