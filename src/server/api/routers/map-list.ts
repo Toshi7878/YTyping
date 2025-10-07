@@ -5,13 +5,13 @@ import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import { MapListSortEnum, MapSearchParamsSchema } from "@/utils/queries/search-params/map-list";
+import { MapListSortEnumSchema, MapSearchParamsSchema } from "@/utils/queries/search-params/map-list";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
 
 const InfiniteMapListBaseSchema = z.object({
   cursor: z.string().nullable().optional(),
-  sort: MapListSortEnum.nullable(),
+  sort: MapListSortEnumSchema.nullable(),
 });
 
 const createBaseSelect = ({ user }: { user: Context["user"] }) => {
@@ -246,7 +246,9 @@ interface GetDifficultyFilterSqlParams {
   maxRate: MapListWhereParams["maxRate"];
 }
 
-const rateSchema = z.coerce.number().min(0).max(12).optional();
+const rateSchema = z
+  .preprocess((v) => (v == null ? v : Math.round(Number(v) * 100)), z.number().int().min(0).max(1200))
+  .optional();
 
 function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
   const conditions: SQL<unknown>[] = [];
@@ -255,11 +257,11 @@ function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSqlPara
   const validMaxRate = rateSchema.safeParse(maxRate);
 
   if (validMinRate.success && validMinRate.data) {
-    conditions.push(gte(MapDifficulties.romaKpmMedian, validMinRate.data * 100));
+    conditions.push(gte(MapDifficulties.romaKpmMedian, validMinRate.data));
   }
 
   if (validMaxRate.success && validMaxRate.data) {
-    conditions.push(lte(MapDifficulties.romaKpmMedian, validMaxRate.data * 100));
+    conditions.push(lte(MapDifficulties.romaKpmMedian, validMaxRate.data));
   }
 
   return conditions;
