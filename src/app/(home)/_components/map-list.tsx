@@ -25,10 +25,10 @@ export const MapList = () => {
   );
 
   useEffect(() => {
-    if (!isFetching && data.pageParams.length > 0) {
+    if (data.pageParams.length > 0) {
       setIsSearching(false);
     }
-  }, [isFetching, setIsSearching, data.pageParams.length]);
+  }, [setIsSearching, data.pageParams.length]);
 
   const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
   return (
