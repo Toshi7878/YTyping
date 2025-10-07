@@ -177,7 +177,7 @@ importers:
         version: 1.0.7(tailwindcss@4.1.14)
       trpc-to-openapi:
         specifier: ^3.0.1
-        version: 3.0.1(@trpc/server@11.6.0(typescript@5.9.3))(zod-openapi@5.4.1(zod@4.1.11))(zod@4.1.11)
+        version: 3.1.0(@trpc/server@11.6.0(typescript@5.9.3))(zod-openapi@5.4.1(zod@4.1.11))(zod@4.1.11)
       ua-parser-js:
         specifier: ^2.0.5
         version: 2.0.5
@@ -2714,6 +2714,9 @@ packages:
   '@types/node@24.6.2':
     resolution: {integrity: sha512-d2L25Y4j+W3ZlNAeMKcy7yDsK425ibcAOO2t7aPTz6gNMH0z2GThtwENCDc0d/Pw9wgyRqE5Px1wkV7naz8ang==}
 
+  '@types/node@24.7.0':
+    resolution: {integrity: sha512-IbKooQVqUBrlzWTi79E8Fw78l8k1RNtlDDNWsFZs7XonuQSJ8oNYfEeclhprUldXISRMLzBpILuKgPlIxm+/Yw==}
+
   '@types/pg-pool@2.0.6':
     resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
 
@@ -4320,8 +4323,8 @@ packages:
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
-  trpc-to-openapi@3.0.1:
-    resolution: {integrity: sha512-XxQl/DvjrtSUkdkixyv403p+JAi/rKSqjfjQb30gR8hbIR4z2ixD+y3Sl0TJVRrx5dLPNJjt+UU/dfMQeTdfiQ==}
+  trpc-to-openapi@3.1.0:
+    resolution: {integrity: sha512-5hKNl8XxE7QZE5UiaxpyKrRQCk6JRNiei4Ddg9I2Tmk2eEzR3/QhTvTElS32COZY+pWwVtqksVTwVWY8dHxLNw==}
     peerDependencies:
       '@trpc/server': ^11.1.0
       zod: ^4.0.0
@@ -4361,6 +4364,9 @@ packages:
 
   undici-types@7.13.0:
     resolution: {integrity: sha512-Ov2Rr9Sx+fRgagJ5AX0qvItZG/JKKoBRAVITs1zk7IqZGTJUwgUr7qoYBpWwakpWilTZFM98rG/AFRocu10iIQ==}
+
+  undici-types@7.14.0:
+    resolution: {integrity: sha512-QQiYxHuyZ9gQUIrmPo3IA+hUl4KYk8uSA7cHrcKd/l3p1OTpZcM0Tbp9x7FAtXdAYhlasd60ncPpgu6ihG6TOA==}
 
   undici@7.16.0:
     resolution: {integrity: sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g==}
@@ -7371,6 +7377,10 @@ snapshots:
     dependencies:
       undici-types: 7.13.0
 
+  '@types/node@24.7.0':
+    dependencies:
+      undici-types: 7.14.0
+
   '@types/pg-pool@2.0.6':
     dependencies:
       '@types/pg': 8.15.5
@@ -8157,7 +8167,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.6.2
+      '@types/node': 24.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -8935,7 +8945,7 @@ snapshots:
 
   tr46@0.0.3: {}
 
-  trpc-to-openapi@3.0.1(@trpc/server@11.6.0(typescript@5.9.3))(zod-openapi@5.4.1(zod@4.1.11))(zod@4.1.11):
+  trpc-to-openapi@3.1.0(@trpc/server@11.6.0(typescript@5.9.3))(zod-openapi@5.4.1(zod@4.1.11))(zod@4.1.11):
     dependencies:
       '@trpc/server': 11.6.0(typescript@5.9.3)
       co-body: 6.2.0
@@ -8973,6 +8983,8 @@ snapshots:
   uncrypto@0.1.3: {}
 
   undici-types@7.13.0: {}
+
+  undici-types@7.14.0: {}
 
   undici@7.16.0: {}
 
