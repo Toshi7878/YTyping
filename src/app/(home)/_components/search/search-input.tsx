@@ -5,14 +5,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { mapListSearchParams } from "@/utils/queries/search-params/map-list";
-import { useIsSearchingState, useReadDifficultyRange, useSetIsSearching } from "../../_lib/atoms";
+import { useIsSearchingState, useReadPendingDifficultyRange, useSetIsSearching } from "../../_lib/atoms";
 
 export const SearchInput = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const [keyword, setKeyword] = useState(params.keyword ?? "");
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
-  const readDifficultyRange = useReadDifficultyRange();
+  const readPendingDifficultyRange = useReadPendingDifficultyRange();
 
   return (
     <form
@@ -20,7 +20,7 @@ export const SearchInput = () => {
       onSubmit={(e) => {
         e.preventDefault();
         setIsSearching(true);
-        setParams({ keyword: keyword.trim(), ...readDifficultyRange() }, { history: "replace" });
+        setParams({ keyword: keyword.trim(), ...readPendingDifficultyRange() }, { history: "replace" });
       }}
     >
       <Input

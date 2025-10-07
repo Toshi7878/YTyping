@@ -2,13 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useQueryStates } from "nuqs";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import { useReadDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
+import { useReadPendingDifficultyRange, useSetIsSearching } from "@/app/(home)/_lib/atoms";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { mapListSearchParams, type SortAndDirection, type SortFieldType } from "@/utils/queries/search-params/map-list";
+import {
+  type MapListSearchParams,
+  mapListSearchParams,
+  type SortFieldType,
+} from "@/utils/queries/search-params/map-list";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
 export const SortControlsAndMapCount = () => {
@@ -34,7 +38,7 @@ const SORT_OPTIONS: { label: string; value: SortFieldType }[] = [
 ];
 
 type SortDirection = "asc" | "desc" | null;
-const parseSortParam = (sort: SortAndDirection | null): { value: SortFieldType; direction: SortDirection } => {
+const parseSortParam = (sort: MapListSearchParams["sort"]): { value: SortFieldType; direction: SortDirection } => {
   switch (sort) {
     case "random":
       return { value: "random", direction: null };
@@ -74,11 +78,11 @@ const parseSortParam = (sort: SortAndDirection | null): { value: SortFieldType; 
 const SortControls = () => {
   const [params, setParams] = useQueryStates(mapListSearchParams);
   const setIsSearching = useSetIsSearching();
-  const readDifficultyRange = useReadDifficultyRange();
+  const readPendingDifficultyRange = useReadPendingDifficultyRange();
 
   const currentSortState = parseSortParam(params.sort);
 
-  const deriveNextSortParam = (value: SortFieldType): SortAndDirection | null => {
+  const deriveNextSortParam = (value: SortFieldType): MapListSearchParams["sort"] => {
     if (value === "random") {
       return currentSortState.value === "random" ? null : "random";
     }
@@ -120,7 +124,7 @@ const SortControls = () => {
             onClick={() => {
               const nextSort = deriveNextSortParam(value);
               setIsSearching(true);
-              setParams({ sort: nextSort, ...readDifficultyRange() }, { history: "replace" });
+              setParams({ sort: nextSort, ...readPendingDifficultyRange() }, { history: "replace" });
             }}
           >
             <span>{label}</span>
