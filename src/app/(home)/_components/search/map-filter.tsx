@@ -66,23 +66,42 @@ const FilterControls = () => {
   const readPendingDifficultyRange = useReadPendingDifficultyRange();
   const setParams = useSetParams();
 
-  const deriveSortParam = ({
-    filter,
-    rankingStatus,
-  }: {
-    filter: typeof params.filter;
-    rankingStatus: typeof params.rankingStatus;
-  }): MapListSearchParams["sort"] | undefined => {
-    if (filter === "liked") return { id: "like", desc: true };
-    switch (rankingStatus) {
-      case "1st":
-      case "not-first":
-      case "registerd":
-      case "perfect":
+  const deriveSortParam = (
+    {
+      filter,
+      rankingStatus,
+    }: {
+      filter: typeof params.filter;
+      rankingStatus: typeof params.rankingStatus;
+    },
+    name: "filter" | "rankingStatus",
+    isActive: boolean,
+  ): MapListSearchParams["sort"] | undefined => {
+    const hasRankingStatusFilter =
+      rankingStatus === "1st" ||
+      rankingStatus === "not-first" ||
+      rankingStatus === "registerd" ||
+      rankingStatus === "perfect";
+
+    if (isActive) {
+      if (name === "filter" && hasRankingStatusFilter) {
         return { id: "ranking-register", desc: true };
+      }
+      if (name === "rankingStatus" && filter === "liked") {
+        return { id: "like", desc: true };
+      }
+      return { id: "id", desc: true };
     }
 
-    return undefined;
+    if (name === "filter" && filter === "liked") {
+      return { id: "like", desc: true };
+    }
+
+    if (name === "rankingStatus" && hasRankingStatusFilter) {
+      return { id: "ranking-register", desc: true };
+    }
+
+    return { id: "id", desc: true };
   };
 
   const getNextFilterParams = (
@@ -111,7 +130,7 @@ const FilterControls = () => {
               {filter.label}
             </div>
             <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
-              {filter.options.map((param, index) => {
+              {filter.options.map((param: (typeof filter.options)[number], index: number) => {
                 const currentValue = filter.name === "filter" ? params.filter : params.rankingStatus;
                 const isActive = currentValue === param.value;
 
@@ -122,7 +141,7 @@ const FilterControls = () => {
                     onClick={(e) => {
                       e.preventDefault();
                       const nextParams = getNextFilterParams(filter.name, param.value, !isActive);
-                      const sort = deriveSortParam(nextParams);
+                      const sort = deriveSortParam(nextParams, filter.name, isActive);
                       setParams({ ...nextParams, sort, ...readPendingDifficultyRange() });
                     }}
                     className={cn(
