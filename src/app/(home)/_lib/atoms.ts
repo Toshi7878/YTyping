@@ -6,8 +6,8 @@ const store = createStore();
 export const getHomeAtomStore = () => store;
 
 export const pendingDifficultyRangeAtom = atomWithReset({
-  pendingMinRate: mapListSearchParams.minRate.defaultValue,
-  pendingMaxRate: mapListSearchParams.maxRate.defaultValue,
+  minRate: mapListSearchParams.minRate.defaultValue,
+  maxRate: mapListSearchParams.maxRate.defaultValue,
 });
 export const useReadPendingDifficultyRange = () => () => store.get(pendingDifficultyRangeAtom);
 export const usePendingDifficultyRangeState = () => useAtomValue(pendingDifficultyRangeAtom, { store });

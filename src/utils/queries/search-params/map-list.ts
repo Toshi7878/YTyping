@@ -1,5 +1,5 @@
 import type { inferParserType } from "nuqs";
-import { createLoader, parseAsFloat, parseAsString, parseAsStringEnum } from "nuqs/server";
+import { createLoader, createSerializer, parseAsFloat, parseAsString, parseAsStringEnum } from "nuqs/server";
 import * as z from "zod";
 
 const baseFields = ["id", "difficulty", "ranking-count", "ranking-register", "like-count", "duration", "like"] as const;
@@ -30,4 +30,5 @@ export const mapListSearchParams = {
 
 export type MapListSearchParams = inferParserType<typeof mapListSearchParams>; // number | null
 
-export const loadSearchParams = createLoader(mapListSearchParams);
+export const loadMapListSearchParams = createLoader(mapListSearchParams);
+export const mapListSerialize = createSerializer(mapListSearchParams);

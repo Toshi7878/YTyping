@@ -6,19 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { mapListSearchParams } from "@/utils/queries/search-params/map-list";
 import { useIsSearchingState, useReadPendingDifficultyRange } from "../../_lib/atoms";
+import { useSetParams } from "../../_lib/use-set-params";
 
 export const SearchInput = () => {
-  const [params, setParams] = useQueryStates(mapListSearchParams);
+  const [params] = useQueryStates(mapListSearchParams);
   const [keyword, setKeyword] = useState(params.keyword ?? "");
   const isSearching = useIsSearchingState();
   const readPendingDifficultyRange = useReadPendingDifficultyRange();
+  const setParams = useSetParams();
 
   return (
     <form
       className="flex items-center gap-3 select-none"
       onSubmit={(e) => {
         e.preventDefault();
-        setParams({ keyword: keyword.trim(), ...readPendingDifficultyRange() }, { history: "replace" });
+        setParams({ keyword: keyword.trim(), ...readPendingDifficultyRange() });
       }}
     >
       <Input

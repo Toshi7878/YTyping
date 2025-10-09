@@ -15,6 +15,7 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { Small } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { type MapListSearchParams, mapListSearchParams } from "@/utils/queries/search-params/map-list";
+import { useSetParams } from "../../_lib/use-set-params";
 
 export const MapFilter = () => {
   const { data: session } = useSession();
@@ -61,8 +62,9 @@ const FILTER_MENUS = [USER_FILTER_MENU, RANKING_STATUS_FILTER_MENU];
 type FilterParam = (typeof FILTER_MENUS)[number]["options"][number];
 
 const FilterControls = () => {
-  const [params, setParams] = useQueryStates(mapListSearchParams);
+  const [params] = useQueryStates(mapListSearchParams);
   const readPendingDifficultyRange = useReadPendingDifficultyRange();
+  const setParams = useSetParams();
 
   const deriveSortParam = ({
     filter,
@@ -121,9 +123,7 @@ const FilterControls = () => {
                       e.preventDefault();
                       const nextParams = getNextFilterParams(filter.name, param.value, !isActive);
                       const sort = deriveSortParam(nextParams);
-                      const newParams = { ...nextParams, sort, ...readPendingDifficultyRange() };
-
-                      setParams(newParams, { shallow: true });
+                      setParams({ ...nextParams, sort, ...readPendingDifficultyRange() });
                     }}
                     className={cn(
                       "transition-none  rounded px-2 py-1 text-sm hover:underline",
@@ -143,23 +143,14 @@ const FilterControls = () => {
 };
 
 const DifficultyRangeControl = () => {
-  const [params, setParams] = useQueryStates(
-    {
-      minRate: mapListSearchParams.minRate,
-      maxRate: mapListSearchParams.maxRate,
-    },
-    { shallow: true, scroll: false },
-  );
-  const { pendingMinRate, pendingMaxRate } = usePendingDifficultyRangeState();
+  const [params] = useQueryStates(mapListSearchParams);
+  const { minRate: pendingMinRate, maxRate: pendingMaxRate } = usePendingDifficultyRangeState();
   const setPendingDifficultyRange = useSetPendingDifficultyRange();
+  const setParams = useSetParams();
 
   const handleEnterKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      const isChanged = params.minRate !== pendingMinRate || params.maxRate !== pendingMaxRate;
-
-      if (isChanged) {
-        setParams({ minRate: pendingMinRate, maxRate: pendingMaxRate }, { shallow: true });
-      }
+      setParams({ ...params, minRate: pendingMinRate, maxRate: pendingMaxRate });
     }
   };
 
@@ -170,7 +161,7 @@ const DifficultyRangeControl = () => {
         <TooltipWrapper label="Enterで検索" sideOffset={24}>
           <DualRangeSlider
             value={[pendingMinRate, pendingMaxRate]}
-            onValueChange={(val) => setPendingDifficultyRange({ pendingMinRate: val[0], pendingMaxRate: val[1] })}
+            onValueChange={(val) => setPendingDifficultyRange({ minRate: val[0], maxRate: val[1] })}
             min={mapListSearchParams.minRate.defaultValue}
             max={mapListSearchParams.maxRate.defaultValue}
             step={0.1}

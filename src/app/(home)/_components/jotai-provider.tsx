@@ -12,7 +12,7 @@ interface JotaiProviderProps {
 
 export const JotaiProvider = ({ children, minRate, maxRate }: JotaiProviderProps) => {
   const store = getHomeAtomStore();
-  useHydrateAtoms([[pendingDifficultyRangeAtom, { pendingMinRate: minRate, pendingMaxRate: maxRate }]], {
+  useHydrateAtoms([[pendingDifficultyRangeAtom, { minRate, maxRate }]], {
     dangerouslyForceHydrate: true,
     store,
   });

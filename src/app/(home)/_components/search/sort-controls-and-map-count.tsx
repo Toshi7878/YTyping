@@ -13,6 +13,7 @@ import {
   mapListSearchParams,
   type SortFieldType,
 } from "@/utils/queries/search-params/map-list";
+import { useSetParams } from "../../_lib/use-set-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
 export const SortControlsAndMapCount = () => {
@@ -76,8 +77,9 @@ const parseSortParam = (sort: MapListSearchParams["sort"]): { value: SortFieldTy
 };
 
 const SortControls = () => {
-  const [params, setParams] = useQueryStates(mapListSearchParams);
+  const [params] = useQueryStates(mapListSearchParams);
   const readPendingDifficultyRange = useReadPendingDifficultyRange();
+  const setParams = useSetParams();
 
   const currentSortState = parseSortParam(params.sort);
 
@@ -122,7 +124,7 @@ const SortControls = () => {
             )}
             onClick={() => {
               const nextSort = deriveNextSortParam(value);
-              setParams({ sort: nextSort, ...readPendingDifficultyRange() }, { history: "replace" });
+              setParams({ sort: nextSort, ...readPendingDifficultyRange() });
             }}
           >
             <span>{label}</span>
