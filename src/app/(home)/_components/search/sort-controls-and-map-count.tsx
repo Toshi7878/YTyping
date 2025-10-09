@@ -47,7 +47,7 @@ const SortControls = () => {
 
   const deriveNextSortParam = (value: SortFieldType): MapListSearchParams["sort"] | undefined => {
     if (value === "random") {
-      return currentSort.id === "random" ? { id: "id", desc: false } : { id: "random", desc: false };
+      return currentSort.id === "random" ? { id: "id", desc: true } : { id: "random", desc: false };
     }
     if (currentSort.id !== value) {
       return { id: value, desc: true };
@@ -56,7 +56,7 @@ const SortControls = () => {
       return { id: value, desc: false };
     }
 
-    return { id: "id", desc: false };
+    return { id: "id", desc: true };
   };
 
   return (

@@ -50,9 +50,6 @@ const parseAsSort = createParser({
   serialize(value: { id: SortFieldType; desc: boolean }) {
     return `${value.id}:${value.desc ? "desc" : "asc"}`;
   },
-  eq(a, b) {
-    return a.id === b.id && a.desc === b.desc;
-  },
 });
 
 export const mapListSearchParams = {
