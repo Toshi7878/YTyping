@@ -38,63 +38,25 @@ const SORT_OPTIONS: { label: string; value: SortFieldType }[] = [
   { label: "記録登録日", value: "ranking-register" },
 ];
 
-type SortDirection = "asc" | "desc" | null;
-const parseSortParam = (sort: MapListSearchParams["sort"]): { value: SortFieldType; direction: SortDirection } => {
-  switch (sort) {
-    case "random":
-      return { value: "random", direction: null };
-    case "id_asc":
-      return { value: "id", direction: "asc" };
-    case "id_desc":
-      return { value: "id", direction: "desc" };
-    case "difficulty_asc":
-      return { value: "difficulty", direction: "asc" };
-    case "difficulty_desc":
-      return { value: "difficulty", direction: "desc" };
-    case "ranking-count_asc":
-      return { value: "ranking-count", direction: "asc" };
-    case "ranking-count_desc":
-      return { value: "ranking-count", direction: "desc" };
-    case "ranking-register_asc":
-      return { value: "ranking-register", direction: "asc" };
-    case "ranking-register_desc":
-      return { value: "ranking-register", direction: "desc" };
-    case "like-count_asc":
-      return { value: "like-count", direction: "asc" };
-    case "like-count_desc":
-      return { value: "like-count", direction: "desc" };
-    case "duration_asc":
-      return { value: "duration", direction: "asc" };
-    case "duration_desc":
-      return { value: "duration", direction: "desc" };
-    case "like_asc":
-      return { value: "like", direction: "asc" };
-    case "like_desc":
-      return { value: "like", direction: "desc" };
-    default:
-      return { value: "id", direction: "desc" };
-  }
-};
-
 const SortControls = () => {
   const [params] = useQueryStates(mapListSearchParams);
   const readPendingDifficultyRange = useReadPendingDifficultyRange();
   const setParams = useSetParams();
 
-  const currentSortState = parseSortParam(params.sort);
+  const currentSort = params.sort;
 
-  const deriveNextSortParam = (value: SortFieldType): MapListSearchParams["sort"] => {
+  const deriveNextSortParam = (value: SortFieldType): MapListSearchParams["sort"] | undefined => {
     if (value === "random") {
-      return currentSortState.value === "random" ? null : "random";
+      return currentSort.id === "random" ? { id: "id", desc: false } : { id: "random", desc: false };
     }
-    if (currentSortState.value !== value) {
-      return `${value}_desc`;
+    if (currentSort.id !== value) {
+      return { id: value, desc: true };
     }
-    if (currentSortState.direction === "desc") {
-      return `${value}_asc`;
+    if (currentSort.desc) {
+      return { id: value, desc: false };
     }
 
-    return null;
+    return { id: "id", desc: false };
   };
 
   return (
@@ -120,7 +82,7 @@ const SortControls = () => {
             key={value}
             className={cn(
               "group transition-none text-base gap-1",
-              currentSortState.value === value && "text-secondary-light bg-accent font-bold hover:text-secondary-light",
+              currentSort.id === value && "text-secondary-light bg-accent font-bold hover:text-secondary-light",
             )}
             onClick={() => {
               const nextSort = deriveNextSortParam(value);
@@ -128,7 +90,7 @@ const SortControls = () => {
             }}
           >
             <span>{label}</span>
-            <SortIndicator value={value} currentSort={currentSortState} />
+            <SortIndicator value={value} currentSort={currentSort} />
           </Button>
         );
       })}
@@ -138,15 +100,15 @@ const SortControls = () => {
 
 interface SortIndicatorProps {
   value: SortFieldType;
-  currentSort: { value: SortFieldType; direction: SortDirection };
+  currentSort: { id: SortFieldType; desc: boolean };
 }
 
 const SortIndicator = ({ value, currentSort }: SortIndicatorProps) => {
   if (value === "random") {
-    return <FaSort className={cn(currentSort.value === "random" ? "visible" : "invisible", "group-hover:visible")} />;
+    return <FaSort className={cn(currentSort.id === "random" ? "visible" : "invisible", "group-hover:visible")} />;
   }
-  if (currentSort.value === value && currentSort.direction === "asc") return <FaSortUp />;
-  if (currentSort.value === value && currentSort.direction === "desc") return <FaSortDown />;
+  if (currentSort.id === value && !currentSort.desc) return <FaSortUp />;
+  if (currentSort.id === value && currentSort.desc) return <FaSortDown />;
   return <FaSortDown className="invisible group-hover:visible" />;
 };
 

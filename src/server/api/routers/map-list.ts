@@ -5,13 +5,18 @@ import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import { MapListSortEnumSchema, MapSearchParamsSchema } from "@/utils/queries/search-params/map-list";
+import { MapSearchParamsSchema, type SortFieldType } from "@/utils/queries/search-params/map-list";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
 
 const InfiniteMapListBaseSchema = z.object({
   cursor: z.string().nullable().optional(),
-  sort: MapListSortEnumSchema.nullable(),
+  sort: z
+    .object({
+      id: z.string(),
+      desc: z.boolean(),
+    })
+    .nullable(),
 });
 
 const createBaseSelect = ({ user }: { user: Context["user"] }) => {
@@ -217,25 +222,26 @@ interface GetSortSqlParams {
 function getSortSql({ sort }: GetSortSqlParams) {
   if (!sort) return [desc(Maps.id)];
 
-  const isAsc = sort.includes("asc");
+  const { id: sortField, desc: isDesc } = sort;
+  const order = isDesc ? desc : asc;
 
-  switch (true) {
-    case sort.includes("random"):
+  switch (sortField as SortFieldType) {
+    case "random":
       return [sql`RANDOM()`];
-    case sort.includes("id"):
-      return [isAsc ? asc(Maps.id) : desc(Maps.id)];
-    case sort.includes("difficulty"):
-      return [isAsc ? asc(MapDifficulties.romaKpmMedian) : desc(MapDifficulties.romaKpmMedian)];
-    case sort.includes("ranking-count"):
-      return [isAsc ? asc(Maps.rankingCount) : desc(Maps.rankingCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
-    case sort.includes("ranking-register"):
-      return [isAsc ? asc(Results.updatedAt) : desc(Results.updatedAt), isAsc ? asc(Maps.id) : desc(Maps.id)];
-    case sort.includes("like-count"):
-      return [isAsc ? asc(Maps.likeCount) : desc(Maps.likeCount), isAsc ? asc(Maps.id) : desc(Maps.id)];
-    case sort.includes("duration"):
-      return [isAsc ? asc(Maps.duration) : desc(Maps.duration)];
-    case sort.includes("like"):
-      return [isAsc ? asc(MapLikes.createdAt) : desc(MapLikes.createdAt)];
+    case "id":
+      return [order(Maps.id)];
+    case "difficulty":
+      return [order(MapDifficulties.romaKpmMedian)];
+    case "ranking-count":
+      return [order(Maps.rankingCount), order(Maps.id)];
+    case "ranking-register":
+      return [order(Results.updatedAt), order(Maps.id)];
+    case "like-count":
+      return [order(Maps.likeCount), order(Maps.id)];
+    case "duration":
+      return [order(Maps.duration)];
+    case "like":
+      return [order(MapLikes.createdAt)];
     default:
       return [desc(Maps.id)];
   }

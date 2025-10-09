@@ -1,12 +1,27 @@
 import type { inferParserType } from "nuqs";
-import { createLoader, createSerializer, parseAsFloat, parseAsString, parseAsStringEnum } from "nuqs/server";
+import {
+  createLoader,
+  createParser,
+  createSerializer,
+  parseAsFloat,
+  parseAsString,
+  parseAsStringEnum,
+  parseAsStringLiteral,
+} from "nuqs/server";
 import * as z from "zod";
 
-const baseFields = ["id", "difficulty", "ranking-count", "ranking-register", "like-count", "duration", "like"] as const;
+const baseFields = [
+  "id",
+  "difficulty",
+  "ranking-count",
+  "ranking-register",
+  "like-count",
+  "duration",
+  "like",
+  "random",
+] as const;
 
-const generatedSortKeys = baseFields.flatMap((f) => [`${f}_asc`, `${f}_desc`] as const);
-export const MapListSortEnumSchema = z.enum([...generatedSortKeys, "random"]);
-export type SortFieldType = (typeof baseFields)[number] | "random";
+export type SortFieldType = (typeof baseFields)[number];
 
 const FilterEnum = z.enum(["liked", "my-map"]);
 const RankingStatusEnum = z.enum(["1st", "not-first", "registerd", "unregisterd", "perfect"]);
@@ -19,8 +34,29 @@ export const MapSearchParamsSchema = z.object({
   maxRate: z.number(),
 });
 
+const parseAsSort = createParser({
+  parse(query): { id: SortFieldType; desc: boolean } | null {
+    const [key = "", direction = ""] = query.split(":");
+    const desc = parseAsStringLiteral(["asc", "desc"]).parse(direction) ?? "desc";
+
+    const validFields = baseFields;
+    if (!validFields.includes(key as SortFieldType)) return null;
+
+    return {
+      id: key as SortFieldType,
+      desc: desc === "desc",
+    };
+  },
+  serialize(value: { id: SortFieldType; desc: boolean }) {
+    return `${value.id}:${value.desc ? "desc" : "asc"}`;
+  },
+  eq(a, b) {
+    return a.id === b.id && a.desc === b.desc;
+  },
+});
+
 export const mapListSearchParams = {
-  sort: parseAsStringEnum(MapListSortEnumSchema.options),
+  sort: parseAsSort.withDefault({ id: "id", desc: true }),
   keyword: parseAsString.withDefault(""),
   minRate: parseAsFloat.withDefault(0),
   maxRate: parseAsFloat.withDefault(12),
@@ -28,7 +64,7 @@ export const mapListSearchParams = {
   rankingStatus: parseAsStringEnum(RankingStatusEnum.options),
 };
 
-export type MapListSearchParams = inferParserType<typeof mapListSearchParams>; // number | null
+export type MapListSearchParams = inferParserType<typeof mapListSearchParams>;
 
 export const loadMapListSearchParams = createLoader(mapListSearchParams);
 export const mapListSerialize = createSerializer(mapListSearchParams);

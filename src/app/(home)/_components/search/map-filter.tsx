@@ -72,17 +72,17 @@ const FilterControls = () => {
   }: {
     filter: typeof params.filter;
     rankingStatus: typeof params.rankingStatus;
-  }): MapListSearchParams["sort"] => {
-    if (filter === "liked") return "like_desc";
+  }): MapListSearchParams["sort"] | undefined => {
+    if (filter === "liked") return { id: "like", desc: true };
     switch (rankingStatus) {
       case "1st":
       case "not-first":
       case "registerd":
       case "perfect":
-        return "ranking-register_desc";
+        return { id: "ranking-register", desc: true };
     }
 
-    return null;
+    return undefined;
   };
 
   const getNextFilterParams = (
