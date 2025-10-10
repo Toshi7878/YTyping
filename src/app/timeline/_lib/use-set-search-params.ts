@@ -4,27 +4,27 @@ import {
   resultListSearchParams,
   resultListSerialize,
 } from "@/utils/queries/schema/result-list";
-import { useReadSearchRange, useSetIsSearching } from "./atoms";
+import { useReadSearchPendingParams, useSetIsSearching } from "./atoms";
 
 export const useSetParams = () => {
   const [currentParams] = useQueryStates(resultListSearchParams);
   const setIsSearching = useSetIsSearching();
-  const readSearchRange = useReadSearchRange();
+  const readSearchRange = useReadSearchPendingParams();
 
   return (updates?: Partial<ResultListSearchParams>) => {
-    const searchRangeAtom = readSearchRange();
+    const searchPendingParams = readSearchRange();
 
-    const searchRangeParams = {
-      minKpm: searchRangeAtom.kpm.min,
-      maxKpm: searchRangeAtom.kpm.max,
-      minClearRate: searchRangeAtom.clearRate.min,
-      maxClearRate: searchRangeAtom.clearRate.max,
-      minPlaySpeed: searchRangeAtom.playSpeed.min,
-      maxPlaySpeed: searchRangeAtom.playSpeed.max,
-      mode: searchRangeAtom.mode,
+    const mergedParams = {
+      ...currentParams,
+      ...updates,
+      minKpm: searchPendingParams.kpm.min,
+      maxKpm: searchPendingParams.kpm.max,
+      minClearRate: searchPendingParams.clearRate.min,
+      maxClearRate: searchPendingParams.clearRate.max,
+      minPlaySpeed: searchPendingParams.playSpeed.min,
+      maxPlaySpeed: searchPendingParams.playSpeed.max,
+      mode: searchPendingParams.mode,
     };
-
-    const mergedParams = { ...currentParams, ...updates, ...searchRangeParams };
     const hasChanged = JSON.stringify(currentParams) !== JSON.stringify(mergedParams);
 
     if (!hasChanged) return;

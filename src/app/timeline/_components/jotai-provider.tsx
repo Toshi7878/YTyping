@@ -9,7 +9,7 @@ import {
   searchResultKpmAtom,
   searchResultModeAtom,
   searchResultSpeedRangeAtom,
-} from "./_lib/atoms";
+} from "../_lib/atoms";
 
 interface TimelineProviderProps {
   children: React.ReactNode;

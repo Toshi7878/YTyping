@@ -7,7 +7,7 @@ import { resultListSearchParams } from "@/utils/queries/schema/result-list";
 const store = createStore();
 export const getTimelineAtomStore = () => store;
 
-const searchAtom = atomWithReset({
+const searchPendingAtom = atomWithReset({
   kpm: {
     min: resultListSearchParams.minKpm.defaultValue,
     max: resultListSearchParams.maxKpm.defaultValue,
@@ -23,26 +23,26 @@ const searchAtom = atomWithReset({
   mode: resultListSearchParams.mode.defaultValue,
 });
 
-export const useReadSearchRange = () => {
+export const useReadSearchPendingParams = () => {
   return useAtomCallback(
-    useCallback((get) => get(searchAtom), []),
+    useCallback((get) => get(searchPendingAtom), []),
     { store },
   );
 };
 
-export const searchResultKpmAtom = focusAtom(searchAtom, (optic) => optic.prop("kpm"));
+export const searchResultKpmAtom = focusAtom(searchPendingAtom, (optic) => optic.prop("kpm"));
 export const useSearchResultKpmState = () => useAtomValue(searchResultKpmAtom, { store });
 export const useSetSearchResultKpm = () => useSetAtom(searchResultKpmAtom, { store });
 
-export const searchResultClearRateAtom = focusAtom(searchAtom, (optic) => optic.prop("clearRate"));
+export const searchResultClearRateAtom = focusAtom(searchPendingAtom, (optic) => optic.prop("clearRate"));
 export const useSearchResultClearRateState = () => useAtomValue(searchResultClearRateAtom, { store });
 export const useSetSearchResultClearRate = () => useSetAtom(searchResultClearRateAtom, { store });
 
-export const searchResultSpeedRangeAtom = focusAtom(searchAtom, (optic) => optic.prop("playSpeed"));
+export const searchResultSpeedRangeAtom = focusAtom(searchPendingAtom, (optic) => optic.prop("playSpeed"));
 export const useSearchResultSpeedState = () => useAtomValue(searchResultSpeedRangeAtom, { store });
 export const useSetSearchResultSpeed = () => useSetAtom(searchResultSpeedRangeAtom, { store });
 
-export const searchResultModeAtom = focusAtom(searchAtom, (optic) => optic.prop("mode"));
+export const searchResultModeAtom = focusAtom(searchPendingAtom, (optic) => optic.prop("mode"));
 export const useSearchResultModeState = () => useAtomValue(searchResultModeAtom, { store });
 export const useSetSearchResultMode = () => useSetAtom(searchResultModeAtom, { store });
 
