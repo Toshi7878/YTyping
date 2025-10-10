@@ -5,7 +5,6 @@ import {
   createSerializer,
   parseAsFloat,
   parseAsString,
-  parseAsStringEnum,
   parseAsStringLiteral,
 } from "nuqs/server";
 import * as z from "zod";
@@ -42,23 +41,33 @@ const parseAsSort = createParser({
     const validFields = baseFields;
     if (!validFields.includes(key as SortFieldType)) return null;
 
-    return {
-      id: key as SortFieldType,
-      desc: desc === "desc",
-    };
+    return { id: key as SortFieldType, desc: desc === "desc" };
   },
   serialize(value: { id: SortFieldType; desc: boolean }) {
     return `${value.id}:${value.desc ? "desc" : "asc"}`;
   },
 });
 
+const parseAsDifficultyRate = createParser({
+  parse(query) {
+    const value = parseAsFloat.parse(query);
+    if (value === null) return null;
+
+    const rounded = Math.round(value * 10) / 10;
+    return Math.max(0, Math.min(12, rounded));
+  },
+  serialize(value: number) {
+    return value.toFixed(1);
+  },
+});
+
 export const mapListSearchParams = {
   sort: parseAsSort.withDefault({ id: "id", desc: true }),
   keyword: parseAsString.withDefault(""),
-  minRate: parseAsFloat.withDefault(0),
-  maxRate: parseAsFloat.withDefault(12),
-  filter: parseAsStringEnum(FilterEnum.options),
-  rankingStatus: parseAsStringEnum(RankingStatusEnum.options),
+  minRate: parseAsDifficultyRate.withDefault(0),
+  maxRate: parseAsDifficultyRate.withDefault(12),
+  filter: parseAsStringLiteral(FilterEnum.options),
+  rankingStatus: parseAsStringLiteral(RankingStatusEnum.options),
 };
 
 export type MapListSearchParams = inferParserType<typeof mapListSearchParams>;

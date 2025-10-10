@@ -5,7 +5,7 @@ import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import { MapSearchParamsSchema, type SortFieldType } from "@/utils/queries/search-params/map-list";
+import { MapSearchParamsSchema, mapListSearchParams, type SortFieldType } from "@/utils/queries/search-params/map-list";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
 
@@ -252,22 +252,15 @@ interface GetDifficultyFilterSqlParams {
   maxRate: MapListWhereParams["maxRate"];
 }
 
-const rateSchema = z
-  .preprocess((v) => (v == null ? v : Math.round(Number(v) * 100)), z.number().int().min(0).max(1200))
-  .optional();
-
 function getDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
   const conditions: SQL<unknown>[] = [];
 
-  const validMinRate = rateSchema.safeParse(minRate);
-  const validMaxRate = rateSchema.safeParse(maxRate);
-
-  if (validMinRate.success && validMinRate.data) {
-    conditions.push(gte(MapDifficulties.romaKpmMedian, validMinRate.data));
+  if (minRate > mapListSearchParams.minRate.defaultValue) {
+    conditions.push(gte(MapDifficulties.romaKpmMedian, Math.round(minRate * 100)));
   }
 
-  if (validMaxRate.success && validMaxRate.data) {
-    conditions.push(lte(MapDifficulties.romaKpmMedian, validMaxRate.data));
+  if (mapListSearchParams.maxRate.defaultValue > maxRate) {
+    conditions.push(lte(MapDifficulties.romaKpmMedian, Math.round(maxRate * 100)));
   }
 
   return conditions;
