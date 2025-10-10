@@ -51,7 +51,7 @@ const parseAsClearRate = createParser({
 });
 
 export const resultListSearchParams = {
-  mode: parseAsStringLiteral(MODE),
+  mode: parseAsStringLiteral(MODE).withDefault("all"),
   minKpm: parseAsKpm.withDefault(KPM_SEARCH_RANGE.min),
   maxKpm: parseAsKpm.withDefault(KPM_SEARCH_RANGE.max),
   minClearRate: parseAsClearRate.withDefault(CLEAR_RATE_SEARCH_RANGE.min),
