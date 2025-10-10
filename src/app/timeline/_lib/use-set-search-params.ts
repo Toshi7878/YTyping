@@ -12,7 +12,18 @@ export const useSetParams = () => {
   const readSearchRange = useReadSearchRange();
 
   return (updates?: Partial<ResultListSearchParams>) => {
-    const searchRangeParams = readSearchRange();
+    const searchRangeAtom = readSearchRange();
+
+    const searchRangeParams = {
+      minKpm: searchRangeAtom.kpm.min,
+      maxKpm: searchRangeAtom.kpm.max,
+      minClearRate: searchRangeAtom.clearRate.min,
+      maxClearRate: searchRangeAtom.clearRate.max,
+      minPlaySpeed: searchRangeAtom.playSpeed.min,
+      maxPlaySpeed: searchRangeAtom.playSpeed.max,
+      mode: searchRangeAtom.mode,
+    };
+
     const mergedParams = { ...currentParams, ...updates, ...searchRangeParams };
     const hasChanged = JSON.stringify(currentParams) !== JSON.stringify(mergedParams);
 
