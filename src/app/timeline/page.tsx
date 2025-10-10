@@ -1,7 +1,7 @@
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { loadResultListSearchParams } from "@/utils/queries/schema/result-list";
+import { UsersResultList } from "./_components/result-list";
 import { SearchContent } from "./_components/search-content";
-import { UsersResultList } from "./_components/users-result-list";
 import { JotaiProvider } from "./jotai-provider";
 
 export default async function Home({ searchParams }: PageProps<"/timeline">) {

@@ -10,22 +10,22 @@ import { useSetParams } from "../../_lib/use-set-search-params";
 
 export const SearchInputs = () => {
   const isSearching = useIsSearchingState();
-  const [mapKeyWord] = useQueryState("mapKeyword", resultListSearchParams.mapKeyword);
+  const [mapKeyword] = useQueryState("mapKeyword", resultListSearchParams.mapKeyword);
   const [username] = useQueryState("username", resultListSearchParams.username);
 
-  const [keywords, setKeywords] = useState({ mapKeyWord, username });
+  const [keywords, setKeywords] = useState({ mapKeyword, username });
   const setParams = useSetParams();
 
   return (
     <div className="flex gap-2">
       <Input
-        value={keywords.mapKeyWord}
+        value={keywords.mapKeyword}
         type="search"
         placeholder="譜面キーワードで絞り込み"
-        onChange={(e) => setKeywords((prev) => ({ ...prev, mapKeyWord: e.target.value }))}
+        onChange={(e) => setKeywords((prev) => ({ ...prev, mapKeyword: e.target.value }))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            setParams({ ...keywords });
+            setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
           }
         }}
       />
@@ -36,14 +36,14 @@ export const SearchInputs = () => {
         onChange={(e) => setKeywords((prev) => ({ ...prev, username: e.target.value }))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            setParams({ ...keywords });
+            setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
           }
         }}
       />
       <Button
         className="w-[30%]"
         onClick={() => {
-          setParams({ ...keywords });
+          setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
         }}
         disabled={isSearching}
       >

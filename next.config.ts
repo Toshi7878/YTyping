@@ -10,6 +10,18 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  // OpenTelemetry関連のパッケージを外部パッケージから除外
+  serverExternalPackages: [
+    "@opentelemetry/api",
+    "@opentelemetry/instrumentation",
+    "@opentelemetry/sdk-trace-base",
+    "require-in-the-middle",
+    "import-in-the-middle",
+  ],
+  // または、これらを外部から除外（bundleに含める）
+  experimental: {
+    serverComponentsExternalPackages: ["@opentelemetry/api", "@opentelemetry/instrumentation"],
+  },
 };
 
 // biome-ignore lint/style/noDefaultExport: <default exportする必要がある>

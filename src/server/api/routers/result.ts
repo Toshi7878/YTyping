@@ -392,28 +392,38 @@ function generateModeFilter({ mode }: { mode: string }) {
 }
 
 function generateKpmFilter({ minKpm, maxKpm }: { minKpm: number; maxKpm: number }) {
-  if (maxKpm === 0) return [];
   const conds: SQL<unknown>[] = [];
-  if (typeof minKpm === "number") conds.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
-  if (typeof maxKpm === "number") {
-    if (maxKpm !== resultListSearchParams.maxKpm.defaultValue) conds.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
+  if (minKpm > resultListSearchParams.minKpm.defaultValue) {
+    conds.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
+  }
+  if (resultListSearchParams.maxKpm.defaultValue > maxKpm) {
+    conds.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
   }
   return conds;
 }
 
 function generateClearRateFilter({ minClearRate, maxClearRate }: { minClearRate: number; maxClearRate: number }) {
-  if (maxClearRate === 0) return [];
   const conds: SQL<unknown>[] = [];
-  if (typeof minClearRate === "number") conds.push(gte(ResultStatuses.clearRate, minClearRate));
-  if (typeof maxClearRate === "number") conds.push(lte(ResultStatuses.clearRate, maxClearRate));
+  if (minClearRate > resultListSearchParams.minClearRate.defaultValue) {
+    conds.push(gte(ResultStatuses.clearRate, minClearRate));
+  }
+  if (resultListSearchParams.maxClearRate.defaultValue > maxClearRate) {
+    conds.push(lte(ResultStatuses.clearRate, maxClearRate));
+  }
+
   return conds;
 }
 
 function generatePlaySpeedFilter({ minPlaySpeed, maxPlaySpeed }: { minPlaySpeed: number; maxPlaySpeed: number }) {
-  if (maxPlaySpeed === 0) return [];
   const conds: SQL<unknown>[] = [];
-  if (typeof minPlaySpeed === "number") conds.push(gte(ResultStatuses.minPlaySpeed, minPlaySpeed));
-  if (typeof maxPlaySpeed === "number") conds.push(lte(ResultStatuses.minPlaySpeed, maxPlaySpeed));
+  if (minPlaySpeed > resultListSearchParams.minPlaySpeed.defaultValue) {
+    conds.push(gte(ResultStatuses.minPlaySpeed, minPlaySpeed));
+  }
+
+  if (resultListSearchParams.maxPlaySpeed.defaultValue > maxPlaySpeed) {
+    conds.push(lte(ResultStatuses.minPlaySpeed, maxPlaySpeed));
+  }
+
   return conds;
 }
 
@@ -430,12 +440,12 @@ function generateKeywordFilter({
 }) {
   const conds: SQL<unknown>[] = [];
 
-  if (username && username.trim() !== "") {
+  if (username !== "") {
     const pattern = `%${username}%`;
     conds.push(ilike(PlayerName, pattern));
   }
 
-  if (mapKeyword && mapKeyword.trim() !== "") {
+  if (mapKeyword !== "") {
     const pattern = `%${mapKeyword}%`;
     const keywordOr: SQL<unknown> = or(
       ilike(Maps.title, pattern),

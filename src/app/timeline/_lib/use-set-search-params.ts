@@ -13,7 +13,7 @@ export const useSetParams = () => {
 
   return (updates?: Partial<ResultListSearchParams>) => {
     const searchRangeParams = readSearchRange();
-    const mergedParams = { ...updates, ...searchRangeParams };
+    const mergedParams = { ...currentParams, ...updates, ...searchRangeParams };
     const hasChanged = JSON.stringify(currentParams) !== JSON.stringify(mergedParams);
 
     if (!hasChanged) return;
