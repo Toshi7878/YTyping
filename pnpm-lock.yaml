@@ -177,7 +177,7 @@ importers:
         version: 1.0.7(tailwindcss@4.1.14)
       trpc-to-openapi:
         specifier: ^3.0.1
-        version: 3.0.1(@trpc/server@11.6.0(typescript@5.9.3))(zod-openapi@5.4.1(zod@4.1.11))(zod@4.1.11)
+        version: 3.1.0(@trpc/server@11.6.0(typescript@5.9.3))(zod-openapi@5.4.1(zod@4.1.11))(zod@4.1.11)
       ua-parser-js:
         specifier: ^2.0.5
         version: 2.0.5
@@ -4323,8 +4323,8 @@ packages:
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
-  trpc-to-openapi@3.0.1:
-    resolution: {integrity: sha512-XxQl/DvjrtSUkdkixyv403p+JAi/rKSqjfjQb30gR8hbIR4z2ixD+y3Sl0TJVRrx5dLPNJjt+UU/dfMQeTdfiQ==}
+  trpc-to-openapi@3.1.0:
+    resolution: {integrity: sha512-5hKNl8XxE7QZE5UiaxpyKrRQCk6JRNiei4Ddg9I2Tmk2eEzR3/QhTvTElS32COZY+pWwVtqksVTwVWY8dHxLNw==}
     peerDependencies:
       '@trpc/server': ^11.1.0
       zod: ^4.0.0
@@ -8945,7 +8945,7 @@ snapshots:
 
   tr46@0.0.3: {}
 
-  trpc-to-openapi@3.0.1(@trpc/server@11.6.0(typescript@5.9.3))(zod-openapi@5.4.1(zod@4.1.11))(zod@4.1.11):
+  trpc-to-openapi@3.1.0(@trpc/server@11.6.0(typescript@5.9.3))(zod-openapi@5.4.1(zod@4.1.11))(zod@4.1.11):
     dependencies:
       '@trpc/server': 11.6.0(typescript@5.9.3)
       co-body: 6.2.0
