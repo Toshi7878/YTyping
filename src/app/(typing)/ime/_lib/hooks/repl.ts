@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { useReplaceReadingWithCustomDict } from "@/lib/build-map/use-replace-reading-with-custom-dict";
+import { useMorphQueries } from "@/lib/queries/morph.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import { useMorphQueries } from "@/utils/queries/morph.queries";
-import { useReplaceReadingWithCustomDict } from "@/utils/use-replace-reading-with-custom-dict";
 
 export const useGenerateTokenizedWords = () => {
   const queryClient = useQueryClient();

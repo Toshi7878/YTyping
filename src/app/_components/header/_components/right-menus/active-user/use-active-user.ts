@@ -4,8 +4,8 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import type { ActiveUserStatus } from "@/lib/global-atoms";
 import { useSetOnlineUsers } from "@/lib/global-atoms";
+import { useUserOptionsQueries } from "@/lib/queries/user-options.queries";
 import { supabase } from "@/lib/supabase-client";
-import { useUserOptionsQueries } from "@/utils/queries/user-options.queries";
 
 export const useActiveUsers = () => {
   const { data: userOptions, isPending } = useQuery(useUserOptionsQueries().myUserOptions());

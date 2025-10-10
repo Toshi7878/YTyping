@@ -4,10 +4,10 @@ import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { ResultCard } from "@/components/shared/result-card/card";
 import { Spinner } from "@/components/ui/spinner";
+import { resultListSearchParams } from "@/lib/queries/schema/result-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { resultListSearchParams } from "@/utils/queries/schema/result-list";
-import { useInfiniteScroll } from "@/utils/use-infinite-scroll";
+import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 
 export const UsersResultList = () => {

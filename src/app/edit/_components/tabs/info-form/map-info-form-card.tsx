@@ -17,15 +17,15 @@ import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { BuildMap } from "@/lib/build-map/build-map";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
+import { useGeminiQueries } from "@/lib/queries/gemini.queries";
+import { useMapQueries } from "@/lib/queries/map.queries";
 import { MapInfoFormSchema } from "@/server/drizzle/validator/map";
 import { useTRPC } from "@/trpc/provider";
-import { BuildMap } from "@/utils/build-map/build-map";
 import { extractYouTubeId } from "@/utils/extract-youtube-id";
 import { useDebounce } from "@/utils/hooks/use-debounce";
-import { useGeminiQueries } from "@/utils/queries/gemini.queries";
-import { useMapQueries } from "@/utils/queries/map.queries";
-import { useNavigationGuard } from "@/utils/use-navigation-guard";
+import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
 import { useMapReducer, useReadMap } from "../../../_lib/atoms/map-reducer-atom";
 import {
   useCanUploadState,

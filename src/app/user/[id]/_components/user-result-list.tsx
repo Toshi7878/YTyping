@@ -6,7 +6,7 @@ import { ResultCard } from "@/components/shared/result-card/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Large, Small } from "@/components/ui/typography";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/use-infinite-scroll";
+import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
 
 export const UserResultList = ({ id }: { id: string }) => {
   const trpc = useTRPC();

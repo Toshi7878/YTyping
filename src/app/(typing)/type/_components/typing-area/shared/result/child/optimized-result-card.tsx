@@ -10,8 +10,8 @@ import {
 import type { LineData } from "@/app/(typing)/type/_lib/type";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { CHAR_POINT } from "@/lib/build-map/build-map";
 import { cn } from "@/lib/utils";
-import { CHAR_POINT } from "@/utils/build-map/build-map";
 import { ResultCardContent } from "./child/result-card-body";
 import { ResultCardFooter } from "./child/result-card-footer";
 import { ResultCardHeader } from "./child/result-card-header";

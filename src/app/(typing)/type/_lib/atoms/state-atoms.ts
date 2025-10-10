@@ -4,9 +4,9 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomFamily, atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
+import type { BuildMap } from "@/lib/build-map/build-map";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { ResultData } from "@/server/drizzle/validator/result";
-import type { BuildMap } from "@/utils/build-map/build-map";
 import type { InputMode, LineData, LineWord, SceneType } from "../type";
 import {
   gameUtilityReferenceParamsAtom,

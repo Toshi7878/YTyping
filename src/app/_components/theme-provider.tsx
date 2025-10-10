@@ -2,7 +2,7 @@
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type * as React from "react";
-import { useFaviconTheme } from "@/utils/use-favicon-theme";
+import { useFaviconTheme } from "@/utils/hooks/use-favicon-theme";
 
 export function ThemeProvider({ children, ...props }: React.ComponentProps<typeof NextThemesProvider>) {
   return (

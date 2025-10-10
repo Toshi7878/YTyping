@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import { useMorphQueries } from "./queries/morph.queries";
+import { useMorphQueries } from "../queries/morph.queries";
 
 export const useReplaceReadingWithCustomDict = () => {
   const queryClient = useQueryClient();

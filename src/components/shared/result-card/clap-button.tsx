@@ -3,8 +3,8 @@ import { useSession } from "next-auth/react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useClapMutationTimeline } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
-import { useClapMutationTimeline } from "@/utils/mutations/clap.mutations";
 
 interface ResultClapButtonProps {
   resultId: number;

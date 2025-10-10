@@ -1,5 +1,5 @@
+import { loadMapListSearchParams } from "@/lib/queries/schema/map-list";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { loadMapListSearchParams } from "@/utils/queries/schema/map-list";
 import { JotaiProvider } from "./_components/jotai-provider";
 import { MapControlArea } from "./_components/map-control-area";
 import { MapList } from "./_components/map-list";

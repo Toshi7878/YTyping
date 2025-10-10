@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { type ResultListSearchParams, resultListSearchParams } from "@/utils/queries/schema/result-list";
+import { type ResultListSearchParams, resultListSearchParams } from "@/lib/queries/schema/result-list";
 import { useSetParams } from "../../_lib/use-set-search-params";
 
 export const FilterFieldsPopover = () => {

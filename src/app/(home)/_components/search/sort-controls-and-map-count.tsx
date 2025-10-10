@@ -5,9 +5,9 @@ import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { type MapListSearchParams, mapListSearchParams } from "@/lib/queries/schema/map-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { type MapListSearchParams, mapListSearchParams } from "@/utils/queries/schema/map-list";
 import { useSetParams } from "../../_lib/use-set-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 

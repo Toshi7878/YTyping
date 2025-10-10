@@ -2,9 +2,9 @@
 import { useQuery } from "@tanstack/react-query";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
-import { useBreakPoint } from "@/lib/use-break-point";
-import { BuildMap } from "@/utils/build-map/build-map";
-import { useMapQueries } from "@/utils/queries/map.queries";
+import { BuildMap } from "@/lib/build-map/build-map";
+import { useMapQueries } from "@/lib/queries/map.queries";
+import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { useProgress } from "../_lib/atoms/read-atoms";
 import {
   useInitializeLineResults,

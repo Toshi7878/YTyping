@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { UAParser } from "ua-parser-js";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useGlobalLoadingState, userAgentAtom } from "@/lib/global-atoms";
-import { useClearSelectionOnNavigate } from "@/utils/use-clear-selection-on-navigate";
+import { useClearSelectionOnNavigate } from "@/utils/hooks/use-clear-selection-on-navigate";
 
 interface MainProviderProps {
   children: ReactNode;
