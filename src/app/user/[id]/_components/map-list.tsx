@@ -4,7 +4,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { MapCard } from "@/components/shared/map-card/card";
 import { Spinner } from "@/components/ui/spinner";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/use-infinite-scroll";
+import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
 
 export const UserCreatedMapList = ({ id }: { id: string }) => {
   const trpc = useTRPC();

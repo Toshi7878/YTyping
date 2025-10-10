@@ -13,7 +13,7 @@ import {
   DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { THEME_LIST } from "@/styles/const";
-import { applyFavicon } from "@/utils/use-favicon-theme";
+import { applyFavicon } from "@/utils/hooks/use-favicon-theme";
 
 export function ThemeDropdownSubmenu() {
   const { setTheme, resolvedTheme } = useTheme();

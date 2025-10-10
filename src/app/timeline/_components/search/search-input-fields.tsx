@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useIsSearchingState } from "@/app/timeline/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { resultListSearchParams } from "@/utils/queries/schema/result-list";
+import { resultListSearchParams } from "@/lib/queries/schema/result-list";
 import { useSetParams } from "../../_lib/use-set-search-params";
 
 export const SearchInputs = () => {

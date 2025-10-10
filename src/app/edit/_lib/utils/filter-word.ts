@@ -5,7 +5,7 @@ import {
   MANDATORY_SYMBOL_LIST,
   NUM_LIST,
   STRICT_SYMBOL_LIST,
-} from "@/utils/build-map/const";
+} from "@/lib/build-map/const";
 
 const typableWordChars = new Set([
   ...KANA_LIST,

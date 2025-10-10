@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useNotificationQueries } from "@/lib/queries/notification.queries";
 import { useTRPC } from "@/trpc/provider";
-import { useNotificationQueries } from "@/utils/queries/notification.queries";
-import { useInfiniteScroll } from "@/utils/use-infinite-scroll";
+import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
 
 export const NotificationSheet = () => {
   const trpc = useTRPC();

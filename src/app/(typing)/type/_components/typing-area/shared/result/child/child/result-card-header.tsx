@@ -3,8 +3,8 @@ import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import type { InputMode } from "@/app/(typing)/type/_lib/type";
 import { CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import type { BuildMap } from "@/lib/build-map/build-map";
 import { cn } from "@/lib/utils";
-import type { BuildMap } from "@/utils/build-map/build-map";
 
 interface ResultCardHeaderProps {
   lineNotes: number;

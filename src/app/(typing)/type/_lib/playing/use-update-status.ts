@@ -1,4 +1,4 @@
-import { MISS_PENALTY } from "../../../../../utils/build-map/build-map";
+import { MISS_PENALTY } from "../../../../../lib/build-map/build-map";
 import { useGameUtilityReferenceParams, useLineStatus, useTypingDetails, useUserStats } from "../atoms/read-atoms";
 import {
   useReadAllLineResult,

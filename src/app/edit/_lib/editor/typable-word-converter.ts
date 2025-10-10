@@ -2,15 +2,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useSetIsWordConverting } from "@/app/edit/_lib/atoms/state-atoms";
-import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/utils/build-map/const";
-import { useMorphQueries } from "@/utils/queries/morph.queries";
+import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/lib/build-map/const";
+import { useReplaceReadingWithCustomDict } from "@/lib/build-map/use-replace-reading-with-custom-dict";
+import { useMorphQueries } from "@/lib/queries/morph.queries";
 import {
   kanaToHira,
   normalizeExclamationQuestionMarks,
   normalizeFullWidthAlnum,
   normalizeSymbols,
 } from "@/utils/string-transform";
-import { useReplaceReadingWithCustomDict } from "@/utils/use-replace-reading-with-custom-dict";
 import type { ConvertOption } from "../atoms/storage-atoms";
 import { useReadWordConvertOption } from "../atoms/storage-atoms";
 import { filterToTypableWordChars } from "../utils/filter-word";

@@ -1,11 +1,11 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import z from "zod";
+import { downloadFile, upsertFile } from "@/lib/r2-storage";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/server/drizzle/validator/map";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
-import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const mapRouter = {

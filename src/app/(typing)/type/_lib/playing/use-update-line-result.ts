@@ -1,4 +1,4 @@
-import { CHAR_POINT, calcWordKanaNotes, MISS_PENALTY } from "@/utils/build-map/build-map";
+import { CHAR_POINT, calcWordKanaNotes, MISS_PENALTY } from "@/lib/build-map/build-map";
 import { useLineCount, useLineStatus, useReadYTStatus, useTypingDetails } from "../atoms/read-atoms";
 import { useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
 import {

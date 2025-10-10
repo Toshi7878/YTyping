@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useMapRankingQueries } from "@/utils/queries/map-ranking.queries";
+import { useMapRankingQueries } from "@/lib/queries/map-ranking.queries";
 
 export const useGetMyRankingResult = () => {
   const { id: mapId } = useParams<{ id: string }>();

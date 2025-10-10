@@ -1,4 +1,4 @@
-import { romaConvert } from "../../../../../utils/build-map/build-map";
+import { romaConvert } from "../../../../../lib/build-map/build-map";
 import { useLineCount, useLineStatus } from "../atoms/read-atoms";
 import {
   useReadGameUtilParams,

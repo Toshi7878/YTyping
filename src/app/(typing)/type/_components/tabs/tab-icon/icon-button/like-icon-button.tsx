@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { LikeButton } from "@/components/shared/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useBreakPoint } from "@/lib/use-break-point";
+import { useLikeMutationMapInfo } from "@/lib/mutations/like.mutations";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { useLikeMutationMapInfo } from "@/utils/mutations/like.mutations";
+import { useBreakPoint } from "@/utils/hooks/use-break-point";
 
 export const LikeIconButton = () => {
   const { id: mapId } = useParams<{ id: string }>();

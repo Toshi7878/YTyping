@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import type React from "react";
 import { FiHeart } from "react-icons/fi";
 import { LikeButtonWithCount } from "@/components/shared/like-button/like-button";
-import { useLikeMutationMapList } from "@/utils/mutations/like.mutations";
+import { useLikeMutationMapList } from "@/lib/mutations/like.mutations";
 
 const InactiveLikeCount = ({ likeCount }: { likeCount: number }) => {
   return (

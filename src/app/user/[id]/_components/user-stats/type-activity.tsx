@@ -8,9 +8,9 @@ import type { Activity } from "react-activity-calendar";
 import ActivityCalendar from "react-activity-calendar";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useUserStatsQueries } from "@/lib/queries/user-stats.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { getCSSVariable } from "@/utils/get-computed-color";
-import { useUserStatsQueries } from "@/utils/queries/user-stats.queries";
 
 export const TypeActivity = () => {
   const { id: userId } = useParams<{ id: string }>();

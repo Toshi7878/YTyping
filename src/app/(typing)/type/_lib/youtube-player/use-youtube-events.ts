@@ -1,5 +1,5 @@
 import { useReadVolume } from "@/lib/global-atoms";
-import { windowFocus } from "@/utils/hooks/window-focus";
+import { windowFocus } from "@/utils/window-focus";
 import {
   useGameUtilityReferenceParams,
   useLineCount,

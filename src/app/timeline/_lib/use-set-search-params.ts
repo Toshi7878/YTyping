@@ -3,7 +3,7 @@ import {
   type ResultListSearchParams,
   resultListSearchParams,
   resultListSerialize,
-} from "@/utils/queries/schema/result-list";
+} from "@/lib/queries/schema/result-list";
 import { useReadSearchPendingParams, useSetIsSearching } from "./atoms";
 
 export const useSetParams = () => {

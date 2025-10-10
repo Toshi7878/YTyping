@@ -2,7 +2,7 @@ import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { resultListSearchParams } from "@/utils/queries/schema/result-list";
+import { resultListSearchParams } from "@/lib/queries/schema/result-list";
 
 const store = createStore();
 export const getTimelineAtomStore = () => store;

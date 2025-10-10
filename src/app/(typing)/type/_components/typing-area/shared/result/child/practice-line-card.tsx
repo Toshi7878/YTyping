@@ -10,7 +10,7 @@ import { useMoveLine } from "@/app/(typing)/type/_lib/playing/practice-replay/us
 import { useInteractJS } from "@/app/(typing)/type/_lib/utils/use-interact-js";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CHAR_POINT } from "@/utils/build-map/build-map";
+import { CHAR_POINT } from "@/lib/build-map/build-map";
 import { ResultCardContent } from "./child/result-card-body";
 import { ResultCardFooter } from "./child/result-card-footer";
 import { ResultCardHeader } from "./child/result-card-header";

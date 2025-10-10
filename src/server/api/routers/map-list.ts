@@ -3,9 +3,9 @@ import type { SQL } from "drizzle-orm";
 import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
+import { MapSearchParamsSchema, MapSortSchema, mapListSearchParams } from "@/lib/queries/schema/map-list";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import { MapSearchParamsSchema, MapSortSchema, mapListSearchParams } from "@/utils/queries/schema/map-list";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
 
