@@ -8,11 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import {
-  type MapListSearchParams,
-  mapListSearchParams,
-  type SortFieldType,
-} from "@/utils/queries/search-params/map-list";
+import { type MapListSearchParams, mapListSearchParams } from "@/utils/queries/search-params/map-list";
 import { useSetParams } from "../../_lib/use-set-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
@@ -27,7 +23,7 @@ export const SortControlsAndMapCount = () => {
   );
 };
 
-const SORT_OPTIONS: { label: string; value: SortFieldType }[] = [
+const SORT_OPTIONS: { label: string; value: MapListSearchParams["sort"]["id"] }[] = [
   { label: "ID", value: "id" },
   { label: "難易度", value: "difficulty" },
   { label: "ランキング数", value: "ranking-count" },
@@ -45,7 +41,7 @@ const SortControls = () => {
 
   const currentSort = params.sort;
 
-  const deriveNextSortParam = (value: SortFieldType): MapListSearchParams["sort"] | undefined => {
+  const deriveNextSortParam = (value: MapListSearchParams["sort"]["id"]): MapListSearchParams["sort"] | undefined => {
     if (value === "random") {
       return currentSort.id === "random" ? { id: "id", desc: true } : { id: "random", desc: false };
     }
@@ -99,8 +95,8 @@ const SortControls = () => {
 };
 
 interface SortIndicatorProps {
-  value: SortFieldType;
-  currentSort: { id: SortFieldType; desc: boolean };
+  value: MapListSearchParams["sort"]["id"];
+  currentSort: { id: MapListSearchParams["sort"]["id"]; desc: boolean };
 }
 
 const SortIndicator = ({ value, currentSort }: SortIndicatorProps) => {

@@ -5,18 +5,13 @@ import { alias } from "drizzle-orm/pg-core";
 import z from "zod";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
-import { MapSearchParamsSchema, mapListSearchParams, type SortFieldType } from "@/utils/queries/search-params/map-list";
+import { MapSearchParamsSchema, MapSortSchema, mapListSearchParams } from "@/utils/queries/search-params/map-list";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
 
 const InfiniteMapListBaseSchema = z.object({
   cursor: z.string().nullable().optional(),
-  sort: z
-    .object({
-      id: z.string(),
-      desc: z.boolean(),
-    })
-    .nullable(),
+  sort: MapSortSchema.nullable(),
 });
 
 const createBaseSelect = ({ user }: { user: Context["user"] }) => {
@@ -225,7 +220,7 @@ function getSortSql({ sort }: GetSortSqlParams) {
   const { id: sortField, desc: isDesc } = sort;
   const order = isDesc ? desc : asc;
 
-  switch (sortField as SortFieldType) {
+  switch (sortField) {
     case "random":
       return [sql`RANDOM()`];
     case "id":

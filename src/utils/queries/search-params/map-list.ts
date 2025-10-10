@@ -20,11 +20,10 @@ const baseFields = [
   "random",
 ] as const;
 
-export type SortFieldType = (typeof baseFields)[number];
-
 const FilterEnum = z.enum(["liked", "my-map"]);
 const RankingStatusEnum = z.enum(["1st", "not-first", "registerd", "unregisterd", "perfect"]);
 
+export const MapSortSchema = z.object({ id: z.literal(baseFields), desc: z.boolean() });
 export const MapSearchParamsSchema = z.object({
   filter: FilterEnum.nullable(),
   rankingStatus: RankingStatusEnum.nullable(),
@@ -33,6 +32,7 @@ export const MapSearchParamsSchema = z.object({
   maxRate: z.number(),
 });
 
+type SortFieldType = (typeof baseFields)[number];
 const parseAsSort = createParser({
   parse(query): { id: SortFieldType; desc: boolean } | null {
     const [key = "", direction = ""] = query.split(":");
