@@ -3,11 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
 import React from "react";
-import {
-  usePendingDifficultyRangeState,
-  useReadPendingDifficultyRange,
-  useSetPendingDifficultyRange,
-} from "@/app/(home)/_lib/atoms";
+import { usePendingDifficultyRangeState, useSetPendingDifficultyRange } from "@/app/(home)/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
@@ -63,7 +59,6 @@ type FilterParam = (typeof FILTER_MENUS)[number]["options"][number];
 
 const FilterControls = () => {
   const [params] = useQueryStates(mapListSearchParams);
-  const readPendingDifficultyRange = useReadPendingDifficultyRange();
   const setParams = useSetParams();
 
   const deriveSortParam = (
@@ -142,7 +137,7 @@ const FilterControls = () => {
                       e.preventDefault();
                       const nextParams = getNextFilterParams(filter.name, param.value, !isActive);
                       const sort = deriveSortParam(nextParams, filter.name, isActive);
-                      setParams({ ...nextParams, sort, ...readPendingDifficultyRange() });
+                      setParams({ ...nextParams, sort });
                     }}
                     className={cn(
                       "transition-none  rounded px-2 py-1 text-sm hover:underline",
@@ -162,14 +157,13 @@ const FilterControls = () => {
 };
 
 const DifficultyRangeControl = () => {
-  const [params] = useQueryStates(mapListSearchParams);
   const { minRate: pendingMinRate, maxRate: pendingMaxRate } = usePendingDifficultyRangeState();
   const setPendingDifficultyRange = useSetPendingDifficultyRange();
   const setParams = useSetParams();
 
   const handleEnterKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      setParams({ ...params, minRate: pendingMinRate, maxRate: pendingMaxRate });
+      setParams({ minRate: pendingMinRate, maxRate: pendingMaxRate });
     }
   };
 

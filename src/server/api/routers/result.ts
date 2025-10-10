@@ -3,7 +3,6 @@ import type { SQL } from "drizzle-orm";
 import { and, count, desc, eq, gt, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import { alias, type BuildAliasTable } from "drizzle-orm/pg-core";
 import z from "zod";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/const";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import {
@@ -18,6 +17,7 @@ import {
 } from "@/server/drizzle/schema";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { CreateResultSchema } from "@/server/drizzle/validator/result";
+import { ResultSearchParamsSchema, resultListSearchParams } from "@/utils/queries/schema/result-list";
 import { downloadFile, upsertFile } from "@/utils/r2-storage";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
@@ -25,18 +25,6 @@ import type { MapListItem } from "./map-list";
 
 const InfiniteResultListBaseSchema = z.object({
   cursor: z.string().nullable().optional(),
-});
-
-const ResultSearchParamsSchema = z.object({
-  mode: z.string().default("all"),
-  minKpm: z.number().default(DEFAULT_KPM_SEARCH_RANGE.min),
-  maxKpm: z.number().default(DEFAULT_KPM_SEARCH_RANGE.max),
-  minClearRate: z.number().default(DEFAULT_CLEAR_RATE_SEARCH_RANGE.min),
-  maxClearRate: z.number().default(DEFAULT_CLEAR_RATE_SEARCH_RANGE.max),
-  minPlaySpeed: z.number().default(1),
-  maxPlaySpeed: z.number().default(2),
-  username: z.string().default(""),
-  mapKeyword: z.string().default(""),
 });
 
 const createResultBaseFields = (Player: BuildAliasTable<typeof Users, "Player">) => {
@@ -408,7 +396,7 @@ function generateKpmFilter({ minKpm, maxKpm }: { minKpm: number; maxKpm: number 
   const conds: SQL<unknown>[] = [];
   if (typeof minKpm === "number") conds.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
   if (typeof maxKpm === "number") {
-    if (maxKpm !== DEFAULT_KPM_SEARCH_RANGE.max) conds.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
+    if (maxKpm !== resultListSearchParams.maxKpm.defaultValue) conds.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
   }
   return conds;
 }

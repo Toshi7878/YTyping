@@ -2,26 +2,25 @@ import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "./const";
-import type { FilterMode } from "./type";
+import { resultListSearchParams } from "@/utils/queries/schema/result-list";
 
 const store = createStore();
 export const getTimelineAtomStore = () => store;
 
 const searchAtom = atomWithReset({
   kpm: {
-    minValue: DEFAULT_KPM_SEARCH_RANGE.min,
-    maxValue: DEFAULT_KPM_SEARCH_RANGE.max,
+    min: resultListSearchParams.minKpm.defaultValue,
+    max: resultListSearchParams.maxKpm.defaultValue,
   },
   clearRate: {
-    minValue: DEFAULT_CLEAR_RATE_SEARCH_RANGE.min,
-    maxValue: DEFAULT_CLEAR_RATE_SEARCH_RANGE.max,
+    min: resultListSearchParams.minClearRate.defaultValue,
+    max: resultListSearchParams.maxClearRate.defaultValue,
   },
   playSpeed: {
-    minValue: 1,
-    maxValue: 2,
+    min: resultListSearchParams.minPlaySpeed.defaultValue,
+    max: resultListSearchParams.maxPlaySpeed.defaultValue,
   },
-  mode: "all" as FilterMode,
+  mode: resultListSearchParams.mode.defaultValue,
 });
 
 export const useReadSearchRange = () => {
@@ -35,11 +34,11 @@ export const searchResultKpmAtom = focusAtom(searchAtom, (optic) => optic.prop("
 export const useSearchResultKpmState = () => useAtomValue(searchResultKpmAtom, { store });
 export const useSetSearchResultKpm = () => useSetAtom(searchResultKpmAtom, { store });
 
-const searchResultClearRateAtom = focusAtom(searchAtom, (optic) => optic.prop("clearRate"));
+export const searchResultClearRateAtom = focusAtom(searchAtom, (optic) => optic.prop("clearRate"));
 export const useSearchResultClearRateState = () => useAtomValue(searchResultClearRateAtom, { store });
 export const useSetSearchResultClearRate = () => useSetAtom(searchResultClearRateAtom, { store });
 
-const searchResultSpeedRangeAtom = focusAtom(searchAtom, (optic) => optic.prop("playSpeed"));
+export const searchResultSpeedRangeAtom = focusAtom(searchAtom, (optic) => optic.prop("playSpeed"));
 export const useSearchResultSpeedState = () => useAtomValue(searchResultSpeedRangeAtom, { store });
 export const useSetSearchResultSpeed = () => useSetAtom(searchResultSpeedRangeAtom, { store });
 

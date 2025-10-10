@@ -1,5 +1,6 @@
 "use client";
-import { useCallback, useMemo } from "react";
+import type { SetStateAction } from "jotai";
+import { type ComponentProps, type Dispatch, useCallback, useMemo } from "react";
 import {
   useSearchResultClearRateState,
   useSearchResultKpmState,
@@ -10,17 +11,16 @@ import {
   useSetSearchResultMode,
   useSetSearchResultSpeed,
 } from "@/app/timeline/_lib/atoms";
-import { DEFAULT_CLEAR_RATE_SEARCH_RANGE, DEFAULT_KPM_SEARCH_RANGE } from "@/app/timeline/_lib/const";
-import type { FilterMode } from "@/app/timeline/_lib/type";
 import { Button } from "@/components/ui/button";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useSearchKeydown } from "../../_lib/hooks/use-search-keydown";
+import { type ResultListSearchParams, resultListSearchParams } from "@/utils/queries/schema/result-list";
+import { useSetParams } from "../../_lib/use-set-search-params";
 
-export const SearchPopover = () => {
+export const FilterFieldsPopover = () => {
   const searchKpm = useSearchResultKpmState();
   const searchClearRate = useSearchResultClearRateState();
   const searchSpeed = useSearchResultSpeedState();
@@ -36,50 +36,60 @@ export const SearchPopover = () => {
       <PopoverContent className="border-border w-xl" align="start">
         <SearchModeRadioCardGroup />
         <SearchRange
-          label={"kpm"}
-          min={DEFAULT_KPM_SEARCH_RANGE.min}
-          max={DEFAULT_KPM_SEARCH_RANGE.max}
+          label="kpm"
+          min={resultListSearchParams.minKpm.defaultValue}
+          max={resultListSearchParams.maxKpm.defaultValue}
           step={10}
           isMaxLabel
           value={searchKpm}
           setValue={setSearchKpm}
         />
         <SearchRange
-          label={"% (クリア率)"}
-          min={DEFAULT_CLEAR_RATE_SEARCH_RANGE.min}
-          max={DEFAULT_CLEAR_RATE_SEARCH_RANGE.max}
+          label="% (クリア率)"
+          min={resultListSearchParams.minClearRate.defaultValue}
+          max={resultListSearchParams.maxClearRate.defaultValue}
           step={1}
           value={searchClearRate}
           setValue={setSearchClearRate}
         />
-        <SearchRange label={"倍速"} min={1} max={2} step={0.25} value={searchSpeed} setValue={setSearchSpeed} />
+        <SearchRange
+          label="倍速"
+          min={resultListSearchParams.minPlaySpeed.defaultValue}
+          max={resultListSearchParams.maxPlaySpeed.defaultValue}
+          step={0.25}
+          value={searchSpeed}
+          setValue={setSearchSpeed}
+        />
       </PopoverContent>
     </Popover>
   );
 };
 
-const MODE_RADIO_CARDS: { value: FilterMode; label: string }[] = [
-  { value: "all", label: "全て" },
-  { value: "roma", label: "ローマ字" },
-  { value: "kana", label: "かな" },
-  { value: "romakana", label: "ローマ字&かな" },
-  { value: "english", label: "英語" },
-];
-
 const SearchModeRadioCardGroup = () => {
-  const modeAtom = useSearchResultModeState();
-  const setModeAtom = useSetSearchResultMode();
-  const handleKeyDown = useSearchKeydown();
+  const mode = useSearchResultModeState();
+  const setMode = useSetSearchResultMode();
+  const setParams = useSetParams();
 
+  const MODE_RADIO_CARDS: { label: string; value: ResultListSearchParams["mode"] }[] = [
+    { label: "全て", value: "all" },
+    { label: "ローマ字", value: "roma" },
+    { label: "かな", value: "kana" },
+    { label: "ローマ字&かな", value: "romakana" },
+    { label: "英語", value: "english" },
+  ];
   return (
     <RadioGroup
-      value={modeAtom}
-      onValueChange={(value) => setModeAtom(value as FilterMode)}
+      value={mode}
+      onValueChange={(value: ResultListSearchParams["mode"]) => setMode(value)}
       className="flex gap-1"
-      onKeyDown={handleKeyDown}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          setParams({ mode });
+        }
+      }}
     >
       {MODE_RADIO_CARDS.map((option) => {
-        const isSelected = modeAtom === option.value;
+        const isSelected = mode === option.value;
 
         return (
           <TooltipWrapper key={option.value} label="Enterで検索" disabled={!isSelected}>
@@ -100,19 +110,14 @@ const SearchModeRadioCardGroup = () => {
 };
 
 interface RangeValue {
-  minValue: number;
-  maxValue: number;
+  min: number;
+  max: number;
 }
 
 interface SearchRangeProps {
   label: string;
-  min: number;
-  max: number;
-  step?: number;
   value: RangeValue;
-  setValue: (value: RangeValue) => void;
-  disabled?: boolean;
-  tooltipLabel?: string;
+  setValue: Dispatch<SetStateAction<RangeValue>>;
   isMaxLabel?: boolean;
 }
 
@@ -125,35 +130,38 @@ const SearchRange = ({
   setValue,
   disabled = false,
   isMaxLabel = false,
-  tooltipLabel = "Enterで検索",
-}: SearchRangeProps) => {
-  const handleKeyDown = useSearchKeydown();
+}: SearchRangeProps & Omit<ComponentProps<typeof DualRangeSlider>, "value" | "label">) => {
+  const setParams = useSetParams();
 
   const handleValueChange = useCallback(
     (newValue: number[]) => {
-      setValue({ minValue: newValue[0], maxValue: newValue[1] });
+      setValue({ min: newValue[0], max: newValue[1] });
     },
     [setValue],
   );
 
   const displayValue = useMemo(() => {
-    const maxLabel = isMaxLabel && value.maxValue === max ? "最大" : value.maxValue;
+    const maxLabel = isMaxLabel && value.max === max ? "最大" : value.max;
     const displayUnit = label;
 
-    return `${value.minValue} - ${maxLabel} ${displayUnit}`;
+    return `${value.min} - ${maxLabel} ${displayUnit}`;
   }, [value, label, isMaxLabel, max]);
 
   return (
     <div className="space-y-3 py-4">
       <Label>{displayValue}</Label>
-      <TooltipWrapper label={tooltipLabel} disabled={disabled}>
+      <TooltipWrapper label="Enterで検索" disabled={disabled}>
         <DualRangeSlider
-          value={[value.minValue, value.maxValue]}
+          value={[value.min, value.max]}
           min={min}
           max={max}
           step={step}
           onValueChange={handleValueChange}
-          onKeyDown={handleKeyDown}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              setParams();
+            }
+          }}
           disabled={disabled}
           aria-label={`${label}の範囲を設定`}
         />

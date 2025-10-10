@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useQueryStates } from "nuqs";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import { useReadPendingDifficultyRange } from "@/app/(home)/_lib/atoms";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,7 +35,6 @@ const SORT_OPTIONS: { label: string; value: MapListSearchParams["sort"]["id"] }[
 
 const SortControls = () => {
   const [params] = useQueryStates(mapListSearchParams);
-  const readPendingDifficultyRange = useReadPendingDifficultyRange();
   const setParams = useSetParams();
 
   const currentSort = params.sort;
@@ -82,7 +80,7 @@ const SortControls = () => {
             )}
             onClick={() => {
               const nextSort = deriveNextSortParam(value);
-              setParams({ sort: nextSort, ...readPendingDifficultyRange() });
+              setParams({ sort: nextSort });
             }}
           >
             <span>{label}</span>

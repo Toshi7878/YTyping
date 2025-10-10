@@ -5,14 +5,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { mapListSearchParams } from "@/utils/queries/schema/map-list";
-import { useIsSearchingState, useReadPendingDifficultyRange } from "../../_lib/atoms";
+import { useIsSearchingState } from "../../_lib/atoms";
 import { useSetParams } from "../../_lib/use-set-params";
 
 export const SearchInput = () => {
   const [params] = useQueryStates(mapListSearchParams);
   const [keyword, setKeyword] = useState(params.keyword ?? "");
   const isSearching = useIsSearchingState();
-  const readPendingDifficultyRange = useReadPendingDifficultyRange();
   const setParams = useSetParams();
 
   return (
@@ -20,7 +19,7 @@ export const SearchInput = () => {
       className="flex items-center gap-3 select-none"
       onSubmit={(e) => {
         e.preventDefault();
-        setParams({ keyword: keyword.trim(), ...readPendingDifficultyRange() });
+        setParams({ keyword: keyword.trim() });
       }}
     >
       <Input

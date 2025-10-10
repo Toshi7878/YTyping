@@ -1,22 +1,28 @@
 "use client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { ResultCard } from "@/components/shared/result-card/card";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { useResultListInfiniteQueryOptions } from "@/utils/queries/result-list.queries";
+import { useTRPC } from "@/trpc/provider";
+import { resultListSearchParams } from "@/utils/queries/schema/result-list";
 import { useInfiniteScroll } from "@/utils/use-infinite-scroll";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 
 export const UsersResultList = () => {
-  const searchParams = useSearchParams();
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
-    useResultListInfiniteQueryOptions(searchParams),
-  );
-
+  const trpc = useTRPC();
+  const [params] = useQueryStates(resultListSearchParams);
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
+    trpc.result.getAllWithMap.infiniteQueryOptions(params, {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      refetchOnWindowFocus: false,
+      gcTime: Infinity,
+    }),
+  );
 
   useEffect(() => {
     if (data) {
@@ -29,7 +35,7 @@ export const UsersResultList = () => {
     { threshold: 0, rootMargin: "2000px 0px" },
   );
   return (
-    <section className={cn("grid grid-cols-1 gap-3", isSearching ? "opacity-20" : "opacity-100")}>
+    <section className={cn("grid grid-cols-1 gap-3", isSearching && "opacity-20")}>
       {data.pages.map((page) => page.items.map((result) => <ResultCard key={result.id} result={result} />))}
       {hasNextPage && <Spinner ref={ref} />}
     </section>
