@@ -4,7 +4,7 @@ import { useQueryStates } from "nuqs";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { mapListSearchParams } from "@/utils/queries/search-params/map-list";
+import { mapListSearchParams } from "@/utils/queries/schema/map-list";
 import { useIsSearchingState, useReadPendingDifficultyRange } from "../../_lib/atoms";
 import { useSetParams } from "../../_lib/use-set-params";
 

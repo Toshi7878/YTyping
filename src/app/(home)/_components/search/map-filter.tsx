@@ -14,7 +14,7 @@ import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { Small } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import { type MapListSearchParams, mapListSearchParams } from "@/utils/queries/search-params/map-list";
+import { type MapListSearchParams, mapListSearchParams } from "@/utils/queries/schema/map-list";
 import { useSetParams } from "../../_lib/use-set-params";
 
 export const MapFilter = () => {

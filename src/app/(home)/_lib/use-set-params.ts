@@ -1,9 +1,5 @@
 import { useQueryStates } from "nuqs";
-import {
-  type MapListSearchParams,
-  mapListSearchParams,
-  mapListSerialize,
-} from "@/utils/queries/search-params/map-list";
+import { type MapListSearchParams, mapListSearchParams, mapListSerialize } from "@/utils/queries/schema/map-list";
 import { useSetIsSearching } from "./atoms";
 
 export const useSetParams = () => {
