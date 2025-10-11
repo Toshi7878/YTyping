@@ -39,7 +39,7 @@ export const userStatsRouter = {
       .leftJoin(UserOptions, eq(UserOptions.userId, input.userId))
       .where(eq(UserStats.userId, input.userId))
       .limit(1)
-      .then((rows) => rows[0]);
+      .then((rows) => rows?.[0] ?? null);
 
     return userStats;
   }),
