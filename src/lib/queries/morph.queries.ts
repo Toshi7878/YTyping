@@ -11,12 +11,6 @@ export const useMorphQueries = () => {
       }),
 
     tokenizeSentence: ({ sentence }: { sentence: string }) =>
-      trpc.morphConvert.tokenizeWordAws.queryOptions(
-        { sentence },
-        {
-          staleTime: Infinity,
-          gcTime: Infinity,
-        },
-      ),
+      trpc.morphConvert.tokenizeSentence.queryOptions({ sentence }, { staleTime: Infinity, gcTime: Infinity }),
   };
 };

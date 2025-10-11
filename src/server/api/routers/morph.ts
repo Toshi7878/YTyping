@@ -6,13 +6,9 @@ import { FixWordEditLogs, ReadingConversionDict } from "@/server/drizzle/schema"
 import { protectedProcedure } from "../trpc";
 
 export const morphConvertRouter = {
-  tokenizeWordAws: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
-    return postAwsLambdaMorphApi(input.sentence);
+  tokenizeSentence: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
+    return postTokenizeSentence(input.sentence);
   }),
-
-  // getKanaWordYahoo: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
-  //   return fetchYahooMorphAnalysis(input.sentence);
-  // }),
 
   getCustomDict: protectedProcedure.query(async ({ ctx }) => {
     const dictionaryDict = await ctx.db
@@ -45,7 +41,7 @@ export const morphConvertRouter = {
     }),
 } satisfies TRPCRouterRecord;
 
-async function postAwsLambdaMorphApi(sentence: string): Promise<{ lyrics: string[]; readings: string[] }> {
+async function postTokenizeSentence(sentence: string): Promise<{ lyrics: string[]; readings: string[] }> {
   try {
     const response = await fetch(env.SUDACHI_API_URL, {
       method: "POST",

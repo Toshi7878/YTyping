@@ -19,7 +19,7 @@ export const env = createEnv({
     AUTH_GOOGLE_SECRET: z.string().min(1),
     AUTH_DISCORD_ID: z.string().min(1),
     AUTH_DISCORD_SECRET: z.string().min(1),
-    AUTH_SECRET: process.env.NODE_ENV === "production" ? z.string().min(1) : z.string().min(1).optional(),
+    AUTH_SECRET: z.string().min(1),
 
     GCP_AUTH_KEY: z.string().min(1),
 
@@ -28,16 +28,14 @@ export const env = createEnv({
     // YAHOO_APP_ID: z.string().min(1),
     NODE_ENV: z.enum(["development", "production"]).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
-
     DATABASE_URL: z.string().min(1),
 
-    VERCEL_PROJECT_ID: z.string().min(1),
-    VERCEL_API_TOKEN: z.string().min(1),
-
-    R2_ACCOUNT_ID: z.string().min(1),
-    R2_ACCESS_KEY_ID: z.string().min(1),
-    R2_SECRET_ACCESS_KEY: z.string().min(1),
-    R2_BUCKET_NAME: z.string().min(1),
+    VERCEL_PROJECT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    VERCEL_API_TOKEN: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    R2_ACCOUNT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    R2_ACCESS_KEY_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    R2_SECRET_ACCESS_KEY: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    R2_BUCKET_NAME: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
   },
 
   /**
@@ -45,7 +43,7 @@ export const env = createEnv({
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_MAINTENANCE_MODE: z.enum(["true", "false"]).optional(),
+    NEXT_PUBLIC_MAINTENANCE_MODE: z.enum(["true", "false"]).optional().default("false"),
     NEXT_PUBLIC_SUPABASE_URL: z.string().min(1),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   },

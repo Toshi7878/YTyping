@@ -6,9 +6,9 @@ export const useReplaceReadingWithCustomDict = () => {
   const queryClient = useQueryClient();
   const morphQueries = useMorphQueries();
 
-  return async (sentense: RouterOutPuts["morphConvert"]["tokenizeWordAws"]) => {
+  return async (tokenizedSentence: RouterOutPuts["morphConvert"]["tokenizeSentence"]) => {
     const { dictionaryDict } = await queryClient.ensureQueryData(morphQueries.customDic());
-    let result = sentense;
+    let result = tokenizedSentence;
 
     for (const { surface, reading } of dictionaryDict) {
       const matchIndexes: number[] = [];

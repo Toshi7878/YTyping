@@ -8,9 +8,9 @@ export const useGenerateTokenizedWords = () => {
   const morphQueries = useMorphQueries();
   const replaceReadingWithCustomDic = useReplaceReadingWithCustomDict();
   return async (words: string[][]) => {
-    const joinedWords = words.flat().join(" ");
+    const joinedLyrics = words.flat().join(" ");
 
-    const tokenizedWords = await queryClient.ensureQueryData(morphQueries.tokenizeSentence({ sentence: joinedWords }));
+    const tokenizedWords = await queryClient.ensureQueryData(morphQueries.tokenizeSentence({ sentence: joinedLyrics }));
 
     const formattedTokenizedWords = await replaceReadingWithCustomDic(tokenizedWords);
 
@@ -20,7 +20,7 @@ export const useGenerateTokenizedWords = () => {
   };
 };
 
-const parseRepl = (tokenizedWords: RouterOutPuts["morphConvert"]["tokenizeWordAws"]) => {
+const parseRepl = (tokenizedWords: RouterOutPuts["morphConvert"]["tokenizeSentence"]) => {
   const repl = new Set<string[]>();
 
   for (let i = 0; i < tokenizedWords.lyrics.length; i++) {
