@@ -1,15 +1,13 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import { env } from "@/env";
 
 // biome-ignore lint/style/noExportedImports: Drizzle 初期化でローカルの `schema` が必要かつ外部公開のため再エクスポートも必要なため
 import * as schema from "./schema";
 
-const connectionString = env.DATABASE_URL;
+const pool = new Pool({ connectionString: env.DATABASE_URL });
 
-const client = postgres(connectionString);
-
-export const db = drizzle(client, { schema });
+export const db = drizzle(pool, { schema });
 export type DBType = typeof db;
 export type TXType = Parameters<Parameters<DBType["transaction"]>[0]>[0];
 
