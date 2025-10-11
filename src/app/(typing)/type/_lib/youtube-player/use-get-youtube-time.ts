@@ -89,9 +89,7 @@ export const useGetYouTubeTime = () => {
 
     const { movieDuration } = readYTStatus();
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
-
-    const lineRemainConstantTime = nextLineTime - currentLine.time - constantLineTime;
-    return lineRemainConstantTime;
+    return (nextLineTime - currentLine.time) / readPlaySpeed().playSpeed - constantLineTime;
   };
 
   function getTimes(arg: { type: "time" }): TimeResultMap["time"];
