@@ -1,21 +1,20 @@
 CREATE TYPE "public"."category" AS ENUM('CSS', 'SPEED_SHIFT');--> statement-breakpoint
 CREATE TYPE "public"."thumbnail_quality" AS ENUM('mqdefault', 'maxresdefault');--> statement-breakpoint
-CREATE TYPE "public"."morph_convert_kana_dic_type" AS ENUM('DICTIONARY', 'REGEX');--> statement-breakpoint
+CREATE TYPE "public"."reading_conversion_dict_type" AS ENUM('DICTIONARY', 'REGEX');--> statement-breakpoint
 CREATE TYPE "public"."action" AS ENUM('LIKE', 'OVER_TAKE');--> statement-breakpoint
+CREATE TYPE "public"."toggle_input_mode_key" AS ENUM('ALT_KANA', 'TAB', 'NONE');--> statement-breakpoint
 CREATE TYPE "public"."custom_user_active_state" AS ENUM('ONLINE', 'ASK_ME', 'HIDE_ONLINE');--> statement-breakpoint
 CREATE TYPE "public"."line_completed_display" AS ENUM('HIGH_LIGHT', 'NEXT_WORD');--> statement-breakpoint
 CREATE TYPE "public"."main_word_display" AS ENUM('KANA_ROMA_UPPERCASE', 'KANA_ROMA_LOWERCASE', 'ROMA_KANA_UPPERCASE', 'ROMA_KANA_LOWERCASE', 'KANA_ONLY', 'ROMA_UPPERCASE_ONLY', 'ROMA_LOWERCASE_ONLY');--> statement-breakpoint
 CREATE TYPE "public"."next_display" AS ENUM('LYRICS', 'WORD');--> statement-breakpoint
 CREATE TYPE "public"."role" AS ENUM('USER', 'ADMIN');--> statement-breakpoint
 CREATE TYPE "public"."time_offset_key" AS ENUM('CTRL_LEFT_RIGHT', 'CTRL_ALT_LEFT_RIGHT', 'NONE');--> statement-breakpoint
-CREATE TYPE "public"."toggle_input_mode_key" AS ENUM('ALT_KANA', 'TAB', 'NONE');--> statement-breakpoint
 CREATE TABLE "map_difficulties" (
 	"map_id" integer PRIMARY KEY NOT NULL,
 	"roma_kpm_median" integer DEFAULT 0 NOT NULL,
 	"roma_kpm_max" integer DEFAULT 0 NOT NULL,
 	"kana_kpm_median" integer DEFAULT 0 NOT NULL,
 	"kana_kpm_max" integer DEFAULT 0 NOT NULL,
-	"total_time" double precision DEFAULT 0 NOT NULL,
 	"roma_total_notes" integer DEFAULT 0 NOT NULL,
 	"kana_total_notes" integer DEFAULT 0 NOT NULL,
 	"english_total_notes" integer DEFAULT 0 NOT NULL,
@@ -26,7 +25,7 @@ CREATE TABLE "map_difficulties" (
 CREATE TABLE "map_likes" (
 	"user_id" integer NOT NULL,
 	"map_id" integer NOT NULL,
-	"is_liked" boolean NOT NULL,
+	"has_liked" boolean NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "map_likes_user_id_map_id_pk" PRIMARY KEY("user_id","map_id")
 );
@@ -34,13 +33,14 @@ CREATE TABLE "map_likes" (
 CREATE TABLE "maps" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"video_id" char(11) NOT NULL,
-	"title" varchar DEFAULT '' NOT NULL,
-	"artist_name" varchar DEFAULT '' NOT NULL,
-	"music_source" varchar DEFAULT '' NOT NULL,
-	"creator_comment" varchar DEFAULT '' NOT NULL,
+	"title" varchar(256) DEFAULT '' NOT NULL,
+	"artist_name" varchar(256) DEFAULT '' NOT NULL,
+	"music_source" varchar(256) DEFAULT '' NOT NULL,
+	"creator_comment" varchar(256) DEFAULT '' NOT NULL,
 	"tags" text[] DEFAULT ARRAY[]::text[] NOT NULL,
 	"creator_id" integer NOT NULL,
 	"preview_time" real DEFAULT 0 NOT NULL,
+	"duration" real DEFAULT 0 NOT NULL,
 	"play_count" integer DEFAULT 0 NOT NULL,
 	"like_count" integer DEFAULT 0 NOT NULL,
 	"ranking_count" integer DEFAULT 0 NOT NULL,
@@ -55,10 +55,10 @@ CREATE TABLE "fix_word_edit_logs" (
 	"word" varchar NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "morph_convert_kana_dic" (
+CREATE TABLE "reading_conversion_dict" (
 	"surface" varchar PRIMARY KEY NOT NULL,
 	"reading" varchar NOT NULL,
-	"type" "morph_convert_kana_dic_type" DEFAULT 'DICTIONARY' NOT NULL
+	"type" "reading_conversion_dict_type" DEFAULT 'DICTIONARY' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "notifications" (
@@ -84,7 +84,7 @@ CREATE TABLE "ime_results" (
 CREATE TABLE "result_claps" (
 	"user_id" integer NOT NULL,
 	"result_id" integer NOT NULL,
-	"is_claped" boolean NOT NULL,
+	"has_clapped" boolean NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "result_claps_user_id_result_id_pk" PRIMARY KEY("user_id","result_id")
 );
@@ -92,11 +92,11 @@ CREATE TABLE "result_claps" (
 CREATE TABLE "result_statuses" (
 	"result_id" integer PRIMARY KEY NOT NULL,
 	"score" integer DEFAULT 0 NOT NULL,
-	"default_speed" real DEFAULT 1 NOT NULL,
+	"min_play_speed" real DEFAULT 1 NOT NULL,
 	"kpm" integer DEFAULT 0 NOT NULL,
 	"rkpm" integer DEFAULT 0 NOT NULL,
-	"roma_kpm" integer DEFAULT 0 NOT NULL,
-	"roma_rkpm" integer DEFAULT 0 NOT NULL,
+	"kana_to_roma_kpm" integer DEFAULT 0 NOT NULL,
+	"kana_to_roma_rkpm" integer DEFAULT 0 NOT NULL,
 	"roma_type" integer DEFAULT 0 NOT NULL,
 	"kana_type" integer DEFAULT 0 NOT NULL,
 	"flick_type" integer DEFAULT 0 NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE "result_statuses" (
 	"lost" integer DEFAULT 0 NOT NULL,
 	"max_combo" integer DEFAULT 0 NOT NULL,
 	"clear_rate" real DEFAULT 0 NOT NULL,
-	CONSTRAINT "default_speed_check" CHECK ("result_statuses"."default_speed" IN (0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00))
+	CONSTRAINT "valid_play_speed_values" CHECK ("result_statuses"."min_play_speed" IN (0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00))
 );
 --> statement-breakpoint
 CREATE TABLE "results" (
@@ -139,7 +139,7 @@ CREATE TABLE "user_ime_typing_options" (
 	"enable_eng_space" boolean DEFAULT false NOT NULL,
 	"enable_eng_upper_case" boolean DEFAULT false NOT NULL,
 	"enable_next_lyrics" boolean DEFAULT true NOT NULL,
-	"add_symbol_list" varchar DEFAULT '' NOT NULL,
+	"add_symbol_list" varchar(256) DEFAULT '' NOT NULL,
 	"enable_large_video_display" boolean DEFAULT false NOT NULL
 );
 --> statement-breakpoint
@@ -154,7 +154,7 @@ CREATE TABLE "user_options" (
 CREATE TABLE "user_profiles" (
 	"user_id" integer PRIMARY KEY NOT NULL,
 	"finger_chart_url" varchar DEFAULT '' NOT NULL,
-	"my_keyboard" varchar DEFAULT '' NOT NULL
+	"keyboard" varchar DEFAULT '' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user_stats" (
@@ -179,19 +179,19 @@ CREATE TABLE "user_typing_options" (
 	"time_offset" real DEFAULT 0 NOT NULL,
 	"kana_word_scroll" integer DEFAULT 10 NOT NULL,
 	"roma_word_scroll" integer DEFAULT 16 NOT NULL,
-	"kana_word_font_size" integer DEFAULT 100 NOT NULL,
-	"roma_word_font_size" integer DEFAULT 100 NOT NULL,
-	"kana_word_top_position" real DEFAULT 0 NOT NULL,
-	"roma_word_top_position" real DEFAULT 0 NOT NULL,
+	"main_word_font_size" integer DEFAULT 100 NOT NULL,
+	"sub_word_font_size" integer DEFAULT 90 NOT NULL,
+	"main_word_top_position" real DEFAULT 0 NOT NULL,
+	"sub_word_top_position" real DEFAULT 0 NOT NULL,
 	"kana_word_spacing" real DEFAULT 0.08 NOT NULL,
 	"roma_word_spacing" real DEFAULT 0.08 NOT NULL,
 	"type_sound" boolean DEFAULT false NOT NULL,
 	"miss_sound" boolean DEFAULT false NOT NULL,
-	"line_clear_sound" boolean DEFAULT false NOT NULL,
+	"completed_type_sound" boolean DEFAULT false NOT NULL,
 	"next_display" "next_display" DEFAULT 'LYRICS' NOT NULL,
 	"line_completed_display" "line_completed_display" DEFAULT 'NEXT_WORD' NOT NULL,
-	"time_offset_key" time_offset_key DEFAULT 'CTRL_LEFT_RIGHT' NOT NULL,
-	"toggle_input_mode_key" "toggle_input_mode_key" DEFAULT 'ALT_KANA' NOT NULL,
+	"time_offset_adjust_key" time_offset_key DEFAULT 'CTRL_LEFT_RIGHT' NOT NULL,
+	"input_mode_toggle_key" "toggle_input_mode_key" DEFAULT 'ALT_KANA' NOT NULL,
 	"main_word_display" "main_word_display" DEFAULT 'KANA_ROMA_UPPERCASE' NOT NULL
 );
 --> statement-breakpoint
