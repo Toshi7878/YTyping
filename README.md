@@ -164,7 +164,7 @@ YAHOO_APP_ID=<Client ID>
 
 #### バグ修正・改善提案
 
-1. [GitHub Issues](https://github.com/ytyping/ytyping/issues) で Issue を作成、または、実際に修正を行いプルリクエストを作成 → レビュー → マージ
+1. [GitHub Issues](https://github.com/Toshi7878/YTyping/issues) で Issue を作成、または、実際に修正を行いプルリクエストを作成 → レビュー → マージ
 
 #### 機能追加
 
