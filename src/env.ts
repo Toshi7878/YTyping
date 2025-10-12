@@ -23,9 +23,9 @@ export const env = createEnv({
 
     GCP_AUTH_KEY: z.string().min(1),
 
-    SUDACHI_API_KEY: z.string().min(1),
-    SUDACHI_API_URL: z.string().min(1),
-    // YAHOO_APP_ID: z.string().min(1),
+    YAHOO_APP_ID: z.string().min(1).optional(),
+    SUDACHI_API_KEY: z.string().min(1).optional(),
+    SUDACHI_API_URL: z.string().min(1).optional(),
     NODE_ENV: z.enum(["development", "production"]).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
     DATABASE_URL: z.string().min(1),

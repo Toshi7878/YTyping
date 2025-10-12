@@ -7,7 +7,13 @@ import { protectedProcedure } from "../trpc";
 
 export const morphConvertRouter = {
   tokenizeSentence: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
-    return postTokenizeSentence(input.sentence);
+    if (env.SUDACHI_API_KEY && env.SUDACHI_API_URL) {
+      return tokenizeSentenceWithSudachi(input.sentence);
+    }
+
+    if (env.YAHOO_APP_ID) {
+      return tokenizeSentenceWithYahoo(input.sentence);
+    }
   }),
 
   getCustomDict: protectedProcedure.query(async ({ ctx }) => {
@@ -41,7 +47,11 @@ export const morphConvertRouter = {
     }),
 } satisfies TRPCRouterRecord;
 
-async function postTokenizeSentence(sentence: string): Promise<{ lyrics: string[]; readings: string[] }> {
+async function tokenizeSentenceWithSudachi(
+  sentence: string,
+): Promise<{ lyrics: string[]; readings: string[] } | undefined> {
+  if (!env.SUDACHI_API_URL || !env.SUDACHI_API_KEY) return;
+
   try {
     const response = await fetch(env.SUDACHI_API_URL, {
       method: "POST",
@@ -64,33 +74,41 @@ async function postTokenizeSentence(sentence: string): Promise<{ lyrics: string[
   }
 }
 
-// async function fetchYahooMorphAnalysis(sentence: string): Promise<string> {
-//   const apiKey = env.YAHOO_APP_ID;
-//   const apiUrl = "https://jlp.yahooapis.jp/MAService/V2/parse";
+async function tokenizeSentenceWithYahoo(sentence: string): Promise<{ lyrics: string[]; readings: string[] }> {
+  const apiKey = env.YAHOO_APP_ID;
+  const apiUrl = "https://jlp.yahooapis.jp/MAService/V2/parse";
 
-//   const response = await fetch(apiUrl, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "User-Agent": `Yahoo AppID: ${apiKey}`,
-//     },
-//     body: JSON.stringify({
-//       id: apiKey,
-//       jsonrpc: "2.0",
-//       method: "jlp.maservice.parse",
-//       params: {
-//         q: sentence,
-//         results: "ma",
-//         response: {
-//           surface: true,
-//           reading: true,
-//           pos: false,
-//           baseform: false,
-//         },
-//       },
-//     }),
-//   });
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": `Yahoo AppID: ${apiKey}`,
+    },
+    body: JSON.stringify({
+      id: apiKey,
+      jsonrpc: "2.0",
+      method: "jlp.maservice.parse",
+      params: {
+        q: sentence,
+        results: "ma",
+        response: {
+          surface: true,
+          reading: true,
+          pos: false,
+          baseform: false,
+        },
+      },
+    }),
+  });
 
-//   const data = await response.json();
-//   return data.tokens.map((char: string) => char[1]).join("");
-// }
+  const data = await response.json();
+  const lyrics: string[] = [];
+  const readings: string[] = [];
+
+  for (const token of data.tokens) {
+    lyrics.push(token[0]); // surface (表層形)
+    readings.push(token[1]); // reading (読み)
+  }
+
+  return { lyrics, readings };
+}
