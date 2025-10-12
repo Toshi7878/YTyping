@@ -32,10 +32,10 @@ export const env = createEnv({
     SUPABASE_SECRET_KEY: z.string().optional(),
     VERCEL_PROJECT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
     VERCEL_API_TOKEN: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    R2_ACCOUNT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    R2_ACCESS_KEY_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    R2_SECRET_ACCESS_KEY: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    R2_BUCKET_NAME: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    R2_ACCOUNT_ID: process.env.VERCEL_ENV === "production" ? z.string().min(1) : z.string().optional(),
+    R2_ACCESS_KEY_ID: process.env.VERCEL_ENV === "production" ? z.string().min(1) : z.string().optional(),
+    R2_SECRET_ACCESS_KEY: process.env.VERCEL_ENV === "production" ? z.string().min(1) : z.string().optional(),
+    R2_BUCKET_NAME: process.env.VERCEL_ENV === "production" ? z.string().min(1) : z.string().optional(),
   },
 
   /**
