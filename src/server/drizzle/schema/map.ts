@@ -11,7 +11,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { MAX_SHORT_LENGTH } from "../const";
+import { MAX_MEDIUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
 import { Users } from "./user";
 
 export const categoryEnum = pgEnum("category", ["CSS", "SPEED_SHIFT"]);
@@ -22,7 +22,7 @@ export const Maps = pgTable("maps", {
   title: varchar("title", { length: MAX_SHORT_LENGTH }).notNull().default(""),
   artistName: varchar("artist_name", { length: MAX_SHORT_LENGTH }).notNull().default(""),
   musicSource: varchar("music_source", { length: MAX_SHORT_LENGTH }).notNull().default(""),
-  creatorComment: varchar("creator_comment", { length: MAX_SHORT_LENGTH }).notNull().default(""),
+  creatorComment: varchar("creator_comment", { length: MAX_MEDIUM_LENGTH }).notNull().default(""),
   tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
   creatorId: integer("creator_id")
     .notNull()

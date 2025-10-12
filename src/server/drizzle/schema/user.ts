@@ -1,5 +1,5 @@
 import { boolean, integer, pgEnum, pgTable, primaryKey, real, timestamp, varchar } from "drizzle-orm/pg-core";
-import { DEFAULT_TYPING_OPTIONS, MAX_SHORT_LENGTH } from "../const";
+import { DEFAULT_TYPING_OPTIONS, MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
 export const Users = pgTable("users", {
@@ -15,8 +15,8 @@ export const UserProfiles = pgTable("user_profiles", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
-  fingerChartUrl: varchar("finger_chart_url").notNull().default(""),
-  keyboard: varchar("keyboard").notNull().default(""),
+  fingerChartUrl: varchar("finger_chart_url", { length: MAX_SHORT_LENGTH }).notNull().default(""),
+  keyboard: varchar("keyboard", { length: MAX_MAXIMUM_LENGTH }).notNull().default(""),
 });
 
 export const customUserActiveStateEnum = pgEnum("custom_user_active_state", ["ONLINE", "ASK_ME", "HIDE_ONLINE"]);
