@@ -115,7 +115,7 @@ async function tokenizeSentenceWithYahoo(sentence: string): Promise<{ lyrics: st
   const lyrics: string[] = [];
   const readings: string[] = [];
 
-  for (const token of data.tokens) {
+  for (const token of data.result.tokens) {
     lyrics.push(token[0]); // surface (表層形)
     readings.push(token[1]); // reading (読み)
   }
