@@ -29,7 +29,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "production"]).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
     DATABASE_URL: z.string().min(1),
-
+    SUPABASE_SECRET_KEY: z.string().optional(),
     VERCEL_PROJECT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
     VERCEL_API_TOKEN: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
     R2_ACCOUNT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),

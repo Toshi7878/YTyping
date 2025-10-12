@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { env } from "@/env";
+import { SUPABASE_PUBLIC_BUCKET } from "@/server/drizzle/const";
 import type { FileUploadParams } from "./types";
 
 const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
@@ -11,14 +12,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const SUPABASE_BUCKET = "ytyping-public";
-
 export const upsertPublicToSupabase = async ({
   key,
   body,
   contentType = "application/json",
 }: FileUploadParams): Promise<void> => {
-  const { error } = await supabase.storage.from(SUPABASE_BUCKET).upload(key, body, {
+  const { error } = await supabase.storage.from(SUPABASE_PUBLIC_BUCKET).upload(key, body, {
     contentType,
     upsert: true,
   });
@@ -30,7 +29,7 @@ export const upsertPublicToSupabase = async ({
 };
 
 export const downloadPublicFromSupabase = async ({ key }: { key: string }): Promise<Uint8Array | undefined> => {
-  const { data, error } = await supabase.storage.from(SUPABASE_BUCKET).download(key);
+  const { data, error } = await supabase.storage.from(SUPABASE_PUBLIC_BUCKET).download(key);
 
   if (error) {
     console.error("Error downloading from Supabase Storage:", error);
