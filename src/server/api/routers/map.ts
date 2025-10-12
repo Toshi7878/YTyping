@@ -1,7 +1,7 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import z from "zod";
-import { downloadFile, upsertFile } from "@/lib/r2-storage";
+import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/server/drizzle/validator/map";
@@ -47,9 +47,7 @@ export const mapRouter = {
 
   getMapJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
     try {
-      const data = await downloadFile({
-        key: `map-json/${input.mapId}.json`,
-      });
+      const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
 
       if (!data) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Map data not found" });
@@ -89,9 +87,17 @@ export const mapRouter = {
       let newMapId: number;
 
       if (mapId === null) {
+        // まず現在の最大 ID を取得
+        const maxIdResult = await tx
+          .select({ maxId: sql<number>`COALESCE(MAX(${Maps.id}), 0)` })
+          .from(Maps)
+          .then((rows) => rows[0]?.maxId ?? 0);
+
+        const nextId = maxIdResult + 1;
+
         newMapId = await tx
           .insert(Maps)
-          .values({ ...mapInfo, creatorId: userId })
+          .values({ id: nextId, ...mapInfo, creatorId: userId })
           .returning({ id: Maps.id })
           .then((res) => res[0].id);
       } else {
@@ -108,11 +114,13 @@ export const mapRouter = {
         .values({ mapId: newMapId, ...mapDifficulty })
         .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: mapDifficulty });
 
-      await upsertFile({
+      const payload = {
         key: `map-json/${mapId === null ? newMapId : mapId}.json`,
         body: JSON.stringify(mapData, null, 2),
-        contentType: "application/json",
-      });
+        contentType: "application/json" as const,
+      };
+
+      await uploadPublicFile(payload);
 
       return newMapId;
     });

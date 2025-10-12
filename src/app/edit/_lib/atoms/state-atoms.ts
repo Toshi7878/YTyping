@@ -3,7 +3,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import type { YouTubeSpeed } from "@/types/types";
+import type { YouTubeSpeed } from "@/utils/types";
 import type { TAB_NAMES } from "../const";
 import { playerAtom, timeInputAtom } from "./read-atoms";
 import { getEditAtomStore } from "./store";

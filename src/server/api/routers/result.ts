@@ -2,9 +2,10 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import type { SQL } from "drizzle-orm";
 import { and, count, desc, eq, gt, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import { alias, type BuildAliasTable } from "drizzle-orm/pg-core";
+import { nanoid } from "nanoid";
 import z from "zod";
 import { ResultSearchParamsSchema, resultListSearchParams } from "@/lib/queries/schema/result-list";
-import { downloadFile, upsertFile } from "@/lib/r2-storage";
+import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import {
@@ -212,7 +213,7 @@ const resultListWithMapRoute = {
 export const resultRouter = {
   ...resultListWithMapRoute,
   getResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
-    const data = await downloadFile({ key: `result-json/${input.resultId}.json` });
+    const data = await downloadPublicFile(`result-json/${input.resultId}.json`);
 
     if (!data) {
       throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
@@ -252,15 +253,36 @@ export const resultRouter = {
     const { mapId, lineResults, status } = input;
 
     return db.transaction(async (tx) => {
-      const resultId = await tx
-        .insert(Results)
-        .values({ mapId, userId })
-        .onConflictDoUpdate({
-          target: [Results.userId, Results.mapId],
-          set: { updatedAt: new Date() },
-        })
-        .returning({ id: Results.id })
-        .then((res) => res[0].id);
+      const existingResult = await tx
+        .select({ id: Results.id })
+        .from(Results)
+        .where(and(eq(Results.userId, userId), eq(Results.mapId, mapId)))
+        .limit(1)
+        .then((rows) => rows[0]);
+
+      let resultId: number;
+
+      if (existingResult) {
+        resultId = await tx
+          .update(Results)
+          .set({ updatedAt: new Date() })
+          .where(eq(Results.id, existingResult.id))
+          .returning({ id: Results.id })
+          .then((res) => res[0].id);
+      } else {
+        const maxIdResult = await tx
+          .select({ maxId: sql<number>`COALESCE(MAX(${Results.id}), 0)` })
+          .from(Results)
+          .then((rows) => rows[0]?.maxId ?? 0);
+
+        const nextId = maxIdResult + 1;
+
+        resultId = await tx
+          .insert(Results)
+          .values({ id: nextId, mapId, userId })
+          .returning({ id: Results.id })
+          .then((res) => res[0].id);
+      }
 
       await tx
         .insert(ResultStatuses)
@@ -268,10 +290,11 @@ export const resultRouter = {
         .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
 
       const jsonString = JSON.stringify(lineResults, null, 2);
-      await upsertFile({
+
+      await uploadPublicFile({
         key: `result-json/${resultId}.json`,
         body: jsonString,
-        contentType: "application/json",
+        contentType: "application/json" as const,
       });
 
       const rankedUsers = await tx
@@ -362,6 +385,7 @@ const updateRankingsAndNotifyOvertakes = async ({
       await tx
         .insert(Notifications)
         .values({
+          id: nanoid(10),
           visitorId: userId,
           visitedId: currentUser.userId,
           mapId,

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import type { ActiveUserStatus } from "@/lib/global-atoms";
 import { useSetOnlineUsers } from "@/lib/global-atoms";
 import { useUserOptionsQueries } from "@/lib/queries/user-options.queries";
-import { supabase } from "@/lib/supabase-client";
+import { createPresenceChannel } from "@/lib/supabase-client";
 
 export const useActiveUsers = () => {
   const { data: userOptions, isPending } = useQuery(useUserOptionsQueries().myUserOptions());
@@ -19,7 +19,7 @@ export const useActiveUsers = () => {
     if (!session?.user?.name || isPending) return;
 
     let inactivityTimer: number;
-    let currentChannel: ReturnType<typeof supabase.channel> | null = null;
+    let currentChannel: ReturnType<typeof createPresenceChannel> | null = null;
 
     const updateUserStatus = async (channelInstance: typeof currentChannel) => {
       if (!session?.user?.name || !channelInstance) return;
@@ -41,11 +41,7 @@ export const useActiveUsers = () => {
     };
 
     const createChannel = () => {
-      const channel = supabase.channel("active_users_room", {
-        config: {
-          presence: { key: session.user.id },
-        },
-      });
+      const channel = createPresenceChannel("active_users_room", session.user.id);
 
       channel.on("presence", { event: "sync" }, () => {
         const newState = channel.presenceState<ActiveUserStatus>();

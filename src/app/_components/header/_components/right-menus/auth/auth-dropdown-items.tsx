@@ -1,11 +1,15 @@
 import { useProgress } from "@bprogress/next";
 import { signIn, signOut } from "next-auth/react";
 import { BsDiscord, BsGoogle } from "react-icons/bs";
+import { FaUser, FaUserShield } from "react-icons/fa";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { env } from "@/env";
 import { cn } from "@/lib/utils";
 
 export const SignInDropdownItems = () => {
   const { start } = useProgress();
+  const isDevelopment = env.NODE_ENV === "development";
+
   const items = [
     {
       text: "Discordでログイン",
@@ -21,9 +25,26 @@ export const SignInDropdownItems = () => {
     },
   ];
 
+  const devItems = isDevelopment
+    ? [
+        {
+          text: "Admin でログイン (開発)",
+          leftIcon: <FaUserShield className="text-primary-foreground size-6 group-focus:text-white" />,
+          provider: "dev-admin",
+          className: "hover:bg-red-600 focus:bg-red-600",
+        },
+        {
+          text: "User でログイン (開発)",
+          leftIcon: <FaUser className="text-primary-foreground size-6 group-focus:text-white" />,
+          provider: "dev-user",
+          className: "hover:bg-blue-600 focus:bg-blue-600",
+        },
+      ]
+    : [];
+
   return (
     <>
-      {items.map((item) => (
+      {[...items, ...devItems].map((item) => (
         <DropdownMenuItem
           key={item.provider}
           onSelect={async () => {

@@ -1,12 +1,12 @@
 import { sql } from "drizzle-orm";
-import { boolean, check, integer, pgTable, primaryKey, real, serial, timestamp, unique } from "drizzle-orm/pg-core";
+import { boolean, check, integer, pgTable, primaryKey, real, timestamp, unique } from "drizzle-orm/pg-core";
 import { Maps } from "./map";
 import { Users } from "./user";
 
 export const Results = pgTable(
   "results",
   {
-    id: serial("id").primaryKey(),
+    id: integer("id").primaryKey(),
     mapId: integer("map_id")
       .notNull()
       .references(() => Maps.id, { onDelete: "cascade" }),
@@ -21,7 +21,7 @@ export const Results = pgTable(
 );
 
 export const ImeResults = pgTable("ime_results", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey(),
   userId: integer("user_id")
     .notNull()
     .references(() => Users.id, { onDelete: "cascade" }),

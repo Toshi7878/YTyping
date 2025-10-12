@@ -15,21 +15,21 @@ export const env = createEnv({
    * This way you can ensure the app isn't built with invalid env vars.
    */
   server: {
-    AUTH_GOOGLE_ID: z.string().min(1),
-    AUTH_GOOGLE_SECRET: z.string().min(1),
-    AUTH_DISCORD_ID: z.string().min(1),
-    AUTH_DISCORD_SECRET: z.string().min(1),
-    AUTH_SECRET: z.string().min(1),
+    AUTH_GOOGLE_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_GOOGLE_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_DISCORD_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_DISCORD_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional().default("auth-secret"),
 
     GCP_AUTH_KEY: z.string().min(1),
 
-    SUDACHI_API_KEY: z.string().min(1),
-    SUDACHI_API_URL: z.string().min(1),
-    // YAHOO_APP_ID: z.string().min(1),
+    YAHOO_APP_ID: z.string().min(1).optional(),
+    SUDACHI_API_KEY: z.string().min(1).optional(),
+    SUDACHI_API_URL: z.string().min(1).optional(),
     NODE_ENV: z.enum(["development", "production"]).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
     DATABASE_URL: z.string().min(1),
-
+    SUPABASE_SECRET_KEY: z.string().optional(),
     VERCEL_PROJECT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
     VERCEL_API_TOKEN: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
     R2_ACCOUNT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
