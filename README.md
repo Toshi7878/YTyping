@@ -32,6 +32,16 @@ pnpm install
 cp .env.example .env
 ```
 
+.envファイルの中身に以下の環境変数があることを確認
+
+```code
+NEXT_PUBLIC_SUPABASE_URL="http://localhost:54321"
+DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=""
+SUPABASE_SECRET_KEY=""
+```
+
 ## Docker Desktopをインストールする
 
 <https://docs.docker.com/desktop/#next-steps>
@@ -48,15 +58,12 @@ pnpm db:start
 pnpm db:status
 ```
 
-### `.env` ファイルの `NEXT_PUBLIC_SUPABASE_ANON_KEY` と `SUPABASE_SECRET_KEY` を設定
+### `NEXT_PUBLIC_SUPABASE_ANON_KEY` と `SUPABASE_SECRET_KEY` を設定
 
-pnpm db:status でコマンドラインに表示されたPublishable keyとSecret keyを `.env` ファイルの `NEXT_PUBLIC_SUPABASE_ANON_KEY` と `SUPABASE_SECRET_KEY` に設定
+pnpm db:status でコマンドラインに表示されたPublishable keyとSecret keyを .envファイルの `NEXT_PUBLIC_SUPABASE_ANON_KEY` と `SUPABASE_SECRET_KEY` に設定
 
 ```code
-> Publishable key: sb_publishable_<ランダムな文字列>
 NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_<ランダムな文字列>"
-
-> Secret key: sb_secret_<ランダムな文字列>
 SUPABASE_SECRET_KEY="sb_secret_<ランダムな文字列>"
 ```
 
