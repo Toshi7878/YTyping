@@ -45,7 +45,6 @@ function parseCSV(csvText: string): Record<string, string>[] {
   });
 }
 
-// CSV データを適切な型に変換
 function parseUserRow(row: Record<string, string>) {
   return {
     id: Number(row.id),
@@ -129,7 +128,7 @@ async function main() {
 
   // 4. MapDifficulties テーブルにシードデータを挿入
   console.log("\n📊 Seeding map_difficulties table...");
-  const difficultiesCSV = await readFile(join(tableDir, "map_difficulties_rows (1).csv"), "utf-8");
+  const difficultiesCSV = await readFile(join(tableDir, "map_difficulties_rows.csv"), "utf-8");
   const difficultyRows = parseCSV(difficultiesCSV).map(parseMapDifficultyRow);
 
   await db.insert(MapDifficulties).values(difficultyRows);
