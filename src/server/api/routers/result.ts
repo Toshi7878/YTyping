@@ -385,7 +385,7 @@ const updateRankingsAndNotifyOvertakes = async ({
       await tx
         .insert(Notifications)
         .values({
-          id: nanoid(),
+          id: nanoid(10),
           visitorId: userId,
           visitedId: currentUser.userId,
           mapId,
