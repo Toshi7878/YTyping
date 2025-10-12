@@ -11,7 +11,6 @@ export const MapControlArea = () => {
   return (
     <section className="mb-4 flex w-full flex-col gap-4">
       <SearchInput />
-      <div>本日10時頃からメンテナンスを実施します。 メンテナンス中は一時的にご利用できなくなります。</div>
       <div className="flex md:flex-row flex-col md:space-y-0 space-y-4 justify-between">
         <MapFilter />
         <VolumeRange player={player} />
