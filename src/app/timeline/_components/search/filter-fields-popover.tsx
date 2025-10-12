@@ -77,16 +77,19 @@ const SearchModeRadioCardGroup = () => {
     { label: "ローマ字&かな", value: "romakana" },
     { label: "英語", value: "english" },
   ];
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setParams({ mode });
+    }
+  };
+
   return (
     <RadioGroup
       value={mode}
       onValueChange={(value: ResultListSearchParams["mode"]) => setMode(value)}
       className="flex gap-1"
-      onKeyDown={(event) => {
-        if (event.key === "Enter") {
-          setParams({ mode });
-        }
-      }}
+      onKeyDown={onKeyDown}
     >
       {MODE_RADIO_CARDS.map((option) => {
         const isSelected = mode === option.value;

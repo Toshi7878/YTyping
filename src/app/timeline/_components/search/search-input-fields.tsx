@@ -15,6 +15,16 @@ export const SearchInputs = () => {
   const [keywords, setKeywords] = useState({ mapKeyword, username });
   const setParams = useSetParams();
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
+    }
+  };
+
+  const onClick = () => {
+    setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
+  };
+
   return (
     <div className="flex gap-2">
       <Input
@@ -22,31 +32,16 @@ export const SearchInputs = () => {
         type="search"
         placeholder="譜面キーワードで絞り込み"
         onChange={(e) => setKeywords((prev) => ({ ...prev, mapKeyword: e.target.value }))}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
-          }
-        }}
+        onKeyDown={onKeyDown}
       />
       <Input
         value={keywords.username}
         placeholder="ユーザーネームで絞り込み"
         type="search"
         onChange={(e) => setKeywords((prev) => ({ ...prev, username: e.target.value }))}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
-          }
-        }}
+        onKeyDown={onKeyDown}
       />
-      <Button
-        className="w-[30%]"
-        onClick={() => {
-          setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
-        }}
-        disabled={isSearching}
-        loading={isSearching}
-      >
+      <Button className="w-[30%]" onClick={onClick} disabled={isSearching} loading={isSearching}>
         検索
       </Button>
     </div>
