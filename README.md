@@ -1,0 +1,110 @@
+# 開発環境セットアップ手順
+
+## リポジトリをクローンする
+
+```bash
+git clone https://github.com/ytyping/ytyping.git
+```
+
+## Node.jsをインストールする
+
+<https://nodejs.org/ja/download/>
+
+## pnpmをインストールする
+
+<https://pnpm.io/installation>
+
+## 依存関係をインストールする
+
+```bash
+pnpm install
+```
+
+## 環境変数を設定する
+
+```bash
+cp .env.example .env
+```
+
+## Dockerをインストールする
+
+<https://docs.docker.com/desktop/#next-steps>
+Install Docker DesktopからOSに合わせてDockerをインストールしてください。
+
+## ローカル環境に開発用のデータベースをセットアップする
+
+```bash
+pnpx supabase init
+pnpm db:start
+pnpm db:status
+```
+
+### pnpm db:status でコマンドラインに表示された `Publishable key` と `Secret key` を .env ファイルの `NEXT_PUBLIC_SUPABASE_ANON_KEY` と `SUPABASE_SECRET_KEY` に設定する
+
+```code
+> Publishable key: sb_publishable_<ランダムな文字列>
+NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_<ランダムな文字列>"
+
+> Secret key: sb_secret_<ランダムな文字列>
+SUPABASE_SECRET_KEY="sb_secret_<ランダムな文字列>"
+```
+
+### ローカル環境のデータベースにテーブルを構築して開発用のシードデータを挿入する
+
+```bash
+pnpm db:migrate
+pnpm db:seed
+```
+
+## 開発サーバーを起動する
+
+```bash
+pnpm dev
+```
+
+サーバーを起動したら、ブラウザで `http://localhost:3000` にアクセスしてください。
+YTypingの開発環境用ページが表示されます。
+
+------------------------------------------------------------------------------------------------------------------
+
+## ローカルデータベースをリセットしてシードデータを挿入する
+
+```bash
+pnpm db:reset
+pnpm db:seed
+```
+
+## 開発環境でエディターの読み変換機能を使用する
+
+読み変換機能を使用するには、.env ファイルに`YAHOO_APP_ID`を設定する必要があります。
+以下のURLでClient IDを発行後、.env ファイルのYAHOO_APP_IDに発行したClient IDを設定してください。
+
+<https://developer.yahoo.co.jp/>
+
+### アプリケーション設定
+
+> Web APIを利用する場所
+>
+> ID連携利用有無: ID連携を利用する
+>
+> アプリケーションの種類: サーバーサイド（Yahoo! ID連携 v2）
+>
+> アプリケーションの利用者情報（契約者情報）
+>
+> 利用者情報: 個人
+>
+> メールアドレス: 設定済み
+>
+> 個人情報授受にかかる確認事項
+>
+> 個人情報提供先としてユーザーへ開示することに同意しますか？: 同意しない
+>
+> アプリケーションの基本情報
+>
+> アプリケーション名: YTyping
+>
+> サイトURL: http://localhost:3000
+
+```code
+YAHOO_APP_ID=<Client ID>
+```
