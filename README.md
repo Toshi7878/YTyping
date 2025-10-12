@@ -1,32 +1,32 @@
 # 開発環境セットアップ手順
 
-## Node.jsをインストールする
+## Node.jsをインストール
 
 <https://nodejs.org/ja/download/>
 
-## pnpmをインストールする
+## pnpmをインストール
 
 <https://pnpm.io/installation>
 
-## 任意のフォルダでコマンドラインを開き、リポジトリをクローンする
+## 任意のフォルダでコマンドラインを開き、リポジトリをクローン
 
 ```bash
 git clone https://github.com/ytyping/ytyping.git
 ```
 
-## リポジトリをクローンしたフォルダに移動する
+## リポジトリをクローンしたフォルダに移動
 
 ```bash
 cd ytyping
 ```
 
-## 依存関係をインストールする
+## 依存関係をインストール
 
 ```bash
 pnpm install
 ```
 
-## 環境変数ファイルを作成する (`.env` ファイルをプロジェクトのルートに作成)
+## 環境変数ファイルを作成 (`.env` ファイルをプロジェクトのルートに作成)
 
 ```bash
 cp .env.example .env
@@ -42,7 +42,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=""
 SUPABASE_SECRET_KEY=""
 ```
 
-## Docker Desktopをインストールする
+## Docker Desktopをインストール
 
 <https://docs.docker.com/desktop/#next-steps>
 
@@ -50,7 +50,7 @@ SUPABASE_SECRET_KEY=""
 
 2. インストールが完了したら、Docker Desktopを起動
 
-## ローカル環境に開発用のデータベースをセットアップする
+## ローカル環境に開発用のデータベースをセットアップ
 
 ```bash
 pnpx supabase init
@@ -67,14 +67,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_<ランダムな文字列>"
 SUPABASE_SECRET_KEY="sb_secret_<ランダムな文字列>"
 ```
 
-### ローカル環境のデータベースにテーブルを構築して開発用のシードデータを挿入する
+### ローカル環境のデータベースにテーブルを構築して開発用のシードデータを挿入
 
 ```bash
 pnpm db:migrate
 pnpm db:seed
 ```
 
-## 開発サーバーを起動する
+## 開発サーバーを起動
 
 ```bash
 pnpm dev
@@ -83,7 +83,7 @@ pnpm dev
 サーバーを起動したら、ブラウザで `http://localhost:3000` にアクセスしてください。
 YTypingの開発環境用ページが表示されます。
 
-## データベースのデータを確認する
+## データベースのデータを確認
 
 `pnpm db:start` 実行成功後、ブラウザで<http://127.0.0.1:54323/project/default/editor> にアクセスするとローカルデータベースのデータを確認することができます。
 
@@ -94,25 +94,25 @@ YTypingの開発環境用ページが表示されます。
 以下のコマンドを実行するには、Docker Desktopを起動している必要があります
 
 `pnpm db:start`
-データベースを起動します
+データベースを起動
 
 `pnpm db:stop`
-データベースを停止します
+データベースを停止
 
 `pnpm db:migrate`
-データベースにテーブルを構築します
+データベースにテーブルを構築
 
 `pnpm db:seed`
-データベースにシードデータを挿入します
+データベースにシードデータを挿入
 
 `pnpm db:reset`
-データベースをリセットします
+データベースをリセット
 
 `pnpm db:status`
-データベースの状態を表示します
+データベースの状態を表示
 
 `pnpm db:generate`
-データベースのスキーマを生成します
+データベースのスキーマを生成
 
 ------------------------------------------------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ ytyping.netで使用している読み変換機能より精度は落ちますが
 YAHOO_APP_ID=<Client ID>
 ```
 
-## 機能開発について
+## 機能開発
 
 ### ブラウザ拡張機能・UserScript で実装可能な機能について
 
