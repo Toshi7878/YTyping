@@ -4,7 +4,7 @@ import { and, count, desc, eq, gt, gte, ilike, inArray, lte, or, sql } from "dri
 import { alias, type BuildAliasTable } from "drizzle-orm/pg-core";
 import z from "zod";
 import { ResultSearchParamsSchema, resultListSearchParams } from "@/lib/queries/schema/result-list";
-import { downloadFile, upsertFile } from "@/lib/r2-storage";
+import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
 import {
@@ -212,7 +212,7 @@ const resultListWithMapRoute = {
 export const resultRouter = {
   ...resultListWithMapRoute,
   getResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
-    const data = await downloadFile({ key: `result-json/${input.resultId}.json` });
+    const data = await downloadPublicFile(`result-json/${input.resultId}.json`);
 
     if (!data) {
       throw new TRPCError({ code: "NOT_FOUND", message: "Result data not found" });
@@ -268,11 +268,14 @@ export const resultRouter = {
         .onConflictDoUpdate({ target: [ResultStatuses.resultId], set: status });
 
       const jsonString = JSON.stringify(lineResults, null, 2);
-      await upsertFile({
+
+      const payload = {
         key: `result-json/${resultId}.json`,
         body: jsonString,
-        contentType: "application/json",
-      });
+        contentType: "application/json" as const,
+      };
+
+      await uploadPublicFile(payload);
 
       const rankedUsers = await tx
         .select({

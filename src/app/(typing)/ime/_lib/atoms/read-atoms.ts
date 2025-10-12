@@ -2,7 +2,6 @@ import { atom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import type {} from "@/types/types";
 import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();

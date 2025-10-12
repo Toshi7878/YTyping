@@ -4,7 +4,7 @@ import { useYTSpeedState } from "@/app/edit/_lib/atoms/state-atoms";
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import type { YouTubeSpeed } from "@/types/types";
+import type { YouTubeSpeed } from "@/utils/types";
 import { usePlayer } from "../_lib/atoms/read-atoms";
 import {
   useSetTimeRangeValue,

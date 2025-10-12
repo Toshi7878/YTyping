@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
-import type { YouTubeSpeed } from "@/types/types";
+import type { YouTubeSpeed } from "@/utils/types";
 import { playerAtom } from "./read-atoms";
 import { sceneAtom } from "./state-atoms";
 import { getTypeAtomStore } from "./store";
