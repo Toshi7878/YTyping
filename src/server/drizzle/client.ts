@@ -9,7 +9,7 @@ const connectionString = env.DATABASE_URL;
 
 const client = postgres(connectionString, { prepare: false });
 
-export const db = drizzle(client, { schema });
+export const db = drizzle(client, { schema, logger: true });
 export type DBType = typeof db;
 export type TXType = Parameters<Parameters<DBType["transaction"]>[0]>[0];
 

@@ -15,11 +15,11 @@ export const env = createEnv({
    * This way you can ensure the app isn't built with invalid env vars.
    */
   server: {
-    AUTH_GOOGLE_ID: z.string().min(1),
-    AUTH_GOOGLE_SECRET: z.string().min(1),
-    AUTH_DISCORD_ID: z.string().min(1),
-    AUTH_DISCORD_SECRET: z.string().min(1),
-    AUTH_SECRET: z.string().min(1),
+    AUTH_GOOGLE_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_GOOGLE_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_DISCORD_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_DISCORD_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
 
     GCP_AUTH_KEY: z.string().min(1),
 
