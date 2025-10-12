@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-10-13",
+    descriptions: ["GitHubのREADME.mdに開発参加用の環境セットアップ手順を追加"],
+  },
+  {
     date: "2025-10-4",
     descriptions: [
       "ユーザーページにランキング履歴タブを追加",
