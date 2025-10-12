@@ -2,6 +2,7 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import type { SQL } from "drizzle-orm";
 import { and, count, desc, eq, gt, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import { alias, type BuildAliasTable } from "drizzle-orm/pg-core";
+import { nanoid } from "nanoid";
 import z from "zod";
 import { ResultSearchParamsSchema, resultListSearchParams } from "@/lib/queries/schema/result-list";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
@@ -252,15 +253,36 @@ export const resultRouter = {
     const { mapId, lineResults, status } = input;
 
     return db.transaction(async (tx) => {
-      const resultId = await tx
-        .insert(Results)
-        .values({ mapId, userId })
-        .onConflictDoUpdate({
-          target: [Results.userId, Results.mapId],
-          set: { updatedAt: new Date() },
-        })
-        .returning({ id: Results.id })
-        .then((res) => res[0].id);
+      const existingResult = await tx
+        .select({ id: Results.id })
+        .from(Results)
+        .where(and(eq(Results.userId, userId), eq(Results.mapId, mapId)))
+        .limit(1)
+        .then((rows) => rows[0]);
+
+      let resultId: number;
+
+      if (existingResult) {
+        resultId = await tx
+          .update(Results)
+          .set({ updatedAt: new Date() })
+          .where(eq(Results.id, existingResult.id))
+          .returning({ id: Results.id })
+          .then((res) => res[0].id);
+      } else {
+        const maxIdResult = await tx
+          .select({ maxId: sql<number>`COALESCE(MAX(${Results.id}), 0)` })
+          .from(Results)
+          .then((rows) => rows[0]?.maxId ?? 0);
+
+        const nextId = maxIdResult + 1;
+
+        resultId = await tx
+          .insert(Results)
+          .values({ id: nextId, mapId, userId })
+          .returning({ id: Results.id })
+          .then((res) => res[0].id);
+      }
 
       await tx
         .insert(ResultStatuses)
@@ -269,13 +291,11 @@ export const resultRouter = {
 
       const jsonString = JSON.stringify(lineResults, null, 2);
 
-      const payload = {
+      await uploadPublicFile({
         key: `result-json/${resultId}.json`,
         body: jsonString,
         contentType: "application/json" as const,
-      };
-
-      await uploadPublicFile(payload);
+      });
 
       const rankedUsers = await tx
         .select({
@@ -365,6 +385,7 @@ const updateRankingsAndNotifyOvertakes = async ({
       await tx
         .insert(Notifications)
         .values({
+          id: nanoid(),
           visitorId: userId,
           visitedId: currentUser.userId,
           mapId,

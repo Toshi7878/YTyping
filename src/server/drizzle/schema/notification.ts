@@ -1,4 +1,4 @@
-import { boolean, foreignKey, integer, pgEnum, pgTable, serial, timestamp, unique } from "drizzle-orm/pg-core";
+import { boolean, foreignKey, integer, pgEnum, pgTable, timestamp, unique, varchar } from "drizzle-orm/pg-core";
 import { Maps } from "./map";
 import { Results } from "./result";
 import { Users } from "./user";
@@ -7,7 +7,7 @@ export const actionEnum = pgEnum("action", ["LIKE", "OVER_TAKE"]);
 export const Notifications = pgTable(
   "notifications",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey(),
     visitorId: integer("visitor_id")
       .notNull()
       .references(() => Users.id, { onDelete: "cascade" }),

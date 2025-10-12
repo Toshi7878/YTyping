@@ -1,9 +1,9 @@
-import { boolean, integer, pgEnum, pgTable, primaryKey, real, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, pgEnum, pgTable, primaryKey, real, timestamp, varchar } from "drizzle-orm/pg-core";
 import { DEFAULT_TYPING_OPTIONS, MAX_SHORT_LENGTH } from "../const";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
 export const Users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey(),
   name: varchar("name").unique(),
   emailHash: varchar("email_hash").unique().notNull(),
   role: roleEnum("role").notNull().default("USER"),

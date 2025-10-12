@@ -1,5 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import { db } from "@/server/drizzle/client";
@@ -87,9 +87,17 @@ export const mapRouter = {
       let newMapId: number;
 
       if (mapId === null) {
+        // まず現在の最大 ID を取得
+        const maxIdResult = await tx
+          .select({ maxId: sql<number>`COALESCE(MAX(${Maps.id}), 0)` })
+          .from(Maps)
+          .then((rows) => rows[0]?.maxId ?? 0);
+
+        const nextId = maxIdResult + 1;
+
         newMapId = await tx
           .insert(Maps)
-          .values({ ...mapInfo, creatorId: userId })
+          .values({ id: nextId, ...mapInfo, creatorId: userId })
           .returning({ id: Maps.id })
           .then((res) => res[0].id);
       } else {

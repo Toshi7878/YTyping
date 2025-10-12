@@ -11,6 +11,8 @@
     "check:fix": "biome check --diagnostic-level=warn --reporter=summary --write",
     "typecheck": "tsc --noEmit",
     "reset": "pnpm dlx rimraf .next .tsbuildinfo node_modules package-lock.json && pnpm install",
+    "db:start": "pnpx supabase start",
+    "db:stop": "pnpx supabase stop",
     "db:migrate": "drizzle-kit push",
     "studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
@@ -94,8 +96,7 @@
     },
     "onlyBuiltDependencies": [
       "@tailwindcss/oxide",
-      "esbuild",
-      "sharp"
+      "supabase"
     ]
   }
 }

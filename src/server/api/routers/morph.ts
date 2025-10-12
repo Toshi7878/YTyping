@@ -1,4 +1,4 @@
-import type { TRPCRouterRecord } from "@trpc/server";
+import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { desc, eq, sql } from "drizzle-orm";
 import z from "zod";
 import { env } from "@/env";
@@ -8,12 +8,18 @@ import { protectedProcedure } from "../trpc";
 export const morphConvertRouter = {
   tokenizeSentence: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
     if (env.SUDACHI_API_KEY && env.SUDACHI_API_URL) {
-      return tokenizeSentenceWithSudachi(input.sentence);
+      return tokenizeSentenceWithSudachi({
+        sentence: input.sentence,
+        apiUrl: env.SUDACHI_API_URL,
+        apiKey: env.SUDACHI_API_KEY,
+      });
     }
 
     if (env.YAHOO_APP_ID) {
       return tokenizeSentenceWithYahoo(input.sentence);
     }
+
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
   }),
 
   getCustomDict: protectedProcedure.query(async ({ ctx }) => {
@@ -47,17 +53,21 @@ export const morphConvertRouter = {
     }),
 } satisfies TRPCRouterRecord;
 
-async function tokenizeSentenceWithSudachi(
-  sentence: string,
-): Promise<{ lyrics: string[]; readings: string[] } | undefined> {
-  if (!env.SUDACHI_API_URL || !env.SUDACHI_API_KEY) return;
-
+async function tokenizeSentenceWithSudachi({
+  sentence,
+  apiUrl,
+  apiKey,
+}: {
+  sentence: string;
+  apiUrl: string;
+  apiKey: string;
+}): Promise<{ lyrics: string[]; readings: string[] }> {
   try {
-    const response = await fetch(env.SUDACHI_API_URL, {
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": env.SUDACHI_API_KEY,
+        "x-api-key": apiKey,
       },
       body: JSON.stringify({ text: sentence }),
     });

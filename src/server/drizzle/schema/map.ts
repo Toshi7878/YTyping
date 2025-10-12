@@ -7,7 +7,6 @@ import {
   pgTable,
   primaryKey,
   real,
-  serial,
   text,
   timestamp,
   varchar,
@@ -18,7 +17,7 @@ import { Users } from "./user";
 export const categoryEnum = pgEnum("category", ["CSS", "SPEED_SHIFT"]);
 export const thumbnailQualityEnum = pgEnum("thumbnail_quality", ["mqdefault", "maxresdefault"]);
 export const Maps = pgTable("maps", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey(),
   videoId: char("video_id", { length: 11 }).notNull(),
   title: varchar("title", { length: MAX_SHORT_LENGTH }).notNull().default(""),
   artistName: varchar("artist_name", { length: MAX_SHORT_LENGTH }).notNull().default(""),

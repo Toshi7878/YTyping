@@ -11,7 +11,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const SUPABASE_BUCKET = "public";
+const SUPABASE_BUCKET = "ytyping-public";
 
 export const upsertPublicToSupabase = async ({
   key,
