@@ -19,7 +19,7 @@ export const morphConvertRouter = {
       return tokenizeSentenceWithYahoo(input.sentence);
     }
 
-    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "読み変換用APIの環境変数が設定されていません" });
   }),
 
   getCustomDict: protectedProcedure.query(async ({ ctx }) => {

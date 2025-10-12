@@ -19,7 +19,7 @@ export const env = createEnv({
     AUTH_GOOGLE_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
     AUTH_DISCORD_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
     AUTH_DISCORD_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    AUTH_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
+    AUTH_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional().default("auth-secret"),
 
     GCP_AUTH_KEY: z.string().min(1),
 
