@@ -3,6 +3,9 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { vercel } from "@t3-oss/env-nextjs/presets-zod";
 import { z } from "zod/v4";
 
+const isProduction = process.env.VERCEL_ENV === "production";
+const isVercel = Boolean(process.env.VERCEL);
+
 export const env = createEnv({
   extends: [vercel()],
 
@@ -15,11 +18,11 @@ export const env = createEnv({
    * This way you can ensure the app isn't built with invalid env vars.
    */
   server: {
-    AUTH_GOOGLE_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    AUTH_GOOGLE_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    AUTH_DISCORD_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    AUTH_DISCORD_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    AUTH_SECRET: process.env.VERCEL ? z.string().min(1) : z.string().optional().default("auth-secret"),
+    AUTH_GOOGLE_ID: isVercel ? z.string().min(1) : z.string().optional(),
+    AUTH_GOOGLE_SECRET: isVercel ? z.string().min(1) : z.string().optional(),
+    AUTH_DISCORD_ID: isVercel ? z.string().min(1) : z.string().optional(),
+    AUTH_DISCORD_SECRET: isVercel ? z.string().min(1) : z.string().optional(),
+    AUTH_SECRET: isVercel ? z.string().min(1) : z.string().optional().default("auth-secret"),
 
     GCP_AUTH_KEY: z.string().min(1),
 
@@ -30,12 +33,12 @@ export const env = createEnv({
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
     DATABASE_URL: z.string().min(1),
     SUPABASE_SECRET_KEY: z.string().optional(),
-    VERCEL_PROJECT_ID: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    VERCEL_API_TOKEN: process.env.VERCEL ? z.string().min(1) : z.string().optional(),
-    R2_ACCOUNT_ID: process.env.VERCEL_ENV === "production" ? z.string().min(1) : z.string().optional(),
-    R2_ACCESS_KEY_ID: process.env.VERCEL_ENV === "production" ? z.string().min(1) : z.string().optional(),
-    R2_SECRET_ACCESS_KEY: process.env.VERCEL_ENV === "production" ? z.string().min(1) : z.string().optional(),
-    R2_BUCKET_NAME: process.env.VERCEL_ENV === "production" ? z.string().min(1) : z.string().optional(),
+    VERCEL_PROJECT_ID: isVercel ? z.string().min(1) : z.string().optional(),
+    VERCEL_API_TOKEN: isVercel ? z.string().min(1) : z.string().optional(),
+    R2_ACCOUNT_ID: isProduction ? z.string().min(1) : z.string().optional(),
+    R2_ACCESS_KEY_ID: isProduction ? z.string().min(1) : z.string().optional(),
+    R2_SECRET_ACCESS_KEY: isProduction ? z.string().min(1) : z.string().optional(),
+    R2_BUCKET_NAME: isProduction ? z.string().min(1) : z.string().optional(),
   },
 
   /**
