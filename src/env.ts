@@ -24,7 +24,7 @@ export const env = createEnv({
     AUTH_DISCORD_SECRET: isVercel ? z.string().min(1) : z.string().optional(),
     AUTH_SECRET: isVercel ? z.string().min(1) : z.string().optional().default("auth-secret"),
 
-    GCP_AUTH_KEY: z.string().min(1),
+    GCP_AUTH_KEY: z.string().min(1).optional(),
 
     YAHOO_APP_ID: z.string().min(1).optional(),
     SUDACHI_API_KEY: z.string().min(1).optional(),

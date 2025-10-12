@@ -34,6 +34,12 @@ interface GeminiMapInfo {
 
 export const geminiRouter = {
   generateMapInfo: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input }) => {
+    if (!apiKey) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "譜面情報の生成に失敗しました",
+      });
+    }
     const genAI = new GoogleGenerativeAI(apiKey);
 
     const model = genAI.getGenerativeModel({
