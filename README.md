@@ -40,7 +40,6 @@ cp .env.example .env
 
 2. インストールが完了したら、Docker Desktopを起動
 
-
 ## ローカル環境に開発用のデータベースをセットアップする
 
 ```bash
@@ -109,7 +108,7 @@ ytyping.netで使用している読み変換機能より精度は落ちますが
 >
 > アプリケーション名: YTyping
 >
-> サイトURL: http://localhost:3000
+> サイトURL: <http://localhost:3000>
 
 ```code
 YAHOO_APP_ID=<Client ID>
