@@ -80,7 +80,7 @@ YTypingの開発環境用ページが表示されます。
 
 読み変換機能を使用するには、.env ファイルに`YAHOO_APP_ID`を設定する必要があります。
 以下のURLでClient IDを発行後、.env ファイルのYAHOO_APP_IDに発行したClient IDを設定してください。
-ytyping.netで使用している読み変換機能より精度が落ちますが、開発環境で譜面エディターの読み変換が利用可能になります。
+ytyping.netで使用している読み変換機能より精度は落ちますが、開発環境で譜面エディターの読み変換が利用可能になります。
 
 <https://developer.yahoo.co.jp/>
 
