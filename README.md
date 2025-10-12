@@ -1,11 +1,5 @@
 # 開発環境セットアップ手順
 
-## リポジトリをクローンする
-
-```bash
-git clone https://github.com/ytyping/ytyping.git
-```
-
 ## Node.jsをインストールする
 
 <https://nodejs.org/ja/download/>
@@ -14,22 +8,35 @@ git clone https://github.com/ytyping/ytyping.git
 
 <https://pnpm.io/installation>
 
+## 任意のフォルダでコマンドラインを開き、リポジトリをクローンする
+
+```bash
+git clone https://github.com/ytyping/ytyping.git
+```
+
+## リポジトリをクローンしたフォルダに移動する
+
+```bash
+cd ytyping
+```
+
 ## 依存関係をインストールする
 
 ```bash
 pnpm install
 ```
 
-## 環境変数を設定する
+## 環境変数ファイルを作成する (`.env` ファイルをプロジェクトのルートに作成)
 
 ```bash
 cp .env.example .env
 ```
 
-## Dockerをインストールする
+## Docker Desktopをインストールする
 
 <https://docs.docker.com/desktop/#next-steps>
-Install Docker DesktopからOSに合わせてDockerをインストールしてください。
+
+上記URLのInstall Docker Desktopから、OSに合わせてDocker Desktopをインストール
 
 ## ローカル環境に開発用のデータベースをセットアップする
 
@@ -39,7 +46,9 @@ pnpm db:start
 pnpm db:status
 ```
 
-### pnpm db:status でコマンドラインに表示された `Publishable key` と `Secret key` を .env ファイルの `NEXT_PUBLIC_SUPABASE_ANON_KEY` と `SUPABASE_SECRET_KEY` に設定する
+### `.env` ファイルの `NEXT_PUBLIC_SUPABASE_ANON_KEY` と `SUPABASE_SECRET_KEY` を設定
+
+pnpm db:status でコマンドラインに表示されたPublishable keyとSecret keyを `.env` ファイルの `NEXT_PUBLIC_SUPABASE_ANON_KEY` と `SUPABASE_SECRET_KEY` に設定
 
 ```code
 > Publishable key: sb_publishable_<ランダムな文字列>
@@ -67,17 +76,11 @@ YTypingの開発環境用ページが表示されます。
 
 ------------------------------------------------------------------------------------------------------------------
 
-## ローカルデータベースをリセットしてシードデータを挿入する
-
-```bash
-pnpm db:reset
-pnpm db:seed
-```
-
-## 開発環境でエディターの読み変換機能を使用する
+## 開発環境で譜面エディターの読み変換機能を利用可能にする
 
 読み変換機能を使用するには、.env ファイルに`YAHOO_APP_ID`を設定する必要があります。
 以下のURLでClient IDを発行後、.env ファイルのYAHOO_APP_IDに発行したClient IDを設定してください。
+ytyping.netで使用している読み変換機能より精度が落ちますが、開発環境で譜面エディターの読み変換が利用可能になります。
 
 <https://developer.yahoo.co.jp/>
 
@@ -121,7 +124,7 @@ YAHOO_APP_ID=<Client ID>
 
 #### バグ修正・改善提案
 
-1. [GitHub Issues](https://github.com/ytyping/ytyping/issues) で Issue を作成
+1. [GitHub Issues](https://github.com/ytyping/ytyping/issues) で Issue を作成、または、実際に修正を行いプルリクエストを作成 → レビュー → マージ
 
 #### 機能追加
 
