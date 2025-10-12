@@ -36,7 +36,10 @@ cp .env.example .env
 
 <https://docs.docker.com/desktop/#next-steps>
 
-上記URLのInstall Docker Desktopから、OSに合わせてDocker Desktopをインストール
+1. 上記URLのInstall Docker Desktopから、OSに合わせてDocker Desktopをダウンロード
+
+2. インストールが完了したら、Docker Desktopを起動
+
 
 ## ローカル環境に開発用のデータベースをセットアップする
 
