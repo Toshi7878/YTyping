@@ -1,5 +1,4 @@
 "use client";
-import { Loader2 } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { useIsSearchingState } from "@/app/timeline/_lib/atoms";
@@ -46,8 +45,8 @@ export const SearchInputs = () => {
           setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
         }}
         disabled={isSearching}
+        loading={isSearching}
       >
-        {isSearching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         検索
       </Button>
     </div>
