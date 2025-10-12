@@ -7,7 +7,7 @@ import { env } from "./env";
 
 Sentry.init({
   dsn: "https://2024608e4fc3af09de64700fef818657@o4510090185342976.ingest.us.sentry.io/4510090185539584",
-  enabled: env.VERCEL_ENV === "production",
+  enabled: env.NODE_ENV === "production",
   tracesSampleRate: 1,
   enableLogs: true,
   debug: false,

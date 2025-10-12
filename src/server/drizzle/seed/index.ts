@@ -26,6 +26,7 @@ if (!isLocalSupabase) {
 const serviceRoleKey = env.SUPABASE_SECRET_KEY;
 if (!serviceRoleKey) {
   throw new Error(
+    // 開発環境ではSentryを無効化（localhost含む）
     "SUPABASE_SECRET_KEY is required for seeding. " +
       "Please set it in your .env file. " +
       "You can find the service_role key in 'pnpm db:status' output.",
