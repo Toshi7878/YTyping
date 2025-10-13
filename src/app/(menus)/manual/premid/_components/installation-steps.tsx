@@ -4,9 +4,6 @@ import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { H3, LinkText, OList, P } from "@/components/ui/typography";
 import { useUserAgent } from "@/lib/global-atoms";
-import preMidLinks from "@/public/images/manual/premid/premid-link.png";
-import preMidPresence1 from "@/public/images/manual/premid/premid-presence-1.png";
-import preMidPresence2 from "@/public/images/manual/premid/premid-presence-2.png";
 
 const browserLinks: Record<string, { url: Route; text: string }> = {
   Chrome: {
@@ -91,7 +88,7 @@ function PreMidLinkImage() {
   return (
     <Image
       alt="PreMID拡張機能を開いてDiscordアカウントとリンクします。"
-      src={preMidLinks}
+      src="/images/manual/premid/premid-link.png"
       width={250}
       height={0}
       className="border-border mt-2 rounded border"
@@ -106,14 +103,14 @@ function PreMidPresenceImages() {
         width={250}
         height={0}
         alt="スクリーンショット1"
-        src={preMidPresence1}
+        src="/images/manual/premid/premid-presence-1.png"
         className="border-border rounded border"
       />
       <Image
         width={250}
         height={0}
         alt="スクリーンショット2"
-        src={preMidPresence2}
+        src="/images/manual/premid/premid-presence-2.png"
         className="border-border rounded border"
       />
     </div>

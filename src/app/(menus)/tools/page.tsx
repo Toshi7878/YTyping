@@ -1,5 +1,6 @@
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, LinkText, P, Small, UList } from "@/components/ui/typography";
+import { env } from "@/env";
 import { ByUser } from "./_components/by-user";
 
 const TOOLS = [
@@ -39,10 +40,12 @@ export default function Page() {
                     <LinkText href={tool.href}>
                       <Large>{tool.title}</Large>
                     </LinkText>
-                    <Small className="flex">
-                      <span>by.</span>
-                      <ByUser userId={tool.byUserId} />
-                    </Small>
+                    {env.VERCEL && (
+                      <Small className="flex">
+                        <span>by.</span>
+                        <ByUser userId={tool.byUserId} />
+                      </Small>
+                    )}
                   </div>
                   <P>{tool.description}</P>
                 </div>
