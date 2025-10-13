@@ -1,0 +1,15 @@
+# SoundEngineFree > 音質 > グラフィックEQ設定
+
+## type.wav
+[Effector]
+EffectorName=Graphic EQ
+Parameter1=0
+Parameter2=0.383997
+Parameter3=0.383987
+Parameter4=1.53601
+Parameter5=1.152
+Parameter6=1.15201
+Parameter7=-0.768002
+Parameter8=-0.768003
+Parameter9=-3.072
+Parameter10=0.5
