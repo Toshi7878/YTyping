@@ -40,35 +40,6 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
     return () => removeTimer();
   }, []);
 
-  // const memorizedYouTubePlayer = useMemo(() => {
-  //   return (
-  //     <ReactPlayer
-  //       className={cn("mt-2 select-none", className)}
-  //       width={width}
-  //       height={height}
-  //       id="yt_player"
-  //       src={`https://www.youtube.com/watch?v=${videoId}`}
-  //       controls={false}
-  //       playsInline={true}
-  //       config={{
-  //         youtube: {
-  //           enablejsapi: 1,
-  //           rel: 0,
-  //           fs: 0,
-  //         },
-  //       }}
-  //       onLoadedMetadata={({ target }) => onReady((target as unknown as { api: YT.Player }).api)}
-  //       // onStart / onPlay / onPlaying
-  //       onStart={({ target }) => onStart((target as unknown as { api: YT.Player }).api)}
-  //       onPlaying={() => onPlay()}
-  //       onPause={() => onPause()}
-  //       onEnded={({ target }) => onEnd((target as unknown as { api: YT.Player }).api)}
-  //       onSeeked={({ target }) => onSeeked((target as unknown as { api: YT.Player }).api)}
-  //       onRateChange={({ target }) => onRateChange((target as unknown as { api: YT.Player }).api)}
-  //     />
-  //   );
-  // }, [videoId, className, width, height]);
-
   const onStateChange = useCallback(
     (event: YouTubeEvent) => {
       if (event.data === YT.PlayerState.BUFFERING) {

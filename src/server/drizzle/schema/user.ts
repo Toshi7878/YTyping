@@ -132,3 +132,15 @@ export const UserDailyTypeCounts = pgTable(
   },
   (t) => [primaryKey({ columns: [t.userId, t.createdAt] })],
 );
+
+export const UserMapCompletionPlayCounts = pgTable(
+  "user_map_completion_play_counts",
+  {
+    userId: integer("user_id")
+      .notNull()
+      .references(() => Users.id, { onDelete: "cascade" }),
+    mapId: integer("map_id").notNull(),
+    count: integer("count").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.mapId] })],
+);

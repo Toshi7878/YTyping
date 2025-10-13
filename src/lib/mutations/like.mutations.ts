@@ -173,19 +173,21 @@ function setNotificationsOptimistic(
       ...old,
       pages: old.pages.map((page) => ({
         ...page,
-        notifications: page.notifications.map((n) =>
-          n.map.id === mapId
+        items: page.items.map((notification) =>
+          notification.map.id === mapId
             ? {
-                ...n,
+                ...notification,
                 map: {
-                  ...n.map,
+                  ...notification.map,
                   like: {
                     hasLiked: optimisticState,
-                    count: optimisticState ? n.map.like.count + 1 : Math.max(0, n.map.like.count - 1),
+                    count: optimisticState
+                      ? notification.map.like.count + 1
+                      : Math.max(0, notification.map.like.count - 1),
                   },
                 } satisfies MapListItem,
               }
-            : n,
+            : notification,
         ),
       })),
     };
@@ -205,10 +207,13 @@ function setNotificationsServer(
       ...old,
       pages: old.pages.map((page) => ({
         ...page,
-        notifications: page.notifications.map((map) =>
-          map.map.id === mapId
-            ? { ...map, map: { ...map.map, like: { hasLiked, count: likeCount } } satisfies MapListItem }
-            : map,
+        items: page.items.map((notification) =>
+          notification.map.id === mapId
+            ? {
+                ...notification,
+                map: { ...notification.map, like: { hasLiked, count: likeCount } } satisfies MapListItem,
+              }
+            : notification,
         ),
       })),
     };

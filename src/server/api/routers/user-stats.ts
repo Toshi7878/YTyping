@@ -2,7 +2,13 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
-import { Maps, UserDailyTypeCounts, UserOptions, UserStats } from "@/server/drizzle/schema";
+import {
+  Maps,
+  UserDailyTypeCounts,
+  UserMapCompletionPlayCounts,
+  UserOptions,
+  UserStats,
+} from "@/server/drizzle/schema";
 import {
   IncrementImeTypeCountStatsSchema,
   IncrementTypingCountStatsSchema,
@@ -43,6 +49,21 @@ export const userStatsRouter = {
 
     return userStats;
   }),
+  incrementMapCompletionPlayCount: publicProcedure
+    .input(z.object({ mapId: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const { db, user } = ctx;
+      if (!user) return;
+      const { mapId } = input;
+
+      await db
+        .insert(UserMapCompletionPlayCounts)
+        .values({ userId: user.id, mapId: mapId, count: 1 })
+        .onConflictDoUpdate({
+          target: [UserMapCompletionPlayCounts.userId, UserMapCompletionPlayCounts.mapId],
+          set: { count: sql`${UserMapCompletionPlayCounts.count} + 1` },
+        });
+    }),
   incrementPlayCountStats: publicProcedure
     .meta({
       openapi: {

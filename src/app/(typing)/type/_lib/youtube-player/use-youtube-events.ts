@@ -1,4 +1,7 @@
+import { useMutation } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { useReadVolume } from "@/lib/global-atoms";
+import { useTRPC } from "@/trpc/provider";
 import { windowFocus } from "@/utils/window-focus";
 import {
   useGameUtilityReferenceParams,
@@ -108,6 +111,12 @@ export const useOnEnd = () => {
   const setScene = useSetScene();
   const { readLineProgress, readTotalProgress } = useProgress();
   const readGameStateUtils = useReadGameUtilParams();
+  const trpc = useTRPC();
+  const { id: mapId } = useParams<{ id: string }>();
+
+  const incrementUserMapCompletionPlayCount = useMutation(
+    trpc.userStats.incrementMapCompletionPlayCount.mutationOptions(),
+  );
   return () => {
     console.log("終了");
 
@@ -121,6 +130,7 @@ export const useOnEnd = () => {
 
     if (scene === "play") {
       setScene("play_end");
+      incrementUserMapCompletionPlayCount.mutate({ mapId: Number(mapId) });
     } else if (scene === "practice") {
       setScene("practice_end");
     } else if (scene === "replay") {

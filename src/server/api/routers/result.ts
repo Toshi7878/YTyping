@@ -12,6 +12,7 @@ import {
   MapDifficulties,
   MapLikes,
   Maps,
+  NotificationOverTakes,
   Notifications,
   ResultClaps,
   ResultStatuses,
@@ -333,29 +334,34 @@ const cleanupOutdatedOvertakeNotifications = async ({
   if (!myResult) return;
 
   const overtakeNotifications = await tx
-    .select({ visitorId: Notifications.visitorId, visitorScore: ResultStatuses.score })
-    .from(Notifications)
-    .innerJoin(Results, and(eq(Results.userId, Notifications.visitorId), eq(Results.mapId, Notifications.mapId)))
+    .select({
+      notificationId: NotificationOverTakes.notificationId,
+      visitorId: NotificationOverTakes.visitorId,
+      visitorScore: ResultStatuses.score,
+    })
+    .from(NotificationOverTakes)
+    .innerJoin(Notifications, eq(Notifications.id, NotificationOverTakes.notificationId))
+    .innerJoin(
+      Results,
+      and(eq(Results.userId, NotificationOverTakes.visitorId), eq(Results.mapId, NotificationOverTakes.mapId)),
+    )
     .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
     .where(
-      and(eq(Notifications.visitedId, userId), eq(Notifications.mapId, mapId), eq(Notifications.action, "OVER_TAKE")),
+      and(
+        eq(NotificationOverTakes.visitedId, userId),
+        eq(NotificationOverTakes.mapId, mapId),
+        eq(Notifications.action, "OVER_TAKE"),
+      ),
     );
 
-  const notificationsToDelete = overtakeNotifications
+  // 自分の最新スコア以下の訪問者の通知IDを取得
+  const notificationIdsToDelete = overtakeNotifications
     .filter((notification) => notification.visitorScore <= myResult.score)
-    .map((notification) => notification.visitorId);
+    .map((notification) => notification.notificationId);
 
-  if (notificationsToDelete.length > 0) {
-    await tx
-      .delete(Notifications)
-      .where(
-        and(
-          inArray(Notifications.visitorId, notificationsToDelete),
-          eq(Notifications.visitedId, userId),
-          eq(Notifications.mapId, mapId),
-          eq(Notifications.action, "OVER_TAKE"),
-        ),
-      );
+  if (notificationIdsToDelete.length > 0) {
+    // Notificationsを削除すると、NotificationOverTakesもカスケード削除される
+    await tx.delete(Notifications).where(inArray(Notifications.id, notificationIdsToDelete));
   }
 };
 
@@ -371,31 +377,58 @@ const updateRankingsAndNotifyOvertakes = async ({
   rankedUsers: { userId: number; rank: number; score: number }[];
 }) => {
   for (let index = 0; index < rankedUsers.length; index++) {
-    const currentUser = rankedUsers[index];
-    const updatedRank = index + 1;
-    const previousRank = currentUser.rank;
+    const rankedUser = rankedUsers[index];
+    const nextRank = index + 1;
+    const prevRank = rankedUser.rank;
 
     await tx
       .update(Results)
-      .set({ rank: updatedRank })
-      .where(and(eq(Results.mapId, mapId), eq(Results.userId, currentUser.userId)));
+      .set({ rank: nextRank })
+      .where(and(eq(Results.mapId, mapId), eq(Results.userId, rankedUser.userId)));
 
-    const isNotCurrentUser = currentUser.userId !== userId;
-    if (isNotCurrentUser && previousRank !== null && previousRank <= 5 && previousRank !== updatedRank) {
-      await tx
-        .insert(Notifications)
-        .values({
-          id: nanoid(10),
-          visitorId: userId,
-          visitedId: currentUser.userId,
-          mapId,
+    const isOtherUser = rankedUser.userId !== userId;
+    if (isOtherUser && prevRank <= 5 && prevRank !== nextRank) {
+      const { userId: recipientId } = rankedUser;
+      const notificationId = nanoid(10);
+
+      const existingNotificationId = await tx
+        .select({ notificationId: NotificationOverTakes.notificationId })
+        .from(NotificationOverTakes)
+        .where(
+          and(
+            eq(NotificationOverTakes.visitorId, userId),
+            eq(NotificationOverTakes.visitedId, recipientId),
+            eq(NotificationOverTakes.mapId, mapId),
+          ),
+        )
+        .limit(1)
+        .then((res) => res[0]?.notificationId ?? null);
+
+      if (existingNotificationId) {
+        await tx
+          .update(Notifications)
+          .set({ checked: false, updatedAt: new Date() })
+          .where(eq(Notifications.id, existingNotificationId));
+
+        await tx
+          .update(NotificationOverTakes)
+          .set({ prevRank })
+          .where(eq(NotificationOverTakes.notificationId, existingNotificationId));
+      } else {
+        await tx.insert(Notifications).values({
+          id: notificationId,
+          recipientId,
           action: "OVER_TAKE",
-          oldRank: previousRank,
-        })
-        .onConflictDoUpdate({
-          target: [Notifications.visitorId, Notifications.visitedId, Notifications.mapId, Notifications.action],
-          set: { checked: false, createdAt: new Date(), oldRank: previousRank ?? null },
         });
+
+        await tx.insert(NotificationOverTakes).values({
+          notificationId,
+          visitorId: userId,
+          visitedId: recipientId,
+          mapId,
+          prevRank,
+        });
+      }
     }
   }
 };

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, check, integer, pgTable, primaryKey, real, timestamp, unique } from "drizzle-orm/pg-core";
+import { boolean, check, integer, pgTable, primaryKey, real, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { Maps } from "./map";
 import { Users } from "./user";
 
@@ -17,7 +17,7 @@ export const Results = pgTable(
     clapCount: integer("clap_count").notNull().default(0),
     rank: integer("rank").notNull().default(1),
   },
-  (t) => [unique("uq_user_id_map_id").on(t.userId, t.mapId)],
+  (t) => [uniqueIndex("uq_user_id_map_id").on(t.userId, t.mapId)],
 );
 
 export const ImeResults = pgTable("ime_results", {

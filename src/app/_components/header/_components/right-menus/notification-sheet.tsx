@@ -64,13 +64,16 @@ const NotificationContent = () => {
         <div className="h-full space-y-4">
           {data?.pages.length ? (
             data.pages.map((page) => {
-              return page.notifications.map((notify) => {
-                const { map } = notify;
+              return page.items.map((notification) => {
+                const { map } = notification;
 
                 return (
-                  <div key={`${notify.visitor.id}-${notify.map.id}`}>
-                    <NotificationMapCard notify={notify} map={map} />
-                    <DateDistanceText date={notify.created_at} className="text-muted-foreground flex justify-end" />
+                  <div key={`${notification.visitor.id}-${notification.map.id}`}>
+                    <NotificationMapCard notification={notification} map={map} />
+                    <DateDistanceText
+                      date={notification.updatedAt}
+                      className="text-muted-foreground flex justify-end"
+                    />
                   </div>
                 );
               });

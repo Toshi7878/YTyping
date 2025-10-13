@@ -12,23 +12,23 @@ import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { UserNameLinkText } from "../text/user-name-link-text";
 
 interface NotificationMapCardProps {
-  notify: RouterOutPuts["notification"]["getInfinite"]["notifications"][number];
+  notification: RouterOutPuts["notification"]["getInfinite"]["items"][number];
   map: MapListItem;
 }
 
-export const NotificationMapCard = ({ notify, map }: NotificationMapCardProps) => {
+export const NotificationMapCard = ({ notification, map }: NotificationMapCardProps) => {
   return (
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
       <CardHeader className="bg-header-background rounded-t-md px-2 py-1.5 text-sm">
         <span className="flex flex-wrap items-center gap-1">
           <UserNameLinkText
             className="text-header-foreground/80 hover:text-header-foreground underline"
-            userId={notify.visitor.id}
-            userName={notify.visitor.name}
+            userId={notification.visitor.id}
+            userName={notification.visitor.name}
           />
           <span>
-            さんがスコア {notify.visitor.score - notify.myResult.score} 差で {Number(notify.myResult.old_rank)}位
-            の記録を抜かしました
+            さんがスコア {notification.visitor.score - notification.myResult.score} 差で{" "}
+            {Number(notification.myResult.prevRank)}位 の記録を抜かしました
           </span>
         </span>
       </CardHeader>

@@ -1,11 +1,12 @@
 import { relations } from "drizzle-orm/relations";
 
 import { MapDifficulties, MapLikes, Maps } from "./map";
-import { Notifications } from "./notification";
+import { NotificationOverTakes, Notifications } from "./notification";
 import { ImeResults, ResultClaps, ResultStatuses, Results } from "./result";
 import {
   UserDailyTypeCounts,
   UserImeTypingOptions,
+  UserMapCompletionPlayCounts,
   UserOptions,
   UserProfiles,
   UserStats,
@@ -19,7 +20,7 @@ export const UsersRelations = relations(Users, ({ many, one }) => {
     results: many(Results),
     resultClaps: many(ResultClaps),
     mapLikes: many(MapLikes),
-    notificationsAsVisitor: many(Notifications, { relationName: "visitor" }),
+    notificationOverTakesAsVisitor: many(NotificationOverTakes, { relationName: "visitor" }),
     typingOption: one(UserTypingOptions, {
       fields: [Users.id],
       references: [UserTypingOptions.userId],
@@ -37,6 +38,7 @@ export const UsersRelations = relations(Users, ({ many, one }) => {
       references: [UserProfiles.userId],
     }),
     userDailyTypeCounts: many(UserDailyTypeCounts),
+    userMapCompletionPlayCounts: many(UserMapCompletionPlayCounts),
     userImeTypingOptions: one(UserImeTypingOptions, {
       fields: [Users.id],
       references: [UserImeTypingOptions.userId],
@@ -53,12 +55,13 @@ export const MapsRelations = relations(Maps, ({ one, many }) => ({
   }),
   results: many(Results),
   mapLikes: many(MapLikes),
-  notifications: many(Notifications),
+  notificationOverTakes: many(NotificationOverTakes),
   difficulty: one(MapDifficulties, {
     fields: [Maps.id],
     references: [MapDifficulties.mapId],
   }),
   imeResults: many(ImeResults),
+  userMapCompletionPlayCounts: many(UserMapCompletionPlayCounts),
 }));
 
 export const MapDifficultiesRelations = relations(MapDifficulties, ({ one }) => ({
@@ -87,8 +90,8 @@ export const ResultsRelations = relations(Results, ({ one, many }) => ({
     references: [ResultStatuses.resultId],
   }),
   claps: many(ResultClaps),
-  notificationsAsVisitor: many(Notifications, { relationName: "VisitorResult" }),
-  notificationsAsVisited: many(Notifications, { relationName: "VisitedResult" }),
+  notificationOverTakesAsVisitor: many(NotificationOverTakes, { relationName: "VisitorResult" }),
+  notificationOverTakesAsVisited: many(NotificationOverTakes, { relationName: "VisitedResult" }),
 }));
 
 export const ImeResultsRelations = relations(ImeResults, ({ one }) => ({
@@ -109,19 +112,33 @@ export const ResultClapsRelations = relations(ResultClaps, ({ one }) => ({
 }));
 
 export const NotificationsRelations = relations(Notifications, ({ one }) => ({
+  overTake: one(NotificationOverTakes, {
+    fields: [Notifications.id],
+    references: [NotificationOverTakes.notificationId],
+  }),
+}));
+
+export const NotificationOverTakesRelations = relations(NotificationOverTakes, ({ one }) => ({
+  notification: one(Notifications, {
+    fields: [NotificationOverTakes.notificationId],
+    references: [Notifications.id],
+  }),
   visitor: one(Users, {
-    fields: [Notifications.visitorId],
+    fields: [NotificationOverTakes.visitorId],
     references: [Users.id],
     relationName: "visitor",
   }),
-  map: one(Maps, { fields: [Notifications.mapId], references: [Maps.id] }),
+  map: one(Maps, {
+    fields: [NotificationOverTakes.mapId],
+    references: [Maps.id],
+  }),
   visitorResult: one(Results, {
-    fields: [Notifications.visitorId, Notifications.mapId],
+    fields: [NotificationOverTakes.visitorId, NotificationOverTakes.mapId],
     references: [Results.userId, Results.mapId],
     relationName: "VisitorResult",
   }),
   visitedResult: one(Results, {
-    fields: [Notifications.visitedId, Notifications.mapId],
+    fields: [NotificationOverTakes.visitedId, NotificationOverTakes.mapId],
     references: [Results.userId, Results.mapId],
     relationName: "VisitedResult",
   }),
@@ -157,5 +174,16 @@ export const UserDailyTypeCountsRelations = relations(UserDailyTypeCounts, ({ on
   user: one(Users, {
     fields: [UserDailyTypeCounts.userId],
     references: [Users.id],
+  }),
+}));
+
+export const UserMapCompletionPlayCountsRelations = relations(UserMapCompletionPlayCounts, ({ one }) => ({
+  user: one(Users, {
+    fields: [UserMapCompletionPlayCounts.userId],
+    references: [Users.id],
+  }),
+  map: one(Maps, {
+    fields: [UserMapCompletionPlayCounts.mapId],
+    references: [Maps.id],
   }),
 }));

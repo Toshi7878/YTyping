@@ -1,13 +1,26 @@
-import { boolean, foreignKey, integer, pgEnum, pgTable, timestamp, unique, varchar } from "drizzle-orm/pg-core";
+import { boolean, foreignKey, integer, pgEnum, pgTable, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 import { Maps } from "./map";
 import { Results } from "./result";
 import { Users } from "./user";
 
 export const actionEnum = pgEnum("action", ["LIKE", "OVER_TAKE"]);
-export const Notifications = pgTable(
-  "notifications",
+
+export const Notifications = pgTable("notifications", {
+  id: varchar("id").primaryKey(),
+  recipientId: integer("recipient_id")
+    .notNull()
+    .references(() => Users.id, { onDelete: "cascade" }),
+  action: actionEnum("action").notNull(),
+  checked: boolean("checked").notNull().default(false),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const NotificationOverTakes = pgTable(
+  "notification_over_takes",
   {
-    id: varchar("id").primaryKey(),
+    notificationId: varchar("notification_id")
+      .primaryKey()
+      .references(() => Notifications.id, { onDelete: "cascade" }),
     visitorId: integer("visitor_id")
       .notNull()
       .references(() => Users.id, { onDelete: "cascade" }),
@@ -15,23 +28,20 @@ export const Notifications = pgTable(
     mapId: integer("map_id")
       .notNull()
       .references(() => Maps.id, { onDelete: "cascade" }),
-    action: actionEnum("action").notNull().default("OVER_TAKE"),
-    oldRank: integer("old_rank"),
-    checked: boolean("checked").notNull().default(false),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    prevRank: integer("prev_rank"),
   },
   (t) => [
     foreignKey({
       columns: [t.visitorId, t.mapId],
       foreignColumns: [Results.userId, Results.mapId],
-      name: "notifications_visitor_result_fk",
+      name: "notification_over_takes_visitor_result_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [t.visitedId, t.mapId],
       foreignColumns: [Results.userId, Results.mapId],
-      name: "notifications_visited_result_fk",
+      name: "notification_over_takes_visited_result_fk",
     }).onDelete("cascade"),
 
-    unique("uq_notifications_visitor_visited_map_action").on(t.visitorId, t.visitedId, t.mapId, t.action),
+    uniqueIndex("uq_overtake_visitor_id_visited_id_map_id").on(t.visitorId, t.visitedId, t.mapId),
   ],
 );
