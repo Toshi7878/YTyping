@@ -389,7 +389,6 @@ const updateRankingsAndNotifyOvertakes = async ({
     const isOtherUser = rankedUser.userId !== userId;
     if (isOtherUser && prevRank <= 5 && prevRank !== nextRank) {
       const { userId: recipientId } = rankedUser;
-      const notificationId = nanoid(10);
 
       const existingNotificationId = await tx
         .select({ notificationId: NotificationOverTakes.notificationId })
@@ -415,6 +414,8 @@ const updateRankingsAndNotifyOvertakes = async ({
           .set({ prevRank })
           .where(eq(NotificationOverTakes.notificationId, existingNotificationId));
       } else {
+        const notificationId = nanoid(10);
+
         await tx.insert(Notifications).values({
           id: notificationId,
           recipientId,
