@@ -3,14 +3,14 @@ import { Maps } from "./map";
 import { Results } from "./result";
 import { Users } from "./user";
 
-export const actionEnum = pgEnum("action", ["LIKE", "CLAP", "OVER_TAKE"]);
+export const notificationTypeEnum = pgEnum("type", ["LIKE", "CLAP", "OVER_TAKE"]);
 
 export const Notifications = pgTable("notifications", {
   id: varchar("id").primaryKey(),
   recipientId: integer("recipient_id")
     .notNull()
     .references(() => Users.id, { onDelete: "cascade" }),
-  type: actionEnum("type").notNull(),
+  type: notificationTypeEnum("type").notNull(),
   checked: boolean("checked").notNull().default(false),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -38,8 +38,12 @@ export const NotificationClaps = pgTable(
     notificationId: varchar("notification_id")
       .primaryKey()
       .references(() => Notifications.id, { onDelete: "cascade" }),
-    clapperId: integer("clapper_id").references(() => Users.id, { onDelete: "cascade" }),
-    resultId: integer("result_id").references(() => Results.id, { onDelete: "cascade" }),
+    clapperId: integer("clapper_id")
+      .notNull()
+      .references(() => Users.id, { onDelete: "cascade" }),
+    resultId: integer("result_id")
+      .notNull()
+      .references(() => Results.id, { onDelete: "cascade" }),
   },
   (t) => [uniqueIndex("uq_notification_claps_clapper_id_result_id").on(t.clapperId, t.resultId)],
 );

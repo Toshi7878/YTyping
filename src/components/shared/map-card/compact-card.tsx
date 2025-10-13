@@ -11,24 +11,22 @@ import { Badge } from "../../ui/badge";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { UserNameLinkText } from "../text/user-name-link-text";
 
-interface NotificationMapCardProps {
-  notification: RouterOutPuts["notification"]["getInfinite"]["items"][number];
-  map: MapListItem;
-}
+type Notification = NonNullable<RouterOutPuts["notification"]["getInfinite"]["items"][number]>;
+type OverTakeNotification = Extract<Notification, { type: "OVER_TAKE" }>;
 
-export const NotificationMapCard = ({ notification, map }: NotificationMapCardProps) => {
+export const OverTakeNotificationMapCard = ({ notification }: { notification: OverTakeNotification }) => {
+  const { map, visitor, myResult } = notification;
   return (
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
       <CardHeader className="bg-header-background rounded-t-md px-2 py-1.5 text-sm">
         <span className="flex flex-wrap items-center gap-1">
           <UserNameLinkText
             className="text-header-foreground/80 hover:text-header-foreground underline"
-            userId={notification.visitor.id}
-            userName={notification.visitor.name}
+            userId={visitor.id}
+            userName={visitor.name}
           />
           <span>
-            さんがスコア {notification.visitor.score - notification.myResult.score} 差で{" "}
-            {Number(notification.myResult.prevRank)}位 の記録を抜かしました
+            さんがスコア {visitor.score - myResult.score} 差で {Number(myResult.prevRank)}位 の記録を抜かしました
           </span>
         </span>
       </CardHeader>

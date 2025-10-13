@@ -24,8 +24,34 @@ export const notificationRouter = {
 
       const { page, offset } = pager.parse(input.cursor);
 
+      const mapQuery = {
+        columns: {
+          creatorComment: false,
+          category: false,
+          createdAt: false,
+          creatorId: false,
+          playCount: false,
+          tags: false,
+        },
+        with: {
+          creator: { columns: { id: true, name: true } },
+          difficulty: { columns: { romaKpmMedian: true, romaKpmMax: true } },
+          mapLikes: {
+            where: and(eq(MapLikes.userId, user.id)),
+            columns: { hasLiked: true },
+            limit: 1,
+          },
+          results: {
+            where: and(eq(Results.userId, user.id)),
+            columns: { rank: true, updatedAt: true },
+            limit: 1,
+          },
+        },
+      } as const;
+
       const notifications = await db.query.Notifications.findMany({
         columns: {
+          id: true,
           type: true,
           updatedAt: true,
         },
@@ -33,32 +59,31 @@ export const notificationRouter = {
           overTake: {
             with: {
               visitor: { columns: { id: true, name: true } },
-              map: {
-                columns: {
-                  creatorComment: false,
-                  category: false,
-                  createdAt: false,
-                  creatorId: false,
-                  playCount: false,
-                  tags: false,
-                },
+              map: mapQuery,
+              visitedResult: { with: { status: { columns: { score: true } } } },
+              visitorResult: { with: { status: { columns: { score: true } } } },
+            },
+          },
+          like: {
+            with: {
+              liker: { columns: { id: true, name: true } },
+              map: mapQuery,
+            },
+          },
+          clap: {
+            columns: {},
+            with: {
+              clapper: { columns: { id: true, name: true } },
+              result: {
                 with: {
-                  creator: { columns: { id: true, name: true } },
-                  difficulty: { columns: { romaKpmMedian: true, romaKpmMax: true } },
-                  mapLikes: {
-                    where: and(eq(MapLikes.userId, user.id)),
-                    columns: { hasLiked: true },
-                    limit: 1,
-                  },
-                  results: {
-                    where: and(eq(Results.userId, user.id)),
-                    columns: { rank: true, updatedAt: true },
-                    limit: 1,
+                  map: mapQuery,
+                  status: {
+                    columns: {
+                      minPlaySpeed: true,
+                    },
                   },
                 },
               },
-              visitedResult: { with: { status: { columns: { score: true } } } },
-              visitorResult: { with: { status: { columns: { score: true } } } },
             },
           },
         },
@@ -68,12 +93,35 @@ export const notificationRouter = {
         offset,
       });
 
+      const toMapListItem = (map: (typeof notifications)[number]["overTake"]["map"], previewSpeed?: number) => {
+        return {
+          id: map.id,
+          updatedAt: map.updatedAt,
+          media: {
+            videoId: map.videoId,
+            previewTime: map.previewTime,
+            thumbnailQuality: map.thumbnailQuality,
+            previewSpeed,
+          },
+          info: { title: map.title, artistName: map.artistName, source: map.musicSource, duration: map.duration },
+          creator: { id: map.creator.id, name: map.creator.name },
+          difficulty: { romaKpmMedian: map.difficulty.romaKpmMedian, romaKpmMax: map.difficulty.romaKpmMax },
+          like: { count: map.likeCount, hasLiked: map.mapLikes?.[0]?.hasLiked ?? false },
+          ranking: {
+            count: map.rankingCount,
+            myRank: map.results?.[0]?.rank ?? null,
+            myRankUpdatedAt: map.results?.[0]?.updatedAt ?? null,
+          },
+        } satisfies MapListItem;
+      };
+
       const items = notifications
         .map((notification) => {
           if (notification.type === "OVER_TAKE" && notification.overTake) {
             const { overTake } = notification;
             return {
-              action: "OVER_TAKE" as const,
+              id: notification.id,
+              type: notification.type,
               updatedAt: notification.updatedAt,
               visitor: {
                 id: overTake.visitorId,
@@ -84,47 +132,30 @@ export const notificationRouter = {
                 prevRank: overTake.prevRank,
                 score: overTake.visitedResult.status.score,
               },
-              map: {
-                id: overTake.map.id,
-                updatedAt: overTake.map.updatedAt,
-                media: {
-                  videoId: overTake.map.videoId,
-                  previewTime: overTake.map.previewTime,
-                  thumbnailQuality: overTake.map.thumbnailQuality,
-                },
-                info: {
-                  title: overTake.map.title,
-                  artistName: overTake.map.artistName,
-                  source: overTake.map.musicSource,
-                  duration: overTake.map.duration,
-                },
-                creator: overTake.map.creator,
-                difficulty: {
-                  romaKpmMedian: overTake.map.difficulty.romaKpmMedian,
-                  romaKpmMax: overTake.map.difficulty.romaKpmMax,
-                },
-                like: {
-                  count: overTake.map.likeCount,
-                  hasLiked: overTake.map.mapLikes?.[0]?.hasLiked ?? false,
-                },
-                ranking: {
-                  count: overTake.map.rankingCount,
-                  myRank: overTake.map.results?.[0]?.rank ?? null,
-                  myRankUpdatedAt: overTake.map.results?.[0]?.updatedAt ?? null,
-                },
-              } satisfies MapListItem,
+              map: toMapListItem(overTake.map),
             };
           }
 
-          // 将来の拡張: LIKE通知
-          // if (notification.action === "LIKE" && notification.like) {
-          //   return {
-          //     action: "LIKE" as const,
-          //     createdAt: notification.createdAt,
-          //     checked: notification.checked,
-          //     ...
-          //   };
-          // }
+          if (notification.type === "LIKE" && notification.like) {
+            const { like } = notification;
+
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              map: toMapListItem(like.map),
+            };
+          }
+          if (notification.type === "CLAP" && notification.clap) {
+            const { clap } = notification;
+
+            return {
+              id: notification.id,
+              type: notification.type,
+              updatedAt: notification.updatedAt,
+              map: toMapListItem(clap.result.map, clap.result.status.minPlaySpeed),
+            };
+          }
 
           // フォールバック（通常は到達しない）
           throw new Error(`Unknown notification action: ${notification.type}`);
