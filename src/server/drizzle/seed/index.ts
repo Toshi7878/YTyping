@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse/sync";
+import { sql as rawSql } from "drizzle-orm";
 import { env } from "@/env";
 import { db } from "../client";
 import { SUPABASE_PUBLIC_BUCKET } from "../const";
@@ -35,7 +36,7 @@ if (!serviceRoleKey) {
 
 console.log("🔧 Running seed script with local Supabase:", supabaseUrl);
 
-const supabase = createClient(supabaseUrl, serviceRoleKey);
+const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
 // CSV パーサー
 function parseCSV(csvText: string): Record<string, string>[] {
@@ -99,17 +100,17 @@ async function main() {
   const __dirname = dirname(__filename);
   const tableDir = join(__dirname, "table");
   const mapJsonDir = join(__dirname, "map-json");
+  const sqlDir = join(__dirname, "sql");
 
   console.log("\n📦 Creating Supabase Storage bucket...");
-  const { error: bucketError } = await supabase.storage.createBucket(SUPABASE_PUBLIC_BUCKET, {
+  await supabaseAdmin.storage.createBucket(SUPABASE_PUBLIC_BUCKET, {
     public: true,
   });
 
-  if (bucketError && !bucketError.message.includes("already exists")) {
-    console.error("❌ Failed to create bucket:", bucketError);
-    throw bucketError;
-  }
-  console.log("✅ Bucket ready:", SUPABASE_PUBLIC_BUCKET);
+  const policyFilePath = join(sqlDir, "apply-bucket-policy.sql");
+  const policySql = await readFile(policyFilePath, "utf-8");
+  const cleanedSql = policySql.replace(/public-bucket-name/g, SUPABASE_PUBLIC_BUCKET);
+  await db.execute(rawSql.raw(cleanedSql));
 
   // 2. Users テーブルにシードデータを挿入
   console.log("\n👥 Seeding users table...");
@@ -147,7 +148,7 @@ async function main() {
     const fileContent = await readFile(filePath, "utf-8");
     const storagePath = `map-json/${filename}`;
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabaseAdmin.storage
       .from(SUPABASE_PUBLIC_BUCKET)
       .upload(storagePath, fileContent, {
         contentType: "application/json",

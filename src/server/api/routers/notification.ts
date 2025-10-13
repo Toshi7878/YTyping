@@ -65,6 +65,7 @@ export const notificationRouter = {
             },
           },
           like: {
+            columns: {},
             with: {
               liker: { columns: { id: true, name: true } },
               map: mapQuery,
@@ -143,6 +144,7 @@ export const notificationRouter = {
               id: notification.id,
               type: notification.type,
               updatedAt: notification.updatedAt,
+              liker: like.liker,
               map: toMapListItem(like.map),
             };
           }
@@ -153,6 +155,7 @@ export const notificationRouter = {
               id: notification.id,
               type: notification.type,
               updatedAt: notification.updatedAt,
+              clapper: clap.clapper,
               map: toMapListItem(clap.result.map, clap.result.status.minPlaySpeed),
             };
           }

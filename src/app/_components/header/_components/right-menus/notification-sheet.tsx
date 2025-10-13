@@ -2,7 +2,11 @@
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot } from "lucide-react";
-import { OverTakeNotificationMapCard } from "@/components/shared/map-card/compact-card";
+import {
+  ClapNotificationMapCard,
+  LikeNotificationMapCard,
+  OverTakeNotificationMapCard,
+} from "@/components/shared/map-card/compact-card";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -68,8 +72,8 @@ const NotificationContent = () => {
                 return (
                   <div key={notification.id}>
                     {notification.type === "OVER_TAKE" && <OverTakeNotificationMapCard notification={notification} />}
-                    {/* {notification.type === "LIKE" && <LikeNotificationMapCard notification={notification} />} */}
-                    {/* {notification.type === "CLAP" && <ClapNotificationMapCard notification={notification} />} */}
+                    {notification.type === "LIKE" && <LikeNotificationMapCard notification={notification} />}
+                    {notification.type === "CLAP" && <ClapNotificationMapCard notification={notification} />}
                     <DateDistanceText
                       date={notification.updatedAt}
                       className="text-muted-foreground flex justify-end"

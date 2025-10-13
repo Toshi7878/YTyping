@@ -1,7 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
+import { nanoid } from "nanoid";
 import z from "zod";
-import { MapLikes, Maps } from "@/server/drizzle/schema";
+import { MapLikes, Maps, NotificationLikes, Notifications } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../trpc";
 
 export const likeRouter = {
@@ -12,6 +13,10 @@ export const likeRouter = {
       const { mapId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
+        const isFirstLike = await tx.query.MapLikes.findFirst({
+          where: and(eq(MapLikes.userId, user.id), eq(MapLikes.mapId, mapId)),
+        }).then((res) => !res);
+
         await tx
           .insert(MapLikes)
           .values({ userId: user.id, mapId, hasLiked: true })
@@ -24,6 +29,29 @@ export const likeRouter = {
           .then((rows) => rows[0]?.c ?? 0);
 
         await tx.update(Maps).set({ likeCount: newLikeCount }).where(eq(Maps.id, mapId));
+
+        if (isFirstLike) {
+          const map = await tx.query.Maps.findFirst({
+            where: eq(Maps.id, mapId),
+            columns: { creatorId: true },
+          });
+
+          if (map && map.creatorId !== user.id) {
+            const notificationId = nanoid(10);
+
+            await tx.insert(Notifications).values({
+              id: notificationId,
+              recipientId: map.creatorId,
+              type: "LIKE",
+            });
+
+            await tx.insert(NotificationLikes).values({
+              notificationId,
+              likerId: user.id,
+              mapId,
+            });
+          }
+        }
 
         return { mapId, hasLiked: newState, likeCount: newLikeCount };
       });

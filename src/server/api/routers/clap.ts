@@ -1,7 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
+import { nanoid } from "nanoid";
 import z from "zod";
-import { ResultClaps, Results } from "@/server/drizzle/schema";
+import { NotificationClaps, Notifications, ResultClaps, Results } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../trpc";
 
 export const clapRouter = {
@@ -12,6 +13,10 @@ export const clapRouter = {
       const { resultId, newState } = input;
 
       const payload = await db.transaction(async (tx) => {
+        const isFirstClap = await tx.query.ResultClaps.findFirst({
+          where: and(eq(ResultClaps.userId, user.id), eq(ResultClaps.resultId, resultId)),
+        }).then((res) => !res);
+
         await tx
           .insert(ResultClaps)
           .values({ userId: user.id, resultId, hasClapped: true })
@@ -33,6 +38,29 @@ export const clapRouter = {
           .where(eq(Results.id, resultId))
           .returning({ mapId: Results.mapId })
           .then((res) => res[0].mapId);
+
+        if (isFirstClap) {
+          const result = await tx.query.Results.findFirst({
+            where: eq(Results.id, resultId),
+            columns: { userId: true },
+          });
+
+          if (result && result.userId !== user.id) {
+            const notificationId = nanoid(10);
+
+            await tx.insert(Notifications).values({
+              id: notificationId,
+              recipientId: result.userId,
+              type: "CLAP",
+            });
+
+            await tx.insert(NotificationClaps).values({
+              notificationId,
+              clapperId: user.id,
+              resultId,
+            });
+          }
+        }
 
         return { resultId, mapId, hasClapped: newState, clapCount: newClapCount };
       });

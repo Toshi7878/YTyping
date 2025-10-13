@@ -12,8 +12,8 @@ import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { UserNameLinkText } from "../text/user-name-link-text";
 
 type Notification = NonNullable<RouterOutPuts["notification"]["getInfinite"]["items"][number]>;
-type OverTakeNotification = Extract<Notification, { type: "OVER_TAKE" }>;
 
+type OverTakeNotification = Extract<Notification, { type: "OVER_TAKE" }>;
 export const OverTakeNotificationMapCard = ({ notification }: { notification: OverTakeNotification }) => {
   const { map, visitor, myResult } = notification;
   return (
@@ -28,6 +28,62 @@ export const OverTakeNotificationMapCard = ({ notification }: { notification: Ov
           <span>
             さんがスコア {visitor.score - myResult.score} 差で {Number(myResult.prevRank)}位 の記録を抜かしました
           </span>
+        </span>
+      </CardHeader>
+      <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">
+        <MapLeftThumbnail
+          alt={map.info.title}
+          media={map.media}
+          size="notification"
+          imageClassName="rounded-t-none rounded-br-none"
+        />
+        <CompactMapInfo map={map} />
+      </CardContent>
+    </Card>
+  );
+};
+
+type LikeNotification = Extract<Notification, { type: "LIKE" }>;
+export const LikeNotificationMapCard = ({ notification }: { notification: LikeNotification }) => {
+  const { map, liker } = notification;
+  return (
+    <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
+      <CardHeader className="bg-like/85 rounded-t-md px-2 py-1.5 text-sm">
+        <span className="flex flex-wrap items-center gap-1">
+          <UserNameLinkText
+            className="text-header-foreground hover:text-header-foreground underline"
+            userId={liker.id}
+            userName={liker.name}
+          />
+          <span>さんが作成した譜面にいいねしました</span>
+        </span>
+      </CardHeader>
+      <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">
+        <MapLeftThumbnail
+          alt={map.info.title}
+          media={map.media}
+          size="notification"
+          imageClassName="rounded-t-none rounded-br-none"
+        />
+        <CompactMapInfo map={map} />
+      </CardContent>
+    </Card>
+  );
+};
+
+type ClapNotification = Extract<Notification, { type: "CLAP" }>;
+export const ClapNotificationMapCard = ({ notification }: { notification: ClapNotification }) => {
+  const { map, clapper } = notification;
+  return (
+    <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
+      <CardHeader className="bg-perfect/70 rounded-t-md px-2 py-1.5 text-sm">
+        <span className="flex flex-wrap items-center gap-1">
+          <UserNameLinkText
+            className="text-header-foreground hover:text-header-foreground underline"
+            userId={clapper.id}
+            userName={clapper.name}
+          />
+          <span>さんが記録に拍手しました</span>
         </span>
       </CardHeader>
       <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">

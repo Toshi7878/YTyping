@@ -295,7 +295,7 @@ export const resultRouter = {
       await uploadPublicFile({
         key: `result-json/${resultId}.json`,
         body: jsonString,
-        contentType: "application/json" as const,
+        contentType: "application/json",
       });
 
       const rankedUsers = await tx

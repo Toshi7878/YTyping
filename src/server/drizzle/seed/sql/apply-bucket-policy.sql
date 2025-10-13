@@ -1,0 +1,3 @@
+CREATE POLICY "Give anon users access to json file in folder r2haxy_0" ON storage.objects FOR SELECT TO anon USING (bucket_id = 'public-bucket-name');
+CREATE POLICY "Give anon users access to json file in folder r2haxy_1" ON storage.objects FOR INSERT TO anon WITH CHECK (bucket_id = 'public-bucket-name');
+CREATE POLICY "Give anon users access to json file in folder r2haxy_2" ON storage.objects FOR UPDATE TO anon USING (bucket_id = 'public-bucket-name');

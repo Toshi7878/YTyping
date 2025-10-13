@@ -1,7 +1,7 @@
 export const changelog = [
   {
     date: "2025-10-13",
-    descriptions: ["GitHubのREADME.mdに開発参加用の環境セットアップ手順を追加"],
+    descriptions: ["いいね / 拍手 通知機能を追加", "GitHubのREADME.mdに開発参加用の環境セットアップ手順を追加"],
   },
   {
     date: "2025-10-4",
