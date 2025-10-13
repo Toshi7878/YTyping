@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm/relations";
 
 import { MapDifficulties, MapLikes, Maps } from "./map";
-import { NotificationLikes, NotificationOverTakes, Notifications } from "./notification";
+import { NotificationClaps, NotificationLikes, NotificationOverTakes, Notifications } from "./notification";
 import { ImeResults, ResultClaps, ResultStatuses, Results } from "./result";
 import {
   UserDailyTypeCounts,
@@ -21,6 +21,8 @@ export const UsersRelations = relations(Users, ({ many, one }) => {
     resultClaps: many(ResultClaps),
     mapLikes: many(MapLikes),
     notificationOverTakesAsVisitor: many(NotificationOverTakes, { relationName: "visitor" }),
+    notificationLikes: many(NotificationLikes),
+    notificationClaps: many(NotificationClaps),
     typingOption: one(UserTypingOptions, {
       fields: [Users.id],
       references: [UserTypingOptions.userId],
@@ -90,6 +92,7 @@ export const ResultsRelations = relations(Results, ({ one, many }) => ({
     references: [ResultStatuses.resultId],
   }),
   claps: many(ResultClaps),
+  notificationClaps: many(NotificationClaps),
   notificationOverTakesAsVisitor: many(NotificationOverTakes, { relationName: "VisitorResult" }),
   notificationOverTakesAsVisited: many(NotificationOverTakes, { relationName: "VisitedResult" }),
 }));
@@ -120,6 +123,10 @@ export const NotificationsRelations = relations(Notifications, ({ one }) => ({
     fields: [Notifications.id],
     references: [NotificationLikes.notificationId],
   }),
+  clap: one(NotificationClaps, {
+    fields: [Notifications.id],
+    references: [NotificationClaps.notificationId],
+  }),
 }));
 
 export const NotificationLikesRelations = relations(NotificationLikes, ({ one }) => ({
@@ -134,6 +141,21 @@ export const NotificationLikesRelations = relations(NotificationLikes, ({ one })
   map: one(Maps, {
     fields: [NotificationLikes.mapId],
     references: [Maps.id],
+  }),
+}));
+
+export const NotificationClapsRelations = relations(NotificationClaps, ({ one }) => ({
+  notification: one(Notifications, {
+    fields: [NotificationClaps.notificationId],
+    references: [Notifications.id],
+  }),
+  clapper: one(Users, {
+    fields: [NotificationClaps.clapperId],
+    references: [Users.id],
+  }),
+  result: one(Results, {
+    fields: [NotificationClaps.resultId],
+    references: [Results.id],
   }),
 }));
 

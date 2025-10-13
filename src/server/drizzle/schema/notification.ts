@@ -1,8 +1,9 @@
 import { boolean, integer, pgEnum, pgTable, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 import { Maps } from "./map";
+import { Results } from "./result";
 import { Users } from "./user";
 
-export const actionEnum = pgEnum("action", ["LIKE", "OVER_TAKE"]);
+export const actionEnum = pgEnum("action", ["LIKE", "CLAP", "OVER_TAKE"]);
 
 export const Notifications = pgTable("notifications", {
   id: varchar("id").primaryKey(),
@@ -24,6 +25,18 @@ export const NotificationLikes = pgTable("notification_likes", {
   mapId: integer("map_id")
     .notNull()
     .references(() => Maps.id, { onDelete: "cascade" }),
+});
+
+export const NotificationClaps = pgTable("notification_claps", {
+  notificationId: varchar("notification_id")
+    .primaryKey()
+    .references(() => Notifications.id, { onDelete: "cascade" }),
+  clapperId: integer("clapper_id")
+    .notNull()
+    .references(() => Users.id, { onDelete: "cascade" }),
+  resultId: integer("result_id")
+    .notNull()
+    .references(() => Results.id, { onDelete: "cascade" }),
 });
 
 export const NotificationOverTakes = pgTable(

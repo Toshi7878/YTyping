@@ -70,7 +70,7 @@ SUPABASE_SECRET_KEY="sb_secret_<ランダムな文字列>"
 ### ローカル環境のデータベースにテーブルを構築 & 開発用のシードデータを挿入
 
 ```bash
-pnpm db:migrate
+pnpm db:push
 pnpm db:seed
 ```
 
@@ -99,7 +99,7 @@ YTypingの開発環境用ページが表示されます
 `pnpm db:stop`
 データベースを停止
 
-`pnpm db:migrate`
+`pnpm db:push`
 データベースにテーブルを構築
 
 `pnpm db:seed`
