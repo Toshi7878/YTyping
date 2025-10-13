@@ -99,8 +99,10 @@
       "@pixi/sound": "patches/@pixi__sound.patch"
     },
     "onlyBuiltDependencies": [
+      "@sentry/cli",
       "@tailwindcss/oxide",
-      "supabase"
+      "esbuild",
+      "sharp"
     ]
   }
 }
