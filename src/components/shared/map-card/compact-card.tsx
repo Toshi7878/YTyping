@@ -76,7 +76,7 @@ export const ClapNotificationMapCard = ({ notification }: { notification: ClapNo
   const { map, clapper } = notification;
   return (
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
-      <CardHeader className="bg-perfect/70 rounded-t-md px-2 py-1.5 text-sm">
+      <CardHeader className="bg-perfect/65 rounded-t-md px-2 py-1.5 text-sm">
         <span className="flex flex-wrap items-center gap-1">
           <UserNameLinkText
             className="text-header-foreground hover:text-header-foreground underline"
