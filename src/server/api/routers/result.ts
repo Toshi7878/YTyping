@@ -350,7 +350,7 @@ const cleanupOutdatedOvertakeNotifications = async ({
       and(
         eq(NotificationOverTakes.visitedId, userId),
         eq(NotificationOverTakes.mapId, mapId),
-        eq(Notifications.action, "OVER_TAKE"),
+        eq(Notifications.type, "OVER_TAKE"),
       ),
     );
 
@@ -418,7 +418,7 @@ const updateRankingsAndNotifyOvertakes = async ({
         await tx.insert(Notifications).values({
           id: notificationId,
           recipientId,
-          action: "OVER_TAKE",
+          type: "OVER_TAKE",
         });
 
         await tx.insert(NotificationOverTakes).values({

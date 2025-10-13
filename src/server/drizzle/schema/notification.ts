@@ -10,7 +10,7 @@ export const Notifications = pgTable("notifications", {
   recipientId: integer("recipient_id")
     .notNull()
     .references(() => Users.id, { onDelete: "cascade" }),
-  action: actionEnum("action").notNull(),
+  type: actionEnum("type").notNull(),
   checked: boolean("checked").notNull().default(false),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

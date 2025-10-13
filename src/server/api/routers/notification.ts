@@ -26,7 +26,7 @@ export const notificationRouter = {
 
       const notifications = await db.query.Notifications.findMany({
         columns: {
-          action: true,
+          type: true,
           updatedAt: true,
         },
         with: {
@@ -70,7 +70,7 @@ export const notificationRouter = {
 
       const items = notifications
         .map((notification) => {
-          if (notification.action === "OVER_TAKE" && notification.overTake) {
+          if (notification.type === "OVER_TAKE" && notification.overTake) {
             const { overTake } = notification;
             return {
               action: "OVER_TAKE" as const,
@@ -127,7 +127,7 @@ export const notificationRouter = {
           // }
 
           // フォールバック（通常は到達しない）
-          throw new Error(`Unknown notification action: ${notification.action}`);
+          throw new Error(`Unknown notification action: ${notification.type}`);
         })
         .filter((item): item is NonNullable<typeof item> => item !== null);
 
