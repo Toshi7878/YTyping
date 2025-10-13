@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm/relations";
 
 import { MapDifficulties, MapLikes, Maps } from "./map";
-import { NotificationOverTakes, Notifications } from "./notification";
+import { NotificationLikes, NotificationOverTakes, Notifications } from "./notification";
 import { ImeResults, ResultClaps, ResultStatuses, Results } from "./result";
 import {
   UserDailyTypeCounts,
@@ -115,6 +115,25 @@ export const NotificationsRelations = relations(Notifications, ({ one }) => ({
   overTake: one(NotificationOverTakes, {
     fields: [Notifications.id],
     references: [NotificationOverTakes.notificationId],
+  }),
+  like: one(NotificationLikes, {
+    fields: [Notifications.id],
+    references: [NotificationLikes.notificationId],
+  }),
+}));
+
+export const NotificationLikesRelations = relations(NotificationLikes, ({ one }) => ({
+  notification: one(Notifications, {
+    fields: [NotificationLikes.notificationId],
+    references: [Notifications.id],
+  }),
+  liker: one(Users, {
+    fields: [NotificationLikes.likerId],
+    references: [Users.id],
+  }),
+  map: one(Maps, {
+    fields: [NotificationLikes.mapId],
+    references: [Maps.id],
   }),
 }));
 

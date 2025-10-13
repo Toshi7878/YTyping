@@ -13,7 +13,7 @@
     "reset": "pnpm dlx rimraf .next .tsbuildinfo node_modules package-lock.json && pnpm install",
     "db:start": "pnpx supabase start",
     "db:stop": "pnpx supabase stop",
-    "db:migrate": "drizzle-kit push",
+    "db:push": "drizzle-kit push",
     "studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
     "db:reset": "pnpx supabase db reset",

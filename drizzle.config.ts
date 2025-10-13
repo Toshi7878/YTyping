@@ -1,10 +1,6 @@
 import { defineConfig } from "drizzle-kit";
 import { env } from "@/env";
 
-if (!env.DATABASE_URL) {
-  throw new Error("Missing DATABASE_URL");
-}
-
 // biome-ignore lint/style/noDefaultExport: <export defaultする必要がある>
 export default defineConfig({
   schema: "./src/server/drizzle/schema.ts",

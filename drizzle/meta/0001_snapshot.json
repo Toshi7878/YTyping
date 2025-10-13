@@ -1,6 +1,6 @@
 {
-  "id": "f7ad745f-ac87-4452-bc24-cb2cf8b033be",
-  "prevId": "9b58a181-b264-4e0e-bbf0-562c9a7b174e",
+  "id": "1f364551-9362-45a9-87fc-b4e557162d2e",
+  "prevId": "80925dba-783f-40e7-8f30-fa959ef622cf",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -376,12 +376,83 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.notifications": {
-      "name": "notifications",
+    "public.notification_likes": {
+      "name": "notification_likes",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
+        "notification_id": {
+          "name": "notification_id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "liker_id": {
+          "name": "liker_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "notification_likes_notification_id_notifications_id_fk": {
+          "name": "notification_likes_notification_id_notifications_id_fk",
+          "tableFrom": "notification_likes",
+          "tableTo": "notifications",
+          "columnsFrom": [
+            "notification_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "notification_likes_liker_id_users_id_fk": {
+          "name": "notification_likes_liker_id_users_id_fk",
+          "tableFrom": "notification_likes",
+          "tableTo": "users",
+          "columnsFrom": [
+            "liker_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "notification_likes_map_id_maps_id_fk": {
+          "name": "notification_likes_map_id_maps_id_fk",
+          "tableFrom": "notification_likes",
+          "tableTo": "maps",
+          "columnsFrom": [
+            "map_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.notification_over_takes": {
+      "name": "notification_over_takes",
+      "schema": "",
+      "columns": {
+        "notification_id": {
+          "name": "notification_id",
           "type": "varchar",
           "primaryKey": true,
           "notNull": true
@@ -404,40 +475,65 @@
           "primaryKey": false,
           "notNull": true
         },
-        "action": {
-          "name": "action",
-          "type": "action",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'OVER_TAKE'"
-        },
-        "old_rank": {
-          "name": "old_rank",
+        "prev_rank": {
+          "name": "prev_rank",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "checked": {
-          "name": "checked",
-          "type": "boolean",
+        "test": {
+          "name": "test",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "uq_overtake_visitor_id_visited_id_map_id": {
+          "name": "uq_overtake_visitor_id_visited_id_map_id",
+          "columns": [
+            {
+              "expression": "visitor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "visited_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "map_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
-        "notifications_visitor_id_users_id_fk": {
-          "name": "notifications_visitor_id_users_id_fk",
-          "tableFrom": "notifications",
+        "notification_over_takes_notification_id_notifications_id_fk": {
+          "name": "notification_over_takes_notification_id_notifications_id_fk",
+          "tableFrom": "notification_over_takes",
+          "tableTo": "notifications",
+          "columnsFrom": [
+            "notification_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "notification_over_takes_visitor_id_users_id_fk": {
+          "name": "notification_over_takes_visitor_id_users_id_fk",
+          "tableFrom": "notification_over_takes",
           "tableTo": "users",
           "columnsFrom": [
             "visitor_id"
@@ -448,9 +544,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "notifications_map_id_maps_id_fk": {
-          "name": "notifications_map_id_maps_id_fk",
-          "tableFrom": "notifications",
+        "notification_over_takes_map_id_maps_id_fk": {
+          "name": "notification_over_takes_map_id_maps_id_fk",
+          "tableFrom": "notification_over_takes",
           "tableTo": "maps",
           "columnsFrom": [
             "map_id"
@@ -460,51 +556,70 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.notifications": {
+      "name": "notifications",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
         },
-        "notifications_visitor_result_fk": {
-          "name": "notifications_visitor_result_fk",
+        "recipient_id": {
+          "name": "recipient_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "action": {
+          "name": "action",
+          "type": "action",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checked": {
+          "name": "checked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "notifications_recipient_id_users_id_fk": {
+          "name": "notifications_recipient_id_users_id_fk",
           "tableFrom": "notifications",
-          "tableTo": "results",
+          "tableTo": "users",
           "columnsFrom": [
-            "visitor_id",
-            "map_id"
+            "recipient_id"
           ],
           "columnsTo": [
-            "user_id",
-            "map_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "notifications_visited_result_fk": {
-          "name": "notifications_visited_result_fk",
-          "tableFrom": "notifications",
-          "tableTo": "results",
-          "columnsFrom": [
-            "visited_id",
-            "map_id"
-          ],
-          "columnsTo": [
-            "user_id",
-            "map_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "uq_notifications_visitor_visited_map_action": {
-          "name": "uq_notifications_visitor_visited_map_action",
-          "nullsNotDistinct": false,
-          "columns": [
-            "visitor_id",
-            "visited_id",
-            "map_id",
-            "action"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -886,8 +1001,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "uq_user_id_map_id": {
-          "name": "uq_user_id_map_id",
+        "uq_results_user_id_map_id": {
+          "name": "uq_results_user_id_map_id",
           "nullsNotDistinct": false,
           "columns": [
             "user_id",
@@ -1058,6 +1173,60 @@
         }
       },
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user_map_completion_play_counts": {
+      "name": "user_map_completion_play_counts",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "map_id": {
+          "name": "map_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_map_completion_play_counts_user_id_users_id_fk": {
+          "name": "user_map_completion_play_counts_user_id_users_id_fk",
+          "tableFrom": "user_map_completion_play_counts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "user_map_completion_play_counts_user_id_map_id_pk": {
+          "name": "user_map_completion_play_counts_user_id_map_id_pk",
+          "columns": [
+            "user_id",
+            "map_id"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
