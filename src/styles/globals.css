@@ -200,13 +200,6 @@
     color: var(--color-primary-foreground);
   }
 }
-
-#lyrics::before,
-#next_lyrics::before,
-#next_kpm::before {
-  content: "\200B";
-}
-
 progress {
   appearance: none;
   outline: solid 1.5px #000;

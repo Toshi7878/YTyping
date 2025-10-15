@@ -19,7 +19,7 @@ export const NextLyrics = () => {
         </ruby>
       </div>
       <div id="next_kpm" className="text-[90%]">
-        {Number(kpm) > 0 ? `NEXT: ${kpm}kpm` : ""}
+        {Number(kpm) > 0 ? `NEXT: ${kpm}kpm` : "\u00A0"}
       </div>
     </div>
   );
