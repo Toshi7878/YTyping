@@ -201,8 +201,6 @@
   }
 }
 
-#main_word::before,
-#sub_word::before,
 #lyrics::before,
 #next_lyrics::before,
 #next_kpm::before {

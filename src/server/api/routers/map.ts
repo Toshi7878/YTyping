@@ -114,13 +114,11 @@ export const mapRouter = {
         .values({ mapId: newMapId, ...mapDifficulty })
         .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: mapDifficulty });
 
-      const payload = {
+      await uploadPublicFile({
         key: `map-json/${mapId === null ? newMapId : mapId}.json`,
         body: JSON.stringify(mapData, null, 2),
-        contentType: "application/json" as const,
-      };
-
-      await uploadPublicFile(payload);
+        contentType: "application/json",
+      });
 
       return newMapId;
     });

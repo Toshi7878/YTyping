@@ -10,20 +10,22 @@ export const SignInDropdownItems = () => {
   const { start } = useProgress();
   const isDevelopment = env.NODE_ENV === "development";
 
-  const items = [
-    {
-      text: "Discordでログイン",
-      leftIcon: <BsDiscord className="text-primary-foreground size-6 group-focus:text-white" />,
-      provider: "discord",
-      className: "hover:bg-discord focus:bg-discord",
-    },
-    {
-      text: "Googleでログイン",
-      leftIcon: <BsGoogle className="text-primary-foreground size-6 group-focus:text-white" />,
-      provider: "google",
-      className: "hover:bg-google focus:bg-google",
-    },
-  ];
+  const items = !isDevelopment
+    ? [
+        {
+          text: "Discordでログイン",
+          leftIcon: <BsDiscord className="text-primary-foreground size-6 group-focus:text-white" />,
+          provider: "discord",
+          className: "hover:bg-discord focus:bg-discord",
+        },
+        {
+          text: "Googleでログイン",
+          leftIcon: <BsGoogle className="text-primary-foreground size-6 group-focus:text-white" />,
+          provider: "google",
+          className: "hover:bg-google focus:bg-google",
+        },
+      ]
+    : [];
 
   const devItems = isDevelopment
     ? [
