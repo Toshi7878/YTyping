@@ -286,17 +286,8 @@ export const useUpdateLine = () => {
       updateAllStatus({ count: newCurrentCount, updateType: "lineUpdate" });
     }
 
-    writeLineStatus({
-      startSpeed: playSpeed,
-      startInputMode: inputMode,
-    });
-
-    setTypingStatus((prev) => ({
-      ...prev,
-      point: 0,
-      timeBonus: 0,
-    }));
-
+    writeLineStatus({ startSpeed: playSpeed, startInputMode: inputMode });
+    setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
     setLineKpm(0);
 
     setNextLyrics(newNextLine);

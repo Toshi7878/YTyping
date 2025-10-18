@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Dispatch } from "react";
+import { type Dispatch, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { useHistoryReducer } from "@/app/edit/_lib/atoms/history-reducer-atom";
@@ -29,6 +29,20 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
   const historyDispatch = useHistoryReducer();
   const mapDispatch = useMapReducer();
 
+  const currentSpeed = useMemo(() => {
+    const speeds = map.map((line) => line.options?.changeVideoSpeed ?? 0);
+    const calculatedSpeed = speeds.slice(0, index).reduce((a, b) => a + b, 0) + 1;
+    return Math.max(0.25, Math.min(2.0, calculatedSpeed));
+  }, [map, index]);
+
+  const [speed, setSpeed] = useState("1.00");
+
+  useEffect(() => {
+    const calculatedSpeed = currentSpeed + (map[index]?.options?.changeVideoSpeed ?? 0);
+    const clampedSpeed = Math.max(0.25, Math.min(2.0, calculatedSpeed));
+    setSpeed(clampedSpeed.toFixed(2));
+  }, [currentSpeed, map, index]);
+
   const form = useForm({
     resolver: zodResolver(LineOptionSchema),
     defaultValues: {
@@ -38,6 +52,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
       changeVideoSpeed: map[index]?.options?.changeVideoSpeed || 0,
     },
   });
+
   const handleModalClose = async () => {
     if (!isDirty) {
       // エディターのEscapeキーのホットキーと競合するためsetTimeoutで遅延させる
@@ -70,7 +85,9 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
         ...(data.changeCSS && { changeCSS: data.changeCSS }),
         ...(data.eternalCSS && { eternalCSS: data.eternalCSS }),
         ...(data.isChangeCSS && { isChangeCSS: data.isChangeCSS }),
-        ...(data.changeVideoSpeed && { changeVideoSpeed: data.changeVideoSpeed }),
+        ...(data.changeVideoSpeed && {
+          changeVideoSpeed: Math.max(0.25 - currentSpeed, Math.min(2.0 - currentSpeed, data.changeVideoSpeed)),
+        }),
       },
     };
     mapDispatch({ type: "update", payload: newLine, index });
@@ -117,19 +134,23 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
               control={form.control}
               name="changeVideoSpeed"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex items-center">
                   <CounterInput
                     label="速度変更"
                     unit={Number(field.value ?? 0) < 0 ? "速度ダウン" : "速度アップ"}
                     value={field.value ?? 0}
                     onChange={(value) => {
                       field.onChange(value);
+                      setSpeed((currentSpeed + value).toFixed(2));
                     }}
-                    min={-1.75}
-                    max={2}
+                    min={0.25 - currentSpeed}
+                    max={2.0 - currentSpeed}
                     step={0.25}
                     valueDigits={2}
                   />
+                  <div className="text-sm text-muted-foreground">
+                    速度: <Badge variant="outline">{speed}x</Badge>
+                  </div>
                 </FormItem>
               )}
             />
