@@ -189,34 +189,10 @@ const useWordScrollSync = (mainCorrect: string, subCorrect: string) => {
   // 前回のスクロール位置を記憶（不要な更新を防ぐ）
   const prevMainShift = useRef(-1);
   const prevSubShift = useRef(-1);
+  const DURATION = 125;
 
-  // === 視認性重視のスクロールアニメーション ===
-
-  // 2. やわらかく自然に止まる
-  // const SCROLL_TRANSITION = "transform 200ms cubic-bezier(0.215, 0.61, 0.355, 1)";
-
-  // 3. キビキビと速い動き
-  // const SCROLL_TRANSITION = "transform 150ms cubic-bezier(0.4, 0, 0.2, 1)";
-
-  // 4. ゆったりと滑らか *
-  // const SCROLL_TRANSITION = "transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-
-  // 7. 素早く始まりゆっくり止まる *
-  // const SCROLL_TRANSITION = "transform 250ms cubic-bezier(0.33, 1, 0.68, 1)";
-
-  // 8. ease-out標準（Material Design系）*
-  // const SCROLL_TRANSITION = "transform 16ms cubic-bezier(0, 0, 0.2, 1)";
-  const SCROLL_TRANSITION = "transform 125ms";
-
-  // 9. 非常に滑らか（長めの時間）*
-  // const SCROLL_TRANSITION = "transform 350ms cubic-bezier(0.23, 1, 0.32, 1)";
-
-  // 10. アニメーションなし（即座に移動）
-  // const SCROLL_TRANSITION = "";
-
+  const SCROLL_TRANSITION = `transform ${DURATION}ms`;
   const RIGHT_BOUND_RATIO = 0.4; // 右
-  //
-  // 端の境界比率
 
   useLayoutEffect(() => {
     // === リセット処理：両方が0の時のみ ===
@@ -236,36 +212,60 @@ const useWordScrollSync = (mainCorrect: string, subCorrect: string) => {
 
     // === Phase 1: DOM読み取り（バッチ実行）===
     const mainMeasurements =
-      mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current
+      mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current && mainRefs.trackRef.current
         ? {
             caretX: mainRefs.caretRef.current.offsetLeft,
             rightBound: Math.floor(mainRefs.viewportRef.current.clientWidth * RIGHT_BOUND_RATIO),
+            viewportWidth: mainRefs.viewportRef.current.clientWidth,
+            trackWidth: mainRefs.trackRef.current.scrollWidth,
           }
         : null;
 
     const subMeasurements =
-      subCorrect.length > 0 && subRefs.viewportRef.current && subRefs.caretRef.current
+      subCorrect.length > 0 && subRefs.viewportRef.current && subRefs.caretRef.current && subRefs.trackRef.current
         ? {
             caretX: subRefs.caretRef.current.offsetLeft,
             rightBound: Math.floor(subRefs.viewportRef.current.clientWidth * RIGHT_BOUND_RATIO),
+            viewportWidth: subRefs.viewportRef.current.clientWidth,
+            trackWidth: subRefs.trackRef.current.scrollWidth,
           }
         : null;
 
-    if (mainMeasurements && mainRefs.trackRef.current && mainMeasurements.caretX > mainMeasurements.rightBound) {
-      const newShift = Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound);
-      if (newShift !== prevMainShift.current) {
-        mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
-        mainRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
-        prevMainShift.current = newShift;
+    // === どちらか一方でもはみ出ているかチェック ===
+    const isOverflowing =
+      (mainMeasurements && mainMeasurements.trackWidth > mainMeasurements.viewportWidth) ||
+      (subMeasurements && subMeasurements.trackWidth > subMeasurements.viewportWidth);
+
+    // === Phase 2: スクロール処理（共通のisOverflowingフラグで制御）===
+    if (mainMeasurements && mainRefs.trackRef.current) {
+      if (isOverflowing && mainMeasurements.caretX > mainMeasurements.rightBound) {
+        const newShift = Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound);
+        if (newShift !== prevMainShift.current) {
+          mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
+          mainRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
+          prevMainShift.current = newShift;
+        }
+      } else if (!isOverflowing && prevMainShift.current !== 0) {
+        // 両方がはみ出ていない場合は位置をリセット
+        mainRefs.trackRef.current.style.transition = "";
+        mainRefs.trackRef.current.style.transform = "translateX(0px)";
+        prevMainShift.current = 0;
       }
     }
 
-    if (subMeasurements && subRefs.trackRef.current && subMeasurements.caretX > subMeasurements.rightBound) {
-      const newShift = Math.max(0, subMeasurements.caretX - subMeasurements.rightBound);
-      if (newShift !== prevSubShift.current) {
-        subRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
-        subRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
-        prevSubShift.current = newShift;
+    if (subMeasurements && subRefs.trackRef.current) {
+      if (isOverflowing && subMeasurements.caretX > subMeasurements.rightBound) {
+        const newShift = Math.max(0, subMeasurements.caretX - subMeasurements.rightBound);
+        if (newShift !== prevSubShift.current) {
+          subRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
+          subRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
+          prevSubShift.current = newShift;
+        }
+      } else if (!isOverflowing && prevSubShift.current !== 0) {
+        // 両方がはみ出ていない場合は位置をリセット
+        subRefs.trackRef.current.style.transition = "";
+        subRefs.trackRef.current.style.transform = "translateX(0px)";
+        prevSubShift.current = 0;
       }
     }
   }, [mainCorrect.length, subCorrect.length]);
