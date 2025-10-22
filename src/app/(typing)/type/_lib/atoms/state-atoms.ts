@@ -7,6 +7,7 @@ import { useCallback } from "react";
 import type { BuildMap } from "@/lib/build-map/build-map";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { ResultData } from "@/server/drizzle/validator/result";
+import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { InputMode, LineData, LineWord, SceneType } from "../type";
 import {
   gameUtilityReferenceParamsAtom,
@@ -407,8 +408,12 @@ const writeCurrentLineAtom = atom(
     const { isPaused } = get(ytStatusAtom);
 
     if (lineProgress && !isPaused) {
-      lineProgress.value = 0;
-      lineProgress.max = newNextLine.time - newCurrentLine.time;
+      requestDebouncedAnimationFrame("line-progress-reset", () => {
+        if (lineProgress) {
+          lineProgress.value = 0;
+          lineProgress.max = newNextLine.time - newCurrentLine.time;
+        }
+      });
     }
   },
 );

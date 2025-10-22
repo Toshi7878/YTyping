@@ -3,6 +3,7 @@ import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import type { TypeResult } from "@/server/drizzle/validator/result";
+import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { InputMode } from "../type";
 import { getTypeAtomStore } from "./store";
 
@@ -253,16 +254,24 @@ export const useProgress = () => {
 
   const setLineProgressValue = useAtomCallback(
     useCallback((get, _set, value: number) => {
-      const lineProgress = get(lineProgressAtom) as HTMLProgressElement;
-      lineProgress.value = value;
+      requestDebouncedAnimationFrame("line-progress", () => {
+        const lineProgress = get(lineProgressAtom) as HTMLProgressElement;
+        if (lineProgress) {
+          lineProgress.value = value;
+        }
+      });
     }, []),
     { store },
   );
 
   const setTotalProgressValue = useAtomCallback(
     useCallback((get, _set, value: number) => {
-      const totalProgress = get(totalProgressAtom) as HTMLProgressElement;
-      totalProgress.value = value;
+      requestDebouncedAnimationFrame("total-progress", () => {
+        const totalProgress = get(totalProgressAtom) as HTMLProgressElement;
+        if (totalProgress) {
+          totalProgress.value = value;
+        }
+      });
     }, []),
     { store },
   );
