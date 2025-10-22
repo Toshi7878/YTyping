@@ -19,6 +19,7 @@ import { ChangeCSS } from "./playing-child/change-css-style";
 import { Lyrics } from "./playing-child/lyrics-text";
 import { NextLyrics } from "./playing-child/next-lyrics";
 import { TypingWords } from "./playing-child/typing-words";
+import { useActiveElement } from "@/utils/hooks/use-active-element";
 
 interface PlayingProps {
   className?: string;
@@ -31,6 +32,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   const { data: session } = useSession();
   const { readUserStats, resetUserStats } = useUserStats();
   const scene = useSceneState();
+  const activeElement = useActiveElement();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
@@ -84,19 +86,28 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       timerControls.setFrameRate(59.99);
     }
 
-    window.addEventListener("keydown", handleKeydown);
-
     const count = readCount();
     if (count === 0 && map) {
       setNextLyrics(map.mapData[1]);
     } else {
       resetNextLyrics();
     }
+  }, [scene, map]);
+
+  // text系inputにフォーカスが当たっている場合はkeydownイベントを登録しない
+  useEffect(() => {
+    const isTextInput =
+      activeElement?.tagName === "INPUT" ||
+      activeElement?.tagName === "TEXTAREA";
+
+    if (!isTextInput) {
+      window.addEventListener("keydown", handleKeydown);
+    }
 
     return () => {
       window.removeEventListener("keydown", handleKeydown);
     };
-  }, [scene, map]);
+  }, [activeElement, handleKeydown]);
 
   return (
     <div
