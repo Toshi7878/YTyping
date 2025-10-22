@@ -36,8 +36,8 @@ export const WordScrollOptions = () => {
           incrementTooltip="ローマ字表示スクロールタイミングを増やします。"
           decrementTooltip="ローマ字表示スクロールタイミングを減らします。"
         />
-        <WordScrollAnimationRadioOptions />
       </div>
+      <WordScrollAnimationRadioOptions />
     </section>
   );
 };
@@ -58,7 +58,6 @@ const WordScrollAnimationRadioOptions = () => {
   return (
     <LabeledRadioGroup
       label="スクロールアニメーション"
-      labelClassName="mb-2 block text-lg font-semibold"
       value={isSmoothScroll ? "smooth" : "instant"}
       onValueChange={onValueChange}
       className="flex flex-row gap-5"

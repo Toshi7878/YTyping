@@ -68,12 +68,8 @@ export const SettingPopover = () => {
           <NextDisplayRadioOptions />
           <Separator className="bg-foreground/20 my-4" />
           <LineCompletedRadioOptions />
-          {isMdScreen && (
-            <>
-              <Separator className="bg-foreground/20 my-4" />
-              <WordScrollOptions />
-            </>
-          )}
+          <Separator className="bg-foreground/20 my-4" />
+          <WordScrollOptions />
           <Separator className="bg-foreground/20 my-4" />
           <WordDisplayOptions />
         </>

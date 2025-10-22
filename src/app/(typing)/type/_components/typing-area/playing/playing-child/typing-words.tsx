@@ -12,7 +12,16 @@ export const TypingWords = () => {
   const lineWord = useLineWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
-  const userOptions = useUserTypingOptionsState();
+  const {
+    wordDisplay,
+    subWordFontSize,
+    subWordTopPosition,
+    romaWordSpacing,
+    mainWordFontSize,
+    mainWordTopPosition,
+    kanaWordSpacing,
+    isSmoothScroll,
+  } = useUserTypingOptionsState();
 
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
 
@@ -27,8 +36,7 @@ export const TypingWords = () => {
     nextWord: nextLyrics.kanaWord,
     className: cn(
       "word-kana lowercase",
-      (userOptions.wordDisplay === "ROMA_LOWERCASE_ONLY" || userOptions.wordDisplay === "ROMA_UPPERCASE_ONLY") &&
-        "invisible",
+      (wordDisplay === "ROMA_LOWERCASE_ONLY" || wordDisplay === "ROMA_UPPERCASE_ONLY") && "invisible",
       inputMode === "kana" && "visible",
     ),
   };
@@ -43,28 +51,27 @@ export const TypingWords = () => {
     nextWord: nextLyrics.romaWord,
     className: cn(
       "word-roma",
-      userOptions.wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase",
+      wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase",
       inputMode === "roma" && "visible",
-      (userOptions.wordDisplay === "KANA_ONLY" || inputMode === "kana") && "invisible",
+      (wordDisplay === "KANA_ONLY" || inputMode === "kana") && "invisible",
     ),
     style: {
-      fontSize: `${userOptions.subWordFontSize}%`,
-      bottom: userOptions.subWordTopPosition,
-      letterSpacing: `${userOptions.romaWordSpacing.toFixed(2)}em`,
+      fontSize: `${subWordFontSize}%`,
+      bottom: subWordTopPosition,
+      letterSpacing: `${romaWordSpacing.toFixed(2)}em`,
     },
   };
 
-  const mainWord = userOptions.wordDisplay.match(/^KANA_/) || inputMode === "kana" ? "kana" : "roma";
+  const mainWord = wordDisplay.match(/^KANA_/) || inputMode === "kana" ? "kana" : "roma";
 
   const style = {
-    kanaLetterSpacing: `${userOptions.kanaWordSpacing.toFixed(2)}em`,
-    romaLetterSpacing: `${userOptions.romaWordSpacing.toFixed(2)}em`,
+    kanaLetterSpacing: `${kanaWordSpacing.toFixed(2)}em`,
+    romaLetterSpacing: `${romaWordSpacing.toFixed(2)}em`,
   };
 
-  // 統合版: 2つのWordを1つのuseLayoutEffectで同期処理
   const mainCorrect = mainWord === "kana" ? lineWord.correct.k : lineWord.correct.r;
   const subCorrect = mainWord === "kana" ? lineWord.correct.r : lineWord.correct.k;
-  const { mainRefs, subRefs } = useWordScroll(mainCorrect, subCorrect);
+  const { mainRefs, subRefs } = useWordScroll(mainCorrect, subCorrect, isSmoothScroll);
 
   return (
     <div
@@ -77,8 +84,8 @@ export const TypingWords = () => {
         id="main_word"
         {...(mainWord === "kana" ? kanaWordProps : romaWordProps)}
         style={{
-          fontSize: `${userOptions.mainWordFontSize}%`,
-          bottom: userOptions.mainWordTopPosition,
+          fontSize: `${mainWordFontSize}%`,
+          bottom: mainWordTopPosition,
           letterSpacing: mainWord === "kana" ? style.kanaLetterSpacing : style.romaLetterSpacing,
         }}
         refs={mainRefs}
@@ -87,8 +94,8 @@ export const TypingWords = () => {
         id="sub_word"
         {...(mainWord === "kana" ? romaWordProps : kanaWordProps)}
         style={{
-          fontSize: `${userOptions.subWordFontSize}%`,
-          bottom: userOptions.subWordTopPosition,
+          fontSize: `${subWordFontSize}%`,
+          bottom: subWordTopPosition,
           letterSpacing: mainWord === "kana" ? style.romaLetterSpacing : style.kanaLetterSpacing,
         }}
         refs={subRefs}
@@ -123,8 +130,8 @@ const Word = ({
   ...rest
 }: WordProps & HTMLAttributes<HTMLDivElement>) => {
   const remainWord = nextChar + word;
-  const userOptionsAtom = useUserTypingOptionsState();
-  const isNextWordDisplay = userOptionsAtom.lineCompletedDisplay === "NEXT_WORD";
+  const { lineCompletedDisplay } = useUserTypingOptionsState();
+  const isNextWordDisplay = lineCompletedDisplay === "NEXT_WORD";
 
   return (
     <div
@@ -157,7 +164,7 @@ const Word = ({
   );
 };
 
-const useWordScroll = (mainCorrect: string, subCorrect: string) => {
+const useWordScroll = (mainCorrect: string, subCorrect: string, isSmoothScroll: boolean) => {
   const mainRefs = useMemo(
     () => ({
       viewportRef: { current: null as HTMLDivElement | null },
@@ -178,8 +185,7 @@ const useWordScroll = (mainCorrect: string, subCorrect: string) => {
 
   const prevMainShift = useRef(-1);
   const prevSubShift = useRef(-1);
-  const DURATION = 80;
-  // const DURATION = 0;
+  const DURATION = isSmoothScroll ? 80 : 0;
 
   const SCROLL_TRANSITION = `transform ${DURATION}ms`;
   const MAIN_RIGHT_BOUND_RATIO = 0.3;
@@ -198,34 +204,9 @@ const useWordScroll = (mainCorrect: string, subCorrect: string) => {
         prevSubShift.current = 0;
       }
 
-      // === はみ出し判定をここで行う ===
-      // const mainMeasurements =
-      //   mainRefs.viewportRef.current && mainRefs.trackRef.current
-      //     ? {
-      //         viewportWidth: mainRefs.viewportRef.current.clientWidth * 0.72,
-      //         trackWidth: mainRefs.trackRef.current.scrollWidth,
-      //       }
-      //     : null;
-
-      // const subMeasurements =
-      //   subRefs.viewportRef.current && subRefs.trackRef.current
-      //     ? {
-      //         viewportWidth: subRefs.viewportRef.current.clientWidth * 0.72,
-      //         trackWidth: subRefs.trackRef.current.scrollWidth,
-      //       }
-      //     : null;
-
-      // // どちらか一方でもはみ出ているかチェック
-      // isOverflowingRef.current =
-      //   (mainMeasurements && mainMeasurements.trackWidth > mainMeasurements.viewportWidth) ||
-      //   (subMeasurements && subMeasurements.trackWidth > subMeasurements.viewportWidth) ||
-      //   false;
-
-      // console.log(mainMeasurements?.trackWidth + " > " + mainMeasurements?.viewportWidth);
       return;
     }
 
-    // === Phase 1: DOM読み取り（バッチ実行）===
     const mainMeasurements =
       mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current && mainRefs.trackRef.current
         ? {
