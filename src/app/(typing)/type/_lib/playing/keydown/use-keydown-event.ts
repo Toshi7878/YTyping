@@ -116,9 +116,6 @@ const useIsKeydownTyped = () => {
     if (scene === "replay") return false;
     if (event.ctrlKey || event.altKey) return false;
 
-    const activeElement = document.activeElement as HTMLInputElement | null;
-    if (!activeElement || activeElement.type === "text") return false;
-
     const { keyCode, code } = event;
 
     const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code);
