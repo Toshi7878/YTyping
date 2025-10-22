@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   useLineWordState,
   useNextLyricsState,
@@ -7,6 +7,7 @@ import {
   useUserTypingOptionsState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
+import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 
 export const TypingWords = () => {
   const lineWord = useLineWordState();
@@ -205,59 +206,61 @@ const useWordScroll = (
   const MAIN_RIGHT_BOUND_RATIO = mainWordScrollStart / 100;
   const SUB_RIGHT_BOUND_RATIO = subWordScrollStart / 100;
 
-  useLayoutEffect(() => {
-    if (mainCorrect.length === 0 && subCorrect.length === 0) {
-      if (mainRefs.trackRef.current) {
-        mainRefs.trackRef.current.style.transition = "";
-        mainRefs.trackRef.current.style.transform = "translateX(0px)";
-        prevMainShift.current = 0;
+  useEffect(() => {
+    requestDebouncedAnimationFrame("word-scroll", () => {
+      if (mainCorrect.length === 0 && subCorrect.length === 0) {
+        if (mainRefs.trackRef.current) {
+          mainRefs.trackRef.current.style.transition = "";
+          mainRefs.trackRef.current.style.transform = "translateX(0px)";
+          prevMainShift.current = 0;
+        }
+        if (subRefs.trackRef.current) {
+          subRefs.trackRef.current.style.transition = "";
+          subRefs.trackRef.current.style.transform = "translateX(0px)";
+          prevSubShift.current = 0;
+        }
+
+        return;
       }
-      if (subRefs.trackRef.current) {
-        subRefs.trackRef.current.style.transition = "";
-        subRefs.trackRef.current.style.transform = "translateX(0px)";
-        prevSubShift.current = 0;
-      }
 
-      return;
-    }
+      const mainMeasurements =
+        mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current && mainRefs.trackRef.current
+          ? {
+              caretX: mainRefs.caretRef.current.offsetLeft,
+              rightBound: Math.floor(mainRefs.viewportRef.current.clientWidth * MAIN_RIGHT_BOUND_RATIO),
+            }
+          : null;
 
-    const mainMeasurements =
-      mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current && mainRefs.trackRef.current
-        ? {
-            caretX: mainRefs.caretRef.current.offsetLeft,
-            rightBound: Math.floor(mainRefs.viewportRef.current.clientWidth * MAIN_RIGHT_BOUND_RATIO),
+      const subMeasurements =
+        subCorrect.length > 0 && subRefs.viewportRef.current && subRefs.caretRef.current && subRefs.trackRef.current
+          ? {
+              caretX: subRefs.caretRef.current.offsetLeft,
+              rightBound: Math.floor(subRefs.viewportRef.current.clientWidth * SUB_RIGHT_BOUND_RATIO),
+            }
+          : null;
+
+      if (mainMeasurements && mainRefs.trackRef.current) {
+        if (mainMeasurements.caretX > mainMeasurements.rightBound) {
+          const newShift = Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound);
+          if (newShift !== prevMainShift.current) {
+            mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
+            mainRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
+            prevMainShift.current = newShift;
           }
-        : null;
-
-    const subMeasurements =
-      subCorrect.length > 0 && subRefs.viewportRef.current && subRefs.caretRef.current && subRefs.trackRef.current
-        ? {
-            caretX: subRefs.caretRef.current.offsetLeft,
-            rightBound: Math.floor(subRefs.viewportRef.current.clientWidth * SUB_RIGHT_BOUND_RATIO),
-          }
-        : null;
-
-    if (mainMeasurements && mainRefs.trackRef.current) {
-      if (mainMeasurements.caretX > mainMeasurements.rightBound) {
-        const newShift = Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound);
-        if (newShift !== prevMainShift.current) {
-          mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
-          mainRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
-          prevMainShift.current = newShift;
         }
       }
-    }
 
-    if (subMeasurements && subRefs.trackRef.current) {
-      if (subMeasurements.caretX > subMeasurements.rightBound) {
-        const newShift = Math.max(0, subMeasurements.caretX - subMeasurements.rightBound);
-        if (newShift !== prevSubShift.current) {
-          subRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
-          subRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
-          prevSubShift.current = newShift;
+      if (subMeasurements && subRefs.trackRef.current) {
+        if (subMeasurements.caretX > subMeasurements.rightBound) {
+          const newShift = Math.max(0, subMeasurements.caretX - subMeasurements.rightBound);
+          if (newShift !== prevSubShift.current) {
+            subRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
+            subRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
+            prevSubShift.current = newShift;
+          }
         }
       }
-    }
+    });
   }, [mainCorrect.length, subCorrect.length]);
 
   return { mainRefs, subRefs };
