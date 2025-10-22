@@ -10,31 +10,31 @@ const SCROLL_STEP = 5;
 
 export const WordScrollOptions = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { kanaWordScroll, romaWordScroll } = useUserTypingOptionsState();
+  const { mainWordScrollStart, subWordScrollStart } = useUserTypingOptionsState();
 
   return (
     <section className="flex flex-col gap-4">
       <H4>ワードスクロール設定</H4>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ kanaWordScroll: value })}
+          onChange={(value) => setUserTypingOptions({ mainWordScrollStart: value })}
           step={SCROLL_STEP}
           max={MAX_SCROLL}
           min={MIN_SCROLL}
-          value={kanaWordScroll}
-          label="かな開始位置"
-          decrementTooltip="かな表示スクロール開始位置を左に移動します"
-          incrementTooltip="かな表示スクロール開始位置を右に移動します"
+          value={mainWordScrollStart}
+          label="メイン開始位置"
+          decrementTooltip="メインワードスクロール開始位置を左に移動します"
+          incrementTooltip="メインワードスクロール開始位置を右に移動します"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ romaWordScroll: value })}
+          onChange={(value) => setUserTypingOptions({ subWordScrollStart: value })}
           step={SCROLL_STEP}
           max={MAX_SCROLL}
           min={MIN_SCROLL}
-          value={romaWordScroll}
-          label="ローマ字開始位置"
-          decrementTooltip="ローマ字表示スクロール開始位置を左に移動します"
-          incrementTooltip="ローマ字表示スクロール開始位置を右に移動します"
+          value={subWordScrollStart}
+          label="サブ開始位置"
+          decrementTooltip="サブワードスクロール開始位置を左に移動します"
+          incrementTooltip="サブワードスクロール開始位置を右に移動します"
         />
       </div>
       <WordScrollAnimationRadioOptions />

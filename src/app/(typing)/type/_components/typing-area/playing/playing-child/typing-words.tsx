@@ -20,6 +20,8 @@ export const TypingWords = () => {
     mainWordFontSize,
     mainWordTopPosition,
     kanaWordSpacing,
+    mainWordScrollStart,
+    subWordScrollStart,
     isSmoothScroll,
   } = useUserTypingOptionsState();
 
@@ -71,7 +73,13 @@ export const TypingWords = () => {
 
   const mainCorrect = mainWord === "kana" ? lineWord.correct.k : lineWord.correct.r;
   const subCorrect = mainWord === "kana" ? lineWord.correct.r : lineWord.correct.k;
-  const { mainRefs, subRefs } = useWordScroll(mainCorrect, subCorrect, isSmoothScroll);
+  const { mainRefs, subRefs } = useWordScroll(
+    mainCorrect,
+    subCorrect,
+    isSmoothScroll,
+    mainWordScrollStart,
+    subWordScrollStart,
+  );
 
   return (
     <div
@@ -164,7 +172,13 @@ const Word = ({
   );
 };
 
-const useWordScroll = (mainCorrect: string, subCorrect: string, isSmoothScroll: boolean) => {
+const useWordScroll = (
+  mainCorrect: string,
+  subCorrect: string,
+  isSmoothScroll: boolean,
+  mainWordScrollStart: number,
+  subWordScrollStart: number,
+) => {
   const mainRefs = useMemo(
     () => ({
       viewportRef: { current: null as HTMLDivElement | null },
@@ -188,8 +202,8 @@ const useWordScroll = (mainCorrect: string, subCorrect: string, isSmoothScroll: 
   const DURATION = isSmoothScroll ? 80 : 0;
 
   const SCROLL_TRANSITION = `transform ${DURATION}ms`;
-  const MAIN_RIGHT_BOUND_RATIO = 0.3;
-  const SUB_RIGHT_BOUND_RATIO = 0.35;
+  const MAIN_RIGHT_BOUND_RATIO = mainWordScrollStart / 100;
+  const SUB_RIGHT_BOUND_RATIO = subWordScrollStart / 100;
 
   useLayoutEffect(() => {
     if (mainCorrect.length === 0 && subCorrect.length === 0) {

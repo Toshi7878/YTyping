@@ -49,8 +49,8 @@ export const UserTypingOptions = pgTable("user_typing_options", {
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
   timeOffset: real("time_offset").notNull().default(DEFAULT_TYPING_OPTIONS.timeOffset),
-  kanaWordScroll: integer("kana_word_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.kanaWordScroll),
-  romaWordScroll: integer("roma_word_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.romaWordScroll),
+  mainWordScrollStart: integer("main_word_scroll_start").notNull().default(DEFAULT_TYPING_OPTIONS.mainWordScrollStart),
+  subWordScrollStart: integer("sub_word_scroll_start").notNull().default(DEFAULT_TYPING_OPTIONS.subWordScrollStart),
   isSmoothScroll: boolean("is_smooth_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.isSmoothScroll),
   mainWordFontSize: integer("main_word_font_size").notNull().default(DEFAULT_TYPING_OPTIONS.mainWordFontSize),
   subWordFontSize: integer("sub_word_font_size").notNull().default(DEFAULT_TYPING_OPTIONS.subWordFontSize),
