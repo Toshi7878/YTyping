@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { useEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import {
   useLineWordState,
   useNextLyricsState,
@@ -206,7 +206,7 @@ const useWordScroll = (
   const MAIN_RIGHT_BOUND_RATIO = mainWordScrollStart / 100;
   const SUB_RIGHT_BOUND_RATIO = subWordScrollStart / 100;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const cancel = requestDebouncedAnimationFrame("word-scroll", () => {
       if (mainCorrect.length === 0 && subCorrect.length === 0) {
         if (mainRefs.trackRef.current) {
