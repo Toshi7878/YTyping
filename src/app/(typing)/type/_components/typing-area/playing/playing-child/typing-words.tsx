@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { memo, useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import {
   useLineWordState,
   useNextLyricsState,
@@ -64,7 +64,7 @@ export const TypingWords = () => {
   // 統合版: 2つのWordを1つのuseLayoutEffectで同期処理
   const mainCorrect = mainWord === "kana" ? lineWord.correct.k : lineWord.correct.r;
   const subCorrect = mainWord === "kana" ? lineWord.correct.r : lineWord.correct.k;
-  const { mainRefs, subRefs } = useWordScrollSync(mainCorrect, subCorrect);
+  const { mainRefs, subRefs } = useWordScroll(mainCorrect, subCorrect);
 
   return (
     <div
@@ -113,61 +113,51 @@ interface WordProps {
   refs: WordRefs;
 }
 
-const Word = memo(
-  ({
-    correct,
-    nextChar,
-    word,
-    isLineCompleted,
-    nextWord,
-    refs,
-    ...rest
-  }: WordProps & HTMLAttributes<HTMLDivElement>) => {
-    const remainWord = nextChar + word;
-    const userOptionsAtom = useUserTypingOptionsState();
-    const isNextWordDisplay = userOptionsAtom.lineCompletedDisplay === "NEXT_WORD";
+const Word = ({
+  correct,
+  nextChar,
+  word,
+  isLineCompleted,
+  nextWord,
+  refs,
+  ...rest
+}: WordProps & HTMLAttributes<HTMLDivElement>) => {
+  const remainWord = nextChar + word;
+  const userOptionsAtom = useUserTypingOptionsState();
+  const isNextWordDisplay = userOptionsAtom.lineCompletedDisplay === "NEXT_WORD";
 
-    return (
-      <div
-        {...rest}
-        className={cn("relative w-full", rest.className)}
-        style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom, letterSpacing: rest.style?.letterSpacing }}
-      >
-        {isLineCompleted && isNextWordDisplay ? (
-          <span className="next-line-word text-word-nextWord">{nextWord.replace(/ /g, " ") || "\u200B"}</span>
-        ) : (
-          <div ref={refs.viewportRef} className="overflow-hidden">
-            {"\u200B"}
-            <div ref={refs.trackRef} className="inline-block will-change-transform translate-z-0">
-              <span
-                className={cn(
-                  "opacity-word-correct",
-                  remainWord.length === 0 ? "text-word-completed" : "text-word-correct",
-                )}
-              >
-                {correct.replace(/ /g, "ˍ")}
-              </span>
-              <span ref={refs.caretRef} className="text-word-nextChar">
-                {nextChar.replace(/ /g, " ")}
-              </span>
-              <span className="text-word-word">{word.replace(/ /g, " ")}</span>
-            </div>
+  return (
+    <div
+      {...rest}
+      className={cn("relative w-full", rest.className)}
+      style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom, letterSpacing: rest.style?.letterSpacing }}
+    >
+      {isLineCompleted && isNextWordDisplay ? (
+        <span className="next-line-word text-word-nextWord">{nextWord.replace(/ /g, " ") || "\u200B"}</span>
+      ) : (
+        <div ref={refs.viewportRef} className="overflow-hidden">
+          {"\u200B"}
+          <div ref={refs.trackRef} className="inline-block will-change-transform translate-z-0">
+            <span
+              className={cn(
+                "opacity-word-correct",
+                remainWord.length === 0 ? "text-word-completed" : "text-word-correct",
+              )}
+            >
+              {correct.replace(/ /g, "ˍ")}
+            </span>
+            <span ref={refs.caretRef} className="text-word-nextChar">
+              {nextChar.replace(/ /g, " ")}
+            </span>
+            <span className="text-word-word">{word.replace(/ /g, " ")}</span>
           </div>
-        )}
-      </div>
-    );
-  },
-);
-Word.displayName = "Word";
+        </div>
+      )}
+    </div>
+  );
+};
 
-/**
- * 🚀 超高速タイピング最適化版（600打鍵/分対応）
- * - refオブジェクトの再作成を防止
- * - 前回値との比較で不要な更新をスキップ
- * - 完全同期処理でレイテンシゼロ
- */
-const useWordScrollSync = (mainCorrect: string, subCorrect: string) => {
-  // refオブジェクトは1回だけ作成（最重要！）
+const useWordScroll = (mainCorrect: string, subCorrect: string) => {
   const mainRefs = useMemo(
     () => ({
       viewportRef: { current: null as HTMLDivElement | null },
@@ -186,16 +176,16 @@ const useWordScrollSync = (mainCorrect: string, subCorrect: string) => {
     [],
   );
 
-  // 前回のスクロール位置を記憶（不要な更新を防ぐ）
   const prevMainShift = useRef(-1);
   const prevSubShift = useRef(-1);
-  const DURATION = 125;
+  const DURATION = 80;
+  // const DURATION = 0;
 
   const SCROLL_TRANSITION = `transform ${DURATION}ms`;
-  const RIGHT_BOUND_RATIO = 0.4; // 右
+  const MAIN_RIGHT_BOUND_RATIO = 0.3;
+  const SUB_RIGHT_BOUND_RATIO = 0.35;
 
   useLayoutEffect(() => {
-    // === リセット処理：両方が0の時のみ ===
     if (mainCorrect.length === 0 && subCorrect.length === 0) {
       if (mainRefs.trackRef.current) {
         mainRefs.trackRef.current.style.transition = "";
@@ -207,6 +197,31 @@ const useWordScrollSync = (mainCorrect: string, subCorrect: string) => {
         subRefs.trackRef.current.style.transform = "translateX(0px)";
         prevSubShift.current = 0;
       }
+
+      // === はみ出し判定をここで行う ===
+      // const mainMeasurements =
+      //   mainRefs.viewportRef.current && mainRefs.trackRef.current
+      //     ? {
+      //         viewportWidth: mainRefs.viewportRef.current.clientWidth * 0.72,
+      //         trackWidth: mainRefs.trackRef.current.scrollWidth,
+      //       }
+      //     : null;
+
+      // const subMeasurements =
+      //   subRefs.viewportRef.current && subRefs.trackRef.current
+      //     ? {
+      //         viewportWidth: subRefs.viewportRef.current.clientWidth * 0.72,
+      //         trackWidth: subRefs.trackRef.current.scrollWidth,
+      //       }
+      //     : null;
+
+      // // どちらか一方でもはみ出ているかチェック
+      // isOverflowingRef.current =
+      //   (mainMeasurements && mainMeasurements.trackWidth > mainMeasurements.viewportWidth) ||
+      //   (subMeasurements && subMeasurements.trackWidth > subMeasurements.viewportWidth) ||
+      //   false;
+
+      // console.log(mainMeasurements?.trackWidth + " > " + mainMeasurements?.viewportWidth);
       return;
     }
 
@@ -215,9 +230,7 @@ const useWordScrollSync = (mainCorrect: string, subCorrect: string) => {
       mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current && mainRefs.trackRef.current
         ? {
             caretX: mainRefs.caretRef.current.offsetLeft,
-            rightBound: Math.floor(mainRefs.viewportRef.current.clientWidth * RIGHT_BOUND_RATIO),
-            viewportWidth: mainRefs.viewportRef.current.clientWidth,
-            trackWidth: mainRefs.trackRef.current.scrollWidth,
+            rightBound: Math.floor(mainRefs.viewportRef.current.clientWidth * MAIN_RIGHT_BOUND_RATIO),
           }
         : null;
 
@@ -225,47 +238,29 @@ const useWordScrollSync = (mainCorrect: string, subCorrect: string) => {
       subCorrect.length > 0 && subRefs.viewportRef.current && subRefs.caretRef.current && subRefs.trackRef.current
         ? {
             caretX: subRefs.caretRef.current.offsetLeft,
-            rightBound: Math.floor(subRefs.viewportRef.current.clientWidth * RIGHT_BOUND_RATIO),
-            viewportWidth: subRefs.viewportRef.current.clientWidth,
-            trackWidth: subRefs.trackRef.current.scrollWidth,
+            rightBound: Math.floor(subRefs.viewportRef.current.clientWidth * SUB_RIGHT_BOUND_RATIO),
           }
         : null;
 
-    // === どちらか一方でもはみ出ているかチェック ===
-    const isOverflowing =
-      (mainMeasurements && mainMeasurements.trackWidth > mainMeasurements.viewportWidth) ||
-      (subMeasurements && subMeasurements.trackWidth > subMeasurements.viewportWidth);
-
-    // === Phase 2: スクロール処理（共通のisOverflowingフラグで制御）===
     if (mainMeasurements && mainRefs.trackRef.current) {
-      if (isOverflowing && mainMeasurements.caretX > mainMeasurements.rightBound) {
+      if (mainMeasurements.caretX > mainMeasurements.rightBound) {
         const newShift = Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound);
         if (newShift !== prevMainShift.current) {
           mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
           mainRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
           prevMainShift.current = newShift;
         }
-      } else if (!isOverflowing && prevMainShift.current !== 0) {
-        // 両方がはみ出ていない場合は位置をリセット
-        mainRefs.trackRef.current.style.transition = "";
-        mainRefs.trackRef.current.style.transform = "translateX(0px)";
-        prevMainShift.current = 0;
       }
     }
 
     if (subMeasurements && subRefs.trackRef.current) {
-      if (isOverflowing && subMeasurements.caretX > subMeasurements.rightBound) {
+      if (subMeasurements.caretX > subMeasurements.rightBound) {
         const newShift = Math.max(0, subMeasurements.caretX - subMeasurements.rightBound);
         if (newShift !== prevSubShift.current) {
           subRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
           subRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
           prevSubShift.current = newShift;
         }
-      } else if (!isOverflowing && prevSubShift.current !== 0) {
-        // 両方がはみ出ていない場合は位置をリセット
-        subRefs.trackRef.current.style.transition = "";
-        subRefs.trackRef.current.style.transform = "translateX(0px)";
-        prevSubShift.current = 0;
       }
     }
   }, [mainCorrect.length, subCorrect.length]);

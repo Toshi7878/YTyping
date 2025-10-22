@@ -20,10 +20,10 @@ import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { HotKeySelectFields } from "./options/hot-key";
-import { UserSoundEffectCheckbox } from "./options/sound-effect";
-import { UserTimeOffsetChange } from "./options/time-offset";
-import { UserWordOptions } from "./options/word-options";
-import { UserWordScrollChange } from "./options/word-scroll";
+import { SoundEffectOptions } from "./options/sound-effect";
+import { TimeOffsetChange } from "./options/time-offset";
+import { WordDisplayOptions } from "./options/word-display";
+import { WordScrollOptions } from "./options/word-scroll";
 
 export const SettingPopover = () => {
   const trpc = useTRPC();
@@ -55,9 +55,9 @@ export const SettingPopover = () => {
       label: "メイン設定",
       content: (
         <>
-          <UserTimeOffsetChange />
+          <TimeOffsetChange />
           <Separator className="bg-foreground/20 my-4" />
-          <UserSoundEffectCheckbox />
+          <SoundEffectOptions />
         </>
       ),
     },
@@ -65,17 +65,17 @@ export const SettingPopover = () => {
       label: "表示設定",
       content: (
         <>
-          <UserNextDisplayRadioButton />
+          <NextDisplayRadioOptions />
           <Separator className="bg-foreground/20 my-4" />
-          <UserLineCompletedRadioButton />
+          <LineCompletedRadioOptions />
           {isMdScreen && (
             <>
               <Separator className="bg-foreground/20 my-4" />
-              <UserWordScrollChange />
+              <WordScrollOptions />
             </>
           )}
           <Separator className="bg-foreground/20 my-4" />
-          <UserWordOptions />
+          <WordDisplayOptions />
         </>
       ),
     },
@@ -151,7 +151,7 @@ const SettingButton = () => {
   );
 };
 
-const UserLineCompletedRadioButton = () => {
+const LineCompletedRadioOptions = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { lineCompletedDisplay: line_completed_display } = useUserTypingOptionsState();
 
@@ -176,7 +176,7 @@ const UserLineCompletedRadioButton = () => {
   );
 };
 
-const UserNextDisplayRadioButton = () => {
+const NextDisplayRadioOptions = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { nextDisplay: next_display } = useUserTypingOptionsState();
 

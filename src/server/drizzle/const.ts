@@ -14,8 +14,9 @@ export const SUPABASE_PUBLIC_BUCKET = "ytyping-public";
 
 export const DEFAULT_TYPING_OPTIONS = {
   timeOffset: 0,
-  kanaWordScroll: 10,
-  romaWordScroll: 16,
+  kanaWordScroll: 35,
+  romaWordScroll: 40,
+  isSmoothScroll: false,
   mainWordFontSize: 100,
   subWordFontSize: 90,
   mainWordTopPosition: 0,

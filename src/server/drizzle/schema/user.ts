@@ -51,6 +51,7 @@ export const UserTypingOptions = pgTable("user_typing_options", {
   timeOffset: real("time_offset").notNull().default(DEFAULT_TYPING_OPTIONS.timeOffset),
   kanaWordScroll: integer("kana_word_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.kanaWordScroll),
   romaWordScroll: integer("roma_word_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.romaWordScroll),
+  isSmoothScroll: boolean("is_smooth_scroll").notNull().default(DEFAULT_TYPING_OPTIONS.isSmoothScroll),
   mainWordFontSize: integer("main_word_font_size").notNull().default(DEFAULT_TYPING_OPTIONS.mainWordFontSize),
   subWordFontSize: integer("sub_word_font_size").notNull().default(DEFAULT_TYPING_OPTIONS.subWordFontSize),
   mainWordTopPosition: real("main_word_top_position").notNull().default(DEFAULT_TYPING_OPTIONS.mainWordTopPosition),

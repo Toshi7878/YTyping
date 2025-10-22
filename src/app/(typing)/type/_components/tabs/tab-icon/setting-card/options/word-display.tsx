@@ -26,7 +26,7 @@ const WORD_OPTIONS_CONFIG = {
   },
 };
 
-export const UserWordOptions = () => {
+export const WordDisplayOptions = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const {
     mainWordFontSize,

@@ -5,7 +5,7 @@ import { VolumeRange } from "@/components/shared/volume-range";
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { H4 } from "@/components/ui/typography";
 
-export const UserSoundEffectCheckbox = () => {
+export const SoundEffectOptions = () => {
   const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
   const { readPlayer } = usePlayer();
   const { setUserTypingOptions } = useSetUserTypingOptions();

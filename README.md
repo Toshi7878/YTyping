@@ -1,10 +1,10 @@
 # YTyping開発環境セットアップ手順
 
-## Node.jsをインストール
+## Node.js v24をインストール
 
 <https://nodejs.org/ja/download/>
 
-## pnpmをインストール
+## pnpm v10をインストール
 
 <https://pnpm.io/installation>
 
