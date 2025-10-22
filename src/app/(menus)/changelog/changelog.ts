@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-10-22",
+    descriptions: ["タイピングページの設定にスクロールアニメーション有効・無効設定を追加(デフォルトは無効)"],
+  },
+  {
     date: "2025-10-13",
     descriptions: ["いいね / 拍手 通知機能を追加", "GitHubのREADME.mdに開発参加用の環境セットアップ手順を追加"],
   },

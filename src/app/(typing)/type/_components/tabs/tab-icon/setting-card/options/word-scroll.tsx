@@ -4,9 +4,9 @@ import { CounterInput } from "@/components/ui/counter";
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { H4 } from "@/components/ui/typography";
 
-const MAX_SCROLL = 20;
-const MIN_SCROLL = 0;
-const SCROLL_STEP = 1;
+const MAX_SCROLL = 80;
+const MIN_SCROLL = 5;
+const SCROLL_STEP = 5;
 
 export const WordScrollOptions = () => {
   const { setUserTypingOptions } = useSetUserTypingOptions();
@@ -23,8 +23,8 @@ export const WordScrollOptions = () => {
           min={MIN_SCROLL}
           value={kanaWordScroll}
           label="かな開始位置"
-          incrementTooltip="かな表示スクロールタイミングを増やします。"
-          decrementTooltip="かな表示スクロールタイミングを減らします。"
+          decrementTooltip="かな表示スクロール開始位置を左に移動します"
+          incrementTooltip="かな表示スクロール開始位置を右に移動します"
         />
         <CounterInput
           onChange={(value) => setUserTypingOptions({ romaWordScroll: value })}
@@ -33,8 +33,8 @@ export const WordScrollOptions = () => {
           min={MIN_SCROLL}
           value={romaWordScroll}
           label="ローマ字開始位置"
-          incrementTooltip="ローマ字表示スクロールタイミングを増やします。"
-          decrementTooltip="ローマ字表示スクロールタイミングを減らします。"
+          decrementTooltip="ローマ字表示スクロール開始位置を左に移動します"
+          incrementTooltip="ローマ字表示スクロール開始位置を右に移動します"
         />
       </div>
       <WordScrollAnimationRadioOptions />
