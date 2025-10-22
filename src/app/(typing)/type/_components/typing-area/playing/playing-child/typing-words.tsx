@@ -207,7 +207,7 @@ const useWordScroll = (
   const SUB_RIGHT_BOUND_RATIO = subWordScrollStart / 100;
 
   useEffect(() => {
-    requestDebouncedAnimationFrame("word-scroll", () => {
+    const cancel = requestDebouncedAnimationFrame("word-scroll", () => {
       if (mainCorrect.length === 0 && subCorrect.length === 0) {
         if (mainRefs.trackRef.current) {
           mainRefs.trackRef.current.style.transition = "";
@@ -261,6 +261,9 @@ const useWordScroll = (
         }
       }
     });
+
+    // コンポーネントアンマウント時にフレームをキャンセル
+    return cancel;
   }, [mainCorrect.length, subCorrect.length]);
 
   return { mainRefs, subRefs };
