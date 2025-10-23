@@ -150,57 +150,66 @@ const useTyping = () => {
     const { constantLineTime, constantRemainLineTime } = getTime({ type: "remainLineTime" });
 
     if (isSuccess) {
+      // 🚀 即座に必要な処理のみ同期実行（ユーザーフィードバック）
       setLineWord(newLineWord);
       triggerTypeSound({ isCompleted });
 
-      updateSuccessStatusRefs({
-        constantLineTime,
-        isCompleted,
-        successKey: inputResult.successKey,
-        typeChunk: inputResult.typeChunk,
-      });
-
-      updateSuccessStatus({
-        isCompleted,
-        constantRemainLineTime,
-        updatePoint: inputResult.updatePoint,
-      });
-      const { isPaused } = readYTStatus();
-
-      if (!isPaused) {
-        calcTypeSpeed({
-          updateType: isCompleted ? "completed" : "keydown",
+      // ⏰ 重い処理は次のフレームで非同期実行
+      requestAnimationFrame(() => {
+        updateSuccessStatusRefs({
           constantLineTime,
+          isCompleted,
+          successKey: inputResult.successKey,
+          typeChunk: inputResult.typeChunk,
         });
-      }
 
-      if (isCompleted) {
-        if (isLinePointUpdated()) {
-          updateLineResult();
+        updateSuccessStatus({
+          isCompleted,
+          constantRemainLineTime,
+          updatePoint: inputResult.updatePoint,
+        });
+        const { isPaused } = readYTStatus();
+
+        if (!isPaused) {
+          calcTypeSpeed({
+            updateType: isCompleted ? "completed" : "keydown",
+            constantLineTime,
+          });
         }
 
-        const { scene } = readGameStateUtils();
-        if (scene === "practice") {
-          const map = readMap();
-          if (!map) return;
+        if (isCompleted) {
+          if (isLinePointUpdated()) {
+            updateLineResult();
+          }
 
-          updateAllStatus({
-            count: map.mapData.length - 1,
-            updateType: "completed",
-          });
+          const { scene } = readGameStateUtils();
+          if (scene === "practice") {
+            const map = readMap();
+            if (!map) return;
 
-          if (isPaused) {
-            const count = readCount();
-            const newCurrentLine = map.mapData[count - 1];
-            const newNextLine = map.mapData[count];
-            setCurrentLine({ newCurrentLine, newNextLine });
+            updateAllStatus({
+              count: map.mapData.length - 1,
+              updateType: "completed",
+            });
+
+            if (isPaused) {
+              const count = readCount();
+              const newCurrentLine = map.mapData[count - 1];
+              const newNextLine = map.mapData[count];
+              setCurrentLine({ newCurrentLine, newNextLine });
+            }
           }
         }
-      }
+      });
     } else if (isFailed) {
+      // 🚀 即座に必要な処理のみ同期実行（ユーザーフィードバック）
       triggerMissSound();
-      updateMissStatus();
-      updateMissRefStatus({ constantLineTime, failKey: inputResult.failKey });
+
+      // ⏰ 重い処理は次のフレームで非同期実行
+      requestAnimationFrame(() => {
+        updateMissStatus();
+        updateMissRefStatus({ constantLineTime, failKey: inputResult.failKey });
+      });
     }
   };
 };
