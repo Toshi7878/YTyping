@@ -150,11 +150,9 @@ const useTyping = () => {
     const { constantLineTime, constantRemainLineTime } = getTime({ type: "remainLineTime" });
 
     if (isSuccess) {
-      // 🚀 即座に必要な処理のみ同期実行（ユーザーフィードバック）
       setLineWord(newLineWord);
       triggerTypeSound({ isCompleted });
 
-      // ⏰ 重い処理は次のフレームで非同期実行
       requestAnimationFrame(() => {
         updateSuccessStatusRefs({
           constantLineTime,
@@ -202,10 +200,8 @@ const useTyping = () => {
         }
       });
     } else if (isFailed) {
-      // 🚀 即座に必要な処理のみ同期実行（ユーザーフィードバック）
       triggerMissSound();
 
-      // ⏰ 重い処理は次のフレームで非同期実行
       requestAnimationFrame(() => {
         updateMissStatus();
         updateMissRefStatus({ constantLineTime, failKey: inputResult.failKey });
