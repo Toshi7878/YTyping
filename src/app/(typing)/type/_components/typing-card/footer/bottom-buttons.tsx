@@ -10,10 +10,10 @@ import {
   useUserTypingOptionsState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
 import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useMoveLine } from "../../../_lib/playing/use-move-line";
 import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";
 
 export const BottomButtons = () => {

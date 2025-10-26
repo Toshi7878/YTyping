@@ -14,6 +14,7 @@ import {
   useReadGameUtilParams,
   useReadLineWord,
   useReadMap,
+  useSetActiveSkipGuideKey,
   useSetChangeCSSCount,
   useSetCurrentLine,
   useSetElapsedSecTime,
@@ -276,8 +277,6 @@ export const useSetupNextLine = () => {
     setChangeCSSCount({ newCurrentCount });
   };
 };
-
-import { useSetActiveSkipGuideKey } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 
 interface useDisplaySkipGuideProps {
   kana: string;
