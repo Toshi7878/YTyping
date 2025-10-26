@@ -11,6 +11,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
+import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { useLineCount, useUserStats } from "../../../_lib/atoms/read-atoms";
 import { usePressSkip } from "../../../_lib/playing/keydown/hot-key/use-press-skip";
 import { useOnKeydown } from "../../../_lib/playing/keydown/use-keydown-event";
@@ -19,7 +20,6 @@ import { ChangeCSS } from "./playing-child/change-css-style";
 import { Lyrics } from "./playing-child/lyrics-text";
 import { NextLyrics } from "./playing-child/next-lyrics";
 import { TypingWords } from "./playing-child/typing-words";
-import { useActiveElement } from "@/utils/hooks/use-active-element";
 
 interface PlayingProps {
   className?: string;
@@ -96,9 +96,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
 
   // text系inputにフォーカスが当たっている場合はkeydownイベントを登録しない
   useEffect(() => {
-    const isTextInput =
-      activeElement?.tagName === "INPUT" ||
-      activeElement?.tagName === "TEXTAREA";
+    const isTextInput = activeElement?.tagName === "INPUT" || activeElement?.tagName === "TEXTAREA";
 
     if (!isTextInput) {
       window.addEventListener("keydown", handleKeydown);
@@ -114,9 +112,9 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       className={cn("flex cursor-none flex-col items-start justify-between truncate select-none", className)}
       id="typing_scene"
       onTouchStart={() => {
-        const { skip } = readGameUtils();
+        const { activeSkipKey } = readGameUtils();
 
-        if (skip) {
+        if (activeSkipKey) {
           pressSkip();
         }
       }}

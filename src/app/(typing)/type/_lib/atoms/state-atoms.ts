@@ -8,7 +8,7 @@ import type { BuildMap } from "@/lib/build-map/build-map";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
-import type { InputMode, LineData, LineWord, SceneType } from "../type";
+import type { InputMode, LineData, LineWord, SceneType, SkipGuideKey } from "../type";
 import {
   gameUtilityReferenceParamsAtom,
   lineProgressAtom,
@@ -69,7 +69,7 @@ const gameStateUtilParamsAtom = atomWithReset({
   tabName: "ランキング" as (typeof TAB_NAMES)[number],
   inputMode: initialInputMode,
   notify: Symbol(""),
-  skip: "" as "Space" | "",
+  activeSkipKey: null as SkipGuideKey,
   changeCSSCount: 0,
   lineSelectIndex: 0,
   isYTStarted: false,
@@ -102,7 +102,7 @@ export const sceneGroupAtom = atom((get) => {
 });
 const tabNameAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("tabName"));
 export const notifyAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("notify"));
-const skipAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("skip"));
+const skipAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("activeSkipKey"));
 const changeCSSCountAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("changeCSSCount"));
 const lineSelectIndexAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("lineSelectIndex"));
 const playingInputModeAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("inputMode"));
@@ -145,7 +145,7 @@ export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom,
 export const useSetPlayingInputMode = () => useSetAtom(playingInputModeAtom, { store });
 
 export const useSkipState = () => useAtomValue(skipAtom, { store });
-export const useSetSkip = () => useSetAtom(skipAtom, { store });
+export const useSetActiveSkipGuideKey = () => useSetAtom(skipAtom, { store });
 
 export const useNotifyState = () => useAtomValue(notifyAtom);
 export const useSetNotify = () => useSetAtom(notifyAtom);

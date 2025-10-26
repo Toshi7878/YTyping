@@ -189,8 +189,6 @@ export const useOnReady = () => {
 export const useOnRateChange = () => {
   const setNotify = useSetNotify();
 
-  const { readLineProgress } = useProgress();
-  const readMap = useReadMap();
   const setSpeed = useSetSpeed();
 
   return (player: YT.Player) => {
@@ -199,10 +197,5 @@ export const useOnRateChange = () => {
     setSpeed((prev) => ({ ...prev, playSpeed: speed }));
 
     setNotify(Symbol(`x${speed.toFixed(2)}`));
-    const lineProgress = readLineProgress();
-    if (lineProgress) {
-      const map = readMap();
-      if (!map) return;
-    }
   };
 };

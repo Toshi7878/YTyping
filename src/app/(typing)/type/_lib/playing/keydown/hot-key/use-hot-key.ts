@@ -40,11 +40,15 @@ export const usePlayingHotKey = () => {
     if (!map) return;
     const typingOptions = readTypingOptions();
 
-    const { inputMode, skip } = readGameStateUtils();
+    const { inputMode, activeSkipKey } = readGameStateUtils();
 
     const isCtrlLeftRight = typingOptions.timeOffsetAdjustKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
     const isCtrlAltLeftRight =
       typingOptions.timeOffsetAdjustKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
+
+    if (event.code === activeSkipKey) {
+      pressSkip();
+    }
 
     switch (event.code) {
       case "Escape": //Escでポーズ
@@ -73,11 +77,6 @@ export const usePlayingHotKey = () => {
           setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
         } else if (scene === "replay" || scene === "practice") {
           movePrevLine();
-        }
-        break;
-      case skip:
-        if (skip !== "") {
-          pressSkip();
         }
         break;
       case "F1":

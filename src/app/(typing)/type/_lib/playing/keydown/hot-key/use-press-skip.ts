@@ -1,10 +1,10 @@
 import { useGameUtilityReferenceParams, useLineCount, usePlayer, useReadYTStatus } from "../../../atoms/read-atoms";
 import { useReadPlaySpeed } from "../../../atoms/speed-reducer-atoms";
-import { useReadMap, useReadUserTypingOptions, useSetSkip } from "../../../atoms/state-atoms";
+import { useReadMap, useReadUserTypingOptions, useSetActiveSkipGuideKey } from "../../../atoms/state-atoms";
 
 export const usePressSkip = () => {
   const { readPlayer } = usePlayer();
-  const setSkip = useSetSkip();
+  const setSkip = useSetActiveSkipGuideKey();
 
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const { readYTStatus } = useReadYTStatus();
@@ -35,6 +35,6 @@ export const usePressSkip = () => {
     readPlayer().seekTo(seekTime, true);
 
     writeGameUtilRefParams({ isRetrySkip: false });
-    setSkip("");
+    setSkip(null);
   };
 };

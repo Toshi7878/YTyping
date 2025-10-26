@@ -3,7 +3,7 @@ import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import { usePlayer, useResultCards } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useMapState, useSceneGroupState, useSetLineSelectIndex } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useMoveLine } from "@/app/(typing)/type/_lib/playing/practice-replay/use-move-line";
+import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { OptimizedResultCard } from "./optimized-result-card";
 

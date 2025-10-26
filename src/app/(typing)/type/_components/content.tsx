@@ -14,7 +14,7 @@ import {
   useSetTypingStatus,
   useSetTypingStatusLine,
 } from "../_lib/atoms/state-atoms";
-import { CONTENT_WIDTH, useWindowScale } from "../_lib/global/use-window-scale";
+import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
 import { MainGameCard } from "./typing-area/main-game-card";
 import { YouTubePlayer } from "./youtube-player";
