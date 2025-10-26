@@ -32,8 +32,8 @@ export const useMoveLine = () => {
     const isPracticeScene = scene === "practice";
     const isTimeBuffer = isPracticeScene && !isPaused;
 
-    const currentCount = readCount();
-    const referenceCount = currentCount - (isTimeBuffer ? 0 : 1);
+    const count = readCount();
+    const referenceCount = count + 1 - (isTimeBuffer ? 0 : 1);
 
     const { typingLineIndexes } = map;
 
@@ -66,8 +66,8 @@ export const useMoveLine = () => {
     readPlayer().seekTo(seekTargetTime, true);
     setNotify(Symbol("◁"));
     scrollToCard(newLineSelectIndex);
-    const currentLine = map.mapData[newCount];
-    readLineProgress().value = isTimeBuffer && currentLine ? prevTime - currentLine.time : 0;
+    const newLine = map.mapData[newCount];
+    readLineProgress().value = isTimeBuffer ? prevTime - newLine.time : 0;
   };
 
   const moveNextLine = () => {
