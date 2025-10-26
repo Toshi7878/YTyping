@@ -52,30 +52,6 @@ export const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerP
     { enableOnFormTags: false, preventDefault: true },
   );
 
-  useHotkeys(
-    ["arrowleft", "arrowright"],
-    (event) => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen) return;
-
-      const ARROW_SEEK_SECONDS = 3;
-
-      const { speed } = readYtPlayerStatus();
-      const time = readPlayer().getCurrentTime();
-      const seekAmount = ARROW_SEEK_SECONDS * speed;
-      if (event.key === "ArrowLeft") {
-        readPlayer().seekTo(time - seekAmount, true);
-      } else {
-        readPlayer().seekTo(time + seekAmount, true);
-      }
-    },
-    {
-      enableOnFormTags: false,
-      preventDefault: true,
-      ignoreModifiers: true,
-    },
-  );
-
   useEffect(() => {
     if ((!isYTReady && !isYTStarted) || videoId === mapVideoId) return;
     updateEndTime(readPlayer());

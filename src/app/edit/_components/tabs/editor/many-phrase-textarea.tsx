@@ -38,6 +38,7 @@ export const ManyPhraseTextarea = () => {
     },
     {
       preventDefault: true,
+      enableOnFormTags: true,
     },
   );
 

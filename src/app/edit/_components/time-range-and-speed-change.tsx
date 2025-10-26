@@ -1,6 +1,8 @@
 "use client";
 
-import { useYTSpeedState } from "@/app/edit/_lib/atoms/state-atoms";
+import { useCallback } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { useReadYtPlayerStatus, useYTSpeedState } from "@/app/edit/_lib/atoms/state-atoms";
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
@@ -29,14 +31,28 @@ const TimeRange = () => {
   const ytDuration = useYTDurationState();
 
   const setTimeRangeValue = useSetTimeRangeValue();
+  const arrowSeek = useArrowSeek();
 
-  const handleRangeChange = (value: number[]) => {
-    const time = value[0];
-    setTimeRangeValue(time);
+  const handleRangeChange = (value: number) => {
+    setTimeRangeValue(value);
     const player = readPlayer();
     player.playVideo();
-    player.seekTo(time, true);
+    player.seekTo(value, true);
   };
+
+  useHotkeys(
+    ["arrowleft", "arrowright"],
+    (event) => {
+      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
+      if (isDialogOpen) return;
+      arrowSeek(event);
+    },
+    {
+      enableOnFormTags: false,
+      preventDefault: true,
+      ignoreModifiers: true,
+    },
+  );
 
   return (
     <Slider
@@ -44,7 +60,8 @@ const TimeRange = () => {
       step={0.1}
       id="time-range"
       value={[timeRangeValue]}
-      onValueChange={handleRangeChange}
+      onValueChange={(value) => handleRangeChange(value[0])}
+      onKeyDown={(event) => arrowSeek(event)}
       max={ytDuration}
       className="w-full"
     />
@@ -68,5 +85,27 @@ const EditSpeedChange = () => {
       minusButtonHotkey="f9"
       plusButtonHotkey="f10"
     />
+  );
+};
+
+const useArrowSeek = () => {
+  const readYtPlayerStatus = useReadYtPlayerStatus();
+  const { readPlayer } = usePlayer();
+
+  return useCallback(
+    (event: KeyboardEvent | React.KeyboardEvent<HTMLDivElement>) => {
+      const ARROW_SEEK_SECONDS = 3;
+
+      const { speed } = readYtPlayerStatus();
+      const time = readPlayer().getCurrentTime();
+      const seekAmount = ARROW_SEEK_SECONDS * speed;
+      if (event.key === "ArrowLeft") {
+        readPlayer().seekTo(time - seekAmount, true);
+      } else if (event.key === "ArrowRight") {
+        readPlayer().seekTo(time + seekAmount, true);
+      }
+      event.preventDefault();
+    },
+    [readYtPlayerStatus, readPlayer],
   );
 };
