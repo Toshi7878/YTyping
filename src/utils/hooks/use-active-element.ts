@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const useActiveElement = () => {
   const [activeElement, setActiveElement] = useState<Element | null>(
-    typeof document !== "undefined" ? document.activeElement : null
+    typeof document !== "undefined" ? document.activeElement : null,
   );
 
   useEffect(() => {
@@ -22,4 +22,3 @@ export const useActiveElement = () => {
 
   return activeElement;
 };
-
