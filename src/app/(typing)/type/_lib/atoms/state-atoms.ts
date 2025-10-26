@@ -101,7 +101,7 @@ export const sceneGroupAtom = atom((get) => {
   }
 });
 const tabNameAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("tabName"));
-export const notifyAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("notify"));
+const notifyAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("notify"));
 const skipAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("activeSkipKey"));
 const changeCSSCountAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("changeCSSCount"));
 const lineSelectIndexAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("lineSelectIndex"));
@@ -157,34 +157,34 @@ export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
 
 export const useSetLineSelectIndex = () => {
   return useAtomCallback(
-    useCallback((get, set, index: number) => {
+    useCallback((get, set, lineIndex: number) => {
+      const map = get(mapAtom);
+      if (!map) return;
+
+      const count = map.typingLineIndexes[lineIndex - 1];
+      if (count === undefined) return;
+
       const prevSelectedIndex = get(lineSelectIndexAtom);
-      if (prevSelectedIndex !== null) {
-        const prevAtom = lineResultAtomFamily(prevSelectedIndex);
-        const prevResult = get(prevAtom);
-        if (prevResult) {
-          set(prevAtom, {
-            ...prevResult,
-            isSelected: false,
-          });
+      if (prevSelectedIndex !== null && prevSelectedIndex !== lineIndex) {
+        // 前回のlineIndexからcountを導出
+        const prevCount = map.typingLineIndexes[prevSelectedIndex - 1];
+        if (prevCount !== undefined) {
+          const prevSelectedAtom = lineResultAtomFamily(prevCount);
+          const prev = get(prevSelectedAtom);
+          if (prev) {
+            set(prevSelectedAtom, { ...prev, isSelected: false });
+          }
         }
       }
 
-      // 指定されたインデックスの行が存在するかチェック
-      const targetAtom = lineResultAtomFamily(index);
-      const targetResult = get(targetAtom);
-
-      if (!targetResult) {
-        return; // 存在しない行は選択できない
-      }
-
       // 新しい行を選択
-      set(lineSelectIndexAtom, index);
-      set(targetAtom, {
-        ...targetResult,
-        isSelected: true,
-      });
-    }, []), // 依存関係配列を追加
+      const targetAtom = lineResultAtomFamily(count);
+      const target = get(targetAtom);
+      if (!target) return;
+
+      set(lineSelectIndexAtom, lineIndex);
+      set(targetAtom, { ...target, isSelected: true });
+    }, []),
     { store },
   );
 };
@@ -254,18 +254,8 @@ export const useSetLineResult = () => {
     useCallback((get, set, { index, lineResult }: { index: number; lineResult: ResultData[number] }) => {
       const prev = get(lineResultAtomFamily(index));
       if (!prev) return;
-      set(lineResultAtomFamily(index), {
-        ...prev,
-        lineResult,
-      });
+      set(lineResultAtomFamily(index), { ...prev, lineResult });
     }, []),
-    { store },
-  );
-};
-
-export const useReadLineResult = (index: number) => {
-  return useAtomCallback(
-    useCallback((get) => get(lineResultAtomFamily(index)), [index]),
     { store },
   );
 };
