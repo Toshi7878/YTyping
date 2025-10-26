@@ -138,7 +138,7 @@ const useTyping = () => {
 
   const calcTypeSpeed = useCalcTypeSpeed();
   const inputJudge = useTypingJudge();
-  const { isLinePointUpdated, updateLineResult } = useUpdateLineResult();
+  const { hasLineResultImproved, saveLineResult } = useUpdateLineResult();
   const readGameStateUtils = useReadGameUtilParams();
   const updateAllStatus = useUpdateAllStatus();
   const readMap = useReadMap();
@@ -176,8 +176,10 @@ const useTyping = () => {
         }
 
         if (isCompleted) {
-          if (isLinePointUpdated()) {
-            updateLineResult();
+          const count = readCount();
+
+          if (hasLineResultImproved(count)) {
+            saveLineResult(count);
           }
 
           const { scene } = readGameStateUtils();
@@ -192,8 +194,8 @@ const useTyping = () => {
 
             if (isPaused) {
               const count = readCount();
-              const newCurrentLine = map.mapData[count - 1];
-              const newNextLine = map.mapData[count];
+              const newCurrentLine = map.mapData[count];
+              const newNextLine = map.mapData[count + 1];
               setCurrentLine({ newCurrentLine, newNextLine });
             }
           }

@@ -110,7 +110,7 @@ export const useReplay = () => {
     const count = readCount();
     const lineResults = readAllLineResults();
 
-    const lineResult = lineResults[count - 1];
+    const lineResult = lineResults[count];
     if (!lineResult) return;
     const { types } = lineResult;
     if (types.length === 0) return;

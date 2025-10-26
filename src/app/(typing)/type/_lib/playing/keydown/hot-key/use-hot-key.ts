@@ -8,9 +8,9 @@ import {
   useSetLineResultDrawer,
   useSetNotify,
 } from "../../../atoms/state-atoms";
-import { useMoveLine } from "../../practice-replay/use-move-line";
 import { useChangePlayMode } from "../../use-change-play-mode";
 import { useInputModeChange } from "../../use-input-mode-change";
+import { useMoveLine } from "../../use-move-line";
 import { useRetry } from "../../use-retry";
 import { useGamePause } from "./use-game-pause";
 import { usePressSkip } from "./use-press-skip";

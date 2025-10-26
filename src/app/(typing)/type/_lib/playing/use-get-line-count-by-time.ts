@@ -6,7 +6,7 @@ export const useGetLineCountByTime = () => {
   return (time: number): number => {
     const map = readMap();
 
-    const index = map?.mapData.findIndex((line) => line.time >= time) ?? 0;
-    return Math.max(index);
+    const nextIndex = map?.mapData.findIndex((line) => line.time >= time) ?? 0;
+    return Math.max(0, nextIndex - 1);
   };
 };

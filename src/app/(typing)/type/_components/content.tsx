@@ -16,7 +16,7 @@ import {
 } from "../_lib/atoms/state-atoms";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
-import { MainGameCard } from "./typing-area/main-game-card";
+import { TypingCard } from "./typing-card/typing-card";
 import { YouTubePlayer } from "./youtube-player";
 
 interface ContentProps {
@@ -77,7 +77,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
           <TabsArea className="flex flex-[8] flex-col" />
         </section>
 
-        <MainGameCard />
+        <TypingCard />
 
         {ytLayoutMode === "column" && (
           <section className="mt-5">

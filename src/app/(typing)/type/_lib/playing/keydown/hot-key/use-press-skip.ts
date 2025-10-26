@@ -20,7 +20,7 @@ export const usePressSkip = () => {
     const { timeOffset, isRetrySkip } = readGameUtilRefParams();
     const count = readCount();
 
-    const nextLine = map.mapData[count];
+    const nextLine = map.mapData[count + 1];
 
     const skippedTime =
       (isRetrySkip ? Number(map.mapData[map.startLine].time) : Number(nextLine.time)) +

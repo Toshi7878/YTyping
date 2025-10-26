@@ -325,7 +325,7 @@ export const useUpdateAllStatus = () => {
     let totalTypeTime = 0;
     const { scene } = readGameStateUtils();
 
-    for (let i = 0; i <= count - 1; i++) {
+    for (let i = 0; i < count; i++) {
       const lineResult = lineResults[i];
       newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
       newStatus.miss += lineResult.status.lMiss ?? 0;
@@ -344,7 +344,7 @@ export const useUpdateAllStatus = () => {
       newStatus.type += lineResult.status.lType ?? 0;
     }
 
-    const lineResult = lineResults[count - 1];
+    const lineResult = lineResults[count];
     newStatus.kpm = totalTypeTime > 0 ? Math.floor((newStatus.type / totalTypeTime) * 60) : 0;
     newStatus.rank = calcCurrentRank(newStatus.score);
 

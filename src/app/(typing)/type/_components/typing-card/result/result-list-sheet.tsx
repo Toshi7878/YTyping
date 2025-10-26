@@ -2,12 +2,43 @@
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import { usePlayer, useResultCards } from "@/app/(typing)/type/_lib/atoms/read-atoms";
-import { useMapState, useSceneGroupState, useSetLineSelectIndex } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import {
+  useLineResultDrawerState,
+  useMapState,
+  useSceneGroupState,
+  useSetLineResultDrawer,
+  useSetLineSelectIndex,
+} from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { ResultData } from "@/server/drizzle/validator/result";
-import { OptimizedResultCard } from "./optimized-result-card";
+import { OptimizedResultCard } from "./card/optimized-result-card";
 
-export const ResultLineList = () => {
+export const ResultListSheet = () => {
+  const isOpen = useLineResultDrawerState();
+  const sceneGroup = useSceneGroupState();
+  const setLineResultDrawer = useSetLineResultDrawer();
+
+  return (
+    <Sheet modal={false} open={isOpen} onOpenChange={setLineResultDrawer}>
+      <SheetContent
+        onEscapeKeyDown={sceneGroup === "Playing" ? (event) => event.preventDefault() : undefined}
+        forceMount
+        side="right"
+        className="bg-accent/90 w-xs"
+        overlayClassName="bg-transparent"
+      >
+        <SheetHeader className="py-2">
+          <SheetTitle>{sceneGroup === "End" ? "詳細リザルト" : "練習リザルト"}</SheetTitle>
+        </SheetHeader>
+
+        <ResultLineList />
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+const ResultLineList = () => {
   const map = useMapState();
 
   const sceneGroup = useSceneGroupState();

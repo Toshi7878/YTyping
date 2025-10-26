@@ -54,7 +54,7 @@ export const useInputModeChange = () => {
     }
 
     const count = readCount();
-    const nextLine = map.mapData[count];
+    const nextLine = map.mapData[count + 1];
 
     if (nextLine.kanaWord) {
       setNextLyrics(nextLine);

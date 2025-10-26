@@ -6,6 +6,7 @@ import {
   useMapState,
   useReadGameUtilParams,
   useSceneState,
+  useSetCurrentLine,
   useSetLineResultDrawer,
   useSetNextLyrics,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
@@ -31,6 +32,8 @@ export const PlayingScene = ({ className }: PlayingProps) => {
 
   const { data: session } = useSession();
   const { readUserStats, resetUserStats } = useUserStats();
+  const { resetCurrentLine } = useSetCurrentLine();
+
   const scene = useSceneState();
   const activeElement = useActiveElement();
 
@@ -89,6 +92,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     const count = readCount();
     if (count === 0 && map) {
       setNextLyrics(map.mapData[1]);
+      resetCurrentLine();
     } else {
       resetNextLyrics();
     }

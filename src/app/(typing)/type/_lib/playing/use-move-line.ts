@@ -25,6 +25,7 @@ export const useMoveLine = () => {
 
   const movePrevLine = () => {
     const map = readMap();
+    if (!map) return;
 
     const { scene } = readGameStateUtils();
     const { isPaused } = readYTStatus();
@@ -66,23 +67,30 @@ export const useMoveLine = () => {
     setNotify(Symbol("◁"));
     drawerSelectColorChange(newCount);
     scrollToCard(newLineSelectIndex);
-
-    const prevLine = map.mapData[newCount - 1];
-    readLineProgress().value = isTimeBuffer && prevLine ? prevTime - prevLine.time : 0;
+    const currentLine = map.mapData[newCount];
+    readLineProgress().value = isTimeBuffer && currentLine ? prevTime - currentLine.time : 0;
   };
 
   const moveNextLine = () => {
     const map = readMap();
+    if (!map) return;
     const { lineSelectIndex } = readGameStateUtils();
+    const count = readCount();
     const seekCount = lineSelectIndex ? map.typingLineIndexes[lineSelectIndex - 1] : null;
-    const seekCountAdjust = seekCount && seekCount === readCount() ? 0 : -1;
+    const seekCountAdjust = seekCount && seekCount === count - 1 ? -1 : 0;
 
-    const count = readCount() + seekCountAdjust;
-    const nextCount = map.typingLineIndexes.find((num) => num > count);
+    const adjustedCount = count + seekCountAdjust;
+
+    const findNextCount = () => {
+      const findCount = map.typingLineIndexes.find((num) => num > adjustedCount);
+      if (findCount === undefined) return;
+
+      return findCount + 1;
+    };
+    const nextCount = findNextCount();
     if (nextCount === undefined) return;
     const { playSpeed } = readPlaySpeed();
-    const prevLineTime =
-      (nextCount > 1 ? map.mapData[nextCount].time - map.mapData[nextCount - 1].time : 0) / playSpeed;
+    const prevLineTime = map.mapData[nextCount].time - map.mapData[nextCount - 1].time / playSpeed;
     const { scene } = readGameStateUtils();
     const { isPaused } = readYTStatus();
     const isTimeBuffer = scene === "practice" && !isPaused && prevLineTime > 1;
@@ -100,11 +108,12 @@ export const useMoveLine = () => {
     setNotify(Symbol("▷"));
     drawerSelectColorChange(newCount);
     scrollToCard(newLineSelectIndex);
-    readLineProgress().value = nextTime - map.mapData[newCount - 1].time;
+    readLineProgress().value = nextTime - map.mapData[newCount].time;
   };
 
   const moveSetLine = (seekCount: number) => {
     const map = readMap();
+    if (!map) return;
     const { isPaused } = readYTStatus();
     const { playSpeed } = readPlaySpeed();
     const { scene, lineSelectIndex } = readGameStateUtils();
@@ -121,7 +130,7 @@ export const useMoveLine = () => {
     updateLine(newCount);
     timerControls.stopTimer();
 
-    readLineProgress().value = seekTime - map.mapData[newCount - 1].time;
+    readLineProgress().value = seekTime - map.mapData[newCount].time;
   };
 
   const drawerSelectColorChange = (newLineSelectIndex: number) => {
