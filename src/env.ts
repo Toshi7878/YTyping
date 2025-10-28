@@ -27,10 +27,10 @@ export const env = createEnv({
 
     YAHOO_APP_ID: z.string().min(1).optional(),
     SUDACHI_API_KEY: z.string().min(1).optional(),
-    SUDACHI_API_URL: z.string().min(1).optional(),
+    SUDACHI_API_URL: z.url().optional(),
     NODE_ENV: z.enum(["development", "production"]).optional(),
     NEXT_RUNTIME: z.enum(["nodejs", "edge"]).optional(),
-    DATABASE_URL: z.string().min(1),
+    DATABASE_URL: z.url(),
     SUPABASE_SECRET_KEY: z.string().optional(),
     VERCEL_PROJECT_ID: isVercel ? z.string().min(1) : z.string().optional(),
     VERCEL_API_TOKEN: isVercel ? z.string().min(1) : z.string().optional(),
