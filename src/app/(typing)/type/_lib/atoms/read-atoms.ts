@@ -1,5 +1,5 @@
 import type { ExtractAtomValue } from "jotai";
-import { atom, useAtomValue } from "jotai";
+import { atom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import type { TypeResult } from "@/server/drizzle/validator/result";
@@ -11,7 +11,6 @@ const store = getTypeAtomStore();
 
 const lineCountAtom = atomWithReset(0);
 
-export const useLineCountState = () => useAtomValue(lineCountAtom, { store });
 export const useLineCount = () => {
   const readCount = useAtomCallback(
     useCallback((get) => get(lineCountAtom), []),
