@@ -1,7 +1,7 @@
 import { useGameUtilityReferenceParams } from "../../../atoms/read-atoms";
 import { usePlaySpeedReducer } from "../../../atoms/speed-reducer-atoms";
 import {
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useReadMap,
   useReadUserTypingOptions,
   useSceneState,
@@ -33,14 +33,14 @@ export const usePlayingHotKey = () => {
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readTypingOptions = useReadUserTypingOptions();
   const readMap = useReadMap();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
 
   return (event: KeyboardEvent) => {
     const map = readMap();
     if (!map) return;
     const typingOptions = readTypingOptions();
 
-    const { inputMode, activeSkipKey } = readGameStateUtils();
+    const { inputMode, activeSkipKey } = readGameUtilityParams();
 
     const isCtrlLeftRight = typingOptions.timeOffsetAdjustKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
     const isCtrlAltLeftRight =
@@ -123,7 +123,7 @@ export const usePlayingHotKey = () => {
         break;
       case "Backspace":
         if (scene === "replay" || scene === "practice") {
-          const { lineSelectIndex } = readGameStateUtils();
+          const { lineSelectIndex } = readGameUtilityParams();
           const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
           moveSetLine(seekCount);
         }

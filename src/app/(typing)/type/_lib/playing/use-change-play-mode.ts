@@ -2,7 +2,7 @@ import type { YouTubeSpeed } from "@/utils/types";
 import { useGameUtilityReferenceParams } from "../atoms/read-atoms";
 import { usePlaySpeedReducer, useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
 import {
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useSetLineResultDrawer,
   useSetNotify,
   useSetPlayingInputMode,
@@ -18,7 +18,7 @@ export const useChangePlayMode = () => {
   const dispatchSpeed = usePlaySpeedReducer();
 
   const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const readGameUtilParams = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const setPlayingInputMode = useSetPlayingInputMode();
   const setLineResultDrawer = useSetLineResultDrawer();
 
@@ -26,7 +26,7 @@ export const useChangePlayMode = () => {
   const readReadyInputMode = useReadReadyInputMode();
 
   return () => {
-    const { scene } = readGameUtilParams();
+    const { scene } = readGameUtilityParams();
     if (scene === "play") {
       const confirmMessage = "練習モードに移動しますか？";
       if (window.confirm(confirmMessage)) {

@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { cn } from "@/lib/utils";
 import { useMapState, useSceneGroupState, useSceneState, useYTStartedState } from "../../_lib/atoms/state-atoms";
 import { EndScene } from "./end/end-scene";
-import { BottomButtons } from "./footer/bottom-buttons";
+import { FooterButtons } from "./footer/buttons";
 import { SkipAndTimeDisplay } from "./footer/skip-and-time-display";
 import { Combo } from "./header/combo";
 import { LineRemainTimeAndKpm } from "./header/linekpm-and-remain-time";
@@ -85,7 +85,7 @@ const GameCardFooter = ({ className }: { className?: string }) => {
     <CardFooter className={className}>
       <SkipAndTimeDisplay />
       <TimeProgress id="total_progress" />
-      <BottomButtons />
+      <FooterButtons />
     </CardFooter>
   );
 };

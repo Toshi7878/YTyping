@@ -6,12 +6,11 @@ import {
   useLineStatus,
   usePlayer,
   useProgress,
-  useReadYTStatus,
 } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadElapsedSecTime,
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useReadLineWord,
   useReadMap,
   useSetActiveSkipGuideKey,
@@ -81,11 +80,10 @@ const useTimer = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
 
   const { setLineProgressValue, setTotalProgressValue } = useProgress();
-  const { readYTStatus } = useReadYTStatus();
   const readElapsedSecTime = useReadElapsedSecTime();
   const readLineWord = useReadLineWord();
   const { readLineStatus } = useLineStatus();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const readMap = useReadMap();
   const { readCount } = useLineCount();
   const { readPlayer } = usePlayer();
@@ -103,14 +101,12 @@ const useTimer = () => {
     nextLine: LineData;
     prevCount: number;
   }) => {
-    const { scene } = readGameStateUtils();
+    const { scene, movieDuration } = readGameUtilityParams();
     const { isCompleted } = readLineStatus();
 
     if (!isCompleted && scene !== "replay") {
       calcLineResult({ constantLineTime, count: prevCount });
     }
-
-    const { movieDuration } = readYTStatus();
 
     const isEnd =
       nextLine?.lyrics === "end" ||
@@ -172,8 +168,8 @@ const useTimer = () => {
     const { currentTime, constantTime, currentLineTime, constantLineTime, constantRemainLineTime } = getYouTubeTime({
       type: "remainLineTime",
     });
+    const { movieDuration } = readGameUtilityParams();
 
-    const { movieDuration } = readYTStatus();
     const count = readCount();
     const nextLine = map.mapData[count + 1];
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
@@ -192,7 +188,7 @@ const useTimer = () => {
     }
 
     setLineProgressValue(currentLineTime);
-    const { scene } = readGameStateUtils();
+    const { scene } = readGameUtilityParams();
 
     if (scene === "replay") {
       replay({ constantLineTime, constantRemainLineTime });
@@ -203,7 +199,7 @@ const useTimer = () => {
 const useProcessLineCompletion = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
-  const readGameUtilParams = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const readMap = useReadMap();
   const { hasLineResultImproved, saveLineResult } = useUpdateLineResult();
   const updateStatus = useLineUpdateStatus();
@@ -211,7 +207,7 @@ const useProcessLineCompletion = () => {
   return ({ constantLineTime, count }: { constantLineTime: number; count: number }) => {
     const map = readMap();
     if (!map) return;
-    const { scene } = readGameUtilParams();
+    const { scene } = readGameUtilityParams();
 
     const isTypingLine = count >= 0 && map.mapData[count].kpm.r > 0;
 
@@ -246,7 +242,7 @@ export const useSetupNextLine = () => {
   const { setCurrentLine } = useSetCurrentLine();
   const readPlaySpeed = useReadPlaySpeed();
   const readMap = useReadMap();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const updateAllStatus = useUpdateAllStatus();
   const { writeCount } = useLineCount();
 
@@ -261,7 +257,7 @@ export const useSetupNextLine = () => {
     setCurrentLine({ newCurrentLine, newNextLine });
     resetLineStatus();
 
-    const { inputMode, scene } = readGameStateUtils();
+    const { inputMode, scene } = readGameUtilityParams();
     const { playSpeed } = readPlaySpeed();
     if (scene === "replay") {
       lineReplayUpdate(newCurrentCount);

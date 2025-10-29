@@ -27,7 +27,7 @@ export const useLineCount = () => {
   return { readCount, writeCount };
 };
 
-const typingDetailsAtom = atomWithReset({
+const typingSubstatusRefAtom = atomWithReset({
   romaType: 0,
   kanaType: 0,
   flickType: 0,
@@ -46,14 +46,14 @@ const typingDetailsAtom = atomWithReset({
   failureCount: 0,
 });
 
-export const useTypingDetails = () => {
-  const readStatus = useAtomCallback(
-    useCallback((get) => get(typingDetailsAtom), []),
+export const useTypingSubstatusReference = () => {
+  const readSubstatusRefOnly = useAtomCallback(
+    useCallback((get) => get(typingSubstatusRefAtom), []),
     { store },
   );
   const writeStatus = useAtomCallback(
-    useCallback((_get, set, newUserStats: Partial<ExtractAtomValue<typeof typingDetailsAtom>>) => {
-      set(typingDetailsAtom, (prev) => {
+    useCallback((_get, set, newUserStats: Partial<ExtractAtomValue<typeof typingSubstatusRefAtom>>) => {
+      set(typingSubstatusRefAtom, (prev) => {
         return { ...prev, ...newUserStats };
       });
     }, []),
@@ -62,12 +62,12 @@ export const useTypingDetails = () => {
 
   const resetStatus = useAtomCallback(
     useCallback((_get, set) => {
-      set(typingDetailsAtom, RESET);
+      set(typingSubstatusRefAtom, RESET);
     }, []),
     { store },
   );
 
-  return { readStatus, writeStatus, resetStatus };
+  return { readStatus: readSubstatusRefOnly, writeStatus, resetStatus };
 };
 
 export const lineStatusAtom = atomWithReset({
@@ -139,34 +139,6 @@ export const useUserStats = () => {
   );
 
   return { readUserStats, writeUserStats, resetUserStats };
-};
-
-export const ytStatusAtom = atomWithReset({
-  isPaused: false,
-  movieDuration: 0,
-});
-
-export const useReadYTStatus = () => {
-  const readYTStatus = useAtomCallback(
-    useCallback((get) => get(ytStatusAtom), []),
-    { store },
-  );
-  const writeYTStatus = useAtomCallback(
-    useCallback((_get, set, newYTStatus: Partial<ExtractAtomValue<typeof ytStatusAtom>>) => {
-      set(ytStatusAtom, (prev) => {
-        return { ...prev, ...newYTStatus };
-      });
-    }, []),
-    { store },
-  );
-  const resetYTStatus = useAtomCallback(
-    useCallback((_get, set) => {
-      set(ytStatusAtom, RESET);
-    }, []),
-    { store },
-  );
-
-  return { readYTStatus, writeYTStatus, resetYTStatus };
 };
 
 export const gameUtilityReferenceParamsAtom = atomWithReset({

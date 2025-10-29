@@ -1,7 +1,12 @@
-import { useGameUtilityReferenceParams, useLineCount, usePlayer, useTypingDetails } from "../atoms/read-atoms";
+import {
+  useGameUtilityReferenceParams,
+  useLineCount,
+  usePlayer,
+  useTypingSubstatusReference,
+} from "../atoms/read-atoms";
 import {
   useInitializeLineResults,
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useReadMap,
   useReadTypingStatus,
   useSetCombo,
@@ -27,10 +32,10 @@ export const useRetry = () => {
 
   const { resetTypingStatus } = useSetTypingStatus();
   const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
-  const { resetStatus } = useTypingDetails();
+  const { resetStatus } = useTypingSubstatusReference();
   const readTypingStatus = useReadTypingStatus();
   const readMap = useReadMap();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const { writeCount } = useLineCount();
   const { resetCurrentLine } = useSetCurrentLine();
   const setTabName = useSetTabName();
@@ -51,7 +56,7 @@ export const useRetry = () => {
       isRetrySkip: enableRetrySKip,
     });
 
-    const { scene } = readGameStateUtils();
+    const { scene } = readGameUtilityParams();
     if (scene === "play" || scene === "practice") {
       sendTypingStats();
     }

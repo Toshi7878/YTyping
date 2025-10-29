@@ -1,10 +1,10 @@
-import { useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
+  useActiveSkipGuideKeyState,
   useElapsedSecTimeState,
   useMapState,
+  useMovieDurationState,
   useSceneGroupState,
-  useSkipState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
@@ -28,9 +28,8 @@ export const SkipAndTimeDisplay = () => {
 };
 
 const PlayingSkipGuide = () => {
-  const skip = useSkipState();
-
-  return <div className="opacity-60">{skip ? `Type ${skip} key to Skip. ⏩` : ""}</div>;
+  const activeSkipGuideKey = useActiveSkipGuideKeyState();
+  return <div className="opacity-60">{activeSkipGuideKey ? `Type ${activeSkipGuideKey} key to Skip. ⏩` : ""}</div>;
 };
 
 const PlayingTimeDisplay = () => {
@@ -49,7 +48,7 @@ const ElapsedMmSsDisplay = () => {
 const VideoDurationTime = () => {
   const map = useMapState();
   const speedData = usePlaySpeedState();
-  const { movieDuration } = useReadYTStatus().readYTStatus();
+  const movieDuration = useMovieDurationState();
   if (!map) return;
   const duration = map.duration > movieDuration ? movieDuration : map?.duration;
   const totalTime = formatTime(Number(duration) / speedData.playSpeed);

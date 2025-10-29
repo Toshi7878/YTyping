@@ -1,4 +1,4 @@
-import { useReadGameUtilParams, useReadLineWord } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useReadGameUtilityParams, useReadLineWord } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { CHAR_POINT } from "@/lib/build-map/build-map";
 import type { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../type";
 import { CODE_TO_KANA, KEY_TO_KANA } from "./const";
@@ -436,11 +436,11 @@ export const useTypingJudge = () => {
     return input;
   };
 
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const readLineWord = useReadLineWord();
 
   return (event: KeyboardEvent) => {
-    const { inputMode } = readGameStateUtils();
+    const { inputMode } = readGameUtilityParams();
     const lineWord = readLineWord();
     const typingKeys: TypingKeys = inputMode === "roma" ? romaMakeInput(event) : kanaMakeInput(event);
     const inputResult =

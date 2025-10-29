@@ -1,4 +1,4 @@
-import { useLineStatus, useTypingDetails, useUserStats } from "../atoms/read-atoms";
+import { useLineStatus, useTypingSubstatusReference, useUserStats } from "../atoms/read-atoms";
 import { useReadTypingStatus, useSetLineKpm, useSetTypingStatus } from "../atoms/state-atoms";
 
 type UpdateType = "keydown" | "completed" | "timer" | "lineUpdate";
@@ -9,7 +9,7 @@ export const useCalcTypeSpeed = () => {
   const setLineKpm = useSetLineKpm();
   const { writeLineStatus } = useLineStatus();
   const { setTypingStatus } = useSetTypingStatus();
-  const { readStatus, writeStatus } = useTypingDetails();
+  const { readStatus, writeStatus } = useTypingSubstatusReference();
   const { readUserStats, writeUserStats } = useUserStats();
 
   const calcLineKpm = ({ constantLineTime }) => {

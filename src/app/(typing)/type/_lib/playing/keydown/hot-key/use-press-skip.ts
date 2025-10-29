@@ -1,17 +1,22 @@
-import { useGameUtilityReferenceParams, useLineCount, usePlayer, useReadYTStatus } from "../../../atoms/read-atoms";
+import { useGameUtilityReferenceParams, useLineCount, usePlayer } from "../../../atoms/read-atoms";
 import { useReadPlaySpeed } from "../../../atoms/speed-reducer-atoms";
-import { useReadMap, useReadUserTypingOptions, useSetActiveSkipGuideKey } from "../../../atoms/state-atoms";
+import {
+  useReadGameUtilityParams,
+  useReadMap,
+  useReadUserTypingOptions,
+  useSetActiveSkipGuideKey,
+} from "../../../atoms/state-atoms";
 
 export const usePressSkip = () => {
   const { readPlayer } = usePlayer();
-  const setSkip = useSetActiveSkipGuideKey();
+  const setActiveSkipGuideKey = useSetActiveSkipGuideKey();
 
   const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { readYTStatus } = useReadYTStatus();
   const { readCount } = useLineCount();
   const readUserOptions = useReadUserTypingOptions();
   const readPlaySpeed = useReadPlaySpeed();
   const readMap = useReadMap();
+  const readGameUtilityParams = useReadGameUtilityParams();
 
   return () => {
     const map = readMap();
@@ -28,13 +33,13 @@ export const usePressSkip = () => {
       timeOffset;
 
     const { playSpeed } = readPlaySpeed();
+    const { movieDuration } = readGameUtilityParams();
 
-    const { movieDuration } = readYTStatus();
     const seekTime = nextLine.lyrics === "end" ? movieDuration - 2 : skippedTime - 1 + (1 - playSpeed);
 
     readPlayer().seekTo(seekTime, true);
 
     writeGameUtilRefParams({ isRetrySkip: false });
-    setSkip(null);
+    setActiveSkipGuideKey(null);
   };
 };

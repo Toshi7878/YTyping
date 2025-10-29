@@ -1,7 +1,7 @@
 import { romaConvert } from "../../../../../lib/build-map/build-map";
 import { useLineCount, useLineStatus } from "../atoms/read-atoms";
 import {
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useReadLineWord,
   useReadMap,
   useSetLineWord,
@@ -20,7 +20,7 @@ export const useInputModeChange = () => {
 
   const getCurrentTime = useGetYouTubeTime();
   const { readLineStatus, writeLineStatus } = useLineStatus();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const readLineWord = useReadLineWord();
   const readMap = useReadMap();
   const { readCount } = useLineCount();
@@ -28,7 +28,7 @@ export const useInputModeChange = () => {
   return async (newInputMode: InputMode) => {
     const map = readMap();
     if (!map) return;
-    const { inputMode, scene } = readGameStateUtils();
+    const { inputMode, scene } = readGameUtilityParams();
 
     if (newInputMode === inputMode) {
       return;

@@ -7,8 +7,8 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUserAgent } from "@/lib/global-atoms";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/window-focus";
-import { usePlayer, useReadYTStatus } from "../_lib/atoms/read-atoms";
-import { useReadGameUtilParams } from "../_lib/atoms/state-atoms";
+import { usePlayer } from "../_lib/atoms/read-atoms";
+import { useReadGameUtilityParams } from "../_lib/atoms/state-atoms";
 import { useTimerRegistration } from "../_lib/playing/timer/use-timer";
 import { useSoundEffect } from "../_lib/playing/use-sound-effect";
 import {
@@ -91,12 +91,10 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
 
 const MobileCover = () => {
   const { readPlayer } = usePlayer();
-  const { readYTStatus } = useReadYTStatus();
   const { iosActiveSound } = useSoundEffect();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const handleStart = () => {
-    const { scene } = readGameStateUtils();
-    const { isPaused } = readYTStatus();
+    const { scene, isPaused } = readGameUtilityParams();
     const player = readPlayer();
 
     iosActiveSound();

@@ -2,7 +2,7 @@ import { useGameUtilityReferenceParams, useLineCount } from "@/app/(typing)/type
 import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadAllLineResult,
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useReadLineWord,
   useSetLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
@@ -34,7 +34,7 @@ const usePlayBackKey = () => {
   const updateAllStatus = useUpdateAllStatus();
 
   const readLineWord = useReadLineWord();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const { readCount } = useLineCount();
 
   return ({ constantLineTime, constantRemainLineTime, type }: UseKeyReplayProps) => {
@@ -49,7 +49,7 @@ const usePlayBackKey = () => {
       };
 
       if (isSuccess) {
-        const { inputMode } = readGameStateUtils();
+        const { inputMode } = readGameUtilityParams();
         const lineWord = readLineWord();
         const result =
           inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
@@ -57,10 +57,7 @@ const usePlayBackKey = () => {
         const isCompleted = result.newLineWord.nextChar.k === "";
         triggerTypeSound({ isCompleted });
 
-        calcTypeSpeed({
-          updateType: "keydown",
-          constantLineTime,
-        });
+        calcTypeSpeed({ updateType: "keydown", constantLineTime });
 
         updateSuccessStatusRefs({
           constantLineTime,

@@ -9,12 +9,7 @@ import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { InputMode, LineData, LineWord, SceneType, SkipGuideKey } from "../type";
-import {
-  gameUtilityReferenceParamsAtom,
-  lineProgressAtom,
-  useGameUtilityReferenceParams,
-  ytStatusAtom,
-} from "./read-atoms";
+import { gameUtilityReferenceParamsAtom, lineProgressAtom, useGameUtilityReferenceParams } from "./read-atoms";
 import { speedBaseAtom } from "./speed-reducer-atoms";
 import { getTypeAtomStore } from "./store";
 
@@ -64,7 +59,7 @@ export const useReadMap = () => {
 };
 
 export const TAB_NAMES = ["ステータス", "ランキング"] as const;
-const gameStateUtilParamsAtom = atomWithReset({
+const gameUtilityParamsAtom = atomWithReset({
   scene: "ready" as SceneType,
   tabName: "ランキング" as (typeof TAB_NAMES)[number],
   inputMode: initialInputMode,
@@ -74,15 +69,17 @@ const gameStateUtilParamsAtom = atomWithReset({
   lineSelectIndex: 0,
   isYTStarted: false,
   lineResultdrawerClosure: false,
+  isPaused: false,
+  movieDuration: 0,
 });
 
-const lineResultDrawerClosure = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("lineResultdrawerClosure"));
+const lineResultDrawerClosureAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("lineResultdrawerClosure"));
 
-export const useLineResultDrawerState = () => useAtomValue(lineResultDrawerClosure);
-export const useSetLineResultDrawer = () => useSetAtom(lineResultDrawerClosure);
+export const useLineResultDrawerState = () => useAtomValue(lineResultDrawerClosureAtom);
+export const useSetLineResultDrawer = () => useSetAtom(lineResultDrawerClosureAtom);
 
-export const sceneAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("scene"));
-export const sceneGroupAtom = atom((get) => {
+export const sceneAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("scene"));
+const sceneGroupAtom = atom((get) => {
   const scene = get(sceneAtom);
   switch (scene) {
     case "ready": {
@@ -100,17 +97,15 @@ export const sceneGroupAtom = atom((get) => {
     }
   }
 });
-const tabNameAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("tabName"));
-const notifyAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("notify"));
-const skipAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("activeSkipKey"));
-const changeCSSCountAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("changeCSSCount"));
-const lineSelectIndexAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("lineSelectIndex"));
-const playingInputModeAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("inputMode"));
-const isYTStartedAtom = focusAtom(gameStateUtilParamsAtom, (optic) => optic.prop("isYTStarted"));
-
-const writeSceneAtom = atom(null, (_get, set, newScene: SceneType) => {
-  set(sceneAtom, newScene);
-});
+const tabNameAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("tabName"));
+const notifyAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("notify"));
+const activeSkipKeyAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("activeSkipKey"));
+const changeCSSCountAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("changeCSSCount"));
+const lineSelectIndexAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("lineSelectIndex"));
+const playingInputModeAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("inputMode"));
+const isYTStartedAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("isYTStarted"));
+const isPausedAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("isPaused"));
+const movieDurationAtom = focusAtom(gameUtilityParamsAtom, (optic) => optic.prop("movieDuration"));
 
 const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { newCurrentCount: number }) => {
   const map = get(mapAtom);
@@ -125,35 +120,46 @@ const writeChangeCSSCountAtom = atom(null, (get, set, { newCurrentCount }: { new
   }
 });
 
-export const useReadGameUtilParams = () => {
+export const useReadGameUtilityParams = () => {
   return useAtomCallback(
-    useCallback((get) => get(gameStateUtilParamsAtom), []),
+    useCallback((get) => get(gameUtilityParamsAtom), []),
     { store },
   );
 };
 
-export const useSetGameUtilParams = () => useSetAtom(gameStateUtilParamsAtom, { store });
+export const useResetGameUtilityParams = () => {
+  return useAtomCallback(
+    useCallback((_, set) => set(gameUtilityParamsAtom, RESET), []),
+    { store },
+  );
+};
 
 export const useTabNameState = () => useAtomValue(tabNameAtom);
 export const useSetTabName = () => useSetAtom(tabNameAtom);
 
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
 export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
-export const useSetScene = () => useSetAtom(writeSceneAtom, { store });
+export const useSetScene = () => useSetAtom(sceneAtom, { store });
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });
 export const useSetPlayingInputMode = () => useSetAtom(playingInputModeAtom, { store });
 
-export const useSkipState = () => useAtomValue(skipAtom, { store });
-export const useSetActiveSkipGuideKey = () => useSetAtom(skipAtom, { store });
+export const useActiveSkipGuideKeyState = () => useAtomValue(activeSkipKeyAtom, { store });
+export const useSetActiveSkipGuideKey = () => useSetAtom(activeSkipKeyAtom, { store });
 
-export const useNotifyState = () => useAtomValue(notifyAtom);
-export const useSetNotify = () => useSetAtom(notifyAtom);
+export const useNotifyState = () => useAtomValue(notifyAtom, { store });
+export const useSetNotify = () => useSetAtom(notifyAtom, { store });
 
 export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { store });
 export const useSetChangeCSSCount = () => useSetAtom(writeChangeCSSCountAtom, { store });
 
-export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom);
+export const useIsPaused = () => useAtomValue(isPausedAtom, { store });
+export const useSetIsPaused = () => useSetAtom(isPausedAtom, { store });
+
+export const useMovieDurationState = () => useAtomValue(movieDurationAtom, { store });
+export const useSetMovieDuration = () => useSetAtom(movieDurationAtom, { store });
+
+export const useLineSelectIndexState = () => useAtomValue(lineSelectIndexAtom, { store });
 
 export const useSetLineSelectIndex = () => {
   return useAtomCallback(
@@ -166,7 +172,6 @@ export const useSetLineSelectIndex = () => {
 
       const prevSelectedIndex = get(lineSelectIndexAtom);
       if (prevSelectedIndex !== null && prevSelectedIndex !== lineIndex) {
-        // 前回のlineIndexからcountを導出
         const prevCount = map.typingLineIndexes[prevSelectedIndex - 1];
         if (prevCount !== undefined) {
           const prevSelectedAtom = lineResultAtomFamily(prevCount);
@@ -177,7 +182,6 @@ export const useSetLineSelectIndex = () => {
         }
       }
 
-      // 新しい行を選択
       const targetAtom = lineResultAtomFamily(count);
       const target = get(targetAtom);
       if (!target) return;
@@ -192,29 +196,27 @@ export const useSetLineSelectIndex = () => {
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const useSetYTStarted = () => useSetAtom(isYTStartedAtom);
 
-const playingStateAtom = atomWithReset({
+const substatusAtom = atomWithReset({
   elapsedSecTime: 0,
   lineRemainTime: 0,
   lineKpm: 0,
   combo: 0,
 });
 
-export const useResetPlayingState = () => {
-  const setPlayingState = useSetAtom(playingStateAtom);
-
-  return () => {
-    setPlayingState(RESET);
-  };
+export const useResetSubstatus = () => {
+  return useAtomCallback(
+    useCallback((_, set) => set(substatusAtom, RESET), []),
+    { store },
+  );
 };
 
-const elapsedSecTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("elapsedSecTime"));
-const lineRemainTimeAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineRemainTime"));
-const lineKpmAtom = focusAtom(playingStateAtom, (optic) => optic.prop("lineKpm"));
-const comboAtom = focusAtom(playingStateAtom, (optic) => optic.prop("combo"));
+const elapsedSecTimeAtom = focusAtom(substatusAtom, (optic) => optic.prop("elapsedSecTime"));
+const lineRemainTimeAtom = focusAtom(substatusAtom, (optic) => optic.prop("lineRemainTime"));
+const lineKpmAtom = focusAtom(substatusAtom, (optic) => optic.prop("lineKpm"));
+const comboAtom = focusAtom(substatusAtom, (optic) => optic.prop("combo"));
 
 export const useLineRemainTimeState = () => useAtomValue(lineRemainTimeAtom, { store });
 export const useSetLineRemainTime = () => useSetAtom(lineRemainTimeAtom, { store });
-
 export const useLineKpmState = () => useAtomValue(lineKpmAtom, { store });
 export const useSetLineKpm = () => useSetAtom(lineKpmAtom, { store });
 export const useReadLineKpm = () => {
@@ -395,7 +397,7 @@ const writeCurrentLineAtom = atom(
     });
 
     const lineProgress = get(lineProgressAtom);
-    const { isPaused } = get(ytStatusAtom);
+    const { isPaused } = get(gameUtilityParamsAtom);
 
     if (lineProgress && !isPaused) {
       requestDebouncedAnimationFrame("line-progress-reset", () => {

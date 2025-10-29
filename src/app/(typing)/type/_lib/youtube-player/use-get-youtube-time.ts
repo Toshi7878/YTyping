@@ -1,6 +1,6 @@
-import { useGameUtilityReferenceParams, useLineCount, usePlayer, useReadYTStatus } from "../atoms/read-atoms";
+import { useGameUtilityReferenceParams, useLineCount, usePlayer } from "../atoms/read-atoms";
 import { useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
-import { useReadMap, useReadUserTypingOptions } from "../atoms/state-atoms";
+import { useReadGameUtilityParams, useReadMap, useReadUserTypingOptions } from "../atoms/state-atoms";
 
 type GetTimeKey = { type: "time" } | { type: "lineTime" } | { type: "remainLineTime" };
 type CurrentTimeResult = {
@@ -26,7 +26,8 @@ type TimeResultMap = {
 
 export const useGetYouTubeTime = () => {
   const { readPlayer } = usePlayer();
-  const { readYTStatus } = useReadYTStatus();
+  const readGameUtilityParams = useReadGameUtilityParams();
+
   const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const readPlaySpeed = useReadPlaySpeed();
   const readTypingOptions = useReadUserTypingOptions();
@@ -35,7 +36,7 @@ export const useGetYouTubeTime = () => {
 
   const getCurrentOffsettedYTTime = () => {
     const { timeOffset } = readGameUtilRefParams();
-    const { movieDuration } = readYTStatus();
+    const { movieDuration } = readGameUtilityParams();
     const typingOptions = readTypingOptions();
     const result = readPlayer().getCurrentTime() - typingOptions.timeOffset - timeOffset;
     return Number.isNaN(result) ? movieDuration : result;
@@ -61,7 +62,7 @@ export const useGetYouTubeTime = () => {
     const count = readCount();
     const nextLine = map.mapData[count + 1];
 
-    const { movieDuration } = readYTStatus();
+    const { movieDuration } = readGameUtilityParams();
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
 
     const lineRemainTime = (nextLineTime - currentTime) / readPlaySpeed().playSpeed;
@@ -83,7 +84,7 @@ export const useGetYouTubeTime = () => {
     const currentLine = map.mapData[count];
     if (!currentLine) return 0;
 
-    const { movieDuration } = readYTStatus();
+    const { movieDuration } = readGameUtilityParams();
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
     return (nextLineTime - currentLine.time) / readPlaySpeed().playSpeed - constantLineTime;
   };

@@ -3,7 +3,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
-  useReadGameUtilParams,
+  useIsPaused,
+  useReadGameUtilityParams,
   useSceneGroupState,
   useSceneState,
   useSetLineResultDrawer,
@@ -13,10 +14,10 @@ import {
 import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
 import { useMoveLine } from "../../../_lib/playing/use-move-line";
-import { BottomButton, BottomDoubleKeyButton } from "./button-with-key";
 
-export const BottomButtons = () => {
+export const FooterButtons = () => {
   const isYTStarted = useYTStartedState();
   const sceneGroup = useSceneGroupState();
   const isReady = sceneGroup === "Ready";
@@ -49,27 +50,28 @@ const SpeedButton = () => {
   const scene = useSceneState();
   const { playSpeed } = usePlaySpeedState();
   const dispatchSpeed = usePlaySpeedReducer();
+  const isPaused = useIsPaused();
 
   if (scene === "practice") {
     return (
-      <BottomDoubleKeyButton
-        badgeText={`${playSpeed.toFixed(2)}倍速`}
-        kbdTextPrev="F9-"
-        kbdTextNext="+F10"
+      <ButtonWithDoubleKbd
+        buttonLabel={`${playSpeed.toFixed(2)}倍速`}
+        prevKbdLabel="F9-"
+        nextKbdLabel="+F10"
         onClick={() => {}}
         onClickPrev={() => dispatchSpeed({ type: "down" })}
         onClickNext={() => dispatchSpeed({ type: "up" })}
+        disabled={isPaused}
       />
     );
   }
 
   return (
-    <BottomButton
-      badgeText={`${playSpeed.toFixed(2)}倍速`}
-      kbdText="F10"
+    <ButtonWithKbd
+      buttonLabel={`${playSpeed.toFixed(2)}倍速`}
+      kbdLabel="F10"
       onClick={() => dispatchSpeed({ type: "toggle" })}
-      isPauseDisabled={true}
-      isKbdHidden={scene === "replay"}
+      disabled={isPaused || scene === "replay"}
     />
   );
 };
@@ -83,23 +85,21 @@ const PracticeButtons = () => {
   return (
     (scene === "practice" || scene === "replay") && (
       <>
-        <BottomDoubleKeyButton
-          badgeText="移動"
-          kbdTextPrev="←"
-          kbdTextNext="→"
+        <ButtonWithDoubleKbd
+          buttonLabel="移動"
+          prevKbdLabel="←"
+          nextKbdLabel="→"
           onClick={() => {}}
           onClickPrev={() => movePrevLine()}
           onClickNext={() => moveNextLine()}
         />
-        <BottomButton
-          badgeText="リスト"
-          kbdText={userOptions.InputModeToggleKey === "TAB" ? "F1" : "Tab"}
+        <ButtonWithKbd
+          buttonLabel="リスト"
+          kbdLabel={userOptions.InputModeToggleKey === "TAB" ? "F1" : "Tab"}
           onClickCapture={(event) => {
             event.stopPropagation();
             setLineResultDrawer(true);
           }}
-          isPauseDisabled={false}
-          isKbdHidden={false}
         />
       </>
     )
@@ -108,21 +108,20 @@ const PracticeButtons = () => {
 
 const RetryButton = () => {
   const retry = useRetry();
-  const readGameStateUtils = useReadGameUtilParams();
-
+  const readGameUtilityParams = useReadGameUtilityParams();
+  const isPaused = useIsPaused();
   return (
-    <BottomButton
-      badgeText="やり直し"
-      kbdText="F4"
+    <ButtonWithKbd
+      buttonLabel="やり直し"
+      kbdLabel="F4"
       onClick={() => {
-        const { scene } = readGameStateUtils();
+        const { scene } = readGameUtilityParams();
 
         if (scene === "play" || scene === "practice" || scene === "replay") {
           retry(scene);
         }
       }}
-      isPauseDisabled={true}
-      isKbdHidden={false}
+      disabled={isPaused}
     />
   );
 };

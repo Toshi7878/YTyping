@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTRPC } from "@/trpc/provider";
-import { useTypingDetails, useUserStats } from "../atoms/read-atoms";
+import { useTypingSubstatusReference, useUserStats } from "../atoms/read-atoms";
 
 export function useSendUserStats() {
   const { id: mapId } = useParams<{ id: string }>();
@@ -11,7 +11,7 @@ export function useSendUserStats() {
   const incrementPlayCountStats = useMutation(trpc.userStats.incrementPlayCountStats.mutationOptions());
 
   const { readUserStats, resetUserStats } = useUserStats();
-  const { readStatus } = useTypingDetails();
+  const { readStatus } = useTypingSubstatusReference();
 
   const sendPlayCountStats = () => {
     incrementPlayCountStats.mutate({ mapId: Number(mapId) });

@@ -1,10 +1,10 @@
 import { CHAR_POINT, calcWordKanaNotes, MISS_PENALTY } from "@/lib/build-map/build-map";
-import { useLineStatus, useReadYTStatus, useTypingDetails } from "../atoms/read-atoms";
+import { useLineStatus, useTypingSubstatusReference } from "../atoms/read-atoms";
 import { useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
 import {
   useReadAllLineResult,
   useReadCombo,
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useReadLineKpm,
   useReadLineWord,
   useReadMap,
@@ -17,14 +17,13 @@ export const useUpdateLineResult = () => {
   const setLineResult = useSetLineResult();
 
   const { readLineStatus } = useLineStatus();
-  const { readStatus, writeStatus } = useTypingDetails();
+  const { readStatus, writeStatus } = useTypingSubstatusReference();
   const readAllLineResults = useReadAllLineResult();
   const readCombo = useReadCombo();
   const readTypingResult = useReadTypingStatus();
   const readLineWord = useReadLineWord();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const readPlaySpeed = useReadPlaySpeed();
-  const { readYTStatus } = useReadYTStatus();
   const readLineKpm = useReadLineKpm();
   const readMap = useReadMap();
   const { setTypingStatus } = useSetTypingStatus();
@@ -41,7 +40,7 @@ export const useUpdateLineResult = () => {
     const romaLostWordOmitNextChar = lineWord.word.map((w) => w.r[0]).join("");
     const pointLostNotes = !isCompleted ? lineWord.nextChar.p / CHAR_POINT + romaLostWordOmitNextChar.length : 0;
 
-    const { inputMode } = readGameStateUtils();
+    const { inputMode } = readGameUtilityParams();
 
     if (inputMode === "roma") {
       const romaLostWord = lineWord.nextChar.r[0] + romaLostWordOmitNextChar;
@@ -66,8 +65,7 @@ export const useUpdateLineResult = () => {
       (savedLineResult.status.tBonus ?? 0) +
       (savedLineResult.status.lMiss ?? 0) * MISS_PENALTY;
 
-    const { isPaused } = readYTStatus();
-    const { scene } = readGameStateUtils();
+    const { scene, isPaused } = readGameUtilityParams();
     const { playSpeed } = readPlaySpeed();
     return currentLineScore >= savedLineScore && !isPaused && scene !== "replay" && playSpeed >= 1;
   };

@@ -72,8 +72,7 @@ export const OptimizedResultCard = ({
       data-line-index={lineIndex}
       data-count={count}
       className={cn(
-        "mb-4 cursor-pointer gap-1 py-4 pl-1 shadow-lg select-none",
-        "bg-card text-card-foreground border-card-foreground",
+        "mb-4 cursor-pointer gap-1 py-4 shadow-lg select-none",
         "hover:outline-foreground hover:outline-2",
         isSelected && "outline-primary outline-2",
       )}

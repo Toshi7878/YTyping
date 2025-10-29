@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import {
   useMapState,
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useSceneState,
   useSetCurrentLine,
   useSetLineResultDrawer,
@@ -28,7 +28,7 @@ interface PlayingProps {
 
 export const PlayingScene = ({ className }: PlayingProps) => {
   const pressSkip = usePressSkip();
-  const readGameUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
 
   const { data: session } = useSession();
   const { readUserStats, resetUserStats } = useUserStats();
@@ -116,7 +116,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       className={cn("flex cursor-none flex-col items-start justify-between truncate select-none", className)}
       id="typing_scene"
       onTouchStart={() => {
-        const { activeSkipKey } = readGameUtils();
+        const { activeSkipKey } = readGameUtilityParams();
 
         if (activeSkipKey) {
           pressSkip();

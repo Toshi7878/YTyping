@@ -1,6 +1,5 @@
-import { useReadYTStatus } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import {
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useReadLineWord,
   useReadMap,
   useSetCurrentLine,
@@ -26,13 +25,10 @@ export const useOnKeydown = () => {
   const typing = useTyping();
   const handleHotKey = usePlayingHotKey();
   const gamePause = useGamePause();
-
-  const { readYTStatus } = useReadYTStatus();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
 
   return (event: KeyboardEvent) => {
-    const { isPaused } = readYTStatus();
-    const { scene } = readGameStateUtils();
+    const { scene, isPaused } = readGameUtilityParams();
 
     if ((!isPaused || scene === "practice") && event.key !== "Escape") {
       if (isKeydownTyped(event)) {
@@ -46,7 +42,7 @@ export const useOnKeydown = () => {
       return;
     }
 
-    const { lineResultdrawerClosure: drawerClosure } = readGameStateUtils();
+    const { lineResultdrawerClosure: drawerClosure } = readGameUtilityParams();
 
     const isAllowedKey =
       KEY_WHITE_LIST.includes(event.code) ||
@@ -107,11 +103,11 @@ const TENKEYS_SET = new Set([
 ]);
 
 const useIsKeydownTyped = () => {
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const readLineWord = useReadLineWord();
 
   return (event: KeyboardEvent) => {
-    const { scene } = readGameStateUtils();
+    const { scene } = readGameUtilityParams();
 
     if (scene === "replay") return false;
     if (event.ctrlKey || event.altKey) return false;
@@ -134,12 +130,11 @@ const useTyping = () => {
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
   const getTime = useGetYouTubeTime();
-  const { readYTStatus } = useReadYTStatus();
 
   const calcTypeSpeed = useCalcTypeSpeed();
   const inputJudge = useTypingJudge();
   const { hasLineResultImproved, saveLineResult } = useUpdateLineResult();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const updateAllStatus = useUpdateAllStatus();
   const readMap = useReadMap();
   const { readCount } = useLineCount();
@@ -166,7 +161,7 @@ const useTyping = () => {
           constantRemainLineTime,
           updatePoint: inputResult.updatePoint,
         });
-        const { isPaused } = readYTStatus();
+        const { isPaused } = readGameUtilityParams();
 
         if (!isPaused) {
           calcTypeSpeed({
@@ -182,7 +177,7 @@ const useTyping = () => {
             saveLineResult(count);
           }
 
-          const { scene } = readGameStateUtils();
+          const { scene } = readGameUtilityParams();
           if (scene === "practice") {
             const map = readMap();
             if (!map) return;
@@ -193,7 +188,6 @@ const useTyping = () => {
             });
 
             if (isPaused) {
-              const count = readCount();
               const newCurrentLine = map.mapData[count];
               const newNextLine = map.mapData[count + 1];
               setCurrentLine({ newCurrentLine, newNextLine });

@@ -1,10 +1,12 @@
-import { usePlayer, useReadYTStatus } from "../../../atoms/read-atoms";
+import { usePlayer } from "../../../atoms/read-atoms";
+import { useReadGameUtilityParams } from "../../../atoms/state-atoms";
 
 export const useGamePause = () => {
   const { readPlayer } = usePlayer();
-  const { readYTStatus } = useReadYTStatus();
+  const readGameUtilityParams = useReadGameUtilityParams();
+
   return () => {
-    const { isPaused } = readYTStatus();
+    const { isPaused } = readGameUtilityParams();
     if (isPaused) {
       readPlayer().playVideo();
     } else {

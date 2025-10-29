@@ -1,9 +1,14 @@
 import { MISS_PENALTY } from "../../../../../lib/build-map/build-map";
-import { useGameUtilityReferenceParams, useLineStatus, useTypingDetails, useUserStats } from "../atoms/read-atoms";
+import {
+  useGameUtilityReferenceParams,
+  useLineStatus,
+  useTypingSubstatusReference,
+  useUserStats,
+} from "../atoms/read-atoms";
 import {
   useReadAllLineResult,
   useReadCombo,
-  useReadGameUtilParams,
+  useReadGameUtilityParams,
   useReadLineWord,
   useReadMap,
   useReadTypingStatus,
@@ -20,8 +25,8 @@ export const useTypeSuccess = () => {
 
   const { readUserStats, writeUserStats } = useUserStats();
   const { readLineStatus, writeLineStatus } = useLineStatus();
-  const { readStatus, writeStatus } = useTypingDetails();
-  const readGameStateUtils = useReadGameUtilParams();
+  const { readStatus, writeStatus } = useTypingSubstatusReference();
+  const readGameUtilityParams = useReadGameUtilityParams();
 
   const readMap = useReadMap();
   const readCombo = useReadCombo();
@@ -79,7 +84,7 @@ export const useTypeSuccess = () => {
     typeChunk?: NextTypeChunk;
     successKey: string;
   }) => {
-    const { scene } = readGameStateUtils();
+    const { scene } = readGameUtilityParams();
     const lineTypingStatusRef = readLineStatus();
     const { maxCombo, completeCount } = readStatus();
     writeStatus({ missCombo: 0 });
@@ -131,7 +136,7 @@ export const useTypeSuccess = () => {
       ],
     });
 
-    const { inputMode } = readGameStateUtils();
+    const { inputMode } = readGameUtilityParams();
     if (typeChunk.t === "kana") {
       if (inputMode === "roma") {
         writeUserStats({
@@ -206,7 +211,7 @@ export const useTypeMiss = () => {
   const { setTypingStatus } = useSetTypingStatus();
 
   const { readLineStatus, writeLineStatus } = useLineStatus();
-  const { readStatus, writeStatus } = useTypingDetails();
+  const { readStatus, writeStatus } = useTypingSubstatusReference();
   const readTypingStatus = useReadTypingStatus();
   const readMap = useReadMap();
 
@@ -248,7 +253,7 @@ export const useTypeMiss = () => {
 export const useLineUpdateStatus = () => {
   const calcCurrentRank = useCalcCurrentRank();
   const { setTypingStatus } = useSetTypingStatus();
-  const { readStatus, writeStatus } = useTypingDetails();
+  const { readStatus, writeStatus } = useTypingSubstatusReference();
   const readMap = useReadMap();
   const readLineWord = useReadLineWord();
   const { readLineStatus } = useLineStatus();
@@ -295,12 +300,12 @@ export const useUpdateAllStatus = () => {
   const readMap = useReadMap();
   const readLineResults = useReadAllLineResult();
   const { setTypingStatus } = useSetTypingStatus();
-  const readGameStateUtils = useReadGameUtilParams();
+  const readGameUtilityParams = useReadGameUtilityParams();
   const setLineKpm = useSetLineKpm();
   const { writeLineStatus } = useLineStatus();
   const setCombo = useSetCombo();
 
-  const { writeStatus } = useTypingDetails();
+  const { writeStatus } = useTypingSubstatusReference();
 
   return ({ count, updateType }: { count: number; updateType: "lineUpdate" | "completed" }) => {
     const map = readMap();
@@ -318,14 +323,12 @@ export const useUpdateAllStatus = () => {
       line: map.lineLength,
     };
 
-    if (count <= 0) {
-      return newStatus;
-    }
     const lineResults = readLineResults();
     let totalTypeTime = 0;
-    const { scene } = readGameStateUtils();
+    const { scene } = readGameUtilityParams();
 
-    for (let i = 0; i < count; i++) {
+    const updateCount = updateType === "completed" ? count + 1 : count;
+    for (let i = 0; i < updateCount; i++) {
       const lineResult = lineResults[i];
       newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
       newStatus.miss += lineResult.status.lMiss ?? 0;
@@ -359,9 +362,7 @@ export const useUpdateAllStatus = () => {
     if (scene === "practice") {
       writeStatus({ totalTypeTime });
     } else if (scene === "replay") {
-      writeStatus({
-        totalTypeTime: lineResult.status.tTime,
-      });
+      writeStatus({ totalTypeTime: lineResult.status.tTime });
       setCombo(lineResult.status.combo);
       setLineKpm(lineResult.status.lKpm ?? 0);
       writeLineStatus({ isCompleted: true });
