@@ -361,18 +361,21 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
 
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
-      onSuccess: async (data, _variables, _, context) => {
-        await context.client.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId: data.id }));
-        await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: data.id }));
+      onSuccess: async (id, _variables, _, context) => {
+        setCanUpload(false);
+        form.reset(form.getValues());
+        await context.client.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId: id }));
+        await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: id }));
         await context.client.invalidateQueries(trpc.mapList.getList.queryFilter());
 
-        if (data.id && mapId === undefined) {
-          window.history.replaceState(null, "", `/edit/${data.id}`);
+        if (mapId === undefined) {
+          window.history.replaceState(null, "", `/edit/${id}`);
           void clearBackupMapWithInfo();
+          toast.success("アップロード完了");
+          return;
         }
-        form.reset(form.getValues());
-        setCanUpload(false);
-        toast.success(data.title);
+
+        toast.success("アップデート完了");
       },
       onError: async (error) => {
         switch (error.data?.code) {

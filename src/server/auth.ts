@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, max } from "drizzle-orm";
 import md5 from "md5";
 import NextAuth from "next-auth";
 import authConfig from "@/config/auth.config";
@@ -29,12 +29,12 @@ export const { auth, handlers, signIn } = NextAuth({
       if (existed.length > 0) return true;
 
       // 現在の最大 ID を取得してインクリメント
-      const maxIdResult = await drizzleDb
-        .select({ maxId: sql<number>`COALESCE(MAX(${Users.id}), 0)` })
+      const maxId = await drizzleDb
+        .select({ maxId: max(Users.id) })
         .from(Users)
         .then((rows) => rows[0]?.maxId ?? 0);
 
-      const nextId = maxIdResult + 1;
+      const nextId = maxId + 1;
 
       await drizzleDb.insert(Users).values({
         id: nextId,

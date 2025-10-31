@@ -1,5 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, max } from "drizzle-orm";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import { db } from "@/server/drizzle/client";
@@ -84,24 +84,23 @@ export const mapRouter = {
     }
 
     const newMapId = await db.transaction(async (tx) => {
-      let newMapId: number;
+      let newId: number;
 
       if (mapId === null) {
-        // まず現在の最大 ID を取得
-        const maxIdResult = await tx
-          .select({ maxId: sql<number>`COALESCE(MAX(${Maps.id}), 0)` })
+        const maxId = await tx
+          .select({ maxId: max(Maps.id) })
           .from(Maps)
           .then((rows) => rows[0]?.maxId ?? 0);
 
-        const nextId = maxIdResult + 1;
+        const nextId = maxId + 1;
 
-        newMapId = await tx
+        newId = await tx
           .insert(Maps)
           .values({ id: nextId, ...mapInfo, creatorId: userId })
           .returning({ id: Maps.id })
           .then((res) => res[0].id);
       } else {
-        newMapId = await tx
+        newId = await tx
           .update(Maps)
           .set({ ...mapInfo, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) })
           .where(eq(Maps.id, mapId))
@@ -111,21 +110,18 @@ export const mapRouter = {
 
       await tx
         .insert(MapDifficulties)
-        .values({ mapId: newMapId, ...mapDifficulty })
+        .values({ mapId: newId, ...mapDifficulty })
         .onConflictDoUpdate({ target: [MapDifficulties.mapId], set: mapDifficulty });
 
       await uploadPublicFile({
-        key: `map-json/${mapId === null ? newMapId : mapId}.json`,
+        key: `map-json/${mapId === null ? newId : mapId}.json`,
         body: JSON.stringify(mapData, null, 2),
         contentType: "application/json",
       });
 
-      return newMapId;
+      return newId;
     });
 
-    return {
-      id: mapId === null ? newMapId : mapId,
-      title: mapId === null ? "アップロード完了" : "アップデート完了",
-    };
+    return mapId === null ? newMapId : mapId;
   }),
 } satisfies TRPCRouterRecord;

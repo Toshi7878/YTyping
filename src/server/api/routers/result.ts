@@ -1,6 +1,6 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import type { SQL } from "drizzle-orm";
-import { and, count, desc, eq, gt, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, gt, gte, ilike, inArray, lte, max, or, sql } from "drizzle-orm";
 import { alias, type BuildAliasTable } from "drizzle-orm/pg-core";
 import { nanoid } from "nanoid";
 import z from "zod";
@@ -271,12 +271,12 @@ export const resultRouter = {
           .returning({ id: Results.id })
           .then((res) => res[0].id);
       } else {
-        const maxIdResult = await tx
-          .select({ maxId: sql<number>`COALESCE(MAX(${Results.id}), 0)` })
+        const maxId = await tx
+          .select({ maxId: max(Results.id) })
           .from(Results)
           .then((rows) => rows[0]?.maxId ?? 0);
 
-        const nextId = maxIdResult + 1;
+        const nextId = maxId + 1;
 
         resultId = await tx
           .insert(Results)
