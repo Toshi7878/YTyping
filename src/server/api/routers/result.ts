@@ -313,8 +313,6 @@ export const resultRouter = {
       await updateRankingsAndNotifyOvertakes({ tx, mapId, userId, rankedUsers });
 
       await tx.update(Maps).set({ rankingCount: rankedUsers.length }).where(eq(Maps.id, mapId));
-
-      return true;
     });
   }),
 } satisfies TRPCRouterRecord;
