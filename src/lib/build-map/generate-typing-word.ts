@@ -279,7 +279,7 @@ const applyDoubleNTypePattern = (typeChunks: TypeChunk[]) => {
   const currentKanaChar = lastChunk.k;
   if (currentKanaChar) {
     //n一つのパターンでもnext typeChunkにnを追加してnnの入力を可能にする
-    const currentRomaPatterns = lastChunk.r;
+    const currentRomaPatterns = [...lastChunk.r];
 
     for (const romaPattern of currentRomaPatterns) {
       lastChunk.r.push(`n${romaPattern}`);
