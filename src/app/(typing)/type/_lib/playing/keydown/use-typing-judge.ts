@@ -324,9 +324,8 @@ export class KanaInput {
       keys[successIndex] === "゛" || keys[successIndex] === "゜"
         ? newLineWord.nextChar.orginalDakuChar
         : keys[successIndex];
-    if (!typingKey) return;
 
-    if (nextKana[0]) {
+    if (!typingKey) {
       const isKanaInArray = !KEYBOARD_CHARS.includes(nextKana[0]);
       return {
         newLineWord,
