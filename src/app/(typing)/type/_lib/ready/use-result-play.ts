@@ -22,6 +22,7 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
         showLoading({ message: "リザルトデータを読込中..." });
         const resultData = await queryClient.ensureQueryData(trpc.result.getResultJson.queryOptions({ resultId }));
 
+        console.log(resultData);
         if (startMode === "replay") {
           const mode = resultData[0]?.status?.mode ?? "roma";
           setPlayingInputModeState(mode);
