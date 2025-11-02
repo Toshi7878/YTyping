@@ -13,7 +13,6 @@ import {
   useReadMap,
   useReadTypingStatus,
   useSetCombo,
-  useSetLineKpm,
   useSetTypingStatus,
 } from "../atoms/state-atoms";
 import type { NextTypeChunk } from "../type";
@@ -301,9 +300,6 @@ export const useUpdateAllStatus = () => {
   const readLineResults = useReadAllLineResult();
   const { setTypingStatus } = useSetTypingStatus();
   const readGameUtilityParams = useReadGameUtilityParams();
-  const setLineKpm = useSetLineKpm();
-  const { writeLineStatus } = useLineStatus();
-  const setCombo = useSetCombo();
 
   const { writeStatus } = useTypingSubstatusReference();
 
@@ -328,7 +324,7 @@ export const useUpdateAllStatus = () => {
     const { scene } = readGameUtilityParams();
 
     const updateCount = updateType === "completed" ? count + 1 : count;
-    for (const lineResult of lineResults.slice(0, updateCount)) {
+    for (const lineResult of lineResults.slice(1, updateCount)) {
       newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
       newStatus.miss += lineResult.status.lMiss ?? 0;
       newStatus.lost += lineResult.status.lLost ?? 0;
@@ -346,7 +342,7 @@ export const useUpdateAllStatus = () => {
       newStatus.type += lineResult.status.lType ?? 0;
     }
 
-    const lineResult = lineResults[count];
+    const lineResult = lineResults[count - 1];
     newStatus.kpm = totalTypeTime > 0 ? Math.floor((newStatus.type / totalTypeTime) * 60) : 0;
     newStatus.rank = calcCurrentRank(newStatus.score);
 
@@ -358,15 +354,7 @@ export const useUpdateAllStatus = () => {
       newStatus.timeBonus = 0;
     }
 
-    if (scene === "practice") {
-      writeStatus({ totalTypeTime });
-    } else if (scene === "replay") {
-      writeStatus({ totalTypeTime: lineResult?.status.tTime });
-      setCombo(lineResult?.status.combo ?? 0);
-      setLineKpm(lineResult?.status.lKpm ?? 0);
-      writeLineStatus({ isCompleted: true });
-    }
-
+    writeStatus({ totalTypeTime: lineResult?.status.tTime });
     setTypingStatus(newStatus);
   };
 };

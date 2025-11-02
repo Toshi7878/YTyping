@@ -1,9 +1,11 @@
-import { useGameUtilityReferenceParams, useLineCount } from "@/app/(typing)/type/_lib/atoms/read-atoms";
+import { useGameUtilityReferenceParams, useLineCount, useLineStatus } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadAllLineResult,
   useReadGameUtilityParams,
   useReadLineWord,
+  useSetCombo,
+  useSetLineKpm,
   useSetLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/playing/use-calc-type-speed";
@@ -36,10 +38,16 @@ const usePlayBackKey = () => {
   const readLineWord = useReadLineWord();
   const readGameUtilityParams = useReadGameUtilityParams();
   const { readCount } = useLineCount();
+  const { writeLineStatus } = useLineStatus();
+  const setLineKpm = useSetLineKpm();
+  const setCombo = useSetCombo();
+  const readLineResults = useReadAllLineResult();
 
   return ({ constantLineTime, constantRemainLineTime, type }: UseKeyReplayProps) => {
     const { c: key, is: isSuccess, op: option } = type;
     const count = readCount();
+    // 0ライン目に記録されてしまっているリプレイが存在するためcount === 0はリプレイしない
+    if (count === 0) return;
 
     if (key) {
       const typingKeys: TypingKeys = {
@@ -67,7 +75,13 @@ const usePlayBackKey = () => {
         if (!isCompleted) {
           updateSuccessStatus({ constantRemainLineTime, updatePoint });
         } else {
+          const lineResults = readLineResults();
+          const lineResult = lineResults[count];
+
           updateAllStatus({ count, updateType: "completed" });
+          writeLineStatus({ isCompleted: true });
+          setCombo(lineResult?.status.combo ?? 0);
+          setLineKpm(lineResult?.status.lKpm ?? 0);
         }
       } else {
         triggerMissSound();
