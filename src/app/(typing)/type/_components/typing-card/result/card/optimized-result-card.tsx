@@ -40,7 +40,7 @@ export const OptimizedResultCard = ({
   const { minPlaySpeed, playSpeed } = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();
 
-  if (!map || !_lineResult) return null;
+  if (!map || !_lineResult || !map.mapData[count]) return null;
 
   const { isSelected, lineResult } = _lineResult;
 

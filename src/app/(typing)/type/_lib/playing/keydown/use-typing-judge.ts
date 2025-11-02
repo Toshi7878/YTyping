@@ -149,7 +149,7 @@ class ProcessedLineWord {
         newLineWord.nextChar.k === "ん" && newLineWord.correct.r.slice(-1) === "n" && newLineWord.nextChar.r[0] === "n";
       const isNext = newLineWord.word[0]?.k === expectedNextKey;
 
-      if (isNNRoute && isNext) {
+      if (isNNRoute && isNext && newLineWord.word[0]) {
         newLineWord.correct.k += "ん";
         this.updatePoint = newLineWord.nextChar.p;
         newLineWord.nextChar = newLineWord.word[0];
@@ -193,52 +193,51 @@ interface JudgeType {
 export class RomaInput {
   newLineWord: LineWord;
   updatePoint: number;
-  successKey: string;
-  failKey: string;
+  successKey: string | undefined;
+  failKey: string | undefined;
   constructor({ typingKeys, lineWord }: JudgeType) {
     const processed = new ProcessedLineWord({ typingKeys, lineWord });
     this.updatePoint = processed.updatePoint;
     const result = this.hasRomaPattern(typingKeys, processed.newLineWord);
     this.newLineWord = result.newLineWord;
     this.successKey = result.successKey;
-    this.failKey = result.failKey ?? "";
+    this.failKey = result.failKey;
   }
   private hasRomaPattern(typingKeys: TypingKeys, lineWord: LineWord) {
-    let newLineWord = { ...lineWord } as LineWord;
+    let newLineWord: LineWord = { ...lineWord };
     const nextRomaPattern: string[] = newLineWord.nextChar.r;
     const kana = lineWord.nextChar.k;
     const isSuccess = nextRomaPattern.some((pattern) => pattern[0] && pattern[0].toLowerCase() === typingKeys.keys[0]);
 
-    if (!isSuccess) {
-      return { newLineWord, successKey: "", failKey: typingKeys.key };
+    if (!isSuccess || !typingKeys.keys[0] || !newLineWord.word[0]?.r) {
+      return { newLineWord, successKey: undefined, failKey: typingKeys.key };
     }
 
-    if (kana === "ん" && newLineWord.word[0]) {
-      newLineWord.word[0].r = this.nextNNFilter(typingKeys.keys[0], newLineWord);
+    if (kana === "ん") {
+      newLineWord.word[0].r = this.nextNNFilter(typingKeys.keys[0], newLineWord.word[0].r);
     }
 
-    newLineWord.nextChar.r = this.updateNextRomaPattern(typingKeys, nextRomaPattern);
+    newLineWord.nextChar.r = this.updateNextRomaPattern(typingKeys.keys[0], nextRomaPattern);
     newLineWord = this.kanaFilter(kana, typingKeys.keys[0], newLineWord);
 
-    newLineWord = this.wordUpdate(typingKeys, newLineWord);
+    newLineWord = this.wordUpdate(typingKeys.keys[0], newLineWord);
 
     return { newLineWord, successKey: typingKeys.keys[0] };
   }
 
-  private updateNextRomaPattern(typingKeys: TypingKeys, nextRomaPattern: string[]) {
-    const key = typingKeys.keys[0];
+  private updateNextRomaPattern(eventKey: TypingKeys["keys"][0], nextRomaPattern: string[]) {
     return nextRomaPattern
-      .map((pattern) => (pattern.startsWith(key) ? pattern.slice(1) : ""))
+      .map((pattern) => (pattern.startsWith(eventKey) ? pattern.slice(1) : ""))
       .filter((pattern) => pattern !== "");
   }
 
-  private kanaFilter(kana: string, typingKey: string, newLineWord: LineWord) {
+  private kanaFilter(kana: string, eventKey: TypingKeys["keys"][0], newLineWord: LineWord) {
     const romaPattern = newLineWord.nextChar.r;
-    if (kana.length >= 2 && romaPattern.length) {
-      const isSokuon = kana[0] === "っ" && (typingKey === "u" || romaPattern[0][0] === typingKey);
+    if (kana.length >= 2 && romaPattern[0]) {
+      const isSokuon = kana[0] === "っ" && (eventKey === "u" || romaPattern[0][0] === eventKey);
       const isYoon = kana[0] !== "っ" && (romaPattern[0][0] === "x" || romaPattern[0][0] === "l");
 
-      const isToriplePeriod = kana === "..." && typingKey === ",";
+      const isToriplePeriod = kana === "..." && eventKey === ",";
       if (isSokuon || isYoon) {
         newLineWord.correct.k += newLineWord.nextChar.k.slice(0, 1);
         newLineWord.nextChar.k = newLineWord.nextChar.k.slice(1);
@@ -253,9 +252,8 @@ export class RomaInput {
     return newLineWord;
   }
 
-  private nextNNFilter(typingKey: string, newLineWord: LineWord) {
-    const nextToNextChar = newLineWord.word[0].r;
-    const isXN = typingKey === "x" && nextToNextChar[0] && nextToNextChar[0][0] !== "n" && nextToNextChar[0][0] !== "N";
+  private nextNNFilter(eventKey: TypingKeys["keys"][0], nextToNextChar: string[]) {
+    const isXN = eventKey === "x" && nextToNextChar[0] && nextToNextChar[0][0] !== "n" && nextToNextChar[0][0] !== "N";
 
     if (isXN) {
       return nextToNextChar.filter((value: string) => {
@@ -266,7 +264,7 @@ export class RomaInput {
     return nextToNextChar;
   }
 
-  private wordUpdate(typingKeys: TypingKeys, newLineWord: LineWord) {
+  private wordUpdate(eventKey: TypingKeys["key"][0], newLineWord: LineWord) {
     const kana = newLineWord.nextChar.k;
     const romaPattern = newLineWord.nextChar.r;
 
@@ -276,7 +274,7 @@ export class RomaInput {
       newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
     }
 
-    newLineWord.correct.r += typingKeys.keys[0];
+    newLineWord.correct.r += eventKey;
 
     return newLineWord;
   }
@@ -289,17 +287,17 @@ interface DakuHandakuData {
 }
 
 export class KanaInput {
-  newLineWord: LineWord;
+  newLineWord: LineWord | undefined;
   updatePoint: number;
-  successKey: string;
-  failKey: string;
+  successKey: string | undefined;
+  failKey: string | undefined;
 
   constructor({ typingKeys, lineWord }: JudgeType) {
     this.updatePoint = 0;
     const result = this.hasKana({ typingKeys, lineWord });
-    this.newLineWord = result.newLineWord;
-    this.successKey = result.successKey;
-    this.failKey = result.failKey ?? "";
+    this.newLineWord = result?.newLineWord;
+    this.successKey = result?.successKey;
+    this.failKey = result?.failKey;
   }
 
   private hasKana({ typingKeys, lineWord }: JudgeType) {
@@ -307,6 +305,7 @@ export class KanaInput {
 
     const nextKana = lineWord.nextChar.k;
     const { keys } = typingKeys;
+    if (!nextKana[0]) return;
     const isdakuHandaku = DAKU_HANDAKU_LIST.includes(nextKana[0]);
 
     const dakuHanDakuData: DakuHandakuData = isdakuHandaku
@@ -325,8 +324,9 @@ export class KanaInput {
       keys[successIndex] === "゛" || keys[successIndex] === "゜"
         ? newLineWord.nextChar.orginalDakuChar
         : keys[successIndex];
+    if (!typingKey) return;
 
-    if (!typingKey) {
+    if (nextKana[0]) {
       const isKanaInArray = !KEYBOARD_CHARS.includes(nextKana[0]);
       return {
         newLineWord,
@@ -346,10 +346,7 @@ export class KanaInput {
       newLineWord = this.wordUpdate(typingKey, newLineWord);
     }
 
-    return {
-      newLineWord,
-      successKey: keys[successIndex],
-    };
+    return { newLineWord, successKey: keys[successIndex] };
   }
 
   private parseDakuHandaku(originalKana: Dakuten | HanDakuten): DakuHandakuData {
@@ -446,9 +443,9 @@ export const useTypingJudge = () => {
     const inputResult =
       inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
 
-    const isCompleted = inputResult.newLineWord.nextChar.k === "";
-    const isSuccess = inputResult.successKey;
-    const isFailed = inputResult.newLineWord.correct.r || inputResult.newLineWord.correct.k;
+    const isCompleted = inputResult.newLineWord?.nextChar.k === "";
+    const isSuccess = !!inputResult.successKey;
+    const isFailed = inputResult.newLineWord?.correct.r || inputResult.newLineWord?.correct.k;
 
     return { ...inputResult, typeChunk: lineWord.nextChar, isCompleted, isSuccess, isFailed };
   };

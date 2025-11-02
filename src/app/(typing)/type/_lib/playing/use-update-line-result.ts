@@ -61,9 +61,9 @@ export const useUpdateLineResult = () => {
 
     const currentLineScore = typingStatus.point + typingStatus.timeBonus + lineMiss * MISS_PENALTY;
     const savedLineScore =
-      (savedLineResult.status.p ?? 0) +
-      (savedLineResult.status.tBonus ?? 0) +
-      (savedLineResult.status.lMiss ?? 0) * MISS_PENALTY;
+      (savedLineResult?.status.p ?? 0) +
+      (savedLineResult?.status.tBonus ?? 0) +
+      (savedLineResult?.status.lMiss ?? 0) * MISS_PENALTY;
 
     const { scene, isPaused } = readGameUtilityParams();
     const { playSpeed } = readPlaySpeed();
@@ -80,7 +80,7 @@ export const useUpdateLineResult = () => {
 
     const typingStatus = readTypingResult();
     const { miss: lineMiss, type: lineType, types, startSpeed, startInputMode, rkpm: lineRkpm } = readLineStatus();
-    const isTypingLine = map.mapData[count].kpm.r > 0;
+    const isTypingLine = (map.mapData[count]?.kpm.r ?? 0) > 0;
     const { totalTypeTime } = readStatus();
     const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
 

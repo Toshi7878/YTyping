@@ -125,6 +125,7 @@ export const usePlayingHotKey = () => {
         if (scene === "replay" || scene === "practice") {
           const { lineSelectIndex } = readGameUtilityParams();
           const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
+          if (!seekCount) return;
           moveSetLine(seekCount);
         }
         break;

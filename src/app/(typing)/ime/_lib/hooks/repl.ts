@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useReplaceReadingWithCustomDict } from "@/lib/build-map/use-replace-reading-with-custom-dict";
 import { useMorphQueries } from "@/lib/queries/morph.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
+import { zip } from "@/utils/array";
 
 export const useGenerateTokenizedWords = () => {
   const queryClient = useQueryClient();
@@ -23,42 +24,44 @@ export const useGenerateTokenizedWords = () => {
 const parseRepl = (tokenizedWords: RouterOutPuts["morphConvert"]["tokenizeSentence"]) => {
   const repl = new Set<string[]>();
 
-  for (let i = 0; i < tokenizedWords.lyrics.length; i++) {
-    if (/[一-龥]/.test(tokenizedWords.lyrics[i])) {
-      repl.add([tokenizedWords.lyrics[i], tokenizedWords.readings[i]]);
+  for (const [lyric, reading] of zip(tokenizedWords.lyrics, tokenizedWords.readings)) {
+    if (/[一-龥]/.test(lyric)) {
+      repl.add([lyric, reading]);
     }
   }
 
-  return Array.from(repl).sort((a, b) => b[0].length - a[0].length);
+  return Array.from(repl).sort((a, b) => (b[0]?.length ?? 0) - (a[0]?.length ?? 0));
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <any>
-const marge = (comparisonLyrics: any, repl: string[][]) => {
-  for (let i = 0; i < comparisonLyrics.length; i++) {
-    for (let j = 0; j < comparisonLyrics[i].length; j++) {
-      if (/[一-龥]/.test(comparisonLyrics[i])) {
-        for (let m = 0; m < repl.length; m++) {
-          comparisonLyrics[i][j] = comparisonLyrics[i][j].replace(RegExp(repl[m][0], "g"), `\t@@${m}@@\t`);
+const marge = (comparisonLyrics: string[][], repl: string[][]): string[][][][] => {
+  // 第1段階: 文字列内の漢字をプレースホルダーに置換
+  const markedLyrics: string[][] = comparisonLyrics.map((lyrics) =>
+    lyrics.map((lyric) => {
+      let marked = lyric;
+      if (/[一-龥]/.test(lyric)) {
+        for (const [m, replItem] of repl.entries()) {
+          marked = marked.replace(RegExp(replItem[0] ?? "", "g"), `\t@@${m}@@\t`);
         }
       }
-    }
-  }
+      return marked;
+    }),
+  );
 
-  for (let i = 0; i < comparisonLyrics.length; i++) {
-    for (let j = 0; j < comparisonLyrics[i].length; j++) {
-      const line = comparisonLyrics[i][j].split("\t").filter((x) => x !== "");
+  // 第2段階: プレースホルダーを読み配列に変換
+  const result: string[][][][] = markedLyrics.map((lyrics) =>
+    lyrics.map((lyric) => {
+      const tokens = lyric.split("\t").filter((x) => x !== "");
 
-      for (let m = 0; m < line.length; m++) {
-        if (line[m].slice(0, 2) === "@@" && line[m].slice(-2) === "@@" && repl[parseFloat(line[m].slice(2))]) {
-          line[m] = repl[parseFloat(line[m].slice(2))];
-        } else {
-          line[m] = [line[m]];
+      return tokens.map((token) => {
+        if (token.slice(0, 2) === "@@" && token.slice(-2) === "@@") {
+          const index = parseFloat(token.slice(2));
+          const replItem = repl[index];
+          return replItem ?? [token];
         }
-      }
+        return [token];
+      });
+    }),
+  );
 
-      comparisonLyrics[i][j] = line;
-    }
-  }
-
-  return comparisonLyrics as string[][][][];
+  return result;
 };

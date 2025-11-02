@@ -98,7 +98,7 @@ const useTimer = () => {
   }: {
     currentTime: number;
     constantLineTime: number;
-    nextLine: LineData;
+    nextLine: LineData | undefined;
     prevCount: number;
   }) => {
     const { scene, movieDuration } = readGameUtilityParams();
@@ -172,7 +172,7 @@ const useTimer = () => {
 
     const count = readCount();
     const nextLine = map.mapData[count + 1];
-    const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
+    const nextLineTime = nextLine && movieDuration > nextLine.time ? nextLine.time : movieDuration;
 
     const hasReachedNextLineTime = currentTime >= nextLineTime;
     const isVideoEnded = readPlayer().getPlayerState() === YT.PlayerState.ENDED;
@@ -206,10 +206,11 @@ const useProcessLineCompletion = () => {
 
   return ({ constantLineTime, count }: { constantLineTime: number; count: number }) => {
     const map = readMap();
-    if (!map) return;
-    const { scene } = readGameUtilityParams();
+    const currentLine = map?.mapData[count];
+    if (!map || !currentLine) return;
 
-    const isTypingLine = count >= 0 && map.mapData[count].kpm.r > 0;
+    const isTypingLine = count >= 0 && currentLine.kpm.r > 0;
+    const { scene } = readGameUtilityParams();
 
     if (isTypingLine) {
       calcTypeSpeed({ updateType: "lineUpdate", constantLineTime });
@@ -248,20 +249,20 @@ export const useSetupNextLine = () => {
 
   return (nextCount: number) => {
     const map = readMap();
-    if (!map) return;
-    writeCount(nextCount);
-    const newCurrentCount = nextCount;
+    const newCurrentLine = map?.mapData[nextCount];
+    const newNextLine = map?.mapData[nextCount + 1];
+    if (!map || !newCurrentLine || !newNextLine) return;
 
-    const newCurrentLine = map.mapData[newCurrentCount];
-    const newNextLine = map.mapData[newCurrentCount + 1];
+    writeCount(nextCount);
     setCurrentLine({ newCurrentLine, newNextLine });
     resetLineStatus();
 
     const { inputMode, scene } = readGameUtilityParams();
     const { playSpeed } = readPlaySpeed();
+
     if (scene === "replay") {
-      lineReplayUpdate(newCurrentCount);
-      updateAllStatus({ count: newCurrentCount, updateType: "lineUpdate" });
+      lineReplayUpdate(nextCount);
+      updateAllStatus({ count: nextCount, updateType: "lineUpdate" });
     }
 
     writeLineStatus({ startSpeed: playSpeed, startInputMode: inputMode });
@@ -270,7 +271,7 @@ export const useSetupNextLine = () => {
 
     setNextLyrics(newNextLine);
 
-    setChangeCSSCount({ newCurrentCount });
+    setChangeCSSCount({ newCurrentCount: nextCount });
   };
 };
 
@@ -301,8 +302,9 @@ const useDisplaySkipGuide = () => {
     if (!map) return;
     const { isRetrySkip } = readGameUtilRefParams();
     const { playSpeed } = readPlaySpeed();
+    const startLine = map.mapData[map.startLine];
 
-    if (isRetrySkip && currentTime >= map.mapData[map.startLine].time - 3 * playSpeed) {
+    if (isRetrySkip && startLine && currentTime >= startLine.time - 3 * playSpeed) {
       writeGameUtilRefParams({ isRetrySkip: false });
     }
 

@@ -1,6 +1,7 @@
 import { CardWithContent } from "@/components/ui/card";
 import { Table, TableBody, TableRow } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
+import type { focusTypingStatusAtoms } from "../../../_lib/atoms/state-atoms";
 import { StatusCell } from "./status-cell";
 
 export const StatusCard = ({ className }: { className: string }) => {
@@ -22,7 +23,7 @@ export const StatusCard = ({ className }: { className: string }) => {
   );
 };
 
-const StatusTableRow = ({ labels }: { labels: string[] }) => {
+const StatusTableRow = ({ labels }: { labels: (keyof typeof focusTypingStatusAtoms)[] }) => {
   return (
     <TableRow className="border-b-0 hover:bg-transparent">
       {labels.map((label) => (

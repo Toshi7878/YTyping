@@ -141,10 +141,12 @@ const useTyping = () => {
   const { setCurrentLine } = useSetCurrentLine();
 
   return (event: KeyboardEvent) => {
-    const { isSuccess, isFailed, isCompleted, newLineWord, ...inputResult } = inputJudge(event);
+    const { isSuccess, isFailed, isCompleted, newLineWord, successKey, failKey, typeChunk, updatePoint } =
+      inputJudge(event);
     const { constantLineTime, constantRemainLineTime } = getTime({ type: "remainLineTime" });
+    if (!newLineWord) return;
 
-    if (isSuccess) {
+    if (isSuccess && successKey) {
       setLineWord(newLineWord);
       triggerTypeSound({ isCompleted });
 
@@ -152,14 +154,14 @@ const useTyping = () => {
         updateSuccessStatusRefs({
           constantLineTime,
           isCompleted,
-          successKey: inputResult.successKey,
-          typeChunk: inputResult.typeChunk,
+          successKey,
+          typeChunk,
         });
 
         updateSuccessStatus({
           isCompleted,
           constantRemainLineTime,
-          updatePoint: inputResult.updatePoint,
+          updatePoint,
         });
         const { isPaused } = readGameUtilityParams();
 
@@ -190,17 +192,18 @@ const useTyping = () => {
             if (isPaused) {
               const newCurrentLine = map.mapData[count];
               const newNextLine = map.mapData[count + 1];
+              if (!newCurrentLine || !newNextLine) return;
               setCurrentLine({ newCurrentLine, newNextLine });
             }
           }
         }
       });
-    } else if (isFailed) {
+    } else if (isFailed && failKey) {
       triggerMissSound();
 
       requestAnimationFrame(() => {
         updateMissStatus();
-        updateMissRefStatus({ constantLineTime, failKey: inputResult.failKey });
+        updateMissRefStatus({ constantLineTime, failKey });
       });
     }
   };

@@ -72,7 +72,7 @@ export const MapTable = () => {
   const mapDispatch = useMapReducer();
   const { readPlayer } = usePlayer();
 
-  const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
+  const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId: mapId ?? "" }));
   const endLineIndex = useEndLineIndexState();
   const timeLineIndex = useTimeLineIndex();
 
@@ -93,7 +93,10 @@ export const MapTable = () => {
 
   const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
     const map = readMap();
-    const { time, lyrics, word } = map[selectingIndex];
+
+    const line = map[selectingIndex];
+    if (!line) return;
+    const { time, lyrics, word } = line;
 
     if (directEditIndex === selectingIndex) {
       return null;

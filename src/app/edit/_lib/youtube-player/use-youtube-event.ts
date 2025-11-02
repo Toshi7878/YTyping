@@ -107,8 +107,8 @@ const useGetSeekedLineCount = () => {
     let count = 0;
 
     const map = readMap();
-    for (let i = 0; i < map.length; i++) {
-      if (Number(map[i].time) - time >= 0) {
+    for (const [i, line] of map.entries()) {
+      if (Number(line.time) - time >= 0) {
         count = i - 1;
         break;
       }

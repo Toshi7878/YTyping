@@ -45,16 +45,19 @@ export const useActiveUsers = () => {
 
       channel.on("presence", { event: "sync" }, () => {
         const newState = channel.presenceState<ActiveUserStatus>();
-        const users = Object.keys(newState).map((key) => {
-          const [userData] = newState[key];
-          return {
-            id: userData.id,
-            name: userData.name,
-            onlineAt: userData.onlineAt,
-            state: userData.state,
-            mapId: userData.mapId,
-          };
-        });
+        const users = Object.keys(newState)
+          .map((key) => {
+            const [userData] = newState[key] ?? [];
+            if (!userData) return null;
+            return {
+              id: userData.id,
+              name: userData.name,
+              onlineAt: userData.onlineAt,
+              state: userData.state,
+              mapId: userData.mapId,
+            };
+          })
+          .filter((user) => user !== null);
         setOnlineUsers(users);
       });
 

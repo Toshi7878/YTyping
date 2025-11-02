@@ -46,7 +46,7 @@ export const ManyPhraseTextarea = () => {
     const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
     if (isDialogOpen) return;
 
-    const topPhrase = manyPhrase.split("\n")[0];
+    const topPhrase = manyPhrase.split("\n")[0] ?? "";
     void pickupTopPhrase(topPhrase);
   });
 
@@ -58,7 +58,7 @@ export const ManyPhraseTextarea = () => {
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { lyrics } = readSelectLine();
 
-    const topPhrase = e.target.value.split("\n")[0];
+    const topPhrase = e.target.value.split("\n")[0] ?? "";
     if (topPhrase !== lyrics) {
       debounce(() => void pickupTopPhrase(topPhrase.trim()));
     }
@@ -78,7 +78,7 @@ export const ManyPhraseTextarea = () => {
       });
     }
 
-    const topPhrase = target.value.split("\n")[0];
+    const topPhrase = target.value.split("\n")[0] ?? "";
 
     void pickupTopPhrase(topPhrase);
   };
@@ -137,7 +137,7 @@ const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
 
     setManyPhrase(cleanedText);
 
-    const topPhrase = cleanedText.split("\n")[0];
+    const topPhrase = cleanedText.split("\n")[0] ?? "";
     void pickupTopPhrase(topPhrase);
     toast.success("歌詞追加テキストエリアの記号を削除しました", {
       description: "読み変換で変換されない記号を削除しました",

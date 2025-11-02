@@ -49,49 +49,49 @@ function parseCSV(csvText: string): Record<string, string>[] {
 
 function parseUserRow(row: Record<string, string>) {
   return {
-    id: Number(row.id),
+    id: Number(row.id ?? 0),
     name: row.name === "" ? null : row.name,
-    emailHash: row.email_hash,
-    role: row.role as "USER" | "ADMIN",
-    createdAt: new Date(row.created_at.replace(" ", "T")),
-    updatedAt: new Date(row.updated_at.replace(" ", "T")),
+    emailHash: row.email_hash ?? "",
+    role: (row.role ?? "USER") as "USER" | "ADMIN",
+    createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
+    updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
   };
 }
 
 function parseMapRow(row: Record<string, string>) {
   return {
-    id: Number(row.id),
-    videoId: row.video_id,
-    title: row.title,
-    artistName: row.artist_name,
-    musicSource: row.music_source,
-    creatorComment: row.creator_comment,
-    tags: JSON.parse(row.tags),
-    creatorId: Number(row.creator_id),
-    previewTime: Number(row.preview_time),
-    duration: Number(row.duration),
-    playCount: Number(row.play_count),
-    likeCount: Number(row.like_count),
-    rankingCount: Number(row.ranking_count),
-    category: JSON.parse(row.category),
-    thumbnailQuality: row.thumbnail_quality as "mqdefault" | "maxresdefault",
-    createdAt: new Date(row.created_at.replace(" ", "T")),
-    updatedAt: new Date(row.updated_at.replace(" ", "T")),
+    id: Number(row.id ?? 0),
+    videoId: row.video_id ?? "",
+    title: row.title ?? "",
+    artistName: row.artist_name ?? "",
+    musicSource: row.music_source ?? "",
+    creatorComment: row.creator_comment ?? "",
+    tags: JSON.parse(row.tags ?? "[]"),
+    creatorId: Number(row.creator_id ?? 0),
+    previewTime: Number(row.preview_time ?? 0),
+    duration: Number(row.duration ?? 0),
+    playCount: Number(row.play_count ?? 0),
+    likeCount: Number(row.like_count ?? 0),
+    rankingCount: Number(row.ranking_count ?? 0),
+    category: JSON.parse(row.category ?? "[]"),
+    thumbnailQuality: (row.thumbnail_quality ?? "mqdefault") as "mqdefault" | "maxresdefault",
+    createdAt: new Date((row.created_at ?? "").replace(" ", "T")),
+    updatedAt: new Date((row.updated_at ?? "").replace(" ", "T")),
   };
 }
 
 function parseMapDifficultyRow(row: Record<string, string>) {
   return {
-    mapId: Number(row.map_id),
-    romaKpmMedian: Number(row.roma_kpm_median),
-    romaKpmMax: Number(row.roma_kpm_max),
-    kanaKpmMedian: Number(row.kana_kpm_median),
-    kanaKpmMax: Number(row.kana_kpm_max),
-    romaTotalNotes: Number(row.roma_total_notes),
-    kanaTotalNotes: Number(row.kana_total_notes),
-    englishTotalNotes: Number(row.english_total_notes),
-    symbolTotalNotes: Number(row.symbol_total_notes),
-    intTotalNotes: Number(row.int_total_notes),
+    mapId: Number(row.map_id ?? 0),
+    romaKpmMedian: Number(row.roma_kpm_median ?? 0),
+    romaKpmMax: Number(row.roma_kpm_max ?? 0),
+    kanaKpmMedian: Number(row.kana_kpm_median ?? 0),
+    kanaKpmMax: Number(row.kana_kpm_max ?? 0),
+    romaTotalNotes: Number(row.roma_total_notes ?? 0),
+    kanaTotalNotes: Number(row.kana_total_notes ?? 0),
+    englishTotalNotes: Number(row.english_total_notes ?? 0),
+    symbolTotalNotes: Number(row.symbol_total_notes ?? 0),
+    intTotalNotes: Number(row.int_total_notes ?? 0),
   };
 }
 

@@ -84,7 +84,7 @@ export const mapRouter = {
     }
 
     const newMapId = await db.transaction(async (tx) => {
-      let newId: number;
+      let newId: number | undefined;
 
       if (mapId === null) {
         const maxId = await tx
@@ -98,14 +98,17 @@ export const mapRouter = {
           .insert(Maps)
           .values({ id: nextId, ...mapInfo, creatorId: userId })
           .returning({ id: Maps.id })
-          .then((res) => res[0].id);
+          .then((res) => res[0]?.id);
       } else {
         newId = await tx
           .update(Maps)
           .set({ ...mapInfo, ...(isMapDataEdited ? { updatedAt: new Date() } : {}) })
           .where(eq(Maps.id, mapId))
           .returning({ id: Maps.id })
-          .then((res) => res[0].id);
+          .then((res) => res[0]?.id);
+      }
+      if (!newId) {
+        throw new TRPCError({ code: "PRECONDITION_FAILED" });
       }
 
       await tx

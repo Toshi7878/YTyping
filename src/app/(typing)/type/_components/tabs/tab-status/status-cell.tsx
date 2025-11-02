@@ -5,7 +5,7 @@ import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
 import { focusTypingStatusAtoms } from "../../../_lib/atoms/state-atoms";
 
-export const StatusCell = ({ label }: { label: string }) => {
+export const StatusCell = ({ label }: { label: keyof typeof focusTypingStatusAtoms }) => {
   return (
     <TableCell id={label} style={{ width: label === "score" || label === "point" ? "20%" : "14%" }}>
       <StatusLabel label={label} />
@@ -22,7 +22,7 @@ export const StatusCell = ({ label }: { label: string }) => {
   );
 };
 
-const StatusLabel = ({ label }: { label: string }) => {
+const StatusLabel = ({ label }: { label: keyof typeof focusTypingStatusAtoms }) => {
   return (
     <span className={cn("status-label relative mr-2 capitalize md:text-[80%]", label === "kpm" && "tracking-[0.2em]")}>
       {label}
@@ -56,7 +56,7 @@ const StatusValue = ({ atom }: { atom: Atom<number> }) => {
   return <>{value}</>;
 };
 
-const StatusUnderline = ({ label }: { label: string }) => {
+const StatusUnderline = ({ label }: { label: keyof typeof focusTypingStatusAtoms }) => {
   const isMainWidth = label === "score" || label === "point";
 
   const underlineWidthClass = isMainWidth ? "w-[240px] md:w-[159px]" : "w-28 md:w-20";

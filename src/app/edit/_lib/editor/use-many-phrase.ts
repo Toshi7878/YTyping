@@ -59,7 +59,7 @@ export const useDeleteTopPhrase = () => {
     const { manyPhraseText } = readEditUtils();
     const lines = manyPhraseText.split("\n") || [];
 
-    if (lyrics === lines[0].trim()) {
+    if (lyrics === lines[0]?.trim()) {
       const newManyPhrase = lines.slice(1).join("\n");
 
       setManyPhrase(newManyPhrase);

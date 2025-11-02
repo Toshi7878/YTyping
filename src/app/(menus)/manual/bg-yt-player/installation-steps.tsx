@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { H3, LinkText, OList, P } from "@/components/ui/typography";
 import { useUserAgent } from "@/lib/global-atoms";
 
-const browserLinks: Record<string, { url: Route; text: string }> = {
+const browserLinks: Record<"Chrome" | "Firefox" | "Edge", { url: Route; text: string }> = {
   Chrome: {
     url: "https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne?hl=ja",
     text: "Stylus - Chrome ウェブストア",
@@ -22,10 +22,10 @@ const browserLinks: Record<string, { url: Route; text: string }> = {
 const useBrowserLink = () => {
   const userAgent = useUserAgent();
   const browserType = userAgent?.getBrowser().name;
-  const browserLink = browserLinks[browserType as keyof typeof browserLinks];
-  if (!browserLink) return browserLinks.Chrome;
-
-  return browserLink;
+  if (browserType === "Chrome") return browserLinks.Chrome;
+  if (browserType === "Firefox") return browserLinks.Firefox;
+  if (browserType === "Edge") return browserLinks.Edge;
+  return browserLinks.Chrome;
 };
 
 export function InstallationSteps() {

@@ -25,12 +25,13 @@ export const usePressSkip = () => {
     const { timeOffset, isRetrySkip } = readGameUtilRefParams();
     const count = readCount();
 
+    const startLine = map.mapData[map.startLine];
     const nextLine = map.mapData[count + 1];
 
+    if (!startLine || !nextLine) return;
+
     const skippedTime =
-      (isRetrySkip ? Number(map.mapData[map.startLine].time) : Number(nextLine.time)) +
-      userOptions.timeOffset +
-      timeOffset;
+      (isRetrySkip ? Number(startLine.time) : Number(nextLine.time)) + userOptions.timeOffset + timeOffset;
 
     const { playSpeed } = readPlaySpeed();
     const { movieDuration } = readGameUtilityParams();

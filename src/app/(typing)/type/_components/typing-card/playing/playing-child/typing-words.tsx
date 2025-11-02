@@ -45,7 +45,7 @@ export const TypingWords = () => {
   };
   const romaWordProps = {
     correct: lineWord.correct.r,
-    nextChar: lineWord.nextChar.r[0],
+    nextChar: lineWord.nextChar.r[0] ?? "",
     word: lineWord.word
       .map((w) => w.r[0])
       .join("")

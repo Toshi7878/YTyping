@@ -1,4 +1,5 @@
-import { romaConvert } from "../../../../../lib/build-map/build-map";
+import { generateTypingWord } from "@/lib/build-map/generate-typing-word";
+import { kanaSentenceToKanaChunkWords } from "@/lib/build-map/kana-sentence-to-kana-word-chunks";
 import { useLineCount, useLineStatus } from "../atoms/read-atoms";
 import {
   useReadGameUtilityParams,
@@ -9,7 +10,7 @@ import {
   useSetNotify,
   useSetPlayingInputMode,
 } from "../atoms/state-atoms";
-import type { InputMode } from "../type";
+import type { InputMode, LineWord } from "../type";
 import { useGetYouTubeTime } from "../youtube-player/use-get-youtube-time";
 
 export const useInputModeChange = () => {
@@ -44,7 +45,6 @@ export const useInputModeChange = () => {
 
       if (lineWord.nextChar.k) {
         const wordFix = romaConvert(lineWord);
-
         setLineWord({
           correct: lineWord.correct,
           nextChar: wordFix.nextChar,
@@ -56,7 +56,7 @@ export const useInputModeChange = () => {
     const count = readCount();
     const nextLine = map.mapData[count + 1];
 
-    if (nextLine.kanaWord) {
+    if (nextLine?.kanaWord) {
       setNextLyrics(nextLine);
     }
 
@@ -74,3 +74,15 @@ export const useInputModeChange = () => {
     }
   };
 };
+
+function romaConvert(lineWord: LineWord) {
+  const dakuten = lineWord.nextChar.orginalDakuChar;
+  const [kanaChunkWord] = kanaSentenceToKanaChunkWords(
+    (dakuten ? dakuten : lineWord.nextChar.k) + lineWord.word.map((char) => char.k).join(""),
+  );
+
+  const nextPoint = lineWord.nextChar.p;
+  const word = generateTypingWord(kanaChunkWord!);
+  const nextChar = word[0]!;
+  return { nextChar: { ...nextChar, p: nextPoint }, word: word.slice(1) };
+}

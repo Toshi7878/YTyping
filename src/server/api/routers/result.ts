@@ -261,7 +261,7 @@ export const resultRouter = {
         .limit(1)
         .then((rows) => rows[0]);
 
-      let resultId: number;
+      let resultId: number | undefined;
 
       if (existingResult) {
         resultId = await tx
@@ -269,7 +269,7 @@ export const resultRouter = {
           .set({ updatedAt: new Date() })
           .where(eq(Results.id, existingResult.id))
           .returning({ id: Results.id })
-          .then((res) => res[0].id);
+          .then((res) => res[0]?.id);
       } else {
         const maxId = await tx
           .select({ maxId: max(Results.id) })
@@ -282,7 +282,10 @@ export const resultRouter = {
           .insert(Results)
           .values({ id: nextId, mapId, userId })
           .returning({ id: Results.id })
-          .then((res) => res[0].id);
+          .then((res) => res[0]?.id);
+      }
+      if (!resultId) {
+        throw new TRPCError({ code: "PRECONDITION_FAILED" });
       }
 
       await tx
@@ -374,8 +377,7 @@ const updateRankingsAndNotifyOvertakes = async ({
   userId: number;
   rankedUsers: { userId: number; rank: number; score: number }[];
 }) => {
-  for (let index = 0; index < rankedUsers.length; index++) {
-    const rankedUser = rankedUsers[index];
+  for (const [index, rankedUser] of rankedUsers.entries()) {
     const nextRank = index + 1;
     const prevRank = rankedUser.rank;
 

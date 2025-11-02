@@ -386,11 +386,13 @@ const writeCurrentLineAtom = atom(
   null,
   (get, set, { newCurrentLine, newNextLine }: { newCurrentLine: LineData; newNextLine: LineData }) => {
     const cloneWord = structuredClone([...newCurrentLine.word]);
+    const nextChar = cloneWord[0];
+    if (!nextChar) return;
 
     set(currentLineAtom, {
       lineWord: {
         correct: { k: "", r: "" },
-        nextChar: cloneWord[0],
+        nextChar,
         word: cloneWord.slice(1),
       },
       lyrics: newCurrentLine.lyrics,
@@ -417,7 +419,7 @@ export const useSetCurrentLine = () => {
     const map = store.get(mapAtom);
     const lineProgress = store.get(lineProgressAtom);
 
-    if (lineProgress && map) {
+    if (lineProgress && map && map.mapData[1]) {
       lineProgress.value = 0;
       lineProgress.max = map.mapData[1].time;
     }

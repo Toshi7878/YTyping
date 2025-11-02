@@ -51,21 +51,21 @@ const usePlayBackKey = () => {
       if (isSuccess) {
         const { inputMode } = readGameUtilityParams();
         const lineWord = readLineWord();
-        const result =
+        const { newLineWord, successKey, updatePoint } =
           inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
-        setLineWord(result.newLineWord);
-        const isCompleted = result.newLineWord.nextChar.k === "";
+
+        if (!newLineWord || !successKey) return;
+
+        setLineWord(newLineWord);
+        const isCompleted = newLineWord.nextChar.k === "";
         triggerTypeSound({ isCompleted });
 
         calcTypeSpeed({ updateType: "keydown", constantLineTime });
 
-        updateSuccessStatusRefs({
-          constantLineTime,
-          successKey: result.successKey,
-        });
+        updateSuccessStatusRefs({ constantLineTime, successKey });
 
         if (!isCompleted) {
-          updateSuccessStatus({ constantRemainLineTime, updatePoint: result.updatePoint });
+          updateSuccessStatus({ constantRemainLineTime, updatePoint });
         } else {
           updateAllStatus({ count, updateType: "completed" });
         }

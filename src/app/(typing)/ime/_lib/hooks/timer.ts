@@ -156,7 +156,8 @@ const useTimer = () => {
   }) => {
     const { nextDisplayLine } = readGameUtilParams();
     if (nextDisplayLine.length === 0) {
-      const nextTime = nextLine[0].time;
+      const nextTime = nextLine?.[0]?.time;
+      if (!nextTime) return;
 
       const { enableNextLyrics } = readImeTypeOptions();
       if (enableNextLyrics && nextTime - constantOffsettedYTTime < 3) {
@@ -177,13 +178,14 @@ const useTimer = () => {
     const nextLine = map.lines[count];
     if (!nextLine) {
       setTextareaPlaceholderType("end");
-
       return;
     }
 
-    const nextLineStartTime = nextLine[0]?.time;
-
     updateNextDisplayLine({ nextLine, constantOffsettedYTTime, count });
+
+    const nextLineStartTime = nextLine[0]?.time;
+    if (!nextLineStartTime) return;
+
     if (currentOffesettedYTTime > nextLineStartTime) {
       const newCount = count + 1;
 

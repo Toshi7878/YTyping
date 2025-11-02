@@ -50,7 +50,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       const map = new BuildMap(mapData);
       setMap(map);
       initializeLineResults(map.initialLineResultData);
-      setLineSelectIndex(map.typingLineIndexes[0]);
+      setLineSelectIndex(map.typingLineIndexes?.[0] ?? 0);
       setTypingStatusLine(map.lineLength);
       resetTypingStatus();
 

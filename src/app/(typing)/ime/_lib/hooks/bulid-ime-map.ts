@@ -1,4 +1,5 @@
 import type { MapLine } from "@/server/drizzle/validator/map-json";
+import { zip } from "@/utils/array";
 import { useReadImeTypeOptions } from "../atoms/state-atoms";
 import type { WordResults } from "../type";
 import { useFormatWord } from "./format-word";
@@ -16,10 +17,10 @@ export const useBuildImeMap = () => {
     let lineTimes: number[] = [];
     const lines: { time: number; word: string }[][] = [];
 
-    for (let i = 0; i < mapData.length; i++) {
-      const line = mapData[i];
+    for (const [i, line] of mapData.entries()) {
       const nextLine = mapData[i + 1];
       const nextToNextLine = mapData[i + 2];
+
       const formattedLyrics = formatWord(deleteRubyTag(line.lyrics));
 
       const isTypingLine = isValidTypingLine(formattedLyrics, line.word);
@@ -34,19 +35,16 @@ export const useBuildImeMap = () => {
       const shouldBreakLine = shouldCreateNewLine(lineWords, nextLine, nextTime, lineTimes);
 
       if (shouldBreakLine) {
-        const lastTime = nextLine ? Number(nextLine.time) : lineTimes[lineTimes.length - 1] + 10; // 次の行がない場合は10秒後
-        lineTimes.push(lastTime);
+        const lastTime = nextLine ? Number(nextLine.time) : Number(line.time) + 10; // 次の行がない場合は10秒後
         lineWords.push("");
+        lineTimes.push(lastTime);
 
-        //   const prevDisplayLyrics = displayLyrics[displayLyrics.length - 1];
+        const WordsWithTimes = zip<number, string>(lineTimes, lineWords).map(([time, word]) => ({
+          time,
+          word,
+        }));
 
-        //   if (prevDisplayLyrics) {
-        //     connectWithPreviousLyrics(displayLyrics, lineTimes);
-        //   }
-
-        const line = lineWords.map((word, index) => ({ time: lineTimes[index], word }));
-
-        lines.push(line);
+        lines.push(WordsWithTimes);
 
         lineWords = [];
         lineTimes = [];
@@ -67,7 +65,7 @@ export const useBuildImeMap = () => {
       }),
     );
 
-    const totalNotes = words.flat(2).reduce((acc, word) => acc + word[0].length, 0);
+    const totalNotes = words.flat(2).reduce((acc, word) => acc + (word?.[0]?.length ?? 0), 0);
 
     const textWords = words.flat(1).map((word) => {
       return word.map((chars) => chars[0]).join("");
@@ -100,31 +98,31 @@ const shouldCreateNewLine = (
   nextTime: number,
   lineTimes: number[],
 ): boolean => {
-  return lineChars.length > 0 && (!nextLine || MIN_LINE_SECONDS < nextTime - lineTimes[0]);
+  return lineChars.length > 0 && (!nextLine || MIN_LINE_SECONDS < nextTime - (lineTimes?.[0] ?? 0));
 };
 
 const deleteRubyTag = (text: string) => {
-  const ruby_convert = text.match(/<*ruby(?: .+?)?>.*?<.*?\/ruby*>/g);
-  let deletedRubyTagText = text;
-  if (ruby_convert) {
-    for (let v = 0; v < ruby_convert.length; v++) {
-      const start = ruby_convert[v].indexOf(">") + 1;
-      const end = ruby_convert[v].indexOf("<rt>");
-      const ruby = ruby_convert[v].slice(start, end);
-      deletedRubyTagText = deletedRubyTagText.replace(ruby_convert[v], ruby);
-    }
+  const rubyMatches = text.match(/<*ruby(?: .+?)?>.*?<.*?\/ruby*>/g);
+  if (!rubyMatches) return text;
+
+  let result = text;
+  for (const rubyTag of rubyMatches) {
+    const start = rubyTag.indexOf(">") + 1;
+    const end = rubyTag.indexOf("<rt>");
+    const rubyText = rubyTag.slice(start, end);
+    result = result.replace(rubyTag, rubyText);
   }
-  return deletedRubyTagText;
+
+  return result;
 };
 
 const insertSpacesEng = (words: string[]) => {
   const insertedSpaceWords = words;
-  for (let i = 0; i < insertedSpaceWords.length; i++) {
-    const currentWord = insertedSpaceWords[i];
+  for (const [i, currentWord] of insertedSpaceWords.entries()) {
     const isCurrentWordAllHankaku = /^[!-~]*$/.test(currentWord);
     const nextWord = insertedSpaceWords[i + 1];
 
-    if (isCurrentWordAllHankaku && nextWord) {
+    if (isCurrentWordAllHankaku && nextWord && nextWord[0]) {
       if (/^[!-~]*$/.test(nextWord[0])) {
         insertedSpaceWords[i] = insertedSpaceWords[i] + " ";
       }

@@ -167,7 +167,7 @@ const TagInputFormField = ({
                 void trigger(name);
               }}
               onTagRemove={(index) => {
-                const newTags = field.value.filter((_, i) => i !== index);
+                const newTags = field.value.filter((_: string, i: number) => i !== index);
                 setValue(name, newTags, { shouldDirty: true, shouldTouch: true });
                 void trigger(name);
               }}

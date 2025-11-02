@@ -90,8 +90,9 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     }
 
     const count = readCount();
-    if (count === 0 && map) {
-      setNextLyrics(map.mapData[1]);
+    const nextLine = map?.mapData[1];
+    if (count === 0 && map && nextLine) {
+      setNextLyrics(nextLine);
       resetCurrentLine();
     } else {
       resetNextLyrics();

@@ -1,4 +1,4 @@
-import type { TRPCRouterRecord } from "@trpc/server";
+import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import z from "zod";
@@ -30,14 +30,18 @@ export const clapRouter = {
           .select({ c: count() })
           .from(ResultClaps)
           .where(and(eq(ResultClaps.resultId, resultId), eq(ResultClaps.hasClapped, true)))
-          .then((rows) => rows[0]?.c);
+          .then((rows) => rows[0]?.c ?? 0);
 
         const mapId = await tx
           .update(Results)
           .set({ clapCount: newClapCount })
           .where(eq(Results.id, resultId))
           .returning({ mapId: Results.mapId })
-          .then((res) => res[0].mapId);
+          .then((res) => res[0]?.mapId);
+
+        if (!mapId) {
+          throw new TRPCError({ code: "PRECONDITION_FAILED" });
+        }
 
         if (isFirstClap) {
           const result = await tx.query.Results.findFirst({

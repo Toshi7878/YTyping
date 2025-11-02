@@ -80,7 +80,7 @@ export const useAddLineAction = () => {
     const lyricsCopy = structuredClone(lyrics);
     deleteTopPhrase(lyricsCopy);
     const { manyPhraseText } = readEditUtils();
-    const topPhrase = manyPhraseText.split("\n")[0];
+    const topPhrase = manyPhraseText.split("\n")[0] ?? "";
     void pickupTopPhrase(topPhrase);
   };
 };
@@ -123,6 +123,8 @@ export const useUpdateLineAction = () => {
     const formatedTime = timeValidate(_time).toFixed(3);
 
     const oldLine = map[selectLineIndex];
+    if (!oldLine) return;
+
     const newLine = {
       time: formatedTime,
       lyrics,
@@ -208,10 +210,12 @@ export const useDeleteLineAction = () => {
     if (!selectIndex) return;
 
     const map = readMap();
+    const lineToDelete = map[selectIndex];
+    if (!lineToDelete) return;
 
     historyDispatch({
       type: "add",
-      payload: { actionType: "delete", data: { ...map[selectIndex], lineIndex: selectIndex } },
+      payload: { actionType: "delete", data: { ...lineToDelete, lineIndex: selectIndex } },
     });
 
     mapDispatch({ type: "delete", index: selectIndex });

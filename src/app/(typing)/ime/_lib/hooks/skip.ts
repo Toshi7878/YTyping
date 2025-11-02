@@ -14,9 +14,11 @@ export const useSkip = () => {
     const map = readMap();
     const { count } = readGameUtilParams();
 
-    const nextLine = map.lines?.[count];
+    const nextLine = map.lines[count];
+    const nextChunk = nextLine?.[0];
+    if (!nextChunk) return;
 
-    const nextStartTime = Number(nextLine[0].time);
+    const nextStartTime = Number(nextChunk.time);
 
     const seekTime = nextStartTime - SKIP_BUFFER_TIME;
 

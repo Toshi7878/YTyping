@@ -5,3 +5,5 @@ export interface FileUploadParams {
   body: Buffer | Uint8Array | string;
   contentType?: ContentType;
 }
+
+export type NonEmptyArray<T> = [T, ...T[]] | [...T[], T];

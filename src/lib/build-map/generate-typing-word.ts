@@ -203,33 +203,34 @@ const SOKUON_JOIN_LIST = [
   "ぺ",
   "ぽ",
 ];
-// prettier-ignore
 const KANA_UNSUPPORTED_SYMBOLS = ["←", "↓", "↑", "→"];
 
-const generateTypingWord = (tokenizedKanaWord: string[]) => {
-  const hasWord = tokenizedKanaWord.length;
+const generateTypingWord = (kanaChunkWord: string[]) => {
+  const hasWord = kanaChunkWord.length;
 
   if (hasWord) {
-    return generateTypeChunks(tokenizedKanaWord);
+    return generateTypeChunks(kanaChunkWord);
   }
+
   return [{ k: "", r: [""], p: 0, t: undefined }];
 };
 
-const generateTypeChunks = (tokenizedKanaWord: string[]) => {
+const generateTypeChunks = (kanaWordChunks: string[]) => {
   let typeChunks: TypeChunk[] = [];
 
-  for (let i = 0; i < tokenizedKanaWord.length; i++) {
-    const kanaChar = tokenizedKanaWord[i];
+  for (const kanaChunk of kanaWordChunks) {
     const romaPatterns = [
-      ...(ROMA_MAP.get(kanaChar) || SYMBOL_TO_ROMA_MAP.get(kanaChar) || [convertZenkakuToHankaku(kanaChar)]),
+      ...(ROMA_MAP.get(kanaChunk) || SYMBOL_TO_ROMA_MAP.get(kanaChunk) || [convertZenkakuToHankaku(kanaChunk)]),
     ];
 
+    if (!romaPatterns[0]) return typeChunks;
+
     typeChunks.push({
-      k: kanaChar,
+      k: kanaChunk,
       r: romaPatterns,
       p: CHAR_POINT * romaPatterns[0].length,
-      t: determineCharacterType({ kanaChar, romaChar: romaPatterns[0] }),
-      ...(KANA_UNSUPPORTED_SYMBOLS.includes(kanaChar) && { kanaUnSupportedSymbol: kanaChar }),
+      t: determineCharacterType({ kanaChar: kanaChunk, romaChar: romaPatterns[0] }),
+      ...(KANA_UNSUPPORTED_SYMBOLS.includes(kanaChunk) && { kanaUnSupportedSymbol: kanaChunk }),
     });
 
     //打鍵パターンを正規化 (促音結合 / n → nn)
@@ -237,10 +238,9 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
 
     if (typeChunks.length >= 2) {
       const prevKanaChar = typeChunks[typeChunks.length - 2]?.k;
+      const currentKanaChar = typeChunks[typeChunks.length - 1]?.k[0];
 
-      if (prevKanaChar?.[prevKanaChar.length - 1] === "っ") {
-        const currentKanaChar = typeChunks[typeChunks.length - 1].k[0];
-
+      if (prevKanaChar?.[prevKanaChar.length - 1] === "っ" && currentKanaChar) {
         if (SOKUON_JOIN_LIST.includes(currentKanaChar)) {
           typeChunks = joinSokuonPattern({ typeChunks, joinType: "normal" });
         } else if (["い", "う", "ん"].includes(currentKanaChar)) {
@@ -250,10 +250,10 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
     }
 
     const prevKanaChar = typeChunks[typeChunks.length - 2]?.k ?? "";
-    const currentKanaChar = typeChunks[typeChunks.length - 1].k;
+    const currentFirstKanaChar = typeChunks[typeChunks.length - 1]?.k[0];
 
-    if (prevKanaChar[prevKanaChar.length - 1] === "ん") {
-      if (NN_LIST.includes(currentKanaChar[0])) {
+    if (prevKanaChar[prevKanaChar.length - 1] === "ん" && currentFirstKanaChar) {
+      if (NN_LIST.includes(currentFirstKanaChar)) {
         typeChunks = replaceNWithNN(typeChunks);
       } else {
         typeChunks = applyDoubleNTypePattern(typeChunks);
@@ -262,26 +262,28 @@ const generateTypeChunks = (tokenizedKanaWord: string[]) => {
   }
 
   //this.kanaArray最後の文字が「ん」だった場合も[nn]に置き換えます。
-  if (typeChunks[typeChunks.length - 1].k === "ん") {
-    typeChunks[typeChunks.length - 1].r[0] = "nn";
-    typeChunks[typeChunks.length - 1].r.push("n'");
-    typeChunks[typeChunks.length - 1].p = CHAR_POINT * typeChunks[typeChunks.length - 1].r[0].length;
+  const lastChunk = typeChunks.at(-1);
+  if (lastChunk?.k === "ん") {
+    lastChunk.r[0] = "nn";
+    lastChunk.r.push("n'");
+    lastChunk.p = CHAR_POINT * lastChunk.r[0].length;
   }
 
   return typeChunks;
 };
 
 const applyDoubleNTypePattern = (typeChunks: TypeChunk[]) => {
-  const currentKanaChar = typeChunks[typeChunks.length - 1].k;
+  const lastChunk = typeChunks.at(-1);
+  if (!lastChunk) return typeChunks;
 
+  const currentKanaChar = lastChunk.k;
   if (currentKanaChar) {
     //n一つのパターンでもnext typeChunkにnを追加してnnの入力を可能にする
-    const currentRomaPatterns = typeChunks[typeChunks.length - 1].r;
-    const currentRomaPatternsLength = currentRomaPatterns.length;
+    const currentRomaPatterns = lastChunk.r;
 
-    for (let i = 0; i < currentRomaPatternsLength; i++) {
-      typeChunks[typeChunks.length - 1].r.push(`n${currentRomaPatterns[i]}`);
-      typeChunks[typeChunks.length - 1].r.push(`'${currentRomaPatterns[i]}`);
+    for (const romaPattern of currentRomaPatterns) {
+      lastChunk.r.push(`n${romaPattern}`);
+      lastChunk.r.push(`'${romaPattern}`);
     }
   }
 
@@ -289,21 +291,22 @@ const applyDoubleNTypePattern = (typeChunks: TypeChunk[]) => {
 };
 
 const replaceNWithNN = (typeChunks: TypeChunk[]) => {
-  const prevRomaPatterns = typeChunks[typeChunks.length - 2].r;
-  const prevRomaPatternsLength = typeChunks[typeChunks.length - 2].r.length;
+  const prevChunk = typeChunks.at(-2);
+  if (!prevChunk) return typeChunks;
 
-  for (let i = 0; i < prevRomaPatternsLength; i++) {
-    const romaPattern = prevRomaPatterns[i];
-    const isNnPattern =
+  const prevRomaPatterns = prevChunk.r;
+
+  for (const [i, romaPattern] of prevRomaPatterns.entries()) {
+    const isNNPattern =
       (romaPattern.length >= 2 &&
         romaPattern[romaPattern.length - 2] !== "x" &&
         romaPattern[romaPattern.length - 1] === "n") ||
       romaPattern === "n";
 
-    if (isNnPattern) {
-      typeChunks[typeChunks.length - 2].r[i] = `${prevRomaPatterns[i]}n`;
-      typeChunks[typeChunks.length - 2].r.push("n'");
-      typeChunks[typeChunks.length - 2].p = CHAR_POINT * prevRomaPatterns[i].length;
+    if (isNNPattern && romaPattern) {
+      prevChunk.r[i] = `${romaPattern}n`;
+      prevChunk.r.push("n'");
+      prevChunk.p = CHAR_POINT * romaPattern.length;
     }
   }
 
@@ -317,29 +320,36 @@ const joinSokuonPattern = ({ joinType, typeChunks }: { joinType: "normal" | "iun
   const xtsu: string[] = [];
   const ltsu: string[] = [];
 
-  const prevKanaChar = typeChunks[typeChunks.length - 2].k;
-  const currentKanaChar = typeChunks[typeChunks.length - 1].k;
+  const prevChunk = typeChunks.at(-2);
+  const currentChunk = typeChunks.at(-1);
+  if (!prevChunk || !currentChunk) return typeChunks;
 
-  typeChunks[typeChunks.length - 1].k = prevKanaChar + currentKanaChar;
+  const prevKanaChar = prevChunk.k;
+  const currentKanaChar = currentChunk.k;
+
+  currentChunk.k = prevKanaChar + currentKanaChar;
   typeChunks.splice(-2, 1);
 
   const sokuonLength = (prevKanaChar.match(/っ/g) || []).length;
-  const romaPatterns = typeChunks[typeChunks.length - 1].r;
-  const romaPatternsLength = romaPatterns.length;
+  const lastChunk = typeChunks.at(-1);
+  if (!lastChunk) return typeChunks;
 
-  for (let i = 0; i < romaPatternsLength; i++) {
-    if (joinType === "normal" || !["i", "u", "n"].includes(romaPatterns[i][0])) {
-      continuous.push(romaPatterns[i][0].repeat(sokuonLength) + romaPatterns[i]);
+  const romaPatterns = lastChunk.r;
+
+  for (const romaPattern of romaPatterns) {
+    const firstChar = romaPattern[0];
+    if (firstChar && (joinType === "normal" || !["i", "u", "n"].includes(firstChar))) {
+      continuous.push(firstChar.repeat(sokuonLength) + romaPattern);
     }
 
-    xtu.push(`${"x".repeat(sokuonLength)}tu${romaPatterns[i]}`);
-    ltu.push(`${"l".repeat(sokuonLength)}tu${romaPatterns[i]}`);
-    xtsu.push(`${"x".repeat(sokuonLength)}tsu${romaPatterns[i]}`);
-    ltsu.push(`${"l".repeat(sokuonLength)}tsu${romaPatterns[i]}`);
+    xtu.push(`${"x".repeat(sokuonLength)}tu${romaPattern}`);
+    ltu.push(`${"l".repeat(sokuonLength)}tu${romaPattern}`);
+    xtsu.push(`${"x".repeat(sokuonLength)}tsu${romaPattern}`);
+    ltsu.push(`${"l".repeat(sokuonLength)}tsu${romaPattern}`);
   }
 
-  typeChunks[typeChunks.length - 1].r = [...continuous, ...xtu, ...ltu, ...xtsu, ...ltsu];
-  typeChunks[typeChunks.length - 1].p = CHAR_POINT * romaPatterns[0].length;
+  lastChunk.r = [...continuous, ...xtu, ...ltu, ...xtsu, ...ltsu];
+  lastChunk.p = CHAR_POINT * (romaPatterns[0]?.length ?? 0);
 
   return typeChunks;
 };

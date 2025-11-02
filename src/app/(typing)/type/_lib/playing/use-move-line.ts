@@ -35,21 +35,14 @@ export const useMoveLine = () => {
 
     const { typingLineIndexes } = map;
 
-    let prevCount: number | undefined;
-    for (let i = typingLineIndexes.length - 1; i >= 0; i--) {
-      const candidate = typingLineIndexes[i];
-      if (candidate < referenceCount) {
-        prevCount = candidate;
-        break;
-      }
-    }
+    const prevCount = typingLineIndexes.findLast((candidate) => candidate < referenceCount);
 
     if (prevCount === undefined) return;
 
     const { playSpeed } = readPlaySpeed();
 
     const timeIndex = prevCount + (isTimeBuffer ? 0 : 1);
-    const prevTimeRaw = Number(map.mapData[timeIndex].time);
+    const prevTimeRaw = Number(map.mapData[timeIndex]?.time);
     const prevTime = prevTimeRaw - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 
     const newLineSelectIndex = typingLineIndexes.indexOf(prevCount) + 1;
@@ -60,12 +53,12 @@ export const useMoveLine = () => {
     writeCount(newCount);
     updateLine(newCount);
 
-    const seekTargetTime = isTimeBuffer ? prevTime : map.mapData[prevCount].time;
+    const seekTargetTime = isTimeBuffer ? prevTime : (map.mapData[prevCount]?.time ?? 0);
     readPlayer().seekTo(seekTargetTime, true);
     setNotify(Symbol("◁"));
     scrollToCard(newLineSelectIndex);
     const newLine = map.mapData[newCount];
-    readLineProgress().value = isTimeBuffer ? prevTime - newLine.time : 0;
+    readLineProgress().value = isTimeBuffer ? prevTime - (newLine?.time ?? 0) : 0;
   };
 
   const moveNextLine = () => {
@@ -80,11 +73,15 @@ export const useMoveLine = () => {
 
     const nextCount = map.typingLineIndexes.find((num) => num > adjustedCount);
     if (nextCount === undefined) return;
+    const prevLine = map.mapData[nextCount - 1];
+    const nextLine = map.mapData[nextCount];
+    if (!prevLine || !nextLine) return;
     const { playSpeed } = readPlaySpeed();
     const { scene, isPaused } = readGameUtilityParams();
-    const prevLineTime = map.mapData[nextCount].time - map.mapData[nextCount - 1].time / playSpeed;
+    const prevLineTime = nextLine.time - prevLine.time / playSpeed;
     const isTimeBuffer = scene === "practice" && !isPaused && prevLineTime > 1;
-    const nextTime = Number(map.mapData[nextCount].time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
+
+    const nextTime = Number(nextLine.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
     const newLineSelectIndex = map.typingLineIndexes.indexOf(nextCount) + 1;
 
     setLineSelectIndex(newLineSelectIndex);
@@ -97,7 +94,7 @@ export const useMoveLine = () => {
     readPlayer().seekTo(nextTime, true);
     setNotify(Symbol("▷"));
     scrollToCard(newLineSelectIndex);
-    readLineProgress().value = nextTime - map.mapData[newCount].time;
+    readLineProgress().value = nextTime - (map.mapData[newCount]?.time ?? 0);
   };
 
   const moveSetLine = (seekCount: number) => {
@@ -106,7 +103,7 @@ export const useMoveLine = () => {
     const { playSpeed } = readPlaySpeed();
     const { scene, isPaused } = readGameUtilityParams();
     const isTimeBuffer = scene === "practice" && !isPaused;
-    const seekTime = Number(map.mapData[seekCount].time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
+    const seekTime = Number(map.mapData[seekCount]?.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 
     readPlayer().seekTo(seekTime, true);
     const newCount = getSeekLineCount(seekTime) + (isTimeBuffer ? 0 : 1);
@@ -114,31 +111,26 @@ export const useMoveLine = () => {
     updateLine(newCount);
     timerControls.stopTimer();
 
-    readLineProgress().value = seekTime - map.mapData[newCount].time;
+    readLineProgress().value = seekTime - (map.mapData[newCount]?.time ?? 0);
   };
 
   const drawerSelectColorChange = (newLineSelectIndex: number) => {
     const resultCards = readResultCards();
-    for (let i = 0; i < resultCards.length; i++) {
-      const card = resultCards[i];
-
-      if (!card) {
-        continue;
-      }
-
+    for (const card of resultCards) {
       if (String(newLineSelectIndex) === card.dataset.count) {
-        resultCards[i].classList.add("result-line-select-outline");
-        resultCards[i].classList.remove("result-line-hover");
+        card.classList.add("result-line-select-outline");
+        card.classList.remove("result-line-hover");
       } else {
-        resultCards[i].classList.add("result-line-hover");
-        resultCards[i].classList.remove("result-line-select-outline");
+        card.classList.add("result-line-hover");
+        card.classList.remove("result-line-select-outline");
       }
     }
   };
+
   const scrollToCard = (newIndex: number) => {
     const resultCards = readResultCards();
 
-    const card: HTMLDivElement = resultCards[newIndex];
+    const card = resultCards[newIndex];
 
     if (card) {
       const drawerBody = card.parentNode as HTMLDivElement;

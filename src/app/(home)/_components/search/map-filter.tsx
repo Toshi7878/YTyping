@@ -174,7 +174,10 @@ const DifficultyRangeControl = () => {
         <TooltipWrapper label="Enterで検索" sideOffset={24}>
           <DualRangeSlider
             value={[pendingMinRate, pendingMaxRate]}
-            onValueChange={(val) => setPendingDifficultyRange({ minRate: val[0], maxRate: val[1] })}
+            onValueChange={([minRate, maxRate]) => {
+              // biome-ignore lint/style/noNonNullAssertion: <minRateとmaxRateは必ずundefinedではない>
+              setPendingDifficultyRange({ minRate: minRate!, maxRate: maxRate! });
+            }}
             min={mapListSearchParams.minRate.defaultValue}
             max={mapListSearchParams.maxRate.defaultValue}
             step={0.1}

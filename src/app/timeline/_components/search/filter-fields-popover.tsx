@@ -138,7 +138,7 @@ const SearchRange = ({
 
   const handleValueChange = useCallback(
     (newValue: number[]) => {
-      setValue({ min: newValue[0], max: newValue[1] });
+      setValue({ min: newValue[0] ?? 0, max: newValue[1] ?? 0 });
     },
     [setValue],
   );

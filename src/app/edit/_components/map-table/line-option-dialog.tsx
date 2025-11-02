@@ -75,7 +75,9 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
   };
 
   const onSubmit = (data: z.output<typeof LineOptionSchema>) => {
-    const { time, lyrics, word } = map[index];
+    const line = map[index];
+    if (!line) return;
+    const { time, lyrics, word } = line;
 
     const newLine = {
       time,
@@ -97,7 +99,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
       payload: {
         actionType: "update",
         data: {
-          old: map[index],
+          old: line,
           new: newLine,
           lineIndex: index,
         },

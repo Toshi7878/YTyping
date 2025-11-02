@@ -52,15 +52,14 @@ export const useGetYouTubeTime = () => {
     const count = readCount();
 
     const currentLine = map.mapData[count];
-    return currentTime - Number(currentLine.time);
+    return currentTime - Number(currentLine?.time);
   };
 
   const getCurrentLineRemainTime = ({ currentTime }: { currentTime: number }) => {
     const map = readMap();
-    if (!map) return 0;
-
     const count = readCount();
-    const nextLine = map.mapData[count + 1];
+    const nextLine = map?.mapData[count + 1];
+    if (!nextLine) return 0;
 
     const { movieDuration } = readGameUtilityParams();
     const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
@@ -77,10 +76,10 @@ export const useGetYouTubeTime = () => {
 
   const getConstantRemainLineTime = ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
-    if (!map) return 0;
     const count = readCount();
+    const nextLine = map?.mapData[count + 1];
+    if (!nextLine) return 0;
 
-    const nextLine = map.mapData[count + 1];
     const currentLine = map.mapData[count];
     if (!currentLine) return 0;
 

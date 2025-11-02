@@ -96,15 +96,16 @@ export const useUndoRedo = () => {
   const redo = () => {
     const { future } = readHistory();
 
-    if (future.length) {
-      const { actionType, data } = future[future.length - 1];
+    const lastFuture = future.at(-1);
+    if (lastFuture) {
+      const { actionType, data } = lastFuture;
 
       switch (actionType) {
         case "add": {
           mapDispatch({ type: "add", payload: data });
           deleteTopPhrase(data.lyrics);
           const { manyPhraseText } = readEditUtils();
-          const topPhrase = manyPhraseText.split("\n")[0];
+          const topPhrase = manyPhraseText.split("\n")[0] ?? "";
           void pickupTopPhrase(topPhrase);
           break;
         }

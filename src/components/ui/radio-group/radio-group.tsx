@@ -3,7 +3,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { CircleIcon } from "lucide-react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
-import * as React from "react";
+import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -108,31 +108,63 @@ const radioCardVariants = cva(
   },
 );
 
-export interface RadioCardProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof radioCardVariants> {
-  value: string;
-  disabled?: boolean;
-  asChild?: boolean;
+interface RadioCardProps extends React.ComponentProps<typeof RadioGroupPrimitive.Item> {
+  variant?: VariantProps<typeof radioCardVariants>["variant"];
+  size?: VariantProps<typeof radioCardVariants>["size"];
 }
 
-const RadioCard = React.forwardRef<HTMLDivElement, RadioCardProps>(
-  ({ className, variant, size, value, disabled, children, ...props }, ref) => {
-    const id = React.useId();
+const RadioCard = ({ className, variant = "default", size = "default", children, ...props }: RadioCardProps) => {
+  return (
+    <RadioGroupPrimitive.Item
+      data-slot="radio-card"
+      className={cn(radioCardVariants({ variant, size, className }))}
+      {...props}
+    >
+      {children}
+    </RadioGroupPrimitive.Item>
+  );
+};
 
-    return (
-      <label className="flex-1" htmlFor={id}>
-        <RadioGroupItem id={id} value={value} className="sr-only" disabled={disabled} />
-        <div
-          ref={ref}
-          className={cn(radioCardVariants({ variant, size, className }))}
-          data-state={props["data-state"]}
-          {...props}
-        >
-          {children}
-        </div>
-      </label>
-    );
+const radioButtonVariants = cva(
+  "inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default:
+          "bg-background border border-input hover:bg-accent hover:text-accent-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground data-[state=checked]:border-primary data-[state=checked]:border-2",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 px-3",
+        lg: "h-11 px-8",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
   },
 );
-RadioCard.displayName = "RadioCard";
 
-export { RadioCard, radioCardVariants, RadioGroup, RadioGroupItem };
+interface RadioButtonProps extends React.ComponentProps<typeof RadioGroupPrimitive.Item> {
+  variant?: VariantProps<typeof radioButtonVariants>["variant"];
+  size?: VariantProps<typeof radioButtonVariants>["size"];
+}
+
+const RadioButton = ({ className, variant, size, children, ...props }: RadioButtonProps) => {
+  return (
+    <RadioGroupPrimitive.Item
+      data-slot="radio-button"
+      className={cn(radioButtonVariants({ variant, size, className }))}
+      {...props}
+    >
+      {children}
+    </RadioGroupPrimitive.Item>
+  );
+};
+
+export { RadioButton, radioButtonVariants, RadioCard, radioCardVariants, RadioGroup, RadioGroupItem };

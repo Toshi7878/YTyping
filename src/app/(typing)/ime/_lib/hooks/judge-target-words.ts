@@ -33,9 +33,8 @@ export const useJudgeTargetWords = () => {
       return;
     }
 
-    for (let i = wordIndex; i < judgedWords.length; i++) {
-      const judgedWord = judgedWords[i];
-
+    for (const [i, judgedWord] of judgedWords.entries()) {
+      if (i < wordIndex) continue;
       if (!userInput) break;
 
       const correct = judgeComment(judgedWord, userInput);
@@ -45,6 +44,7 @@ export const useJudgeTargetWords = () => {
         const prevEvaluation = wordResults[i - 1]?.evaluation;
         const isPrevFailure = prevEvaluation === "None" || prevEvaluation === "Skip";
         const currentResult = wordResults[i];
+        if (!currentResult) continue;
 
         const result = isPrevFailure
           ? {
@@ -93,7 +93,7 @@ export const useJudgeTargetWords = () => {
         },
       });
 
-      const joinedJudgeWord = joinWord(judgedWord);
+      const joinedJudgeWord = judgedWord.map((chars) => chars[0]).join("");
       const isGood = correct.judge === "Good";
       const wordTypeCount = joinedJudgeWord.length / (isGood ? 1.5 : 1);
 
@@ -124,9 +124,8 @@ function judgeComment(judgedWords: string[][], comment: string) {
 
   let currentComment = comment;
 
-  for (let i = 0; i < judgedWords.length; i++) {
-    for (let m = 0; m < judgedWords[i].length; m++) {
-      const target = judgedWords[i][m];
+  for (const [i, judgedWord] of judgedWords.entries()) {
+    for (const [m, target] of judgedWord.entries()) {
       let search = currentComment.search(escapeRegExp(target));
 
       // Great判定
@@ -147,7 +146,7 @@ function judgeComment(judgedWords: string[][], comment: string) {
       }
 
       // 最後の候補でGood/None判定
-      if (m === judgedWords[i].length - 1) {
+      if (m === judgedWord.length - 1) {
         const commentHira = kanaToHira(currentComment.toLowerCase());
         const targetHira = kanaToHira(target.toLowerCase());
         let replSearch = commentHira.search(escapeRegExp(targetHira));
@@ -210,16 +209,6 @@ function useFormatComment() {
     }
     return formattedComment;
   };
-}
-
-function joinWord(word: string[][]) {
-  let str = "";
-
-  for (let i = 0; i < word.length; i++) {
-    str += word[i][0];
-  }
-
-  return str;
 }
 
 function getBeforeTarget(str: string, target: string): string {

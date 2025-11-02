@@ -18,6 +18,8 @@ export const VolumeRange = ({ player, ...props }: VolumeRangeProps & HTMLAttribu
 
   const handleChange = (value: number[]) => {
     const newVolume = value[0];
+    if (!newVolume) return;
+
     setVolume(newVolume);
     if (player) {
       player.setVolume(newVolume);

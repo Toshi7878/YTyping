@@ -52,10 +52,11 @@ function useJsonConverter() {
   return (jsonMap: JsonMap) => {
     const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
 
-    for (let i = 0; i < jsonMap.length; i++) {
-      const lyrics = normalizeSymbols(jsonMap[i][1]);
-      const time = jsonMap[i][0] === "0" ? "0.001" : jsonMap[i][0];
-      const word = normalizeSymbols(jsonMap[i][2]);
+    for (const line of jsonMap) {
+      const time = line[0] === "0" ? "0.001" : line[0];
+      if (!time) continue;
+      const lyrics = normalizeSymbols(line[1] ?? "");
+      const word = normalizeSymbols(line[2] ?? "");
 
       if ((time === "0" && word === "" && lyrics === "") || lyrics === "end") {
         continue;
@@ -75,18 +76,18 @@ function useLrcConverter() {
   const { readPlayer } = usePlayer();
   return async (lrc: string[]) => {
     const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
-    for (let i = 0; i < lrc.length; i++) {
-      const timeTagMatch = lrc[i].match(/\[\d\d.\d\d.\d\d\]/);
+    for (const line of lrc) {
+      const matchedTimeTags = line.match(/\[\d\d.\d\d.\d\d\]/);
 
-      if (timeTagMatch) {
-        const timeTag = timeTagMatch[0].match(/\d\d/g);
-        if (!timeTag) continue;
-        const minute = Number(timeTag[0]);
-        const second = Number(timeTag[1]);
-        const minSec = Number(timeTag[2]);
+      if (matchedTimeTags) {
+        const matchedTimeTag = matchedTimeTags[0].match(/\d\d/g);
+        if (!matchedTimeTag) continue;
+        const minute = Number(matchedTimeTag[0]);
+        const second = Number(matchedTimeTag[1]);
+        const minSec = Number(matchedTimeTag[2]);
 
         const time = (minute * 60 + second + minSec * 0.01).toString();
-        const lyrics = normalizeSymbols(lrc[i].replace(/\[\d\d.\d\d.\d\d\]/g, ""));
+        const lyrics = normalizeSymbols(line.replace(/\[\d\d.\d\d.\d\d\]/g, ""));
         const word = (await wordConvert(lyrics)) ?? "";
 
         result.push({ time, lyrics, word });

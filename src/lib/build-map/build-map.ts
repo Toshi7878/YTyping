@@ -1,8 +1,9 @@
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import type { ResultData } from "@/server/drizzle/validator/result";
-import type { InputMode, LineData, LineWord, TypeChunk } from "../../app/(typing)/type/_lib/type";
-import { ROMA_MAP, SYMBOL_TO_ROMA_MAP } from "./const";
+import { zip } from "@/utils/array";
+import type { InputMode, LineData, TypeChunk } from "../../app/(typing)/type/_lib/type";
 import { generateTypingWord } from "./generate-typing-word";
+import { kanaSentenceToKanaChunkWords } from "./kana-sentence-to-kana-word-chunks";
 
 export const CHAR_POINT = 50;
 export const MISS_PENALTY = CHAR_POINT / 2;
@@ -35,16 +36,17 @@ export class BuildMap {
     this.totalNotes = this.calculateTotalNotes(result.words);
     this.speedDifficulty = this.calculateSpeedDifficulty(result.words);
 
-    this.duration = Number(this.mapData[result.words.length - 1].time);
+    this.duration = Number(this.mapData[result.words.length - 1]!.time);
     this.keyRate = 100 / this.totalNotes.r;
     this.missRate = this.keyRate / 2;
   }
 
-  private create({ data }: { data: MapLine[] }) {
+  private create({ data: mapLines }: { data: MapLine[] }) {
     const wordsData: LineData[] = [];
     const initialLineResultData: ResultData = [];
     const typingLineIndexes: number[] = [];
     const mapChangeCSSCounts: number[] = [];
+    // 譜面作成時にkanaになる?
     const inputMode = (
       typeof window !== "undefined" ? (localStorage.getItem("inputMode") ?? "roma") : "roma"
     ) as InputMode;
@@ -52,25 +54,23 @@ export class BuildMap {
     let startLine = 0;
     let lineLength = 0;
 
-    const tokenizedKanaLyrics = tokenizeKanaBySentenceRomaPatterns(data.map((line) => line.word).join("\n"));
-
-    for (let i = 0; i < data.length; i++) {
-      const tokenizedKanaWord = tokenizedKanaLyrics[i];
-
+    const kanaChunkWords = kanaSentenceToKanaChunkWords(mapLines.map((line) => line.word).join("\n"));
+    for (const [i, [mapLine, kanaChunkWord]] of zip(mapLines, kanaChunkWords).entries()) {
       const line = {
-        time: Number(data[i].time),
-        lyrics: data[i].lyrics,
-        kanaWord: tokenizedKanaWord.join(""),
-        options: data[i].options,
-        word: generateTypingWord(tokenizedKanaWord),
+        time: Number(mapLine.time),
+        lyrics: mapLine.lyrics,
+        kanaWord: kanaChunkWord.join(""),
+        options: mapLine.options,
+        word: generateTypingWord(kanaChunkWord),
       };
 
-      if (line.options?.isChangeCSS) {
+      if (mapLine.options?.isChangeCSS) {
         mapChangeCSSCounts.push(i);
       }
 
-      const hasWord = tokenizedKanaWord.length;
-      if (hasWord && line.lyrics !== "end") {
+      const hasWord = !!kanaChunkWord.length;
+      const nextLine = mapLines[i + 1];
+      if (hasWord && line.lyrics !== "end" && nextLine) {
         if (startLine === 0) {
           startLine = i;
         }
@@ -80,7 +80,7 @@ export class BuildMap {
 
         const notes = this.calcLineNotes(line.word);
         wordsData.push({
-          kpm: this.calcLineKpm({ notes, lineDuration: Number(data[i + 1].time) - line.time }),
+          kpm: this.calcLineKpm({ notes, lineDuration: Number(nextLine.time) - line.time }),
           notes,
           lineCount: lineLength,
           ...line,
@@ -180,49 +180,13 @@ function median(arr: number[]) {
   const half = (temp.length / 2) | 0;
 
   if (temp.length % 2) {
-    return temp[half];
+    return temp[half]!;
   }
 
-  return (temp[half - 1] + temp[half]) / 2;
-}
-
-export function romaConvert(lineWord: LineWord) {
-  const dakuten = lineWord.nextChar.orginalDakuChar;
-  const tokenizedKanaWord = tokenizeKanaBySentenceRomaPatterns(
-    (dakuten ? dakuten : lineWord.nextChar.k) + lineWord.word.map((char) => char.k).join(""),
-  );
-  const nextPoint = lineWord.nextChar.p;
-
-  const word = generateTypingWord(tokenizedKanaWord[0]);
-
-  return { nextChar: { ...word[0], p: nextPoint }, word: word.slice(1) };
+  return (temp[half - 1]! + temp[half]!) / 2;
 }
 
 export const calcWordKanaNotes = ({ kanaWord }: { kanaWord: string }) => {
   const dakuHandakuLineNotes = (kanaWord.match(/[ゔがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ]/g) || []).length;
   return kanaWord.length + dakuHandakuLineNotes;
-};
-
-const tokenizeKanaBySentenceRomaPatterns = (kanaSentence: string) => {
-  const pattern = Array.from(ROMA_MAP.keys()).concat(Array.from(SYMBOL_TO_ROMA_MAP.keys())).join("|");
-  const regex = new RegExp(`(${pattern})`, "g");
-  const processed = kanaSentence.replace(regex, "\t$1\t");
-
-  return processed.split("\n").map((line) => {
-    const splitLine = line.split("\t").filter((word) => word !== "");
-
-    const result: string[] = [];
-
-    for (const word of splitLine) {
-      if (ROMA_MAP.has(word) || SYMBOL_TO_ROMA_MAP.has(word)) {
-        result.push(word);
-      } else {
-        for (let i = 0; i < word.length; i++) {
-          result.push(word[i]);
-        }
-      }
-    }
-
-    return result;
-  });
 };

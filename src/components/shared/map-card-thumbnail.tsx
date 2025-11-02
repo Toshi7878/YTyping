@@ -46,7 +46,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
           <div className={mapLeftThumbnailVariants({ size })}>
             <Image unoptimized loading="lazy" alt={alt} src={src} fill className={cn("rounded-md", imageClassName)} />
           </div>
-          {!PREVIEW_DISABLE_PATHNAMES.includes(pathSegment) && (
+          {!PREVIEW_DISABLE_PATHNAMES.includes(pathSegment ?? "") && (
             <ThumbnailPreviewCover {...media} className={imageClassName} />
           )}
         </>

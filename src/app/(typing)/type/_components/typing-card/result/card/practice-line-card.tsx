@@ -62,8 +62,8 @@ export const PracticeLineCard = () => {
       onMouseDown={() => setIsDragging(false)}
       onMouseMove={() => setIsDragging(true)}
       onClick={() => {
-        if (!isDragging) {
-          const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
+        const seekCount = map.typingLineIndexes[lineSelectIndex - 1];
+        if (!isDragging && seekCount) {
           moveSetLine(seekCount);
         }
       }}

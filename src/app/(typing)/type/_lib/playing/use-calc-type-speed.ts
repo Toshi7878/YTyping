@@ -12,7 +12,7 @@ export const useCalcTypeSpeed = () => {
   const { readStatus, writeStatus } = useTypingSubstatusReference();
   const { readUserStats, writeUserStats } = useUserStats();
 
-  const calcLineKpm = ({ constantLineTime }) => {
+  const calcLineKpm = ({ constantLineTime }: { constantLineTime: number }) => {
     const { type: lineTypeCount } = readLineStatus();
 
     const lineKpm = constantLineTime ? Math.floor((lineTypeCount / constantLineTime) * 60) : 0;
@@ -20,7 +20,7 @@ export const useCalcTypeSpeed = () => {
     return lineKpm;
   };
 
-  const calcLineRkpm = ({ lineKpm, constantLineTime }) => {
+  const calcLineRkpm = ({ lineKpm, constantLineTime }: { lineKpm: number; constantLineTime: number }) => {
     const { latency: lineLatency } = readLineStatus();
     const { type: lineTypeCount } = readLineStatus();
 

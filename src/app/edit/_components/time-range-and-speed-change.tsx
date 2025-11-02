@@ -60,7 +60,7 @@ const TimeRange = () => {
       step={0.1}
       id="time-range"
       value={[timeRangeValue]}
-      onValueChange={(value) => handleRangeChange(value[0])}
+      onValueChange={(value) => handleRangeChange(value[0] ?? 0)}
       onKeyDown={(event) => arrowSeek(event)}
       max={ytDuration}
       className="w-full"

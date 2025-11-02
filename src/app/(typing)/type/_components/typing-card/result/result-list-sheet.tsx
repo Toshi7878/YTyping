@@ -67,15 +67,17 @@ const ResultLineList = () => {
   const endCardClick = useCallback(
     (lineIndex: number) => {
       let nextTypedCount = 0;
-      const typedElements = cardRefs.current[lineIndex].querySelectorAll<HTMLElement>(".typed");
+      const typedElements = cardRefs.current[lineIndex]?.querySelectorAll<HTMLElement>(".typed");
+      if (!typedElements) return;
 
-      const lastTypedChildClassList = typedElements[typedElements.length - 1].classList;
+      const lastTypedChildClassList = typedElements[typedElements.length - 1]?.classList;
+      if (!lastTypedChildClassList) return;
 
       if (lastTypedChildClassList[lastTypedChildClassList.length - 1] === "invisible") {
         return;
       }
       for (let i = 0; i < typedElements.length; i++) {
-        typedElements[i].classList.add("invisible");
+        typedElements[i]?.classList.add("invisible");
       }
       const date = Date.now();
       const handleTick = () => handleResultCardReplay(date, typedElements);
@@ -91,10 +93,10 @@ const ResultLineList = () => {
           return;
         }
 
-        const nextTime = nextCharElement.dataset.time;
+        const nextTime = nextCharElement?.dataset.time;
 
         if (currentTime > Number(nextTime)) {
-          nextCharElement.classList.remove("invisible");
+          nextCharElement?.classList.remove("invisible");
           nextTypedCount++;
         }
       };
@@ -116,7 +118,7 @@ const ResultLineList = () => {
       {map?.initialLineResultData.map((_: ResultData[number], index: number) => {
         const lineData = map.mapData[index];
 
-        if (!lineData.kanaWord) return null;
+        if (!lineData?.kanaWord) return null;
 
         lineIndex++;
         // scoreCount += (lineResult.status?.p ?? 0) + (lineResult.status?.tBonus ?? 0);

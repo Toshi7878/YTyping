@@ -44,12 +44,14 @@ export const useRetry = () => {
 
   return (newPlayMode: PlayMode) => {
     const map = readMap();
-    if (!map) return;
+    const nextLine = map?.mapData[1];
+    const startLine = map?.mapData[map.startLine];
+    if (!nextLine || !startLine) return;
     resetCurrentLine();
-    setNextLyrics(map.mapData[1]);
+    setNextLyrics(nextLine);
     writeCount(0);
 
-    const enableRetrySKip = map.mapData[map.startLine].time > 5;
+    const enableRetrySKip = startLine.time > 5;
 
     writeGameUtilRefParams({
       replayKeyCount: 0,

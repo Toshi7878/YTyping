@@ -29,12 +29,12 @@ export const useWordSearchReplace = () => {
     }
     const map = readMap();
 
-    for (let i = 0, len = map.length; i < len; i++) {
-      const match = map[i].word.match(searchReg);
+    for (const [i, line] of map.entries()) {
+      const match = line.word.match(searchReg);
       if (!match) {
         continue;
       }
-      let replacedWord = map[i].word;
+      let replacedWord = line.word;
 
       for (let j = 1; j < match.length + 1; j++) {
         void replaceFoundFocus({ i, searchText });
@@ -59,8 +59,10 @@ function useReplaceFoundFocus() {
 
       const range = document.createRange();
 
-      const wordCell = tbody.children[i].children[2];
-      if (wordCell.textContent) {
+      const targetRowChildren = tbody.children[i];
+      if (!targetRowChildren) return resolve(0);
+      const wordCell = targetRowChildren.children[2];
+      if (wordCell?.textContent) {
         const textMatch = wordCell.textContent.match(new RegExp(searchText));
         if (textMatch) {
           range.selectNodeContents(wordCell);
@@ -102,8 +104,8 @@ function useGetKanaSearchLength() {
     const map = readMap();
     let lyricsKana = "";
 
-    for (let i = 0, len = map.length; i < len; i++) {
-      lyricsKana += map[i].word;
+    for (const line of map) {
+      lyricsKana += line.word;
     }
 
     const Result = lyricsKana.match(searchReg);
@@ -119,11 +121,13 @@ function useReplaceDialog() {
 
   const mapDispatch = useMapReducer();
   const historyDispatch = useHistoryReducer();
-  return (i: number, searchReg: RegExp, replace, matchLength: number) => {
+  return (i: number, searchReg: RegExp, replace: string, matchLength: number) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         const map = readMap();
-        const { time, lyrics, word } = map[i];
+        const line = map[i];
+        if (!line) return resolve(0);
+        const { time, lyrics, word } = line;
         if (confirm(`残り${matchLength}件\n${word}\n置き換えますか？`)) {
           let n = 0;
 

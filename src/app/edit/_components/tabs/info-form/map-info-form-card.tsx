@@ -415,7 +415,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
     const { video_id: videoId } = readPlayer().getVideoData();
     const videoDuration = readPlayer().getDuration();
 
-    const typingStartTime = Math.max(0, Number(map[startLine].time) + 0.2);
+    const typingStartTime = Math.max(0, Number(map[startLine]?.time ?? 0) + 0.2);
 
     const newPreviewTime =
       Number(previewTime) > videoDuration || typingStartTime >= Number(previewTime)
