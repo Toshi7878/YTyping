@@ -13,7 +13,6 @@ interface ResultCardContentProps {
 export const ResultCardContent = ({ lineKanaWord, types, lineTypeWord, lostWord }: ResultCardContentProps) => {
   let correctCount = 0;
 
-  console.log(lostWord);
   return (
     <CardContent className="word-font gap-2 py-2 text-base">
       <div className="kana-word">

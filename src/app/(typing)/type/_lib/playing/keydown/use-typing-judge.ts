@@ -209,11 +209,11 @@ export class RomaInput {
     const kana = lineWord.nextChar.k;
     const isSuccess = nextRomaPattern.some((pattern) => pattern[0] && pattern[0].toLowerCase() === typingKeys.keys[0]);
 
-    if (!isSuccess || !typingKeys.keys[0] || !newLineWord.word[0]?.r) {
+    if (!isSuccess || !typingKeys.keys[0]) {
       return { newLineWord, successKey: undefined, failKey: typingKeys.key };
     }
 
-    if (kana === "ん") {
+    if (kana === "ん" && newLineWord.word[0]) {
       newLineWord.word[0].r = this.nextNNFilter(typingKeys.keys[0], newLineWord.word[0].r);
     }
 
