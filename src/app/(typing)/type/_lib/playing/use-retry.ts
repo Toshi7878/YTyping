@@ -1,6 +1,7 @@
 import {
   useGameUtilityReferenceParams,
   useLineCount,
+  useLineStatus,
   usePlayer,
   useTypingSubstatusReference,
 } from "../atoms/read-atoms";
@@ -33,6 +34,8 @@ export const useRetry = () => {
   const { resetTypingStatus } = useSetTypingStatus();
   const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
   const { resetStatus } = useTypingSubstatusReference();
+  const { resetLineStatus } = useLineStatus();
+
   const readTypingStatus = useReadTypingStatus();
   const readMap = useReadMap();
   const readGameUtilityParams = useReadGameUtilityParams();
@@ -50,6 +53,7 @@ export const useRetry = () => {
     resetCurrentLine();
     setNextLyrics(nextLine);
     writeCount(0);
+    resetLineStatus();
 
     const enableRetrySKip = startLine.time > 5;
 

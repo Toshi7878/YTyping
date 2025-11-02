@@ -166,10 +166,7 @@ const useTyping = () => {
         const { isPaused } = readGameUtilityParams();
 
         if (!isPaused) {
-          calcTypeSpeed({
-            updateType: isCompleted ? "completed" : "keydown",
-            constantLineTime,
-          });
+          calcTypeSpeed({ updateType: isCompleted ? "completed" : "keydown", constantLineTime });
         }
 
         if (isCompleted) {
@@ -178,23 +175,19 @@ const useTyping = () => {
           if (hasLineResultImproved(count)) {
             saveLineResult(count);
           }
-
           const { scene } = readGameUtilityParams();
-          if (scene === "practice") {
-            const map = readMap();
-            if (!map) return;
+          if (scene !== "practice") return;
 
-            updateAllStatus({
-              count: map.mapData.length - 1,
-              updateType: "completed",
-            });
+          const map = readMap();
+          if (!map) return;
 
-            if (isPaused) {
-              const newCurrentLine = map.mapData[count];
-              const newNextLine = map.mapData[count + 1];
-              if (!newCurrentLine || !newNextLine) return;
-              setCurrentLine({ newCurrentLine, newNextLine });
-            }
+          updateAllStatus({ count: map.mapData.length - 1, updateType: "completed" });
+
+          if (isPaused) {
+            const newCurrentLine = map.mapData[count];
+            const newNextLine = map.mapData[count + 1];
+            if (!newCurrentLine || !newNextLine) return;
+            setCurrentLine({ newCurrentLine, newNextLine });
           }
         }
       });

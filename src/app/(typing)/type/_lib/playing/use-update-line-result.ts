@@ -55,6 +55,7 @@ export const useUpdateLineResult = () => {
 
   const hasLineResultImproved = (count: number) => {
     const lineResults = readAllLineResults();
+    console.log(lineResults);
     const { miss: lineMiss } = readLineStatus();
     const savedLineResult = lineResults[count];
     const typingStatus = readTypingResult();
