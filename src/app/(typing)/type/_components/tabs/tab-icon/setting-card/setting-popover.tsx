@@ -124,7 +124,7 @@ export const SettingPopover = () => {
         <Button
           size="sm"
           variant="outline"
-          onClick={void handleReset}
+          onClick={handleReset}
           className="text-destructive hover:bg-destructive/10 mt-4 ml-auto block"
         >
           設定をリセット
