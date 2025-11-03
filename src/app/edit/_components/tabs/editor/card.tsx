@@ -1,7 +1,7 @@
 import { CardWithContent } from "@/components/ui/card";
 import { AddTimeAdjust } from "./add-time-adjust";
 import { EditorButtons } from "./editor-buttons";
-import { EditorLineInput } from "./editor-input-field";
+import { EditorLineInput } from "./input-fields";
 import { ManyPhraseTextarea } from "./many-phrase-textarea";
 
 export const EditorCard = () => {
