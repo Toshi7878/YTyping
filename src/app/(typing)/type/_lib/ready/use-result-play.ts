@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useGlobalLoadingOverlay, useUserAgent } from "@/lib/global-atoms";
+import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
+import { isDesktopDevice } from "@/lib/atoms/user-agent";
 import { useTRPC } from "@/trpc/provider";
 import { initializeAllLineResult } from "../atoms/family";
 import { readYTPlayer } from "../atoms/ref";
@@ -10,12 +11,12 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
-  const userAgent = useUserAgent();
   return async (resultId: number | null) => {
     const YTPlayer = readYTPlayer();
     if (!YTPlayer) return;
 
-    if (userAgent?.getDevice().type !== "desktop") {
+    const isDesktop = isDesktopDevice();
+    if (!isDesktop) {
       YTPlayer.playVideo();
       YTPlayer.pauseVideo();
     }

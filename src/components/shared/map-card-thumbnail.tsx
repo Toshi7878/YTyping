@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
-import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/global-atoms";
+import { usePreviewVideoState, useSetPreviewVideo } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map-list";
 

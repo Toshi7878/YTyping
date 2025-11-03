@@ -6,45 +6,38 @@ import {
   readUtilityParams,
   setLineResultSheet,
   setNotify,
-  useSceneState,
 } from "../../../atoms/state";
+import { togglePlayInputMode } from "../../input-mode-change";
+import { moveNextLine, movePrevLine, moveSetLine } from "../../move-line";
 import { useChangePlayMode } from "../../use-change-play-mode";
-import { useInputModeChange } from "../../use-input-mode-change";
-import { useMoveLine } from "../../use-move-line";
 import { useRetry } from "../../use-retry";
-import { useGamePause } from "./use-game-pause";
-import { usePressSkip } from "./use-press-skip";
+import { commitLineSkip } from "./commit-line-skip";
+import { togglePause } from "./toggle-pause";
 
 const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1;
 
 export const usePlayingHotKey = () => {
-  const scene = useSceneState();
-
   const retry = useRetry();
-  const pressSkip = usePressSkip();
-  const gamePause = useGamePause();
-  const inputModeChange = useInputModeChange();
   const changePlayMode = useChangePlayMode();
-  const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine();
 
   return (event: KeyboardEvent) => {
     const map = readBuiltMap();
     if (!map) return;
     const typingOptions = readTypingOptions();
 
-    const { inputMode, activeSkipKey } = readUtilityParams();
+    const { scene, activeSkipKey } = readUtilityParams();
 
     const isCtrlLeftRight = typingOptions.timeOffsetAdjustKey === "CTRL_LEFT_RIGHT" && event.ctrlKey;
     const isCtrlAltLeftRight =
       typingOptions.timeOffsetAdjustKey === "CTRL_ALT_LEFT_RIGHT" && event.ctrlKey && event.altKey;
 
     if (event.code === activeSkipKey) {
-      pressSkip();
+      commitLineSkip();
     }
 
     switch (event.code) {
       case "Escape": //Escでポーズ
-        gamePause();
+        togglePause();
         break;
       case "ArrowUp":
         break;
@@ -105,11 +98,7 @@ export const usePlayingHotKey = () => {
       case "Romaji":
         if (typingOptions.InputModeToggleKey === "ALT_KANA") {
           if (scene !== "replay") {
-            if (inputMode === "roma") {
-              void inputModeChange("kana");
-            } else {
-              void inputModeChange("roma");
-            }
+            togglePlayInputMode();
           }
         }
         break;
@@ -125,11 +114,7 @@ export const usePlayingHotKey = () => {
       case "Tab":
         if (typingOptions.InputModeToggleKey === "TAB") {
           if (scene !== "replay") {
-            if (inputMode === "roma") {
-              void inputModeChange("kana");
-            } else {
-              void inputModeChange("roma");
-            }
+            togglePlayInputMode();
           }
         } else if (scene === "replay" || scene === "practice") {
           setLineResultSheet((prev) => !prev);

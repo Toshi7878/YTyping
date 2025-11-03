@@ -6,14 +6,16 @@ import {
   setNewLine,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { readLineCount } from "../../atoms/ref";
-import { useGetYouTubeTime } from "../../youtube-player/use-get-youtube-time";
-import { useCalcTypeSpeed } from "../use-calc-type-speed";
+import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
+import { calcTypeSpeed } from "../calc-type-speed";
+import { hasLineResultImproved, saveLineResult } from "../save-line-result";
+import { updateMissStatus, updateMissStatusRefs } from "../update-status/miss";
+import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
+import { updateSuccessStatus, updateSuccessStatusRefs } from "../update-status/success";
 import { useSoundEffect } from "../use-sound-effect";
-import { useUpdateLineResult } from "../use-update-line-result";
-import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../use-update-status";
-import { useGamePause } from "./hot-key/use-game-pause";
+import { togglePause } from "./hot-key/toggle-pause";
 import { usePlayingHotKey } from "./hot-key/use-hot-key";
-import { useTypingJudge } from "./use-typing-judge";
+import { evaluateTypingKeyEvent } from "./use-typing-judge";
 
 const KEY_WHITE_LIST = ["F5"];
 const CTRL_KEY_WHITE_CODE_LIST = ["KeyC", "KeyV", "KeyZ", "KeyY", "KeyX"];
@@ -24,7 +26,6 @@ export const useOnKeydown = () => {
   const isKeydownTyped = useIsKeydownTyped();
   const typing = useTyping();
   const handleHotKey = usePlayingHotKey();
-  const gamePause = useGamePause();
 
   return (event: KeyboardEvent) => {
     const { scene, isPaused } = readUtilityParams();
@@ -37,7 +38,7 @@ export const useOnKeydown = () => {
       }
     } else if (event.key === "Escape") {
       event.preventDefault();
-      gamePause();
+      togglePause();
       return;
     }
 
@@ -121,21 +122,12 @@ const useIsKeydownTyped = () => {
 const useTyping = () => {
   const { triggerTypeSound, triggerMissSound } = useSoundEffect();
 
-  const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
-
-  const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
-  const getTime = useGetYouTubeTime();
-
-  const calcTypeSpeed = useCalcTypeSpeed();
-  const inputJudge = useTypingJudge();
-  const { hasLineResultImproved, saveLineResult } = useUpdateLineResult();
-  const updateAllStatus = useUpdateAllStatus();
-
   return (event: KeyboardEvent) => {
+    const evaluateResult = evaluateTypingKeyEvent(event);
     const { isSuccess, isFailed, isCompleted, newLineWord, successKey, failKey, typeChunk, updatePoint } =
-      inputJudge(event);
-    const { constantLineTime, constantRemainLineTime } = getTime({ type: "remainLineTime" });
+      evaluateResult;
     if (!newLineWord) return;
+    const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
 
     if (isSuccess && successKey) {
       setLineWord(newLineWord);
@@ -172,7 +164,7 @@ const useTyping = () => {
           const map = readBuiltMap();
           if (!map) return;
 
-          updateAllStatus({ count: map.mapData.length - 1, updateType: "completed" });
+          recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "completed" });
 
           if (isPaused) {
             const newCurrentLine = map.mapData[count];
@@ -187,7 +179,7 @@ const useTyping = () => {
 
       requestAnimationFrame(() => {
         updateMissStatus();
-        updateMissRefStatus({ constantLineTime, failKey });
+        updateMissStatusRefs({ constantLineTime, failKey });
       });
     }
   };

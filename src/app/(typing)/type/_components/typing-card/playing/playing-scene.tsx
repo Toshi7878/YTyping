@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
-import { usePressSkip } from "../../../_lib/playing/keydown/hot-key/use-press-skip";
+import { commitLineSkip } from "../../../_lib/playing/keydown/hot-key/commit-line-skip";
 import { useOnKeydown } from "../../../_lib/playing/keydown/use-keydown-event";
 import { timerControls } from "../../../_lib/playing/timer/use-timer";
 import { ChangeCSS } from "./playing-child/change-css-style";
@@ -28,8 +28,6 @@ interface PlayingProps {
 }
 
 export const PlayingScene = ({ className }: PlayingProps) => {
-  const pressSkip = usePressSkip();
-
   const { data: session } = useSession();
 
   const scene = useSceneState();
@@ -114,7 +112,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
         const { activeSkipKey } = readUtilityParams();
 
         if (activeSkipKey) {
-          pressSkip();
+          commitLineSkip();
         }
       }}
     >

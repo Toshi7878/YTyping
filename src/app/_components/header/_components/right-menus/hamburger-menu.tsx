@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUserAgent } from "@/lib/global-atoms";
+import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { SignInDropdownItems } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
@@ -23,7 +23,7 @@ interface HamburgerMenuProps {
 
 export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { data: session } = useSession();
-  const isMobile = useUserAgent()?.getDevice().type === "mobile";
+  const isMobile = useIsMobileDeviceState();
 
   const menus = LEFT_MENU_LINK_ITEM.concat(LEFT_LINKS);
   const [, formAction] = useActionState(() => signOut({ redirect: false }), null);

@@ -1,6 +1,7 @@
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
-import { useReadVolume, useUserAgent } from "@/lib/global-atoms";
+import { readVolume } from "@/lib/atoms/global-atoms";
+import { isMobileDevice } from "@/lib/atoms/user-agent";
 import { readTypingOptions } from "../atoms/state";
 
 const manifest = [
@@ -16,9 +17,6 @@ const START_OFFSETS: Partial<Record<SoundAlias, number>> = {
 };
 
 export const useSoundEffect = () => {
-  const readVolume = useReadVolume();
-  const isMobile = useUserAgent()?.getDevice().type === "mobile";
-
   useEffect(() => {
     sound.disableAutoPause = true;
 
@@ -29,7 +27,10 @@ export const useSoundEffect = () => {
     });
   }, []);
 
-  const getVolume = () => (isMobile ? 100 : readVolume()) / 100;
+  const getVolume = () => {
+    const isMobile = isMobileDevice();
+    return (isMobile ? 100 : readVolume()) / 100;
+  };
 
   const playSoundEffect = (alias: SoundAlias) => {
     const volume = getVolume();

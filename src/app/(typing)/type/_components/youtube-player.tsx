@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import type { YouTubeEvent } from "react-youtube";
 import YouTube from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
-import { useUserAgent } from "@/lib/global-atoms";
+import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/window-focus";
 import { readYTPlayer } from "../_lib/atoms/ref";
@@ -34,7 +34,8 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
   const onSeeked = useOnSeeked();
   const onRateChange = useOnRateChange();
   const { addTimer, removeTimer } = useTimerRegistration();
-  const isMobile = useUserAgent()?.getDevice().type === "mobile";
+  const isMobile = useIsMobileDeviceState();
+
   useEffect(() => {
     addTimer();
     return () => removeTimer();

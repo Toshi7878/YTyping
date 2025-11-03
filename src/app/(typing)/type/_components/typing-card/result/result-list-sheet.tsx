@@ -9,7 +9,7 @@ import {
   useLineResultSheetOpenState,
   useSceneGroupState,
 } from "@/app/(typing)/type/_lib/atoms/state";
-import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
+import { drawerSelectColorChange, moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { OptimizedResultCard } from "./card/optimized-result-card";
@@ -41,7 +41,6 @@ const ResultLineList = () => {
   const map = useBuiltMapState();
 
   const sceneGroup = useSceneGroupState();
-  const { moveSetLine, drawerSelectColorChange } = useMoveLine();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
@@ -57,54 +56,51 @@ const ResultLineList = () => {
       moveSetLine(seekCount);
       setLineSelectIndex(lineIndex);
     },
-    [map, moveSetLine, setLineSelectIndex],
+    [map],
   );
 
-  const endCardClick = useCallback(
-    (lineIndex: number) => {
-      let nextTypedCount = 0;
-      const typedElements = cardRefs.current[lineIndex]?.querySelectorAll<HTMLElement>(".typed");
-      if (!typedElements) return;
+  const endCardClick = useCallback((lineIndex: number) => {
+    let nextTypedCount = 0;
+    const typedElements = cardRefs.current[lineIndex]?.querySelectorAll<HTMLElement>(".typed");
+    if (!typedElements) return;
 
-      const lastTypedChildClassList = typedElements[typedElements.length - 1]?.classList;
-      if (!lastTypedChildClassList) return;
+    const lastTypedChildClassList = typedElements[typedElements.length - 1]?.classList;
+    if (!lastTypedChildClassList) return;
 
-      if (lastTypedChildClassList[lastTypedChildClassList.length - 1] === "invisible") {
+    if (lastTypedChildClassList[lastTypedChildClassList.length - 1] === "invisible") {
+      return;
+    }
+    for (let i = 0; i < typedElements.length; i++) {
+      typedElements[i]?.classList.add("invisible");
+    }
+    const date = Date.now();
+    const handleTick = () => handleResultCardReplay(date, typedElements);
+
+    const ticker = new Ticker();
+    const handleResultCardReplay = (date: number, typedElements: NodeListOf<HTMLElement>) => {
+      const currentTime = (Date.now() - date) / 1000;
+      const nextCharElement = typedElements[nextTypedCount];
+
+      if (typedElements.length - 1 < nextTypedCount) {
+        ticker.stop();
+        ticker.remove(handleTick);
         return;
       }
-      for (let i = 0; i < typedElements.length; i++) {
-        typedElements[i]?.classList.add("invisible");
+
+      const nextTime = nextCharElement?.dataset.time;
+
+      if (currentTime > Number(nextTime)) {
+        nextCharElement?.classList.remove("invisible");
+        nextTypedCount++;
       }
-      const date = Date.now();
-      const handleTick = () => handleResultCardReplay(date, typedElements);
+    };
 
-      const ticker = new Ticker();
-      const handleResultCardReplay = (date: number, typedElements: NodeListOf<HTMLElement>) => {
-        const currentTime = (Date.now() - date) / 1000;
-        const nextCharElement = typedElements[nextTypedCount];
-
-        if (typedElements.length - 1 < nextTypedCount) {
-          ticker.stop();
-          ticker.remove(handleTick);
-          return;
-        }
-
-        const nextTime = nextCharElement?.dataset.time;
-
-        if (currentTime > Number(nextTime)) {
-          nextCharElement?.classList.remove("invisible");
-          nextTypedCount++;
-        }
-      };
-
-      if (!ticker.started) {
-        ticker.add(handleTick);
-        ticker.start();
-        drawerSelectColorChange(lineIndex);
-      }
-    },
-    [drawerSelectColorChange],
-  );
+    if (!ticker.started) {
+      ticker.add(handleTick);
+      ticker.start();
+      drawerSelectColorChange(lineIndex);
+    }
+  }, []);
 
   let lineIndex = 0;
   const scoreCount = 0;

@@ -4,7 +4,7 @@ import {
   writeLineSubstatus,
   writeUtilityRefParams,
 } from "@/app/(typing)/type/_lib/atoms/ref";
-import { handlePlaySpeedAction, readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
+import { handlePlaySpeedAction } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   readLineWord,
   readUtilityParams,
@@ -12,14 +12,15 @@ import {
   setLineKpm,
   setLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state";
-import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/playing/use-calc-type-speed";
-import { useInputModeChange } from "@/app/(typing)/type/_lib/playing/use-input-mode-change";
+import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/input-mode-change";
 import type { TypeResult } from "@/server/drizzle/validator/result";
-import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
+import { calcTypeSpeed } from "../calc-type-speed";
 import { KanaInput, RomaInput, type TypingKeys } from "../keydown/use-typing-judge";
+import { updateMissStatus, updateMissStatusRefs } from "../update-status/miss";
+import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
+import { updateSuccessStatus, updateSuccessStatusRefs } from "../update-status/success";
 import { useSoundEffect } from "../use-sound-effect";
-import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../use-update-status";
 
 interface UseKeyReplayProps {
   constantLineTime: number;
@@ -28,13 +29,7 @@ interface UseKeyReplayProps {
 }
 
 const usePlayBackKey = () => {
-  const inputModeChange = useInputModeChange();
-  const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
-
-  const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
   const { triggerTypeSound, triggerMissSound } = useSoundEffect();
-  const calcTypeSpeed = useCalcTypeSpeed();
-  const updateAllStatus = useUpdateAllStatus();
 
   return ({ constantLineTime, constantRemainLineTime, type }: UseKeyReplayProps) => {
     const { c: key, is: isSuccess, op: option } = type;
@@ -71,7 +66,7 @@ const usePlayBackKey = () => {
           const lineResults = readAllLineResult();
           const lineResult = lineResults[count];
 
-          updateAllStatus({ count, updateType: "completed" });
+          recalculateStatusFromResults({ count, updateType: "completed" });
           writeLineSubstatus({ isCompleted: true });
           setCombo(lineResult?.status.combo ?? 0);
           setLineKpm(lineResult?.status.lKpm ?? 0);
@@ -79,15 +74,15 @@ const usePlayBackKey = () => {
       } else {
         triggerMissSound();
         updateMissStatus();
-        updateMissRefStatus({ constantLineTime, failKey: key });
+        updateMissStatusRefs({ constantLineTime, failKey: key });
       }
     } else if (option) {
       switch (option) {
         case "roma":
-          void inputModeChange("roma");
+          applyRomaInputMode();
           break;
         case "kana":
-          void inputModeChange("kana");
+          applyKanaInputMode();
           break;
         case "speedChange":
           handlePlaySpeedAction({ type: "toggle" });
@@ -125,29 +120,5 @@ export const useReplay = () => {
       playBackKey({ constantLineTime, constantRemainLineTime, type });
       writeUtilityRefParams({ replayKeyCount: replayKeyCount + 1 });
     }
-  };
-};
-
-export const useLineReplayUpdate = () => {
-  const inputModeChange = useInputModeChange();
-
-  return (newCurrentCount: number) => {
-    const lineResults = readAllLineResult();
-
-    const lineResult = lineResults[newCurrentCount];
-
-    if (!lineResult) {
-      return;
-    }
-
-    void inputModeChange(lineResult.status.mode);
-
-    writeUtilityRefParams({ replayKeyCount: 0 });
-
-    const { playSpeed } = readPlaySpeed();
-    const speed = lineResult.status.sp as YouTubeSpeed;
-
-    if (playSpeed === speed) return;
-    handlePlaySpeedAction({ type: "set", payload: speed });
   };
 };

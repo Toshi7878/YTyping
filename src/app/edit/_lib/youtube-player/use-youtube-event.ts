@@ -1,5 +1,5 @@
 import type { YouTubeEvent } from "react-youtube";
-import { useReadVolume } from "@/lib/global-atoms";
+import { readVolume } from "@/lib/atoms/global-atoms";
 import { useReadMap } from "../atoms/map-reducer-atom";
 import { usePlayer, usePreventEditortabAutoFocus } from "../atoms/read-atoms";
 import {
@@ -19,7 +19,6 @@ export const useOnReady = () => {
   const readMap = useReadMap();
   const updateEndTime = useUpdateEndTime();
   const setYTPlayerStatus = useSetYtPlayerStatus();
-  const readVolume = useReadVolume();
 
   return (event: { target: YT.Player }) => {
     console.log("Ready");

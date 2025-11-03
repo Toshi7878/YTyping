@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import type { ActiveUserStatus } from "@/lib/global-atoms";
-import { useSetOnlineUsers } from "@/lib/global-atoms";
+import type { ActiveUserStatus } from "@/lib/atoms/global-atoms";
+import { useSetOnlineUsers } from "@/lib/atoms/global-atoms";
 import { useUserOptionsQueries } from "@/lib/queries/user-options.queries";
 import { createPresenceChannel } from "@/lib/supabase-client";
 

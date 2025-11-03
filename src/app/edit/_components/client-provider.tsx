@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import type React from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useSetPreviewVideo } from "@/lib/global-atoms";
+import { useSetPreviewVideo } from "@/lib/atoms/global-atoms";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";

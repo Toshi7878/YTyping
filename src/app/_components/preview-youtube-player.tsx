@@ -2,7 +2,12 @@
 import { RESET } from "jotai/utils";
 import { useEffect } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
-import { usePreviewVideoState, useSetPreviewPlayer, useSetPreviewVideo, useVolumeState } from "../../lib/global-atoms";
+import {
+  usePreviewVideoState,
+  useSetPreviewPlayer,
+  useSetPreviewVideo,
+  useVolumeState,
+} from "../../lib/atoms/global-atoms";
 
 // biome-ignore lint/style/noDefaultExport: <dynamic importを使うため>
 export default function PreviewYouTubePlayer() {

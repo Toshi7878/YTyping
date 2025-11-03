@@ -15,7 +15,7 @@ import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
-import { useMoveLine } from "../../../_lib/playing/use-move-line";
+import { moveNextLine, movePrevLine } from "../../../_lib/playing/move-line";
 
 export const FooterButtons = () => {
   const isYTStarted = useYTStartedState();
@@ -77,7 +77,6 @@ const SpeedButton = () => {
 
 const PracticeButtons = () => {
   const scene = useSceneState();
-  const { movePrevLine, moveNextLine } = useMoveLine();
   const userOptions = useUserTypingOptionsState();
 
   return (

@@ -3,7 +3,7 @@ import { Provider as JotaiProvider } from "jotai";
 import { RESET, useHydrateAtoms } from "jotai/utils";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { useSetPreviewVideo } from "@/lib/global-atoms";
+import { useSetPreviewVideo } from "@/lib/atoms/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { userTypingOptionsAtom } from "../_lib/atoms/state";

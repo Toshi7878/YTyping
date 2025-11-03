@@ -12,7 +12,7 @@ import {
   writeLineSubstatus,
   writeUtilityRefParams,
 } from "@/app/(typing)/type/_lib/atoms/ref";
-import { readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
+import { handlePlaySpeedAction, readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   readBuiltMap,
   readElapsedSecTime,
@@ -27,14 +27,18 @@ import {
   setNextLyrics,
   setTypingStatus,
 } from "@/app/(typing)/type/_lib/atoms/state";
+import type { YouTubeSpeed } from "@/utils/types";
+import { readAllLineResult } from "../../atoms/family";
 import type { BuiltMapLine } from "../../type";
-import { useGetYouTubeTime } from "../../youtube-player/use-get-youtube-time";
+import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { useOnEnd } from "../../youtube-player/use-youtube-events";
-import { useCalcTypeSpeed } from "../use-calc-type-speed";
-import { useGetLineCountByTime } from "../use-get-line-count-by-time";
-import { useUpdateLineResult } from "../use-update-line-result";
-import { useLineUpdateStatus, useUpdateAllStatus } from "../use-update-status";
-import { useLineReplayUpdate, useReplay } from "./use-replay";
+import { calcTypeSpeed } from "../calc-type-speed";
+import { getLineCountByTime } from "../get-line-count-by-time";
+import { applyKanaInputMode, applyRomaInputMode } from "../input-mode-change";
+import { hasLineResultImproved, saveLineResult } from "../save-line-result";
+import { updateStatusForLineUpdate } from "../update-status/line-update";
+import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
+import { useReplay } from "./use-replay";
 
 const typeTicker = new Ticker();
 
@@ -73,14 +77,7 @@ export const timerControls = {
 };
 
 const useTimer = () => {
-  const displaySkipGuide = useDisplaySkipGuide();
-  const setupNextLine = useSetupNextLine();
-  const calcLineResult = useProcessLineCompletion();
   const replay = useReplay();
-  const getSeekLineCount = useGetLineCountByTime();
-
-  const getYouTubeTime = useGetYouTubeTime();
-  const calcTypeSpeed = useCalcTypeSpeed();
 
   const onEnd = useOnEnd();
   const lastUpdateTimeRef = useRef(0);
@@ -102,7 +99,7 @@ const useTimer = () => {
     const { isCompleted } = readLineSubstatus();
 
     if (!isCompleted && scene !== "replay") {
-      calcLineResult({ constantLineTime, count: prevCount });
+      processIncompleteLineEnd({ constantLineTime, count: prevCount });
     }
 
     const isEnd = nextLine?.lyrics === "end" || currentTime >= movieDuration || isVideoEnded;
@@ -117,8 +114,8 @@ const useTimer = () => {
     }
 
     if (nextLine) {
-      const nextCount = scene === "play" ? prevCount + 1 : getSeekLineCount(currentTime);
-      setupNextLine(nextCount);
+      const nextCount = scene === "play" ? prevCount + 1 : getLineCountByTime(currentTime);
+      setupLine(nextCount);
     }
   };
 
@@ -141,7 +138,7 @@ const useTimer = () => {
       calcTypeSpeed({ updateType: "timer", constantLineTime });
     }
 
-    displaySkipGuide({
+    updateSkipGuideVisibility({
       kana: readLineWord().nextChar.k,
       currentTime,
       constantLineTime,
@@ -159,9 +156,8 @@ const useTimer = () => {
     const map = readBuiltMap();
     if (!map) return;
 
-    const { currentTime, constantTime, currentLineTime, constantLineTime, constantRemainLineTime } = getYouTubeTime({
-      type: "remainLineTime",
-    });
+    const { currentTime, constantTime, currentLineTime, constantLineTime, constantRemainLineTime } =
+      getRemainLineTime();
     const { movieDuration } = readUtilityParams();
 
     const count = readLineCount();
@@ -191,106 +187,120 @@ const useTimer = () => {
   };
 };
 
-const useProcessLineCompletion = () => {
-  const calcTypeSpeed = useCalcTypeSpeed();
-  const updateAllStatus = useUpdateAllStatus();
-  const { hasLineResultImproved, saveLineResult } = useUpdateLineResult();
-  const updateStatus = useLineUpdateStatus();
+const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTime: number; count: number }) => {
+  const map = readBuiltMap();
+  const currentLine = map?.mapData[count];
+  if (!map || !currentLine) return;
 
-  return ({ constantLineTime, count }: { constantLineTime: number; count: number }) => {
-    const map = readBuiltMap();
-    const currentLine = map?.mapData[count];
-    if (!map || !currentLine) return;
+  const isTypingLine = count >= 0 && currentLine.kpm.r > 0;
+  const { scene } = readUtilityParams();
 
-    const isTypingLine = count >= 0 && currentLine.kpm.r > 0;
-    const { scene } = readUtilityParams();
+  if (isTypingLine) {
+    calcTypeSpeed({ updateType: "lineUpdate", constantLineTime });
+  }
 
-    if (isTypingLine) {
-      calcTypeSpeed({ updateType: "lineUpdate", constantLineTime });
-    }
+  if (hasLineResultImproved(count)) {
+    saveLineResult(count);
+  }
 
-    if (hasLineResultImproved(count)) {
-      saveLineResult(count);
-    }
-
-    switch (scene) {
-      case "play":
-      case "play_end":
-        updateStatus({ constantLineTime });
-        break;
-      case "practice":
-        updateAllStatus({ count: map.mapData.length - 1, updateType: "lineUpdate" });
-        break;
-    }
-  };
+  switch (scene) {
+    case "play":
+    case "play_end":
+      updateStatusForLineUpdate({ constantLineTime });
+      break;
+    case "practice":
+      recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "lineUpdate" });
+      break;
+  }
 };
 
-export const useSetupNextLine = () => {
-  const lineReplayUpdate = useLineReplayUpdate();
-  const updateAllStatus = useUpdateAllStatus();
+export const setupLine = (nextCount: number) => {
+  const map = readBuiltMap();
+  const newCurrentLine = map?.mapData[nextCount];
+  const newNextLine = map?.mapData[nextCount + 1];
+  if (!map || !newCurrentLine || !newNextLine) return;
 
-  return (nextCount: number) => {
-    const map = readBuiltMap();
-    const newCurrentLine = map?.mapData[nextCount];
-    const newNextLine = map?.mapData[nextCount + 1];
-    if (!map || !newCurrentLine || !newNextLine) return;
+  writeLineCount(nextCount);
+  setNewLine({ newCurrentLine, newNextLine });
+  resetLineSubstatus();
 
-    writeLineCount(nextCount);
-    setNewLine({ newCurrentLine, newNextLine });
-    resetLineSubstatus();
+  const { inputMode, scene } = readUtilityParams();
+  const { playSpeed } = readPlaySpeed();
 
-    const { inputMode, scene } = readUtilityParams();
-    const { playSpeed } = readPlaySpeed();
+  if (scene === "replay") {
+    syncReplayLineSnapshot(nextCount);
+    recalculateStatusFromResults({ count: nextCount, updateType: "lineUpdate" });
+  }
 
-    if (scene === "replay") {
-      lineReplayUpdate(nextCount);
-      updateAllStatus({ count: nextCount, updateType: "lineUpdate" });
-    }
+  writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
+  setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
+  setLineKpm(0);
 
-    writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
-    setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
-    setLineKpm(0);
+  setNextLyrics(newNextLine);
 
-    setNextLyrics(newNextLine);
-
-    setChangeCSSCount(nextCount);
-  };
+  setChangeCSSCount(nextCount);
 };
 
-interface useDisplaySkipGuideProps {
+interface updateSkipGuideVisibilityparams {
   kana: string;
   currentTime: number;
   constantLineTime: number;
   constantRemainLineTime: number;
 }
 
-const useDisplaySkipGuide = () => {
-  const SKIP_IN = 0.4; //ラインが切り替わり後、指定のtimeが経過したら表示
-  const SKIP_OUT = 4; //ラインの残り時間が指定のtimeを切ったら非表示
-  const SKIP_KEY = "Space" as const;
+const SKIP_IN = 0.4; //ラインが切り替わり後、指定のtimeが経過したら表示
+const SKIP_OUT = 4; //ラインの残り時間が指定のtimeを切ったら非表示
+const SKIP_KEY = "Space" as const;
+const updateSkipGuideVisibility = ({
+  kana,
+  currentTime,
+  constantLineTime,
+  constantRemainLineTime,
+}: updateSkipGuideVisibilityparams) => {
+  const map = readBuiltMap();
+  if (!map) return;
+  const { isRetrySkip } = readUtilityRefParams();
+  const { playSpeed } = readPlaySpeed();
+  const startLine = map.mapData[map.startLine];
 
-  return ({
-    kana,
-    currentTime,
-    constantLineTime: lineConstantTime,
-    constantRemainLineTime: lineRemainTime,
-  }: useDisplaySkipGuideProps) => {
-    const map = readBuiltMap();
-    if (!map) return;
-    const { isRetrySkip } = readUtilityRefParams();
-    const { playSpeed } = readPlaySpeed();
-    const startLine = map.mapData[map.startLine];
+  if (isRetrySkip && startLine && currentTime >= startLine.time - 3 * playSpeed) {
+    writeUtilityRefParams({ isRetrySkip: false });
+  }
 
-    if (isRetrySkip && startLine && currentTime >= startLine.time - 3 * playSpeed) {
-      writeUtilityRefParams({ isRetrySkip: false });
-    }
+  const IS_SKIP_DISPLAY = (!kana && constantLineTime >= SKIP_IN && constantRemainLineTime >= SKIP_OUT) || isRetrySkip;
 
-    const IS_SKIP_DISPLAY = (!kana && lineConstantTime >= SKIP_IN && lineRemainTime >= SKIP_OUT) || isRetrySkip;
+  if (IS_SKIP_DISPLAY) {
+    setActiveSkipGuideKey(SKIP_KEY);
+  } else {
+    setActiveSkipGuideKey(null);
+  }
+};
 
-    if (IS_SKIP_DISPLAY) {
-      setActiveSkipGuideKey(SKIP_KEY);
+const syncReplayLineSnapshot = (newCurrentCount: number) => {
+  const lineResults = readAllLineResult();
+  const { inputMode } = readUtilityParams();
+
+  const lineResult = lineResults[newCurrentCount];
+
+  if (!lineResult) {
+    return;
+  }
+
+  const newInputMode = lineResult.status.mode;
+
+  if (inputMode !== newInputMode) {
+    if (newInputMode === "roma") {
+      applyRomaInputMode();
     } else {
-      setActiveSkipGuideKey(null);
+      applyKanaInputMode();
     }
-  };
+  }
+
+  writeUtilityRefParams({ replayKeyCount: 0 });
+
+  const { playSpeed } = readPlaySpeed();
+  const speed = lineResult.status.sp as YouTubeSpeed;
+
+  if (playSpeed === speed) return;
+  handlePlaySpeedAction({ type: "set", payload: speed });
 };

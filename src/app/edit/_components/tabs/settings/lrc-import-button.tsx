@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { toast } from "sonner";
 import { useImportMapFile } from "@/app/edit/_lib/editor/use-import-map-file";
 import { Button } from "@/components/ui/button";
-import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
+import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
 
 export const LrcImportButton = () => {
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();

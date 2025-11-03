@@ -1,7 +1,8 @@
 "use client";
 import type { HTMLAttributes } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
-import { useSetVolume, useUserAgent, useVolumeState } from "@/lib/global-atoms";
+import { useSetVolume, useVolumeState } from "@/lib/atoms/global-atoms";
+import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { Slider } from "../ui/slider";
 
 interface VolumeRangeProps {
@@ -11,8 +12,7 @@ interface VolumeRangeProps {
 export const VolumeRange = ({ player, ...props }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) => {
   const volume = useVolumeState();
   const setVolume = useSetVolume();
-  const userAgent = useUserAgent();
-  const isMobile = userAgent?.getDevice().type === "mobile";
+  const isMobile = useIsMobileDeviceState();
 
   if (isMobile) return null;
 

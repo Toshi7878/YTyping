@@ -3,3 +3,7 @@ export const zip = <T, U>(arr1: T[], arr2: U[]): [T, U][] => {
   // biome-ignore lint/style/noNonNullAssertion: <lengthが同じ前提>
   return Array.from({ length }, (_, i) => [arr1[i]!, arr2[i]!]);
 };
+
+export function getMinValue(numbers: number[]): number {
+  return Math.min(...numbers);
+}

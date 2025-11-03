@@ -2,7 +2,7 @@
 import type { Route } from "next";
 import { Separator } from "@/components/ui/separator";
 import { H3, LinkText, OList, P } from "@/components/ui/typography";
-import { useUserAgent } from "@/lib/global-atoms";
+import { useBrowserTypeState } from "@/lib/atoms/user-agent";
 
 const browserLinks: Record<"Chrome" | "Firefox" | "Edge", { url: Route; text: string }> = {
   Chrome: {
@@ -20,8 +20,7 @@ const browserLinks: Record<"Chrome" | "Firefox" | "Edge", { url: Route; text: st
 };
 
 const useBrowserLink = () => {
-  const userAgent = useUserAgent();
-  const browserType = userAgent?.getBrowser().name;
+  const browserType = useBrowserTypeState();
   if (browserType === "Chrome") return browserLinks.Chrome;
   if (browserType === "Firefox") return browserLinks.Firefox;
   if (browserType === "Edge") return browserLinks.Edge;

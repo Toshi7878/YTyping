@@ -6,7 +6,7 @@ import {
   useLineSelectIndexState,
   usePlayingInputModeState,
 } from "@/app/(typing)/type/_lib/atoms/state";
-import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
+import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { useInteractJS } from "@/app/(typing)/type/_lib/utils/use-interact-js";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -21,7 +21,6 @@ export const PracticeLineCard = () => {
   const lineSelectIndex = useLineSelectIndexState();
   const inputMode = usePlayingInputModeState();
   const [isDragging, setIsDragging] = useState(false);
-  const { moveSetLine } = useMoveLine();
   const interact = useInteractJS();
 
   const index = map?.typingLineIndexes[lineSelectIndex - 1] ?? map?.typingLineIndexes[0] ?? 0;

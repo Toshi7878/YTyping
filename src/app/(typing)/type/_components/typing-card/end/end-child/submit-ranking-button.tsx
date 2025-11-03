@@ -3,11 +3,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { setTabName } from "@/app/(typing)/type/_lib/atoms/state";
-import { useResultData } from "@/app/(typing)/type/_lib/end/use-result-data";
+import type z from "zod/v4";
+import { readAllLineResult } from "@/app/(typing)/type/_lib/atoms/family";
+import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
+import { readTypingStatus, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
+import type { CreateResultStatusSchema } from "@/server/drizzle/validator/result";
 import { useTRPC } from "@/trpc/provider";
+import { getMinValue } from "@/utils/array";
 
 interface SubmitRankingButtonProps {
   isScoreUpdated: boolean;
@@ -23,7 +27,6 @@ export const SubmitRankingButton = ({
   const { id: mapId } = useParams<{ id: string }>();
   const confirm = useConfirm();
 
-  const resultData = useResultData();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -44,8 +47,7 @@ export const SubmitRankingButton = ({
 
   const handleClick = async () => {
     if (isScoreUpdated) {
-      const result = resultData();
-      sendResult.mutate(result);
+      sendResult.mutate(parseResultData(mapId));
       return;
     }
 
@@ -59,8 +61,7 @@ export const SubmitRankingButton = ({
     });
 
     if (isConfirmed) {
-      const result = resultData();
-      sendResult.mutate(result);
+      sendResult.mutate(parseResultData(mapId));
     }
   };
 
@@ -76,4 +77,54 @@ export const SubmitRankingButton = ({
       {isSendResultBtnDisabled ? "ランキング登録完了" : "ランキング登録"}
     </Button>
   );
+};
+
+const parseResultData = (mapId: string) => {
+  const {
+    totalTypeTime,
+    totalLatency,
+    kanaToRomaConvertCount,
+    clearRate,
+    romaType,
+    kanaType,
+    flickType,
+    englishType,
+    spaceType,
+    symbolType,
+    numType,
+    maxCombo,
+  } = readSubstatus();
+
+  const lineResults = readAllLineResult();
+
+  const minPlaySpeed = getMinValue(lineResults.flatMap(({ status }) => (status?.tTime ? [status.sp] : [])));
+
+  const rkpmTime = totalTypeTime - totalLatency;
+  const typingStatus = readTypingStatus();
+
+  const sendStatus: z.output<typeof CreateResultStatusSchema> = {
+    score: typingStatus.score,
+    rkpm: Math.floor((typingStatus.type / rkpmTime) * 60),
+    kpm: typingStatus.kpm,
+    miss: typingStatus.miss,
+    lost: typingStatus.lost,
+    romaType,
+    kanaType,
+    flickType,
+    englishType,
+    spaceType,
+    symbolType,
+    numType,
+    maxCombo,
+    minPlaySpeed,
+    kanaToRomaKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
+    kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
+    clearRate: Number(Math.max(0, clearRate).toFixed(1)),
+  };
+
+  return {
+    mapId: Number(mapId),
+    status: sendStatus,
+    lineResults,
+  };
 };

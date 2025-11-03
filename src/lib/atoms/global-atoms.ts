@@ -1,14 +1,10 @@
 import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
-import { atomWithReset, atomWithStorage, RESET, useAtomCallback } from "jotai/utils";
+import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
-import type { UAParser } from "ua-parser-js";
 
 const store = getDefaultStore();
-
-export const userAgentAtom = atom<UAParser | null>(null);
-export const useUserAgent = () => useAtomValue(userAgentAtom, { store });
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, {
   getOnInit: false,
@@ -16,11 +12,7 @@ const volumeAtom = atomWithStorage("volume", 30, undefined, {
 
 export const useVolumeState = () => useAtomValue(volumeAtom, { store });
 export const useSetVolume = () => useSetAtom(volumeAtom, { store });
-export const useReadVolume = () =>
-  useAtomCallback(
-    useCallback((get) => get(volumeAtom), []),
-    { store },
-  );
+export const readVolume = () => store.get(volumeAtom);
 
 const previewVideoAtom = atomWithReset<{
   videoId: string | null;

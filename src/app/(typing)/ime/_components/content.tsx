@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
+import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
 import { useMapQueries } from "@/lib/queries/map.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import type { MapLine } from "@/server/drizzle/validator/map-json";

@@ -1,5 +1,5 @@
 import type { YouTubeEvent } from "react-youtube";
-import { useReadVolume } from "@/lib/global-atoms";
+import { readVolume } from "@/lib/atoms/global-atoms";
 import { usePlayer } from "../atoms/read-atoms";
 import { useReadScene } from "../atoms/state-atoms";
 import { useInitializePlayScene } from "./reset";
@@ -75,7 +75,6 @@ export const useOnSeek = () => {
 export const useOnReady = () => {
   const { writePlayer } = usePlayer();
 
-  const readVolume = useReadVolume();
   return (event: YouTubeEvent) => {
     const player = event.target as YT.Player;
     player.setVolume(readVolume());

@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useReadVolume } from "@/lib/global-atoms";
+import { readVolume } from "@/lib/atoms/global-atoms";
 import { useTRPC } from "@/trpc/provider";
 import { windowFocus } from "@/utils/window-focus";
 import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount, writeYTPlayer } from "../atoms/ref";
@@ -18,14 +18,12 @@ import {
 } from "../atoms/state";
 import { readReadyInputMode } from "../atoms/storage";
 import { timerControls } from "../playing/timer/use-timer";
+import { recalculateStatusFromResults } from "../playing/update-status/recalc-from-results";
 import { useSendUserStats } from "../playing/use-send-user-stats";
-import { useUpdateAllStatus } from "../playing/use-update-status";
 import type { InputMode } from "../type";
 
 const useOnStart = () => {
   const { sendPlayCountStats } = useSendUserStats();
-
-  const updateAllStatus = useUpdateAllStatus();
 
   return (player: YT.Player) => {
     const { scene } = readUtilityParams();
@@ -50,7 +48,7 @@ const useOnStart = () => {
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
       const map = readBuiltMap();
       if (map && scene === "practice") {
-        updateAllStatus({ count: map.mapData.length - 1, updateType: "lineUpdate" });
+        recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "lineUpdate" });
       }
     }
 
@@ -152,8 +150,6 @@ export const useOnSeeked = () => {
 };
 
 export const useOnReady = () => {
-  const readVolume = useReadVolume();
-
   return (player: YT.Player) => {
     player.setVolume(readVolume());
     writeYTPlayer(player);

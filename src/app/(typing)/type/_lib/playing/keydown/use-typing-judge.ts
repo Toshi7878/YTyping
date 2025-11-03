@@ -3,117 +3,24 @@ import { CHAR_POINT } from "@/lib/build-map/build-map";
 import type { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../type";
 import { CODE_TO_KANA, KEY_TO_KANA } from "./const";
 
-const KEYBOARD_CHARS = [
-  "0",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z",
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-  "~",
-  "&",
-  "%",
-  "!",
-  "?",
-  "@",
-  "#",
-  "$",
-  "(",
-  ")",
-  "|",
-  "{",
-  "}",
-  "`",
-  "*",
-  "+",
-  ":",
-  ";",
-  "_",
-  "<",
-  ">",
-  "=",
-  "^",
-];
+export const evaluateTypingKeyEvent = (event: KeyboardEvent) => {
+  const { inputMode } = readUtilityParams();
+  const lineWord = readLineWord();
+  const typingKeys: TypingKeys = inputMode === "roma" ? romaMakeInput(event) : kanaMakeInput(event);
+  const inputResult =
+    inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
 
-const DAKU_LIST = [
-  "ゔ",
-  "が",
-  "ぎ",
-  "ぐ",
-  "げ",
-  "ご",
-  "ざ",
-  "じ",
-  "ず",
-  "ぜ",
-  "ぞ",
-  "だ",
-  "ぢ",
-  "づ",
-  "で",
-  "ど",
-  "ば",
-  "び",
-  "ぶ",
-  "べ",
-  "ぼ",
-];
+  const isCompleted = inputResult.newLineWord?.nextChar.k === "";
+  const isSuccess = !!inputResult.successKey;
+  const isFailed = inputResult.newLineWord?.correct.r || inputResult.newLineWord?.correct.k;
+
+  return { ...inputResult, typeChunk: lineWord.nextChar, isCompleted, isSuccess, isFailed };
+};
+
+// biome-ignore format: <explanation>
+const KEYBOARD_CHARS = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "~", "&", "%", "!", "?", "@", "#", "$", "(", ")", "|", "{", "}", "`", "*", "+", ":", ";", "_", "<", ">", "=", "^"];
+// biome-ignore format: <explanation>
+const DAKU_LIST = [ "ゔ", "が", "ぎ", "ぐ", "げ", "ご", "ざ", "じ", "ず", "ぜ", "ぞ", "だ", "ぢ", "づ", "で", "ど", "ば", "び", "ぶ", "べ", "ぼ"];
 const HANDAKU_KANA_LIST = ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"];
 
 const DAKU_HANDAKU_LIST = DAKU_LIST.concat(HANDAKU_KANA_LIST);
@@ -367,82 +274,66 @@ export class KanaInput {
   }
 }
 
-export const useTypingJudge = () => {
-  const romaMakeInput = (event: KeyboardEvent) => {
-    const input = {
-      keys: [event.key.toLowerCase()],
-      key: event.key.toLowerCase(),
-      code: event.code,
-      shift: event.shiftKey,
-    };
-
-    return input;
+const romaMakeInput = (event: KeyboardEvent) => {
+  const input = {
+    keys: [event.key.toLowerCase()],
+    key: event.key.toLowerCase(),
+    code: event.code,
+    shift: event.shiftKey,
   };
 
-  const kanaMakeInput = (event: KeyboardEvent) => {
-    const codeKanaKey = CODE_TO_KANA.get(event.code);
-    const keyToKanaResult = KEY_TO_KANA.get(event.key) ?? [];
-    const input = {
-      keys: codeKanaKey ? [...codeKanaKey] : [...keyToKanaResult],
-      key: event.key.toLowerCase(),
-      code: event.code,
-      shift: event.shiftKey,
-    };
+  return input;
+};
 
-    if (event.keyCode === 0) {
-      input.keys = ["ー", "￥", "\\"];
-    } else if (event.shiftKey) {
-      if (event.code === "KeyE") {
-        input.keys[0] = "ぃ";
-      }
-      if (event.code === "KeyZ") {
-        input.keys[0] = "っ";
-      }
+const kanaMakeInput = (event: KeyboardEvent) => {
+  const codeKanaKey = CODE_TO_KANA.get(event.code);
+  const keyToKanaResult = KEY_TO_KANA.get(event.key) ?? [];
+  const input = {
+    keys: codeKanaKey ? [...codeKanaKey] : [...keyToKanaResult],
+    key: event.key.toLowerCase(),
+    code: event.code,
+    shift: event.shiftKey,
+  };
 
-      //ATOK入力 https://support.justsystems.com/faq/1032/app/servlet/qadoc?QID=024273
-      if (event.code === "KeyV") {
-        input.keys.push("ゐ", "ヰ");
-      }
-      if (event.code === "Equal") {
-        input.keys.push("ゑ", "ヱ");
-      }
-      if (event.code === "KeyT") {
-        input.keys.push("ヵ");
-      }
-      if (event.code === "Quote") {
-        input.keys.push("ヶ");
-      }
-      if (event.code === "KeyF") {
-        input.keys.push("ゎ");
-      }
-      if (event.code === "Digit0") {
-        input.keys = ["を"];
-      }
+  if (event.keyCode === 0) {
+    input.keys = ["ー", "￥", "\\"];
+  } else if (event.shiftKey) {
+    if (event.code === "KeyE") {
+      input.keys[0] = "ぃ";
+    }
+    if (event.code === "KeyZ") {
+      input.keys[0] = "っ";
     }
 
-    if (KEYBOARD_CHARS.includes(event.key)) {
-      input.keys.push(
-        event.key.toLowerCase(),
-        event.key.toLowerCase().replace(event.key.toLowerCase(), (s) => {
-          return String.fromCharCode(s.charCodeAt(0) + 0xfee0);
-        }),
-      );
+    //ATOK入力 https://support.justsystems.com/faq/1032/app/servlet/qadoc?QID=024273
+    if (event.code === "KeyV") {
+      input.keys.push("ゐ", "ヰ");
     }
+    if (event.code === "Equal") {
+      input.keys.push("ゑ", "ヱ");
+    }
+    if (event.code === "KeyT") {
+      input.keys.push("ヵ");
+    }
+    if (event.code === "Quote") {
+      input.keys.push("ヶ");
+    }
+    if (event.code === "KeyF") {
+      input.keys.push("ゎ");
+    }
+    if (event.code === "Digit0") {
+      input.keys = ["を"];
+    }
+  }
 
-    return input;
-  };
+  if (KEYBOARD_CHARS.includes(event.key)) {
+    input.keys.push(
+      event.key.toLowerCase(),
+      event.key.toLowerCase().replace(event.key.toLowerCase(), (s) => {
+        return String.fromCharCode(s.charCodeAt(0) + 0xfee0);
+      }),
+    );
+  }
 
-  return (event: KeyboardEvent) => {
-    const { inputMode } = readUtilityParams();
-    const lineWord = readLineWord();
-    const typingKeys: TypingKeys = inputMode === "roma" ? romaMakeInput(event) : kanaMakeInput(event);
-    const inputResult =
-      inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
-
-    const isCompleted = inputResult.newLineWord?.nextChar.k === "";
-    const isSuccess = !!inputResult.successKey;
-    const isFailed = inputResult.newLineWord?.correct.r || inputResult.newLineWord?.correct.k;
-
-    return { ...inputResult, typeChunk: lineWord.nextChar, isCompleted, isSuccess, isFailed };
-  };
+  return input;
 };
