@@ -6,7 +6,7 @@ import { getImeTypeAtomStore } from "./store";
 
 const store = getImeTypeAtomStore();
 
-export const playerAtom = atom<YT.Player | null>(null);
+const playerAtom = atom<YT.Player | null>(null);
 
 export const usePlayer = () => {
   const readPlayer = useAtomCallback(

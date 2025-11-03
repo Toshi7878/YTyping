@@ -52,7 +52,7 @@ export const usePlayer = () => {
   return { readPlayer, writePlayer };
 };
 
-export const preventEditorTabAutoFocusAtom = atom<boolean>(false);
+const preventEditorTabAutoFocusAtom = atom<boolean>(false);
 
 export const usePreventEditortabAutoFocus = () =>
   useAtomCallback(

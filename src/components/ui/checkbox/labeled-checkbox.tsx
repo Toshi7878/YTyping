@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "../label";
 import { Checkbox } from "./checkbox";
 
-export interface LabeledCheckboxProps extends ComponentProps<typeof Checkbox> {
+interface LabeledCheckboxProps extends ComponentProps<typeof Checkbox> {
   label: ReactNode;
 }
 

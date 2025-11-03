@@ -20,7 +20,7 @@ export const useReadMap = () => {
   );
 };
 
-export const sceneAtom = atomWithReset<SceneType>("ready");
+const sceneAtom = atomWithReset<SceneType>("ready");
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
 export const useSetScene = () => useSetAtom(sceneAtom, { store });
 export const useReadScene = () => {

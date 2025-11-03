@@ -1,6 +1,4 @@
 import { atom, useAtomValue } from "jotai";
-import { useAtomCallback } from "jotai/utils";
-import { useCallback } from "react";
 import { mapReducerAtom } from "./map-reducer-atom";
 import { isTimeInputValidAtom, selectLineIndexAtom } from "./state-atoms";
 import { getEditAtomStore } from "./store";
@@ -51,25 +49,7 @@ const isDeleteButtonDisabledAtom = atom((get) => {
 });
 
 export const useIsAddBtnDisabledState = () => useAtomValue(isAddButtonDisabledAtom, { store });
-export const useIsAddBtnDisabledStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(isAddButtonDisabledAtom), []),
-    { store },
-  );
-};
 export const useIsUpdateBtnDisabledState = () => useAtomValue(isUpdateButtonDisabledAtom, { store });
-export const useIsUpdateBtnDisabledStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(isUpdateButtonDisabledAtom), []),
-    { store },
-  );
-};
 export const useIsDeleteBtnDisabledState = () => useAtomValue(isDeleteButtonDisabledAtom, { store });
-export const useIsDeleteBtnDisabledStateRef = () => {
-  return useAtomCallback(
-    useCallback((get) => get(isDeleteButtonDisabledAtom), []),
-    { store },
-  );
-};
 
 export const useEndLineIndexState = () => useAtomValue(endLineIndexAtom, { store });

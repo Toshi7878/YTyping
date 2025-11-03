@@ -25,7 +25,7 @@ const dataListVariants = cva("overflow-hidden font-normal text-left", {
   },
 });
 
-export interface DataListProps extends React.HTMLAttributes<HTMLDListElement>, VariantProps<typeof dataListVariants> {
+interface DataListProps extends React.HTMLAttributes<HTMLDListElement>, VariantProps<typeof dataListVariants> {
   asChild?: boolean;
 }
 
@@ -42,7 +42,7 @@ const DataList = React.forwardRef<HTMLDListElement, DataListProps>(
 );
 DataList.displayName = "DataList";
 
-export interface DataListItemProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DataListItemProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
@@ -59,7 +59,7 @@ const DataListItem = React.forwardRef<HTMLDivElement, DataListItemProps>(({ clas
 });
 DataListItem.displayName = "DataListItem";
 
-export interface DataListLabelProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DataListLabelProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 

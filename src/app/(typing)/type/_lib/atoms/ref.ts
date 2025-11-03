@@ -1,6 +1,5 @@
 import type { ExtractAtomValue } from "jotai";
-import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
-import { useCallback } from "react";
+import { atomWithReset, RESET } from "jotai/utils";
 import type { TypeResult } from "@/server/drizzle/validator/result";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { InputMode } from "../type";
@@ -94,7 +93,6 @@ export const resetYTPlayer = () => store.set(playerAtom, RESET);
 export const lineProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
 export const readLineProgress = () => store.get(lineProgressAtom);
 export const writeLineProgress = (newYTPlayer: HTMLProgressElement) => store.set(lineProgressAtom, newYTPlayer);
-export const resetLineProgress = () => store.set(lineProgressAtom, RESET);
 export const setLineProgressValue = (value: number) => {
   requestDebouncedAnimationFrame("line-progress", () => {
     const lineProgress = store.get(lineProgressAtom);
@@ -107,7 +105,6 @@ export const setLineProgressValue = (value: number) => {
 const totalProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
 export const readTotalProgress = () => store.get(totalProgressAtom);
 export const writeTotalProgress = (newYTPlayer: HTMLProgressElement) => store.set(totalProgressAtom, newYTPlayer);
-export const resetTotalProgress = () => store.set(totalProgressAtom, RESET);
 export const setTotalProgressValue = (value: number) => {
   requestDebouncedAnimationFrame("total-progress", () => {
     const totalProgress = store.get(totalProgressAtom);
@@ -120,19 +117,3 @@ export const setTotalProgressValue = (value: number) => {
 const lineResultCardsAtom = atomWithReset<HTMLDivElement[]>([]);
 export const readResultCards = () => store.get(lineResultCardsAtom);
 export const writeResultCards = (newCards: HTMLDivElement[]) => store.set(lineResultCardsAtom, newCards);
-
-export const useResultCards = () => {
-  const readResultCards = useAtomCallback(
-    useCallback((get) => get(lineResultCardsAtom), []),
-    { store },
-  );
-
-  const writeResultCards = useAtomCallback(
-    useCallback((_get, set, newCards: HTMLDivElement[]) => {
-      set(lineResultCardsAtom, newCards);
-    }, []),
-    { store },
-  );
-
-  return { readResultCards, writeResultCards };
-};

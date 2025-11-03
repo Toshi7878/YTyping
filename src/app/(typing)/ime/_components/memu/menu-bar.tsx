@@ -17,7 +17,7 @@ import { useSceneControl } from "../../_lib/hooks/scene-control";
 import { ResultDialog } from "./result-dialog";
 import { SettingPopover } from "./setting-popover";
 
-export const ICON_SIZE = "16";
+const ICON_SIZE = "16";
 
 export const MenuBar = () => {
   const { id: mapId } = useParams();

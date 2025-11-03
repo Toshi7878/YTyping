@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "../label";
 import { RadioGroup, RadioGroupItem } from "./radio-group";
 
-export interface LabeledRadioItemProps extends Omit<React.ComponentProps<typeof RadioGroupItem>, "onCheckedChange"> {
+interface LabeledRadioItemProps extends Omit<React.ComponentProps<typeof RadioGroupItem>, "onCheckedChange"> {
   label: React.ReactNode;
   labelClassName?: string;
   containerClassName?: string;
@@ -55,7 +55,7 @@ const LabeledRadioItem = ({
   );
 };
 
-export interface LabeledRadioGroupProps extends React.ComponentProps<typeof RadioGroup> {
+interface LabeledRadioGroupProps extends React.ComponentProps<typeof RadioGroup> {
   items: { label: string; value: string }[];
   label?: React.ReactNode;
   labelClassName?: string;

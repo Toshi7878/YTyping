@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { FormControl, FormDescription, FormField, FormItem, FormMessage } from "../form";
 import { FloatingLabelInput } from "./floating-label-input";
 
-export interface TagInputProps {
+interface TagInputProps {
   tags: string[];
   onTagAdd: (tag: string) => void;
   onTagRemove: (index: number) => void;

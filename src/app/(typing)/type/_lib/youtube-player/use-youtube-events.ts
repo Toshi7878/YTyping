@@ -22,7 +22,7 @@ import { useSendUserStats } from "../playing/use-send-user-stats";
 import { useUpdateAllStatus } from "../playing/use-update-status";
 import type { InputMode } from "../type";
 
-export const useOnStart = () => {
+const useOnStart = () => {
   const { sendPlayCountStats } = useSendUserStats();
 
   const updateAllStatus = useUpdateAllStatus();

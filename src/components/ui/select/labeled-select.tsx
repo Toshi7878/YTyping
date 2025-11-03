@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "../label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 
-export interface LabeledSelectProps extends React.ComponentProps<typeof Select> {
+interface LabeledSelectProps extends React.ComponentProps<typeof Select> {
   label: React.ReactNode;
   options: {
     label: string;
