@@ -202,7 +202,7 @@ importers:
         version: 2.3.6
       '@types/node':
         specifier: ^24.5.2
-        version: 24.9.1
+        version: 24.10.0
       '@types/react':
         specifier: ^19.1.13
         version: 19.2.2
@@ -2704,9 +2704,6 @@ packages:
 
   '@types/node@24.10.0':
     resolution: {integrity: sha512-qzQZRBqkFsYyaSWXuEHc2WR9c0a0CXwiE5FWUvn7ZM+vdy1uZLfCunD38UzhuB7YN/J11ndbDBcTmOdxJo9Q7A==}
-
-  '@types/node@24.9.1':
-    resolution: {integrity: sha512-QoiaXANRkSXK6p0Duvt56W208du4P9Uye9hWLWgGMDTEoKPhuenzNcC4vGUmrNkiOKTlIrBoyNQYNpSwfEZXSg==}
 
   '@types/pg-pool@2.0.6':
     resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
@@ -7276,7 +7273,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.10.0
 
   '@types/css-font-loading-module@0.0.12': {}
 
@@ -7302,13 +7299,9 @@ snapshots:
 
   '@types/mysql@2.15.27':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.10.0
 
   '@types/node@24.10.0':
-    dependencies:
-      undici-types: 7.16.0
-
-  '@types/node@24.9.1':
     dependencies:
       undici-types: 7.16.0
 
@@ -7318,7 +7311,7 @@ snapshots:
 
   '@types/pg@8.15.5':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.10.0
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
@@ -7336,11 +7329,11 @@ snapshots:
 
   '@types/tedious@4.0.14':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.10.0
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.10.0
 
   '@types/youtube@0.1.2': {}
 
