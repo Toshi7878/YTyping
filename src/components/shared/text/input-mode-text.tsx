@@ -24,8 +24,8 @@ export const InputModeText = ({ typeCounts }: InputModeTextProps) => {
 
   if (romaType && kanaType) {
     const isRomaFirst = romaType >= kanaType;
-    const first = isRomaFirst ? { label: "ローマ字", color: colors.roma } : { label: "かな", color: colors.kana };
-    const second = isRomaFirst ? { label: "かな", color: colors.kana } : { label: "ローマ字", color: colors.roma };
+    const first = isRomaFirst ? { label: "ロマ", color: colors.roma } : { label: "かな", color: colors.kana };
+    const second = isRomaFirst ? { label: "かな", color: colors.kana } : { label: "ロマ", color: colors.roma };
 
     return (
       <div className="truncate overflow-hidden text-ellipsis whitespace-nowrap">
@@ -39,7 +39,7 @@ export const InputModeText = ({ typeCounts }: InputModeTextProps) => {
   const kanaInput = romaType || kanaType;
   if (kanaInput && (englishType + spaceType) / total >= 0.1) {
     const inputMode = flickType ? "flick" : romaType >= kanaType ? "roma" : "kana";
-    const inputLabel = inputMode === "flick" ? "フリック" : inputMode === "roma" ? "ローマ字" : "かな";
+    const inputLabel = inputMode === "flick" ? "フリック" : inputMode === "roma" ? "ロマ" : "かな";
 
     return (
       <div className="truncate overflow-hidden text-ellipsis whitespace-nowrap">
