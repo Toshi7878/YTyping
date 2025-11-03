@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
 import { toast } from "sonner";
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/read-atoms";
+import { writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import {
   useReadUserTypingOptions,
   useSetUserTypingOptions,
@@ -33,7 +33,6 @@ export const SettingPopover = () => {
   const confirm = useConfirm();
   const { resetUserTypingOptions } = useSetUserTypingOptions();
 
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readUserTypingOptions = useReadUserTypingOptions();
 
   const handleOpenChange = (open: boolean) => {
@@ -45,7 +44,7 @@ export const SettingPopover = () => {
       if (isOptionEdited) {
         const userOptions = readUserTypingOptions();
         updateTypingOptions.mutate(userOptions);
-        writeGameUtilRefParams({ isOptionEdited: false });
+        writeUtilityRefParams({ isOptionEdited: false });
       }
     }
   };

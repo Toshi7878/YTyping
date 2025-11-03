@@ -1,5 +1,5 @@
 import type { YouTubeSpeed } from "@/utils/types";
-import { useGameUtilityReferenceParams } from "../atoms/read-atoms";
+import { writeUtilityRefParams } from "../atoms/read-atoms";
 import { usePlaySpeedReducer, useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
 import {
   useReadGameUtilityParams,
@@ -17,7 +17,6 @@ export const useChangePlayMode = () => {
   const retry = useRetry();
   const dispatchSpeed = usePlaySpeedReducer();
 
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readGameUtilityParams = useReadGameUtilityParams();
   const setPlayingInputMode = useSetPlayingInputMode();
   const setLineResultDrawer = useSetLineResultDrawer();
@@ -35,7 +34,7 @@ export const useChangePlayMode = () => {
     } else {
       const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
       if (window.confirm(confirmMessage)) {
-        writeGameUtilRefParams({ replayKeyCount: 0, replayUserName: "" });
+        writeUtilityRefParams({ replayKeyCount: 0, replayUserName: "" });
 
         setLineResultDrawer(false);
 

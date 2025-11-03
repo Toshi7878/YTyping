@@ -1,7 +1,7 @@
 "use client";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
-import { usePlayer, useResultCards } from "@/app/(typing)/type/_lib/atoms/read-atoms";
+import { writeResultCards } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import {
   useLineResultDrawerState,
   useMapState,
@@ -43,9 +43,7 @@ const ResultLineList = () => {
 
   const sceneGroup = useSceneGroupState();
   const { moveSetLine, drawerSelectColorChange } = useMoveLine();
-  const { writeResultCards } = useResultCards();
   const setLineSelectIndex = useSetLineSelectIndex();
-  const { readPlayer } = usePlayer();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
@@ -61,7 +59,7 @@ const ResultLineList = () => {
       moveSetLine(seekCount);
       setLineSelectIndex(lineIndex);
     },
-    [map, moveSetLine, setLineSelectIndex, readPlayer],
+    [map, moveSetLine, setLineSelectIndex],
   );
 
   const endCardClick = useCallback(

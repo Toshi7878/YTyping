@@ -13,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
-import { useLineCount, useUserStats } from "../../../_lib/atoms/read-atoms";
+import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/read-atoms";
 import { usePressSkip } from "../../../_lib/playing/keydown/hot-key/use-press-skip";
 import { useOnKeydown } from "../../../_lib/playing/keydown/use-keydown-event";
 import { timerControls } from "../../../_lib/playing/timer/use-timer";
@@ -31,7 +31,6 @@ export const PlayingScene = ({ className }: PlayingProps) => {
   const readGameUtilityParams = useReadGameUtilityParams();
 
   const { data: session } = useSession();
-  const { readUserStats, resetUserStats } = useUserStats();
   const { resetCurrentLine } = useSetCurrentLine();
 
   const scene = useSceneState();
@@ -41,25 +40,24 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
         const sendStats = readUserStats();
-        const { maxCombo } = sendStats;
         const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
         const body = new Blob([JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })], {
           type: "application/json",
         });
         navigator.sendBeacon(url, body);
 
-        resetUserStats(structuredClone(maxCombo));
+        //TODO: maxComboを引数に渡す?
+        resetUserStats();
       }
     };
     const handleBeforeunload = () => {
       const sendStats = readUserStats();
-      const { maxCombo } = sendStats;
       const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
       const body = new Blob([JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })], {
         type: "application/json",
       });
       navigator.sendBeacon(url, body);
-      resetUserStats(structuredClone(maxCombo));
+      resetUserStats();
     };
 
     if (scene === "play" || scene === "practice") {
@@ -74,7 +72,6 @@ export const PlayingScene = ({ className }: PlayingProps) => {
 
   const { setNextLyrics, resetNextLyrics } = useSetNextLyrics();
   const handleKeydown = useOnKeydown();
-  const { readCount } = useLineCount();
   const setLineResultDrawer = useSetLineResultDrawer();
   const map = useMapState();
 
@@ -89,7 +86,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       timerControls.setFrameRate(59.99);
     }
 
-    const count = readCount();
+    const count = readLineCount();
     const nextLine = map?.mapData[1];
     if (count === 0 && map && nextLine) {
       setNextLyrics(nextLine);

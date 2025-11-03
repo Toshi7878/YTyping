@@ -2,9 +2,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSetTabName, useTabNameState } from "../../_lib/atoms/state-atoms";
 import { TAB_NAMES } from "../../_lib/const";
-import { EditorCard } from "./editor/editor-card";
-import { MapInfoFormCard } from "./info-form/map-info-form-card";
-import { SettingsCard } from "./settings/settings";
+import { EditorCard } from "./editor/card";
+import { MapInfoFormCard } from "./info-form/card";
+import { SettingsCard } from "./settings/card";
 
 export const EditTabs = () => {
   const tabName = useTabNameState();

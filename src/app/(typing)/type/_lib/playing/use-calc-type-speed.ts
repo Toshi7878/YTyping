@@ -1,19 +1,21 @@
-import { useLineStatus, useTypingSubstatusReference, useUserStats } from "../atoms/read-atoms";
+import {
+  readLineSubstatus,
+  readSubstatus,
+  readUserStats,
+  writeLineSubstatus,
+  writeSubstatus,
+  writeUserStats,
+} from "../atoms/read-atoms";
 import { useReadTypingStatus, useSetLineKpm, useSetTypingStatus } from "../atoms/state-atoms";
 
 type UpdateType = "keydown" | "completed" | "timer" | "lineUpdate";
 export const useCalcTypeSpeed = () => {
-  const { readLineStatus } = useLineStatus();
-
   const readTypingStatus = useReadTypingStatus();
   const setLineKpm = useSetLineKpm();
-  const { writeLineStatus } = useLineStatus();
   const { setTypingStatus } = useSetTypingStatus();
-  const { readStatus, writeStatus } = useTypingSubstatusReference();
-  const { readUserStats, writeUserStats } = useUserStats();
 
   const calcLineKpm = ({ constantLineTime }: { constantLineTime: number }) => {
-    const { type: lineTypeCount } = readLineStatus();
+    const { type: lineTypeCount } = readLineSubstatus();
 
     const lineKpm = constantLineTime ? Math.floor((lineTypeCount / constantLineTime) * 60) : 0;
     setLineKpm(lineKpm);
@@ -21,17 +23,16 @@ export const useCalcTypeSpeed = () => {
   };
 
   const calcLineRkpm = ({ lineKpm, constantLineTime }: { lineKpm: number; constantLineTime: number }) => {
-    const { latency: lineLatency } = readLineStatus();
-    const { type: lineTypeCount } = readLineStatus();
+    const { latency: lineLatency, type: lineTypeCount } = readLineSubstatus();
 
     const rkpmTime = constantLineTime - lineLatency;
     const lineRkpm = lineTypeCount !== 0 ? Math.floor((lineTypeCount / rkpmTime) * 60) : lineKpm;
-    writeLineStatus({ rkpm: lineRkpm });
+    writeLineSubstatus({ rkpm: lineRkpm });
   };
 
   const calcTotalKpm = ({ constantLineTime }: { constantLineTime: number }) => {
     const { type: totalTypeCount } = readTypingStatus();
-    const { totalTypeTime } = readStatus();
+    const { totalTypeTime } = readSubstatus();
 
     const newTotalTypeTime = totalTypeTime + constantLineTime;
 
@@ -53,14 +54,15 @@ export const useCalcTypeSpeed = () => {
     }
 
     if (updateType === "lineUpdate" || updateType === "completed") {
-      writeStatus({
-        totalTypeTime: readStatus().totalTypeTime + constantLineTime,
+      const { totalTypeTime } = readSubstatus();
+      writeSubstatus({
+        totalTypeTime: totalTypeTime + constantLineTime,
       });
 
-      if (readLineStatus().type !== 0) {
-        writeUserStats({
-          typingTime: readUserStats().typingTime + constantLineTime,
-        });
+      const { type: lineTypeCount } = readLineSubstatus();
+      if (lineTypeCount !== 0) {
+        const { typingTime } = readUserStats();
+        writeUserStats({ typingTime: typingTime + constantLineTime });
       }
       calcLineRkpm({ lineKpm, constantLineTime });
     }

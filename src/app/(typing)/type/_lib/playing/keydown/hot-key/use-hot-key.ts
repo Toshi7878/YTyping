@@ -1,4 +1,4 @@
-import { useGameUtilityReferenceParams } from "../../../atoms/read-atoms";
+import { readUtilityRefParams, writeUtilityRefParams } from "../../../atoms/read-atoms";
 import { usePlaySpeedReducer } from "../../../atoms/speed-reducer-atoms";
 import {
   useReadGameUtilityParams,
@@ -30,7 +30,6 @@ export const usePlayingHotKey = () => {
   const { movePrevLine, moveNextLine, moveSetLine } = useMoveLine();
   const setNotify = useSetNotify();
 
-  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readTypingOptions = useReadUserTypingOptions();
   const readMap = useReadMap();
   const readGameUtilityParams = useReadGameUtilityParams();
@@ -60,9 +59,9 @@ export const usePlayingHotKey = () => {
         break;
       case "ArrowRight":
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
-          const { timeOffset } = readGameUtilRefParams();
+          const { timeOffset } = readUtilityRefParams();
           const newTimeOffset = Math.round((timeOffset + TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-          writeGameUtilRefParams({ timeOffset: newTimeOffset });
+          writeUtilityRefParams({ timeOffset: newTimeOffset });
           setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
         } else if (scene === "replay" || scene === "practice") {
           moveNextLine();
@@ -71,9 +70,9 @@ export const usePlayingHotKey = () => {
         break;
       case "ArrowLeft":
         if (isCtrlLeftRight || isCtrlAltLeftRight) {
-          const { timeOffset } = readGameUtilRefParams();
+          const { timeOffset } = readUtilityRefParams();
           const newTimeOffset = Math.round((timeOffset - TIME_OFFSET_SHORTCUTKEY_RANGE) * 100) / 100;
-          writeGameUtilRefParams({ timeOffset: newTimeOffset });
+          writeUtilityRefParams({ timeOffset: newTimeOffset });
           setNotify(Symbol(`時間調整: ${(newTimeOffset + typingOptions.timeOffset).toFixed(2)}`));
         } else if (scene === "replay" || scene === "practice") {
           movePrevLine();

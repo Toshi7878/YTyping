@@ -1,5 +1,4 @@
 import type { ExtractAtomValue } from "jotai";
-import { atom } from "jotai";
 import { atomWithReset, RESET, useAtomCallback } from "jotai/utils";
 import { useCallback } from "react";
 import type { TypeResult } from "@/server/drizzle/validator/result";
@@ -10,23 +9,11 @@ import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 
 const lineCountAtom = atomWithReset(0);
+export const readLineCount = () => store.get(lineCountAtom);
+export const writeLineCount = (count: number) => store.set(lineCountAtom, count);
+export const resetLineCount = () => store.set(lineCountAtom, RESET);
 
-export const useLineCount = () => {
-  const readCount = useAtomCallback(
-    useCallback((get) => get(lineCountAtom), []),
-    { store },
-  );
-  const writeCount = useAtomCallback(
-    useCallback((_get, set, newCount: number) => {
-      set(lineCountAtom, newCount);
-    }, []),
-    { store },
-  );
-
-  return { readCount, writeCount };
-};
-
-const typingSubstatusRefAtom = atomWithReset({
+const substatusRefAtom = atomWithReset({
   romaType: 0,
   kanaType: 0,
   flickType: 0,
@@ -45,31 +32,12 @@ const typingSubstatusRefAtom = atomWithReset({
   failureCount: 0,
 });
 
-export const useTypingSubstatusReference = () => {
-  const readSubstatusRefOnly = useAtomCallback(
-    useCallback((get) => get(typingSubstatusRefAtom), []),
-    { store },
-  );
-  const writeStatus = useAtomCallback(
-    useCallback((_get, set, newUserStats: Partial<ExtractAtomValue<typeof typingSubstatusRefAtom>>) => {
-      set(typingSubstatusRefAtom, (prev) => {
-        return { ...prev, ...newUserStats };
-      });
-    }, []),
-    { store },
-  );
+export const readSubstatus = () => store.get(substatusRefAtom);
+export const writeSubstatus = (newSubstatus: Partial<ExtractAtomValue<typeof substatusRefAtom>>) =>
+  store.set(substatusRefAtom, (prev) => ({ ...prev, ...newSubstatus }));
+export const resetSubstatus = () => store.set(substatusRefAtom, RESET);
 
-  const resetStatus = useAtomCallback(
-    useCallback((_get, set) => {
-      set(typingSubstatusRefAtom, RESET);
-    }, []),
-    { store },
-  );
-
-  return { readStatus: readSubstatusRefOnly, writeStatus, resetStatus };
-};
-
-export const lineStatusAtom = atomWithReset({
+export const lineSubstatusRefAtom = atomWithReset({
   type: 0,
   miss: 0,
   latency: 0,
@@ -80,30 +48,12 @@ export const lineStatusAtom = atomWithReset({
   rkpm: 0,
 });
 
-export const useLineStatus = () => {
-  const readLineStatus = useAtomCallback(
-    useCallback((get) => get(lineStatusAtom), []),
-    { store },
-  );
-  const writeLineStatus = useAtomCallback(
-    useCallback((_get, set, newUserStats: Partial<ExtractAtomValue<typeof lineStatusAtom>>) => {
-      set(lineStatusAtom, (prev) => {
-        return { ...prev, ...newUserStats };
-      });
-    }, []),
-    { store },
-  );
-  const resetLineStatus = useAtomCallback(
-    useCallback((_get, set) => {
-      set(lineStatusAtom, RESET);
-    }, []),
-    { store },
-  );
+export const readLineSubstatus = () => store.get(lineSubstatusRefAtom);
+export const writeLineSubstatus = (newLineSubstatus: Partial<ExtractAtomValue<typeof lineSubstatusRefAtom>>) =>
+  store.set(lineSubstatusRefAtom, (prev) => ({ ...prev, ...newLineSubstatus }));
+export const resetLineSubstatus = () => store.set(lineSubstatusRefAtom, RESET);
 
-  return { readLineStatus, writeLineStatus, resetLineStatus };
-};
-
-const userStatsAtom = atomWithReset({
+const userStatsRefAtom = atomWithReset({
   romaType: 0,
   kanaType: 0,
   flickType: 0,
@@ -115,149 +65,62 @@ const userStatsAtom = atomWithReset({
   maxCombo: 0,
 });
 
-export const useUserStats = () => {
-  const readUserStats = useAtomCallback(
-    useCallback((get) => get(userStatsAtom), []),
-    { store },
-  );
+export const readUserStats = () => store.get(userStatsRefAtom);
+export const writeUserStats = (newUserStats: Partial<ExtractAtomValue<typeof userStatsRefAtom>>) =>
+  store.set(userStatsRefAtom, (prev) => ({ ...prev, ...newUserStats }));
+export const resetUserStats = () => store.set(userStatsRefAtom, RESET);
 
-  const writeUserStats = useAtomCallback(
-    useCallback((_get, set, newUserStats: Partial<ExtractAtomValue<typeof userStatsAtom>>) => {
-      set(userStatsAtom, (prev) => {
-        return { ...prev, ...newUserStats };
-      });
-    }, []),
-    { store },
-  );
-  const resetUserStats = useAtomCallback(
-    useCallback((_get, set, maxCombo = 0) => {
-      set(userStatsAtom, RESET);
-      set(userStatsAtom, (prev) => ({ ...prev, maxCombo }));
-    }, []),
-    { store },
-  );
-
-  return { readUserStats, writeUserStats, resetUserStats };
-};
-
-export const gameUtilityReferenceParamsAtom = atomWithReset({
+export const utilityRefParamsAtom = atomWithReset({
   isRetrySkip: false,
   retryCount: 1,
   timeOffset: 0,
   startPlaySpeed: 1,
   replayKeyCount: 0,
-  replayUserName: "",
+  replayUserName: "", //TODO: stateとして使用している
   rankingScores: [] as number[],
   isOptionEdited: false,
 });
 
-export const useGameUtilityReferenceParams = () => {
-  const readGameUtilRefParams = useAtomCallback(
-    useCallback((get) => get(gameUtilityReferenceParamsAtom), []),
-    { store },
-  );
-  const writeGameUtilRefParams = useAtomCallback(
-    useCallback((_get, set, newGameState: Partial<ExtractAtomValue<typeof gameUtilityReferenceParamsAtom>>) => {
-      set(gameUtilityReferenceParamsAtom, (prev) => {
-        return { ...prev, ...newGameState };
-      });
-    }, []),
-    { store },
-  );
-  const resetGameUtilRefParams = useAtomCallback(
-    useCallback((_get, set) => {
-      set(gameUtilityReferenceParamsAtom, RESET);
-    }, []),
-    { store },
-  );
+export const readUtilityRefParams = () => store.get(utilityRefParamsAtom);
+export const writeUtilityRefParams = (newUserStats: Partial<ExtractAtomValue<typeof utilityRefParamsAtom>>) =>
+  store.set(utilityRefParamsAtom, (prev) => ({ ...prev, ...newUserStats }));
+export const resetUtilityRefParams = () => store.set(utilityRefParamsAtom, RESET);
 
-  return {
-    readGameUtilRefParams,
-    writeGameUtilRefParams,
-    resetGameUtilRefParams,
-  };
+export const playerAtom = atomWithReset<YT.Player | null>(null);
+// TODO: stateとして使用している
+export const readYTPlayer = () => store.get(playerAtom);
+export const writeYTPlayer = (newYTPlayer: YT.Player) => store.set(playerAtom, newYTPlayer);
+export const resetYTPlayer = () => store.set(playerAtom, RESET);
+
+export const lineProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
+export const readLineProgress = () => store.get(lineProgressAtom);
+export const writeLineProgress = (newYTPlayer: HTMLProgressElement) => store.set(lineProgressAtom, newYTPlayer);
+export const resetLineProgress = () => store.set(lineProgressAtom, RESET);
+export const setLineProgressValue = (value: number) => {
+  requestDebouncedAnimationFrame("line-progress", () => {
+    const lineProgress = store.get(lineProgressAtom);
+    if (lineProgress) {
+      lineProgress.value = value;
+    }
+  });
 };
 
-export const playerAtom = atom<YT.Player | null>(null);
-
-export const usePlayer = () => {
-  const readPlayer = useAtomCallback(
-    useCallback((get) => get(playerAtom) as YT.Player, []),
-    { store },
-  );
-
-  const writePlayer = useAtomCallback(
-    useCallback((_get, set, newPlayer: YT.Player | null) => {
-      set(playerAtom, newPlayer);
-    }, []),
-    { store },
-  );
-
-  return { readPlayer, writePlayer };
+const totalProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
+export const readTotalProgress = () => store.get(totalProgressAtom);
+export const writeTotalProgress = (newYTPlayer: HTMLProgressElement) => store.set(totalProgressAtom, newYTPlayer);
+export const resetTotalProgress = () => store.set(totalProgressAtom, RESET);
+export const setTotalProgressValue = (value: number) => {
+  requestDebouncedAnimationFrame("total-progress", () => {
+    const totalProgress = store.get(totalProgressAtom);
+    if (totalProgress) {
+      totalProgress.value = value;
+    }
+  });
 };
 
-export const lineProgressAtom = atom<HTMLProgressElement | null>(null);
-const totalProgressAtom = atom<HTMLProgressElement | null>(null);
-
-export const useProgress = () => {
-  const readLineProgress = useAtomCallback(
-    useCallback((get) => get(lineProgressAtom) as HTMLProgressElement, []),
-    { store },
-  );
-  const readTotalProgress = useAtomCallback(
-    useCallback((get) => get(totalProgressAtom) as HTMLProgressElement, []),
-    { store },
-  );
-
-  const writeLineProgress = useAtomCallback(
-    useCallback((_get, set, newProgress: HTMLProgressElement | null) => {
-      set(lineProgressAtom, newProgress);
-    }, []),
-    { store },
-  );
-
-  const writeTotalProgress = useAtomCallback(
-    useCallback((_get, set, newProgress: HTMLProgressElement | null) => {
-      set(totalProgressAtom, newProgress);
-    }, []),
-    { store },
-  );
-
-  const setLineProgressValue = useAtomCallback(
-    useCallback((get, _set, value: number) => {
-      requestDebouncedAnimationFrame("line-progress", () => {
-        const lineProgress = get(lineProgressAtom) as HTMLProgressElement;
-        if (lineProgress) {
-          lineProgress.value = value;
-        }
-      });
-    }, []),
-    { store },
-  );
-
-  const setTotalProgressValue = useAtomCallback(
-    useCallback((get, _set, value: number) => {
-      requestDebouncedAnimationFrame("total-progress", () => {
-        const totalProgress = get(totalProgressAtom) as HTMLProgressElement;
-        if (totalProgress) {
-          totalProgress.value = value;
-        }
-      });
-    }, []),
-    { store },
-  );
-
-  return {
-    readTotalProgress,
-    readLineProgress,
-    writeLineProgress,
-    writeTotalProgress,
-    setLineProgressValue,
-    setTotalProgressValue,
-  };
-};
-
-const lineResultCardsAtom = atom<HTMLDivElement[]>([]);
+const lineResultCardsAtom = atomWithReset<HTMLDivElement[]>([]);
+export const readResultCards = () => store.get(lineResultCardsAtom);
+export const writeResultCards = (newCards: HTMLDivElement[]) => store.set(lineResultCardsAtom, newCards);
 
 export const useResultCards = () => {
   const readResultCards = useAtomCallback(

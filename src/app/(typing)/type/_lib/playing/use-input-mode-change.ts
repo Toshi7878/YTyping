@@ -1,6 +1,6 @@
 import { generateTypingWord } from "@/lib/build-map/generate-typing-word";
 import { kanaSentenceToKanaChunkWords } from "@/lib/build-map/kana-sentence-to-kana-word-chunks";
-import { useLineCount, useLineStatus } from "../atoms/read-atoms";
+import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/read-atoms";
 import {
   useReadGameUtilityParams,
   useReadLineWord,
@@ -20,11 +20,9 @@ export const useInputModeChange = () => {
   const setLineWord = useSetLineWord();
 
   const getCurrentTime = useGetYouTubeTime();
-  const { readLineStatus, writeLineStatus } = useLineStatus();
   const readGameUtilityParams = useReadGameUtilityParams();
   const readLineWord = useReadLineWord();
   const readMap = useReadMap();
-  const { readCount } = useLineCount();
 
   return async (newInputMode: InputMode) => {
     const map = readMap();
@@ -53,7 +51,7 @@ export const useInputModeChange = () => {
       }
     }
 
-    const count = readCount();
+    const count = readLineCount();
     const nextLine = map.mapData[count + 1];
 
     if (nextLine?.kanaWord) {
@@ -62,9 +60,10 @@ export const useInputModeChange = () => {
 
     if (scene === "play") {
       const { currentLineTime } = getCurrentTime({ type: "lineTime" });
-      writeLineStatus({
+      const { types } = readLineSubstatus();
+      writeLineSubstatus({
         types: [
-          ...readLineStatus().types,
+          ...types,
           {
             op: newInputMode,
             t: Math.floor(currentLineTime * 1000) / 1000,

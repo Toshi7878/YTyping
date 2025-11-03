@@ -1,9 +1,12 @@
 import { MISS_PENALTY } from "../../../../../lib/build-map/build-map";
 import {
-  useGameUtilityReferenceParams,
-  useLineStatus,
-  useTypingSubstatusReference,
-  useUserStats,
+  readLineSubstatus,
+  readSubstatus,
+  readUserStats,
+  readUtilityRefParams,
+  writeLineSubstatus,
+  writeSubstatus,
+  writeUserStats,
 } from "../atoms/read-atoms";
 import {
   useReadAllLineResult,
@@ -22,9 +25,6 @@ export const useTypeSuccess = () => {
   const { setTypingStatus } = useSetTypingStatus();
   const calcCurrentRank = useCalcCurrentRank();
 
-  const { readUserStats, writeUserStats } = useUserStats();
-  const { readLineStatus, writeLineStatus } = useLineStatus();
-  const { readStatus, writeStatus } = useTypingSubstatusReference();
   const readGameUtilityParams = useReadGameUtilityParams();
 
   const readMap = useReadMap();
@@ -40,8 +40,8 @@ export const useTypeSuccess = () => {
     constantRemainLineTime: number;
     updatePoint: number;
   }) => {
-    const lineTypeCount = readLineStatus().type;
-    const { completeCount, failureCount } = readStatus();
+    const { type: lineTypeCount } = readLineSubstatus();
+    const { completeCount, failureCount } = readSubstatus();
     const map = readMap();
 
     setTypingStatus((prev) => {
@@ -84,110 +84,68 @@ export const useTypeSuccess = () => {
     successKey: string;
   }) => {
     const { scene } = readGameUtilityParams();
-    const lineTypingStatusRef = readLineStatus();
-    const { maxCombo, completeCount } = readStatus();
-    writeStatus({ missCombo: 0 });
+    const { type: lineTypeCount } = readLineSubstatus();
+    const { maxCombo, completeCount } = readSubstatus();
+    writeSubstatus({ missCombo: 0 });
 
-    if (lineTypingStatusRef.type === 0) {
-      writeLineStatus({ latency: constantLineTime });
+    if (lineTypeCount === 0) {
+      writeLineSubstatus({ latency: constantLineTime });
 
-      const { totalLatency } = readStatus();
-      writeStatus({ totalLatency: totalLatency + constantLineTime });
+      const { totalLatency } = readSubstatus();
+      writeSubstatus({ totalLatency: totalLatency + constantLineTime });
     }
 
     const newCombo = readCombo() + 1;
     if (scene === "play") {
       if (newCombo > maxCombo) {
-        writeStatus({ maxCombo: newCombo });
-
+        writeSubstatus({ maxCombo: newCombo });
         writeUserStats({ maxCombo: newCombo });
       }
     }
 
-    writeLineStatus({
-      type: readLineStatus().type + 1,
-    });
+    writeLineSubstatus({ type: lineTypeCount + 1 });
 
     if (isCompleted) {
-      writeLineStatus({
-        isCompleted: true,
-      });
-      writeStatus({
-        completeCount: completeCount + 1,
-      });
-      writeStatus({
-        kanaToRomaConvertCount: readStatus().kanaToRomaConvertCount + readLineWord().correct.r.length,
-      });
+      writeLineSubstatus({ isCompleted: true });
+      writeSubstatus({ completeCount: completeCount + 1 });
+      const { kanaToRomaConvertCount } = readSubstatus();
+      writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + readLineWord().correct.r.length });
     }
 
     if (scene === "replay" || !typeChunk) {
       return;
     }
 
-    writeLineStatus({
-      types: [
-        ...readLineStatus().types,
-        {
-          c: successKey,
-          is: true,
-          t: constantLineTime,
-        },
-      ],
-    });
+    const { types } = readLineSubstatus();
 
-    const { inputMode } = readGameUtilityParams();
+    writeLineSubstatus({ types: [...types, { c: successKey, is: true, t: constantLineTime }] });
+
+    const substatus = readSubstatus();
+    const userStats = readUserStats();
     if (typeChunk.t === "kana") {
+      const { inputMode } = readGameUtilityParams();
       if (inputMode === "roma") {
-        writeUserStats({
-          romaType: readUserStats().romaType + 1,
-        });
-        writeStatus({
-          romaType: readStatus().romaType + 1,
-        });
+        writeUserStats({ romaType: substatus.romaType + 1 });
+        writeSubstatus({ romaType: substatus.romaType + 1 });
       } else if (inputMode === "kana") {
-        writeUserStats({
-          kanaType: readUserStats().kanaType + 1,
-        });
-
-        writeStatus({
-          kanaType: readStatus().kanaType + 1,
-        });
+        writeUserStats({ kanaType: userStats.kanaType + 1 });
+        writeSubstatus({ kanaType: substatus.kanaType + 1 });
       } else if (inputMode === "flick") {
-        writeUserStats({
-          flickType: readUserStats().flickType + 1,
-        });
-        writeStatus({
-          flickType: readStatus().flickType + 1,
-        });
+        writeUserStats({ flickType: userStats.flickType + 1 });
+        writeSubstatus({ flickType: substatus.flickType + 1 });
       }
     } else if (typeChunk.t === "alphabet") {
-      writeUserStats({
-        englishType: readUserStats().englishType + 1,
-      });
-      writeStatus({
-        englishType: readStatus().englishType + 1,
-      });
+      writeUserStats({ englishType: userStats.englishType + 1 });
+      writeSubstatus({ englishType: substatus.englishType + 1 });
     } else if (typeChunk.t === "num") {
-      writeUserStats({
-        numType: readUserStats().numType + 1,
-      });
-      writeStatus({
-        numType: readStatus().numType + 1,
-      });
+      writeUserStats({ numType: userStats.numType + 1 });
+      writeSubstatus({ numType: substatus.numType + 1 });
     } else if (typeChunk.t === "space") {
-      writeUserStats({
-        spaceType: readUserStats().spaceType + 1,
-      });
-      writeStatus({
-        spaceType: readStatus().spaceType + 1,
-      });
+      writeUserStats({ spaceType: userStats.spaceType + 1 });
+      writeSubstatus({ spaceType: substatus.spaceType + 1 });
     } else if (typeChunk.t === "symbol") {
-      writeUserStats({
-        symbolType: readUserStats().symbolType + 1,
-      });
-      writeStatus({
-        symbolType: readStatus().symbolType + 1,
-      });
+      writeUserStats({ symbolType: userStats.symbolType + 1 });
+      writeSubstatus({ symbolType: substatus.symbolType + 1 });
     }
   };
 
@@ -195,11 +153,9 @@ export const useTypeSuccess = () => {
 };
 
 const useCalcCurrentRank = () => {
-  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
-
   return (currentScore: number) => {
     // 現在のスコアが何番目に入るかを取得
-    const { rankingScores } = readGameUtilRefParams();
+    const { rankingScores } = readUtilityRefParams();
     const rank = rankingScores.findIndex((score) => score <= currentScore);
     return (rank < 0 ? rankingScores.length : rank) + 1;
   };
@@ -209,8 +165,6 @@ export const useTypeMiss = () => {
   const setCombo = useSetCombo();
   const { setTypingStatus } = useSetTypingStatus();
 
-  const { readLineStatus, writeLineStatus } = useLineStatus();
-  const { readStatus, writeStatus } = useTypingSubstatusReference();
   const readTypingStatus = useReadTypingStatus();
   const readMap = useReadMap();
 
@@ -229,20 +183,14 @@ export const useTypeMiss = () => {
     const map = readMap();
     if (!map) return;
 
-    writeStatus({
-      clearRate: readStatus().clearRate - map.missRate,
-      missCombo: readStatus().missCombo + 1,
-    });
+    const { clearRate, missCombo } = readSubstatus();
+    writeSubstatus({ clearRate: clearRate - map.missRate, missCombo: missCombo + 1 });
 
-    writeLineStatus({
-      miss: readLineStatus().miss + 1,
-      types: [
-        ...readLineStatus().types,
-        {
-          c: failKey,
-          t: constantLineTime,
-        },
-      ],
+    const { miss: lineMissCount, types } = readLineSubstatus();
+
+    writeLineSubstatus({
+      miss: lineMissCount + 1,
+      types: [...types, { c: failKey, t: constantLineTime }],
     });
   };
 
@@ -252,36 +200,29 @@ export const useTypeMiss = () => {
 export const useLineUpdateStatus = () => {
   const calcCurrentRank = useCalcCurrentRank();
   const { setTypingStatus } = useSetTypingStatus();
-  const { readStatus, writeStatus } = useTypingSubstatusReference();
   const readMap = useReadMap();
   const readLineWord = useReadLineWord();
-  const { readLineStatus } = useLineStatus();
   return ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
     if (!map) return;
     const lineWord = readLineWord();
 
-    writeStatus({
-      kanaToRomaConvertCount: readStatus().kanaToRomaConvertCount + lineWord.correct.r.length,
-    });
+    const { kanaToRomaConvertCount } = readSubstatus();
+    writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + lineWord.correct.r.length });
 
     const isFailured = lineWord.nextChar.k;
     if (isFailured) {
-      const status = readStatus();
-
-      writeStatus({ failureCount: status.failureCount + 1 });
-
-      const { totalLatency } = readStatus();
-      const { type: lineType } = readLineStatus();
-
-      writeStatus({ totalLatency: lineType === 0 ? totalLatency + constantLineTime : totalLatency });
+      const { failureCount, totalLatency } = readSubstatus();
+      writeSubstatus({ failureCount: failureCount + 1 });
+      const { type: lineType } = readLineSubstatus();
+      writeSubstatus({ totalLatency: lineType === 0 ? totalLatency + constantLineTime : totalLatency });
     }
 
     setTypingStatus((prev) => {
       let { score } = prev;
       let { line } = prev;
       let { rank } = prev;
-      const { completeCount, failureCount } = readStatus();
+      const { completeCount, failureCount } = readSubstatus();
 
       if (isFailured) {
         score = prev.score + prev.point;
@@ -300,8 +241,6 @@ export const useUpdateAllStatus = () => {
   const readLineResults = useReadAllLineResult();
   const { setTypingStatus } = useSetTypingStatus();
   const readGameUtilityParams = useReadGameUtilityParams();
-
-  const { writeStatus } = useTypingSubstatusReference();
 
   return ({ count, updateType }: { count: number; updateType: "lineUpdate" | "completed" }) => {
     const map = readMap();
@@ -354,7 +293,7 @@ export const useUpdateAllStatus = () => {
       newStatus.timeBonus = 0;
     }
 
-    writeStatus({ totalTypeTime: lineResult?.status.tTime });
+    writeSubstatus({ totalTypeTime: lineResult?.status.tTime });
     setTypingStatus(newStatus);
   };
 };

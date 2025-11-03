@@ -1,11 +1,16 @@
 import { Ticker } from "@pixi/ticker";
 import { useRef } from "react";
 import {
-  useGameUtilityReferenceParams,
-  useLineCount,
-  useLineStatus,
-  usePlayer,
-  useProgress,
+  readLineCount,
+  readLineSubstatus,
+  readUtilityRefParams,
+  readYTPlayer,
+  resetLineSubstatus,
+  setLineProgressValue,
+  setTotalProgressValue,
+  writeLineCount,
+  writeLineSubstatus,
+  writeUtilityRefParams,
 } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
@@ -79,14 +84,10 @@ const useTimer = () => {
   const getYouTubeTime = useGetYouTubeTime();
   const calcTypeSpeed = useCalcTypeSpeed();
 
-  const { setLineProgressValue, setTotalProgressValue } = useProgress();
   const readElapsedSecTime = useReadElapsedSecTime();
   const readLineWord = useReadLineWord();
-  const { readLineStatus } = useLineStatus();
   const readGameUtilityParams = useReadGameUtilityParams();
   const readMap = useReadMap();
-  const { readCount } = useLineCount();
-  const { readPlayer } = usePlayer();
   const onEnd = useOnEnd();
   const lastUpdateTimeRef = useRef(0);
 
@@ -95,30 +96,29 @@ const useTimer = () => {
     constantLineTime,
     nextLine,
     prevCount,
+    isVideoEnded,
   }: {
     currentTime: number;
     constantLineTime: number;
     nextLine: LineData | undefined;
     prevCount: number;
+    isVideoEnded: boolean;
   }) => {
     const { scene, movieDuration } = readGameUtilityParams();
-    const { isCompleted } = readLineStatus();
+    const { isCompleted } = readLineSubstatus();
 
     if (!isCompleted && scene !== "replay") {
       calcLineResult({ constantLineTime, count: prevCount });
     }
 
-    const isEnd =
-      nextLine?.lyrics === "end" ||
-      currentTime >= movieDuration ||
-      readPlayer().getPlayerState() === YT.PlayerState.ENDED;
+    const isEnd = nextLine?.lyrics === "end" || currentTime >= movieDuration || isVideoEnded;
 
     if (isEnd) {
       onEnd();
       timerControls.stopTimer();
-      const player = readPlayer();
-      player.stopVideo();
-      player.cueVideoById(player.getVideoData().video_id);
+      const YTPlayer = readYTPlayer();
+      YTPlayer?.stopVideo();
+      YTPlayer?.cueVideoById(YTPlayer.getVideoData().video_id);
       return;
     }
 
@@ -141,7 +141,7 @@ const useTimer = () => {
   }) => {
     setDisplayRemainTime(constantRemainLineTime);
 
-    const { isCompleted } = readLineStatus();
+    const { isCompleted } = readLineSubstatus();
 
     if (!isCompleted) {
       calcTypeSpeed({ updateType: "timer", constantLineTime });
@@ -170,14 +170,15 @@ const useTimer = () => {
     });
     const { movieDuration } = readGameUtilityParams();
 
-    const count = readCount();
+    const count = readLineCount();
     const nextLine = map.mapData[count + 1];
     const nextLineTime = nextLine && movieDuration > nextLine.time ? nextLine.time : movieDuration;
 
     const hasReachedNextLineTime = currentTime >= nextLineTime;
-    const isVideoEnded = readPlayer().getPlayerState() === YT.PlayerState.ENDED;
+    const YTPlayer = readYTPlayer();
+    const isVideoEnded = YTPlayer?.getPlayerState() === YT.PlayerState.ENDED;
     if (hasReachedNextLineTime || isVideoEnded) {
-      proceedToNextLine({ currentTime, constantLineTime, nextLine, prevCount: count });
+      proceedToNextLine({ currentTime, constantLineTime, nextLine, prevCount: count, isVideoEnded });
       return;
     }
 
@@ -238,14 +239,12 @@ export const useSetupNextLine = () => {
   const setChangeCSSCount = useSetChangeCSSCount();
 
   const lineReplayUpdate = useLineReplayUpdate();
-  const { resetLineStatus, writeLineStatus } = useLineStatus();
   const { setTypingStatus } = useSetTypingStatus();
   const { setCurrentLine } = useSetCurrentLine();
   const readPlaySpeed = useReadPlaySpeed();
   const readMap = useReadMap();
   const readGameUtilityParams = useReadGameUtilityParams();
   const updateAllStatus = useUpdateAllStatus();
-  const { writeCount } = useLineCount();
 
   return (nextCount: number) => {
     const map = readMap();
@@ -253,9 +252,9 @@ export const useSetupNextLine = () => {
     const newNextLine = map?.mapData[nextCount + 1];
     if (!map || !newCurrentLine || !newNextLine) return;
 
-    writeCount(nextCount);
+    writeLineCount(nextCount);
     setCurrentLine({ newCurrentLine, newNextLine });
-    resetLineStatus();
+    resetLineSubstatus();
 
     const { inputMode, scene } = readGameUtilityParams();
     const { playSpeed } = readPlaySpeed();
@@ -265,7 +264,7 @@ export const useSetupNextLine = () => {
       updateAllStatus({ count: nextCount, updateType: "lineUpdate" });
     }
 
-    writeLineStatus({ startSpeed: playSpeed, startInputMode: inputMode });
+    writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
     setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
     setLineKpm(0);
 
@@ -285,7 +284,6 @@ interface useDisplaySkipGuideProps {
 const useDisplaySkipGuide = () => {
   const readMap = useReadMap();
   const setSkip = useSetActiveSkipGuideKey();
-  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readPlaySpeed = useReadPlaySpeed();
 
   const SKIP_IN = 0.4; //ラインが切り替わり後、指定のtimeが経過したら表示
@@ -300,12 +298,12 @@ const useDisplaySkipGuide = () => {
   }: useDisplaySkipGuideProps) => {
     const map = readMap();
     if (!map) return;
-    const { isRetrySkip } = readGameUtilRefParams();
+    const { isRetrySkip } = readUtilityRefParams();
     const { playSpeed } = readPlaySpeed();
     const startLine = map.mapData[map.startLine];
 
     if (isRetrySkip && startLine && currentTime >= startLine.time - 3 * playSpeed) {
-      writeGameUtilRefParams({ isRetrySkip: false });
+      writeUtilityRefParams({ isRetrySkip: false });
     }
 
     const IS_SKIP_DISPLAY = (!kana && lineConstantTime >= SKIP_IN && lineRemainTime >= SKIP_OUT) || isRetrySkip;

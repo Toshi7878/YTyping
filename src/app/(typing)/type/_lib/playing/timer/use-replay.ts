@@ -1,4 +1,9 @@
-import { useGameUtilityReferenceParams, useLineCount, useLineStatus } from "@/app/(typing)/type/_lib/atoms/read-atoms";
+import {
+  readLineCount,
+  readUtilityRefParams,
+  writeLineSubstatus,
+  writeUtilityRefParams,
+} from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useReadAllLineResult,
@@ -37,15 +42,13 @@ const usePlayBackKey = () => {
 
   const readLineWord = useReadLineWord();
   const readGameUtilityParams = useReadGameUtilityParams();
-  const { readCount } = useLineCount();
-  const { writeLineStatus } = useLineStatus();
   const setLineKpm = useSetLineKpm();
   const setCombo = useSetCombo();
   const readLineResults = useReadAllLineResult();
 
   return ({ constantLineTime, constantRemainLineTime, type }: UseKeyReplayProps) => {
     const { c: key, is: isSuccess, op: option } = type;
-    const count = readCount();
+    const count = readLineCount();
     // 0ライン目に記録されてしまっているリプレイが存在するためcount === 0はリプレイしない
     if (count === 0) return;
 
@@ -79,7 +82,7 @@ const usePlayBackKey = () => {
           const lineResult = lineResults[count];
 
           updateAllStatus({ count, updateType: "completed" });
-          writeLineStatus({ isCompleted: true });
+          writeLineSubstatus({ isCompleted: true });
           setCombo(lineResult?.status.combo ?? 0);
           setLineKpm(lineResult?.status.lKpm ?? 0);
         }
@@ -108,9 +111,6 @@ export const useReplay = () => {
   const playBackKey = usePlayBackKey();
   const readAllLineResults = useReadAllLineResult();
 
-  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { readCount } = useLineCount();
-
   return ({
     constantLineTime,
     constantRemainLineTime,
@@ -118,7 +118,7 @@ export const useReplay = () => {
     constantLineTime: number;
     constantRemainLineTime: number;
   }) => {
-    const count = readCount();
+    const count = readLineCount();
     const lineResults = readAllLineResults();
 
     const lineResult = lineResults[count];
@@ -126,7 +126,7 @@ export const useReplay = () => {
     const { types } = lineResult;
     if (types.length === 0) return;
 
-    const { replayKeyCount } = readGameUtilRefParams();
+    const { replayKeyCount } = readUtilityRefParams();
     const type = types[replayKeyCount];
     if (!type) return;
 
@@ -134,7 +134,7 @@ export const useReplay = () => {
 
     if (constantLineTime >= keyTime) {
       playBackKey({ constantLineTime, constantRemainLineTime, type });
-      writeGameUtilRefParams({ replayKeyCount: replayKeyCount + 1 });
+      writeUtilityRefParams({ replayKeyCount: replayKeyCount + 1 });
     }
   };
 };
@@ -143,7 +143,6 @@ export const useLineReplayUpdate = () => {
   const dispatchSpeed = usePlaySpeedReducer();
   const inputModeChange = useInputModeChange();
 
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const readAllLineResults = useReadAllLineResult();
   const readPlaySpeed = useReadPlaySpeed();
 
@@ -158,7 +157,7 @@ export const useLineReplayUpdate = () => {
 
     void inputModeChange(lineResult.status.mode);
 
-    writeGameUtilRefParams({ replayKeyCount: 0 });
+    writeUtilityRefParams({ replayKeyCount: 0 });
 
     const { playSpeed } = readPlaySpeed();
     const speed = lineResult.status.sp as YouTubeSpeed;

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { BuildMap } from "@/lib/build-map/build-map";
 import { useMapQueries } from "@/lib/queries/map.queries";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
-import { useProgress } from "../_lib/atoms/read-atoms";
+import { readTotalProgress } from "../_lib/atoms/read-atoms";
 import {
   useInitializeLineResults,
   useSceneGroupState,
@@ -31,7 +31,6 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   const setTypingStatusLine = useSetTypingStatusLine();
   const initializeLineResults = useInitializeLineResults();
 
-  const { readTotalProgress } = useProgress();
   const { resetTypingStatus } = useSetTypingStatus();
 
   const setMap = useSetMap();
@@ -55,7 +54,9 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       resetTypingStatus();
 
       const totalProgress = readTotalProgress();
-      totalProgress.max = map.duration;
+      if (totalProgress) {
+        totalProgress.max = map.duration;
+      }
     }
   }, [mapData]);
 

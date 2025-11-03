@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
-import { useProgress } from "@/app/(typing)/type/_lib/atoms/read-atoms";
+import { writeLineProgress, writeTotalProgress } from "../../_lib/atoms/read-atoms";
 
 interface TimeProgressProps {
   id: string;
 }
 export const TimeProgress = (props: TimeProgressProps) => {
   const progressRef = React.useRef<HTMLProgressElement>(null);
-
-  const { writeLineProgress, writeTotalProgress } = useProgress();
 
   useEffect(() => {
     if (progressRef.current) {

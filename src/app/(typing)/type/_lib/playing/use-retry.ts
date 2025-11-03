@@ -1,9 +1,10 @@
 import {
-  useGameUtilityReferenceParams,
-  useLineCount,
-  useLineStatus,
-  usePlayer,
-  useTypingSubstatusReference,
+  readUtilityRefParams,
+  readYTPlayer,
+  resetLineCount,
+  resetLineSubstatus,
+  resetSubstatus,
+  writeUtilityRefParams,
 } from "../atoms/read-atoms";
 import {
   useInitializeLineResults,
@@ -23,9 +24,6 @@ import { timerControls } from "./timer/use-timer";
 import { useSendUserStats } from "./use-send-user-stats";
 
 export const useRetry = () => {
-  const { readPlayer } = usePlayer();
-  const { readGameUtilRefParams, writeGameUtilRefParams } = useGameUtilityReferenceParams();
-
   const initializeLineResults = useInitializeLineResults();
   const setCombo = useSetCombo();
   const setNotify = useSetNotify();
@@ -33,13 +31,10 @@ export const useRetry = () => {
 
   const { resetTypingStatus } = useSetTypingStatus();
   const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
-  const { resetStatus } = useTypingSubstatusReference();
-  const { resetLineStatus } = useLineStatus();
 
   const readTypingStatus = useReadTypingStatus();
   const readMap = useReadMap();
   const readGameUtilityParams = useReadGameUtilityParams();
-  const { writeCount } = useLineCount();
   const { resetCurrentLine } = useSetCurrentLine();
   const setTabName = useSetTabName();
 
@@ -52,15 +47,12 @@ export const useRetry = () => {
     if (!nextLine || !startLine) return;
     resetCurrentLine();
     setNextLyrics(nextLine);
-    writeCount(0);
-    resetLineStatus();
+    resetLineCount();
+    resetLineSubstatus();
 
     const enableRetrySKip = startLine.time > 5;
 
-    writeGameUtilRefParams({
-      replayKeyCount: 0,
-      isRetrySkip: enableRetrySKip,
-    });
+    writeUtilityRefParams({ replayKeyCount: 0, isRetrySkip: enableRetrySKip });
 
     const { scene } = readGameUtilityParams();
     if (scene === "play" || scene === "practice") {
@@ -71,14 +63,15 @@ export const useRetry = () => {
       case "play": {
         const { type: totalTypeCount } = readTypingStatus();
         if (totalTypeCount) {
-          const { retryCount } = readGameUtilRefParams();
-          writeGameUtilRefParams({ retryCount: retryCount + 1 });
+          const { retryCount } = readUtilityRefParams();
+          writeUtilityRefParams({ retryCount: retryCount + 1 });
           if (totalTypeCount >= 10) {
             sendPlayCountStats();
           }
         }
 
-        setNotify(Symbol(`Retry(${readGameUtilRefParams().retryCount})`));
+        const { retryCount } = readUtilityRefParams();
+        setNotify(Symbol(`Retry(${retryCount})`));
         break;
       }
       case "play_end":
@@ -103,15 +96,18 @@ export const useRetry = () => {
     if (newPlayMode !== "practice") {
       resetTypingStatus();
       setCombo(0);
-      resetStatus();
+      resetSubstatus();
     }
 
     if (newPlayMode !== "replay") {
-      writeGameUtilRefParams({ replayUserName: "" });
+      writeUtilityRefParams({ replayUserName: "" });
     }
 
-    readPlayer().seekTo(0, true);
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return;
+
+    YTPlayer.seekTo(0, true);
     timerControls.stopTimer();
-    readPlayer().playVideo();
+    YTPlayer.playVideo();
   };
 };

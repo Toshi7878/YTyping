@@ -9,7 +9,7 @@ import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { InputMode, LineData, LineWord, SceneType, SkipGuideKey } from "../type";
-import { gameUtilityReferenceParamsAtom, lineProgressAtom, useGameUtilityReferenceParams } from "./read-atoms";
+import { lineProgressAtom, readUtilityRefParams, utilityRefParamsAtom } from "./read-atoms";
 import { speedBaseAtom } from "./speed-reducer-atoms";
 import { getTypeAtomStore } from "./store";
 
@@ -24,7 +24,7 @@ const writeTypingOptionsAtom = atom(
   null,
   (_get, set, newUserTypingOptions: Partial<ExtractAtomValue<typeof userTypingOptionsAtom>>) => {
     set(userTypingOptionsAtom, (prev) => ({ ...prev, ...newUserTypingOptions }));
-    set(gameUtilityReferenceParamsAtom, (prev) => ({ ...prev, isOptionEdited: true }));
+    set(utilityRefParamsAtom, (prev) => ({ ...prev, isOptionEdited: true }));
   },
 );
 
@@ -34,7 +34,7 @@ export const useSetUserTypingOptions = () => {
   const resetUserTypingOptions = useAtomCallback(
     useCallback((_get, set) => {
       set(userTypingOptionsAtom, RESET);
-      set(gameUtilityReferenceParamsAtom, (prev) => ({ ...prev, isOptionEdited: true }));
+      set(utilityRefParamsAtom, (prev) => ({ ...prev, isOptionEdited: true }));
     }, []),
     { store },
   );
@@ -456,7 +456,6 @@ export const useSetTypingStatusRank = () => useSetAtom(focusTypingStatusAtoms.ra
 export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
 export const useSetTypingStatus = () => {
   const readMap = useReadMap();
-  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const setTypingStatus = useSetAtom(typingStatusAtom, { store });
   const setLineCount = useSetTypingStatusLine();
   const setRank = useSetTypingStatusRank();
@@ -465,7 +464,7 @@ export const useSetTypingStatus = () => {
     setTypingStatus(RESET);
     setLineCount(readMap()?.lineLength || 0);
 
-    const { rankingScores } = readGameUtilRefParams();
+    const { rankingScores } = readUtilityRefParams();
     setRank(rankingScores.length + 1);
   };
 

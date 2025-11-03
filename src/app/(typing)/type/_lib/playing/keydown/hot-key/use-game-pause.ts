@@ -1,16 +1,18 @@
-import { usePlayer } from "../../../atoms/read-atoms";
+import { readYTPlayer } from "../../../atoms/read-atoms";
 import { useReadGameUtilityParams } from "../../../atoms/state-atoms";
 
 export const useGamePause = () => {
-  const { readPlayer } = usePlayer();
   const readGameUtilityParams = useReadGameUtilityParams();
 
   return () => {
     const { isPaused } = readGameUtilityParams();
+
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return;
     if (isPaused) {
-      readPlayer().playVideo();
+      YTPlayer.playVideo();
     } else {
-      readPlayer().pauseVideo();
+      YTPlayer.pauseVideo();
     }
   };
 };

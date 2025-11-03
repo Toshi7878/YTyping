@@ -1,21 +1,27 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
+import { useGlobalLoadingOverlay, useUserAgent } from "@/lib/global-atoms";
 import { useTRPC } from "@/trpc/provider";
-import { usePlayer } from "../atoms/read-atoms";
+import { readYTPlayer } from "../atoms/read-atoms";
 import { useInitializeLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/state-atoms";
 import type { PlayMode } from "../type";
 
 export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "playing"> }) => {
   const initializeLineResults = useInitializeLineResults();
-  const { readPlayer } = usePlayer();
   const setPlayingInputModeState = useSetPlayingInputMode();
   const setScene = useSetScene();
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
+  const userAgent = useUserAgent();
   return async (resultId: number | null) => {
-    readPlayer().playVideo();
-    readPlayer().pauseVideo();
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return;
+
+    if (userAgent?.getDevice().type !== "desktop") {
+      YTPlayer.playVideo();
+      YTPlayer.pauseVideo();
+    }
+
     setScene(startMode);
     try {
       if (resultId) {
@@ -30,7 +36,7 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
         initializeLineResults(resultData);
       }
     } finally {
-      readPlayer().playVideo();
+      YTPlayer.playVideo();
       hideLoading();
     }
   };

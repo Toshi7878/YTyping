@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { useGameUtilityReferenceParams } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
@@ -12,6 +11,7 @@ import { PopoverContent } from "@/components/ui/popover";
 import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
+import { writeUtilityRefParams } from "../../../_lib/atoms/read-atoms";
 import { useResultPlay } from "../../../_lib/ready/use-result-play";
 
 interface RankingMenuProps {
@@ -30,7 +30,6 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name,
   const resultPlay = useResultPlay({ startMode: "replay" });
   const setTabName = useSetTabName();
 
-  const { writeGameUtilRefParams } = useGameUtilityReferenceParams();
   const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();
   const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
@@ -51,7 +50,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name,
     }
 
     setTabName("ステータス");
-    writeGameUtilRefParams({ replayUserName: name });
+    writeUtilityRefParams({ replayUserName: name });
 
     if (sceneGroup === "End") {
       retry("replay");

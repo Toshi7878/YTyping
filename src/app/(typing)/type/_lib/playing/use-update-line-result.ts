@@ -1,5 +1,5 @@
 import { CHAR_POINT, calcWordKanaNotes, MISS_PENALTY } from "@/lib/build-map/build-map";
-import { useLineStatus, useTypingSubstatusReference } from "../atoms/read-atoms";
+import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/read-atoms";
 import { useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
 import {
   useReadAllLineResult,
@@ -16,8 +16,6 @@ import {
 export const useUpdateLineResult = () => {
   const setLineResult = useSetLineResult();
 
-  const { readLineStatus } = useLineStatus();
-  const { readStatus, writeStatus } = useTypingSubstatusReference();
   const readAllLineResults = useReadAllLineResult();
   const readCombo = useReadCombo();
   const readTypingResult = useReadTypingStatus();
@@ -56,7 +54,7 @@ export const useUpdateLineResult = () => {
   const hasLineResultImproved = (count: number) => {
     const lineResults = readAllLineResults();
     console.log(lineResults);
-    const { miss: lineMiss } = readLineStatus();
+    const { miss: lineMiss } = readLineSubstatus();
     const savedLineResult = lineResults[count];
     const typingStatus = readTypingResult();
 
@@ -77,12 +75,15 @@ export const useUpdateLineResult = () => {
     if (!map) return;
 
     if (actualLostNotes > 0) setTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
-    if (pointLostNotes > 0) writeStatus({ clearRate: readStatus().clearRate - map.keyRate * pointLostNotes });
+    if (pointLostNotes > 0) {
+      const { clearRate } = readSubstatus();
+      writeSubstatus({ clearRate: clearRate - map.keyRate * pointLostNotes });
+    }
 
     const typingStatus = readTypingResult();
-    const { miss: lineMiss, type: lineType, types, startSpeed, startInputMode, rkpm: lineRkpm } = readLineStatus();
+    const { miss: lineMiss, type: lineType, types, startSpeed, startInputMode, rkpm: lineRkpm } = readLineSubstatus();
     const isTypingLine = (map.mapData[count]?.kpm.r ?? 0) > 0;
-    const { totalTypeTime } = readStatus();
+    const { totalTypeTime } = readSubstatus();
     const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
 
     setLineResult({

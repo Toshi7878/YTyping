@@ -1,4 +1,4 @@
-import { useGameUtilityReferenceParams, useLineCount, usePlayer } from "../atoms/read-atoms";
+import { readLineCount, readUtilityRefParams, readYTPlayer } from "../atoms/read-atoms";
 import { useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
 import { useReadGameUtilityParams, useReadMap, useReadUserTypingOptions } from "../atoms/state-atoms";
 
@@ -25,20 +25,20 @@ type TimeResultMap = {
 };
 
 export const useGetYouTubeTime = () => {
-  const { readPlayer } = usePlayer();
   const readGameUtilityParams = useReadGameUtilityParams();
 
-  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
   const readPlaySpeed = useReadPlaySpeed();
   const readTypingOptions = useReadUserTypingOptions();
   const readMap = useReadMap();
-  const { readCount } = useLineCount();
 
   const getCurrentOffsettedYTTime = () => {
-    const { timeOffset } = readGameUtilRefParams();
+    const { timeOffset } = readUtilityRefParams();
     const { movieDuration } = readGameUtilityParams();
     const typingOptions = readTypingOptions();
-    const result = readPlayer().getCurrentTime() - typingOptions.timeOffset - timeOffset;
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return 0;
+
+    const result = YTPlayer.getCurrentTime() - typingOptions.timeOffset - timeOffset;
     return Number.isNaN(result) ? movieDuration : result;
   };
 
@@ -49,7 +49,7 @@ export const useGetYouTubeTime = () => {
   const getCurrentLineTime = ({ currentTime }: { currentTime: number }) => {
     const map = readMap();
     if (!map) return 0;
-    const count = readCount();
+    const count = readLineCount();
 
     const currentLine = map.mapData[count];
     return currentTime - Number(currentLine?.time);
@@ -57,7 +57,7 @@ export const useGetYouTubeTime = () => {
 
   const getCurrentLineRemainTime = ({ currentTime }: { currentTime: number }) => {
     const map = readMap();
-    const count = readCount();
+    const count = readLineCount();
     const nextLine = map?.mapData[count + 1];
     if (!nextLine) return 0;
 
@@ -76,7 +76,7 @@ export const useGetYouTubeTime = () => {
 
   const getConstantRemainLineTime = ({ constantLineTime }: { constantLineTime: number }) => {
     const map = readMap();
-    const count = readCount();
+    const count = readLineCount();
     const nextLine = map?.mapData[count + 1];
     if (!nextLine) return 0;
 

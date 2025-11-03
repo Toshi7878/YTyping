@@ -1,4 +1,4 @@
-import { usePlayer } from "@/app/(typing)/type/_lib/atoms/read-atoms";
+import { readYTPlayer } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
 import { VolumeRange } from "@/components/shared/volume-range";
@@ -7,14 +7,13 @@ import { H4 } from "@/components/ui/typography";
 
 export const SoundEffectOptions = () => {
   const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
-  const { readPlayer } = usePlayer();
   const { setUserTypingOptions } = useSetUserTypingOptions();
   const { playSoundEffect } = useSoundEffect();
 
   return (
     <section className="space-y-4">
       <H4>サウンド</H4>
-      <VolumeRange player={readPlayer()} />
+      <VolumeRange player={readYTPlayer()} />
       <div className="flex flex-row gap-4">
         <LabeledCheckbox
           label="タイプ音"

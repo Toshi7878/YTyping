@@ -5,7 +5,7 @@ import {
   useSetCurrentLine,
   useSetLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useLineCount } from "../../atoms/read-atoms";
+import { readLineCount } from "../../atoms/read-atoms";
 import { useGetYouTubeTime } from "../../youtube-player/use-get-youtube-time";
 import { useCalcTypeSpeed } from "../use-calc-type-speed";
 import { useSoundEffect } from "../use-sound-effect";
@@ -137,7 +137,6 @@ const useTyping = () => {
   const readGameUtilityParams = useReadGameUtilityParams();
   const updateAllStatus = useUpdateAllStatus();
   const readMap = useReadMap();
-  const { readCount } = useLineCount();
   const { setCurrentLine } = useSetCurrentLine();
 
   return (event: KeyboardEvent) => {
@@ -170,7 +169,7 @@ const useTyping = () => {
         }
 
         if (isCompleted) {
-          const count = readCount();
+          const count = readLineCount();
 
           if (hasLineResultImproved(count)) {
             saveLineResult(count);

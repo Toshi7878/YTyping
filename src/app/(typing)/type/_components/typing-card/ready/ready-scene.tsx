@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import { usePlayer } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
+import { readYTPlayer } from "../../../_lib/atoms/read-atoms";
 import { ReadyInputModeRadioCards } from "./ready-child/input-mode-radio-cards";
 import { ReadyPlaySpeed } from "./ready-child/min-play-speed-counter";
 import { ReadyPracticeButton } from "./ready-child/practice-button";
@@ -15,7 +15,6 @@ export const ReadyScene = ({ className }: ReadyProps) => {
   const speedUpButtonRef = useRef<HTMLButtonElement>(null);
   const speedDownButtonRef = useRef<HTMLButtonElement>(null);
   const map = useMapState();
-  const { readPlayer } = usePlayer();
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {
@@ -24,9 +23,9 @@ export const ReadyScene = ({ className }: ReadyProps) => {
 
       switch (event.code) {
         case "Enter": {
-          const player = readPlayer();
-          if (player && map) {
-            player.playVideo();
+          const YTPlayer = readYTPlayer();
+          if (YTPlayer && map) {
+            YTPlayer.playVideo();
           }
           event.preventDefault();
           break;
@@ -49,7 +48,7 @@ export const ReadyScene = ({ className }: ReadyProps) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [readPlayer(), map]);
+  }, [map]);
 
   return (
     <div className={cn("flex flex-col justify-between select-none", className)}>

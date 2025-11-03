@@ -3,7 +3,13 @@ import { useParams } from "next/navigation";
 import { useReadVolume } from "@/lib/global-atoms";
 import { useTRPC } from "@/trpc/provider";
 import { windowFocus } from "@/utils/window-focus";
-import { useGameUtilityReferenceParams, useLineCount, usePlayer, useProgress } from "../atoms/read-atoms";
+import {
+  readLineProgress,
+  readTotalProgress,
+  readUtilityRefParams,
+  writeLineCount,
+  writeYTPlayer,
+} from "../atoms/read-atoms";
 import { useReadPlaySpeed, useSetSpeed } from "../atoms/speed-reducer-atoms";
 import {
   useReadGameUtilityParams,
@@ -104,7 +110,6 @@ export const useOnPlay = () => {
 
 export const useOnEnd = () => {
   const setScene = useSetScene();
-  const { readLineProgress, readTotalProgress } = useProgress();
   const readGameUtilityParams = useReadGameUtilityParams();
   const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();
@@ -118,8 +123,12 @@ export const useOnEnd = () => {
     const lineProgress = readLineProgress();
     const totalProgress = readTotalProgress();
 
-    lineProgress.value = lineProgress.max;
-    totalProgress.value = totalProgress.max;
+    if (lineProgress) {
+      lineProgress.value = lineProgress.max;
+    }
+    if (totalProgress) {
+      totalProgress.value = totalProgress.max;
+    }
 
     const { scene } = readGameUtilityParams();
 
@@ -154,16 +163,13 @@ export const useOnPause = () => {
 };
 
 export const useOnSeeked = () => {
-  const { readGameUtilRefParams } = useGameUtilityReferenceParams();
-  const { writeCount } = useLineCount();
-
   return (player: YT.Player) => {
     const time = player.getCurrentTime();
 
-    const { isRetrySkip } = readGameUtilRefParams();
+    const { isRetrySkip } = readUtilityRefParams();
 
     if (isRetrySkip && time === 0) {
-      writeCount(0);
+      writeLineCount(0);
     }
 
     console.log("シーク");
@@ -172,11 +178,10 @@ export const useOnSeeked = () => {
 
 export const useOnReady = () => {
   const readVolume = useReadVolume();
-  const { writePlayer } = usePlayer();
 
   return (player: YT.Player) => {
     player.setVolume(readVolume());
-    writePlayer(player);
+    writeYTPlayer(player);
   };
 };
 
