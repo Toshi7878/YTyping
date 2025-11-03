@@ -4,14 +4,14 @@ import {
   writeLineSubstatus,
   writeUtilityRefParams,
 } from "@/app/(typing)/type/_lib/atoms/read-atoms";
-import { usePlaySpeedReducer, useReadPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+import { handlePlaySpeedAction, readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
-  useReadAllLineResult,
-  useReadGameUtilityParams,
-  useReadLineWord,
-  useSetCombo,
-  useSetLineKpm,
-  useSetLineWord,
+  readAllLineResult,
+  readLineWord,
+  readUtilityParams,
+  setCombo,
+  setLineKpm,
+  setLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/playing/use-calc-type-speed";
 import { useInputModeChange } from "@/app/(typing)/type/_lib/playing/use-input-mode-change";
@@ -28,23 +28,13 @@ interface UseKeyReplayProps {
 }
 
 const usePlayBackKey = () => {
-  const setLineWord = useSetLineWord();
-
   const inputModeChange = useInputModeChange();
-  const dispatchSpeed = usePlaySpeedReducer();
-
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
   const { triggerTypeSound, triggerMissSound } = useSoundEffect();
   const calcTypeSpeed = useCalcTypeSpeed();
   const updateAllStatus = useUpdateAllStatus();
-
-  const readLineWord = useReadLineWord();
-  const readGameUtilityParams = useReadGameUtilityParams();
-  const setLineKpm = useSetLineKpm();
-  const setCombo = useSetCombo();
-  const readLineResults = useReadAllLineResult();
 
   return ({ constantLineTime, constantRemainLineTime, type }: UseKeyReplayProps) => {
     const { c: key, is: isSuccess, op: option } = type;
@@ -60,7 +50,7 @@ const usePlayBackKey = () => {
       };
 
       if (isSuccess) {
-        const { inputMode } = readGameUtilityParams();
+        const { inputMode } = readUtilityParams();
         const lineWord = readLineWord();
         const { newLineWord, successKey, updatePoint } =
           inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
@@ -78,7 +68,7 @@ const usePlayBackKey = () => {
         if (!isCompleted) {
           updateSuccessStatus({ constantRemainLineTime, updatePoint });
         } else {
-          const lineResults = readLineResults();
+          const lineResults = readAllLineResult();
           const lineResult = lineResults[count];
 
           updateAllStatus({ count, updateType: "completed" });
@@ -100,7 +90,7 @@ const usePlayBackKey = () => {
           void inputModeChange("kana");
           break;
         case "speedChange":
-          dispatchSpeed({ type: "toggle" });
+          handlePlaySpeedAction({ type: "toggle" });
           break;
       }
     }
@@ -109,7 +99,6 @@ const usePlayBackKey = () => {
 
 export const useReplay = () => {
   const playBackKey = usePlayBackKey();
-  const readAllLineResults = useReadAllLineResult();
 
   return ({
     constantLineTime,
@@ -119,7 +108,7 @@ export const useReplay = () => {
     constantRemainLineTime: number;
   }) => {
     const count = readLineCount();
-    const lineResults = readAllLineResults();
+    const lineResults = readAllLineResult();
 
     const lineResult = lineResults[count];
     if (!lineResult) return;
@@ -140,14 +129,10 @@ export const useReplay = () => {
 };
 
 export const useLineReplayUpdate = () => {
-  const dispatchSpeed = usePlaySpeedReducer();
   const inputModeChange = useInputModeChange();
 
-  const readAllLineResults = useReadAllLineResult();
-  const readPlaySpeed = useReadPlaySpeed();
-
   return (newCurrentCount: number) => {
-    const lineResults = readAllLineResults();
+    const lineResults = readAllLineResult();
 
     const lineResult = lineResults[newCurrentCount];
 
@@ -163,6 +148,6 @@ export const useLineReplayUpdate = () => {
     const speed = lineResult.status.sp as YouTubeSpeed;
 
     if (playSpeed === speed) return;
-    dispatchSpeed({ type: "set", payload: speed });
+    handlePlaySpeedAction({ type: "set", payload: speed });
   };
 };

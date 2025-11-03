@@ -2,12 +2,12 @@
 import type { RefObject } from "react";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
+  useBuiltMapState,
   useLineResultState,
-  useMapState,
   usePlayingInputModeState,
   useSceneState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import type { LineData } from "@/app/(typing)/type/_lib/type";
+import type { BuiltMapLine } from "@/app/(typing)/type/_lib/type";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CHAR_POINT } from "@/lib/build-map/build-map";
@@ -22,7 +22,7 @@ interface OptimizedResultCardProps {
   scoreCount: number;
   cardRefs: RefObject<HTMLDivElement[]>;
   handleCardClick: (lineNumber: number) => void;
-  lineData: LineData;
+  lineData: BuiltMapLine;
 }
 
 export const OptimizedResultCard = ({
@@ -35,7 +35,7 @@ export const OptimizedResultCard = ({
 }: OptimizedResultCardProps) => {
   const _lineResult = useLineResultState(count);
 
-  const map = useMapState();
+  const map = useBuiltMapState();
   const scene = useSceneState();
   const { minPlaySpeed, playSpeed } = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();

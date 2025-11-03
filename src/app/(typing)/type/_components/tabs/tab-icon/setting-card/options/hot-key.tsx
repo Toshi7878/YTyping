@@ -1,11 +1,10 @@
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H4 } from "@/components/ui/typography";
 import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
 
 export const HotKeySelectFields = () => {
   const { timeOffsetAdjustKey, InputModeToggleKey } = useUserTypingOptionsState();
-  const { setUserTypingOptions } = useSetUserTypingOptions();
 
   const changeTimeOffsetAdjustKey = (value: string) => {
     setUserTypingOptions({ timeOffsetAdjustKey: value as (typeof timeOffsetAdjustKeyEnum.enumValues)[number] });

@@ -1,13 +1,10 @@
-import { useReadUserTypingOptions } from "../../../type/_lib/atoms/state-atoms";
 import { usePlayer } from "../atoms/read-atoms";
 
 export const useGetYouTubeTime = () => {
   const { readPlayer } = usePlayer();
-  const readTypingOptions = useReadUserTypingOptions();
 
   const getCurrentOffsettedYTTime = () => {
-    const typingOptions = readTypingOptions();
-    const result = readPlayer().getCurrentTime() - typingOptions.timeOffset;
+    const result = readPlayer().getCurrentTime();
     return result;
   };
 

@@ -1,5 +1,5 @@
 import { readYTPlayer } from "@/app/(typing)/type/_lib/atoms/read-atoms";
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
@@ -7,7 +7,6 @@ import { H4 } from "@/components/ui/typography";
 
 export const SoundEffectOptions = () => {
   const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
-  const { setUserTypingOptions } = useSetUserTypingOptions();
   const { playSoundEffect } = useSoundEffect();
 
   return (
@@ -19,9 +18,7 @@ export const SoundEffectOptions = () => {
           label="タイプ音"
           defaultChecked={typeSound}
           onCheckedChange={(value: boolean) => {
-            setUserTypingOptions({
-              typeSound: value,
-            });
+            setUserTypingOptions({ typeSound: value });
             if (value) playSoundEffect("type");
           }}
         />
@@ -29,9 +26,7 @@ export const SoundEffectOptions = () => {
           label="ミス音"
           defaultChecked={missSound}
           onCheckedChange={(value: boolean) => {
-            setUserTypingOptions({
-              missSound: value,
-            });
+            setUserTypingOptions({ missSound: value });
             if (value) playSoundEffect("miss");
           }}
         />

@@ -1,37 +1,29 @@
 import { RESET } from "jotai/utils";
-import { resetLineCount, resetLineSubstatus, resetUtilityRefParams, resetYTPlayer } from "./read-atoms";
+import { resetLineCount, resetLineSubstatus, resetSubstatus, resetUtilityRefParams, resetYTPlayer } from "./read-atoms";
 import { useSetSpeed as useSetPlaySpeed } from "./speed-reducer-atoms";
 import {
-  useClearLineResults,
-  useResetGameUtilityParams,
-  useResetSubstatus,
-  useSetCombo,
-  useSetCurrentLine,
-  useSetMap,
-  useSetTypingStatus,
+  clearAllLineResult,
+  resetCurrentLine,
+  resetSubstatusState,
+  resetTypingStatus,
+  resetUtilityParams,
+  useSetBuiltMap,
 } from "./state-atoms";
 
 export const usePathChangeAtomReset = () => {
-  const resetGameUtilityParams = useResetGameUtilityParams();
   const setPlaySpeed = useSetPlaySpeed();
 
-  const { resetTypingStatus } = useSetTypingStatus();
-  const setMap = useSetMap();
-  const { resetCurrentLine } = useSetCurrentLine();
-  const resetSubstatus = useResetSubstatus();
-  const clearAllLineResults = useClearLineResults();
-  const setCombo = useSetCombo();
+  const setMap = useSetBuiltMap();
   return () => {
-    setCombo(0);
     resetYTPlayer();
     resetCurrentLine();
-    clearAllLineResults();
-    resetGameUtilityParams();
+    clearAllLineResult();
+    resetUtilityParams();
     setPlaySpeed(RESET);
     setMap(RESET);
     resetTypingStatus();
     resetUtilityRefParams();
-    resetSubstatus();
+    resetSubstatusState();
     resetSubstatus();
 
     resetLineSubstatus();

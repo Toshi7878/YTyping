@@ -1,9 +1,9 @@
 import {
-  useReadGameUtilityParams,
-  useReadLineWord,
-  useReadMap,
-  useSetCurrentLine,
-  useSetLineWord,
+  readBuiltMap,
+  readLineWord,
+  readUtilityParams,
+  setLineWord,
+  setNewLine,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { readLineCount } from "../../atoms/read-atoms";
 import { useGetYouTubeTime } from "../../youtube-player/use-get-youtube-time";
@@ -25,10 +25,9 @@ export const useOnKeydown = () => {
   const typing = useTyping();
   const handleHotKey = usePlayingHotKey();
   const gamePause = useGamePause();
-  const readGameUtilityParams = useReadGameUtilityParams();
 
   return (event: KeyboardEvent) => {
-    const { scene, isPaused } = readGameUtilityParams();
+    const { scene, isPaused } = readUtilityParams();
 
     if ((!isPaused || scene === "practice") && event.key !== "Escape") {
       if (isKeydownTyped(event)) {
@@ -42,7 +41,7 @@ export const useOnKeydown = () => {
       return;
     }
 
-    const { lineResultdrawerClosure: drawerClosure } = readGameUtilityParams();
+    const { lineResultdrawerClosure: drawerClosure } = readUtilityParams();
 
     const isAllowedKey =
       KEY_WHITE_LIST.includes(event.code) ||
@@ -103,11 +102,8 @@ const TENKEYS_SET = new Set([
 ]);
 
 const useIsKeydownTyped = () => {
-  const readGameUtilityParams = useReadGameUtilityParams();
-  const readLineWord = useReadLineWord();
-
   return (event: KeyboardEvent) => {
-    const { scene } = readGameUtilityParams();
+    const { scene } = readUtilityParams();
 
     if (scene === "replay") return false;
     if (event.ctrlKey || event.altKey) return false;
@@ -125,7 +121,6 @@ const useIsKeydownTyped = () => {
 const useTyping = () => {
   const { triggerTypeSound, triggerMissSound } = useSoundEffect();
 
-  const setLineWord = useSetLineWord();
   const { updateSuccessStatus, updateSuccessStatusRefs } = useTypeSuccess();
 
   const { updateMissStatus, updateMissRefStatus } = useTypeMiss();
@@ -134,10 +129,7 @@ const useTyping = () => {
   const calcTypeSpeed = useCalcTypeSpeed();
   const inputJudge = useTypingJudge();
   const { hasLineResultImproved, saveLineResult } = useUpdateLineResult();
-  const readGameUtilityParams = useReadGameUtilityParams();
   const updateAllStatus = useUpdateAllStatus();
-  const readMap = useReadMap();
-  const { setCurrentLine } = useSetCurrentLine();
 
   return (event: KeyboardEvent) => {
     const { isSuccess, isFailed, isCompleted, newLineWord, successKey, failKey, typeChunk, updatePoint } =
@@ -162,7 +154,7 @@ const useTyping = () => {
           constantRemainLineTime,
           updatePoint,
         });
-        const { isPaused } = readGameUtilityParams();
+        const { isPaused } = readUtilityParams();
 
         if (!isPaused) {
           calcTypeSpeed({ updateType: isCompleted ? "completed" : "keydown", constantLineTime });
@@ -174,10 +166,10 @@ const useTyping = () => {
           if (hasLineResultImproved(count)) {
             saveLineResult(count);
           }
-          const { scene } = readGameUtilityParams();
+          const { scene } = readUtilityParams();
           if (scene !== "practice") return;
 
-          const map = readMap();
+          const map = readBuiltMap();
           if (!map) return;
 
           updateAllStatus({ count: map.mapData.length - 1, updateType: "completed" });
@@ -186,7 +178,7 @@ const useTyping = () => {
             const newCurrentLine = map.mapData[count];
             const newNextLine = map.mapData[count + 1];
             if (!newCurrentLine || !newNextLine) return;
-            setCurrentLine({ newCurrentLine, newNextLine });
+            setNewLine({ newCurrentLine, newNextLine });
           }
         }
       });

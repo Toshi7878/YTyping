@@ -1,7 +1,7 @@
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { zip } from "@/utils/array";
-import type { InputMode, LineData, TypeChunk } from "../../app/(typing)/type/_lib/type";
+import type { BuiltMapLine, InputMode, TypeChunk } from "../../app/(typing)/type/_lib/type";
 import { generateTypingWord } from "./generate-typing-word";
 import { kanaSentenceToKanaChunkWords } from "./kana-sentence-to-kana-word-chunks";
 
@@ -9,14 +9,14 @@ export const CHAR_POINT = 50;
 export const MISS_PENALTY = CHAR_POINT / 2;
 
 export class BuildMap {
-  mapData: LineData[];
+  mapData: BuiltMapLine[];
 
   startLine: number;
   lineLength: number;
   typingLineIndexes: number[];
   mapChangeCSSCounts: number[];
   initialLineResultData: ResultData;
-  totalNotes: LineData["notes"];
+  totalNotes: BuiltMapLine["notes"];
   speedDifficulty: { median: { r: number; k: number }; max: { r: number; k: number } };
   duration: number;
   keyRate: number;
@@ -42,7 +42,7 @@ export class BuildMap {
   }
 
   private create({ data: mapLines }: { data: MapLine[] }) {
-    const wordsData: LineData[] = [];
+    const wordsData: BuiltMapLine[] = [];
     const initialLineResultData: ResultData = [];
     const typingLineIndexes: number[] = [];
     const mapChangeCSSCounts: number[] = [];
@@ -132,7 +132,7 @@ export class BuildMap {
     };
   }
 
-  private calcLineKpm({ notes, lineDuration: remainTime }: { notes: LineData["notes"]; lineDuration: number }) {
+  private calcLineKpm({ notes, lineDuration: remainTime }: { notes: BuiltMapLine["notes"]; lineDuration: number }) {
     const romaKpm = Math.max(1, Math.floor((notes.r / remainTime) * 60));
     const kanaKpm = Math.max(1, Math.floor((notes.k / remainTime) * 60));
     return { r: romaKpm, k: kanaKpm };
@@ -146,7 +146,7 @@ export class BuildMap {
     return { k: kanaNotes, r: romaNotes };
   }
 
-  private calculateTotalNotes(typingWords: LineData[]) {
+  private calculateTotalNotes(typingWords: BuiltMapLine[]) {
     return typingWords.reduce(
       (acc, line) => {
         acc.k += line.notes.k;
@@ -157,7 +157,7 @@ export class BuildMap {
     );
   }
 
-  private calculateSpeedDifficulty(typingWords: LineData[]) {
+  private calculateSpeedDifficulty(typingWords: BuiltMapLine[]) {
     const romaSpeedList = typingWords.map((line) => line.kpm.r);
     const kanaSpeedList = typingWords.map((line) => line.kpm.k);
 

@@ -1,5 +1,5 @@
 "use client";
-import { useSetPlayingInputMode } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setPlayingInputMode } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useReadyInputModeState, useSetReadyInputMode } from "@/app/(typing)/type/_lib/atoms/storage-atoms";
 import type { InputMode } from "@/app/(typing)/type/_lib/type";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
@@ -14,7 +14,6 @@ export const ReadyInputModeRadioCards = () => {
 
   const readyInputMode = useReadyInputModeState();
   const setReadyInputMode = useSetReadyInputMode();
-  const setPlayingInputMode = useSetPlayingInputMode();
 
   const handleChange = (value: string) => {
     setReadyInputMode(value as InputMode);

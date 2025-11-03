@@ -7,12 +7,12 @@ import { useMapQueries } from "@/lib/queries/map.queries";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { readTotalProgress } from "../_lib/atoms/read-atoms";
 import {
-  useInitializeLineResults,
+  initializeAllLineResult,
+  resetTypingStatus,
+  setLineSelectIndex,
+  setLineStatus,
   useSceneGroupState,
-  useSetLineSelectIndex,
-  useSetMap,
-  useSetTypingStatus,
-  useSetTypingStatusLine,
+  useSetBuiltMap,
 } from "../_lib/atoms/state-atoms";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
@@ -27,13 +27,7 @@ interface ContentProps {
 export const Content = ({ videoId, mapId }: ContentProps) => {
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
 
-  const setLineSelectIndex = useSetLineSelectIndex();
-  const setTypingStatusLine = useSetTypingStatusLine();
-  const initializeLineResults = useInitializeLineResults();
-
-  const { resetTypingStatus } = useSetTypingStatus();
-
-  const setMap = useSetMap();
+  const setMap = useSetBuiltMap();
   const sceneGroup = useSceneGroupState();
   const { isSmScreen } = useBreakPoint();
 
@@ -48,9 +42,9 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     if (mapData) {
       const map = new BuildMap(mapData);
       setMap(map);
-      initializeLineResults(map.initialLineResultData);
+      initializeAllLineResult(map.initialLineResultData);
       setLineSelectIndex(map.typingLineIndexes?.[0] ?? 0);
-      setTypingStatusLine(map.lineLength);
+      setLineStatus(map.lineLength);
       resetTypingStatus();
 
       const totalProgress = readTotalProgress();

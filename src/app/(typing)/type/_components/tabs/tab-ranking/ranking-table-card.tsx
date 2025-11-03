@@ -17,7 +17,7 @@ import { useMapRankingQueries } from "@/lib/queries/map-ranking.queries";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { writeUtilityRefParams } from "../../../_lib/atoms/read-atoms";
-import { useSceneGroupState, useSetTypingStatusRank } from "../../../_lib/atoms/state-atoms";
+import { setRankStatus, useSceneGroupState } from "../../../_lib/atoms/state-atoms";
 import { RankingPopoverContent } from "./ranking-popover-menu";
 
 type RankingResult = RouterOutPuts["result"]["getMapRanking"][number];
@@ -25,7 +25,6 @@ type RankingResult = RouterOutPuts["result"]["getMapRanking"][number];
 export const RankingTableCard = ({ className }: { className?: string }) => {
   const { id: mapId } = useParams<{ id: string }>();
   const { data, error, isPending } = useQuery(useMapRankingQueries().mapRanking({ mapId }));
-  const setTypingStatusRank = useSetTypingStatusRank();
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
@@ -37,8 +36,8 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     writeUtilityRefParams({ rankingScores: scores });
 
     if (sceneGroup !== "Ready") return;
-    setTypingStatusRank(scores.length + 1);
-  }, [data, sceneGroup, setTypingStatusRank]);
+    setRankStatus(scores.length + 1);
+  }, [data, sceneGroup]);
 
   const toggleClap = useClapMutationRanking(Number(mapId));
 

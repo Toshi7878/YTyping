@@ -3,11 +3,11 @@ import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
 import { writeResultCards } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import {
-  useLineResultDrawerState,
-  useMapState,
+  setLineResultSheet,
+  setLineSelectIndex,
+  useBuiltMapState,
+  useLineResultSheetOpenState,
   useSceneGroupState,
-  useSetLineResultDrawer,
-  useSetLineSelectIndex,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -15,12 +15,11 @@ import type { ResultData } from "@/server/drizzle/validator/result";
 import { OptimizedResultCard } from "./card/optimized-result-card";
 
 export const ResultListSheet = () => {
-  const isOpen = useLineResultDrawerState();
+  const isOpen = useLineResultSheetOpenState();
   const sceneGroup = useSceneGroupState();
-  const setLineResultDrawer = useSetLineResultDrawer();
 
   return (
-    <Sheet modal={false} open={isOpen} onOpenChange={setLineResultDrawer}>
+    <Sheet modal={false} open={isOpen} onOpenChange={setLineResultSheet}>
       <SheetContent
         onEscapeKeyDown={sceneGroup === "Playing" ? (event) => event.preventDefault() : undefined}
         forceMount
@@ -39,11 +38,10 @@ export const ResultListSheet = () => {
 };
 
 const ResultLineList = () => {
-  const map = useMapState();
+  const map = useBuiltMapState();
 
   const sceneGroup = useSceneGroupState();
   const { moveSetLine, drawerSelectColorChange } = useMoveLine();
-  const setLineSelectIndex = useSetLineSelectIndex();
 
   const cardRefs = useRef<HTMLDivElement[]>([]);
 

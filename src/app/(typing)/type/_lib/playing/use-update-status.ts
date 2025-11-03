@@ -9,27 +9,19 @@ import {
   writeUserStats,
 } from "../atoms/read-atoms";
 import {
-  useReadAllLineResult,
-  useReadCombo,
-  useReadGameUtilityParams,
-  useReadLineWord,
-  useReadMap,
-  useReadTypingStatus,
-  useSetCombo,
-  useSetTypingStatus,
+  readAllLineResult,
+  readBuiltMap,
+  readCombo,
+  readLineWord,
+  readTypingStatus,
+  readUtilityParams,
+  setCombo,
+  setTypingStatus,
 } from "../atoms/state-atoms";
 import type { NextTypeChunk } from "../type";
 
 export const useTypeSuccess = () => {
-  const setCombo = useSetCombo();
-  const { setTypingStatus } = useSetTypingStatus();
   const calcCurrentRank = useCalcCurrentRank();
-
-  const readGameUtilityParams = useReadGameUtilityParams();
-
-  const readMap = useReadMap();
-  const readCombo = useReadCombo();
-  const readLineWord = useReadLineWord();
 
   const updateSuccessStatus = ({
     isCompleted,
@@ -42,7 +34,7 @@ export const useTypeSuccess = () => {
   }) => {
     const { type: lineTypeCount } = readLineSubstatus();
     const { completeCount, failureCount } = readSubstatus();
-    const map = readMap();
+    const map = readBuiltMap();
 
     setTypingStatus((prev) => {
       let { point } = prev;
@@ -83,7 +75,7 @@ export const useTypeSuccess = () => {
     typeChunk?: NextTypeChunk;
     successKey: string;
   }) => {
-    const { scene } = readGameUtilityParams();
+    const { scene } = readUtilityParams();
     const { type: lineTypeCount } = readLineSubstatus();
     const { maxCombo, completeCount } = readSubstatus();
     writeSubstatus({ missCombo: 0 });
@@ -123,7 +115,7 @@ export const useTypeSuccess = () => {
     const substatus = readSubstatus();
     const userStats = readUserStats();
     if (typeChunk.t === "kana") {
-      const { inputMode } = readGameUtilityParams();
+      const { inputMode } = readUtilityParams();
       if (inputMode === "roma") {
         writeUserStats({ romaType: substatus.romaType + 1 });
         writeSubstatus({ romaType: substatus.romaType + 1 });
@@ -162,12 +154,6 @@ const useCalcCurrentRank = () => {
 };
 
 export const useTypeMiss = () => {
-  const setCombo = useSetCombo();
-  const { setTypingStatus } = useSetTypingStatus();
-
-  const readTypingStatus = useReadTypingStatus();
-  const readMap = useReadMap();
-
   const updateMissStatus = () => {
     const status = readTypingStatus();
     const newStatus = { ...status };
@@ -180,7 +166,7 @@ export const useTypeMiss = () => {
   };
 
   const updateMissRefStatus = ({ constantLineTime, failKey }: { constantLineTime: number; failKey: string }) => {
-    const map = readMap();
+    const map = readBuiltMap();
     if (!map) return;
 
     const { clearRate, missCombo } = readSubstatus();
@@ -199,11 +185,8 @@ export const useTypeMiss = () => {
 
 export const useLineUpdateStatus = () => {
   const calcCurrentRank = useCalcCurrentRank();
-  const { setTypingStatus } = useSetTypingStatus();
-  const readMap = useReadMap();
-  const readLineWord = useReadLineWord();
   return ({ constantLineTime }: { constantLineTime: number }) => {
-    const map = readMap();
+    const map = readBuiltMap();
     if (!map) return;
     const lineWord = readLineWord();
 
@@ -237,13 +220,9 @@ export const useLineUpdateStatus = () => {
 
 export const useUpdateAllStatus = () => {
   const calcCurrentRank = useCalcCurrentRank();
-  const readMap = useReadMap();
-  const readLineResults = useReadAllLineResult();
-  const { setTypingStatus } = useSetTypingStatus();
-  const readGameUtilityParams = useReadGameUtilityParams();
 
   return ({ count, updateType }: { count: number; updateType: "lineUpdate" | "completed" }) => {
-    const map = readMap();
+    const map = readBuiltMap();
     if (!map) return;
 
     const newStatus = {
@@ -258,9 +237,9 @@ export const useUpdateAllStatus = () => {
       line: map.lineLength,
     };
 
-    const lineResults = readLineResults();
+    const lineResults = readAllLineResult();
     let totalTypeTime = 0;
-    const { scene } = readGameUtilityParams();
+    const { scene } = readUtilityParams();
 
     const updateCount = updateType === "completed" ? count + 1 : count;
     for (const lineResult of lineResults.slice(1, updateCount)) {

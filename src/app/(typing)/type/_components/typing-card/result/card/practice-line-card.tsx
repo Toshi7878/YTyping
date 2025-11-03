@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
+  useBuiltMapState,
   useLineResultState,
   useLineSelectIndexState,
-  useMapState,
   usePlayingInputModeState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
@@ -16,7 +16,7 @@ import { ResultCardFooter } from "./child/result-card-footer";
 import { ResultCardHeader } from "./child/result-card-header";
 
 export const PracticeLineCard = () => {
-  const map = useMapState();
+  const map = useBuiltMapState();
   const speedData = usePlaySpeedState();
   const lineSelectIndex = useLineSelectIndexState();
   const inputMode = usePlayingInputModeState();

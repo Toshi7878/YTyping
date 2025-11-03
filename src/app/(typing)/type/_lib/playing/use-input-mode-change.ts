@@ -2,32 +2,24 @@ import { generateTypingWord } from "@/lib/build-map/generate-typing-word";
 import { kanaSentenceToKanaChunkWords } from "@/lib/build-map/kana-sentence-to-kana-word-chunks";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/read-atoms";
 import {
-  useReadGameUtilityParams,
-  useReadLineWord,
-  useReadMap,
-  useSetLineWord,
-  useSetNextLyrics,
-  useSetNotify,
-  useSetPlayingInputMode,
+  readBuiltMap,
+  readLineWord,
+  readUtilityParams,
+  setLineWord,
+  setNextLyrics,
+  setNotify,
+  setPlayingInputMode,
 } from "../atoms/state-atoms";
 import type { InputMode, LineWord } from "../type";
 import { useGetYouTubeTime } from "../youtube-player/use-get-youtube-time";
 
 export const useInputModeChange = () => {
-  const setPlayingInputMode = useSetPlayingInputMode();
-  const setNotify = useSetNotify();
-  const { setNextLyrics } = useSetNextLyrics();
-  const setLineWord = useSetLineWord();
-
   const getCurrentTime = useGetYouTubeTime();
-  const readGameUtilityParams = useReadGameUtilityParams();
-  const readLineWord = useReadLineWord();
-  const readMap = useReadMap();
 
   return async (newInputMode: InputMode) => {
-    const map = readMap();
+    const map = readBuiltMap();
     if (!map) return;
-    const { inputMode, scene } = readGameUtilityParams();
+    const { inputMode, scene } = readUtilityParams();
 
     if (newInputMode === inputMode) {
       return;

@@ -8,7 +8,7 @@ import { useUserAgent } from "@/lib/global-atoms";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/window-focus";
 import { readYTPlayer } from "../_lib/atoms/read-atoms";
-import { useReadGameUtilityParams } from "../_lib/atoms/state-atoms";
+import { readUtilityParams } from "../_lib/atoms/state-atoms";
 import { useTimerRegistration } from "../_lib/playing/timer/use-timer";
 import { useSoundEffect } from "../_lib/playing/use-sound-effect";
 import {
@@ -91,9 +91,8 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
 
 const MobileCover = () => {
   const { iosActiveSound } = useSoundEffect();
-  const readGameUtilityParams = useReadGameUtilityParams();
   const handleStart = () => {
-    const { scene, isPaused } = readGameUtilityParams();
+    const { scene, isPaused } = readUtilityParams();
 
     iosActiveSound();
 

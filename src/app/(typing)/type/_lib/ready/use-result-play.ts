@@ -2,13 +2,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useGlobalLoadingOverlay, useUserAgent } from "@/lib/global-atoms";
 import { useTRPC } from "@/trpc/provider";
 import { readYTPlayer } from "../atoms/read-atoms";
-import { useInitializeLineResults, useSetPlayingInputMode, useSetScene } from "../atoms/state-atoms";
+import { initializeAllLineResult, setPlayingInputMode, setScene } from "../atoms/state-atoms";
 import type { PlayMode } from "../type";
 
 export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "playing"> }) => {
-  const initializeLineResults = useInitializeLineResults();
-  const setPlayingInputModeState = useSetPlayingInputMode();
-  const setScene = useSetScene();
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
@@ -31,9 +28,9 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
         console.log(resultData);
         if (startMode === "replay") {
           const mode = resultData[0]?.status?.mode ?? "roma";
-          setPlayingInputModeState(mode);
+          setPlayingInputMode(mode);
         }
-        initializeLineResults(resultData);
+        initializeAllLineResult(resultData);
       }
     } finally {
       YTPlayer.playVideo();

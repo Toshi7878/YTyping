@@ -7,41 +7,27 @@ import {
   writeUtilityRefParams,
 } from "../atoms/read-atoms";
 import {
-  useInitializeLineResults,
-  useReadGameUtilityParams,
-  useReadMap,
-  useReadTypingStatus,
-  useSetCombo,
-  useSetCurrentLine,
-  useSetNextLyrics,
-  useSetNotify,
-  useSetScene,
-  useSetTabName,
-  useSetTypingStatus,
+  initializeAllLineResult,
+  readBuiltMap,
+  readTypingStatus,
+  readUtilityParams,
+  resetCurrentLine,
+  resetTypingStatus,
+  setCombo,
+  setNextLyrics,
+  setNotify,
+  setScene,
+  setTabName,
 } from "../atoms/state-atoms";
 import type { PlayMode } from "../type";
 import { timerControls } from "./timer/use-timer";
 import { useSendUserStats } from "./use-send-user-stats";
 
 export const useRetry = () => {
-  const initializeLineResults = useInitializeLineResults();
-  const setCombo = useSetCombo();
-  const setNotify = useSetNotify();
-  const { setNextLyrics } = useSetNextLyrics();
-
-  const { resetTypingStatus } = useSetTypingStatus();
   const { sendPlayCountStats, sendTypingStats } = useSendUserStats();
 
-  const readTypingStatus = useReadTypingStatus();
-  const readMap = useReadMap();
-  const readGameUtilityParams = useReadGameUtilityParams();
-  const { resetCurrentLine } = useSetCurrentLine();
-  const setTabName = useSetTabName();
-
-  const setScene = useSetScene();
-
   return (newPlayMode: PlayMode) => {
-    const map = readMap();
+    const map = readBuiltMap();
     const nextLine = map?.mapData[1];
     const startLine = map?.mapData[map.startLine];
     if (!nextLine || !startLine) return;
@@ -54,7 +40,7 @@ export const useRetry = () => {
 
     writeUtilityRefParams({ replayKeyCount: 0, isRetrySkip: enableRetrySKip });
 
-    const { scene } = readGameUtilityParams();
+    const { scene } = readUtilityParams();
     if (scene === "play" || scene === "practice") {
       sendTypingStats();
     }
@@ -90,7 +76,7 @@ export const useRetry = () => {
     setScene(newPlayMode);
 
     if (newPlayMode === "play") {
-      initializeLineResults(structuredClone(map.initialLineResultData));
+      initializeAllLineResult(structuredClone(map.initialLineResultData));
     }
 
     if (newPlayMode !== "practice") {

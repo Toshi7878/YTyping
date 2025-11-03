@@ -24,7 +24,7 @@ export interface LineWord {
   word: TypeChunk[];
 }
 
-export interface LineData {
+export interface BuiltMapLine {
   time: number;
   word: TypeChunk[];
   lyrics: string;

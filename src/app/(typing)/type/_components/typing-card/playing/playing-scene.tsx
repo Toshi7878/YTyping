@@ -3,12 +3,13 @@
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import {
-  useMapState,
-  useReadGameUtilityParams,
+  readUtilityParams,
+  resetCurrentLine,
+  resetNextLyrics,
+  setLineResultSheet,
+  setNextLyrics,
+  useBuiltMapState,
   useSceneState,
-  useSetCurrentLine,
-  useSetLineResultDrawer,
-  useSetNextLyrics,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
@@ -28,10 +29,8 @@ interface PlayingProps {
 
 export const PlayingScene = ({ className }: PlayingProps) => {
   const pressSkip = usePressSkip();
-  const readGameUtilityParams = useReadGameUtilityParams();
 
   const { data: session } = useSession();
-  const { resetCurrentLine } = useSetCurrentLine();
 
   const scene = useSceneState();
   const activeElement = useActiveElement();
@@ -70,14 +69,12 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     };
   }, [scene]);
 
-  const { setNextLyrics, resetNextLyrics } = useSetNextLyrics();
   const handleKeydown = useOnKeydown();
-  const setLineResultDrawer = useSetLineResultDrawer();
-  const map = useMapState();
+  const map = useBuiltMapState();
 
   useEffect(() => {
     if (scene === "practice") {
-      setLineResultDrawer(true);
+      setLineResultSheet(true);
     }
 
     if (scene === "replay") {
@@ -114,7 +111,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       className={cn("flex cursor-none flex-col items-start justify-between truncate select-none", className)}
       id="typing_scene"
       onTouchStart={() => {
-        const { activeSkipKey } = readGameUtilityParams();
+        const { activeSkipKey } = readUtilityParams();
 
         if (activeSkipKey) {
           pressSkip();

@@ -1,27 +1,20 @@
 import { readLineCount, readLineProgress, readResultCards, readYTPlayer, writeLineCount } from "../atoms/read-atoms";
-import { useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
-import { useReadGameUtilityParams, useReadMap, useSetLineSelectIndex, useSetNotify } from "../atoms/state-atoms";
+import { readPlaySpeed } from "../atoms/speed-reducer-atoms";
+import { readBuiltMap, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state-atoms";
 import { timerControls, useSetupNextLine } from "./timer/use-timer";
 import { useGetLineCountByTime } from "./use-get-line-count-by-time";
 
 const SEEK_BUFFER_TIME = 0.8;
 
 export const useMoveLine = () => {
-  const setLineSelectIndex = useSetLineSelectIndex();
-  const setNotify = useSetNotify();
   const updateLine = useSetupNextLine();
   const getSeekLineCount = useGetLineCountByTime();
 
-  const readPlaySpeed = useReadPlaySpeed();
-  const readMap = useReadMap();
-
-  const readGameUtilityParams = useReadGameUtilityParams();
-
   const movePrevLine = () => {
-    const map = readMap();
+    const map = readBuiltMap();
     if (!map) return;
 
-    const { scene, isPaused } = readGameUtilityParams();
+    const { scene, isPaused } = readUtilityParams();
     const isPracticeScene = scene === "practice";
     const isTimeBuffer = isPracticeScene && !isPaused;
 
@@ -61,9 +54,9 @@ export const useMoveLine = () => {
   };
 
   const moveNextLine = () => {
-    const map = readMap();
+    const map = readBuiltMap();
     if (!map) return;
-    const { lineSelectIndex } = readGameUtilityParams();
+    const { lineSelectIndex } = readUtilityParams();
     const count = readLineCount();
     const seekCount = lineSelectIndex ? map.typingLineIndexes[lineSelectIndex - 1] : null;
     const seekCountAdjust = seekCount && seekCount === count ? -1 : 0;
@@ -76,7 +69,7 @@ export const useMoveLine = () => {
     const nextLine = map.mapData[nextCount];
     if (!prevLine || !nextLine) return;
     const { playSpeed } = readPlaySpeed();
-    const { scene, isPaused } = readGameUtilityParams();
+    const { scene, isPaused } = readUtilityParams();
     const prevLineTime = nextLine.time - prevLine.time / playSpeed;
     const isTimeBuffer = scene === "practice" && !isPaused && prevLineTime > 1;
 
@@ -101,10 +94,10 @@ export const useMoveLine = () => {
   };
 
   const moveSetLine = (seekCount: number) => {
-    const map = readMap();
+    const map = readBuiltMap();
     if (!map) return;
     const { playSpeed } = readPlaySpeed();
-    const { scene, isPaused } = readGameUtilityParams();
+    const { scene, isPaused } = readUtilityParams();
     const isTimeBuffer = scene === "practice" && !isPaused;
     const seekTime = Number(map.mapData[seekCount]?.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 

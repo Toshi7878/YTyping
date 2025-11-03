@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { readYTPlayer } from "../../../_lib/atoms/read-atoms";
@@ -14,7 +14,7 @@ interface ReadyProps {
 export const ReadyScene = ({ className }: ReadyProps) => {
   const speedUpButtonRef = useRef<HTMLButtonElement>(null);
   const speedDownButtonRef = useRef<HTMLButtonElement>(null);
-  const map = useMapState();
+  const map = useBuiltMapState();
 
   useEffect(() => {
     const handleKeyDown = async (event: KeyboardEvent) => {

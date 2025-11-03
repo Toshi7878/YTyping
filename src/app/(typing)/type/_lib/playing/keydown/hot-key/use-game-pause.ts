@@ -1,11 +1,9 @@
 import { readYTPlayer } from "../../../atoms/read-atoms";
-import { useReadGameUtilityParams } from "../../../atoms/state-atoms";
+import { readUtilityParams } from "../../../atoms/state-atoms";
 
 export const useGamePause = () => {
-  const readGameUtilityParams = useReadGameUtilityParams();
-
   return () => {
-    const { isPaused } = readGameUtilityParams();
+    const { isPaused } = readUtilityParams();
 
     const YTPlayer = readYTPlayer();
     if (!YTPlayer) return;

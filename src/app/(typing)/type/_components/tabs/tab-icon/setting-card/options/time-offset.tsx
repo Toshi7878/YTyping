@@ -1,5 +1,5 @@
 "use client";
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { CounterInput } from "@/components/ui/counter";
 
 const MAX_TIME_OFFSET = 1;
@@ -7,7 +7,6 @@ const MIN_TIME_OFFSET = -1;
 const TIME_OFFSET_STEP = 0.05;
 
 export const TimeOffsetChange = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions();
   const { timeOffset: time_offset } = useUserTypingOptionsState();
 
   return (

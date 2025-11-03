@@ -10,40 +10,31 @@ import {
   writeLineCount,
   writeYTPlayer,
 } from "../atoms/read-atoms";
-import { useReadPlaySpeed, useSetSpeed } from "../atoms/speed-reducer-atoms";
+import { readPlaySpeed, setSpeed } from "../atoms/speed-reducer-atoms";
 import {
-  useReadGameUtilityParams,
-  useReadMap,
-  useSetIsPaused,
-  useSetMovieDuration,
-  useSetNotify,
-  useSetPlayingInputMode,
-  useSetScene,
-  useSetTabName,
-  useSetYTStarted,
+  readBuiltMap,
+  readUtilityParams,
+  setIsPaused,
+  setMovieDuration,
+  setNotify,
+  setPlayingInputMode,
+  setScene,
+  setTabName,
+  setYTStarted,
 } from "../atoms/state-atoms";
-import { useReadReadyInputMode } from "../atoms/storage-atoms";
+import { readReadyInputMode } from "../atoms/storage-atoms";
 import { timerControls } from "../playing/timer/use-timer";
 import { useSendUserStats } from "../playing/use-send-user-stats";
 import { useUpdateAllStatus } from "../playing/use-update-status";
 import type { InputMode } from "../type";
 
 export const useOnStart = () => {
-  const setScene = useSetScene();
-  const setPlayingInputMode = useSetPlayingInputMode();
   const { sendPlayCountStats } = useSendUserStats();
-  const setTabName = useSetTabName();
 
-  const setYTStarted = useSetYTStarted();
-  const setMovieDuration = useSetMovieDuration();
-  const readGameUtilityParams = useReadGameUtilityParams();
-  const readReadyInputMode = useReadReadyInputMode();
-  const readPlaySpeed = useReadPlaySpeed();
   const updateAllStatus = useUpdateAllStatus();
-  const readMap = useReadMap();
 
   return (player: YT.Player) => {
-    const { scene } = readGameUtilityParams();
+    const { scene } = readUtilityParams();
 
     if (scene === "ready") {
       timerControls.startTimer();
@@ -63,7 +54,7 @@ export const useOnStart = () => {
 
       const readyInputMode = readReadyInputMode();
       setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
-      const map = readMap();
+      const map = readBuiltMap();
       if (map && scene === "practice") {
         updateAllStatus({ count: map.mapData.length - 1, updateType: "lineUpdate" });
       }
@@ -77,18 +68,14 @@ export const useOnStart = () => {
 };
 
 export const useOnPlay = () => {
-  const setNotify = useSetNotify();
-
-  const readGameUtilityParams = useReadGameUtilityParams();
   const onStart = useOnStart();
-  const setIsPaused = useSetIsPaused();
 
   return async (player: YT.Player) => {
     windowFocus();
 
     console.log("再生 1");
 
-    const { scene, isYTStarted, isPaused } = readGameUtilityParams();
+    const { scene, isYTStarted, isPaused } = readUtilityParams();
 
     if (!isYTStarted) {
       onStart(player);
@@ -109,8 +96,6 @@ export const useOnPlay = () => {
 };
 
 export const useOnEnd = () => {
-  const setScene = useSetScene();
-  const readGameUtilityParams = useReadGameUtilityParams();
   const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();
 
@@ -130,7 +115,7 @@ export const useOnEnd = () => {
       totalProgress.value = totalProgress.max;
     }
 
-    const { scene } = readGameUtilityParams();
+    const { scene } = readUtilityParams();
 
     if (scene === "play") {
       setScene("play_end");
@@ -144,16 +129,12 @@ export const useOnEnd = () => {
 };
 
 export const useOnPause = () => {
-  const setNotify = useSetNotify();
-  const readGameUtilityParams = useReadGameUtilityParams();
-  const setIsPaused = useSetIsPaused();
-
   return () => {
     console.log("一時停止");
 
     timerControls.stopTimer();
 
-    const { isPaused, scene } = readGameUtilityParams();
+    const { isPaused, scene } = readUtilityParams();
     if (!isPaused) {
       setIsPaused(true);
       if (scene === "practice") return;
@@ -186,10 +167,6 @@ export const useOnReady = () => {
 };
 
 export const useOnRateChange = () => {
-  const setNotify = useSetNotify();
-
-  const setSpeed = useSetSpeed();
-
   return (player: YT.Player) => {
     const speed = player.getPlaybackRate();
 

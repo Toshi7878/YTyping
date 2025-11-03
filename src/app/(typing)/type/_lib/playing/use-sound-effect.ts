@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useReadVolume, useUserAgent } from "@/lib/global-atoms";
-import { useReadUserTypingOptions } from "../atoms/state-atoms";
+import { readTypingOptions } from "../atoms/state-atoms";
 
 const manifest = [
   { alias: "type", src: "/wav/type.wav" },
@@ -16,7 +16,6 @@ const START_OFFSETS: Partial<Record<SoundAlias, number>> = {
 };
 
 export const useSoundEffect = () => {
-  const readTypingOptions = useReadUserTypingOptions();
   const readVolume = useReadVolume();
   const isMobile = useUserAgent()?.getDevice().type === "mobile";
 

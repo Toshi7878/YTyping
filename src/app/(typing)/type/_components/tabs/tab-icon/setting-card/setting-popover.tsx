@@ -4,8 +4,9 @@ import { IoMdSettings } from "react-icons/io";
 import { toast } from "sonner";
 import { writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/read-atoms";
 import {
-  useReadUserTypingOptions,
-  useSetUserTypingOptions,
+  readTypingOptions,
+  resetUserTypingOptions,
+  setUserTypingOptions,
   useUserTypingOptionsState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
@@ -31,18 +32,15 @@ export const SettingPopover = () => {
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
   const confirm = useConfirm();
-  const { resetUserTypingOptions } = useSetUserTypingOptions();
-
-  const readUserTypingOptions = useReadUserTypingOptions();
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
 
     if (!open) {
-      const isOptionEdited = readUserTypingOptions();
+      const isOptionEdited = readTypingOptions();
 
       if (isOptionEdited) {
-        const userOptions = readUserTypingOptions();
+        const userOptions = readTypingOptions();
         updateTypingOptions.mutate(userOptions);
         writeUtilityRefParams({ isOptionEdited: false });
       }
@@ -147,7 +145,6 @@ const SettingButton = () => {
 };
 
 const LineCompletedRadioOptions = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions();
   const { lineCompletedDisplay: line_completed_display } = useUserTypingOptionsState();
 
   const changeRadio = (value: (typeof lineCompletedDisplayEnum.enumValues)[number]) => {
@@ -172,8 +169,7 @@ const LineCompletedRadioOptions = () => {
 };
 
 const NextDisplayRadioOptions = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions();
-  const { nextDisplay: next_display } = useUserTypingOptionsState();
+  const { nextDisplay } = useUserTypingOptionsState();
 
   const changeRadio = (value: (typeof nextDisplayEnum.enumValues)[number]) => {
     setUserTypingOptions({ nextDisplay: value });
@@ -186,7 +182,7 @@ const NextDisplayRadioOptions = () => {
 
   return (
     <LabeledRadioGroup
-      value={next_display}
+      value={nextDisplay}
       onValueChange={changeRadio}
       label="次の歌詞表示"
       className="flex flex-row gap-5"

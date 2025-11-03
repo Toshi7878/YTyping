@@ -1,31 +1,15 @@
 import type { YouTubeSpeed } from "@/utils/types";
 import { writeUtilityRefParams } from "../atoms/read-atoms";
-import { usePlaySpeedReducer, useReadPlaySpeed } from "../atoms/speed-reducer-atoms";
-import {
-  useReadGameUtilityParams,
-  useSetLineResultDrawer,
-  useSetNotify,
-  useSetPlayingInputMode,
-  useSetScene,
-} from "../atoms/state-atoms";
-import { useReadReadyInputMode } from "../atoms/storage-atoms";
+import { handlePlaySpeedAction, readPlaySpeed } from "../atoms/speed-reducer-atoms";
+import { readUtilityParams, setLineResultSheet, setNotify, setPlayingInputMode, setScene } from "../atoms/state-atoms";
+import { readReadyInputMode } from "../atoms/storage-atoms";
 import { useRetry } from "./use-retry";
 
 export const useChangePlayMode = () => {
-  const setScene = useSetScene();
-  const setNotify = useSetNotify();
   const retry = useRetry();
-  const dispatchSpeed = usePlaySpeedReducer();
-
-  const readGameUtilityParams = useReadGameUtilityParams();
-  const setPlayingInputMode = useSetPlayingInputMode();
-  const setLineResultDrawer = useSetLineResultDrawer();
-
-  const readSpeed = useReadPlaySpeed();
-  const readReadyInputMode = useReadReadyInputMode();
 
   return () => {
-    const { scene } = readGameUtilityParams();
+    const { scene } = readUtilityParams();
     if (scene === "play") {
       const confirmMessage = "練習モードに移動しますか？";
       if (window.confirm(confirmMessage)) {
@@ -36,13 +20,14 @@ export const useChangePlayMode = () => {
       if (window.confirm(confirmMessage)) {
         writeUtilityRefParams({ replayKeyCount: 0, replayUserName: "" });
 
-        setLineResultDrawer(false);
+        setLineResultSheet(false);
 
         if (scene === "replay") {
-          setPlayingInputMode(readReadyInputMode());
+          const readyInputMode = readReadyInputMode();
+          setPlayingInputMode(readyInputMode);
         }
-        const { playSpeed } = readSpeed();
-        dispatchSpeed({ type: "set", payload: playSpeed < 1 ? 1 : (playSpeed as YouTubeSpeed) });
+        const { playSpeed } = readPlaySpeed();
+        handlePlaySpeedAction({ type: "set", payload: playSpeed < 1 ? 1 : (playSpeed as YouTubeSpeed) });
 
         retry("play");
       }

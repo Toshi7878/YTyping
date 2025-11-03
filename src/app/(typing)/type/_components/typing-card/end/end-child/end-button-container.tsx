@@ -1,11 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
-import {
-  useSceneState,
-  useSetLineResultDrawer,
-  useTypingStatusState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setLineResultSheet, useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/ranking/use-get-my-ranking-result";
 import { Button } from "@/components/ui/button";
 import { RetryButton } from "./child/retry-button";
@@ -18,7 +14,6 @@ export const EndButtonContainer = () => {
   const retryBtnRef = useRef<HTMLButtonElement>(null);
   const modeChangeBtnRef = useRef<HTMLButtonElement>(null);
   const scene = useSceneState();
-  const setLineResultDrawer = useSetLineResultDrawer();
 
   const isPerfect = status.miss === 0 && status.lost === 0;
   const getMyRankingResult = useGetMyRankingResult();
@@ -55,6 +50,7 @@ export const EndButtonContainer = () => {
   }, []);
 
   const playMode = scene === "play_end" ? "play" : scene === "practice_end" ? "practice" : "replay";
+
   return (
     <>
       <div className="flex items-center justify-around" id="end_main_buttons">
@@ -72,7 +68,7 @@ export const EndButtonContainer = () => {
           className="max-sm:text-5xl max-sm:h-40 max-sm:w-xl"
           onClickCapture={(event) => {
             event.stopPropagation();
-            setLineResultDrawer((prev) => !prev);
+            setLineResultSheet((prev) => !prev);
           }}
         >
           詳細リザルトを見る

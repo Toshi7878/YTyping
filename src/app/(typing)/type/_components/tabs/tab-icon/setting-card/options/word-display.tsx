@@ -1,6 +1,6 @@
 "use client";
 import { MdRestartAlt } from "react-icons/md";
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
@@ -27,7 +27,6 @@ const WORD_OPTIONS_CONFIG = {
 };
 
 export const WordDisplayOptions = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions();
   const {
     mainWordFontSize,
     subWordFontSize,

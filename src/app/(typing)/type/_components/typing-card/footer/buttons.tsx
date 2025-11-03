@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+import { handlePlaySpeedAction, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
+  readUtilityParams,
+  setLineResultSheet,
   useIsPaused,
-  useReadGameUtilityParams,
   useSceneGroupState,
   useSceneState,
-  useSetLineResultDrawer,
   useUserTypingOptionsState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state-atoms";
@@ -49,7 +49,6 @@ export const FooterButtons = () => {
 const SpeedButton = () => {
   const scene = useSceneState();
   const { playSpeed } = usePlaySpeedState();
-  const dispatchSpeed = usePlaySpeedReducer();
   const isPaused = useIsPaused();
 
   if (scene === "practice") {
@@ -59,8 +58,8 @@ const SpeedButton = () => {
         prevKbdLabel="F9-"
         nextKbdLabel="+F10"
         onClick={() => {}}
-        onClickPrev={() => dispatchSpeed({ type: "down" })}
-        onClickNext={() => dispatchSpeed({ type: "up" })}
+        onClickPrev={() => handlePlaySpeedAction({ type: "down" })}
+        onClickNext={() => handlePlaySpeedAction({ type: "up" })}
         disabled={isPaused}
       />
     );
@@ -70,7 +69,7 @@ const SpeedButton = () => {
     <ButtonWithKbd
       buttonLabel={`${playSpeed.toFixed(2)}倍速`}
       kbdLabel="F10"
-      onClick={() => dispatchSpeed({ type: "toggle" })}
+      onClick={() => handlePlaySpeedAction({ type: "toggle" })}
       disabled={isPaused || scene === "replay"}
     />
   );
@@ -78,7 +77,6 @@ const SpeedButton = () => {
 
 const PracticeButtons = () => {
   const scene = useSceneState();
-  const setLineResultDrawer = useSetLineResultDrawer();
   const { movePrevLine, moveNextLine } = useMoveLine();
   const userOptions = useUserTypingOptionsState();
 
@@ -98,7 +96,7 @@ const PracticeButtons = () => {
           kbdLabel={userOptions.InputModeToggleKey === "TAB" ? "F1" : "Tab"}
           onClickCapture={(event) => {
             event.stopPropagation();
-            setLineResultDrawer(true);
+            setLineResultSheet(true);
           }}
         />
       </>
@@ -108,14 +106,13 @@ const PracticeButtons = () => {
 
 const RetryButton = () => {
   const retry = useRetry();
-  const readGameUtilityParams = useReadGameUtilityParams();
   const isPaused = useIsPaused();
   return (
     <ButtonWithKbd
       buttonLabel="やり直し"
       kbdLabel="F4"
       onClick={() => {
-        const { scene } = readGameUtilityParams();
+        const { scene } = readUtilityParams();
 
         if (scene === "play" || scene === "practice" || scene === "replay") {
           retry(scene);

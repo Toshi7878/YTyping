@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { useSceneGroupState, useSetTabName } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setTabName, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,6 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name,
   const { iosActiveSound } = useSoundEffect();
   const retry = useRetry();
   const resultPlay = useResultPlay({ startMode: "replay" });
-  const setTabName = useSetTabName();
 
   const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();

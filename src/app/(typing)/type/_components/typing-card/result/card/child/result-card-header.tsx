@@ -1,5 +1,5 @@
 "use client";
-import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import type { InputMode } from "@/app/(typing)/type/_lib/type";
 import { CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -21,7 +21,7 @@ export const ResultCardHeader = ({
   lineKpm,
   lineSpeed,
 }: ResultCardHeaderProps) => {
-  const map = useMapState() as BuildMap;
+  const map = useBuiltMapState() as BuildMap;
 
   const inputModeText = lineInputMode === "roma" ? "(ローマ字)" : "(かな)";
 

@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { useSetTabName } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setTabName } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useResultData } from "@/app/(typing)/type/_lib/end/use-result-data";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ export const SubmitRankingButton = ({
   setIsSendResultBtnDisabled,
 }: SubmitRankingButtonProps) => {
   const { id: mapId } = useParams<{ id: string }>();
-  const setTabName = useSetTabName();
   const confirm = useConfirm();
 
   const resultData = useResultData();

@@ -1,8 +1,8 @@
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import {
   useActiveSkipGuideKeyState,
+  useBuiltMapState,
   useElapsedSecTimeState,
-  useMapState,
   useMovieDurationState,
   useSceneGroupState,
   useYTStartedState,
@@ -46,7 +46,7 @@ const ElapsedMmSsDisplay = () => {
 };
 
 const VideoDurationTime = () => {
-  const map = useMapState();
+  const map = useBuiltMapState();
   const speedData = usePlaySpeedState();
   const movieDuration = useMovieDurationState();
   if (!map) return;

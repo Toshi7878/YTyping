@@ -2,13 +2,10 @@ import { useParams } from "next/navigation";
 import type z from "zod";
 import type { CreateResultStatusSchema, ResultData } from "@/server/drizzle/validator/result";
 import { readSubstatus } from "../atoms/read-atoms";
-import { useReadAllLineResult, useReadTypingStatus } from "../atoms/state-atoms";
+import { readAllLineResult, readTypingStatus } from "../atoms/state-atoms";
 
 export const useResultData = () => {
   const { id: mapId } = useParams();
-
-  const readAllLineResults = useReadAllLineResult();
-  const readTypingStatus = useReadTypingStatus();
 
   const getMinSpeed = (lineResults: ResultData) => {
     return lineResults.reduce((min, result) => {
@@ -36,7 +33,7 @@ export const useResultData = () => {
       maxCombo,
     } = readSubstatus();
 
-    const lineResults = readAllLineResults();
+    const lineResults = readAllLineResult();
     const minPlaySpeed = getMinSpeed(lineResults);
     const rkpmTime = totalTypeTime - totalLatency;
     const typingStatus = readTypingStatus();

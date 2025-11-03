@@ -1,11 +1,11 @@
-import { useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/ranking/use-get-my-ranking-result";
 import { useResultPlay } from "@/app/(typing)/type/_lib/ready/use-result-play";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/global-atoms";
 
 export const ReadyPracticeButton = () => {
-  const map = useMapState();
+  const map = useBuiltMapState();
 
   const getMyRankingResult = useGetMyRankingResult();
   const { showLoading } = useGlobalLoadingOverlay();

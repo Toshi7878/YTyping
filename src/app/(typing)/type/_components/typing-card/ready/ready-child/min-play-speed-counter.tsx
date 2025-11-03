@@ -1,5 +1,5 @@
 import type React from "react";
-import { usePlaySpeedReducer, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+import { handlePlaySpeedAction, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 
@@ -42,14 +42,12 @@ interface SpeedChangeButtonProps {
 }
 
 const SpeedChangeButton = (props: SpeedChangeButtonProps) => {
-  const dispatchSpeed = usePlaySpeedReducer();
-
   return (
     <Button
       variant="unstyled"
       ref={props.buttonRef}
       className="text-primary-light hover:text-primary-light/90 px-4 py-3 font-bold"
-      onClick={() => dispatchSpeed({ type: props.type })}
+      onClick={() => handlePlaySpeedAction({ type: props.type })}
     >
       <div className="relative top-1 text-3xl md:text-2xl">
         {props.buttonLabel.text}

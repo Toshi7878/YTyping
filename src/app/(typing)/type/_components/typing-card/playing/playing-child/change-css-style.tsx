@@ -1,7 +1,7 @@
-import { useChangeCSSCountState, useMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useBuiltMapState, useChangeCSSCountState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 
 export const ChangeCSS = () => {
-  const map = useMapState();
+  const map = useBuiltMapState();
   const changeCSSCount = useChangeCSSCountState();
 
   if (changeCSSCount === null) {

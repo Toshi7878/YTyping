@@ -1,5 +1,5 @@
 "use client";
-import { useSetUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { H4 } from "@/components/ui/typography";
@@ -9,7 +9,6 @@ const MIN_SCROLL = 5;
 const SCROLL_STEP = 5;
 
 export const WordScrollOptions = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions();
   const { mainWordScrollStart, subWordScrollStart } = useUserTypingOptionsState();
 
   return (
@@ -43,7 +42,6 @@ export const WordScrollOptions = () => {
 };
 
 const WordScrollAnimationRadioOptions = () => {
-  const { setUserTypingOptions } = useSetUserTypingOptions();
   const { isSmoothScroll } = useUserTypingOptionsState();
 
   const onValueChange = (value: "smooth" | "instant") => {
