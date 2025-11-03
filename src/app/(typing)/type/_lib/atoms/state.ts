@@ -1,5 +1,5 @@
 import type { ExtractAtomValue } from "jotai";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { BuildMap } from "@/lib/build-map/build-map";
@@ -28,7 +28,7 @@ export const resetUserTypingOptions = () => {
 
 const builtMapAtom = atomWithReset<BuildMap | null>(null);
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
-export const useSetBuiltMap = () => useSetAtom(builtMapAtom, { store });
+export const setBuiltMap = (map: BuildMap) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 export const readBuiltMap = () => store.get(builtMapAtom);
 

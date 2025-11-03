@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
-import { ClientProvider } from "../_components/client-provider";
 import { Content } from "../_components/content";
+import { ClientProvider, JotaiProvider } from "../_components/provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -36,17 +36,18 @@ export default async function Page({ params }: PageProps<"/type/[id]">) {
   const { id: mapId } = await params;
   const userTypingOptions = await serverApi.userOption.getUserTypingOptions();
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(mapId) });
-
-  prefetch(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
   if (!mapInfo) {
     notFound();
   }
 
+  prefetch(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
   return (
     <HydrateClient>
-      <ClientProvider userTypingOptions={userTypingOptions} mapId={mapId}>
-        <Content videoId={mapInfo.videoId} mapId={mapId} />
-      </ClientProvider>
+      <JotaiProvider userTypingOptions={userTypingOptions} mapId={mapId}>
+        <ClientProvider mapId={mapId}>
+          <Content videoId={mapInfo.videoId} mapId={mapId} />
+        </ClientProvider>
+      </JotaiProvider>
     </HydrateClient>
   );
 }

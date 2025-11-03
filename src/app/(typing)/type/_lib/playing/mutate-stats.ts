@@ -3,7 +3,6 @@ import { readMapId, readUserStats, resetUserStats } from "../atoms/ref";
 
 export const mutatePlayCountStats = () => {
   const mapId = readMapId();
-  console.log("readMapId:", mapId);
   void trpcClient.userStats.incrementPlayCountStats.mutate({ mapId });
 };
 

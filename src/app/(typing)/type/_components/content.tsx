@@ -9,10 +9,10 @@ import { initializeAllLineResult } from "../_lib/atoms/family";
 import { readTotalProgress } from "../_lib/atoms/ref";
 import {
   resetTypingStatus,
+  setBuiltMap,
   setLineSelectIndex,
   setLineStatus,
   useSceneGroupState,
-  useSetBuiltMap,
 } from "../_lib/atoms/state";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
@@ -26,30 +26,28 @@ interface ContentProps {
 
 export const Content = ({ videoId, mapId }: ContentProps) => {
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
-
-  const setMap = useSetBuiltMap();
   const sceneGroup = useSceneGroupState();
   const { isSmScreen } = useBreakPoint();
-
   const [ytLayoutMode, setYtLayoutMode] = useState<"column" | "row">("row");
+
   useEffect(() => {
     if (sceneGroup === "Ready") {
       setYtLayoutMode(isSmScreen ? "column" : "row");
     }
-  }, [isSmScreen]);
+  }, [isSmScreen, sceneGroup]);
 
   useEffect(() => {
     if (mapData) {
-      const map = new BuildMap(mapData);
-      setMap(map);
-      initializeAllLineResult(map.initialLineResultData);
-      setLineSelectIndex(map.typingLineIndexes?.[0] ?? 0);
-      setLineStatus(map.lineLength);
+      const builtMap = new BuildMap(mapData);
+      setBuiltMap(builtMap);
+      initializeAllLineResult(builtMap.initialLineResultData);
+      setLineSelectIndex(builtMap.typingLineIndexes?.[0] ?? 0);
+      setLineStatus(builtMap.lineLength);
       resetTypingStatus();
 
       const totalProgress = readTotalProgress();
       if (totalProgress) {
-        totalProgress.max = map.duration;
+        totalProgress.max = builtMap.duration;
       }
     }
   }, [mapData]);
@@ -69,7 +67,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
         <section className="flex w-full gap-6 md:flex-row">
           {ytLayoutMode === "row" && <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-[460px]" />}
 
-          <TabsArea className="flex flex-[8] flex-col" />
+          <TabsArea className="flex flex-8 flex-col" />
         </section>
 
         <TypingCard />

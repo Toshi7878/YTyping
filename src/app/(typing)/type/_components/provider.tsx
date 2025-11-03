@@ -1,8 +1,7 @@
 "use client";
-import { Provider as JotaiProvider } from "jotai";
+import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
-import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import { resetPreviewVideo } from "@/lib/atoms/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { mapIdAtom } from "../_lib/atoms/ref";
@@ -12,13 +11,13 @@ import { getTypeAtomStore } from "../_lib/atoms/store";
 import { mutateTypingStats } from "../_lib/playing/mutate-stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
 
-interface ClientProviderProps {
+interface JotaiProviderProps {
   userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
   mapId: string;
   children: ReactNode;
 }
 
-export const ClientProvider = ({ userTypingOptions, mapId, children }: ClientProviderProps) => {
+export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProviderProps) => {
   const store = getTypeAtomStore();
 
   useHydrateAtoms(
@@ -29,6 +28,21 @@ export const ClientProvider = ({ userTypingOptions, mapId, children }: ClientPro
     },
   );
 
+  useEffect(() => {
+    return () => {
+      mutateTypingStats();
+      resetAllStateOnCleanup();
+    };
+  }, [mapId]);
+
+  return <Provider store={store}>{children}</Provider>;
+};
+
+interface ClientProviderProps {
+  children: ReactNode;
+}
+
+export const ClientProvider = ({ children }: ClientProviderProps) => {
   useLoadSoundEffects();
   useEffect(() => {
     resetPreviewVideo();
@@ -47,10 +61,8 @@ export const ClientProvider = ({ userTypingOptions, mapId, children }: ClientPro
 
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
-      mutateTypingStats();
-      resetAllStateOnCleanup();
     };
-  }, [mapId]);
+  }, []);
 
-  return <JotaiProvider store={store}>{children}</JotaiProvider>;
+  return <>{children}</>;
 };
