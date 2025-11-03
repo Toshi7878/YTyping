@@ -1,6 +1,6 @@
 import { CardWithContent } from "@/components/ui/card";
 import { AddTimeAdjust } from "./add-time-adjust";
-import { EditorButtons } from "./editor-buttons";
+import { EditorButtons } from "./buttons";
 import { EditorLineInput } from "./input-fields";
 import { ManyPhraseTextarea } from "./many-phrase-textarea";
 
