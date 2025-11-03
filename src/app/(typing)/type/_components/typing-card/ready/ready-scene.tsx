@@ -8,7 +8,7 @@ import { ReadyPlaySpeed } from "./ready-child/min-play-speed-counter";
 import { ReadyPracticeButton } from "./ready-child/practice-button";
 
 interface ReadyProps {
-  className?: string;
+  className: string;
 }
 
 export const ReadyScene = ({ className }: ReadyProps) => {

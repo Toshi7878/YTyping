@@ -5,7 +5,7 @@ import { EndButtonContainer } from "./end-child/end-button-container";
 import { EndText } from "./end-child/end-text";
 
 interface EndProps {
-  className?: string;
+  className: string;
 }
 
 export const EndScene = ({ className }: EndProps) => {

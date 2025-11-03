@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/window-focus";
 import { readYTPlayer } from "../_lib/atoms/ref";
 import { readUtilityParams } from "../_lib/atoms/state";
+import { iosActiveSound } from "../_lib/playing/sound-effect";
 import { useTimerRegistration } from "../_lib/playing/timer/use-timer";
-import { useSoundEffect } from "../_lib/playing/use-sound-effect";
 import {
   useOnEnd,
   useOnPause,
@@ -91,7 +91,6 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
 };
 
 const MobileCover = () => {
-  const { iosActiveSound } = useSoundEffect();
   const handleStart = () => {
     const { scene, isPaused } = readUtilityParams();
 

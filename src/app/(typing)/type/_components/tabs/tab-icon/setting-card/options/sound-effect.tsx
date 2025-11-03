@@ -1,13 +1,12 @@
 import { readYTPlayer } from "@/app/(typing)/type/_lib/atoms/ref";
 import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state";
-import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
+import { playSound } from "@/app/(typing)/type/_lib/playing/sound-effect";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
 import { H4 } from "@/components/ui/typography";
 
 export const SoundEffectOptions = () => {
   const { typeSound, missSound, completedTypeSound } = useUserTypingOptionsState();
-  const { playSoundEffect } = useSoundEffect();
 
   return (
     <section className="space-y-4">
@@ -19,7 +18,7 @@ export const SoundEffectOptions = () => {
           defaultChecked={typeSound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({ typeSound: value });
-            if (value) playSoundEffect("type");
+            if (value) playSound("type");
           }}
         />
         <LabeledCheckbox
@@ -27,7 +26,7 @@ export const SoundEffectOptions = () => {
           defaultChecked={missSound}
           onCheckedChange={(value: boolean) => {
             setUserTypingOptions({ missSound: value });
-            if (value) playSoundEffect("miss");
+            if (value) playSound("miss");
           }}
         />
         <LabeledCheckbox
@@ -37,7 +36,7 @@ export const SoundEffectOptions = () => {
             setUserTypingOptions({
               completedTypeSound: value,
             });
-            if (value) playSoundEffect("typeCompleted");
+            if (value) playSound("typeCompleted");
           }}
         />
       </div>

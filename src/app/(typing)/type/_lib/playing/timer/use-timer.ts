@@ -38,7 +38,7 @@ import { applyKanaInputMode, applyRomaInputMode } from "../input-mode-change";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
-import { useReplay } from "./use-replay";
+import { processReplayKeyAtTimestamp } from "./replay-processor";
 
 const typeTicker = new Ticker();
 
@@ -77,8 +77,6 @@ export const timerControls = {
 };
 
 const useTimer = () => {
-  const replay = useReplay();
-
   const onEnd = useOnEnd();
   const lastUpdateTimeRef = useRef(0);
 
@@ -182,7 +180,7 @@ const useTimer = () => {
     const { scene } = readUtilityParams();
 
     if (scene === "replay") {
-      replay({ constantLineTime, constantRemainLineTime });
+      processReplayKeyAtTimestamp({ constantLineTime, constantRemainLineTime });
     }
   };
 };

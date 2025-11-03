@@ -1,4 +1,4 @@
-import { type ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
+import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readYTPlayer } from "./ref";
@@ -21,7 +21,7 @@ export const readPlaySpeed = () => store.get(speedBaseAtom);
 export const setSpeed = (update: Updater<ExtractAtomValue<typeof speedBaseAtom>>) => {
   store.set(speedBaseAtom, update);
 };
-export const useSetSpeed = () => useSetAtom(speedBaseAtom, { store });
+export const resetSpeed = () => store.set(speedBaseAtom, RESET);
 
 export const handlePlaySpeedAction = ({ type, payload: value }: { type: SpeedActionType; payload?: YouTubeSpeed }) => {
   const YTPlayer = readYTPlayer();

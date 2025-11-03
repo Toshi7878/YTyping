@@ -9,13 +9,13 @@ import { readLineCount } from "../../atoms/ref";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { calcTypeSpeed } from "../calc-type-speed";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
+import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissStatusRefs } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessStatusRefs } from "../update-status/success";
-import { useSoundEffect } from "../use-sound-effect";
 import { togglePause } from "./hot-key/toggle-pause";
 import { usePlayingHotKey } from "./hot-key/use-hot-key";
-import { evaluateTypingKeyEvent } from "./use-typing-judge";
+import { evaluateTypingKeyEvent } from "./typing-input-evaluator";
 
 const KEY_WHITE_LIST = ["F5"];
 const CTRL_KEY_WHITE_CODE_LIST = ["KeyC", "KeyV", "KeyZ", "KeyY", "KeyX"];
@@ -23,8 +23,6 @@ const ALT_KEY_WHITE_CODE_LIST = ["ArrowLeft", "ArrowRight"];
 const OPEN_DRAWER_CTRL_KEY_CODE_LIST = ["KeyF"];
 
 export const useOnKeydown = () => {
-  const isKeydownTyped = useIsKeydownTyped();
-  const typing = useTyping();
   const handleHotKey = usePlayingHotKey();
 
   return (event: KeyboardEvent) => {
@@ -33,7 +31,7 @@ export const useOnKeydown = () => {
     if ((!isPaused || scene === "practice") && event.key !== "Escape") {
       if (isKeydownTyped(event)) {
         event.preventDefault();
-        typing(event);
+        handleTyping(event);
         return;
       }
     } else if (event.key === "Escape") {
@@ -102,85 +100,78 @@ const TENKEYS_SET = new Set([
   "NumpadDecimal",
 ]);
 
-const useIsKeydownTyped = () => {
-  return (event: KeyboardEvent) => {
-    const { scene } = readUtilityParams();
+const isKeydownTyped = (event: KeyboardEvent) => {
+  const { scene } = readUtilityParams();
 
-    if (scene === "replay") return false;
-    if (event.ctrlKey || event.altKey) return false;
+  if (scene === "replay") return false;
+  if (event.ctrlKey || event.altKey) return false;
 
-    const { keyCode, code } = event;
+  const { keyCode, code } = event;
 
-    const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code);
-    if (!isType) return false;
+  const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code);
+  if (!isType) return false;
 
-    const lineWord = readLineWord();
-    return Boolean(lineWord.nextChar.k);
-  };
+  const lineWord = readLineWord();
+  return Boolean(lineWord.nextChar.k);
 };
 
-const useTyping = () => {
-  const { triggerTypeSound, triggerMissSound } = useSoundEffect();
+const handleTyping = (event: KeyboardEvent) => {
+  const evaluateResult = evaluateTypingKeyEvent(event);
+  const { isSuccess, isFailed, isCompleted, newLineWord, successKey, failKey, typeChunk, updatePoint } = evaluateResult;
+  if (!newLineWord) return;
+  const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
 
-  return (event: KeyboardEvent) => {
-    const evaluateResult = evaluateTypingKeyEvent(event);
-    const { isSuccess, isFailed, isCompleted, newLineWord, successKey, failKey, typeChunk, updatePoint } =
-      evaluateResult;
-    if (!newLineWord) return;
-    const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
+  if (isSuccess && successKey) {
+    setLineWord(newLineWord);
+    triggerTypeSound({ isCompleted });
 
-    if (isSuccess && successKey) {
-      setLineWord(newLineWord);
-      triggerTypeSound({ isCompleted });
-
-      requestAnimationFrame(() => {
-        updateSuccessStatusRefs({
-          constantLineTime,
-          isCompleted,
-          successKey,
-          typeChunk,
-        });
-
-        updateSuccessStatus({
-          isCompleted,
-          constantRemainLineTime,
-          updatePoint,
-        });
-        const { isPaused } = readUtilityParams();
-
-        if (!isPaused) {
-          calcTypeSpeed({ updateType: isCompleted ? "completed" : "keydown", constantLineTime });
-        }
-
-        if (isCompleted) {
-          const count = readLineCount();
-
-          if (hasLineResultImproved(count)) {
-            saveLineResult(count);
-          }
-          const { scene } = readUtilityParams();
-          if (scene !== "practice") return;
-
-          const map = readBuiltMap();
-          if (!map) return;
-
-          recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "completed" });
-
-          if (isPaused) {
-            const newCurrentLine = map.mapData[count];
-            const newNextLine = map.mapData[count + 1];
-            if (!newCurrentLine || !newNextLine) return;
-            setNewLine({ newCurrentLine, newNextLine });
-          }
-        }
+    requestAnimationFrame(() => {
+      updateSuccessStatusRefs({
+        constantLineTime,
+        isCompleted,
+        successKey,
+        typeChunk,
       });
-    } else if (isFailed && failKey) {
-      triggerMissSound();
 
-      requestAnimationFrame(() => {
-        updateMissStatus();
-        updateMissStatusRefs({ constantLineTime, failKey });
+      updateSuccessStatus({
+        isCompleted,
+        constantRemainLineTime,
+        updatePoint,
       });
-    }
-  };
+      const { isPaused } = readUtilityParams();
+
+      if (!isPaused) {
+        calcTypeSpeed({ updateType: isCompleted ? "completed" : "keydown", constantLineTime });
+      }
+
+      if (isCompleted) {
+        const count = readLineCount();
+
+        if (hasLineResultImproved(count)) {
+          saveLineResult(count);
+        }
+        const { scene } = readUtilityParams();
+        if (scene !== "practice") return;
+
+        const map = readBuiltMap();
+        if (!map) return;
+
+        recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "completed" });
+
+        if (isPaused) {
+          const newCurrentLine = map.mapData[count];
+          const newNextLine = map.mapData[count + 1];
+          if (!newCurrentLine || !newNextLine) return;
+          setNewLine({ newCurrentLine, newNextLine });
+        }
+      }
+    });
+  } else if (isFailed && failKey) {
+    triggerMissSound();
+
+    requestAnimationFrame(() => {
+      updateMissStatus();
+      updateMissStatusRefs({ constantLineTime, failKey });
+    });
+  }
 };

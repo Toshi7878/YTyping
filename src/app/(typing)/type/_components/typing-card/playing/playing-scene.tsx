@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import {
   readUtilityParams,
@@ -11,6 +10,7 @@ import {
   useBuiltMapState,
   useSceneState,
 } from "@/app/(typing)/type/_lib/atoms/state";
+import { env } from "@/env";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
@@ -24,40 +24,24 @@ import { NextLyrics } from "./playing-child/next-lyrics";
 import { TypingWords } from "./playing-child/typing-words";
 
 interface PlayingProps {
-  className?: string;
+  className: string;
 }
 
 export const PlayingScene = ({ className }: PlayingProps) => {
-  const { data: session } = useSession();
-
   const scene = useSceneState();
   const activeElement = useActiveElement();
 
   useEffect(() => {
     const handleVisibilitychange = () => {
       if (document.visibilityState === "hidden") {
-        const sendStats = readUserStats();
-        const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
-        const body = new Blob([JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })], {
-          type: "application/json",
-        });
-        navigator.sendBeacon(url, body);
-
-        //TODO: maxComboを引数に渡す?
-        resetUserStats();
+        sendUserStats();
       }
     };
     const handleBeforeunload = () => {
-      const sendStats = readUserStats();
-      const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
-      const body = new Blob([JSON.stringify({ ...sendStats, userId: Number(session?.user.id ?? 0) })], {
-        type: "application/json",
-      });
-      navigator.sendBeacon(url, body);
-      resetUserStats();
+      sendUserStats();
     };
 
-    if (scene === "play" || scene === "practice") {
+    if (env.NODE_ENV !== "development" && (scene === "play" || scene === "practice")) {
       window.addEventListener("beforeunload", handleBeforeunload);
       window.addEventListener("visibilitychange", handleVisibilitychange);
     }
@@ -122,4 +106,14 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       <ChangeCSS />
     </div>
   );
+};
+
+const sendUserStats = () => {
+  const sendStats = readUserStats();
+  const url = `${getBaseUrl()}/api/user-stats/typing/increment`;
+  const body = new Blob([JSON.stringify({ ...sendStats })], {
+    type: "application/json",
+  });
+  navigator.sendBeacon(url, body);
+  resetUserStats();
 };

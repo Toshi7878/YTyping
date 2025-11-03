@@ -5,12 +5,12 @@ import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { setReplayUserName, setTabName, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state";
 import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
-import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
+import { iosActiveSound } from "../../../_lib/playing/sound-effect";
 import { useResultPlay } from "../../../_lib/ready/use-result-play";
 
 interface RankingMenuProps {
@@ -24,7 +24,6 @@ interface RankingMenuProps {
 export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name, hasClapped }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
-  const { iosActiveSound } = useSoundEffect();
   const retry = useRetry();
   const resultPlay = useResultPlay({ startMode: "replay" });
 

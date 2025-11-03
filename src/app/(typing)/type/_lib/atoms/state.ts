@@ -29,6 +29,7 @@ export const resetUserTypingOptions = () => {
 const builtMapAtom = atomWithReset<BuildMap | null>(null);
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
 export const useSetBuiltMap = () => useSetAtom(builtMapAtom, { store });
+export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 export const readBuiltMap = () => store.get(builtMapAtom);
 
 const initialInputMode: InputMode =
