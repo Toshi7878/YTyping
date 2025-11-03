@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { setTabName, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state";
+import { setReplayUserName, setTabName, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state";
 import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,6 @@ import { PopoverContent } from "@/components/ui/popover";
 import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { writeUtilityRefParams } from "../../../_lib/atoms/ref";
 import { useResultPlay } from "../../../_lib/ready/use-result-play";
 
 interface RankingMenuProps {
@@ -49,7 +48,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name,
     }
 
     setTabName("ステータス");
-    writeUtilityRefParams({ replayUserName: name });
+    setReplayUserName(name);
 
     if (sceneGroup === "End") {
       retry("replay");

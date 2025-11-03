@@ -16,6 +16,7 @@ import {
   setCombo,
   setNextLyrics,
   setNotify,
+  setReplayUserName,
   setScene,
   setTabName,
 } from "../atoms/state";
@@ -86,7 +87,7 @@ export const useRetry = () => {
     }
 
     if (newPlayMode !== "replay") {
-      writeUtilityRefParams({ replayUserName: "" });
+      setReplayUserName(null);
     }
 
     const YTPlayer = readYTPlayer();

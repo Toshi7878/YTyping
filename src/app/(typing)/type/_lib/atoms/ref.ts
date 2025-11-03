@@ -76,7 +76,6 @@ export const utilityRefParamsAtom = atomWithReset({
   timeOffset: 0,
   startPlaySpeed: 1,
   replayKeyCount: 0,
-  replayUserName: "", //TODO: stateとして使用している
   rankingScores: [] as number[],
   isOptionEdited: false,
 });

@@ -10,13 +10,17 @@ const lineResultAtomFamily = atomFamily(
   () => atom<{ isSelected: boolean; lineResult: ResultData[number] } | undefined>(),
   deepEqual,
 );
-export const getLineResultAtomByIndex = (index: number) => lineResultAtomFamily(index);
 
 export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
 export const setLineResult = ({ index, lineResult }: { index: number; lineResult: ResultData[number] }) => {
   const prev = store.get(lineResultAtomFamily(index));
   if (!prev) return;
   store.set(lineResultAtomFamily(index), { ...prev, lineResult });
+};
+export const setLineResultSelected = ({ index, isSelected }: { index: number; isSelected: boolean }) => {
+  const target = store.get(lineResultAtomFamily(index));
+  if (!target) return;
+  store.set(lineResultAtomFamily(index), { ...target, isSelected });
 };
 export const readAllLineResult = (): ResultData => {
   const results: ResultData = [];

@@ -7,7 +7,7 @@ import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
 import type { BuiltMapLine, InputMode, LineWord, SceneType, SkipGuideKey } from "../type";
-import { getLineResultAtomByIndex } from "./family";
+import { setLineResultSelected } from "./family";
 import { lineProgressAtom, readUtilityRefParams, writeUtilityRefParams } from "./ref";
 import { speedBaseAtom } from "./speed-reducer";
 import { getTypeAtomStore } from "./store";
@@ -41,11 +41,12 @@ const utilityParamsAtom = atomWithReset({
   notify: Symbol(""),
   activeSkipKey: null as SkipGuideKey,
   changeCSSCount: 0,
-  lineSelectIndex: 0,
   isYTStarted: false,
   lineResultdrawerClosure: false,
   isPaused: false,
   movieDuration: 0,
+  replayUserName: null as string | null,
+  lineSelectIndex: 0,
 });
 
 const lineResultDrawerClosureAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineResultdrawerClosure"));
@@ -54,11 +55,12 @@ const tabNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("tabName"
 const notifyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("notify"));
 const activeSkipKeyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("activeSkipKey"));
 const changeCSSCountAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("changeCSSCount"));
-const lineSelectIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineSelectIndex"));
 const playingInputModeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("inputMode"));
 const isYTStartedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isYTStarted"));
 const isPausedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isPaused"));
 const movieDurationAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("movieDuration"));
+const lineSelectIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineSelectIndex"));
+const replayUserNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("replayUserName"));
 
 export const useLineResultSheetOpenState = () => useAtomValue(lineResultDrawerClosureAtom);
 export const setLineResultSheet = (update: Updater<boolean>) => {
@@ -139,24 +141,20 @@ export const setLineSelectIndex = (lineIndex: number) => {
   if (prevSelectedIndex !== null && prevSelectedIndex !== lineIndex) {
     const prevCount = map.typingLineIndexes[prevSelectedIndex - 1];
     if (prevCount !== undefined) {
-      const prevSelectedAtom = getLineResultAtomByIndex(prevCount);
-      const prev = store.get(prevSelectedAtom);
-      if (prev) {
-        store.set(prevSelectedAtom, { ...prev, isSelected: false });
-      }
+      setLineResultSelected({ index: prevCount, isSelected: false });
     }
   }
 
-  const targetAtom = getLineResultAtomByIndex(count);
-  const target = store.get(targetAtom);
-  if (!target) return;
-
   store.set(lineSelectIndexAtom, lineIndex);
-  store.set(targetAtom, { ...target, isSelected: true });
+  setLineResultSelected({ index: count, isSelected: true });
 };
 
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const setYTStarted = (value: ExtractAtomValue<typeof isYTStartedAtom>) => store.set(isYTStartedAtom, value);
+
+export const replayUserNameState = () => useAtomValue(replayUserNameAtom);
+export const setReplayUserName = (value: ExtractAtomValue<typeof replayUserNameAtom>) =>
+  store.set(replayUserNameAtom, value);
 
 const substatusAtom = atomWithReset({
   elapsedSecTime: 0,

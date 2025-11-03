@@ -1,14 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion"; // 追加
 import { useEffect, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
-import { setNotify, useNotifyState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
-import { readUtilityRefParams } from "../../../_lib/atoms/ref";
+import { replayUserNameState, setNotify, useNotifyState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
 
 export const PlayingNotify = () => {
   const notify = useNotifyState();
   const scene = useSceneState();
+  const replayUserName = replayUserNameState();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const playModeNotify = () => {
@@ -65,7 +65,7 @@ export const PlayingNotify = () => {
           {notify.description === "ll" ? (
             <FaPause />
           ) : notify.description === "Replay" ? (
-            `${readUtilityRefParams().replayUserName} Replay`
+            `${replayUserName} Replay`
           ) : (
             notify.description
           )}
