@@ -110,20 +110,6 @@ export const moveSetLine = (seekCount: number) => {
   }
 };
 
-// moveSetLineに移行
-export const drawerSelectColorChange = (newLineSelectIndex: number) => {
-  const resultCards = readResultCards();
-  for (const card of resultCards) {
-    if (String(newLineSelectIndex) === card.dataset.count) {
-      card.classList.add("result-line-select-outline");
-      card.classList.remove("result-line-hover");
-    } else {
-      card.classList.add("result-line-hover");
-      card.classList.remove("result-line-select-outline");
-    }
-  }
-};
-
 const scrollToCard = (newIndex: number) => {
   const resultCards = readResultCards();
 

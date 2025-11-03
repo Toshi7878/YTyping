@@ -88,7 +88,6 @@ export const writeUtilityRefParams = (newUserStats: Partial<ExtractAtomValue<typ
 export const resetUtilityRefParams = () => store.set(utilityRefParamsAtom, RESET);
 
 const playerAtom = atomWithReset<YT.Player | null>(null);
-// TODO: stateとして使用している
 export const readYTPlayer = () => store.get(playerAtom);
 export const writeYTPlayer = (newYTPlayer: YT.Player) => store.set(playerAtom, newYTPlayer);
 export const resetYTPlayer = () => store.set(playerAtom, RESET);

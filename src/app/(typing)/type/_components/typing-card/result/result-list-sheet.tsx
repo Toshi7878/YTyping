@@ -9,7 +9,7 @@ import {
   useLineResultSheetOpenState,
   useSceneGroupState,
 } from "@/app/(typing)/type/_lib/atoms/state";
-import { drawerSelectColorChange, moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
+import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { ResultData } from "@/server/drizzle/validator/result";
 import { OptimizedResultCard } from "./card/optimized-result-card";
@@ -98,7 +98,7 @@ const ResultLineList = () => {
     if (!ticker.started) {
       ticker.add(handleTick);
       ticker.start();
-      drawerSelectColorChange(lineIndex);
+      setLineSelectIndex(lineIndex);
     }
   }, []);
 
