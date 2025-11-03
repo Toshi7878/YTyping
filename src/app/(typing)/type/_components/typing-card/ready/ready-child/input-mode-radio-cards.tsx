@@ -1,6 +1,6 @@
 "use client";
-import { setPlayingInputMode } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { useReadyInputModeState, useSetReadyInputMode } from "@/app/(typing)/type/_lib/atoms/storage-atoms";
+import { setPlayingInputMode } from "@/app/(typing)/type/_lib/atoms/state";
+import { useReadyInputModeState, useSetReadyInputMode } from "@/app/(typing)/type/_lib/atoms/storage";
 import type { InputMode } from "@/app/(typing)/type/_lib/type";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { cn } from "@/lib/utils";

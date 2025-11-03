@@ -1,5 +1,5 @@
 "use client";
-import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import type { InputMode } from "@/app/(typing)/type/_lib/type";
 import { CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";

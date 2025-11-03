@@ -1,6 +1,6 @@
 import { generateTypingWord } from "@/lib/build-map/generate-typing-word";
 import { kanaSentenceToKanaChunkWords } from "@/lib/build-map/kana-sentence-to-kana-word-chunks";
-import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/read-atoms";
+import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
   readLineWord,
@@ -9,7 +9,7 @@ import {
   setNextLyrics,
   setNotify,
   setPlayingInputMode,
-} from "../atoms/state-atoms";
+} from "../atoms/state";
 import type { InputMode, LineWord } from "../type";
 import { useGetYouTubeTime } from "../youtube-player/use-get-youtube-time";
 

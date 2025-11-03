@@ -5,15 +5,15 @@ import { useEffect, useState } from "react";
 import { BuildMap } from "@/lib/build-map/build-map";
 import { useMapQueries } from "@/lib/queries/map.queries";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
-import { readTotalProgress } from "../_lib/atoms/read-atoms";
+import { initializeAllLineResult } from "../_lib/atoms/family";
+import { readTotalProgress } from "../_lib/atoms/ref";
 import {
-  initializeAllLineResult,
   resetTypingStatus,
   setLineSelectIndex,
   setLineStatus,
   useSceneGroupState,
   useSetBuiltMap,
-} from "../_lib/atoms/state-atoms";
+} from "../_lib/atoms/state";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
 import { TypingCard } from "./typing-card/typing-card";

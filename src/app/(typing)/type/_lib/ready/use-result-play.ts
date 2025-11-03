@@ -1,8 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useGlobalLoadingOverlay, useUserAgent } from "@/lib/global-atoms";
 import { useTRPC } from "@/trpc/provider";
-import { readYTPlayer } from "../atoms/read-atoms";
-import { initializeAllLineResult, setPlayingInputMode, setScene } from "../atoms/state-atoms";
+import { initializeAllLineResult } from "../atoms/family";
+import { readYTPlayer } from "../atoms/ref";
+import { setPlayingInputMode, setScene } from "../atoms/state";
 import type { PlayMode } from "../type";
 
 export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "playing"> }) => {

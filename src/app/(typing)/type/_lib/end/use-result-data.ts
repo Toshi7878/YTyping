@@ -1,8 +1,9 @@
 import { useParams } from "next/navigation";
 import type z from "zod";
 import type { CreateResultStatusSchema, ResultData } from "@/server/drizzle/validator/result";
-import { readSubstatus } from "../atoms/read-atoms";
-import { readAllLineResult, readTypingStatus } from "../atoms/state-atoms";
+import { readAllLineResult } from "../atoms/family";
+import { readSubstatus } from "../atoms/ref";
+import { readTypingStatus } from "../atoms/state";
 
 export const useResultData = () => {
   const { id: mapId } = useParams();

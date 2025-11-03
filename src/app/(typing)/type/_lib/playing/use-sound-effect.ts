@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { useReadVolume, useUserAgent } from "@/lib/global-atoms";
-import { readTypingOptions } from "../atoms/state-atoms";
+import { readTypingOptions } from "../atoms/state";
 
 const manifest = [
   { alias: "type", src: "/wav/type.wav" },

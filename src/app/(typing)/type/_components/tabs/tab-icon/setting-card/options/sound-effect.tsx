@@ -1,5 +1,5 @@
-import { readYTPlayer } from "@/app/(typing)/type/_lib/atoms/read-atoms";
-import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { readYTPlayer } from "@/app/(typing)/type/_lib/atoms/ref";
+import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state";
 import { useSoundEffect } from "@/app/(typing)/type/_lib/playing/use-sound-effect";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";

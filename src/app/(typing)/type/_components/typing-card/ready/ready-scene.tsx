@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import { readYTPlayer } from "../../../_lib/atoms/read-atoms";
+import { readYTPlayer } from "../../../_lib/atoms/ref";
 import { ReadyInputModeRadioCards } from "./ready-child/input-mode-radio-cards";
 import { ReadyPlaySpeed } from "./ready-child/min-play-speed-counter";
 import { ReadyPracticeButton } from "./ready-child/practice-button";

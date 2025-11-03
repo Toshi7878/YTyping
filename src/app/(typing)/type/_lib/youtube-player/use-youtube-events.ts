@@ -3,14 +3,8 @@ import { useParams } from "next/navigation";
 import { useReadVolume } from "@/lib/global-atoms";
 import { useTRPC } from "@/trpc/provider";
 import { windowFocus } from "@/utils/window-focus";
-import {
-  readLineProgress,
-  readTotalProgress,
-  readUtilityRefParams,
-  writeLineCount,
-  writeYTPlayer,
-} from "../atoms/read-atoms";
-import { readPlaySpeed, setSpeed } from "../atoms/speed-reducer-atoms";
+import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount, writeYTPlayer } from "../atoms/ref";
+import { readPlaySpeed, setSpeed } from "../atoms/speed-reducer";
 import {
   readBuiltMap,
   readUtilityParams,
@@ -21,8 +15,8 @@ import {
   setScene,
   setTabName,
   setYTStarted,
-} from "../atoms/state-atoms";
-import { readReadyInputMode } from "../atoms/storage-atoms";
+} from "../atoms/state";
+import { readReadyInputMode } from "../atoms/storage";
 import { timerControls } from "../playing/timer/use-timer";
 import { useSendUserStats } from "../playing/use-send-user-stats";
 import { useUpdateAllStatus } from "../playing/use-update-status";

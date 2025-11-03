@@ -1,6 +1,6 @@
-import { readLineCount, readUtilityRefParams, readYTPlayer } from "../atoms/read-atoms";
-import { readPlaySpeed } from "../atoms/speed-reducer-atoms";
-import { readBuiltMap, readTypingOptions, readUtilityParams } from "../atoms/state-atoms";
+import { readLineCount, readUtilityRefParams, readYTPlayer } from "../atoms/ref";
+import { readPlaySpeed } from "../atoms/speed-reducer";
+import { readBuiltMap, readTypingOptions, readUtilityParams } from "../atoms/state";
 
 type GetTimeKey = { type: "time" } | { type: "lineTime" } | { type: "remainLineTime" };
 type CurrentTimeResult = {

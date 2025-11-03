@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
-import { setLineResultSheet, useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
+import { setLineResultSheet, useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state";
 import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/ranking/use-get-my-ranking-result";
 import { Button } from "@/components/ui/button";
 import { RetryButton } from "./child/retry-button";

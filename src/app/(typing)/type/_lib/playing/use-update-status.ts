@@ -1,4 +1,5 @@
 import { MISS_PENALTY } from "../../../../../lib/build-map/build-map";
+import { readAllLineResult } from "../atoms/family";
 import {
   readLineSubstatus,
   readSubstatus,
@@ -7,9 +8,8 @@ import {
   writeLineSubstatus,
   writeSubstatus,
   writeUserStats,
-} from "../atoms/read-atoms";
+} from "../atoms/ref";
 import {
-  readAllLineResult,
   readBuiltMap,
   readCombo,
   readLineWord,
@@ -17,7 +17,7 @@ import {
   readUtilityParams,
   setCombo,
   setTypingStatus,
-} from "../atoms/state-atoms";
+} from "../atoms/state";
 import type { NextTypeChunk } from "../type";
 
 export const useTypeSuccess = () => {

@@ -1,17 +1,16 @@
 import { CHAR_POINT, calcWordKanaNotes, MISS_PENALTY } from "@/lib/build-map/build-map";
-import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/read-atoms";
-import { readPlaySpeed } from "../atoms/speed-reducer-atoms";
+import { readAllLineResult, setLineResult } from "../atoms/family";
+import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/ref";
+import { readPlaySpeed } from "../atoms/speed-reducer";
 import {
-  readAllLineResult,
   readBuiltMap,
   readCombo,
   readLineKpm,
   readLineWord,
   readTypingStatus,
   readUtilityParams,
-  setLineResult,
   setTypingStatus,
-} from "../atoms/state-atoms";
+} from "../atoms/state";
 
 export const useUpdateLineResult = () => {
   const generateLostWord = () => {

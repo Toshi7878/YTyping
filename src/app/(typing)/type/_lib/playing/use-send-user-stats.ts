@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useTRPC } from "@/trpc/provider";
-import { readUserStats, resetUserStats } from "../atoms/read-atoms";
+import { readUserStats, resetUserStats } from "../atoms/ref";
 
 export function useSendUserStats() {
   const { id: mapId } = useParams<{ id: string }>();

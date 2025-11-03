@@ -1,5 +1,5 @@
-import { readUtilityRefParams, writeUtilityRefParams } from "../../../atoms/read-atoms";
-import { handlePlaySpeedAction } from "../../../atoms/speed-reducer-atoms";
+import { readUtilityRefParams, writeUtilityRefParams } from "../../../atoms/ref";
+import { handlePlaySpeedAction } from "../../../atoms/speed-reducer";
 import {
   readBuiltMap,
   readTypingOptions,
@@ -7,7 +7,7 @@ import {
   setLineResultSheet,
   setNotify,
   useSceneState,
-} from "../../../atoms/state-atoms";
+} from "../../../atoms/state";
 import { useChangePlayMode } from "../../use-change-play-mode";
 import { useInputModeChange } from "../../use-input-mode-change";
 import { useMoveLine } from "../../use-move-line";

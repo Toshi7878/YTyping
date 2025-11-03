@@ -11,8 +11,8 @@ import {
   writeLineCount,
   writeLineSubstatus,
   writeUtilityRefParams,
-} from "@/app/(typing)/type/_lib/atoms/read-atoms";
-import { readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+} from "@/app/(typing)/type/_lib/atoms/ref";
+import { readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   readBuiltMap,
   readElapsedSecTime,
@@ -26,7 +26,7 @@ import {
   setNewLine,
   setNextLyrics,
   setTypingStatus,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import type { BuiltMapLine } from "../../type";
 import { useGetYouTubeTime } from "../../youtube-player/use-get-youtube-time";
 import { useOnEnd } from "../../youtube-player/use-youtube-events";

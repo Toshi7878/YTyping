@@ -3,20 +3,20 @@ import {
   readUtilityRefParams,
   writeLineSubstatus,
   writeUtilityRefParams,
-} from "@/app/(typing)/type/_lib/atoms/read-atoms";
-import { handlePlaySpeedAction, readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+} from "@/app/(typing)/type/_lib/atoms/ref";
+import { handlePlaySpeedAction, readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
-  readAllLineResult,
   readLineWord,
   readUtilityParams,
   setCombo,
   setLineKpm,
   setLineWord,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { useCalcTypeSpeed } from "@/app/(typing)/type/_lib/playing/use-calc-type-speed";
 import { useInputModeChange } from "@/app/(typing)/type/_lib/playing/use-input-mode-change";
 import type { TypeResult } from "@/server/drizzle/validator/result";
 import type { YouTubeSpeed } from "@/utils/types";
+import { readAllLineResult } from "../../atoms/family";
 import { KanaInput, RomaInput, type TypingKeys } from "../keydown/use-typing-judge";
 import { useSoundEffect } from "../use-sound-effect";
 import { useTypeMiss, useTypeSuccess, useUpdateAllStatus } from "../use-update-status";

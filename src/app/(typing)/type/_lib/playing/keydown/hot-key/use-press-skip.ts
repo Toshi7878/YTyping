@@ -1,6 +1,6 @@
-import { readLineCount, readUtilityRefParams, readYTPlayer, writeUtilityRefParams } from "../../../atoms/read-atoms";
-import { readPlaySpeed } from "../../../atoms/speed-reducer-atoms";
-import { readBuiltMap, readTypingOptions, readUtilityParams, setActiveSkipGuideKey } from "../../../atoms/state-atoms";
+import { readLineCount, readUtilityRefParams, readYTPlayer, writeUtilityRefParams } from "../../../atoms/ref";
+import { readPlaySpeed } from "../../../atoms/speed-reducer";
+import { readBuiltMap, readTypingOptions, readUtilityParams, setActiveSkipGuideKey } from "../../../atoms/state";
 
 export const usePressSkip = () => {
   return () => {

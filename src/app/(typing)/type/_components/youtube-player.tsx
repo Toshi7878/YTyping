@@ -7,8 +7,8 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useUserAgent } from "@/lib/global-atoms";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/window-focus";
-import { readYTPlayer } from "../_lib/atoms/read-atoms";
-import { readUtilityParams } from "../_lib/atoms/state-atoms";
+import { readYTPlayer } from "../_lib/atoms/ref";
+import { readUtilityParams } from "../_lib/atoms/state";
 import { useTimerRegistration } from "../_lib/playing/timer/use-timer";
 import { useSoundEffect } from "../_lib/playing/use-sound-effect";
 import {

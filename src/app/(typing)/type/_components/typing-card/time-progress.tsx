@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { writeLineProgress, writeTotalProgress } from "../../_lib/atoms/read-atoms";
+import { writeLineProgress, writeTotalProgress } from "../../_lib/atoms/ref";
 
 interface TimeProgressProps {
   id: string;

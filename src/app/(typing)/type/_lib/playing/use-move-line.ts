@@ -1,6 +1,6 @@
-import { readLineCount, readLineProgress, readResultCards, readYTPlayer, writeLineCount } from "../atoms/read-atoms";
-import { readPlaySpeed } from "../atoms/speed-reducer-atoms";
-import { readBuiltMap, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state-atoms";
+import { readLineCount, readLineProgress, readResultCards, readYTPlayer, writeLineCount } from "../atoms/ref";
+import { readPlaySpeed } from "../atoms/speed-reducer";
+import { readBuiltMap, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
 import { timerControls, useSetupNextLine } from "./timer/use-timer";
 import { useGetLineCountByTime } from "./use-get-line-count-by-time";
 

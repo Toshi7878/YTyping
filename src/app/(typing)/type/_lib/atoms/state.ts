@@ -1,16 +1,15 @@
-import deepEqual from "fast-deep-equal";
 import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { atomFamily, atomWithReset, RESET } from "jotai/utils";
+import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { BuildMap } from "@/lib/build-map/build-map";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
-import type { ResultData } from "@/server/drizzle/validator/result";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
 import type { BuiltMapLine, InputMode, LineWord, SceneType, SkipGuideKey } from "../type";
-import { lineProgressAtom, readUtilityRefParams, writeUtilityRefParams } from "./read-atoms";
-import { speedBaseAtom } from "./speed-reducer-atoms";
+import { getLineResultAtomByIndex } from "./family";
+import { lineProgressAtom, readUtilityRefParams, writeUtilityRefParams } from "./ref";
+import { speedBaseAtom } from "./speed-reducer";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
@@ -140,7 +139,7 @@ export const setLineSelectIndex = (lineIndex: number) => {
   if (prevSelectedIndex !== null && prevSelectedIndex !== lineIndex) {
     const prevCount = map.typingLineIndexes[prevSelectedIndex - 1];
     if (prevCount !== undefined) {
-      const prevSelectedAtom = lineResultAtomFamily(prevCount);
+      const prevSelectedAtom = getLineResultAtomByIndex(prevCount);
       const prev = store.get(prevSelectedAtom);
       if (prev) {
         store.set(prevSelectedAtom, { ...prev, isSelected: false });
@@ -148,7 +147,7 @@ export const setLineSelectIndex = (lineIndex: number) => {
     }
   }
 
-  const targetAtom = lineResultAtomFamily(count);
+  const targetAtom = getLineResultAtomByIndex(count);
   const target = store.get(targetAtom);
   if (!target) return;
 
@@ -183,52 +182,6 @@ export const useElapsedSecTimeState = () => useAtomValue(elapsedSecTimeAtom, { s
 export const setElapsedSecTime = (value: ExtractAtomValue<typeof elapsedSecTimeAtom>) =>
   store.set(elapsedSecTimeAtom, value);
 export const readElapsedSecTime = () => store.get(elapsedSecTimeAtom);
-const lineResultAtomFamily = atomFamily(
-  () => atom<{ isSelected: boolean; lineResult: ResultData[number] } | undefined>(),
-  deepEqual,
-);
-export const useLineResultState = (index: number) => useAtomValue(lineResultAtomFamily(index), { store });
-export const setLineResult = ({ index, lineResult }: { index: number; lineResult: ResultData[number] }) => {
-  const prev = store.get(lineResultAtomFamily(index));
-  if (!prev) return;
-  store.set(lineResultAtomFamily(index), { ...prev, lineResult });
-};
-export const readAllLineResult = (): ResultData => {
-  const results: ResultData = [];
-  let index = 0;
-
-  while (true) {
-    const atom = lineResultAtomFamily(index);
-    const result = store.get(atom);
-
-    if (result !== undefined) {
-      results.push(result.lineResult);
-      index++;
-    } else {
-      break;
-    }
-  }
-
-  return results;
-};
-export const initializeAllLineResult = (initResultData: ResultData) => {
-  initResultData.forEach((lineResult, index) => {
-    store.set(lineResultAtomFamily(index), { isSelected: false, lineResult });
-  });
-};
-export const clearAllLineResult = () => {
-  let index = 0;
-  while (true) {
-    const atom = lineResultAtomFamily(index);
-    const result = store.get(atom);
-    if (result !== undefined) {
-      lineResultAtomFamily.remove(index);
-      index++;
-    } else {
-      break;
-    }
-  }
-};
 
 const nextLyricsAtom = atomWithReset({
   lyrics: "",

@@ -1,12 +1,8 @@
 "use client";
 import type { RefObject } from "react";
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
-import {
-  useBuiltMapState,
-  useLineResultState,
-  usePlayingInputModeState,
-  useSceneState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useLineResultState } from "@/app/(typing)/type/_lib/atoms/family";
+import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
+import { useBuiltMapState, usePlayingInputModeState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import type { BuiltMapLine } from "@/app/(typing)/type/_lib/type";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";

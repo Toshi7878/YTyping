@@ -1,3 +1,4 @@
+import { initializeAllLineResult } from "../atoms/family";
 import {
   readUtilityRefParams,
   readYTPlayer,
@@ -5,9 +6,8 @@ import {
   resetLineSubstatus,
   resetSubstatus,
   writeUtilityRefParams,
-} from "../atoms/read-atoms";
+} from "../atoms/ref";
 import {
-  initializeAllLineResult,
   readBuiltMap,
   readTypingStatus,
   readUtilityParams,
@@ -18,7 +18,7 @@ import {
   setNotify,
   setScene,
   setTabName,
-} from "../atoms/state-atoms";
+} from "../atoms/state";
 import type { PlayMode } from "../type";
 import { timerControls } from "./timer/use-timer";
 import { useSendUserStats } from "./use-send-user-stats";

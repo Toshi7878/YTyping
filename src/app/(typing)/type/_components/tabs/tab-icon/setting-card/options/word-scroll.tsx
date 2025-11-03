@@ -1,5 +1,5 @@
 "use client";
-import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledRadioGroup } from "@/components/ui/radio-group/labeled-radio-group";
 import { H4 } from "@/components/ui/typography";

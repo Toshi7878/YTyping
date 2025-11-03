@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { handlePlaySpeedAction, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+import { handlePlaySpeedAction, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   readUtilityParams,
   setLineResultSheet,
@@ -10,7 +10,7 @@ import {
   useSceneState,
   useUserTypingOptionsState,
   useYTStartedState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

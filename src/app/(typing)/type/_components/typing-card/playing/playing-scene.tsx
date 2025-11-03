@@ -10,11 +10,11 @@ import {
   setNextLyrics,
   useBuiltMapState,
   useSceneState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
-import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/read-atoms";
+import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
 import { usePressSkip } from "../../../_lib/playing/keydown/hot-key/use-press-skip";
 import { useOnKeydown } from "../../../_lib/playing/keydown/use-keydown-event";
 import { timerControls } from "../../../_lib/playing/timer/use-timer";

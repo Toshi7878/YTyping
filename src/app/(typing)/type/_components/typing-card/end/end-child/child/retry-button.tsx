@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
 
-import { useSceneState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";

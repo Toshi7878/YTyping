@@ -1,4 +1,4 @@
-import { useBuiltMapState, useChangeCSSCountState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useBuiltMapState, useChangeCSSCountState } from "@/app/(typing)/type/_lib/atoms/state";
 
 export const ChangeCSS = () => {
   const map = useBuiltMapState();

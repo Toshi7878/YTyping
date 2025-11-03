@@ -3,7 +3,7 @@ import type { Atom } from "jotai";
 import { useAtomValue, useStore } from "jotai";
 import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import { focusTypingStatusAtoms } from "../../../_lib/atoms/state-atoms";
+import { focusTypingStatusAtoms } from "../../../_lib/atoms/state";
 
 export const StatusCell = ({ label }: { label: keyof typeof focusTypingStatusAtoms }) => {
   return (

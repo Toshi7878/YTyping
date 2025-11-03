@@ -1,8 +1,8 @@
 import type { YouTubeSpeed } from "@/utils/types";
-import { writeUtilityRefParams } from "../atoms/read-atoms";
-import { handlePlaySpeedAction, readPlaySpeed } from "../atoms/speed-reducer-atoms";
-import { readUtilityParams, setLineResultSheet, setNotify, setPlayingInputMode, setScene } from "../atoms/state-atoms";
-import { readReadyInputMode } from "../atoms/storage-atoms";
+import { writeUtilityRefParams } from "../atoms/ref";
+import { handlePlaySpeedAction, readPlaySpeed } from "../atoms/speed-reducer";
+import { readUtilityParams, setLineResultSheet, setNotify, setPlayingInputMode, setScene } from "../atoms/state";
+import { readReadyInputMode } from "../atoms/storage";
 import { useRetry } from "./use-retry";
 
 export const useChangePlayMode = () => {

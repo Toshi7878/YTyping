@@ -1,7 +1,7 @@
 import { CardWithContent } from "@/components/ui/card";
 import { Table, TableBody, TableRow } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import type { focusTypingStatusAtoms } from "../../../_lib/atoms/state-atoms";
+import type { focusTypingStatusAtoms } from "../../../_lib/atoms/state";
 import { StatusCell } from "./status-cell";
 
 export const StatusCard = ({ className }: { className: string }) => {

@@ -2,13 +2,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
 import { toast } from "sonner";
-import { writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/read-atoms";
+import { writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/ref";
 import {
   readTypingOptions,
   resetUserTypingOptions,
   setUserTypingOptions,
   useUserTypingOptionsState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";

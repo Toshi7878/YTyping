@@ -1,5 +1,5 @@
 import parse from "html-react-parser";
-import { useNextLyricsState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { useNextLyricsState } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 
 export const NextLyrics = () => {

@@ -5,7 +5,7 @@ import {
   useNextLyricsState,
   usePlayingInputModeState,
   useUserTypingOptionsState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 

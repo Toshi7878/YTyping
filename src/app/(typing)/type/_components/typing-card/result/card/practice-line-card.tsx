@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+import { useLineResultState } from "@/app/(typing)/type/_lib/atoms/family";
+import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   useBuiltMapState,
-  useLineResultState,
   useLineSelectIndexState,
   usePlayingInputModeState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
 import { useInteractJS } from "@/app/(typing)/type/_lib/utils/use-interact-js";
 import { Card, CardFooter } from "@/components/ui/card";

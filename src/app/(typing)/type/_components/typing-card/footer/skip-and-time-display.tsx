@@ -1,4 +1,4 @@
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer-atoms";
+import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   useActiveSkipGuideKeyState,
   useBuiltMapState,
@@ -6,7 +6,7 @@ import {
   useMovieDurationState,
   useSceneGroupState,
   useYTStartedState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/utils/format-time";
 

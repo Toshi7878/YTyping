@@ -4,8 +4,8 @@ import {
   readUtilityParams,
   setLineWord,
   setNewLine,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { readLineCount } from "../../atoms/read-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
+import { readLineCount } from "../../atoms/ref";
 import { useGetYouTubeTime } from "../../youtube-player/use-get-youtube-time";
 import { useCalcTypeSpeed } from "../use-calc-type-speed";
 import { useSoundEffect } from "../use-sound-effect";

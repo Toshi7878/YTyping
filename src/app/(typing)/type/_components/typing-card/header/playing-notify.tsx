@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion"; // 追加
 import { useEffect, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
-import { setNotify, useNotifyState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state-atoms";
-import { readUtilityRefParams } from "../../../_lib/atoms/read-atoms";
+import { setNotify, useNotifyState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
+import { readUtilityRefParams } from "../../../_lib/atoms/ref";
 
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
 

@@ -1,4 +1,4 @@
-import { readLineWord, readUtilityParams } from "@/app/(typing)/type/_lib/atoms/state-atoms";
+import { readLineWord, readUtilityParams } from "@/app/(typing)/type/_lib/atoms/state";
 import { CHAR_POINT } from "@/lib/build-map/build-map";
 import type { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../type";
 import { CODE_TO_KANA, KEY_TO_KANA } from "./const";

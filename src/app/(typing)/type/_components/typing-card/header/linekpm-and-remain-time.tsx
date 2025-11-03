@@ -1,4 +1,4 @@
-import { useLineKpmState, useLineRemainTimeState } from "../../../_lib/atoms/state-atoms";
+import { useLineKpmState, useLineRemainTimeState } from "../../../_lib/atoms/state";
 
 export const LineRemainTimeAndKpm = () => {
   return (

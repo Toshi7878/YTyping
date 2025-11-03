@@ -16,8 +16,8 @@ import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
 import { useMapRankingQueries } from "@/lib/queries/map-ranking.queries";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import { writeUtilityRefParams } from "../../../_lib/atoms/read-atoms";
-import { setRankStatus, useSceneGroupState } from "../../../_lib/atoms/state-atoms";
+import { writeUtilityRefParams } from "../../../_lib/atoms/ref";
+import { setRankStatus, useSceneGroupState } from "../../../_lib/atoms/state";
 import { RankingPopoverContent } from "./ranking-popover-menu";
 
 type RankingResult = RouterOutPuts["result"]["getMapRanking"][number];

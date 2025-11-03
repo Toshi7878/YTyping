@@ -1,14 +1,8 @@
 import { RESET } from "jotai/utils";
-import { resetLineCount, resetLineSubstatus, resetSubstatus, resetUtilityRefParams, resetYTPlayer } from "./read-atoms";
-import { useSetSpeed as useSetPlaySpeed } from "./speed-reducer-atoms";
-import {
-  clearAllLineResult,
-  resetCurrentLine,
-  resetSubstatusState,
-  resetTypingStatus,
-  resetUtilityParams,
-  useSetBuiltMap,
-} from "./state-atoms";
+import { clearAllLineResult } from "./family";
+import { resetLineCount, resetLineSubstatus, resetSubstatus, resetUtilityRefParams, resetYTPlayer } from "./ref";
+import { useSetSpeed as useSetPlaySpeed } from "./speed-reducer";
+import { resetCurrentLine, resetSubstatusState, resetTypingStatus, resetUtilityParams, useSetBuiltMap } from "./state";
 
 export const usePathChangeAtomReset = () => {
   const setPlaySpeed = useSetPlaySpeed();

@@ -1,8 +1,8 @@
 import { type ExtractAtomValue, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { YouTubeSpeed } from "@/utils/types";
-import { readYTPlayer } from "./read-atoms";
-import { readScene } from "./state-atoms";
+import { readYTPlayer } from "./ref";
+import { readScene } from "./state";
 import { getTypeAtomStore } from "./store";
 
 type Updater<T> = T | ((prev: T) => T);

@@ -1,14 +1,14 @@
 "use client";
 import { Ticker } from "@pixi/ticker";
 import { useCallback, useEffect, useRef } from "react";
-import { writeResultCards } from "@/app/(typing)/type/_lib/atoms/read-atoms";
+import { writeResultCards } from "@/app/(typing)/type/_lib/atoms/ref";
 import {
   setLineResultSheet,
   setLineSelectIndex,
   useBuiltMapState,
   useLineResultSheetOpenState,
   useSceneGroupState,
-} from "@/app/(typing)/type/_lib/atoms/state-atoms";
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { useMoveLine } from "@/app/(typing)/type/_lib/playing/use-move-line";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { ResultData } from "@/server/drizzle/validator/result";

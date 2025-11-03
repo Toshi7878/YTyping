@@ -1,4 +1,4 @@
-import { readBuiltMap } from "../atoms/state-atoms";
+import { readBuiltMap } from "../atoms/state";
 
 export const useGetLineCountByTime = () => {
   return (time: number): number => {
