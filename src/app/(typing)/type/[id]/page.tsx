@@ -44,7 +44,7 @@ export default async function Page({ params }: PageProps<"/type/[id]">) {
   return (
     <HydrateClient>
       <JotaiProvider userTypingOptions={userTypingOptions} mapId={mapId}>
-        <ClientProvider mapId={mapId}>
+        <ClientProvider>
           <Content videoId={mapInfo.videoId} mapId={mapId} />
         </ClientProvider>
       </JotaiProvider>

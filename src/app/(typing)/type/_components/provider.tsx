@@ -44,11 +44,9 @@ interface ClientProviderProps {
 
 export const ClientProvider = ({ children }: ClientProviderProps) => {
   useLoadSoundEffects();
-  useEffect(() => {
-    resetPreviewVideo();
-  }, []);
 
   useEffect(() => {
+    resetPreviewVideo();
     const DISABLE_KEYS = ["Home", "End", "PageUp", "PageDown", "CapsLock", "Backquote", "F3", "F6", "Space"];
 
     const disableKeyHandle = (event: KeyboardEvent) => {
