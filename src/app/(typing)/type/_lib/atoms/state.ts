@@ -123,7 +123,7 @@ export const setChangeCSSCount = (newCurrentCount: number) => {
   }
 };
 
-export const useIsPaused = () => useAtomValue(isPausedAtom, { store });
+export const useIsPausedState = () => useAtomValue(isPausedAtom, { store });
 export const setIsPaused = (value: ExtractAtomValue<typeof isPausedAtom>) => store.set(isPausedAtom, value);
 
 export const useMovieDurationState = () => useAtomValue(movieDurationAtom, { store });
@@ -153,7 +153,7 @@ export const setLineSelectIndex = (lineIndex: number) => {
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const setYTStarted = (value: ExtractAtomValue<typeof isYTStartedAtom>) => store.set(isYTStartedAtom, value);
 
-export const replayUserNameState = () => useAtomValue(replayUserNameAtom);
+export const useReplayUserNameState = () => useAtomValue(replayUserNameAtom);
 export const setReplayUserName = (value: ExtractAtomValue<typeof replayUserNameAtom>) =>
   store.set(replayUserNameAtom, value);
 

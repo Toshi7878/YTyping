@@ -14,7 +14,6 @@ import {
 
 export const hasLineResultImproved = (count: number) => {
   const lineResults = readAllLineResult();
-  console.log(lineResults);
   const { miss: lineMiss } = readLineSubstatus();
   const savedLineResult = lineResults[count];
   const typingStatus = readTypingStatus();

@@ -6,10 +6,10 @@ import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { Slider } from "../ui/slider";
 
 interface VolumeRangeProps {
-  player: YT.Player | null;
+  YTPlayer: YT.Player | null;
 }
 
-export const VolumeRange = ({ player, ...props }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) => {
+export const VolumeRange = ({ YTPlayer, ...props }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) => {
   const volume = useVolumeState();
   const setVolume = useSetVolume();
   const isMobile = useIsMobileDeviceState();
@@ -21,8 +21,8 @@ export const VolumeRange = ({ player, ...props }: VolumeRangeProps & HTMLAttribu
     if (!newVolume) return;
 
     setVolume(newVolume);
-    if (player) {
-      player.setVolume(newVolume);
+    if (YTPlayer) {
+      YTPlayer.setVolume(newVolume);
     }
   };
 

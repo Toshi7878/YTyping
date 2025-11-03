@@ -1,15 +1,16 @@
 "use client";
 import { Provider as JotaiProvider } from "jotai";
-import { RESET, useHydrateAtoms } from "jotai/utils";
+import { useHydrateAtoms } from "jotai/utils";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { useSetPreviewVideo } from "@/lib/atoms/global-atoms";
+import { resetPreviewVideo } from "@/lib/atoms/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
+import { mapIdAtom } from "../_lib/atoms/ref";
 import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
 import { userTypingOptionsAtom } from "../_lib/atoms/state";
 import { getTypeAtomStore } from "../_lib/atoms/store";
+import { mutateTypingStats } from "../_lib/playing/mutate-stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
-import { useSendUserStats } from "../_lib/playing/use-send-user-stats";
 
 interface ClientProviderProps {
   userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
@@ -19,18 +20,19 @@ interface ClientProviderProps {
 
 export const ClientProvider = ({ userTypingOptions, mapId, children }: ClientProviderProps) => {
   const store = getTypeAtomStore();
-  const setPreviewVideoState = useSetPreviewVideo();
-  const { sendTypingStats } = useSendUserStats();
 
-  useHydrateAtoms([...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : [])], {
-    dangerouslyForceHydrate: true,
-    store,
-  });
+  useHydrateAtoms(
+    [[mapIdAtom, Number(mapId)], ...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : [])],
+    {
+      dangerouslyForceHydrate: true,
+      store,
+    },
+  );
 
   useLoadSoundEffects();
   useEffect(() => {
-    setPreviewVideoState(RESET);
-  }, [setPreviewVideoState]);
+    resetPreviewVideo();
+  }, []);
 
   useEffect(() => {
     const DISABLE_KEYS = ["Home", "End", "PageUp", "PageDown", "CapsLock", "Backquote", "F3", "F6", "Space"];
@@ -45,10 +47,10 @@ export const ClientProvider = ({ userTypingOptions, mapId, children }: ClientPro
 
     return () => {
       window.removeEventListener("keydown", disableKeyHandle);
+      mutateTypingStats();
       resetAllStateOnCleanup();
-      sendTypingStats();
     };
-  }, [mapId, sendTypingStats]);
+  }, [mapId]);
 
   return <JotaiProvider store={store}>{children}</JotaiProvider>;
 };

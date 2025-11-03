@@ -7,10 +7,11 @@ import { readYTPlayer } from "../atoms/ref";
 import { setPlayingInputMode, setScene } from "../atoms/state";
 import type { PlayMode } from "../type";
 
-export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "playing"> }) => {
+export const useLoadResultAndStartPlay = ({ startMode }: { startMode: Exclude<PlayMode, "playing"> }) => {
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
+
   return async (resultId: number | null) => {
     const YTPlayer = readYTPlayer();
     if (!YTPlayer) return;
@@ -27,7 +28,6 @@ export const useResultPlay = ({ startMode }: { startMode: Exclude<PlayMode, "pla
         showLoading({ message: "リザルトデータを読込中..." });
         const resultData = await queryClient.ensureQueryData(trpc.result.getResultJson.queryOptions({ resultId }));
 
-        console.log(resultData);
         if (startMode === "replay") {
           const mode = resultData[0]?.status?.mode ?? "roma";
           setPlayingInputMode(mode);

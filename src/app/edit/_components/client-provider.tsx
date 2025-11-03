@@ -1,11 +1,10 @@
 "use client";
 import { Provider as JotaiProvider } from "jotai";
-import { RESET } from "jotai/utils";
 import { useParams } from "next/navigation";
 import type React from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useSetPreviewVideo } from "@/lib/atoms/global-atoms";
+import { resetPreviewVideo } from "@/lib/atoms/global-atoms";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
@@ -18,15 +17,14 @@ interface EditProviderProps {
 
 export const EditProvider = ({ children }: EditProviderProps) => {
   const store = getEditAtomStore();
-  const setPreviewVideoState = useSetPreviewVideo();
   const hasUploadPermission = useHasMapUploadPermission();
   const { addTimer, removeTimer } = useTimerRegistration();
   const pathChangeReset = usePathChangeAtomReset();
   const { id: mapId } = useParams();
 
   useEffect(() => {
-    setPreviewVideoState(RESET);
-  }, [setPreviewVideoState]);
+    resetPreviewVideo();
+  }, []);
 
   useEffect(() => {
     if (!hasUploadPermission) {

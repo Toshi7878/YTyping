@@ -1,39 +1,43 @@
 "use client";
-import { RESET } from "jotai/utils";
 import { useEffect } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import {
+  resetPreviewVideo,
   usePreviewVideoState,
   useSetPreviewPlayer,
-  useSetPreviewVideo,
   useVolumeState,
 } from "../../lib/atoms/global-atoms";
+
+const onKeyDown = (event: KeyboardEvent) => {
+  if (event.key === "Escape") {
+    resetPreviewVideo();
+  }
+};
 
 // biome-ignore lint/style/noDefaultExport: <dynamic importを使うため>
 export default function PreviewYouTubePlayer() {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
 
   const volume = useVolumeState();
-  const previewYouTubeKeyDown = usePreviewYouTubeKeyDown();
   const setPreviewPlayer = useSetPreviewPlayer();
 
   useEffect(() => {
-    window.addEventListener("keydown", previewYouTubeKeyDown);
-    return () => window.removeEventListener("keydown", previewYouTubeKeyDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [videoId]);
 
   if (!videoId) return null;
 
   const onReady = (event: YouTubeEvent) => {
-    const player = event.target;
-    player.setVolume(volume);
-    player.seekTo(Number(previewTime), true);
-    player.playVideo();
-    setPreviewPlayer(player);
+    const YTPlayer = event.target;
+    YTPlayer.setVolume(volume);
+    YTPlayer.seekTo(Number(previewTime), true);
+    YTPlayer.playVideo();
+    setPreviewPlayer(YTPlayer);
   };
 
   const onPlay = (event: YouTubeEvent) => {
-    setTimeout(() => event.target.setPlaybackRate(previewSpeed ?? 1), 300);
+    event.target.setPlaybackRate(previewSpeed ?? 1);
   };
 
   return (
@@ -57,13 +61,3 @@ export default function PreviewYouTubePlayer() {
     />
   );
 }
-
-const usePreviewYouTubeKeyDown = () => {
-  const setPreviewVideo = useSetPreviewVideo();
-
-  return (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      setPreviewVideo(RESET);
-    }
-  };
-};

@@ -1,8 +1,9 @@
-import { atom, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
+import { atom, type ExtractAtomValue, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
+import type { Updater } from "@/utils/types";
 
 const store = getDefaultStore();
 
@@ -24,7 +25,10 @@ const previewVideoAtom = atomWithReset<{
 const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
 
 export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store });
-export const useSetPreviewVideo = () => useSetAtom(previewVideoAtom, { store });
+
+export const setPreviewVideo = (update: Updater<ExtractAtomValue<typeof previewVideoAtom>>) =>
+  store.set(previewVideoAtom, update);
+export const resetPreviewVideo = () => store.set(previewVideoAtom, RESET);
 export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, { store });
 export const useSetPreviewPlayer = () => useSetAtom(previewPlayerFocusAtom, { store });
 

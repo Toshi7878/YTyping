@@ -7,7 +7,7 @@ import { FooterButtons } from "./footer/buttons";
 import { SkipAndTimeDisplay } from "./footer/skip-and-time-display";
 import { Combo } from "./header/combo";
 import { LineRemainTimeAndKpm } from "./header/linekpm-and-remain-time";
-import { PlayingNotify } from "./header/playing-notify";
+import { PlayingNotify } from "./header/notify";
 import { PlayingScene } from "./playing/playing-scene";
 import { ReadyScene } from "./ready/ready-scene";
 import { PracticeLineCard } from "./result/card/practice-line-card";

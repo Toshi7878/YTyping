@@ -7,6 +7,9 @@ import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
 
+export const mapIdAtom = atomWithReset(0);
+export const readMapId = () => store.get(mapIdAtom);
+
 const lineCountAtom = atomWithReset(0);
 export const readLineCount = () => store.get(lineCountAtom);
 export const writeLineCount = (count: number) => store.set(lineCountAtom, count);

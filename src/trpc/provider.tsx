@@ -25,31 +25,29 @@ const getQueryClient = () => {
 
 export const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();
 export type Trpc = ReturnType<typeof useTRPC>;
-
+export const trpcClient = createTRPCClient<AppRouter>({
+  links: [
+    loggerLink({
+      enabled: (op) => env.NODE_ENV === "development" || (op.direction === "down" && op.result instanceof Error),
+    }),
+    httpBatchStreamLink({
+      transformer: SuperJSON,
+      url: `${getBaseUrl()}/api/trpc`,
+      headers() {
+        const headers = new Headers();
+        headers.set("x-trpc-source", "nextjs-react");
+        return headers;
+      },
+    }),
+  ],
+});
 // biome-ignore lint/style/noDefaultExport: <名前空間が被るため>
 export default function Provider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
-  const [trpcClient] = useState(() =>
-    createTRPCClient<AppRouter>({
-      links: [
-        loggerLink({
-          enabled: (op) => env.NODE_ENV === "development" || (op.direction === "down" && op.result instanceof Error),
-        }),
-        httpBatchStreamLink({
-          transformer: SuperJSON,
-          url: `${getBaseUrl()}/api/trpc`,
-          headers() {
-            const headers = new Headers();
-            headers.set("x-trpc-source", "nextjs-react");
-            return headers;
-          },
-        }),
-      ],
-    }),
-  );
+  const [client] = useState(() => trpcClient);
   return (
     <QueryClientProvider client={queryClient}>
-      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+      <TRPCProvider trpcClient={client} queryClient={queryClient}>
         {children}
       </TRPCProvider>
     </QueryClientProvider>

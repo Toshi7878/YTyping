@@ -1,5 +1,4 @@
 import { Ticker } from "@pixi/ticker";
-import { useRef } from "react";
 import {
   readLineCount,
   readLineSubstatus,
@@ -31,7 +30,7 @@ import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
 import type { BuiltMapLine } from "../../type";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
-import { useOnEnd } from "../../youtube-player/use-youtube-events";
+import { onEnd } from "../../youtube-player/use-youtube-events";
 import { calcTypeSpeed } from "../calc-type-speed";
 import { getLineCountByTime } from "../get-line-count-by-time";
 import { applyKanaInputMode, applyRomaInputMode } from "../input-mode-change";
@@ -42,19 +41,13 @@ import { processReplayKeyAtTimestamp } from "./replay-processor";
 
 const typeTicker = new Ticker();
 
-export const useTimerRegistration = () => {
-  const playTimer = useTimer();
+export const addTimer = () => {
+  typeTicker.add(timer);
+};
 
-  const addTimer = () => {
-    typeTicker.add(playTimer);
-  };
-
-  const removeTimer = () => {
-    typeTicker.stop();
-    typeTicker.remove(playTimer);
-  };
-
-  return { addTimer, removeTimer };
+export const removeTimer = () => {
+  typeTicker.stop();
+  typeTicker.remove(timer);
 };
 
 export const timerControls = {
@@ -75,114 +68,109 @@ export const timerControls = {
     typeTicker.minFPS = rate;
   },
 };
+let lastUpdateTime = 0;
 
-const useTimer = () => {
-  const onEnd = useOnEnd();
-  const lastUpdateTimeRef = useRef(0);
+const timer = () => {
+  const map = readBuiltMap();
+  if (!map) return;
 
-  const proceedToNextLine = ({
-    currentTime,
-    constantLineTime,
-    nextLine,
-    prevCount,
-    isVideoEnded,
-  }: {
-    currentTime: number;
-    constantLineTime: number;
-    nextLine: BuiltMapLine | undefined;
-    prevCount: number;
-    isVideoEnded: boolean;
-  }) => {
-    const { scene, movieDuration } = readUtilityParams();
-    const { isCompleted } = readLineSubstatus();
+  const { currentTime, constantTime, currentLineTime, constantLineTime, constantRemainLineTime } = getRemainLineTime();
+  const { movieDuration } = readUtilityParams();
 
-    if (!isCompleted && scene !== "replay") {
-      processIncompleteLineEnd({ constantLineTime, count: prevCount });
-    }
+  const count = readLineCount();
+  const nextLine = map.mapData[count + 1];
+  const nextLineTime = nextLine && movieDuration > nextLine.time ? nextLine.time : movieDuration;
 
-    const isEnd = nextLine?.lyrics === "end" || currentTime >= movieDuration || isVideoEnded;
+  const hasReachedNextLineTime = currentTime >= nextLineTime;
+  const YTPlayer = readYTPlayer();
+  const isVideoEnded = YTPlayer?.getPlayerState() === YT.PlayerState.ENDED;
+  if (hasReachedNextLineTime || isVideoEnded) {
+    proceedToNextLine({ currentTime, constantLineTime, nextLine, prevCount: count, isVideoEnded });
+    return;
+  }
 
-    if (isEnd) {
-      onEnd();
-      timerControls.stopTimer();
-      const YTPlayer = readYTPlayer();
-      YTPlayer?.stopVideo();
-      YTPlayer?.cueVideoById(YTPlayer.getVideoData().video_id);
-      return;
-    }
+  const shouldUpdate100ms = Math.abs(constantTime - lastUpdateTime) >= 0.1;
+  if (shouldUpdate100ms) {
+    updateEvery100ms({ currentTime, constantTime, constantLineTime, constantRemainLineTime });
+    lastUpdateTime = constantTime;
+  }
 
-    if (nextLine) {
-      const nextCount = scene === "play" ? prevCount + 1 : getLineCountByTime(currentTime);
-      setupLine(nextCount);
-    }
-  };
+  setLineProgressValue(currentLineTime);
+  const { scene } = readUtilityParams();
 
-  const updateEvery100ms = ({
+  if (scene === "replay") {
+    processReplayKeyAtTimestamp({ constantLineTime, constantRemainLineTime });
+  }
+};
+
+const proceedToNextLine = ({
+  currentTime,
+  constantLineTime,
+  nextLine,
+  prevCount,
+  isVideoEnded,
+}: {
+  currentTime: number;
+  constantLineTime: number;
+  nextLine: BuiltMapLine | undefined;
+  prevCount: number;
+  isVideoEnded: boolean;
+}) => {
+  const { scene, movieDuration } = readUtilityParams();
+  const { isCompleted } = readLineSubstatus();
+
+  if (!isCompleted && scene !== "replay") {
+    processIncompleteLineEnd({ constantLineTime, count: prevCount });
+  }
+
+  const isEnd = nextLine?.lyrics === "end" || currentTime >= movieDuration || isVideoEnded;
+
+  if (isEnd) {
+    onEnd();
+    timerControls.stopTimer();
+    const YTPlayer = readYTPlayer();
+    YTPlayer?.stopVideo();
+    YTPlayer?.cueVideoById(YTPlayer.getVideoData().video_id);
+    return;
+  }
+
+  if (nextLine) {
+    const nextCount = scene === "play" ? prevCount + 1 : getLineCountByTime(currentTime);
+    setupLine(nextCount);
+  }
+};
+
+const updateEvery100ms = ({
+  currentTime,
+  constantLineTime,
+  constantRemainLineTime,
+  constantTime,
+}: {
+  currentTime: number;
+  constantTime: number;
+  constantLineTime: number;
+  constantRemainLineTime: number;
+}) => {
+  setLineRemainTime(constantRemainLineTime);
+
+  const { isCompleted } = readLineSubstatus();
+
+  if (!isCompleted) {
+    calcTypeSpeed({ updateType: "timer", constantLineTime });
+  }
+
+  updateSkipGuideVisibility({
+    kana: readLineWord().nextChar.k,
     currentTime,
     constantLineTime,
     constantRemainLineTime,
-    constantTime,
-  }: {
-    currentTime: number;
-    constantTime: number;
-    constantLineTime: number;
-    constantRemainLineTime: number;
-  }) => {
-    setLineRemainTime(constantRemainLineTime);
+  });
 
-    const { isCompleted } = readLineSubstatus();
-
-    if (!isCompleted) {
-      calcTypeSpeed({ updateType: "timer", constantLineTime });
-    }
-
-    updateSkipGuideVisibility({
-      kana: readLineWord().nextChar.k,
-      currentTime,
-      constantLineTime,
-      constantRemainLineTime,
-    });
-
-    setTotalProgressValue(currentTime);
-    const elapsedSecTime = readElapsedSecTime();
-    if (Math.abs(constantTime - elapsedSecTime) >= 1) {
-      setElapsedSecTime(constantTime);
-    }
-  };
-
-  return () => {
-    const map = readBuiltMap();
-    if (!map) return;
-
-    const { currentTime, constantTime, currentLineTime, constantLineTime, constantRemainLineTime } =
-      getRemainLineTime();
-    const { movieDuration } = readUtilityParams();
-
-    const count = readLineCount();
-    const nextLine = map.mapData[count + 1];
-    const nextLineTime = nextLine && movieDuration > nextLine.time ? nextLine.time : movieDuration;
-
-    const hasReachedNextLineTime = currentTime >= nextLineTime;
-    const YTPlayer = readYTPlayer();
-    const isVideoEnded = YTPlayer?.getPlayerState() === YT.PlayerState.ENDED;
-    if (hasReachedNextLineTime || isVideoEnded) {
-      proceedToNextLine({ currentTime, constantLineTime, nextLine, prevCount: count, isVideoEnded });
-      return;
-    }
-
-    const shouldUpdate100ms = Math.abs(constantTime - lastUpdateTimeRef.current) >= 0.1;
-    if (shouldUpdate100ms) {
-      updateEvery100ms({ currentTime, constantTime, constantLineTime, constantRemainLineTime });
-      lastUpdateTimeRef.current = constantTime;
-    }
-
-    setLineProgressValue(currentLineTime);
-    const { scene } = readUtilityParams();
-
-    if (scene === "replay") {
-      processReplayKeyAtTimestamp({ constantLineTime, constantRemainLineTime });
-    }
-  };
+  setTotalProgressValue(currentTime);
+  const elapsedSecTime = readElapsedSecTime();
+  if (Math.abs(constantTime - elapsedSecTime) >= 1) {
+    setElapsedSecTime(constantTime);
+  }
 };
 
 const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTime: number; count: number }) => {

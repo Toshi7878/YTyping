@@ -13,8 +13,6 @@ import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissStatusRefs } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessStatusRefs } from "../update-status/success";
-import { togglePause } from "./hot-key/toggle-pause";
-import { usePlayingHotKey } from "./hot-key/use-hot-key";
 import { evaluateTypingKeyEvent } from "./typing-input-evaluator";
 
 const KEY_WHITE_LIST = ["F5"];
@@ -22,35 +20,15 @@ const CTRL_KEY_WHITE_CODE_LIST = ["KeyC", "KeyV", "KeyZ", "KeyY", "KeyX"];
 const ALT_KEY_WHITE_CODE_LIST = ["ArrowLeft", "ArrowRight"];
 const OPEN_DRAWER_CTRL_KEY_CODE_LIST = ["KeyF"];
 
-export const useOnKeydown = () => {
-  const handleHotKey = usePlayingHotKey();
+export const isHotKeyIgnored = (event: KeyboardEvent) => {
+  const { lineResultdrawerClosure: drawerClosure } = readUtilityParams();
 
-  return (event: KeyboardEvent) => {
-    const { scene, isPaused } = readUtilityParams();
-
-    if ((!isPaused || scene === "practice") && event.key !== "Escape") {
-      if (isKeydownTyped(event)) {
-        event.preventDefault();
-        handleTyping(event);
-        return;
-      }
-    } else if (event.key === "Escape") {
-      event.preventDefault();
-      togglePause();
-      return;
-    }
-
-    const { lineResultdrawerClosure: drawerClosure } = readUtilityParams();
-
-    const isAllowedKey =
-      KEY_WHITE_LIST.includes(event.code) ||
-      (event.ctrlKey && CTRL_KEY_WHITE_CODE_LIST.includes(event.code)) ||
-      (event.altKey && !event.ctrlKey && ALT_KEY_WHITE_CODE_LIST.includes(event.code)) ||
-      (event.ctrlKey && OPEN_DRAWER_CTRL_KEY_CODE_LIST.includes(event.code) && drawerClosure);
-    if (isAllowedKey) return;
-
-    handleHotKey(event);
-  };
+  return (
+    KEY_WHITE_LIST.includes(event.code) ||
+    (event.ctrlKey && CTRL_KEY_WHITE_CODE_LIST.includes(event.code)) ||
+    (event.altKey && !event.ctrlKey && ALT_KEY_WHITE_CODE_LIST.includes(event.code)) ||
+    (event.ctrlKey && OPEN_DRAWER_CTRL_KEY_CODE_LIST.includes(event.code) && drawerClosure)
+  );
 };
 
 const CODES_SET = new Set([
@@ -100,7 +78,7 @@ const TENKEYS_SET = new Set([
   "NumpadDecimal",
 ]);
 
-const isKeydownTyped = (event: KeyboardEvent) => {
+export const isTypingKey = (event: KeyboardEvent) => {
   const { scene } = readUtilityParams();
 
   if (scene === "replay") return false;
@@ -115,7 +93,7 @@ const isKeydownTyped = (event: KeyboardEvent) => {
   return Boolean(lineWord.nextChar.k);
 };
 
-const handleTyping = (event: KeyboardEvent) => {
+export const handleTyping = (event: KeyboardEvent) => {
   const evaluateResult = evaluateTypingKeyEvent(event);
   const { isSuccess, isFailed, isCompleted, newLineWord, successKey, failKey, typeChunk, updatePoint } = evaluateResult;
   if (!newLineWord) return;

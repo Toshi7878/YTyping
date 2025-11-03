@@ -5,16 +5,16 @@ import { handlePlaySpeedAction, usePlaySpeedState } from "@/app/(typing)/type/_l
 import {
   readUtilityParams,
   setLineResultSheet,
-  useIsPaused,
+  useIsPausedState,
   useSceneGroupState,
   useSceneState,
   useUserTypingOptionsState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state";
-import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
+import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { moveNextLine, movePrevLine } from "../../../_lib/playing/move-line";
 
 export const FooterButtons = () => {
@@ -49,7 +49,7 @@ export const FooterButtons = () => {
 const SpeedButton = () => {
   const scene = useSceneState();
   const { playSpeed } = usePlaySpeedState();
-  const isPaused = useIsPaused();
+  const isPaused = useIsPausedState();
 
   if (scene === "practice") {
     return (
@@ -104,8 +104,7 @@ const PracticeButtons = () => {
 };
 
 const RetryButton = () => {
-  const retry = useRetry();
-  const isPaused = useIsPaused();
+  const isPaused = useIsPausedState();
   return (
     <ButtonWithKbd
       buttonLabel="やり直し"
@@ -114,7 +113,7 @@ const RetryButton = () => {
         const { scene } = readUtilityParams();
 
         if (scene === "play" || scene === "practice" || scene === "replay") {
-          retry(scene);
+          commitPlayRestart(scene);
         }
       }}
       disabled={isPaused}

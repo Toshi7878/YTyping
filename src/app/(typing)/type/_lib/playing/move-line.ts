@@ -2,7 +2,7 @@ import { readLineCount, readLineProgress, readResultCards, readYTPlayer, writeLi
 import { readPlaySpeed } from "../atoms/speed-reducer";
 import { readBuiltMap, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
 import { getLineCountByTime } from "./get-line-count-by-time";
-import { setupLine, timerControls } from "./timer/use-timer";
+import { setupLine, timerControls } from "./timer/timer";
 
 const SEEK_BUFFER_TIME = 0.8;
 

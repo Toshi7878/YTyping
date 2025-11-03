@@ -15,9 +15,11 @@ import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
+import { handleTyping, isHotKeyIgnored, isTypingKey } from "../../../_lib/playing/keydown/handle-typing";
 import { commitLineSkip } from "../../../_lib/playing/keydown/hot-key/commit-line-skip";
-import { useOnKeydown } from "../../../_lib/playing/keydown/use-keydown-event";
-import { timerControls } from "../../../_lib/playing/timer/use-timer";
+import { handlePlayHotKey } from "../../../_lib/playing/keydown/hot-key/handle-play-hot-key";
+import { togglePause } from "../../../_lib/playing/keydown/hot-key/toggle-pause";
+import { timerControls } from "../../../_lib/playing/timer/timer";
 import { ChangeCSS } from "./playing-child/change-css-style";
 import { Lyrics } from "./playing-child/lyrics-text";
 import { NextLyrics } from "./playing-child/next-lyrics";
@@ -51,7 +53,6 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     };
   }, [scene]);
 
-  const handleKeydown = useOnKeydown();
   const map = useBuiltMapState();
 
   useEffect(() => {
@@ -80,13 +81,13 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     const isTextInput = activeElement?.tagName === "INPUT" || activeElement?.tagName === "TEXTAREA";
 
     if (!isTextInput) {
-      window.addEventListener("keydown", handleKeydown);
+      window.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
-      window.removeEventListener("keydown", handleKeydown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [activeElement, handleKeydown]);
+  }, [activeElement]);
 
   return (
     <div
@@ -106,6 +107,26 @@ export const PlayingScene = ({ className }: PlayingProps) => {
       <ChangeCSS />
     </div>
   );
+};
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  const { scene, isPaused } = readUtilityParams();
+
+  if ((!isPaused || scene === "practice") && event.key !== "Escape") {
+    if (isTypingKey(event)) {
+      event.preventDefault();
+      handleTyping(event);
+      return;
+    }
+  } else if (event.key === "Escape") {
+    event.preventDefault();
+    togglePause();
+    return;
+  }
+
+  if (isHotKeyIgnored(event)) return;
+
+  handlePlayHotKey(event);
 };
 
 const sendUserStats = () => {

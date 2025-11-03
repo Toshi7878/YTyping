@@ -1,7 +1,7 @@
 import type { RefObject } from "react";
 
 import { useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
-import { useRetry } from "@/app/(typing)/type/_lib/playing/use-retry";
+import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-restart";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,11 @@ interface RetryButtonProps {
 
 export const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: RetryButtonProps) => {
   const scene = useSceneState();
-  const retry = useRetry();
   const confirm = useConfirm();
 
   const handleRetry = async () => {
     if (!isRetryAlert) {
-      retry(retryMode);
+      commitPlayRestart(retryMode);
       return;
     }
 
@@ -33,7 +32,7 @@ export const RetryButton = ({ isRetryAlert, retryMode, retryBtnRef }: RetryButto
     });
 
     if (isConfirmed) {
-      retry(retryMode);
+      commitPlayRestart(retryMode);
     }
   };
 

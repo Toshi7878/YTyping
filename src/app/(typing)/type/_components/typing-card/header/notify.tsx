@@ -1,14 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion"; // 追加
 import { useEffect, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
-import { replayUserNameState, setNotify, useNotifyState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
+import { setNotify, useNotifyState, useReplayUserNameState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
+import { cn } from "@/lib/utils";
 
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
 
 export const PlayingNotify = () => {
   const notify = useNotifyState();
   const scene = useSceneState();
-  const replayUserName = replayUserNameState();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const playModeNotify = () => {
@@ -61,27 +61,40 @@ export const PlayingNotify = () => {
       id="playing_notify"
     >
       {NON_ANIMATED.includes(notify.description || "") ? (
-        <div className={notify.description === "Replay" || notify.description === "Practice" ? "opacity-30" : ""}>
-          {notify.description === "ll" ? (
-            <FaPause />
-          ) : notify.description === "Replay" ? (
-            `${replayUserName} Replay`
-          ) : (
-            notify.description
-          )}
+        <div className={cn(notify.description === "Replay" || notify.description === "Practice" ? "opacity-30" : "")}>
+          <NonAnimatedNotifyText description={notify.description ?? ""} />
         </div>
       ) : (
-        <AnimatePresence mode="popLayout" key={Date.now()}>
-          <motion.div
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            exit={{ opacity: 0 }}
-          >
-            <div>{notify.description === "▶" ? <FaPlay /> : notify.description}</div>
-          </motion.div>
-        </AnimatePresence>
+        <TransitionNotify description={notify.description ?? ""} />
       )}
     </div>
+  );
+};
+
+const NonAnimatedNotifyText = ({ description }: { description: string }) => {
+  const replayUserName = useReplayUserNameState();
+
+  switch (description) {
+    case "ll":
+      return <FaPause />;
+    case "Replay":
+      return `${replayUserName} Replay`;
+    case "Practice":
+      return "Practice";
+  }
+};
+
+const TransitionNotify = ({ description }: { description: string }) => {
+  return (
+    <AnimatePresence mode="popLayout" key={Date.now()}>
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+        exit={{ opacity: 0 }}
+      >
+        <div>{description === "▶" ? <FaPlay /> : description}</div>
+      </motion.div>
+    </AnimatePresence>
   );
 };

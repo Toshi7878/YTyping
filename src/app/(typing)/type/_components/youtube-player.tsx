@@ -10,15 +10,8 @@ import { windowFocus } from "@/utils/window-focus";
 import { readYTPlayer } from "../_lib/atoms/ref";
 import { readUtilityParams } from "../_lib/atoms/state";
 import { iosActiveSound } from "../_lib/playing/sound-effect";
-import { useTimerRegistration } from "../_lib/playing/timer/use-timer";
-import {
-  useOnEnd,
-  useOnPause,
-  useOnPlay,
-  useOnRateChange,
-  useOnReady,
-  useOnSeeked,
-} from "../_lib/youtube-player/use-youtube-events";
+import { addTimer, removeTimer } from "../_lib/playing/timer/timer";
+import { onEnd, onPause, onPlay, onRateChange, onReady, onSeeked } from "../_lib/youtube-player/use-youtube-events";
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;
@@ -27,13 +20,6 @@ interface YouTubePlayerProps {
 }
 
 export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
-  const onReady = useOnReady();
-  const onPlay = useOnPlay();
-  const onPause = useOnPause();
-  const onEnd = useOnEnd();
-  const onSeeked = useOnSeeked();
-  const onRateChange = useOnRateChange();
-  const { addTimer, removeTimer } = useTimerRegistration();
   const isMobile = useIsMobileDeviceState();
 
   useEffect(() => {

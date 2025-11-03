@@ -32,7 +32,7 @@ export const MenuBar = () => {
       <div id="menu_bar" className="bg-card">
         <div className="mx-4 flex flex-col items-center justify-between lg:flex-row">
           <div className="flex flex-col items-center lg:flex-row">
-            <VolumeRange player={readPlayer()} />
+            <VolumeRange YTPlayer={readPlayer()} />
             <MenuButton disabled={true} image={metronome} title="倍速" />
           </div>
           <div className="flex w-full justify-between lg:w-1/5">

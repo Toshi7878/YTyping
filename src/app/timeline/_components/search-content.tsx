@@ -5,7 +5,7 @@ import { FilterFieldsPopover } from "./search/filter-fields-popover";
 import { SearchInputs } from "./search/search-input-fields";
 
 export const SearchContent = () => {
-  const player = usePreviewPlayerState();
+  const YTPlayer = usePreviewPlayerState();
 
   return (
     <section className="space-y-6">
@@ -13,7 +13,7 @@ export const SearchContent = () => {
 
       <div className="flex justify-between">
         <FilterFieldsPopover />
-        <VolumeRange player={player} />
+        <VolumeRange YTPlayer={YTPlayer} />
       </div>
     </section>
   );

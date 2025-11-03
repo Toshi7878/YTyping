@@ -11,7 +11,7 @@ export const SoundEffectOptions = () => {
   return (
     <section className="space-y-4">
       <H4>サウンド</H4>
-      <VolumeRange player={readYTPlayer()} />
+      <VolumeRange YTPlayer={readYTPlayer()} />
       <div className="flex flex-row gap-4">
         <LabeledCheckbox
           label="タイプ音"
