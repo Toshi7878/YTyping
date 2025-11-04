@@ -1,20 +1,14 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import type { YouTubeEvent } from "react-youtube";
 import YouTube from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { cn } from "@/lib/utils";
-import { usePlayer } from "../_lib/atoms/read-atoms";
-import {
-  useIsYTReadiedState,
-  useIsYTStartedState,
-  useReadYtPlayerStatus,
-  useVideoIdState,
-} from "../_lib/atoms/state-atoms";
-import { useUpdateEndTime } from "../_lib/map-table/use-update-end-time";
-import { useOnEnd, useOnPause, useOnPlay, useOnReady, useOnSeeked } from "../_lib/youtube-player/use-youtube-event";
+import { readYTPlayer } from "../_lib/atoms/ref";
+import { readYTPlayerStatus, useIsYTReadiedState, useIsYTStartedState, useVideoIdState } from "../_lib/atoms/state";
+import { updateEndTime } from "../_lib/map-table/update-end-time";
+import { onEnd, onPause, onPlay, onReady, onStateChange } from "../_lib/youtube-player/youtube-event";
 
 interface YouTubePlayerProps {
   className: string;
@@ -23,56 +17,31 @@ interface YouTubePlayerProps {
 
 export const YouTubePlayer = ({ className, videoId: mapVideoId }: YouTubePlayerProps) => {
   const videoId = useVideoIdState();
-  const onReady = useOnReady();
-  const onPlay = useOnPlay();
-  const onPause = useOnPause();
-  const onEnd = useOnEnd();
-  const onSeek = useOnSeeked();
-
-  const updateEndTime = useUpdateEndTime();
-  const { readPlayer } = usePlayer();
-
   const isYTStarted = useIsYTStartedState();
   const isYTReady = useIsYTReadiedState();
-  const readYtPlayerStatus = useReadYtPlayerStatus();
 
   useHotkeys(
     "Escape",
     () => {
       const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen) return;
+      const YTPlayer = readYTPlayer();
+      if (isDialogOpen || !YTPlayer) return;
 
-      const { playing } = readYtPlayerStatus();
+      const { playing } = readYTPlayerStatus();
       if (!playing) {
-        readPlayer().playVideo();
+        YTPlayer.playVideo();
       } else {
-        readPlayer().pauseVideo();
+        YTPlayer.pauseVideo();
       }
     },
     { enableOnFormTags: false, preventDefault: true },
   );
 
   useEffect(() => {
-    if ((!isYTReady && !isYTStarted) || videoId === mapVideoId) return;
-    updateEndTime(readPlayer());
-  }, [isYTReady, isYTStarted, readPlayer, videoId, updateEndTime, mapVideoId]);
-
-  const onStateChange = useCallback(
-    (event: YouTubeEvent) => {
-      if (document.activeElement instanceof HTMLIFrameElement) {
-        document.activeElement.blur();
-      }
-
-      if (event.data === 3) {
-        // seek時の処理
-        onSeek(event);
-      } else if (event.data === 1) {
-        //	未スタート、他の動画に切り替えた時など
-        console.log("未スタート -1");
-      }
-    },
-    [onSeek],
-  );
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer || (!isYTReady && !isYTStarted) || videoId === mapVideoId) return;
+    updateEndTime(YTPlayer);
+  }, [isYTReady, isYTStarted, videoId, mapVideoId]);
 
   return (
     <div className="relative h-fit">

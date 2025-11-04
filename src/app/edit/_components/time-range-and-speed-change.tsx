@@ -2,18 +2,13 @@
 
 import { useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useReadYtPlayerStatus, useYTSpeedState } from "@/app/edit/_lib/atoms/state-atoms";
+import { readYTPlayerStatus, setTimeRangeValue, setYTSpeed, useYTSpeedState } from "@/app/edit/_lib/atoms/state";
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import type { YouTubeSpeed } from "@/utils/types";
-import { usePlayer } from "../_lib/atoms/read-atoms";
-import {
-  useSetTimeRangeValue,
-  useSetYTSpeed,
-  useTimeRangeValueState,
-  useYTDurationState,
-} from "../_lib/atoms/state-atoms";
+import { readYTPlayer } from "../_lib/atoms/ref";
+import { useTimeRangeValueState, useYTDurationState } from "../_lib/atoms/state";
 
 export const TimeRangeAndSpeedChange = ({ className }: { className: string }) => {
   return (
@@ -25,19 +20,18 @@ export const TimeRangeAndSpeedChange = ({ className }: { className: string }) =>
 };
 
 const TimeRange = () => {
-  const { readPlayer } = usePlayer();
-
   const timeRangeValue = useTimeRangeValueState();
   const ytDuration = useYTDurationState();
 
-  const setTimeRangeValue = useSetTimeRangeValue();
   const arrowSeek = useArrowSeek();
 
   const handleRangeChange = (value: number) => {
     setTimeRangeValue(value);
-    const player = readPlayer();
-    player.playVideo();
-    player.seekTo(value, true);
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return;
+
+    YTPlayer.playVideo();
+    YTPlayer.seekTo(value, true);
   };
 
   useHotkeys(
@@ -70,7 +64,6 @@ const TimeRange = () => {
 
 const EditSpeedChange = () => {
   const speed = useYTSpeedState();
-  const setYTSpeed = useSetYTSpeed();
 
   return (
     <CounterInput
@@ -89,23 +82,20 @@ const EditSpeedChange = () => {
 };
 
 const useArrowSeek = () => {
-  const readYtPlayerStatus = useReadYtPlayerStatus();
-  const { readPlayer } = usePlayer();
+  return useCallback((event: KeyboardEvent | React.KeyboardEvent<HTMLDivElement>) => {
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return;
+    const ARROW_SEEK_SECONDS = 3;
 
-  return useCallback(
-    (event: KeyboardEvent | React.KeyboardEvent<HTMLDivElement>) => {
-      const ARROW_SEEK_SECONDS = 3;
+    const { speed } = readYTPlayerStatus();
 
-      const { speed } = readYtPlayerStatus();
-      const time = readPlayer().getCurrentTime();
-      const seekAmount = ARROW_SEEK_SECONDS * speed;
-      if (event.key === "ArrowLeft") {
-        readPlayer().seekTo(time - seekAmount, true);
-      } else if (event.key === "ArrowRight") {
-        readPlayer().seekTo(time + seekAmount, true);
-      }
-      event.preventDefault();
-    },
-    [readYtPlayerStatus, readPlayer],
-  );
+    const time = YTPlayer.getCurrentTime();
+    const seekAmount = ARROW_SEEK_SECONDS * speed;
+    if (event.key === "ArrowLeft") {
+      YTPlayer.seekTo(time - seekAmount, true);
+    } else if (event.key === "ArrowRight") {
+      YTPlayer.seekTo(time + seekAmount, true);
+    }
+    event.preventDefault();
+  }, []);
 };

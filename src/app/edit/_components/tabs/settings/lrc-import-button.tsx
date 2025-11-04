@@ -2,7 +2,7 @@
 import type React from "react";
 import { useRef } from "react";
 import { toast } from "sonner";
-import { useImportMapFile } from "@/app/edit/_lib/editor/use-import-map-file";
+import { importMapFile } from "@/app/edit/_lib/editor/import-map";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
 
@@ -10,7 +10,6 @@ export const LrcImportButton = () => {
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const importMapFile = useImportMapFile();
 
   const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

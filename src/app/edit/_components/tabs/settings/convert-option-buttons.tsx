@@ -1,7 +1,7 @@
 "use client";
 import { useMemo } from "react";
-import type { ConvertOption } from "@/app/edit/_lib/atoms/storage-atoms";
-import { useSetWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage-atoms";
+import type { ConvertOption } from "@/app/edit/_lib/atoms/storage";
+import { setWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group/radio-group";
@@ -37,7 +37,6 @@ const CONVERT_OPTIONS = [
 
 export const ConvertOptionButtons = () => {
   const wordConvertOption = useWordConvertOptionState();
-  const setWordConvertOption = useSetWordConvertOption();
 
   const optionButtons = useMemo(
     () =>
@@ -64,7 +63,7 @@ export const ConvertOptionButtons = () => {
       <Label className="text-sm whitespace-nowrap">読み変換</Label>
       <RadioGroup
         value={wordConvertOption}
-        onValueChange={(value: string) => setWordConvertOption(value as ConvertOption)}
+        onValueChange={(value) => setWordConvertOption(value as ConvertOption)}
         className="flex flex-col gap-2 sm:flex-row"
       >
         {optionButtons.map((option) => (

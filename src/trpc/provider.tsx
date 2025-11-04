@@ -2,7 +2,7 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchStreamLink, loggerLink } from "@trpc/client";
-import { createTRPCContext } from "@trpc/tanstack-react-query";
+import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import type React from "react";
 import { useState } from "react";
 import SuperJSON from "superjson";
@@ -12,7 +12,7 @@ import { getBaseUrl } from "@/utils/get-base-url";
 import { createQueryClient } from "./query-client";
 
 let clientQueryClientSingleton: QueryClient | undefined;
-const getQueryClient = () => {
+export const getQueryClient = () => {
   if (typeof window === "undefined") {
     // Server: always make a new query client
     return createQueryClient();
@@ -23,9 +23,9 @@ const getQueryClient = () => {
   return (clientQueryClientSingleton ??= createQueryClient());
 };
 
-export const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();
+export const { useTRPC, TRPCProvider, useTRPCClient } = createTRPCContext<AppRouter>();
 export type Trpc = ReturnType<typeof useTRPC>;
-export const trpcClient = createTRPCClient<AppRouter>({
+const trpcClient = createTRPCClient<AppRouter>({
   links: [
     loggerLink({
       enabled: (op) => env.NODE_ENV === "development" || (op.direction === "down" && op.result instanceof Error),
@@ -41,6 +41,15 @@ export const trpcClient = createTRPCClient<AppRouter>({
     }),
   ],
 });
+
+const trpcOptions = createTRPCOptionsProxy({
+  client: trpcClient,
+  queryClient: getQueryClient(),
+});
+
+export const getTRPCClient = () => trpcClient;
+export const getTRPCOptionsProxy = () => trpcOptions;
+
 // biome-ignore lint/style/noDefaultExport: <名前空間が被るため>
 export default function Provider({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();

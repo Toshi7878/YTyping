@@ -7,9 +7,10 @@ import { toast } from "sonner";
 import { resetPreviewVideo } from "@/lib/atoms/global-atoms";
 import { usePathChangeAtomReset } from "../_lib/atoms/reset";
 import { getEditAtomStore } from "../_lib/atoms/store";
-import { NOT_EDIT_PERMISSION_TOAST_ID } from "../_lib/const";
-import { useHasMapUploadPermission } from "../_lib/utils/use-has-map-upload-permission";
-import { useTimerRegistration } from "../_lib/youtube-player/use-timer";
+import { useHasMapUploadPermission } from "../_lib/map-table/use-has-map-upload-permission";
+import { addTimer, removeTimer } from "../_lib/youtube-player/timer";
+
+const NOT_EDIT_PERMISSION_TOAST_ID = "not-edit-permission-toast";
 
 interface EditProviderProps {
   children: React.ReactNode;
@@ -18,7 +19,6 @@ interface EditProviderProps {
 export const EditProvider = ({ children }: EditProviderProps) => {
   const store = getEditAtomStore();
   const hasUploadPermission = useHasMapUploadPermission();
-  const { addTimer, removeTimer } = useTimerRegistration();
   const pathChangeReset = usePathChangeAtomReset();
   const { id: mapId } = useParams();
 

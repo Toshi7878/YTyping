@@ -1,5 +1,5 @@
 import { readVolume } from "@/lib/atoms/global-atoms";
-import { trpcClient } from "@/trpc/provider";
+import { getTRPCClient } from "@/trpc/provider";
 import { windowFocus } from "@/utils/window-focus";
 import {
   readLineProgress,
@@ -102,6 +102,7 @@ export const onEnd = () => {
   if (scene === "play") {
     setScene("play_end");
     const mapId = readMapId();
+    const trpcClient = getTRPCClient();
     void trpcClient.userStats.incrementMapCompletionPlayCount.mutate({ mapId });
   } else if (scene === "practice") {
     setScene("practice_end");

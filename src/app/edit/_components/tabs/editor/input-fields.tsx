@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { useTimeInput } from "@/app/edit/_lib/atoms/read-atoms";
+import { writeTimeInput } from "@/app/edit/_lib/atoms/ref";
 import {
+  setIsTimeInputValid,
+  setLyrics,
+  setWord,
   useLyricsState,
   useSelectIndexState,
-  useSetIsTimeInputValid,
-  useSetLyrics,
-  useSetWord,
   useWordState,
-} from "@/app/edit/_lib/atoms/state-atoms";
-import { useLyricsRubyTagHandler } from "@/app/edit/_lib/editor/use-lyrics-ruby-tag-handler";
+} from "@/app/edit/_lib/atoms/state";
+import { handleEnterAddRuby } from "@/app/edit/_lib/editor/handle-enter-add-ruby";
 import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
 import { Input } from "@/components/ui/input/input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
@@ -31,8 +31,6 @@ export const EditorLineInput = () => {
 const LyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const lyrics = useLyricsState();
-  const setLyrics = useSetLyrics();
-  const handleEnterAddRuby = useLyricsRubyTagHandler();
 
   return (
     <TooltipWrapper
@@ -61,7 +59,6 @@ const LyricsInput = () => {
 
 const WordInput = () => {
   const word = useWordState();
-  const setWord = useSetWord();
 
   return (
     <FloatingLabelInput
@@ -83,15 +80,13 @@ const SelectedLineIndex = () => {
 
 const TimeInput = () => {
   const timeInputRef = useRef<HTMLInputElement>(null);
-  const setEditIsTimeInputValid = useSetIsTimeInputValid();
-  const { writeTimeInput } = useTimeInput();
   const [time, setTime] = useState("0");
 
   useEffect(() => {
     if (timeInputRef.current) {
       writeTimeInput(timeInputRef.current);
     }
-  }, [writeTimeInput]);
+  }, []);
 
   return (
     <Input
@@ -101,7 +96,7 @@ const TimeInput = () => {
       value={time}
       onChange={(e) => {
         setTime(e.currentTarget.value);
-        setEditIsTimeInputValid(e.currentTarget.value === "");
+        setIsTimeInputValid(e.currentTarget.value === "");
       }}
       onKeyDown={(e) => {
         const { value } = e.currentTarget;

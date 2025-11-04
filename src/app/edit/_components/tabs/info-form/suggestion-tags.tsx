@@ -1,11 +1,11 @@
 import type { VariantProps } from "class-variance-authority";
 import { useFormContext } from "react-hook-form";
 import { toast } from "sonner";
-import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
 import type { badgeVariants } from "@/components/ui/badge";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { TAG_MAX_LEN } from "./card";
 
 interface SuggestionTagsProps {
   isGeminiLoading: boolean;

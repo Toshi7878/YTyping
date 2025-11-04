@@ -1,8 +1,6 @@
-import { useSetAtom } from "jotai";
-import { atomWithReducer, useAtomCallback } from "jotai/utils";
-import { useCallback } from "react";
+import { atomWithReducer } from "jotai/utils";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
-import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer-atom";
+import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer";
 import { getEditAtomStore } from "./store";
 
 type MapLineEdit = MapLine & {
@@ -103,10 +101,5 @@ const historyReducer = (prev: typeof initialState, action: PayloadAction | Other
 
 const historyReducerAtom = atomWithReducer(initialState, historyReducer);
 
-export const useHistoryReducer = () => useSetAtom(historyReducerAtom, { store });
-export const useReadEditHistory = () => {
-  return useAtomCallback(
-    useCallback((get) => get(historyReducerAtom), []),
-    { store },
-  );
-};
+export const dispatchEditHistory = (action: PayloadAction | OtherAction) => store.set(historyReducerAtom, action);
+export const readEditHistory = () => store.get(historyReducerAtom);

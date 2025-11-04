@@ -8,9 +8,8 @@ import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
 import type z from "zod";
-import { usePlayer, useSetPreventEditortabAutoFocus } from "@/app/edit/_lib/atoms/read-atoms";
-import { TAG_MAX_LEN } from "@/app/edit/_lib/const";
-import { useHasMapUploadPermission } from "@/app/edit/_lib/utils/use-has-map-upload-permission";
+import { readYTPlayer, setPreventEditorTabAutoFocus } from "@/app/edit/_lib/atoms/ref";
+import { useHasMapUploadPermission } from "@/app/edit/_lib/map-table/use-has-map-upload-permission";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -19,28 +18,31 @@ import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { BuildMap } from "@/lib/build-map/build-map";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
-import { useGeminiQueries } from "@/lib/queries/gemini.queries";
 import { useMapQueries } from "@/lib/queries/map.queries";
 import { MapInfoFormSchema } from "@/server/drizzle/validator/map";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeId } from "@/utils/extract-youtube-id";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
-import { useMapReducer, useReadMap } from "../../../_lib/atoms/map-reducer-atom";
+import { mapAction, readMap } from "../../../_lib/atoms/map-reducer";
 import {
+  readUtilityParams,
+  setCanUpload,
+  setVideoId,
+  setYTChangingVideo,
   useCanUploadState,
-  useReadEditUtils,
-  useSetCanUpload,
-  useSetVideoId,
-  useSetYTChaningVideo,
   useVideoIdState,
-} from "../../../_lib/atoms/state-atoms";
+} from "../../../_lib/atoms/state";
 import { getThumbnailQuality } from "../../../_lib/utils/get-thumbail-quality";
 import { SuggestionTags } from "./suggestion-tags";
+
+export const TAG_MAX_LEN = 10;
 
 export const MapInfoFormCard = () => {
   const searchParams = useSearchParams();
   const mapId = usePathname().split("/")[2];
+
+  const trpc = useTRPC();
 
   const isBackUp = searchParams.get("backup") === "true";
   const newCreateVideoId = searchParams.get("new");
@@ -57,9 +59,6 @@ export const MapInfoFormCard = () => {
   });
 
   const videoId = useVideoIdState();
-  const setVideoId = useSetVideoId();
-  const mapDispatch = useMapReducer();
-  const setCanUpload = useSetCanUpload();
   const { debounce } = useDebounce(500);
 
   const form = useForm({
@@ -84,30 +83,37 @@ export const MapInfoFormCard = () => {
     if (mapInfo && !isBackUp) {
       setVideoId(mapInfo.videoId);
     }
-  }, [mapInfo, isBackUp, form, setVideoId]);
+  }, [mapInfo, isBackUp, form]);
 
   useEffect(() => {
     if (backupMap && isBackUp && newCreateVideoId) {
-      mapDispatch({ type: "replaceAll", payload: backupMap.map });
+      mapAction({ type: "replaceAll", payload: backupMap.map });
       setCanUpload(true);
       setVideoId(newCreateVideoId);
     }
-  }, [backupMap, isBackUp, newCreateVideoId, form, mapDispatch, setCanUpload, setVideoId]);
+  }, [backupMap, isBackUp, newCreateVideoId, form]);
 
   useEffect(() => {
     if (newCreateVideoId && !mapId && !isBackUp) {
       setVideoId(newCreateVideoId);
     }
-  }, [newCreateVideoId, mapId, isBackUp, setVideoId]);
+  }, [newCreateVideoId, mapId, isBackUp]);
 
   const {
     data: geminiInfoData,
     error: geminiError,
     isFetching,
   } = useQuery(
-    useGeminiQueries().generateMapInfo(
+    trpc.gemini.generateMapInfo.queryOptions(
       { videoId: videoId ?? "" },
-      { enabled: !!(videoId && !isBackUp && hasUploadPermission) },
+      {
+        enabled: !!(videoId && !isBackUp && hasUploadPermission),
+        staleTime: Infinity,
+        gcTime: Infinity,
+        retry: false,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+      },
     ),
   );
 
@@ -225,8 +231,6 @@ const VideoIdInput = () => {
   const { watch, formState, setValue, getValues } = useFormContext();
   const { dirtyFields } = formState;
   const formVideoId = watch("videoId");
-  const setVideoId = useSetVideoId();
-  const setYTChaningVideo = useSetYTChaningVideo();
 
   return (
     <div className="flex w-full items-center gap-4">
@@ -256,7 +260,7 @@ const VideoIdInput = () => {
               if (formVideoId.length !== 11) return;
 
               setVideoId(getValues("videoId"));
-              setYTChaningVideo(true);
+              setYTChangingVideo(true);
             }}
           >
             動画切り替え
@@ -268,16 +272,14 @@ const VideoIdInput = () => {
 };
 
 const PreviewTimeInput = () => {
-  const { readPlayer } = usePlayer();
   const { watch, setValue, getValues } = useFormContext();
   const previewTime = watch("previewTime");
-  const setPreventEditortabAutoFocus = useSetPreventEditortabAutoFocus();
-  const setCanUpload = useSetCanUpload();
 
   const handlePreviewClick = () => {
-    readPlayer().playVideo();
-    readPlayer().seekTo(Number(previewTime), true);
-    setPreventEditortabAutoFocus(true);
+    const YTPlayer = readYTPlayer();
+    YTPlayer?.playVideo();
+    YTPlayer?.seekTo(Number(previewTime), true);
+    setPreventEditorTabAutoFocus(true);
   };
 
   return (
@@ -351,12 +353,8 @@ const TypeLinkButton = () => {
 
 const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormSchema>>>) => {
   const mapId = usePathname().split("/")[2];
-  const readEditUtils = useReadEditUtils();
-  const { readPlayer } = usePlayer();
   const searchParams = useSearchParams();
   const newCreateVideoId = searchParams.get("new");
-  const setCanUpload = useSetCanUpload();
-  const readMap = useReadMap();
   const trpc = useTRPC();
 
   const upsertMap = useMutation(
@@ -408,12 +406,13 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
 
   return async (data: z.input<typeof MapInfoFormSchema>) => {
     const map = readMap();
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return;
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
     const { speedDifficulty, duration, totalNotes, startLine } = new BuildMap(map);
-
-    const { video_id: videoId } = readPlayer().getVideoData();
-    const videoDuration = readPlayer().getDuration();
+    const { video_id: videoId } = YTPlayer.getVideoData();
+    const videoDuration = YTPlayer.getDuration();
 
     const typingStartTime = Math.max(0, Number(map[startLine]?.time ?? 0) + 0.2);
 
@@ -444,7 +443,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
       romaTotalNotes: Math.floor(totalNotes.r),
       kanaTotalNotes: Math.floor(totalNotes.k),
     };
-    const { isUpdateUpdatedAt } = readEditUtils();
+    const { isUpdateUpdatedAt } = readUtilityParams();
     await upsertMap.mutateAsync({
       mapInfo,
       mapDifficulty,

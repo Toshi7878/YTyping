@@ -87,10 +87,10 @@ export const writeUtilityRefParams = (newUserStats: Partial<ExtractAtomValue<typ
   store.set(utilityRefParamsAtom, (prev) => ({ ...prev, ...newUserStats }));
 export const resetUtilityRefParams = () => store.set(utilityRefParamsAtom, RESET);
 
-const playerAtom = atomWithReset<YT.Player | null>(null);
-export const readYTPlayer = () => store.get(playerAtom);
-export const writeYTPlayer = (newYTPlayer: YT.Player) => store.set(playerAtom, newYTPlayer);
-export const resetYTPlayer = () => store.set(playerAtom, RESET);
+const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
+export const readYTPlayer = () => store.get(YTPlayerAtom);
+export const writeYTPlayer = (newYTPlayer: YT.Player) => store.set(YTPlayerAtom, newYTPlayer);
+export const resetYTPlayer = () => store.set(YTPlayerAtom, RESET);
 
 export const lineProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
 export const readLineProgress = () => store.get(lineProgressAtom);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSetTimeOffset, useTimeOffsetState } from "@/app/edit/_lib/atoms/storage-atoms";
+import { setTimeOffset, useTimeOffsetState } from "@/app/edit/_lib/atoms/storage";
 import { CounterInput } from "@/components/ui/counter";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 
@@ -10,7 +10,6 @@ const TIME_OFFSET_STEP = 0.01;
 
 export const AddTimeAdjust = () => {
   const timeOffset = useTimeOffsetState();
-  const setTimeOffset = useSetTimeOffset();
 
   return (
     <TooltipWrapper

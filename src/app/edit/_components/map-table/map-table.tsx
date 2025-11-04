@@ -17,35 +17,32 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useMapQueries } from "@/lib/queries/map.queries";
 import { cn } from "@/lib/utils";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
-import { useEndLineIndexState } from "../../_lib/atoms/button-disable-state-atoms";
-import { useMapReducer, useMapState, useReadMap } from "../../_lib/atoms/map-reducer-atom";
-import { usePlayer, useTimeInput } from "../../_lib/atoms/read-atoms";
+import { useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
+import { mapAction, readMap, useMapState } from "../../_lib/atoms/map-reducer";
+import { readYTPlayer, setTimeInputValue } from "../../_lib/atoms/ref";
 import {
+  dispatchLine,
+  setDirectEditIndex,
+  setLyrics,
+  setTabName,
+  setWord,
   useDirectEditIndexState,
   useIsWordConvertingState,
-  useLineReducer,
   useLyricsState,
   useSelectIndexState,
-  useSetDirectEditIndex,
-  useSetLyrics,
-  useSetTabName,
-  useSetWord,
   useTimeLineIndexState as useTimeLineIndex,
   useWordState,
-} from "../../_lib/atoms/state-atoms";
+} from "../../_lib/atoms/state";
+import { handleEnterAddRuby } from "../../_lib/editor/handle-enter-add-ruby";
 import { useUpdateLineAction, useWordConvertAction } from "../../_lib/editor/use-editor-actions";
-import { useLyricsRubyTagHandler } from "../../_lib/editor/use-lyrics-ruby-tag-handler";
-import { useSeekNextPrev, useUndoRedo } from "../../_lib/map-table/use-map-table-hotkey";
-import { useWordSearchReplace } from "../../_lib/utils/use-word-search-replace";
+import { redo, undo } from "../../_lib/map-table/history";
+import { moveLine } from "../../_lib/map-table/move-line";
+import { wordSearchReplace } from "../../_lib/map-table/word-search-replace";
 import { LineOptionDialog } from "./line-option-dialog";
 
 export const MapTable = () => {
   const map = useMapState();
   const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
-  const seekNextPrev = useSeekNextPrev();
-  const { undo, redo } = useUndoRedo();
-  const lineDispatch = useLineReducer();
-  const wordSearchPeplace = useWordSearchReplace();
 
   const hotKeyOptions = {
     enableOnFormTags: false,
@@ -53,15 +50,15 @@ export const MapTable = () => {
     enabled: optionDialogIndex === null,
   };
 
-  useHotkeys("arrowUp", () => seekNextPrev("prev"), hotKeyOptions);
-  useHotkeys("arrowDown", () => seekNextPrev("next"), hotKeyOptions);
+  useHotkeys("arrowUp", () => moveLine("prev"), hotKeyOptions);
+  useHotkeys("arrowDown", () => moveLine("next"), hotKeyOptions);
   useHotkeys("ctrl+z", () => undo(), hotKeyOptions);
   useHotkeys("ctrl+y", () => redo(), hotKeyOptions);
-  useHotkeys("ctrl+shift+f", () => wordSearchPeplace(), hotKeyOptions);
+  useHotkeys("ctrl+shift+f", () => wordSearchReplace(), hotKeyOptions);
   useHotkeys(
     "d",
     () => {
-      lineDispatch({ type: "reset" });
+      dispatchLine({ type: "reset" });
       setDirectEditIndex(null);
     },
     hotKeyOptions,
@@ -69,27 +66,20 @@ export const MapTable = () => {
 
   const mapId = usePathname().split("/")[2];
 
-  const mapDispatch = useMapReducer();
-  const { readPlayer } = usePlayer();
-
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId: mapId ?? "" }));
   const endLineIndex = useEndLineIndexState();
   const timeLineIndex = useTimeLineIndex();
 
   useEffect(() => {
     if (mapData) {
-      mapDispatch({ type: "replaceAll", payload: mapData });
+      mapAction({ type: "replaceAll", payload: mapData });
     }
-  }, [mapData, mapDispatch]);
+  }, [mapData]);
 
   const directEditIndex = useDirectEditIndexState();
   const selectIndex = useSelectIndexState();
 
-  const setTabName = useSetTabName();
-  const setDirectEditIndex = useSetDirectEditIndex();
-  const setSelectLine = useLineReducer();
   const lineUpdateButtonEvent = useUpdateLineAction();
-  const readMap = useReadMap();
 
   const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
     const map = readMap();
@@ -115,7 +105,7 @@ export const MapTable = () => {
     }
 
     setTimeout(() => {
-      setSelectLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
+      dispatchLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
     });
   };
 
@@ -129,7 +119,7 @@ export const MapTable = () => {
         meta: {
           onClick: (_event, row: MapLine, index: number) => {
             if (directEditIndex !== index) {
-              readPlayer().seekTo(Number(row.time), true);
+              readYTPlayer()?.seekTo(Number(row.time), true);
             }
           },
           cellClassName: (cell: Cell<MapLine, unknown>, index: number) => {
@@ -227,7 +217,7 @@ export const MapTable = () => {
         meta: { headerClassName: "text-center" },
       },
     ],
-    [directEditIndex, endLineIndex, readPlayer, map],
+    [directEditIndex, endLineIndex, map],
   );
 
   return (
@@ -267,8 +257,6 @@ export const MapTable = () => {
 
 const DirectTimeInput = ({ time }: { time: string }) => {
   const [editTime, setEditTime] = useState(time);
-  const { setTime } = useTimeInput();
-  const { readPlayer } = usePlayer();
 
   return (
     <TooltipWrapper label={"↓↑: 0.05ずつ調整, Enter:再生"}>
@@ -280,7 +268,7 @@ const DirectTimeInput = ({ time }: { time: string }) => {
         onChange={(e) => {
           const newValue = e.target.value;
           setEditTime(newValue);
-          setTime(newValue);
+          setTimeInputValue(newValue);
         }}
         onKeyDown={(e) => {
           const { value } = e.currentTarget;
@@ -288,15 +276,15 @@ const DirectTimeInput = ({ time }: { time: string }) => {
           if (e.code === "ArrowUp") {
             const newValue = (Number(value) - 0.05).toFixed(3);
             setEditTime(newValue);
-            setTime(newValue);
+            setTimeInputValue(newValue);
             e.preventDefault();
           } else if (e.code === "ArrowDown") {
             const newValue = (Number(value) + 0.05).toFixed(3);
             setEditTime(newValue);
-            setTime(newValue);
+            setTimeInputValue(newValue);
             e.preventDefault();
           } else if (e.code === "Enter") {
-            readPlayer().seekTo(Number(value), true);
+            readYTPlayer()?.seekTo(Number(value), true);
           }
         }}
       />
@@ -307,9 +295,6 @@ const DirectTimeInput = ({ time }: { time: string }) => {
 const DirectLyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const lyrics = useLyricsState();
-
-  const setLyrics = useSetLyrics();
-  const handleEnterAddRuby = useLyricsRubyTagHandler();
 
   return (
     <TooltipWrapper
@@ -339,7 +324,6 @@ const DirectWordInput = () => {
   const isLoadWordConvert = useIsWordConvertingState();
   const selectWord = useWordState();
   const wordConvertButtonEvent = useWordConvertAction();
-  const setWord = useSetWord();
 
   return (
     <div className="flex items-center justify-between gap-2">

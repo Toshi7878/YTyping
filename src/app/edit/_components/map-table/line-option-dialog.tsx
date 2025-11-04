@@ -4,9 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type Dispatch, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
-import { useHistoryReducer } from "@/app/edit/_lib/atoms/history-reducer-atom";
-import { useMapReducer, useMapState } from "@/app/edit/_lib/atoms/map-reducer-atom";
-import { useSetCanUpload } from "@/app/edit/_lib/atoms/state-atoms";
+import { mapAction, useMapState } from "@/app/edit/_lib/atoms/map-reducer";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +14,8 @@ import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
 import { LineOptionSchema } from "@/server/drizzle/validator/map-json";
+import { dispatchEditHistory } from "../../_lib/atoms/history-reducer";
+import { setCanUpload } from "../../_lib/atoms/state";
 
 interface LineOptionDialogProps {
   index: number;
@@ -25,9 +25,6 @@ interface LineOptionDialogProps {
 export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDialogProps) => {
   const map = useMapState();
   const confirm = useConfirm();
-  const setCanUpload = useSetCanUpload();
-  const historyDispatch = useHistoryReducer();
-  const mapDispatch = useMapReducer();
 
   const currentSpeed = useMemo(() => {
     const speeds = map.map((line) => line.options?.changeVideoSpeed ?? 0);
@@ -92,9 +89,9 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
         }),
       },
     };
-    mapDispatch({ type: "update", payload: newLine, index });
+    mapAction({ type: "update", payload: newLine, index });
 
-    historyDispatch({
+    dispatchEditHistory({
       type: "add",
       payload: {
         actionType: "update",

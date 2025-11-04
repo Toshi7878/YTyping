@@ -1,24 +1,13 @@
-import { RESET } from "jotai/utils";
-import { useHistoryReducer } from "./history-reducer-atom";
-import { useMapReducer } from "./map-reducer-atom";
-import { useLineReducer, useSetEditUtils, useSetYTSpeed, useSetYtPlayerStatus } from "./state-atoms";
+import { dispatchEditHistory } from "./history-reducer";
+import { mapAction } from "./map-reducer";
+import { dispatchLine, resetUtilityParams, resetYTPlayerStatus } from "./state";
 
 export const usePathChangeAtomReset = () => {
-  const setEditUtils = useSetEditUtils();
-
-  const setYTSpeed = useSetYTSpeed();
-  const setYtPlayerStatus = useSetYtPlayerStatus();
-
-  const mapDispatch = useMapReducer();
-  const setSelectLine = useLineReducer();
-  const historyDispatch = useHistoryReducer();
-
   return () => {
-    setEditUtils(RESET);
-    setYTSpeed(1);
-    setYtPlayerStatus(RESET);
-    mapDispatch({ type: "reset" });
-    setSelectLine({ type: "reset" });
-    historyDispatch({ type: "reset" });
+    resetYTPlayerStatus();
+    resetUtilityParams();
+    mapAction({ type: "reset" });
+    dispatchLine({ type: "reset" });
+    dispatchEditHistory({ type: "reset" });
   };
 };

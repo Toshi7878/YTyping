@@ -3,62 +3,46 @@ import { toast } from "sonner";
 import { backupMap } from "@/lib/indexed-db";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSymbols } from "@/utils/string-transform";
-import { useHistoryReducer } from "../atoms/history-reducer-atom";
-import { useMapReducer, useReadMap } from "../atoms/map-reducer-atom";
-import { usePlayer, useTimeInput } from "../atoms/read-atoms";
+import { dispatchEditHistory } from "../atoms/history-reducer";
+import { mapAction, readMap } from "../atoms/map-reducer";
+import { readTimeInputValue, readYTPlayer } from "../atoms/ref";
 import {
-  useLineReducer,
-  useReadEditUtils,
-  useReadLine,
-  useReadYtPlayerStatus,
-  useSetCanUpload,
-  useSetDirectEditIndex,
-  useSetIsUpdateUpdatedAt,
-  useSetWord,
-} from "../atoms/state-atoms";
-import { useReadTimeOffsetState } from "../atoms/storage-atoms";
+  dispatchLine,
+  readSelectLine,
+  readUtilityParams,
+  readYTPlayerStatus,
+  setCanUpload,
+  setDirectEditIndex,
+  setIsUpdateUpdatedAt,
+  setWord,
+} from "../atoms/state";
+import { readTimeOffset } from "../atoms/storage";
 import { scrollMapTable } from "../map-table/scroll-map-table";
-import { useHasMapUploadPermission } from "../utils/use-has-map-upload-permission";
-import { useWordConverter } from "./typable-word-converter";
-import { useDeleteTopPhrase, usePickupTopPhrase } from "./use-many-phrase";
-import { useTimeValidate } from "./use-time-validate";
+import { useHasMapUploadPermission } from "../map-table/use-has-map-upload-permission";
+import { deleteTopPhrase, pickupTopPhrase } from "./many-phrase";
+import { timeValidate } from "./time-validate";
+import { wordConvert } from "./typable-word-convert";
 
 export const useAddLineAction = () => {
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
-  const setDirectEdit = useSetDirectEditIndex();
-  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
-
-  const setCanUpload = useSetCanUpload();
-  const pickupTopPhrase = usePickupTopPhrase();
-  const deleteTopPhrase = useDeleteTopPhrase();
-
-  const readYtPlayerStatus = useReadYtPlayerStatus();
-  const readSelectLine = useReadLine();
-  const readTimeOffset = useReadTimeOffsetState();
-  const readEditUtils = useReadEditUtils();
-  const { readTime } = useTimeInput();
-  const { readPlayer } = usePlayer();
-  const mapDispatch = useMapReducer();
-  const historyDispatch = useHistoryReducer();
-  const lineDispatch = useLineReducer();
-  const timeValidate = useTimeValidate();
-  const readMap = useReadMap();
 
   return (isShiftKey: boolean) => {
-    const { playing } = readYtPlayerStatus();
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return;
+    const { playing } = readYTPlayerStatus();
     const { lyrics, word } = readSelectLine();
     const timeOffset = word !== "" ? readTimeOffset() : 0;
 
-    const _time = playing ? readPlayer().getCurrentTime() + timeOffset : Number(readTime());
+    const _time = playing ? YTPlayer.getCurrentTime() + timeOffset : Number(readTimeInputValue());
     const time = timeValidate(_time).toFixed(3);
     const newLine: MapLine = !isShiftKey
       ? { time, lyrics, word: normalizeSymbols(word) }
       : { time, lyrics: "", word: "" };
 
-    mapDispatch({ type: "add", payload: newLine });
+    mapAction({ type: "add", payload: newLine });
     const lineIndex = readMap().findIndex((line) => JSON.stringify(line) === JSON.stringify(newLine));
-    historyDispatch({ type: "add", payload: { actionType: "add", data: { ...newLine, lineIndex } } });
+    dispatchEditHistory({ type: "add", payload: { actionType: "add", data: { ...newLine, lineIndex } } });
 
     if (newVideoId) {
       const map = readMap();
@@ -67,7 +51,7 @@ export const useAddLineAction = () => {
 
     setCanUpload(true);
     setIsUpdateUpdatedAt(true);
-    setDirectEdit(null);
+    setDirectEditIndex(null);
 
     //フォーカスを外さないと追加ボタンクリック時にテーブルがスクロールされない
     (document.activeElement as HTMLElement)?.blur();
@@ -76,50 +60,36 @@ export const useAddLineAction = () => {
 
     if (isShiftKey) return;
 
-    lineDispatch({ type: "reset" });
+    dispatchLine({ type: "reset" });
     const lyricsCopy = structuredClone(lyrics);
     deleteTopPhrase(lyricsCopy);
-    const { manyPhraseText } = readEditUtils();
+    const { manyPhraseText } = readUtilityParams();
     const topPhrase = manyPhraseText.split("\n")[0] ?? "";
     void pickupTopPhrase(topPhrase);
   };
 };
 
 export const useUpdateLineAction = () => {
-  const setCanUpload = useSetCanUpload();
-  const setDirectEdit = useSetDirectEditIndex();
-
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
-  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
-
-  const mapDispatch = useMapReducer();
-  const historyDispatch = useHistoryReducer();
-  const lineDispatch = useLineReducer();
-
-  const readYtPlayerStatus = useReadYtPlayerStatus();
-  const readSelectLine = useReadLine();
-  const readTimeOffset = useReadTimeOffsetState();
-  const { readTime } = useTimeInput();
-  const { readPlayer } = usePlayer();
-  const readUtilsState = useReadEditUtils();
 
   // const trpc = useTRPC();
   // 読み修正編集履歴ログを送信するmutation
   // const postFixWordLog = useMutation(trpc.morphConvert.post_fix_word_log.mutationOptions());
 
-  const timeValidate = useTimeValidate();
-
-  const readMap = useReadMap();
   return () => {
+    const YTPlayer = readYTPlayer();
+    if (!YTPlayer) return;
+
     const map = readMap();
     const { selectIndex: index, lyrics, word } = readSelectLine();
-    const { playing } = readYtPlayerStatus();
-    const { directEditingIndex } = readUtilsState();
+    const { playing } = readYTPlayerStatus();
+    const { directEditingIndex } = readUtilityParams();
     const timeOffset = word !== "" ? readTimeOffset() : 0;
     const selectLineIndex = index as number;
 
-    const _time = playing && !directEditingIndex ? readPlayer().getCurrentTime() + timeOffset : +readTime();
+    const _time =
+      playing && !directEditingIndex ? YTPlayer.getCurrentTime() + timeOffset : Number(readTimeInputValue());
     const formatedTime = timeValidate(_time).toFixed(3);
 
     const oldLine = map[selectLineIndex];
@@ -134,7 +104,7 @@ export const useUpdateLineAction = () => {
       }),
     };
 
-    historyDispatch({
+    dispatchEditHistory({
       type: "add",
       payload: {
         actionType: "update",
@@ -155,9 +125,9 @@ export const useUpdateLineAction = () => {
       void backupMap({ videoId: newVideoId, map });
     }
 
-    mapDispatch({ type: "update", payload: newLine, index: selectLineIndex });
-    lineDispatch({ type: "reset" });
-    setDirectEdit(null);
+    mapAction({ type: "update", payload: newLine, index: selectLineIndex });
+    dispatchLine({ type: "reset" });
+    setDirectEditIndex(null);
     setCanUpload(true);
 
     // if (newLine.time === oldLine.time && newLine.lyrics === oldLine.lyrics && newLine.word !== oldLine.word) {
@@ -170,11 +140,8 @@ export const useUpdateLineAction = () => {
 };
 
 export const useWordConvertAction = () => {
-  const wordConvert = useWordConverter();
-  const readSelectLine = useReadLine();
   const hasEditPermission = useHasMapUploadPermission();
 
-  const setWord = useSetWord();
   return async () => {
     if (!hasEditPermission) {
       toast.warning("読み変換機能は編集保存権限が有効な場合に使用できます");
@@ -188,37 +155,26 @@ export const useWordConvertAction = () => {
 };
 
 export const useDeleteLineAction = () => {
-  const setCanUpload = useSetCanUpload();
-  const setIsUpdateUpdatedAt = useSetIsUpdateUpdatedAt();
-  const setDirectEdit = useSetDirectEditIndex();
-
   const searchParams = useSearchParams();
   const newVideoId = searchParams.get("new") || "";
-  const readSelectLine = useReadLine();
-
-  const mapDispatch = useMapReducer();
-  const historyDispatch = useHistoryReducer();
-  const lineDispatch = useLineReducer();
-
-  const readMap = useReadMap();
 
   return () => {
     const { selectIndex } = readSelectLine();
 
-    setDirectEdit(null);
-    lineDispatch({ type: "reset" });
+    setDirectEditIndex(null);
+    dispatchLine({ type: "reset" });
     if (!selectIndex) return;
 
     const map = readMap();
     const lineToDelete = map[selectIndex];
     if (!lineToDelete) return;
 
-    historyDispatch({
+    dispatchEditHistory({
       type: "add",
       payload: { actionType: "delete", data: { ...lineToDelete, lineIndex: selectIndex } },
     });
 
-    mapDispatch({ type: "delete", index: selectIndex });
+    mapAction({ type: "delete", index: selectIndex });
     setCanUpload(true);
     setIsUpdateUpdatedAt(true);
 

@@ -1,6 +1,6 @@
 import { atom, useAtomValue } from "jotai";
-import { mapReducerAtom } from "./map-reducer-atom";
-import { isTimeInputValidAtom, selectLineIndexAtom } from "./state-atoms";
+import { mapReducerAtom } from "./map-reducer";
+import { isTimeInputValidAtom, selectLineIndexAtom } from "./state";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();

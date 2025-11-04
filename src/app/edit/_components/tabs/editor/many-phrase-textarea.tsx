@@ -3,9 +3,9 @@ import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { TiFilter } from "react-icons/ti";
 import { toast } from "sonner";
-import { useManyPhraseState, useReadLine, useSetManyPhrase } from "@/app/edit/_lib/atoms/state-atoms";
-import { filterWordSymbolsByOption } from "@/app/edit/_lib/editor/typable-word-converter";
-import { usePickupTopPhrase } from "@/app/edit/_lib/editor/use-many-phrase";
+import { readSelectLine, setManyPhrase, useManyPhraseState } from "@/app/edit/_lib/atoms/state";
+import { pickupTopPhrase } from "@/app/edit/_lib/editor/many-phrase";
+import { filterWordSymbol } from "@/app/edit/_lib/editor/typable-word-convert";
 import { sanitizeToAllowedSymbols } from "@/app/edit/_lib/utils/filter-word";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
@@ -50,9 +50,6 @@ export const ManyPhraseTextarea = () => {
     void pickupTopPhrase(topPhrase);
   });
 
-  const setManyPhrase = useSetManyPhrase();
-  const pickupTopPhrase = usePickupTopPhrase();
-  const readSelectLine = useReadLine();
   const { debounce } = useDebounce(500);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -106,9 +103,6 @@ interface FilterSymbolButtonProps {
 }
 
 const FilterSymbolButton = ({ manyPhrase }: FilterSymbolButtonProps) => {
-  const setManyPhrase = useSetManyPhrase();
-  const pickupTopPhrase = usePickupTopPhrase();
-  const filterWordSymbol = filterWordSymbolsByOption();
   const confirm = useConfirm();
 
   const handleConfirm = async () => {

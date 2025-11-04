@@ -1,4 +1,4 @@
-import { usePlayer } from "@/app/edit/_lib/atoms/read-atoms";
+import { useYTPlayer } from "@/app/edit/_lib/atoms/ref";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { CardWithContent } from "@/components/ui/card";
 import { AllTimeAdjust } from "./all-time-adjust-input-field";
@@ -6,12 +6,11 @@ import { ConvertOptionButtons } from "./convert-option-buttons";
 import { LrcImportButton } from "./lrc-import-button";
 
 export const SettingsCard = () => {
-  const { readPlayer } = usePlayer();
-
+  const YTPlayer = useYTPlayer();
   return (
     <CardWithContent className={{ card: "py-4", cardContent: "space-y-4 sm:space-y-6" }}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <VolumeRange YTPlayer={readPlayer()} />
+        <VolumeRange YTPlayer={YTPlayer} />
         <LrcImportButton />
       </div>
       <ConvertOptionButtons />

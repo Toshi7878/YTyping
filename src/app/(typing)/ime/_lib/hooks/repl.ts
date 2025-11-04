@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useReplaceReadingWithCustomDict } from "@/lib/build-map/use-replace-reading-with-custom-dict";
+import { replaceReadingWithCustomDict } from "@/lib/build-map/use-replace-reading-with-custom-dict";
 import { useMorphQueries } from "@/lib/queries/morph.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { zip } from "@/utils/array";
@@ -7,13 +7,12 @@ import { zip } from "@/utils/array";
 export const useGenerateTokenizedWords = () => {
   const queryClient = useQueryClient();
   const morphQueries = useMorphQueries();
-  const replaceReadingWithCustomDic = useReplaceReadingWithCustomDict();
   return async (words: string[][]) => {
     const joinedLyrics = words.flat().join(" ");
 
     const tokenizedWords = await queryClient.ensureQueryData(morphQueries.tokenizeSentence({ sentence: joinedLyrics }));
 
-    const formattedTokenizedWords = await replaceReadingWithCustomDic(tokenizedWords);
+    const formattedTokenizedWords = await replaceReadingWithCustomDict(tokenizedWords);
 
     const repl = parseRepl(formattedTokenizedWords);
 

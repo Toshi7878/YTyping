@@ -1,6 +1,5 @@
-import { useAtomValue, useSetAtom } from "jotai";
-import { atomWithReducer, useAtomCallback } from "jotai/utils";
-import { useCallback } from "react";
+import { useAtomValue } from "jotai";
+import { atomWithReducer } from "jotai/utils";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSymbols } from "@/utils/string-transform";
 import { getEditAtomStore } from "./store";
@@ -79,9 +78,5 @@ export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(init, (prev:
 });
 
 export const useMapState = () => useAtomValue(mapReducerAtom, { store });
-export const useMapReducer = () => useSetAtom(mapReducerAtom, { store });
-export const useReadMap = () =>
-  useAtomCallback(
-    useCallback((get) => get(mapReducerAtom), []),
-    { store },
-  );
+export const mapAction = (action: MapAction) => store.set(mapReducerAtom, action);
+export const readMap = () => store.get(mapReducerAtom);

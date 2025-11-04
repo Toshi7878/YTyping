@@ -1,14 +1,12 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSetTabName, useTabNameState } from "../../_lib/atoms/state-atoms";
-import { TAB_NAMES } from "../../_lib/const";
+import { setTabName, TAB_NAMES, useTabNameState } from "../../_lib/atoms/state";
 import { EditorCard } from "./editor/card";
 import { MapInfoFormCard } from "./info-form/card";
 import { SettingsCard } from "./settings/card";
 
 export const EditTabs = () => {
   const tabName = useTabNameState();
-  const setTabName = useSetTabName();
 
   return (
     <Tabs value={tabName} onValueChange={(value) => setTabName(value as (typeof TAB_NAMES)[number])} className="w-full">

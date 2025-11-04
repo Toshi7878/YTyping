@@ -3,8 +3,8 @@ import {
   useIsAddBtnDisabledState,
   useIsDeleteBtnDisabledState,
   useIsUpdateBtnDisabledState,
-} from "@/app/edit/_lib/atoms/button-disable-state-atoms";
-import { useIsWordConvertingState } from "@/app/edit/_lib/atoms/state-atoms";
+} from "@/app/edit/_lib/atoms/button-disabled-state";
+import { useIsWordConvertingState } from "@/app/edit/_lib/atoms/state";
 import {
   useAddLineAction,
   useDeleteLineAction,
