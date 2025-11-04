@@ -28,11 +28,11 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
   const sceneGroup = useSceneGroupState();
   const { isSmScreen } = useBreakPoint();
-  const [ytLayoutMode, setYtLayoutMode] = useState<"column" | "row">("row");
+  const [layout, setLayout] = useState<"column" | "row">("row");
 
   useEffect(() => {
     if (sceneGroup === "Ready") {
-      setYtLayoutMode(isSmScreen ? "column" : "row");
+      setLayout(isSmScreen ? "column" : "row");
     }
   }, [isSmScreen, sceneGroup]);
 
@@ -65,14 +65,14 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
     <div className="fixed flex h-screen w-screen flex-col items-center">
       <div style={style} className="h-fit space-y-8 md:space-y-5">
         <section className="flex w-full gap-6 md:flex-row">
-          {ytLayoutMode === "row" && <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-[460px]" />}
+          {layout === "row" && <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-[460px]" />}
 
           <TabsArea className="flex flex-8 flex-col" />
         </section>
 
         <TypingCard />
 
-        {ytLayoutMode === "column" && (
+        {layout === "column" && (
           <section className="mt-5">
             <YouTubePlayer isMapLoading={isLoading} videoId={videoId} />
           </section>
