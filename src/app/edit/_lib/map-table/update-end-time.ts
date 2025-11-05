@@ -1,4 +1,4 @@
-import { mapAction, readMap } from "../atoms/map-reducer";
+import { readMap, setMapAction } from "../atoms/map-reducer";
 
 export const updateEndTime = (player: YT.Player) => {
   const duration = player.getDuration();
@@ -13,8 +13,8 @@ export const updateEndTime = (player: YT.Player) => {
   };
 
   if (endLineIndex === -1) {
-    mapAction({ type: "add", payload: endLine });
+    setMapAction({ type: "add", payload: endLine });
   } else {
-    mapAction({ type: "update", payload: endLine, index: endLineIndex });
+    setMapAction({ type: "update", payload: endLine, index: endLineIndex });
   }
 };

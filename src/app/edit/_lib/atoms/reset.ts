@@ -1,13 +1,21 @@
 import { dispatchEditHistory } from "./history-reducer";
-import { mapAction } from "./map-reducer";
-import { dispatchLine, resetUtilityParams, resetYTPlayerStatus } from "./state";
+import { setMapAction } from "./map-reducer";
+import {
+  dispatchLine,
+  resetCreatorId,
+  resetMapId,
+  resetUtilityParams,
+  resetYTPlayer,
+  resetYTPlayerStatus,
+} from "./state";
 
-export const usePathChangeAtomReset = () => {
-  return () => {
-    resetYTPlayerStatus();
-    resetUtilityParams();
-    mapAction({ type: "reset" });
-    dispatchLine({ type: "reset" });
-    dispatchEditHistory({ type: "reset" });
-  };
+export const pathChangeAtomReset = () => {
+  resetYTPlayerStatus();
+  resetUtilityParams();
+  resetYTPlayer();
+  resetMapId();
+  resetCreatorId();
+  setMapAction({ type: "reset" });
+  dispatchLine({ type: "reset" });
+  dispatchEditHistory({ type: "reset" });
 };

@@ -1,8 +1,9 @@
 import type { YouTubeEvent } from "react-youtube";
 import { readVolume } from "@/lib/atoms/global-atoms";
 import { readMap } from "../atoms/map-reducer";
-import { preventEditortabAutoFocus, writeYTPlayer } from "../atoms/ref";
+import { preventEditortabAutoFocus } from "../atoms/ref";
 import {
+  readMapId,
   readYTPlayerStatus,
   setIsYTPlaying,
   setIsYTReadied,
@@ -11,37 +12,44 @@ import {
   setTimeLineIndex,
   setYTChangingVideo,
   setYTDuration,
+  setYTPlayer,
 } from "../atoms/state";
 import { updateEndTime } from "../map-table/update-end-time";
 import { timerControls } from "./timer";
 
-export const onReady = (event: { target: YT.Player }) => {
+export const onReady = ({ target: player }: { target: YT.Player }) => {
   console.log("Ready");
-  const player = event.target;
-
-  const endLine = readMap().findLast((line) => line.lyrics === "end");
-  const { changingVideo } = readYTPlayerStatus();
-  const duration = player.getDuration();
-  if (changingVideo && duration.toFixed(0) !== Number(endLine?.time).toFixed(0)) {
+  const mapId = readMapId();
+  const { isChangingVideo } = readYTPlayerStatus();
+  if (!mapId || isChangingVideo) {
     updateEndTime(player);
   }
 
-  writeYTPlayer(player);
-  player.setVolume(readVolume());
-
+  setYTPlayer(player);
   setYTChangingVideo(false);
   setIsYTPlaying(false);
   setIsYTReadied(true);
   setIsYTStarted(false);
+  const duration = player.getDuration();
   setYTDuration(duration);
+  player.setVolume(readVolume());
 };
 
-export const onPlay = () => {
+const onStart = (player: YT.Player) => {
+  updateEndTime(player);
+};
+
+export const onPlay = ({ target: player }: { target: YT.Player }) => {
   console.log("再生 1");
+  const { isStarted } = readYTPlayerStatus();
+
+  if (!isStarted) {
+    onStart(player);
+  }
 
   timerControls.startTimer();
-  setIsYTPlaying(true);
   setIsYTStarted(true);
+  setIsYTPlaying(true);
 
   if (preventEditortabAutoFocus()) return;
   setTabName("エディター");
@@ -59,10 +67,10 @@ export const onEnd = () => {
   setIsYTPlaying(false);
 };
 
-const onSeeked = (event: YouTubeEvent) => {
-  const time = event.target.getCurrentTime();
+const onSeeked = ({ target: player }: { target: YT.Player }) => {
+  const time = player.getCurrentTime();
   console.log(`シークtime: ${time}`);
-  setTimeLineIndex(getSeekedCount(time));
+  setTimeLineIndex(getLineCountByTime(time));
 };
 
 export const onStateChange = (event: YouTubeEvent) => {
@@ -70,29 +78,15 @@ export const onStateChange = (event: YouTubeEvent) => {
     document.activeElement.blur();
   }
 
-  if (event.data === 3) {
+  if (event.data === YT.PlayerState.BUFFERING) {
     // seek時の処理
     onSeeked(event);
-  } else if (event.data === 1) {
-    //	未スタート、他の動画に切り替えた時など
-    console.log("未スタート -1");
   }
 };
 
-const getSeekedCount = (time: number) => {
-  let count = 0;
-
+const getLineCountByTime = (time: number): number => {
   const map = readMap();
-  for (const [i, line] of map.entries()) {
-    if (Number(line.time) - time >= 0) {
-      count = i - 1;
-      break;
-    }
-  }
 
-  if (count < 0) {
-    count = 0;
-  }
-
-  return count;
+  const nextIndex = map.findIndex((line) => Number(line.time) >= time) ?? 0;
+  return Math.max(0, nextIndex - 1);
 };

@@ -1,10 +1,11 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import type { Cell, ColumnDef } from "@tanstack/react-table";
 import parse from "html-react-parser";
 import { Play } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useQueryStates } from "nuqs";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -14,30 +15,38 @@ import { Input } from "@/components/ui/input/input";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useMapQueries } from "@/lib/queries/map.queries";
+import { fetchBackupMap } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
-import { useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
-import { mapAction, readMap, useMapState } from "../../_lib/atoms/map-reducer";
-import { readYTPlayer, setTimeInputValue } from "../../_lib/atoms/ref";
+import { useTRPC } from "@/trpc/provider";
+import { readEndLineIndex, useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
+import { readMap, setMapAction, useMapState } from "../../_lib/atoms/map-reducer";
+import { setTimeInputValue } from "../../_lib/atoms/ref";
 import {
   dispatchLine,
+  readDirectEditIndex,
+  readYTPlayer,
+  setCanUpload,
   setDirectEditIndex,
   setLyrics,
   setTabName,
   setWord,
+  useCreatorIdState,
   useDirectEditIndexState,
   useIsWordConvertingState,
   useLyricsState,
+  useMapIdState,
   useSelectIndexState,
   useTimeLineIndexState as useTimeLineIndex,
   useWordState,
 } from "../../_lib/atoms/state";
-import { handleEnterAddRuby } from "../../_lib/editor/handle-enter-add-ruby";
-import { useUpdateLineAction, useWordConvertAction } from "../../_lib/editor/use-editor-actions";
+import { updateLineAction, wordConvertAction } from "../../_lib/editor/editor-actions";
+import { handleEnterAddRuby } from "../../_lib/editor/enter-add-ruby";
+import { hasMapUploadPermission } from "../../_lib/map-table/has-map-upload-permission";
 import { redo, undo } from "../../_lib/map-table/history";
 import { moveLine } from "../../_lib/map-table/move-line";
 import { wordSearchReplace } from "../../_lib/map-table/word-search-replace";
+import { searchParamsParsers } from "../../_lib/search-params";
 import { LineOptionDialog } from "./line-option-dialog";
 
 export const MapTable = () => {
@@ -64,50 +73,42 @@ export const MapTable = () => {
     hotKeyOptions,
   );
 
-  const mapId = usePathname().split("/")[2];
+  const trpc = useTRPC();
+  const mapId = useMapIdState();
+  const [{ backup: isBackup }] = useQueryStates({ backup: searchParamsParsers.isBackup });
 
-  const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId: mapId ?? "" }));
+  const { data: mapData, isLoading } = useQuery(
+    trpc.map.getMapJson.queryOptions(
+      { mapId: mapId ?? 0 },
+      { enabled: !!mapId && !isBackup, staleTime: Infinity, gcTime: Infinity },
+    ),
+  );
+
   const endLineIndex = useEndLineIndexState();
   const timeLineIndex = useTimeLineIndex();
 
+  const { data: backupMap } = useQuery(
+    queryOptions({
+      queryKey: ["backup"],
+      queryFn: fetchBackupMap,
+      enabled: isBackup && !mapId,
+    }),
+  );
+  useEffect(() => {
+    if (backupMap) {
+      setMapAction({ type: "replaceAll", payload: backupMap.map });
+      setCanUpload(true);
+    }
+  }, [backupMap]);
+
   useEffect(() => {
     if (mapData) {
-      mapAction({ type: "replaceAll", payload: mapData });
+      setMapAction({ type: "replaceAll", payload: mapData });
     }
   }, [mapData]);
 
   const directEditIndex = useDirectEditIndexState();
   const selectIndex = useSelectIndexState();
-
-  const lineUpdateButtonEvent = useUpdateLineAction();
-
-  const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
-    const map = readMap();
-
-    const line = map[selectingIndex];
-    if (!line) return;
-    const { time, lyrics, word } = line;
-
-    if (directEditIndex === selectingIndex) {
-      return null;
-    }
-
-    if (directEditIndex) {
-      lineUpdateButtonEvent();
-    }
-
-    const isDirectEditMode = event.ctrlKey && selectingIndex !== 0 && selectingIndex !== endLineIndex;
-
-    if (isDirectEditMode) {
-      setDirectEditIndex(selectingIndex);
-    } else if (directEditIndex !== selectingIndex) {
-      setDirectEditIndex(null);
-    }
-
-    setTimeout(() => {
-      dispatchLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
-    });
-  };
 
   const columns = useMemo(
     (): ColumnDef<MapLine>[] => [
@@ -124,6 +125,7 @@ export const MapTable = () => {
           },
           cellClassName: (cell: Cell<MapLine, unknown>, index: number) => {
             const row = cell.row.original;
+            const map = readMap();
             const nextTime = map[index + 1]?.time;
             return cn("text-center group", nextTime && row.time === nextTime && "bg-destructive/30 text-destructive");
           },
@@ -140,7 +142,7 @@ export const MapTable = () => {
           return (
             <TooltipWrapper label={label} disabled={!label}>
               <div className="flex items-center gap-1">
-                <Play className="size-3.5 hidden xl:block relative top-[1px] text-muted-foreground group-hover:text-white" />
+                <Play className="size-3.5 hidden xl:block relative top-px text-muted-foreground group-hover:text-white" />
                 <span>{row.original.time}</span>
               </div>
             </TooltipWrapper>
@@ -323,7 +325,9 @@ const DirectLyricsInput = () => {
 const DirectWordInput = () => {
   const isLoadWordConvert = useIsWordConvertingState();
   const selectWord = useWordState();
-  const wordConvertButtonEvent = useWordConvertAction();
+  const { data: session } = useSession();
+  const creatorId = useCreatorIdState();
+  const hasUploadPermission = hasMapUploadPermission(session, creatorId);
 
   return (
     <div className="flex items-center justify-between gap-2">
@@ -332,11 +336,41 @@ const DirectWordInput = () => {
         variant="outline"
         size="sm"
         className="hover:bg-secondary/40 h-8 w-[8%]"
-        onClick={wordConvertButtonEvent}
+        onClick={() => wordConvertAction(hasUploadPermission)}
       >
         {isLoadWordConvert ? <span className="loading loading-spinner loading-xs" /> : "変換"}
       </Button>
       <Input className="h-8 w-[91%]" autoComplete="off" value={selectWord} onChange={(e) => setWord(e.target.value)} />
     </div>
   );
+};
+
+const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
+  const map = readMap();
+  const directEditIndex = readDirectEditIndex();
+
+  const line = map[selectingIndex];
+  if (!line) return;
+  const { time, lyrics, word } = line;
+
+  if (directEditIndex === selectingIndex) {
+    return null;
+  }
+
+  if (directEditIndex) {
+    updateLineAction();
+  }
+
+  const endLineIndex = readEndLineIndex();
+  const isDirectEditMode = event.ctrlKey && selectingIndex !== 0 && selectingIndex !== endLineIndex;
+
+  if (isDirectEditMode) {
+    setDirectEditIndex(selectingIndex);
+  } else if (directEditIndex !== selectingIndex) {
+    setDirectEditIndex(null);
+  }
+
+  setTimeout(() => {
+    dispatchLine({ type: "set", line: { time, lyrics, word, selectIndex: selectingIndex } });
+  });
 };

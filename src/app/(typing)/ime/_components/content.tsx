@@ -4,9 +4,9 @@ import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
-import { useMapQueries } from "@/lib/queries/map.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
+import { useTRPC } from "@/trpc/provider";
 import { InputTextarea } from "../_components/input-textarea";
 import { MenuBar } from "../_components/memu/menu-bar";
 import { Notifications } from "../_components/notifications-display";
@@ -30,7 +30,13 @@ export const Content = ({ mapInfo }: ContentProps) => {
   });
   const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
   const { id: mapId } = useParams<{ id: string }>();
-  const { data: mapData } = useQuery(useMapQueries().map({ mapId }));
+  const trpc = useTRPC();
+  const { data: mapData } = useQuery(
+    trpc.map.getMapJson.queryOptions(
+      { mapId: Number(mapId) ?? 0 },
+      { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity },
+    ),
+  );
   const setMap = useSetMap();
   const parseImeMap = useBuildImeMap();
   const pathChangeAtomReset = usePathChangeAtomReset();

@@ -1,7 +1,6 @@
 import { dispatchEditHistory, readEditHistory } from "../atoms/history-reducer";
-import { mapAction } from "../atoms/map-reducer";
-import { readYTPlayer } from "../atoms/ref";
-import { dispatchLine, readSelectLine, readUtilityParams, setManyPhrase, setWord } from "../atoms/state";
+import { setMapAction } from "../atoms/map-reducer";
+import { dispatchLine, readSelectLine, readUtilityParams, readYTPlayer, setManyPhrase, setWord } from "../atoms/state";
 import { wordConvert } from "./typable-word-convert";
 
 export const pickupTopPhrase = async (topPhrase: string) => {
@@ -34,7 +33,7 @@ export const pickupTopPhrase = async (topPhrase: string) => {
       if (data.lyrics === topPhrase) {
         const { lineIndex, ...line } = present.data;
         const newLine = { ...line, word };
-        mapAction({ type: "update", payload: newLine, index: lineIndex });
+        setMapAction({ type: "update", payload: newLine, index: lineIndex });
         dispatchEditHistory({ type: "overwrite", payload: { ...present, data: { ...present.data, word } } });
         return;
       }

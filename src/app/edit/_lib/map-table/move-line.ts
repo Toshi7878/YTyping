@@ -1,6 +1,5 @@
 import { readMap } from "../atoms/map-reducer";
-import { readYTPlayer } from "../atoms/ref";
-import { dispatchLine, readSelectLine, readUtilityParams } from "../atoms/state";
+import { dispatchLine, readSelectLine, readUtilityParams, readYTPlayer } from "../atoms/state";
 import { scrollMapTable } from "./scroll-map-table";
 
 export const moveLine = (type: "next" | "prev") => {

@@ -1,4 +1,4 @@
-import { useYTPlayer } from "@/app/edit/_lib/atoms/ref";
+import { useYTPlayer } from "@/app/edit/_lib/atoms/state";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { CardWithContent } from "@/components/ui/card";
 import { AllTimeAdjust } from "./all-time-adjust-input-field";
@@ -58,7 +58,7 @@ const ShortCutKeyList = () => {
               ))}
             </div>
             <span className="text-muted-foreground">:</span>
-            <span className="break-words">{shortcut.description}</span>
+            <span className="wrap-break-word">{shortcut.description}</span>
           </div>
         ))}
       </div>

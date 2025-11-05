@@ -1,5 +1,5 @@
 import { dispatchEditHistory } from "../atoms/history-reducer";
-import { mapAction, readMap } from "../atoms/map-reducer";
+import { readMap, setMapAction } from "../atoms/map-reducer";
 import { setCanUpload, setIsUpdateUpdatedAt } from "../atoms/state";
 
 export const wordSearchReplace = async () => {
@@ -112,7 +112,7 @@ const replaceDialog = (i: number, searchReg: RegExp, replace: string, matchLengt
           return match;
         });
 
-        mapAction({
+        setMapAction({
           type: "update",
           payload: {
             time,

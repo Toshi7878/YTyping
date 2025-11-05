@@ -1,5 +1,5 @@
 import { generateTypingWord } from "@/lib/build-map/generate-typing-word";
-import { kanaSentenceToKanaChunkWords } from "@/lib/build-map/kana-sentence-to-kana-word-chunks";
+import { sentenceToKanaChunkWords } from "@/lib/build-map/sentence-to-kana-chunk-words";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -73,7 +73,7 @@ const updateNextLyrics = () => {
 
 function romaConvert(lineWord: LineWord) {
   const dakuten = lineWord.nextChar.orginalDakuChar;
-  const [kanaChunkWord] = kanaSentenceToKanaChunkWords(
+  const [kanaChunkWord] = sentenceToKanaChunkWords(
     (dakuten ? dakuten : lineWord.nextChar.k) + lineWord.word.map((char) => char.k).join(""),
   );
 

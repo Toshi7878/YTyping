@@ -53,3 +53,4 @@ export const useIsUpdateBtnDisabledState = () => useAtomValue(isUpdateButtonDisa
 export const useIsDeleteBtnDisabledState = () => useAtomValue(isDeleteButtonDisabledAtom, { store });
 
 export const useEndLineIndexState = () => useAtomValue(endLineIndexAtom, { store });
+export const readEndLineIndex = () => store.get(endLineIndexAtom);

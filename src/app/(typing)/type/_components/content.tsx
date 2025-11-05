@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { BuildMap } from "@/lib/build-map/build-map";
-import { useMapQueries } from "@/lib/queries/map.queries";
+import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
 import { readTotalProgress } from "../_lib/atoms/ref";
@@ -12,6 +12,7 @@ import {
   setBuiltMap,
   setLineSelectIndex,
   setLineStatus,
+  useMapIdState,
   useSceneGroupState,
 } from "../_lib/atoms/state";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
@@ -21,11 +22,15 @@ import { YouTubePlayer } from "./youtube-player";
 
 interface ContentProps {
   videoId: string;
-  mapId: string;
 }
 
-export const Content = ({ videoId, mapId }: ContentProps) => {
-  const { data: mapData, isLoading } = useQuery(useMapQueries().map({ mapId }));
+export const Content = ({ videoId }: ContentProps) => {
+  const mapId = useMapIdState();
+  const trpc = useTRPC();
+  const { data: mapData, isLoading } = useQuery(
+    trpc.map.getMapJson.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
+  );
+
   const sceneGroup = useSceneGroupState();
   const { isSmScreen } = useBreakPoint();
   const [layout, setLayout] = useState<"column" | "row">("row");

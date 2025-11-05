@@ -11,7 +11,7 @@ import { readYTPlayer } from "../_lib/atoms/ref";
 import { readUtilityParams } from "../_lib/atoms/state";
 import { iosActiveSound } from "../_lib/playing/sound-effect";
 import { addTimer, removeTimer } from "../_lib/playing/timer/timer";
-import { onEnd, onPause, onPlay, onRateChange, onReady, onSeeked } from "../_lib/youtube-player/use-youtube-events";
+import { onEnd, onPause, onPlay, onRateChange, onReady, onSeeked } from "../_lib/youtube-player/youtube-events";
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;

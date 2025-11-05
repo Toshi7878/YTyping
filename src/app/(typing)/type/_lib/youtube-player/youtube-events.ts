@@ -1,17 +1,11 @@
 import { readVolume } from "@/lib/atoms/global-atoms";
 import { getTRPCClient } from "@/trpc/provider";
 import { windowFocus } from "@/utils/window-focus";
-import {
-  readLineProgress,
-  readMapId,
-  readTotalProgress,
-  readUtilityRefParams,
-  writeLineCount,
-  writeYTPlayer,
-} from "../atoms/ref";
+import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount, writeYTPlayer } from "../atoms/ref";
 import { readPlaySpeed, setSpeed } from "../atoms/speed-reducer";
 import {
   readBuiltMap,
+  readMapId,
   readUtilityParams,
   setIsPaused,
   setMovieDuration,

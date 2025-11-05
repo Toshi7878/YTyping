@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { replaceReadingWithCustomDict } from "@/lib/build-map/use-replace-reading-with-custom-dict";
+import { replaceReadingWithCustomDict } from "@/lib/build-map/replace-reading-with-custom-dict";
 import { useMorphQueries } from "@/lib/queries/morph.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { zip } from "@/utils/array";

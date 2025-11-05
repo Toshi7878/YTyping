@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { readVolume } from "@/lib/atoms/global-atoms";
-import { isMobileDevice } from "@/lib/atoms/user-agent";
+import { readIsMobileDevice } from "@/lib/atoms/user-agent";
 import { readTypingOptions } from "../atoms/state";
 
 export const manifest = [
@@ -61,6 +61,6 @@ export const playSound = (alias: SoundAlias) => {
 };
 
 const getVolume = () => {
-  const isMobile = isMobileDevice();
+  const isMobile = readIsMobileDevice();
   return (isMobile ? 100 : readVolume()) / 100;
 };

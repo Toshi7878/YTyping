@@ -1,21 +1,27 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { CreatedVideoMapList } from "@/components/shared/created-video-map-list";
-import { EditProvider } from "../_components/client-provider";
 import { Content } from "../_components/content";
+import { EditProvider, JotaiProvider } from "../_components/provider";
+import { searchParamsLoader } from "../_lib/search-params";
 
 export const metadata: Metadata = {
   title: "Edit New Map - YTyping",
   description: "",
 };
 
-export default async function Home(props: { searchParams: Promise<{ new?: string }> }) {
-  const searchParams = await props.searchParams;
-  const videoId = searchParams.new;
+export default async function Page({ searchParams }: PageProps<"/edit">) {
+  const { new: videoId } = await searchParamsLoader(searchParams);
+  if (!videoId) {
+    notFound();
+  }
 
   return (
-    <EditProvider>
-      <Content />
-      {videoId && <CreatedVideoMapList videoId={videoId} disabledNotFoundText />}
-    </EditProvider>
+    <JotaiProvider videoId={videoId}>
+      <EditProvider>
+        <Content />
+        <CreatedVideoMapList videoId={videoId} disabledNotFoundText />
+      </EditProvider>
+    </JotaiProvider>
   );
 }

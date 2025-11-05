@@ -8,27 +8,12 @@ import {
   useSelectIndexState,
   useWordState,
 } from "@/app/edit/_lib/atoms/state";
-import { handleEnterAddRuby } from "@/app/edit/_lib/editor/handle-enter-add-ruby";
+import { handleEnterAddRuby } from "@/app/edit/_lib/editor/enter-add-ruby";
 import { FloatingLabelInput } from "@/components/ui/input/floating-label-input";
 import { Input } from "@/components/ui/input/input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 
-export const EditorLineInput = () => {
-  return (
-    <section>
-      <div className="flex items-center">
-        <TimeInput />
-        <LyricsInput />
-      </div>
-      <div className="flex items-center">
-        <SelectedLineIndex />
-        <WordInput />
-      </div>
-    </section>
-  );
-};
-
-const LyricsInput = () => {
+export const LyricsInput = () => {
   const [isLineLyricsSelected, setIsLineLyricsSelected] = useState(false);
   const lyrics = useLyricsState();
 
@@ -57,7 +42,7 @@ const LyricsInput = () => {
   );
 };
 
-const WordInput = () => {
+export const WordInput = () => {
   const word = useWordState();
 
   return (
@@ -71,14 +56,14 @@ const WordInput = () => {
   );
 };
 
-const SelectedLineIndex = () => {
+export const SelectedLineIndex = () => {
   const selectedLineIndex = useSelectIndexState();
   return (
     <Input placeholder="No." className="bg-muted h-8 w-[90px] opacity-100" disabled value={selectedLineIndex ?? ""} />
   );
 };
 
-const TimeInput = () => {
+export const TimeInput = () => {
   const timeInputRef = useRef<HTMLInputElement>(null);
   const [time, setTime] = useState("0");
 
@@ -104,7 +89,6 @@ const TimeInput = () => {
         if (e.code === "ArrowDown") {
           const newValue = (Number(value) - 0.05).toFixed(3);
           e.currentTarget.value = newValue;
-
           e.preventDefault();
         } else if (e.code === "ArrowUp") {
           const newValue = (Number(value) + 0.05).toFixed(3);

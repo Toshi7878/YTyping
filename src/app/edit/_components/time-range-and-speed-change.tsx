@@ -2,12 +2,17 @@
 
 import { useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { readYTPlayerStatus, setTimeRangeValue, setYTSpeed, useYTSpeedState } from "@/app/edit/_lib/atoms/state";
+import {
+  readYTPlayer,
+  readYTPlayerStatus,
+  setTimeRangeValue,
+  setYTSpeed,
+  useYTSpeedState,
+} from "@/app/edit/_lib/atoms/state";
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import type { YouTubeSpeed } from "@/utils/types";
-import { readYTPlayer } from "../_lib/atoms/ref";
 import { useTimeRangeValueState, useYTDurationState } from "../_lib/atoms/state";
 
 export const TimeRangeAndSpeedChange = ({ className }: { className: string }) => {

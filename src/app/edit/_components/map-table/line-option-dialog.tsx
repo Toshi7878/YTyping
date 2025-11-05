@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type Dispatch, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
-import { mapAction, useMapState } from "@/app/edit/_lib/atoms/map-reducer";
+import { setMapAction, useMapState } from "@/app/edit/_lib/atoms/map-reducer";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -89,7 +89,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
         }),
       },
     };
-    mapAction({ type: "update", payload: newLine, index });
+    setMapAction({ type: "update", payload: newLine, index });
 
     dispatchEditHistory({
       type: "add",

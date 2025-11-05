@@ -1,4 +1,4 @@
-import { readYTPlayer } from "../atoms/ref";
+import { readYTPlayer } from "../atoms/state";
 
 export const timeValidate = (time: number) => {
   const YTPlayer = readYTPlayer();

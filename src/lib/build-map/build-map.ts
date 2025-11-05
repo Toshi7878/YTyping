@@ -3,7 +3,7 @@ import type { ResultData } from "@/server/drizzle/validator/result";
 import { zip } from "@/utils/array";
 import type { BuiltMapLine, InputMode, TypeChunk } from "../../app/(typing)/type/_lib/type";
 import { generateTypingWord } from "./generate-typing-word";
-import { kanaSentenceToKanaChunkWords } from "./kana-sentence-to-kana-word-chunks";
+import { sentenceToKanaChunkWords } from "./sentence-to-kana-chunk-words";
 
 export const CHAR_POINT = 50;
 export const MISS_PENALTY = CHAR_POINT / 2;
@@ -46,7 +46,6 @@ export class BuildMap {
     const initialLineResultData: ResultData = [];
     const typingLineIndexes: number[] = [];
     const mapChangeCSSCounts: number[] = [];
-    // 譜面作成時にkanaになる?
     const inputMode = (
       typeof window !== "undefined" ? (localStorage.getItem("inputMode") ?? "roma") : "roma"
     ) as InputMode;
@@ -54,7 +53,7 @@ export class BuildMap {
     let startLine = 0;
     let lineLength = 0;
 
-    const kanaChunkWords = kanaSentenceToKanaChunkWords(mapLines.map((line) => line.word).join("\n"));
+    const kanaChunkWords = sentenceToKanaChunkWords(mapLines.map((line) => line.word).join("\n"));
     for (const [i, [mapLine, kanaChunkWord]] of zip(mapLines, kanaChunkWords).entries()) {
       const line = {
         time: Number(mapLine.time),

@@ -1,7 +1,13 @@
 import { dispatchEditHistory, readEditHistory } from "../atoms/history-reducer";
-import { mapAction } from "../atoms/map-reducer";
-import { readYTPlayer } from "../atoms/ref";
-import { dispatchLine, readUtilityParams, readYTPlayerStatus, setManyPhrase, setWord } from "../atoms/state";
+import { setMapAction } from "../atoms/map-reducer";
+import {
+  dispatchLine,
+  readUtilityParams,
+  readYTPlayer,
+  readYTPlayerStatus,
+  setManyPhrase,
+  setWord,
+} from "../atoms/state";
 import { deleteTopPhrase, pickupTopPhrase } from "../editor/many-phrase";
 import { wordConvert } from "../editor/typable-word-convert";
 
@@ -15,7 +21,7 @@ export const undo = async () => {
     switch (actionType) {
       case "add": {
         const { lineIndex, time, lyrics, word } = data;
-        mapAction({ type: "delete", index: lineIndex });
+        setMapAction({ type: "delete", index: lineIndex });
         const { speed } = readYTPlayerStatus();
         YTPlayer.seekTo(Number(data.time) - 3 * speed, true);
         dispatchLine({ type: "set", line: { time, lyrics, word, selectIndex: null } });
@@ -29,13 +35,13 @@ export const undo = async () => {
         break;
       }
       case "update":
-        mapAction({ type: "update", payload: data.old, index: data.lineIndex });
+        setMapAction({ type: "update", payload: data.old, index: data.lineIndex });
         break;
       case "delete":
-        mapAction({ type: "add", payload: data });
+        setMapAction({ type: "add", payload: data });
         break;
       case "replaceAll":
-        mapAction({ type: "replaceAll", payload: data.old });
+        setMapAction({ type: "replaceAll", payload: data.old });
         break;
     }
     dispatchEditHistory({ type: "undo" });
@@ -51,7 +57,7 @@ export const redo = () => {
 
     switch (actionType) {
       case "add": {
-        mapAction({ type: "add", payload: data });
+        setMapAction({ type: "add", payload: data });
         deleteTopPhrase(data.lyrics);
         const { manyPhraseText } = readUtilityParams();
         const topPhrase = manyPhraseText.split("\n")[0] ?? "";
@@ -59,13 +65,13 @@ export const redo = () => {
         break;
       }
       case "update":
-        mapAction({ type: "update", payload: data.new, index: data.lineIndex });
+        setMapAction({ type: "update", payload: data.new, index: data.lineIndex });
         break;
       case "delete":
-        mapAction({ type: "delete", index: data.lineIndex });
+        setMapAction({ type: "delete", index: data.lineIndex });
         break;
       case "replaceAll":
-        mapAction({ type: "replaceAll", payload: data.new });
+        setMapAction({ type: "replaceAll", payload: data.new });
         break;
     }
     dispatchEditHistory({ type: "redo" });

@@ -66,12 +66,12 @@ export const useGlobalLoadingOverlay = () => {
     ({ message, hideSpinner }: { message?: ReactNode; hideSpinner?: boolean } = {}) => {
       setLoadingState({ isLoading: true, message, hideSpinner });
     },
-    [setLoadingState],
+    [],
   );
 
   const hideLoading = useCallback(() => {
     setLoadingState(RESET);
-  }, [setLoadingState]);
+  }, []);
 
   return { showLoading, hideLoading };
 };

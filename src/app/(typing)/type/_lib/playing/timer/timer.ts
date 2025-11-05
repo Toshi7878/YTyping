@@ -30,7 +30,7 @@ import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
 import type { BuiltMapLine } from "../../type";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
-import { onEnd } from "../../youtube-player/use-youtube-events";
+import { onEnd } from "../../youtube-player/youtube-events";
 import { calcTypeSpeed } from "../calc-type-speed";
 import { getLineCountByTime } from "../get-line-count-by-time";
 import { applyKanaInputMode, applyRomaInputMode } from "../input-mode-change";

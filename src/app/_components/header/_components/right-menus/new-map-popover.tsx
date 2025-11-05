@@ -116,7 +116,7 @@ function CreateMapBackUpButton(props: CreateMapBackUpButtonProps) {
       }
     >
       <Link
-        href={`/edit?new=${props.backupData?.videoId}&backup=true`}
+        href={`/edit?new=${props.backupData?.videoId}&isBackup=true`}
         className={cn(!props.backupData?.videoId && "invisible")}
       >
         <Button variant="outline" size="sm" onClick={() => props.onOpenChange(false)} type="button">

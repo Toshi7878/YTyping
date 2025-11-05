@@ -1,16 +1,30 @@
 import { CardWithContent } from "@/components/ui/card";
 import { AddTimeAdjust } from "./add-time-adjust";
-import { EditorButtons } from "./buttons";
-import { EditorLineInput } from "./input-fields";
+import { AddLineButton, DeleteLineButton, UpdateLineButton, WordConvertButton } from "./button";
+import { LyricsInput, SelectedLineIndex, TimeInput, WordInput } from "./input";
 import { ManyPhraseTextarea } from "./many-phrase-textarea";
 
 export const EditorCard = () => {
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-1" }}>
-      <EditorLineInput />
+      <section>
+        <div className="flex items-center">
+          <TimeInput />
+          <LyricsInput />
+        </div>
+        <div className="flex items-center">
+          <SelectedLineIndex />
+          <WordInput />
+        </div>
+      </section>
 
       <section className="flex items-center justify-between">
-        <EditorButtons />
+        <div className="grid grid-cols-2 gap-2 sm:flex">
+          <AddLineButton />
+          <UpdateLineButton />
+          <WordConvertButton />
+          <DeleteLineButton />
+        </div>
         <AddTimeAdjust />
       </section>
       <ManyPhraseTextarea />

@@ -14,6 +14,11 @@ import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
 
+export const mapIdAtom = atomWithReset(0);
+export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
+export const readMapId = () => store.get(mapIdAtom);
+export const resetMapId = () => store.set(mapIdAtom, RESET);
+
 export const userTypingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
 export const useUserTypingOptionsState = () => useAtomValue(userTypingOptionsAtom, { store });
 export const readTypingOptions = () => store.get(userTypingOptionsAtom);

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { serverApi } from "@/trpc/server";
-import { EditProvider } from "../_components/client-provider";
 import { Content } from "../_components/content";
+import { EditProvider, JotaiProvider } from "../_components/provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -19,8 +19,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (!mapInfo) notFound();
 
   return (
-    <EditProvider>
-      <Content videoId={mapInfo.videoId} />
-    </EditProvider>
+    <JotaiProvider mapId={id} videoId={mapInfo.videoId} creatorId={mapInfo.creator.id}>
+      <EditProvider>
+        <Content />
+      </EditProvider>
+    </JotaiProvider>
   );
 }

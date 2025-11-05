@@ -72,7 +72,6 @@ export const ConvertOptionButtons = () => {
               variant={option.variant}
               size="sm"
               className="h-10 w-full text-xs sm:h-[50px] sm:w-[120px] sm:text-sm md:w-[150px]"
-              onClick={() => setWordConvertOption(option.value)}
             >
               {option.label}
             </Button>

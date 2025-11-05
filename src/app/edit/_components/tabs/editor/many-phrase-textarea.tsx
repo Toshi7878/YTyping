@@ -21,7 +21,6 @@ export const ManyPhraseTextarea = () => {
     "tab",
     () => {
       const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-
       if (isDialogOpen) return;
 
       const textarea = textareaRef.current;
@@ -36,10 +35,7 @@ export const ManyPhraseTextarea = () => {
         }
       }
     },
-    {
-      preventDefault: true,
-      enableOnFormTags: true,
-    },
+    { preventDefault: true, enableOnFormTags: true },
   );
 
   useHotkeys("q", () => {

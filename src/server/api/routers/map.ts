@@ -125,6 +125,6 @@ export const mapRouter = {
       return newId;
     });
 
-    return mapId === null ? newMapId : mapId;
+    return { id: newMapId, creatorId: userId };
   }),
 } satisfies TRPCRouterRecord;

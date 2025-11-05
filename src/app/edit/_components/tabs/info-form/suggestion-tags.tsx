@@ -105,8 +105,8 @@ interface TagBadgeProps {
 }
 
 const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
-  const control = useFormContext();
-  const tags = control.watch("tags");
+  const control = useFormContext<{ tags: string[] }>();
+  const tags = control.watch("tags") ?? [];
 
   return (
     <Badge

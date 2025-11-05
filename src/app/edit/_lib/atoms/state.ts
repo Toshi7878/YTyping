@@ -3,10 +3,22 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { YouTubeSpeed } from "@/utils/types";
-import { readTimeInputValue, readYTPlayer, setTimeInputValue } from "./ref";
+import { readTimeInputValue, setTimeInputValue } from "./ref";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
+
+export const mapIdAtom = atomWithReset<number | null>(null);
+export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
+export const readMapId = () => store.get(mapIdAtom);
+export const setMapId = (value: ExtractAtomValue<typeof mapIdAtom>) => store.set(mapIdAtom, value);
+export const resetMapId = () => store.set(mapIdAtom, RESET);
+
+export const creatorIdAtom = atomWithReset<number | null>(null);
+export const useCreatorIdState = () => useAtomValue(mapIdAtom, { store });
+export const setCreatorId = (value: ExtractAtomValue<typeof creatorIdAtom>) => store.set(creatorIdAtom, value);
+export const resetCreatorId = () => store.set(creatorIdAtom, RESET);
+
 export const TAB_NAMES = ["情報&保存", "エディター", "ショートカットキー&設定"] as const;
 const utilityParamsAtom = atomWithReset({
   tabName: "情報&保存" as (typeof TAB_NAMES)[number],
@@ -42,6 +54,7 @@ export const setTimeLineIndex = (value: ExtractAtomValue<typeof timeLineIndexAto
   store.set(timeLineIndexAtom, value);
 
 export const useDirectEditIndexState = () => useAtomValue(directEditingIndexAtom, { store });
+export const readDirectEditIndex = () => store.get(directEditingIndexAtom);
 export const setDirectEditIndex = (value: ExtractAtomValue<typeof directEditingIndexAtom>) =>
   store.set(directEditingIndexAtom, value);
 
@@ -69,22 +82,22 @@ export const setTimeRangeValue = (value: ExtractAtomValue<typeof timeRangeValueA
   store.set(timeRangeValueAtom, value);
 
 const YTPlayerStatusAtom = atomWithReset({
-  videoId: null as string | null,
-  readied: false,
-  started: false,
-  playing: false,
+  videoId: "",
+  isReadied: false,
+  isStarted: false,
+  isPlaying: false,
+  isChangingVideo: false,
   speed: 1 as YouTubeSpeed,
   duration: 0,
-  changingVideo: false,
 });
 
-const videoIdAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("videoId"));
-const readiedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("readied"));
-const startedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("started"));
-const playingAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("playing"));
+export const videoIdAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("videoId"));
+const isReadiedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isReadied"));
+const isStartedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isStarted"));
+const isPlayingAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isPlaying"));
+const isChangingVideoAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isChangingVideo"));
 const ytDurationAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("duration"));
 const speedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("speed"));
-const changingVideoAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("changingVideo"));
 
 export const resetYTPlayerStatus = () => store.set(YTPlayerStatusAtom, RESET);
 export const readYTPlayerStatus = () => store.get(YTPlayerStatusAtom);
@@ -92,12 +105,12 @@ export const readYTPlayerStatus = () => store.get(YTPlayerStatusAtom);
 export const useYTSpeedState = () => useAtomValue(speedAtom, { store });
 export const setYTSpeed = (value: ExtractAtomValue<typeof speedAtom>) => store.set(speedAtom, value);
 
-export const useIsYTReadiedState = () => useAtomValue(readiedAtom, { store });
-export const setIsYTReadied = (value: ExtractAtomValue<typeof readiedAtom>) => store.set(readiedAtom, value);
+export const useIsYTReadiedState = () => useAtomValue(isReadiedAtom, { store });
+export const setIsYTReadied = (value: ExtractAtomValue<typeof isReadiedAtom>) => store.set(isReadiedAtom, value);
 
-export const useIsYTStartedState = () => useAtomValue(startedAtom, { store });
-export const setIsYTStarted = (value: ExtractAtomValue<typeof startedAtom>) => store.set(startedAtom, value);
-export const setIsYTPlaying = (value: ExtractAtomValue<typeof playingAtom>) => store.set(playingAtom, value);
+export const useIsYTStartedState = () => useAtomValue(isStartedAtom, { store });
+export const setIsYTStarted = (value: ExtractAtomValue<typeof isStartedAtom>) => store.set(isStartedAtom, value);
+export const setIsYTPlaying = (value: ExtractAtomValue<typeof isPlayingAtom>) => store.set(isPlayingAtom, value);
 
 export const useVideoIdState = () => useAtomValue(videoIdAtom, { store });
 export const setVideoId = (value: ExtractAtomValue<typeof videoIdAtom>) => store.set(videoIdAtom, value);
@@ -105,8 +118,8 @@ export const setVideoId = (value: ExtractAtomValue<typeof videoIdAtom>) => store
 export const useYTDurationState = () => useAtomValue(ytDurationAtom, { store });
 export const setYTDuration = (value: ExtractAtomValue<typeof ytDurationAtom>) => store.set(ytDurationAtom, value);
 
-export const setYTChangingVideo = (value: ExtractAtomValue<typeof changingVideoAtom>) =>
-  store.set(changingVideoAtom, value);
+export const setYTChangingVideo = (value: ExtractAtomValue<typeof isChangingVideoAtom>) =>
+  store.set(isChangingVideoAtom, value);
 
 store.sub(speedAtom, () => {
   const YTPlayer = readYTPlayer();
@@ -165,3 +178,9 @@ export const setWord = (value: ExtractAtomValue<typeof selectLineWordAtom>) => s
 export const useSetWord = () => useSetAtom(selectLineWordAtom, { store });
 
 export const useSelectIndexState = () => useAtomValue(selectLineIndexAtom, { store });
+
+const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
+export const useYTPlayer = () => useAtomValue(YTPlayerAtom, { store });
+export const readYTPlayer = () => store.get(YTPlayerAtom);
+export const setYTPlayer = (newYTPlayer: YT.Player) => store.set(YTPlayerAtom, newYTPlayer);
+export const resetYTPlayer = () => store.set(YTPlayerAtom, RESET);

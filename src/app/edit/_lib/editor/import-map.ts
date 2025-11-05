@@ -1,10 +1,10 @@
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
-import { mapAction, readMap } from "@/app/edit/_lib/atoms/map-reducer";
-import { readYTPlayer } from "@/app/edit/_lib/atoms/ref";
+import { readMap, setMapAction } from "@/app/edit/_lib/atoms/map-reducer";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSymbols } from "@/utils/string-transform";
 import { dispatchEditHistory } from "../atoms/history-reducer";
+import { readYTPlayer } from "../atoms/state";
 import { wordConvert } from "./typable-word-convert";
 
 export const importMapFile = async (file: File) => {
@@ -26,14 +26,14 @@ export const importMapFile = async (file: File) => {
       type: "add",
       payload: { actionType: "replaceAll", data: { old: readMap(), new: convertedData } },
     });
-    mapAction({ type: "replaceAll", payload: convertedData });
+    setMapAction({ type: "replaceAll", payload: convertedData });
   } else {
     const convertedData = jsonConverter(JSON.parse(decodedData).map);
     dispatchEditHistory({
       type: "add",
       payload: { actionType: "replaceAll", data: { old: readMap(), new: convertedData } },
     });
-    mapAction({ type: "replaceAll", payload: convertedData });
+    setMapAction({ type: "replaceAll", payload: convertedData });
   }
 };
 type JsonMap = [string, string, string];

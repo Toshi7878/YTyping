@@ -1,15 +1,17 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
 import type z from "zod";
-import { readYTPlayer, setPreventEditorTabAutoFocus } from "@/app/edit/_lib/atoms/ref";
-import { useHasMapUploadPermission } from "@/app/edit/_lib/map-table/use-has-map-upload-permission";
+import { setPreventEditorTabAutoFocus } from "@/app/edit/_lib/atoms/ref";
+import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
+import { searchParamsParsers } from "@/app/edit/_lib/search-params";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -17,20 +19,26 @@ import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-fi
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { BuildMap } from "@/lib/build-map/build-map";
-import { backupMap, backupMapInfo, clearBackupMapWithInfo } from "@/lib/indexed-db";
-import { useMapQueries } from "@/lib/queries/map.queries";
+import { backupMap, backupMapInfo, clearBackupMapWithInfo, fetchBackupMap } from "@/lib/indexed-db";
 import { MapInfoFormSchema } from "@/server/drizzle/validator/map";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeId } from "@/utils/extract-youtube-id";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
-import { mapAction, readMap } from "../../../_lib/atoms/map-reducer";
+import { readMap } from "../../../_lib/atoms/map-reducer";
 import {
+  readMapId,
   readUtilityParams,
+  readYTPlayer,
+  readYTPlayerStatus,
   setCanUpload,
+  setCreatorId,
+  setMapId,
   setVideoId,
   setYTChangingVideo,
   useCanUploadState,
+  useCreatorIdState,
+  useMapIdState,
   useVideoIdState,
 } from "../../../_lib/atoms/state";
 import { getThumbnailQuality } from "../../../_lib/utils/get-thumbail-quality";
@@ -39,24 +47,28 @@ import { SuggestionTags } from "./suggestion-tags";
 export const TAG_MAX_LEN = 10;
 
 export const MapInfoFormCard = () => {
-  const searchParams = useSearchParams();
-  const mapId = usePathname().split("/")[2];
-
+  const mapId = useMapIdState();
   const trpc = useTRPC();
 
-  const isBackUp = searchParams.get("backup") === "true";
-  const newCreateVideoId = searchParams.get("new");
-  const hasUploadPermission = useHasMapUploadPermission();
+  const [{ isBackup }] = useQueryStates({ isBackup: searchParamsParsers.isBackup });
+  const { data: session } = useSession();
+  const creatorId = useCreatorIdState();
+  const hasUploadPermission = hasMapUploadPermission(session, creatorId);
 
-  const { data: mapInfo } = useQuery({
-    ...useMapQueries().mapInfo({ mapId: Number(mapId) }),
-    enabled: !!mapId && !isBackUp,
-  });
+  const { data: mapInfo } = useQuery(
+    trpc.map.getMapInfo.queryOptions(
+      { mapId: mapId ?? 0 },
+      { enabled: !!mapId && !isBackup, staleTime: Infinity, gcTime: Infinity },
+    ),
+  );
 
-  const { data: backupMap } = useQuery({
-    ...useMapQueries().editBackupMap(),
-    enabled: isBackUp,
-  });
+  const { data: backupMap } = useQuery(
+    queryOptions({
+      queryKey: ["backup"],
+      queryFn: fetchBackupMap,
+      enabled: isBackup && !mapId,
+    }),
+  );
 
   const videoId = useVideoIdState();
   const { debounce } = useDebounce(500);
@@ -71,7 +83,7 @@ export const MapInfoFormCard = () => {
       previewTime: mapInfo?.previewTime ?? backupMap?.previewTime ?? 0,
       creatorComment: mapInfo?.creator.comment ?? backupMap?.creatorComment ?? "",
       tags: mapInfo?.tags ?? backupMap?.tags ?? [],
-      videoId: mapInfo?.videoId ?? newCreateVideoId ?? "",
+      videoId: videoId,
     },
 
     resetOptions: {
@@ -79,35 +91,15 @@ export const MapInfoFormCard = () => {
     },
   });
 
-  useEffect(() => {
-    if (mapInfo && !isBackUp) {
-      setVideoId(mapInfo.videoId);
-    }
-  }, [mapInfo, isBackUp, form]);
-
-  useEffect(() => {
-    if (backupMap && isBackUp && newCreateVideoId) {
-      mapAction({ type: "replaceAll", payload: backupMap.map });
-      setCanUpload(true);
-      setVideoId(newCreateVideoId);
-    }
-  }, [backupMap, isBackUp, newCreateVideoId, form]);
-
-  useEffect(() => {
-    if (newCreateVideoId && !mapId && !isBackUp) {
-      setVideoId(newCreateVideoId);
-    }
-  }, [newCreateVideoId, mapId, isBackUp]);
-
   const {
     data: geminiInfoData,
     error: geminiError,
     isFetching,
   } = useQuery(
     trpc.gemini.generateMapInfo.queryOptions(
-      { videoId: videoId ?? "" },
+      { videoId },
       {
-        enabled: !!(videoId && !isBackUp && hasUploadPermission),
+        enabled: hasUploadPermission,
         staleTime: Infinity,
         gcTime: Infinity,
         retry: false,
@@ -127,22 +119,22 @@ export const MapInfoFormCard = () => {
     if (geminiInfoData) {
       const { title, artistName, source } = geminiInfoData;
 
-      if (newCreateVideoId) {
+      if (!mapId && !isBackup) {
         form.setValue("title", title);
         form.setValue("artistName", artistName);
         form.setValue("musicSource", source);
       }
     }
-  }, [form, geminiInfoData, newCreateVideoId]);
+  }, [form, geminiInfoData, mapId, isBackup]);
 
   useEffect(() => {
-    if (newCreateVideoId) {
+    if (!mapId) {
       const subscription = form.watch((value) => {
-        if (!value || !newCreateVideoId) return;
+        if (!value || !mapId) return;
 
         debounce(() => {
           void backupMapInfo({
-            videoId: newCreateVideoId,
+            videoId,
             title: value.title || "",
             artistName: value.artistName || "",
             musicSource: value.musicSource || "",
@@ -154,18 +146,18 @@ export const MapInfoFormCard = () => {
       });
       return () => subscription.unsubscribe();
     }
-  }, [newCreateVideoId, form, debounce]);
+  }, [mapId, videoId, form, debounce]);
 
   const onSubmit = useOnSubmit(form);
 
-  const isGeminiLoading = isFetching && !!newCreateVideoId;
+  const isGeminiLoading = isFetching && !mapId;
   const tags = form.watch("tags");
 
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
-          {!newCreateVideoId && <VideoIdInput />}
+          {mapId && <VideoIdInput />}
 
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
@@ -200,7 +192,7 @@ export const MapInfoFormCard = () => {
           <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
               <InfoFormButton />
-              {mapId && <TypeLinkButton />}
+              {mapId && <TypeLinkButton mapId={mapId} />}
             </div>
 
             <PreviewTimeInput />
@@ -215,7 +207,9 @@ const InfoFormButton = () => {
   const { formState } = useFormContext();
   const { isDirty, isSubmitting } = formState;
   const canUpload = useCanUploadState();
-  const hasUploadPermission = useHasMapUploadPermission();
+  const { data: session } = useSession();
+  const creatorId = useCreatorIdState();
+  const hasUploadPermission = hasMapUploadPermission(session, creatorId);
   useNavigationGuard((isDirty || canUpload) && hasUploadPermission);
 
   if (!hasUploadPermission) return null;
@@ -337,11 +331,7 @@ const PreviewTimeInput = () => {
   );
 };
 
-const TypeLinkButton = () => {
-  const mapId = usePathname().split("/")[2];
-
-  if (!mapId) return null;
-
+const TypeLinkButton = ({ mapId }: { mapId: number }) => {
   return (
     <Link href={`/type/${mapId}`}>
       <Button size="default" variant="outline">
@@ -351,29 +341,29 @@ const TypeLinkButton = () => {
   );
 };
 
-const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormSchema>>>) => {
-  const mapId = usePathname().split("/")[2];
-  const searchParams = useSearchParams();
-  const newCreateVideoId = searchParams.get("new");
-  const trpc = useTRPC();
+type FormType = ReturnType<typeof useForm<z.input<typeof MapInfoFormSchema>>>;
 
+const useOnSubmit = (form: FormType) => {
+  const trpc = useTRPC();
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
-      onSuccess: async (id, _variables, _, context) => {
+      onSuccess: async ({ id, creatorId }, _variables, _, context) => {
         setCanUpload(false);
         form.reset(form.getValues());
         await context.client.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId: id }));
         await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: id }));
         await context.client.invalidateQueries(trpc.mapList.getList.queryFilter());
 
-        if (mapId === undefined) {
+        const mapId = readMapId();
+        if (!mapId) {
           window.history.replaceState(null, "", `/edit/${id}`);
           void clearBackupMapWithInfo();
+          setMapId(id);
+          setCreatorId(creatorId);
           toast.success("アップロード完了");
-          return;
+        } else {
+          toast.success("アップデート完了");
         }
-
-        toast.success("アップデート完了");
       },
       onError: async (error) => {
         switch (error.data?.code) {
@@ -384,9 +374,11 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
             toast.error("保存に失敗しました", { description: "しばらく時間をおいてから再度お試しください。" });
         }
 
-        if (newCreateVideoId) {
+        const mapId = readMapId();
+        if (!mapId) {
+          const { videoId } = readYTPlayerStatus();
           await backupMapInfo({
-            videoId: newCreateVideoId,
+            videoId,
             title: form.getValues("title"),
             artistName: form.getValues("artistName"),
             musicSource: form.getValues("musicSource"),
@@ -395,16 +387,13 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
             previewTime: Number(form.getValues("previewTime") ?? 0),
           });
 
-          void backupMap({
-            videoId: newCreateVideoId,
-            map: readMap(),
-          });
+          void backupMap({ videoId, map: readMap() });
         }
       },
     }),
   );
 
-  return async (data: z.input<typeof MapInfoFormSchema>) => {
+  return async (data: z.output<typeof MapInfoFormSchema>) => {
     const map = readMap();
     const YTPlayer = readYTPlayer();
     if (!YTPlayer) return;
@@ -417,11 +406,9 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
     const typingStartTime = Math.max(0, Number(map[startLine]?.time ?? 0) + 0.2);
 
     const newPreviewTime =
-      Number(previewTime) > videoDuration || typingStartTime >= Number(previewTime)
-        ? typingStartTime.toFixed(3)
-        : previewTime;
+      previewTime > videoDuration || typingStartTime >= previewTime ? Number(typingStartTime.toFixed(3)) : previewTime;
 
-    form.setValue("previewTime", Number(newPreviewTime));
+    form.setValue("previewTime", newPreviewTime);
 
     const mapInfo = {
       videoId,
@@ -430,7 +417,7 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
       musicSource,
       creatorComment,
       tags,
-      previewTime: Number(newPreviewTime),
+      previewTime: newPreviewTime,
       thumbnailQuality: await getThumbnailQuality(videoId),
       duration,
     };
@@ -444,12 +431,13 @@ const useOnSubmit = (form: ReturnType<typeof useForm<z.input<typeof MapInfoFormS
       kanaTotalNotes: Math.floor(totalNotes.k),
     };
     const { isUpdateUpdatedAt } = readUtilityParams();
+    const mapId = readMapId();
     await upsertMap.mutateAsync({
       mapInfo,
       mapDifficulty,
       mapData: map,
       isMapDataEdited: isUpdateUpdatedAt,
-      mapId: mapId ? Number(mapId) : null,
+      mapId,
     });
   };
 };
