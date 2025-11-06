@@ -20,13 +20,11 @@ export const setBuiltMap = (map: BuildMap) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 export const readBuiltMap = () => store.get(builtMapAtom);
 
-const initialInputMode: InputMode =
-  typeof window !== "undefined" ? (localStorage.getItem("inputMode") as InputMode) || "roma" : "roma";
 export const TAB_NAMES = ["ステータス", "ランキング"] as const;
 const utilityParamsAtom = atomWithReset({
   scene: "ready" as SceneType,
   tabName: "ランキング" as (typeof TAB_NAMES)[number],
-  inputMode: initialInputMode,
+  inputMode: "roma" as InputMode,
   notify: Symbol(""),
   activeSkipKey: null as SkipGuideKey,
   changeCSSCount: 0,

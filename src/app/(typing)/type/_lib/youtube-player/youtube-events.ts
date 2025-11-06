@@ -19,35 +19,25 @@ import {
 import { readReadyInputMode } from "../atoms/storage";
 import { mutatePlayCountStats } from "../playing/mutate-stats";
 import { startTimer, stopTimer } from "../playing/timer/timer";
-import type { InputMode } from "../type";
 
 const onStart = (player: YT.Player) => {
   const { scene } = readUtilityParams();
-
-  const movieDuration = player.getDuration();
-  setMovieDuration(movieDuration);
-
-  const { minPlaySpeed } = readPlaySpeed();
-
-  if (scene !== "replay") {
-    if (minPlaySpeed < 1) {
-      setScene("practice");
-    } else if (scene === "ready") {
-      setScene("play");
-    }
-
-    const readyInputMode = readReadyInputMode();
-    setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
-    // const map = readBuiltMap();
-    // if (map && scene === "practice") {
-    //   recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "lineUpdate" });
-    // }
-  }
-
+  setMovieDuration(player.getDuration());
   mutatePlayCountStats();
   setTabName("ステータス");
   setYTStarted(true);
   player.seekTo(0, true);
+  if (scene === "replay") return;
+
+  const { minPlaySpeed } = readPlaySpeed();
+  if (minPlaySpeed < 1) {
+    setScene("practice");
+  } else if (scene === "ready") {
+    setScene("play");
+  }
+
+  const readyInputMode = readReadyInputMode();
+  setPlayingInputMode(readyInputMode);
 };
 
 export const onPlay = async ({ target: player }: { target: YT.Player }) => {
