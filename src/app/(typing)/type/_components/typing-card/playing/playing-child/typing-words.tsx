@@ -1,11 +1,7 @@
 import type { HTMLAttributes } from "react";
 import { useLayoutEffect, useMemo, useRef } from "react";
-import {
-  useLineWordState,
-  useNextLyricsState,
-  usePlayingInputModeState,
-  useUserTypingOptionsState,
-} from "@/app/(typing)/type/_lib/atoms/state";
+import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
+import { useLineWordState, useNextLyricsState, usePlayingInputModeState } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 
@@ -24,7 +20,7 @@ export const TypingWords = () => {
     mainWordScrollStart,
     subWordScrollStart,
     isSmoothScroll,
-  } = useUserTypingOptionsState();
+  } = useTypingOptionsState();
 
   const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
 
@@ -139,7 +135,7 @@ const Word = ({
   ...rest
 }: WordProps & HTMLAttributes<HTMLDivElement>) => {
   const remainWord = nextChar + word;
-  const { lineCompletedDisplay } = useUserTypingOptionsState();
+  const { lineCompletedDisplay } = useTypingOptionsState();
   const isNextWordDisplay = lineCompletedDisplay === "NEXT_WORD";
 
   return (

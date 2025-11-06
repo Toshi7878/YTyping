@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { useTRPC } from "@/trpc/provider";
 import { readEndLineIndex, useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
+import { useCreatorIdState, useMapIdState } from "../../_lib/atoms/hydrate";
 import { readMap, setMapAction, useMapState } from "../../_lib/atoms/map-reducer";
 import { setTimeInputValue } from "../../_lib/atoms/ref";
 import {
@@ -31,11 +32,9 @@ import {
   setLyrics,
   setTabName,
   setWord,
-  useCreatorIdState,
   useDirectEditIndexState,
   useIsWordConvertingState,
   useLyricsState,
-  useMapIdState,
   useSelectIndexState,
   useTimeLineIndexState as useTimeLineIndex,
   useWordState,

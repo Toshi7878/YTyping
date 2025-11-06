@@ -39,34 +39,21 @@ import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { processReplayKeyAtTimestamp } from "./replay-processor";
 
-const typeTicker = new Ticker();
-
-export const addTimer = () => {
-  typeTicker.add(timer);
+export const startTimer = () => {
+  if (!typeTicker.started) {
+    typeTicker.start();
+  }
 };
 
-export const removeTimer = () => {
-  typeTicker.stop();
-  typeTicker.remove(timer);
+export const stopTimer = () => {
+  if (typeTicker.started) {
+    typeTicker.stop();
+  }
 };
 
-export const timerControls = {
-  startTimer: () => {
-    if (!typeTicker.started) {
-      typeTicker.start();
-      console.log("startTimer");
-    }
-  },
-  stopTimer: () => {
-    if (typeTicker.started) {
-      typeTicker.stop();
-      console.log("stopTimer");
-    }
-  },
-  setFrameRate: (rate: number) => {
-    typeTicker.maxFPS = rate;
-    typeTicker.minFPS = rate;
-  },
+export const setTimerFPS = (rate: number) => {
+  typeTicker.maxFPS = rate;
+  typeTicker.minFPS = rate;
 };
 let lastUpdateTime = 0;
 
@@ -127,7 +114,7 @@ const proceedToNextLine = ({
 
   if (isEnd) {
     onEnd();
-    timerControls.stopTimer();
+    stopTimer();
     const YTPlayer = readYTPlayer();
     YTPlayer?.stopVideo();
     YTPlayer?.cueVideoById(YTPlayer.getVideoData().video_id);
@@ -290,3 +277,6 @@ const syncReplayLineSnapshot = (newCurrentCount: number) => {
   if (playSpeed === speed) return;
   handlePlaySpeedAction({ type: "set", payload: speed });
 };
+
+const typeTicker = new Ticker();
+typeTicker.add(timer);

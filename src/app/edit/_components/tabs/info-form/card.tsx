@@ -9,6 +9,16 @@ import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
 import { toast } from "sonner";
 import type z from "zod";
+import {
+  readMapId,
+  readVideoId,
+  setCreatorId,
+  setMapId,
+  setVideoId,
+  useCreatorIdState,
+  useMapIdState,
+  useVideoIdState,
+} from "@/app/edit/_lib/atoms/hydrate";
 import { setPreventEditorTabAutoFocus } from "@/app/edit/_lib/atoms/ref";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
 import { searchParamsParsers } from "@/app/edit/_lib/search-params";
@@ -27,19 +37,11 @@ import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
 import { readMap } from "../../../_lib/atoms/map-reducer";
 import {
-  readMapId,
   readUtilityParams,
   readYTPlayer,
-  readYTPlayerStatus,
   setCanUpload,
-  setCreatorId,
-  setMapId,
-  setVideoId,
   setYTChangingVideo,
   useCanUploadState,
-  useCreatorIdState,
-  useMapIdState,
-  useVideoIdState,
 } from "../../../_lib/atoms/state";
 import { getThumbnailQuality } from "../../../_lib/utils/get-thumbail-quality";
 import { SuggestionTags } from "./suggestion-tags";
@@ -191,7 +193,7 @@ export const MapInfoFormCard = () => {
 
           <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <InfoFormButton />
+              <UpsertButton />
               {mapId && <TypeLinkButton mapId={mapId} />}
             </div>
 
@@ -203,7 +205,7 @@ export const MapInfoFormCard = () => {
   );
 };
 
-const InfoFormButton = () => {
+const UpsertButton = () => {
   const { formState } = useFormContext();
   const { isDirty, isSubmitting } = formState;
   const canUpload = useCanUploadState();
@@ -376,7 +378,7 @@ const useOnSubmit = (form: FormType) => {
 
         const mapId = readMapId();
         if (!mapId) {
-          const { videoId } = readYTPlayerStatus();
+          const videoId = readVideoId();
           await backupMapInfo({
             videoId,
             title: form.getValues("title"),

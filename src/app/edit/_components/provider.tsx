@@ -7,8 +7,16 @@ import type React from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { resetPreviewVideo } from "@/lib/atoms/global-atoms";
+import {
+  creatorIdAtom,
+  mapIdAtom,
+  setCreatorId,
+  setMapId,
+  setVideoId,
+  useCreatorIdState,
+  videoIdAtom,
+} from "../_lib/atoms/hydrate";
 import { pathChangeAtomReset } from "../_lib/atoms/reset";
-import { creatorIdAtom, mapIdAtom, useCreatorIdState, videoIdAtom } from "../_lib/atoms/state";
 import { getEditAtomStore } from "../_lib/atoms/store";
 import { hasMapUploadPermission } from "../_lib/map-table/has-map-upload-permission";
 
@@ -35,6 +43,12 @@ export const JotaiProvider = ({ mapId, videoId, creatorId, children }: JotaiProv
     { store },
   );
 
+  useEffect(() => {
+    setMapId(mapId ? Number(mapId) : null);
+    setCreatorId(creatorId ? creatorId : null);
+    setVideoId(videoId);
+  }, [mapId, videoId, creatorId]);
+
   return <Provider store={store}>{children}</Provider>;
 };
 
@@ -42,7 +56,7 @@ export const EditProvider = ({ children }: EditProviderProps) => {
   const { data: session } = useSession();
   const creatorId = useCreatorIdState();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
-  const { id: mapId } = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     resetPreviewVideo();
@@ -63,7 +77,7 @@ export const EditProvider = ({ children }: EditProviderProps) => {
     return () => {
       pathChangeAtomReset();
     };
-  }, [mapId]);
+  }, [id]);
 
   return <>{children}</>;
 };

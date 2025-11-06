@@ -1,6 +1,6 @@
 import { getTRPCClient } from "@/trpc/provider";
+import { readMapId } from "../atoms/hydrate";
 import { readUserStats, resetUserStats } from "../atoms/ref";
-import { readMapId } from "../atoms/state";
 
 export const mutatePlayCountStats = () => {
   const mapId = readMapId();

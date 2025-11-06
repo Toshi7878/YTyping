@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
-import type { YouTubeEvent } from "react-youtube";
+import { useMemo } from "react";
 import YouTube from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
@@ -10,8 +9,14 @@ import { windowFocus } from "@/utils/window-focus";
 import { readYTPlayer } from "../_lib/atoms/ref";
 import { readUtilityParams } from "../_lib/atoms/state";
 import { iosActiveSound } from "../_lib/playing/sound-effect";
-import { addTimer, removeTimer } from "../_lib/playing/timer/timer";
-import { onEnd, onPause, onPlay, onRateChange, onReady, onSeeked } from "../_lib/youtube-player/youtube-events";
+import {
+  onEnd,
+  onPause,
+  onPlay,
+  onPlaybackRateChange,
+  onReady,
+  onStateChange,
+} from "../_lib/youtube-player/youtube-events";
 
 interface YouTubePlayerProps {
   isMapLoading: boolean;
@@ -21,21 +26,6 @@ interface YouTubePlayerProps {
 
 export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
   const isMobile = useIsMobileDeviceState();
-
-  useEffect(() => {
-    addTimer();
-    return () => removeTimer();
-  }, []);
-
-  const onStateChange = useCallback(
-    (event: YouTubeEvent) => {
-      if (event.data === YT.PlayerState.BUFFERING) {
-        onSeeked(event.target as YT.Player);
-      }
-    },
-
-    [],
-  );
 
   const memoizedYouTube = useMemo(
     () => (
@@ -56,12 +46,12 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
             fs: 0,
           },
         }}
-        onReady={({ target }) => onReady(target as YT.Player)}
-        onPlay={({ target }) => onPlay(target as YT.Player)}
-        onPause={() => onPause()}
+        onReady={onReady}
+        onPlay={onPlay}
+        onPause={onPause}
         onEnd={onEnd}
         onStateChange={onStateChange}
-        onPlaybackRateChange={({ target }) => onRateChange(target as YT.Player)}
+        onPlaybackRateChange={onPlaybackRateChange}
       />
     ),
 
@@ -79,11 +69,10 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
 const MobileCover = () => {
   const handleStart = () => {
     const { scene, isPaused } = readUtilityParams();
-
     iosActiveSound();
-
     const player = readYTPlayer();
     if (!player) return;
+
     if (isPaused || scene === "ready") {
       player.playVideo();
     } else {
@@ -96,7 +85,7 @@ const MobileCover = () => {
   return (
     <div
       id="mobile_cover"
-      className="absolute inset-0 z-[5] cursor-pointer items-center rounded-lg transition-opacity duration-300"
+      className="absolute inset-0 z-5 cursor-pointer items-center rounded-lg transition-opacity duration-300"
       onClick={handleStart}
     />
   );

@@ -1,6 +1,6 @@
 "use client";
 import { MdRestartAlt } from "react-icons/md";
-import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state";
+import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { Button } from "@/components/ui/button";
 import { CounterInput } from "@/components/ui/counter";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
@@ -35,10 +35,10 @@ export const WordDisplayOptions = () => {
     kanaWordSpacing,
     romaWordSpacing,
     wordDisplay,
-  } = useUserTypingOptionsState();
+  } = useTypingOptionsState();
 
   const resetToDefaults = () => {
-    setUserTypingOptions({
+    setTypingOptions({
       mainWordFontSize: DEFAULT_TYPING_OPTIONS.mainWordFontSize,
       subWordFontSize: DEFAULT_TYPING_OPTIONS.subWordFontSize,
       mainWordTopPosition: DEFAULT_TYPING_OPTIONS.mainWordTopPosition,
@@ -60,7 +60,7 @@ export const WordDisplayOptions = () => {
       </header>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ mainWordFontSize: value })}
+          onChange={(value) => setTypingOptions({ mainWordFontSize: value })}
           step={WORD_OPTIONS_CONFIG.fontSize.step}
           max={WORD_OPTIONS_CONFIG.fontSize.max}
           min={WORD_OPTIONS_CONFIG.fontSize.min}
@@ -71,7 +71,7 @@ export const WordDisplayOptions = () => {
           unit="%"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ subWordFontSize: value })}
+          onChange={(value) => setTypingOptions({ subWordFontSize: value })}
           step={WORD_OPTIONS_CONFIG.fontSize.step}
           max={WORD_OPTIONS_CONFIG.fontSize.max}
           min={WORD_OPTIONS_CONFIG.fontSize.min}
@@ -84,7 +84,7 @@ export const WordDisplayOptions = () => {
       </div>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ mainWordTopPosition: value })}
+          onChange={(value) => setTypingOptions({ mainWordTopPosition: value })}
           step={WORD_OPTIONS_CONFIG.topPosition.step}
           max={WORD_OPTIONS_CONFIG.topPosition.max}
           min={WORD_OPTIONS_CONFIG.topPosition.min}
@@ -96,7 +96,7 @@ export const WordDisplayOptions = () => {
           unit="px"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ subWordTopPosition: value })}
+          onChange={(value) => setTypingOptions({ subWordTopPosition: value })}
           step={WORD_OPTIONS_CONFIG.topPosition.step}
           max={WORD_OPTIONS_CONFIG.topPosition.max}
           min={WORD_OPTIONS_CONFIG.topPosition.min}
@@ -110,7 +110,7 @@ export const WordDisplayOptions = () => {
       </div>
       <div className="flex gap-6">
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ kanaWordSpacing: value })}
+          onChange={(value) => setTypingOptions({ kanaWordSpacing: value })}
           step={WORD_OPTIONS_CONFIG.spacing.step}
           max={WORD_OPTIONS_CONFIG.spacing.max}
           min={WORD_OPTIONS_CONFIG.spacing.min}
@@ -122,7 +122,7 @@ export const WordDisplayOptions = () => {
           unit="em"
         />
         <CounterInput
-          onChange={(value) => setUserTypingOptions({ romaWordSpacing: value })}
+          onChange={(value) => setTypingOptions({ romaWordSpacing: value })}
           step={WORD_OPTIONS_CONFIG.spacing.step}
           max={WORD_OPTIONS_CONFIG.spacing.max}
           min={WORD_OPTIONS_CONFIG.spacing.min}
@@ -147,8 +147,8 @@ export const WordDisplayOptions = () => {
             { label: "ローマ字小文字のみ", value: "ROMA_LOWERCASE_ONLY" },
           ] satisfies { label: string; value: (typeof mainWordDisplayEnum.enumValues)[number] }[]
         }
-        onValueChange={(value: (typeof mainWordDisplayEnum.enumValues)[number]) =>
-          setUserTypingOptions({ wordDisplay: value })
+        onValueChange={(value) =>
+          setTypingOptions({ wordDisplay: value as (typeof mainWordDisplayEnum.enumValues)[number] })
         }
         value={wordDisplay}
       />

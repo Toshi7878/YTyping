@@ -5,7 +5,8 @@ import {
   useIsDeleteBtnDisabledState,
   useIsUpdateBtnDisabledState,
 } from "@/app/edit/_lib/atoms/button-disabled-state";
-import { useCreatorIdState, useIsWordConvertingState } from "@/app/edit/_lib/atoms/state";
+import { useCreatorIdState } from "@/app/edit/_lib/atoms/hydrate";
+import { useIsWordConvertingState } from "@/app/edit/_lib/atoms/state";
 import {
   addLineAction,
   deleteLineAction,

@@ -9,16 +9,15 @@ import {
   setTimeRangeValue,
 } from "../atoms/state";
 
-export const timerControls = {
-  startTimer: () => {
-    if (!editTicker.started) {
-      editTicker.start();
-    }
-  },
-  stopTimer: () => {
-    if (editTicker.started) {
-    }
-  },
+export const startTimer = () => {
+  if (!editTicker.started) {
+    editTicker.start();
+  }
+};
+export const stopTimer = () => {
+  if (editTicker.started) {
+    editTicker.stop();
+  }
 };
 
 const timer = () => {
@@ -48,3 +47,6 @@ const timer = () => {
 
 const editTicker = new Ticker();
 editTicker.add(timer);
+
+editTicker.maxFPS = 60;
+editTicker.minFPS = 60;

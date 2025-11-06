@@ -1,18 +1,10 @@
-import { setUserTypingOptions, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state";
+import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { LabeledSelect } from "@/components/ui/select/labeled-select";
 import { H4 } from "@/components/ui/typography";
 import type { InputModeToggleKeyEnum, timeOffsetAdjustKeyEnum } from "@/server/drizzle/schema";
 
 export const HotKeySelectFields = () => {
-  const { timeOffsetAdjustKey, InputModeToggleKey } = useUserTypingOptionsState();
-
-  const changeTimeOffsetAdjustKey = (value: string) => {
-    setUserTypingOptions({ timeOffsetAdjustKey: value as (typeof timeOffsetAdjustKeyEnum.enumValues)[number] });
-  };
-
-  const changeInputModeKey = (value: string) => {
-    setUserTypingOptions({ InputModeToggleKey: value as (typeof InputModeToggleKeyEnum.enumValues)[number] });
-  };
+  const { timeOffsetAdjustKey, InputModeToggleKey } = useTypingOptionsState();
 
   return (
     <section className="flex flex-col gap-2">
@@ -26,7 +18,9 @@ export const HotKeySelectFields = () => {
             { label: "無効化", value: "NONE" },
           ]}
           value={timeOffsetAdjustKey}
-          onValueChange={changeTimeOffsetAdjustKey}
+          onValueChange={(value) => {
+            setTypingOptions({ timeOffsetAdjustKey: value as (typeof timeOffsetAdjustKeyEnum.enumValues)[number] });
+          }}
         />
       </div>
       <div className="flex items-baseline gap-2">
@@ -38,7 +32,9 @@ export const HotKeySelectFields = () => {
             { label: "無効化", value: "NONE" },
           ]}
           value={InputModeToggleKey}
-          onValueChange={changeInputModeKey}
+          onValueChange={(value: string) => {
+            setTypingOptions({ InputModeToggleKey: value as (typeof InputModeToggleKeyEnum.enumValues)[number] });
+          }}
         />
       </div>
     </section>

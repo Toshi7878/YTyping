@@ -1,6 +1,7 @@
+import { readTypingOptions } from "../../../atoms/hydrate";
 import { readLineCount, readUtilityRefParams, readYTPlayer, writeUtilityRefParams } from "../../../atoms/ref";
 import { readPlaySpeed } from "../../../atoms/speed-reducer";
-import { readBuiltMap, readTypingOptions, readUtilityParams, setActiveSkipGuideKey } from "../../../atoms/state";
+import { readBuiltMap, readUtilityParams, setActiveSkipGuideKey } from "../../../atoms/state";
 
 export const commitLineSkip = () => {
   const map = readBuiltMap();

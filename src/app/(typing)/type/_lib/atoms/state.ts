@@ -3,33 +3,16 @@ import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { BuildMap } from "@/lib/build-map/build-map";
-import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
 import type { BuiltMapLine, InputMode, LineWord, SceneType, SkipGuideKey } from "../type";
 import { setLineResultSelected } from "./family";
-import { lineProgressAtom, readUtilityRefParams, writeUtilityRefParams } from "./ref";
+import { readTypingOptions } from "./hydrate";
+import { lineProgressAtom, readUtilityRefParams } from "./ref";
 import { speedBaseAtom } from "./speed-reducer";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
-
-export const mapIdAtom = atomWithReset(0);
-export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
-export const readMapId = () => store.get(mapIdAtom);
-export const resetMapId = () => store.set(mapIdAtom, RESET);
-
-export const userTypingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
-export const useUserTypingOptionsState = () => useAtomValue(userTypingOptionsAtom, { store });
-export const readTypingOptions = () => store.get(userTypingOptionsAtom);
-export const setUserTypingOptions = (newUserTypingOptions: Partial<ExtractAtomValue<typeof userTypingOptionsAtom>>) => {
-  store.set(userTypingOptionsAtom, (prev) => ({ ...prev, ...newUserTypingOptions }));
-  writeUtilityRefParams({ isOptionEdited: true });
-};
-export const resetUserTypingOptions = () => {
-  store.set(userTypingOptionsAtom, RESET);
-  writeUtilityRefParams({ isOptionEdited: true });
-};
 
 const builtMapAtom = atomWithReset<BuildMap | null>(null);
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
@@ -101,6 +84,8 @@ export const setTabName = (value: ExtractAtomValue<typeof tabNameAtom>) => store
 export const useSceneState = () => useAtomValue(sceneAtom, { store });
 export const readScene = () => store.get(sceneAtom);
 export const useSceneGroupState = () => useAtomValue(sceneGroupAtom, { store });
+export const readSceneGroup = () => store.get(sceneGroupAtom);
+
 export const setScene = (value: ExtractAtomValue<typeof sceneAtom>) => store.set(sceneAtom, value);
 
 export const usePlayingInputModeState = () => useAtomValue(playingInputModeAtom, { store });

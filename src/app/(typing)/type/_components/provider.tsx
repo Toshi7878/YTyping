@@ -4,8 +4,8 @@ import { useHydrateAtoms } from "jotai/utils";
 import { type ReactNode, useEffect } from "react";
 import { resetPreviewVideo } from "@/lib/atoms/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
+import { mapIdAtom, setMapId, typingOptionsAtom } from "../_lib/atoms/hydrate";
 import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
-import { mapIdAtom, userTypingOptionsAtom } from "../_lib/atoms/state";
 import { getTypeAtomStore } from "../_lib/atoms/store";
 import { mutateTypingStats } from "../_lib/playing/mutate-stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
@@ -20,14 +20,12 @@ export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProvi
   const store = getTypeAtomStore();
 
   useHydrateAtoms(
-    [[mapIdAtom, Number(mapId)], ...(userTypingOptions ? [[userTypingOptionsAtom, userTypingOptions] as const] : [])],
-    {
-      dangerouslyForceHydrate: true,
-      store,
-    },
+    [[mapIdAtom, Number(mapId)], ...(userTypingOptions ? [[typingOptionsAtom, userTypingOptions] as const] : [])],
+    { store },
   );
 
   useEffect(() => {
+    setMapId(Number(mapId));
     return () => {
       mutateTypingStats();
       resetAllStateOnCleanup();
@@ -53,7 +51,6 @@ export const ClientProvider = ({ children }: ClientProviderProps) => {
         event.preventDefault();
       }
     };
-
     window.addEventListener("keydown", disableKeyHandle);
 
     return () => {

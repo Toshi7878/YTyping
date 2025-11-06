@@ -19,7 +19,7 @@ import { handleTyping, isHotKeyIgnored, isTypingKey } from "../../../_lib/playin
 import { commitLineSkip } from "../../../_lib/playing/keydown/hot-key/commit-line-skip";
 import { handlePlayHotKey } from "../../../_lib/playing/keydown/hot-key/handle-play-hot-key";
 import { togglePause } from "../../../_lib/playing/keydown/hot-key/toggle-pause";
-import { timerControls } from "../../../_lib/playing/timer/timer";
+import { setTimerFPS } from "../../../_lib/playing/timer/timer";
 import { ChangeCSS } from "./playing-child/change-css-style";
 import { Lyrics } from "./playing-child/lyrics-text";
 import { NextLyrics } from "./playing-child/next-lyrics";
@@ -61,9 +61,9 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     }
 
     if (scene === "replay") {
-      timerControls.setFrameRate(0);
+      setTimerFPS(0);
     } else {
-      timerControls.setFrameRate(59.99);
+      setTimerFPS(59.99);
     }
 
     const count = readLineCount();

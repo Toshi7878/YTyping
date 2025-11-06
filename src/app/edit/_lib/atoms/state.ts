@@ -8,17 +8,6 @@ import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
 
-export const mapIdAtom = atomWithReset<number | null>(null);
-export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
-export const readMapId = () => store.get(mapIdAtom);
-export const setMapId = (value: ExtractAtomValue<typeof mapIdAtom>) => store.set(mapIdAtom, value);
-export const resetMapId = () => store.set(mapIdAtom, RESET);
-
-export const creatorIdAtom = atomWithReset<number | null>(null);
-export const useCreatorIdState = () => useAtomValue(mapIdAtom, { store });
-export const setCreatorId = (value: ExtractAtomValue<typeof creatorIdAtom>) => store.set(creatorIdAtom, value);
-export const resetCreatorId = () => store.set(creatorIdAtom, RESET);
-
 export const TAB_NAMES = ["情報&保存", "エディター", "ショートカットキー&設定"] as const;
 const utilityParamsAtom = atomWithReset({
   tabName: "情報&保存" as (typeof TAB_NAMES)[number],
@@ -82,7 +71,6 @@ export const setTimeRangeValue = (value: ExtractAtomValue<typeof timeRangeValueA
   store.set(timeRangeValueAtom, value);
 
 const YTPlayerStatusAtom = atomWithReset({
-  videoId: "",
   isReadied: false,
   isStarted: false,
   isPlaying: false,
@@ -91,7 +79,6 @@ const YTPlayerStatusAtom = atomWithReset({
   duration: 0,
 });
 
-export const videoIdAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("videoId"));
 const isReadiedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isReadied"));
 const isStartedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isStarted"));
 const isPlayingAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isPlaying"));
@@ -111,9 +98,6 @@ export const setIsYTReadied = (value: ExtractAtomValue<typeof isReadiedAtom>) =>
 export const useIsYTStartedState = () => useAtomValue(isStartedAtom, { store });
 export const setIsYTStarted = (value: ExtractAtomValue<typeof isStartedAtom>) => store.set(isStartedAtom, value);
 export const setIsYTPlaying = (value: ExtractAtomValue<typeof isPlayingAtom>) => store.set(isPlayingAtom, value);
-
-export const useVideoIdState = () => useAtomValue(videoIdAtom, { store });
-export const setVideoId = (value: ExtractAtomValue<typeof videoIdAtom>) => store.set(videoIdAtom, value);
 
 export const useYTDurationState = () => useAtomValue(ytDurationAtom, { store });
 export const setYTDuration = (value: ExtractAtomValue<typeof ytDurationAtom>) => store.set(ytDurationAtom, value);

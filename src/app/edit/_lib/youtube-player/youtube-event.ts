@@ -1,9 +1,9 @@
 import type { YouTubeEvent } from "react-youtube";
 import { readVolume } from "@/lib/atoms/global-atoms";
+import { readMapId } from "../atoms/hydrate";
 import { readMap } from "../atoms/map-reducer";
 import { preventEditortabAutoFocus } from "../atoms/ref";
 import {
-  readMapId,
   readYTPlayerStatus,
   setIsYTPlaying,
   setIsYTReadied,
@@ -15,7 +15,7 @@ import {
   setYTPlayer,
 } from "../atoms/state";
 import { updateEndTime } from "../map-table/update-end-time";
-import { timerControls } from "./timer";
+import { startTimer, stopTimer } from "./timer";
 
 export const onReady = ({ target: player }: { target: YT.Player }) => {
   console.log("Ready");
@@ -47,7 +47,7 @@ export const onPlay = ({ target: player }: { target: YT.Player }) => {
     onStart(player);
   }
 
-  timerControls.startTimer();
+  startTimer();
   setIsYTStarted(true);
   setIsYTPlaying(true);
 
@@ -57,13 +57,13 @@ export const onPlay = ({ target: player }: { target: YT.Player }) => {
 
 export const onPause = () => {
   console.log("一時停止");
-  timerControls.stopTimer();
+  stopTimer();
   setIsYTPlaying(false);
 };
 
 export const onEnd = () => {
   console.log("プレイ終了 動画完全停止");
-  timerControls.stopTimer();
+  stopTimer();
   setIsYTPlaying(false);
 };
 

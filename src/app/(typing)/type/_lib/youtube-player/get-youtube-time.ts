@@ -1,6 +1,7 @@
+import { readTypingOptions } from "../atoms/hydrate";
 import { readLineCount, readUtilityRefParams, readYTPlayer } from "../atoms/ref";
 import { readPlaySpeed } from "../atoms/speed-reducer";
-import { readBuiltMap, readTypingOptions, readUtilityParams } from "../atoms/state";
+import { readBuiltMap, readUtilityParams } from "../atoms/state";
 
 export const getTime = () => {
   const currentTime = getCurrentOffsettedYTTime();

@@ -8,12 +8,12 @@ import {
   useIsPausedState,
   useSceneGroupState,
   useSceneState,
-  useUserTypingOptionsState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
+import { useTypingOptionsState } from "../../../_lib/atoms/hydrate";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { moveNextLine, movePrevLine } from "../../../_lib/playing/move-line";
 
@@ -77,7 +77,7 @@ const SpeedButton = () => {
 
 const PracticeButtons = () => {
   const scene = useSceneState();
-  const userOptions = useUserTypingOptionsState();
+  const { InputModeToggleKey } = useTypingOptionsState();
 
   return (
     (scene === "practice" || scene === "replay") && (
@@ -92,7 +92,7 @@ const PracticeButtons = () => {
         />
         <ButtonWithKbd
           buttonLabel="リスト"
-          kbdLabel={userOptions.InputModeToggleKey === "TAB" ? "F1" : "Tab"}
+          kbdLabel={InputModeToggleKey === "TAB" ? "F1" : "Tab"}
           onClickCapture={(event) => {
             event.stopPropagation();
             setLineResultSheet(true);

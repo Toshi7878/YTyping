@@ -1,10 +1,11 @@
 import parse from "html-react-parser";
-import { useLyricsState, useUserTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/state";
+import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
+import { useLyricsState } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 
 export const Lyrics = () => {
   const lyrics = useLyricsState();
-  const userOptionsAtom = useUserTypingOptionsState();
+  const typingOptions = useTypingOptionsState();
 
   return (
     <div
@@ -13,7 +14,7 @@ export const Lyrics = () => {
         "text-word-word w-full max-w-[103%] whitespace-nowrap",
         "text-7xl font-bold md:text-[2.5rem]",
         "font-[system-ui]",
-        userOptionsAtom.lineCompletedDisplay === "NEXT_WORD" && "[.word-area-completed_+_&]:invisible",
+        typingOptions.lineCompletedDisplay === "NEXT_WORD" && "[.word-area-completed_+_&]:invisible",
       )}
     >
       {parse(lyrics)}

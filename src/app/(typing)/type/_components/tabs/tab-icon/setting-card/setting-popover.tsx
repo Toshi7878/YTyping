@@ -2,13 +2,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
 import { toast } from "sonner";
-import { writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/ref";
 import {
   readTypingOptions,
-  resetUserTypingOptions,
-  setUserTypingOptions,
-  useUserTypingOptionsState,
-} from "@/app/(typing)/type/_lib/atoms/state";
+  resetTypingOptions,
+  setTypingOptions,
+  useTypingOptionsState,
+} from "@/app/(typing)/type/_lib/atoms/hydrate";
+import { readUtilityRefParams, writeUtilityRefParams } from "@/app/(typing)/type/_lib/atoms/ref";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -37,11 +37,11 @@ export const SettingPopover = () => {
     setIsOpen(open);
 
     if (!open) {
-      const isOptionEdited = readTypingOptions();
+      const { isOptionEdited } = readUtilityRefParams();
 
       if (isOptionEdited) {
-        const userOptions = readTypingOptions();
-        updateTypingOptions.mutate(userOptions);
+        const typingOptions = readTypingOptions();
+        updateTypingOptions.mutate(typingOptions);
         writeUtilityRefParams({ isOptionEdited: false });
       }
     }
@@ -86,7 +86,7 @@ export const SettingPopover = () => {
     });
 
     if (result) {
-      resetUserTypingOptions();
+      resetTypingOptions();
       toast.success("設定をリセットしました");
     }
   };
@@ -145,11 +145,7 @@ const SettingButton = () => {
 };
 
 const LineCompletedRadioOptions = () => {
-  const { lineCompletedDisplay: line_completed_display } = useUserTypingOptionsState();
-
-  const changeRadio = (value: (typeof lineCompletedDisplayEnum.enumValues)[number]) => {
-    setUserTypingOptions({ lineCompletedDisplay: value });
-  };
+  const { lineCompletedDisplay } = useTypingOptionsState();
 
   const items = [
     { label: "ワードハイライト", value: "HIGH_LIGHT" },
@@ -160,8 +156,10 @@ const LineCompletedRadioOptions = () => {
     <LabeledRadioGroup
       label="打ち切り時のワード表示"
       labelClassName="mb-2 block text-lg font-semibold"
-      value={line_completed_display}
-      onValueChange={changeRadio}
+      value={lineCompletedDisplay}
+      onValueChange={(value) => {
+        setTypingOptions({ lineCompletedDisplay: value as (typeof lineCompletedDisplayEnum.enumValues)[number] });
+      }}
       className="flex flex-row gap-5"
       items={items}
     />
@@ -169,11 +167,7 @@ const LineCompletedRadioOptions = () => {
 };
 
 const NextDisplayRadioOptions = () => {
-  const { nextDisplay } = useUserTypingOptionsState();
-
-  const changeRadio = (value: (typeof nextDisplayEnum.enumValues)[number]) => {
-    setUserTypingOptions({ nextDisplay: value });
-  };
+  const { nextDisplay } = useTypingOptionsState();
 
   const items = [
     { label: "歌詞", value: "LYRICS" },
@@ -183,7 +177,9 @@ const NextDisplayRadioOptions = () => {
   return (
     <LabeledRadioGroup
       value={nextDisplay}
-      onValueChange={changeRadio}
+      onValueChange={(value) => {
+        setTypingOptions({ nextDisplay: value as (typeof nextDisplayEnum.enumValues)[number] });
+      }}
       label="次の歌詞表示"
       className="flex flex-row gap-5"
       labelClassName="text-lg font-semibold"

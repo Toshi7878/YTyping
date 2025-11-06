@@ -1,11 +1,12 @@
+import type { YouTubeEvent } from "react-youtube";
 import { readVolume } from "@/lib/atoms/global-atoms";
 import { getTRPCClient } from "@/trpc/provider";
 import { windowFocus } from "@/utils/window-focus";
+import { readMapId } from "../atoms/hydrate";
 import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount, writeYTPlayer } from "../atoms/ref";
 import { readPlaySpeed, setSpeed } from "../atoms/speed-reducer";
 import {
-  readBuiltMap,
-  readMapId,
+  readSceneGroup,
   readUtilityParams,
   setIsPaused,
   setMovieDuration,
@@ -17,16 +18,11 @@ import {
 } from "../atoms/state";
 import { readReadyInputMode } from "../atoms/storage";
 import { mutatePlayCountStats } from "../playing/mutate-stats";
-import { timerControls } from "../playing/timer/timer";
-import { recalculateStatusFromResults } from "../playing/update-status/recalc-from-results";
+import { startTimer, stopTimer } from "../playing/timer/timer";
 import type { InputMode } from "../type";
 
 const onStart = (player: YT.Player) => {
   const { scene } = readUtilityParams();
-
-  if (scene === "ready") {
-    timerControls.startTimer();
-  }
 
   const movieDuration = player.getDuration();
   setMovieDuration(movieDuration);
@@ -42,10 +38,10 @@ const onStart = (player: YT.Player) => {
 
     const readyInputMode = readReadyInputMode();
     setPlayingInputMode(readyInputMode.replace(/""/g, '"') as InputMode);
-    const map = readBuiltMap();
-    if (map && scene === "practice") {
-      recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "lineUpdate" });
-    }
+    // const map = readBuiltMap();
+    // if (map && scene === "practice") {
+    //   recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "lineUpdate" });
+    // }
   }
 
   mutatePlayCountStats();
@@ -54,19 +50,20 @@ const onStart = (player: YT.Player) => {
   player.seekTo(0, true);
 };
 
-export const onPlay = async (player: YT.Player) => {
+export const onPlay = async ({ target: player }: { target: YT.Player }) => {
   windowFocus();
 
   console.log("再生 1");
 
   const { scene, isYTStarted, isPaused } = readUtilityParams();
+  const sceneGroup = readSceneGroup();
+
+  if (sceneGroup === "Ready" || sceneGroup === "Playing") {
+    startTimer();
+  }
 
   if (!isYTStarted) {
     onStart(player);
-  }
-
-  if (scene === "play" || scene === "practice" || scene === "replay") {
-    timerControls.startTimer();
   }
 
   if (isPaused) {
@@ -108,7 +105,7 @@ export const onEnd = () => {
 export const onPause = () => {
   console.log("一時停止");
 
-  timerControls.stopTimer();
+  stopTimer();
 
   const { isPaused, scene } = readUtilityParams();
   if (!isPaused) {
@@ -118,7 +115,7 @@ export const onPause = () => {
   }
 };
 
-export const onSeeked = (player: YT.Player) => {
+const onSeeked = (player: YT.Player) => {
   const time = player.getCurrentTime();
 
   const { isRetrySkip } = readUtilityRefParams();
@@ -130,13 +127,19 @@ export const onSeeked = (player: YT.Player) => {
   console.log("シーク");
 };
 
-export const onReady = (player: YT.Player) => {
+export const onReady = ({ target: player }: { target: YT.Player }) => {
   player.setVolume(readVolume());
   writeYTPlayer(player);
 };
 
-export const onRateChange = (player: YT.Player) => {
+export const onPlaybackRateChange = ({ target: player }: { target: YT.Player }) => {
   const speed = player.getPlaybackRate();
   setSpeed((prev) => ({ ...prev, playSpeed: speed }));
   setNotify(Symbol(`x${speed.toFixed(2)}`));
+};
+
+export const onStateChange = (event: YouTubeEvent) => {
+  if (event.data === YT.PlayerState.BUFFERING) {
+    onSeeked(event.target as YT.Player);
+  }
 };

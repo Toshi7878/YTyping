@@ -2,7 +2,7 @@ import { readLineCount, readLineProgress, readResultCards, readYTPlayer, writeLi
 import { readPlaySpeed } from "../atoms/speed-reducer";
 import { readBuiltMap, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
 import { getLineCountByTime } from "./get-line-count-by-time";
-import { setupLine, timerControls } from "./timer/timer";
+import { setupLine, stopTimer } from "./timer/timer";
 
 const SEEK_BUFFER_TIME = 0.8;
 
@@ -31,7 +31,7 @@ export const movePrevLine = () => {
 
   const newLineSelectIndex = typingLineIndexes.indexOf(prevCount) + 1;
   setLineSelectIndex(newLineSelectIndex);
-  timerControls.stopTimer();
+  stopTimer();
 
   const newCount = getLineCountByTime(prevTime);
   writeLineCount(newCount);
@@ -73,7 +73,7 @@ export const moveNextLine = () => {
   const newLineSelectIndex = map.typingLineIndexes.indexOf(nextCount) + 1;
 
   setLineSelectIndex(newLineSelectIndex);
-  timerControls.stopTimer();
+  stopTimer();
 
   const newCount = getLineCountByTime(nextTime) + (isTimeBuffer ? 0 : 1);
   writeLineCount(newCount);
@@ -102,7 +102,7 @@ export const moveSetLine = (seekCount: number) => {
   const newCount = getLineCountByTime(seekTime) + (isTimeBuffer ? 0 : 1);
   writeLineCount(newCount);
   setupLine(newCount);
-  timerControls.stopTimer();
+  stopTimer();
 
   const lineProgress = readLineProgress();
   if (lineProgress) {

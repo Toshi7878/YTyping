@@ -4,7 +4,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { cn } from "@/lib/utils";
-import { readYTPlayer, readYTPlayerStatus, useVideoIdState } from "../_lib/atoms/state";
+import { useVideoIdState } from "../_lib/atoms/hydrate";
+import { readYTPlayer, readYTPlayerStatus } from "../_lib/atoms/state";
 import { onEnd, onPause, onPlay, onReady, onStateChange } from "../_lib/youtube-player/youtube-event";
 
 export const YouTubePlayer = ({ className }: { className: string }) => {

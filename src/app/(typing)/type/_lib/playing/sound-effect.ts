@@ -2,7 +2,7 @@ import { sound } from "@pixi/sound";
 import { useEffect } from "react";
 import { readVolume } from "@/lib/atoms/global-atoms";
 import { readIsMobileDevice } from "@/lib/atoms/user-agent";
-import { readTypingOptions } from "../atoms/state";
+import { readTypingOptions } from "../atoms/hydrate";
 
 export const manifest = [
   { alias: "type", src: "/wav/type.wav" },

@@ -22,7 +22,7 @@ import {
 } from "../atoms/state";
 import type { PlayMode } from "../type";
 import { mutatePlayCountStats, mutateTypingStats } from "./mutate-stats";
-import { timerControls } from "./timer/timer";
+import { stopTimer } from "./timer/timer";
 
 export const commitPlayRestart = (newPlayMode: PlayMode) => {
   const map = readBuiltMap();
@@ -91,6 +91,6 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
   if (!YTPlayer) return;
 
   YTPlayer.seekTo(0, true);
-  timerControls.stopTimer();
+  stopTimer();
   YTPlayer.playVideo();
 };

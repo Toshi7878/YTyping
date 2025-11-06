@@ -3,11 +3,11 @@ import { backupMap } from "@/lib/indexed-db";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSymbols } from "@/utils/string-transform";
 import { dispatchEditHistory } from "../atoms/history-reducer";
+import { readMapId, readVideoId } from "../atoms/hydrate";
 import { readMap, setMapAction } from "../atoms/map-reducer";
 import { readTimeInputValue } from "../atoms/ref";
 import {
   dispatchLine,
-  readMapId,
   readSelectLine,
   readUtilityParams,
   readYTPlayer,
@@ -43,7 +43,7 @@ export const addLineAction = (isShiftKey: boolean) => {
   const mapId = readMapId();
   if (mapId === null) {
     const map = readMap();
-    const { videoId } = readYTPlayerStatus();
+    const videoId = readVideoId();
     void backupMap({ videoId, map });
   }
 
@@ -65,10 +65,6 @@ export const addLineAction = (isShiftKey: boolean) => {
   const topPhrase = manyPhraseText.split("\n")[0] ?? "";
   void pickupTopPhrase(topPhrase);
 };
-
-// const trpc = useTRPC();
-// 読み修正編集履歴ログを送信するmutation
-// const postFixWordLog = useMutation(trpc.morphConvert.post_fix_word_log.mutationOptions());
 
 export const updateLineAction = () => {
   const YTPlayer = readYTPlayer();
@@ -116,7 +112,7 @@ export const updateLineAction = () => {
   const mapId = readMapId();
   if (mapId === null) {
     const map = readMap();
-    const { videoId } = readYTPlayerStatus();
+    const videoId = readVideoId();
     void backupMap({ videoId, map });
   }
 
@@ -167,7 +163,7 @@ export const deleteLineAction = () => {
   const mapId = readMapId();
   if (mapId === null) {
     const map = readMap();
-    const { videoId } = readYTPlayerStatus();
+    const videoId = readVideoId();
     void backupMap({ videoId, map });
   }
 };

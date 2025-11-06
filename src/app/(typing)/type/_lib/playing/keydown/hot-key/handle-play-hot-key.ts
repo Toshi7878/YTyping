@@ -1,12 +1,7 @@
+import { readTypingOptions } from "../../../atoms/hydrate";
 import { readUtilityRefParams, writeUtilityRefParams } from "../../../atoms/ref";
 import { handlePlaySpeedAction } from "../../../atoms/speed-reducer";
-import {
-  readBuiltMap,
-  readTypingOptions,
-  readUtilityParams,
-  setLineResultSheet,
-  setNotify,
-} from "../../../atoms/state";
+import { readBuiltMap, readUtilityParams, setLineResultSheet, setNotify } from "../../../atoms/state";
 import { commitPlayModeChange } from "../../commit-play-mode-change";
 import { commitPlayRestart } from "../../commit-play-restart";
 import { togglePlayInputMode } from "../../input-mode-change";

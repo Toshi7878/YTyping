@@ -6,13 +6,13 @@ import { BuildMap } from "@/lib/build-map/build-map";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
+import { useMapIdState } from "../_lib/atoms/hydrate";
 import { readTotalProgress } from "../_lib/atoms/ref";
 import {
   resetTypingStatus,
   setBuiltMap,
   setLineSelectIndex,
   setLineStatus,
-  useMapIdState,
   useSceneGroupState,
 } from "../_lib/atoms/state";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
