@@ -8,9 +8,9 @@ import { readMap, setMapAction } from "../atoms/map-reducer";
 import { readTimeInputValue } from "../atoms/ref";
 import {
   dispatchLine,
+  getYTCurrentTime,
   readSelectLine,
   readUtilityParams,
-  readYTPlayer,
   readYTPlayerStatus,
   setCanUpload,
   setDirectEditIndex,
@@ -24,13 +24,11 @@ import { timeValidate } from "./time-validate";
 import { wordConvert } from "./typable-word-convert";
 
 export const addLineAction = (isShiftKey: boolean) => {
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) return;
   const { isPlaying } = readYTPlayerStatus();
   const { lyrics, word } = readSelectLine();
   const timeOffset = word !== "" ? readTimeOffset() : 0;
 
-  const _time = isPlaying ? YTPlayer.getCurrentTime() + timeOffset : Number(readTimeInputValue());
+  const _time = isPlaying ? (getYTCurrentTime() ?? 0 + timeOffset) : Number(readTimeInputValue());
   const time = timeValidate(_time).toFixed(3);
   const newLine: MapLine = !isShiftKey
     ? { time, lyrics, word: normalizeSymbols(word) }
@@ -67,9 +65,6 @@ export const addLineAction = (isShiftKey: boolean) => {
 };
 
 export const updateLineAction = () => {
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) return;
-
   const map = readMap();
   const { selectIndex: index, lyrics, word } = readSelectLine();
   const { isPlaying } = readYTPlayerStatus();
@@ -78,7 +73,7 @@ export const updateLineAction = () => {
   const selectLineIndex = index as number;
 
   const _time =
-    isPlaying && !directEditingIndex ? YTPlayer.getCurrentTime() + timeOffset : Number(readTimeInputValue());
+    isPlaying && !directEditingIndex ? (getYTCurrentTime() ?? 0 + timeOffset) : Number(readTimeInputValue());
   const formatedTime = timeValidate(_time).toFixed(3);
 
   const oldLine = map[selectLineIndex];

@@ -15,15 +15,15 @@ import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
+import { commitLineSkip } from "../../../_lib/playing/commit-line-skip";
+import { handlePlayHotKey } from "../../../_lib/playing/keydown/handle-play-hot-key";
 import { handleTyping, isHotKeyIgnored, isTypingKey } from "../../../_lib/playing/keydown/handle-typing";
-import { commitLineSkip } from "../../../_lib/playing/keydown/hot-key/commit-line-skip";
-import { handlePlayHotKey } from "../../../_lib/playing/keydown/hot-key/handle-play-hot-key";
-import { togglePause } from "../../../_lib/playing/keydown/hot-key/toggle-pause";
 import { setTimerFPS } from "../../../_lib/playing/timer/timer";
-import { ChangeCSS } from "./playing-child/change-css-style";
-import { Lyrics } from "./playing-child/lyrics-text";
-import { NextLyrics } from "./playing-child/next-lyrics";
-import { TypingWords } from "./playing-child/typing-words";
+import { togglePause } from "../../../_lib/playing/toggle-pause";
+import { ChangeCSS } from "./change-css-style";
+import { Lyrics } from "./lyrics-text";
+import { NextLyrics } from "./next-lyrics";
+import { TypingWords } from "./typing-words";
 
 interface PlayingProps {
   className: string;

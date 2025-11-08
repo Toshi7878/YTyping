@@ -44,7 +44,7 @@ export const JotaiProvider = ({ mapId, videoId, creatorId, children }: JotaiProv
   );
 
   useEffect(() => {
-    setMapId(mapId ? Number(mapId) : null);
+    setMapId(mapId ? Number(mapId) : 0);
     setCreatorId(creatorId ? creatorId : null);
     setVideoId(videoId);
   }, [mapId, videoId, creatorId]);

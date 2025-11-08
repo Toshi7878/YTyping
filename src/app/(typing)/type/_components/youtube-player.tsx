@@ -6,8 +6,8 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/window-focus";
-import { readYTPlayer } from "../_lib/atoms/ref";
 import { readUtilityParams } from "../_lib/atoms/state";
+import { pauseYTPlayer, playYTPlayer } from "../_lib/atoms/yt-player";
 import { iosActiveSound } from "../_lib/playing/sound-effect";
 import {
   onEnd,
@@ -70,13 +70,10 @@ const MobileCover = () => {
   const handleStart = () => {
     const { scene, isPaused } = readUtilityParams();
     iosActiveSound();
-    const player = readYTPlayer();
-    if (!player) return;
-
     if (isPaused || scene === "ready") {
-      player.playVideo();
+      playYTPlayer();
     } else {
-      player.pauseVideo();
+      pauseYTPlayer();
     }
 
     windowFocus();

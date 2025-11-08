@@ -1,21 +1,15 @@
-import { useEffect } from "react";
-import { mutateTypingStats } from "@/app/(typing)/type/_lib/playing/mutate-stats";
 import { cn } from "@/lib/utils";
-import { EndButtonContainer } from "./end-child/end-button-container";
-import { EndText } from "./end-child/end-text";
+import { EndButtonContainer } from "./button-container";
+import { ResultMessage } from "./result-message";
 
 interface EndProps {
   className: string;
 }
 
 export const EndScene = ({ className }: EndProps) => {
-  useEffect(() => {
-    mutateTypingStats();
-  }, []);
-
   return (
     <div className={cn("flex flex-col justify-between", className)}>
-      <EndText />
+      <ResultMessage />
       <EndButtonContainer />
     </div>
   );

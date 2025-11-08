@@ -7,7 +7,7 @@ import type { RouterOutPuts } from "@/server/api/trpc";
 import { mapIdAtom, setMapId, typingOptionsAtom } from "../_lib/atoms/hydrate";
 import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
 import { getTypeAtomStore } from "../_lib/atoms/store";
-import { mutateTypingStats } from "../_lib/playing/mutate-stats";
+import { mutateTypingStats } from "../_lib/mutate-stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
 
 interface JotaiProviderProps {

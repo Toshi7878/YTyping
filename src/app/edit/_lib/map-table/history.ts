@@ -3,8 +3,8 @@ import { setMapAction } from "../atoms/map-reducer";
 import {
   dispatchLine,
   readUtilityParams,
-  readYTPlayer,
   readYTPlayerStatus,
+  seekYTPlayer,
   setManyPhrase,
   setWord,
 } from "../atoms/state";
@@ -12,8 +12,6 @@ import { deleteTopPhrase, pickupTopPhrase } from "../editor/many-phrase";
 import { wordConvert } from "../editor/typable-word-convert";
 
 export const undo = async () => {
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) return;
   const { present } = readEditHistory();
 
   if (present) {
@@ -23,7 +21,7 @@ export const undo = async () => {
         const { lineIndex, time, lyrics, word } = data;
         setMapAction({ type: "delete", index: lineIndex });
         const { speed } = readYTPlayerStatus();
-        YTPlayer.seekTo(Number(data.time) - 3 * speed, true);
+        seekYTPlayer(Number(data.time) - 3 * speed);
         dispatchLine({ type: "set", line: { time, lyrics, word, selectIndex: null } });
         const { manyPhraseText } = readUtilityParams();
         setManyPhrase(`${lyrics}\n${manyPhraseText}`);

@@ -1,9 +1,7 @@
 import type { YouTubeEvent } from "react-youtube";
 import { readVolume } from "@/lib/atoms/global-atoms";
-import { getTRPCClient } from "@/trpc/provider";
 import { windowFocus } from "@/utils/window-focus";
-import { readMapId } from "../atoms/hydrate";
-import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount, writeYTPlayer } from "../atoms/ref";
+import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount } from "../atoms/ref";
 import { readPlaySpeed, setSpeed } from "../atoms/speed-reducer";
 import {
   readSceneGroup,
@@ -17,7 +15,8 @@ import {
   setYTStarted,
 } from "../atoms/state";
 import { readReadyInputMode } from "../atoms/storage";
-import { mutatePlayCountStats } from "../playing/mutate-stats";
+import { writeYTPlayer } from "../atoms/yt-player";
+import { mutateIncrementMapCompletionPlayCountStats, mutatePlayCountStats, mutateTypingStats } from "../mutate-stats";
 import { startTimer, stopTimer } from "../playing/timer/timer";
 
 const onStart = (player: YT.Player) => {
@@ -82,11 +81,11 @@ export const onEnd = () => {
 
   if (scene === "play") {
     setScene("play_end");
-    const mapId = readMapId();
-    const trpcClient = getTRPCClient();
-    void trpcClient.userStats.incrementMapCompletionPlayCount.mutate({ mapId });
+    mutateTypingStats();
+    mutateIncrementMapCompletionPlayCountStats();
   } else if (scene === "practice") {
     setScene("practice_end");
+    mutateTypingStats();
   } else if (scene === "replay") {
     setScene("replay_end");
   }

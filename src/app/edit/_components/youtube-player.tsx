@@ -4,8 +4,9 @@ import { useHotkeys } from "react-hotkeys-hook";
 import YouTube from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { cn } from "@/lib/utils";
+import { isDialogOpen } from "@/utils/is-dialog-option";
 import { useVideoIdState } from "../_lib/atoms/hydrate";
-import { readYTPlayer, readYTPlayerStatus } from "../_lib/atoms/state";
+import { pauseYTPlayer, playYTPlayer, readYTPlayerStatus } from "../_lib/atoms/state";
 import { onEnd, onPause, onPlay, onReady, onStateChange } from "../_lib/youtube-player/youtube-event";
 
 export const YouTubePlayer = ({ className }: { className: string }) => {
@@ -14,15 +15,12 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
   useHotkeys(
     "Escape",
     () => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      const YTPlayer = readYTPlayer();
-      if (isDialogOpen || !YTPlayer) return;
-
-      const { isPlaying: playing } = readYTPlayerStatus();
-      if (!playing) {
-        YTPlayer.playVideo();
+      if (isDialogOpen()) return;
+      const { isPlaying } = readYTPlayerStatus();
+      if (!isPlaying) {
+        playYTPlayer();
       } else {
-        YTPlayer.pauseVideo();
+        pauseYTPlayer();
       }
     },
     { enableOnFormTags: false, preventDefault: true },

@@ -51,23 +51,20 @@ interface LoadingState {
   hideSpinner?: boolean;
 }
 
-const loadingStateAtom = atomWithReset<LoadingState>({
+const globalLoadingAtom = atomWithReset<LoadingState>({
   isLoading: false,
   message: undefined,
   hideSpinner: false,
 });
 
-export const useGlobalLoadingState = () => useAtomValue(loadingStateAtom, { store });
+export const useGlobalLoadingState = () => useAtomValue(globalLoadingAtom, { store });
 
 export const useGlobalLoadingOverlay = () => {
-  const setLoadingState = useSetAtom(loadingStateAtom, { store });
+  const setLoadingState = useSetAtom(globalLoadingAtom, { store });
 
-  const showLoading = useCallback(
-    ({ message, hideSpinner }: { message?: ReactNode; hideSpinner?: boolean } = {}) => {
-      setLoadingState({ isLoading: true, message, hideSpinner });
-    },
-    [],
-  );
+  const showLoading = useCallback(({ message, hideSpinner }: { message?: ReactNode; hideSpinner?: boolean } = {}) => {
+    setLoadingState({ isLoading: true, message, hideSpinner });
+  }, []);
 
   const hideLoading = useCallback(() => {
     setLoadingState(RESET);

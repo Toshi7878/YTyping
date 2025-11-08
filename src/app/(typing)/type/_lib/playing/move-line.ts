@@ -1,6 +1,7 @@
-import { readLineCount, readLineProgress, readResultCards, readYTPlayer, writeLineCount } from "../atoms/ref";
+import { readLineCount, readLineProgress, readResultCards, writeLineCount } from "../atoms/ref";
 import { readPlaySpeed } from "../atoms/speed-reducer";
 import { readBuiltMap, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
+import { seekYTPlayer } from "../atoms/yt-player";
 import { getLineCountByTime } from "./get-line-count-by-time";
 import { setupLine, stopTimer } from "./timer/timer";
 
@@ -38,8 +39,7 @@ export const movePrevLine = () => {
   setupLine(newCount);
 
   const seekTargetTime = isTimeBuffer ? prevTime : (map.mapData[prevCount]?.time ?? 0);
-  const YTPlayer = readYTPlayer();
-  YTPlayer?.seekTo(seekTargetTime, true);
+  seekYTPlayer(seekTargetTime);
   setNotify(Symbol("◁"));
   scrollToCard(newLineSelectIndex);
   const newLine = map.mapData[newCount];
@@ -79,8 +79,7 @@ export const moveNextLine = () => {
   writeLineCount(newCount);
   setupLine(newCount);
 
-  const YTPlayer = readYTPlayer();
-  YTPlayer?.seekTo(nextTime, true);
+  seekYTPlayer(nextTime);
   setNotify(Symbol("▷"));
   scrollToCard(newLineSelectIndex);
   const lineProgress = readLineProgress();
@@ -97,8 +96,7 @@ export const moveSetLine = (seekCount: number) => {
   const isTimeBuffer = scene === "practice" && !isPaused;
   const seekTime = Number(map.mapData[seekCount]?.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 
-  const YTPlayer = readYTPlayer();
-  YTPlayer?.seekTo(seekTime, true);
+  seekYTPlayer(seekTime);
   const newCount = getLineCountByTime(seekTime) + (isTimeBuffer ? 0 : 1);
   writeLineCount(newCount);
   setupLine(newCount);

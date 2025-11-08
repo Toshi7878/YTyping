@@ -1,7 +1,6 @@
 import { initializeAllLineResult } from "../atoms/family";
 import {
   readUtilityRefParams,
-  readYTPlayer,
   resetLineCount,
   resetLineSubstatus,
   resetSubstatus,
@@ -20,8 +19,9 @@ import {
   setScene,
   setTabName,
 } from "../atoms/state";
+import { playYTPlayer, seekYTPlayer } from "../atoms/yt-player";
+import { mutatePlayCountStats, mutateTypingStats } from "../mutate-stats";
 import type { PlayMode } from "../type";
-import { mutatePlayCountStats, mutateTypingStats } from "./mutate-stats";
 import { stopTimer } from "./timer/timer";
 
 export const commitPlayRestart = (newPlayMode: PlayMode) => {
@@ -87,10 +87,7 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
     setReplayUserName(null);
   }
 
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) return;
-
-  YTPlayer.seekTo(0, true);
+  seekYTPlayer(0);
   stopTimer();
-  YTPlayer.playVideo();
+  playYTPlayer();
 };

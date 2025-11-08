@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useMapIdState } from "@/app/edit/_lib/atoms/hydrate";
 import { LikeButton } from "@/components/shared/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useLikeMutationMapInfo } from "@/lib/mutations/like.mutations";
@@ -8,11 +8,10 @@ import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 
 export const LikeIconButton = () => {
-  const { id: mapId } = useParams<{ id: string }>();
+  const mapId = useMapIdState();
   const trpc = useTRPC();
-  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
+  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId }));
   const hasLiked = mapInfo?.hasLiked;
-
   const { isSmScreen } = useBreakPoint();
 
   const setMapLike = useLikeMutationMapInfo();

@@ -3,15 +3,23 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { setReplayUserName, setTabName, useSceneGroupState } from "@/app/(typing)/type/_lib/atoms/state";
+import {
+  setPlayingInputMode,
+  setReplayUserName,
+  setScene,
+  setTabName,
+  useSceneGroupState,
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
+import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
 import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
+import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../../_lib/atoms/yt-player";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { iosActiveSound } from "../../../_lib/playing/sound-effect";
-import { useLoadResultAndStartPlay } from "../../../_lib/ready/use-load-result-and-start-play";
+import { queryResultJson } from "../../../_lib/query-result-json";
 
 interface RankingMenuProps {
   resultId: number;
@@ -24,20 +32,32 @@ interface RankingMenuProps {
 export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name, hasClapped }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
-  const resultPlay = useLoadResultAndStartPlay({ startMode: "replay" });
 
   const trpc = useTRPC();
   const { id: mapId } = useParams<{ id: string }>();
   const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
 
   const toggleClap = useClapMutationRanking(Number(mapId));
+  const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const handleReplayClick = async () => {
-    await resultPlay(resultId);
+    iosActiveSound();
+    primeYTPlayerForMobilePlayback();
+    showLoading({ message: "リザルトデータを読込中..." });
+    setScene("replay");
+    try {
+      const resultData = await queryResultJson(resultId);
+      const mode = resultData[0]?.status?.mode ?? "roma";
+      setPlayingInputMode(mode);
+      playYTPlayer();
+    } catch {
+      toast.error("リザルトデータの読み込みに失敗しました");
+    } finally {
+      hideLoading();
+    }
 
     const mapUpdatedAt = mapInfo?.updatedAt;
     const resultUpdatedAtDate = new Date(resultUpdatedAt);
-    iosActiveSound();
 
     if (mapUpdatedAt && mapUpdatedAt > resultUpdatedAtDate) {
       toast.warning("リプレイ登録時より後に譜面が更新されています", {

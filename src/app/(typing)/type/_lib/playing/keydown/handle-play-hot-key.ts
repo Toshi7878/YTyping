@@ -1,13 +1,13 @@
-import { readTypingOptions } from "../../../atoms/hydrate";
-import { readUtilityRefParams, writeUtilityRefParams } from "../../../atoms/ref";
-import { handlePlaySpeedAction } from "../../../atoms/speed-reducer";
-import { readBuiltMap, readUtilityParams, setLineResultSheet, setNotify } from "../../../atoms/state";
-import { commitPlayModeChange } from "../../commit-play-mode-change";
-import { commitPlayRestart } from "../../commit-play-restart";
-import { togglePlayInputMode } from "../../input-mode-change";
-import { moveNextLine, movePrevLine, moveSetLine } from "../../move-line";
-import { commitLineSkip } from "./commit-line-skip";
-import { togglePause } from "./toggle-pause";
+import { readTypingOptions } from "../../atoms/hydrate";
+import { readUtilityRefParams, writeUtilityRefParams } from "../../atoms/ref";
+import { handlePlaySpeedAction } from "../../atoms/speed-reducer";
+import { readBuiltMap, readUtilityParams, setLineResultSheet, setNotify } from "../../atoms/state";
+import { commitLineSkip } from "../commit-line-skip";
+import { commitPlayModeChange } from "../commit-play-mode-change";
+import { commitPlayRestart } from "../commit-play-restart";
+import { moveNextLine, movePrevLine, moveSetLine } from "../move-line";
+import { togglePlayInputMode } from "../toggle-input-mode";
+import { togglePause } from "../toggle-pause";
 
 const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1;
 

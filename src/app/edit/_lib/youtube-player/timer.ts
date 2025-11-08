@@ -27,9 +27,7 @@ const timer = () => {
     return;
   }
   const currentTime = YTPlayer.getCurrentTime();
-
   setTimeRangeValue(currentTime);
-
   const { directEditingIndex, timeLineIndex } = readUtilityParams();
   if (!directEditingIndex) {
     setTimeInputValue(currentTime.toFixed(3));

@@ -4,7 +4,7 @@ import { readMap, setMapAction } from "@/app/edit/_lib/atoms/map-reducer";
 import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSymbols } from "@/utils/string-transform";
 import { dispatchEditHistory } from "../atoms/history-reducer";
-import { readYTPlayer } from "../atoms/state";
+import { getYTDuration } from "../atoms/state";
 import { wordConvert } from "./typable-word-convert";
 
 export const importMapFile = async (file: File) => {
@@ -39,11 +39,6 @@ export const importMapFile = async (file: File) => {
 type JsonMap = [string, string, string];
 
 const jsonConverter = (jsonMap: JsonMap) => {
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) {
-    throw new Error("動画の長さが取得できませんでした");
-  }
-
   const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
 
   for (const line of jsonMap) {
@@ -59,17 +54,12 @@ const jsonConverter = (jsonMap: JsonMap) => {
     result.push({ time, lyrics, word });
   }
 
-  result.push({ time: YTPlayer.getDuration().toFixed(3), lyrics: "end", word: "" });
+  result.push({ time: getYTDuration()?.toFixed(3) ?? "0", lyrics: "end", word: "" });
 
   return result;
 };
 
 const lrcConverter = async (lrc: string[]) => {
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) {
-    throw new Error("動画の長さが取得できませんでした");
-  }
-
   const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
   for (const line of lrc) {
     const matchedTimeTags = line.match(/\[\d\d.\d\d.\d\d\]/);
@@ -89,7 +79,7 @@ const lrcConverter = async (lrc: string[]) => {
     }
   }
 
-  result.push({ time: YTPlayer?.getDuration().toFixed(3), lyrics: "end", word: "" });
+  result.push({ time: getYTDuration()?.toFixed(3) ?? "0", lyrics: "end", word: "" });
 
   return result;
 };

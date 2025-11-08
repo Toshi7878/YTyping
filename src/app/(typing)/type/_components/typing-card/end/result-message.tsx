@@ -2,15 +2,14 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import { useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state";
-import { useGetMyRankingResult } from "@/app/(typing)/type/_lib/ranking/use-get-my-ranking-result";
-import { RandomEmoji } from "./child/random-emoji";
+import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-my-result";
+import { RandomEmoji } from "./random-emoji";
 
-export const EndText = () => {
-  const getMyRankingResult = useGetMyRankingResult();
+export const ResultMessage = () => {
   const { data: session } = useSession();
   const speed = usePlaySpeedState();
   const { score, miss, lost } = useTypingStatusState();
-  const [bestScore] = useState(() => getMyRankingResult()?.score ?? 0);
+  const [bestScore] = useState(() => getRankingMyResult(session)?.score ?? 0);
   const isPerfect = miss === 0 && lost === 0;
   const scene = useSceneState();
 

@@ -1,10 +1,10 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import type z from "zod/v4";
 import { readAllLineResult } from "@/app/(typing)/type/_lib/atoms/family";
+import { readMapId } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
 import { readTypingStatus, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
@@ -15,16 +15,11 @@ import { getMinValue } from "@/utils/array";
 
 interface SubmitRankingButtonProps {
   isScoreUpdated: boolean;
-  isSendResultBtnDisabled: boolean;
-  setIsSendResultBtnDisabled: (isDisabled: boolean) => void;
+  disabled: boolean;
+  onSuccess: () => void;
 }
 
-export const SubmitRankingButton = ({
-  isScoreUpdated,
-  isSendResultBtnDisabled,
-  setIsSendResultBtnDisabled,
-}: SubmitRankingButtonProps) => {
-  const { id: mapId } = useParams<{ id: string }>();
+export const SubmitRankingButton = ({ isScoreUpdated, disabled, onSuccess }: SubmitRankingButtonProps) => {
   const confirm = useConfirm();
 
   const trpc = useTRPC();
@@ -33,21 +28,22 @@ export const SubmitRankingButton = ({
   const sendResult = useMutation(
     trpc.result.createResult.mutationOptions({
       onSuccess: async () => {
-        setIsSendResultBtnDisabled(true);
-        await queryClient.invalidateQueries(trpc.result.getMapRanking.queryOptions({ mapId: Number(mapId) }));
+        onSuccess();
+        const mapId = readMapId();
+        await queryClient.invalidateQueries(trpc.result.getMapRanking.queryOptions({ mapId }));
         setTabName("ランキング");
         toast.success("ランキング登録が完了しました");
       },
       onError: () => {
-        setIsSendResultBtnDisabled(false);
         toast.error("ランキング登録に失敗しました");
       },
     }),
   );
 
   const handleClick = async () => {
+    const mapId = readMapId();
     if (isScoreUpdated) {
-      sendResult.mutate(parseResultData(mapId));
+      sendResult.mutate(generateResultData(mapId));
       return;
     }
 
@@ -61,7 +57,7 @@ export const SubmitRankingButton = ({
     });
 
     if (isConfirmed) {
-      sendResult.mutate(parseResultData(mapId));
+      sendResult.mutate(generateResultData(mapId));
     }
   };
 
@@ -70,16 +66,16 @@ export const SubmitRankingButton = ({
       size="4xl"
       variant="primary-hover-light"
       className="max-sm:text-5xl max-sm:h-40 max-sm:w-xl"
-      disabled={isSendResultBtnDisabled}
+      disabled={disabled}
       loading={sendResult.isPending}
       onClick={handleClick}
     >
-      {isSendResultBtnDisabled ? "ランキング登録完了" : "ランキング登録"}
+      {disabled ? "ランキング登録完了" : "ランキング登録"}
     </Button>
   );
 };
 
-const parseResultData = (mapId: string) => {
+const generateResultData = (mapId: number) => {
   const {
     totalTypeTime,
     totalLatency,
@@ -123,7 +119,7 @@ const parseResultData = (mapId: string) => {
   };
 
   return {
-    mapId: Number(mapId),
+    mapId,
     status: sendStatus,
     lineResults,
   };

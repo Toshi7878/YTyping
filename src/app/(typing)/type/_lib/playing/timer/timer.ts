@@ -3,7 +3,6 @@ import {
   readLineCount,
   readLineSubstatus,
   readUtilityRefParams,
-  readYTPlayer,
   resetLineSubstatus,
   setLineProgressValue,
   setTotalProgressValue,
@@ -28,13 +27,14 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/state";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
+import { cueYTVideoById, getYTPlayerState, getYTVideoId, readYTPlayer, stopYTPlayer } from "../../atoms/yt-player";
 import type { BuiltMapLine } from "../../type";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { onEnd } from "../../youtube-player/youtube-events";
 import { calcTypeSpeed } from "../calc-type-speed";
 import { getLineCountByTime } from "../get-line-count-by-time";
-import { applyKanaInputMode, applyRomaInputMode } from "../input-mode-change";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
+import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { processReplayKeyAtTimestamp } from "./replay-processor";
@@ -58,8 +58,12 @@ export const setTimerFPS = (rate: number) => {
 let lastUpdateTime = 0;
 
 const timer = () => {
+  const YTPlayer = readYTPlayer();
   const map = readBuiltMap();
-  if (!map) return;
+  if (!YTPlayer || !map) {
+    typeTicker.stop();
+    return;
+  }
 
   const { currentTime, constantTime, currentLineTime, constantLineTime, constantRemainLineTime } = getRemainLineTime();
   const { movieDuration } = readUtilityParams();
@@ -69,8 +73,7 @@ const timer = () => {
   const nextLineTime = nextLine && movieDuration > nextLine.time ? nextLine.time : movieDuration;
 
   const hasReachedNextLineTime = currentTime >= nextLineTime;
-  const YTPlayer = readYTPlayer();
-  const isVideoEnded = YTPlayer?.getPlayerState() === YT.PlayerState.ENDED;
+  const isVideoEnded = getYTPlayerState() === YT.PlayerState.ENDED;
   if (hasReachedNextLineTime || isVideoEnded) {
     proceedToNextLine({ currentTime, constantLineTime, nextLine, prevCount: count, isVideoEnded });
     return;
@@ -115,9 +118,8 @@ const proceedToNextLine = ({
   if (isEnd) {
     onEnd();
     stopTimer();
-    const YTPlayer = readYTPlayer();
-    YTPlayer?.stopVideo();
-    YTPlayer?.cueVideoById(YTPlayer.getVideoData().video_id);
+    stopYTPlayer();
+    cueYTVideoById(getYTVideoId() ?? "");
     return;
   }
 

@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
-  readYTPlayer,
+  getYTCurrentTime,
+  playYTPlayer,
   readYTPlayerStatus,
+  seekYTPlayer,
   setTimeRangeValue,
   setYTSpeed,
   useYTSpeedState,
@@ -12,6 +13,7 @@ import {
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
+import { isDialogOpen } from "@/utils/is-dialog-option";
 import type { YouTubeSpeed } from "@/utils/types";
 import { useTimeRangeValueState, useYTDurationState } from "../_lib/atoms/state";
 
@@ -28,23 +30,17 @@ const TimeRange = () => {
   const timeRangeValue = useTimeRangeValueState();
   const ytDuration = useYTDurationState();
 
-  const arrowSeek = useArrowSeek();
-
   const handleRangeChange = (value: number) => {
     setTimeRangeValue(value);
-    const YTPlayer = readYTPlayer();
-    if (!YTPlayer) return;
-
-    YTPlayer.playVideo();
-    YTPlayer.seekTo(value, true);
+    playYTPlayer();
+    seekYTPlayer(value);
   };
 
   useHotkeys(
     ["arrowleft", "arrowright"],
     (event) => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen) return;
-      arrowSeek(event);
+      if (isDialogOpen()) return;
+      handleArrowSeek(event);
     },
     {
       enableOnFormTags: false,
@@ -60,7 +56,7 @@ const TimeRange = () => {
       id="time-range"
       value={[timeRangeValue]}
       onValueChange={(value) => handleRangeChange(value[0] ?? 0)}
-      onKeyDown={(event) => arrowSeek(event)}
+      onKeyDown={handleArrowSeek}
       max={ytDuration}
       className="w-full"
     />
@@ -86,21 +82,16 @@ const EditSpeedChange = () => {
   );
 };
 
-const useArrowSeek = () => {
-  return useCallback((event: KeyboardEvent | React.KeyboardEvent<HTMLDivElement>) => {
-    const YTPlayer = readYTPlayer();
-    if (!YTPlayer) return;
-    const ARROW_SEEK_SECONDS = 3;
-
-    const { speed } = readYTPlayerStatus();
-
-    const time = YTPlayer.getCurrentTime();
-    const seekAmount = ARROW_SEEK_SECONDS * speed;
-    if (event.key === "ArrowLeft") {
-      YTPlayer.seekTo(time - seekAmount, true);
-    } else if (event.key === "ArrowRight") {
-      YTPlayer.seekTo(time + seekAmount, true);
-    }
-    event.preventDefault();
-  }, []);
+const handleArrowSeek = (event: KeyboardEvent | React.KeyboardEvent<HTMLDivElement>) => {
+  const ARROW_SEEK_SECONDS = 3;
+  const { speed } = readYTPlayerStatus();
+  const time = getYTCurrentTime();
+  if (!time) return;
+  const seekAmount = ARROW_SEEK_SECONDS * speed;
+  if (event.key === "ArrowLeft") {
+    seekYTPlayer(time - seekAmount);
+  } else if (event.key === "ArrowRight") {
+    seekYTPlayer(time + seekAmount);
+  }
+  event.preventDefault();
 };

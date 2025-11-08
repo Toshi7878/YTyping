@@ -1,14 +1,38 @@
 import type React from "react";
+import { useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { handlePlaySpeedAction, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { isDialogOpen } from "@/utils/is-dialog-option";
 
-interface ReadyPlaySpeedProps {
-  speedUpButtonRef: React.RefObject<HTMLButtonElement | null>;
-  speedDownButtonRef: React.RefObject<HTMLButtonElement | null>;
-}
-export const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
+const hotKeyOptions = {
+  enableOnFormTags: false,
+  preventDefault: true,
+};
+
+export const ReadyPlaySpeed = () => {
   const { minPlaySpeed } = usePlaySpeedState();
+  const speedUpButtonRef = useRef<HTMLButtonElement>(null);
+  const speedDownButtonRef = useRef<HTMLButtonElement>(null);
+
+  useHotkeys(
+    "F9",
+    () => {
+      if (isDialogOpen() || !speedDownButtonRef.current) return;
+      speedDownButtonRef.current.click();
+    },
+    hotKeyOptions,
+  );
+
+  useHotkeys(
+    "F10",
+    () => {
+      if (isDialogOpen() || !speedUpButtonRef.current) return;
+      speedUpButtonRef.current?.click();
+    },
+    hotKeyOptions,
+  );
 
   return (
     <TooltipWrapper
@@ -19,14 +43,14 @@ export const ReadyPlaySpeed = (props: ReadyPlaySpeedProps) => {
       sideOffset={-20}
     >
       <div className="border-border flex items-center rounded-lg border border-solid px-8 py-6 shadow-md md:py-3">
-        <SpeedChangeButton buttonRef={props.speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} type="down" />
+        <SpeedChangeButton buttonRef={speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} type="down" />
 
         <div className="mx-8 text-3xl font-bold select-none md:text-4xl">
           <span id="speed">{minPlaySpeed.toFixed(2)}</span>
           倍速
         </div>
 
-        <SpeedChangeButton buttonRef={props.speedUpButtonRef} buttonLabel={{ text: "+", key: "F10" }} type="up" />
+        <SpeedChangeButton buttonRef={speedUpButtonRef} buttonLabel={{ text: "+", key: "F10" }} type="up" />
       </div>
     </TooltipWrapper>
   );
@@ -41,6 +65,7 @@ interface SpeedChangeButtonProps {
   type: "up" | "down";
 }
 
+// TODO: UIに汎用化
 const SpeedChangeButton = (props: SpeedChangeButtonProps) => {
   return (
     <Button

@@ -1,4 +1,4 @@
-import type { ExtractAtomValue } from "jotai";
+import { type ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { TypeResult } from "@/server/drizzle/validator/result";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
@@ -83,11 +83,6 @@ export const readUtilityRefParams = () => store.get(utilityRefParamsAtom);
 export const writeUtilityRefParams = (newUserStats: Partial<ExtractAtomValue<typeof utilityRefParamsAtom>>) =>
   store.set(utilityRefParamsAtom, (prev) => ({ ...prev, ...newUserStats }));
 export const resetUtilityRefParams = () => store.set(utilityRefParamsAtom, RESET);
-
-const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
-export const readYTPlayer = () => store.get(YTPlayerAtom);
-export const writeYTPlayer = (newYTPlayer: YT.Player) => store.set(YTPlayerAtom, newYTPlayer);
-export const resetYTPlayer = () => store.set(YTPlayerAtom, RESET);
 
 export const lineProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
 export const readLineProgress = () => store.get(lineProgressAtom);

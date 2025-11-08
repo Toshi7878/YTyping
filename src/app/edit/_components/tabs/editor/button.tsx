@@ -15,20 +15,17 @@ import {
 } from "@/app/edit/_lib/editor/editor-actions";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
 import { Button } from "@/components/ui/button";
+import { isDialogOpen } from "@/utils/is-dialog-option";
 
 export const AddLineButton = () => {
   const isAddButtonDisabled = useIsAddBtnDisabledState();
   useHotkeys(
     ["shift+s", "s"],
     (event) => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen || isAddButtonDisabled) return;
+      if (isDialogOpen() || isAddButtonDisabled) return;
       addLineAction(event.shiftKey);
     },
-    {
-      enableOnFormTags: false,
-      preventDefault: true,
-    },
+    { enableOnFormTags: false, preventDefault: true },
   );
   return (
     <Button
@@ -49,14 +46,10 @@ export const UpdateLineButton = () => {
   useHotkeys(
     ["shift+u", "u"],
     () => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen || isUpdateButtonDisabled) return;
+      if (isDialogOpen() || isUpdateButtonDisabled) return;
       updateLineAction();
     },
-    {
-      enableOnFormTags: false,
-      preventDefault: true,
-    },
+    { enableOnFormTags: false, preventDefault: true },
   );
 
   return (
@@ -88,11 +81,14 @@ export const WordConvertButton = () => {
 export const DeleteLineButton = () => {
   const isDeleteButtonDisabled = useIsDeleteBtnDisabledState();
 
-  useHotkeys("delete", () => {
-    const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-    if (isDialogOpen || isDeleteButtonDisabled) return;
-    deleteLineAction();
-  });
+  useHotkeys(
+    "delete",
+    () => {
+      if (isDialogOpen() || isDeleteButtonDisabled) return;
+      deleteLineAction();
+    },
+    { enableOnFormTags: false, preventDefault: true },
+  );
 
   return (
     <Button

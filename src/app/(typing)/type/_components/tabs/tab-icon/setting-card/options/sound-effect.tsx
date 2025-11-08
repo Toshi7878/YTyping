@@ -1,5 +1,5 @@
 import { setTypingOptions, useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
-import { readYTPlayer } from "@/app/(typing)/type/_lib/atoms/ref";
+import { useYTPlayer } from "@/app/(typing)/type/_lib/atoms/yt-player";
 import { playSound } from "@/app/(typing)/type/_lib/playing/sound-effect";
 import { VolumeRange } from "@/components/shared/volume-range";
 import { LabeledCheckbox } from "@/components/ui/checkbox/labeled-checkbox";
@@ -7,11 +7,12 @@ import { H4 } from "@/components/ui/typography";
 
 export const SoundEffectOptions = () => {
   const { typeSound, missSound, completedTypeSound } = useTypingOptionsState();
+  const YTPlayer = useYTPlayer();
 
   return (
     <section className="space-y-4">
       <H4>サウンド</H4>
-      <VolumeRange YTPlayer={readYTPlayer()} />
+      <VolumeRange YTPlayer={YTPlayer} />
       <div className="flex flex-row gap-4">
         <LabeledCheckbox
           label="タイプ音"

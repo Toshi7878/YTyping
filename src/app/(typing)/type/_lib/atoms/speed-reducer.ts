@@ -1,9 +1,9 @@
 import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { YouTubeSpeed } from "@/utils/types";
-import { readYTPlayer } from "./ref";
 import { readScene } from "./state";
 import { getTypeAtomStore } from "./store";
+import { getYTPlaybackRate, setYTPlaybackRate } from "./yt-player";
 
 type Updater<T> = T | ((prev: T) => T);
 
@@ -24,10 +24,8 @@ export const setSpeed = (update: Updater<ExtractAtomValue<typeof speedBaseAtom>>
 export const resetSpeed = () => store.set(speedBaseAtom, RESET);
 
 export const handlePlaySpeedAction = ({ type, payload: value }: { type: SpeedActionType; payload?: YouTubeSpeed }) => {
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) return;
   const { minPlaySpeed } = store.get(speedBaseAtom);
-  const playSpeed = YTPlayer.getPlaybackRate();
+  const playSpeed = getYTPlaybackRate();
   if (!playSpeed) return;
   const scene = readScene();
   const isUpdateMinSpeed = scene !== "play";
@@ -35,7 +33,7 @@ export const handlePlaySpeedAction = ({ type, payload: value }: { type: SpeedAct
   switch (type) {
     case "up":
       if (playSpeed < 2) {
-        YTPlayer.setPlaybackRate(playSpeed + 0.25);
+        setYTPlaybackRate(playSpeed + 0.25);
 
         store.set(speedBaseAtom, (prev) => ({
           ...prev,
@@ -45,7 +43,7 @@ export const handlePlaySpeedAction = ({ type, payload: value }: { type: SpeedAct
       break;
     case "down":
       if (playSpeed > 0.25) {
-        YTPlayer.setPlaybackRate(playSpeed - 0.25);
+        setYTPlaybackRate(playSpeed - 0.25);
 
         store.set(speedBaseAtom, (prev) => ({
           ...prev,
@@ -55,7 +53,7 @@ export const handlePlaySpeedAction = ({ type, payload: value }: { type: SpeedAct
       break;
     case "set":
       if (value !== undefined) {
-        YTPlayer.setPlaybackRate(value);
+        setYTPlaybackRate(value);
 
         store.set(speedBaseAtom, (prev) => ({
           ...prev,
@@ -64,11 +62,11 @@ export const handlePlaySpeedAction = ({ type, payload: value }: { type: SpeedAct
       }
       break;
     case "reset":
-      YTPlayer.setPlaybackRate(1);
+      setYTPlaybackRate(1);
       store.set(speedBaseAtom, RESET);
       break;
     case "toggle":
-      YTPlayer.setPlaybackRate(playSpeed + 0.25 <= 2 ? playSpeed + 0.25 : minPlaySpeed);
+      setYTPlaybackRate(playSpeed + 0.25 <= 2 ? playSpeed + 0.25 : minPlaySpeed);
       break;
   }
 };

@@ -37,8 +37,11 @@ import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
 import { readMap } from "../../../_lib/atoms/map-reducer";
 import {
+  getYTDuration,
+  getYTVideoId,
+  playYTPlayer,
   readUtilityParams,
-  readYTPlayer,
+  seekYTPlayer,
   setCanUpload,
   setYTChangingVideo,
   useCanUploadState,
@@ -272,9 +275,8 @@ const PreviewTimeInput = () => {
   const previewTime = watch("previewTime");
 
   const handlePreviewClick = () => {
-    const YTPlayer = readYTPlayer();
-    YTPlayer?.playVideo();
-    YTPlayer?.seekTo(Number(previewTime), true);
+    playYTPlayer();
+    seekYTPlayer(Number(previewTime));
     setPreventEditorTabAutoFocus(true);
   };
 
@@ -397,13 +399,12 @@ const useOnSubmit = (form: FormType) => {
 
   return async (data: z.output<typeof MapInfoFormSchema>) => {
     const map = readMap();
-    const YTPlayer = readYTPlayer();
-    if (!YTPlayer) return;
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
     const { speedDifficulty, duration, totalNotes, startLine } = new BuildMap(map);
-    const { video_id: videoId } = YTPlayer.getVideoData();
-    const videoDuration = YTPlayer.getDuration();
+    const videoId = getYTVideoId();
+    if (!videoId) return;
+    const videoDuration = getYTDuration() ?? 0;
 
     const typingStartTime = Math.max(0, Number(map[startLine]?.time ?? 0) + 0.2);
 

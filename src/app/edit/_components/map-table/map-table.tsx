@@ -26,7 +26,7 @@ import { setTimeInputValue } from "../../_lib/atoms/ref";
 import {
   dispatchLine,
   readDirectEditIndex,
-  readYTPlayer,
+  seekYTPlayer,
   setCanUpload,
   setDirectEditIndex,
   setLyrics,
@@ -119,7 +119,7 @@ export const MapTable = () => {
         meta: {
           onClick: (_event, row: MapLine, index: number) => {
             if (directEditIndex !== index) {
-              readYTPlayer()?.seekTo(Number(row.time), true);
+              seekYTPlayer(Number(row.time));
             }
           },
           cellClassName: (cell: Cell<MapLine, unknown>, index: number) => {
@@ -285,7 +285,7 @@ const DirectTimeInput = ({ time }: { time: string }) => {
             setTimeInputValue(newValue);
             e.preventDefault();
           } else if (e.code === "Enter") {
-            readYTPlayer()?.seekTo(Number(value), true);
+            seekYTPlayer(Number(value));
           }
         }}
       />

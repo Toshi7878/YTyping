@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useDebounce } from "@/utils/hooks/use-debounce";
+import { isDialogOpen } from "@/utils/is-dialog-option";
 import { normalizeFullWidthAlnum, normalizeSymbols } from "@/utils/string-transform";
 
 export const ManyPhraseTextarea = () => {
@@ -20,8 +21,7 @@ export const ManyPhraseTextarea = () => {
   useHotkeys(
     "tab",
     () => {
-      const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-      if (isDialogOpen) return;
+      if (isDialogOpen()) return;
 
       const textarea = textareaRef.current;
 
@@ -39,8 +39,7 @@ export const ManyPhraseTextarea = () => {
   );
 
   useHotkeys("q", () => {
-    const isDialogOpen = document.querySelector('[role="dialog"]') !== null;
-    if (isDialogOpen) return;
+    if (isDialogOpen()) return;
 
     const topPhrase = manyPhrase.split("\n")[0] ?? "";
     void pickupTopPhrase(topPhrase);

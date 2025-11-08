@@ -1,7 +1,8 @@
-import { readTypingOptions } from "../../../atoms/hydrate";
-import { readLineCount, readUtilityRefParams, readYTPlayer, writeUtilityRefParams } from "../../../atoms/ref";
-import { readPlaySpeed } from "../../../atoms/speed-reducer";
-import { readBuiltMap, readUtilityParams, setActiveSkipGuideKey } from "../../../atoms/state";
+import { readTypingOptions } from "../atoms/hydrate";
+import { readLineCount, readUtilityRefParams, writeUtilityRefParams } from "../atoms/ref";
+import { readPlaySpeed } from "../atoms/speed-reducer";
+import { readBuiltMap, readUtilityParams, setActiveSkipGuideKey } from "../atoms/state";
+import { seekYTPlayer } from "../atoms/yt-player";
 
 export const commitLineSkip = () => {
   const map = readBuiltMap();
@@ -23,8 +24,7 @@ export const commitLineSkip = () => {
 
   const seekTime = nextLine.lyrics === "end" ? movieDuration - 2 : skippedTime - 1 + (1 - playSpeed);
 
-  const YTPlayer = readYTPlayer();
-  YTPlayer?.seekTo(seekTime, true);
+  seekYTPlayer(seekTime);
 
   writeUtilityRefParams({ isRetrySkip: false });
   setActiveSkipGuideKey(null);

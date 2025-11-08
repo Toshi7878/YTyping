@@ -1,6 +1,6 @@
 import { getTRPCClient } from "@/trpc/provider";
-import { readMapId } from "../atoms/hydrate";
-import { readUserStats, resetUserStats } from "../atoms/ref";
+import { readMapId } from "./atoms/hydrate";
+import { readUserStats, resetUserStats } from "./atoms/ref";
 
 export const mutatePlayCountStats = () => {
   const mapId = readMapId();
@@ -15,4 +15,10 @@ export const mutateTypingStats = () => {
 
   void trpcClient.userStats.incrementTypingStats.mutate(userStats);
   resetUserStats();
+};
+
+export const mutateIncrementMapCompletionPlayCountStats = () => {
+  const trpcClient = getTRPCClient();
+  const mapId = readMapId();
+  void trpcClient.userStats.incrementMapCompletionPlayCount.mutate({ mapId });
 };

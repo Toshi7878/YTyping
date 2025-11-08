@@ -1,7 +1,8 @@
 import { clearAllLineResult } from "./family";
-import { resetLineCount, resetLineSubstatus, resetSubstatus, resetUtilityRefParams, resetYTPlayer } from "./ref";
+import { resetLineCount, resetLineSubstatus, resetSubstatus, resetUtilityRefParams } from "./ref";
 import { resetSpeed } from "./speed-reducer";
 import { resetBuiltMap, resetCurrentLine, resetSubstatusState, resetTypingStatus, resetUtilityParams } from "./state";
+import { resetYTPlayer } from "./yt-player";
 
 export const resetAllStateOnCleanup = () => {
   resetYTPlayer();

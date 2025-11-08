@@ -1,11 +1,8 @@
 import { readMap } from "../atoms/map-reducer";
-import { dispatchLine, readSelectLine, readUtilityParams, readYTPlayer } from "../atoms/state";
+import { dispatchLine, readSelectLine, readUtilityParams, seekYTPlayer } from "../atoms/state";
 import { scrollMapTable } from "./scroll-map-table";
 
 export const moveLine = (type: "next" | "prev") => {
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) return;
-
   const { directEditingIndex } = readUtilityParams();
 
   const { selectIndex } = readSelectLine();
@@ -13,7 +10,7 @@ export const moveLine = (type: "next" | "prev") => {
     const seekCount = selectIndex + (type === "next" ? 1 : -1);
     const seekLine = readMap()[seekCount];
     if (seekLine) {
-      YTPlayer.seekTo(Number(seekLine.time), true);
+      seekYTPlayer(Number(seekLine.time));
       dispatchLine({
         type: "set",
         line: {

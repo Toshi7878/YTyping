@@ -12,7 +12,7 @@ import {
   setLineKpm,
   setLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state";
-import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/input-mode-change";
+import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/toggle-input-mode";
 import type { TypeResult } from "@/server/drizzle/validator/result";
 import { readAllLineResult } from "../../atoms/family";
 import { calcTypeSpeed } from "../calc-type-speed";

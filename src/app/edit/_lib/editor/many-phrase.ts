@@ -1,20 +1,22 @@
 import { dispatchEditHistory, readEditHistory } from "../atoms/history-reducer";
 import { setMapAction } from "../atoms/map-reducer";
-import { dispatchLine, readSelectLine, readUtilityParams, readYTPlayer, setManyPhrase, setWord } from "../atoms/state";
+import {
+  dispatchLine,
+  getYTCurrentTime,
+  readSelectLine,
+  readUtilityParams,
+  setManyPhrase,
+  setWord,
+} from "../atoms/state";
 import { wordConvert } from "./typable-word-convert";
 
 export const pickupTopPhrase = async (topPhrase: string) => {
-  const YTPlayer = readYTPlayer();
-  if (!YTPlayer) return;
-
   const { directEditingIndex } = readUtilityParams();
-  if (directEditingIndex !== null) {
-    return null;
-  }
+  if (directEditingIndex !== null) return null;
 
   dispatchLine({
     type: "set",
-    line: { lyrics: topPhrase.trim(), word: "", selectIndex: null, time: YTPlayer.getCurrentTime() },
+    line: { lyrics: topPhrase.trim(), word: "", selectIndex: null, time: getYTCurrentTime() ?? 0 },
   });
 
   const word = await wordConvert(topPhrase);

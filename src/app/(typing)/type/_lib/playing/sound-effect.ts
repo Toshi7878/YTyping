@@ -4,7 +4,7 @@ import { readVolume } from "@/lib/atoms/global-atoms";
 import { readIsMobileDevice } from "@/lib/atoms/user-agent";
 import { readTypingOptions } from "../atoms/hydrate";
 
-export const manifest = [
+const manifest = [
   { alias: "type", src: "/wav/type.wav" },
   { alias: "typeCompleted", src: "/wav/type-completed.wav" },
   { alias: "miss", src: "/wav/miss.wav" },
