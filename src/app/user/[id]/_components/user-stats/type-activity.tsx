@@ -8,13 +8,16 @@ import type { Activity } from "react-activity-calendar";
 import ActivityCalendar from "react-activity-calendar";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useUserStatsQueries } from "@/lib/queries/user-stats.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
+import { useTRPC } from "@/trpc/provider";
 import { getCSSVariable } from "@/utils/get-computed-color";
 
 export const TypeActivity = () => {
+  const trpc = useTRPC();
   const { id: userId } = useParams<{ id: string }>();
-  const { data, isPending, isError } = useQuery(useUserStatsQueries().userActivity({ userId: Number(userId) }));
+  const { data, isPending, isError } = useQuery(
+    trpc.userStats.getUserActivity.queryOptions({ userId: Number(userId) }, { staleTime: Infinity, gcTime: Infinity }),
+  );
 
   const getBlockColors = () => {
     const colors = {

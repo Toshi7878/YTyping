@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useNotificationQueries } from "@/lib/queries/notification.queries";
 import { useTRPC } from "@/trpc/provider";
 import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
 
@@ -55,8 +54,16 @@ export const NotificationSheet = () => {
 };
 
 const NotificationContent = () => {
+  const trpc = useTRPC();
   const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(
-    useNotificationQueries().infinite(),
+    trpc.notification.getInfinite.infiniteQueryOptions(
+      {},
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        refetchOnWindowFocus: false,
+        gcTime: Infinity,
+      },
+    ),
   );
 
   const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage }, { threshold: 0.8 });

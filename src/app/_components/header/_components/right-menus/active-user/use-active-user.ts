@@ -4,11 +4,17 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import type { ActiveUserStatus } from "@/lib/atoms/global-atoms";
 import { useSetOnlineUsers } from "@/lib/atoms/global-atoms";
-import { useUserOptionsQueries } from "@/lib/queries/user-options.queries";
 import { createPresenceChannel } from "@/lib/supabase-client";
+import { useTRPC } from "@/trpc/provider";
 
 export const useActiveUsers = () => {
-  const { data: userOptions, isPending } = useQuery(useUserOptionsQueries().myUserOptions());
+  const trpc = useTRPC();
+  const { data: userOptions, isPending } = useQuery(
+    trpc.userOption.getUserOptions.queryOptions(undefined, {
+      gcTime: Infinity,
+      staleTime: Infinity,
+    }),
+  );
 
   const { data: session } = useSession();
   const setOnlineUsers = useSetOnlineUsers();

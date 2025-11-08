@@ -48,6 +48,7 @@ export const Content = ({ mapInfo }: ContentProps) => {
   const loadMap = async (mapData: MapLine[]) => {
     showLoading({ message: "ひらがな判定生成中..." });
 
+    // await に変更
     parseImeMap(mapData)
       .then((map) => {
         setMap(map);

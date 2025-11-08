@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
@@ -13,9 +12,10 @@ import { Popover, PopoverAnchor } from "@/components/ui/popover";
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
-import { useMapRankingQueries } from "@/lib/queries/map-ranking.queries";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
+import { useTRPC } from "@/trpc/provider";
+import { useMapIdState } from "../../../_lib/atoms/hydrate";
 import { writeUtilityRefParams } from "../../../_lib/atoms/ref";
 import { setRankStatus, useSceneGroupState } from "../../../_lib/atoms/state";
 import { RankingPopoverContent } from "./ranking-popover-menu";
@@ -23,10 +23,12 @@ import { RankingPopoverContent } from "./ranking-popover-menu";
 type RankingResult = RouterOutPuts["result"]["getMapRanking"][number];
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
-  const { id: mapId } = useParams<{ id: string }>();
-  const { data, error, isPending } = useQuery(useMapRankingQueries().mapRanking({ mapId }));
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
+  const mapId = useMapIdState();
+  const trpc = useTRPC();
+  const { data, error, isPending } = useQuery(trpc.result.getMapRanking.queryOptions({ mapId }, { gcTime: Infinity }));
+  const toggleClap = useClapMutationRanking(mapId);
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -38,8 +40,6 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     if (sceneGroup !== "Ready") return;
     setRankStatus(scores.length + 1);
   }, [data, sceneGroup]);
-
-  const toggleClap = useClapMutationRanking(Number(mapId));
 
   const columns: ColumnDef<RankingResult, unknown>[] = useMemo(() => {
     return [
