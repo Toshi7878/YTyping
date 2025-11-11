@@ -82,7 +82,7 @@ export const SelectMapListByUserIdApiSchema = z.object({
   sort: MapSortSearchParamsSchema.nullable(),
 });
 
-export const SelectPlayingMapByActiveUserApiSchema = z.array(
+export const SelectMapListByActiveUserApiSchema = z.array(
   z.object({
     id: z.number(),
     name: z.string(),

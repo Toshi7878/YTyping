@@ -10,8 +10,8 @@ import {
   MapFilterSearchParamsSchema,
   type MapSortSearchParamsSchema,
   SelectMapListApiSchema,
+  SelectMapListByActiveUserApiSchema,
   SelectMapListByUserIdApiSchema,
-  SelectPlayingMapByActiveUserApiSchema,
 } from "@/validator/map";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
@@ -130,7 +130,7 @@ const mapListRoute = {
     return createBaseSelect({ user }).where(eq(Maps.videoId, videoId)).orderBy(desc(Maps.id));
   }),
 
-  getByActiveUser: protectedProcedure.input(SelectPlayingMapByActiveUserApiSchema).query(async ({ input, ctx }) => {
+  getByActiveUser: protectedProcedure.input(SelectMapListByActiveUserApiSchema).query(async ({ input, ctx }) => {
     const { user } = ctx;
 
     const userListPromises = input.map(async (activeUser) => {
