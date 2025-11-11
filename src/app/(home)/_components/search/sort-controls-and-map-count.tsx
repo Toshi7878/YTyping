@@ -8,7 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { type MapListSearchParams, mapListSearchParams } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { useSetParams } from "../../_lib/use-set-params";
+import type { MAP_SORT_OPTIONS } from "@/validator/map";
+import { useSetSearchParams } from "../../_lib/use-set-search-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 
 export const SortControlsAndMapCount = () => {
@@ -22,7 +23,7 @@ export const SortControlsAndMapCount = () => {
   );
 };
 
-const SORT_OPTIONS: { label: string; value: MapListSearchParams["sort"]["id"] }[] = [
+const SORT_OPTIONS: { label: string; value: (typeof MAP_SORT_OPTIONS)[number] }[] = [
   { label: "ID", value: "id" },
   { label: "難易度", value: "difficulty" },
   { label: "ランキング数", value: "ranking-count" },
@@ -35,22 +36,22 @@ const SORT_OPTIONS: { label: string; value: MapListSearchParams["sort"]["id"] }[
 
 const SortControls = () => {
   const [params] = useQueryStates(mapListSearchParams);
-  const setParams = useSetParams();
+  const setSearchParams = useSetSearchParams();
 
   const currentSort = params.sort;
 
-  const deriveNextSortParam = (value: MapListSearchParams["sort"]["id"]): MapListSearchParams["sort"] | undefined => {
+  const deriveNextSortParam = (value: (typeof MAP_SORT_OPTIONS)[number]): MapListSearchParams["sort"] | undefined => {
     if (value === "random") {
-      return currentSort.id === "random" ? { id: "id", desc: true } : { id: "random", desc: false };
+      return currentSort.value === "random" ? { value: "id", desc: true } : { value: "random", desc: false };
     }
-    if (currentSort.id !== value) {
-      return { id: value, desc: true };
+    if (currentSort.value !== value) {
+      return { value, desc: true };
     }
     if (currentSort.desc) {
-      return { id: value, desc: false };
+      return { value, desc: false };
     }
 
-    return { id: "id", desc: true };
+    return { value: "id", desc: true };
   };
 
   return (
@@ -76,11 +77,11 @@ const SortControls = () => {
             key={value}
             className={cn(
               "group transition-none text-base gap-1",
-              currentSort.id === value && "text-secondary-light bg-accent font-bold hover:text-secondary-light",
+              currentSort.value === value && "text-secondary-light bg-accent font-bold hover:text-secondary-light",
             )}
             onClick={() => {
               const nextSort = deriveNextSortParam(value);
-              setParams({ sort: nextSort });
+              setSearchParams({ sort: nextSort });
             }}
           >
             <span>{label}</span>
@@ -93,16 +94,16 @@ const SortControls = () => {
 };
 
 interface SortIndicatorProps {
-  value: MapListSearchParams["sort"]["id"];
-  currentSort: { id: MapListSearchParams["sort"]["id"]; desc: boolean };
+  value: (typeof MAP_SORT_OPTIONS)[number];
+  currentSort: { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean };
 }
 
 const SortIndicator = ({ value, currentSort }: SortIndicatorProps) => {
   if (value === "random") {
-    return <FaSort className={cn(currentSort.id === "random" ? "visible" : "invisible", "group-hover:visible")} />;
+    return <FaSort className={cn(currentSort.value === "random" ? "visible" : "invisible", "group-hover:visible")} />;
   }
-  if (currentSort.id === value && !currentSort.desc) return <FaSortUp />;
-  if (currentSort.id === value && currentSort.desc) return <FaSortDown />;
+  if (currentSort.value === value && !currentSort.desc) return <FaSortUp />;
+  if (currentSort.value === value && currentSort.desc) return <FaSortDown />;
   return <FaSortDown className="invisible group-hover:visible" />;
 };
 

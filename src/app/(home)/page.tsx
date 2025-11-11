@@ -7,7 +7,7 @@ import { MapList } from "./_components/map-list";
 export default async function Home({ searchParams }: PageProps<"/">) {
   const mapListQueryParams = loadMapListSearchParams(await searchParams);
 
-  prefetch(trpc.mapList.getList.infiniteQueryOptions(mapListQueryParams));
+  prefetch(trpc.mapList.get.infiniteQueryOptions(mapListQueryParams));
 
   const { minRate, maxRate } = mapListQueryParams;
   return (

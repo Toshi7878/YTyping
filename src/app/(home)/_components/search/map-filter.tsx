@@ -11,7 +11,12 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { Small } from "@/components/ui/typography";
 import { type MapListSearchParams, mapListSearchParams } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
-import { useSetParams } from "../../_lib/use-set-params";
+import {
+  MAP_DIFFICULTY_RATE_FILTER_LIMIT,
+  type MAP_RANKING_STATUS_FILTER_OPTIONS,
+  type MAP_USER_FILTER_OPTIONS,
+} from "@/validator/map";
+import { useSetSearchParams } from "../../_lib/use-set-search-params";
 
 export const MapFilter = () => {
   const { data: session } = useSession();
@@ -38,8 +43,8 @@ const USER_FILTER_MENU: FilterMenuConfig<"filter"> = {
   label: "フィルター",
   options: [
     { label: "いいね済み", value: "liked" },
-    { label: "作成した譜面", value: "my-map" },
-  ],
+    { label: "作成した譜面", value: "created" },
+  ] satisfies { label: string; value: (typeof MAP_USER_FILTER_OPTIONS)[number] }[],
 };
 
 export const RANKING_STATUS_FILTER_MENU: FilterMenuConfig<"rankingStatus"> = {
@@ -51,7 +56,7 @@ export const RANKING_STATUS_FILTER_MENU: FilterMenuConfig<"rankingStatus"> = {
     { label: "登録済み", value: "registerd" },
     { label: "未登録", value: "unregisterd" },
     { label: "パーフェクト", value: "perfect" },
-  ],
+  ] satisfies { label: string; value: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number] }[],
 };
 
 const FILTER_MENUS = [USER_FILTER_MENU, RANKING_STATUS_FILTER_MENU];
@@ -59,7 +64,7 @@ type FilterParam = (typeof FILTER_MENUS)[number]["options"][number];
 
 const FilterControls = () => {
   const [params] = useQueryStates(mapListSearchParams);
-  const setParams = useSetParams();
+  const setSearchParams = useSetSearchParams();
 
   const deriveSortParam = (
     {
@@ -80,23 +85,23 @@ const FilterControls = () => {
 
     if (isActive) {
       if (name === "filter" && hasRankingStatusFilter) {
-        return { id: "ranking-register", desc: true };
+        return { value: "ranking-register", desc: true };
       }
       if (name === "rankingStatus" && filter === "liked") {
-        return { id: "like", desc: true };
+        return { value: "like", desc: true };
       }
-      return { id: "id", desc: true };
+      return { value: "id", desc: true };
     }
 
     if (name === "filter" && filter === "liked") {
-      return { id: "like", desc: true };
+      return { value: "like", desc: true };
     }
 
     if (name === "rankingStatus" && hasRankingStatusFilter) {
-      return { id: "ranking-register", desc: true };
+      return { value: "ranking-register", desc: true };
     }
 
-    return { id: "id", desc: true };
+    return { value: "id", desc: true };
   };
 
   const getNextFilterParams = (
@@ -137,7 +142,7 @@ const FilterControls = () => {
                       e.preventDefault();
                       const nextParams = getNextFilterParams(filter.name, param.value, !isActive);
                       const sort = deriveSortParam(nextParams, filter.name, isActive);
-                      setParams({ ...nextParams, sort });
+                      setSearchParams({ ...nextParams, sort });
                     }}
                     className={cn(
                       "transition-none  rounded px-2 py-1 text-sm hover:underline",
@@ -159,11 +164,11 @@ const FilterControls = () => {
 const DifficultyRangeControl = () => {
   const { minRate: pendingMinRate, maxRate: pendingMaxRate } = usePendingDifficultyRangeState();
   const setPendingDifficultyRange = useSetPendingDifficultyRange();
-  const setParams = useSetParams();
+  const setSearchParams = useSetSearchParams();
 
   const handleEnterKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      setParams({ minRate: pendingMinRate, maxRate: pendingMaxRate });
+      setSearchParams({ minRate: pendingMinRate, maxRate: pendingMaxRate });
     }
   };
 
@@ -178,15 +183,15 @@ const DifficultyRangeControl = () => {
               // biome-ignore lint/style/noNonNullAssertion: <minRateとmaxRateは必ずundefinedではない>
               setPendingDifficultyRange({ minRate: minRate!, maxRate: maxRate! });
             }}
-            min={mapListSearchParams.minRate.defaultValue}
-            max={mapListSearchParams.maxRate.defaultValue}
+            min={MAP_DIFFICULTY_RATE_FILTER_LIMIT.min}
+            max={MAP_DIFFICULTY_RATE_FILTER_LIMIT.max}
             step={0.1}
             onKeyDown={handleEnterKeyDown}
           />
         </TooltipWrapper>
         <div className="flex w-full justify-between">
           <span>★{pendingMinRate.toFixed(1)}</span>
-          <span>★{pendingMaxRate === 12 ? "∞" : pendingMaxRate.toFixed(1)}</span>
+          <span>★{pendingMaxRate === MAP_DIFFICULTY_RATE_FILTER_LIMIT.max ? "∞" : pendingMaxRate.toFixed(1)}</span>
         </div>
       </CardContent>
     </Card>

@@ -7,16 +7,15 @@ import { Spinner } from "@/components/ui/spinner";
 import { mapListSearchParams } from "@/lib/search-params/map-list";
 import { useTRPC } from "@/trpc/provider";
 import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
-import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
+import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
 
 export const MapList = () => {
   const isSearching = useIsSearchingState();
-  const setIsSearching = useSetIsSearching();
   const trpc = useTRPC();
   const [params] = useQueryStates(mapListSearchParams);
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
-    trpc.mapList.getList.infiniteQueryOptions(params, {
+    trpc.mapList.get.infiniteQueryOptions(params, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       refetchOnWindowFocus: false,
       gcTime: Infinity,
@@ -27,7 +26,7 @@ export const MapList = () => {
     if (data) {
       setIsSearching(false);
     }
-  }, [setIsSearching, data]);
+  }, [data]);
 
   const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
   return (

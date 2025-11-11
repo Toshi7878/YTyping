@@ -10,8 +10,8 @@ export const UserCreatedMapList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
-    trpc.mapList.getListByCreatorId.infiniteQueryOptions(
-      { creatorId: Number(id), sort: null },
+    trpc.mapList.getByCreatorId.infiniteQueryOptions(
+      { userId: Number(id), sort: null },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
@@ -36,8 +36,8 @@ export const UserLikedMapList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
-    trpc.mapList.getLikeListByUserId.infiniteQueryOptions(
-      { likedUserId: Number(id), sort: null },
+    trpc.mapList.getByLikedUserId.infiniteQueryOptions(
+      { userId: Number(id), sort: null },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         refetchOnWindowFocus: false,

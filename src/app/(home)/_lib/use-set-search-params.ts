@@ -1,11 +1,9 @@
 import { useQueryStates } from "nuqs";
 import { type MapListSearchParams, mapListSearchParams, mapListSerialize } from "@/lib/search-params/map-list";
-import { useReadPendingDifficultyRange, useSetIsSearching } from "./atoms";
+import { readPendingDifficultyRange, setIsSearching } from "./atoms";
 
-export const useSetParams = () => {
+export const useSetSearchParams = () => {
   const [params] = useQueryStates(mapListSearchParams);
-  const setIsSearching = useSetIsSearching();
-  const readPendingDifficultyRange = useReadPendingDifficultyRange();
 
   return (updates?: Partial<MapListSearchParams>) => {
     const rangeParams = readPendingDifficultyRange();

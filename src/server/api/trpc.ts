@@ -15,8 +15,8 @@ export const createContext = async () => {
   return { db: drizzleDb, user: { ...session.user, id: Number(session.user.id) } };
 };
 
-export type Context = Awaited<ReturnType<typeof createContext>>;
-const t = initTRPC.context<Context>().meta<OpenApiMeta>().create({
+export type TRPCContext = Awaited<ReturnType<typeof createContext>>;
+const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create({
   transformer: superjson,
 });
 

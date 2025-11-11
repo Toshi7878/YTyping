@@ -21,7 +21,7 @@ export const ActiveUsersSheet = () => {
   const onlineUsers = useOnlineUsersState();
   const trpc = useTRPC();
   const { data: activeUsersWithMap } = useQuery({
-    ...trpc.mapList.getActiveUserPlayingMaps.queryOptions(onlineUsers),
+    ...trpc.mapList.getByActiveUser.queryOptions(onlineUsers),
     enabled: open,
   });
 

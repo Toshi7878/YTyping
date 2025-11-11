@@ -7,44 +7,24 @@ import {
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs/server";
-import * as z from "zod";
+import {
+  MAP_DIFFICULTY_RATE_FILTER_LIMIT,
+  MAP_RANKING_STATUS_FILTER_OPTIONS,
+  MAP_SORT_OPTIONS,
+  MAP_USER_FILTER_OPTIONS,
+} from "@/validator/map";
 
-const baseFields = [
-  "id",
-  "difficulty",
-  "ranking-count",
-  "ranking-register",
-  "like-count",
-  "duration",
-  "like",
-  "random",
-] as const;
-
-const FilterEnum = z.enum(["liked", "my-map"]);
-const RankingStatusEnum = z.enum(["1st", "not-first", "registerd", "unregisterd", "perfect"]);
-
-export const MapSortSchema = z.object({ id: z.literal(baseFields), desc: z.boolean() });
-export const MapSearchParamsSchema = z.object({
-  filter: FilterEnum.nullable(),
-  rankingStatus: RankingStatusEnum.nullable(),
-  keyword: z.string().default(""),
-  minRate: z.number(),
-  maxRate: z.number(),
-});
-
-type SortFieldType = (typeof baseFields)[number];
 const parseAsSort = createParser({
-  parse(query): { id: SortFieldType; desc: boolean } | null {
-    const [key = "", direction = ""] = query.split(":");
+  parse(query): { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean } | null {
+    const [value = "", direction = ""] = query.split(":");
     const desc = parseAsStringLiteral(["asc", "desc"]).parse(direction) ?? "desc";
 
-    const validFields = baseFields;
-    if (!validFields.includes(key as SortFieldType)) return null;
+    if (!MAP_SORT_OPTIONS.includes(value as (typeof MAP_SORT_OPTIONS)[number])) return null;
 
-    return { id: key as SortFieldType, desc: desc === "desc" };
+    return { value: value as (typeof MAP_SORT_OPTIONS)[number], desc: desc === "desc" };
   },
-  serialize(value: { id: SortFieldType; desc: boolean }) {
-    return `${value.id}:${value.desc ? "desc" : "asc"}`;
+  serialize(value: { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean }) {
+    return `${value.value}:${value.desc ? "desc" : "asc"}`;
   },
 });
 
@@ -62,12 +42,12 @@ const parseAsDifficultyRate = createParser({
 });
 
 export const mapListSearchParams = {
-  sort: parseAsSort.withDefault({ id: "id", desc: true }),
+  sort: parseAsSort.withDefault({ value: "id", desc: true }),
   keyword: parseAsString.withDefault(""),
-  minRate: parseAsDifficultyRate.withDefault(0),
-  maxRate: parseAsDifficultyRate.withDefault(12),
-  filter: parseAsStringLiteral(FilterEnum.options),
-  rankingStatus: parseAsStringLiteral(RankingStatusEnum.options),
+  minRate: parseAsDifficultyRate.withDefault(MAP_DIFFICULTY_RATE_FILTER_LIMIT.min),
+  maxRate: parseAsDifficultyRate.withDefault(MAP_DIFFICULTY_RATE_FILTER_LIMIT.max),
+  filter: parseAsStringLiteral(MAP_USER_FILTER_OPTIONS),
+  rankingStatus: parseAsStringLiteral(MAP_RANKING_STATUS_FILTER_OPTIONS),
 };
 
 export type MapListSearchParams = inferParserType<typeof mapListSearchParams>;

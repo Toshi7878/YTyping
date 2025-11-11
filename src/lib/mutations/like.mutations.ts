@@ -5,12 +5,12 @@ import type { RouterOutPuts } from "@/server/api/trpc";
 import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
 
-type MapListFilter = ReturnType<Trpc["mapList"]["getList"]["infiniteQueryFilter"]>;
+type MapListFilter = ReturnType<Trpc["mapList"]["get"]["infiniteQueryFilter"]>;
 type TimeLineFilter = ReturnType<Trpc["result"]["getAllWithMap"]["infiniteQueryFilter"]>;
-type ActiveUserMapsFilter = ReturnType<Trpc["mapList"]["getActiveUserPlayingMaps"]["queryFilter"]>;
+type ActiveUserMapsFilter = ReturnType<Trpc["mapList"]["getByActiveUser"]["queryFilter"]>;
 type NotificationsMapFilter = ReturnType<Trpc["notification"]["getInfinite"]["infiniteQueryFilter"]>;
-type MapListByCreatorFilter = ReturnType<Trpc["mapList"]["getListByCreatorId"]["infiniteQueryFilter"]>;
-type MapListLikedByUserFilter = ReturnType<Trpc["mapList"]["getLikeListByUserId"]["infiniteQueryFilter"]>;
+type MapListByCreatorFilter = ReturnType<Trpc["mapList"]["getByCreatorId"]["infiniteQueryFilter"]>;
+type MapListLikedByUserFilter = ReturnType<Trpc["mapList"]["getByLikedUserId"]["infiniteQueryFilter"]>;
 type MapListByVideoIdFilter = ReturnType<Trpc["mapList"]["getByVideoId"]["queryFilter"]>;
 type UserResultsFilter = ReturnType<Trpc["result"]["getAllWithMapByUserId"]["infiniteQueryFilter"]>;
 type ResultsInfiniteFilter = TimeLineFilter | UserResultsFilter;
@@ -226,7 +226,7 @@ function setActiveUsersOptimistic(
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["mapList"]["getActiveUserPlayingMaps"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutPuts["mapList"]["getByActiveUser"]>(filter, (old) => {
     if (!old) return old;
     return old.map((user) =>
       user.map?.id === mapId
@@ -252,7 +252,7 @@ function setActiveUsersServer(
   likeCount: number,
   hasLiked: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["mapList"]["getActiveUserPlayingMaps"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutPuts["mapList"]["getByActiveUser"]>(filter, (old) => {
     if (!old) return old;
     return old.map((user) =>
       user.map?.id === mapId ? { ...user, map: { ...user.map, like: { count: likeCount, hasLiked } } } : user,
@@ -292,14 +292,14 @@ export function useLikeMutationMapList() {
   return useMutation(
     trpc.like.toggleLike.mutationOptions({
       onMutate: async (input) => {
-        const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
-        const mapListByCreatorFilter = trpc.mapList.getListByCreatorId.infiniteQueryFilter();
-        const mapListLikedByUserFilter = trpc.mapList.getLikeListByUserId.infiniteQueryFilter();
+        const mapListFilter = trpc.mapList.get.infiniteQueryFilter();
+        const mapListByCreatorFilter = trpc.mapList.getByCreatorId.infiniteQueryFilter();
+        const mapListLikedByUserFilter = trpc.mapList.getByLikedUserId.infiniteQueryFilter();
         const mapListByVideoFilter = trpc.mapList.getByVideoId.queryFilter();
         const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
-        const activeUserMapsFilter = trpc.mapList.getActiveUserPlayingMaps.queryFilter();
+        const activeUserMapsFilter = trpc.mapList.getByActiveUser.queryFilter();
 
         await queryClient.cancelQueries(mapListFilter);
         await queryClient.cancelQueries(mapListByCreatorFilter);
@@ -382,14 +382,14 @@ export function useLikeMutationMapInfo() {
     trpc.like.toggleLike.mutationOptions({
       onMutate: async (input) => {
         const mapInfoFilter = trpc.map.getMapInfo.queryFilter();
-        const mapListFilter = trpc.mapList.getList.infiniteQueryFilter();
-        const mapListByCreatorFilter = trpc.mapList.getListByCreatorId.infiniteQueryFilter();
-        const mapListLikedByUserFilter = trpc.mapList.getLikeListByUserId.infiniteQueryFilter();
+        const mapListFilter = trpc.mapList.get.infiniteQueryFilter();
+        const mapListByCreatorFilter = trpc.mapList.getByCreatorId.infiniteQueryFilter();
+        const mapListLikedByUserFilter = trpc.mapList.getByLikedUserId.infiniteQueryFilter();
         const mapListByVideoFilter = trpc.mapList.getByVideoId.queryFilter();
         const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
-        const activeUserMapsFilter = trpc.mapList.getActiveUserPlayingMaps.queryFilter();
+        const activeUserMapsFilter = trpc.mapList.getByActiveUser.queryFilter();
 
         await queryClient.cancelQueries(mapInfoFilter);
         await queryClient.cancelQueries(mapListFilter);

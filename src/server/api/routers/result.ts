@@ -27,7 +27,7 @@ import {
   SelectResultListApiSchema,
   SelectResultListByPlayerIdApiSchema,
 } from "@/validator/result";
-import { type Context, protectedProcedure, publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure, type TRPCContext } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
 import type { MapListItem } from "./map-list";
 
@@ -68,7 +68,7 @@ const createResultWithMapBaseSelect = ({
   user,
   alias: tableAlias,
 }: {
-  user: Context["user"];
+  user: TRPCContext["user"];
   alias: {
     Player: BuildAliasTable<typeof Users, "Player">;
     Creator: BuildAliasTable<typeof Users, "Creator">;
