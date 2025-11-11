@@ -4,7 +4,7 @@ import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
 
-export const mapIdAtom = atomWithReset<number>(0);
+export const mapIdAtom = atomWithReset<number | null>(null);
 export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
 export const readMapId = () => store.get(mapIdAtom);
 export const setMapId = (value: ExtractAtomValue<typeof mapIdAtom>) => store.set(mapIdAtom, value);
