@@ -9,10 +9,7 @@ import {
   UserOptions,
   UserStats,
 } from "@/server/drizzle/schema";
-import {
-  IncrementImeTypeCountStatsSchema,
-  IncrementTypingCountStatsSchema,
-} from "@/server/drizzle/validator/user-stats";
+import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user-stats";
 import { publicProcedure } from "../trpc";
 
 export const userStatsRouter = {

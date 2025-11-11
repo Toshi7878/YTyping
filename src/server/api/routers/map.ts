@@ -4,8 +4,8 @@ import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
-import { UpsertMapSchema } from "@/server/drizzle/validator/map";
-import type { MapLine } from "@/server/drizzle/validator/map-json";
+import { UpsertMapSchema } from "@/validator/map";
+import type { MapLine } from "@/validator/map-json";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const mapRouter = {

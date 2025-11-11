@@ -1,7 +1,7 @@
 import { CardContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type { TypeResult } from "@/server/drizzle/validator/result";
+import type { TypeResult } from "@/validator/result";
 
 interface ResultCardContentProps {
   lineKanaWord: string;

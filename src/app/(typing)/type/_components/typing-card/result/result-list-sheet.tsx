@@ -11,7 +11,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import type { ResultData } from "@/server/drizzle/validator/result";
+import type { ResultData } from "@/validator/result";
 import { OptimizedResultCard } from "./card/optimized-result-card";
 
 export const ResultListSheet = () => {

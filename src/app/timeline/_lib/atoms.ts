@@ -2,25 +2,25 @@ import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, useAtomCallback } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { useCallback } from "react";
-import { resultListSearchParams } from "@/lib/queries/schema/result-list";
+import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, type RESULT_INPUT_METHOD_TYPES } from "@/validator/result";
 
 const store = createStore();
 export const getTimelineAtomStore = () => store;
 
 const searchPendingAtom = atomWithReset({
   kpm: {
-    min: resultListSearchParams.minKpm.defaultValue,
-    max: resultListSearchParams.maxKpm.defaultValue,
+    min: KPM_LIMIT.min,
+    max: KPM_LIMIT.max,
   },
   clearRate: {
-    min: resultListSearchParams.minClearRate.defaultValue,
-    max: resultListSearchParams.maxClearRate.defaultValue,
+    min: CLEAR_RATE_LIMIT.min,
+    max: CLEAR_RATE_LIMIT.max,
   },
   playSpeed: {
-    min: resultListSearchParams.minPlaySpeed.defaultValue,
-    max: resultListSearchParams.maxPlaySpeed.defaultValue,
+    min: PLAY_SPEED_LIMIT.min,
+    max: PLAY_SPEED_LIMIT.max,
   },
-  mode: resultListSearchParams.mode.defaultValue,
+  mode: null as (typeof RESULT_INPUT_METHOD_TYPES)[number] | null,
 });
 
 export const useReadSearchPendingParams = () => {

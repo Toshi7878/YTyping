@@ -5,7 +5,7 @@ import {
   CreateUserImeTypingOptionSchema,
   CreateUserOptionSchema,
   CreateUserTypingOptionSchema,
-} from "@/server/drizzle/validator/user-option";
+} from "@/validator/user-option";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userOptionRouter = {

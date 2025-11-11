@@ -13,7 +13,7 @@ import {
   setLineWord,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/toggle-input-mode";
-import type { TypeResult } from "@/server/drizzle/validator/result";
+import type { TypeResult } from "@/validator/result";
 import { readAllLineResult } from "../../atoms/family";
 import { calcTypeSpeed } from "../calc-type-speed";
 import { KanaInput, RomaInput, type TypingKeys } from "../keydown/typing-input-evaluator";

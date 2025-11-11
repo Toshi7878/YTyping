@@ -2,7 +2,7 @@ import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, eq, ne } from "drizzle-orm";
 import z from "zod";
 import { UserProfiles, Users } from "@/server/drizzle/schema";
-import { FingerChartUrlApiSchema, keyboardApiSchema, UserNameSchema } from "@/server/drizzle/validator/user-setting";
+import { FingerChartUrlApiSchema, keyboardApiSchema, UserNameSchema } from "@/validator/user-setting";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const userProfileRouter = {

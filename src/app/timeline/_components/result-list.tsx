@@ -4,7 +4,7 @@ import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { ResultCard } from "@/components/shared/result-card/card";
 import { Spinner } from "@/components/ui/spinner";
-import { resultListSearchParams } from "@/lib/queries/schema/result-list";
+import { resultListSearchParams } from "@/lib/search-params/result-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
@@ -12,12 +12,12 @@ import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
 
 export const UsersResultList = () => {
   const trpc = useTRPC();
-  const [params] = useQueryStates(resultListSearchParams);
+  const [searchParams] = useQueryStates(resultListSearchParams);
   const isSearching = useIsSearchingState();
   const setIsSearching = useSetIsSearching();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
-    trpc.result.getAllWithMap.infiniteQueryOptions(params, {
+    trpc.result.getAllWithMap.infiniteQueryOptions(searchParams, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       refetchOnWindowFocus: false,
       gcTime: Infinity,

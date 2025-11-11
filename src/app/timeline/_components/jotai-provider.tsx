@@ -2,7 +2,7 @@
 import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import type React from "react";
-import type { ResultListSearchParams } from "@/lib/queries/schema/result-list";
+import type { ResultListSearchParams } from "@/lib/search-params/result-list";
 import {
   getTimelineAtomStore,
   searchResultClearRateAtom,

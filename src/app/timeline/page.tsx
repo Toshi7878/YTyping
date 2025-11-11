@@ -1,4 +1,4 @@
-import { loadResultListSearchParams } from "@/lib/queries/schema/result-list";
+import { loadResultListSearchParams } from "@/lib/search-params/result-list";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { JotaiProvider } from "./_components/jotai-provider";
 import { UsersResultList } from "./_components/result-list";

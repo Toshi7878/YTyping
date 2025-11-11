@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import { atomWithReducer } from "jotai/utils";
-import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSymbols } from "@/utils/string-transform";
+import type { MapLine } from "@/validator/map-json";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();

@@ -1,4 +1,4 @@
-import { loadMapListSearchParams } from "@/lib/queries/schema/map-list";
+import { loadMapListSearchParams } from "@/lib/search-params/map-list";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { JotaiProvider } from "./_components/jotai-provider";
 import { MapControlArea } from "./_components/map-control-area";
@@ -13,7 +13,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   return (
     <HydrateClient>
       <JotaiProvider minRate={minRate} maxRate={maxRate}>
-        <div className="mx-auto max-w-screen-xl lg:px-8">
+        <div className="mx-auto max-w-7xl lg:px-8">
           <MapControlArea />
           <MapList />
         </div>

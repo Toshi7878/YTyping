@@ -1,5 +1,5 @@
 import { useQueryStates } from "nuqs";
-import { type MapListSearchParams, mapListSearchParams, mapListSerialize } from "@/lib/queries/schema/map-list";
+import { type MapListSearchParams, mapListSearchParams, mapListSerialize } from "@/lib/search-params/map-list";
 import { useReadPendingDifficultyRange, useSetIsSearching } from "./atoms";
 
 export const useSetParams = () => {

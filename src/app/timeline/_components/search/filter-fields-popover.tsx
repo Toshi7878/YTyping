@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { type ResultListSearchParams, resultListSearchParams } from "@/lib/queries/schema/result-list";
+import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, type RESULT_INPUT_METHOD_TYPES } from "@/validator/result";
 import { useSetParams } from "../../_lib/use-set-search-params";
 
 export const FilterFieldsPopover = () => {
@@ -37,8 +37,8 @@ export const FilterFieldsPopover = () => {
         <SearchModeRadioCardGroup />
         <SearchRange
           label="kpm"
-          min={resultListSearchParams.minKpm.defaultValue}
-          max={resultListSearchParams.maxKpm.defaultValue}
+          min={KPM_LIMIT.min}
+          max={KPM_LIMIT.max}
           step={10}
           isMaxLabel
           value={searchKpm}
@@ -46,16 +46,16 @@ export const FilterFieldsPopover = () => {
         />
         <SearchRange
           label="% (クリア率)"
-          min={resultListSearchParams.minClearRate.defaultValue}
-          max={resultListSearchParams.maxClearRate.defaultValue}
+          min={CLEAR_RATE_LIMIT.min}
+          max={CLEAR_RATE_LIMIT.max}
           step={1}
           value={searchClearRate}
           setValue={setSearchClearRate}
         />
         <SearchRange
           label="倍速"
-          min={resultListSearchParams.minPlaySpeed.defaultValue}
-          max={resultListSearchParams.maxPlaySpeed.defaultValue}
+          min={PLAY_SPEED_LIMIT.min}
+          max={PLAY_SPEED_LIMIT.max}
           step={0.25}
           value={searchSpeed}
           setValue={setSearchSpeed}
@@ -70,7 +70,7 @@ const SearchModeRadioCardGroup = () => {
   const setMode = useSetSearchResultMode();
   const setParams = useSetParams();
 
-  const MODE_RADIO_CARDS: { label: string; value: ResultListSearchParams["mode"] }[] = [
+  const MODE_RADIO_CARDS: { label: string; value: (typeof RESULT_INPUT_METHOD_TYPES)[number] | "all" }[] = [
     { label: "全て", value: "all" },
     { label: "ローマ字", value: "roma" },
     { label: "かな", value: "kana" },
@@ -86,13 +86,15 @@ const SearchModeRadioCardGroup = () => {
 
   return (
     <RadioGroup
-      value={mode}
-      onValueChange={(value: ResultListSearchParams["mode"]) => setMode(value)}
+      value={mode ?? "all"}
+      onValueChange={(value: (typeof RESULT_INPUT_METHOD_TYPES)[number] | "all") =>
+        setMode(value === "all" ? null : value)
+      }
       className="flex gap-1"
       onKeyDown={onKeyDown}
     >
       {MODE_RADIO_CARDS.map((option) => {
-        const isSelected = mode === option.value;
+        const isSelected = (mode ?? "all") === option.value;
 
         return (
           <TooltipWrapper key={option.value} label="Enterで検索" disabled={!isSelected}>

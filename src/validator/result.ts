@@ -41,3 +41,29 @@ export const CreateResultSchema = z
 export type ResultData = z.output<typeof CreateTypingResultJsonSchema>;
 export type TypeResult = ResultData[number]["types"][number];
 export type LineResultStatus = ResultData[number]["status"];
+
+export const RESULT_INPUT_METHOD_TYPES = ["roma", "kana", "romakana", "english"] as const;
+export const RESULT_PLAY_SPEEDS = [1, 1.25, 1.5, 1.75, 2];
+export const KPM_LIMIT = { min: 0, max: 1200 };
+export const CLEAR_RATE_LIMIT = { min: 0, max: 100 };
+export const PLAY_SPEED_LIMIT = { min: 1, max: 2 };
+
+const ResultListSearchParamsSchema = {
+  mode: z.literal(RESULT_INPUT_METHOD_TYPES).nullable(),
+  minKpm: z.number().default(KPM_LIMIT.min),
+  maxKpm: z.number().default(KPM_LIMIT.max),
+  minClearRate: z.number().default(CLEAR_RATE_LIMIT.min),
+  maxClearRate: z.number().default(CLEAR_RATE_LIMIT.max),
+  minPlaySpeed: z.literal(RESULT_PLAY_SPEEDS).default(PLAY_SPEED_LIMIT.min),
+  maxPlaySpeed: z.literal(RESULT_PLAY_SPEEDS).default(PLAY_SPEED_LIMIT.max),
+  username: z.string().default(""),
+  mapKeyword: z.string().default(""),
+};
+
+export const SelectResultListApiSchema = z
+  .object({ cursor: z.string().nullable().optional() })
+  .extend(ResultListSearchParamsSchema);
+export const SelectResultListByPlayerIdApiSchema = z.object({
+  playerId: z.number(),
+  cursor: z.string().nullable().optional(),
+});

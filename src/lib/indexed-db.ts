@@ -1,6 +1,6 @@
 import Dexie, { type EntityTable } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
-import type { MapLine } from "@/server/drizzle/validator/map-json";
+import type { MapLine } from "@/validator/map-json";
 
 interface MapTable {
   videoId: string;

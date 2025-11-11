@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { backupMap } from "@/lib/indexed-db";
-import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSymbols } from "@/utils/string-transform";
+import type { MapLine } from "@/validator/map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
 import { readMapId, readVideoId } from "../atoms/hydrate";
 import { readMap, setMapAction } from "../atoms/map-reducer";

@@ -4,7 +4,7 @@ import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { MapCard } from "@/components/shared/map-card/card";
 import { Spinner } from "@/components/ui/spinner";
-import { mapListSearchParams } from "@/lib/queries/schema/map-list";
+import { mapListSearchParams } from "@/lib/search-params/map-list";
 import { useTRPC } from "@/trpc/provider";
 import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
 import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";

@@ -1,8 +1,8 @@
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
 import { readMap, setMapAction } from "@/app/edit/_lib/atoms/map-reducer";
-import type { MapLine } from "@/server/drizzle/validator/map-json";
 import { normalizeSymbols } from "@/utils/string-transform";
+import type { MapLine } from "@/validator/map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
 import { getYTDuration } from "../atoms/state";
 import { wordConvert } from "./typable-word-convert";

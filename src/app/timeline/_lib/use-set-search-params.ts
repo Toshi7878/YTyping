@@ -3,11 +3,11 @@ import {
   type ResultListSearchParams,
   resultListSearchParams,
   resultListSerialize,
-} from "@/lib/queries/schema/result-list";
+} from "@/lib/search-params/result-list";
 import { useReadSearchPendingParams, useSetIsSearching } from "./atoms";
 
 export const useSetParams = () => {
-  const [currentParams] = useQueryStates(resultListSearchParams);
+  const [currentParams] = useQueryStates(resultListSearchParams, { shallow: true });
   const setIsSearching = useSetIsSearching();
   const readSearchRange = useReadSearchPendingParams();
 

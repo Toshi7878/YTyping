@@ -1,6 +1,6 @@
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset } from "jotai/utils";
-import { mapListSearchParams } from "@/lib/queries/schema/map-list";
+import { mapListSearchParams } from "@/lib/search-params/map-list";
 
 const store = createStore();
 export const getHomeAtomStore = () => store;

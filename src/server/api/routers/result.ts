@@ -4,7 +4,6 @@ import { and, count, desc, eq, gt, gte, ilike, inArray, lte, max, or, sql } from
 import { alias, type BuildAliasTable } from "drizzle-orm/pg-core";
 import { nanoid } from "nanoid";
 import z from "zod";
-import { ResultSearchParamsSchema, resultListSearchParams } from "@/lib/queries/schema/result-list";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
 import { db } from "@/server/drizzle/client";
@@ -19,15 +18,18 @@ import {
   Results,
   Users,
 } from "@/server/drizzle/schema";
-import type { ResultData } from "@/server/drizzle/validator/result";
-import { CreateResultSchema } from "@/server/drizzle/validator/result";
+import type { RESULT_INPUT_METHOD_TYPES, ResultData } from "@/validator/result";
+import {
+  CLEAR_RATE_LIMIT,
+  CreateResultSchema,
+  KPM_LIMIT,
+  PLAY_SPEED_LIMIT,
+  SelectResultListApiSchema,
+  SelectResultListByPlayerIdApiSchema,
+} from "@/validator/result";
 import { type Context, protectedProcedure, publicProcedure } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
 import type { MapListItem } from "./map-list";
-
-const InfiniteResultListBaseSchema = z.object({
-  cursor: z.string().nullable().optional(),
-});
 
 const createResultBaseFields = (Player: BuildAliasTable<typeof Users, "Player">) => {
   return {
@@ -142,59 +144,56 @@ const toMapListItem = (items: Awaited<ReturnType<typeof createResultWithMapBaseS
 export type ResultWithMapItem = ReturnType<typeof toMapListItem>[number];
 
 const PAGE_SIZE = 25;
+
 const resultListWithMapRoute = {
-  getAllWithMap: publicProcedure
-    .input(InfiniteResultListBaseSchema.extend(ResultSearchParamsSchema.shape))
-    .query(async ({ input, ctx }) => {
-      const { user } = ctx;
+  getAllWithMap: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
+    const { user } = ctx;
 
-      const { parse, paginate } = createCursorPager(PAGE_SIZE);
-      const { page, offset } = parse(input.cursor);
+    const { parse, paginate } = createCursorPager(PAGE_SIZE);
+    const { page, offset } = parse(input.cursor);
 
-      const Player = alias(Users, "Player");
-      const Creator = alias(Users, "Creator");
+    const Player = alias(Users, "Player");
+    const Creator = alias(Users, "Creator");
 
-      const whereConds = [
-        ...generateModeFilter({ mode: input.mode }),
-        ...generateKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
-        ...generateClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
-        ...generatePlaySpeedFilter({ minPlaySpeed: input.minPlaySpeed, maxPlaySpeed: input.maxPlaySpeed }),
-        ...generateKeywordFilter({
-          username: input.username,
-          mapKeyword: input.mapKeyword,
-          PlayerName: Player.name,
-          CreatorName: Creator.name,
-        }),
-      ];
+    const whereConds = [
+      ...generateModeFilter({ mode: input.mode }),
+      ...generateKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
+      ...generateClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
+      ...generatePlaySpeedFilter({ minPlaySpeed: input.minPlaySpeed, maxPlaySpeed: input.maxPlaySpeed }),
+      ...generateKeywordFilter({
+        username: input.username,
+        mapKeyword: input.mapKeyword,
+        PlayerName: Player.name,
+        CreatorName: Creator.name,
+      }),
+    ];
 
-      const items = await createResultWithMapBaseSelect({ user, alias: { Player, Creator } })
-        .where(whereConds.length ? and(...whereConds) : undefined)
-        .orderBy(desc(Results.updatedAt))
-        .limit(PAGE_SIZE + 1)
-        .offset(offset);
+    const items = await createResultWithMapBaseSelect({ user, alias: { Player, Creator } })
+      .where(whereConds.length ? and(...whereConds) : undefined)
+      .orderBy(desc(Results.updatedAt))
+      .limit(PAGE_SIZE + 1)
+      .offset(offset);
 
-      return paginate(toMapListItem(items), page);
-    }),
+    return paginate(toMapListItem(items), page);
+  }),
 
-  getAllWithMapByUserId: publicProcedure
-    .input(InfiniteResultListBaseSchema.extend({ playerId: z.number() }))
-    .query(async ({ input, ctx }) => {
-      const { user } = ctx;
-      const { playerId } = input;
-      const { parse, paginate } = createCursorPager(PAGE_SIZE);
-      const { page, offset } = parse(input.cursor);
+  getAllWithMapByUserId: publicProcedure.input(SelectResultListByPlayerIdApiSchema).query(async ({ input, ctx }) => {
+    const { user } = ctx;
+    const { playerId } = input;
+    const { parse, paginate } = createCursorPager(PAGE_SIZE);
+    const { page, offset } = parse(input.cursor);
 
-      const Player = alias(Users, "Player");
-      const Creator = alias(Users, "Creator");
+    const Player = alias(Users, "Player");
+    const Creator = alias(Users, "Creator");
 
-      const items = await createResultWithMapBaseSelect({ user, alias: { Player, Creator } })
-        .where(eq(Results.userId, playerId))
-        .orderBy(desc(Results.updatedAt))
-        .limit(PAGE_SIZE + 1)
-        .offset(offset);
+    const items = await createResultWithMapBaseSelect({ user, alias: { Player, Creator } })
+      .where(eq(Results.userId, playerId))
+      .orderBy(desc(Results.updatedAt))
+      .limit(PAGE_SIZE + 1)
+      .offset(offset);
 
-      return paginate(toMapListItem(items), page);
-    }),
+    return paginate(toMapListItem(items), page);
+  }),
 
   getUserResultStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
     const { db } = ctx;
@@ -434,7 +433,7 @@ const updateRankingsAndNotifyOvertakes = async ({
   }
 };
 
-function generateModeFilter({ mode }: { mode: string }) {
+function generateModeFilter({ mode }: { mode: (typeof RESULT_INPUT_METHOD_TYPES)[number] | null }) {
   switch (mode) {
     case "roma":
       return [gt(ResultStatuses.romaType, 0), eq(ResultStatuses.kanaType, 0)];
@@ -451,10 +450,10 @@ function generateModeFilter({ mode }: { mode: string }) {
 
 function generateKpmFilter({ minKpm, maxKpm }: { minKpm: number; maxKpm: number }) {
   const conds: SQL<unknown>[] = [];
-  if (minKpm > resultListSearchParams.minKpm.defaultValue) {
+  if (minKpm > KPM_LIMIT.min) {
     conds.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
   }
-  if (resultListSearchParams.maxKpm.defaultValue > maxKpm) {
+  if (KPM_LIMIT.max > maxKpm) {
     conds.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
   }
   return conds;
@@ -462,10 +461,10 @@ function generateKpmFilter({ minKpm, maxKpm }: { minKpm: number; maxKpm: number 
 
 function generateClearRateFilter({ minClearRate, maxClearRate }: { minClearRate: number; maxClearRate: number }) {
   const conds: SQL<unknown>[] = [];
-  if (minClearRate > resultListSearchParams.minClearRate.defaultValue) {
+  if (minClearRate > CLEAR_RATE_LIMIT.min) {
     conds.push(gte(ResultStatuses.clearRate, minClearRate));
   }
-  if (resultListSearchParams.maxClearRate.defaultValue > maxClearRate) {
+  if (CLEAR_RATE_LIMIT.max > maxClearRate) {
     conds.push(lte(ResultStatuses.clearRate, maxClearRate));
   }
 
@@ -474,11 +473,11 @@ function generateClearRateFilter({ minClearRate, maxClearRate }: { minClearRate:
 
 function generatePlaySpeedFilter({ minPlaySpeed, maxPlaySpeed }: { minPlaySpeed: number; maxPlaySpeed: number }) {
   const conds: SQL<unknown>[] = [];
-  if (minPlaySpeed > resultListSearchParams.minPlaySpeed.defaultValue) {
+  if (minPlaySpeed > PLAY_SPEED_LIMIT.min) {
     conds.push(gte(ResultStatuses.minPlaySpeed, minPlaySpeed));
   }
 
-  if (resultListSearchParams.maxPlaySpeed.defaultValue > maxPlaySpeed) {
+  if (PLAY_SPEED_LIMIT.max > maxPlaySpeed) {
     conds.push(lte(ResultStatuses.minPlaySpeed, maxPlaySpeed));
   }
 

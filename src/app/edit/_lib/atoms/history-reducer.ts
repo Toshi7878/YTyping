@@ -1,5 +1,5 @@
 import { atomWithReducer } from "jotai/utils";
-import type { MapLine } from "@/server/drizzle/validator/map-json";
+import type { MapLine } from "@/validator/map-json";
 import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer";
 import { getEditAtomStore } from "./store";
 

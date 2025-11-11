@@ -1,7 +1,7 @@
 import deepEqual from "fast-deep-equal";
 import { atom, useAtomValue } from "jotai";
 import { atomFamily } from "jotai/utils";
-import type { ResultData } from "@/server/drizzle/validator/result";
+import type { ResultData } from "@/validator/result";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();

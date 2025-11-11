@@ -1,6 +1,6 @@
-import type { MapLine } from "@/server/drizzle/validator/map-json";
-import type { ResultData } from "@/server/drizzle/validator/result";
 import { zip } from "@/utils/array";
+import type { MapLine } from "@/validator/map-json";
+import type { ResultData } from "@/validator/result";
 import type { BuiltMapLine, InputMode, TypeChunk } from "../../app/(typing)/type/_lib/type";
 import { generateTypingWord } from "./generate-typing-word";
 import { sentenceToKanaChunkWords } from "./sentence-to-kana-chunk-words";

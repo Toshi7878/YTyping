@@ -1,7 +1,7 @@
-import { type ExtractAtomValue } from "jotai";
+import type { ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import type { TypeResult } from "@/server/drizzle/validator/result";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
+import type { TypeResult } from "@/validator/result";
 import type { InputMode } from "../type";
 import { getTypeAtomStore } from "./store";
 

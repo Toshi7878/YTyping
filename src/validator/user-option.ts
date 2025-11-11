@@ -1,7 +1,7 @@
 import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
-import { MAX_SHORT_LENGTH } from "../const";
-import { UserImeTypingOptions, UserOptions, UserTypingOptions } from "../schema";
+import { MAX_SHORT_LENGTH } from "../server/drizzle/const";
+import { UserImeTypingOptions, UserOptions, UserTypingOptions } from "../server/drizzle/schema";
 
 export const CreateUserTypingOptionSchema = createInsertSchema(UserTypingOptions).omit({ userId: true });
 

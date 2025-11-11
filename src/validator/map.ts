@@ -1,7 +1,7 @@
 import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
-import { MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
-import { MapDifficulties, thumbnailQualityEnum } from "../schema";
+import { MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "../server/drizzle/const";
+import { MapDifficulties, thumbnailQualityEnum } from "../server/drizzle/schema";
 import { mapDataSchema } from "./map-json";
 
 const MapInfoBaseSchema = z.object({

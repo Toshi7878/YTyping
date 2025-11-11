@@ -10,8 +10,8 @@ import type z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
-import { UserNameSchema } from "@/server/drizzle/validator/user-setting";
 import { useTRPC } from "@/trpc/provider";
+import { UserNameSchema } from "@/validator/user-setting";
 
 interface UserNameInputFormProps {
   placeholder?: string;

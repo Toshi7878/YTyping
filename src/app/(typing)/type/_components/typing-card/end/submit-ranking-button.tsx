@@ -9,9 +9,9 @@ import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
 import { readTypingStatus, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
-import type { CreateResultStatusSchema } from "@/server/drizzle/validator/result";
 import { useTRPC } from "@/trpc/provider";
 import { getMinValue } from "@/utils/array";
+import type { CreateResultStatusSchema } from "@/validator/result";
 
 interface SubmitRankingButtonProps {
   isScoreUpdated: boolean;

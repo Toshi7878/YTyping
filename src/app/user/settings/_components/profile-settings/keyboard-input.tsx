@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 import { MutationInputFormField } from "@/components/ui/input/input-form-field";
-import { keyboardFormSchema } from "@/server/drizzle/validator/user-setting";
 import { useTRPC } from "@/trpc/provider";
+import { keyboardFormSchema } from "@/validator/user-setting";
 
 interface KeyboardInputProps {
   keyboard: string;
