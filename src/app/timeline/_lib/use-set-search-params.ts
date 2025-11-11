@@ -4,15 +4,13 @@ import {
   resultListSearchParams,
   resultListSerialize,
 } from "@/lib/search-params/result-list";
-import { useReadSearchPendingParams, useSetIsSearching } from "./atoms";
+import { readSearchPendingParams, setIsSearching } from "./atoms";
 
-export const useSetParams = () => {
-  const [currentParams] = useQueryStates(resultListSearchParams, { shallow: true });
-  const setIsSearching = useSetIsSearching();
-  const readSearchRange = useReadSearchPendingParams();
+export const useSetSearchParams = () => {
+  const [currentParams] = useQueryStates(resultListSearchParams);
 
   return (updates?: Partial<ResultListSearchParams>) => {
-    const searchPendingParams = readSearchRange();
+    const searchPendingParams = readSearchPendingParams();
 
     const mergedParams = {
       ...currentParams,

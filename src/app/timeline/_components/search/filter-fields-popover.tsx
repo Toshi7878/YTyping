@@ -18,7 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, type RESULT_INPUT_METHOD_TYPES } from "@/validator/result";
-import { useSetParams } from "../../_lib/use-set-search-params";
+import { useSetSearchParams } from "../../_lib/use-set-search-params";
 
 export const FilterFieldsPopover = () => {
   const searchKpm = useSearchResultKpmState();
@@ -68,7 +68,7 @@ export const FilterFieldsPopover = () => {
 const SearchModeRadioCardGroup = () => {
   const mode = useSearchResultModeState();
   const setMode = useSetSearchResultMode();
-  const setParams = useSetParams();
+  const setSearchParams = useSetSearchParams();
 
   const MODE_RADIO_CARDS: { label: string; value: (typeof RESULT_INPUT_METHOD_TYPES)[number] | "all" }[] = [
     { label: "全て", value: "all" },
@@ -80,7 +80,7 @@ const SearchModeRadioCardGroup = () => {
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setParams({ mode });
+      setSearchParams({ mode });
     }
   };
 
@@ -136,7 +136,7 @@ const SearchRange = ({
   disabled = false,
   isMaxLabel = false,
 }: SearchRangeProps & Omit<ComponentProps<typeof DualRangeSlider>, "value" | "label">) => {
-  const setParams = useSetParams();
+  const setSearchParams = useSetSearchParams();
 
   const handleValueChange = useCallback(
     (newValue: number[]) => {
@@ -164,7 +164,7 @@ const SearchRange = ({
           onValueChange={handleValueChange}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
-              setParams();
+              setSearchParams();
             }
           }}
           disabled={disabled}

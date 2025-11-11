@@ -5,7 +5,7 @@ import { useIsSearchingState } from "@/app/timeline/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
 import { resultListSearchParams } from "@/lib/search-params/result-list";
-import { useSetParams } from "../../_lib/use-set-search-params";
+import { useSetSearchParams } from "../../_lib/use-set-search-params";
 
 export const SearchInputs = () => {
   const isSearching = useIsSearchingState();
@@ -13,16 +13,16 @@ export const SearchInputs = () => {
   const [username] = useQueryState("username", resultListSearchParams.username);
 
   const [keywords, setKeywords] = useState({ mapKeyword, username });
-  const setParams = useSetParams();
+  const setSearchParams = useSetSearchParams();
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
+      setSearchParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
     }
   };
 
   const onClick = () => {
-    setParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
+    setSearchParams({ mapKeyword: keywords.mapKeyword.trim(), username: keywords.username.trim() });
   };
 
   return (

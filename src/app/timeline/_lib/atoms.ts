@@ -1,7 +1,6 @@
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
-import { atomWithReset, useAtomCallback } from "jotai/utils";
+import { atomWithReset } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import { useCallback } from "react";
 import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, type RESULT_INPUT_METHOD_TYPES } from "@/validator/result";
 
 const store = createStore();
@@ -23,12 +22,7 @@ const searchPendingAtom = atomWithReset({
   mode: null as (typeof RESULT_INPUT_METHOD_TYPES)[number] | null,
 });
 
-export const useReadSearchPendingParams = () => {
-  return useAtomCallback(
-    useCallback((get) => get(searchPendingAtom), []),
-    { store },
-  );
-};
+export const readSearchPendingParams = () => store.get(searchPendingAtom);
 
 export const searchResultKpmAtom = focusAtom(searchPendingAtom, (optic) => optic.prop("kpm"));
 export const useSearchResultKpmState = () => useAtomValue(searchResultKpmAtom, { store });
@@ -48,4 +42,4 @@ export const useSetSearchResultMode = () => useSetAtom(searchResultModeAtom, { s
 
 const isSearchingAtom = atom(false);
 export const useIsSearchingState = () => useAtomValue(isSearchingAtom, { store });
-export const useSetIsSearching = () => useSetAtom(isSearchingAtom, { store });
+export const setIsSearching = (value: boolean) => store.set(isSearchingAtom, value);

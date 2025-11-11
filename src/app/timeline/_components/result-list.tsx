@@ -8,13 +8,12 @@ import { resultListSearchParams } from "@/lib/search-params/result-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
-import { useIsSearchingState, useSetIsSearching } from "../_lib/atoms";
+import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
 
 export const UsersResultList = () => {
   const trpc = useTRPC();
   const [searchParams] = useQueryStates(resultListSearchParams);
   const isSearching = useIsSearchingState();
-  const setIsSearching = useSetIsSearching();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     trpc.result.getAllWithMap.infiniteQueryOptions(searchParams, {
@@ -28,7 +27,7 @@ export const UsersResultList = () => {
     if (data) {
       setIsSearching(false);
     }
-  }, [data, setIsSearching]);
+  }, [data]);
 
   const ref = useInfiniteScroll(
     { isFetchingNextPage, fetchNextPage, hasNextPage },
