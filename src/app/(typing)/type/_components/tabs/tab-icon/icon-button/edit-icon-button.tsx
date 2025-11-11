@@ -10,7 +10,7 @@ import { useTRPC } from "@/trpc/provider";
 export const EditIconButton = () => {
   const trpc = useTRPC();
   const mapId = useMapIdState();
-  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId }));
+  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: mapId ?? 0 }));
   const { data: session } = useSession();
 
   const role = session?.user.role;

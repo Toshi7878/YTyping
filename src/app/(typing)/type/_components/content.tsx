@@ -28,7 +28,7 @@ export const Content = ({ videoId }: ContentProps) => {
   const mapId = useMapIdState();
   const trpc = useTRPC();
   const { data: mapData, isLoading } = useQuery(
-    trpc.map.getMapJson.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
+    trpc.map.getMapJson.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
   );
 
   const sceneGroup = useSceneGroupState();

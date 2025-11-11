@@ -10,16 +10,16 @@ import { useBreakPoint } from "@/utils/hooks/use-break-point";
 export const LikeIconButton = () => {
   const mapId = useMapIdState();
   const trpc = useTRPC();
-  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId }));
+  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: mapId ?? 0 }));
   const hasLiked = mapInfo?.hasLiked;
   const { isSmScreen } = useBreakPoint();
 
   const setMapLike = useLikeMutationMapInfo();
 
   const handleClick = () => {
-    if (setMapLike.isPending) return;
+    if (setMapLike.isPending || !mapId) return;
 
-    setMapLike.mutate({ mapId: Number(mapId), newState: !hasLiked });
+    setMapLike.mutate({ mapId, newState: !hasLiked });
   };
 
   return (

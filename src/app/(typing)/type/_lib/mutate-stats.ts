@@ -4,6 +4,7 @@ import { readUserStats, resetUserStats } from "./atoms/ref";
 
 export const mutatePlayCountStats = () => {
   const mapId = readMapId();
+  if (!mapId) return;
   const trpcClient = getTRPCClient();
 
   void trpcClient.userStats.incrementPlayCountStats.mutate({ mapId });
@@ -18,7 +19,9 @@ export const mutateTypingStats = () => {
 };
 
 export const mutateIncrementMapCompletionPlayCountStats = () => {
-  const trpcClient = getTRPCClient();
   const mapId = readMapId();
+  if (!mapId) return;
+
+  const trpcClient = getTRPCClient();
   void trpcClient.userStats.incrementMapCompletionPlayCount.mutate({ mapId });
 };

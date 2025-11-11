@@ -30,7 +30,7 @@ export const SubmitRankingButton = ({ isScoreUpdated, disabled, onSuccess }: Sub
       onSuccess: async () => {
         onSuccess();
         const mapId = readMapId();
-        await queryClient.invalidateQueries(trpc.result.getMapRanking.queryOptions({ mapId }));
+        await queryClient.invalidateQueries(trpc.result.getMapRanking.queryOptions({ mapId: mapId ?? 0 }));
         setTabName("ランキング");
         toast.success("ランキング登録が完了しました");
       },
@@ -42,6 +42,8 @@ export const SubmitRankingButton = ({ isScoreUpdated, disabled, onSuccess }: Sub
 
   const handleClick = async () => {
     const mapId = readMapId();
+    if (!mapId) return;
+
     if (isScoreUpdated) {
       sendResult.mutate(generateResultData(mapId));
       return;

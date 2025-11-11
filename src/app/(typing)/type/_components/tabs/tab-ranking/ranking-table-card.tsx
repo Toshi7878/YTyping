@@ -27,8 +27,10 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
   const sceneGroup = useSceneGroupState();
   const mapId = useMapIdState();
   const trpc = useTRPC();
-  const { data, error, isPending } = useQuery(trpc.result.getMapRanking.queryOptions({ mapId }, { gcTime: Infinity }));
-  const toggleClap = useClapMutationRanking(mapId);
+  const { data, error, isPending } = useQuery(
+    trpc.result.getMapRanking.queryOptions({ mapId: mapId ?? 0 }, { gcTime: Infinity }),
+  );
+  const toggleClap = useClapMutationRanking(mapId ?? 0);
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -140,7 +142,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
             );
           },
           onClick: (event, row) => {
-            if (!session?.user?.id || toggleClap.isPending) return;
+            if (!session?.user?.id || toggleClap.isPending || !mapId) return;
             event.preventDefault();
             event.stopPropagation();
             toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClapped });
@@ -148,7 +150,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
         },
       },
     ];
-  }, [data, openPopoverIndex, toggleClap.isPending, session?.user?.id, toggleClap.mutate]);
+  }, [data, openPopoverIndex, toggleClap.isPending, session?.user?.id, toggleClap.mutate, mapId]);
 
   if (error) return <div>Error loading data</div>;
 
