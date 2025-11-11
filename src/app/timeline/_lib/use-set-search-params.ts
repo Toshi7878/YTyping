@@ -28,6 +28,6 @@ export const useSetSearchParams = () => {
     if (!hasChanged) return;
 
     setIsSearching(true);
-    window.history.replaceState(null, "", resultListSerialize(mergedParams));
+    window.history.replaceState(null, "", resultListSerialize(mergedParams) || window.location.pathname);
   };
 };

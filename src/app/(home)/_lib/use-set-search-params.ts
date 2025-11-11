@@ -12,6 +12,6 @@ export const useSetSearchParams = () => {
     if (!isChanged) return;
 
     setIsSearching(true);
-    window.history.replaceState(null, "", mapListSerialize(mergedParams));
+    window.history.replaceState(null, "", mapListSerialize(mergedParams) || window.location.pathname);
   };
 };
