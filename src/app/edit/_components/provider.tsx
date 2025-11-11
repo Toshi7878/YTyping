@@ -36,7 +36,7 @@ export const JotaiProvider = ({ mapId, videoId, creatorId, children }: JotaiProv
   const store = getEditAtomStore();
   useHydrateAtoms(
     [
-      ...(mapId ? [[mapIdAtom, Number(mapId)] as const] : []),
+      ...(mapId ? [[mapIdAtom, mapId ? Number(mapId) : null] as const] : []),
       ...(creatorId ? [[creatorIdAtom, creatorId] as const] : []),
       [videoIdAtom, videoId],
     ],
@@ -44,7 +44,7 @@ export const JotaiProvider = ({ mapId, videoId, creatorId, children }: JotaiProv
   );
 
   useEffect(() => {
-    setMapId(mapId ? Number(mapId) : 0);
+    setMapId(mapId ? Number(mapId) : null);
     setCreatorId(creatorId ? creatorId : null);
     setVideoId(videoId);
   }, [mapId, videoId, creatorId]);

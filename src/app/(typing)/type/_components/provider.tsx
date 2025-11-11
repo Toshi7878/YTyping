@@ -20,12 +20,15 @@ export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProvi
   const store = getTypeAtomStore();
 
   useHydrateAtoms(
-    [[mapIdAtom, Number(mapId)], ...(userTypingOptions ? [[typingOptionsAtom, userTypingOptions] as const] : [])],
+    [
+      [mapIdAtom, mapId ? Number(mapId) : null],
+      ...(userTypingOptions ? [[typingOptionsAtom, userTypingOptions] as const] : []),
+    ],
     { store },
   );
 
   useEffect(() => {
-    setMapId(Number(mapId));
+    setMapId(mapId ? Number(mapId) : null);
     return () => {
       mutateTypingStats();
       resetAllStateOnCleanup();
