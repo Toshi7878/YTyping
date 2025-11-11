@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { BiEdit } from "react-icons/bi";
+import { useMapIdState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { Button } from "@/components/ui/button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useTRPC } from "@/trpc/provider";
 
 export const EditIconButton = () => {
   const trpc = useTRPC();
-  const { id: mapId } = useParams<{ id: string }>();
-  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
+  const mapId = useMapIdState();
+  const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId }));
   const { data: session } = useSession();
 
   const role = session?.user.role;

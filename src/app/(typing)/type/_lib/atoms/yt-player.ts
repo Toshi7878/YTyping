@@ -11,7 +11,7 @@ export const readYTPlayer = () => store.get(YTPlayerAtom);
 export const writeYTPlayer = (newYTPlayer: YT.Player) => store.set(YTPlayerAtom, newYTPlayer);
 export const resetYTPlayer = () => store.set(YTPlayerAtom, RESET);
 export const playYTPlayer = () => store.get(YTPlayerAtom)?.playVideo();
-export const pauseYTPlayer = () => store.get(YTPlayerAtom)?.playVideo();
+export const pauseYTPlayer = () => store.get(YTPlayerAtom)?.pauseVideo();
 export const seekYTPlayer = (seconds: number) => store.get(YTPlayerAtom)?.seekTo(seconds, true);
 export const stopYTPlayer = () => store.get(YTPlayerAtom)?.stopVideo();
 export const getYTPlayerState = () => store.get(YTPlayerAtom)?.getPlayerState();

@@ -124,7 +124,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     return;
   }
 
-  if (isHotKeyIgnored(event)) return;
+  if (isPaused || isHotKeyIgnored(event)) return;
 
   handlePlayHotKey(event);
 };

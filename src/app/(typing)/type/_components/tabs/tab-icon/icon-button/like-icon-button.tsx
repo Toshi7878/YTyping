@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMapIdState } from "@/app/edit/_lib/atoms/hydrate";
+import { useMapIdState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { LikeButton } from "@/components/shared/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useLikeMutationMapInfo } from "@/lib/mutations/like.mutations";
