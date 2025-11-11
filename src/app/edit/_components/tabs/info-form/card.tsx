@@ -162,7 +162,7 @@ export const MapInfoFormCard = () => {
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
-          {mapId && <VideoIdInput />}
+          {!!mapId && <VideoIdInput />}
 
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
@@ -197,7 +197,7 @@ export const MapInfoFormCard = () => {
           <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
               <UpsertButton />
-              {mapId && <TypeLinkButton mapId={mapId} />}
+              {!!mapId && <TypeLinkButton mapId={mapId} />}
             </div>
 
             <PreviewTimeInput />
