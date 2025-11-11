@@ -23,8 +23,8 @@ const parseAsSort = createParser({
 
     return { value: value as (typeof MAP_SORT_OPTIONS)[number], desc: desc === "desc" };
   },
-  serialize(value: { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean }) {
-    return `${value.value}:${value.desc ? "desc" : "asc"}`;
+  serialize({ value, desc }: { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean }) {
+    return `${value}:${desc ? "desc" : "asc"}`;
   },
 });
 
