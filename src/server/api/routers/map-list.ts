@@ -12,7 +12,7 @@ import {
   SelectMapListApiSchema,
   SelectMapListByActiveUserApiSchema,
   SelectMapListByUserIdApiSchema,
-} from "@/validator/map";
+} from "@/validator/map-list";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../trpc";
 import { createCursorPager } from "../utils/cursor-pager";
 

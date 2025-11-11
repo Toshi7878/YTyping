@@ -1,6 +1,6 @@
 import { atom, createStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset } from "jotai/utils";
-import { MAP_DIFFICULTY_RATE_FILTER_LIMIT } from "@/validator/map";
+import { MAP_DIFFICULTY_RATE_FILTER_LIMIT } from "@/validator/map-list";
 
 const store = createStore();
 export const getHomeAtomStore = () => store;

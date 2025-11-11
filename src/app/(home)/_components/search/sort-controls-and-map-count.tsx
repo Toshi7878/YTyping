@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { type MapListSearchParams, mapListSearchParams } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import type { MAP_SORT_OPTIONS } from "@/validator/map";
+import type { MAP_SORT_OPTIONS } from "@/validator/map-list";
 import { useSetSearchParams } from "../../_lib/use-set-search-params";
 import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 

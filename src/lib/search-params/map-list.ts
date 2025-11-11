@@ -12,7 +12,7 @@ import {
   MAP_RANKING_STATUS_FILTER_OPTIONS,
   MAP_SORT_OPTIONS,
   MAP_USER_FILTER_OPTIONS,
-} from "@/validator/map";
+} from "@/validator/map-list";
 
 const parseAsSort = createParser({
   parse(query): { value: (typeof MAP_SORT_OPTIONS)[number]; desc: boolean } | null {
