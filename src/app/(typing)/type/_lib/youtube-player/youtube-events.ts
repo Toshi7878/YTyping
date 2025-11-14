@@ -1,6 +1,8 @@
 import type { YouTubeEvent } from "react-youtube";
 import { readVolume } from "@/lib/atoms/global-atoms";
+import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { windowFocus } from "@/utils/window-focus";
+import { readMapId } from "../atoms/hydrate";
 import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount } from "../atoms/ref";
 import { readPlaySpeed, setSpeed } from "../atoms/speed-reducer";
 import {
@@ -16,13 +18,16 @@ import {
 } from "../atoms/state";
 import { readReadyInputMode } from "../atoms/storage";
 import { writeYTPlayer } from "../atoms/yt-player";
-import { mutateIncrementMapCompletionPlayCountStats, mutatePlayCountStats, mutateTypingStats } from "../mutate-stats";
+import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../mutate-stats";
 import { startTimer, stopTimer } from "../playing/timer/timer";
 
 const onStart = (player: YT.Player) => {
   const { scene } = readUtilityParams();
   setMovieDuration(player.getDuration());
-  mutatePlayCountStats();
+  const mapId = readMapId();
+  if (mapId) {
+    mutatePlayCountStats({ mapId });
+  }
   setTabName("ステータス");
   setYTStarted(true);
   player.seekTo(0, true);

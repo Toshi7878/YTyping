@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import { useMapState, useStatusState, useWordResultsState } from "../../_lib/atoms/state-atoms";
+import { useBuiltMapState, useStatusState, useWordResultsState } from "../../_lib/atoms/state";
 
 interface ResultDialogProps {
   isOpen: boolean;
@@ -26,7 +26,7 @@ export const ResultDialog = ({ isOpen, onClose }: ResultDialogProps) => {
 
 const ResultStatus = () => {
   const status = useStatusState();
-  const map = useMapState();
+  const map = useBuiltMapState();
 
   const isPerfect = status.score === 1000;
 
@@ -52,7 +52,7 @@ const ResultStatus = () => {
 
 const ResultWordsTable = () => {
   const wordResults = useWordResultsState();
-  const map = useMapState();
+  const map = useBuiltMapState();
   const status = useStatusState();
 
   return (

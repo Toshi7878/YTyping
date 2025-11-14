@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { serverApi } from "@/trpc/server";
-import { ImeTypeProvider } from "../_components/client-provider";
 import { Content } from "../_components/content";
+import { JotaiProvider } from "../_components/provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -36,12 +36,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const { id } = await params;
   const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
   const userImeTypingOptions = await serverApi.userOption.getUserImeTypingOptions();
-
   if (!mapInfo) notFound();
 
   return (
-    <ImeTypeProvider userImeTypingOptions={userImeTypingOptions}>
+    <JotaiProvider userImeTypingOptions={userImeTypingOptions} mapId={id}>
       <Content mapInfo={mapInfo} />
-    </ImeTypeProvider>
+    </JotaiProvider>
   );
 }

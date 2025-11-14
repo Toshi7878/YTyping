@@ -8,13 +8,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/provider";
 import {
+  readImeTypeOptions,
+  readIsImeTypeOptionsEdited,
+  setBuiltMap,
+  setImeOptions,
   useImeTypeOptionsState,
-  useReadImeTypeOptions,
-  useReadIsImeTypeOptionsEdited,
-  useSetImetypeOptions,
-  useSetMap,
-} from "../../_lib/atoms/state-atoms";
-import { useBuildImeMap } from "../../_lib/hooks/bulid-ime-map";
+} from "../../_lib/atoms/state";
+import { buildImeMap } from "../../_lib/core/bulid-ime-map";
 
 interface SettingPopoverProps {
   triggerButton: ReactNode;
@@ -24,14 +24,10 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
   const trpc = useTRPC();
   const updateImeTypingOptions = useMutation(trpc.userOption.updateImeTypeOptions.mutationOptions());
   const queryClient = useQueryClient();
-  const readIsImeTypeOptionsEdited = useReadIsImeTypeOptionsEdited();
-  const readImeTypeOptions = useReadImeTypeOptions();
-  const parseImeMap = useBuildImeMap();
-  const setMap = useSetMap();
   const { id: mapId } = useParams<{ id: string }>();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleOpenChange = (open: boolean) => {
+  const handleOpenChange = async (open: boolean) => {
     setIsOpen(open);
 
     if (!open) {
@@ -41,7 +37,8 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
         const mapData = queryClient.getQueryData(trpc.map.getMapJson.queryOptions({ mapId: Number(mapId) }).queryKey);
 
         if (mapData) {
-          void parseImeMap(mapData).then((map) => setMap(map));
+          const map = await buildImeMap(mapData);
+          setBuiltMap(map);
         }
       }
     }
@@ -98,7 +95,6 @@ const SettingCardDivider = () => {
 
 const MainSettingTab = () => {
   const userImeTypeOptions = useImeTypeOptionsState();
-  const setUserImeTypeOptions = useSetImetypeOptions();
 
   return (
     <div className="flex flex-col gap-4">
@@ -109,12 +105,12 @@ const MainSettingTab = () => {
               label="判定文字追加を有効化"
               defaultChecked={userImeTypeOptions.enableAddSymbol}
               onCheckedChange={(value: boolean) => {
-                setUserImeTypeOptions({ enableAddSymbol: value });
+                setImeOptions({ enableAddSymbol: value });
               }}
             />
           }
           onInput={(e) => {
-            setUserImeTypeOptions({ addSymbolList: e.currentTarget.value });
+            setImeOptions({ addSymbolList: e.currentTarget.value });
           }}
           value={userImeTypeOptions.addSymbolList}
           disabled={!userImeTypeOptions.enableAddSymbol}
@@ -125,14 +121,14 @@ const MainSettingTab = () => {
           label="英語スペースを有効化"
           defaultChecked={userImeTypeOptions.enableEngSpace}
           onCheckedChange={(value: boolean) => {
-            setUserImeTypeOptions({ enableEngSpace: value });
+            setImeOptions({ enableEngSpace: value });
           }}
         />
         <LabeledCheckbox
           label="英語大文字判定を有効化"
           defaultChecked={userImeTypeOptions.enableEngUpperCase}
           onCheckedChange={(value: boolean) => {
-            setUserImeTypeOptions({ enableEngUpperCase: value });
+            setImeOptions({ enableEngUpperCase: value });
           }}
         />
       </div>
@@ -143,7 +139,7 @@ const MainSettingTab = () => {
         label="次の歌詞を表示"
         defaultChecked={userImeTypeOptions.enableNextLyrics}
         onCheckedChange={(value: boolean) => {
-          setUserImeTypeOptions({ enableNextLyrics: value });
+          setImeOptions({ enableNextLyrics: value });
         }}
       />
 
@@ -151,7 +147,7 @@ const MainSettingTab = () => {
         label="動画を大きく表示"
         defaultChecked={userImeTypeOptions.enableLargeVideoDisplay}
         onCheckedChange={(value: boolean) => {
-          setUserImeTypeOptions({ enableLargeVideoDisplay: value });
+          setImeOptions({ enableLargeVideoDisplay: value });
         }}
       />
     </div>

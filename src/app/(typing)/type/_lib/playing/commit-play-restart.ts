@@ -1,4 +1,6 @@
+import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { initializeAllLineResult } from "../atoms/family";
+import { readMapId } from "../atoms/hydrate";
 import {
   readUtilityRefParams,
   resetLineCount,
@@ -20,7 +22,7 @@ import {
   setTabName,
 } from "../atoms/state";
 import { playYTPlayer, seekYTPlayer } from "../atoms/yt-player";
-import { mutatePlayCountStats, mutateTypingStats } from "../mutate-stats";
+import { mutateTypingStats } from "../mutate-stats";
 import type { PlayMode } from "../type";
 import { stopTimer } from "./timer/timer";
 
@@ -43,14 +45,16 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
     mutateTypingStats();
   }
 
+  const mapId = readMapId();
+
   switch (scene) {
     case "play": {
       const { type: totalTypeCount } = readTypingStatus();
       if (totalTypeCount) {
         const { retryCount } = readUtilityRefParams();
         writeUtilityRefParams({ retryCount: retryCount + 1 });
-        if (totalTypeCount >= 10) {
-          mutatePlayCountStats();
+        if (totalTypeCount >= 10 && mapId) {
+          mutatePlayCountStats({ mapId });
         }
       }
 
@@ -63,8 +67,8 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
     case "replay_end": {
       setTabName("ステータス");
 
-      if (newPlayMode === "play" || newPlayMode === "practice") {
-        mutatePlayCountStats();
+      if (mapId && (newPlayMode === "play" || newPlayMode === "practice")) {
+        mutatePlayCountStats({ mapId });
       }
       setNotify(Symbol(""));
       break;

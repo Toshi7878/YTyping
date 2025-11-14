@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useSkipRemainTimeState } from "../../../_lib/atoms/state-atoms";
-import { useSkip } from "../../../_lib/hooks/skip";
+import { useSkipRemainTimeState } from "../../../_lib/atoms/state";
+import { handleSkip } from "../../../_lib/core/skip";
 
 interface SkipProps {
   className?: string;
@@ -8,7 +8,6 @@ interface SkipProps {
 
 export const Skip = ({ className }: SkipProps) => {
   const skipRemainTime = useSkipRemainTimeState();
-  const handleSkip = useSkip();
 
   const handleClick = () => {
     if (skipRemainTime === null) return;

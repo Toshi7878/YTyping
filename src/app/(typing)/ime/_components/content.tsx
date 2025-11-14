@@ -1,6 +1,5 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
@@ -12,10 +11,11 @@ import { MenuBar } from "../_components/memu/menu-bar";
 import { Notifications } from "../_components/notifications-display";
 import { ViewArea } from "../_components/view-area/view-area";
 import { YouTubePlayer } from "../_components/youtube-player";
-import { useEnableLargeVideoDisplayState, useReadScene, useSetMap } from "../_lib/atoms/state-atoms";
-import { useBuildImeMap } from "../_lib/hooks/bulid-ime-map";
-import { usePathChangeAtomReset } from "../_lib/hooks/reset";
-import { useUpdateTypingStats } from "../_lib/hooks/update-typing-stats";
+import { readMapId } from "../_lib/atoms/hydrate";
+import { readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
+import { buildImeMap } from "../_lib/core/bulid-ime-map";
+import { mutateImeStats } from "../_lib/core/mutate-stats";
+import { pathChangeAtomReset } from "../_lib/core/reset";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
@@ -28,44 +28,36 @@ export const Content = ({ mapInfo }: ContentProps) => {
     minHeight: "calc(100vh - var(--header-height))",
     height: "calc(100vh - var(--header-height))",
   });
-  const [notificationsHeight, setNotificationsHeight] = useState<string>("calc(100vh - var(--header-height))");
-  const { id: mapId } = useParams<{ id: string }>();
+  const [notificationsHeight, setNotificationsHeight] = useState("calc(100vh - var(--header-height))");
   const trpc = useTRPC();
+  const mapId = readMapId();
   const { data: mapData } = useQuery(
     trpc.map.getMapJson.queryOptions(
       { mapId: Number(mapId) ?? 0 },
       { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity },
     ),
   );
-  const setMap = useSetMap();
-  const parseImeMap = useBuildImeMap();
-  const pathChangeAtomReset = usePathChangeAtomReset();
-  const readScene = useReadScene();
-  const updateTypingStats = useUpdateTypingStats();
   const enableLargeVideoDisplay = useEnableLargeVideoDisplayState();
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const loadMap = async (mapData: MapLine[]) => {
     showLoading({ message: "ひらがな判定生成中..." });
 
-    // await に変更
-    parseImeMap(mapData)
-      .then((map) => {
-        setMap(map);
-        hideLoading();
-      })
-      .catch((error) => {
-        console.error(error);
-        showLoading({
-          message: (
-            <div className="flex h-full flex-col items-center justify-center gap-2">
-              ワード生成に失敗しました。
-              <Button onClick={() => loadMap(mapData)}>再試行</Button>
-            </div>
-          ),
-          hideSpinner: true,
-        });
+    try {
+      const map = await buildImeMap(mapData);
+      setBuiltMap(map);
+      hideLoading();
+    } catch {
+      showLoading({
+        message: (
+          <div className="flex h-full flex-col items-center justify-center gap-2">
+            ワード生成に失敗しました。
+            <Button onClick={() => loadMap(mapData)}>再試行</Button>
+          </div>
+        ),
+        hideSpinner: true,
       });
+    }
   };
 
   useEffect(() => {
@@ -74,11 +66,11 @@ export const Content = ({ mapInfo }: ContentProps) => {
     } else {
       showLoading({ message: "譜面読み込み中..." });
     }
-  }, [mapData, showLoading]);
+  }, [mapData, showLoading, loadMap]);
 
   useEffect(() => {
     return () => {
-      void updateTypingStats();
+      void mutateImeStats();
       pathChangeAtomReset();
       hideLoading();
     };
@@ -100,7 +92,9 @@ export const Content = ({ mapInfo }: ContentProps) => {
       const menuBarHeight = document.getElementById("menu_bar")?.offsetHeight || 0;
       const viewheight = isMdOrBelow || enableLargeVideoDisplay ? textareaHeight + menuBarHeight : lyricsViewAreaHeight;
 
-      if (readScene() === "ready") {
+      const scene = readScene();
+
+      if (scene === "ready") {
         setYoutubeHeight({
           minHeight: `calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`,
           height: `calc(100vh - 40px - ${viewheight}px - ${bottomPx}px)`,
@@ -123,17 +117,15 @@ export const Content = ({ mapInfo }: ContentProps) => {
 
     resizeObserver.observe(lyricsViewAreaElement);
 
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [readScene, enableLargeVideoDisplay]);
+    return () => resizeObserver.disconnect();
+  }, [enableLargeVideoDisplay]);
 
   return (
     <>
       <Notifications style={{ height: notificationsHeight }} />
       <YouTubePlayer
         videoId={videoId}
-        className={"fixed top-[40px] left-0 w-full"}
+        className="fixed top-[40px] left-0 w-full"
         style={{ height: youtubeHeight.height, minHeight: youtubeHeight.minHeight }}
       />
 

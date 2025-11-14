@@ -10,10 +10,10 @@ import gear from "../../_img/gear.png";
 import metronome from "../../_img/metronome.png";
 import reportPencil from "../../_img/report--pencil.png";
 import trophy from "../../_img/trophy.png";
-import { usePlayer } from "../../_lib/atoms/read-atoms";
 
-import { useResultDialogDisclosure, useSceneState } from "../../_lib/atoms/state-atoms";
-import { useSceneControl } from "../../_lib/hooks/scene-control";
+import { resultDialogClose, resultDialogOpen, useIsResultDialogOpen, useSceneState } from "../../_lib/atoms/state";
+import { useYTPlayer } from "../../_lib/atoms/yt-player";
+import { handleSceneEnd, startPlayFlow } from "../../_lib/core/scene-control";
 import { ResultDialog } from "./result-dialog";
 import { SettingPopover } from "./setting-popover";
 
@@ -21,29 +21,21 @@ const ICON_SIZE = "16";
 
 export const MenuBar = () => {
   const { id: mapId } = useParams();
-  const { readPlayer } = usePlayer();
-  const { handleStart, handleEnd } = useSceneControl();
+  const YTPlayer = useYTPlayer();
   const scene = useSceneState();
-
-  const resultDialogDisclosure = useResultDialogDisclosure();
-
+  const isResultDialogOpen = useIsResultDialogOpen();
   return (
     <>
       <div id="menu_bar" className="bg-card">
         <div className="mx-4 flex flex-col items-center justify-between lg:flex-row">
           <div className="flex flex-col items-center lg:flex-row">
-            <VolumeRange YTPlayer={readPlayer()} />
+            <VolumeRange YTPlayer={YTPlayer} />
             <MenuButton disabled={true} image={metronome} title="倍速" />
           </div>
           <div className="flex w-full justify-between lg:w-1/5">
-            <MenuButton image={start} disabled={scene === "play"} onClick={handleStart} title="開始" />
-            <MenuButton image={trophy} disabled={scene !== "play"} onClick={handleEnd} title="終了" />
-            <MenuButton
-              disabled={scene === "ready"}
-              onClick={resultDialogDisclosure.onOpen}
-              image={reportPencil}
-              title="採点結果"
-            />
+            <MenuButton image={start} disabled={scene === "play"} onClick={startPlayFlow} title="開始" />
+            <MenuButton image={trophy} disabled={scene !== "play"} onClick={handleSceneEnd} title="終了" />
+            <MenuButton disabled={scene === "ready"} onClick={resultDialogOpen} image={reportPencil} title="採点結果" />
           </div>
           <div className="flex lg:w-1/5">
             <SettingPopover triggerButton={<MenuButton image={gear} title="設定" />} />
@@ -55,7 +47,7 @@ export const MenuBar = () => {
           </div>
         </div>
       </div>
-      <ResultDialog isOpen={resultDialogDisclosure.open} onClose={resultDialogDisclosure.onClose} />
+      <ResultDialog isOpen={isResultDialogOpen} onClose={resultDialogClose} />
     </>
   );
 };

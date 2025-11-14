@@ -1,23 +1,26 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { replaceReadingWithCustomDict } from "@/lib/build-map/replace-reading-with-custom-dict";
-import { useMorphQueries } from "@/lib/queries/morph.queries";
 import type { RouterOutPuts } from "@/server/api/trpc";
+import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
 import { zip } from "@/utils/array";
 
-export const useGenerateTokenizedWords = () => {
-  const queryClient = useQueryClient();
-  const morphQueries = useMorphQueries();
-  return async (words: string[][]) => {
-    const joinedLyrics = words.flat().join(" ");
+export const generateTokenizedWords = async (words: string[][]) => {
+  const joinedLyrics = words.flat().join(" ");
 
-    const tokenizedWords = await queryClient.ensureQueryData(morphQueries.tokenizeSentence({ sentence: joinedLyrics }));
+  const queryClient = getQueryClient();
+  const trpc = getTRPCOptionsProxy();
 
-    const formattedTokenizedWords = await replaceReadingWithCustomDict(tokenizedWords);
+  const tokenizedWords = await queryClient.ensureQueryData(
+    trpc.morphConvert.tokenizeSentence.queryOptions(
+      { sentence: joinedLyrics },
+      { staleTime: Infinity, gcTime: Infinity },
+    ),
+  );
 
-    const repl = parseRepl(formattedTokenizedWords);
+  const formattedTokenizedWords = await replaceReadingWithCustomDict(tokenizedWords);
 
-    return marge(words, repl);
-  };
+  const repl = parseRepl(formattedTokenizedWords);
+
+  return marge(words, repl);
 };
 
 const parseRepl = (tokenizedWords: RouterOutPuts["morphConvert"]["tokenizeSentence"]) => {

@@ -2,15 +2,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { HTMLAttributes } from "react";
 import { Fragment, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { useLyricsContainer } from "../../../_lib/atoms/read-atoms";
 import {
+  useBuiltMapState,
   useCountState,
   useDisplayLinesState,
   useEnableNextLyricsOptionState,
-  useMapState,
   useNextDisplayLineState,
-} from "../../../_lib/atoms/state-atoms";
+} from "../../../_lib/atoms/state";
 import "./lyrics-container.css";
+import { writeLyricsContainer } from "../../../_lib/atoms/ref";
 import { Skip } from "./skip-display";
 
 export const LyricsContainer = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
@@ -26,7 +26,6 @@ export const LyricsContainer = ({ className, ...props }: HTMLAttributes<HTMLDivE
 };
 
 const Lyrics = () => {
-  const { writeLyricsContainer } = useLyricsContainer();
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
   const displayLines = useDisplayLinesState();
 
@@ -34,10 +33,10 @@ const Lyrics = () => {
     if (lyricsContainerRef.current) {
       writeLyricsContainer(lyricsContainerRef.current);
     }
-  }, [writeLyricsContainer]);
+  }, []);
 
   return (
-    <div className="my-1 min-h-[7.5rem] leading-14" ref={lyricsContainerRef}>
+    <div className="my-1 min-h-30 leading-14" ref={lyricsContainerRef}>
       {displayLines.map((line, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
         <div key={index}>
@@ -81,7 +80,7 @@ const INITIAL_WIPE_COLOR = {
 
 const NextLyrics = () => {
   const nextDisplayLine = useNextDisplayLineState();
-  const map = useMapState();
+  const map = useBuiltMapState();
   const count = useCountState();
 
   const nextLine = map?.lines?.[count];

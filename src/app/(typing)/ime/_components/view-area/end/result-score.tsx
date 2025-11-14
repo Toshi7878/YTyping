@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { useStatusState } from "../../../_lib/atoms/state-atoms";
+import { useStatusState } from "../../../_lib/atoms/state";
 
 export const ResultScore = (props: HTMLAttributes<HTMLDivElement>) => {
   const statusState = useStatusState();

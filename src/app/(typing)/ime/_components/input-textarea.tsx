@@ -2,32 +2,26 @@ import { Ticker } from "@pixi/ticker";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { useInputTextarea, useUserStats } from "../_lib/atoms/read-atoms";
+import { updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
-  useReadGameUtilParams,
-  useReadMap,
-  useResultDialogDisclosure,
+  readBuiltMap,
+  readUtilityParams,
+  resultDialogOpen,
   useSceneState,
   useTextareaPlaceholderTypeState,
-} from "../_lib/atoms/state-atoms";
-import { useJudgeTargetWords } from "../_lib/hooks/judge-target-words";
-import { useSceneControl } from "../_lib/hooks/scene-control";
-import { useSkip } from "../_lib/hooks/skip";
+} from "../_lib/atoms/state";
+import { judgeTargetWords } from "../_lib/core/judge-target-words";
+import { handleSceneEnd } from "../_lib/core/scene-control";
+import { handleSkip } from "../_lib/core/skip";
 import type { PlaceholderType, SceneType } from "../_lib/type";
 
 const TICK_STOP_TIME = 1000;
 
 export const InputTextarea = () => {
-  const judgeTargetWords = useJudgeTargetWords();
-  const handleSkip = useSkip();
-  const { handleEnd } = useSceneControl();
-  const { readGameUtilParams } = useReadGameUtilParams();
-  const readMap = useReadMap();
   const textareaPlaceholderType = useTextareaPlaceholderTypeState();
   const scene = useSceneState();
 
   const { startTicker, stopTicker, tickerRef, tickStartRef } = useTypingTimeTimer();
-  const { onOpen } = useResultDialogDisclosure();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
@@ -38,23 +32,25 @@ export const InputTextarea = () => {
 
       switch (value.toLowerCase().trim()) {
         case "skip": {
-          const { skipRemainTime } = readGameUtilParams();
+          const { skipRemainTime } = readUtilityParams();
           if (skipRemainTime !== null) {
             handleSkip();
           }
           break;
         }
         case "end": {
-          const map = readMap();
-          const { count } = readGameUtilParams();
+          const map = readBuiltMap();
+          if (!map) return;
+
+          const { count } = readUtilityParams();
           if (!map.lines[count]) {
-            handleEnd();
+            handleSceneEnd();
           }
           break;
         }
         case "result":
           if (scene === "end") {
-            onOpen();
+            resultDialogOpen();
           }
           break;
       }
@@ -72,13 +68,12 @@ export const InputTextarea = () => {
   };
 
   const lyricsTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const { writeInputTextarea: writeLyricsTextarea } = useInputTextarea();
 
   useEffect(() => {
     if (lyricsTextareaRef.current) {
-      writeLyricsTextarea(lyricsTextareaRef.current);
+      writeTypingTextarea(lyricsTextareaRef.current);
     }
-  }, [writeLyricsTextarea]);
+  }, []);
 
   return (
     <div className="z-2 mx-auto flex w-[95%] items-center justify-center md:w-[85%]">
@@ -124,7 +119,6 @@ const useTypingTimeTimer = () => {
   const tickerRef = useRef<Ticker | null>(null);
   const elapsedRef = useRef(0);
   const tickStartRef = useRef(0);
-  const { incrementTypingTime } = useUserStats();
 
   const onTick = (delta: number) => {
     elapsedRef.current += delta / 60;
@@ -148,7 +142,7 @@ const useTypingTimeTimer = () => {
   const stopTicker = () => {
     if (tickerRef.current) {
       tickerRef.current.stop();
-      incrementTypingTime(elapsedRef.current);
+      updateTypingTimeStats((prev) => prev + elapsedRef.current);
       elapsedRef.current = 0;
     }
   };

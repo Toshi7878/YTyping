@@ -1,6 +1,6 @@
 export type SceneType = "ready" | "play" | "end";
 
-export type BuildMap = {
+export type BuiltImeMap = {
   lines: {
     time: number;
     word: string;

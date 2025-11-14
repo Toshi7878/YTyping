@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
-import { useNotificationsState } from "../_lib/atoms/state-atoms";
+import { useNotificationsState } from "../_lib/atoms/state";
 
 export const Notifications = ({ style }: { style: CSSProperties }) => {
   const notifications = useNotificationsState();
