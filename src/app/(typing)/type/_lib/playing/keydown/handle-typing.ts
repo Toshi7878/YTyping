@@ -103,14 +103,13 @@ export const handleTyping = (event: KeyboardEvent) => {
     setLineWord(newLineWord);
     triggerTypeSound({ isCompleted });
 
+    updateSuccessStatusRefs({
+      constantLineTime,
+      isCompleted,
+      successKey,
+      typeChunk,
+    });
     requestAnimationFrame(() => {
-      updateSuccessStatusRefs({
-        constantLineTime,
-        isCompleted,
-        successKey,
-        typeChunk,
-      });
-
       updateSuccessStatus({
         isCompleted,
         constantRemainLineTime,
