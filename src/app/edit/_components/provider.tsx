@@ -59,13 +59,17 @@ export const EditProvider = ({ children }: EditProviderProps) => {
 
   useEffect(() => {
     if (!hasUploadPermission) {
-      toast.warning("編集保存権限がないため譜面の更新はできません", {
-        id: NOT_EDIT_PERMISSION_TOAST_ID,
-        duration: Infinity,
+      requestAnimationFrame(() => {
+        toast.warning("編集保存権限がないため譜面の更新はできません", {
+          id: NOT_EDIT_PERMISSION_TOAST_ID,
+          duration: Infinity,
+        });
       });
-    } else {
-      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
     }
+
+    return () => {
+      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
+    };
   }, [hasUploadPermission]);
 
   useEffect(() => {
