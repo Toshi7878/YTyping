@@ -2,7 +2,6 @@
 import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { type ReactNode, useEffect } from "react";
-import { resetPreviewVideo } from "@/lib/atoms/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { mapIdAtom, setMapId, typingOptionsAtom } from "../_lib/atoms/hydrate";
 import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
@@ -46,7 +45,6 @@ export const ClientProvider = ({ children }: ClientProviderProps) => {
   useLoadSoundEffects();
 
   useEffect(() => {
-    resetPreviewVideo();
     const DISABLE_KEYS = ["Home", "End", "PageUp", "PageDown", "CapsLock", "Backquote", "F3", "F6", "Space"];
 
     const disableKeyHandle = (event: KeyboardEvent) => {

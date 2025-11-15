@@ -1,44 +1,38 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import YouTube, { type YouTubeEvent } from "react-youtube";
+import { useHotkeys } from "react-hotkeys-hook";
+import YouTube from "react-youtube";
+import { isDialogOpen } from "@/utils/is-dialog-option";
 import {
-  resetPreviewVideo,
-  usePreviewVideoState,
-  useSetPreviewPlayer,
-  useVolumeState,
+  readPreviewVideoInfo,
+  readVolume,
+  resetPreviewVideoInfo,
+  setPreviewYTPlayer,
+  usePreviewVideoInfoState,
 } from "../../lib/atoms/global-atoms";
-
-const onKeyDown = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
-    resetPreviewVideo();
-  }
-};
 
 // biome-ignore lint/style/noDefaultExport: <dynamic importを使うため>
 export default function PreviewYouTubePlayer() {
-  const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
+  const { videoId, previewTime } = usePreviewVideoInfoState();
+  useHotkeys(
+    "Escape",
+    () => {
+      if (isDialogOpen()) return;
+      resetPreviewVideoInfo();
+    },
+    { enableOnFormTags: false, preventDefault: true, enabled: !!videoId },
+  );
 
-  const volume = useVolumeState();
-  const setPreviewPlayer = useSetPreviewPlayer();
+  const pathname = usePathname();
 
   useEffect(() => {
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [videoId]);
+    if (pathname.startsWith("/type") || pathname.startsWith("/edit") || pathname.startsWith("/ime")) {
+      resetPreviewVideoInfo();
+    }
+  }, [pathname]);
 
   if (!videoId) return null;
-
-  const onReady = (event: YouTubeEvent) => {
-    const YTPlayer = event.target;
-    YTPlayer.setVolume(volume);
-    YTPlayer.seekTo(Number(previewTime), true);
-    YTPlayer.playVideo();
-    setPreviewPlayer(YTPlayer);
-  };
-
-  const onPlay = (event: YouTubeEvent) => {
-    event.target.setPlaybackRate(previewSpeed ?? 1);
-  };
 
   return (
     <YouTube
@@ -61,3 +55,16 @@ export default function PreviewYouTubePlayer() {
     />
   );
 }
+
+const onReady = ({ target: YTPlayer }: { target: YT.Player }) => {
+  const volume = readVolume();
+  YTPlayer.setVolume(volume);
+  const { previewTime } = readPreviewVideoInfo();
+  YTPlayer.seekTo(Number(previewTime), true);
+  setPreviewYTPlayer(YTPlayer);
+};
+
+const onPlay = ({ target: YTPlayer }: { target: YT.Player }) => {
+  const { previewSpeed } = readPreviewVideoInfo();
+  YTPlayer.setPlaybackRate(previewSpeed ?? 1);
+};
