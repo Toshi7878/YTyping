@@ -23,7 +23,7 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
         pauseYTPlayer();
       }
     },
-    { enableOnFormTags: false, preventDefault: true },
+    { enableOnFormTags: ["slider"], preventDefault: true },
   );
 
   return (

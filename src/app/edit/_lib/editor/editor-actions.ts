@@ -26,10 +26,13 @@ import { wordConvert } from "./typable-word-convert";
 export const addLineAction = (isShiftKey: boolean) => {
   const { isPlaying } = readYTPlayerStatus();
   const { lyrics, word } = readSelectLine();
-  const timeOffset = word !== "" ? readTimeOffset() : 0;
+  const { isWordConverting } = readUtilityParams();
+  const timeOffset = word !== "" || isWordConverting ? readTimeOffset() : 0;
 
-  const _time = isPlaying ? (getYTCurrentTime() ?? 0 + timeOffset) : Number(readTimeInputValue());
-  const time = timeValidate(_time).toFixed(3);
+  const time = timeValidate(isPlaying ? (getYTCurrentTime() ?? 0 + timeOffset) : Number(readTimeInputValue())).toFixed(
+    3,
+  );
+
   const newLine: MapLine = !isShiftKey
     ? { time, lyrics, word: normalizeSymbols(word) }
     : { time, lyrics: "", word: "" };

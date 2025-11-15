@@ -25,7 +25,7 @@ export const AddLineButton = () => {
       if (isDialogOpen() || isAddButtonDisabled) return;
       addLineAction(event.shiftKey);
     },
-    { enableOnFormTags: false, preventDefault: true },
+    { enableOnFormTags: ["slider"], preventDefault: true },
   );
   return (
     <Button
@@ -49,7 +49,7 @@ export const UpdateLineButton = () => {
       if (isDialogOpen() || isUpdateButtonDisabled) return;
       updateLineAction();
     },
-    { enableOnFormTags: false, preventDefault: true },
+    { enableOnFormTags: ["slider"], preventDefault: true },
   );
 
   return (
@@ -87,7 +87,7 @@ export const DeleteLineButton = () => {
       if (isDialogOpen() || isDeleteButtonDisabled) return;
       deleteLineAction();
     },
-    { enableOnFormTags: false, preventDefault: true },
+    { enableOnFormTags: ["slider"], preventDefault: true },
   );
 
   return (

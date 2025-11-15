@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
+import { type Options, useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input/input";
@@ -52,8 +52,8 @@ export const MapTable = () => {
   const map = useMapState();
   const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
 
-  const hotKeyOptions = {
-    enableOnFormTags: false,
+  const hotKeyOptions: Options = {
+    enableOnFormTags: ["slider"],
     preventDefault: true,
     enabled: optionDialogIndex === null,
   };

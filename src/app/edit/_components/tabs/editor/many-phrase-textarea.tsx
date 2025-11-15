@@ -38,12 +38,16 @@ export const ManyPhraseTextarea = () => {
     { preventDefault: true, enableOnFormTags: true },
   );
 
-  useHotkeys("q", () => {
-    if (isDialogOpen()) return;
+  useHotkeys(
+    "q",
+    () => {
+      if (isDialogOpen()) return;
 
-    const topPhrase = manyPhrase.split("\n")[0] ?? "";
-    void pickupTopPhrase(topPhrase);
-  });
+      const topPhrase = manyPhrase.split("\n")[0] ?? "";
+      void pickupTopPhrase(topPhrase);
+    },
+    { enableOnFormTags: ["slider"], preventDefault: true },
+  );
 
   const { debounce } = useDebounce(500);
 
