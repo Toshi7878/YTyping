@@ -1,4 +1,6 @@
 "use client";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { isDialogOpen } from "@/utils/is-dialog-option";
@@ -15,6 +17,14 @@ export default function PreviewYouTubePlayer() {
     },
     { enableOnFormTags: false, preventDefault: true, enabled: !!videoId },
   );
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname.startsWith("/type") || pathname.startsWith("/edit") || pathname.startsWith("/ime")) {
+      resetPreviewVideo();
+    }
+  }, [pathname]);
 
   if (!videoId) return null;
 

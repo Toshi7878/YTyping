@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 import type React from "react";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { resetPreviewVideo } from "@/lib/atoms/global-atoms";
 import {
   creatorIdAtom,
   mapIdAtom,
@@ -57,10 +56,6 @@ export const EditProvider = ({ children }: EditProviderProps) => {
   const creatorId = useCreatorIdState();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
   const { id } = useParams();
-
-  useEffect(() => {
-    resetPreviewVideo();
-  }, []);
 
   useEffect(() => {
     if (!hasUploadPermission) {
