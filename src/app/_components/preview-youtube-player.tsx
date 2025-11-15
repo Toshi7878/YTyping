@@ -1,39 +1,30 @@
 "use client";
-import { useEffect } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import YouTube, { type YouTubeEvent } from "react-youtube";
-import {
-  resetPreviewVideo,
-  usePreviewVideoState,
-  useSetPreviewPlayer,
-  useVolumeState,
-} from "../../lib/atoms/global-atoms";
-
-const onKeyDown = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
-    resetPreviewVideo();
-  }
-};
+import { isDialogOpen } from "@/utils/is-dialog-option";
+import { readVolume, resetPreviewVideo, setPreviewYTPlayer, usePreviewVideoState } from "../../lib/atoms/global-atoms";
 
 // biome-ignore lint/style/noDefaultExport: <dynamic importを使うため>
 export default function PreviewYouTubePlayer() {
   const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
-
-  const volume = useVolumeState();
-  const setPreviewPlayer = useSetPreviewPlayer();
-
-  useEffect(() => {
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [videoId]);
+  useHotkeys(
+    "Escape",
+    () => {
+      if (isDialogOpen()) return;
+      resetPreviewVideo();
+    },
+    { enableOnFormTags: false, preventDefault: true, enabled: !!videoId },
+  );
 
   if (!videoId) return null;
 
   const onReady = (event: YouTubeEvent) => {
     const YTPlayer = event.target;
+    const volume = readVolume();
     YTPlayer.setVolume(volume);
     YTPlayer.seekTo(Number(previewTime), true);
     YTPlayer.playVideo();
-    setPreviewPlayer(YTPlayer);
+    setPreviewYTPlayer(YTPlayer);
   };
 
   const onPlay = (event: YouTubeEvent) => {
