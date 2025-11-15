@@ -2,18 +2,24 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import YouTube, { type YouTubeEvent } from "react-youtube";
+import YouTube from "react-youtube";
 import { isDialogOpen } from "@/utils/is-dialog-option";
-import { readVolume, resetPreviewVideo, setPreviewYTPlayer, usePreviewVideoState } from "../../lib/atoms/global-atoms";
+import {
+  readPreviewVideoInfo,
+  readVolume,
+  resetPreviewVideoInfo,
+  setPreviewYTPlayer,
+  usePreviewVideoInfoState,
+} from "../../lib/atoms/global-atoms";
 
 // biome-ignore lint/style/noDefaultExport: <dynamic importを使うため>
 export default function PreviewYouTubePlayer() {
-  const { videoId, previewTime, previewSpeed } = usePreviewVideoState();
+  const { videoId, previewTime } = usePreviewVideoInfoState();
   useHotkeys(
     "Escape",
     () => {
       if (isDialogOpen()) return;
-      resetPreviewVideo();
+      resetPreviewVideoInfo();
     },
     { enableOnFormTags: false, preventDefault: true, enabled: !!videoId },
   );
@@ -22,24 +28,11 @@ export default function PreviewYouTubePlayer() {
 
   useEffect(() => {
     if (pathname.startsWith("/type") || pathname.startsWith("/edit") || pathname.startsWith("/ime")) {
-      resetPreviewVideo();
+      resetPreviewVideoInfo();
     }
   }, [pathname]);
 
   if (!videoId) return null;
-
-  const onReady = (event: YouTubeEvent) => {
-    const YTPlayer = event.target;
-    const volume = readVolume();
-    YTPlayer.setVolume(volume);
-    YTPlayer.seekTo(Number(previewTime), true);
-    YTPlayer.playVideo();
-    setPreviewYTPlayer(YTPlayer);
-  };
-
-  const onPlay = (event: YouTubeEvent) => {
-    event.target.setPlaybackRate(previewSpeed ?? 1);
-  };
 
   return (
     <YouTube
@@ -62,3 +55,16 @@ export default function PreviewYouTubePlayer() {
     />
   );
 }
+
+const onReady = ({ target: YTPlayer }: { target: YT.Player }) => {
+  const volume = readVolume();
+  YTPlayer.setVolume(volume);
+  const { previewTime } = readPreviewVideoInfo();
+  YTPlayer.seekTo(Number(previewTime), true);
+  setPreviewYTPlayer(YTPlayer);
+};
+
+const onPlay = ({ target: YTPlayer }: { target: YT.Player }) => {
+  const { previewSpeed } = readPreviewVideoInfo();
+  YTPlayer.setPlaybackRate(previewSpeed ?? 1);
+};

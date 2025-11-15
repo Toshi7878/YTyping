@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
-import { resetPreviewVideo, setPreviewVideo, usePreviewVideoState } from "@/lib/atoms/global-atoms";
+import { resetPreviewVideoInfo, setPreviewVideoInfo, usePreviewVideoInfoState } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map-list";
 
@@ -60,19 +60,19 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
 
 const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: string }) => {
   const { videoId: mapVideoId, previewTime: mapPreviewTime, previewSpeed: mapPreviewSpeed } = props;
-  const { videoId } = usePreviewVideoState();
+  const { videoId } = usePreviewVideoInfoState();
   const [isTouchMove, setIsTouchMove] = useState(false);
 
   const previewYouTube = () => {
     if (videoId !== mapVideoId) {
-      setPreviewVideo((prev) => ({
+      setPreviewVideoInfo((prev) => ({
         ...prev,
         videoId: mapVideoId,
         previewTime: mapPreviewTime,
         previewSpeed: mapPreviewSpeed ?? 1,
       }));
     } else {
-      resetPreviewVideo();
+      resetPreviewVideoInfo();
     }
   };
 

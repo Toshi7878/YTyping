@@ -24,13 +24,14 @@ const previewVideoAtom = atomWithReset<{
 
 const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
 
-export const usePreviewVideoState = () => useAtomValue(previewVideoAtom, { store });
-
-export const setPreviewVideo = (update: Updater<ExtractAtomValue<typeof previewVideoAtom>>) =>
+export const usePreviewVideoInfoState = () => useAtomValue(previewVideoAtom, { store });
+export const readPreviewVideoInfo = () => store.get(previewVideoAtom);
+export const setPreviewVideoInfo = (update: Updater<ExtractAtomValue<typeof previewVideoAtom>>) =>
   store.set(previewVideoAtom, update);
-export const resetPreviewVideo = () => store.set(previewVideoAtom, RESET);
+export const resetPreviewVideoInfo = () => store.set(previewVideoAtom, RESET);
+
 export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, { store });
-export const useSetPreviewPlayer = () => useSetAtom(previewPlayerFocusAtom, { store });
+export const setPreviewYTPlayer = (newYTPlayer: YT.Player) => store.set(previewPlayerFocusAtom, newYTPlayer);
 
 export interface ActiveUserStatus {
   id: number;
