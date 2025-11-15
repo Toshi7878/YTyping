@@ -18,6 +18,7 @@ export const MapList = () => {
     trpc.mapList.get.infiniteQueryOptions(params, {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       refetchOnWindowFocus: false,
+      staleTime: Infinity,
       gcTime: Infinity,
     }),
   );
