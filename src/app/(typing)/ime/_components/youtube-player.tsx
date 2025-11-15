@@ -1,8 +1,7 @@
 "use client";
 import type { CSSProperties } from "react";
 import YouTube from "react-youtube";
-import { onPlay } from "../../type/_lib/youtube-player/youtube-events";
-import { onEnd, onPause, onReady } from "../_lib/core/youtube-events";
+import { onEnd, onPause, onPlay, onReady } from "../_lib/core/youtube-events";
 
 interface YouTubePlayerProps {
   videoId: string;

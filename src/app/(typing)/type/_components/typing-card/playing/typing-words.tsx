@@ -147,9 +147,9 @@ const Word = ({
       {isLineCompleted && isNextWordDisplay ? (
         <span className="next-line-word text-word-nextWord">{nextWord.replace(/ /g, " ") || "\u200B"}</span>
       ) : (
-        <div ref={refs.viewportRef} className="overflow-hidden">
+        <div ref={refs.viewportRef} className="overflow-hidden contain-[layout_paint]">
           {"\u200B"}
-          <div ref={refs.trackRef} className="inline-block will-change-transform translate-z-0">
+          <div ref={refs.trackRef} className="inline-block will-change-transform transform-gpu backface-hidden">
             <span
               className={cn(
                 "opacity-word-correct",
@@ -204,21 +204,22 @@ const useWordScroll = (
 
   useLayoutEffect(() => {
     const cancel = requestDebouncedAnimationFrame("word-scroll", () => {
+      // 早期リターン：レイアウト計算を回避
       if (mainCorrect.length === 0 && subCorrect.length === 0) {
         if (mainRefs.trackRef.current) {
           mainRefs.trackRef.current.style.transition = "";
-          mainRefs.trackRef.current.style.transform = "translateX(0px)";
+          mainRefs.trackRef.current.style.transform = "translate3d(0px, 0px, 0px)";
           prevMainShift.current = 0;
         }
         if (subRefs.trackRef.current) {
           subRefs.trackRef.current.style.transition = "";
-          subRefs.trackRef.current.style.transform = "translateX(0px)";
+          subRefs.trackRef.current.style.transform = "translate3d(0px, 0px, 0px)";
           prevSubShift.current = 0;
         }
-
         return;
       }
 
+      // フェーズ1: すべての読み取り操作を一度に実行（レイアウトスラッシング回避）
       const mainMeasurements =
         mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current && mainRefs.trackRef.current
           ? {
@@ -235,26 +236,30 @@ const useWordScroll = (
             }
           : null;
 
-      if (mainMeasurements && mainRefs.trackRef.current) {
-        if (mainMeasurements.caretX > mainMeasurements.rightBound) {
-          const newShift = Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound);
-          if (newShift !== prevMainShift.current) {
-            mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
-            mainRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
-            prevMainShift.current = newShift;
-          }
-        }
+      // フェーズ2: 計算のみ実行（DOM操作なし）
+      const mainShift = mainMeasurements
+        ? mainMeasurements.caretX > mainMeasurements.rightBound
+          ? Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound)
+          : null
+        : null;
+
+      const subShift = subMeasurements
+        ? subMeasurements.caretX > subMeasurements.rightBound
+          ? Math.max(0, subMeasurements.caretX - subMeasurements.rightBound)
+          : null
+        : null;
+
+      // フェーズ3: すべての書き込み操作をバッチ実行
+      if (mainShift !== null && mainShift !== prevMainShift.current && mainRefs.trackRef.current) {
+        mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
+        mainRefs.trackRef.current.style.transform = `translate3d(${-mainShift}px, 0px, 0px)`;
+        prevMainShift.current = mainShift;
       }
 
-      if (subMeasurements && subRefs.trackRef.current) {
-        if (subMeasurements.caretX > subMeasurements.rightBound) {
-          const newShift = Math.max(0, subMeasurements.caretX - subMeasurements.rightBound);
-          if (newShift !== prevSubShift.current) {
-            subRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
-            subRefs.trackRef.current.style.transform = `translateX(${-newShift}px)`;
-            prevSubShift.current = newShift;
-          }
-        }
+      if (subShift !== null && subShift !== prevSubShift.current && subRefs.trackRef.current) {
+        subRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
+        subRefs.trackRef.current.style.transform = `translate3d(${-subShift}px, 0px, 0px)`;
+        prevSubShift.current = subShift;
       }
     });
 

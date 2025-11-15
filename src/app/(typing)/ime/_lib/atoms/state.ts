@@ -105,7 +105,7 @@ export const resetNotifications = () => store.set(notificationsAtom, RESET);
 
 const resultDialogAtom = atom(false);
 
-export const useIsResultDialogOpen = () => useAtomValue(resultDialogAtom);
+export const useIsResultDialogOpen = () => useAtomValue(resultDialogAtom, { store });
 export const resultDialogOpen = () => store.set(resultDialogAtom, true);
 export const resultDialogClose = () => store.set(resultDialogAtom, false);
 

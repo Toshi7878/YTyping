@@ -7,13 +7,13 @@ import { mapIdAtom, setMapId } from "../_lib/atoms/hydrate";
 import { imeTypeOptionsAtom } from "../_lib/atoms/state";
 import { getImeAtomStore } from "../_lib/atoms/store";
 
-interface ImeTypeProviderProps {
+interface JotaiProviderProps {
   children: ReactNode;
   userImeTypingOptions: RouterOutPuts["userOption"]["getUserImeTypingOptions"];
   mapId: string;
 }
 
-export const JotaiProvider = ({ children, userImeTypingOptions, mapId }: ImeTypeProviderProps) => {
+export const JotaiProvider = ({ children, userImeTypingOptions, mapId }: JotaiProviderProps) => {
   const store = getImeAtomStore();
   useHydrateAtoms(
     [
