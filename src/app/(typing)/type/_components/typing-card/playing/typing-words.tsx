@@ -203,9 +203,9 @@ const useWordScroll = (
   const SUB_RIGHT_BOUND_RATIO = subWordScrollStart / 100;
 
   useLayoutEffect(() => {
-    const cancel = requestDebouncedAnimationFrame("word-scroll", () => {
-      // 早期リターン：レイアウト計算を回避
-      if (mainCorrect.length === 0 && subCorrect.length === 0) {
+    // 早期リターン：レイアウト計算を回避（即座に実行、キャンセル不可）
+    if (mainCorrect.length === 0 && subCorrect.length === 0) {
+      requestAnimationFrame(() => {
         if (mainRefs.trackRef.current) {
           mainRefs.trackRef.current.style.transition = "";
           mainRefs.trackRef.current.style.transform = "translate3d(0px, 0px, 0px)";
@@ -216,10 +216,11 @@ const useWordScroll = (
           subRefs.trackRef.current.style.transform = "translate3d(0px, 0px, 0px)";
           prevSubShift.current = 0;
         }
-        return;
-      }
+      });
+      return;
+    }
 
-      // フェーズ1: すべての読み取り操作を一度に実行（レイアウトスラッシング回避）
+    const cancel = requestDebouncedAnimationFrame("word-scroll", () => {
       const mainMeasurements =
         mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current && mainRefs.trackRef.current
           ? {
@@ -236,7 +237,6 @@ const useWordScroll = (
             }
           : null;
 
-      // フェーズ2: 計算のみ実行（DOM操作なし）
       const mainShift = mainMeasurements
         ? mainMeasurements.caretX > mainMeasurements.rightBound
           ? Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound)
@@ -249,7 +249,6 @@ const useWordScroll = (
           : null
         : null;
 
-      // フェーズ3: すべての書き込み操作をバッチ実行
       if (mainShift !== null && mainShift !== prevMainShift.current && mainRefs.trackRef.current) {
         mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
         mainRefs.trackRef.current.style.transform = `translate3d(${-mainShift}px, 0px, 0px)`;
@@ -263,7 +262,6 @@ const useWordScroll = (
       }
     });
 
-    // コンポーネントアンマウント時にフレームをキャンセル
     return cancel;
   }, [mainCorrect.length, subCorrect.length]);
 
