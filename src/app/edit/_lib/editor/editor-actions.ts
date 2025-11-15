@@ -26,8 +26,7 @@ import { wordConvert } from "./typable-word-convert";
 export const addLineAction = (isShiftKey: boolean) => {
   const { isPlaying } = readYTPlayerStatus();
   const { lyrics, word } = readSelectLine();
-  const { isWordConverting } = readUtilityParams();
-  const timeOffset = word !== "" || isWordConverting ? readTimeOffset() : 0;
+  const timeOffset = lyrics !== "" ? readTimeOffset() : 0;
 
   const time = timeValidate(isPlaying ? (getYTCurrentTime() ?? 0) + timeOffset : Number(readTimeInputValue())).toFixed(
     3,
@@ -69,16 +68,15 @@ export const addLineAction = (isShiftKey: boolean) => {
 
 export const updateLineAction = () => {
   const map = readMap();
-  const { selectIndex: index, lyrics, word } = readSelectLine();
+  const { selectIndex: selectLineIndex, lyrics, word } = readSelectLine();
+  if (selectLineIndex === null) return;
   const { isPlaying } = readYTPlayerStatus();
   const { directEditingIndex } = readUtilityParams();
-  const timeOffset = word !== "" ? readTimeOffset() : 0;
-  const selectLineIndex = index as number;
+  const timeOffset = lyrics !== "" ? readTimeOffset() : 0;
 
   const time = timeValidate(
     isPlaying && !directEditingIndex ? (getYTCurrentTime() ?? 0) + timeOffset : Number(readTimeInputValue()),
   ).toFixed(3);
-
   const oldLine = map[selectLineIndex];
   if (!oldLine) return;
 
