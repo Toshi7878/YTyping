@@ -59,7 +59,12 @@ export const WordInput = () => {
 export const SelectedLineIndex = () => {
   const selectedLineIndex = useSelectIndexState();
   return (
-    <Input placeholder="No." className="bg-muted h-8 w-[90px] opacity-100" disabled value={selectedLineIndex ?? ""} />
+    <Input
+      placeholder="No."
+      className="bg-muted/50 h-8 w-[90px] opacity-100"
+      readOnly
+      value={selectedLineIndex ?? ""}
+    />
   );
 };
 

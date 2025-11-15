@@ -29,7 +29,7 @@ export const addLineAction = (isShiftKey: boolean) => {
   const { isWordConverting } = readUtilityParams();
   const timeOffset = word !== "" || isWordConverting ? readTimeOffset() : 0;
 
-  const time = timeValidate(isPlaying ? (getYTCurrentTime() ?? 0 + timeOffset) : Number(readTimeInputValue())).toFixed(
+  const time = timeValidate(isPlaying ? (getYTCurrentTime() ?? 0) + timeOffset : Number(readTimeInputValue())).toFixed(
     3,
   );
 
@@ -75,15 +75,15 @@ export const updateLineAction = () => {
   const timeOffset = word !== "" ? readTimeOffset() : 0;
   const selectLineIndex = index as number;
 
-  const _time =
-    isPlaying && !directEditingIndex ? (getYTCurrentTime() ?? 0 + timeOffset) : Number(readTimeInputValue());
-  const formatedTime = timeValidate(_time).toFixed(3);
+  const time = timeValidate(
+    isPlaying && !directEditingIndex ? (getYTCurrentTime() ?? 0) + timeOffset : Number(readTimeInputValue()),
+  ).toFixed(3);
 
   const oldLine = map[selectLineIndex];
   if (!oldLine) return;
 
   const newLine = {
-    time: formatedTime,
+    time,
     lyrics,
     word,
     ...(oldLine.options && {
@@ -103,7 +103,7 @@ export const updateLineAction = () => {
     },
   });
 
-  if (oldLine.word !== word || oldLine.time !== formatedTime) {
+  if (oldLine.word !== word || oldLine.time !== time) {
     setIsUpdateUpdatedAt(true);
   }
 
