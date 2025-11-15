@@ -65,12 +65,11 @@ const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: strin
 
   const previewYouTube = () => {
     if (videoId !== mapVideoId) {
-      setPreviewVideoInfo((prev) => ({
-        ...prev,
+      setPreviewVideoInfo({
         videoId: mapVideoId,
         previewTime: mapPreviewTime,
         previewSpeed: mapPreviewSpeed ?? 1,
-      }));
+      });
     } else {
       resetPreviewVideoInfo();
     }

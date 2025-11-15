@@ -1,9 +1,7 @@
 import { atom, type ExtractAtomValue, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
-import { focusAtom } from "jotai-optics";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
-import type { Updater } from "@/utils/types";
 
 const store = getDefaultStore();
 
@@ -15,23 +13,38 @@ export const useVolumeState = () => useAtomValue(volumeAtom, { store });
 export const useSetVolume = () => useSetAtom(volumeAtom, { store });
 export const readVolume = () => store.get(volumeAtom);
 
-const previewVideoAtom = atomWithReset<{
+const previewVideoInfoAtom = atomWithReset<{
   videoId: string | null;
   previewTime: number | null;
   previewSpeed: number | null;
-  player: YT.Player | null;
-}>({ videoId: null, previewTime: null, previewSpeed: null, player: null });
+}>({ videoId: null, previewTime: null, previewSpeed: null });
+const previewYTPlayerAtom = atomWithReset<YT.Player | null>(null);
 
-const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
+// const previewPlayerFocusAtom = focusAtom(previewVideoAtom, (optic) => optic.prop("player"));
 
-export const usePreviewVideoInfoState = () => useAtomValue(previewVideoAtom, { store });
-export const readPreviewVideoInfo = () => store.get(previewVideoAtom);
-export const setPreviewVideoInfo = (update: Updater<ExtractAtomValue<typeof previewVideoAtom>>) =>
-  store.set(previewVideoAtom, update);
-export const resetPreviewVideoInfo = () => store.set(previewVideoAtom, RESET);
+export const usePreviewVideoInfoState = () => useAtomValue(previewVideoInfoAtom, { store });
+export const readPreviewVideoInfo = () => store.get(previewVideoInfoAtom);
+export const setPreviewVideoInfo = (info: ExtractAtomValue<typeof previewVideoInfoAtom>) => {
+  store.set(previewVideoInfoAtom, info);
 
-export const usePreviewPlayerState = () => useAtomValue(previewPlayerFocusAtom, { store });
-export const setPreviewYTPlayer = (newYTPlayer: YT.Player) => store.set(previewPlayerFocusAtom, newYTPlayer);
+  const { videoId, previewTime } = info;
+  if (videoId) {
+    const player = readPreviewYTPlayer();
+    if (videoId) {
+      player?.cueVideoById({ videoId, startSeconds: previewTime ?? 0 });
+    }
+  }
+};
+export const resetPreviewVideoInfo = () => {
+  store.set(previewVideoInfoAtom, RESET);
+  const YTPlayer = readPreviewYTPlayer();
+  YTPlayer?.cueVideoById({ videoId: "" });
+};
+
+export const usePreviewPlayerState = () => useAtomValue(previewYTPlayerAtom, { store });
+export const readPreviewYTPlayer = () => store.get(previewYTPlayerAtom);
+export const setPreviewYTPlayer = (newYTPlayer: YT.Player) => store.set(previewYTPlayerAtom, newYTPlayer);
+export const resetPreviewYTPlayer = () => store.set(previewYTPlayerAtom, RESET);
 
 export interface ActiveUserStatus {
   id: number;
