@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-11-15",
+    descriptions: ["タイピング中に稀に描画がカクつく問題を改善"],
+  },
+  {
     date: "2025-10-22",
     descriptions: [
       "スクロール処理変更に伴い、スクロール開始設定とワードの文字間隔設定を初期化",
