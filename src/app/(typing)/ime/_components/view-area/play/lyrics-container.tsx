@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { HTMLAttributes } from "react";
 import { Fragment, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { writeLyricsContainer } from "../../../_lib/atoms/ref";
 import {
   useBuiltMapState,
   useCountState,
@@ -9,8 +10,6 @@ import {
   useEnableNextLyricsOptionState,
   useNextDisplayLineState,
 } from "../../../_lib/atoms/state";
-import "./lyrics-container.css";
-import { writeLyricsContainer } from "../../../_lib/atoms/ref";
 import { Skip } from "./skip-display";
 
 export const LyricsContainer = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
@@ -36,23 +35,28 @@ const Lyrics = () => {
   }, []);
 
   return (
-    <div className="my-1 min-h-30 leading-14" ref={lyricsContainerRef}>
+    <div
+      className="my-1 min-h-16 md:min-h-30 leading-8 md:leading-14 pointer-events-none user-select-none"
+      ref={lyricsContainerRef}
+    >
       {displayLines.map((line, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
         <div key={index}>
-          <div className="shadow-layer">
+          <div className="shadow-layer absolute">
+            {"\u200B"}
             {line.map((chunk) => (
               <Fragment key={String(chunk.time)}>
-                <span className="text-transparent">{chunk.word}</span>{" "}
+                <span className="text-transparent">{chunk.word}</span>
               </Fragment>
             ))}
           </div>
-          <div className="wipe-layer">
+          <div className="wipe-layer relative text-shadow-none" style={{ WebkitTextFillColor: "transparent" }}>
+            {"\u200B"}
             {line.map((chunk) => (
               <Fragment key={String(chunk.time)}>
                 <span style={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}>
                   {chunk.word}
-                </span>{" "}
+                </span>
               </Fragment>
             ))}
           </div>

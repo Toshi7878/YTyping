@@ -13,6 +13,7 @@ export const NextLyrics = () => {
       )}
     >
       <div id="next_lyrics" className={"flex items-end text-[110%] font-bold whitespace-nowrap"}>
+        {"\u200B"}
         {parse(lyrics)}
         <ruby className="invisible">
           あ<rt>あ</rt>

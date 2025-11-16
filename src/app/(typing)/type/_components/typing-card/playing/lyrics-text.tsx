@@ -14,7 +14,7 @@ export const Lyrics = () => {
         "text-word-word w-full max-w-[103%] whitespace-nowrap",
         "text-7xl font-bold md:text-[2.5rem]",
         "font-[system-ui]",
-        typingOptions.lineCompletedDisplay === "NEXT_WORD" && "[.word-area-completed_+_&]:invisible",
+        typingOptions.lineCompletedDisplay === "NEXT_WORD" && "[.word-area-completed+&]:invisible",
       )}
     >
       {parse(lyrics)}

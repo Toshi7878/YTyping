@@ -23,12 +23,6 @@ interface ContentProps {
 
 export const Content = ({ mapInfo }: ContentProps) => {
   const { videoId } = mapInfo;
-  const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
-  const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
-    minHeight: "calc(100vh - var(--header-height))",
-    height: "calc(100vh - var(--header-height))",
-  });
-  const [notificationsHeight, setNotificationsHeight] = useState("calc(100vh - var(--header-height))");
   const trpc = useTRPC();
   const mapId = readMapId();
   const { data: mapData } = useQuery(
@@ -37,7 +31,6 @@ export const Content = ({ mapInfo }: ContentProps) => {
       { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity },
     ),
   );
-  const enableLargeVideoDisplay = useEnableLargeVideoDisplayState();
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const loadMap = async (mapData: MapLine[]) => {
@@ -75,6 +68,18 @@ export const Content = ({ mapInfo }: ContentProps) => {
       hideLoading();
     };
   }, [mapId]);
+
+  return <TypingLayout videoId={videoId} />;
+};
+
+export const TypingLayout = ({ videoId }: { videoId: string }) => {
+  const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
+  const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
+    minHeight: "calc(100vh - var(--header-height))",
+    height: "calc(100vh - var(--header-height))",
+  });
+  const [notificationsHeight, setNotificationsHeight] = useState("calc(100vh - var(--header-height))");
+  const enableLargeVideoDisplay = useEnableLargeVideoDisplayState();
 
   useEffect(() => {
     const lyricsViewAreaElement = lyricsViewAreaRef.current;
