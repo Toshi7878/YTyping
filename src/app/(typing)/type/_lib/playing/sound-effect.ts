@@ -12,10 +12,6 @@ const manifest = [
 
 type SoundAlias = (typeof manifest)[number]["alias"];
 
-const START_OFFSETS: Partial<Record<SoundAlias, number>> = {
-  type: 0.005,
-};
-
 export const triggerTypeSound = ({ isCompleted }: { isCompleted: boolean }) => {
   const typingOptions = readTypingOptions();
 
@@ -56,8 +52,7 @@ export const useLoadSoundEffects = () => {
 
 export const playSound = (alias: SoundAlias) => {
   const volume = getVolume();
-  const start = START_OFFSETS[alias];
-  void sound.play(alias, start != null ? { volume, start } : { volume });
+  void sound.play(alias, { volume });
 };
 
 const getVolume = () => {
