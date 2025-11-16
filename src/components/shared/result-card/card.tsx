@@ -22,38 +22,57 @@ interface ResultCardProps {
 
 export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
   const { ref, shouldRender } = useLazyRender({ priority });
-  return <ResultCardLayout ref={ref} result={shouldRender ? result : null} priority={priority} />;
-};
-
-interface ResultCardLayoutProps {
-  ref: ReturnType<typeof useLazyRender>["ref"];
-  result: ResultWithMapItem | null;
-  priority: boolean;
-}
-
-const ResultCardLayout = ({ ref, result, priority }: ResultCardLayoutProps) => {
-  const src = result
-    ? result.map.media.thumbnailQuality === "maxresdefault"
+  const src =
+    result.map.media.thumbnailQuality === "maxresdefault"
       ? `https://i.ytimg.com/vi_webp/${result.map.media.videoId}/maxresdefault.webp`
-      : `https://i.ytimg.com/vi/${result.map.media.videoId}/mqdefault.jpg`
-    : "";
+      : `https://i.ytimg.com/vi/${result.map.media.videoId}/mqdefault.jpg`;
 
   return (
-    <Card
-      className={result ? "map-card-hover block w-full py-0 transition-shadow duration-300" : "block w-full py-0"}
-      ref={ref}
-    >
-      <ResultCardHeader
-        player={result?.player ?? null}
-        resultId={result?.id ?? 0}
-        updatedAt={result?.updatedAt}
-        clap={result?.clap ?? null}
-        className="mx-0 py-4 md:mx-6"
-      />
-
+    <Card className="map-card-hover block w-full py-0 transition-shadow duration-300" ref={ref}>
+      <CardHeader className="flex items-center justify-between mx-0 py-4 md:mx-6">
+        <div className="flex flex-row items-center gap-2">
+          {shouldRender && (
+            <>
+              <Link
+                href={`/user/${result.player.id}`}
+                className="text-secondary max-w-32 truncate font-bold hover:underline sm:max-w-none"
+              >
+                {result.player.name}
+              </Link>
+              {" - "}
+              <DateDistanceText date={result.updatedAt} />
+            </>
+          )}
+        </div>
+        <ResultClapButton
+          resultId={result.id}
+          clapCount={result.clap.count}
+          hasClapped={result.clap?.hasClapped ?? false}
+          className={shouldRender ? "invisible" : undefined}
+        />
+      </CardHeader>
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
-        <ResultCardContent result={result ?? null} priority={priority} />
-        {result && (
+        <div className="flex w-full items-center gap-4 py-6">
+          {shouldRender && (
+            <Badge
+              variant="result"
+              className={cn("hidden font-bold md:flex", result?.rank === 1 && "outline-text text-perfect")}
+              size="lg"
+            >
+              Rank: #{result.rank}
+            </Badge>
+          )}
+
+          <MapLeftThumbnail
+            alt={result.map.info.title}
+            media={shouldRender ? result?.map.media : undefined}
+            size="timeline"
+            loading={priority ? "eager" : "lazy"}
+          />
+          {shouldRender && <MapInfo map={result.map} className="flex-1" />}
+          {shouldRender && <ResultStatusBadges result={result} className="hidden md:flex" />}
+        </div>
+        {shouldRender && (
           <div className="absolute bottom-0 left-4 z-2 flex items-center space-x-1">
             <RankingCount
               myRank={result.map.ranking.myRank}
@@ -70,73 +89,17 @@ const ResultCardLayout = ({ ref, result, priority }: ResultCardLayoutProps) => {
       </CardContentWithThumbnail>
 
       <CardFooter className="py-4">
-        <ResultBadgesMobile result={result ?? null} className="flex md:hidden" />
+        <ResultBadgesMobile result={shouldRender ? result : null} className="flex md:hidden" />
       </CardFooter>
     </Card>
   );
 };
 
-interface ResultCardHeaderProps {
-  player: ResultWithMapItem["player"] | null;
-  resultId: ResultWithMapItem["id"] | null;
-  updatedAt: ResultWithMapItem["updatedAt"] | undefined;
-  clap: ResultWithMapItem["clap"] | null;
-  className?: string;
-}
-
-const ResultCardHeader = ({ player, resultId, updatedAt, clap, className }: ResultCardHeaderProps) => {
-  return (
-    <CardHeader className={cn("flex items-center justify-between", className)}>
-      <div className="flex flex-row items-center gap-2">
-        {player && (
-          <>
-            <Link
-              href={`/user/${player.id}`}
-              className="text-secondary max-w-32 truncate font-bold hover:underline sm:max-w-none"
-            >
-              {player.name}
-            </Link>
-            {" - "}
-          </>
-        )}
-        {updatedAt && <DateDistanceText date={updatedAt} />}
-      </div>
-      <ResultClapButton resultId={resultId} clapCount={clap?.count ?? 0} hasClapped={clap?.hasClapped ?? false} />
-    </CardHeader>
-  );
-};
-
-const ResultCardContent = ({ result, priority = false }: { result: ResultWithMapItem | null; priority: boolean }) => {
-  return (
-    <div className="flex w-full items-center gap-4 py-6">
-      {result && (
-        <Badge
-          variant="result"
-          className={cn("hidden font-bold md:flex", result?.rank === 1 && "outline-text text-perfect")}
-          size="lg"
-        >
-          Rank: #{result.rank}
-        </Badge>
-      )}
-
-      <MapLeftThumbnail
-        alt={result?.map.info.title ?? ""}
-        media={result?.map.media ?? undefined}
-        size="timeline"
-        loading={priority ? "eager" : "lazy"}
-      />
-
-      {result && <MapInfo map={result.map} className="flex-1" />}
-      {result && <ResultStatusBadges result={result} className="hidden md:flex" />}
-    </div>
-  );
-};
-
-interface MapInfoProps extends HTMLAttributes<HTMLDivElement> {
+interface MapInfoProps {
   map: ResultWithMapItem["map"];
 }
 
-const MapInfo = ({ map, className, ...rest }: MapInfoProps) => {
+const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTMLDivElement>) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
   return (
     <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>

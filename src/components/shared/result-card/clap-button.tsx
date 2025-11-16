@@ -7,23 +7,24 @@ import { useClapMutationTimeline } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
 
 interface ResultClapButtonProps {
-  resultId: number | null;
+  resultId: number;
   clapCount: number;
   hasClapped: boolean;
+  className?: string;
 }
 
-export const ResultClapButton = ({ resultId, clapCount, hasClapped: hasClap }: ResultClapButtonProps) => {
+export const ResultClapButton = ({ resultId, clapCount, hasClapped, className }: ResultClapButtonProps) => {
   const { data: session } = useSession();
 
   const toggleClapMutation = useClapMutationTimeline();
 
   const onClick = () => {
-    if (!session || !resultId) return;
-    toggleClapMutation.mutate({ resultId, newState: !hasClap });
+    if (!session) return;
+    toggleClapMutation.mutate({ resultId, newState: !hasClapped });
   };
 
   return (
-    <div className="inline-flex">
+    <div className={cn("inline-flex", className)}>
       <TooltipWrapper disabled={!!session} label={"拍手はログイン後に可能です"}>
         <Button
           type="button"
@@ -33,7 +34,7 @@ export const ResultClapButton = ({ resultId, clapCount, hasClapped: hasClap }: R
           onClick={onClick}
           className={cn(
             "min-w-[100px] rounded-full border px-7",
-            hasClap && session ? "bg-perfect/20 border-perfect text-perfect" : "",
+            hasClapped && session ? "bg-perfect/20 border-perfect text-perfect" : "",
             session && "hover:bg-perfect/20 hover:text-perfect",
           )}
         >

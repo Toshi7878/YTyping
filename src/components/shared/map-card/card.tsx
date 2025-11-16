@@ -21,26 +21,15 @@ interface MapCardProps {
 
 export const MapCard = ({ map, className, priority = false }: MapCardProps) => {
   const { ref, shouldRender } = useLazyRender({ priority });
-  return <MapCardLayout ref={ref} map={shouldRender ? map : null} className={className} priority={priority} />;
-};
-
-interface MapCardLayoutProps {
-  ref: ReturnType<typeof useLazyRender>["ref"];
-  map: MapListItem | null;
-  className?: string;
-  priority: boolean;
-}
-
-const MapCardLayout = ({ ref, map, className, priority }: MapCardLayoutProps) => {
   return (
     <CardWithContent variant="map" className={{ card: className }} ref={ref}>
       <MapLeftThumbnail
-        alt={map?.info.title ?? ""}
-        media={map?.media ?? undefined}
+        alt={map.info.title}
+        media={shouldRender ? map.media : undefined}
         size="home"
         loading={priority ? "eager" : "lazy"}
       />
-      {map && <MapInfo map={map} />}
+      {shouldRender && <MapInfo map={map} />}
     </CardWithContent>
   );
 };
