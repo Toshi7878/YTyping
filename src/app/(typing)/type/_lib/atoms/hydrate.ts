@@ -1,17 +1,15 @@
 import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import { writeUtilityRefParams } from "./ref";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
 
-export const mapInfoAtom = atomWithReset<RouterOutPuts["map"]["getMapInfo"] | null>(null);
-export const useMapInfoState = () => useAtomValue(mapInfoAtom, { store });
-export const readMapInfo = () => store.get(mapInfoAtom);
-export const setMapInfo = (value: ExtractAtomValue<typeof mapInfoAtom>) => store.set(mapInfoAtom, value);
-export const readMapId = () => store.get(mapInfoAtom)?.id ?? null;
+export const mapIdAtom = atomWithReset<number | null>(null);
+export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
+export const readMapId = () => store.get(mapIdAtom);
+export const setMapId = (value: ExtractAtomValue<typeof mapIdAtom>) => store.set(mapIdAtom, value);
 
 export const typingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
 export const useTypingOptionsState = () => useAtomValue(typingOptionsAtom, { store });

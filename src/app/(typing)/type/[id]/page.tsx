@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { HydrateClient, serverApi } from "@/trpc/server";
+import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
 import { Content } from "../_components/content";
 import { JotaiProvider } from "../_components/provider";
 
@@ -46,9 +46,11 @@ export default async function Page({ params }: PageProps<"/type/[id]">) {
     notFound();
   }
 
+  prefetch(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
+
   return (
     <HydrateClient>
-      <JotaiProvider userTypingOptions={userTypingOptions} mapInfo={mapInfo}>
+      <JotaiProvider userTypingOptions={userTypingOptions} mapId={Number(mapId)}>
         <Content videoId={mapInfo.videoId} mapId={Number(mapId)} />
       </JotaiProvider>
     </HydrateClient>
