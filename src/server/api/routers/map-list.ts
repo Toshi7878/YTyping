@@ -66,7 +66,7 @@ export type MapListItem = Omit<BaseSelectItem, "media"> & {
   };
 };
 
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 60;
 const mapListRoute = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
     const { user } = ctx;
