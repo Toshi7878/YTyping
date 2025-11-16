@@ -82,7 +82,7 @@ const MapInfo = ({ map }: MapInfoProps) => {
   );
 };
 
-const MapInfoBottom = ({ map }: MapInfoProps) => {
+const MapInfoBottom = ({ map }: { map: MapListItem }) => {
   return (
     <div className="mr-3 flex w-fit justify-end md:justify-between lg:w-[98%]">
       <div className="mr-2 flex items-center gap-2">
