@@ -15,12 +15,13 @@ import { UserNameLinkText } from "../text/user-name-link-text";
 interface MapCardProps {
   map: MapListItem;
   className?: string;
+  priority?: boolean;
 }
 
-export const MapCard = ({ map, className }: MapCardProps) => {
+export const MapCard = ({ map, className, priority = false }: MapCardProps) => {
   return (
     <CardWithContent variant="map" className={{ card: className }}>
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
+      <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" priority={priority} />
       <MapInfo map={map} />
     </CardWithContent>
   );
