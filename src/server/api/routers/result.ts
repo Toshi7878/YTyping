@@ -95,7 +95,7 @@ const createResultWithMapBaseSelect = ({
     duration: Maps.duration,
     romaKpmMedian: MapDifficulties.romaKpmMedian,
     romaKpmMax: MapDifficulties.romaKpmMax,
-    hasLiked: MapLikes.hasLiked,
+    hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
     myRank: MyResult.rank,
     myRankUpdatedAt: MyResult.updatedAt,
   };

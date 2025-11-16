@@ -1,5 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, eq, max } from "drizzle-orm";
+import { and, eq, max, sql } from "drizzle-orm";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import { db } from "@/server/drizzle/client";
@@ -21,7 +21,7 @@ export const mapRouter = {
         musicSource: Maps.musicSource,
         previewTime: Maps.previewTime,
         thumbnailQuality: Maps.thumbnailQuality,
-        hasLiked: MapLikes.hasLiked,
+        hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
         tags: Maps.tags,
         creator: {
           id: Users.id,

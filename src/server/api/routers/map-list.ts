@@ -42,7 +42,7 @@ const createBaseSelect = ({ user }: { user: TRPCContext["user"] }) => {
       },
       like: {
         count: Maps.likeCount,
-        hasLiked: MapLikes.hasLiked,
+        hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
       },
       ranking: {
         count: Maps.rankingCount,
