@@ -26,7 +26,7 @@ import { wordConvert } from "./typable-word-convert";
 export const addLineAction = (isShiftKey: boolean) => {
   const { isPlaying } = readYTPlayerStatus();
   const { lyrics, word } = readSelectLine();
-  const timeOffset = lyrics !== "" ? readTimeOffset() : 0;
+  const timeOffset = lyrics !== "" && !isShiftKey ? readTimeOffset() : 0;
 
   const time = timeValidate(isPlaying ? (getYTCurrentTime() ?? 0) + timeOffset : Number(readTimeInputValue())).toFixed(
     3,

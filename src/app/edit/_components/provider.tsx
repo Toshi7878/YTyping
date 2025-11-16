@@ -1,29 +1,10 @@
 "use client";
 import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
-import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import type React from "react";
 import { useEffect } from "react";
-import { toast } from "sonner";
-import {
-  creatorIdAtom,
-  mapIdAtom,
-  setCreatorId,
-  setMapId,
-  setVideoId,
-  useCreatorIdState,
-  videoIdAtom,
-} from "../_lib/atoms/hydrate";
-import { pathChangeAtomReset } from "../_lib/atoms/reset";
+import { creatorIdAtom, mapIdAtom, setCreatorId, setMapId, setVideoId, videoIdAtom } from "../_lib/atoms/hydrate";
 import { getEditAtomStore } from "../_lib/atoms/store";
-import { hasMapUploadPermission } from "../_lib/map-table/has-map-upload-permission";
-
-const NOT_EDIT_PERMISSION_TOAST_ID = "not-edit-permission-toast";
-
-interface EditProviderProps {
-  children: React.ReactNode;
-}
 
 interface JotaiProviderProps {
   mapId?: string;
@@ -49,34 +30,4 @@ export const JotaiProvider = ({ mapId, videoId, creatorId, children }: JotaiProv
   }, [mapId, videoId, creatorId]);
 
   return <Provider store={store}>{children}</Provider>;
-};
-
-export const EditProvider = ({ children }: EditProviderProps) => {
-  const { data: session } = useSession();
-  const creatorId = useCreatorIdState();
-  const hasUploadPermission = hasMapUploadPermission(session, creatorId);
-  const { id } = useParams();
-
-  useEffect(() => {
-    if (!hasUploadPermission) {
-      requestAnimationFrame(() => {
-        toast.warning("編集保存権限がないため譜面の更新はできません", {
-          id: NOT_EDIT_PERMISSION_TOAST_ID,
-          duration: Infinity,
-        });
-      });
-    }
-
-    return () => {
-      toast.dismiss(NOT_EDIT_PERMISSION_TOAST_ID);
-    };
-  }, [hasUploadPermission]);
-
-  useEffect(() => {
-    return () => {
-      pathChangeAtomReset();
-    };
-  }, [id]);
-
-  return <>{children}</>;
 };
