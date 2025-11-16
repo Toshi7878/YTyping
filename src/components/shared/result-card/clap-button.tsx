@@ -7,7 +7,7 @@ import { useClapMutationTimeline } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
 
 interface ResultClapButtonProps {
-  resultId: number;
+  resultId: number | null;
   clapCount: number;
   hasClapped: boolean;
 }
@@ -18,7 +18,7 @@ export const ResultClapButton = ({ resultId, clapCount, hasClapped: hasClap }: R
   const toggleClapMutation = useClapMutationTimeline();
 
   const onClick = () => {
-    if (!session) return;
+    if (!session || !resultId) return;
     toggleClapMutation.mutate({ resultId, newState: !hasClap });
   };
 

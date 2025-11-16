@@ -10,14 +10,13 @@ interface ResultStatusBadgesProps {
 }
 
 export const ResultStatusBadges = ({ result, className }: ResultStatusBadgesProps) => {
-  const { typeCounts, otherStatus, typeSpeed } = result;
-  const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
+  const isPerfect = result.otherStatus.miss === 0 && result.otherStatus.lost === 0;
 
   return (
     <div className={cn("flex flex-col items-end gap-5", className)}>
       <div className="mb-2 flex flex-row gap-2">
         <Badge variant="result" size="lg">
-          <InputModeText typeCounts={typeCounts} />
+          <InputModeText typeCounts={result.typeCounts} />
         </Badge>
         <Badge variant="result" size="lg">
           {result.score}
@@ -34,7 +33,7 @@ export const ResultStatusBadges = ({ result, className }: ResultStatusBadgesProp
           </span>
         </Badge>
         <Badge variant="result" size="lg">
-          {typeSpeed.kpm}
+          {result.typeSpeed.kpm}
           <span className="ml-1" style={{ letterSpacing: "2px" }}>
             kpm
           </span>
@@ -44,45 +43,52 @@ export const ResultStatusBadges = ({ result, className }: ResultStatusBadgesProp
   );
 };
 
-interface ResultBadgesMobileProps extends ResultStatusBadgesProps {
+interface ResultBadgesMobileProps {
   className?: string;
-  result: ResultWithMapItem;
+  result: ResultWithMapItem | null;
 }
 
 export const ResultBadgesMobile = ({ result, className }: ResultBadgesMobileProps) => {
-  const { typeCounts, otherStatus, typeSpeed } = result;
-  const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
+  const isPerfect = result?.otherStatus.miss === 0 && result?.otherStatus.lost === 0;
 
   return (
     <div className={cn("visible flex w-full justify-around", className)}>
       <div className="mr-5 flex flex-col items-end gap-5">
-        <Badge variant="result" size="lg" className={cn(result.rank === 1 && "text-perfect outline-text")}>
-          Rank: #{result.rank}
+        <Badge variant="result" size="lg" className={cn(result?.rank === 1 && "text-perfect outline-text")}>
+          {result && `Rank: #${result.rank}`}
         </Badge>
         <Badge variant="result" size="lg">
-          <InputModeText typeCounts={typeCounts} />
-        </Badge>
-      </div>
-      <div className="mr-5 flex flex-col items-end gap-5">
-        <Badge variant="result" size="lg">
-          {result.score}
-        </Badge>
-        <Badge variant="result" size="lg">
-          {typeSpeed.kpm}
-          <span className="ml-1" style={{ letterSpacing: "2px" }}>
-            kpm
-          </span>
+          {result && <InputModeText typeCounts={result.typeCounts} />}
         </Badge>
       </div>
       <div className="mr-5 flex flex-col items-end gap-5">
         <Badge variant="result" size="lg">
-          <ClearRateText clearRate={result.otherStatus.clearRate ?? 0} isPerfect={isPerfect} />
+          {result?.score}
         </Badge>
         <Badge variant="result" size="lg">
-          {result.otherStatus.playSpeed.toFixed(2)}
-          <span className="ml-1" style={{ letterSpacing: "2px" }}>
-            倍速
-          </span>
+          {result && (
+            <>
+              {result.typeSpeed?.kpm}
+              <span className="ml-1" style={{ letterSpacing: "2px" }}>
+                kpm
+              </span>
+            </>
+          )}
+        </Badge>
+      </div>
+      <div className="mr-5 flex flex-col items-end gap-5">
+        <Badge variant="result" size="lg">
+          {result && <ClearRateText clearRate={result.otherStatus.clearRate} isPerfect={isPerfect} />}
+        </Badge>
+        <Badge variant="result" size="lg">
+          {result && (
+            <>
+              {result.otherStatus.playSpeed.toFixed(2)}
+              <span className="ml-1" style={{ letterSpacing: "2px" }}>
+                倍速
+              </span>
+            </>
+          )}
         </Badge>
       </div>
     </div>

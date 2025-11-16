@@ -17,7 +17,7 @@ const InactiveLikeCount = ({ likeCount }: { likeCount: number }) => {
 };
 
 interface LikeCountIconProps {
-  mapId: number;
+  mapId: number | null;
   hasLiked: boolean;
   likeCount: number;
 }
@@ -30,7 +30,7 @@ const ActiveLikeCountButton = ({ hasLiked, likeCount, mapId }: LikeCountIconProp
     event.stopPropagation();
     event.preventDefault();
 
-    if (setLikeMutation.isPending) return;
+    if (setLikeMutation.isPending || !mapId) return;
 
     setLikeMutation.mutate({ mapId, newState });
     stop();
@@ -52,7 +52,7 @@ export const LikeCountIcon = ({ mapId, hasLiked, likeCount }: LikeCountIconProps
 
   return (
     <div className="z-30" onClick={session?.user.id ? (e) => e.stopPropagation() : undefined}>
-      {session?.user.id ? (
+      {session?.user.id && mapId ? (
         <ActiveLikeCountButton hasLiked={hasLiked} likeCount={likeCount} mapId={mapId} />
       ) : (
         <InactiveLikeCount likeCount={likeCount} />
