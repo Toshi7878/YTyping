@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { handlePlaySpeedAction, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   readUtilityParams,
@@ -23,12 +24,13 @@ export const FooterButtons = () => {
   const isReady = sceneGroup === "Ready";
   const isPlaying = isYTStarted && sceneGroup === "Playing";
   const { id: mapId } = useParams<{ id: string }>();
+  const { status } = useSession();
 
   return (
     <section
       className={cn("mx-3 mt-2 mb-3 flex h-16 w-full justify-between font-bold md:h-10", isReady && "justify-end")}
     >
-      {isReady && (
+      {isReady && status === "authenticated" && (
         <Link href={`/ime/${mapId}`} replace>
           <Button variant="outline" className="p-8 text-2xl md:p-2 md:text-base">
             変換有りタイピング

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
 import { Content } from "../_components/content";
-import { ClientProvider, JotaiProvider } from "../_components/provider";
+import { JotaiProvider } from "../_components/provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -44,9 +44,7 @@ export default async function Page({ params }: PageProps<"/type/[id]">) {
   return (
     <HydrateClient>
       <JotaiProvider userTypingOptions={userTypingOptions} mapId={mapId}>
-        <ClientProvider>
-          <Content videoId={mapInfo.videoId} />
-        </ClientProvider>
+        <Content videoId={mapInfo.videoId} />
       </JotaiProvider>
     </HydrateClient>
   );

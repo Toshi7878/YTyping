@@ -7,7 +7,6 @@ import { mapIdAtom, setMapId, typingOptionsAtom } from "../_lib/atoms/hydrate";
 import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
 import { getTypeAtomStore } from "../_lib/atoms/store";
 import { mutateTypingStats } from "../_lib/mutate-stats";
-import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
 
 interface JotaiProviderProps {
   userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
@@ -35,29 +34,4 @@ export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProvi
   }, [mapId]);
 
   return <Provider store={store}>{children}</Provider>;
-};
-
-interface ClientProviderProps {
-  children: ReactNode;
-}
-
-export const ClientProvider = ({ children }: ClientProviderProps) => {
-  useLoadSoundEffects();
-
-  useEffect(() => {
-    const DISABLE_KEYS = ["Home", "End", "PageUp", "PageDown", "CapsLock", "Backquote", "F3", "F6", "Space"];
-
-    const disableKeyHandle = (event: KeyboardEvent) => {
-      if (DISABLE_KEYS.includes(event.code)) {
-        event.preventDefault();
-      }
-    };
-    window.addEventListener("keydown", disableKeyHandle);
-
-    return () => {
-      window.removeEventListener("keydown", disableKeyHandle);
-    };
-  }, []);
-
-  return <>{children}</>;
 };

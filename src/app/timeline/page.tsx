@@ -1,6 +1,6 @@
 import { loadResultListSearchParams } from "@/lib/search-params/result-list";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { JotaiProvider } from "./_components/jotai-provider";
+import { JotaiProvider } from "./_components/provider";
 import { UsersResultList } from "./_components/result-list";
 import { SearchContent } from "./_components/search-content";
 

@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { BuildMap } from "@/lib/build-map/build-map";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
@@ -15,6 +16,7 @@ import {
   setLineStatus,
   useSceneGroupState,
 } from "../_lib/atoms/state";
+import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
 import { TypingCard } from "./typing-card/typing-card";
@@ -25,25 +27,24 @@ interface ContentProps {
 }
 
 export const Content = ({ videoId }: ContentProps) => {
+  useLoadSoundEffects();
+  useHotkeys(
+    "home, end, pageup, pagedown, capslock, `, f3, f6, space",
+    (event) => {
+      event.preventDefault();
+    },
+    { enableOnFormTags: false, preventDefault: true },
+  );
+
   const mapId = useMapIdState();
   const trpc = useTRPC();
-  const { data: mapData, isLoading } = useQuery(
+  const { data: mapJson, isLoading } = useQuery(
     trpc.map.getMapJson.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
   );
 
-  const sceneGroup = useSceneGroupState();
-  const { isSmScreen } = useBreakPoint();
-  const [layout, setLayout] = useState<"column" | "row">("row");
-
   useEffect(() => {
-    if (sceneGroup === "Ready") {
-      setLayout(isSmScreen ? "column" : "row");
-    }
-  }, [isSmScreen, sceneGroup]);
-
-  useEffect(() => {
-    if (mapData) {
-      const builtMap = new BuildMap(mapData);
+    if (mapJson) {
+      const builtMap = new BuildMap(mapJson);
       setBuiltMap(builtMap);
       initializeAllLineResult(builtMap.initialLineResultData);
       setLineSelectIndex(builtMap.typingLineIndexes?.[0] ?? 0);
@@ -55,8 +56,24 @@ export const Content = ({ videoId }: ContentProps) => {
         totalProgress.max = builtMap.duration;
       }
     }
-  }, [mapData]);
+  }, [mapJson]);
 
+  return (
+    <div className="fixed flex h-screen w-screen flex-col items-center">
+      <TypingLayout isLoading={isLoading} videoId={videoId} />
+    </div>
+  );
+};
+
+const TypingLayout = ({ isLoading, videoId }: { isLoading: boolean; videoId: string }) => {
+  const { isSmScreen } = useBreakPoint();
+  const [layout, setLayout] = useState<"column" | "row">("row");
+  const sceneGroup = useSceneGroupState();
+  useEffect(() => {
+    if (sceneGroup === "Ready") {
+      setLayout(isSmScreen ? "column" : "row");
+    }
+  }, [isSmScreen, sceneGroup]);
   const { scale, ready } = useWindowScale();
 
   const style: CSSProperties = {
@@ -67,22 +84,20 @@ export const Content = ({ videoId }: ContentProps) => {
   };
 
   return (
-    <div className="fixed flex h-screen w-screen flex-col items-center">
-      <div style={style} className="h-fit space-y-8 md:space-y-5">
-        <section className="flex w-full gap-6 md:flex-row">
-          {layout === "row" && <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-[460px]" />}
+    <div style={style} className="space-y-8 md:space-y-5">
+      <section className="flex w-full gap-6 md:flex-row">
+        {layout === "row" && <YouTubePlayer isMapLoading={isLoading} videoId={videoId} className="w-[460px]" />}
 
-          <TabsArea className="flex flex-8 flex-col" />
+        <TabsArea className="flex flex-8 flex-col" />
+      </section>
+
+      <TypingCard />
+
+      {layout === "column" && (
+        <section className="mt-5">
+          <YouTubePlayer isMapLoading={isLoading} videoId={videoId} />
         </section>
-
-        <TypingCard />
-
-        {layout === "column" && (
-          <section className="mt-5">
-            <YouTubePlayer isMapLoading={isLoading} videoId={videoId} />
-          </section>
-        )}
-      </div>
+      )}
     </div>
   );
 };
