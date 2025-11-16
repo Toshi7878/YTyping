@@ -35,10 +35,8 @@ export const UsersResultList = () => {
   );
   return (
     <section className={cn("grid grid-cols-1 gap-3", isSearching && "opacity-20")}>
-      {data.pages.map((page, index) =>
-        page.items.map((result) => (
-          <ResultCard key={result.id} result={result} priority={data.pages.length - 1 === index} />
-        )),
+      {data.pages.map((page, pageIndex) =>
+        page.items.map((result) => <ResultCard key={result.id} result={result} priority={pageIndex === 0} />),
       )}
       {hasNextPage && <Spinner ref={ref} />}
     </section>

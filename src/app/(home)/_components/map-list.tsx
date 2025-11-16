@@ -34,8 +34,10 @@ export const MapList = () => {
   return (
     <section className={isSearching ? "opacity-20" : ""}>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {data.pages.map((page, index) =>
-          page.items.map((map) => <MapCard key={map.id} map={map} priority={data.pages.length - 1 === index} />),
+        {data.pages.map((page, pageIndex) =>
+          page.items.map((map) => {
+            return <MapCard key={map.id} map={map} priority={pageIndex === 0} />;
+          }),
         )}
       </div>
 
