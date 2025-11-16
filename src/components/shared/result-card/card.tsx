@@ -22,7 +22,7 @@ interface ResultCardProps {
 
 export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
   const { ref, shouldRender } = useLazyRender({ priority });
-  return <ResultCardLayout ref={ref} result={null} priority={priority} />;
+  return <ResultCardLayout ref={ref} result={shouldRender ? result : null} priority={priority} />;
 };
 
 interface ResultCardLayoutProps {
