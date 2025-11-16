@@ -19,7 +19,12 @@ export const ResultCardContent = ({ result, priority = false }: { result: Result
         Rank: #{result.rank}
       </Badge>
 
-      <MapLeftThumbnail alt={result.map.info.title} media={result.map.media} size="timeline" priority={priority} />
+      <MapLeftThumbnail
+        alt={result.map.info.title}
+        media={result.map.media}
+        size="timeline"
+        loading={priority ? "eager" : "lazy"}
+      />
 
       <MapInfo map={result.map} className="flex-1" />
 

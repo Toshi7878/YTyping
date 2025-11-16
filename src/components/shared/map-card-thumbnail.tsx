@@ -3,7 +3,7 @@ import { cva } from "class-variance-authority";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import {
   readPreviewYTPlayer,
@@ -32,70 +32,33 @@ interface MapLeftThumbnailPreviewCoverProps {
   size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
   className?: string;
   imageClassName?: string;
-  priority: boolean; // 優先読み込みフラグ（初期表示される画像用）
+  loading?: "eager" | "lazy";
 }
 
 const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
 
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { alt = "", media, size, className, imageClassName, priority = false, ...rest } = props;
-
-  const [shouldLoad, setShouldLoad] = useState(priority); // priorityがtrueなら初期状態で読み込む
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { alt = "", media, size, className, imageClassName, loading = "lazy", ...rest } = props;
 
   const src = `https://i.ytimg.com/vi/${media?.videoId}/mqdefault.jpg`;
   const pathname = usePathname();
   const pathSegment = pathname.split("/")[1];
 
-  useEffect(() => {
-    // priorityがtrueの場合は既に読み込み開始しているのでObserver不要
-    if (priority) return;
-
-    const container = containerRef.current;
-    if (!container) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setShouldLoad(true);
-            observer.unobserve(entry.target); // 一度読み込んだらobserve解除
-          }
-        });
-      },
-      {
-        rootMargin: "200px", // 画面に入る200px前から読み込み開始
-        threshold: 0.01, // 1%でも見えたら読み込み開始
-      },
-    );
-
-    observer.observe(container);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [priority]);
-
   return (
-    <div ref={containerRef} className={cn("group relative my-auto select-none", className)} {...rest}>
+    <div className={cn("group relative my-auto select-none", className)} {...rest}>
       {media ? (
         <>
           <div className={mapLeftThumbnailVariants({ size })}>
-            {shouldLoad ? (
-              <Image
-                unoptimized
-                loading={priority ? "eager" : "lazy"}
-                alt={alt}
-                src={src}
-                fill
-                className={cn("rounded-md", imageClassName)}
-              />
-            ) : (
-              // プレースホルダー（スケルトン）
-              <div className={cn("rounded-md bg-muted animate-pulse", imageClassName)} />
-            )}
+            <Image
+              unoptimized
+              loading={loading}
+              alt={alt}
+              src={src}
+              fill
+              className={cn("rounded-md", imageClassName)}
+            />
           </div>
-          {!PREVIEW_DISABLE_PATHNAMES.includes(pathSegment ?? "") && shouldLoad && (
+          {!PREVIEW_DISABLE_PATHNAMES.includes(pathSegment ?? "") && (
             <ThumbnailPreviewCover {...media} className={imageClassName} />
           )}
         </>

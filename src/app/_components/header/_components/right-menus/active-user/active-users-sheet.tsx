@@ -70,7 +70,7 @@ export const ActiveUsersSheet = () => {
                       <CompactMapCard map={user.map} thumbnailSize="activeUser" />
                     ) : (
                       <CardWithContent variant="map">
-                        <MapLeftThumbnail size="activeUser" alt={stateMsg} priority={true} />
+                        <MapLeftThumbnail size="activeUser" alt={stateMsg} loading="eager" />
                       </CardWithContent>
                     )}
                   </TableCell>

@@ -67,7 +67,12 @@ interface MapCardLayoutProps {
 const MapCardLayout = ({ map, className, priority }: MapCardLayoutProps) => {
   return (
     <CardWithContent variant="map" className={{ card: className }}>
-      <MapLeftThumbnail alt={map?.info.title ?? ""} media={map?.media ?? undefined} size="home" priority={priority} />
+      <MapLeftThumbnail
+        alt={map?.info.title ?? ""}
+        media={map?.media ?? undefined}
+        size="home"
+        loading={priority ? "eager" : "lazy"}
+      />
       {map && <MapInfo map={map} />}
     </CardWithContent>
   );
