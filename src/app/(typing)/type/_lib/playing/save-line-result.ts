@@ -1,4 +1,5 @@
-import { CHAR_POINT, calcWordKanaNotes, MISS_PENALTY } from "@/lib/build-map/build-map";
+import { CHAR_POINT, MISS_PENALTY } from "@/lib/build-map/build-map";
+import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { readAllLineResult, setLineResult } from "../atoms/family";
 import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/ref";
 import { readPlaySpeed } from "../atoms/speed-reducer";
@@ -92,13 +93,17 @@ const generateLostWord = () => {
 
   const { inputMode } = readUtilityParams();
 
-  if (inputMode === "roma") {
-    const romaLostWord = lineWord.nextChar.r[0] + romaLostWordOmitNextChar;
-    const actualLostNotes = romaLostWord.length;
-    return { lostWord: romaLostWord, actualLostNotes, pointLostNotes };
+  switch (inputMode) {
+    case "roma": {
+      const romaLostWord = lineWord.nextChar.r[0] + romaLostWordOmitNextChar;
+      const actualLostNotes = romaLostWord.length;
+      return { lostWord: romaLostWord, actualLostNotes, pointLostNotes };
+    }
+    case "kana":
+    case "flick": {
+      const kanaLostWord = lineWord.nextChar.k + lineWord.word.map((w) => w.k).join("");
+      const actualLostNotes = countKanaWordWithDakuonSplit({ kanaWord: kanaLostWord });
+      return { lostWord: kanaLostWord, actualLostNotes, pointLostNotes };
+    }
   }
-
-  const kanaLostWord = lineWord.nextChar.k + lineWord.word.map((w) => w.k).join("");
-  const actualLostNotes = calcWordKanaNotes({ kanaWord: kanaLostWord });
-  return { lostWord: kanaLostWord, actualLostNotes, pointLostNotes };
 };

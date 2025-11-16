@@ -7,3 +7,16 @@ export const zip = <T, U>(arr1: T[], arr2: U[]): [T, U][] => {
 export function getMinValue(numbers: number[]): number {
   return Math.min(...numbers);
 }
+
+export function medianIgnoringZeros(array: number[]) {
+  const nonZeroArray = array.filter((a) => a !== 0);
+
+  const temp = [...nonZeroArray].sort((a, b) => a - b);
+  const half = (temp.length / 2) | 0;
+
+  if (temp.length % 2) {
+    return temp[half]!;
+  }
+
+  return (temp[half - 1]! + temp[half]!) / 2;
+}

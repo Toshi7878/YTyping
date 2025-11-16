@@ -206,7 +206,7 @@ const SOKUON_JOIN_LIST = [
 const KANA_UNSUPPORTED_SYMBOLS = ["←", "↓", "↑", "→"];
 
 const generateTypingWord = (kanaChunkWord: string[]) => {
-  const hasWord = kanaChunkWord.length;
+  const hasWord = !!kanaChunkWord.length;
 
   if (hasWord) {
     return generateTypeChunks(kanaChunkWord);
