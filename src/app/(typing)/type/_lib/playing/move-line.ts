@@ -27,7 +27,7 @@ export const movePrevLine = () => {
   const { playSpeed } = readPlaySpeed();
 
   const timeIndex = prevCount + (isTimeBuffer ? 0 : 1);
-  const prevTimeRaw = Number(map.mapData[timeIndex]?.time);
+  const prevTimeRaw = Number(map.lines[timeIndex]?.time);
   const prevTime = prevTimeRaw - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 
   const newLineSelectIndex = typingLineIndexes.indexOf(prevCount) + 1;
@@ -38,11 +38,11 @@ export const movePrevLine = () => {
   writeLineCount(newCount);
   setupLine(newCount);
 
-  const seekTargetTime = isTimeBuffer ? prevTime : (map.mapData[prevCount]?.time ?? 0);
+  const seekTargetTime = isTimeBuffer ? prevTime : (map.lines[prevCount]?.time ?? 0);
   seekYTPlayer(seekTargetTime);
   setNotify(Symbol("◁"));
   scrollToCard(newLineSelectIndex);
-  const newLine = map.mapData[newCount];
+  const newLine = map.lines[newCount];
   const lineProgress = readLineProgress();
   if (lineProgress) {
     lineProgress.value = isTimeBuffer ? prevTime - (newLine?.time ?? 0) : 0;
@@ -61,8 +61,8 @@ export const moveNextLine = () => {
 
   const nextCount = map.typingLineIndexes.find((num) => num > adjustedCount);
   if (nextCount === undefined) return;
-  const prevLine = map.mapData[nextCount - 1];
-  const nextLine = map.mapData[nextCount];
+  const prevLine = map.lines[nextCount - 1];
+  const nextLine = map.lines[nextCount];
   if (!prevLine || !nextLine) return;
   const { playSpeed } = readPlaySpeed();
   const { scene, isPaused } = readUtilityParams();
@@ -84,7 +84,7 @@ export const moveNextLine = () => {
   scrollToCard(newLineSelectIndex);
   const lineProgress = readLineProgress();
   if (lineProgress) {
-    lineProgress.value = nextTime - (map.mapData[newCount]?.time ?? 0);
+    lineProgress.value = nextTime - (map.lines[newCount]?.time ?? 0);
   }
 };
 
@@ -94,7 +94,7 @@ export const moveSetLine = (seekCount: number) => {
   const { playSpeed } = readPlaySpeed();
   const { scene, isPaused } = readUtilityParams();
   const isTimeBuffer = scene === "practice" && !isPaused;
-  const seekTime = Number(map.mapData[seekCount]?.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
+  const seekTime = Number(map.lines[seekCount]?.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
 
   seekYTPlayer(seekTime);
   const newCount = getLineCountByTime(seekTime) + (isTimeBuffer ? 0 : 1);
@@ -104,7 +104,7 @@ export const moveSetLine = (seekCount: number) => {
 
   const lineProgress = readLineProgress();
   if (lineProgress) {
-    lineProgress.value = seekTime - (map.mapData[newCount]?.time ?? 0);
+    lineProgress.value = seekTime - (map.lines[newCount]?.time ?? 0);
   }
 };
 

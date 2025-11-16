@@ -10,8 +10,8 @@ export const commitLineSkip = () => {
   const { timeOffset, isRetrySkip } = readUtilityRefParams();
   const count = readLineCount();
 
-  const startLine = map.mapData[map.startLine];
-  const nextLine = map.mapData[count + 1];
+  const startLine = map.lines[map.typingLineIndexes[0] ?? 0];
+  const nextLine = map.lines[count + 1];
 
   if (!startLine || !nextLine) return;
 

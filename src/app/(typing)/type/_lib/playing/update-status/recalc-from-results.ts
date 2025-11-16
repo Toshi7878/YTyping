@@ -22,7 +22,7 @@ export const recalculateStatusFromResults = ({
     lost: 0,
     kpm: 0,
     rank: 0,
-    line: map.lineLength,
+    line: map.typingLineIndexes.length,
   };
 
   const lineResults = readAllLineResult();

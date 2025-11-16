@@ -18,7 +18,7 @@ import {
   Results,
   Users,
 } from "@/server/drizzle/schema";
-import type { RESULT_INPUT_METHOD_TYPES, ResultData } from "@/validator/result";
+import type { RESULT_INPUT_METHOD_TYPES, TypingLineResults } from "@/validator/result";
 import {
   CLEAR_RATE_LIMIT,
   CreateResultSchema,
@@ -220,7 +220,7 @@ export const resultRouter = {
     }
 
     const jsonString = new TextDecoder().decode(data);
-    const jsonData: ResultData = JSON.parse(jsonString);
+    const jsonData: TypingLineResults = JSON.parse(jsonString);
 
     return jsonData;
   }),

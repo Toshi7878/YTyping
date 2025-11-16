@@ -38,9 +38,9 @@ export const CreateResultSchema = z
   })
   .refine(() => true, { error: "リザルトデータの形式が無効です" });
 
-export type ResultData = z.output<typeof CreateTypingResultJsonSchema>;
-export type TypeResult = ResultData[number]["types"][number];
-export type LineResultStatus = ResultData[number]["status"];
+export type TypingLineResults = z.output<typeof CreateTypingResultJsonSchema>;
+export type TypeResult = TypingLineResults[number]["types"][number];
+export type LineResultStatus = TypingLineResults[number]["status"];
 
 export const RESULT_INPUT_METHOD_TYPES = ["roma", "kana", "romakana", "english"] as const;
 export const RESULT_PLAY_SPEEDS = [1, 1.25, 1.5, 1.75, 2];

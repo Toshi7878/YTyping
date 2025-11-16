@@ -67,7 +67,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     }
 
     const count = readLineCount();
-    const nextLine = map?.mapData[1];
+    const nextLine = map?.lines[1];
     if (count === 0 && map && nextLine) {
       setNextLyrics(nextLine);
       resetCurrentLine();

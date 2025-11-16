@@ -43,7 +43,7 @@ export const saveLineResult = (count: number) => {
 
   const typingStatus = readTypingStatus();
   const { miss: lineMiss, type: lineType, types, startSpeed, startInputMode, rkpm: lineRkpm } = readLineSubstatus();
-  const isTypingLine = (map.mapData[count]?.kpm.r ?? 0) > 0;
+  const isTypingLine = (map.lines[count]?.kpm.roma ?? 0) > 0;
   const { totalTypeTime } = readSubstatus();
   const roundedTotalTypeTime = Math.floor(totalTypeTime * 1000) / 1000;
 

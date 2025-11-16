@@ -58,14 +58,14 @@ const getCurrentLineTime = ({ currentTime }: { currentTime: number }) => {
   if (!map) return 0;
   const count = readLineCount();
 
-  const currentLine = map.mapData[count];
+  const currentLine = map.lines[count];
   return currentTime - Number(currentLine?.time);
 };
 
 const getCurrentLineRemainTime = ({ currentTime }: { currentTime: number }) => {
   const map = readBuiltMap();
   const count = readLineCount();
-  const nextLine = map?.mapData[count + 1];
+  const nextLine = map?.lines[count + 1];
   if (!nextLine) return 0;
 
   const { movieDuration } = readUtilityParams();
@@ -84,10 +84,10 @@ const getConstantLineTime = ({ currentLineTime }: { currentLineTime: number }) =
 const getConstantRemainLineTime = ({ constantLineTime }: { constantLineTime: number }) => {
   const map = readBuiltMap();
   const count = readLineCount();
-  const nextLine = map?.mapData[count + 1];
+  const nextLine = map?.lines[count + 1];
   if (!nextLine) return 0;
 
-  const currentLine = map.mapData[count];
+  const currentLine = map.lines[count];
   if (!currentLine) return 0;
 
   const { movieDuration } = readUtilityParams();

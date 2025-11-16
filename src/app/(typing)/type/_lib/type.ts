@@ -28,8 +28,8 @@ export interface BuiltMapLine {
   time: number;
   word: TypeChunk[];
   lyrics: string;
-  kpm: { k: number; r: number };
-  notes: { k: number; r: number };
+  kpm: { kana: number; roma: number };
+  notes: { kana: number; roma: number };
   lineCount?: number;
   kanaWord: string;
   options?: MapLine["options"];

@@ -35,8 +35,9 @@ export const OptimizedResultCard = ({
   const scene = useSceneState();
   const { minPlaySpeed, playSpeed } = usePlaySpeedState();
   const inputMode = usePlayingInputModeState();
+  const currentLine = map?.lines[count];
 
-  if (!map || !_lineResult || !map.mapData[count]) return null;
+  if (!currentLine || !_lineResult) return null;
 
   const { isSelected, lineResult } = _lineResult;
 
@@ -44,10 +45,10 @@ export const OptimizedResultCard = ({
   const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.word.map((w) => w.k).join("");
   const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w.r[0]).join("") : lineKanaWord;
-  const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
-  const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
+  const lineNotes = lineInputMode === "roma" ? lineData.notes.roma : lineData.notes.kana;
+  const lineKpm = (lineInputMode === "roma" ? lineData.kpm.roma : lineData.kpm.kana) * lineSpeed;
 
-  const maxLinePoint = lineData.notes.r * CHAR_POINT;
+  const maxLinePoint = lineData.notes.roma * CHAR_POINT;
 
   const kpm = lineResult.status.lKpm ?? 0;
   const rkpm = lineResult.status.lRkpm ?? 0;
@@ -57,7 +58,7 @@ export const OptimizedResultCard = ({
   const lostWord = lineResult.status.lostW ?? "";
   const lost = lineResult.status.lLost ?? 0;
 
-  const seekTime = Number(map.mapData[count].time) - (scene === "replay" ? 0 : 1 * playSpeed);
+  const seekTime = currentLine.time - (scene === "replay" ? 0 : 1 * playSpeed);
 
   return (
     <Card

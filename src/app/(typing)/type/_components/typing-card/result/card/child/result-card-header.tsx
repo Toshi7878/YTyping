@@ -3,7 +3,6 @@ import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import type { InputMode } from "@/app/(typing)/type/_lib/type";
 import { CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import type { BuildMap } from "@/lib/build-map/build-map";
 import { cn } from "@/lib/utils";
 
 interface ResultCardHeaderProps {
@@ -21,14 +20,14 @@ export const ResultCardHeader = ({
   lineKpm,
   lineSpeed,
 }: ResultCardHeaderProps) => {
-  const map = useBuiltMapState() as BuildMap;
+  const map = useBuiltMapState();
 
   const inputModeText = lineInputMode === "roma" ? "(ローマ字)" : "(かな)";
 
   return (
     <CardHeader className="flex flex-row items-center">
       <span>
-        {lineIndex}/{map?.lineLength}
+        {lineIndex}/{map?.typingLineIndexes.length}
       </span>
       <span className="mx-2">|</span>
       <TooltipWrapper label={`要求打鍵速度${inputModeText}`}>

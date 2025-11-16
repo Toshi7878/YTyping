@@ -7,7 +7,7 @@ export const ChangeCSS = () => {
   if (changeCSSCount === null) {
     return;
   }
-  const changeCSS = map?.mapData[changeCSSCount]?.options?.changeCSS;
+  const changeCSS = map?.lines[changeCSSCount]?.options?.changeCSS;
   if (!changeCSS) return;
   return <style>{changeCSS}</style>;
 };

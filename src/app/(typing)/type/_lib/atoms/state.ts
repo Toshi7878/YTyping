@@ -2,9 +2,10 @@ import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import type { BuildMap } from "@/lib/build-map/build-map";
+
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
+import type { TypingLineResults } from "@/validator/result";
 import type { BuiltMapLine, InputMode, LineWord, SceneType, SkipGuideKey } from "../type";
 import { setLineResultSelected } from "./family";
 import { readTypingOptions } from "./hydrate";
@@ -14,9 +15,18 @@ import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
 
-const builtMapAtom = atomWithReset<BuildMap | null>(null);
+const builtMapAtom = atomWithReset<{
+  lines: BuiltMapLine[];
+  totalNotes: { roma: number; kana: number };
+  keyRate: number;
+  missRate: number;
+  initialLineResults: TypingLineResults;
+  typingLineIndexes: number[];
+  changeCSSIndexes: number[];
+  duration: number;
+} | null>(null);
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
-export const setBuiltMap = (map: BuildMap) => store.set(builtMapAtom, map);
+export const setBuiltMap = (map: ExtractAtomValue<typeof builtMapAtom>) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 export const readBuiltMap = () => store.get(builtMapAtom);
 
@@ -102,8 +112,8 @@ export const setChangeCSSCount = (newCurrentCount: number) => {
   const map = readBuiltMap();
   if (!map) return;
 
-  if (map.mapChangeCSSCounts.length > 0) {
-    const closestMin = map.mapChangeCSSCounts
+  if (map.changeCSSIndexes.length > 0) {
+    const closestMin = map.changeCSSIndexes
       .filter((count) => count <= newCurrentCount)
       .reduce((prev, curr) => (prev === undefined || curr > prev ? curr : prev), 0);
 
@@ -181,7 +191,7 @@ export const setNextLyrics = (line: BuiltMapLine) => {
   const typingOptions = readTypingOptions();
   const inputMode = store.get(playingInputModeAtom);
   const speed = store.get(speedBaseAtom);
-  const nextKpm = (inputMode === "roma" ? line.kpm.r : line.kpm.k) * speed.playSpeed;
+  const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * speed.playSpeed;
   store.set(nextLyricsAtom, () => {
     if (line.kanaWord) {
       return {
@@ -251,9 +261,9 @@ export const resetCurrentLine = () => {
   const map = store.get(builtMapAtom);
   const lineProgress = store.get(lineProgressAtom);
 
-  if (lineProgress && map && map.mapData[1]) {
+  if (lineProgress && map && map.lines[1]) {
     lineProgress.value = 0;
-    lineProgress.max = map.mapData[1].time;
+    lineProgress.max = map.lines[1].time;
   }
 };
 
@@ -289,7 +299,7 @@ export const setTypingStatus = (update: Updater<ExtractAtomValue<typeof typingSt
 export const resetTypingStatus = () => {
   store.set(typingStatusAtom, RESET);
   const map = readBuiltMap();
-  setLineStatus(map?.lineLength || 0);
+  setLineStatus(map?.typingLineIndexes.length || 0);
   const { rankingScores } = readUtilityRefParams();
   setRankStatus(rankingScores.length + 1);
 };

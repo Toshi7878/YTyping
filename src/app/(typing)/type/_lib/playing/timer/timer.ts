@@ -69,7 +69,7 @@ const timer = () => {
   const { movieDuration } = readUtilityParams();
 
   const count = readLineCount();
-  const nextLine = map.mapData[count + 1];
+  const nextLine = map.lines[count + 1];
   const nextLineTime = nextLine && movieDuration > nextLine.time ? nextLine.time : movieDuration;
 
   const hasReachedNextLineTime = currentTime >= nextLineTime;
@@ -164,10 +164,10 @@ const updateEvery100ms = ({
 
 const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTime: number; count: number }) => {
   const map = readBuiltMap();
-  const currentLine = map?.mapData[count];
+  const currentLine = map?.lines[count];
   if (!map || !currentLine) return;
 
-  const isTypingLine = count >= 0 && currentLine.kpm.r > 0;
+  const isTypingLine = count >= 0 && currentLine.kpm.roma > 0;
   const { scene } = readUtilityParams();
 
   if (isTypingLine) {
@@ -184,15 +184,15 @@ const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTim
       updateStatusForLineUpdate({ constantLineTime });
       break;
     case "practice":
-      recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "lineUpdate" });
+      recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "lineUpdate" });
       break;
   }
 };
 
 export const setupLine = (nextCount: number) => {
   const map = readBuiltMap();
-  const newCurrentLine = map?.mapData[nextCount];
-  const newNextLine = map?.mapData[nextCount + 1];
+  const newCurrentLine = map?.lines[nextCount];
+  const newNextLine = map?.lines[nextCount + 1];
   if (!map || !newCurrentLine || !newNextLine) return;
 
   writeLineCount(nextCount);
@@ -236,7 +236,7 @@ const updateSkipGuideVisibility = ({
   if (!map) return;
   const { isRetrySkip } = readUtilityRefParams();
   const { playSpeed } = readPlaySpeed();
-  const startLine = map.mapData[map.startLine];
+  const startLine = map.lines[map.typingLineIndexes[0] ?? 0];
 
   if (isRetrySkip && startLine && currentTime >= startLine.time - 3 * playSpeed) {
     writeUtilityRefParams({ isRetrySkip: false });

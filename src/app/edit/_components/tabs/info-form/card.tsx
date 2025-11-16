@@ -28,7 +28,13 @@ import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { BuildMap } from "@/lib/build-map/build-map";
+import { buildMap } from "@/lib/build-map/build-map";
+import {
+  calculateDuration,
+  calculateSpeedDifficulty,
+  calculateTotalNotes,
+  getStartLine,
+} from "@/lib/build-map/generate-initial-result";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo, fetchBackupMap } from "@/lib/indexed-db";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeId } from "@/utils/extract-youtube-id";
@@ -401,13 +407,17 @@ const useOnSubmit = (form: FormType) => {
     const map = readMap();
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
-    const { speedDifficulty, duration, totalNotes, startLine } = new BuildMap(map);
+    const builtMap = buildMap(map);
+    const duration = calculateDuration(builtMap);
+    const totalNotes = calculateTotalNotes(builtMap);
+    const startLine = getStartLine(builtMap);
+    const speedDifficulty = calculateSpeedDifficulty(builtMap);
     const videoId = getYTVideoId();
     if (!videoId) return;
+
+    const typingStartTime = Math.max(0, startLine.time + 0.2);
+
     const videoDuration = getYTDuration() ?? 0;
-
-    const typingStartTime = Math.max(0, Number(map[startLine]?.time ?? 0) + 0.2);
-
     const newPreviewTime =
       previewTime > videoDuration || typingStartTime >= previewTime ? Number(typingStartTime.toFixed(3)) : previewTime;
 
@@ -430,8 +440,8 @@ const useOnSubmit = (form: FormType) => {
       romaKpmMax: Math.floor(speedDifficulty.max.r),
       kanaKpmMedian: Math.floor(speedDifficulty.median.r),
       kanaKpmMax: Math.floor(speedDifficulty.max.r),
-      romaTotalNotes: Math.floor(totalNotes.r),
-      kanaTotalNotes: Math.floor(totalNotes.k),
+      romaTotalNotes: Math.floor(totalNotes.roma),
+      kanaTotalNotes: Math.floor(totalNotes.kana),
     };
     const { isUpdateUpdatedAt } = readUtilityParams();
     const mapId = readMapId();

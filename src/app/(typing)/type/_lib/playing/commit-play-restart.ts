@@ -1,3 +1,4 @@
+import { getStartLine } from "@/lib/build-map/generate-initial-result";
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { initializeAllLineResult } from "../atoms/family";
 import { readMapId } from "../atoms/hydrate";
@@ -28,9 +29,10 @@ import { stopTimer } from "./timer/timer";
 
 export const commitPlayRestart = (newPlayMode: PlayMode) => {
   const map = readBuiltMap();
-  const nextLine = map?.mapData[1];
-  const startLine = map?.mapData[map.startLine];
-  if (!nextLine || !startLine) return;
+  const nextLine = map?.lines[1];
+  if (!map || !nextLine) return;
+  const startLine = getStartLine(map.lines);
+  if (!startLine) return;
   resetCurrentLine();
   setNextLyrics(nextLine);
   resetLineCount();
@@ -78,7 +80,7 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
   setScene(newPlayMode);
 
   if (newPlayMode === "play") {
-    initializeAllLineResult(structuredClone(map.initialLineResultData));
+    initializeAllLineResult(structuredClone(map.initialLineResults));
   }
 
   if (newPlayMode !== "practice") {

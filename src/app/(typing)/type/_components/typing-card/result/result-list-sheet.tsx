@@ -11,7 +11,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import type { ResultData } from "@/validator/result";
+import type { TypingLineResults } from "@/validator/result";
 import { OptimizedResultCard } from "./card/optimized-result-card";
 
 export const ResultListSheet = () => {
@@ -107,9 +107,8 @@ const ResultLineList = () => {
 
   return (
     <div className="relative h-full overflow-y-auto px-4">
-      {map?.initialLineResultData.map((_: ResultData[number], index: number) => {
-        const lineData = map.mapData[index];
-
+      {map?.initialLineResults.map((_: TypingLineResults[number], index: number) => {
+        const lineData = map.lines[index];
         if (!lineData?.kanaWord) return null;
 
         lineIndex++;

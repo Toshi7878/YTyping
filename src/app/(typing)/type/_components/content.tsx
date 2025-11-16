@@ -4,7 +4,15 @@ import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { BuildMap } from "@/lib/build-map/build-map";
+import { buildMap } from "@/lib/build-map/build-map";
+import {
+  buildInitialLineResult,
+  calculateDuration,
+  calculateKeyAndMissRates,
+  calculateTotalNotes,
+  extractChangeCSSIndexes,
+  extractTypingLineIndexes,
+} from "@/lib/build-map/generate-initial-result";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
@@ -17,6 +25,7 @@ import {
   setLineStatus,
   useSceneGroupState,
 } from "../_lib/atoms/state";
+import { readReadyInputMode } from "../_lib/atoms/storage";
 import { mutateTypingStats } from "../_lib/mutate-stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
@@ -47,11 +56,28 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
 
   useEffect(() => {
     if (mapJson) {
-      const builtMap = new BuildMap(mapJson);
+      const builtMapLines = buildMap(mapJson);
+      const totalNotes = calculateTotalNotes(builtMapLines);
+      const { keyRate, missRate } = calculateKeyAndMissRates({ romaTotalNotes: totalNotes.roma });
+
+      const readyInputMode = readReadyInputMode();
+      const typingLineIndexes = extractTypingLineIndexes(builtMapLines);
+      const changeCSSIndexes = extractChangeCSSIndexes(builtMapLines);
+
+      const builtMap = {
+        lines: builtMapLines,
+        totalNotes,
+        keyRate,
+        missRate,
+        initialLineResults: buildInitialLineResult(builtMapLines, readyInputMode),
+        typingLineIndexes,
+        changeCSSIndexes,
+        duration: calculateDuration(builtMapLines),
+      };
       setBuiltMap(builtMap);
-      initializeAllLineResult(builtMap.initialLineResultData);
+      initializeAllLineResult(builtMap.initialLineResults);
       setLineSelectIndex(builtMap.typingLineIndexes?.[0] ?? 0);
-      setLineStatus(builtMap.lineLength);
+      setLineStatus(builtMapLines.length);
       resetTypingStatus();
 
       const totalProgress = readTotalProgress();

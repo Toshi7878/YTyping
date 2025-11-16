@@ -31,16 +31,16 @@ export const PracticeLineCard = () => {
 
   const lineInputMode = lineResult.status.mode ?? inputMode;
 
-  const lineData = map?.mapData[index];
-  if (!lineData) return null;
+  const builtLine = map?.lines[index];
+  if (!builtLine) return null;
 
-  const maxLinePoint = lineData.notes.r * CHAR_POINT;
-  const lineKanaWord = lineData.word.map((w) => w.k).join("");
-  const lineNotes = lineInputMode === "roma" ? lineData.notes.r : lineData.notes.k;
+  const maxLinePoint = builtLine.notes.roma * CHAR_POINT;
+  const lineKanaWord = builtLine.word.map((w) => w.k).join("");
+  const lineNotes = lineInputMode === "roma" ? builtLine.notes.roma : builtLine.notes.kana;
   const lineSpeed = lineResult.status.sp > speedData.minPlaySpeed ? lineResult.status.sp : speedData.minPlaySpeed;
-  const lineKpm = (lineInputMode === "roma" ? lineData.kpm.r : lineData.kpm.k) * lineSpeed;
+  const lineKpm = (lineInputMode === "roma" ? builtLine.kpm.roma : builtLine.kpm.kana) * lineSpeed;
 
-  const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w.r[0]).join("") : lineKanaWord;
+  const lineTypeWord = lineInputMode === "roma" ? builtLine.word.map((w) => w.r[0]).join("") : lineKanaWord;
   const lostWord = lineResult.status.lostW ?? "";
   const point = lineResult.status.p ?? 0;
   const tBonus = lineResult.status.tBonus ?? 0;

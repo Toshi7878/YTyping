@@ -26,7 +26,7 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
 
     if (isFailed) {
       score = prev.score + prev.point;
-      line = map.lineLength - (completeCount + failureCount);
+      line = map.typingLineIndexes.length - (completeCount + failureCount);
       rank = calcCurrentRank(score);
     }
 

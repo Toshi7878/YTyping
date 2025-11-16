@@ -30,7 +30,7 @@ export const ReadyPracticeButton = () => {
         const map = readBuiltMap();
         const scene = readScene();
         if (map && scene === "practice") {
-          recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "lineUpdate" });
+          recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "lineUpdate" });
         }
       }
     }

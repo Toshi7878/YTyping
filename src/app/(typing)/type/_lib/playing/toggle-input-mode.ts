@@ -64,7 +64,7 @@ const updateNextLyrics = () => {
   if (!map) return;
 
   const count = readLineCount();
-  const nextLine = map.mapData[count + 1];
+  const nextLine = map.lines[count + 1];
 
   if (nextLine?.kanaWord) {
     setNextLyrics(nextLine);

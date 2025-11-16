@@ -133,11 +133,11 @@ export const handleTyping = (event: KeyboardEvent) => {
         const map = readBuiltMap();
         if (!map) return;
 
-        recalculateStatusFromResults({ count: map.mapData.length - 1, updateType: "completed" });
+        recalculateStatusFromResults({ count: map.lines.length - 1, updateType: "completed" });
 
         if (isPaused) {
-          const newCurrentLine = map.mapData[count];
-          const newNextLine = map.mapData[count + 1];
+          const newCurrentLine = map.lines[count];
+          const newNextLine = map.lines[count + 1];
           if (!newCurrentLine || !newNextLine) return;
           setNewLine({ newCurrentLine, newNextLine });
         }
