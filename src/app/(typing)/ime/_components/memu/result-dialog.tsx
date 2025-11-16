@@ -76,7 +76,7 @@ const ResultWordsTable = () => {
                 <TableCell className="text-center">
                   {isJudged ? <EvaluationText evaluation={result.evaluation} /> : "-"}
                 </TableCell>
-                <TableCell className="px-4 leading-6 break-words">
+                <TableCell className="px-4 leading-6 wrap-break-word">
                   <div className="space-y-1">
                     {result.inputs.map((input, i) => (
                       <div key={`${i}-${input}`} className="text-sm">
@@ -85,7 +85,7 @@ const ResultWordsTable = () => {
                     ))}
                   </div>
                 </TableCell>
-                <TableCell className="px-4 break-words">
+                <TableCell className="px-4 wrap-break-word">
                   <div className="text-sm">{result.evaluation !== "Great" && map?.textWords[index]}</div>
                 </TableCell>
               </TableRow>
@@ -99,15 +99,15 @@ const ResultWordsTable = () => {
 
 const EvaluationText = ({ evaluation }: { evaluation: string }) => {
   if (evaluation === "Great") {
-    return <span className="outline-text text-xs text-yellow-500">Great!</span>;
+    return <span className="outline-text text-xs text-perfect">Great!</span>;
   }
 
   if (evaluation === "Good") {
-    return <span className="outline-text text-xs text-blue-400">Good</span>;
+    return <span className="outline-text text-xs text-success">Good</span>;
   }
 
   if (evaluation === "None") {
-    return <span className="outline-text text-xs text-red-500">None</span>;
+    return <span className="outline-text text-xs text-destructive">None</span>;
   }
 
   return <span className="outline-text text-foreground text-xs opacity-60">Skip</span>;
