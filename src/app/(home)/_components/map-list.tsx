@@ -30,6 +30,7 @@ export const MapList = () => {
   }, [data]);
 
   const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
+
   return (
     <section className={isSearching ? "opacity-20" : ""}>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">

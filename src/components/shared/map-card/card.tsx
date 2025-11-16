@@ -24,7 +24,7 @@ export const MapCard = ({ map, className, priority = false }: MapCardProps) => {
   return (
     <CardWithContent variant="map" className={{ card: className }} ref={ref}>
       <MapLeftThumbnail
-        alt={map.info.title}
+        alt={shouldRender ? map.info.title : ""}
         media={shouldRender ? map.media : undefined}
         size="home"
         loading={priority ? "eager" : "lazy"}

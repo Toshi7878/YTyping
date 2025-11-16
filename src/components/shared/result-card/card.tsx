@@ -64,7 +64,7 @@ export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
           )}
 
           <MapLeftThumbnail
-            alt={result.map.info.title}
+            alt={shouldRender ? result.map.info.title : ""}
             media={shouldRender ? result?.map.media : undefined}
             size="timeline"
             loading={priority ? "eager" : "lazy"}
