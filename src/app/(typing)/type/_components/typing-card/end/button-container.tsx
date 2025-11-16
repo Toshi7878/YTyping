@@ -8,7 +8,7 @@ import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
-import { SubmitRankingButton } from "./submit-ranking-button";
+import { RegisterRankingButton } from "./submit-ranking-button";
 
 export const EndButtonContainer = () => {
   const { data: session } = useSession();
@@ -26,7 +26,7 @@ export const EndButtonContainer = () => {
     <>
       <div className="flex items-center justify-around" id="end_main_buttons">
         {isDisplayRankingButton && (
-          <SubmitRankingButton
+          <RegisterRankingButton
             isScoreUpdated={isScoreUpdated}
             disabled={isSubmitRankingButtonDisabled}
             onSuccess={() => setIsSubmitRankingButtonDisabled(true)}

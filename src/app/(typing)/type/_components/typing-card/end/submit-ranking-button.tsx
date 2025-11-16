@@ -13,13 +13,13 @@ import { useTRPC } from "@/trpc/provider";
 import { getMinValue } from "@/utils/array";
 import type { CreateResultStatusSchema } from "@/validator/result";
 
-interface SubmitRankingButtonProps {
+interface RegisterRankingButtonProps {
   isScoreUpdated: boolean;
   disabled: boolean;
   onSuccess: () => void;
 }
 
-export const SubmitRankingButton = ({ isScoreUpdated, disabled, onSuccess }: SubmitRankingButtonProps) => {
+export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: RegisterRankingButtonProps) => {
   const confirm = useConfirm();
 
   const trpc = useTRPC();
