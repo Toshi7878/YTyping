@@ -32,10 +32,7 @@ export const useLazyRender = (options: UseLazyRenderOptions = {}) => {
           }
         });
       },
-      {
-        rootMargin,
-        threshold,
-      },
+      { rootMargin, threshold },
     );
 
     observer.observe(element);
