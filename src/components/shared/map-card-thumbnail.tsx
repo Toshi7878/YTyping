@@ -5,7 +5,12 @@ import { usePathname } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
-import { resetPreviewVideoInfo, setPreviewVideoInfo, usePreviewVideoInfoState } from "@/lib/atoms/global-atoms";
+import {
+  readPreviewYTPlayer,
+  resetPreviewVideoInfo,
+  setPreviewVideoInfo,
+  usePreviewVideoInfoState,
+} from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map-list";
 
@@ -65,6 +70,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: strin
 
   const previewYouTube = () => {
     if (videoId !== mapVideoId) {
+      if (!readPreviewYTPlayer()) return;
       setPreviewVideoInfo({
         videoId: mapVideoId,
         previewTime: mapPreviewTime,
