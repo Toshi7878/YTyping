@@ -53,20 +53,20 @@ const ResultCardLayout = ({ ref, result, priority }: ResultCardLayoutProps) => {
 
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
         <ResultCardContent result={result ?? null} priority={priority} />
-        <div className="absolute bottom-0 left-4 z-2 flex items-center space-x-1">
-          <RankingCount
-            // key={result?.map.ranking.myRank ?? 0}
-            myRank={result?.map.ranking.myRank ?? null}
-            rankingCount={result?.map.ranking.count ?? 0}
-            myRankUpdatedAt={result?.map.ranking.myRankUpdatedAt ?? null}
-          />
-          <LikeCountIcon
-            // key={result ? `${result.map.id}-${result.map.like.hasLiked}` : "skeleton"}
-            mapId={result?.map.id ?? null}
-            hasLiked={result?.map.like.hasLiked ?? false}
-            likeCount={result?.map.like.count ?? 0}
-          />
-        </div>
+        {result && (
+          <div className="absolute bottom-0 left-4 z-2 flex items-center space-x-1">
+            <RankingCount
+              myRank={result.map.ranking.myRank}
+              rankingCount={result.map.ranking.count}
+              myRankUpdatedAt={result.map.ranking.myRankUpdatedAt}
+            />
+            <LikeCountIcon
+              mapId={result.map.id}
+              hasLiked={result.map.like.hasLiked ?? false}
+              likeCount={result.map.like.count}
+            />
+          </div>
+        )}
       </CardContentWithThumbnail>
 
       <CardFooter className="py-4">
