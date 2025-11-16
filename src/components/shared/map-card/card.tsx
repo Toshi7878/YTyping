@@ -96,7 +96,6 @@ const MapInfoBottom = ({ map }: { map: MapListItem }) => {
       </div>
       <div className="flex items-center space-x-1">
         <RankingCount
-          key={map.ranking.myRank}
           myRank={map.ranking.myRank}
           rankingCount={map.ranking.count}
           myRankUpdatedAt={map.ranking.myRankUpdatedAt}
