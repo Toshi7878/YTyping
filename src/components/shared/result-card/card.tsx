@@ -9,9 +9,10 @@ import { ResultBadgesMobile } from "./status-badges";
 
 interface ResultCardProps {
   result: ResultWithMapItem;
+  priority?: boolean;
 }
 
-export const ResultCard = ({ result }: ResultCardProps) => {
+export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
   const src =
     result.map.media.thumbnailQuality === "maxresdefault"
       ? `https://i.ytimg.com/vi_webp/${result.map.media.videoId}/maxresdefault.webp`
@@ -28,7 +29,7 @@ export const ResultCard = ({ result }: ResultCardProps) => {
       />
 
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
-        <ResultCardContent result={result} />
+        <ResultCardContent result={result} priority={priority} />
         <div className="absolute bottom-0 left-4 z-2 flex items-center space-x-1">
           <RankingCount
             key={result.map.ranking.myRank}
