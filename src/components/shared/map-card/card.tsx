@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardWithContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { MapListItem } from "@/server/api/routers/map-list";
 import { formatTime } from "@/utils/format-time";
+import { useLazyRender } from "@/utils/hooks/use-lazy-render";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
@@ -20,53 +20,20 @@ interface MapCardProps {
 }
 
 export const MapCard = ({ map, className, priority = false }: MapCardProps) => {
-  const [shouldRender, setShouldRender] = useState(priority);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (priority) return;
-
-    const card = cardRef.current;
-    if (!card) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setShouldRender(true);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        rootMargin: "300px",
-        threshold: 0,
-      },
-    );
-
-    observer.observe(card);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [priority]);
-
-  return (
-    <div ref={cardRef}>
-      <MapCardLayout map={shouldRender ? map : null} className={className} priority={priority} />
-    </div>
-  );
+  const { ref, shouldRender } = useLazyRender({ priority });
+  return <MapCardLayout ref={ref} map={shouldRender ? map : null} className={className} priority={priority} />;
 };
 
 interface MapCardLayoutProps {
+  ref: ReturnType<typeof useLazyRender>["ref"];
   map: MapListItem | null;
   className?: string;
   priority: boolean;
 }
 
-const MapCardLayout = ({ map, className, priority }: MapCardLayoutProps) => {
+const MapCardLayout = ({ ref, map, className, priority }: MapCardLayoutProps) => {
   return (
-    <CardWithContent variant="map" className={{ card: className }}>
+    <CardWithContent variant="map" className={{ card: className }} ref={ref}>
       <MapLeftThumbnail
         alt={map?.info.title ?? ""}
         media={map?.media ?? undefined}

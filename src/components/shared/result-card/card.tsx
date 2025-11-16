@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { Card, CardContentWithThumbnail, CardFooter } from "@/components/ui/card";
 import type { ResultWithMapItem } from "@/server/api/routers/result";
+import { useLazyRender } from "@/utils/hooks/use-lazy-render";
 import { ResultCardContent } from "./card-content";
 import { ResultCardHeader } from "./card-header";
 import { ResultBadgesMobile } from "./status-badges";
@@ -14,50 +14,17 @@ interface ResultCardProps {
 }
 
 export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
-  const [shouldRender, setShouldRender] = useState(priority);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (priority) return;
-
-    const card = cardRef.current;
-    if (!card) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setShouldRender(true);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        rootMargin: "300px",
-        threshold: 0,
-      },
-    );
-
-    observer.observe(card);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [priority]);
-
-  return (
-    <div ref={cardRef}>
-      <ResultCardLayout result={shouldRender ? result : null} priority={priority} />
-    </div>
-  );
+  const { ref, shouldRender } = useLazyRender({ priority });
+  return <ResultCardLayout ref={ref} result={shouldRender ? result : null} priority={priority} />;
 };
 
 interface ResultCardLayoutProps {
+  ref: ReturnType<typeof useLazyRender>["ref"];
   result: ResultWithMapItem | null;
   priority: boolean;
 }
 
-const ResultCardLayout = ({ result, priority }: ResultCardLayoutProps) => {
+const ResultCardLayout = ({ ref, result, priority }: ResultCardLayoutProps) => {
   const src = result
     ? result.map.media.thumbnailQuality === "maxresdefault"
       ? `https://i.ytimg.com/vi_webp/${result.map.media.videoId}/maxresdefault.webp`
@@ -69,7 +36,10 @@ const ResultCardLayout = ({ result, priority }: ResultCardLayoutProps) => {
   const skeletonDate = new Date(0);
 
   return (
-    <Card className={result ? "map-card-hover block w-full py-0 transition-shadow duration-300" : "block w-full py-0"}>
+    <Card
+      className={result ? "map-card-hover block w-full py-0 transition-shadow duration-300" : "block w-full py-0"}
+      ref={ref}
+    >
       <ResultCardHeader
         player={result?.player ?? skeletonPlayer}
         resultId={result?.id ?? 0}
