@@ -12,17 +12,17 @@ export const buildImeMap = async (mapData: MapLine[]) => {
   let lineTimes: number[] = [];
   const lines: { time: number; word: string }[][] = [];
 
-  for (const [i, line] of mapData.entries()) {
+  for (const [i, currentLine] of mapData.entries()) {
     const nextLine = mapData[i + 1];
     const nextToNextLine = mapData[i + 2];
 
-    const formattedLyrics = formatWord(deleteRubyTag(line.lyrics));
+    const formattedLyrics = formatWord(deleteRubyTag(currentLine.lyrics));
 
-    const isTypingLine = isValidTypingLine(formattedLyrics, line.word);
+    const isTypingLine = isValidTypingLine(formattedLyrics, currentLine.word);
 
     if (isTypingLine) {
       lineWords.push(formattedLyrics);
-      lineTimes.push(Number(line.time));
+      lineTimes.push(Number(currentLine.time));
     }
 
     const nextTime = getNextTime(nextLine, nextToNextLine);
@@ -30,7 +30,7 @@ export const buildImeMap = async (mapData: MapLine[]) => {
     const shouldBreakLine = shouldCreateNewLine(lineWords, nextLine, nextTime, lineTimes);
 
     if (shouldBreakLine) {
-      const lastTime = nextLine ? Number(nextLine.time) : Number(line.time) + 10; // 次の行がない場合は10秒後
+      const lastTime = nextLine ? Number(nextLine.time) : Number(currentLine.time) + 10; // 次の行がない場合は10秒後
       lineWords.push("");
       lineTimes.push(lastTime);
 

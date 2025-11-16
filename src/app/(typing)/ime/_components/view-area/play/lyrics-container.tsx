@@ -46,7 +46,7 @@ const Lyrics = () => {
             {"\u200B"}
             {line.map((chunk) => (
               <Fragment key={String(chunk.time)}>
-                <span className="text-transparent">{chunk.word}</span>
+                <span className="text-transparent">{chunk.word}</span>{" "}
               </Fragment>
             ))}
           </div>
@@ -56,7 +56,7 @@ const Lyrics = () => {
               <Fragment key={String(chunk.time)}>
                 <span style={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}>
                   {chunk.word}
-                </span>
+                </span>{" "}
               </Fragment>
             ))}
           </div>
