@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
+import { cache } from "react";
+import { HydrateClient, serverApi } from "@/trpc/server";
 import { Content } from "../_components/content";
 import { JotaiProvider } from "../_components/provider";
 
+// React cache でメモ化：同じmapIdでの複数回の呼び出しでもDBクエリは1回のみ
+const getMapInfo = cache(async (mapId: number) => {
+  return await serverApi.map.getMapInfo({ mapId });
+});
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
+  const mapInfo = await getMapInfo(Number(id));
 
   const thumbnailUrl =
     mapInfo.thumbnailQuality === "maxresdefault"
@@ -35,15 +41,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function Page({ params }: PageProps<"/type/[id]">) {
   const { id: mapId } = await params;
   const userTypingOptions = await serverApi.userOption.getUserTypingOptions();
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(mapId) });
+  const mapInfo = await getMapInfo(Number(mapId));
   if (!mapInfo) {
     notFound();
   }
 
-  prefetch(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
   return (
     <HydrateClient>
-      <JotaiProvider userTypingOptions={userTypingOptions} mapId={Number(mapId)}>
+      <JotaiProvider userTypingOptions={userTypingOptions} mapInfo={mapInfo}>
         <Content videoId={mapInfo.videoId} mapId={Number(mapId)} />
       </JotaiProvider>
     </HydrateClient>

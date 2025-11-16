@@ -15,8 +15,10 @@ export function medianIgnoringZeros(array: number[]) {
   const half = (temp.length / 2) | 0;
 
   if (temp.length % 2) {
+    // biome-ignore lint/style/noNonNullAssertion: <>
     return temp[half]!;
   }
 
+  // biome-ignore lint/style/noNonNullAssertion: <>
   return (temp[half - 1]! + temp[half]!) / 2;
 }

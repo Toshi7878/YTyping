@@ -50,6 +50,7 @@ export const applyRomaInputMode = () => {
 
   if (lineWord.nextChar.k) {
     const wordFix = romaConvert(lineWord);
+    if (!wordFix) return;
     setLineWord({
       correct: lineWord.correct,
       nextChar: wordFix.nextChar,
@@ -77,8 +78,10 @@ function romaConvert(lineWord: LineWord) {
     (dakuten ? dakuten : lineWord.nextChar.k) + lineWord.word.map((char) => char.k).join(""),
   );
 
+  if (!kanaChunkWord) return;
   const nextPoint = lineWord.nextChar.p;
-  const word = generateTypingWord(kanaChunkWord!);
-  const nextChar = word[0]!;
+  const word = generateTypingWord(kanaChunkWord);
+  const nextChar = word[0];
+  if (!nextChar) return;
   return { nextChar: { ...nextChar, p: nextPoint }, word: word.slice(1) };
 }

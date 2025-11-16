@@ -15,7 +15,7 @@ import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { useMapIdState } from "../../../_lib/atoms/hydrate";
+import { useMapInfoState } from "../../../_lib/atoms/hydrate";
 import { writeUtilityRefParams } from "../../../_lib/atoms/ref";
 import { setRankStatus, useSceneGroupState } from "../../../_lib/atoms/state";
 import { RankingPopoverContent } from "./ranking-popover-menu";
@@ -25,12 +25,12 @@ type RankingResult = RouterOutPuts["result"]["getMapRanking"][number];
 export const RankingTableCard = ({ className }: { className?: string }) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
-  const mapId = useMapIdState();
+  const mapInfo = useMapInfoState();
   const trpc = useTRPC();
   const { data, error, isPending } = useQuery(
-    trpc.result.getMapRanking.queryOptions({ mapId: mapId ?? 0 }, { gcTime: Infinity }),
+    trpc.result.getMapRanking.queryOptions({ mapId: mapInfo?.id ?? 0 }, { gcTime: Infinity }),
   );
-  const toggleClap = useClapMutationRanking(mapId ?? 0);
+  const toggleClap = useClapMutationRanking(mapInfo?.id ?? 0);
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -142,7 +142,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
             );
           },
           onClick: (event, row) => {
-            if (!session?.user?.id || toggleClap.isPending || !mapId) return;
+            if (!session?.user?.id || toggleClap.isPending || !mapInfo?.id) return;
             event.preventDefault();
             event.stopPropagation();
             toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClapped });
@@ -150,7 +150,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
         },
       },
     ];
-  }, [data, openPopoverIndex, toggleClap.isPending, session?.user?.id, toggleClap.mutate, mapId]);
+  }, [data, openPopoverIndex, toggleClap.isPending, session?.user?.id, toggleClap.mutate, mapInfo?.id]);
 
   if (error) return <div>Error loading data</div>;
 

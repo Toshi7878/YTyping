@@ -15,6 +15,7 @@ export const mapRouter = {
 
     const mapInfo = await db
       .select({
+        id: Maps.id,
         title: Maps.title,
         videoId: Maps.videoId,
         artistName: Maps.artistName,

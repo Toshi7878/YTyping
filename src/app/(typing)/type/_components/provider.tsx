@@ -3,26 +3,26 @@ import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { type ReactNode, useEffect } from "react";
 import type { RouterOutPuts } from "@/server/api/trpc";
-import { mapIdAtom, setMapId, typingOptionsAtom } from "../_lib/atoms/hydrate";
+import { mapInfoAtom, setMapInfo, typingOptionsAtom } from "../_lib/atoms/hydrate";
 import { getTypeAtomStore } from "../_lib/atoms/store";
 
 interface JotaiProviderProps {
   userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
-  mapId: number;
+  mapInfo: RouterOutPuts["map"]["getMapInfo"];
   children: ReactNode;
 }
 
-export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProviderProps) => {
+export const JotaiProvider = ({ userTypingOptions, mapInfo, children }: JotaiProviderProps) => {
   const store = getTypeAtomStore();
 
   useHydrateAtoms(
-    [[mapIdAtom, mapId], ...(userTypingOptions ? [[typingOptionsAtom, userTypingOptions] as const] : [])],
+    [[mapInfoAtom, mapInfo], ...(userTypingOptions ? [[typingOptionsAtom, userTypingOptions] as const] : [])],
     { store },
   );
 
   useEffect(() => {
-    setMapId(mapId);
-  }, [mapId]);
+    setMapInfo(mapInfo);
+  }, [mapInfo]);
 
   return <Provider store={store}>{children}</Provider>;
 };

@@ -246,6 +246,7 @@ export const userStatsRouter = {
     type DayCounts = Omit<(typeof userActivityTypeCounts)[number], "createdAt">;
     const dataMap = new Map<string, DayCounts>();
     userActivityTypeCounts.forEach((record) => {
+      // biome-ignore lint/style/noNonNullAssertion: <>
       const dateKey = new Date(record.createdAt).toISOString().split("T")[0]!;
       const { createdAt: _, ...dayData } = record;
       dataMap.set(dateKey, dayData);
@@ -255,6 +256,7 @@ export const userStatsRouter = {
     const currentDate = new Date(startOfYear);
 
     while (currentDate <= endOfYear) {
+      // biome-ignore lint/style/noNonNullAssertion: <>
       const dateKey = currentDate.toISOString().split("T")[0]!;
       const existingData = dataMap.get(dateKey);
 
@@ -271,6 +273,7 @@ export const userStatsRouter = {
 
         const dominantType = typeCounts.reduce(
           (max, current) => (current.count > max.count ? current : max),
+          // biome-ignore lint/style/noNonNullAssertion: <>
           typeCounts[0]!,
         );
         const totalTypeCount = Object.values(existingData).reduce((total, count) => total + count, 0);
