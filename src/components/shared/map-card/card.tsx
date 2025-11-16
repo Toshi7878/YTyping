@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardWithContent } from "@/components/ui/card";
@@ -15,13 +16,59 @@ import { UserNameLinkText } from "../text/user-name-link-text";
 interface MapCardProps {
   map: MapListItem;
   className?: string;
+  priority?: boolean;
 }
 
-export const MapCard = ({ map, className }: MapCardProps) => {
+export const MapCard = ({ map, className, priority = false }: MapCardProps) => {
+  const [shouldRender, setShouldRender] = useState(priority);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (priority) return;
+
+    const card = cardRef.current;
+    if (!card) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldRender(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        rootMargin: "300px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(card);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [priority]);
+
+  return (
+    <div ref={cardRef}>
+      <MapCardLayout map={shouldRender ? map : null} className={className} priority={priority} />
+    </div>
+  );
+};
+
+interface MapCardLayoutProps {
+  map: MapListItem | null;
+  className?: string;
+  priority: boolean;
+}
+
+const MapCardLayout = ({ map, className, priority }: MapCardLayoutProps) => {
   return (
     <CardWithContent variant="map" className={{ card: className }}>
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size="home" />
-      <MapInfo map={map} />
+      <MapLeftThumbnail alt={map?.info.title ?? ""} media={map?.media ?? undefined} size="home" priority={priority} />
+      {map && <MapInfo map={map} />}
     </CardWithContent>
   );
 };

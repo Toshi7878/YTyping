@@ -8,7 +8,7 @@ import type { ResultWithMapItem } from "@/server/api/routers/result";
 import { nolink } from "@/utils/no-link";
 import { ResultStatusBadges } from "./status-badges";
 
-export const ResultCardContent = ({ result }: { result: ResultWithMapItem }) => {
+export const ResultCardContent = ({ result, priority = false }: { result: ResultWithMapItem; priority: boolean }) => {
   return (
     <div className="flex w-full items-center gap-4 py-6">
       <Badge
@@ -19,7 +19,7 @@ export const ResultCardContent = ({ result }: { result: ResultWithMapItem }) => 
         Rank: #{result.rank}
       </Badge>
 
-      <MapLeftThumbnail alt={result.map.info.title} media={result.map.media} size="timeline" />
+      <MapLeftThumbnail alt={result.map.info.title} media={result.map.media} size="timeline" priority={priority} />
 
       <MapInfo map={result.map} className="flex-1" />
 

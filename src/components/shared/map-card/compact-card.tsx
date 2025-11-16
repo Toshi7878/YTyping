@@ -36,6 +36,7 @@ export const OverTakeNotificationMapCard = ({ notification }: { notification: Ov
           media={map.media}
           size="notification"
           imageClassName="rounded-t-none rounded-br-none"
+          priority={false}
         />
         <CompactMapInfo map={map} />
       </CardContent>
@@ -64,6 +65,7 @@ export const LikeNotificationMapCard = ({ notification }: { notification: LikeNo
           media={map.media}
           size="notification"
           imageClassName="rounded-t-none rounded-br-none"
+          priority={false}
         />
         <CompactMapInfo map={map} />
       </CardContent>
@@ -92,6 +94,7 @@ export const ClapNotificationMapCard = ({ notification }: { notification: ClapNo
           media={map.media}
           size="notification"
           imageClassName="rounded-t-none rounded-br-none"
+          priority={false}
         />
         <CompactMapInfo map={map} />
       </CardContent>
@@ -107,7 +110,7 @@ interface CompactMapCardProps {
 export const CompactMapCard = ({ map, thumbnailSize }: CompactMapCardProps) => {
   return (
     <CardWithContent variant="map">
-      <MapLeftThumbnail alt={map.info.title} media={map.media} size={thumbnailSize} />
+      <MapLeftThumbnail alt={map.info.title} media={map.media} size={thumbnailSize} priority={false} />
       <CompactMapInfo map={map} />
     </CardWithContent>
   );

@@ -27,7 +27,9 @@ export const UserResultList = ({ id }: { id: string }) => {
     <div className="space-y-4">
       <StatsList userId={id} />
       <section className="grid grid-cols-1 gap-3">
-        {data.pages.map((page) => page.items.map((result) => <ResultCard key={result.id} result={result} />))}
+        {data.pages.map((page) =>
+          page.items.map((result) => <ResultCard key={result.id} result={result} priority={data.pages.length === 1} />),
+        )}
         {hasNextPage && <Spinner ref={ref} />}
       </section>
     </div>
