@@ -12,7 +12,7 @@ interface UseLazyRenderOptions {
  * @returns ref - 監視対象の要素に割り当てるref, shouldRender - レンダリングすべきかどうかのフラグ
  */
 export const useLazyRender = (options: UseLazyRenderOptions = {}) => {
-  const { priority = false, rootMargin = "300px", threshold = 0 } = options;
+  const { priority = false, rootMargin = "400px", threshold = 0 } = options;
 
   const [shouldRender, setShouldRender] = useState(priority);
   const ref = useRef<HTMLDivElement>(null);

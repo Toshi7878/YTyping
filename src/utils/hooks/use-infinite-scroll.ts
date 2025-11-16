@@ -17,7 +17,7 @@ export const useInfiniteScroll = <TData = unknown, TError = unknown>(
   options: InfiniteScrollOptions = {},
 ) => {
   const { isFetchingNextPage, fetchNextPage, hasNextPage } = props;
-  const { rootMargin = "1800px 0px", threshold = 0 } = options;
+  const { rootMargin = "1500px 0px", threshold = 0 } = options;
 
   const { ref, inView } = useInView({ threshold, rootMargin });
 

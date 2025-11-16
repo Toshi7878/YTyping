@@ -29,10 +29,7 @@ export const UsersResultList = () => {
     }
   }, [data]);
 
-  const ref = useInfiniteScroll(
-    { isFetchingNextPage, fetchNextPage, hasNextPage },
-    { threshold: 0, rootMargin: "2000px 0px" },
-  );
+  const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
   return (
     <section className={cn("grid grid-cols-1 gap-3", isSearching && "opacity-20")}>
       {data.pages.map((page, pageIndex) =>
