@@ -1,5 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -7,8 +8,8 @@ import { BuildMap } from "@/lib/build-map/build-map";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
-import { useMapIdState } from "../_lib/atoms/hydrate";
 import { readTotalProgress } from "../_lib/atoms/ref";
+import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
 import {
   resetTypingStatus,
   setBuiltMap,
@@ -16,6 +17,7 @@ import {
   setLineStatus,
   useSceneGroupState,
 } from "../_lib/atoms/state";
+import { mutateTypingStats } from "../_lib/mutate-stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";
@@ -24,9 +26,10 @@ import { YouTubePlayer } from "./youtube-player";
 
 interface ContentProps {
   videoId: string;
+  mapId: number;
 }
 
-export const Content = ({ videoId }: ContentProps) => {
+export const Content = ({ videoId, mapId }: ContentProps) => {
   useLoadSoundEffects();
   useHotkeys(
     "home, end, pageup, pagedown, capslock, `, f3, f6, space",
@@ -36,11 +39,11 @@ export const Content = ({ videoId }: ContentProps) => {
     { enableOnFormTags: false, preventDefault: true },
   );
 
-  const mapId = useMapIdState();
   const trpc = useTRPC();
   const { data: mapJson, isLoading } = useQuery(
-    trpc.map.getMapJson.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
+    trpc.map.getMapJson.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
   );
+  const pathname = usePathname();
 
   useEffect(() => {
     if (mapJson) {
@@ -57,6 +60,13 @@ export const Content = ({ videoId }: ContentProps) => {
       }
     }
   }, [mapJson]);
+
+  useEffect(() => {
+    return () => {
+      mutateTypingStats();
+      resetAllStateOnCleanup();
+    };
+  }, [pathname]);
 
   return (
     <div className="fixed flex h-screen w-screen flex-col items-center">

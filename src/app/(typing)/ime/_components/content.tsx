@@ -1,6 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
@@ -11,7 +12,6 @@ import { MenuBar } from "../_components/memu/menu-bar";
 import { Notifications } from "../_components/notifications-display";
 import { ViewArea } from "../_components/view-area/view-area";
 import { YouTubePlayer } from "../_components/youtube-player";
-import { readMapId } from "../_lib/atoms/hydrate";
 import { readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
 import { buildImeMap } from "../_lib/core/bulid-ime-map";
 import { mutateImeStats } from "../_lib/core/mutate-stats";
@@ -19,47 +19,48 @@ import { pathChangeAtomReset } from "../_lib/core/reset";
 
 interface ContentProps {
   mapInfo: RouterOutPuts["map"]["getMapInfo"];
+  mapId: number;
 }
 
-export const Content = ({ mapInfo }: ContentProps) => {
+export const Content = ({ mapInfo, mapId }: ContentProps) => {
   const { videoId } = mapInfo;
   const trpc = useTRPC();
-  const mapId = readMapId();
-  const { data: mapData } = useQuery(
-    trpc.map.getMapJson.queryOptions(
-      { mapId: Number(mapId) ?? 0 },
-      { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity },
-    ),
+  const pathname = usePathname();
+  const { data: mapJson } = useQuery(
+    trpc.map.getMapJson.queryOptions({ mapId }, { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
   );
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
-  const loadMap = async (mapData: MapLine[]) => {
-    showLoading({ message: "ひらがな判定生成中..." });
+  const loadMap = useCallback(
+    async (mapData: MapLine[]) => {
+      showLoading({ message: "ひらがな判定生成中..." });
 
-    try {
-      const map = await buildImeMap(mapData);
-      setBuiltMap(map);
-      hideLoading();
-    } catch {
-      showLoading({
-        message: (
-          <div className="flex h-full flex-col items-center justify-center gap-2">
-            ワード生成に失敗しました。
-            <Button onClick={() => loadMap(mapData)}>再試行</Button>
-          </div>
-        ),
-        hideSpinner: true,
-      });
-    }
-  };
+      try {
+        const map = await buildImeMap(mapData);
+        setBuiltMap(map);
+        hideLoading();
+      } catch {
+        showLoading({
+          message: (
+            <div className="flex h-full flex-col items-center justify-center gap-2">
+              ワード生成に失敗しました。
+              <Button onClick={() => loadMap(mapData)}>再試行</Button>
+            </div>
+          ),
+          hideSpinner: true,
+        });
+      }
+    },
+    [showLoading, hideLoading],
+  );
 
   useEffect(() => {
-    if (mapData) {
-      void loadMap(mapData);
+    if (mapJson) {
+      void loadMap(mapJson);
     } else {
       showLoading({ message: "譜面読み込み中..." });
     }
-  }, [mapData, showLoading, loadMap]);
+  }, [mapJson, showLoading, loadMap]);
 
   useEffect(() => {
     return () => {
@@ -67,7 +68,7 @@ export const Content = ({ mapInfo }: ContentProps) => {
       pathChangeAtomReset();
       hideLoading();
     };
-  }, [mapId]);
+  }, [pathname]);
 
   return <TypingLayout videoId={videoId} />;
 };

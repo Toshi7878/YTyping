@@ -10,21 +10,18 @@ import { getImeAtomStore } from "../_lib/atoms/store";
 interface JotaiProviderProps {
   children: ReactNode;
   userImeTypingOptions: RouterOutPuts["userOption"]["getUserImeTypingOptions"];
-  mapId: string;
+  mapId: number;
 }
 
 export const JotaiProvider = ({ children, userImeTypingOptions, mapId }: JotaiProviderProps) => {
   const store = getImeAtomStore();
   useHydrateAtoms(
-    [
-      ...(userImeTypingOptions ? [[imeTypeOptionsAtom, userImeTypingOptions] as const] : []),
-      [mapIdAtom, mapId ? Number(mapId) : null],
-    ],
+    [...(userImeTypingOptions ? [[imeTypeOptionsAtom, userImeTypingOptions] as const] : []), [mapIdAtom, mapId]],
     { store },
   );
 
   useEffect(() => {
-    setMapId(mapId ? Number(mapId) : null);
+    setMapId(mapId);
   }, [mapId]);
   return <Provider store={store}>{children}</Provider>;
 };

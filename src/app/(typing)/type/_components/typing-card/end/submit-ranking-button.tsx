@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type z from "zod/v4";
 import { readAllLineResult } from "@/app/(typing)/type/_lib/atoms/family";
-import { readMapId } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
 import { readTypingStatus, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
@@ -12,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/provider";
 import { getMinValue } from "@/utils/array";
 import type { CreateResultStatusSchema } from "@/validator/result";
+import { readMapId } from "../../../_lib/atoms/hydrate";
 
 interface RegisterRankingButtonProps {
   isScoreUpdated: boolean;

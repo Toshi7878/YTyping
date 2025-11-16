@@ -43,8 +43,8 @@ export default async function Page({ params }: PageProps<"/type/[id]">) {
   prefetch(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
   return (
     <HydrateClient>
-      <JotaiProvider userTypingOptions={userTypingOptions} mapId={mapId}>
-        <Content videoId={mapInfo.videoId} />
+      <JotaiProvider userTypingOptions={userTypingOptions} mapId={Number(mapId)}>
+        <Content videoId={mapInfo.videoId} mapId={Number(mapId)} />
       </JotaiProvider>
     </HydrateClient>
   );

@@ -1,5 +1,5 @@
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
-import { readMapId } from "../atoms/hydrate";
+import { readMapId, resetMapId } from "../atoms/hydrate";
 import { readTypingTextarea } from "../atoms/ref";
 import {
   initializeResultsFromMap,
@@ -41,4 +41,5 @@ export const pathChangeAtomReset = () => {
   resetScene();
   resetStatus();
   resetNotifications();
+  resetMapId();
 };

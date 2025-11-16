@@ -39,8 +39,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (!mapInfo) notFound();
 
   return (
-    <JotaiProvider userImeTypingOptions={userImeTypingOptions} mapId={id}>
-      <Content mapInfo={mapInfo} />
+    <JotaiProvider userImeTypingOptions={userImeTypingOptions} mapId={Number(id)}>
+      <Content mapInfo={mapInfo} mapId={Number(id)} />
     </JotaiProvider>
   );
 }
