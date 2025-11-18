@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -17,7 +17,7 @@ export const Content = () => {
   const { data: session } = useSession();
   const creatorId = useCreatorIdState();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
-  const { id } = useParams();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!hasUploadPermission) {
@@ -38,7 +38,7 @@ export const Content = () => {
     return () => {
       pathChangeAtomReset();
     };
-  }, [id]);
+  }, [pathname]);
   return (
     <div className="mx-auto max-w-5xl xl:max-w-7xl">
       <section className="flex flex-col gap-2 lg:flex-row lg:gap-6">
