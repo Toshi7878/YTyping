@@ -61,9 +61,9 @@ const ResultListSearchParamsSchema = {
 };
 
 export const SelectResultListApiSchema = z
-  .object({ cursor: z.number().nullable().optional() })
+  .object({ cursor: z.number().optional() })
   .extend(ResultListSearchParamsSchema);
 export const SelectResultListByPlayerIdApiSchema = z.object({
   playerId: z.number(),
-  cursor: z.number().nullable().optional(),
+  cursor: z.number().optional(),
 });

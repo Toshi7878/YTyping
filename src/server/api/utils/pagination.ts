@@ -1,4 +1,4 @@
-export const createPagination = (cursor: number | null | undefined, pageSize: number) => {
+export const createPagination = (cursor: number | undefined, pageSize: number) => {
   const page = cursor ?? 0;
 
   const buildPageResult = <T>(items: T[]): { items: T[]; nextCursor: number | undefined } => {
