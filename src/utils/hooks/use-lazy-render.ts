@@ -1,18 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import type { IntersectionOptions } from "react-intersection-observer";
 
-interface UseLazyRenderOptions {
+interface UseLazyRenderOptions extends IntersectionOptions {
   priority?: boolean;
-  rootMargin?: string;
-  threshold?: number;
 }
 
-/**
- * Intersection Observerを使用して遅延レンダリングを実現するカスタムフック
- * @param options - 優先読み込みフラグとIntersection Observerのオプション
- * @returns ref - 監視対象の要素に割り当てるref, shouldRender - レンダリングすべきかどうかのフラグ
- */
 export const useLazyRender = (options: UseLazyRenderOptions = {}) => {
-  const { priority = false, rootMargin = "400px", threshold = 0 } = options;
+  const { priority = false, rootMargin = "400px" } = options;
 
   const [shouldRender, setShouldRender] = useState(priority);
   const ref = useRef<HTMLDivElement>(null);
@@ -32,7 +26,7 @@ export const useLazyRender = (options: UseLazyRenderOptions = {}) => {
           }
         });
       },
-      { rootMargin, threshold },
+      { rootMargin },
     );
 
     observer.observe(element);
@@ -40,7 +34,7 @@ export const useLazyRender = (options: UseLazyRenderOptions = {}) => {
     return () => {
       observer.disconnect();
     };
-  }, [priority, rootMargin, threshold]);
+  }, [priority, rootMargin]);
 
   return { ref, shouldRender };
 };
