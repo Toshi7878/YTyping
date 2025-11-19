@@ -7,7 +7,7 @@ type UseInfiniteScrollProps<TData = unknown, TError = unknown> = Pick<
   "isFetchingNextPage" | "fetchNextPage" | "hasNextPage"
 >;
 
-export const useInfiniteScroll = (props: UseInfiniteScrollProps, options: IntersectionOptions) => {
+export const useInfiniteScroll = (props: UseInfiniteScrollProps, options: IntersectionOptions = {}) => {
   const { isFetchingNextPage, fetchNextPage, hasNextPage } = props;
   const { rootMargin = "1500px 0px" } = options;
   const { ref, inView } = useInView({ ...options, rootMargin });
