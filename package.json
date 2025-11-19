@@ -18,7 +18,8 @@
     "db:generate": "drizzle-kit generate",
     "db:reset": "pnpx supabase db reset",
     "db:status": "pnpx supabase status",
-    "db:seed": "pnpx tsx --env-file=.env src/server/drizzle/seed/index.ts"
+    "db:seed": "pnpx tsx --env-file=.env src/server/drizzle/seed/index.ts",
+    "notice:generate": "pnpx license-checker-rseidelsohn --production --markdown --out NOTICE.md"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.896.0",
