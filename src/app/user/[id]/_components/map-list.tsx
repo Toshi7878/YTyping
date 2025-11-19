@@ -13,7 +13,7 @@ export const UserCreatedMapList = ({ id }: { id: string }) => {
     trpc.mapList.getByCreatorId.infiniteQueryOptions(
       { userId: Number(id), sort: null },
       {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
         refetchOnWindowFocus: false,
         gcTime: Infinity,
       },
@@ -39,7 +39,7 @@ export const UserLikedMapList = ({ id }: { id: string }) => {
     trpc.mapList.getByLikedUserId.infiniteQueryOptions(
       { userId: Number(id), sort: null },
       {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
         refetchOnWindowFocus: false,
         gcTime: Infinity,
       },

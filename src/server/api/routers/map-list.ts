@@ -14,7 +14,7 @@ import {
   SelectMapListByUserIdApiSchema,
 } from "@/validator/map-list";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../trpc";
-import { createCursorPager } from "../utils/cursor-pager";
+import { createPagination } from "../utils/pagination";
 
 const createBaseSelect = ({ user }: { user: TRPCContext["user"] }) => {
   return db
@@ -71,56 +71,53 @@ const mapListRoute = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
     const { user } = ctx;
 
-    const { parse, paginate } = createCursorPager(PAGE_SIZE);
-    const { page, offset } = parse(input.cursor);
-    const whereConds = [
-      user ? generateFilterSql(input.filter, user) : undefined,
-      user ? generateRankingStatusFilterSql(input.rankingStatus) : undefined,
-      ...generateDifficultyFilterSql({ minRate: input.minRate, maxRate: input.maxRate }),
-      generateKeywordFilterSql(input.keyword),
+    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
+    const searchConditions = [
+      user ? buildFilterCondition(input.filter, user) : undefined,
+      user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
+      ...buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
+      buildKeywordCondition(input.keyword),
     ];
 
     const maps = await createBaseSelect({ user })
-      .limit(PAGE_SIZE + 1)
-      .orderBy(...generateSortSql(input.sort))
+      .limit(limit)
       .offset(offset)
-      .where(whereConds.length ? and(...whereConds) : undefined);
+      .orderBy(...buildSortConditions(input.sort))
+      .where(and(...searchConditions));
 
-    return paginate(maps, page);
+    return buildPageResult(maps);
   }),
 
   getByCreatorId: publicProcedure.input(SelectMapListByUserIdApiSchema).query(async ({ input, ctx }) => {
-    const { sort, cursor, userId: creatorId } = input;
+    const { sort, userId: creatorId } = input;
     const { user } = ctx;
 
-    const { parse, paginate } = createCursorPager(PAGE_SIZE);
-    const { page, offset } = parse(cursor);
+    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
     const maps = await createBaseSelect({ user })
-      .limit(PAGE_SIZE + 1)
-      .orderBy(...generateSortSql(sort))
+      .limit(limit)
       .offset(offset)
+      .orderBy(...buildSortConditions(sort))
       .where(eq(Maps.creatorId, creatorId));
 
-    return paginate(maps, page);
+    return buildPageResult(maps);
   }),
 
   getByLikedUserId: publicProcedure.input(SelectMapListByUserIdApiSchema).query(async ({ input, ctx }) => {
-    const { sort, cursor, userId: likedUserId } = input;
+    const { sort, userId: likedUserId } = input;
     const { user } = ctx;
 
-    const { parse, paginate } = createCursorPager(PAGE_SIZE);
-    const { page, offset } = parse(cursor);
+    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
     const UserLikes = alias(MapLikes, "UserLikes");
 
     const maps = await createBaseSelect({ user })
       .innerJoin(UserLikes, and(eq(UserLikes.mapId, Maps.id), eq(UserLikes.userId, likedUserId)))
-      .limit(PAGE_SIZE + 1)
-      .orderBy(...generateSortSql(sort))
+      .limit(limit)
       .offset(offset)
+      .orderBy(...buildSortConditions(sort))
       .where(and(eq(UserLikes.userId, likedUserId), eq(UserLikes.hasLiked, true)));
 
-    return paginate(maps, page);
+    return buildPageResult(maps);
   }),
 
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
@@ -155,10 +152,10 @@ const mapListCountRoute = {
     const { db, user } = ctx;
 
     const whereConds = [
-      user ? generateFilterSql(input.filter, user) : undefined,
-      user ? generateRankingStatusFilterSql(input.rankingStatus) : undefined,
-      ...generateDifficultyFilterSql({ minRate: input.minRate, maxRate: input.maxRate }),
-      generateKeywordFilterSql(input.keyword),
+      user ? buildFilterCondition(input.filter, user) : undefined,
+      user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
+      ...buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
+      buildKeywordCondition(input.keyword),
     ];
 
     return db
@@ -181,7 +178,7 @@ export const mapListRouter = {
 
 type MapListWhereParams = z.output<typeof MapFilterSearchParamsSchema>;
 
-function generateFilterSql(
+function buildFilterCondition(
   filter: (typeof MAP_USER_FILTER_OPTIONS)[number] | null,
   user: NonNullable<TRPCContext["user"]>,
 ) {
@@ -196,7 +193,7 @@ function generateFilterSql(
   }
 }
 
-function generateSortSql(sort: z.output<typeof MapSortSearchParamsSchema> | null) {
+function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema> | null) {
   if (!sort) return [desc(Maps.id)];
 
   const { value: sortField, desc: isDesc } = sort;
@@ -229,7 +226,7 @@ interface GetDifficultyFilterSqlParams {
   maxRate: MapListWhereParams["maxRate"];
 }
 
-function generateDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
+function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
   const conditions = [];
 
   if (minRate > MAP_DIFFICULTY_RATE_FILTER_LIMIT.min) {
@@ -243,7 +240,7 @@ function generateDifficultyFilterSql({ minRate, maxRate }: GetDifficultyFilterSq
   return conditions;
 }
 
-function generateRankingStatusFilterSql(rankingStatus: MapListWhereParams["rankingStatus"]) {
+function buildRankingStatusCondition(rankingStatus: MapListWhereParams["rankingStatus"]) {
   switch (rankingStatus) {
     case "registerd":
       return isNotNull(Results.id);
@@ -260,7 +257,7 @@ function generateRankingStatusFilterSql(rankingStatus: MapListWhereParams["ranki
   }
 }
 
-const generateKeywordFilterSql = (keyword: MapListWhereParams["keyword"]) => {
+const buildKeywordCondition = (keyword: MapListWhereParams["keyword"]) => {
   if (keyword === undefined || keyword.trim() === "") return;
 
   const keywords = keyword.trim().split(/\s+/);

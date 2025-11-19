@@ -28,13 +28,13 @@ export const MapFilterSearchParamsSchema = z.object({
 
 export const SelectMapListApiSchema = z
   .object({
-    cursor: z.string().nullable().optional(),
+    cursor: z.number().nullable().optional(),
     sort: MapSortSearchParamsSchema.nullable(),
   })
   .extend(MapFilterSearchParamsSchema.shape);
 
 export const SelectMapListByUserIdApiSchema = z.object({
-  cursor: z.string().nullable().optional(),
+  cursor: z.number().nullable().optional(),
   userId: z.number(),
   sort: MapSortSearchParamsSchema.nullable(),
 });

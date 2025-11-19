@@ -14,7 +14,11 @@ export const UserResultList = ({ id }: { id: string }) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     trpc.result.getAllWithMapByUserId.infiniteQueryOptions(
       { playerId: Number(id) },
-      { getNextPageParam: (lastPage) => lastPage.nextCursor, refetchOnWindowFocus: false, gcTime: Infinity },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+        refetchOnWindowFocus: false,
+        gcTime: Infinity,
+      },
     ),
   );
 

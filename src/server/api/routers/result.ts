@@ -28,7 +28,7 @@ import {
   SelectResultListByPlayerIdApiSchema,
 } from "@/validator/result";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../trpc";
-import { createCursorPager } from "../utils/cursor-pager";
+import { createPagination } from "../utils/pagination";
 import type { MapListItem } from "./map-list";
 
 const createResultBaseFields = (Player: BuildAliasTable<typeof Users, "Player">) => {
@@ -149,8 +149,7 @@ const resultListWithMapRoute = {
   getAllWithMap: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
     const { user } = ctx;
 
-    const { parse, paginate } = createCursorPager(PAGE_SIZE);
-    const { page, offset } = parse(input.cursor);
+    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
     const Player = alias(Users, "Player");
     const Creator = alias(Users, "Creator");
@@ -171,17 +170,16 @@ const resultListWithMapRoute = {
     const items = await createResultWithMapBaseSelect({ user, alias: { Player, Creator } })
       .where(whereConds.length ? and(...whereConds) : undefined)
       .orderBy(desc(Results.updatedAt))
-      .limit(PAGE_SIZE + 1)
+      .limit(limit)
       .offset(offset);
 
-    return paginate(toMapListItem(items), page);
+    return buildPageResult(toMapListItem(items));
   }),
 
   getAllWithMapByUserId: publicProcedure.input(SelectResultListByPlayerIdApiSchema).query(async ({ input, ctx }) => {
     const { user } = ctx;
     const { playerId } = input;
-    const { parse, paginate } = createCursorPager(PAGE_SIZE);
-    const { page, offset } = parse(input.cursor);
+    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
     const Player = alias(Users, "Player");
     const Creator = alias(Users, "Creator");
@@ -189,10 +187,10 @@ const resultListWithMapRoute = {
     const items = await createResultWithMapBaseSelect({ user, alias: { Player, Creator } })
       .where(eq(Results.userId, playerId))
       .orderBy(desc(Results.updatedAt))
-      .limit(PAGE_SIZE + 1)
+      .limit(limit)
       .offset(offset);
 
-    return paginate(toMapListItem(items), page);
+    return buildPageResult(toMapListItem(items));
   }),
 
   getUserResultStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {

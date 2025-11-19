@@ -59,7 +59,7 @@ const NotificationContent = () => {
     trpc.notification.getInfinite.infiniteQueryOptions(
       {},
       {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
         refetchOnWindowFocus: false,
         gcTime: Infinity,
       },

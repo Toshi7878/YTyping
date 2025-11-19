@@ -17,7 +17,7 @@ export const UsersResultList = () => {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     trpc.result.getAllWithMap.infiniteQueryOptions(searchParams, {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,
       gcTime: Infinity,
     }),

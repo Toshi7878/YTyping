@@ -3,7 +3,7 @@ import { and, desc, eq } from "drizzle-orm";
 import z from "zod";
 import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../trpc";
-import { createCursorPager } from "../utils/cursor-pager";
+import { createPagination } from "../utils/pagination";
 import type { MapListItem } from "./map-list";
 
 export const notificationRouter = {
@@ -16,13 +16,11 @@ export const notificationRouter = {
     return isUnreadNotificationFound;
   }),
   getInfinite: protectedProcedure
-    .input(z.object({ cursor: z.string().nullable().optional() }))
+    .input(z.object({ cursor: z.number().nullable().optional() }))
     .query(async ({ input, ctx }) => {
       const { db, user } = ctx;
       const PAGE_SIZE = 20;
-      const pager = createCursorPager(PAGE_SIZE);
-
-      const { page, offset } = pager.parse(input.cursor);
+      const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
       const mapQuery = {
         columns: {
@@ -90,7 +88,7 @@ export const notificationRouter = {
         },
         where: eq(Notifications.recipientId, user.id),
         orderBy: desc(Notifications.updatedAt),
-        limit: PAGE_SIZE + 1,
+        limit,
         offset,
       });
 
@@ -165,7 +163,7 @@ export const notificationRouter = {
         })
         .filter((item): item is NonNullable<typeof item> => item !== null);
 
-      return pager.paginate(items, page);
+      return buildPageResult(items);
     }),
 
   postUserNotificationRead: protectedProcedure.mutation(async ({ ctx }) => {

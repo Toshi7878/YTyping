@@ -16,7 +16,7 @@ export const MapList = () => {
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
     trpc.mapList.get.infiniteQueryOptions(params, {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
       gcTime: Infinity,
