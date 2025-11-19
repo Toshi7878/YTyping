@@ -48,7 +48,7 @@ export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
           resultId={result.id}
           clapCount={result.clap.count}
           hasClapped={result.clap?.hasClapped ?? false}
-          className={shouldRender ? "invisible" : undefined}
+          className={cn(!shouldRender && "invisible")}
         />
       </CardHeader>
       <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
