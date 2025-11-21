@@ -36,7 +36,9 @@ export const Content = () => {
   }, [hasUploadPermission]);
 
   useEffect(() => {
-    pathChangeAtomReset();
+    return () => {
+      pathChangeAtomReset();
+    };
   }, [pathname, searchParams]);
   return (
     <div className="mx-auto max-w-5xl xl:max-w-7xl">
