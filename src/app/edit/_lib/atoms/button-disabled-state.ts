@@ -1,5 +1,5 @@
 import { atom, useAtomValue } from "jotai";
-import { mapReducerAtom } from "./map-reducer";
+import { mapAtom } from "./map-reducer";
 import { isTimeInputValidAtom, selectLineIndexAtom } from "./state";
 import { getEditAtomStore } from "./store";
 
@@ -12,7 +12,7 @@ const isNotSelectLineAtom = atom((get) => {
 });
 
 const endLineIndexAtom = atom((get) => {
-  const map = get(mapReducerAtom);
+  const map = get(mapAtom);
 
   return map.findLastIndex((line) => line.lyrics === "end");
 });

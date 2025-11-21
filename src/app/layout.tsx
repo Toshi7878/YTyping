@@ -1,7 +1,6 @@
 import { Header } from "@/app/_components/header/header-component";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { SessionProvider } from "next-auth/react";
@@ -13,9 +12,8 @@ import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
 import { MainProvider } from "./_components/main-provider";
+import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
 import { ThemeProvider } from "./_components/theme-provider";
-
-const PreviewYouTubePlayer = dynamic(() => import("@/app/_components/preview-youtube-player"));
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],

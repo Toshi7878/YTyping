@@ -14,10 +14,18 @@ import {
   usePreviewVideoInfoState,
 } from "../../lib/atoms/global-atoms";
 
-// biome-ignore lint/style/noDefaultExport: <dynamic importを使うため>
-export default function PreviewYouTubePlayer() {
+export const PREVIEW_EXCLUDED_SEGMENTS = ["type", "edit", "ime"];
+
+export function useIsPreviewEnabled() {
   const pathname = usePathname();
-  const isPreviewPage = !pathname.startsWith("/type") && !pathname.startsWith("/edit") && !pathname.startsWith("/ime");
+  const firstSegment = pathname.split("/")[1] ?? "";
+  const isDisabled = PREVIEW_EXCLUDED_SEGMENTS.includes(firstSegment);
+
+  return !isDisabled;
+}
+
+export const PreviewYouTubePlayer = () => {
+  const isPreviewEnabled = useIsPreviewEnabled();
 
   const { videoId } = usePreviewVideoInfoState();
 
@@ -27,17 +35,17 @@ export default function PreviewYouTubePlayer() {
       if (isDialogOpen()) return;
       resetPreviewVideoInfo();
     },
-    { enableOnFormTags: false, preventDefault: true, enabled: !!videoId && isPreviewPage },
+    { enableOnFormTags: false, preventDefault: true, enabled: !!videoId && isPreviewEnabled },
   );
 
   useEffect(() => {
-    if (!isPreviewPage) {
+    if (!isPreviewEnabled) {
       resetPreviewVideoInfo();
       resetPreviewYTPlayer();
     }
-  }, [isPreviewPage]);
+  }, [isPreviewEnabled]);
 
-  if (!isPreviewPage) return null;
+  if (!isPreviewEnabled) return null;
 
   return (
     <YouTube
@@ -62,7 +70,7 @@ export default function PreviewYouTubePlayer() {
       onStateChange={onStateChange}
     />
   );
-}
+};
 
 const onStateChange = ({ data, target: YTPlayer }: { data: YT.PlayerState; target: YT.Player }) => {
   console.log("onStateChange", data);

@@ -1,14 +1,15 @@
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
+import { useIsPreviewEnabled } from "@/app/_components/preview-youtube-player";
 import {
   readPreviewYTPlayer,
   resetPreviewVideoInfo,
   setPreviewVideoInfo,
+  usePreviewPlayerState,
   usePreviewVideoInfoState,
 } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
@@ -35,19 +36,18 @@ interface MapLeftThumbnailPreviewCoverProps {
   loading?: "eager" | "lazy";
 }
 
-const PREVIEW_DISABLE_PATHNAMES = ["type", "edit"];
-
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
   const { alt = "", media, size, className, imageClassName, loading = "lazy", ...rest } = props;
 
   const src = `https://i.ytimg.com/vi/${media?.videoId}/mqdefault.jpg`;
-  const pathname = usePathname();
-  const pathSegment = pathname.split("/")[1];
+  const isPreviewEnabled = useIsPreviewEnabled();
+  const previewYTPlayer = usePreviewPlayerState();
 
   return (
     <div className={cn("group relative my-auto select-none", className)} {...rest}>
       {media ? (
         <>
+          {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
           <div className={mapLeftThumbnailVariants({ size })}>
             <Image
               unoptimized
@@ -58,9 +58,6 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
               className={cn("rounded-md", imageClassName)}
             />
           </div>
-          {!PREVIEW_DISABLE_PATHNAMES.includes(pathSegment ?? "") && (
-            <ThumbnailPreviewCover {...media} className={imageClassName} />
-          )}
         </>
       ) : (
         <div className={cn(mapLeftThumbnailVariants({ size }))}>
@@ -107,7 +104,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: strin
   return (
     <div
       className={cn(
-        "absolute inset-0 flex cursor-pointer items-center justify-center rounded-lg border-none",
+        "z-1 absolute inset-0 flex cursor-pointer items-center justify-center rounded-lg border-none",
         isActive ? "bg-black/50 opacity-100" : "bg-black/30 opacity-0 group-hover:opacity-100",
         props.className,
       )}

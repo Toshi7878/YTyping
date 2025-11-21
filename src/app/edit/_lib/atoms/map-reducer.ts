@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { atomWithReducer } from "jotai/utils";
+import { atomWithReset, RESET } from "jotai/utils";
 import { normalizeSymbols } from "@/utils/string-transform";
 import type { MapLine } from "@/validator/map-json";
 import { getEditAtomStore } from "./store";
@@ -27,56 +27,36 @@ export interface MapDeleteAction {
   index: number;
 }
 
-interface MapResetAction {
-  type: "reset";
-}
+type MapAction = MapAddAction | MapUpdateAction | MapDeleteAction | MapReplaceAllAction;
+const init: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
+export const mapAtom = atomWithReset<MapLine[]>(init);
 
-type MapAction = MapAddAction | MapUpdateAction | MapDeleteAction | MapReplaceAllAction | MapResetAction;
-
-const init = [
-  {
-    time: "0",
-    lyrics: "",
-    word: "",
-  },
-];
-
-export const mapReducerAtom = atomWithReducer<MapLine[], MapAction>(init, (prev: MapLine[], action: MapAction) => {
-  switch (action.type) {
-    case "add": {
-      const { lyrics, word } = action.payload;
-      const normalizedWord = normalizeSymbols(word);
-
-      return [...prev, { ...action.payload, lyrics, word: normalizedWord }].sort(
-        (a, b) => parseFloat(a.time) - parseFloat(b.time),
-      );
+export const useMapState = () => useAtomValue(mapAtom, { store });
+export const setMapAction = (action: MapAction) => {
+  store.set(mapAtom, (prev) => {
+    switch (action.type) {
+      case "add": {
+        const { lyrics, word } = action.payload;
+        const normalizedWord = normalizeSymbols(word);
+        return [...prev, { ...action.payload, lyrics, word: normalizedWord }].sort(
+          (a, b) => parseFloat(a.time) - parseFloat(b.time),
+        );
+      }
+      case "update": {
+        const newArray = [...prev];
+        const { lyrics, word, ...rest } = action.payload;
+        const normalizedWord = normalizeSymbols(word);
+        newArray[action.index] = { lyrics, word: normalizedWord, ...rest };
+        return newArray.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
+      }
+      case "delete": {
+        return prev.filter((_, lineIndex) => lineIndex !== action.index);
+      }
+      case "replaceAll": {
+        return action.payload;
+      }
     }
-
-    case "update": {
-      const newArray = [...prev];
-
-      const { lyrics, word, ...rest } = action.payload;
-      const normalizedWord = normalizeSymbols(word);
-
-      newArray[action.index] = { lyrics, word: normalizedWord, ...rest };
-
-      return newArray.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-    }
-
-    case "delete": {
-      return prev.filter((_, lineIndex) => lineIndex !== action.index);
-    }
-
-    case "replaceAll": {
-      return action.payload;
-    }
-
-    case "reset": {
-      return init;
-    }
-  }
-});
-
-export const useMapState = () => useAtomValue(mapReducerAtom, { store });
-export const setMapAction = (action: MapAction) => store.set(mapReducerAtom, action);
-export const readMap = () => store.get(mapReducerAtom);
+  });
+};
+export const resetMap = () => store.set(mapAtom, RESET);
+export const readMap = () => store.get(mapAtom);
