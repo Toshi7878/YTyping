@@ -15,6 +15,7 @@ interface JotaiProviderProps {
 }
 export const JotaiProvider = ({ mapId, videoId, creatorId, children }: JotaiProviderProps) => {
   const store = getEditAtomStore();
+  pathChangeAtomReset();
 
   useHydrateAtoms(
     [
@@ -26,7 +27,6 @@ export const JotaiProvider = ({ mapId, videoId, creatorId, children }: JotaiProv
   );
 
   useEffect(() => {
-    pathChangeAtomReset();
     setMapId(mapId ? Number(mapId) : null);
     setCreatorId(creatorId ? creatorId : null);
     setVideoId(videoId);
