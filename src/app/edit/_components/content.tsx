@@ -1,10 +1,8 @@
 "use client";
-import { usePathname, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useCreatorIdState } from "../_lib/atoms/hydrate";
-import { pathChangeAtomReset } from "../_lib/atoms/reset";
 import { hasMapUploadPermission } from "../_lib/map-table/has-map-upload-permission";
 import { MapTable } from "./map-table/map-table";
 import { EditTabs } from "./tabs/edit-tabs";
@@ -17,8 +15,6 @@ export const Content = () => {
   const { data: session } = useSession();
   const creatorId = useCreatorIdState();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!hasUploadPermission) {
@@ -35,11 +31,6 @@ export const Content = () => {
     };
   }, [hasUploadPermission]);
 
-  useEffect(() => {
-    return () => {
-      pathChangeAtomReset();
-    };
-  }, [pathname, searchParams]);
   return (
     <div className="mx-auto max-w-5xl xl:max-w-7xl">
       <section className="flex flex-col gap-2 lg:flex-row lg:gap-6">
