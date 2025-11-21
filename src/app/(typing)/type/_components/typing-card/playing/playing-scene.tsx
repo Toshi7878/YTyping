@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import {
+  readLineWord,
   readUtilityParams,
   resetCurrentLine,
   resetNextLyrics,
@@ -112,13 +113,18 @@ export const PlayingScene = ({ className }: PlayingProps) => {
 const handleKeyDown = (event: KeyboardEvent) => {
   const { scene, isPaused } = readUtilityParams();
 
-  if ((!isPaused || scene === "practice") && event.key !== "Escape") {
+  if ((!isPaused && scene === "play") || scene === "practice") {
+    const lineWord = readLineWord();
+    if (lineWord.nextChar.k) return;
+
     if (isTypingKey(event)) {
       event.preventDefault();
       handleTyping(event);
       return;
     }
-  } else if (event.key === "Escape") {
+  }
+
+  if (event.key === "Escape") {
     event.preventDefault();
     togglePause();
     return;

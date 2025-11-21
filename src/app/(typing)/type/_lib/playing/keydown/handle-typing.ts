@@ -1,10 +1,4 @@
-import {
-  readBuiltMap,
-  readLineWord,
-  readUtilityParams,
-  setLineWord,
-  setNewLine,
-} from "@/app/(typing)/type/_lib/atoms/state";
+import { readBuiltMap, readUtilityParams, setLineWord, setNewLine } from "@/app/(typing)/type/_lib/atoms/state";
 import { readLineCount } from "../../atoms/ref";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { calcTypeSpeed } from "../calc-type-speed";
@@ -79,18 +73,13 @@ const TENKEYS_SET = new Set([
 ]);
 
 export const isTypingKey = (event: KeyboardEvent) => {
-  const { scene } = readUtilityParams();
-
-  if (scene === "replay") return false;
   if (event.ctrlKey || event.altKey) return false;
-
   const { keyCode, code } = event;
 
   const isType = (keyCode >= 65 && keyCode <= 90) || CODES_SET.has(code) || TENKEYS_SET.has(code);
   if (!isType) return false;
 
-  const lineWord = readLineWord();
-  return Boolean(lineWord.nextChar.k);
+  return true;
 };
 
 export const handleTyping = (event: KeyboardEvent) => {
