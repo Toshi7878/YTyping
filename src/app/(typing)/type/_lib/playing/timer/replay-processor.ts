@@ -15,12 +15,12 @@ import {
 import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
 import { readAllLineResult } from "../../atoms/family";
-import { calcTypeSpeed } from "../calc-type-speed";
 import { KanaInput, RomaInput, type TypingKeys } from "../keydown/typing-input-evaluator";
 import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissStatusRefs } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessStatusRefs } from "../update-status/success";
+import { updateKpmOnTyping } from "../update-status/update-kpm";
 
 export const processReplayKeyAtTimestamp = ({
   constantLineTime,
@@ -77,11 +77,10 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
       if (!newLineWord || !successKey) return;
 
       setLineWord(newLineWord);
-      const isCompleted = newLineWord.nextChar.k === "";
+      const isCompleted = newLineWord.nextChar.kana === "";
       triggerTypeSound({ isCompleted });
 
-      calcTypeSpeed({ updateType: "keydown", constantLineTime });
-
+      updateKpmOnTyping({ constantLineTime });
       updateSuccessStatusRefs({ constantLineTime, successKey });
 
       if (!isCompleted) {

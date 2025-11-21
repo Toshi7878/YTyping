@@ -138,7 +138,7 @@ function calculateLineComplexity(line: BuiltMapLine): number {
     const chunk = line.word[i];
     if (!chunk) continue;
 
-    const firstRoma = chunk.r[0];
+    const firstRoma = chunk.romaPatterns[0];
     if (!firstRoma) continue;
 
     // 長い打鍵（4文字以上）
@@ -149,19 +149,19 @@ function calculateLineComplexity(line: BuiltMapLine): number {
     if (hasSameChar) complexityScore += 0.2;
 
     // 小文字の特殊入力（ゃ、ゅ、ょ、っ など）
-    if (chunk.k && /[ぁぃぅぇぉゃゅょゎっ]/.test(chunk.k)) {
+    if (chunk.kana && /[ぁぃぅぇぉゃゅょゎっ]/.test(chunk.kana)) {
       complexityScore += 0.15;
     }
 
     // 長音記号
-    if (chunk.k?.includes("ー")) {
+    if (chunk.kana?.includes("ー")) {
       complexityScore += 0.1;
     }
 
     // nで終わる（次の文字との関係で打ちにくい）
     if (firstRoma.endsWith("n") && i < line.word.length - 1) {
       const nextChunk = line.word[i + 1];
-      const nextRoma = nextChunk?.r[0];
+      const nextRoma = nextChunk?.romaPatterns[0];
       if (nextRoma && /^[aiueony]/.test(nextRoma)) {
         complexityScore += 0.25; // "nn"を打たなければならない
       }

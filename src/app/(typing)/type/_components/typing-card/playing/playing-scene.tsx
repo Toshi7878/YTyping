@@ -113,15 +113,13 @@ export const PlayingScene = ({ className }: PlayingProps) => {
 const handleKeyDown = (event: KeyboardEvent) => {
   const { scene, isPaused } = readUtilityParams();
 
-  if ((!isPaused && scene === "play") || scene === "practice") {
-    const lineWord = readLineWord();
-    if (lineWord.nextChar.k) return;
+  const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
 
-    if (isTypingKey(event)) {
-      event.preventDefault();
-      handleTyping(event);
-      return;
-    }
+  const lineWord = readLineWord();
+  if (shouldAcceptTyping && lineWord.nextChar.kana && isTypingKey(event)) {
+    event.preventDefault();
+    handleTyping(event);
+    return;
   }
 
   if (event.key === "Escape") {

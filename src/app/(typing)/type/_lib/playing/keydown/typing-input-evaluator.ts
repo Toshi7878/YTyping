@@ -10,9 +10,9 @@ export const evaluateTypingKeyEvent = (event: KeyboardEvent) => {
   const inputResult =
     inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
 
-  const isCompleted = inputResult.newLineWord?.nextChar.k === "";
+  const isCompleted = inputResult.newLineWord?.nextChar.kana === "";
   const isSuccess = !!inputResult.successKey;
-  const isFailed = inputResult.newLineWord?.correct.r || inputResult.newLineWord?.correct.k;
+  const isFailed = inputResult.newLineWord?.correct.roma || inputResult.newLineWord?.correct.kana;
 
   return { ...inputResult, typeChunk: lineWord.nextChar, isCompleted, isSuccess, isFailed };
 };
@@ -33,8 +33,8 @@ const DAKU_HANDAKU_LIST = DAKU_LIST.concat(HANDAKU_KANA_LIST);
 // const kana_mode_convert_rule_after = ["ひだり", "した", "うえ", "みぎ", "「", "」"];
 
 const Z_COMMAND_MAP = {
-  "...": { k: "...", r: ["z.", "z,."], p: CHAR_POINT * 3, t: "symbol" as const },
-  "..": { k: "..", r: ["z,"], p: CHAR_POINT * 2, t: "symbol" as const },
+  "...": { kana: "...", romaPatterns: ["z.", "z,."], point: CHAR_POINT * 3, type: "symbol" as const },
+  "..": { kana: "..", romaPatterns: ["z,"], point: CHAR_POINT * 2, type: "symbol" as const },
 };
 
 class ProcessedLineWord {
@@ -53,12 +53,14 @@ class ProcessedLineWord {
     if (typingKeys.code === "KeyX" || typingKeys.code === "KeyW") {
       const expectedNextKey = typingKeys.code === "KeyX" ? "ん" : "う";
       const isNNRoute =
-        newLineWord.nextChar.k === "ん" && newLineWord.correct.r.slice(-1) === "n" && newLineWord.nextChar.r[0] === "n";
-      const isNext = newLineWord.word[0]?.k === expectedNextKey;
+        newLineWord.nextChar.kana === "ん" &&
+        newLineWord.correct.roma.slice(-1) === "n" &&
+        newLineWord.nextChar.romaPatterns[0] === "n";
+      const isNext = newLineWord.word[0]?.kana === expectedNextKey;
 
       if (isNNRoute && isNext && newLineWord.word[0]) {
-        newLineWord.correct.k += "ん";
-        this.updatePoint = newLineWord.nextChar.p;
+        newLineWord.correct.kana += "ん";
+        this.updatePoint = newLineWord.nextChar.point;
         newLineWord.nextChar = newLineWord.word[0];
         newLineWord.word.splice(0, 1);
         return newLineWord;
@@ -70,9 +72,9 @@ class ProcessedLineWord {
   private zCommand({ typingKeys, lineWord }: JudgeType) {
     const newLineWord = { ...lineWord };
     if (typingKeys.code === "KeyZ" && !typingKeys.shift) {
-      const doublePeriod = newLineWord.nextChar.k === "." && newLineWord.word[0]?.k === ".";
+      const doublePeriod = newLineWord.nextChar.kana === "." && newLineWord.word[0]?.kana === ".";
       if (doublePeriod) {
-        const triplePeriod = doublePeriod && newLineWord.word[1]?.k === ".";
+        const triplePeriod = doublePeriod && newLineWord.word[1]?.kana === ".";
         if (triplePeriod) {
           newLineWord.nextChar = structuredClone(Z_COMMAND_MAP["..."]);
           newLineWord.word.splice(0, 2);
@@ -112,8 +114,8 @@ export class RomaInput {
   }
   private hasRomaPattern(typingKeys: TypingKeys, lineWord: LineWord) {
     let newLineWord: LineWord = { ...lineWord };
-    const nextRomaPattern: string[] = newLineWord.nextChar.r;
-    const kana = lineWord.nextChar.k;
+    const nextRomaPattern: string[] = newLineWord.nextChar.romaPatterns;
+    const kana = lineWord.nextChar.kana;
     const isSuccess = nextRomaPattern.some((pattern) => pattern[0] && pattern[0].toLowerCase() === typingKeys.keys[0]);
 
     if (!isSuccess || !typingKeys.keys[0]) {
@@ -121,10 +123,10 @@ export class RomaInput {
     }
 
     if (kana === "ん" && newLineWord.word[0]) {
-      newLineWord.word[0].r = this.nextNNFilter(typingKeys.keys[0], newLineWord.word[0].r);
+      newLineWord.word[0].romaPatterns = this.nextNNFilter(typingKeys.keys[0], newLineWord.word[0].romaPatterns);
     }
 
-    newLineWord.nextChar.r = this.updateNextRomaPattern(typingKeys.keys[0], nextRomaPattern);
+    newLineWord.nextChar.romaPatterns = this.updateNextRomaPattern(typingKeys.keys[0], nextRomaPattern);
     newLineWord = this.kanaFilter(kana, typingKeys.keys[0], newLineWord);
 
     newLineWord = this.wordUpdate(typingKeys.keys[0], newLineWord);
@@ -139,19 +141,19 @@ export class RomaInput {
   }
 
   private kanaFilter(kana: string, eventKey: TypingKeys["keys"][0], newLineWord: LineWord) {
-    const romaPattern = newLineWord.nextChar.r;
+    const romaPattern = newLineWord.nextChar.romaPatterns;
     if (kana.length >= 2 && romaPattern[0]) {
       const isSokuon = kana[0] === "っ" && (eventKey === "u" || romaPattern[0][0] === eventKey);
       const isYoon = kana[0] !== "っ" && (romaPattern[0][0] === "x" || romaPattern[0][0] === "l");
 
       const isToriplePeriod = kana === "..." && eventKey === ",";
       if (isSokuon || isYoon) {
-        newLineWord.correct.k += newLineWord.nextChar.k.slice(0, 1);
-        newLineWord.nextChar.k = newLineWord.nextChar.k.slice(1);
+        newLineWord.correct.kana += newLineWord.nextChar.kana.slice(0, 1);
+        newLineWord.nextChar.kana = newLineWord.nextChar.kana.slice(1);
       } else if (isToriplePeriod) {
-        newLineWord.correct.k += newLineWord.nextChar.k.slice(0, 2);
-        newLineWord.nextChar.k = newLineWord.nextChar.k.slice(2);
-        newLineWord.nextChar.p = CHAR_POINT;
+        newLineWord.correct.kana += newLineWord.nextChar.kana.slice(0, 2);
+        newLineWord.nextChar.kana = newLineWord.nextChar.kana.slice(2);
+        newLineWord.nextChar.point = CHAR_POINT;
         this.updatePoint = CHAR_POINT * 2;
       }
     }
@@ -172,16 +174,16 @@ export class RomaInput {
   }
 
   private wordUpdate(eventKey: TypingKeys["key"][0], newLineWord: LineWord) {
-    const kana = newLineWord.nextChar.k;
-    const romaPattern = newLineWord.nextChar.r;
+    const kana = newLineWord.nextChar.kana;
+    const romaPattern = newLineWord.nextChar.romaPatterns;
 
     if (!romaPattern.length) {
-      newLineWord.correct.k += kana;
-      this.updatePoint = newLineWord.nextChar.p;
-      newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
+      newLineWord.correct.kana += kana;
+      this.updatePoint = newLineWord.nextChar.point;
+      newLineWord.nextChar = newLineWord.word.shift() || { kana: "", romaPatterns: [""], point: 0, type: undefined };
     }
 
-    newLineWord.correct.r += eventKey;
+    newLineWord.correct.roma += eventKey;
 
     return newLineWord;
   }
@@ -210,7 +212,7 @@ export class KanaInput {
   private hasKana({ typingKeys, lineWord }: JudgeType) {
     let newLineWord = { ...lineWord };
 
-    const nextKana = lineWord.nextChar.k;
+    const nextKana = lineWord.nextChar.kana;
     const { keys } = typingKeys;
     if (!nextKana[0]) return;
     const isdakuHandaku = DAKU_HANDAKU_LIST.includes(nextKana[0]);
@@ -243,11 +245,11 @@ export class KanaInput {
 
     if (dakuHanDakuData.type) {
       const yoon = nextKana.length >= 2 && dakuHanDakuData.type ? nextKana[1] : "";
-      newLineWord.nextChar.k = dakuHanDakuData.type + yoon;
+      newLineWord.nextChar.kana = dakuHanDakuData.type + yoon;
       newLineWord.nextChar.orginalDakuChar = dakuHanDakuData.originalKana as Dakuten | HanDakuten;
     } else if (nextKana.length >= 2) {
-      newLineWord.correct.k += typingKey;
-      newLineWord.nextChar.k = newLineWord.nextChar.k.slice(1);
+      newLineWord.correct.kana += typingKey;
+      newLineWord.nextChar.kana = newLineWord.nextChar.kana.slice(1);
     } else {
       newLineWord = this.wordUpdate(typingKey, newLineWord);
     }
@@ -262,13 +264,13 @@ export class KanaInput {
   }
 
   private wordUpdate(typingKey: string, newLineWord: LineWord) {
-    const romaPattern = newLineWord.nextChar.r;
+    const romaPattern = newLineWord.nextChar.romaPatterns;
 
-    newLineWord.correct.k += typingKey;
-    newLineWord.correct.r += romaPattern[0];
+    newLineWord.correct.kana += typingKey;
+    newLineWord.correct.roma += romaPattern[0];
 
-    this.updatePoint = newLineWord.nextChar.p;
-    newLineWord.nextChar = newLineWord.word.shift() || { k: "", r: [""], p: 0, t: undefined };
+    this.updatePoint = newLineWord.nextChar.point;
+    newLineWord.nextChar = newLineWord.word.shift() || { kana: "", romaPatterns: [""], point: 0, type: undefined };
 
     return newLineWord;
   }

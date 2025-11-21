@@ -7,10 +7,10 @@ export type SceneType = "ready" | PlayMode | "play_end" | "practice_end" | "repl
 export type SkipGuideKey = "Space" | null;
 
 export interface TypeChunk {
-  k: string;
-  r: string[];
-  p: number;
-  t: "kana" | "alphabet" | "num" | "symbol" | "space" | undefined;
+  kana: string;
+  romaPatterns: string[];
+  point: number;
+  type: "kana" | "alphabet" | "num" | "symbol" | "space" | undefined;
   kanaUnSupportedSymbol?: string;
 }
 
@@ -19,7 +19,7 @@ export interface NextTypeChunk extends TypeChunk {
 }
 
 export interface LineWord {
-  correct: { k: string; r: string };
+  correct: { kana: string; roma: string };
   nextChar: NextTypeChunk;
   word: TypeChunk[];
 }

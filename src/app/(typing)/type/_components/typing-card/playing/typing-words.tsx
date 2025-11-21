@@ -22,13 +22,13 @@ export const TypingWords = () => {
     isSmoothScroll,
   } = useTypingOptionsState();
 
-  const isLineCompleted = !lineWord.nextChar.k && !!lineWord.correct.k;
+  const isLineCompleted = !lineWord.nextChar.kana && !!lineWord.correct.kana;
 
   const kanaWordProps = {
-    correct: lineWord.correct.k,
-    nextChar: lineWord.nextChar.k,
+    correct: lineWord.correct.kana,
+    nextChar: lineWord.nextChar.kana,
     word: lineWord.word
-      .map((w) => w.k)
+      .map((w) => w.kana)
       .join("")
       .slice(0, 60),
     isLineCompleted,
@@ -40,10 +40,10 @@ export const TypingWords = () => {
     ),
   };
   const romaWordProps = {
-    correct: lineWord.correct.r,
-    nextChar: lineWord.nextChar.r[0] ?? "",
+    correct: lineWord.correct.roma,
+    nextChar: lineWord.nextChar.romaPatterns[0] ?? "",
     word: lineWord.word
-      .map((w) => w.r[0])
+      .map((w) => w.romaPatterns[0])
       .join("")
       .slice(0, 60),
     isLineCompleted,
@@ -68,8 +68,8 @@ export const TypingWords = () => {
     romaLetterSpacing: `${romaWordSpacing.toFixed(2)}em`,
   };
 
-  const mainCorrect = mainWord === "kana" ? lineWord.correct.k : lineWord.correct.r;
-  const subCorrect = mainWord === "kana" ? lineWord.correct.r : lineWord.correct.k;
+  const mainCorrect = mainWord === "kana" ? lineWord.correct.kana : lineWord.correct.roma;
+  const subCorrect = mainWord === "kana" ? lineWord.correct.roma : lineWord.correct.kana;
   const { mainRefs, subRefs } = useWordScroll(
     mainCorrect,
     subCorrect,

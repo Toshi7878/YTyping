@@ -29,14 +29,15 @@ import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
 import { cueYTVideoById, getYTPlayerState, getYTVideoId, readYTPlayer, stopYTPlayer } from "../../atoms/yt-player";
 import type { BuiltMapLine } from "../../type";
+import { calculateLineKpm } from "../../utils/calculate-kpm";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { onEnd } from "../../youtube-player/youtube-events";
-import { calcTypeSpeed } from "../calc-type-speed";
 import { getLineCountByTime } from "../get-line-count-by-time";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
+import { updateKpmOnLineEnded } from "../update-status/update-kpm";
 import { processReplayKeyAtTimestamp } from "./replay-processor";
 
 export const startTimer = () => {
@@ -145,11 +146,13 @@ const updateEvery100ms = ({
   const { isCompleted } = readLineSubstatus();
 
   if (!isCompleted) {
-    calcTypeSpeed({ updateType: "timer", constantLineTime });
+    const { type: lineTypeCount } = readLineSubstatus();
+    const newLineKpm = calculateLineKpm({ lineTypeCount, constantLineTime });
+    setLineKpm(newLineKpm);
   }
 
   updateSkipGuideVisibility({
-    kana: readLineWord().nextChar.k,
+    kana: readLineWord().nextChar.kana,
     currentTime,
     constantLineTime,
     constantRemainLineTime,
@@ -171,7 +174,7 @@ const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTim
   const { scene } = readUtilityParams();
 
   if (isTypingLine) {
-    calcTypeSpeed({ updateType: "lineUpdate", constantLineTime });
+    updateKpmOnLineEnded({ constantLineTime });
   }
 
   if (hasLineResultImproved(count)) {

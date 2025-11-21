@@ -212,7 +212,7 @@ const generateTypingWord = (kanaChunkWord: string[]) => {
     return generateTypeChunks(kanaChunkWord);
   }
 
-  return [{ k: "", r: [""], p: 0, t: undefined }];
+  return [{ kana: "", romaPatterns: [""], point: 0, type: undefined }];
 };
 
 const generateTypeChunks = (kanaWordChunks: string[]) => {
@@ -226,10 +226,10 @@ const generateTypeChunks = (kanaWordChunks: string[]) => {
     if (!romaPatterns[0]) return typeChunks;
 
     typeChunks.push({
-      k: kanaChunk,
-      r: romaPatterns,
-      p: CHAR_POINT * romaPatterns[0].length,
-      t: determineCharacterType({ kanaChar: kanaChunk, romaChar: romaPatterns[0] }),
+      kana: kanaChunk,
+      romaPatterns: romaPatterns,
+      point: CHAR_POINT * romaPatterns[0].length,
+      type: determineCharacterType({ kanaChar: kanaChunk, romaChar: romaPatterns[0] }),
       ...(KANA_UNSUPPORTED_SYMBOLS.includes(kanaChunk) && { kanaUnSupportedSymbol: kanaChunk }),
     });
 
@@ -237,8 +237,8 @@ const generateTypeChunks = (kanaWordChunks: string[]) => {
     // ============================================================================================
 
     if (typeChunks.length >= 2) {
-      const prevKanaChar = typeChunks[typeChunks.length - 2]?.k;
-      const currentKanaChar = typeChunks[typeChunks.length - 1]?.k[0];
+      const prevKanaChar = typeChunks[typeChunks.length - 2]?.kana;
+      const currentKanaChar = typeChunks[typeChunks.length - 1]?.kana[0];
 
       if (prevKanaChar?.[prevKanaChar.length - 1] === "っ" && currentKanaChar) {
         if (SOKUON_JOIN_LIST.includes(currentKanaChar)) {
@@ -249,8 +249,8 @@ const generateTypeChunks = (kanaWordChunks: string[]) => {
       }
     }
 
-    const prevKanaChar = typeChunks[typeChunks.length - 2]?.k ?? "";
-    const currentFirstKanaChar = typeChunks[typeChunks.length - 1]?.k[0];
+    const prevKanaChar = typeChunks[typeChunks.length - 2]?.kana ?? "";
+    const currentFirstKanaChar = typeChunks[typeChunks.length - 1]?.kana[0];
 
     if (prevKanaChar[prevKanaChar.length - 1] === "ん" && currentFirstKanaChar) {
       if (NN_LIST.includes(currentFirstKanaChar)) {
@@ -263,10 +263,10 @@ const generateTypeChunks = (kanaWordChunks: string[]) => {
 
   //this.kanaArray最後の文字が「ん」だった場合も[nn]に置き換えます。
   const lastChunk = typeChunks.at(-1);
-  if (lastChunk?.k === "ん") {
-    lastChunk.r[0] = "nn";
-    lastChunk.r.push("n'");
-    lastChunk.p = CHAR_POINT * lastChunk.r[0].length;
+  if (lastChunk?.kana === "ん") {
+    lastChunk.romaPatterns[0] = "nn";
+    lastChunk.romaPatterns.push("n'");
+    lastChunk.point = CHAR_POINT * lastChunk.romaPatterns[0].length;
   }
 
   return typeChunks;
@@ -276,14 +276,14 @@ const applyDoubleNTypePattern = (typeChunks: TypeChunk[]) => {
   const lastChunk = typeChunks.at(-1);
   if (!lastChunk) return typeChunks;
 
-  const currentKanaChar = lastChunk.k;
+  const currentKanaChar = lastChunk.kana;
   if (currentKanaChar) {
     //n一つのパターンでもnext typeChunkにnを追加してnnの入力を可能にする
-    const currentRomaPatterns = [...lastChunk.r];
+    const currentRomaPatterns = [...lastChunk.romaPatterns];
 
     for (const romaPattern of currentRomaPatterns) {
-      lastChunk.r.push(`n${romaPattern}`);
-      lastChunk.r.push(`'${romaPattern}`);
+      lastChunk.romaPatterns.push(`n${romaPattern}`);
+      lastChunk.romaPatterns.push(`'${romaPattern}`);
     }
   }
 
@@ -294,7 +294,7 @@ const replaceNWithNN = (typeChunks: TypeChunk[]) => {
   const prevChunk = typeChunks.at(-2);
   if (!prevChunk) return typeChunks;
 
-  const prevRomaPatterns = prevChunk.r;
+  const prevRomaPatterns = prevChunk.romaPatterns;
 
   for (const [i, romaPattern] of prevRomaPatterns.entries()) {
     const isNNPattern =
@@ -304,9 +304,9 @@ const replaceNWithNN = (typeChunks: TypeChunk[]) => {
       romaPattern === "n";
 
     if (isNNPattern && romaPattern) {
-      prevChunk.r[i] = `${romaPattern}n`;
-      prevChunk.r.push("n'");
-      prevChunk.p = CHAR_POINT * romaPattern.length;
+      prevChunk.romaPatterns[i] = `${romaPattern}n`;
+      prevChunk.romaPatterns.push("n'");
+      prevChunk.point = CHAR_POINT * romaPattern.length;
     }
   }
 
@@ -324,17 +324,17 @@ const joinSokuonPattern = ({ joinType, typeChunks }: { joinType: "normal" | "iun
   const currentChunk = typeChunks.at(-1);
   if (!prevChunk || !currentChunk) return typeChunks;
 
-  const prevKanaChar = prevChunk.k;
-  const currentKanaChar = currentChunk.k;
+  const prevKanaChar = prevChunk.kana;
+  const currentKanaChar = currentChunk.kana;
 
-  currentChunk.k = prevKanaChar + currentKanaChar;
+  currentChunk.kana = prevKanaChar + currentKanaChar;
   typeChunks.splice(-2, 1);
 
   const sokuonLength = (prevKanaChar.match(/っ/g) || []).length;
   const lastChunk = typeChunks.at(-1);
   if (!lastChunk) return typeChunks;
 
-  const romaPatterns = lastChunk.r;
+  const romaPatterns = lastChunk.romaPatterns;
 
   for (const romaPattern of romaPatterns) {
     const firstChar = romaPattern[0];
@@ -348,13 +348,13 @@ const joinSokuonPattern = ({ joinType, typeChunks }: { joinType: "normal" | "iun
     ltsu.push(`${"l".repeat(sokuonLength)}tsu${romaPattern}`);
   }
 
-  lastChunk.r = [...continuous, ...xtu, ...ltu, ...xtsu, ...ltsu];
-  lastChunk.p = CHAR_POINT * (romaPatterns[0]?.length ?? 0);
+  lastChunk.romaPatterns = [...continuous, ...xtu, ...ltu, ...xtsu, ...ltsu];
+  lastChunk.point = CHAR_POINT * (romaPatterns[0]?.length ?? 0);
 
   return typeChunks;
 };
 
-const determineCharacterType = ({ kanaChar, romaChar }: { kanaChar: string; romaChar: string }): TypeChunk["t"] => {
+const determineCharacterType = ({ kanaChar, romaChar }: { kanaChar: string; romaChar: string }): TypeChunk["type"] => {
   if (ROMA_MAP.has(kanaChar)) {
     return "kana";
   }

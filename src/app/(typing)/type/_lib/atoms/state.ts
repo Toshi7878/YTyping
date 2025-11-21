@@ -199,7 +199,7 @@ export const setNextLyrics = (line: BuiltMapLine) => {
         kpm: nextKpm.toFixed(0),
         kanaWord: line.kanaWord.slice(0, 60),
         romaWord: line.word
-          .map((w) => w.r[0])
+          .map((w) => w.romaPatterns[0])
           .join("")
           .slice(0, 60),
       };
@@ -212,9 +212,9 @@ export const resetNextLyrics = () => store.set(nextLyricsAtom, RESET);
 
 const currentLineAtom = atomWithReset<{ lineWord: LineWord; lyrics: string }>({
   lineWord: {
-    correct: { k: "", r: "" },
-    nextChar: { k: "", r: [""], p: 0, t: undefined },
-    word: [{ k: "", r: [""], p: 0, t: undefined }],
+    correct: { kana: "", roma: "" },
+    nextChar: { kana: "", romaPatterns: [""], point: 0, type: undefined },
+    word: [{ kana: "", romaPatterns: [""], point: 0, type: undefined }],
   },
   lyrics: "",
 });
@@ -237,7 +237,7 @@ export const setNewLine = ({
 
   store.set(currentLineAtom, {
     lineWord: {
-      correct: { k: "", r: "" },
+      correct: { kana: "", roma: "" },
       nextChar,
       word: cloneWord.slice(1),
     },

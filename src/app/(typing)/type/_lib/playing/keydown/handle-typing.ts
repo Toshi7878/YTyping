@@ -1,12 +1,12 @@
 import { readBuiltMap, readUtilityParams, setLineWord, setNewLine } from "@/app/(typing)/type/_lib/atoms/state";
 import { readLineCount } from "../../atoms/ref";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
-import { calcTypeSpeed } from "../calc-type-speed";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissStatusRefs } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessStatusRefs } from "../update-status/success";
+import { updateKpmOnLineEnded, updateKpmOnTyping } from "../update-status/update-kpm";
 import { evaluateTypingKeyEvent } from "./typing-input-evaluator";
 
 const KEY_WHITE_LIST = ["F5"];
@@ -107,10 +107,11 @@ export const handleTyping = (event: KeyboardEvent) => {
       const { isPaused } = readUtilityParams();
 
       if (!isPaused) {
-        calcTypeSpeed({ updateType: isCompleted ? "completed" : "keydown", constantLineTime });
+        updateKpmOnTyping({ constantLineTime });
       }
 
       if (isCompleted) {
+        updateKpmOnLineEnded({ constantLineTime });
         const count = readLineCount();
 
         if (hasLineResultImproved(count)) {

@@ -8,9 +8,9 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
   const lineWord = readLineWord();
 
   const { kanaToRomaConvertCount } = readSubstatus();
-  writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + lineWord.correct.r.length });
+  writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + lineWord.correct.roma.length });
 
-  const isFailed = lineWord.nextChar.k;
+  const isFailed = lineWord.nextChar.kana;
   if (isFailed) {
     const { failureCount, totalLatency } = readSubstatus();
     writeSubstatus({ failureCount: failureCount + 1 });

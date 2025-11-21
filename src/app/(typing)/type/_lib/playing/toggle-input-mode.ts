@@ -48,7 +48,7 @@ export const applyRomaInputMode = () => {
   setNotify(Symbol("Romaji"));
   const lineWord = readLineWord();
 
-  if (lineWord.nextChar.k) {
+  if (lineWord.nextChar.kana) {
     const wordFix = romaConvert(lineWord);
     if (!wordFix) return;
     setLineWord({
@@ -75,13 +75,13 @@ const updateNextLyrics = () => {
 function romaConvert(lineWord: LineWord) {
   const dakuten = lineWord.nextChar.orginalDakuChar;
   const [kanaChunkWord] = sentenceToKanaChunkWords(
-    (dakuten ? dakuten : lineWord.nextChar.k) + lineWord.word.map((char) => char.k).join(""),
+    (dakuten ? dakuten : lineWord.nextChar.kana) + lineWord.word.map((char) => char.kana).join(""),
   );
 
   if (!kanaChunkWord) return;
-  const nextPoint = lineWord.nextChar.p;
+  const nextPoint = lineWord.nextChar.point;
   const word = generateTypingWord(kanaChunkWord);
   const nextChar = word[0];
   if (!nextChar) return;
-  return { nextChar: { ...nextChar, p: nextPoint }, word: word.slice(1) };
+  return { nextChar: { ...nextChar, point: nextPoint }, word: word.slice(1) };
 }

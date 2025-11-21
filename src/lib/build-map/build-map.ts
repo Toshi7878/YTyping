@@ -53,9 +53,9 @@ const calcLineKpm = ({ notes, lineDuration: remainTime }: { notes: BuiltMapLine[
 };
 
 const calcLineNotes = (word: TypeChunk[]) => {
-  const kanaWord = word.map((item) => item.k).join("");
+  const kanaWord = word.map((item) => item.kana).join("");
   const kanaNotes = countKanaWordWithDakuonSplit({ kanaWord });
-  const romaNotes = word.map((item) => item.r[0]).join("").length;
+  const romaNotes = word.map((item) => item.romaPatterns[0]).join("").length;
 
   return { kana: kanaNotes, roma: romaNotes };
 };
