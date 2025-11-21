@@ -18,6 +18,7 @@ import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
 import { readTotalProgress } from "../_lib/atoms/ref";
 import {
+  readScene,
   resetTypingStatus,
   setBuiltMap,
   setLineSelectIndex,
@@ -88,7 +89,10 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
 
   useEffect(() => {
     return () => {
-      mutateTypingStats();
+      const scene = readScene();
+      if (scene === "play" || scene === "practice") {
+        mutateTypingStats();
+      }
     };
   }, [pathname]);
 

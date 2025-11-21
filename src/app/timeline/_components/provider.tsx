@@ -1,7 +1,7 @@
 "use client";
 import { Provider } from "jotai";
-import { useHydrateAtoms } from "jotai/utils";
 import type React from "react";
+import { AtomsHydrator } from "@/components/shared/jotai";
 import type { ResultListSearchParams } from "@/lib/search-params/result-list";
 import {
   getTimelineAtomStore,
@@ -19,15 +19,18 @@ interface TimelineProviderProps {
 export const JotaiProvider = ({ children, params }: TimelineProviderProps) => {
   const store = getTimelineAtomStore();
 
-  useHydrateAtoms(
-    [
-      [searchResultModeAtom, params.mode],
-      [searchResultKpmAtom, { min: params.minKpm, max: params.maxKpm }],
-      [searchResultClearRateAtom, { min: params.minClearRate, max: params.maxClearRate }],
-      [searchResultSpeedRangeAtom, { min: params.minPlaySpeed, max: params.maxPlaySpeed }],
-    ],
-    { store },
+  return (
+    <Provider store={store}>
+      <AtomsHydrator
+        atomValues={[
+          [searchResultModeAtom, params.mode],
+          [searchResultKpmAtom, { min: params.minKpm, max: params.maxKpm }],
+          [searchResultClearRateAtom, { min: params.minClearRate, max: params.maxClearRate }],
+          [searchResultSpeedRangeAtom, { min: params.minPlaySpeed, max: params.maxPlaySpeed }],
+        ]}
+      >
+        {children}
+      </AtomsHydrator>
+    </Provider>
   );
-
-  return <Provider store={store}>{children}</Provider>;
 };

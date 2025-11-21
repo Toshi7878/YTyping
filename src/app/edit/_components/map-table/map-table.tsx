@@ -4,6 +4,7 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import type { Cell, ColumnDef } from "@tanstack/react-table";
 import parse from "html-react-parser";
 import { Play } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
 import type React from "react";
@@ -20,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import type { MapLine } from "@/validator/map-json";
 import { readEndLineIndex, useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
-import { useCreatorIdState, useMapIdState } from "../../_lib/atoms/hydrate";
+import { useCreatorIdState } from "../../_lib/atoms/hydrate";
 import { readMap, setMapAction, useMapState } from "../../_lib/atoms/map-reducer";
 import { setTimeInputValue } from "../../_lib/atoms/ref";
 import {
@@ -73,12 +74,13 @@ export const MapTable = () => {
   );
 
   const trpc = useTRPC();
-  const mapId = useMapIdState();
+  // const mapId = useMapIdState();
+  const { id: mapId } = useParams();
   const [{ backup: isBackup }] = useQueryStates({ backup: searchParamsParsers.isBackup });
 
   const { data: mapData, isLoading } = useQuery(
     trpc.map.getMapJson.queryOptions(
-      { mapId: mapId ?? 0 },
+      { mapId: Number(mapId) },
       { enabled: !!mapId && !isBackup, staleTime: Infinity, gcTime: Infinity },
     ),
   );

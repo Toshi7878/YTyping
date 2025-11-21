@@ -11,8 +11,8 @@ import { auth } from "@/server/auth";
 import { THEME_LIST } from "@/styles/const";
 import TRPCProvider from "@/trpc/provider";
 import { LinkProgressProvider } from "./_components/link-progress-provider";
-import { MainProvider } from "./_components/main-provider";
 import { PreviewYouTubePlayer } from "./_components/preview-youtube-player";
+import { JotaiProvider, MainProvider } from "./_components/provider";
 import { ThemeProvider } from "./_components/theme-provider";
 
 const notoSansJP = Noto_Sans_JP({
@@ -49,12 +49,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <LinkProgressProvider>
                   <AlertDialogProvider>
                     <Header className="fixed z-50 h-10 w-full" />
-                    <MainProvider userAgent={userAgent}>
-                      <main className="min-h-screen pt-12 md:pt-16" id="main_content">
-                        {children}
-                      </main>
-                      <PreviewYouTubePlayer />
-                    </MainProvider>
+                    <JotaiProvider userAgent={userAgent}>
+                      <MainProvider>
+                        <main className="min-h-screen pt-12 md:pt-16" id="main_content">
+                          {children}
+                        </main>
+                        <PreviewYouTubePlayer />
+                      </MainProvider>
+                    </JotaiProvider>
                   </AlertDialogProvider>
                 </LinkProgressProvider>
               </TRPCProvider>
