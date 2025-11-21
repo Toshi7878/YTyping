@@ -38,12 +38,14 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
   resetLineCount();
   resetLineSubstatus();
 
-  const enableRetrySKip = startLine.time > 5;
+  const isEnableRetrySkip = startLine.time > 5;
 
-  writeUtilityRefParams({ replayKeyCount: 0, isRetrySkip: enableRetrySKip });
+  writeUtilityRefParams({ replayKeyCount: 0, isRetrySkip: isEnableRetrySkip });
 
   const { scene } = readUtilityParams();
-  if (scene === "play" || scene === "practice") {
+  const { type: totalTypeCount } = readTypingStatus();
+
+  if (totalTypeCount && (scene === "play" || scene === "practice")) {
     mutateTypingStats();
   }
 
@@ -51,7 +53,6 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
 
   switch (scene) {
     case "play": {
-      const { type: totalTypeCount } = readTypingStatus();
       if (totalTypeCount) {
         const { retryCount } = readUtilityRefParams();
         writeUtilityRefParams({ retryCount: retryCount + 1 });

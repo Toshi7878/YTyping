@@ -1,9 +1,11 @@
 "use client";
 import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
+import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { mapIdAtom, setMapId, typingOptionsAtom } from "../_lib/atoms/hydrate";
+import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
 import { getTypeAtomStore } from "../_lib/atoms/store";
 
 interface JotaiProviderProps {
@@ -14,6 +16,7 @@ interface JotaiProviderProps {
 
 export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProviderProps) => {
   const store = getTypeAtomStore();
+  const pathname = usePathname();
 
   useHydrateAtoms(
     [[mapIdAtom, mapId], ...(userTypingOptions ? [[typingOptionsAtom, userTypingOptions] as const] : [])],
@@ -21,8 +24,13 @@ export const JotaiProvider = ({ userTypingOptions, mapId, children }: JotaiProvi
   );
 
   useEffect(() => {
+    resetAllStateOnCleanup();
     setMapId(mapId);
   }, [mapId]);
 
-  return <Provider store={store}>{children}</Provider>;
+  return (
+    <Provider store={store} key={pathname}>
+      {children}
+    </Provider>
+  );
 };

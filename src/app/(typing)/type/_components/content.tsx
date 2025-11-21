@@ -17,7 +17,6 @@ import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
 import { readTotalProgress } from "../_lib/atoms/ref";
-import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
 import {
   resetTypingStatus,
   setBuiltMap,
@@ -90,7 +89,6 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   useEffect(() => {
     return () => {
       mutateTypingStats();
-      resetAllStateOnCleanup();
     };
   }, [pathname]);
 
