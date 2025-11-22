@@ -13,7 +13,7 @@ export function ThemeProvider({ children, ...props }: React.ComponentProps<typeo
   );
 }
 
-export const FaviconTheme = () => {
+const FaviconTheme = () => {
   useFaviconTheme();
   return null;
 };

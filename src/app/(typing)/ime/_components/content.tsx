@@ -73,7 +73,7 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
   return <TypingLayout videoId={videoId} />;
 };
 
-export const TypingLayout = ({ videoId }: { videoId: string }) => {
+const TypingLayout = ({ videoId }: { videoId: string }) => {
   const lyricsViewAreaRef = useRef<HTMLDivElement>(null);
   const [youtubeHeight, setYoutubeHeight] = useState<{ minHeight: string; height: string }>({
     minHeight: "calc(100vh - var(--header-height))",

@@ -1,8 +1,8 @@
 import type { ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
+import type { InputMode } from "lyrics-typing-engine";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { TypeResult } from "@/validator/result";
-import type { InputMode } from "../type";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();

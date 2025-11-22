@@ -1,5 +1,5 @@
 import type { ExtractAtomValue } from "jotai";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import type { YouTubeSpeed } from "@/utils/types";
@@ -92,10 +92,8 @@ export const readYTPlayerStatus = () => store.get(YTPlayerStatusAtom);
 export const useYTSpeedState = () => useAtomValue(speedAtom, { store });
 export const setYTSpeed = (value: ExtractAtomValue<typeof speedAtom>) => store.set(speedAtom, value);
 
-export const useIsYTReadiedState = () => useAtomValue(isReadiedAtom, { store });
 export const setIsYTReadied = (value: ExtractAtomValue<typeof isReadiedAtom>) => store.set(isReadiedAtom, value);
 
-export const useIsYTStartedState = () => useAtomValue(isStartedAtom, { store });
 export const setIsYTStarted = (value: ExtractAtomValue<typeof isStartedAtom>) => store.set(isStartedAtom, value);
 export const setIsYTPlaying = (value: ExtractAtomValue<typeof isPlayingAtom>) => store.set(isPlayingAtom, value);
 
@@ -158,8 +156,6 @@ export const setLyrics = (value: ExtractAtomValue<typeof selectLineLyricsAtom>) 
 
 export const useWordState = () => useAtomValue(selectLineWordAtom, { store });
 export const setWord = (value: ExtractAtomValue<typeof selectLineWordAtom>) => store.set(selectLineWordAtom, value);
-
-export const useSetWord = () => useSetAtom(selectLineWordAtom, { store });
 
 export const useSelectIndexState = () => useAtomValue(selectLineIndexAtom, { store });
 

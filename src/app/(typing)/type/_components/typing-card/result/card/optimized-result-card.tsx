@@ -4,9 +4,9 @@ import { useLineResultState } from "@/app/(typing)/type/_lib/atoms/family";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import { useBuiltMapState, usePlayingInputModeState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
-import type { BuiltMapLine } from "@/app/(typing)/type/_lib/type";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import type { BuiltMapLineWithOption } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ResultCardContent } from "./child/result-card-body";
 import { ResultCardFooter } from "./child/result-card-footer";
@@ -18,7 +18,7 @@ interface OptimizedResultCardProps {
   scoreCount: number;
   cardRefs: RefObject<HTMLDivElement[]>;
   handleCardClick: (lineNumber: number) => void;
-  lineData: BuiltMapLine;
+  lineData: BuiltMapLineWithOption;
 }
 
 export const OptimizedResultCard = ({

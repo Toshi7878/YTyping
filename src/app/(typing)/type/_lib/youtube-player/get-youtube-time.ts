@@ -4,13 +4,6 @@ import { readPlaySpeed } from "../atoms/speed-reducer";
 import { readBuiltMap, readUtilityParams } from "../atoms/state";
 import { getYTCurrentTime } from "../atoms/yt-player";
 
-export const getTime = () => {
-  const currentTime = getCurrentOffsettedYTTime();
-  const constantTime = getConstantOffsettedYTTime({ currentTime });
-
-  return { currentTime, constantTime };
-};
-
 export const getLineTime = () => {
   const currentTime = getCurrentOffsettedYTTime();
   const constantTime = getConstantOffsettedYTTime({ currentTime });

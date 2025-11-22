@@ -1,8 +1,12 @@
-import type { BuiltMapLine, InputMode } from "@/app/(typing)/type/_lib/type";
+import type { InputMode } from "lyrics-typing-engine";
 import { medianIgnoringZeros } from "@/utils/array";
 import type { TypingLineResults } from "@/validator/result";
+import type { BuiltMapLineWithOption } from "../types";
 
-export function buildInitialLineResult(builtMapLines: BuiltMapLine[], inputMode: InputMode): TypingLineResults {
+export function buildInitialLineResult(
+  builtMapLines: BuiltMapLineWithOption[],
+  inputMode: InputMode,
+): TypingLineResults {
   const initialLineResultData: TypingLineResults = [];
 
   for (const line of builtMapLines) {
@@ -40,7 +44,7 @@ export function buildInitialLineResult(builtMapLines: BuiltMapLine[], inputMode:
   return initialLineResultData;
 }
 
-export function extractTypingLineIndexes(builtMapLines: BuiltMapLine[]): number[] {
+export function extractTypingLineIndexes(builtMapLines: BuiltMapLineWithOption[]): number[] {
   const typingLineIndexes: number[] = [];
 
   for (const [index, line] of builtMapLines.entries()) {
@@ -52,7 +56,7 @@ export function extractTypingLineIndexes(builtMapLines: BuiltMapLine[]): number[
   return typingLineIndexes;
 }
 
-export function extractChangeCSSIndexes(builtMapLines: BuiltMapLine[]): number[] {
+export function extractChangeCSSIndexes(builtMapLines: BuiltMapLineWithOption[]): number[] {
   const changeCSSIndexes: number[] = [];
 
   for (const [index, line] of builtMapLines.entries()) {
@@ -64,7 +68,7 @@ export function extractChangeCSSIndexes(builtMapLines: BuiltMapLine[]): number[]
   return changeCSSIndexes;
 }
 
-export const getStartLine = (builtMapLines: BuiltMapLine[]) => {
+export const getStartLine = (builtMapLines: BuiltMapLineWithOption[]) => {
   if (!builtMapLines[0]) {
     throw new Error("builtMapLines is empty: cannot find start line");
   }
@@ -78,7 +82,7 @@ export const getStartLine = (builtMapLines: BuiltMapLine[]) => {
   return { ...builtMapLines[0], index: builtMapLines.length - 1 };
 };
 
-export const calculateSpeedDifficulty = (lines: BuiltMapLine[]) => {
+export const calculateSpeedDifficulty = (lines: BuiltMapLineWithOption[]) => {
   const romaSpeedList = lines.map((line) => line.kpm.roma);
   const kanaSpeedList = lines.map((line) => line.kpm.kana);
 
@@ -93,7 +97,7 @@ export const calculateSpeedDifficulty = (lines: BuiltMapLine[]) => {
   };
 };
 
-export const calculateTotalNotes = (typingWords: BuiltMapLine[]) => {
+export const calculateTotalNotes = (typingWords: BuiltMapLineWithOption[]) => {
   return typingWords.reduce(
     (acc, line) => {
       acc.kana += line.notes.kana;
@@ -111,7 +115,7 @@ export const calculateKeyAndMissRates = ({ romaTotalNotes }: { romaTotalNotes: n
   return { keyRate, missRate };
 };
 
-export const calculateDuration = (builtMapLines: BuiltMapLine[]): number => {
+export const calculateDuration = (builtMapLines: BuiltMapLineWithOption[]): number => {
   const endLine = builtMapLines.findLast((line) => line.lyrics === "end");
   if (endLine) return endLine.time;
 

@@ -1,5 +1,5 @@
 import type { ExtractAtomValue } from "jotai";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
@@ -69,7 +69,6 @@ const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0 });
 export const useStatusState = () => useAtomValue(statusAtom, { store });
 export const setStatus = (update: Updater<ExtractAtomValue<typeof statusAtom>>) => store.set(statusAtom, update);
 export const resetStatus = () => store.set(statusAtom, RESET);
-export const useSetStatus = () => useSetAtom(statusAtom, { store });
 export const readStatus = () => store.get(statusAtom);
 
 const wordResultsAtom = atomWithReset([] as WordResults);

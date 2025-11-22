@@ -58,7 +58,7 @@ interface TypeCountResultProps {
   typeCounts: RouterOutPuts["result"]["getMapRanking"][number]["typeCounts"];
 }
 
-export const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
+const TypeCountResult = ({ typeCounts }: TypeCountResultProps) => {
   const { romaType, kanaType, flickType, englishType, numType, spaceType, symbolType } = typeCounts;
   const types = [
     { label: "ローマ字", value: romaType },

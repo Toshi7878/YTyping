@@ -9,7 +9,6 @@ const store = getTypeAtomStore();
 export const mapIdAtom = atomWithReset<number | null>(null);
 export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
 export const readMapId = () => store.get(mapIdAtom);
-export const setMapId = (value: ExtractAtomValue<typeof mapIdAtom>) => store.set(mapIdAtom, value);
 
 export const typingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
 export const useTypingOptionsState = () => useAtomValue(typingOptionsAtom, { store });

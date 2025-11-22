@@ -2,11 +2,13 @@ import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-
+import type { BuiltMapLine, InputMode, LineWord } from "lyrics-typing-engine";
+import type z from "zod/v4";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
+import type { LineOptionSchema } from "@/validator/map-json";
 import type { TypingLineResults } from "@/validator/result";
-import type { BuiltMapLine, InputMode, LineWord, SceneType, SkipGuideKey } from "../type";
+import type { SceneType, SkipGuideKey } from "../type";
 import { setLineResultSelected } from "./family";
 import { readTypingOptions } from "./hydrate";
 import { lineProgressAtom, readUtilityRefParams } from "./ref";
@@ -16,7 +18,7 @@ import { getTypeAtomStore } from "./store";
 const store = getTypeAtomStore();
 
 const builtMapAtom = atomWithReset<{
-  lines: BuiltMapLine[];
+  lines: BuiltMapLine<z.infer<typeof LineOptionSchema>>[];
   totalNotes: { roma: number; kana: number };
   keyRate: number;
   missRate: number;

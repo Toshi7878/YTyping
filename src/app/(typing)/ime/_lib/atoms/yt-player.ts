@@ -12,4 +12,3 @@ export const playYTPlayer = () => store.get(YTPlayerAtom)?.playVideo();
 export const seekYTPlayer = (seconds: number) => store.get(YTPlayerAtom)?.seekTo(seconds, true);
 export const stopYTPlayer = () => store.get(YTPlayerAtom)?.stopVideo();
 export const getYTCurrentTime = () => store.get(YTPlayerAtom)?.getCurrentTime();
-export const cueYTVideoById = (videoId: string) => store.get(YTPlayerAtom)?.cueVideoById(videoId);

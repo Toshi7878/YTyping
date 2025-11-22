@@ -29,11 +29,6 @@ export const pauseTimer = () => {
   }
 };
 
-export const setFrameRate = (rate: number) => {
-  imeTypeTicker.maxFPS = rate;
-  imeTypeTicker.minFPS = rate;
-};
-
 const wipeUpdate = ({ wipeCount, currentTime }: { wipeCount: number; currentTime: number }) => {
   const wipeElements = readLyricsContainer()?.lastElementChild?.lastElementChild;
   if (!wipeElements) return;

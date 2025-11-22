@@ -19,11 +19,3 @@ function cancelIfPending(frameId: string): void {
     pendingFrames.delete(frameId);
   }
 }
-
-// すべての保留中のフレームをキャンセル（オプション）
-export function cancelAllFrames(): void {
-  for (const frame of pendingFrames.values()) {
-    cancelAnimationFrame(frame);
-  }
-  pendingFrames.clear();
-}

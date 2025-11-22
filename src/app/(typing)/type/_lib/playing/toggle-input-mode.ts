@@ -1,4 +1,4 @@
-import { generateTypingWord, sentenceToKanaChunkWords } from "lyrics-typing-engine";
+import { generateTypingWord, type LineWord, sentenceToKanaChunkWords } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -10,7 +10,6 @@ import {
   setPlayingInputMode,
 } from "../atoms/state";
 import { CHAR_POINT } from "../const";
-import type { LineWord } from "../type";
 import { getLineTime } from "../youtube-player/get-youtube-time";
 
 export const togglePlayInputMode = () => {

@@ -14,7 +14,7 @@ import {
   usePreviewVideoInfoState,
 } from "../../lib/atoms/global-atoms";
 
-export const PREVIEW_EXCLUDED_SEGMENTS = ["type", "edit", "ime"];
+const PREVIEW_EXCLUDED_SEGMENTS = ["type", "edit", "ime"];
 
 export function useIsPreviewEnabled() {
   const pathname = usePathname();

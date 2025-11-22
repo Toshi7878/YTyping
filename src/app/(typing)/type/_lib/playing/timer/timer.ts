@@ -25,10 +25,10 @@ import {
   setNextLyrics,
   setTypingStatus,
 } from "@/app/(typing)/type/_lib/atoms/state";
+import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
 import { cueYTVideoById, getYTPlayerState, getYTVideoId, readYTPlayer, stopYTPlayer } from "../../atoms/yt-player";
-import type { BuiltMapLine } from "../../type";
 import { calculateLineKpm } from "../../utils/calculate-kpm";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { onEnd } from "../../youtube-player/youtube-events";
@@ -103,7 +103,7 @@ const proceedToNextLine = ({
 }: {
   currentTime: number;
   constantLineTime: number;
-  nextLine: BuiltMapLine | undefined;
+  nextLine: BuiltMapLineWithOption | undefined;
   prevCount: number;
   isVideoEnded: boolean;
 }) => {

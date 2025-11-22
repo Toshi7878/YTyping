@@ -1,3 +1,4 @@
+import type { TypeChunk } from "lyrics-typing-engine";
 import {
   readLineSubstatus,
   readSubstatus,
@@ -7,7 +8,6 @@ import {
   writeUserStats,
 } from "../../atoms/ref";
 import { readBuiltMap, readCombo, readLineWord, readUtilityParams, setCombo, setTypingStatus } from "../../atoms/state";
-import type { TypeChunk } from "../../type";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateSuccessStatus = ({

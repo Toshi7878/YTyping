@@ -1,9 +1,9 @@
-import type { BuiltMapLine } from "@/app/(typing)/type/_lib/type";
+import type { BuiltMapLineWithOption } from "../types";
 
 /**
  * 総合難易度を計算（0-100のスケール）
  */
-export function calculateOverallDifficulty(lines: BuiltMapLine[]): number {
+export function calculateOverallDifficulty(lines: BuiltMapLineWithOption[]): number {
   const speedScore = calculateSpeedScore(lines);
   const staminaScore = calculateStaminaScore(lines);
   const complexityScore = calculateComplexityScore(lines);
@@ -32,7 +32,7 @@ export function calculateOverallDifficulty(lines: BuiltMapLine[]): number {
 /**
  * 詳細な難易度内訳を計算
  */
-export function calculateDetailedDifficulty(lines: BuiltMapLine[]) {
+export function calculateDetailedDifficulty(lines: BuiltMapLineWithOption[]) {
   return {
     overall: calculateOverallDifficulty(lines),
     breakdown: {
@@ -57,7 +57,7 @@ export function calculateDetailedDifficulty(lines: BuiltMapLine[]) {
  * 速度スコア（KPMベース）
  * 0-100のスケールで返す
  */
-function calculateSpeedScore(lines: BuiltMapLine[]): number {
+function calculateSpeedScore(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.kpm && line.kpm.roma > 0);
   if (validLines.length === 0) return 0;
 
@@ -76,7 +76,7 @@ function calculateSpeedScore(lines: BuiltMapLine[]): number {
 /**
  * 持続性スコア（長時間の高速タイピング）
  */
-function calculateStaminaScore(lines: BuiltMapLine[]): number {
+function calculateStaminaScore(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.kpm && line.kpm.roma > 0);
   if (validLines.length === 0) return 0;
 
@@ -107,7 +107,7 @@ function calculateStaminaScore(lines: BuiltMapLine[]): number {
 /**
  * 複雑さスコア（打ちにくい文字列）
  */
-function calculateComplexityScore(lines: BuiltMapLine[]): number {
+function calculateComplexityScore(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.word && line.word.length > 0);
   if (validLines.length === 0) return 0;
 
@@ -128,7 +128,7 @@ function calculateComplexityScore(lines: BuiltMapLine[]): number {
 /**
  * 1行の複雑さを計算
  */
-function calculateLineComplexity(line: BuiltMapLine): number {
+function calculateLineComplexity(line: BuiltMapLineWithOption): number {
   if (!line.word || line.word.length === 0) return 0;
 
   let complexityScore = 0;
@@ -174,7 +174,7 @@ function calculateLineComplexity(line: BuiltMapLine): number {
 /**
  * 密度スコア（ノート密度）
  */
-function calculateDensityScore(lines: BuiltMapLine[]): number {
+function calculateDensityScore(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.notes && line.notes.roma > 0);
   if (validLines.length === 0) return 0;
 
@@ -193,7 +193,7 @@ function calculateDensityScore(lines: BuiltMapLine[]): number {
 /**
  * 変化スコア（速度の変化幅）
  */
-function calculateVarianceScore(lines: BuiltMapLine[]): number {
+function calculateVarianceScore(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.kpm && line.kpm.roma > 0);
   if (validLines.length === 0) return 0;
 
@@ -212,7 +212,7 @@ function calculateVarianceScore(lines: BuiltMapLine[]): number {
 /**
  * ピーク密度（最も密度が高い10秒間）
  */
-function calculatePeakDensity(lines: BuiltMapLine[]): number {
+function calculatePeakDensity(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.notes && line.notes.roma > 0);
   if (validLines.length === 0) return 0;
 
@@ -235,7 +235,7 @@ function calculatePeakDensity(lines: BuiltMapLine[]): number {
 }
 
 // ヘルパー関数
-function calculateAverageKpm(lines: BuiltMapLine[]): number {
+function calculateAverageKpm(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.kpm && line.kpm.roma > 0);
   if (validLines.length === 0) return 0;
 
@@ -243,14 +243,14 @@ function calculateAverageKpm(lines: BuiltMapLine[]): number {
   return totalKpm / validLines.length;
 }
 
-function calculateMaxKpm(lines: BuiltMapLine[]): number {
+function calculateMaxKpm(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.kpm && line.kpm.roma > 0);
   if (validLines.length === 0) return 0;
 
   return Math.max(...validLines.map((line) => line.kpm.roma));
 }
 
-function calculateMedianKpm(lines: BuiltMapLine[]): number {
+function calculateMedianKpm(lines: BuiltMapLineWithOption[]): number {
   const validLines = lines.filter((line) => line.kpm && line.kpm.roma > 0);
   if (validLines.length === 0) return 0;
 
@@ -260,11 +260,11 @@ function calculateMedianKpm(lines: BuiltMapLine[]): number {
   return kpmValues.length % 2 === 0 ? ((kpmValues[mid - 1] || 0) + (kpmValues[mid] || 0)) / 2 : kpmValues[mid] || 0;
 }
 
-function calculateTotalNotes(lines: BuiltMapLine[]): number {
+function calculateTotalNotes(lines: BuiltMapLineWithOption[]): number {
   return lines.reduce((sum, line) => sum + (line.notes?.roma || 0), 0);
 }
 
-function calculateDuration(lines: BuiltMapLine[]): number {
+function calculateDuration(lines: BuiltMapLineWithOption[]): number {
   if (lines.length === 0) return 0;
   const lastLine = lines[lines.length - 1];
   const firstLine = lines[0];

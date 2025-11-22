@@ -40,7 +40,6 @@ export const CreateResultSchema = z
 
 export type TypingLineResults = z.output<typeof CreateTypingResultJsonSchema>;
 export type TypeResult = TypingLineResults[number]["types"][number];
-export type LineResultStatus = TypingLineResults[number]["status"];
 
 export const RESULT_INPUT_METHOD_TYPES = ["roma", "kana", "romakana", "english"] as const;
 export const RESULT_PLAY_SPEEDS = [1, 1.25, 1.5, 1.75, 2];

@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import type { InputMode } from "../type";
+import type { InputMode } from "lyrics-typing-engine";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
