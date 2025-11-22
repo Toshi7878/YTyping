@@ -7,7 +7,7 @@ import {
   writeUserStats,
 } from "../../atoms/ref";
 import { readBuiltMap, readCombo, readLineWord, readUtilityParams, setCombo, setTypingStatus } from "../../atoms/state";
-import type { NextTypeChunk } from "../../type";
+import type { TypeChunk } from "../../type";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateSuccessStatus = ({
@@ -51,15 +51,15 @@ export const updateSuccessStatus = ({
   setCombo((prev) => prev + 1);
 };
 
-export const updateSuccessStatusRefs = ({
+export const updateSuccessSubstatus = ({
   constantLineTime,
   isCompleted,
-  typeChunk,
+  charType,
   successKey,
 }: {
   constantLineTime: number;
   isCompleted?: boolean;
-  typeChunk?: NextTypeChunk;
+  charType?: TypeChunk["type"];
   successKey: string;
 }) => {
   const { scene } = readUtilityParams();
@@ -91,7 +91,7 @@ export const updateSuccessStatusRefs = ({
     writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + readLineWord().correct.roma.length });
   }
 
-  if (scene === "replay" || !typeChunk) {
+  if (scene === "replay" || !charType) {
     return;
   }
 
@@ -101,7 +101,7 @@ export const updateSuccessStatusRefs = ({
 
   const substatus = readSubstatus();
   const userStats = readUserStats();
-  if (typeChunk.type === "kana") {
+  if (charType === "kana") {
     const { inputMode } = readUtilityParams();
     if (inputMode === "roma") {
       writeUserStats({ romaType: substatus.romaType + 1 });
@@ -113,16 +113,16 @@ export const updateSuccessStatusRefs = ({
       writeUserStats({ flickType: userStats.flickType + 1 });
       writeSubstatus({ flickType: substatus.flickType + 1 });
     }
-  } else if (typeChunk.type === "alphabet") {
+  } else if (charType === "alphabet") {
     writeUserStats({ englishType: userStats.englishType + 1 });
     writeSubstatus({ englishType: substatus.englishType + 1 });
-  } else if (typeChunk.type === "num") {
+  } else if (charType === "num") {
     writeUserStats({ numType: userStats.numType + 1 });
     writeSubstatus({ numType: substatus.numType + 1 });
-  } else if (typeChunk.type === "space") {
+  } else if (charType === "space") {
     writeUserStats({ spaceType: userStats.spaceType + 1 });
     writeSubstatus({ spaceType: substatus.spaceType + 1 });
-  } else if (typeChunk.type === "symbol") {
+  } else if (charType === "symbol") {
     writeUserStats({ symbolType: userStats.symbolType + 1 });
     writeSubstatus({ symbolType: substatus.symbolType + 1 });
   }

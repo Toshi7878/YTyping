@@ -1,20 +1,75 @@
-import { readLineWord, readUtilityParams } from "@/app/(typing)/type/_lib/atoms/state";
 import { CHAR_POINT } from "@/lib/build-map/build-map";
-import type { Dakuten, HanDakuten, LineWord, NormalizeHirakana } from "../../type";
+import type { Dakuten, HanDakuten, InputMode, LineWord, NormalizeHirakana } from "../../type";
 import { CODE_TO_KANA, KEY_TO_KANA } from "./const";
 
-export const evaluateTypingKeyEvent = (event: KeyboardEvent) => {
-  const { inputMode } = readUtilityParams();
-  const lineWord = readLineWord();
+const TYPE_CODE_SET = new Set([
+  "Space",
+  "Digit1",
+  "Digit2",
+  "Digit3",
+  "Digit4",
+  "Digit5",
+  "Digit6",
+  "Digit7",
+  "Digit8",
+  "Digit9",
+  "Digit0",
+  "Minus",
+  "Equal",
+  "IntlYen",
+  "BracketLeft",
+  "BracketRight",
+  "Semicolon",
+  "Quote",
+  "Backslash",
+  "Backquote",
+  "IntlBackslash",
+  "Comma",
+  "Period",
+  "Slash",
+  "IntlRo",
+  "Unidentified",
+]);
+
+const TYPE_TENKEY_CODE_SET = new Set([
+  "Numpad1",
+  "Numpad2",
+  "Numpad3",
+  "Numpad4",
+  "Numpad5",
+  "Numpad6",
+  "Numpad7",
+  "Numpad8",
+  "Numpad9",
+  "Numpad0",
+  "NumpadDivide",
+  "NumpadMultiply",
+  "NumpadSubtract",
+  "NumpadAdd",
+  "NumpadDecimal",
+]);
+
+export const isTypingKey = (event: KeyboardEvent) => {
+  if (event.ctrlKey || event.altKey) return false;
+  const { keyCode, code } = event;
+
+  const isTypeKey = (keyCode >= 65 && keyCode <= 90) || TYPE_CODE_SET.has(code) || TYPE_TENKEY_CODE_SET.has(code);
+  if (!isTypeKey) return false;
+
+  return true;
+};
+
+export const evaluateTypingKeyEvent = (event: KeyboardEvent, inputMode: InputMode, lineWord: LineWord) => {
   const typingKeys: TypingKeys = inputMode === "roma" ? romaMakeInput(event) : kanaMakeInput(event);
+
   const inputResult =
     inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
 
-  const isCompleted = inputResult.newLineWord?.nextChar.kana === "";
-  const isSuccess = !!inputResult.successKey;
-  const isFailed = inputResult.newLineWord?.correct.roma || inputResult.newLineWord?.correct.kana;
-
-  return { ...inputResult, typeChunk: lineWord.nextChar, isCompleted, isSuccess, isFailed };
+  return {
+    ...inputResult,
+    charType: lineWord.nextChar.type,
+    isCompleted: inputResult.newLineWord.nextChar.kana === "",
+  };
 };
 
 // biome-ignore format: <explanation>
@@ -196,7 +251,7 @@ interface DakuHandakuData {
 }
 
 export class KanaInput {
-  newLineWord: LineWord | undefined;
+  newLineWord: LineWord;
   updatePoint: number;
   successKey: string | undefined;
   failKey: string | undefined;
@@ -204,7 +259,7 @@ export class KanaInput {
   constructor({ typingKeys, lineWord }: JudgeType) {
     this.updatePoint = 0;
     const result = this.hasKana({ typingKeys, lineWord });
-    this.newLineWord = result?.newLineWord;
+    this.newLineWord = result.newLineWord;
     this.successKey = result?.successKey;
     this.failKey = result?.failKey;
   }
@@ -213,20 +268,20 @@ export class KanaInput {
     let newLineWord = { ...lineWord };
 
     const nextKana = lineWord.nextChar.kana;
+    const firstKanaChar = nextKana.charAt(0);
     const { keys } = typingKeys;
-    if (!nextKana[0]) return;
-    const isdakuHandaku = DAKU_HANDAKU_LIST.includes(nextKana[0]);
+    const isdakuHandaku = DAKU_HANDAKU_LIST.includes(firstKanaChar);
 
     const dakuHanDakuData: DakuHandakuData = isdakuHandaku
-      ? this.parseDakuHandaku(nextKana[0] as Dakuten | HanDakuten)
+      ? this.parseDakuHandaku(firstKanaChar as Dakuten | HanDakuten)
       : {
           type: "",
           normalizedKana: "",
           originalKana: "",
         };
 
-    const successIndex: number = nextKana[0]
-      ? keys.indexOf(dakuHanDakuData.normalizedKana ? dakuHanDakuData.normalizedKana : nextKana[0].toLowerCase())
+    const successIndex: number = firstKanaChar
+      ? keys.indexOf(dakuHanDakuData.normalizedKana ? dakuHanDakuData.normalizedKana : firstKanaChar.toLowerCase())
       : -1;
 
     const typingKey =
@@ -235,7 +290,7 @@ export class KanaInput {
         : keys[successIndex];
 
     if (!typingKey) {
-      const isKanaInArray = !KEYBOARD_CHARS.includes(nextKana[0]);
+      const isKanaInArray = !KEYBOARD_CHARS.includes(firstKanaChar);
       return {
         newLineWord,
         successKey: "",

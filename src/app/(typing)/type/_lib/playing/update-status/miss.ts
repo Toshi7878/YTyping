@@ -13,7 +13,7 @@ export const updateMissStatus = () => {
   setTypingStatus(newStatus);
 };
 
-export const updateMissStatusRefs = ({ constantLineTime, failKey }: { constantLineTime: number; failKey: string }) => {
+export const updateMissSubstatus = ({ constantLineTime, failKey }: { constantLineTime: number; failKey: string }) => {
   const map = readBuiltMap();
   if (!map) return;
 

@@ -17,9 +17,9 @@ import type { TypeResult } from "@/validator/result";
 import { readAllLineResult } from "../../atoms/family";
 import { KanaInput, RomaInput, type TypingKeys } from "../keydown/typing-input-evaluator";
 import { triggerMissSound, triggerTypeSound } from "../sound-effect";
-import { updateMissStatus, updateMissStatusRefs } from "../update-status/miss";
+import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
-import { updateSuccessStatus, updateSuccessStatusRefs } from "../update-status/success";
+import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/success";
 import { updateKpmOnTyping } from "../update-status/update-kpm";
 
 export const processReplayKeyAtTimestamp = ({
@@ -81,7 +81,7 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
       triggerTypeSound({ isCompleted });
 
       updateKpmOnTyping({ constantLineTime });
-      updateSuccessStatusRefs({ constantLineTime, successKey });
+      updateSuccessSubstatus({ constantLineTime, successKey });
 
       if (!isCompleted) {
         updateSuccessStatus({ constantRemainLineTime, updatePoint });
@@ -97,7 +97,7 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
     } else {
       triggerMissSound();
       updateMissStatus();
-      updateMissStatusRefs({ constantLineTime, failKey: key });
+      updateMissSubstatus({ constantLineTime, failKey: key });
     }
   } else if (option) {
     switch (option) {

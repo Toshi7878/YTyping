@@ -1,3 +1,4 @@
+import { isDialogOpen } from "@/utils/is-dialog-option";
 import { readTypingOptions } from "../../atoms/hydrate";
 import { readUtilityRefParams, writeUtilityRefParams } from "../../atoms/ref";
 import { handlePlaySpeedAction } from "../../atoms/speed-reducer";
@@ -8,6 +9,20 @@ import { commitPlayRestart } from "../commit-play-restart";
 import { moveNextLine, movePrevLine, moveSetLine } from "../move-line";
 import { togglePlayInputMode } from "../toggle-input-mode";
 import { togglePause } from "../toggle-pause";
+
+const KEY_WHITE_LIST = ["F5"];
+const CTRL_KEY_WHITE_CODE_LIST = ["KeyC", "KeyV", "KeyZ", "KeyY", "KeyX"];
+const ALT_KEY_WHITE_CODE_LIST = ["ArrowLeft", "ArrowRight"];
+const OPEN_DIALOG_CTRL_KEY_CODE_LIST = ["KeyF"];
+
+export const isHotKeyIgnored = (event: KeyboardEvent) => {
+  return (
+    KEY_WHITE_LIST.includes(event.code) ||
+    (event.ctrlKey && CTRL_KEY_WHITE_CODE_LIST.includes(event.code)) ||
+    (event.altKey && !event.ctrlKey && ALT_KEY_WHITE_CODE_LIST.includes(event.code)) ||
+    (event.ctrlKey && OPEN_DIALOG_CTRL_KEY_CODE_LIST.includes(event.code) && isDialogOpen())
+  );
+};
 
 const TIME_OFFSET_SHORTCUTKEY_RANGE = 0.1;
 
