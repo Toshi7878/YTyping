@@ -116,8 +116,8 @@ importers:
         specifier: ^0.548.0
         version: 0.548.0(react@19.2.0)
       lyrics-typing-engine:
-        specifier: ^1.0.5
-        version: 1.0.5
+        specifier: ^1.0.9
+        version: 1.0.9
       md5:
         specifier: ^2.3.0
         version: 2.3.0
@@ -223,7 +223,7 @@ importers:
         version: 0.31.6
       supabase:
         specifier: ^2.48.3
-        version: 2.54.11
+        version: 2.58.5
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -3657,8 +3657,8 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lyrics-typing-engine@1.0.5:
-    resolution: {integrity: sha512-FsdUPjuCcSRb/PFOIlK3sOdAH7jCoUNLe0LzAJNSdl+lx2n3TXeM53OMpKuS4fVlsFq2xPrPd6ZEbeZjMoIXRA==}
+  lyrics-typing-engine@1.0.9:
+    resolution: {integrity: sha512-46HZVGjP2NHVA+/Z0nvLwdYYN3UO+DH0dohlyt5bcFqNNDRiXpB0ej60XVt6M3flTzXQOFIDN3e4FSo9WFWvUw==}
 
   magic-string@0.30.19:
     resolution: {integrity: sha512-2N21sPY9Ws53PZvsEpVtNuSW+ScYbQdp4b9qUaL+9QkHUrGFKo56Lg9Emg5s9V/qrtNBmiR01sYhUOwu3H+VOw==}
@@ -4208,8 +4208,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  supabase@2.54.11:
-    resolution: {integrity: sha512-KuDDVi1s2fhfun81LNPaCLpW4/LFsP3G2LKUQimzEoj64sP1DtZ/d97uw6GFYbNMPW9JC2Ruuei53qHInOwJLA==}
+  supabase@2.58.5:
+    resolution: {integrity: sha512-mYZSkUIePTdmwlHd26Pff8wpmjfre8gcuWzrc5QqhZgZvCXugVzAQQhcjaQisw5kusbPQWNIjUwcHYEKmejhPw==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -4240,8 +4240,8 @@ packages:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
     engines: {node: '>=6'}
 
-  tar@7.5.1:
-    resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
+  tar@7.5.2:
+    resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
     engines: {node: '>=18'}
 
   terser-webpack-plugin@5.3.14:
@@ -8165,7 +8165,7 @@ snapshots:
     dependencies:
       react: 19.2.0
 
-  lyrics-typing-engine@1.0.5: {}
+  lyrics-typing-engine@1.0.9: {}
 
   magic-string@0.30.19:
     dependencies:
@@ -8735,12 +8735,12 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.28.5
 
-  supabase@2.54.11:
+  supabase@2.58.5:
     dependencies:
       bin-links: 6.0.0
       https-proxy-agent: 7.0.6
       node-fetch: 3.3.2
-      tar: 7.5.1
+      tar: 7.5.2
     transitivePeerDependencies:
       - supports-color
 
@@ -8764,7 +8764,7 @@ snapshots:
 
   tapable@2.3.0: {}
 
-  tar@7.5.1:
+  tar@7.5.2:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
