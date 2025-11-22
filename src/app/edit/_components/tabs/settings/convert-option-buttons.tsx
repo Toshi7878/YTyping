@@ -2,9 +2,8 @@
 import { useMemo } from "react";
 import type { ConvertOption } from "@/app/edit/_lib/atoms/storage";
 import { setWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { RadioGroup } from "@/components/ui/radio-group/radio-group";
+import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/lib/build-map/const";
 
@@ -68,13 +67,13 @@ export const ConvertOptionButtons = () => {
       >
         {optionButtons.map((option) => (
           <TooltipWrapper key={option.value} label={option.tooltipLabel} side="bottom">
-            <Button
-              variant={option.variant}
-              size="sm"
+            <RadioButton
+              value={option.value}
               className="h-10 w-full text-xs sm:h-[50px] sm:w-[120px] sm:text-sm md:w-[150px]"
+              variant={option.variant}
             >
               {option.label}
-            </Button>
+            </RadioButton>
           </TooltipWrapper>
         ))}
       </RadioGroup>
