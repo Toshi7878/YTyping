@@ -1,3 +1,4 @@
+import type { TypingEvaluationResult } from "lyrics-typing-engine";
 import { readBuiltMap, readUtilityParams, setLineWord, setNewLine } from "@/app/(typing)/type/_lib/atoms/state";
 import { readLineCount } from "../../atoms/ref";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
@@ -7,9 +8,8 @@ import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/success";
 import { updateKpmOnLineEnded, updateKpmOnTyping } from "../update-status/update-kpm";
-import type { evaluateTypingKeyEvent } from "./typing-input-evaluator";
 
-export const processTypingResult = (evaluateResult: ReturnType<typeof evaluateTypingKeyEvent>) => {
+export const processTypingResult = (evaluateResult: TypingEvaluationResult) => {
   const { isCompleted, newLineWord, successKey, failKey, charType, updatePoint } = evaluateResult;
 
   const { constantLineTime, constantRemainLineTime } = getRemainLineTime();

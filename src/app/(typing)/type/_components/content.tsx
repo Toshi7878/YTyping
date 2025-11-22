@@ -1,10 +1,10 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
+import { buildTypingMap } from "lyrics-typing-engine";
 import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { buildMap } from "@/lib/build-map/build-map";
 import {
   buildInitialLineResult,
   calculateDuration,
@@ -26,6 +26,7 @@ import {
   useSceneGroupState,
 } from "../_lib/atoms/state";
 import { readReadyInputMode } from "../_lib/atoms/storage";
+import { CHAR_POINT } from "../_lib/const";
 import { mutateTypingStats } from "../_lib/mutate-stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
@@ -56,7 +57,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
 
   useEffect(() => {
     if (mapJson) {
-      const builtMapLines = buildMap(mapJson);
+      const builtMapLines = buildTypingMap(mapJson, CHAR_POINT);
       const totalNotes = calculateTotalNotes(builtMapLines);
       const { keyRate, missRate } = calculateKeyAndMissRates({ romaTotalNotes: totalNotes.roma });
 

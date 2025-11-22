@@ -1,5 +1,4 @@
-import { generateTypingWord } from "@/lib/build-map/generate-typing-word";
-import { sentenceToKanaChunkWords } from "@/lib/build-map/sentence-to-kana-chunk-words";
+import { generateTypingWord, sentenceToKanaChunkWords } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -10,6 +9,7 @@ import {
   setNotify,
   setPlayingInputMode,
 } from "../atoms/state";
+import { CHAR_POINT } from "../const";
 import type { LineWord } from "../type";
 import { getLineTime } from "../youtube-player/get-youtube-time";
 
@@ -80,7 +80,7 @@ function romaConvert(lineWord: LineWord) {
 
   if (!kanaChunkWord) return;
   const nextPoint = lineWord.nextChar.point;
-  const word = generateTypingWord(kanaChunkWord);
+  const word = generateTypingWord(kanaChunkWord, CHAR_POINT);
   const nextChar = word[0];
   if (!nextChar) return;
   return { nextChar: { ...nextChar, point: nextPoint }, word: word.slice(1) };

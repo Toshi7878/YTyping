@@ -1,4 +1,3 @@
-import { CHAR_POINT, MISS_PENALTY } from "@/lib/build-map/build-map";
 import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { readAllLineResult, setLineResult } from "../atoms/family";
 import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/ref";
@@ -12,6 +11,7 @@ import {
   readUtilityParams,
   setTypingStatus,
 } from "../atoms/state";
+import { CHAR_POINT, MISS_PENALTY_POINT } from "../const";
 
 export const hasLineResultImproved = (count: number) => {
   const lineResults = readAllLineResult();
@@ -19,11 +19,11 @@ export const hasLineResultImproved = (count: number) => {
   const savedLineResult = lineResults[count];
   const typingStatus = readTypingStatus();
 
-  const currentLineScore = typingStatus.point + typingStatus.timeBonus + lineMiss * MISS_PENALTY;
+  const currentLineScore = typingStatus.point + typingStatus.timeBonus + lineMiss * MISS_PENALTY_POINT;
   const savedLineScore =
     (savedLineResult?.status.p ?? 0) +
     (savedLineResult?.status.tBonus ?? 0) +
-    (savedLineResult?.status.lMiss ?? 0) * MISS_PENALTY;
+    (savedLineResult?.status.lMiss ?? 0) * MISS_PENALTY_POINT;
 
   const { scene, isPaused } = readUtilityParams();
   const { playSpeed } = readPlaySpeed();

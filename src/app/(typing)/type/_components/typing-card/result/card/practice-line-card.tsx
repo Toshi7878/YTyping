@@ -6,11 +6,11 @@ import {
   useLineSelectIndexState,
   usePlayingInputModeState,
 } from "@/app/(typing)/type/_lib/atoms/state";
+import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
 import { moveSetLine } from "@/app/(typing)/type/_lib/playing/move-line";
 import { useInteractJS } from "@/app/(typing)/type/_lib/utils/use-interact-js";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CHAR_POINT } from "@/lib/build-map/build-map";
 import { ResultCardContent } from "./child/result-card-body";
 import { ResultCardFooter } from "./child/result-card-footer";
 import { ResultCardHeader } from "./child/result-card-header";

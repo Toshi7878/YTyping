@@ -1,5 +1,6 @@
 "use client";
 
+import { evaluateKanaTypingInput, evaluateRomaTypingInput, isTypingKey } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import {
   readLineWord,
@@ -19,7 +20,6 @@ import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atom
 import { commitLineSkip } from "../../../_lib/playing/commit-line-skip";
 import { handlePlayHotKey, isHotKeyIgnored } from "../../../_lib/playing/keydown/handle-play-hot-key";
 import { processTypingResult } from "../../../_lib/playing/keydown/process-typing-result";
-import { evaluateTypingKeyEvent, isTypingKey } from "../../../_lib/playing/keydown/typing-input-evaluator";
 import { setTimerFPS } from "../../../_lib/playing/timer/timer";
 import { togglePause } from "../../../_lib/playing/toggle-pause";
 import { ChangeCSS } from "./change-css-style";
@@ -119,8 +119,9 @@ const handleKeyDown = (event: KeyboardEvent) => {
   const lineWord = readLineWord();
   if (shouldAcceptTyping && lineWord.nextChar.kana && isTypingKey(event)) {
     const { inputMode } = readUtilityParams();
-    const evaluateResult = evaluateTypingKeyEvent(event, inputMode, lineWord);
-    processTypingResult(evaluateResult);
+    const typingResult =
+      inputMode === "roma" ? evaluateRomaTypingInput(event, lineWord) : evaluateKanaTypingInput(event, lineWord);
+    processTypingResult(typingResult);
     event.preventDefault();
     return;
   }

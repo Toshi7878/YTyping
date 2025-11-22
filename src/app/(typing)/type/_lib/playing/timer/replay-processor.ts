@@ -1,3 +1,4 @@
+import { evaluateTypingInput, type TypingKey } from "lyrics-typing-engine";
 import {
   readLineCount,
   readUtilityRefParams,
@@ -15,7 +16,6 @@ import {
 import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
 import { readAllLineResult } from "../../atoms/family";
-import { KanaInput, RomaInput, type TypingKeys } from "../keydown/typing-input-evaluator";
 import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
@@ -62,7 +62,7 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
   if (count === 0) return;
 
   if (key) {
-    const typingKeys: TypingKeys = {
+    const typingKeys: TypingKey = {
       keys: [key],
       key,
       code: `Key${key.toUpperCase()}`,
@@ -71,13 +71,15 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
     if (isSuccess) {
       const { inputMode } = readUtilityParams();
       const lineWord = readLineWord();
-      const { newLineWord, successKey, updatePoint } =
-        inputMode === "roma" ? new RomaInput({ typingKeys, lineWord }) : new KanaInput({ typingKeys, lineWord });
+      const { newLineWord, successKey, isCompleted, updatePoint } = evaluateTypingInput(
+        typingKeys,
+        inputMode,
+        lineWord,
+      );
 
       if (!newLineWord || !successKey) return;
 
       setLineWord(newLineWord);
-      const isCompleted = newLineWord.nextChar.kana === "";
       triggerTypeSound({ isCompleted });
 
       updateKpmOnTyping({ constantLineTime });

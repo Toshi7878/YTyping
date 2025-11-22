@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { buildTypingMap } from "lyrics-typing-engine";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
@@ -28,7 +29,6 @@ import { Form } from "@/components/ui/form";
 import { FloatingLabelInputFormField } from "@/components/ui/input/input-form-field";
 import { TagInputFormField } from "@/components/ui/input/tag-input";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { buildMap } from "@/lib/build-map/build-map";
 import {
   calculateDuration,
   calculateSpeedDifficulty,
@@ -407,7 +407,7 @@ const useOnSubmit = (form: FormType) => {
     const map = readMap();
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
-    const builtMap = buildMap(map);
+    const builtMap = buildTypingMap(map);
     const duration = calculateDuration(builtMap);
     const totalNotes = calculateTotalNotes(builtMap);
     const startLine = getStartLine(builtMap);

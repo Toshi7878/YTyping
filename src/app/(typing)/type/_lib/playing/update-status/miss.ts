@@ -1,13 +1,13 @@
-import { MISS_PENALTY } from "@/lib/build-map/build-map";
 import { readLineSubstatus, readSubstatus, writeLineSubstatus, writeSubstatus } from "../../atoms/ref";
 import { readBuiltMap, readTypingStatus, setCombo, setTypingStatus } from "../../atoms/state";
+import { MISS_PENALTY_POINT } from "../../const";
 
 export const updateMissStatus = () => {
   const status = readTypingStatus();
   const newStatus = { ...status };
 
   newStatus.miss++;
-  newStatus.point -= MISS_PENALTY;
+  newStatus.point -= MISS_PENALTY_POINT;
 
   setCombo(0);
   setTypingStatus(newStatus);
