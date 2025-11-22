@@ -79,7 +79,7 @@ function romaConvert(lineWord: LineWord) {
 
   if (!kanaChunkWord) return;
   const nextPoint = lineWord.nextChar.point;
-  const word = generateTypingWord(kanaChunkWord, CHAR_POINT);
+  const word = generateTypingWord({ kanaChunkWord, charPoint: CHAR_POINT });
   const nextChar = word[0];
   if (!nextChar) return;
   return { nextChar: { ...nextChar, point: nextPoint }, word: word.slice(1) };

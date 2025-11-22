@@ -407,7 +407,7 @@ const useOnSubmit = (form: FormType) => {
     const map = readMap();
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
-    const builtMap = buildTypingMap(map);
+    const builtMap = buildTypingMap({ mapJson: map, charPoint: 0 });
     const duration = calculateDuration(builtMap);
     const totalNotes = calculateTotalNotes(builtMap);
     const startLine = getStartLine(builtMap);

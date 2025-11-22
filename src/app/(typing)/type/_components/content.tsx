@@ -57,7 +57,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
 
   useEffect(() => {
     if (mapJson) {
-      const builtMapLines = buildTypingMap(mapJson, CHAR_POINT);
+      const builtMapLines = buildTypingMap({ mapJson, charPoint: CHAR_POINT });
       const totalNotes = calculateTotalNotes(builtMapLines);
       const { keyRate, missRate } = calculateKeyAndMissRates({ romaTotalNotes: totalNotes.roma });
 
