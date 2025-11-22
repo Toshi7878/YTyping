@@ -117,7 +117,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
 
   const lineWord = readLineWord();
-  if (shouldAcceptTyping && lineWord.nextChar.kana && isTypingKey(event)) {
+  if (shouldAcceptTyping && lineWord.nextChunk.kana && isTypingKey(event)) {
     const { inputMode } = readUtilityParams();
     const typingResult =
       inputMode === "roma" ? evaluateRomaTypingInput(event, lineWord) : evaluateKanaTypingInput(event, lineWord);

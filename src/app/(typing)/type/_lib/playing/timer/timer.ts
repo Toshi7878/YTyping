@@ -152,7 +152,7 @@ const updateEvery100ms = ({
   }
 
   updateSkipGuideVisibility({
-    kana: readLineWord().nextChar.kana,
+    kana: readLineWord().nextChunk.kana,
     currentTime,
     constantLineTime,
     constantRemainLineTime,

@@ -82,26 +82,26 @@ export const saveLineResult = (count: number) => {
 const generateLostWord = () => {
   const lineWord = readLineWord();
 
-  const isCompleted = !lineWord.nextChar.kana;
+  const isCompleted = !lineWord.nextChunk.kana;
 
   if (isCompleted) {
     return { lostWord: "", actualLostNotes: 0, pointLostNotes: 0 };
   }
 
-  const romaLostWordOmitNextChar = lineWord.word.map((w) => w.romaPatterns[0]).join("");
-  const pointLostNotes = !isCompleted ? lineWord.nextChar.point / CHAR_POINT + romaLostWordOmitNextChar.length : 0;
+  const romaLostWordOmitNextChar = lineWord.wordChunks.map((chunk) => chunk.romaPatterns[0]).join("");
+  const pointLostNotes = !isCompleted ? lineWord.nextChunk.point / CHAR_POINT + romaLostWordOmitNextChar.length : 0;
 
   const { inputMode } = readUtilityParams();
 
   switch (inputMode) {
     case "roma": {
-      const romaLostWord = lineWord.nextChar.romaPatterns[0] + romaLostWordOmitNextChar;
+      const romaLostWord = lineWord.nextChunk.romaPatterns[0] + romaLostWordOmitNextChar;
       const actualLostNotes = romaLostWord.length;
       return { lostWord: romaLostWord, actualLostNotes, pointLostNotes };
     }
     case "kana":
     case "flick": {
-      const kanaLostWord = lineWord.nextChar.kana + lineWord.word.map((w) => w.kana).join("");
+      const kanaLostWord = lineWord.nextChunk.kana + lineWord.wordChunks.map((chunk) => chunk.kana).join("");
       const actualLostNotes = countKanaWordWithDakuonSplit({ kanaWord: kanaLostWord });
       return { lostWord: kanaLostWord, actualLostNotes, pointLostNotes };
     }

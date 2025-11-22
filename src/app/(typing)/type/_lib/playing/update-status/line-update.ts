@@ -10,7 +10,7 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
   const { kanaToRomaConvertCount } = readSubstatus();
   writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + lineWord.correct.roma.length });
 
-  const isFailed = lineWord.nextChar.kana;
+  const isFailed = lineWord.nextChunk.kana;
   if (isFailed) {
     const { failureCount, totalLatency } = readSubstatus();
     writeSubstatus({ failureCount: failureCount + 1 });

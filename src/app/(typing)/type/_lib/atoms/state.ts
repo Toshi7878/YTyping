@@ -200,8 +200,8 @@ export const setNextLyrics = (line: BuiltMapLine) => {
         lyrics: typingOptions.nextDisplay === "WORD" ? line.kanaWord : line.lyrics,
         kpm: nextKpm.toFixed(0),
         kanaWord: line.kanaWord.slice(0, 60),
-        romaWord: line.word
-          .map((w) => w.romaPatterns[0])
+        romaWord: line.wordChunks
+          .map((chunk) => chunk.romaPatterns[0])
           .join("")
           .slice(0, 60),
       };
@@ -215,8 +215,8 @@ export const resetNextLyrics = () => store.set(nextLyricsAtom, RESET);
 const currentLineAtom = atomWithReset<{ lineWord: LineWord; lyrics: string }>({
   lineWord: {
     correct: { kana: "", roma: "" },
-    nextChar: { kana: "", romaPatterns: [""], point: 0, type: undefined },
-    word: [{ kana: "", romaPatterns: [""], point: 0, type: undefined }],
+    nextChunk: { kana: "", romaPatterns: [""], point: 0, type: undefined },
+    wordChunks: [{ kana: "", romaPatterns: [""], point: 0, type: undefined }],
   },
   lyrics: "",
 });
@@ -233,15 +233,15 @@ export const setNewLine = ({
   newCurrentLine: BuiltMapLine;
   newNextLine: BuiltMapLine;
 }) => {
-  const cloneWord = structuredClone([...newCurrentLine.word]);
-  const nextChar = cloneWord[0];
-  if (!nextChar) return;
+  const cloneWord = structuredClone([...newCurrentLine.wordChunks]);
+  const nextChunk = cloneWord[0];
+  if (!nextChunk) return;
 
   store.set(currentLineAtom, {
     lineWord: {
       correct: { kana: "", roma: "" },
-      nextChar,
-      word: cloneWord.slice(1),
+      nextChunk,
+      wordChunks: cloneWord.slice(1),
     },
     lyrics: newCurrentLine.lyrics,
   });

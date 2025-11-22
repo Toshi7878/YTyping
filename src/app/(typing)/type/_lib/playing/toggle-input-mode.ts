@@ -1,4 +1,4 @@
-import { generateTypingWord, type LineWord, sentenceToKanaChunkWords } from "lyrics-typing-engine";
+import { buildTypingWord, type LineWord, parseKanaChunks } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -47,13 +47,13 @@ export const applyRomaInputMode = () => {
   setNotify(Symbol("Romaji"));
   const lineWord = readLineWord();
 
-  if (lineWord.nextChar.kana) {
+  if (lineWord.nextChunk.kana) {
     const wordFix = romaConvert(lineWord);
     if (!wordFix) return;
     setLineWord({
       correct: lineWord.correct,
-      nextChar: wordFix.nextChar,
-      word: wordFix.word,
+      nextChunk: wordFix.nextChunk,
+      wordChunks: wordFix.wordChunks,
     });
   }
   updateNextLyrics();
@@ -72,15 +72,15 @@ const updateNextLyrics = () => {
 };
 
 function romaConvert(lineWord: LineWord) {
-  const dakuten = lineWord.nextChar.orginalDakuChar;
-  const [kanaChunkWord] = sentenceToKanaChunkWords(
-    (dakuten ? dakuten : lineWord.nextChar.kana) + lineWord.word.map((char) => char.kana).join(""),
+  const dakuten = lineWord.nextChunk.orginalDakuChar;
+  const [kanaChunkWord] = parseKanaChunks(
+    (dakuten ? dakuten : lineWord.nextChunk.kana) + lineWord.wordChunks.map((char) => char.kana).join(""),
   );
 
   if (!kanaChunkWord) return;
-  const nextPoint = lineWord.nextChar.point;
-  const word = generateTypingWord({ kanaChunkWord, charPoint: CHAR_POINT });
+  const nextPoint = lineWord.nextChunk.point;
+  const word = buildTypingWord({ kanaChunkWord, charPoint: CHAR_POINT });
   const nextChar = word[0];
   if (!nextChar) return;
-  return { nextChar: { ...nextChar, point: nextPoint }, word: word.slice(1) };
+  return { nextChunk: { ...nextChar, point: nextPoint }, wordChunks: word.slice(1) };
 }

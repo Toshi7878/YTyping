@@ -43,8 +43,9 @@ export const OptimizedResultCard = ({
 
   const lineSpeed = lineResult.status.sp > minPlaySpeed ? lineResult.status.sp : minPlaySpeed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
-  const lineKanaWord = lineData.word.map((w) => w.kana).join("");
-  const lineTypeWord = lineInputMode === "roma" ? lineData.word.map((w) => w.romaPatterns[0]).join("") : lineKanaWord;
+  const lineKanaWord = lineData.wordChunks.map((chunk) => chunk.kana).join("");
+  const lineTypeWord =
+    lineInputMode === "roma" ? lineData.wordChunks.map((chunk) => chunk.romaPatterns[0]).join("") : lineKanaWord;
   const lineNotes = lineInputMode === "roma" ? lineData.notes.roma : lineData.notes.kana;
   const lineKpm = (lineInputMode === "roma" ? lineData.kpm.roma : lineData.kpm.kana) * lineSpeed;
 

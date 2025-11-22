@@ -22,13 +22,13 @@ export const TypingWords = () => {
     isSmoothScroll,
   } = useTypingOptionsState();
 
-  const isLineCompleted = !lineWord.nextChar.kana && !!lineWord.correct.kana;
+  const isLineCompleted = !lineWord.nextChunk.kana && !!lineWord.correct.kana;
 
   const kanaWordProps = {
     correct: lineWord.correct.kana,
-    nextChar: lineWord.nextChar.kana,
-    word: lineWord.word
-      .map((w) => w.kana)
+    nextChar: lineWord.nextChunk.kana,
+    word: lineWord.wordChunks
+      .map((chunk) => chunk.kana)
       .join("")
       .slice(0, 60),
     isLineCompleted,
@@ -41,9 +41,9 @@ export const TypingWords = () => {
   };
   const romaWordProps = {
     correct: lineWord.correct.roma,
-    nextChar: lineWord.nextChar.romaPatterns[0] ?? "",
-    word: lineWord.word
-      .map((w) => w.romaPatterns[0])
+    nextChar: lineWord.nextChunk.romaPatterns[0] ?? "",
+    word: lineWord.wordChunks
+      .map((chunk) => chunk.romaPatterns[0])
       .join("")
       .slice(0, 60),
     isLineCompleted,

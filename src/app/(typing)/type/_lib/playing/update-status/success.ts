@@ -1,4 +1,4 @@
-import type { TypeChunk } from "lyrics-typing-engine";
+import type { WordChunk } from "lyrics-typing-engine";
 import {
   readLineSubstatus,
   readSubstatus,
@@ -59,7 +59,7 @@ export const updateSuccessSubstatus = ({
 }: {
   constantLineTime: number;
   isCompleted?: boolean;
-  charType?: TypeChunk["type"];
+  charType?: WordChunk["type"];
   successKey: string;
 }) => {
   const { scene } = readUtilityParams();

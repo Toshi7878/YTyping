@@ -108,7 +108,7 @@ function calculateStaminaScore(lines: BuiltMapLineWithOption[]): number {
  * 複雑さスコア（打ちにくい文字列）
  */
 function calculateComplexityScore(lines: BuiltMapLineWithOption[]): number {
-  const validLines = lines.filter((line) => line.word && line.word.length > 0);
+  const validLines = lines.filter((line) => line.wordChunks && line.wordChunks.length > 0);
   if (validLines.length === 0) return 0;
 
   let totalComplexity = 0;
@@ -129,13 +129,13 @@ function calculateComplexityScore(lines: BuiltMapLineWithOption[]): number {
  * 1行の複雑さを計算
  */
 function calculateLineComplexity(line: BuiltMapLineWithOption): number {
-  if (!line.word || line.word.length === 0) return 0;
+  if (!line.wordChunks || line.wordChunks.length === 0) return 0;
 
   let complexityScore = 0;
-  const totalChunks = line.word.length;
+  const totalChunks = line.wordChunks.length;
 
-  for (let i = 0; i < line.word.length; i++) {
-    const chunk = line.word[i];
+  for (let i = 0; i < line.wordChunks.length; i++) {
+    const chunk = line.wordChunks[i];
     if (!chunk) continue;
 
     const firstRoma = chunk.romaPatterns[0];
@@ -159,8 +159,8 @@ function calculateLineComplexity(line: BuiltMapLineWithOption): number {
     }
 
     // nで終わる（次の文字との関係で打ちにくい）
-    if (firstRoma.endsWith("n") && i < line.word.length - 1) {
-      const nextChunk = line.word[i + 1];
+    if (firstRoma.endsWith("n") && i < line.wordChunks.length - 1) {
+      const nextChunk = line.wordChunks[i + 1];
       const nextRoma = nextChunk?.romaPatterns[0];
       if (nextRoma && /^[aiueony]/.test(nextRoma)) {
         complexityScore += 0.25; // "nn"を打たなければならない
