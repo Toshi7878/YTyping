@@ -1,4 +1,4 @@
-import { buildTypingWord, type LineWord, parseKanaChunks } from "lyrics-typing-engine";
+import { type LineWord, parseKanaChunks, parseKanaToWordChunks } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -73,14 +73,14 @@ const updateNextLyrics = () => {
 
 function romaConvert(lineWord: LineWord) {
   const dakuten = lineWord.nextChunk.orginalDakuChar;
-  const [kanaChunkWord] = parseKanaChunks(
+  const [kanaChunks] = parseKanaChunks(
     (dakuten ? dakuten : lineWord.nextChunk.kana) + lineWord.wordChunks.map((char) => char.kana).join(""),
   );
 
-  if (!kanaChunkWord) return;
+  if (!kanaChunks) return;
   const nextPoint = lineWord.nextChunk.point;
-  const word = buildTypingWord({ kanaChunkWord, charPoint: CHAR_POINT });
-  const nextChar = word[0];
-  if (!nextChar) return;
-  return { nextChunk: { ...nextChar, point: nextPoint }, wordChunks: word.slice(1) };
+  const wordChunks = parseKanaToWordChunks({ kanaChunks, charPoint: CHAR_POINT });
+  const nextChunk = wordChunks[0];
+  if (!nextChunk) return;
+  return { nextChunk: { ...nextChunk, point: nextPoint }, wordChunks: wordChunks.slice(1) };
 }
