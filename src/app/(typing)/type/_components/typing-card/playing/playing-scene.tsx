@@ -1,6 +1,6 @@
 "use client";
 
-import { evaluateKanaTypingInput, evaluateRomaTypingInput, isTypingKey } from "lyrics-typing-engine";
+import { evaluateKanaInput, evaluateRomaInput, isTypingKey } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import {
   readLineWord,
@@ -119,8 +119,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
   const lineWord = readLineWord();
   if (shouldAcceptTyping && lineWord.nextChunk.kana && isTypingKey(event)) {
     const { inputMode } = readUtilityParams();
-    const typingResult =
-      inputMode === "roma" ? evaluateRomaTypingInput(event, lineWord) : evaluateKanaTypingInput(event, lineWord);
+    const typingResult = inputMode === "roma" ? evaluateRomaInput(event, lineWord) : evaluateKanaInput(event, lineWord);
     processTypingResult(typingResult);
     event.preventDefault();
     return;
