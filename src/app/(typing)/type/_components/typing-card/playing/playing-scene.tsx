@@ -19,7 +19,7 @@ import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
 import { commitLineSkip } from "../../../_lib/playing/commit-line-skip";
 import { handlePlayHotKey, isHotKeyIgnored } from "../../../_lib/playing/keydown/handle-play-hot-key";
-import { processTypingResult } from "../../../_lib/playing/keydown/process-typing-result";
+import { processTypingInputResult } from "../../../_lib/playing/keydown/process-typing-result";
 import { setTimerFPS } from "../../../_lib/playing/timer/timer";
 import { togglePause } from "../../../_lib/playing/toggle-pause";
 import { ChangeCSS } from "./change-css-style";
@@ -119,9 +119,9 @@ const handleKeyDown = (event: KeyboardEvent) => {
   const typingWord = readTypingWord();
   if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
     const { inputMode } = readUtilityParams();
-    const typingResult =
+    const typingInputResult =
       inputMode === "roma" ? evaluateRomaInput(event, typingWord) : evaluateKanaInput(event, typingWord);
-    processTypingResult(typingResult);
+    processTypingInputResult(typingInputResult);
     event.preventDefault();
     return;
   }
