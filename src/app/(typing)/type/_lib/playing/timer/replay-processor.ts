@@ -1,4 +1,4 @@
-import { evaluateTypingInput, type TypingKey } from "lyrics-typing-engine";
+import { executeTypingInput } from "lyrics-typing-engine";
 import {
   readLineCount,
   readUtilityRefParams,
@@ -56,23 +56,17 @@ interface SimulateKeyInputParams {
 }
 
 const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, type }: SimulateKeyInputParams) => {
-  const { c: key, is: isSuccess, op: option } = type;
+  const { c: inputChar, is: isSuccess, op: option } = type;
   const count = readLineCount();
   // 0ライン目に記録されてしまっているリプレイが存在するためcount === 0はリプレイしない
   if (count === 0) return;
 
-  if (key) {
-    const typingKeys: TypingKey = {
-      keys: [key],
-      key,
-      code: `Key${key.toUpperCase()}`,
-    };
-
+  if (inputChar) {
     if (isSuccess) {
       const { inputMode } = readUtilityParams();
       const typingWord = readTypingWord();
-      const { nextTypingWord, successKey, isCompleted, updatePoint } = evaluateTypingInput(
-        typingKeys,
+      const { nextTypingWord, successKey, isCompleted, updatePoint } = executeTypingInput(
+        inputChar,
         inputMode,
         typingWord,
       );
@@ -99,7 +93,7 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
     } else {
       triggerMissSound();
       updateMissStatus();
-      updateMissSubstatus({ constantLineTime, failKey: key });
+      updateMissSubstatus({ constantLineTime, failKey: inputChar });
     }
   } else if (option) {
     switch (option) {
