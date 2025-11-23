@@ -61,12 +61,12 @@ export const updateSuccessStatus = ({
 export const updateSuccessSubstatus = ({
   constantLineTime,
   isCompleted,
-  charType,
+  chunkType,
   successKey,
 }: {
   constantLineTime: number;
   isCompleted?: boolean;
-  charType?: WordChunk["type"];
+  chunkType?: WordChunk["type"];
   successKey: string;
 }) => {
   const { scene } = readUtilityParams();
@@ -98,7 +98,7 @@ export const updateSuccessSubstatus = ({
     writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + readTypingWord().correct.roma.length });
   }
 
-  if (scene === "replay" || !charType) {
+  if (scene === "replay" || !chunkType) {
     return;
   }
 
@@ -108,7 +108,7 @@ export const updateSuccessSubstatus = ({
 
   const substatus = readSubstatus();
   const userStats = readUserStats();
-  if (charType === "kana") {
+  if (chunkType === "kana") {
     const { inputMode } = readUtilityParams();
     if (inputMode === "roma") {
       writeUserStats({ romaType: substatus.romaType + 1 });
@@ -120,16 +120,16 @@ export const updateSuccessSubstatus = ({
       writeUserStats({ flickType: userStats.flickType + 1 });
       writeSubstatus({ flickType: substatus.flickType + 1 });
     }
-  } else if (charType === "alphabet") {
+  } else if (chunkType === "alphabet") {
     writeUserStats({ englishType: userStats.englishType + 1 });
     writeSubstatus({ englishType: substatus.englishType + 1 });
-  } else if (charType === "num") {
+  } else if (chunkType === "num") {
     writeUserStats({ numType: userStats.numType + 1 });
     writeSubstatus({ numType: substatus.numType + 1 });
-  } else if (charType === "space") {
+  } else if (chunkType === "space") {
     writeUserStats({ spaceType: userStats.spaceType + 1 });
     writeSubstatus({ spaceType: substatus.spaceType + 1 });
-  } else if (charType === "symbol") {
+  } else if (chunkType === "symbol") {
     writeUserStats({ symbolType: userStats.symbolType + 1 });
     writeSubstatus({ symbolType: substatus.symbolType + 1 });
   }

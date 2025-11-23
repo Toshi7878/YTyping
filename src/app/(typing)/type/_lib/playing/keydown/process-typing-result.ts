@@ -10,7 +10,7 @@ import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/su
 import { updateKpmOnLineEnded, updateKpmOnTyping } from "../update-status/update-kpm";
 
 export const processTypingResult = (evaluateResult: TypingEvaluationResult) => {
-  const { isCompleted, nextTypingWord, successKey, failKey, charType, updatePoint } = evaluateResult;
+  const { isCompleted, nextTypingWord, successKey, failKey, chunkType, updatePoint } = evaluateResult;
 
   const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
 
@@ -22,7 +22,7 @@ export const processTypingResult = (evaluateResult: TypingEvaluationResult) => {
       constantLineTime,
       isCompleted,
       successKey,
-      charType,
+      chunkType,
     });
 
     requestAnimationFrame(() => {
