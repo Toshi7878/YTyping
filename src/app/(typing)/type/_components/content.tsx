@@ -75,6 +75,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
         typingLineIndexes,
         changeCSSIndexes,
         duration: calculateDuration(builtMapLines),
+        isCaseSensitive: builtMapLines[0]?.options?.isCaseSensitive ?? false,
       };
       setBuiltMap(builtMap);
       initializeAllLineResult(builtMap.initialLineResults);

@@ -3,6 +3,7 @@
 import { evaluateKanaInput, evaluateRomaInput, isTypingKey } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import {
+  readBuiltMap,
   readTypingWord,
   readUtilityParams,
   resetCurrentLine,
@@ -118,9 +119,13 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
   const typingWord = readTypingWord();
   if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
+    const map = readBuiltMap();
+    const isCaseSensitive = map?.isCaseSensitive ?? false;
     const { inputMode } = readUtilityParams();
     const typingInputResult =
-      inputMode === "roma" ? evaluateRomaInput({ event, typingWord }) : evaluateKanaInput({ event, typingWord });
+      inputMode === "roma"
+        ? evaluateRomaInput({ event, typingWord, isCaseSensitive })
+        : evaluateKanaInput({ event, typingWord, isCaseSensitive });
     processTypingInputResult(typingInputResult);
     event.preventDefault();
     return;

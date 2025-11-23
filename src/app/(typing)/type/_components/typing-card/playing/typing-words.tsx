@@ -1,7 +1,12 @@
 import type { HTMLAttributes } from "react";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
-import { useNextLyricsState, usePlayingInputModeState, useTypingWordState } from "@/app/(typing)/type/_lib/atoms/state";
+import {
+  useBuiltMapState,
+  useNextLyricsState,
+  usePlayingInputModeState,
+  useTypingWordState,
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 
@@ -9,6 +14,8 @@ export const TypingWords = () => {
   const typingWord = useTypingWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
+  const builtMap = useBuiltMapState();
+  const isCaseSensitive = builtMap?.isCaseSensitive ?? false;
   const {
     wordDisplay,
     subWordFontSize,
@@ -34,7 +41,8 @@ export const TypingWords = () => {
     isLineCompleted,
     nextWord: nextLyrics.kanaWord,
     className: cn(
-      "word-kana lowercase",
+      "word-kana",
+      !isCaseSensitive && "lowercase",
       (wordDisplay === "ROMA_LOWERCASE_ONLY" || wordDisplay === "ROMA_UPPERCASE_ONLY") && "invisible",
       inputMode === "kana" && "visible",
     ),
@@ -50,7 +58,7 @@ export const TypingWords = () => {
     nextWord: nextLyrics.romaWord,
     className: cn(
       "word-roma",
-      wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase",
+      isCaseSensitive && (wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase"),
       inputMode === "roma" && "visible",
       (wordDisplay === "KANA_ONLY" || inputMode === "kana") && "invisible",
     ),
