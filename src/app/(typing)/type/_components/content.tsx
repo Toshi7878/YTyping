@@ -50,14 +50,14 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
   );
 
   const trpc = useTRPC();
-  const { data: mapJson, isLoading } = useQuery(
-    trpc.map.getMapJson.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
+  const { data: rawMapLines, isLoading } = useQuery(
+    trpc.map.getRawMapJson.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
   );
   const pathname = usePathname();
 
   useEffect(() => {
-    if (mapJson) {
-      const builtMapLines = buildTypingMap({ mapJson, charPoint: CHAR_POINT });
+    if (rawMapLines) {
+      const builtMapLines = buildTypingMap({ rawMapLines, charPoint: CHAR_POINT });
       const totalNotes = calculateTotalNotes(builtMapLines);
       const { keyRate, missRate } = calculateKeyAndMissRates({ romaTotalNotes: totalNotes.roma });
 
@@ -86,7 +86,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
         totalProgress.max = builtMap.duration;
       }
     }
-  }, [mapJson]);
+  }, [rawMapLines]);
 
   useEffect(() => {
     return () => {

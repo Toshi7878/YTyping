@@ -1,8 +1,8 @@
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
-import { readMap, setMapAction } from "@/app/edit/_lib/atoms/map-reducer";
+import { readRawMap, setRawMapAction } from "@/app/edit/_lib/atoms/map-reducer";
 import { normalizeSymbols } from "@/utils/string-transform";
-import type { MapLine } from "@/validator/map-json";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
 import { getYTDuration } from "../atoms/state";
 import { wordConvert } from "./typable-word-convert";
@@ -24,22 +24,22 @@ export const importMapFile = async (file: File) => {
     const convertedData = await lrcConverter(lrc);
     dispatchEditHistory({
       type: "add",
-      payload: { actionType: "replaceAll", data: { old: readMap(), new: convertedData } },
+      payload: { actionType: "replaceAll", data: { old: readRawMap(), new: convertedData } },
     });
-    setMapAction({ type: "replaceAll", payload: convertedData });
+    setRawMapAction({ type: "replaceAll", payload: convertedData });
   } else {
     const convertedData = jsonConverter(JSON.parse(decodedData).map);
     dispatchEditHistory({
       type: "add",
-      payload: { actionType: "replaceAll", data: { old: readMap(), new: convertedData } },
+      payload: { actionType: "replaceAll", data: { old: readRawMap(), new: convertedData } },
     });
-    setMapAction({ type: "replaceAll", payload: convertedData });
+    setRawMapAction({ type: "replaceAll", payload: convertedData });
   }
 };
 type JsonMap = [string, string, string];
 
 const jsonConverter = (jsonMap: JsonMap) => {
-  const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
+  const result: RawMapLine[] = [{ time: "0", lyrics: "", word: "" }];
 
   for (const line of jsonMap) {
     const time = line[0] === "0" ? "0.001" : line[0];
@@ -60,7 +60,7 @@ const jsonConverter = (jsonMap: JsonMap) => {
 };
 
 const lrcConverter = async (lrc: string[]) => {
-  const result: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
+  const result: RawMapLine[] = [{ time: "0", lyrics: "", word: "" }];
   for (const line of lrc) {
     const matchedTimeTags = line.match(/\[\d\d.\d\d.\d\d\]/);
 

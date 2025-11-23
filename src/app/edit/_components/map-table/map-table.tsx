@@ -19,10 +19,10 @@ import { TooltipWrapper } from "@/components/ui/tooltip";
 import { fetchBackupMap } from "@/lib/indexed-db";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import type { MapLine } from "@/validator/map-json";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import { readEndLineIndex, useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
 import { useCreatorIdState } from "../../_lib/atoms/hydrate";
-import { readMap, setMapAction, useMapState } from "../../_lib/atoms/map-reducer";
+import { readRawMap, setRawMapAction, useRawMapState } from "../../_lib/atoms/map-reducer";
 import { setTimeInputValue } from "../../_lib/atoms/ref";
 import {
   dispatchLine,
@@ -50,7 +50,7 @@ import { searchParamsParsers } from "../../_lib/search-params";
 import { LineOptionDialog } from "./line-option-dialog";
 
 export const MapTable = () => {
-  const map = useMapState();
+  const map = useRawMapState();
   const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
 
   const hotKeyOptions: Options = {
@@ -79,7 +79,7 @@ export const MapTable = () => {
   const [{ backup: isBackup }] = useQueryStates({ backup: searchParamsParsers.isBackup });
 
   const { data: mapData, isLoading } = useQuery(
-    trpc.map.getMapJson.queryOptions(
+    trpc.map.getRawMapJson.queryOptions(
       { mapId: Number(mapId) },
       { enabled: !!mapId && !isBackup, staleTime: Infinity, gcTime: Infinity },
     ),
@@ -97,14 +97,14 @@ export const MapTable = () => {
   );
   useEffect(() => {
     if (backupMap) {
-      setMapAction({ type: "replaceAll", payload: backupMap.map });
+      setRawMapAction({ type: "replaceAll", payload: backupMap.map });
       setCanUpload(true);
     }
   }, [backupMap]);
 
   useEffect(() => {
     if (mapData) {
-      setMapAction({ type: "replaceAll", payload: mapData });
+      setRawMapAction({ type: "replaceAll", payload: mapData });
     }
   }, [mapData]);
 
@@ -112,21 +112,21 @@ export const MapTable = () => {
   const selectIndex = useSelectIndexState();
 
   const columns = useMemo(
-    (): ColumnDef<MapLine>[] => [
+    (): ColumnDef<RawMapLine>[] => [
       {
         header: "Time",
         accessorKey: "time",
         maxSize: 35,
         minSize: 35,
         meta: {
-          onClick: (_event, row: MapLine, index: number) => {
+          onClick: (_event, row: RawMapLine, index: number) => {
             if (directEditIndex !== index) {
               seekYTPlayer(Number(row.time));
             }
           },
-          cellClassName: (cell: Cell<MapLine, unknown>, index: number) => {
+          cellClassName: (cell: Cell<RawMapLine, unknown>, index: number) => {
             const row = cell.row.original;
-            const map = readMap();
+            const map = readRawMap();
             const nextTime = map[index + 1]?.time;
             return cn("text-center group", nextTime && row.time === nextTime && "bg-destructive/30 text-destructive");
           },
@@ -347,7 +347,7 @@ const DirectWordInput = () => {
 };
 
 const selectLine = (event: React.MouseEvent<HTMLTableRowElement>, selectingIndex: number) => {
-  const map = readMap();
+  const map = readRawMap();
   const directEditIndex = readDirectEditIndex();
 
   const line = map[selectingIndex];

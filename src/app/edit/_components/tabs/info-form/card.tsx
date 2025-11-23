@@ -41,7 +41,7 @@ import { extractYouTubeId } from "@/utils/extract-youtube-id";
 import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
 import { MapInfoFormSchema } from "@/validator/map";
-import { readMap } from "../../../_lib/atoms/map-reducer";
+import { readRawMap } from "../../../_lib/atoms/map-reducer";
 import {
   getYTDuration,
   getYTVideoId,
@@ -360,7 +360,7 @@ const useOnSubmit = (form: FormType) => {
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
         setCanUpload(false);
         form.reset(form.getValues());
-        await context.client.invalidateQueries(trpc.map.getMapJson.queryFilter({ mapId: id }));
+        await context.client.invalidateQueries(trpc.map.getRawMapJson.queryFilter({ mapId: id }));
         await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: id }));
         await context.client.invalidateQueries(trpc.mapList.get.infiniteQueryFilter());
 
@@ -397,17 +397,17 @@ const useOnSubmit = (form: FormType) => {
             previewTime: Number(form.getValues("previewTime") ?? 0),
           });
 
-          void backupMap({ videoId, map: readMap() });
+          void backupMap({ videoId, map: readRawMap() });
         }
       },
     }),
   );
 
   return async (data: z.output<typeof MapInfoFormSchema>) => {
-    const map = readMap();
+    const rawMapLines = readRawMap();
 
     const { title, artistName, musicSource, creatorComment, tags, previewTime } = data;
-    const builtMap = buildTypingMap({ mapJson: map, charPoint: 0 });
+    const builtMap = buildTypingMap({ rawMapLines, charPoint: 0 });
     const duration = calculateDuration(builtMap);
     const totalNotes = calculateTotalNotes(builtMap);
     const startLine = getStartLine(builtMap);
@@ -448,7 +448,7 @@ const useOnSubmit = (form: FormType) => {
     await upsertMap.mutateAsync({
       mapInfo,
       mapDifficulty,
-      mapData: map,
+      mapData: rawMapLines,
       isMapDataEdited: isUpdateUpdatedAt,
       mapId,
     });

@@ -1,7 +1,7 @@
 import type { YouTubeEvent } from "react-youtube";
 import { readVolume } from "@/lib/atoms/global-atoms";
 import { readMapId } from "../atoms/hydrate";
-import { readMap } from "../atoms/map-reducer";
+import { readRawMap } from "../atoms/map-reducer";
 import { preventEditortabAutoFocus } from "../atoms/ref";
 import {
   readYTPlayerStatus,
@@ -85,7 +85,7 @@ export const onStateChange = (event: YouTubeEvent) => {
 };
 
 const getLineCountByTime = (time: number): number => {
-  const map = readMap();
+  const map = readRawMap();
 
   const nextIndex = map.findIndex((line) => Number(line.time) >= time) ?? 0;
   return Math.max(0, nextIndex - 1);

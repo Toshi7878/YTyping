@@ -1,5 +1,5 @@
 import { dispatchEditHistory } from "../atoms/history-reducer";
-import { readMap, setMapAction } from "../atoms/map-reducer";
+import { readRawMap, setRawMapAction } from "../atoms/map-reducer";
 import { setCanUpload, setIsUpdateUpdatedAt } from "../atoms/state";
 
 export const wordSearchReplace = async () => {
@@ -16,7 +16,7 @@ export const wordSearchReplace = async () => {
     alert("sorry...置き換えする文字に検索する文字が含まれないようにしてください。");
     return;
   }
-  const map = readMap();
+  const map = readRawMap();
 
   for (const [i, line] of map.entries()) {
     const match = line.word.match(searchReg);
@@ -84,7 +84,7 @@ const replaceFoundFocus = ({ i, searchText }: { i: number; searchText: string })
 };
 
 const getKanaSearchLength = (searchReg: RegExp) => {
-  const map = readMap();
+  const map = readRawMap();
   let lyricsKana = "";
 
   for (const line of map) {
@@ -99,7 +99,7 @@ const getKanaSearchLength = (searchReg: RegExp) => {
 const replaceDialog = (i: number, searchReg: RegExp, replace: string, matchLength: number) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const map = readMap();
+      const map = readRawMap();
       const line = map[i];
       if (!line) return resolve(0);
       const { time, lyrics, word } = line;
@@ -112,7 +112,7 @@ const replaceDialog = (i: number, searchReg: RegExp, replace: string, matchLengt
           return match;
         });
 
-        setMapAction({
+        setRawMapAction({
           type: "update",
           payload: {
             time,

@@ -1,5 +1,5 @@
 import { Ticker } from "@pixi/ticker";
-import { readMap } from "../atoms/map-reducer";
+import { readRawMap } from "../atoms/map-reducer";
 import { setTimeInputValue } from "../atoms/ref";
 import {
   readUtilityParams,
@@ -36,7 +36,7 @@ const timer = () => {
 
   const nextLineIndex = timeLineIndex + 1;
 
-  const map = readMap();
+  const map = readRawMap();
   const nextLine = map[nextLineIndex];
   if (nextLine && Number(currentTime) >= Number(nextLine.time)) {
     setTimeLineIndex(nextLineIndex);

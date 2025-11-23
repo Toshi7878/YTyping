@@ -1,5 +1,5 @@
 import { dispatchEditHistory, readEditHistory } from "../atoms/history-reducer";
-import { setMapAction } from "../atoms/map-reducer";
+import { setRawMapAction } from "../atoms/map-reducer";
 import {
   dispatchLine,
   readUtilityParams,
@@ -19,7 +19,7 @@ export const undo = async () => {
     switch (actionType) {
       case "add": {
         const { lineIndex, time, lyrics, word } = data;
-        setMapAction({ type: "delete", index: lineIndex });
+        setRawMapAction({ type: "delete", index: lineIndex });
         const { speed } = readYTPlayerStatus();
         seekYTPlayer(Number(data.time) - 3 * speed);
         dispatchLine({ type: "set", line: { time, lyrics, word, selectIndex: null } });
@@ -33,13 +33,13 @@ export const undo = async () => {
         break;
       }
       case "update":
-        setMapAction({ type: "update", payload: data.old, index: data.lineIndex });
+        setRawMapAction({ type: "update", payload: data.old, index: data.lineIndex });
         break;
       case "delete":
-        setMapAction({ type: "add", payload: data });
+        setRawMapAction({ type: "add", payload: data });
         break;
       case "replaceAll":
-        setMapAction({ type: "replaceAll", payload: data.old });
+        setRawMapAction({ type: "replaceAll", payload: data.old });
         break;
     }
     dispatchEditHistory({ type: "undo" });
@@ -55,7 +55,7 @@ export const redo = () => {
 
     switch (actionType) {
       case "add": {
-        setMapAction({ type: "add", payload: data });
+        setRawMapAction({ type: "add", payload: data });
         deleteTopPhrase(data.lyrics);
         const { manyPhraseText } = readUtilityParams();
         const topPhrase = manyPhraseText.split("\n")[0] ?? "";
@@ -63,13 +63,13 @@ export const redo = () => {
         break;
       }
       case "update":
-        setMapAction({ type: "update", payload: data.new, index: data.lineIndex });
+        setRawMapAction({ type: "update", payload: data.new, index: data.lineIndex });
         break;
       case "delete":
-        setMapAction({ type: "delete", index: data.lineIndex });
+        setRawMapAction({ type: "delete", index: data.lineIndex });
         break;
       case "replaceAll":
-        setMapAction({ type: "replaceAll", payload: data.new });
+        setRawMapAction({ type: "replaceAll", payload: data.new });
         break;
     }
     dispatchEditHistory({ type: "redo" });

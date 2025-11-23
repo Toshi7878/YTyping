@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { dispatchEditHistory } from "@/app/edit/_lib/atoms/history-reducer";
-import { readMap, setMapAction } from "@/app/edit/_lib/atoms/map-reducer";
+import { readRawMap, setRawMapAction } from "@/app/edit/_lib/atoms/map-reducer";
 import { setCanUpload } from "@/app/edit/_lib/atoms/state";
 import { timeValidate } from "@/app/edit/_lib/editor/time-validate";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ export const AllTimeAdjust = () => {
     }
 
     if (Number(totalAdjustValue) !== 0) {
-      const map = readMap();
+      const map = readRawMap();
       const newMap = map.map((item, index) => {
         if (index === 0) {
           return {
@@ -36,10 +36,10 @@ export const AllTimeAdjust = () => {
       });
 
       setCanUpload(true);
-      setMapAction({ type: "replaceAll", payload: [...newMap] });
+      setRawMapAction({ type: "replaceAll", payload: [...newMap] });
       dispatchEditHistory({
         type: "add",
-        payload: { actionType: "replaceAll", data: { old: readMap(), new: newMap } },
+        payload: { actionType: "replaceAll", data: { old: readRawMap(), new: newMap } },
       });
     }
 

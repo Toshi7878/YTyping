@@ -1,5 +1,5 @@
 import { dispatchEditHistory, readEditHistory } from "../atoms/history-reducer";
-import { setMapAction } from "../atoms/map-reducer";
+import { setRawMapAction } from "../atoms/map-reducer";
 import {
   dispatchLine,
   getYTCurrentTime,
@@ -35,7 +35,7 @@ export const pickupTopPhrase = async (topPhrase: string) => {
       if (data.lyrics === topPhrase) {
         const { lineIndex, ...line } = present.data;
         const newLine = { ...line, word };
-        setMapAction({ type: "update", payload: newLine, index: lineIndex });
+        setRawMapAction({ type: "update", payload: newLine, index: lineIndex });
         dispatchEditHistory({ type: "overwrite", payload: { ...present, data: { ...present.data, word } } });
         return;
       }

@@ -1,4 +1,4 @@
-import { parseKanaChunks, parseKanaToWordChunks, type TypingWordState } from "lyrics-typing-engine";
+import { parseKanaChunks, parseKanaToWordChunks, type TypingWord } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -71,7 +71,7 @@ const updateNextLyrics = () => {
   }
 };
 
-function romaConvert(wordState: TypingWordState) {
+function romaConvert(wordState: TypingWord) {
   const dakuten = wordState.nextChunk.orginalDakuChar;
   const [kanaChunks] = parseKanaChunks(
     (dakuten ? dakuten : wordState.nextChunk.kana) + wordState.wordChunks.map((char) => char.kana).join(""),

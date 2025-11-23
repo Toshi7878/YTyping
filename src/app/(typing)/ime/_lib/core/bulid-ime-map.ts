@@ -1,5 +1,5 @@
 import { zip } from "@/utils/array";
-import type { MapLine } from "@/validator/map-json";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import { readImeTypeOptions } from "../atoms/state";
 import type { WordResults } from "../type";
 import { formatWord } from "./format-word";
@@ -7,7 +7,7 @@ import { generateTokenizedWords } from "./repl";
 
 const MIN_LINE_SECONDS = 5;
 
-export const buildImeMap = async (mapData: MapLine[]) => {
+export const buildImeMap = async (mapData: RawMapLine[]) => {
   let lineWords: string[] = [];
   let lineTimes: number[] = [];
   const lines: { time: number; word: string }[][] = [];
@@ -80,7 +80,7 @@ const isValidTypingLine = (formattedLyrics: string, word: string): boolean => {
   return formattedLyrics !== "" && formattedLyrics !== "end" && word.replace(/\s/g, "") !== "";
 };
 
-const getNextTime = (nextLine: MapLine | undefined, lineAfterNext: MapLine | undefined): number => {
+const getNextTime = (nextLine: RawMapLine | undefined, lineAfterNext: RawMapLine | undefined): number => {
   if (!nextLine) return 0;
 
   return lineAfterNext && nextLine.word.replace(/\s/g, "") === "" ? Number(lineAfterNext.time) : Number(nextLine.time);
@@ -88,7 +88,7 @@ const getNextTime = (nextLine: MapLine | undefined, lineAfterNext: MapLine | und
 
 const shouldCreateNewLine = (
   lineChars: string[],
-  nextLine: MapLine | undefined,
+  nextLine: RawMapLine | undefined,
   nextTime: number,
   lineTimes: number[],
 ): boolean => {

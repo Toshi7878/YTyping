@@ -2,7 +2,7 @@ import { createInsertSchema } from "drizzle-zod";
 import z from "zod";
 import { MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "../server/drizzle/const";
 import { MapDifficulties, thumbnailQualityEnum } from "../server/drizzle/schema";
-import { mapDataSchema } from "./map-json";
+import { RawMapSchema } from "./raw-map-json";
 
 const MapInfoBaseSchema = z.object({
   title: z
@@ -39,6 +39,6 @@ export const UpsertMapSchema = z.object({
   mapId: z.number().nullable(),
   mapInfo: MapInfoApiSchema,
   mapDifficulty: CreateMapDifficultySchema,
-  mapData: mapDataSchema,
+  mapData: RawMapSchema,
   isMapDataEdited: z.boolean(),
 });

@@ -1,24 +1,24 @@
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { normalizeSymbols } from "@/utils/string-transform";
-import type { MapLine } from "@/validator/map-json";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import { getEditAtomStore } from "./store";
 
 const store = getEditAtomStore();
 
 export interface MapReplaceAllAction {
   type: "replaceAll";
-  payload: MapLine[];
+  payload: RawMapLine[];
 }
 
 export interface MapAddAction {
   type: "add";
-  payload: MapLine;
+  payload: RawMapLine;
 }
 
 export interface MapUpdateAction {
   type: "update";
-  payload: MapLine;
+  payload: RawMapLine;
   index: number;
 }
 
@@ -28,11 +28,11 @@ export interface MapDeleteAction {
 }
 
 type MapAction = MapAddAction | MapUpdateAction | MapDeleteAction | MapReplaceAllAction;
-const init: MapLine[] = [{ time: "0", lyrics: "", word: "" }];
-export const mapAtom = atomWithReset<MapLine[]>(init);
+const init: RawMapLine[] = [{ time: "0", lyrics: "", word: "" }];
+export const mapAtom = atomWithReset<RawMapLine[]>(init);
 
-export const useMapState = () => useAtomValue(mapAtom, { store });
-export const setMapAction = (action: MapAction) => {
+export const useRawMapState = () => useAtomValue(mapAtom, { store });
+export const setRawMapAction = (action: MapAction) => {
   store.set(mapAtom, (prev) => {
     switch (action.type) {
       case "add": {
@@ -58,5 +58,5 @@ export const setMapAction = (action: MapAction) => {
     }
   });
 };
-export const resetMap = () => store.set(mapAtom, RESET);
-export const readMap = () => store.get(mapAtom);
+export const resetRawMap = () => store.set(mapAtom, RESET);
+export const readRawMap = () => store.get(mapAtom);

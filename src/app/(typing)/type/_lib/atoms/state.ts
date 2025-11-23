@@ -2,12 +2,12 @@ import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import { type BuiltMapLine, createTypingWord, type InputMode, type TypingWordState } from "lyrics-typing-engine";
+import { type BuiltMapLine, createTypingWord, type InputMode, type TypingWord } from "lyrics-typing-engine";
 import type z from "zod/v4";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
-import type { LineOptionSchema } from "@/validator/map-json";
+import type { LineOptionSchema } from "@/validator/raw-map-json";
 import type { TypingLineResults } from "@/validator/result";
 import type { SceneType, SkipGuideKey } from "../type";
 import { setLineResultSelected } from "./family";
@@ -210,7 +210,7 @@ export const setNextLyrics = (line: BuiltMapLine) => {
 };
 export const resetNextLyrics = () => store.set(nextLyricsAtom, RESET);
 
-const lineAtom = atomWithReset<{ typingWord: TypingWordState; lyrics: string }>({
+const lineAtom = atomWithReset<{ typingWord: TypingWord; lyrics: string }>({
   typingWord: {
     correct: { kana: "", roma: "" },
     nextChunk: { kana: "", romaPatterns: [], point: 0, type: undefined },

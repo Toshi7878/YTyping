@@ -7,49 +7,49 @@ export const LineOptionSchema = z.object({
   changeVideoSpeed: z.number().min(-1.75).max(2).optional(),
 });
 
-const LineSchema = z.object({
+const RawMapLineSchema = z.object({
   time: z.string().max(20),
   lyrics: z.string(),
   word: z.string(),
   options: LineOptionSchema.optional(),
 });
 
-export type MapLine = z.infer<typeof LineSchema>;
+export type RawMapLine = z.infer<typeof RawMapLineSchema>;
 
-const validateNoHttpContent = (lines: MapLine[]) => {
+const validateNoHttpContent = (lines: RawMapLine[]) => {
   return !lines.some((line) =>
     Object.values(line).some((value) => typeof value === "string" && value.includes("http")),
   );
 };
 
-const validateHasTypingWords = (lines: MapLine[]) => {
+const validateHasTypingWords = (lines: RawMapLine[]) => {
   return lines.some((line) => line.word && line.word.length > 0);
 };
 
-const validateEndsWithEnd = (lines: MapLine[]) => {
+const validateEndsWithEnd = (lines: RawMapLine[]) => {
   return lines[lines.length - 1]?.lyrics === "end";
 };
 
-const validateStartsWithZero = (lines: MapLine[]) => {
+const validateStartsWithZero = (lines: RawMapLine[]) => {
   return lines[0]?.time === "0";
 };
 
-const validateAllTimesAreNumbers = (lines: MapLine[]) => {
+const validateAllTimesAreNumbers = (lines: RawMapLine[]) => {
   return lines.every((line) => !Number.isNaN(Number(line.time)));
 };
 
-const validateNoLinesAfterEnd = (lines: MapLine[]) => {
+const validateNoLinesAfterEnd = (lines: RawMapLine[]) => {
   const endAfterLineIndex = lines.findIndex((line) => line.lyrics === "end");
   return endAfterLineIndex === -1 || lines.every((line, index) => index <= endAfterLineIndex || line.lyrics === "end");
 };
 
-const validateUniqueTimeValues = (lines: MapLine[]) => {
+const validateUniqueTimeValues = (lines: RawMapLine[]) => {
   const timeValues = lines.map((line) => line.time);
   const uniqueTimeValues = new Set(timeValues);
   return timeValues.length === uniqueTimeValues.size;
 };
 
-const validateCSSLength = (lines: MapLine[]) => {
+const validateCSSLength = (lines: RawMapLine[]) => {
   const totalCSSLength = lines.reduce((total, line) => {
     const eternalCSSLength = line.options?.eternalCSS?.length || 0;
     const changeCSSLength = line.options?.changeCSS?.length || 0;
@@ -59,8 +59,8 @@ const validateCSSLength = (lines: MapLine[]) => {
   return totalCSSLength < 10000;
 };
 
-export const mapDataSchema = z
-  .array(LineSchema)
+export const RawMapSchema = z
+  .array(RawMapLineSchema)
   .refine(validateNoHttpContent, {
     error: "譜面データにはhttpから始まる文字を含めることはできません",
   })

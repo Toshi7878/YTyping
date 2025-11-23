@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type Dispatch, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
-import { setMapAction, useMapState } from "@/app/edit/_lib/atoms/map-reducer";
+import { setRawMapAction, useRawMapState } from "@/app/edit/_lib/atoms/map-reducer";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/co
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
-import { LineOptionSchema } from "@/validator/map-json";
+import { LineOptionSchema } from "@/validator/raw-map-json";
 import { dispatchEditHistory } from "../../_lib/atoms/history-reducer";
 import { setCanUpload } from "../../_lib/atoms/state";
 
@@ -23,7 +23,7 @@ interface LineOptionDialogProps {
 }
 
 export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDialogProps) => {
-  const map = useMapState();
+  const map = useRawMapState();
   const confirm = useConfirm();
 
   const currentSpeed = useMemo(() => {
@@ -89,7 +89,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
         }),
       },
     };
-    setMapAction({ type: "update", payload: newLine, index });
+    setRawMapAction({ type: "update", payload: newLine, index });
 
     dispatchEditHistory({
       type: "add",

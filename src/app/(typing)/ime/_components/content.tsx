@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
 import type { RouterOutPuts } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import type { MapLine } from "@/validator/map-json";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import { InputTextarea } from "../_components/input-textarea";
 import { MenuBar } from "../_components/memu/menu-bar";
 import { Notifications } from "../_components/notifications-display";
@@ -27,12 +27,12 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
   const trpc = useTRPC();
   const pathname = usePathname();
   const { data: mapJson } = useQuery(
-    trpc.map.getMapJson.queryOptions({ mapId }, { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
+    trpc.map.getRawMapJson.queryOptions({ mapId }, { enabled: !!mapId, staleTime: Infinity, gcTime: Infinity }),
   );
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const loadMap = useCallback(
-    async (mapData: MapLine[]) => {
+    async (mapData: RawMapLine[]) => {
       showLoading({ message: "ひらがな判定生成中..." });
 
       try {

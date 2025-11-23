@@ -5,7 +5,7 @@ import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage
 import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/validator/map";
-import type { MapLine } from "@/validator/map-json";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import { protectedProcedure, publicProcedure } from "../trpc";
 
 export const mapRouter = {
@@ -46,7 +46,7 @@ export const mapRouter = {
     return mapInfo;
   }),
 
-  getMapJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
+  getRawMapJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
     try {
       const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
 
@@ -55,7 +55,7 @@ export const mapRouter = {
       }
 
       const jsonString = new TextDecoder().decode(data);
-      const mapJson: MapLine[] = JSON.parse(jsonString);
+      const mapJson: RawMapLine[] = JSON.parse(jsonString);
 
       return mapJson;
     } catch (error) {

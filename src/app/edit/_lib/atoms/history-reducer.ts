@@ -1,9 +1,9 @@
 import { atomWithReducer } from "jotai/utils";
-import type { MapLine } from "@/validator/map-json";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import type { MapAddAction, MapDeleteAction, MapReplaceAllAction, MapUpdateAction } from "./map-reducer";
 import { getEditAtomStore } from "./store";
 
-type MapLineEdit = MapLine & {
+type MapLineEdit = RawMapLine & {
   lineIndex: number;
 };
 
@@ -13,8 +13,8 @@ type Add = { actionType: MapAddAction["type"]; data: MapLineEdit };
 type Update = {
   actionType: MapUpdateAction["type"];
   data: {
-    old: MapLine;
-    new: MapLine;
+    old: RawMapLine;
+    new: RawMapLine;
     lineIndex: number;
   };
 };
@@ -22,8 +22,8 @@ type Delete = { actionType: MapDeleteAction["type"]; data: MapLineEdit };
 type ReplaceAll = {
   actionType: MapReplaceAllAction["type"];
   data: {
-    old: MapLine[];
-    new: MapLine[];
+    old: RawMapLine[];
+    new: RawMapLine[];
   };
 };
 

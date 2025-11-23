@@ -34,10 +34,12 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
       const isOptionEdited = readIsImeTypeOptionsEdited();
       if (isOptionEdited) {
         updateImeTypingOptions.mutate({ ...readImeTypeOptions() });
-        const mapData = queryClient.getQueryData(trpc.map.getMapJson.queryOptions({ mapId: Number(mapId) }).queryKey);
+        const rawMapLines = queryClient.getQueryData(
+          trpc.map.getRawMapJson.queryOptions({ mapId: Number(mapId) }).queryKey,
+        );
 
-        if (mapData) {
-          const map = await buildImeMap(mapData);
+        if (rawMapLines) {
+          const map = await buildImeMap(rawMapLines);
           setBuiltMap(map);
         }
       }

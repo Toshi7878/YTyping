@@ -1,10 +1,10 @@
 import { toast } from "sonner";
 import { backupMap } from "@/lib/indexed-db";
 import { normalizeSymbols } from "@/utils/string-transform";
-import type { MapLine } from "@/validator/map-json";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
 import { readMapId, readVideoId } from "../atoms/hydrate";
-import { readMap, setMapAction } from "../atoms/map-reducer";
+import { readRawMap, setRawMapAction } from "../atoms/map-reducer";
 import { readTimeInputValue } from "../atoms/ref";
 import {
   dispatchLine,
@@ -32,17 +32,17 @@ export const addLineAction = (isShiftKey: boolean) => {
     3,
   );
 
-  const newLine: MapLine = !isShiftKey
+  const newLine: RawMapLine = !isShiftKey
     ? { time, lyrics, word: normalizeSymbols(word) }
     : { time, lyrics: "", word: "" };
 
-  setMapAction({ type: "add", payload: newLine });
-  const lineIndex = readMap().findIndex((line) => JSON.stringify(line) === JSON.stringify(newLine));
+  setRawMapAction({ type: "add", payload: newLine });
+  const lineIndex = readRawMap().findIndex((line) => JSON.stringify(line) === JSON.stringify(newLine));
   dispatchEditHistory({ type: "add", payload: { actionType: "add", data: { ...newLine, lineIndex } } });
 
   const mapId = readMapId();
   if (mapId === null) {
-    const map = readMap();
+    const map = readRawMap();
     const videoId = readVideoId();
     void backupMap({ videoId, map });
   }
@@ -67,7 +67,7 @@ export const addLineAction = (isShiftKey: boolean) => {
 };
 
 export const updateLineAction = () => {
-  const map = readMap();
+  const map = readRawMap();
   const { selectIndex: selectLineIndex, lyrics, word } = readSelectLine();
   if (selectLineIndex === null) return;
   const { isPlaying } = readYTPlayerStatus();
@@ -107,12 +107,12 @@ export const updateLineAction = () => {
 
   const mapId = readMapId();
   if (mapId === null) {
-    const map = readMap();
+    const map = readRawMap();
     const videoId = readVideoId();
     void backupMap({ videoId, map });
   }
 
-  setMapAction({ type: "update", payload: newLine, index: selectLineIndex });
+  setRawMapAction({ type: "update", payload: newLine, index: selectLineIndex });
   dispatchLine({ type: "reset" });
   setDirectEditIndex(null);
   setCanUpload(true);
@@ -143,7 +143,7 @@ export const deleteLineAction = () => {
   dispatchLine({ type: "reset" });
   if (!selectIndex) return;
 
-  const map = readMap();
+  const map = readRawMap();
   const lineToDelete = map[selectIndex];
   if (!lineToDelete) return;
 
@@ -152,13 +152,13 @@ export const deleteLineAction = () => {
     payload: { actionType: "delete", data: { ...lineToDelete, lineIndex: selectIndex } },
   });
 
-  setMapAction({ type: "delete", index: selectIndex });
+  setRawMapAction({ type: "delete", index: selectIndex });
   setCanUpload(true);
   setIsUpdateUpdatedAt(true);
 
   const mapId = readMapId();
   if (mapId === null) {
-    const map = readMap();
+    const map = readRawMap();
     const videoId = readVideoId();
     void backupMap({ videoId, map });
   }
