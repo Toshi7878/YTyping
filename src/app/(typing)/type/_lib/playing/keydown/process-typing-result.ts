@@ -10,12 +10,12 @@ import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/su
 import { updateKpmOnLineEnded, updateKpmOnTyping } from "../update-status/update-kpm";
 
 export const processTypingResult = (evaluateResult: TypingEvaluationResult) => {
-  const { isCompleted, nextWordState, successKey, failKey, charType, updatePoint } = evaluateResult;
+  const { isCompleted, nextTypingWord, successKey, failKey, charType, updatePoint } = evaluateResult;
 
   const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
 
   if (successKey) {
-    setTypingWord(nextWordState);
+    setTypingWord(nextTypingWord);
     triggerTypeSound({ isCompleted });
 
     updateSuccessSubstatus({
@@ -41,7 +41,7 @@ export const processTypingResult = (evaluateResult: TypingEvaluationResult) => {
         handleLineCompleted(constantLineTime);
       }
     });
-  } else if ((nextWordState.correct.roma || nextWordState.correct.kana) && failKey) {
+  } else if ((nextTypingWord.correct.roma || nextTypingWord.correct.kana) && failKey) {
     triggerMissSound();
     updateMissSubstatus({ constantLineTime, failKey });
     requestAnimationFrame(() => {

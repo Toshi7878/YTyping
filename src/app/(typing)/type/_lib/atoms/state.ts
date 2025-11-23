@@ -2,7 +2,7 @@ import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import { type BuiltMapLine, createWordState, type InputMode, type TypingWordState } from "lyrics-typing-engine";
+import { type BuiltMapLine, createTypingWord, type InputMode, type TypingWordState } from "lyrics-typing-engine";
 import type z from "zod/v4";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
@@ -225,7 +225,7 @@ export const setTypingWord = (value: ExtractAtomValue<typeof typingWordAtom>) =>
 export const readTypingWord = () => store.get(typingWordAtom);
 export const useLyricsState = () => useAtomValue(lyricsAtom, { store });
 export const setNewLine = (newLine: BuiltMapLineWithOption) => {
-  store.set(lineAtom, { typingWord: createWordState(newLine), lyrics: newLine.lyrics });
+  store.set(lineAtom, { typingWord: createTypingWord(newLine), lyrics: newLine.lyrics });
 
   const lineProgress = store.get(lineProgressAtom);
   const { isPaused } = store.get(utilityParamsAtom);
