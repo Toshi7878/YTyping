@@ -109,7 +109,7 @@ const ResultLineList = () => {
     <div className="relative h-full overflow-y-auto px-4">
       {map?.initialLineResults.map((_: TypingLineResults[number], index: number) => {
         const lineData = map.lines[index];
-        if (!lineData?.kanaWord) return null;
+        if (!lineData?.kanaLyrics) return null;
 
         lineIndex++;
         // scoreCount += (lineResult.status?.p ?? 0) + (lineResult.status?.tBonus ?? 0);

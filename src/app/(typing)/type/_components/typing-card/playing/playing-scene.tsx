@@ -3,7 +3,7 @@
 import { evaluateKanaInput, evaluateRomaInput, isTypingKey } from "lyrics-typing-engine";
 import { useEffect } from "react";
 import {
-  readLineWord,
+  readTypingWord,
   readUtilityParams,
   resetCurrentLine,
   resetNextLyrics,
@@ -116,7 +116,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
 
-  const lineWord = readLineWord();
+  const lineWord = readTypingWord();
   if (shouldAcceptTyping && lineWord.nextChunk.kana && isTypingKey(event)) {
     const { inputMode } = readUtilityParams();
     const typingResult = inputMode === "roma" ? evaluateRomaInput(event, lineWord) : evaluateKanaInput(event, lineWord);

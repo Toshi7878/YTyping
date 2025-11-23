@@ -116,7 +116,7 @@ function calculateComplexityScore(lines: BuiltMapLineWithOption[]): number {
 
   for (const line of validLines) {
     const lineComplexity = calculateLineComplexity(line);
-    const lineLength = line.kanaWord?.length || 0;
+    const lineLength = line.kanaLyrics?.length || 0;
     totalComplexity += lineComplexity * lineLength;
     totalWeight += lineLength;
   }

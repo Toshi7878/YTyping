@@ -7,7 +7,14 @@ import {
   writeSubstatus,
   writeUserStats,
 } from "../../atoms/ref";
-import { readBuiltMap, readCombo, readLineWord, readUtilityParams, setCombo, setTypingStatus } from "../../atoms/state";
+import {
+  readBuiltMap,
+  readCombo,
+  readTypingWord,
+  readUtilityParams,
+  setCombo,
+  setTypingStatus,
+} from "../../atoms/state";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateSuccessStatus = ({
@@ -88,7 +95,7 @@ export const updateSuccessSubstatus = ({
     writeLineSubstatus({ isCompleted: true });
     writeSubstatus({ completeCount: completeCount + 1 });
     const { kanaToRomaConvertCount } = readSubstatus();
-    writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + readLineWord().correct.roma.length });
+    writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + readTypingWord().correct.roma.length });
   }
 
   if (scene === "replay" || !charType) {

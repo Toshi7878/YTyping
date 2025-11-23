@@ -1,13 +1,13 @@
-import { type LineWord, parseKanaChunks, parseKanaToWordChunks } from "lyrics-typing-engine";
+import { parseKanaChunks, parseKanaToWordChunks, type TypingWordState } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
-  readLineWord,
+  readTypingWord,
   readUtilityParams,
-  setLineWord,
   setNextLyrics,
   setNotify,
   setPlayingInputMode,
+  setTypingWord,
 } from "../atoms/state";
 import { CHAR_POINT } from "../const";
 import { getLineTime } from "../youtube-player/get-youtube-time";
@@ -45,12 +45,12 @@ export const applyKanaInputMode = () => {
 export const applyRomaInputMode = () => {
   setPlayingInputMode("roma");
   setNotify(Symbol("Romaji"));
-  const lineWord = readLineWord();
+  const lineWord = readTypingWord();
 
   if (lineWord.nextChunk.kana) {
     const wordFix = romaConvert(lineWord);
     if (!wordFix) return;
-    setLineWord({
+    setTypingWord({
       correct: lineWord.correct,
       nextChunk: wordFix.nextChunk,
       wordChunks: wordFix.wordChunks,
@@ -66,19 +66,19 @@ const updateNextLyrics = () => {
   const count = readLineCount();
   const nextLine = map.lines[count + 1];
 
-  if (nextLine?.kanaWord) {
+  if (nextLine?.kanaLyrics) {
     setNextLyrics(nextLine);
   }
 };
 
-function romaConvert(lineWord: LineWord) {
-  const dakuten = lineWord.nextChunk.orginalDakuChar;
+function romaConvert(wordState: TypingWordState) {
+  const dakuten = wordState.nextChunk.orginalDakuChar;
   const [kanaChunks] = parseKanaChunks(
-    (dakuten ? dakuten : lineWord.nextChunk.kana) + lineWord.wordChunks.map((char) => char.kana).join(""),
+    (dakuten ? dakuten : wordState.nextChunk.kana) + wordState.wordChunks.map((char) => char.kana).join(""),
   );
 
   if (!kanaChunks) return;
-  const nextPoint = lineWord.nextChunk.point;
+  const nextPoint = wordState.nextChunk.point;
   const wordChunks = parseKanaToWordChunks({ kanaChunks, charPoint: CHAR_POINT });
   const nextChunk = wordChunks[0];
   if (!nextChunk) return;

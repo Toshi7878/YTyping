@@ -7,11 +7,11 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/ref";
 import { handlePlaySpeedAction } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
-  readLineWord,
+  readTypingWord,
   readUtilityParams,
   setCombo,
   setLineKpm,
-  setLineWord,
+  setTypingWord,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
@@ -70,16 +70,16 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
 
     if (isSuccess) {
       const { inputMode } = readUtilityParams();
-      const lineWord = readLineWord();
-      const { newLineWord, successKey, isCompleted, updatePoint } = evaluateTypingInput(
+      const lineWord = readTypingWord();
+      const { nextWordState, successKey, isCompleted, updatePoint } = evaluateTypingInput(
         typingKeys,
         inputMode,
         lineWord,
       );
 
-      if (!newLineWord || !successKey) return;
+      if (!nextWordState || !successKey) return;
 
-      setLineWord(newLineWord);
+      setTypingWord(nextWordState);
       triggerTypeSound({ isCompleted });
 
       updateKpmOnTyping({ constantLineTime });

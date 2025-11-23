@@ -6,8 +6,8 @@ import {
   readBuiltMap,
   readCombo,
   readLineKpm,
-  readLineWord,
   readTypingStatus,
+  readTypingWord,
   readUtilityParams,
   setTypingStatus,
 } from "../atoms/state";
@@ -80,7 +80,7 @@ export const saveLineResult = (count: number) => {
 };
 
 const generateLostWord = () => {
-  const lineWord = readLineWord();
+  const lineWord = readTypingWord();
 
   const isCompleted = !lineWord.nextChunk.kana;
 

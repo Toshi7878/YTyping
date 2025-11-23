@@ -1,12 +1,12 @@
 import type { HTMLAttributes } from "react";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
-import { useLineWordState, useNextLyricsState, usePlayingInputModeState } from "@/app/(typing)/type/_lib/atoms/state";
+import { useNextLyricsState, usePlayingInputModeState, useTypingWordState } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 
 export const TypingWords = () => {
-  const lineWord = useLineWordState();
+  const lineWord = useTypingWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
   const {

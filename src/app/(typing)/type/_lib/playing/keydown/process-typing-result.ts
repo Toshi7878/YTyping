@@ -1,5 +1,5 @@
 import type { TypingEvaluationResult } from "lyrics-typing-engine";
-import { readBuiltMap, readUtilityParams, setLineWord, setNewLine } from "@/app/(typing)/type/_lib/atoms/state";
+import { readBuiltMap, readUtilityParams, setNewLine, setTypingWord } from "@/app/(typing)/type/_lib/atoms/state";
 import { readLineCount } from "../../atoms/ref";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
@@ -10,12 +10,12 @@ import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/su
 import { updateKpmOnLineEnded, updateKpmOnTyping } from "../update-status/update-kpm";
 
 export const processTypingResult = (evaluateResult: TypingEvaluationResult) => {
-  const { isCompleted, newLineWord, successKey, failKey, charType, updatePoint } = evaluateResult;
+  const { isCompleted, nextWordState, successKey, failKey, charType, updatePoint } = evaluateResult;
 
   const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
 
   if (successKey) {
-    setLineWord(newLineWord);
+    setTypingWord(nextWordState);
     triggerTypeSound({ isCompleted });
 
     updateSuccessSubstatus({
@@ -41,7 +41,7 @@ export const processTypingResult = (evaluateResult: TypingEvaluationResult) => {
         handleLineCompleted(constantLineTime);
       }
     });
-  } else if ((newLineWord.correct.roma || newLineWord.correct.kana) && failKey) {
+  } else if ((nextWordState.correct.roma || nextWordState.correct.kana) && failKey) {
     triggerMissSound();
     updateMissSubstatus({ constantLineTime, failKey });
     requestAnimationFrame(() => {
@@ -68,8 +68,7 @@ const handleLineCompleted = (constantLineTime: number) => {
 
   if (isPaused) {
     const newCurrentLine = map.lines[count];
-    const newNextLine = map.lines[count + 1];
-    if (!newCurrentLine || !newNextLine) return;
-    setNewLine({ newCurrentLine, newNextLine });
+    if (!newCurrentLine) return;
+    setNewLine(newCurrentLine);
   }
 };

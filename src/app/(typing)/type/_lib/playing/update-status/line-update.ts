@@ -1,11 +1,11 @@
 import { readLineSubstatus, readSubstatus, writeSubstatus } from "../../atoms/ref";
-import { readBuiltMap, readLineWord, setTypingStatus } from "../../atoms/state";
+import { readBuiltMap, readTypingWord, setTypingStatus } from "../../atoms/state";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTime: number }) => {
   const map = readBuiltMap();
   if (!map) return;
-  const lineWord = readLineWord();
+  const lineWord = readTypingWord();
 
   const { kanaToRomaConvertCount } = readSubstatus();
   writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + lineWord.correct.roma.length });

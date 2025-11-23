@@ -14,7 +14,7 @@ import { handlePlaySpeedAction, readPlaySpeed } from "@/app/(typing)/type/_lib/a
 import {
   readBuiltMap,
   readElapsedSecTime,
-  readLineWord,
+  readTypingWord,
   readUtilityParams,
   setActiveSkipGuideKey,
   setChangeCSSCount,
@@ -152,7 +152,7 @@ const updateEvery100ms = ({
   }
 
   updateSkipGuideVisibility({
-    kana: readLineWord().nextChunk.kana,
+    kana: readTypingWord().nextChunk.kana,
     currentTime,
     constantLineTime,
     constantRemainLineTime,
@@ -194,12 +194,12 @@ const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTim
 
 export const setupLine = (nextCount: number) => {
   const map = readBuiltMap();
-  const newCurrentLine = map?.lines[nextCount];
+  const newLine = map?.lines[nextCount];
   const newNextLine = map?.lines[nextCount + 1];
-  if (!map || !newCurrentLine || !newNextLine) return;
+  if (!map || !newLine || !newNextLine) return;
 
   writeLineCount(nextCount);
-  setNewLine({ newCurrentLine, newNextLine });
+  setNewLine(newLine);
   resetLineSubstatus();
 
   const { inputMode, scene } = readUtilityParams();

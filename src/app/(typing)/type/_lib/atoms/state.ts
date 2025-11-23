@@ -2,8 +2,9 @@ import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import type { BuiltMapLine, InputMode, LineWord } from "lyrics-typing-engine";
+import { type BuiltMapLine, createWordState, type InputMode, type TypingWordState } from "lyrics-typing-engine";
 import type z from "zod/v4";
+import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
 import type { LineOptionSchema } from "@/validator/map-json";
@@ -195,15 +196,12 @@ export const setNextLyrics = (line: BuiltMapLine) => {
   const speed = store.get(speedBaseAtom);
   const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * speed.playSpeed;
   store.set(nextLyricsAtom, () => {
-    if (line.kanaWord) {
+    if (line.kanaLyrics) {
       return {
-        lyrics: typingOptions.nextDisplay === "WORD" ? line.kanaWord : line.lyrics,
+        lyrics: typingOptions.nextDisplay === "WORD" ? line.kanaLyrics : line.lyrics,
         kpm: nextKpm.toFixed(0),
-        kanaWord: line.kanaWord.slice(0, 60),
-        romaWord: line.wordChunks
-          .map((chunk) => chunk.romaPatterns[0])
-          .join("")
-          .slice(0, 60),
+        kanaWord: line.kanaLyrics.slice(0, 60),
+        romaWord: line.romaLyrics.slice(0, 60),
       };
     }
 
@@ -212,39 +210,22 @@ export const setNextLyrics = (line: BuiltMapLine) => {
 };
 export const resetNextLyrics = () => store.set(nextLyricsAtom, RESET);
 
-const currentLineAtom = atomWithReset<{ lineWord: LineWord; lyrics: string }>({
-  lineWord: {
+const lineAtom = atomWithReset<{ typingWord: TypingWordState; lyrics: string }>({
+  typingWord: {
     correct: { kana: "", roma: "" },
-    nextChunk: { kana: "", romaPatterns: [""], point: 0, type: undefined },
-    wordChunks: [{ kana: "", romaPatterns: [""], point: 0, type: undefined }],
+    nextChunk: { kana: "", romaPatterns: [], point: 0, type: undefined },
+    wordChunks: [{ kana: "", romaPatterns: [], point: 0, type: undefined }],
   },
   lyrics: "",
 });
-const lineWordAtom = focusAtom(currentLineAtom, (optic) => optic.prop("lineWord"));
-const lineLyricsAtom = focusAtom(currentLineAtom, (optic) => optic.prop("lyrics"));
-export const useLineWordState = () => useAtomValue(lineWordAtom, { store });
-export const setLineWord = (value: ExtractAtomValue<typeof lineWordAtom>) => store.set(lineWordAtom, value);
-export const readLineWord = () => store.get(lineWordAtom);
-export const useLyricsState = () => useAtomValue(lineLyricsAtom, { store });
-export const setNewLine = ({
-  newCurrentLine,
-  newNextLine,
-}: {
-  newCurrentLine: BuiltMapLine;
-  newNextLine: BuiltMapLine;
-}) => {
-  const cloneWord = structuredClone([...newCurrentLine.wordChunks]);
-  const nextChunk = cloneWord[0];
-  if (!nextChunk) return;
-
-  store.set(currentLineAtom, {
-    lineWord: {
-      correct: { kana: "", roma: "" },
-      nextChunk,
-      wordChunks: cloneWord.slice(1),
-    },
-    lyrics: newCurrentLine.lyrics,
-  });
+const typingWordAtom = focusAtom(lineAtom, (optic) => optic.prop("typingWord"));
+const lyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics"));
+export const useTypingWordState = () => useAtomValue(typingWordAtom, { store });
+export const setTypingWord = (value: ExtractAtomValue<typeof typingWordAtom>) => store.set(typingWordAtom, value);
+export const readTypingWord = () => store.get(typingWordAtom);
+export const useLyricsState = () => useAtomValue(lyricsAtom, { store });
+export const setNewLine = (newLine: BuiltMapLineWithOption) => {
+  store.set(lineAtom, { typingWord: createWordState(newLine), lyrics: newLine.lyrics });
 
   const lineProgress = store.get(lineProgressAtom);
   const { isPaused } = store.get(utilityParamsAtom);
@@ -253,13 +234,13 @@ export const setNewLine = ({
     requestDebouncedAnimationFrame("line-progress", () => {
       if (lineProgress) {
         lineProgress.value = 0;
-        lineProgress.max = newNextLine.time - newCurrentLine.time;
+        lineProgress.max = newLine.duration;
       }
     });
   }
 };
 export const resetCurrentLine = () => {
-  store.set(currentLineAtom, RESET);
+  store.set(lineAtom, RESET);
   const map = store.get(builtMapAtom);
   const lineProgress = store.get(lineProgressAtom);
 
