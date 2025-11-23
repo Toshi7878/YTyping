@@ -1,4 +1,4 @@
-import { parseKanaChunks, parseKanaToWordChunks, type TypingWord } from "lyrics-typing-engine";
+import { createTypingWord, parseWordToChunks } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -48,14 +48,14 @@ export const applyRomaInputMode = () => {
   const typingWord = readTypingWord();
 
   if (typingWord.nextChunk.kana) {
-    const wordFix = romaConvert(typingWord);
-    if (!wordFix) return;
-    setTypingWord({
-      correct: typingWord.correct,
-      nextChunk: wordFix.nextChunk,
-      wordChunks: wordFix.wordChunks,
-    });
+    const reconstructedWord =
+      (typingWord.nextChunk.originalDakutenChar ?? typingWord.nextChunk.kana) +
+      typingWord.wordChunks.map((chunk) => chunk.kana).join("");
+
+    const wordChunks = parseWordToChunks({ word: reconstructedWord, charPoint: CHAR_POINT });
+    setTypingWord(createTypingWord({ wordChunks }));
   }
+
   updateNextLyrics();
 };
 
@@ -70,17 +70,3 @@ const updateNextLyrics = () => {
     setNextLyrics(nextLine);
   }
 };
-
-function romaConvert(wordState: TypingWord) {
-  const dakuten = wordState.nextChunk.orginalDakuChar;
-  const [kanaChunks] = parseKanaChunks(
-    (dakuten ? dakuten : wordState.nextChunk.kana) + wordState.wordChunks.map((char) => char.kana).join(""),
-  );
-
-  if (!kanaChunks) return;
-  const nextPoint = wordState.nextChunk.point;
-  const wordChunks = parseKanaToWordChunks({ kanaChunks, charPoint: CHAR_POINT });
-  const nextChunk = wordChunks[0];
-  if (!nextChunk) return;
-  return { nextChunk: { ...nextChunk, point: nextPoint }, wordChunks: wordChunks.slice(1) };
-}
