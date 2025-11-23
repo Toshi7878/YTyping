@@ -34,7 +34,7 @@ import {
   calculateSpeedDifficulty,
   calculateTotalNotes,
   getStartLine,
-} from "@/lib/build-map/generate-initial-result";
+} from "@/lib/build-map/built-map-helper";
 import { backupMap, backupMapInfo, clearBackupMapWithInfo, fetchBackupMap } from "@/lib/indexed-db";
 import { useTRPC } from "@/trpc/provider";
 import { extractYouTubeId } from "@/utils/extract-youtube-id";

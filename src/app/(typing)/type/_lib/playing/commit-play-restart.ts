@@ -1,4 +1,4 @@
-import { getStartLine } from "@/lib/build-map/generate-initial-result";
+import { getStartLine } from "@/lib/build-map/built-map-helper";
 import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { initializeAllLineResult } from "../atoms/family";
 import { readMapId } from "../atoms/hydrate";

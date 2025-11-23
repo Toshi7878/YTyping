@@ -12,7 +12,7 @@ import {
   calculateTotalNotes,
   extractChangeCSSIndexes,
   extractTypingLineIndexes,
-} from "@/lib/build-map/generate-initial-result";
+} from "@/lib/build-map/built-map-helper";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
