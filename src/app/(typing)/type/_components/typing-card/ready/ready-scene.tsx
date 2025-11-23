@@ -21,7 +21,7 @@ export const ReadyScene = ({ className }: ReadyProps) => {
       if (isDialogOpen() || !map) return;
       playYTPlayer();
     },
-    { enableOnFormTags: false, preventDefault: true },
+    { enableOnFormTags: ["radio"], preventDefault: true },
   );
 
   return (
