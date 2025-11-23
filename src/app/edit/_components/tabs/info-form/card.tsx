@@ -254,14 +254,14 @@ const VideoIdInput = () => {
               const videoId = extractYouTubeId(e.clipboardData.getData("text"));
 
               if (videoId) {
-                setValue("videoId", videoId);
+                setValue("videoId", videoId, { shouldDirty: true });
               }
             }}
           />
           <Button
             variant="outline-info"
             size="lg"
-            disabled={!isVideoIdDirty || formVideoId.length !== 11}
+            disabled={formVideoId.length !== 11 || !isVideoIdDirty}
             onClick={(e) => {
               e.preventDefault();
               if (formVideoId.length !== 11) return;
