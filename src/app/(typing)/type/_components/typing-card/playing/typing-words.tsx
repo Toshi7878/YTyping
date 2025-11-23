@@ -58,7 +58,7 @@ export const TypingWords = () => {
     nextWord: nextLyrics.romaWord,
     className: cn(
       "word-roma",
-      isCaseSensitive && (wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase"),
+      !isCaseSensitive && (wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase"),
       inputMode === "roma" && "visible",
       (wordDisplay === "KANA_ONLY" || inputMode === "kana") && "invisible",
     ),
