@@ -5,12 +5,12 @@ import { calcCurrentRank } from "./calc-current-rank";
 export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTime: number }) => {
   const map = readBuiltMap();
   if (!map) return;
-  const lineWord = readTypingWord();
+  const typingWord = readTypingWord();
 
   const { kanaToRomaConvertCount } = readSubstatus();
-  writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + lineWord.correct.roma.length });
+  writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + typingWord.correct.roma.length });
 
-  const isFailed = lineWord.nextChunk.kana;
+  const isFailed = typingWord.nextChunk.kana;
   if (isFailed) {
     const { failureCount, totalLatency } = readSubstatus();
     writeSubstatus({ failureCount: failureCount + 1 });

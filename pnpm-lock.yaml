@@ -116,8 +116,8 @@ importers:
         specifier: ^0.548.0
         version: 0.548.0(react@19.2.0)
       lyrics-typing-engine:
-        specifier: ^1.0.14
-        version: 1.0.14
+        specifier: ^1.0.15
+        version: 1.0.15
       md5:
         specifier: ^2.3.0
         version: 2.3.0
@@ -3657,8 +3657,8 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lyrics-typing-engine@1.0.14:
-    resolution: {integrity: sha512-3y4hJXH30wL/QqSTnKQla/q0n60SfVY1dfjaDpTqtOJq+C1IazKrOsRpVspWV0QnbXZOjDYjPpbmdZjiR9Tg9A==}
+  lyrics-typing-engine@1.0.15:
+    resolution: {integrity: sha512-qAg56VxbL0gKxQTpRgsazYUgd1d3xoXcj36gKESisCQtdCM2OodKVn3TAbYTvHcvcMHVxBgRzRrR93Zmhf2nJQ==}
 
   magic-string@0.30.19:
     resolution: {integrity: sha512-2N21sPY9Ws53PZvsEpVtNuSW+ScYbQdp4b9qUaL+9QkHUrGFKo56Lg9Emg5s9V/qrtNBmiR01sYhUOwu3H+VOw==}
@@ -8165,7 +8165,7 @@ snapshots:
     dependencies:
       react: 19.2.0
 
-  lyrics-typing-engine@1.0.14: {}
+  lyrics-typing-engine@1.0.15: {}
 
   magic-string@0.30.19:
     dependencies:

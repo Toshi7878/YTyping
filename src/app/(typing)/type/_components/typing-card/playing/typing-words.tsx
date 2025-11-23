@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 
 export const TypingWords = () => {
-  const lineWord = useTypingWordState();
+  const typingWord = useTypingWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
   const {
@@ -22,12 +22,12 @@ export const TypingWords = () => {
     isSmoothScroll,
   } = useTypingOptionsState();
 
-  const isLineCompleted = !lineWord.nextChunk.kana && !!lineWord.correct.kana;
+  const isLineCompleted = !typingWord.nextChunk.kana && !!typingWord.correct.kana;
 
   const kanaWordProps = {
-    correct: lineWord.correct.kana,
-    nextChar: lineWord.nextChunk.kana,
-    word: lineWord.wordChunks
+    correct: typingWord.correct.kana,
+    nextChar: typingWord.nextChunk.kana,
+    word: typingWord.wordChunks
       .map((chunk) => chunk.kana)
       .join("")
       .slice(0, 60),
@@ -40,9 +40,9 @@ export const TypingWords = () => {
     ),
   };
   const romaWordProps = {
-    correct: lineWord.correct.roma,
-    nextChar: lineWord.nextChunk.romaPatterns[0] ?? "",
-    word: lineWord.wordChunks
+    correct: typingWord.correct.roma,
+    nextChar: typingWord.nextChunk.romaPatterns[0] ?? "",
+    word: typingWord.wordChunks
       .map((chunk) => chunk.romaPatterns[0])
       .join("")
       .slice(0, 60),
@@ -68,8 +68,8 @@ export const TypingWords = () => {
     romaLetterSpacing: `${romaWordSpacing.toFixed(2)}em`,
   };
 
-  const mainCorrect = mainWord === "kana" ? lineWord.correct.kana : lineWord.correct.roma;
-  const subCorrect = mainWord === "kana" ? lineWord.correct.roma : lineWord.correct.kana;
+  const mainCorrect = mainWord === "kana" ? typingWord.correct.kana : typingWord.correct.roma;
+  const subCorrect = mainWord === "kana" ? typingWord.correct.roma : typingWord.correct.kana;
   const { mainRefs, subRefs } = useWordScroll(
     mainCorrect,
     subCorrect,

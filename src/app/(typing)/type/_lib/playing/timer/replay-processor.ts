@@ -70,16 +70,16 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
 
     if (isSuccess) {
       const { inputMode } = readUtilityParams();
-      const lineWord = readTypingWord();
-      const { nextWordState, successKey, isCompleted, updatePoint } = evaluateTypingInput(
+      const typingWord = readTypingWord();
+      const { nextTypingWord, successKey, isCompleted, updatePoint } = evaluateTypingInput(
         typingKeys,
         inputMode,
-        lineWord,
+        typingWord,
       );
 
-      if (!nextWordState || !successKey) return;
+      if (!nextTypingWord || !successKey) return;
 
-      setTypingWord(nextWordState);
+      setTypingWord(nextTypingWord);
       triggerTypeSound({ isCompleted });
 
       updateKpmOnTyping({ constantLineTime });

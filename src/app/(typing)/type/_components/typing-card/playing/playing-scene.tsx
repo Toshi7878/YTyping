@@ -116,10 +116,11 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
   const shouldAcceptTyping = (!isPaused && scene === "play") || scene === "practice";
 
-  const lineWord = readTypingWord();
-  if (shouldAcceptTyping && lineWord.nextChunk.kana && isTypingKey(event)) {
+  const typingWord = readTypingWord();
+  if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
     const { inputMode } = readUtilityParams();
-    const typingResult = inputMode === "roma" ? evaluateRomaInput(event, lineWord) : evaluateKanaInput(event, lineWord);
+    const typingResult =
+      inputMode === "roma" ? evaluateRomaInput(event, typingWord) : evaluateKanaInput(event, typingWord);
     processTypingResult(typingResult);
     event.preventDefault();
     return;

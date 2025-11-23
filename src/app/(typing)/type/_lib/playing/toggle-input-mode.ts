@@ -45,13 +45,13 @@ export const applyKanaInputMode = () => {
 export const applyRomaInputMode = () => {
   setPlayingInputMode("roma");
   setNotify(Symbol("Romaji"));
-  const lineWord = readTypingWord();
+  const typingWord = readTypingWord();
 
-  if (lineWord.nextChunk.kana) {
-    const wordFix = romaConvert(lineWord);
+  if (typingWord.nextChunk.kana) {
+    const wordFix = romaConvert(typingWord);
     if (!wordFix) return;
     setTypingWord({
-      correct: lineWord.correct,
+      correct: typingWord.correct,
       nextChunk: wordFix.nextChunk,
       wordChunks: wordFix.wordChunks,
     });
