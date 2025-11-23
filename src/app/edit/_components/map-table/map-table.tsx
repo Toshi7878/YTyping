@@ -198,7 +198,8 @@ export const MapTable = () => {
           const isOptionEdited = Boolean(
             row.original.options?.isChangeCSS ||
               row.original.options?.eternalCSS ||
-              row.original.options?.changeVideoSpeed,
+              row.original.options?.changeVideoSpeed ||
+              row.original.options?.isCaseSensitive,
           );
 
           return (

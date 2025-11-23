@@ -120,7 +120,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
     const { inputMode } = readUtilityParams();
     const typingInputResult =
-      inputMode === "roma" ? evaluateRomaInput(event, typingWord) : evaluateKanaInput(event, typingWord);
+      inputMode === "roma" ? evaluateRomaInput({ event, typingWord }) : evaluateKanaInput({ event, typingWord });
     processTypingInputResult(typingInputResult);
     event.preventDefault();
     return;

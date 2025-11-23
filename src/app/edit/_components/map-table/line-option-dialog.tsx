@@ -13,6 +13,7 @@ import { DialogFooter, DialogHeader, DialogTitle, DialogWithContent } from "@/co
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { LineOptionSchema } from "@/validator/raw-map-json";
 import { dispatchEditHistory } from "../../_lib/atoms/history-reducer";
 import { setCanUpload } from "../../_lib/atoms/state";
@@ -47,6 +48,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
       eternalCSS: map[index]?.options?.eternalCSS || "",
       isChangeCSS: map[index]?.options?.isChangeCSS || false,
       changeVideoSpeed: map[index]?.options?.changeVideoSpeed || 0,
+      isCaseSensitive: map[index]?.options?.isCaseSensitive || false,
     },
   });
 
@@ -87,6 +89,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
         ...(data.changeVideoSpeed && {
           changeVideoSpeed: Math.max(0.25 - currentSpeed, Math.min(2.0 - currentSpeed, data.changeVideoSpeed)),
         }),
+        ...(data.isCaseSensitive && { isCaseSensitive: data.isCaseSensitive }),
       },
     };
     setRawMapAction({ type: "update", payload: newLine, index });
@@ -107,8 +110,11 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
   };
 
   const {
+    watch,
+    setValue,
     formState: { isDirty },
   } = form;
+  const isChangeCSSValue = watch("isChangeCSS");
 
   return (
     <DialogWithContent
@@ -128,6 +134,10 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
           </Badge>
 
           <div className="space-y-4">
+            {index === 0 && (
+              <SwitchFormField name="isCaseSensitive" label="この譜面のアルファベット大文字の入力を有効化" />
+            )}
+
             {/* TODO:現在の速度を表示する 現在の速度から加減上限を制御する */}
             <FormField
               control={form.control}
@@ -167,8 +177,13 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
             <TextareaFormField
               name="changeCSS"
               label="選択ラインから適用するCSSを入力"
-              className="min-h-[200px] resize-y"
-              disabled={!form.watch("isChangeCSS")}
+              className={cn("min-h-[200px] resize-y", !isChangeCSSValue && "opacity-50 cursor-pointer")}
+              readOnly={!isChangeCSSValue}
+              onClick={() => {
+                if (!isChangeCSSValue) {
+                  setValue("isChangeCSS", true);
+                }
+              }}
             />
 
             {/* <CSSTextLength

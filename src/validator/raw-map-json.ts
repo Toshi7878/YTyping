@@ -5,6 +5,7 @@ export const LineOptionSchema = z.object({
   eternalCSS: z.string().optional(),
   isChangeCSS: z.boolean().optional(),
   changeVideoSpeed: z.number().min(-1.75).max(2).optional(),
+  isCaseSensitive: z.boolean().optional(),
 });
 
 const RawMapLineSchema = z.object({

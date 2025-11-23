@@ -65,11 +65,11 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
     if (isSuccess) {
       const { inputMode } = readUtilityParams();
       const typingWord = readTypingWord();
-      const { nextTypingWord, successKey, isCompleted, updatePoint } = executeTypingInput(
+      const { nextTypingWord, successKey, isCompleted, updatePoint } = executeTypingInput({
         inputChar,
         inputMode,
         typingWord,
-      );
+      });
 
       if (!nextTypingWord || !successKey) return;
 
