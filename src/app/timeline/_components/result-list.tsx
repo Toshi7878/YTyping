@@ -19,6 +19,7 @@ export const UsersResultList = () => {
     trpc.result.getAllWithMap.infiniteQueryOptions(searchParams, {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,
+      staleTime: Infinity,
       gcTime: Infinity,
     }),
   );
