@@ -234,7 +234,9 @@ const UpsertButton = () => {
 
 const VideoIdInput = () => {
   const { watch, formState, setValue, getValues } = useFormContext();
-  const { dirtyFields } = formState;
+  const {
+    dirtyFields: { videoId: isVideoIdDirty },
+  } = formState;
   const formVideoId = watch("videoId");
 
   return (
@@ -259,7 +261,7 @@ const VideoIdInput = () => {
           <Button
             variant="outline-info"
             size="lg"
-            disabled={!dirtyFields.videoId || formVideoId.length !== 11}
+            disabled={!isVideoIdDirty || formVideoId.length !== 11}
             onClick={(e) => {
               e.preventDefault();
               if (formVideoId.length !== 11) return;
