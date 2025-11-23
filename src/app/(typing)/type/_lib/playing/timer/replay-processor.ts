@@ -7,6 +7,7 @@ import {
 } from "@/app/(typing)/type/_lib/atoms/ref";
 import { handlePlaySpeedAction } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
+  readBuiltMap,
   readTypingWord,
   readUtilityParams,
   setCombo,
@@ -58,6 +59,8 @@ interface SimulateKeyInputParams {
 const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, type }: SimulateKeyInputParams) => {
   const { c: inputChar, is: isSuccess, op: option } = type;
   const count = readLineCount();
+  const builtMap = readBuiltMap();
+  const isCaseSensitive = builtMap?.isCaseSensitive ?? false;
   // 0ライン目に記録されてしまっているリプレイが存在するためcount === 0はリプレイしない
   if (count === 0) return;
 
@@ -69,6 +72,7 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
         inputChar,
         inputMode,
         typingWord,
+        isCaseSensitive,
       });
 
       if (!nextTypingWord || !successKey) return;
