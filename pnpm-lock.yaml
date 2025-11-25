@@ -219,7 +219,7 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       drizzle-kit:
-        specifier: ^0.31.5
+        specifier: ^0.31.7
         version: 0.31.7
       supabase:
         specifier: ^2.48.3
