@@ -10,7 +10,7 @@ export const readMapId = () => store.get(mapIdAtom);
 export const setMapId = (value: ExtractAtomValue<typeof mapIdAtom>) => store.set(mapIdAtom, value);
 
 export const creatorIdAtom = atomWithReset<number | null>(null);
-export const useCreatorIdState = () => useAtomValue(mapIdAtom, { store });
+export const useCreatorIdState = () => useAtomValue(creatorIdAtom, { store });
 export const setCreatorId = (value: ExtractAtomValue<typeof creatorIdAtom>) => store.set(creatorIdAtom, value);
 
 export const videoIdAtom = atomWithReset("");
