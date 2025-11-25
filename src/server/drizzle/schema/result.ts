@@ -55,6 +55,7 @@ export const ResultStatuses = pgTable(
     lost: integer("lost").notNull().default(0),
     maxCombo: integer("max_combo").notNull().default(0),
     clearRate: real("clear_rate").notNull().default(0),
+    isCaseSensitive: boolean("is_case_sensitive").notNull().default(false),
   },
   (t) => [check("valid_play_speed_values", sql`${t.minPlaySpeed} IN (0.25, 0.5, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00)`)],
 );

@@ -5,13 +5,13 @@ import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { Card, CardContent, CardHeader, CardWithContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { MapListItem } from "@/server/api/routers/map-list";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { UserNameLinkText } from "../text/user-name-link-text";
 
-type Notification = NonNullable<RouterOutPuts["notification"]["getInfinite"]["items"][number]>;
+type Notification = NonNullable<RouterOutputs["notification"]["getInfinite"]["items"][number]>;
 
 type OverTakeNotification = Extract<Notification, { type: "OVER_TAKE" }>;
 export const OverTakeNotificationMapCard = ({ notification }: { notification: OverTakeNotification }) => {

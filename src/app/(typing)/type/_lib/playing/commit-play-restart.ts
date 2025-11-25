@@ -14,11 +14,11 @@ import {
   readTypingStatus,
   readUtilityParams,
   resetCurrentLine,
+  resetReplayRankingResult,
   resetTypingStatus,
   setCombo,
   setNextLyrics,
   setNotify,
-  setReplayUserName,
   setScene,
   setTabName,
 } from "../atoms/state";
@@ -91,7 +91,7 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
   }
 
   if (newPlayMode !== "replay") {
-    setReplayUserName(null);
+    resetReplayRankingResult();
   }
 
   seekYTPlayer(0);

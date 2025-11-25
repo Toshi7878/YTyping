@@ -5,6 +5,7 @@ import {
   useBuiltMapState,
   useNextLyricsState,
   usePlayingInputModeState,
+  useReplayRankingResultState,
   useTypingWordState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
@@ -15,7 +16,6 @@ export const TypingWords = () => {
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
   const builtMap = useBuiltMapState();
-  const isCaseSensitive = builtMap?.isCaseSensitive ?? false;
   const {
     wordDisplay,
     subWordFontSize,
@@ -27,7 +27,11 @@ export const TypingWords = () => {
     mainWordScrollStart,
     subWordScrollStart,
     isSmoothScroll,
+    isCaseSensitive: isCaseSensitiveTypingOptions,
   } = useTypingOptionsState();
+  const replayRankingResult = useReplayRankingResultState();
+  const { otherStatus } = replayRankingResult ?? {};
+  const isCaseSensitive = otherStatus?.isCaseSensitive ?? builtMap?.isCaseSensitive ?? isCaseSensitiveTypingOptions;
 
   const isLineCompleted = !typingWord.nextChunk.kana && !!typingWord.correct.kana;
 

@@ -1,5 +1,5 @@
 import { replaceReadingWithCustomDict } from "@/lib/build-map/replace-reading-with-custom-dict";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
 import { zip } from "@/utils/array";
 
@@ -23,7 +23,7 @@ export const generateTokenizedWords = async (words: string[][]) => {
   return marge(words, repl);
 };
 
-const parseRepl = (tokenizedWords: RouterOutPuts["morphConvert"]["tokenizeSentence"]) => {
+const parseRepl = (tokenizedWords: RouterOutputs["morphConvert"]["tokenizeSentence"]) => {
   const repl = new Set<string[]>();
 
   for (const [lyric, reading] of zip(tokenizedWords.lyrics, tokenizedWords.readings)) {

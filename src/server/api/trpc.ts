@@ -40,4 +40,4 @@ export const protectedProcedure = t.procedure.use((opts) => {
 });
 
 export type RouterInputs = inferRouterInputs<AppRouter>;
-export type RouterOutPuts = inferRouterOutputs<AppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/raw-map-json";
 import { InputTextarea } from "../_components/input-textarea";
@@ -18,7 +18,7 @@ import { mutateImeStats } from "../_lib/core/mutate-stats";
 import { pathChangeAtomReset } from "../_lib/core/reset";
 
 interface ContentProps {
-  mapInfo: RouterOutPuts["map"]["getMapInfo"];
+  mapInfo: RouterOutputs["map"]["getMapInfo"];
   mapId: number;
 }
 

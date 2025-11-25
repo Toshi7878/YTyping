@@ -72,6 +72,7 @@ export const UserTypingOptions = pgTable("user_typing_options", {
     .notNull()
     .default(DEFAULT_TYPING_OPTIONS.InputModeToggleKey),
   wordDisplay: mainWordDisplayEnum("main_word_display").notNull().default(DEFAULT_TYPING_OPTIONS.wordDisplay),
+  isCaseSensitive: boolean("is_case_sensitive").notNull().default(DEFAULT_TYPING_OPTIONS.isCaseSensitive),
 });
 
 export const DEFAULT_IME_OPTIONS = {

@@ -31,4 +31,5 @@ export const DEFAULT_TYPING_OPTIONS = {
   timeOffsetAdjustKey: "CTRL_LEFT_RIGHT" as (typeof timeOffsetAdjustKeyEnum.enumValues)[number],
   InputModeToggleKey: "ALT_KANA" as (typeof InputModeToggleKeyEnum.enumValues)[number],
   wordDisplay: "KANA_ROMA_UPPERCASE" as (typeof mainWordDisplayEnum.enumValues)[number],
+  isCaseSensitive: false,
 };

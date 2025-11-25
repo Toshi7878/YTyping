@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import {
   setPlayingInputMode,
-  setReplayUserName,
+  setReplayRankingResult,
   setScene,
   setTabName,
   useSceneGroupState,
@@ -17,6 +17,7 @@ import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../../_lib/atoms/yt-player";
+import { getRankingResultByResultId } from "../../../_lib/get-ranking-result";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { iosActiveSound } from "../../../_lib/playing/sound-effect";
 import { queryResultJson } from "../../../_lib/query-result-json";
@@ -25,11 +26,10 @@ interface RankingMenuProps {
   resultId: number;
   userId: number;
   resultUpdatedAt: Date;
-  name: string;
   hasClapped: boolean;
 }
 
-export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name, hasClapped }: RankingMenuProps) => {
+export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasClapped }: RankingMenuProps) => {
   const { data: session } = useSession();
   const sceneGroup = useSceneGroupState();
 
@@ -66,7 +66,9 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, name,
     }
 
     setTabName("ステータス");
-    setReplayUserName(name);
+
+    const replayRankingResult = getRankingResultByResultId(resultId);
+    setReplayRankingResult(replayRankingResult);
 
     if (sceneGroup === "End") {
       commitPlayRestart("replay");

@@ -5,6 +5,7 @@ import { focusAtom } from "jotai-optics";
 import { type BuiltMapLine, createTypingWord, type InputMode, type TypingWord } from "lyrics-typing-engine";
 import type z from "zod/v4";
 import type { BuiltMapLineWithOption } from "@/lib/types";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
 import type { LineOptionSchema } from "@/validator/raw-map-json";
@@ -46,7 +47,6 @@ const utilityParamsAtom = atomWithReset({
   lineResultdrawerClosure: false,
   isPaused: false,
   movieDuration: 0,
-  replayUserName: null as string | null,
   lineSelectIndex: 0,
 });
 
@@ -61,7 +61,6 @@ const isYTStartedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isYT
 const isPausedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isPaused"));
 const movieDurationAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("movieDuration"));
 const lineSelectIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineSelectIndex"));
-const replayUserNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("replayUserName"));
 
 export const useLineResultSheetOpenState = () => useAtomValue(lineResultDrawerClosureAtom);
 export const setLineResultSheet = (update: Updater<boolean>) => {
@@ -155,9 +154,13 @@ export const setLineSelectIndex = (lineIndex: number) => {
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const setYTStarted = (value: ExtractAtomValue<typeof isYTStartedAtom>) => store.set(isYTStartedAtom, value);
 
-export const useReplayUserNameState = () => useAtomValue(replayUserNameAtom);
-export const setReplayUserName = (value: ExtractAtomValue<typeof replayUserNameAtom>) =>
-  store.set(replayUserNameAtom, value);
+const replayRankingResultAtom = atomWithReset<RouterOutputs["result"]["getMapRanking"][number] | null>(null);
+
+export const useReplayRankingResultState = () => useAtomValue(replayRankingResultAtom);
+export const readReplayRankingResult = () => store.get(replayRankingResultAtom);
+export const setReplayRankingResult = (value: ExtractAtomValue<typeof replayRankingResultAtom>) =>
+  store.set(replayRankingResultAtom, value);
+export const resetReplayRankingResult = () => store.set(replayRankingResultAtom, RESET);
 
 const substatusAtom = atomWithReset({
   elapsedSecTime: 0,
