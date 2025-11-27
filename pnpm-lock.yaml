@@ -223,7 +223,7 @@ importers:
         version: 0.31.7
       supabase:
         specifier: ^2.48.3
-        version: 2.62.5
+        version: 2.63.1
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -3963,8 +3963,8 @@ packages:
   preact@10.24.3:
     resolution: {integrity: sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==}
 
-  proc-log@6.0.0:
-    resolution: {integrity: sha512-KG/XsTDN901PNfPfAMmj6N/Ywg9tM+bHK8pAz+27fS4N4Pcr+4zoYBOcGSBu6ceXYNPxkLpa4ohtfxV1XcLAfA==}
+  proc-log@6.1.0:
+    resolution: {integrity: sha512-iG+GYldRf2BQ0UDUAd6JQ/RwzaQy6mXmsk/IzlYyal4A4SNFw54MeH4/tLkF4I5WoWG9SQwuqWzS99jaFQHBuQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
   progress@2.0.3:
@@ -4246,8 +4246,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  supabase@2.62.5:
-    resolution: {integrity: sha512-KjR57sEwNpTLOMHo+Nt9bHtq9RGWV0GGp6MWALp7RQtOcZdUopUOH+hoOojAuVyk4ChOipB7POu0y3vssW272A==}
+  supabase@2.63.1:
+    resolution: {integrity: sha512-VptpJrw8sSG8xE6Pda/jg5Vg2f3jt15nJZ0crPvRKGpYkMJi7EjPapbOonRxIH5JvTd98x+lshsLnKR2mkoTRA==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -7540,7 +7540,7 @@ snapshots:
     dependencies:
       cmd-shim: 8.0.0
       npm-normalize-package-bin: 5.0.0
-      proc-log: 6.0.0
+      proc-log: 6.1.0
       read-cmd-shim: 6.0.0
       write-file-atomic: 7.0.0
 
@@ -8437,7 +8437,7 @@ snapshots:
 
   preact@10.24.3: {}
 
-  proc-log@6.0.0: {}
+  proc-log@6.1.0: {}
 
   progress@2.0.3: {}
 
@@ -8804,7 +8804,7 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.28.5
 
-  supabase@2.62.5:
+  supabase@2.63.1:
     dependencies:
       bin-links: 6.0.0
       https-proxy-agent: 7.0.6
