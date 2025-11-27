@@ -59,7 +59,7 @@
     "lyrics-typing-engine": "^1.0.26",
     "md5": "^2.3.0",
     "nanoid": "^5.1.6",
-    "next": "^15.5.4",
+    "next": "^16.0.0",
     "next-auth": "5.0.0-beta.30",
     "next-themes": "^0.4.6",
     "nuqs": "^2.7.0",
