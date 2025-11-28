@@ -124,7 +124,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     const map = readBuiltMap();
     const typingOptions = readTypingOptions();
     const { otherStatus } = readReplayRankingResult() ?? {};
-    const isCaseSensitive = otherStatus?.isCaseSensitive ?? map?.isCaseSensitive ?? typingOptions.isCaseSensitive;
+    const isCaseSensitive = otherStatus?.isCaseSensitive ?? (map?.isCaseSensitive || typingOptions.isCaseSensitive);
     const { inputMode } = readUtilityParams();
     const typingInputResult =
       inputMode === "roma"

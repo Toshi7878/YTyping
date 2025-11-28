@@ -31,7 +31,7 @@ export const TypingWords = () => {
   } = useTypingOptionsState();
   const replayRankingResult = useReplayRankingResultState();
   const { otherStatus } = replayRankingResult ?? {};
-  const isCaseSensitive = otherStatus?.isCaseSensitive ?? builtMap?.isCaseSensitive ?? isCaseSensitiveTypingOptions;
+  const isCaseSensitive = otherStatus?.isCaseSensitive ?? (builtMap?.isCaseSensitive || isCaseSensitiveTypingOptions);
 
   const isLineCompleted = !typingWord.nextChunk.kana && !!typingWord.correct.kana;
 
