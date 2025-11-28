@@ -5,6 +5,8 @@ import { Checkbox as CheckboxPrimitive } from "radix-ui";
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { Label } from "../label";
+import { TooltipWrapper } from "../tooltip";
 
 function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
   return (
@@ -26,4 +28,64 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
   );
 }
 
-export { Checkbox };
+const CheckboxListItem = ({
+  label,
+  tooltip,
+  defaultChecked,
+  ...props
+}: Omit<React.ComponentProps<typeof Checkbox>, "id" | "defaultChecked"> & {
+  label: string;
+  tooltip?: string;
+  defaultChecked: boolean;
+}) => {
+  const isChanged = defaultChecked !== props.checked;
+
+  const content = (
+    <Label
+      className={cn(
+        "hover:bg-accent/50 flex items-start px-3 py-4 has-aria-checked:border-primary",
+        props.disabled ? "cursor-not-allowed" : "cursor-pointer",
+      )}
+    >
+      <Checkbox
+        {...props}
+        className="data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+      />
+      {label}
+    </Label>
+  );
+
+  return (
+    <div className={cn("border-l-4", isChanged ? "border-primary" : "border-muted")}>
+      {tooltip ? (
+        <TooltipWrapper label={tooltip} align="start">
+          {content}
+        </TooltipWrapper>
+      ) : (
+        content
+      )}
+    </div>
+  );
+};
+
+
+interface CheckboxCardGroupProps {
+  items: {
+    label: string;
+    defaultChecked: boolean;
+    checked: boolean;
+    onCheckedChange: (checked: boolean) => void;
+    tooltip?: string;
+  }[];
+}
+const CheckboxCardGroup = ({ items, ...props }: CheckboxCardGroupProps & Omit<React.ComponentProps<typeof Checkbox>, "id" | "defaultChecked">) => {
+  return (
+    <div>
+      {items.map((item) => (
+        <CheckboxListItem key={item.label} {...item} {...props} />
+      ))}
+    </div>
+  );
+};
+
+export { Checkbox, CheckboxListItem, CheckboxCardGroup };

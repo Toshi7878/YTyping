@@ -26,7 +26,7 @@ const WORD_OPTIONS_CONFIG = {
   },
 };
 
-export const WordDisplayOptions = () => {
+export const WordDisplayFields = () => {
   const {
     mainWordFontSize,
     subWordFontSize,

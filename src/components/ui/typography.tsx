@@ -54,8 +54,8 @@ export function Large({ children, className }: { children: ReactNode; className?
   return <div className={cn("text-lg font-semibold", className)}>{children}</div>;
 }
 
-export function P({ children }: { children: ReactNode }) {
-  return <p className="leading-7">{children}</p>;
+export function P({ children, className }: { children: ReactNode; className?: string }) {
+  return <p className={cn("leading-7", className)}>{children}</p>;
 }
 
 export function Small({ children, className }: { children: ReactNode; className?: string }) {

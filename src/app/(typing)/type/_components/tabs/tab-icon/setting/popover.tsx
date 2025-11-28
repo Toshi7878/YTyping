@@ -20,12 +20,12 @@ import { cn } from "@/lib/utils";
 import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
-import { HotKeySelectFields } from "./options/hot-key";
-import { SoundEffectOptions } from "./options/sound-effect";
-import { TimeOffsetChange } from "./options/time-offset";
-import { WordDisplayOptions } from "./options/word-display";
-import { WordScrollOptions } from "./options/word-scroll";
-
+import { WordDisplayFields } from "./options/word-display-fields";
+import { WordScrollFields } from "./options/word-scroll-fields";
+import { SoundEffectFields } from "./options/sound-effect-fields";
+import { HotKeySelectFields } from "./options/hot-key-select-fields";
+import { CaseSensitiveCheckbox } from "./options/case-sensitive-checkbox";
+import { TimeOffsetCounter } from "./options/time-offset-conter";
 export const SettingPopover = () => {
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.userOption.updateTypeOptions.mutationOptions());
@@ -51,24 +51,25 @@ export const SettingPopover = () => {
     {
       label: "メイン設定",
       content: (
-        <>
-          <TimeOffsetChange />
+        <div className="space-y-4">
+          <TimeOffsetCounter />
+          <CaseSensitiveCheckbox />
           <Separator className="bg-foreground/20 my-4" />
-          <SoundEffectOptions />
-        </>
+          <SoundEffectFields />
+        </div>
       ),
     },
     {
       label: "表示設定",
       content: (
         <>
-          <NextDisplayRadioOptions />
+          <NextDisplayRadioGroup />
           <Separator className="bg-foreground/20 my-4" />
-          <LineCompletedRadioOptions />
+          <LineCompletedRadioGroup />
           <Separator className="bg-foreground/20 my-4" />
-          <WordScrollOptions />
+          <WordScrollFields />
           <Separator className="bg-foreground/20 my-4" />
-          <WordDisplayOptions />
+          <WordDisplayFields />
         </>
       ),
     },
@@ -144,7 +145,7 @@ const SettingButton = () => {
   );
 };
 
-const LineCompletedRadioOptions = () => {
+const LineCompletedRadioGroup = () => {
   const { lineCompletedDisplay } = useTypingOptionsState();
 
   const items = [
@@ -166,7 +167,7 @@ const LineCompletedRadioOptions = () => {
   );
 };
 
-const NextDisplayRadioOptions = () => {
+const NextDisplayRadioGroup = () => {
   const { nextDisplay } = useTypingOptionsState();
 
   const items = [
