@@ -2,7 +2,7 @@
   "name": "ytyping",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.23.0",
+  "packageManager": "pnpm@10.24.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
