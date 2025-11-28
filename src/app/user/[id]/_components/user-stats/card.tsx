@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { TypeActivity } from "./type-activity";
 
@@ -57,7 +57,7 @@ export const UserStatsCard = () => {
 };
 
 interface UserStatsContentProps {
-  userStats: RouterOutPuts["userStats"]["getUserStats"];
+  userStats: RouterOutputs["userStats"]["getUserStats"];
   isMyStatsWithHide: boolean;
 }
 

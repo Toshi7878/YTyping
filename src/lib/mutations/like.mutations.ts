@@ -1,7 +1,7 @@
 import type { InfiniteData } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { MapListItem } from "@/server/api/routers/map-list";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
 
@@ -69,7 +69,7 @@ function setResultsWithMapOptimistic(
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<{ items: RouterOutPuts["result"]["getAllWithMap"]["items"][number][] }>>(
+  queryClient.setQueriesData<InfiniteData<{ items: RouterOutputs["result"]["getAllWithMap"]["items"][number][] }>>(
     filter,
     (old) => {
       if (!old?.pages) return old;
@@ -104,7 +104,7 @@ function setResultsWithMapServer(
   likeCount: number,
   hasLiked: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<{ items: RouterOutPuts["result"]["getAllWithMap"]["items"][number][] }>>(
+  queryClient.setQueriesData<InfiniteData<{ items: RouterOutputs["result"]["getAllWithMap"]["items"][number][] }>>(
     filter,
     (old) => {
       if (!old?.pages) return old;
@@ -132,7 +132,7 @@ function setMapListByVideoOptimistic(
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["mapList"]["getByVideoId"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutputs["mapList"]["getByVideoId"]>(filter, (old) => {
     if (!old) return old;
     return old.map((map) =>
       map.id === mapId
@@ -155,7 +155,7 @@ function setMapListByVideoServer(
   likeCount: number,
   hasLiked: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["mapList"]["getByVideoId"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutputs["mapList"]["getByVideoId"]>(filter, (old) => {
     if (!old) return old;
     return old.map((map) => (map.id === mapId ? { ...map, like: { count: likeCount, hasLiked } } : map));
   });
@@ -167,7 +167,7 @@ function setNotificationsOptimistic(
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["notification"]["getInfinite"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutputs["notification"]["getInfinite"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -201,7 +201,7 @@ function setNotificationsServer(
   likeCount: number,
   hasLiked: boolean,
 ) {
-  queryClient.setQueriesData<InfiniteData<RouterOutPuts["notification"]["getInfinite"]>>(filter, (old) => {
+  queryClient.setQueriesData<InfiniteData<RouterOutputs["notification"]["getInfinite"]>>(filter, (old) => {
     if (!old?.pages) return old;
     return {
       ...old,
@@ -226,7 +226,7 @@ function setActiveUsersOptimistic(
   mapId: number,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["mapList"]["getByActiveUser"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutputs["mapList"]["getByActiveUser"]>(filter, (old) => {
     if (!old) return old;
     return old.map((user) =>
       user.map?.id === mapId
@@ -252,7 +252,7 @@ function setActiveUsersServer(
   likeCount: number,
   hasLiked: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["mapList"]["getByActiveUser"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutputs["mapList"]["getByActiveUser"]>(filter, (old) => {
     if (!old) return old;
     return old.map((user) =>
       user.map?.id === mapId ? { ...user, map: { ...user.map, like: { count: likeCount, hasLiked } } } : user,
@@ -265,7 +265,7 @@ function setMapInfoOptimistic(
   filter: ReturnType<Trpc["map"]["getMapInfo"]["queryFilter"]>,
   optimisticState: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["map"]["getMapInfo"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutputs["map"]["getMapInfo"]>(filter, (old) => {
     if (!old) return old;
     return {
       ...old,
@@ -279,7 +279,7 @@ function setMapInfoServer(
   filter: ReturnType<Trpc["map"]["getMapInfo"]["queryFilter"]>,
   hasLiked: boolean,
 ) {
-  queryClient.setQueriesData<RouterOutPuts["map"]["getMapInfo"]>(filter, (old) => {
+  queryClient.setQueriesData<RouterOutputs["map"]["getMapInfo"]>(filter, (old) => {
     if (!old) return old;
     return { ...old, hasLiked };
   });

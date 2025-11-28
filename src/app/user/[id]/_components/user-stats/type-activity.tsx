@@ -8,7 +8,7 @@ import type { Activity } from "react-activity-calendar";
 import ActivityCalendar from "react-activity-calendar";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { getCSSVariable } from "@/utils/get-computed-color";
 
@@ -117,7 +117,7 @@ export const TypeActivity = () => {
 };
 
 const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
-  const { data } = activity as RouterOutPuts["userStats"]["getUserActivity"][number];
+  const { data } = activity as RouterOutputs["userStats"]["getUserActivity"][number];
   const sortedTypeData = [
     { label: "ローマ字", count: data?.romaTypeCount ?? 0 },
     { label: "かな", count: data?.kanaTypeCount ?? 0 },

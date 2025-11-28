@@ -3,10 +3,10 @@ import { writeUtilityRefParams } from "../atoms/ref";
 import { handlePlaySpeedAction, readPlaySpeed } from "../atoms/speed-reducer";
 import {
   readUtilityParams,
+  resetReplayRankingResult,
   setLineResultSheet,
   setNotify,
   setPlayingInputMode,
-  setReplayUserName,
   setScene,
 } from "../atoms/state";
 import { readReadyInputMode } from "../atoms/storage";
@@ -23,7 +23,7 @@ export const commitPlayModeChange = () => {
     const confirmMessage = "本番モードに移動しますか？了承すると初めから再生されます。";
     if (window.confirm(confirmMessage)) {
       writeUtilityRefParams({ replayKeyCount: 0 });
-      setReplayUserName(null);
+      resetReplayRankingResult();
 
       setLineResultSheet(false);
 

@@ -53,6 +53,7 @@ const createResultBaseFields = (Player: BuildAliasTable<typeof Users, "Player">)
       lost: ResultStatuses.lost,
       maxCombo: ResultStatuses.maxCombo,
       clearRate: ResultStatuses.clearRate,
+      isCaseSensitive: ResultStatuses.isCaseSensitive,
     },
     typeSpeed: {
       kpm: ResultStatuses.kpm,

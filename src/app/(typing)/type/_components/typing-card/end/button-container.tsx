@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import { setLineResultSheet, useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state";
-import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-my-result";
+import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-restart";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";

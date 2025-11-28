@@ -13,14 +13,14 @@ import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
 import { cn } from "@/lib/utils";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useMapIdState } from "../../../_lib/atoms/hydrate";
 import { writeUtilityRefParams } from "../../../_lib/atoms/ref";
 import { setRankStatus, useSceneGroupState } from "../../../_lib/atoms/state";
 import { RankingPopoverContent } from "./ranking-popover-menu";
 
-type RankingResult = RouterOutPuts["result"]["getMapRanking"][number];
+type RankingResult = RouterOutputs["result"]["getMapRanking"][number];
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
   const { data: session } = useSession();
@@ -64,7 +64,6 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
                   resultId={result.id}
                   userId={result.player.id}
                   resultUpdatedAt={result.updatedAt}
-                  name={result.player.name ?? ""}
                   hasClapped={result.clap.hasClapped ?? false}
                 />
               </Popover>

@@ -1,13 +1,13 @@
 "use client";
 import { Provider } from "jotai";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { AtomsHydrator } from "@/components/shared/jotai";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { mapIdAtom, typingOptionsAtom } from "../_lib/atoms/hydrate";
 import { getTypeAtomStore } from "../_lib/atoms/store";
 
 interface JotaiProviderProps {
-  userTypingOptions: RouterOutPuts["userOption"]["getUserTypingOptions"];
+  userTypingOptions: RouterOutputs["userOption"]["getUserTypingOptions"];
   mapId: number;
   children: ReactNode;
 }

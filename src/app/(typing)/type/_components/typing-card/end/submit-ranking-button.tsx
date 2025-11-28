@@ -5,13 +5,13 @@ import { toast } from "sonner";
 import type z from "zod/v4";
 import { readAllLineResult } from "@/app/(typing)/type/_lib/atoms/family";
 import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
-import { readTypingStatus, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
+import { readBuiltMap, readTypingStatus, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/provider";
 import { getMinValue } from "@/utils/array";
 import type { CreateResultStatusSchema } from "@/validator/result";
-import { readMapId } from "../../../_lib/atoms/hydrate";
+import { readMapId, readTypingOptions } from "../../../_lib/atoms/hydrate";
 
 interface RegisterRankingButtonProps {
   isScoreUpdated: boolean;
@@ -99,6 +99,8 @@ const generateResultData = (mapId: number) => {
 
   const rkpmTime = totalTypeTime - totalLatency;
   const typingStatus = readTypingStatus();
+  const builtMap = readBuiltMap();
+  const typingOptions = readTypingOptions();
 
   const sendStatus: z.output<typeof CreateResultStatusSchema> = {
     score: typingStatus.score,
@@ -118,6 +120,7 @@ const generateResultData = (mapId: number) => {
     kanaToRomaKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
     kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
     clearRate: Number(Math.max(0, clearRate).toFixed(1)),
+    isCaseSensitive: builtMap?.isCaseSensitive ?? typingOptions.isCaseSensitive,
   };
 
   return {

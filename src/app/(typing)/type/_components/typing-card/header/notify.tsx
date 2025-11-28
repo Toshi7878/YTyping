@@ -1,7 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion"; // 追加
 import { useEffect, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
-import { setNotify, useNotifyState, useReplayUserNameState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
+import {
+  setNotify,
+  useNotifyState,
+  useReplayRankingResultState,
+  useSceneState,
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 
 const NON_ANIMATED = ["ll", "Replay", "Practice"];
@@ -72,13 +77,13 @@ export const PlayingNotify = () => {
 };
 
 const NonAnimatedNotifyText = ({ description }: { description: string }) => {
-  const replayUserName = useReplayUserNameState();
+  const replayUserRankingResult = useReplayRankingResultState();
 
   switch (description) {
     case "ll":
       return <FaPause />;
     case "Replay":
-      return `${replayUserName} Replay`;
+      return `${replayUserRankingResult?.player.name ?? "Unknown"} Replay`;
     case "Practice":
       return "Practice";
   }

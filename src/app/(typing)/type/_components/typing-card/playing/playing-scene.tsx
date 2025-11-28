@@ -4,6 +4,7 @@ import { evaluateKanaInput, evaluateRomaInput, isTypingKey } from "lyrics-typing
 import { useEffect } from "react";
 import {
   readBuiltMap,
+  readReplayRankingResult,
   readTypingWord,
   readUtilityParams,
   resetCurrentLine,
@@ -17,6 +18,7 @@ import { env } from "@/env";
 import { cn } from "@/lib/utils";
 import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
+import { readTypingOptions } from "../../../_lib/atoms/hydrate";
 import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
 import { commitLineSkip } from "../../../_lib/playing/commit-line-skip";
 import { handlePlayHotKey, isHotKeyIgnored } from "../../../_lib/playing/keydown/handle-play-hot-key";
@@ -120,7 +122,9 @@ const handleKeyDown = (event: KeyboardEvent) => {
   const typingWord = readTypingWord();
   if (shouldAcceptTyping && typingWord.nextChunk.kana && isTypingKey(event)) {
     const map = readBuiltMap();
-    const isCaseSensitive = map?.isCaseSensitive ?? false;
+    const typingOptions = readTypingOptions();
+    const { otherStatus } = readReplayRankingResult() ?? {};
+    const isCaseSensitive = otherStatus?.isCaseSensitive ?? map?.isCaseSensitive ?? typingOptions.isCaseSensitive;
     const { inputMode } = readUtilityParams();
     const typingInputResult =
       inputMode === "roma"

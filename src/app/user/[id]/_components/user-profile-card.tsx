@@ -9,10 +9,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DataList, DataListItem, DataListLabel, DataListValue } from "@/components/ui/data-list";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { H2, LinkText } from "@/components/ui/typography";
-import type { RouterOutPuts } from "@/server/api/trpc";
+import type { RouterOutputs } from "@/server/api/trpc";
 
 interface UserProfileCardProps {
-  userProfile: RouterOutPuts["userProfile"]["getUserProfile"];
+  userProfile: RouterOutputs["userProfile"]["getUserProfile"];
 }
 
 export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {

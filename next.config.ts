@@ -10,6 +10,7 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  experimental: { scrollRestoration: true },
 };
 
 // @see https://www.npmjs.com/package/@sentry/webpack-plugin#options
