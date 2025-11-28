@@ -7,6 +7,7 @@ export const LEFT_MENU_LINK_ITEM: HeaderMenu[] = [
   { title: "GitHub", href: "https://github.com/Toshi7878/YTyping" },
   { title: "ツール", href: "/tools", device: "PC" },
   { title: "クレジット", href: "/credit" },
+  { title: "プライバシーポリシー", href: "/privacy" },
 ];
 
 export const LEFT_LINKS: HeaderMenu[] = [{ title: "タイムライン", href: "/timeline" }];
