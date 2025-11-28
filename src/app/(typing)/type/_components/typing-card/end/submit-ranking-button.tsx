@@ -120,7 +120,7 @@ const generateResultData = (mapId: number) => {
     kanaToRomaKpm: Math.floor((kanaToRomaConvertCount / totalTypeTime) * 60),
     kanaToRomaRkpm: Math.floor((kanaToRomaConvertCount / rkpmTime) * 60),
     clearRate: Number(Math.max(0, clearRate).toFixed(1)),
-    isCaseSensitive: builtMap?.isCaseSensitive ?? typingOptions.isCaseSensitive,
+    isCaseSensitive: builtMap?.isCaseSensitive || typingOptions.isCaseSensitive,
   };
 
   return {
