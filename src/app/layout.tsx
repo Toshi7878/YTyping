@@ -51,7 +51,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                     <Header className="fixed z-50 h-10 w-full" />
                     <JotaiProvider userAgent={userAgent}>
                       <MainProvider>
-                        <main className="min-h-screen pt-12 md:pt-16" id="main_content">
+                        <main className="min-h-screen pt-12 md:pt-16 mb-6" id="main_content">
                           {children}
                         </main>
                         <PreviewYouTubePlayer />
