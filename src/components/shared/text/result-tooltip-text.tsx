@@ -18,7 +18,7 @@ export const ResultToolTipText = ({
   isKanaFlickTyped,
   updatedAt,
 }: ResultToolTipTextProps) => {
-  const { miss, lost, maxCombo, playSpeed } = otherStatus;
+  const { miss, lost, maxCombo, playSpeed, isCaseSensitive } = otherStatus;
   const { kpm, rkpm, kanaToRomaKpm, kanaToRomaRkpm } = typeSpeed;
 
   return (
@@ -39,6 +39,7 @@ export const ResultToolTipText = ({
       )}
 
       {playSpeed > 1 && <LabelValue label="倍速" value={playSpeed.toFixed(2)} />}
+      {isCaseSensitive && <LabelValue label="アルファベット大文字入力" value="有効" />}
 
       <LabelValue
         label="日時"

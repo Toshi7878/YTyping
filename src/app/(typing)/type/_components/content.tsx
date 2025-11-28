@@ -12,6 +12,7 @@ import {
   calculateTotalNotes,
   extractChangeCSSIndexes,
   extractTypingLineIndexes,
+  hasAlphabetChunk,
 } from "@/lib/build-map/built-map-helper";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
@@ -75,6 +76,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
         typingLineIndexes,
         changeCSSIndexes,
         duration: calculateDuration(builtMapLines),
+        hasAlphabet: hasAlphabetChunk(builtMapLines),
         isCaseSensitive: builtMapLines[0]?.options?.isCaseSensitive ?? false,
       };
       setBuiltMap(builtMap);

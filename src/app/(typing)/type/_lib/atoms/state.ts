@@ -28,6 +28,7 @@ const builtMapAtom = atomWithReset<{
   typingLineIndexes: number[];
   changeCSSIndexes: number[];
   duration: number;
+  hasAlphabet: boolean;
   isCaseSensitive: boolean;
 } | null>(null);
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });

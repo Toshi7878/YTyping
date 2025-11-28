@@ -122,3 +122,6 @@ export const calculateDuration = (builtMapLines: BuiltMapLineWithOption[]): numb
   const lastLine = builtMapLines[builtMapLines.length - 1];
   return lastLine?.time ?? 0;
 };
+
+export const hasAlphabetChunk = (builtMapLines: BuiltMapLineWithOption[]): boolean =>
+  builtMapLines.some((line) => line.wordChunks.some((chunk) => chunk.type === "alphabet"));
