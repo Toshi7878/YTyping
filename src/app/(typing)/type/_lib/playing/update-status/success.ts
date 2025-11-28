@@ -7,6 +7,7 @@ import {
   writeSubstatus,
   writeUserStats,
 } from "../../atoms/ref";
+import { readPlaySpeed } from "../../atoms/speed-reducer";
 import {
   readBuiltMap,
   readCombo,
@@ -29,6 +30,7 @@ export const updateSuccessStatus = ({
   const { type: lineTypeCount } = readLineSubstatus();
   const { completeCount, failureCount } = readSubstatus();
   const map = readBuiltMap();
+  const { playSpeed } = readPlaySpeed();
 
   setTypingStatus((prev) => {
     let { point } = prev;
@@ -43,7 +45,7 @@ export const updateSuccessStatus = ({
     let { rank } = prev;
 
     if (isCompleted) {
-      const timeBonusValue = Math.floor(constantRemainLineTime * 100);
+      const timeBonusValue = Math.floor(constantRemainLineTime * playSpeed * 100);
       timeBonus = timeBonusValue;
       score = prev.score + point + timeBonusValue;
       if (map) {

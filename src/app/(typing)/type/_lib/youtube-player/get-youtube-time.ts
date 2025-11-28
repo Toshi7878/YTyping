@@ -18,7 +18,6 @@ export const getRemainLineTime = () => {
   const constantTime = getConstantOffsettedYTTime({ currentTime });
   const currentLineTime = getCurrentLineTime({ currentTime });
   const constantLineTime = getConstantLineTime({ currentLineTime });
-  const currentRemainLineTime = getCurrentLineRemainTime({ currentTime });
   const constantRemainLineTime = getConstantRemainLineTime({ constantLineTime });
 
   return {
@@ -26,7 +25,6 @@ export const getRemainLineTime = () => {
     constantTime,
     currentLineTime,
     constantLineTime,
-    currentRemainLineTime,
     constantRemainLineTime,
   };
 };
@@ -55,20 +53,6 @@ const getCurrentLineTime = ({ currentTime }: { currentTime: number }) => {
   return currentTime - Number(currentLine?.time);
 };
 
-const getCurrentLineRemainTime = ({ currentTime }: { currentTime: number }) => {
-  const map = readBuiltMap();
-  const count = readLineCount();
-  const nextLine = map?.lines[count + 1];
-  if (!nextLine) return 0;
-
-  const { movieDuration } = readUtilityParams();
-  const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
-
-  const lineRemainTime = (nextLineTime - currentTime) / readPlaySpeed().playSpeed;
-
-  return lineRemainTime;
-};
-
 const getConstantLineTime = ({ currentLineTime }: { currentLineTime: number }) => {
   const lineConstantTime = Math.floor((currentLineTime / readPlaySpeed().playSpeed) * 1000) / 1000;
   return lineConstantTime;
@@ -76,14 +60,13 @@ const getConstantLineTime = ({ currentLineTime }: { currentLineTime: number }) =
 
 const getConstantRemainLineTime = ({ constantLineTime }: { constantLineTime: number }) => {
   const map = readBuiltMap();
-  const count = readLineCount();
-  const nextLine = map?.lines[count + 1];
-  if (!nextLine) return 0;
+  if (!map) return 0;
 
+  const count = readLineCount();
   const currentLine = map.lines[count];
   if (!currentLine) return 0;
 
-  const { movieDuration } = readUtilityParams();
-  const nextLineTime = nextLine.time > movieDuration ? movieDuration : nextLine.time;
-  return (nextLineTime - currentLine.time) / readPlaySpeed().playSpeed - constantLineTime;
+  const { playSpeed } = readPlaySpeed();
+  const constantLineDuration = currentLine.duration / playSpeed;
+  return constantLineDuration - constantLineTime;
 };
