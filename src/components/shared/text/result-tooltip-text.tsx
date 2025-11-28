@@ -39,7 +39,7 @@ export const ResultToolTipText = ({
       )}
 
       {playSpeed > 1 && <LabelValue label="倍速" value={playSpeed.toFixed(2)} />}
-      {isCaseSensitive && <LabelValue label="アルファベット大文字入力" value="有効" />}
+      {isCaseSensitive && <LabelValue label="英語大文字" value="有効" />}
 
       <LabelValue
         label="日時"
