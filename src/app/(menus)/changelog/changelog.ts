@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-11-28",
+    descriptions: ["プライバシーポリシーを追加"],
+  },
+  {
     date: "2025-11-23",
     descriptions: ["促音の点数配点が100点になっていた問題を修正"],
   },
