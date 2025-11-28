@@ -6,7 +6,7 @@ const MAX_TIME_OFFSET = 1;
 const MIN_TIME_OFFSET = -1;
 const TIME_OFFSET_STEP = 0.05;
 
-export const TimeOffsetChange = () => {
+export const TimeOffsetCounter = () => {
   const { timeOffset } = useTypingOptionsState();
   return (
     <CounterInput

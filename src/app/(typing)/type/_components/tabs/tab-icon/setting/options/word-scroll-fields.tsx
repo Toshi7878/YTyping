@@ -8,7 +8,7 @@ const MAX_SCROLL = 80;
 const MIN_SCROLL = 5;
 const SCROLL_STEP = 5;
 
-export const WordScrollOptions = () => {
+export const WordScrollFields = () => {
   const { mainWordScrollStart, subWordScrollStart } = useTypingOptionsState();
 
   return (
