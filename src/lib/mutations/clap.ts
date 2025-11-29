@@ -4,11 +4,8 @@ import { useTRPC } from "@/trpc/provider";
 import {
   updateInfiniteQuery as updateInfiniteQueryCache,
   updateListQuery as updateListQueryCache,
-} from "./update-query-cache";
+} from "../update-query-cache";
 
-// --- ヘルパー関数 ---
-
-// Clapの状態を計算する純粋関数
 function calculateClapState(
   current: { count: number; hasClapped: boolean },
   optimisticState?: boolean,
@@ -24,12 +21,10 @@ function calculateClapState(
   return current;
 }
 
-// 更新ロジックを生成するファクトリ
 const createResultUpdater = (
   resultId: number,
   newState: { optimistic?: boolean; server?: { count: number; hasClapped: boolean } },
 ) => {
-  // ResultWithMapItem 自体を更新する関数
   const updateResult = (result: ResultWithMapItem): ResultWithMapItem => {
     if (result.id !== resultId) return result;
     return {
@@ -38,10 +33,7 @@ const createResultUpdater = (
     };
   };
 
-  return {
-    // アイテムが ResultWithMapItem そのものの場合 (例: Timeline, Ranking)
-    forResult: updateResult,
-  };
+  return { forResult: updateResult, };
 };
 
 export function useClapMutationTimeline() {
@@ -82,8 +74,6 @@ export function useClapMutationTimeline() {
         // --- Server Updates ---
         const updater = createResultUpdater(resultId, { server: { count: clapCount, hasClapped } });
 
-        // Ranking (List Query) の更新
-        // RankingはfilterにmapIdを含むため、特定して更新
         const mapRankingFilter = trpc.result.getMapRanking.queryFilter({ mapId });
         updateListQueryCache(queryClient, mapRankingFilter, updater.forResult);
 
@@ -127,7 +117,6 @@ export function useClapMutationRanking(mapId: number) {
           server: { count: server.clapCount, hasClapped: server.hasClapped },
         });
 
-        // Infinite Queries (Timeline) の更新
         const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
 

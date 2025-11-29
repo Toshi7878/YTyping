@@ -6,7 +6,7 @@ import { useTRPC } from "@/trpc/provider";
 import {
   updateInfiniteQuery as updateInfiniteQueryCache,
   updateListQuery as updateListQueryCache,
-} from "./update-query-cache";
+} from "../update-query-cache";
 
 function calculateLikeState(
   current: { count: number; hasLiked: boolean },

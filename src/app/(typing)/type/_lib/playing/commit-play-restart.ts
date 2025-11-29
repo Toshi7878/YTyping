@@ -23,7 +23,7 @@ import {
   setTabName,
 } from "../atoms/state";
 import { playYTPlayer, seekYTPlayer } from "../atoms/yt-player";
-import { mutateTypingStats } from "../mutate-stats";
+import { mutateTypingStats } from "../mutate/stats";
 import type { PlayMode } from "../type";
 import { stopTimer } from "./timer/timer";
 

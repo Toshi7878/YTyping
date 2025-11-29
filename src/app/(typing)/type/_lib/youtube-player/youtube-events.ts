@@ -18,7 +18,7 @@ import {
 } from "../atoms/state";
 import { readReadyInputMode } from "../atoms/storage";
 import { writeYTPlayer } from "../atoms/yt-player";
-import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../mutate-stats";
+import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../mutate/stats";
 import { startTimer, stopTimer } from "../playing/timer/timer";
 
 const onStart = (player: YT.Player) => {

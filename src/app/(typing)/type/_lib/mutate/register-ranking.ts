@@ -4,11 +4,8 @@ import { useTRPC } from "@/trpc/provider";
 import {
   updateInfiniteQuery as updateInfiniteQueryCache,
   updateListQuery as updateListQueryCache,
-} from "./update-query-cache";
+} from "../../../../../lib/update-query-cache";
 
-// --- ヘルパー関数 ---
-
-// Rankingの状態を計算する純粋関数
 function calculateRankingState(
   current: MapListItem["ranking"],
   optimisticUpdatedAt?: Date,
@@ -27,7 +24,6 @@ function calculateRankingState(
   return current;
 }
 
-// 更新ロジックを生成するファクトリ
 const createMapUpdater = (mapId: number, newState: { optimistic?: Date; server?: MapListItem["ranking"] }) => {
   const updateMap = (map: MapListItem): MapListItem => {
     if (map.id !== mapId) return map;

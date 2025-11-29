@@ -11,7 +11,7 @@ import { CardWithContent } from "@/components/ui/card";
 import { Popover, PopoverAnchor } from "@/components/ui/popover";
 import { DataTable } from "@/components/ui/table/data-table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
+import { useClapMutationRanking } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";

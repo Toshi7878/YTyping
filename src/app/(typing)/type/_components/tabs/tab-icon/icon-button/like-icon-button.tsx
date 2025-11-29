@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMapIdState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import { LikeButton } from "@/components/shared/like-button/like-button";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useLikeMutationMapInfo } from "@/lib/mutations/like.mutations";
+import { useLikeMutationMapInfo } from "@/lib/mutations/like";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";

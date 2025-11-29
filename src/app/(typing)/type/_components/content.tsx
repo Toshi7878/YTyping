@@ -29,7 +29,7 @@ import {
 } from "../_lib/atoms/state";
 import { readReadyInputMode } from "../_lib/atoms/storage";
 import { CHAR_POINT } from "../_lib/const";
-import { mutateTypingStats } from "../_lib/mutate-stats";
+import { mutateTypingStats } from "../_lib/mutate/stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";
 import { CONTENT_WIDTH, useWindowScale } from "../_lib/utils/use-window-scale";
 import { TabsArea } from "./tabs/tabs";

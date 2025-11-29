@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
-import { useClapMutationRanking } from "@/lib/mutations/clap.mutations";
+import { useClapMutationRanking } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../../_lib/atoms/yt-player";
