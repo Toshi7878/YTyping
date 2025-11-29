@@ -67,7 +67,7 @@
     "postgres": "^3.4.7",
     "radix-ui": "^1.4.3",
     "react": "19.2.0",
-    "react-activity-calendar": "^2.7.14",
+    "react-activity-calendar": "^3.0.0",
     "react-dom": "19.2.0",
     "react-hook-form": "^7.63.0",
     "react-hotkeys-hook": "^5.1.0",
