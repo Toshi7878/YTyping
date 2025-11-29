@@ -51,7 +51,7 @@ export const ResultCard = memo(({ result, priority = false }: ResultCardProps) =
           className={cn(!shouldRender && "invisible")}
         />
       </CardHeader>
-      <CardContentWithThumbnail src={src} className="relative mx-auto max-w-[95%]">
+      <CardContentWithThumbnail src={shouldRender ? src : undefined} className="relative mx-auto max-w-[95%]">
         <div className="flex w-full items-center gap-4 py-6">
           {shouldRender && (
             <Badge

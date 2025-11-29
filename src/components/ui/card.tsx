@@ -75,13 +75,15 @@ const CardContentWithThumbnail = ({
   src,
   className,
   ...props
-}: { src: string } & React.ComponentProps<typeof CardContent>) => {
+}: { src: string | undefined } & React.ComponentProps<typeof CardContent>) => {
   return (
     <div
       data-slot="card-content"
       className={cn("rounded-sm px-4 py-4", className)}
       style={{
-        background: `var(--card-with-thumbnail), url(${src}) center center / cover no-repeat`,
+        background: src
+          ? `var(--card-with-thumbnail), url(${src}) center center / cover no-repeat`
+          : "var(--card-with-thumbnail)",
       }}
       {...props}
     >
