@@ -14,19 +14,8 @@ import {
   usePreviewVideoInfoState,
 } from "../../lib/atoms/global-atoms";
 
-const PREVIEW_EXCLUDED_SEGMENTS = ["type", "edit", "ime"];
-
-export function useIsPreviewEnabled() {
-  const pathname = usePathname();
-  const firstSegment = pathname.split("/")[1] ?? "";
-  const isDisabled = PREVIEW_EXCLUDED_SEGMENTS.includes(firstSegment);
-
-  return !isDisabled;
-}
-
 export const PreviewYouTubePlayer = () => {
   const isPreviewEnabled = useIsPreviewEnabled();
-
   const { videoId } = usePreviewVideoInfoState();
 
   useHotkeys(
@@ -49,8 +38,6 @@ export const PreviewYouTubePlayer = () => {
 
   return (
     <YouTube
-      id="preview_youtube"
-      videoId=""
       className={cn(
         "fixed right-2 bottom-2 z-50 lg:right-4 lg:bottom-4 2xl:right-5 2xl:bottom-5 [&_iframe]:h-[128px] [&_iframe]:w-[228px] [&_iframe]:lg:h-[180px] [&_iframe]:lg:w-[320px] [&_iframe]:2xl:h-[252px] [&_iframe]:2xl:w-[448px]",
         videoId ? "visible" : "hidden",
@@ -73,8 +60,6 @@ export const PreviewYouTubePlayer = () => {
 };
 
 const onStateChange = ({ data, target: YTPlayer }: { data: YT.PlayerState; target: YT.Player }) => {
-  console.log("onStateChange", data);
-
   switch (data) {
     case YT.PlayerState.CUED: {
       const { previewTime } = readPreviewVideoInfo();
@@ -94,3 +79,13 @@ const onPlay = ({ target: YTPlayer }: { target: YT.Player }) => {
   const { previewSpeed } = readPreviewVideoInfo();
   YTPlayer.setPlaybackRate(previewSpeed ?? 1);
 };
+
+const PREVIEW_EXCLUDED_SEGMENTS = ["type", "edit", "ime"];
+
+export function useIsPreviewEnabled() {
+  const pathname = usePathname();
+  const firstSegment = pathname.split("/")[1] ?? "";
+  const isDisabled = PREVIEW_EXCLUDED_SEGMENTS.includes(firstSegment);
+
+  return !isDisabled;
+}
