@@ -3,7 +3,6 @@
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { useActionState } from "react";
 import { LEFT_LINKS, LEFT_MENU_LINK_ITEM, LOGIN_MENU_LINK_ITEM } from "@/app/_components/header/lib/const";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +25,6 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const isMobile = useIsMobileDeviceState();
 
   const menus = [...LEFT_LINKS, ...LEFT_MENU_LINK_ITEM];
-  const [, formAction] = useActionState(() => signOut({ redirect: false }), null);
 
   return (
     <div className={className}>
@@ -67,7 +65,7 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
                   <DropdownMenuItem>{item.title}</DropdownMenuItem>
                 </Link>
               ))}
-              <DropdownMenuItem onSelect={() => formAction()}>ログアウト</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => signOut({ redirect: false })}>ログアウト</DropdownMenuItem>
             </>
           ) : (
             !session && <SignInDropdownItems />
