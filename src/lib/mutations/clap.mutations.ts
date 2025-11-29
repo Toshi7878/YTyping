@@ -1,109 +1,48 @@
-import type { InfiniteData } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ResultWithMapItem } from "@/server/api/routers/result";
-import type { RouterOutputs } from "@/server/api/trpc";
-import type { Trpc } from "@/trpc/provider";
 import { useTRPC } from "@/trpc/provider";
+import {
+  updateInfiniteQuery as updateInfiniteQueryCache,
+  updateListQuery as updateListQueryCache,
+} from "./update-query-cache";
 
-type MapRankingFilter = ReturnType<Trpc["result"]["getMapRanking"]["queryFilter"]>;
-type ResultInfiniteFilter =
-  | ReturnType<Trpc["result"]["getAllWithMap"]["infiniteQueryFilter"]>
-  | ReturnType<Trpc["result"]["getAllWithMapByUserId"]["infiniteQueryFilter"]>;
+// --- ヘルパー関数 ---
 
-function setResultsClapOptimistic(
-  queryClient: ReturnType<typeof useQueryClient>,
-  filter: ResultInfiniteFilter,
-  resultId: number,
-  optimisticState: boolean,
+// Clapの状態を計算する純粋関数
+function calculateClapState(
+  current: { count: number; hasClapped: boolean },
+  optimisticState?: boolean,
+  serverState?: { count: number; hasClapped: boolean },
 ) {
-  queryClient.setQueriesData<InfiniteData<{ items: ResultWithMapItem[] }>>(filter, (old) => {
-    if (!old?.pages) return old;
+  if (serverState) return serverState;
+  if (optimisticState !== undefined) {
     return {
-      ...old,
-      pages: old.pages.map((page) => ({
-        ...page,
-        items: page.items.map((result) =>
-          result.id === resultId
-            ? {
-                ...result,
-                clap: {
-                  count: optimisticState ? result.clap.count + 1 : Math.max(0, result.clap.count - 1),
-                  hasClapped: optimisticState,
-                } satisfies ResultWithMapItem["clap"],
-              }
-            : result,
-        ),
-      })),
+      count: optimisticState ? current.count + 1 : Math.max(0, current.count - 1),
+      hasClapped: optimisticState,
     };
-  });
+  }
+  return current;
 }
 
-function setResultsClapServer(
-  queryClient: ReturnType<typeof useQueryClient>,
-  filter: ResultInfiniteFilter,
+// 更新ロジックを生成するファクトリ
+const createResultUpdater = (
   resultId: number,
-  hasClapped: boolean,
-  clapCount: number,
-) {
-  queryClient.setQueriesData<InfiniteData<{ items: ResultWithMapItem[] }>>(filter, (old) => {
-    if (!old?.pages) return old;
+  newState: { optimistic?: boolean; server?: { count: number; hasClapped: boolean } },
+) => {
+  // ResultWithMapItem 自体を更新する関数
+  const updateResult = (result: ResultWithMapItem): ResultWithMapItem => {
+    if (result.id !== resultId) return result;
     return {
-      ...old,
-      pages: old.pages.map((page) => ({
-        ...page,
-        items: page.items.map((result) =>
-          result.id === resultId
-            ? { ...result, clap: { hasClapped, count: clapCount } satisfies ResultWithMapItem["clap"] }
-            : result,
-        ),
-      })),
+      ...result,
+      clap: calculateClapState(result.clap, newState.optimistic, newState.server),
     };
-  });
-}
+  };
 
-// End of common helpers
-
-function setRankingClapOptimistic(
-  queryClient: ReturnType<typeof useQueryClient>,
-  filter: MapRankingFilter,
-  resultId: number,
-  optimisticState: boolean,
-) {
-  queryClient.setQueriesData<RouterOutputs["result"]["getMapRanking"]>(filter, (old) => {
-    if (!old) return old;
-    return old.map((result) =>
-      result.id === resultId
-        ? {
-            ...result,
-            clap: {
-              hasClapped: optimisticState,
-              count: optimisticState ? result.clap.count + 1 : Math.max(0, result.clap.count - 1),
-            } satisfies ResultWithMapItem["clap"],
-          }
-        : result,
-    );
-  });
-}
-
-function setRankingClapServer(
-  queryClient: ReturnType<typeof useQueryClient>,
-  filter: MapRankingFilter,
-  resultId: number,
-  hasClapped: boolean,
-  clapCount: number,
-) {
-  queryClient.setQueriesData<RouterOutputs["result"]["getMapRanking"]>(filter, (old) => {
-    if (!old) return old;
-    return old.map((result) =>
-      result.id === resultId
-        ? {
-            ...result,
-            clap: { hasClapped, count: clapCount } satisfies ResultWithMapItem["clap"],
-          }
-        : result,
-    );
-  });
-}
+  return {
+    // アイテムが ResultWithMapItem そのものの場合 (例: Timeline, Ranking)
+    forResult: updateResult,
+  };
+};
 
 export function useClapMutationTimeline() {
   const trpc = useTRPC();
@@ -115,16 +54,18 @@ export function useClapMutationTimeline() {
         const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
 
-        await queryClient.cancelQueries(timelineFilter);
-        await queryClient.cancelQueries(userResultsFilter);
+        await Promise.all([queryClient.cancelQueries(timelineFilter), queryClient.cancelQueries(userResultsFilter)]);
 
         const previous = [
           ...queryClient.getQueriesData(timelineFilter),
           ...queryClient.getQueriesData(userResultsFilter),
         ];
 
-        setResultsClapOptimistic(queryClient, timelineFilter, input.resultId, input.newState);
-        setResultsClapOptimistic(queryClient, userResultsFilter, input.resultId, input.newState);
+        // --- Optimistic Updates ---
+        const updater = createResultUpdater(input.resultId, { optimistic: input.newState });
+
+        updateInfiniteQueryCache(queryClient, timelineFilter, updater.forResult);
+        updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forResult);
 
         return { previous, timelineFilter, userResultsFilter };
       },
@@ -137,12 +78,18 @@ export function useClapMutationTimeline() {
       },
       onSuccess: (server, _vars, ctx) => {
         const { clapCount, hasClapped, mapId, resultId } = server;
+
+        // --- Server Updates ---
+        const updater = createResultUpdater(resultId, { server: { count: clapCount, hasClapped } });
+
+        // Ranking (List Query) の更新
+        // RankingはfilterにmapIdを含むため、特定して更新
         const mapRankingFilter = trpc.result.getMapRanking.queryFilter({ mapId });
-        setRankingClapServer(queryClient, mapRankingFilter, resultId, hasClapped, clapCount);
+        updateListQueryCache(queryClient, mapRankingFilter, updater.forResult);
 
         if (!ctx) return;
-        setResultsClapServer(queryClient, ctx.timelineFilter, resultId, hasClapped, clapCount);
-        setResultsClapServer(queryClient, ctx.userResultsFilter, resultId, hasClapped, clapCount);
+        updateInfiniteQueryCache(queryClient, ctx.timelineFilter, updater.forResult);
+        updateInfiniteQueryCache(queryClient, ctx.userResultsFilter, updater.forResult);
       },
     }),
   );
@@ -160,7 +107,10 @@ export function useClapMutationRanking(mapId: number) {
         await queryClient.cancelQueries(mapRankingFilter);
         const previous = queryClient.getQueriesData(mapRankingFilter);
 
-        setRankingClapOptimistic(queryClient, mapRankingFilter, input.resultId, input.newState);
+        // --- Optimistic Updates ---
+        const updater = createResultUpdater(input.resultId, { optimistic: input.newState });
+
+        updateListQueryCache(queryClient, mapRankingFilter, updater.forResult);
 
         return { previous, mapRankingFilter };
       },
@@ -172,13 +122,20 @@ export function useClapMutationRanking(mapId: number) {
         }
       },
       onSuccess: (server, _vars, ctx) => {
+        // --- Server Updates ---
+        const updater = createResultUpdater(server.resultId, {
+          server: { count: server.clapCount, hasClapped: server.hasClapped },
+        });
+
+        // Infinite Queries (Timeline) の更新
         const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
 
-        setResultsClapServer(queryClient, timelineFilter, server.resultId, server.hasClapped, server.clapCount);
-        setResultsClapServer(queryClient, userResultsFilter, server.resultId, server.hasClapped, server.clapCount);
+        updateInfiniteQueryCache(queryClient, timelineFilter, updater.forResult);
+        updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forResult);
+
         if (!ctx) return;
-        setRankingClapServer(queryClient, ctx.mapRankingFilter, server.resultId, server.hasClapped, server.clapCount);
+        updateListQueryCache(queryClient, ctx.mapRankingFilter, updater.forResult);
       },
     }),
   );

@@ -61,7 +61,7 @@ const createResultBaseFields = (Player: BuildAliasTable<typeof Users, "Player">)
       kanaToRomaKpm: ResultStatuses.kanaToRomaKpm,
       kanaToRomaRkpm: ResultStatuses.kanaToRomaRkpm,
     },
-    clap: { count: Results.clapCount, hasClapped: ResultClaps.hasClapped },
+    clap: { count: Results.clapCount, hasClapped: sql<boolean>`COALESCE(${ResultClaps.hasClapped}, false)` },
   };
 };
 
@@ -314,6 +314,11 @@ export const resultRouter = {
       await updateRankingsAndNotifyOvertakes({ tx, mapId, userId, rankedUsers });
 
       await tx.update(Maps).set({ rankingCount: rankedUsers.length }).where(eq(Maps.id, mapId));
+
+      const myRankIndex = rankedUsers.findIndex((user) => user.userId === userId);
+      const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
+
+      return { rankingCount: rankedUsers.length, myRank, myRankUpdatedAt: new Date() };
     });
   }),
 } satisfies TRPCRouterRecord;

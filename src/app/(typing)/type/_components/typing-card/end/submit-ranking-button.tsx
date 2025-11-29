@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type z from "zod/v4";
 import { readAllLineResult } from "@/app/(typing)/type/_lib/atoms/family";
@@ -8,6 +8,7 @@ import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
 import { readBuiltMap, readTypingStatus, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
+import { useRegisterRankingMutation } from "@/lib/mutations/ranking.mutations";
 import { useTRPC } from "@/trpc/provider";
 import { getMinValue } from "@/utils/array";
 import type { CreateResultStatusSchema } from "@/validator/result";
@@ -25,27 +26,25 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const sendResult = useMutation(
-    trpc.result.createResult.mutationOptions({
-      onSuccess: async () => {
-        onSuccess();
-        const mapId = readMapId();
-        await queryClient.invalidateQueries(trpc.result.getMapRanking.queryOptions({ mapId: mapId ?? 0 }));
-        setTabName("ランキング");
-        toast.success("ランキング登録が完了しました");
-      },
-      onError: () => {
-        toast.error("ランキング登録に失敗しました");
-      },
-    }),
-  );
+  const registerRanking = useRegisterRankingMutation({
+    onSuccess: async () => {
+      onSuccess();
+      const mapId = readMapId();
+      await queryClient.invalidateQueries(trpc.result.getMapRanking.queryOptions({ mapId: mapId ?? 0 }));
+      setTabName("ランキング");
+      toast.success("ランキング登録が完了しました");
+    },
+    onError: () => {
+      toast.error("ランキング登録に失敗しました");
+    },
+  });
 
   const handleClick = async () => {
     const mapId = readMapId();
     if (!mapId) return;
 
     if (isScoreUpdated) {
-      sendResult.mutate(generateResultData(mapId));
+      registerRanking.mutate(generateResultData(mapId));
       return;
     }
 
@@ -59,7 +58,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
     });
 
     if (isConfirmed) {
-      sendResult.mutate(generateResultData(mapId));
+      registerRanking.mutate(generateResultData(mapId));
     }
   };
 
@@ -69,7 +68,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
       variant="primary-hover-light"
       className="max-sm:text-5xl max-sm:h-40 max-sm:w-xl"
       disabled={disabled}
-      loading={sendResult.isPending}
+      loading={registerRanking.isPending}
       onClick={handleClick}
     >
       {disabled ? "ランキング登録完了" : "ランキング登録"}
