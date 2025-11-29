@@ -364,7 +364,7 @@ const useOnSubmit = (form: FormType) => {
         form.reset(form.getValues());
         await context.client.invalidateQueries(trpc.map.getRawMapJson.queryFilter({ mapId: id }));
         await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: id }));
-        await context.client.invalidateQueries(trpc.mapList.get.infiniteQueryFilter());
+        context.client.removeQueries({ queryKey: trpc.mapList.get.queryKey() });
 
         const mapId = readMapId();
         if (!mapId) {
