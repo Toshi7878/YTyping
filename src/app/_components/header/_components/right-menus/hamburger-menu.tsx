@@ -25,7 +25,7 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { data: session } = useSession();
   const isMobile = useIsMobileDeviceState();
 
-  const menus = LEFT_MENU_LINK_ITEM.concat(LEFT_LINKS);
+  const menus = [...LEFT_LINKS, ...LEFT_MENU_LINK_ITEM];
   const [, formAction] = useActionState(() => signOut({ redirect: false }), null);
 
   return (
@@ -43,7 +43,7 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-56">
-          {menus.reverse().map((menuItem) => {
+          {menus.map((menuItem) => {
             if (isMobile === undefined) {
               return null;
             }
