@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { LEFT_LINKS, LEFT_MENU_LINK_ITEM } from "@/app/_components/header/lib/const";
+import { LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "@/app/_components/header/lib/menu-items";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -43,7 +43,7 @@ const LinksDropdownMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-fit">
-        {LEFT_MENU_LINK_ITEM.map((menuItem) => (
+        {LEFT_MENU_LINK_ITEMS.map((menuItem) => (
           <Link href={menuItem.href} key={menuItem.title}>
             <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
           </Link>

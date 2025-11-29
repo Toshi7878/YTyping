@@ -2,8 +2,8 @@
 
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
-import { LEFT_LINKS, LEFT_MENU_LINK_ITEM, LOGIN_MENU_LINK_ITEM } from "@/app/_components/header/lib/const";
+import { useSession } from "next-auth/react";
+import { buildUserMenuLinkItems, LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "@/app/_components/header/lib/menu-items";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
+import { useIsDesktopDeviceState } from "@/lib/atoms/user-agent";
 import { SignInDropdownItems } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
@@ -22,9 +22,6 @@ interface HamburgerMenuProps {
 
 export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
   const { data: session } = useSession();
-  const isMobile = useIsMobileDeviceState();
-
-  const menus = [...LEFT_LINKS, ...LEFT_MENU_LINK_ITEM];
 
   return (
     <div className={className}>
@@ -41,37 +38,52 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-56">
-          {menus.map((menuItem) => {
-            if (isMobile === undefined) {
-              return null;
-            }
-            if ((menuItem.device === "PC" && !isMobile) || !menuItem.device) {
-              return (
-                <Link href={menuItem.href} key={menuItem.title}>
-                  <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
-                </Link>
-              );
-            }
-            return null;
-          })}
+          <MenuDropdownItems />
 
           <ThemeDropdownSubmenu />
           <DropdownMenuSeparator />
 
           {session?.user?.name ? (
-            <>
-              {LOGIN_MENU_LINK_ITEM.map((item) => (
-                <Link href={item.href} key={item.title}>
-                  <DropdownMenuItem>{item.title}</DropdownMenuItem>
-                </Link>
-              ))}
-              <DropdownMenuItem onSelect={() => signOut({ redirect: false })}>ログアウト</DropdownMenuItem>
-            </>
+            <UserMenuDropdownItems userId={session.user.id} />
           ) : (
             !session && <SignInDropdownItems />
           )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+};
+
+const MenuDropdownItems = () => {
+  const isDesktop = useIsDesktopDeviceState();
+  const menus = [...LEFT_LINKS, ...LEFT_MENU_LINK_ITEMS];
+
+  return (
+    <>
+      {menus.map((menuItem) => {
+        const isDesktopMenuItem = menuItem.device === "PC";
+        if ((isDesktopMenuItem && isDesktop) || !isDesktopMenuItem) {
+          return (
+            <Link href={menuItem.href} key={menuItem.title}>
+              <DropdownMenuItem>{menuItem.title}</DropdownMenuItem>
+            </Link>
+          );
+        }
+        return null;
+      })}
+    </>
+  );
+};
+
+const UserMenuDropdownItems = ({ userId }: { userId: string }) => {
+  const userMenuLinkItems = buildUserMenuLinkItems(userId);
+  return (
+    <>
+      {userMenuLinkItems.map((item) => (
+        <Link href={item.href} key={item.title}>
+          <DropdownMenuItem>{item.title}</DropdownMenuItem>
+        </Link>
+      ))}
+    </>
   );
 };

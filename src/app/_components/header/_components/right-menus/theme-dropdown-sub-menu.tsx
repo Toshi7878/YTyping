@@ -15,7 +15,7 @@ import {
 import { THEME_LIST } from "@/styles/const";
 import { applyFavicon } from "@/utils/hooks/use-favicon-theme";
 
-export function ThemeDropdownSubmenu() {
+export const ThemeDropdownSubmenu = () => {
   const { setTheme, resolvedTheme } = useTheme();
 
   const handleThemeChange = (themeClass: string) => {
@@ -65,4 +65,4 @@ export function ThemeDropdownSubmenu() {
       </DropdownMenuPortal>
     </DropdownMenuSub>
   );
-}
+};

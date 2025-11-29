@@ -121,4 +121,4 @@ export const { auth, handlers, signIn } = NextAuth({
   },
 });
 
-const authRoutes = ["/user/register", "/user/settings", "/user/mypage"];
+const authRoutes = ["/user/register", "/user/settings"];

@@ -51,7 +51,7 @@ export const RightNav = () => {
 const RightDropDownMenu = ({ className }: { className: string }) => {
   const { data: session } = useSession();
   if (session?.user?.name) {
-    return <UserMenu userName={session.user.name} className={className} />;
+    return <UserMenu userName={session.user.name} className={className} userId={session.user.id} />;
   }
 
   return <SignInMenu className={className} />;

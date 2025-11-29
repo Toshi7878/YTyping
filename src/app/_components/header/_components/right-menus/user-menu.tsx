@@ -1,6 +1,5 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { LOGIN_MENU_LINK_ITEM } from "@/app/_components/header/lib/const";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,15 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { buildUserMenuLinkItems } from "../../lib/menu-items";
 import { LogOutDropdownItem } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
 interface UserMenuProps {
   userName: string;
   className: string;
+  userId: string;
 }
 
-export const UserMenu = ({ userName, className }: UserMenuProps) => {
+export const UserMenu = ({ userName, className, userId }: UserMenuProps) => {
+  const userMenuLinkItems = buildUserMenuLinkItems(userId);
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -28,11 +31,11 @@ export const UserMenu = ({ userName, className }: UserMenuProps) => {
           className={cn("hover:text-header-foreground text-header-foreground/80 mb-0.5", className)}
         >
           {userName}
-          <ChevronDown className="relative top-[1px] size-4" />
+          <ChevronDown className="relative top-px size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-fit">
-        {LOGIN_MENU_LINK_ITEM.map((item) => (
+        {userMenuLinkItems.map((item) => (
           <Link href={item.href} key={item.title}>
             <DropdownMenuItem>{item.title}</DropdownMenuItem>
           </Link>
