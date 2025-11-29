@@ -25,28 +25,24 @@ export const processTypingInputResult = (typingInputResult: TypingInputResult) =
       chunkType,
     });
 
-    requestAnimationFrame(() => {
-      updateSuccessStatus({
-        isCompleted,
-        constantRemainLineTime,
-        updatePoint,
-      });
-
-      const { isPaused } = readUtilityParams();
-      if (!isPaused) {
-        updateKpmOnTyping({ constantLineTime });
-      }
-
-      if (isCompleted) {
-        handleLineCompleted(constantLineTime);
-      }
+    updateSuccessStatus({
+      isCompleted,
+      constantRemainLineTime,
+      updatePoint,
     });
+
+    const { isPaused } = readUtilityParams();
+    if (!isPaused) {
+      updateKpmOnTyping({ constantLineTime });
+    }
+
+    if (isCompleted) {
+      handleLineCompleted(constantLineTime);
+    }
   } else if ((nextTypingWord.correct.roma || nextTypingWord.correct.kana) && failKey) {
     triggerMissSound();
     updateMissSubstatus({ constantLineTime, failKey });
-    requestAnimationFrame(() => {
-      updateMissStatus();
-    });
+    updateMissStatus();
   }
 };
 
