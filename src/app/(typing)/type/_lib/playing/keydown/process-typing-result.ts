@@ -11,16 +11,11 @@ import { updateKpmOnLineEnded, updateKpmOnTyping } from "../update-status/update
 
 export const processTypingInputResult = (typingInputResult: TypingInputResult) => {
   const { isCompleted, nextTypingWord, successKey, failKey, chunkType, updatePoint } = typingInputResult;
-
   const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
 
   if (successKey) {
     setTypingWord(nextTypingWord);
-    updateSuccessStatus({
-      isCompleted,
-      constantRemainLineTime,
-      updatePoint,
-    });
+    updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint });
 
     const { isPaused } = readUtilityParams();
     if (!isPaused) {
@@ -32,13 +27,7 @@ export const processTypingInputResult = (typingInputResult: TypingInputResult) =
     }
 
     triggerTypeSound({ isCompleted });
-
-    updateSuccessSubstatus({
-      constantLineTime,
-      isCompleted,
-      successKey,
-      chunkType,
-    });
+    updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
 
     if (isCompleted) {
       handleLineCompleted();
