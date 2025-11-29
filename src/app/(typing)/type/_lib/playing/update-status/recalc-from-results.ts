@@ -29,8 +29,7 @@ export const recalculateStatusFromResults = ({
   let totalTypeTime = 0;
   const { scene } = readUtilityParams();
 
-  const updateCount = updateType === "completed" ? count + 1 : count;
-  for (const lineResult of lineResults.slice(1, updateCount)) {
+  for (const lineResult of lineResults.slice(1, count)) {
     newStatus.score += (lineResult.status.p ?? 0) + (lineResult.status.tBonus ?? 0);
     newStatus.miss += lineResult.status.lMiss ?? 0;
     newStatus.lost += lineResult.status.lLost ?? 0;

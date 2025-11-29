@@ -16,6 +16,21 @@ export const processTypingInputResult = (typingInputResult: TypingInputResult) =
 
   if (successKey) {
     setTypingWord(nextTypingWord);
+    updateSuccessStatus({
+      isCompleted,
+      constantRemainLineTime,
+      updatePoint,
+    });
+
+    const { isPaused } = readUtilityParams();
+    if (!isPaused) {
+      if (isCompleted) {
+        updateKpmOnLineEnded({ constantLineTime });
+      } else {
+        updateKpmOnTyping({ constantLineTime });
+      }
+    }
+
     triggerTypeSound({ isCompleted });
 
     updateSuccessSubstatus({
@@ -25,29 +40,17 @@ export const processTypingInputResult = (typingInputResult: TypingInputResult) =
       chunkType,
     });
 
-    updateSuccessStatus({
-      isCompleted,
-      constantRemainLineTime,
-      updatePoint,
-    });
-
-    const { isPaused } = readUtilityParams();
-    if (!isPaused) {
-      updateKpmOnTyping({ constantLineTime });
-    }
-
     if (isCompleted) {
-      handleLineCompleted(constantLineTime);
+      handleLineCompleted();
     }
   } else if ((nextTypingWord.correct.roma || nextTypingWord.correct.kana) && failKey) {
     triggerMissSound();
-    updateMissSubstatus({ constantLineTime, failKey });
     updateMissStatus();
+    updateMissSubstatus({ constantLineTime, failKey });
   }
 };
 
-const handleLineCompleted = (constantLineTime: number) => {
-  updateKpmOnLineEnded({ constantLineTime });
+const handleLineCompleted = () => {
   const count = readLineCount();
 
   if (hasLineResultImproved(count)) {

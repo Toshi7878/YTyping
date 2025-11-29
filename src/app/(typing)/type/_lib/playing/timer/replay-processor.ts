@@ -90,7 +90,7 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
         const lineResults = readAllLineResult();
         const lineResult = lineResults[count];
 
-        recalculateStatusFromResults({ count, updateType: "completed" });
+        recalculateStatusFromResults({ count: count + 1, updateType: "completed" });
         writeLineSubstatus({ isCompleted: true });
         setCombo(lineResult?.status.combo ?? 0);
         setLineKpm(lineResult?.status.lKpm ?? 0);
