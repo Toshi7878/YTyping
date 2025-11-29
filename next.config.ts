@@ -1,10 +1,10 @@
 // @ts-check
 
-/** @type {import('next').NextConfig} */
 /** biome-ignore-all lint/style/noProcessEnv: <process.envを使用する必要がある> */
 import { withSentryConfig } from "@sentry/nextjs";
+import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: false,
   typedRoutes: true,
   compiler: {
