@@ -11,6 +11,20 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === "production",
   },
   experimental: { scrollRestoration: true },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/vi/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/vi_webp/**",
+      },
+    ],
+  },
 };
 
 // @see https://www.npmjs.com/package/@sentry/webpack-plugin#options

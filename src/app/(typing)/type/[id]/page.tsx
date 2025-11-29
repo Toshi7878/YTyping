@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
+import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { Content } from "../_components/content";
 import { JotaiProvider } from "../_components/provider";
 
@@ -14,10 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const mapInfo = await getMapInfo(Number(id));
 
-  const thumbnailUrl =
-    mapInfo.thumbnailQuality === "maxresdefault"
-      ? `https://i.ytimg.com/vi_webp/${mapInfo.videoId}/maxresdefault.webp`
-      : `https://i.ytimg.com/vi/${mapInfo.videoId}/mqdefault.jpg`;
+  const thumbnailUrl = buildYouTubeThumbnailUrl(mapInfo.videoId, mapInfo.thumbnailQuality);
 
   return {
     title: `${mapInfo.title} - YTyping`,

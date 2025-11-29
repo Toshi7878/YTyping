@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result";
 import { useLazyRender } from "@/utils/hooks/use-lazy-render";
 import { nolink } from "@/utils/no-link";
+import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { DateDistanceText } from "../text/date-distance-text";
 import { ResultClapButton } from "./clap-button";
@@ -22,10 +23,7 @@ interface ResultCardProps {
 
 export const ResultCard = memo(({ result, priority = false }: ResultCardProps) => {
   const { ref, shouldRender } = useLazyRender({ priority });
-  const src =
-    result.map.media.thumbnailQuality === "maxresdefault"
-      ? `https://i.ytimg.com/vi_webp/${result.map.media.videoId}/maxresdefault.webp`
-      : `https://i.ytimg.com/vi/${result.map.media.videoId}/mqdefault.jpg`;
+  const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
 
   return (
     <Card className="map-card-hover block w-full py-0 transition-shadow duration-300" ref={ref}>

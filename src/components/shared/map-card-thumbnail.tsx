@@ -14,6 +14,7 @@ import {
 } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map-list";
+import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 
 const mapLeftThumbnailVariants = cva("relative aspect-video", {
   variants: {
@@ -39,7 +40,6 @@ interface MapLeftThumbnailPreviewCoverProps {
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
   const { alt = "", media, size, className, imageClassName, loading = "lazy", ...rest } = props;
 
-  const src = `https://i.ytimg.com/vi/${media?.videoId}/mqdefault.jpg`;
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
 
@@ -50,10 +50,9 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
           <div className={mapLeftThumbnailVariants({ size })}>
             <Image
-              unoptimized
               loading={loading}
               alt={alt}
-              src={src}
+              src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
               fill
               className={cn("rounded-md", imageClassName)}
             />
