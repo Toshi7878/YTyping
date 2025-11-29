@@ -6,7 +6,6 @@ import { type BuiltMapLine, createTypingWord, type InputMode, type TypingWord } 
 import type z from "zod/v4";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { RouterOutputs } from "@/server/api/trpc";
-import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { Updater } from "@/utils/types";
 import type { LineOptionSchema } from "@/validator/raw-map-json";
 import type { TypingLineResults } from "@/validator/result";
@@ -236,12 +235,8 @@ export const setNewLine = (newLine: BuiltMapLineWithOption) => {
   const { isPaused } = store.get(utilityParamsAtom);
 
   if (lineProgress && !isPaused) {
-    requestDebouncedAnimationFrame("line-progress", () => {
-      if (lineProgress) {
-        lineProgress.value = 0;
-        lineProgress.max = newLine.duration;
-      }
-    });
+    lineProgress.value = 0;
+    lineProgress.max = newLine.duration;
   }
 };
 export const resetCurrentLine = () => {

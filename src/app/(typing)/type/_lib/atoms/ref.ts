@@ -1,7 +1,6 @@
 import type { ExtractAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import type { InputMode } from "lyrics-typing-engine";
-import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import type { TypeResult } from "@/validator/result";
 import { getTypeAtomStore } from "./store";
 
@@ -88,24 +87,20 @@ export const lineProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
 export const readLineProgress = () => store.get(lineProgressAtom);
 export const writeLineProgress = (newYTPlayer: HTMLProgressElement) => store.set(lineProgressAtom, newYTPlayer);
 export const setLineProgressValue = (value: number) => {
-  requestDebouncedAnimationFrame("line-progress", () => {
-    const lineProgress = store.get(lineProgressAtom);
-    if (lineProgress) {
-      lineProgress.value = value;
-    }
-  });
+  const lineProgress = store.get(lineProgressAtom);
+  if (lineProgress) {
+    lineProgress.value = value;
+  }
 };
 
 const totalProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
 export const readTotalProgress = () => store.get(totalProgressAtom);
 export const writeTotalProgress = (newYTPlayer: HTMLProgressElement) => store.set(totalProgressAtom, newYTPlayer);
 export const setTotalProgressValue = (value: number) => {
-  requestDebouncedAnimationFrame("total-progress", () => {
-    const totalProgress = store.get(totalProgressAtom);
-    if (totalProgress) {
-      totalProgress.value = value;
-    }
-  });
+  const totalProgress = store.get(totalProgressAtom);
+  if (totalProgress) {
+    totalProgress.value = value;
+  }
 };
 
 const lineResultCardsAtom = atomWithReset<HTMLDivElement[]>([]);
