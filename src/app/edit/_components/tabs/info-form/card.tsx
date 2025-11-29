@@ -360,11 +360,11 @@ const useOnSubmit = (form: FormType) => {
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
+        context.client.removeQueries({ queryKey: trpc.mapList.get.queryKey() });
         setCanUpload(false);
         form.reset(form.getValues());
         await context.client.invalidateQueries(trpc.map.getRawMapJson.queryFilter({ mapId: id }));
         await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: id }));
-        context.client.removeQueries({ queryKey: trpc.mapList.get.queryKey() });
 
         const mapId = readMapId();
         if (!mapId) {
