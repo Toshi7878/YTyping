@@ -49,7 +49,7 @@ export const updateSuccessStatus = ({
       timeBonus = timeBonusValue;
       score = prev.score + point + timeBonusValue;
       if (map) {
-        line = map.typingLineIndexes.length - (completeCount + failureCount);
+        line = map.typingLineIndexes.length - 1 - (completeCount + failureCount);
       }
       rank = calcCurrentRank(score);
     }
