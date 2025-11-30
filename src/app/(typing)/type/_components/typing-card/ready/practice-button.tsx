@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import { readBuiltMap, readScene, setScene, useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
-import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_lib/atoms/yt-player";
+import { playYTPlayer, primeYTPlayerForMobilePlayback } from "@/app/(typing)/type/_lib/atoms/youtube-player";
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { iosActiveSound } from "@/app/(typing)/type/_lib/playing/sound-effect";
 import { recalculateStatusFromResults } from "@/app/(typing)/type/_lib/playing/update-status/recalc-from-results";

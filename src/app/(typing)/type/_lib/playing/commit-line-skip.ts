@@ -2,7 +2,7 @@ import { readTypingOptions } from "../atoms/hydrate";
 import { readLineCount, readUtilityRefParams, writeUtilityRefParams } from "../atoms/ref";
 import { readPlaySpeed } from "../atoms/speed-reducer";
 import { readBuiltMap, readUtilityParams, setActiveSkipGuideKey } from "../atoms/state";
-import { seekYTPlayer } from "../atoms/yt-player";
+import { seekYTPlayer } from "../atoms/youtube-player";
 
 export const commitLineSkip = () => {
   const map = readBuiltMap();

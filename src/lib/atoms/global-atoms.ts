@@ -6,12 +6,12 @@ import { useCallback } from "react";
 const store = getDefaultStore();
 
 const volumeAtom = atomWithStorage("volume", 30, undefined, {
-  getOnInit: false,
+  getOnInit: true,
 });
 
 export const useVolumeState = () => useAtomValue(volumeAtom, { store });
-export const useSetVolume = () => useSetAtom(volumeAtom, { store });
 export const readVolume = () => store.get(volumeAtom);
+export const setVolume = (value: number) => store.set(volumeAtom, value);
 
 const previewVideoInfoAtom = atomWithReset<{
   videoId: string | null;

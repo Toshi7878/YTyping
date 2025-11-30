@@ -1,7 +1,7 @@
 import { readLineCount, readLineProgress, readResultCards, writeLineCount } from "../atoms/ref";
 import { readPlaySpeed } from "../atoms/speed-reducer";
 import { readBuiltMap, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
-import { seekYTPlayer } from "../atoms/yt-player";
+import { seekYTPlayer } from "../atoms/youtube-player";
 import { getLineCountByTime } from "./get-line-count-by-time";
 import { setupLine, stopTimer } from "./timer/timer";
 

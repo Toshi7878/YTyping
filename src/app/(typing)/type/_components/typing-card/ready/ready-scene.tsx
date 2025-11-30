@@ -3,7 +3,7 @@ import { useBuiltMapState } from "@/app/(typing)/type/_lib/atoms/state";
 import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";
-import { playYTPlayer } from "../../../_lib/atoms/yt-player";
+import { playYTPlayer } from "../../../_lib/atoms/youtube-player";
 import { ReadyInputModeRadioCards } from "./input-mode-radio-cards";
 import { ReadyPlaySpeed } from "./min-play-speed-counter";
 import { ReadyPracticeButton } from "./practice-button";

@@ -1,7 +1,7 @@
 "use client";
 import type { HTMLAttributes } from "react";
 import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeMute } from "react-icons/io";
-import { useSetVolume, useVolumeState } from "@/lib/atoms/global-atoms";
+import { setVolume, useVolumeState } from "@/lib/atoms/global-atoms";
 import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { Slider } from "../ui/slider";
 
@@ -11,7 +11,6 @@ interface VolumeRangeProps {
 
 export const VolumeRange = ({ YTPlayer, ...props }: VolumeRangeProps & HTMLAttributes<HTMLFieldSetElement>) => {
   const volume = useVolumeState();
-  const setVolume = useSetVolume();
   const isMobile = useIsMobileDeviceState();
 
   if (isMobile) return null;
@@ -39,7 +38,6 @@ export const VolumeRange = ({ YTPlayer, ...props }: VolumeRangeProps & HTMLAttri
           onValueChange={handleChange}
           max={100}
           min={0}
-          step={1}
           className="w-[200px]"
           aria-label={`音量: ${volume}%`}
         />

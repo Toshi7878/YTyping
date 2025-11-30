@@ -9,7 +9,7 @@ import {
   resetTypingStatus,
   resetUtilityParams,
 } from "./state";
-import { resetYTPlayer } from "./yt-player";
+import { resetYTPlayer } from "./youtube-player";
 
 export const resetAllStateOnCleanup = () => {
   resetYTPlayer();

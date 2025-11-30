@@ -7,7 +7,7 @@ import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
 import { cn } from "@/lib/utils";
 import { windowFocus } from "@/utils/window-focus";
 import { readUtilityParams } from "../_lib/atoms/state";
-import { pauseYTPlayer, playYTPlayer } from "../_lib/atoms/yt-player";
+import { pauseYTPlayer, playYTPlayer } from "../_lib/atoms/youtube-player";
 import { iosActiveSound } from "../_lib/playing/sound-effect";
 import {
   onEnd,

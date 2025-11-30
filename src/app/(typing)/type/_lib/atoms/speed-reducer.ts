@@ -3,7 +3,7 @@ import { atomWithReset, RESET } from "jotai/utils";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readScene } from "./state";
 import { getTypeAtomStore } from "./store";
-import { getYTPlaybackRate, setYTPlaybackRate } from "./yt-player";
+import { getYTPlaybackRate, setYTPlaybackRate } from "./youtube-player";
 
 type Updater<T> = T | ((prev: T) => T);
 

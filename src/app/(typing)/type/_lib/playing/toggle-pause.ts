@@ -1,5 +1,5 @@
 import { readUtilityParams } from "../atoms/state";
-import { pauseYTPlayer, playYTPlayer } from "../atoms/yt-player";
+import { pauseYTPlayer, playYTPlayer } from "../atoms/youtube-player";
 
 export const togglePause = () => {
   const { isPaused } = readUtilityParams();

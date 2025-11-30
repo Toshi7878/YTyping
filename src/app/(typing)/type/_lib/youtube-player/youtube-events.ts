@@ -17,7 +17,7 @@ import {
   setYTStarted,
 } from "../atoms/state";
 import { readReadyInputMode } from "../atoms/storage";
-import { writeYTPlayer } from "../atoms/yt-player";
+import { writeYTPlayer } from "../atoms/youtube-player";
 import { mutateIncrementMapCompletionPlayCountStats, mutateTypingStats } from "../mutate/stats";
 import { startTimer, stopTimer } from "../playing/timer/timer";
 

@@ -28,7 +28,7 @@ import {
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
-import { cueYTVideoById, getYTPlayerState, getYTVideoId, readYTPlayer, stopYTPlayer } from "../../atoms/yt-player";
+import { cueYTVideoById, getYTPlayerState, getYTVideoId, readYTPlayer, stopYTPlayer } from "../../atoms/youtube-player";
 import { calculateLineKpm } from "../../utils/calculate-kpm";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { onEnd } from "../../youtube-player/youtube-events";
