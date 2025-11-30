@@ -360,14 +360,12 @@ const useOnSubmit = (form: FormType) => {
   const upsertMap = useMutation(
     useTRPC().map.upsertMap.mutationOptions({
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
-        setCanUpload(false);
         form.reset(form.getValues());
         context.client.setQueriesData<RawMapLine[]>(
           trpc.map.getRawMapJson.queryFilter({ mapId: id }),
           () => _variables.mapData,
         );
         await context.client.invalidateQueries(trpc.map.getMapInfo.queryOptions({ mapId: id }));
-        await context.client.resetQueries({ queryKey: trpc.mapList.get.pathKey() });
 
         const mapId = readMapId();
         if (!mapId) {
@@ -376,9 +374,12 @@ const useOnSubmit = (form: FormType) => {
           setMapId(id);
           setCreatorId(creatorId);
           toast.success("アップロード完了");
+          await context.client.resetQueries({ queryKey: trpc.mapList.get.pathKey() });
         } else {
           toast.success("アップデート完了");
+          await context.client.invalidateQueries({ queryKey: trpc.mapList.get.pathKey() });
         }
+        setCanUpload(false);
       },
       onError: async (error) => {
         switch (error.data?.code) {
