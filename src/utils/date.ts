@@ -21,12 +21,9 @@ export const toLocaleDateString = (
     month: "numeric",
     day: "numeric",
   },
-  locale?: string | string[],
 ) => {
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return "";
 
-  return d.toLocaleDateString(locale, {
-    ...options,
-  });
+  return d.toLocaleDateString(undefined, { ...options });
 };
