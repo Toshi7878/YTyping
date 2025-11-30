@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { type HTMLAttributes, memo } from "react";
+import type { HTMLAttributes } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,7 @@ interface ResultCardProps {
   priority?: boolean;
 }
 
-export const ResultCard = memo(({ result, priority = false }: ResultCardProps) => {
+export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
   const { ref, shouldRender } = useLazyRender({ priority });
   const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
 
@@ -91,7 +91,7 @@ export const ResultCard = memo(({ result, priority = false }: ResultCardProps) =
       </CardFooter>
     </Card>
   );
-});
+};
 
 interface MapInfoProps {
   map: ResultWithMapItem["map"];

@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import { memo } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardWithContent } from "@/components/ui/card";
@@ -20,7 +19,7 @@ interface MapCardProps {
   priority?: boolean;
 }
 
-export const MapCard = memo(({ map, className, priority = false }: MapCardProps) => {
+export const MapCard = ({ map, className, priority = false }: MapCardProps) => {
   const { ref, shouldRender } = useLazyRender({ priority });
   return (
     <CardWithContent variant="map" className={{ card: className }} ref={ref}>
@@ -33,7 +32,7 @@ export const MapCard = memo(({ map, className, priority = false }: MapCardProps)
       {shouldRender && <MapInfo map={map} />}
     </CardWithContent>
   );
-});
+};
 
 interface MapInfoProps {
   map: MapListItem;
