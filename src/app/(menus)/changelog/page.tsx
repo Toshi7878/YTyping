@@ -1,15 +1,16 @@
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, Small, UList } from "@/components/ui/typography";
 import { serverApi } from "@/trpc/server";
+import { toLocaleDateString } from "@/utils/date";
 import { changelog } from "./changelog";
 
 export default async function Page() {
   const buildingDate = await serverApi.vercel.getLatestDeployDate();
 
   return (
-    <article className="mx-auto max-w-screen-xl space-y-4">
+    <article className="mx-auto max-w-7xl space-y-4">
       <H1 className="flex items-baseline gap-4">
-        更新履歴 <Small>最終更新: {buildingDate?.toLocaleString()}</Small>
+        更新履歴 {buildingDate && <Small>最終更新: {toLocaleDateString(buildingDate)}</Small>}
       </H1>
       <CardWithContent>
         {changelog.map((update) => (

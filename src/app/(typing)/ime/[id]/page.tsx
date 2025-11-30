@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { serverApi } from "@/trpc/server";
+import { toLocaleDateString } from "@/utils/date";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { Content } from "../_components/content";
 import { JotaiProvider } from "../_components/provider";
@@ -25,8 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     creator: mapInfo.creator.name,
     other: {
-      "article:published_time": mapInfo.createdAt.toISOString(),
-      "article:modified_time": mapInfo.updatedAt.toISOString(),
+      "article:published_time": toLocaleDateString(mapInfo.createdAt),
+      "article:modified_time": toLocaleDateString(mapInfo.updatedAt),
       "article:youtube_id": mapInfo.videoId,
       "article:title": mapInfo.title,
       "article:artist": mapInfo.artistName,
