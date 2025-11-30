@@ -1,6 +1,6 @@
 import type { UseInfiniteQueryResult } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { type IntersectionOptions, useInView } from "react-intersection-observer";
+import type { IntersectionOptions } from "react-intersection-observer";
+import { useOnInView } from "react-intersection-observer";
 
 type UseInfiniteScrollProps<TData = unknown, TError = unknown> = Pick<
   UseInfiniteQueryResult<TData, TError>,
@@ -10,13 +10,13 @@ type UseInfiniteScrollProps<TData = unknown, TError = unknown> = Pick<
 export const useInfiniteScroll = (props: UseInfiniteScrollProps, options: IntersectionOptions = {}) => {
   const { isFetchingNextPage, fetchNextPage, hasNextPage } = props;
   const { rootMargin = "1500px 0px" } = options;
-  const { ref, inView } = useInView({ ...options, rootMargin });
 
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      void fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  return ref;
+  return useOnInView(
+    (inView) => {
+      if (inView && hasNextPage && !isFetchingNextPage) {
+        void fetchNextPage();
+      }
+    },
+    { rootMargin },
+  );
 };
