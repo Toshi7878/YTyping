@@ -362,8 +362,8 @@ const useOnSubmit = (form: FormType) => {
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
         setCanUpload(false);
         form.reset(form.getValues());
-        await context.client.invalidateQueries(trpc.map.getRawMapJson.queryFilter({ mapId: id }));
-        await context.client.invalidateQueries(trpc.map.getMapInfo.queryFilter({ mapId: id }));
+        await context.client.invalidateQueries(trpc.map.getRawMapJson.queryOptions({ mapId: id }));
+        await context.client.invalidateQueries(trpc.map.getMapInfo.queryOptions({ mapId: id }));
         await context.client.resetQueries({ queryKey: trpc.mapList.get.pathKey() });
 
         const mapId = readMapId();
