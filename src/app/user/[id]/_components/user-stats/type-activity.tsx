@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { cloneElement } from "react";
 import { type Activity, ActivityCalendar } from "react-activity-calendar";
@@ -14,7 +13,7 @@ import { getCSSVariable } from "@/utils/get-computed-color";
 export const TypeActivity = () => {
   const trpc = useTRPC();
   const { id: userId } = useParams<{ id: string }>();
-  const { data, isPending, isError } = useQuery(
+  const { data, isPending } = useQuery(
     trpc.userStats.getUserActivity.queryOptions({ userId: Number(userId) }, { staleTime: Infinity, gcTime: Infinity }),
   );
 
@@ -22,58 +21,47 @@ export const TypeActivity = () => {
 
   return (
     <div className="relative flex min-h-[200px] w-full justify-center">
-      {isPending ? (
-        <div className="flex h-[200px] w-full items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      ) : isError ? (
-        <div className="flex h-[200px] w-full items-center justify-center">
-          <p>エラーが発生しました</p>
-        </div>
-      ) : (
-        <div className="flex w-full justify-center">
-          <ActivityCalendar
-            data={data ?? []} // dataがundefinedの場合は空配列を渡す
-            labels={{
-              months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-              weekdays: ["日", "月", "火", "水", "木", "金", "土"],
-              totalCount: "{{count}} 打鍵",
-            }}
-            theme={{ dark: blockColors }}
-            colorScheme="dark"
-            blockSize={14}
-            blockMargin={3}
-            maxLevel={12}
-            renderBlock={(block, activity) => {
-              const styledBlock = cloneElement(block, {
-                style: {
-                  ...block.props.style,
-                  opacity: getOpacity(activity.level),
-                },
-              });
+      <ActivityCalendar
+        data={data ?? []}
+        labels={{
+          months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+          weekdays: ["日", "月", "火", "水", "木", "金", "土"],
+          totalCount: "{{count}} 打鍵",
+        }}
+        theme={{ dark: blockColors }}
+        colorScheme="dark"
+        blockSize={14}
+        blockMargin={3}
+        maxLevel={12}
+        loading={isPending}
+        renderBlock={(block, activity) => {
+          const styledBlock = cloneElement(block, {
+            style: {
+              ...block.props.style,
+              opacity: getOpacity(activity.level),
+            },
+          });
 
-              return (
-                <TooltipWrapper key={activity.date} label={<BlockToolTipLabel activity={activity} />}>
-                  {styledBlock}
-                </TooltipWrapper>
-              );
-            }}
-            renderColorLegend={(_block, level) => {
-              const color = blockColors[level] ?? "";
-              const label = getLevelLabel(level);
+          return (
+            <TooltipWrapper key={activity.date} label={<BlockToolTipLabel activity={activity} />}>
+              {styledBlock}
+            </TooltipWrapper>
+          );
+        }}
+        renderColorLegend={(_block, level) => {
+          const color = blockColors[level] ?? "";
+          const label = getLevelLabel(level);
 
-              return (
-                <TooltipWrapper key={level} label={label}>
-                  <div className={level % 3 === 0 ? "mr-2" : ""} style={{ opacity: getOpacity(level) }}>
-                    <div style={{ width: 14, height: 14, backgroundColor: color, borderRadius: 2 }} />
-                  </div>
-                </TooltipWrapper>
-              );
-            }}
-            weekStart={1}
-          />
-        </div>
-      )}
+          return (
+            <TooltipWrapper key={level} label={label}>
+              <div className={level % 3 === 0 ? "mr-2" : ""} style={{ opacity: getOpacity(level) }}>
+                <div style={{ width: 14, height: 14, backgroundColor: color, borderRadius: 2 }} />
+              </div>
+            </TooltipWrapper>
+          );
+        }}
+        weekStart={1}
+      />
     </div>
   );
 };
