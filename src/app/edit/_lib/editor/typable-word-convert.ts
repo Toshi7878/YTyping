@@ -4,10 +4,10 @@ import { LOOSE_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
 import { replaceReadingWithCustomDict } from "@/lib/build-map/replace-reading-with-custom-dict";
 import { getQueryClient, getTRPCOptionsProxy } from "@/trpc/provider";
 import {
-	kanaToHira,
-	normalizeExclamationQuestionMarks,
-	normalizeFullWidthAlnum,
-	normalizeSymbols,
+  kanaToHira,
+  normalizeExclamationQuestionMarks,
+  normalizeFullWidthAlnum,
+  normalizeSymbols,
 } from "@/utils/string-transform";
 import { type ConvertOption, readWordConvertOption } from "../atoms/storage";
 import { filterToTypableWordChars } from "../utils/filter-word";

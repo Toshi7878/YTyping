@@ -20,12 +20,12 @@ import { cn } from "@/lib/utils";
 import type { lineCompletedDisplayEnum, nextDisplayEnum } from "@/server/drizzle/schema";
 import { useTRPC } from "@/trpc/provider";
 import { useBreakPoint } from "@/utils/hooks/use-break-point";
+import { CaseSensitiveCheckbox } from "./options/case-sensitive-checkbox";
+import { HotKeySelectFields } from "./options/hot-key-select-fields";
+import { SoundEffectFields } from "./options/sound-effect-fields";
+import { TimeOffsetCounter } from "./options/time-offset-conter";
 import { WordDisplayFields } from "./options/word-display-fields";
 import { WordScrollFields } from "./options/word-scroll-fields";
-import { SoundEffectFields } from "./options/sound-effect-fields";
-import { HotKeySelectFields } from "./options/hot-key-select-fields";
-import { CaseSensitiveCheckbox } from "./options/case-sensitive-checkbox";
-import { TimeOffsetCounter } from "./options/time-offset-conter";
 export const SettingPopover = () => {
   const trpc = useTRPC();
   const updateTypingOptions = useMutation(trpc.userOption.updateTypeOptions.mutationOptions());

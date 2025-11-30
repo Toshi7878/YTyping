@@ -68,7 +68,6 @@ const CheckboxListItem = ({
   );
 };
 
-
 interface CheckboxCardGroupProps {
   items: {
     label: string;
@@ -78,7 +77,10 @@ interface CheckboxCardGroupProps {
     tooltip?: string;
   }[];
 }
-const CheckboxCardGroup = ({ items, ...props }: CheckboxCardGroupProps & Omit<React.ComponentProps<typeof Checkbox>, "id" | "defaultChecked">) => {
+const CheckboxCardGroup = ({
+  items,
+  ...props
+}: CheckboxCardGroupProps & Omit<React.ComponentProps<typeof Checkbox>, "id" | "defaultChecked">) => {
   return (
     <div>
       {items.map((item) => (

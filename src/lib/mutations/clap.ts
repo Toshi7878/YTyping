@@ -33,7 +33,7 @@ const createResultUpdater = (
     };
   };
 
-  return { forResult: updateResult, };
+  return { forResult: updateResult };
 };
 
 export function useClapMutationTimeline() {
