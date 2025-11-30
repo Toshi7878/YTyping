@@ -110,5 +110,10 @@
       "@types/react": "19.2.7",
       "@types/react-dom": "19.2.3"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Toshi7878/YTyping",
+    "directory": "ytyping"
   }
 }
