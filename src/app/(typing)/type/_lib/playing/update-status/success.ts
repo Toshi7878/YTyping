@@ -9,12 +9,11 @@ import {
 } from "../../atoms/ref";
 import { readPlaySpeed } from "../../atoms/speed-reducer";
 import {
-  readBuiltMap,
   readCombo,
   readTypingWord,
   readUtilityParams,
   setCombo,
-  setTypingStatus,
+  setTypingStatus
 } from "../../atoms/state";
 import { calcCurrentRank } from "./calc-current-rank";
 
@@ -28,8 +27,6 @@ export const updateSuccessStatus = ({
   updatePoint: number;
 }) => {
   const { type: lineTypeCount } = readLineSubstatus();
-  const { completeCount, failureCount } = readSubstatus();
-  const map = readBuiltMap();
   const { playSpeed } = readPlaySpeed();
 
   setTypingStatus((prev) => {
@@ -41,20 +38,16 @@ export const updateSuccessStatus = ({
 
     let { timeBonus } = prev;
     let { score } = prev;
-    let { line } = prev;
     let { rank } = prev;
 
     if (isCompleted) {
       const timeBonusValue = Math.floor(constantRemainLineTime * playSpeed * 100);
       timeBonus = timeBonusValue;
       score = prev.score + point + timeBonusValue;
-      if (map) {
-        line = map.typingLineIndexes.length - 1 - (completeCount + failureCount);
-      }
       rank = calcCurrentRank(score);
     }
 
-    return { ...prev, point, type, timeBonus, score, line, rank };
+    return { ...prev, point, type, timeBonus, score, line: isCompleted ?  prev.line-1:prev.line , rank };
   });
 
   setCombo((prev) => prev + 1);
