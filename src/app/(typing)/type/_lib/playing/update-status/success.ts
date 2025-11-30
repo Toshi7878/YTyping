@@ -8,13 +8,7 @@ import {
   writeUserStats,
 } from "../../atoms/ref";
 import { readPlaySpeed } from "../../atoms/speed-reducer";
-import {
-  readCombo,
-  readTypingWord,
-  readUtilityParams,
-  setCombo,
-  setTypingStatus
-} from "../../atoms/state";
+import { readCombo, readTypingWord, readUtilityParams, setCombo, setTypingStatus } from "../../atoms/state";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateSuccessStatus = ({
@@ -47,7 +41,7 @@ export const updateSuccessStatus = ({
       rank = calcCurrentRank(score);
     }
 
-    return { ...prev, point, type, timeBonus, score, line: isCompleted ?  prev.line-1:prev.line , rank };
+    return { ...prev, point, type, timeBonus, score, line: isCompleted ? prev.line - 1 : prev.line, rank };
   });
 
   setCombo((prev) => prev + 1);
