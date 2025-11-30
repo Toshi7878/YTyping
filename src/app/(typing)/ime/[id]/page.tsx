@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     creator: mapInfo.creator.name,
     other: {
-      "article:published_time": toLocaleDateString(mapInfo.createdAt),
-      "article:modified_time": toLocaleDateString(mapInfo.updatedAt),
+      "article:published_time": toLocaleDateString(mapInfo.createdAt, "ja-JP"),
+      "article:modified_time": toLocaleDateString(mapInfo.updatedAt, "ja-JP"),
       "article:youtube_id": mapInfo.videoId,
       "article:title": mapInfo.title,
       "article:artist": mapInfo.artistName,

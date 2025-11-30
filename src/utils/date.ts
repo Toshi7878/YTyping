@@ -1,5 +1,8 @@
+type LocaleString = "ja-JP";
+
 export const formatDate = (
   date: Date | string | number,
+  locale?: LocaleString,
   options: Intl.DateTimeFormatOptions = {
     dateStyle: "short",
     timeStyle: "medium",
@@ -8,7 +11,7 @@ export const formatDate = (
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return "";
 
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(locale, {
     hour12: false,
     ...options,
   }).format(d);
@@ -16,6 +19,7 @@ export const formatDate = (
 
 export const toLocaleDateString = (
   date: Date | string | number,
+  locale?: LocaleString,
   options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "numeric",
@@ -25,5 +29,5 @@ export const toLocaleDateString = (
   const d = new Date(date);
   if (Number.isNaN(d.getTime())) return "";
 
-  return d.toLocaleDateString(undefined, { ...options });
+  return d.toLocaleDateString(locale, { ...options });
 };
