@@ -1,3 +1,4 @@
+import type { InputMode, TypingWord } from "lyrics-typing-engine";
 import type { HTMLAttributes } from "react";
 import { useLayoutEffect, useRef } from "react";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
@@ -35,44 +36,6 @@ export const TypingWords = () => {
 
   const isLineCompleted = !typingWord.nextChunk.kana && !!typingWord.correct.kana;
 
-  const kanaWordProps = {
-    correct: typingWord.correct.kana,
-    nextChar: typingWord.nextChunk.kana,
-    word: typingWord.wordChunks
-      .map((chunk) => chunk.kana)
-      .join("")
-      .slice(0, 60),
-    isLineCompleted,
-    nextWord: nextLyrics.kanaWord,
-    className: cn(
-      "word-kana",
-      !isCaseSensitive && "lowercase",
-      (wordDisplay === "ROMA_LOWERCASE_ONLY" || wordDisplay === "ROMA_UPPERCASE_ONLY") && "invisible",
-      inputMode === "kana" && "visible",
-    ),
-  };
-  const romaWordProps = {
-    correct: typingWord.correct.roma,
-    nextChar: typingWord.nextChunk.romaPatterns[0] ?? "",
-    word: typingWord.wordChunks
-      .map((chunk) => chunk.romaPatterns[0])
-      .join("")
-      .slice(0, 60),
-    isLineCompleted,
-    nextWord: nextLyrics.romaWord,
-    className: cn(
-      "word-roma",
-      !isCaseSensitive && (wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase"),
-      inputMode === "roma" && "visible",
-      (wordDisplay === "KANA_ONLY" || inputMode === "kana") && "invisible",
-    ),
-    style: {
-      fontSize: `${subWordFontSize}%`,
-      bottom: subWordTopPosition,
-      letterSpacing: `${romaWordSpacing.toFixed(2)}em`,
-    },
-  };
-
   const mainWord = wordDisplay.match(/^KANA_/) || inputMode === "kana" ? "kana" : "roma";
 
   const style = {
@@ -99,7 +62,16 @@ export const TypingWords = () => {
     >
       <Word
         id="main_word"
-        {...(mainWord === "kana" ? kanaWordProps : romaWordProps)}
+        correct={mainCorrect}
+        nextChar={mainWord === "kana" ? typingWord.nextChunk.kana : (typingWord.nextChunk.romaPatterns[0] ?? "")}
+        word={mainWord === "kana" ? getKanaWord(typingWord.wordChunks) : getRomaWord(typingWord.wordChunks)}
+        isLineCompleted={isLineCompleted}
+        nextWord={mainWord === "kana" ? nextLyrics.kanaWord : nextLyrics.romaWord}
+        className={cn(
+          mainWord === "kana" ? "word-kana" : "word-roma",
+          getWordCaseClass(mainWord === "kana" ? "kana" : "roma", isCaseSensitive, wordDisplay),
+          getWordVisibilityClass(mainWord === "kana" ? "kana" : "roma", wordDisplay, inputMode),
+        )}
         style={{
           fontSize: `${mainWordFontSize}%`,
           bottom: mainWordTopPosition,
@@ -109,7 +81,16 @@ export const TypingWords = () => {
       />
       <Word
         id="sub_word"
-        {...(mainWord === "kana" ? romaWordProps : kanaWordProps)}
+        correct={subCorrect}
+        nextChar={mainWord === "kana" ? (typingWord.nextChunk.romaPatterns[0] ?? "") : typingWord.nextChunk.kana}
+        word={mainWord === "kana" ? getRomaWord(typingWord.wordChunks) : getKanaWord(typingWord.wordChunks)}
+        isLineCompleted={isLineCompleted}
+        nextWord={mainWord === "kana" ? nextLyrics.romaWord : nextLyrics.kanaWord}
+        className={cn(
+          mainWord === "kana" ? "word-roma" : "word-kana",
+          getWordCaseClass(mainWord === "kana" ? "roma" : "kana", isCaseSensitive, wordDisplay),
+          getWordVisibilityClass(mainWord === "kana" ? "roma" : "kana", wordDisplay, inputMode),
+        )}
         style={{
           fontSize: `${subWordFontSize}%`,
           bottom: subWordTopPosition,
@@ -121,11 +102,45 @@ export const TypingWords = () => {
   );
 };
 
-interface WordRefs {
-  viewportRef: React.RefObject<HTMLDivElement | null>;
-  trackRef: React.RefObject<HTMLDivElement | null>;
-  caretRef: React.RefObject<HTMLSpanElement | null>;
-}
+const getKanaWord = (wordChunks: TypingWord["wordChunks"]) => {
+  return wordChunks
+    .map((chunk) => chunk.kana)
+    .join("")
+    .slice(0, 60);
+};
+
+const getRomaWord = (wordChunks: TypingWord["wordChunks"]) => {
+  return wordChunks
+    .map((chunk) => chunk.romaPatterns[0])
+    .join("")
+    .slice(0, 60);
+};
+
+const getWordCaseClass = (targetType: "kana" | "roma", isCaseSensitive: boolean, wordDisplay: string) => {
+  if (isCaseSensitive) return undefined;
+
+  if (targetType === "kana") {
+    return "lowercase";
+  }
+
+  return wordDisplay.includes("UPPERCASE") ? "uppercase" : "lowercase";
+};
+
+const getWordVisibilityClass = (targetType: "kana" | "roma", wordDisplay: string, inputMode: InputMode) => {
+  if (targetType === "kana") {
+    if (wordDisplay === "ROMA_LOWERCASE_ONLY" || wordDisplay === "ROMA_UPPERCASE_ONLY") {
+      return "invisible";
+    }
+  } else if (wordDisplay === "KANA_ONLY" || inputMode !== "roma") {
+    return "invisible";
+  }
+
+  if (inputMode === targetType) {
+    return "visible";
+  }
+
+  return undefined;
+};
 
 interface WordProps {
   correct: string;
@@ -134,7 +149,11 @@ interface WordProps {
   id: string;
   isLineCompleted: boolean;
   nextWord: string;
-  refs: WordRefs;
+  refs: {
+    viewportRef: React.RefObject<HTMLDivElement | null>;
+    trackRef: React.RefObject<HTMLDivElement | null>;
+    caretRef: React.RefObject<HTMLSpanElement | null>;
+  };
 }
 
 const Word = ({
@@ -146,7 +165,6 @@ const Word = ({
   refs,
   ...rest
 }: WordProps & HTMLAttributes<HTMLDivElement>) => {
-  const remainWord = nextChar + word;
   const { lineCompletedDisplay } = useTypingOptionsState();
   const isNextWordDisplay = lineCompletedDisplay === "NEXT_WORD";
 
@@ -162,12 +180,7 @@ const Word = ({
         <div ref={refs.viewportRef} className="overflow-hidden contain-[layout_paint]">
           {"\u200B"}
           <div ref={refs.trackRef} className="inline-block will-change-transform transform-gpu backface-hidden">
-            <span
-              className={cn(
-                "opacity-word-correct",
-                remainWord.length === 0 ? "text-word-completed" : "text-word-correct",
-              )}
-            >
+            <span className={cn("opacity-word-correct", isLineCompleted ? "text-word-completed" : "text-word-correct")}>
               {correct.replace(/ /g, "ˍ")}
             </span>
             <span ref={refs.caretRef} className="text-word-nextChar">
