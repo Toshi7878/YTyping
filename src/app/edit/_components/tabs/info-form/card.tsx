@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
-import { buildTypingMap } from "lyrics-typing-engine";
+import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
@@ -362,7 +362,10 @@ const useOnSubmit = (form: FormType) => {
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
         setCanUpload(false);
         form.reset(form.getValues());
-        await context.client.invalidateQueries(trpc.map.getRawMapJson.queryOptions({ mapId: id }));
+        context.client.setQueriesData<RawMapLine[]>(trpc.map.getRawMapJson.queryFilter({ mapId: id }), (old) => {
+          if (!old) return old;
+          return _variables.mapData;
+        });
         await context.client.invalidateQueries(trpc.map.getMapInfo.queryOptions({ mapId: id }));
         await context.client.resetQueries({ queryKey: trpc.mapList.get.pathKey() });
 
