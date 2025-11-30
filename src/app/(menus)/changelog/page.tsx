@@ -1,7 +1,7 @@
 import { CardWithContent } from "@/components/ui/card";
 import { H1, Large, Small, UList } from "@/components/ui/typography";
 import { serverApi } from "@/trpc/server";
-import { toLocaleDateString } from "@/utils/date";
+import { formatDate } from "@/utils/date";
 import { changelog } from "./changelog";
 
 export default async function Page() {
@@ -10,7 +10,7 @@ export default async function Page() {
   return (
     <article className="mx-auto max-w-7xl space-y-4">
       <H1 className="flex items-baseline gap-4">
-        更新履歴 {buildingDate && <Small>最終更新: {toLocaleDateString(buildingDate)}</Small>}
+        更新履歴 {buildingDate && <Small>最終更新: {formatDate(buildingDate)}</Small>}
       </H1>
       <CardWithContent>
         {changelog.map((update) => (
