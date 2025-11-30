@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaHandsClapping } from "react-icons/fa6";
 import { ClearRateText } from "@/components/shared/text/clear-rate-text";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
@@ -43,113 +43,111 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
     setRankStatus(scores.length + 1);
   }, [data, sceneGroup]);
 
-  const columns: ColumnDef<RankingResult, unknown>[] = useMemo(() => {
-    return [
-      {
-        id: "rank",
-        header: () => "順位",
-        size: 10,
+  const columns: ColumnDef<RankingResult, unknown>[] = [
+    {
+      id: "rank",
+      header: () => "順位",
+      size: 10,
 
-        cell: ({ row }) => {
-          const { original: result, index } = row;
-          const rank = index + 1;
-          const isThisPopoverOpen = openPopoverIndex === index;
+      cell: ({ row }) => {
+        const { original: result, index } = row;
+        const rank = index + 1;
+        const isThisPopoverOpen = openPopoverIndex === index;
 
-          return (
-            <>
-              <span className={cn("ml-1 pointer-events-none", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
-              <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
-                <PopoverAnchor />
-                <RankingPopoverContent
-                  resultId={result.id}
-                  userId={result.player.id}
-                  resultUpdatedAt={result.updatedAt}
-                  hasClapped={result.clap.hasClapped ?? false}
-                />
-              </Popover>
-            </>
+        return (
+          <>
+            <span className={cn("ml-1 pointer-events-none", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
+            <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
+              <PopoverAnchor />
+              <RankingPopoverContent
+                resultId={result.id}
+                userId={result.player.id}
+                resultUpdatedAt={result.updatedAt}
+                hasClapped={result.clap.hasClapped ?? false}
+              />
+            </Popover>
+          </>
+        );
+      },
+    },
+    {
+      id: "score",
+      header: () => "Score",
+      size: 35,
+      cell: ({ row }) => row.original.score,
+    },
+    {
+      id: "clearRate",
+      header: () => "クリア率",
+      size: 40,
+      cell: ({ row }) => {
+        const { otherStatus } = row.original;
+        const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
+        return (
+          <ClearRateText clearRate={otherStatus.clearRate} isPerfect={isPerfect} className="pointer-events-none" />
+        );
+      },
+    },
+    {
+      id: "name",
+      header: () => "名前",
+      size: 110,
+      cell: ({ row }) => {
+        const { name } = row.original.player;
+        return <span className="truncate pointer-events-none">{name}</span>;
+      },
+    },
+    {
+      id: "kpm",
+      header: () => "kpm",
+      size: 30,
+      cell: ({ row }) => row.original.typeSpeed.kpm,
+    },
+    {
+      id: "mode",
+      header: () => "モード",
+      size: 60,
+      cell: ({ row }) => {
+        const { typeCounts } = row.original;
+        return <InputModeText typeCounts={typeCounts} />;
+      },
+    },
+    {
+      id: "time",
+      header: () => "時間",
+      size: 40,
+      cell: ({ row }) => <DateDistanceText date={row.original.updatedAt} className="pointer-events-none" />,
+    },
+    {
+      id: "clap",
+      header: () => <FaHandsClapping size={16} className="size-10 md:size-4" />,
+      size: 15,
+      cell: ({ row }) => {
+        const { clap } = row.original;
+        const hasClapped = !!(clap.hasClapped && session);
+
+        return (
+          <div className="ml-1" title={clap.hasClapped ? "拍手を取り消す" : "拍手する"}>
+            <span className={cn(hasClapped && "outline-text text-yellow-500")}>{clap.count}</span>
+          </div>
+        );
+      },
+      meta: {
+        cellClassName: (cell) => {
+          return cn(
+            toggleClap.isPending ? "opacity-80" : "",
+            cell.row.original.clap.hasClapped ? "" : "hover:bg-perfect/20",
           );
         },
-      },
-      {
-        id: "score",
-        header: () => "Score",
-        size: 35,
-        cell: ({ row }) => row.original.score,
-      },
-      {
-        id: "clearRate",
-        header: () => "クリア率",
-        size: 40,
-        cell: ({ row }) => {
-          const { otherStatus } = row.original;
-          const isPerfect = otherStatus.miss === 0 && otherStatus.lost === 0;
-          return (
-            <ClearRateText clearRate={otherStatus.clearRate} isPerfect={isPerfect} className="pointer-events-none" />
-          );
+        onClick: (event, row) => {
+          if (!session?.user?.id || toggleClap.isPending || !mapId) return;
+          event.preventDefault();
+          event.stopPropagation();
+          toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClapped });
         },
       },
-      {
-        id: "name",
-        header: () => "名前",
-        size: 110,
-        cell: ({ row }) => {
-          const { name } = row.original.player;
-          return <span className="truncate pointer-events-none">{name}</span>;
-        },
-      },
-      {
-        id: "kpm",
-        header: () => "kpm",
-        size: 30,
-        cell: ({ row }) => row.original.typeSpeed.kpm,
-      },
-      {
-        id: "mode",
-        header: () => "モード",
-        size: 60,
-        cell: ({ row }) => {
-          const { typeCounts } = row.original;
-          return <InputModeText typeCounts={typeCounts} />;
-        },
-      },
-      {
-        id: "time",
-        header: () => "時間",
-        size: 40,
-        cell: ({ row }) => <DateDistanceText date={row.original.updatedAt} className="pointer-events-none" />,
-      },
-      {
-        id: "clap",
-        header: () => <FaHandsClapping size={16} className="size-10 md:size-4" />,
-        size: 15,
-        cell: ({ row }) => {
-          const { clap } = row.original;
-          const hasClapped = !!(clap.hasClapped && session);
-
-          return (
-            <div className="ml-1" title={clap.hasClapped ? "拍手を取り消す" : "拍手する"}>
-              <span className={cn(hasClapped && "outline-text text-yellow-500")}>{clap.count}</span>
-            </div>
-          );
-        },
-        meta: {
-          cellClassName: (cell) => {
-            return cn(
-              toggleClap.isPending ? "opacity-80" : "",
-              cell.row.original.clap.hasClapped ? "" : "hover:bg-perfect/20",
-            );
-          },
-          onClick: (event, row) => {
-            if (!session?.user?.id || toggleClap.isPending || !mapId) return;
-            event.preventDefault();
-            event.stopPropagation();
-            toggleClap.mutate({ resultId: row.id, newState: !row.clap.hasClapped });
-          },
-        },
-      },
-    ];
-  }, [data, openPopoverIndex, toggleClap.isPending, session?.user?.id, toggleClap.mutate, mapId]);
+    },
+  ];
 
   if (error) return <div>Error loading data</div>;
 

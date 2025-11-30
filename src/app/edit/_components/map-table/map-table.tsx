@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
 import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { type Options, useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -111,118 +111,115 @@ export const MapTable = () => {
   const directEditIndex = useDirectEditIndexState();
   const selectIndex = useSelectIndexState();
 
-  const columns = useMemo(
-    (): ColumnDef<RawMapLine>[] => [
-      {
-        header: "Time",
-        accessorKey: "time",
-        maxSize: 35,
-        minSize: 35,
-        meta: {
-          onClick: (_event, row: RawMapLine, index: number) => {
-            if (directEditIndex !== index) {
-              seekYTPlayer(Number(row.time));
-            }
-          },
-          cellClassName: (cell: Cell<RawMapLine, unknown>, index: number) => {
-            const row = cell.row.original;
-            const map = readRawMap();
-            const nextTime = map[index + 1]?.time;
-            return cn("text-center group", nextTime && row.time === nextTime && "bg-destructive/30 text-destructive");
-          },
-        },
-        cell: ({ row }) => {
-          const { index } = row;
-          const nextTime = map[index + 1]?.time;
-          const label = nextTime && row.original.time === nextTime ? "同じ時間の行が存在します" : "";
-
-          if (directEditIndex === row.index) {
-            return <DirectTimeInput time={row.original.time} />;
+  const columns: ColumnDef<RawMapLine>[] = [
+    {
+      header: "Time",
+      accessorKey: "time",
+      maxSize: 35,
+      minSize: 35,
+      meta: {
+        onClick: (_event, row: RawMapLine, index: number) => {
+          if (directEditIndex !== index) {
+            seekYTPlayer(Number(row.time));
           }
-
-          return (
-            <TooltipWrapper label={label} disabled={!label}>
-              <div className="flex items-center gap-1">
-                <Play className="size-3.5 hidden xl:block relative top-px text-muted-foreground group-hover:text-white" />
-                <span>{row.original.time}</span>
-              </div>
-            </TooltipWrapper>
-          );
+        },
+        cellClassName: (cell: Cell<RawMapLine, unknown>, index: number) => {
+          const row = cell.row.original;
+          const map = readRawMap();
+          const nextTime = map[index + 1]?.time;
+          return cn("text-center group", nextTime && row.time === nextTime && "bg-destructive/30 text-destructive");
         },
       },
-      {
-        header: "Lyrics",
-        accessorKey: "lyrics",
-        maxSize: 200,
-        minSize: 200,
+      cell: ({ row }) => {
+        const { index } = row;
+        const nextTime = map[index + 1]?.time;
+        const label = nextTime && row.original.time === nextTime ? "同じ時間の行が存在します" : "";
 
-        enableResizing: false,
-        cell: ({ row }) => {
-          const { index } = row;
+        if (directEditIndex === row.index) {
+          return <DirectTimeInput time={row.original.time} />;
+        }
 
-          return (
-            <>
-              {directEditIndex === index && <DirectLyricsInput />}
-              {directEditIndex !== index && parse(row.original.lyrics)}
-            </>
-          );
-        },
+        return (
+          <TooltipWrapper label={label} disabled={!label}>
+            <div className="flex items-center gap-1">
+              <Play className="size-3.5 hidden xl:block relative top-px text-muted-foreground group-hover:text-white" />
+              <span>{row.original.time}</span>
+            </div>
+          </TooltipWrapper>
+        );
       },
-      {
-        header: "Word",
-        accessorKey: "word",
-        maxSize: 250,
-        minSize: 250,
+    },
+    {
+      header: "Lyrics",
+      accessorKey: "lyrics",
+      maxSize: 200,
+      minSize: 200,
 
-        enableResizing: false,
-        cell: ({ row }) => {
-          const { index } = row;
+      enableResizing: false,
+      cell: ({ row }) => {
+        const { index } = row;
 
-          return (
-            <>
-              {directEditIndex === index && <DirectWordInput />}
-              {directEditIndex !== index && row.original.word}
-            </>
-          );
-        },
+        return (
+          <>
+            {directEditIndex === index && <DirectLyricsInput />}
+            {directEditIndex !== index && parse(row.original.lyrics)}
+          </>
+        );
       },
+    },
+    {
+      header: "Word",
+      accessorKey: "word",
+      maxSize: 250,
+      minSize: 250,
 
-      {
-        header: "Option",
-        accessorKey: "option",
-        maxSize: 34,
-        minSize: 34,
-        enableResizing: false,
-        cell: ({ row }) => {
-          const { index } = row;
-          const isOptionEdited = Boolean(
-            row.original.options?.isChangeCSS ||
-              row.original.options?.eternalCSS ||
-              row.original.options?.changeVideoSpeed ||
-              row.original.options?.isCaseSensitive,
-          );
+      enableResizing: false,
+      cell: ({ row }) => {
+        const { index } = row;
 
-          return (
-            <Button
-              disabled={index === endLineIndex}
-              variant={isOptionEdited ? "success" : "outline"}
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (index !== endLineIndex) {
-                  setOptionDialogIndex(index);
-                }
-              }}
-            >
-              {isOptionEdited ? "設定有" : "未設定"}
-            </Button>
-          );
-        },
-        meta: { headerClassName: "text-center" },
+        return (
+          <>
+            {directEditIndex === index && <DirectWordInput />}
+            {directEditIndex !== index && row.original.word}
+          </>
+        );
       },
-    ],
-    [directEditIndex, endLineIndex, map],
-  );
+    },
+
+    {
+      header: "Option",
+      accessorKey: "option",
+      maxSize: 34,
+      minSize: 34,
+      enableResizing: false,
+      cell: ({ row }) => {
+        const { index } = row;
+        const isOptionEdited = Boolean(
+          row.original.options?.isChangeCSS ||
+            row.original.options?.eternalCSS ||
+            row.original.options?.changeVideoSpeed ||
+            row.original.options?.isCaseSensitive,
+        );
+
+        return (
+          <Button
+            disabled={index === endLineIndex}
+            variant={isOptionEdited ? "success" : "outline"}
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (index !== endLineIndex) {
+                setOptionDialogIndex(index);
+              }
+            }}
+          >
+            {isOptionEdited ? "設定有" : "未設定"}
+          </Button>
+        );
+      },
+      meta: { headerClassName: "text-center" },
+    },
+  ];
 
   return (
     <LoadingOverlayProvider isLoading={isLoading} message="Loading...">
