@@ -1,6 +1,6 @@
 "use client";
+import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import { FaRankingStar } from "react-icons/fa6";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -13,23 +13,8 @@ interface RankingCountProps {
 
 export const RankingCount = ({ myRank, rankingCount, myRankUpdatedAt }: RankingCountProps) => {
   const { data: session } = useSession();
-  const [colorClass, setColorClass] = useState("text-muted-foreground");
 
-  useEffect(() => {
-    if (!session) {
-      setColorClass("text-muted-foreground");
-      return;
-    }
-
-    if (myRank === 1) {
-      setColorClass("text-perfect");
-    } else if (myRank) {
-      setColorClass("text-secondary");
-    } else {
-      setColorClass("text-muted-foreground");
-    }
-  }, [session, myRank]);
-
+  const colorClass = buildColorClass(myRank, session);
   return (
     <TooltipWrapper
       label={
@@ -55,4 +40,18 @@ export const RankingCount = ({ myRank, rankingCount, myRankUpdatedAt }: RankingC
       </div>
     </TooltipWrapper>
   );
+};
+
+const buildColorClass = (myRank: number | null, session: Session | null) => {
+  if (!session) {
+    return "text-muted-foreground";
+  }
+
+  if (myRank === 1) {
+    return "text-perfect";
+  }
+  if (myRank) {
+    return "text-secondary";
+  }
+  return "text-muted-foreground";
 };

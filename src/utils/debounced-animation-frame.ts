@@ -8,7 +8,6 @@ export function requestDebouncedAnimationFrame(frameId: string, callback: () => 
   });
   pendingFrames.set(frameId, frame);
 
-  // useEffectのクリーンアップ関数として使用可能
   return () => cancelIfPending(frameId);
 }
 
