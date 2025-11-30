@@ -362,10 +362,10 @@ const useOnSubmit = (form: FormType) => {
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
         setCanUpload(false);
         form.reset(form.getValues());
-        context.client.setQueriesData<RawMapLine[]>(trpc.map.getRawMapJson.queryFilter({ mapId: id }), (old) => {
-          if (!old) return old;
-          return _variables.mapData;
-        });
+        context.client.setQueriesData<RawMapLine[]>(
+          trpc.map.getRawMapJson.queryFilter({ mapId: id }),
+          () => _variables.mapData,
+        );
         await context.client.invalidateQueries(trpc.map.getMapInfo.queryOptions({ mapId: id }));
         await context.client.resetQueries({ queryKey: trpc.mapList.get.pathKey() });
 
