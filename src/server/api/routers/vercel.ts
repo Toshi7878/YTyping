@@ -1,6 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import axios from "axios";
 import { env } from "@/env";
+import { JST_OFFSET } from "@/utils/const";
 import { publicProcedure } from "../trpc";
 
 export const vercelRouter = {
@@ -13,6 +14,8 @@ export const vercelRouter = {
     );
 
     const latestDeployment = response.data.deployments[0];
-    return new Date(latestDeployment.buildingAt);
+    const d = new Date(latestDeployment.buildingAt);
+    // Vercel APIはUTCで返すが、表示上JSTとして扱いたいため9時間加算する
+    return new Date(d.getTime() + JST_OFFSET);
   }),
 } satisfies TRPCRouterRecord;
