@@ -6,6 +6,7 @@ import { type BuiltMapLine, createTypingWord, type InputMode, type TypingWord } 
 import type z from "zod/v4";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { RouterOutputs } from "@/server/api/trpc";
+import { findClosestLowerOrEqual } from "@/utils/array";
 import type { Updater } from "@/utils/types";
 import type { LineOptionSchema } from "@/validator/raw-map-json";
 import type { TypingLineResults } from "@/validator/result";
@@ -42,7 +43,7 @@ const utilityParamsAtom = atomWithReset({
   inputMode: "roma" as InputMode,
   notify: Symbol(""),
   activeSkipKey: null as SkipGuideKey,
-  changeCSSCount: 0,
+  changeCSSCount: null as number | null,
   isYTStarted: false,
   lineResultdrawerClosure: false,
   isPaused: false,
@@ -111,17 +112,15 @@ export const useNotifyState = () => useAtomValue(notifyAtom, { store });
 export const setNotify = (value: ExtractAtomValue<typeof notifyAtom>) => store.set(notifyAtom, value);
 
 export const useChangeCSSCountState = () => useAtomValue(changeCSSCountAtom, { store });
-export const setChangeCSSCount = (newCurrentCount: number) => {
+export const setChangeCSSCount = (currentIndex: number) => {
   const map = readBuiltMap();
   if (!map) return;
-
-  if (map.changeCSSIndexes.length > 0) {
-    const closestMin = map.changeCSSIndexes
-      .filter((count) => count <= newCurrentCount)
-      .reduce((prev, curr) => (prev === undefined || curr > prev ? curr : prev), 0);
-
-    store.set(changeCSSCountAtom, closestMin);
+  if (map.changeCSSIndexes.length === 0) {
+    store.set(changeCSSCountAtom, null);
+    return;
   }
+
+  store.set(changeCSSCountAtom, findClosestLowerOrEqual(map.changeCSSIndexes, currentIndex));
 };
 
 export const useIsPausedState = () => useAtomValue(isPausedAtom, { store });
