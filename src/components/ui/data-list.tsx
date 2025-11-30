@@ -29,24 +29,32 @@ interface DataListProps extends React.HTMLAttributes<HTMLDListElement>, VariantP
   asChild?: boolean;
 }
 
-const DataList = React.forwardRef<HTMLDListElement, DataListProps>(
-  ({ className, orientation = "horizontal", size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? SlotPrimitive.Slot : "dl";
+const DataList = ({
+  className,
+  orientation = "horizontal",
+  size,
+  asChild = false,
+  ref,
+  ...props
+}: DataListProps & { ref?: React.Ref<React.ComponentRef<"dl">> }) => {
+  const Comp = asChild ? SlotPrimitive.Slot : "dl";
 
-    return (
-      <DataListOrientationContext.Provider value={orientation || "horizontal"}>
-        <Comp ref={ref} className={cn(dataListVariants({ orientation, size }), className)} {...props} />
-      </DataListOrientationContext.Provider>
-    );
-  },
-);
-DataList.displayName = "DataList";
+  return (
+    <DataListOrientationContext.Provider value={orientation || "horizontal"}>
+      <Comp ref={ref} className={cn(dataListVariants({ orientation, size }), className)} {...props} />
+    </DataListOrientationContext.Provider>
+  );
+};
 
 interface DataListItemProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const DataListItem = React.forwardRef<HTMLDivElement, DataListItemProps>(({ className, ...props }, ref) => {
+const DataListItem = ({
+  className,
+  ref,
+  ...props
+}: DataListItemProps & { ref?: React.Ref<React.ComponentRef<"div">> }) => {
   const orientation = React.useContext(DataListOrientationContext);
 
   return (
@@ -56,25 +64,28 @@ const DataListItem = React.forwardRef<HTMLDivElement, DataListItemProps>(({ clas
       {...props}
     />
   );
-});
-DataListItem.displayName = "DataListItem";
+};
 
 interface DataListLabelProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const DataListLabel = React.forwardRef<HTMLDivElement, DataListLabelProps>(({ className, ...props }, ref) => (
+const DataListLabel = ({
+  className,
+  ref,
+  ...props
+}: DataListLabelProps & { ref?: React.Ref<React.ComponentRef<"dt">> }) => (
   <dt ref={ref} className={cn("font-medium", className)} {...props} />
-));
-DataListLabel.displayName = "DataListLabel";
+);
 
 export interface DataListValueProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const DataListValue = React.forwardRef<HTMLDivElement, DataListValueProps>(({ className, ...props }, ref) => (
-  <dd ref={ref} {...props} />
-));
-DataListValue.displayName = "DataListValue";
+const DataListValue = ({
+  className,
+  ref,
+  ...props
+}: DataListValueProps & { ref?: React.Ref<React.ComponentRef<"dd">> }) => <dd ref={ref} {...props} />;
 
 export { DataList, DataListItem, DataListLabel, DataListValue };

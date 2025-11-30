@@ -64,23 +64,29 @@ interface LabeledRadioGroupProps extends React.ComponentProps<typeof RadioGroup>
   error?: string;
 }
 
-const LabeledRadioGroup = React.forwardRef<React.ComponentRef<typeof RadioGroup>, LabeledRadioGroupProps>(
-  ({ label, labelClassName, containerClassName, className, description, error, items, ...props }, ref) => {
-    return (
-      <div className={cn("space-y-3", containerClassName)}>
-        {label && <Label className={cn("text-sm font-medium", labelClassName)}>{label}</Label>}
-        {description && <p className="text-muted-foreground text-xs">{description}</p>}
-        <RadioGroup ref={ref} className={cn(error && "border-destructive", className)} {...props}>
-          {items.map((item) => (
-            <LabeledRadioItem key={item.value} label={item.label} value={item.value} />
-          ))}
-        </RadioGroup>
-        {error && <p className="text-destructive text-sm">{error}</p>}
-      </div>
-    );
-  },
-);
-
-LabeledRadioGroup.displayName = "LabeledRadioGroup";
+const LabeledRadioGroup = ({
+  label,
+  labelClassName,
+  containerClassName,
+  className,
+  description,
+  error,
+  items,
+  ref,
+  ...props
+}: LabeledRadioGroupProps & { ref?: React.Ref<React.ComponentRef<typeof RadioGroup>> }) => {
+  return (
+    <div className={cn("space-y-3", containerClassName)}>
+      {label && <Label className={cn("text-sm font-medium", labelClassName)}>{label}</Label>}
+      {description && <p className="text-muted-foreground text-xs">{description}</p>}
+      <RadioGroup ref={ref} className={cn(error && "border-destructive", className)} {...props}>
+        {items.map((item) => (
+          <LabeledRadioItem key={item.value} label={item.label} value={item.value} />
+        ))}
+      </RadioGroup>
+      {error && <p className="text-destructive text-sm">{error}</p>}
+    </div>
+  );
+};
 
 export { LabeledRadioGroup, LabeledRadioItem };
