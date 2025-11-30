@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import YouTube from "react-youtube";
 import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { useIsMobileDeviceState } from "@/lib/atoms/user-agent";
@@ -27,8 +26,9 @@ interface YouTubePlayerProps {
 export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTubePlayerProps) => {
   const isMobile = useIsMobileDeviceState();
 
-  const memoizedYouTube = useMemo(
-    () => (
+  return (
+    <LoadingOverlayProvider isLoading={isMapLoading} message="譜面読み込み中...">
+      {isMobile && <MobileCover />}
       <YouTube
         className={cn("mt-2 aspect-video select-none", className)}
         id="yt_player"
@@ -53,15 +53,6 @@ export const YouTubePlayer = ({ isMapLoading, videoId, className = "" }: YouTube
         onStateChange={onStateChange}
         onPlaybackRateChange={onPlaybackRateChange}
       />
-    ),
-
-    [videoId],
-  );
-
-  return (
-    <LoadingOverlayProvider isLoading={isMapLoading} message="譜面読み込み中...">
-      {isMobile && <MobileCover />}
-      {memoizedYouTube}
     </LoadingOverlayProvider>
   );
 };

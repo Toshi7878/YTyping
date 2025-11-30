@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from "react";
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import {
   useBuiltMapState,
@@ -188,23 +188,17 @@ const useWordScroll = (
   mainWordScrollStart: number,
   subWordScrollStart: number,
 ) => {
-  const mainRefs = useMemo(
-    () => ({
-      viewportRef: { current: null as HTMLDivElement | null },
-      trackRef: { current: null as HTMLDivElement | null },
-      caretRef: { current: null as HTMLSpanElement | null },
-    }),
-    [],
-  );
+  const mainRefs = useRef({
+    viewportRef: { current: null as HTMLDivElement | null },
+    trackRef: { current: null as HTMLDivElement | null },
+    caretRef: { current: null as HTMLSpanElement | null },
+  }).current;
 
-  const subRefs = useMemo(
-    () => ({
-      viewportRef: { current: null as HTMLDivElement | null },
-      trackRef: { current: null as HTMLDivElement | null },
-      caretRef: { current: null as HTMLSpanElement | null },
-    }),
-    [],
-  );
+  const subRefs = useRef({
+    viewportRef: { current: null as HTMLDivElement | null },
+    trackRef: { current: null as HTMLDivElement | null },
+    caretRef: { current: null as HTMLSpanElement | null },
+  }).current;
 
   const prevMainShift = useRef(-1);
   const prevSubShift = useRef(-1);

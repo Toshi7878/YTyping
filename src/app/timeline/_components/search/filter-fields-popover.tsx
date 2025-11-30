@@ -1,6 +1,6 @@
 "use client";
 import type { SetStateAction } from "jotai";
-import { type ComponentProps, type Dispatch, useCallback, useMemo } from "react";
+import { type ComponentProps, type Dispatch, useCallback } from "react";
 import {
   useSearchResultClearRateState,
   useSearchResultKpmState,
@@ -145,12 +145,7 @@ const SearchRange = ({
     [setValue],
   );
 
-  const displayValue = useMemo(() => {
-    const maxLabel = isMaxLabel && value.max === max ? "最大" : value.max;
-    const displayUnit = label;
-
-    return `${value.min} - ${maxLabel} ${displayUnit}`;
-  }, [value, label, isMaxLabel, max]);
+  const displayValue = formatDisplayValue(value, label, max ?? 0, isMaxLabel);
 
   return (
     <div className="space-y-3 py-4">
@@ -173,4 +168,10 @@ const SearchRange = ({
       </TooltipWrapper>
     </div>
   );
+};
+
+const formatDisplayValue = (value: RangeValue, label: string, max: number, isMaxLabel: boolean) => {
+  const maxLabel = isMaxLabel && value.max === max ? "最大" : value.max;
+  const displayUnit = label;
+  return `${value.min} - ${maxLabel} ${displayUnit}`;
 };

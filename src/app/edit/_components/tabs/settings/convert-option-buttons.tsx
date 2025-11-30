@@ -1,11 +1,10 @@
 "use client";
-import { useMemo } from "react";
 import type { ConvertOption } from "@/app/edit/_lib/atoms/storage";
 import { setWordConvertOption, useWordConvertOptionState } from "@/app/edit/_lib/atoms/storage";
+import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
 import { Label } from "@/components/ui/label";
 import { RadioButton, RadioGroup } from "@/components/ui/radio-group/radio-group";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { LOOSE_SYMBOL_LIST, MANDATORY_SYMBOL_LIST, STRICT_SYMBOL_LIST } from "@/app/edit/_lib/const";
 
 const CONVERT_OPTIONS = [
   {
@@ -37,26 +36,6 @@ const CONVERT_OPTIONS = [
 export const ConvertOptionButtons = () => {
   const wordConvertOption = useWordConvertOptionState();
 
-  const optionButtons = useMemo(
-    () =>
-      CONVERT_OPTIONS.map((option) => {
-        const { activeVariant, inactiveVariant, description, symbolList } = option;
-        const isActive = wordConvertOption === option.value;
-
-        return {
-          ...option,
-          variant: isActive ? activeVariant : inactiveVariant,
-          tooltipLabel: (
-            <div>
-              <div>{description}</div>
-              <div>変換される記号: {symbolList.join(" ")}</div>
-            </div>
-          ),
-        };
-      }),
-    [wordConvertOption],
-  );
-
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline">
       <Label className="text-sm whitespace-nowrap">読み変換</Label>
@@ -65,18 +44,33 @@ export const ConvertOptionButtons = () => {
         onValueChange={(value) => setWordConvertOption(value as ConvertOption)}
         className="flex flex-col gap-2 sm:flex-row"
       >
-        {optionButtons.map((option) => (
-          <TooltipWrapper key={option.value} label={option.tooltipLabel} side="bottom">
-            <RadioButton
-              value={option.value}
-              className="h-10 w-full text-xs sm:h-[50px] sm:w-[120px] sm:text-sm md:w-[150px]"
-              variant={option.variant}
-            >
-              {option.label}
-            </RadioButton>
-          </TooltipWrapper>
+        {CONVERT_OPTIONS.map((option) => (
+          <ConvertOptionButton key={option.value} option={option} isActive={wordConvertOption === option.value} />
         ))}
       </RadioGroup>
     </div>
+  );
+};
+
+const ConvertOptionButton = ({ option, isActive }: { option: (typeof CONVERT_OPTIONS)[number]; isActive: boolean }) => {
+  return (
+    <TooltipWrapper
+      key={option.value}
+      label={
+        <div>
+          <div>{option.description}</div>
+          <div>変換される記号: {option.symbolList.join(" ")}</div>
+        </div>
+      }
+      side="bottom"
+    >
+      <RadioButton
+        value={option.value}
+        className="h-10 w-full text-xs sm:h-[50px] sm:w-[120px] sm:text-sm md:w-[150px]"
+        variant={isActive ? option.activeVariant : option.inactiveVariant}
+      >
+        {option.label}
+      </RadioButton>
+    </TooltipWrapper>
   );
 };

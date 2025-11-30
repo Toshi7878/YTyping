@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Dispatch, useEffect, useMemo, useState } from "react";
+import { type Dispatch, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { setRawMapAction, useRawMapState } from "@/app/edit/_lib/atoms/map-reducer";
@@ -14,9 +14,16 @@ import { Form, FormField, FormItem } from "@/components/ui/form";
 import { SwitchFormField } from "@/components/ui/switch";
 import { TextareaFormField } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import type { RawMapLine } from "@/validator/raw-map-json";
 import { LineOptionSchema } from "@/validator/raw-map-json";
 import { dispatchEditHistory } from "../../_lib/atoms/history-reducer";
 import { setCanUpload } from "../../_lib/atoms/state";
+
+const calculateCurrentSpeed = (map: RawMapLine[], index: number) => {
+  const speeds = map.map((line) => line.options?.changeVideoSpeed ?? 0);
+  const calculatedSpeed = speeds.slice(0, index).reduce((a, b) => a + b, 0) + 1;
+  return Math.max(0.25, Math.min(2.0, calculatedSpeed));
+};
 
 interface LineOptionDialogProps {
   index: number;
@@ -27,11 +34,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
   const map = useRawMapState();
   const confirm = useConfirm();
 
-  const currentSpeed = useMemo(() => {
-    const speeds = map.map((line) => line.options?.changeVideoSpeed ?? 0);
-    const calculatedSpeed = speeds.slice(0, index).reduce((a, b) => a + b, 0) + 1;
-    return Math.max(0.25, Math.min(2.0, calculatedSpeed));
-  }, [map, index]);
+  const currentSpeed = calculateCurrentSpeed(map, index);
 
   const [speed, setSpeed] = useState("1.00");
 
