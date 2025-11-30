@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
 import type { RouterOutputs } from "@/server/api/trpc";
@@ -31,28 +31,25 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
   );
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
-  const loadMap = useCallback(
-    async (mapData: RawMapLine[]) => {
-      showLoading({ message: "ひらがな判定生成中..." });
+  const loadMap = async (mapData: RawMapLine[]) => {
+    showLoading({ message: "ひらがな判定生成中..." });
 
-      try {
-        const map = await buildImeMap(mapData);
-        setBuiltMap(map);
-        hideLoading();
-      } catch {
-        showLoading({
-          message: (
-            <div className="flex h-full flex-col items-center justify-center gap-2">
-              ワード生成に失敗しました。
-              <Button onClick={() => loadMap(mapData)}>再試行</Button>
-            </div>
-          ),
-          hideSpinner: true,
-        });
-      }
-    },
-    [showLoading, hideLoading],
-  );
+    try {
+      const map = await buildImeMap(mapData);
+      setBuiltMap(map);
+      hideLoading();
+    } catch {
+      showLoading({
+        message: (
+          <div className="flex h-full flex-col items-center justify-center gap-2">
+            ワード生成に失敗しました。
+            <Button onClick={() => loadMap(mapData)}>再試行</Button>
+          </div>
+        ),
+        hideSpinner: true,
+      });
+    }
+  };
 
   useEffect(() => {
     if (mapJson) {

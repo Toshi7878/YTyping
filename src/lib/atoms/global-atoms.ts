@@ -1,7 +1,6 @@
 import { atom, type ExtractAtomValue, getDefaultStore, useAtomValue, useSetAtom } from "jotai";
 import { atomWithReset, atomWithStorage, RESET } from "jotai/utils";
 import type { ReactNode } from "react";
-import { useCallback } from "react";
 
 const store = getDefaultStore();
 
@@ -76,13 +75,13 @@ export const useGlobalLoadingState = () => useAtomValue(globalLoadingAtom, { sto
 export const useGlobalLoadingOverlay = () => {
   const setLoadingState = useSetAtom(globalLoadingAtom, { store });
 
-  const showLoading = useCallback(({ message, hideSpinner }: { message?: ReactNode; hideSpinner?: boolean } = {}) => {
+  const showLoading = ({ message, hideSpinner }: { message?: ReactNode; hideSpinner?: boolean } = {}) => {
     setLoadingState({ isLoading: true, message, hideSpinner });
-  }, []);
+  };
 
-  const hideLoading = useCallback(() => {
+  const hideLoading = () => {
     setLoadingState(RESET);
-  }, []);
+  };
 
   return { showLoading, hideLoading };
 };

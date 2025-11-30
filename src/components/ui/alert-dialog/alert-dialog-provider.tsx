@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentProps, DetailedHTMLProps, InputHTMLAttributes, PropsWithoutRef, ReactNode } from "react";
-import { createContext, useCallback, useContext, useReducer, useRef } from "react";
+import { createContext, useContext, useReducer, useRef } from "react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -119,13 +119,13 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
     resolveRef.current?.(value ?? true);
   }
 
-  const dialog = useCallback(async <T extends AlertAction>(params: T) => {
+  const dialog = async <T extends AlertAction>(params: T) => {
     dispatch(params);
 
     return new Promise<T["type"] extends "alert" | "confirm" ? boolean : string | null>((resolve) => {
       resolveRef.current = resolve;
     });
-  }, []);
+  };
 
   return (
     <AlertDialogContext.Provider value={dialog}>
@@ -170,15 +170,12 @@ type Params<T extends "alert" | "confirm" | "prompt"> = Omit<Extract<AlertAction
 export function useConfirm() {
   const dialog = useContext(AlertDialogContext);
 
-  return useCallback(
-    (params: Params<"confirm">) => {
-      return dialog({
-        ...(typeof params === "string" ? { title: params } : params),
-        type: "confirm",
-      });
-    },
-    [dialog],
-  );
+  return (params: Params<"confirm">) => {
+    return dialog({
+      ...(typeof params === "string" ? { title: params } : params),
+      type: "confirm",
+    });
+  };
 }
 
 export function usePrompt() {

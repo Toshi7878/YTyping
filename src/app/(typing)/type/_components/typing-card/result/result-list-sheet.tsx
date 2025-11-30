@@ -1,6 +1,6 @@
 "use client";
 import { Ticker } from "@pixi/ticker";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { writeResultCards } from "@/app/(typing)/type/_lib/atoms/ref";
 import {
   setLineResultSheet,
@@ -48,18 +48,15 @@ const ResultLineList = () => {
     writeResultCards(cardRefs.current);
   }, [sceneGroup]);
 
-  const practiceReplayCardClick = useCallback(
-    (lineIndex: number) => {
-      if (!map) return;
-      const seekCount = Math.max(0, map.typingLineIndexes[lineIndex - 1] ?? 0);
+  const practiceReplayCardClick = (lineIndex: number) => {
+    if (!map) return;
+    const seekCount = Math.max(0, map.typingLineIndexes[lineIndex - 1] ?? 0);
 
-      moveSetLine(seekCount);
-      setLineSelectIndex(lineIndex);
-    },
-    [map],
-  );
+    moveSetLine(seekCount);
+    setLineSelectIndex(lineIndex);
+  };
 
-  const endCardClick = useCallback((lineIndex: number) => {
+  const endCardClick = (lineIndex: number) => {
     let nextTypedCount = 0;
     const typedElements = cardRefs.current[lineIndex]?.querySelectorAll<HTMLElement>(".typed");
     if (!typedElements) return;
@@ -100,7 +97,7 @@ const ResultLineList = () => {
       ticker.start();
       setLineSelectIndex(lineIndex);
     }
-  }, []);
+  };
 
   let lineIndex = 0;
   const scoreCount = 0;

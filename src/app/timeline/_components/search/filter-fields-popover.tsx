@@ -1,6 +1,6 @@
 "use client";
 import type { SetStateAction } from "jotai";
-import { type ComponentProps, type Dispatch, useCallback } from "react";
+import type { ComponentProps, Dispatch } from "react";
 import {
   useSearchResultClearRateState,
   useSearchResultKpmState,
@@ -138,12 +138,9 @@ const SearchRange = ({
 }: SearchRangeProps & Omit<ComponentProps<typeof DualRangeSlider>, "value" | "label">) => {
   const setSearchParams = useSetSearchParams();
 
-  const handleValueChange = useCallback(
-    (newValue: number[]) => {
-      setValue({ min: newValue[0] ?? 0, max: newValue[1] ?? 0 });
-    },
-    [setValue],
-  );
+  const handleValueChange = (newValue: number[]) => {
+    setValue({ min: newValue[0] ?? 0, max: newValue[1] ?? 0 });
+  };
 
   const displayValue = formatDisplayValue(value, label, max ?? 0, isMaxLabel);
 

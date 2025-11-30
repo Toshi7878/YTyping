@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 type Debounce = (fn: () => void | Promise<void>) => void;
 
@@ -14,29 +14,26 @@ export const useDebounce = (timeout: number): UseDebounceReturn => {
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [isPending, setIsPending] = useState(false);
 
-  const debounce: Debounce = useCallback(
-    (fn) => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
+  const debounce: Debounce = (fn) => {
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
 
-      setIsPending(true);
+    setIsPending(true);
 
-      timer.current = setTimeout(() => {
-        void fn();
-        setIsPending(false);
-      }, timeout);
-    },
-    [timeout],
-  );
+    timer.current = setTimeout(() => {
+      void fn();
+      setIsPending(false);
+    }, timeout);
+  };
 
-  const cancel = useCallback(() => {
+  const cancel = () => {
     if (timer.current) {
       clearTimeout(timer.current);
       timer.current = undefined;
     }
     setIsPending(false);
-  }, []);
+  };
 
   return { debounce, isPending, cancel };
 };
