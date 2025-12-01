@@ -66,7 +66,7 @@ export const NewMapPopover = () => {
       </TooltipWrapper>
       <PopoverContent
         onOpenAutoFocus={() => inputRef.current?.focus()}
-        className="w-full p-1 md:w-[640px]"
+        className="p-1 sm:w-[640px]"
         side="bottom"
         align="end"
         sideOffset={8}
@@ -81,7 +81,7 @@ export const NewMapPopover = () => {
               autoComplete="off"
               ref={inputRef}
             />
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4 sm:justify-between justify-end flex-wrap-reverse">
               <CreateMapBackUpButton backupData={backupMapInfo} onOpenChange={setOpen} />
               <Button size="lg" className="w-30" type="submit" disabled={!extractedVideoId}>
                 作成

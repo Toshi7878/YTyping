@@ -222,8 +222,31 @@ const lineAtom = atomWithReset<{ typingWord: TypingWord; lyrics: string }>({
   lyrics: "",
 });
 const typingWordAtom = focusAtom(lineAtom, (optic) => optic.prop("typingWord"));
+const displayTypingWordAtom = atom((get) => {
+  const typingWord = get(typingWordAtom);
+
+  const correct = typingWord.correct;
+
+  const nextChar = {
+    kana: typingWord.nextChunk.kana,
+    roma: typingWord.nextChunk.romaPatterns[0] ?? "",
+  };
+
+  const remainWord = {
+    kana: typingWord.wordChunks
+      .map((chunk) => chunk.kana)
+      .join("")
+      .slice(0, 60),
+    roma: typingWord.wordChunks
+      .map((chunk) => chunk.romaPatterns[0])
+      .join("")
+      .slice(0, 60),
+  };
+
+  return { correct, nextChar, remainWord };
+});
 const lyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics"));
-export const useTypingWordState = () => useAtomValue(typingWordAtom, { store });
+export const useTypingWordState = () => useAtomValue(displayTypingWordAtom, { store });
 export const setTypingWord = (value: ExtractAtomValue<typeof typingWordAtom>) => store.set(typingWordAtom, value);
 export const readTypingWord = () => store.get(typingWordAtom);
 export const useLyricsState = () => useAtomValue(lyricsAtom, { store });

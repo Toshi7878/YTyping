@@ -97,7 +97,7 @@ export const SettingPopover = () => {
         <SettingButton />
       </PopoverTrigger>
       <PopoverContent
-        className={cn(isMdScreen ? "w-xl p-4" : "w-screen p-4")}
+        className="sm:w-xl w-screen p-4"
         align={isMdScreen ? "end" : "center"}
         side="bottom"
         sideOffset={10}

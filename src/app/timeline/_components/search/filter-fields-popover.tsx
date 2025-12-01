@@ -33,7 +33,7 @@ export const FilterFieldsPopover = () => {
       <PopoverTrigger asChild>
         <Button variant="outline">詳細フィルター</Button>
       </PopoverTrigger>
-      <PopoverContent className="border-border w-xl" align="start">
+      <PopoverContent className="sm:w-fit w-screen" align="start">
         <SearchModeRadioCardGroup />
         <SearchRange
           label="kpm"
@@ -90,7 +90,7 @@ const SearchModeRadioCardGroup = () => {
       onValueChange={(value: (typeof RESULT_INPUT_METHOD_TYPES)[number] | "all") =>
         setMode(value === "all" ? null : value)
       }
-      className="flex gap-1"
+      className="flex gap-1 flex-wrap"
       onKeyDown={onKeyDown}
     >
       {MODE_RADIO_CARDS.map((option) => {

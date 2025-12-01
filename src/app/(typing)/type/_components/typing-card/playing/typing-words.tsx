@@ -1,4 +1,4 @@
-import type { InputMode, TypingWord } from "lyrics-typing-engine";
+import type { InputMode } from "lyrics-typing-engine";
 import type { HTMLAttributes } from "react";
 import { useLayoutEffect, useRef } from "react";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 
 export const TypingWords = () => {
-  const typingWord = useTypingWordState();
+  const { correct, nextChar, remainWord } = useTypingWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
   const builtMap = useBuiltMapState();
@@ -34,17 +34,17 @@ export const TypingWords = () => {
   const { otherStatus } = replayRankingResult ?? {};
   const isCaseSensitive = otherStatus?.isCaseSensitive ?? (builtMap?.isCaseSensitive || isCaseSensitiveTypingOptions);
 
-  const isLineCompleted = !typingWord.nextChunk.kana && !!typingWord.correct.kana;
+  const isLineCompleted = !nextChar.kana && !!correct.kana;
 
-  const mainWord = wordDisplay.match(/^KANA_/) || inputMode === "kana" ? "kana" : "roma";
+  const mainWord = wordDisplay.startsWith("KANA_") || inputMode === "kana" ? "kana" : "roma";
 
   const style = {
     kanaLetterSpacing: `${kanaWordSpacing.toFixed(2)}em`,
     romaLetterSpacing: `${romaWordSpacing.toFixed(2)}em`,
   };
 
-  const mainCorrect = mainWord === "kana" ? typingWord.correct.kana : typingWord.correct.roma;
-  const subCorrect = mainWord === "kana" ? typingWord.correct.roma : typingWord.correct.kana;
+  const mainCorrect = mainWord === "kana" ? correct.kana : correct.roma;
+  const subCorrect = mainWord === "kana" ? correct.roma : correct.kana;
   const { mainRefs, subRefs } = useWordScroll(
     mainCorrect,
     subCorrect,
@@ -63,8 +63,8 @@ export const TypingWords = () => {
       <Word
         id="main_word"
         correct={mainCorrect}
-        nextChar={mainWord === "kana" ? typingWord.nextChunk.kana : (typingWord.nextChunk.romaPatterns[0] ?? "")}
-        word={mainWord === "kana" ? getKanaWord(typingWord.wordChunks) : getRomaWord(typingWord.wordChunks)}
+        nextChar={mainWord === "kana" ? nextChar.kana : nextChar.roma}
+        word={mainWord === "kana" ? remainWord.kana : remainWord.roma}
         isLineCompleted={isLineCompleted}
         nextWord={mainWord === "kana" ? nextLyrics.kanaWord : nextLyrics.romaWord}
         className={cn(
@@ -82,8 +82,8 @@ export const TypingWords = () => {
       <Word
         id="sub_word"
         correct={subCorrect}
-        nextChar={mainWord === "kana" ? (typingWord.nextChunk.romaPatterns[0] ?? "") : typingWord.nextChunk.kana}
-        word={mainWord === "kana" ? getRomaWord(typingWord.wordChunks) : getKanaWord(typingWord.wordChunks)}
+        nextChar={mainWord === "kana" ? nextChar.roma : nextChar.kana}
+        word={mainWord === "kana" ? remainWord.roma : remainWord.kana}
         isLineCompleted={isLineCompleted}
         nextWord={mainWord === "kana" ? nextLyrics.romaWord : nextLyrics.kanaWord}
         className={cn(
@@ -100,20 +100,6 @@ export const TypingWords = () => {
       />
     </div>
   );
-};
-
-const getKanaWord = (wordChunks: TypingWord["wordChunks"]) => {
-  return wordChunks
-    .map((chunk) => chunk.kana)
-    .join("")
-    .slice(0, 60);
-};
-
-const getRomaWord = (wordChunks: TypingWord["wordChunks"]) => {
-  return wordChunks
-    .map((chunk) => chunk.romaPatterns[0])
-    .join("")
-    .slice(0, 60);
 };
 
 const getWordCaseClass = (targetType: "kana" | "roma", isCaseSensitive: boolean, wordDisplay: string) => {
