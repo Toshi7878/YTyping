@@ -25,7 +25,7 @@ export const DEFAULT_TYPING_OPTIONS = {
   romaWordSpacing: 0.02,
   typeSound: false,
   missSound: false,
-  completedTypeSound: false,
+  completedTypeSound: true,
   nextDisplay: "LYRICS" as (typeof nextDisplayEnum.enumValues)[number],
   lineCompletedDisplay: "NEXT_WORD" as (typeof lineCompletedDisplayEnum.enumValues)[number],
   timeOffsetAdjustKey: "CTRL_LEFT_RIGHT" as (typeof timeOffsetAdjustKeyEnum.enumValues)[number],
