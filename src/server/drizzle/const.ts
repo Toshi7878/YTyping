@@ -16,7 +16,7 @@ export const DEFAULT_TYPING_OPTIONS = {
   timeOffset: 0,
   mainWordScrollStart: 35,
   subWordScrollStart: 40,
-  isSmoothScroll: false,
+  isSmoothScroll: true,
   mainWordFontSize: 100,
   subWordFontSize: 90,
   mainWordTopPosition: 0,
