@@ -230,7 +230,7 @@ importers:
         version: 0.31.7
       supabase:
         specifier: ^2.48.3
-        version: 2.63.1
+        version: 2.64.2
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -4263,8 +4263,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  supabase@2.63.1:
-    resolution: {integrity: sha512-VptpJrw8sSG8xE6Pda/jg5Vg2f3jt15nJZ0crPvRKGpYkMJi7EjPapbOonRxIH5JvTd98x+lshsLnKR2mkoTRA==}
+  supabase@2.64.2:
+    resolution: {integrity: sha512-EugYwwNGIcJSuyPPvUR02KYn5YqM9M/ZdgEbWZli1J4HQZafazVYsCGCpApRozzUG314tZBsMylNCZzc9nfvRw==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -8841,7 +8841,7 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.28.5
 
-  supabase@2.63.1:
+  supabase@2.64.2:
     dependencies:
       bin-links: 6.0.0
       https-proxy-agent: 7.0.6
