@@ -163,9 +163,9 @@ const Word = ({
       {isLineCompleted && isNextWordDisplay ? (
         <span className="next-line-word text-word-nextWord">{nextWord.replace(/ /g, " ") || "\u200B"}</span>
       ) : (
-        <div ref={refs.viewportRef} className="overflow-hidden contain-[layout_paint]">
+        <div ref={refs.viewportRef} className="overflow-hidden contain-content">
           {"\u200B"}
-          <div ref={refs.trackRef} className="inline-block will-change-transform transform-gpu backface-hidden">
+          <div ref={refs.trackRef} className="inline-block">
             <span className={cn("opacity-word-correct", isLineCompleted ? "text-word-completed" : "text-word-correct")}>
               {correct.replace(/ /g, "ˍ")}
             </span>
