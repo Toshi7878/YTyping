@@ -1,11 +1,13 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMapIdState } from "../../_lib/atoms/hydrate";
 import { setTabName, TAB_NAMES, useTabNameState } from "../../_lib/atoms/state";
 import { EditorCard } from "./editor/card";
-import { MapInfoFormCard } from "./info-form/card";
+import { AddMapInfoFormCard, EditMapInfoFormCard } from "./info-form/card";
 import { SettingsCard } from "./settings/card";
 
 export const EditTabs = () => {
+  const mapId = useMapIdState();
   const tabName = useTabNameState();
 
   return (
@@ -25,7 +27,7 @@ export const EditTabs = () => {
       </TabsList>
 
       <TabsContent value="情報&保存" forceMount>
-        <MapInfoFormCard />
+        {mapId ? <EditMapInfoFormCard /> : <AddMapInfoFormCard />}
       </TabsContent>
 
       <TabsContent value="エディター" forceMount>

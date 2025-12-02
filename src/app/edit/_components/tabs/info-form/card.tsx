@@ -57,8 +57,74 @@ import { SuggestionTags } from "./suggestion-tags";
 
 export const TAG_MAX_LEN = 10;
 
-export const MapInfoFormCard = () => {
+export const EditMapInfoFormCard = () => {
   const mapId = useMapIdState();
+  const trpc = useTRPC();
+
+  const { data: mapInfo } = useQuery(
+    trpc.map.getMapInfo.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
+  );
+
+  const videoId = useVideoIdState();
+
+  const form = useForm({
+    resolver: zodResolver(MapInfoFormSchema),
+    shouldUnregister: false,
+    values: {
+      title: mapInfo?.title ?? "",
+      artistName: mapInfo?.artistName ?? "",
+      musicSource: mapInfo?.musicSource ?? "",
+      previewTime: mapInfo?.previewTime ?? 0,
+      creatorComment: mapInfo?.creator.comment ?? "",
+      tags: mapInfo?.tags ?? [],
+      videoId: videoId,
+    },
+    resetOptions: {
+      keepDirtyValues: true,
+    },
+  });
+
+  const onSubmit = useOnSubmit(form);
+
+  const tags = form.watch("tags");
+
+  return (
+    <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
+          <VideoIdInput />
+
+          <div className="flex w-full gap-4">
+            <FloatingLabelInputFormField name="title" label="曲名" required />
+            <FloatingLabelInputFormField name="artistName" label="アーティスト名" required />
+          </div>
+          <div className="flex w-full gap-4">
+            <FloatingLabelInputFormField name="musicSource" label="ソース" />
+            <FloatingLabelInputFormField name="creatorComment" label="コメント" />
+          </div>
+          <TagInputFormField
+            name="tags"
+            maxTags={TAG_MAX_LEN}
+            label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LEN}`}
+            maxLength={100}
+          />
+          <SuggestionTags />
+
+          <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
+              <UpsertButton />
+              <TypeLinkButton mapId={mapId ?? 0} />
+            </div>
+
+            <PreviewTimeInput />
+          </div>
+        </form>
+      </Form>
+    </CardWithContent>
+  );
+};
+
+export const AddMapInfoFormCard = () => {
   const trpc = useTRPC();
 
   const [{ isBackup }] = useQueryStates({ isBackup: searchParamsParsers.isBackup });
@@ -66,18 +132,11 @@ export const MapInfoFormCard = () => {
   const creatorId = useCreatorIdState();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
 
-  const { data: mapInfo } = useQuery(
-    trpc.map.getMapInfo.queryOptions(
-      { mapId: mapId ?? 0 },
-      { enabled: !!mapId && !isBackup, staleTime: Infinity, gcTime: Infinity },
-    ),
-  );
-
   const { data: backupMap } = useQuery(
     queryOptions({
       queryKey: ["backup"],
       queryFn: fetchBackupMap,
-      enabled: isBackup && !mapId,
+      enabled: isBackup,
     }),
   );
 
@@ -88,12 +147,12 @@ export const MapInfoFormCard = () => {
     resolver: zodResolver(MapInfoFormSchema),
     shouldUnregister: false,
     values: {
-      title: mapInfo?.title ?? backupMap?.title ?? "",
-      artistName: mapInfo?.artistName ?? backupMap?.artistName ?? "",
-      musicSource: mapInfo?.musicSource ?? backupMap?.musicSource ?? "",
-      previewTime: mapInfo?.previewTime ?? backupMap?.previewTime ?? 0,
-      creatorComment: mapInfo?.creator.comment ?? backupMap?.creatorComment ?? "",
-      tags: mapInfo?.tags ?? backupMap?.tags ?? [],
+      title: backupMap?.title ?? "",
+      artistName: backupMap?.artistName ?? "",
+      musicSource: backupMap?.musicSource ?? "",
+      previewTime: backupMap?.previewTime ?? 0,
+      creatorComment: backupMap?.creatorComment ?? "",
+      tags: backupMap?.tags ?? [],
       videoId: videoId,
     },
 
@@ -105,7 +164,7 @@ export const MapInfoFormCard = () => {
   const {
     data: geminiInfoData,
     error: geminiError,
-    isFetching,
+    isFetching: isGeminiFetching,
   } = useQuery(
     trpc.gemini.generateMapInfo.queryOptions(
       { videoId },
@@ -130,65 +189,60 @@ export const MapInfoFormCard = () => {
     if (geminiInfoData) {
       const { title, artistName, source } = geminiInfoData;
 
-      if (!mapId && !isBackup) {
+      if (!isBackup) {
         form.setValue("title", title);
         form.setValue("artistName", artistName);
         form.setValue("musicSource", source);
       }
     }
-  }, [form, geminiInfoData, mapId, isBackup]);
+  }, [form, geminiInfoData, isBackup]);
 
   useEffect(() => {
-    if (!mapId) {
-      const subscription = form.watch((value) => {
-        if (!value || !mapId) return;
+    const subscription = form.watch((value) => {
+      if (!value) return;
 
-        debounce(() => {
-          void backupMapInfo({
-            videoId,
-            title: value.title || "",
-            artistName: value.artistName || "",
-            musicSource: value.musicSource || "",
-            creatorComment: value.creatorComment || "",
-            tags: value.tags?.filter((tag): tag is string => typeof tag === "string" && tag !== undefined) || [],
-            previewTime: Number(value.previewTime) || 0,
-          });
+      debounce(() => {
+        void backupMapInfo({
+          videoId,
+          title: value.title || "",
+          artistName: value.artistName || "",
+          musicSource: value.musicSource || "",
+          creatorComment: value.creatorComment || "",
+          tags: value.tags?.filter((tag): tag is string => typeof tag === "string" && tag !== undefined) || [],
+          previewTime: Number(value.previewTime) || 0,
         });
       });
-      return () => subscription.unsubscribe();
-    }
-  }, [mapId, videoId, form, debounce]);
+    });
+    return () => subscription.unsubscribe();
+  }, [videoId, form, debounce]);
 
   const onSubmit = useOnSubmit(form);
 
-  const isGeminiLoading = isFetching && !mapId;
   const tags = form.watch("tags");
 
   return (
     <CardWithContent className={{ card: "py-3", cardContent: "flex flex-col gap-6" }}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
-          {!!mapId && <VideoIdInput />}
-
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
-              disabled={isGeminiLoading}
+              disabled={isGeminiFetching}
               name="title"
-              label={isGeminiLoading ? "曲名を生成中..." : "曲名"}
+              label={isGeminiFetching ? "曲名を生成中..." : "曲名"}
               required
             />
             <FloatingLabelInputFormField
-              disabled={isGeminiLoading}
+              disabled={isGeminiFetching}
               name="artistName"
-              label={isGeminiLoading ? "アーティスト名を生成中..." : "アーティスト名"}
+              label={isGeminiFetching ? "アーティスト名を生成中..." : "アーティスト名"}
               required
             />
           </div>
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
-              disabled={isGeminiLoading}
+              disabled={isGeminiFetching}
               name="musicSource"
-              label={isGeminiLoading ? "ソースを生成中..." : "ソース"}
+              label={isGeminiFetching ? "ソースを生成中..." : "ソース"}
             />
             <FloatingLabelInputFormField name="creatorComment" label="コメント" />
           </div>
@@ -198,18 +252,13 @@ export const MapInfoFormCard = () => {
             label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LEN}`}
             maxLength={100}
           />
-          <SuggestionTags isGeminiLoading={isGeminiLoading} geminiTags={geminiInfoData?.otherTags ?? []} />
-
-          <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <UpsertButton />
-              {!!mapId && <TypeLinkButton mapId={mapId} />}
-            </div>
-
-            <PreviewTimeInput />
-          </div>
+          <SuggestionTags isAIFetching={isGeminiFetching} aiTags={geminiInfoData?.otherTags ?? []} />
         </form>
       </Form>
+      <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
+        <UpsertButton />
+        <PreviewTimeInput />
+      </div>
     </CardWithContent>
   );
 };
@@ -279,12 +328,11 @@ const VideoIdInput = () => {
 };
 
 const PreviewTimeInput = () => {
-  const { watch, setValue, getValues } = useFormContext();
-  const previewTime = watch("previewTime");
+  const { setValue, getValues } = useFormContext();
 
   const handlePreviewClick = () => {
     playYTPlayer();
-    seekYTPlayer(Number(previewTime));
+    seekYTPlayer(Number(getValues("previewTime")));
     setPreventEditorTabAutoFocus(true);
   };
 
@@ -310,9 +358,7 @@ const PreviewTimeInput = () => {
             min="0"
             step="0.001"
             onFocus={(e) => e.target.select()}
-            onChange={() => {
-              setCanUpload(true);
-            }}
+            onChange={() => setCanUpload(true)}
             inputMode="decimal"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -322,13 +368,13 @@ const PreviewTimeInput = () => {
               if (e.key === "ArrowUp") {
                 e.preventDefault();
                 const currentValue = Number(getValues("previewTime")) || 0;
-                setValue("previewTime", (currentValue + 0.05).toFixed(3));
+                setValue("previewTime", (currentValue + 0.05).toFixed(3), { shouldDirty: true });
                 setCanUpload(true);
               }
               if (e.key === "ArrowDown") {
                 e.preventDefault();
                 const currentValue = Number(getValues("previewTime")) || 0;
-                setValue("previewTime", Math.max(0, currentValue - 0.05).toFixed(3));
+                setValue("previewTime", Math.max(0, currentValue - 0.05).toFixed(3), { shouldDirty: true });
                 setCanUpload(true);
               }
             }}
