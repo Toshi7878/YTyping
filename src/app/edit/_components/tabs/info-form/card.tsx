@@ -55,7 +55,7 @@ import {
 import { getThumbnailQuality } from "../../../_lib/utils/get-thumbail-quality";
 import { SuggestionTags } from "./suggestion-tags";
 
-export const TAG_MAX_LEN = 10;
+export const TAG_MAX_LENGTH = 10;
 
 export const EditMapInfoFormCard = () => {
   const mapId = useMapIdState();
@@ -104,8 +104,8 @@ export const EditMapInfoFormCard = () => {
           </div>
           <TagInputFormField
             name="tags"
-            maxTags={TAG_MAX_LEN}
-            label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LEN}`}
+            maxTags={TAG_MAX_LENGTH}
+            label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LENGTH}`}
             maxLength={100}
           />
           <SuggestionTags />
@@ -248,17 +248,17 @@ export const AddMapInfoFormCard = () => {
           </div>
           <TagInputFormField
             name="tags"
-            maxTags={TAG_MAX_LEN}
-            label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LEN}`}
+            maxTags={TAG_MAX_LENGTH}
+            label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LENGTH}`}
             maxLength={100}
           />
           <SuggestionTags isAIFetching={isGeminiFetching} aiTags={geminiInfoData?.otherTags ?? []} />
+          <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
+            <UpsertButton />
+            <PreviewTimeInput />
+          </div>
         </form>
       </Form>
-      <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
-        <UpsertButton />
-        <PreviewTimeInput />
-      </div>
     </CardWithContent>
   );
 };

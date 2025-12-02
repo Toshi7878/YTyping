@@ -5,7 +5,7 @@ import type { badgeVariants } from "@/components/ui/badge";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { TAG_MAX_LEN } from "./card";
+import { TAG_MAX_LENGTH } from "./card";
 
 interface SuggestionTagsProps {
   isAIFetching?: boolean;
@@ -112,12 +112,12 @@ const SuggestionTagBadge = ({ label, variant }: TagBadgeProps) => {
     <Badge
       className={cn(
         "cursor-pointer rounded-lg text-sm opacity-70 hover:opacity-100",
-        tags.length >= TAG_MAX_LEN && "cursor-default opacity-50 hover:opacity-50",
+        tags.length >= TAG_MAX_LENGTH && "cursor-default opacity-50 hover:opacity-50",
       )}
       variant={variant}
       onClick={() => {
         const currentTags = tags;
-        if (currentTags.length < TAG_MAX_LEN) {
+        if (currentTags.length < TAG_MAX_LENGTH) {
           control.setValue("tags", [...currentTags, label], {
             shouldDirty: true,
             shouldTouch: true,
