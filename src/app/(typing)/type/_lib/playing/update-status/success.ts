@@ -20,28 +20,20 @@ export const updateSuccessStatus = ({
   constantRemainLineTime: number;
   updatePoint: number;
 }) => {
-  const { type: lineTypeCount } = readLineSubstatus();
   const { playSpeed } = readPlaySpeed();
 
   setTypingStatus((prev) => {
-    let { point } = prev;
-    if (lineTypeCount === 1) point = updatePoint;
-    else if (updatePoint > 0) point = prev.point + updatePoint;
-
     const type = prev.type + 1;
-
-    let { timeBonus } = prev;
-    let { score } = prev;
-    let { rank } = prev;
+    const point = prev.point + updatePoint
 
     if (isCompleted) {
-      const timeBonusValue = Math.floor(constantRemainLineTime * playSpeed * 100);
-      timeBonus = timeBonusValue;
-      score = prev.score + point + timeBonusValue;
-      rank = calcCurrentRank(score);
+      const timeBonus = Math.floor(constantRemainLineTime * playSpeed * 100);
+      const score = prev.score + point + timeBonus;
+      return { ...prev, point, type, timeBonus, score, line:prev.line - 1, rank:calcCurrentRank(score) };
+
     }
 
-    return { ...prev, point, type, timeBonus, score, line: isCompleted ? prev.line - 1 : prev.line, rank };
+    return { ...prev, point, type };
   });
 
   setCombo((prev) => prev + 1);
