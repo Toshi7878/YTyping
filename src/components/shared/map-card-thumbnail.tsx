@@ -55,6 +55,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
               src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
               fill
               className={cn("rounded-md", imageClassName)}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         </>
