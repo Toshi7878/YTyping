@@ -24,13 +24,12 @@ export const updateSuccessStatus = ({
 
   setTypingStatus((prev) => {
     const type = prev.type + 1;
-    const point = prev.point + updatePoint
+    const point = prev.point + updatePoint;
 
     if (isCompleted) {
       const timeBonus = Math.floor(constantRemainLineTime * playSpeed * 100);
       const score = prev.score + point + timeBonus;
-      return { ...prev, point, type, timeBonus, score, line:prev.line - 1, rank:calcCurrentRank(score) };
-
+      return { ...prev, point, type, timeBonus, score, line: prev.line - 1, rank: calcCurrentRank(score) };
     }
 
     return { ...prev, point, type };
