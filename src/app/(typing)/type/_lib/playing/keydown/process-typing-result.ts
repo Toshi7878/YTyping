@@ -14,20 +14,19 @@ export const processTypingInputResult = (typingInputResult: TypingInputResult) =
   const { constantLineTime, constantRemainLineTime } = getRemainLineTime();
 
   if (successKey) {
+    triggerTypeSound({ isCompleted });
     setTypingWord(nextTypingWord);
     updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint });
+    updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
 
     const { isPaused } = readUtilityParams();
+
     if (!isPaused) {
+      updateKpmOnTyping({ constantLineTime });
       if (isCompleted) {
         updateKpmOnLineEnded({ constantLineTime });
-      } else {
-        updateKpmOnTyping({ constantLineTime });
       }
     }
-
-    triggerTypeSound({ isCompleted });
-    updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
 
     if (isCompleted) {
       handleLineCompleted();
