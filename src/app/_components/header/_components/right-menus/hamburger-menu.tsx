@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useIsDesktopDeviceState } from "@/lib/atoms/user-agent";
-import { SignInDropdownItems } from "./auth/auth-dropdown-items";
+import { LogOutDropdownItem, SignInDropdownItems } from "./auth/auth-dropdown-items";
 import { ThemeDropdownSubmenu } from "./theme-dropdown-sub-menu";
 
 interface HamburgerMenuProps {
@@ -47,6 +47,12 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
             <UserMenuDropdownItems userId={session.user.id} />
           ) : (
             !session && <SignInDropdownItems />
+          )}
+          {session?.user?.name && (
+            <>
+              <DropdownMenuSeparator />
+              <LogOutDropdownItem />
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
