@@ -1,5 +1,4 @@
 import type { InputMode } from "lyrics-typing-engine";
-import type { HTMLAttributes } from "react";
 import { useLayoutEffect, useRef } from "react";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import {
@@ -140,32 +139,22 @@ interface WordProps {
     trackRef: React.RefObject<HTMLDivElement | null>;
     caretRef: React.RefObject<HTMLSpanElement | null>;
   };
+  className: string;
+  style: React.CSSProperties;
 }
 
-const Word = ({
-  correct,
-  nextChar,
-  word,
-  isLineCompleted,
-  nextWord,
-  refs,
-  ...rest
-}: WordProps & HTMLAttributes<HTMLDivElement>) => {
+const Word = ({ correct, nextChar, word, isLineCompleted, nextWord, refs, className, style }: WordProps) => {
   const { lineCompletedDisplay } = useTypingOptionsState();
   const isNextWordDisplay = lineCompletedDisplay === "NEXT_WORD";
 
   return (
-    <div
-      {...rest}
-      className={cn("relative w-full", rest.className)}
-      style={{ fontSize: rest.style?.fontSize, bottom: rest.style?.bottom, letterSpacing: rest.style?.letterSpacing }}
-    >
+    <div className={cn("relative w-full", className)} style={style}>
       {isLineCompleted && isNextWordDisplay ? (
         <span className="next-line-word text-word-nextWord">{nextWord.replace(/ /g, " ") || "\u200B"}</span>
       ) : (
-        <div ref={refs.viewportRef} className="overflow-hidden contain-[layout_paint]">
+        <div ref={refs.viewportRef} className="overflow-hidden contain-content">
           {"\u200B"}
-          <div ref={refs.trackRef} className="inline-block will-change-transform transform-gpu backface-hidden">
+          <div ref={refs.trackRef} className="inline-block">
             <span className={cn("opacity-word-correct", isLineCompleted ? "text-word-completed" : "text-word-correct")}>
               {correct.replace(/ /g, "ˍ")}
             </span>
