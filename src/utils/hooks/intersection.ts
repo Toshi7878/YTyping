@@ -1,6 +1,14 @@
 import type { UseInfiniteQueryResult } from "@tanstack/react-query";
 import type { IntersectionOptions } from "react-intersection-observer";
-import { useOnInView } from "react-intersection-observer";
+import { useInView, useOnInView } from "react-intersection-observer";
+
+export const useInViewRender = (options: IntersectionOptions = {}) => {
+  const { initialInView = false, rootMargin = "400px", ...rest } = options;
+
+  const { ref, inView } = useInView({ triggerOnce: true, rootMargin, initialInView, ...rest });
+
+  return { ref, shouldRender: inView };
+};
 
 type UseInfiniteScrollProps<TData = unknown, TError = unknown> = Pick<
   UseInfiniteQueryResult<TData, TError>,

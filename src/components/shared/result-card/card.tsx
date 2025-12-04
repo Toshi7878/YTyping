@@ -8,7 +8,7 @@ import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/compon
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { ResultWithMapItem } from "@/server/api/routers/result";
-import { useLazyRender } from "@/utils/hooks/use-lazy-render";
+import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
@@ -18,11 +18,11 @@ import { ResultBadgesMobile, ResultStatusBadges } from "./status-badges";
 
 interface ResultCardProps {
   result: ResultWithMapItem;
-  priority?: boolean;
+  initialInView: boolean;
 }
 
-export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
-  const { ref, shouldRender } = useLazyRender({ priority });
+export const ResultCard = ({ result, initialInView = false }: ResultCardProps) => {
+  const { ref, shouldRender } = useInViewRender({ initialInView });
   const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
 
   return (
@@ -65,7 +65,7 @@ export const ResultCard = ({ result, priority = false }: ResultCardProps) => {
             alt={shouldRender ? result.map.info.title : ""}
             media={shouldRender ? result?.map.media : undefined}
             size="timeline"
-            loading={priority ? "eager" : "lazy"}
+            loading={initialInView ? "eager" : "lazy"}
           />
           {shouldRender && <MapInfo map={result.map} className="flex-1" />}
           {shouldRender && <ResultStatusBadges result={result} className="hidden md:flex" />}

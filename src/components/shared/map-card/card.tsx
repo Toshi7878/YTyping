@@ -6,7 +6,7 @@ import { CardWithContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { MapListItem } from "@/server/api/routers/map-list";
 import { formatTime } from "@/utils/format-time";
-import { useLazyRender } from "@/utils/hooks/use-lazy-render";
+import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
@@ -16,18 +16,18 @@ import { UserNameLinkText } from "../text/user-name-link-text";
 interface MapCardProps {
   map: MapListItem;
   className?: string;
-  priority?: boolean;
+  initialInView?: boolean;
 }
 
-export const MapCard = ({ map, className, priority = false }: MapCardProps) => {
-  const { ref, shouldRender } = useLazyRender({ priority });
+export const MapCard = ({ map, className, initialInView = false }: MapCardProps) => {
+  const { ref, shouldRender } = useInViewRender({ initialInView });
   return (
     <CardWithContent variant="map" className={{ card: className }} ref={ref}>
       <MapLeftThumbnail
         alt={shouldRender ? map.info.title : ""}
         media={shouldRender ? map.media : undefined}
         size="home"
-        loading={priority ? "eager" : "lazy"}
+        loading={initialInView ? "eager" : "lazy"}
       />
       {shouldRender && <MapInfo map={map} />}
     </CardWithContent>

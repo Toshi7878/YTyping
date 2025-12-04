@@ -7,7 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { resultListSearchParams } from "@/lib/search-params/result-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
+import { useInfiniteScroll } from "@/utils/hooks/intersection";
 import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
 
 export const UsersResultList = () => {
@@ -35,7 +35,7 @@ export const UsersResultList = () => {
     <section className={cn("grid grid-cols-1 gap-3", isSearching && "opacity-20")}>
       {data.pages.map((page, pageIndex) =>
         page.items.map((result) => (
-          <ResultCard key={result.id} result={result} priority={data.pages.length - 1 === pageIndex} />
+          <ResultCard key={result.id} result={result} initialInView={data.pages.length - 1 === pageIndex} />
         )),
       )}
       {hasNextPage && <Spinner ref={ref} />}

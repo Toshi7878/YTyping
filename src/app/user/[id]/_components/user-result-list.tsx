@@ -6,7 +6,7 @@ import { ResultCard } from "@/components/shared/result-card/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Large, Small } from "@/components/ui/typography";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
+import { useInfiniteScroll } from "@/utils/hooks/intersection";
 
 export const UserResultList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
@@ -31,8 +31,10 @@ export const UserResultList = ({ id }: { id: string }) => {
     <div className="space-y-4">
       <StatsList userId={id} />
       <section className="grid grid-cols-1 gap-3">
-        {data.pages.map((page) =>
-          page.items.map((result) => <ResultCard key={result.id} result={result} priority={data.pages.length === 1} />),
+        {data.pages.map((page, pageIndex) =>
+          page.items.map((result) => (
+            <ResultCard key={result.id} result={result} initialInView={data.pages.length - 1 === pageIndex} />
+          )),
         )}
         {hasNextPage && <Spinner ref={ref} />}
       </section>

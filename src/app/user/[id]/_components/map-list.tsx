@@ -4,7 +4,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { MapCard } from "@/components/shared/map-card/card";
 import { Spinner } from "@/components/ui/spinner";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
+import { useInfiniteScroll } from "@/utils/hooks/intersection";
 
 export const UserCreatedMapList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
@@ -24,7 +24,11 @@ export const UserCreatedMapList = ({ id }: { id: string }) => {
   return (
     <section>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {data.pages.map((page) => page.items.map((map) => <MapCard key={map.id} map={map} />))}
+        {data.pages.map((page, pageIndex) =>
+          page.items.map((map) => (
+            <MapCard key={map.id} map={map} initialInView={data.pages.length - 1 === pageIndex} />
+          )),
+        )}
       </div>
 
       {hasNextPage && <Spinner ref={ref} />}
@@ -50,7 +54,11 @@ export const UserLikedMapList = ({ id }: { id: string }) => {
   return (
     <section>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {data.pages.map((page) => page.items.map((map) => <MapCard key={map.id} map={map} />))}
+        {data.pages.map((page, pageIndex) =>
+          page.items.map((map) => (
+            <MapCard key={map.id} map={map} initialInView={data.pages.length - 1 === pageIndex} />
+          )),
+        )}
       </div>
 
       {hasNextPage && <Spinner ref={ref} />}

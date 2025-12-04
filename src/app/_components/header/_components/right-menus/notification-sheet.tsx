@@ -13,7 +13,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/hooks/use-infinite-scroll";
+import { useInfiniteScroll } from "@/utils/hooks/intersection";
 
 export const NotificationSheet = () => {
   const trpc = useTRPC();
