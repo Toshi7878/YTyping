@@ -75,7 +75,7 @@ const mapListRoute = {
     const searchConditions = [
       user ? buildFilterCondition(input.filter, user) : undefined,
       user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
-      ...buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
+      buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
       buildKeywordCondition(input.keyword),
     ];
 
@@ -151,10 +151,10 @@ const mapListCountRoute = {
   getListLength: publicProcedure.input(MapFilterSearchParamsSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
-    const whereConds = [
+    const searchConditions = [
       user ? buildFilterCondition(input.filter, user) : undefined,
       user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
-      ...buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
+      buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
       buildKeywordCondition(input.keyword),
     ];
 
@@ -166,7 +166,7 @@ const mapListCountRoute = {
       .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
       .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user?.id ?? 0)))
       .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-      .where(whereConds.length ? and(...whereConds) : undefined)
+      .where(and(...searchConditions))
       .then((rows) => rows[0]?.total ?? 0);
   }),
 } satisfies TRPCRouterRecord;
@@ -237,7 +237,7 @@ function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlPa
     conditions.push(lte(MapDifficulties.romaKpmMedian, Math.round(maxRate * 100)));
   }
 
-  return conditions;
+  return and(...conditions);
 }
 
 function buildRankingStatusCondition(rankingStatus: MapListWhereParams["rankingStatus"]) {
