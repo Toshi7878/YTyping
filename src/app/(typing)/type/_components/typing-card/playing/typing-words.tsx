@@ -1,18 +1,16 @@
 import type { InputMode } from "lyrics-typing-engine";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import {
   useBuiltMapState,
   useNextLyricsState,
   usePlayingInputModeState,
   useReplayRankingResultState,
-  useTypingWordState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
-import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
+import { setMainWordElements, setSubWordElements, useIsLineCompletedState } from "../../../_lib/atoms/typing-word";
 
 export const TypingWords = () => {
-  const { correct, nextChar, remainWord } = useTypingWordState();
   const inputMode = usePlayingInputModeState();
   const nextLyrics = useNextLyricsState();
   const builtMap = useBuiltMapState();
@@ -24,33 +22,49 @@ export const TypingWords = () => {
     mainWordFontSize,
     mainWordTopPosition,
     kanaWordSpacing,
-    mainWordScrollStart,
-    subWordScrollStart,
-    isSmoothScroll,
+    lineCompletedDisplay,
     isCaseSensitive: isCaseSensitiveTypingOptions,
   } = useTypingOptionsState();
   const replayRankingResult = useReplayRankingResultState();
   const { otherStatus } = replayRankingResult ?? {};
   const isCaseSensitive = otherStatus?.isCaseSensitive ?? (builtMap?.isCaseSensitive || isCaseSensitiveTypingOptions);
 
-  const isLineCompleted = !nextChar.kana && !!correct.kana;
+  const isLineCompleted = useIsLineCompletedState();
 
   const mainWord = wordDisplay.startsWith("KANA_") || inputMode === "kana" ? "kana" : "roma";
+  const mainRefs = useRef({
+    viewportRef: { current: null as HTMLDivElement | null },
+    trackRef: { current: null as HTMLDivElement | null },
+    caretRef: { current: null as HTMLSpanElement | null },
+  }).current;
+
+  const subRefs = useRef({
+    viewportRef: { current: null as HTMLDivElement | null },
+    trackRef: { current: null as HTMLDivElement | null },
+    caretRef: { current: null as HTMLSpanElement | null },
+  }).current;
 
   const style = {
     kanaLetterSpacing: `${kanaWordSpacing.toFixed(2)}em`,
     romaLetterSpacing: `${romaWordSpacing.toFixed(2)}em`,
   };
 
-  const mainCorrect = mainWord === "kana" ? correct.kana : correct.roma;
-  const subCorrect = mainWord === "kana" ? correct.roma : correct.kana;
-  const { mainRefs, subRefs } = useWordScroll(
-    mainCorrect,
-    subCorrect,
-    isSmoothScroll,
-    mainWordScrollStart,
-    subWordScrollStart,
-  );
+  useEffect(() => {
+    if (mainRefs.viewportRef.current && mainRefs.trackRef.current && mainRefs.caretRef.current) {
+      setMainWordElements({
+        viewportRef: mainRefs.viewportRef.current,
+        trackRef: mainRefs.trackRef.current,
+        caretRef: mainRefs.caretRef.current,
+      });
+    }
+    if (subRefs.viewportRef.current && subRefs.trackRef.current && subRefs.caretRef.current) {
+      setSubWordElements({
+        viewportRef: subRefs.viewportRef.current,
+        trackRef: subRefs.trackRef.current,
+        caretRef: subRefs.caretRef.current,
+      });
+    }
+  }, []);
 
   return (
     <div
@@ -61,11 +75,8 @@ export const TypingWords = () => {
     >
       <Word
         id="main_word"
-        correct={mainCorrect}
-        nextChar={mainWord === "kana" ? nextChar.kana : nextChar.roma}
-        word={mainWord === "kana" ? remainWord.kana : remainWord.roma}
-        isLineCompleted={isLineCompleted}
         nextWord={mainWord === "kana" ? nextLyrics.kanaWord : nextLyrics.romaWord}
+        isLineCompleted={isLineCompleted}
         className={cn(
           mainWord === "kana" ? "word-kana" : "word-roma",
           getWordCaseClass(mainWord === "kana" ? "kana" : "roma", isCaseSensitive, wordDisplay),
@@ -77,14 +88,12 @@ export const TypingWords = () => {
           letterSpacing: mainWord === "kana" ? style.kanaLetterSpacing : style.romaLetterSpacing,
         }}
         refs={mainRefs}
+        isCompletedNextWord={lineCompletedDisplay === "NEXT_WORD"}
       />
       <Word
         id="sub_word"
-        correct={subCorrect}
-        nextChar={mainWord === "kana" ? nextChar.roma : nextChar.kana}
-        word={mainWord === "kana" ? remainWord.roma : remainWord.kana}
-        isLineCompleted={isLineCompleted}
         nextWord={mainWord === "kana" ? nextLyrics.romaWord : nextLyrics.kanaWord}
+        isLineCompleted={isLineCompleted}
         className={cn(
           mainWord === "kana" ? "word-roma" : "word-kana",
           getWordCaseClass(mainWord === "kana" ? "roma" : "kana", isCaseSensitive, wordDisplay),
@@ -96,6 +105,7 @@ export const TypingWords = () => {
           letterSpacing: mainWord === "kana" ? style.romaLetterSpacing : style.kanaLetterSpacing,
         }}
         refs={subRefs}
+        isCompletedNextWord={lineCompletedDisplay === "NEXT_WORD"}
       />
     </div>
   );
@@ -128,12 +138,7 @@ const getWordVisibilityClass = (targetType: "kana" | "roma", wordDisplay: string
 };
 
 interface WordProps {
-  correct: string;
-  nextChar: string;
-  word: string;
   id: string;
-  isLineCompleted: boolean;
-  nextWord: string;
   refs: {
     viewportRef: React.RefObject<HTMLDivElement | null>;
     trackRef: React.RefObject<HTMLDivElement | null>;
@@ -141,123 +146,26 @@ interface WordProps {
   };
   className: string;
   style: React.CSSProperties;
+  nextWord: string;
+  isLineCompleted: boolean;
+  isCompletedNextWord: boolean;
 }
 
-const Word = ({ correct, nextChar, word, isLineCompleted, nextWord, refs, className, style }: WordProps) => {
-  const { lineCompletedDisplay } = useTypingOptionsState();
-  const isNextWordDisplay = lineCompletedDisplay === "NEXT_WORD";
-
+const Word = ({ refs, className, style, nextWord, isLineCompleted, isCompletedNextWord }: WordProps) => {
+  const isDisplayNextWord = isLineCompleted && isCompletedNextWord;
   return (
     <div className={cn("relative w-full", className)} style={style}>
-      {isLineCompleted && isNextWordDisplay ? (
-        <span className="next-line-word text-word-nextWord">{nextWord.replace(/ /g, " ") || "\u200B"}</span>
-      ) : (
-        <div ref={refs.viewportRef} className="overflow-hidden contain-content">
-          {"\u200B"}
-          <div ref={refs.trackRef} className="inline-block">
-            <span className={cn("opacity-word-correct", isLineCompleted ? "text-word-completed" : "text-word-correct")}>
-              {correct.replace(/ /g, "ˍ")}
-            </span>
-            <span ref={refs.caretRef} className="text-word-nextChar">
-              {nextChar.replace(/ /g, " ")}
-            </span>
-            <span className="text-word-word">{word.replace(/ /g, " ")}</span>
-          </div>
+      <span className={cn("next-line-word text-word-nextWord hidden", isDisplayNextWord && "block")}>
+        {nextWord.replace(/ /g, " ") || "\u200B"}
+      </span>
+      <div ref={refs.viewportRef} className={cn("overflow-hidden contain-content", isDisplayNextWord && "hidden")}>
+        {"\u200B"}
+        <div ref={refs.trackRef} className="inline-block">
+          <span className="opacity-word-correct text-word-correct"></span>
+          <span ref={refs.caretRef} className="text-word-nextChar"></span>
+          <span className="text-word-word"></span>
         </div>
-      )}
+      </div>
     </div>
   );
-};
-
-const useWordScroll = (
-  mainCorrect: string,
-  subCorrect: string,
-  isSmoothScroll: boolean,
-  mainWordScrollStart: number,
-  subWordScrollStart: number,
-) => {
-  const mainRefs = useRef({
-    viewportRef: { current: null as HTMLDivElement | null },
-    trackRef: { current: null as HTMLDivElement | null },
-    caretRef: { current: null as HTMLSpanElement | null },
-  }).current;
-
-  const subRefs = useRef({
-    viewportRef: { current: null as HTMLDivElement | null },
-    trackRef: { current: null as HTMLDivElement | null },
-    caretRef: { current: null as HTMLSpanElement | null },
-  }).current;
-
-  const prevMainShift = useRef(-1);
-  const prevSubShift = useRef(-1);
-  const DURATION = isSmoothScroll ? 80 : 0;
-
-  const SCROLL_TRANSITION = `transform ${DURATION}ms`;
-  const MAIN_RIGHT_BOUND_RATIO = mainWordScrollStart / 100;
-  const SUB_RIGHT_BOUND_RATIO = subWordScrollStart / 100;
-
-  useLayoutEffect(() => {
-    // 早期リターン：レイアウト計算を回避（即座に実行、キャンセル不可）
-    if (mainCorrect.length === 0 && subCorrect.length === 0) {
-      requestAnimationFrame(() => {
-        if (mainRefs.trackRef.current) {
-          mainRefs.trackRef.current.style.transition = "";
-          mainRefs.trackRef.current.style.transform = "translate3d(0px, 0px, 0px)";
-          prevMainShift.current = 0;
-        }
-        if (subRefs.trackRef.current) {
-          subRefs.trackRef.current.style.transition = "";
-          subRefs.trackRef.current.style.transform = "translate3d(0px, 0px, 0px)";
-          prevSubShift.current = 0;
-        }
-      });
-      return;
-    }
-
-    const cancel = requestDebouncedAnimationFrame("word-scroll", () => {
-      const mainMeasurements =
-        mainCorrect.length > 0 && mainRefs.viewportRef.current && mainRefs.caretRef.current && mainRefs.trackRef.current
-          ? {
-              caretX: mainRefs.caretRef.current.offsetLeft,
-              rightBound: Math.floor(mainRefs.viewportRef.current.clientWidth * MAIN_RIGHT_BOUND_RATIO),
-            }
-          : null;
-
-      const subMeasurements =
-        subCorrect.length > 0 && subRefs.viewportRef.current && subRefs.caretRef.current && subRefs.trackRef.current
-          ? {
-              caretX: subRefs.caretRef.current.offsetLeft,
-              rightBound: Math.floor(subRefs.viewportRef.current.clientWidth * SUB_RIGHT_BOUND_RATIO),
-            }
-          : null;
-
-      const mainShift = mainMeasurements
-        ? mainMeasurements.caretX > mainMeasurements.rightBound
-          ? Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound)
-          : null
-        : null;
-
-      const subShift = subMeasurements
-        ? subMeasurements.caretX > subMeasurements.rightBound
-          ? Math.max(0, subMeasurements.caretX - subMeasurements.rightBound)
-          : null
-        : null;
-
-      if (mainShift !== null && mainShift !== prevMainShift.current && mainRefs.trackRef.current) {
-        mainRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
-        mainRefs.trackRef.current.style.transform = `translate3d(${-mainShift}px, 0px, 0px)`;
-        prevMainShift.current = mainShift;
-      }
-
-      if (subShift !== null && subShift !== prevSubShift.current && subRefs.trackRef.current) {
-        subRefs.trackRef.current.style.transition = SCROLL_TRANSITION;
-        subRefs.trackRef.current.style.transform = `translate3d(${-subShift}px, 0px, 0px)`;
-        prevSubShift.current = subShift;
-      }
-    });
-
-    return cancel;
-  }, [mainCorrect.length, subCorrect.length]);
-
-  return { mainRefs, subRefs };
 };

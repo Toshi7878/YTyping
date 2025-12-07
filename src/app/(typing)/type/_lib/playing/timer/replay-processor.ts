@@ -6,17 +6,12 @@ import {
   writeUtilityRefParams,
 } from "@/app/(typing)/type/_lib/atoms/ref";
 import { handlePlaySpeedAction } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
-import {
-  readReplayRankingResult,
-  readTypingWord,
-  readUtilityParams,
-  setCombo,
-  setLineKpm,
-  setTypingWord,
-} from "@/app/(typing)/type/_lib/atoms/state";
+import { readReplayRankingResult, readUtilityParams } from "@/app/(typing)/type/_lib/atoms/state";
 import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
 import { readAllLineResult } from "../../atoms/family";
+import { setCombo, setLineKpm } from "../../atoms/sub-status";
+import { readTypingWord, setTypingWord } from "../../atoms/typing-word";
 import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";

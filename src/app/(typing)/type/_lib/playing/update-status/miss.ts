@@ -1,5 +1,7 @@
 import { readLineSubstatus, readSubstatus, writeLineSubstatus, writeSubstatus } from "../../atoms/ref";
-import { readBuiltMap, readTypingStatus, setCombo, setTypingStatus } from "../../atoms/state";
+import { readBuiltMap } from "../../atoms/state";
+import { readTypingStatus, setAllTypingStatus } from "../../atoms/status";
+import { setCombo } from "../../atoms/sub-status";
 import { MISS_PENALTY_POINT } from "../../const";
 
 export const updateMissStatus = () => {
@@ -10,7 +12,7 @@ export const updateMissStatus = () => {
   newStatus.point -= MISS_PENALTY_POINT;
 
   setCombo(0);
-  setTypingStatus(newStatus);
+  setAllTypingStatus(newStatus);
 };
 
 export const updateMissSubstatus = ({ constantLineTime, failKey }: { constantLineTime: number; failKey: string }) => {

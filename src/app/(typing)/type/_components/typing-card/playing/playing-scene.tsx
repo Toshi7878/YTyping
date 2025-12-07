@@ -5,9 +5,7 @@ import { useEffect } from "react";
 import {
   readBuiltMap,
   readReplayRankingResult,
-  readTypingWord,
   readUtilityParams,
-  resetCurrentLine,
   resetNextLyrics,
   setLineResultSheet,
   setNextLyrics,
@@ -20,6 +18,7 @@ import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readTypingOptions } from "../../../_lib/atoms/hydrate";
 import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
+import { readTypingWord, resetCurrentLine } from "../../../_lib/atoms/typing-word";
 import { commitLineSkip } from "../../../_lib/playing/commit-line-skip";
 import { handlePlayHotKey, isHotKeyIgnored } from "../../../_lib/playing/keydown/handle-play-hot-key";
 import { processTypingInputResult } from "../../../_lib/playing/keydown/process-typing-result";

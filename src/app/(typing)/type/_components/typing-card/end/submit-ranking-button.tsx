@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import type z from "zod/v4";
 import { readAllLineResult } from "@/app/(typing)/type/_lib/atoms/family";
 import { readSubstatus } from "@/app/(typing)/type/_lib/atoms/ref";
-import { readBuiltMap, readTypingStatus, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
+import { readBuiltMap, setTabName } from "@/app/(typing)/type/_lib/atoms/state";
 import { useRegisterRankingMutation } from "@/app/(typing)/type/_lib/mutate/register-ranking";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { useTRPC } from "@/trpc/provider";
 import { getMinValue } from "@/utils/array";
 import type { CreateResultStatusSchema } from "@/validator/result";
 import { readMapId, readTypingOptions } from "../../../_lib/atoms/hydrate";
+import { readTypingStatus } from "../../../_lib/atoms/status";
 
 interface RegisterRankingButtonProps {
   isScoreUpdated: boolean;

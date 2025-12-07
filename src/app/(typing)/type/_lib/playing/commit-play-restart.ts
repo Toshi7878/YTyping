@@ -11,17 +11,16 @@ import {
 } from "../atoms/ref";
 import {
   readBuiltMap,
-  readTypingStatus,
   readUtilityParams,
-  resetCurrentLine,
   resetReplayRankingResult,
-  resetTypingStatus,
-  setCombo,
   setNextLyrics,
   setNotify,
   setScene,
   setTabName,
 } from "../atoms/state";
+import { readTypingStatus, resetAllTypingStatus } from "../atoms/status";
+import { setCombo } from "../atoms/sub-status";
+import { resetCurrentLine } from "../atoms/typing-word";
 import { playYTPlayer, seekYTPlayer } from "../atoms/youtube-player";
 import { mutateTypingStats } from "../mutate/stats";
 import type { PlayMode } from "../type";
@@ -85,7 +84,7 @@ export const commitPlayRestart = (newPlayMode: PlayMode) => {
   }
 
   if (newPlayMode !== "practice") {
-    resetTypingStatus();
+    resetAllTypingStatus();
     setCombo(0);
     resetSubstatus();
   }

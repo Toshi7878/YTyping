@@ -1,7 +1,7 @@
 import parse from "html-react-parser";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
-import { useLyricsState } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
+import { useLyricsState } from "../../../_lib/atoms/typing-word";
 
 export const Lyrics = () => {
   const lyrics = useLyricsState();

@@ -2,15 +2,10 @@ import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { readAllLineResult, setLineResult } from "../atoms/family";
 import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/ref";
 import { readPlaySpeed } from "../atoms/speed-reducer";
-import {
-  readBuiltMap,
-  readCombo,
-  readLineKpm,
-  readTypingStatus,
-  readTypingWord,
-  readUtilityParams,
-  setTypingStatus,
-} from "../atoms/state";
+import { readBuiltMap, readUtilityParams } from "../atoms/state";
+import { readTypingStatus, setAllTypingStatus } from "../atoms/status";
+import { readCombo, readLineKpm } from "../atoms/sub-status";
+import { readTypingWord } from "../atoms/typing-word";
 import { CHAR_POINT, MISS_PENALTY_POINT } from "../const";
 
 export const hasLineResultImproved = (count: number) => {
@@ -35,7 +30,7 @@ export const saveLineResult = (count: number) => {
   const map = readBuiltMap();
   if (!map) return;
 
-  if (actualLostNotes > 0) setTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
+  if (actualLostNotes > 0) setAllTypingStatus((prev) => ({ ...prev, lost: prev.lost + actualLostNotes }));
   if (pointLostNotes > 0) {
     const { clearRate } = readSubstatus();
     writeSubstatus({ clearRate: clearRate - map.keyRate * pointLostNotes });

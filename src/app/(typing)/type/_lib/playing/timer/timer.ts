@@ -13,21 +13,17 @@ import {
 import { handlePlaySpeedAction, readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   readBuiltMap,
-  readElapsedSecTime,
-  readTypingWord,
   readUtilityParams,
   setActiveSkipGuideKey,
   setChangeCSSCount,
-  setElapsedSecTime,
-  setLineKpm,
-  setLineRemainTime,
-  setNewLine,
   setNextLyrics,
-  setTypingStatus,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
+import { setAllTypingStatus } from "../../atoms/status";
+import { readElapsedSecTime, setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../atoms/sub-status";
+import { readTypingWord, setNewLine } from "../../atoms/typing-word";
 import { cueYTVideoById, getYTPlayerState, getYTVideoId, readYTPlayer, stopYTPlayer } from "../../atoms/youtube-player";
 import { calculateLineKpm } from "../../utils/calculate-kpm";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
@@ -211,7 +207,7 @@ export const setupLine = (nextCount: number) => {
   }
 
   writeLineSubstatus({ startSpeed: playSpeed, startInputMode: inputMode });
-  setTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
+  setAllTypingStatus((prev) => ({ ...prev, point: 0, timeBonus: 0 }));
   setLineKpm(0);
 
   setNextLyrics(newNextLine);

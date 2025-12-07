@@ -1,6 +1,7 @@
 import type { TypingInputResult } from "lyrics-typing-engine";
-import { readBuiltMap, readUtilityParams, setNewLine, setTypingWord } from "@/app/(typing)/type/_lib/atoms/state";
+import { readBuiltMap, readUtilityParams } from "@/app/(typing)/type/_lib/atoms/state";
 import { readLineCount } from "../../atoms/ref";
+import { setNewLine, setTypingWord } from "../../atoms/typing-word";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { triggerMissSound, triggerTypeSound } from "../sound-effect";
@@ -15,6 +16,7 @@ export const processTypingInputResult = (typingInputResult: TypingInputResult) =
 
   if (successKey) {
     setTypingWord(nextTypingWord);
+
     updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint });
 
     const { isPaused } = readUtilityParams();

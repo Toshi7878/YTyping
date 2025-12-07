@@ -1,14 +1,15 @@
+import { useEffect, useRef } from "react";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   useActiveSkipGuideKeyState,
   useBuiltMapState,
-  useElapsedSecTimeState,
   useMovieDurationState,
   useSceneGroupState,
   useYTStartedState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
 import { formatTime } from "@/utils/format-time";
+import { setElapsedSecTimeElement } from "../../../_lib/atoms/sub-status";
 
 export const SkipAndTimeDisplay = () => {
   const isYTStarted = useYTStartedState();
@@ -41,8 +42,15 @@ const PlayingTimeDisplay = () => {
 };
 
 const ElapsedMmSsDisplay = () => {
-  const elapsedSecTime = useElapsedSecTimeState();
-  return <span id="elapsed_sec_time">{formatTime(elapsedSecTime)}</span>;
+  const elapsedSecTimeRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (elapsedSecTimeRef.current) {
+      setElapsedSecTimeElement(elapsedSecTimeRef.current);
+    }
+  }, []);
+
+  return <span id="elapsed_sec_time" ref={elapsedSecTimeRef}></span>;
 };
 
 const VideoDurationTime = () => {
