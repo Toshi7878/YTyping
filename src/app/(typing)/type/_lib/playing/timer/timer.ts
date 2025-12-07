@@ -48,9 +48,8 @@ export const stopTimer = () => {
   }
 };
 
-export const setTimerFPS = (rate: number) => {
+export const setTimerMaxFPS = (rate: number) => {
   typeTicker.maxFPS = rate;
-  typeTicker.minFPS = rate;
 };
 let lastUpdateTime = 0;
 

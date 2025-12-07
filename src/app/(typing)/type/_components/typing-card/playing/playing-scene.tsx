@@ -22,7 +22,7 @@ import { readTypingWord, resetCurrentLine } from "../../../_lib/atoms/typing-wor
 import { commitLineSkip } from "../../../_lib/playing/commit-line-skip";
 import { handlePlayHotKey, isHotKeyIgnored } from "../../../_lib/playing/keydown/handle-play-hot-key";
 import { processTypingInputResult } from "../../../_lib/playing/keydown/process-typing-result";
-import { setTimerFPS } from "../../../_lib/playing/timer/timer";
+import { setTimerMaxFPS } from "../../../_lib/playing/timer/timer";
 import { togglePause } from "../../../_lib/playing/toggle-pause";
 import { ChangeCSS } from "./change-css-style";
 import { Lyrics } from "./lyrics-text";
@@ -65,9 +65,9 @@ export const PlayingScene = ({ className }: PlayingProps) => {
     }
 
     if (scene === "replay") {
-      setTimerFPS(0);
+      setTimerMaxFPS(0);
     } else {
-      setTimerFPS(59.99);
+      setTimerMaxFPS(59.99);
     }
 
     const count = readLineCount();
