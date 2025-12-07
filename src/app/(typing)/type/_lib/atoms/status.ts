@@ -22,15 +22,8 @@ const typingStatusAtom = atomWithReset({
 });
 
 const focusAtoms = {
-  score: focusAtom(typingStatusAtom, (optic) => optic.prop("score")),
-  type: focusAtom(typingStatusAtom, (optic) => optic.prop("type")),
-  kpm: focusAtom(typingStatusAtom, (optic) => optic.prop("kpm")),
   rank: focusAtom(typingStatusAtom, (optic) => optic.prop("rank")),
-  point: focusAtom(typingStatusAtom, (optic) => optic.prop("point")),
-  miss: focusAtom(typingStatusAtom, (optic) => optic.prop("miss")),
-  lost: focusAtom(typingStatusAtom, (optic) => optic.prop("lost")),
   line: focusAtom(typingStatusAtom, (optic) => optic.prop("line")),
-  timeBonus: focusAtom(typingStatusAtom, (optic) => optic.prop("timeBonus")),
 };
 export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
 export const setLineStatus = (value: ExtractAtomValue<typeof focusAtoms.line>) => store.set(focusAtoms.line, value);
@@ -39,6 +32,7 @@ export const setAllTypingStatus = (update: Updater<ExtractAtomValue<typeof typin
   store.set(typingStatusAtom, update);
 export const resetAllTypingStatus = () => {
   store.set(typingStatusAtom, RESET);
+  resetStatusCache();
   const map = readBuiltMap();
   setLineStatus(map?.typingLineIndexes.length || 0);
   const { rankingScores } = readUtilityRefParams();
@@ -62,24 +56,72 @@ export const setStatusElements = (elements: ExtractAtomValue<typeof statusValueE
   store.set(statusValueElementsAtom, elements);
 };
 
-(Object.keys(focusAtoms) as (keyof typeof focusAtoms)[]).forEach((key) => {
-  store.sub(focusAtoms[key], () => {
-    const statusValueElements = store.get(statusValueElementsAtom);
-    const element = statusValueElements?.[key];
-    if (element) {
-      const newValue = store.get(focusAtoms[key]);
+const prevStatus = {
+  score: -1,
+  type: -1,
+  kpm: -1,
+  rank: -1,
+  point: -1,
+  miss: -1,
+  lost: -1,
+  line: -1,
+  timeBonus: -1,
+};
 
-      requestDebouncedAnimationFrame(key, () => {
-        if (key === "timeBonus") {
-          if (newValue === 0) {
-            element.textContent = "";
-            return;
-          }
-          element.textContent = `+${String(newValue)}`;
-        } else {
-          element.textContent = String(newValue);
-        }
-      });
+store.sub(typingStatusAtom, () => {
+  const elements = store.get(statusValueElementsAtom);
+  if (!elements) return;
+
+  const current = store.get(typingStatusAtom);
+
+  requestDebouncedAnimationFrame("status-update", () => {
+    if (prevStatus.score !== current.score) {
+      elements.score.textContent = String(current.score);
+      prevStatus.score = current.score;
+    }
+    if (prevStatus.type !== current.type) {
+      elements.type.textContent = String(current.type);
+      prevStatus.type = current.type;
+    }
+    if (prevStatus.kpm !== current.kpm) {
+      elements.kpm.textContent = String(current.kpm);
+      prevStatus.kpm = current.kpm;
+    }
+    if (prevStatus.rank !== current.rank) {
+      elements.rank.textContent = String(current.rank);
+      prevStatus.rank = current.rank;
+    }
+    if (prevStatus.point !== current.point) {
+      elements.point.textContent = String(current.point);
+      prevStatus.point = current.point;
+    }
+    if (prevStatus.miss !== current.miss) {
+      elements.miss.textContent = String(current.miss);
+      prevStatus.miss = current.miss;
+    }
+    if (prevStatus.lost !== current.lost) {
+      elements.lost.textContent = String(current.lost);
+      prevStatus.lost = current.lost;
+    }
+    if (prevStatus.line !== current.line) {
+      elements.line.textContent = String(current.line);
+      prevStatus.line = current.line;
+    }
+    if (prevStatus.timeBonus !== current.timeBonus) {
+      elements.timeBonus.textContent = current.timeBonus === 0 ? "" : `+${String(current.timeBonus)}`;
+      prevStatus.timeBonus = current.timeBonus;
     }
   });
 });
+
+export const resetStatusCache = () => {
+  prevStatus.score = -1;
+  prevStatus.type = -1;
+  prevStatus.kpm = -1;
+  prevStatus.rank = -1;
+  prevStatus.point = -1;
+  prevStatus.miss = -1;
+  prevStatus.lost = -1;
+  prevStatus.line = -1;
+  prevStatus.timeBonus = -1;
+};
