@@ -90,6 +90,12 @@ const subWordElementsAtom = atomWithReset<{
   nextWordRef: HTMLSpanElement;
 } | null>(null);
 
+const wordContainerElementAtom = atom<HTMLDivElement | null>(null);
+
+export const setWordContainerElement = (element: ExtractAtomValue<typeof wordContainerElementAtom>) => {
+  store.set(wordContainerElementAtom, element);
+};
+
 export const readMainWordElements = () => store.get(mainWordElementsAtom);
 store.sub(typingWordAtom, () => {
   const typingWord = store.get(typingWordAtom);
@@ -135,6 +141,15 @@ export const setSubWordElements = (elements: ExtractAtomValue<typeof subWordElem
   store.set(subWordElementsAtom, elements);
 };
 
+// キャッシュ用変数を定義
+let prevMainCorrect = "";
+let prevMainNextChar = "";
+let prevMainRemain = "";
+
+let prevSubCorrect = "";
+let prevSubNextChar = "";
+let prevSubRemain = "";
+
 const updateWordDisplay = (
   typingWord: TypingWord,
   main: {
@@ -177,15 +192,28 @@ const updateWordDisplay = (
       .replace(/ /g, " "),
   };
 
+  const mainCorrectText = isMainKana ? correct.kana : correct.roma;
+  const mainNextCharText = isMainKana ? nextChar.kana : nextChar.roma;
+  const mainRemainText = isMainKana ? remainWord.kana : remainWord.roma;
+
   if (main?.trackRef) {
     const correctEl = main.trackRef.children[0];
     const nextCharEl = main.trackRef.children[1];
     const remainWordEl = main.trackRef.children[2];
 
     if (correctEl && nextCharEl && remainWordEl) {
-      correctEl.textContent = isMainKana ? correct.kana : correct.roma;
-      nextCharEl.textContent = isMainKana ? nextChar.kana : nextChar.roma;
-      remainWordEl.textContent = isMainKana ? remainWord.kana : remainWord.roma;
+      if (prevMainCorrect !== mainCorrectText) {
+        correctEl.textContent = mainCorrectText;
+        prevMainCorrect = mainCorrectText;
+      }
+      if (prevMainNextChar !== mainNextCharText) {
+        nextCharEl.textContent = mainNextCharText;
+        prevMainNextChar = mainNextCharText;
+      }
+      if (prevMainRemain !== mainRemainText) {
+        remainWordEl.textContent = mainRemainText;
+        prevMainRemain = mainRemainText;
+      }
     }
   }
 
@@ -195,16 +223,34 @@ const updateWordDisplay = (
     const remainWordEl = sub?.trackRef.children[2];
 
     if (correctEl && nextCharEl && remainWordEl) {
-      correctEl.textContent = isMainKana ? correct.roma : correct.kana;
-      nextCharEl.textContent = isMainKana ? nextChar.roma : nextChar.kana;
-      remainWordEl.textContent = isMainKana ? remainWord.roma : remainWord.kana;
+      const subCorrectText = isMainKana ? correct.roma : correct.kana;
+      const subNextCharText = isMainKana ? nextChar.roma : nextChar.kana;
+      const subRemainText = isMainKana ? remainWord.roma : remainWord.kana;
+
+      if (prevSubCorrect !== subCorrectText) {
+        correctEl.textContent = subCorrectText;
+        prevSubCorrect = subCorrectText;
+      }
+      if (prevSubNextChar !== subNextCharText) {
+        nextCharEl.textContent = subNextCharText;
+        prevSubNextChar = subNextCharText;
+      }
+      if (prevSubRemain !== subRemainText) {
+        remainWordEl.textContent = subRemainText;
+        prevSubRemain = subRemainText;
+      }
     }
   }
 
   const isCompleted = !!correct.kana && !nextChar.kana;
   const isUpdateLine = !correct.kana;
+  const wordContainer = store.get(wordContainerElementAtom);
   requestAnimationFrame(() => {
     if (isCompleted) {
+      if (wordContainer) {
+        wordContainer.classList.add("word-area-completed");
+      }
+
       if (lineCompletedDisplay === "NEXT_WORD") {
         const builtMap = readBuiltMap();
         const count = readLineCount();
@@ -235,6 +281,8 @@ const updateWordDisplay = (
       sub.nextWordRef.classList.remove("!block");
       main.viewportRef.classList.remove("hidden");
       sub.viewportRef.classList.remove("hidden");
+      wordContainer?.classList.remove("word-area-completed");
+
       const mainCorrectEl = main.trackRef.children[0];
       const subCorrectEl = sub.trackRef.children[0];
       if (mainCorrectEl && subCorrectEl) {
@@ -325,4 +373,13 @@ const applyScroll = (
       prevSubShift = subShift;
     }
   });
+};
+
+export const resetWordCache = () => {
+  prevMainCorrect = "";
+  prevMainNextChar = "";
+  prevMainRemain = "";
+  prevSubCorrect = "";
+  prevSubNextChar = "";
+  prevSubRemain = "";
 };

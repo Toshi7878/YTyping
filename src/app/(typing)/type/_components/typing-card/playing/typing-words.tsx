@@ -7,7 +7,7 @@ import {
   useReplayRankingResultState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
-import { setMainWordElements, setSubWordElements } from "../../../_lib/atoms/typing-word";
+import { setMainWordElements, setSubWordElements, setWordContainerElement } from "../../../_lib/atoms/typing-word";
 
 export const TypingWords = () => {
   const inputMode = usePlayingInputModeState();
@@ -28,6 +28,7 @@ export const TypingWords = () => {
   const isCaseSensitive = otherStatus?.isCaseSensitive ?? (builtMap?.isCaseSensitive || isCaseSensitiveTypingOptions);
 
   const mainWord = wordDisplay.startsWith("KANA_") || inputMode === "kana" ? "kana" : "roma";
+  const wordContainerRef = useRef<HTMLDivElement | null>(null);
   const mainRefs = useRef({
     viewportRef: { current: null as HTMLDivElement | null },
     trackRef: { current: null as HTMLDivElement | null },
@@ -76,8 +77,17 @@ export const TypingWords = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (wordContainerRef.current) {
+      setWordContainerElement(wordContainerRef.current);
+    }
+  }, []);
+
   return (
-    <div className="w-full word-font word-outline-text text-7xl leading-24 md:text-[2.8rem] md:leading-15">
+    <div
+      ref={wordContainerRef}
+      className="w-full word-font word-outline-text text-7xl leading-24 md:text-[2.8rem] md:leading-15"
+    >
       <Word
         id="main_word"
         className={cn(
