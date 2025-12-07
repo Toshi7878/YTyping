@@ -7,7 +7,7 @@ import {
   useReplayRankingResultState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
-import { setMainWordElements, setSubWordElements, useIsLineCompletedState } from "../../../_lib/atoms/typing-word";
+import { setMainWordElements, setSubWordElements } from "../../../_lib/atoms/typing-word";
 
 export const TypingWords = () => {
   const inputMode = usePlayingInputModeState();
@@ -26,8 +26,6 @@ export const TypingWords = () => {
   const replayRankingResult = useReplayRankingResultState();
   const { otherStatus } = replayRankingResult ?? {};
   const isCaseSensitive = otherStatus?.isCaseSensitive ?? (builtMap?.isCaseSensitive || isCaseSensitiveTypingOptions);
-
-  const isLineCompleted = useIsLineCompletedState();
 
   const mainWord = wordDisplay.startsWith("KANA_") || inputMode === "kana" ? "kana" : "roma";
   const mainRefs = useRef({
@@ -79,15 +77,9 @@ export const TypingWords = () => {
   }, []);
 
   return (
-    <div
-      className={cn(
-        "w-full word-font word-outline-text text-7xl leading-24 md:text-[2.8rem] md:leading-15",
-        isLineCompleted && "word-area-completed",
-      )}
-    >
+    <div className="w-full word-font word-outline-text text-7xl leading-24 md:text-[2.8rem] md:leading-15">
       <Word
         id="main_word"
-        isLineCompleted={isLineCompleted}
         className={cn(
           mainWord === "kana" ? "word-kana" : "word-roma",
           getWordCaseClass(mainWord === "kana" ? "kana" : "roma", isCaseSensitive, wordDisplay),
@@ -103,7 +95,6 @@ export const TypingWords = () => {
       />
       <Word
         id="sub_word"
-        isLineCompleted={isLineCompleted}
         className={cn(
           mainWord === "kana" ? "word-roma" : "word-kana",
           getWordCaseClass(mainWord === "kana" ? "roma" : "kana", isCaseSensitive, wordDisplay),
@@ -157,26 +148,19 @@ interface WordProps {
   };
   className: string;
   style: React.CSSProperties;
-  isLineCompleted: boolean;
   isCompletedNextWord: boolean;
 }
 
-const Word = ({ refs, className, style, isLineCompleted, isCompletedNextWord }: WordProps) => {
-  const isDisplayNextWord = isLineCompleted && isCompletedNextWord;
+const Word = ({ refs, className, style }: WordProps) => {
   return (
     <div className={cn("relative w-full", className)} style={style}>
-      <span
-        ref={refs.nextWordRef}
-        className={cn("next-line-word text-word-nextWord hidden", isDisplayNextWord && "block")}
-      >
+      <span ref={refs.nextWordRef} className="next-line-word text-word-nextWord hidden">
         {"\u200B"}
       </span>
-      <div ref={refs.viewportRef} className={cn("overflow-hidden contain-content", isDisplayNextWord && "hidden")}>
+      <div ref={refs.viewportRef} className="overflow-hidden contain-content">
         {"\u200B"}
         <div ref={refs.trackRef} className="inline-block">
-          <span
-            className={cn("opacity-word-correct text-word-correct", isLineCompleted && "text-word-completed")}
-          ></span>
+          <span className="opacity-word-correct text-word-correct"></span>
           <span ref={refs.caretRef} className="text-word-nextChar"></span>
           <span className="text-word-word"></span>
         </div>
