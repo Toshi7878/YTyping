@@ -22,7 +22,7 @@ const LineKpm = () => {
     }
   }, []);
 
-  return <span ref={lineKpmRef}></span>;
+  return <span ref={lineKpmRef}>0</span>;
 };
 
 const LineRemainTime = ({ className }: { className: string }) => {

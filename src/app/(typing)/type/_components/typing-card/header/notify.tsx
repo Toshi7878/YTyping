@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"; // 追加
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import {
   setNotify,
@@ -15,6 +15,8 @@ export const PlayingNotify = () => {
   const notify = useNotifyState();
   const scene = useSceneState();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const notifyKey = useMemo(() => Math.random().toString(), [notify]);
 
   const playModeNotify = () => {
     if (scene === "play") {
@@ -38,7 +40,7 @@ export const PlayingNotify = () => {
         clearTimeout(timerRef.current);
       }
     };
-  }, [notify.description]);
+  }, [notify]);
 
   const handleExitComplete = () => {
     if (timerRef.current) {
@@ -70,7 +72,7 @@ export const PlayingNotify = () => {
           <NonAnimatedNotifyText description={notify.description ?? ""} />
         </div>
       ) : (
-        <TransitionNotify description={notify.description ?? ""} />
+        <TransitionNotify description={notify.description ?? ""} notifyKey={notifyKey} />
       )}
     </div>
   );
@@ -89,10 +91,11 @@ const NonAnimatedNotifyText = ({ description }: { description: string }) => {
   }
 };
 
-const TransitionNotify = ({ description }: { description: string }) => {
+const TransitionNotify = ({ description, notifyKey }: { description: string; notifyKey: string }) => {
   return (
-    <AnimatePresence mode="popLayout" key={Date.now()}>
+    <AnimatePresence mode="popLayout">
       <motion.div
+        key={notifyKey}
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
         transition={{ duration: 0.5 }}

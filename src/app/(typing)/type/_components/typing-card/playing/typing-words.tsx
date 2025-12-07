@@ -161,7 +161,9 @@ const Word = ({ refs, className, style, nextWord, isLineCompleted, isCompletedNe
       <div ref={refs.viewportRef} className={cn("overflow-hidden contain-content", isDisplayNextWord && "hidden")}>
         {"\u200B"}
         <div ref={refs.trackRef} className="inline-block">
-          <span className="opacity-word-correct text-word-correct"></span>
+          <span
+            className={cn("opacity-word-correct text-word-correct", isLineCompleted && "text-word-completed")}
+          ></span>
           <span ref={refs.caretRef} className="text-word-nextChar"></span>
           <span className="text-word-word"></span>
         </div>
