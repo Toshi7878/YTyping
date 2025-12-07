@@ -203,44 +203,46 @@ const updateWordDisplay = (
 
   const isCompleted = !!correct.kana && !nextChar.kana;
   const isUpdateLine = !correct.kana;
-  if (isCompleted) {
-    if (lineCompletedDisplay === "NEXT_WORD") {
-      const builtMap = readBuiltMap();
-      const count = readLineCount();
-      const nextLine = builtMap?.lines[count + 1];
-      if (nextLine && main && sub) {
-        const { kanaLyrics, romaLyrics } = nextLine;
-        main.nextWordRef.textContent = isMainKana ? kanaLyrics : romaLyrics;
-        sub.nextWordRef.textContent = isMainKana ? romaLyrics : kanaLyrics;
+  requestAnimationFrame(() => {
+    if (isCompleted) {
+      if (lineCompletedDisplay === "NEXT_WORD") {
+        const builtMap = readBuiltMap();
+        const count = readLineCount();
+        const nextLine = builtMap?.lines[count + 1];
+        if (nextLine && main && sub) {
+          const { kanaLyrics, romaLyrics } = nextLine;
+          main.nextWordRef.textContent = isMainKana ? kanaLyrics : romaLyrics;
+          sub.nextWordRef.textContent = isMainKana ? romaLyrics : kanaLyrics;
 
-        main.nextWordRef.classList.add("!block");
-        sub.nextWordRef.classList.add("!block");
-        main.viewportRef.classList.add("hidden");
-        sub.viewportRef.classList.add("hidden");
+          main.nextWordRef.classList.add("!block");
+          sub.nextWordRef.classList.add("!block");
+          main.viewportRef.classList.add("hidden");
+          sub.viewportRef.classList.add("hidden");
+        }
+      } else {
+        const mainCorrectEl = main.trackRef.children[0];
+        const subCorrectEl = sub.trackRef.children[0];
+        if (mainCorrectEl && subCorrectEl) {
+          mainCorrectEl.classList.add("!text-word-completed");
+          subCorrectEl.classList.add("!text-word-completed");
+        }
       }
-    } else {
+    } else if (isUpdateLine) {
+      main.nextWordRef.textContent = "";
+      sub.nextWordRef.textContent = "";
+
+      main.nextWordRef.classList.remove("!block");
+      sub.nextWordRef.classList.remove("!block");
+      main.viewportRef.classList.remove("hidden");
+      sub.viewportRef.classList.remove("hidden");
       const mainCorrectEl = main.trackRef.children[0];
       const subCorrectEl = sub.trackRef.children[0];
       if (mainCorrectEl && subCorrectEl) {
-        mainCorrectEl.classList.add("!text-word-completed");
-        subCorrectEl.classList.add("!text-word-completed");
+        mainCorrectEl.classList.remove("!text-word-completed");
+        subCorrectEl.classList.remove("!text-word-completed");
       }
     }
-  } else if (isUpdateLine) {
-    main.nextWordRef.textContent = "";
-    sub.nextWordRef.textContent = "";
-
-    main.nextWordRef.classList.remove("!block");
-    sub.nextWordRef.classList.remove("!block");
-    main.viewportRef.classList.remove("hidden");
-    sub.viewportRef.classList.remove("hidden");
-    const mainCorrectEl = main.trackRef.children[0];
-    const subCorrectEl = sub.trackRef.children[0];
-    if (mainCorrectEl && subCorrectEl) {
-      mainCorrectEl.classList.remove("!text-word-completed");
-      subCorrectEl.classList.remove("!text-word-completed");
-    }
-  }
+  });
 
   return { correct, nextChar, remainWord };
 };
