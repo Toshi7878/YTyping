@@ -257,8 +257,8 @@ const updateWordDisplay = (
         const nextLine = builtMap?.lines[count + 1];
         if (nextLine && main && sub) {
           const { kanaLyrics, romaLyrics } = nextLine;
-          main.nextWordRef.textContent = `\u200B${isMainKana ? kanaLyrics : romaLyrics}`;
-          sub.nextWordRef.textContent = `\u200B${isMainKana ? romaLyrics : kanaLyrics}`;
+          main.nextWordRef.textContent = `\u200B${isMainKana ? kanaLyrics : romaLyrics}`.replace(/ /g, " ");
+          sub.nextWordRef.textContent = `\u200B${isMainKana ? romaLyrics : kanaLyrics}`.replace(/ /g, " ");
 
           main.nextWordRef.classList.add("!block");
           sub.nextWordRef.classList.add("!block");
