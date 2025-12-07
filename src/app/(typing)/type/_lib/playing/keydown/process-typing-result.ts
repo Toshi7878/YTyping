@@ -8,7 +8,7 @@ import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/success";
-import { updateKpmOnLineEnded, updateKpmOnTyping } from "../update-status/update-kpm";
+import { updateTypingTimeOnLineEnded } from "../update-status/update-kpm";
 
 export const processTypingInputResult = (typingInputResult: TypingInputResult) => {
   const { isCompleted, nextTypingWord, successKey, failKey, chunkType, updatePoint } = typingInputResult;
@@ -18,19 +18,15 @@ export const processTypingInputResult = (typingInputResult: TypingInputResult) =
     triggerTypeSound({ isCompleted });
     setTypingWord(nextTypingWord);
 
-    updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint });
+    updateSuccessStatus({ isCompleted, constantRemainLineTime, updatePoint, constantLineTime });
     updateSuccessSubstatus({ constantLineTime, isCompleted, successKey, chunkType });
 
     const { isPaused } = readUtilityParams();
 
-    if (!isPaused) {
-      updateKpmOnTyping({ constantLineTime });
-      if (isCompleted) {
-        updateKpmOnLineEnded({ constantLineTime });
-      }
-    }
-
     if (isCompleted) {
+      if (!isPaused) {
+        updateTypingTimeOnLineEnded({ constantLineTime });
+      }
       handleLineCompleted();
     }
   } else if ((nextTypingWord.correct.roma || nextTypingWord.correct.kana) && failKey) {

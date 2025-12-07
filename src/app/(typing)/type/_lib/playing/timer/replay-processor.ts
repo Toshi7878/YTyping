@@ -16,7 +16,6 @@ import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
 import { updateSuccessStatus, updateSuccessSubstatus } from "../update-status/success";
-import { updateKpmOnTyping } from "../update-status/update-kpm";
 
 export const processReplayKeyAtTimestamp = ({
   constantLineTime,
@@ -75,12 +74,10 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
 
       setTypingWord(nextTypingWord);
       triggerTypeSound({ isCompleted });
-
-      updateKpmOnTyping({ constantLineTime });
       updateSuccessSubstatus({ constantLineTime, successKey });
 
       if (!isCompleted) {
-        updateSuccessStatus({ constantRemainLineTime, updatePoint });
+        updateSuccessStatus({ constantRemainLineTime, updatePoint, constantLineTime });
       } else {
         const lineResults = readAllLineResult();
         const lineResult = lineResults[count];

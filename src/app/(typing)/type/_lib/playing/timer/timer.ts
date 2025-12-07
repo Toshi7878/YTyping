@@ -33,7 +33,7 @@ import { hasLineResultImproved, saveLineResult } from "../save-line-result";
 import { applyKanaInputMode, applyRomaInputMode } from "../toggle-input-mode";
 import { updateStatusForLineUpdate } from "../update-status/line-update";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
-import { updateKpmOnLineEnded } from "../update-status/update-kpm";
+import { updateTypingTimeOnLineEnded } from "../update-status/update-kpm";
 import { processReplayKeyAtTimestamp } from "./replay-processor";
 
 export const startTimer = () => {
@@ -170,7 +170,7 @@ const processIncompleteLineEnd = ({ constantLineTime, count }: { constantLineTim
   const { scene } = readUtilityParams();
 
   if (isTypingLine) {
-    updateKpmOnLineEnded({ constantLineTime });
+    updateTypingTimeOnLineEnded({ constantLineTime });
   }
 
   if (hasLineResultImproved(count)) {
