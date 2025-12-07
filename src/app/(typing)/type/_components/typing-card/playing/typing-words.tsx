@@ -157,7 +157,7 @@ const Word = ({ refs, className, style }: WordProps) => {
       <span ref={refs.nextWordRef} className="next-line-word text-word-nextWord hidden"></span>
       <div ref={refs.viewportRef} className="overflow-hidden contain-content">
         {"\u200B"}
-        <div ref={refs.trackRef} className="inline-block">
+        <div ref={refs.trackRef} className="inline-block will-change-transform">
           <span className="opacity-word-correct text-word-correct"></span>
           <span ref={refs.caretRef} className="text-word-nextChar"></span>
           <span className="text-word-word"></span>

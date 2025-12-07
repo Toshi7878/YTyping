@@ -265,8 +265,9 @@ const applyScroll = (
   subCorrect: string,
   options: { isSmoothScroll: boolean; mainScrollStart: number; subScrollStart: number },
 ) => {
-  // 早期リターン：レイアウト計算を回避（即座に実行、キャンセル不可）
+  // 早期リターン：初期化（即座に実行）
   if (mainCorrect.length === 0 && subCorrect.length === 0) {
+    // Write Only
     mainRefs.trackRef.style.transition = "";
     mainRefs.trackRef.style.transform = "translate3d(0px, 0px, 0px)";
     prevMainShift = 0;
@@ -277,38 +278,40 @@ const applyScroll = (
   }
 
   const DURATION = options.isSmoothScroll ? 80 : 0;
-
   const SCROLL_TRANSITION = `transform ${DURATION}ms`;
   const MAIN_RIGHT_BOUND_RATIO = options.mainScrollStart / 100;
   const SUB_RIGHT_BOUND_RATIO = options.subScrollStart / 100;
+
   return requestDebouncedAnimationFrame("word-scroll", () => {
-    const mainMeasurements =
-      mainCorrect.length > 0
-        ? {
-            caretX: mainRefs.caretRef.offsetLeft,
-            rightBound: Math.floor(mainRefs.viewportRef.clientWidth * MAIN_RIGHT_BOUND_RATIO),
-          }
-        : null;
+    // --- Phase 1: Read (Layout計測) ---
+    // ここでDOMプロパティ(clientWidth, offsetLeft)を一気に読み取る
+    // 書き込み(style変更)を行う前にすべて読み終えることが重要
 
-    const subMeasurements =
-      subCorrect.length > 0
-        ? {
-            caretX: subRefs.caretRef.offsetLeft,
-            rightBound: Math.floor(subRefs.viewportRef.clientWidth * SUB_RIGHT_BOUND_RATIO),
-          }
-        : null;
+    let mainShift: number | null = null;
+    let subShift: number | null = null;
 
-    const mainShift = mainMeasurements
-      ? mainMeasurements.caretX > mainMeasurements.rightBound
-        ? Math.max(0, mainMeasurements.caretX - mainMeasurements.rightBound)
-        : null
-      : null;
+    if (mainCorrect.length > 0) {
+      const caretX = mainRefs.caretRef.offsetLeft;
+      // clientWidthの読み取りもここで行う
+      const rightBound = Math.floor(mainRefs.viewportRef.clientWidth * MAIN_RIGHT_BOUND_RATIO);
 
-    const subShift = subMeasurements
-      ? subMeasurements.caretX > subMeasurements.rightBound
-        ? Math.max(0, subMeasurements.caretX - subMeasurements.rightBound)
-        : null
-      : null;
+      if (caretX > rightBound) {
+        mainShift = Math.max(0, caretX - rightBound);
+      }
+    }
+
+    if (subCorrect.length > 0) {
+      const caretX = subRefs.caretRef.offsetLeft;
+      const rightBound = Math.floor(subRefs.viewportRef.clientWidth * SUB_RIGHT_BOUND_RATIO);
+
+      if (caretX > rightBound) {
+        subShift = Math.max(0, caretX - rightBound);
+      }
+    }
+
+    // --- Phase 2: Write (DOM更新) ---
+    // 計測結果に基づいてDOMを更新する
+    // これ以降、DOMの読み取りは行わない
 
     if (mainShift !== null && mainShift !== prevMainShift) {
       mainRefs.trackRef.style.transition = SCROLL_TRANSITION;
