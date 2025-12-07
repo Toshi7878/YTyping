@@ -13,14 +13,13 @@ import {
   readBuiltMap,
   readUtilityParams,
   resetReplayRankingResult,
-  setNextLyrics,
   setNotify,
   setScene,
   setTabName,
 } from "../atoms/state";
 import { readTypingStatus, resetAllTypingStatus } from "../atoms/status";
 import { setCombo } from "../atoms/sub-status";
-import { resetCurrentLine } from "../atoms/typing-word";
+import { resetCurrentLine, setNextLyrics } from "../atoms/typing-word";
 import { playYTPlayer, seekYTPlayer } from "../atoms/youtube-player";
 import { mutateTypingStats } from "../mutate/stats";
 import type { PlayMode } from "../type";

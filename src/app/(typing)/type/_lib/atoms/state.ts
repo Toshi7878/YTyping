@@ -11,8 +11,6 @@ import type { LineOptionSchema } from "@/validator/raw-map-json";
 import type { TypingLineResults } from "@/validator/result";
 import type { SceneType, SkipGuideKey } from "../type";
 import { setLineResultSelected } from "./family";
-import { readTypingOptions } from "./hydrate";
-import { speedBaseAtom } from "./speed-reducer";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
@@ -158,30 +156,3 @@ export const readReplayRankingResult = () => store.get(replayRankingResultAtom);
 export const setReplayRankingResult = (value: ExtractAtomValue<typeof replayRankingResultAtom>) =>
   store.set(replayRankingResultAtom, value);
 export const resetReplayRankingResult = () => store.set(replayRankingResultAtom, RESET);
-
-const nextLyricsAtom = atomWithReset({
-  lyrics: "",
-  kpm: "",
-  kanaWord: "",
-  romaWord: "",
-});
-export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
-export const setNextLyrics = (line: BuiltMapLine) => {
-  const typingOptions = readTypingOptions();
-  const inputMode = store.get(playingInputModeAtom);
-  const speed = store.get(speedBaseAtom);
-  const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * speed.playSpeed;
-  store.set(nextLyricsAtom, () => {
-    if (line.kanaLyrics) {
-      return {
-        lyrics: typingOptions.nextDisplay === "WORD" ? line.kanaLyrics : line.lyrics,
-        kpm: nextKpm.toFixed(0),
-        kanaWord: line.kanaLyrics.slice(0, 60),
-        romaWord: line.romaLyrics.slice(0, 60),
-      };
-    }
-
-    return RESET;
-  });
-};
-export const resetNextLyrics = () => store.set(nextLyricsAtom, RESET);

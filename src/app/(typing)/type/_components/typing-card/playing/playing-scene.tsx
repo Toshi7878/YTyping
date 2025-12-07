@@ -6,9 +6,7 @@ import {
   readBuiltMap,
   readReplayRankingResult,
   readUtilityParams,
-  resetNextLyrics,
   setLineResultSheet,
-  setNextLyrics,
   useBuiltMapState,
   useSceneState,
 } from "@/app/(typing)/type/_lib/atoms/state";
@@ -18,14 +16,14 @@ import { getBaseUrl } from "@/utils/get-base-url";
 import { useActiveElement } from "@/utils/hooks/use-active-element";
 import { readTypingOptions } from "../../../_lib/atoms/hydrate";
 import { readLineCount, readUserStats, resetUserStats } from "../../../_lib/atoms/ref";
-import { readTypingWord, resetCurrentLine } from "../../../_lib/atoms/typing-word";
+import { readTypingWord, resetCurrentLine, resetNextLyrics, setNextLyrics } from "../../../_lib/atoms/typing-word";
 import { commitLineSkip } from "../../../_lib/playing/commit-line-skip";
 import { handlePlayHotKey, isHotKeyIgnored } from "../../../_lib/playing/keydown/handle-play-hot-key";
 import { processTypingInputResult } from "../../../_lib/playing/keydown/process-typing-result";
 import { setTimerMaxFPS } from "../../../_lib/playing/timer/timer";
 import { togglePause } from "../../../_lib/playing/toggle-pause";
 import { ChangeCSS } from "./change-css-style";
-import { Lyrics } from "./lyrics-text";
+import { Lyrics } from "./lyrics";
 import { NextLyrics } from "./next-lyrics";
 import { TypingWords } from "./typing-words";
 

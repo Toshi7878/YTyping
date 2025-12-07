@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 import { useTypingOptionsState } from "@/app/(typing)/type/_lib/atoms/hydrate";
 import {
   useBuiltMapState,
-  useNextLyricsState,
   usePlayingInputModeState,
   useReplayRankingResultState,
 } from "@/app/(typing)/type/_lib/atoms/state";
@@ -12,7 +11,6 @@ import { setMainWordElements, setSubWordElements, useIsLineCompletedState } from
 
 export const TypingWords = () => {
   const inputMode = usePlayingInputModeState();
-  const nextLyrics = useNextLyricsState();
   const builtMap = useBuiltMapState();
   const {
     wordDisplay,
@@ -36,12 +34,14 @@ export const TypingWords = () => {
     viewportRef: { current: null as HTMLDivElement | null },
     trackRef: { current: null as HTMLDivElement | null },
     caretRef: { current: null as HTMLSpanElement | null },
+    nextWordRef: { current: null as HTMLSpanElement | null },
   }).current;
 
   const subRefs = useRef({
     viewportRef: { current: null as HTMLDivElement | null },
     trackRef: { current: null as HTMLDivElement | null },
     caretRef: { current: null as HTMLSpanElement | null },
+    nextWordRef: { current: null as HTMLSpanElement | null },
   }).current;
 
   const style = {
@@ -50,18 +50,30 @@ export const TypingWords = () => {
   };
 
   useEffect(() => {
-    if (mainRefs.viewportRef.current && mainRefs.trackRef.current && mainRefs.caretRef.current) {
+    if (
+      mainRefs.viewportRef.current &&
+      mainRefs.trackRef.current &&
+      mainRefs.caretRef.current &&
+      mainRefs.nextWordRef.current
+    ) {
       setMainWordElements({
         viewportRef: mainRefs.viewportRef.current,
         trackRef: mainRefs.trackRef.current,
         caretRef: mainRefs.caretRef.current,
+        nextWordRef: mainRefs.nextWordRef.current,
       });
     }
-    if (subRefs.viewportRef.current && subRefs.trackRef.current && subRefs.caretRef.current) {
+    if (
+      subRefs.viewportRef.current &&
+      subRefs.trackRef.current &&
+      subRefs.caretRef.current &&
+      subRefs.nextWordRef.current
+    ) {
       setSubWordElements({
         viewportRef: subRefs.viewportRef.current,
         trackRef: subRefs.trackRef.current,
         caretRef: subRefs.caretRef.current,
+        nextWordRef: subRefs.nextWordRef.current,
       });
     }
   }, []);
@@ -75,7 +87,6 @@ export const TypingWords = () => {
     >
       <Word
         id="main_word"
-        nextWord={mainWord === "kana" ? nextLyrics.kanaWord : nextLyrics.romaWord}
         isLineCompleted={isLineCompleted}
         className={cn(
           mainWord === "kana" ? "word-kana" : "word-roma",
@@ -92,7 +103,6 @@ export const TypingWords = () => {
       />
       <Word
         id="sub_word"
-        nextWord={mainWord === "kana" ? nextLyrics.romaWord : nextLyrics.kanaWord}
         isLineCompleted={isLineCompleted}
         className={cn(
           mainWord === "kana" ? "word-roma" : "word-kana",
@@ -143,20 +153,23 @@ interface WordProps {
     viewportRef: React.RefObject<HTMLDivElement | null>;
     trackRef: React.RefObject<HTMLDivElement | null>;
     caretRef: React.RefObject<HTMLSpanElement | null>;
+    nextWordRef: React.RefObject<HTMLSpanElement | null>;
   };
   className: string;
   style: React.CSSProperties;
-  nextWord: string;
   isLineCompleted: boolean;
   isCompletedNextWord: boolean;
 }
 
-const Word = ({ refs, className, style, nextWord, isLineCompleted, isCompletedNextWord }: WordProps) => {
+const Word = ({ refs, className, style, isLineCompleted, isCompletedNextWord }: WordProps) => {
   const isDisplayNextWord = isLineCompleted && isCompletedNextWord;
   return (
     <div className={cn("relative w-full", className)} style={style}>
-      <span className={cn("next-line-word text-word-nextWord hidden", isDisplayNextWord && "block")}>
-        {nextWord.replace(/ /g, " ") || "\u200B"}
+      <span
+        ref={refs.nextWordRef}
+        className={cn("next-line-word text-word-nextWord hidden", isDisplayNextWord && "block")}
+      >
+        {"\u200B"}
       </span>
       <div ref={refs.viewportRef} className={cn("overflow-hidden contain-content", isDisplayNextWord && "hidden")}>
         {"\u200B"}

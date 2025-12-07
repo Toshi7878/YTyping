@@ -1,6 +1,6 @@
 import parse from "html-react-parser";
-import { useNextLyricsState } from "@/app/(typing)/type/_lib/atoms/state";
 import { cn } from "@/lib/utils";
+import { useNextLyricsState } from "../../../_lib/atoms/typing-word";
 
 export const NextLyrics = () => {
   const { lyrics, kpm } = useNextLyricsState();

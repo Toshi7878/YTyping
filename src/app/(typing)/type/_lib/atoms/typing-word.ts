@@ -2,15 +2,39 @@ import { useAtomValue } from "jotai";
 import { atom, type ExtractAtomValue } from "jotai/vanilla";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import { focusAtom } from "jotai-optics";
-import { createTypingWord, type TypingWord } from "lyrics-typing-engine";
+import { type BuiltMapLine, createTypingWord, type TypingWord } from "lyrics-typing-engine";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import { readTypingOptions, wordDisplayAtom } from "./hydrate";
-import { readLineProgress } from "./ref";
+import { readLineCount, readLineProgress } from "./ref";
+import { speedBaseAtom } from "./speed-reducer";
 import { playingInputModeAtom, readBuiltMap, readUtilityParams } from "./state";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
+
+const nextLyricsAtom = atomWithReset({
+  lyrics: "",
+  kpm: "",
+});
+export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
+export const setNextLyrics = (line: BuiltMapLine) => {
+  const typingOptions = readTypingOptions();
+  const inputMode = store.get(playingInputModeAtom);
+  const speed = store.get(speedBaseAtom);
+  const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * speed.playSpeed;
+  store.set(nextLyricsAtom, () => {
+    if (line.kanaLyrics) {
+      return {
+        lyrics: typingOptions.nextDisplay === "WORD" ? line.kanaLyrics : line.lyrics,
+        kpm: nextKpm.toFixed(0),
+      };
+    }
+
+    return RESET;
+  });
+};
+export const resetNextLyrics = () => store.set(nextLyricsAtom, RESET);
 
 const lineAtom = atomWithReset<{ typingWord: TypingWord; lyrics: string }>({
   typingWord: {
@@ -56,12 +80,14 @@ const mainWordElementsAtom = atomWithReset<{
   viewportRef: HTMLDivElement;
   trackRef: HTMLDivElement;
   caretRef: HTMLSpanElement;
+  nextWordRef: HTMLSpanElement;
 } | null>(null);
 
 const subWordElementsAtom = atomWithReset<{
   viewportRef: HTMLDivElement;
   trackRef: HTMLDivElement;
   caretRef: HTMLSpanElement;
+  nextWordRef: HTMLSpanElement;
 } | null>(null);
 
 export const readMainWordElements = () => store.get(mainWordElementsAtom);
@@ -115,14 +141,16 @@ const updateWordDisplay = (
     viewportRef: HTMLDivElement;
     trackRef: HTMLDivElement;
     caretRef: HTMLSpanElement;
+    nextWordRef: HTMLSpanElement;
   },
   sub: {
     viewportRef: HTMLDivElement;
     trackRef: HTMLDivElement;
     caretRef: HTMLSpanElement;
+    nextWordRef: HTMLSpanElement;
   },
 ) => {
-  const { wordDisplay } = readTypingOptions();
+  const { wordDisplay, lineCompletedDisplay } = readTypingOptions();
   const { inputMode } = readUtilityParams();
   const isMainKana = wordDisplay.startsWith("KANA_") || inputMode === "kana";
 
@@ -170,6 +198,18 @@ const updateWordDisplay = (
       correctEl.textContent = isMainKana ? correct.roma : correct.kana;
       nextCharEl.textContent = isMainKana ? nextChar.roma : nextChar.kana;
       remainWordEl.textContent = isMainKana ? remainWord.roma : remainWord.kana;
+    }
+  }
+
+  const isCompleted = !!correct.kana && !nextChar.kana;
+  if (isCompleted && lineCompletedDisplay === "NEXT_WORD") {
+    const builtMap = readBuiltMap();
+    const count = readLineCount();
+    const nextLine = builtMap?.lines[count + 1];
+    if (nextLine && main && sub) {
+      const { kanaLyrics, romaLyrics } = nextLine;
+      main.nextWordRef.textContent = isMainKana ? kanaLyrics : romaLyrics;
+      sub.nextWordRef.textContent = isMainKana ? romaLyrics : kanaLyrics;
     }
   }
 

@@ -16,14 +16,13 @@ import {
   readUtilityParams,
   setActiveSkipGuideKey,
   setChangeCSSCount,
-  setNextLyrics,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { YouTubeSpeed } from "@/utils/types";
 import { readAllLineResult } from "../../atoms/family";
 import { setAllTypingStatus } from "../../atoms/status";
 import { readElapsedSecTime, setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../atoms/sub-status";
-import { readTypingWord, setNewLine } from "../../atoms/typing-word";
+import { readTypingWord, setNewLine, setNextLyrics } from "../../atoms/typing-word";
 import { cueYTVideoById, getYTPlayerState, getYTVideoId, readYTPlayer, stopYTPlayer } from "../../atoms/youtube-player";
 import { calculateLineKpm } from "../../utils/calculate-kpm";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";

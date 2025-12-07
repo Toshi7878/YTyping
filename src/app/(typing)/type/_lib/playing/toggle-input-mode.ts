@@ -1,7 +1,7 @@
 import { createTypingWord, parseWordToChunks } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
-import { readBuiltMap, readUtilityParams, setNextLyrics, setNotify, setPlayingInputMode } from "../atoms/state";
-import { readTypingWord, setTypingWord } from "../atoms/typing-word";
+import { readBuiltMap, readUtilityParams, setNotify, setPlayingInputMode } from "../atoms/state";
+import { readTypingWord, setNextLyrics, setTypingWord } from "../atoms/typing-word";
 import { CHAR_POINT } from "../const";
 import { getLineTime } from "../youtube-player/get-youtube-time";
 
