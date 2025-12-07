@@ -9,26 +9,40 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
   if (!map) return;
   const typingWord = readTypingWord();
 
-  const { kanaToRomaConvertCount } = readSubstatus();
-  writeSubstatus({ kanaToRomaConvertCount: kanaToRomaConvertCount + typingWord.correct.roma.length });
+  // 現在の状態を取得
+  const currentSubstatus = readSubstatus();
+  const diffSubstatus: Partial<typeof currentSubstatus> = {};
+
+  // 1. kanaToRomaConvertCount の更新
+  diffSubstatus.kanaToRomaConvertCount = currentSubstatus.kanaToRomaConvertCount + typingWord.correct.roma.length;
 
   const isFailed = typingWord.nextChunk.kana;
+
+  // 2. 失敗時の Substatus 更新
   if (isFailed) {
-    const { failureCount, totalLatency } = readSubstatus();
-    writeSubstatus({ failureCount: failureCount + 1 });
+    diffSubstatus.failureCount = currentSubstatus.failureCount + 1;
+
     const { type: lineType } = readLineSubstatus();
-    writeSubstatus({ totalLatency: lineType === 0 ? totalLatency + constantLineTime : totalLatency });
+    if (lineType === 0) {
+      // lineType === 0 の場合のみ更新
+      diffSubstatus.totalLatency = currentSubstatus.totalLatency + constantLineTime;
+    }
   }
 
+  // Substatus を一度に更新
+  writeSubstatus(diffSubstatus);
+
+  // 3. TypingStatus の更新
   setAllTypingStatus((prev) => {
-    let { score } = prev;
-    let { line } = prev;
-    let { rank } = prev;
-    const { completeCount, failureCount } = readSubstatus();
+    let { score, line, rank } = prev;
 
     if (isFailed) {
       score = prev.score + prev.point;
-      line = map.typingLineIndexes.length - (completeCount + failureCount);
+
+      const nextCompleteCount = currentSubstatus.completeCount;
+      const nextFailureCount = diffSubstatus.failureCount ?? currentSubstatus.failureCount;
+
+      line = map.typingLineIndexes.length - (nextCompleteCount + nextFailureCount);
       rank = calcCurrentRank(score);
     }
 
