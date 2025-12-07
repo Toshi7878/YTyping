@@ -1,11 +1,17 @@
 "use client";
-import type { Atom } from "jotai";
-import { useAtomValue, useStore } from "jotai";
+import type { RefObject } from "react";
 import { TableCell } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import { focusTypingStatusAtoms } from "../../../_lib/atoms/state";
+import type { LabelType, StatusValueElementRefs } from "./status-table-card";
 
-export const StatusCell = ({ label }: { label: keyof typeof focusTypingStatusAtoms }) => {
+interface StatusCellProps {
+  label: LabelType;
+  statusValueRefs: StatusValueElementRefs;
+}
+
+export const StatusCell = ({ label, statusValueRefs }: StatusCellProps) => {
+  const statusValueRef = statusValueRefs[label];
+
   return (
     <TableCell id={label} style={{ width: label === "score" || label === "point" ? "20%" : "14%" }}>
       <StatusLabel label={label} />
@@ -13,16 +19,16 @@ export const StatusCell = ({ label }: { label: keyof typeof focusTypingStatusAto
 
       <span className="value text-6xl md:text-[2.2rem]">
         {label === "point" ? (
-          <PointStatusValue atom={focusTypingStatusAtoms[label]} timeBonusAtom={focusTypingStatusAtoms.timeBonus} />
+          <PointStatusValue pointValueRef={statusValueRef} timeBonusValueRef={statusValueRefs.timeBonus} />
         ) : (
-          <StatusValue atom={focusTypingStatusAtoms[label]} />
+          <StatusValue statusValueRef={statusValueRef} />
         )}
       </span>
     </TableCell>
   );
 };
 
-const StatusLabel = ({ label }: { label: keyof typeof focusTypingStatusAtoms }) => {
+const StatusLabel = ({ label }: { label: LabelType }) => {
   return (
     <span className={cn("status-label relative mr-2 capitalize md:text-[80%]", label === "kpm" && "tracking-[0.2em]")}>
       {label}
@@ -31,32 +37,24 @@ const StatusLabel = ({ label }: { label: keyof typeof focusTypingStatusAtoms }) 
 };
 
 interface PointStatusValueProps {
-  atom: Atom<number>;
-  timeBonusAtom: Atom<number>;
+  pointValueRef: RefObject<HTMLSpanElement | null>;
+  timeBonusValueRef: RefObject<HTMLSpanElement | null>;
 }
 
-const PointStatusValue = ({ atom, timeBonusAtom }: PointStatusValueProps) => {
-  const store = useStore();
-
-  const value = useAtomValue(atom, { store });
-  const timeBonusValue = useAtomValue(timeBonusAtom, { store });
-
+const PointStatusValue = ({ pointValueRef, timeBonusValueRef }: PointStatusValueProps) => {
   return (
     <>
-      {value.toString()}
-      <small>{timeBonusValue > 0 && `+${timeBonusValue.toString()}`}</small>
+      <span ref={pointValueRef}>0</span>
+      <small ref={timeBonusValueRef}></small>
     </>
   );
 };
 
-const StatusValue = ({ atom }: { atom: Atom<number> }) => {
-  const store = useStore();
-  const value = useAtomValue(atom, { store });
-
-  return <>{value}</>;
+const StatusValue = ({ statusValueRef }: { statusValueRef: RefObject<HTMLSpanElement | null> }) => {
+  return <span ref={statusValueRef}>0</span>;
 };
 
-const StatusUnderline = ({ label }: { label: keyof typeof focusTypingStatusAtoms }) => {
+const StatusUnderline = ({ label }: { label: LabelType }) => {
   const isMainWidth = label === "score" || label === "point";
 
   const underlineWidthClass = isMainWidth ? "w-[240px] md:w-[159px]" : "w-28 md:w-20";

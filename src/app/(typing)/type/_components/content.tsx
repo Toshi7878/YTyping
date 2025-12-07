@@ -19,14 +19,8 @@ import { useBreakPoint } from "@/utils/hooks/use-break-point";
 import { initializeAllLineResult } from "../_lib/atoms/family";
 import { readTotalProgress } from "../_lib/atoms/ref";
 import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
-import {
-  readScene,
-  resetTypingStatus,
-  setBuiltMap,
-  setLineSelectIndex,
-  setLineStatus,
-  useSceneGroupState,
-} from "../_lib/atoms/state";
+import { readScene, setBuiltMap, setLineSelectIndex, useSceneGroupState } from "../_lib/atoms/state";
+import { resetAllTypingStatus, setLineStatus } from "../_lib/atoms/status";
 import { readReadyInputMode } from "../_lib/atoms/storage";
 import { CHAR_POINT } from "../_lib/const";
 import { mutateTypingStats } from "../_lib/mutate/stats";
@@ -83,7 +77,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
       initializeAllLineResult(builtMap.initialLineResults);
       setLineSelectIndex(builtMap.typingLineIndexes?.[0] ?? 0);
       setLineStatus(builtMapLines.length);
-      resetTypingStatus();
+      resetAllTypingStatus();
 
       const totalProgress = readTotalProgress();
       if (totalProgress) {

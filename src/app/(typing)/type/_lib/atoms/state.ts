@@ -2,9 +2,8 @@ import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import { type BuiltMapLine, createTypingWord, type InputMode, type TypingWord } from "lyrics-typing-engine";
+import type { BuiltMapLine, InputMode } from "lyrics-typing-engine";
 import type z from "zod/v4";
-import type { BuiltMapLineWithOption } from "@/lib/types";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { findClosestLowerOrEqual } from "@/utils/array";
 import type { Updater } from "@/utils/types";
@@ -13,7 +12,6 @@ import type { TypingLineResults } from "@/validator/result";
 import type { SceneType, SkipGuideKey } from "../type";
 import { setLineResultSelected } from "./family";
 import { readTypingOptions } from "./hydrate";
-import { lineProgressAtom, readUtilityRefParams } from "./ref";
 import { speedBaseAtom } from "./speed-reducer";
 import { getTypeAtomStore } from "./store";
 
@@ -57,7 +55,7 @@ const tabNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("tabName"
 const notifyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("notify"));
 const activeSkipKeyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("activeSkipKey"));
 const changeCSSCountAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("changeCSSCount"));
-const playingInputModeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("inputMode"));
+export const playingInputModeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("inputMode"));
 const isYTStartedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isYTStarted"));
 const isPausedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isPaused"));
 const movieDurationAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("movieDuration"));
@@ -161,31 +159,6 @@ export const setReplayRankingResult = (value: ExtractAtomValue<typeof replayRank
   store.set(replayRankingResultAtom, value);
 export const resetReplayRankingResult = () => store.set(replayRankingResultAtom, RESET);
 
-const substatusAtom = atomWithReset({
-  elapsedSecTime: 0,
-  lineRemainTime: 0,
-  lineKpm: 0,
-  combo: 0,
-});
-export const resetSubstatusState = () => store.set(substatusAtom, RESET);
-const lineRemainTimeAtom = focusAtom(substatusAtom, (optic) => optic.prop("lineRemainTime"));
-export const useLineRemainTimeState = () => useAtomValue(lineRemainTimeAtom, { store });
-export const setLineRemainTime = (value: ExtractAtomValue<typeof lineRemainTimeAtom>) =>
-  store.set(lineRemainTimeAtom, value);
-const lineKpmAtom = focusAtom(substatusAtom, (optic) => optic.prop("lineKpm"));
-export const useLineKpmState = () => useAtomValue(lineKpmAtom, { store });
-export const setLineKpm = (value: ExtractAtomValue<typeof lineKpmAtom>) => store.set(lineKpmAtom, value);
-export const readLineKpm = () => store.get(lineKpmAtom);
-const comboAtom = focusAtom(substatusAtom, (optic) => optic.prop("combo"));
-export const useComboState = () => useAtomValue(comboAtom, { store });
-export const setCombo = (update: Updater<ExtractAtomValue<typeof comboAtom>>) => store.set(comboAtom, update);
-export const readCombo = () => store.get(comboAtom);
-const elapsedSecTimeAtom = focusAtom(substatusAtom, (optic) => optic.prop("elapsedSecTime"));
-export const useElapsedSecTimeState = () => useAtomValue(elapsedSecTimeAtom, { store });
-export const setElapsedSecTime = (value: ExtractAtomValue<typeof elapsedSecTimeAtom>) =>
-  store.set(elapsedSecTimeAtom, value);
-export const readElapsedSecTime = () => store.get(elapsedSecTimeAtom);
-
 const nextLyricsAtom = atomWithReset({
   lyrics: "",
   kpm: "",
@@ -212,100 +185,3 @@ export const setNextLyrics = (line: BuiltMapLine) => {
   });
 };
 export const resetNextLyrics = () => store.set(nextLyricsAtom, RESET);
-
-const lineAtom = atomWithReset<{ typingWord: TypingWord; lyrics: string }>({
-  typingWord: {
-    correct: { kana: "", roma: "" },
-    nextChunk: { kana: "", romaPatterns: [], point: 0, type: undefined },
-    wordChunks: [{ kana: "", romaPatterns: [], point: 0, type: undefined }],
-  },
-  lyrics: "",
-});
-const typingWordAtom = focusAtom(lineAtom, (optic) => optic.prop("typingWord"));
-const displayTypingWordAtom = atom((get) => {
-  const typingWord = get(typingWordAtom);
-
-  const correct = typingWord.correct;
-
-  const nextChar = {
-    kana: typingWord.nextChunk.kana,
-    roma: typingWord.nextChunk.romaPatterns[0] ?? "",
-  };
-
-  const remainWord = {
-    kana: typingWord.wordChunks
-      .map((chunk) => chunk.kana)
-      .join("")
-      .slice(0, 60),
-    roma: typingWord.wordChunks
-      .map((chunk) => chunk.romaPatterns[0])
-      .join("")
-      .slice(0, 60),
-  };
-
-  return { correct, nextChar, remainWord };
-});
-const lyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics"));
-export const useTypingWordState = () => useAtomValue(displayTypingWordAtom, { store });
-export const setTypingWord = (value: ExtractAtomValue<typeof typingWordAtom>) => store.set(typingWordAtom, value);
-export const readTypingWord = () => store.get(typingWordAtom);
-export const useLyricsState = () => useAtomValue(lyricsAtom, { store });
-export const setNewLine = (newLine: BuiltMapLineWithOption) => {
-  store.set(lineAtom, { typingWord: createTypingWord(newLine), lyrics: newLine.lyrics });
-
-  const lineProgress = store.get(lineProgressAtom);
-  const { isPaused } = store.get(utilityParamsAtom);
-
-  if (lineProgress && !isPaused) {
-    lineProgress.value = 0;
-    lineProgress.max = newLine.duration;
-  }
-};
-export const resetCurrentLine = () => {
-  store.set(lineAtom, RESET);
-  const map = store.get(builtMapAtom);
-  const lineProgress = store.get(lineProgressAtom);
-
-  if (lineProgress && map && map.lines[1]) {
-    lineProgress.value = 0;
-    lineProgress.max = map.lines[1].time;
-  }
-};
-
-const typingStatusAtom = atomWithReset({
-  score: 0,
-  type: 0,
-  kpm: 0,
-  rank: 0,
-  point: 0,
-  miss: 0,
-  lost: 0,
-  line: 0,
-  timeBonus: 0,
-});
-export const focusTypingStatusAtoms = {
-  score: focusAtom(typingStatusAtom, (optic) => optic.prop("score")),
-  type: focusAtom(typingStatusAtom, (optic) => optic.prop("type")),
-  kpm: focusAtom(typingStatusAtom, (optic) => optic.prop("kpm")),
-  rank: focusAtom(typingStatusAtom, (optic) => optic.prop("rank")),
-  point: focusAtom(typingStatusAtom, (optic) => optic.prop("point")),
-  miss: focusAtom(typingStatusAtom, (optic) => optic.prop("miss")),
-  lost: focusAtom(typingStatusAtom, (optic) => optic.prop("lost")),
-  line: focusAtom(typingStatusAtom, (optic) => optic.prop("line")),
-  timeBonus: focusAtom(typingStatusAtom, (optic) => optic.prop("timeBonus")),
-};
-export const useTypingStatusState = () => useAtomValue(typingStatusAtom, { store });
-export const setLineStatus = (value: ExtractAtomValue<typeof focusTypingStatusAtoms.line>) =>
-  store.set(focusTypingStatusAtoms.line, value);
-export const setRankStatus = (value: ExtractAtomValue<typeof focusTypingStatusAtoms.rank>) =>
-  store.set(focusTypingStatusAtoms.rank, value);
-export const setTypingStatus = (update: Updater<ExtractAtomValue<typeof typingStatusAtom>>) =>
-  store.set(typingStatusAtom, update);
-export const resetTypingStatus = () => {
-  store.set(typingStatusAtom, RESET);
-  const map = readBuiltMap();
-  setLineStatus(map?.typingLineIndexes.length || 0);
-  const { rankingScores } = readUtilityRefParams();
-  setRankStatus(rankingScores.length + 1);
-};
-export const readTypingStatus = () => store.get(typingStatusAtom);

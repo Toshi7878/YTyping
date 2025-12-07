@@ -8,7 +8,10 @@ import {
   writeUserStats,
 } from "../../atoms/ref";
 import { readPlaySpeed } from "../../atoms/speed-reducer";
-import { readCombo, readTypingWord, readUtilityParams, setCombo, setTypingStatus } from "../../atoms/state";
+import { readUtilityParams } from "../../atoms/state";
+import { setAllTypingStatus } from "../../atoms/status";
+import { readCombo, setCombo } from "../../atoms/sub-status";
+import { readTypingWord } from "../../atoms/typing-word";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateSuccessStatus = ({
@@ -22,7 +25,7 @@ export const updateSuccessStatus = ({
 }) => {
   const { playSpeed } = readPlaySpeed();
 
-  setTypingStatus((prev) => {
+  setAllTypingStatus((prev) => {
     const type = prev.type + 1;
     const point = prev.point + updatePoint;
 

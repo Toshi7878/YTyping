@@ -1,4 +1,5 @@
-import { useLineKpmState, useLineRemainTimeState } from "../../../_lib/atoms/state";
+import { useEffect, useRef } from "react";
+import { setLineKpmElement, setLineRemainTimeElement } from "../../../_lib/atoms/sub-status";
 
 export const LineRemainTimeAndKpm = () => {
   return (
@@ -13,12 +14,25 @@ export const LineRemainTimeAndKpm = () => {
 };
 
 const LineKpm = () => {
-  const displayLineKpm = useLineKpmState();
+  const lineKpmRef = useRef<HTMLSpanElement>(null);
 
-  return <span>{displayLineKpm.toFixed(0)}</span>;
+  useEffect(() => {
+    if (lineKpmRef.current) {
+      setLineKpmElement(lineKpmRef.current);
+    }
+  }, []);
+
+  return <span ref={lineKpmRef}>0</span>;
 };
 
 const LineRemainTime = ({ className }: { className: string }) => {
-  const displayLineRemainTime = useLineRemainTimeState();
-  return <span className={className}>{displayLineRemainTime.toFixed(1)}</span>;
+  const lineRemainTimeRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (lineRemainTimeRef.current) {
+      setLineRemainTimeElement(lineRemainTimeRef.current);
+    }
+  }, []);
+
+  return <span className={className} ref={lineRemainTimeRef}></span>;
 };

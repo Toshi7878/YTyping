@@ -1,7 +1,14 @@
-import { useComboState } from "../../../_lib/atoms/state";
+import { useEffect, useRef } from "react";
+import { setComboElement } from "../../../_lib/atoms/sub-status";
 
 export const Combo = () => {
-  const combo = useComboState();
+  const comboRef = useRef<HTMLSpanElement>(null);
 
-  return <div>{combo}</div>;
+  useEffect(() => {
+    if (comboRef.current) {
+      setComboElement(comboRef.current);
+    }
+  }, []);
+
+  return <span ref={comboRef}>0</span>;
 };

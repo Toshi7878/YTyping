@@ -1,5 +1,6 @@
-import { readTypingStatus, setLineKpm, setTypingStatus } from "@/app/(typing)/type/_lib/atoms/state";
 import { readLineSubstatus, readSubstatus, readUserStats, writeSubstatus, writeUserStats } from "../../atoms/ref";
+import { readTypingStatus, setAllTypingStatus } from "../../atoms/status";
+import { setLineKpm } from "../../atoms/sub-status";
 import { calculateLineKpm, calculateLineRkpm, calculateTotalKpm } from "../../utils/calculate-kpm";
 
 export const updateKpmOnLineEnded = ({ constantLineTime }: { constantLineTime: number }) => {
@@ -25,5 +26,5 @@ export const updateKpmOnTyping = ({ constantLineTime }: { constantLineTime: numb
   const newTotalKpm = calculateTotalKpm({ totalTypeCount, totalTypeTime, constantLineTime });
 
   setLineKpm(newLineKpm);
-  setTypingStatus((prev) => ({ ...prev, kpm: newTotalKpm }));
+  setAllTypingStatus((prev) => ({ ...prev, kpm: newTotalKpm }));
 };

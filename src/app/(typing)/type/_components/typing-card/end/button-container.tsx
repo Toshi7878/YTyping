@@ -2,12 +2,13 @@ import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
-import { setLineResultSheet, useSceneState, useTypingStatusState } from "@/app/(typing)/type/_lib/atoms/state";
+import { setLineResultSheet, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { commitPlayRestart } from "@/app/(typing)/type/_lib/playing/commit-play-restart";
 import type { PlayMode } from "@/app/(typing)/type/_lib/type";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Button } from "@/components/ui/button";
+import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { RegisterRankingButton } from "./submit-ranking-button";
 
 export const EndButtonContainer = () => {

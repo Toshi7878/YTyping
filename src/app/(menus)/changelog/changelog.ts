@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-12-07",
+    descriptions: ["タイピング中の描画パフォーマンス改善"],
+  },
+  {
     date: "2025-12-04",
     descriptions: [
       "タイピング時に合計kpmとフレーズ単位のkpmで誤差が発生している問題を修正",

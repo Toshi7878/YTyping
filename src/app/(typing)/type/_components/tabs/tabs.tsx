@@ -20,7 +20,7 @@ export const TabsArea = ({ className }: TabsAreaProps) => {
       id="tabs-area"
     >
       <TabLists />
-      <TabsContent value="ステータス" className="tab-card">
+      <TabsContent forceMount value="ステータス" className="tab-card">
         <StatusCard className="h-96 md:h-56" />
       </TabsContent>
 

@@ -17,7 +17,8 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { useMapIdState } from "../../../_lib/atoms/hydrate";
 import { writeUtilityRefParams } from "../../../_lib/atoms/ref";
-import { setRankStatus, useSceneGroupState } from "../../../_lib/atoms/state";
+import { useSceneGroupState } from "../../../_lib/atoms/state";
+import { setRankStatus } from "../../../_lib/atoms/status";
 import { RankingPopoverContent } from "./ranking-popover-menu";
 
 type RankingResult = RouterOutputs["result"]["getMapRanking"][number];

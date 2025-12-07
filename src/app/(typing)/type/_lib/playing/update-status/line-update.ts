@@ -1,5 +1,7 @@
 import { readLineSubstatus, readSubstatus, writeSubstatus } from "../../atoms/ref";
-import { readBuiltMap, readTypingWord, setTypingStatus } from "../../atoms/state";
+import { readBuiltMap } from "../../atoms/state";
+import { setAllTypingStatus } from "../../atoms/status";
+import { readTypingWord } from "../../atoms/typing-word";
 import { calcCurrentRank } from "./calc-current-rank";
 
 export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTime: number }) => {
@@ -18,7 +20,7 @@ export const updateStatusForLineUpdate = ({ constantLineTime }: { constantLineTi
     writeSubstatus({ totalLatency: lineType === 0 ? totalLatency + constantLineTime : totalLatency });
   }
 
-  setTypingStatus((prev) => {
+  setAllTypingStatus((prev) => {
     let { score } = prev;
     let { line } = prev;
     let { rank } = prev;

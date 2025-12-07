@@ -1,14 +1,10 @@
 import { clearAllLineResult } from "./family";
 import { resetLineCount, resetLineSubstatus, resetSubstatus, resetUtilityRefParams } from "./ref";
 import { resetSpeed } from "./speed-reducer";
-import {
-  resetBuiltMap,
-  resetCurrentLine,
-  resetReplayRankingResult,
-  resetSubstatusState,
-  resetTypingStatus,
-  resetUtilityParams,
-} from "./state";
+import { resetBuiltMap, resetReplayRankingResult, resetUtilityParams } from "./state";
+import { resetAllTypingStatus } from "./status";
+import { resetSubstatusState } from "./sub-status";
+import { resetCurrentLine } from "./typing-word";
 import { resetYTPlayer } from "./youtube-player";
 
 export const resetAllStateOnCleanup = () => {
@@ -18,7 +14,7 @@ export const resetAllStateOnCleanup = () => {
   resetUtilityParams();
   resetSpeed();
   resetBuiltMap();
-  resetTypingStatus();
+  resetAllTypingStatus();
   resetUtilityRefParams();
   resetSubstatusState();
   resetSubstatus();
