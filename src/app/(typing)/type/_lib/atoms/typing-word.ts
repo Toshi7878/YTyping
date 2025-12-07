@@ -297,6 +297,8 @@ const updateWordDisplay = (
 
 let prevMainShift = -1;
 let prevSubShift = -1;
+let prevMainCorrectTextForScroll = "";
+let prevSubCorrectTextForScroll = "";
 
 const applyScroll = (
   mainRefs: {
@@ -322,6 +324,8 @@ const applyScroll = (
     subRefs.trackRef.style.transition = "";
     subRefs.trackRef.style.transform = "translate3d(0px, 0px, 0px)";
     prevSubShift = 0;
+    prevMainCorrectTextForScroll = "";
+    prevSubCorrectTextForScroll = "";
     return;
   }
 
@@ -338,22 +342,35 @@ const applyScroll = (
     let mainShift: number | null = null;
     let subShift: number | null = null;
 
-    if (mainCorrect.length > 0) {
-      const caretX = mainRefs.caretRef.offsetLeft;
-      // clientWidthの読み取りもここで行う
-      const rightBound = Math.floor(mainRefs.viewportRef.clientWidth * MAIN_RIGHT_BOUND_RATIO);
+    const isMainTextChanged = prevMainCorrectTextForScroll !== mainCorrect;
+    const isSubTextChanged = prevSubCorrectTextForScroll !== subCorrect;
 
-      if (caretX > rightBound) {
-        mainShift = Math.max(0, caretX - rightBound);
+    prevMainCorrectTextForScroll = mainCorrect;
+    prevSubCorrectTextForScroll = subCorrect;
+
+    if (mainCorrect.length > 0) {
+      if (isMainTextChanged || prevMainShift === -1) {
+        const caretX = mainRefs.caretRef.offsetLeft;
+        const rightBound = Math.floor(mainRefs.viewportRef.clientWidth * MAIN_RIGHT_BOUND_RATIO);
+
+        if (caretX > rightBound) {
+          mainShift = Math.max(0, caretX - rightBound);
+        }
+      } else {
+        mainShift = prevMainShift;
       }
     }
 
     if (subCorrect.length > 0) {
-      const caretX = subRefs.caretRef.offsetLeft;
-      const rightBound = Math.floor(subRefs.viewportRef.clientWidth * SUB_RIGHT_BOUND_RATIO);
+      if (isSubTextChanged || prevSubShift === -1) {
+        const caretX = subRefs.caretRef.offsetLeft;
+        const rightBound = Math.floor(subRefs.viewportRef.clientWidth * SUB_RIGHT_BOUND_RATIO);
 
-      if (caretX > rightBound) {
-        subShift = Math.max(0, caretX - rightBound);
+        if (caretX > rightBound) {
+          subShift = Math.max(0, caretX - rightBound);
+        }
+      } else {
+        subShift = prevSubShift;
       }
     }
 
@@ -363,13 +380,13 @@ const applyScroll = (
 
     if (mainShift !== null && mainShift !== prevMainShift) {
       mainRefs.trackRef.style.transition = SCROLL_TRANSITION;
-      mainRefs.trackRef.style.transform = `translate3d(${-mainShift}px, 0px, 0px)`;
+      mainRefs.trackRef.style.transform = `translateX(${-mainShift}px)`;
       prevMainShift = mainShift;
     }
 
     if (subShift !== null && subShift !== prevSubShift) {
       subRefs.trackRef.style.transition = SCROLL_TRANSITION;
-      subRefs.trackRef.style.transform = `translate3d(${-subShift}px, 0px, 0px)`;
+      subRefs.trackRef.style.transform = `translateX(${-subShift}px)`;
       prevSubShift = subShift;
     }
   });
@@ -382,4 +399,6 @@ export const resetWordCache = () => {
   prevSubCorrect = "";
   prevSubNextChar = "";
   prevSubRemain = "";
+  prevMainCorrectTextForScroll = "";
+  prevSubCorrectTextForScroll = "";
 };
