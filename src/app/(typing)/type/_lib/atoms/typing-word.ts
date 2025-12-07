@@ -196,14 +196,12 @@ const applyScroll = (
 ) => {
   // 早期リターン：レイアウト計算を回避（即座に実行、キャンセル不可）
   if (mainCorrect.length === 0 && subCorrect.length === 0) {
-    requestAnimationFrame(() => {
-      mainRefs.trackRef.style.transition = "";
-      mainRefs.trackRef.style.transform = "translate3d(0px, 0px, 0px)";
-      prevMainShift = 0;
-      subRefs.trackRef.style.transition = "";
-      subRefs.trackRef.style.transform = "translate3d(0px, 0px, 0px)";
-      prevSubShift = 0;
-    });
+    mainRefs.trackRef.style.transition = "";
+    mainRefs.trackRef.style.transform = "translate3d(0px, 0px, 0px)";
+    prevMainShift = 0;
+    subRefs.trackRef.style.transition = "";
+    subRefs.trackRef.style.transform = "translate3d(0px, 0px, 0px)";
+    prevSubShift = 0;
     return;
   }
 
