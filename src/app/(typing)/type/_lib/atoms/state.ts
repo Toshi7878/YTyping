@@ -55,7 +55,7 @@ const tabNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("tabName"
 const notifyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("notify"));
 const activeSkipKeyAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("activeSkipKey"));
 const changeCSSCountAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("changeCSSCount"));
-const playingInputModeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("inputMode"));
+export const playingInputModeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("inputMode"));
 const isYTStartedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isYTStarted"));
 const isPausedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isPaused"));
 const movieDurationAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("movieDuration"));

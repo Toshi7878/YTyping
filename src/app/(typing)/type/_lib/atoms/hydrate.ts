@@ -1,5 +1,6 @@
 import { type ExtractAtomValue, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
+import { focusAtom } from "jotai-optics";
 import { DEFAULT_TYPING_OPTIONS } from "@/server/drizzle/const";
 import { writeUtilityRefParams } from "./ref";
 import { getTypeAtomStore } from "./store";
@@ -11,6 +12,8 @@ export const useMapIdState = () => useAtomValue(mapIdAtom, { store });
 export const readMapId = () => store.get(mapIdAtom);
 
 export const typingOptionsAtom = atomWithReset(DEFAULT_TYPING_OPTIONS);
+export const wordDisplayAtom = focusAtom(typingOptionsAtom, (optic) => optic.prop("wordDisplay"));
+
 export const useTypingOptionsState = () => useAtomValue(typingOptionsAtom, { store });
 export const readTypingOptions = () => store.get(typingOptionsAtom);
 export const setTypingOptions = (newTypingOptions: Partial<ExtractAtomValue<typeof typingOptionsAtom>>) => {

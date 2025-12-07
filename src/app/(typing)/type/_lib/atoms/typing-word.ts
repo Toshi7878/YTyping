@@ -5,9 +5,9 @@ import { focusAtom } from "jotai-optics";
 import { createTypingWord, type TypingWord } from "lyrics-typing-engine";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
-import { readTypingOptions } from "./hydrate";
+import { readTypingOptions, wordDisplayAtom } from "./hydrate";
 import { readLineProgress } from "./ref";
-import { readBuiltMap, readUtilityParams } from "./state";
+import { playingInputModeAtom, readBuiltMap, readUtilityParams } from "./state";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
@@ -67,6 +67,64 @@ const subWordElementsAtom = atomWithReset<{
 export const readMainWordElements = () => store.get(mainWordElementsAtom);
 store.sub(typingWordAtom, () => {
   const typingWord = store.get(typingWordAtom);
+  const main = store.get(mainWordElementsAtom);
+  const sub = store.get(subWordElementsAtom);
+
+  if (main && sub) {
+    const { correct } = updateWordDisplay(typingWord, main, sub);
+    const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = readTypingOptions();
+
+    applyScroll(main, sub, correct.kana, correct.roma, {
+      isSmoothScroll,
+      mainScrollStart: mainWordScrollStart,
+      subScrollStart: subWordScrollStart,
+    });
+  }
+});
+
+store.sub(playingInputModeAtom, () => {
+  const typingWord = store.get(typingWordAtom);
+  const main = store.get(mainWordElementsAtom);
+  const sub = store.get(subWordElementsAtom);
+
+  if (main && sub) {
+    updateWordDisplay(typingWord, main, sub);
+  }
+});
+store.sub(wordDisplayAtom, () => {
+  const typingWord = store.get(typingWordAtom);
+  const main = store.get(mainWordElementsAtom);
+  const sub = store.get(subWordElementsAtom);
+
+  if (main && sub) {
+    updateWordDisplay(typingWord, main, sub);
+  }
+});
+
+export const setMainWordElements = (elements: ExtractAtomValue<typeof mainWordElementsAtom>) => {
+  store.set(mainWordElementsAtom, elements);
+};
+
+export const setSubWordElements = (elements: ExtractAtomValue<typeof subWordElementsAtom>) => {
+  store.set(subWordElementsAtom, elements);
+};
+
+const updateWordDisplay = (
+  typingWord: TypingWord,
+  main: {
+    viewportRef: HTMLDivElement;
+    trackRef: HTMLDivElement;
+    caretRef: HTMLSpanElement;
+  },
+  sub: {
+    viewportRef: HTMLDivElement;
+    trackRef: HTMLDivElement;
+    caretRef: HTMLSpanElement;
+  },
+) => {
+  const { wordDisplay } = readTypingOptions();
+  const { inputMode } = readUtilityParams();
+  const isMainKana = wordDisplay.startsWith("KANA_") || inputMode === "kana";
 
   const correct = {
     kana: typingWord.correct.kana.replace(/ /g, "ˍ"),
@@ -91,48 +149,31 @@ store.sub(typingWordAtom, () => {
       .replace(/ /g, " "),
   };
 
-  const main = store.get(mainWordElementsAtom);
   if (main?.trackRef) {
     const correctEl = main.trackRef.children[0];
     const nextCharEl = main.trackRef.children[1];
     const remainWordEl = main.trackRef.children[2];
 
     if (correctEl && nextCharEl && remainWordEl) {
-      correctEl.textContent = correct.kana;
-      nextCharEl.textContent = nextChar.kana;
-      remainWordEl.textContent = remainWord.kana;
+      correctEl.textContent = isMainKana ? correct.kana : correct.roma;
+      nextCharEl.textContent = isMainKana ? nextChar.kana : nextChar.roma;
+      remainWordEl.textContent = isMainKana ? remainWord.kana : remainWord.roma;
     }
   }
 
-  const sub = store.get(subWordElementsAtom);
   if (sub?.trackRef) {
     const correctEl = sub?.trackRef.children[0];
     const nextCharEl = sub?.trackRef.children[1];
     const remainWordEl = sub?.trackRef.children[2];
 
     if (correctEl && nextCharEl && remainWordEl) {
-      correctEl.textContent = correct.roma;
-      nextCharEl.textContent = nextChar.roma;
-      remainWordEl.textContent = remainWord.roma;
+      correctEl.textContent = isMainKana ? correct.roma : correct.kana;
+      nextCharEl.textContent = isMainKana ? nextChar.roma : nextChar.kana;
+      remainWordEl.textContent = isMainKana ? remainWord.roma : remainWord.kana;
     }
   }
 
-  const { isSmoothScroll, mainWordScrollStart, subWordScrollStart } = readTypingOptions();
-  if (main && sub) {
-    applyScroll(main, sub, correct.kana, correct.roma, {
-      isSmoothScroll,
-      mainScrollStart: mainWordScrollStart,
-      subScrollStart: subWordScrollStart,
-    });
-  }
-});
-
-export const setMainWordElements = (elements: ExtractAtomValue<typeof mainWordElementsAtom>) => {
-  store.set(mainWordElementsAtom, elements);
-};
-
-export const setSubWordElements = (elements: ExtractAtomValue<typeof subWordElementsAtom>) => {
-  store.set(subWordElementsAtom, elements);
+  return { correct, nextChar, remainWord };
 };
 
 let prevMainShift = -1;
