@@ -79,7 +79,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
     <PopoverContent
       side="bottom"
       align="start"
-      className="flex w-fit flex-col items-center px-0 py-2 [&>button]:w-full"
+      className="flex w-fit  sm:w-fit flex-col items-center px-0 py-2 [&>button]:w-full"
     >
       <Button variant="ghost">
         <Link href={`/user/${userId}`}>ユーザーページへ </Link>
