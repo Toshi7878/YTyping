@@ -2,7 +2,7 @@ import { useAtomValue } from "jotai";
 import { atom, type ExtractAtomValue } from "jotai/vanilla";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import { focusAtom } from "jotai-optics";
-import { type BuiltMapLine, createTypingWord, type TypingWord } from "lyrics-typing-engine";
+import { type BuiltMapLine, createDisplayWord, createTypingWord, type TypingWord } from "lyrics-typing-engine";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import { readTypingOptions, wordDisplayAtom } from "./hydrate";
@@ -168,29 +168,7 @@ const updateWordDisplay = (
   const { wordDisplay, lineCompletedDisplay } = readTypingOptions();
   const { inputMode } = readUtilityParams();
   const isMainKana = wordDisplay.startsWith("KANA_") || inputMode === "kana";
-
-  const correct = {
-    kana: typingWord.correct.kana.replace(/ /g, "ˍ"),
-    roma: typingWord.correct.roma.replace(/ /g, "ˍ"),
-  };
-
-  const nextChar = {
-    kana: typingWord.nextChunk.kana.replace(/ /g, " "),
-    roma: (typingWord.nextChunk.romaPatterns[0] ?? "").replace(/ /g, " "),
-  };
-
-  const remainWord = {
-    kana: typingWord.wordChunks
-      .map((chunk) => chunk.kana)
-      .join("")
-      .slice(0, 60)
-      .replace(/ /g, " "),
-    roma: typingWord.wordChunks
-      .map((chunk) => chunk.romaPatterns[0])
-      .join("")
-      .slice(0, 60)
-      .replace(/ /g, " "),
-  };
+  const { correct, nextChar, remainWord } = createDisplayWord(typingWord, { remainWord: { maxLength: 60 } });
 
   const mainCorrectText = isMainKana ? correct.kana : correct.roma;
   const mainNextCharText = isMainKana ? nextChar.kana : nextChar.roma;
