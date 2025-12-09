@@ -121,7 +121,7 @@ importers:
         version: 0.556.0(react@19.2.1)
       lyrics-typing-engine:
         specifier: ^1.1.13
-        version: 1.1.17
+        version: 1.2.0
       md5:
         specifier: ^2.3.0
         version: 2.3.0
@@ -2733,6 +2733,9 @@ packages:
   '@types/node@24.10.1':
     resolution: {integrity: sha512-GNWcUTRBgIRJD5zj+Tq0fKOJ5XZajIiBroOF0yvj2bSU1WvNdYS/dn9UxwsujGW4JX06dnHyjV2y9rRaybH0iQ==}
 
+  '@types/node@24.10.2':
+    resolution: {integrity: sha512-WOhQTZ4G8xZ1tjJTvKOpyEVSGgOTvJAfDK3FNFgELyaTpzhdgHVHeqW8V+UJvzF5BT+/B54T/1S2K6gd9c7bbA==}
+
   '@types/pg-pool@2.0.6':
     resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
 
@@ -3724,8 +3727,8 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  lyrics-typing-engine@1.1.17:
-    resolution: {integrity: sha512-BZ8PmaCGs2NAtkxgHviDPiC3YnEs8UfWe5N4/Gd1TyQe8o5/+EiGJIWyZnKlYC3Zo3TmXPzeU8Gd91NdiT1VyA==}
+  lyrics-typing-engine@1.2.0:
+    resolution: {integrity: sha512-g0bFyb+xrHDmBG2rNNlx9luCkhgQ+/QSiQeuRX+fCGKJzLOh8rxrOlaBmCrRLs6lUFBsFATOm0GtgBGcRFKaXA==}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -7415,6 +7418,10 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
+  '@types/node@24.10.2':
+    dependencies:
+      undici-types: 7.16.0
+
   '@types/pg-pool@2.0.6':
     dependencies:
       '@types/pg': 8.15.6
@@ -8201,7 +8208,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.10.1
+      '@types/node': 24.10.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -8306,7 +8313,7 @@ snapshots:
     dependencies:
       react: 19.2.1
 
-  lyrics-typing-engine@1.1.17: {}
+  lyrics-typing-engine@1.2.0: {}
 
   magic-string@0.30.21:
     dependencies:
