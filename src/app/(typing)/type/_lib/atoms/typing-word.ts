@@ -2,7 +2,13 @@ import { useAtomValue } from "jotai";
 import { atom, type ExtractAtomValue } from "jotai/vanilla";
 import { atomWithReset, RESET } from "jotai/vanilla/utils";
 import { focusAtom } from "jotai-optics";
-import { type BuiltMapLine, createDisplayWord, createTypingWord, type TypingWord } from "lyrics-typing-engine";
+import {
+  type BuiltMapLine,
+  createDisplayWord,
+  createTypingWord,
+  replaceAllSpaceWithThreePerEmSpace,
+  type TypingWord,
+} from "lyrics-typing-engine";
 import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import { readTypingOptions, wordDisplayAtom } from "./hydrate";
@@ -235,9 +241,8 @@ const updateWordDisplay = (
         const nextLine = builtMap?.lines[count + 1];
         if (nextLine && main && sub) {
           const { kanaLyrics, romaLyrics } = nextLine;
-          main.nextWordRef.textContent = `\u200B${isMainKana ? kanaLyrics : romaLyrics}`.replace(/ /g, " ");
-          sub.nextWordRef.textContent = `\u200B${isMainKana ? romaLyrics : kanaLyrics}`.replace(/ /g, " ");
-
+          main.nextWordRef.textContent = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? kanaLyrics : romaLyrics)}`;
+          sub.nextWordRef.textContent = `\u200B${replaceAllSpaceWithThreePerEmSpace(isMainKana ? romaLyrics : kanaLyrics)}`;
           main.nextWordRef.classList.add("!block");
           sub.nextWordRef.classList.add("!block");
           main.viewportRef.classList.add("hidden");
