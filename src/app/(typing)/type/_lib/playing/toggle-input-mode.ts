@@ -46,7 +46,7 @@ export const applyRomaInputMode = () => {
       typingWord.wordChunks.map((chunk) => chunk.kana).join("");
 
     const wordChunks = parseWordToChunks({ word: reconstructedWord, charPoint: CHAR_POINT });
-    setTypingWord(createTypingWord({ wordChunks }));
+    setTypingWord(createTypingWord({ wordChunks }, typingWord.correct));
   }
 
   updateNextLyrics();

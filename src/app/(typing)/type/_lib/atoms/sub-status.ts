@@ -22,7 +22,10 @@ const focusSubStatusAtoms = {
   combo: focusAtom(substatusAtom, (optic) => optic.prop("combo")),
 };
 
-export const resetSubstatusState = () => store.set(substatusAtom, RESET);
+export const resetSubstatusState = () => {
+  store.set(substatusAtom, RESET);
+  resetSubStatusCache();
+};
 
 export const setLineRemainTime = (value: ExtractAtomValue<typeof focusSubStatusAtoms.lineRemainTime>) =>
   store.set(focusSubStatusAtoms.lineRemainTime, value);
@@ -51,38 +54,54 @@ export const setLineRemainTimeElement = (element: HTMLSpanElement | null) =>
 export const setLineKpmElement = (element: HTMLSpanElement | null) => store.set(lineKpmElementAtom, element);
 export const setComboElement = (element: HTMLSpanElement | null) => store.set(comboElementAtom, element);
 
-store.sub(focusSubStatusAtoms.elapsedSecTime, () => {
-  const element = store.get(elapsedSecTimeElementAtom);
-  if (element) {
-    requestDebouncedAnimationFrame("elapsedSecTime", () => {
-      element.textContent = String(formatTime(store.get(focusSubStatusAtoms.elapsedSecTime)));
-    });
-  }
+const prevSubStatus = {
+  elapsedSecTime: -1,
+  lineRemainTime: -1,
+  lineKpm: -1,
+  combo: -1,
+};
+
+store.sub(substatusAtom, () => {
+  const current = store.get(substatusAtom);
+
+  requestDebouncedAnimationFrame("substatus-update", () => {
+    if (prevSubStatus.elapsedSecTime !== current.elapsedSecTime) {
+      const element = store.get(elapsedSecTimeElementAtom);
+      if (element) {
+        element.textContent = String(formatTime(current.elapsedSecTime));
+      }
+      prevSubStatus.elapsedSecTime = current.elapsedSecTime;
+    }
+
+    if (prevSubStatus.lineRemainTime !== current.lineRemainTime) {
+      const element = store.get(lineRemainTimeElementAtom);
+      if (element) {
+        element.textContent = current.lineRemainTime.toFixed(1);
+      }
+      prevSubStatus.lineRemainTime = current.lineRemainTime;
+    }
+
+    if (prevSubStatus.lineKpm !== current.lineKpm) {
+      const element = store.get(lineKpmElementAtom);
+      if (element) {
+        element.textContent = current.lineKpm.toFixed(0);
+      }
+      prevSubStatus.lineKpm = current.lineKpm;
+    }
+
+    if (prevSubStatus.combo !== current.combo) {
+      const element = store.get(comboElementAtom);
+      if (element) {
+        element.textContent = String(current.combo);
+      }
+      prevSubStatus.combo = current.combo;
+    }
+  });
 });
 
-store.sub(focusSubStatusAtoms.lineRemainTime, () => {
-  const element = store.get(lineRemainTimeElementAtom);
-  if (element) {
-    requestDebouncedAnimationFrame("lineRemainTime", () => {
-      element.textContent = store.get(focusSubStatusAtoms.lineRemainTime).toFixed(1);
-    });
-  }
-});
-
-store.sub(focusSubStatusAtoms.lineKpm, () => {
-  const element = store.get(lineKpmElementAtom);
-  if (element) {
-    requestDebouncedAnimationFrame("lineKpm", () => {
-      element.textContent = store.get(focusSubStatusAtoms.lineKpm).toFixed(0);
-    });
-  }
-});
-
-store.sub(focusSubStatusAtoms.combo, () => {
-  const element = store.get(comboElementAtom);
-  if (element) {
-    requestDebouncedAnimationFrame("combo", () => {
-      element.textContent = String(store.get(focusSubStatusAtoms.combo));
-    });
-  }
-});
+export const resetSubStatusCache = () => {
+  prevSubStatus.elapsedSecTime = -1;
+  prevSubStatus.lineRemainTime = -1;
+  prevSubStatus.lineKpm = -1;
+  prevSubStatus.combo = -1;
+};
