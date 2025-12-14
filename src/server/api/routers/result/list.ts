@@ -125,8 +125,8 @@ const getBaseSelect = () =>
       romaKpmMedian: MapDifficulties.romaKpmMedian,
       romaKpmMax: MapDifficulties.romaKpmMax,
       hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
-      myRank: sql`${MyResult.rank}`.mapWith(MyResult.rank),
-      myRankUpdatedAt: sql`${MyResult.updatedAt}`.mapWith(Results.updatedAt),
+      myRank: sql<Date | null>`${MyResult.rank}`.mapWith(MyResult.rank),
+      myRankUpdatedAt: sql<Date | null>`${MyResult.updatedAt}`.mapWith(Results.updatedAt),
     },
   }) satisfies SelectedFields;
 
