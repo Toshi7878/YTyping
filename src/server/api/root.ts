@@ -1,8 +1,8 @@
 import { clapRouter } from "./routers/clap";
 import { geminiRouter } from "./routers/gemini";
 import { likeRouter } from "./routers/like";
-import { mapRouter } from "./routers/map";
 import { mapListRouter } from "./routers/map/list";
+import { mapRouter } from "./routers/map/map";
 import { morphConvertRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
 import { resultListRouter } from "./routers/result/list";
