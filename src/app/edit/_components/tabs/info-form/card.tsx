@@ -305,11 +305,13 @@ const VideoIdInput = () => {
               if (videoId) {
                 setValue("videoId", videoId, { shouldDirty: true });
                 setVideoId(videoId);
+                setYTChangingVideo(true);
               }
 
               if (clipboardText.length === 11) {
                 setValue("videoId", clipboardText, { shouldDirty: true });
                 setVideoId(clipboardText);
+                setYTChangingVideo(true);
               }
             }}
           />
