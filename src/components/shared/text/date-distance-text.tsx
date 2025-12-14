@@ -2,7 +2,7 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { formatDate, toLocaleDateString } from "@/utils/date";
+import { formatDate } from "@/utils/date";
 
 interface DateDistanceTextProps {
   date: Date | string;
@@ -14,7 +14,7 @@ interface DateDistanceTextProps {
 export const DateDistanceText = ({ date, text, addSuffix = true, className }: DateDistanceTextProps) => {
   return (
     <time
-      dateTime={toLocaleDateString(date)}
+      // dateTime={toLocaleDateString(date)}
       title={formatDate(date)}
       className={cn("truncate overflow-hidden text-ellipsis whitespace-nowrap", className)}
       suppressHydrationWarning
