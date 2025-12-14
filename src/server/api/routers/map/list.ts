@@ -133,8 +133,8 @@ const baseSelect = {
   },
   ranking: {
     count: Maps.rankingCount,
-    myRank: sql<number | null>`${Results.rank}`,
-    myRankUpdatedAt: sql<Date | null>`${Results.updatedAt}`.mapWith(Results.updatedAt),
+    myRank: sql`${Results.rank}`.mapWith(Results.rank),
+    myRankUpdatedAt: sql`${Results.updatedAt}`.mapWith(Results.updatedAt),
   },
 } satisfies SelectedFields;
 
