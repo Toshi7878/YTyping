@@ -308,6 +308,7 @@ const VideoIdInput = () => {
                 setValue("videoId", videoId, { shouldDirty: true });
                 setVideoId(videoId);
                 setYTChangingVideo(true);
+                setCanUpload(true);
                 return;
               }
 
@@ -315,6 +316,7 @@ const VideoIdInput = () => {
                 setValue("videoId", clipboardText, { shouldDirty: true });
                 setVideoId(clipboardText);
                 setYTChangingVideo(true);
+                setCanUpload(true);
               }
             }}
           />
@@ -328,6 +330,7 @@ const VideoIdInput = () => {
 
               setVideoId(getValues("videoId"));
               setYTChangingVideo(true);
+              setCanUpload(true);
             }}
           >
             動画切り替え
