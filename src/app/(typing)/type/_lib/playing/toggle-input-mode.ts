@@ -1,8 +1,7 @@
-import { createTypingWord, parseWordToChunks } from "lyrics-typing-engine";
+import { recreateTypingWord } from "lyrics-typing-engine";
 import { readLineCount, readLineSubstatus, writeLineSubstatus } from "../atoms/ref";
 import { readBuiltMap, readUtilityParams, setNotify, setPlayingInputMode } from "../atoms/state";
 import { readTypingWord, setNextLyrics, setTypingWord } from "../atoms/typing-word";
-import { CHAR_POINT } from "../const";
 import { getLineTime } from "../youtube-player/get-youtube-time";
 
 export const togglePlayInputMode = () => {
@@ -40,14 +39,7 @@ export const applyRomaInputMode = () => {
   setNotify(Symbol("Romaji"));
   const typingWord = readTypingWord();
 
-  if (typingWord.nextChunk.kana) {
-    const reconstructedWord =
-      (typingWord.nextChunk.originalDakutenChar ?? typingWord.nextChunk.kana) +
-      typingWord.wordChunks.map((chunk) => chunk.kana).join("");
-
-    const wordChunks = parseWordToChunks({ word: reconstructedWord, charPoint: CHAR_POINT });
-    setTypingWord(createTypingWord({ wordChunks }, typingWord.correct));
-  }
+  setTypingWord(recreateTypingWord(typingWord));
 
   updateNextLyrics();
 };
