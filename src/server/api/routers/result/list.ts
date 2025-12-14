@@ -126,7 +126,7 @@ const getBaseSelect = () =>
       romaKpmMax: MapDifficulties.romaKpmMax,
       hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
       myRank: sql<number | null>`${MyResult.rank}`,
-      myRankUpdatedAt: sql<Date | null>`${MyResult.updatedAt}`,
+      myRankUpdatedAt: sql<Date | null>`${MyResult.updatedAt}`.mapWith(Results.updatedAt),
     },
   }) satisfies SelectedFields;
 
