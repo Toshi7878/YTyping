@@ -22,7 +22,7 @@ export const mapRouter = {
         musicSource: Maps.musicSource,
         previewTime: Maps.previewTime,
         thumbnailQuality: Maps.thumbnailQuality,
-        hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
+        hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
         tags: Maps.tags,
         creator: {
           id: Users.id,

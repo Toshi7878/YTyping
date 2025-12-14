@@ -107,7 +107,7 @@ const getBaseSelect = () =>
       kanaToRomaKpm: ResultStatuses.kanaToRomaKpm,
       kanaToRomaRkpm: ResultStatuses.kanaToRomaRkpm,
     },
-    clap: { count: Results.clapCount, hasClapped: sql<boolean>`COALESCE(${ResultClaps.hasClapped}, false)` },
+    clap: { count: Results.clapCount, hasClapped: sql`COALESCE(${ResultClaps.hasClapped}, false)`.mapWith(Boolean) },
     map: {
       id: Maps.id,
       videoId: Maps.videoId,
@@ -124,7 +124,7 @@ const getBaseSelect = () =>
       duration: Maps.duration,
       romaKpmMedian: MapDifficulties.romaKpmMedian,
       romaKpmMax: MapDifficulties.romaKpmMax,
-      hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
+      hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
       myRank: sql`${MyResult.rank}`.mapWith(MyResult.rank),
       myRankUpdatedAt: sql`${MyResult.updatedAt}`.mapWith(Results.updatedAt),
     },

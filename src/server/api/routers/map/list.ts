@@ -129,7 +129,7 @@ const baseSelect = {
   },
   like: {
     count: Maps.likeCount,
-    hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
+    hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
   },
   ranking: {
     count: Maps.rankingCount,
