@@ -47,6 +47,8 @@ const lineAtom = atomWithReset<{ typingWord: TypingWord; lyrics: string }>({
     correct: { kana: "", roma: "" },
     nextChunk: { kana: "", romaPatterns: [], point: 0, type: undefined },
     wordChunks: [{ kana: "", romaPatterns: [], point: 0, type: undefined }],
+    wordChunksIndex: 1,
+    tempRomaPatterns: undefined,
   },
   lyrics: "",
 });

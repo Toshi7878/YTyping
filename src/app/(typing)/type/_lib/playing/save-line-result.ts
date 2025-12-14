@@ -1,3 +1,4 @@
+import { createDisplayWord } from "lyrics-typing-engine";
 import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { readAllLineResult, setLineResult } from "../atoms/family";
 import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/ref";
@@ -83,20 +84,19 @@ const generateLostWord = () => {
     return { lostWord: "", actualLostNotes: 0, pointLostNotes: 0 };
   }
 
-  const romaLostWordOmitNextChar = typingWord.wordChunks.map((chunk) => chunk.romaPatterns[0]).join("");
-  const pointLostNotes = !isCompleted ? typingWord.nextChunk.point / CHAR_POINT + romaLostWordOmitNextChar.length : 0;
+  const { nextChar, remainWord } = createDisplayWord(typingWord);
+  const pointLostNotes = !isCompleted ? typingWord.nextChunk.point / CHAR_POINT + remainWord.roma.length : 0;
 
   const { inputMode } = readUtilityParams();
-
   switch (inputMode) {
     case "roma": {
-      const romaLostWord = typingWord.nextChunk.romaPatterns[0] + romaLostWordOmitNextChar;
+      const romaLostWord = nextChar.roma + remainWord.roma;
       const actualLostNotes = romaLostWord.length;
       return { lostWord: romaLostWord, actualLostNotes, pointLostNotes };
     }
     case "kana":
     case "flick": {
-      const kanaLostWord = typingWord.nextChunk.kana + typingWord.wordChunks.map((chunk) => chunk.kana).join("");
+      const kanaLostWord = nextChar.kana + remainWord.kana;
       const actualLostNotes = countKanaWordWithDakuonSplit({ kanaWord: kanaLostWord });
       return { lostWord: kanaLostWord, actualLostNotes, pointLostNotes };
     }
