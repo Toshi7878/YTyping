@@ -4,7 +4,7 @@ import z from "zod";
 import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../trpc";
 import { createPagination } from "../utils/pagination";
-import type { MapListItem } from "./map-list";
+import type { MapListItem } from "./map/list";
 
 export const notificationRouter = {
   hasUnread: protectedProcedure.query(async ({ ctx }) => {

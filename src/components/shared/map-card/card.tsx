@@ -4,7 +4,7 @@ import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardWithContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import type { MapListItem } from "@/server/api/routers/map-list";
+import type { MapListItem } from "@/server/api/routers/map/list";
 import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";

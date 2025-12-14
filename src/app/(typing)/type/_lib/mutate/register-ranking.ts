@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { MapListItem } from "@/server/api/routers/map-list";
+import type { MapListItem } from "@/server/api/routers/map/list";
 import { useTRPC } from "@/trpc/provider";
 import {
   updateInfiniteQuery as updateInfiniteQueryCache,
@@ -65,8 +65,8 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
         const mapListByCreatorFilter = trpc.mapList.getByCreatorId.infiniteQueryFilter();
         const mapListLikedByUserFilter = trpc.mapList.getByLikedUserId.infiniteQueryFilter();
         const mapListByVideoFilter = trpc.mapList.getByVideoId.queryFilter();
-        const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
+        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
+        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
         const activeUserMapsFilter = trpc.mapList.getByActiveUser.queryFilter();
 
@@ -80,7 +80,7 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
         updateListQueryCache(queryClient, activeUserMapsFilter, updater.forItemWithMap);
 
         // Ranking自体のクエリだけは再取得（順位変動など他のユーザーの情報も含むため）
-        await queryClient.invalidateQueries(trpc.result.getMapRanking.queryFilter({ mapId }));
+        await queryClient.invalidateQueries(trpc.resultList.getMapRanking.queryFilter({ mapId }));
       },
     }),
   );

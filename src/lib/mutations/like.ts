@@ -1,6 +1,6 @@
 import type { QueryClient, QueryFilters } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { MapListItem } from "@/server/api/routers/map-list";
+import type { MapListItem } from "@/server/api/routers/map/list";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import {
@@ -73,8 +73,8 @@ export function useLikeMutationMapList() {
         const mapListByCreatorFilter = trpc.mapList.getByCreatorId.infiniteQueryFilter();
         const mapListLikedByUserFilter = trpc.mapList.getByLikedUserId.infiniteQueryFilter();
         const mapListByVideoFilter = trpc.mapList.getByVideoId.queryFilter();
-        const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
+        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
+        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
         const activeUserMapsFilter = trpc.mapList.getByActiveUser.queryFilter();
 
@@ -161,8 +161,8 @@ export function useLikeMutationMapInfo() {
         const mapListByCreatorFilter = trpc.mapList.getByCreatorId.infiniteQueryFilter();
         const mapListLikedByUserFilter = trpc.mapList.getByLikedUserId.infiniteQueryFilter();
         const mapListByVideoFilter = trpc.mapList.getByVideoId.queryFilter();
-        const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
+        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
+        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
         const activeUserMapsFilter = trpc.mapList.getByActiveUser.queryFilter();
 

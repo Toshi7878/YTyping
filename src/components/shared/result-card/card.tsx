@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContentWithThumbnail, CardFooter, CardHeader } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type { ResultWithMapItem } from "@/server/api/routers/result";
+import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";

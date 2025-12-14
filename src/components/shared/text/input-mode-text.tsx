@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { ResultWithMapItem } from "@/server/api/routers/result";
+import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 
 interface InputModeTextProps {
   typeCounts: ResultWithMapItem["typeCounts"];

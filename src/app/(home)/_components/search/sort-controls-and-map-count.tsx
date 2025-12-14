@@ -111,7 +111,7 @@ const MapCountBadge = () => {
   const trpc = useTRPC();
   const [params] = useQueryStates(mapListSearchParams);
   const { sort: _, ...queryParams } = params;
-  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getListLength.queryOptions(queryParams));
+  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getCount.queryOptions(queryParams));
 
   return (
     <Badge variant="accent-light" className="gap-4" size="md">

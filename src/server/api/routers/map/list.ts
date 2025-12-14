@@ -1,100 +1,51 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
+import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
+import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
-import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import {
   MAP_DIFFICULTY_RATE_FILTER_LIMIT,
   type MAP_USER_FILTER_OPTIONS,
-  MapFilterSearchParamsSchema,
+  MapSearchFilterSchema,
   type MapSortSearchParamsSchema,
   SelectMapListApiSchema,
   SelectMapListByActiveUserApiSchema,
   SelectMapListByUserIdApiSchema,
 } from "@/validator/map-list";
-import { protectedProcedure, publicProcedure, type TRPCContext } from "../trpc";
-import { createPagination } from "../utils/pagination";
-
-const createBaseSelect = ({ user }: { user: TRPCContext["user"] }) => {
-  return db
-    .select({
-      id: Maps.id,
-      updatedAt: Maps.updatedAt,
-      media: {
-        videoId: Maps.videoId,
-        previewTime: Maps.previewTime,
-        thumbnailQuality: Maps.thumbnailQuality,
-      },
-      info: {
-        title: Maps.title,
-        artistName: Maps.artistName,
-        source: Maps.musicSource,
-        duration: Maps.duration,
-      },
-      creator: {
-        id: Users.id,
-        name: Users.name,
-      },
-      difficulty: {
-        romaKpmMedian: MapDifficulties.romaKpmMedian,
-        romaKpmMax: MapDifficulties.romaKpmMax,
-      },
-      like: {
-        count: Maps.likeCount,
-        hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
-      },
-      ranking: {
-        count: Maps.rankingCount,
-        myRank: Results.rank,
-        myRankUpdatedAt: Results.updatedAt,
-      },
-    })
-    .from(Maps)
-    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-    .innerJoin(Users, eq(Users.id, Maps.creatorId))
-    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
-    .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user?.id ?? 0)))
-    .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id));
-};
-
-type BaseSelectItem = Awaited<ReturnType<typeof createBaseSelect>>[number];
-
-export type MapListItem = Omit<BaseSelectItem, "media"> & {
-  media: BaseSelectItem["media"] & {
-    previewSpeed?: number;
-  };
-};
+import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
+import { createPagination } from "../../utils/pagination";
 
 const PAGE_SIZE = 30;
-const mapListRoute = {
+export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
-    const { user } = ctx;
+    const { db, user } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
-    const searchConditions = [
-      user ? buildFilterCondition(input.filter, user) : undefined,
-      user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
-      buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
-      buildKeywordCondition(input.keyword),
-    ];
 
-    const maps = await createBaseSelect({ user })
+    const maps = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user, input)
       .limit(limit)
       .offset(offset)
-      .orderBy(...buildSortConditions(input.sort))
-      .where(and(...searchConditions));
+      .orderBy(...buildSortConditions(input.sort));
 
     return buildPageResult(maps);
   }),
 
+  getCount: publicProcedure.input(MapSearchFilterSchema).query(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+    const baseQuery = buildBaseSelect(db.select({ count: count() }).from(Maps).$dynamic(), user, input);
+    const total = await baseQuery.limit(1);
+
+    return total[0]?.count;
+  }),
+
   getByCreatorId: publicProcedure.input(SelectMapListByUserIdApiSchema).query(async ({ input, ctx }) => {
     const { sort, userId: creatorId } = input;
-    const { user } = ctx;
+    const { db, user } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
-    const maps = await createBaseSelect({ user })
+    const maps = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
       .limit(limit)
       .offset(offset)
       .orderBy(...buildSortConditions(sort))
@@ -105,12 +56,12 @@ const mapListRoute = {
 
   getByLikedUserId: publicProcedure.input(SelectMapListByUserIdApiSchema).query(async ({ input, ctx }) => {
     const { sort, userId: likedUserId } = input;
-    const { user } = ctx;
+    const { db, user } = ctx;
 
-    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
     const UserLikes = alias(MapLikes, "UserLikes");
+    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
-    const maps = await createBaseSelect({ user })
+    const maps = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
       .innerJoin(UserLikes, and(eq(UserLikes.mapId, Maps.id), eq(UserLikes.userId, likedUserId)))
       .limit(limit)
       .offset(offset)
@@ -121,18 +72,20 @@ const mapListRoute = {
   }),
 
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
-    const { user } = ctx;
+    const { db, user } = ctx;
     const { videoId } = input;
 
-    return createBaseSelect({ user }).where(eq(Maps.videoId, videoId)).orderBy(desc(Maps.id));
+    return await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
+      .where(eq(Maps.videoId, videoId))
+      .orderBy(desc(Maps.id));
   }),
 
   getByActiveUser: protectedProcedure.input(SelectMapListByActiveUserApiSchema).query(async ({ input, ctx }) => {
-    const { user } = ctx;
+    const { db, user } = ctx;
 
     const userListPromises = input.map(async (activeUser) => {
       if (activeUser.state === "type" && activeUser.mapId) {
-        const map = await createBaseSelect({ user })
+        const map = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
           .where(eq(Maps.id, activeUser.mapId))
           .then((rows) => rows[0]);
 
@@ -147,36 +100,67 @@ const mapListRoute = {
   }),
 } satisfies TRPCRouterRecord;
 
-const mapListCountRoute = {
-  getListLength: publicProcedure.input(MapFilterSearchParamsSchema).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
+type BaseSelectItem = SelectResultFields<typeof baseSelect>;
+export type MapListItem = Omit<BaseSelectItem, "media"> & {
+  media: BaseSelectItem["media"] & { previewSpeed?: number };
+};
 
-    const searchConditions = [
-      user ? buildFilterCondition(input.filter, user) : undefined,
-      user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
-      buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
-      buildKeywordCondition(input.keyword),
-    ];
+const baseSelect = {
+  id: Maps.id,
+  updatedAt: Maps.updatedAt,
+  media: {
+    videoId: Maps.videoId,
+    previewTime: Maps.previewTime,
+    thumbnailQuality: Maps.thumbnailQuality,
+  },
+  info: {
+    title: Maps.title,
+    artistName: Maps.artistName,
+    source: Maps.musicSource,
+    duration: Maps.duration,
+  },
+  creator: {
+    id: Users.id,
+    name: Users.name,
+  },
+  difficulty: {
+    romaKpmMedian: MapDifficulties.romaKpmMedian,
+    romaKpmMax: MapDifficulties.romaKpmMax,
+  },
+  like: {
+    count: Maps.likeCount,
+    hasLiked: sql<boolean>`COALESCE(${MapLikes.hasLiked}, false)`,
+  },
+  ranking: {
+    count: Maps.rankingCount,
+    myRank: sql<number | null>`${Results.rank}`,
+    myRankUpdatedAt: sql<Date | null>`${Results.updatedAt}`,
+  },
+} satisfies SelectedFields;
 
-    return db
-      .select({ total: count() })
-      .from(Maps)
-      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-      .innerJoin(Users, eq(Users.id, Maps.creatorId))
-      .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
-      .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user?.id ?? 0)))
-      .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-      .where(and(...searchConditions))
-      .then((rows) => rows[0]?.total ?? 0);
-  }),
-} satisfies TRPCRouterRecord;
+const buildBaseSelect = <T extends PgSelect>(
+  db: T,
+  user: TRPCContext["user"],
+  input?: z.output<typeof MapSearchFilterSchema>,
+) => {
+  const baseQuery = db
+    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+    .innerJoin(Users, eq(Users.id, Maps.creatorId))
+    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
+    .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user?.id ?? 0)))
+    .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id));
 
-export const mapListRouter = {
-  ...mapListRoute,
-  ...mapListCountRoute,
-} satisfies TRPCRouterRecord;
+  if (!input) return baseQuery;
 
-type MapListWhereParams = z.output<typeof MapFilterSearchParamsSchema>;
+  const searchConditions = [
+    user ? buildFilterCondition(input.filter, user) : undefined,
+    user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
+    buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
+    buildKeywordCondition(input.keyword),
+  ];
+
+  return baseQuery.where(and(...searchConditions));
+};
 
 function buildFilterCondition(
   filter: (typeof MAP_USER_FILTER_OPTIONS)[number] | null,
@@ -221,6 +205,8 @@ function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema> | 
   }
 }
 
+type MapListWhereParams = z.output<typeof MapSearchFilterSchema>;
+
 interface GetDifficultyFilterSqlParams {
   minRate: MapListWhereParams["minRate"];
   maxRate: MapListWhereParams["maxRate"];
@@ -240,7 +226,7 @@ function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlPa
   return and(...conditions);
 }
 
-function buildRankingStatusCondition(rankingStatus: MapListWhereParams["rankingStatus"]) {
+const buildRankingStatusCondition = (rankingStatus: MapListWhereParams["rankingStatus"]) => {
   switch (rankingStatus) {
     case "registerd":
       return isNotNull(Results.id);
@@ -255,7 +241,7 @@ function buildRankingStatusCondition(rankingStatus: MapListWhereParams["rankingS
     default:
       return;
   }
-}
+};
 
 const buildKeywordCondition = (keyword: MapListWhereParams["keyword"]) => {
   if (keyword === undefined || keyword.trim() === "") return;

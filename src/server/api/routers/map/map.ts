@@ -6,7 +6,7 @@ import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/validator/map";
 import type { RawMapLine } from "@/validator/raw-map-json";
-import { protectedProcedure, publicProcedure } from "../trpc";
+import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const mapRouter = {
   getMapInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {

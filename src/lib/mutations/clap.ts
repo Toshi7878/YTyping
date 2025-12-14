@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ResultWithMapItem } from "@/server/api/routers/result";
+import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useTRPC } from "@/trpc/provider";
 import {
   updateInfiniteQuery as updateInfiniteQueryCache,
@@ -43,8 +43,8 @@ export function useClapMutationTimeline() {
   return useMutation(
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
+        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
+        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
 
         await Promise.all([queryClient.cancelQueries(timelineFilter), queryClient.cancelQueries(userResultsFilter)]);
 
@@ -74,7 +74,7 @@ export function useClapMutationTimeline() {
         // --- Server Updates ---
         const updater = createResultUpdater(resultId, { server: { count: clapCount, hasClapped } });
 
-        const mapRankingFilter = trpc.result.getMapRanking.queryFilter({ mapId });
+        const mapRankingFilter = trpc.resultList.getMapRanking.queryFilter({ mapId });
         updateListQueryCache(queryClient, mapRankingFilter, updater.forResult);
 
         if (!ctx) return;
@@ -92,7 +92,7 @@ export function useClapMutationRanking(mapId: number) {
   return useMutation(
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const mapRankingFilter = trpc.result.getMapRanking.queryFilter({ mapId });
+        const mapRankingFilter = trpc.resultList.getMapRanking.queryFilter({ mapId });
 
         await queryClient.cancelQueries(mapRankingFilter);
         const previous = queryClient.getQueriesData(mapRankingFilter);
@@ -117,8 +117,8 @@ export function useClapMutationRanking(mapId: number) {
           server: { count: server.clapCount, hasClapped: server.hasClapped },
         });
 
-        const timelineFilter = trpc.result.getAllWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.result.getAllWithMapByUserId.infiniteQueryFilter();
+        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
+        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
 
         updateInfiniteQueryCache(queryClient, timelineFilter, updater.forResult);
         updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forResult);

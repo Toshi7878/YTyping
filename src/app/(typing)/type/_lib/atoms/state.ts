@@ -149,7 +149,7 @@ export const setLineSelectIndex = (lineIndex: number) => {
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const setYTStarted = (value: ExtractAtomValue<typeof isYTStartedAtom>) => store.set(isYTStartedAtom, value);
 
-const replayRankingResultAtom = atomWithReset<RouterOutputs["result"]["getMapRanking"][number] | null>(null);
+const replayRankingResultAtom = atomWithReset<RouterOutputs["resultList"]["getMapRanking"][number] | null>(null);
 
 export const useReplayRankingResultState = () => useAtomValue(replayRankingResultAtom);
 export const readReplayRankingResult = () => store.get(replayRankingResultAtom);

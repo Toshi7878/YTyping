@@ -12,7 +12,7 @@ export const UserResultList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
-    trpc.result.getAllWithMapByUserId.infiniteQueryOptions(
+    trpc.resultList.getWithMapByUserId.infiniteQueryOptions(
       { playerId: Number(id) },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

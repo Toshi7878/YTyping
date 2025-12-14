@@ -18,7 +18,7 @@ export const MapSortSearchParamsSchema = z.object({
   value: z.literal(MAP_SORT_OPTIONS).default("id"),
   desc: z.boolean().default(true),
 });
-export const MapFilterSearchParamsSchema = z.object({
+export const MapSearchFilterSchema = z.object({
   filter: z.enum(MAP_USER_FILTER_OPTIONS).nullable(),
   rankingStatus: z.enum(MAP_RANKING_STATUS_FILTER_OPTIONS).nullable(),
   keyword: z.string().default(""),
@@ -31,7 +31,7 @@ export const SelectMapListApiSchema = z
     cursor: z.number().optional(),
     sort: MapSortSearchParamsSchema.nullable(),
   })
-  .extend(MapFilterSearchParamsSchema.shape);
+  .extend(MapSearchFilterSchema.shape);
 
 export const SelectMapListByUserIdApiSchema = z.object({
   cursor: z.number().optional(),

@@ -47,7 +47,7 @@ export const KPM_LIMIT = { min: 0, max: 1200 };
 export const CLEAR_RATE_LIMIT = { min: 0, max: 100 };
 export const PLAY_SPEED_LIMIT = { min: 1, max: 2 };
 
-const ResultListSearchParamsSchema = {
+export const ResultListSearchFilterSchema = z.object({
   mode: z.literal(RESULT_INPUT_METHOD_TYPES).nullable(),
   minKpm: z.number().default(KPM_LIMIT.min),
   maxKpm: z.number().default(KPM_LIMIT.max),
@@ -57,11 +57,12 @@ const ResultListSearchParamsSchema = {
   maxPlaySpeed: z.literal(RESULT_PLAY_SPEEDS).default(PLAY_SPEED_LIMIT.max),
   username: z.string().default(""),
   mapKeyword: z.string().default(""),
-};
+});
 
 export const SelectResultListApiSchema = z
   .object({ cursor: z.number().optional() })
-  .extend(ResultListSearchParamsSchema);
+  .extend(ResultListSearchFilterSchema.shape);
+
 export const SelectResultListByPlayerIdApiSchema = z.object({
   playerId: z.number(),
   cursor: z.number().optional(),
