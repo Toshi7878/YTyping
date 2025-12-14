@@ -1,7 +1,10 @@
 export const changelog = [
   {
     date: "2025-12-14",
-    descriptions: ["タイピング中に稀に処理落ちが発生する不具合を改善"],
+    descriptions: [
+      "エディター > YouTubeIDの貼り付けができない問題を修正",
+      "タイピング中に稀に処理落ちが発生する不具合を改善",
+    ],
   },
   {
     date: "2025-12-07",

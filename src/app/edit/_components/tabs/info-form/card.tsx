@@ -283,6 +283,7 @@ const UpsertButton = () => {
 
 const VideoIdInput = () => {
   const { watch, formState, setValue, getValues } = useFormContext();
+  const videoId = useVideoIdState();
   const {
     dirtyFields: { videoId: isVideoIdDirty },
   } = formState;
@@ -300,17 +301,25 @@ const VideoIdInput = () => {
             onPaste={(e) => {
               e.preventDefault();
 
-              const videoId = extractYouTubeId(e.clipboardData.getData("text"));
+              const clipboardText = e.clipboardData.getData("text");
+
+              const videoId = extractYouTubeId(clipboardText);
 
               if (videoId) {
                 setValue("videoId", videoId, { shouldDirty: true });
+                setVideoId(videoId);
+              }
+
+              if (clipboardText.length === 11) {
+                setValue("videoId", clipboardText, { shouldDirty: true });
+                setVideoId(clipboardText);
               }
             }}
           />
           <Button
             variant="outline-info"
             size="lg"
-            disabled={formVideoId.length !== 11 || !isVideoIdDirty}
+            disabled={formVideoId.length !== 11 || formVideoId === videoId}
             onClick={(e) => {
               e.preventDefault();
               if (formVideoId.length !== 11) return;
