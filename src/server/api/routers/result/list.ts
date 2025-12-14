@@ -2,7 +2,6 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import type { SQL } from "drizzle-orm";
 import { and, desc, eq, gt, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
-import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
 import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import type { RESULT_INPUT_METHOD_TYPES, ResultListSearchFilterSchema } from "@/validator/result";
@@ -35,7 +34,32 @@ export const resultListRouter = {
       .limit(limit)
       .offset(offset);
 
-    return buildPageResult(formatMapListItem(items));
+    return buildPageResult(
+      items.map(({ map: m, ...rest }) => {
+        return {
+          ...rest,
+          map: {
+            id: m.id,
+            updatedAt: m.updatedAt,
+            media: {
+              videoId: m.videoId,
+              previewTime: m.previewTime,
+              thumbnailQuality: m.thumbnailQuality,
+              previewSpeed: rest.otherStatus.playSpeed,
+            },
+            info: { title: m.title, artistName: m.artistName, source: m.musicSource, duration: m.duration },
+            creator: { id: m.creatorId, name: m.creatorName },
+            difficulty: { romaKpmMedian: m.romaKpmMedian, romaKpmMax: m.romaKpmMax },
+            like: { count: m.likeCount, hasLiked: m.hasLiked },
+            ranking: {
+              count: m.rankingCount,
+              myRank: m.myRank as number,
+              myRankUpdatedAt: m.myRankUpdatedAt as Date,
+            },
+          } satisfies MapListItem,
+        };
+      }),
+    );
   }),
 
   getWithMapByUserId: publicProcedure.input(SelectResultListByPlayerIdApiSchema).query(async ({ input, ctx }) => {
@@ -50,7 +74,32 @@ export const resultListRouter = {
       .offset(offset)
       .orderBy(desc(Results.updatedAt));
 
-    return buildPageResult(formatMapListItem(items));
+    return buildPageResult(
+      items.map(({ map: m, ...rest }) => {
+        return {
+          ...rest,
+          map: {
+            id: m.id,
+            updatedAt: m.updatedAt,
+            media: {
+              videoId: m.videoId,
+              previewTime: m.previewTime,
+              thumbnailQuality: m.thumbnailQuality,
+              previewSpeed: rest.otherStatus.playSpeed,
+            },
+            info: { title: m.title, artistName: m.artistName, source: m.musicSource, duration: m.duration },
+            creator: { id: m.creatorId, name: m.creatorName },
+            difficulty: { romaKpmMedian: m.romaKpmMedian, romaKpmMax: m.romaKpmMax },
+            like: { count: m.likeCount, hasLiked: m.hasLiked },
+            ranking: {
+              count: m.rankingCount,
+              myRank: m.myRank as number,
+              myRankUpdatedAt: m.myRankUpdatedAt as Date,
+            },
+          } satisfies MapListItem,
+        };
+      }),
+    );
   }),
 
   getMapRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
@@ -130,10 +179,6 @@ const getBaseSelect = () =>
     },
   }) satisfies SelectedFields;
 
-type ResultWithMapBaseItem = SelectResultFields<ReturnType<typeof getBaseSelect>>;
-
-export type ResultWithMapItem = ReturnType<typeof formatMapListItem>[number];
-
 const buildResultWithMapBaseQuery = <T extends PgSelect>(
   db: T,
   user: TRPCContext["user"],
@@ -165,29 +210,6 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
   ];
 
   return baseQuery.where(and(...whereConds));
-};
-
-const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
-  return items.map(({ map: m, ...rest }) => {
-    return {
-      ...rest,
-      map: {
-        id: m.id,
-        updatedAt: m.updatedAt,
-        media: {
-          videoId: m.videoId,
-          previewTime: m.previewTime,
-          thumbnailQuality: m.thumbnailQuality,
-          previewSpeed: rest.otherStatus.playSpeed,
-        },
-        info: { title: m.title, artistName: m.artistName, source: m.musicSource, duration: m.duration },
-        creator: { id: m.creatorId, name: m.creatorName },
-        difficulty: { romaKpmMedian: m.romaKpmMedian, romaKpmMax: m.romaKpmMax },
-        like: { count: m.likeCount, hasLiked: m.hasLiked },
-        ranking: { count: m.rankingCount, myRank: m.myRank, myRankUpdatedAt: m.myRankUpdatedAt },
-      } satisfies MapListItem,
-    };
-  });
 };
 
 const buildModeFilter = ({ mode }: { mode: (typeof RESULT_INPUT_METHOD_TYPES)[number] | null }) => {
