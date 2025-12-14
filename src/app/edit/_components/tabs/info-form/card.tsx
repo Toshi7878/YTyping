@@ -282,8 +282,10 @@ const UpsertButton = () => {
 };
 
 const VideoIdInput = () => {
-  const { watch, setValue, getValues } = useFormContext();
-  const videoId = useVideoIdState();
+  const { watch, setValue, getValues, formState } = useFormContext();
+  const {
+    dirtyFields: { videoId: isVideoIdDirty },
+  } = formState;
   const formVideoId = watch("videoId");
 
   return (
@@ -306,6 +308,7 @@ const VideoIdInput = () => {
                 setValue("videoId", videoId, { shouldDirty: true });
                 setVideoId(videoId);
                 setYTChangingVideo(true);
+                return;
               }
 
               if (clipboardText.length === 11) {
@@ -318,7 +321,7 @@ const VideoIdInput = () => {
           <Button
             variant="outline-info"
             size="lg"
-            disabled={formVideoId.length !== 11 || formVideoId === videoId}
+            disabled={formVideoId.length !== 11 || isVideoIdDirty}
             onClick={(e) => {
               e.preventDefault();
               if (formVideoId.length !== 11) return;
