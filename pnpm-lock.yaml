@@ -55,13 +55,13 @@ importers:
         version: 8.21.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@trpc/client':
         specifier: ^11.6.0
-        version: 11.7.2(@trpc/server@11.7.2(typescript@5.9.3))(typescript@5.9.3)
+        version: 11.8.0(@trpc/server@11.8.0(typescript@5.9.3))(typescript@5.9.3)
       '@trpc/server':
         specifier: ^11.6.0
-        version: 11.7.2(typescript@5.9.3)
+        version: 11.8.0(typescript@5.9.3)
       '@trpc/tanstack-react-query':
         specifier: ^11.6.0
-        version: 11.7.2(@tanstack/react-query@5.90.12(react@19.2.3))(@trpc/client@11.7.2(@trpc/server@11.7.2(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.7.2(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 11.8.0(@tanstack/react-query@5.90.12(react@19.2.3))(@trpc/client@11.8.0(@trpc/server@11.8.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.8.0(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.22(postcss@8.5.6)
@@ -88,16 +88,16 @@ importers:
         version: 4.2.0(@types/react@19.2.7)(dexie@4.2.1)(react@19.2.3)
       drizzle-orm:
         specifier: ^0.45.0
-        version: 0.45.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7)
+        version: 0.45.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7)
       drizzle-zod:
         specifier: ^0.8.3
-        version: 0.8.3(drizzle-orm@0.45.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7))(zod@4.1.13)
+        version: 0.8.3(drizzle-orm@0.45.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7))(zod@4.1.13)
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
       framer-motion:
         specifier: ^12.23.22
-        version: 12.23.25(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 12.23.26(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       html-react-parser:
         specifier: ^5.2.6
         version: 5.2.10(@types/react@19.2.7)(react@19.2.3)
@@ -109,10 +109,10 @@ importers:
         version: 1.10.27
       jotai:
         specifier: ^2.14.0
-        version: 2.15.2(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
+        version: 2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
       jotai-optics:
         specifier: ^0.4.0
-        version: 0.4.0(jotai@2.15.2(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1)
+        version: 0.4.0(jotai@2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1)
       jschardet:
         specifier: ^3.1.4
         version: 3.1.4
@@ -193,7 +193,7 @@ importers:
         version: 1.0.7(tailwindcss@4.1.18)
       trpc-to-openapi:
         specifier: ^3.0.1
-        version: 3.1.0(@trpc/server@11.7.2(typescript@5.9.3))(zod-openapi@5.4.5(zod@4.1.13))(zod@4.1.13)
+        version: 3.1.0(@trpc/server@11.8.0(typescript@5.9.3))(zod-openapi@5.4.5(zod@4.1.13))(zod@4.1.13)
       ua-parser-js:
         specifier: ^2.0.5
         version: 2.0.7
@@ -212,7 +212,7 @@ importers:
         version: 2.3.6
       '@types/node':
         specifier: ^24.5.2
-        version: 24.10.3
+        version: 24.10.4
       '@types/react':
         specifier: 19.2.7
         version: 19.2.7
@@ -2679,23 +2679,23 @@ packages:
     resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
     engines: {node: '>=12'}
 
-  '@trpc/client@11.7.2':
-    resolution: {integrity: sha512-OQxqUMfpDvjcszo9dbnqWQXnW2L5IbrKSz2H7l8s+mVM3EvYw7ztQ/gjFIN3iy0NcamiQfd4eE6qjcb9Lm+63A==}
+  '@trpc/client@11.8.0':
+    resolution: {integrity: sha512-imJQeESX1hAapDaC4JB91yvXg41AZfBuTh/scnEiN/hAubZa5s/ikp0n+w29q2GCf+hREkr3WptUFKFJoDAIug==}
     peerDependencies:
-      '@trpc/server': 11.7.2
+      '@trpc/server': 11.8.0
       typescript: '>=5.7.2'
 
-  '@trpc/server@11.7.2':
-    resolution: {integrity: sha512-AgB26PXY69sckherIhCacKLY49rxE2XP5h38vr/KMZTbLCL1p8IuIoKPjALTcugC2kbyQ7Lbqo2JDVfRSmPmfQ==}
+  '@trpc/server@11.8.0':
+    resolution: {integrity: sha512-DphyQnLuyX2nwJCQGWQ9zYz4hZGvRhSBqDhQ0SH3tDhQ3PU4u68xofA0pJ741Ir4InEAFD+TtJVLAQy+wVOkiQ==}
     peerDependencies:
       typescript: '>=5.7.2'
 
-  '@trpc/tanstack-react-query@11.7.2':
-    resolution: {integrity: sha512-3XrY0b8lV0Fhj4Z2hVn1d1ZJzq2/stbc2F1e9Y6RrUWOfLmOKHlEVHYO1QfDGM6rqj66DkUj7eA593hAI0VTkQ==}
+  '@trpc/tanstack-react-query@11.8.0':
+    resolution: {integrity: sha512-LtLVyYzv5MjviBUElkCn1X246BCcq2j58N7mNxg4IqaR9Uvw9y7q6VdJMo5jWO9XogBVltgvHc5sZCJ+7IE1NQ==}
     peerDependencies:
       '@tanstack/react-query': ^5.80.3
-      '@trpc/client': 11.7.2
-      '@trpc/server': 11.7.2
+      '@trpc/client': 11.8.0
+      '@trpc/server': 11.8.0
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
       typescript: '>=5.7.2'
@@ -2730,8 +2730,8 @@ packages:
   '@types/mysql@2.15.27':
     resolution: {integrity: sha512-YfWiV16IY0OeBfBCk8+hXKmdTKrKlwKN1MNKAPBu5JYxLwBEZl7QzeEpGnlZb3VMGJrrGmB84gXiH+ofs/TezA==}
 
-  '@types/node@24.10.3':
-    resolution: {integrity: sha512-gqkrWUsS8hcm0r44yn7/xZeV1ERva/nLgrLxFRUGb7aoNMIJfZJ3AC261zDQuOAKC7MiXai1WCpYc48jAHoShQ==}
+  '@types/node@24.10.4':
+    resolution: {integrity: sha512-vnDVpYPMzs4wunl27jHrfmwojOGKya0xyM3sH+UE5iv5uPS6vX7UIoh6m+vQc5LGBq52HBKPIn/zcSZVzeDEZg==}
 
   '@types/pg-pool@2.0.6':
     resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
@@ -3103,8 +3103,8 @@ packages:
     resolution: {integrity: sha512-O9EC/miwdnRDY10qRxM8P3Pg8hXe3LyU4ZipReKOgTwn4OqANmftj8XJz1UPUAS6NMHf0E2htjsbQujUTkncCg==}
     hasBin: true
 
-  drizzle-orm@0.45.0:
-    resolution: {integrity: sha512-lyd9VRk3SXKRjV/gQckQzmJgkoYMvVG3A2JAV0vh3L+Lwk+v9+rK5Gj0H22y+ZBmxsrRBgJ5/RbQCN7DWd1dtQ==}
+  drizzle-orm@0.45.1:
+    resolution: {integrity: sha512-Te0FOdKIistGNPMq2jscdqngBRfBpC8uMFVwqjf6gtTVJHIQ/dosgV/CLBU2N4ZJBsXL5savCba9b0YJskKdcA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -3360,8 +3360,8 @@ packages:
   fraction.js@5.3.4:
     resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
 
-  framer-motion@12.23.25:
-    resolution: {integrity: sha512-gUHGl2e4VG66jOcH0JHhuJQr6ZNwrET9g31ZG0xdXzT0CznP7fHX4P8Bcvuc4MiUB90ysNnWX2ukHRIggkl6hQ==}
+  framer-motion@12.23.26:
+    resolution: {integrity: sha512-cPcIhgR42xBn1Uj+PzOyheMtZ73H927+uWPDVhUMqxy8UHt6Okavb6xIz9J/phFUHUj0OncR6UvMfJTXoc/LKA==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -3569,8 +3569,8 @@ packages:
       jotai: '>=2.0.0'
       optics-ts: '>=2.0.0'
 
-  jotai@2.15.2:
-    resolution: {integrity: sha512-El86CCfXNMEOytp20NPfppqGGmcp6H6kIA+tJHdmASEUURJCYW4fh8nTHEnB8rUXEFAY1pm8PdHPwnrcPGwdEg==}
+  jotai@2.16.0:
+    resolution: {integrity: sha512-NmkwPBet0SHQ28GBfEb10sqnbVOYyn6DL4iazZgGRDUKxSWL0iqcm+IK4TqTSFC2ixGk+XX2e46Wbv364a3cKg==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@babel/core': '>=7.0.0'
@@ -7341,27 +7341,27 @@ snapshots:
 
   '@tanstack/table-core@8.21.3': {}
 
-  '@trpc/client@11.7.2(@trpc/server@11.7.2(typescript@5.9.3))(typescript@5.9.3)':
+  '@trpc/client@11.8.0(@trpc/server@11.8.0(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
-      '@trpc/server': 11.7.2(typescript@5.9.3)
+      '@trpc/server': 11.8.0(typescript@5.9.3)
       typescript: 5.9.3
 
-  '@trpc/server@11.7.2(typescript@5.9.3)':
+  '@trpc/server@11.8.0(typescript@5.9.3)':
     dependencies:
       typescript: 5.9.3
 
-  '@trpc/tanstack-react-query@11.7.2(@tanstack/react-query@5.90.12(react@19.2.3))(@trpc/client@11.7.2(@trpc/server@11.7.2(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.7.2(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)':
+  '@trpc/tanstack-react-query@11.8.0(@tanstack/react-query@5.90.12(react@19.2.3))(@trpc/client@11.8.0(@trpc/server@11.8.0(typescript@5.9.3))(typescript@5.9.3))(@trpc/server@11.8.0(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)':
     dependencies:
       '@tanstack/react-query': 5.90.12(react@19.2.3)
-      '@trpc/client': 11.7.2(@trpc/server@11.7.2(typescript@5.9.3))(typescript@5.9.3)
-      '@trpc/server': 11.7.2(typescript@5.9.3)
+      '@trpc/client': 11.8.0(@trpc/server@11.8.0(typescript@5.9.3))(typescript@5.9.3)
+      '@trpc/server': 11.8.0(typescript@5.9.3)
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
       typescript: 5.9.3
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.10.3
+      '@types/node': 24.10.4
 
   '@types/css-font-loading-module@0.0.12': {}
 
@@ -7387,9 +7387,9 @@ snapshots:
 
   '@types/mysql@2.15.27':
     dependencies:
-      '@types/node': 24.10.3
+      '@types/node': 24.10.4
 
-  '@types/node@24.10.3':
+  '@types/node@24.10.4':
     dependencies:
       undici-types: 7.16.0
 
@@ -7399,7 +7399,7 @@ snapshots:
 
   '@types/pg@8.15.6':
     dependencies:
-      '@types/node': 24.10.3
+      '@types/node': 24.10.4
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
@@ -7415,11 +7415,11 @@ snapshots:
 
   '@types/tedious@4.0.14':
     dependencies:
-      '@types/node': 24.10.3
+      '@types/node': 24.10.4
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.10.3
+      '@types/node': 24.10.4
 
   '@types/youtube@0.1.2': {}
 
@@ -7771,15 +7771,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.45.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7):
+  drizzle-orm@0.45.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7):
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
       '@types/pg': 8.15.6
       postgres: 3.4.7
 
-  drizzle-zod@0.8.3(drizzle-orm@0.45.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7))(zod@4.1.13):
+  drizzle-zod@0.8.3(drizzle-orm@0.45.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7))(zod@4.1.13):
     dependencies:
-      drizzle-orm: 0.45.0(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7)
+      drizzle-orm: 0.45.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.6)(postgres@3.4.7)
       zod: 4.1.13
 
   dunder-proto@1.0.1:
@@ -7959,7 +7959,7 @@ snapshots:
 
   fraction.js@5.3.4: {}
 
-  framer-motion@12.23.25(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  framer-motion@12.23.26(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       motion-dom: 12.23.23
       motion-utils: 12.23.6
@@ -8165,7 +8165,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.10.3
+      '@types/node': 24.10.4
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -8173,12 +8173,12 @@ snapshots:
 
   jose@6.1.3: {}
 
-  jotai-optics@0.4.0(jotai@2.15.2(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1):
+  jotai-optics@0.4.0(jotai@2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1):
     dependencies:
-      jotai: 2.15.2(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
+      jotai: 2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
       optics-ts: 2.4.1
 
-  jotai@2.15.2(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3):
+  jotai@2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3):
     optionalDependencies:
       '@babel/core': 7.28.5
       '@babel/template': 7.27.2
@@ -8929,9 +8929,9 @@ snapshots:
 
   tr46@0.0.3: {}
 
-  trpc-to-openapi@3.1.0(@trpc/server@11.7.2(typescript@5.9.3))(zod-openapi@5.4.5(zod@4.1.13))(zod@4.1.13):
+  trpc-to-openapi@3.1.0(@trpc/server@11.8.0(typescript@5.9.3))(zod-openapi@5.4.5(zod@4.1.13))(zod@4.1.13):
     dependencies:
-      '@trpc/server': 11.7.2(typescript@5.9.3)
+      '@trpc/server': 11.8.0(typescript@5.9.3)
       co-body: 6.2.0
       h3: 1.15.1
       openapi3-ts: 4.4.0
