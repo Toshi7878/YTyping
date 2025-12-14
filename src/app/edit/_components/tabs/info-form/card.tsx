@@ -282,11 +282,8 @@ const UpsertButton = () => {
 };
 
 const VideoIdInput = () => {
-  const { watch, formState, setValue, getValues } = useFormContext();
+  const { watch, setValue, getValues } = useFormContext();
   const videoId = useVideoIdState();
-  const {
-    dirtyFields: { videoId: isVideoIdDirty },
-  } = formState;
   const formVideoId = watch("videoId");
 
   return (
