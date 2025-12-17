@@ -17,6 +17,11 @@ import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trp
 import { createPagination } from "../../utils/pagination";
 
 const PAGE_SIZE = 30;
+const Creator = alias(Users, "creator");
+const MyLike = alias(MapLikes, "my_like");
+const MyResult = alias(Results, "my_result");
+const MyResultStatus = alias(ResultStatuses, "my_result_status");
+
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
@@ -58,15 +63,14 @@ export const mapListRouter = {
     const { sort, userId: likedUserId } = input;
     const { db, user } = ctx;
 
-    const UserLikes = alias(MapLikes, "UserLikes");
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
     const maps = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
-      .innerJoin(UserLikes, and(eq(UserLikes.mapId, Maps.id), eq(UserLikes.userId, likedUserId)))
+      .innerJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, likedUserId)))
       .limit(limit)
       .offset(offset)
       .orderBy(...buildSortConditions(sort))
-      .where(and(eq(UserLikes.userId, likedUserId), eq(UserLikes.hasLiked, true)));
+      .where(and(eq(MyLike.userId, likedUserId), eq(MyLike.hasLiked, true)));
 
     return buildPageResult(maps);
   }),
@@ -120,8 +124,8 @@ const baseSelect = {
     duration: Maps.duration,
   },
   creator: {
-    id: Users.id,
-    name: Users.name,
+    id: Creator.id,
+    name: Creator.name,
   },
   difficulty: {
     romaKpmMedian: MapDifficulties.romaKpmMedian,
@@ -129,12 +133,17 @@ const baseSelect = {
   },
   like: {
     count: Maps.likeCount,
-    hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
+    hasLiked: sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean),
   },
   ranking: {
     count: Maps.rankingCount,
-    myRank: sql`${Results.rank}`.mapWith(Results.rank),
-    myRankUpdatedAt: sql`${Results.updatedAt}`.mapWith(Results.updatedAt),
+    myRank: sql<number | null>`${MyResult.rank}`,
+    myRankUpdatedAt: sql`${MyResult.updatedAt}`.mapWith({
+      mapFromDriverValue: (value) => {
+        if (value === null) return null;
+        return new Date(value);
+      },
+    }),
   },
 } satisfies SelectedFields;
 
@@ -143,12 +152,15 @@ const buildBaseSelect = <T extends PgSelect>(
   user: TRPCContext["user"],
   input?: z.output<typeof MapSearchFilterSchema>,
 ) => {
-  const baseQuery = db
-    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-    .innerJoin(Users, eq(Users.id, Maps.creatorId))
-    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
-    .leftJoin(Results, and(eq(Results.mapId, Maps.id), eq(Results.userId, user?.id ?? 0)))
-    .leftJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id));
+  const baseQuery = user
+    ? db
+        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+        .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
+        .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, user.id)))
+        .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)))
+    : db
+        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+        .innerJoin(Creator, eq(Creator.id, Maps.creatorId));
 
   if (!input) return baseQuery;
 
@@ -159,6 +171,12 @@ const buildBaseSelect = <T extends PgSelect>(
     buildKeywordCondition(input.keyword),
   ];
 
+  if (input?.rankingStatus === "perfect") {
+    return baseQuery
+      .innerJoin(MyResultStatus, eq(MyResultStatus.resultId, MyResult.id))
+      .where(and(...searchConditions));
+  }
+
   return baseQuery.where(and(...searchConditions));
 };
 
@@ -168,7 +186,7 @@ function buildFilterCondition(
 ) {
   switch (filter) {
     case "liked": {
-      return eq(MapLikes.hasLiked, true);
+      return eq(MyLike.hasLiked, true);
     }
     case "created":
       return eq(Maps.creatorId, user.id);
@@ -193,13 +211,13 @@ function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema> | 
     case "ranking-count":
       return [order(Maps.rankingCount), order(Maps.id)];
     case "ranking-register":
-      return [order(Results.updatedAt), order(Maps.id)];
+      return [order(MyResult.updatedAt), order(Maps.id)];
     case "like-count":
       return [order(Maps.likeCount), order(Maps.id)];
     case "duration":
       return [order(Maps.duration)];
     case "like":
-      return [order(MapLikes.createdAt)];
+      return [order(MyLike.createdAt)];
     default:
       return [desc(Maps.id)];
   }
@@ -229,15 +247,15 @@ function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlPa
 const buildRankingStatusCondition = (rankingStatus: MapListWhereParams["rankingStatus"]) => {
   switch (rankingStatus) {
     case "registerd":
-      return isNotNull(Results.id);
+      return isNotNull(MyResult.id);
     case "unregisterd":
-      return isNull(Results.id);
+      return isNull(MyResult.id);
     case "1st":
-      return eq(Results.rank, 1);
+      return eq(MyResult.rank, 1);
     case "not-first":
-      return sql`${Results.rank} > 1`;
+      return sql`${MyResult.rank} > 1`;
     case "perfect":
-      return and(eq(ResultStatuses.miss, 0), eq(ResultStatuses.lost, 0));
+      return and(eq(MyResultStatus.miss, 0), eq(MyResultStatus.lost, 0));
     default:
       return;
   }
@@ -255,7 +273,7 @@ const buildKeywordCondition = (keyword: MapListWhereParams["keyword"]) => {
       ilike(Maps.artistName, pattern),
       ilike(Maps.musicSource, pattern),
       sql`array_to_string(${Maps.tags}, ',') ilike ${pattern}`,
-      ilike(Users.name, pattern),
+      ilike(Creator.name, pattern),
     );
   });
 

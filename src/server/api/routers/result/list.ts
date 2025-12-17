@@ -19,7 +19,9 @@ import type { MapListItem } from "../map/list";
 
 const Player = alias(Users, "Player");
 const Creator = alias(Users, "Creator");
-const MyResult = alias(Results, "MyResult");
+const MyResult = alias(Results, "my_result");
+const MyLike = alias(MapLikes, "my_like");
+const MyClap = alias(ResultClaps, "my_clap");
 
 const PAGE_SIZE = 25;
 
@@ -67,10 +69,8 @@ export const resultListRouter = {
       .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
       .innerJoin(Player, eq(Player.id, Results.userId))
       .leftJoin(
-        ResultClaps,
-        user
-          ? and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, user.id))
-          : eq(ResultClaps.resultId, Results.id),
+        MyClap,
+        user ? and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, user.id)) : eq(MyClap.resultId, Results.id),
       )
       .where(eq(Results.mapId, mapId))
       .orderBy(desc(ResultStatuses.score));
@@ -107,7 +107,7 @@ const getBaseSelect = () =>
       kanaToRomaKpm: ResultStatuses.kanaToRomaKpm,
       kanaToRomaRkpm: ResultStatuses.kanaToRomaRkpm,
     },
-    clap: { count: Results.clapCount, hasClapped: sql`COALESCE(${ResultClaps.hasClapped}, false)`.mapWith(Boolean) },
+    clap: { count: Results.clapCount, hasClapped: sql`COALESCE(${MyClap.hasClapped}, false)`.mapWith(Boolean) },
     map: {
       id: Maps.id,
       videoId: Maps.videoId,
@@ -124,9 +124,14 @@ const getBaseSelect = () =>
       duration: Maps.duration,
       romaKpmMedian: MapDifficulties.romaKpmMedian,
       romaKpmMax: MapDifficulties.romaKpmMax,
-      hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
-      myRank: sql<Date | null>`${MyResult.rank}`.mapWith(MyResult.rank),
-      myRankUpdatedAt: sql<Date | null>`${MyResult.updatedAt}`.mapWith(Results.updatedAt),
+      hasLiked: sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean),
+      myRank: sql<number | null>`${MyResult.rank}`,
+      myRankUpdatedAt: sql`${MyResult.updatedAt}`.mapWith({
+        mapFromDriverValue: (value) => {
+          if (value === null) return null;
+          return new Date(value);
+        },
+      }),
     },
   }) satisfies SelectedFields;
 
@@ -139,24 +144,26 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
   user: TRPCContext["user"],
   input?: z.output<typeof ResultListSearchFilterSchema>,
 ) => {
-  const baseQuery = db
-    .innerJoin(Maps, eq(Maps.id, Results.mapId))
-    .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-    .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
-    .innerJoin(Player, eq(Player.id, Results.userId))
-    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-    .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
-    .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user?.id ?? 0)))
-    .leftJoin(
-      ResultClaps,
-      user
-        ? and(eq(ResultClaps.resultId, Results.id), eq(ResultClaps.userId, user.id))
-        : eq(ResultClaps.resultId, Results.id),
-    );
+  const baseQuery = user
+    ? db
+        .innerJoin(Maps, eq(Maps.id, Results.mapId))
+        .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+        .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
+        .innerJoin(Player, eq(Player.id, Results.userId))
+        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+        .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, user.id)))
+        .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)))
+        .leftJoin(MyClap, and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, user.id)))
+    : db
+        .innerJoin(Maps, eq(Maps.id, Results.mapId))
+        .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+        .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
+        .innerJoin(Player, eq(Player.id, Results.userId))
+        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id));
 
   if (!input) return baseQuery;
 
-  const whereConds = [
+  const whereConditions = [
     buildModeFilter({ mode: input.mode }),
     buildKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
     buildClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
@@ -164,7 +171,7 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
     buildKeywordFilter({ username: input.username, mapKeyword: input.mapKeyword }),
   ];
 
-  return baseQuery.where(and(...whereConds));
+  return baseQuery.where(and(...whereConditions));
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
