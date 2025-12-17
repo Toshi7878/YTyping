@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import type React from "react";
 import { FiHeart } from "react-icons/fi";
 import { LikeButtonWithCount } from "@/components/shared/like-button/like-button";
-import { useLikeMutationMapList } from "@/lib/mutations/like";
+import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 
 const InactiveLikeCount = ({ likeCount }: { likeCount: number }) => {
   return (
@@ -23,7 +23,7 @@ interface LikeCountIconProps {
 }
 
 const ActiveLikeCountButton = ({ hasLiked, likeCount, mapId }: LikeCountIconProps) => {
-  const setLikeMutation = useLikeMutationMapList();
+  const setLikeMutation = useToggleMapLikeMutation();
   const { stop } = useProgress();
 
   const handleClick = (event: React.MouseEvent, newState: boolean) => {

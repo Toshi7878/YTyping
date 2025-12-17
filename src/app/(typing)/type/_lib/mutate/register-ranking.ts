@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
-import { updateInfiniteQuery as updateInfiniteQueryCache } from "../../../../../lib/update-query-cache";
+import { updateInfiniteQueryCache, updateQueryCache } from "../../../../../lib/update-query-cache";
 
 function calculateRankingState(
   current: MapListItem["ranking"],
@@ -59,13 +59,12 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
         });
 
         const mapListFilter = trpc.mapList.pathFilter();
-        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
+        const resultListFilter = trpc.resultList.pathFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
 
         updateInfiniteQueryCache(queryClient, mapListFilter, updater.forMap);
-        updateInfiniteQueryCache(queryClient, timelineFilter, updater.forItemWithMap);
-        updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forItemWithMap);
+        updateQueryCache(queryClient, mapListFilter, updater.forMap);
+        updateInfiniteQueryCache(queryClient, resultListFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, notificationsFilter, updater.forItemWithMap);
 
         // Ranking自体のクエリだけは再取得（順位変動など他のユーザーの情報も含むため）

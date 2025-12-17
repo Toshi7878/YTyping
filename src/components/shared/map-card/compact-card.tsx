@@ -138,7 +138,7 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
         </section>
         <section className="flex w-[98%] justify-between items-center">
           <MapBadges map={map} />
-          <MapCountIcons mapId={map.id} ranking={map.ranking} like={map.like} />
+          <MapIcons mapId={map.id} ranking={map.ranking} like={map.like} />
         </section>
       </Link>
     </div>
@@ -174,7 +174,7 @@ interface MapCountIconsProps {
   like: MapListItem["like"];
 }
 
-const MapCountIcons = ({ mapId, ranking, like }: MapCountIconsProps) => {
+const MapIcons = ({ mapId, ranking, like }: MapCountIconsProps) => {
   return (
     <div className="flex items-center space-x-1">
       <RankingCount

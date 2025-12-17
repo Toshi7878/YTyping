@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PopoverContent } from "@/components/ui/popover";
 import { useGlobalLoadingOverlay } from "@/lib/atoms/global-atoms";
-import { useClapMutationRanking } from "@/lib/mutations/clap";
+import { useToggleClapMutation } from "@/lib/mutations/clap";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { playYTPlayer, primeYTPlayerForMobilePlayback } from "../../../_lib/atoms/youtube-player";
@@ -37,7 +37,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
   const { id: mapId } = useParams<{ id: string }>();
   const { data: mapInfo } = useQuery(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
 
-  const toggleClap = useClapMutationRanking(Number(mapId));
+  const toggleClap = useToggleClapMutation();
   const { showLoading, hideLoading } = useGlobalLoadingOverlay();
 
   const handleReplayClick = async () => {

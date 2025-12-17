@@ -1,10 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useTRPC } from "@/trpc/provider";
-import {
-  updateInfiniteQuery as updateInfiniteQueryCache,
-  updateListQuery as updateListQueryCache,
-} from "../update-query-cache";
+import { updateInfiniteQueryCache, updateQueryCache } from "../update-query-cache";
 
 function calculateClapState(
   current: { count: number; hasClapped: boolean },
@@ -36,30 +33,26 @@ const createResultUpdater = (
   return { forResult: updateResult };
 };
 
-export function useClapMutationTimeline() {
+export function useToggleClapMutation() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   return useMutation(
     trpc.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
+        const resultListFilter = trpc.resultList.pathFilter();
 
-        await Promise.all([queryClient.cancelQueries(timelineFilter), queryClient.cancelQueries(userResultsFilter)]);
+        await Promise.all([queryClient.cancelQueries(resultListFilter)]);
 
-        const previous = [
-          ...queryClient.getQueriesData(timelineFilter),
-          ...queryClient.getQueriesData(userResultsFilter),
-        ];
+        const previous = [...queryClient.getQueriesData(resultListFilter)];
 
         // --- Optimistic Updates ---
         const updater = createResultUpdater(input.resultId, { optimistic: input.newState });
 
-        updateInfiniteQueryCache(queryClient, timelineFilter, updater.forResult);
-        updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forResult);
+        updateInfiniteQueryCache(queryClient, resultListFilter, updater.forResult);
+        updateQueryCache(queryClient, resultListFilter, updater.forResult);
 
-        return { previous, timelineFilter, userResultsFilter };
+        return { previous, resultListFilter };
       },
       onError: (_err, _vars, ctx) => {
         if (ctx?.previous) {
@@ -69,62 +62,13 @@ export function useClapMutationTimeline() {
         }
       },
       onSuccess: (server, _vars, ctx) => {
-        const { clapCount, hasClapped, mapId, resultId } = server;
+        const { clapCount, hasClapped, resultId } = server;
 
         // --- Server Updates ---
         const updater = createResultUpdater(resultId, { server: { count: clapCount, hasClapped } });
 
-        const mapRankingFilter = trpc.resultList.getMapRanking.queryFilter({ mapId });
-        updateListQueryCache(queryClient, mapRankingFilter, updater.forResult);
-
-        if (!ctx) return;
-        updateInfiniteQueryCache(queryClient, ctx.timelineFilter, updater.forResult);
-        updateInfiniteQueryCache(queryClient, ctx.userResultsFilter, updater.forResult);
-      },
-    }),
-  );
-}
-
-export function useClapMutationRanking(mapId: number) {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-
-  return useMutation(
-    trpc.clap.toggleClap.mutationOptions({
-      onMutate: async (input) => {
-        const mapRankingFilter = trpc.resultList.getMapRanking.queryFilter({ mapId });
-
-        await queryClient.cancelQueries(mapRankingFilter);
-        const previous = queryClient.getQueriesData(mapRankingFilter);
-
-        // --- Optimistic Updates ---
-        const updater = createResultUpdater(input.resultId, { optimistic: input.newState });
-
-        updateListQueryCache(queryClient, mapRankingFilter, updater.forResult);
-
-        return { previous, mapRankingFilter };
-      },
-      onError: (_err, _vars, ctx) => {
-        if (ctx?.previous) {
-          for (const [key, data] of ctx.previous) {
-            queryClient.setQueryData(key, data);
-          }
-        }
-      },
-      onSuccess: (server, _vars, ctx) => {
-        // --- Server Updates ---
-        const updater = createResultUpdater(server.resultId, {
-          server: { count: server.clapCount, hasClapped: server.hasClapped },
-        });
-
-        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
-
-        updateInfiniteQueryCache(queryClient, timelineFilter, updater.forResult);
-        updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forResult);
-
-        if (!ctx) return;
-        updateListQueryCache(queryClient, ctx.mapRankingFilter, updater.forResult);
+        updateQueryCache(queryClient, ctx.resultListFilter, updater.forResult);
+        updateInfiniteQueryCache(queryClient, ctx.resultListFilter, updater.forResult);
       },
     }),
   );

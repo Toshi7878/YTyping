@@ -90,6 +90,7 @@ export const mapListRouter = {
 
     const map = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
       .where(eq(Maps.id, input.mapId))
+      .limit(1)
       .then((rows) => rows[0]);
 
     return map;
