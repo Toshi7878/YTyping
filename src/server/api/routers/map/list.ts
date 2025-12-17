@@ -65,12 +65,14 @@ export const mapListRouter = {
 
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
+    const TargetUserLike = alias(MapLikes, "target_user_like");
+
     const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
-      .innerJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, likedUserId)))
+      .innerJoin(TargetUserLike, and(eq(TargetUserLike.mapId, Maps.id), eq(TargetUserLike.userId, likedUserId)))
       .limit(limit)
       .offset(offset)
       .orderBy(...buildSortConditions(sort))
-      .where(and(eq(MyLike.userId, likedUserId), eq(MyLike.hasLiked, true)));
+      .where(and(eq(TargetUserLike.userId, likedUserId), eq(TargetUserLike.hasLiked, true)));
 
     return buildPageResult(maps);
   }),
