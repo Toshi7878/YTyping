@@ -11,7 +11,7 @@ import { CardWithContent } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table/table";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import { useOnlineUsersState } from "@/lib/atoms/global-atoms";
+import { type ActiveUserStatus, useOnlineUsersState } from "@/lib/atoms/global-atoms";
 import { useTRPC } from "@/trpc/provider";
 import { useActiveUsers } from "./use-active-user";
 
@@ -19,11 +19,6 @@ export const ActiveUsersSheet = () => {
   useActiveUsers();
   const [open, setOpen] = useState(false);
   const onlineUsers = useOnlineUsersState();
-  const trpc = useTRPC();
-  const { data: activeUsersWithMap } = useQuery({
-    ...trpc.mapList.getByActiveUser.queryOptions(onlineUsers),
-    enabled: open,
-  });
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -46,16 +41,7 @@ export const ActiveUsersSheet = () => {
         </SheetHeader>
         <Table className="table-fixed">
           <TableBody>
-            {activeUsersWithMap?.map((user) => {
-              const stateMsg =
-                user.state === "askMe"
-                  ? "Ask Me"
-                  : user.state === "type"
-                    ? "プレイ中"
-                    : user.state === "edit"
-                      ? "譜面編集中"
-                      : "待機中";
-
+            {onlineUsers.map((user) => {
               return (
                 <TableRow key={user.id} className="border-border/30 border-b">
                   <TableCell className="px-0 py-2" width={100}>
@@ -66,13 +52,7 @@ export const ActiveUsersSheet = () => {
                     </TooltipWrapper>
                   </TableCell>
                   <TableCell className="px-0 py-2">
-                    {user.state === "type" && user.map ? (
-                      <CompactMapCard map={user.map} thumbnailSize="activeUser" />
-                    ) : (
-                      <CardWithContent variant="map">
-                        <MapLeftThumbnail size="activeUser" alt={stateMsg} loading="eager" />
-                      </CardWithContent>
-                    )}
+                    <ActiveMapCard activeUser={user} />
                   </TableCell>
                 </TableRow>
               );
@@ -82,4 +62,35 @@ export const ActiveUsersSheet = () => {
       </SheetContent>
     </Sheet>
   );
+};
+
+const ActiveMapCard = ({ activeUser }: { activeUser: ActiveUserStatus }) => {
+  const trpc = useTRPC();
+  const { data: map } = useQuery(
+    trpc.mapList.getByMapId.queryOptions({ mapId: activeUser.mapId ?? 0 }, { enabled: !!activeUser.mapId }),
+  );
+
+  if (!map) {
+    const stateMsg = buildStateMessage(activeUser.state);
+    return (
+      <CardWithContent variant="map">
+        <MapLeftThumbnail size="activeUser" alt={stateMsg} loading="eager" />
+      </CardWithContent>
+    );
+  }
+
+  return <CompactMapCard map={map} thumbnailSize="activeUser" />;
+};
+
+const buildStateMessage = (state: ActiveUserStatus["state"]) => {
+  switch (state) {
+    case "askMe":
+      return "Ask Me";
+    case "edit":
+      return "譜面編集中";
+    case "idle":
+      return "待機中";
+    default:
+      return "";
+  }
 };

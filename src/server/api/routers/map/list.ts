@@ -10,7 +10,6 @@ import {
   MapSearchFilterSchema,
   type MapSortSearchParamsSchema,
   SelectMapListApiSchema,
-  SelectMapListByActiveUserApiSchema,
   SelectMapListByUserIdApiSchema,
 } from "@/validator/map-list";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
@@ -86,23 +85,14 @@ export const mapListRouter = {
       .orderBy(desc(Maps.id));
   }),
 
-  getByActiveUser: protectedProcedure.input(SelectMapListByActiveUserApiSchema).query(async ({ input, ctx }) => {
+  getByMapId: protectedProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
 
-    const userListPromises = input.map(async (activeUser) => {
-      if (activeUser.state === "type" && activeUser.mapId) {
-        const map = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
-          .where(eq(Maps.id, activeUser.mapId))
-          .then((rows) => rows[0]);
+    const map = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
+      .where(eq(Maps.id, input.mapId))
+      .then((rows) => rows[0]);
 
-        return { ...activeUser, map };
-      }
-
-      return { ...activeUser, map: null };
-    });
-
-    const userList = await Promise.all(userListPromises);
-    return userList;
+    return map;
   }),
 } satisfies TRPCRouterRecord;
 

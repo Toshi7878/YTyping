@@ -38,13 +38,3 @@ export const SelectMapListByUserIdApiSchema = z.object({
   userId: z.number(),
   sort: MapSortSearchParamsSchema.nullable(),
 });
-
-export const SelectMapListByActiveUserApiSchema = z.array(
-  z.object({
-    id: z.number(),
-    name: z.string(),
-    onlineAt: z.coerce.date(),
-    state: z.string(),
-    mapId: z.number().nullable(),
-  }),
-);
