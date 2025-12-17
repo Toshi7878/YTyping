@@ -1,10 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
-import {
-  updateInfiniteQuery as updateInfiniteQueryCache,
-  updateListQuery as updateListQueryCache,
-} from "../../../../../lib/update-query-cache";
+import { updateInfiniteQuery as updateInfiniteQueryCache } from "../../../../../lib/update-query-cache";
 
 function calculateRankingState(
   current: MapListItem["ranking"],
@@ -61,23 +58,15 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
           server: { count: rankingCount, myRank, myRankUpdatedAt },
         });
 
-        const mapListFilter = trpc.mapList.get.infiniteQueryFilter();
-        const mapListByCreatorFilter = trpc.mapList.getByCreatorId.infiniteQueryFilter();
-        const mapListLikedByUserFilter = trpc.mapList.getByLikedUserId.infiniteQueryFilter();
-        const mapListByVideoFilter = trpc.mapList.getByVideoId.queryFilter();
+        const mapListFilter = trpc.mapList.pathFilter();
         const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
-        const mapListByMapIdFilter = trpc.mapList.getByMapId.queryFilter();
 
         updateInfiniteQueryCache(queryClient, mapListFilter, updater.forMap);
-        updateInfiniteQueryCache(queryClient, mapListByCreatorFilter, updater.forMap);
-        updateInfiniteQueryCache(queryClient, mapListLikedByUserFilter, updater.forMap);
-        updateListQueryCache(queryClient, mapListByVideoFilter, updater.forMap);
         updateInfiniteQueryCache(queryClient, timelineFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, notificationsFilter, updater.forItemWithMap);
-        updateListQueryCache(queryClient, mapListByMapIdFilter, updater.forItemWithMap);
 
         // Ranking自体のクエリだけは再取得（順位変動など他のユーザーの情報も含むため）
         await queryClient.invalidateQueries(trpc.resultList.getMapRanking.queryFilter({ mapId }));
