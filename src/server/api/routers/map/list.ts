@@ -28,7 +28,7 @@ export const mapListRouter = {
 
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
-    const maps = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user, input)
+    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user, input)
       .limit(limit)
       .offset(offset)
       .orderBy(...buildSortConditions(input.sort));
@@ -38,7 +38,7 @@ export const mapListRouter = {
 
   getCount: publicProcedure.input(MapSearchFilterSchema).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    const baseQuery = buildBaseSelect(db.select({ count: count() }).from(Maps).$dynamic(), user, input);
+    const baseQuery = buildBaseQuery(db.select({ count: count() }).from(Maps).$dynamic(), user, input);
     const total = await baseQuery.limit(1);
 
     return total[0]?.count;
@@ -50,7 +50,7 @@ export const mapListRouter = {
 
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
-    const maps = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
+    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
       .limit(limit)
       .offset(offset)
       .orderBy(...buildSortConditions(sort))
@@ -65,7 +65,7 @@ export const mapListRouter = {
 
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
 
-    const maps = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
+    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
       .innerJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, likedUserId)))
       .limit(limit)
       .offset(offset)
@@ -79,7 +79,7 @@ export const mapListRouter = {
     const { db, user } = ctx;
     const { videoId } = input;
 
-    return await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
+    return await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
       .where(eq(Maps.videoId, videoId))
       .orderBy(desc(Maps.id));
   }),
@@ -89,7 +89,7 @@ export const mapListRouter = {
 
     const userListPromises = input.map(async (activeUser) => {
       if (activeUser.state === "type" && activeUser.mapId) {
-        const map = await buildBaseSelect(db.select(baseSelect).from(Maps).$dynamic(), user)
+        const map = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
           .where(eq(Maps.id, activeUser.mapId))
           .then((rows) => rows[0]);
 
@@ -104,50 +104,50 @@ export const mapListRouter = {
   }),
 } satisfies TRPCRouterRecord;
 
-type BaseSelectItem = SelectResultFields<typeof baseSelect>;
-export type MapListItem = Omit<BaseSelectItem, "media"> & {
-  media: BaseSelectItem["media"] & { previewSpeed?: number };
-};
+export type BaseSelectItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
-const baseSelect = {
-  id: Maps.id,
-  updatedAt: Maps.updatedAt,
-  media: {
-    videoId: Maps.videoId,
-    previewTime: Maps.previewTime,
-    thumbnailQuality: Maps.thumbnailQuality,
-  },
-  info: {
-    title: Maps.title,
-    artistName: Maps.artistName,
-    source: Maps.musicSource,
-    duration: Maps.duration,
-  },
-  creator: {
-    id: Creator.id,
-    name: Creator.name,
-  },
-  difficulty: {
-    romaKpmMedian: MapDifficulties.romaKpmMedian,
-    romaKpmMax: MapDifficulties.romaKpmMax,
-  },
-  like: {
-    count: Maps.likeCount,
-    hasLiked: sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean),
-  },
-  ranking: {
-    count: Maps.rankingCount,
-    myRank: sql<number | null>`${MyResult.rank}`,
-    myRankUpdatedAt: sql`${MyResult.updatedAt}`.mapWith({
-      mapFromDriverValue: (value) => {
-        if (value === null) return null;
-        return new Date(value);
-      },
-    }),
-  },
-} satisfies SelectedFields;
+const buildBaseSelect = (user: TRPCContext["user"]) =>
+  ({
+    id: Maps.id,
+    updatedAt: Maps.updatedAt,
+    media: {
+      videoId: Maps.videoId,
+      previewTime: Maps.previewTime,
+      thumbnailQuality: Maps.thumbnailQuality,
+    },
+    info: {
+      title: Maps.title,
+      artistName: Maps.artistName,
+      source: Maps.musicSource,
+      duration: Maps.duration,
+    },
+    creator: {
+      id: Creator.id,
+      name: Creator.name,
+    },
+    difficulty: {
+      romaKpmMedian: MapDifficulties.romaKpmMedian,
+      romaKpmMax: MapDifficulties.romaKpmMax,
+    },
+    like: {
+      count: Maps.likeCount,
+      hasLiked: user ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+    },
+    ranking: {
+      count: Maps.rankingCount,
+      myRank: user ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
+      myRankUpdatedAt: user
+        ? sql`${MyResult.updatedAt}`.mapWith({
+            mapFromDriverValue: (value) => {
+              if (value === null) return null;
+              return new Date(value);
+            },
+          })
+        : sql<null>`null`,
+    },
+  }) satisfies SelectedFields;
 
-const buildBaseSelect = <T extends PgSelect>(
+const buildBaseQuery = <T extends PgSelect>(
   db: T,
   user: TRPCContext["user"],
   input?: z.output<typeof MapSearchFilterSchema>,

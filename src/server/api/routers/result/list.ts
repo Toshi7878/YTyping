@@ -15,7 +15,7 @@ import {
 } from "@/validator/result";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
-import type { MapListItem } from "../map/list";
+import type { MapListItem } from "../map";
 
 const Player = alias(Users, "Player");
 const Creator = alias(Users, "Creator");
@@ -30,7 +30,7 @@ export const resultListRouter = {
     const { db, user } = ctx;
 
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
-    const baseSelect = getBaseSelect();
+    const baseSelect = buildBaseSelect(user);
 
     const items = await buildResultWithMapBaseQuery(db.select(baseSelect).from(Results).$dynamic(), user, input)
       .orderBy(desc(Results.updatedAt))
@@ -44,7 +44,7 @@ export const resultListRouter = {
     const { db, user } = ctx;
     const { playerId } = input;
     const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
-    const baseSelect = getBaseSelect();
+    const baseSelect = buildBaseSelect(user);
 
     const items = await buildResultWithMapBaseQuery(db.select(baseSelect).from(Results).$dynamic(), user)
       .where(eq(Results.userId, playerId))
@@ -61,7 +61,7 @@ export const resultListRouter = {
 
     const Player = alias(Users, "Player");
 
-    const { map: _, ...resultSelect } = getBaseSelect();
+    const { map: _, ...resultSelect } = buildBaseSelect(user);
 
     return db
       .select(resultSelect)
@@ -77,7 +77,7 @@ export const resultListRouter = {
   }),
 } satisfies TRPCRouterRecord;
 
-const getBaseSelect = () =>
+const buildBaseSelect = (user: TRPCContext["user"]) =>
   ({
     id: Results.id,
     updatedAt: Results.updatedAt,
@@ -107,7 +107,10 @@ const getBaseSelect = () =>
       kanaToRomaKpm: ResultStatuses.kanaToRomaKpm,
       kanaToRomaRkpm: ResultStatuses.kanaToRomaRkpm,
     },
-    clap: { count: Results.clapCount, hasClapped: sql`COALESCE(${MyClap.hasClapped}, false)`.mapWith(Boolean) },
+    clap: {
+      count: Results.clapCount,
+      hasClapped: user ? sql`COALESCE(${MyClap.hasClapped}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+    },
     map: {
       id: Maps.id,
       videoId: Maps.videoId,
@@ -124,18 +127,20 @@ const getBaseSelect = () =>
       duration: Maps.duration,
       romaKpmMedian: MapDifficulties.romaKpmMedian,
       romaKpmMax: MapDifficulties.romaKpmMax,
-      hasLiked: sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean),
-      myRank: sql<number | null>`${MyResult.rank}`,
-      myRankUpdatedAt: sql`${MyResult.updatedAt}`.mapWith({
-        mapFromDriverValue: (value) => {
-          if (value === null) return null;
-          return new Date(value);
-        },
-      }),
+      hasLiked: user ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
+      myRank: user ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
+      myRankUpdatedAt: user
+        ? sql`${MyResult.updatedAt}`.mapWith({
+            mapFromDriverValue: (value) => {
+              if (value === null) return null;
+              return new Date(value);
+            },
+          })
+        : sql<null>`null`,
     },
   }) satisfies SelectedFields;
 
-type ResultWithMapBaseItem = SelectResultFields<ReturnType<typeof getBaseSelect>>;
+type ResultWithMapBaseItem = SelectResultFields<ReturnType<typeof buildBaseSelect>>;
 
 export type ResultWithMapItem = ReturnType<typeof formatMapListItem>[number];
 

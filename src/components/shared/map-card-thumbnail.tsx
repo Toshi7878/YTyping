@@ -13,7 +13,7 @@ import {
   usePreviewVideoInfoState,
 } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
-import type { MapListItem } from "@/server/api/routers/map/list";
+import type { MapListItem } from "@/server/api/routers/map";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 
 const mapLeftThumbnailVariants = cva("relative aspect-video", {

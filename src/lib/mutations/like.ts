@@ -1,6 +1,6 @@
 import type { QueryClient, QueryFilters } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { MapListItem } from "@/server/api/routers/map/list";
+import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import {

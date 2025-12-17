@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { MapListItem } from "@/server/api/routers/map/list";
+import type { MapListItem } from "@/server/api/routers/map";
 import { useTRPC } from "@/trpc/provider";
 import {
   updateInfiniteQuery as updateInfiniteQueryCache,

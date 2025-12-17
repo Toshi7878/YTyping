@@ -4,7 +4,7 @@ import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { Card, CardContent, CardHeader, CardWithContent } from "@/components/ui/card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
-import type { MapListItem } from "@/server/api/routers/map/list";
+import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
