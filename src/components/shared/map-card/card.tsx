@@ -27,7 +27,7 @@ export const MapCard = ({ map, className, initialInView = false }: MapCardProps)
         alt={shouldRender ? map.info.title : ""}
         media={shouldRender ? map.media : undefined}
         size="home"
-        loading={initialInView ? "eager" : "lazy"}
+        priority={initialInView}
       />
       {shouldRender && <MapInfo map={map} />}
     </CardWithContent>

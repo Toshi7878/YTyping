@@ -65,7 +65,7 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
             alt={shouldRender ? result.map.info.title : ""}
             media={shouldRender ? result?.map.media : undefined}
             size="timeline"
-            loading={initialInView ? "eager" : "lazy"}
+            priority={initialInView}
           />
           {shouldRender && <MapInfo map={result.map} className="flex-1" />}
           {shouldRender && <ResultStatusBadges result={result} className="hidden md:flex" />}

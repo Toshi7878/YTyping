@@ -74,7 +74,7 @@ const ActiveMapCard = ({ activeUser }: { activeUser: ActiveUserStatus }) => {
     const stateMsg = buildStateMessage(activeUser.state);
     return (
       <CardWithContent variant="map">
-        <MapLeftThumbnail size="activeUser" alt={stateMsg} loading="eager" />
+        <MapLeftThumbnail size="activeUser" alt={stateMsg} />
       </CardWithContent>
     );
   }

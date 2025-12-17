@@ -34,11 +34,11 @@ interface MapLeftThumbnailPreviewCoverProps {
   size: VariantProps<typeof mapLeftThumbnailVariants>["size"];
   className?: string;
   imageClassName?: string;
-  loading?: "eager" | "lazy";
+  priority?: boolean;
 }
 
 export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & React.HTMLAttributes<HTMLDivElement>) => {
-  const { alt = "", media, size, className, imageClassName, loading = "lazy", ...rest } = props;
+  const { alt = "", media, size, className, imageClassName, priority = false, ...rest } = props;
 
   const isPreviewEnabled = useIsPreviewEnabled();
   const previewYTPlayer = usePreviewPlayerState();
@@ -50,7 +50,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
           <div className={mapLeftThumbnailVariants({ size })}>
             <Image
-              loading={loading}
+              priority={priority}
               alt={alt}
               src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
               fill
