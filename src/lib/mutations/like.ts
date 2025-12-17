@@ -76,7 +76,7 @@ export function useLikeMutationMapList() {
         const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
-        const activeUserMapsFilter = trpc.mapList.getByActiveUser.queryFilter();
+        const mapListByMapIdFilter = trpc.mapList.getByMapId.queryFilter();
 
         await Promise.all([
           queryClient.cancelQueries(mapListFilter),
@@ -86,7 +86,7 @@ export function useLikeMutationMapList() {
           queryClient.cancelQueries(timelineFilter),
           queryClient.cancelQueries(userResultsFilter),
           queryClient.cancelQueries(notificationsFilter),
-          queryClient.cancelQueries(activeUserMapsFilter),
+          queryClient.cancelQueries(mapListByMapIdFilter),
         ]);
 
         const previous = [
@@ -97,7 +97,7 @@ export function useLikeMutationMapList() {
           ...queryClient.getQueriesData(timelineFilter),
           ...queryClient.getQueriesData(userResultsFilter),
           ...queryClient.getQueriesData(notificationsFilter),
-          ...queryClient.getQueriesData(activeUserMapsFilter),
+          ...queryClient.getQueriesData(mapListByMapIdFilter),
         ];
 
         // --- Optimistic Updates ---
@@ -107,7 +107,7 @@ export function useLikeMutationMapList() {
         updateInfiniteQueryCache(queryClient, mapListByCreatorFilter, updater.forMap);
         updateInfiniteQueryCache(queryClient, mapListLikedByUserFilter, updater.forMap);
         updateListQueryCache(queryClient, mapListByVideoFilter, updater.forMap);
-        updateListQueryCache(queryClient, activeUserMapsFilter, updater.forItemWithMap);
+        updateListQueryCache(queryClient, mapListByMapIdFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, timelineFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, notificationsFilter, updater.forItemWithMap);
@@ -121,7 +121,7 @@ export function useLikeMutationMapList() {
           timelineFilter,
           userResultsFilter,
           notificationsFilter,
-          activeUserMapsFilter,
+          mapListByMapIdFilter,
         };
       },
       onError: (_e, _v, ctx) => {
@@ -140,7 +140,7 @@ export function useLikeMutationMapList() {
         updateInfiniteQueryCache(queryClient, ctx.mapListByCreatorFilter, updater.forMap);
         updateInfiniteQueryCache(queryClient, ctx.mapListLikedByUserFilter, updater.forMap);
         updateListQueryCache(queryClient, ctx.mapListByVideoFilter, updater.forMap);
-        updateListQueryCache(queryClient, ctx.activeUserMapsFilter, updater.forItemWithMap);
+        updateListQueryCache(queryClient, ctx.mapListByMapIdFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, ctx.timelineFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, ctx.userResultsFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, ctx.notificationsFilter, updater.forItemWithMap);
@@ -164,7 +164,7 @@ export function useLikeMutationMapInfo() {
         const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
         const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
-        const activeUserMapsFilter = trpc.mapList.getByActiveUser.queryFilter();
+        const mapListByMapIdFilter = trpc.mapList.getByMapId.queryFilter();
 
         await Promise.all([
           queryClient.cancelQueries(mapInfoFilter),
@@ -175,7 +175,7 @@ export function useLikeMutationMapInfo() {
           queryClient.cancelQueries(timelineFilter),
           queryClient.cancelQueries(userResultsFilter),
           queryClient.cancelQueries(notificationsFilter),
-          queryClient.cancelQueries(activeUserMapsFilter),
+          queryClient.cancelQueries(mapListByMapIdFilter),
         ]);
 
         const previous = [
@@ -187,7 +187,7 @@ export function useLikeMutationMapInfo() {
           ...queryClient.getQueriesData(timelineFilter),
           ...queryClient.getQueriesData(userResultsFilter),
           ...queryClient.getQueriesData(notificationsFilter),
-          ...queryClient.getQueriesData(activeUserMapsFilter),
+          ...queryClient.getQueriesData(mapListByMapIdFilter),
         ];
 
         updateMapInfoQuery(queryClient, mapInfoFilter, input.newState);
@@ -228,7 +228,7 @@ export function useLikeMutationMapInfo() {
         );
         updateListQueryCache(
           queryClient,
-          activeUserMapsFilter,
+          mapListByMapIdFilter,
           createMapUpdater(input.mapId, { optimistic: input.newState }).forItemWithMap,
         );
 
@@ -242,7 +242,7 @@ export function useLikeMutationMapInfo() {
           timelineFilter,
           userResultsFilter,
           notificationsFilter,
-          activeUserMapsFilter,
+          mapListByMapIdFilter,
         };
       },
       onError: (_e, _v, ctx) => {
@@ -291,7 +291,7 @@ export function useLikeMutationMapInfo() {
         );
         updateListQueryCache(
           queryClient,
-          ctx.activeUserMapsFilter,
+          ctx.mapListByMapIdFilter,
           createMapUpdater(mapId, { server: { count: likeCount, hasLiked } }).forItemWithMap,
         );
       },
