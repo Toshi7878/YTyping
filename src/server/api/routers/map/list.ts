@@ -24,14 +24,15 @@ const TargetUserLike = alias(MapLikes, "target_user_like");
 
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
+    const { cursor, sort, ...searchInput } = input ?? {};
     const { db, user } = ctx;
 
-    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
+    const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
 
-    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user, input)
+    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user, searchInput)
       .limit(limit)
       .offset(offset)
-      .orderBy(...buildSortConditions(input.sort));
+      .orderBy(...buildSortConditions(sort));
 
     return buildPageResult(maps);
   }),
@@ -113,15 +114,16 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   user: TRPCContext["user"],
   input?: z.output<typeof MapSearchFilterSchema>,
 ) => {
-  let baseQuery = user
-    ? db
-        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-        .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
-        .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, user.id)))
-        .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)))
-    : db
-        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-        .innerJoin(Creator, eq(Creator.id, Maps.creatorId));
+  let baseQuery = db
+    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
+    .innerJoin(Creator, eq(Creator.id, Maps.creatorId));
+
+  if (user) {
+    // @ts-expect-error
+    baseQuery = baseQuery
+      .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, user.id)))
+      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)));
+  }
 
   if (!input) return baseQuery;
 

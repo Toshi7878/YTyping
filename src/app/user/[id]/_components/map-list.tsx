@@ -1,15 +1,14 @@
 "use client";
 
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
-import { Spinner } from "@/components/ui/spinner";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/hooks/intersection";
 
 export const UserCreatedMapList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
-  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
+  const { data, ...pagination } = useSuspenseInfiniteQuery(
     trpc.mapList.get.infiniteQueryOptions(
       { creatorId: Number(id) },
       {
@@ -20,7 +19,6 @@ export const UserCreatedMapList = ({ id }: { id: string }) => {
     ),
   );
 
-  const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
   return (
     <section>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -30,8 +28,7 @@ export const UserCreatedMapList = ({ id }: { id: string }) => {
           )),
         )}
       </div>
-
-      {hasNextPage && <Spinner ref={ref} />}
+      <InfiniteScrollSpinner {...pagination} />
     </section>
   );
 };
@@ -39,7 +36,7 @@ export const UserCreatedMapList = ({ id }: { id: string }) => {
 export const UserLikedMapList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
-  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
+  const { data, ...pagination } = useSuspenseInfiniteQuery(
     trpc.mapList.get.infiniteQueryOptions(
       { likerId: Number(id) },
       {
@@ -50,7 +47,6 @@ export const UserLikedMapList = ({ id }: { id: string }) => {
     ),
   );
 
-  const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
   return (
     <section>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -60,8 +56,7 @@ export const UserLikedMapList = ({ id }: { id: string }) => {
           )),
         )}
       </div>
-
-      {hasNextPage && <Spinner ref={ref} />}
+      <InfiniteScrollSpinner {...pagination} />
     </section>
   );
 };

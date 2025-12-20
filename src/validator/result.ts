@@ -48,22 +48,18 @@ export const CLEAR_RATE_LIMIT = { min: 0, max: 100 };
 export const PLAY_SPEED_LIMIT = { min: 1, max: 2 };
 
 export const ResultListSearchFilterSchema = z.object({
-  mode: z.literal(RESULT_INPUT_METHOD_TYPES).nullable(),
-  minKpm: z.number().default(KPM_LIMIT.min),
-  maxKpm: z.number().default(KPM_LIMIT.max),
-  minClearRate: z.number().default(CLEAR_RATE_LIMIT.min),
-  maxClearRate: z.number().default(CLEAR_RATE_LIMIT.max),
-  minPlaySpeed: z.literal(RESULT_PLAY_SPEEDS).default(PLAY_SPEED_LIMIT.min),
-  maxPlaySpeed: z.literal(RESULT_PLAY_SPEEDS).default(PLAY_SPEED_LIMIT.max),
-  username: z.string().default(""),
-  mapKeyword: z.string().default(""),
+  mode: z.literal(RESULT_INPUT_METHOD_TYPES).nullish(),
+  minKpm: z.number().nullish(),
+  maxKpm: z.number().nullish(),
+  minClearRate: z.number().nullish(),
+  maxClearRate: z.number().nullish(),
+  minPlaySpeed: z.literal(RESULT_PLAY_SPEEDS).nullish(),
+  maxPlaySpeed: z.literal(RESULT_PLAY_SPEEDS).nullish(),
+  username: z.string().nullish(),
+  mapKeyword: z.string().nullish(),
+  playerId: z.number().nullish(),
 });
 
 export const SelectResultListApiSchema = z
   .object({ cursor: z.number().optional() })
   .extend(ResultListSearchFilterSchema.shape);
-
-export const SelectResultListByPlayerIdApiSchema = z.object({
-  playerId: z.number(),
-  cursor: z.number().optional(),
-});

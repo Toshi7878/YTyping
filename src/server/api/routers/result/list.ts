@@ -6,13 +6,7 @@ import type { SelectResultFields } from "drizzle-orm/query-builders/select.types
 import z from "zod";
 import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import type { RESULT_INPUT_METHOD_TYPES, ResultListSearchFilterSchema } from "@/validator/result";
-import {
-  CLEAR_RATE_LIMIT,
-  KPM_LIMIT,
-  PLAY_SPEED_LIMIT,
-  SelectResultListApiSchema,
-  SelectResultListByPlayerIdApiSchema,
-} from "@/validator/result";
+import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, SelectResultListApiSchema } from "@/validator/result";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
@@ -27,30 +21,16 @@ const PAGE_SIZE = 25;
 
 export const resultListRouter = {
   getWithMap: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
+    const { cursor, ...searchInput } = input ?? {};
     const { db, user } = ctx;
 
-    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
+    const { limit, offset, buildPageResult } = createPagination(cursor, PAGE_SIZE);
     const baseSelect = buildBaseSelect(user);
 
-    const items = await buildResultWithMapBaseQuery(db.select(baseSelect).from(Results).$dynamic(), user, input)
+    const items = await buildResultWithMapBaseQuery(db.select(baseSelect).from(Results).$dynamic(), user, searchInput)
       .orderBy(desc(Results.updatedAt))
       .limit(limit)
       .offset(offset);
-
-    return buildPageResult(formatMapListItem(items));
-  }),
-
-  getWithMapByUserId: publicProcedure.input(SelectResultListByPlayerIdApiSchema).query(async ({ input, ctx }) => {
-    const { db, user } = ctx;
-    const { playerId } = input;
-    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
-    const baseSelect = buildBaseSelect(user);
-
-    const items = await buildResultWithMapBaseQuery(db.select(baseSelect).from(Results).$dynamic(), user)
-      .where(eq(Results.userId, playerId))
-      .limit(limit)
-      .offset(offset)
-      .orderBy(desc(Results.updatedAt));
 
     return buildPageResult(formatMapListItem(items));
   }),
@@ -149,26 +129,25 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
   user: TRPCContext["user"],
   input?: z.output<typeof ResultListSearchFilterSchema>,
 ) => {
-  const baseQuery = user
-    ? db
-        .innerJoin(Maps, eq(Maps.id, Results.mapId))
-        .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-        .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
-        .innerJoin(Player, eq(Player.id, Results.userId))
-        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
-        .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, user.id)))
-        .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)))
-        .leftJoin(MyClap, and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, user.id)))
-    : db
-        .innerJoin(Maps, eq(Maps.id, Results.mapId))
-        .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
-        .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
-        .innerJoin(Player, eq(Player.id, Results.userId))
-        .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id));
+  let baseQuery = db
+    .innerJoin(Maps, eq(Maps.id, Results.mapId))
+    .innerJoin(ResultStatuses, eq(ResultStatuses.resultId, Results.id))
+    .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
+    .innerJoin(Player, eq(Player.id, Results.userId))
+    .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id));
+
+  if (user) {
+    // @ts-expect-error
+    baseQuery = baseQuery
+      .leftJoin(MyLike, and(eq(MyLike.mapId, Maps.id), eq(MyLike.userId, user.id)))
+      .leftJoin(MyResult, and(eq(MyResult.mapId, Maps.id), eq(MyResult.userId, user.id)))
+      .leftJoin(MyClap, and(eq(MyClap.resultId, Results.id), eq(MyClap.userId, user.id)));
+  }
 
   if (!input) return baseQuery;
 
   const whereConditions = [
+    input.playerId ? eq(Player.id, input.playerId) : undefined,
     buildModeFilter({ mode: input.mode }),
     buildKpmFilter({ minKpm: input.minKpm, maxKpm: input.maxKpm }),
     buildClearRateFilter({ minClearRate: input.minClearRate, maxClearRate: input.maxClearRate }),
@@ -202,7 +181,7 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
   });
 };
 
-const buildModeFilter = ({ mode }: { mode: (typeof RESULT_INPUT_METHOD_TYPES)[number] | null }) => {
+const buildModeFilter = ({ mode }: { mode?: (typeof RESULT_INPUT_METHOD_TYPES)[number] | null }) => {
   switch (mode) {
     case "roma":
       return and(gt(ResultStatuses.romaType, 0), eq(ResultStatuses.kanaType, 0));
@@ -217,51 +196,63 @@ const buildModeFilter = ({ mode }: { mode: (typeof RESULT_INPUT_METHOD_TYPES)[nu
   }
 };
 
-const buildKpmFilter = ({ minKpm, maxKpm }: { minKpm: number; maxKpm: number }) => {
+const buildKpmFilter = ({ minKpm, maxKpm }: { minKpm?: number | null; maxKpm?: number | null }) => {
   const conditions: SQL<unknown>[] = [];
-  if (minKpm > KPM_LIMIT.min) {
+  if (minKpm && minKpm > KPM_LIMIT.min) {
     conditions.push(gte(ResultStatuses.kanaToRomaKpm, minKpm));
   }
-  if (KPM_LIMIT.max > maxKpm) {
+  if (maxKpm && KPM_LIMIT.max > maxKpm) {
     conditions.push(lte(ResultStatuses.kanaToRomaKpm, maxKpm));
   }
   return and(...conditions);
 };
 
-const buildClearRateFilter = ({ minClearRate, maxClearRate }: { minClearRate: number; maxClearRate: number }) => {
+const buildClearRateFilter = ({
+  minClearRate,
+  maxClearRate,
+}: {
+  minClearRate?: number | null;
+  maxClearRate?: number | null;
+}) => {
   const conditions: SQL<unknown>[] = [];
-  if (minClearRate > CLEAR_RATE_LIMIT.min) {
+  if (minClearRate && minClearRate > CLEAR_RATE_LIMIT.min) {
     conditions.push(gte(ResultStatuses.clearRate, minClearRate));
   }
-  if (CLEAR_RATE_LIMIT.max > maxClearRate) {
+  if (maxClearRate && CLEAR_RATE_LIMIT.max > maxClearRate) {
     conditions.push(lte(ResultStatuses.clearRate, maxClearRate));
   }
 
   return and(...conditions);
 };
 
-const buildPlaySpeedFilter = ({ minPlaySpeed, maxPlaySpeed }: { minPlaySpeed: number; maxPlaySpeed: number }) => {
+const buildPlaySpeedFilter = ({
+  minPlaySpeed,
+  maxPlaySpeed,
+}: {
+  minPlaySpeed?: number | null;
+  maxPlaySpeed?: number | null;
+}) => {
   const conditions: SQL<unknown>[] = [];
-  if (minPlaySpeed > PLAY_SPEED_LIMIT.min) {
+  if (minPlaySpeed && minPlaySpeed > PLAY_SPEED_LIMIT.min) {
     conditions.push(gte(ResultStatuses.minPlaySpeed, minPlaySpeed));
   }
 
-  if (PLAY_SPEED_LIMIT.max > maxPlaySpeed) {
+  if (maxPlaySpeed && PLAY_SPEED_LIMIT.max > maxPlaySpeed) {
     conditions.push(lte(ResultStatuses.minPlaySpeed, maxPlaySpeed));
   }
 
   return and(...conditions);
 };
 
-const buildKeywordFilter = ({ username, mapKeyword }: { username: string; mapKeyword: string }) => {
+const buildKeywordFilter = ({ username, mapKeyword }: { username?: string | null; mapKeyword?: string | null }) => {
   const conditions = [];
 
-  if (username !== "") {
+  if (username) {
     const pattern = `%${username}%`;
     conditions.push(ilike(Player.name, pattern));
   }
 
-  if (mapKeyword !== "") {
+  if (mapKeyword) {
     const pattern = `%${mapKeyword}%`;
     const keywordOr = or(
       ilike(Maps.title, pattern),

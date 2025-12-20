@@ -37,9 +37,3 @@ export const SelectMapListApiSchema = z
     sort: MapSortSearchParamsSchema,
   })
   .extend(MapSearchFilterSchema.shape);
-
-export const SelectMapListByUserIdApiSchema = z.object({
-  cursor: z.number().optional(),
-  userId: z.number(),
-  sort: MapSortSearchParamsSchema.nullable(),
-});

@@ -2,17 +2,16 @@
 
 import { useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { ResultCard } from "@/components/shared/result-card/card";
-import { Spinner } from "@/components/ui/spinner";
 import { Large, Small } from "@/components/ui/typography";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/hooks/intersection";
 
 export const UserResultList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
-    trpc.resultList.getWithMapByUserId.infiniteQueryOptions(
+  const { data, ...pagination } = useSuspenseInfiniteQuery(
+    trpc.resultList.getWithMap.infiniteQueryOptions(
       { playerId: Number(id) },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -20,11 +19,6 @@ export const UserResultList = ({ id }: { id: string }) => {
         gcTime: Infinity,
       },
     ),
-  );
-
-  const ref = useInfiniteScroll(
-    { isFetchingNextPage, fetchNextPage, hasNextPage },
-    { threshold: 0, rootMargin: "2000px 0px" },
   );
 
   return (
@@ -36,7 +30,7 @@ export const UserResultList = ({ id }: { id: string }) => {
             <ResultCard key={result.id} result={result} initialInView={data.pages.length - 1 === pageIndex} />
           )),
         )}
-        {hasNextPage && <Spinner ref={ref} />}
+        <InfiniteScrollSpinner rootMarginVariant="resultListWithMap" {...pagination} />
       </section>
     </div>
   );

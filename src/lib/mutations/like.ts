@@ -51,23 +51,20 @@ export function useToggleMapLikeMutation() {
       onMutate: async (input) => {
         const mapListFilter = trpc.mapList.pathFilter();
         const mapInfoFilter = trpc.map.getMapInfo.queryFilter();
-        const timelineFilter = trpc.resultList.getWithMap.infiniteQueryFilter();
-        const userResultsFilter = trpc.resultList.getWithMapByUserId.infiniteQueryFilter();
+        const resultListFilter = trpc.resultList.pathFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
 
         await Promise.all([
           queryClient.cancelQueries(mapListFilter),
           queryClient.cancelQueries(mapInfoFilter),
-          queryClient.cancelQueries(timelineFilter),
-          queryClient.cancelQueries(userResultsFilter),
+          queryClient.cancelQueries(resultListFilter),
           queryClient.cancelQueries(notificationsFilter),
         ]);
 
         const previous = [
           ...queryClient.getQueriesData(mapListFilter),
           ...queryClient.getQueriesData(mapInfoFilter),
-          ...queryClient.getQueriesData(timelineFilter),
-          ...queryClient.getQueriesData(userResultsFilter),
+          ...queryClient.getQueriesData(resultListFilter),
           ...queryClient.getQueriesData(notificationsFilter),
         ];
 
@@ -77,16 +74,14 @@ export function useToggleMapLikeMutation() {
         updateInfiniteQueryCache(queryClient, mapListFilter, updater.forMap);
         updateQueryCache(queryClient, mapListFilter, updater.forMap);
         updateQueryCache(queryClient, mapInfoFilter, updater.forMap);
-        updateInfiniteQueryCache(queryClient, timelineFilter, updater.forItemWithMap);
-        updateInfiniteQueryCache(queryClient, userResultsFilter, updater.forItemWithMap);
+        updateInfiniteQueryCache(queryClient, resultListFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, notificationsFilter, updater.forItemWithMap);
 
         return {
           previous,
           mapListFilter,
           mapInfoFilter,
-          timelineFilter,
-          userResultsFilter,
+          resultListFilter,
           notificationsFilter,
         };
       },
@@ -105,8 +100,7 @@ export function useToggleMapLikeMutation() {
         updateInfiniteQueryCache(queryClient, ctx.mapListFilter, updater.forItemWithMap);
         updateQueryCache(queryClient, ctx.mapListFilter, updater.forMap);
         updateQueryCache(queryClient, ctx.mapInfoFilter, updater.forMap);
-        updateInfiniteQueryCache(queryClient, ctx.timelineFilter, updater.forItemWithMap);
-        updateInfiniteQueryCache(queryClient, ctx.userResultsFilter, updater.forItemWithMap);
+        updateInfiniteQueryCache(queryClient, ctx.resultListFilter, updater.forItemWithMap);
         updateInfiniteQueryCache(queryClient, ctx.notificationsFilter, updater.forItemWithMap);
       },
     }),

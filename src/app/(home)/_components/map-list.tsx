@@ -2,11 +2,10 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
+import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
-import { Spinner } from "@/components/ui/spinner";
 import { mapListSearchParams } from "@/lib/search-params/map-list";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/hooks/intersection";
 import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
 
 export const MapList = () => {
@@ -14,7 +13,7 @@ export const MapList = () => {
   const trpc = useTRPC();
   const [params] = useQueryStates(mapListSearchParams);
 
-  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(
+  const { data, ...pagination } = useSuspenseInfiniteQuery(
     trpc.mapList.get.infiniteQueryOptions(params, {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,
@@ -29,8 +28,6 @@ export const MapList = () => {
     }
   }, [data]);
 
-  const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage });
-
   return (
     <section className={isSearching ? "opacity-20" : ""}>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -40,8 +37,7 @@ export const MapList = () => {
           )),
         )}
       </div>
-
-      {hasNextPage && <Spinner ref={ref} />}
+      <InfiniteScrollSpinner {...pagination} />
     </section>
   );
 };

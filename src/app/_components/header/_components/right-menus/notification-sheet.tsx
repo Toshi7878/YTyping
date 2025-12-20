@@ -2,6 +2,7 @@
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot } from "lucide-react";
+import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import {
   ClapNotificationMapCard,
   LikeNotificationMapCard,
@@ -13,7 +14,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useTRPC } from "@/trpc/provider";
-import { useInfiniteScroll } from "@/utils/hooks/intersection";
 
 export const NotificationSheet = () => {
   const trpc = useTRPC();
@@ -55,7 +55,7 @@ export const NotificationSheet = () => {
 
 const NotificationContent = () => {
   const trpc = useTRPC();
-  const { data, fetchNextPage, hasNextPage, isPending, isFetchingNextPage } = useInfiniteQuery(
+  const { data, isPending, ...pagination } = useInfiniteQuery(
     trpc.notification.getInfinite.infiniteQueryOptions(
       {},
       {
@@ -66,7 +66,6 @@ const NotificationContent = () => {
     ),
   );
 
-  const ref = useInfiniteScroll({ isFetchingNextPage, fetchNextPage, hasNextPage }, { threshold: 0.8 });
   return (
     <div className="h-full overflow-y-auto px-3">
       {isPending ? (
@@ -92,9 +91,7 @@ const NotificationContent = () => {
           ) : (
             <div className="text-muted-foreground py-8 text-center">まだ通知はありません</div>
           )}
-          <div ref={ref} className="py-4">
-            {isFetchingNextPage && <Spinner />}
-          </div>
+          <InfiniteScrollSpinner className="py-4" rootMarginVariant="notificationSheet" {...pagination} />
         </div>
       )}
     </div>
