@@ -17,10 +17,10 @@ import { createPagination } from "../../utils/pagination";
 
 const PAGE_SIZE = 30;
 const Creator = alias(Users, "creator");
+const Liker = alias(MapLikes, "liker");
 const MyLike = alias(MapLikes, "my_like");
 const MyResult = alias(Results, "my_result");
 const MyResultStatus = alias(ResultStatuses, "my_result_status");
-const MapLiker = alias(MapLikes, "map_liker");
 
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
@@ -133,7 +133,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
     buildKeywordCondition(input.keyword),
     input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
-    input.likerId ? and(eq(MapLiker.userId, input.likerId), eq(MapLiker.hasLiked, true)) : undefined,
+    input.likerId ? and(eq(Liker.userId, input.likerId), eq(Liker.hasLiked, true)) : undefined,
   ];
 
   /**
@@ -147,7 +147,7 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
 
   if (input?.likerId) {
     // @ts-expect-error
-    baseQuery = baseQuery.innerJoin(MapLiker, and(eq(MapLiker.mapId, Maps.id), eq(MapLiker.userId, input.likerId)));
+    baseQuery = baseQuery.innerJoin(Liker, and(eq(Liker.mapId, Maps.id), eq(Liker.userId, input.likerId)));
   }
 
   return baseQuery.where(and(...searchConditions));
