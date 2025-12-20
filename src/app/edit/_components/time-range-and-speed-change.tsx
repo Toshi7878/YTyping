@@ -1,14 +1,13 @@
 "use client";
 
 import { useHotkeys } from "react-hotkeys-hook";
-import { readYTPlayerStatus, setMediaSpeed, setTimeRangeValue, useMediaSpeedState } from "@/app/edit/_lib/atoms/state";
+import { readYTPlayerStatus, setTimeRangeValue, useMediaSpeedState } from "@/app/edit/_lib/atoms/state";
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";
-import type { YouTubeSpeed } from "@/utils/types";
 import { useTimeRangeValueState, useYTDurationState } from "../_lib/atoms/state";
-import { getYTCurrentTime, playYTPlayer, seekYTPlayer } from "../_lib/atoms/youtube-player";
+import { getYTCurrentTime, playYTPlayer, seekYTPlayer, setYTPlaybackRate } from "../_lib/atoms/youtube-player";
 
 export const TimeRangeAndSpeedChange = ({ className }: { className: string }) => {
   return (
@@ -67,7 +66,7 @@ const EditSpeedChange = () => {
       min={0.25}
       step={0.25}
       valueDigits={2}
-      onChange={(value: number) => setMediaSpeed(value as YouTubeSpeed)}
+      onChange={(value: number) => setYTPlaybackRate(value)}
       unit="倍速"
       minusButtonHotkey="f9"
       plusButtonHotkey="f10"
