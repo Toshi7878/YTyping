@@ -1,16 +1,16 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
-import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
+import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
 import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import {
   MAP_DIFFICULTY_RATE_FILTER_LIMIT,
+  type MAP_RANKING_STATUS_FILTER_OPTIONS,
   type MAP_USER_FILTER_OPTIONS,
   MapSearchFilterSchema,
   type MapSortSearchParamsSchema,
   SelectMapListApiSchema,
-  SelectMapListByUserIdApiSchema,
 } from "@/validator/map-list";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
@@ -20,6 +20,7 @@ const Creator = alias(Users, "creator");
 const MyLike = alias(MapLikes, "my_like");
 const MyResult = alias(Results, "my_result");
 const MyResultStatus = alias(ResultStatuses, "my_result_status");
+const TargetUserLike = alias(MapLikes, "target_user_like");
 
 export const mapListRouter = {
   get: publicProcedure.input(SelectMapListApiSchema).query(async ({ input, ctx }) => {
@@ -41,39 +42,6 @@ export const mapListRouter = {
     const total = await baseQuery.limit(1);
 
     return total[0]?.count;
-  }),
-
-  getByCreatorId: publicProcedure.input(SelectMapListByUserIdApiSchema).query(async ({ input, ctx }) => {
-    const { sort, userId: creatorId } = input;
-    const { db, user } = ctx;
-
-    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
-
-    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
-      .limit(limit)
-      .offset(offset)
-      .orderBy(...buildSortConditions(sort))
-      .where(eq(Maps.creatorId, creatorId));
-
-    return buildPageResult(maps);
-  }),
-
-  getByLikedUserId: publicProcedure.input(SelectMapListByUserIdApiSchema).query(async ({ input, ctx }) => {
-    const { sort, userId: likedUserId } = input;
-    const { db, user } = ctx;
-
-    const { limit, offset, buildPageResult } = createPagination(input?.cursor, PAGE_SIZE);
-
-    const TargetUserLike = alias(MapLikes, "target_user_like");
-
-    const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user)
-      .innerJoin(TargetUserLike, and(eq(TargetUserLike.mapId, Maps.id), eq(TargetUserLike.userId, likedUserId)))
-      .limit(limit)
-      .offset(offset)
-      .orderBy(...buildSortConditions(sort))
-      .where(and(eq(TargetUserLike.userId, likedUserId), eq(TargetUserLike.hasLiked, true)));
-
-    return buildPageResult(maps);
   }),
 
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
@@ -140,12 +108,12 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
     },
   }) satisfies SelectedFields;
 
-const buildBaseQuery = <T extends PgSelect>(
+const buildBaseQuery = <T extends PgSelectQueryBuilder>(
   db: T,
   user: TRPCContext["user"],
   input?: z.output<typeof MapSearchFilterSchema>,
 ) => {
-  const baseQuery = user
+  let baseQuery = user
     ? db
         .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
         .innerJoin(Creator, eq(Creator.id, Maps.creatorId))
@@ -162,19 +130,32 @@ const buildBaseQuery = <T extends PgSelect>(
     user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
     buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
     buildKeywordCondition(input.keyword),
+    input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
+    input.likerId ? and(eq(TargetUserLike.userId, input.likerId), eq(TargetUserLike.hasLiked, true)) : undefined,
   ];
 
+  /**
+   * @see https://github.com/drizzle-team/drizzle-orm/issues/4232
+   */
+
   if (input?.rankingStatus === "perfect") {
-    return baseQuery
-      .innerJoin(MyResultStatus, eq(MyResultStatus.resultId, MyResult.id))
-      .where(and(...searchConditions));
+    // @ts-expect-error
+    baseQuery = baseQuery.innerJoin(MyResultStatus, eq(MyResultStatus.resultId, MyResult.id));
+  }
+
+  if (input?.likerId) {
+    // @ts-expect-error
+    baseQuery = baseQuery.innerJoin(
+      TargetUserLike,
+      and(eq(TargetUserLike.mapId, Maps.id), eq(TargetUserLike.userId, input.likerId)),
+    );
   }
 
   return baseQuery.where(and(...searchConditions));
 };
 
 function buildFilterCondition(
-  filter: (typeof MAP_USER_FILTER_OPTIONS)[number] | null,
+  filter: (typeof MAP_USER_FILTER_OPTIONS)[number] | undefined | null,
   user: NonNullable<TRPCContext["user"]>,
 ) {
   switch (filter) {
@@ -188,7 +169,7 @@ function buildFilterCondition(
   }
 }
 
-function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema> | null) {
+function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema>) {
   if (!sort) return [desc(Maps.id)];
 
   const { value: sortField, desc: isDesc } = sort;
@@ -216,28 +197,28 @@ function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema> | 
   }
 }
 
-type MapListWhereParams = z.output<typeof MapSearchFilterSchema>;
-
 interface GetDifficultyFilterSqlParams {
-  minRate: MapListWhereParams["minRate"];
-  maxRate: MapListWhereParams["maxRate"];
+  minRate?: number | null;
+  maxRate?: number | null;
 }
 
 function buildDifficultyCondition({ minRate, maxRate }: GetDifficultyFilterSqlParams) {
   const conditions = [];
 
-  if (minRate > MAP_DIFFICULTY_RATE_FILTER_LIMIT.min) {
+  if (minRate && minRate > MAP_DIFFICULTY_RATE_FILTER_LIMIT.min) {
     conditions.push(gte(MapDifficulties.romaKpmMedian, Math.round(minRate * 100)));
   }
 
-  if (MAP_DIFFICULTY_RATE_FILTER_LIMIT.max > maxRate) {
+  if (maxRate && MAP_DIFFICULTY_RATE_FILTER_LIMIT.max > maxRate) {
     conditions.push(lte(MapDifficulties.romaKpmMedian, Math.round(maxRate * 100)));
   }
 
   return and(...conditions);
 }
 
-const buildRankingStatusCondition = (rankingStatus: MapListWhereParams["rankingStatus"]) => {
+const buildRankingStatusCondition = (
+  rankingStatus: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number] | undefined | null,
+) => {
   switch (rankingStatus) {
     case "registerd":
       return isNotNull(MyResult.id);
@@ -254,8 +235,8 @@ const buildRankingStatusCondition = (rankingStatus: MapListWhereParams["rankingS
   }
 };
 
-const buildKeywordCondition = (keyword: MapListWhereParams["keyword"]) => {
-  if (keyword === undefined || keyword.trim() === "") return;
+const buildKeywordCondition = (keyword?: string | null) => {
+  if (!keyword || keyword.trim() === "") return;
 
   const keywords = keyword.trim().split(/\s+/);
 
