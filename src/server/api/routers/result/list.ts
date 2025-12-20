@@ -136,6 +136,9 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
     .innerJoin(Player, eq(Player.id, Results.userId))
     .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id));
 
+  /**
+   * @see https://github.com/drizzle-team/drizzle-orm/issues/4232
+   */
   if (user) {
     // @ts-expect-error
     baseQuery = baseQuery

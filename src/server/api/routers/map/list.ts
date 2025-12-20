@@ -127,19 +127,9 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
 
   if (!input) return baseQuery;
 
-  const searchConditions = [
-    user ? buildFilterCondition(input.filter, user) : undefined,
-    user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
-    buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
-    buildKeywordCondition(input.keyword),
-    input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
-    input.likerId ? and(eq(Liker.userId, input.likerId), eq(Liker.hasLiked, true)) : undefined,
-  ];
-
   /**
    * @see https://github.com/drizzle-team/drizzle-orm/issues/4232
    */
-
   if (input?.rankingStatus === "perfect") {
     // @ts-expect-error
     baseQuery = baseQuery.innerJoin(MyResultStatus, eq(MyResultStatus.resultId, MyResult.id));
@@ -149,6 +139,15 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     // @ts-expect-error
     baseQuery = baseQuery.innerJoin(Liker, and(eq(Liker.mapId, Maps.id), eq(Liker.userId, input.likerId)));
   }
+
+  const searchConditions = [
+    user ? buildFilterCondition(input.filter, user) : undefined,
+    user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
+    buildDifficultyCondition({ minRate: input.minRate, maxRate: input.maxRate }),
+    buildKeywordCondition(input.keyword),
+    input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
+    input.likerId ? and(eq(Liker.userId, input.likerId), eq(Liker.hasLiked, true)) : undefined,
+  ];
 
   return baseQuery.where(and(...searchConditions));
 };
