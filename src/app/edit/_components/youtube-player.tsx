@@ -6,8 +6,16 @@ import { LoadingOverlayProvider } from "@/components/ui/loading-overlay";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { useVideoIdState } from "../_lib/atoms/hydrate";
-import { pauseYTPlayer, playYTPlayer, readYTPlayerStatus } from "../_lib/atoms/state";
-import { onEnd, onPause, onPlay, onReady, onStateChange } from "../_lib/youtube-player/youtube-event";
+import { readYTPlayerStatus } from "../_lib/atoms/state";
+import { pauseYTPlayer, playYTPlayer } from "../_lib/atoms/youtube-player";
+import {
+  onEnd,
+  onPause,
+  onPlay,
+  onPlaybackRateChange,
+  onReady,
+  onStateChange,
+} from "../_lib/youtube-player/youtube-event";
 
 export const YouTubePlayer = ({ className }: { className: string }) => {
   const videoId = useVideoIdState();
@@ -43,6 +51,7 @@ export const YouTubePlayer = ({ className }: { className: string }) => {
           onPause={onPause}
           onEnd={onEnd}
           onStateChange={onStateChange}
+          onPlaybackRateChange={onPlaybackRateChange}
         />
       </LoadingOverlayProvider>
     </div>

@@ -1,8 +1,13 @@
 "use client";
 import type { RefObject } from "react";
 import { useLineResultState } from "@/app/(typing)/type/_lib/atoms/family";
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
-import { useBuiltMapState, usePlayingInputModeState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
+import {
+  useBuiltMapState,
+  useMediaSpeedState,
+  useMinMediaSpeedState,
+  usePlayingInputModeState,
+  useSceneState,
+} from "@/app/(typing)/type/_lib/atoms/state";
 import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -33,7 +38,8 @@ export const OptimizedResultCard = ({
 
   const map = useBuiltMapState();
   const scene = useSceneState();
-  const { minPlaySpeed, playSpeed } = usePlaySpeedState();
+  const playSpeed = useMediaSpeedState();
+  const minMediaSpeed = useMinMediaSpeedState();
   const inputMode = usePlayingInputModeState();
   const currentLine = map?.lines[count];
 
@@ -41,7 +47,7 @@ export const OptimizedResultCard = ({
 
   const { isSelected, lineResult } = _lineResult;
 
-  const lineSpeed = lineResult.status.sp > minPlaySpeed ? lineResult.status.sp : minPlaySpeed;
+  const lineSpeed = lineResult.status.sp > minMediaSpeed ? lineResult.status.sp : minMediaSpeed;
   const lineInputMode = lineResult.status.mode ?? inputMode;
   const lineKanaWord = lineData.wordChunks.map((chunk) => chunk.kana).join("");
   const lineTypeWord =

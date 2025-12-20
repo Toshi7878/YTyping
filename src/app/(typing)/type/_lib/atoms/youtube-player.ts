@@ -1,6 +1,8 @@
 import { useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { readIsDesktopDevice } from "@/lib/atoms/user-agent";
+import { cycleMediaSpeed, getNextMediaSpeed } from "@/utils/media-speed-change";
+import { setMinMediaSpeed } from "./state";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
@@ -16,6 +18,23 @@ export const seekYTPlayer = (seconds: number) => store.get(YTPlayerAtom)?.seekTo
 export const stopYTPlayer = () => store.get(YTPlayerAtom)?.stopVideo();
 export const getYTPlayerState = () => store.get(YTPlayerAtom)?.getPlayerState();
 export const getYTPlaybackRate = () => store.get(YTPlayerAtom)?.getPlaybackRate();
+export const cycleYTPlaybackRate = ({ minSpeed }: { minSpeed: number }) => {
+  const currentSpeed = getYTPlaybackRate();
+  if (!currentSpeed) return;
+
+  const nextSpeed = cycleMediaSpeed({ current: currentSpeed, min: minSpeed });
+  setYTPlaybackRate(nextSpeed);
+};
+export const stepYTPlaybackRate = (direction: "up" | "down") => {
+  const current = getYTPlaybackRate();
+  if (current == null) return;
+
+  const next = getNextMediaSpeed({ type: direction, current });
+
+  setYTPlaybackRate(next);
+  setMinMediaSpeed(next);
+};
+
 export const setYTPlaybackRate = (suggestedRate: number) => store.get(YTPlayerAtom)?.setPlaybackRate(suggestedRate);
 export const getYTVideoId = () => store.get(YTPlayerAtom)?.getVideoData().video_id;
 export const getYTCurrentTime = () => store.get(YTPlayerAtom)?.getCurrentTime();

@@ -1,21 +1,14 @@
 "use client";
 
 import { useHotkeys } from "react-hotkeys-hook";
-import {
-  getYTCurrentTime,
-  playYTPlayer,
-  readYTPlayerStatus,
-  seekYTPlayer,
-  setTimeRangeValue,
-  setYTSpeed,
-  useYTSpeedState,
-} from "@/app/edit/_lib/atoms/state";
+import { readYTPlayerStatus, setMediaSpeed, setTimeRangeValue, useMediaSpeedState } from "@/app/edit/_lib/atoms/state";
 import { CounterInput } from "@/components/ui/counter";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import type { YouTubeSpeed } from "@/utils/types";
 import { useTimeRangeValueState, useYTDurationState } from "../_lib/atoms/state";
+import { getYTCurrentTime, playYTPlayer, seekYTPlayer } from "../_lib/atoms/youtube-player";
 
 export const TimeRangeAndSpeedChange = ({ className }: { className: string }) => {
   return (
@@ -64,7 +57,7 @@ const TimeRange = () => {
 };
 
 const EditSpeedChange = () => {
-  const speed = useYTSpeedState();
+  const speed = useMediaSpeedState();
 
   return (
     <CounterInput
@@ -74,7 +67,7 @@ const EditSpeedChange = () => {
       min={0.25}
       step={0.25}
       valueDigits={2}
-      onChange={(value: number) => setYTSpeed(value as YouTubeSpeed)}
+      onChange={(value: number) => setMediaSpeed(value as YouTubeSpeed)}
       unit="倍速"
       minusButtonHotkey="f9"
       plusButtonHotkey="f10"
@@ -84,10 +77,10 @@ const EditSpeedChange = () => {
 
 const handleArrowSeek = (event: KeyboardEvent | React.KeyboardEvent<HTMLDivElement>) => {
   const ARROW_SEEK_SECONDS = 3;
-  const { speed } = readYTPlayerStatus();
+  const { mediaSpeed } = readYTPlayerStatus();
   const time = getYTCurrentTime();
   if (!time) return;
-  const seekAmount = ARROW_SEEK_SECONDS * speed;
+  const seekAmount = ARROW_SEEK_SECONDS * mediaSpeed;
   if (event.key === "ArrowLeft") {
     seekYTPlayer(time - seekAmount);
   } else if (event.key === "ArrowRight") {

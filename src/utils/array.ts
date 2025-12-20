@@ -61,3 +61,18 @@ export const findClosestLowerOrEqual = (sortedNumbers: number[], target: number)
 
   return resultIndex !== -1 ? (sortedNumbers[resultIndex] ?? null) : null;
 };
+
+/**
+ * 数値配列から、指定された値に最も近い値を返します。
+ * 差が等しい場合は、配列内で先に見つかった方を優先します。
+ *
+ * @param numbers 数値配列
+ * @param target 基準となる値
+ */
+export const findClosest = (numbers: number[], target: number): number | null => {
+  if (numbers.length === 0) return null;
+
+  return numbers.reduce((prev, curr) => {
+    return Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev;
+  });
+};

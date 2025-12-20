@@ -27,7 +27,6 @@ import { setTimeInputValue } from "../../_lib/atoms/ref";
 import {
   dispatchLine,
   readDirectEditIndex,
-  seekYTPlayer,
   setCanUpload,
   setDirectEditIndex,
   setLyrics,
@@ -40,6 +39,7 @@ import {
   useTimeLineIndexState as useTimeLineIndex,
   useWordState,
 } from "../../_lib/atoms/state";
+import { seekYTPlayer } from "../../_lib/atoms/youtube-player";
 import { updateLineAction, wordConvertAction } from "../../_lib/editor/editor-actions";
 import { handleEnterAddRuby } from "../../_lib/editor/enter-add-ruby";
 import { hasMapUploadPermission } from "../../_lib/map-table/has-map-upload-permission";

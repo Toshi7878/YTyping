@@ -1,13 +1,7 @@
 import { dispatchEditHistory, readEditHistory } from "../atoms/history-reducer";
 import { setRawMapAction } from "../atoms/map-reducer";
-import {
-  dispatchLine,
-  getYTCurrentTime,
-  readSelectLine,
-  readUtilityParams,
-  setManyPhrase,
-  setWord,
-} from "../atoms/state";
+import { dispatchLine, readSelectLine, readUtilityParams, setManyPhrase, setWord } from "../atoms/state";
+import { getYTCurrentTime } from "../atoms/youtube-player";
 import { wordConvert } from "./typable-word-convert";
 
 export const pickupTopPhrase = async (topPhrase: string) => {

@@ -2,11 +2,12 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { handlePlaySpeedAction, usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
+  readMinMediaSpeed,
   readUtilityParams,
   setLineResultSheet,
   useIsPausedState,
+  useMediaSpeedState,
   useSceneGroupState,
   useSceneState,
   useYTStartedState,
@@ -15,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ButtonWithDoubleKbd, ButtonWithKbd } from "../../../../../../components/ui/button-with-kbd";
 import { useTypingOptionsState } from "../../../_lib/atoms/hydrate";
+import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../../_lib/atoms/youtube-player";
 import { commitPlayRestart } from "../../../_lib/playing/commit-play-restart";
 import { moveNextLine, movePrevLine } from "../../../_lib/playing/move-line";
 
@@ -50,7 +52,7 @@ export const FooterButtons = () => {
 
 const SpeedButton = () => {
   const scene = useSceneState();
-  const { playSpeed } = usePlaySpeedState();
+  const playSpeed = useMediaSpeedState();
   const isPaused = useIsPausedState();
 
   if (scene === "practice") {
@@ -60,8 +62,8 @@ const SpeedButton = () => {
         prevKbdLabel="F9-"
         nextKbdLabel="+F10"
         onClick={() => {}}
-        onClickPrev={() => handlePlaySpeedAction({ type: "down" })}
-        onClickNext={() => handlePlaySpeedAction({ type: "up" })}
+        onClickPrev={() => stepYTPlaybackRate("down")}
+        onClickNext={() => stepYTPlaybackRate("up")}
         disabled={isPaused}
       />
     );
@@ -71,7 +73,10 @@ const SpeedButton = () => {
     <ButtonWithKbd
       buttonLabel={`${playSpeed.toFixed(2)}倍速`}
       kbdLabel="F10"
-      onClick={() => handlePlaySpeedAction({ type: "toggle" })}
+      onClick={() => {
+        const minMediaSpeed = readMinMediaSpeed();
+        cycleYTPlaybackRate({ minSpeed: minMediaSpeed });
+      }}
       disabled={isPaused || scene === "replay"}
     />
   );

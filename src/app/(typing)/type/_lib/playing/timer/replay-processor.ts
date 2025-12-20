@@ -5,13 +5,13 @@ import {
   writeLineSubstatus,
   writeUtilityRefParams,
 } from "@/app/(typing)/type/_lib/atoms/ref";
-import { handlePlaySpeedAction } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
-import { readReplayRankingResult, readUtilityParams } from "@/app/(typing)/type/_lib/atoms/state";
+import { readMinMediaSpeed, readReplayRankingResult, readUtilityParams } from "@/app/(typing)/type/_lib/atoms/state";
 import { applyKanaInputMode, applyRomaInputMode } from "@/app/(typing)/type/_lib/playing/toggle-input-mode";
 import type { TypeResult } from "@/validator/result";
 import { readAllLineResult } from "../../atoms/family";
 import { setCombo, setLineKpm } from "../../atoms/sub-status";
 import { readTypingWord, setTypingWord } from "../../atoms/typing-word";
+import { cycleYTPlaybackRate } from "../../atoms/youtube-player";
 import { triggerMissSound, triggerTypeSound } from "../sound-effect";
 import { updateMissStatus, updateMissSubstatus } from "../update-status/miss";
 import { recalculateStatusFromResults } from "../update-status/recalc-from-results";
@@ -100,9 +100,11 @@ const simulateRecordedKeyInput = ({ constantLineTime, constantRemainLineTime, ty
       case "kana":
         applyKanaInputMode();
         break;
-      case "speedChange":
-        handlePlaySpeedAction({ type: "toggle" });
+      case "speedChange": {
+        const minPlaySpeed = readMinMediaSpeed();
+        cycleYTPlaybackRate({ minSpeed: minPlaySpeed });
         break;
+      }
     }
   }
 };

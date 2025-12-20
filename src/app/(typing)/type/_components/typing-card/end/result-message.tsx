@@ -1,15 +1,14 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
-import { useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
+import { useMinMediaSpeedState, useSceneState } from "@/app/(typing)/type/_lib/atoms/state";
 import { getRankingMyResult } from "@/app/(typing)/type/_lib/get-ranking-result";
 import { useTypingStatusState } from "../../../_lib/atoms/status";
 import { RandomEmoji } from "./random-emoji";
 
 export const ResultMessage = () => {
   const { data: session } = useSession();
-  const speed = usePlaySpeedState();
   const { score, miss, lost } = useTypingStatusState();
+  const minMediaSpeed = useMinMediaSpeedState();
   const [bestScore] = useState(() => getRankingMyResult(session)?.score ?? 0);
   const isPerfect = miss === 0 && lost === 0;
   const scene = useSceneState();
@@ -36,7 +35,7 @@ export const ResultMessage = () => {
           `最高スコアは ${bestScore} です。記録更新まであと ${bestScore - score} です。`
         )}
       </span>
-      {speed.minPlaySpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
+      {minMediaSpeed < 1 && <div>1.00倍速以上でランキング登録できます。</div>}
     </div>
   );
 };

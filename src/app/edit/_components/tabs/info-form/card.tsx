@@ -21,6 +21,7 @@ import {
   useVideoIdState,
 } from "@/app/edit/_lib/atoms/hydrate";
 import { setPreventEditorTabAutoFocus } from "@/app/edit/_lib/atoms/ref";
+import { getYTDuration, getYTVideoId, playYTPlayer, seekYTPlayer } from "@/app/edit/_lib/atoms/youtube-player";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
 import { searchParamsParsers } from "@/app/edit/_lib/search-params";
 import { Button } from "@/components/ui/button";
@@ -42,16 +43,7 @@ import { useDebounce } from "@/utils/hooks/use-debounce";
 import { useNavigationGuard } from "@/utils/hooks/use-navigation-guard";
 import { MapInfoFormSchema } from "@/validator/map";
 import { readRawMap } from "../../../_lib/atoms/map-reducer";
-import {
-  getYTDuration,
-  getYTVideoId,
-  playYTPlayer,
-  readUtilityParams,
-  seekYTPlayer,
-  setCanUpload,
-  setYTChangingVideo,
-  useCanUploadState,
-} from "../../../_lib/atoms/state";
+import { readUtilityParams, setCanUpload, setYTChangingVideo, useCanUploadState } from "../../../_lib/atoms/state";
 import { getThumbnailQuality } from "../../../_lib/utils/get-thumbail-quality";
 import { SuggestionTags } from "./suggestion-tags";
 

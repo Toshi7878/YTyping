@@ -1,13 +1,8 @@
 import { Ticker } from "@pixi/ticker";
 import { readRawMap } from "../atoms/map-reducer";
 import { setTimeInputValue } from "../atoms/ref";
-import {
-  readUtilityParams,
-  readYTPlayer,
-  setIsTimeInputValid,
-  setTimeLineIndex,
-  setTimeRangeValue,
-} from "../atoms/state";
+import { readUtilityParams, setIsTimeInputValid, setTimeLineIndex, setTimeRangeValue } from "../atoms/state";
+import { readYTPlayer } from "../atoms/youtube-player";
 
 export const startTimer = () => {
   if (!editTicker.started) {

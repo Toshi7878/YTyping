@@ -13,8 +13,7 @@ import type { BuiltMapLineWithOption } from "@/lib/types";
 import { requestDebouncedAnimationFrame } from "@/utils/debounced-animation-frame";
 import { readTypingOptions, wordDisplayAtom } from "./hydrate";
 import { readLineCount, readLineProgress } from "./ref";
-import { speedBaseAtom } from "./speed-reducer";
-import { playingInputModeAtom, readBuiltMap, readUtilityParams } from "./state";
+import { playingInputModeAtom, readBuiltMap, readMediaSpeed, readUtilityParams } from "./state";
 import { getTypeAtomStore } from "./store";
 
 const store = getTypeAtomStore();
@@ -27,8 +26,8 @@ export const useNextLyricsState = () => useAtomValue(nextLyricsAtom, { store });
 export const setNextLyrics = (line: BuiltMapLine) => {
   const typingOptions = readTypingOptions();
   const inputMode = store.get(playingInputModeAtom);
-  const speed = store.get(speedBaseAtom);
-  const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * speed.playSpeed;
+  const playSpeed = readMediaSpeed();
+  const nextKpm = (inputMode === "roma" ? line.kpm.roma : line.kpm.kana) * playSpeed;
   store.set(nextLyricsAtom, () => {
     if (line.kanaLyrics) {
       return {

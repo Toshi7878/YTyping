@@ -1,6 +1,5 @@
 import { readLineCount, readLineProgress, readResultCards, writeLineCount } from "../atoms/ref";
-import { readPlaySpeed } from "../atoms/speed-reducer";
-import { readBuiltMap, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
+import { readBuiltMap, readMediaSpeed, readUtilityParams, setLineSelectIndex, setNotify } from "../atoms/state";
 import { seekYTPlayer } from "../atoms/youtube-player";
 import { getLineCountByTime } from "./get-line-count-by-time";
 import { setupLine, stopTimer } from "./timer/timer";
@@ -24,7 +23,7 @@ export const movePrevLine = () => {
 
   if (prevCount === undefined) return;
 
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
 
   const timeIndex = prevCount + (isTimeBuffer ? 0 : 1);
   const prevTimeRaw = Number(map.lines[timeIndex]?.time);
@@ -64,7 +63,7 @@ export const moveNextLine = () => {
   const prevLine = map.lines[nextCount - 1];
   const nextLine = map.lines[nextCount];
   if (!prevLine || !nextLine) return;
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
   const { scene, isPaused } = readUtilityParams();
   const prevLineTime = nextLine.time - prevLine.time / playSpeed;
   const isTimeBuffer = scene === "practice" && !isPaused && prevLineTime > 1;
@@ -91,7 +90,7 @@ export const moveNextLine = () => {
 export const moveSetLine = (seekCount: number) => {
   const map = readBuiltMap();
   if (!map) return;
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
   const { scene, isPaused } = readUtilityParams();
   const isTimeBuffer = scene === "practice" && !isPaused;
   const seekTime = Number(map.lines[seekCount]?.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);

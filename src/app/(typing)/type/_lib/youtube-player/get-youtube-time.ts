@@ -1,7 +1,6 @@
 import { readTypingOptions } from "../atoms/hydrate";
 import { readLineCount, readUtilityRefParams } from "../atoms/ref";
-import { readPlaySpeed } from "../atoms/speed-reducer";
-import { readBuiltMap, readUtilityParams } from "../atoms/state";
+import { readBuiltMap, readMediaSpeed, readUtilityParams } from "../atoms/state";
 import { getYTCurrentTime } from "../atoms/youtube-player";
 
 export const getLineTime = () => {
@@ -41,7 +40,8 @@ const getCurrentOffsettedYTTime = () => {
 };
 
 const getConstantOffsettedYTTime = ({ currentTime }: { currentTime: number }) => {
-  return currentTime / readPlaySpeed().playSpeed;
+  const playSpeed = readMediaSpeed();
+  return currentTime / playSpeed;
 };
 
 const getCurrentLineTime = ({ currentTime }: { currentTime: number }) => {
@@ -54,7 +54,9 @@ const getCurrentLineTime = ({ currentTime }: { currentTime: number }) => {
 };
 
 const getConstantLineTime = ({ currentLineTime }: { currentLineTime: number }) => {
-  const lineConstantTime = Math.floor((currentLineTime / readPlaySpeed().playSpeed) * 1000) / 1000;
+  const playSpeed = readMediaSpeed();
+
+  const lineConstantTime = Math.floor((currentLineTime / playSpeed) * 1000) / 1000;
   return lineConstantTime;
 };
 
@@ -66,7 +68,8 @@ const getConstantRemainLineTime = ({ constantLineTime }: { constantLineTime: num
   const currentLine = map.lines[count];
   if (!currentLine) return 0;
 
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
+
   const constantLineDuration = currentLine.duration / playSpeed;
   return constantLineDuration - constantLineTime;
 };

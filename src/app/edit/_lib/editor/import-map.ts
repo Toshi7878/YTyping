@@ -4,7 +4,7 @@ import { readRawMap, setRawMapAction } from "@/app/edit/_lib/atoms/map-reducer";
 import { normalizeSymbols } from "@/utils/string-transform";
 import type { RawMapLine } from "@/validator/raw-map-json";
 import { dispatchEditHistory } from "../atoms/history-reducer";
-import { getYTDuration } from "../atoms/state";
+import { getYTDuration } from "../atoms/youtube-player";
 import { wordConvert } from "./typable-word-convert";
 
 export const importMapFile = async (file: File) => {

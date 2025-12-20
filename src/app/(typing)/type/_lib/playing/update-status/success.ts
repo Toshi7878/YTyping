@@ -7,8 +7,7 @@ import {
   writeSubstatus,
   writeUserStats,
 } from "../../atoms/ref";
-import { readPlaySpeed } from "../../atoms/speed-reducer";
-import { readUtilityParams } from "../../atoms/state";
+import { readMediaSpeed, readUtilityParams } from "../../atoms/state";
 import { setAllTypingStatus } from "../../atoms/status";
 import { readCombo, setCombo, setLineKpm } from "../../atoms/sub-status";
 import { readTypingWord } from "../../atoms/typing-word";
@@ -26,7 +25,7 @@ export const updateSuccessStatus = ({
   updatePoint: number;
   constantLineTime: number;
 }) => {
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
   const { isPaused } = readUtilityParams();
 
   // KPM計算用の状態取得

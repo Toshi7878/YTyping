@@ -1,8 +1,8 @@
 import { isDialogOpen } from "@/utils/is-dialog-option";
 import { readTypingOptions } from "../../atoms/hydrate";
 import { readUtilityRefParams, writeUtilityRefParams } from "../../atoms/ref";
-import { handlePlaySpeedAction } from "../../atoms/speed-reducer";
-import { readBuiltMap, readUtilityParams, setLineResultSheet, setNotify } from "../../atoms/state";
+import { readBuiltMap, readMinMediaSpeed, readUtilityParams, setLineResultSheet, setNotify } from "../../atoms/state";
+import { cycleYTPlaybackRate, stepYTPlaybackRate } from "../../atoms/youtube-player";
 import { commitLineSkip } from "../commit-line-skip";
 import { commitPlayModeChange } from "../commit-play-mode-change";
 import { commitPlayRestart } from "../commit-play-restart";
@@ -90,14 +90,15 @@ export const handlePlayHotKey = (event: KeyboardEvent) => {
       break;
     case "F9":
       if (scene === "practice") {
-        handlePlaySpeedAction({ type: "down" });
+        stepYTPlaybackRate("down");
       }
       break;
     case "F10":
       if (scene === "play") {
-        handlePlaySpeedAction({ type: "toggle" });
+        const minMediaSpeed = readMinMediaSpeed();
+        cycleYTPlaybackRate({ minSpeed: minMediaSpeed });
       } else if (scene === "practice") {
-        handlePlaySpeedAction({ type: "up" });
+        stepYTPlaybackRate("up");
       }
       break;
     case "KanaMode":

@@ -1,7 +1,6 @@
 import { readTypingOptions } from "../atoms/hydrate";
 import { readLineCount, readUtilityRefParams, writeUtilityRefParams } from "../atoms/ref";
-import { readPlaySpeed } from "../atoms/speed-reducer";
-import { readBuiltMap, readUtilityParams, setActiveSkipGuideKey } from "../atoms/state";
+import { readBuiltMap, readMediaSpeed, readUtilityParams, setActiveSkipGuideKey } from "../atoms/state";
 import { seekYTPlayer } from "../atoms/youtube-player";
 
 export const commitLineSkip = () => {
@@ -19,7 +18,7 @@ export const commitLineSkip = () => {
   const skippedTime =
     (isRetrySkip ? Number(startLine.time) : Number(nextLine.time)) + userOptions.timeOffset + timeOffset;
 
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
   const { movieDuration } = readUtilityParams();
 
   const seekTime = nextLine.lyrics === "end" ? movieDuration - 2 : skippedTime - 1 + (1 - playSpeed);

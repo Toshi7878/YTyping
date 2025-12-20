@@ -8,7 +8,6 @@ import { readRawMap, setRawMapAction } from "../atoms/map-reducer";
 import { readTimeInputValue } from "../atoms/ref";
 import {
   dispatchLine,
-  getYTCurrentTime,
   readSelectLine,
   readUtilityParams,
   readYTPlayerStatus,
@@ -18,6 +17,7 @@ import {
   setWord,
 } from "../atoms/state";
 import { readTimeOffset } from "../atoms/storage";
+import { getYTCurrentTime } from "../atoms/youtube-player";
 import { scrollMapTable } from "../map-table/scroll-map-table";
 import { deleteTopPhrase, pickupTopPhrase } from "./many-phrase";
 import { timeValidate } from "./time-validate";

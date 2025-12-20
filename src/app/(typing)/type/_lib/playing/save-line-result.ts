@@ -2,8 +2,7 @@ import { createDisplayWord } from "lyrics-typing-engine";
 import { countKanaWordWithDakuonSplit } from "@/utils/kana";
 import { readAllLineResult, setLineResult } from "../atoms/family";
 import { readLineSubstatus, readSubstatus, writeSubstatus } from "../atoms/ref";
-import { readPlaySpeed } from "../atoms/speed-reducer";
-import { readBuiltMap, readUtilityParams } from "../atoms/state";
+import { readBuiltMap, readMediaSpeed, readUtilityParams } from "../atoms/state";
 import { readTypingStatus, setAllTypingStatus } from "../atoms/status";
 import { readCombo, readLineKpm } from "../atoms/sub-status";
 import { readTypingWord } from "../atoms/typing-word";
@@ -22,7 +21,7 @@ export const hasLineResultImproved = (count: number) => {
     (savedLineResult?.status.lMiss ?? 0) * MISS_PENALTY_POINT;
 
   const { scene, isPaused } = readUtilityParams();
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
   return currentLineScore >= savedLineScore && !isPaused && scene !== "replay" && playSpeed >= 1;
 };
 

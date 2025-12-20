@@ -10,9 +10,9 @@ import {
   writeLineSubstatus,
   writeUtilityRefParams,
 } from "@/app/(typing)/type/_lib/atoms/ref";
-import { handlePlaySpeedAction, readPlaySpeed } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   readBuiltMap,
+  readMediaSpeed,
   readUtilityParams,
   setActiveSkipGuideKey,
   setChangeCSSCount,
@@ -23,7 +23,14 @@ import { readAllLineResult } from "../../atoms/family";
 import { setAllTypingStatus } from "../../atoms/status";
 import { readElapsedSecTime, setElapsedSecTime, setLineKpm, setLineRemainTime } from "../../atoms/sub-status";
 import { readTypingWord, setNewLine, setNextLyrics } from "../../atoms/typing-word";
-import { cueYTVideoById, getYTPlayerState, getYTVideoId, readYTPlayer, stopYTPlayer } from "../../atoms/youtube-player";
+import {
+  cueYTVideoById,
+  getYTPlayerState,
+  getYTVideoId,
+  readYTPlayer,
+  setYTPlaybackRate,
+  stopYTPlayer,
+} from "../../atoms/youtube-player";
 import { calculateLineKpm } from "../../utils/calculate-kpm";
 import { getRemainLineTime } from "../../youtube-player/get-youtube-time";
 import { onEnd } from "../../youtube-player/youtube-events";
@@ -197,7 +204,7 @@ export const setupLine = (nextCount: number) => {
   resetLineSubstatus();
 
   const { inputMode, scene } = readUtilityParams();
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
 
   if (scene === "replay") {
     syncReplayLineSnapshot(nextCount);
@@ -232,7 +239,7 @@ const updateSkipGuideVisibility = ({
   const map = readBuiltMap();
   if (!map) return;
   const { isRetrySkip } = readUtilityRefParams();
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
   const startLine = map.lines[map.typingLineIndexes[0] ?? 0];
 
   if (isRetrySkip && startLine && currentTime >= startLine.time - 3 * playSpeed) {
@@ -270,11 +277,11 @@ const syncReplayLineSnapshot = (newCurrentCount: number) => {
 
   writeUtilityRefParams({ replayKeyCount: 0 });
 
-  const { playSpeed } = readPlaySpeed();
+  const playSpeed = readMediaSpeed();
   const speed = lineResult.status.sp as YouTubeSpeed;
 
   if (playSpeed === speed) return;
-  handlePlaySpeedAction({ type: "set", payload: speed });
+  setYTPlaybackRate(speed);
 };
 
 const typeTicker = new Ticker();

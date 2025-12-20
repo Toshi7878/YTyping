@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   useActiveSkipGuideKeyState,
   useBuiltMapState,
+  useMediaSpeedState,
   useMovieDurationState,
   useSceneGroupState,
   useYTStartedState,
@@ -55,11 +55,11 @@ const ElapsedMmSsDisplay = () => {
 
 const VideoDurationTime = () => {
   const map = useBuiltMapState();
-  const speedData = usePlaySpeedState();
+  const playSpeed = useMediaSpeedState();
   const movieDuration = useMovieDurationState();
   if (!map) return;
   const duration = map.duration > movieDuration ? movieDuration : map?.duration;
-  const totalTime = formatTime(Number(duration) / speedData.playSpeed);
+  const totalTime = formatTime(Number(duration) / playSpeed);
 
   return <span id="constant_duration_count">{totalTime}</span>;
 };

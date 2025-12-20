@@ -1,6 +1,7 @@
 import { dispatchEditHistory } from "./history-reducer";
 import { resetRawMap } from "./map-reducer";
-import { dispatchLine, resetUtilityParams, resetYTPlayer, resetYTPlayerStatus } from "./state";
+import { dispatchLine, resetUtilityParams, resetYTPlayerStatus } from "./state";
+import { resetYTPlayer } from "./youtube-player";
 
 export const pathChangeAtomReset = () => {
   resetYTPlayerStatus();

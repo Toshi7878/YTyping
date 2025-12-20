@@ -8,12 +8,13 @@ import {
   setIsYTPlaying,
   setIsYTReadied,
   setIsYTStarted,
+  setMediaSpeed,
   setTabName,
   setTimeLineIndex,
   setYTChangingVideo,
   setYTDuration,
-  setYTPlayer,
 } from "../atoms/state";
+import { setYTPlayer } from "../atoms/youtube-player";
 import { updateEndTime } from "../map-table/update-end-time";
 import { startTimer, stopTimer } from "./timer";
 
@@ -82,6 +83,11 @@ export const onStateChange = (event: YouTubeEvent) => {
     // seek時の処理
     onSeeked(event);
   }
+};
+
+export const onPlaybackRateChange = ({ target: player }: { target: YT.Player }) => {
+  const nextSpeed = player.getPlaybackRate();
+  setMediaSpeed(nextSpeed);
 };
 
 const getLineCountByTime = (time: number): number => {

@@ -4,11 +4,12 @@ import { mutatePlayCountStats } from "@/lib/mutations/play-count";
 import { windowFocus } from "@/utils/window-focus";
 import { readMapId } from "../atoms/hydrate";
 import { readLineProgress, readTotalProgress, readUtilityRefParams, writeLineCount } from "../atoms/ref";
-import { readPlaySpeed, setSpeed } from "../atoms/speed-reducer";
 import {
+  readMinMediaSpeed,
   readSceneGroup,
   readUtilityParams,
   setIsPaused,
+  setMediaSpeed,
   setMovieDuration,
   setNotify,
   setPlayingInputMode,
@@ -33,8 +34,8 @@ const onStart = (player: YT.Player) => {
   player.seekTo(0, true);
   if (scene === "replay") return;
 
-  const { minPlaySpeed } = readPlaySpeed();
-  if (minPlaySpeed < 1) {
+  const minMediaSpeed = readMinMediaSpeed();
+  if (minMediaSpeed < 1) {
     setScene("practice");
   } else if (scene === "ready") {
     setScene("play");
@@ -127,9 +128,9 @@ export const onReady = ({ target: player }: { target: YT.Player }) => {
 };
 
 export const onPlaybackRateChange = ({ target: player }: { target: YT.Player }) => {
-  const speed = player.getPlaybackRate();
-  setSpeed((prev) => ({ ...prev, playSpeed: speed }));
-  setNotify(Symbol(`x${speed.toFixed(2)}`));
+  const nextSpeed = player.getPlaybackRate();
+  setMediaSpeed(nextSpeed);
+  setNotify(Symbol(`x${nextSpeed.toFixed(2)}`));
 };
 
 export const onStateChange = (event: YouTubeEvent) => {

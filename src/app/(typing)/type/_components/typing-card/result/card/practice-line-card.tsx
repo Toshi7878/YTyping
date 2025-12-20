@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLineResultState } from "@/app/(typing)/type/_lib/atoms/family";
-import { usePlaySpeedState } from "@/app/(typing)/type/_lib/atoms/speed-reducer";
 import {
   useBuiltMapState,
   useLineSelectIndexState,
+  useMinMediaSpeedState,
   usePlayingInputModeState,
 } from "@/app/(typing)/type/_lib/atoms/state";
 import { CHAR_POINT } from "@/app/(typing)/type/_lib/const";
@@ -17,7 +17,7 @@ import { ResultCardHeader } from "./child/result-card-header";
 
 export const PracticeLineCard = () => {
   const map = useBuiltMapState();
-  const speedData = usePlaySpeedState();
+  const minMediaSpeed = useMinMediaSpeedState();
   const lineSelectIndex = useLineSelectIndexState();
   const inputMode = usePlayingInputModeState();
   const [isDragging, setIsDragging] = useState(false);
@@ -37,7 +37,7 @@ export const PracticeLineCard = () => {
   const maxLinePoint = builtLine.notes.roma * CHAR_POINT;
   const lineKanaWord = builtLine.wordChunks.map((chunk) => chunk.kana).join("");
   const lineNotes = lineInputMode === "roma" ? builtLine.notes.roma : builtLine.notes.kana;
-  const lineSpeed = lineResult.status.sp > speedData.minPlaySpeed ? lineResult.status.sp : speedData.minPlaySpeed;
+  const lineSpeed = lineResult.status.sp > minMediaSpeed ? lineResult.status.sp : minMediaSpeed;
   const lineKpm = (lineInputMode === "roma" ? builtLine.kpm.roma : builtLine.kpm.kana) * lineSpeed;
 
   const lineTypeWord =

@@ -45,6 +45,8 @@ const utilityParamsAtom = atomWithReset({
   isPaused: false,
   movieDuration: 0,
   lineSelectIndex: 0,
+  mediaSpeed: 1,
+  minMediaSpeed: 1,
 });
 
 const lineResultDrawerClosureAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineResultdrawerClosure"));
@@ -58,6 +60,8 @@ const isYTStartedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isYT
 const isPausedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isPaused"));
 const movieDurationAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("movieDuration"));
 const lineSelectIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("lineSelectIndex"));
+const mediaSpeedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("mediaSpeed"));
+const minMediaSpeedAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("minMediaSpeed"));
 
 export const useLineResultSheetOpenState = () => useAtomValue(lineResultDrawerClosureAtom);
 export const setLineResultSheet = (update: Updater<boolean>) => {
@@ -145,6 +149,14 @@ export const setLineSelectIndex = (lineIndex: number) => {
   store.set(lineSelectIndexAtom, lineIndex);
   setLineResultSelected({ index: count, isSelected: true });
 };
+
+export const useMediaSpeedState = () => useAtomValue(mediaSpeedAtom, { store });
+export const readMediaSpeed = () => store.get(mediaSpeedAtom);
+export const setMediaSpeed = (nextSpeed: number) => store.set(mediaSpeedAtom, nextSpeed);
+
+export const useMinMediaSpeedState = () => useAtomValue(minMediaSpeedAtom, { store });
+export const readMinMediaSpeed = () => store.get(minMediaSpeedAtom);
+export const setMinMediaSpeed = (nextSpeed: number) => store.set(minMediaSpeedAtom, nextSpeed);
 
 export const useYTStartedState = () => useAtomValue(isYTStartedAtom);
 export const setYTStarted = (value: ExtractAtomValue<typeof isYTStartedAtom>) => store.set(isYTStartedAtom, value);

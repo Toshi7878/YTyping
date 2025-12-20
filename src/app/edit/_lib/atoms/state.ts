@@ -2,7 +2,6 @@ import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
-import type { YouTubeSpeed } from "@/utils/types";
 import { readTimeInputValue, setTimeInputValue } from "./ref";
 import { getEditAtomStore } from "./store";
 
@@ -75,7 +74,7 @@ const YTPlayerStatusAtom = atomWithReset({
   isStarted: false,
   isPlaying: false,
   isChangingVideo: false,
-  speed: 1 as YouTubeSpeed,
+  mediaSpeed: 1,
   duration: 0,
 });
 
@@ -84,13 +83,13 @@ const isStartedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isSta
 const isPlayingAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isPlaying"));
 const isChangingVideoAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("isChangingVideo"));
 const ytDurationAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("duration"));
-const speedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("speed"));
+const mediaSpeedAtom = focusAtom(YTPlayerStatusAtom, (optic) => optic.prop("mediaSpeed"));
 
 export const resetYTPlayerStatus = () => store.set(YTPlayerStatusAtom, RESET);
 export const readYTPlayerStatus = () => store.get(YTPlayerStatusAtom);
 
-export const useYTSpeedState = () => useAtomValue(speedAtom, { store });
-export const setYTSpeed = (value: ExtractAtomValue<typeof speedAtom>) => store.set(speedAtom, value);
+export const useMediaSpeedState = () => useAtomValue(mediaSpeedAtom, { store });
+export const setMediaSpeed = (value: ExtractAtomValue<typeof mediaSpeedAtom>) => store.set(mediaSpeedAtom, value);
 
 export const setIsYTReadied = (value: ExtractAtomValue<typeof isReadiedAtom>) => store.set(isReadiedAtom, value);
 
@@ -102,15 +101,6 @@ export const setYTDuration = (value: ExtractAtomValue<typeof ytDurationAtom>) =>
 
 export const setYTChangingVideo = (value: ExtractAtomValue<typeof isChangingVideoAtom>) =>
   store.set(isChangingVideoAtom, value);
-
-store.sub(speedAtom, () => {
-  const YTPlayer = readYTPlayer();
-  const speed = store.get(speedAtom);
-
-  if (YTPlayer) {
-    YTPlayer.setPlaybackRate(speed);
-  }
-});
 
 const lineAtom = atomWithReset({
   selectIndex: null as number | null,
@@ -158,16 +148,3 @@ export const useWordState = () => useAtomValue(selectLineWordAtom, { store });
 export const setWord = (value: ExtractAtomValue<typeof selectLineWordAtom>) => store.set(selectLineWordAtom, value);
 
 export const useSelectIndexState = () => useAtomValue(selectLineIndexAtom, { store });
-
-const YTPlayerAtom = atomWithReset<YT.Player | null>(null);
-export const useYTPlayer = () => useAtomValue(YTPlayerAtom, { store });
-export const readYTPlayer = () => store.get(YTPlayerAtom);
-export const playYTPlayer = () => store.get(YTPlayerAtom)?.playVideo();
-export const pauseYTPlayer = () => store.get(YTPlayerAtom)?.playVideo();
-export const seekYTPlayer = (seconds: number) => store.get(YTPlayerAtom)?.seekTo(seconds, true);
-export const getYTVideoId = () => store.get(YTPlayerAtom)?.getVideoData().video_id;
-export const getYTCurrentTime = () => store.get(YTPlayerAtom)?.getCurrentTime();
-export const getYTDuration = () => store.get(YTPlayerAtom)?.getDuration();
-
-export const setYTPlayer = (newYTPlayer: YT.Player) => store.set(YTPlayerAtom, newYTPlayer);
-export const resetYTPlayer = () => store.set(YTPlayerAtom, RESET);

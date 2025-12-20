@@ -1,7 +1,6 @@
-import type { YouTubeSpeed } from "@/utils/types";
 import { writeUtilityRefParams } from "../atoms/ref";
-import { handlePlaySpeedAction, readPlaySpeed } from "../atoms/speed-reducer";
 import {
+  readMediaSpeed,
   readUtilityParams,
   resetReplayRankingResult,
   setLineResultSheet,
@@ -10,6 +9,7 @@ import {
   setScene,
 } from "../atoms/state";
 import { readReadyInputMode } from "../atoms/storage";
+import { setYTPlaybackRate } from "../atoms/youtube-player";
 import { commitPlayRestart } from "./commit-play-restart";
 
 export const commitPlayModeChange = () => {
@@ -31,8 +31,9 @@ export const commitPlayModeChange = () => {
         const readyInputMode = readReadyInputMode();
         setPlayingInputMode(readyInputMode);
       }
-      const { playSpeed } = readPlaySpeed();
-      handlePlaySpeedAction({ type: "set", payload: playSpeed < 1 ? 1 : (playSpeed as YouTubeSpeed) });
+      const playSpeed = readMediaSpeed();
+
+      setYTPlaybackRate(playSpeed < 1 ? 1 : playSpeed);
 
       commitPlayRestart("play");
     }

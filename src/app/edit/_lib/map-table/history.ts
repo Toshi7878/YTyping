@@ -1,13 +1,7 @@
 import { dispatchEditHistory, readEditHistory } from "../atoms/history-reducer";
 import { setRawMapAction } from "../atoms/map-reducer";
-import {
-  dispatchLine,
-  readUtilityParams,
-  readYTPlayerStatus,
-  seekYTPlayer,
-  setManyPhrase,
-  setWord,
-} from "../atoms/state";
+import { dispatchLine, readUtilityParams, readYTPlayerStatus, setManyPhrase, setWord } from "../atoms/state";
+import { seekYTPlayer } from "../atoms/youtube-player";
 import { deleteTopPhrase, pickupTopPhrase } from "../editor/many-phrase";
 import { wordConvert } from "../editor/typable-word-convert";
 
@@ -20,8 +14,8 @@ export const undo = async () => {
       case "add": {
         const { lineIndex, time, lyrics, word } = data;
         setRawMapAction({ type: "delete", index: lineIndex });
-        const { speed } = readYTPlayerStatus();
-        seekYTPlayer(Number(data.time) - 3 * speed);
+        const { mediaSpeed } = readYTPlayerStatus();
+        seekYTPlayer(Number(data.time) - 3 * mediaSpeed);
         dispatchLine({ type: "set", line: { time, lyrics, word, selectIndex: null } });
         const { manyPhraseText } = readUtilityParams();
         setManyPhrase(`${lyrics}\n${manyPhraseText}`);

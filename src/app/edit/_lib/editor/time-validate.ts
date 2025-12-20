@@ -1,4 +1,4 @@
-import { getYTDuration } from "../atoms/state";
+import { getYTDuration } from "../atoms/youtube-player";
 
 export const timeValidate = (time: number) => {
   if (time <= 0) {
