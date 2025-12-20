@@ -11,8 +11,8 @@ import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
 
-const Player = alias(Users, "Player");
-const Creator = alias(Users, "Creator");
+const Player = alias(Users, "player");
+const Creator = alias(Users, "creator");
 const MyResult = alias(Results, "my_result");
 const MyLike = alias(MapLikes, "my_like");
 const MyClap = alias(ResultClaps, "my_clap");
@@ -39,7 +39,7 @@ export const resultListRouter = {
     const { db, user } = ctx;
     const { mapId } = input;
 
-    const Player = alias(Users, "Player");
+    const Player = alias(Users, "player");
 
     const { map: _, ...resultSelect } = buildBaseSelect(user);
 
