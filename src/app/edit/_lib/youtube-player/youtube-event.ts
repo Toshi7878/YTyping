@@ -9,8 +9,8 @@ import {
   setIsYTReadied,
   setIsYTStarted,
   setMediaSpeed,
+  setPlayingLineIndex,
   setTabName,
-  setTimeLineIndex,
   setYTChangingVideo,
   setYTDuration,
 } from "../atoms/state";
@@ -71,7 +71,7 @@ export const onEnd = () => {
 const onSeeked = ({ target: player }: { target: YT.Player }) => {
   const time = player.getCurrentTime();
   console.log(`シークtime: ${time}`);
-  setTimeLineIndex(getLineCountByTime(time));
+  setPlayingLineIndex(getLineCountByTime(time));
 };
 
 export const onStateChange = (event: YouTubeEvent) => {

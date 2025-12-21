@@ -1,6 +1,6 @@
 import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
-import { atomWithReset, RESET } from "jotai/utils";
+import { atomWithReset, RESET, selectAtom } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
 import { readTimeInputValue, setTimeInputValue } from "./ref";
 import { getEditAtomStore } from "./store";
@@ -10,7 +10,7 @@ const store = getEditAtomStore();
 export const TAB_NAMES = ["情報&保存", "エディター", "ショートカットキー&設定"] as const;
 const utilityParamsAtom = atomWithReset({
   tabName: "情報&保存" as (typeof TAB_NAMES)[number],
-  timeLineIndex: 0,
+  playingLineIndex: 0,
   directEditingIndex: null as number | null,
   manyPhraseText: "",
   cssTextLength: 0,
@@ -21,7 +21,7 @@ const utilityParamsAtom = atomWithReset({
   timeRangeValue: 0,
 });
 const tabNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("tabName"));
-const timeLineIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("timeLineIndex"));
+const playingLineIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("playingLineIndex"));
 const directEditingIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("directEditingIndex"));
 const manyPhraseTextAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("manyPhraseText"));
 const cssTextLengthAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("cssTextLength"));
@@ -36,12 +36,21 @@ export const resetUtilityParams = () => store.set(utilityParamsAtom, RESET);
 
 export const useTabNameState = () => useAtomValue(tabNameAtom, { store });
 export const setTabName = (value: ExtractAtomValue<typeof tabNameAtom>) => store.set(tabNameAtom, value);
+export const useIsPlayingLineState = (index: number) => {
+  return useAtomValue(
+    selectAtom(playingLineIndexAtom, (s) => s === index),
+    { store },
+  );
+};
+export const setPlayingLineIndex = (value: ExtractAtomValue<typeof playingLineIndexAtom>) =>
+  store.set(playingLineIndexAtom, value);
 
-export const useTimeLineIndexState = () => useAtomValue(timeLineIndexAtom, { store });
-export const setTimeLineIndex = (value: ExtractAtomValue<typeof timeLineIndexAtom>) =>
-  store.set(timeLineIndexAtom, value);
-
-export const useDirectEditIndexState = () => useAtomValue(directEditingIndexAtom, { store });
+export const useIsDirectEditLine = (index: number) => {
+  return useAtomValue(
+    selectAtom(directEditingIndexAtom, (s) => s === index),
+    { store },
+  );
+};
 export const readDirectEditIndex = () => store.get(directEditingIndexAtom);
 export const setDirectEditIndex = (value: ExtractAtomValue<typeof directEditingIndexAtom>) =>
   store.set(directEditingIndexAtom, value);
@@ -137,6 +146,12 @@ const selectLineLyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics")
 const selectLineWordAtom = focusAtom(lineAtom, (optic) => optic.prop("word"));
 export const selectLineIndexAtom = focusAtom(lineAtom, (optic) => optic.prop("selectIndex"));
 
+export const useSelectIndexState = () => useAtomValue(selectLineIndexAtom, { store });
+export const useIsSelectedLine = (index: number) => {
+  const isSelectedAtom = selectAtom(selectLineIndexAtom, (s) => s === index);
+  return useAtomValue(isSelectedAtom, { store });
+};
+
 export const dispatchLine = (action: WriteLineSetAction | ResetLineAction) => store.set(writeLineAtom, action);
 export const readSelectLine = () => store.get(lineAtom);
 
@@ -146,5 +161,3 @@ export const setLyrics = (value: ExtractAtomValue<typeof selectLineLyricsAtom>) 
 
 export const useWordState = () => useAtomValue(selectLineWordAtom, { store });
 export const setWord = (value: ExtractAtomValue<typeof selectLineWordAtom>) => store.set(selectLineWordAtom, value);
-
-export const useSelectIndexState = () => useAtomValue(selectLineIndexAtom, { store });

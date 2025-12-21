@@ -1,7 +1,7 @@
 import { Ticker } from "@pixi/ticker";
 import { readRawMap } from "../atoms/map-reducer";
 import { setTimeInputValue } from "../atoms/ref";
-import { readUtilityParams, setIsTimeInputValid, setTimeLineIndex, setTimeRangeValue } from "../atoms/state";
+import { readUtilityParams, setIsTimeInputValid, setPlayingLineIndex, setTimeRangeValue } from "../atoms/state";
 import { readYTPlayer } from "../atoms/youtube-player";
 
 export const startTimer = () => {
@@ -23,18 +23,18 @@ const timer = () => {
   }
   const currentTime = YTPlayer.getCurrentTime();
   setTimeRangeValue(currentTime);
-  const { directEditingIndex, timeLineIndex } = readUtilityParams();
+  const { directEditingIndex, playingLineIndex } = readUtilityParams();
   if (!directEditingIndex) {
     setTimeInputValue(currentTime.toFixed(3));
     setIsTimeInputValid(false);
   }
 
-  const nextLineIndex = timeLineIndex + 1;
+  const nextLineIndex = playingLineIndex + 1;
 
   const map = readRawMap();
   const nextLine = map[nextLineIndex];
   if (nextLine && Number(currentTime) >= Number(nextLine.time)) {
-    setTimeLineIndex(nextLineIndex);
+    setPlayingLineIndex(nextLineIndex);
   }
 };
 
@@ -42,4 +42,3 @@ const editTicker = new Ticker();
 editTicker.add(timer);
 
 editTicker.maxFPS = 60;
-editTicker.minFPS = 60;

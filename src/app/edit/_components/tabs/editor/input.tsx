@@ -61,7 +61,7 @@ export const SelectedLineIndex = () => {
   return (
     <Input
       placeholder="No."
-      className="bg-muted/50 h-8 w-[90px] opacity-100"
+      className="h-8 w-[90px] bg-muted/50 opacity-100"
       readOnly
       value={selectedLineIndex ?? ""}
     />

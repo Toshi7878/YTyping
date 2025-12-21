@@ -29,10 +29,10 @@ import {
   setLyrics,
   setTabName,
   setWord,
-  useDirectEditIndexState,
+  useIsDirectEditLine,
+  useIsPlayingLineState,
+  useIsSelectedLine,
   useLyricsState,
-  useSelectIndexState,
-  useTimeLineIndexState as useTimeLineIndex,
   useWordState,
 } from "../../_lib/atoms/state";
 import { seekYTPlayer } from "../../_lib/atoms/youtube-player";
@@ -173,17 +173,16 @@ const MapTableRow = ({
   isErrorRow: boolean;
   onOpenChange: Dispatch<SetStateAction<number | null>>;
 }) => {
-  const selectIndex = useSelectIndexState();
-  const timeLineIndex = useTimeLineIndex();
-  const directEditIndex = useDirectEditIndexState();
-  const isDirectEditMode = directEditIndex === index;
+  const isSelectedLine = useIsSelectedLine(index);
+  const isPlayingLine = useIsPlayingLineState(index);
+  const isDirectEditLine = useIsDirectEditLine(index);
 
   return (
     <TableRow
       className={cn(
         "cursor-pointer border-b hover:bg-info/30",
-        selectIndex === index && "bg-info/70!",
-        timeLineIndex === index && "bg-success/30",
+        isSelectedLine && "bg-info/70!",
+        isPlayingLine && "bg-success/30",
         isErrorRow && "bg-destructive/30 text-destructive",
       )}
       onClick={(event) => {
@@ -200,7 +199,7 @@ const MapTableRow = ({
           }
         }}
       >
-        {isDirectEditMode ? (
+        {isDirectEditLine ? (
           <DirectTimeInput time={row.time} />
         ) : (
           <div className="flex items-center gap-1">
@@ -209,8 +208,8 @@ const MapTableRow = ({
           </div>
         )}
       </TableCell>
-      <TableCell>{isDirectEditMode ? <DirectLyricsInput /> : parse(row.lyrics)}</TableCell>
-      <TableCell>{isDirectEditMode ? <DirectWordInput /> : <span>{row.word}</span>}</TableCell>
+      <TableCell>{isDirectEditLine ? <DirectLyricsInput /> : parse(row.lyrics)}</TableCell>
+      <TableCell>{isDirectEditLine ? <DirectWordInput /> : <span>{row.word}</span>}</TableCell>
       <TableCell>
         <OptionCell options={row.options} index={index} onOpenChange={onOpenChange} />
       </TableCell>
