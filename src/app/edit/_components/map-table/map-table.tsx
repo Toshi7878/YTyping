@@ -4,10 +4,9 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import parse from "html-react-parser";
 import { Play } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useQueryStates } from "nuqs";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Options, useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import type { RawMapLine } from "@/validator/raw-map-json";
 import { readEndLineIndex, useEndLineIndexState } from "../../_lib/atoms/button-disabled-state";
-import { useCreatorIdState } from "../../_lib/atoms/hydrate";
 import { readRawMap, setRawMapAction, useRawMapState } from "../../_lib/atoms/map-reducer";
 import { setTimeInputValue } from "../../_lib/atoms/ref";
 import {
@@ -32,20 +30,19 @@ import {
   setTabName,
   setWord,
   useDirectEditIndexState,
-  useIsWordConvertingState,
   useLyricsState,
   useSelectIndexState,
   useTimeLineIndexState as useTimeLineIndex,
   useWordState,
 } from "../../_lib/atoms/state";
 import { seekYTPlayer } from "../../_lib/atoms/youtube-player";
-import { updateLineAction, wordConvertAction } from "../../_lib/editor/editor-actions";
+import { updateLineAction } from "../../_lib/editor/editor-actions";
 import { handleEnterAddRuby } from "../../_lib/editor/enter-add-ruby";
-import { hasMapUploadPermission } from "../../_lib/map-table/has-map-upload-permission";
 import { redo, undo } from "../../_lib/map-table/history";
 import { moveLine } from "../../_lib/map-table/move-line";
 import { wordSearchReplace } from "../../_lib/map-table/word-search-replace";
 import { searchParamsParsers } from "../../_lib/search-params";
+import { WordConvertButton } from "../tabs/editor/button";
 import { LineOptionDialog } from "./line-option-dialog";
 
 export const NewMapTable = () => {
@@ -150,6 +147,7 @@ const MapTable = () => {
                     row={row}
                     index={index}
                     isErrorRow={isErrorRow}
+                    onOpenChange={setOptionDialogIndex}
                   />
                 );
               })}
@@ -164,9 +162,21 @@ const MapTable = () => {
   );
 };
 
-const MapTableRow = ({ row, index, isErrorRow }: { row: RawMapLine; index: number; isErrorRow: boolean }) => {
+const MapTableRow = ({
+  row,
+  index,
+  isErrorRow,
+  onOpenChange,
+}: {
+  row: RawMapLine;
+  index: number;
+  isErrorRow: boolean;
+  onOpenChange: Dispatch<SetStateAction<number | null>>;
+}) => {
   const selectIndex = useSelectIndexState();
   const timeLineIndex = useTimeLineIndex();
+  const directEditIndex = useDirectEditIndexState();
+  const isDirectEditMode = directEditIndex === index;
 
   return (
     <TableRow
@@ -190,97 +200,53 @@ const MapTableRow = ({ row, index, isErrorRow }: { row: RawMapLine; index: numbe
           }
         }}
       >
-        <TimeCell row={{ original: row, index }} />
+        {isDirectEditMode ? (
+          <DirectTimeInput time={row.time} />
+        ) : (
+          <div className="flex items-center gap-1">
+            <Play className="relative top-px hidden size-3.5 text-muted-foreground group-hover:text-white xl:block" />
+            <span>{row.time}</span>
+          </div>
+        )}
       </TableCell>
+      <TableCell>{isDirectEditMode ? <DirectLyricsInput /> : parse(row.lyrics)}</TableCell>
+      <TableCell>{isDirectEditMode ? <DirectWordInput /> : <span>{row.word}</span>}</TableCell>
       <TableCell>
-        <LyricsCell row={{ original: row, index }} />
-      </TableCell>
-      <TableCell>
-        <WordCell row={{ original: row, index }} />
-      </TableCell>
-      <TableCell>
-        <OptionCell row={{ original: row, index }} />
+        <OptionCell options={row.options} index={index} onOpenChange={onOpenChange} />
       </TableCell>
     </TableRow>
   );
 };
 
-const TimeCell = ({ row }: { row: { original: RawMapLine; index: number } }) => {
-  const directEditIndex = useDirectEditIndexState();
-  const { index } = row;
-  const map = readRawMap();
-  const nextTime = map[index + 1]?.time;
-  const label = nextTime && row.original.time === nextTime ? "同じ時間の行が存在します" : "";
-
-  if (directEditIndex === row.index) {
-    return <DirectTimeInput time={row.original.time} />;
-  }
-
-  return (
-    <TooltipWrapper label={label} disabled={!label}>
-      <div className="flex items-center gap-1">
-        <Play className="relative top-px hidden size-3.5 text-muted-foreground group-hover:text-white xl:block" />
-        <span>{row.original.time}</span>
-      </div>
-    </TooltipWrapper>
-  );
-};
-
-const LyricsCell = ({ row }: { row: { original: RawMapLine; index: number } }) => {
-  const directEditIndex = useDirectEditIndexState();
-  const { index } = row;
-
-  return (
-    <>
-      {directEditIndex === index && <DirectLyricsInput />}
-      {directEditIndex !== index && parse(row.original.lyrics)}
-    </>
-  );
-};
-
-const WordCell = ({ row }: { row: { original: RawMapLine; index: number } }) => {
-  const directEditIndex = useDirectEditIndexState();
-  const { index } = row;
-
-  return (
-    <>
-      {directEditIndex === index && <DirectWordInput />}
-      {directEditIndex !== index && row.original.word}
-    </>
-  );
-};
-
-const OptionCell = ({ row }: { row: { original: RawMapLine; index: number } }) => {
-  const { index } = row;
+const OptionCell = ({
+  options,
+  index,
+  onOpenChange,
+}: {
+  options: RawMapLine["options"];
+  index: number;
+  onOpenChange: Dispatch<SetStateAction<number | null>>;
+}) => {
   const endLineIndex = useEndLineIndexState();
-  const [optionDialogIndex, setOptionDialogIndex] = useState<number | null>(null);
 
   const isOptionEdited = Boolean(
-    row.original.options?.isChangeCSS ||
-      row.original.options?.eternalCSS ||
-      row.original.options?.changeVideoSpeed ||
-      row.original.options?.isCaseSensitive,
+    options?.isChangeCSS || options?.eternalCSS || options?.changeVideoSpeed || options?.isCaseSensitive,
   );
 
   return (
-    <>
-      <Button
-        disabled={index === endLineIndex}
-        variant={isOptionEdited ? "success" : "outline"}
-        size="sm"
-        onClick={(e) => {
-          e.stopPropagation();
-          if (index !== endLineIndex) {
-            setOptionDialogIndex(index);
-          }
-        }}
-      >
-        {isOptionEdited ? "設定有" : "未設定"}
-      </Button>
-      {optionDialogIndex !== null && (
-        <LineOptionDialog index={optionDialogIndex} setOptionDialogIndex={setOptionDialogIndex} />
-      )}
-    </>
+    <Button
+      disabled={index === endLineIndex}
+      variant={isOptionEdited ? "success" : "outline"}
+      size="sm"
+      onClick={(e) => {
+        e.stopPropagation();
+        if (index !== endLineIndex) {
+          onOpenChange(index);
+        }
+      }}
+    >
+      {isOptionEdited ? "設定有" : "未設定"}
+    </Button>
   );
 };
 
@@ -350,23 +316,11 @@ const DirectLyricsInput = () => {
 };
 
 const DirectWordInput = () => {
-  const isLoadWordConvert = useIsWordConvertingState();
   const selectWord = useWordState();
-  const { data: session } = useSession();
-  const creatorId = useCreatorIdState();
-  const hasUploadPermission = hasMapUploadPermission(session, creatorId);
 
   return (
     <div className="flex items-center justify-between gap-2">
-      <Button
-        disabled={isLoadWordConvert}
-        variant="outline"
-        size="sm"
-        className="h-8 w-[8%] hover:bg-secondary/40"
-        onClick={() => wordConvertAction(hasUploadPermission)}
-      >
-        {isLoadWordConvert ? <span className="loading loading-spinner loading-xs" /> : "変換"}
-      </Button>
+      <WordConvertButton className="h-8 w-[8%] hover:bg-secondary/40" label="変換" variant="outline" />
       <Input className="h-8 w-[91%]" autoComplete="off" value={selectWord} onChange={(e) => setWord(e.target.value)} />
     </div>
   );

@@ -59,7 +59,15 @@ export const UpdateLineButton = () => {
   );
 };
 
-export const WordConvertButton = () => {
+export const WordConvertButton = ({
+  className,
+  label,
+  variant,
+}: {
+  className: string;
+  label: string;
+  variant: React.ComponentProps<typeof Button>["variant"];
+}) => {
   const { data: session } = useSession();
   const creatorId = useCreatorIdState();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);
@@ -68,12 +76,12 @@ export const WordConvertButton = () => {
   return (
     <Button
       loading={isWordConverting}
-      variant="outline-info"
+      variant={variant}
       size="sm"
-      className="w-20 font-bold xl:w-28"
+      className={className}
       onClick={() => wordConvertAction(hasUploadPermission)}
     >
-      読み変換
+      {label}
     </Button>
   );
 };

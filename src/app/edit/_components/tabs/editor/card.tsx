@@ -22,7 +22,7 @@ export const EditorCard = () => {
         <div className="grid grid-cols-2 gap-2 sm:flex">
           <AddLineButton />
           <UpdateLineButton />
-          <WordConvertButton />
+          <WordConvertButton className="w-20 font-bold xl:w-28" label="読み変換" variant="outline-info" />
           <DeleteLineButton />
         </div>
         <AddTimeAdjust />
