@@ -27,13 +27,13 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
 
   return (
     <Card className="map-card-hover block w-full py-0 transition-shadow duration-300" ref={ref}>
-      <CardHeader className="flex items-center justify-between mx-0 py-4 md:mx-6">
+      <CardHeader className="mx-0 flex items-center justify-between py-4 md:mx-6">
         <div className="flex flex-row items-center gap-2">
           {shouldRender && (
             <>
               <Link
                 href={`/user/${result.player.id}`}
-                className="text-secondary max-w-32 truncate font-bold hover:underline sm:max-w-none"
+                className="max-w-32 truncate font-bold text-secondary hover:underline sm:max-w-none"
               >
                 {result.player.name}
               </Link>
@@ -54,7 +54,7 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
           {shouldRender && (
             <Badge
               variant="result"
-              className={cn("hidden font-bold md:flex", result?.rank === 1 && "outline-text text-perfect")}
+              className={cn("hidden font-bold md:flex", result?.rank === 1 && "text-perfect outline-text")}
               size="lg"
             >
               Rank: #{result.rank}
@@ -102,8 +102,8 @@ const MapInfo = ({ map, className, ...rest }: MapInfoProps & HTMLAttributes<HTML
   return (
     <div className={cn("flex flex-col justify-center gap-4 truncate", className)} {...rest}>
       <TooltipWrapper delayDuration={300} label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}>
-        <Link href={`/type/${map.id}`} className="text-secondary block hover:underline">
-          <div className="truncate text-sm font-bold sm:text-base">
+        <Link href={`/type/${map.id}`} className="block text-secondary hover:underline">
+          <div className="truncate font-bold text-sm sm:text-base">
             {nolink(`${map.info.title} / ${map.info.artistName}`)}
           </div>
         </Link>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { serverApi } from "@/trpc/server";
 import { Content } from "../_components/content";
+import { PermissionToast } from "../_components/permission-toast";
 import { JotaiProvider } from "../_components/provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -20,7 +21,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
   return (
     <JotaiProvider mapId={id} videoId={mapInfo.videoId} creatorId={mapInfo.creator.id}>
-      <Content />
+      <PermissionToast />
+      <Content type="edit" />
     </JotaiProvider>
   );
 }

@@ -61,7 +61,7 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
         </>
       ) : (
         <div className={cn(mapLeftThumbnailVariants({ size }))}>
-          <div className="flex-start flex h-full w-full items-center justify-center">{alt}</div>
+          <div className="flex h-full w-full flex-start items-center justify-center">{alt}</div>
         </div>
       )}
     </div>
@@ -104,7 +104,7 @@ const ThumbnailPreviewCover = (props: MapListItem["media"] & { className?: strin
   return (
     <div
       className={cn(
-        "z-1 absolute inset-0 flex cursor-pointer items-center justify-center rounded-lg border-none",
+        "absolute inset-0 z-1 flex cursor-pointer items-center justify-center rounded-lg border-none",
         isActive ? "bg-black/50 opacity-100" : "bg-black/30 opacity-0 group-hover:opacity-100",
         props.className,
       )}

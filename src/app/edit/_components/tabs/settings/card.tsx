@@ -43,7 +43,7 @@ const SHORTCUT_KEY_LIST = [
 const ShortCutKeyList = () => {
   return (
     <section className="mt-2">
-      <h3 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">ショートカットキー 一覧</h3>
+      <h3 className="mb-3 font-semibold text-base sm:mb-4 sm:text-lg">ショートカットキー 一覧</h3>
       <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 sm:gap-4 sm:text-base lg:grid-cols-3">
         {SHORTCUT_KEY_LIST.map((shortcut) => (
           <div key={shortcut.description} className="flex flex-wrap items-center gap-1">
@@ -51,7 +51,7 @@ const ShortCutKeyList = () => {
               {shortcut.keys.map((key) => (
                 <kbd
                   key={key}
-                  className="bg-background text-foreground border-border/50 rounded border px-1.5 py-0.5 text-xs font-bold sm:px-2 sm:py-1 sm:text-sm"
+                  className="rounded border border-border/50 bg-background px-1.5 py-0.5 font-bold text-foreground text-xs sm:px-2 sm:py-1 sm:text-sm"
                 >
                   {key}
                 </kbd>

@@ -35,7 +35,7 @@ export const NotificationSheet = () => {
           <Button
             variant="unstyled"
             size="icon"
-            className="hover:text-header-foreground text-header-foreground/80 p-2"
+            className="p-2 text-header-foreground/80 hover:text-header-foreground"
             onClick={() => postUserNotificationRead.mutate()}
           >
             {isNewNotificationFound ? <BellDot size={18} strokeWidth={2.5} /> : <Bell size={18} strokeWidth={2.5} />}
@@ -82,14 +82,14 @@ const NotificationContent = () => {
                     {notification.type === "CLAP" && <ClapNotificationMapCard notification={notification} />}
                     <DateDistanceText
                       date={notification.updatedAt}
-                      className="text-muted-foreground flex justify-end"
+                      className="flex justify-end text-muted-foreground"
                     />
                   </div>
                 );
               });
             })
           ) : (
-            <div className="text-muted-foreground py-8 text-center">まだ通知はありません</div>
+            <div className="py-8 text-center text-muted-foreground">まだ通知はありません</div>
           )}
           <InfiniteScrollSpinner className="py-4" rootMarginVariant="notificationSheet" {...pagination} />
         </div>

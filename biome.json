@@ -16,6 +16,15 @@
       "project": "recommended"
     },
     "rules": {
+      "nursery": {
+        "useSortedClasses": {
+          "fix": "safe",
+          "level": "error",
+          "options": {
+            "functions": ["twMerge", "twJoin", "tv"]
+          }
+        }
+      },
       "correctness": {
         "useExhaustiveDependencies": "info"
       },

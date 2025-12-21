@@ -47,7 +47,7 @@ const LineResultButton = () => {
     <Button
       size="4xl"
       variant="primary-hover-light"
-      className="max-sm:text-5xl max-sm:h-40 max-sm:w-xl"
+      className="max-sm:h-40 max-sm:w-xl max-sm:text-5xl"
       onClickCapture={(event) => {
         event.stopPropagation();
         setLineResultSheet((prev) => !prev);
@@ -105,7 +105,7 @@ const RetryButton = ({ showAlert }: RetryButtonProps) => {
     <Button
       ref={buttonRef}
       variant="outline"
-      className="max-sm:text-5xl max-sm:h-32 max-sm:w-md h-auto px-20 py-6 text-2xl"
+      className="h-auto px-20 py-6 text-2xl max-sm:h-32 max-sm:w-md max-sm:text-5xl"
       onClick={handleRetry}
     >
       {buttonTextMap[scene] ?? "もう一度プレイ"}
@@ -148,7 +148,7 @@ const ModeChangeButton = ({ showAlert }: ModeChangeButtonProps) => {
     <Button
       ref={buttonRef}
       variant="outline"
-      className="max-sm:text-5xl max-sm:h-32 max-sm:w-md h-auto px-20 py-6 text-2xl"
+      className="h-auto px-20 py-6 text-2xl max-sm:h-32 max-sm:w-md max-sm:text-5xl"
       onClick={handleModeChange}
     >
       {scene === "play_end" ? "練習モードへ" : "本番モードへ"}

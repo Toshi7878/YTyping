@@ -18,7 +18,7 @@ export const SkipAndTimeDisplay = () => {
   return (
     <section
       className={cn(
-        "bottom-card-text flex w-full items-center justify-between px-4 text-4xl font-bold md:text-xl",
+        "bottom-card-text flex w-full items-center justify-between px-4 font-bold text-4xl md:text-xl",
         !isPlayed && "invisible",
       )}
     >

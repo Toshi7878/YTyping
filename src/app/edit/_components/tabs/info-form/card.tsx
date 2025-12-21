@@ -283,7 +283,7 @@ const VideoIdInput = () => {
   return (
     <div className="flex w-full items-center gap-4">
       <TooltipWrapper label="動画URLを貼り付けるとIDが自動入力されます">
-        <div className="flex-center flex gap-4">
+        <div className="flex flex-center gap-4">
           <FloatingLabelInputFormField
             name="videoId"
             className="w-32"

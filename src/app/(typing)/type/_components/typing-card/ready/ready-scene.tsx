@@ -25,7 +25,7 @@ export const ReadyScene = ({ className }: ReadyProps) => {
   );
 
   return (
-    <div className={cn("flex flex-col justify-between select-none", className)}>
+    <div className={cn("flex select-none flex-col justify-between", className)}>
       <H2 className="text-4xl md:text-2xl">Enterキー / 動画をクリックして開始</H2>
       <ReadyInputModeRadioCards />
       <div className="flex justify-between text-center">

@@ -43,10 +43,10 @@ export const ReadyPlaySpeed = () => {
       open={playSpeed < 1}
       sideOffset={-20}
     >
-      <div className="border-border flex items-center rounded-lg border border-solid px-8 py-6 shadow-md md:py-3">
+      <div className="flex items-center rounded-lg border border-border border-solid px-8 py-6 shadow-md md:py-3">
         <SpeedChangeButton buttonRef={speedDownButtonRef} buttonLabel={{ text: "-", key: "F9" }} direction="down" />
 
-        <div className="mx-8 text-3xl font-bold select-none md:text-4xl">
+        <div className="mx-8 select-none font-bold text-3xl md:text-4xl">
           <span id="speed">{playSpeed.toFixed(2)}</span>
           倍速
         </div>
@@ -72,14 +72,14 @@ const SpeedChangeButton = (props: SpeedChangeButtonProps) => {
     <Button
       variant="unstyled"
       ref={props.buttonRef}
-      className="text-primary-light hover:text-primary-light/90 px-4 py-3 font-bold"
+      className="px-4 py-3 font-bold text-primary-light hover:text-primary-light/90"
       onClick={() => {
         stepYTPlaybackRate(props.direction);
       }}
     >
       <div className="relative top-1 text-3xl md:text-2xl">
         {props.buttonLabel.text}
-        <small className="absolute -top-[0.9em] left-1/2 -translate-x-1/2 text-[65%]">{props.buttonLabel.key}</small>
+        <small className="-top-[0.9em] -translate-x-1/2 absolute left-1/2 text-[65%]">{props.buttonLabel.key}</small>
       </div>
     </Button>
   );

@@ -42,7 +42,7 @@ const StatsList = ({ userId }: { userId: string }) => {
 
   if (isPending) {
     return (
-      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3 mt-1">
+      <section className="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <StatsItem label="登録済み譜面数" loading />
         <StatsItem label="1位譜面数" loading />
         <StatsItem label="1位譜面率" loading />
@@ -55,7 +55,7 @@ const StatsList = ({ userId }: { userId: string }) => {
   const rate = total > 0 ? Math.round((first / total) * 1000) / 10 : 0; // 0.1% precision
 
   return (
-    <section className="grid grid-cols-1 gap-3 sm:grid-cols-3 mt-1">
+    <section className="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
       <StatsItem label="登録済み譜面数" value={total.toLocaleString()} />
       <StatsItem label="1位譜面数" value={first.toLocaleString()} />
       <StatsItem label="1位譜面率" value={`${rate.toFixed(1)}%`} />
@@ -65,9 +65,9 @@ const StatsList = ({ userId }: { userId: string }) => {
 
 const StatsItem = ({ label, value, loading }: { label: string; value?: string; loading?: boolean }) => {
   return (
-    <div className="rounded-sm border p-3 relative">
+    <div className="relative rounded-sm border p-3">
       <Small className="text-muted-foreground">{label}</Small>
-      {loading && <Loader2 className="animate-spin size-7" />}
+      {loading && <Loader2 className="size-7 animate-spin" />}
       {value && <Large>{value}</Large>}
     </div>
   );

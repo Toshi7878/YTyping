@@ -52,13 +52,13 @@ const MapInfo = ({ map }: MapInfoProps) => {
           >
             <Link
               href={`/type/${map.id}`}
-              className="text-secondary z-1 truncate overflow-hidden text-base font-bold whitespace-nowrap hover:no-underline"
+              className="z-1 overflow-hidden truncate whitespace-nowrap font-bold text-base text-secondary hover:no-underline"
             >
               {map.info.title}
             </Link>
           </TooltipWrapper>
 
-          <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
+          <div className="overflow-hidden truncate whitespace-nowrap font-bold text-secondary text-xs sm:text-sm">
             {nolink(map.info.artistName + musicSource)}
           </div>
         </section>

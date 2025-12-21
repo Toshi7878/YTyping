@@ -18,7 +18,7 @@ export default async function Page({ searchParams }: PageProps<"/edit">) {
 
   return (
     <JotaiProvider videoId={videoId}>
-      <Content />
+      <Content type="new" />
       <CreatedVideoMapList videoId={videoId} disabledNotFoundText />
     </JotaiProvider>
   );

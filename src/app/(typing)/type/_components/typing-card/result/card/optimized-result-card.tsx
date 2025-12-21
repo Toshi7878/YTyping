@@ -76,9 +76,9 @@ export const OptimizedResultCard = ({
       data-line-index={lineIndex}
       data-count={count}
       className={cn(
-        "mb-4 cursor-pointer gap-1 py-4 shadow-lg select-none",
-        "hover:outline-foreground hover:outline-2",
-        isSelected && "outline-primary outline-2",
+        "mb-4 cursor-pointer select-none gap-1 py-4 shadow-lg",
+        "hover:outline-2 hover:outline-foreground",
+        isSelected && "outline-2 outline-primary",
       )}
       onClick={() => handleCardClick(lineIndex)}
     >
@@ -98,7 +98,7 @@ export const OptimizedResultCard = ({
       />
 
       <Separator className="mx-auto w-[88%]" />
-      <CardFooter className="py-0 text-lg font-semibold">
+      <CardFooter className="py-0 font-semibold text-lg">
         <ResultCardFooter
           scoreCount={scoreCount}
           point={point}

@@ -18,10 +18,10 @@ export const OverTakeNotificationMapCard = ({ notification }: { notification: Ov
   const { map, visitor, myResult } = notification;
   return (
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
-      <CardHeader className="bg-header-background rounded-t-md px-2 py-1.5 text-sm">
+      <CardHeader className="rounded-t-md bg-header-background px-2 py-1.5 text-sm">
         <span className="flex flex-wrap items-center gap-1">
           <UserNameLinkText
-            className="text-header-foreground/80 hover:text-header-foreground underline"
+            className="text-header-foreground/80 underline hover:text-header-foreground"
             userId={visitor.id}
             userName={visitor.name}
           />
@@ -30,7 +30,7 @@ export const OverTakeNotificationMapCard = ({ notification }: { notification: Ov
           </span>
         </span>
       </CardHeader>
-      <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">
+      <CardContent className="flex h-full items-start rounded-md border-none p-0 text-muted-foreground">
         <MapLeftThumbnail
           alt={map.info.title}
           media={map.media}
@@ -48,17 +48,17 @@ export const LikeNotificationMapCard = ({ notification }: { notification: LikeNo
   const { map, liker } = notification;
   return (
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
-      <CardHeader className="bg-like/85 rounded-t-md px-2 py-1.5 text-sm">
+      <CardHeader className="rounded-t-md bg-like/85 px-2 py-1.5 text-sm">
         <span className="flex flex-wrap items-center gap-1">
           <UserNameLinkText
-            className="text-header-foreground hover:text-header-foreground underline"
+            className="text-header-foreground underline hover:text-header-foreground"
             userId={liker.id}
             userName={liker.name}
           />
           <span>さんが作成した譜面にいいねしました</span>
         </span>
       </CardHeader>
-      <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">
+      <CardContent className="flex h-full items-start rounded-md border-none p-0 text-muted-foreground">
         <MapLeftThumbnail
           alt={map.info.title}
           media={map.media}
@@ -76,17 +76,17 @@ export const ClapNotificationMapCard = ({ notification }: { notification: ClapNo
   const { map, clapper } = notification;
   return (
     <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
-      <CardHeader className="bg-perfect/65 rounded-t-md px-2 py-1.5 text-sm">
+      <CardHeader className="rounded-t-md bg-perfect/65 px-2 py-1.5 text-sm">
         <span className="flex flex-wrap items-center gap-1">
           <UserNameLinkText
-            className="text-header-foreground hover:text-header-foreground underline"
+            className="text-header-foreground underline hover:text-header-foreground"
             userId={clapper.id}
             userName={clapper.name}
           />
           <span>さんが記録に拍手しました</span>
         </span>
       </CardHeader>
-      <CardContent className="text-muted-foreground flex h-full items-start rounded-md border-none p-0">
+      <CardContent className="flex h-full items-start rounded-md border-none p-0 text-muted-foreground">
         <MapLeftThumbnail
           alt={map.info.title}
           media={map.media}
@@ -128,15 +128,15 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
             delayDuration={300}
             label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}
           >
-            <div className="text-secondary truncate overflow-hidden text-base font-bold whitespace-nowrap">
+            <div className="overflow-hidden truncate whitespace-nowrap font-bold text-base text-secondary">
               {nolink(map.info.title)}
             </div>
           </TooltipWrapper>
-          <div className="text-secondary truncate overflow-hidden text-xs font-bold whitespace-nowrap sm:text-sm">
+          <div className="overflow-hidden truncate whitespace-nowrap font-bold text-secondary text-xs sm:text-sm">
             {nolink(map.info.artistName)}
           </div>
         </section>
-        <section className="flex w-[98%] justify-between items-center">
+        <section className="flex w-[98%] items-center justify-between">
           <MapBadges map={map} />
           <MapIcons mapId={map.id} ranking={map.ranking} like={map.like} />
         </section>

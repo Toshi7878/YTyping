@@ -24,14 +24,14 @@ export const ActiveUsersSheet = () => {
     <Sheet open={open} onOpenChange={setOpen}>
       <TooltipWrapper label="アクティブユーザー" delayDuration={600} className="relative bottom-3">
         <SheetTrigger asChild>
-          <Button variant="unstyled" size="icon" className="hover:text-header-foreground text-header-foreground/80">
+          <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
             <Users size={18} strokeWidth={2.5} />
           </Button>
         </SheetTrigger>
       </TooltipWrapper>
 
       <SheetContent className="block">
-        <SheetHeader className="border-border/30 w-full border-b py-0">
+        <SheetHeader className="w-full border-border/30 border-b py-0">
           <SheetTitle className="flex items-baseline gap-3 py-3">
             <span>アクティブユーザー</span>
             <Badge variant="secondary" className="text-xs">
