@@ -1,6 +1,5 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "@/app/_components/header/lib/menu-items";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "../menu-items";
 
 export const SiteLogo = () => {
   return (
