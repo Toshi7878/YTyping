@@ -118,7 +118,7 @@ const MapTable = () => {
     <>
       <Card className="p-0">
         <CardContent
-          className="max-h-[calc(100vh-100px)] overflow-y-auto p-0 pb-56 md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]"
+          className="max-h-[calc(100vh-100px)] overflow-y-auto p-0 pb-80 md:max-h-[500px] xl:pb-56 2xl:max-h-[calc(100vh-400px)]"
           id="map-table-card"
         >
           <Table className="w-full table-fixed text-sm">
