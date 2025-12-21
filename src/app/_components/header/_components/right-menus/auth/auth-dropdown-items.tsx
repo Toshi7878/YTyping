@@ -14,13 +14,13 @@ export const SignInDropdownItems = () => {
     ? [
         {
           text: "Discordでログイン",
-          leftIcon: <BsDiscord className="text-primary-foreground size-6 group-focus:text-white" />,
+          leftIcon: <BsDiscord className="size-6 text-primary-foreground group-focus:text-white" />,
           provider: "discord",
           className: "hover:bg-discord focus:bg-discord",
         },
         {
           text: "Googleでログイン",
-          leftIcon: <BsGoogle className="text-primary-foreground size-6 group-focus:text-white" />,
+          leftIcon: <BsGoogle className="size-6 text-primary-foreground group-focus:text-white" />,
           provider: "google",
           className: "hover:bg-google focus:bg-google",
         },
@@ -31,13 +31,13 @@ export const SignInDropdownItems = () => {
     ? [
         {
           text: "Admin でログイン (開発)",
-          leftIcon: <FaUserShield className="text-primary-foreground size-6 group-focus:text-white" />,
+          leftIcon: <FaUserShield className="size-6 text-primary-foreground group-focus:text-white" />,
           provider: "dev-admin",
           className: "hover:bg-red-600 focus:bg-red-600",
         },
         {
           text: "User でログイン (開発)",
-          leftIcon: <FaUser className="text-primary-foreground size-6 group-focus:text-white" />,
+          leftIcon: <FaUser className="size-6 text-primary-foreground group-focus:text-white" />,
           provider: "dev-user",
           className: "hover:bg-blue-600 focus:bg-blue-600",
         },

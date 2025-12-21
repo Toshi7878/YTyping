@@ -74,7 +74,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
               <TabsTrigger
                 key={`${index}-${tab.label}`}
                 value={index === 0 ? "main" : `tab-${index}`}
-                className="border-border bg-card text-foreground hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md border text-sm"
+                className="rounded-md border border-border bg-card text-foreground text-sm hover:bg-primary/80 hover:text-primary-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 {tab.label}
               </TabsTrigger>
@@ -92,7 +92,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
 };
 
 const SettingCardDivider = () => {
-  return <div className="bg-foreground my-4 h-px" />;
+  return <div className="my-4 h-px bg-foreground" />;
 };
 
 const MainSettingTab = () => {

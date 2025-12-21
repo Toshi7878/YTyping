@@ -44,7 +44,7 @@ export const UserTabs = ({ id }: { id: string }) => {
         window.history.replaceState(null, "", `#${value}`);
       }}
     >
-      <TabsList variant="underline" className="max-sm:h-fit flex flex-wrap w-full">
+      <TabsList variant="underline" className="flex w-full flex-wrap max-sm:h-fit">
         {TABS.map((tab) => (
           <TabsTrigger key={tab.value} value={tab.value} variant="underline">
             {tab.label}

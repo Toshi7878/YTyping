@@ -9,10 +9,10 @@ export const NextLyrics = () => {
     <div
       id="next_lyrics_kpm"
       className={cn(
-        "text-card-foreground mt-4 font-[system-ui] text-5xl leading-14 opacity-60 md:text-3xl md:leading-10",
+        "mt-4 font-[system-ui] text-5xl text-card-foreground leading-14 opacity-60 md:text-3xl md:leading-10",
       )}
     >
-      <div id="next_lyrics" className={"flex items-end text-[110%] font-bold whitespace-nowrap"}>
+      <div id="next_lyrics" className={"flex items-end whitespace-nowrap font-bold text-[110%]"}>
         {"\u200B"}
         {parse(lyrics)}
         <ruby className="invisible">

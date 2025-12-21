@@ -26,7 +26,7 @@ export const ReadyInputModeRadioCards = () => {
             value={option.value}
             disabled={option.value === "flick"}
             className={cn(
-              "border-border flex-1 cursor-pointer rounded border py-16 text-4xl font-bold shadow-md transition-none select-none md:py-10 md:text-3xl",
+              "flex-1 cursor-pointer select-none rounded border border-border py-16 font-bold text-4xl shadow-md transition-none md:py-10 md:text-3xl",
               option.value === "roma" && readyInputMode !== option.value && "hover:bg-roma/50",
               option.value === "kana" && readyInputMode !== option.value && "hover:bg-kana/50",
               option.value === "flick" && readyInputMode !== option.value && "hover:bg-flick/50",

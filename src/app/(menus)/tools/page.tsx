@@ -32,7 +32,7 @@ export default function Page() {
         <P>YTypingで使用できる外部ツール一覧です。</P>
         <section className="space-y-2">
           <UList
-            className="list-none ml-2 space-y-4"
+            className="ml-2 list-none space-y-4"
             items={TOOLS.map((tool) => {
               return (
                 <div key={tool.href}>

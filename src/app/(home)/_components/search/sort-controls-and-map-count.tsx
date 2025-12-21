@@ -15,7 +15,7 @@ import type { RANKING_STATUS_FILTER_MENU } from "./map-filter";
 export const SortControlsAndMapCount = () => {
   return (
     <Card className="p-0">
-      <CardContent className="p-1.5 flex flex-wrap items-center justify-between">
+      <CardContent className="flex flex-wrap items-center justify-between p-1.5">
         <SortControls />
         <MapCountBadge />
       </CardContent>
@@ -55,7 +55,7 @@ const SortControls = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-1 select-none">
+    <div className="flex select-none flex-wrap items-center gap-1">
       {SORT_OPTIONS.map(({ label, value }) => {
         const isLikedFilterActive = params.filter === "liked";
         if (value === "like" && !isLikedFilterActive) return null;
@@ -76,8 +76,8 @@ const SortControls = () => {
             variant="ghost"
             key={value}
             className={cn(
-              "group transition-none text-base gap-1",
-              currentSort.value === value && "text-secondary-light bg-accent font-bold hover:text-secondary-light",
+              "group gap-1 text-base transition-none",
+              currentSort.value === value && "bg-accent font-bold text-secondary-light hover:text-secondary-light",
             )}
             onClick={() => {
               const nextSort = deriveNextSortParam(value);

@@ -25,7 +25,7 @@ const BorrowedMaterials = () => {
     <CardWithContent>
       <H2>お借りした素材</H2>
       <UList
-        className="list-none ml-2"
+        className="ml-2 list-none"
         items={BORROWED_MATERIALS.map(({ name, url, materials }) => (
           <div key={name}>
             <Large className="flex">
@@ -60,7 +60,7 @@ const SpecialThanks = () => {
     <CardWithContent>
       <H2>スペシャルサンクス</H2>
       <UList
-        className="list-none ml-2 space-y-5"
+        className="ml-2 list-none space-y-5"
         items={SPECIAL_THANKS.map(({ name, url }) => (
           <Large className="flex" key={name}>
             <LinkText href={url as Route} target="_blank" rel="noopener noreferrer">

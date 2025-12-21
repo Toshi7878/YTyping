@@ -26,7 +26,7 @@ export const ViewArea = () => {
     <div
       onClick={onClick}
       className={cn(
-        "w-full bg-black/80 text-2xl font-bold sm:text-3xl lg:text-4xl",
+        "w-full bg-black/80 font-bold text-2xl sm:text-3xl lg:text-4xl",
         scene === "ready" ? "cursor-pointer" : "cursor-default",
       )}
       style={{

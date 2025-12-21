@@ -38,7 +38,7 @@ export const ConvertOptionButtons = () => {
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline">
-      <Label className="text-sm whitespace-nowrap">読み変換</Label>
+      <Label className="whitespace-nowrap text-sm">読み変換</Label>
       <RadioGroup
         value={wordConvertOption}
         onValueChange={(value) => setWordConvertOption(value as ConvertOption)}

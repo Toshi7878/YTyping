@@ -93,7 +93,7 @@ export const PlayingScene = ({ className }: PlayingProps) => {
 
   return (
     <div
-      className={cn("flex cursor-none flex-col items-start justify-between truncate select-none", className)}
+      className={cn("flex cursor-none select-none flex-col items-start justify-between truncate", className)}
       id="typing_scene"
       onTouchStart={() => {
         const { activeSkipKey } = readUtilityParams();

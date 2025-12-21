@@ -11,8 +11,8 @@ export const Lyrics = () => {
     <div
       id="lyrics"
       className={cn(
-        "text-word-word w-full max-w-[103%] whitespace-nowrap",
-        "text-7xl font-bold md:text-[2.5rem]",
+        "w-full max-w-[103%] whitespace-nowrap text-word-word",
+        "font-bold text-7xl md:text-[2.5rem]",
         "font-[system-ui]",
         typingOptions.lineCompletedDisplay === "NEXT_WORD" && "[.word-area-completed+&]:invisible",
       )}

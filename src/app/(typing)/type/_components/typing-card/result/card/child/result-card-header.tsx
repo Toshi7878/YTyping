@@ -31,7 +31,7 @@ export const ResultCardHeader = ({
       </span>
       <span className="mx-2">|</span>
       <TooltipWrapper label={`要求打鍵速度${inputModeText}`}>
-        <span className={cn("line-kpm hover:bg-border/20 font-bold")}>
+        <span className={cn("line-kpm font-bold hover:bg-border/20")}>
           {lineKpm.toFixed(0)}kpm {lineSpeed > 1 && `(${lineSpeed.toFixed(2)}倍速)`}
         </span>
       </TooltipWrapper>

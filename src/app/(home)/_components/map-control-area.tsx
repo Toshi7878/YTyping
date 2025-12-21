@@ -11,7 +11,7 @@ export const MapControlArea = () => {
   return (
     <section className="mb-4 flex w-full flex-col gap-4">
       <SearchInput />
-      <div className="flex md:flex-row flex-col md:space-y-0 space-y-4 justify-between">
+      <div className="flex flex-col justify-between space-y-4 md:flex-row md:space-y-0">
         <MapFilter />
         <VolumeRange YTPlayer={YTPlayer} />
       </div>

@@ -86,7 +86,7 @@ export const TypingWords = () => {
   return (
     <div
       ref={wordContainerRef}
-      className="w-full word-font word-outline-text text-7xl leading-24 md:text-[2.8rem] md:leading-15"
+      className="word-font word-outline-text w-full text-7xl leading-24 md:text-[2.8rem] md:leading-15"
     >
       <Word
         id="main_word"
@@ -164,11 +164,11 @@ interface WordProps {
 const Word = ({ refs, className, style }: WordProps) => {
   return (
     <div className={cn("relative w-full", className)} style={style}>
-      <span ref={refs.nextWordRef} className="next-line-word text-word-nextWord hidden"></span>
+      <span ref={refs.nextWordRef} className="next-line-word hidden text-word-nextWord"></span>
       <div ref={refs.viewportRef} className="overflow-hidden contain-content">
         {"\u200B"}
         <div ref={refs.trackRef} className="inline-block will-change-transform">
-          <span className="opacity-word-correct text-word-correct"></span>
+          <span className="text-word-correct opacity-word-correct"></span>
           <span ref={refs.caretRef} className="text-word-nextChar"></span>
           <span className="text-word-word"></span>
         </div>

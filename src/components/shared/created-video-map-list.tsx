@@ -18,7 +18,7 @@ export const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: C
   if (data?.length) {
     return (
       <div className="space-y-3">
-        <div className="text-lg font-bold">この動画の譜面が{data.length}件見つかりました</div>
+        <div className="font-bold text-lg">この動画の譜面が{data.length}件見つかりました</div>
         <div className="space-y-3">
           {data.map((map) => (
             <MapCard key={map.id} map={map} />
@@ -29,7 +29,7 @@ export const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: C
   }
 
   if (!disabledNotFoundText) {
-    return <div className="my-3 text-lg font-bold">この動画の譜面は見つかりませんでした</div>;
+    return <div className="my-3 font-bold text-lg">この動画の譜面は見つかりませんでした</div>;
   }
 
   return null;

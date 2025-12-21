@@ -49,7 +49,7 @@ const UnsiLink = () => {
     <Link
       href="http://unsi.nonip.net"
       target="_blank"
-      className="text-muted-foreground flex w-fit items-center gap-1 text-xs opacity-70 transition-opacity hover:opacity-100"
+      className="flex w-fit items-center gap-1 text-muted-foreground text-xs opacity-70 transition-opacity hover:opacity-100"
     >
       運指表作成はこちら
       <ExternalLink className="h-3 w-3" />

@@ -39,7 +39,7 @@ export const ThemeDropdownSubmenu = () => {
               >
                 <span>{theme.label}</span>
                 {resolvedTheme === theme.class ? (
-                  <Check className="hover:text-primary-foreground ml-auto size-5" />
+                  <Check className="ml-auto size-5 hover:text-primary-foreground" />
                 ) : null}
               </DropdownMenuItem>
             ))}
@@ -56,7 +56,7 @@ export const ThemeDropdownSubmenu = () => {
               >
                 <span>{theme.label}</span>
                 {resolvedTheme === theme.class ? (
-                  <Check className="hover:text-primary-foreground ml-auto size-5" />
+                  <Check className="ml-auto size-5 hover:text-primary-foreground" />
                 ) : null}
               </DropdownMenuItem>
             ))}

@@ -91,7 +91,7 @@ function PreMidLinkImage() {
       src="/images/manual/premid/premid-link.png"
       width={250}
       height={0}
-      className="border-border mt-2 rounded border"
+      className="mt-2 rounded border border-border"
     />
   );
 }
@@ -104,14 +104,14 @@ function PreMidPresenceImages() {
         height={0}
         alt="スクリーンショット1"
         src="/images/manual/premid/premid-presence-1.png"
-        className="border-border rounded border"
+        className="rounded border border-border"
       />
       <Image
         width={250}
         height={0}
         alt="スクリーンショット2"
         src="/images/manual/premid/premid-presence-2.png"
-        className="border-border rounded border"
+        className="rounded border border-border"
       />
     </div>
   );

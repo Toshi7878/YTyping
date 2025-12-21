@@ -28,7 +28,7 @@ export const UserMenu = ({ userName, className, userId }: UserMenuProps) => {
         <Button
           variant="unstyled"
           size="sm"
-          className={cn("hover:text-header-foreground text-header-foreground/80 mb-0.5", className)}
+          className={cn("mb-0.5 text-header-foreground/80 hover:text-header-foreground", className)}
         >
           {userName}
           <ChevronDown className="relative top-px size-4" />

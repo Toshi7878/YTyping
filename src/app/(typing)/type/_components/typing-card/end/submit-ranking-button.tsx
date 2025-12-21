@@ -67,7 +67,7 @@ export const RegisterRankingButton = ({ isScoreUpdated, disabled, onSuccess }: R
     <Button
       size="4xl"
       variant="primary-hover-light"
-      className="max-sm:text-5xl max-sm:h-40 max-sm:w-xl"
+      className="max-sm:h-40 max-sm:w-xl max-sm:text-5xl"
       disabled={disabled}
       loading={registerRanking.isPending}
       onClick={handleClick}

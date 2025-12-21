@@ -33,11 +33,11 @@ export const TabsArea = ({ className }: TabsAreaProps) => {
 
 const TabLists = () => {
   return (
-    <TabsList variant="underline" className="h-28 w-full bg-transparent pl-8 select-none md:h-9">
+    <TabsList variant="underline" className="h-28 w-full select-none bg-transparent pl-8 md:h-9">
       {TAB_NAMES.map((name) => (
         <TabsTrigger
           variant="underline"
-          className="flex max-sm:pb-5 max-w-96 md:max-w-50 flex-1 items-end text-5xl md:text-xl"
+          className="flex max-w-96 flex-1 items-end text-5xl max-sm:pb-5 md:max-w-50 md:text-xl"
           key={name}
           value={name}
           onFocus={(e) => e.target.blur()}

@@ -160,7 +160,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
                     step={0.25}
                     valueDigits={2}
                   />
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     速度: <Badge variant="outline">{speed}x</Badge>
                   </div>
                 </FormItem>
@@ -180,7 +180,7 @@ export const LineOptionDialog = ({ index, setOptionDialogIndex }: LineOptionDial
             <TextareaFormField
               name="changeCSS"
               label="選択ラインから適用するCSSを入力"
-              className={cn("min-h-[200px] resize-y", !isChangeCSSValue && "opacity-50 cursor-pointer")}
+              className={cn("min-h-[200px] resize-y", !isChangeCSSValue && "cursor-pointer opacity-50")}
               readOnly={!isChangeCSSValue}
               onClick={() => {
                 if (!isChangeCSSValue) {

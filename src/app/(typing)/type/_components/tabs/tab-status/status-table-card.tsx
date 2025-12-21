@@ -58,8 +58,8 @@ export const StatusCard = ({ className }: { className: string }) => {
         cardContent: "my-auto overflow-auto pl-16 md:pl-6",
       }}
     >
-      <Table className="h-64 md:h-48 table-fixed overflow-hidden">
-        <TableBody className="font-mono text-4xl font-bold md:text-[2rem]">
+      <Table className="h-64 table-fixed overflow-hidden md:h-48">
+        <TableBody className="font-bold font-mono text-4xl md:text-[2rem]">
           <StatusTableRow labels={["score", "type", "kpm", "rank"]} statusValueRefs={statusValueRefs} />
           <StatusTableRow labels={["point", "miss", "lost", "line"]} statusValueRefs={statusValueRefs} />
         </TableBody>

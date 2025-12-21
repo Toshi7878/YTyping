@@ -79,7 +79,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
     <PopoverContent
       side="bottom"
       align="start"
-      className="flex w-fit  sm:w-fit flex-col items-center px-0 py-2 [&>button]:w-full"
+      className="flex w-fit flex-col items-center px-0 py-2 sm:w-fit [&>button]:w-full"
     >
       <Button variant="ghost">
         <Link href={`/user/${userId}`}>ユーザーページへ </Link>
@@ -92,7 +92,7 @@ export const RankingPopoverContent = ({ resultId, userId, resultUpdatedAt, hasCl
         <Button
           variant="ghost"
           type="button"
-          className={cn(hasClapped && "hover:text-perfect text-perfect outline-text")}
+          className={cn(hasClapped && "text-perfect outline-text hover:text-perfect")}
           onClick={(e) => {
             e.stopPropagation();
             toggleClap.mutate({ resultId, newState: !hasClapped });

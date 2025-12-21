@@ -54,7 +54,7 @@ export const SettingPopover = () => {
         <div className="space-y-4">
           <TimeOffsetCounter />
           <CaseSensitiveCheckbox />
-          <Separator className="bg-foreground/20 my-4" />
+          <Separator className="my-4 bg-foreground/20" />
           <SoundEffectFields />
         </div>
       ),
@@ -64,11 +64,11 @@ export const SettingPopover = () => {
       content: (
         <>
           <NextDisplayRadioGroup />
-          <Separator className="bg-foreground/20 my-4" />
+          <Separator className="my-4 bg-foreground/20" />
           <LineCompletedRadioGroup />
-          <Separator className="bg-foreground/20 my-4" />
+          <Separator className="my-4 bg-foreground/20" />
           <WordScrollFields />
-          <Separator className="bg-foreground/20 my-4" />
+          <Separator className="my-4 bg-foreground/20" />
           <WordDisplayFields />
         </>
       ),
@@ -97,7 +97,7 @@ export const SettingPopover = () => {
         <SettingButton />
       </PopoverTrigger>
       <PopoverContent
-        className="sm:w-xl w-screen p-4"
+        className="w-screen p-4 sm:w-xl"
         align={isMdScreen ? "end" : "center"}
         side="bottom"
         sideOffset={10}
@@ -126,7 +126,7 @@ export const SettingPopover = () => {
           size="sm"
           variant="outline"
           onClick={handleReset}
-          className="text-destructive hover:bg-destructive/10 mt-4 ml-auto block"
+          className="mt-4 ml-auto block text-destructive hover:bg-destructive/10"
         >
           設定をリセット
         </Button>

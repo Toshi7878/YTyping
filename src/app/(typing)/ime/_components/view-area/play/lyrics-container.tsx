@@ -36,13 +36,13 @@ const Lyrics = () => {
 
   return (
     <div
-      className="my-1 min-h-16 md:min-h-30 leading-8 md:leading-14 pointer-events-none user-select-none"
+      className="user-select-none pointer-events-none my-1 min-h-16 leading-8 md:min-h-30 md:leading-14"
       ref={lyricsContainerRef}
     >
       {displayLines.map((line, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
         <div key={index}>
-          <div className="shadow-layer absolute">
+          <div className="absolute shadow-layer">
             {"\u200B"}
             {line.map((chunk) => (
               <Fragment key={String(chunk.time)}>
@@ -89,7 +89,7 @@ const NextLyrics = () => {
 
   const nextLine = map?.lines?.[count];
   return (
-    <div id="next_lyrics" className="text-[60%] text-gray-400 select-none">
+    <div id="next_lyrics" className="select-none text-[60%] text-gray-400">
       {nextLine && <span>{"NEXT: "}</span>}
       <AnimatePresence>
         {nextDisplayLine.length > 0 && (

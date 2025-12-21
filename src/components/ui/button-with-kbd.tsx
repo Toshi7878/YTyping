@@ -18,7 +18,7 @@ export const ButtonWithKbd = (props: ButtonWithKbdProps) => {
         onClickCapture={props.onClickCapture}
         variant="outline-accent"
         disabled={props.disabled}
-        className="rounded-full max-sm:p-9 text-4xl md:text-xl font-bold hover:scale-105"
+        className="rounded-full font-bold text-4xl hover:scale-105 max-sm:p-9 md:text-xl"
       >
         {props.buttonLabel}
       </Button>
@@ -27,7 +27,7 @@ export const ButtonWithKbd = (props: ButtonWithKbdProps) => {
         onClick={props.onClick}
         onClickCapture={props.onClickCapture}
         disabled={props.disabled}
-        className="bg-transparent text-xl hidden md:block"
+        className="hidden bg-transparent text-xl md:block"
       >
         {props.kbdLabel}
       </Kbd>
@@ -56,7 +56,7 @@ export const ButtonWithDoubleKbd = (props: ButtonWithDoubleKbdProps) => {
         disabled={props.disabled}
         onClick={props.onClick}
         variant="outline-accent"
-        className="rounded-full border max-sm:p-9 text-4xl md:text-xl font-bold hover:scale-105"
+        className="rounded-full border font-bold text-4xl hover:scale-105 max-sm:p-9 md:text-xl"
       >
         {props.buttonLabel}
       </Button>

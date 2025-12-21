@@ -63,7 +63,7 @@ const StatusUnderline = ({ label }: { label: LabelType }) => {
     <span className="relative">
       <span
         id="status_underline"
-        className={cn("bg-card-foreground absolute bottom-0 left-0.5 h-0.5", underlineWidthClass)}
+        className={cn("absolute bottom-0 left-0.5 h-0.5 bg-card-foreground", underlineWidthClass)}
       />
     </span>
   );

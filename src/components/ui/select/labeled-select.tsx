@@ -14,7 +14,7 @@ interface LabeledSelectProps extends React.ComponentProps<typeof Select> {
 const LabeledSelect = ({ label, options, ...props }: LabeledSelectProps) => {
   return (
     <div className="flex flex-col gap-1">
-      <Label className={cn("text-sm font-normal")}>{label}</Label>
+      <Label className={cn("font-normal text-sm")}>{label}</Label>
       <Select {...props}>
         <SelectTrigger className="w-fit">
           <SelectValue />

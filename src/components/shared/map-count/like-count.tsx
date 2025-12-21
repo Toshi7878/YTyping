@@ -7,7 +7,7 @@ import { useToggleMapLikeMutation } from "@/lib/mutations/like";
 
 const InactiveLikeCount = ({ likeCount }: { likeCount: number }) => {
   return (
-    <div className="text-muted-foreground flex items-baseline rounded-md px-1">
+    <div className="flex items-baseline rounded-md px-1 text-muted-foreground">
       <div className="relative top-[2.5px] mr-1">
         <FiHeart size={17} />
       </div>

@@ -79,7 +79,7 @@ export const InputTextarea = () => {
     <div className="z-2 mx-auto flex w-[95%] items-center justify-center md:w-[85%]">
       <Textarea
         ref={lyricsTextareaRef}
-        className="h-[130px] resize-none rounded-md px-4 text-2xl font-bold tracking-widest xl:text-3xl"
+        className="h-[130px] resize-none rounded-md px-4 font-bold text-2xl tracking-widest xl:text-3xl"
         autoComplete="off"
         placeholder={textareaPlaceholder({ scene, textareaPlaceholderType })}
         onKeyDown={handleKeyDown}

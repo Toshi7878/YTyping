@@ -24,7 +24,7 @@ export const ResultListSheet = () => {
         onEscapeKeyDown={sceneGroup === "Playing" ? (event) => event.preventDefault() : undefined}
         forceMount
         side="right"
-        className="bg-accent/90 w-xs"
+        className="w-xs bg-accent/90"
         overlayClassName="bg-transparent"
       >
         <SheetHeader className="py-2">

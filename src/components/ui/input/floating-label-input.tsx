@@ -24,7 +24,7 @@ const FloatingLabel = ({
   return (
     <Label
       className={cn(
-        "peer-focus:secondary peer-focus:dark:secondary bg-input text-muted-foreground absolute start-2 top-2 z-10 origin-left -translate-y-4 scale-75 transform cursor-text px-2 text-sm duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4",
+        "peer-focus:secondary peer-focus:dark:secondary -translate-y-4 peer-placeholder-shown:-translate-y-1/2 peer-focus:-translate-y-4 absolute start-2 top-2 z-10 origin-left scale-75 transform cursor-text bg-input px-2 text-muted-foreground text-sm duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:scale-75 peer-focus:px-2 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4",
         className,
       )}
       ref={ref}

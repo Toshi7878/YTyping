@@ -11,7 +11,7 @@ export const SignInMenu = ({ className }: { className: string }) => {
         <Button
           variant="unstyled"
           size="sm"
-          className={cn("hover:text-header-foreground text-header-foreground/80", className)}
+          className={cn("text-header-foreground/80 hover:text-header-foreground", className)}
         >
           ログイン
           <ChevronDown className="relative top-[1px] size-4" />

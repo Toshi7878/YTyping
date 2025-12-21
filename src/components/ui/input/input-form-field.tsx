@@ -48,7 +48,7 @@ const InputFormField = ({
           {label && (
             <FormLabel>
               {label}
-              {required && <span className="text-destructive ml-1">*</span>}
+              {required && <span className="ml-1 text-destructive">*</span>}
             </FormLabel>
           )}
           <FormControl className={cn(className)}>
@@ -140,7 +140,7 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
 
     return (
       <div className="flex items-center gap-1">
-        <XCircle className="text-destructive h-4 w-4" />
+        <XCircle className="h-4 w-4 text-destructive" />
         <span className="text-destructive text-xs">{messageText}</span>
       </div>
     );
@@ -153,7 +153,7 @@ const MutateMessage = ({ isPending, isSuccess, errorMessage, successMessage }: M
     return (
       <div className="flex items-center gap-1">
         <CheckCircle className="h-4 w-4 text-green-600" />
-        <span className="text-xs text-green-600">{successMessage}</span>
+        <span className="text-green-600 text-xs">{successMessage}</span>
       </div>
     );
   }

@@ -34,7 +34,7 @@ export const ResultClapButton = ({ resultId, clapCount, hasClapped, className }:
           onClick={onClick}
           className={cn(
             "min-w-[100px] rounded-full border px-7",
-            hasClapped && session ? "bg-perfect/20 border-perfect text-perfect" : "",
+            hasClapped && session ? "border-perfect bg-perfect/20 text-perfect" : "",
             session && "hover:bg-perfect/20 hover:text-perfect",
           )}
         >

@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <CardWithContent>
         <H2>収集する情報</H2>
         <P>本サービスでは、以下の情報を収集します。</P>
-        <ul className="list-disc pl-6 my-4 space-y-2">
+        <ul className="my-4 list-disc space-y-2 pl-6">
           <li>認証に必要なメールアドレス（復元不可能な形式でハッシュ化して保存）</li>
           <li>サービスの利用履歴（タイピングゲームのログ）</li>
           <li>サービス内のユーザー設定情報</li>
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
       <CardWithContent>
         <H2>外部認証サービスの利用</H2>
         <P>本サービスでは、以下の認証プロバイダーを利用しています。</P>
-        <ul className="list-disc pl-6 my-4 space-y-2">
+        <ul className="my-4 list-disc space-y-2 pl-6">
           <li>Google</li>
           <li>Discord</li>
         </ul>
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
       <CardWithContent>
         <H2>利用目的</H2>
         <P>収集した情報は、以下の目的で利用します。</P>
-        <ul className="list-disc pl-6 my-4 space-y-2">
+        <ul className="my-4 list-disc space-y-2 pl-6">
           <li>本人確認およびアカウント管理</li>
           <li>サービスの提供および品質向上</li>
           <li>利用状況の分析</li>

@@ -32,17 +32,17 @@ const ResultStatus = () => {
 
   return (
     <section>
-      <div className="border-border/25 mb-4 flex items-center justify-center gap-4 rounded-md border p-4 shadow-sm">
+      <div className="mb-4 flex items-center justify-center gap-4 rounded-md border border-border/25 p-4 shadow-sm">
         <div className="min-w-[120px] text-center">
-          <div className="text-muted-foreground text-sm font-semibold">スコア</div>
-          <div className={cn("font-mono text-3xl font-bold", isPerfect ? "text-yellow-500" : "text-foreground")}>
-            {status.score} <span className="text-muted-foreground text-base font-normal">/ 1000</span>
+          <div className="font-semibold text-muted-foreground text-sm">スコア</div>
+          <div className={cn("font-bold font-mono text-3xl", isPerfect ? "text-yellow-500" : "text-foreground")}>
+            {status.score} <span className="font-normal text-base text-muted-foreground">/ 1000</span>
           </div>
         </div>
         <div className="min-w-[120px] text-center">
-          <div className="text-muted-foreground text-sm font-semibold">タイプ数</div>
-          <div className={cn("font-mono text-3xl font-bold", isPerfect ? "text-yellow-500" : "text-foreground")}>
-            {status.typeCount} <span className="text-muted-foreground text-base font-normal">/ {map?.totalNotes}</span>
+          <div className="font-semibold text-muted-foreground text-sm">タイプ数</div>
+          <div className={cn("font-bold font-mono text-3xl", isPerfect ? "text-yellow-500" : "text-foreground")}>
+            {status.typeCount} <span className="font-normal text-base text-muted-foreground">/ {map?.totalNotes}</span>
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@ const ResultWordsTable = () => {
   return (
     <div className="max-h-[45vh] overflow-auto rounded-lg border shadow-sm">
       <Table>
-        <TableHeader className="bg-background sticky top-0 z-10">
+        <TableHeader className="sticky top-0 z-10 bg-background">
           <TableRow>
             <TableHead className="text-center">No.</TableHead>
             <TableHead className="text-center">判定</TableHead>
@@ -76,7 +76,7 @@ const ResultWordsTable = () => {
                 <TableCell className="text-center">
                   {isJudged ? <EvaluationText evaluation={result.evaluation} /> : "-"}
                 </TableCell>
-                <TableCell className="px-4 leading-6 wrap-break-word">
+                <TableCell className="wrap-break-word px-4 leading-6">
                   <div className="space-y-1">
                     {result.inputs.map((input, i) => (
                       <div key={`${i}-${input}`} className="text-sm">
@@ -85,7 +85,7 @@ const ResultWordsTable = () => {
                     ))}
                   </div>
                 </TableCell>
-                <TableCell className="px-4 wrap-break-word">
+                <TableCell className="wrap-break-word px-4">
                   <div className="text-sm">{result.evaluation !== "Great" && map?.textWords[index]}</div>
                 </TableCell>
               </TableRow>
@@ -99,16 +99,16 @@ const ResultWordsTable = () => {
 
 const EvaluationText = ({ evaluation }: { evaluation: string }) => {
   if (evaluation === "Great") {
-    return <span className="outline-text text-xs text-perfect">Great!</span>;
+    return <span className="text-perfect text-xs outline-text">Great!</span>;
   }
 
   if (evaluation === "Good") {
-    return <span className="outline-text text-xs text-success">Good</span>;
+    return <span className="text-success text-xs outline-text">Good</span>;
   }
 
   if (evaluation === "None") {
-    return <span className="outline-text text-xs text-destructive">None</span>;
+    return <span className="text-destructive text-xs outline-text">None</span>;
   }
 
-  return <span className="outline-text text-foreground text-xs opacity-60">Skip</span>;
+  return <span className="text-foreground text-xs opacity-60 outline-text">Skip</span>;
 };

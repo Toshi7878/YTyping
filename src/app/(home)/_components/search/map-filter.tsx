@@ -122,11 +122,11 @@ const FilterControls = () => {
   };
 
   return (
-    <Card className="min-h-20 py-3 select-none">
-      <CardContent className="grid grid-cols-1 gap-1 md:grid-cols-[auto_1fr] items-center">
+    <Card className="min-h-20 select-none py-3">
+      <CardContent className="grid grid-cols-1 items-center gap-1 md:grid-cols-[auto_1fr]">
         {FILTER_MENUS.map((filter, filterIndex) => (
           <React.Fragment key={`${filterIndex}-${filter.label}`}>
-            <div className="text-foreground flex h-8 min-w-0 items-center text-sm font-medium md:min-w-[80px]">
+            <div className="flex h-8 min-w-0 items-center font-medium text-foreground text-sm md:min-w-[80px]">
               {filter.label}
             </div>
             <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
@@ -145,8 +145,8 @@ const FilterControls = () => {
                       setSearchParams({ ...nextParams, sort });
                     }}
                     className={cn(
-                      "transition-none  rounded px-2 py-1 text-sm hover:underline",
-                      isActive && "text-secondary-light hover:text-secondary-light font-bold  bg-accent/40",
+                      "rounded px-2 py-1 text-sm transition-none hover:underline",
+                      isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
                     )}
                   >
                     {param.label}
@@ -174,7 +174,7 @@ const DifficultyRangeControl = () => {
 
   return (
     <Card className="min-h-23 py-3">
-      <CardContent className="mt-1 space-y-1 flex w-56 flex-col items-center gap-2 select-none">
+      <CardContent className="mt-1 flex w-56 select-none flex-col items-center gap-2 space-y-1">
         <Small>難易度</Small>
         <TooltipWrapper label="Enterで検索" sideOffset={24}>
           <DualRangeSlider

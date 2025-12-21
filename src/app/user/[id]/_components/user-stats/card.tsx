@@ -123,9 +123,9 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
 
 const StatsCard = ({ label, value }: { label: string; value: string | number | ReactNode }) => {
   return (
-    <Card className="bg-background border-accent-foreground/50 gap-1 rounded-sm border py-4 pl-8">
-      <CardTitle className="text-lg font-normal">{label}</CardTitle>
-      <div className="text-2xl font-bold">{value}</div>
+    <Card className="gap-1 rounded-sm border border-accent-foreground/50 bg-background py-4 pl-8">
+      <CardTitle className="font-normal text-lg">{label}</CardTitle>
+      <div className="font-bold text-2xl">{value}</div>
     </Card>
   );
 };

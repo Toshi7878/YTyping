@@ -28,7 +28,7 @@ export const InputModeText = ({ typeCounts }: InputModeTextProps) => {
     const second = isRomaFirst ? { label: "かな", color: colors.kana } : { label: "ロマ", color: colors.roma };
 
     return (
-      <div className="truncate overflow-hidden text-ellipsis whitespace-nowrap">
+      <div className="overflow-hidden truncate text-ellipsis whitespace-nowrap">
         {renderText(first.label, first.color)}
         <span className="text-muted-foreground">・</span>
         {renderText(second.label, second.color)}
@@ -42,7 +42,7 @@ export const InputModeText = ({ typeCounts }: InputModeTextProps) => {
     const inputLabel = inputMode === "flick" ? "フリック" : inputMode === "roma" ? "ロマ" : "かな";
 
     return (
-      <div className="truncate overflow-hidden text-ellipsis whitespace-nowrap">
+      <div className="overflow-hidden truncate text-ellipsis whitespace-nowrap">
         {renderText(inputLabel, colors[inputMode])}
         <span className="text-muted-foreground">・</span>
         {renderText("英語", colors.english)}

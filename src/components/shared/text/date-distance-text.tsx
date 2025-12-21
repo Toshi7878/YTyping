@@ -16,7 +16,7 @@ export const DateDistanceText = ({ date, text, addSuffix = true, className }: Da
     <time
       dateTime={toLocaleDateString(date)}
       title={formatDate(date)}
-      className={cn("truncate overflow-hidden text-ellipsis whitespace-nowrap", className)}
+      className={cn("overflow-hidden truncate text-ellipsis whitespace-nowrap", className)}
       suppressHydrationWarning
     >
       {formatDistanceToNowStrict(date, { addSuffix, locale: ja })}

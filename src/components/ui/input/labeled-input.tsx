@@ -38,9 +38,9 @@ const LabeledInput = ({
   return (
     <div className={cn("space-y-2", containerClassName)}>
       {label && (
-        <Label htmlFor={inputId} className={cn("text-sm leading-none font-medium", labelClassName)}>
+        <Label htmlFor={inputId} className={cn("font-medium text-sm leading-none", labelClassName)}>
           {label}
-          {required && <span className="text-destructive ml-1">*</span>}
+          {required && <span className="ml-1 text-destructive">*</span>}
         </Label>
       )}
       <Input

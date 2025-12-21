@@ -57,7 +57,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
 
         return (
           <>
-            <span className={cn("ml-1 pointer-events-none", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
+            <span className={cn("pointer-events-none ml-1", rank === 1 && "text-perfect outline-text")}>#{rank}</span>
             <Popover open={isThisPopoverOpen} onOpenChange={(open) => setOpenPopoverIndex(open ? index : null)}>
               <PopoverAnchor />
               <RankingPopoverContent
@@ -95,7 +95,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
       size: 110,
       cell: ({ row }) => {
         const { name } = row.original.player;
-        return <span className="truncate pointer-events-none">{name}</span>;
+        return <span className="pointer-events-none truncate">{name}</span>;
       },
     },
     {
@@ -129,7 +129,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
 
         return (
           <div className="ml-1" title={clap.hasClapped ? "拍手を取り消す" : "拍手する"}>
-            <span className={cn(hasClapped && "outline-text text-yellow-500")}>{clap.count}</span>
+            <span className={cn(hasClapped && "text-yellow-500 outline-text")}>{clap.count}</span>
           </div>
         );
       },

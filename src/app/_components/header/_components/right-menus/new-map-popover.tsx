@@ -59,7 +59,7 @@ export const NewMapPopover = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <TooltipWrapper label="譜面新規作成" delayDuration={600} className="relative bottom-3">
         <PopoverTrigger asChild>
-          <Button variant="unstyled" size="icon" className="hover:text-header-foreground text-header-foreground/80">
+          <Button variant="unstyled" size="icon" className="text-header-foreground/80 hover:text-header-foreground">
             <RiAddBoxFill size={20} />
           </Button>
         </PopoverTrigger>
@@ -81,7 +81,7 @@ export const NewMapPopover = () => {
               autoComplete="off"
               ref={inputRef}
             />
-            <div className="flex items-center gap-4 sm:justify-between justify-end flex-wrap-reverse">
+            <div className="flex flex-wrap-reverse items-center justify-end gap-4 sm:justify-between">
               <CreateMapBackUpButton backupData={backupMapInfo} onOpenChange={setOpen} />
               <Button size="lg" className="w-30" type="submit" disabled={!extractedVideoId}>
                 作成

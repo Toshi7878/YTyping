@@ -16,7 +16,7 @@ export const SearchInput = () => {
 
   return (
     <form
-      className="flex items-center gap-3 select-none"
+      className="flex select-none items-center gap-3"
       onSubmit={(e) => {
         e.preventDefault();
         setSearchParams({ keyword: keyword.trim() });

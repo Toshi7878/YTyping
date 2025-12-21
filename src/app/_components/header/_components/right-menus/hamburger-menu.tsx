@@ -30,9 +30,9 @@ export const HamburgerMenu = ({ className }: HamburgerMenuProps) => {
           <Button
             variant="outline"
             size="sm"
-            className="border-header-foreground hover:bg-accent/50 border border-solid p-2"
+            className="border border-header-foreground border-solid p-2 hover:bg-accent/50"
           >
-            <Menu className="text-header-foreground size-4" />
+            <Menu className="size-4 text-header-foreground" />
             <span className="sr-only">メニューを開く</span>
           </Button>
         </DropdownMenuTrigger>

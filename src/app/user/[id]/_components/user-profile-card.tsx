@@ -41,7 +41,7 @@ export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {
 
   return (
     <Card>
-      <CardContent className=" md:mx-8 flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 md:mx-8">
         <H2>{userProfile?.name ?? ""}</H2>
         <DataList orientation="vertical" className="gap-3">
           {profile.map((item) => (

@@ -12,7 +12,7 @@ interface LabeledCheckboxProps extends ComponentProps<typeof Checkbox> {
 const LabeledCheckbox = ({ label, ...props }: LabeledCheckboxProps) => {
   return (
     <div className="flex items-center gap-1">
-      <Label className={cn("cursor-pointer text-sm font-normal")}>
+      <Label className={cn("cursor-pointer font-normal text-sm")}>
         <Checkbox {...props} />
         {label}
       </Label>

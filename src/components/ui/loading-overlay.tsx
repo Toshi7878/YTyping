@@ -52,12 +52,12 @@ const LoadingOverlay = ({ isLoading, message, hideSpinner }: LoadingOverlayProps
           style={{
             animationDelay: isLoading ? "0s" : "0.4s",
           }}
-          className="bg-overlay-background absolute inset-0 z-[25] flex flex-col items-center justify-center"
+          className="absolute inset-0 z-[25] flex flex-col items-center justify-center bg-overlay-background"
           aria-busy="true"
           aria-label="Loading"
         >
           {!hideSpinner && <Spinner size="xl" />}
-          {message && <div className="text-overlay-foreground mt-4 font-medium">{message}</div>}
+          {message && <div className="mt-4 font-medium text-overlay-foreground">{message}</div>}
         </motion.div>
       )}
     </AnimatePresence>

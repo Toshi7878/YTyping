@@ -11,7 +11,7 @@ export const UserNameLinkText = ({ userId, userName, className }: UserNameLinkTe
   if (!userName) return null;
 
   return (
-    <Link href={`/user/${userId}`} className={cn("text-secondary relative z-1 hover:underline", className)}>
+    <Link href={`/user/${userId}`} className={cn("relative z-1 text-secondary hover:underline", className)}>
       {userName}
     </Link>
   );

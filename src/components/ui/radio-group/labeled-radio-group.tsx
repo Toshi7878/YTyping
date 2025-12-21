@@ -34,7 +34,7 @@ const LabeledRadioItem = ({
         <Label
           htmlFor={radioId}
           className={cn(
-            "cursor-pointer text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+            "cursor-pointer font-medium text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
             labelClassName,
           )}
         >
@@ -49,8 +49,8 @@ const LabeledRadioItem = ({
           {label}
         </Label>
       </div>
-      {description && <p className="text-muted-foreground ml-6 text-xs">{description}</p>}
-      {error && <p className="text-destructive ml-6 text-sm">{error}</p>}
+      {description && <p className="ml-6 text-muted-foreground text-xs">{description}</p>}
+      {error && <p className="ml-6 text-destructive text-sm">{error}</p>}
     </div>
   );
 };
@@ -77,7 +77,7 @@ const LabeledRadioGroup = ({
 }: LabeledRadioGroupProps & { ref?: React.Ref<React.ComponentRef<typeof RadioGroup>> }) => {
   return (
     <div className={cn("space-y-3", containerClassName)}>
-      {label && <Label className={cn("text-sm font-medium", labelClassName)}>{label}</Label>}
+      {label && <Label className={cn("font-medium text-sm", labelClassName)}>{label}</Label>}
       {description && <p className="text-muted-foreground text-xs">{description}</p>}
       <RadioGroup ref={ref} className={cn(error && "border-destructive", className)} {...props}>
         {items.map((item) => (

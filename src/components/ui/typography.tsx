@@ -12,7 +12,7 @@ interface H1Props {
 export function H1({ children, className, ...props }: H1Props & HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h1
-      className={cn("scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0", className)}
+      className={cn("scroll-m-20 border-b pb-2 font-semibold text-3xl tracking-tight first:mt-0", className)}
       {...props}
     >
       {children}
@@ -27,7 +27,7 @@ interface H2Props {
 
 export function H2({ children, className, ...props }: H2Props & HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h2 className={cn("scroll-m-20 text-2xl font-semibold tracking-tight", className)} {...props}>
+    <h2 className={cn("scroll-m-20 font-semibold text-2xl tracking-tight", className)} {...props}>
       {children}
     </h2>
   );
@@ -40,18 +40,18 @@ interface H3Props {
 
 export function H3({ children, className, ...props }: H3Props & HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("scroll-m-20 text-xl font-semibold tracking-tight", className)} {...props}>
+    <h3 className={cn("scroll-m-20 font-semibold text-xl tracking-tight", className)} {...props}>
       {children}
     </h3>
   );
 }
 
 export function H4({ children, className }: { children: ReactNode; className?: string }) {
-  return <h4 className={cn("scroll-m-20 text-lg font-semibold tracking-tight", className)}>{children}</h4>;
+  return <h4 className={cn("scroll-m-20 font-semibold text-lg tracking-tight", className)}>{children}</h4>;
 }
 
 export function Large({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("text-lg font-semibold", className)}>{children}</div>;
+  return <div className={cn("font-semibold text-lg", className)}>{children}</div>;
 }
 
 export function P({ children, className }: { children: ReactNode; className?: string }) {
@@ -59,7 +59,7 @@ export function P({ children, className }: { children: ReactNode; className?: st
 }
 
 export function Small({ children, className }: { children: ReactNode; className?: string }) {
-  return <small className={cn("text-sm leading-none font-medium", className)}>{children}</small>;
+  return <small className={cn("font-medium text-sm leading-none", className)}>{children}</small>;
 }
 
 interface LinkTextProps {
@@ -74,7 +74,7 @@ export const LinkText = ({ href, children, className, ...props }: LinkTextProps 
     <Link
       href={href}
       className={cn(
-        "text-primary-light hover:text-primary-light/80 flex flex-row items-center gap-1 underline transition-colors",
+        "flex flex-row items-center gap-1 text-primary-light underline transition-colors hover:text-primary-light/80",
         className,
       )}
       {...props}

@@ -107,7 +107,7 @@ export const LikeButtonWithCount = ({
   return (
     <button
       disabled={disabled}
-      className="hover:bg-like/40 relative top-[0.09px] flex w-9 cursor-pointer items-center justify-center space-x-1 rounded-sm px-1"
+      className="relative top-[0.09px] flex w-9 cursor-pointer items-center justify-center space-x-1 rounded-sm px-1 hover:bg-like/40"
       style={buttonStyle}
       type="button"
       onClick={(event) => {
@@ -122,15 +122,15 @@ export const LikeButtonWithCount = ({
         <Heart
           className={cn(
             hasBeenClicked ? (hasLiked ? "like-animation" : "like-animation-end") : "",
-            hasLiked ? "fill-like text-like" : "text-muted-foreground fill-transparent",
+            hasLiked ? "fill-like text-like" : "fill-transparent text-muted-foreground",
           )}
           size={heartSize}
           strokeWidth={2.5}
         />
-        <div className={cn("like-base-64 absolute inset-y-0 -right-[8.25px]")} style={backgroundStyle} />
+        <div className={cn("like-base-64 -right-[8.25px] absolute inset-y-0")} style={backgroundStyle} />
       </div>
       {typeof likeCount === "number" && (
-        <span className={cn("font-mono text-lg select-none", hasLiked ? "text-like" : "text-muted-foreground")}>
+        <span className={cn("select-none font-mono text-lg", hasLiked ? "text-like" : "text-muted-foreground")}>
           {likeCount}
         </span>
       )}
