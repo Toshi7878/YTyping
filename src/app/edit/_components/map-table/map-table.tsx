@@ -118,10 +118,10 @@ const MapTable = () => {
     <>
       <Card className="p-0">
         <CardContent
-          className="max-h-[calc(100vh-100px)] overflow-y-auto p-0 md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]"
+          className="max-h-[calc(100vh-100px)] overflow-y-auto p-0 pb-56 md:max-h-[500px] 2xl:max-h-[calc(100vh-400px)]"
           id="map-table-card"
         >
-          <Table className="mb-56 w-full table-fixed text-sm">
+          <Table className="w-full table-fixed text-sm">
             <colgroup>
               <col className="w-[35px] min-w-[35px]" />
               <col className="w-[200px] min-w-[200px]" />

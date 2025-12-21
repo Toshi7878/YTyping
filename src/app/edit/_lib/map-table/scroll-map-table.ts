@@ -9,7 +9,7 @@ export const scrollMapTable = ({ rowIndex }: { rowIndex: number }) => {
     const tableCard = targetRow.closest<HTMLDivElement>("#map-table-card");
     if (tableCard) {
       tableCard.scrollTo({
-        top: targetRow.offsetTop - tableCard.offsetTop - targetRow.offsetHeight,
+        top: targetRow.offsetTop - targetRow.offsetHeight,
         behavior: "smooth",
       });
     }
