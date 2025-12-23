@@ -33,7 +33,6 @@ interface BookmarkListPopoverProps {
 
 export const BookmarkListPopover = ({ mapId, hasBookmarked, className }: BookmarkListPopoverProps) => {
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,20 +45,6 @@ export const BookmarkListPopover = ({ mapId, hasBookmarked, className }: Bookmar
 
   const addMapToList = useAddBookmarkListItemMutation();
   const removeMapFromList = useRemoveBookmarkListItemMutation();
-
-  const removeMapMutation = useMutation(
-    trpc.bookmarkListItem.removeMap.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries(
-          trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(session?.user?.id), includeMapId: mapId }),
-        );
-        toast.success("ブックマークから削除しました");
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    }),
-  );
 
   const toggleMap = (listId: number, hasMap: boolean) => {
     if (hasMap) {
