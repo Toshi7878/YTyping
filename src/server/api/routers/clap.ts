@@ -1,9 +1,9 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
-import { nanoid } from "nanoid";
 import z from "zod";
 import { NotificationClaps, Notifications, ResultClaps, Results } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../trpc";
+import { generateNotificationId } from "../utils/id";
 
 export const clapRouter = {
   toggleClap: protectedProcedure
@@ -50,7 +50,7 @@ export const clapRouter = {
           });
 
           if (result && result.userId !== user.id) {
-            const notificationId = nanoid(10);
+            const notificationId = generateNotificationId();
 
             await tx.insert(Notifications).values({
               id: notificationId,

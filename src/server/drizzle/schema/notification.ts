@@ -1,9 +1,12 @@
 import { boolean, integer, pgEnum, pgTable, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
+import { MapBookmarkLists } from "./bookmark";
 import { Maps } from "./map";
 import { Results } from "./result";
 import { Users } from "./user";
 
-export const notificationTypeEnum = pgEnum("type", ["LIKE", "CLAP", "OVER_TAKE"]);
+export const NOTIFICATION_TYPES = ["LIKE", "CLAP", "OVER_TAKE", "MAP_BOOKMARK"] as const;
+
+export const notificationTypeEnum = pgEnum("type", NOTIFICATION_TYPES);
 
 export const Notifications = pgTable("notifications", {
   id: varchar("id").primaryKey(),
@@ -63,19 +66,26 @@ export const NotificationOverTakes = pgTable(
       .references(() => Maps.id, { onDelete: "cascade" }),
     prevRank: integer("prev_rank"),
   },
-  (t) => [
-    // @see https://github.com/drizzle-team/drizzle-orm/issues/4789?utm_source=chatgpt.com
-    // foreignKey({
-    //   columns: [t.visitorId, t.mapId],
-    //   foreignColumns: [Results.userId, Results.mapId],
-    //   name: "notification_over_takes_visitor_result_fk",
-    // }).onDelete("cascade"),
-    // foreignKey({
-    //   columns: [t.visitedId, t.mapId],
-    //   foreignColumns: [Results.userId, Results.mapId],
-    //   name: "notification_over_takes_visited_result_fk",
-    // }).onDelete("cascade"),
+  (t) => [uniqueIndex("uq_notification_over_takes_visitor_id_visited_id_map_id").on(t.visitorId, t.visitedId, t.mapId)],
+);
 
-    uniqueIndex("uq_notification_over_takes_visitor_id_visited_id_map_id").on(t.visitorId, t.visitedId, t.mapId),
+export const NotificationMapBookmarks = pgTable(
+  "notification_map_bookmarks",
+  {
+    notificationId: varchar("notification_id")
+      .primaryKey()
+      .references(() => Notifications.id, { onDelete: "cascade" }),
+    bookmarkerId: integer("bookmarker_id")
+      .notNull()
+      .references(() => Users.id, { onDelete: "cascade" }),
+    listId: integer("list_id")
+      .notNull()
+      .references(() => MapBookmarkLists.id, { onDelete: "cascade" }),
+    mapId: integer("map_id")
+      .notNull()
+      .references(() => Maps.id, { onDelete: "cascade" }),
+  },
+  (t) => [
+    uniqueIndex("uq_notification_map_bookmarks_bookmarker_id_list_id_map_id").on(t.bookmarkerId, t.listId, t.mapId),
   ],
 );

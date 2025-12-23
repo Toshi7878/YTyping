@@ -24,6 +24,7 @@ export const MapSortSearchParamsSchema = z
 export const MapSearchFilterSchema = z.object({
   filter: z.enum(MAP_USER_FILTER_OPTIONS).nullish(),
   rankingStatus: z.enum(MAP_RANKING_STATUS_FILTER_OPTIONS).nullish(),
+  bookmarkListId: z.number().nullish(),
   keyword: z.string().nullish(),
   minRate: z.number().nullish(),
   maxRate: z.number().nullish(),

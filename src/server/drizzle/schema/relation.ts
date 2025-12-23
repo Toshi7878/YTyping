@@ -1,7 +1,14 @@
 import { relations } from "drizzle-orm/relations";
 
+import { MapBookmarkLists } from "./bookmark";
 import { MapDifficulties, MapLikes, Maps } from "./map";
-import { NotificationClaps, NotificationLikes, NotificationOverTakes, Notifications } from "./notification";
+import {
+  NotificationClaps,
+  NotificationLikes,
+  NotificationMapBookmarks,
+  NotificationOverTakes,
+  Notifications,
+} from "./notification";
 import { ImeResults, ResultClaps, ResultStatuses, Results } from "./result";
 import {
   UserDailyTypeCounts,
@@ -23,6 +30,7 @@ export const UsersRelations = relations(Users, ({ many, one }) => {
     notificationOverTakesAsVisitor: many(NotificationOverTakes, { relationName: "visitor" }),
     notificationLikes: many(NotificationLikes),
     notificationClaps: many(NotificationClaps),
+    notificationMapBookmarks: many(NotificationMapBookmarks),
     typingOption: one(UserTypingOptions, {
       fields: [Users.id],
       references: [UserTypingOptions.userId],
@@ -58,6 +66,7 @@ export const MapsRelations = relations(Maps, ({ one, many }) => ({
   results: many(Results),
   mapLikes: many(MapLikes),
   notificationOverTakes: many(NotificationOverTakes),
+  notificationMapBookmarks: many(NotificationMapBookmarks),
   difficulty: one(MapDifficulties, {
     fields: [Maps.id],
     references: [MapDifficulties.mapId],
@@ -127,6 +136,10 @@ export const NotificationsRelations = relations(Notifications, ({ one }) => ({
     fields: [Notifications.id],
     references: [NotificationClaps.notificationId],
   }),
+  mapBookmark: one(NotificationMapBookmarks, {
+    fields: [Notifications.id],
+    references: [NotificationMapBookmarks.notificationId],
+  }),
 }));
 
 export const NotificationLikesRelations = relations(NotificationLikes, ({ one }) => ({
@@ -182,6 +195,25 @@ export const NotificationOverTakesRelations = relations(NotificationOverTakes, (
     fields: [NotificationOverTakes.visitedId, NotificationOverTakes.mapId],
     references: [Results.userId, Results.mapId],
     relationName: "VisitedResult",
+  }),
+}));
+
+export const NotificationMapBookmarksRelations = relations(NotificationMapBookmarks, ({ one }) => ({
+  notification: one(Notifications, {
+    fields: [NotificationMapBookmarks.notificationId],
+    references: [Notifications.id],
+  }),
+  bookmarker: one(Users, {
+    fields: [NotificationMapBookmarks.bookmarkerId],
+    references: [Users.id],
+  }),
+  map: one(Maps, {
+    fields: [NotificationMapBookmarks.mapId],
+    references: [Maps.id],
+  }),
+  list: one(MapBookmarkLists, {
+    fields: [NotificationMapBookmarks.listId],
+    references: [MapBookmarkLists.id],
   }),
 }));
 

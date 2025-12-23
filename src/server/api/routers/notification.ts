@@ -1,7 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { and, desc, eq } from "drizzle-orm";
+import { and, type DBQueryConfig, desc, eq } from "drizzle-orm";
 import z from "zod";
 import { MapLikes, Notifications, Results } from "@/server/drizzle/schema";
+import { buildHasBookmarkedMapExists } from "../lib/map";
 import { protectedProcedure } from "../trpc";
 import { createPagination } from "../utils/pagination";
 import type { MapListItem } from "./map";
@@ -29,6 +30,9 @@ export const notificationRouter = {
         playCount: false,
         tags: false,
       },
+      extras: (table) => ({
+        hasBookmarked: buildHasBookmarkedMapExists(user, table.id).as("has_bookmarked"),
+      }),
       with: {
         creator: { columns: { id: true, name: true } },
         difficulty: { columns: { romaKpmMedian: true, romaKpmMax: true } },
@@ -43,7 +47,7 @@ export const notificationRouter = {
           limit: 1,
         },
       },
-    } as const;
+    } satisfies DBQueryConfig;
 
     const notifications = await db.query.Notifications.findMany({
       columns: {
@@ -51,8 +55,18 @@ export const notificationRouter = {
         type: true,
         updatedAt: true,
       },
+
       with: {
+        mapBookmark: {
+          columns: {},
+          with: {
+            bookmarker: { columns: { id: true, name: true } },
+            map: mapQuery,
+            list: { columns: { id: true, title: true } },
+          },
+        },
         overTake: {
+          columns: { visitorId: true, prevRank: true },
           with: {
             visitor: { columns: { id: true, name: true } },
             map: mapQuery,
@@ -109,6 +123,7 @@ export const notificationRouter = {
           myRank: map.results?.[0]?.rank ?? null,
           myRankUpdatedAt: map.results?.[0]?.updatedAt ?? null,
         },
+        bookmark: { hasBookmarked: !!map.hasBookmarked },
       } satisfies MapListItem;
     };
 
@@ -153,6 +168,18 @@ export const notificationRouter = {
             updatedAt: notification.updatedAt,
             clapper: clap.clapper,
             map: toMapListItem(clap.result.map, clap.result.status.minPlaySpeed),
+          };
+        }
+
+        if (notification.type === "MAP_BOOKMARK" && notification.mapBookmark) {
+          const { mapBookmark } = notification;
+
+          return {
+            id: notification.id,
+            type: notification.type,
+            updatedAt: notification.updatedAt,
+            bookmarker: mapBookmark.bookmarker,
+            map: toMapListItem(mapBookmark.map),
           };
         }
 

@@ -7,6 +7,7 @@ import z from "zod";
 import { MapDifficulties, MapLikes, Maps, ResultClaps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
 import type { RESULT_INPUT_METHOD_TYPES, ResultListSearchFilterSchema } from "@/validator/result";
 import { CLEAR_RATE_LIMIT, KPM_LIMIT, PLAY_SPEED_LIMIT, SelectResultListApiSchema } from "@/validator/result";
+import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 import type { MapListItem } from "../map";
@@ -107,6 +108,7 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       duration: Maps.duration,
       romaKpmMedian: MapDifficulties.romaKpmMedian,
       romaKpmMax: MapDifficulties.romaKpmMax,
+      hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
       hasLiked: user ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
       myRank: user ? sql<number | null>`${MyResult.rank}` : sql<null>`null`,
       myRankUpdatedAt: user
@@ -179,6 +181,7 @@ const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
         difficulty: { romaKpmMedian: m.romaKpmMedian, romaKpmMax: m.romaKpmMax },
         like: { count: m.likeCount, hasLiked: m.hasLiked },
         ranking: { count: m.rankingCount, myRank: m.myRank, myRankUpdatedAt: m.myRankUpdatedAt },
+        bookmark: { hasBookmarked: m.hasBookmarked },
       } satisfies MapListItem,
     };
   });

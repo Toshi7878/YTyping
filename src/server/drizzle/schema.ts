@@ -1,3 +1,4 @@
+export * from "./schema/bookmark";
 export * from "./schema/map";
 export * from "./schema/morph";
 export * from "./schema/notification";

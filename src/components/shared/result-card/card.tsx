@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import type { HTMLAttributes } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
@@ -11,6 +12,7 @@ import type { ResultWithMapItem } from "@/server/api/routers/result/list";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
+import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { DateDistanceText } from "../text/date-distance-text";
 import { ResultClapButton } from "./clap-button";
@@ -22,6 +24,7 @@ interface ResultCardProps {
 }
 
 export const ResultCard = ({ result, initialInView = false }: ResultCardProps) => {
+  const { status } = useSession();
   const { ref, shouldRender } = useInViewRender({ initialInView });
   const src = buildYouTubeThumbnailUrl(result.map.media.videoId, result.map.media.thumbnailQuality);
 
@@ -71,7 +74,10 @@ export const ResultCard = ({ result, initialInView = false }: ResultCardProps) =
           {shouldRender && <ResultStatusBadges result={result} className="hidden md:flex" />}
         </div>
         {shouldRender && (
-          <div className="absolute bottom-0 left-4 z-2 flex items-center space-x-1">
+          <div className="absolute bottom-0 left-1 z-2 flex items-center space-x-1">
+            {status === "authenticated" ? (
+              <BookmarkListPopover mapId={result.map.id} hasBookmarked={result.map.bookmark.hasBookmarked} />
+            ) : null}{" "}
             <RankingCount
               myRank={result.map.ranking.myRank}
               rankingCount={result.map.ranking.count}

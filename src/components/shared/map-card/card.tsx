@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardWithContent } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { formatTime } from "@/utils/format-time";
 import { useInViewRender } from "@/utils/hooks/intersection";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
+import { BookmarkListPopover } from "../bookmark/bookmark-list-popover";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";
@@ -64,6 +66,7 @@ const MapInfo = ({ map }: MapInfoProps) => {
         </section>
         <section className="flex flex-row items-baseline justify-between space-y-1 lg:flex-col">
           <MapCreatorInfo creator={map.creator} updatedAt={map.updatedAt} />
+
           <MapInfoBottom map={map} />
         </section>
       </div>
@@ -72,6 +75,8 @@ const MapInfo = ({ map }: MapInfoProps) => {
 };
 
 const MapInfoBottom = ({ map }: { map: MapListItem }) => {
+  const { status } = useSession();
+
   return (
     <div className="mr-3 flex w-fit justify-end md:justify-between lg:w-[98%]">
       <div className="mr-2 flex items-center gap-2">
@@ -83,7 +88,10 @@ const MapInfoBottom = ({ map }: { map: MapListItem }) => {
           {formatTime(map.info.duration)}
         </Badge>
       </div>
-      <div className="flex items-center space-x-1">
+      <div className="z-10 flex items-center space-x-1">
+        {status === "authenticated" ? (
+          <BookmarkListPopover className="relative mr-1.5" mapId={map.id} hasBookmarked={map.bookmark.hasBookmarked} />
+        ) : null}
         <RankingCount
           myRank={map.ranking.myRank}
           rankingCount={map.ranking.count}

@@ -3,16 +3,13 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot } from "lucide-react";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
-import {
-  ClapNotificationMapCard,
-  LikeNotificationMapCard,
-  OverTakeNotificationMapCard,
-} from "@/components/shared/map-card/compact-card";
+import { NotificationMapCardContent } from "@/components/shared/map-card/compact-card";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 
 export const NotificationSheet = () => {
@@ -80,6 +77,9 @@ const NotificationContent = () => {
                     {notification.type === "OVER_TAKE" && <OverTakeNotificationMapCard notification={notification} />}
                     {notification.type === "LIKE" && <LikeNotificationMapCard notification={notification} />}
                     {notification.type === "CLAP" && <ClapNotificationMapCard notification={notification} />}
+                    {notification.type === "MAP_BOOKMARK" && (
+                      <BookMarkNotificationMapCard notification={notification} />
+                    )}
                     <DateDistanceText
                       date={notification.updatedAt}
                       className="flex justify-end text-muted-foreground"
@@ -95,5 +95,59 @@ const NotificationContent = () => {
         </div>
       )}
     </div>
+  );
+};
+
+type Notification = NonNullable<RouterOutputs["notification"]["getInfinite"]["items"][number]>;
+
+type OverTakeNotification = Extract<Notification, { type: "OVER_TAKE" }>;
+export const OverTakeNotificationMapCard = ({ notification }: { notification: OverTakeNotification }) => {
+  const { map, visitor, myResult } = notification;
+  return (
+    <NotificationMapCardContent
+      map={map}
+      user={{ id: visitor.id, name: visitor.name ?? "" }}
+      className="bg-header-background"
+      title={`さんがスコア ${visitor.score - myResult.score} 差で ${Number(myResult.prevRank)}位 の記録を抜かしました`}
+    />
+  );
+};
+
+type LikeNotification = Extract<Notification, { type: "LIKE" }>;
+export const LikeNotificationMapCard = ({ notification }: { notification: LikeNotification }) => {
+  const { map, liker } = notification;
+  return (
+    <NotificationMapCardContent
+      map={map}
+      user={{ id: liker.id, name: liker.name ?? "" }}
+      className="bg-like/85"
+      title="さんが作成した譜面にいいねしました"
+    />
+  );
+};
+
+type ClapNotification = Extract<Notification, { type: "CLAP" }>;
+export const ClapNotificationMapCard = ({ notification }: { notification: ClapNotification }) => {
+  const { map, clapper } = notification;
+  return (
+    <NotificationMapCardContent
+      map={map}
+      user={{ id: clapper.id, name: clapper.name ?? "" }}
+      className="bg-perfect/65"
+      title="さんが記録に拍手しました"
+    />
+  );
+};
+
+type BookMarkNotification = Extract<Notification, { type: "MAP_BOOKMARK" }>;
+export const BookMarkNotificationMapCard = ({ notification }: { notification: BookMarkNotification }) => {
+  const { map, bookmarker } = notification;
+  return (
+    <NotificationMapCardContent
+      map={map}
+      user={{ id: bookmarker.id, name: bookmarker.name ?? "" }}
+      className="bg-secondary-dark/85"
+      title={<span>さんが譜面をブックマークしました</span>}
+    />
   );
 };

@@ -1,3 +1,5 @@
+import { bookmarkListRouter } from "./routers/bookmark/list";
+import { bookmarkListItemRouter } from "./routers/bookmark/list-item";
 import { clapRouter } from "./routers/clap";
 import { geminiRouter } from "./routers/gemini";
 import { likeRouter } from "./routers/like";
@@ -27,6 +29,8 @@ export const appRouter = router({
   vercel: vercelRouter,
   clap: clapRouter,
   like: likeRouter,
+  bookmarkListItem: bookmarkListItemRouter,
+  bookmarkList: bookmarkListRouter,
 });
 
 export type AppRouter = typeof appRouter;

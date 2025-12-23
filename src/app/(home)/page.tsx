@@ -8,6 +8,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const mapListQueryParams = loadMapListSearchParams(await searchParams);
 
   prefetch(trpc.mapList.get.infiniteQueryOptions(mapListQueryParams));
+  prefetch(trpc.bookmarkList.getForSession.queryOptions());
 
   const { minRate, maxRate } = mapListQueryParams;
   return (

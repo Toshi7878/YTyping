@@ -1,9 +1,9 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
-import { nanoid } from "nanoid";
 import z from "zod";
 import { MapLikes, Maps, NotificationLikes, Notifications } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../trpc";
+import { generateNotificationId } from "../utils/id";
 
 export const likeRouter = {
   toggleLike: protectedProcedure
@@ -37,7 +37,7 @@ export const likeRouter = {
           });
 
           if (map && map.creatorId !== user.id) {
-            const notificationId = nanoid(10);
+            const notificationId = generateNotificationId();
 
             await tx.insert(Notifications).values({
               id: notificationId,

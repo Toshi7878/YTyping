@@ -1,16 +1,19 @@
 ﻿"use client";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useQueryStates } from "nuqs";
-import React from "react";
+import { useQueryStates, type Values } from "nuqs";
+import type React from "react";
 import { usePendingDifficultyRangeState, useSetPendingDifficultyRange } from "@/app/(home)/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select/select";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { Small } from "@/components/ui/typography";
 import { type MapListSearchParams, mapListSearchParams } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
+import { useTRPC } from "@/trpc/provider";
 import {
   MAP_DIFFICULTY_RATE_FILTER_LIMIT,
   type MAP_RANKING_STATUS_FILTER_OPTIONS,
@@ -23,7 +26,7 @@ export const MapFilter = () => {
   const isLogin = !!session?.user?.id;
   return (
     <div className="flex flex-col flex-wrap items-start gap-5 md:flex-row md:items-center">
-      {isLogin && <FilterControls />}
+      {isLogin && <FilterControlCard />}
       <DifficultyRangeControl />
     </div>
   );
@@ -59,106 +62,159 @@ export const RANKING_STATUS_FILTER_MENU: FilterMenuConfig<"rankingStatus"> = {
   ] satisfies { label: string; value: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number] }[],
 };
 
-const FILTER_MENUS = [USER_FILTER_MENU, RANKING_STATUS_FILTER_MENU];
-type FilterParam = (typeof FILTER_MENUS)[number]["options"][number];
-
-const FilterControls = () => {
-  const [params] = useQueryStates(mapListSearchParams);
-  const setSearchParams = useSetSearchParams();
-
-  const deriveSortParam = (
-    {
-      filter,
-      rankingStatus,
-    }: {
-      filter: typeof params.filter;
-      rankingStatus: typeof params.rankingStatus;
-    },
-    name: "filter" | "rankingStatus",
-    isActive: boolean,
-  ): MapListSearchParams["sort"] | undefined => {
-    const hasRankingStatusFilter =
-      rankingStatus === "1st" ||
-      rankingStatus === "not-first" ||
-      rankingStatus === "registerd" ||
-      rankingStatus === "perfect";
-
-    if (isActive) {
-      if (name === "filter" && hasRankingStatusFilter) {
-        return { value: "ranking-register", desc: true };
-      }
-      if (name === "rankingStatus" && filter === "liked") {
-        return { value: "like", desc: true };
-      }
-      return { value: "id", desc: true };
-    }
-
-    if (name === "filter" && filter === "liked") {
-      return { value: "like", desc: true };
-    }
-
-    if (name === "rankingStatus" && hasRankingStatusFilter) {
-      return { value: "ranking-register", desc: true };
-    }
-
-    return { value: "id", desc: true };
-  };
-
-  const getNextFilterParams = (
-    name: "filter" | "rankingStatus",
-    value: FilterParam["value"],
-    isApply: boolean,
-  ): Pick<MapListSearchParams, "filter" | "rankingStatus"> => {
-    let selectedFilter = params.filter;
-    if (name === "filter") {
-      selectedFilter = isApply ? (value as typeof params.filter) : null;
-    }
-
-    let selectedRankingStatus = params.rankingStatus;
-    if (name === "rankingStatus") {
-      selectedRankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
-    }
-    return { filter: selectedFilter, rankingStatus: selectedRankingStatus };
-  };
-
+const FilterControlCard = () => {
   return (
     <Card className="min-h-20 select-none py-3">
       <CardContent className="grid grid-cols-1 items-center gap-1 md:grid-cols-[auto_1fr]">
-        {FILTER_MENUS.map((filter, filterIndex) => (
-          <React.Fragment key={`${filterIndex}-${filter.label}`}>
-            <div className="flex h-8 min-w-0 items-center font-medium text-foreground text-sm md:min-w-[80px]">
-              {filter.label}
-            </div>
-            <div className="ml-0 flex flex-wrap items-center gap-1 md:ml-3">
-              {filter.options.map((param: (typeof filter.options)[number], index: number) => {
-                const currentValue = filter.name === "filter" ? params.filter : params.rankingStatus;
-                const isActive = currentValue === param.value;
-
-                return (
-                  <Button
-                    key={`${filter.name}-${index}`}
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const nextParams = getNextFilterParams(filter.name, param.value, !isActive);
-                      const sort = deriveSortParam(nextParams, filter.name, isActive);
-                      setSearchParams({ ...nextParams, sort });
-                    }}
-                    className={cn(
-                      "rounded px-2 py-1 text-sm transition-none hover:underline",
-                      isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
-                    )}
-                  >
-                    {param.label}
-                  </Button>
-                );
-              })}
-            </div>
-          </React.Fragment>
-        ))}
+        <FilterMenu key={USER_FILTER_MENU.label} filter={USER_FILTER_MENU}>
+          <BookmarkListSelect />
+        </FilterMenu>
+        <FilterMenu key={RANKING_STATUS_FILTER_MENU.label} filter={RANKING_STATUS_FILTER_MENU} />
       </CardContent>
     </Card>
   );
+};
+
+interface FilterMenuProps {
+  filter: FilterMenuConfig<"filter" | "rankingStatus">;
+  children?: React.ReactNode;
+}
+
+const FilterMenu = ({ filter, children }: FilterMenuProps) => {
+  const [params] = useQueryStates(mapListSearchParams);
+
+  const setSearchParams = useSetSearchParams();
+  return (
+    <>
+      <div className="mr-0 flex h-8 min-w-0 items-center font-medium text-foreground text-sm md:mr-3 md:min-w-[80px]">
+        {filter.label}
+      </div>
+      <div className="flex flex-wrap items-center gap-1">
+        {filter.options.map((param: (typeof filter.options)[number], index: number) => {
+          const currentValue = filter.name === "filter" ? params.filter : params.rankingStatus;
+          const isActive = currentValue === param.value;
+
+          return (
+            <Button
+              key={`${filter.name}-${index}`}
+              variant="ghost"
+              onClick={(e) => {
+                e.preventDefault();
+                const nextParams = getNextFilterParams(filter.name, param.value, !isActive, params);
+                const sort = deriveSortParam(nextParams, filter.name, isActive);
+                setSearchParams({ ...nextParams, sort });
+              }}
+              className={cn(
+                "rounded px-2 py-1 text-sm transition-none hover:underline",
+                isActive && "bg-accent/40 font-bold text-secondary-light hover:text-secondary-light",
+              )}
+            >
+              {param.label}
+            </Button>
+          );
+        })}
+        {children}
+      </div>
+    </>
+  );
+};
+
+const BookmarkListSelect = () => {
+  const trpc = useTRPC();
+  const { data: lists } = useSuspenseQuery(trpc.bookmarkList.getForSession.queryOptions());
+  const [params] = useQueryStates(mapListSearchParams);
+  const setSearchParams = useSetSearchParams();
+
+  const CLEAR_VALUE = "__clear__";
+  const value = !params.bookmarkListId ? "" : String(params.bookmarkListId);
+
+  return (
+    <Select
+      value={value}
+      onValueChange={(nextValue) => {
+        if (nextValue === CLEAR_VALUE) {
+          setSearchParams({ ...params, bookmarkListId: null });
+          return;
+        }
+        setSearchParams({ ...params, bookmarkListId: Number(nextValue) });
+      }}
+    >
+      <SelectTrigger
+        size="sm"
+        className={cn("w-40 font-normal", value && "font-bold text-secondary-light hover:text-secondary-light")}
+      >
+        <SelectValue placeholder="ブックマーク" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={CLEAR_VALUE}>指定なし</SelectItem>
+        {lists?.map((list) => (
+          <SelectItem key={list.id} value={list.id.toString()}>
+            {list.title}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+};
+
+const deriveSortParam = (
+  {
+    filter,
+    rankingStatus,
+  }: {
+    filter: Values<typeof mapListSearchParams>["filter"];
+    rankingStatus: Values<typeof mapListSearchParams>["rankingStatus"];
+  },
+  name: "filter" | "rankingStatus",
+  isActive: boolean,
+): MapListSearchParams["sort"] | undefined => {
+  const RANKING_REGISTERED_FILTER_OPTIONS: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number][] = [
+    "1st",
+    "not-first",
+    "registerd",
+    "perfect",
+  ];
+  const hasRankingStatusFilter = rankingStatus !== null && RANKING_REGISTERED_FILTER_OPTIONS.includes(rankingStatus);
+
+  if (isActive) {
+    if (name === "filter" && hasRankingStatusFilter) {
+      return { value: "ranking-register", desc: true };
+    }
+    if (name === "rankingStatus" && filter === "liked") {
+      return { value: "like", desc: true };
+    }
+    return { value: "id", desc: true };
+  }
+
+  if (name === "filter" && filter === "liked") {
+    return { value: "like", desc: true };
+  }
+
+  if (name === "rankingStatus" && hasRankingStatusFilter) {
+    return { value: "ranking-register", desc: true };
+  }
+
+  return { value: "id", desc: true };
+};
+
+const getNextFilterParams = (
+  name: "filter" | "rankingStatus",
+  value:
+    | (typeof USER_FILTER_MENU.options)[number]["value"]
+    | (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"],
+  isApply: boolean,
+  params: NonNullable<Values<typeof mapListSearchParams>>,
+): Pick<MapListSearchParams, "filter" | "rankingStatus"> => {
+  let selectedFilter = params.filter;
+  if (name === "filter") {
+    selectedFilter = isApply ? (value as typeof params.filter) : null;
+  }
+
+  let selectedRankingStatus = params.rankingStatus;
+  if (name === "rankingStatus") {
+    selectedRankingStatus = isApply ? (value as typeof params.rankingStatus) : null;
+  }
+  return { filter: selectedFilter, rankingStatus: selectedRankingStatus };
 };
 
 const DifficultyRangeControl = () => {

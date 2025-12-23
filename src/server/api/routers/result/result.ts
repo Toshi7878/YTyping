@@ -1,6 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { and, count, desc, eq, inArray, max, sql } from "drizzle-orm";
-import { nanoid } from "nanoid";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
@@ -9,6 +8,7 @@ import { Maps, NotificationOverTakes, Notifications, ResultStatuses, Results } f
 import type { TypingLineResults } from "@/validator/result";
 import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
+import { generateNotificationId } from "../../utils/id";
 
 export const resultRouter = {
   getResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
@@ -209,7 +209,7 @@ const updateRankingsAndNotifyOvertakes = async ({
           .set({ prevRank })
           .where(eq(NotificationOverTakes.notificationId, existingNotificationId));
       } else {
-        const notificationId = nanoid(10);
+        const notificationId = generateNotificationId();
 
         await tx.insert(Notifications).values({
           id: notificationId,

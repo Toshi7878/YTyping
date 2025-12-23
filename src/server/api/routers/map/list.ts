@@ -3,7 +3,16 @@ import { and, asc, count, desc, eq, gte, ilike, isNotNull, isNull, lte, or, sql 
 import { alias, type PgSelectQueryBuilder, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
-import { MapDifficulties, MapLikes, Maps, ResultStatuses, Results, Users } from "@/server/drizzle/schema";
+import {
+  MapBookmarkListItems,
+  MapBookmarkLists,
+  MapDifficulties,
+  MapLikes,
+  Maps,
+  ResultStatuses,
+  Results,
+  Users,
+} from "@/server/drizzle/schema";
 import {
   MAP_DIFFICULTY_RATE_FILTER_LIMIT,
   type MAP_RANKING_STATUS_FILTER_OPTIONS,
@@ -12,6 +21,7 @@ import {
   type MapSortSearchParamsSchema,
   SelectMapListApiSchema,
 } from "@/validator/map-list";
+import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure, type TRPCContext } from "../../trpc";
 import { createPagination } from "../../utils/pagination";
 
@@ -91,6 +101,9 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
       romaKpmMedian: MapDifficulties.romaKpmMedian,
       romaKpmMax: MapDifficulties.romaKpmMax,
     },
+    bookmark: {
+      hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
+    },
     like: {
       count: Maps.likeCount,
       hasLiked: user ? sql`COALESCE(${MyLike.hasLiked}, false)`.mapWith(Boolean) : sql`0`.mapWith(Boolean),
@@ -140,6 +153,16 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     baseQuery = baseQuery.innerJoin(Liker, and(eq(Liker.mapId, Maps.id), eq(Liker.userId, input.likerId)));
   }
 
+  if (input?.bookmarkListId) {
+    // @ts-expect-error
+    baseQuery = baseQuery
+      .innerJoin(MapBookmarkLists, and(eq(MapBookmarkLists.id, input.bookmarkListId)))
+      .innerJoin(
+        MapBookmarkListItems,
+        and(eq(MapBookmarkListItems.listId, input.bookmarkListId), eq(MapBookmarkListItems.mapId, Maps.id)),
+      );
+  }
+
   const searchConditions = [
     user ? buildFilterCondition(input.filter, user) : undefined,
     user ? buildRankingStatusCondition(input.rankingStatus) : undefined,
@@ -147,6 +170,9 @@ const buildBaseQuery = <T extends PgSelectQueryBuilder>(
     buildKeywordCondition(input.keyword),
     input.creatorId ? eq(Maps.creatorId, input.creatorId) : undefined,
     input.likerId ? and(eq(Liker.userId, input.likerId), eq(Liker.hasLiked, true)) : undefined,
+    input.bookmarkListId
+      ? and(eq(MapBookmarkLists.id, input.bookmarkListId), eq(MapBookmarkListItems.mapId, Maps.id))
+      : undefined,
   ];
 
   return baseQuery.where(and(...searchConditions));

@@ -4,6 +4,7 @@ import {
   createParser,
   createSerializer,
   parseAsFloat,
+  parseAsInteger,
   parseAsString,
   parseAsStringLiteral,
 } from "nuqs/server";
@@ -48,6 +49,7 @@ export const mapListSearchParams = {
   maxRate: parseAsDifficultyRate.withDefault(MAP_DIFFICULTY_RATE_FILTER_LIMIT.max),
   filter: parseAsStringLiteral(MAP_USER_FILTER_OPTIONS),
   rankingStatus: parseAsStringLiteral(MAP_RANKING_STATUS_FILTER_OPTIONS),
+  bookmarkListId: parseAsInteger,
 };
 
 export type MapListSearchParams = inferParserType<typeof mapListSearchParams>;
