@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-12-23",
+    descriptions: ["ブックマーク機能を追加"],
+  },
+  {
     date: "2025-12-14",
     descriptions: [
       "エディター > YouTubeIDの貼り付けができない問題を修正",

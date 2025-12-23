@@ -19,6 +19,7 @@ export const bookmarkListRouter = {
       .groupBy(MapBookmarkLists.id)
       .where(eq(MapBookmarkLists.userId, user.id));
   }),
+
   getByUserId: publicProcedure
     .input(z.object({ userId: z.number(), includeMapId: z.number().optional() }))
     .query(async ({ input, ctx }) => {
