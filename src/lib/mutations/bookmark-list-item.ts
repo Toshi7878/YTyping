@@ -111,6 +111,13 @@ export function useAddBookmarkListItemMutation() {
         if (!ctx?.previous) return;
         for (const [key, data] of ctx.previous) queryClient.setQueryData(key, data);
       },
+      onSuccess: (_data, input, ctx) => {
+        if (!ctx) return;
+        queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
+        queryClient.invalidateQueries(
+          trpc.bookmarkList.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
+        );
+      },
     }),
   );
 }
@@ -125,6 +132,13 @@ export function useRemoveBookmarkListItemMutation() {
       onError: (_err, _vars, ctx) => {
         if (!ctx?.previous) return;
         for (const [key, data] of ctx.previous) queryClient.setQueryData(key, data);
+      },
+      onSuccess: (_data, input, ctx) => {
+        if (!ctx) return;
+        queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
+        queryClient.invalidateQueries(
+          trpc.bookmarkList.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
+        );
       },
     }),
   );
