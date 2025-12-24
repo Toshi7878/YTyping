@@ -230,7 +230,7 @@ importers:
         version: 0.31.8
       supabase:
         specifier: ^2.48.3
-        version: 2.67.3
+        version: 2.70.5
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -4270,8 +4270,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  supabase@2.67.3:
-    resolution: {integrity: sha512-qckJFdFh+sttA4rXe0oFb9X80nGaXXGm95tsd0IyKF/6OG/dgxSmdehkoA9CEyPwun5lpaqHdbdmYF3314M4RA==}
+  supabase@2.70.5:
+    resolution: {integrity: sha512-HtMGtYbcL9dxi2Yz4eGWWlxl9nQi76pOyGgCTBeE67p5AeIlv+KJhDOR8oinaNfHHMPKk0Uo1WW7Kxyrz+tdgg==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -4439,8 +4439,8 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  watchpack@2.4.4:
-    resolution: {integrity: sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA==}
+  watchpack@2.5.0:
+    resolution: {integrity: sha512-e6vZvY6xboSwLz2GD36c16+O/2Z6fKvIf4pOXptw2rY9MVwE/TXc6RGqxD3I3x0a28lwBY7DE+76uTPSsBrrCA==}
     engines: {node: '>=10.13.0'}
 
   web-streams-polyfill@3.3.3:
@@ -8856,7 +8856,7 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.28.5
 
-  supabase@2.67.3:
+  supabase@2.70.5:
     dependencies:
       bin-links: 6.0.0
       https-proxy-agent: 7.0.6
@@ -9007,7 +9007,7 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  watchpack@2.4.4:
+  watchpack@2.5.0:
     dependencies:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
@@ -9045,7 +9045,7 @@ snapshots:
       schema-utils: 4.3.3
       tapable: 2.3.0
       terser-webpack-plugin: 5.3.16(esbuild@0.25.12)(webpack@5.103.0(esbuild@0.25.12))
-      watchpack: 2.4.4
+      watchpack: 2.5.0
       webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
