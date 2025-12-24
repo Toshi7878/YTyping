@@ -29,9 +29,17 @@ interface BookmarkListPopoverProps {
   mapId: number;
   hasBookmarked: boolean;
   className?: string;
+  iconClassName?: string;
+  variant?: "ghost" | "unstyled";
 }
 
-export const BookmarkListPopover = ({ mapId, hasBookmarked, className }: BookmarkListPopoverProps) => {
+export const BookmarkListPopover = ({
+  mapId,
+  hasBookmarked,
+  className,
+  iconClassName,
+  variant = "ghost",
+}: BookmarkListPopoverProps) => {
   const trpc = useTRPC();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
@@ -58,10 +66,11 @@ export const BookmarkListPopover = ({ mapId, hasBookmarked, className }: Bookmar
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className={cn("dark:hover:bg-primary/35", className)}>
+        <Button variant={variant} size="icon" className={cn("dark:hover:bg-primary/35", className)}>
           <Bookmark
+            strokeWidth={2.5}
             fill={hasBookmarked ? "currentColor" : "none"}
-            className={cn("size-4", hasBookmarked ? "text-primary-light" : "text-muted-foreground")}
+            className={cn("size-4", hasBookmarked ? "text-primary-light" : "text-muted-foreground", iconClassName)}
           />
         </Button>
       </PopoverTrigger>

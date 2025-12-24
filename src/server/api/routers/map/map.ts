@@ -6,6 +6,7 @@ import { db } from "@/server/drizzle/client";
 import { MapDifficulties, MapLikes, Maps, Users } from "@/server/drizzle/schema";
 import { UpsertMapSchema } from "@/validator/map";
 import type { RawMapLine } from "@/validator/raw-map-json";
+import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const mapRouter = {
@@ -30,6 +31,9 @@ export const mapRouter = {
         },
         like: {
           hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
+        },
+        bookmark: {
+          hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
         },
         createdAt: Maps.createdAt,
         updatedAt: Maps.updatedAt,

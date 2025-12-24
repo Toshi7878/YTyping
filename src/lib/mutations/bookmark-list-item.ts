@@ -5,19 +5,21 @@ import { useTRPC } from "@/trpc/provider";
 import { updateInfiniteQueryCache, updateQueryCache } from "../update-query-cache";
 
 type BookmarkListsByUserIdItem = RouterOutputs["bookmarkList"]["getByUserId"][number];
+type MapInfo = RouterOutputs["map"]["getMapInfo"];
 
 const createMapBookmarkUpdater = (mapId: number, hasBookmarked: boolean) => {
-  const updateMap = (map: MapListItem): MapListItem => {
+  const updateBookmark = <T extends { id: number; bookmark: { hasBookmarked: boolean } }>(map: T): T => {
     if (map.id !== mapId) return map;
     return { ...map, bookmark: { ...map.bookmark, hasBookmarked } };
   };
 
   return {
-    forMap: updateMap,
+    forMapListItem: (map: MapListItem) => updateBookmark(map),
+    forMapInfo: (map: MapInfo) => updateBookmark(map),
     forItemWithMap: <T>(item: T): T => {
       const i = item as T & { map: MapListItem };
       if (i.map?.id !== mapId) return item;
-      return { ...i, map: updateMap(i.map) };
+      return { ...i, map: updateBookmark(i.map) };
     },
   };
 };
@@ -31,6 +33,17 @@ function getIncludeMapIdFromTrpcQueryKey(key: unknown): number | undefined {
   return typeof input?.includeMapId === "number" ? input.includeMapId : undefined;
 }
 
+function computeNextHasBookmarkedFromBookmarkLists(args: {
+  data: BookmarkListsByUserIdItem[];
+  listId: number;
+  action: ToggleInput["action"];
+}) {
+  const { data, listId, action } = args;
+  const nextHasMapForTargetList = action === "add";
+  const anyOtherHasMap = data.some((l) => l.id !== listId && l.hasMap);
+  return nextHasMapForTargetList || anyOtherHasMap;
+}
+
 async function runOptimisticUpdate(args: {
   trpc: ReturnType<typeof useTRPC>;
   queryClient: ReturnType<typeof useQueryClient>;
@@ -39,11 +52,13 @@ async function runOptimisticUpdate(args: {
   const { trpc, queryClient, input } = args;
 
   const mapListFilter = trpc.mapList.pathFilter();
+  const mapInfoFilter = trpc.map.getMapInfo.queryFilter({ mapId: input.mapId });
   const resultListFilter = trpc.resultList.pathFilter();
   const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
   const bookmarkListsByUserIdFilter = trpc.bookmarkList.getByUserId.queryFilter();
 
   await Promise.all([
+    queryClient.cancelQueries(mapInfoFilter),
     queryClient.cancelQueries(mapListFilter),
     queryClient.cancelQueries(resultListFilter),
     queryClient.cancelQueries(notificationsFilter),
@@ -51,6 +66,7 @@ async function runOptimisticUpdate(args: {
   ]);
 
   const previous = [
+    ...queryClient.getQueriesData(mapInfoFilter),
     ...queryClient.getQueriesData(mapListFilter),
     ...queryClient.getQueriesData(resultListFilter),
     ...queryClient.getQueriesData(notificationsFilter),
@@ -72,8 +88,11 @@ async function runOptimisticUpdate(args: {
     if (!target) continue;
 
     const nextHasMapForTargetList = input.action === "add";
-    const anyOtherHasMap = data.some((l) => l.id !== input.listId && l.hasMap);
-    nextHasBookmarked = nextHasMapForTargetList || anyOtherHasMap;
+    nextHasBookmarked = computeNextHasBookmarkedFromBookmarkLists({
+      data,
+      listId: input.listId,
+      action: input.action,
+    });
 
     // まずリスト側を更新（hasMap / count）
     queryClient.setQueryData<BookmarkListsByUserIdItem[]>(key, (old) => {
@@ -90,8 +109,9 @@ async function runOptimisticUpdate(args: {
   if (nextHasBookmarked !== undefined) {
     const updater = createMapBookmarkUpdater(input.mapId, nextHasBookmarked);
 
-    updateInfiniteQueryCache(queryClient, mapListFilter, updater.forMap);
-    updateQueryCache(queryClient, mapListFilter, updater.forMap);
+    updateInfiniteQueryCache(queryClient, mapListFilter, updater.forMapListItem);
+    updateQueryCache(queryClient, mapListFilter, updater.forMapListItem);
+    updateQueryCache(queryClient, mapInfoFilter, updater.forMapInfo);
 
     updateInfiniteQueryCache(queryClient, resultListFilter, updater.forItemWithMap);
     updateInfiniteQueryCache(queryClient, notificationsFilter, updater.forItemWithMap);
