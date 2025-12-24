@@ -7,21 +7,13 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import type z from "zod";
+import { BookmarkListFormFields } from "@/components/shared/bookmark/bookmark-list-popover";
+import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,12 +22,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Form } from "@/components/ui/form";
-import { InputFormField } from "@/components/ui/input/input-form-field";
 import { Spinner } from "@/components/ui/spinner";
-import { SwitchFormField } from "@/components/ui/switch";
 import { Small } from "@/components/ui/typography";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
+import { MapBookmarkListFormSchema } from "@/validator/bookmark";
 
 type BookmarkList = RouterOutputs["bookmarkList"]["getByUserId"][number];
 
@@ -53,58 +44,13 @@ export const UserBookmarkLists = ({ id }: { id: string }) => {
   return (
     <section className="grid grid-cols-1 gap-3 md:grid-cols-2">
       {lists.map((list) => (
-        <BookmarkListCard
-          key={list.id}
-          list={list}
-          userId={Number(id)}
-          showMenu={Number(id) === Number(session?.user?.id)}
-        />
+        <BookmarkListCard key={list.id} list={list} showMenu={Number(id) === Number(session?.user?.id)} />
       ))}
     </section>
   );
 };
 
-const EditBookmarkListSchema = z.object({
-  title: z.string().trim().min(1),
-  isPublic: z.boolean(),
-});
-
-const BookmarkListCard = ({ list, userId, showMenu }: { list: BookmarkList; userId: number; showMenu: boolean }) => {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  const form = useForm<z.infer<typeof EditBookmarkListSchema>>({
-    resolver: zodResolver(EditBookmarkListSchema),
-    defaultValues: { title: list.title, isPublic: list.isPublic },
-  });
-
-  const updateMutation = useMutation(
-    trpc.bookmarkList.update.mutationOptions({
-      onSuccess: async () => {
-        await Promise.all([
-          queryClient.invalidateQueries(trpc.bookmarkList.getByUserId.queryOptions({ userId })),
-          queryClient.invalidateQueries(trpc.bookmarkList.getForSession.queryOptions()),
-        ]);
-        toast.success("更新しました");
-      },
-      onError: (e) => toast.error(e.message),
-    }),
-  );
-
-  const deleteMutation = useMutation(
-    trpc.bookmarkList.delete.mutationOptions({
-      onSuccess: async () => {
-        await Promise.all([
-          queryClient.invalidateQueries(trpc.bookmarkList.getByUserId.queryOptions({ userId })),
-          queryClient.invalidateQueries(trpc.bookmarkList.getForSession.queryOptions()),
-        ]);
-        toast.success("削除しました");
-      },
-      onError: (e) => toast.error(e.message),
-    }),
-  );
-
+const BookmarkListCard = ({ list, showMenu }: { list: BookmarkList; showMenu: boolean }) => {
   return (
     <Card className="py-0">
       <CardContent className="flex items-center justify-between gap-3 px-4 py-4">
@@ -121,83 +67,128 @@ const BookmarkListCard = ({ list, userId, showMenu }: { list: BookmarkList; user
           </div>
         </div>
 
-        {showMenu && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="shrink-0">
-                <MoreHorizontal className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <Dialog
-                onOpenChange={(open) => {
-                  if (open) {
-                    form.reset({ title: list.title, isPublic: list.isPublic });
-                  }
-                }}
-              >
-                <DialogTrigger asChild>
-                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                    <Pencil className="size-4" />
-                    編集
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>ブックマークリストを編集</DialogTitle>
-                  </DialogHeader>
-                  <Form {...form}>
-                    <form
-                      onSubmit={form.handleSubmit((data) =>
-                        updateMutation.mutate({ listId: list.id, title: data.title, isPublic: data.isPublic }),
-                      )}
-                      className="grid gap-3"
-                    >
-                      <InputFormField name="title" label="リスト名" />
-                      <SwitchFormField name="isPublic" label="公開" />
-                      <DialogFooter>
-                        <Button type="submit" disabled={updateMutation.isPending}>
-                          更新
-                        </Button>
-                      </DialogFooter>
-                    </form>
-                  </Form>
-                </DialogContent>
-              </Dialog>
-
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onSelect={(e) => {
-                  e.preventDefault();
-                  setIsDeleteOpen(true);
-                }}
-              >
-                <Trash2 className="size-4" />
-                削除
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+        {showMenu && <BookmarkListMenu list={list} />}
       </CardContent>
-
-      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>リストを削除しますか？</AlertDialogTitle>
-            <AlertDialogDescription>この操作は取り消せません。</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>キャンセル</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
-              onClick={() => deleteMutation.mutate({ listId: list.id })}
-            >
-              削除
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </Card>
+  );
+};
+
+const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
+  const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  const deleteListMutation = useMutation(
+    trpc.bookmarkList.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(trpc.bookmarkList.getByUserId.queryFilter({ userId: Number(session?.user?.id) }));
+        setOpen(false);
+        toast.success("リストを削除しました");
+      },
+      onError: (error) => {
+        toast.error(`削除に失敗しました: ${error.message}`);
+      },
+    }),
+  );
+
+  const confirm = useConfirm();
+
+  const handleDelete = async () => {
+    const isConfirmed = await confirm({
+      title: "リストを削除",
+      body: "リストを削除してもよろしいですか？この操作は元に戻せません。",
+      cancelButton: "キャンセル",
+      actionButton: "削除する",
+      cancelButtonVariant: "outline",
+      actionButtonVariant: "destructive",
+    });
+    if (!isConfirmed) return;
+    deleteListMutation.mutate({ listId: list.id });
+  };
+
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="shrink-0">
+          <MoreHorizontal className="size-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <EditBookmarkListDialogForm
+          list={list}
+          trigger={
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <Pencil className="size-4" />
+              編集
+            </DropdownMenuItem>
+          }
+        />
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
+          <Trash2 className="size-4" />
+          削除
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; trigger: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
+
+  const form = useForm({
+    resolver: zodResolver(MapBookmarkListFormSchema),
+    defaultValues: {
+      title: list.title,
+      visibility: list.isPublic ? ("public" as const) : ("private" as const),
+    },
+  });
+  const {
+    formState: { isDirty },
+  } = form;
+
+  const updateListMutation = useMutation(
+    trpc.bookmarkList.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(trpc.bookmarkList.getByUserId.queryFilter({ userId: Number(session?.user?.id) }));
+        setOpen(false);
+        toast.success("リストを編集しました");
+      },
+      onError: (error) => {
+        toast.error(`編集に失敗しました: ${error.message}`);
+      },
+    }),
+  );
+
+  const onSubmit = (data: z.infer<typeof MapBookmarkListFormSchema>) => {
+    const { visibility, ...rest } = data;
+    updateListMutation.mutate({
+      listId: list.id,
+      ...rest,
+      isPublic: visibility === "public",
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>リストを編集</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+            <BookmarkListFormFields />
+            <Button type="submit" loading={updateListMutation.isPending} disabled={!isDirty}>
+              編集
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };

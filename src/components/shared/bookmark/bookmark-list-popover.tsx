@@ -92,101 +92,12 @@ export const BookmarkListPopover = ({ mapId, hasBookmarked, className }: Bookmar
   );
 };
 
-// const EditBookmarkListDialogForm = ({ listId, mapId }: { listId: number; mapId: number }) => {
-//   const form = useForm({
-//     resolver: zodResolver(MapBookmarkListFormSchema),
-//     defaultValues: {
-//       title: "",
-//       visibility: "public" as const,
-//     },
-//   });
-//   const [open, setOpen] = useState(false);
-//   const trpc = useTRPC();
-//   const queryClient = useQueryClient();
-//   const { data: session } = useSession();
-//   const confirm = useConfirm();
-
-//   const updateListMutation = useMutation(
-//     trpc.bookmarkList.update.mutationOptions({
-//       onSuccess: () => {
-//         queryClient.invalidateQueries(
-//           trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(session?.user?.id), includeMapId: mapId }),
-//         );
-//       },
-//       onError: (error) => {
-//         toast.error(`編集に失敗しました: ${error.message}`);
-//       },
-//     }),
-//   );
-
-//   const deleteListMutation = useMutation(
-//     trpc.bookmarkList.delete.mutationOptions({
-//       onSuccess: () => {
-//         queryClient.invalidateQueries(
-//           trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(session?.user?.id), includeMapId: mapId }),
-//         );
-//         setOpen(false);
-//         toast.success("リストを削除しました");
-//       },
-//       onError: (error) => {
-//         toast.error(`削除に失敗しました: ${error.message}`);
-//       },
-//     }),
-//   );
-
-//   const onDelete = async () => {
-//     const isConfirmed = await confirm({
-//       title: "リストを削除",
-//       body: "リストを削除してもよろしいですか？この操作は元に戻せません。",
-//       cancelButton: "キャンセル",
-//       actionButton: "削除する",
-//       cancelButtonVariant: "outline",
-//       actionButtonVariant: "destructive",
-//     });
-//     if (!isConfirmed) return;
-//     deleteListMutation.mutate({ listId });
-//   };
-
-//   const onSubmit = (data: z.infer<typeof MapBookmarkListFormSchema>) => {
-//     const { visibility, ...rest } = data;
-//     updateListMutation.mutate({
-//       listId,
-//       ...rest,
-//       isPublic: visibility === "public",
-//     });
-//   };
-
-//   return (
-//     <Dialog open={open} onOpenChange={setOpen}>
-//       <DialogTrigger asChild>
-//         <Button variant="ghost" className="w-full justify-start gap-2 py-5">
-//           <Pencil className="size-4" /> リストを編集
-//         </Button>
-//       </DialogTrigger>
-//       <DialogContent>
-//         <DialogHeader>
-//           <DialogTitle>リストを編集</DialogTitle>
-//         </DialogHeader>
-//         <Form {...form}>
-//           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-//             <BookmarkListFormFields />
-//             <Button type="submit">編集</Button>
-//             <Button type="button" variant="outline-destructive" onClick={onDelete}>
-//               リストを削除
-//             </Button>
-//           </form>
-//         </Form>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// };
-
 interface BookMarkListItemProps {
   list: RouterOutputs["bookmarkList"]["getByUserId"][number];
   onClick: React.ComponentProps<"button">["onClick"];
 }
 
-const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
+export const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
   return (
     <Button variant="ghost" size="xl" className="justify-between px-1" onClick={onClick}>
       <div className="flex items-center gap-3">
@@ -282,7 +193,7 @@ const AddBookmarkListDialogForm = ({ mapId }: { mapId: number }) => {
   );
 };
 
-const BookmarkListFormFields = () => {
+export const BookmarkListFormFields = () => {
   return (
     <>
       <InputFormField name="title" label="リスト名" />
