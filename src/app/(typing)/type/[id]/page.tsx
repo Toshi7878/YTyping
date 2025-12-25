@@ -44,8 +44,8 @@ export default async function Page({ params }: PageProps<"/type/[id]">) {
   if (!mapInfo) {
     notFound();
   }
-
-  prefetch(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }));
+  prefetch(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }, { initialData: mapInfo }));
+  prefetch(trpc.map.getRawMapJson.queryOptions({ mapId: Number(mapId) }));
 
   return (
     <HydrateClient>

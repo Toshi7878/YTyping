@@ -9,7 +9,7 @@ import { KeyboardInput } from "./_components/profile-settings/keyboard-input";
 
 export default async function Page() {
   return (
-    <div className="mx-auto max-w-screen-lg space-y-5">
+    <div className="mx-auto max-w-5xl space-y-5">
       <ProfileSettingCard />
       <OptionSettingCard />
     </div>
