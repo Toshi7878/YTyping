@@ -39,8 +39,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function Page({ params }: PageProps<"/type/[id]">) {
   const { id: mapId } = await params;
-  const userTypingOptions = await serverApi.userOption.getUserTypingOptions();
   prefetch(trpc.map.getRawMapJson.queryOptions({ mapId: Number(mapId) }));
+  const userTypingOptions = await serverApi.userOption.getUserTypingOptions();
   const mapInfo = await getMapInfo(Number(mapId));
   if (!mapInfo) {
     notFound();
