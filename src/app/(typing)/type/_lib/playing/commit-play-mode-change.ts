@@ -4,6 +4,7 @@ import {
   readUtilityParams,
   resetReplayRankingResult,
   setLineResultSheet,
+  setMinMediaSpeed,
   setNotify,
   setPlayingInputMode,
   setScene,
@@ -31,9 +32,11 @@ export const commitPlayModeChange = () => {
         const readyInputMode = readReadyInputMode();
         setPlayingInputMode(readyInputMode);
       }
-      const playSpeed = readMediaSpeed();
+      const mediaSpeed = readMediaSpeed();
 
-      setYTPlaybackRate(playSpeed < 1 ? 1 : playSpeed);
+      const newMediaSpeed = mediaSpeed < 1 ? 1 : mediaSpeed;
+      setMinMediaSpeed(newMediaSpeed);
+      setYTPlaybackRate(newMediaSpeed);
 
       commitPlayRestart("play");
     }
