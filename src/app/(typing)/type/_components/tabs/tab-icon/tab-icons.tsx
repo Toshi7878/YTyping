@@ -17,7 +17,7 @@ export const TabIcons = ({ className }: { className?: string }) => {
   const { data: session } = useSession();
 
   return (
-    <div className={cn("relative flex text-foreground/60 max-sm:pr-10 md:bottom-1", className)}>
+    <div className={cn("relative flex text-foreground/60 max-md:pr-10 md:bottom-1", className)}>
       {session?.user.id ? <SettingPopover /> : null}
       {session?.user.id ? <BookmarkListIconButton /> : null}
       {session?.user.id ? <LikeIconButton /> : null}
@@ -41,7 +41,7 @@ export const BookmarkListIconButton = () => {
         hasBookmarked={hasBookmarked}
         variant="unstyled"
         className={cn(
-          "group relative bottom-0.5 ml-3 size-20 p-5 max-sm:mt-8 max-sm:ml-8 md:size-8 dark:hover:bg-transparent",
+          "group relative bottom-0.5 ml-3 size-20 p-5 max-md:mt-8 max-md:ml-8 md:size-8 dark:hover:bg-transparent",
           hasBookmarked && "hover:opacity-80",
         )}
         iconClassName={cn("size-20 md:size-8", !hasBookmarked && "group-hover:text-foreground/90")}
@@ -70,7 +70,7 @@ export const LikeIconButton = () => {
         size={isSmScreen ? 164 : 64}
         defaultLiked={mapInfo.like.hasLiked}
         className={cn(
-          "bottom-3.5 max-sm:mb-[-25px]",
+          "bottom-3.5 max-md:mb-[-25px]",
           mapInfo.like.hasLiked ? "hover:opacity-80" : "hover:text-foreground/90",
         )}
       />
@@ -92,7 +92,7 @@ const EditIconButton = () => {
   const tooltipLabel = `譜面のEditページに移動${Number(userId) !== Number(creatorId) && role === "USER" ? "(閲覧のみ)" : ""}`;
   return (
     <TooltipWrapper label={tooltipLabel} delayDuration={500}>
-      <Link href={`/edit/${mapId}`} replace className="max-sm:relative max-sm:top-[50px] max-sm:ml-6">
+      <Link href={`/edit/${mapId}`} replace className="max-md:relative max-md:top-[50px] max-md:ml-6">
         <Button variant="unstyled" size="icon" className="hover:text-foreground/90">
           <BiEdit className="size-24 md:size-9" />
         </Button>
