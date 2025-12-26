@@ -109,10 +109,10 @@ importers:
         version: 1.10.27
       jotai:
         specifier: ^2.14.0
-        version: 2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
+        version: 2.16.1(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
       jotai-optics:
         specifier: ^0.4.0
-        version: 0.4.0(jotai@2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1)
+        version: 0.4.0(jotai@2.16.1(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1)
       jschardet:
         specifier: ^3.1.4
         version: 3.1.4
@@ -3569,8 +3569,8 @@ packages:
       jotai: '>=2.0.0'
       optics-ts: '>=2.0.0'
 
-  jotai@2.16.0:
-    resolution: {integrity: sha512-NmkwPBet0SHQ28GBfEb10sqnbVOYyn6DL4iazZgGRDUKxSWL0iqcm+IK4TqTSFC2ixGk+XX2e46Wbv364a3cKg==}
+  jotai@2.16.1:
+    resolution: {integrity: sha512-vrHcAbo3P7Br37C8Bv6JshMtlKMPqqmx0DDREtTjT4nf3QChDrYdbH+4ik/9V0cXA57dK28RkJ5dctYvavcIlg==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@babel/core': '>=7.0.0'
@@ -4439,8 +4439,8 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  watchpack@2.4.4:
-    resolution: {integrity: sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA==}
+  watchpack@2.5.0:
+    resolution: {integrity: sha512-e6vZvY6xboSwLz2GD36c16+O/2Z6fKvIf4pOXptw2rY9MVwE/TXc6RGqxD3I3x0a28lwBY7DE+76uTPSsBrrCA==}
     engines: {node: '>=10.13.0'}
 
   web-streams-polyfill@3.3.3:
@@ -8168,12 +8168,12 @@ snapshots:
 
   jose@6.1.3: {}
 
-  jotai-optics@0.4.0(jotai@2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1):
+  jotai-optics@0.4.0(jotai@2.16.1(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3))(optics-ts@2.4.1):
     dependencies:
-      jotai: 2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
+      jotai: 2.16.1(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3)
       optics-ts: 2.4.1
 
-  jotai@2.16.0(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3):
+  jotai@2.16.1(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.2.3):
     optionalDependencies:
       '@babel/core': 7.28.5
       '@babel/template': 7.27.2
@@ -9007,7 +9007,7 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  watchpack@2.4.4:
+  watchpack@2.5.0:
     dependencies:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
@@ -9045,7 +9045,7 @@ snapshots:
       schema-utils: 4.3.3
       tapable: 2.3.0
       terser-webpack-plugin: 5.3.16(esbuild@0.25.12)(webpack@5.103.0(esbuild@0.25.12))
-      watchpack: 2.4.4
+      watchpack: 2.5.0
       webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
