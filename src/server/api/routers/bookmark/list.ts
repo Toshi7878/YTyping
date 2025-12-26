@@ -1,8 +1,14 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
-import { and, count, desc, eq, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, sql } from "drizzle-orm";
 import z from "zod";
-import { MapBookmarkListItems, MapBookmarkLists, Maps } from "@/server/drizzle/schema";
+import {
+  MapBookmarkListItems,
+  MapBookmarkLists,
+  Maps,
+  NotificationMapBookmarks,
+  Notifications,
+} from "@/server/drizzle/schema";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const bookmarkListRouter = {
@@ -108,8 +114,28 @@ export const bookmarkListRouter = {
 
   delete: protectedProcedure.input(z.object({ listId: z.number() })).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;
-    return db
-      .delete(MapBookmarkLists)
-      .where(and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, user.id)));
+
+    return db.transaction(async (tx) => {
+      // list削除の cascade で notification_map_bookmarks 側は消えるが、notifications は残り得る。
+      // 先に紐づく notifications を消して、孤児通知を作らないようにする。
+      const relatedNotificationIds = await tx
+        .select({ id: NotificationMapBookmarks.notificationId })
+        .from(NotificationMapBookmarks)
+        .innerJoin(MapBookmarkLists, eq(MapBookmarkLists.id, NotificationMapBookmarks.listId))
+        .where(and(eq(NotificationMapBookmarks.listId, input.listId), eq(MapBookmarkLists.userId, user.id)));
+
+      if (relatedNotificationIds.length > 0) {
+        await tx.delete(Notifications).where(
+          inArray(
+            Notifications.id,
+            relatedNotificationIds.map((r) => r.id),
+          ),
+        );
+      }
+
+      return await tx
+        .delete(MapBookmarkLists)
+        .where(and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, user.id)));
+    });
   }),
 } satisfies TRPCRouterRecord;
