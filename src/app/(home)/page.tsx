@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { loadMapListSearchParams } from "@/lib/search-params/map-list";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { MapControlArea } from "./_components/map-control-area";
@@ -15,8 +16,10 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     <HydrateClient>
       <JotaiProvider minRate={minRate} maxRate={maxRate}>
         <div className="mx-auto max-w-7xl lg:px-8">
-          <MapControlArea />
-          <MapList />
+          <Suspense>
+            <MapControlArea />
+            <MapList />
+          </Suspense>
         </div>
       </JotaiProvider>
     </HydrateClient>
