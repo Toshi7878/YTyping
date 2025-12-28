@@ -82,7 +82,7 @@ const CardContentWithThumbnail = ({
       className={cn("rounded-sm px-4 py-4", className)}
       style={{
         background: src
-          ? `var(--card-with-thumbnail), url(${src}) center center / cover no-repeat`
+          ? `var(--card-with-thumbnail), url(${src}) center 40% / cover no-repeat`
           : "var(--card-with-thumbnail)",
       }}
       {...props}
