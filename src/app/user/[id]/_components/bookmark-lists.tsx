@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient, useSuspenseInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Bookmark, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -92,14 +93,14 @@ const BookmarkListCardList = ({ id }: { id: string }) => {
   );
 };
 
+export const buildBookmarkListUrl = (userId: string, listId: number) => {
+  return `/user/${userId}${serializeUserPageSearchParams({ tab: "bookmarks", bookmarkListId: listId })}`;
+};
 const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu: boolean; id: string }) => {
   return (
     <Card className="hover-card-shadow-primary py-0 transition-shadow">
       <CardContent className="relative flex items-center justify-between gap-3 px-4 py-4">
-        <Link
-          href={`/user/${id}${serializeUserPageSearchParams({ tab: "bookmarks", bookmarkListId: list.id })}`}
-          className="absolute size-full"
-        />
+        <Link href={buildBookmarkListUrl(id, list.id) as Route} className="absolute size-full" />
         <div className="flex flex-row items-center gap-3">
           <Image
             src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}

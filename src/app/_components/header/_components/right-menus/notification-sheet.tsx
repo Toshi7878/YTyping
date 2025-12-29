@@ -2,6 +2,9 @@
 
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, BellDot } from "lucide-react";
+import type { Route } from "next";
+import Link from "next/link";
+import { buildBookmarkListUrl } from "@/app/user/[id]/_components/bookmark-lists";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { NotificationMapCardContent } from "@/components/shared/map-card/compact-card";
 import { DateDistanceText } from "@/components/shared/text/date-distance-text";
@@ -141,13 +144,21 @@ export const ClapNotificationMapCard = ({ notification }: { notification: ClapNo
 
 type BookMarkNotification = Extract<Notification, { type: "MAP_BOOKMARK" }>;
 export const BookMarkNotificationMapCard = ({ notification }: { notification: BookMarkNotification }) => {
-  const { map, bookmarker } = notification;
+  const { map, bookmarker, mapBookmark } = notification;
   return (
     <NotificationMapCardContent
       map={map}
       user={{ id: bookmarker.id, name: bookmarker.name ?? "" }}
       className="bg-secondary-dark/85"
-      title={<span>さんが譜面をブックマークしました</span>}
+      title={
+        <span>
+          さんが
+          <Link href={buildBookmarkListUrl(String(bookmarker.id), mapBookmark.list.id) as Route}>
+            {mapBookmark.list.title}
+          </Link>
+          ブックマークしました
+        </span>
+      }
     />
   );
 };

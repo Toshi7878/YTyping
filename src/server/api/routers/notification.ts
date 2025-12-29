@@ -180,6 +180,7 @@ export const notificationRouter = {
             updatedAt: notification.updatedAt,
             bookmarker: mapBookmark.bookmarker,
             map: toMapListItem(mapBookmark.map),
+            mapBookmark: notification.mapBookmark,
           };
         }
 
