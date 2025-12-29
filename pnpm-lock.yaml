@@ -154,7 +154,7 @@ importers:
         version: 19.2.3
       react-activity-calendar:
         specifier: ^3.0.1
-        version: 3.0.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 3.0.5(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-dom:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
@@ -4035,8 +4035,8 @@ packages:
     resolution: {integrity: sha512-s4VSOf6yN0rvbRZGxs8Om5CWj6seneMwK3oDb4lWDH0UPhWcxwOWw5+qk24bxq87szX1ydrwylIOp2uG1ojUpA==}
     engines: {node: '>= 0.8'}
 
-  react-activity-calendar@3.0.4:
-    resolution: {integrity: sha512-buCiBiD95UGfOJs9DZKuJX5fvrcSWBd7xNhLDtwhOz9yvkziWZ2zqPm8FtMIZV5HVHnVo/3gHBMUfcRzXHPPyA==}
+  react-activity-calendar@3.0.5:
+    resolution: {integrity: sha512-OwySecGFNRq5uuIenBOHGyzFXiHbwD/hHobX0HTJt3G60/FZWKDd+v7uchS/62GznVrXoiY47vAXOxJrAcnW8A==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -8588,7 +8588,7 @@ snapshots:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
-  react-activity-calendar@3.0.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  react-activity-calendar@3.0.5(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       date-fns: 4.1.0
