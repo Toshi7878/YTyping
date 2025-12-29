@@ -74,6 +74,22 @@ export const bookmarkListRouter = {
         .orderBy(desc(MapBookmarkLists.updatedAt));
     }),
 
+  getCount: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+
+    const total = await db
+      .select({ count: count() })
+      .from(MapBookmarkLists)
+      .where(
+        and(
+          eq(MapBookmarkLists.userId, input.userId),
+          input.userId !== user?.id ? eq(MapBookmarkLists.isPublic, true) : undefined,
+        ),
+      );
+
+    return total[0]?.count ?? 0;
+  }),
+
   create: protectedProcedure
     .input(z.object({ title: z.string().min(1), isPublic: z.boolean().default(false) }))
     .mutation(async ({ input, ctx }) => {

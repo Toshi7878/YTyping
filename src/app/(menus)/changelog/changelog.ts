@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2025-12-29",
+    descriptions: ["ユーザーページの譜面タブにカウントバッジを追加"],
+  },
+  {
     date: "2025-12-23",
     descriptions: ["ブックマーク機能を追加"],
   },

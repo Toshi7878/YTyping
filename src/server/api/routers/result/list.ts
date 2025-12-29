@@ -1,6 +1,6 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import type { SQL } from "drizzle-orm";
-import { and, desc, eq, gt, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, gt, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { alias, type PgSelect, type SelectedFields } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import z from "zod";
@@ -34,6 +34,21 @@ export const resultListRouter = {
       .offset(offset);
 
     return buildPageResult(formatMapListItem(items));
+  }),
+
+  getWithMapCount: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
+    const { cursor, ...searchInput } = input ?? {};
+    const { db, user } = ctx;
+
+    const baseQuery = buildResultWithMapBaseQuery(
+      db.select({ count: count() }).from(Results).$dynamic(),
+      user,
+      searchInput,
+    );
+
+    const total = await baseQuery.limit(1);
+
+    return total[0]?.count ?? 0;
   }),
 
   getMapRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {

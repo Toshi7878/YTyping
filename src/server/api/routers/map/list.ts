@@ -52,7 +52,7 @@ export const mapListRouter = {
     const baseQuery = buildBaseQuery(db.select({ count: count() }).from(Maps).$dynamic(), user, input);
     const total = await baseQuery.limit(1);
 
-    return total[0]?.count;
+    return total[0]?.count ?? 0;
   }),
 
   getByVideoId: protectedProcedure.input(z.object({ videoId: z.string().length(11) })).query(async ({ input, ctx }) => {
