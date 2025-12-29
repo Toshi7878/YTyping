@@ -152,11 +152,11 @@ export const BookMarkNotificationMapCard = ({ notification }: { notification: Bo
       className="bg-secondary-dark/85"
       title={
         <span>
-          さんが
-          <Link href={buildBookmarkListUrl(String(bookmarker.id), mapBookmark.list.id) as Route}>
+          さんが譜面を
+          <Link className="underline" href={buildBookmarkListUrl(String(bookmarker.id), mapBookmark.list.id) as Route}>
             {mapBookmark.list.title}
           </Link>
-          ブックマークしました
+          リストにブックマークしました
         </span>
       }
     />
