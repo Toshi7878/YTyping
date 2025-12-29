@@ -22,6 +22,7 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
     prefetch(trpc.mapList.get.infiniteQueryOptions({ creatorId: Number(id) }));
   } else if (tab === "results") {
     prefetch(trpc.resultList.getWithMap.infiniteQueryOptions({ playerId: Number(id) }));
+    prefetch(trpc.result.getUserResultStats.queryOptions({ userId: Number(id) }));
   } else if (tab === "liked") {
     prefetch(trpc.mapList.get.infiniteQueryOptions({ likerId: Number(id) }));
   }
