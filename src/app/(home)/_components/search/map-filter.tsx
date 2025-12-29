@@ -136,7 +136,7 @@ const BookmarkListSelect = () => {
           setSearchParams({ ...params, bookmarkListId: null });
           return;
         }
-        setSearchParams({ ...params, bookmarkListId: Number(nextValue) });
+        setSearchParams({ ...params, bookmarkListId: Number(nextValue), sort: { value: "bookmark", desc: true } });
       }}
     >
       <SelectTrigger

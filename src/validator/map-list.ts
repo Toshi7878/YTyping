@@ -8,6 +8,7 @@ export const MAP_SORT_OPTIONS = [
   "like-count",
   "duration",
   "like",
+  "bookmark",
   "random",
 ] as const;
 export const MAP_USER_FILTER_OPTIONS = ["liked", "created"] as const;

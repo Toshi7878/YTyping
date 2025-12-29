@@ -216,6 +216,8 @@ function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema>) {
       return [order(Maps.duration)];
     case "like":
       return [order(MyLike.createdAt)];
+    case "bookmark":
+      return [order(MapBookmarkListItems.createdAt)];
     default:
       return [desc(Maps.id)];
   }

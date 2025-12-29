@@ -32,6 +32,7 @@ const SORT_OPTIONS: { label: string; value: (typeof MAP_SORT_OPTIONS)[number] }[
   { label: "ランダム", value: "random" },
   { label: "いいね", value: "like" },
   { label: "記録登録日", value: "ranking-register" },
+  { label: "ブックマーク", value: "bookmark" },
 ];
 
 const SortControls = () => {
@@ -70,6 +71,9 @@ const SortControls = () => {
         const rs = params.rankingStatus;
         const isRegisterSortAvailable = rs !== null && RANKING_STATUS_FOR_REGISTER_SORT.includes(rs);
         if (value === "ranking-register" && !isRegisterSortAvailable) return null;
+
+        const isBookmarkSortAvailable = params.bookmarkListId !== null;
+        if (value === "bookmark" && !isBookmarkSortAvailable) return null;
 
         return (
           <Button

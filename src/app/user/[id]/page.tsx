@@ -18,6 +18,9 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
     prefetch(trpc.userStats.getUserStats.queryOptions({ userId: Number(id) }));
   } else if (tab === "bookmarks") {
     prefetch(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
+    prefetch(
+      trpc.mapList.get.infiniteQueryOptions({ bookmarkListId: Number(id), sort: { value: "bookmark", desc: true } }),
+    );
   } else if (tab === "maps") {
     prefetch(trpc.mapList.get.infiniteQueryOptions({ creatorId: Number(id) }));
   } else if (tab === "results") {

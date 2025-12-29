@@ -1,14 +1,19 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Bookmark, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 import { BookmarkListFormFields } from "@/components/shared/bookmark/bookmark-list-popover";
+import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
+import { MapCard } from "@/components/shared/map-card/card";
 import { useConfirm } from "@/components/ui/alert-dialog/alert-dialog-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,11 +30,51 @@ import { Form } from "@/components/ui/form";
 import { Small } from "@/components/ui/typography";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
+import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { MapBookmarkListFormSchema } from "@/validator/bookmark";
+import { serializeUserPageSearchParams, userPageSearchParamsParser } from "../_lib/search-params";
 
 type BookmarkList = RouterOutputs["bookmarkList"]["getByUserId"][number];
 
 export const UserBookmarkLists = ({ id }: { id: string }) => {
+  const [bookmarkListId] = useQueryState("bookmarkListId", userPageSearchParamsParser.bookmarkListId);
+
+  if (!bookmarkListId) {
+    return <BookmarkListCardList id={id} />;
+  }
+
+  return <BookmarkListMapList listId={bookmarkListId} />;
+};
+
+const BookmarkListMapList = ({ listId }: { listId: number }) => {
+  const trpc = useTRPC();
+
+  const { data, ...pagination } = useSuspenseInfiniteQuery(
+    trpc.mapList.get.infiniteQueryOptions(
+      { bookmarkListId: listId, sort: { value: "bookmark", desc: true } },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+        refetchOnWindowFocus: false,
+        gcTime: Infinity,
+      },
+    ),
+  );
+
+  return (
+    <section>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        {data.pages.map((page, pageIndex) =>
+          page.items.map((map) => (
+            <MapCard key={map.id} map={map} initialInView={data.pages.length - 1 === pageIndex} />
+          )),
+        )}
+      </div>
+      <InfiniteScrollSpinner {...pagination} />
+    </section>
+  );
+};
+
+const BookmarkListCardList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
   const { data: session } = useSession();
   const { data: lists } = useSuspenseQuery(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
@@ -41,26 +86,39 @@ export const UserBookmarkLists = ({ id }: { id: string }) => {
   return (
     <section className="grid grid-cols-1 gap-3 md:grid-cols-2">
       {lists.map((list) => (
-        <BookmarkListCard key={list.id} list={list} showMenu={Number(id) === Number(session?.user?.id)} />
+        <BookmarkListCard key={list.id} list={list} showMenu={Number(id) === Number(session?.user?.id)} id={id} />
       ))}
     </section>
   );
 };
 
-const BookmarkListCard = ({ list, showMenu }: { list: BookmarkList; showMenu: boolean }) => {
+const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu: boolean; id: string }) => {
   return (
-    <Card className="py-0">
-      <CardContent className="flex items-center justify-between gap-3 px-4 py-4">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <Bookmark className="size-4 text-muted-foreground" />
-            <div className="truncate font-medium text-sm">{list.title}</div>
-          </div>
-          <div className="mt-1 flex items-center gap-2">
-            <Small className="text-muted-foreground">{list.count.toLocaleString()}件</Small>
-            <Badge variant={list.isPublic ? "secondary" : "outline"} size="default">
-              {list.isPublic ? "公開" : "非公開"}
-            </Badge>
+    <Card className="hover-card-shadow-primary py-0 transition-shadow">
+      <CardContent className="relative flex items-center justify-between gap-3 px-4 py-4">
+        <Link
+          href={`/user/${id}${serializeUserPageSearchParams({ tab: "bookmarks", bookmarkListId: list.id })}`}
+          className="absolute size-full"
+        />
+        <div className="flex flex-row items-center gap-3">
+          <Image
+            src={buildYouTubeThumbnailUrl(list.firstMapVideoId ?? "", "mqdefault")}
+            alt={list.title}
+            width={100}
+            height={100}
+            className="rounded-sm"
+          />
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <Bookmark className="size-4 text-muted-foreground" />
+              <div className="truncate font-medium text-sm">{list.title}</div>
+            </div>
+            <div className="mt-1 flex items-center gap-2">
+              <Small className="text-muted-foreground">{list.count.toLocaleString()}件</Small>
+              <Badge variant={list.isPublic ? "secondary" : "outline"} size="default">
+                {list.isPublic ? "公開" : "非公開"}
+              </Badge>
+            </div>
           </div>
         </div>
 
