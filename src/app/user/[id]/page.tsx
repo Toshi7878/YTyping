@@ -19,11 +19,11 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   } else if (tab === "bookmarks") {
     prefetch(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
   } else if (tab === "maps") {
-    prefetch(trpc.mapList.get.queryOptions({ creatorId: Number(id) }));
+    prefetch(trpc.mapList.get.infiniteQueryOptions({ creatorId: Number(id) }));
   } else if (tab === "results") {
-    prefetch(trpc.resultList.getWithMap.queryOptions({ playerId: Number(id) }));
+    prefetch(trpc.resultList.getWithMap.infiniteQueryOptions({ playerId: Number(id) }));
   } else if (tab === "liked") {
-    prefetch(trpc.mapList.get.queryOptions({ likerId: Number(id) }));
+    prefetch(trpc.mapList.get.infiniteQueryOptions({ likerId: Number(id) }));
   }
 
   return (

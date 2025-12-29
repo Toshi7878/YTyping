@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Bookmark, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -22,7 +22,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Form } from "@/components/ui/form";
-import { Spinner } from "@/components/ui/spinner";
 import { Small } from "@/components/ui/typography";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
@@ -33,11 +32,9 @@ type BookmarkList = RouterOutputs["bookmarkList"]["getByUserId"][number];
 export const UserBookmarkLists = ({ id }: { id: string }) => {
   const trpc = useTRPC();
   const { data: session } = useSession();
-  const { data: lists, isPending } = useQuery(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
+  const { data: lists } = useSuspenseQuery(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
 
-  if (isPending) return <Spinner size="lg" />;
-
-  if (!lists || lists.length === 0) {
+  if (lists.length === 0) {
     return <div className="py-10 text-center text-muted-foreground text-sm">ブックマークリストがありません</div>;
   }
 
