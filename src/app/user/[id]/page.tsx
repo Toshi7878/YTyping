@@ -7,7 +7,6 @@ import { loadUserPageSearchParams } from "./_lib/search-params";
 export default async function Page({ params, searchParams }: PageProps<"/user/[id]">) {
   const { id } = await params;
   const { tab } = await loadUserPageSearchParams(searchParams);
-  const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(id) });
 
   prefetch(trpc.mapList.getCount.queryOptions({ creatorId: Number(id) }));
   prefetch(trpc.mapList.getCount.queryOptions({ likerId: Number(id) }));
@@ -30,6 +29,8 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   } else if (tab === "liked") {
     prefetch(trpc.mapList.get.infiniteQueryOptions({ likerId: Number(id) }));
   }
+
+  const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(id) });
 
   return (
     <div className="mx-auto max-w-5xl space-y-4 pb-10">
