@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient, useSuspenseInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { Bookmark, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -110,12 +110,10 @@ const BookmarkListCard = ({ list, showMenu, id }: { list: BookmarkList; showMenu
             className="rounded-sm"
           />
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <Bookmark className="size-4 text-muted-foreground" />
-              <div className="truncate font-medium text-sm">{list.title}</div>
-            </div>
+            <div className="truncate font-medium text-sm">{list.title}</div>
+
             <div className="mt-1 flex items-center gap-2">
-              <Small className="text-muted-foreground">{list.count.toLocaleString()}件</Small>
+              <Small className="text-muted-foreground">{list.count}件</Small>
               <Badge variant={list.isPublic ? "secondary" : "outline"} size="default">
                 {list.isPublic ? "公開" : "非公開"}
               </Badge>
@@ -166,7 +164,7 @@ const BookmarkListMenu = ({ list }: { list: BookmarkList }) => {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="shrink-0">
+        <Button variant="ghost" size="icon" className="z-10 shrink-0">
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
