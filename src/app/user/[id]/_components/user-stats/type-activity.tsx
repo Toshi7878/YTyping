@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { cloneElement } from "react";
 import { type Activity, ActivityCalendar } from "react-activity-calendar";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
@@ -16,6 +17,13 @@ export const TypeActivity = () => {
   const { data, isPending } = useQuery(
     trpc.userStats.getUserActivity.queryOptions({ userId: Number(userId) }, { staleTime: Infinity, gcTime: Infinity }),
   );
+
+  if (isPending)
+    return (
+      <div className="relative flex min-h-[200px] w-full justify-center">
+        <Skeleton className="h-[200px] w-full bg-card" />
+      </div>
+    );
 
   const blockColors = getBlockColors();
 
@@ -33,7 +41,6 @@ export const TypeActivity = () => {
         blockSize={14}
         blockMargin={3}
         maxLevel={12}
-        loading={isPending}
         renderBlock={(block, activity) => {
           const styledBlock = cloneElement(block, {
             style: {
