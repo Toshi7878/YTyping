@@ -133,14 +133,14 @@ const MapInfoBottom = ({
         >
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">難易度</span>
+              <span className="text-muted-foreground">中央値</span>
               <span className="font-semibold tabular-nums">{map.difficulty.romaKpmMedian}kpm</span>
             </div>
 
             <div className="h-3 w-px bg-border/60" />
 
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">最大KPM</span>
+              <span className="text-muted-foreground">最大</span>
               <span className="font-semibold tabular-nums">{map.difficulty.romaKpmMax}kpm</span>
             </div>
 
