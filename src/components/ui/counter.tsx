@@ -135,7 +135,7 @@ export const CounterInput = ({
             <div className="relative">
               -
               {minusButtonHotkey && (
-                <small className="-top-[0.9em] -translate-x-1/2 absolute left-1/2 text-[65%]">
+                <small className="absolute -top-[0.9em] left-1/2 -translate-x-1/2 text-[65%]">
                   {minusButtonHotkey.toUpperCase()}
                 </small>
               )}
@@ -159,7 +159,7 @@ export const CounterInput = ({
             <div className="relative">
               +
               {plusButtonHotkey && (
-                <small className="-top-[0.9em] -translate-x-1/2 absolute left-1/2 text-[65%]">
+                <small className="absolute -top-[0.9em] left-1/2 -translate-x-1/2 text-[65%]">
                   {plusButtonHotkey.toUpperCase()}
                 </small>
               )}
