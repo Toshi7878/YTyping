@@ -105,12 +105,17 @@ interface CardWithContentProps extends Omit<React.ComponentProps<"div">, "classN
     card?: string;
     cardContent?: string;
   };
+  cardContentRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-function CardWithContent({ className, variant, children, ...props }: CardWithContentProps) {
+function CardWithContent({ className, variant, children, cardContentRef, ...props }: CardWithContentProps) {
   return (
     <div data-slot="card" className={cn(cardVariants({ variant }), className?.card)} {...props}>
-      <div data-slot="card-content" className={cn(cardContentVariants({ variant }), className?.cardContent)}>
+      <div
+        data-slot="card-content"
+        className={cn(cardContentVariants({ variant }), className?.cardContent)}
+        ref={cardContentRef}
+      >
         {children}
       </div>
     </div>

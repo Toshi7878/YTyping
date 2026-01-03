@@ -35,7 +35,7 @@ export const notificationRouter = {
       }),
       with: {
         creator: { columns: { id: true, name: true } },
-        difficulty: { columns: { romaKpmMedian: true, romaKpmMax: true } },
+        difficulty: { columns: { romaKpmMedian: true, romaKpmMax: true, romaTotalNotes: true, kanaTotalNotes: true } },
         mapLikes: {
           where: and(eq(MapLikes.userId, user.id)),
           columns: { hasLiked: true },
@@ -116,7 +116,12 @@ export const notificationRouter = {
         },
         info: { title: map.title, artistName: map.artistName, source: map.musicSource, duration: map.duration },
         creator: { id: map.creator.id, name: map.creator.name },
-        difficulty: { romaKpmMedian: map.difficulty.romaKpmMedian, romaKpmMax: map.difficulty.romaKpmMax },
+        difficulty: {
+          romaKpmMedian: map.difficulty.romaKpmMedian,
+          romaKpmMax: map.difficulty.romaKpmMax,
+          romaTotalNotes: map.difficulty.romaTotalNotes,
+          kanaTotalNotes: map.difficulty.kanaTotalNotes,
+        },
         like: { count: map.likeCount, hasLiked: map.mapLikes?.[0]?.hasLiked ?? false },
         ranking: {
           count: map.rankingCount,

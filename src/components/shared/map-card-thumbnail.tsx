@@ -19,7 +19,7 @@ import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 const mapLeftThumbnailVariants = cva("relative aspect-video", {
   variants: {
     size: {
-      home: "w-[160px] sm:w-[220px]",
+      home: "w-[160px] sm:w-[224px]",
       timeline: "w-[120px]",
       activeUser: "w-[120px]",
       notification: "w-[160px]",

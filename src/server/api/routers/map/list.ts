@@ -100,6 +100,8 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
     difficulty: {
       romaKpmMedian: MapDifficulties.romaKpmMedian,
       romaKpmMax: MapDifficulties.romaKpmMax,
+      romaTotalNotes: MapDifficulties.romaTotalNotes,
+      kanaTotalNotes: MapDifficulties.kanaTotalNotes,
     },
     bookmark: {
       hasBookmarked: user ? buildHasBookmarkedMapExists(user) : sql`false`.mapWith(Boolean),
