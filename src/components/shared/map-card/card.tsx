@@ -123,8 +123,10 @@ const MapInfoBottom = ({
           </Link>
         </HoverCardTrigger>
         <HoverCardContent
+          avoidCollisions={false}
           className="z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm"
           align="start"
+          side="bottom"
           alignOffset={-236}
           sideOffset={-2}
           style={{ width: cardContentRef.current?.offsetWidth ?? 0 }}
