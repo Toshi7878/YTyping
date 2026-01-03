@@ -112,7 +112,7 @@ const MapInfoBottom = ({
     <div className="mr-3 flex w-fit justify-end md:justify-between lg:w-[98%]">
       <HoverCard openDelay={100} closeDelay={0} open={hoverOpen} onOpenChange={setHoverOpen}>
         <HoverCardTrigger asChild>
-          <div className="z-10 mr-2 flex flex-1 items-center gap-2">
+          <Link href={`/type/${map.id}`} className="z-10 mr-2 flex flex-1 items-center gap-2">
             <Badge variant="accent-light" className="rounded-full px-2 text-sm">
               <span className="hidden text-xs sm:inline-block">★</span>
               {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
@@ -120,12 +120,10 @@ const MapInfoBottom = ({
             <Badge variant="accent-light" className="hidden rounded-full px-2 text-sm md:block">
               {formatTime(map.info.duration)}
             </Badge>
-          </div>
+          </Link>
         </HoverCardTrigger>
         <HoverCardContent
-          className={cn(
-            "z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm",
-          )}
+          className="z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm"
           align="start"
           alignOffset={-236}
           sideOffset={-2}
