@@ -133,7 +133,7 @@ const BookmarkListSelect = () => {
       value={value}
       onValueChange={(nextValue) => {
         if (nextValue === CLEAR_VALUE) {
-          setSearchParams({ ...params, bookmarkListId: null });
+          setSearchParams({ ...params, bookmarkListId: null, sort: { value: "id", desc: true } });
           return;
         }
         setSearchParams({ ...params, bookmarkListId: Number(nextValue), sort: { value: "bookmark", desc: true } });

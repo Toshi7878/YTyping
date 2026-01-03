@@ -42,7 +42,7 @@ export const mapListRouter = {
     const maps = await buildBaseQuery(db.select(buildBaseSelect(user)).from(Maps).$dynamic(), user, searchInput)
       .limit(limit)
       .offset(offset)
-      .orderBy(...buildSortConditions(sort));
+      .orderBy(...buildSortConditions(sort, searchInput));
 
     return buildPageResult(maps);
   }),
@@ -193,7 +193,10 @@ function buildFilterCondition(
   }
 }
 
-function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema>) {
+function buildSortConditions(
+  sort: z.output<typeof MapSortSearchParamsSchema>,
+  searchInput: z.output<typeof MapSearchFilterSchema>,
+) {
   if (!sort) return [desc(Maps.id)];
 
   const { value: sortField, desc: isDesc } = sort;
@@ -216,8 +219,14 @@ function buildSortConditions(sort: z.output<typeof MapSortSearchParamsSchema>) {
       return [order(Maps.duration)];
     case "like":
       return [order(MyLike.createdAt)];
-    case "bookmark":
-      return [order(MapBookmarkListItems.createdAt)];
+    case "bookmark": {
+      if (searchInput.bookmarkListId) {
+        return [order(MapBookmarkListItems.createdAt)];
+      }
+
+      return [desc(Maps.id)];
+    }
+
     default:
       return [desc(Maps.id)];
   }
