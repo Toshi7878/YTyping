@@ -122,36 +122,7 @@ const MapInfoBottom = ({
             </Badge>
           </Link>
         </HoverCardTrigger>
-        <HoverCardContent
-          avoidCollisions={false}
-          className="z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm"
-          align="start"
-          side="bottom"
-          alignOffset={-236}
-          sideOffset={-2}
-          style={{ width: cardContentRef.current?.offsetWidth ?? 0 }}
-        >
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">中央値</span>
-              <span className="font-semibold tabular-nums">{map.difficulty.romaKpmMedian}kpm</span>
-            </div>
-
-            <div className="h-3 w-px bg-border/60" />
-
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">最大</span>
-              <span className="font-semibold tabular-nums">{map.difficulty.romaKpmMax}kpm</span>
-            </div>
-
-            <div className="h-3 w-px bg-border/60" />
-
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">ローマ字打鍵数</span>
-              <span className="font-semibold tabular-nums">{map.difficulty.romaTotalNotes}打</span>
-            </div>
-          </div>
-        </HoverCardContent>
+        <MapDifficultyHoverCardContent map={map} cardContentRef={cardContentRef} />
       </HoverCard>
       <div className="z-10 flex items-center space-x-1">
         {status === "authenticated" ? (
@@ -183,5 +154,46 @@ const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
         </span>
       </span>
     </small>
+  );
+};
+
+const MapDifficultyHoverCardContent = ({
+  map,
+  cardContentRef,
+}: {
+  map: Map;
+  cardContentRef: React.RefObject<HTMLDivElement | null>;
+}) => {
+  return (
+    <HoverCardContent
+      avoidCollisions={false}
+      className="z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm"
+      align="start"
+      side="bottom"
+      alignOffset={-236}
+      sideOffset={-2}
+      style={{ width: cardContentRef.current?.offsetWidth ?? 0 }}
+    >
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground">中央値</span>
+          <span className="font-semibold tabular-nums">{map.difficulty.romaKpmMedian}kpm</span>
+        </div>
+
+        <div className="h-3 w-px bg-border/60" />
+
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground">最大</span>
+          <span className="font-semibold tabular-nums">{map.difficulty.romaKpmMax}kpm</span>
+        </div>
+
+        <div className="h-3 w-px bg-border/60" />
+
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground">ローマ字打鍵数</span>
+          <span className="font-semibold tabular-nums">{map.difficulty.romaTotalNotes}打</span>
+        </div>
+      </div>
+    </HoverCardContent>
   );
 };
