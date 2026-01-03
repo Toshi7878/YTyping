@@ -35,7 +35,16 @@ export const notificationRouter = {
       }),
       with: {
         creator: { columns: { id: true, name: true } },
-        difficulty: { columns: { romaKpmMedian: true, romaKpmMax: true, romaTotalNotes: true, kanaTotalNotes: true } },
+        difficulty: {
+          columns: {
+            kanaKpmMedian: true,
+            kanaKpmMax: true,
+            romaKpmMedian: true,
+            romaKpmMax: true,
+            romaTotalNotes: true,
+            kanaTotalNotes: true,
+          },
+        },
         mapLikes: {
           where: and(eq(MapLikes.userId, user.id)),
           columns: { hasLiked: true },
@@ -118,7 +127,9 @@ export const notificationRouter = {
         creator: { id: map.creator.id, name: map.creator.name },
         difficulty: {
           romaKpmMedian: map.difficulty.romaKpmMedian,
+          kanaKpmMedian: map.difficulty.kanaKpmMedian,
           romaKpmMax: map.difficulty.romaKpmMax,
+          kanaKpmMax: map.difficulty.kanaKpmMax,
           romaTotalNotes: map.difficulty.romaTotalNotes,
           kanaTotalNotes: map.difficulty.kanaTotalNotes,
         },

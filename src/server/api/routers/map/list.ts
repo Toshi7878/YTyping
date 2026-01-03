@@ -99,7 +99,9 @@ const buildBaseSelect = (user: TRPCContext["user"]) =>
     },
     difficulty: {
       romaKpmMedian: MapDifficulties.romaKpmMedian,
+      kanaKpmMedian: MapDifficulties.kanaKpmMedian,
       romaKpmMax: MapDifficulties.romaKpmMax,
+      kanaKpmMax: MapDifficulties.kanaKpmMax,
       romaTotalNotes: MapDifficulties.romaTotalNotes,
       kanaTotalNotes: MapDifficulties.kanaTotalNotes,
     },

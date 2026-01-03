@@ -1,3 +1,4 @@
+import { readReadyInputMode } from "@/lib/atoms/global-atoms";
 import { writeUtilityRefParams } from "../atoms/ref";
 import {
   readMediaSpeed,
@@ -9,7 +10,6 @@ import {
   setPlayingInputMode,
   setScene,
 } from "../atoms/state";
-import { readReadyInputMode } from "../atoms/storage";
 import { setYTPlaybackRate } from "../atoms/youtube-player";
 import { commitPlayRestart } from "./commit-play-restart";
 

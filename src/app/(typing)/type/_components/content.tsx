@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { readReadyInputMode } from "@/lib/atoms/global-atoms";
 import {
   buildInitialLineResult,
   calculateDuration,
@@ -21,7 +22,6 @@ import { readTotalProgress } from "../_lib/atoms/ref";
 import { resetAllStateOnCleanup } from "../_lib/atoms/reset";
 import { readScene, setBuiltMap, setLineSelectIndex, useSceneGroupState } from "../_lib/atoms/state";
 import { resetAllTypingStatus, setLineStatus } from "../_lib/atoms/status";
-import { readReadyInputMode } from "../_lib/atoms/storage";
 import { CHAR_POINT } from "../_lib/const";
 import { mutateTypingStats } from "../_lib/mutate/stats";
 import { useLoadSoundEffects } from "../_lib/playing/sound-effect";

@@ -1,7 +1,7 @@
 "use client";
 import type { InputMode } from "lyrics-typing-engine";
-import { setReadyInputMode, useReadyInputModeState } from "@/app/(typing)/type/_lib/atoms/storage";
 import { RadioCard, RadioGroup } from "@/components/ui/radio-group/radio-group";
+import { setReadyInputMode, useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 
 export const ReadyInputModeRadioCards = () => {

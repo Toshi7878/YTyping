@@ -27,8 +27,11 @@ const badgeVariants = cva(
           "border-transparent bg-destructive-light/50 text-destructive-foreground [a&]:hover:bg-destructive-soft/90",
         outline: "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         result: "bg-card  rounded-sm border border-border text-center normal-case",
+        kana: "border-transparent bg-kana/90 text-kana-foreground [a&]:hover:bg-kana/90",
+        roma: "border-transparent bg-roma/90 text-roma-foreground [a&]:hover:bg-roma/90",
       },
       size: {
+        xs: "px-1 py-0.5 text-xs w-fit h-4",
         default: "px-2 py-0.5 text-xs w-fit h-6",
         md: "text-base min-w-24 h-8 px-3 py-1",
         lg: "text-lg min-w-24 h-8",

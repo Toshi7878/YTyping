@@ -6,7 +6,9 @@ import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardWithContent } from "@/components/ui/card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
@@ -164,6 +166,10 @@ const MapDifficultyHoverCardContent = ({
   map: Map;
   cardContentRef: React.RefObject<HTMLDivElement | null>;
 }) => {
+  const inputMode = useReadyInputModeState();
+  const kpm = inputMode === "roma" ? map.difficulty.romaKpmMedian : map.difficulty.kanaKpmMedian;
+  const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
+  const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
   return (
     <HoverCardContent
       avoidCollisions={false}
@@ -174,24 +180,23 @@ const MapDifficultyHoverCardContent = ({
       sideOffset={-2}
       style={{ width: cardContentRef.current?.offsetWidth ?? 0 }}
     >
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+      <div className="flex flex-wrap items-center gap-x-3">
+        <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
+          {inputMode === "roma" ? "ローマ字" : "かな"}
+        </Badge>
         <div className="flex items-center gap-2">
           <span className="text-muted-foreground">中央値</span>
-          <span className="font-semibold tabular-nums">{map.difficulty.romaKpmMedian}kpm</span>
+          <span className="font-semibold tabular-nums">{kpm}kpm</span>
         </div>
-
-        <div className="h-3 w-px bg-border/60" />
-
+        <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
         <div className="flex items-center gap-2">
           <span className="text-muted-foreground">最大</span>
-          <span className="font-semibold tabular-nums">{map.difficulty.romaKpmMax}kpm</span>
+          <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
         </div>
-
-        <div className="h-3 w-px bg-border/60" />
-
+        <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">ローマ字打鍵数</span>
-          <span className="font-semibold tabular-nums">{map.difficulty.romaTotalNotes}打</span>
+          <span className="text-muted-foreground">打鍵数</span>
+          <span className="font-semibold tabular-nums">{totalNotes}打</span>
         </div>
       </div>
     </HoverCardContent>
