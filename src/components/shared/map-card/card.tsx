@@ -34,21 +34,30 @@ export const MapCard = ({ map, className, initialInView = false }: MapCardProps)
   const cardContentRef = useRef<HTMLDivElement>(null);
   const [hoverOpen, setHoverOpen] = useState(false);
   const closeTimerRef = useRef<number | null>(null);
+  const openTimerRef = useRef<number | null>(null);
 
   const openHover = () => {
     if (closeTimerRef.current !== null) {
       window.clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
     }
-    setHoverOpen(true);
+    if (openTimerRef.current !== null) return;
+    openTimerRef.current = window.setTimeout(() => {
+      setHoverOpen(true);
+      openTimerRef.current = null;
+    }, 50);
   };
 
   const scheduleCloseHover = () => {
+    if (openTimerRef.current !== null) {
+      window.clearTimeout(openTimerRef.current);
+      openTimerRef.current = null;
+    }
     if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
     closeTimerRef.current = window.setTimeout(() => {
       setHoverOpen(false);
       closeTimerRef.current = null;
-    }, 80);
+    }, 40);
   };
 
   return (
