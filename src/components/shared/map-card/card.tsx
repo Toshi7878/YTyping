@@ -33,6 +33,24 @@ export const MapCard = ({ map, className, initialInView = false }: MapCardProps)
   const { ref, shouldRender } = useInViewRender({ initialInView });
   const cardContentRef = useRef<HTMLDivElement>(null);
   const [hoverOpen, setHoverOpen] = useState(false);
+  const closeTimerRef = useRef<number | null>(null);
+
+  const openHover = () => {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setHoverOpen(true);
+  };
+
+  const scheduleCloseHover = () => {
+    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = window.setTimeout(() => {
+      setHoverOpen(false);
+      closeTimerRef.current = null;
+    }, 80);
+  };
+
   return (
     <CardWithContent
       variant="map"
@@ -40,30 +58,40 @@ export const MapCard = ({ map, className, initialInView = false }: MapCardProps)
       cardContentRef={cardContentRef}
       ref={ref}
     >
-      {hoverOpen && (
-        <div className="absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
-      )}
-      <MapLeftThumbnail
-        alt={shouldRender ? map.info.title : ""}
-        media={shouldRender ? map.media : undefined}
-        size="home"
-        priority={initialInView}
-      />
-      {shouldRender && (
-        <MapInfo map={map} cardContentRef={cardContentRef} hoverOpen={hoverOpen} setHoverOpen={setHoverOpen} />
-      )}
+      <HoverCard open={hoverOpen}>
+        {/* Trigger を CardWithContent 左端に置いて、HoverCardContent の表示基準を左端に固定 */}
+        <HoverCardTrigger asChild>
+          <span className="pointer-events-none absolute bottom-0 left-0 h-px w-px" />
+        </HoverCardTrigger>
+        {hoverOpen && (
+          <div className="absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
+        )}
+        <MapLeftThumbnail
+          alt={shouldRender ? map.info.title : ""}
+          media={shouldRender ? map.media : undefined}
+          size="home"
+          priority={initialInView}
+        />
+        {shouldRender && <MapInfo map={map} onHoverOpen={openHover} onHoverClose={scheduleCloseHover} />}
+        <MapDifficultyHoverCardContent
+          map={map}
+          cardContentRef={cardContentRef}
+          enabled={hoverOpen}
+          onHoverOpen={openHover}
+          onHoverClose={scheduleCloseHover}
+        />
+      </HoverCard>
     </CardWithContent>
   );
 };
 
 interface MapInfoProps {
   map: Map;
-  cardContentRef: React.RefObject<HTMLDivElement | null>;
-  hoverOpen: boolean;
-  setHoverOpen: (hoverOpen: boolean) => void;
+  onHoverOpen: () => void;
+  onHoverClose: () => void;
 }
 
-const MapInfo = ({ map, cardContentRef, hoverOpen, setHoverOpen }: MapInfoProps) => {
+const MapInfo = ({ map, onHoverOpen, onHoverClose }: MapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
@@ -90,7 +118,7 @@ const MapInfo = ({ map, cardContentRef, hoverOpen, setHoverOpen }: MapInfoProps)
         <section className="flex flex-row items-baseline justify-between space-y-1 lg:flex-col">
           <MapCreatorInfo creator={map.creator} updatedAt={map.updatedAt} />
 
-          <MapInfoBottom map={map} cardContentRef={cardContentRef} hoverOpen={hoverOpen} setHoverOpen={setHoverOpen} />
+          <MapInfoBottom map={map} onHoverOpen={onHoverOpen} onHoverClose={onHoverClose} />
         </section>
       </div>
     </div>
@@ -99,33 +127,31 @@ const MapInfo = ({ map, cardContentRef, hoverOpen, setHoverOpen }: MapInfoProps)
 
 const MapInfoBottom = ({
   map,
-  cardContentRef,
-  hoverOpen,
-  setHoverOpen,
+  onHoverOpen,
+  onHoverClose,
 }: {
   map: Map;
-  cardContentRef: React.RefObject<HTMLDivElement | null>;
-  hoverOpen: boolean;
-  setHoverOpen: (hoverOpen: boolean) => void;
+  onHoverOpen: () => void;
+  onHoverClose: () => void;
 }) => {
   const { status } = useSession();
 
   return (
     <div className="mr-3 flex w-fit justify-end md:justify-between lg:w-[98%]">
-      <HoverCard openDelay={100} closeDelay={0} open={hoverOpen} onOpenChange={setHoverOpen}>
-        <HoverCardTrigger asChild>
-          <Link href={`/type/${map.id}`} className="z-10 mr-2 flex flex-1 items-center gap-2">
-            <Badge variant="accent-light" className="rounded-full px-2 text-sm">
-              <span className="hidden text-xs sm:inline-block">★</span>
-              {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
-            </Badge>
-            <Badge variant="accent-light" className="hidden rounded-full px-2 text-sm md:block">
-              {formatTime(map.info.duration)}
-            </Badge>
-          </Link>
-        </HoverCardTrigger>
-        <MapDifficultyHoverCardContent map={map} cardContentRef={cardContentRef} enabled={hoverOpen} />
-      </HoverCard>
+      <Link
+        href={`/type/${map.id}`}
+        className="z-10 mr-2 flex flex-1 items-center gap-2"
+        onPointerEnter={onHoverOpen}
+        onPointerLeave={onHoverClose}
+      >
+        <Badge variant="accent-light" className="rounded-full px-2 text-sm">
+          <span className="hidden text-xs sm:inline-block">★</span>
+          {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
+        </Badge>
+        <Badge variant="accent-light" className="hidden rounded-full px-2 text-sm md:block">
+          {formatTime(map.info.duration)}
+        </Badge>
+      </Link>
       <div className="z-10 flex items-center space-x-1">
         {status === "authenticated" ? (
           <BookmarkListPopover className="relative mr-1.5" mapId={map.id} hasBookmarked={map.bookmark.hasBookmarked} />
@@ -163,10 +189,14 @@ const MapDifficultyHoverCardContent = ({
   map,
   cardContentRef,
   enabled,
+  onHoverOpen,
+  onHoverClose,
 }: {
   map: Map;
   cardContentRef: React.RefObject<HTMLDivElement | null>;
   enabled: boolean;
+  onHoverOpen: () => void;
+  onHoverClose: () => void;
 }) => {
   const inputMode = useReadyInputModeState();
   const kpm = inputMode === "roma" ? map.difficulty.romaKpmMedian : map.difficulty.kanaKpmMedian;
@@ -195,9 +225,10 @@ const MapDifficultyHoverCardContent = ({
       className="z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm"
       align="start"
       side="bottom"
-      alignOffset={-236}
       sideOffset={-2}
       style={{ width: cardWidth }}
+      onPointerEnter={onHoverOpen}
+      onPointerLeave={onHoverClose}
     >
       <div className="flex flex-wrap items-center gap-x-3">
         <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
