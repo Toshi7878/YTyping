@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardWithContent } from "@/components/ui/card";
@@ -170,6 +170,22 @@ const MapDifficultyHoverCardContent = ({
   const kpm = inputMode === "roma" ? map.difficulty.romaKpmMedian : map.difficulty.kanaKpmMedian;
   const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
+  const [cardWidth, setCardWidth] = useState(0);
+
+  useEffect(() => {
+    const el = cardContentRef.current;
+    if (!el) return;
+
+    setCardWidth(el.clientWidth);
+
+    const ro = new ResizeObserver(() => {
+      setCardWidth(el.clientWidth);
+    });
+
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [cardContentRef]);
+
   return (
     <HoverCardContent
       avoidCollisions={false}
@@ -178,7 +194,7 @@ const MapDifficultyHoverCardContent = ({
       side="bottom"
       alignOffset={-236}
       sideOffset={-2}
-      style={{ width: cardContentRef.current?.offsetWidth ?? 0 }}
+      style={{ width: cardWidth }}
     >
       <div className="flex flex-wrap items-center gap-x-3">
         <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
