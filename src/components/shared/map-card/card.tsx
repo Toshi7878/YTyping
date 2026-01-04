@@ -124,7 +124,7 @@ const MapInfoBottom = ({
             </Badge>
           </Link>
         </HoverCardTrigger>
-        <MapDifficultyHoverCardContent map={map} cardContentRef={cardContentRef} />
+        <MapDifficultyHoverCardContent map={map} cardContentRef={cardContentRef} enabled={hoverOpen} />
       </HoverCard>
       <div className="z-10 flex items-center space-x-1">
         {status === "authenticated" ? (
@@ -162,9 +162,11 @@ const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
 const MapDifficultyHoverCardContent = ({
   map,
   cardContentRef,
+  enabled,
 }: {
   map: Map;
   cardContentRef: React.RefObject<HTMLDivElement | null>;
+  enabled: boolean;
 }) => {
   const inputMode = useReadyInputModeState();
   const kpm = inputMode === "roma" ? map.difficulty.romaKpmMedian : map.difficulty.kanaKpmMedian;
@@ -173,6 +175,7 @@ const MapDifficultyHoverCardContent = ({
   const [cardWidth, setCardWidth] = useState(0);
 
   useEffect(() => {
+    if (!enabled) return;
     const el = cardContentRef.current;
     if (!el) return;
 
@@ -184,7 +187,7 @@ const MapDifficultyHoverCardContent = ({
 
     ro.observe(el);
     return () => ro.disconnect();
-  }, [cardContentRef]);
+  }, [cardContentRef, enabled]);
 
   return (
     <HoverCardContent
