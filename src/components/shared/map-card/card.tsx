@@ -63,9 +63,7 @@ export const MapCard = ({ map, className, initialInView = false }: MapCardProps)
         <HoverCardTrigger asChild>
           <span className="pointer-events-none absolute bottom-0 left-0 h-px w-px" />
         </HoverCardTrigger>
-        {hoverOpen && (
-          <div className="absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
-        )}
+
         <MapLeftThumbnail
           alt={shouldRender ? map.info.title : ""}
           media={shouldRender ? map.media : undefined}
@@ -220,35 +218,40 @@ const MapDifficultyHoverCardContent = ({
   }, [cardContentRef, enabled]);
 
   return (
-    <HoverCardContent
-      avoidCollisions={false}
-      className="z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm"
-      align="start"
-      side="bottom"
-      sideOffset={-2}
-      style={{ width: cardWidth }}
-      onPointerEnter={onHoverOpen}
-      onPointerLeave={onHoverClose}
-    >
-      <div className="flex flex-wrap items-center gap-x-3">
-        <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
-          {inputMode === "roma" ? "ローマ字" : "かな"}
-        </Badge>
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">中央値</span>
-          <span className="font-semibold tabular-nums">{kpm}kpm</span>
+    <>
+      {enabled && (
+        <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
+      )}
+      <HoverCardContent
+        avoidCollisions={false}
+        className="z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm"
+        align="start"
+        side="bottom"
+        sideOffset={-2}
+        style={{ width: cardWidth }}
+        onPointerEnter={onHoverOpen}
+        onPointerLeave={onHoverClose}
+      >
+        <div className="flex flex-wrap items-center gap-x-3">
+          <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
+            {inputMode === "roma" ? "ローマ字" : "かな"}
+          </Badge>
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">中央値</span>
+            <span className="font-semibold tabular-nums">{kpm}kpm</span>
+          </div>
+          <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">最大</span>
+            <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
+          </div>
+          <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">打鍵数</span>
+            <span className="font-semibold tabular-nums">{totalNotes}打</span>
+          </div>
         </div>
-        <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">最大</span>
-          <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
-        </div>
-        <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">打鍵数</span>
-          <span className="font-semibold tabular-nums">{totalNotes}打</span>
-        </div>
-      </div>
-    </HoverCardContent>
+      </HoverCardContent>
+    </>
   );
 };
