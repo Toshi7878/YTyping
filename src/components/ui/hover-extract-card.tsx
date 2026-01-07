@@ -25,6 +25,7 @@ interface HoverExtractCardProps {
   children: React.ReactNode;
   cardClassName?: string;
   cardContentClassName?: string;
+  cardHoverContentClassName?: string;
   extractContent: React.ReactNode;
   cardHeader?: React.ReactNode;
   openDelay?: number;
@@ -37,6 +38,7 @@ export const HoverExtractCard = ({
   children,
   cardClassName,
   cardContentClassName,
+  cardHoverContentClassName,
   extractContent,
   cardHeader,
   openDelay = 50,
@@ -127,7 +129,10 @@ export const HoverExtractCard = ({
                 align="start"
                 side="bottom"
                 sideOffset={-2}
-                className="z-100 rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md"
+                className={cn(
+                  "z-100 rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md",
+                  cardHoverContentClassName,
+                )}
                 style={{ width: cardWidth }}
                 onPointerEnter={openHover}
                 onPointerLeave={closeHover}

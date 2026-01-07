@@ -63,6 +63,7 @@ export const CompactMapCard = ({ map, thumbnailSize }: CompactMapCardProps) => {
   return (
     <HoverExtractCard
       variant="map"
+      cardHoverContentClassName="px-2"
       openDelay={50}
       closeDelay={40}
       extractContent={<MapDifficultyExtractContent map={map} />}
@@ -112,10 +113,12 @@ interface MapBadgesProps {
 const MapBadges = ({ map }: MapBadgesProps) => {
   return (
     <HoverExtractCardTrigger>
-      <Badge variant="accent-light" className="rounded-full px-2 text-sm">
-        <span className="hidden text-xs sm:inline-block">★</span>
-        {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
-      </Badge>
+      <div className="flex-1">
+        <Badge variant="accent-light" className="rounded-full px-2 text-sm">
+          <span className="hidden text-xs sm:inline-block">★</span>
+          {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
+        </Badge>
+      </div>
     </HoverExtractCardTrigger>
   );
 };
