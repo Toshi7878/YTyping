@@ -111,15 +111,15 @@ export const HoverExtractCard = ({
 
   return (
     <HoverExtractContext.Provider value={ctxValue}>
-      <Card ref={ref} variant={variant} className={cardClassName}>
+      <Card ref={ref} variant={variant} className={cn(cardClassName, "relative", isOpen ? "z-50" : "")}>
+        {isOpen && (
+          <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
+        )}
         {cardHeader}
-        <CardContent variant={variant} className={cn(cardContentClassName, "relative", isOpen ? "z-50" : "")} ref={cardContentRef}>
+        <CardContent variant={variant} className={cn(cardContentClassName)} ref={cardContentRef}>
           <HoverCardPrimitive.Root open={isOpen}>
             <HoverCardPrimitive.Trigger className="pointer-events-none absolute bottom-0 left-0 h-px w-px" />
 
-            {isOpen && (
-              <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
-            )}
             {children}
             <HoverCardPrimitive.Portal>
               <HoverCardPrimitive.Content
