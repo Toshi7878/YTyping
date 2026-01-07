@@ -118,7 +118,7 @@ export const HoverExtractCard = ({
         {cardHeader}
         <CardContent variant={variant} className={cn(cardContentClassName)} ref={cardContentRef}>
           <HoverCardPrimitive.Root open={isOpen}>
-            <HoverCardPrimitive.Trigger className="pointer-events-none absolute bottom-0 left-0 h-px w-px" />
+            <HoverCardPrimitive.Trigger className="pointer-events-none absolute bottom-0 left-0 size-px" />
 
             {children}
             <HoverCardPrimitive.Portal>
@@ -127,7 +127,7 @@ export const HoverExtractCard = ({
                 align="start"
                 side="bottom"
                 sideOffset={-2}
-                className="z-100 flex flex-col rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md outline-hidden"
+                className="z-100 rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover p-3 text-sm shadow-md"
                 style={{ width: cardWidth }}
                 onPointerEnter={openHover}
                 onPointerLeave={closeHover}
