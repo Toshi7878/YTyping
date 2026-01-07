@@ -111,7 +111,7 @@ export const HoverExtractCard = ({
 
   return (
     <HoverExtractContext.Provider value={ctxValue}>
-      <Card ref={ref} variant={variant} className={cn(cardClassName, "relative", isOpen ? "z-50" : "")}>
+      <Card ref={ref} variant={variant} className={cn(cardClassName, "relative", isOpen && "z-50")}>
         {isOpen && (
           <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
         )}
