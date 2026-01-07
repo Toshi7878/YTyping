@@ -37,16 +37,13 @@ export const normalizeSymbols = (text: string) => {
 };
 
 export const normalizeExclamationQuestionMarks = (text: string) => {
-  return (
-    text
-      .replaceAll(
-        /([^\u0020-\u007E])([!?]+)/g,
-        (_, p1: string, p2: string) => p1 + p2.replaceAll("!", "！").replaceAll("?", "？"),
-      )
-      // ASCII の直後に続く "！？" の並びは半角へ
-      .replaceAll(
-        /([\u0020-\u007E])([！？]+)/g,
-        (_, p1: string, p2: string) => p1 + p2.replaceAll("！", "!").replaceAll("？", "?"),
-      )
-  );
+  return text
+    .replaceAll(
+      /([^\u0020-\u007E])([!?]+)/g,
+      (_, p1: string, p2: string) => p1 + p2.replaceAll("!", "！").replaceAll("?", "？"),
+    )
+    .replaceAll(
+      /([\u0020-\u007E])([！？]+)/g,
+      (_, p1: string, p2: string) => p1 + p2.replaceAll("！", "!").replaceAll("？", "?"),
+    );
 };
