@@ -5,14 +5,16 @@ import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
 import { CardHeader } from "@/components/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
+import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
+import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
 import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
+import type { RouterOutputs } from "@/server/api/trpc";
 import { nolink } from "@/utils/no-link";
 import { Badge } from "../../ui/badge";
 import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { UserNameLinkText } from "../text/user-name-link-text";
-import { MapDifficultyExtractContent } from "./card";
 
 interface NotificationMapCardContentProps {
   map: MapListItem;
@@ -109,14 +111,12 @@ interface MapBadgesProps {
 
 const MapBadges = ({ map }: MapBadgesProps) => {
   return (
-    <div className="flex">
-      <HoverExtractCardTrigger>
-        <Badge variant="accent-light" className="rounded-full px-2 text-sm">
-          <span className="hidden text-xs sm:inline-block">★</span>
-          {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
-        </Badge>
-      </HoverExtractCardTrigger>
-    </div>
+    <HoverExtractCardTrigger>
+      <Badge variant="accent-light" className="rounded-full px-2 text-sm">
+        <span className="hidden text-xs sm:inline-block">★</span>
+        {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
+      </Badge>
+    </HoverExtractCardTrigger>
   );
 };
 
@@ -136,6 +136,31 @@ const MapIcons = ({ mapId, ranking, like }: MapCountIconsProps) => {
         myRankUpdatedAt={ranking.myRankUpdatedAt}
       />
       <LikeCountIcon mapId={mapId} hasLiked={like.hasLiked ?? false} likeCount={like.count} />
+    </div>
+  );
+};
+
+type Map = NonNullable<RouterOutputs["mapList"]["get"]["items"]>[number];
+
+export const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
+  const inputMode = useReadyInputModeState();
+  const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
+  const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
+  return (
+    <div className="flex flex-wrap items-center gap-x-2">
+      <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
+        {inputMode === "roma" ? "ローマ字" : "かな"}
+      </Badge>
+      <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
+      <div className="flex items-center gap-2 text-xs">
+        <span className="text-muted-foreground">最大</span>
+        <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
+      </div>
+      <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
+      <div className="flex items-center gap-2 text-xs">
+        <span className="text-muted-foreground">打鍵数</span>
+        <span className="font-semibold tabular-nums">{totalNotes}打</span>
+      </div>
     </div>
   );
 };
