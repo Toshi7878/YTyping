@@ -1,15 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
-import { CardWithContent } from "@/components/ui/card";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { Separator } from "@/components/ui/separator";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { useReadyInputModeState } from "@/lib/atoms/global-atoms";
-import { cn } from "@/lib/utils";
 import type { MapListItem } from "@/server/api/routers/map";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { formatTime } from "@/utils/format-time";
@@ -25,85 +22,41 @@ type Map = NonNullable<RouterOutputs["mapList"]["get"]["items"]>[number];
 
 interface MapCardProps {
   map: Map;
-  className?: string;
   initialInView?: boolean;
 }
 
-export const MapCard = ({ map, className, initialInView = false }: MapCardProps) => {
+export const MapCard = ({ map, initialInView = false }: MapCardProps) => {
   const { ref, shouldRender } = useInViewRender({ initialInView });
-  const cardContentRef = useRef<HTMLDivElement>(null);
-  const [hoverOpen, setHoverOpen] = useState(false);
-  const closeTimerRef = useRef<number | null>(null);
-  const openTimerRef = useRef<number | null>(null);
-
-  const openHover = () => {
-    if (closeTimerRef.current !== null) {
-      window.clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-    if (openTimerRef.current !== null) return;
-    openTimerRef.current = window.setTimeout(() => {
-      setHoverOpen(true);
-      openTimerRef.current = null;
-    }, 50);
-  };
-
-  const scheduleCloseHover = () => {
-    if (openTimerRef.current !== null) {
-      window.clearTimeout(openTimerRef.current);
-      openTimerRef.current = null;
-    }
-    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
-    closeTimerRef.current = window.setTimeout(() => {
-      setHoverOpen(false);
-      closeTimerRef.current = null;
-    }, 40);
-  };
 
   return (
-    <CardWithContent
+    <HoverExtractCard
       variant="map"
-      className={{ card: className, cardContent: cn("relative", hoverOpen ? "z-50" : "") }}
-      cardContentRef={cardContentRef}
       ref={ref}
+      openDelay={50}
+      closeDelay={40}
+      extractContent={<MapDifficultyExtractContent map={map} />}
     >
-      <HoverCard open={hoverOpen}>
-        {/* Trigger を CardWithContent 左端に置いて、HoverCardContent の表示基準を左端に固定 */}
-        <HoverCardTrigger asChild>
-          <span className="pointer-events-none absolute bottom-0 left-0 h-px w-px" />
-        </HoverCardTrigger>
-
-        <MapLeftThumbnail
-          alt={shouldRender ? map.info.title : ""}
-          media={shouldRender ? map.media : undefined}
-          size="home"
-          priority={initialInView}
-        />
-        {shouldRender && <MapInfo map={map} onHoverOpen={openHover} onHoverClose={scheduleCloseHover} />}
-        <MapDifficultyHoverCardContent
-          map={map}
-          cardContentRef={cardContentRef}
-          enabled={hoverOpen}
-          onHoverOpen={openHover}
-          onHoverClose={scheduleCloseHover}
-        />
-      </HoverCard>
-    </CardWithContent>
+      <MapLeftThumbnail
+        alt={shouldRender ? map.info.title : ""}
+        media={shouldRender ? map.media : undefined}
+        size="home"
+        priority={initialInView}
+      />
+      {shouldRender && <MapInfo map={map} />}
+    </HoverExtractCard>
   );
 };
 
 interface MapInfoProps {
   map: Map;
-  onHoverOpen: () => void;
-  onHoverClose: () => void;
 }
 
-const MapInfo = ({ map, onHoverOpen, onHoverClose }: MapInfoProps) => {
+const MapInfo = ({ map }: MapInfoProps) => {
   const musicSource = map.info.source ? `【${map.info.source}】` : "";
 
   return (
-    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden text-xs sm:text-sm md:text-base lg:text-lg">
-      <Link className="absolute h-full w-full" href={`/type/${map.id}`} />
+    <div className="relative flex size-full flex-col justify-between overflow-hidden text-xs sm:text-sm md:text-base lg:text-lg">
+      <Link className="absolute size-full" href={`/type/${map.id}`} />
       <div className="flex h-full flex-col justify-between pt-2 pl-3 hover:no-underline">
         <section className="flex flex-col gap-1">
           <TooltipWrapper
@@ -125,40 +78,29 @@ const MapInfo = ({ map, onHoverOpen, onHoverClose }: MapInfoProps) => {
         <section className="flex flex-row items-baseline justify-between space-y-1 lg:flex-col">
           <MapCreatorInfo creator={map.creator} updatedAt={map.updatedAt} />
 
-          <MapInfoBottom map={map} onHoverOpen={onHoverOpen} onHoverClose={onHoverClose} />
+          <MapInfoBottom map={map} />
         </section>
       </div>
     </div>
   );
 };
 
-const MapInfoBottom = ({
-  map,
-  onHoverOpen,
-  onHoverClose,
-}: {
-  map: Map;
-  onHoverOpen: () => void;
-  onHoverClose: () => void;
-}) => {
+const MapInfoBottom = ({ map }: { map: Map }) => {
   const { status } = useSession();
 
   return (
     <div className="mr-3 flex w-fit justify-end md:justify-between lg:w-[98%]">
-      <Link
-        href={`/type/${map.id}`}
-        className="z-10 mr-2 flex flex-1 items-center gap-2"
-        onPointerEnter={onHoverOpen}
-        onPointerLeave={onHoverClose}
-      >
-        <Badge variant="accent-light" className="rounded-full px-2 text-sm">
-          <span className="hidden text-xs sm:inline-block">★</span>
-          {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
-        </Badge>
-        <Badge variant="accent-light" className="hidden rounded-full px-2 text-sm md:block">
-          {formatTime(map.info.duration)}
-        </Badge>
-      </Link>
+      <HoverExtractCardTrigger>
+        <Link href={`/type/${map.id}`} className="z-10 mr-2 flex flex-1 items-center gap-2">
+          <Badge variant="accent-light" className="rounded-full px-2 text-sm">
+            <span className="hidden text-xs sm:inline-block">★</span>
+            {(map.difficulty.romaKpmMedian / 100).toFixed(1)}
+          </Badge>
+          <Badge variant="accent-light" className="hidden rounded-full px-2 text-sm md:block">
+            {formatTime(map.info.duration)}
+          </Badge>
+        </Link>
+      </HoverExtractCardTrigger>
       <div className="z-10 flex items-center space-x-1">
         {status === "authenticated" ? (
           <BookmarkListPopover className="relative mr-1.5" mapId={map.id} hasBookmarked={map.bookmark.hasBookmarked} />
@@ -192,75 +134,30 @@ const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
   );
 };
 
-const MapDifficultyHoverCardContent = ({
-  map,
-  cardContentRef,
-  enabled,
-  onHoverOpen,
-  onHoverClose,
-}: {
-  map: Map;
-  cardContentRef: React.RefObject<HTMLDivElement | null>;
-  enabled: boolean;
-  onHoverOpen: () => void;
-  onHoverClose: () => void;
-}) => {
+const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
   const inputMode = useReadyInputModeState();
   const kpm = inputMode === "roma" ? map.difficulty.romaKpmMedian : map.difficulty.kanaKpmMedian;
   const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;
-  const [cardWidth, setCardWidth] = useState(0);
-
-  useEffect(() => {
-    if (!enabled) return;
-    const el = cardContentRef.current;
-    if (!el) return;
-
-    setCardWidth(el.clientWidth);
-
-    const ro = new ResizeObserver(() => {
-      setCardWidth(el.clientWidth);
-    });
-
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [cardContentRef, enabled]);
-
   return (
-    <>
-      {enabled && (
-        <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
-      )}
-      <HoverCardContent
-        avoidCollisions={false}
-        className="z-40 flex flex-col gap-3 rounded-t-none border-primary-light border-x-2 border-t-0 border-b-2 px-3 py-3 text-sm"
-        align="start"
-        side="bottom"
-        sideOffset={-2}
-        style={{ width: cardWidth }}
-        onPointerEnter={onHoverOpen}
-        onPointerLeave={onHoverClose}
-      >
-        <div className="flex flex-wrap items-center gap-x-3">
-          <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
-            {inputMode === "roma" ? "ローマ字" : "かな"}
-          </Badge>
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">中央値</span>
-            <span className="font-semibold tabular-nums">{kpm}kpm</span>
-          </div>
-          <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">最大</span>
-            <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
-          </div>
-          <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">打鍵数</span>
-            <span className="font-semibold tabular-nums">{totalNotes}打</span>
-          </div>
-        </div>
-      </HoverCardContent>
-    </>
+    <div className="flex flex-wrap items-center gap-x-3">
+      <Badge variant={inputMode === "roma" ? "roma" : "kana"} size="xs">
+        {inputMode === "roma" ? "ローマ字" : "かな"}
+      </Badge>
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground">中央値</span>
+        <span className="font-semibold tabular-nums">{kpm}kpm</span>
+      </div>
+      <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground">最大</span>
+        <span className="font-semibold tabular-nums">{maxKpm}kpm</span>
+      </div>
+      <Separator orientation="vertical" className="bg-border/60 data-[orientation=vertical]:h-3" />
+      <div className="flex items-center gap-2">
+        <span className="text-muted-foreground">打鍵数</span>
+        <span className="font-semibold tabular-nums">{totalNotes}打</span>
+      </div>
+    </div>
   );
 };
