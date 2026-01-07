@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { LikeCountIcon } from "@/components/shared/map-count/like-count";
 import { RankingCount } from "@/components/shared/map-count/ranking-count";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CardHeader } from "@/components/ui/card";
 import { HoverExtractCard, HoverExtractCardTrigger } from "@/components/ui/hover-extract-card";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -23,25 +23,32 @@ interface NotificationMapCardContentProps {
 
 export const NotificationMapCardContent = ({ map, user, className, title }: NotificationMapCardContentProps) => {
   return (
-    <Card variant="map" className="block transition-shadow duration-300 hover:shadow-lg">
-      <CardHeader className={cn("flex flex-wrap items-center gap-1 rounded-t-md px-2 py-1.5 text-sm", className)}>
-        <UserNameLinkText
-          className="text-header-foreground underline hover:text-header-foreground"
-          userId={user.id}
-          userName={user.name}
-        />
-        <span>{title}</span>
-      </CardHeader>
-      <CardContent className="flex h-full items-start rounded-md border-none p-0 text-muted-foreground">
-        <MapLeftThumbnail
-          alt={map.info.title}
-          media={map.media}
-          size="notification"
-          imageClassName="rounded-t-none rounded-br-none"
-        />
-        <CompactMapInfo map={map} />
-      </CardContent>
-    </Card>
+    <HoverExtractCard
+      variant="map"
+      cardClassName="block transition-shadow duration-300 hover:shadow-lg"
+      cardContentClassName="flex h-full items-start rounded-md border-none p-0 text-muted-foreground"
+      cardHeader={
+        <CardHeader className={cn("flex flex-wrap items-center gap-1 rounded-t-md px-2 py-1.5 text-sm", className)}>
+          <UserNameLinkText
+            className="text-header-foreground underline hover:text-header-foreground"
+            userId={user.id}
+            userName={user.name}
+          />
+          <span>{title}</span>
+        </CardHeader>
+      }
+      openDelay={50}
+      closeDelay={40}
+      extractContent={<MapDifficultyExtractContent map={map} />}
+    >
+      <MapLeftThumbnail
+        alt={map.info.title}
+        media={map.media}
+        size="notification"
+        imageClassName="rounded-t-none rounded-br-none"
+      />
+      <CompactMapInfo map={map} />
+    </HoverExtractCard>
   );
 };
 

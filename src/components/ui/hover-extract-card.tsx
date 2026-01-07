@@ -23,6 +23,8 @@ const useHoverExtract = () => {
 
 interface HoverExtractCardProps {
   children: React.ReactNode;
+  cardClassName?: string;
+  cardContentClassName?: string;
   extractContent: React.ReactNode;
   cardHeader?: React.ReactNode;
   openDelay?: number;
@@ -33,6 +35,8 @@ interface HoverExtractCardProps {
 
 export const HoverExtractCard = ({
   children,
+  cardClassName,
+  cardContentClassName,
   extractContent,
   cardHeader,
   openDelay = 50,
@@ -107,9 +111,9 @@ export const HoverExtractCard = ({
 
   return (
     <HoverExtractContext.Provider value={ctxValue}>
-      <Card ref={ref} variant={variant}>
+      <Card ref={ref} variant={variant} className={cardClassName}>
         {cardHeader}
-        <CardContent variant={variant} className={cn("relative", isOpen ? "z-50" : "")} ref={cardContentRef}>
+        <CardContent variant={variant} className={cn(cardContentClassName, "relative", isOpen ? "z-50" : "")} ref={cardContentRef}>
           <HoverCardPrimitive.Root open={isOpen}>
             <HoverCardPrimitive.Trigger className="pointer-events-none absolute bottom-0 left-0 h-px w-px" />
 
