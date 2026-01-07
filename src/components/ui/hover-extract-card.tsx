@@ -3,7 +3,7 @@
 import { HoverCard as HoverCardPrimitive, Slot as SlotPrimitive } from "radix-ui";
 import type * as React from "react";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { CardWithContent } from "@/components/ui/card";
+import { Card, CardContent, type CardWithContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 type HoverExtractCtx = {
@@ -24,6 +24,7 @@ const useHoverExtract = () => {
 interface HoverExtractCardProps {
   children: React.ReactNode;
   extractContent: React.ReactNode;
+  cardHeader?: React.ReactNode;
   openDelay?: number;
   closeDelay?: number;
   variant?: React.ComponentProps<typeof CardWithContent>["variant"];
@@ -33,6 +34,7 @@ interface HoverExtractCardProps {
 export const HoverExtractCard = ({
   children,
   extractContent,
+  cardHeader,
   openDelay = 50,
   closeDelay = 40,
   variant,
@@ -105,37 +107,33 @@ export const HoverExtractCard = ({
 
   return (
     <HoverExtractContext.Provider value={ctxValue}>
-      <CardWithContent
-        variant={variant}
-        className={{
-          cardContent: cn("relative", isOpen ? "z-50" : ""),
-        }}
-        ref={ref}
-        cardContentRef={cardContentRef}
-      >
-        <HoverCardPrimitive.Root open={isOpen}>
-          <HoverCardPrimitive.Trigger className="pointer-events-none absolute bottom-0 left-0 h-px w-px" />
+      <Card ref={ref} variant={variant}>
+        {cardHeader}
+        <CardContent variant={variant} className={cn("relative", isOpen ? "z-50" : "")} ref={cardContentRef}>
+          <HoverCardPrimitive.Root open={isOpen}>
+            <HoverCardPrimitive.Trigger className="pointer-events-none absolute bottom-0 left-0 h-px w-px" />
 
-          {isOpen && (
-            <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
-          )}
-          {children}
-          <HoverCardPrimitive.Portal>
-            <HoverCardPrimitive.Content
-              avoidCollisions={false}
-              align="start"
-              side="bottom"
-              sideOffset={-2}
-              className="z-40 flex flex-col rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover px-3 py-3 text-sm shadow-md outline-hidden"
-              style={{ width: cardWidth }}
-              onPointerEnter={openHover}
-              onPointerLeave={closeHover}
-            >
-              {extractContent}
-            </HoverCardPrimitive.Content>
-          </HoverCardPrimitive.Portal>
-        </HoverCardPrimitive.Root>
-      </CardWithContent>
+            {isOpen && (
+              <div className="pointer-events-none absolute bottom-0 left-0 z-10 size-full rounded-t-md border-primary-light border-x-2 border-t-2" />
+            )}
+            {children}
+            <HoverCardPrimitive.Portal>
+              <HoverCardPrimitive.Content
+                avoidCollisions={false}
+                align="start"
+                side="bottom"
+                sideOffset={-2}
+                className="z-100 flex flex-col rounded-t-none rounded-b-lg border-primary-light border-x-2 border-t-0 border-b-2 bg-popover px-3 py-3 text-sm shadow-md outline-hidden"
+                style={{ width: cardWidth }}
+                onPointerEnter={openHover}
+                onPointerLeave={closeHover}
+              >
+                {extractContent}
+              </HoverCardPrimitive.Content>
+            </HoverCardPrimitive.Portal>
+          </HoverCardPrimitive.Root>
+        </CardContent>
+      </Card>
     </HoverExtractContext.Provider>
   );
 };

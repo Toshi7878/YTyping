@@ -134,7 +134,7 @@ const MapCreatorInfo = ({ creator, updatedAt }: MapCreatorInfoProps) => {
   );
 };
 
-const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
+export const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
   const inputMode = useReadyInputModeState();
   const kpm = inputMode === "roma" ? map.difficulty.romaKpmMedian : map.difficulty.kanaKpmMedian;
   const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
