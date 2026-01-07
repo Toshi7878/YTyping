@@ -65,7 +65,7 @@ export const moveNextLine = () => {
   if (!prevLine || !nextLine) return;
   const playSpeed = readMediaSpeed();
   const { scene, isPaused } = readUtilityParams();
-  const prevLineTime = nextLine.time - prevLine.time / playSpeed;
+  const prevLineTime = (nextLine.time - prevLine.time) / playSpeed;
   const isTimeBuffer = scene === "practice" && !isPaused && prevLineTime > 1;
 
   const nextTime = Number(nextLine.time) - (isTimeBuffer ? SEEK_BUFFER_TIME * playSpeed : 0);
