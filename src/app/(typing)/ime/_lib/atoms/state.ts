@@ -43,6 +43,7 @@ export const setExpectedWords = (newExpectedWords: ExtractAtomValue<typeof expec
 export const useCurrentWordIndexState = () => useAtomValue(currentWordIndexAtom, { store });
 export const setCurrentWordIndex = (newCurrentWordIndex: number) =>
   store.set(currentWordIndexAtom, newCurrentWordIndex);
+export const resetTypingWord = () => store.set(typingWordAtom, RESET);
 
 const utilityParamsAtom = atomWithReset({
   skipRemainTime: null as number | null,

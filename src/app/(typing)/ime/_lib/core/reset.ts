@@ -9,6 +9,7 @@ import {
   resetNotifications,
   resetScene,
   resetStatus,
+  resetTypingWord,
   resetUtilityParams,
   setScene,
 } from "../atoms/state";
@@ -35,6 +36,7 @@ export const initializePlayScene = () => {
 };
 
 export const pathChangeAtomReset = () => {
+  resetTypingWord();
   resetUtilityParams();
   resetYTPlayer();
   resetBuiltMap();
