@@ -24,7 +24,6 @@ const tabNameAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("tabName"
 const playingLineIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("playingLineIndex"));
 const directEditingIndexAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("directEditingIndex"));
 const manyPhraseTextAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("manyPhraseText"));
-const cssTextLengthAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("cssTextLength"));
 const isWordConvertingAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isWordConverting"));
 export const isTimeInputValidAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isTimeInputValid"));
 const isUpdateUpdatedAtAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("isUpdateUpdatedAt"));
