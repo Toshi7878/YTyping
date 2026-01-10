@@ -233,7 +233,7 @@ importers:
         version: 0.31.8
       supabase:
         specifier: ^2.48.3
-        version: 2.70.5
+        version: 2.72.3
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -2740,6 +2740,9 @@ packages:
   '@types/node@24.10.4':
     resolution: {integrity: sha512-vnDVpYPMzs4wunl27jHrfmwojOGKya0xyM3sH+UE5iv5uPS6vX7UIoh6m+vQc5LGBq52HBKPIn/zcSZVzeDEZg==}
 
+  '@types/node@24.10.5':
+    resolution: {integrity: sha512-tPacJqtEN9wmsHA9YKHxDQlODhoUN3SFQV8kCiWc4oCV1QjbigUNHH8xH3KAyM963jGRCmeDGsBl4ePSgsFivA==}
+
   '@types/pg-pool@2.0.6':
     resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
 
@@ -4280,8 +4283,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  supabase@2.70.5:
-    resolution: {integrity: sha512-HtMGtYbcL9dxi2Yz4eGWWlxl9nQi76pOyGgCTBeE67p5AeIlv+KJhDOR8oinaNfHHMPKk0Uo1WW7Kxyrz+tdgg==}
+  supabase@2.72.3:
+    resolution: {integrity: sha512-c0vpDmMFS/A5XyBFJzQqil/GSldFOj5dzzeBwtDo7pKTp/M9i4cajq/I7GgJXAzXNNTjzuXmmdL8EXrACSIJaw==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -7405,6 +7408,10 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
+  '@types/node@24.10.5':
+    dependencies:
+      undici-types: 7.16.0
+
   '@types/pg-pool@2.0.6':
     dependencies:
       '@types/pg': 8.15.6
@@ -8176,7 +8183,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.10.4
+      '@types/node': 24.10.5
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -8874,7 +8881,7 @@ snapshots:
     optionalDependencies:
       '@babel/core': 7.28.5
 
-  supabase@2.70.5:
+  supabase@2.72.3:
     dependencies:
       bin-links: 6.0.0
       https-proxy-agent: 7.0.6
