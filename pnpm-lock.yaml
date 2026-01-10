@@ -28,7 +28,7 @@ importers:
         version: 0.24.1
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.69.0(react@19.2.3))
+        version: 5.2.2(react-hook-form@7.70.0(react@19.2.3))
       '@pixi/sound':
         specifier: ^6.0.1
         version: 6.0.1(patch_hash=b0300d5c2c0d3f9f1449ff45b40a439b01f7914f0d33b2c999aa58251be1a9dd)(pixi.js@8.14.3)
@@ -163,7 +163,7 @@ importers:
         version: 19.2.3(react@19.2.3)
       react-hook-form:
         specifier: ^7.63.0
-        version: 7.69.0(react@19.2.3)
+        version: 7.70.0(react@19.2.3)
       react-hotkeys-hook:
         specifier: ^5.1.0
         version: 5.2.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -4054,8 +4054,8 @@ packages:
     peerDependencies:
       react: ^19.2.3
 
-  react-hook-form@7.69.0:
-    resolution: {integrity: sha512-yt6ZGME9f4F6WHwevrvpAjh42HMvocuSnSIHUGycBqXIJdhqGSPQzTpGF+1NLREk/58IdPxEMfPcFCjlMhclGw==}
+  react-hook-form@7.70.0:
+    resolution: {integrity: sha512-COOMajS4FI3Wuwrs3GPpi/Jeef/5W1DRR84Yl5/ShlT3dKVFUfoGiEZ/QE6Uw8P4T2/CLJdcTVYKvWBMQTEpvw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -5392,10 +5392,10 @@ snapshots:
 
   '@hapi/bourne@3.0.0': {}
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.69.0(react@19.2.3))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.70.0(react@19.2.3))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.69.0(react@19.2.3)
+      react-hook-form: 7.70.0(react@19.2.3)
 
   '@img/colour@1.0.0':
     optional: true
@@ -8616,7 +8616,7 @@ snapshots:
       react: 19.2.3
       scheduler: 0.27.0
 
-  react-hook-form@7.69.0(react@19.2.3):
+  react-hook-form@7.70.0(react@19.2.3):
     dependencies:
       react: 19.2.3
 
