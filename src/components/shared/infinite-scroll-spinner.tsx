@@ -29,7 +29,7 @@ export const InfiniteScrollSpinner = ({
   return <Spinner ref={ref} className={className} />;
 };
 
-export const useInfiniteScroll = ({
+const useInfiniteScroll = ({
   isFetchingNextPage,
   fetchNextPage,
   ...options

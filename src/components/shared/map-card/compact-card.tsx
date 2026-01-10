@@ -145,7 +145,7 @@ const MapIcons = ({ mapId, ranking, like }: MapCountIconsProps) => {
 
 type Map = NonNullable<RouterOutputs["mapList"]["get"]["items"]>[number];
 
-export const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
+const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
   const inputMode = useReadyInputModeState();
   const maxKpm = inputMode === "roma" ? map.difficulty.romaKpmMax : map.difficulty.kanaKpmMax;
   const totalNotes = inputMode === "roma" ? map.difficulty.romaTotalNotes : map.difficulty.kanaTotalNotes;

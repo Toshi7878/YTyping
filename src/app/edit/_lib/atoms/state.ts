@@ -59,9 +59,6 @@ export const useManyPhraseState = () => useAtomValue(manyPhraseTextAtom, { store
 export const setManyPhrase = (value: ExtractAtomValue<typeof manyPhraseTextAtom>) =>
   store.set(manyPhraseTextAtom, value);
 
-export const useCssLengthState = () => useAtomValue(cssTextLengthAtom, { store });
-export const setCssLength = (value: ExtractAtomValue<typeof cssTextLengthAtom>) => store.set(cssTextLengthAtom, value);
-
 export const useIsWordConvertingState = () => useAtomValue(isWordConvertingAtom, { store });
 export const setIsWordConverting = (value: ExtractAtomValue<typeof isWordConvertingAtom>) =>
   store.set(isWordConvertingAtom, value);

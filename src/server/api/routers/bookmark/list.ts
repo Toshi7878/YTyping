@@ -9,6 +9,7 @@ import {
   NotificationMapBookmarks,
   Notifications,
 } from "@/server/drizzle/schema";
+import { CreateMapBookmarkListApiSchema, UpdateMapBookmarkListApiSchema } from "@/validator/bookmark";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const bookmarkListRouter = {
@@ -90,43 +91,39 @@ export const bookmarkListRouter = {
     return total[0]?.count ?? 0;
   }),
 
-  create: protectedProcedure
-    .input(z.object({ title: z.string().min(1), isPublic: z.boolean().default(false) }))
-    .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
+  create: protectedProcedure.input(CreateMapBookmarkListApiSchema).mutation(async ({ input, ctx }) => {
+    const { db, user } = ctx;
 
-      const listCount = await db
-        .select({ count: count() })
-        .from(MapBookmarkLists)
-        .where(eq(MapBookmarkLists.userId, user.id))
-        .then((rows) => rows[0]?.count ?? 0);
+    const listCount = await db
+      .select({ count: count() })
+      .from(MapBookmarkLists)
+      .where(eq(MapBookmarkLists.userId, user.id))
+      .then((rows) => rows[0]?.count ?? 0);
 
-      if (listCount >= 15) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "ブックマークリストは最大15件まで作成できます",
-        });
-      }
+    if (listCount >= 15) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "ブックマークリストは最大15件まで作成できます",
+      });
+    }
 
-      return db.insert(MapBookmarkLists).values({
-        userId: user.id,
+    return db.insert(MapBookmarkLists).values({
+      userId: user.id,
+      title: input.title,
+      isPublic: input.isPublic,
+    });
+  }),
+
+  update: protectedProcedure.input(UpdateMapBookmarkListApiSchema).mutation(async ({ input, ctx }) => {
+    const { db, user } = ctx;
+    return db
+      .update(MapBookmarkLists)
+      .set({
         title: input.title,
         isPublic: input.isPublic,
-      });
-    }),
-
-  update: protectedProcedure
-    .input(z.object({ listId: z.number(), title: z.string().min(1), isPublic: z.boolean() }))
-    .mutation(async ({ input, ctx }) => {
-      const { db, user } = ctx;
-      return db
-        .update(MapBookmarkLists)
-        .set({
-          title: input.title,
-          isPublic: input.isPublic,
-        })
-        .where(and(eq(MapBookmarkLists.id, input.listId), eq(MapBookmarkLists.userId, user.id)));
-    }),
+      })
+      .where(and(eq(MapBookmarkLists.id, input.id), eq(MapBookmarkLists.userId, user.id)));
+  }),
 
   delete: protectedProcedure.input(z.object({ listId: z.number() })).mutation(async ({ input, ctx }) => {
     const { db, user } = ctx;

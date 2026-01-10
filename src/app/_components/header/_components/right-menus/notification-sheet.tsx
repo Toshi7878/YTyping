@@ -104,7 +104,7 @@ const NotificationContent = () => {
 type Notification = NonNullable<RouterOutputs["notification"]["getInfinite"]["items"][number]>;
 
 type OverTakeNotification = Extract<Notification, { type: "OVER_TAKE" }>;
-export const OverTakeNotificationMapCard = ({ notification }: { notification: OverTakeNotification }) => {
+const OverTakeNotificationMapCard = ({ notification }: { notification: OverTakeNotification }) => {
   const { map, visitor, myResult } = notification;
   return (
     <NotificationMapCardContent
@@ -117,7 +117,7 @@ export const OverTakeNotificationMapCard = ({ notification }: { notification: Ov
 };
 
 type LikeNotification = Extract<Notification, { type: "LIKE" }>;
-export const LikeNotificationMapCard = ({ notification }: { notification: LikeNotification }) => {
+const LikeNotificationMapCard = ({ notification }: { notification: LikeNotification }) => {
   const { map, liker } = notification;
   return (
     <NotificationMapCardContent
@@ -130,7 +130,7 @@ export const LikeNotificationMapCard = ({ notification }: { notification: LikeNo
 };
 
 type ClapNotification = Extract<Notification, { type: "CLAP" }>;
-export const ClapNotificationMapCard = ({ notification }: { notification: ClapNotification }) => {
+const ClapNotificationMapCard = ({ notification }: { notification: ClapNotification }) => {
   const { map, clapper } = notification;
   return (
     <NotificationMapCardContent
@@ -143,7 +143,7 @@ export const ClapNotificationMapCard = ({ notification }: { notification: ClapNo
 };
 
 type BookMarkNotification = Extract<Notification, { type: "MAP_BOOKMARK" }>;
-export const BookMarkNotificationMapCard = ({ notification }: { notification: BookMarkNotification }) => {
+const BookMarkNotificationMapCard = ({ notification }: { notification: BookMarkNotification }) => {
   const { map, bookmarker, mapBookmark } = notification;
   return (
     <NotificationMapCardContent

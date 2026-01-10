@@ -106,7 +106,7 @@ interface BookMarkListItemProps {
   onClick: React.ComponentProps<"button">["onClick"];
 }
 
-export const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
+const BookMarkListItem = ({ list, onClick }: BookMarkListItemProps) => {
   return (
     <Button variant="ghost" size="xl" className="justify-between px-1" onClick={onClick}>
       <div className="flex items-center gap-3">

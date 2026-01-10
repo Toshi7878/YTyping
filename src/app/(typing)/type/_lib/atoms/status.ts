@@ -114,7 +114,7 @@ store.sub(typingStatusAtom, () => {
   });
 });
 
-export const resetStatusCache = () => {
+const resetStatusCache = () => {
   prevStatus.score = -1;
   prevStatus.type = -1;
   prevStatus.kpm = -1;

@@ -26,7 +26,7 @@ export const TabIcons = ({ className }: { className?: string }) => {
   );
 };
 
-export const BookmarkListIconButton = () => {
+const BookmarkListIconButton = () => {
   const mapId = useMapIdState();
 
   const trpc = useTRPC();
@@ -50,7 +50,7 @@ export const BookmarkListIconButton = () => {
   );
 };
 
-export const LikeIconButton = () => {
+const LikeIconButton = () => {
   const { isSmScreen } = useBreakPoint();
   const toggleMapLike = useToggleMapLikeMutation();
   const trpc = useTRPC();

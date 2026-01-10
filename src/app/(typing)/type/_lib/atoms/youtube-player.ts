@@ -17,7 +17,7 @@ export const pauseYTPlayer = () => store.get(YTPlayerAtom)?.pauseVideo();
 export const seekYTPlayer = (seconds: number) => store.get(YTPlayerAtom)?.seekTo(seconds, true);
 export const stopYTPlayer = () => store.get(YTPlayerAtom)?.stopVideo();
 export const getYTPlayerState = () => store.get(YTPlayerAtom)?.getPlayerState();
-export const getYTPlaybackRate = () => store.get(YTPlayerAtom)?.getPlaybackRate();
+const getYTPlaybackRate = () => store.get(YTPlayerAtom)?.getPlaybackRate();
 export const cycleYTPlaybackRate = ({ minSpeed }: { minSpeed: number }) => {
   const currentSpeed = getYTPlaybackRate();
   if (!currentSpeed) return;

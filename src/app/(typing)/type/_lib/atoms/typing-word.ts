@@ -51,14 +51,10 @@ const lineAtom = atomWithReset<{ typingWord: TypingWord; lyrics: string }>({
   },
   lyrics: "",
 });
-export const typingWordAtom = focusAtom(lineAtom, (optic) => optic.prop("typingWord"));
-const isLineCompletedAtom = atom((get) => {
-  const typingWord = get(typingWordAtom);
-  return !typingWord.nextChunk.kana && !!typingWord.correct.kana;
-});
+const typingWordAtom = focusAtom(lineAtom, (optic) => optic.prop("typingWord"));
 const lyricsAtom = focusAtom(lineAtom, (optic) => optic.prop("lyrics"));
+
 export const setTypingWord = (value: ExtractAtomValue<typeof typingWordAtom>) => store.set(typingWordAtom, value);
-export const useIsLineCompletedState = () => useAtomValue(isLineCompletedAtom);
 export const readTypingWord = () => store.get(typingWordAtom);
 export const useLyricsState = () => useAtomValue(lyricsAtom, { store });
 export const setNewLine = (newLine: BuiltMapLineWithOption) => {
@@ -103,7 +99,6 @@ export const setWordContainerElement = (element: ExtractAtomValue<typeof wordCon
   store.set(wordContainerElementAtom, element);
 };
 
-export const readMainWordElements = () => store.get(mainWordElementsAtom);
 store.sub(typingWordAtom, () => {
   const typingWord = store.get(typingWordAtom);
   const main = store.get(mainWordElementsAtom);
@@ -374,15 +369,4 @@ const applyScroll = (
       prevSubShift = subShift;
     }
   });
-};
-
-export const resetWordCache = () => {
-  prevMainCorrect = "";
-  prevMainNextChar = "";
-  prevMainRemain = "";
-  prevSubCorrect = "";
-  prevSubNextChar = "";
-  prevSubRemain = "";
-  prevMainCorrectTextForScroll = "";
-  prevSubCorrectTextForScroll = "";
 };

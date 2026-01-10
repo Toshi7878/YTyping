@@ -35,7 +35,7 @@ export const writeSubstatus = (newSubstatus: Partial<ExtractAtomValue<typeof sub
   store.set(substatusRefAtom, (prev) => ({ ...prev, ...newSubstatus }));
 export const resetSubstatus = () => store.set(substatusRefAtom, RESET);
 
-export const lineSubstatusRefAtom = atomWithReset({
+const lineSubstatusRefAtom = atomWithReset({
   type: 0,
   miss: 0,
   latency: 0,
@@ -68,7 +68,7 @@ export const writeUserStats = (newUserStats: Partial<ExtractAtomValue<typeof use
   store.set(userStatsRefAtom, (prev) => ({ ...prev, ...newUserStats }));
 export const resetUserStats = () => store.set(userStatsRefAtom, RESET);
 
-export const utilityRefParamsAtom = atomWithReset({
+const utilityRefParamsAtom = atomWithReset({
   isRetrySkip: false,
   retryCount: 1,
   timeOffset: 0,
@@ -83,7 +83,7 @@ export const writeUtilityRefParams = (newUserStats: Partial<ExtractAtomValue<typ
   store.set(utilityRefParamsAtom, (prev) => ({ ...prev, ...newUserStats }));
 export const resetUtilityRefParams = () => store.set(utilityRefParamsAtom, RESET);
 
-export const lineProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
+const lineProgressAtom = atomWithReset<HTMLProgressElement | null>(null);
 export const readLineProgress = () => store.get(lineProgressAtom);
 export const writeLineProgress = (newYTPlayer: HTMLProgressElement) => store.set(lineProgressAtom, newYTPlayer);
 export const setLineProgressValue = (value: number) => {

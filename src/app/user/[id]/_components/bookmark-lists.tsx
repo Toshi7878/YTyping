@@ -220,11 +220,7 @@ const EditBookmarkListDialogForm = ({ list, trigger }: { list: BookmarkList; tri
 
   const onSubmit = (data: z.infer<typeof MapBookmarkListFormSchema>) => {
     const { visibility, ...rest } = data;
-    updateListMutation.mutate({
-      listId: list.id,
-      ...rest,
-      isPublic: visibility === "public",
-    });
+    updateListMutation.mutate({ id: list.id, ...rest, isPublic: visibility === "public" });
   };
 
   return (

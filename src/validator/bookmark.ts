@@ -1,4 +1,4 @@
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 import { MAX_SHORT_LENGTH } from "@/server/drizzle/const";
 import { MapBookmarkLists } from "@/server/drizzle/schema";
@@ -10,12 +10,15 @@ export const MapBookmarkListFormSchema = z.object({
   visibility: z.literal(["public", "private"]),
 });
 
-export const MapBookmarkListApiSchema = createInsertSchema(MapBookmarkLists).pick({
+export const CreateMapBookmarkListApiSchema = createInsertSchema(MapBookmarkLists).pick({
   title: true,
   isPublic: true,
 });
 
-export const IncrementImeTypeCountStatsSchema = z.object({
-  typingTime: z.number().min(0),
-  imeTypeCount: z.number().min(0),
+export const UpdateMapBookmarkListApiSchema = createUpdateSchema(MapBookmarkLists, {
+  id: z.number(),
+}).pick({
+  id: true,
+  title: true,
+  isPublic: true,
 });

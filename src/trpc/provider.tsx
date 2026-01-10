@@ -23,8 +23,7 @@ export const getQueryClient = () => {
   return (clientQueryClientSingleton ??= createQueryClient());
 };
 
-export const { useTRPC, TRPCProvider, useTRPCClient } = createTRPCContext<AppRouter>();
-export type Trpc = ReturnType<typeof useTRPC>;
+export const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();
 const trpcClient = createTRPCClient<AppRouter>({
   links: [
     loggerLink({

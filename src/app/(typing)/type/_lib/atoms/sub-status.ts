@@ -99,7 +99,7 @@ store.sub(substatusAtom, () => {
   });
 });
 
-export const resetSubStatusCache = () => {
+const resetSubStatusCache = () => {
   prevSubStatus.elapsedSecTime = -1;
   prevSubStatus.lineRemainTime = -1;
   prevSubStatus.lineKpm = -1;
