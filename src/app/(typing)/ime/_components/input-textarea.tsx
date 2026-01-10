@@ -1,10 +1,12 @@
 import { Ticker } from "@pixi/ticker";
+import { evaluateImeInput } from "lyrics-ime-typing-engine";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { updateImeTypeCountStats, updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
   readBuiltMap,
+  readImeTypeOptions,
   readTypingWord,
   readUtilityParams,
   readWordResults,
@@ -16,7 +18,6 @@ import {
   useSceneState,
   useTextareaPlaceholderTypeState,
 } from "../_lib/atoms/state";
-import { evaluateImeInput } from "../_lib/core/evaluate-ime-input";
 import { handleSceneEnd } from "../_lib/core/scene-control";
 import { handleSkip } from "../_lib/core/skip";
 import type { PlaceholderType, SceneType } from "../_lib/type";
@@ -38,7 +39,13 @@ export const InputTextarea = () => {
 
       const typingWord = readTypingWord();
       const wordResults = readWordResults();
-      const result = evaluateImeInput(value, typingWord, [...wordResults], map);
+      const { enableEngUpperCase, addSymbolList, enableAddSymbol, enableEngSpace } = readImeTypeOptions();
+
+      const result = evaluateImeInput(value, typingWord, [...wordResults], map, {
+        isCaseSensitive: enableEngUpperCase,
+        includeRegexPattern: addSymbolList,
+        enableIncludeRegex: enableAddSymbol,
+      });
 
       for (const update of result.wordResultUpdates) {
         setWordResults(update);

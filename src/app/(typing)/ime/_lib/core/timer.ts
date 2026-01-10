@@ -1,4 +1,5 @@
 import { Ticker } from "@pixi/ticker";
+import { getExpectedWords } from "lyrics-ime-typing-engine";
 import { readLyricsContainer } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -176,8 +177,4 @@ const calcWipeProgress = ({ wipeChunk, currentTime }: { wipeChunk: WipeChunk; cu
   const wipeProgress = Math.round((wipeTime / wipeDuration) * 100 * 1000) / 1000;
 
   return `background:-webkit-linear-gradient(0deg, #ffa500 ${String(wipeProgress)}%, white 0%); -webkit-background-clip:text;`;
-};
-
-const getExpectedWords = (count: number, words: BuiltImeMap["words"]) => {
-  return words.slice(0, count).flat(1);
 };

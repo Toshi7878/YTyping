@@ -1,4 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  buildImeLines,
+  buildImeWords,
+  createFlatWords,
+  createInitWordResults,
+  getTotalNotes,
+} from "lyrics-ime-typing-engine";
 import { useParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
@@ -14,9 +21,7 @@ import {
   setImeOptions,
   useImeTypeOptionsState,
 } from "../../_lib/atoms/state";
-import { buildImeMap } from "../../_lib/core/bulid-ime-map";
-import { createFlatWords, createInitWordResults, getTotalNotes } from "../../_lib/core/map-modules";
-import { generateImeWords, generateLyricsWithReadings } from "../../_lib/core/repl";
+import { generateLyricsWithReadings } from "../../_lib/core/generate-lyrics-with-readings";
 
 interface SettingPopoverProps {
   triggerButton: ReactNode;
@@ -42,15 +47,13 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
 
         if (rawMapLines) {
           const { enableEngUpperCase, addSymbolList, enableAddSymbol, enableEngSpace } = readImeTypeOptions();
-          const lines = await buildImeMap(rawMapLines, {
+          const lines = await buildImeLines(rawMapLines, {
             isCaseSensitive: enableEngUpperCase,
             includeRegexPattern: addSymbolList,
             enableIncludeRegex: enableAddSymbol,
           });
 
-          const words = await generateImeWords(lines, generateLyricsWithReadings, {
-            insertEnglishSpaces: enableEngSpace,
-          });
+          const words = await buildImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces: enableEngSpace });
           const totalNotes = getTotalNotes(words);
           const flatWords = createFlatWords(words);
           const initWordResults = createInitWordResults(flatWords);

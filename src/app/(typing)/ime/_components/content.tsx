@@ -1,5 +1,12 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
+import {
+  buildImeLines,
+  buildImeWords,
+  createFlatWords,
+  createInitWordResults,
+  getTotalNotes,
+} from "lyrics-ime-typing-engine";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,10 +20,8 @@ import { Notifications } from "../_components/notifications-display";
 import { ViewArea } from "../_components/view-area/view-area";
 import { YouTubePlayer } from "../_components/youtube-player";
 import { readImeTypeOptions, readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
-import { buildImeMap } from "../_lib/core/bulid-ime-map";
-import { createFlatWords, createInitWordResults, getTotalNotes } from "../_lib/core/map-modules";
+import { generateLyricsWithReadings } from "../_lib/core/generate-lyrics-with-readings";
 import { mutateImeStats } from "../_lib/core/mutate-stats";
-import { generateImeWords, generateLyricsWithReadings } from "../_lib/core/repl";
 import { pathChangeAtomReset } from "../_lib/core/reset";
 
 interface ContentProps {
@@ -38,17 +43,16 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
 
     try {
       const { enableEngUpperCase, addSymbolList, enableAddSymbol, enableEngSpace } = readImeTypeOptions();
-      const lines = await buildImeMap(mapData, {
+      const lines = await buildImeLines(mapData, {
         isCaseSensitive: enableEngUpperCase,
         includeRegexPattern: addSymbolList,
         enableIncludeRegex: enableAddSymbol,
       });
 
-      const words = await generateImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces: enableEngSpace });
+      const words = await buildImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces: enableEngSpace });
       const totalNotes = getTotalNotes(words);
       const flatWords = createFlatWords(words);
       const initWordResults = createInitWordResults(flatWords);
-      console.log({ lines, words, totalNotes, initWordResults, flatWords });
       setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
       hideLoading();
     } catch {
