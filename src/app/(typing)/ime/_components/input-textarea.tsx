@@ -39,7 +39,7 @@ export const InputTextarea = () => {
 
       const typingWord = readTypingWord();
       const wordResults = readWordResults();
-      const { enableEngUpperCase, addSymbolList, enableAddSymbol, enableEngSpace } = readImeTypeOptions();
+      const { enableEngUpperCase, addSymbolList, enableAddSymbol } = readImeTypeOptions();
 
       const result = evaluateImeInput(value, typingWord, [...wordResults], map, {
         isCaseSensitive: enableEngUpperCase,
