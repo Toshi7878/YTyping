@@ -22,13 +22,27 @@ export const setScene = (newScene: SceneType) => store.set(sceneAtom, newScene);
 export const resetScene = () => store.set(sceneAtom, RESET);
 export const readScene = () => store.get(sceneAtom);
 
+const typingWordAtom = atomWithReset({
+  expectedWords: [] as string[][][],
+  currentWordIndex: 0,
+});
+
+const expectedWordsAtom = focusAtom(typingWordAtom, (optic) => optic.prop("expectedWords"));
+const currentWordIndexAtom = focusAtom(typingWordAtom, (optic) => optic.prop("currentWordIndex"));
+
+export const readTypingWord = () => store.get(typingWordAtom);
+export const setExpectedWords = (newExpectedWords: ExtractAtomValue<typeof expectedWordsAtom>) =>
+  store.set(expectedWordsAtom, newExpectedWords);
+export const useCurrentWordIndexState = () => useAtomValue(currentWordIndexAtom, { store });
+export const setCurrentWordIndex = (newCurrentWordIndex: number) =>
+  store.set(currentWordIndexAtom, newCurrentWordIndex);
+
 const utilityParamsAtom = atomWithReset({
   skipRemainTime: null as number | null,
   count: 0,
   wipeCount: 0,
   displayLines: new Array(DISPLAY_LINE_LENGTH).fill([]) as BuiltImeMap["lines"][number][],
   nextDisplayLine: [] as BuiltImeMap["lines"][number],
-  judgedWords: [] as string[][][],
   textareaPlaceholderType: "normal" as PlaceholderType,
 });
 
@@ -45,7 +59,6 @@ const countAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("count"));
 const wipeCountAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("wipeCount"));
 const displayLinesAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("displayLines"));
 const nextDisplayLineAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("nextDisplayLine"));
-const judgedWordsAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("judgedWords"));
 const textareaPlaceholderTypeAtom = focusAtom(utilityParamsAtom, (optic) => optic.prop("textareaPlaceholderType"));
 
 export const useCountState = () => useAtomValue(countAtom, { store });
@@ -60,12 +73,11 @@ export const setCount = (count: number) => store.set(countAtom, count);
 export const setDisplayLines = (lines: ExtractAtomValue<typeof displayLinesAtom>) => store.set(displayLinesAtom, lines);
 export const setNextDisplayLine = (nextLine: ExtractAtomValue<typeof nextDisplayLineAtom>) =>
   store.set(nextDisplayLineAtom, nextLine);
-export const setJudgedWords = (judgedWords: ExtractAtomValue<typeof judgedWordsAtom>) =>
-  store.set(judgedWordsAtom, judgedWords);
+
 export const setTextareaPlaceholderType = (type: ExtractAtomValue<typeof textareaPlaceholderTypeAtom>) =>
   store.set(textareaPlaceholderTypeAtom, type);
 
-const statusAtom = atomWithReset({ typeCount: 0, score: 0, wordIndex: 0 });
+const statusAtom = atomWithReset({ typeCount: 0, score: 0 });
 export const useStatusState = () => useAtomValue(statusAtom, { store });
 export const setStatus = (update: Updater<ExtractAtomValue<typeof statusAtom>>) => store.set(statusAtom, update);
 export const resetStatus = () => store.set(statusAtom, RESET);

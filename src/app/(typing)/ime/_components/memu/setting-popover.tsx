@@ -15,6 +15,8 @@ import {
   useImeTypeOptionsState,
 } from "../../_lib/atoms/state";
 import { buildImeMap } from "../../_lib/core/bulid-ime-map";
+import { createFlatWords, createInitWordResults, getTotalNotes } from "../../_lib/core/map-modules";
+import { generateImeWords, generateLyricsWithReadings } from "../../_lib/core/repl";
 
 interface SettingPopoverProps {
   triggerButton: ReactNode;
@@ -39,8 +41,20 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
         );
 
         if (rawMapLines) {
-          const map = await buildImeMap(rawMapLines);
-          setBuiltMap(map);
+          const { enableEngUpperCase, addSymbolList, enableAddSymbol, enableEngSpace } = readImeTypeOptions();
+          const lines = await buildImeMap(rawMapLines, {
+            isCaseSensitive: enableEngUpperCase,
+            includeRegexPattern: addSymbolList,
+            enableIncludeRegex: enableAddSymbol,
+          });
+
+          const words = await generateImeWords(lines, generateLyricsWithReadings, {
+            insertEnglishSpaces: enableEngSpace,
+          });
+          const totalNotes = getTotalNotes(words);
+          const flatWords = createFlatWords(words);
+          const initWordResults = createInitWordResults(flatWords);
+          setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
         }
       }
     }

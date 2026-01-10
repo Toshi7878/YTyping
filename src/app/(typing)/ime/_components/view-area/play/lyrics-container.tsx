@@ -45,7 +45,7 @@ const Lyrics = () => {
           <div className="absolute shadow-layer">
             {"\u200B"}
             {line.map((chunk) => (
-              <Fragment key={String(chunk.time)}>
+              <Fragment key={String(chunk.startTime) + String(chunk.endTime)}>
                 <span className="text-transparent">{chunk.word}</span>{" "}
               </Fragment>
             ))}
@@ -53,7 +53,7 @@ const Lyrics = () => {
           <div className="wipe-layer relative text-shadow-none" style={{ WebkitTextFillColor: "transparent" }}>
             {"\u200B"}
             {line.map((chunk) => (
-              <Fragment key={String(chunk.time)}>
+              <Fragment key={String(chunk.startTime) + String(chunk.endTime)}>
                 <span style={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}>
                   {chunk.word}
                 </span>{" "}
@@ -101,7 +101,7 @@ const NextLyrics = () => {
             style={{ display: "inline" }}
           >
             {nextDisplayLine.map((chunk) => (
-              <Fragment key={String(chunk.time)}>
+              <Fragment key={String(chunk.startTime) + String(chunk.endTime)}>
                 <span>{chunk.word}</span>{" "}
               </Fragment>
             ))}

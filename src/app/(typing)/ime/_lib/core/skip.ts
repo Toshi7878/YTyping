@@ -13,7 +13,7 @@ export const handleSkip = () => {
   const nextChunk = nextLine?.[0];
   if (!nextChunk) return;
 
-  const nextStartTime = Number(nextChunk.time);
+  const nextStartTime = Number(nextChunk.startTime);
 
   const seekTime = nextStartTime - SKIP_BUFFER_TIME;
 

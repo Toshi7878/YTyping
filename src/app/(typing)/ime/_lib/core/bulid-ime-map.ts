@@ -1,43 +1,45 @@
 import { zip } from "@/utils/array";
 import type { RawMapLine } from "@/validator/raw-map-json";
-import { readImeTypeOptions } from "../atoms/state";
-import type { WordResults } from "../type";
-import { formatWord } from "./format-word";
-import { generateTokenizedWords } from "./repl";
+import type { BuiltImeMap } from "../type";
+import { normalizeTypingText } from "./normalize-word";
 
 const MIN_LINE_SECONDS = 5;
 
-export const buildImeMap = async (mapData: RawMapLine[]) => {
+export const buildImeMap = async (
+  mapData: RawMapLine[],
+  options: { isCaseSensitive: boolean; includeRegexPattern: string; enableIncludeRegex: boolean },
+) => {
   let lineWords: string[] = [];
   let lineTimes: number[] = [];
-  const lines: { time: number; word: string }[][] = [];
+  const lines: BuiltImeMap["lines"] = [];
 
   for (const [i, currentLine] of mapData.entries()) {
     const nextLine = mapData[i + 1];
     const nextToNextLine = mapData[i + 2];
 
-    const formattedLyrics = formatWord(deleteRubyTag(currentLine.lyrics));
+    const normalizedTypingLyrics = normalizeTypingText(deleteRubyTag(currentLine.lyrics), options);
 
-    const isTypingLine = isValidTypingLine(formattedLyrics, currentLine.word);
+    const isTypingLine = isValidTypingLine(normalizedTypingLyrics, currentLine.word);
 
     if (isTypingLine) {
-      lineWords.push(formattedLyrics);
+      lineWords.push(normalizedTypingLyrics);
       lineTimes.push(Number(currentLine.time));
     }
 
-    const nextTime = getNextTime(nextLine, nextToNextLine);
-
-    const shouldBreakLine = shouldCreateNewLine(lineWords, nextLine, nextTime, lineTimes);
+    const shouldBreakLine = shouldCreateNewLine(lineWords, nextLine, getNextTime(nextLine, nextToNextLine), lineTimes);
 
     if (shouldBreakLine) {
       const lastTime = nextLine ? Number(nextLine.time) : Number(currentLine.time) + 10; // 次の行がない場合は10秒後
-      lineWords.push("");
-      lineTimes.push(lastTime);
 
-      const WordsWithTimes = zip<number, string>(lineTimes, lineWords).map(([time, word]) => ({
-        time,
-        word,
-      }));
+      const WordsWithTimes = zip<number, string>(lineTimes, lineWords).map(([time, word], index) => {
+        const nextTime = lineTimes[index + 1];
+
+        return {
+          startTime: time,
+          word,
+          endTime: nextTime ? nextTime : lastTime,
+        };
+      });
 
       lines.push(WordsWithTimes);
 
@@ -46,34 +48,9 @@ export const buildImeMap = async (mapData: RawMapLine[]) => {
     }
   }
 
-  const words = await generateTokenizedWords(
-    lines.map((line) => {
-      const { enableEngSpace } = readImeTypeOptions();
+  console.log(lines);
 
-      const words = line.flatMap((chunk) => chunk.word.split(" ")).filter((char) => char !== "");
-
-      if (enableEngSpace) {
-        return insertSpacesEng(words);
-      }
-
-      return words;
-    }),
-  );
-
-  const totalNotes = words.flat(2).reduce((acc, word) => acc + (word?.[0]?.length ?? 0), 0);
-
-  const textWords = words.flat(1).map((word) => {
-    return word.map((chars) => chars[0]).join("");
-  });
-
-  const initWordResults: WordResults = Array.from({ length: textWords.length }, () => ({
-    inputs: [],
-    evaluation: "Skip" as const,
-  }));
-
-  console.log({ lines, words, totalNotes, initWordResults, textWords });
-
-  return { lines, words, totalNotes, initWordResults, textWords };
+  return lines;
 };
 
 const isValidTypingLine = (formattedLyrics: string, word: string): boolean => {
@@ -108,20 +85,4 @@ const deleteRubyTag = (text: string) => {
   }
 
   return result;
-};
-
-const insertSpacesEng = (words: string[]) => {
-  const insertedSpaceWords = words;
-  for (const [i, currentWord] of insertedSpaceWords.entries()) {
-    const isCurrentWordAllHankaku = /^[!-~]*$/.test(currentWord);
-    const nextWord = insertedSpaceWords[i + 1];
-
-    if (isCurrentWordAllHankaku && nextWord && nextWord[0]) {
-      if (/^[!-~]*$/.test(nextWord[0])) {
-        insertedSpaceWords[i] = insertedSpaceWords[i] + " ";
-      }
-    }
-  }
-
-  return insertedSpaceWords;
 };

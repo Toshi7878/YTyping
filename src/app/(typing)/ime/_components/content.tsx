@@ -12,9 +12,11 @@ import { MenuBar } from "../_components/memu/menu-bar";
 import { Notifications } from "../_components/notifications-display";
 import { ViewArea } from "../_components/view-area/view-area";
 import { YouTubePlayer } from "../_components/youtube-player";
-import { readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
+import { readImeTypeOptions, readScene, setBuiltMap, useEnableLargeVideoDisplayState } from "../_lib/atoms/state";
 import { buildImeMap } from "../_lib/core/bulid-ime-map";
+import { createFlatWords, createInitWordResults, getTotalNotes } from "../_lib/core/map-modules";
 import { mutateImeStats } from "../_lib/core/mutate-stats";
+import { generateImeWords, generateLyricsWithReadings } from "../_lib/core/repl";
 import { pathChangeAtomReset } from "../_lib/core/reset";
 
 interface ContentProps {
@@ -35,8 +37,19 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     showLoading({ message: "ひらがな判定生成中..." });
 
     try {
-      const map = await buildImeMap(mapData);
-      setBuiltMap(map);
+      const { enableEngUpperCase, addSymbolList, enableAddSymbol, enableEngSpace } = readImeTypeOptions();
+      const lines = await buildImeMap(mapData, {
+        isCaseSensitive: enableEngUpperCase,
+        includeRegexPattern: addSymbolList,
+        enableIncludeRegex: enableAddSymbol,
+      });
+
+      const words = await generateImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces: enableEngSpace });
+      const totalNotes = getTotalNotes(words);
+      const flatWords = createFlatWords(words);
+      const initWordResults = createInitWordResults(flatWords);
+      console.log({ lines, words, totalNotes, initWordResults, flatWords });
+      setBuiltMap({ lines, words, totalNotes, initWordResults, flatWords });
       hideLoading();
     } catch {
       showLoading({

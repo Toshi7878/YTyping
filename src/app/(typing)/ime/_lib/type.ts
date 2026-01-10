@@ -2,13 +2,14 @@ export type SceneType = "ready" | "play" | "end";
 
 export type BuiltImeMap = {
   lines: {
-    time: number;
+    startTime: number;
     word: string;
+    endTime: number;
   }[][];
   words: string[][][][];
   totalNotes: number;
   initWordResults: WordResults;
-  textWords: string[];
+  flatWords: string[];
 };
 
 export type WordResults = {

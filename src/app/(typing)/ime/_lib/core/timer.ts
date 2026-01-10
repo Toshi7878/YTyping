@@ -7,7 +7,7 @@ import {
   readWipeLine,
   setCount,
   setDisplayLines,
-  setJudgedWords,
+  setExpectedWords,
   setNextDisplayLine,
   setSkipRemainTime,
   setTextareaPlaceholderType,
@@ -36,18 +36,16 @@ const wipeUpdate = ({ wipeCount, currentTime }: { wipeCount: number; currentTime
   if (!currentWipeElement) return;
 
   const wipeLine = readWipeLine();
-  const nextWipeChunk = wipeLine?.[wipeCount + 1];
+  const wipeChunk = wipeLine?.[wipeCount];
 
-  if (nextWipeChunk && currentTime > nextWipeChunk.time) {
+  if (wipeChunk && currentTime > wipeChunk.endTime) {
     currentWipeElement.setAttribute("style", completeWipe());
     setWipeCount(wipeCount + 1);
     return;
   }
 
-  const wipeChunk = wipeLine?.[wipeCount];
-
-  if (wipeChunk && nextWipeChunk) {
-    currentWipeElement.setAttribute("style", calcWipeProgress({ wipeChunk, nextWipeChunk, currentTime }));
+  if (wipeChunk) {
+    currentWipeElement.setAttribute("style", calcWipeProgress({ wipeChunk, currentTime }));
   }
 };
 
@@ -66,7 +64,7 @@ const updateSkip = ({
 }) => {
   const SKIP_REMAIN_TIME = 5;
 
-  const isWipeCompleted = count === 0 || (count >= 0 && currentLine.length === wipeCount + 1);
+  const isWipeCompleted = count === 0 || (count >= 0 && currentLine.length === wipeCount);
 
   const remainTime = nextLineStartTime - currentTime;
   if (remainTime > SKIP_REMAIN_TIME && isWipeCompleted) {
@@ -97,9 +95,9 @@ const updateDisplayLines = (newCount: number) => {
   setNextDisplayLine([]);
   setWipeCount(0);
 
-  const judgedWords = getJudgedWords(newCount);
-  if (judgedWords) {
-    setJudgedWords(judgedWords);
+  const expectedWords = getExpectedWords(newCount, map.words);
+  if (expectedWords) {
+    setExpectedWords(expectedWords);
   }
 };
 
@@ -114,16 +112,19 @@ const updateNextDisplayLine = ({
 }) => {
   const { nextDisplayLine } = readUtilityParams();
   if (nextDisplayLine.length === 0) {
-    const nextTime = nextLine?.[0]?.time;
+    const nextTime = nextLine?.[0]?.startTime;
     if (!nextTime) return;
 
     const { enableNextLyrics } = readImeTypeOptions();
     if (enableNextLyrics && nextTime - currentTime < 3) {
       setNextDisplayLine(nextLine);
 
-      const judgedWords = getJudgedWords(count + 1);
-      if (judgedWords) {
-        setJudgedWords(judgedWords);
+      const map = readBuiltMap();
+      if (!map) return;
+
+      const expectedWords = getExpectedWords(count + 1, map.words);
+      if (expectedWords) {
+        setExpectedWords(expectedWords);
       }
     }
   }
@@ -145,7 +146,7 @@ const timer = () => {
 
   updateNextDisplayLine({ nextLine, currentTime, count });
 
-  const nextLineStartTime = nextLine[0]?.time;
+  const nextLineStartTime = nextLine[0]?.startTime;
   if (!nextLineStartTime) return;
 
   if (currentTime > nextLineStartTime) {
@@ -168,26 +169,15 @@ const completeWipe = () => {
   return "background:-webkit-linear-gradient(0deg, #ffa500 100%, white 0%);-webkit-background-clip:text;";
 };
 
-const calcWipeProgress = ({
-  wipeChunk,
-  nextWipeChunk,
-  currentTime,
-}: {
-  wipeChunk: WipeChunk;
-  nextWipeChunk: WipeChunk;
-  currentTime: number;
-}) => {
-  const wipeDuration = nextWipeChunk.time - wipeChunk.time;
-  const wipeTime = currentTime - wipeChunk.time;
+const calcWipeProgress = ({ wipeChunk, currentTime }: { wipeChunk: WipeChunk; currentTime: number }) => {
+  const wipeDuration = wipeChunk.endTime - wipeChunk.startTime;
+  const wipeTime = currentTime - wipeChunk.startTime;
 
   const wipeProgress = Math.round((wipeTime / wipeDuration) * 100 * 1000) / 1000;
 
   return `background:-webkit-linear-gradient(0deg, #ffa500 ${String(wipeProgress)}%, white 0%); -webkit-background-clip:text;`;
 };
 
-const getJudgedWords = (count: number) => {
-  const map = readBuiltMap();
-  if (!map) return;
-
-  return map.words.slice(0, count).flat(1);
+const getExpectedWords = (count: number, words: BuiltImeMap["words"]) => {
+  return words.slice(0, count).flat(1);
 };

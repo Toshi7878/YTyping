@@ -1,7 +1,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table/table";
 import { cn } from "@/lib/utils";
-import { useBuiltMapState, useStatusState, useWordResultsState } from "../../_lib/atoms/state";
+import {
+  useBuiltMapState,
+  useCurrentWordIndexState,
+  useStatusState,
+  useWordResultsState,
+} from "../../_lib/atoms/state";
 
 interface ResultDialogProps {
   isOpen: boolean;
@@ -53,7 +58,7 @@ const ResultStatus = () => {
 const ResultWordsTable = () => {
   const wordResults = useWordResultsState();
   const map = useBuiltMapState();
-  const status = useStatusState();
+  const currentWordIndex = useCurrentWordIndexState();
 
   return (
     <div className="max-h-[45vh] overflow-auto rounded-lg border shadow-sm">
@@ -68,7 +73,7 @@ const ResultWordsTable = () => {
         </TableHeader>
         <TableBody>
           {wordResults.map((result, index) => {
-            const isJudged = status.wordIndex > index || (status.wordIndex === index && result.evaluation !== "Skip");
+            const isJudged = currentWordIndex > index || (currentWordIndex === index && result.evaluation !== "Skip");
 
             return (
               <TableRow key={`${index}-${result.inputs.join("")}`} className="[&>td]:py-2">
@@ -86,7 +91,7 @@ const ResultWordsTable = () => {
                   </div>
                 </TableCell>
                 <TableCell className="wrap-break-word px-4">
-                  <div className="text-sm">{result.evaluation !== "Great" && map?.textWords[index]}</div>
+                  <div className="text-sm">{result.evaluation !== "Great" && map?.flatWords[index]}</div>
                 </TableCell>
               </TableRow>
             );

@@ -2,15 +2,21 @@ import { Ticker } from "@pixi/ticker";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
+import { updateImeTypeCountStats, updateTypingTimeStats, writeTypingTextarea } from "../_lib/atoms/ref";
 import {
   readBuiltMap,
+  readTypingWord,
   readUtilityParams,
+  readWordResults,
   resultDialogOpen,
+  setCurrentWordIndex,
+  setNotifications,
+  setStatus,
+  setWordResults,
   useSceneState,
   useTextareaPlaceholderTypeState,
 } from "../_lib/atoms/state";
-import { judgeTargetWords } from "../_lib/core/judge-target-words";
+import { evaluateImeInput } from "../_lib/core/evaluate-ime-input";
 import { handleSceneEnd } from "../_lib/core/scene-control";
 import { handleSkip } from "../_lib/core/skip";
 import type { PlaceholderType, SceneType } from "../_lib/type";
@@ -27,7 +33,37 @@ export const InputTextarea = () => {
     if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
       const { value } = e.currentTarget;
       e.preventDefault();
-      judgeTargetWords(value);
+      const map = readBuiltMap();
+      if (!map) return;
+
+      const typingWord = readTypingWord();
+      const wordResults = readWordResults();
+      const result = evaluateImeInput(value, typingWord, [...wordResults], map);
+
+      for (const update of result.wordResultUpdates) {
+        setWordResults(update);
+      }
+
+      if (result.typeCountDelta) {
+        setStatus((prev) => {
+          const newTypeCount = prev.typeCount + result.typeCountDelta;
+          return {
+            typeCount: Math.floor(newTypeCount),
+            score: Math.round((1000 / map.totalNotes) * newTypeCount),
+          };
+        });
+
+        if (result.nextWordIndex) {
+          setCurrentWordIndex(result.nextWordIndex);
+        }
+      }
+      if (result.typeCountStatsDelta) {
+        updateImeTypeCountStats((prev) => prev + result.typeCountStatsDelta);
+      }
+      if (result.notificationsToAppend.length) {
+        setNotifications((prev) => [...prev, ...result.notificationsToAppend]);
+      }
+
       stopTicker();
 
       switch (value.toLowerCase().trim()) {
