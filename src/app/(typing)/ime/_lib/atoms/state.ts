@@ -2,17 +2,24 @@ import type { ExtractAtomValue } from "jotai";
 import { atom, useAtomValue } from "jotai";
 import { atomWithReset, RESET } from "jotai/utils";
 import { focusAtom } from "jotai-optics";
+import type { BuiltImeLine, WordResult } from "lyrics-ime-typing-engine";
 import { DEFAULT_IME_OPTIONS } from "@/server/drizzle/schema";
 import type { Updater } from "@/utils/types";
 import { DISPLAY_LINE_LENGTH } from "../const";
-import type { BuiltImeMap, PlaceholderType, SceneType, WordResults } from "../type";
+import type { PlaceholderType, SceneType } from "../type";
 import { getImeAtomStore } from "./store";
 
 const store = getImeAtomStore();
 
-const builtMapAtom = atomWithReset<BuiltImeMap | null>(null);
+const builtMapAtom = atomWithReset<{
+  lines: BuiltImeLine[];
+  words: string[][][][];
+  totalNotes: number;
+  initWordResults: WordResult[];
+  flatWords: string[];
+} | null>(null);
 export const useBuiltMapState = () => useAtomValue(builtMapAtom, { store });
-export const setBuiltMap = (map: BuiltImeMap) => store.set(builtMapAtom, map);
+export const setBuiltMap = (map: ExtractAtomValue<typeof builtMapAtom>) => store.set(builtMapAtom, map);
 export const resetBuiltMap = () => store.set(builtMapAtom, RESET);
 export const readBuiltMap = () => store.get(builtMapAtom);
 
@@ -41,8 +48,8 @@ const utilityParamsAtom = atomWithReset({
   skipRemainTime: null as number | null,
   count: 0,
   wipeCount: 0,
-  displayLines: new Array(DISPLAY_LINE_LENGTH).fill([]) as BuiltImeMap["lines"][number][],
-  nextDisplayLine: [] as BuiltImeMap["lines"][number],
+  displayLines: new Array(DISPLAY_LINE_LENGTH).fill([]) as BuiltImeLine[],
+  nextDisplayLine: [] as BuiltImeLine,
   textareaPlaceholderType: "normal" as PlaceholderType,
 });
 
@@ -83,7 +90,7 @@ export const setStatus = (update: Updater<ExtractAtomValue<typeof statusAtom>>) 
 export const resetStatus = () => store.set(statusAtom, RESET);
 export const readStatus = () => store.get(statusAtom);
 
-const wordResultsAtom = atomWithReset([] as WordResults);
+const wordResultsAtom = atomWithReset([] as WordResult[]);
 
 export const useWordResultsState = () => useAtomValue(wordResultsAtom, { store });
 export const readWordResults = () => store.get(wordResultsAtom);
@@ -94,7 +101,7 @@ export const initializeResultsFromMap = () => {
     store.set(wordResultsAtom, map.initWordResults);
   }
 };
-export const setWordResults = (updateResult: { index: number; result: WordResults[number] }) => {
+export const setWordResults = (updateResult: { index: number; result: WordResult }) => {
   const { index, result } = updateResult;
 
   store.set(wordResultsAtom, (prev) => {

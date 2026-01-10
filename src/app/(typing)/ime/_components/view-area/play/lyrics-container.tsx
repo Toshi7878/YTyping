@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import type { BuiltImeLine } from "lyrics-ime-typing-engine";
 import type { HTMLAttributes } from "react";
 import { Fragment, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
@@ -40,33 +41,49 @@ const Lyrics = () => {
       ref={lyricsContainerRef}
     >
       {displayLines.map((line, index) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
-        <div key={index}>
-          <div className="absolute shadow-layer">
-            {"\u200B"}
-            {line.map((chunk) => (
-              <Fragment key={String(chunk.startTime) + String(chunk.endTime)}>
-                <span className="text-transparent">{chunk.word}</span>{" "}
-              </Fragment>
-            ))}
-          </div>
-          <div className="wipe-layer relative text-shadow-none" style={{ WebkitTextFillColor: "transparent" }}>
-            {"\u200B"}
-            {line.map((chunk) => (
-              <Fragment key={String(chunk.startTime) + String(chunk.endTime)}>
-                <span style={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}>
-                  {chunk.word}
-                </span>{" "}
-              </Fragment>
-            ))}
-          </div>
-        </div>
+        <WipeLyrics
+          // biome-ignore lint/suspicious/noArrayIndexKey: <固定長配列なのでindex keyを許可>
+          key={index}
+          line={line}
+          wipeColor={index === displayLines.length - 1 ? INITIAL_WIPE_COLOR : COMPLETED_WIPE_COLOR}
+        />
       ))}
     </div>
   );
 };
 
-const COMPLETED_WIPE_COLOR = {
+const WipeLyrics = ({ line, wipeColor }: { line: BuiltImeLine; wipeColor: WipeColor }) => {
+  return (
+    <div>
+      <div className="absolute shadow-layer">
+        {"\u200B"}
+        {line.map((chunk) => (
+          <Fragment key={String(chunk.startTime) + String(chunk.endTime)}>
+            <span className="text-transparent">{chunk.word}</span>{" "}
+          </Fragment>
+        ))}
+      </div>
+      <div className="wipe-layer relative text-shadow-none" style={{ WebkitTextFillColor: "transparent" }}>
+        {"\u200B"}
+        {line.map((chunk) => (
+          <Fragment key={String(chunk.startTime) + String(chunk.endTime)}>
+            <span style={wipeColor}>{chunk.word}</span>{" "}
+          </Fragment>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+type WipeColor = {
+  background: string;
+  backgroundClip: string;
+  WebkitBackgroundClip: string;
+  color: string;
+  WebkitTextFillColor: string;
+};
+
+const COMPLETED_WIPE_COLOR: WipeColor = {
   background: "-webkit-linear-gradient(0deg, #ffa500 100%, white 0%)",
   backgroundClip: "text",
   WebkitBackgroundClip: "text",
@@ -74,7 +91,7 @@ const COMPLETED_WIPE_COLOR = {
   WebkitTextFillColor: "transparent",
 };
 
-const INITIAL_WIPE_COLOR = {
+const INITIAL_WIPE_COLOR: WipeColor = {
   background: "-webkit-linear-gradient(0deg, #fff 100%, white 0%)",
   backgroundClip: "text",
   WebkitBackgroundClip: "text",

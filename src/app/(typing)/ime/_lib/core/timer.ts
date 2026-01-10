@@ -1,5 +1,5 @@
 import { Ticker } from "@pixi/ticker";
-import { getExpectedWords } from "lyrics-ime-typing-engine";
+import { type BuiltImeLine, getExpectedWords } from "lyrics-ime-typing-engine";
 import { readLyricsContainer } from "../atoms/ref";
 import {
   readBuiltMap,
@@ -16,7 +16,6 @@ import {
 } from "../atoms/state";
 import { getYTCurrentTime } from "../atoms/yt-player";
 import { DISPLAY_LINE_LENGTH } from "../const";
-import type { BuiltImeMap } from "../type";
 
 export const startTimer = () => {
   if (!imeTypeTicker.started) {
@@ -57,7 +56,7 @@ const updateSkip = ({
   currentTime,
   wipeCount,
 }: {
-  currentLine: BuiltImeMap["lines"][number];
+  currentLine: BuiltImeLine;
   count: number;
   nextLineStartTime: number;
   currentTime: number;
@@ -107,7 +106,7 @@ const updateNextDisplayLine = ({
   currentTime,
   count,
 }: {
-  nextLine: BuiltImeMap["lines"][number];
+  nextLine: BuiltImeLine;
   currentTime: number;
   count: number;
 }) => {
@@ -165,7 +164,7 @@ const timer = () => {
 const imeTypeTicker = new Ticker();
 imeTypeTicker.add(timer);
 
-type WipeChunk = BuiltImeMap["lines"][number][number];
+type WipeChunk = BuiltImeLine[number];
 const completeWipe = () => {
   return "background:-webkit-linear-gradient(0deg, #ffa500 100%, white 0%);-webkit-background-clip:text;";
 };
