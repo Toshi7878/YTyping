@@ -10,9 +10,11 @@ export const IncrementTypingCountStatsSchema = z.object({
   numType: z.number().int().min(0),
   typingTime: z.number().min(0),
   maxCombo: z.number().int().min(0),
+  timezone: z.string(),
 });
 
 export const IncrementImeTypeCountStatsSchema = z.object({
   typingTime: z.number().min(0),
   imeTypeCount: z.number().min(0),
+  timezone: z.string(),
 });

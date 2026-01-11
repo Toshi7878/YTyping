@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, primaryKey, real, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, date, integer, pgEnum, pgTable, primaryKey, real, timestamp, varchar } from "drizzle-orm/pg-core";
 import { DEFAULT_TYPING_OPTIONS, MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
@@ -124,7 +124,7 @@ export const UserDailyTypeCounts = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => Users.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { mode: "date" }).notNull(),
+    date: date("date", { mode: "date" }).notNull(),
     romaTypeCount: integer("roma_type_count").notNull().default(0),
     kanaTypeCount: integer("kana_type_count").notNull().default(0),
     flickTypeCount: integer("flick_type_count").notNull().default(0),
@@ -132,7 +132,7 @@ export const UserDailyTypeCounts = pgTable(
     imeTypeCount: integer("ime_type_count").notNull().default(0),
     otherTypeCount: integer("other_type_count").notNull().default(0),
   },
-  (t) => [primaryKey({ columns: [t.userId, t.createdAt] })],
+  (t) => [primaryKey({ columns: [t.userId, t.date] })],
 );
 
 export const UserMapCompletionPlayCounts = pgTable(
