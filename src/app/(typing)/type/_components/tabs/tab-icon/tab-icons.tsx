@@ -41,7 +41,7 @@ const InfoIconButton = () => {
   const tags = mapInfo.info.tags ?? [];
 
   return (
-    <HoverCard openDelay={500}>
+    <HoverCard openDelay={200} closeDelay={200}>
       <HoverCardTrigger asChild>
         <Button
           variant="unstyled"
