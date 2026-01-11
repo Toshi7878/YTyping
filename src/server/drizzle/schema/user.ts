@@ -76,10 +76,10 @@ export const UserTypingOptions = pgTable("user_typing_options", {
 });
 
 export const DEFAULT_IME_OPTIONS = {
-  enableAddSymbol: false,
-  enableEngUpperCase: false,
-  enableEngSpace: false,
-  addSymbolList: "",
+  enableIncludeRegex: false,
+  isCaseSensitive: false,
+  insertEnglishSpaces: false,
+  includeRegexPattern: "",
   enableNextLyrics: true,
   enableLargeVideoDisplay: false,
 };
@@ -87,13 +87,13 @@ export const UserImeTypingOptions = pgTable("user_ime_typing_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
-  enableIncludeRegex: boolean("enable_include_regex").notNull().default(DEFAULT_IME_OPTIONS.enableAddSymbol),
-  insertEnglishSpaces: boolean("insert_english_spaces").notNull().default(DEFAULT_IME_OPTIONS.enableEngSpace),
-  isCaseSensitive: boolean("is_case_sensitive").notNull().default(DEFAULT_IME_OPTIONS.enableEngUpperCase),
+  enableIncludeRegex: boolean("enable_include_regex").notNull().default(DEFAULT_IME_OPTIONS.enableIncludeRegex),
+  insertEnglishSpaces: boolean("insert_english_spaces").notNull().default(DEFAULT_IME_OPTIONS.insertEnglishSpaces),
+  isCaseSensitive: boolean("is_case_sensitive").notNull().default(DEFAULT_IME_OPTIONS.isCaseSensitive),
   enableNextLyrics: boolean("enable_next_lyrics").notNull().default(DEFAULT_IME_OPTIONS.enableNextLyrics),
   includeRegexPattern: varchar("include_regex_pattern", { length: MAX_SHORT_LENGTH })
     .notNull()
-    .default(DEFAULT_IME_OPTIONS.addSymbolList),
+    .default(DEFAULT_IME_OPTIONS.includeRegexPattern),
   enableLargeVideoDisplay: boolean("enable_large_video_display")
     .notNull()
     .default(DEFAULT_IME_OPTIONS.enableLargeVideoDisplay),

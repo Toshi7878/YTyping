@@ -44,14 +44,10 @@ export const Content = ({ mapInfo, mapId }: ContentProps) => {
     showLoading({ message: "ひらがな判定生成中..." });
 
     try {
-      const { enableEngUpperCase, addSymbolList, enableAddSymbol, enableEngSpace } = readImeTypeOptions();
-      const lines = await buildImeLines(mapData, {
-        isCaseSensitive: enableEngUpperCase,
-        includeRegexPattern: addSymbolList,
-        enableIncludeRegex: enableAddSymbol,
-      });
+      const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } = readImeTypeOptions();
+      const lines = await buildImeLines(mapData, { isCaseSensitive, includeRegexPattern, enableIncludeRegex });
 
-      const words = await buildImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces: enableEngSpace });
+      const words = await buildImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces });
       const totalNotes = getTotalNotes(words);
       const flatWords = createFlatWords(words);
       const initWordResults = createInitWordResults(flatWords);

@@ -46,14 +46,10 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
         );
 
         if (rawMapLines) {
-          const { enableEngUpperCase, addSymbolList, enableAddSymbol, enableEngSpace } = readImeTypeOptions();
-          const lines = await buildImeLines(rawMapLines, {
-            isCaseSensitive: enableEngUpperCase,
-            includeRegexPattern: addSymbolList,
-            enableIncludeRegex: enableAddSymbol,
-          });
-
-          const words = await buildImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces: enableEngSpace });
+          const { isCaseSensitive, includeRegexPattern, enableIncludeRegex, insertEnglishSpaces } =
+            readImeTypeOptions();
+          const lines = await buildImeLines(rawMapLines, { isCaseSensitive, includeRegexPattern, enableIncludeRegex });
+          const words = await buildImeWords(lines, generateLyricsWithReadings, { insertEnglishSpaces });
           const totalNotes = getTotalNotes(words);
           const flatWords = createFlatWords(words);
           const initWordResults = createInitWordResults(flatWords);
@@ -122,32 +118,32 @@ const MainSettingTab = () => {
           label={
             <LabeledCheckbox
               label="判定文字追加を有効化"
-              defaultChecked={userImeTypeOptions.enableAddSymbol}
+              defaultChecked={userImeTypeOptions.enableIncludeRegex}
               onCheckedChange={(value: boolean) => {
-                setImeOptions({ enableAddSymbol: value });
+                setImeOptions({ enableIncludeRegex: value });
               }}
             />
           }
           onInput={(e) => {
-            setImeOptions({ addSymbolList: e.currentTarget.value });
+            setImeOptions({ includeRegexPattern: e.currentTarget.value });
           }}
-          value={userImeTypeOptions.addSymbolList}
-          disabled={!userImeTypeOptions.enableAddSymbol}
+          value={userImeTypeOptions.includeRegexPattern}
+          disabled={!userImeTypeOptions.enableIncludeRegex}
         />
       </div>
       <div className="flex">
         <LabeledCheckbox
           label="英語スペースを有効化"
-          defaultChecked={userImeTypeOptions.enableEngSpace}
+          defaultChecked={userImeTypeOptions.insertEnglishSpaces}
           onCheckedChange={(value: boolean) => {
-            setImeOptions({ enableEngSpace: value });
+            setImeOptions({ insertEnglishSpaces: value });
           }}
         />
         <LabeledCheckbox
           label="英語大文字判定を有効化"
-          defaultChecked={userImeTypeOptions.enableEngUpperCase}
+          defaultChecked={userImeTypeOptions.isCaseSensitive}
           onCheckedChange={(value: boolean) => {
-            setImeOptions({ enableEngUpperCase: value });
+            setImeOptions({ isCaseSensitive: value });
           }}
         />
       </div>
