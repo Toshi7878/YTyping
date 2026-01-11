@@ -7,20 +7,20 @@ import { JotaiProvider } from "../_components/provider";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
+  const mapInfo = await serverApi.map.getInfoById({ mapId: Number(id) });
 
   return {
-    title: `Edit ${mapInfo.title} - YTyping`,
+    title: `Edit ${mapInfo.info.title} - YTyping`,
   };
 }
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const mapInfo = await serverApi.map.getMapInfo({ mapId: Number(id) });
+  const mapInfo = await serverApi.map.getInfoById({ mapId: Number(id) });
 
   if (!mapInfo) notFound();
 
   return (
-    <JotaiProvider mapId={id} videoId={mapInfo.videoId} creatorId={mapInfo.creator.id}>
+    <JotaiProvider mapId={id} videoId={mapInfo.media.videoId} creatorId={mapInfo.creator.id}>
       <PermissionToast />
       <Content type="edit" />
     </JotaiProvider>

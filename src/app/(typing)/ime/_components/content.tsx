@@ -25,12 +25,14 @@ import { mutateImeStats } from "../_lib/core/mutate-stats";
 import { pathChangeAtomReset } from "../_lib/core/reset";
 
 interface ContentProps {
-  mapInfo: RouterOutputs["map"]["getMapInfo"];
+  mapInfo: RouterOutputs["map"]["getInfoById"];
   mapId: number;
 }
 
 export const Content = ({ mapInfo, mapId }: ContentProps) => {
-  const { videoId } = mapInfo;
+  const {
+    media: { videoId },
+  } = mapInfo;
   const trpc = useTRPC();
   const pathname = usePathname();
   const { data: mapJson } = useQuery(

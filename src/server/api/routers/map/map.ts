@@ -10,24 +10,37 @@ import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const mapRouter = {
-  getMapInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
+  getInfoById: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { mapId } = input;
 
     const mapInfo = await db
       .select({
         id: Maps.id,
-        title: Maps.title,
-        videoId: Maps.videoId,
-        artistName: Maps.artistName,
-        musicSource: Maps.musicSource,
-        previewTime: Maps.previewTime,
-        thumbnailQuality: Maps.thumbnailQuality,
-        tags: Maps.tags,
+        media: {
+          previewTime: Maps.previewTime,
+          thumbnailQuality: Maps.thumbnailQuality,
+          videoId: Maps.videoId,
+        },
+        info: {
+          tags: Maps.tags,
+          title: Maps.title,
+          artistName: Maps.artistName,
+          source: Maps.musicSource,
+          duration: Maps.duration,
+        },
         creator: {
           id: Users.id,
           name: Users.name,
           comment: Maps.creatorComment,
+        },
+        difficulty: {
+          romaKpmMedian: MapDifficulties.romaKpmMedian,
+          kanaKpmMedian: MapDifficulties.kanaKpmMedian,
+          romaKpmMax: MapDifficulties.romaKpmMax,
+          kanaKpmMax: MapDifficulties.kanaKpmMax,
+          romaTotalNotes: MapDifficulties.romaTotalNotes,
+          kanaTotalNotes: MapDifficulties.kanaTotalNotes,
         },
         like: {
           hasLiked: sql`COALESCE(${MapLikes.hasLiked}, false)`.mapWith(Boolean),
@@ -40,6 +53,7 @@ export const mapRouter = {
       })
       .from(Maps)
       .innerJoin(Users, eq(Users.id, Maps.creatorId))
+      .innerJoin(MapDifficulties, eq(MapDifficulties.mapId, Maps.id))
       .leftJoin(MapLikes, and(eq(MapLikes.mapId, Maps.id), eq(MapLikes.userId, user?.id ?? 0)))
       .where(eq(Maps.id, mapId))
       .limit(1)

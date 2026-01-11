@@ -54,7 +54,7 @@ export const EditMapInfoFormCard = () => {
   const trpc = useTRPC();
 
   const { data: mapInfo } = useQuery(
-    trpc.map.getMapInfo.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
+    trpc.map.getInfoById.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
   );
 
   const videoId = useVideoIdState();
@@ -63,13 +63,13 @@ export const EditMapInfoFormCard = () => {
     resolver: zodResolver(MapInfoFormSchema),
     shouldUnregister: false,
     values: {
-      title: mapInfo?.title ?? "",
-      artistName: mapInfo?.artistName ?? "",
-      musicSource: mapInfo?.musicSource ?? "",
-      previewTime: mapInfo?.previewTime ?? 0,
+      title: mapInfo?.info.title ?? "",
+      artistName: mapInfo?.info.artistName ?? "",
+      musicSource: mapInfo?.info.source ?? "",
+      previewTime: mapInfo?.media.previewTime ?? 0,
       creatorComment: mapInfo?.creator.comment ?? "",
-      tags: mapInfo?.tags ?? [],
-      videoId: videoId,
+      tags: mapInfo?.info.tags ?? [],
+      videoId,
     },
     resetOptions: {
       keepDirtyValues: true,
@@ -417,7 +417,7 @@ const useOnSubmit = (form: FormType) => {
           trpc.map.getRawMapJson.queryFilter({ mapId: id }),
           () => _variables.mapData,
         );
-        await context.client.invalidateQueries(trpc.map.getMapInfo.queryOptions({ mapId: id }));
+        await context.client.invalidateQueries(trpc.map.getInfoById.queryOptions({ mapId: id }));
 
         const mapId = readMapId();
         if (!mapId) {

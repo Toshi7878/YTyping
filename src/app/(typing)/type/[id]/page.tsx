@@ -9,19 +9,19 @@ import { JotaiProvider } from "../_components/provider";
 
 // React cache でメモ化：同じmapIdでの複数回の呼び出しでもDBクエリは1回のみ
 const getMapInfo = cache(async (mapId: number) => {
-  return await serverApi.map.getMapInfo({ mapId });
+  return await serverApi.map.getInfoById({ mapId });
 });
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const mapInfo = await getMapInfo(Number(id));
 
-  const thumbnailUrl = buildYouTubeThumbnailUrl(mapInfo.videoId, mapInfo.thumbnailQuality);
+  const thumbnailUrl = buildYouTubeThumbnailUrl(mapInfo.media.videoId, mapInfo.media.thumbnailQuality);
 
   return {
-    title: `${mapInfo.title} - YTyping`,
+    title: `${mapInfo.info.title} - YTyping`,
     openGraph: {
-      title: mapInfo.title,
+      title: mapInfo.info.title,
       type: "website",
       images: thumbnailUrl,
     },
@@ -29,10 +29,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     other: {
       "article:published_time": toLocaleDateString(mapInfo.createdAt, "ja-JP"),
       "article:modified_time": toLocaleDateString(mapInfo.updatedAt, "ja-JP"),
-      "article:youtube_id": mapInfo.videoId,
-      "article:title": mapInfo.title,
-      "article:artist": mapInfo.artistName,
-      "article:tag": mapInfo.tags,
+      "article:youtube_id": mapInfo.media.videoId,
+      "article:title": mapInfo.info.title,
+      "article:artist": mapInfo.info.artistName,
+      "article:tag": mapInfo.info.tags,
     },
   };
 }
@@ -45,12 +45,12 @@ export default async function Page({ params }: PageProps<"/type/[id]">) {
   if (!mapInfo) {
     notFound();
   }
-  prefetch(trpc.map.getMapInfo.queryOptions({ mapId: Number(mapId) }, { initialData: mapInfo }));
+  prefetch(trpc.map.getInfoById.queryOptions({ mapId: Number(mapId) }, { initialData: mapInfo }));
 
   return (
     <HydrateClient>
       <JotaiProvider userTypingOptions={userTypingOptions} mapId={Number(mapId)}>
-        <Content videoId={mapInfo.videoId} mapId={Number(mapId)} />
+        <Content videoId={mapInfo.media.videoId} mapId={Number(mapId)} />
       </JotaiProvider>
     </HydrateClient>
   );
