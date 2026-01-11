@@ -15,7 +15,6 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
 
   if (tab === "stats") {
     prefetch(trpc.userStats.getUserStats.queryOptions({ userId: Number(id) }));
-    prefetch(trpc.userStats.getUserActivity.queryOptions({ userId: Number(id) }));
   } else if (tab === "bookmarks") {
     prefetch(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
     prefetch(

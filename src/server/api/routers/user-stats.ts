@@ -1,4 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { eachDayOfInterval } from "date-fns";
 import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
@@ -11,6 +12,7 @@ import {
 } from "@/server/drizzle/schema";
 import { IncrementImeTypeCountStatsSchema, IncrementTypingCountStatsSchema } from "@/validator/user-stats";
 import { publicProcedure } from "../trpc";
+import { formatDateKeyInTimeZone, getNowInTimeZone, getYearDateRangeInTimeZone } from "../utils/date";
 
 export const userStatsRouter = {
   getUserStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
@@ -109,6 +111,8 @@ export const userStatsRouter = {
     .mutation(async ({ input, ctx }) => {
       const { user, db } = ctx;
       if (!user) return;
+      const isAllZero = input.typingTime === 0 && input.imeTypeCount === 0;
+      if (isAllZero) return;
 
       await db
         .insert(UserStats)
@@ -121,23 +125,13 @@ export const userStatsRouter = {
           },
         });
 
-      // DBの日付変更基準（15:00）に合わせて日付を計算
-      const now = new Date();
-      const isAfterCutoff = now.getHours() >= 15;
-      const targetDate = new Date();
-
-      // 15時前なら前日の日付、15時以降なら当日の日付
-      if (isAfterCutoff) {
-        targetDate.setDate(targetDate.getDate() + 1);
-      }
-
-      const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+      const date = getNowInTimeZone(input.timezone);
 
       await db
         .insert(UserDailyTypeCounts)
-        .values({ userId: user.id, createdAt: dbDate, imeTypeCount: input.imeTypeCount })
+        .values({ userId: user.id, date, imeTypeCount: input.imeTypeCount })
         .onConflictDoUpdate({
-          target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.createdAt],
+          target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.date],
           set: { imeTypeCount: sql`${UserDailyTypeCounts.imeTypeCount} + ${input.imeTypeCount}` },
         });
     }),
@@ -158,6 +152,18 @@ export const userStatsRouter = {
     .mutation(async ({ input, ctx }) => {
       const { user, db } = ctx;
       if (!user) return;
+
+      const isAllZero =
+        input.romaType === 0 &&
+        input.kanaType === 0 &&
+        input.flickType === 0 &&
+        input.englishType === 0 &&
+        input.spaceType === 0 &&
+        input.symbolType === 0 &&
+        input.numType === 0 &&
+        input.typingTime === 0 &&
+        input.maxCombo === 0;
+      if (isAllZero) return;
 
       const currentMaxCombo = await db.query.UserStats.findFirst({
         columns: { maxCombo: true },
@@ -184,23 +190,13 @@ export const userStatsRouter = {
           },
         });
 
-      // DBの日付変更基準（15:00）に合わせて日付を計算
-      const now = new Date();
-      const isAfterCutoff = now.getHours() >= 15;
-      const targetDate = new Date();
-
-      // 15時前なら前日の日付、15時以降なら当日の日付
-      if (isAfterCutoff) {
-        targetDate.setDate(targetDate.getDate() + 1);
-      }
-
-      const dbDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+      const date = getNowInTimeZone(input.timezone);
 
       await db
         .insert(UserDailyTypeCounts)
         .values({
           userId: user.id,
-          createdAt: dbDate,
+          date,
           romaTypeCount: input.romaType,
           kanaTypeCount: input.kanaType,
           flickTypeCount: input.flickType,
@@ -208,7 +204,7 @@ export const userStatsRouter = {
           otherTypeCount: input.spaceType + input.numType + input.symbolType,
         })
         .onConflictDoUpdate({
-          target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.createdAt],
+          target: [UserDailyTypeCounts.userId, UserDailyTypeCounts.date],
           set: {
             romaTypeCount: sql`${UserDailyTypeCounts.romaTypeCount} + ${input.romaType}`,
             kanaTypeCount: sql`${UserDailyTypeCounts.kanaTypeCount} + ${input.kanaType}`,
@@ -218,82 +214,67 @@ export const userStatsRouter = {
           },
         });
     }),
-  getUserActivity: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db } = ctx;
+  getUserActivity: publicProcedure
+    .input(z.object({ userId: z.number(), timezone: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const { db } = ctx;
 
-    const currentYear = new Date().getFullYear();
-    const startOfYear = new Date(currentYear, 0, 1);
-    const endOfYear = new Date(currentYear, 11, 31);
+      const currentYear = getNowInTimeZone(input.timezone).getFullYear();
+      const { startOfYear, endOfYear } = getYearDateRangeInTimeZone(currentYear);
 
-    const userActivityTypeCounts = await db.query.UserDailyTypeCounts.findMany({
-      columns: {
-        romaTypeCount: true,
-        kanaTypeCount: true,
-        flickTypeCount: true,
-        englishTypeCount: true,
-        otherTypeCount: true,
-        imeTypeCount: true,
-        createdAt: true,
-      },
-      where: and(
-        eq(UserDailyTypeCounts.userId, input.userId),
-        gte(UserDailyTypeCounts.createdAt, startOfYear),
-        lte(UserDailyTypeCounts.createdAt, endOfYear),
-      ),
-      orderBy: asc(UserDailyTypeCounts.createdAt),
-    });
+      const dataMap = await db.query.UserDailyTypeCounts.findMany({
+        columns: {
+          romaTypeCount: true,
+          kanaTypeCount: true,
+          flickTypeCount: true,
+          englishTypeCount: true,
+          otherTypeCount: true,
+          imeTypeCount: true,
+          date: true,
+        },
+        where: and(
+          eq(UserDailyTypeCounts.userId, input.userId),
+          gte(UserDailyTypeCounts.date, startOfYear),
+          lte(UserDailyTypeCounts.date, endOfYear),
+        ),
+        orderBy: asc(UserDailyTypeCounts.date),
+      }).then((records) => {
+        return new Map(
+          records.map((record) => {
+            const dateKey = formatDateKeyInTimeZone(record.date, input.timezone);
+            const { date: _, ...dayData } = record;
+            return [dateKey, dayData];
+          }),
+        );
+      });
 
-    type DayCounts = Omit<(typeof userActivityTypeCounts)[number], "createdAt">;
-    const dataMap = new Map<string, DayCounts>();
-    userActivityTypeCounts.forEach((record) => {
-      // biome-ignore lint/style/noNonNullAssertion: <>
-      const dateKey = new Date(record.createdAt).toISOString().split("T")[0]!;
-      const { createdAt: _, ...dayData } = record;
-      dataMap.set(dateKey, dayData);
-    });
+      const days = eachDayOfInterval({ start: startOfYear, end: endOfYear });
 
-    const fullYearData: { date: string; count: number; level: number; data: DayCounts | undefined }[] = [];
-    const currentDate = new Date(startOfYear);
+      return days.map((day) => {
+        const dateKey = formatDateKeyInTimeZone(day, input.timezone);
+        const existingData = dataMap.get(dateKey);
 
-    while (currentDate <= endOfYear) {
-      // biome-ignore lint/style/noNonNullAssertion: <>
-      const dateKey = currentDate.toISOString().split("T")[0]!;
-      const existingData = dataMap.get(dateKey);
+        if (!existingData) {
+          return { date: dateKey, count: 0, level: 0, data: undefined };
+        }
 
-      if (existingData) {
         const typeCounts = [
-          { type: "roma" as const, count: existingData.romaTypeCount },
-          { type: "kana" as const, count: existingData.kanaTypeCount },
+          { type: "roma", count: existingData.romaTypeCount },
+          { type: "kana", count: existingData.kanaTypeCount },
           {
-            type: "other" as const,
+            type: "other",
             count: existingData.flickTypeCount + existingData.englishTypeCount + existingData.otherTypeCount,
           },
-          { type: "ime" as const, count: existingData.imeTypeCount },
-        ];
+          { type: "ime", count: existingData.imeTypeCount },
+        ] as const;
 
-        const dominantType = typeCounts.reduce(
-          (max, current) => (current.count > max.count ? current : max),
-          // biome-ignore lint/style/noNonNullAssertion: <>
-          typeCounts[0]!,
-        );
+        const dominantType = typeCounts.reduce((max, current) => (current.count > max.count ? current : max));
         const totalTypeCount = Object.values(existingData).reduce((total, count) => total + count, 0);
         const level = getActivityLevel({ type: dominantType.type, totalTypeCount });
 
-        fullYearData.push({
-          date: dateKey,
-          count: totalTypeCount,
-          level,
-          data: existingData,
-        });
-      } else {
-        fullYearData.push({ date: dateKey, count: 0, level: 0, data: undefined });
-      }
-
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return fullYearData;
-  }),
+        return { date: dateKey, count: totalTypeCount, level, data: existingData };
+      });
+    }),
 } satisfies TRPCRouterRecord;
 
 const getActivityLevel = ({ type, totalTypeCount }: { type: keyof typeof LEVELS; totalTypeCount: number }): number => {

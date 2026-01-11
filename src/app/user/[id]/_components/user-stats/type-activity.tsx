@@ -9,13 +9,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
+import { getTimezone } from "@/utils/date";
 import { getCSSVariable } from "@/utils/get-computed-color";
 
 export const TypeActivity = () => {
   const trpc = useTRPC();
   const { id: userId } = useParams<{ id: string }>();
+  const timezone = getTimezone();
   const { data, isPending } = useQuery(
-    trpc.userStats.getUserActivity.queryOptions({ userId: Number(userId) }, { staleTime: Infinity, gcTime: Infinity }),
+    trpc.userStats.getUserActivity.queryOptions(
+      { userId: Number(userId), timezone },
+      { staleTime: Infinity, gcTime: Infinity },
+    ),
   );
 
   if (isPending)

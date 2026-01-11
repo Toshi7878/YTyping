@@ -1,4 +1,5 @@
 import { getTRPCClient } from "@/trpc/provider";
+import { getTimezone } from "@/utils/date";
 import { readMapId } from "../atoms/hydrate";
 import { readUserStats, resetUserStats } from "../atoms/ref";
 
@@ -6,7 +7,9 @@ export const mutateTypingStats = () => {
   const userStats = readUserStats();
   const trpcClient = getTRPCClient();
 
-  void trpcClient.userStats.incrementTypingStats.mutate(userStats);
+  const timezone = getTimezone();
+
+  void trpcClient.userStats.incrementTypingStats.mutate({ ...userStats, timezone });
   resetUserStats();
 };
 

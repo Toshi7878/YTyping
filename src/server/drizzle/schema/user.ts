@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, primaryKey, real, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, date, integer, pgEnum, pgTable, primaryKey, real, timestamp, varchar } from "drizzle-orm/pg-core";
 import { DEFAULT_TYPING_OPTIONS, MAX_MAXIMUM_LENGTH, MAX_SHORT_LENGTH } from "../const";
 
 export const roleEnum = pgEnum("role", ["USER", "ADMIN"]);
@@ -76,10 +76,10 @@ export const UserTypingOptions = pgTable("user_typing_options", {
 });
 
 export const DEFAULT_IME_OPTIONS = {
-  enableAddSymbol: false,
-  enableEngUpperCase: false,
-  enableEngSpace: false,
-  addSymbolList: "",
+  enableIncludeRegex: false,
+  isCaseSensitive: false,
+  insertEnglishSpaces: false,
+  includeRegexPattern: "",
   enableNextLyrics: true,
   enableLargeVideoDisplay: false,
 };
@@ -87,13 +87,13 @@ export const UserImeTypingOptions = pgTable("user_ime_typing_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
-  enableAddSymbol: boolean("enable_add_symbol").notNull().default(DEFAULT_IME_OPTIONS.enableAddSymbol),
-  enableEngSpace: boolean("enable_eng_space").notNull().default(DEFAULT_IME_OPTIONS.enableEngSpace),
-  enableEngUpperCase: boolean("enable_eng_upper_case").notNull().default(DEFAULT_IME_OPTIONS.enableEngUpperCase),
+  enableIncludeRegex: boolean("enable_include_regex").notNull().default(DEFAULT_IME_OPTIONS.enableIncludeRegex),
+  insertEnglishSpaces: boolean("insert_english_spaces").notNull().default(DEFAULT_IME_OPTIONS.insertEnglishSpaces),
+  isCaseSensitive: boolean("is_case_sensitive").notNull().default(DEFAULT_IME_OPTIONS.isCaseSensitive),
   enableNextLyrics: boolean("enable_next_lyrics").notNull().default(DEFAULT_IME_OPTIONS.enableNextLyrics),
-  addSymbolList: varchar("add_symbol_list", { length: MAX_SHORT_LENGTH })
+  includeRegexPattern: varchar("include_regex_pattern", { length: MAX_SHORT_LENGTH })
     .notNull()
-    .default(DEFAULT_IME_OPTIONS.addSymbolList),
+    .default(DEFAULT_IME_OPTIONS.includeRegexPattern),
   enableLargeVideoDisplay: boolean("enable_large_video_display")
     .notNull()
     .default(DEFAULT_IME_OPTIONS.enableLargeVideoDisplay),
@@ -124,7 +124,7 @@ export const UserDailyTypeCounts = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => Users.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { mode: "date" }).notNull(),
+    date: date("date", { mode: "date" }).notNull(),
     romaTypeCount: integer("roma_type_count").notNull().default(0),
     kanaTypeCount: integer("kana_type_count").notNull().default(0),
     flickTypeCount: integer("flick_type_count").notNull().default(0),
@@ -132,7 +132,7 @@ export const UserDailyTypeCounts = pgTable(
     imeTypeCount: integer("ime_type_count").notNull().default(0),
     otherTypeCount: integer("other_type_count").notNull().default(0),
   },
-  (t) => [primaryKey({ columns: [t.userId, t.createdAt] })],
+  (t) => [primaryKey({ columns: [t.userId, t.date] })],
 );
 
 export const UserMapCompletionPlayCounts = pgTable(

@@ -31,3 +31,7 @@ export const toLocaleDateString = (
 
   return d.toLocaleDateString(locale, { ...options });
 };
+
+export const getTimezone = () => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+};
