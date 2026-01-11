@@ -6,7 +6,7 @@ import { UserImeTypingOptions, UserOptions, UserTypingOptions } from "../server/
 export const CreateUserTypingOptionSchema = createInsertSchema(UserTypingOptions).omit({ userId: true });
 
 export const CreateUserImeTypingOptionSchema = createInsertSchema(UserImeTypingOptions, {
-  addSymbolList: z.string().max(MAX_SHORT_LENGTH),
+  enableIncludeRegex: z.string().max(MAX_SHORT_LENGTH),
 }).omit({ userId: true });
 
 export const CreateUserOptionSchema = createInsertSchema(UserOptions).omit({
