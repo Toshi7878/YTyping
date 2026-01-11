@@ -1,6 +1,5 @@
 import { H1 } from "@/components/ui/typography";
 import { prefetch, serverApi, trpc } from "@/trpc/server";
-import { getTimezone } from "@/utils/date";
 import { UserTabs } from "./_components/tabs";
 import { UserProfileCard } from "./_components/user-profile-card";
 import { loadUserPageSearchParams } from "./_lib/search-params";
@@ -15,9 +14,7 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   prefetch(trpc.bookmarkList.getCount.queryOptions({ userId: Number(id) }));
 
   if (tab === "stats") {
-    const timezone = getTimezone();
     prefetch(trpc.userStats.getUserStats.queryOptions({ userId: Number(id) }));
-    prefetch(trpc.userStats.getUserActivity.queryOptions({ userId: Number(id), timezone }));
   } else if (tab === "bookmarks") {
     prefetch(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
     prefetch(
