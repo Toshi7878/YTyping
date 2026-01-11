@@ -87,11 +87,11 @@ export const UserImeTypingOptions = pgTable("user_ime_typing_options", {
   userId: integer("user_id")
     .primaryKey()
     .references(() => Users.id, { onDelete: "cascade" }),
-  enableAddSymbol: boolean("enable_add_symbol").notNull().default(DEFAULT_IME_OPTIONS.enableAddSymbol),
-  enableEngSpace: boolean("enable_eng_space").notNull().default(DEFAULT_IME_OPTIONS.enableEngSpace),
-  enableEngUpperCase: boolean("enable_eng_upper_case").notNull().default(DEFAULT_IME_OPTIONS.enableEngUpperCase),
+  enableIncludeRegex: boolean("enable_include_regex").notNull().default(DEFAULT_IME_OPTIONS.enableAddSymbol),
+  insertEnglishSpaces: boolean("insert_english_spaces").notNull().default(DEFAULT_IME_OPTIONS.enableEngSpace),
+  isCaseSensitive: boolean("is_case_sensitive").notNull().default(DEFAULT_IME_OPTIONS.enableEngUpperCase),
   enableNextLyrics: boolean("enable_next_lyrics").notNull().default(DEFAULT_IME_OPTIONS.enableNextLyrics),
-  addSymbolList: varchar("add_symbol_list", { length: MAX_SHORT_LENGTH })
+  includeRegexPattern: varchar("include_regex_pattern", { length: MAX_SHORT_LENGTH })
     .notNull()
     .default(DEFAULT_IME_OPTIONS.addSymbolList),
   enableLargeVideoDisplay: boolean("enable_large_video_display")
