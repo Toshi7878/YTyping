@@ -50,7 +50,11 @@ const ElapsedMmSsDisplay = () => {
     }
   }, []);
 
-  return <span id="elapsed_sec_time" ref={elapsedSecTimeRef}></span>;
+  return (
+    <span id="elapsed_sec_time" ref={elapsedSecTimeRef}>
+      00:00
+    </span>
+  );
 };
 
 const VideoDurationTime = () => {
