@@ -11,9 +11,6 @@ export const MapControlArea = () => {
   return (
     <section className="mb-4 flex w-full flex-col gap-4">
       <SearchInput />
-      <span>
-        お知らせ: 本日10時頃よりサーバーのメンテナンスを実施します。メンテナンス中はアクセスできなくなります。
-      </span>
       <div className="flex flex-col justify-between space-y-4 md:flex-row md:space-y-0">
         <MapFilter />
         <VolumeRange YTPlayer={YTPlayer} />
