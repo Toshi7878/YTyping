@@ -116,7 +116,7 @@ const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
   const sortedTypeData = [
     { label: "ローマ字", count: data?.romaTypeCount ?? 0 },
     { label: "かな", count: data?.kanaTypeCount ?? 0 },
-    { label: "英数字記号", count: data?.englishTypeCount ?? 0 },
+    { label: "英数字記号", count: (data?.englishTypeCount ?? 0) + (data?.otherTypeCount ?? 0) },
     { label: "変換有りタイプ数", count: data?.imeTypeCount ?? 0 },
   ].sort((a, b) => b.count - a.count);
 
