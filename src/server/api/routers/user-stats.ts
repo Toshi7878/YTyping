@@ -214,13 +214,22 @@ export const userStatsRouter = {
           },
         });
     }),
+  getUserActivityOldestYear: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
+    const { db } = ctx;
+
+    return await db.query.UserDailyTypeCounts.findFirst({
+      columns: { date: true },
+      where: eq(UserDailyTypeCounts.userId, input.userId),
+      orderBy: asc(UserDailyTypeCounts.date),
+    }).then((res) => (res?.date ?? new Date()).getUTCFullYear());
+  }),
   getUserActivity: publicProcedure
-    .input(z.object({ userId: z.number(), timezone: z.string() }))
+    .input(z.object({ userId: z.number(), targetYear: z.number().nullish(), timezone: z.string() }))
     .query(async ({ input, ctx }) => {
       const { db } = ctx;
 
       const currentYear = getNowInTimeZone(input.timezone).getFullYear();
-      const { startOfYear, endOfYear } = getYearDateRangeInTimeZone(currentYear);
+      const { startOfYear, endOfYear } = getYearDateRangeInTimeZone(input.targetYear ?? currentYear);
 
       const dataMap = await db.query.UserDailyTypeCounts.findMany({
         columns: {

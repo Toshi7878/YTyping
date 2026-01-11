@@ -2,40 +2,45 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { cloneElement } from "react";
+import { useQueryState } from "nuqs";
+import { cloneElement, useState } from "react";
 import { type Activity, ActivityCalendar } from "react-activity-calendar";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipWrapper } from "@/components/ui/tooltip";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { getTimezone } from "@/utils/date";
+import { getTimezone, getYearsDesc } from "@/utils/date";
 import { getCSSVariable } from "@/utils/get-computed-color";
+import { userPageSearchParamsParser } from "../../_lib/search-params";
 
 export const TypeActivity = () => {
   const trpc = useTRPC();
   const { id: userId } = useParams<{ id: string }>();
-  const timezone = getTimezone();
-  const { data, isPending } = useQuery(
+  const [targetYear] = useQueryState("targetYear", userPageSearchParamsParser.targetYear);
+
+  const { data: typeActivities, isPending } = useQuery(
     trpc.userStats.getUserActivity.queryOptions(
-      { userId: Number(userId), timezone },
+      { userId: Number(userId), targetYear, timezone: getTimezone() },
       { staleTime: Infinity, gcTime: Infinity },
     ),
   );
 
-  if (isPending)
+  if (isPending) {
     return (
       <div className="relative flex min-h-[200px] w-full justify-center">
         <Skeleton className="h-[200px] w-full bg-card" />
       </div>
     );
+  }
 
   const blockColors = getBlockColors();
 
   return (
-    <div className="relative flex min-h-[200px] w-full justify-center">
+    <div className="relative flex min-h-[200px] w-full justify-center gap-4">
       <ActivityCalendar
-        data={data ?? []}
+        data={typeActivities ?? []}
         labels={{
           months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
           weekdays: ["日", "月", "火", "水", "木", "金", "土"],
@@ -44,7 +49,7 @@ export const TypeActivity = () => {
         theme={{ dark: blockColors }}
         colorScheme="dark"
         blockSize={14}
-        blockMargin={3}
+        blockMargin={2}
         maxLevel={12}
         renderBlock={(block, activity) => {
           const styledBlock = cloneElement(block, {
@@ -74,6 +79,7 @@ export const TypeActivity = () => {
         }}
         weekStart={1}
       />
+      <ActivityYearButtons userId={userId} />
     </div>
   );
 };
@@ -141,4 +147,45 @@ const getLevelLabel = (level: number) => {
   if (level <= 6) return `かな level: ${levelLabel}`;
   if (level <= 9) return `英数字記号 level: ${levelLabel}`;
   return `変換有りタイプ数 level: ${levelLabel}`;
+};
+
+const ActivityYearButtons = ({ userId }: { userId: string }) => {
+  const [targetYear, setTargetYear] = useQueryState("targetYear", userPageSearchParamsParser.targetYear);
+  const [currentYear] = useState(() => new Date().getFullYear());
+
+  const trpc = useTRPC();
+  const { data: oldestYear } = useQuery(
+    trpc.userStats.getUserActivityOldestYear.queryOptions(
+      { userId: Number(userId) },
+      { staleTime: Infinity, gcTime: Infinity },
+    ),
+  );
+
+  const years = getYearsDesc({ oldestYear, currentYear });
+
+  return (
+    <div className="flex w-14 shrink-0 flex-col gap-2">
+      {years.map((year) => {
+        const isActive = year === (targetYear ?? currentYear);
+        return (
+          <Button
+            key={year}
+            type="button"
+            variant={isActive ? "default" : "ghost"}
+            size="xs"
+            className="w-14 rounded-sm"
+            onClick={() => {
+              if (year === currentYear) {
+                setTargetYear(null);
+              } else {
+                setTargetYear(year);
+              }
+            }}
+          >
+            {year}
+          </Button>
+        );
+      })}
+    </div>
+  );
 };

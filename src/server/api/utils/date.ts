@@ -16,7 +16,7 @@ export const getYearDateRangeInTimeZone = (year: number): { startOfYear: Date; e
   return { startOfYear, endOfYear };
 };
 
-export const formatDateKeyInTimeZone = (date: Date, timeZone: string): string => {
+export const formatDateKeyInTimeZone = (date: Date, timeZone: string = "UTC"): string => {
   const formatter = new Intl.DateTimeFormat("en-CA", {
     timeZone,
     year: "numeric",

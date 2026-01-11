@@ -35,3 +35,16 @@ export const toLocaleDateString = (
 export const getTimezone = () => {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 };
+
+export const getYearsDesc = ({
+  oldestYear,
+  currentYear = new Date().getFullYear(),
+}: {
+  oldestYear?: number;
+  currentYear?: number;
+}): number[] => {
+  const oldest = oldestYear ?? currentYear;
+  const start = Math.min(oldest, currentYear);
+  const end = Math.max(oldest, currentYear);
+  return Array.from({ length: end - start + 1 }, (_, i) => end - i);
+};
