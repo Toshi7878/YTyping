@@ -237,7 +237,8 @@ const DifficultyRangeControl = () => {
           onValueChange={([minRate, maxRate]) => {
             setPendingMinRate(minRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.min);
             setPendingMaxRate(maxRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.max);
-            debounce(() => void setSearchParams({ minRate: pendingMinRate, maxRate: pendingMaxRate }));
+            // biome-ignore lint/style/noNonNullAssertion: <minRateとmaxRateは必ずundefinedではない>
+            debounce(() => void setSearchParams({ minRate: minRate!, maxRate: maxRate! }));
           }}
           min={MAP_DIFFICULTY_RATE_FILTER_LIMIT.min}
           max={MAP_DIFFICULTY_RATE_FILTER_LIMIT.max}
