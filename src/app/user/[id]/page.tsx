@@ -1,5 +1,5 @@
 import { H1 } from "@/components/ui/typography";
-import { prefetch, serverApi, trpc } from "@/trpc/server";
+import { HydrateClient, prefetch, serverApi, trpc } from "@/trpc/server";
 import { UserTabs } from "./_components/tabs";
 import { UserProfileCard } from "./_components/user-profile-card";
 import { loadUserPageSearchParams } from "./_lib/search-params";
@@ -33,10 +33,12 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(id) });
 
   return (
-    <div className="mx-auto max-w-5xl space-y-4 pb-10">
-      <H1>プレイヤー情報</H1>
-      <UserProfileCard userProfile={userProfile} />
-      <UserTabs id={id} />
-    </div>
+    <HydrateClient>
+      <div className="mx-auto max-w-5xl space-y-4 pb-10">
+        <H1>プレイヤー情報</H1>
+        <UserProfileCard userProfile={userProfile} />
+        <UserTabs id={id} />
+      </div>
+    </HydrateClient>
   );
 }

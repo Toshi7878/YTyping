@@ -3,17 +3,19 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useQueryStates, type Values } from "nuqs";
+
 import type React from "react";
-import { usePendingDifficultyRangeState, useSetPendingDifficultyRange } from "@/app/(home)/_lib/atoms";
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select/select";
-import { TooltipWrapper } from "@/components/ui/tooltip";
 import { Small } from "@/components/ui/typography";
 import { type MapListSearchParams, mapListSearchParams } from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
+import { useDebounce } from "@/utils/hooks/use-debounce";
 import {
   MAP_DIFFICULTY_RATE_FILTER_LIMIT,
   type MAP_RANKING_STATUS_FILTER_OPTIONS,
@@ -218,33 +220,30 @@ const getNextFilterParams = (
 };
 
 const DifficultyRangeControl = () => {
-  const { minRate: pendingMinRate, maxRate: pendingMaxRate } = usePendingDifficultyRangeState();
-  const setPendingDifficultyRange = useSetPendingDifficultyRange();
-  const setSearchParams = useSetSearchParams();
+  const [pendingMinRate, setPendingMinRate] = useState(MAP_DIFFICULTY_RATE_FILTER_LIMIT.min);
+  const [pendingMaxRate, setPendingMaxRate] = useState(MAP_DIFFICULTY_RATE_FILTER_LIMIT.max);
+  const [params] = useQueryStates(mapListSearchParams);
 
-  const handleEnterKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      setSearchParams({ minRate: pendingMinRate, maxRate: pendingMaxRate });
-    }
-  };
+  const setSearchParams = useSetSearchParams();
+  const { debounce } = useDebounce(500);
 
   return (
     <Card className="min-h-23 py-3">
       <CardContent className="mt-1 flex w-56 select-none flex-col items-center gap-2 space-y-1">
         <Small>難易度</Small>
-        <TooltipWrapper label="Enterで検索" sideOffset={24}>
-          <DualRangeSlider
-            value={[pendingMinRate, pendingMaxRate]}
-            onValueChange={([minRate, maxRate]) => {
-              // biome-ignore lint/style/noNonNullAssertion: <minRateとmaxRateは必ずundefinedではない>
-              setPendingDifficultyRange({ minRate: minRate!, maxRate: maxRate! });
-            }}
-            min={MAP_DIFFICULTY_RATE_FILTER_LIMIT.min}
-            max={MAP_DIFFICULTY_RATE_FILTER_LIMIT.max}
-            step={0.1}
-            onKeyDown={handleEnterKeyDown}
-          />
-        </TooltipWrapper>
+
+        <DualRangeSlider
+          value={[params.minRate, params.maxRate]}
+          onValueChange={([minRate, maxRate]) => {
+            setPendingMinRate(minRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.min);
+            setPendingMaxRate(maxRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.max);
+            debounce(() => void setSearchParams({ minRate: pendingMinRate, maxRate: pendingMaxRate }));
+          }}
+          min={MAP_DIFFICULTY_RATE_FILTER_LIMIT.min}
+          max={MAP_DIFFICULTY_RATE_FILTER_LIMIT.max}
+          step={0.1}
+        />
+
         <div className="flex w-full justify-between">
           <span>★{pendingMinRate.toFixed(1)}</span>
           <span>★{pendingMaxRate === MAP_DIFFICULTY_RATE_FILTER_LIMIT.max ? "∞" : pendingMaxRate.toFixed(1)}</span>

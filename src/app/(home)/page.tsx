@@ -10,10 +10,9 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   prefetch(trpc.mapList.get.infiniteQueryOptions(mapListQueryParams));
   prefetch(trpc.bookmarkList.getForSession.queryOptions());
 
-  const { minRate, maxRate } = mapListQueryParams;
   return (
     <HydrateClient>
-      <JotaiProvider minRate={minRate} maxRate={maxRate}>
+      <JotaiProvider>
         <div className="mx-auto max-w-7xl lg:px-8">
           <MapControlArea />
           <MapList />
