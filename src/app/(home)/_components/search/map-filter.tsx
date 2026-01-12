@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useQueryStates, type Values } from "nuqs";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -226,6 +226,11 @@ const DifficultyRangeControl = () => {
 
   const setSearchParams = useSetSearchParams();
   const { debounce } = useDebounce(500);
+
+  useEffect(() => {
+    setPendingMinRate(params.minRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.min);
+    setPendingMaxRate(params.maxRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.max);
+  }, [params.minRate, params.maxRate]);
 
   return (
     <Card className="min-h-23 py-3">
