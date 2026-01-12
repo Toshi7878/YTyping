@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import type { Route } from "next";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { BiEdit } from "react-icons/bi";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BookmarkListPopover } from "@/components/shared/bookmark/bookmark-list-popover";
@@ -33,6 +34,7 @@ export const TabIcons = ({ className }: { className?: string }) => {
 };
 
 const InfoIconButton = () => {
+  const [open, setOpen] = useState(false);
   const trpc = useTRPC();
   const mapId = useMapIdState();
   const { data: mapInfo } = useSuspenseQuery(trpc.map.getInfoById.queryOptions({ mapId: mapId ?? 0 }));
@@ -41,12 +43,17 @@ const InfoIconButton = () => {
   const tags = mapInfo.info.tags ?? [];
 
   return (
-    <HoverCard openDelay={200} closeDelay={200}>
+    <HoverCard openDelay={200} closeDelay={200} open={open} onOpenChange={setOpen}>
       <HoverCardTrigger asChild>
         <Button
           variant="unstyled"
           size="icon"
-          className="mr-12 cursor-help hover:text-foreground/90 max-md:relative max-md:top-[50px] md:mr-2.5"
+          className="mr-12 cursor-help hover:text-foreground/90 max-md:relative max-md:top-[50px] md:mr-3"
+          onMouseDown={() => {
+            if (!open) {
+              setOpen(true);
+            }
+          }}
         >
           <IoMdInformationCircleOutline className="size-24 md:size-9" />
         </Button>
