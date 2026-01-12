@@ -48,7 +48,7 @@ const InfoIconButton = () => {
         <Button
           variant="unstyled"
           size="icon"
-          className="mr-12 cursor-help hover:text-foreground/90 max-md:relative max-md:top-[50px] md:mr-3"
+          className="top-7 mr-14 cursor-help hover:text-foreground/90 max-md:relative max-md:top-12 md:mr-3"
           onMouseDown={() => {
             if (!open) {
               setOpen(true);
