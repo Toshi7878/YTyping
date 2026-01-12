@@ -1,5 +1,9 @@
 export const changelog = [
   {
+    date: "2026-1-13",
+    descriptions: ["ツールページにYTyping Lyrics Markerを追加"],
+  },
+  {
     date: "2026-1-12",
     descriptions: [
       "ユーザーページのアクティビティカレンダーに2025年の表示に切り替えるボタンを設置",

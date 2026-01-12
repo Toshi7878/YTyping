@@ -22,6 +22,12 @@ const TOOLS = [
     href: "/manual/bg-yt-player",
     byUserId: "1",
   },
+  {
+    title: "YTyping Lyrics Marker",
+    description: "譜面作成で、BPMなどからタイミングを自動調節できるツール",
+    href: "https://ytyping-lyrics-marker.y5svdwtx8p.workers.dev/",
+    byUserId: "21",
+  },
 ] as const;
 
 export default function Page() {
