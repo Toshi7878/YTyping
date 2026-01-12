@@ -220,8 +220,9 @@ const getNextFilterParams = (
 };
 
 const DifficultyRangeControl = () => {
-  const [pendingMinRate, setPendingMinRate] = useState(MAP_DIFFICULTY_RATE_FILTER_LIMIT.min);
-  const [pendingMaxRate, setPendingMaxRate] = useState(MAP_DIFFICULTY_RATE_FILTER_LIMIT.max);
+  const [params] = useQueryStates(mapListSearchParams);
+  const [pendingMinRate, setPendingMinRate] = useState(params.minRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.min);
+  const [pendingMaxRate, setPendingMaxRate] = useState(params.maxRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.max);
 
   const setSearchParams = useSetSearchParams();
   const { debounce } = useDebounce(500);
