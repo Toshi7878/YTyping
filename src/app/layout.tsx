@@ -1,5 +1,6 @@
 import { Header } from "@/app/_components/header/header";
 import "@/styles/globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
@@ -53,6 +54,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                       <MainProvider>
                         <main className="min-h-screen pt-12 pb-6 md:pt-16" id="main_content">
                           {children}
+                          <Analytics />
                         </main>
                         <PreviewYouTubePlayer />
                       </MainProvider>

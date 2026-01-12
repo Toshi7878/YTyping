@@ -37,6 +37,7 @@
     "@trpc/client": "^11.6.0",
     "@trpc/server": "^11.6.0",
     "@trpc/tanstack-react-query": "^11.6.0",
+    "@vercel/analytics": "^1.6.1",
     "autoprefixer": "^10.4.21",
     "axios": "^1.12.2",
     "class-variance-authority": "^0.7.1",
