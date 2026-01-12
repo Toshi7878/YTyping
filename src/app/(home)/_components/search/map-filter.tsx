@@ -233,7 +233,7 @@ const DifficultyRangeControl = () => {
         <Small>難易度</Small>
 
         <DualRangeSlider
-          value={[params.minRate, params.maxRate]}
+          value={[pendingMinRate, pendingMaxRate]}
           onValueChange={([minRate, maxRate]) => {
             setPendingMinRate(minRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.min);
             setPendingMaxRate(maxRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.max);
