@@ -4,7 +4,7 @@ import { seekYTPlayer } from "../atoms/youtube-player";
 import { getLineCountByTime } from "./get-line-count-by-time";
 import { setupLine, stopTimer } from "./timer/timer";
 
-const SEEK_BUFFER_TIME = 0.8;
+const SEEK_BUFFER_TIME = 0.7;
 
 export const movePrevLine = () => {
   const map = readBuiltMap();
