@@ -54,7 +54,9 @@ export const moveNextLine = () => {
   const { lineSelectIndex } = readUtilityParams();
   const count = readLineCount();
   const seekCount = lineSelectIndex ? map.typingLineIndexes[lineSelectIndex - 1] : null;
-  const seekCountAdjust = seekCount && seekCount === count ? -1 : 0;
+
+  const isTypingLine = map.typingLineIndexes.some((num) => num === count);
+  const seekCountAdjust = (seekCount && seekCount === count) || (!isTypingLine && seekCount !== count + 1) ? -1 : 0;
 
   const adjustedCount = count + 1 + seekCountAdjust;
 
