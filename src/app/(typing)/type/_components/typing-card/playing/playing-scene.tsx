@@ -138,7 +138,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     return;
   }
 
-  if (isPaused || isHotKeyIgnored(event)) return;
+  if ((scene === "play" && isPaused) || isHotKeyIgnored(event)) return;
   handlePlayHotKey(event);
 };
 
