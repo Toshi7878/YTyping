@@ -29,7 +29,7 @@ export const TypeActivity = () => {
   if (isPending) {
     return (
       <div className="relative flex min-h-[200px] w-full justify-center">
-        <Skeleton className="h-[200px] w-full bg-card" />
+        <Skeleton className="h-[200px] w-[846px] bg-card" />
       </div>
     );
   }
