@@ -4,7 +4,6 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import parse from "html-react-parser";
 import { Play } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useQueryStates } from "nuqs";
 import type React from "react";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Options, useHotkeys } from "react-hotkeys-hook";
@@ -41,13 +40,13 @@ import { handleEnterAddRuby } from "../../_lib/editor/enter-add-ruby";
 import { redo, undo } from "../../_lib/map-table/history";
 import { moveLine } from "../../_lib/map-table/move-line";
 import { wordSearchReplace } from "../../_lib/map-table/word-search-replace";
-import { searchParamsParsers } from "../../_lib/search-params";
+import { useIsBuckupQueryState } from "../../_lib/search-params";
 import { WordConvertButton } from "../tabs/editor/button";
 import { LineOptionDialog } from "./line-option-dialog";
 
 export const NewMapTable = () => {
   const { id: mapId } = useParams();
-  const [{ backup: isBackup }] = useQueryStates({ backup: searchParamsParsers.isBackup });
+  const [isBackup] = useIsBuckupQueryState();
 
   const { data: backupMap } = useQuery(
     queryOptions({

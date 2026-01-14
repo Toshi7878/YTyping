@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useQueryState } from "nuqs";
 import { cloneElement, useState } from "react";
 import { type Activity, ActivityCalendar } from "react-activity-calendar";
 import { Button } from "@/components/ui/button";
@@ -13,12 +12,12 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { getTimezone, getYearsDesc } from "@/utils/date";
 import { getCSSVariable } from "@/utils/get-computed-color";
-import { userPageSearchParamsParser } from "../../_lib/search-params";
+import { useTargetYearQueryState } from "../../_lib/search-params";
 
 export const TypeActivity = () => {
   const trpc = useTRPC();
   const { id: userId } = useParams<{ id: string }>();
-  const [targetYear] = useQueryState("targetYear", userPageSearchParamsParser.targetYear);
+  const [targetYear] = useTargetYearQueryState();
 
   const { data: typeActivities, isPending } = useQuery(
     trpc.userStats.getUserActivity.queryOptions(
@@ -38,48 +37,87 @@ export const TypeActivity = () => {
   const blockColors = getBlockColors();
 
   return (
-    <div className="relative flex min-h-[200px] w-full justify-center gap-4">
-      <ActivityCalendar
-        data={typeActivities ?? []}
-        labels={{
-          months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-          weekdays: ["日", "月", "火", "水", "木", "金", "土"],
-          totalCount: "{{count}} 打鍵",
-        }}
-        theme={{ dark: blockColors }}
-        colorScheme="dark"
-        blockSize={14}
-        blockMargin={2}
-        maxLevel={12}
-        renderBlock={(block, activity) => {
-          const styledBlock = cloneElement(block, {
-            style: {
-              ...block.props.style,
-              opacity: getOpacity(activity.level),
-            },
-          });
+    <ActivityCalendar
+      data={typeActivities ?? []}
+      labels={{
+        months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        weekdays: ["日", "月", "火", "水", "木", "金", "土"],
+        totalCount: "{{count}} 打鍵",
+      }}
+      theme={{ dark: blockColors }}
+      colorScheme="dark"
+      blockSize={14}
+      blockMargin={2}
+      maxLevel={12}
+      renderBlock={(block, activity) => {
+        const styledBlock = cloneElement(block, {
+          style: {
+            ...block.props.style,
+            opacity: getOpacity(activity.level),
+          },
+        });
 
-          return (
-            <TooltipWrapper key={activity.date} label={<BlockToolTipLabel activity={activity} />}>
-              {styledBlock}
-            </TooltipWrapper>
-          );
-        }}
-        renderColorLegend={(_block, level) => {
-          const color = blockColors[level] ?? "";
-          const label = getLevelLabel(level);
+        return (
+          <TooltipWrapper key={activity.date} label={<BlockToolTipLabel activity={activity} />}>
+            {styledBlock}
+          </TooltipWrapper>
+        );
+      }}
+      renderColorLegend={(_block, level) => {
+        const color = blockColors[level] ?? "";
+        const label = getLevelLabel(level);
 
-          return (
-            <TooltipWrapper key={level} label={label}>
-              <div className={level % 3 === 0 ? "mr-2" : ""} style={{ opacity: getOpacity(level) }}>
-                <div style={{ width: 14, height: 14, backgroundColor: color, borderRadius: 2 }} />
-              </div>
-            </TooltipWrapper>
-          );
-        }}
-        weekStart={1}
-      />
-      <ActivityYearButtons userId={userId} />
+        return (
+          <TooltipWrapper key={level} label={label}>
+            <div className={level % 3 === 0 ? "mr-2" : ""} style={{ opacity: getOpacity(level) }}>
+              <div style={{ width: 14, height: 14, backgroundColor: color, borderRadius: 2 }} />
+            </div>
+          </TooltipWrapper>
+        );
+      }}
+      weekStart={1}
+    />
+  );
+};
+
+export const ActivityYearButtons = () => {
+  const [targetYear, setTargetYear] = useTargetYearQueryState();
+  const [currentYear] = useState(() => new Date().getFullYear());
+  const { id: userId } = useParams<{ id: string }>();
+
+  const trpc = useTRPC();
+  const { data: oldestYear } = useQuery(
+    trpc.userStats.getUserActivityOldestYear.queryOptions(
+      { userId: Number(userId) },
+      { staleTime: Infinity, gcTime: Infinity },
+    ),
+  );
+
+  const years = getYearsDesc({ oldestYear, currentYear });
+
+  return (
+    <div className="flex w-14 shrink-0 flex-col gap-2">
+      {years.map((year) => {
+        const isActive = year === (targetYear ?? currentYear);
+        return (
+          <Button
+            key={year}
+            type="button"
+            variant={isActive ? "default" : "ghost"}
+            size="xs"
+            className="w-14 rounded-sm"
+            onClick={() => {
+              if (year === currentYear) {
+                setTargetYear(null);
+              } else {
+                setTargetYear(year);
+              }
+            }}
+          >
+            {year}
+          </Button>
+        );
+      })}
     </div>
   );
 };
@@ -147,45 +185,4 @@ const getLevelLabel = (level: number) => {
   if (level <= 6) return `かな level: ${levelLabel}`;
   if (level <= 9) return `英数字記号 level: ${levelLabel}`;
   return `変換有りタイプ数 level: ${levelLabel}`;
-};
-
-const ActivityYearButtons = ({ userId }: { userId: string }) => {
-  const [targetYear, setTargetYear] = useQueryState("targetYear", userPageSearchParamsParser.targetYear);
-  const [currentYear] = useState(() => new Date().getFullYear());
-
-  const trpc = useTRPC();
-  const { data: oldestYear } = useQuery(
-    trpc.userStats.getUserActivityOldestYear.queryOptions(
-      { userId: Number(userId) },
-      { staleTime: Infinity, gcTime: Infinity },
-    ),
-  );
-
-  const years = getYearsDesc({ oldestYear, currentYear });
-
-  return (
-    <div className="flex w-14 shrink-0 flex-col gap-2">
-      {years.map((year) => {
-        const isActive = year === (targetYear ?? currentYear);
-        return (
-          <Button
-            key={year}
-            type="button"
-            variant={isActive ? "default" : "ghost"}
-            size="xs"
-            className="w-14 rounded-sm"
-            onClick={() => {
-              if (year === currentYear) {
-                setTargetYear(null);
-              } else {
-                setTargetYear(year);
-              }
-            }}
-          >
-            {year}
-          </Button>
-        );
-      })}
-    </div>
-  );
 };

@@ -1,15 +1,14 @@
 "use client";
 
-import { useQueryStates } from "nuqs";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { mapListSearchParams } from "@/lib/search-params/map-list";
+import { useMapListFilterQueryStates } from "@/lib/search-params/map-list";
 import { useIsSearchingState } from "../../_lib/atoms";
 import { useSetSearchParams } from "../../_lib/use-set-search-params";
 
 export const SearchInput = () => {
-  const [params] = useQueryStates(mapListSearchParams);
+  const [params] = useMapListFilterQueryStates();
   const [keyword, setKeyword] = useState(params.keyword ?? "");
   const isSearching = useIsSearchingState();
   const setSearchParams = useSetSearchParams();

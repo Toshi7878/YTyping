@@ -7,7 +7,6 @@ import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -33,12 +32,12 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { buildYouTubeThumbnailUrl } from "@/utils/ytimg";
 import { MapBookmarkListFormSchema } from "@/validator/bookmark";
-import { serializeUserPageSearchParams, userPageSearchParamsParser } from "../_lib/search-params";
+import { serializeUserPageSearchParams, useBookmarkListIdQueryState } from "../_lib/search-params";
 
 type BookmarkList = RouterOutputs["bookmarkList"]["getByUserId"][number];
 
 export const UserBookmarkLists = ({ id }: { id: string }) => {
-  const [bookmarkListId] = useQueryState("bookmarkListId", userPageSearchParamsParser.bookmarkListId);
+  const [bookmarkListId] = useBookmarkListIdQueryState();
 
   if (!bookmarkListId) {
     return <BookmarkListCardList id={id} />;

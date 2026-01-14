@@ -1,4 +1,4 @@
-import type { inferParserType } from "nuqs";
+import { type inferParserType, useQueryStates } from "nuqs";
 import {
   createLoader,
   createParser,
@@ -40,7 +40,7 @@ const parseAsClearRate = createParser({
   },
 });
 
-export const resultListSearchParams = {
+const resultListSearchParams = {
   mode: parseAsStringLiteral(RESULT_INPUT_METHOD_TYPES),
   minKpm: parseAsKpm.withDefault(KPM_LIMIT.min),
   maxKpm: parseAsKpm.withDefault(KPM_LIMIT.max),
@@ -51,6 +51,8 @@ export const resultListSearchParams = {
   username: parseAsString.withDefault(""),
   mapKeyword: parseAsString.withDefault(""),
 };
+
+export const resultListFilterQueryStates = () => useQueryStates(resultListSearchParams);
 
 export type ResultListSearchParams = inferParserType<typeof resultListSearchParams>;
 

@@ -1,3 +1,4 @@
+import { useQueryState } from "nuqs";
 import { createLoader, createParser, parseAsBoolean, parseAsString } from "nuqs/server";
 
 const parseAsNewMapVideoId = createParser({
@@ -11,6 +12,8 @@ const parseAsNewMapVideoId = createParser({
     return value;
   },
 });
+const isBuckupParser = parseAsBoolean.withDefault(false);
 
-export const searchParamsParsers = { new: parseAsNewMapVideoId, isBackup: parseAsBoolean.withDefault(false) };
-export const searchParamsLoader = createLoader(searchParamsParsers);
+export const useIsBuckupQueryState = () => useQueryState("isBuckup", parseAsBoolean.withDefault(false));
+
+export const searchParamsLoader = createLoader({ new: parseAsNewMapVideoId, isBuckup: isBuckupParser });

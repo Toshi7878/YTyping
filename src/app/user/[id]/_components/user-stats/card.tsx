@@ -15,7 +15,7 @@ import { H2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
-import { TypeActivity } from "./type-activity";
+import { ActivityYearButtons, TypeActivity } from "./type-activity";
 
 const formatTime = (totalSeconds: number) => {
   const hours = Math.floor(totalSeconds / 3600);
@@ -110,7 +110,10 @@ const UserStatsContent = ({ userStats, isMyStatsWithHide }: UserStatsContentProp
 
       <H2>打鍵情報</H2>
 
-      <TypeActivity />
+      <div className="relative flex min-h-[200px] w-full justify-center gap-4">
+        <TypeActivity />
+        <ActivityYearButtons />
+      </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {keystrokeStatsData.map((item) => (

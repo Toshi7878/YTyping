@@ -2,7 +2,6 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useQueryStates, type Values } from "nuqs";
 
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -12,7 +11,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select/select";
 import { Small } from "@/components/ui/typography";
-import { type MapListSearchParams, mapListSearchParams } from "@/lib/search-params/map-list";
+import {
+  type MapListFilterSearchParams,
+  type MapListSortSearchParams,
+  useMapListFilterQueryStates,
+} from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { useDebounce } from "@/utils/hooks/use-debounce";
@@ -34,12 +37,12 @@ export const MapFilter = () => {
   );
 };
 
-type FilterMenuConfig<K extends keyof MapListSearchParams> = {
+type FilterMenuConfig<K extends keyof MapListFilterSearchParams> = {
   name: K;
   label: string;
   options: {
     label: string;
-    value: MapListSearchParams[K];
+    value: MapListFilterSearchParams[K];
   }[];
 };
 
@@ -83,7 +86,7 @@ interface FilterMenuProps {
 }
 
 const FilterMenu = ({ filter, children }: FilterMenuProps) => {
-  const [params] = useQueryStates(mapListSearchParams);
+  const [params] = useMapListFilterQueryStates();
 
   const setSearchParams = useSetSearchParams();
   return (
@@ -124,7 +127,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
 const BookmarkListSelect = () => {
   const trpc = useTRPC();
   const { data: lists } = useSuspenseQuery(trpc.bookmarkList.getForSession.queryOptions());
-  const [params] = useQueryStates(mapListSearchParams);
+  const [params] = useMapListFilterQueryStates();
   const setSearchParams = useSetSearchParams();
 
   const CLEAR_VALUE = "__clear__";
@@ -164,12 +167,12 @@ const deriveSortParam = (
     filter,
     rankingStatus,
   }: {
-    filter: Values<typeof mapListSearchParams>["filter"];
-    rankingStatus: Values<typeof mapListSearchParams>["rankingStatus"];
+    filter: MapListFilterSearchParams["filter"];
+    rankingStatus: MapListFilterSearchParams["rankingStatus"];
   },
   name: "filter" | "rankingStatus",
   isActive: boolean,
-): MapListSearchParams["sort"] | undefined => {
+): MapListSortSearchParams | undefined => {
   const RANKING_REGISTERED_FILTER_OPTIONS: (typeof MAP_RANKING_STATUS_FILTER_OPTIONS)[number][] = [
     "1st",
     "not-first",
@@ -205,8 +208,8 @@ const getNextFilterParams = (
     | (typeof USER_FILTER_MENU.options)[number]["value"]
     | (typeof RANKING_STATUS_FILTER_MENU.options)[number]["value"],
   isApply: boolean,
-  params: NonNullable<Values<typeof mapListSearchParams>>,
-): Pick<MapListSearchParams, "filter" | "rankingStatus"> => {
+  params: MapListFilterSearchParams,
+): Pick<MapListFilterSearchParams, "filter" | "rankingStatus"> => {
   let selectedFilter = params.filter;
   if (name === "filter") {
     selectedFilter = isApply ? (value as typeof params.filter) : null;
@@ -220,7 +223,7 @@ const getNextFilterParams = (
 };
 
 const DifficultyRangeControl = () => {
-  const [params] = useQueryStates(mapListSearchParams);
+  const [params] = useMapListFilterQueryStates();
   const [pendingMinRate, setPendingMinRate] = useState(params.minRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.min);
   const [pendingMaxRate, setPendingMaxRate] = useState(params.maxRate ?? MAP_DIFFICULTY_RATE_FILTER_LIMIT.max);
 

@@ -4,7 +4,6 @@ import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { FaPlay } from "react-icons/fa";
@@ -23,7 +22,7 @@ import {
 import { setPreventEditorTabAutoFocus } from "@/app/edit/_lib/atoms/ref";
 import { getYTDuration, getYTVideoId, playYTPlayer, seekYTPlayer } from "@/app/edit/_lib/atoms/youtube-player";
 import { hasMapUploadPermission } from "@/app/edit/_lib/map-table/has-map-upload-permission";
-import { searchParamsParsers } from "@/app/edit/_lib/search-params";
+import { useIsBuckupQueryState } from "@/app/edit/_lib/search-params";
 import { Button } from "@/components/ui/button";
 import { CardWithContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -119,7 +118,7 @@ export const EditMapInfoFormCard = () => {
 export const AddMapInfoFormCard = () => {
   const trpc = useTRPC();
 
-  const [{ isBackup }] = useQueryStates({ isBackup: searchParamsParsers.isBackup });
+  const [isBackup] = useIsBuckupQueryState();
   const { data: session } = useSession();
   const creatorId = useCreatorIdState();
   const hasUploadPermission = hasMapUploadPermission(session, creatorId);

@@ -1,18 +1,16 @@
 "use client";
-import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { useIsSearchingState } from "@/app/timeline/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { resultListSearchParams } from "@/lib/search-params/result-list";
+import { resultListFilterQueryStates } from "@/lib/search-params/result-list";
 import { useSetSearchParams } from "../../_lib/use-set-search-params";
 
 export const SearchInputs = () => {
   const isSearching = useIsSearchingState();
-  const [mapKeyword] = useQueryState("mapKeyword", resultListSearchParams.mapKeyword);
-  const [username] = useQueryState("username", resultListSearchParams.username);
+  const [filterParams] = resultListFilterQueryStates();
 
-  const [keywords, setKeywords] = useState({ mapKeyword, username });
+  const [keywords, setKeywords] = useState({ mapKeyword: filterParams.mapKeyword, username: filterParams.username });
   const setSearchParams = useSetSearchParams();
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

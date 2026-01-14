@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useQueryStates } from "nuqs";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { type MapListSearchParams, mapListSearchParams } from "@/lib/search-params/map-list";
+import {
+  type MapListSortSearchParams,
+  useMapListFilterQueryStates,
+  useMapListSortQueryState,
+} from "@/lib/search-params/map-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import type { MAP_SORT_OPTIONS } from "@/validator/map-list";
@@ -36,12 +39,11 @@ const SORT_OPTIONS: { label: string; value: (typeof MAP_SORT_OPTIONS)[number] }[
 ];
 
 const SortControls = () => {
-  const [params] = useQueryStates(mapListSearchParams);
   const setSearchParams = useSetSearchParams();
+  const [params] = useMapListFilterQueryStates();
+  const [currentSort] = useMapListSortQueryState();
 
-  const currentSort = params.sort;
-
-  const deriveNextSortParam = (value: (typeof MAP_SORT_OPTIONS)[number]): MapListSearchParams["sort"] | undefined => {
+  const deriveNextSortParam = (value: (typeof MAP_SORT_OPTIONS)[number]): MapListSortSearchParams | undefined => {
     if (value === "random") {
       return currentSort.value === "random" ? { value: "id", desc: true } : { value: "random", desc: false };
     }
@@ -113,9 +115,8 @@ const SortIndicator = ({ value, currentSort }: SortIndicatorProps) => {
 
 const MapCountBadge = () => {
   const trpc = useTRPC();
-  const [params] = useQueryStates(mapListSearchParams);
-  const { sort: _, ...queryParams } = params;
-  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getCount.queryOptions(queryParams));
+  const [params] = useMapListFilterQueryStates();
+  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getCount.queryOptions(params));
 
   return (
     <Badge variant="accent-light" className="gap-4" size="md">

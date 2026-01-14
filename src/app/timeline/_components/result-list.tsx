@@ -1,21 +1,20 @@
 "use client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { ResultCard } from "@/components/shared/result-card/card";
-import { resultListSearchParams } from "@/lib/search-params/result-list";
+import { resultListFilterQueryStates } from "@/lib/search-params/result-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
 
 export const UsersResultList = () => {
   const trpc = useTRPC();
-  const [searchParams] = useQueryStates(resultListSearchParams);
+  const [filterParams] = resultListFilterQueryStates();
   const isSearching = useIsSearchingState();
 
   const { data, ...pagination } = useSuspenseInfiniteQuery(
-    trpc.resultList.getWithMap.infiniteQueryOptions(searchParams, {
+    trpc.resultList.getWithMap.infiniteQueryOptions(filterParams, {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,
       staleTime: Infinity,

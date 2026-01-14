@@ -1,4 +1,4 @@
-import type { inferParserType } from "nuqs";
+import { type inferParserType, useQueryState, useQueryStates } from "nuqs";
 import {
   createLoader,
   createParser,
@@ -42,8 +42,7 @@ const parseAsDifficultyRate = createParser({
   },
 });
 
-export const mapListSearchParams = {
-  sort: parseAsSort.withDefault({ value: "id", desc: true }),
+const mapListFilterParsers = {
   keyword: parseAsString.withDefault(""),
   minRate: parseAsDifficultyRate.withDefault(MAP_DIFFICULTY_RATE_FILTER_LIMIT.min),
   maxRate: parseAsDifficultyRate.withDefault(MAP_DIFFICULTY_RATE_FILTER_LIMIT.max),
@@ -51,8 +50,14 @@ export const mapListSearchParams = {
   rankingStatus: parseAsStringLiteral(MAP_RANKING_STATUS_FILTER_OPTIONS),
   bookmarkListId: parseAsInteger,
 };
+const mapListSortParser = parseAsSort.withDefault({ value: "id", desc: true });
 
-export type MapListSearchParams = inferParserType<typeof mapListSearchParams>;
+export const useMapListFilterQueryStates = () => useQueryStates(mapListFilterParsers);
+export const useMapListSortQueryState = () =>
+  useQueryState("sort", parseAsSort.withDefault({ value: "id", desc: true }));
 
-export const loadMapListSearchParams = createLoader(mapListSearchParams);
-export const mapListSerialize = createSerializer(mapListSearchParams);
+export type MapListFilterSearchParams = inferParserType<typeof mapListFilterParsers>;
+export type MapListSortSearchParams = inferParserType<typeof mapListSortParser>;
+
+export const loadMapListSearchParams = createLoader({ ...mapListFilterParsers, sort: mapListSortParser });
+export const mapListSerialize = createSerializer({ ...mapListFilterParsers, sort: mapListSortParser });

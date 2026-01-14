@@ -1,10 +1,9 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useQueryState } from "nuqs";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTRPC } from "@/trpc/provider";
-import { type TABS, userPageSearchParamsParser } from "../_lib/search-params";
+import { type TABS, useTabQueryState } from "../_lib/search-params";
 import { UserBookmarkLists } from "./bookmark-lists";
 import { UserCreatedMapList, UserLikedMapList } from "./map-list";
 import { UserResultList } from "./user-result-list";
@@ -19,7 +18,7 @@ const TAB_OPTIONS = [
 ] satisfies { label: string; value: (typeof TABS)[number] }[];
 
 export const UserTabs = ({ id }: { id: string }) => {
-  const [tab, setTab] = useQueryState("tab", userPageSearchParamsParser.tab);
+  const [tab, setTab] = useTabQueryState();
 
   return (
     <Tabs value={tab} onValueChange={(value) => setTab(value as (typeof TABS)[number])}>

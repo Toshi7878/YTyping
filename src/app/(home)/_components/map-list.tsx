@@ -1,17 +1,16 @@
 "use client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
-import { mapListSearchParams } from "@/lib/search-params/map-list";
+import { useMapListFilterQueryStates } from "@/lib/search-params/map-list";
 import { useTRPC } from "@/trpc/provider";
 import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
 
 export const MapList = () => {
   const isSearching = useIsSearchingState();
   const trpc = useTRPC();
-  const [params] = useQueryStates(mapListSearchParams);
+  const [params] = useMapListFilterQueryStates();
 
   const { data, ...pagination } = useSuspenseInfiniteQuery(
     trpc.mapList.get.infiniteQueryOptions(params, {

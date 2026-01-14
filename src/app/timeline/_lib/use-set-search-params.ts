@@ -1,19 +1,18 @@
-import { useQueryStates } from "nuqs";
 import {
   type ResultListSearchParams,
-  resultListSearchParams,
+  resultListFilterQueryStates,
   resultListSerialize,
 } from "@/lib/search-params/result-list";
 import { readSearchPendingParams, setIsSearching } from "./atoms";
 
 export const useSetSearchParams = () => {
-  const [currentParams] = useQueryStates(resultListSearchParams);
+  const [filterParams] = resultListFilterQueryStates();
 
   return (updates?: Partial<ResultListSearchParams>) => {
     const searchPendingParams = readSearchPendingParams();
 
     const mergedParams = {
-      ...currentParams,
+      ...filterParams,
       ...updates,
       minKpm: searchPendingParams.kpm.min,
       maxKpm: searchPendingParams.kpm.max,
@@ -23,7 +22,7 @@ export const useSetSearchParams = () => {
       maxPlaySpeed: searchPendingParams.playSpeed.max,
       mode: searchPendingParams.mode,
     };
-    const hasChanged = JSON.stringify(currentParams) !== JSON.stringify(mergedParams);
+    const hasChanged = JSON.stringify(filterParams) !== JSON.stringify(mergedParams);
 
     if (!hasChanged) return;
 
