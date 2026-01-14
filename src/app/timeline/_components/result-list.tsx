@@ -3,14 +3,14 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { ResultCard } from "@/components/shared/result-card/card";
-import { resultListFilterQueryStates } from "@/lib/search-params/result-list";
+import { useResultListFilterQueryStates } from "@/lib/search-params/result-list";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/provider";
 import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
 
 export const UsersResultList = () => {
   const trpc = useTRPC();
-  const [filterParams] = resultListFilterQueryStates();
+  const [filterParams] = useResultListFilterQueryStates();
   const isSearching = useIsSearchingState();
 
   const { data, ...pagination } = useSuspenseInfiniteQuery(

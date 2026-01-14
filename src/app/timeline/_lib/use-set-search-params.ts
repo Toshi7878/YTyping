@@ -1,12 +1,12 @@
 import {
   type ResultListSearchParams,
-  resultListFilterQueryStates,
   resultListSerialize,
+  useResultListFilterQueryStates,
 } from "@/lib/search-params/result-list";
 import { readSearchPendingParams, setIsSearching } from "./atoms";
 
 export const useSetSearchParams = () => {
-  const [filterParams] = resultListFilterQueryStates();
+  const [filterParams] = useResultListFilterQueryStates();
 
   return (updates?: Partial<ResultListSearchParams>) => {
     const searchPendingParams = readSearchPendingParams();

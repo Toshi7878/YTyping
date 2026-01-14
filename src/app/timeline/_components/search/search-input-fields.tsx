@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useIsSearchingState } from "@/app/timeline/_lib/atoms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input/input";
-import { resultListFilterQueryStates } from "@/lib/search-params/result-list";
+import { useResultListFilterQueryStates } from "@/lib/search-params/result-list";
 import { useSetSearchParams } from "../../_lib/use-set-search-params";
 
 export const SearchInputs = () => {
   const isSearching = useIsSearchingState();
-  const [filterParams] = resultListFilterQueryStates();
+  const [filterParams] = useResultListFilterQueryStates();
 
   const [keywords, setKeywords] = useState({ mapKeyword: filterParams.mapKeyword, username: filterParams.username });
   const setSearchParams = useSetSearchParams();

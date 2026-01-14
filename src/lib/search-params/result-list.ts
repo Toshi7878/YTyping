@@ -52,7 +52,7 @@ const resultListSearchParams = {
   mapKeyword: parseAsString.withDefault(""),
 };
 
-export const resultListFilterQueryStates = () => useQueryStates(resultListSearchParams);
+export const useResultListFilterQueryStates = () => useQueryStates(resultListSearchParams);
 
 export type ResultListSearchParams = inferParserType<typeof resultListSearchParams>;
 
