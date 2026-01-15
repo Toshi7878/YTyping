@@ -126,7 +126,7 @@ const FilterMenu = ({ filter, children }: FilterMenuProps) => {
 
 const BookmarkListSelect = () => {
   const trpc = useTRPC();
-  const { data: lists } = useSuspenseQuery(trpc.bookmarkList.getForSession.queryOptions());
+  const { data: lists } = useSuspenseQuery(trpc.map.bookmark.list.getForSession.queryOptions());
   const [params] = useMapListFilterQueryStates();
   const setSearchParams = useSetSearchParams();
 

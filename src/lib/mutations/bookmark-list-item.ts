@@ -4,7 +4,7 @@ import type { RouterOutputs } from "@/server/api/trpc";
 import { useTRPC } from "@/trpc/provider";
 import { updateInfiniteQueryCache, updateQueryCache } from "../update-query-cache";
 
-type BookmarkListsByUserIdItem = RouterOutputs["bookmarkList"]["getByUserId"][number];
+type BookmarkListsByUserIdItem = RouterOutputs["map"]["bookmark"]["list"]["getByUserId"][number];
 type MapInfo = RouterOutputs["map"]["detail"]["getInfo"];
 
 const createMapBookmarkUpdater = (mapId: number, hasBookmarked: boolean) => {
@@ -55,7 +55,7 @@ async function runOptimisticUpdate(args: {
   const mapInfoFilter = trpc.map.detail.getInfo.queryFilter({ mapId: input.mapId });
   const resultListFilter = trpc.resultList.pathFilter();
   const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
-  const bookmarkListsByUserIdFilter = trpc.bookmarkList.getByUserId.queryFilter();
+  const bookmarkListsByUserIdFilter = trpc.map.bookmark.list.getByUserId.queryFilter();
 
   await Promise.all([
     queryClient.cancelQueries(mapInfoFilter),
@@ -125,7 +125,7 @@ export function useAddBookmarkListItemMutation() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.bookmarkListItem.addMap.mutationOptions({
+    trpc.map.bookmark.detail.add.mutationOptions({
       onMutate: async (input) => runOptimisticUpdate({ trpc, queryClient, input: { ...input, action: "add" } }),
       onError: (_err, _vars, ctx) => {
         if (!ctx?.previous) return;
@@ -135,7 +135,7 @@ export function useAddBookmarkListItemMutation() {
         if (!ctx) return;
         queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
         queryClient.invalidateQueries(
-          trpc.bookmarkList.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
+          trpc.map.bookmark.list.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
         );
       },
     }),
@@ -147,7 +147,7 @@ export function useRemoveBookmarkListItemMutation() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.bookmarkListItem.removeMap.mutationOptions({
+    trpc.map.bookmark.detail.remove.mutationOptions({
       onMutate: async (input) => runOptimisticUpdate({ trpc, queryClient, input: { ...input, action: "remove" } }),
       onError: (_err, _vars, ctx) => {
         if (!ctx?.previous) return;
@@ -157,7 +157,7 @@ export function useRemoveBookmarkListItemMutation() {
         if (!ctx) return;
         queryClient.invalidateQueries(ctx.bookmarkListsByUserIdFilter);
         queryClient.invalidateQueries(
-          trpc.bookmarkList.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
+          trpc.map.bookmark.list.getByUserId.queryFilter({ includeMapId: input.mapId } as never),
         );
       },
     }),

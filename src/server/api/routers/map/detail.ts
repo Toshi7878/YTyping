@@ -9,7 +9,7 @@ import type { RawMapLine } from "@/validator/raw-map-json";
 import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
-export const mapRouter = {
+export const mapDetailRouter = {
   getInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { mapId } = input;

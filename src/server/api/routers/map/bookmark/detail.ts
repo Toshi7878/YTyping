@@ -8,11 +8,11 @@ import {
   NotificationMapBookmarks,
   Notifications,
 } from "@/server/drizzle/schema";
-import { protectedProcedure } from "../../trpc";
-import { generateNotificationId } from "../../utils/id";
+import { protectedProcedure } from "../../../trpc";
+import { generateNotificationId } from "../../../utils/id";
 
-export const bookmarkListItemRouter = {
-  addMap: protectedProcedure
+export const mapBookmarkDetailRouter = {
+  add: protectedProcedure
     .input(z.object({ listId: z.number(), mapId: z.number() }))
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;
@@ -65,7 +65,7 @@ export const bookmarkListItemRouter = {
       return { action: "added" as const };
     }),
 
-  removeMap: protectedProcedure
+  remove: protectedProcedure
     .input(z.object({ listId: z.number(), mapId: z.number() }))
     .mutation(async ({ input, ctx }) => {
       const { db, user } = ctx;

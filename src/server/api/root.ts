@@ -1,9 +1,9 @@
 import { aiRouter } from "./routers/ai";
-import { bookmarkListRouter } from "./routers/bookmark/list";
-import { bookmarkListItemRouter } from "./routers/bookmark/list-item";
+import { mapBookmarkDetailRouter } from "./routers/map/bookmark/detail";
+import { mapBookmarkListRouter } from "./routers/map/bookmark/list";
+import { mapDetailRouter } from "./routers/map/detail";
 import { mapLikeRouter } from "./routers/map/like";
 import { mapListRouter } from "./routers/map/list";
-import { mapRouter } from "./routers/map/map";
 import { morphConvertRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
 import { resultClapRouter } from "./routers/result/clap";
@@ -19,8 +19,12 @@ import { router } from "./trpc";
 export const appRouter = router({
   map: {
     list: mapListRouter,
-    detail: mapRouter,
+    detail: mapDetailRouter,
     like: mapLikeRouter,
+    bookmark: {
+      list: mapBookmarkListRouter,
+      detail: mapBookmarkDetailRouter,
+    },
   },
   notification: notificationRouter,
   result: resultRouter,
@@ -36,8 +40,6 @@ export const appRouter = router({
   ai: aiRouter,
   vercel: vercelRouter,
   clap: resultClapRouter,
-  bookmarkListItem: bookmarkListItemRouter,
-  bookmarkList: bookmarkListRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -10,9 +10,9 @@ import {
   Notifications,
 } from "@/server/drizzle/schema";
 import { CreateMapBookmarkListApiSchema, UpdateMapBookmarkListApiSchema } from "@/validator/bookmark";
-import { protectedProcedure, publicProcedure } from "../../trpc";
+import { protectedProcedure, publicProcedure } from "../../../trpc";
 
-export const bookmarkListRouter = {
+export const mapBookmarkListRouter = {
   getForSession: protectedProcedure.query(async ({ ctx }) => {
     const { db, user } = ctx;
 

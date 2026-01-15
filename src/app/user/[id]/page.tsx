@@ -11,13 +11,13 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   prefetch(trpc.map.list.getCount.queryOptions({ creatorId: Number(id) }));
   prefetch(trpc.map.list.getCount.queryOptions({ likerId: Number(id) }));
   prefetch(trpc.resultList.getWithMapCount.queryOptions({ playerId: Number(id) }));
-  prefetch(trpc.bookmarkList.getCount.queryOptions({ userId: Number(id) }));
+  prefetch(trpc.map.bookmark.list.getCount.queryOptions({ userId: Number(id) }));
 
   if (tab === "stats") {
     prefetch(trpc.user.stats.get.queryOptions({ userId: Number(id) }));
     prefetch(trpc.user.stats.getActivityOldestYear.queryOptions({ userId: Number(id) }));
   } else if (tab === "bookmarks") {
-    prefetch(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
+    prefetch(trpc.map.bookmark.list.getByUserId.queryOptions({ userId: Number(id) }));
     prefetch(
       trpc.map.list.get.infiniteQueryOptions({ bookmarkListId: Number(id), sort: { value: "bookmark", desc: true } }),
     );
