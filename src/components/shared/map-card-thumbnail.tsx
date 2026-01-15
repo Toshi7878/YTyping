@@ -50,7 +50,8 @@ export const MapLeftThumbnail = (props: MapLeftThumbnailPreviewCoverProps & Reac
           {isPreviewEnabled && previewYTPlayer && <ThumbnailPreviewCover {...media} className={imageClassName} />}
           <div className={mapLeftThumbnailVariants({ size })}>
             <Image
-              priority={priority}
+              loading={priority ? "eager" : "lazy"}
+              preload={priority}
               alt={alt}
               src={buildYouTubeThumbnailUrl(media.videoId, "mqdefault")}
               fill

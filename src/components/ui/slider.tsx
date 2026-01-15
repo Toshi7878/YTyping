@@ -47,7 +47,7 @@ function Slider({
           key={index}
           className="block size-4 shrink-0 rounded-full border border-primary bg-foreground shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:outline-hidden focus-visible:ring-4 disabled:pointer-events-none disabled:opacity-50"
         >
-          <Badge className="-top-4 -translate-x-1/2 -translate-y-1/2 absolute left-1/2 scale-0 transition-transform group-hover:scale-100">
+          <Badge className="absolute -top-4 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-0 transition-transform group-hover:scale-100">
             {value?.[0]}
           </Badge>
         </SliderPrimitive.Thumb>
