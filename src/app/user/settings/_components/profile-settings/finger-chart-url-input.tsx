@@ -24,7 +24,7 @@ export const FingerChartUrlInput = ({ url }: FingerChartUrlInputProps) => {
   const { reset } = form;
 
   const trpc = useTRPC();
-  const update = useMutation(trpc.userProfile.upsertFingerChartUrl.mutationOptions());
+  const update = useMutation(trpc.user.profile.upsertFingerChartUrl.mutationOptions());
 
   return (
     <div className="flex flex-col gap-2">

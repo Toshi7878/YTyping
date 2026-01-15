@@ -29,7 +29,7 @@ interface SettingPopoverProps {
 
 export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) => {
   const trpc = useTRPC();
-  const updateImeTypingOptions = useMutation(trpc.userOption.updateImeTypeOptions.mutationOptions());
+  const updateImeTypingOptions = useMutation(trpc.user.imeTypingOption.upsert.mutationOptions());
   const queryClient = useQueryClient();
   const { id: mapId } = useParams<{ id: string }>();
   const [isOpen, setIsOpen] = useState(false);

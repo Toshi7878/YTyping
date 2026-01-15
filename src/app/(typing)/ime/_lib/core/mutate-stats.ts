@@ -9,7 +9,7 @@ export const mutateImeStats = async () => {
 
   const timezone = getTimezone();
 
-  void trpc.userStats.incrementImeStats.mutate({ imeTypeCount, typingTime, timezone });
+  void trpc.user.stats.incrementImeStats.mutate({ imeTypeCount, typingTime, timezone });
 
   resetUserStats();
 };

@@ -18,7 +18,7 @@ export default async function Page() {
 
 const ProfileSettingCard = async () => {
   const session = await auth();
-  const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(session?.user.id) });
+  const userProfile = await serverApi.user.profile.get({ userId: Number(session?.user.id) });
 
   return (
     <Card className="mx-8">
@@ -38,7 +38,7 @@ const ProfileSettingCard = async () => {
 };
 
 const OptionSettingCard = async () => {
-  const userOptions = await serverApi.userOption.getUserOptions();
+  const userOptions = await serverApi.user.option.getForSession();
 
   return (
     <Card className="mx-8">

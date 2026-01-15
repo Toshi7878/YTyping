@@ -9,7 +9,7 @@ import { getImeAtomStore } from "../_lib/atoms/store";
 
 interface JotaiProviderProps {
   children: ReactNode;
-  userImeTypingOptions: RouterOutputs["userOption"]["getUserImeTypingOptions"];
+  userImeTypingOptions: RouterOutputs["user"]["imeTypingOption"]["getForSession"];
   mapId: number;
 }
 

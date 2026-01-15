@@ -7,11 +7,11 @@ import { useTRPC } from "@/trpc/provider";
 
 export const ByUser = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();
-  const { data: userName } = useSuspenseQuery(trpc.userProfile.getUserName.queryOptions({ userId: Number(userId) }));
+  const { data: profile } = useSuspenseQuery(trpc.user.profile.get.queryOptions({ userId: Number(userId) }));
 
   return (
     <LinkText href={`/user/${userId}` as Route}>
-      <span>{userName}</span>
+      <span>{profile?.name}</span>
     </LinkText>
   );
 };

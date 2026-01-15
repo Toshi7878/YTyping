@@ -9,7 +9,7 @@ export const mutateTypingStats = () => {
 
   const timezone = getTimezone();
 
-  void trpcClient.userStats.incrementTypingStats.mutate({ ...userStats, timezone });
+  void trpcClient.user.stats.incrementTypingStats.mutate({ ...userStats, timezone });
   resetUserStats();
 };
 
@@ -18,5 +18,5 @@ export const mutateIncrementMapCompletionPlayCountStats = () => {
   if (!mapId) return;
 
   const trpcClient = getTRPCClient();
-  void trpcClient.userStats.incrementMapCompletionPlayCount.mutate({ mapId });
+  void trpcClient.user.stats.incrementMapCompletionPlayCount.mutate({ mapId });
 };

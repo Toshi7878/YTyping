@@ -12,7 +12,7 @@ import { useTRPC } from "@/trpc/provider";
 import { CreateUserOptionSchema } from "@/validator/user-option";
 
 interface OptionFormProps {
-  userOptions: RouterOutputs["userOption"]["getUserOptions"];
+  userOptions: RouterOutputs["user"]["option"]["getForSession"];
 }
 
 export const OptionForm = ({ userOptions }: OptionFormProps) => {
@@ -27,9 +27,9 @@ export const OptionForm = ({ userOptions }: OptionFormProps) => {
   const queryClient = useQueryClient();
 
   const sendUserOption = useMutation(
-    trpc.userOption.updateOptions.mutationOptions({
+    trpc.user.option.upsert.mutationOptions({
       onSuccess: () => {
-        void queryClient.invalidateQueries(trpc.userOption.getUserOptions.queryOptions());
+        void queryClient.invalidateQueries(trpc.user.option.getForSession.queryOptions());
       },
     }),
   );

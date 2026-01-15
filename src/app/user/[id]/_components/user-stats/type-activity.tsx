@@ -20,7 +20,7 @@ export const TypeActivity = () => {
   const [targetYear] = useTargetYearQueryState();
 
   const { data: typeActivities, isPending } = useQuery(
-    trpc.userStats.getUserActivity.queryOptions(
+    trpc.user.stats.getYearlyTypingActivity.queryOptions(
       { userId: Number(userId), targetYear, timezone: getTimezone() },
       { staleTime: Infinity, gcTime: Infinity },
     ),
@@ -87,7 +87,7 @@ export const ActivityYearButtons = () => {
 
   const trpc = useTRPC();
   const { data: oldestYear } = useQuery(
-    trpc.userStats.getUserActivityOldestYear.queryOptions(
+    trpc.user.stats.getActivityOldestYear.queryOptions(
       { userId: Number(userId) },
       { staleTime: Infinity, gcTime: Infinity },
     ),
@@ -150,7 +150,7 @@ const getOpacity = (level: number) => {
 };
 
 const BlockToolTipLabel = ({ activity }: { activity: Activity }) => {
-  const { data } = activity as RouterOutputs["userStats"]["getUserActivity"][number];
+  const { data } = activity as RouterOutputs["user"]["stats"]["getYearlyTypingActivity"][number];
   const sortedTypeData = [
     { label: "ローマ字", count: data?.romaTypeCount ?? 0 },
     { label: "かな", count: data?.kanaTypeCount ?? 0 },

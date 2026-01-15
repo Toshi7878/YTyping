@@ -12,7 +12,7 @@ import { H2, LinkText } from "@/components/ui/typography";
 import type { RouterOutputs } from "@/server/api/trpc";
 
 interface UserProfileCardProps {
-  userProfile: RouterOutputs["userProfile"]["getUserProfile"];
+  userProfile: RouterOutputs["user"]["profile"]["get"];
 }
 
 export const UserProfileCard = ({ userProfile }: UserProfileCardProps) => {

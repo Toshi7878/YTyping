@@ -39,7 +39,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   } = form;
 
   const updateUserName = useMutation(
-    trpc.userProfile.updateName.mutationOptions({
+    trpc.user.profile.updateName.mutationOptions({
       onSuccess: async (newName) => {
         await update({ ...session?.user, name: newName });
         reset({ newName });
@@ -53,7 +53,7 @@ export const UserNameInputForm = ({ placeholder = "名前を入力" }: UserNameI
   );
 
   const checkNameAvailability = useMutation(
-    trpc.userProfile.checkUsernameAvailability.mutationOptions({
+    trpc.user.profile.checkUsernameAvailability.mutationOptions({
       onError: (error) => {
         if (error.data?.code === "CONFLICT") {
           setError("newName", { message: error.message });

@@ -38,3 +38,5 @@ export const getYouTubeInfo = async (videoId: string) => {
     });
   }
 };
+
+export type YouTubeInfo = Awaited<ReturnType<typeof getYouTubeInfo>>;

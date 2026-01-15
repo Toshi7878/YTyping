@@ -153,11 +153,11 @@ export const AddMapInfoFormCard = () => {
   });
 
   const {
-    data: geminiInfoData,
-    error: geminiError,
-    isFetching: isGeminiFetching,
+    data: generatedMapInfo,
+    error: aiError,
+    isFetching: isAIFetching,
   } = useQuery(
-    trpc.gemini.generateMapInfo.queryOptions(
+    trpc.ai.generateMapInfo.queryOptions(
       { videoId },
       {
         enabled: hasUploadPermission,
@@ -171,14 +171,14 @@ export const AddMapInfoFormCard = () => {
   );
 
   useEffect(() => {
-    if (geminiError) {
-      toast.error(geminiError.message);
+    if (aiError) {
+      toast.error(aiError.message);
     }
-  }, [geminiError]);
+  }, [aiError]);
 
   useEffect(() => {
-    if (geminiInfoData) {
-      const { title, artistName, source } = geminiInfoData;
+    if (generatedMapInfo) {
+      const { title, artistName, source } = generatedMapInfo;
 
       if (!isBackup) {
         form.setValue("title", title);
@@ -186,7 +186,7 @@ export const AddMapInfoFormCard = () => {
         form.setValue("musicSource", source);
       }
     }
-  }, [form, geminiInfoData, isBackup]);
+  }, [form, generatedMapInfo, isBackup]);
 
   useEffect(() => {
     const subscription = form.watch((value) => {
@@ -217,23 +217,23 @@ export const AddMapInfoFormCard = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-baseline gap-4">
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
-              disabled={isGeminiFetching}
+              disabled={isAIFetching}
               name="title"
-              label={isGeminiFetching ? "曲名を生成中..." : "曲名"}
+              label={isAIFetching ? "曲名を生成中..." : "曲名"}
               required
             />
             <FloatingLabelInputFormField
-              disabled={isGeminiFetching}
+              disabled={isAIFetching}
               name="artistName"
-              label={isGeminiFetching ? "アーティスト名を生成中..." : "アーティスト名"}
+              label={isAIFetching ? "アーティスト名を生成中..." : "アーティスト名"}
               required
             />
           </div>
           <div className="flex w-full gap-4">
             <FloatingLabelInputFormField
-              disabled={isGeminiFetching}
+              disabled={isAIFetching}
               name="musicSource"
-              label={isGeminiFetching ? "ソースを生成中..." : "ソース"}
+              label={isAIFetching ? "ソースを生成中..." : "ソース"}
             />
             <FloatingLabelInputFormField name="creatorComment" label="コメント" />
           </div>
@@ -243,7 +243,7 @@ export const AddMapInfoFormCard = () => {
             label={tags.length <= 1 ? "タグを2つ以上追加してください" : `タグを追加 ${tags.length} / ${TAG_MAX_LENGTH}`}
             maxLength={100}
           />
-          <SuggestionTags isAIFetching={isGeminiFetching} aiTags={geminiInfoData?.otherTags ?? []} />
+          <SuggestionTags isAIFetching={isAIFetching} aiTags={generatedMapInfo?.otherTags ?? []} />
           <div className="flex w-full flex-col-reverse items-start gap-4 md:flex-row md:items-center md:justify-between">
             <UpsertButton />
             <PreviewTimeInput />

@@ -7,7 +7,7 @@ import { mapIdAtom, typingOptionsAtom } from "../_lib/atoms/hydrate";
 import { getTypeAtomStore } from "../_lib/atoms/store";
 
 interface JotaiProviderProps {
-  userTypingOptions: RouterOutputs["userOption"]["getUserTypingOptions"];
+  userTypingOptions: RouterOutputs["user"]["typingOption"]["getForSession"];
   mapId: number;
   children: ReactNode;
 }

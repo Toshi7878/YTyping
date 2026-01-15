@@ -10,7 +10,7 @@ import { useTRPC } from "@/trpc/provider";
 export const useActiveUsers = () => {
   const trpc = useTRPC();
   const { data: userOptions, isPending } = useQuery(
-    trpc.userOption.getUserOptions.queryOptions(undefined, {
+    trpc.user.option.getForSession.queryOptions(undefined, {
       gcTime: Infinity,
       staleTime: Infinity,
     }),

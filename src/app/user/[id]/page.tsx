@@ -14,8 +14,8 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   prefetch(trpc.bookmarkList.getCount.queryOptions({ userId: Number(id) }));
 
   if (tab === "stats") {
-    prefetch(trpc.userStats.getUserStats.queryOptions({ userId: Number(id) }));
-    prefetch(trpc.userStats.getUserActivityOldestYear.queryOptions({ userId: Number(id) }));
+    prefetch(trpc.user.stats.get.queryOptions({ userId: Number(id) }));
+    prefetch(trpc.user.stats.getActivityOldestYear.queryOptions({ userId: Number(id) }));
   } else if (tab === "bookmarks") {
     prefetch(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
     prefetch(
@@ -30,7 +30,7 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
     prefetch(trpc.mapList.get.infiniteQueryOptions({ likerId: Number(id) }));
   }
 
-  const userProfile = await serverApi.userProfile.getUserProfile({ userId: Number(id) });
+  const userProfile = await serverApi.user.profile.get({ userId: Number(id) });
 
   return (
     <HydrateClient>

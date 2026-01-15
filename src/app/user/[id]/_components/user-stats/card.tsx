@@ -28,7 +28,7 @@ export const UserStatsCard = () => {
   const trpc = useTRPC();
 
   const { id: userId } = useParams<{ id: string }>();
-  const { data: userStats } = useSuspenseQuery(trpc.userStats.getUserStats.queryOptions({ userId: Number(userId) }));
+  const { data: userStats } = useSuspenseQuery(trpc.user.stats.get.queryOptions({ userId: Number(userId) }));
 
   const { data: session } = useSession();
   const userSearchParams = useSearchParams();
@@ -57,7 +57,7 @@ export const UserStatsCard = () => {
 };
 
 interface UserStatsContentProps {
-  userStats: RouterOutputs["userStats"]["getUserStats"];
+  userStats: RouterOutputs["user"]["stats"]["get"];
   isMyStatsWithHide: boolean;
 }
 

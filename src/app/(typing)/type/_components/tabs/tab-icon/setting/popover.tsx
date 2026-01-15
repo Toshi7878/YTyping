@@ -28,7 +28,7 @@ import { WordDisplayFields } from "./options/word-display-fields";
 import { WordScrollFields } from "./options/word-scroll-fields";
 export const SettingPopover = () => {
   const trpc = useTRPC();
-  const updateTypingOptions = useMutation(trpc.userOption.updateTypeOptions.mutationOptions());
+  const updateTypingOptions = useMutation(trpc.user.typingOption.upsert.mutationOptions());
   const { isMdScreen } = useBreakPoint();
   const [isOpen, setIsOpen] = useState(false);
   const confirm = useConfirm();

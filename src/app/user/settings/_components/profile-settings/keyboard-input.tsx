@@ -21,12 +21,12 @@ export const KeyboardInput = ({ keyboard }: KeyboardInputProps) => {
   const { reset } = form;
 
   const trpc = useTRPC();
-  const updateKeyboard = useMutation(trpc.userProfile.upsertKeyboard.mutationOptions());
+  const upsertKeyboard = useMutation(trpc.user.profile.upsertKeyboard.mutationOptions());
 
   return (
     <FormProvider {...form}>
       <MutationInputFormField
-        mutation={updateKeyboard}
+        mutation={upsertKeyboard}
         label="使用キーボード"
         successMessage="更新しました"
         name="keyboard"
