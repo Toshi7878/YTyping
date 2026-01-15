@@ -127,7 +127,7 @@ export const LikeButtonWithCount = ({
           size={heartSize}
           strokeWidth={2.5}
         />
-        <div className={cn("like-base-64 -right-[8.25px] absolute inset-y-0")} style={backgroundStyle} />
+        <div className={cn("like-base-64 absolute inset-y-0 -right-[8.25px]")} style={backgroundStyle} />
       </div>
       {typeof likeCount === "number" && (
         <span className={cn("select-none font-mono text-lg", hasLiked ? "text-like" : "text-muted-foreground")}>

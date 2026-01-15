@@ -79,7 +79,7 @@ const SpeedChangeButton = (props: SpeedChangeButtonProps) => {
     >
       <div className="relative top-1 text-3xl md:text-2xl">
         {props.buttonLabel.text}
-        <small className="-top-[0.9em] -translate-x-1/2 absolute left-1/2 text-[65%]">{props.buttonLabel.key}</small>
+        <small className="absolute -top-[0.9em] left-1/2 -translate-x-1/2 text-[65%]">{props.buttonLabel.key}</small>
       </div>
     </Button>
   );

@@ -218,7 +218,7 @@ importers:
         version: 2.3.6
       '@types/node':
         specifier: ^24.5.2
-        version: 24.10.6
+        version: 24.10.8
       '@types/react':
         specifier: 19.2.8
         version: 19.2.8
@@ -2761,8 +2761,8 @@ packages:
   '@types/mysql@2.15.27':
     resolution: {integrity: sha512-YfWiV16IY0OeBfBCk8+hXKmdTKrKlwKN1MNKAPBu5JYxLwBEZl7QzeEpGnlZb3VMGJrrGmB84gXiH+ofs/TezA==}
 
-  '@types/node@24.10.6':
-    resolution: {integrity: sha512-B8h60xgJMR/xmgyX9fncRzEW9gCxoJjdenUhke2v1JGOd/V66KopmWrLPXi5oUI4VuiGK+d+HlXJjDRZMj21EQ==}
+  '@types/node@24.10.8':
+    resolution: {integrity: sha512-r0bBaXu5Swb05doFYO2kTWHMovJnNVbCsII0fhesM8bNRlLhXIuckley4a2DaD+vOdmm5G+zGkQZAPZsF80+YQ==}
 
   '@types/node@24.10.8':
     resolution: {integrity: sha512-r0bBaXu5Swb05doFYO2kTWHMovJnNVbCsII0fhesM8bNRlLhXIuckley4a2DaD+vOdmm5G+zGkQZAPZsF80+YQ==}
@@ -7440,7 +7440,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.10.6
+      '@types/node': 24.10.8
 
   '@types/css-font-loading-module@0.0.12': {}
 
@@ -7466,9 +7466,9 @@ snapshots:
 
   '@types/mysql@2.15.27':
     dependencies:
-      '@types/node': 24.10.6
+      '@types/node': 24.10.8
 
-  '@types/node@24.10.6':
+  '@types/node@24.10.8':
     dependencies:
       undici-types: 7.16.0
 
@@ -7482,7 +7482,7 @@ snapshots:
 
   '@types/pg@8.15.6':
     dependencies:
-      '@types/node': 24.10.6
+      '@types/node': 24.10.8
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
@@ -7498,11 +7498,11 @@ snapshots:
 
   '@types/tedious@4.0.14':
     dependencies:
-      '@types/node': 24.10.6
+      '@types/node': 24.10.8
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.10.6
+      '@types/node': 24.10.8
 
   '@types/youtube@0.1.2': {}
 
