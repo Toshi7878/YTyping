@@ -1,12 +1,12 @@
 import { aiRouter } from "./routers/ai";
 import { bookmarkListRouter } from "./routers/bookmark/list";
 import { bookmarkListItemRouter } from "./routers/bookmark/list-item";
-import { clapRouter } from "./routers/clap";
-import { likeRouter } from "./routers/like";
+import { likeRouter } from "./routers/map/like";
 import { mapListRouter } from "./routers/map/list";
 import { mapRouter } from "./routers/map/map";
 import { morphConvertRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
+import { clapRouter } from "./routers/result/clap";
 import { resultListRouter } from "./routers/result/list";
 import { resultRouter } from "./routers/result/result";
 import { userImeTypingOptionRouter } from "./routers/user/ime-typing-option";

@@ -2,8 +2,8 @@ import type { TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { MapLikes, Maps, NotificationLikes, Notifications } from "@/server/drizzle/schema";
-import { protectedProcedure } from "../trpc";
-import { generateNotificationId } from "../utils/id";
+import { protectedProcedure } from "../../trpc";
+import { generateNotificationId } from "../../utils/id";
 
 export const likeRouter = {
   toggleLike: protectedProcedure
