@@ -63,7 +63,7 @@ export const PlayingNotify = () => {
 
   return (
     <div
-      className="-translate-x-1/2 pointer-events-none absolute select-none whitespace-nowrap"
+      className="pointer-events-none absolute -translate-x-1/2 select-none whitespace-nowrap"
       style={{ left: `calc(45% - ${offsetCh}ch)` }}
       id="playing_notify"
     >
