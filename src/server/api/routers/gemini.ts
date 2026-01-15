@@ -3,6 +3,7 @@ import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/ge
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import z from "zod";
 import { env } from "@/env";
+import { getYouTubeInfo } from "../lib/youtube";
 import { protectedProcedure } from "../trpc";
 
 const TEXT_PROMPT = `以下のJSONデータ情報を解析して{title:string; artistName:string; source:string; otherTags:string[];}の形式で出力してください。\n
@@ -84,45 +85,4 @@ const cleanJsonResponse = (responseText: string): GeminiMapInfo => {
     artistName: result?.artistName ?? "",
     otherTags: result?.otherTags ?? [],
   };
-};
-
-interface YouTubeInfo {
-  channelTitle: string;
-  description: string;
-  title: string;
-  tags: string[];
-}
-
-const getYouTubeInfo = async (videoId: string): Promise<YouTubeInfo> => {
-  try {
-    const videoResponse = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`,
-    );
-
-    if (!videoResponse.ok) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: `YouTube APIエラー: ${videoResponse.status}`,
-      });
-    }
-
-    const videoData = await videoResponse.json();
-
-    if (!videoData.items || videoData.items.length === 0) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "動画が見つかりませんでした",
-      });
-    }
-
-    const { channelTitle, description, title, tags = [] } = videoData.items[0].snippet;
-    return { channelTitle, description, title, tags };
-  } catch (error) {
-    if (error instanceof TRPCError) throw error;
-
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "YouTube情報の取得に失敗しました",
-    });
-  }
 };
