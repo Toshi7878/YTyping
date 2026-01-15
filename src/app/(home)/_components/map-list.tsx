@@ -14,7 +14,7 @@ export const MapList = () => {
   const [sortParams] = useMapListSortQueryState();
 
   const { data, ...pagination } = useSuspenseInfiniteQuery(
-    trpc.mapList.get.infiniteQueryOptions(
+    trpc.map.list.get.infiniteQueryOptions(
       { ...filterParams, sort: sortParams },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
