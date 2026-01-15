@@ -116,7 +116,7 @@ const SortIndicator = ({ value, currentSort }: SortIndicatorProps) => {
 const MapCountBadge = () => {
   const trpc = useTRPC();
   const [params] = useMapListFilterQueryStates();
-  const { data: mapListLength, isPending } = useQuery(trpc.mapList.getCount.queryOptions(params));
+  const { data: mapListLength, isPending } = useQuery(trpc.map.list.getCount.queryOptions(params));
 
   return (
     <Badge variant="accent-light" className="gap-4" size="md">

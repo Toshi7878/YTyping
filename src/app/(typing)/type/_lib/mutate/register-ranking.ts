@@ -58,7 +58,7 @@ export const useRegisterRankingMutation = ({ onSuccess, onError }: { onSuccess: 
           server: { count: rankingCount, myRank, myRankUpdatedAt },
         });
 
-        const mapListFilter = trpc.mapList.pathFilter();
+        const mapListFilter = trpc.map.list.pathFilter();
         const resultListFilter = trpc.resultList.pathFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
 

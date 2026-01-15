@@ -5,7 +5,7 @@ import { NotificationClaps, Notifications, ResultClaps, Results } from "@/server
 import { protectedProcedure } from "../../trpc";
 import { generateNotificationId } from "../../utils/id";
 
-export const clapRouter = {
+export const resultClapRouter = {
   toggleClap: protectedProcedure
     .input(z.object({ resultId: z.number(), newState: z.boolean() }))
     .mutation(async ({ input, ctx }) => {

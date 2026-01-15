@@ -143,7 +143,7 @@ const MapIcons = ({ mapId, ranking, like }: MapCountIconsProps) => {
   );
 };
 
-type Map = NonNullable<RouterOutputs["mapList"]["get"]["items"]>[number];
+type Map = NonNullable<RouterOutputs["map"]["list"]["get"]["items"]>[number];
 
 const MapDifficultyExtractContent = ({ map }: { map: Map }) => {
   const inputMode = useReadyInputModeState();

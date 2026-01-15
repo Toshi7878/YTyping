@@ -50,7 +50,7 @@ const BookmarkListMapList = ({ listId }: { listId: number }) => {
   const trpc = useTRPC();
 
   const { data, ...pagination } = useSuspenseInfiniteQuery(
-    trpc.mapList.get.infiniteQueryOptions(
+    trpc.map.list.get.infiniteQueryOptions(
       { bookmarkListId: listId, sort: { value: "bookmark", desc: true } },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

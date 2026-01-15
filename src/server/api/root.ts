@@ -1,12 +1,12 @@
 import { aiRouter } from "./routers/ai";
 import { bookmarkListRouter } from "./routers/bookmark/list";
 import { bookmarkListItemRouter } from "./routers/bookmark/list-item";
-import { likeRouter } from "./routers/map/like";
+import { mapLikeRouter } from "./routers/map/like";
 import { mapListRouter } from "./routers/map/list";
 import { mapRouter } from "./routers/map/map";
 import { morphConvertRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
-import { clapRouter } from "./routers/result/clap";
+import { resultClapRouter } from "./routers/result/clap";
 import { resultListRouter } from "./routers/result/list";
 import { resultRouter } from "./routers/result/result";
 import { userImeTypingOptionRouter } from "./routers/user/ime-typing-option";
@@ -17,8 +17,11 @@ import { userTypingOptionRouter } from "./routers/user/typing-option";
 import { vercelRouter } from "./routers/vercel";
 import { router } from "./trpc";
 export const appRouter = router({
-  map: mapRouter,
-  mapList: mapListRouter,
+  map: {
+    list: mapListRouter,
+    detail: mapRouter,
+    like: mapLikeRouter,
+  },
   notification: notificationRouter,
   result: resultRouter,
   resultList: resultListRouter,
@@ -32,8 +35,7 @@ export const appRouter = router({
   morphConvert: morphConvertRouter,
   ai: aiRouter,
   vercel: vercelRouter,
-  clap: clapRouter,
-  like: likeRouter,
+  clap: resultClapRouter,
   bookmarkListItem: bookmarkListItemRouter,
   bookmarkList: bookmarkListRouter,
 });

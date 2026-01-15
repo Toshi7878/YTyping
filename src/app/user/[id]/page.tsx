@@ -8,8 +8,8 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   const { id } = await params;
   const { tab } = await loadUserPageSearchParams(searchParams);
 
-  prefetch(trpc.mapList.getCount.queryOptions({ creatorId: Number(id) }));
-  prefetch(trpc.mapList.getCount.queryOptions({ likerId: Number(id) }));
+  prefetch(trpc.map.list.getCount.queryOptions({ creatorId: Number(id) }));
+  prefetch(trpc.map.list.getCount.queryOptions({ likerId: Number(id) }));
   prefetch(trpc.resultList.getWithMapCount.queryOptions({ playerId: Number(id) }));
   prefetch(trpc.bookmarkList.getCount.queryOptions({ userId: Number(id) }));
 
@@ -19,15 +19,15 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   } else if (tab === "bookmarks") {
     prefetch(trpc.bookmarkList.getByUserId.queryOptions({ userId: Number(id) }));
     prefetch(
-      trpc.mapList.get.infiniteQueryOptions({ bookmarkListId: Number(id), sort: { value: "bookmark", desc: true } }),
+      trpc.map.list.get.infiniteQueryOptions({ bookmarkListId: Number(id), sort: { value: "bookmark", desc: true } }),
     );
   } else if (tab === "maps") {
-    prefetch(trpc.mapList.get.infiniteQueryOptions({ creatorId: Number(id) }));
+    prefetch(trpc.map.list.get.infiniteQueryOptions({ creatorId: Number(id) }));
   } else if (tab === "results") {
     prefetch(trpc.resultList.getWithMap.infiniteQueryOptions({ playerId: Number(id) }));
     prefetch(trpc.result.getUserResultStats.queryOptions({ userId: Number(id) }));
   } else if (tab === "liked") {
-    prefetch(trpc.mapList.get.infiniteQueryOptions({ likerId: Number(id) }));
+    prefetch(trpc.map.list.get.infiniteQueryOptions({ likerId: Number(id) }));
   }
 
   const userProfile = await serverApi.user.profile.get({ userId: Number(id) });

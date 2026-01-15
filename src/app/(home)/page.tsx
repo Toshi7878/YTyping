@@ -7,7 +7,7 @@ import { JotaiProvider } from "./_components/provider";
 export default async function Home({ searchParams }: PageProps<"/">) {
   const mapListQueryParams = loadMapListSearchParams(await searchParams);
 
-  prefetch(trpc.mapList.get.infiniteQueryOptions(mapListQueryParams));
+  prefetch(trpc.map.list.get.infiniteQueryOptions(mapListQueryParams));
   prefetch(trpc.bookmarkList.getForSession.queryOptions());
 
   return (

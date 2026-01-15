@@ -67,7 +67,7 @@ export const ActiveUsersSheet = () => {
 const ActiveMapCard = ({ activeUser }: { activeUser: ActiveUserStatus }) => {
   const trpc = useTRPC();
   const { data: map } = useQuery(
-    trpc.mapList.getByMapId.queryOptions({ mapId: activeUser.mapId ?? 0 }, { enabled: !!activeUser.mapId }),
+    trpc.map.list.getByMapId.queryOptions({ mapId: activeUser.mapId ?? 0 }, { enabled: !!activeUser.mapId }),
   );
 
   if (!map) {

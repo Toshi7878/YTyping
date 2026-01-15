@@ -60,13 +60,13 @@ export const UserTabs = ({ id }: { id: string }) => {
 
 const MapTabLabelWithCount = ({ id }: { id: string }) => {
   const trpc = useTRPC();
-  const { data: mapCount } = useSuspenseQuery(trpc.mapList.getCount.queryOptions({ creatorId: Number(id) }));
+  const { data: mapCount } = useSuspenseQuery(trpc.map.list.getCount.queryOptions({ creatorId: Number(id) }));
   return <LabelWithCount label="制作譜面" count={mapCount} />;
 };
 
 const LikedMapTabLabelWithCount = ({ id }: { id: string }) => {
   const trpc = useTRPC();
-  const { data: mapCount } = useSuspenseQuery(trpc.mapList.getCount.queryOptions({ likerId: Number(id) }));
+  const { data: mapCount } = useSuspenseQuery(trpc.map.list.getCount.queryOptions({ likerId: Number(id) }));
   return <LabelWithCount label="いいねした譜面" count={mapCount} />;
 };
 

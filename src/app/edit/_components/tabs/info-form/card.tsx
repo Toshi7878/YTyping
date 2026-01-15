@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { buildTypingMap, type RawMapLine } from "lyrics-typing-engine";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -52,8 +52,8 @@ export const EditMapInfoFormCard = () => {
   const mapId = useMapIdState();
   const trpc = useTRPC();
 
-  const { data: mapInfo } = useQuery(
-    trpc.map.getInfoById.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
+  const { data: mapInfo } = useSuspenseQuery(
+    trpc.map.detail.getInfo.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
   );
 
   const videoId = useVideoIdState();
@@ -62,12 +62,12 @@ export const EditMapInfoFormCard = () => {
     resolver: zodResolver(MapInfoFormSchema),
     shouldUnregister: false,
     values: {
-      title: mapInfo?.info.title ?? "",
-      artistName: mapInfo?.info.artistName ?? "",
-      musicSource: mapInfo?.info.source ?? "",
-      previewTime: mapInfo?.media.previewTime ?? 0,
-      creatorComment: mapInfo?.creator.comment ?? "",
-      tags: mapInfo?.info.tags ?? [],
+      title: mapInfo.info.title,
+      artistName: mapInfo.info.artistName,
+      musicSource: mapInfo.info.source,
+      previewTime: mapInfo.media.previewTime,
+      creatorComment: mapInfo.creator.comment,
+      tags: mapInfo.info.tags,
       videoId,
     },
     resetOptions: {
@@ -409,14 +409,14 @@ type FormType = ReturnType<typeof useForm<z.input<typeof MapInfoFormSchema>>>;
 const useOnSubmit = (form: FormType) => {
   const trpc = useTRPC();
   const upsertMap = useMutation(
-    useTRPC().map.upsertMap.mutationOptions({
+    trpc.map.detail.upsert.mutationOptions({
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
         form.reset(form.getValues());
         context.client.setQueriesData<RawMapLine[]>(
-          trpc.map.getRawMapJson.queryFilter({ mapId: id }),
+          trpc.map.detail.getRawMapJson.queryFilter({ mapId: id }),
           () => _variables.mapData,
         );
-        await context.client.invalidateQueries(trpc.map.getInfoById.queryOptions({ mapId: id }));
+        await context.client.invalidateQueries(trpc.map.detail.getInfo.queryOptions({ mapId: id }));
 
         const mapId = readMapId();
         if (!mapId) {
@@ -425,10 +425,10 @@ const useOnSubmit = (form: FormType) => {
           setMapId(id);
           setCreatorId(creatorId);
           toast.success("アップロード完了");
-          await context.client.resetQueries({ queryKey: trpc.mapList.get.pathKey() });
+          await context.client.resetQueries({ queryKey: trpc.map.list.get.pathKey() });
         } else {
           toast.success("アップデート完了");
-          await context.client.invalidateQueries({ queryKey: trpc.mapList.get.pathKey() });
+          await context.client.invalidateQueries({ queryKey: trpc.map.list.get.pathKey() });
         }
         setCanUpload(false);
       },

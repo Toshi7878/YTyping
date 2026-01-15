@@ -10,7 +10,7 @@ import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const mapRouter = {
-  getInfoById: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
+  getInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { mapId } = input;
 
@@ -84,7 +84,7 @@ export const mapRouter = {
     }
   }),
 
-  upsertMap: protectedProcedure.input(UpsertMapSchema).mutation(async ({ input, ctx }) => {
+  upsert: protectedProcedure.input(UpsertMapSchema).mutation(async ({ input, ctx }) => {
     const { mapId, isMapDataEdited, mapData, mapInfo, mapDifficulty } = input;
     const userId = ctx.user.id;
     const userRole = ctx.user.role;

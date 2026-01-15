@@ -12,7 +12,7 @@ interface CreatedVideoMapListProps {
 
 export const CreatedVideoMapList = ({ videoId, disabledNotFoundText = false }: CreatedVideoMapListProps) => {
   const trpc = useTRPC();
-  const { data, isPending } = useQuery(trpc.mapList.getByVideoId.queryOptions({ videoId }));
+  const { data, isPending } = useQuery(trpc.map.list.getByVideoId.queryOptions({ videoId }));
   if (isPending) return <Spinner />;
 
   if (data?.length) {

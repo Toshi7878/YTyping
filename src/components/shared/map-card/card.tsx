@@ -18,7 +18,7 @@ import { MapLeftThumbnail } from "../map-card-thumbnail";
 import { DateDistanceText } from "../text/date-distance-text";
 import { UserNameLinkText } from "../text/user-name-link-text";
 
-type Map = NonNullable<RouterOutputs["mapList"]["get"]["items"]>[number];
+type Map = NonNullable<RouterOutputs["map"]["list"]["get"]["items"]>[number];
 
 interface MapCardProps {
   map: Map;

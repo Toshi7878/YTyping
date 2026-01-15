@@ -5,7 +5,7 @@ import { MapLikes, Maps, NotificationLikes, Notifications } from "@/server/drizz
 import { protectedProcedure } from "../../trpc";
 import { generateNotificationId } from "../../utils/id";
 
-export const likeRouter = {
+export const mapLikeRouter = {
   toggleLike: protectedProcedure
     .input(z.object({ mapId: z.number(), newState: z.boolean() }))
     .mutation(async ({ input, ctx }) => {
