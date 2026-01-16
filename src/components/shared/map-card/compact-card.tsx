@@ -89,12 +89,9 @@ const CompactMapInfo = ({ map }: CompactMapInfoProps) => {
             delayDuration={300}
             label={nolink(`${map.info.title} / ${map.info.artistName}${musicSource}`)}
           >
-            <Link
-              href={`/type/${map.id}`}
-              className="z-1 overflow-hidden truncate whitespace-nowrap font-bold text-base text-secondary hover:no-underline"
-            >
+            <div className="overflow-hidden truncate whitespace-nowrap font-bold text-base text-secondary">
               {nolink(map.info.title)}
-            </Link>
+            </div>
           </TooltipWrapper>
           <div className="overflow-hidden truncate whitespace-nowrap font-bold text-secondary text-xs sm:text-sm">
             {nolink(map.info.artistName)}
