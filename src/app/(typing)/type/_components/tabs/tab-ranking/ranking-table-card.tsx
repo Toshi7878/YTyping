@@ -21,7 +21,7 @@ import { useSceneGroupState } from "../../../_lib/atoms/state";
 import { setRankStatus } from "../../../_lib/atoms/status";
 import { RankingPopoverContent } from "./ranking-popover-menu";
 
-type RankingResult = RouterOutputs["resultList"]["getMapRanking"][number];
+type RankingResult = RouterOutputs["result"]["list"]["getRanking"][number];
 
 export const RankingTableCard = ({ className }: { className?: string }) => {
   const { data: session } = useSession();
@@ -29,7 +29,7 @@ export const RankingTableCard = ({ className }: { className?: string }) => {
   const trpc = useTRPC();
   const mapId = useMapIdState();
   const { data, error, isPending } = useQuery(
-    trpc.resultList.getMapRanking.queryOptions({ mapId: mapId ?? 0 }, { gcTime: Infinity }),
+    trpc.result.list.getRanking.queryOptions({ mapId: mapId ?? 0 }, { gcTime: Infinity }),
   );
   const toggleClap = useToggleClapMutation();
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);

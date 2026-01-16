@@ -5,7 +5,7 @@ export const generateLyricsWithReadings = async (comparisonLyrics: string[][]) =
   const queryClient = getQueryClient();
   const trpc = getTRPCOptionsProxy();
   return await queryClient.ensureQueryData(
-    trpc.morphConvert.tokenizeSentence.queryOptions(
+    trpc.morph.tokenizeSentence.queryOptions(
       { sentence: comparisonLyrics.flat().join(" ") },
       {
         staleTime: Infinity,

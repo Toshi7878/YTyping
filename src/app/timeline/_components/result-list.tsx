@@ -14,7 +14,7 @@ export const UsersResultList = () => {
   const isSearching = useIsSearchingState();
 
   const { data, ...pagination } = useSuspenseInfiniteQuery(
-    trpc.resultList.getWithMap.infiniteQueryOptions(filterParams, {
+    trpc.result.list.get.infiniteQueryOptions(filterParams, {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       refetchOnWindowFocus: false,
       staleTime: Infinity,

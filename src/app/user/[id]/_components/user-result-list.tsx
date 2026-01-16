@@ -11,7 +11,7 @@ export const UserResultList = ({ id }: { id: string }) => {
   const trpc = useTRPC();
 
   const { data, ...pagination } = useSuspenseInfiniteQuery(
-    trpc.resultList.getWithMap.infiniteQueryOptions(
+    trpc.result.list.get.infiniteQueryOptions(
       { playerId: Number(id) },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -38,7 +38,9 @@ export const UserResultList = ({ id }: { id: string }) => {
 
 const StatsList = ({ userId }: { userId: string }) => {
   const trpc = useTRPC();
-  const { data: stats, isPending } = useQuery(trpc.result.getUserResultStats.queryOptions({ userId: Number(userId) }));
+  const { data: stats, isPending } = useQuery(
+    trpc.user.stats.getRankingSummary.queryOptions({ userId: Number(userId) }),
+  );
 
   if (isPending) {
     return (
@@ -50,14 +52,14 @@ const StatsList = ({ userId }: { userId: string }) => {
     );
   }
 
-  const total = stats?.totalResults ?? 0;
-  const first = stats?.firstRankCount ?? 0;
-  const rate = total > 0 ? Math.round((first / total) * 1000) / 10 : 0; // 0.1% precision
+  const totalResultCount = stats?.totalResultCount ?? 0;
+  const firstRankCount = stats?.firstRankCount ?? 0;
+  const rate = totalResultCount > 0 ? Math.round((firstRankCount / totalResultCount) * 1000) / 10 : 0; // 0.1% precision
 
   return (
     <section className="mt-1 grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <StatsItem label="登録済み譜面数" value={total.toLocaleString()} />
-      <StatsItem label="1位譜面数" value={first.toLocaleString()} />
+      <StatsItem label="登録済み譜面数" value={totalResultCount.toLocaleString()} />
+      <StatsItem label="1位譜面数" value={firstRankCount.toLocaleString()} />
       <StatsItem label="1位譜面率" value={`${rate.toFixed(1)}%`} />
     </section>
   );

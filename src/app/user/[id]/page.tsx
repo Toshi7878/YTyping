@@ -10,7 +10,7 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
 
   prefetch(trpc.map.list.getCount.queryOptions({ creatorId: Number(id) }));
   prefetch(trpc.map.list.getCount.queryOptions({ likerId: Number(id) }));
-  prefetch(trpc.resultList.getWithMapCount.queryOptions({ playerId: Number(id) }));
+  prefetch(trpc.result.list.getCount.queryOptions({ playerId: Number(id) }));
   prefetch(trpc.map.bookmark.list.getCount.queryOptions({ userId: Number(id) }));
 
   if (tab === "stats") {
@@ -24,8 +24,8 @@ export default async function Page({ params, searchParams }: PageProps<"/user/[i
   } else if (tab === "maps") {
     prefetch(trpc.map.list.get.infiniteQueryOptions({ creatorId: Number(id) }));
   } else if (tab === "results") {
-    prefetch(trpc.resultList.getWithMap.infiniteQueryOptions({ playerId: Number(id) }));
-    prefetch(trpc.result.getUserResultStats.queryOptions({ userId: Number(id) }));
+    prefetch(trpc.result.list.get.infiniteQueryOptions({ playerId: Number(id) }));
+    prefetch(trpc.user.stats.getRankingSummary.queryOptions({ userId: Number(id) }));
   } else if (tab === "liked") {
     prefetch(trpc.map.list.get.infiniteQueryOptions({ likerId: Number(id) }));
   }

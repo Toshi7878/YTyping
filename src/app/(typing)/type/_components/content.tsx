@@ -47,7 +47,7 @@ export const Content = ({ videoId, mapId }: ContentProps) => {
 
   const trpc = useTRPC();
   const { data: rawMapLines, isLoading } = useQuery(
-    trpc.map.detail.getRawMapJson.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
+    trpc.map.detail.getJson.queryOptions({ mapId }, { staleTime: Infinity, gcTime: Infinity }),
   );
   const pathname = usePathname();
 

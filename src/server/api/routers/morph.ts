@@ -5,7 +5,7 @@ import { env } from "@/env";
 import { FixWordEditLogs, ReadingConversionDict } from "@/server/drizzle/schema";
 import { protectedProcedure } from "../trpc";
 
-export const morphConvertRouter = {
+export const morphRouter = {
   tokenizeSentence: protectedProcedure.input(z.object({ sentence: z.string().min(1) })).query(async ({ input }) => {
     if (env.SUDACHI_API_KEY && env.SUDACHI_API_URL) {
       return tokenizeSentenceWithSudachi({

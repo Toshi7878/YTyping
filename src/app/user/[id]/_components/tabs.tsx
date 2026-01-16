@@ -72,9 +72,7 @@ const LikedMapTabLabelWithCount = ({ id }: { id: string }) => {
 
 const ResultTabLabelWithCount = ({ id }: { id: string }) => {
   const trpc = useTRPC();
-  const { data: resultCount } = useSuspenseQuery(
-    trpc.resultList.getWithMapCount.queryOptions({ playerId: Number(id) }),
-  );
+  const { data: resultCount } = useSuspenseQuery(trpc.result.list.getCount.queryOptions({ playerId: Number(id) }));
 
   return <LabelWithCount label="ランキング履歴" count={resultCount} />;
 };

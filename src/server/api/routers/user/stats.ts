@@ -1,10 +1,11 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { eachDayOfInterval } from "date-fns";
-import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, count, eq, gte, lte, sql } from "drizzle-orm";
 import type { OpenApiContentType } from "trpc-to-openapi";
 import z from "zod";
 import {
   Maps,
+  Results,
   UserDailyTypeCounts,
   UserMapCompletionPlayCounts,
   UserOptions,
@@ -47,6 +48,20 @@ export const userStatsRouter = {
       .then((rows) => rows?.[0] ?? null);
 
     return userStats;
+  }),
+
+  getRankingSummary: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
+    const { db } = ctx;
+    const { userId } = input;
+
+    return db
+      .select({
+        totalResultCount: count(),
+        firstRankCount: sql<number>`cast(count(*) filter (where ${Results.rank} = 1) as int)`,
+      })
+      .from(Results)
+      .where(eq(Results.userId, userId))
+      .then((rows) => rows[0] ?? { totalResultCount: 0, firstRankCount: 0 });
   }),
 
   getYearlyTypingActivity: publicProcedure

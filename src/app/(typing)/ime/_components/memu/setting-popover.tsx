@@ -42,7 +42,7 @@ export const SettingPopover = ({ triggerButton: trigger }: SettingPopoverProps) 
       if (isOptionEdited) {
         updateImeTypingOptions.mutate({ ...readImeTypeOptions() });
         const rawMapLines = queryClient.getQueryData(
-          trpc.map.detail.getRawMapJson.queryOptions({ mapId: Number(mapId) }).queryKey,
+          trpc.map.detail.getJson.queryOptions({ mapId: Number(mapId) }).queryKey,
         );
 
         if (rawMapLines) {

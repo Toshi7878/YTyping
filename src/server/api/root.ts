@@ -4,11 +4,11 @@ import { mapBookmarkListRouter } from "./routers/map/bookmark/list";
 import { mapDetailRouter } from "./routers/map/detail";
 import { mapLikeRouter } from "./routers/map/like";
 import { mapListRouter } from "./routers/map/list";
-import { morphConvertRouter } from "./routers/morph";
+import { morphRouter } from "./routers/morph";
 import { notificationRouter } from "./routers/notification";
 import { resultClapRouter } from "./routers/result/clap";
+import { resultDetailRouter } from "./routers/result/detail";
 import { resultListRouter } from "./routers/result/list";
-import { resultRouter } from "./routers/result/result";
 import { userImeTypingOptionRouter } from "./routers/user/ime-typing-option";
 import { userOptionRouter } from "./routers/user/option";
 import { userProfileRouter } from "./routers/user/profile";
@@ -26,9 +26,11 @@ export const appRouter = router({
       detail: mapBookmarkDetailRouter,
     },
   },
-  notification: notificationRouter,
-  result: resultRouter,
-  resultList: resultListRouter,
+  result: {
+    list: resultListRouter,
+    detail: resultDetailRouter,
+    clap: resultClapRouter,
+  },
   user: {
     profile: userProfileRouter,
     option: userOptionRouter,
@@ -36,10 +38,10 @@ export const appRouter = router({
     imeTypingOption: userImeTypingOptionRouter,
     stats: userStatsRouter,
   },
-  morphConvert: morphConvertRouter,
+  notification: notificationRouter,
+  morph: morphRouter,
   ai: aiRouter,
   vercel: vercelRouter,
-  clap: resultClapRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -6,7 +6,7 @@ import { SearchContent } from "./_components/search-content";
 
 export default async function Home({ searchParams }: PageProps<"/timeline">) {
   const params = loadResultListSearchParams(await searchParams);
-  prefetch(trpc.resultList.getWithMap.infiniteQueryOptions(params));
+  prefetch(trpc.result.list.get.infiniteQueryOptions(params));
 
   return (
     <HydrateClient>

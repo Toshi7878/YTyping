@@ -1,5 +1,5 @@
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
-import { and, count, desc, eq, inArray, max, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, max } from "drizzle-orm";
 import z from "zod";
 import { downloadPublicFile, uploadPublicFile } from "@/server/api/utils/storage";
 import type { TXType } from "@/server/drizzle/client";
@@ -10,8 +10,8 @@ import { CreateResultSchema } from "@/validator/result";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 import { generateNotificationId } from "../../utils/id";
 
-export const resultRouter = {
-  getResultJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
+export const resultDetailRouter = {
+  getJson: publicProcedure.input(z.object({ resultId: z.number().nullable() })).query(async ({ input }) => {
     const data = await downloadPublicFile(`result-json/${input.resultId}.json`);
 
     if (!data) {
@@ -24,21 +24,7 @@ export const resultRouter = {
     return jsonData;
   }),
 
-  getUserResultStats: publicProcedure.input(z.object({ userId: z.number() })).query(async ({ input, ctx }) => {
-    const { db } = ctx;
-    const { userId } = input;
-
-    return db
-      .select({
-        totalResults: count(),
-        firstRankCount: sql<number>`cast(count(*) filter (where ${Results.rank} = 1) as int)`,
-      })
-      .from(Results)
-      .where(eq(Results.userId, userId))
-      .then((rows) => rows[0] ?? { totalResults: 0, firstRankCount: 0 });
-  }),
-
-  createResult: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
+  upsert: protectedProcedure.input(CreateResultSchema).mutation(async ({ input, ctx }) => {
     const { user } = ctx;
     const userId = user.id;
     const { mapId, lineResults, status } = input;

@@ -30,7 +30,7 @@ const fetchReading = async (sentence: string) => {
   const trpcOptions = getTRPCOptionsProxy();
   try {
     const { regexDict } = await queryClient.ensureQueryData(
-      trpcOptions.morphConvert.getCustomDict.queryOptions(undefined, {
+      trpcOptions.morph.getCustomDict.queryOptions(undefined, {
         staleTime: Infinity,
         gcTime: Infinity,
       }),
@@ -43,7 +43,7 @@ const fetchReading = async (sentence: string) => {
     }
 
     const tokenizedWord = await queryClient.ensureQueryData(
-      trpcOptions.morphConvert.tokenizeSentence.queryOptions(
+      trpcOptions.morph.tokenizeSentence.queryOptions(
         { sentence: processedSentence },
         { staleTime: Infinity, gcTime: Infinity },
       ),

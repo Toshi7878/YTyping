@@ -53,7 +53,7 @@ export const EditMapInfoFormCard = () => {
   const trpc = useTRPC();
 
   const { data: mapInfo } = useSuspenseQuery(
-    trpc.map.detail.getInfo.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
+    trpc.map.detail.get.queryOptions({ mapId: mapId ?? 0 }, { staleTime: Infinity, gcTime: Infinity }),
   );
 
   const videoId = useVideoIdState();
@@ -413,10 +413,10 @@ const useOnSubmit = (form: FormType) => {
       onSuccess: async ({ id, creatorId }, _variables, _, context) => {
         form.reset(form.getValues());
         context.client.setQueriesData<RawMapLine[]>(
-          trpc.map.detail.getRawMapJson.queryFilter({ mapId: id }),
+          trpc.map.detail.getJson.queryFilter({ mapId: id }),
           () => _variables.mapData,
         );
-        await context.client.invalidateQueries(trpc.map.detail.getInfo.queryOptions({ mapId: id }));
+        await context.client.invalidateQueries(trpc.map.detail.get.queryOptions({ mapId: id }));
 
         const mapId = readMapId();
         if (!mapId) {

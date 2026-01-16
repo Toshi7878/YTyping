@@ -21,7 +21,7 @@ const MyClap = alias(ResultClaps, "my_clap");
 const PAGE_SIZE = 25;
 
 export const resultListRouter = {
-  getWithMap: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
+  get: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, ...searchInput } = input ?? {};
     const { db, user } = ctx;
 
@@ -36,7 +36,7 @@ export const resultListRouter = {
     return buildPageResult(formatMapListItem(items));
   }),
 
-  getWithMapCount: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
+  getCount: publicProcedure.input(SelectResultListApiSchema).query(async ({ input, ctx }) => {
     const { cursor, ...searchInput } = input ?? {};
     const { db, user } = ctx;
 
@@ -51,11 +51,9 @@ export const resultListRouter = {
     return total[0]?.count ?? 0;
   }),
 
-  getMapRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
+  getRanking: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { mapId } = input;
-
-    const Player = alias(Users, "player");
 
     const { map: _, ...resultSelect } = buildBaseSelect(user);
 
@@ -183,31 +181,31 @@ const buildResultWithMapBaseQuery = <T extends PgSelect>(
 };
 
 const formatMapListItem = (items: ResultWithMapBaseItem[]) => {
-  return items.map(({ map: m, ...rest }) => {
+  return items.map(({ map, ...rest }) => {
     return {
       ...rest,
       map: {
-        id: m.id,
-        updatedAt: m.updatedAt,
+        id: map.id,
+        updatedAt: map.updatedAt,
         media: {
-          videoId: m.videoId,
-          previewTime: m.previewTime,
-          thumbnailQuality: m.thumbnailQuality,
+          videoId: map.videoId,
+          previewTime: map.previewTime,
+          thumbnailQuality: map.thumbnailQuality,
           previewSpeed: rest.otherStatus.playSpeed,
         },
-        info: { title: m.title, artistName: m.artistName, source: m.musicSource, duration: m.duration },
-        creator: { id: m.creatorId, name: m.creatorName },
+        info: { title: map.title, artistName: map.artistName, source: map.musicSource, duration: map.duration },
+        creator: { id: map.creatorId, name: map.creatorName },
         difficulty: {
-          romaKpmMedian: m.romaKpmMedian,
-          kanaKpmMedian: m.kanaKpmMedian,
-          romaKpmMax: m.romaKpmMax,
-          kanaKpmMax: m.kanaKpmMax,
-          romaTotalNotes: m.romaTotalNotes,
-          kanaTotalNotes: m.kanaTotalNotes,
+          romaKpmMedian: map.romaKpmMedian,
+          kanaKpmMedian: map.kanaKpmMedian,
+          romaKpmMax: map.romaKpmMax,
+          kanaKpmMax: map.kanaKpmMax,
+          romaTotalNotes: map.romaTotalNotes,
+          kanaTotalNotes: map.kanaTotalNotes,
         },
-        like: { count: m.likeCount, hasLiked: m.hasLiked },
-        ranking: { count: m.rankingCount, myRank: m.myRank, myRankUpdatedAt: m.myRankUpdatedAt },
-        bookmark: { hasBookmarked: m.hasBookmarked },
+        like: { count: map.likeCount, hasLiked: map.hasLiked },
+        ranking: { count: map.rankingCount, myRank: map.myRank, myRankUpdatedAt: map.myRankUpdatedAt },
+        bookmark: { hasBookmarked: map.hasBookmarked },
       } satisfies MapListItem,
     };
   });

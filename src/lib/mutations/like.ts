@@ -50,8 +50,8 @@ export function useToggleMapLikeMutation() {
     trpc.map.like.toggleLike.mutationOptions({
       onMutate: async (input) => {
         const mapListFilter = trpc.map.list.pathFilter();
-        const mapInfoFilter = trpc.map.detail.getInfo.queryFilter();
-        const resultListFilter = trpc.resultList.pathFilter();
+        const mapInfoFilter = trpc.map.detail.get.queryFilter();
+        const resultListFilter = trpc.result.list.pathFilter();
         const notificationsFilter = trpc.notification.getInfinite.infiniteQueryFilter();
 
         await Promise.all([

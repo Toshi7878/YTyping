@@ -7,7 +7,7 @@ import { PermissionToast } from "../_components/permission-toast";
 import { JotaiProvider } from "../_components/provider";
 
 const getMapInfo = cache(async (mapId: number) => {
-  return await serverApi.map.detail.getInfo({ mapId });
+  return await serverApi.map.detail.get({ mapId });
 });
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
   if (!mapInfo) notFound();
 
-  prefetch(trpc.map.detail.getInfo.queryOptions({ mapId: Number(id) }, { initialData: mapInfo }));
+  prefetch(trpc.map.detail.get.queryOptions({ mapId: Number(id) }, { initialData: mapInfo }));
 
   return (
     <HydrateClient>

@@ -37,7 +37,7 @@ const InfoIconButton = () => {
   const [open, setOpen] = useState(false);
   const trpc = useTRPC();
   const mapId = useMapIdState();
-  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.getInfo.queryOptions({ mapId: mapId ?? 0 }));
+  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.get.queryOptions({ mapId: mapId ?? 0 }));
 
   const creatorComment = mapInfo.creator.comment?.trim() ? mapInfo.creator.comment : "-";
   const tags = mapInfo.info.tags ?? [];
@@ -113,7 +113,7 @@ const BookmarkListIconButton = () => {
   const mapId = useMapIdState();
 
   const trpc = useTRPC();
-  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.getInfo.queryOptions({ mapId: mapId ?? 0 }));
+  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.get.queryOptions({ mapId: mapId ?? 0 }));
 
   const hasBookmarked = mapInfo.bookmark.hasBookmarked;
 
@@ -138,7 +138,7 @@ const LikeIconButton = () => {
   const toggleMapLike = useToggleMapLikeMutation();
   const trpc = useTRPC();
   const mapId = useMapIdState();
-  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.getInfo.queryOptions({ mapId: mapId ?? 0 }));
+  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.get.queryOptions({ mapId: mapId ?? 0 }));
 
   const handleClick = () => {
     if (toggleMapLike.isPending) return;
@@ -166,7 +166,7 @@ const EditIconButton = () => {
   const { data: session } = useSession();
 
   const trpc = useTRPC();
-  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.getInfo.queryOptions({ mapId: mapId ?? 0 }));
+  const { data: mapInfo } = useSuspenseQuery(trpc.map.detail.get.queryOptions({ mapId: mapId ?? 0 }));
 
   const role = session?.user.role;
   const creatorId = mapInfo.creator.id;

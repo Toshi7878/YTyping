@@ -10,7 +10,7 @@ import { buildHasBookmarkedMapExists } from "../../lib/map";
 import { protectedProcedure, publicProcedure } from "../../trpc";
 
 export const mapDetailRouter = {
-  getInfo: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
+  get: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input, ctx }) => {
     const { db, user } = ctx;
     const { mapId } = input;
 
@@ -66,7 +66,7 @@ export const mapDetailRouter = {
     return mapInfo;
   }),
 
-  getRawMapJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
+  getJson: publicProcedure.input(z.object({ mapId: z.number() })).query(async ({ input }) => {
     try {
       const data = await downloadPublicFile(`map-json/${input.mapId}.json`);
 

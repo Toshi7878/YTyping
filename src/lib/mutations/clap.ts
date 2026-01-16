@@ -38,9 +38,9 @@ export function useToggleClapMutation() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    trpc.clap.toggleClap.mutationOptions({
+    trpc.result.clap.toggleClap.mutationOptions({
       onMutate: async (input) => {
-        const resultListFilter = trpc.resultList.pathFilter();
+        const resultListFilter = trpc.result.list.pathFilter();
 
         await Promise.all([queryClient.cancelQueries(resultListFilter)]);
 
