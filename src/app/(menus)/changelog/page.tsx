@@ -5,7 +5,7 @@ import { formatDate } from "@/utils/date";
 import { changelog } from "./changelog";
 
 export default async function Page() {
-  const buildingDate = await serverApi.vercel.getLatestDeployDate();
+  const buildingDate = await serverApi.vercel.getActiveBuildingAt();
 
   return (
     <article className="mx-auto max-w-7xl space-y-4">
