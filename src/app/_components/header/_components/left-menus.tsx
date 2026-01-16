@@ -14,7 +14,7 @@ export const SiteLogo = () => {
     <Link
       href="/"
       className="h-9 px-2 font-bold text-2xl text-header-foreground transition-colors duration-200 hover:bg-secondary/30"
-      onClick={() => {
+      onNavigate={() => {
         window.scrollTo({ top: 0, behavior: "instant" });
       }}
     >
