@@ -36,7 +36,7 @@ export const MapList = () => {
   return (
     <section className={isSearching ? "opacity-20" : ""}>
       {listLayout === "THREE_COLUMNS" ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {data.pages.map((page, pageIndex) =>
             page.items.map((map) => (
               <ThreeColumnCompactMapCard key={map.id} map={map} initialInView={data.pages.length - 1 === pageIndex} />
