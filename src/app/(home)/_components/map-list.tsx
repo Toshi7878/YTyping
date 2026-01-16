@@ -1,21 +1,17 @@
 "use client";
-import { useSuspenseInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { InfiniteScrollSpinner } from "@/components/shared/infinite-scroll-spinner";
 import { MapCard } from "@/components/shared/map-card/card";
 import { ThreeColumnCompactMapCard } from "@/components/shared/map-card/three-column-compact-card";
 import { useMapListFilterQueryStates, useMapListSortQueryState } from "@/lib/search-params/map-list";
 import { useTRPC } from "@/trpc/provider";
-import { setIsSearching, useIsSearchingState } from "../_lib/atoms";
+import { setIsSearching, useIsSearchingState, useListLayoutTypeState } from "../_lib/atoms";
 
 export const MapList = () => {
   const isSearching = useIsSearchingState();
   const trpc = useTRPC();
-  const { data: listLayout } = useSuspenseQuery(
-    trpc.user.option.getForSession.queryOptions(undefined, {
-      select: (data) => data?.mapListLayout ?? "TWO_COLUMNS",
-    }),
-  );
+  const listLayout = useListLayoutTypeState();
   const [filterParams] = useMapListFilterQueryStates();
   const [sortParams] = useMapListSortQueryState();
 

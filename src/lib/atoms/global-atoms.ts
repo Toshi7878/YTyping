@@ -5,16 +5,12 @@ import type { ReactNode } from "react";
 
 const store = getDefaultStore();
 
-const readyRadioInputModeAtom = atomWithStorage<InputMode>("inputMode", "roma", undefined, {
-  getOnInit: false,
-});
+const readyRadioInputModeAtom = atomWithStorage<InputMode>("inputMode", "roma");
 export const useReadyInputModeState = () => useAtomValue(readyRadioInputModeAtom, { store });
 export const setReadyInputMode = (value: InputMode) => store.set(readyRadioInputModeAtom, value);
 export const readReadyInputMode = () => store.get(readyRadioInputModeAtom);
 
-const volumeAtom = atomWithStorage("volume", 30, undefined, {
-  getOnInit: true,
-});
+const volumeAtom = atomWithStorage("volume", 30);
 
 export const useVolumeState = () => useAtomValue(volumeAtom, { store });
 export const readVolume = () => store.get(volumeAtom);
