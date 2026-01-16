@@ -4,7 +4,7 @@ import { Spinner } from "../ui/spinner";
 
 const ROOT_MARGIN_MAP = {
   default: { rootMargin: "1500px 0px" },
-  threeColumnMapList: { rootMargin: "100px 0px" },
+  threeColumnMapList: { rootMargin: "300px 0px" },
   resultListWithMap: { rootMargin: "2000px 0px" },
   notificationSheet: { threshold: 0.8 },
 } as const satisfies Record<string, IntersectionOptions>;

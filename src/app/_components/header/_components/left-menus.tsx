@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,13 +11,16 @@ import {
 import { LEFT_LINKS, LEFT_MENU_LINK_ITEMS } from "../menu-items";
 
 export const SiteLogo = () => {
+  const isHome = usePathname() === "/";
   return (
     <Link
       href="/"
-      className="h-9 px-2 font-bold text-2xl text-header-foreground transition-colors duration-200 hover:bg-secondary/30"
-      onNavigate={() => {
-        window.scrollTo({ top: 0, behavior: "instant" });
+      onClick={() => {
+        if (isHome) {
+          window.scrollTo({ top: 0, behavior: "instant" });
+        }
       }}
+      className="h-9 px-2 font-bold text-2xl text-header-foreground transition-colors duration-200 hover:bg-secondary/30"
     >
       <span>Y</span>
       <span>Typing</span>
